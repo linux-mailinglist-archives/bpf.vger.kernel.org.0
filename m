@@ -2,251 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E84D24C41C
-	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 19:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379FF24C427
+	for <lists+bpf@lfdr.de>; Thu, 20 Aug 2020 19:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730429AbgHTRHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Aug 2020 13:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
+        id S1730011AbgHTRJZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Aug 2020 13:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730348AbgHTRFP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Aug 2020 13:05:15 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3850FC061385
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 10:05:06 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id jp10so3410877ejb.0
-        for <bpf@vger.kernel.org>; Thu, 20 Aug 2020 10:05:06 -0700 (PDT)
+        with ESMTP id S1730447AbgHTRIP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Aug 2020 13:08:15 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA78C061387;
+        Thu, 20 Aug 2020 10:07:11 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id m200so1489233ybf.10;
+        Thu, 20 Aug 2020 10:07:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Io5tdLMfOwzBnOTgWMWIIWlg9YYSmolrrRZ0RRvwKR8=;
-        b=kh+7Oi77zCYs0Sv7wjusq4Fc5vU9fpUjsb6r/DE/kUtxx0CQITSCQqoDaZMzjaZZ0n
-         b1VJBkGhEFH8feITupWHQFvEFbhGDN845BnvjWUre/C1K2N+lPbdhqaIylz5UM+JGll+
-         GAVJaLbBjUVw3gF32YxoWxhiSe7a6YeLphd03FE7liKLJ5lz6XlIf+0N3dLp2wHQZ2P2
-         53QhRJ8b2V+Ssvr4++sy0/W/vhM+NV6FRxAvOqnSw4Nm2O2HY9sBxZRz1vMCOGY4jAbH
-         UjkJOxnjy+aZJDIrRyJTTdd0XsUtqpmNCMnzV1KqEUvUC7x54C+Gl0x7HdYdkHKrC7ng
-         JLZQ==
+        bh=glbSY9AfO3c8Ilt34Mm40yHeC6Eq+qmYUQCGg5s1K0U=;
+        b=G40t2fYW0FhXMcs05aomQTRQxrdlOpkX/PnxGcUCLWyKhms/BoNlmCrutAjwhgn3gW
+         kr6hbH7rHVs77A+tTAmg5+CfvNiTNs+2ZXOHPCAYMXybwieTG7aFMImHSW5rgfcOjtzt
+         mWMtIZBvvy346pwDG2jYbKAKbXr5z0AuQGYagW8fOYtnkG9ymeh6Cyek+XgM8BH8hGkz
+         ko7pWuBxDlR4c8L299wc4COwVSVc8KE4HIlR5vzvV0f2UxO/VvpAeHiMmpPzfYMuZI+0
+         er1AUffqw/sjoKcBRhgQbk/rlui05AToJrRrgel0WfvCJxmCtvt+aavfjXNXEGhSwK3A
+         RkAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Io5tdLMfOwzBnOTgWMWIIWlg9YYSmolrrRZ0RRvwKR8=;
-        b=XwFITpzTAC0EnSUCTRPhhVAcpI2vSUTVDOh7UxEn/Rq35KS5kMFOlLr49p714oS6JH
-         RylcALCOTlc2HAdgA+62fN2hsS2Hty3HWjolxNT91WdMqvHX1CoS42SvB8HII79MhJG2
-         0nBK38CeUPZgBA0MGNYq41HfI2nHjMRQSkMGLJPBD/WLOS4sfEQUskaS5T59uh2gxLOu
-         dIuTpbvqlTTSqPP+nrBaoxFkiWdz/mnPNxGA/sEE3qrKCO+6G0+irkW+PW62aFwNEgzT
-         5rsERuvX/ybodo/xRhbQ7w8WIx+FY5269H4Fhjy4T20bSQfPu7y2uFFuoVvufE1qu4uh
-         nDPQ==
-X-Gm-Message-State: AOAM531z2SED0uzbMim4QVKzTKhm+9aSATtrfB26hV86yCKIWQANaXpK
-        1YLEBeV28EBMR1jaw716MOFqPhZmRQ83yHn6iA0lbw==
-X-Google-Smtp-Source: ABdhPJxmhN2XhjhlawKzSbrnBdxU0whJpUJmBc0bEkLW6GcfQwO/fGclhykmEtouej1+n+vSOnBFgnayetnB0wumRKM=
-X-Received: by 2002:a17:906:54d3:: with SMTP id c19mr4419389ejp.408.1597943104367;
- Thu, 20 Aug 2020 10:05:04 -0700 (PDT)
+        bh=glbSY9AfO3c8Ilt34Mm40yHeC6Eq+qmYUQCGg5s1K0U=;
+        b=MLHoFEaqUHzmdUGwRWYQnJ5gfq/h0ArUO1fvPHN8Ln5AMxXAfJeUQouERqPHXPtnhr
+         HX7CwkJJ79LbvriCy06lf9n2O86MDtm8bdilGGU8UjSN1eo6ZHqBRbWvRy+aB1oRqpDQ
+         3AyEVNRU8798aHTQ+ZQcCnx1qlR8TSbOPHxHdBY6nlPUJgxXsom6SezMURts6ldrIIWr
+         +Z1AgjJ7Td+IHUm+CdxtDhmnwtgcV0Wi7ZH+ayse9JQB4bvxxniU6NhJBmXUBWh2TErB
+         Ti1rbAMsaPQaKPFyxVgbtklVhcgwlnGXpz3BmCh0D7uS8lZb6+o0SwbK5D9D2LVV3XEb
+         pkOQ==
+X-Gm-Message-State: AOAM533EYimiw6LAXNz7/k2SQkNrIlhABJDClymqF+iG3/9ivGItiC9a
+        stQGhsTlF+W02jhKNcf9+uvfaWuK5ZjnVB4qK/k=
+X-Google-Smtp-Source: ABdhPJxVweS8wTcW+9Gn3U434vsgVIpBXkGRmzYW1MOeLGuvJQyj3w61ppDG3Iinwf6rEdXgfkSObizgTjEYOLgziAI=
+X-Received: by 2002:a25:84cd:: with SMTP id x13mr5973103ybm.425.1597943231062;
+ Thu, 20 Aug 2020 10:07:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-2-haoluo@google.com>
- <35519fec-754c-0a17-4f01-9d6e39a8a7e8@fb.com>
-In-Reply-To: <35519fec-754c-0a17-4f01-9d6e39a8a7e8@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 20 Aug 2020 10:04:53 -0700
-Message-ID: <CA+khW7jYgRxsjvqSWwLQDP5PpuXB0HJDNMLGFAOPddi7SdMP0g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/8] bpf: Introduce pseudo_btf_id
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <000000000000568fc005ad3b57c3@google.com> <CACT4Y+bxvHp9gq_OEBAYdMTsm9vxw3CuviuDpxHCXcZHv_A0nw@mail.gmail.com>
+In-Reply-To: <CACT4Y+bxvHp9gq_OEBAYdMTsm9vxw3CuviuDpxHCXcZHv_A0nw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 20 Aug 2020 10:07:00 -0700
+Message-ID: <CAEf4BzYHJgAtO2+6R70MYKQmXjiGy8OVgojNpvEPJ+FQb_DnKg@mail.gmail.com>
+Subject: Re: unregister_netdevice: waiting for DEV to become free (4)
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yonghong,
-
-Thank you for taking a look. Explicitly cc'ing Arnaldo to see if he
-has any immediate insights. In the meantime, I'll dedicate time to
-investigate this issue you found.
-
-Thanks,
-Hao
-
-
-On Thu, Aug 20, 2020 at 8:23 AM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Aug 19, 2020 at 7:06 AM Dmitry Vyukov <dvyukov@google.com> wrote:
 >
->
->
-> On 8/19/20 3:40 PM, Hao Luo wrote:
-> > Pseudo_btf_id is a type of ld_imm insn that associates a btf_id to a
-> > ksym so that further dereferences on the ksym can use the BTF info
-> > to validate accesses. Internally, when seeing a pseudo_btf_id ld insn,
-> > the verifier reads the btf_id stored in the insn[0]'s imm field and
-> > marks the dst_reg as PTR_TO_BTF_ID. The btf_id points to a VAR_KIND,
-> > which is encoded in btf_vminux by pahole. If the VAR is not of a struct
-> > type, the dst reg will be marked as PTR_TO_MEM instead of PTR_TO_BTF_ID
-> > and the mem_size is resolved to the size of the VAR's type.
+> On Wed, Aug 19, 2020 at 3:54 PM syzbot
+> <syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com> wrote:
 > >
-> >  From the VAR btf_id, the verifier can also read the address of the
-> > ksym's corresponding kernel var from kallsyms and use that to fill
-> > dst_reg.
+> > Hello,
 > >
-> > Therefore, the proper functionality of pseudo_btf_id depends on (1)
-> > kallsyms and (2) the encoding of kernel global VARs in pahole, which
-> > should be available since pahole v1.18.
->
-> I tried your patch with latest pahole but it did not generate
-> expected BTF_TYPE_VARs. My pahole head is:
->    f3d9054ba8ff btf_encoder: Teach pahole to store percpu variables in
-> vmlinux BTF.
->
-> First I made the following changes to facilitate debugging:
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 982f59d..f94c3a6 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -334,6 +334,9 @@ int cu__encode_btf(struct cu *cu, int verbose, bool
-> force)
->                  /* percpu variables are allocated in global space */
->                  if (variable__scope(var) != VSCOPE_GLOBAL)
->                          continue;
-> +               /* type 0 is void, probably an internal error */
-> +               if (var->ip.tag.type == 0)
-> +                       continue;
->                  has_global_var = true;
->                  head = &hash_addr[hashaddr__fn(var->ip.addr)];
->                  hlist_add_head(&var->tool_hnode, head);
-> @@ -399,8 +402,8 @@ int cu__encode_btf(struct cu *cu, int verbose, bool
-> force)
->                  }
->
->                  if (verbose)
-> -                       printf("symbol '%s' of address 0x%lx encoded\n",
-> -                              sym_name, addr);
-> +                       printf("symbol '%s' of address 0x%lx encoded,
-> type %u\n",
-> +                              sym_name, addr, type);
->
->                  /* add a BTF_KIND_VAR in btfe->types */
->                  linkage = var->external ? BTF_VAR_GLOBAL_ALLOCATED :
-> BTF_VAR_STATIC;
-> diff --git a/libbtf.c b/libbtf.c
-> index 7a01ded..3a0d8d7 100644
-> --- a/libbtf.c
-> +++ b/libbtf.c
-> @@ -304,6 +304,8 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
->          [BTF_KIND_RESTRICT]     = "RESTRICT",
->          [BTF_KIND_FUNC]         = "FUNC",
->          [BTF_KIND_FUNC_PROTO]   = "FUNC_PROTO",
-> +       [BTF_KIND_VAR]          = "VAR",
-> +       [BTF_KIND_DATASEC]      = "DATASEC",
->   };
->
->   static const char *btf_elf__name_in_gobuf(const struct btf_elf *btfe,
-> uint32_t offset)
-> @@ -671,7 +673,7 @@ int32_t btf_elf__add_var_type(struct btf_elf *btfe,
-> uint32_t type, uint32_t name
->                  return -1;
->          }
->
-> -       btf_elf__log_type(btfe, &t.type, false, false, "type=%u name=%s",
-> +       btf_elf__log_type(btfe, &t.type, false, false, "type=%u name=%s\n",
->                            t.type.type, btf_elf__name_in_gobuf(btfe,
-> t.type.name_off));
->
->          return btfe->type_index;
->
-> It would be good if you can add some of the above changes to
-> pahole for easier `pahole -JV` dump.
->
-> With the above change, I only got static per cpu variables.
-> For example,
->     static DEFINE_PER_CPU(unsigned int , mirred_rec_level);
-> in net/sched/act_mirred.c.
->
-> [10] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 encoding=(none)
-> [74536] VAR 'mirred_rec_level' type_id=10, linkage=static
->
-> The dwarf debug_info entry for `mirred_rec_level`:
-> 0x0001d8d6:   DW_TAG_variable
->                  DW_AT_name      ("mirred_rec_level")
->                  DW_AT_decl_file
-> ("/data/users/yhs/work/net-next/net/sched/act_mirred.c")
->                  DW_AT_decl_line (31)
->                  DW_AT_decl_column       (0x08)
->                  DW_AT_type      (0x00000063 "unsigned int")
->                  DW_AT_location  (DW_OP_addr 0x0)
-> It is not a declaration and it contains type.
->
-> All global per cpu variables do not have BTF_KIND_VAR generated.
-> I did a brief investigation and found this mostly like to be a
-> pahole issue. For example, for global per cpu variable
-> bpf_prog_active,
->    include/linux/bpf.h
->          DECLARE_PER_CPU(int , bpf_prog_active);
->    kernel/bpf/syscall.c
->          DEFINE_PER_CPU(int , bpf_prog_active);
-> it is declared in the header include/linux/bpf.h and
-> defined in kernel/bpf/syscall.c.
->
-> In many cu's, you will see:
-> 0x0003592a:   DW_TAG_variable
->                  DW_AT_name      ("bpf_prog_active")
->                  DW_AT_decl_file
-> ("/data/users/yhs/work/net-next/include/linux/bpf.h")
->                  DW_AT_decl_line (1074)
->                  DW_AT_decl_column       (0x01)
->                  DW_AT_type      (0x0001fa7e "int")
->                  DW_AT_external  (true)
->                  DW_AT_declaration       (true)
->
-> In kernel/bpf/syscall.c, I see
-> the following dwarf entry for real definition:
-> 0x00013534:   DW_TAG_variable
->                  DW_AT_name      ("bpf_prog_active")
->                  DW_AT_decl_file
-> ("/data/users/yhs/work/net-next/include/linux/bpf.h")
->                  DW_AT_decl_line (1074)
->                  DW_AT_decl_column       (0x01)
->                  DW_AT_type      (0x000000d6 "int")
->                  DW_AT_external  (true)
->                  DW_AT_declaration       (true)
->
-> 0x00021a25:   DW_TAG_variable
->                  DW_AT_specification     (0x00013534 "bpf_prog_active")
->                  DW_AT_decl_file
-> ("/data/users/yhs/work/net-next/kernel/bpf/syscall.c")
->                  DW_AT_decl_line (43)
->                  DW_AT_location  (DW_OP_addr 0x0)
->
-> Note that for the second entry DW_AT_specification points to the
-> declaration. I am not 100% sure whether pahole handle this properly or
-> not. It generates a type id 0 (void) for bpf_prog_active variable.
->
-> Could you investigate this a little more?
->
-> I am using gcc 8.2.1. Using kernel default dwarf (dwarf 2) exposed
-> the above issue. Tries to use dwarf 4 and the problem still exists.
->
->
+> > syzbot found the following issue on:
 > >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > HEAD commit:    18445bf4 Merge tag 'spi-fix-v5.9-rc1' of git://git.kernel...
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1710d97a900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=df400f2f24a1677cd7e0
+> > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15859986900000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1228fea1900000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+df400f2f24a1677cd7e0@syzkaller.appspotmail.com
+> >
+> > unregister_netdevice: waiting for lo to become free. Usage count = 1
+>
+> Based on the repro, it looks bpf/bpf link related:
+>
+> syz_emit_ethernet(0x86, &(0x7f0000000000)={@local, @empty=[0x2],
+> @void, {@ipv4={0x800, @udp={{0x5, 0x4, 0x0, 0x0, 0x78, 0x0, 0x0, 0x0,
+> 0x11, 0x0, @empty, @empty}, {0x0, 0x1b59, 0x64, 0x0,
+> @wg=@response={0x5, 0x0, 0x0, "020000010865390406030500000000010900",
+> "9384bbeb3018ad591b661fe808b21b77",
+> {"694c875dfb1be5d2a0057a62022a1564",
+> "a329d3a73b8268129e5fa4316a5d8c69"}}}}}}}, 0x0)
+> mkdirat(0xffffffffffffff9c, &(0x7f0000000000)='./file0\x00', 0x0)
+> mount(0x0, &(0x7f0000000080)='./file0\x00',
+> &(0x7f0000000040)='cgroup2\x00', 0x0, 0x0)
+> r0 = openat$cgroup_root(0xffffffffffffff9c, &(0x7f0000000000), 0x200002, 0x0)
+> r1 = bpf$PROG_LOAD(0x5, &(0x7f0000000080)={0x9, 0x4,
+> &(0x7f0000000000)=@framed={{}, [@alu={0x8000000201a7f19, 0x0, 0x6,
+> 0x2, 0x1}]}, &(0x7f0000000100)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, [],
+> 0x0, 0x0, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x70)
+> bpf$BPF_LINK_CREATE(0x1c, &(0x7f0000000100)={r1, r0, 0x2}, 0x10)
+>
+
+The only place where BPF link-related code is bumping refcount for
+net_device is in bpf_xdp_link_attach(), but both success and failure
+code paths always do dev_put() in the end. bpf_link itself has a
+pointer on net_device, but it's protected by rtnl_lock() only, no
+refcnt associated with it. So I don't see how bpf_link can cause this.
+I also couldn't reproduce this locally, using the provided C
+reproducer.
+
 > > ---
-> >   include/linux/btf.h      | 15 +++++++++
-> >   include/uapi/linux/bpf.h | 38 ++++++++++++++++------
-> >   kernel/bpf/btf.c         | 15 ---------
-> >   kernel/bpf/verifier.c    | 68 ++++++++++++++++++++++++++++++++++++++++
-> >   4 files changed, 112 insertions(+), 24 deletions(-)
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
 > >
-> [...]
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > syzbot can test patches for this issue, for details see:
+> > https://goo.gl/tpsmEJ#testing-patches
