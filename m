@@ -2,105 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08CE24E097
-	for <lists+bpf@lfdr.de>; Fri, 21 Aug 2020 21:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72E424E0A8
+	for <lists+bpf@lfdr.de>; Fri, 21 Aug 2020 21:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgHUTS3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Aug 2020 15:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S1725951AbgHUTak (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Aug 2020 15:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgHUTS2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Aug 2020 15:18:28 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB7EC061573
-        for <bpf@vger.kernel.org>; Fri, 21 Aug 2020 12:18:27 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id u6so1600812ybf.1
-        for <bpf@vger.kernel.org>; Fri, 21 Aug 2020 12:18:27 -0700 (PDT)
+        with ESMTP id S1725801AbgHUTak (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Aug 2020 15:30:40 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB07C061573;
+        Fri, 21 Aug 2020 12:30:40 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id t6so3051867ljk.9;
+        Fri, 21 Aug 2020 12:30:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IwQYi7yPTRFHwsPxqihWQxC53BJV6JtAp4xq0VMbSow=;
-        b=c9ORyMD/mb6mK3v8Mp+yFC82MhvGT4drMMUwcJIsUvrSbyIStQ+v9350KA8Gu0o1mC
-         7KoDtB3CKwY8AAz1PWb94Qltyh/5vhm5kZD6kbeZBsOGOHPb5XHzTDtq/LmqdsidTUb4
-         JG1hU1gMEs1R4wiN6HAYQL0IatSVNCULve7c0kCcvv/CMORolTMGOpiZmW3p7NbR9UKR
-         JeGYUM9M5OKBxTd77f5xjMcvzJM1WspOxcbyaYrPXW0+1chB13nQHpOBxbZXTjOnFG2r
-         NvbQFUEssBKd/v8InMQ8bECyKIpAW36sHyUinm3Y8oVkFyQt8rqtHPptjQhE+lkYUKpL
-         u8Uw==
+        bh=qH5V/CAcJojJmrzaRt7ZuBu4tS92/jfWcHTajZqiiyI=;
+        b=nXa4dnmh56UCe81eiSlJuACzhYWGLwTPW0cWew3TjOI3GBAxXlIaKhWXArxV3Olp/J
+         Qfv/v9oJoWIAf3TdvcRENmdXWbO0QKQby42iwqtRPSXPL8XF18hGu1np0kf4qDCm3rFm
+         1qqLluYHbwjsH0It5tyK6o3ZwfopCd40i1UZkA0FcmO2QoO2etRgSja71OdK7nalf4II
+         FOKiQ8vQSg2nCSoZAk8gMMxnKEYTELrWAw1FM4BaT4YGK3my3HKSboQ9MQn0zWO0gEgt
+         wHMIrK6eM+zAWd1Vak9iJv9Sd3er4oTcGp7BIrdo1wbUl4xbhfWYOFZWb4YaURtit6Yk
+         ufZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IwQYi7yPTRFHwsPxqihWQxC53BJV6JtAp4xq0VMbSow=;
-        b=uKXQke6LVw8QDsdVn5ASITCiVAORKhEpChp8T+30+r3py5w+zSkjPiAyDfP1sKbfGT
-         LCvUU7ll3rGlxQJqBsW9u+uW81HiuBnta9s5i5GqcYaDi/SRHhnWrqDTJ2rvWFyW51L3
-         IUG/qM6REUnVOTSCnT9sDINuVncU3fkd4ULLxLf975nPN+KroLVhqP3DoptQW9yvlqG8
-         iFMH/PZbaT6uTBamfJLZ8s4gaSLCbR2DUt63cE36wq72QFUQoaI8jYFpT0zHIOKtZSBz
-         g5W9WccZ3QDQu/pVFnK+KVZ+RfpxJrjnOXzds5pN4Onq1Omymu5/5lDKReFFHS4jXJd3
-         jO/A==
-X-Gm-Message-State: AOAM532r07jDJPfKOTLyaUiIC31qYER0HWJeznZXG8tfO6cwrh0vFOcj
-        sjwWX3+pPNGwpRwOsjOI3Kh24VNkfOwiavbuhQg=
-X-Google-Smtp-Source: ABdhPJztaieCLZOxC4X4gwkHpe28zWEcu2aMprox/sQ1bIgxsH7qODsPkJqf8qPfxYUQMtUOzMfnpb5+ealfeRBntUU=
-X-Received: by 2002:a25:ae43:: with SMTP id g3mr5821428ybe.459.1598037506965;
- Fri, 21 Aug 2020 12:18:26 -0700 (PDT)
+        bh=qH5V/CAcJojJmrzaRt7ZuBu4tS92/jfWcHTajZqiiyI=;
+        b=KVq+LAS9TLtKL4PV5pFz2UCgzkcLr2zGpXu826sIiyPRrRQPX16t76hpXM8Gqkk9Bf
+         UzhpN6YPON7Mp8xpYEYhX+U2gAKz4eRn4H5qu1duG7thmww8vxfcCSvffdGid0cOJLeL
+         QDgh9ZSQbrfM+TeOLnZUqXGjquiQBuj2gY2xfmGkoptyj2Q1LJjdVtkYQSeL5IeKUTW/
+         GjYImuyAh4AbVseTS1lGYS98FGr/JeImpDn59NJi284qkezA61L4dbh0eZjyGt4qtnuj
+         kVL5GEEtiLYR8LWjGDASzpgT4qISFw5ycTXl/YwF2tcboMMbGZ1f03oAyTGI9STounWw
+         tH0w==
+X-Gm-Message-State: AOAM532seQti42T0yL6mfDz5jbVguOndmPHbzQzhBcZHDGc8X19BI2mp
+        eerWb072imL8vhrxxNo2nFI7CqzBZ1FSKWcWk40=
+X-Google-Smtp-Source: ABdhPJwMOif6Xh8+WCxYlHVKVqV2ZWk8p7B9yM6GPYXiD0wSQMJyAQ1zBXPkdkfYQ19A2wlN7RlXiAx8pd8/pAYWbxQ=
+X-Received: by 2002:a2e:a489:: with SMTP id h9mr2251463lji.121.1598038238500;
+ Fri, 21 Aug 2020 12:30:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <159802249863.919353.9321169154213417316.stgit@firesoul>
-In-Reply-To: <159802249863.919353.9321169154213417316.stgit@firesoul>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Aug 2020 12:18:16 -0700
-Message-ID: <CAEf4BzbOa0wF6LzOP1PGEf7UB2StEAbG_SXwV_TXWuGZ0B2DwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Fix test_progs-flavor run getting
- number of tests
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>
+References: <20200821133642.18870-1-tklauser@distanz.ch>
+In-Reply-To: <20200821133642.18870-1-tklauser@distanz.ch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 21 Aug 2020 12:30:27 -0700
+Message-ID: <CAADnVQKL3V3bDrMZSb_ksiLtH0wLXY7L8ueo4eBgSY8TgLx21g@mail.gmail.com>
+Subject: Re: [PATCH] bpf: fix two typos in uapi/linux/bpf.h
+To:     Tobias Klauser <tklauser@distanz.ch>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 8:09 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
+On Fri, Aug 21, 2020 at 6:36 AM Tobias Klauser <tklauser@distanz.ch> wrote:
 >
-> Commit 643e7233aa94 ("selftests/bpf: Test_progs option for getting number of
-> tests") introduced ability to getting number of tests, which is targeted
-> towards scripting.  As demonstrate in the commit the number can be use as a
-> shell variable for further scripting.
+> Also remove trailing whitespaces in bpf_skb_get_tunnel_key example code.
 >
-> The test_progs program support "flavor", which is detected by the binary
-> have a "-flavor" in the executable name. One example is test_progs-no_alu32,
-> which load bpf-progs compiled with disabled alu32, located in dir 'no_alu32/'.
->
-> The problem is that invoking a "flavor" binary prints to stdout e.g.:
->  "Switching to flavor 'no_alu32' subdirectory..."
-> Thus, intermixing with the number of tests, making it unusable for scripting.
->
-> Fix the issue by printing "flavor" info to stderr instead of stdout.
->
-> Fixes: 643e7233aa94 ("selftests/bpf: Test_progs option for getting number of tests")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/testing/selftests/bpf/test_progs.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index b1e4dadacd9b..d858e883bd75 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -618,7 +618,7 @@ int cd_flavor_subdir(const char *exec_name)
->         if (!flavor)
->                 return 0;
->         flavor++;
-> -       fprintf(stdout, "Switching to flavor '%s' subdirectory...\n", flavor);
-> +       fprintf(stderr, "Switching to flavor '%s' subdirectory...\n", flavor);
->         return chdir(flavor);
->  }
->
->
->
+Applied to bpf tree. Thanks
+Please include destination tree in the subject line next time.
