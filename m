@@ -2,108 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0726224E1DE
-	for <lists+bpf@lfdr.de>; Fri, 21 Aug 2020 22:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725F824E1E1
+	for <lists+bpf@lfdr.de>; Fri, 21 Aug 2020 22:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgHUUJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Aug 2020 16:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
+        id S1725801AbgHUULP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Aug 2020 16:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgHUUJV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Aug 2020 16:09:21 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90037C061573;
-        Fri, 21 Aug 2020 13:09:21 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id a34so1656265ybj.9;
-        Fri, 21 Aug 2020 13:09:21 -0700 (PDT)
+        with ESMTP id S1725831AbgHUULN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Aug 2020 16:11:13 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE4EC061573
+        for <bpf@vger.kernel.org>; Fri, 21 Aug 2020 13:11:11 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id b16so2948808ioj.4
+        for <bpf@vger.kernel.org>; Fri, 21 Aug 2020 13:11:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OlqUo3Dge1orlY+cxzOKP+C7gVBbYdp4PpHHz814e9c=;
-        b=WR4wVgmu2qTjwJc5qujv7bzHaNk0RvFcGAd54SXtSEm0V8FTOyTd+Xx6KhBAAp+gZK
-         YlYMtv0KuCvDcouC81zSWj0IR4D5wBBTgisW74V/8d1YBSHvYtmyqp5s9oSbRyQymBe6
-         vI2GmRQ5K7AOTco6z91rD2gXcjMqSiwo76+9NyHklfdoCKJucSCl43ThmThLdpH+6TFd
-         JkJtJzYxe9RPxqTSG/xNFlPHi47GMpHel0FR4wgy4xqlcX88GUMODtIn8gPSA6sjNrEf
-         9k8480QOYdjY6UTss7+BfDHZCjcYWBVNCdQW63Xvy3B4V1vz4LA5UcmitUrbeFD3NfCx
-         jX2Q==
+         :cc:content-transfer-encoding;
+        bh=zZSOcpy1P/zNsT/51IFI9bOfmzwYPf0Ipi5VIDha23k=;
+        b=VfvGA2xVELvGsMnxnrR+yZlJkasdKkvaVU9Vxpo1KioxZowknsB1wtnXwbtP/VtQu2
+         ulIGcI9B/9B5Re488GuE3BANYTaw6vlLg++haO+SAwidZRg/fsMBcUBWsOC2AYZFTDL0
+         olggIjbes8EbUCFlyVkGxd0C4c2nEcHIm80SDLVdNQ02LzvknoPZIkp9xtSc8ds4j4vw
+         +KMxgQjIfSLhtiRWHbPOYCjM8aLXgsCBhsFvQ09uR+hqOYpNUSjGZBO+bJGxPwMt5EK7
+         KtYnxmKkzw0VmUKWT+Xsn+L5s+c4wja00RPR8YMCp90YXKLGbVlZZajduXmUuuQXWYdp
+         6iUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OlqUo3Dge1orlY+cxzOKP+C7gVBbYdp4PpHHz814e9c=;
-        b=N349eTraZ5U5etKJMdcn4SYc91lB0u9OC2ufxlOsecjiYptMMzkfeJMQJwpIQjQQSZ
-         /fDsg+5tTfw8zkbhVSWQFYeU6HNsugQghr0A9eGtkp4cNFUV3VMSRPkNDYqh8ZIjD1L9
-         5Yc1Ono+p1frP/Ri4JNGjvRMmQd7YxtnfwZIZbogNXKExs58LMzT7S5V51bNrjKhC4eh
-         32t/Qn5HzyXr4Y5zXXgDAQQoOldsq+hduZzt++fNAcr+lERmNU5oZMy9dYQ712m8cqYP
-         TwgzQjOd6CQfl11LcxDyrpNOXK6jtTAJMHTKDWvzqPWhEcdLIRO36Mm7wPONnQfZBIkB
-         ZXKA==
-X-Gm-Message-State: AOAM530bPDTkILUH8YWlnjsxC/21m3WH+gXRgGQEcZwk9oiL0PPV3Uj/
-        uUjZ/l+jU4gQkJcBZlv9E/hhRUSaVv1tB6ZiMAk=
-X-Google-Smtp-Source: ABdhPJwrk1iCzTk6KzhCz09vBXaW/eTD6J/3EojIhuAb8Ds06Sge5HXnkkZ+pNjvyW/I6/8pX3Rzl9Is0s0r0dWfTdo=
-X-Received: by 2002:a25:bc50:: with SMTP id d16mr5609943ybk.230.1598040557470;
- Fri, 21 Aug 2020 13:09:17 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zZSOcpy1P/zNsT/51IFI9bOfmzwYPf0Ipi5VIDha23k=;
+        b=Qyx3rBuIRKLjfG27eetB/zeQ8BEK0jc6vZvcfozhsA8t3NMvoBWKA4462DPjoJOLHZ
+         Dg1nfYX2Vf9hHQKFGRuYam43hoXZ3peGtjJNzZxZfW2s+iaSYLvYEu+4GkWRwJbQeMff
+         7eVM5giNHBJNknQhl/bc1GnsG7ksxAJDIr0BHV0l+ra4HdiHmo3rU7oXvlm01fJ7EkoD
+         Fl+VzA9n5m0mJMol11mIOQQp7zxRQP8/Mmz0WY5bztrq1QFxj8TBa8YL7O3H8rnUzTgj
+         f+gcHodEfrnu+SpCpuejH1P0pKCJAeNSgOTV3sa9CCkmPSvBqsYss51utVWBM2er70Zi
+         SqrA==
+X-Gm-Message-State: AOAM533n+AOpD31mtRC2slp287mRF/pbHcStHLa0yQWn2/gYveRVj4QN
+        pGOcz7BHPdNxmntSSmGiBAnxyvM3BDtJ411LvSp9OA==
+X-Google-Smtp-Source: ABdhPJw+UQyQnO7DbS1+Q/HMuR8ZdrSv2ziQjw0R75FB5mcjWmLCcs3iDRQ0MsF1cq7Qs+V9siVea9WXIgyLhYy+0oA=
+X-Received: by 2002:a05:6602:26c1:: with SMTP id g1mr3705695ioo.10.1598040671155;
+ Fri, 21 Aug 2020 13:11:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200821191054.714731-1-yhs@fb.com>
-In-Reply-To: <20200821191054.714731-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Aug 2020 13:09:06 -0700
-Message-ID: <CAEf4BzYkHraBsaaApbaBAUsQfjnYJtnBU7EcNybzxqaHmSNBCg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix a buffer out-of-bound access when filling
- raw_tp link_info
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <cover.1597915265.git.zhuyifei@google.com> <9138c60f036c68f02c41dae0605ef587a8347f4c.1597915265.git.zhuyifei@google.com>
+ <e02ae4a7-938f-222e-3139-5ba84e95df15@fb.com> <877dts5qah.fsf@toke.dk>
+In-Reply-To: <877dts5qah.fsf@toke.dk>
+From:   YiFei Zhu <zhuyifei@google.com>
+Date:   Fri, 21 Aug 2020 15:10:59 -0500
+Message-ID: <CAA-VZP=Jo0iQRpP+QEmB359C5TS=0BnDHTAzd6yC85aOkEJrsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/5] bpftool: support dumping metadata
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, YiFei Zhu <zhuyifei1999@gmail.com>,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
+        Stanislav Fomichev <sdf@google.com>,
+        Mahesh Bandewar <maheshb@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 12:11 PM Yonghong Song <yhs@fb.com> wrote:
+On Fri, Aug 21, 2020 at 3:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+> Yonghong Song <yhs@fb.com> writes:
+> > Not sure whether we need formal libbpf API to access metadata or not.
+> > This may help other applications too. But we can delay until it is
+> > necessary.
 >
-> Commit f2e10bff16a0 ("bpf: Add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link")
-> added link query for raw_tp. One of fields in link_info is to
-> fill a user buffer with tp_name. The Scurrent checking only
-> declares "ulen && !ubuf" as invalid. So "!ulen && ubuf" will be
-> valid. Later on, we do "copy_to_user(ubuf, tp_name, ulen - 1)" which
-> may overwrite user memory incorrectly.
+> Yeah, please put in a libbpf accessor as well; I would like to use this
+> from libxdp - without a skeleton :)
 >
-> This patch fixed the problem by disallowing "!ulen && ubuf" case as well.
->
-> Fixes: f2e10bff16a0 ("bpf: Add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link")
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  kernel/bpf/syscall.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 86299a292214..ac6c784c0576 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2634,7 +2634,7 @@ static int bpf_raw_tp_link_fill_link_info(const struct bpf_link *link,
->         u32 ulen = info->raw_tracepoint.tp_name_len;
->         size_t tp_len = strlen(tp_name);
->
-> -       if (ulen && !ubuf)
-> +       if (!ulen ^ !ubuf)
->                 return -EINVAL;
+> -Toke
 
-I think my original idea was to allow ulen == 0 && ubuf != NULL as a
-still valid way to get real ulen, but it's clearly wrong with ulen-1
-below. So instead of special-casing ulen==0 for the case I wanted to
-support, it's easier to disallow ulen==0 && ubuf!=NULL.
+I don't think I have an idea on a good API in libbpf that could be
+used to get the metadata of an existing program in kernel, that could
+be reused by bpftool without duplicating all the code. Maybe we can
+discuss this in a follow up series?
 
-So thanks for the fix!
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->
->         info->raw_tracepoint.tp_name_len = tp_len + 1;
-> --
-> 2.24.1
->
+YiFei Zhu
