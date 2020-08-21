@@ -2,183 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A238C24E2D8
-	for <lists+bpf@lfdr.de>; Fri, 21 Aug 2020 23:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100B824E334
+	for <lists+bpf@lfdr.de>; Sat, 22 Aug 2020 00:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgHUVuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Aug 2020 17:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgHUVuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Aug 2020 17:50:16 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A3CC061573;
-        Fri, 21 Aug 2020 14:50:16 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id i10so1781223ybt.11;
-        Fri, 21 Aug 2020 14:50:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LCtDZbEXzC+Kn+f0fxyMM1jOnFnep3y18ErpLmPyWt4=;
-        b=T8qkn1gP+Rp85/WBW+E10QZI55mtY/lvclpr3P7fxqBrHSA7suC3XiloMsmuuWf/+m
-         HmDmMB04s32ENwcls/J6AbATRIcvsmO+7lr+2ePM9UbcWDZC0tR1yvN1ch++35SfNpqN
-         qV1Wx+XrikqB2RucXlQQro36UTEy8/13alnvL09oSLB1mp1Bnei89N9W7DWiwD6SQF5z
-         NKD0AA5Cb/2D2oaZ1K7mIIiGD4z4kPLKHMzWUxBdW9+vr+buKs1ySwQVfukV11vWRVv5
-         RrukKViMe3OkIWkbygbUP4X3ffqQBygwF0bZYkYHYoYESW/pmE0sAnHnnnaAXM0nHfNF
-         8t/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LCtDZbEXzC+Kn+f0fxyMM1jOnFnep3y18ErpLmPyWt4=;
-        b=VEmldfgKf4tdpxUyOhCwrQGBSmSX+sQ6g20MczEUldZci+vSlXQ6SNJshd61IFjyif
-         6YiaSTyX8wH9+Kd4SsnOtjfUpbETXtT61Hn5bDwtjB7amNQFb/G/BxFdBJtF0R/ssC/2
-         KNVJin++sohPxuwZBWTWwj8EdKzAIzzFypVCaf+UyjAZddQqItvN96xfXFfmpZg3emqk
-         1Thu0yDpc0h/MG9QaofCnXNt19dPdiYFFCy7GzoHaO7F4evSAQiuZi8n4iq3PTLTx87k
-         ykTItNkTuIWwKkvZxxEUBtBHljY4/7tAAWohUZRTwkNs4/PiMgGRs8ad0rdLpjJPf3y0
-         lP3Q==
-X-Gm-Message-State: AOAM531klb6ZjzL00vPj5jPubAIXYcnqPKcGmtT8aYm7bumghWBNiTek
-        HVCESD8WuE/vAV4sd73Tu9i4pL22bSYlSqenAr8=
-X-Google-Smtp-Source: ABdhPJxfazP3ESG4tMzcWn+ppdV1i2aqc1DNrqYNaLzJ3GbVy/tyCs1m/FpQa0NbRO17DXJ0YwXfaY18lWUIeijSrZs=
-X-Received: by 2002:a25:2ad3:: with SMTP id q202mr6235577ybq.27.1598046615439;
- Fri, 21 Aug 2020 14:50:15 -0700 (PDT)
+        id S1726765AbgHUWVM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Aug 2020 18:21:12 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5554 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726747AbgHUWVL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 21 Aug 2020 18:21:11 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07LMKCNE025616;
+        Fri, 21 Aug 2020 15:20:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=zHC3Xgo17oOVTix6IMnPw8W65mLrTZxQUIxPE2i9VDk=;
+ b=ZQSRSQz7DZ6Yd9/2uEZL0w4oj8Gt79LCHoCBIryrR/HmR335kl27xJYaFe2XrIEIVN1Y
+ 66r9Ke/wOFI5GGcLShV4oOFJkJvFQMdLrv7g+w5X2cxt7DBhkzEYjVu0SMbbzkbrNlOg
+ c3cXvSSrky5ym8lmAEHiBHsWWml/oHEjBLw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3318g0wm2a-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 21 Aug 2020 15:20:49 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 21 Aug 2020 15:20:48 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KQ9AGscsYrRBwKoWaPTE3P5Z5U1jUAw0XvYgSdxXA6NFtcysGWdf6huiTblR+7A3v5eiTLT+7XeJmN4x10TzZiR3lVWkH3NvwfCVVcc41eNEiQAXdn9XUekD1CraVDqXQcTTNpanJ5JV//g+KYW1iJU1QzadpFN4WK1H9k5UNs5OLx8LkAriXlXpmbbFr4tfFZDD17x51+HaYQcYeBp8rCKTT/kmSn1YyZbp/4iDAv/CybE5srTo0PyotgsHDyoe1sYyoZ/VJe2y/JZVUeugJOzjW20YSIXoF8TuMGZ5Y1cESCcRz9bQp1/Rcyr21RvuqD6O9GXn7VkoMTH6u2VE5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zHC3Xgo17oOVTix6IMnPw8W65mLrTZxQUIxPE2i9VDk=;
+ b=FII+uajdaZn7j6fga5CcECO/2SvMoGPivFkI/qhAotKq6nW6cs9z0leNC+cKpVnt7TNgom3xVv5lg5S/DaTXJxt5so14z5dxCmHy7SlHtYQZAqRRt8YwtIjd3sYSsBhcbgJWT9taZhxdI9kgfEmZkwOddWiaQ3eyo9YVozchM53kTelORTntZ4grQPu0p0hkH1B65TW+XeKtUmS2VZ4mmUPgfdC+du/T8qKhmrtaEgivuHjPjSZbqG2IMPOwrqu1bOziusr2WNnMSVAyLKip1aSJdPlqBbimv6xPgedSxH5TjeKG402nSaOV+r7kiY/wc87RL4z5QexwpLHwWHxxag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zHC3Xgo17oOVTix6IMnPw8W65mLrTZxQUIxPE2i9VDk=;
+ b=hh4r1hjVKgziB47x7TweO++8Z4Ey0FYtScr9OWaxlWSoW/J/unelQIP/7ISa4sdZ8GAJzaUNfiVdsTMjaJMOe3iY0lLZU2SjphDTwss98Wv1dP5wdlTXMa08Kt/v0E98DflNgVYrTPPCVSlOAW6H8UT9OjCTx0+e6S8qO2pTj50=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SA0PR15MB3952.namprd15.prod.outlook.com
+ (2603:10b6:806:8d::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Fri, 21 Aug
+ 2020 22:20:45 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::e1a8:24c:73df:fe9a%7]) with mapi id 15.20.3305.026; Fri, 21 Aug 2020
+ 22:20:45 +0000
+Date:   Fri, 21 Aug 2020 15:20:36 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <netdev@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>
+Subject: Re: [PATCH bpf-next v4 00/30] bpf: switch to memcg-based memory
+ accounting
+Message-ID: <20200821222036.GB2250889@carbon.dhcp.thefacebook.com>
+References: <20200821150134.2581465-1-guro@fb.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200821150134.2581465-1-guro@fb.com>
+X-ClientProxiedBy: BYAPR05CA0005.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::18) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
 MIME-Version: 1.0
-References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-4-haoluo@google.com>
- <d50a1530-9a9f-45b2-5aba-05fe4b895fbc@fb.com>
-In-Reply-To: <d50a1530-9a9f-45b2-5aba-05fe4b895fbc@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Aug 2020 14:50:04 -0700
-Message-ID: <CAEf4BzZmLUcw4M16U6w-s2Zd6KbsuY4dzzkeEBx9CejetT5BwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 3/8] bpf: Introduce help function to validate
- ksym's type.
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Hao Luo <haoluo@google.com>, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by BYAPR05CA0005.namprd05.prod.outlook.com (2603:10b6:a03:c0::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.10 via Frontend Transport; Fri, 21 Aug 2020 22:20:44 +0000
+X-Originating-IP: [2620:10d:c090:400::5:1692]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7aa0062b-1e4f-4d8a-5d3f-08d8462072a7
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3952:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB39523EADEEFEDB1C0ED3C9EABE5B0@SA0PR15MB3952.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vmHsZuAbYe4ZlMcfix4L/GhKK8fHS3KjtqGzJBxQhFaupw1/hbFNurcPLck4ecv2vuEheh/nfFvAcpdyHOHBQZCvq+JgbrW9iOBcTYtvkLykmiB1IjQ28OVylrlxXHgqUCLrP2Eo19FzbTLELj6yyjafH9/KWNwr1raJh3B+x8YwMnzjV9YoBgUtCnHjMyzxlM/uHpYwSugI6bqXuNHyf0ERSV6WyPYV9NZzcPePIbj/He2DQSX254m9LMAuSY4yD9rQlADCFBfFC98H80v/xTmZQxjuMvDl3x+7MeWHZU25Ruq5B3ntP2jQ241JlIKODEhrbKCdkretpW0r/gMWP9uBrsSgdTt8CjX99XMV/GMhjroOapJSqFwed5LcDn41
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(366004)(396003)(136003)(8936002)(5660300002)(6666004)(6916009)(2906002)(16576012)(956004)(8676002)(86362001)(33656002)(316002)(83380400001)(186003)(15650500001)(54906003)(1076003)(6486002)(110011004)(66946007)(478600001)(66476007)(9686003)(66556008)(52116002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 2ElhtghiJT7yhr/AAIUtK1QMMnMy/iDeTHOvPfdjhFrNA8ykDxvm/BYxvDOdE0DkPAsUug/NFLMwDQrr3JcsiBi/3XYtNzxy8MHSVjfyP0VihH4+8i3l4LaOQojSSfm218lnEorE/pC/dqh0+CS6sh177SVndfRVYLEeghR5kQs6EHSzknDqTYX4BMC8TiUL+odExLpZ2MEPF8PQ8p/KU/J7/J+wwc3r4VYWGEhggo5GBPIc3hZoA9FStJRIUF9z5Bj8foOfbvZxcDP5O0rPe3jzAehOSCldA4XxO4FgIGA7X/Q0CXcuzICTCdBukRH+/H8ylmuNf4MgX5VuwPZXXzR8H5LsvzkLyG7/9/0ZWlv8sUFEgKQ1RnCAtDyPAFzI7x+Ez2FaTzYdiJ9e6Pt+4UAoz5xqx/41hMcbJ5yZQlc9uOXRwIFnunlA0VCzKjDnf+K2lUPvFYknATg7YVheYJnCZ6R/0veCJA8TeGIpmatH2HZb73Ynzq+qWRk3+8rhUMZf7WKvpoIpdwOyiInx2PZh75xk4y+qMLm9CHCyPt+AI8TYxzQqafrYQ1eqjdlzjFCQtKWZE4Xg3SURAcfnqWUl09eBQsDxXRGDPM/WDIFdse4vcDqqv1CuFbK/u+QlGzBc0VCsMAq/Nlgl10x4UF5nRd0iK8dmkR4HAfhPiV8=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7aa0062b-1e4f-4d8a-5d3f-08d8462072a7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2020 22:20:45.2102
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eOoQ+Kr9Hj3nvjifzy67jv7Fy/emA20JurwXqF1ZhiU8fAosZVOT3hfh6PZ5dkdc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3952
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-21_10:2020-08-21,2020-08-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 clxscore=1015 bulkscore=0 priorityscore=1501
+ mlxlogscore=736 suspectscore=34 mlxscore=0 adultscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008210208
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 10:22 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 8/19/20 3:40 PM, Hao Luo wrote:
-> > For a ksym to be safely dereferenced and accessed, its type defined in
-> > bpf program should basically match its type defined in kernel. Implement
-> > a help function for a quick matching, which is used by libbpf when
-> > resolving the kernel btf_id of a ksym.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >   tools/lib/bpf/btf.c | 171 ++++++++++++++++++++++++++++++++++++++++++++
-> >   tools/lib/bpf/btf.h |   2 +
-> >   2 files changed, 173 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index a3d259e614b0..2ff31f244d7a 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -1005,6 +1005,177 @@ int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
-> >       return 0;
-> >   }
-> >
-> > +/*
-> > + * Basic type check for ksym support. Only checks type kind and resolved size.
-> > + */
-> > +static inline
-> > +bool btf_ksym_equal_type(const struct btf *ba, __u32 type_a,
-> > +                      const struct btf *bb, __u32 type_b)
->
-> "ba" and "bb" is not descriptive. Maybe "btf_a" or "btf_b"?
-> or even "btf1" or "btf2" since the number does not carry
-> extra meaning compared to letters.
->
-> The same for below, may be t1, t2?
->
-> > +{
-> > +     const struct btf_type *ta, *tb;
-> > +
-> > +     ta = btf__type_by_id(ba, type_a);
-> > +     tb = btf__type_by_id(bb, type_b);
-> > +
-> > +     /* compare type kind */
-> > +     if (btf_kind(ta) != btf_kind(tb))
-> > +             return false;
-> > +
-> > +     /* compare resolved type size */
-> > +     return btf__resolve_size(ba, type_a) == btf__resolve_size(bb, type_b);
-> > +}
-> > +
-> > +/*
-> > + * Match a ksym's type defined in bpf programs against its type encoded in
-> > + * kernel btf.
-> > + */
-> > +bool btf_ksym_type_match(const struct btf *ba, __u32 id_a,
-> > +                      const struct btf *bb, __u32 id_b)
-> > +{
+On Fri, Aug 21, 2020 at 08:01:04AM -0700, Roman Gushchin wrote:
+> Currently bpf is using the memlock rlimit for the memory accounting.
+> This approach has its downsides and over time has created a significant
+> amount of problems:
+> 
+> 1) The limit is per-user, but because most bpf operations are performed
+>    as root, the limit has a little value.
+> 
+> 2) It's hard to come up with a specific maximum value. Especially because
+>    the counter is shared with non-bpf users (e.g. memlock() users).
+>    Any specific value is either too low and creates false failures
+>    or too high and useless.
+> 
+> 3) Charging is not connected to the actual memory allocation. Bpf code
+>    should manually calculate the estimated cost and precharge the counter,
+>    and then take care of uncharging, including all fail paths.
+>    It adds to the code complexity and makes it easy to leak a charge.
+> 
+> 4) There is no simple way of getting the current value of the counter.
+>    We've used drgn for it, but it's far from being convenient.
+> 
+> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+>    a function to "explain" this case for users.
+> 
+> In order to overcome these problems let's switch to the memcg-based
+> memory accounting of bpf objects. With the recent addition of the percpu
+> memory accounting, now it's possible to provide a comprehensive accounting
+> of the memory used by bpf programs and maps.
+> 
+> This approach has the following advantages:
+> 1) The limit is per-cgroup and hierarchical. It's way more flexible and allows
+>    a better control over memory usage by different workloads. Of course, it
+>    requires enabled cgroups and kernel memory accounting and properly configured
+>    cgroup tree, but it's a default configuration for a modern Linux system.
+> 
+> 2) The actual memory consumption is taken into account. It happens automatically
+>    on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is also
+>    performed automatically on releasing the memory. So the code on the bpf side
+>    becomes simpler and safer.
+> 
+> 3) There is a simple way to get the current value and statistics.
+> 
+> In general, if a process performs a bpf operation (e.g. creates or updates
+> a map), it's memory cgroup is charged. However map updates performed from
+> an interrupt context are charged to the memory cgroup which contained
+> the process, which created the map.
+> 
+> Providing a 1:1 replacement for the rlimit-based memory accounting is
+> a non-goal of this patchset. Users and memory cgroups are completely
+> orthogonal, so it's not possible even in theory.
+> Memcg-based memory accounting requires a properly configured cgroup tree
+> to be actually useful. However, it's the way how the memory is managed
+> on a modern Linux system.
+> 
+> 
+> The patchset consists of the following parts:
+> 1) an auxiliary patch by Johanness, which adds an ability to charge
+>    a custom memory cgroup from an interrupt context
+> 2) memcg-based accounting for various bpf objects: progs and maps
+> 3) removal of the rlimit-based accounting
+> 4) removal of rlimit adjustments in userspace samples
 
-[...]
+As a note, I've resent the first patch from the series as a standalone
+patch to linux-mm@, because a similar change is required by other non-related
+patchset. This should avoid further merge conflicts.
 
-> > +                     }
-> > +             }
->
-> I am wondering whether this is too strict and how this can co-work with
-> CO-RE. Forcing users to write almost identical structure definition to
-> the underlying kernel will not be user friendly and may not work cross
-> kernel versions even if the field user cares have not changed.
->
-> Maybe we can relax the constraint here. You can look at existing
-> libbpf CO-RE code.
+I did some renamings in the patch, so v5 of this patchset is expected.
+Please, don't merge v4. Feedback is highly appreciated though.
 
-Right. Hao, can you just re-use bpf_core_types_are_compat() instead?
-See if semantics makes sense, but I think it should. BPF CO-RE has
-been permissive in terms of struct size and few other type aspects,
-because it handles relocations so well. This approach allows to not
-have to exactly match all possible variations of some struct
-definition, which is a big problem with ever-changing kernel data
-structures.
-
->
-> > +             break;
-> > +     }
-
-[...]
-
-> > +
-> >   struct btf_ext_sec_setup_param {
-> >       __u32 off;
-> >       __u32 len;
-> > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-> > index 91f0ad0e0325..5ef220e52485 100644
-> > --- a/tools/lib/bpf/btf.h
-> > +++ b/tools/lib/bpf/btf.h
-> > @@ -52,6 +52,8 @@ LIBBPF_API int btf__get_map_kv_tids(const struct btf *btf, const char *map_name,
-> >                                   __u32 expected_key_size,
-> >                                   __u32 expected_value_size,
-> >                                   __u32 *key_type_id, __u32 *value_type_id);
-> > +LIBBPF_API bool btf_ksym_type_match(const struct btf *ba, __u32 id_a,
-> > +                                 const struct btf *bb, __u32 id_b);
-> >
-> >   LIBBPF_API struct btf_ext *btf_ext__new(__u8 *data, __u32 size);
-> >   LIBBPF_API void btf_ext__free(struct btf_ext *btf_ext);
->
-> The new API function should be added to libbpf.map.
-
-My question is why does this even have to be a public API?
+Thanks!
