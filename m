@@ -2,113 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0857224E283
-	for <lists+bpf@lfdr.de>; Fri, 21 Aug 2020 23:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9797124E2B7
+	for <lists+bpf@lfdr.de>; Fri, 21 Aug 2020 23:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgHUVRd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Aug 2020 17:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
+        id S1726391AbgHUVbr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Aug 2020 17:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgHUVR3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Aug 2020 17:17:29 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79923C061573;
-        Fri, 21 Aug 2020 14:17:29 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id y2so3380770ljc.1;
-        Fri, 21 Aug 2020 14:17:29 -0700 (PDT)
+        with ESMTP id S1726187AbgHUVbr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Aug 2020 17:31:47 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B19BC061573;
+        Fri, 21 Aug 2020 14:31:46 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id t6so3369602ljk.9;
+        Fri, 21 Aug 2020 14:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4Y8Ez4pa2ApbWubBTUCh6B8TyCD929c4j3pQk30qda8=;
-        b=uaO913Mnnbmoua0DYbXH8vx2qEfRaNdl/GKji80qKh/CdGAxOUVFYQaVbpnLNfuBi0
-         LdGxcRzIVEznT5jclgv7ahvM6oyF0KC5+IWPYPgZfZnjtfjP+693APiqsijp6cFRUFOv
-         yqAIsO5NrzHICPp8Jjo7UhDKJVZSzr8tIpEZ71dk8Sv0CdprkThM7OMDDqu7zb8ZHdyf
-         bS5m9KNvFrc64ZOoZH8sHwKRjznw7XF56L12OEe8lAQTlFAWbkrjaPNPlKw396uWIapd
-         sYEC+HJoh8jZ3GGJ7CnxgPRTUnJIOTMSTeYQTtTTR4kC7d4qhhft+97lfPQ1v592bZW9
-         l7pw==
+        bh=rZUr/GkYNW5/6BirLMXHGNGdzUx6hfASz9W4/WE4Qhk=;
+        b=vFcLi8xa0U+sQw3m6NlrUAAuwlIiczp2JfAetCnZMqu6uGfKO00FoIgTD3nMM9RoRk
+         fCvILlCTEHDZucf8v0FxGYYhWipEOxqBEmOIPSqse3jqSCybymmOXuuKMv1Mg+F33SDW
+         WEnUWnY08mYCTg8kwt6wwSyWeXzbkm4kyZ8QMZZtPGzoy39s7U5psUvjYj6kmusEl12Z
+         cwRquLCTvbPOlYt6sKSflVWM1mzCbXQ9K6Y8oBFjG5A/qhcL7YLiDqJwBSnGIRWRuNlN
+         yoZp9SIclPINHqfbod6bvIh3y64+sNCprB+dbgOw73jrCdddOSSw9Q7fAhwzVYolLS8w
+         QlDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4Y8Ez4pa2ApbWubBTUCh6B8TyCD929c4j3pQk30qda8=;
-        b=hlGqPKzQbfpM/O94O0sXCk4ut45Yqvp6ovQ+CJ4jcSDQdkL65Fi2C99vyw+u1cXs3D
-         PbKIC0fAa7x0VPqQJRHQeP/GyJiuacLvLAw+2ucqXkf8A0+pDhKKug8d00lkM/S6Hfyr
-         rKPOj74Oda7+YW67pEhPRYMvEFg58pVZ1K//NLXfoYzBf0eWeXYHKiUQ2XGd18Df6mzP
-         25cQ/e0sU1bp+dIWZhsXxo8yxOxL9jKf1xyPsfSYCzftJGEDmlqBUaIjpapUBHNCktrq
-         lTkqjG677axjLngL77APmF11hDn99VakgZ59gPBgWlHIwAn5AuEP6TPYMofCELRPwBpe
-         97Jg==
-X-Gm-Message-State: AOAM533WlrpO2pqizcEYqgAD8AQ/Lu821bQF/muzabj5lm4BB4tpG526
-        icAP6piNe1/G/tOYSTEwcr8sUgQHuxsoFzv91lY=
-X-Google-Smtp-Source: ABdhPJxw2aUWGFEQ711AaegJg/2aYowv4Jvq7gZyuJsz6BMSsgkvDyp8vQiZSD0fKSJvolwj6pol2u1woa1PwXnQd8E=
-X-Received: by 2002:a2e:8e28:: with SMTP id r8mr2182846ljk.290.1598044647897;
- Fri, 21 Aug 2020 14:17:27 -0700 (PDT)
+        bh=rZUr/GkYNW5/6BirLMXHGNGdzUx6hfASz9W4/WE4Qhk=;
+        b=N8nCbSPyXwpOLabyPOUS7U6D9YrG4J1o1a5uep6sVQ3L1Hi5xE0WoP94JZX/261lsk
+         lkoW0QE9qA4Xi08MNk77O9k5un17cNPEso6qj0neThU0FtDciFYGih7AC4mrKC0FGnk2
+         z+tU5cqJW36J/figVpExL6gHGDNqnGngSRgnPadCP/dhBx4txzziAqWofRbrzKNLQ2r1
+         LIlCzmPC103hCNfl7LcjMoBUYGJC+7Ryw15I0CEXOtg5nbbRMN/xOfKeZtFvH1KQLiqY
+         LwZ5nu5hrUklEqRP8fwCGX+1+KcziGcz30Sj3QTZLXidNPSQTj8APf2bl82BcF3PmjSD
+         nvnQ==
+X-Gm-Message-State: AOAM532V/LF9QEPHLolOkTyZfgquiWJfY87vaUCSiKSr/l/N9JSiQy3f
+        BeXRzWJz33nY2NGX8gG11IYSlETG5iK8rbfaefE=
+X-Google-Smtp-Source: ABdhPJzmFAT/wI2qQgZhH8Fe8pMKOY+MQjgip+6drw95aPi/LP8mFu5als1h8DowR1kfEADV6R4Mr/n+xlyb+l/5y30=
+X-Received: by 2002:a05:651c:82:: with SMTP id 2mr2418463ljq.2.1598045504924;
+ Fri, 21 Aug 2020 14:31:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200821184418.574065-1-yhs@fb.com> <CAEf4BzZQOz_uBkSOSXRXvc2nb0y5FUvT7x_SWwCbgwzwQKVdBg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZQOz_uBkSOSXRXvc2nb0y5FUvT7x_SWwCbgwzwQKVdBg@mail.gmail.com>
+References: <20200821165927.849538-1-andriin@fb.com>
+In-Reply-To: <20200821165927.849538-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 21 Aug 2020 14:17:16 -0700
-Message-ID: <CAADnVQ+6avUVgC422WWe_1aN_qLNiWKdOzGi7XSVm0M5dqjEvQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/3] bpf: implement link_query for bpf iterators
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 21 Aug 2020 14:31:33 -0700
+Message-ID: <CAADnVQJBcUwMzSm7Bw=EW2cLsOcAu+yXrWqqV7zJBmWMmndNjw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: add perf_buffer APIs for better
+ integration with outside epoll loop
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 12:04 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Aug 21, 2020 at 10:06 AM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> On Fri, Aug 21, 2020 at 11:44 AM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > "link" has been an important concept for bpf ecosystem to connect
-> > bpf program with other properties. Currently, the information related
-> > information can be queried from userspace through bpf command
-> > BPF_LINK_GET_NEXT_ID, BPF_LINK_GET_FD_BY_ID and BPF_OBJ_GET_INFO_BY_FD.
-> > The information is also available by "cating" /proc/<pid>/fdinfo/<link_fd>.
-> > Raw_tracepoint, tracing, cgroup, netns and xdp links are already
-> > supported in the kernel and bpftool.
-> >
-> > This patch added support for bpf iterator. Patch #1 added generic support
-> > for link querying interface. Patch #2 implemented callback functions
-> > for map element bpf iterators. Patch #3 added bpftool support.
-> >
-> > Changelogs:
-> >   v3 -> v4:
-> >     . return target specific link_info even if target_name buffer
-> >       is empty. (Andrii)
-> >   v2 -> v3:
-> >     . remove extra '\t' when fdinfo prints map_id to make parsing
-> >       consistent. (Andrii)
-> >   v1 -> v2:
-> >     . fix checkpatch.pl warnings. (Jakub)
-> >
-> > Yonghong Song (3):
-> >   bpf: implement link_query for bpf iterators
-> >   bpf: implement link_query callbacks in map element iterators
-> >   bpftool: implement link_query for bpf iterators
-> >
-> >  include/linux/bpf.h            | 10 ++++++
-> >  include/uapi/linux/bpf.h       |  7 ++++
-> >  kernel/bpf/bpf_iter.c          | 58 ++++++++++++++++++++++++++++++++++
-> >  kernel/bpf/map_iter.c          | 15 +++++++++
-> >  net/core/bpf_sk_storage.c      |  2 ++
-> >  tools/bpf/bpftool/link.c       | 44 ++++++++++++++++++++++++--
-> >  tools/include/uapi/linux/bpf.h |  7 ++++
-> >  7 files changed, 140 insertions(+), 3 deletions(-)
-> >
-> > --
-> > 2.24.1
-> >
+> Add a set of APIs to perf_buffer manage to allow applications to integrate
+> perf buffer polling into existing epoll-based infrastructure. One example is
+> applications using libevent already and wanting to plug perf_buffer polling,
+> instead of relying on perf_buffer__poll() and waste an extra thread to do it.
+> But perf_buffer is still extremely useful to set up and consume perf buffer
+> rings even for such use cases.
 >
-> LGTM, thanks.
+> So to accomodate such new use cases, add three new APIs:
+>   - perf_buffer__buffer_cnt() returns number of per-CPU buffers maintained by
+>     given instance of perf_buffer manager;
+>   - perf_buffer__buffer_fd() returns FD of perf_event corresponding to
+>     a specified per-CPU buffer; this FD is then polled independently;
+>   - perf_buffer__consume_buffer() consumes data from single per-CPU buffer,
+>     identified by its slot index.
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> To support a simpler, but less efficient, way to integrate perf_buffer into
+> external polling logic, also expose underlying epoll FD through
+> perf_buffer__epoll_fd() API. It will need to be followed by
+> perf_buffer__poll(), wasting extra syscall, or perf_buffer__consume(), wasting
+> CPU to iterate buffers with no data. But could be simpler and more convenient
+> for some cases.
+>
+> These APIs allow for great flexiblity, but do not sacrifice general usability
+> of perf_buffer.
+>
+> Also exercise and check new APIs in perf_buffer selftest.
+>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
 Applied. Thanks
