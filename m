@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB2F250537
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 19:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE522250532
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 19:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgHXRMX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 13:12:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40652 "EHLO mail.kernel.org"
+        id S1726703AbgHXRMU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 13:12:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728355AbgHXQhr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:37:47 -0400
+        id S1728022AbgHXQhx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:37:53 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E08D22BED;
-        Mon, 24 Aug 2020 16:37:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66EE522CB1;
+        Mon, 24 Aug 2020 16:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598287023;
-        bh=XgAPwW5p08EVNxpEPZXKmgq4NXimCCuJjGzdGrbacpk=;
+        s=default; t=1598287026;
+        bh=3wKM+eofZ9MBJ6+Q56FyXiwsjGuqFNmK8dy1L010v3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O5e+NDAdH+5jc/hGF+2ekXFwoohqBSMzmdG3298tYf30rC2kwtl36xFLOLOF72eGb
-         fshzslzScw30mCtC0SvxQ1x8tiHBCbXpdgSMecV+cczgtgLO3FvXuINmiHVGsZssiq
-         sRUMR72ypxWbHg0mIzfChLU7DggLONYMe2roEbVs=
+        b=xSFHHUwcaaYww2gTxGdok27s6qgj43vY5bCN3eY8e9mNljCJqef3g9OeOAv2t1dhM
+         u+5zTyk326tT0nMhXYUYq1KIeN4EaoE5U8nJUtRuC7Y1JVQaIQfccrWHd5x45uhNgS
+         hhfWV2D1KPBqx66wbgUpWR3htbIr7eorYkeJyoos=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jakov Petrina <jakov.petrina@sartura.hr>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.7 21/54] libbpf: Handle GCC built-in types for Arm NEON
-Date:   Mon, 24 Aug 2020 12:36:00 -0400
-Message-Id: <20200824163634.606093-21-sashal@kernel.org>
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.7 23/54] libbpf: Prevent overriding errno when logging errors
+Date:   Mon, 24 Aug 2020 12:36:02 -0400
+Message-Id: <20200824163634.606093-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200824163634.606093-1-sashal@kernel.org>
 References: <20200824163634.606093-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,113 +46,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 702eddc77a905782083b14ccd05b23840675fd18 ]
+[ Upstream commit 23ab656be263813acc3c20623757d3cd1496d9e1 ]
 
-When building Arm NEON (SIMD) code from lib/raid6/neon.uc, GCC emits
-DWARF information using a base type "__Poly8_t", which is internal to
-GCC and not recognized by Clang. This causes build failures when
-building with Clang a vmlinux.h generated from an arm64 kernel that was
-built with GCC.
+Turns out there were a few more instances where libbpf didn't save the
+errno before writing an error message, causing errno to be overridden by
+the printf() return and the error disappearing if logging is enabled.
 
-	vmlinux.h:47284:9: error: unknown type name '__Poly8_t'
-	typedef __Poly8_t poly8x16_t[16];
-	        ^~~~~~~~~
-
-The polyX_t types are defined as unsigned integers in the "Arm C
-Language Extension" document (101028_Q220_00_en). Emit typedefs based on
-standard integer types for the GCC internal types, similar to those
-emitted by Clang.
-
-Including linux/kernel.h to use ARRAY_SIZE() incidentally redefined
-max(), causing a build bug due to different types, hence the seemingly
-unrelated change.
-
-Reported-by: Jakov Petrina <jakov.petrina@sartura.hr>
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200812143909.3293280-1-jean-philippe@linaro.org
+Link: https://lore.kernel.org/bpf/20200813142905.160381-1-toke@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/btf_dump.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 653dbbe2e3663..55a729682cf94 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -13,6 +13,7 @@
- #include <errno.h>
- #include <linux/err.h>
- #include <linux/btf.h>
-+#include <linux/kernel.h>
- #include "btf.h"
- #include "hashmap.h"
- #include "libbpf.h"
-@@ -548,6 +549,9 @@ static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index c417cff2cdaf4..3e53bfcba2b1a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3210,10 +3210,11 @@ bpf_object__probe_global_data(struct bpf_object *obj)
+ 
+ 	map = bpf_create_map_xattr(&map_attr);
+ 	if (map < 0) {
+-		cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
++		ret = -errno;
++		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+ 		pr_warn("Error in %s():%s(%d). Couldn't create simple array map.\n",
+-			__func__, cp, errno);
+-		return -errno;
++			__func__, cp, -ret);
++		return ret;
  	}
- }
  
-+static void btf_dump_emit_missing_aliases(struct btf_dump *d, __u32 id,
-+					  const struct btf_type *t);
-+
- static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
- 				     const struct btf_type *t);
- static void btf_dump_emit_struct_def(struct btf_dump *d, __u32 id,
-@@ -670,6 +674,9 @@ static void btf_dump_emit_type(struct btf_dump *d, __u32 id, __u32 cont_id)
+ 	insns[0].imm = map;
+@@ -5508,9 +5509,10 @@ int bpf_program__pin_instance(struct bpf_program *prog, const char *path,
+ 	}
  
- 	switch (kind) {
- 	case BTF_KIND_INT:
-+		/* Emit type alias definitions if necessary */
-+		btf_dump_emit_missing_aliases(d, id, t);
-+
- 		tstate->emit_state = EMITTED;
- 		break;
- 	case BTF_KIND_ENUM:
-@@ -869,7 +876,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
- 			btf_dump_printf(d, ": %d", m_sz);
- 			off = m_off + m_sz;
- 		} else {
--			m_sz = max(0, btf__resolve_size(d->btf, m->type));
-+			m_sz = max(0LL, btf__resolve_size(d->btf, m->type));
- 			off = m_off + m_sz * 8;
- 		}
- 		btf_dump_printf(d, ";");
-@@ -889,6 +896,32 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
- 		btf_dump_printf(d, " __attribute__((packed))");
- }
+ 	if (bpf_obj_pin(prog->instances.fds[instance], path)) {
+-		cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
++		err = -errno;
++		cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+ 		pr_warn("failed to pin program: %s\n", cp);
+-		return -errno;
++		return err;
+ 	}
+ 	pr_debug("pinned program '%s'\n", path);
  
-+static const char *missing_base_types[][2] = {
-+	/*
-+	 * GCC emits typedefs to its internal __PolyX_t types when compiling Arm
-+	 * SIMD intrinsics. Alias them to standard base types.
-+	 */
-+	{ "__Poly8_t",		"unsigned char" },
-+	{ "__Poly16_t",		"unsigned short" },
-+	{ "__Poly64_t",		"unsigned long long" },
-+	{ "__Poly128_t",	"unsigned __int128" },
-+};
-+
-+static void btf_dump_emit_missing_aliases(struct btf_dump *d, __u32 id,
-+					  const struct btf_type *t)
-+{
-+	const char *name = btf_dump_type_name(d, id);
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(missing_base_types); i++) {
-+		if (strcmp(name, missing_base_types[i][0]) == 0) {
-+			btf_dump_printf(d, "typedef %s %s;\n\n",
-+					missing_base_types[i][1], name);
-+			break;
-+		}
-+	}
-+}
-+
- static void btf_dump_emit_enum_fwd(struct btf_dump *d, __u32 id,
- 				   const struct btf_type *t)
- {
 -- 
 2.25.1
 
