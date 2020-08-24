@@ -2,127 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0794B24F2B4
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 08:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E57F24F3C5
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 10:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgHXGtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 02:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgHXGtm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 02:49:42 -0400
-Received: from coco.lan (unknown [95.90.213.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725968AbgHXIRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 04:17:15 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60678 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725780AbgHXIRP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 24 Aug 2020 04:17:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598257033;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4qaHx+4DgU7tZu2iXG2DADTWF+wfpKAFg4isrL3CwcQ=;
+        b=DaQP59GLbzOUQgVo8/mVvqiGf8Sx544H/YxuCBPtc7wil5BOfWdGJrLest/0Tk6FRw5MUA
+        kqevtfew9CUNfGdZwn8oSbx5725iETUBUV4xGny+yUq7gPIL9b8PCWCLiSfZw60uodu1dO
+        TIkshDFTJnNFT5Taqgo+nRkQLyrHVRI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-qZiY-s5xPQqOytrDRO8Gjg-1; Mon, 24 Aug 2020 04:17:10 -0400
+X-MC-Unique: qZiY-s5xPQqOytrDRO8Gjg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB28A2067C;
-        Mon, 24 Aug 2020 06:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598251781;
-        bh=MoR5l415tOqXO7qDvbGK3qkYCXTWIk9BbyxnSBH+NOA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=d8Fa9jnF4RxQAHQUfTQiJnd1/Cv3peOrzUsQ+uvrMSfO9dxpXk5FFmL8qQR+62r2d
-         /5Z+CzrXnWZx+hAETh664fBPlISrF9QHDL0J3KIvyrE+0W2sam4bZO9CkasBh6uuiy
-         Lifm+3q0OlCTMYdbS1UXGwLbhr7/E/XclY5RLP1s=
-Date:   Mon, 24 Aug 2020 08:49:30 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Liwei Cai <cailiwei@hisilicon.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Clark <robdclark@chromium.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Liuyao An <anliuyao@huawei.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Wei Xu <xuwei5@hisilicon.com>,
-        Rongrong Zou <zourongrong@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DAA081F006;
+        Mon, 24 Aug 2020 08:17:08 +0000 (UTC)
+Received: from ovpn-113-102.ams2.redhat.com (ovpn-113-102.ams2.redhat.com [10.36.113.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6464361982;
+        Mon, 24 Aug 2020 08:17:04 +0000 (UTC)
+Message-ID: <8ccf0b77c854a20f65026fdc68dcd64b93d07fc5.camel@redhat.com>
+Subject: Re: BPF sk_lookup v5 - TCP SYN and UDP 0-len flood benchmarks
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Chen Feng <puck.chen@hisilicon.com>
-Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
-Message-ID: <20200824084853.10560ed1@coco.lan>
-In-Reply-To: <CALAqxLULQvW3UikCHpEzSDnpeYnBy8wDSsWZNbSrmivQTW3_Sg@mail.gmail.com>
-References: <cover.1597833138.git.mchehab+huawei@kernel.org>
-        <CALAqxLU3bt6fT4nGHZFSnzyQq4xJo2On=c_Oa9ONED9-jhaFgw@mail.gmail.com>
-        <CALAqxLW98nVc-=8Q6nx-wRP1z8pzkw1_zNc9M7V3GhnJQqM9rg@mail.gmail.com>
-        <CALAqxLULQvW3UikCHpEzSDnpeYnBy8wDSsWZNbSrmivQTW3_Sg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Andrii Nakryiko <andriin@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
+Date:   Mon, 24 Aug 2020 10:17:03 +0200
+In-Reply-To: <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
+References: <20200717103536.397595-1-jakub@cloudflare.com>
+         <87lficrm2v.fsf@cloudflare.com>
+         <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi John,
+On Tue, 2020-08-18 at 11:19 -0700, Alexei Starovoitov wrote:
+> On Tue, Aug 18, 2020 at 8:49 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> >          :                      rcu_read_lock();
+> >          :                      run_array = rcu_dereference(net->bpf.run_array[NETNS_BPF_SK_LOOKUP]);
+> >     0.01 :   ffffffff817f8624:       mov    0xd68(%r12),%rsi
+> >          :                      if (run_array) {
+> >     0.00 :   ffffffff817f862c:       test   %rsi,%rsi
+> >     0.00 :   ffffffff817f862f:       je     ffffffff817f87a9 <__udp4_lib_lookup+0x2c9>
+> >          :                      struct bpf_sk_lookup_kern ctx = {
+> >     1.05 :   ffffffff817f8635:       xor    %eax,%eax
+> >     0.00 :   ffffffff817f8637:       mov    $0x6,%ecx
+> >     0.01 :   ffffffff817f863c:       movl   $0x110002,0x40(%rsp)
+> >     0.00 :   ffffffff817f8644:       lea    0x48(%rsp),%rdi
+> >    18.76 :   ffffffff817f8649:       rep stos %rax,%es:(%rdi)
+> >     1.12 :   ffffffff817f864c:       mov    0xc(%rsp),%eax
+> >     0.00 :   ffffffff817f8650:       mov    %ebp,0x48(%rsp)
+> >     0.00 :   ffffffff817f8654:       mov    %eax,0x44(%rsp)
+> >     0.00 :   ffffffff817f8658:       movzwl 0x10(%rsp),%eax
+> >     1.21 :   ffffffff817f865d:       mov    %ax,0x60(%rsp)
+> >     0.00 :   ffffffff817f8662:       movzwl 0x20(%rsp),%eax
+> >     0.00 :   ffffffff817f8667:       mov    %ax,0x62(%rsp)
+> >          :                      .sport          = sport,
+> >          :                      .dport          = dport,
+> >          :                      };
+> 
+> Such heavy hit to zero init 56-byte structure is surprising.
+> There are two 4-byte holes in this struct. You can try to pack it and
+> make sure that 'rep stoq' is used instead of 'rep stos' (8 byte at a time vs 4).
 
-Em Wed, 19 Aug 2020 20:28:44 -0700
-John Stultz <john.stultz@linaro.org> escreveu:
+I think here rep stos is copying 8 bytes at a time (%rax operand, %ecx
+initalized with '6').
 
+I think that you can avoid the costly instruction explicitly
+initializing each field individually:
 
-> That said even with the patches I've got on top of your series, I
-> still see a few issues:
-> 1) I'm seeing red-blue swap with your driver.  I need to dig a bit to
-> see what the difference is, I know gralloc has a config option for
-> this, and maybe the version of the driver I'm carrying has it wrong?
+	struct bpf_sk_lookup_kern ctx;
 
-Maybe it is due to this:
+	ctx.family = AF_INET;
+	ctx.protocol = protocol;
+	// ...
 
-	drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c:      hal_fmt = HISI_FB_PIXEL_FORMAT_BGRA_8888;/* dss_get_format(fb->pixel_format); */
+note, you likely want to explicitly zero the v6 addresses, too.
 
-It sounds to me that someone added a hack hardcoding BGRA_8888 over
-there.
+Cheers,
 
-Btw, I removed the hack, with:
+Paolo
 
-
-diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
-index a68db1a27bbf..ba64aae371e4 100644
---- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
-+++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
-@@ -857,7 +857,7 @@ void hisi_fb_pan_display(struct drm_plane *plane)
-        rect.right = src_w - 1;
-        rect.top = 0;
-        rect.bottom = src_h - 1;
--       hal_fmt = HISI_FB_PIXEL_FORMAT_BGRA_8888;/* dss_get_format(fb->pixel_format); */
-+       hal_fmt = dss_get_format(fb->format->format);
- 
-        DRM_DEBUG_DRIVER("channel%d: src:(%d,%d, %dx%d) crtc:(%d,%d, %dx%d), rect(%d,%d,%d,%d),fb:%dx%d, pixel_format=%d, stride=%d, paddr=0x%x, bpp=%d.\n",
-                         chn_idx, src_x, src_y, src_w, src_h,
-
-
-And now red and blue are swapped on my HDMI screen too.
-
-I'll compare this part with your version, but I guess the bug is
-on this logic.
-
-
-Thanks,
-Mauro
