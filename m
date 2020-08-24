@@ -2,229 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DB724FF90
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 16:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BEF24FFA7
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 16:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgHXOJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 10:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgHXOJZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 10:09:25 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C549C061573
-        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 07:09:25 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id s1so8748432iot.10
-        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 07:09:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bA1BV2aseyQF/WzkRQXsks8mi0w91MOj30YomTdhB24=;
-        b=ja5bDYhrwnRbhqtcV0+hArCGMnGdzSqsZnKyGRT5k1UJ6WElf/GjM4OZXfddKwvvzm
-         aWNZ6AFUkq8/LzdiwGSPGOjVfTOb4+3TJ7ET1YyZp1Zdnod24BL/Sra3SQj1gqE4cvlb
-         7QU0pJv/WCuTKoWLToLBqK3d9nWpz/R1RPA7yiC6ko5eWBRA/SLEIuIekew8dqUHOfEs
-         /GbP79fBHvXldRjOSv36xwdhJF2LjlICsaoDuvKZSilgvgGVmo6nMlfSK2tr98QDU6z7
-         ccrR0wUHcnJB0uD8sb4A5AUXB02vie0m06hkYEraoVRGjxgJ31pfijIQ25dwc6Ox/eH7
-         9GnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bA1BV2aseyQF/WzkRQXsks8mi0w91MOj30YomTdhB24=;
-        b=WK6HLw+DZBmHPc+kGCNeIufjUH4xZ//qAUgXjp4B2a207kLnYE+/jfUADB4NEp3K0D
-         Vkk6HzC3vFCcttgGVab5XyAUHVWJGHfrA1e1H9TotMI2u9/PE2sZlK9x7sSpv97ialr3
-         VNtJREPEO1XCi2Hyd/xLFNKHi0PnVQnl2QO6h95CYNBIfhfyyyiQ9LzF+HfjzNaxxSQE
-         //Jca8QjMKgXOyWJvVsXMCJJ1Q39wz4k885RcUV7Y4z+SZZjpQorr3Pdcra/l3a+xIz3
-         Q8dpg+ucn729hWofZmzPKv0fKiii7YFGwExMOJ9M7yNHjXR5Tfn+9EcwYLnL/vM2PnMN
-         9BdA==
-X-Gm-Message-State: AOAM531C3eUHK5NZUpEj2RxrtUlRlDqw3hjWpDGjj5AOQA39x1DXvG5Y
-        2OyXTqefB9SSwttb8YJWZ0I8DRbqXZKqkFgwXrtBvA==
-X-Google-Smtp-Source: ABdhPJwjelAWzcEn7VzNUk7+Vkp9BFR/nJBH2gLe74ADI/3bVYbtSMs4/T4jOU84m5eRayVGvqGd5Ele60w9x5+iCr0=
-X-Received: by 2002:a02:a403:: with SMTP id c3mr5678171jal.102.1598278161040;
- Mon, 24 Aug 2020 07:09:21 -0700 (PDT)
+        id S1725780AbgHXOPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 10:15:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60386 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbgHXOPa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 10:15:30 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OEDl9p087031;
+        Mon, 24 Aug 2020 14:15:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=WlTllf3+qsSUWkFs3FMJP9D3QwySGo9UCDcc6PMhg1Y=;
+ b=s4wPFdjF34XdDFuPMlNaY1X7D555Lr31mTjvpA770omnqkQEAn1gupYmm3zpEP1M1VnJ
+ GWp2QFG+BJPEoYM1fKp6dRZpDGnz2vGVeQfur9Wq1DdCODJPi+hRSM7sMAQTvJs7Idis
+ ryX1X8+fKMffOVwAUKzTnP2tnhNIQmaPz8AymNsiTNBw6LkLCn6h7AFFBpFHKNnDig9M
+ vHNYjtezKIyfZOb+pB76b/qvvk+aVXRCnuWzRTMgK88MSLW5zoW1S70/BJ4YQ99bloBp
+ 7fWU0sd0pIJiAqC+l6hC126kVOoRfkZ/ejWCkHZU74tgDCybyfJacBOQMUSvpGuDiwuP aQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 333dbrmsy5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 24 Aug 2020 14:15:28 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07OE4Xqw005702;
+        Mon, 24 Aug 2020 14:15:27 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 333rtwjxtb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Aug 2020 14:15:27 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07OEFOiS021390;
+        Mon, 24 Aug 2020 14:15:26 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Aug 2020 07:15:24 -0700
+Date:   Mon, 24 Aug 2020 17:15:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jason@zx2c4.com
+Cc:     bpf@vger.kernel.org
+Subject: [bug report] net: WireGuard secure network tunnel
+Message-ID: <20200824141519.GA223008@mwanda>
 MIME-Version: 1.0
-References: <20200820164753.3256899-1-jackmanb@chromium.org> <202008201435.97CF8296@keescook>
-In-Reply-To: <202008201435.97CF8296@keescook>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Mon, 24 Aug 2020 16:09:09 +0200
-Message-ID: <CA+i-1C0XEuWWRm5nMPWCzEPUao7rp5346Eotpt1A_S3Za3Wysw@mail.gmail.com>
-Subject: Re: [RFC] security: replace indirect calls with static calls
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Brendan Jackman <jackmanb@chromium.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Paul Renauld <renauld@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, pjt@google.com,
-        Jann Horn <jannh@google.com>, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, thgarnie@chromium.org,
-        KP Singh <kpsingh@google.com>, paul.renauld.epfl@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=10 adultscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9722 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=10
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008240114
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 20 Aug 2020 at 23:46, Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Aug 20, 2020 at 06:47:53PM +0200, Brendan Jackman wrote:
-> > From: Paul Renauld <renauld@google.com>
-> >
-> > LSMs have high overhead due to indirect function calls through
-> > retpolines. This RPC proposes to replace these with static calls [1]
->
-> typo: RFC
+Hello Jason A. Donenfeld,
 
-Oops, thanks - I also meant to have the [RFC] subject prefix.
+The patch e7096c131e51: "net: WireGuard secure network tunnel" from
+Dec 9, 2019, leads to the following static checker warning:
 
->
-> > instead.
->
-> Yay! :)
->
-> > [...]
-> > This overhead prevents the adoption of bpf LSM on performance critical
-> > systems, and also, in general, slows down all LSMs.
->
-> I'd be curious to see other workloads too. (Your measurements are a bit
-> synthetic, mostly showing "worst case": one short syscall in a tight
-> loop. I'm curious how much performance gain can be had -- we should
-> still do it, it'll be a direct performance improvement, but I'm curious
-> about "real world" impact too.)
->
+	net/core/dev.c:10103 netdev_run_todo()
+	warn: 'dev->_tx' double freed
 
-Sounds good - I'll gather some more data and get back.
+net/core/dev.c
+ 10071          /* Wait for rcu callbacks to finish before next phase */
+ 10072          if (!list_empty(&list))
+ 10073                  rcu_barrier();
+ 10074  
+ 10075          while (!list_empty(&list)) {
+ 10076                  struct net_device *dev
+ 10077                          = list_first_entry(&list, struct net_device, todo_list);
+ 10078                  list_del(&dev->todo_list);
+ 10079  
+ 10080                  if (unlikely(dev->reg_state != NETREG_UNREGISTERING)) {
+ 10081                          pr_err("network todo '%s' but state %d\n",
+ 10082                                 dev->name, dev->reg_state);
+ 10083                          dump_stack();
+ 10084                          continue;
+ 10085                  }
+ 10086  
+ 10087                  dev->reg_state = NETREG_UNREGISTERED;
+ 10088  
+ 10089                  netdev_wait_allrefs(dev);
+ 10090  
+ 10091                  /* paranoia */
+ 10092                  BUG_ON(netdev_refcnt_read(dev));
+ 10093                  BUG_ON(!list_empty(&dev->ptype_all));
+ 10094                  BUG_ON(!list_empty(&dev->ptype_specific));
+ 10095                  WARN_ON(rcu_access_pointer(dev->ip_ptr));
+ 10096                  WARN_ON(rcu_access_pointer(dev->ip6_ptr));
+ 10097  #if IS_ENABLED(CONFIG_DECNET)
+ 10098                  WARN_ON(dev->dn_ptr);
+ 10099  #endif
+ 10100                  if (dev->priv_destructor)
+ 10101                          dev->priv_destructor(dev);
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+The wg_destruct() functions frees "dev".
 
-(I would also reiterate what KP said in response
-to James: the "worst case" relative indirect call overhead (i.e. the case
-where the hook callback does minimal work) is exactly the case we care
-about here. If the callback is doing enough work that the indirect call overhead
-becomes negligible, that callback is probably anyway too heavyweight for the
-use cases that motivated this work).
+ 10102                  if (dev->needs_free_netdev)
+                            ^^^^^
+Use after free.
 
-> > [...]
-> > Previously, the code for this hook would have looked like this:
-> >
-> >       ret = DEFAULT_RET;
-> >
-> >         for each cb in [A, B, C]:
-> >                 ret = cb(args); <--- costly indirect call here
-> >                 if ret != 0:
-> >                         break;
-> >
-> >         return ret;
-> >
-> > Static calls are defined at build time and are initially empty (NOP
-> > instructions). When the LSMs are initialized, the slots are filled as
-> > follows:
-> >
-> >  slot idx     content
-> >            |-----------|
-> >     0      |           |
-> >            |-----------|
-> >     1      |           |
-> >            |-----------|
-> >     2      |   call A  | <-- base_slot_idx = 2
-> >            |-----------|
-> >     3      |   call B  |
-> >            |-----------|
-> >     4      |   call C  |
-> >            |-----------|
-> >
-> > The generated code will unroll the foreach loop to have a static call for
-> > each possible LSM:
-> >
-> >         ret = DEFAULT_RET;
-> >         switch(base_slot_idx):
-> >
-> >                 case 0:
-> >                         NOP
-> >                         if ret != 0:
-> >                                 break;
-> >                         // fallthrough
-> >                 case 1:
-> >                         NOP
-> >                         if ret != 0:
-> >                                 break;
-> >                         // fallthrough
-> >                 case 2:
-> >                         ret = A(args); <--- direct call, no retpoline
-> >                         if ret != 0:
-> >                                 break;
-> >                         // fallthrough
-> >                 case 3:
-> >                         ret = B(args); <--- direct call, no retpoline
-> >                         if ret != 0:
-> >                                 break;
-> >                         // fallthrough
-> >
-> >                 [...]
-> >
-> >                 default:
-> >                         break;
-> >
-> >         return ret;
-> >
-> > A similar logic is applied for void hooks.
-> >
-> > Why this trick with a switch statement? The table of static call is defined
-> > at compile time. The number of hook callbacks that will be defined is
-> > unknown at that time, and the table cannot be resized at runtime.  Static
-> > calls do not define a conditional execution for a non-void function, so the
-> > executed slots must be non-empty.  With this use of the table and the
-> > switch, it is possible to jump directly to the first used slot and execute
-> > all of the slots after. This essentially makes the entry point of the table
-> > dynamic. Instead, it would also be possible to start from 0 and break after
-> > the final populated slot, but that would require an additional conditional
-> > after each slot.
->
-> Instead of just "NOP", having the static branches perform a jump would
-> solve this pretty cleanly, yes? Something like:
->
->         ret = DEFAULT_RET;
->
->         ret = A(args); <--- direct call, no retpoline
->         if ret != 0:
->                 goto out;
->
->         ret = B(args); <--- direct call, no retpoline
->         if ret != 0:
->                 goto out;
->
->         goto out;
->         if ret != 0:
->                 goto out;
->
-> out:
->         return ret;
+ 10103                          free_netdev(dev);
+ 10104  
+ 10105                  /* Report a network device has been unregistered */
+ 10106                  rtnl_lock();
+ 10107                  dev_net(dev)->dev_unreg_count--;
+ 10108                  __rtnl_unlock();
+ 10109                  wake_up(&netdev_unregistering_wq);
+ 10110  
+ 10111                  /* Free network device */
+ 10112                  kobject_put(&dev->dev.kobj);
+ 10113          }
+ 10114  }
 
-Hmm yeah that's a cool idea. This would either need to be implemented
-with custom
-code-modification logic for the LSM hooks, or we'd need to think of a
-way to express it
-in a sensible addition to the static_call API. I do wonder if the
-latter could take
-the form of a generic system for arrays of static calls.
-
-It would also need to handle the fact that IIUC at the moment the last
-static_call may be a tail
-call, so we'd be patching an existing jump into a jump to a different
-target, I don't know if we
-can do that atomically.
-
-More research required on my side here, on both points.
-
- > [...]
-> > Signed-off-by: Paul Renauld <renauld@google.com>
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
->
-> This implies a maintainership chain, with Paul as the sole author. If
-> you mean all of you worked on the patch, include Co-developed-by: as
-> needed[1].
-
-Yep, this is intentional - Paul is the sole author so far (I suppose
-KP's sign-off
-is not technically required since he's also at the Google).
+regards,
+dan carpenter
