@@ -2,128 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A892509A6
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 21:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7331250A66
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 23:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgHXTw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 15:52:59 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:57803 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgHXTw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 15:52:58 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 34338963;
-        Mon, 24 Aug 2020 19:25:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=kZvBC3dKvagzKtx7Cpr3Owe93hg=; b=fmZ45a
-        WLGPXX7mTFvmO1DTdmGEpdVbS16eUwsVbYaA0RKoD0OQlKNW3iAE2LdGdwnOgPl1
-        z/VvPz6Wk1viJjsrjgXaHzGGx0o7Y1zGQotHXULkBq+J/rm1Q/kFmkhRJQx+Mvjj
-        Tc5gyEs+ER/5hle544oVB/j9kmFNtZK9je9z1CWWkVye98UYWJtHecmlkvgGWmdR
-        dCniT2wVOe8SZ2ulzBDmLnD+l1ZeLineez+8ahfKjGCQfhRnW3THeMcokx53Ab8O
-        997GDHRQeWjzpCjwEUYkapBwfM/O39TCXhMNgNwAovUtM65RdLxxml20I4lg08bm
-        q/8c4APyeZptT56A==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id b7dcdd6e (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Mon, 24 Aug 2020 19:25:58 +0000 (UTC)
-Received: by mail-io1-f45.google.com with SMTP id b16so10023260ioj.4;
-        Mon, 24 Aug 2020 12:52:57 -0700 (PDT)
-X-Gm-Message-State: AOAM530yGqMviITJ8VeU4HBOOVGhFQJcmWsK3psWz8zWR99D1uC0JUqq
-        Vlli+hfqpxe2RsmDvE6oTqa+4e5kQwScuDYVb70=
-X-Google-Smtp-Source: ABdhPJyGlMk0PQmZ7wJPjtSmTV7irbslSCugeo+bQKmO1S9GTyH6J4Hk9lS3Vb7PjtOCLedDtpgt+A+fFRLtj7aCPnk=
-X-Received: by 2002:a05:6602:15c3:: with SMTP id f3mr6378056iow.25.1598298776630;
- Mon, 24 Aug 2020 12:52:56 -0700 (PDT)
+        id S1725904AbgHXVAZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 17:00:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57426 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726189AbgHXVAU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 24 Aug 2020 17:00:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598302819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dArBMjBu6Yjd06FGK20jndZ6EdlklVUmvStH3WB7sTA=;
+        b=VkxC5aDG5QbqOjX1g7DlDCudiZ1qwdBeFesdRBdwrOExIvXIltOZ5b2p9gL/Iwi56Fp4FL
+        xIYwSbOkMkuWs8cQ4UqykgaUTAuRdZwKrZ0WAEXOoZCQ/lZM7JWYBqVsSzL9mCQtWUdEPR
+        sEt6DZ7Uak+wGfdjhFqC3L5/VHBXH/A=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-FEKhMDvXMqKCVY2zd8Pvew-1; Mon, 24 Aug 2020 17:00:14 -0400
+X-MC-Unique: FEKhMDvXMqKCVY2zd8Pvew-1
+Received: by mail-lf1-f72.google.com with SMTP id c5so743020lfp.7
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 14:00:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dArBMjBu6Yjd06FGK20jndZ6EdlklVUmvStH3WB7sTA=;
+        b=KmLkXn1TedUYg2NgxduK2J4FHuuRHYULA1J14zc/6b2wnc5h02OWlDUCUoQBqnjI/J
+         M5u/PG0E/JtUFqbo+EgR9gfIvhO0x2k7dt/5smKaWwsgdS2LyVAPbfE0PgxQtwbYJDzw
+         3uDNLl/NfyS+kPE4lQhtGB7AZJBECsOzpfltK4srol+AULTMb1e7cXy5ooTWNI8lRDob
+         9bfpp2j/J8oOz9nzZswiTlxwoFKbXAELmqSqixUUflmstjwsBjg9E/K5oIXgtoMxgeIb
+         7do8R27dKegUnQgYzgo3cXl6H2FZAVmVVQ2B12k5k8wVyKk+GBfTd3uT+qZ63ie0h3Kz
+         UTug==
+X-Gm-Message-State: AOAM533fr0VN3cL1wvRRrYZbzw/+1k6eEtuk0yGESqEcG8+dWnbUJMIf
+        J2hXVkZVuIXb/q3TR43DsHt8JVInDS07rsaDlssZQ03mXXdeFwzQIShIrfivYW3RELXcjQNuhbJ
+        FXBWNswHhssGFx/sp08oF/C/pQMcc
+X-Received: by 2002:ac2:568b:: with SMTP id 11mr3362048lfr.87.1598302811895;
+        Mon, 24 Aug 2020 14:00:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyh510SXVhjTJ4fo6qnIoXsDmjw+4kFDJo+p6bMWy1uCQEAElrM7xxXDoIBq3WLL1m/FjtxmlH9uAoJXx9nXns=
+X-Received: by 2002:ac2:568b:: with SMTP id 11mr3362038lfr.87.1598302811601;
+ Mon, 24 Aug 2020 14:00:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200824141519.GA223008@mwanda>
-In-Reply-To: <20200824141519.GA223008@mwanda>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Mon, 24 Aug 2020 21:52:45 +0200
-X-Gmail-Original-Message-ID: <CAHmME9r9TazDujfSL3sM98QHZWEQxD99bTdHK+d8vFNOi+H_ZA@mail.gmail.com>
-Message-ID: <CAHmME9r9TazDujfSL3sM98QHZWEQxD99bTdHK+d8vFNOi+H_ZA@mail.gmail.com>
-Subject: Re: [bug report] net: WireGuard secure network tunnel
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>
+References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
+In-Reply-To: <000000000000a726a405ada4b6cf@google.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Mon, 24 Aug 2020 23:00:00 +0200
+Message-ID: <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
+Subject: Re: general protection fault in security_inode_getattr
+To:     syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>
+Cc:     andriin@fb.com, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, john.fastabend@gmail.com,
+        kafai@fb.com, KP Singh <kpsingh@chromium.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        linux-fsdevel@vger.kernel.org, Miklos Szeredi <miklos@szeredi.hu>,
+        linux-unionfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 4:15 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> Hello Jason A. Donenfeld,
->
-> The patch e7096c131e51: "net: WireGuard secure network tunnel" from
-> Dec 9, 2019, leads to the following static checker warning:
->
->         net/core/dev.c:10103 netdev_run_todo()
->         warn: 'dev->_tx' double freed
->
-> net/core/dev.c
->  10071          /* Wait for rcu callbacks to finish before next phase */
->  10072          if (!list_empty(&list))
->  10073                  rcu_barrier();
->  10074
->  10075          while (!list_empty(&list)) {
->  10076                  struct net_device *dev
->  10077                          = list_first_entry(&list, struct net_device, todo_list);
->  10078                  list_del(&dev->todo_list);
->  10079
->  10080                  if (unlikely(dev->reg_state != NETREG_UNREGISTERING)) {
->  10081                          pr_err("network todo '%s' but state %d\n",
->  10082                                 dev->name, dev->reg_state);
->  10083                          dump_stack();
->  10084                          continue;
->  10085                  }
->  10086
->  10087                  dev->reg_state = NETREG_UNREGISTERED;
->  10088
->  10089                  netdev_wait_allrefs(dev);
->  10090
->  10091                  /* paranoia */
->  10092                  BUG_ON(netdev_refcnt_read(dev));
->  10093                  BUG_ON(!list_empty(&dev->ptype_all));
->  10094                  BUG_ON(!list_empty(&dev->ptype_specific));
->  10095                  WARN_ON(rcu_access_pointer(dev->ip_ptr));
->  10096                  WARN_ON(rcu_access_pointer(dev->ip6_ptr));
->  10097  #if IS_ENABLED(CONFIG_DECNET)
->  10098                  WARN_ON(dev->dn_ptr);
->  10099  #endif
->  10100                  if (dev->priv_destructor)
->  10101                          dev->priv_destructor(dev);
->                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
-> The wg_destruct() functions frees "dev".
->
->  10102                  if (dev->needs_free_netdev)
->                             ^^^^^
-> Use after free.
->
->  10103                          free_netdev(dev);
->  10104
->  10105                  /* Report a network device has been unregistered */
->  10106                  rtnl_lock();
->  10107                  dev_net(dev)->dev_unreg_count--;
->  10108                  __rtnl_unlock();
->  10109                  wake_up(&netdev_unregistering_wq);
->  10110
->  10111                  /* Free network device */
->  10112                  kobject_put(&dev->dev.kobj);
->  10113          }
->  10114  }
->
-> regards,
-> dan carpenter
+On Mon, Aug 24, 2020 at 9:37 PM syzbot
+<syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
+> syzbot has found a reproducer for the following issue on:
 
-I actually recall a patch ~3 years ago from DaveM trying to make
-netdev tear down semantics a bit cleaner, by distinguishing between
-the case when netdevs free their own dev and when they don't. I'm not
-sure whether wireguard should set needs_free_netdev or not, but I
-vaguely remember reasoning about that a long time ago and deciding,
-"no". However, branching on dev->needs_free_netdev seems like it must
-be a UaF always in the case where needs_free_netdev is false, since in
-that case, the destructor should free it (I think). I'll send a patch,
-and see if DaveM likes that, or if he'd prefer I just set
-needs_free_netdev in wireguard and remove the free_netdev call in
-wg_destruct.
+Looping in fsdevel and OverlayFS maintainers, as this seems to be
+FS/OverlayFS related...
 
-Thanks for the report.
+See also original report against 5.8-rc7:
+https://lore.kernel.org/linux-security-module/0000000000008caae305ab9a5318@google.com/T/
 
-Jason
+>
+> HEAD commit:    d012a719 Linux 5.9-rc2
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14aa130e900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f07cc9be8d1d226947ed
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=104a650e900000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com
+>
+> general protection fault, probably for non-canonical address 0xdffffc000000000d: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
+> CPU: 1 PID: 32288 Comm: syz-executor.3 Not tainted 5.9.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:d_backing_inode include/linux/dcache.h:549 [inline]
+> RIP: 0010:security_inode_getattr+0x42/0x140 security/security.c:1276
+> Code: 1b fe 49 8d 5e 08 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 bc b4 5b fe 48 8b 1b 48 83 c3 68 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 9f b4 5b fe 48 8b 1b 48 83 c3 0c
+> RSP: 0018:ffffc9000a017750 EFLAGS: 00010202
+> RAX: 000000000000000d RBX: 0000000000000068 RCX: ffff888093ec6180
+> RDX: 0000000000000000 RSI: ffffc9000a017860 RDI: ffffc9000a017850
+> RBP: ffffc9000a017850 R08: dffffc0000000000 R09: ffffc9000a017850
+> R10: fffff52001402f0c R11: 0000000000000000 R12: ffffc9000a017860
+> R13: 0000000000008401 R14: ffffc9000a017850 R15: dffffc0000000000
+> FS:  00007f292d4ef700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b30920074 CR3: 00000000937fd000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  vfs_getattr+0x21/0x60 fs/stat.c:121
+>  ovl_copy_up_one fs/overlayfs/copy_up.c:850 [inline]
+>  ovl_copy_up_flags+0x2ef/0x2a00 fs/overlayfs/copy_up.c:931
+>  ovl_maybe_copy_up+0x154/0x180 fs/overlayfs/copy_up.c:963
+>  ovl_open+0xa2/0x200 fs/overlayfs/file.c:147
+>  do_dentry_open+0x7c8/0x1010 fs/open.c:817
+>  do_open fs/namei.c:3251 [inline]
+>  path_openat+0x2794/0x3840 fs/namei.c:3368
+>  do_filp_open+0x191/0x3a0 fs/namei.c:3395
+>  file_open_name+0x321/0x430 fs/open.c:1113
+>  acct_on kernel/acct.c:207 [inline]
+>  __do_sys_acct kernel/acct.c:286 [inline]
+>  __se_sys_acct+0x122/0x6f0 kernel/acct.c:273
+>  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45d579
+> Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f292d4eec78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a3
+> RAX: ffffffffffffffda RBX: 0000000000000700 RCX: 000000000045d579
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000040
+> RBP: 000000000118cf70 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+> R13: 00007ffc8e04bc4f R14: 00007f292d4ef9c0 R15: 000000000118cf4c
+> Modules linked in:
+> ---[ end trace 7e4f1041b188e411 ]---
+> RIP: 0010:d_backing_inode include/linux/dcache.h:549 [inline]
+> RIP: 0010:security_inode_getattr+0x42/0x140 security/security.c:1276
+> Code: 1b fe 49 8d 5e 08 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 bc b4 5b fe 48 8b 1b 48 83 c3 68 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 9f b4 5b fe 48 8b 1b 48 83 c3 0c
+> RSP: 0018:ffffc9000a017750 EFLAGS: 00010202
+> RAX: 000000000000000d RBX: 0000000000000068 RCX: ffff888093ec6180
+> RDX: 0000000000000000 RSI: ffffc9000a017860 RDI: ffffc9000a017850
+> RBP: ffffc9000a017850 R08: dffffc0000000000 R09: ffffc9000a017850
+> R10: fffff52001402f0c R11: 0000000000000000 R12: ffffc9000a017860
+> R13: 0000000000008401 R14: ffffc9000a017850 R15: dffffc0000000000
+> FS:  00007f292d4ef700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fef820e7000 CR3: 00000000937fd000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
+
+-- 
+Ondrej Mosnacek
+Software Engineer, Platform Security - SELinux kernel
+Red Hat, Inc.
+
