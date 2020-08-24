@@ -2,109 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B163924F90D
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 11:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4533124FD10
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 13:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbgHXJkj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 05:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729251AbgHXIpp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:45:45 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A23C061573
-        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 01:45:45 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x5so7513082wmi.2
-        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 01:45:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kr1c3haT1yhxfl33XmTaSeXi33h/k6BkkvRpBNN6lwQ=;
-        b=MB9S7b84pla+BcD84lZT3P3lcWv5hFKe/OmZWr/j6lT3iPORefJiqMEKXuN0fjX0xo
-         ND+USgWsApxiI9xGI2VhDWpIYbX/HiS74u8N7aHlhlcrts7l/eBG5rGzARwbAzT99Wyi
-         HUPOiI6wQa8vHsP3vDYKDT2SOHe8XPwliUqhg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kr1c3haT1yhxfl33XmTaSeXi33h/k6BkkvRpBNN6lwQ=;
-        b=ONcsfcSj+AFHxllvDtD8OW7FTdWMEsRsJvRNBYMaGJHLIJlDuPNsHGt1TWQUZ1nt1J
-         dwWJpYSy3+vDQFVzgIwWIzi5x5x9qoUh8FkW7dhh7n3vSvspdNsx77b/aIe+oXQNUzdN
-         E0ruNHOlDFUK+KGqinQQdkt1e9VOUMdVbxOpo68QO2wk+IIrd/uDe2rIKyRxdGMVxOlD
-         XQaL2DVQeQu0ZzfDzhktSgsJhUF8TKHr/+4qyXLDx+Dv24tynTDEZFUs5kzok4hxbVfo
-         98C0OzFV/xF9kLuD1hkKbRKDxKS+aezeTvrhHhjtjMvN++dsU9v8XuxD0a87WZDcNHQX
-         mZyQ==
-X-Gm-Message-State: AOAM5322jFMGl1iZ1ePC1Uvd9fL7sfqgK9cIJlg/qRO8tCo90HZ7d0qo
-        HuHdsEVexv0OqWvcHk4RBgzRog==
-X-Google-Smtp-Source: ABdhPJx8dImHvW2WWOV9cX7FzTbLm1HFOCVVN/8wMcBEsm4gnokQEx+mxngPfhEVF1w1Nmd0+jGx+g==
-X-Received: by 2002:a1c:818e:: with SMTP id c136mr4802397wmd.170.1598258744015;
-        Mon, 24 Aug 2020 01:45:44 -0700 (PDT)
-Received: from antares.lan (f.b.d.5.c.0.0.9.c.8.0.f.d.9.d.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:d9d:f08c:900c:5dbf])
-        by smtp.gmail.com with ESMTPSA id t70sm40377848wmt.3.2020.08.24.01.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 01:45:43 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next] selftests: bpf: fix sockmap update nits
-Date:   Mon, 24 Aug 2020 09:45:23 +0100
-Message-Id: <20200824084523.13104-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726466AbgHXL5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 07:57:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:40033 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726075AbgHXL5P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 07:57:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598270234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uMvM2RtL83e2YUaGWF80AZDLFuLnlaj4E2rguE786ng=;
+        b=OnBy6Fp3KHd6ie8M3A9uoRBfvsVrnI+8NX829x8yFYMUioz7lr6c4h3PFfTIr8zJPLm31h
+        hc/Il9EXsU5HclPHOcr0f0nS6KzNOXHA66t1Gqc2hjK3rv+G7liBKgISDxtUAJ1FvCNmkL
+        zp3BWl3MFdDAfZZJ014fZGgkvTr3MDc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-513-Q8EgwxsjP_CIN0PTdLYqDA-1; Mon, 24 Aug 2020 07:57:12 -0400
+X-MC-Unique: Q8EgwxsjP_CIN0PTdLYqDA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB5DB807331;
+        Mon, 24 Aug 2020 11:57:10 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.64])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CA7BA7C656;
+        Mon, 24 Aug 2020 11:57:05 +0000 (UTC)
+Date:   Mon, 24 Aug 2020 13:57:04 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf] selftests/bpf: Fix test_progs-flavor run getting
+ number of tests
+Message-ID: <20200824135704.2b86fc83@carbon>
+In-Reply-To: <CAADnVQLA4UNsooPg7Cwk3hQU8dih6uATrOi+-V-a8b0Nb_ndWw@mail.gmail.com>
+References: <159802249863.919353.9321169154213417316.stgit@firesoul>
+        <CAADnVQLA4UNsooPg7Cwk3hQU8dih6uATrOi+-V-a8b0Nb_ndWw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Address review by Yonghong, to bring the new tests in line with the
-usual code style.
+On Fri, 21 Aug 2020 12:45:08 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../testing/selftests/bpf/prog_tests/sockmap_basic.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+> > diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+> > index b1e4dadacd9b..d858e883bd75 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.c
+> > +++ b/tools/testing/selftests/bpf/test_progs.c
+> > @@ -618,7 +618,7 @@ int cd_flavor_subdir(const char *exec_name)
+> >         if (!flavor)
+> >                 return 0;
+> >         flavor++;
+> > -       fprintf(stdout, "Switching to flavor '%s' subdirectory...\n", flavor);
+> > +       fprintf(stderr, "Switching to flavor '%s' subdirectory...\n", flavor);  
+> 
+> Hmm. May be move it under -v flag instead?
+> The person or script that runs test_progs-no_alu32 knows what's happening.
+> That message either to stdout or stderr will be fine under extra verbose flag.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 65ce7c289534..0b79d78b98db 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -118,10 +118,8 @@ static void test_sockmap_update(enum bpf_map_type map_type)
- 		return;
- 
- 	skel = test_sockmap_update__open_and_load();
--	if (CHECK(!skel, "open_and_load", "cannot load skeleton\n")) {
--		close(sk);
--		return;
--	}
-+	if (CHECK(!skel, "open_and_load", "cannot load skeleton\n"))
-+		goto close_sk;
- 
- 	prog = bpf_program__fd(skel->progs.copy_sock_map);
- 	src = bpf_map__fd(skel->maps.src);
-@@ -158,8 +156,9 @@ static void test_sockmap_update(enum bpf_map_type map_type)
- 	      dst_cookie, src_cookie);
- 
- out:
--	close(sk);
- 	test_sockmap_update__destroy(skel);
-+close_sk:
-+	close(sk);
- }
- 
- static void test_sockmap_invalid_update(void)
-@@ -168,8 +167,7 @@ static void test_sockmap_invalid_update(void)
- 	int duration = 0;
- 
- 	skel = test_sockmap_invalid_update__open_and_load();
--	CHECK(skel, "open_and_load", "verifier accepted map_update\n");
--	if (skel)
-+	if (CHECK(skel, "open_and_load", "verifier accepted map_update\n"))
- 		test_sockmap_invalid_update__destroy(skel);
- }
- 
+Sounds good to me with a -v flag, sending V2
+
 -- 
-2.25.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
