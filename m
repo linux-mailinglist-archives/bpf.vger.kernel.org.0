@@ -2,172 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB6F2506F9
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 19:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA7825093F
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 21:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHXRyb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 13:54:31 -0400
-Received: from sonic312-30.consmr.mail.ne1.yahoo.com ([66.163.191.211]:36600
-        "EHLO sonic312-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726581AbgHXRyb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 24 Aug 2020 13:54:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598291670; bh=wZWdeV82grk1vCCG3xyxethbZMe/msX85Us+HfU7CEg=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=jv9ij9F16qa1xzyTPbSC3hnDR9x22zIAPzidexwZ8V1iieDz9qQ/QN8c/5W2Jbv/RvY9OghklFdK6UC6ACXnwnKkaK3gEPYF8slGbb77OJvt89udcJQ8lt2o4FGalovEt69dZXhzGFXVWNdmXn1gITh97KNgA+x/yghb5m+RtTs8K2DGYGRBZ1LxhgNYCQ3SfIPqnvfxfAr2gm3uL7bMB3nXUNFDDCIWXqu5LNhtLYa25Yd3J0/PWMsQuNwPbggpYy5BOzmhLnBlo+rTYbN6ON3DNDscx4cBjle9Lt+xCYKgqNTsGFJXQcVRYZI+dI+jl8UzPaoiJqqp1OZjhWTVhQ==
-X-YMail-OSG: Ws92fo4VM1mkc77h2D.KIK2Of1VKQjfcG5Xhd0ffvRyyGPxmw9R4IkYrt3w_B4b
- uRu0TI7SB834dyQBAW16L3WTq8guJKN9SnGrQI682oRyq8S0HBrrClnY0tm608wSl6e3kY7Mt1aO
- _TwTmWs8c9b7CReMmupYS_BFSTdILsnwtqeVd4ASRxDgYVrePEB48z4xAIbuk9Wt0eY1ntsCuV0N
- ndQVjlcXGGF1NcPAwXX3R7Awt2x_J_2_EMq3GkSJSfHkzKUSXzkWm6te2_2R0uOQfmPb6I9sqmCf
- DhCvnkDN6PgwBLxxC9nJk5zT13M05d4EHWhzDIeNEpdq6pzj9so6aOfOmHpLFU4gIBGMERjL21WM
- lLx3pmo38q5YF6e4rPEefVJwOhHFzQvzbT7kGM2gLh6M67pPYu9rcsll2EaXzshDj2UE4bgk4h0z
- EJD9MzIm2kS5dMGquCPX_kiRTlgFfI8WBufDu4YehRbblA7tbIA8glPx5jecV.DPDLSW19ACBDIV
- BkUpCHmGP7Iu_8ANK0LDOBjhnE9QzbLVz1.fz_fe20UroPQRTqOPL2oAEtlu2NeLk2NZcgO5mOpR
- SInSnlqLSrrKn8O1SQJOHDmwDYx5mV1vYVytf0tDe4cGcDx47goIaEHpbAWg3avgrUIdVDwngvtJ
- xdUEUeQIYM5Xx7u14JXVpK5Ib06jDfAv_YeHma3cvtO1DlAs6FP9AH2TxRGQDwIKf7NTf0qhlv.x
- bK48ym9Bw_PvQnrqHgVJIXEoHM0mX_dH_udz50xk4J7BYNesuvKx9JT3Q6p7oRYNnWQRMWd0VOyE
- 7rIuNK4.k4LytuDmTc_TSJl_UUvGCh9BsyZSOxSBJTufmGspWuIN4ksYXsOGG3aw0slVVo2L44iO
- fEQmBsFjAVslIG9ZeCHgoJvo9aYQuI81W_uC0n7gn8G6NS0ulF7vJoop4D5PYyylIt8N4u9VStW1
- agihrNPCnfxLp3_oR.gEOemkPgt_iJcdk614qyiGNKHia_fQAr4iHPcR2SlXyhhZ1c85xjf4yTjE
- B3Fxup53R1f1YHFJp5qUk7BdTYVgaQu3Wmi3h9jYyFe_xdXLG0xFQpd0a._wNrLqoFBmgC9RJiF8
- _D3CQmdMGmxndAzeE5XwNIyw1tFUVo7urFX_A5p42ad71YG.1U4xQ6iTjdQzif4a.YHw2q58F9ds
- Uy39Nr4CvGo_zhZT6Dk1W4wg9FVEtW5aUxbTZVFJgSs583KudHfuUTIZGXJ_i7liInk3QGuI2tRd
- zpH.1lsfZjpRTMzJQu4fGAWP.PLbs1p0PO6LNj_4e777B2DC2tRgahap0rzyqkXoIgstGQuhHXGs
- 0KxDgruSu3k9EPUQhyv0oXDER8iiKPHQs_FwCze07PxxvntxkXcRSuLlHALZduypZH0CBJuYizUK
- A0mBeQoFFQ35XUBUU1y_6oCoWRIznzI577W5FeDQXKuEOPZb..FtUGTHdoikcFPLt4YO31C2t.bQ
- ScOGwV2hCGpehlb0oPMb1k1Y2FMeodRGu.jaGcMb4oGVhHiM_aimKPooogDH9S6OzZRgFLSbBY6X
- 5G0lBS86LqJKcNwVHcvZzWz0tcrwnweTi6vQMuLUDQyK1pB9NMDaBEonHoI8IXLH5tVZCjewdCMH
- PZqw_tM36DJszZMAbNQAtJ5mH
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Mon, 24 Aug 2020 17:54:30 +0000
-Received: by smtp424.mail.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 56d747b8779068a3f044ba03cad1d4c1;
-          Mon, 24 Aug 2020 17:54:29 +0000 (UTC)
-Subject: Re: [RFC] security: replace indirect calls with static calls
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     Brendan Jackman <jackmanb@chromium.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Paul Renauld <renauld@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rafael.j.wysocki@intel.com, Kees Cook <keescook@chromium.org>,
-        thgarnie@chromium.org, KP Singh <kpsingh@google.com>,
-        paul.renauld.epfl@gmail.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20200820164753.3256899-1-jackmanb@chromium.org>
- <42fb4180-772c-5579-ef3e-b4003e2b784b@schaufler-ca.com>
- <CA+i-1C09YZ8aCr6p5NOA2e3Ji5TKwdET=qAy=M328NK--L=0RA@mail.gmail.com>
- <66a35f25-53be-17c3-8ab3-7cb32b0bc77a@schaufler-ca.com>
- <CA+i-1C1GwgYJAfaUofzv47nyryQ15znE6OLWhAN-gsscm6mMoA@mail.gmail.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <04b2d1ca-1524-d503-084c-4b27d55f862c@schaufler-ca.com>
-Date:   Mon, 24 Aug 2020 10:54:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726041AbgHXT3o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 15:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgHXT3n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 15:29:43 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE81C061573;
+        Mon, 24 Aug 2020 12:29:43 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id i26so9127537edv.4;
+        Mon, 24 Aug 2020 12:29:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tkyjDeEozETacXNRr3uxxFjEe+DOSkNiETr7ujJ7mA4=;
+        b=gbLjbs+kaoh4rZOxABupqrCM4Qcd3bYtkfeVC/nRU8Z2Wz1U+JbkAQkArH4gmcAbQg
+         +me959Drpnd4CjLnwv1i7I+n39T70i1k9MgfXmM4TdqSH5CHPeQQ704WlNRzvMmsCNE3
+         mHOMfsb2nqxSIfJ5iG/uxSzInfGvZgulDJl2jhM0ZTUq12X/DcNPeCcreRhIEGU5c473
+         tplXuWIWR80tZi94jsXsW9LbmVH0mU1xGrXQJgLidd+oqlPUkRSlZgZ3kJ1zt0Zs4Z/h
+         iVwiFqFsoqXrzRsD/80e0iJI+ElqXVWr+zeUX5i662Lr58YYWQFbC+XEQHqwTrZ52/i7
+         S1hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tkyjDeEozETacXNRr3uxxFjEe+DOSkNiETr7ujJ7mA4=;
+        b=rEgwT0ZbXNTE+tR82bQrOlKADOrPeQE9BzXIQ40wkQ3nALEqkuNPYO5uXNK6fTvf5L
+         xkslt5ZEM1cN0pNvVQPDQD8+3SVVfNqhkbIrwYhKzrv6ymwVBkz+JLJh6fR8IKOIx6G6
+         v0OddlOcBiWD+jA0M9w+I7dr2fPn7TFoubyzfGJ0cThELC+JFWgPe7XXRBOAWCxoTlKW
+         LLUcA6kpZphz5aUDbASrhefDMDDFxgpC/LiNlN/gydahM9tcSNS1hnH4AcUGt42N1j01
+         g4ViN6/jHTfacWAr4Z9VoUI1ms3XfQs5+3VwLsC1knpMg3lGoifpbyKKJhgkA33HPQk4
+         H/lw==
+X-Gm-Message-State: AOAM531nbeZ+mAt5m9q7abkJtViyJvbkbMUhO89+u+YS8rU7GQPh9Fag
+        a81hGNWqixhUjVpouA5gmztu6EnCidt2h6ECb1c=
+X-Google-Smtp-Source: ABdhPJy8zXxqgoqnCG7czfw4GIuDC9/xFzn6G7zIEQJby4+MpOb+8f/28WY9QeyW1U8+CILxKbHrHp2ZOuZ7tua7MN0=
+X-Received: by 2002:aa7:c983:: with SMTP id c3mr6737425edt.383.1598297381878;
+ Mon, 24 Aug 2020 12:29:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+i-1C1GwgYJAfaUofzv47nyryQ15znE6OLWhAN-gsscm6mMoA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.16455 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+ <20200819152120.GA106437@ravnborg.org> <20200819153045.GA18469@pendragon.ideasonboard.com>
+ <CALAqxLUXnPRec3UYbMKge8yNKBagLOatOeRCagF=JEyPEfWeKA@mail.gmail.com>
+ <20200820090326.3f400a15@coco.lan> <20200820100205.GA5962@pendragon.ideasonboard.com>
+In-Reply-To: <20200820100205.GA5962@pendragon.ideasonboard.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Tue, 25 Aug 2020 05:29:29 +1000
+Message-ID: <CAPM=9twzsw7T=GD6Jc1EFenXq9ZhTgf_Nuo71uLfX2W33oa=6w@mail.gmail.com>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        mauro.chehab@huawei.com, Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Liuyao An <anliuyao@huawei.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Rongrong Zou <zourongrong@gmail.com>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/24/2020 10:04 AM, Brendan Jackman wrote:
-> On Mon, 24 Aug 2020 at 18:43, Casey Schaufler <casey@schaufler-ca.com> wrote:
->> On 8/24/2020 8:20 AM, Brendan Jackman wrote:
->>> On Fri, 21 Aug 2020 at 00:46, Casey Schaufler <casey@schaufler-ca.com> wrote:
->>>> On 8/20/2020 9:47 AM, Brendan Jackman wrote:
->>> [...]
->>>> What does NOP really look like?
->>> The NOP is the same as a regular function call but the CALL
->>> instruction is replaced with a NOP instruction. The code that sets up
->>> the call parameters is unchanged, and so is the code that expects to
->>> get the return value in eax or whatever.
->> Right. Are you saying that NOP is in-line assembler in your switch?
-> That's right - although it's behind the static_call API that the patch
-> depends on ([5] in the original mail).
+On Thu, 20 Aug 2020 at 20:02, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
->>> That means we cannot actually
->>> call the static_calls for NULL slots, we'd get undefined behaviour
->>> (except for void hooks) - this is what Peter is talking about in the
->>> sibling thread.
->> Referring to the "sibling thread" is kinda confusing, and
->> assumes everyone is one all the right mailing lists, and knows
->> which other thread you're talking about.
-> Sure, sorry - here's the Lore link for future reference:
+> Hi Mauro,
 >
-> https://lore.kernel.org/lkml/20200820164753.3256899-1-jackmanb@chromium.org/T/#m5a6fb3f10141049ce43e18a41f154796090ae1d5
+> On Thu, Aug 20, 2020 at 09:03:26AM +0200, Mauro Carvalho Chehab wrote:
+> > Em Wed, 19 Aug 2020 12:52:06 -0700 John Stultz escreveu:
+> > > On Wed, Aug 19, 2020 at 8:31 AM Laurent Pinchart wrote:
+> > > > On Wed, Aug 19, 2020 at 05:21:20PM +0200, Sam Ravnborg wrote:
+> > > > > On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:
+> > > > > > This patch series port the out-of-tree driver for Hikey 970 (which
+> > > > > > should also support Hikey 960) from the official 96boards tree:
+> > > > > >
+> > > > > >    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
+> > > > > >
+> > > > > > Based on his history, this driver seems to be originally written
+> > > > > > for Kernel 4.4, and was later ported to Kernel 4.9. The original
+> > > > > > driver used to depend on ION (from Kernel 4.4) and had its own
+> > > > > > implementation for FB dev API.
+> > > > > >
+> > > > > > As I need to preserve the original history (with has patches from
+> > > > > > both HiSilicon and from Linaro),  I'm starting from the original
+> > > > > > patch applied there. The remaining patches are incremental,
+> > > > > > and port this driver to work with upstream Kernel.
+> > > > > >
+> > > ...
+> > > > > > - Due to legal reasons, I need to preserve the authorship of
+> > > > > >   each one responsbile for each patch. So, I need to start from
+> > > > > >   the original patch from Kernel 4.4;
+> > > ...
+> > > > > I do acknowledge you need to preserve history and all -
+> > > > > but this patchset is not easy to review.
+> > > >
+> > > > Why do we need to preserve history ? Adding relevant Signed-off-by and
+> > > > Co-developed-by should be enough, shouldn't it ? Having a public branch
+> > > > that contains the history is useful if anyone is interested, but I don't
+> > > > think it's required in mainline.
+> > >
+> > > Yea. I concur with Laurent here. I'm not sure what legal reasoning you
+> > > have on this but preserving the "absolute" history here is actively
+> > > detrimental for review and understanding of the patch set.
+> > >
+> > > Preserving Authorship, Signed-off-by lines and adding Co-developed-by
+> > > lines should be sufficient to provide both atribution credit and DCO
+> > > history.
+> >
+> > I'm not convinced that, from legal standpoint, folding things would
+> > be enough. See, there are at least 3 legal systems involved here
+> > among the different patch authors:
+> >
+> >       - civil law;
+> >       - common law;
+> >       - customary law + common law.
+> >
+> > Merging stuff altogether from different law systems can be problematic,
+> > and trying to discuss this with experienced IP property lawyers will
+> > for sure take a lot of time and efforts. I also bet that different
+> > lawyers will have different opinions, because laws are subject to
+> > interpretation. With that matter I'm not aware of any court rules
+> > with regards to folded patches. So, it sounds to me that folding
+> > patches is something that has yet to be proofed in courts around
+> > the globe.
+> >
+> > At least for US legal system, it sounds that the Country of
+> > origin of a patch is relevant, as they have a concept of
+> > "national technology" that can be subject to export regulations.
+> >
+> > From my side, I really prefer to play safe and stay out of any such
+> > legal discussions.
 >
->>> For this reason, there are _no gaps_ in the callback table. For a
->>> given LSM hook, all the slots after base_slot_idx are filled,
->> Why go to all the trouble of maintaining the base_slot_idx
->> if NOP is so cheap? Why not fill all unused slots with NOP?
->> Worst case would be a hook with no users, in which case you
->> have 11 NOPS in the void hook case and 11 "if (ret != DEFAULT_RET)"
->> and 11 NOPS in the int case. No switch magic required. Even
->> better, in the int case you have two calls/slot, the first is the
->> module supplied function (or NOP) and the second is
->>         int isit(int ret) { return (ret != DEFAULT_RET) ? ret : 0; }
->> (or NOP).
->>
->> The no security module case degenerates to 22 NOP instructions
->> and no if checks of any sort. I'm not the performance guy, but
->> that seems better than maintaining and checking base_slot_idx
->> to me.
-> The switch trick is not really motivated by performance.
-
-Then what is its motivation? It makes the code more complicated,
-and is unnecessary.
-
-> I think all the focus on the NOPs themselves is a bit misleading here
-> - we _can't_ execute the NOPs for the int hooks, because there are
-> instructions after them that expect a function to have just returned a
-> value, which NOP doesn't do.
-
-That's what I was hoping to address with the second call in the slot.
-The first call in the slot would be either the module supplied code
-or a NOP if the module isn't using the hook. The second would be
-supplied by the LSM infrastructure and would be NOP if the module
-didn't use the hook. The LSM supplied function would do the necessary
-checking. Its more complicated than the void case, but not that much
-more complicated than the existing list based scheme.
-
-The concern about the non-existent return on a NOP can be dealt with
-by setting up initial conditions correctly in most cases. Dealing with
-multiple security modules providing information (e.g. secid_to_secctx)
-is where it gets tricky.
-
->  When there is a NOP in the slot instead
-> of a CALL, it would appear to "return" whatever value is leftover in
-> the return register. At the C level, this is why the static_call API
-> doesn't allow static_call_cond to return a value (which is what PeterZ
-> is referring to in the thread I linked above).
+> Let's be serious for a moment. If you think there are legal issues in
+> taking GPL-v2.0-only patches and squashing them while retaining
+> authorship information through tags, the Linux kernel if *full* of that.
+> You also routinely modify patches that you commit to the media subsystem
+> to fix "small issues".
 >
-> So, we could drop the switch trick for void hooks and just use
-> static_call_cond, but this doesn't work for int hooks. IMO that
-> variation between the two hook types would just add confusion.
+> The country of origin argument makes no sense either, the kernel code
+> base if full of code coming from pretty much all country on the planet.
+>
+> Keeping the patches separate make this hard to review. Please squash
+> them.
 
-With the number of cases where the switch trick isn't going to
-work in the long term I'm disinclined to think it makes things
-less confusing.
+I'm inclined to agree with Laurent here.
 
+Patches submitted as GPL-v2 with DCO lines and author names/companies
+should be fine to be squashed and rearranged,
+as long as the DCO and Authorship is kept somewhere in the new patch
+that is applied.
 
->>>>> +#define __UNROLL_MACRO_LOOP_20(MACRO, ...) \
->>>>> + __UNROLL_MACRO_LOOP_19(MACRO, __VA_ARGS__) \
->>>>> + MACRO(19, __VA_ARGS__)
->>>>> +
->>>> Where does "20" come from? Why are you unrolling beyond 11?
->>> It's just an arbitrary limit on the unrolling macro implementation, we
->>> aren't actually unrolling beyond 11 where the macro is used (N is set
->>> to 11).
->> I'm not a fan of including macros you can't use, especially
->> when they're just obvious variants of other macros.
-> Not sure what you mean here - is there already a macro that does what
-> UNROLL_MACRO_LOOP does?
+Review is more important here.
 
-No, I'm saying that __UNROLL_MACRO_LOOP_20() will never be used on
-a system that has at most 11 security modules. You've added a bunch of
-text that serves no purpose. "Future expansion" is pretty silly here.
-
+Dave.
