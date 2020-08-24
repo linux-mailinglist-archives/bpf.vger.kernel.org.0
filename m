@@ -2,112 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E57F24F3C5
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 10:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 218ED24F684
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 11:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgHXIRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 04:17:15 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60678 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725780AbgHXIRP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 24 Aug 2020 04:17:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598257033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4qaHx+4DgU7tZu2iXG2DADTWF+wfpKAFg4isrL3CwcQ=;
-        b=DaQP59GLbzOUQgVo8/mVvqiGf8Sx544H/YxuCBPtc7wil5BOfWdGJrLest/0Tk6FRw5MUA
-        kqevtfew9CUNfGdZwn8oSbx5725iETUBUV4xGny+yUq7gPIL9b8PCWCLiSfZw60uodu1dO
-        TIkshDFTJnNFT5Taqgo+nRkQLyrHVRI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-qZiY-s5xPQqOytrDRO8Gjg-1; Mon, 24 Aug 2020 04:17:10 -0400
-X-MC-Unique: qZiY-s5xPQqOytrDRO8Gjg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DAA081F006;
-        Mon, 24 Aug 2020 08:17:08 +0000 (UTC)
-Received: from ovpn-113-102.ams2.redhat.com (ovpn-113-102.ams2.redhat.com [10.36.113.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6464361982;
-        Mon, 24 Aug 2020 08:17:04 +0000 (UTC)
-Message-ID: <8ccf0b77c854a20f65026fdc68dcd64b93d07fc5.camel@redhat.com>
-Subject: Re: BPF sk_lookup v5 - TCP SYN and UDP 0-len flood benchmarks
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Date:   Mon, 24 Aug 2020 10:17:03 +0200
-In-Reply-To: <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
-References: <20200717103536.397595-1-jakub@cloudflare.com>
-         <87lficrm2v.fsf@cloudflare.com>
-         <CAADnVQKE6y9h2fwX6OS837v-Uf+aBXnT_JXiN_bbo2gitZQ3tA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1728480AbgHXJAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 05:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730475AbgHXJAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 05:00:17 -0400
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69ABC061574
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 02:00:15 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id m12so1809307vko.5
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 02:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=KfhSuOovLnLRVmlJFLbo80kBFl4FB5sqA5U4FgRWdXE=;
+        b=sF0cp1JrdrQ5w+tMqws5LD4vUPY/tS2GNl0kwpIxrT7Z2tvlIvQl3kp/UupnnkFEhw
+         P97cQIaiKcoqDiXPPChDUtgG3floGftRcROmppacO3HxwKH80TUEl6Vr2WM8I8s6S9u4
+         sghLN2nBSTyQpm7VBixjZNrvVUOMM/VwZ9MTfhS9bA+x3LYj8x587UWnrhiWQ5rK/S8c
+         sMrf0vOlbgVyn3Kyh06cI3dtcOykPduzolO2XbUM1mCa0bnxK2/e3X+I5MI/OAbvIQer
+         RrVqK3fqYbCfcU1Er/UikCOKQm8VTa1SsBPUTpUo+OGY8a8L4QX9n2TrQR1KnduIIb2p
+         xhCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=KfhSuOovLnLRVmlJFLbo80kBFl4FB5sqA5U4FgRWdXE=;
+        b=V3MTCxHuGIB39Za0dNhj5NlpMkyB2cjLehyiDIRMoquVTcl2EJ9yH07oo/bg7OsIRB
+         6QOVQOhZU6GFYK/1TqrdET33GrBQhpvrY0UluxYtuDu6f3UUgth/LLejUC1BEs0RgaXF
+         KP2KWAFaZ5PeOf7Vk2vPh1555I/ND9plJ7DjXcuYkw3+qBcmJ6SfV6KbiVNkU/2oPk1q
+         MSnarmGDQXkaEQHhHGyWNRjH/QR4S9pTGY6JiXfZfHybNYrrJLOGmMOKsp9MmMPtdJtA
+         EWQ0q9OsH8/HyGNpLydGPhAuamveN08VaTeKgH1RYaUSIccTDJV28BuuX8E0f5WrPUX0
+         6nWQ==
+X-Gm-Message-State: AOAM533LEfGSYLR2GBVTxCu9fTlo89BS2ZY/cdh+LWUTYUqK8IG+6lLp
+        hwy99q1o0BvzQhPkBahv+hiKHtpyKmW18OLaaIv4ceHoFJ/yffHA
+X-Google-Smtp-Source: ABdhPJz/KtMppW2wUDSI5hh9kF22nqOYQnim3Qj7+E4taS5Wd7au/tHa/tVWNgJla6ZbMnBGXUm+Vz9lK3r+rPtUyo4=
+X-Received: by 2002:a1f:eecb:: with SMTP id m194mr1767325vkh.40.1598259613475;
+ Mon, 24 Aug 2020 02:00:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 24 Aug 2020 14:30:01 +0530
+Message-ID: <CA+G9fYvWkGp9p95DQ5T87GDBmUMecEYBZC0TYHmfwHysanQ7zA@mail.gmail.com>
+Subject: expects argument of type 'size_t', but argument 5 has type 'Elf64_Xword
+To:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        ast@fb.com, Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, lkft-triage@lists.linaro.org,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2020-08-18 at 11:19 -0700, Alexei Starovoitov wrote:
-> On Tue, Aug 18, 2020 at 8:49 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> >          :                      rcu_read_lock();
-> >          :                      run_array = rcu_dereference(net->bpf.run_array[NETNS_BPF_SK_LOOKUP]);
-> >     0.01 :   ffffffff817f8624:       mov    0xd68(%r12),%rsi
-> >          :                      if (run_array) {
-> >     0.00 :   ffffffff817f862c:       test   %rsi,%rsi
-> >     0.00 :   ffffffff817f862f:       je     ffffffff817f87a9 <__udp4_lib_lookup+0x2c9>
-> >          :                      struct bpf_sk_lookup_kern ctx = {
-> >     1.05 :   ffffffff817f8635:       xor    %eax,%eax
-> >     0.00 :   ffffffff817f8637:       mov    $0x6,%ecx
-> >     0.01 :   ffffffff817f863c:       movl   $0x110002,0x40(%rsp)
-> >     0.00 :   ffffffff817f8644:       lea    0x48(%rsp),%rdi
-> >    18.76 :   ffffffff817f8649:       rep stos %rax,%es:(%rdi)
-> >     1.12 :   ffffffff817f864c:       mov    0xc(%rsp),%eax
-> >     0.00 :   ffffffff817f8650:       mov    %ebp,0x48(%rsp)
-> >     0.00 :   ffffffff817f8654:       mov    %eax,0x44(%rsp)
-> >     0.00 :   ffffffff817f8658:       movzwl 0x10(%rsp),%eax
-> >     1.21 :   ffffffff817f865d:       mov    %ax,0x60(%rsp)
-> >     0.00 :   ffffffff817f8662:       movzwl 0x20(%rsp),%eax
-> >     0.00 :   ffffffff817f8667:       mov    %ax,0x62(%rsp)
-> >          :                      .sport          = sport,
-> >          :                      .dport          = dport,
-> >          :                      };
-> 
-> Such heavy hit to zero init 56-byte structure is surprising.
-> There are two 4-byte holes in this struct. You can try to pack it and
-> make sure that 'rep stoq' is used instead of 'rep stos' (8 byte at a time vs 4).
+while building perf with gcc 7.3.0 on linux next this warning/error is found.
 
-I think here rep stos is copying 8 bytes at a time (%rax operand, %ecx
-initalized with '6').
+In file included from libbpf.c:55:0:
+libbpf.c: In function 'bpf_object__elf_collect':
+libbpf_internal.h:74:22: error: format '%zu' expects argument of type
+'size_t', but argument 5 has type 'Elf64_Xword {aka long long unsigned
+int}' [-Werror=format=]
+  libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__);
+cc1: all warnings being treated as errors
 
-I think that you can avoid the costly instruction explicitly
-initializing each field individually:
+OE perf build long link,
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=am57xx-evm,label=docker-lkft/846/consoleText
 
-	struct bpf_sk_lookup_kern ctx;
-
-	ctx.family = AF_INET;
-	ctx.protocol = protocol;
-	// ...
-
-note, you likely want to explicitly zero the v6 addresses, too.
-
-Cheers,
-
-Paolo
-
+- Naresh
