@@ -2,106 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A481224EF44
-	for <lists+bpf@lfdr.de>; Sun, 23 Aug 2020 20:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0794B24F2B4
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 08:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbgHWSgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Aug 2020 14:36:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24017 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725867AbgHWSgP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 Aug 2020 14:36:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598207773;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SkQDoUqFb2pcXsHEYlbXyVvwoHEdGkctXljyuRbwe0I=;
-        b=cmCUcWZew4cJQ3A4mkM6yjpIEpUDIZCMiPnOSLJUqaXtNKU7W/AdiXcizGBQaiQhUaolnm
-        Iag+FUde+EJxMU8XHzOQOY3zi63B1t1+5yfEgdEclyz6xxlmNrS4asPe0XOW01tMgP/oeC
-        OANg03v6r4sNFOQUHZYy5f5Ok80Ya7Q=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-XdcVLc9TM5mg9q00KYpLXw-1; Sun, 23 Aug 2020 14:36:11 -0400
-X-MC-Unique: XdcVLc9TM5mg9q00KYpLXw-1
-Received: by mail-wr1-f69.google.com with SMTP id z1so3041080wrn.18
-        for <bpf@vger.kernel.org>; Sun, 23 Aug 2020 11:36:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=SkQDoUqFb2pcXsHEYlbXyVvwoHEdGkctXljyuRbwe0I=;
-        b=TXz+YIUKEuI6dNP3HBCMgHhgxcnAKiiG5yVYixjRGO8S1CQ5bnoR85NCKkE0Bz+SX4
-         xTQcIWA0Yx1/rV52HkGFDqNZk38nEro2NFjrlHlKrI9FiOZrmvs8qkTVQgQX1bL/aCBX
-         SG0ANT5fCdiwvzsMMWFL2a/Z99dVlfVjIi/CIBpxp1Q/jfa8s+SzEQgglh2WE4oPC5ei
-         SP7sBCnf/m7JOdV2OlD3oSPSnOf7z0bQZrpl7CEXwUkXV8G5Sd+1OMO4bgc5fRsph34b
-         xza5PJlLzXOldZK8E+QjmBduWyEYFkMwiVcNrC3UnZayyPz7oI7C9NI9s9lpZ5Q6dfHe
-         Dj4g==
-X-Gm-Message-State: AOAM531W7m6R8bVUG/98nmUN9qMhV98w54r1Uq/0+8IebUErxTeJCbHh
-        MzhBBHv5V3ptI9J8ng9DElo2xIQHmGAZtQw/YrlWhsNeGLz9CPifx1Od7USGu7IwONrgPZYMV18
-        MoaVlXdCcvoki
-X-Received: by 2002:a5d:638c:: with SMTP id p12mr2450324wru.17.1598207770234;
-        Sun, 23 Aug 2020 11:36:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx86SbvwVkJeaPtFelbSv1Hi/W9Qr/OpgUF7YVHbqpp+BusMv/LAquX8wmggGCrho9uBekX5g==
-X-Received: by 2002:a5d:638c:: with SMTP id p12mr2450296wru.17.1598207769862;
-        Sun, 23 Aug 2020 11:36:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z6sm10771101wrt.91.2020.08.23.11.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Aug 2020 11:36:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5F29E1825D0; Sun, 23 Aug 2020 20:36:07 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     YiFei Zhu <zhuyifei@google.com>
-Cc:     Yonghong Song <yhs@fb.com>, YiFei Zhu <zhuyifei1999@gmail.com>,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S1725946AbgHXGtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 02:49:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgHXGtm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 02:49:42 -0400
+Received: from coco.lan (unknown [95.90.213.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB28A2067C;
+        Mon, 24 Aug 2020 06:49:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598251781;
+        bh=MoR5l415tOqXO7qDvbGK3qkYCXTWIk9BbyxnSBH+NOA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d8Fa9jnF4RxQAHQUfTQiJnd1/Cv3peOrzUsQ+uvrMSfO9dxpXk5FFmL8qQR+62r2d
+         /5Z+CzrXnWZx+hAETh664fBPlISrF9QHDL0J3KIvyrE+0W2sam4bZO9CkasBh6uuiy
+         Lifm+3q0OlCTMYdbS1UXGwLbhr7/E/XclY5RLP1s=
+Date:   Mon, 24 Aug 2020 08:49:30 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Liwei Cai <cailiwei@hisilicon.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Mahesh Bandewar <maheshb@google.com>
-Subject: Re: [PATCH bpf-next 4/5] bpftool: support dumping metadata
-In-Reply-To: <CAA-VZP=Jo0iQRpP+QEmB359C5TS=0BnDHTAzd6yC85aOkEJrsA@mail.gmail.com>
-References: <cover.1597915265.git.zhuyifei@google.com>
- <9138c60f036c68f02c41dae0605ef587a8347f4c.1597915265.git.zhuyifei@google.com>
- <e02ae4a7-938f-222e-3139-5ba84e95df15@fb.com> <877dts5qah.fsf@toke.dk>
- <CAA-VZP=Jo0iQRpP+QEmB359C5TS=0BnDHTAzd6yC85aOkEJrsA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sun, 23 Aug 2020 20:36:07 +0200
-Message-ID: <874kot2ors.fsf@toke.dk>
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Clark <robdclark@chromium.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Liuyao An <anliuyao@huawei.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Wei Xu <xuwei5@hisilicon.com>,
+        Rongrong Zou <zourongrong@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Chen Feng <puck.chen@hisilicon.com>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200824084853.10560ed1@coco.lan>
+In-Reply-To: <CALAqxLULQvW3UikCHpEzSDnpeYnBy8wDSsWZNbSrmivQTW3_Sg@mail.gmail.com>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+        <CALAqxLU3bt6fT4nGHZFSnzyQq4xJo2On=c_Oa9ONED9-jhaFgw@mail.gmail.com>
+        <CALAqxLW98nVc-=8Q6nx-wRP1z8pzkw1_zNc9M7V3GhnJQqM9rg@mail.gmail.com>
+        <CALAqxLULQvW3UikCHpEzSDnpeYnBy8wDSsWZNbSrmivQTW3_Sg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-YiFei Zhu <zhuyifei@google.com> writes:
+Hi John,
 
-> On Fri, Aug 21, 2020 at 3:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->> Yonghong Song <yhs@fb.com> writes:
->> > Not sure whether we need formal libbpf API to access metadata or not.
->> > This may help other applications too. But we can delay until it is
->> > necessary.
->>
->> Yeah, please put in a libbpf accessor as well; I would like to use this
->> from libxdp - without a skeleton :)
->>
->> -Toke
->
-> I don't think I have an idea on a good API in libbpf that could be
-> used to get the metadata of an existing program in kernel, that could
-> be reused by bpftool without duplicating all the code. Maybe we can
-> discuss this in a follow up series?
+Em Wed, 19 Aug 2020 20:28:44 -0700
+John Stultz <john.stultz@linaro.org> escreveu:
 
-I think the most important part is getting a reference to the metadata
-map. So a function that basically does what the top half of what your
-show_prog_metadata() function does: given a prog fd, walk the map ids,
-check if any of them looks like a metadata map, and if so return the map
-fd.
 
-Should be pretty straight-forward to reuse between bpftool/libbpf, no?
+> That said even with the patches I've got on top of your series, I
+> still see a few issues:
+> 1) I'm seeing red-blue swap with your driver.  I need to dig a bit to
+> see what the difference is, I know gralloc has a config option for
+> this, and maybe the version of the driver I'm carrying has it wrong?
 
--Toke
+Maybe it is due to this:
 
+	drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c:      hal_fmt = HISI_FB_PIXEL_FORMAT_BGRA_8888;/* dss_get_format(fb->pixel_format); */
+
+It sounds to me that someone added a hack hardcoding BGRA_8888 over
+there.
+
+Btw, I removed the hack, with:
+
+
+diff --git a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
+index a68db1a27bbf..ba64aae371e4 100644
+--- a/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
++++ b/drivers/staging/hikey9xx/gpu/kirin9xx_drm_overlay_utils.c
+@@ -857,7 +857,7 @@ void hisi_fb_pan_display(struct drm_plane *plane)
+        rect.right = src_w - 1;
+        rect.top = 0;
+        rect.bottom = src_h - 1;
+-       hal_fmt = HISI_FB_PIXEL_FORMAT_BGRA_8888;/* dss_get_format(fb->pixel_format); */
++       hal_fmt = dss_get_format(fb->format->format);
+ 
+        DRM_DEBUG_DRIVER("channel%d: src:(%d,%d, %dx%d) crtc:(%d,%d, %dx%d), rect(%d,%d,%d,%d),fb:%dx%d, pixel_format=%d, stride=%d, paddr=0x%x, bpp=%d.\n",
+                         chn_idx, src_x, src_y, src_w, src_h,
+
+
+And now red and blue are swapped on my HDMI screen too.
+
+I'll compare this part with your version, but I guess the bug is
+on this logic.
+
+
+Thanks,
+Mauro
