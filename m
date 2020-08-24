@@ -2,84 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A27250B0C
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 23:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F37250B15
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 23:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgHXVon (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 17:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45368 "EHLO
+        id S1726532AbgHXVrv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 17:47:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHXVom (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 17:44:42 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B7AC061574;
-        Mon, 24 Aug 2020 14:44:41 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 12so5280512lfb.11;
-        Mon, 24 Aug 2020 14:44:41 -0700 (PDT)
+        with ESMTP id S1726365AbgHXVru (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 17:47:50 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4578EC061574;
+        Mon, 24 Aug 2020 14:47:50 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id f26so11401255ljc.8;
+        Mon, 24 Aug 2020 14:47:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TdTPQNZpnKf78FVYri0YP31zJnbvLBKjS32AlT/iKJU=;
-        b=BVf76X/0z5/rDTYQi3SxYSOlh6YsECZPoUmRX5rtNz9SvQK1N8yKIxxsjp9m2nBbPV
-         aY/GNAGc6I3WZQKdOimwIFt8OcQ/aWgpyw+Wd2L1m5hL0ebyB6WK/2tIN70FoI/HYuvf
-         1XhAsOkdFjectBneXZHOnJa7JyR0uN2KjaUs83a/lYwKGo8zvKO+2qhcMZOFzP/BOKQQ
-         Yl+ae8USR8ss3xt9I04FX5Jaerv9LH1cfgTRSQPIgkG03SDmeZBG7Yv3/4X4ACvnxnsJ
-         5YG7vlNV45pgF0tMzC+3uH/8rSnO9kLbLLdjfgSvm98AKLkCWLY/ImVqmAvoL3Bhr0ja
-         e0fg==
+         :cc;
+        bh=U8AEMx+c+PIG8pVY+1WZJabYi9uVpApSHXqIEELfdGY=;
+        b=YkjD+uj+Uvg9cAMLJes7/IcruEFSRaXCc2h/WETwH7QH1oHaNOxh50r52bZ09fQiYQ
+         EIMMtqWFIsAFYR38qEiZiiox7Tyla+H151srxmmEUdzuikHxOd7vPry1wFGV2t4OCzil
+         FO17CT4i+sc0HQLXvsJnP2o6JxatA6ziAoeWKGwcVlC688T6r2MELrimnVWOS+qWvcYr
+         H8xJ1pnmR0v1MMfwgQ57kO5NQ2y0A24+XUxKtd6Are8kja8Fa0U0j/hNrdYKtg8hB8OV
+         pnS+U20s9Y5WACZCLZXreWJ7sESdJg1Tvy3ouot/WWdzkpt5EuFNtoZrAlsF+x4fDGOt
+         Ryiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TdTPQNZpnKf78FVYri0YP31zJnbvLBKjS32AlT/iKJU=;
-        b=DKYNsG1y1rAEqu0Wdrol62kP1l9DopoqniaklfNuJ8iEkIcWQ+rCHgNppFtFvi1ITm
-         61TIO7h2A+US1iVBSHmg3NbKsBq/Ldn50kwvVx97ERb1JhnGvRPPHhW7vxz+jt+C0d02
-         NpuF2XjVKx1W/98K2jGDDYim7Y4Z0INtr2+7BQdDQTV9qU8Gm4jd3fByZ+NfaD6615s7
-         rn1qq+Hci8/DUKIgS6NWJzx+LOwLTw/sDQzqukKJOq1kTUtjbe+QhhyWWRSlJ/3d3XCg
-         8evckH5TcBy8ZAF1wecmGTENg0Ixn52dEifYSUdQpCkpTXIoNJ8/8ts9efoJUfrQrIg0
-         KuDw==
-X-Gm-Message-State: AOAM531actNuDL2OvZL+6Z7IMWrHqr6u6T5QQ+7tFlXQwLjDMMkvBZKf
-        OvsQP4g26QskYX/KPyjt0IouIGyu4IgILifRno8=
-X-Google-Smtp-Source: ABdhPJwCI8wZoJHux1MLa9VCBOqaU+OUSir8cfDbXeBz1WxcArhOLQhozg9Kfn9JQN7d9r8IYHYTD1L48jbEtBY+HT8=
-X-Received: by 2002:a19:c20d:: with SMTP id l13mr2031571lfc.157.1598305480290;
- Mon, 24 Aug 2020 14:44:40 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=U8AEMx+c+PIG8pVY+1WZJabYi9uVpApSHXqIEELfdGY=;
+        b=aNht+UZInZmuukI1j1LdyILaWPo4hlCiB+iXvrYaGNKggAL8YWkqoWrdW4qD3J+j35
+         m5HE2ciNEwIeBUmEWVXkYds62rfIRwC1XpVPigNuB6/QL7FmenPcD6HwPMq+zyc1ON1z
+         7T0xxJxJ0kgf1FRwDx7VXuDbzsjQ2miOaY8QZGNIF8BNenKC+MXdDu6VOegrmCKKxpiI
+         J+z8OCK6OvUmeFl7WQ1zairv/93jAzHhINQG8k6jKupq5Esn/mVaM3AyRtIQ4hy2cKyN
+         SqHDwoKE4U6RpAN8nJPmJL2ILmJ24BAM9seIfPGbxWlzQXMyVexpYXRP7V41TyW8CrET
+         ji3w==
+X-Gm-Message-State: AOAM533sLT3Ju7XLbb8qQ02TwokkWtMFD5WuaPUhmA6y9Ihq8+y8DNk0
+        xScudIEG2h+ezmFkFnI5ZV6vNjK+JRMFliW1f00=
+X-Google-Smtp-Source: ABdhPJyvIf4NPitY4M02yDuGYpeLWF7mxpYui7UX/35anjxUsVgeX0RbTHSoNCMqzVX6fW9WyUIZRqlPnzoirTWNkhM=
+X-Received: by 2002:a2e:4e09:: with SMTP id c9mr3563500ljb.283.1598305668740;
+ Mon, 24 Aug 2020 14:47:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200821052817.46887-1-Jianlin.Lv@arm.com> <2b3ed0fe-5be3-05a4-4db0-d0039709e488@fb.com>
-In-Reply-To: <2b3ed0fe-5be3-05a4-4db0-d0039709e488@fb.com>
+References: <20200821100226.403844-1-jakub@cloudflare.com>
+In-Reply-To: <20200821100226.403844-1-jakub@cloudflare.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 24 Aug 2020 14:44:28 -0700
-Message-ID: <CAADnVQ+tJkfr1LtzHC8F-A6WLpQHiFts1fmDcmyQ5qWiUrO_aQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] docs: correct subject prefix and update LLVM info
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+Date:   Mon, 24 Aug 2020 14:47:37 -0700
+Message-ID: <CAADnVQKm8nQsTVamtNZbSJz0feezdLk=vYKitp_zjT02TV9ejw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: sk_lookup: Add user documentation
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, Song.Zhu@arm.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 11:23 PM Yonghong Song <yhs@fb.com> wrote:
+On Fri, Aug 21, 2020 at 3:02 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
+> Describe the purpose of BPF sk_lookup program, how it can be attached, when
+> it gets invoked, and what information gets passed to it. Point the reader
+> to examples and further documentation.
 >
->
-> On 8/20/20 10:28 PM, Jianlin Lv wrote:
-> > bpf_devel_QA.rst:152 The subject prefix information is not accurate, it
-> > should be 'PATCH bpf-next v2'
-> >
-> > Also update LLVM version info and add information about
-> > =E2=80=98-DLLVM_TARGETS_TO_BUILD=E2=80=99 to prompt the developer to bu=
-ild the desired
-> > target.
-> >
-> > Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
->
-> Acked-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 
-Applied. Thanks
+Applied to bpf-next. Thanks
