@@ -2,121 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7832500B0
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 17:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B56A2500CD
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 17:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgHXPPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 11:15:54 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16908 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725890AbgHXPP1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 24 Aug 2020 11:15:27 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07OFBSec004840;
-        Mon, 24 Aug 2020 08:15:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=UyHqqEEy3gnYP7OdzbYiM1LXmWkzBpZxaiRCknfLk8E=;
- b=l6DNahOLkft1h5qvz5XYRcxsfdGo36KiWD62AOrKIKEpDqZSKvFCbzsUrOkdnHZl//xM
- 2a1/zlb5oWKirjHGvUePQKVNdDJo3eoF7x973aBLY9innL5NVeyPkaD7NyRFr4Uw9evp
- ZrTDO0SrBuAxgBvwi3Hys5lsgzUW2f4XnPA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 333ke6d4w3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 24 Aug 2020 08:15:09 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 24 Aug 2020 08:15:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1tFL+RUQJpU9TL9WIC1nmf3AnQe6Kz2K08mz+l43h6524m3vMwGCrTip7cOpIKi+EYA5U8Y0axyW2A0zPyhL9XCOxccygv3p1eKNQk/t32BWwAtigYPXg/wCMApHiYlt7agXhFbXxy8x+PryonsRl6DoJsead7xgFgH/mTY0hgMF+bbbKEKTM/DzIqAHgC76N4Z09khacVunS4FZvRkdtyCVN/9nl6v72wr/6efvAW245Les9hmVDU3p5jhQbLU8NVE+05GHuXM+fzmD2/QXJ0lEOgVmW2Qihc565AdcmhNt5ZaQ98344Dpr9R0lppqqrrqhXyEzbsKMcD3Hl6LJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UyHqqEEy3gnYP7OdzbYiM1LXmWkzBpZxaiRCknfLk8E=;
- b=Fqj7IVU6U1C2TI3TYYlJm/8s4igxjLUs3M4+v1J2ZBVU5Xrao2uzdnLUgBVnvXRMHa3JZeD/gQldbk+eRC8m4wVr7HfzpiTU0NLnHi2PeYM04tIzhlyjiykv6ggF3cQ3BXLp0jPfQoK4W3fGh+tXv28kXS2MUdu58UaoEytwgvwpyvN2xpYvMxSPxC/jwStZN11jPsFd8SIk60ZjbMF8+GpaEP1/SGztM0KuQbmlOAlPl9Q0pAFRoEQpYb7FiXL9bGSNPHR0ztM/Xeyny/NBfis1BVg/pvcRZZzwVetFdzuSA2qIuDV+dK7uSy2II1gqb/HkPL/moKNro7Xv38ecYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UyHqqEEy3gnYP7OdzbYiM1LXmWkzBpZxaiRCknfLk8E=;
- b=dpqC4cMHcbvFLy1mN8wjgLkL1P69TcPNOxUa5SoSskr9W/UYux/qn8TzYLzAjImzeUxHvaNxXVig3uKfWoZ0G2LMfDCtT1YktuHW6ewlwUmYTbWqeEPND1TA3aMzKzmj1As7lqxpb8vxuD673xCktTYYZ3vlU2tziYrYZ2dkuyI=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3255.namprd15.prod.outlook.com (2603:10b6:a03:107::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Mon, 24 Aug
- 2020 15:15:06 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3305.026; Mon, 24 Aug 2020
- 15:15:06 +0000
-Subject: Re: [PATCH bpf-next] selftests: bpf: fix sockmap update nits
-To:     Lorenz Bauer <lmb@cloudflare.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     <bpf@vger.kernel.org>, <kernel-team@cloudflare.com>
-References: <20200824084523.13104-1-lmb@cloudflare.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <f984a088-e9d2-7fbe-dccc-d732f924467a@fb.com>
-Date:   Mon, 24 Aug 2020 08:15:02 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-In-Reply-To: <20200824084523.13104-1-lmb@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR16CA0046.namprd16.prod.outlook.com
- (2603:10b6:208:234::15) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1727943AbgHXPVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 11:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727939AbgHXPUk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 11:20:40 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3FCC061575
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 08:20:35 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b16so9043553ioj.4
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 08:20:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zeC/aDefrZoTzvg9rlHaO0UB/IBG2UmhhL24I87SS1Q=;
+        b=N4ZRpOGMnhvYWQQG+jl12Q/BjcjWCSKU+SK+vib9BkSRL3Ye0gtU0sNoUGF3h+Ofkk
+         IBZQNkAkRvBj1MscZZFa117en/0+akhCSFECnMnHhx2t+yEr7Sefx0lfNOkbFzCTUkK4
+         d++7WouZ1kiRD89Z0wLpzixt1bOxGd0zJ+f9lbWG15GIkAca9hNKH84lhf4d4NcOeoYs
+         nyDa8Y9SdfxWnCiy9uUQc5+E8bCB+QbbWoAwW4WNsy+T/1iCpQBp561iU7goNJgJVfSu
+         O+NfZQxM7JBCsO/DSisTTsqz/eRudBzJRwnY2VO2FR3SUPk3/hljVhEqXMxXRxkEk7ag
+         FDlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zeC/aDefrZoTzvg9rlHaO0UB/IBG2UmhhL24I87SS1Q=;
+        b=JU/3jraQywjGr1FdgSErahvWKAl5oIvtsF0U9ktGT/a7Ah8EnySgLr7wOUwme3TPig
+         hmQRG0BF5TblJ1lcam8aGGBss5umykS2dXxLUt9vmiNRtVxB3H/uMZbOqSyvsLrbFTRC
+         /12F4dp62B8v2Dk4k2Ee0RdTo77ZbhuUFRPu8e3mdO27Hzp4U4lDhutV+WYYtgXZmIDr
+         SsyDVRXA55RHgJDKNF/L/0oVCfBuwoMwPjIsESKHUetOQS9cmWFz8E28cifvFRIpSPR5
+         I68vVuOcjMVYaYl2idVNoztwyfS77cS9ZjCUHkazsWK9AIzX9QAgx7nQA5gUjbXevTt7
+         RlEQ==
+X-Gm-Message-State: AOAM533T2Q8Sf8cUaDdekExn8AI61865kld4yjOaShR4CW0WsRVIK+w4
+        Q+zbpLGZ+RbsuLnXI1fMR7eMHfS/oK+mMT2hsa+++w==
+X-Google-Smtp-Source: ABdhPJy278YluTofu0sFJZY5pDSWm9saNVVAkhdL8U6wgVtI+kCshwIZnENHnc8l0A9enr9br7vWZBlVC3FTR30WgL4=
+X-Received: by 2002:a6b:9256:: with SMTP id u83mr5366174iod.194.1598282432748;
+ Mon, 24 Aug 2020 08:20:32 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by MN2PR16CA0046.namprd16.prod.outlook.com (2603:10b6:208:234::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25 via Frontend Transport; Mon, 24 Aug 2020 15:15:05 +0000
-X-Originating-IP: [2620:10d:c091:480::1:355e]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d1d0638d-7577-4594-f584-08d848407ba7
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3255:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3255213F7E395F72503C96B0D3560@BYAPR15MB3255.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jMfiywQQpe6sYEDM4LqITWew12Bc6x3GQnhdw2KwOAu9W0RkaoZENerDJCMlgOKfJkuARxebZKAEz8LCvI4KB/spqAQODnF0V3JgulDpZYEGqFoMC+DNErDEG9qZl1zwIZBM3y0i7slMFuTqdyN+ZhqE4Mv3vm8PJpJM9Nno5x7be0fTcJQGGwVli5tbdU26+fYb+HXyHsNRBD4drdP0K6F18EvQ1Pgfc8c3pL2c6I/etiBeuGduQ80KLVIW4USdTG5A+hDoM/AW2dfSf+nnWXquJeJuTutkDxV5duiiyQ4cBKp9kzASVB/Vq/aOqLYWjM2EVaLlCgR0ZzttOwP6jnjrGzo+Oi+w8G2URYBcKgWMNBUg83WA2gppVTdrKILP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(346002)(136003)(376002)(558084003)(16576012)(2906002)(4326008)(6486002)(36756003)(956004)(316002)(31696002)(2616005)(6666004)(5660300002)(8676002)(52116002)(66946007)(86362001)(8936002)(66476007)(478600001)(31686004)(53546011)(186003)(66556008)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: OLrA1bPf+q/oowX2epAWrkas0+3a8/u5LLE/2REOFdJlg99lBn5fqTvBGoKV2ek/zS9iwrOkWaM9i+ETwFi0JaLQLg96vHDBffbXIQGyK39WYIxx1YVFLhuTuIqRKbfPhcCRW/DdgRsAzQrFZA96zjI+Zt55i3EJbTE2pX+PMKVNwfUgZ2w5OLUBWgReC/hvfRLUQ75d6ZE3SNBbjGDfcELlJ65hWMNJ7KW6x0EHpVLhwJpTTEJo181KMa0Vt947s611lZE6gt4xM+JG2ygijpnBLNr7aN6LFXygZpjgaSbNGPuJmymSZ6Vpwgkr4Mgzhx5xx+36eYd0hE9MZdu3RaB8aahUnPz2KCYJUUDo574OlDrnCrNAqhtajFdBjkRwby4O6eORuntSYq1g9dU+C2SINBUAI6sau9KeGDZeNRjIBKbZZvXZqW6j3dzfqBFTZobhxI0cFsjI2+jqUbDJx0Rjz9vEcRdAQ5IxnxCfmKyC/olZy1AYXHHwSJalAv9aYYxesRHQckHRJTVq2qvKaCDXhqVCJk1DhRIZ7vmKOZZWZ14xoNWgnmRsa3S0ZZhjeIT+rmJdDUKUPBA+ZgtafkAsv2Yk26PrtLofxfCYnhggAsWel7F333rCQKMhydcAOFhOTF4CnKzrFx9uzvKF48Z8YD6wcdTfnAgBn5ms2PM=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1d0638d-7577-4594-f584-08d848407ba7
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2020 15:15:06.7344
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zB3Obx29LxEaA63dKnLyV6EZnMm4sErSeORjhtixlUdPmP0XUk5Xkvm7yM4j7gcn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3255
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-24_12:2020-08-24,2020-08-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 mlxscore=0
- bulkscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 adultscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 clxscore=1015
- mlxlogscore=955 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008240123
-X-FB-Internal: deliver
+References: <20200820164753.3256899-1-jackmanb@chromium.org> <42fb4180-772c-5579-ef3e-b4003e2b784b@schaufler-ca.com>
+In-Reply-To: <42fb4180-772c-5579-ef3e-b4003e2b784b@schaufler-ca.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Mon, 24 Aug 2020 17:20:21 +0200
+Message-ID: <CA+i-1C09YZ8aCr6p5NOA2e3Ji5TKwdET=qAy=M328NK--L=0RA@mail.gmail.com>
+Subject: Re: [RFC] security: replace indirect calls with static calls
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Brendan Jackman <jackmanb@chromium.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Paul Renauld <renauld@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        rafael.j.wysocki@intel.com, Kees Cook <keescook@chromium.org>,
+        thgarnie@chromium.org, KP Singh <kpsingh@google.com>,
+        paul.renauld.epfl@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, 21 Aug 2020 at 00:46, Casey Schaufler <casey@schaufler-ca.com> wrot=
+e:
+>
+> On 8/20/2020 9:47 AM, Brendan Jackman wrote:
+[...]
+> What does NOP really look like?
 
+The NOP is the same as a regular function call but the CALL
+instruction is replaced with a NOP instruction. The code that sets up
+the call parameters is unchanged, and so is the code that expects to
+get the return value in eax or whatever. That means we cannot actually
+call the static_calls for NULL slots, we'd get undefined behaviour
+(except for void hooks) - this is what Peter is talking about in the
+sibling thread.
 
-On 8/24/20 1:45 AM, Lorenz Bauer wrote:
-> Address review by Yonghong, to bring the new tests in line with the
-> usual code style.
-> 
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+For this reason, there are _no gaps_ in the callback table. For a
+given LSM hook, all the slots after base_slot_idx are filled, and all
+before are empty, so jumping to base_slot_idx ensures that we don't
+reach an empty slot. That's what the switch trick is all about.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+>
+> >                         if ret !=3D 0:
+>
+> I assume you'd want "ret !=3D DEFAULT_RET" instead of "ret !=3D 0".
+
+Yeah that's a good question - but the existing behaviour is to always
+check against 0 (DEFAULT_RET is called IRC in the real code),
+which does seem strange.
+
+> So what goes in for empty slots? What about gaps in the table?
+
+It's a NOP, but we never execute it (explained above). There are no gaps.
+
+>> +#define __UNROLL_MACRO_LOOP_20(MACRO, ...) \
+>> + __UNROLL_MACRO_LOOP_19(MACRO, __VA_ARGS__) \
+>> + MACRO(19, __VA_ARGS__)
+>> +
+> Where does "20" come from? Why are you unrolling beyond 11?
+
+It's just an arbitrary limit on the unrolling macro implementation, we
+aren't actually unrolling beyond 11 where the macro is used (N is set
+to 11).
+
+>
+> >   With this use of the table and the
+> > switch, it is possible to jump directly to the first used slot and exec=
+ute
+> > all of the slots after. This essentially makes the entry point of the t=
+able
+> > dynamic. Instead, it would also be possible to start from 0 and break a=
+fter
+> > the final populated slot, but that would require an additional conditio=
+nal
+> > after each slot.
+> >
+> > This macro is used to generate the code for each static slot, (e.g. eac=
+h
+> > case statement in the previous example). This will expand into a call t=
+o
+> > MACRO for each static slot defined. For example, if with again 5 slots:
+> >
+> > SECURITY_FOREACH_STATIC_SLOT(MACRO, x, y) ->
+> >
+> >       MACRO(0, x, y)
+> >       MACRO(1, x, y)
+> >       MACRO(2, x, y)
+> >       MACRO(3, x, y)
+> >       MACRO(4, x, y)
+> >
+> > This is used in conjunction with LSM_HOOK definitions in
+> > linux/lsm_hook_defs.h to execute a macro for each static slot of each L=
+SM
+> > hook.
+> >
+> > The patches for static calls [6] are not upstreamed yet.
+> >
+> > The number of available slots for each LSM hook is currently fixed at
+> > 11 (the number of LSMs in the kernel). Ideally, it should automatically
+> > adapt to the number of LSMs compiled into the kernel.
+>
+> #define SECURITY_STATIC_SLOT_COUNT ( \
+>         1 + /* Capability module is always there */ \
+>         (IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+>         (IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+>         ... \
+>         (IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0))
+>
+
+Yeah, that's exactly what we need but it needs to be expanded to an
+integer literal at preprocessor time, those +s won't work :(
+
+> > If there=E2=80=99s no practical way to implement such automatic adaptat=
+ion, an
+> > option instead would be to remove the panic call by falling-back to the=
+ old
+> > linked-list mechanism, which is still present anyway (see below).
+> >
+> > A few special cases of LSM don't use the macro call_[int/void]_hook but
+> > have their own calling logic. The linked-lists are kept as a possible s=
+low
+> > path fallback for them.
+>
+> Unfortunately, the stacking effort is increasing the number of hooks
+> that will require special handling. security_secid_to_secctx() is one
+> example.
+>
+> >
+> > Before:
+> >
+> > https://gist.githubusercontent.com/PaulRenauld/fe3ee7b51121556e03c18143=
+2c8b3dd5/raw/62437b1416829ca0e8a0ed9101530bc90fd42d69/lsm-performance.png
+> >
+> > After:
+> >
+> > https://gist.githubusercontent.com/PaulRenauld/fe3ee7b51121556e03c18143=
+2c8b3dd5/raw/00e414b73e0c38c2eae8f05d5363a745179ba285/faster-lsm-results.pn=
+g
+> >
+> > With this implementation, any overhead of the indirect call in the LSM
+> > framework is completely mitigated (performance results: [7]). This
+> > facilitates the adoption of "bpf" LSM on production machines and also
+> > benefits all other LSMs.
+>
+> Your numbers for a system with BPF are encouraging. What do the numbers
+> look like for a system with SELinux, Smack or AppArmor?
+
+Yeah that's a good question. As I said in the sibling thread the
+motivating example is very lightweight LSM callbacks in very hot
+codepaths, but I'll get some broader data too and report back.
