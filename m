@@ -2,105 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539302501B0
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 18:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408CF2502EC
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 18:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgHXQGN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 12:06:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47756 "EHLO mail.kernel.org"
+        id S1728386AbgHXQhr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 12:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgHXQGM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 12:06:12 -0400
-Received: from coco.lan (unknown [95.90.213.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728044AbgHXQgx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 12:36:53 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D10B92072D;
-        Mon, 24 Aug 2020 16:06:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0AA522B49;
+        Mon, 24 Aug 2020 16:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598285171;
-        bh=03hAu4nRPFwVwIO4v5NWL3jE+EDhR0ft7Y0oPd1gP0w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=y7swRGyvuvKiCu9/nrs1SXr8C+kHHYOQrQUSAJjGAjyfAkO2vlAob2lP+2GvOiVv3
-         Pt1iO8jmNElYCkalrWgU0wwBm1cz8FdwsHljARxYM9slVfU3ws0JegC3Brl+1hW/zf
-         NjcQkkkNKRa79YYaPTJPVie4PrwlTYTaf84FyRb4=
-Date:   Mon, 24 Aug 2020 18:06:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        devel@driverdev.osuosl.org, Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Xiubin Zhang <zhangxiubin1@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>, David Airlie <airlied@linux.ie>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        Liwei Cai <cailiwei@hisilicon.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
+        s=default; t=1598286988;
+        bh=elLIwk+vXIz3X/dNZdhcxZlWgo/Xj0p8DfSj9gycQNg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yCWE7NgoqdSuzd+hE9k0yfjNDrsSkvYlqJaZpwuWXOralpziX4+Pw3xzIfTfZMLPV
+         KILJ1ucjxj+ikjztHMvVGhftJJpqICCqcopL7Sbk1bUxNlxgM7Rb+C1qxXAxHa376Q
+         OTDoCVxuuOBCNdJXfsUveCayvZrNtc4Zsl0rkumE=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        linaro-mm-sig@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, mauro.chehab@huawei.com,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Liuyao An <anliuyao@huawei.com>,
-        Rongrong Zou <zourongrong@gmail.com>, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
-Message-ID: <20200824180601.192adc3b@coco.lan>
-In-Reply-To: <20200821155650.GB300361@ravnborg.org>
-References: <cover.1597833138.git.mchehab+huawei@kernel.org>
-        <20200819152120.GA106437@ravnborg.org>
-        <20200819174027.70b39ee9@coco.lan>
-        <20200819173558.GA3733@ravnborg.org>
-        <20200821164158.22777f95@coco.lan>
-        <20200821155650.GB300361@ravnborg.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 61/63] bpf: selftests: global_funcs: Check err_str before strstr
+Date:   Mon, 24 Aug 2020 12:35:01 -0400
+Message-Id: <20200824163504.605538-61-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200824163504.605538-1-sashal@kernel.org>
+References: <20200824163504.605538-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, 21 Aug 2020 17:56:50 +0200
-Sam Ravnborg <sam@ravnborg.org> escreveu:
+From: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 
-> Hi Mauro.
-> 
-> On Fri, Aug 21, 2020 at 04:41:58PM +0200, Mauro Carvalho Chehab wrote:
-> > Another quick question:
-> > 
-> > Em Wed, 19 Aug 2020 19:35:58 +0200
-> > Sam Ravnborg <sam@ravnborg.org> escreveu:
-> >   
-> > > > +#define DSS_REDUCE(x)	((x) > 0 ? ((x) - 1) : (x))    
-> > > Use generic macros for this?  
-> > 
-> > Do you know a generic macro similar to this? Or do you mean adding
-> > it to include/kernel.h?  
-> 
-> It looked like something there should be a macro for.
-> But I do not know one.
-> 
-> And no, do not try to go the kernel.h route on this.
-> At least not until you see more than one user.
+[ Upstream commit c210773d6c6f595f5922d56b7391fe343bc7310e ]
 
-Yeah, adding this to kernel.h just for a single usage is overkill. I would
-be expecting that a non-underflow decrement logic is something that 
-would be used on other places at the Kernel, but identifying this
-pattern would require some time. Maybe Kernel janitors could write some
-coccinelle script to replace similar patterns like that into some
-macro in the future.
+The error path in libbpf.c:load_program() has calls to pr_warn()
+which ends up for global_funcs tests to
+test_global_funcs.c:libbpf_debug_print().
 
-Thanks,
-Mauro
+For the tests with no struct test_def::err_str initialized with a
+string, it causes call of strstr() with NULL as the second argument
+and it segfaults.
+
+Fix it by calling strstr() only for non-NULL err_str.
+
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20200820115843.39454-1-yauheni.kaliuta@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/bpf/prog_tests/test_global_funcs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+index 25b068591e9a4..193002b14d7f6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+@@ -19,7 +19,7 @@ static int libbpf_debug_print(enum libbpf_print_level level,
+ 	log_buf = va_arg(args, char *);
+ 	if (!log_buf)
+ 		goto out;
+-	if (strstr(log_buf, err_str) == 0)
++	if (err_str && strstr(log_buf, err_str) == 0)
+ 		found = true;
+ out:
+ 	printf(format, log_buf);
+-- 
+2.25.1
+
