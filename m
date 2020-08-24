@@ -2,97 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4932124F91A
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 11:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B163924F90D
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 11:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbgHXIpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 04:45:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36739 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729195AbgHXIpC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 04:45:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598258698;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=amlNRwZzjLO8LRoaaNfqHXc/ssKxKn18rqfsvwULgxs=;
-        b=Jqb3NZZZGUvK+GTDxTGnVDfDVmtVPRc1uhxl40yHsEG24UQ3TB0kFBlpbGzT4EhxnLgixN
-        31B+elIcJJpHZ0mjsrRU04vfP5tN/mDumzA6/KAeOclfV7WhtEVXPMef/s5/x38WtYCj2P
-        6XoV+iumy98gyfYsLmv42m7zrE2ypyU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-220-q5Pr61WHOHa60e1SKBA16w-1; Mon, 24 Aug 2020 04:44:54 -0400
-X-MC-Unique: q5Pr61WHOHa60e1SKBA16w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9EC01007462;
-        Mon, 24 Aug 2020 08:44:52 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.64])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8161B197E5;
-        Mon, 24 Aug 2020 08:44:43 +0000 (UTC)
-Date:   Mon, 24 Aug 2020 10:44:42 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <lorenzo.bianconi@redhat.com>, <echaudro@redhat.com>,
-        <sameehj@amazon.com>, <kuba@kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH net-next 1/6] xdp: introduce mb in xdp_buff/xdp_frame
-Message-ID: <20200824104442.023bdd11@carbon>
-In-Reply-To: <pj41zlft8dsbdt.fsf@u68c7b5b1d2d758.ant.amazon.com>
-References: <cover.1597842004.git.lorenzo@kernel.org>
-        <c2665f369ede07328bbf7456def2e2025b9b320e.1597842004.git.lorenzo@kernel.org>
-        <pj41zlft8dsbdt.fsf@u68c7b5b1d2d758.ant.amazon.com>
+        id S1728433AbgHXJkj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 05:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729251AbgHXIpp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 04:45:45 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A23C061573
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 01:45:45 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x5so7513082wmi.2
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 01:45:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kr1c3haT1yhxfl33XmTaSeXi33h/k6BkkvRpBNN6lwQ=;
+        b=MB9S7b84pla+BcD84lZT3P3lcWv5hFKe/OmZWr/j6lT3iPORefJiqMEKXuN0fjX0xo
+         ND+USgWsApxiI9xGI2VhDWpIYbX/HiS74u8N7aHlhlcrts7l/eBG5rGzARwbAzT99Wyi
+         HUPOiI6wQa8vHsP3vDYKDT2SOHe8XPwliUqhg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kr1c3haT1yhxfl33XmTaSeXi33h/k6BkkvRpBNN6lwQ=;
+        b=ONcsfcSj+AFHxllvDtD8OW7FTdWMEsRsJvRNBYMaGJHLIJlDuPNsHGt1TWQUZ1nt1J
+         dwWJpYSy3+vDQFVzgIwWIzi5x5x9qoUh8FkW7dhh7n3vSvspdNsx77b/aIe+oXQNUzdN
+         E0ruNHOlDFUK+KGqinQQdkt1e9VOUMdVbxOpo68QO2wk+IIrd/uDe2rIKyRxdGMVxOlD
+         XQaL2DVQeQu0ZzfDzhktSgsJhUF8TKHr/+4qyXLDx+Dv24tynTDEZFUs5kzok4hxbVfo
+         98C0OzFV/xF9kLuD1hkKbRKDxKS+aezeTvrhHhjtjMvN++dsU9v8XuxD0a87WZDcNHQX
+         mZyQ==
+X-Gm-Message-State: AOAM5322jFMGl1iZ1ePC1Uvd9fL7sfqgK9cIJlg/qRO8tCo90HZ7d0qo
+        HuHdsEVexv0OqWvcHk4RBgzRog==
+X-Google-Smtp-Source: ABdhPJx8dImHvW2WWOV9cX7FzTbLm1HFOCVVN/8wMcBEsm4gnokQEx+mxngPfhEVF1w1Nmd0+jGx+g==
+X-Received: by 2002:a1c:818e:: with SMTP id c136mr4802397wmd.170.1598258744015;
+        Mon, 24 Aug 2020 01:45:44 -0700 (PDT)
+Received: from antares.lan (f.b.d.5.c.0.0.9.c.8.0.f.d.9.d.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:d9d:f08c:900c:5dbf])
+        by smtp.gmail.com with ESMTPSA id t70sm40377848wmt.3.2020.08.24.01.45.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Aug 2020 01:45:43 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf-next] selftests: bpf: fix sockmap update nits
+Date:   Mon, 24 Aug 2020 09:45:23 +0100
+Message-Id: <20200824084523.13104-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 23 Aug 2020 17:08:30 +0300
-Shay Agroskin <shayagr@amazon.com> wrote:
+Address review by Yonghong, to bring the new tests in line with the
+usual code style.
 
-> > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > index 3814fb631d52..42f439f9fcda 100644
-> > --- a/include/net/xdp.h
-> > +++ b/include/net/xdp.h
-> > @@ -72,7 +72,8 @@ struct xdp_buff {
-> >  	void *data_hard_start;
-> >  	struct xdp_rxq_info *rxq;
-> >  	struct xdp_txq_info *txq;
-> > -	u32 frame_sz; /* frame size to deduce 
-> > data_hard_end/reserved tailroom*/
-> > +	u32 frame_sz:31; /* frame size to deduce 
-> > data_hard_end/reserved tailroom*/
-> > +	u32 mb:1; /* xdp non-linear buffer */
-> >  };
-> >  
-> >  /* Reserve memory area at end-of data area.
-> > @@ -96,7 +97,8 @@ struct xdp_frame {
-> >  	u16 len;
-> >  	u16 headroom;
-> >  	u32 metasize:8;
-> > -	u32 frame_sz:24;
-> > +	u32 frame_sz:23;
-> > +	u32 mb:1; /* xdp non-linear frame */  
-> 
-> Although this issue wasn't introduced with this patch, why not 
-> make frame_sz field to be the same size in xdp_buff and xdp_frame 
-> ?
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ .../testing/selftests/bpf/prog_tests/sockmap_basic.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-This is all about struct layout and saving memory size, due to
-cacheline access. Please read up on this and use the tool pahole to
-inspect the struct memory layout.
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+index 65ce7c289534..0b79d78b98db 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+@@ -118,10 +118,8 @@ static void test_sockmap_update(enum bpf_map_type map_type)
+ 		return;
+ 
+ 	skel = test_sockmap_update__open_and_load();
+-	if (CHECK(!skel, "open_and_load", "cannot load skeleton\n")) {
+-		close(sk);
+-		return;
+-	}
++	if (CHECK(!skel, "open_and_load", "cannot load skeleton\n"))
++		goto close_sk;
+ 
+ 	prog = bpf_program__fd(skel->progs.copy_sock_map);
+ 	src = bpf_map__fd(skel->maps.src);
+@@ -158,8 +156,9 @@ static void test_sockmap_update(enum bpf_map_type map_type)
+ 	      dst_cookie, src_cookie);
+ 
+ out:
+-	close(sk);
+ 	test_sockmap_update__destroy(skel);
++close_sk:
++	close(sk);
+ }
+ 
+ static void test_sockmap_invalid_update(void)
+@@ -168,8 +167,7 @@ static void test_sockmap_invalid_update(void)
+ 	int duration = 0;
+ 
+ 	skel = test_sockmap_invalid_update__open_and_load();
+-	CHECK(skel, "open_and_load", "verifier accepted map_update\n");
+-	if (skel)
++	if (CHECK(skel, "open_and_load", "verifier accepted map_update\n"))
+ 		test_sockmap_invalid_update__destroy(skel);
+ }
+ 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.25.1
 
