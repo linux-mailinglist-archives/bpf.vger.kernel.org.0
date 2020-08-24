@@ -2,75 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD286250B26
-	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 23:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268D0250B2C
+	for <lists+bpf@lfdr.de>; Mon, 24 Aug 2020 23:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgHXVvd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Aug 2020 17:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
+        id S1726519AbgHXVxN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Aug 2020 17:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgHXVvd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Aug 2020 17:51:33 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9486FC061574;
-        Mon, 24 Aug 2020 14:51:32 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v9so11446210ljk.6;
-        Mon, 24 Aug 2020 14:51:32 -0700 (PDT)
+        with ESMTP id S1726090AbgHXVxM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Aug 2020 17:53:12 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49695C061574
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 14:53:11 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 185so11439969ljj.7
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 14:53:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=73V1VGeqSaeMpk3jSWcbtFWTB3xSFqOLFDIQrBzJHB4=;
-        b=JUkpj9lOLk5bi744jOFwiIuL9/BCz0bQtDhWWNv+bTs+9K0g/JH7wfSXi4LpAKRM9g
-         OaJjt49b9w0UR/WayZ/euGfqrfqbYe83u23geuCRocTOOCGhfLKh3ftBqrbWsD5NShdX
-         hwzCAEJjJNq0yXj+SVymGyukDOxPJlqDjistNklp1ElzUNGlSEyjNRlrIugr/dslNKw5
-         om67BgDtpzVaEB+sgcDEpj8lcAqAsRmelbKMRfcIjBv8R04ceWJZMRGdVEb1mUit0/av
-         fns9QFWD80OJcWoyRk6uxVXQki52jBFFNk+8ON374VqnFHHCwizZUohun+tPWjLQIO0y
-         XC9g==
+        bh=yVVUmUEjhUlTVb7b1BdMdHWnhjIy/SevSrF8qGz65ng=;
+        b=o+OdpBbEhdzAxMov+FELlKO556B6WXJyb4EkRHX86H7JsZ3KVUpALEgYhb4gmQfLg6
+         1Mpsc1guQYqpt3WKQsW24lm8I9WyO8RehH0FIC1Vx5FbLwjIlH2rEjKaBdLrI+Hkz9dV
+         yqZNmjinoDwXIjde+/LkhrU4HBFPbIuOvxvdlL4bw937cyZfvHRj6MettSs4YUL6jc9p
+         gvyFNXAIDBhXtgWqYuRrXfMGGcw2zsH1Vxd6AzGA9HooLDgSUE2CPi2Bql8PneIdvCoF
+         gsnRXmCzEm5Tin5lToopJzDYt27lIn2ZzLbJu0kt9KvGI5o4Txf8+dtta5CoWyliFqKr
+         5lDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=73V1VGeqSaeMpk3jSWcbtFWTB3xSFqOLFDIQrBzJHB4=;
-        b=PKvkQeIfYA+72yZbIie5Uc5t5HeePDyKCVX/n/kA9vGhsWu7ZBqsg+kPfB02gz7nJt
-         6OCiIJlVUqyXeSYgCUArkqAUZirNQDXlIFPONKwFg//rK36/03Jissku5+HhRvkpfPEv
-         HHCKSEli9aQX0SRiwuxCvt5XHVEmN75N0DiRvMW/L8jh9ZE7OtNeDE/ro4HGzxWkrjef
-         +Hf9OQLtduBRU9GM+WR4ZAU2m2aLos42/bQOm0xUHInFn4xR8o6e+BEZn4hS6DyNge5y
-         poGD5YDp6S2MoqyuzEvpxJLLRvBBlCdzqWT2A1LG7RuLkbzQxG9ZmMsSw1Isz0rQ8msK
-         btKQ==
-X-Gm-Message-State: AOAM531tITnEdLjE19bUQPV0/5FNsVkj6YIaNwRqf/ihH1Hg1N5x1QJx
-        4uPpXjB0pFSTiD5DGxr0e21LzKx/N1d4cqYY72o=
-X-Google-Smtp-Source: ABdhPJzuUFNMMXArYzyt+hOfzgaM5xK39foOc9q2RwyY1tHHB3PdTegQ41iY94rV1kzJSN4GEBXphFwKnjr1mWdad7M=
-X-Received: by 2002:a2e:b6cd:: with SMTP id m13mr3608921ljo.91.1598305891084;
- Mon, 24 Aug 2020 14:51:31 -0700 (PDT)
+        bh=yVVUmUEjhUlTVb7b1BdMdHWnhjIy/SevSrF8qGz65ng=;
+        b=O6ABbYPlFc8vBSveY5Abl8YpPUzxbw4RvcNqQjmUI4CkgXcNGkOlnk+852lPFv/t+O
+         t3ow2yzEr3zl3/K5nrSFxjqOAIEL3+pBCjgmd8a5w6gqOgaT1GOja8szm8lwgpNyHy5d
+         dLeUasjYPXr/OwiGbS+OS4/bgqLd9d6paTL4z2Ywa8O1bcJ5+756eVsxueHbPSZ4oIr/
+         Zg9J8FEhPqFxk6Se2KqiqkntJGM2baf1HEBhhACO8co7pThV+KNJ/JB+cBCRzc5joNWS
+         /xze+2iBuVKU2jGVvpShNgYXYo+S+1I84SVOMcTfxRkAvq0IRzefJ148oVKL0IqaAjtc
+         CNeQ==
+X-Gm-Message-State: AOAM5303jId8GJZV8qTyfL6QquG1RQPEQkVpmmvLIuU4ehW4qKcnY0q1
+        plNEcagiLvl3dOX1qCBvr+BOI61JPiUWOd72utY=
+X-Google-Smtp-Source: ABdhPJy3P++YK6I/Fp5DSpI9EStMIsza0SfbrTZ4LJcsIXA+ItSX0rCLdQxfI5XF4GU38oi5lUIIYVLamS1CEPYuNJY=
+X-Received: by 2002:a2e:a489:: with SMTP id h9mr3595424lji.121.1598305989792;
+ Mon, 24 Aug 2020 14:53:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200821225653.2180782-1-andriin@fb.com>
-In-Reply-To: <20200821225653.2180782-1-andriin@fb.com>
+References: <20200824084523.13104-1-lmb@cloudflare.com> <f984a088-e9d2-7fbe-dccc-d732f924467a@fb.com>
+In-Reply-To: <f984a088-e9d2-7fbe-dccc-d732f924467a@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 24 Aug 2020 14:51:19 -0700
-Message-ID: <CAADnVQL8rkUUTTRhjhVUDNTcoWq5Wxxg8ajTpu-OqBgvAqXryg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix type compatibility check copy-paste error
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Mon, 24 Aug 2020 14:52:58 -0700
+Message-ID: <CAADnVQKbO2Lcho1b3DfLLq2j4AgVpvumxhT0e6ceZ13HBMOLqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests: bpf: fix sockmap update nits
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 4:00 PM Andrii Nakryiko <andriin@fb.com> wrote:
+On Mon, Aug 24, 2020 at 8:15 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Fix copy-paste error in types compatibility check. Local type is accidentally
-> used instead of target type for the very first type check strictness check.
-> This can result in potentially less strict candidate comparison. Fix the
-> error.
 >
-> Fixes: 3fc32f40c402 ("libbpf: Implement type-based CO-RE relocations support")
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> On 8/24/20 1:45 AM, Lorenz Bauer wrote:
+> > Address review by Yonghong, to bring the new tests in line with the
+> > usual code style.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
 
 Applied. Thanks
