@@ -2,84 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B719251052
-	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 06:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5150C251056
+	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 06:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgHYELV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 00:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
+        id S1726351AbgHYEPB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 00:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726230AbgHYELU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 00:11:20 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712D9C061574
-        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 21:11:20 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v12so12156092ljc.10
-        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 21:11:20 -0700 (PDT)
+        with ESMTP id S1725881AbgHYEPA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Aug 2020 00:15:00 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FFBC061574;
+        Mon, 24 Aug 2020 21:15:00 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v4so12201678ljd.0;
+        Mon, 24 Aug 2020 21:15:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NwokDsIoZ7MyMVX4nKfaKe/JJKsexYPW4SZq7cgaJ5s=;
-        b=HE3sI9+J0QCTMakq9KkmJSIlQT6ibge2NL1Q9YndIYAJj1qpC2x/XvUoI2c4iLnulw
-         zT1QjT6mIqBS04n5euFInP6iZka6gOraRcmLXpYYns05MNZJG6P8za5t1EHfREB+roMH
-         OzBM8vfMiLDPBY0+JNQinEEDVWNG0BYX3/Tyoo0W2pZh8lExSOIIJt0nD4rF/tn0m9Nk
-         lBzGRZhkOqMKnoiThRhYjiScaNB6z+jYFPmTvujlKCrf6kg+MR1IS/jrO+lV5rmLBmRa
-         tAizOEb4bJ89MA+4FRrxeukUHAKz1YiiSoJyLbbx47vDfWKTjxknlVmLMaBHS4opW3sc
-         yrIA==
+        bh=jixWM/zIS64nCGA1U6cQ5Pjeg1UMIki8HoUmWtXeAkY=;
+        b=LzxRELyEGRsgbX7kBwy/PssngmffqOYu4iwz/HiL7qUN0lGC1lQpXAOQXz+F2cLbN0
+         YHc+wPiPHwEpfqaNauQ5o4ltyHIGFbSfutkjrkPV0rBGEY7xNZu6Kn9JB/B6gClEJoK9
+         EknibguIdT50J825b2y09+8efYzZb9WBWcBq2MM52XPFqIXoNi0KHHeEba1UZx0Mheqg
+         DDF77qKfcFEGzkWx/NA6OLVyQHADQH7sNJUy5Mv/H3HzFYqiruZiOipm+qwuaY0K2Qvs
+         AcIXw9RNcT+qymzl5fS604sk9dVmFarjAPCMpjyEQCoIGBSv6t9ByEb0dJOh/K0GckqY
+         8DsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NwokDsIoZ7MyMVX4nKfaKe/JJKsexYPW4SZq7cgaJ5s=;
-        b=Ah96Z9XaesmlRLNCge4EGM0Dv/a55FS8CSkQJmZL6xYQncNxyL4xgpaPgbt6PbIm7P
-         /HP4B+CdT5uLVSIRD2KezyidFyyJRkSYhJmEMclg6pxCaL6N8XEm2jU/dUACvwF11aq+
-         EHxB8Vb1JsRWsqypBYnRh52CSOY9l/mfZpjzbTUAoYuqQG4aQnieqEFhh7MCvy7s1+/8
-         MoHPqQSICHrdUsM6UixTnNEgkYhCwjXKXfEL4x8UZmS+3jBlKqGg+QVR99oGGdNbVlpO
-         9f4cK14OEmS02mCm7qKOdiuZC4jN/DgO7m3R1zAc8FSoj3BESwgGNkZF8nQJhIYq5kqd
-         cU9Q==
-X-Gm-Message-State: AOAM5337HIHp+IGHu2dChTUiZxCdd0zo7jKFNWSSYxiCMcNh2CXauv0W
-        uXdIPanMQcZop+DcXoYyHjmBmdXkv7lRGUpfKkLfDMOS
-X-Google-Smtp-Source: ABdhPJwYPA5Wwbsn5Bsl6VmK18xC/z5pn3c8d1ZtRWoDKz9MtYtQiinjDCeKz1nTDTs2Ijq9ILdsZ6wSmxaqAYY4vXw=
-X-Received: by 2002:a2e:b6c3:: with SMTP id m3mr4068027ljo.450.1598328678873;
- Mon, 24 Aug 2020 21:11:18 -0700 (PDT)
+        bh=jixWM/zIS64nCGA1U6cQ5Pjeg1UMIki8HoUmWtXeAkY=;
+        b=ijuFBK3xspbB07EpAaFeKDJW3s0uZUkHFLSip44SUwcsVqhN80paCLhbG2JPCArSfD
+         MT7EohsM1fxoEGFdY+80H8V1UrpyVopiuJLl+zt8Y3ZU8vWCVVhgNtfc6OThzsce4lUC
+         KJqVunHP5kL0c1/dwyot8nA5W21Olyw6cGJQrwchcKMhWpMGRKixv736pdrvuOEg7f91
+         oTG9bpSx6Eln2/DS16kaLFdcQhtWs/ctNAZOjUpZ/pVbQwLNITWhMAKxPC3mOzS0V1eR
+         FUqWIRr1c+k6OR/HOIq3zziSfHRratZjoKulZCY7kFKslviTwN5nzBLNbgUHOPrPUwo5
+         FvEw==
+X-Gm-Message-State: AOAM532fdspo12FGu1+oGlxTNbUpSfXOiQ14gfW+Q9A8a7Hkvx/6p7Zr
+        FQ0L2nJ3zZruy4lrNgky2MpxNz3C7rnwOhOtsrk0539M
+X-Google-Smtp-Source: ABdhPJyV58Ym6HhdUQZ/BWmsotzvFYsy+cyju8w+pTPKc/vxJ20Gec2Un+mVQhPM4VCVQZN++dBlhpHzS3ju44BJo8Y=
+X-Received: by 2002:a2e:4e09:: with SMTP id c9mr4104057ljb.283.1598328898606;
+ Mon, 24 Aug 2020 21:14:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <159827024012.923543.7104106594870150597.stgit@firesoul>
-In-Reply-To: <159827024012.923543.7104106594870150597.stgit@firesoul>
+References: <20200824142047.22043-1-tklauser@distanz.ch>
+In-Reply-To: <20200824142047.22043-1-tklauser@distanz.ch>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 24 Aug 2020 21:11:07 -0700
-Message-ID: <CAADnVQLd5jZaCJsAbLKautedAA298uydZNY0GH0bXCQ_K=gNgg@mail.gmail.com>
-Subject: Re: [PATCH bpf V2] selftests/bpf: Fix test_progs-flavor run getting
- number of tests
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
+Date:   Mon, 24 Aug 2020 21:14:47 -0700
+Message-ID: <CAADnVQJ6g_ZYS-wQ-FN6p4X=MoVu65Qe_=-5O3eh-K_jB=kCCQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf, sysctl: let bpf_stats_handler take a kernel
+ pointer buffer
+To:     Tobias Klauser <tklauser@distanz.ch>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 4:57 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
+On Mon, Aug 24, 2020 at 7:20 AM Tobias Klauser <tklauser@distanz.ch> wrote:
 >
-> Commit 643e7233aa94 ("selftests/bpf: Test_progs option for getting number of
-> tests") introduced ability to getting number of tests, which is targeted
-> towards scripting.  As demonstrate in the commit the number can be use as a
-> shell variable for further scripting.
+> Commit 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
+> changed ctl_table.proc_handler to take a kernel pointer. Adjust the
+> signature of bpf_stats_handler to match ctl_table.proc_handler which
+> fixes the following sparse warning:
 >
-> The test_progs program support "flavor", which is detected by the binary
-> have a "-flavor" in the executable name. One example is test_progs-no_alu32,
-> which load bpf-progs compiled with disabled alu32, located in dir 'no_alu32/'.
+> kernel/sysctl.c:226:49: warning: incorrect type in argument 3 (different address spaces)
+> kernel/sysctl.c:226:49:    expected void *
+> kernel/sysctl.c:226:49:    got void [noderef] __user *buffer
+> kernel/sysctl.c:2640:35: warning: incorrect type in initializer (incompatible argument 3 (different address spaces))
+> kernel/sysctl.c:2640:35:    expected int ( [usertype] *proc_handler )( ... )
+> kernel/sysctl.c:2640:35:    got int ( * )( ... )
 >
-> The problem is that invoking a "flavor" binary prints to stdout e.g.:
->  "Switching to flavor 'no_alu32' subdirectory..."
-> Thus, intermixing with the number of tests, making it unusable for scripting.
->
-> Fix the issue by only printing "flavor" info when verbose -v option is used.
->
-> Fixes: 643e7233aa94 ("selftests/bpf: Test_progs option for getting number of tests")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Fixes: 32927393dc1c ("sysctl: pass kernel pointers to ->proc_handler")
+> Cc: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 
 Applied. Thanks
