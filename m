@@ -2,124 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9A52523F7
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 01:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FB925240A
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 01:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726356AbgHYXG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 19:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726542AbgHYXG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 19:06:27 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7837DC061574;
-        Tue, 25 Aug 2020 16:06:27 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id s9so7356162lfs.4;
-        Tue, 25 Aug 2020 16:06:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=m0w8/C3nNNWhHiTFS/rLyqNqZLaFpdzhoabKoFBS2uI=;
-        b=Q26eCIigSXd1oH5D+9cCHLgFf82+zbrRPxkSf2Xh+wXySoUbi8eTxScnvJJYhCcV0l
-         6OGnEABE51iIe970xzA6i4bAxcVuOmaBWDk5S6h1r7Xnjp/qnfp7Fj046UmOmbDfW6mh
-         SXAylNPlL+2Y2bTGKZjxevOBudI1GmKCqvc1joD67eYvw/B5z5IW1NtxjXQ7kqm8b1KU
-         Z8MFOEt+08U6L6Gv7LjVjx6vyqX1rTVOjB0GYEcsySMnTKF4vGJ6cYmAcAgROyJHv61u
-         c+fbzOp7/l2mjrjbZn5TfgG/rjMTSbSMH4XQOpaX2bmsmTKOYl2Rkwi1jRKfnEKXUxHL
-         QRTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m0w8/C3nNNWhHiTFS/rLyqNqZLaFpdzhoabKoFBS2uI=;
-        b=lChl+z5usoJeuuJNP05U8xZmbOrxo3hwz5BjwepCo1HiKKgr3OQzlhEoxj3qWgxoGq
-         AKZr8fN4dcG6GTHmRvfRx5Li7vyBzrlBqAGCnfeuLAKyIlVrOf/KhfVZM4eEhufwUiWv
-         uTIKh+s4H1/nVO0t0/WJhJMyKDMIR9WM5dqbnsXqQNuGNHjCY23CXbOXZuAJQUlUXW+L
-         zRzGb6vfnBYDQhg4QzrvGieFbgEI7ykcNu/s6qtdMsPjhfjyE9k2HkTtnmr8++yoGDY5
-         6aBbupBw1i4GUtrtXEhYYeLVm5pXG1gxSUhMOsIM/FSwoIiGh2V7HYuygJhWroMzEPvh
-         Eo5w==
-X-Gm-Message-State: AOAM531nWCCdfNkKEApIvtKvluNe8JV5n2tPi+kenpK6cfEWwZUVNZ+q
-        1QHfABOFTm5CDNG1WQcgjqvFr0Y999W7/m6YBcI=
-X-Google-Smtp-Source: ABdhPJwU0tc8FDQJuzlfUOjGLpD6Z1TVj2/8uBfcFr67ym5r4XWI7NVbs/LRNZ9nOrM8T97fc0qogoty5Es2+EvjcLM=
-X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr5834310lfs.8.1598396785920;
- Tue, 25 Aug 2020 16:06:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200825192124.710397-1-jolsa@kernel.org> <20200825192124.710397-14-jolsa@kernel.org>
-In-Reply-To: <20200825192124.710397-14-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 25 Aug 2020 16:06:14 -0700
-Message-ID: <CAADnVQ+_X4-eWW_wNDr9G+Ac6LObQeJ5uCxgetGpR2F33BFk5A@mail.gmail.com>
-Subject: Re: [PATCH v12 bpf-next 13/14] selftests/bpf: Add test for d_path helper
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Wenbo Zhang <ethercflow@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        id S1726593AbgHYXUl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 19:20:41 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36114 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726551AbgHYXUk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Aug 2020 19:20:40 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07PNGlT8019074
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 16:20:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=7vFPxfbUZkYxWAD0+nMscJ1pZa6+fxgsolX0ujeyhgk=;
+ b=NHsqbFmKZntSF0WU0EKbv/Zb7124/L7ItbUD/UTTDypokd8KuFN491uW2VxLjuF7eJE/
+ z7vzhdyh2C3xNhIqWNVMPHdIPNS3Mn2GT2WOAZEPA+1WuKCAwjfl+aKnZwBLyC8YIkCi
+ OLWtNzHLXcFXlM0JsUHerrvTLFWZCu5QsfQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 333juu638b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 16:20:40 -0700
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 25 Aug 2020 16:20:39 -0700
+Received: by devbig218.frc2.facebook.com (Postfix, from userid 116055)
+        id A08A4207586; Tue, 25 Aug 2020 16:20:35 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Udip Pant <udippant@fb.com>
+Smtp-Origin-Hostname: devbig218.frc2.facebook.com
+To:     Udip Pant <udippant@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Smtp-Origin-Cluster: frc2c02
+Subject: [PATCH bpf-next v3 0/4] bpf: verifier: use target program's type for access verifications
+Date:   Tue, 25 Aug 2020 16:19:59 -0700
+Message-ID: <20200825232003.2877030-1-udippant@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-25_10:2020-08-25,2020-08-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ priorityscore=1501 spamscore=0 bulkscore=0 phishscore=0 mlxlogscore=978
+ clxscore=1015 impostorscore=0 malwarescore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008250173
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 12:22 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> +
-> +static int trigger_fstat_events(pid_t pid)
-> +{
-> +       int sockfd =3D -1, procfd =3D -1, devfd =3D -1;
-> +       int localfd =3D -1, indicatorfd =3D -1;
-> +       int pipefd[2] =3D { -1, -1 };
-> +       struct stat fileStat;
-> +       int ret =3D -1;
-> +
-> +       /* unmountable pseudo-filesystems */
-> +       if (CHECK(pipe(pipefd) < 0, "trigger", "pipe failed\n"))
-> +               return ret;
-> +       /* unmountable pseudo-filesystems */
-> +       sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
-> +       if (CHECK(sockfd < 0, "trigger", "scoket failed\n"))
-> +               goto out_close;
-> +       /* mountable pseudo-filesystems */
-> +       procfd =3D open("/proc/self/comm", O_RDONLY);
-> +       if (CHECK(procfd < 0, "trigger", "open /proc/self/comm failed\n")=
-)
-> +               goto out_close;
-> +       devfd =3D open("/dev/urandom", O_RDONLY);
-> +       if (CHECK(devfd < 0, "trigger", "open /dev/urandom failed\n"))
-> +               goto out_close;
-> +       localfd =3D open("/tmp/d_path_loadgen.txt", O_CREAT | O_RDONLY);
+This patch series adds changes in verifier to make decisions such as gran=
+ting
+of read / write access or enforcement of return code status based on
+the program type of the target program while using dynamic program
+extension (of type BPF_PROG_TYPE_EXT).
 
-The work-in-progress CI caught a problem here:
+The BPF_PROG_TYPE_EXT type can be used to extend types such as XDP, SKB
+and others. Since the BPF_PROG_TYPE_EXT program type on itself is just a
+placeholder for those, we need this extended check for those extended
+programs to actually work with proper access, while using this option.
 
-In file included from /usr/include/fcntl.h:290:0,
-4814                 from ./test_progs.h:29,
-4815                 from
-/home/travis/build/tsipa/bpf-next/tools/testing/selftests/bpf/prog_tests/d_=
-path.c:3:
-4816In function =E2=80=98open=E2=80=99,
-4817    inlined from =E2=80=98trigger_fstat_events=E2=80=99 at
-/home/travis/build/tsipa/bpf-next/tools/testing/selftests/bpf/prog_tests/d_=
-path.c:50:10,
-4818    inlined from =E2=80=98test_d_path=E2=80=99 at
-/home/travis/build/tsipa/bpf-next/tools/testing/selftests/bpf/prog_tests/d_=
-path.c:119:6:
-4819/usr/include/x86_64-linux-gnu/bits/fcntl2.h:50:4: error: call to
-=E2=80=98__open_missing_mode=E2=80=99 declared with attribute error: open w=
-ith O_CREAT
-or O_TMPFILE in second argument needs 3 arguments
-4820    __open_missing_mode ();
-4821    ^~~~~~~~~~~~~~~~~~~~~~
+Patch #1 includes changes in the verifier.
+Patch #2 adds selftests to verify write access on a packet for a valid=20
+extension program type
+Patch #3 adds selftests to verify proper check for the return code
+Patch #4 adds selftests to ensure access permissions and restrictions=20
+for some map types such sockmap.
 
-I don't see this bug in my setup, since I'm using an older glibc that
-doesn't have this check,
-so I've pushed it anyway since it was taking a bit long to land and folks w=
-ere
-eagerly waiting for the allowlist and d_path features.
-But some other folks may complain about build breakage really soon.
-So please follow up asap.
+Changelogs:
+  v2 -> v3:
+    * more comprehensive resolution of the program type in the verifier
+      based on the target program (and not just for the packet access)
+    * selftests for checking return code and map access
+    * Also moved this patch to 'bpf-next' from 'bpf' tree
+  v1 -> v2:
+    * extraction of the logic to resolve prog type into a separate method
+    * selftests to check for packet access for a valid freplace prog
+
+Udip Pant (4):
+  bpf: verifier: use target program's type for access verifications
+  selftests/bpf: add test for freplace program with write access
+  selftests/bpf: test for checking return code for the extended prog
+  selftests/bpf: test for map update access from within EXT programs
+
+ kernel/bpf/verifier.c                         | 32 ++++++---
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 68 +++++++++++++++++++
+ .../selftests/bpf/progs/fexit_bpf2bpf.c       | 27 ++++++++
+ .../bpf/progs/freplace_attach_probe.c         | 40 +++++++++++
+ .../bpf/progs/freplace_cls_redirect.c         | 34 ++++++++++
+ .../bpf/progs/freplace_connect_v4_prog.c      | 19 ++++++
+ .../selftests/bpf/progs/test_pkt_access.c     | 20 ++++++
+ 7 files changed, 229 insertions(+), 11 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_attach_pro=
+be.c
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_cls_redire=
+ct.c
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_connect_v4=
+_prog.c
+
+--=20
+2.24.1
+
