@@ -2,129 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72ED251448
-	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 10:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4BE2517AD
+	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 13:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728788AbgHYIcy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 04:32:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32494 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726365AbgHYIcx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 Aug 2020 04:32:53 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07P8CpEu126412;
-        Tue, 25 Aug 2020 04:32:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=iIIg6HBcLqlLd2Oo2yDjDLtxk8C6Y2WvUebW/n6zbR4=;
- b=aQKYihV8wQUEFVkcynscZvrWKRrakHwzHvOngeDO2GsRmW/qxI34bibcc0sHx0tXsRj5
- EINpmf9Aw1YkTQm+b3CL+j3Uo8+bU9S5phlUY/5jvuLaijd6mAFV3kejYx8bbIEaixOd
- 2JIsO+iEc+CdWjFXmzrbEXZVxttVJLyMguv9oU1Q2OyOb6pufnZCA8htYS6GrXXuQ3xE
- dEmLdPzAvbdXFU2lM8SaNP60ZSOoMJm8h1D6ksegXJb1KuDBbW0dfwd2FNZfUJLVbkq0
- zQIibBGayZKOn9vRMj6Wn+zPBoIC2d7aLZQu9mr39iXRo5rBJ+qUX9xBSGlkak27cIcf bA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 334xx9gfn7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 04:32:51 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07P8D9rR126801;
-        Tue, 25 Aug 2020 04:32:51 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 334xx9gfmj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 04:32:51 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07P8R8rU025851;
-        Tue, 25 Aug 2020 08:32:49 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 33498u94kh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Aug 2020 08:32:49 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07P8WkGw16974266
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 25 Aug 2020 08:32:46 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3BA9911C069;
-        Tue, 25 Aug 2020 08:32:46 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C8DBA11C05B;
-        Tue, 25 Aug 2020 08:32:45 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.5.129])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 25 Aug 2020 08:32:45 +0000 (GMT)
-Subject: Re: [PATCH] perf test: Fix basic bpf filtering test
-To:     acme@kernel.org
-Cc:     tmricht@linux.ibm.com, hca@linux.ibm.com, svens@linux.ibm.com,
-        jolsa@redhat.com, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200817072754.58344-1-sumanthk@linux.ibm.com>
-From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
-Message-ID: <1954643f-e268-b7bc-7c6e-75205d9f5f92@linux.ibm.com>
-Date:   Tue, 25 Aug 2020 10:32:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729897AbgHYLaj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 07:30:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729710AbgHYLai (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Aug 2020 07:30:38 -0400
+Received: from coco.lan (ip5f5ad5a4.dynamic.kabel-deutschland.de [95.90.213.164])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B53082068E;
+        Tue, 25 Aug 2020 11:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598355037;
+        bh=hS8MOXkGn7JYwFlDKqfpgI96hhlOO6z5RGuYqJxyWNk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vjYUYXjEaXVD3eAv3vZmxrvIuLgKkLKqMeS9kLfzQ69qD0P0HbZowGUT/hmAmwffm
+         yhiHRysfyy1aN6khI/k+KqtD8yKFr0XivtzoBQzJmSmoZhDkN4wwHZH+fXlz9L07Pt
+         MOWyOw/24QeMx5Wugndtf9E49WkpaoSdesV/9YFE=
+Date:   Tue, 25 Aug 2020 13:30:25 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        mauro.chehab@huawei.com, Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Liuyao An <anliuyao@huawei.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Rongrong Zou <zourongrong@gmail.com>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200825133025.13f047f0@coco.lan>
+In-Reply-To: <CAPM=9twzsw7T=GD6Jc1EFenXq9ZhTgf_Nuo71uLfX2W33oa=6w@mail.gmail.com>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+        <20200819152120.GA106437@ravnborg.org>
+        <20200819153045.GA18469@pendragon.ideasonboard.com>
+        <CALAqxLUXnPRec3UYbMKge8yNKBagLOatOeRCagF=JEyPEfWeKA@mail.gmail.com>
+        <20200820090326.3f400a15@coco.lan>
+        <20200820100205.GA5962@pendragon.ideasonboard.com>
+        <CAPM=9twzsw7T=GD6Jc1EFenXq9ZhTgf_Nuo71uLfX2W33oa=6w@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200817072754.58344-1-sumanthk@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-24_12:2020-08-24,2020-08-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=1 bulkscore=0
- adultscore=0 phishscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- clxscore=1015 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008250057
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kind Ping. Thank you.
+Em Tue, 25 Aug 2020 05:29:29 +1000
+Dave Airlie <airlied@gmail.com> escreveu:
 
-On 8/17/20 9:27 AM, Sumanth Korikkar wrote:
-> BPF basic filtering test fails on s390x (when vmlinux debuginfo is
-> utilized instead of /proc/kallsyms)
->
-> Info:
-> - bpf_probe_load installs the bpf code at do_epoll_wait.
-> - For s390x, do_epoll_wait resolves to 3 functions including inlines.
->    found inline addr: 0x43769e
->    Probe point found: __s390_sys_epoll_wait+6
->    found inline addr: 0x437290
->    Probe point found: do_epoll_wait+0
->    found inline addr: 0x4375d6
->    Probe point found: __se_sys_epoll_wait+6
-> - add_bpf_event  creates evsel for every probe in a BPF object. This
->    results in 3 evsels.
->
-> Solution:
-> - Expected result = 50% of the samples to be collected from epoll_wait *
->    number of entries present in the evlist.
->
-> Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-> Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
-> ---
->   tools/perf/tests/bpf.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-> index 5d20bf8397f0..cd77e334e577 100644
-> --- a/tools/perf/tests/bpf.c
-> +++ b/tools/perf/tests/bpf.c
-> @@ -197,7 +197,7 @@ static int do_test(struct bpf_object *obj, int (*func)(void),
->   		perf_mmap__read_done(&md->core);
->   	}
->   
-> -	if (count != expect) {
-> +	if (count != expect * evlist->core.nr_entries) {
->   		pr_debug("BPF filter result incorrect, expected %d, got %d samples\n", expect, count);
->   		goto out_delete_evlist;
->   	}
+> On Thu, 20 Aug 2020 at 20:02, Laurent Pinchart
+> <laurent.pinchart@ideasonboard.com> wrote:
+> >
+> > Hi Mauro,
+> >
+> > On Thu, Aug 20, 2020 at 09:03:26AM +0200, Mauro Carvalho Chehab wrote: =
+=20
+> > > Em Wed, 19 Aug 2020 12:52:06 -0700 John Stultz escreveu: =20
+> > > > On Wed, Aug 19, 2020 at 8:31 AM Laurent Pinchart wrote: =20
+> > > > > On Wed, Aug 19, 2020 at 05:21:20PM +0200, Sam Ravnborg wrote: =20
+> > > > > > On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab=
+ wrote: =20
+> > > > > > > This patch series port the out-of-tree driver for Hikey 970 (=
+which
+> > > > > > > should also support Hikey 960) from the official 96boards tre=
+e:
+> > > > > > >
+> > > > > > >    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
+> > > > > > >
+> > > > > > > Based on his history, this driver seems to be originally writ=
+ten
+> > > > > > > for Kernel 4.4, and was later ported to Kernel 4.9. The origi=
+nal
+> > > > > > > driver used to depend on ION (from Kernel 4.4) and had its own
+> > > > > > > implementation for FB dev API.
+> > > > > > >
+> > > > > > > As I need to preserve the original history (with has patches =
+from
+> > > > > > > both HiSilicon and from Linaro),  I'm starting from the origi=
+nal
+> > > > > > > patch applied there. The remaining patches are incremental,
+> > > > > > > and port this driver to work with upstream Kernel.
+> > > > > > > =20
+> > > > ... =20
+> > > > > > > - Due to legal reasons, I need to preserve the authorship of
+> > > > > > >   each one responsbile for each patch. So, I need to start fr=
+om
+> > > > > > >   the original patch from Kernel 4.4; =20
+> > > > ... =20
+> > > > > > I do acknowledge you need to preserve history and all -
+> > > > > > but this patchset is not easy to review. =20
+> > > > >
+> > > > > Why do we need to preserve history ? Adding relevant Signed-off-b=
+y and
+> > > > > Co-developed-by should be enough, shouldn't it ? Having a public =
+branch
+> > > > > that contains the history is useful if anyone is interested, but =
+I don't
+> > > > > think it's required in mainline. =20
+> > > >
+> > > > Yea. I concur with Laurent here. I'm not sure what legal reasoning =
+you
+> > > > have on this but preserving the "absolute" history here is actively
+> > > > detrimental for review and understanding of the patch set.
+> > > >
+> > > > Preserving Authorship, Signed-off-by lines and adding Co-developed-=
+by
+> > > > lines should be sufficient to provide both atribution credit and DCO
+> > > > history. =20
+> > >
+> > > I'm not convinced that, from legal standpoint, folding things would
+> > > be enough. See, there are at least 3 legal systems involved here
+> > > among the different patch authors:
+> > >
+> > >       - civil law;
+> > >       - common law;
+> > >       - customary law + common law.
+> > >
+> > > Merging stuff altogether from different law systems can be problemati=
+c,
+> > > and trying to discuss this with experienced IP property lawyers will
+> > > for sure take a lot of time and efforts. I also bet that different
+> > > lawyers will have different opinions, because laws are subject to
+> > > interpretation. With that matter I'm not aware of any court rules
+> > > with regards to folded patches. So, it sounds to me that folding
+> > > patches is something that has yet to be proofed in courts around
+> > > the globe.
+> > >
+> > > At least for US legal system, it sounds that the Country of
+> > > origin of a patch is relevant, as they have a concept of
+> > > "national technology" that can be subject to export regulations.
+> > >
+> > > From my side, I really prefer to play safe and stay out of any such
+> > > legal discussions. =20
+> >
+> > Let's be serious for a moment. If you think there are legal issues in
+> > taking GPL-v2.0-only patches and squashing them while retaining
+> > authorship information through tags, the Linux kernel if *full* of that.
+> > You also routinely modify patches that you commit to the media subsystem
+> > to fix "small issues".
+> >
+> > The country of origin argument makes no sense either, the kernel code
+> > base if full of code coming from pretty much all country on the planet.
+> >
+> > Keeping the patches separate make this hard to review. Please squash
+> > them. =20
+>=20
+> I'm inclined to agree with Laurent here.
+>=20
+> Patches submitted as GPL-v2 with DCO lines and author names/companies
+> should be fine to be squashed and rearranged,
+> as long as the DCO and Authorship is kept somewhere in the new patch
+> that is applied.
+>=20
+> Review is more important here.
 
--- 
-Sumanth Korikkar
+Sorry, but I can't agree that review is more important than to be able
+to properly indicate copyrights in a valid way at the legal systems that
+it would apply ;-)
 
+In any case, there's an easy way to make the code easy to review:
+I can write the patches against staging (where it is OK to submit
+preserving the history) and then add a final patch moving it out
+of staging.
+
+You can then just review the last patch, as it will contain the
+entire code on it.
+
+Another alternative, as I'm already doing with Sam, is for me to
+submit the folded code as a reply to 00/xx. You can then just=20
+review the final code, without concerning about how the code reached
+there.
+
+=46rom review point of the view, this will be the same as reviewing
+a folded patch, but, from legal standpoint, the entire copyright
+chain will be preserved.
+
+Thanks,
+Mauro
