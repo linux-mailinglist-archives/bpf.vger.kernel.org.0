@@ -2,59 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9A3251F0F
-	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 20:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE290251F14
+	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 20:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbgHYSaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 14:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
+        id S1726471AbgHYSa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 14:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbgHYS31 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 14:29:27 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009A0C061755
-        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 11:29:26 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id dp2so12570011ejc.4
-        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 11:29:26 -0700 (PDT)
+        with ESMTP id S1726104AbgHYS3j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Aug 2020 14:29:39 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262E4C0617A5
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 11:29:32 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id d11so17646288ejt.13
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 11:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7EGajeDiJIxrlPr3Y0NRvAuPtl3AEsFbIm2NTrH6ZEc=;
-        b=jDfTkfnuojbMaFUK6N1gavlgXoz0UOitqddOW0kO7XGsBtyCIdWvVGP4Ali167FpVl
-         +8fZXzYunItxxegZYSeFNDr+lSOHwnPn/FI8sdZL/Jmm+9TIQS005cX+6+E9SOoujGw1
-         aSz2+ffiizsI2Lg0F9RC26uoeZVLjUSIq012E=
+        bh=UQsnRZlN0H9BcX2r4S5kq1SuETDS5jf7walwVksTH94=;
+        b=S4kmTq23hn3c5x6dDrPPRADtdxouNbGaglISf+110wP0HCsA2GmLSuM0EkGQAuj24C
+         VsZgLifucYVDpdlRkjKUkXm7FkGl9AiYwBe8YbC78zHDafg3TQpWS6XScocuXLNAdCZh
+         1PD/7HPrhVfrA8+1Jxx5JIFOYyeq0IxDQPs+0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7EGajeDiJIxrlPr3Y0NRvAuPtl3AEsFbIm2NTrH6ZEc=;
-        b=r7ZaFq/pOfXIFcmpjFfA9BD5F+wwlaChsqKvv1aPppE0lXejv2ra/z75RsdK2wNZUp
-         kX+ba6NbLNvLx9p+xS2DrVg4xnJg2HV9o9LfZJFnnyEQIYMkMhKuoTsb6LV+noK4rkRq
-         z9YFhOuKWzIFZjV5EGlC1JI6YW35gyYWRMjFyEmIy2qGLZ8AalbVqgusbCsI3nXpRq3N
-         bj4X+qVcTEPwBbUfmg289xVSdcEfC90wcodGxMPluXZJWPgeyGKTwT+5tACVzKUpCkdU
-         v1SHfbS6UIz0b4FW6oHMNe6PCo9wyA2yin2hn6n1enVcIyYrgXBGbppW/h8QlhtMHrFs
-         jyNw==
-X-Gm-Message-State: AOAM532kfC7CW5awQTCewZrXbxXTubyXU0bEtkN5SidXBYy0dsz7TZuP
-        Bo3LcL5N8jgmkYKKkawQKJFB+A==
-X-Google-Smtp-Source: ABdhPJxwWmTdSKRTZoliBYv1yxoma3Uae22mPp0EOYaM+udhulIxdQLSMBipzg5LcWTHCcC3UvKnbg==
-X-Received: by 2002:a17:906:4f11:: with SMTP id t17mr8838115eju.371.1598380165443;
-        Tue, 25 Aug 2020 11:29:25 -0700 (PDT)
+        bh=UQsnRZlN0H9BcX2r4S5kq1SuETDS5jf7walwVksTH94=;
+        b=V+8t+cw924nloZCmgfWybUMi+RLTVlxnMN7s9VBJOrP7HVMkfajhqnjIWEZkhlRbNv
+         kJlvXyvhOM2hRn4YX04ODSovst6xUYpaKvdkA/vRMbkpEA+fR+Nr4WBBpOYB0wuU/4Os
+         SrN0FUEhWplGBgCjrjJgzfLPbQ+8icOO9WBxxrR+JtgkMcftQGsfzyZfDJ8YDRs9oTSB
+         hnBcwj4toGZLpqmpvnHDTTASNcBwXxPRwCI5YRTAHqFKSGNfaKFQIPUbCdMmIcouPidl
+         OI/5zob/NXIhOqMCH3BD7KlZSc7daq9BV9PESjv6YmpBzrblmd56qJeq3R/RtAAQ5n49
+         cDSQ==
+X-Gm-Message-State: AOAM530eSxAqC6p6iOJ3iQjXNFlJ52GDRQF836o+mjOloKB/3mPe3D88
+        j7tLjV/YvArSE9hO+gyEEij+6WFCLfSX8A==
+X-Google-Smtp-Source: ABdhPJz1JfvNo65OJ9r9gQgOVA5SsP2Ub+ZB2uY2L7FHVSKJIso58vh+xWKQkANnkCKKXYRi/cDxMg==
+X-Received: by 2002:a17:906:4089:: with SMTP id u9mr12450371ejj.235.1598380170754;
+        Tue, 25 Aug 2020 11:29:30 -0700 (PDT)
 Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id dr21sm15323286ejc.112.2020.08.25.11.29.24
+        by smtp.gmail.com with ESMTPSA id dr21sm15323286ejc.112.2020.08.25.11.29.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 11:29:24 -0700 (PDT)
+        Tue, 25 Aug 2020 11:29:30 -0700 (PDT)
 From:   KP Singh <kpsingh@chromium.org>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-security-module@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
+Cc:     Andrii Nakryiko <andriin@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
         Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
         Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v10 2/7] bpf: Generalize caching for sk_storage.
-Date:   Tue, 25 Aug 2020 20:29:14 +0200
-Message-Id: <20200825182919.1118197-3-kpsingh@chromium.org>
+Subject: [PATCH bpf-next v10 7/7] bpf: Add selftests for local_storage
+Date:   Tue, 25 Aug 2020 20:29:19 +0200
+Message-Id: <20200825182919.1118197-8-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.28.0.297.g1956fa8f8d-goog
 In-Reply-To: <20200825182919.1118197-1-kpsingh@chromium.org>
 References: <20200825182919.1118197-1-kpsingh@chromium.org>
@@ -67,148 +68,242 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-Provide the a ability to define local storage caches on a per-object
-type basis. The caches and caching indices for different objects should
-not be inter-mixed as suggested in:
+inode_local_storage:
 
-  https://lore.kernel.org/bpf/20200630193441.kdwnkestulg5erii@kafai-mbp.dhcp.thefacebook.com/
+* Hook to the file_open and inode_unlink LSM hooks.
+* Create and unlink a temporary file.
+* Store some information in the inode's bpf_local_storage during
+  file_open.
+* Verify that this information exists when the file is unlinked.
 
-  "Caching a sk-storage at idx=0 of a sk should not stop an
-  inode-storage to be cached at the same idx of a inode."
+sk_local_storage:
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+* Hook to the socket_post_create and socket_bind LSM hooks.
+* Open and bind a socket and set the sk_storage in the
+  socket_post_create hook using the start_server helper.
+* Verify if the information is set in the socket_bind hook.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- include/net/bpf_sk_storage.h | 19 +++++++++++++++++++
- net/core/bpf_sk_storage.c    | 31 +++++++++++++++----------------
- 2 files changed, 34 insertions(+), 16 deletions(-)
+ .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
+ .../selftests/bpf/progs/local_storage.c       | 140 ++++++++++++++++++
+ 2 files changed, 200 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
 
-diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
-index 5036c94c0503..950c5aaba15e 100644
---- a/include/net/bpf_sk_storage.h
-+++ b/include/net/bpf_sk_storage.h
-@@ -3,6 +3,9 @@
- #ifndef _BPF_SK_STORAGE_H
- #define _BPF_SK_STORAGE_H
- 
-+#include <linux/types.h>
-+#include <linux/spinlock.h>
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+new file mode 100644
+index 000000000000..91cd6f357246
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- struct sock;
- 
- void bpf_sk_storage_free(struct sock *sk);
-@@ -15,6 +18,22 @@ struct sk_buff;
- struct nlattr;
- struct sock;
- 
-+#define BPF_LOCAL_STORAGE_CACHE_SIZE	16
++/*
++ * Copyright (C) 2020 Google LLC.
++ */
 +
-+struct bpf_local_storage_cache {
-+	spinlock_t idx_lock;
-+	u64 idx_usage_counts[BPF_LOCAL_STORAGE_CACHE_SIZE];
-+};
++#include <test_progs.h>
++#include <linux/limits.h>
 +
-+#define DEFINE_BPF_STORAGE_CACHE(name)				\
-+static struct bpf_local_storage_cache name = {			\
-+	.idx_lock = __SPIN_LOCK_UNLOCKED(name.idx_lock),	\
++#include "local_storage.skel.h"
++#include "network_helpers.h"
++
++int create_and_unlink_file(void)
++{
++	char fname[PATH_MAX] = "/tmp/fileXXXXXX";
++	int fd;
++
++	fd = mkstemp(fname);
++	if (fd < 0)
++		return fd;
++
++	close(fd);
++	unlink(fname);
++	return 0;
 +}
 +
-+u16 bpf_local_storage_cache_idx_get(struct bpf_local_storage_cache *cache);
-+void bpf_local_storage_cache_idx_free(struct bpf_local_storage_cache *cache,
-+				      u16 idx);
++void test_test_local_storage(void)
++{
++	struct local_storage *skel = NULL;
++	int err, duration = 0, serv_sk = -1;
 +
- #ifdef CONFIG_BPF_SYSCALL
- int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
- struct bpf_sk_storage_diag *
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index f975e2d01207..ec61ee7c7ee4 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -14,6 +14,8 @@
- 
- #define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK (BPF_F_NO_PREALLOC | BPF_F_CLONE)
- 
-+DEFINE_BPF_STORAGE_CACHE(sk_cache);
++	skel = local_storage__open_and_load();
++	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
++		goto close_prog;
 +
- struct bpf_local_storage_map_bucket {
- 	struct hlist_head list;
- 	raw_spinlock_t lock;
-@@ -78,10 +80,6 @@ struct bpf_local_storage_elem {
- #define SELEM(_SDATA)							\
- 	container_of((_SDATA), struct bpf_local_storage_elem, sdata)
- #define SDATA(_SELEM) (&(_SELEM)->sdata)
--#define BPF_LOCAL_STORAGE_CACHE_SIZE	16
--
--static DEFINE_SPINLOCK(cache_idx_lock);
--static u64 cache_idx_usage_counts[BPF_LOCAL_STORAGE_CACHE_SIZE];
- 
- struct bpf_local_storage {
- 	struct bpf_local_storage_data __rcu *cache[BPF_LOCAL_STORAGE_CACHE_SIZE];
-@@ -521,16 +519,16 @@ static int sk_storage_delete(struct sock *sk, struct bpf_map *map)
- 	return 0;
- }
- 
--static u16 cache_idx_get(void)
-+u16 bpf_local_storage_cache_idx_get(struct bpf_local_storage_cache *cache)
- {
- 	u64 min_usage = U64_MAX;
- 	u16 i, res = 0;
- 
--	spin_lock(&cache_idx_lock);
-+	spin_lock(&cache->idx_lock);
- 
- 	for (i = 0; i < BPF_LOCAL_STORAGE_CACHE_SIZE; i++) {
--		if (cache_idx_usage_counts[i] < min_usage) {
--			min_usage = cache_idx_usage_counts[i];
-+		if (cache->idx_usage_counts[i] < min_usage) {
-+			min_usage = cache->idx_usage_counts[i];
- 			res = i;
- 
- 			/* Found a free cache_idx */
-@@ -538,18 +536,19 @@ static u16 cache_idx_get(void)
- 				break;
- 		}
- 	}
--	cache_idx_usage_counts[res]++;
-+	cache->idx_usage_counts[res]++;
- 
--	spin_unlock(&cache_idx_lock);
-+	spin_unlock(&cache->idx_lock);
- 
- 	return res;
- }
- 
--static void cache_idx_free(u16 idx)
-+void bpf_local_storage_cache_idx_free(struct bpf_local_storage_cache *cache,
-+				      u16 idx)
- {
--	spin_lock(&cache_idx_lock);
--	cache_idx_usage_counts[idx]--;
--	spin_unlock(&cache_idx_lock);
-+	spin_lock(&cache->idx_lock);
-+	cache->idx_usage_counts[idx]--;
-+	spin_unlock(&cache->idx_lock);
- }
- 
- /* Called by __sk_destruct() & bpf_sk_storage_clone() */
-@@ -601,7 +600,7 @@ static void bpf_local_storage_map_free(struct bpf_map *map)
- 
- 	smap = (struct bpf_local_storage_map *)map;
- 
--	cache_idx_free(smap->cache_idx);
-+	bpf_local_storage_cache_idx_free(&sk_cache, smap->cache_idx);
- 
- 	/* Note that this map might be concurrently cloned from
- 	 * bpf_sk_storage_clone. Wait for any existing bpf_sk_storage_clone
-@@ -718,7 +717,7 @@ static struct bpf_map *bpf_local_storage_map_alloc(union bpf_attr *attr)
- 
- 	smap->elem_size =
- 		sizeof(struct bpf_local_storage_elem) + attr->value_size;
--	smap->cache_idx = cache_idx_get();
-+	smap->cache_idx = bpf_local_storage_cache_idx_get(&sk_cache);
- 
- 	return &smap->map;
- }
++	err = local_storage__attach(skel);
++	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
++		goto close_prog;
++
++	skel->bss->monitored_pid = getpid();
++
++	err = create_and_unlink_file();
++	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
++		goto close_prog;
++
++	CHECK(skel->data->inode_storage_result != 0, "inode_storage_result",
++	      "inode_local_storage not set\n");
++
++	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
++	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
++		goto close_prog;
++
++	CHECK(skel->data->sk_storage_result != 0, "sk_storage_result",
++	      "sk_local_storage not set\n");
++
++	close(serv_sk);
++
++close_prog:
++	local_storage__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
+new file mode 100644
+index 000000000000..0758ba229ae0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/local_storage.c
+@@ -0,0 +1,140 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright 2020 Google LLC.
++ */
++
++#include <errno.h>
++#include <linux/bpf.h>
++#include <stdbool.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++#define DUMMY_STORAGE_VALUE 0xdeadbeef
++
++int monitored_pid = 0;
++int inode_storage_result = -1;
++int sk_storage_result = -1;
++
++struct dummy_storage {
++	__u32 value;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct dummy_storage);
++} inode_storage_map SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
++	__type(key, int);
++	__type(value, struct dummy_storage);
++} sk_storage_map SEC(".maps");
++
++/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
++ */
++struct sock {} __attribute__((preserve_access_index));
++struct sockaddr {} __attribute__((preserve_access_index));
++struct socket {
++	struct sock *sk;
++} __attribute__((preserve_access_index));
++
++struct inode {} __attribute__((preserve_access_index));
++struct dentry {
++	struct inode *d_inode;
++} __attribute__((preserve_access_index));
++struct file {
++	struct inode *f_inode;
++} __attribute__((preserve_access_index));
++
++
++SEC("lsm/inode_unlink")
++int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
++				     BPF_SK_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	if (storage->value == DUMMY_STORAGE_VALUE)
++		inode_storage_result = -1;
++
++	inode_storage_result =
++		bpf_inode_storage_delete(&inode_storage_map, victim->d_inode);
++
++	return 0;
++}
++
++SEC("lsm/socket_bind")
++int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
++	     int addrlen)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
++				     BPF_SK_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	if (storage->value == DUMMY_STORAGE_VALUE)
++		sk_storage_result = -1;
++
++	sk_storage_result = bpf_sk_storage_delete(&sk_storage_map, sock->sk);
++	return 0;
++}
++
++SEC("lsm/socket_post_create")
++int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
++	     int protocol, int kern)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
++				     BPF_SK_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	storage->value = DUMMY_STORAGE_VALUE;
++
++	return 0;
++}
++
++SEC("lsm/file_open")
++int BPF_PROG(file_open, struct file *file)
++{
++	__u32 pid = bpf_get_current_pid_tgid() >> 32;
++	struct dummy_storage *storage;
++
++	if (pid != monitored_pid)
++		return 0;
++
++	if (!file->f_inode)
++		return 0;
++
++	storage = bpf_inode_storage_get(&inode_storage_map, file->f_inode, 0,
++				     BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!storage)
++		return 0;
++
++	storage->value = DUMMY_STORAGE_VALUE;
++	return 0;
++}
 -- 
 2.28.0.297.g1956fa8f8d-goog
 
