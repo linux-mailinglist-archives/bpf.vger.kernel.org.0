@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE0F2523EB
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 00:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9A52523F7
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 01:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726611AbgHYW6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 18:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
+        id S1726356AbgHYXG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 19:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbgHYW6q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 18:58:46 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5532C061755;
-        Tue, 25 Aug 2020 15:58:45 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id h19so119130ljg.13;
-        Tue, 25 Aug 2020 15:58:45 -0700 (PDT)
+        with ESMTP id S1726542AbgHYXG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Aug 2020 19:06:27 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7837DC061574;
+        Tue, 25 Aug 2020 16:06:27 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id s9so7356162lfs.4;
+        Tue, 25 Aug 2020 16:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l2cjR9MV5pvSVMmhgeG5m9fnexeorxlv3qcsSxNAMZk=;
-        b=V1MBc6qdGt7oY3UHpUOGg0cphBBi5DbG49KVxb/GOzAHDlBWtk/o/Z3sE/lqZ34B90
-         a5wnoMLYtA162jVdYZpxt2VuN3uREzfBEA85OC5HTHsOibxEc+JdY5BPi5RQrQQ9SVCs
-         rgvz9O+pPxEtN6irGEDbehZZdxD2UyrAexsoipw5UxG7+YTi+9oDP6tZHlTICuN82hP0
-         Z4X4f7MdN96S+o1CLndICowGZNhNfnp4XBIKRHOlCMaNxrZYOb0sfjPe3Wfn2J1xDENt
-         FMsBIygvbD6cLcaI6iAnGn5ddNDphkfPMrMyPYJmQ+/5iy5XuIGXzEHIetVdQ2bKgrIq
-         Dkig==
+         :cc:content-transfer-encoding;
+        bh=m0w8/C3nNNWhHiTFS/rLyqNqZLaFpdzhoabKoFBS2uI=;
+        b=Q26eCIigSXd1oH5D+9cCHLgFf82+zbrRPxkSf2Xh+wXySoUbi8eTxScnvJJYhCcV0l
+         6OGnEABE51iIe970xzA6i4bAxcVuOmaBWDk5S6h1r7Xnjp/qnfp7Fj046UmOmbDfW6mh
+         SXAylNPlL+2Y2bTGKZjxevOBudI1GmKCqvc1joD67eYvw/B5z5IW1NtxjXQ7kqm8b1KU
+         Z8MFOEt+08U6L6Gv7LjVjx6vyqX1rTVOjB0GYEcsySMnTKF4vGJ6cYmAcAgROyJHv61u
+         c+fbzOp7/l2mjrjbZn5TfgG/rjMTSbSMH4XQOpaX2bmsmTKOYl2Rkwi1jRKfnEKXUxHL
+         QRTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l2cjR9MV5pvSVMmhgeG5m9fnexeorxlv3qcsSxNAMZk=;
-        b=FP+Bbqu9ukvG03Nd62ynplKN5/QRmc3urkNfF0eCCpCF28YBVdPWxD2sPT8e/1alEm
-         ZiBye5H7GduoAFI06hNiBMjiiJTxMx4jBIHIhqhg6RfPBup5m2Cjf6iI4f/Ife963hVi
-         FZj3JVkkPRO1ogCwYg/Ldlc/qM66KGUIMr7FJamQrU+Uq72GVuVX5UpOaybm4r4P27Mn
-         c2q8bHyDeZzMl+R6by1DcOs+zdl56LIMI8TnuxB1OF+NQ12WGgnFKR7pXQqrurPonRWC
-         +xNycI9BLa+6EU4vOKFMEutI7eWIvUBVhYzBewKbhcKKpBE7oiUADURFUWlXfn/1uudH
-         3EzQ==
-X-Gm-Message-State: AOAM533+beGLO4XmdBE/X9ZROj0WQMugAarJb8xtVMjKOT6Zl/kcCyFk
-        ojBFVIPTB99awlAjfTvSHWTKe8RG+aKVYyJmPH0=
-X-Google-Smtp-Source: ABdhPJwsTb+S1GD0wz7dH7SfF7esDGRQMAbokMXNVHrncRSV1HbkEIrkBs21HtypJ1x1F1pvXTBX+tVO8y1OlARF1Uc=
-X-Received: by 2002:a2e:8e28:: with SMTP id r8mr5410177ljk.290.1598396324173;
- Tue, 25 Aug 2020 15:58:44 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=m0w8/C3nNNWhHiTFS/rLyqNqZLaFpdzhoabKoFBS2uI=;
+        b=lChl+z5usoJeuuJNP05U8xZmbOrxo3hwz5BjwepCo1HiKKgr3OQzlhEoxj3qWgxoGq
+         AKZr8fN4dcG6GTHmRvfRx5Li7vyBzrlBqAGCnfeuLAKyIlVrOf/KhfVZM4eEhufwUiWv
+         uTIKh+s4H1/nVO0t0/WJhJMyKDMIR9WM5dqbnsXqQNuGNHjCY23CXbOXZuAJQUlUXW+L
+         zRzGb6vfnBYDQhg4QzrvGieFbgEI7ykcNu/s6qtdMsPjhfjyE9k2HkTtnmr8++yoGDY5
+         6aBbupBw1i4GUtrtXEhYYeLVm5pXG1gxSUhMOsIM/FSwoIiGh2V7HYuygJhWroMzEPvh
+         Eo5w==
+X-Gm-Message-State: AOAM531nWCCdfNkKEApIvtKvluNe8JV5n2tPi+kenpK6cfEWwZUVNZ+q
+        1QHfABOFTm5CDNG1WQcgjqvFr0Y999W7/m6YBcI=
+X-Google-Smtp-Source: ABdhPJwU0tc8FDQJuzlfUOjGLpD6Z1TVj2/8uBfcFr67ym5r4XWI7NVbs/LRNZ9nOrM8T97fc0qogoty5Es2+EvjcLM=
+X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr5834310lfs.8.1598396785920;
+ Tue, 25 Aug 2020 16:06:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200825192124.710397-1-jolsa@kernel.org> <20200825192124.710397-11-jolsa@kernel.org>
-In-Reply-To: <20200825192124.710397-11-jolsa@kernel.org>
+References: <20200825192124.710397-1-jolsa@kernel.org> <20200825192124.710397-14-jolsa@kernel.org>
+In-Reply-To: <20200825192124.710397-14-jolsa@kernel.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 25 Aug 2020 15:58:32 -0700
-Message-ID: <CAADnVQKtE9p22J2stAc6WuGOxkoPdzcAf5DstK6J76-x1thjZA@mail.gmail.com>
-Subject: Re: [PATCH v12 bpf-next 10/14] bpf: Add d_path helper
+Date:   Tue, 25 Aug 2020 16:06:14 -0700
+Message-ID: <CAADnVQ+_X4-eWW_wNDr9G+Ac6LObQeJ5uCxgetGpR2F33BFk5A@mail.gmail.com>
+Subject: Re: [PATCH v12 bpf-next 13/14] selftests/bpf: Add test for d_path helper
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Wenbo Zhang <ethercflow@gmail.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@google.com>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -62,24 +62,64 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@chromium.org>,
         Jesper Dangaard Brouer <brouer@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 12:23 PM Jiri Olsa <jolsa@kernel.org> wrote:
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3655,7 +3668,8 @@ union bpf_attr {
->         FN(get_task_stack),             \
->         FN(load_hdr_opt),               \
->         FN(store_hdr_opt),              \
-> -       FN(reserve_hdr_opt),
-> +       FN(reserve_hdr_opt),            \
-> +       FN(d_path),
->         /* */
+On Tue, Aug 25, 2020 at 12:22 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> +
+> +static int trigger_fstat_events(pid_t pid)
+> +{
+> +       int sockfd =3D -1, procfd =3D -1, devfd =3D -1;
+> +       int localfd =3D -1, indicatorfd =3D -1;
+> +       int pipefd[2] =3D { -1, -1 };
+> +       struct stat fileStat;
+> +       int ret =3D -1;
+> +
+> +       /* unmountable pseudo-filesystems */
+> +       if (CHECK(pipe(pipefd) < 0, "trigger", "pipe failed\n"))
+> +               return ret;
+> +       /* unmountable pseudo-filesystems */
+> +       sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
+> +       if (CHECK(sockfd < 0, "trigger", "scoket failed\n"))
+> +               goto out_close;
+> +       /* mountable pseudo-filesystems */
+> +       procfd =3D open("/proc/self/comm", O_RDONLY);
+> +       if (CHECK(procfd < 0, "trigger", "open /proc/self/comm failed\n")=
+)
+> +               goto out_close;
+> +       devfd =3D open("/dev/urandom", O_RDONLY);
+> +       if (CHECK(devfd < 0, "trigger", "open /dev/urandom failed\n"))
+> +               goto out_close;
+> +       localfd =3D open("/tmp/d_path_loadgen.txt", O_CREAT | O_RDONLY);
 
-This is not correct. Please keep "\" at the end.
-I've missed it while applying Martin's patch.
-I've manually rebased this set due to conflict with KP's changes,
-fixed the above issue and applied.
+The work-in-progress CI caught a problem here:
+
+In file included from /usr/include/fcntl.h:290:0,
+4814                 from ./test_progs.h:29,
+4815                 from
+/home/travis/build/tsipa/bpf-next/tools/testing/selftests/bpf/prog_tests/d_=
+path.c:3:
+4816In function =E2=80=98open=E2=80=99,
+4817    inlined from =E2=80=98trigger_fstat_events=E2=80=99 at
+/home/travis/build/tsipa/bpf-next/tools/testing/selftests/bpf/prog_tests/d_=
+path.c:50:10,
+4818    inlined from =E2=80=98test_d_path=E2=80=99 at
+/home/travis/build/tsipa/bpf-next/tools/testing/selftests/bpf/prog_tests/d_=
+path.c:119:6:
+4819/usr/include/x86_64-linux-gnu/bits/fcntl2.h:50:4: error: call to
+=E2=80=98__open_missing_mode=E2=80=99 declared with attribute error: open w=
+ith O_CREAT
+or O_TMPFILE in second argument needs 3 arguments
+4820    __open_missing_mode ();
+4821    ^~~~~~~~~~~~~~~~~~~~~~
+
+I don't see this bug in my setup, since I'm using an older glibc that
+doesn't have this check,
+so I've pushed it anyway since it was taking a bit long to land and folks w=
+ere
+eagerly waiting for the allowlist and d_path features.
+But some other folks may complain about build breakage really soon.
+So please follow up asap.
