@@ -2,125 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13503251FDB
-	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 21:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921F52521E1
+	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 22:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgHYTWp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 25 Aug 2020 15:22:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21473 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726090AbgHYTWn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 15:22:43 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-v6z3FJGfMR2DlR0vamUE4A-1; Tue, 25 Aug 2020 15:22:35 -0400
-X-MC-Unique: v6z3FJGfMR2DlR0vamUE4A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726222AbgHYUWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 16:22:05 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:49118 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgHYUWF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Aug 2020 16:22:05 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED5AE100670C;
-        Tue, 25 Aug 2020 19:22:33 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF4F319C4F;
-        Tue, 25 Aug 2020 19:22:27 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 199B620024;
+        Tue, 25 Aug 2020 22:21:54 +0200 (CEST)
+Date:   Tue, 25 Aug 2020 22:21:53 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Wanchun Zheng <zhengwanchun@hisilicon.com>,
+        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devel@driverdev.osuosl.org, Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH v12 bpf-next 14/14] selftests/bpf: Add set test to resolve_btfids
-Date:   Tue, 25 Aug 2020 21:21:24 +0200
-Message-Id: <20200825192124.710397-15-jolsa@kernel.org>
-In-Reply-To: <20200825192124.710397-1-jolsa@kernel.org>
-References: <20200825192124.710397-1-jolsa@kernel.org>
+        Xiubin Zhang <zhangxiubin1@huawei.com>,
+        Wei Xu <xuwei5@hisilicon.com>, David Airlie <airlied@linux.ie>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Liwei Cai <cailiwei@hisilicon.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linaro-mm-sig@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, mauro.chehab@huawei.com,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Liuyao An <anliuyao@huawei.com>,
+        Rongrong Zou <zourongrong@gmail.com>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
+Message-ID: <20200825202153.GA237836@ravnborg.org>
+References: <cover.1597833138.git.mchehab+huawei@kernel.org>
+ <20200819152120.GA106437@ravnborg.org>
+ <20200819174027.70b39ee9@coco.lan>
+ <20200819173558.GA3733@ravnborg.org>
+ <20200821155801.0b820fc6@coco.lan>
+ <20200821155505.GA300361@ravnborg.org>
+ <20200824180225.1a515b6a@coco.lan>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0.0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824180225.1a515b6a@coco.lan>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8 a=jmfwfdV-BNFhccFjUE8A:9
+        a=CjuIK1q_8ugA:10 a=pBTelFdiagIA:10 a=Vxmtnl_E_bksehYqCbjh:22
+        a=pHzHmUro8NiASowvMSCR:22 a=xoEH_sTeL_Rfw54TyV31:22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test to for sets resolve_btfids. We're checking that
-testing set gets properly resolved and sorted.
+Hi Mauro.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/prog_tests/resolve_btfids.c | 39 ++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+Laurent and I discussed this driver a little on irc.
+Some highlights:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-index 3b127cab4864..8826c652adad 100644
---- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -47,6 +47,15 @@ BTF_ID(struct,  S)
- BTF_ID(union,   U)
- BTF_ID(func,    func)
- 
-+BTF_SET_START(test_set)
-+BTF_ID(typedef, S)
-+BTF_ID(typedef, T)
-+BTF_ID(typedef, U)
-+BTF_ID(struct,  S)
-+BTF_ID(union,   U)
-+BTF_ID(func,    func)
-+BTF_SET_END(test_set)
-+
- static int
- __resolve_symbol(struct btf *btf, int type_id)
- {
-@@ -116,12 +125,40 @@ int test_resolve_btfids(void)
- 	 */
- 	for (j = 0; j < ARRAY_SIZE(test_lists); j++) {
- 		test_list = test_lists[j];
--		for (i = 0; i < ARRAY_SIZE(test_symbols) && !ret; i++) {
-+		for (i = 0; i < ARRAY_SIZE(test_symbols); i++) {
- 			ret = CHECK(test_list[i] != test_symbols[i].id,
- 				    "id_check",
- 				    "wrong ID for %s (%d != %d)\n",
- 				    test_symbols[i].name,
- 				    test_list[i], test_symbols[i].id);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
-+	/* Check BTF_SET_START(test_set) IDs */
-+	for (i = 0; i < test_set.cnt; i++) {
-+		bool found = false;
-+
-+		for (j = 0; j < ARRAY_SIZE(test_symbols); j++) {
-+			if (test_symbols[j].id != test_set.ids[i])
-+				continue;
-+			found = true;
-+			break;
-+		}
-+
-+		ret = CHECK(!found, "id_check",
-+			    "ID %d not found in test_symbols\n",
-+			    test_set.ids[i]);
-+		if (ret)
-+			break;
-+
-+		if (i > 0) {
-+			ret = CHECK(test_set.ids[i - 1] > test_set.ids[i],
-+				    "sort_check",
-+				    "test_set is not sorted\n");
-+			if (ret)
-+				break;
- 		}
- 	}
- 
--- 
-2.25.4
+This parts could use register names:
++       writel(0x2, noc_dss_base + 0xc);
++       writel(0x2, noc_dss_base + 0x8c);
++       writel(0x2, noc_dss_base + 0x10c);
++       writel(0x2, noc_dss_base + 0x18c);
 
+The two nodes in the DT for DPE and DSI uses overlapping range for reg
+entries. It looks like a syscon node or some iommu thing is needed to do
+this properly.
+
+The chain will lok like this:
+
+DPE -> DSI -> video mux -> {adv7533, panel}
+
+But drm_bridge has not yet support for such non-linear setup.
+The recommendation is to focus on the HDMI prat. Then we can later
+come up with support for a video mux.
+
+The video mux should have a dedicated node with one input node and two
+output nodes. Which is also where the gpio should be.
+
+The DSI node references two DPHY instances - should it be PHY driver(s)?
+
+Does the DSI part contain one or two instances. Clocks looks duplicated.
+
+Does the DPE and DSI share a lot of register blocks - or does it just
+look like this from a first point of view?
+
+You can read though the logs here:
+https://people.freedesktop.org/~cbrill/dri-log/index.php
+
+Could you please try to get back on some of the points above so we can
+help you move forward in the right direction.
+
+Thanks,
+	Sam
