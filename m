@@ -2,108 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1976C25104F
-	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 06:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B719251052
+	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 06:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgHYEIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 00:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
+        id S1726294AbgHYELV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 00:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbgHYEIy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 00:08:54 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718BFC061574;
-        Mon, 24 Aug 2020 21:08:53 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 185so12172018ljj.7;
-        Mon, 24 Aug 2020 21:08:53 -0700 (PDT)
+        with ESMTP id S1726230AbgHYELU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Aug 2020 00:11:20 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712D9C061574
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 21:11:20 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id v12so12156092ljc.10
+        for <bpf@vger.kernel.org>; Mon, 24 Aug 2020 21:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ifEPajG5WZvddRDhWRkMEk4y3lPOYfaDkQP3skchVFY=;
-        b=dO3WEaIoj8S8RZPZP2BnwuqclcIlgq6eKT+Rvc70JAKsRWiwaiH4aRrRFsf2aLPOyS
-         9sRj8VFMW3BJndYfux07/Juh3SX7TB51fqIobv/Hun2yB/bLHJ4ePbhcUg8olMG9dIoX
-         Sh2k2Q9va3snlnc8KpkNx2gCnQmG3TAy3r+rHPRNkkoN9u5Ux+WBXiIzsHJZd8w6jvOP
-         dXEDRWgwRmzC7rbbngXZzp0xu3Af+ZrMazIUfirbJeB41Wl4vTq8g5nwcKsEbTfMnkXN
-         jt55jJ0uwgvwj3s6Xz3zL30h6jcGlNDbSzPTxljOrGEh+dSVV8C82s2Wx1eBg4Q6Ovsi
-         78Bw==
+        bh=NwokDsIoZ7MyMVX4nKfaKe/JJKsexYPW4SZq7cgaJ5s=;
+        b=HE3sI9+J0QCTMakq9KkmJSIlQT6ibge2NL1Q9YndIYAJj1qpC2x/XvUoI2c4iLnulw
+         zT1QjT6mIqBS04n5euFInP6iZka6gOraRcmLXpYYns05MNZJG6P8za5t1EHfREB+roMH
+         OzBM8vfMiLDPBY0+JNQinEEDVWNG0BYX3/Tyoo0W2pZh8lExSOIIJt0nD4rF/tn0m9Nk
+         lBzGRZhkOqMKnoiThRhYjiScaNB6z+jYFPmTvujlKCrf6kg+MR1IS/jrO+lV5rmLBmRa
+         tAizOEb4bJ89MA+4FRrxeukUHAKz1YiiSoJyLbbx47vDfWKTjxknlVmLMaBHS4opW3sc
+         yrIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ifEPajG5WZvddRDhWRkMEk4y3lPOYfaDkQP3skchVFY=;
-        b=ezllLILIfXcLf0B/Iy5WTWWBzvGj8lmmISSSHqMEsp1+N0DwfPvH7hyhMVWiHg2X0I
-         yxAZk1m8W4mEQs1XO3CoHPX3wp3qDEoNu7mZ7bwQPKUjeosgkL0jryb0tu4C7gXKlQnE
-         QEomFMOzSxv343Vi44UlQBLpp+sc4BBCDLG1DHM6CVhr3yFw8YH9NvWpCjqg3kneVCgu
-         CSaZZGl55y71dj1/ameMA+aJG+kVC59aliI2CJShgNjbWu52MCPYgQSc8DjngifsTTCT
-         srO8i8HbWD/liQC4oUDLPCXvXUmkV1KnRwdZppgORhdcLA+AXRgD9C4LassUg0QnSWMZ
-         LGhA==
-X-Gm-Message-State: AOAM530CjddkOGzPPZeyamVqv9Q2+d/ExKfSdZ/E9RlDHLEKTxi4LPTz
-        OfRyYJe9UzdXx5WTNhGXrN5801Iv3tnA49tsEuw=
-X-Google-Smtp-Source: ABdhPJyBhlZJmM15p+hH+3iYCLyS8a8G4DpwGGmHaO7g6zLLDpGJJxA1MbEnyG1Dzc2laHVqEgs/xnN+uXC6LGF/7gc=
-X-Received: by 2002:a2e:b6cd:: with SMTP id m13mr4131968ljo.91.1598328531851;
- Mon, 24 Aug 2020 21:08:51 -0700 (PDT)
+        bh=NwokDsIoZ7MyMVX4nKfaKe/JJKsexYPW4SZq7cgaJ5s=;
+        b=Ah96Z9XaesmlRLNCge4EGM0Dv/a55FS8CSkQJmZL6xYQncNxyL4xgpaPgbt6PbIm7P
+         /HP4B+CdT5uLVSIRD2KezyidFyyJRkSYhJmEMclg6pxCaL6N8XEm2jU/dUACvwF11aq+
+         EHxB8Vb1JsRWsqypBYnRh52CSOY9l/mfZpjzbTUAoYuqQG4aQnieqEFhh7MCvy7s1+/8
+         MoHPqQSICHrdUsM6UixTnNEgkYhCwjXKXfEL4x8UZmS+3jBlKqGg+QVR99oGGdNbVlpO
+         9f4cK14OEmS02mCm7qKOdiuZC4jN/DgO7m3R1zAc8FSoj3BESwgGNkZF8nQJhIYq5kqd
+         cU9Q==
+X-Gm-Message-State: AOAM5337HIHp+IGHu2dChTUiZxCdd0zo7jKFNWSSYxiCMcNh2CXauv0W
+        uXdIPanMQcZop+DcXoYyHjmBmdXkv7lRGUpfKkLfDMOS
+X-Google-Smtp-Source: ABdhPJwYPA5Wwbsn5Bsl6VmK18xC/z5pn3c8d1ZtRWoDKz9MtYtQiinjDCeKz1nTDTs2Ijq9ILdsZ6wSmxaqAYY4vXw=
+X-Received: by 2002:a2e:b6c3:: with SMTP id m3mr4068027ljo.450.1598328678873;
+ Mon, 24 Aug 2020 21:11:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200821191054.714731-1-yhs@fb.com> <CAEf4BzYkHraBsaaApbaBAUsQfjnYJtnBU7EcNybzxqaHmSNBCg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYkHraBsaaApbaBAUsQfjnYJtnBU7EcNybzxqaHmSNBCg@mail.gmail.com>
+References: <159827024012.923543.7104106594870150597.stgit@firesoul>
+In-Reply-To: <159827024012.923543.7104106594870150597.stgit@firesoul>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 24 Aug 2020 21:08:40 -0700
-Message-ID: <CAADnVQ+FB4GQ9nUhCYHWXyocXE7-tdnWttpzMND6b1sv82puwg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix a buffer out-of-bound access when filling
- raw_tp link_info
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
+Date:   Mon, 24 Aug 2020 21:11:07 -0700
+Message-ID: <CAADnVQLd5jZaCJsAbLKautedAA298uydZNY0GH0bXCQ_K=gNgg@mail.gmail.com>
+Subject: Re: [PATCH bpf V2] selftests/bpf: Fix test_progs-flavor run getting
+ number of tests
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 1:09 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Aug 24, 2020 at 4:57 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> On Fri, Aug 21, 2020 at 12:11 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > Commit f2e10bff16a0 ("bpf: Add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link")
-> > added link query for raw_tp. One of fields in link_info is to
-> > fill a user buffer with tp_name. The Scurrent checking only
-> > declares "ulen && !ubuf" as invalid. So "!ulen && ubuf" will be
-> > valid. Later on, we do "copy_to_user(ubuf, tp_name, ulen - 1)" which
-> > may overwrite user memory incorrectly.
-> >
-> > This patch fixed the problem by disallowing "!ulen && ubuf" case as well.
-> >
-> > Fixes: f2e10bff16a0 ("bpf: Add support for BPF_OBJ_GET_INFO_BY_FD for bpf_link")
-> > Cc: Andrii Nakryiko <andriin@fb.com>
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
-> >  kernel/bpf/syscall.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 86299a292214..ac6c784c0576 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -2634,7 +2634,7 @@ static int bpf_raw_tp_link_fill_link_info(const struct bpf_link *link,
-> >         u32 ulen = info->raw_tracepoint.tp_name_len;
-> >         size_t tp_len = strlen(tp_name);
-> >
-> > -       if (ulen && !ubuf)
-> > +       if (!ulen ^ !ubuf)
-> >                 return -EINVAL;
+> Commit 643e7233aa94 ("selftests/bpf: Test_progs option for getting number of
+> tests") introduced ability to getting number of tests, which is targeted
+> towards scripting.  As demonstrate in the commit the number can be use as a
+> shell variable for further scripting.
 >
-> I think my original idea was to allow ulen == 0 && ubuf != NULL as a
-> still valid way to get real ulen, but it's clearly wrong with ulen-1
-> below. So instead of special-casing ulen==0 for the case I wanted to
-> support, it's easier to disallow ulen==0 && ubuf!=NULL.
+> The test_progs program support "flavor", which is detected by the binary
+> have a "-flavor" in the executable name. One example is test_progs-no_alu32,
+> which load bpf-progs compiled with disabled alu32, located in dir 'no_alu32/'.
 >
-> So thanks for the fix!
+> The problem is that invoking a "flavor" binary prints to stdout e.g.:
+>  "Switching to flavor 'no_alu32' subdirectory..."
+> Thus, intermixing with the number of tests, making it unusable for scripting.
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Fix the issue by only printing "flavor" info when verbose -v option is used.
+>
+> Fixes: 643e7233aa94 ("selftests/bpf: Test_progs option for getting number of tests")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
 Applied. Thanks
