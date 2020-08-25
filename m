@@ -2,78 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A85D251E99
-	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 19:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EB3251EDB
+	for <lists+bpf@lfdr.de>; Tue, 25 Aug 2020 20:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgHYRo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 13:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
+        id S1726119AbgHYSGt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 14:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726225AbgHYRo6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 13:44:58 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0CFC061574
-        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 10:44:56 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id o8so8358893otp.9
-        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 10:44:56 -0700 (PDT)
+        with ESMTP id S1726104AbgHYSGs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Aug 2020 14:06:48 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89491C061574
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 11:06:47 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id c15so6937251lfi.3
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 11:06:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=ntSHUt2a1B+2Yh8CUmxEf7rUTqElIS4Z7sAJfBd2sVw=;
-        b=wuXPOrHiS8Aazy0634wDVH2jj7WRCZHcbLrzMpN7A75B01lDYpotMaeZFngCG6NH64
-         ajsrpVyrEYkRi8Z+pbm/Jg6McpF/1hHEM3og2omkLkWpKf7/TLGzoBYE8wsn4SY+eQEX
-         4DszqcRnSbs+KymoXYAcyP/8Lpve6SS7bUukI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tbgV1ue27TVRMGaAdUZvt1XEH/MXY/5HeqmliZ5UI6w=;
+        b=YFeSB2fnLie+kG2zUF0WmxuHroAZBJ0C1+Wi8aWwq38AgrtppEypFsnM+xJYaXKDBS
+         roLTpajtV+zdg6Et0xxXfyv11j1T4Clh2R7BGynMPGx3Umy1yz1qGzW7Ll2GKKXP6+SE
+         2VwA4gcANr9PWRTAuydbs9SmeLJ/zxmNgGPfCEbL5jIEtFRGthjksR878qWBTpkwmDS7
+         Ao8moC0/GUIz3qt3E+HMKHFRpemEcRrvaWNd05B/AeK2iJNsOk5j7uUy0GjSMuXkNpg5
+         h+XQSCYCtwIKYd2gpIJQBfYSFQclwL/7igwUWq/Afmc8H5z3Jfkge33pWG87L4Hfv2j7
+         r/XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=ntSHUt2a1B+2Yh8CUmxEf7rUTqElIS4Z7sAJfBd2sVw=;
-        b=F1B9zj/G4CojLblmzKHHfsvrOR1wLqIz05FeXaf/D80+IeOsa48Thsnh6sFxogi5eF
-         IjuzLA2lCXIw3cp38coCvbZ1q8qe7s8DccaOCTmpDYxKAhiWSHzqspW6QS9ofDiOENkN
-         7IOOut2g3uvNOzBTRwuzUsp2sO2rKZZzUNavmKWyk4cdyegLVDU6ev7dnEZRj8QHuQHv
-         IW7UL4zEsEY/wx5VeT1rHp3uyBFPdLwTzwmDx8w9VHaDdDbiFCaUcxC3CaWTvuj1612D
-         oq22+Mvt9GKuniEzhbxitiVqah5bNlgYgVN/Pm5lRr8A658dPR7VWPi3Xa4LZDXNWnPG
-         hf7Q==
-X-Gm-Message-State: AOAM530D3ZJrFQcdAETVPorvD+EcDC1nqgyDNavoYh82pyy6CINehaoX
-        0jIVH/GJOCRQeMRZWgCZEbTkgq+FwHNWqQUJiZQsfe5es5sAeg==
-X-Google-Smtp-Source: ABdhPJxKpzCP0iyqslTs4y69kt6wq2sqg/7tQQnUiTIsn5XdFjM69l05r9oP/kzs2DVCh4/ZUJ74KmX78Pr0PBCZ27o=
-X-Received: by 2002:a9d:6e18:: with SMTP id e24mr7077357otr.132.1598377491709;
- Tue, 25 Aug 2020 10:44:51 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tbgV1ue27TVRMGaAdUZvt1XEH/MXY/5HeqmliZ5UI6w=;
+        b=lkh9LKcPxOWIfQOm66Sgiasxfle1ADnLEhCSNxlalbS43+iDrMTUeSO38v/mdwl1Cf
+         95o+Ng67JzRW4CQOMu6/TLl1mvTKJt1rlM9nnb54VfnKqW+8scXPI0lcHx351qZ5VeEa
+         vdbxF58HisMi+K4v7RfKNv3Dup8cRmFanxibynFF62aSe9Wl3r1xv+pOxuzFsIkd74mv
+         Z080vEE7+JJjGI8QjBHExMIL3no/VXjST/ewZ/QavCsOIw3uuY9oXiDlB43U0QnTtX5n
+         /MbJB4R/mPgw4ogFN3zI6CftjPohomu9+ExbBs5ospqrBzC5EEhhllQqNI5o6NZx/dgS
+         Xx/w==
+X-Gm-Message-State: AOAM532QYNiUcwUx17ONo57Un6/Ihx6OeNJVNvYj1189Djh/UDEyBCdM
+        16wTUez273/0kegYxvOx4qc2BnCADQQNnMyTm6g=
+X-Google-Smtp-Source: ABdhPJzq4L2pxXfvu2YVFiYwXGSEmxVmft6v/6jRgYs2iPwjT9FztV9zj2lhtNh6d1hL46xkZ8rmmRcof4KQpLoIXSM=
+X-Received: by 2002:a05:6512:74b:: with SMTP id c11mr5300640lfs.119.1598378805791;
+ Tue, 25 Aug 2020 11:06:45 -0700 (PDT)
 MIME-Version: 1.0
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 25 Aug 2020 18:44:38 +0100
-Message-ID: <CACAyw984Z3YiQPtVOZkSYzxOECHOhJKKe8d4=g9eDu0OK9Nq6Q@mail.gmail.com>
-Subject: Adding sockmap element iterator
-To:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>
-Cc:     kernel-team <kernel-team@cloudflare.com>
+References: <CACAyw98fJe3qanRVe5LcoP49METHhzjZKPcSGnKQ-o=_F3=Hfw@mail.gmail.com>
+In-Reply-To: <CACAyw98fJe3qanRVe5LcoP49METHhzjZKPcSGnKQ-o=_F3=Hfw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 25 Aug 2020 11:06:34 -0700
+Message-ID: <CAADnVQLji8CMCVoefHPqc457Fz1xZ+yEnogHXpghhx6=GPYTbg@mail.gmail.com>
+Subject: Re: Advisory file locking behaviour of bpf_link (and others?)
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Yonghong,
+On Tue, Aug 25, 2020 at 6:39 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> Hi,
+>
+> I was playing around a bit, and noticed that trying to acquire an
+> exclusive POSIX record lock on a bpf_link fd fails. I've traced this
+> to the call to anon_inode_getfile from bpf_link_prime which
+> effectively specifies O_RDONLY on the bpf_link struct file. This makes
+> check_fmode_for_setlk return EBADF.
+>
+> This means the following:
+> * flock(link, LOCK_EX): works
+> * fcntl(link, SETLK, F_RDLCK): works
+> * fcntl(link, SETLK, F_WRLCK): doesn't work
+>
+> Especially the discrepancy between flock(EX) and fcntl(WRLCK) has me
+> puzzled. Should fcntl(WRLCK) work on a link?
+>
+> program fds are always O_RDWR as far as I can tell (so all locks
+> work), while maps depend on map_flags.
 
-I'm currently looking at adding support to iterate sockmap elements.
-For that purpose, the context passed to the iterator program needs to
-contain PTR_TO_SOCKET, like so:
-
-    .ctx_arg_info = {
-        { offsetof(struct bpf_iter__bpf_map_elem, key),
-          PTR_TO_RDONLY_BUF_OR_NULL },
-        { offsetof(struct bpf_iter__bpf_map_elem, value),
-          PTR_TO_SOCKET },
-    },
-
-This is in contrast to PTR_TO_RDWR_BUF_OR_NULL. I think I could just
-add a separate bpf_sockmap_elem iterator, but I'm guessing that this
-is counter to how you would approach this. What do you think is the
-best way to achieve this?
-
-Best
-Lorenz
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Because for links fd/file flags are reserved for the future use.
+progs are rdwr for historical reasons while maps can have three combinations:
+/* Flags for accessing BPF object from syscall side. */
+        BPF_F_RDONLY            = (1U << 3),
+        BPF_F_WRONLY            = (1U << 4),
+by default they are rdwr.
+What is your use case to use flock on bpf_link fd?
