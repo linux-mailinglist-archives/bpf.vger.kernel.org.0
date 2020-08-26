@@ -2,125 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C61F252E9B
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 14:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9D9252F82
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 15:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgHZMTk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 08:19:40 -0400
-Received: from mail-eopbgr150094.outbound.protection.outlook.com ([40.107.15.94]:38950
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728682AbgHZMTj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Aug 2020 08:19:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=beIUGiqBFX3SGPJbajHnCz1mD06m5tk9fPc3MkmO8SYSVzrD1+JRXxKFtPZBYwx0nlgssUTn/f64MJ50OF+mzibySKp/clkbbwea7PRACIhNPyoW3fjxcsbvXk9rPqvCkzI8RfcRix4qxsCGj/T0c58UocMINYBALx8iIQsRfRQfWuEdhkp6w4tjOzMotlKW+UEWCPN9vXYLJmVX0S/R7zxWglse0xS4BYI9cIzqR85lvFVPlUsp1T9rj5R2HZ5qyF3B1ACjJjn1+nSbZ/mnZCNVClHg0mxZYJSyJwzWS7oDvFivFCgIep1Cnb8rvnONOLXF+ESKJahnJ7mZL3qo3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K1io2rGKtYlqZnhdum4MoDcbUgkbtqt42/FXvw/upfU=;
- b=eUquV46XBGg02kSEp9I5GHGYhLvrWShsE7DSvxhAb7G3mOw1IQku8qh7ViJSnJVw635g1JjpzG+hI91mdQDxcPWGLIdvizemp+kVa1qzYP+j8r/QMEMp+oksp8KANUeRWdjNS0d9S7UfcyPtz9C2qt0Pj5eSQBvsiFPzUY0B74B9AHl5IGXFkRoEOvcya/LNYRyzVspx/mpwMJc4RI6j91XuMpm4UoJC2wEQB8mtPBNLk126ioaPg80r02NBZJxQHh6Xo93IUsFPel/CFi5haMdg/7Gd503qPh6wvFKWDs8w6XDGaYIQAbAAx4yDn7juIakG0BI4zG9Sz3i1WJI2UQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K1io2rGKtYlqZnhdum4MoDcbUgkbtqt42/FXvw/upfU=;
- b=Ab8NV8Gvrsufw4UEv0xWnX+LDBdlQhAMyTygQGp59cS9GnJV/0iFOGCL9bL2fhGYpB/qyVpTdlAwXzcxENsDc5LRgtqLzMBdQkPTxCL2FuFr6O68AyfKZozDYcuiaO1BJ7BjWfT0ZkWwU2bPz3LEXmm2lL9tSXgENCB1/oxF/9w=
-Received: from AM0PR83MB0275.EURPRD83.prod.outlook.com (2603:10a6:208:94::26)
- by AM0PR83MB0273.EURPRD83.prod.outlook.com (2603:10a6:208:94::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.4; Wed, 26 Aug
- 2020 12:19:32 +0000
-Received: from AM0PR83MB0275.EURPRD83.prod.outlook.com
- ([fe80::4dd5:3b7e:321f:b1bd]) by AM0PR83MB0275.EURPRD83.prod.outlook.com
- ([fe80::4dd5:3b7e:321f:b1bd%8]) with mapi id 15.20.3348.005; Wed, 26 Aug 2020
- 12:19:32 +0000
-From:   Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: Clang | llc incorrect jumps
-Thread-Topic: [EXTERNAL] Re: Clang | llc incorrect jumps
-Thread-Index: AdZ6+BhyKlwHLo/hTjGCiXuCkGGBSQAB3rQAACiyYNA=
-Date:   Wed, 26 Aug 2020 12:19:31 +0000
-Message-ID: <AM0PR83MB02753E93882896A2138995ADFB540@AM0PR83MB0275.EURPRD83.prod.outlook.com>
-References: <AM0PR83MB0275B96730F50564861C3C55FB570@AM0PR83MB0275.EURPRD83.prod.outlook.com>
- <CAADnVQ+BpWg5aFMG2QV1OWvPgzrwqpPO+9fJ6NfwEPLp3Gp6Mw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+BpWg5aFMG2QV1OWvPgzrwqpPO+9fJ6NfwEPLp3Gp6Mw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=kesheldr@microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-08-26T12:19:28.9062338Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=41a2629c-0c62-4158-93d1-7b6a297316e5;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [149.12.0.58]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 04bd2c34-960f-4761-2b5a-08d849ba49c1
-x-ms-traffictypediagnostic: AM0PR83MB0273:
-x-microsoft-antispam-prvs: <AM0PR83MB02737AE48637AF7A8B1BBFC1FB540@AM0PR83MB0273.EURPRD83.prod.outlook.com>
-x-o365-sonar-daas-pilot: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0zUQ+CmgutfublKROlj2TfUJUrry9kkdVSHONbgx7WeHxnjwyogPFF4tlrhHyj5Bgw4miruImhtxeEcN1tMPCAJwGaDselNcaRLHAks1HXDSgFbBMlv3U13yBopDVOI22JheKGNUndX4qOJUe+TmUe29/8zfFOLvsfV7uwroIDhJQ+2SNfuWg7aboYrZoEWIVYNLgJC/hgpHdt7rvJyaBfUAfK5rBCd5HRa9SYDoDAjcOPgZ40O6h2jcz9QDFQ7HL1JHGZRVK1JPJd/pBTGEdsl6NU/YEJb8ha1wNECcu0BPSOqufRx1qlqe8cwSaIsS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR83MB0275.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(366004)(316002)(110136005)(33656002)(8676002)(66446008)(8936002)(83380400001)(82950400001)(82960400001)(7696005)(64756008)(10290500003)(66556008)(186003)(71200400001)(76116006)(66946007)(6506007)(2906002)(53546011)(52536014)(86362001)(9686003)(5660300002)(4326008)(8990500004)(26005)(55016002)(478600001)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: XKUHtk3sFv5IIE+qHFbDWBrUAvOuHyHX2FqiG+3b090qu8t+UG/y9RcYXzvyLOo0o6WoKRWPhCMqL37nCLckjroYGC7eKZ0/EtwEkXgVIXuLOTXNwGl8ZqnzQ5wLRqLu9O4dmNBSKqmmZNCOojchUjI2huep++R+szDwTiVhjuaZpDK9rP3InxhEXZXcabpELBM+uCnbXqppBfDRPRKoeKukpiThFh8EpFIc36BJgJYz/6fAKhfzf9m4LY0gI/wA7BGNx6RvH+a/iHxy35V0EingP2diPGKSJp8GNhmZiE9sI9auJ8sEuq3pXmVgzc2X69wdYsVaIXwcZklnzDtaOjWIpYCRLod1pkPkOiKMnZKWbG2JJBxOSXMvJL66ZpDVphTf1DGELxDS//HCShJmTPBYy9Lbqr3SlTiEVCTXGFQEykz4g6ZONUJshZwDHBncNkARIgITV093wQdgIp+kDNqfEksxe5Y2cBT0Y29M3in+u5Hxfcaa57nDa+nJqH2A76sE7r4x8YN6hBdfdwXxhwYK6lFEkFV6qOHq+HSdHmL7je32gDQ5ud7hTbpXLSBx+XaOm1R0kx3UCB4ApAiB3KZv27aDuTO3w15LzEBPW7EB3gAgE6sNw0LGGR8z8M83nkGmU4zxqeRjZhBmuuYygg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1730204AbgHZNUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 09:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728132AbgHZNUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 09:20:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC13C061574;
+        Wed, 26 Aug 2020 06:20:18 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id v15so1016885pgh.6;
+        Wed, 26 Aug 2020 06:20:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4lEiv1+g42tak/pNBpAE9OgTskqsd570J5NbrgTF+rw=;
+        b=nNtQ3v1BVgsx4TRI7w62tgAa3GApt9C4fEWT4Fzp7DgUe3yJnRieVQdqBJwDO7ABen
+         fjbAT0gWhWcuIAwcnZGp8hAyn9uzMHR86lCmiLHJ+KXIL2YuKnH6gjHnyLdxdbT4dgwo
+         owTuVTLeBNQxWLXebUk35aAS0TuV1jIe0j+5DV+1vkvV40XN8byYfFiwlfe6ogs+LbtQ
+         HBe2YRB4u+iyINEkGL3rciNfxWE38w+nZA2PCWXPMNMHMhRdmcVb6Y8//7tK+L6rMKOq
+         cX3IW596PZj9xsqrcnlFDJwZiA51H4Q7DF97sTY0YsCib7slwOCdwMHcukUBfDmbySw4
+         Jb7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4lEiv1+g42tak/pNBpAE9OgTskqsd570J5NbrgTF+rw=;
+        b=n1YSPoGVUTZ/o064OOinJrdsok1x/4nExgGkXWrXK6NwJHeg3H4wUUg6Uan99hnfGl
+         HMx72mFs0JY94aF57J2lX3IXe5ocqezmmin/DZ3imRx5kOZSOtSkDlsIbmBBXlTRMvJM
+         3Btm1vpRzVdFYxu+bVh90jYqB66FOufvB1Yi46GKgjshV/yAgC3Ilb/tY1DqDlGrmuqm
+         nMeO1sdcLX8rF6xwBXzF5sCV8cjz2jY4/lZdLUrpSUIpTIAxQlLdb1DmedfNGoQR03qd
+         LBktB1oVdr4sDLV5MaGO+PEKNubBsFkNbYRjwhfvsc1i4TM6VuS32LZTypJDOgAszHb4
+         2FEA==
+X-Gm-Message-State: AOAM531OMvrVRaqO6Zf+2QqHJgupP4yHWlKtQ3XYS3/Wo7dyvkRVcn1z
+        TSJVb46iY11LSejG6ky5U6rbucwZdm4UR4aF
+X-Google-Smtp-Source: ABdhPJyN1F2uNljjQzI2Bikxr5uHOZflMJqPqx/eUC6MyCnzUFa5Abc2EwFLCV18QVIGOWv7RtGmzA==
+X-Received: by 2002:a63:30c6:: with SMTP id w189mr10298599pgw.241.1598448017984;
+        Wed, 26 Aug 2020 06:20:17 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s129sm3131794pfb.39.2020.08.26.06.20.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 06:20:16 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko B <andrii.nakryiko@gmail.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv9 bpf-next 0/5] xdp: add a new helper for dev map multicast support
+Date:   Wed, 26 Aug 2020 21:19:57 +0800
+Message-Id: <20200826132002.2808380-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200715130816.2124232-1-liuhangbin@gmail.com>
+References: <20200715130816.2124232-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR83MB0275.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04bd2c34-960f-4761-2b5a-08d849ba49c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2020 12:19:32.0427
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yqSno1al/+8S8HF1biryoHNC7CgXIjYN7kZZjozclD0j47N2vvUUL7vEc0oJRK6iMe7PUJCbEzKk0LS4g/e84A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR83MB0273
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQpPbiBUdWUsIEF1ZyAyNSwgMjAyMCBhdCA1OjQ5IFBNIEFsZXhlaSBTdGFyb3ZvaXRvdiA8YWxl
-eGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbT4gd3JvdGU6DQo+IE9uIFR1ZSwgQXVnIDI1LCAyMDIw
-IGF0IDk6MzQgQU0gS2V2aW4gU2hlbGRyYWtlDQo+IDxLZXZpbi5TaGVsZHJha2VAbWljcm9zb2Z0
-LmNvbT4gd3JvdGU6DQo8U05JUD4NCj4gPiBJZiBJIHJlbW92ZSBvbmUgc2VjdGlvbiBvZiBjb2Rl
-LCB1bnJlbGF0ZWQgdG8gd2hlcmUgdGhlIGlsbGVnYWwganVtcHMgYXJlLA0KPiByZWR1Y2luZyB0
-aGUgb3ZlcmFsbCBzaXplIHRvIDI0NDgwIGluc3RydWN0aW9ucywgdGhlIGlsbGVnYWwganVtcHMg
-ZGlzYXBwZWFyLiAgSWYNCj4gSSByZWVuYWJsZSB0aGF0IHNlY3Rpb24gb2YgY29kZSBhbmQgcmVt
-b3ZlIGEgZGlmZmVyZW50IHNlY3Rpb24gb2YgY29kZSwgYWxzbw0KPiB1bnJlbGF0ZWQgdG8gdGhl
-IGlsbGVnYWwganVtcHMsIHJlZHVjaW5nIHRoZSBvdmVyYWxsIHNpemUgdG8gNDc0NDQgaW5zdHJ1
-Y3Rpb25zLA0KPiB0aGUgaWxsZWdhbCBqdW1wcyBkaXNhcHBlYXIgYWdhaW4uDQo+IA0KPiBJIHN1
-c3BlY3QgaXQncyBhIGJ1ZyBpbiBsbHZtLiBJdCBkb2Vzbid0IGhhdmUgYSBjaGVjayB0aGF0IHRo
-ZSBicmFuY2ggdGFyZ2V0IGZpdHMNCj4gaW50byAxNi1iaXRzLg0KPiBJdCBzaW1wbHkgZG9lczoN
-Cj4gbGx2bS9saWIvVGFyZ2V0L0JQRi9NQ1RhcmdldERlc2MvQlBGQXNtQmFja2VuZC5jcHANCj4g
-ICAgIFZhbHVlID0gKHVpbnQxNl90KSgoVmFsdWUgLSA4KSAvIDgpOw0KPiAgICAgc3VwcG9ydDo6
-ZW5kaWFuOjp3cml0ZTx1aW50MTZfdD4oJkRhdGFbRml4dXAuZ2V0T2Zmc2V0KCkgKyAyXSwgVmFs
-dWUsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFbmRpYW4pOyBDb3Vs
-ZCB5b3UgYWRkIGEgbG9nIGFyb3VuZCB0aGF0IGxpbmUgdG8gZG91YmxlDQo+IGNoZWNrIHRoYXQn
-cyB0aGUgY2FzZT8NCj4gTWF5IGJlIHlvdSBjb3VsZCBzZW5kIGEgcGF0Y2ggdG8gYWRkIGFuIGFz
-c2VydCB0aGVyZT8NCj4gSXQgd2lsbCBoZWxwIG90aGVycyBhdm9pZCB0aGlzIGRlYnVnZ2luZy4N
-Cj4gDQo+IEluIHRoZSBwYXN0IHdlJ3ZlIHRhbGtlZCBhYm91dCBleHRlbmRpbmcgQlBGIElTQSB3
-aXRoIDMyLWJpdCB1bmNvbmRpdGlvbmFsDQo+IGp1bXAgaW5zdHJ1Y3Rpb24uDQo+IEJ1dCBubyBv
-bmUgZGlkbid0IGNvbWUgYXJvdW5kIHRvIGFjdHVhbGx5IGltcGxlbWVudGluZyBpdC4NCj4gT25j
-ZSB3ZSBoYXZlIHN1Y2ggaW5zbiBsbHZtIHNob3VsZCBiZSBhYmxlIHRvIGRldGVjdCB0aGlzIDE2
-LWJpdCBvdmVyZmxvdw0KPiBhbmQgdXNlIHRoaXMgbmV3IGptcCBpbnNuLg0KDQpIZWxsbyBBbGV4
-ZWkNCg0KVGhhbmsgeW91IGZvciB0aGlzIGluc2lnaHQgLSB0aGF0J3MgcmVhbGx5IGhlbHBmdWwu
-ICBJJ2xsIGdldCBvbiBpdCB3aGVuIEknbSBiYWNrIGF0IHdvcmsgb24gRnJpZGF5IGFuZCBJJ2xs
-IHN1Ym1pdCBhIHBhdGNoLg0KDQpUaGFua3MNCg0KS2V2aW4gU2hlbGRyYWtlDQoNCg==
+This patch is for xdp multicast support. which has been discussed before[0],
+The goal is to be able to implement an OVS-like data plane in XDP, i.e.,
+a software switch that can forward XDP frames to multiple ports.
+
+To achieve this, an application needs to specify a group of interfaces
+to forward a packet to. It is also common to want to exclude one or more
+physical interfaces from the forwarding operation - e.g., to forward a
+packet to all interfaces in the multicast group except the interface it
+arrived on. While this could be done simply by adding more groups, this
+quickly leads to a combinatorial explosion in the number of groups an
+application has to maintain.
+
+To avoid the combinatorial explosion, we propose to include the ability
+to specify an "exclude group" as part of the forwarding operation. This
+needs to be a group (instead of just a single port index), because there
+may have multi interfaces you want to exclude.
+
+Thus, the logical forwarding operation becomes a "set difference"
+operation, i.e. "forward to all ports in group A that are not also in
+group B". This series implements such an operation using device maps to
+represent the groups. This means that the XDP program specifies two
+device maps, one containing the list of netdevs to redirect to, and the
+other containing the exclude list.
+
+To achieve this, I re-implement a new helper bpf_redirect_map_multi()
+to accept two maps, the forwarding map and exclude map. If user
+don't want to use exclude map and just want simply stop redirecting back
+to ingress device, they can use flag BPF_F_EXCLUDE_INGRESS.
+
+The 1st patch add a new bpf arg to allow NULL map pointer.
+The 2nd patch add the new bpf_redirect_map_multi() helper.
+The 3rd and 4th patches are for usage sample and testing purpose, there
+is no effort has been made on performance optimisation.
+The 5th patch added some verifier test for new bpf arg ARG_CONST_MAP_PTR_OR_NULL
+
+I did same tests with pktgen(pkt size 64) to compire with xdp_redirect_map().
+Here is the test result(the veth peer has a dummy xdp program with XDP_DROP
+directly):
+
+Version         | Test                                   | Native | Generic
+5.9 rc1         | xdp_redirect_map       i40e->i40e      |  10.4M |  1.9M
+5.9 rc1         | xdp_redirect_map       i40e->veth      |  14.2M |  2.2M
+5.9 rc1 + patch | xdp_redirect_map       i40e->i40e      |  10.3M |  1.9M
+5.9 rc1 + patch | xdp_redirect_map       i40e->veth      |  14.2M |  2.2M
+5.9 rc1 + patch | xdp_redirect_map_multi i40e->i40e      |   8.0M |  1.5M
+5.9 rc1 + patch | xdp_redirect_map_multi i40e->veth      |  11.2M |  1.6M
+5.9 rc1 + patch | xdp_redirect_map_multi i40e->i40e+veth |   3.5M |  1.1M
+
+The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
+the map and do clone skb/xdpf. The generic path is slower than native
+path as we send skbs by pktgen. So the result looks reasonable. There is
+some performance improvement for veth port compared with 5.8 rc1.
+
+Last but not least, thanks a lot to Toke, Jesper, Jiri and Eelco for
+suggestions and help on implementation.
+
+[0] https://xdp-project.net/#Handling-multicast
+
+v9: Merge the new bpf argument type ARG_CONST_MAP_PTR_OR_NULL to this patchset
+
+v8:
+a) Update function dev_in_exclude_map():
+   - remove duplicate ex_map map_type check in
+   - lookup the element in dev map by obj dev index directly instead
+     of looping all the map
+
+v7:
+a) Fix helper flag check
+b) Limit the *ex_map* to use DEVMAP_HASH only and update function
+   dev_in_exclude_map() to get better performance.
+
+v6: converted helper return types from int to long
+
+v5:
+a) Check devmap_get_next_key() return value.
+b) Pass through flags to __bpf_tx_xdp_map() instead of bool value.
+c) In function dev_map_enqueue_multi(), consume xdpf for the last
+   obj instead of the first on.
+d) Update helper description and code comments to explain that we
+   use NULL target value to distinguish multicast and unicast
+   forwarding.
+e) Update memory model, memory id and frame_sz in xdpf_clone().
+f) Split the tests from sample and add a bpf kernel selftest patch.
+
+v4: Fix bpf_xdp_redirect_map_multi_proto arg2_type typo
+
+v3: Based on Toke's suggestion, do the following update
+a) Update bpf_redirect_map_multi() description in bpf.h.
+b) Fix exclude_ifindex checking order in dev_in_exclude_map().
+c) Fix one more xdpf clone in dev_map_enqueue_multi().
+d) Go find next one in dev_map_enqueue_multi() if the interface is not
+   able to forward instead of abort the whole loop.
+e) Remove READ_ONCE/WRITE_ONCE for ex_map.
+
+v2: Add new syscall bpf_xdp_redirect_map_multi() which could accept
+include/exclude maps directly.
+
+Hangbin Liu (5):
+  bpf: add a new bpf argument type ARG_CONST_MAP_PTR_OR_NULL
+  xdp: add a new helper for dev map multicast support
+  sample/bpf: add xdp_redirect_map_multicast test
+  selftests/bpf: add xdp_redirect_multi test
+  selftests/bpf: Add verifier tests for bpf arg
+    ARG_CONST_MAP_PTR_OR_NULL
+
+ include/linux/bpf.h                           |  22 +++
+ include/linux/filter.h                        |   1 +
+ include/net/xdp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  27 +++
+ kernel/bpf/devmap.c                           | 124 +++++++++++++
+ kernel/bpf/verifier.c                         |  29 ++-
+ net/core/filter.c                             | 112 +++++++++++-
+ net/core/xdp.c                                |  29 +++
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  43 +++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 166 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  27 +++
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  77 ++++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  22 ++-
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 164 +++++++++++++++++
+ .../testing/selftests/bpf/verifier/map_ptr.c  |  70 +++++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 173 ++++++++++++++++++
+ 18 files changed, 1080 insertions(+), 14 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
+
+-- 
+2.25.4
+
