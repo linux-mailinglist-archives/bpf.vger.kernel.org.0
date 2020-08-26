@@ -2,82 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042A12529EB
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 11:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228AE2529F6
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 11:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgHZJ0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 05:26:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23371 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727982AbgHZJ0O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Aug 2020 05:26:14 -0400
+        id S1728073AbgHZJ0S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 05:26:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27452 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728063AbgHZJ0Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 05:26:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598433972;
+        s=mimecast20190719; t=1598433975;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ve0BOGipvrEyZNF3unuUB8RSXRaKeLtKF9/koSApImE=;
-        b=POorwIMWHQHAoFiIrpVFODHGtqDcBpcVLNOh1nAA4DWJUtABY1OqnDslaEkacwYm8FRE5W
-        nxV+Hqj0m5xjrNL2lPcL5j0kj58qBBvpiCn7xvE5y+CNy8LP23SNwvRpq+1/37XRwy6cKG
-        IiTGIt94IFcyxEJoyjFwOr+aDaCY89M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-a1Cydz3dOqWdIcbci1LExw-1; Wed, 26 Aug 2020 05:26:07 -0400
-X-MC-Unique: a1Cydz3dOqWdIcbci1LExw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFE6087309D;
-        Wed, 26 Aug 2020 09:26:05 +0000 (UTC)
-Received: from krava (unknown [10.40.194.188])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DE01F808BF;
-        Wed, 26 Aug 2020 09:25:57 +0000 (UTC)
-Date:   Wed, 26 Aug 2020 11:25:56 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        KP Singh <kpsingh@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        bh=agp/hO3HA0Z0hfUFtsmDs9RtARVSFqoaGKCQpLnO2Ok=;
+        b=N3JpjTIMh+iF8460yynV+pLkmnMcPXdYwvu19bISB5HwlBZPmWa0piNz6Z5meC4FQ1dfhQ
+        KomH+Kb/Ih9TdITv+90qXk7kCQ39nn4NCMohXWk98o/MtJjIK5J5zxn+ALU8SKG6ZP06vH
+        FIJYIdSmxfHRNed6d9eyC6Sz7upxdCQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-568-96tLtoWZO1qmnPCf7vt_qg-1; Wed, 26 Aug 2020 05:26:13 -0400
+X-MC-Unique: 96tLtoWZO1qmnPCf7vt_qg-1
+Received: by mail-wm1-f70.google.com with SMTP id z1so532201wmf.9
+        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 02:26:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=agp/hO3HA0Z0hfUFtsmDs9RtARVSFqoaGKCQpLnO2Ok=;
+        b=FpkIOpXgu2QM9LWwJZZu1YSsdu/GycUGvMUyypXz9mvmyW2phabNt2uUDnk2FtGhSI
+         pEz1W8lS31wPZ5Vr2TWzEAsr6KW9oK+egZRM5fqVAwvA2SWtm2LccTk/8BZ3WulfcSZF
+         TncKsY9c6v4tBt8vXpWDYjhDybxyDlqLdnHH+6F14yl+7LSLQWQYKlhf94DKfSwJwVPm
+         oq6V0uvL3BYfTNQreutZmTHNJwZ3VUxrzC/+JCGQFQy2pTUfXb1NHl61j6DgDhQoVnNW
+         juLYenR0g1MpKEXvaQn1zbDJ/NRflPpyOfVDAGcXLIvTKRRJMLnlHiAYjSAC3IYZKXxa
+         8a4A==
+X-Gm-Message-State: AOAM531Iz+mTqOzsu4uRO80ajrTdZt6+FNQuD9El9sU/oDb12qitlrhV
+        SSpvu6kvG497PbzB24bD72yIB08mQacHzx+9CVMFbjaWnhtc6F6pYkI/NzsInojtxDu2iP8DmX3
+        7IiwiljghkCxs
+X-Received: by 2002:a1c:f402:: with SMTP id z2mr5905007wma.87.1598433972521;
+        Wed, 26 Aug 2020 02:26:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjBNfA0JkDm5pSERTTkgDewo1suo1L4gWLGvbKyUyxju95Q1RgGFF9tew89G/0ciNae8pP+A==
+X-Received: by 2002:a1c:f402:: with SMTP id z2mr5904993wma.87.1598433972345;
+        Wed, 26 Aug 2020 02:26:12 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id j8sm4780813wrs.22.2020.08.26.02.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 02:26:11 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 638F2182B6D; Wed, 26 Aug 2020 11:26:11 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Udip Pant <udippant@fb.com>, Udip Pant <udippant@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH v12 bpf-next 10/14] bpf: Add d_path helper
-Message-ID: <20200826092556.GA703542@krava>
-References: <20200825192124.710397-1-jolsa@kernel.org>
- <20200825192124.710397-11-jolsa@kernel.org>
- <CAADnVQKtE9p22J2stAc6WuGOxkoPdzcAf5DstK6J76-x1thjZA@mail.gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 0/4] bpf: verifier: use target program's
+ type for access verifications
+In-Reply-To: <20200825232003.2877030-1-udippant@fb.com>
+References: <20200825232003.2877030-1-udippant@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 26 Aug 2020 11:26:11 +0200
+Message-ID: <87wo1lwyfg.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKtE9p22J2stAc6WuGOxkoPdzcAf5DstK6J76-x1thjZA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 03:58:32PM -0700, Alexei Starovoitov wrote:
-> On Tue, Aug 25, 2020 at 12:23 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >  #define __BPF_FUNC_MAPPER(FN)          \
-> >         FN(unspec),                     \
-> > @@ -3655,7 +3668,8 @@ union bpf_attr {
-> >         FN(get_task_stack),             \
-> >         FN(load_hdr_opt),               \
-> >         FN(store_hdr_opt),              \
-> > -       FN(reserve_hdr_opt),
-> > +       FN(reserve_hdr_opt),            \
-> > +       FN(d_path),
-> >         /* */
-> 
-> This is not correct. Please keep "\" at the end.
-> I've missed it while applying Martin's patch.
-> I've manually rebased this set due to conflict with KP's changes,
-> fixed the above issue and applied.
+Udip Pant <udippant@fb.com> writes:
 
-thanks,
-jirka
+> This patch series adds changes in verifier to make decisions such as gran=
+ting
+> of read / write access or enforcement of return code status based on
+> the program type of the target program while using dynamic program
+> extension (of type BPF_PROG_TYPE_EXT).
+>
+> The BPF_PROG_TYPE_EXT type can be used to extend types such as XDP, SKB
+> and others. Since the BPF_PROG_TYPE_EXT program type on itself is just a
+> placeholder for those, we need this extended check for those extended
+> programs to actually work with proper access, while using this option.
+>
+> Patch #1 includes changes in the verifier.
+> Patch #2 adds selftests to verify write access on a packet for a valid=20
+> extension program type
+> Patch #3 adds selftests to verify proper check for the return code
+> Patch #4 adds selftests to ensure access permissions and restrictions=20
+> for some map types such sockmap.
+
+Thanks for fixing this!
+
+For the series:
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
