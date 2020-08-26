@@ -2,107 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFC12528A4
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 09:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161D52528B6
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 09:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbgHZHuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 03:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
+        id S1726698AbgHZH4u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 03:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgHZHuk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Aug 2020 03:50:40 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D96C061574
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 00:50:40 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id z22so770480oid.1
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 00:50:40 -0700 (PDT)
+        with ESMTP id S1726016AbgHZH4s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 03:56:48 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2B9C061574;
+        Wed, 26 Aug 2020 00:56:48 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id g6so509664pjl.0;
+        Wed, 26 Aug 2020 00:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u/LWzNjYebAgkV5btA27GyQwpiuLqO4m8FQFnzAQZXA=;
-        b=BN6nYJwRl+zIeg+fg6HkVnKnMBPv2/8y5hGwQ96NJ3Omdg48na25BOF0+pMVtZ98ZS
-         wkLmGsV5WbiaJi1EqHsgn2JaJIUpQpl4ImcW7vupOI4wJpMkWLIGaI9Llfma5NZfN6ct
-         9Bq1FOQQtqZgpgTWNqXaUaI7fSqTy28iZ/jBI=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lQhOObv+lMeVrBH98+RIOt0nZTla/ZkBoT3gnKZpJ6g=;
+        b=dMQVUM2LfcF3dyA0IeYUCQDV6Uud3W19yX1d/PlY9sKdtsdmQsSBHelgKbvvde5/3R
+         i7JY6JNJ3rD/ocGzK+MiSd9BxUStN9sFvwTfrsjU+9IGIRraFtUcE3+SCvmnPEHYrOt9
+         kvobXGr7kumAveis20yV1nvlBRtTRUltYase8FRgrwWOVM6esxK7zeEtgWdNg2o2TqUk
+         Luc1rUvukw8jUHQ0kH63uPnHwTiucwLnZgJ6y//m2k0lJCqZouYyyLHxFe7mtYRkTcIW
+         DVTzyZvPWwie7NTutGAtDTM+eaoVi2G9O8aggrgRre1FF7j/uwb6Fx7UR/TQWVigh18S
+         wycQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u/LWzNjYebAgkV5btA27GyQwpiuLqO4m8FQFnzAQZXA=;
-        b=Q4OhQoZgb8K0opgTmiCV4PxiTpbnwovjck+TOjF78DrLYMB+mX3ZOIC/NNB5KmKFno
-         2BNBwmUvmWu1aG1dZN2kdqELw6FWz9jwBSuItOCNhW7lxDs9EPL8Z244CCS/k9b2gOQM
-         NUK5MfqVxWxEo4g9pZStSOxWYcWsP9CiQ27rNSy5rhtq3pGFL+ePgD3oDecTSrkI+s/1
-         FpwNVdyDHLXsz+Z8sb1h0bs3Q3yHKjzqoJgov525auGxMrFafjuPZVRSwkEDBQTwkyc2
-         9WQAijVtem/R8MGwJVea2EhhnRK6OAv5Fox9490G9CSSLM39vhTV+9+vpXykvDOtmd4Y
-         W8Ow==
-X-Gm-Message-State: AOAM532Pzue+bVWht/2aDSnm6U9Y+QELDaINEx2e36t4oGeW5M4XoyNu
-        FEDVaCda2kZ3Xfx471klWskIGnGGJRWxaNlycA7Mwsw5mTE=
-X-Google-Smtp-Source: ABdhPJyX1ZDP8Ow/pVUvPqpTkXpOx3eCsc14OCah9yeVVRq1Jv6DrvGXK/AXV6rlhmJybVjlwoTcze9FjuQpS49OJbM=
-X-Received: by 2002:aca:3e8b:: with SMTP id l133mr293974oia.110.1598428239829;
- Wed, 26 Aug 2020 00:50:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lQhOObv+lMeVrBH98+RIOt0nZTla/ZkBoT3gnKZpJ6g=;
+        b=W2XE0MehEEjDMAi5G82Vi4uoyOJX7Ei6XmD8nG9BQDBJrhjxhYGkl1C70z7ScuZJWL
+         uSogGJnD7eQnHTpdOWX2ZjIDIxhrb6cu7lF4pUU3xV1mx72m80aAmfaLORoOBgYyUZ/0
+         OLnYLoZImrr0QweoWehgsDZeEP9lFZog63K0tNi3bjmpmytVNNtBd27odFglJanx9/Su
+         C9UrOgTMPmfhz5o/+L6RVVzw5K1Nd2cDWCZZexPKbmbtyZQJhbKkuuSGwsozr6/pm4Yp
+         aWVGZ9X3uHhM7lO/oTU7fUvPrCDgzlpLEDLcP3qnj9MErw+xNHGL8w1JHpjZlbalpWE2
+         /LjA==
+X-Gm-Message-State: AOAM530PRrUv8x4kn04tNQd8j0oXSttX3I6cx/Z3Z8ZvnfRyMdnOTW6v
+        FF5Ww4ILUWDj9maQzSBS9TA3yKOJLA8=
+X-Google-Smtp-Source: ABdhPJwrCG4NQcUg5+X4kECL4J44UXkxe5monYE8rncYwMfmGhT59HMGGOfFVCnJx5SlXCgzvCWjFw==
+X-Received: by 2002:a17:90a:2a84:: with SMTP id j4mr5025904pjd.135.1598428607699;
+        Wed, 26 Aug 2020 00:56:47 -0700 (PDT)
+Received: from localhost.localdomain (c-24-130-33-210.hsd1.ca.comcast.net. [24.130.33.210])
+        by smtp.gmail.com with ESMTPSA id o65sm1796100pfg.105.2020.08.26.00.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 00:56:46 -0700 (PDT)
+From:   Alex Gartrell <alexgartrell@gmail.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     kernel-team@fb.com, Alex Gartrell <alexgartrell@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Fix unintentional success return code in bpf_object__load
+Date:   Wed, 26 Aug 2020 00:55:49 -0700
+Message-Id: <20200826075549.1858580-1-alexgartrell@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <CACAyw98fJe3qanRVe5LcoP49METHhzjZKPcSGnKQ-o=_F3=Hfw@mail.gmail.com>
- <CAADnVQLji8CMCVoefHPqc457Fz1xZ+yEnogHXpghhx6=GPYTbg@mail.gmail.com>
-In-Reply-To: <CAADnVQLji8CMCVoefHPqc457Fz1xZ+yEnogHXpghhx6=GPYTbg@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 26 Aug 2020 08:50:28 +0100
-Message-ID: <CACAyw988=DLoXJ6dC4qkTCWgQu2M19fVTAhjnF5Hg2Oe=mkmOw@mail.gmail.com>
-Subject: Re: Advisory file locking behaviour of bpf_link (and others?)
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Aug 2020 at 19:06, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Aug 25, 2020 at 6:39 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > Hi,
-> >
-> > I was playing around a bit, and noticed that trying to acquire an
-> > exclusive POSIX record lock on a bpf_link fd fails. I've traced this
-> > to the call to anon_inode_getfile from bpf_link_prime which
-> > effectively specifies O_RDONLY on the bpf_link struct file. This makes
-> > check_fmode_for_setlk return EBADF.
-> >
-> > This means the following:
-> > * flock(link, LOCK_EX): works
-> > * fcntl(link, SETLK, F_RDLCK): works
-> > * fcntl(link, SETLK, F_WRLCK): doesn't work
-> >
-> > Especially the discrepancy between flock(EX) and fcntl(WRLCK) has me
-> > puzzled. Should fcntl(WRLCK) work on a link?
-> >
-> > program fds are always O_RDWR as far as I can tell (so all locks
-> > work), while maps depend on map_flags.
->
-> Because for links fd/file flags are reserved for the future use.
-> progs are rdwr for historical reasons while maps can have three combinations:
-> /* Flags for accessing BPF object from syscall side. */
->         BPF_F_RDONLY            = (1U << 3),
->         BPF_F_WRONLY            = (1U << 4),
-> by default they are rdwr.
-> What is your use case to use flock on bpf_link fd?
+There are code paths where EINVAL is returned directly without setting
+errno. In that case, errno could be 0, which would mask the
+failure. For example, if a careless programmer set log_level to 10000
+out of laziness, they would have to spend a long time trying to figure
+out why.
 
-The idea is to prevent concurrent access / modification of pinned maps
-+ pinned link from a command line tool. I could just as well lock one
-of the maps for this, but conceptually the link is the thing that
-actually controls what maps are used via the attached BPF program.
-FWIW I'm using flock(EX) on the link for now, which is fine for my use
-case. I just thought I'd raise this in case it was an oversight :)
+Fixes: 4f33ddb4e3e2 ("libbpf: Propagate EPERM to caller on program load")
+Signed-off-by: Alex Gartrell <alexgartrell@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best
-Lorenz
-
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 2e2523d8bb6d..8f9e7d281225 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -6067,7 +6067,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ 		free(log_buf);
+ 		goto retry_load;
+ 	}
+-	ret = -errno;
++	ret = errno ? -errno : -LIBBPF_ERRNO__LOAD;
+ 	cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
+ 	pr_warn("load bpf program failed: %s\n", cp);
+ 	pr_perm_msg(ret);
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.26.0
 
-www.cloudflare.com
