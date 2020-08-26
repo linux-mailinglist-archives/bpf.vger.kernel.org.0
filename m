@@ -2,108 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBE825360C
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 19:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D783125376F
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 20:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgHZRlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 13:41:21 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22034 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725995AbgHZRlU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Aug 2020 13:41:20 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07QHbJhY012204;
-        Wed, 26 Aug 2020 10:41:15 -0700
+        id S1726858AbgHZSpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 14:45:30 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36166 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726786AbgHZSp3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 Aug 2020 14:45:29 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07QIccrn003000;
+        Wed, 26 Aug 2020 11:45:26 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=3gT3kyP+h6uSL/Uf4CrZaDXHedWudk/oGGg+fqF0pNI=;
- b=EWcquvZbxIWB4QJwAW+1QPGuNT9lfY6P3CWuQW4cBim2xyCka7QQw1ijFgsg9n+CqAI8
- 8dwm6A7E6/SfNEI+GbbjKv0Op8LFIY0jI5/4GJOoaffWoVEci5el6FfLR4TZTyoHiHGI
- QDMne3hRNJgvNAaMbyefTt5GI3hWl6yBuIQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 335up8g8hs-12
+ bh=HhKnk8tbMLXonHNa/UfLmipvZv4YTcZhV+yaW95+Who=;
+ b=g2f+J5pw9q9FodorCaMS6363hEhpqQ0ECgJP+ezuQb6341/RBNx6fYaS7xnYtFy++J+5
+ Y11VODquf5iQWCgr7J3NF9kgQY7Vjce6Ntk0mfsSZ0/zRj5qLdPrMAhWmXwTXZ3a/ywd
+ +UjsCwaz0AzIrjasDU+5mXyNdhd5fUe97mg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 335up7rn8p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 26 Aug 2020 10:41:15 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        Wed, 26 Aug 2020 11:45:26 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 26 Aug 2020 10:41:08 -0700
+ 15.1.1979.3; Wed, 26 Aug 2020 11:45:25 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K5s1DEHUe8Y1GRSCWXbRO1g9hi/y7XJm39Iq266iZGUSqiU0UE8aNTpmDs/q0rRfVwmIcz8DLtoEXjO74NruKfT2sxdWkmLnhG3HUxmtOS6Hqi88JluBl1TWaU5fjpbeal97hVoppTfCH4TsYGhFn3a0agGSJLtWKh+mWljRM1hdrQ0zGWj3qQjU+kQNf3bV52tqfm2BXdT0kW6P35KZCqM3Fv9yhMV4Y0/6SU/C3g3hNbtE/ayzkbD/CpQCm+xdYHtnMShplNonGP7T49MX1WRjf7CKG2RUZ8i06j4k453BBK35LeIE2TMl5oKbFdSALgcgSU04kFyM+Tm3K3cvWw==
+ b=TXPFdzduZ9CbboLl8t8rAvxB7X0tMflnzQRICaSkcDBqPptyl65H8SY/6WB0GvOiJxfqopV61cn/X6nxwPnXq+SuaxawaNgoZMNKh1wl7zqrAPzBuAeItHnmmgQ55+eQaBdiozxOo+pOiE3kiSDjl09QZOQilDIDieBwR9KukxhqGWutg/LxOkcqs9Bh0KWmm1gJnQiaMAtZZZlycg9flV3dKQPyHrbU/kjS4fcAEi4fVPZQQWP0tVDK3ZsmnqDprhDWzUXi37l6AAKmIBViggPXvTcDzpuTzlqARzpr7EeJzX9N0E6z+Nnuw5YmsavXQZSZFIWCBU4oKE08mdJLxw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3gT3kyP+h6uSL/Uf4CrZaDXHedWudk/oGGg+fqF0pNI=;
- b=nv6vWpQm63AU34O7xjxrhC4WNGXAaxnGQw8XZbV5ZlEl5g0hnlflUGD04G9l50l9qD5tydGN0Uve5FIDkecmFDxZNF8jEmLOd+6M6eg/ePTohdv+VQq5mHdr1eAr9eCATn08sZ+DoHCIhx8i8PKJPDqFUbFplVfP3+U1DhBttpz9S89tt7ze40nZ0p+LBezZxn7CLD/aLNWptgUKM5HUTYUdHGEqn9cxMYqrv6px54iT1m6JB2KSUyo8KVjDmn7unEWpyfAEk0MQUkfkN9OpU1F4ZW9hvK7WeIHXjtesI06mrLrpSkLGZtR63qq9Q8k1bAJ+r1eOjSWtIH4BbSKFfA==
+ bh=HhKnk8tbMLXonHNa/UfLmipvZv4YTcZhV+yaW95+Who=;
+ b=Bf0PKqmTNi9BniBluLfG96PDS17/KXdzk/91gmnHDUQ402PfoGxApezzTM7mbLlXizTlBkeZ3f3DYkwdJWyOqjbr/GnTPvzHtMRv+JXX14qiZrRc4ga7k+eShCi0JR1ES1/KsAVdhtsO1mfIr8a3H/9PzC3JA2Q/yMuURtaemHEXOcdeHE6ItDU7/N2ZiMzQX4cUCxxwm6J5Bw6uEedUYWECOL+7dj584Wh0CXu3t39VDpvk7i4ReUr05EmMbLiddXW69R6H00CmsDlvhZX39wP4h+lfJdYWwauRkPH/TTZPXqKrykQe/ivSQyj6jud+NRaDIH3pmKe8iyEZ4EQQ+g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3gT3kyP+h6uSL/Uf4CrZaDXHedWudk/oGGg+fqF0pNI=;
- b=PC0LSq4Vn3NDOt3uv6xkXrTqObQIgudqfIoKKXKvPNwyD9sek6aiVFTtxXxuetfe+77AdA18/dpVQijKItWsYjHKJjxUo1Jm/N9Eyfl5ApgNlzECzS2iumBPLwiV+PoLmY6P5tvafProHLdaG0NB3DF3+zrS79/uAuTxo7+Hi4c=
+ bh=HhKnk8tbMLXonHNa/UfLmipvZv4YTcZhV+yaW95+Who=;
+ b=TsH+kNtr0v7AQ2ERNB7CXmJ0ARV4LIczkzEVtYQp6qRKhwlMNe8m3YSLiqzy2WoYPvO+5TPlJ9y/sHHrUVcQq97IOyH3yYPEzncodVPf4SmSjs0s57FyavJ4Q12+8XxcJxJUHO1yPF33Am0hl2/6/ArXSYIQUSW4WVSKPiKxm/A=
+Authentication-Results: sartura.hr; dkim=none (message not signed)
+ header.d=none;sartura.hr; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2263.namprd15.prod.outlook.com (2603:10b6:a02:87::27) with
+ by BYAPR15MB3302.namprd15.prod.outlook.com (2603:10b6:a03:10f::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Wed, 26 Aug
- 2020 17:41:07 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.25; Wed, 26 Aug
+ 2020 18:45:24 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3326.019; Wed, 26 Aug 2020
- 17:41:07 +0000
-Subject: Re: [PATCH v1 bpf-next] bpf: new helper bpf_get_current_pcomm
-To:     Carlos Neira <cneirabustos@gmail.com>, <netdev@vger.kernel.org>
-CC:     <ebiederm@xmission.com>, <brouer@redhat.com>,
-        <bpf@vger.kernel.org>, <andriin@fb.com>
-References: <20200826160424.14131-1-cneirabustos@gmail.com>
+ 18:45:24 +0000
+Subject: Re: perf event and data_sz
+To:     Borna Cafuk <borna.cafuk@sartura.hr>, <bpf@vger.kernel.org>
+CC:     Luka Perkov <luka.perkov@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Jakov Petrina <jakov.petrina@sartura.hr>
+References: <CAGeTCaWAs9gX_Y17gXJhSVvsbuJF2aD3Tfi9+79JmndF2ERmOw@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <e3d9907a-391e-9b7e-c211-4a43b9d4f43f@fb.com>
-Date:   Wed, 26 Aug 2020 10:41:02 -0700
+Message-ID: <e21c4dd9-9336-017f-752e-5b83704d86bf@fb.com>
+Date:   Wed, 26 Aug 2020 11:45:19 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.11.0
-In-Reply-To: <20200826160424.14131-1-cneirabustos@gmail.com>
+In-Reply-To: <CAGeTCaWAs9gX_Y17gXJhSVvsbuJF2aD3Tfi9+79JmndF2ERmOw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR06CA0004.namprd06.prod.outlook.com
- (2603:10b6:208:23d::9) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MN2PR15CA0047.namprd15.prod.outlook.com
+ (2603:10b6:208:237::16) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by MN2PR06CA0004.namprd06.prod.outlook.com (2603:10b6:208:23d::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 26 Aug 2020 17:41:04 +0000
+Received: from 255.255.255.255 (255.255.255.255) by MN2PR15CA0047.namprd15.prod.outlook.com (2603:10b6:208:237::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 26 Aug 2020 18:45:22 +0000
 X-Originating-IP: [2620:10d:c091:480::1:342c]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 69f6b458-6bbc-4392-784c-08d849e735e2
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2263:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2263381A4ECAD325C3ED3E29D3540@BYAPR15MB2263.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 2aae9271-a7d8-4ad8-6da0-08d849f0310f
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3302:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB33023E31B106FF8F3062D060D3540@BYAPR15MB3302.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7152DSvMPTbEV0KtHe1jc3R8njRUDGCD5AidT9ou4FWkV5AF2xtyvb/ySra6lxdE+i1ZkjAny+AG7yaJrFkEjngW2QiVxOzGOhgZMJ/K7bK+ipnuPfp/8Am5zMc7KndI5+NgSQ5znQltbmUa45qFlG5/6aSgxWqc9/nThsnB4weIKmb/4Fb2YiL5JwsYIEHZjIwVBhNifmiD/dgxighsKvaoXkYsdLxih+tO+c8AnvbOwKnK2Kvwa5g7wuxWzP5/oAzL9cn5AUGtcUlk1jlssKktJxGqUrc6UtHavipsjZ+/u/eRP+CJPFe0/rbIDDLJ+DQEzLHNzR05VJqmr8TSuAsWIZyfRN7O2JsWLioHBFTxD7R2ACbKmI0iraQbTJl5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(346002)(376002)(366004)(66946007)(4326008)(478600001)(6486002)(5660300002)(2616005)(2906002)(31696002)(83380400001)(316002)(16576012)(86362001)(66556008)(66476007)(52116002)(8936002)(53546011)(186003)(956004)(36756003)(8676002)(31686004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: SKxS9kxwxrXnxG5e6IhK5zOdYFVhv9eRf4c3sVlPCYp70KrkbpVaC7lAoqwjMg+zdNMHnvvmRMfBoZDw8rgC+3+e0uthgdw0wnngqaTN7t/SQ12Z6FmJgVa7oodkFIo/aDL0HiA/dHWMEIMqr7OzT90qlIlwDG3nsiJzkrsleGNiBO9Bep7pLVouGoBe3FYsWo+2QvMyimq610LAtdwUTq/AOxr4YlFIZxb2eQgMclpz9TpOkVso1GQpJM8BqPl2rGLVvsGSc9H4EUNrX/cKN20HsLf7zHfbwnP66u+k9bhy3Qxu5CQAFvw0Tind1p5iiWrqDxDYY8LCj7S4NsdUn9VynQis7bY2k+GUKSPuUVEMCi8AKiRB/ZPyKAiG5AXYgqvR7seqcHYrxWRRa5eWdEeSadssFuma9aoOnQhmLppKosCP71Lzo60saUvVRFoCthn44bU3K7e7vCOANN1Aze+LWmV8qucEt+fKNdgRhyi9dcB3ofs63t6+Msv4BTpIXgf7QrgbrBjnFRry1J87Ua1PjJq7zFyS22hJ8IWVvpPo69NWwlHKmClOdMU512HeR5oCNI1h28NDAr5FgUbXuPL9GCKWt+e0oYSoGqf5NgvR7XfiKd4sQrUjjcZtsuMAkvQ77qvZlJu9neG7rjTNjlSS110dLHM4XITQB3taQZNRXdj/oI8QUrG8QVewnZHF
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69f6b458-6bbc-4392-784c-08d849e735e2
+X-Microsoft-Antispam-Message-Info: CnuTnUU6H1xJh15RGxSmMUaWpJfYf/LmfD+MLFsSXwJhlkclAxywj0kfrOSKvEVvBFC+L+mK7fnLyJbgA3qJGQ0r+JR6G7bQHesmPK2i5K3E2KfazmvJfPaKf0v6SfiQcrUbRjxk98nssIiBDsRq4OejnYVoiirlt6tqFbINHyB1tmDp1q96UX2YeY9niipQdgF7HJRxsd5f3X0vLz5vObtHRNA++L1RbFjxdGwS5ZqCViyIh7hgvXSDjoNLbgFCZ1xXWy9Q/yfDt4BxLDLD2PWmJIo4GEYPWl2Nd+W3+lTHJaKsVK69hPge2KvGMUdBhvP0ekUB/RwnM/jAt6X7b048wU1TjyEPLTeZibg7zZWBIS24LAM7YJZdv2WgIGRB+T6Ch7vAmUhbGASZU059w0sWltysAMZG4WGt+IWTm+qWkbBxSEjSuafXPBpRDuzKQhhsuS9rxNPL8HMJe2h8cA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(136003)(346002)(39860400002)(8936002)(66946007)(16576012)(4326008)(2616005)(956004)(86362001)(186003)(31686004)(8676002)(66556008)(6666004)(966005)(5660300002)(53546011)(83380400001)(31696002)(478600001)(2906002)(52116002)(66476007)(54906003)(316002)(36756003)(6486002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: IVOhXtu57ZvMAzywswd33IyOoCTMBJ36wSxst98XYDiiWhz3oint3etYI80kBwt52Q9VJUhBypFSiUoUSUDKfXuSH4j+GBWDzyjljrCn7bJSZn4QsEUDOOKZ/CyMNtqQxyg++NyXW3Qv2Az5xd7/FatuyrqwJvTjJ3yKRAgY668fiS45JBDzWs2MtZV36zgpHrYagNRpi2dJfZK5g8jljt/4ffRqC/OtRAvm/bnTyjKIegmH3w7tZFYi0fINRfNV2xkkGnxWx7KPEJix+6JpcEfrhhAsX+I9WGXTfJTRr4jTuoXbqh8jdQ+v2+OkYxVgKEKTXvU9uUABERwhL3gWAVODyTsn5LkqVM5FmS+Z00IdMq3MeE54Xg5oADuKWNLGJYOnEc3D3HiwTCOcmti8ut80M4AwCr7bdPT0VFeX8oxMrmI7ZxZXDB+wndIcqKqLDUwPCDz0lKJ8r90zrBjg+rPNLrJsgRfsk2NnsTt0p5qM6XIGbCja8XfcT7CfhaSF4JsZdCVWRqweArR1kZGS2fMedZsIglKPbJ44M6xSmF5W9t4hmK+V1Z0ify8Lzq0Soc4ksIknjfsrd5NuvVZIPOpWmgkjoee00xYsbeZ6BJYNESz+3tT77E68QZNx1QYqpRbAMJj7Txz+h5zHhUPuHnLMUo0j8vpiG/Ss9Com6BO6w9/5I+hfGRgawbjoSyYw
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2aae9271-a7d8-4ad8-6da0-08d849f0310f
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2020 17:41:07.0548
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2020 18:45:24.0066
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MGs332xhIvwJMlaGqOhx+QwRUcaoEyRaTYcXZebqQmo2nU5PAvdfe2CmYn3/RnEL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2263
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5aW1/Ddl3vSqMmvszGlhHth8NBe3vlBL6ZCNH4PKzwO4f6b2MAUx7I1YXoyat2pk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3302
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-26_10:2020-08-26,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- priorityscore=1501 malwarescore=0 mlxscore=0 clxscore=1011 bulkscore=0
- spamscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008260132
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 adultscore=0 suspectscore=0
+ mlxscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 clxscore=1011
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260138
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -112,152 +114,179 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 8/26/20 9:04 AM, Carlos Neira wrote:
-> In multi-threaded applications bpf_get_current_comm is returning per-thread
-> names, this helper will return comm from real_parent.
-> This makes a difference for some Java applications, where get_current_comm is
-> returning per-thread names, but get_current_pcomm will return "java".
+On 8/26/20 7:11 AM, Borna Cafuk wrote:
+> Hi everyone,
 > 
-> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> ---
->   include/linux/bpf.h                           |  1 +
->   include/uapi/linux/bpf.h                      | 15 ++++-
->   kernel/bpf/core.c                             |  1 +
->   kernel/bpf/helpers.c                          | 28 +++++++++
->   kernel/trace/bpf_trace.c                      |  2 +
->   tools/include/uapi/linux/bpf.h                | 15 ++++-
->   .../selftests/bpf/prog_tests/current_pcomm.c  | 57 +++++++++++++++++++
->   .../selftests/bpf/progs/test_current_pcomm.c  | 17 ++++++
->   8 files changed, 134 insertions(+), 2 deletions(-)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/current_pcomm.c
->   create mode 100644 tools/testing/selftests/bpf/progs/test_current_pcomm.c
+> When examining BPF programs that use perf buffers, I have noticed that
+> the `data_sz` parameter in the sample callback has a different value than
+> the size passed to `bpf_perf_event_output`.
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 81f38e2fda78..93b0c197fd75 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1754,6 +1754,7 @@ extern const struct bpf_func_proto bpf_skc_to_tcp_sock_proto;
->   extern const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto;
->   extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
->   extern const struct bpf_func_proto bpf_skc_to_udp6_sock_proto;
-> +extern const struct bpf_func_proto bpf_get_current_pcomm_proto;
->   
->   const struct bpf_func_proto *bpf_tracing_func_proto(
->   	enum bpf_func_id func_id, const struct bpf_prog *prog);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 544b89a64918..200a2309e5e1 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3509,6 +3509,18 @@ union bpf_attr {
->    *
->    *		**-EPERM** This helper cannot be used under the
->    *			   current sock_ops->op.
-> + *
-> + * long bpf_get_current_pcomm(void *buf, u32 size_of_buf)
-> + *	Description
-> + *		Copy the **comm** attribute of the real_parent current task
-> + *		into *buf* of *size_of_buf*. The **comm** attribute contains
-> + *		the name of the executable (excluding the path) for real_parent
-> + *		of current task.
-> + *		The *size_of_buf* must be strictly positive. On success, the
-> + *		helper makes sure that the *buf* is NUL-terminated. On failure,
-> + *		it is filled with zeroes.
-> + *	Return
-> + *		0 on success, or a negative error in case of failure.
->    */
->   #define __BPF_FUNC_MAPPER(FN)		\
-[...]
->   
->   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/tools/testing/selftests/bpf/prog_tests/current_pcomm.c b/tools/testing/selftests/bpf/prog_tests/current_pcomm.c
-> new file mode 100644
-> index 000000000000..23b708e1c417
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/current_pcomm.c
-> @@ -0,0 +1,57 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
-> +
-> +#define _GNU_SOURCE
-> +#include <test_progs.h>
-> +#include "test_current_pcomm.skel.h"
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <pthread.h>
-> +
-> +void *current_pcomm(void *args)
-> +{
-> +	struct test_current_pcomm__bss  *bss;
-> +	struct test_current_pcomm *skel;
-> +	int err, duration = 0;
-> +
-> +	skel = test_current_pcomm__open_and_load();
-> +	if (CHECK(!skel, "skel_open_load", "failed to load skeleton"))
-> +		goto cleanup;
-> +
-> +	bss = skel->bss;
-> +
-> +	err = test_current_pcomm__attach(skel);
-> +	if (CHECK(err, "skel_attach", "skeleton attach failed %d", err))
-> +		goto cleanup;
-> +
-> +	/* trigger tracepoint */
-> +	usleep(10);
-> +	err = memcmp(bss->comm, "current_pcomm2", 14);
-> +	if (CHECK(!err, "pcomm ", "bss->comm: %s\n", bss->comm))
-> +		goto cleanup;
-> +cleanup:
-> +	test_current_pcomm__destroy(skel);
-> +	return NULL;
-> +}
-> +
-> +int test_current_pcomm(void)
-> +{
-> +	int err = 0, duration = 0;
-> +	pthread_t tid;
-> +
-> +	err = pthread_create(&tid, NULL, &current_pcomm, NULL);
-> +	if (CHECK(err, "thread", "thread creation failed %d", err))
-> +		return EXIT_FAILURE;
-> +	err = pthread_setname_np(tid, "current_pcomm2");
-> +	if (CHECK(err, "thread naming", "thread naming failed %d", err))
-> +		return EXIT_FAILURE;
-> +
-> +	usleep(5);
-> +
-> +	err = pthread_join(tid, NULL);
-> +	if (CHECK(err, "thread join", "thread join failed %d", err))
-> +		return EXIT_FAILURE;
-> +
-> +	return EXIT_SUCCESS;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_current_pcomm.c b/tools/testing/selftests/bpf/progs/test_current_pcomm.c
-> new file mode 100644
-> index 000000000000..27dab17ccdd4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_current_pcomm.c
-> @@ -0,0 +1,17 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
-> +
-> +#include <linux/bpf.h>
-> +#include <stdint.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +char comm[16] = {0};
-> +
-> +SEC("raw_tracepoint/sys_enter")
-> +int current_pcomm(const void *ctx)
-> +{
-> +	bpf_get_current_pcomm(comm, sizeof(comm));
+> Raw samples are padded in `perf_prepare_sample` so their size is a multiple of
+> `sizeof(u64)` (see [0]). The sample includes the size header, a `u32`.
+> The size stored in `raw->size` is then size of the sample, minus the 4 bytes for
+> the size header. This size, however, includes both the data and the padding.
+> 
+> What I find confusing is that this size including the padding is eventually
+> passed as `data_sz` to the callback in the userspace, instead of
+> the size of the data that was passed as an argument to `bpf_perf_event_output`.
+> 
+> Is this intended behaviour?
 
-I think you want to get the pcomm of the newly created pthread. But
-the bpf program here could be triggered by other syscall as well.
-You probably want to filter based on the "curr_pcomm" pthread tid.
+ From the kernel source code, yes, this is expected behavior. What you 
+described below matches what the kernel did. So raw->size = 68 is expected.
 
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
+> 
+> I have a use-case for getting only the size of the data in the
+> userspace, could this be done?
+
+In this case, since we know the kernel writes one record at a time,
+you check the size, it is 68 more than 62, you just read 62 bytes
+as your real data, ignore the rest as the padding. Does this work?
+
+bcc callback passed the the buffer with raw->size to application.
+But applications are expected to know what the record layout is...
+
+> 
+> To demonstrate, I have prepared a minimal example by modifying
+> BCC's filelife example. It uses a kprobe on vfs_unlink to print some sizes
+> every time a file is unlinked. The sizes are:
+>   * the `sizeof(struct event)` measured in the userspace program,
+>   * the `sizeof(struct event)` measured in the BPF program, and
+>   * the `data_sz` parameter.
+> 
+> The first two are 62, as expected, but `data_sz` is 68.
+> The 62 bytes of the struct and the 4 bytes of the sample header make 66 bytes.
+> This is rounded up to the first multiple of 8, which is 72.
+> The 4 bytes for the size header are then subtracted,
+> and 68 is written as the data size.
+> 
+> Any input is much appreciated,
+> 
+> Best regards,
+> Borna Cafuk
+> 
+> 
+> [0] https://github.com/torvalds/linux/blob/6a9dc5fd6170d0a41c8a14eb19e63d94bea5705a/kernel/events/core.c#L7035
+> 
+> 
+> example.h
+> --------------------------------
+> #ifndef __EXAMPLE_H
+> #define __EXAMPLE_H
+> 
+> struct __attribute__((__packed__)) event {
+>      __u16 size;
+>      char filler[60];
+> };
+> 
+> #endif /* __EXAMPLE_H */
+> 
+> 
+> example.bpf.c
+> --------------------------------
+> #include "vmlinux.h"
+> #include <bpf/bpf_helpers.h>
+> #include <bpf/bpf_tracing.h>
+> #include "example.h"
+> 
+> struct {
+>      __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+>      __uint(key_size, sizeof(u32));
+>      __uint(value_size, sizeof(u32));
+> } events SEC(".maps");
+> 
+> SEC("kprobe/vfs_unlink")
+> int BPF_KPROBE(kprobe__vfs_unlink, struct inode *dir, struct dentry *dentry)
+> {
+>      struct event event = {};
+>      event.size = sizeof(struct event);
+> 
+>      bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU,
+>                            &event, sizeof(struct event));
+>      return 0;
+> }
+> 
+> char LICENSE[] SEC("license") = "GPL";
+> 
+> 
+> example.c
+> --------------------------------
+> #include <stdio.h>
+> #include <bpf/libbpf.h>
+> #include <sys/resource.h>
+> #include "example.h"
+> #include "example.skel.h"
+> 
+> #define PERF_BUFFER_PAGES    16
+> #define PERF_POLL_TIMEOUT_MS    100
+> 
+> void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)
+> {
+>      const struct event *e = data;
+> 
+>      printf("Userspace: %u | BPF: %zu | data_sz: %u \n",
+>             e->size, sizeof(struct event), data_sz);
+> }
+> 
+> void handle_lost_events(void *ctx, int cpu, __u64 lost_cnt)
+> {
+>      fprintf(stderr, "lost %llu events on CPU #%d\n", lost_cnt, cpu);
+> }
+> 
+> int main(int argc, char **argv)
+> {
+>      struct perf_buffer_opts pb_opts;
+>      struct perf_buffer *pb = NULL;
+>      struct example_bpf *obj;
+>      int err;
+> 
+>      struct rlimit rlim_new = {
+>          .rlim_cur    = RLIM_INFINITY,
+>          .rlim_max    = RLIM_INFINITY,
+>      };
+>      err = setrlimit(RLIMIT_MEMLOCK, &rlim_new);
+>      if (err) {
+>          fprintf(stderr, "failed to increase rlimit: %d\n", err);
+>          return 1;
+>      }
+> 
+>      obj = example_bpf__open();
+>      if (!obj) {
+>          fprintf(stderr, "failed to open and/or load BPF object\n");
+>          return 1;
+>      }
+> 
+>      err = example_bpf__load(obj);
+>      if (err) {
+>          fprintf(stderr, "failed to load BPF object: %d\n", err);
+>          goto cleanup;
+>      }
+> 
+>      err = example_bpf__attach(obj);
+>      if (err) {
+>          fprintf(stderr, "failed to attach BPF programs\n");
+>          goto cleanup;
+>      }
+> 
+>      pb_opts.sample_cb = handle_event;
+>      pb_opts.lost_cb = handle_lost_events;
+>      pb = perf_buffer__new(bpf_map__fd(obj->maps.events), PERF_BUFFER_PAGES,
+>                            &pb_opts);
+>      err = libbpf_get_error(pb);
+>      if (err) {
+>          pb = NULL;
+>          fprintf(stderr, "failed to open perf buffer: %d\n", err);
+>          goto cleanup;
+>      }
+> 
+>      while ((err = perf_buffer__poll(pb, PERF_POLL_TIMEOUT_MS)) >= 0)
+>          ;
+>      fprintf(stderr, "error polling perf buffer: %d\n", err);
+> 
+>      cleanup:
+>      perf_buffer__free(pb);
+>      example_bpf__destroy(obj);
+> 
+>      return err != 0;
+> }
 > 
