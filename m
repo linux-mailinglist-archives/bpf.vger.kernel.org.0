@@ -2,97 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52648253137
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 16:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B94253185
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 16:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726972AbgHZOZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 10:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726886AbgHZOZe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:25:34 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355D5C061574;
-        Wed, 26 Aug 2020 07:25:34 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w14so2602066ljj.4;
-        Wed, 26 Aug 2020 07:25:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fUtIj3hzDzLsBqvJCTdE5TL3n5Xu1i/sePosco2yc7g=;
-        b=KiE/D0AgpWhG/1MbSVKmVxY7meQYPdEK4JuI7/bYiLZZCAHwNr5KLQJjx+3Nacmlx6
-         6wSZvgKEs4XBYgGS0Zx9jhbsAlWYwLXk0CnQ9KOblQ4eBhWE861KPJz3b2L+zOWG3zoV
-         /K7Ji13TNwyL3+Vl7sjqIkEwu6tRDdk+Z5uwqAxu1TLQOBdxgvtJD4mEuE9Fx5D/N3+Y
-         QSHaZPQWAovWYZvnDtuViquyg8txQ0atPclwJPW2BPBWLs6QcFyR4BrfBzB3iY36ujFg
-         4p3CviO2noPkikBq/io54g91htX6Z7dpnOAuesIuN9w5vnIg93LeqstuwfORprQnX4/+
-         3TQA==
+        id S1726995AbgHZOib (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 10:38:31 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55040 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726936AbgHZOiY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 10:38:24 -0400
+Received: by mail-io1-f72.google.com with SMTP id o18so1358466ioa.21
+        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 07:38:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fUtIj3hzDzLsBqvJCTdE5TL3n5Xu1i/sePosco2yc7g=;
-        b=PI/9DChXrY8I2lPpDRTi60ftcjk93FFfdh1Jo/Ar/o+2Ia3OkjCZc9lCKK1isTsNDx
-         UbDd6t2sC8FkITMc8xnCZA2+lN/R0xW0fRS3sATtZeegL1RQtbf7tWtt1bHAgKL8daK0
-         RtTS9LuebZFv+se1anVtN/u9T1WL1xTWqT80jrDGMjHspugK3RTOQnsDQANKXcSLa9aA
-         Fr/ZkVH8za/N2QPqHR0CYLwoYgw/QXt270N8fesJHFYnehgxjN+P/Tj0pkPvmFMsQA5b
-         HFn8YHkgPG+ZlZsH7dtO+tKr9k0MYhkKvvz9MGGqnqJFF/QlOEpcfm1VLftW55nI0Ft+
-         oKQQ==
-X-Gm-Message-State: AOAM5304GywMiEllqvtTrMqb8KTOjDjXN5/i6FOi18fi00icA1NCFi79
-        2LSEd2EgYbMNWCzXrKLcEDNJ/nDt1cozwifcZCii2Aij
-X-Google-Smtp-Source: ABdhPJyJ46idCRtmkxHnRB9Jg+3IBsnQtM/eqyN9oMKSA80miG9ffalfVw1LtygAaJ+0Jzd5fNFj4GOu07Elsl0ASes=
-X-Received: by 2002:a2e:8e28:: with SMTP id r8mr6861089ljk.290.1598451932616;
- Wed, 26 Aug 2020 07:25:32 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Xxqad3xL8qqUrM4EVjmvmkbniZ+gtAPelAMhad+ABBc=;
+        b=cOBa15kFW6r3emr/btuVfuK3sk6s63thipVzQirdCKVJ2sAjGt41GOxHjdtfijtv8d
+         Rgh9Nmr7tNwvtozaGiZO4GWqf1ezKEsa5D1O77WWXret1M/SrS1Da4qddzb98tsddjUj
+         F8KvG16/AMEOicspn64Os8tSH27woL1UnRjviHsd5daLQokDvcEfQYP6YACzOAXJMXgt
+         9gP7gMdsclDartIHrBtGXxyft6xsW1QrwtGlBroyyMeJP+EkL5F1/YLWzGMfSLEski4a
+         6JS1/H133uLYbo40iJGOGEqkE1GxHNHRQeFRCZNMY3pbkgUWVbhjJ/JGGtOnR9j5I2F3
+         GCTA==
+X-Gm-Message-State: AOAM532iIuT7nqY1e20HoXbdD15lMcG+q03VAA8SklduG8dO6iitQOCe
+        mqHDl44X3a060LTW02UMQSZ6p+mLjtH9aQkjyi+NNVrq1WPy
+X-Google-Smtp-Source: ABdhPJx/wE3q6toYtnfpdXKUpmAL2eZoCUl21CrqenWwy9a2FBEuv8fnXX8NeASztT0UzeKqqCLDzTQYVEgaZz53g+szfsyEfCYQ
 MIME-Version: 1.0
-References: <20200826101845.747617-1-jolsa@kernel.org>
-In-Reply-To: <20200826101845.747617-1-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 26 Aug 2020 07:25:21 -0700
-Message-ID: <CAADnVQLc5=Y_ssfp53DuJvRRu4YdQ=qdKS9fsP23XhqLXeb-vQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix open call in trigger_fstat_events
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+X-Received: by 2002:a05:6602:2b08:: with SMTP id p8mr8153004iov.180.1598452703156;
+ Wed, 26 Aug 2020 07:38:23 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 07:38:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008fddd805adc8c56f@google.com>
+Subject: general protection fault in rt6_fill_node
+From:   syzbot <syzbot+81af6e9b3c4b8bc874f8@syzkaller.appspotmail.com>
+To:     John.Linn@xilinx.com, a@unstable.cc, andriin@fb.com,
+        anirudh@xilinx.com, ast@kernel.org,
+        b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hancock@sedsystems.ca,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mareklindner@neomailbox.ch, michal.simek@xilinx.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 3:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Alexei reported compile breakage on newer systems with
-> following error:
->
->   In file included from /usr/include/fcntl.h:290:0,
->   4814                 from ./test_progs.h:29,
->   4815                 from
->   .../bpf-next/tools/testing/selftests/bpf/prog_tests/d_path.c:3:
->   4816In function =E2=80=98open=E2=80=99,
->   4817    inlined from =E2=80=98trigger_fstat_events=E2=80=99 at
->   .../bpf-next/tools/testing/selftests/bpf/prog_tests/d_path.c:50:10,
->   4818    inlined from =E2=80=98test_d_path=E2=80=99 at
->   .../bpf-next/tools/testing/selftests/bpf/prog_tests/d_path.c:119:6:
->   4819/usr/include/x86_64-linux-gnu/bits/fcntl2.h:50:4: error: call to
->   =E2=80=98__open_missing_mode=E2=80=99 declared with attribute error: op=
-en with O_CREAT
->   or O_TMPFILE in second argument needs 3 arguments
->   4820    __open_missing_mode ();
->   4821    ^~~~~~~~~~~~~~~~~~~~~~
->
-> We're missing permission bits as 3rd argument
-> for open call with O_CREAT flag specified.
->
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Fixes: e4d1af4b16f8 ("selftests/bpf: Add test for d_path helper")
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Hello,
 
-Applied. Thanks
+syzbot found the following issue on:
+
+HEAD commit:    d7223aa5 Merge branch 'l2tp-replace-custom-logging-code-wi..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1399802e900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
+dashboard link: https://syzkaller.appspot.com/bug?extid=81af6e9b3c4b8bc874f8
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12949b5a900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17b60e46900000
+
+The issue was bisected to:
+
+commit 867d03bc238f62fcd28f287b9da8af5e483baeab
+Author: Robert Hancock <hancock@sedsystems.ca>
+Date:   Thu Jun 6 22:28:14 2019 +0000
+
+    net: axienet: Add DMA registers to ethtool register dump
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1523f266900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1723f266900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1323f266900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+81af6e9b3c4b8bc874f8@syzkaller.appspotmail.com
+Fixes: 867d03bc238f ("net: axienet: Add DMA registers to ethtool register dump")
+
+IPv6: RTM_NEWROUTE with no NLM_F_CREATE or NLM_F_REPLACE
+IPv6: NLM_F_CREATE should be set when creating new route
+IPv6: NLM_F_CREATE should be set when creating new route
+general protection fault, probably for non-canonical address 0xdffffc0000000010: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000080-0x0000000000000087]
+CPU: 1 PID: 7050 Comm: syz-executor648 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:nexthop_is_blackhole include/net/nexthop.h:240 [inline]
+RIP: 0010:rt6_fill_node+0x1396/0x2940 net/ipv6/route.c:5584
+Code: 3c 02 00 0f 85 ef 14 00 00 4d 8b 6d 10 e8 f2 1c 87 fa 49 8d bd 80 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 10 15 00 00 4d 8b ad 80 00 00 00 e8 34 4b 06 01
+RSP: 0018:ffffc900063672b0 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880a88bd800 RCX: ffffffff86ed2456
+RDX: 0000000000000010 RSI: ffffffff86ed248e RDI: 0000000000000080
+RBP: ffffc900063673e8 R08: 0000000000000001 R09: ffff8880a88bd847
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff8880a8ded940
+R13: 0000000000000000 R14: ffff8880a899ea00 R15: 0000000000000000
+FS:  00000000010e3880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000300 CR3: 00000000a8efa000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ inet6_rt_notify+0x14c/0x2b0 net/ipv6/route.c:6017
+ fib6_add_rt2node net/ipv6/ip6_fib.c:1246 [inline]
+ fib6_add+0x2840/0x3ed0 net/ipv6/ip6_fib.c:1473
+ __ip6_ins_rt net/ipv6/route.c:1317 [inline]
+ ip6_route_add+0x8b/0x150 net/ipv6/route.c:3744
+ inet6_rtm_newroute+0x152/0x160 net/ipv6/route.c:5360
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x443ef9
+Code: e8 8c 07 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 bb 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff25138308 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443ef9
+RDX: 0000000000000000 RSI: 0000000020000300 RDI: 0000000000000003
+RBP: 00007fff25138310 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000e25f
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 46e9e8854602a8a3 ]---
+RIP: 0010:nexthop_is_blackhole include/net/nexthop.h:240 [inline]
+RIP: 0010:rt6_fill_node+0x1396/0x2940 net/ipv6/route.c:5584
+Code: 3c 02 00 0f 85 ef 14 00 00 4d 8b 6d 10 e8 f2 1c 87 fa 49 8d bd 80 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 10 15 00 00 4d 8b ad 80 00 00 00 e8 34 4b 06 01
+RSP: 0018:ffffc900063672b0 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff8880a88bd800 RCX: ffffffff86ed2456
+RDX: 0000000000000010 RSI: ffffffff86ed248e RDI: 0000000000000080
+RBP: ffffc900063673e8 R08: 0000000000000001 R09: ffff8880a88bd847
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff8880a8ded940
+R13: 0000000000000000 R14: ffff8880a899ea00 R15: 0000000000000000
+FS:  00000000010e3880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000300 CR3: 00000000a8efa000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
