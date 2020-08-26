@@ -2,94 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1219B252B42
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 12:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70AC252CDF
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 13:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbgHZKTC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 26 Aug 2020 06:19:02 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25385 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728184AbgHZKTB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Aug 2020 06:19:01 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-axKnq8jwPNyk4FK5q1gRMw-1; Wed, 26 Aug 2020 06:18:54 -0400
-X-MC-Unique: axKnq8jwPNyk4FK5q1gRMw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BB20807332;
-        Wed, 26 Aug 2020 10:18:52 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3960F1992F;
-        Wed, 26 Aug 2020 10:18:46 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix open call in trigger_fstat_events
-Date:   Wed, 26 Aug 2020 12:18:45 +0200
-Message-Id: <20200826101845.747617-1-jolsa@kernel.org>
+        id S1729177AbgHZLvF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 07:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728694AbgHZLvD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 07:51:03 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57267C061795
+        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 04:50:58 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id u46so455282uau.6
+        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 04:50:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=21TkmqRkeg04nU4SLHnIEMUOkC/8Ppa//Ai9CSy2BTE=;
+        b=Rb3xcOHhyAl5KNqVqBQG48QysDkE031/yShs15V2bTRgfV/oDg7uYrixM58mXqiWca
+         5tmsEdiQxT0GdmctVuog4qeR8lqxpfRsbjsTS9Be2HT1rDTlXcNETOsf5CgVbJefd0Io
+         F16FVQ5uR36dnrFTMCGMpBFUNuXOvoOumaKfu06VG8FvI2zk9LftNMPLshS6skzPi1P0
+         syhyZeZicjfWw2Mg44pn1dLO8i7Ench8AJ1E/N10Pc1SuEOAUlR3p1K4hNIpw1zdCUNU
+         lxkpvWcsfPvUcuXzTSVoxQpoOtEtDRRdtiqzFN8mP3h3hKzj4qx+68rVIrudrXYA7pTE
+         ZTzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=21TkmqRkeg04nU4SLHnIEMUOkC/8Ppa//Ai9CSy2BTE=;
+        b=YBGWahQQz4JHdAfwaIYOR9LTD6mUXoDJlAqJ5WkvWy5OXrdLmcqFL50hunwh3a4wY/
+         AX725Oq2WknaxFfkbvUhaXUUJtP+mbkQ70XChrO6sqABLdt8y6iD3aUU8BBwK3o1UOA5
+         hQjOgpmcGVj49OsgbM+wSc92n2QASQg6bS9yQTEcFOssso2d5pM0D4IQDHdUfUCG2SuC
+         C0dq+TGXciMCMu+Om7tJHrVud+TqwPdIgmxe4nCPoo/3uvgcceCPiYcJj5WyZuBu5ytZ
+         lk1qjxSProaQRZIYmmI52A6IjZts5By5FsIXeBJIqyx3nPvKHhTZStSsgg0MGIJXvuqh
+         WnRw==
+X-Gm-Message-State: AOAM532WnLAjGaEYM0A2kfClroG6tzTS8mBPmDeat0ADDtrEThXlyetS
+        BJ6eV97QDGWoIolbTvQnM5AwAHjCzq1pvdkWU64=
+X-Google-Smtp-Source: ABdhPJzfwYxY72z8HtXfp7XwJK8p867+6/oUKwr/SNIc9SXaf0PxItdbi8mk2bvFVGSq/9ad+V79/iRyACx00nYZEgQ=
+X-Received: by 2002:ab0:2104:: with SMTP id d4mr8134494ual.123.1598442657221;
+ Wed, 26 Aug 2020 04:50:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0.002
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Received: by 2002:a67:f785:0:0:0:0:0 with HTTP; Wed, 26 Aug 2020 04:50:56
+ -0700 (PDT)
+From:   robert anderson <robertandersonhappy9@gmail.com>
+Date:   Wed, 26 Aug 2020 04:50:56 -0700
+Message-ID: <CAJ63UmgPOLZbkqpTWrPfTzkPuXxnYAREx9xvi4R0frwz1qE0WQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei reported compile breakage on newer systems with
-following error:
+Good afternoon, my good friend.
 
-  In file included from /usr/include/fcntl.h:290:0,
-  4814                 from ./test_progs.h:29,
-  4815                 from
-  .../bpf-next/tools/testing/selftests/bpf/prog_tests/d_path.c:3:
-  4816In function ‘open’,
-  4817    inlined from ‘trigger_fstat_events’ at
-  .../bpf-next/tools/testing/selftests/bpf/prog_tests/d_path.c:50:10,
-  4818    inlined from ‘test_d_path’ at
-  .../bpf-next/tools/testing/selftests/bpf/prog_tests/d_path.c:119:6:
-  4819/usr/include/x86_64-linux-gnu/bits/fcntl2.h:50:4: error: call to
-  ‘__open_missing_mode’ declared with attribute error: open with O_CREAT
-  or O_TMPFILE in second argument needs 3 arguments
-  4820    __open_missing_mode ();
-  4821    ^~~~~~~~~~~~~~~~~~~~~~
+How are you doing today? I've heard from you for a long time what's going on
+Your side? Today I am very pleased to inform you of my success in
+receipt of these hereditary funds, transferred with the cooperation of the new
+partner from India Asia. He is Canadian, but lives in India, but currently
+I come to India on investment projects with my share of the total
+millions of dollars. Meanwhile, I have not forgotten your past efforts
+and attempts
+to help me pass on these hereditary remedies even though it failed
+us sometime, I want you to contact my secretary in Lome, West Togo Republic
+Africa, her name is the brand solomon, this is his email address (
+solomonbrand003@gmail.com), ask her to contact Ecobank if I
+kept $ 350,000.00 for your compensation, this compensation fund
+for all past efforts and attempts to help me in the past
+deal. I really appreciated your efforts at that time. feel so
+free of charge, contact my secretary, Mr. Solomon Brand, and tell her where
+Ecobank will transfer the total amount of 350,000 US dollars.
 
-We're missing permission bits as 3rd argument
-for open call with O_CREAT flag specified.
+Please let me know immediately. Ecobank will transfer funds in the
+amount of USD 350,000.00.
+to my bank account, now I'm too busy because of
+investment projects that I have with my new partner at hand, therefore
+contact Mr. Solomon brand at his email address, he
+immediately contact Ecobank on your behalf. Stay safe from Covid 19.
 
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: e4d1af4b16f8 ("selftests/bpf: Add test for d_path helper")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/d_path.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-index 058765da17e6..43ffbeacd680 100644
---- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-+++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-@@ -47,7 +47,7 @@ static int trigger_fstat_events(pid_t pid)
- 	devfd = open("/dev/urandom", O_RDONLY);
- 	if (CHECK(devfd < 0, "trigger", "open /dev/urandom failed\n"))
- 		goto out_close;
--	localfd = open("/tmp/d_path_loadgen.txt", O_CREAT | O_RDONLY);
-+	localfd = open("/tmp/d_path_loadgen.txt", O_CREAT | O_RDONLY, 0644);
- 	if (CHECK(localfd < 0, "trigger", "open /tmp/d_path_loadgen.txt failed\n"))
- 		goto out_close;
- 	/* bpf_d_path will return path with (deleted) */
--- 
-2.25.4
-
+Respectfully,
+Dr. robert anderson
