@@ -2,104 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277DC2531AC
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 16:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950AC253456
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 18:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgHZOoi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 10:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        id S1727882AbgHZQEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 12:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726834AbgHZOod (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Aug 2020 10:44:33 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD42C0613ED
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 07:44:32 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id k20so1510884qtq.11
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 07:44:32 -0700 (PDT)
+        with ESMTP id S1727905AbgHZQEl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 12:04:41 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076DEC061574;
+        Wed, 26 Aug 2020 09:04:41 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id cs12so952959qvb.2;
+        Wed, 26 Aug 2020 09:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=3fltz4Tid80yvbd7ycd5CEvXCm5Dl/pplKlQTmdAxKA=;
-        b=k4m5mEJBWpHKc8UCyiMSoWpLFbB9PLsFXQSse1GeHDwA4DKW/bxLFf2oq06iweP+iL
-         M8bgXdl0A9155UGa8Nz8VJmE6L39gWW8oVIXtrtnNW2XbaFdQ7/KhobmLnk55ujnHV/2
-         tPPob3cH4BlQEISinoXdsc01CEIIJiQYM7T+gkUDqRjYhkY6CbBd83M1+SskyHHbWLvL
-         rHtzPGZUMHG7eDyNL2Q4ZV/nAiZIzogvhqr+a2Knoik0r52ut2ISFzGOCWsps3sZCmxq
-         fBsjIPcK+lwVA+ap0kK3kVNC6i6d4qEdXhZRr9MSKdg1iPVBdKJXwariY86XZf+E2JPH
-         +9mw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nwtkn8jfzOHS+ZPoSHaK83LPofDShb0WhWs6tgkIXkU=;
+        b=O5dj9JkY1YXBIN8K5SpppN8mS39zd2PcE9OzQUFV1jKTZ4xkyQGBjo/Ao9IhZiSlDj
+         Gca6DwCkWPhK3X0J4bbHy/oCCPZGnFCa5hTSGiOn9YKt2/F/njm7p3DKR3UBk70oOeyE
+         pBTUUK16lwUoj7XuoENk9XUrZzumR53ZWbH5t41npvvQTcyZYKe0DrpgS4rZJd/D5GqI
+         RQmyWfYK2FmFNeNRtBG65fwDR9oSDSnnbpHwCCg2o05dDfIF206BVhXgG2xAIPi/4vr4
+         2FmVOv7uSpsgkmw35Z9BURl6dunAFCudwKaKdfVpL4VH8g7Oex84i4lZSKZlSb8Rn315
+         XDrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=3fltz4Tid80yvbd7ycd5CEvXCm5Dl/pplKlQTmdAxKA=;
-        b=l3wnaGrLJNnrNqT4XwmHnWsj2uBhB4/4+Ld9dMnJhPE7cD8ZGkdI8YFSOKBEYrRIJI
-         5M7EqA6SgIPoDCwtiNo7+BFSgqBoCEEMBV5nXfWz3xOLz/Qf21Fkp/VaFbnx4QqzN0tu
-         ju/eayynQh8pQexwVayXLcJIRuYV7cIxROurq4p7niDw8+G7gsGRLz2zX0lJc5QgX1zy
-         GvFnZgvyVyjzP1a+LwUFud78IjIjZulLeaJ7+5J+xsHwoS4tHrxgl1uCyMQoPFuOQ1A+
-         6/TRHO/Wpfk9OKdxFkn9uYWstXV4hpAyfiQBXKm8VRu5R9BaqcBkh/khH3+Ob0T26HdF
-         Tq+A==
-X-Gm-Message-State: AOAM531XmicgrgMdZQJ2jXNujJGfvSowgwdILGi+oAsygYZfOIyaz1OZ
-        viMhfIzpx5Zz1hIsoEuanYCTIg==
-X-Google-Smtp-Source: ABdhPJzCRDv2m2NsfRzSYdU3punl1WmSuoZIWY3X6Qrw3w/UZAKmzNkoM0/3I601SkHanbswK7RLyw==
-X-Received: by 2002:ac8:33a1:: with SMTP id c30mr10693591qtb.156.1598453071797;
-        Wed, 26 Aug 2020 07:44:31 -0700 (PDT)
-Received: from skullcanyon ([192.222.193.21])
-        by smtp.gmail.com with ESMTPSA id a203sm1862906qkg.30.2020.08.26.07.44.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nwtkn8jfzOHS+ZPoSHaK83LPofDShb0WhWs6tgkIXkU=;
+        b=AhmwJaRBSJ90cVpZh7ysEs347NL/G64W3brwPY5cYvYO2AP18QPPmRaaecnKkI3NHx
+         jzSMXOLe1EMtIphNV2/LbFKGTM3rdL8DeNA1kmkt/+tY5lKAgT1IbIomAgBspCJY31nU
+         /q2pwD+tdos4hNUR7ISddN0PZKzVXrvp5GhplxgCcELq/IozrwXU4Uh6sHaJci2vsFCS
+         LASluwT808UrI/RDyQdDRyUit2SLRu0O6UukKpzusJkQOBhO0L7Dh9hjE8REPuGjpb+S
+         1LciQwI9nYAzF8fj6xxKzX8skEHR/j8JYN8AjIhlJ6Ebu/M4nL5RwLgvOMkf1XDaQZqr
+         2yeg==
+X-Gm-Message-State: AOAM532tHq/1sxtNc8sbWbuM6MkiwZvWWBDttrzRy/oC+/KI+4iSrFy2
+        Z4yqaBOd4tfEKIjOKc+z4cihbx7rJAOx22ntPxI=
+X-Google-Smtp-Source: ABdhPJwxwFI+OKdQAG6XWCYQ2n/mIi0NbL7zxxQ+XNbpSllaBQUPCtpHXmUwZteDyE58LemfNS+GAQ==
+X-Received: by 2002:a0c:a224:: with SMTP id f33mr14519847qva.93.1598457879750;
+        Wed, 26 Aug 2020 09:04:39 -0700 (PDT)
+Received: from localhost.localdomain (pc-199-79-45-190.cm.vtr.net. [190.45.79.199])
+        by smtp.googlemail.com with ESMTPSA id n142sm1032547qke.60.2020.08.26.09.04.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 07:44:31 -0700 (PDT)
-Message-ID: <aade022eeea9d9196774d0f21cbdaa118de8f885.camel@ndufresne.ca>
-Subject: Re: [PATCH 00/49] DRM driver for Hikey 970
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dave Airlie <airlied@gmail.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Wanchun Zheng <zhengwanchun@hisilicon.com>,
-        linuxarm@huawei.com, dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        driverdevel <devel@driverdev.osuosl.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Xiubin Zhang <zhangxiubin1@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Liwei Cai <cailiwei@hisilicon.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        mauro.chehab@huawei.com, Rob Clark <robdclark@chromium.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Liuyao An <anliuyao@huawei.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Rongrong Zou <zourongrong@gmail.com>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Date:   Wed, 26 Aug 2020 10:44:28 -0400
-In-Reply-To: <20200825133025.13f047f0@coco.lan>
-References: <cover.1597833138.git.mchehab+huawei@kernel.org>
-         <20200819152120.GA106437@ravnborg.org>
-         <20200819153045.GA18469@pendragon.ideasonboard.com>
-         <CALAqxLUXnPRec3UYbMKge8yNKBagLOatOeRCagF=JEyPEfWeKA@mail.gmail.com>
-         <20200820090326.3f400a15@coco.lan>
-         <20200820100205.GA5962@pendragon.ideasonboard.com>
-         <CAPM=9twzsw7T=GD6Jc1EFenXq9ZhTgf_Nuo71uLfX2W33oa=6w@mail.gmail.com>
-         <20200825133025.13f047f0@coco.lan>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Wed, 26 Aug 2020 09:04:39 -0700 (PDT)
+From:   Carlos Neira <cneirabustos@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     yhs@fb.com, ebiederm@xmission.com, brouer@redhat.com,
+        bpf@vger.kernel.org, andriin@fb.com, cneirabustos@gmail.com
+Subject: [PATCH v1 bpf-next] bpf: new helper bpf_get_current_pcomm
+Date:   Wed, 26 Aug 2020 12:04:24 -0400
+Message-Id: <20200826160424.14131-1-cneirabustos@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -107,128 +62,253 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Le mardi 25 août 2020 à 13:30 +0200, Mauro Carvalho Chehab a écrit :
-> Em Tue, 25 Aug 2020 05:29:29 +1000
-> Dave Airlie <airlied@gmail.com> escreveu:
-> 
-> > On Thu, 20 Aug 2020 at 20:02, Laurent Pinchart
-> > <laurent.pinchart@ideasonboard.com> wrote:
-> > > Hi Mauro,
-> > > 
-> > > On Thu, Aug 20, 2020 at 09:03:26AM +0200, Mauro Carvalho Chehab wrote:  
-> > > > Em Wed, 19 Aug 2020 12:52:06 -0700 John Stultz escreveu:  
-> > > > > On Wed, Aug 19, 2020 at 8:31 AM Laurent Pinchart wrote:  
-> > > > > > On Wed, Aug 19, 2020 at 05:21:20PM +0200, Sam Ravnborg wrote:  
-> > > > > > > On Wed, Aug 19, 2020 at 01:45:28PM +0200, Mauro Carvalho Chehab wrote:  
-> > > > > > > > This patch series port the out-of-tree driver for Hikey 970 (which
-> > > > > > > > should also support Hikey 960) from the official 96boards tree:
-> > > > > > > > 
-> > > > > > > >    https://github.com/96boards-hikey/linux/tree/hikey970-v4.9
-> > > > > > > > 
-> > > > > > > > Based on his history, this driver seems to be originally written
-> > > > > > > > for Kernel 4.4, and was later ported to Kernel 4.9. The original
-> > > > > > > > driver used to depend on ION (from Kernel 4.4) and had its own
-> > > > > > > > implementation for FB dev API.
-> > > > > > > > 
-> > > > > > > > As I need to preserve the original history (with has patches from
-> > > > > > > > both HiSilicon and from Linaro),  I'm starting from the original
-> > > > > > > > patch applied there. The remaining patches are incremental,
-> > > > > > > > and port this driver to work with upstream Kernel.
-> > > > > > > >  
-> > > > > ...  
-> > > > > > > > - Due to legal reasons, I need to preserve the authorship of
-> > > > > > > >   each one responsbile for each patch. So, I need to start from
-> > > > > > > >   the original patch from Kernel 4.4;  
-> > > > > ...  
-> > > > > > > I do acknowledge you need to preserve history and all -
-> > > > > > > but this patchset is not easy to review.  
-> > > > > > 
-> > > > > > Why do we need to preserve history ? Adding relevant Signed-off-by and
-> > > > > > Co-developed-by should be enough, shouldn't it ? Having a public branch
-> > > > > > that contains the history is useful if anyone is interested, but I don't
-> > > > > > think it's required in mainline.  
-> > > > > 
-> > > > > Yea. I concur with Laurent here. I'm not sure what legal reasoning you
-> > > > > have on this but preserving the "absolute" history here is actively
-> > > > > detrimental for review and understanding of the patch set.
-> > > > > 
-> > > > > Preserving Authorship, Signed-off-by lines and adding Co-developed-by
-> > > > > lines should be sufficient to provide both atribution credit and DCO
-> > > > > history.  
-> > > > 
-> > > > I'm not convinced that, from legal standpoint, folding things would
-> > > > be enough. See, there are at least 3 legal systems involved here
-> > > > among the different patch authors:
-> > > > 
-> > > >       - civil law;
-> > > >       - common law;
-> > > >       - customary law + common law.
-> > > > 
-> > > > Merging stuff altogether from different law systems can be problematic,
-> > > > and trying to discuss this with experienced IP property lawyers will
-> > > > for sure take a lot of time and efforts. I also bet that different
-> > > > lawyers will have different opinions, because laws are subject to
-> > > > interpretation. With that matter I'm not aware of any court rules
-> > > > with regards to folded patches. So, it sounds to me that folding
-> > > > patches is something that has yet to be proofed in courts around
-> > > > the globe.
-> > > > 
-> > > > At least for US legal system, it sounds that the Country of
-> > > > origin of a patch is relevant, as they have a concept of
-> > > > "national technology" that can be subject to export regulations.
-> > > > 
-> > > > From my side, I really prefer to play safe and stay out of any such
-> > > > legal discussions.  
-> > > 
-> > > Let's be serious for a moment. If you think there are legal issues in
-> > > taking GPL-v2.0-only patches and squashing them while retaining
-> > > authorship information through tags, the Linux kernel if *full* of that.
-> > > You also routinely modify patches that you commit to the media subsystem
-> > > to fix "small issues".
-> > > 
-> > > The country of origin argument makes no sense either, the kernel code
-> > > base if full of code coming from pretty much all country on the planet.
-> > > 
-> > > Keeping the patches separate make this hard to review. Please squash
-> > > them.  
-> > 
-> > I'm inclined to agree with Laurent here.
-> > 
-> > Patches submitted as GPL-v2 with DCO lines and author names/companies
-> > should be fine to be squashed and rearranged,
-> > as long as the DCO and Authorship is kept somewhere in the new patch
-> > that is applied.
-> > 
-> > Review is more important here.
-> 
-> Sorry, but I can't agree that review is more important than to be able
-> to properly indicate copyrights in a valid way at the legal systems that
-> it would apply ;-)
+In multi-threaded applications bpf_get_current_comm is returning per-thread 
+names, this helper will return comm from real_parent.
+This makes a difference for some Java applications, where get_current_comm is 
+returning per-thread names, but get_current_pcomm will return "java".
 
-Regardless of the "review-ability", our users distribute the Linux
-Kernel as a whole, so who contributed which specific line of code is
-already lost in a way. All we see in the distribution if a list of
-copyright holder and licenses. In this context, the per patches
-ownership have no legal implication. My two, non lawyer cents.
+Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+---
+ include/linux/bpf.h                           |  1 +
+ include/uapi/linux/bpf.h                      | 15 ++++-
+ kernel/bpf/core.c                             |  1 +
+ kernel/bpf/helpers.c                          | 28 +++++++++
+ kernel/trace/bpf_trace.c                      |  2 +
+ tools/include/uapi/linux/bpf.h                | 15 ++++-
+ .../selftests/bpf/prog_tests/current_pcomm.c  | 57 +++++++++++++++++++
+ .../selftests/bpf/progs/test_current_pcomm.c  | 17 ++++++
+ 8 files changed, 134 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/current_pcomm.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_current_pcomm.c
 
-> 
-> In any case, there's an easy way to make the code easy to review:
-> I can write the patches against staging (where it is OK to submit
-> preserving the history) and then add a final patch moving it out
-> of staging.
-> 
-> You can then just review the last patch, as it will contain the
-> entire code on it.
-> 
-> Another alternative, as I'm already doing with Sam, is for me to
-> submit the folded code as a reply to 00/xx. You can then just 
-> review the final code, without concerning about how the code reached
-> there.
-> 
-> From review point of the view, this will be the same as reviewing
-> a folded patch, but, from legal standpoint, the entire copyright
-> chain will be preserved.
-> 
-> Thanks,
-> Mauro
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 81f38e2fda78..93b0c197fd75 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1754,6 +1754,7 @@ extern const struct bpf_func_proto bpf_skc_to_tcp_sock_proto;
+ extern const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto;
+ extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
+ extern const struct bpf_func_proto bpf_skc_to_udp6_sock_proto;
++extern const struct bpf_func_proto bpf_get_current_pcomm_proto;
+ 
+ const struct bpf_func_proto *bpf_tracing_func_proto(
+ 	enum bpf_func_id func_id, const struct bpf_prog *prog);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 544b89a64918..200a2309e5e1 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3509,6 +3509,18 @@ union bpf_attr {
+  *
+  *		**-EPERM** This helper cannot be used under the
+  *			   current sock_ops->op.
++ *
++ * long bpf_get_current_pcomm(void *buf, u32 size_of_buf)
++ *	Description
++ *		Copy the **comm** attribute of the real_parent current task
++ *		into *buf* of *size_of_buf*. The **comm** attribute contains
++ *		the name of the executable (excluding the path) for real_parent
++ *		of current task.
++ *		The *size_of_buf* must be strictly positive. On success, the
++ *		helper makes sure that the *buf* is NUL-terminated. On failure,
++ *		it is filled with zeroes.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3655,7 +3667,8 @@ union bpf_attr {
+ 	FN(get_task_stack),		\
+ 	FN(load_hdr_opt),		\
+ 	FN(store_hdr_opt),		\
+-	FN(reserve_hdr_opt),
++	FN(reserve_hdr_opt),		\
++	FN(get_current_pcomm),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ed0b3578867c..fd346c2ff6f6 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2208,6 +2208,7 @@ const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
+ const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto __weak;
+ const struct bpf_func_proto bpf_get_local_storage_proto __weak;
+ const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto __weak;
++const struct bpf_func_proto bpf_get_current_pcomm_proto __weak;
+ 
+ const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
+ {
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index be43ab3e619f..9fb663945e0b 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -575,6 +575,34 @@ const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto = {
+ 	.arg4_type      = ARG_CONST_SIZE,
+ };
+ 
++BPF_CALL_2(bpf_get_current_pcomm, char *, buf, u32, size)
++{
++	struct task_struct *task = current;
++
++	if (unlikely(!task))
++		goto err_clear;
++
++	strncpy(buf, task->real_parent->comm, size);
++
++	/* Verifier guarantees that size > 0. For task->comm exceeding
++	 * size, guarantee that buf is %NUL-terminated. Unconditionally
++	 * done here to save the size test.
++	 */
++	buf[size - 1] = 0;
++	return 0;
++err_clear:
++	memset(buf, 0, size);
++	return -EINVAL;
++}
++
++const struct bpf_func_proto bpf_get_current_pcomm_proto = {
++	.func		= bpf_get_current_pcomm,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
++	.arg2_type	= ARG_CONST_SIZE,
++};
++
+ static const struct bpf_func_proto bpf_get_raw_smp_processor_id_proto = {
+ 	.func		= bpf_get_raw_cpu_id,
+ 	.gpl_only	= false,
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index a8d4f253ed77..7cfeb58c729a 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1182,6 +1182,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_jiffies64_proto;
+ 	case BPF_FUNC_get_task_stack:
+ 		return &bpf_get_task_stack_proto;
++	case BPF_FUNC_get_current_pcomm:
++		return &bpf_get_current_pcomm_proto;
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 544b89a64918..200a2309e5e1 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3509,6 +3509,18 @@ union bpf_attr {
+  *
+  *		**-EPERM** This helper cannot be used under the
+  *			   current sock_ops->op.
++ *
++ * long bpf_get_current_pcomm(void *buf, u32 size_of_buf)
++ *	Description
++ *		Copy the **comm** attribute of the real_parent current task
++ *		into *buf* of *size_of_buf*. The **comm** attribute contains
++ *		the name of the executable (excluding the path) for real_parent
++ *		of current task.
++ *		The *size_of_buf* must be strictly positive. On success, the
++ *		helper makes sure that the *buf* is NUL-terminated. On failure,
++ *		it is filled with zeroes.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3655,7 +3667,8 @@ union bpf_attr {
+ 	FN(get_task_stack),		\
+ 	FN(load_hdr_opt),		\
+ 	FN(store_hdr_opt),		\
+-	FN(reserve_hdr_opt),
++	FN(reserve_hdr_opt),		\
++	FN(get_current_pcomm),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/tools/testing/selftests/bpf/prog_tests/current_pcomm.c b/tools/testing/selftests/bpf/prog_tests/current_pcomm.c
+new file mode 100644
+index 000000000000..23b708e1c417
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/current_pcomm.c
+@@ -0,0 +1,57 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
++
++#define _GNU_SOURCE
++#include <test_progs.h>
++#include "test_current_pcomm.skel.h"
++#include <sys/types.h>
++#include <unistd.h>
++#include <string.h>
++#include <pthread.h>
++
++void *current_pcomm(void *args)
++{
++	struct test_current_pcomm__bss  *bss;
++	struct test_current_pcomm *skel;
++	int err, duration = 0;
++
++	skel = test_current_pcomm__open_and_load();
++	if (CHECK(!skel, "skel_open_load", "failed to load skeleton"))
++		goto cleanup;
++
++	bss = skel->bss;
++
++	err = test_current_pcomm__attach(skel);
++	if (CHECK(err, "skel_attach", "skeleton attach failed %d", err))
++		goto cleanup;
++
++	/* trigger tracepoint */
++	usleep(10);
++	err = memcmp(bss->comm, "current_pcomm2", 14);
++	if (CHECK(!err, "pcomm ", "bss->comm: %s\n", bss->comm))
++		goto cleanup;
++cleanup:
++	test_current_pcomm__destroy(skel);
++	return NULL;
++}
++
++int test_current_pcomm(void)
++{
++	int err = 0, duration = 0;
++	pthread_t tid;
++
++	err = pthread_create(&tid, NULL, &current_pcomm, NULL);
++	if (CHECK(err, "thread", "thread creation failed %d", err))
++		return EXIT_FAILURE;
++	err = pthread_setname_np(tid, "current_pcomm2");
++	if (CHECK(err, "thread naming", "thread naming failed %d", err))
++		return EXIT_FAILURE;
++
++	usleep(5);
++
++	err = pthread_join(tid, NULL);
++	if (CHECK(err, "thread join", "thread join failed %d", err))
++		return EXIT_FAILURE;
++
++	return EXIT_SUCCESS;
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_current_pcomm.c b/tools/testing/selftests/bpf/progs/test_current_pcomm.c
+new file mode 100644
+index 000000000000..27dab17ccdd4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_current_pcomm.c
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
++
++#include <linux/bpf.h>
++#include <stdint.h>
++#include <bpf/bpf_helpers.h>
++
++char comm[16] = {0};
++
++SEC("raw_tracepoint/sys_enter")
++int current_pcomm(const void *ctx)
++{
++	bpf_get_current_pcomm(comm, sizeof(comm));
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+-- 
+2.20.1
 
