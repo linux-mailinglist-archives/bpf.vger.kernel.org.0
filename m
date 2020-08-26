@@ -2,313 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950AC253456
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 18:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8709C253468
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 18:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgHZQEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 12:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45228 "EHLO
+        id S1727012AbgHZQI6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 12:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727905AbgHZQEl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Aug 2020 12:04:41 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076DEC061574;
-        Wed, 26 Aug 2020 09:04:41 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id cs12so952959qvb.2;
-        Wed, 26 Aug 2020 09:04:40 -0700 (PDT)
+        with ESMTP id S1726856AbgHZQI5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 12:08:57 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50BBC061574;
+        Wed, 26 Aug 2020 09:08:55 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id g6so1080196pjl.0;
+        Wed, 26 Aug 2020 09:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nwtkn8jfzOHS+ZPoSHaK83LPofDShb0WhWs6tgkIXkU=;
-        b=O5dj9JkY1YXBIN8K5SpppN8mS39zd2PcE9OzQUFV1jKTZ4xkyQGBjo/Ao9IhZiSlDj
-         Gca6DwCkWPhK3X0J4bbHy/oCCPZGnFCa5hTSGiOn9YKt2/F/njm7p3DKR3UBk70oOeyE
-         pBTUUK16lwUoj7XuoENk9XUrZzumR53ZWbH5t41npvvQTcyZYKe0DrpgS4rZJd/D5GqI
-         RQmyWfYK2FmFNeNRtBG65fwDR9oSDSnnbpHwCCg2o05dDfIF206BVhXgG2xAIPi/4vr4
-         2FmVOv7uSpsgkmw35Z9BURl6dunAFCudwKaKdfVpL4VH8g7Oex84i4lZSKZlSb8Rn315
-         XDrQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MoHvmadsGuY4v+aAFE/hESek8nTGcOx9XgTS+CORF2Q=;
+        b=iyqgL1UIutqJ3kxUcf2gk895U0y6p58B8bcQjUJEPL6q3+7z5tRtt1niBzqmDyKuRZ
+         6c5nLPHKWxnO2hxjv9z93hSXrDy2AENZXUhG1KKZEd2GlMC7MMRxeP9A1YnXsNvZcrji
+         JOcqk3NRPDR2OUzxPRXfm0By2bvVN/AFQOZ8ChIPp5ix+rJmlovMocmIvRbMqNySVxn5
+         niJMyxZWxYDvEtFSh6QYefVWOcAHp5VNScW3TtnsXK0IQx3ghO2yeNBOCPv3zKRgTssw
+         9RmjBfjp96chpTfyhi9vQWok7CP8ijOuRrD+VLuHJ6P1eAD0vkUEBECEKtNCK5cmSPa/
+         EsRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nwtkn8jfzOHS+ZPoSHaK83LPofDShb0WhWs6tgkIXkU=;
-        b=AhmwJaRBSJ90cVpZh7ysEs347NL/G64W3brwPY5cYvYO2AP18QPPmRaaecnKkI3NHx
-         jzSMXOLe1EMtIphNV2/LbFKGTM3rdL8DeNA1kmkt/+tY5lKAgT1IbIomAgBspCJY31nU
-         /q2pwD+tdos4hNUR7ISddN0PZKzVXrvp5GhplxgCcELq/IozrwXU4Uh6sHaJci2vsFCS
-         LASluwT808UrI/RDyQdDRyUit2SLRu0O6UukKpzusJkQOBhO0L7Dh9hjE8REPuGjpb+S
-         1LciQwI9nYAzF8fj6xxKzX8skEHR/j8JYN8AjIhlJ6Ebu/M4nL5RwLgvOMkf1XDaQZqr
-         2yeg==
-X-Gm-Message-State: AOAM532tHq/1sxtNc8sbWbuM6MkiwZvWWBDttrzRy/oC+/KI+4iSrFy2
-        Z4yqaBOd4tfEKIjOKc+z4cihbx7rJAOx22ntPxI=
-X-Google-Smtp-Source: ABdhPJwxwFI+OKdQAG6XWCYQ2n/mIi0NbL7zxxQ+XNbpSllaBQUPCtpHXmUwZteDyE58LemfNS+GAQ==
-X-Received: by 2002:a0c:a224:: with SMTP id f33mr14519847qva.93.1598457879750;
-        Wed, 26 Aug 2020 09:04:39 -0700 (PDT)
-Received: from localhost.localdomain (pc-199-79-45-190.cm.vtr.net. [190.45.79.199])
-        by smtp.googlemail.com with ESMTPSA id n142sm1032547qke.60.2020.08.26.09.04.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MoHvmadsGuY4v+aAFE/hESek8nTGcOx9XgTS+CORF2Q=;
+        b=hjhaV10xiLmvehZO+CtTVTY+Ez6MY7tNMRHUO2Rqlqjec7qVgqzUfKO2RIOBVlUUGS
+         bD67v9dYdPM/AMe3X5n9JTWDOu5RbBvEdDoIYqbSCPSlNG43fDe8pyzNWzzsbyjSs5Bn
+         xdJNrUQ+WfnuLagALGcsF74zO9ZN6+mysHlAqtI7VBktn6VzreTQndb3H39yBIML0ZWt
+         878ch0b+mLMLs4f0vs4osWN2BDr8PKpYY9INWfCG1cAwuyifYwRbB7OJWXcisQbXfFKF
+         44T7QFcyqJH+CQQfbC9rfLlCcKekgojoqSWZmGwD9yey24yrhVAaDenI3io8VS+J2p81
+         ASrw==
+X-Gm-Message-State: AOAM533QgRkUWNHcMjevUYXdFTqO13S5xpbFIlrnzFyNwQF6ywyJbblZ
+        R1QaNLqX2v9jnP/JpGmLz5g=
+X-Google-Smtp-Source: ABdhPJweDIoBQBvEisXUzLq5yU93eoDIx5UHkNS4Zxu6oI4JpHxlROVH62XqXscmneEWJ8G8CbuKPg==
+X-Received: by 2002:a17:90a:a61:: with SMTP id o88mr6800820pjo.201.1598458135222;
+        Wed, 26 Aug 2020 09:08:55 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:a814])
+        by smtp.gmail.com with ESMTPSA id j35sm2732384pgi.91.2020.08.26.09.08.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Aug 2020 09:04:39 -0700 (PDT)
-From:   Carlos Neira <cneirabustos@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     yhs@fb.com, ebiederm@xmission.com, brouer@redhat.com,
-        bpf@vger.kernel.org, andriin@fb.com, cneirabustos@gmail.com
-Subject: [PATCH v1 bpf-next] bpf: new helper bpf_get_current_pcomm
-Date:   Wed, 26 Aug 2020 12:04:24 -0400
-Message-Id: <20200826160424.14131-1-cneirabustos@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Wed, 26 Aug 2020 09:08:54 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 09:08:52 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com, Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [PATCH bpf-next] libbpf: fix compilation warnings for 64-bit
+ printf args
+Message-ID: <20200826160852.e4hnkyvg2kzrtzjj@ast-mbp.dhcp.thefacebook.com>
+References: <20200826030922.2591203-1-andriin@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826030922.2591203-1-andriin@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In multi-threaded applications bpf_get_current_comm is returning per-thread 
-names, this helper will return comm from real_parent.
-This makes a difference for some Java applications, where get_current_comm is 
-returning per-thread names, but get_current_pcomm will return "java".
+On Tue, Aug 25, 2020 at 08:09:21PM -0700, Andrii Nakryiko wrote:
+> Add __pu64 and __ps64 (sort of like "printf u64 and s64") for libbpf-internal
+> use only in printf-like situations to avoid compilation warnings due to
+> %lld/%llu mismatch with a __u64/__s64 due to some architecture defining the
+> latter as either `long` or `long long`. Use that on all %lld/%llu cases in
+> libbpf.c.
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Fixes: eacaaed784e2 ("libbpf: Implement enum value-based CO-RE relocations")
+> Fixes: 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating ELF")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/lib/bpf/libbpf.c          | 15 ++++++++-------
+>  tools/lib/bpf/libbpf_internal.h | 11 +++++++++++
+>  2 files changed, 19 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 2e2523d8bb6d..211eb0d9020c 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1529,12 +1529,12 @@ static int set_kcfg_value_num(struct extern_desc *ext, void *ext_val,
+>  {
+>  	if (ext->kcfg.type != KCFG_INT && ext->kcfg.type != KCFG_CHAR) {
+>  		pr_warn("extern (kcfg) %s=%llu should be integer\n",
+> -			ext->name, (unsigned long long)value);
+> +			ext->name, (__pu64)value);
+>  		return -EINVAL;
+>  	}
+>  	if (!is_kcfg_value_in_range(ext, value)) {
+>  		pr_warn("extern (kcfg) %s=%llu value doesn't fit in %d bytes\n",
+> -			ext->name, (unsigned long long)value, ext->kcfg.sz);
+> +			ext->name, (__pu64)value, ext->kcfg.sz);
+>  		return -ERANGE;
+>  	}
+>  	switch (ext->kcfg.sz) {
+> @@ -2823,7 +2823,8 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
+>  			obj->efile.bss = data;
+>  			obj->efile.bss_shndx = idx;
+>  		} else {
+> -			pr_info("elf: skipping section(%d) %s (size %zu)\n", idx, name, sh.sh_size);
+> +			pr_info("elf: skipping section(%d) %s (size %zu)\n", idx, name,
+> +				(size_t)sh.sh_size);
+>  		}
+>  	}
+>  
+> @@ -5244,7 +5245,7 @@ static int bpf_core_patch_insn(struct bpf_program *prog,
+>  		if (res->validate && imm != orig_val) {
+>  			pr_warn("prog '%s': relo #%d: unexpected insn #%d (LDIMM64) value: got %llu, exp %u -> %u\n",
+>  				bpf_program__title(prog, false), relo_idx,
+> -				insn_idx, imm, orig_val, new_val);
+> +				insn_idx, (__pu64)imm, orig_val, new_val);
+>  			return -EINVAL;
+>  		}
+>  
+> @@ -5252,7 +5253,7 @@ static int bpf_core_patch_insn(struct bpf_program *prog,
+>  		insn[1].imm = 0; /* currently only 32-bit values are supported */
+>  		pr_debug("prog '%s': relo #%d: patched insn #%d (LDIMM64) imm64 %llu -> %u\n",
+>  			 bpf_program__title(prog, false), relo_idx, insn_idx,
+> -			 imm, new_val);
+> +			 (__pu64)imm, new_val);
+>  		break;
+>  	}
+>  	default:
+> @@ -7782,8 +7783,8 @@ static int bpf_object__collect_st_ops_relos(struct bpf_object *obj,
+>  		st_ops = map->st_ops;
+>  		pr_debug("struct_ops reloc %s: for %lld value %lld shdr_idx %u rel.r_offset %zu map->sec_offset %zu name %d (\'%s\')\n",
+>  			 map->name,
+> -			 (long long)(rel.r_info >> 32),
+> -			 (long long)sym.st_value,
+> +			 (__ps64)(rel.r_info >> 32),
+> +			 (__ps64)sym.st_value,
+>  			 shdr_idx, (size_t)rel.r_offset,
+>  			 map->sec_offset, sym.st_name, name);
+>  
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index 4d1c366fca2c..7ad3c4b9917c 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -69,6 +69,17 @@ extern void libbpf_print(enum libbpf_print_level level,
+>  			 const char *format, ...)
+>  	__attribute__((format(printf, 2, 3)));
+>  
+> +/* These types are for casting 64-bit arguments of printf-like functions to
+> + * avoid compiler warnings on various architectures that define size_t, __u64,
+> + * uint64_t, etc as either unsigned long or unsigned long long (similarly for
+> + * signed variants). Use these typedefs only for these purposes. Alternative
+> + * is PRIu64 (and similar) macros, requiring stitching printf format strings
+> + * which are extremely ugly and should be avoided in libbpf code base. With
+> + * arguments casted to __pu64/__ps64, always use %llu/%lld in format string.
+> + */
+> +typedef unsigned long long __pu64;
+> +typedef long long __ps64;
 
-Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
----
- include/linux/bpf.h                           |  1 +
- include/uapi/linux/bpf.h                      | 15 ++++-
- kernel/bpf/core.c                             |  1 +
- kernel/bpf/helpers.c                          | 28 +++++++++
- kernel/trace/bpf_trace.c                      |  2 +
- tools/include/uapi/linux/bpf.h                | 15 ++++-
- .../selftests/bpf/prog_tests/current_pcomm.c  | 57 +++++++++++++++++++
- .../selftests/bpf/progs/test_current_pcomm.c  | 17 ++++++
- 8 files changed, 134 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/current_pcomm.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_current_pcomm.c
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 81f38e2fda78..93b0c197fd75 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1754,6 +1754,7 @@ extern const struct bpf_func_proto bpf_skc_to_tcp_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_tcp_request_sock_proto;
- extern const struct bpf_func_proto bpf_skc_to_udp6_sock_proto;
-+extern const struct bpf_func_proto bpf_get_current_pcomm_proto;
- 
- const struct bpf_func_proto *bpf_tracing_func_proto(
- 	enum bpf_func_id func_id, const struct bpf_prog *prog);
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 544b89a64918..200a2309e5e1 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3509,6 +3509,18 @@ union bpf_attr {
-  *
-  *		**-EPERM** This helper cannot be used under the
-  *			   current sock_ops->op.
-+ *
-+ * long bpf_get_current_pcomm(void *buf, u32 size_of_buf)
-+ *	Description
-+ *		Copy the **comm** attribute of the real_parent current task
-+ *		into *buf* of *size_of_buf*. The **comm** attribute contains
-+ *		the name of the executable (excluding the path) for real_parent
-+ *		of current task.
-+ *		The *size_of_buf* must be strictly positive. On success, the
-+ *		helper makes sure that the *buf* is NUL-terminated. On failure,
-+ *		it is filled with zeroes.
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3655,7 +3667,8 @@ union bpf_attr {
- 	FN(get_task_stack),		\
- 	FN(load_hdr_opt),		\
- 	FN(store_hdr_opt),		\
--	FN(reserve_hdr_opt),
-+	FN(reserve_hdr_opt),		\
-+	FN(get_current_pcomm),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ed0b3578867c..fd346c2ff6f6 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2208,6 +2208,7 @@ const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
- const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto __weak;
- const struct bpf_func_proto bpf_get_local_storage_proto __weak;
- const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto __weak;
-+const struct bpf_func_proto bpf_get_current_pcomm_proto __weak;
- 
- const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
- {
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index be43ab3e619f..9fb663945e0b 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -575,6 +575,34 @@ const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto = {
- 	.arg4_type      = ARG_CONST_SIZE,
- };
- 
-+BPF_CALL_2(bpf_get_current_pcomm, char *, buf, u32, size)
-+{
-+	struct task_struct *task = current;
-+
-+	if (unlikely(!task))
-+		goto err_clear;
-+
-+	strncpy(buf, task->real_parent->comm, size);
-+
-+	/* Verifier guarantees that size > 0. For task->comm exceeding
-+	 * size, guarantee that buf is %NUL-terminated. Unconditionally
-+	 * done here to save the size test.
-+	 */
-+	buf[size - 1] = 0;
-+	return 0;
-+err_clear:
-+	memset(buf, 0, size);
-+	return -EINVAL;
-+}
-+
-+const struct bpf_func_proto bpf_get_current_pcomm_proto = {
-+	.func		= bpf_get_current_pcomm,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_UNINIT_MEM,
-+	.arg2_type	= ARG_CONST_SIZE,
-+};
-+
- static const struct bpf_func_proto bpf_get_raw_smp_processor_id_proto = {
- 	.func		= bpf_get_raw_cpu_id,
- 	.gpl_only	= false,
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index a8d4f253ed77..7cfeb58c729a 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1182,6 +1182,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_jiffies64_proto;
- 	case BPF_FUNC_get_task_stack:
- 		return &bpf_get_task_stack_proto;
-+	case BPF_FUNC_get_current_pcomm:
-+		return &bpf_get_current_pcomm_proto;
- 	default:
- 		return NULL;
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 544b89a64918..200a2309e5e1 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3509,6 +3509,18 @@ union bpf_attr {
-  *
-  *		**-EPERM** This helper cannot be used under the
-  *			   current sock_ops->op.
-+ *
-+ * long bpf_get_current_pcomm(void *buf, u32 size_of_buf)
-+ *	Description
-+ *		Copy the **comm** attribute of the real_parent current task
-+ *		into *buf* of *size_of_buf*. The **comm** attribute contains
-+ *		the name of the executable (excluding the path) for real_parent
-+ *		of current task.
-+ *		The *size_of_buf* must be strictly positive. On success, the
-+ *		helper makes sure that the *buf* is NUL-terminated. On failure,
-+ *		it is filled with zeroes.
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3655,7 +3667,8 @@ union bpf_attr {
- 	FN(get_task_stack),		\
- 	FN(load_hdr_opt),		\
- 	FN(store_hdr_opt),		\
--	FN(reserve_hdr_opt),
-+	FN(reserve_hdr_opt),		\
-+	FN(get_current_pcomm),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/tools/testing/selftests/bpf/prog_tests/current_pcomm.c b/tools/testing/selftests/bpf/prog_tests/current_pcomm.c
-new file mode 100644
-index 000000000000..23b708e1c417
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/current_pcomm.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
-+
-+#define _GNU_SOURCE
-+#include <test_progs.h>
-+#include "test_current_pcomm.skel.h"
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <pthread.h>
-+
-+void *current_pcomm(void *args)
-+{
-+	struct test_current_pcomm__bss  *bss;
-+	struct test_current_pcomm *skel;
-+	int err, duration = 0;
-+
-+	skel = test_current_pcomm__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "failed to load skeleton"))
-+		goto cleanup;
-+
-+	bss = skel->bss;
-+
-+	err = test_current_pcomm__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed %d", err))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(10);
-+	err = memcmp(bss->comm, "current_pcomm2", 14);
-+	if (CHECK(!err, "pcomm ", "bss->comm: %s\n", bss->comm))
-+		goto cleanup;
-+cleanup:
-+	test_current_pcomm__destroy(skel);
-+	return NULL;
-+}
-+
-+int test_current_pcomm(void)
-+{
-+	int err = 0, duration = 0;
-+	pthread_t tid;
-+
-+	err = pthread_create(&tid, NULL, &current_pcomm, NULL);
-+	if (CHECK(err, "thread", "thread creation failed %d", err))
-+		return EXIT_FAILURE;
-+	err = pthread_setname_np(tid, "current_pcomm2");
-+	if (CHECK(err, "thread naming", "thread naming failed %d", err))
-+		return EXIT_FAILURE;
-+
-+	usleep(5);
-+
-+	err = pthread_join(tid, NULL);
-+	if (CHECK(err, "thread join", "thread join failed %d", err))
-+		return EXIT_FAILURE;
-+
-+	return EXIT_SUCCESS;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_current_pcomm.c b/tools/testing/selftests/bpf/progs/test_current_pcomm.c
-new file mode 100644
-index 000000000000..27dab17ccdd4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_current_pcomm.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
-+
-+#include <linux/bpf.h>
-+#include <stdint.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char comm[16] = {0};
-+
-+SEC("raw_tracepoint/sys_enter")
-+int current_pcomm(const void *ctx)
-+{
-+	bpf_get_current_pcomm(comm, sizeof(comm));
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.20.1
-
+I think these extra typedefs will cause confusion. Original approach
+of open coding type casts to long long and unsigned long long is imo cleaner.
