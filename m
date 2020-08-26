@@ -2,208 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCA6252581
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 04:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC802525B7
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 05:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgHZCi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 22:38:29 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40994 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726635AbgHZCi2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 Aug 2020 22:38:28 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q2P2Ln027267;
-        Tue, 25 Aug 2020 19:38:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=ddWATERfla7VGEv5e7t8JREuMb1qasGyjNfoV803qDU=;
- b=ZMLFw7zsfm7aCcZqlCwpN8hxKHXeP30EuLLhBgTNbKmBmZonDp32IrHudh20w6yMFFvV
- YNFxcodx6+roA93W/nIDxuspNzO6/BYah5cvdDxpgwXwF/r3dsD36WSwEaHVAAzYj258
- BePfr6xPs3zsRwe+/EaUGtgNuq93q0bOBIU= 
+        id S1726711AbgHZDKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 23:10:16 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44686 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726672AbgHZDKQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Aug 2020 23:10:16 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q35m1n015583
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 20:10:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=GCQKPuvA9eng5ybNI2DOYZrTlMDd9wi721TRvtYjF3s=;
+ b=hYctapAOGyvBf3xW+ZOv6GIIq/KGiYGJoGsPMGnEh/yQ4zx9bZqM2MxAQUmCxMt7Mztd
+ 6oCQayIc1ya9oSc34Yw5HBFg5cmYY7K3E7GBPxx5LNpsLjIAbX4KX/t/9TmJeGjZTyQr
+ mNhfc83jN/Fg7AHcRWh54su7lm/NEBSAARQ= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 335dp9raxy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 25 Aug 2020 19:38:09 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        by mx0a-00082601.pphosted.com with ESMTP id 333jv9xuyu-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 20:10:15 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 25 Aug 2020 19:38:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M/vxz72fbR42Pq7eCBuSvinYjRLCm+aOOmhuoO9tPJIYre3CQRc20Q00RM+xFO2M4ZFenOAUoJJx4JJzh4u5ohWtEsod82hMRjR9HjnWwPWnD/HjYdRDPw/r1WYF+DB2qZJEpi9Ihfx7+gGTDi7JgYlRrAwuENzFQeID6wlR3AUyLOx1j10rF2i6W/qc3xYxtu67ZQ96wBPR0Bj5lstuBurG4H0QxNVbVnMME/mvCpDaQZhJ4HkYoIhwhiJ6XX9iCJHCDNQEXm0ILSZjrodJ1t0oVFh8CQ/Be4ytVDU1Sk9EzN+XvQyTOjIsAN3hCcEjOxfj/l7fNPmqST5BQZIoYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ddWATERfla7VGEv5e7t8JREuMb1qasGyjNfoV803qDU=;
- b=AQb1OL/IS2+uL1Ic93bHWYwxLKR9VY+XLi4rJuOnoM/cQSuZ2nWlIGoZyLwB4qxZAqXNJ07oHNNWiMQcJSUvNY7nSGjxSEArGHIi1zfOmIQhLJwHacjecC3AlsnDVaqnADpGcsXhDtd1thj7s0XaCA4oasr6C5bOjzveJ0gkoJj3CKB7IE2lVhKAw8IRMoBjBWpyOqe/mkUaJXGuacNdfvWi03dFXPpR7cA6GnS5CP8Y0cLrOjQRkkz7hy1U6dstmfIfbkoY8BTTLn7fRh3ML1/w0YNQxi37DmXzT6UrIgWn6yfO5lI5x5zPwhjsew31EnrO1QBC00WAsgMYr4bFVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ddWATERfla7VGEv5e7t8JREuMb1qasGyjNfoV803qDU=;
- b=e7Qj9Oq2pa6M+USPfZao1lJHNB1x9D4QJkcuWUBqlrtOubcNCMLH1SZbkjgqNYAaqSvj2QTazmLs51iSW88tx9KROXbojOXXxXFyUBo0s1v5Kepl8Zw8Td1I1zVXk5E+AWXeHbuAM2nSH9XJRK2yxFqWrlgg6zLs/LaKHBK53YU=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2215.namprd15.prod.outlook.com (2603:10b6:a02:89::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Wed, 26 Aug
- 2020 02:38:05 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3326.019; Wed, 26 Aug 2020
- 02:38:05 +0000
-Date:   Tue, 25 Aug 2020 19:38:02 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH bpf-next v4 03/30] bpf: memcg-based memory accounting for
- bpf maps
-Message-ID: <20200826023802.GA2490802@carbon.dhcp.thefacebook.com>
-References: <20200821150134.2581465-1-guro@fb.com>
- <20200821150134.2581465-4-guro@fb.com>
- <CALvZod70cywN0-HCXUPfyLN1vQdOBb46uCRk5E3NkOTDeWcEtg@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod70cywN0-HCXUPfyLN1vQdOBb46uCRk5E3NkOTDeWcEtg@mail.gmail.com>
-X-ClientProxiedBy: BYAPR07CA0034.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::47) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+ 15.1.1979.3; Tue, 25 Aug 2020 20:09:38 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 363A42EC628A; Tue, 25 Aug 2020 20:09:24 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: fix compilation warnings for 64-bit printf args
+Date:   Tue, 25 Aug 2020 20:09:21 -0700
+Message-ID: <20200826030922.2591203-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by BYAPR07CA0034.namprd07.prod.outlook.com (2603:10b6:a02:bc::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 26 Aug 2020 02:38:04 +0000
-X-Originating-IP: [2620:10d:c090:400::5:75b8]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dc66c436-9e89-4a7e-14a9-08d849690f4e
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2215:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2215DB41F0036FF8CE8BA33CBE540@BYAPR15MB2215.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n76nI93Mdj2wcPIahJDyD4p5sMK9xEr25xbAE4OYKwO2PSSsV6B//ie+ctaMds+H2zDl/yRvRnzHJzOeDMvub37y9GC+4XRtlkA4MyeFYYARDAI8LOtZPNiKdYwwOduU8y/hrR4Geh/Ix3JXgckAGD+BDueu8hQooe93qoCrSvw4RM0AULX/P2D6wMF0mw0/sLnrrhbo1hgnxIL4arfdTyp1peNUZPpY3M95y8hMykY6FJpdOLQ8vglCx1PVflKrw/KBJhzdRKrWnMgVmQzmdP4QppfKQmDcOfSY1SJ1CoEnbpBYCx1DUzrWOdLPklhubDS78ojHYMxnRsT7ZwAvOQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(39860400002)(346002)(376002)(956004)(33656002)(86362001)(66476007)(66556008)(54906003)(4326008)(52116002)(186003)(53546011)(16576012)(83380400001)(15650500001)(316002)(9686003)(8936002)(5660300002)(8676002)(2906002)(478600001)(6916009)(66946007)(1076003)(6486002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 3dhVIPtDhBSJ/Tshe/i5y4CChUQGNlRMQusCci9Me8ZQD0Q9HmKEcw+vMWDLIV2xDPvZ6y0CTOGwgVZYCJjFNynNCCXGW5zcQm1+ke9tyx0Hw0YvnvIdC/tMb57RvVsk8NNsNGbNY9O6LeSLrjKWVuyyDZBikOCY0yrwxhM/bxuhPy55w7D8gJhH5VTOHlzVaAeF8+hDz8X9+/FnWL9IuYb5FmbcgEIpi50FpPuhimjTPx2vJkN8G7ATMYKJszUhQw2SSQHCkWtXLPzj0oI3coAfXJmLDMsE0nu5Cw9pBPpJ6qf6v8XS7NXYH4XsRYCubL7B719NdU8SLfoBZwLs9jOOR54WhEBIRwhVcjp2luxRmER5R0W0N8JqSHYuHIZat1EmL/paU/cyEyeva4AV2gg13UWMjMkO6LS3L2Z2XeJadXw7mcV9DW9V4IrMjXRBFc6GdAOhtzDh957qWwKFHBlPPnlnrLyqsGD4rZqWbrriblMBO065mERAVJeXNObeKPGmw7xhk/rP7j/jtT6JHHmf+Om6vdFGt55+I1OQFuLI3B6gq1hG/6xqVy72BF05rYMKh0n9T0lCKaQCNJ0vksyPUZLuKbcPGhtZ0P1xxPy0b/CyR6zcG+GH1pmsAwxMVpvgE5q9aWB4u2o7/7A56+SxDv2mANelUwIxEA+HJWQ=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc66c436-9e89-4a7e-14a9-08d849690f4e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2020 02:38:05.3002
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YV1f4ucp2OhKqmWQ/W5lN/JvcfRoLxF6XQXJVlB7dRi09tyXKYfYjRKQAcC+qplD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2215
-X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-08-25_11:2020-08-25,2020-08-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- malwarescore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=1 phishscore=0
- clxscore=1015 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2008260018
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ suspectscore=9 mlxlogscore=999 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ spamscore=0 adultscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260023
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 04:27:09PM -0700, Shakeel Butt wrote:
-> On Fri, Aug 21, 2020 at 8:01 AM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > This patch enables memcg-based memory accounting for memory allocated
-> > by __bpf_map_area_alloc(), which is used by most map types for
-> > large allocations.
-> >
-> > If a map is updated from an interrupt context, and the update
-> > results in memory allocation, the memory cgroup can't be determined
-> > from the context of the current process. To address this case,
-> > bpf map preserves a pointer to the memory cgroup of the process,
-> > which created the map. This memory cgroup is charged for allocations
-> > from interrupt context.
-> >
-> > Following patches in the series will refine the accounting for
-> > some map types.
-> >
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > ---
-> >  include/linux/bpf.h  |  4 ++++
-> >  kernel/bpf/helpers.c | 37 ++++++++++++++++++++++++++++++++++++-
-> >  kernel/bpf/syscall.c | 27 ++++++++++++++++++++++++++-
-> >  3 files changed, 66 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index a9b7185a6b37..b5f178afde94 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -34,6 +34,7 @@ struct btf_type;
-> >  struct exception_table_entry;
-> >  struct seq_operations;
-> >  struct bpf_iter_aux_info;
-> > +struct mem_cgroup;
-> >
-> >  extern struct idr btf_idr;
-> >  extern spinlock_t btf_idr_lock;
-> > @@ -138,6 +139,9 @@ struct bpf_map {
-> >         u32 btf_value_type_id;
-> >         struct btf *btf;
-> >         struct bpf_map_memory memory;
-> > +#ifdef CONFIG_MEMCG_KMEM
-> > +       struct mem_cgroup *memcg;
-> > +#endif
-> >         char name[BPF_OBJ_NAME_LEN];
-> >         u32 btf_vmlinux_value_type_id;
-> >         bool bypass_spec_v1;
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index be43ab3e619f..f8ce7bc7003f 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/jiffies.h>
-> >  #include <linux/pid_namespace.h>
-> >  #include <linux/proc_ns.h>
-> > +#include <linux/sched/mm.h>
-> >
-> >  #include "../../lib/kstrtox.h"
-> >
-> > @@ -41,11 +42,45 @@ const struct bpf_func_proto bpf_map_lookup_elem_proto = {
-> >         .arg2_type      = ARG_PTR_TO_MAP_KEY,
-> >  };
-> >
-> > +#ifdef CONFIG_MEMCG_KMEM
-> > +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
-> > +                                                void *value, u64 flags)
-> > +{
-> > +       struct mem_cgroup *old_memcg;
-> > +       bool in_interrupt;
-> > +       int ret;
-> > +
-> > +       /*
-> > +        * If update from an interrupt context results in a memory allocation,
-> > +        * the memory cgroup to charge can't be determined from the context
-> > +        * of the current task. Instead, we charge the memory cgroup, which
-> > +        * contained a process created the map.
-> > +        */
-> > +       in_interrupt = in_interrupt();
-> > +       if (in_interrupt)
-> > +               old_memcg = memalloc_use_memcg(map->memcg);
-> > +
-> 
-> The memcg_kmem_bypass() will bypass all __GFP_ACCOUNT allocations even
-> before looking at current->active_memcg, so, this patch will be a
-> noop.
+Add __pu64 and __ps64 (sort of like "printf u64 and s64") for libbpf-inte=
+rnal
+use only in printf-like situations to avoid compilation warnings due to
+%lld/%llu mismatch with a __u64/__s64 due to some architecture defining t=
+he
+latter as either `long` or `long long`. Use that on all %lld/%llu cases i=
+n
+libbpf.c.
 
-Good point. Looks like it's a good example of kmem accounting from an interrupt
-context, which we've discussed on the Plumbers session.
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Fixes: eacaaed784e2 ("libbpf: Implement enum value-based CO-RE relocation=
+s")
+Fixes: 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating=
+ ELF")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c          | 15 ++++++++-------
+ tools/lib/bpf/libbpf_internal.h | 11 +++++++++++
+ 2 files changed, 19 insertions(+), 7 deletions(-)
 
-It means we need some more work on the mm side.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 2e2523d8bb6d..211eb0d9020c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1529,12 +1529,12 @@ static int set_kcfg_value_num(struct extern_desc =
+*ext, void *ext_val,
+ {
+ 	if (ext->kcfg.type !=3D KCFG_INT && ext->kcfg.type !=3D KCFG_CHAR) {
+ 		pr_warn("extern (kcfg) %s=3D%llu should be integer\n",
+-			ext->name, (unsigned long long)value);
++			ext->name, (__pu64)value);
+ 		return -EINVAL;
+ 	}
+ 	if (!is_kcfg_value_in_range(ext, value)) {
+ 		pr_warn("extern (kcfg) %s=3D%llu value doesn't fit in %d bytes\n",
+-			ext->name, (unsigned long long)value, ext->kcfg.sz);
++			ext->name, (__pu64)value, ext->kcfg.sz);
+ 		return -ERANGE;
+ 	}
+ 	switch (ext->kcfg.sz) {
+@@ -2823,7 +2823,8 @@ static int bpf_object__elf_collect(struct bpf_objec=
+t *obj)
+ 			obj->efile.bss =3D data;
+ 			obj->efile.bss_shndx =3D idx;
+ 		} else {
+-			pr_info("elf: skipping section(%d) %s (size %zu)\n", idx, name, sh.sh=
+_size);
++			pr_info("elf: skipping section(%d) %s (size %zu)\n", idx, name,
++				(size_t)sh.sh_size);
+ 		}
+ 	}
+=20
+@@ -5244,7 +5245,7 @@ static int bpf_core_patch_insn(struct bpf_program *=
+prog,
+ 		if (res->validate && imm !=3D orig_val) {
+ 			pr_warn("prog '%s': relo #%d: unexpected insn #%d (LDIMM64) value: go=
+t %llu, exp %u -> %u\n",
+ 				bpf_program__title(prog, false), relo_idx,
+-				insn_idx, imm, orig_val, new_val);
++				insn_idx, (__pu64)imm, orig_val, new_val);
+ 			return -EINVAL;
+ 		}
+=20
+@@ -5252,7 +5253,7 @@ static int bpf_core_patch_insn(struct bpf_program *=
+prog,
+ 		insn[1].imm =3D 0; /* currently only 32-bit values are supported */
+ 		pr_debug("prog '%s': relo #%d: patched insn #%d (LDIMM64) imm64 %llu -=
+> %u\n",
+ 			 bpf_program__title(prog, false), relo_idx, insn_idx,
+-			 imm, new_val);
++			 (__pu64)imm, new_val);
+ 		break;
+ 	}
+ 	default:
+@@ -7782,8 +7783,8 @@ static int bpf_object__collect_st_ops_relos(struct =
+bpf_object *obj,
+ 		st_ops =3D map->st_ops;
+ 		pr_debug("struct_ops reloc %s: for %lld value %lld shdr_idx %u rel.r_o=
+ffset %zu map->sec_offset %zu name %d (\'%s\')\n",
+ 			 map->name,
+-			 (long long)(rel.r_info >> 32),
+-			 (long long)sym.st_value,
++			 (__ps64)(rel.r_info >> 32),
++			 (__ps64)sym.st_value,
+ 			 shdr_idx, (size_t)rel.r_offset,
+ 			 map->sec_offset, sym.st_name, name);
+=20
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+index 4d1c366fca2c..7ad3c4b9917c 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -69,6 +69,17 @@ extern void libbpf_print(enum libbpf_print_level level=
+,
+ 			 const char *format, ...)
+ 	__attribute__((format(printf, 2, 3)));
+=20
++/* These types are for casting 64-bit arguments of printf-like functions=
+ to
++ * avoid compiler warnings on various architectures that define size_t, =
+__u64,
++ * uint64_t, etc as either unsigned long or unsigned long long (similarl=
+y for
++ * signed variants). Use these typedefs only for these purposes. Alterna=
+tive
++ * is PRIu64 (and similar) macros, requiring stitching printf format str=
+ings
++ * which are extremely ugly and should be avoided in libbpf code base. W=
+ith
++ * arguments casted to __pu64/__ps64, always use %llu/%lld in format str=
+ing.
++ */
++typedef unsigned long long __pu64;
++typedef long long __ps64;
++
+ #define __pr(level, fmt, ...)	\
+ do {				\
+ 	libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__);	\
+--=20
+2.24.1
 
-Thanks!
