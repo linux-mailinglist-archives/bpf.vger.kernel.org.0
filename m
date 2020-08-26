@@ -2,215 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F1425255F
-	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 03:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCA6252581
+	for <lists+bpf@lfdr.de>; Wed, 26 Aug 2020 04:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgHZB6m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Aug 2020 21:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgHZB6k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Aug 2020 21:58:40 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8200AC061574
-        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 18:58:40 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ls14so148013pjb.3
-        for <bpf@vger.kernel.org>; Tue, 25 Aug 2020 18:58:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xLdC9ND688u6xs5VTWloWjmvEbXN0787RhILJ/xlSyc=;
-        b=MOYbw3ZQRi2JvL2xzjLNtrsIgnL6cYRGLj50s/gQrUtPcCg32X7hDsbc0ZV0Rh/Q08
-         1bPudtCoHy1PSot9qvCvtnt8gTes3WgBI3E/WgdTUecohD+QDk3TCZ36o0/S2FScEByt
-         9S1ZhmpaY7yJoIx+j2kaNq0wb+Dk2UMZQkX6WCdoog2j3PulTOdSWfVrVXuRzCbQsXHT
-         l89FO++/TMkzar0UOT1sW54pSRpcW7qyfSRqoAYUP9FVY8wVym3tlQA50SS8BccYEPK/
-         wZxjBWj1WS7sJhJWn4SeSKSv0MER4yYbg4JdfXGFZejYnya2c3NYHDov9JwfaB9tf8bD
-         7f7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xLdC9ND688u6xs5VTWloWjmvEbXN0787RhILJ/xlSyc=;
-        b=V8GbcL5vNLcs8oDCtA3im4AYRyHNgb8uGHErq4b7riBv86mGO7wkuXov+BBa6ewWKy
-         V1zFujW30mm3wBMcoAG1Q4O1u8WPJ4H123nNBvPXycF8tHXyHemHxFYMe+dQLyWZWcJa
-         bjEZCq5gjO1M0HNcJRPQ3Os6gjH8Ly509CA4y64Zsl5+f4EIYhzDGrWcnjIg1c7joob4
-         iVVkA8gtSWNmm6idUntjLs6lyNi7Gm/LB04+S5NBbD0cNgoehGtwPJVoRqtiyF4Vroj4
-         nYazhWvZcH0vmN+SW+u5Y6nURe8ouQ1GJtiK+cmgYB5R7+P4ig4OMaNJB5ooAjvCi0aA
-         CSfA==
-X-Gm-Message-State: AOAM532jaFMQRTLIb890f9cfjc896X7aX/UVf+wl6a7ct3HoqhYXjUOd
-        Vbrp3JpRs9FJAgP03Qi1D2s=
-X-Google-Smtp-Source: ABdhPJwCopbh66PYU1LNDYaley4FrqMrpNn7qIc1QoUQKPiM7fBIowTU2BK2n2bDa0MY4FzZeMs/IA==
-X-Received: by 2002:a17:90a:e30e:: with SMTP id x14mr3708109pjy.150.1598407119928;
-        Tue, 25 Aug 2020 18:58:39 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:3d59])
-        by smtp.gmail.com with ESMTPSA id a20sm577335pfi.11.2020.08.25.18.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Aug 2020 18:58:39 -0700 (PDT)
-Date:   Tue, 25 Aug 2020 18:58:36 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        John Fastabend <john.fastabend@gmail.com>, ecree@solarflare.com
-Subject: Re: [PATCH bpf-next 1/2] bpf: fix a verifier failure with xor
-Message-ID: <20200826015836.2rlfvhoznylkabp6@ast-mbp.dhcp.thefacebook.com>
-References: <20200825064608.2017878-1-yhs@fb.com>
- <20200825064608.2017937-1-yhs@fb.com>
-MIME-Version: 1.0
+        id S1726645AbgHZCi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Aug 2020 22:38:29 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40994 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726635AbgHZCi2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Aug 2020 22:38:28 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07Q2P2Ln027267;
+        Tue, 25 Aug 2020 19:38:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=ddWATERfla7VGEv5e7t8JREuMb1qasGyjNfoV803qDU=;
+ b=ZMLFw7zsfm7aCcZqlCwpN8hxKHXeP30EuLLhBgTNbKmBmZonDp32IrHudh20w6yMFFvV
+ YNFxcodx6+roA93W/nIDxuspNzO6/BYah5cvdDxpgwXwF/r3dsD36WSwEaHVAAzYj258
+ BePfr6xPs3zsRwe+/EaUGtgNuq93q0bOBIU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 335dp9raxy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 25 Aug 2020 19:38:09 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 25 Aug 2020 19:38:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M/vxz72fbR42Pq7eCBuSvinYjRLCm+aOOmhuoO9tPJIYre3CQRc20Q00RM+xFO2M4ZFenOAUoJJx4JJzh4u5ohWtEsod82hMRjR9HjnWwPWnD/HjYdRDPw/r1WYF+DB2qZJEpi9Ihfx7+gGTDi7JgYlRrAwuENzFQeID6wlR3AUyLOx1j10rF2i6W/qc3xYxtu67ZQ96wBPR0Bj5lstuBurG4H0QxNVbVnMME/mvCpDaQZhJ4HkYoIhwhiJ6XX9iCJHCDNQEXm0ILSZjrodJ1t0oVFh8CQ/Be4ytVDU1Sk9EzN+XvQyTOjIsAN3hCcEjOxfj/l7fNPmqST5BQZIoYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ddWATERfla7VGEv5e7t8JREuMb1qasGyjNfoV803qDU=;
+ b=AQb1OL/IS2+uL1Ic93bHWYwxLKR9VY+XLi4rJuOnoM/cQSuZ2nWlIGoZyLwB4qxZAqXNJ07oHNNWiMQcJSUvNY7nSGjxSEArGHIi1zfOmIQhLJwHacjecC3AlsnDVaqnADpGcsXhDtd1thj7s0XaCA4oasr6C5bOjzveJ0gkoJj3CKB7IE2lVhKAw8IRMoBjBWpyOqe/mkUaJXGuacNdfvWi03dFXPpR7cA6GnS5CP8Y0cLrOjQRkkz7hy1U6dstmfIfbkoY8BTTLn7fRh3ML1/w0YNQxi37DmXzT6UrIgWn6yfO5lI5x5zPwhjsew31EnrO1QBC00WAsgMYr4bFVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ddWATERfla7VGEv5e7t8JREuMb1qasGyjNfoV803qDU=;
+ b=e7Qj9Oq2pa6M+USPfZao1lJHNB1x9D4QJkcuWUBqlrtOubcNCMLH1SZbkjgqNYAaqSvj2QTazmLs51iSW88tx9KROXbojOXXxXFyUBo0s1v5Kepl8Zw8Td1I1zVXk5E+AWXeHbuAM2nSH9XJRK2yxFqWrlgg6zLs/LaKHBK53YU=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2215.namprd15.prod.outlook.com (2603:10b6:a02:89::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3305.26; Wed, 26 Aug
+ 2020 02:38:05 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3326.019; Wed, 26 Aug 2020
+ 02:38:05 +0000
+Date:   Tue, 25 Aug 2020 19:38:02 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH bpf-next v4 03/30] bpf: memcg-based memory accounting for
+ bpf maps
+Message-ID: <20200826023802.GA2490802@carbon.dhcp.thefacebook.com>
+References: <20200821150134.2581465-1-guro@fb.com>
+ <20200821150134.2581465-4-guro@fb.com>
+ <CALvZod70cywN0-HCXUPfyLN1vQdOBb46uCRk5E3NkOTDeWcEtg@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200825064608.2017937-1-yhs@fb.com>
+In-Reply-To: <CALvZod70cywN0-HCXUPfyLN1vQdOBb46uCRk5E3NkOTDeWcEtg@mail.gmail.com>
+X-ClientProxiedBy: BYAPR07CA0034.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::47) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by BYAPR07CA0034.namprd07.prod.outlook.com (2603:10b6:a02:bc::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 26 Aug 2020 02:38:04 +0000
+X-Originating-IP: [2620:10d:c090:400::5:75b8]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dc66c436-9e89-4a7e-14a9-08d849690f4e
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2215:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2215DB41F0036FF8CE8BA33CBE540@BYAPR15MB2215.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n76nI93Mdj2wcPIahJDyD4p5sMK9xEr25xbAE4OYKwO2PSSsV6B//ie+ctaMds+H2zDl/yRvRnzHJzOeDMvub37y9GC+4XRtlkA4MyeFYYARDAI8LOtZPNiKdYwwOduU8y/hrR4Geh/Ix3JXgckAGD+BDueu8hQooe93qoCrSvw4RM0AULX/P2D6wMF0mw0/sLnrrhbo1hgnxIL4arfdTyp1peNUZPpY3M95y8hMykY6FJpdOLQ8vglCx1PVflKrw/KBJhzdRKrWnMgVmQzmdP4QppfKQmDcOfSY1SJ1CoEnbpBYCx1DUzrWOdLPklhubDS78ojHYMxnRsT7ZwAvOQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(39860400002)(346002)(376002)(956004)(33656002)(86362001)(66476007)(66556008)(54906003)(4326008)(52116002)(186003)(53546011)(16576012)(83380400001)(15650500001)(316002)(9686003)(8936002)(5660300002)(8676002)(2906002)(478600001)(6916009)(66946007)(1076003)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 3dhVIPtDhBSJ/Tshe/i5y4CChUQGNlRMQusCci9Me8ZQD0Q9HmKEcw+vMWDLIV2xDPvZ6y0CTOGwgVZYCJjFNynNCCXGW5zcQm1+ke9tyx0Hw0YvnvIdC/tMb57RvVsk8NNsNGbNY9O6LeSLrjKWVuyyDZBikOCY0yrwxhM/bxuhPy55w7D8gJhH5VTOHlzVaAeF8+hDz8X9+/FnWL9IuYb5FmbcgEIpi50FpPuhimjTPx2vJkN8G7ATMYKJszUhQw2SSQHCkWtXLPzj0oI3coAfXJmLDMsE0nu5Cw9pBPpJ6qf6v8XS7NXYH4XsRYCubL7B719NdU8SLfoBZwLs9jOOR54WhEBIRwhVcjp2luxRmER5R0W0N8JqSHYuHIZat1EmL/paU/cyEyeva4AV2gg13UWMjMkO6LS3L2Z2XeJadXw7mcV9DW9V4IrMjXRBFc6GdAOhtzDh957qWwKFHBlPPnlnrLyqsGD4rZqWbrriblMBO065mERAVJeXNObeKPGmw7xhk/rP7j/jtT6JHHmf+Om6vdFGt55+I1OQFuLI3B6gq1hG/6xqVy72BF05rYMKh0n9T0lCKaQCNJ0vksyPUZLuKbcPGhtZ0P1xxPy0b/CyR6zcG+GH1pmsAwxMVpvgE5q9aWB4u2o7/7A56+SxDv2mANelUwIxEA+HJWQ=
+X-MS-Exchange-CrossTenant-Network-Message-Id: dc66c436-9e89-4a7e-14a9-08d849690f4e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2020 02:38:05.3002
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YV1f4ucp2OhKqmWQ/W5lN/JvcfRoLxF6XQXJVlB7dRi09tyXKYfYjRKQAcC+qplD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2215
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-25_11:2020-08-25,2020-08-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ malwarescore=0 priorityscore=1501 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=1 phishscore=0
+ clxscore=1015 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2008260018
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 11:46:08PM -0700, Yonghong Song wrote:
-> bpf selftest test_progs/test_sk_assign failed with llvm 11 and llvm 12.
-> Compared to llvm 10, llvm 11 and 12 generates xor instruction which
-> is not handled properly in verifier. The following illustrates the
-> problem:
+On Tue, Aug 25, 2020 at 04:27:09PM -0700, Shakeel Butt wrote:
+> On Fri, Aug 21, 2020 at 8:01 AM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > This patch enables memcg-based memory accounting for memory allocated
+> > by __bpf_map_area_alloc(), which is used by most map types for
+> > large allocations.
+> >
+> > If a map is updated from an interrupt context, and the update
+> > results in memory allocation, the memory cgroup can't be determined
+> > from the context of the current process. To address this case,
+> > bpf map preserves a pointer to the memory cgroup of the process,
+> > which created the map. This memory cgroup is charged for allocations
+> > from interrupt context.
+> >
+> > Following patches in the series will refine the accounting for
+> > some map types.
+> >
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > ---
+> >  include/linux/bpf.h  |  4 ++++
+> >  kernel/bpf/helpers.c | 37 ++++++++++++++++++++++++++++++++++++-
+> >  kernel/bpf/syscall.c | 27 ++++++++++++++++++++++++++-
+> >  3 files changed, 66 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index a9b7185a6b37..b5f178afde94 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -34,6 +34,7 @@ struct btf_type;
+> >  struct exception_table_entry;
+> >  struct seq_operations;
+> >  struct bpf_iter_aux_info;
+> > +struct mem_cgroup;
+> >
+> >  extern struct idr btf_idr;
+> >  extern spinlock_t btf_idr_lock;
+> > @@ -138,6 +139,9 @@ struct bpf_map {
+> >         u32 btf_value_type_id;
+> >         struct btf *btf;
+> >         struct bpf_map_memory memory;
+> > +#ifdef CONFIG_MEMCG_KMEM
+> > +       struct mem_cgroup *memcg;
+> > +#endif
+> >         char name[BPF_OBJ_NAME_LEN];
+> >         u32 btf_vmlinux_value_type_id;
+> >         bool bypass_spec_v1;
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index be43ab3e619f..f8ce7bc7003f 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -14,6 +14,7 @@
+> >  #include <linux/jiffies.h>
+> >  #include <linux/pid_namespace.h>
+> >  #include <linux/proc_ns.h>
+> > +#include <linux/sched/mm.h>
+> >
+> >  #include "../../lib/kstrtox.h"
+> >
+> > @@ -41,11 +42,45 @@ const struct bpf_func_proto bpf_map_lookup_elem_proto = {
+> >         .arg2_type      = ARG_PTR_TO_MAP_KEY,
+> >  };
+> >
+> > +#ifdef CONFIG_MEMCG_KMEM
+> > +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
+> > +                                                void *value, u64 flags)
+> > +{
+> > +       struct mem_cgroup *old_memcg;
+> > +       bool in_interrupt;
+> > +       int ret;
+> > +
+> > +       /*
+> > +        * If update from an interrupt context results in a memory allocation,
+> > +        * the memory cgroup to charge can't be determined from the context
+> > +        * of the current task. Instead, we charge the memory cgroup, which
+> > +        * contained a process created the map.
+> > +        */
+> > +       in_interrupt = in_interrupt();
+> > +       if (in_interrupt)
+> > +               old_memcg = memalloc_use_memcg(map->memcg);
+> > +
 > 
->   16: (b4) w5 = 0
->   17: ... R5_w=inv0 ...
->   ...
->   132: (a4) w5 ^= 1
->   133: ... R5_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) ...
->   ...
->   37: (bc) w8 = w5
->   38: ... R5=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
->           R8_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) ...
->   ...
->   41: (bc) w3 = w8
->   42: ... R3_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) ...
->   45: (56) if w3 != 0x0 goto pc+1
->    ... R3_w=inv0 ...
->   46: (b7) r1 = 34
->   47: R1_w=inv34 R7=pkt(id=0,off=26,r=38,imm=0)
->   47: (0f) r7 += r1
->   48: R1_w=invP34 R3_w=inv0 R7_w=pkt(id=0,off=60,r=38,imm=0)
->   48: (b4) w9 = 0
->   49: R1_w=invP34 R3_w=inv0 R7_w=pkt(id=0,off=60,r=38,imm=0)
->   49: (69) r1 = *(u16 *)(r7 +0)
->   invalid access to packet, off=60 size=2, R7(id=0,off=60,r=38)
->   R7 offset is outside of the packet
-> 
-> At above insn 132, w5 = 0, but after w5 ^= 1, we give a really conservative
-> value of w5. At insn 45, in reality the condition should be always false.
-> But due to conservative value for w3, the verifier evaluates it could be
-> true and this later leads to verifier failure complaining potential
-> packet out-of-bound access.
-> 
-> This patch implemented proper XOR support in verifier.
-> In the above example, we have:
->   132: R5=invP0
->   132: (a4) w5 ^= 1
->   133: R5_w=invP1
->   ...
->   37: (bc) w8 = w5
->   ...
->   41: (bc) w3 = w8
->   42: R3_w=invP1
->   ...
->   45: (56) if w3 != 0x0 goto pc+1
->   47: R3_w=invP1
->   ...
->   processed 353 insns ...
-> and the verifier can verify the program successfully.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  kernel/bpf/verifier.c | 66 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 66 insertions(+)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index dd24503ab3d3..a08cabc0f683 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5801,6 +5801,67 @@ static void scalar_min_max_or(struct bpf_reg_state *dst_reg,
->  	__update_reg_bounds(dst_reg);
->  }
->  
-> +static void scalar32_min_max_xor(struct bpf_reg_state *dst_reg,
-> +				 struct bpf_reg_state *src_reg)
-> +{
-> +	bool src_known = tnum_subreg_is_const(src_reg->var_off);
-> +	bool dst_known = tnum_subreg_is_const(dst_reg->var_off);
-> +	struct tnum var32_off = tnum_subreg(dst_reg->var_off);
-> +	s32 smin_val = src_reg->s32_min_value;
-> +
-> +	/* Assuming scalar64_min_max_xor will be called so it is safe
-> +	 * to skip updating register for known case.
-> +	 */
-> +	if (src_known && dst_known)
-> +		return;
+> The memcg_kmem_bypass() will bypass all __GFP_ACCOUNT allocations even
+> before looking at current->active_memcg, so, this patch will be a
+> noop.
 
-why?
-I've looked at _and() and _or() variants that do the same and
-couldn't quite remember why it's ok to do so.
+Good point. Looks like it's a good example of kmem accounting from an interrupt
+context, which we've discussed on the Plumbers session.
 
-> +
-> +	/* We get both minimum and maximum from the var32_off. */
-> +	dst_reg->u32_min_value = var32_off.value;
-> +	dst_reg->u32_max_value = var32_off.value | var32_off.mask;
-> +
-> +	if (dst_reg->s32_min_value >= 0 && smin_val >= 0) {
-> +		/* XORing two positive sign numbers gives a positive,
-> +		 * so safe to cast u32 result into s32.
-> +		 */
-> +		dst_reg->s32_min_value = dst_reg->u32_min_value;
-> +		dst_reg->s32_max_value = dst_reg->u32_max_value;
-> +	} else {
-> +		dst_reg->s32_min_value = S32_MIN;
-> +		dst_reg->s32_max_value = S32_MAX;
-> +	}
-> +}
-> +
-> +static void scalar_min_max_xor(struct bpf_reg_state *dst_reg,
-> +			       struct bpf_reg_state *src_reg)
-> +{
-> +	bool src_known = tnum_is_const(src_reg->var_off);
-> +	bool dst_known = tnum_is_const(dst_reg->var_off);
-> +	s64 smin_val = src_reg->smin_value;
-> +
-> +	if (src_known && dst_known) {
-> +		/* dst_reg->var_off.value has been updated earlier */
+It means we need some more work on the mm side.
 
-right, but that means that there is sort-of 'bug' (unnecessary operation)
-that caused me a lot of head scratching.
-scalar_min_max_and() and scalar_min_max_or() do the alu in similar situation:
-        if (src_known && dst_known) {
-                __mark_reg_known(dst_reg, dst_reg->var_off.value |
-                                          src_reg->var_off.value);
-I guess it's still technically correct to repeat alu operation.
-second & and second | won't change the value of dst_reg,
-but it feels that it's correct by accident?
-John ?
-
-> +		__mark_reg_known(dst_reg, dst_reg->var_off.value);
-> +		return;
-> +	}
-> +
-> +	/* We get both minimum and maximum from the var_off. */
-> +	dst_reg->umin_value = dst_reg->var_off.value;
-> +	dst_reg->umax_value = dst_reg->var_off.value | dst_reg->var_off.mask;
-
-I think this is correct, but I hope somebody else can analyze this as well.
-John, Ed ?
-
-> +
-> +	if (dst_reg->smin_value >= 0 && smin_val >= 0) {
-> +		/* XORing two positive sign numbers gives a positive,
-> +		 * so safe to cast u64 result into s64.
-> +		 */
-> +		dst_reg->smin_value = dst_reg->umin_value;
-> +		dst_reg->smax_value = dst_reg->umax_value;
-> +	} else {
-> +		dst_reg->smin_value = S64_MIN;
-> +		dst_reg->smax_value = S64_MAX;
-> +	}
-> +
-> +	__update_reg_bounds(dst_reg);
-> +}
+Thanks!
