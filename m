@@ -2,94 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA0225499C
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 17:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB684254A19
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 18:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726009AbgH0PiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 11:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
+        id S1726854AbgH0QAE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 12:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726995AbgH0PiN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 11:38:13 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107B2C06121B
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 08:38:13 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id a21so8293131ejp.0
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 08:38:12 -0700 (PDT)
+        with ESMTP id S1726234AbgH0QAD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Aug 2020 12:00:03 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FBFC061264
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 09:00:01 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id e187so3225918ybc.5
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 09:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=v0FgighIwdmM/GwCv8tksYLJpYPYvU6sl0BqpPn2H6s=;
-        b=l8oxS2MIS5ymcvd2DzvHjvFpQCZU7T1S1yljxP0yRdqoNskUq0gjLFybxd/ySXAyaN
-         B1q+RikCsT72yE6bGRemR99UjziVE/8Lq75KmnPGpkCsYJh1/ecM9droa9WegRMj6P65
-         Niie3+may9hLnssUX9Qk5zgjUnTYB7jBha/AB+3UwF8hegdXW9YFt0wf0n3mGTtOlpjC
-         YNHbK0ZwgBTO6XmQOzWiD1gl9FaJ8Y6rWm5mEIxpRnOJx7rf0d/D0mzb/hEaKG4zCVVX
-         +pYxhLo4KHd3t9yo/TyStaLgLPgWEvTFtK1LnPWvzz/GoIVAd8wV64xA7wyb+1LU5Sf1
-         /JIQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=/llJ76ws27LsT6/YXXpmEzV/LI8WQtmNf2e5yPfGiHc=;
+        b=X9NmYUDCLVEUrxSCXhb2zAAr/M+zceBvfem0mszvfvkh8OvUeL3evUjm1Ah7BSj655
+         nn6eqZItms8a2HJtCTCm1Zj1HT2WeSYE6TFtiEp+BMr+01eCSFUxxDDV4r+OX00NlvBW
+         eb/80OfZob33YdJ+ChhhukW+eEtVx9bPfBybH1xzbXAZMID6Y6xu6Kio0rhPLAeW1Dsz
+         NEsQZwcpe97X/Ps0jLDE7zigmXtBICqfJlSzlJ6huTyTBtrtvsLWjHsI5GHDMweiRXWw
+         ljOrUBypf4bY1T7gEmFbPwTxTPOw/4Dgc1Ip/wtbHv10/VWRq7BTsTSb/zg4VOrQ/ZTH
+         xuqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=v0FgighIwdmM/GwCv8tksYLJpYPYvU6sl0BqpPn2H6s=;
-        b=ShxOEqv8u6t4+ODteJudyK5zh7fyAbKE3uk43CJNHBaG09KuK5SdO71ZavEtdweJjg
-         xf7jsp1hDbieOVNOoJoNBIExGEE/Lkw9bKAlDoYxci7oTHpmrYOM4g/Zv/6WWAzVTdxp
-         1azQBm4dp6i9OsLHURSWHbtzbbZ0Zn1R4KvJW6UGUbMOViUPEsyuxRrm2W2yCteStPRF
-         OdGHdjUGAUNjlyuxwLVJ+6e6xtTZMl1/cL0cZqoVmdEJthEVHV2hM5ADySfNtZ2LKt+P
-         r12AC4ZWlZGaY6Xe0vzH1utJ4fxECTLKZxhrdHOArN6jeFOO5KXg+xAuLBOP/Rq+xrpw
-         uUMQ==
-X-Gm-Message-State: AOAM532LS4BXWRLHiYbFuEkodhJ0L/WvFAiHGwMGFYC6whWF8GoVnQIE
-        WgRFV4ijW1PlmUqMR0lGaMFx0g==
-X-Google-Smtp-Source: ABdhPJwyQCaAezpLu/msj4Wm8kAo6W6LLXcDXbhHWJsOLToMqCuFqw2GWb8nAUs7Z/NrJdmFc5gxow==
-X-Received: by 2002:a17:906:1719:: with SMTP id c25mr22440976eje.487.1598542691776;
-        Thu, 27 Aug 2020 08:38:11 -0700 (PDT)
-Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id i25sm1765616edt.1.2020.08.27.08.38.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 08:38:11 -0700 (PDT)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH bpf-next 6/6] tools/runqslower: Build bpftool using HOSTCC
-Date:   Thu, 27 Aug 2020 17:36:30 +0200
-Message-Id: <20200827153629.3820891-7-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200827153629.3820891-1-jean-philippe@linaro.org>
-References: <20200827153629.3820891-1-jean-philippe@linaro.org>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=/llJ76ws27LsT6/YXXpmEzV/LI8WQtmNf2e5yPfGiHc=;
+        b=FRzN0uNPLxXZOZg3DXq4jb6yPvpslW7ekllPPDT3SM36c+nqVhcWUYQ6hz5vzGmoM8
+         jperQTy9cklKTeD4iHkgsqFagIJvSve7EHxC/CjSSMlwMk9pw/EElyIAHMOeeFdojwMB
+         fMUyP3hCZp0GGHHRHssQy8dbr8pKPA8mCdgxZVhh/Bphxqkigtdfd3RKz3hd67Zm+eiu
+         aK1zu04YSeFepjGgawObPyoHi3gdXTUiDLJew+qCFJJTizpU5wFwQ/JtXL9gW5rngQNu
+         oqnG5GDpPXtUQwj3NA5QimdvmTmvUrIbO1UJoTRUdBbgqa+SnbZcUAFiqIne4yJpgKL3
+         mCSg==
+X-Gm-Message-State: AOAM5306ZRjyqCWuhjdybwJt7jxjgYF6dQYupvA8Pachef5I94VkTN0C
+        tv1qBz8MOkacbFpQVHLkxKC5FPfuw19U/oX/BuseEo4dW8ML7Q==
+X-Google-Smtp-Source: ABdhPJxDJg6dE6zdkinErSi1gaE71M1QTcakW4kSR1PXryYwow68V1kw3iO8Z0SCj0pw26ELF0y4As6iWrWQVgOiztg=
+X-Received: by 2002:a05:6902:1025:: with SMTP id x5mr30567454ybt.58.1598543999144;
+ Thu, 27 Aug 2020 08:59:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Abhishek Vijeev <abhishek.vijeev@gmail.com>
+Date:   Thu, 27 Aug 2020 21:29:47 +0530
+Message-ID: <CAHhV9ERe4VwPrrwDJF4xqmaeyqQqPvYaY2Wb9DEk8tf-GB_-Yw@mail.gmail.com>
+Subject: Frozen Maps
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When cross building runqslower for an other architecture, the
-intermediate bpftool used to generate a skeleton must be built using the
-host toolchain. Pass HOSTCC and HOSTLD, defined in Makefile.include, to
-the bpftool Makefile.
+Hi,
 
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
----
- tools/bpf/runqslower/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+From a user-space process, given a BPF map file descriptor, is it
+possible to determine whether the map is frozen (with BPF_MAP_FREEZE)?
 
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-index 861f4dcde960..fa5c18b70dd0 100644
---- a/tools/bpf/runqslower/Makefile
-+++ b/tools/bpf/runqslower/Makefile
-@@ -85,7 +85,8 @@ $(BPFOBJ)-clean: $(BPFOBJ_OUTPUT)
- 	$(Q)$(MAKE) -C $(LIBBPF_SRC) OUTPUT=$(BPFOBJ_OUTPUT) clean
- 
- $(DEFAULT_BPFTOOL): | $(BPFTOOL_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT)
-+	$(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT)   \
-+		    CC=$(HOSTCC) LD=$(HOSTLD)
- 
- $(DEFAULT_BPFTOOL)-clean: $(BPFTOOL_OUTPUT)
- ifeq ($(DEFAULT_BPFTOOL),$(BPFTOOL))
--- 
-2.28.0
+As far as I'm aware, the only way to retrieve information about BPF
+maps from file descriptors is to use BPF_OBJ_GET_INFO_BY_FD. However,
+I do not see a field which tells me whether a map is frozen (or not)
+in struct bpf_map_info
+(https://github.com/torvalds/linux/blob/master/include/uapi/linux/bpf.h#L4035).
+Kindly correct me if I'm wrong.
 
+Thank you,
+Abhishek Vijeev.
