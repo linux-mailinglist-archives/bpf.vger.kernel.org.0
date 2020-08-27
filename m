@@ -2,77 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA95E254B1E
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 18:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC28254B6F
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 19:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgH0QtU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 12:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
+        id S1726217AbgH0RCv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 13:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727883AbgH0QtS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 12:49:18 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1022C06121B
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 09:49:17 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id k4so5432828ilr.12
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 09:49:17 -0700 (PDT)
+        with ESMTP id S1726093AbgH0RCu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Aug 2020 13:02:50 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E554C061264
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 10:02:50 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id a34so3326237ybj.9
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 10:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v9ZyGHwAqhd4TejFabDc6/PzC/u7N902eASqly8StkU=;
-        b=ZTLNUEBGYrrFPRLYpDlQNCn/VXu5DlNjkXlWLdjYdlKI+Miqmm9KKLX5ebyDG6joSd
-         YjnGdwjqSX+zUX6Xde0DWGLTeiS5rw5d6Uapq8mcBLX37RIZ49Rsey0T3Smvh0fOIree
-         DI+ZejK3GmR7hFIwVR9HAxx8dNG+EkpCBD0YDnpy0oy0XTGM+kBBWP1XHhwpuFsTeRAS
-         +IAhvXO8eteKMQQkD9JSHCzdGE+GmeW1dOepr6Lk16LKpNzY8Qicxf9K9F9A9HqgBN4Z
-         WITrWsz1zievmgL+ey+64vJVGHlTck3KI3qLlBsTar7jmlJXCQeQXaczSHHg1sA9inhQ
-         0WNw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4m+hmGk2KBXeELO5szTujMxeAL1STNjr9OgA1hZdwHE=;
+        b=uP3y4+QK4dOuP+5d+++WaP2V5ndi/LaX4WAt5j6Y2G9L9SpH2lZ5f0W8ZrR4mdtpoO
+         paB3nrggM4W2CXuHVXvS4Q+/d1Y2ZKICgFe9HGZGIWE4ZDkinyyYApv2cqm10OBSx54f
+         QIda3kRBQML6Ji77Le0UUmqfEfjcsFaxaxz6DnFrXLVGWpZ+16hdK+hc1APkBJLnp5Te
+         aqwVU83/0qDjVy4k1id0vsD+aHwMszKiA6ZLuLbFUf/gq5zOm4hioZnaBkc5GgRPXDjN
+         Vokcz779zxuq/DqU6tLpxtJ+wWgoly60imK4CRqWVGVkIG4NM4B2I2j8GFd+BzNjmUll
+         VM2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v9ZyGHwAqhd4TejFabDc6/PzC/u7N902eASqly8StkU=;
-        b=anaWTaJCOerAqHLLElpUMP5baxf9HN0JzyAw9HgOlSTMPnT8J3UG+ICHfTebjKQVu5
-         Sfrpils5f5Aulqo4TobX5WVv+NcXm1yf29Y09z46xwRGRz6YywiHpt29xudfnFldkFDi
-         Waikty2DQr0a6tNDSXlrvr7R8XSBIaBirH7bvQBGFmCdA/7txpj3hR5c0asal7YP1Pnl
-         N8Khl0LMV5v5cPSZdJCX2ShJ38hJ2OdwXFJc72m4p8+APbTlsD/XoPsNLSjBl99mi3kA
-         h3reA9v8eY1ryCYaTWxTmjExg+FqtJM9J152oauPfcWl6/Tw5d2ZSpafKD3x7j2+nBJQ
-         0fsw==
-X-Gm-Message-State: AOAM53001jl4Ag5tbLEYV7/6/JcFvtUkOU9hqrfdOs8ThAbBDtL+9JZd
-        qBPNt+FyOE0zB533hnCDWL3L9lDIcIiVYg==
-X-Google-Smtp-Source: ABdhPJxYZ/dD0KOxKFi3aDdy52FO303Pfjhg3gPfh6rEsjm/xuAUFmHc5+k1SzPeRbixuGEmhGDSxg==
-X-Received: by 2002:a92:4995:: with SMTP id k21mr17578367ilg.30.1598546954273;
-        Thu, 27 Aug 2020 09:49:14 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:3005:f69c:3e46:66e5])
-        by smtp.googlemail.com with ESMTPSA id p21sm1446151ioj.10.2020.08.27.09.49.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Aug 2020 09:49:13 -0700 (PDT)
-Subject: Re: Frozen Maps
-To:     Abhishek Vijeev <abhishek.vijeev@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-References: <CAHhV9ERe4VwPrrwDJF4xqmaeyqQqPvYaY2Wb9DEk8tf-GB_-Yw@mail.gmail.com>
- <b8a11771-7b7c-a3b1-0639-dc4706ef3ecf@gmail.com>
- <CAHhV9ERrtpmNdAmM0-evExLi=iC0wkwTByw5AqBbSQv9CbaNow@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <01775dda-3e00-708a-1433-a1facb79db3d@gmail.com>
-Date:   Thu, 27 Aug 2020 10:49:12 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4m+hmGk2KBXeELO5szTujMxeAL1STNjr9OgA1hZdwHE=;
+        b=BfWzyCiA/Gxr2TGYcZYN5zy3iFFGwKfN63swAfxelveza10EMd8PueF4G+bsQ5x3Gx
+         zsa+GXipmFPzDA338KRvSYpL6iwxlQGFKGU+y5GEnOIcag/JRC4sH6P4SjZctUzRu2WI
+         kb9RkNCnNshB36t0kV4jiypCYe+kaAYI+W4zSTfkh5mdYv4Cq44QA4UwkcFhvHVcKZna
+         CRKvW7j57wrunK8EVaLT2vZrlmPCKXIXCAOO3BaIhPYeYyMIRigsQy9RRGZiu5CILKHw
+         aDuWMUdXOzI7nfKZQbAjOAODR9dNkDV4gs80vlOHlK469VkSbJVCvSftLBNTMfO66aja
+         P0Kg==
+X-Gm-Message-State: AOAM5316XX80Of10QroB7sAB3cd/gJaAZBir70wKyCU/hVavbsi1b+kg
+        AHbj+K8diJZiX3DeuBHi+AgZphSLpUfD+vgSLIw=
+X-Google-Smtp-Source: ABdhPJymd8pzoMi5/U9ADTiAGI+ok4JwonMqdkPWqWPENBZtlJXpun6J35yJR4B6r5bUs2IVgonRX6pbr15SBTnRhDA=
+X-Received: by 2002:a25:6b4e:: with SMTP id o14mr29007171ybm.506.1598547769076;
+ Thu, 27 Aug 2020 10:02:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHhV9ERrtpmNdAmM0-evExLi=iC0wkwTByw5AqBbSQv9CbaNow@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAHhV9ERe4VwPrrwDJF4xqmaeyqQqPvYaY2Wb9DEk8tf-GB_-Yw@mail.gmail.com>
+ <b8a11771-7b7c-a3b1-0639-dc4706ef3ecf@gmail.com> <CAHhV9ERrtpmNdAmM0-evExLi=iC0wkwTByw5AqBbSQv9CbaNow@mail.gmail.com>
+ <01775dda-3e00-708a-1433-a1facb79db3d@gmail.com>
+In-Reply-To: <01775dda-3e00-708a-1433-a1facb79db3d@gmail.com>
+From:   Abhishek Vijeev <abhishek.vijeev@gmail.com>
+Date:   Thu, 27 Aug 2020 22:32:37 +0530
+Message-ID: <CAHhV9ETbOHxBJMHZ57PmmZ1vovwn+g=LNuJEJFio4ouD6xQWkw@mail.gmail.com>
+Subject: Re: Frozen Maps
+To:     David Ahern <dsahern@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/27/20 10:43 AM, Abhishek Vijeev wrote:
-> Thank you.
-> 
-> To confirm, is this the only way?
+Yes, that's precisely why I reached out.
 
-appears so from a code review. I am surprised it is not in GET_INFO
-response.
+Thank you.
+
+On Thu, Aug 27, 2020 at 10:19 PM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 8/27/20 10:43 AM, Abhishek Vijeev wrote:
+> > Thank you.
+> >
+> > To confirm, is this the only way?
+>
+> appears so from a code review. I am surprised it is not in GET_INFO
+> response.
