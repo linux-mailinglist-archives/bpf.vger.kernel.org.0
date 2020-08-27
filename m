@@ -2,105 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABAA253D1E
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 07:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624EE253D22
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 07:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgH0FM5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 01:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        id S1726395AbgH0FOn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 01:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbgH0FM4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 01:12:56 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDA3C061240
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 22:12:55 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id k10so2234347lfm.5
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 22:12:55 -0700 (PDT)
+        with ESMTP id S1726123AbgH0FOn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Aug 2020 01:14:43 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FDAC061240;
+        Wed, 26 Aug 2020 22:14:43 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id m22so4959120ljj.5;
+        Wed, 26 Aug 2020 22:14:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pzfEqEuxWPsthi6ICODPe0IobDuBQZfGwmKpBrJn6zU=;
-        b=J25bfIzlwSkPzC5TdxtsIbMuvKUdLQB/Hl2vcWTL+Bz2OvRHCloIkvdO+BViwCpviO
-         7ZLSTT86P/2uLU7Pmse5ejJaulox5t+LLN8I95YBzVSVC4/SgJ2RZV+HhuJTgJ8M4mY0
-         7USJEKaXmXRxISVUjGUGNIOEqC8C8dojnYWRI7HtsSPiWsGLUnuwv78QpzcYtJWQJEKc
-         U932kqAnvA4VnJDEtyc7bFlxR9DGYkZjM5Yf0XfznTNUl9mNKQyAdDbp3oykXJ5OryL+
-         e43RPhRaOoUS9QP2mhCEdLo9Hd76fOAqmqXP9GbIMvwlE0VE6yfqmgCCAosgsLQY+93v
-         w8Uw==
+        bh=j2EiiOVQtIuXtayMjxk185GJittEj1l4xRc5OheFlLc=;
+        b=IGwkKuXAFLgSaBq7s6s4VR2vr7rYJAQNBcrY6e2wmx+r7Z9nQ3EuxIVcYfgz0cjBxW
+         VjBI1ULtfCrvsfsD6mwRcl4iiO0LR+KsdmZM7Xg1ROHM1JHqan/LipqWYzk9lDzjvNVV
+         z3MhD3fhQMGQCPJiO7h956ZOBzSiN4NR+5IbH42yrQqn/Gbexmw+8zCGRXGry2Bujk20
+         eV8teDJZt0C20uCxcfvG0Rrd2xLArorKuSZOYB00tba6Rj+Qql7Rqf+XI+t45ijODGrk
+         GwnHzE7yCtR5Ry7ev3lDoYCRoMP4ih9Idaf5IL+0V5DNvLXWtHpTcAFcyZzYGDgjOYbc
+         VfMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pzfEqEuxWPsthi6ICODPe0IobDuBQZfGwmKpBrJn6zU=;
-        b=jMxe2KiscOuW2rPHQADto9+a0KzQg1BgpvySRxZC1Iet5hRU6nHE0Sq+6nPBvgCjvp
-         DucCyFUUcep6GSJhfkpkmv8Oew21ejzjyLOeeURV3stU/JrGtih0T/uesVcgxCU7C9VJ
-         9JacjFpj9Ypsc8ssONcHuUdFgoO6LjaDQOVNliPQvKZEWQRq26o5R/sRQ/lm9a44ti62
-         OYlhyT7XRekVPMSI73ff+S3UmurK6tPsaRB+HzObF7heDD6QXkdIfQqaEg7R+w4A6A+F
-         P6MMjh7y6B8nd6thyiYpjoNOu/4510TtFVYCYyz4Z878XHsQu2uqYE07sgVNq1AasFBX
-         +vZQ==
-X-Gm-Message-State: AOAM530DG/JmFrj0jgJgD2IPpXyFUzfZGl6U9FHlk2AIFtuvIbLAzXOn
-        JQHHa5iMNnKjVjBhthHZfUyPDOZHbRTuF330bI8=
-X-Google-Smtp-Source: ABdhPJwijgbDp1s/1Inkh3eOt0B9ZX93PkOOjGDbdScoJTch/mSRO/yby/vE/PG8uYg96GA2Sh/zvHfOAo/OJTlJ6pE=
-X-Received: by 2002:a05:6512:3610:: with SMTP id f16mr8902465lfs.8.1598505174327;
- Wed, 26 Aug 2020 22:12:54 -0700 (PDT)
+        bh=j2EiiOVQtIuXtayMjxk185GJittEj1l4xRc5OheFlLc=;
+        b=pA+daul61AFhWX1z27UxF+oMYK7IyPKIg/zBllCelNGG/SAM/p08ASWgBSAAAl5T+q
+         WZWZVT+Z3Q0FUE0tryesyumQrG/7YYrjCcayQX4/TaE9yxCgj0ufBzCod3k+XnSN8ENv
+         GV6fukaS4RnNRozBSx4j7rEpKp98+TRctyK6+ECmXMw7uGOyP8oiITJ6sVs41vOG6d7p
+         Y2aYhWpEAH9VJrQicDh4m55PJJu4wgveH5a3B2MKMy5OrW95vaETDlawik4YONRvA3CI
+         7Jp03L+0/PwWFHgOiwiOM13RQa198nEXb6EIxrM8d00lTBpCPVdbxSmfP8s4NgKVLMqW
+         Gssg==
+X-Gm-Message-State: AOAM532svvsmP9Q9J6Y17xC83zLNNWi6bF6RF95eGTvCkv0JgTIzVHsx
+        3RXDvnQOzRCyTpwwydbGUoLWrK2yXKVctwxQjHg=
+X-Google-Smtp-Source: ABdhPJw4QIGwfZbzPrRlqpg6bzzjkaoQpkuojXuYXcKBBp3SclRwIPtK4grKtZl3C3xn+ct3ikCpz0GwdW7Nn31i5aU=
+X-Received: by 2002:a2e:b6cd:: with SMTP id m13mr9128000ljo.91.1598505281404;
+ Wed, 26 Aug 2020 22:14:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200825064608.2017878-1-yhs@fb.com> <20200825064608.2017937-1-yhs@fb.com>
- <20200826015836.2rlfvhoznylkabp6@ast-mbp.dhcp.thefacebook.com>
- <f2056e3c-e300-6fa0-8b8e-fa19ed5580bd@fb.com> <5f46dcd8c0156_50e8208f4@john-XPS-13-9370.notmuch>
-In-Reply-To: <5f46dcd8c0156_50e8208f4@john-XPS-13-9370.notmuch>
+References: <20200827041109.3613090-1-andriin@fb.com>
+In-Reply-To: <20200827041109.3613090-1-andriin@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 26 Aug 2020 22:12:42 -0700
-Message-ID: <CAADnVQ+XYd=GzF2P=3RO_Xi6m5zQA2q3JYTWxbh3O=Pfn8zLXw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: fix a verifier failure with xor
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 26 Aug 2020 22:14:30 -0700
+Message-ID: <CAADnVQ+jE8iUqB4mdPA58JQmNow08LGFkemC2BbTb+TYvJ2K1w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: fix compilation warnings for 64-bit
+ printf args
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Kernel Team <kernel-team@fb.com>,
-        Edward Cree <ecree@solarflare.com>
+        Naresh Kamboju <naresh.kamboju@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 3:06 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, Aug 26, 2020 at 9:13 PM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> It is a hold-out from when we went from having a 32-bit var-off
-> and a 64-bit var-off. I'll send a patch its clumsy and not needed
-> for sure.
+> Fix compilation warnings due to __u64 defined differently as `unsigned long`
+> or `unsigned long long` on different architectures (e.g., ppc64le differs from
+> x86-64). Also cast one argument to size_t to fix printf warning of similar
+> nature.
+>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Fixes: eacaaed784e2 ("libbpf: Implement enum value-based CO-RE relocations")
+> Fixes: 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating ELF")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-please follow up with such patches.
-
-> The other subtle piece here we should clean up. Its possible
-> to have a const in the subreg but a non-const in the wider
-> 64-bit reg. In this case we skip marking the 32-bit subreg
-> as known and rely on the 64-bit case to handle it. But, we
-> may if the 64-bit reg is not const fall through and update
-> the 64-bit bounds. Then later we call __update_reg32_bounds()
-> and this will use the var_off, previously updated. The
-> 32-bit bounds are then updated using this var_off so they
-> are correct even if less precise than we might expect. I
-> believe xor is correct here as well.
-
-makes sense. I think it's correct now, but I agree that cleaning
-this up would be good as well.
-
-> I need to send another patch with a comment for the BTF_ID
-> types. I'll add some test cases for this 64-bit non-const and
-> subreg const so we don't break it later. I'm on the fence
-> if we should tighten the bounds there as well. I'll see if
-> it helps readability to do explicit 32-bit const handling
-> there. I had it in one of the early series with the 32-bit
-> bounds handling, but dropped for what we have now.
-
-Not following. Why is this related to btf_id ?
-
-> LGTM, but I see a couple follow up patches with tests, comments,
-> and dropping the duplicate ALU op I'll try to do those Friday, unless
-> someone else does them first.
-
-yes. please :)
-
-I've pushed this set to bpf-next in the meantime.
-Thanks everyone!
+Applied. Thanks
