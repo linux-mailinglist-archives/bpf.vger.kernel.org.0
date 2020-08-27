@@ -2,103 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDC6253C78
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 06:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77281253CED
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 06:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgH0EMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 00:12:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
+        id S1726977AbgH0EvA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 00:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgH0EMX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 00:12:23 -0400
+        with ESMTP id S1725909AbgH0Eu7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Aug 2020 00:50:59 -0400
 Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E833EC0612A8;
-        Wed, 26 Aug 2020 21:12:22 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id q3so2204912ybp.7;
-        Wed, 26 Aug 2020 21:12:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1483C0612AC;
+        Wed, 26 Aug 2020 21:50:58 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id p191so2262775ybg.0;
+        Wed, 26 Aug 2020 21:50:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kp/u4RK/gNkc7rDaaiMxnwAkhw/8/LsUDPjsgGtLT6o=;
-        b=Kno7ShG/vp6+iFF/Xh18Xh6EhpLHZp5xUCzgjmTrbkoaDKeDtcNByvG8C+h7V0kroy
-         i2kFCVZH0iPjzHuhCAYaylJfkJXP63v+ny21BSfYoJ/0YKt7rvMthfXB/7JXZyqBIYgR
-         Jz7JBjGk1i5SWEIcXsB6Y9VvIrUMyRT9y9rbmLW58T23FekaZzAWGze9XsrU22IZBxPh
-         VLxejIENydKjzaTGnW8vpWxl2lQ+v1XymK/jC9cLPy/58T4TK1KZHWM+6rs9eygk12pP
-         JDU89KuDlIfjhi5LWcT6g16ptZcI2T7oA3+cur/vdeMOQSKX/NHIQntyy/n+OSJnaNrl
-         9mmw==
+        bh=XZYR7VNw5NZ2Jso3mPlMp39U2lgdgcQkzuZjsh+Wx0s=;
+        b=pHUt3AAkY0mIHAET71C4ze52gzab5HXSIemi92bNPACl+RQJziqidxiUr1ptgRtzkN
+         OO8Cy6i8NWrdIv9301wuoSHseBPVw1HjuppImSP5msWs+KfRCUcSD64xaen9tvajgn9o
+         GGbAG+PuU5xUr4H7BXKLJ4zvQL6qjBX63cuy2uw/QCAeli7U8s9Lp+O60FwJAx5w6x9E
+         8otqqXzWw/nUSY2b4R+RzqLPkUrAJqP085xcWqSEr+wBkc+xquxm0Jkt3qS2R8ug6Qx4
+         lGgsfVbhdNKbxKizf/5zjY8zrSCUHNWGynkiMsBePL/hcbWh4LMROKS+lXNE1HtNfza3
+         B/tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kp/u4RK/gNkc7rDaaiMxnwAkhw/8/LsUDPjsgGtLT6o=;
-        b=rtz+MHohax19vl6hlQSmWeqUbawQpjYAINaRq1+Fg72wAHWQrXqKWv6ENex5hkFBkd
-         KTEUDrpC1nO97E8XjRFZWFpuH5Ehqd3Suvrepz9zMZDDx3BtpUozPnIFA9vLrM1uMhIU
-         UiI14XB5PRWUOMImVAwo3InZwM82GoUN9joVK4//ooilbXK+HwqhzhHNpy5MUQjMwoxx
-         HnINEvGlvYCiTkUL5H+rZf+1lG5Tkcvpj+yy09JGaWzMZcZX2zYDqKqtLgsePS/hWIZF
-         MiFgz+HfvUCwZ3K+ckLSBn6tu3VZ4CnZrAR5PLQupbNJUhQKe4cp0PskAd5fpRqFDFDI
-         b+BQ==
-X-Gm-Message-State: AOAM530+QgwYVBeoOD3wIpKyGHgxdBNhi5UOq793+Z9z0j8/aGq5MW2b
-        Emm+6w+XLXlS3GtugtVmLMpxJ/m/C466mTKQexk=
-X-Google-Smtp-Source: ABdhPJxDT7ZRUaeQt7UkZ2F1k5QSS9nfBPz50zh2I1Wr5FsNda3NIW/M7p1/mOTLwstva5xQ4VDlktD0qNyV00429KI=
-X-Received: by 2002:a25:ad5a:: with SMTP id l26mr24810072ybe.510.1598501540763;
- Wed, 26 Aug 2020 21:12:20 -0700 (PDT)
+        bh=XZYR7VNw5NZ2Jso3mPlMp39U2lgdgcQkzuZjsh+Wx0s=;
+        b=oOBphK/1edsgJSv3gzjke18E1y3aZNL2Lfrhu8avvS8XOfOatkf2BLXu2jxquZ9o+u
+         PnxxvzjjF8qnLyGqsRQFoCgJnoMKExEzo7gBVYQlZ1bTkA3UX5Zlw/9dB3CjpYwh/pkl
+         +14n4ZCkbDwCVGZLxV/vVxlx++Wf/T3Su4X5ljeNSTHwYDnIPMl8xR42zDKLHvB1dfH6
+         X36r+fPTeQjp7pXZEBXEHLRm2uOZhimF/9MhP5VyrjTy0RQKuEUUMHzRfqKsrgVf8cZX
+         SX1on6xYTOx0O2TZgLlNFNiSX2tASVqP5WVo3m/VEbHeuHp7NmCnzO0+4cwM66Hf5MJ1
+         N2Qw==
+X-Gm-Message-State: AOAM532BXQH4GA/LtE1QvG/XM3UTnVWKOCkW3XCWWDt9+MCbhCoiSt4o
+        jI6z4uXR7su4rNk1ug+iEbrAQKrC+C8lhVPNoRn0CJTx
+X-Google-Smtp-Source: ABdhPJzuSO+K4V+PMBFld61Dn+aVaPXsLSmlbpxfVY3OMltgSrbeN//ZQo6K/hZ+TZDeY0NO8iHUn5Tc/8V+bRkGu2Y=
+X-Received: by 2002:a25:ae43:: with SMTP id g3mr26766908ybe.459.1598503857838;
+ Wed, 26 Aug 2020 21:50:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200826030922.2591203-1-andriin@fb.com> <20200826160852.e4hnkyvg2kzrtzjj@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200826160852.e4hnkyvg2kzrtzjj@ast-mbp.dhcp.thefacebook.com>
+References: <20200827000618.2711826-1-yhs@fb.com> <20200827000619.2711883-1-yhs@fb.com>
+In-Reply-To: <20200827000619.2711883-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Aug 2020 21:12:09 -0700
-Message-ID: <CAEf4BzbLj5g8PK+fTE17v4nXKDDuZMBp9g98=oaYN59d0pVeZQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix compilation warnings for 64-bit
- printf args
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Wed, 26 Aug 2020 21:50:47 -0700
+Message-ID: <CAEf4BzZg3D=7rkWjer49GH0_MZEf0KJH3O3tMs1gkzqMOb7t6g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: make bpf_link_info.iter similar to bpf_iter_link_info
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 9:08 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Aug 26, 2020 at 5:07 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Tue, Aug 25, 2020 at 08:09:21PM -0700, Andrii Nakryiko wrote:
-> > Add __pu64 and __ps64 (sort of like "printf u64 and s64") for libbpf-internal
-> > use only in printf-like situations to avoid compilation warnings due to
-> > %lld/%llu mismatch with a __u64/__s64 due to some architecture defining the
-> > latter as either `long` or `long long`. Use that on all %lld/%llu cases in
-> > libbpf.c.
-> >
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > Fixes: eacaaed784e2 ("libbpf: Implement enum value-based CO-RE relocations")
-> > Fixes: 50e09460d9f8 ("libbpf: Skip well-known ELF sections when iterating ELF")
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c          | 15 ++++++++-------
-> >  tools/lib/bpf/libbpf_internal.h | 11 +++++++++++
-> >  2 files changed, 19 insertions(+), 7 deletions(-)
-> >
+> bpf_link_info.iter is used by link_query to return
+> bpf_iter_link_info to user space. Fields may be different
+> ,e.g., map_fd vs. map_id, so we cannot reuse
+> the exact structure. But make them similar, e.g.,
+>   struct bpf_link_info {
+>      /* common fields */
+>      union {
+>         struct { ... } raw_tracepoint;
+>         struct { ... } tracing;
+>         ...
+>         struct {
+>             /* common fields for iter */
+>             union {
+>                 struct {
+>                     __u32 map_id;
+>                 } map;
+>                 /* other structs for other targets */
+>             };
+>         };
+>     };
+>  };
+> so the structure is extensible the same way as
+> bpf_iter_link_info.
+>
+> Fixes: 6b0a249a301e ("bpf: Implement link_query for bpf iterators")
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+
+I like this change, thanks!
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  include/uapi/linux/bpf.h       | 6 ++++--
+>  tools/include/uapi/linux/bpf.h | 6 ++++--
+>  2 files changed, 8 insertions(+), 4 deletions(-)
+>
 
 [...]
-
-> >
-> > +/* These types are for casting 64-bit arguments of printf-like functions to
-> > + * avoid compiler warnings on various architectures that define size_t, __u64,
-> > + * uint64_t, etc as either unsigned long or unsigned long long (similarly for
-> > + * signed variants). Use these typedefs only for these purposes. Alternative
-> > + * is PRIu64 (and similar) macros, requiring stitching printf format strings
-> > + * which are extremely ugly and should be avoided in libbpf code base. With
-> > + * arguments casted to __pu64/__ps64, always use %llu/%lld in format string.
-> > + */
-> > +typedef unsigned long long __pu64;
-> > +typedef long long __ps64;
->
-> I think these extra typedefs will cause confusion. Original approach
-> of open coding type casts to long long and unsigned long long is imo cleaner.
-
-Fair enough. Sent v2 with just direct "unsigned long long" casts.
