@@ -2,225 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A001253D4E
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 07:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877B9253D5F
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 08:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgH0FpR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 01:45:17 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:35857 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgH0FpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 01:45:16 -0400
-Received: by mail-il1-f199.google.com with SMTP id f20so2836445ilg.3
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 22:45:16 -0700 (PDT)
+        id S1726242AbgH0GFC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 02:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgH0GFB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Aug 2020 02:05:01 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CADAC061246;
+        Wed, 26 Aug 2020 23:05:01 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id q3so2317242ybp.7;
+        Wed, 26 Aug 2020 23:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YS0E3x+rd6mFReNohPRwURMjsOh1VMEQF9vUanLTT/0=;
+        b=IFTjQNtz4TH2ktM9bD6omTwK6z8gQvROWHXKbfocfX5JvTWo06Ms8/XrAlrIy3dtMZ
+         8VJHbRmBi7VXDd4x7lDLd1u1yT/JX76vR3OHZBRrR0/Q0DtFLSb7KljcSSDEycOvMH+K
+         qGEVrz42WL57VIifN8yGNgYfqDxdt5V9azJr3EW9JdUcF2s6UmFvanEl/WCh6/rQjjCF
+         BuwbsvXjrxiJTyYgCSaDWHhCUFvhhnpRz5Aj7uPavBCLvAVQCwn3uOygMymfgKVydA9i
+         mQO2Ru/0Iu2YMJ+6tgWb7kZZh2miNc8HUOKf4XogqPd6GpUyUMDCacl0OcjWALtiwarb
+         JrPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=AOnJK58KWAgjckYsBB0yMrRGuMXnsjy16cofVkiVrV0=;
-        b=VK0cM5CqkovtEyQXn/5fOpjxpB9FTIJvH13MGCGKwQK0oxQrFVMIvn9qZFKqObr961
-         ha2gRTXptfhWwQsPo2kAOGg5a/IA4F1tWthwE1t9VNGzu972EcK0MeKh36IEkdLp18qS
-         Tjk0Jz+Q3ZH9C9FJ2CpcAKyGhq6WJltlVfV9zJLvH9SXbgvYZU9EP/Wh6sWrr1U3p9ut
-         Y7BPmYOCN7oXOeH3r4Yh4XHGwVw88wovPSTF+cnwphAlf5xm8DAFcpIRg0Y+HGVGabb1
-         cNu4HQF03FNTeg77HjAMQ4/8xqMeXwjgKIvUYY/dfThkeBHTdoZ99wd/mfAd3FkOFAb9
-         IOwg==
-X-Gm-Message-State: AOAM531YtyaojeEUGdvSGaXQbGOAOlQnSDqWTQYBQOD8jWw2oueQePZr
-        EGVT0Q7ZIITRd3w7ON9QHoUK6wYdY5Zj8HZ8Z3dLEl/ySjDj
-X-Google-Smtp-Source: ABdhPJxVMcCYi0n2+hu7wGOwaonrfV3/g00xVzHNfTVQoH598Vl+9+Fsj+Bky7V9IUFN4v3+QRE+q7R2RWPfZiXwmddgVt6jiWhW
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YS0E3x+rd6mFReNohPRwURMjsOh1VMEQF9vUanLTT/0=;
+        b=OpHFfK/GukplruU2rXg1Lw/dUSFVo7iKM1VnG0K6giv99VW/ehKme3CYsO9TF14FmK
+         1H6AcoCxRplWJxZkkXUBUHacggfXU2kWCpUi1bFiPWi9WWP7X7XCazYK1+qCRk24m+HC
+         Epk4nNj6RN++auzaebrQGoP6veghLMIKSX5KdUdG3LPuP3jl8+XVWf2UXcUbkQzBMeR0
+         Lnw1hhfyzXVXZNQpGR0EjLlfmUAgIPTbAamFrMwfreR6yXEaIU1eDkR+lVJWuuoHIRuO
+         kB4neczy/Y+f77dQOF3gV+AFEnb+GbW25ofTT+WB4YU8sB1kxQ9O5BVRmVEi+bo8JMAF
+         qzrw==
+X-Gm-Message-State: AOAM532vwMHsFe4QSGezFDiKXJphTS3wYmIgHUeqlyXZgCwwGYEbBf2O
+        rbf3Ty5bbl9DfUQQ990k/xiT2w7cF/dY/cNLziE=
+X-Google-Smtp-Source: ABdhPJxkd5AOFlyKfKZ9Ayi2ea1O8ksOJql6kpnE/JAyYTpEmJYhrmUoiUve3mvyb77ThYiXm979rJGxuQivakeUTxA=
+X-Received: by 2002:a25:bc50:: with SMTP id d16mr24534529ybk.230.1598508300269;
+ Wed, 26 Aug 2020 23:05:00 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:c71:: with SMTP id f17mr15347923ilj.98.1598507115751;
- Wed, 26 Aug 2020 22:45:15 -0700 (PDT)
-Date:   Wed, 26 Aug 2020 22:45:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ce2f6d05add5705a@google.com>
-Subject: BUG: stack guard page was hit in __zone_watermark_ok
-From:   syzbot <syzbot+144d1f35995353c5779c@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        hawk@kernel.org, jiri@mellanox.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        roopa@cumulusnetworks.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20200825232003.2877030-1-udippant@fb.com> <20200825232003.2877030-3-udippant@fb.com>
+In-Reply-To: <20200825232003.2877030-3-udippant@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Aug 2020 23:04:49 -0700
+Message-ID: <CAEf4BzYsxBJf2a59L4EPKwX0eH2U7z41PSUgupwOWUXVH4sgYQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/4] selftests/bpf: add test for freplace
+ program with write access
+To:     Udip Pant <udippant@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Aug 25, 2020 at 4:21 PM Udip Pant <udippant@fb.com> wrote:
+>
+> This adds a selftest that tests the behavior when a freplace target program
+> attempts to make a write access on a packet. The expectation is that the read or write
+> access is granted based on the program type of the linked program and
+> not itself (which is of type, for e.g., BPF_PROG_TYPE_EXT).
+>
+> This test fails without the associated patch on the verifier.
+>
+> Signed-off-by: Udip Pant <udippant@fb.com>
+> ---
+>  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  1 +
+>  .../selftests/bpf/progs/fexit_bpf2bpf.c       | 27 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_pkt_access.c     | 20 ++++++++++++++
+>  3 files changed, 48 insertions(+)
+>
 
-syzbot found the following issue on:
+[...]
 
-HEAD commit:    85eb5bc3 net: atheros: switch from 'pci_' to 'dma_' API
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e32139900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
-dashboard link: https://syzkaller.appspot.com/bug?extid=144d1f35995353c5779c
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+> +__attribute__ ((noinline))
+> +int test_pkt_write_access_subprog(struct __sk_buff *skb, __u32 off)
+> +{
+> +       void *data = (void *)(long)skb->data;
+> +       void *data_end = (void *)(long)skb->data_end;
+> +       struct tcphdr *tcp = NULL;
+> +
+> +       if (off > sizeof(struct ethhdr) + sizeof(struct ipv6hdr))
+> +               return -1;
+> +
+> +       tcp = data + off;
+> +       if (tcp + 1 > data_end)
+> +               return -1;
+> +       /* make modification to the packet data */
+> +       tcp->check++;
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Just FYI for all BPF contributors. This change makes test_pkt_access
+BPF program to fail on kernel 5.5, which (the kernel) we use as part
+libbpf CI testing. test_pkt_access.o in turn makes few different
+selftests (see [0] for details) to fail on 5.5 (because
+test_pkt_access is used as one of BPF objects loaded as part of those
+selftests). This is ok, I'm blacklisting (at least temporarily) those
+tests, but I wanted to bring up this issue, as it did happen before
+and will keep happening in the future and will constantly decrease
+test coverage for older kernels that libbpf CI performs.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+144d1f35995353c5779c@syzkaller.appspotmail.com
+I propose that when we introduce new features (like new fields in a
+BPF program's context or something along those lines) and want to test
+them, we should lean towards creating new tests, not modify existing
+ones. This will allow all already working selftests to keep working
+for older kernels. Does this sound reasonable as an approach?
 
-BUG: stack guard page was hit at 00000000b2f481cf (stack is 000000009cbf9546..0000000099742d14)
-kernel stack overflow (double-fault): 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 29993 Comm: syz-executor.4 Not tainted 5.9.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:instrument_atomic_read include/linux/instrumented.h:56 [inline]
-RIP: 0010:atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
-RIP: 0010:atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
-RIP: 0010:zone_page_state include/linux/vmstat.h:217 [inline]
-RIP: 0010:__zone_watermark_unusable_free mm/page_alloc.c:3508 [inline]
-RIP: 0010:__zone_watermark_ok+0x23f/0x3f0 mm/page_alloc.c:3529
-Code: c4 28 31 c0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 49 8d bc 24 98 06 00 00 be 08 00 00 00 4c 89 4c 24 20 4c 89 54 24 18 89 54 24 10 <4c> 89 44 24 08 48 89 3c 24 e8 33 78 08 00 48 8b 3c 24 48 b8 00 00
-RSP: 0018:ffffc900169f7ff0 EFLAGS: 00010046
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88812fffc498
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88812fffbe00
-R13: 0000000000000040 R14: 0000000000000002 R15: 0000000000000000
-FS:  00007f98bc4db700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc900169f7fe8 CR3: 00000002063a9000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- zone_watermark_fast mm/page_alloc.c:3612 [inline]
- get_page_from_freelist+0x102f/0x37f0 mm/page_alloc.c:3785
- __alloc_pages_slowpath.constprop.0+0x322/0x2860 mm/page_alloc.c:4592
- __alloc_pages_nodemask+0x62c/0x790 mm/page_alloc.c:4901
- __alloc_pages include/linux/gfp.h:509 [inline]
- __alloc_pages_node include/linux/gfp.h:522 [inline]
- kmem_getpages mm/slab.c:1376 [inline]
- cache_grow_begin+0x71/0x430 mm/slab.c:2590
- cache_alloc_refill+0x27b/0x340 mm/slab.c:2962
- ____cache_alloc mm/slab.c:3045 [inline]
- ____cache_alloc mm/slab.c:3028 [inline]
- slab_alloc_node mm/slab.c:3241 [inline]
- kmem_cache_alloc_node_trace+0x3de/0x400 mm/slab.c:3592
- __do_kmalloc_node mm/slab.c:3614 [inline]
- __kmalloc_node_track_caller+0x38/0x60 mm/slab.c:3629
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0xae/0x550 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1085 [inline]
- nlmsg_new include/net/netlink.h:944 [inline]
- rtmsg_ifinfo_build_skb+0x72/0x1a0 net/core/rtnetlink.c:3804
- rtmsg_ifinfo_event net/core/rtnetlink.c:3840 [inline]
- rtmsg_ifinfo_event net/core/rtnetlink.c:3831 [inline]
- rtnetlink_event+0x123/0x1d0 net/core/rtnetlink.c:5614
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
- bond_compute_features+0x562/0xa80 drivers/net/bonding/bond_main.c:1308
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3375 [inline]
- bond_netdev_event+0x871/0xb80 drivers/net/bonding/bond_main.c:3415
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
- bond_compute_features+0x562/0xa80 drivers/net/bonding/bond_main.c:1308
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3375 [inline]
- bond_netdev_event+0x871/0xb80 drivers/net/bonding/bond_main.c:3415
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
- bond_compute_features+0x562/0xa80 drivers/net/bonding/bond_main.c:1308
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3375 [inline]
- bond_netdev_event+0x871/0xb80 drivers/net/bonding/bond_main.c:3415
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
- bond_compute_features+0x562/0xa80 drivers/net/bonding/bond_main.c:1308
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3375 [inline]
- bond_netdev_event+0x871/0xb80 drivers/net/bonding/bond_main.c:3415
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
- bond_compute_features+0x562/0xa80 drivers/net/bonding/bond_main.c:1308
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3375 [inline]
- bond_netdev_event+0x871/0xb80 drivers/net/bonding/bond_main.c:3415
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
- bond_compute_features+0x562/0xa80 drivers/net/bonding/bond_main.c:1308
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3375 [inline]
- bond_netdev_event+0x871/0xb80 drivers/net/bonding/bond_main.c:3415
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
- bond_compute_features+0x562/0xa80 drivers/net/bonding/bond_main.c:1308
- bond_slave_netdev_event drivers/net/bonding/bond_main.c:3375 [inline]
- bond_netdev_event+0x871/0xb80 drivers/net/bonding/bond_main.c:3415
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2033
- call_netdevice_notifiers_extack net/core/dev.c:2045 [inline]
- call_netdevice_notifiers net/core/dev.c:2059 [inline]
- netdev_features_change net/core/dev.c:1444 [inline]
- netdev_sync_lower_features net/core/dev.c:9371 [inline]
- __netdev_update_features+0x88d/0x1360 net/core/dev.c:9502
- netdev_change_features+0x61/0xb0 net/core/dev.c:9574
-Lost 504 message(s)!
----[ end trace 99fc362a1b5e94a8 ]---
-RIP: 0010:instrument_atomic_read include/linux/instrumented.h:56 [inline]
-RIP: 0010:atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
-RIP: 0010:atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
-RIP: 0010:zone_page_state include/linux/vmstat.h:217 [inline]
-RIP: 0010:__zone_watermark_unusable_free mm/page_alloc.c:3508 [inline]
-RIP: 0010:__zone_watermark_ok+0x23f/0x3f0 mm/page_alloc.c:3529
-Code: c4 28 31 c0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 49 8d bc 24 98 06 00 00 be 08 00 00 00 4c 89 4c 24 20 4c 89 54 24 18 89 54 24 10 <4c> 89 44 24 08 48 89 3c 24 e8 33 78 08 00 48 8b 3c 24 48 b8 00 00
-RSP: 0018:ffffc900169f7ff0 EFLAGS: 00010046
-RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffff88812fffc498
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88812fffbe00
-R13: 0000000000000040 R14: 0000000000000002 R15: 0000000000000000
-FS:  00007f98bc4db700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc900169f7fe8 CR3: 00000002063a9000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+As for this particular breakage, I'd appreciate someone taking a look
+at the problem and checking if it's some new feature that's not
+present in 5.5 or just Clang/verifier interactions (32-bit pointer
+arithmetic, is this a new issue?). If it's something fixable, it would
+be nice to fix and restore 5.5 tests. Thanks!
+
+  [0] https://travis-ci.com/github/libbpf/libbpf/jobs/378226438
+
+Verifier complains about:
+
+; if (test_pkt_write_access_subprog(skb, (void *)tcp - data))
+
+57: (79) r1 = *(u64 *)(r10 -8)
+
+58: (bc) w2 = w1
+
+59: (1c) w2 -= w9
+
+R2 32-bit pointer arithmetic prohibited
+
+processed 198 insns (limit 1000000) max_states_per_insn 1 total_states
+8 peak_states 8 mark_read 7
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +       return 0;
+> +}
+> +
+>  SEC("classifier/test_pkt_access")
+>  int test_pkt_access(struct __sk_buff *skb)
+>  {
+> @@ -117,6 +135,8 @@ int test_pkt_access(struct __sk_buff *skb)
+>         if (test_pkt_access_subprog3(3, skb) != skb->len * 3 * skb->ifindex)
+>                 return TC_ACT_SHOT;
+>         if (tcp) {
+> +               if (test_pkt_write_access_subprog(skb, (void *)tcp - data))
+> +                       return TC_ACT_SHOT;
+>                 if (((void *)(tcp) + 20) > data_end || proto != 6)
+>                         return TC_ACT_SHOT;
+>                 barrier(); /* to force ordering of checks */
+> --
+> 2.24.1
+>
