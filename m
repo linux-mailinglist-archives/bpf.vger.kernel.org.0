@@ -2,75 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CDD253B86
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 03:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00695253BE7
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 04:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgH0BiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Aug 2020 21:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgH0BiO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Aug 2020 21:38:14 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F7CC061383
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 18:38:13 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id c8so2024702lfh.9
-        for <bpf@vger.kernel.org>; Wed, 26 Aug 2020 18:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tcZaZT5thwhJ11Sw+P5MksLekBOktbPk7Gm1gWNLeIg=;
-        b=Dnw0CNEgWHRjRY6mVfKDmenVclOHmH5gb8vsyRKn1HlquwSK9oiMqP5+l+4bHIUmEN
-         ImBA+i6GyDM1F0AHWS7CRMjJ7MbjGg3iMTfGDiQs2TxZFuTaeWydDDDSQzsB1j+J+HS2
-         hF5BeBXmPWTkNM6rGsgz2JkcZoHkS34A8KeAOj/TRNVUC4cD4QDaQFLc1HCe10CG1PYe
-         Q0U9h5FTzR8smu+Ap/LU1p61Im/PL+P7y/rCDRvwMmMg06sLJPyajSl/UF/RMG3Dnw47
-         6BcaQUsr7h/UOccf+voQ08xND5Y4s1o9fVhqmMAio85FbwxE4hrSZAgkBPmBsn1k0C6I
-         e/Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tcZaZT5thwhJ11Sw+P5MksLekBOktbPk7Gm1gWNLeIg=;
-        b=nRQsh54LE5rls4jPZrjXuoeu+kb5id0QjqS6bxz3f/jyLsIlajl0w6iJVVJbrYHcU6
-         oskIWbQCBWl+oBdijpxeC2iMd6bwD0ala86UdEDWn4U79F5PzDi4cY/jX+IZDhT65985
-         dhQIQmAosBO6DOcPMYIdYLSdCjJew1lwtN9tOi1RmaLfst+VEIKZTh/a2uO/BU3dvIvH
-         dx3kOTST5D7vqV7jauBioKQlTa0ty5aXo4WZOJDBENmKB+/sJVUTJ0PXfI+O3UvL1azO
-         W4ezfRbv0UG1Tu+ltKL9oLHXxFrGpbEX64n2IjCLVWtq/96jeZDUK2ZKD527weirjfHW
-         hsbw==
-X-Gm-Message-State: AOAM533cvZp8cKOMBxG1sglj/8s//Fu3TSVIaQbPmg8qp8Va2krEk4Kf
-        SQ+U/Pav6m9nej5Yme+TNO7qCihU3nRPgAjG76H5BA==
-X-Google-Smtp-Source: ABdhPJxRcjc/Gqp/xT0urxhuNv5VqgxhHlf/nPvUR2crUR0WvM1oYHdUzyehd4aChT2XgBrBktIsBGkJHiIB0EJwAh4=
-X-Received: by 2002:ac2:47ec:: with SMTP id b12mr3245912lfp.124.1598492292040;
- Wed, 26 Aug 2020 18:38:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200821150134.2581465-1-guro@fb.com> <20200821150134.2581465-8-guro@fb.com>
-In-Reply-To: <20200821150134.2581465-8-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 26 Aug 2020 18:38:01 -0700
-Message-ID: <CALvZod62e=y1-HJJrC7dQQiarRR9o5t+4y_NtZT4B7aGhF46WQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 07/30] bpf: refine memcg-based memory
- accounting for devmap maps
-To:     Roman Gushchin <guro@fb.com>
-Cc:     bpf@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        id S1726878AbgH0Cel (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Aug 2020 22:34:41 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:48760 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726790AbgH0Cek (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Aug 2020 22:34:40 -0400
+Received: from localhost.localdomain (unknown [210.32.144.184])
+        by mail-app2 (Coremail) with SMTP id by_KCgAnKZyjG0df3OE5Ag--.51347S4;
+        Thu, 27 Aug 2020 10:34:14 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>, Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] ice: Fix memleak in ice_set_ringparam
+Date:   Thu, 27 Aug 2020 10:34:10 +0800
+Message-Id: <20200827023410.3677-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgAnKZyjG0df3OE5Ag--.51347S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr13uFy7ArWxXw1Utr1rtFb_yoW8XrWrpF
+        4vkry5Cr18Zr47Ww13Way8uF98tw4xJwn3WFZ7Jw1a9wn8AF4rtFZYkFyjgr15ZrZI9F1a
+        kF13urs7CFnxXrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9m1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
+        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
+        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxE
+        wVAFwVW8JwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I
+        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
+        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
+        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0
+        rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHWlkUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0EBlZdtPrBDAAQsV
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 8:18 AM Roman Gushchin <guro@fb.com> wrote:
->
-> Include map metadata and the node size (struct bpf_dtab_netdev) on
-> element update into the accounting.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
+When kcalloc() on rx_rings fails, we should free tx_rings
+and xdp_rings to prevent memleak. Similarly, when
+ice_alloc_rx_bufs() fails, we should free xdp_rings.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/net/ethernet/intel/ice/ice_ethtool.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+index 9e8e9531cd87..caf64eb5e96d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
++++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+@@ -2863,7 +2863,7 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
+ 	rx_rings = kcalloc(vsi->num_rxq, sizeof(*rx_rings), GFP_KERNEL);
+ 	if (!rx_rings) {
+ 		err = -ENOMEM;
+-		goto done;
++		goto free_xdp;
+ 	}
+ 
+ 	ice_for_each_rxq(vsi, i) {
+@@ -2892,7 +2892,7 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
+ 			}
+ 			kfree(rx_rings);
+ 			err = -ENOMEM;
+-			goto free_tx;
++			goto free_xdp;
+ 		}
+ 	}
+ 
+@@ -2943,6 +2943,15 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring)
+ 	}
+ 	goto done;
+ 
++free_xdp:
++	if (xdp_rings) {
++		for (i = 0; i < vsi->num_xdp_txq; i++) {
++			ice_free_tx_ring(vsi->xdp_rings[i]);
++			*vsi->xdp_rings[i] = xdp_rings[i];
++		}
++		kfree(xdp_rings);
++	}
++
+ free_tx:
+ 	/* error cleanup if the Rx allocations failed after getting Tx */
+ 	if (tx_rings) {
+-- 
+2.17.1
+
