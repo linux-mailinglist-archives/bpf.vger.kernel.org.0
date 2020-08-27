@@ -2,74 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC28254B6F
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 19:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A91254C5B
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 19:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgH0RCv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 13:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726093AbgH0RCu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 13:02:50 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E554C061264
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 10:02:50 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id a34so3326237ybj.9
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 10:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4m+hmGk2KBXeELO5szTujMxeAL1STNjr9OgA1hZdwHE=;
-        b=uP3y4+QK4dOuP+5d+++WaP2V5ndi/LaX4WAt5j6Y2G9L9SpH2lZ5f0W8ZrR4mdtpoO
-         paB3nrggM4W2CXuHVXvS4Q+/d1Y2ZKICgFe9HGZGIWE4ZDkinyyYApv2cqm10OBSx54f
-         QIda3kRBQML6Ji77Le0UUmqfEfjcsFaxaxz6DnFrXLVGWpZ+16hdK+hc1APkBJLnp5Te
-         aqwVU83/0qDjVy4k1id0vsD+aHwMszKiA6ZLuLbFUf/gq5zOm4hioZnaBkc5GgRPXDjN
-         Vokcz779zxuq/DqU6tLpxtJ+wWgoly60imK4CRqWVGVkIG4NM4B2I2j8GFd+BzNjmUll
-         VM2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4m+hmGk2KBXeELO5szTujMxeAL1STNjr9OgA1hZdwHE=;
-        b=BfWzyCiA/Gxr2TGYcZYN5zy3iFFGwKfN63swAfxelveza10EMd8PueF4G+bsQ5x3Gx
-         zsa+GXipmFPzDA338KRvSYpL6iwxlQGFKGU+y5GEnOIcag/JRC4sH6P4SjZctUzRu2WI
-         kb9RkNCnNshB36t0kV4jiypCYe+kaAYI+W4zSTfkh5mdYv4Cq44QA4UwkcFhvHVcKZna
-         CRKvW7j57wrunK8EVaLT2vZrlmPCKXIXCAOO3BaIhPYeYyMIRigsQy9RRGZiu5CILKHw
-         aDuWMUdXOzI7nfKZQbAjOAODR9dNkDV4gs80vlOHlK469VkSbJVCvSftLBNTMfO66aja
-         P0Kg==
-X-Gm-Message-State: AOAM5316XX80Of10QroB7sAB3cd/gJaAZBir70wKyCU/hVavbsi1b+kg
-        AHbj+K8diJZiX3DeuBHi+AgZphSLpUfD+vgSLIw=
-X-Google-Smtp-Source: ABdhPJymd8pzoMi5/U9ADTiAGI+ok4JwonMqdkPWqWPENBZtlJXpun6J35yJR4B6r5bUs2IVgonRX6pbr15SBTnRhDA=
-X-Received: by 2002:a25:6b4e:: with SMTP id o14mr29007171ybm.506.1598547769076;
- Thu, 27 Aug 2020 10:02:49 -0700 (PDT)
+        id S1726266AbgH0Rog (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 13:44:36 -0400
+Received: from mga11.intel.com ([192.55.52.93]:22087 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726153AbgH0Rof (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Aug 2020 13:44:35 -0400
+IronPort-SDR: rAcp7JkpB1QTGfjz3J7+3HmdsrwW7e6oyptYtPi9Tmuva4g2DD8a6JndtrTktI3+rOBzJMmFGi
+ 0Pgr422O3kmA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="154089656"
+X-IronPort-AV: E=Sophos;i="5.76,360,1592895600"; 
+   d="scan'208";a="154089656"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Aug 2020 10:44:33 -0700
+IronPort-SDR: 8ExoDBvszRY/YbkRUjQAJF0Fjz03PuadL/Uf8TtAVQmpSjJ1u0TdQz3VVAqtC6xGU8+FUmeVO8
+ t+UlRXXDeN3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,360,1592895600"; 
+   d="scan'208";a="475318598"
+Received: from wricherx-mobl1.ger.corp.intel.com (HELO [10.249.140.235]) ([10.249.140.235])
+  by orsmga005.jf.intel.com with ESMTP; 27 Aug 2020 10:44:24 -0700
+Subject: Re: [PATCH bpf-next 1/6] tools: Factor HOSTCC, HOSTLD, HOSTAR
+ definitions
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        devel@acpica.org
+References: <20200827153629.3820891-1-jean-philippe@linaro.org>
+ <20200827153629.3820891-2-jean-philippe@linaro.org>
+From:   "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Organization: Intel Technology Poland Sp. z o. o., KRS 101882, ul. Slowackiego
+ 173, 80-298 Gdansk
+Message-ID: <58fc65fd-9675-0126-f575-d64008ba8057@intel.com>
+Date:   Thu, 27 Aug 2020 19:44:24 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CAHhV9ERe4VwPrrwDJF4xqmaeyqQqPvYaY2Wb9DEk8tf-GB_-Yw@mail.gmail.com>
- <b8a11771-7b7c-a3b1-0639-dc4706ef3ecf@gmail.com> <CAHhV9ERrtpmNdAmM0-evExLi=iC0wkwTByw5AqBbSQv9CbaNow@mail.gmail.com>
- <01775dda-3e00-708a-1433-a1facb79db3d@gmail.com>
-In-Reply-To: <01775dda-3e00-708a-1433-a1facb79db3d@gmail.com>
-From:   Abhishek Vijeev <abhishek.vijeev@gmail.com>
-Date:   Thu, 27 Aug 2020 22:32:37 +0530
-Message-ID: <CAHhV9ETbOHxBJMHZ57PmmZ1vovwn+g=LNuJEJFio4ouD6xQWkw@mail.gmail.com>
-Subject: Re: Frozen Maps
-To:     David Ahern <dsahern@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200827153629.3820891-2-jean-philippe@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yes, that's precisely why I reached out.
-
-Thank you.
-
-On Thu, Aug 27, 2020 at 10:19 PM David Ahern <dsahern@gmail.com> wrote:
+On 8/27/2020 5:36 PM, Jean-Philippe Brucker wrote:
+> Several Makefiles in tools/ need to define the host toolchain variables.
+> Move their definition to tools/scripts/Makefile.include
 >
-> On 8/27/20 10:43 AM, Abhishek Vijeev wrote:
-> > Thank you.
-> >
-> > To confirm, is this the only way?
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> ---
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Robert Moore <robert.moore@intel.com>
+> Cc: Erik Kaneda <erik.kaneda@intel.com>
+> Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: linux-acpi@vger.kernel.org
+> Cc: devel@acpica.org
+
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+for the ACPI part.
+
+
+> ---
+>   tools/bpf/resolve_btfids/Makefile |  9 ---------
+>   tools/build/Makefile              |  4 ----
+>   tools/objtool/Makefile            |  9 ---------
+>   tools/perf/Makefile.perf          |  4 ----
+>   tools/power/acpi/Makefile.config  |  1 -
+>   tools/scripts/Makefile.include    | 10 ++++++++++
+>   6 files changed, 10 insertions(+), 27 deletions(-)
 >
-> appears so from a code review. I am surprised it is not in GET_INFO
-> response.
+> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> index a88cd4426398..b06935578a96 100644
+> --- a/tools/bpf/resolve_btfids/Makefile
+> +++ b/tools/bpf/resolve_btfids/Makefile
+> @@ -17,15 +17,6 @@ else
+>   endif
+>   
+>   # always use the host compiler
+> -ifneq ($(LLVM),)
+> -HOSTAR  ?= llvm-ar
+> -HOSTCC  ?= clang
+> -HOSTLD  ?= ld.lld
+> -else
+> -HOSTAR  ?= ar
+> -HOSTCC  ?= gcc
+> -HOSTLD  ?= ld
+> -endif
+>   AR       = $(HOSTAR)
+>   CC       = $(HOSTCC)
+>   LD       = $(HOSTLD)
+> diff --git a/tools/build/Makefile b/tools/build/Makefile
+> index 727050c40f09..8a55378e8b7c 100644
+> --- a/tools/build/Makefile
+> +++ b/tools/build/Makefile
+> @@ -15,10 +15,6 @@ endef
+>   $(call allow-override,CC,$(CROSS_COMPILE)gcc)
+>   $(call allow-override,LD,$(CROSS_COMPILE)ld)
+>   
+> -HOSTCC ?= gcc
+> -HOSTLD ?= ld
+> -HOSTAR ?= ar
+> -
+>   export HOSTCC HOSTLD HOSTAR
+>   
+>   ifeq ($(V),1)
+> diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
+> index 7770edcda3a0..b7cb4f26ccde 100644
+> --- a/tools/objtool/Makefile
+> +++ b/tools/objtool/Makefile
+> @@ -3,15 +3,6 @@ include ../scripts/Makefile.include
+>   include ../scripts/Makefile.arch
+>   
+>   # always use the host compiler
+> -ifneq ($(LLVM),)
+> -HOSTAR	?= llvm-ar
+> -HOSTCC	?= clang
+> -HOSTLD	?= ld.lld
+> -else
+> -HOSTAR	?= ar
+> -HOSTCC	?= gcc
+> -HOSTLD	?= ld
+> -endif
+>   AR	 = $(HOSTAR)
+>   CC	 = $(HOSTCC)
+>   LD	 = $(HOSTLD)
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 6031167939ae..43e90334a54e 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -175,10 +175,6 @@ endef
+>   
+>   LD += $(EXTRA_LDFLAGS)
+>   
+> -HOSTCC  ?= gcc
+> -HOSTLD  ?= ld
+> -HOSTAR  ?= ar
+> -
+>   PKG_CONFIG = $(CROSS_COMPILE)pkg-config
+>   LLVM_CONFIG ?= llvm-config
+>   
+> diff --git a/tools/power/acpi/Makefile.config b/tools/power/acpi/Makefile.config
+> index 54a2857c2510..331f6d30f472 100644
+> --- a/tools/power/acpi/Makefile.config
+> +++ b/tools/power/acpi/Makefile.config
+> @@ -54,7 +54,6 @@ INSTALL_SCRIPT = ${INSTALL_PROGRAM}
+>   CROSS = #/usr/i386-linux-uclibc/usr/bin/i386-uclibc-
+>   CROSS_COMPILE ?= $(CROSS)
+>   LD = $(CC)
+> -HOSTCC = gcc
+>   
+>   # check if compiler option is supported
+>   cc-supports = ${shell if $(CC) ${1} -S -o /dev/null -x c /dev/null > /dev/null 2>&1; then echo "$(1)"; fi;}
+> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+> index a7974638561c..1358e89cdf7d 100644
+> --- a/tools/scripts/Makefile.include
+> +++ b/tools/scripts/Makefile.include
+> @@ -59,6 +59,16 @@ $(call allow-override,LD,$(CROSS_COMPILE)ld)
+>   $(call allow-override,CXX,$(CROSS_COMPILE)g++)
+>   $(call allow-override,STRIP,$(CROSS_COMPILE)strip)
+>   
+> +ifneq ($(LLVM),)
+> +HOSTAR  ?= llvm-ar
+> +HOSTCC  ?= clang
+> +HOSTLD  ?= ld.lld
+> +else
+> +HOSTAR  ?= ar
+> +HOSTCC  ?= gcc
+> +HOSTLD  ?= ld
+> +endif
+> +
+>   ifeq ($(CC_NO_CLANG), 1)
+>   EXTRA_WARNINGS += -Wstrict-aliasing=3
+>   endif
+
+
