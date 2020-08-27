@@ -2,159 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877B9253D5F
-	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 08:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68549254136
+	for <lists+bpf@lfdr.de>; Thu, 27 Aug 2020 10:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgH0GFC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 02:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgH0GFB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 02:05:01 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CADAC061246;
-        Wed, 26 Aug 2020 23:05:01 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id q3so2317242ybp.7;
-        Wed, 26 Aug 2020 23:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YS0E3x+rd6mFReNohPRwURMjsOh1VMEQF9vUanLTT/0=;
-        b=IFTjQNtz4TH2ktM9bD6omTwK6z8gQvROWHXKbfocfX5JvTWo06Ms8/XrAlrIy3dtMZ
-         8VJHbRmBi7VXDd4x7lDLd1u1yT/JX76vR3OHZBRrR0/Q0DtFLSb7KljcSSDEycOvMH+K
-         qGEVrz42WL57VIifN8yGNgYfqDxdt5V9azJr3EW9JdUcF2s6UmFvanEl/WCh6/rQjjCF
-         BuwbsvXjrxiJTyYgCSaDWHhCUFvhhnpRz5Aj7uPavBCLvAVQCwn3uOygMymfgKVydA9i
-         mQO2Ru/0Iu2YMJ+6tgWb7kZZh2miNc8HUOKf4XogqPd6GpUyUMDCacl0OcjWALtiwarb
-         JrPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YS0E3x+rd6mFReNohPRwURMjsOh1VMEQF9vUanLTT/0=;
-        b=OpHFfK/GukplruU2rXg1Lw/dUSFVo7iKM1VnG0K6giv99VW/ehKme3CYsO9TF14FmK
-         1H6AcoCxRplWJxZkkXUBUHacggfXU2kWCpUi1bFiPWi9WWP7X7XCazYK1+qCRk24m+HC
-         Epk4nNj6RN++auzaebrQGoP6veghLMIKSX5KdUdG3LPuP3jl8+XVWf2UXcUbkQzBMeR0
-         Lnw1hhfyzXVXZNQpGR0EjLlfmUAgIPTbAamFrMwfreR6yXEaIU1eDkR+lVJWuuoHIRuO
-         kB4neczy/Y+f77dQOF3gV+AFEnb+GbW25ofTT+WB4YU8sB1kxQ9O5BVRmVEi+bo8JMAF
-         qzrw==
-X-Gm-Message-State: AOAM532vwMHsFe4QSGezFDiKXJphTS3wYmIgHUeqlyXZgCwwGYEbBf2O
-        rbf3Ty5bbl9DfUQQ990k/xiT2w7cF/dY/cNLziE=
-X-Google-Smtp-Source: ABdhPJxkd5AOFlyKfKZ9Ayi2ea1O8ksOJql6kpnE/JAyYTpEmJYhrmUoiUve3mvyb77ThYiXm979rJGxuQivakeUTxA=
-X-Received: by 2002:a25:bc50:: with SMTP id d16mr24534529ybk.230.1598508300269;
- Wed, 26 Aug 2020 23:05:00 -0700 (PDT)
+        id S1727909AbgH0Ixr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 04:53:47 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:23307 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727793AbgH0Ixr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 27 Aug 2020 04:53:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598518425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RrMwwJkiIN6IE4DKC1Do1r49qx7TdOB11Zk1v1eRJzw=;
+        b=WzV5j67ceQON+jFG6fTijESa/Uq1w7r5OeyX4BmyywOypguGmcerGu8KT+VjAbt+3ZmqmR
+        HLnZWb9c/OinDvvBcD4yc1VIV/sCTJThUyg2oW2fj9OgtP7cXCfHbfvJHUwsGjDoPd74HV
+        Tb+vW7tCazuFtXRQL1V2oZgvl3ja/iE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-k-L04AzZPEukU3yiqK1pgg-1; Thu, 27 Aug 2020 04:53:41 -0400
+X-MC-Unique: k-L04AzZPEukU3yiqK1pgg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF0AF185FD6C;
+        Thu, 27 Aug 2020 08:53:40 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C4C347B9F2;
+        Thu, 27 Aug 2020 08:53:37 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id B205C30736C8B;
+        Thu, 27 Aug 2020 10:53:36 +0200 (CEST)
+Subject: [PATCH] tools build feature: cleanup feature files on make clean
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
+Date:   Thu, 27 Aug 2020 10:53:36 +0200
+Message-ID: <159851841661.1072907.13770213104521805592.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <20200825232003.2877030-1-udippant@fb.com> <20200825232003.2877030-3-udippant@fb.com>
-In-Reply-To: <20200825232003.2877030-3-udippant@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Aug 2020 23:04:49 -0700
-Message-ID: <CAEf4BzYsxBJf2a59L4EPKwX0eH2U7z41PSUgupwOWUXVH4sgYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/4] selftests/bpf: add test for freplace
- program with write access
-To:     Udip Pant <udippant@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 4:21 PM Udip Pant <udippant@fb.com> wrote:
->
-> This adds a selftest that tests the behavior when a freplace target program
-> attempts to make a write access on a packet. The expectation is that the read or write
-> access is granted based on the program type of the linked program and
-> not itself (which is of type, for e.g., BPF_PROG_TYPE_EXT).
->
-> This test fails without the associated patch on the verifier.
->
-> Signed-off-by: Udip Pant <udippant@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  1 +
->  .../selftests/bpf/progs/fexit_bpf2bpf.c       | 27 +++++++++++++++++++
->  .../selftests/bpf/progs/test_pkt_access.c     | 20 ++++++++++++++
->  3 files changed, 48 insertions(+)
->
+The system for "Auto-detecting system features" located under
+tools/build/ are (currently) used by perf, libbpf and bpftool. It can
+contain stalled feature detection files, which are not cleaned up by
+libbpf and bpftool on make clean (side-note: perf tool is correct).
 
-[...]
+Fix this by making the users invoke the make clean target.
 
-> +__attribute__ ((noinline))
-> +int test_pkt_write_access_subprog(struct __sk_buff *skb, __u32 off)
-> +{
-> +       void *data = (void *)(long)skb->data;
-> +       void *data_end = (void *)(long)skb->data_end;
-> +       struct tcphdr *tcp = NULL;
-> +
-> +       if (off > sizeof(struct ethhdr) + sizeof(struct ipv6hdr))
-> +               return -1;
-> +
-> +       tcp = data + off;
-> +       if (tcp + 1 > data_end)
-> +               return -1;
-> +       /* make modification to the packet data */
-> +       tcp->check++;
+Some details about the changes. The libbpf Makefile already had a
+clean-config target (which seems to be copy-pasted from perf), but this
+target was not "connected" (a make dependency) to clean target. Choose
+not to rename target as someone might be using it. Did change the output
+from "CLEAN config" to "CLEAN feature-detect", to make it more clear
+what happens.
 
-Just FYI for all BPF contributors. This change makes test_pkt_access
-BPF program to fail on kernel 5.5, which (the kernel) we use as part
-libbpf CI testing. test_pkt_access.o in turn makes few different
-selftests (see [0] for details) to fail on 5.5 (because
-test_pkt_access is used as one of BPF objects loaded as part of those
-selftests). This is ok, I'm blacklisting (at least temporarily) those
-tests, but I wanted to bring up this issue, as it did happen before
-and will keep happening in the future and will constantly decrease
-test coverage for older kernels that libbpf CI performs.
+This is related to the complaint and troubleshooting in link:
+Link: https://lore.kernel.org/lkml/20200818122007.2d1cfe2d@carbon/
 
-I propose that when we introduce new features (like new fields in a
-BPF program's context or something along those lines) and want to test
-them, we should lean towards creating new tests, not modify existing
-ones. This will allow all already working selftests to keep working
-for older kernels. Does this sound reasonable as an approach?
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ tools/build/Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
 
-As for this particular breakage, I'd appreciate someone taking a look
-at the problem and checking if it's some new feature that's not
-present in 5.5 or just Clang/verifier interactions (32-bit pointer
-arithmetic, is this a new issue?). If it's something fixable, it would
-be nice to fix and restore 5.5 tests. Thanks!
-
-  [0] https://travis-ci.com/github/libbpf/libbpf/jobs/378226438
-
-Verifier complains about:
-
-; if (test_pkt_write_access_subprog(skb, (void *)tcp - data))
-
-57: (79) r1 = *(u64 *)(r10 -8)
-
-58: (bc) w2 = w1
-
-59: (1c) w2 -= w9
-
-R2 32-bit pointer arithmetic prohibited
-
-processed 198 insns (limit 1000000) max_states_per_insn 1 total_states
-8 peak_states 8 mark_read 7
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 8462690a039b..02c99bc95c69 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -176,7 +176,11 @@ $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
+ $(OUTPUT)%.o: %.c
+ 	$(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
+ 
+-clean: $(LIBBPF)-clean
++feature-detect-clean:
++	$(call QUIET_CLEAN, feature-detect)
++	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
++
++clean: $(LIBBPF)-clean feature-detect-clean
+ 	$(call QUIET_CLEAN, bpftool)
+ 	$(Q)$(RM) -- $(OUTPUT)bpftool $(OUTPUT)*.o $(OUTPUT)*.d
+ 	$(Q)$(RM) -- $(BPFTOOL_BOOTSTRAP) $(OUTPUT)*.skel.h $(OUTPUT)vmlinux.h
+diff --git a/tools/build/Makefile b/tools/build/Makefile
+index 727050c40f09..722f1700d96a 100644
+--- a/tools/build/Makefile
++++ b/tools/build/Makefile
+@@ -38,6 +38,8 @@ clean:
+ 	$(call QUIET_CLEAN, fixdep)
+ 	$(Q)find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
+ 	$(Q)rm -f $(OUTPUT)fixdep
++	$(call QUIET_CLEAN, feature-detect)
++	$(Q)$(MAKE) -C feature/ clean >/dev/null
+ 
+ $(OUTPUT)fixdep-in.o: FORCE
+ 	$(Q)$(MAKE) $(build)=fixdep
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index bf8ed134cb8a..bbb89551468a 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -269,10 +269,10 @@ install: install_lib install_pkgconfig install_headers
+ ### Cleaning rules
+ 
+ config-clean:
+-	$(call QUIET_CLEAN, config)
++	$(call QUIET_CLEAN, feature-detect)
+ 	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
+ 
+-clean:
++clean: config-clean
+ 	$(call QUIET_CLEAN, libbpf) $(RM) -rf $(CMD_TARGETS)		     \
+ 		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_HELPER_DEFS)		     \
+ 		$(SHARED_OBJDIR) $(STATIC_OBJDIR)			     \
 
 
-> +       return 0;
-> +}
-> +
->  SEC("classifier/test_pkt_access")
->  int test_pkt_access(struct __sk_buff *skb)
->  {
-> @@ -117,6 +135,8 @@ int test_pkt_access(struct __sk_buff *skb)
->         if (test_pkt_access_subprog3(3, skb) != skb->len * 3 * skb->ifindex)
->                 return TC_ACT_SHOT;
->         if (tcp) {
-> +               if (test_pkt_write_access_subprog(skb, (void *)tcp - data))
-> +                       return TC_ACT_SHOT;
->                 if (((void *)(tcp) + 20) > data_end || proto != 6)
->                         return TC_ACT_SHOT;
->                 barrier(); /* to force ordering of checks */
-> --
-> 2.24.1
->
