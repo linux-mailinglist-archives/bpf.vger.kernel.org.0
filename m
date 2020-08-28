@@ -2,76 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79772255A50
-	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 14:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C844E255A93
+	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 14:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729323AbgH1Mg7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Aug 2020 08:36:59 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42992 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729175AbgH1Mg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:36:57 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kBdcl-0000Uv-Hl; Fri, 28 Aug 2020 14:36:55 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kBdck-0001eO-PQ; Fri, 28 Aug 2020 14:36:55 +0200
-Subject: Re: [PATCH bpf-next] bpf: make bpf_link_info.iter similar to
- bpf_iter_link_info
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>
-References: <20200828051922.758950-1-yhs@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b81b5a8b-da27-fdb4-323c-577b8d8ed5c2@iogearbox.net>
-Date:   Fri, 28 Aug 2020 14:36:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20200828051922.758950-1-yhs@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25912/Thu Aug 27 15:16:21 2020)
+        id S1729305AbgH1MvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Aug 2020 08:51:13 -0400
+Received: from mga03.intel.com ([134.134.136.65]:39885 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729172AbgH1MvN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Aug 2020 08:51:13 -0400
+IronPort-SDR: IL9yvp/3CWVuno1QDKoyD6qx0tFykZOf20E7KwO0shw2zpK80Y7XQHd8L5x915QBLU02Jfr62v
+ udcObSlG1lcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="156660852"
+X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
+   d="scan'208";a="156660852"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 05:51:12 -0700
+IronPort-SDR: qLZfFMxhpAuBZ+bj2afbifOo+/JalzTxbFrgl4AlaZms1EHkEu8oXmB1SdepKwJ3BrIryFr9c3
+ UzTNpxHvrnqQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
+   d="scan'208";a="444826649"
+Received: from mkarlsso-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.249.35.66])
+  by orsmga004.jf.intel.com with ESMTP; 28 Aug 2020 05:51:10 -0700
+From:   Magnus Karlsson <magnus.karlsson@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org
+Subject: [PATCH bpf-next] samples/bpf: optimize l2fwd performance in xdpsock
+Date:   Fri, 28 Aug 2020 14:51:05 +0200
+Message-Id: <1598619065-1944-1-git-send-email-magnus.karlsson@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/28/20 7:19 AM, Yonghong Song wrote:
-> bpf_link_info.iter is used by link_query to return
-> bpf_iter_link_info to user space. Fields may be different
-> ,e.g., map_fd vs. map_id, so we cannot reuse
-> the exact structure. But make them similar, e.g.,
->    struct bpf_link_info {
->       /* common fields */
->       union {
-> 	struct { ... } raw_tracepoint;
-> 	struct { ... } tracing;
-> 	...
-> 	struct {
-> 	    /* common fields for iter */
-> 	    union {
-> 		struct {
-> 		    __u32 map_id;
-> 		} map;
-> 		/* other structs for other targets */
-> 	    };
-> 	};
->      };
->   };
-> so the structure is extensible the same way as
-> bpf_iter_link_info.
-> 
-> Fixes: 6b0a249a301e ("bpf: Implement link_query for bpf iterators")
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+Optimize the throughput performance of the l2fwd sub-app in the
+xdpsock sample application by removing a duplicate syscall and
+increasing the size of the fill ring.
 
-Applied, thanks!
+The latter needs some further explanation. We recommend that you set
+the fill ring size >= HW RX ring size + AF_XDP RX ring size. Make sure
+you fill up the fill ring with buffers at regular intervals, and you
+will with this setting avoid allocation failures in the driver. These
+are usually quite expensive since drivers have not been written to
+assume that allocation failures are common. For regular sockets,
+kernel allocated memory is used that only runs out in OOM situations
+that should be rare.
+
+These two performance optimizations together lead to a 6% percent
+improvement for the l2fwd app on my machine.
+
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ samples/bpf/xdpsock_user.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+index 19c6794..9f54df7 100644
+--- a/samples/bpf/xdpsock_user.c
++++ b/samples/bpf/xdpsock_user.c
+@@ -613,7 +613,16 @@ static struct xsk_umem_info *xsk_configure_umem(void *buffer, u64 size)
+ {
+ 	struct xsk_umem_info *umem;
+ 	struct xsk_umem_config cfg = {
+-		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
++		/* We recommend that you set the fill ring size >= HW RX ring size +
++		 * AF_XDP RX ring size. Make sure you fill up the fill ring
++		 * with buffers at regular intervals, and you will with this setting
++		 * avoid allocation failures in the driver. These are usually quite
++		 * expensive since drivers have not been written to assume that
++		 * allocation failures are common. For regular sockets, kernel
++		 * allocated memory is used that only runs out in OOM situations
++		 * that should be rare.
++		 */
++		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS * 2,
+ 		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+ 		.frame_size = opt_xsk_frame_size,
+ 		.frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM,
+@@ -640,13 +649,13 @@ static void xsk_populate_fill_ring(struct xsk_umem_info *umem)
+ 	u32 idx;
+ 
+ 	ret = xsk_ring_prod__reserve(&umem->fq,
+-				     XSK_RING_PROD__DEFAULT_NUM_DESCS, &idx);
+-	if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
++				     XSK_RING_PROD__DEFAULT_NUM_DESCS * 2, &idx);
++	if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS * 2)
+ 		exit_with_error(-ret);
+-	for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS; i++)
++	for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS * 2; i++)
+ 		*xsk_ring_prod__fill_addr(&umem->fq, idx++) =
+ 			i * opt_xsk_frame_size;
+-	xsk_ring_prod__submit(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS);
++	xsk_ring_prod__submit(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS * 2);
+ }
+ 
+ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem,
+@@ -888,9 +897,6 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk,
+ 	if (!xsk->outstanding_tx)
+ 		return;
+ 
+-	if (!opt_need_wakeup || xsk_ring_prod__needs_wakeup(&xsk->tx))
+-		kick_tx(xsk);
+-
+ 	ndescs = (xsk->outstanding_tx > opt_batch_size) ? opt_batch_size :
+ 		xsk->outstanding_tx;
+ 
+-- 
+2.7.4
+
