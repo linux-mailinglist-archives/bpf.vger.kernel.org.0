@@ -2,90 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF10255F4B
-	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 19:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F8325615A
+	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 21:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgH1RAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Aug 2020 13:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51168 "EHLO
+        id S1726322AbgH1TgK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Aug 2020 15:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgH1RAO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Aug 2020 13:00:14 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCA3C061264
-        for <bpf@vger.kernel.org>; Fri, 28 Aug 2020 10:00:13 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id i4so1269679qvv.4
-        for <bpf@vger.kernel.org>; Fri, 28 Aug 2020 10:00:13 -0700 (PDT)
+        with ESMTP id S1726010AbgH1TgH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Aug 2020 15:36:07 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368D3C061264
+        for <bpf@vger.kernel.org>; Fri, 28 Aug 2020 12:36:07 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d14so251996pln.4
+        for <bpf@vger.kernel.org>; Fri, 28 Aug 2020 12:36:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc:content-transfer-encoding;
-        bh=qVSCDm8AqOY/NN5FUWbHAl4wXL1gIq+ycngXFQDgYlE=;
-        b=igZbLsbo9LouaWkh6UIVRC4+6oxbHcOBZWqzv2Cf2e0mS9yxZIQGEeRl2nCPEGGcGg
-         esoG/caKDB3NZTnmKfh2z+NpUR/8+NM7jkutuWiUERufKURv0Hdjk2rNr1YbTYj1n8Fz
-         C0sslc0tdfGkxFA6W2L/t4cdtozaAEz2ytTeqtguGmko7crDTTx1Ul/NUcpGmqHB8HIS
-         krzkOPvZVRZv/xmTKb2rAO3ThyfDrIKZawyq4gtR85iWVE5bbA3+2TbomECggdnW+Jm8
-         WDAki2Q5196Io1KxAJmKf+cu2BJ3IAFiT81Vq0nk7Y3nef/QUCRxXZ35YQDOa1xioT5t
-         dvIg==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=LIlGK/Ax6RIqxr8cZxsOwCtqjDpUNwGZQiT8jrnTk+E=;
+        b=kwhFEAelZ2iw7+50F7qlZBc5UjBpy5XCI12sSEdZm4ffEdTpdwSjZs2gQsYJTZ7pLw
+         UsdY5wF6s0OzWeyeAuTImv4Mg6+dETrbOChe6lFlfzCvr0XcwR1O0GW2a1/CvcUzxCbL
+         dyfjwwbjoSWmoYOcB1HROOLNK3hAAWHkLhd7Oc1EH5fnZGacJXON7upG84aqPi++s/cu
+         muPH1mlU+uUtN11eyLMqfnhDZ1rqtEUPkQ5Rtbq2ExHUK6eJiJyEmn70mOrQnV3e2kfZ
+         gkRWM0ngOe3WdmptwzEsadc55g/VwvPNOEaWIs0CYbUyUrUfPsV9HzQDyQGSL3ieFuX/
+         qkuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=qVSCDm8AqOY/NN5FUWbHAl4wXL1gIq+ycngXFQDgYlE=;
-        b=C0yqTEY/D4AIJ4tg+0EOaWIXkGdY5m2OaNzC24DibTkIj3I/z+DQvkoVqkrl2FlK8g
-         jSmUK65EnqewHRiroIDTq91ocW6P6tSsEqTCTYJl28eO6V2KOApwNMKydUKBFo6yD35z
-         XaIa7bD/pQQMrVQ3IwakLtxg8LXzc8Nz5EiQvaYEbTSKI2n5oCNXvq+I80Yd7JrclEI1
-         fGKE8ZKJdAwle7swxFP71/IY6YnN2QkCHOnUBtrEOikm90r2uO1PDNUNEiI2zQ89ViTf
-         EeN1qD4nQ9bRhCwNKWKe7XLs11J6UEX4TnJt5bF/HX89KZ/fuFNTPUXXIg5A+ZH1OLPf
-         Q0Tg==
-X-Gm-Message-State: AOAM532ZKwX8FNw8KUxsBG9qMqUagiFAhLnpQKcNUUO1kEHJNxhPFFVX
-        alCcbXNzenvc67bO2H9JZpyX1ik=
-X-Google-Smtp-Source: ABdhPJxucGUIQ8aLUCAvPWJp0rosUMSVDrsXhj57wQLbWOmpxCZBly93HTlWNvKLoAtMQ7IKUtX39Qw=
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=LIlGK/Ax6RIqxr8cZxsOwCtqjDpUNwGZQiT8jrnTk+E=;
+        b=AMkzkE52rk66uCTiRXHz4aGX3tqpN0eHGunVTL6Kzo0Km3B6F3F6UFSUfSu4051fft
+         4O6elOKqP2CTXrMR4R245yZh7KwXxOdXKNiowxLCfUIOKFTQDHACxbX2MqFSgobS3f9J
+         ebAiuu4BS9Yp1MmT/K6cyvncQKoy0g1TmwN/2q8ib7fX9lsakiHwrRBKHx1Zece3j9oE
+         vkCJI7gF8x0HKFwhsnkMi5HzSHIYIIZGiJAZmR0XGWmOHbvpNcZenf9ptlb2xyLpz3j9
+         5Kvg5Xj/ap+OhoJMFY9+YWBiY238NAPkWwIlq5L7b7ezWOrw9Kw0ipGbyRFajrUJUNQ0
+         jrfA==
+X-Gm-Message-State: AOAM530raz6JOSR7NwVbFtsBTlaHd0GzsbQ49XOYmd4G7Q4ZO1fAdHlR
+        jGQntmCkoWuZ+5giNLnV9JspsM8=
+X-Google-Smtp-Source: ABdhPJzaoLFMQZd+DCTSKo3T+4awecWgk4V+BJNR3GAE0bo0Ss6iosI5v4pNelGHvx6vqohEEyRAY/g=
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a05:6214:10e8:: with SMTP id
- q8mr2649915qvt.59.1598634011735; Fri, 28 Aug 2020 10:00:11 -0700 (PDT)
-Date:   Fri, 28 Aug 2020 10:00:10 -0700
-In-Reply-To: <874kot2ors.fsf@toke.dk>
-Message-Id: <20200828170010.GB48607@google.com>
+ (user=sdf job=sendgmr) by 2002:a17:902:8f91:: with SMTP id
+ z17mr330606plo.123.1598643365421; Fri, 28 Aug 2020 12:36:05 -0700 (PDT)
+Date:   Fri, 28 Aug 2020 12:35:55 -0700
+Message-Id: <20200828193603.335512-1-sdf@google.com>
 Mime-Version: 1.0
-References: <cover.1597915265.git.zhuyifei@google.com> <9138c60f036c68f02c41dae0605ef587a8347f4c.1597915265.git.zhuyifei@google.com>
- <e02ae4a7-938f-222e-3139-5ba84e95df15@fb.com> <877dts5qah.fsf@toke.dk>
- <CAA-VZP=Jo0iQRpP+QEmB359C5TS=0BnDHTAzd6yC85aOkEJrsA@mail.gmail.com> <874kot2ors.fsf@toke.dk>
-Subject: Re: [PATCH bpf-next 4/5] bpftool: support dumping metadata
-From:   sdf@google.com
-To:     "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>
-Cc:     YiFei Zhu <zhuyifei@google.com>, Yonghong Song <yhs@fb.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Mahesh Bandewar <maheshb@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
+Subject: [PATCH bpf-next v3 0/8] Allow storage of flexible metadata
+ information for eBPF programs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        YiFei Zhu <zhuyifei1999@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMDgvMjMsIFRva2UgSO+/vWlsYW5kLUrvv71yZ2Vuc2VuIHdyb3RlOg0KPiBZaUZlaSBaaHUg
-PHpodXlpZmVpQGdvb2dsZS5jb20+IHdyaXRlczoNCg0KPiA+IE9uIEZyaSwgQXVnIDIxLCAyMDIw
-IGF0IDM6NTggQU0gVG9rZSBI77+9aWxhbmQtSu+/vXJnZW5zZW4gIA0KPiA8dG9rZUByZWRoYXQu
-Y29tPiB3cm90ZToNCj4gPj4gWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4gd3JpdGVzOg0KPiA+
-PiA+IE5vdCBzdXJlIHdoZXRoZXIgd2UgbmVlZCBmb3JtYWwgbGliYnBmIEFQSSB0byBhY2Nlc3Mg
-bWV0YWRhdGEgb3Igbm90Lg0KPiA+PiA+IFRoaXMgbWF5IGhlbHAgb3RoZXIgYXBwbGljYXRpb25z
-IHRvby4gQnV0IHdlIGNhbiBkZWxheSB1bnRpbCBpdCBpcw0KPiA+PiA+IG5lY2Vzc2FyeS4NCj4g
-Pj4NCj4gPj4gWWVhaCwgcGxlYXNlIHB1dCBpbiBhIGxpYmJwZiBhY2Nlc3NvciBhcyB3ZWxsOyBJ
-IHdvdWxkIGxpa2UgdG8gdXNlIHRoaXMNCj4gPj4gZnJvbSBsaWJ4ZHAgLSB3aXRob3V0IGEgc2tl
-bGV0b24gOikNCj4gPj4NCj4gPj4gLVRva2UNCj4gPg0KPiA+IEkgZG9uJ3QgdGhpbmsgSSBoYXZl
-IGFuIGlkZWEgb24gYSBnb29kIEFQSSBpbiBsaWJicGYgdGhhdCBjb3VsZCBiZQ0KPiA+IHVzZWQg
-dG8gZ2V0IHRoZSBtZXRhZGF0YSBvZiBhbiBleGlzdGluZyBwcm9ncmFtIGluIGtlcm5lbCwgdGhh
-dCBjb3VsZA0KPiA+IGJlIHJldXNlZCBieSBicGZ0b29sIHdpdGhvdXQgZHVwbGljYXRpbmcgYWxs
-IHRoZSBjb2RlLiBNYXliZSB3ZSBjYW4NCj4gPiBkaXNjdXNzIHRoaXMgaW4gYSBmb2xsb3cgdXAg
-c2VyaWVzPw0KDQo+IEkgdGhpbmsgdGhlIG1vc3QgaW1wb3J0YW50IHBhcnQgaXMgZ2V0dGluZyBh
-IHJlZmVyZW5jZSB0byB0aGUgbWV0YWRhdGENCj4gbWFwLiBTbyBhIGZ1bmN0aW9uIHRoYXQgYmFz
-aWNhbGx5IGRvZXMgd2hhdCB0aGUgdG9wIGhhbGYgb2Ygd2hhdCB5b3VyDQo+IHNob3dfcHJvZ19t
-ZXRhZGF0YSgpIGZ1bmN0aW9uIGRvZXM6IGdpdmVuIGEgcHJvZyBmZCwgd2FsayB0aGUgbWFwIGlk
-cywNCj4gY2hlY2sgaWYgYW55IG9mIHRoZW0gbG9va3MgbGlrZSBhIG1ldGFkYXRhIG1hcCwgYW5k
-IGlmIHNvIHJldHVybiB0aGUgbWFwDQo+IGZkLg0KDQo+IFNob3VsZCBiZSBwcmV0dHkgc3RyYWln
-aHQtZm9yd2FyZCB0byByZXVzZSBiZXR3ZWVuIGJwZnRvb2wvbGliYnBmLCBubz8NClNvdW5kcyBn
-b29kLCBJJ2xsIGJlIHRha2luZyBvdmVyIHRoaXMgcGF0Y2ggc2VyaWVzIGFzIFlpRmVpJ3MgaW50
-ZXJuc2hpcA0KaGFzIGVuZGVkLiBJJ2xsIHRyeSB0byBhZGRyZXNzIHRoYXQuDQo=
+Currently, if a user wants to store arbitrary metadata for an eBPF
+program, for example, the program build commit hash or version, they
+could store it in a map, and conveniently libbpf uses .data section to
+populate an internal map. However, if the program does not actually
+reference the map, then the map would be de-refcounted and freed.
+
+This patch set introduces a new syscall BPF_PROG_BIND_MAP to add a map
+to a program's used_maps, even if the program instructions does not
+reference the map. libbpf is extended to recognize the .metadata section
+and load it as an internal map, and use the new syscall to ensure the
+map is bound. bpftool is also extended to have a new flag to prog
+subcommand, "--metadata" to dump the contents of the metadata section
+without a separate map dump call.
+
+An example use of this would be BPF C file declaring:
+
+  char commit_hash[] SEC(".metadata") = "abcdef123456";
+
+and bpftool would emit:
+
+  $ bpftool prog --metadata
+  [...]
+        metadata:
+                commit_hash = "abcdef123456"
+
+Patch 1 protects the used_maps array and count with a mutex.
+
+Patch 2 implements the new syscall.
+
+Patch 3 extends libbpf to have a wrapper around the syscall, probe the
+kernel for support of this new syscall, and use it on .metadata section
+if supported and the section exists.
+
+Patch 4 extends bpftool so that it is able to dump metadata from prog
+show.
+
+Patch 5 extends bpftool gen skeleton to treat the metadata section like
+an rodata section so that it mmaps the map read-only at load time.
+
+Patch 6 adds a test to check the metadata loading and dumping.
+
+Changes since RFC:
+* Fixed a few missing unlocks, and missing close while iterating map fds.
+* Move mutex initialization to right after prog aux allocation, and mutex
+  destroy to right after prog aux free.
+* s/ADD_MAP/BIND_MAP/
+* Use mutex only instead of RCU to protect the used_map array & count.
+
+Changes since v1:
+* Made struct bpf_prog_bind_opts in libbpf so flags is optional.
+* Deduped probe_kern_global_data and probe_prog_bind_map into a common
+  helper.
+* Added comment regarding why EEXIST is ignored in libbpf bind map.
+* Froze all LIBBPF_MAP_METADATA internal maps.
+* Moved bpf_prog_bind_map into new LIBBPF_0.1.1 in libbpf.map.
+* Added p_err() calls on error cases in bpftool show_prog_metadata.
+* Reverse christmas tree coding style in bpftool show_prog_metadata.
+* Made bpftool gen skeleton recognize .metadata as an internal map and
+  generate datasec definition in skeleton.
+* Added C test using skeleton to see asset that the metadata is what we
+  expect and rebinding causes EEXIST.
+
+Cc: YiFei Zhu <zhuyifei1999@gmail.com>
+
+Stanislav Fomichev (2):
+  libbpf: implement bpf_prog_find_metadata
+  bpftool: mention --metadata in the documentation
+
+YiFei Zhu (6):
+  bpf: Mutex protect used_maps array and count
+  bpf: Add BPF_PROG_BIND_MAP syscall
+  libbpf: Add BPF_PROG_BIND_MAP syscall and use it on .metadata section
+  bpftool: support dumping metadata
+  bpftool: support metadata internal map in gen skeleton
+  selftests/bpf: Test load and dump metadata with btftool and skel
+
+ .../net/ethernet/netronome/nfp/bpf/offload.c  |  18 ++-
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/bpf/core.c                             |  15 +-
+ kernel/bpf/syscall.c                          |  81 ++++++++++-
+ net/core/dev.c                                |  11 +-
+ .../bpftool/Documentation/bpftool-prog.rst    |   5 +-
+ tools/bpf/bpftool/gen.c                       |   5 +
+ tools/bpf/bpftool/json_writer.c               |   6 +
+ tools/bpf/bpftool/json_writer.h               |   3 +
+ tools/bpf/bpftool/main.c                      |  10 ++
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/prog.c                      | 132 +++++++++++++++++-
+ tools/include/uapi/linux/bpf.h                |   7 +
+ tools/lib/bpf/bpf.c                           |  87 ++++++++++++
+ tools/lib/bpf/bpf.h                           |   9 ++
+ tools/lib/bpf/libbpf.c                        | 130 ++++++++++++++---
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/prog_tests/metadata.c       |  83 +++++++++++
+ .../selftests/bpf/progs/metadata_unused.c     |  15 ++
+ .../selftests/bpf/progs/metadata_used.c       |  15 ++
+ .../selftests/bpf/test_bpftool_metadata.sh    |  82 +++++++++++
+ 23 files changed, 687 insertions(+), 41 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
+ create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
+
+-- 
+2.28.0.402.g5ffc5be6b7-goog
+
