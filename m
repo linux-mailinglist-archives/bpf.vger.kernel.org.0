@@ -2,116 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C844E255A93
-	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 14:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3AA255DAB
+	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 17:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729305AbgH1MvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Aug 2020 08:51:13 -0400
-Received: from mga03.intel.com ([134.134.136.65]:39885 "EHLO mga03.intel.com"
+        id S1726219AbgH1PUi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Aug 2020 11:20:38 -0400
+Received: from mga17.intel.com ([192.55.52.151]:13213 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729172AbgH1MvN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Aug 2020 08:51:13 -0400
-IronPort-SDR: IL9yvp/3CWVuno1QDKoyD6qx0tFykZOf20E7KwO0shw2zpK80Y7XQHd8L5x915QBLU02Jfr62v
- udcObSlG1lcA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="156660852"
-X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
-   d="scan'208";a="156660852"
+        id S1726321AbgH1PUh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Aug 2020 11:20:37 -0400
+IronPort-SDR: Zy+357+bIlf846PYA8VKHi7HrWMyht9FIPvFs/FcEgfE/ejbXtrtQ3gCmR9AzXnEBSutd/gHdF
+ oqo0rvmXovcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9727"; a="136744421"
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
+   d="scan'208";a="136744421"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 05:51:12 -0700
-IronPort-SDR: qLZfFMxhpAuBZ+bj2afbifOo+/JalzTxbFrgl4AlaZms1EHkEu8oXmB1SdepKwJ3BrIryFr9c3
- UzTNpxHvrnqQ==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 08:20:34 -0700
+IronPort-SDR: 0gXLrwgpWXtkB9mKzimsaRRA/x9TWapBhKVEG6GxRYvodddgTy41Q0uPtObzf/FY+rRbsu/O+N
+ x4nVyPdZmGUQ==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
-   d="scan'208";a="444826649"
-Received: from mkarlsso-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.249.35.66])
-  by orsmga004.jf.intel.com with ESMTP; 28 Aug 2020 05:51:10 -0700
-From:   Magnus Karlsson <magnus.karlsson@intel.com>
+X-IronPort-AV: E=Sophos;i="5.76,364,1592895600"; 
+   d="scan'208";a="444866264"
+Received: from silpixa00400468.ir.intel.com ([10.237.214.28])
+  by orsmga004.jf.intel.com with ESMTP; 28 Aug 2020 08:20:32 -0700
+From:   Weqaar Janjua <weqaar.a.janjua@intel.com>
 To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
         daniel@iogearbox.net, netdev@vger.kernel.org,
         jonathan.lemon@gmail.com
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH bpf-next] samples/bpf: optimize l2fwd performance in xdpsock
-Date:   Fri, 28 Aug 2020 14:51:05 +0200
-Message-Id: <1598619065-1944-1-git-send-email-magnus.karlsson@intel.com>
-X-Mailer: git-send-email 2.7.4
+Cc:     Weqaar Janjua <weqaar.a.janjua@intel.com>, bpf@vger.kernel.org
+Subject: [PATCH bpf-next]  0001-samples-bpf-fix-to-xdpsock-to-avoid-recycling-frames.patch
+Date:   Fri, 28 Aug 2020 23:20:19 +0800
+Message-Id: <20200828152019.42201-1-weqaar.a.janjua@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Optimize the throughput performance of the l2fwd sub-app in the
-xdpsock sample application by removing a duplicate syscall and
-increasing the size of the fill ring.
-
-The latter needs some further explanation. We recommend that you set
-the fill ring size >= HW RX ring size + AF_XDP RX ring size. Make sure
-you fill up the fill ring with buffers at regular intervals, and you
-will with this setting avoid allocation failures in the driver. These
-are usually quite expensive since drivers have not been written to
-assume that allocation failures are common. For regular sockets,
-kernel allocated memory is used that only runs out in OOM situations
-that should be rare.
-
-These two performance optimizations together lead to a 6% percent
-improvement for the l2fwd app on my machine.
-
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- samples/bpf/xdpsock_user.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ ...to-xdpsock-to-avoid-recycling-frames.patch | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 0001-samples-bpf-fix-to-xdpsock-to-avoid-recycling-frames.patch
 
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 19c6794..9f54df7 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -613,7 +613,16 @@ static struct xsk_umem_info *xsk_configure_umem(void *buffer, u64 size)
- {
- 	struct xsk_umem_info *umem;
- 	struct xsk_umem_config cfg = {
--		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		/* We recommend that you set the fill ring size >= HW RX ring size +
-+		 * AF_XDP RX ring size. Make sure you fill up the fill ring
-+		 * with buffers at regular intervals, and you will with this setting
-+		 * avoid allocation failures in the driver. These are usually quite
-+		 * expensive since drivers have not been written to assume that
-+		 * allocation failures are common. For regular sockets, kernel
-+		 * allocated memory is used that only runs out in OOM situations
-+		 * that should be rare.
-+		 */
-+		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS * 2,
- 		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
- 		.frame_size = opt_xsk_frame_size,
- 		.frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM,
-@@ -640,13 +649,13 @@ static void xsk_populate_fill_ring(struct xsk_umem_info *umem)
- 	u32 idx;
- 
- 	ret = xsk_ring_prod__reserve(&umem->fq,
--				     XSK_RING_PROD__DEFAULT_NUM_DESCS, &idx);
--	if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
-+				     XSK_RING_PROD__DEFAULT_NUM_DESCS * 2, &idx);
-+	if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS * 2)
- 		exit_with_error(-ret);
--	for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS; i++)
-+	for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS * 2; i++)
- 		*xsk_ring_prod__fill_addr(&umem->fq, idx++) =
- 			i * opt_xsk_frame_size;
--	xsk_ring_prod__submit(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS);
-+	xsk_ring_prod__submit(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS * 2);
- }
- 
- static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem,
-@@ -888,9 +897,6 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk,
- 	if (!xsk->outstanding_tx)
- 		return;
- 
--	if (!opt_need_wakeup || xsk_ring_prod__needs_wakeup(&xsk->tx))
--		kick_tx(xsk);
--
- 	ndescs = (xsk->outstanding_tx > opt_batch_size) ? opt_batch_size :
- 		xsk->outstanding_tx;
- 
+diff --git a/0001-samples-bpf-fix-to-xdpsock-to-avoid-recycling-frames.patch b/0001-samples-bpf-fix-to-xdpsock-to-avoid-recycling-frames.patch
+new file mode 100644
+index 000000000000..ae3b99b335e2
+--- /dev/null
++++ b/0001-samples-bpf-fix-to-xdpsock-to-avoid-recycling-frames.patch
+@@ -0,0 +1,62 @@
++From df0a23a79c9dca96c0059b4d766a613eba57200e Mon Sep 17 00:00:00 2001
++From: Weqaar Janjua <weqaar.a.janjua@intel.com>
++Date: Fri, 28 Aug 2020 13:36:32 +0100
++Subject: [PATCH bpf-next] samples/bpf: fix to xdpsock to avoid recycling
++ frames
++To: magnus.karlsson@intel.com
++
++The txpush program in the xdpsock sample application is supposed
++to send out all packets in the umem in a round-robin fashion.
++The problem is that it only cycled through the first BATCH_SIZE
++worth of packets. Fixed this so that it cycles through all buffers
++in the umem as intended.
++
++Fixes: 248c7f9c0e21 ("samples/bpf: convert xdpsock to use libbpf for AF_XDP access")
++Signed-off-by: Weqaar Janjua <weqaar.a.janjua@intel.com>
++---
++ samples/bpf/xdpsock_user.c | 10 +++++-----
++ 1 file changed, 5 insertions(+), 5 deletions(-)
++
++diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
++index 19c679456a0e..c821e9867139 100644
++--- a/samples/bpf/xdpsock_user.c
+++++ b/samples/bpf/xdpsock_user.c
++@@ -1004,7 +1004,7 @@ static void rx_drop_all(void)
++ 	}
++ }
++ 
++-static void tx_only(struct xsk_socket_info *xsk, u32 frame_nb, int batch_size)
+++static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
++ {
++ 	u32 idx;
++ 	unsigned int i;
++@@ -1017,14 +1017,14 @@ static void tx_only(struct xsk_socket_info *xsk, u32 frame_nb, int batch_size)
++ 	for (i = 0; i < batch_size; i++) {
++ 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx,
++ 								  idx + i);
++-		tx_desc->addr = (frame_nb + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
+++		tx_desc->addr = (*frame_nb + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
++ 		tx_desc->len = PKT_SIZE;
++ 	}
++ 
++ 	xsk_ring_prod__submit(&xsk->tx, batch_size);
++ 	xsk->outstanding_tx += batch_size;
++-	frame_nb += batch_size;
++-	frame_nb %= NUM_FRAMES;
+++	*frame_nb += batch_size;
+++	*frame_nb %= NUM_FRAMES;
++ 	complete_tx_only(xsk, batch_size);
++ }
++ 
++@@ -1080,7 +1080,7 @@ static void tx_only_all(void)
++ 		}
++ 
++ 		for (i = 0; i < num_socks; i++)
++-			tx_only(xsks[i], frame_nb[i], batch_size);
+++			tx_only(xsks[i], &frame_nb[i], batch_size);
++ 
++ 		pkt_cnt += batch_size;
++ 
++-- 
++2.20.1
++
 -- 
-2.7.4
+2.20.1
+
+--------------------------------------------------------------
+Intel Research and Development Ireland Limited
+Registered in Ireland
+Registered Office: Collinstown Industrial Park, Leixlip, County Kildare
+Registered Number: 308263
+
+
+This e-mail and any attachments may contain confidential material for the sole
+use of the intended recipient(s). Any review or distribution by others is
+strictly prohibited. If you are not the intended recipient, please contact the
+sender and delete all copies.
 
