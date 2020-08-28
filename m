@@ -2,136 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E33F255364
-	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 05:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80F92553FB
+	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 07:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgH1Dmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 23:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727992AbgH1Dms (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 23:42:48 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C615C061232
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 20:42:47 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id m22so10453421eje.10
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 20:42:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wl7POtGUJpujC577nqFjmTBAOmvQ4nTIGwkF53IPEDs=;
-        b=tq0zGDR93T6ES5KjCAtJcuuPzPguZpOtkbOunk4JUInNQbuoAVAJvp++D4hQ1yRLG9
-         oVPESLvDSvN/SxHxeQBn/z/jPgT6PJD8LEEIA9IyLij9gJ1K6+1fPJHnJ0EoDT8b3Ey3
-         WdmEq+7HQmSJcbiUqvgLSodFl+JDqVoT85Ibx6I87W+TjP1QncW/tz9j4q/JVPBsZaj1
-         gONchDfblDPomG0BR+ZL49xl0Fu5y2j9uQAVCn2UYlnN2/qTkbxSswMf4Mi3d370TMHJ
-         WHUTT1bZSwkkCnhEOOAFbmilHPa4mwjSE7kHdORspUTiVg9cDmo+mshEIyS/3rtOo+yV
-         f8NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wl7POtGUJpujC577nqFjmTBAOmvQ4nTIGwkF53IPEDs=;
-        b=hwmt5w9qxhbF1fLk3eOmOlL8zOJOfv0FTRGFp8E2zNPEUiWCKjbLcQQYUidu8/ayIb
-         BGx95E1dAO0D65GfVYYd2xInRsvXLxMTyOFi64gzfTO+UjjYZSf33RlI+P9U+tNENHWs
-         /TjclD7cXdPUcx7UEeuyjSLs2phgHzM/JZgfGlBRo4Plgsbm11Vz/es3hFOb2556T3WC
-         NQcghzGy6bH3Fg3unF4bZShrrHKT0a5e6dQrwO2xIsQRjcdJBBh9Ni8wOL5TPwihBNrW
-         FoHDbRbvl+EDvEYrnjcaAu/FhrOuDwiHxs6dKj3wP+CJWh4xU7VQqKWu/rC3DG2NBgnH
-         GO2Q==
-X-Gm-Message-State: AOAM530XmkmnhT4BDG5roeV6y3sk4PBeIPlx93q1T349aDYYYizOLAyX
-        oNdZdtk4ibNxljvncfh/PWAU/e1BO1z1b1beCGAAKQ==
-X-Google-Smtp-Source: ABdhPJwk4MdYud22SSD4VMNkQ45Fwn96im/vGznNyYRJQx0E7CnsPzI55RD6/Xhy7xw6X35XN4XD+TwVA146l+SuseE=
-X-Received: by 2002:a17:906:6406:: with SMTP id d6mr23310789ejm.30.1598586165507;
- Thu, 27 Aug 2020 20:42:45 -0700 (PDT)
+        id S1726450AbgH1FTs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Aug 2020 01:19:48 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64774 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725809AbgH1FTs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 Aug 2020 01:19:48 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 07S5JjAP008604
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 22:19:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=h8yPN4wnII9g309UM/PHVphReHEqEGJQbTrnYP/IugQ=;
+ b=ULCENbENEwOprgrjp/fPiH2zqQPKZ4wXhnVkRdiGHd6X6hMvNJOniUHGLGBLqJBRbd1m
+ 9XJmRpUUsCU4OpQVWfwGbMZzmk9hShljdXu/DPXmTMZMfMg0OrsOQMkHO9aQZddfTpMv
+ Bq6nDuu2IW4QsCb7nA4rmbDgAyHUKljh9io= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 335up719pm-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 22:19:47 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 27 Aug 2020 22:19:27 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 347B337052D7; Thu, 27 Aug 2020 22:19:22 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: make bpf_link_info.iter similar to bpf_iter_link_info
+Date:   Thu, 27 Aug 2020 22:19:22 -0700
+Message-ID: <20200828051922.758950-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-9-haoluo@google.com>
- <CAEf4BzYC0JRQusCxTrmraYQC7SZdkVjdy8DMUNECKwCbXP9-dw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYC0JRQusCxTrmraYQC7SZdkVjdy8DMUNECKwCbXP9-dw@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 27 Aug 2020 20:42:34 -0700
-Message-ID: <CA+khW7jYWNT5aVe5vCinw5qwKKoB0w386qz2g+0ndv1LeeoGGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 8/8] bpf/selftests: Test for bpf_per_cpu_ptr()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-28_03:2020-08-27,2020-08-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=626 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ phishscore=0 suspectscore=0 clxscore=1015 spamscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008280044
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for taking a look!
+bpf_link_info.iter is used by link_query to return
+bpf_iter_link_info to user space. Fields may be different
+,e.g., map_fd vs. map_id, so we cannot reuse
+the exact structure. But make them similar, e.g.,
+  struct bpf_link_info {
+     /* common fields */
+     union {
+	struct { ... } raw_tracepoint;
+	struct { ... } tracing;
+	...
+	struct {
+	    /* common fields for iter */
+	    union {
+		struct {
+		    __u32 map_id;
+		} map;
+		/* other structs for other targets */
+	    };
+	};
+    };
+ };
+so the structure is extensible the same way as
+bpf_iter_link_info.
 
-On Fri, Aug 21, 2020 at 8:30 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Aug 19, 2020 at 3:42 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Test bpf_per_cpu_ptr(). Test two paths in the kernel. If the base
-> > pointer points to a struct, the returned reg is of type PTR_TO_BTF_ID.
-> > Direct pointer dereference can be applied on the returned variable.
-> > If the base pointer isn't a struct, the returned reg is of type
-> > PTR_TO_MEM, which also supports direct pointer dereference.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-[...]
-> >
-> >  __u64 out__runqueues = -1;
-> >  __u64 out__bpf_prog_active = -1;
-> > +__u32 out__rq_cpu = -1;
-> > +unsigned long out__process_counts = -1;
->
-> try to not use long for variables, it is 32-bit integer in user-space
-> but always 64-bit in BPF. This causes problems when using skeleton on
-> 32-bit architecture.
->
+Fixes: 6b0a249a301e ("bpf: Implement link_query for bpf iterators")
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ include/uapi/linux/bpf.h       | 6 ++++--
+ tools/include/uapi/linux/bpf.h | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-Ack. I will use another variable of type 'int' instead.
+This patch was the first patch in
+  https://lore.kernel.org/bpf/20200827000618.2711826-1-yhs@fb.com/
+I now sent this separately as it is largely independent and my
+immediate follow-ups does not depend on this any more.
 
-> >
-> > -extern const struct rq runqueues __ksym; /* struct type global var. */
-> > +extern const struct rq runqueues __ksym; /* struct type percpu var. */
-> >  extern const int bpf_prog_active __ksym; /* int type global var. */
-> > +extern const unsigned long process_counts __ksym; /* int type percpu var. */
-> >
-> >  SEC("raw_tp/sys_enter")
-> >  int handler(const void *ctx)
-> >  {
-> > +       struct rq *rq;
-> > +       unsigned long *count;
-> > +
-> >         out__runqueues = (__u64)&runqueues;
-> >         out__bpf_prog_active = (__u64)&bpf_prog_active;
-> >
-> > +       rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, 1);
-> > +       if (rq)
-> > +               out__rq_cpu = rq->cpu;
->
-> this is awesome!
->
-> Are there any per-cpu variables that are arrays? Would be nice to test
-> those too.
->
->
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 0388bc0200b0..ef7af384f5ee 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4251,8 +4251,10 @@ struct bpf_link_info {
+ 			__aligned_u64 target_name; /* in/out: target_name buffer ptr */
+ 			__u32 target_name_len;	   /* in/out: target_name buffer len */
+ 			union {
+-				__u32 map_id;
+-			} map;
++				struct {
++					__u32 map_id;
++				} map;
++			};
+ 		} iter;
+ 		struct  {
+ 			__u32 netns_ino;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 0388bc0200b0..ef7af384f5ee 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4251,8 +4251,10 @@ struct bpf_link_info {
+ 			__aligned_u64 target_name; /* in/out: target_name buffer ptr */
+ 			__u32 target_name_len;	   /* in/out: target_name buffer len */
+ 			union {
+-				__u32 map_id;
+-			} map;
++				struct {
++					__u32 map_id;
++				} map;
++			};
+ 		} iter;
+ 		struct  {
+ 			__u32 netns_ino;
+--=20
+2.24.1
 
-There are currently per-cpu arrays, but not common. There is a
-'pmc_prev_left' in arch/x86, I can add that in this test.
-
-[...]
