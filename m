@@ -2,165 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E343255673
-	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 10:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A6F2557F7
+	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 11:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgH1I2D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Aug 2020 04:28:03 -0400
-Received: from mga03.intel.com ([134.134.136.65]:23538 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728581AbgH1I1t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Aug 2020 04:27:49 -0400
-IronPort-SDR: 2g7loLEuyJeryPQV2CvLCJUdr1XTr9VT2v219dVzqhQoSdAKCcrgO5z2+dLXw5+7KWuUF3BGKt
- DA9+mUDTEK+Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9726"; a="156634061"
-X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
-   d="scan'208";a="156634061"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2020 01:27:39 -0700
-IronPort-SDR: zqyjrOcXGB2TfwMYHevhvO+TaQxu2RdIOBVnD9fVT4DXg4UOsnbakOO0MwgiZtIMaNB6dC7bd7
- cB/oOfnmXb+Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,363,1592895600"; 
-   d="scan'208";a="444762930"
-Received: from mkarlsso-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.249.36.33])
-  by orsmga004.jf.intel.com with ESMTP; 28 Aug 2020 01:27:36 -0700
-From:   Magnus Karlsson <magnus.karlsson@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, maximmi@mellanox.com
-Cc:     bpf@vger.kernel.org, jeffrey.t.kirsher@intel.com,
-        anthony.l.nguyen@intel.com, maciej.fijalkowski@intel.com,
-        maciejromanfijalkowski@gmail.com, cristian.dumitrescu@intel.com
-Subject: [PATCH bpf-next v5 15/15] xsk: documentation for XDP_SHARED_UMEM between queues and netdevs
-Date:   Fri, 28 Aug 2020 10:26:29 +0200
-Message-Id: <1598603189-32145-16-git-send-email-magnus.karlsson@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598603189-32145-1-git-send-email-magnus.karlsson@intel.com>
-References: <1598603189-32145-1-git-send-email-magnus.karlsson@intel.com>
+        id S1728269AbgH1JtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Aug 2020 05:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728016AbgH1JtB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Aug 2020 05:49:01 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7B8C061264
+        for <bpf@vger.kernel.org>; Fri, 28 Aug 2020 02:49:00 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y8so482868wma.0
+        for <bpf@vger.kernel.org>; Fri, 28 Aug 2020 02:49:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ImKXCTbxtsyXKa2yFgKuyPXc7peqmPQCKRcDEmZRSk=;
+        b=wog6DIqABp/ebb2IGZ5qejfJIteVOPxgPQNP+g1uRHkw0cOGXEAGVlAQdeTdAEi4TO
+         fzsqnayQ5tkT8AjER64mJeQ2qI4ibqQsQy+m6XgbQ1LQHv246XET0b7DzoXz9PGlFfh8
+         Os/zGzoV0QN3VzAYFOcu1KDxB+WD9Ux6z9Lnc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ImKXCTbxtsyXKa2yFgKuyPXc7peqmPQCKRcDEmZRSk=;
+        b=Abr9K+fU9Wlrb1SvKtzvNMHlo0TCC1MLxUZlOU5i3kT/z1nQ5/ruGgwvaj3k5RHdZj
+         jAp0byGcSg1T00S8TUCNq8WvjnPPoLAuN8JTrgBGeyJUNbCwwykfOqq2st7I4GzmOlGi
+         9D0LIwhcw/v23gYoDLh1i7lhBIFFbghogloTSrlFwLL22lvcnZqYFipeOu3AfkiNFJo8
+         JKi6mKWztjHcqAZ63ZRpuBWMt71gpu0OsdUtHmEfSn39Rjd7OEDSCgv06CwIarwrSCIF
+         T5BCcZVWDkZ6KewTLmLKwzjvk0VLimPlb/ZjLsVU81I7H7CH9gjRzpmtnIIv7IZDAOge
+         pGlQ==
+X-Gm-Message-State: AOAM53328oeBQ6PUBDKC/oz3uo5qdfF4sbBimZc5Gbplck2EeT/b4V0G
+        whLoTv1OOCgSd9j7K/y34zGEBw==
+X-Google-Smtp-Source: ABdhPJw+dOoONvXEn1EO3gxbLUp/R8/A/w7L4CxzUusgToeNOmQdEZ0BeqI8qOb+3bCDNI+vuUpmrw==
+X-Received: by 2002:a1c:c90d:: with SMTP id f13mr813644wmb.25.1598608139532;
+        Fri, 28 Aug 2020 02:48:59 -0700 (PDT)
+Received: from antares.lan (5.8.0.7.f.1.6.5.2.2.a.f.0.8.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:80:fa22:561f:7085])
+        by smtp.gmail.com with ESMTPSA id z203sm1371119wmc.31.2020.08.28.02.48.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Aug 2020 02:48:58 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net,
+        jakub@cloudflare.com, john.fastabend@gmail.com
+Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf-next 0/3] Sockmap iterator
+Date:   Fri, 28 Aug 2020 10:48:31 +0100
+Message-Id: <20200828094834.23290-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add documentation for the XDP_SHARED_UMEM feature when a UMEM is
-shared between different queues and/or netdevs.
+Add a new bpf_iter for sockmap and sockhash. As previously discussed, we
+want to use this to copy a sockhash in kernel space while modifying the
+format of the keys.
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Acked-by: Björn Töpel <bjorn.topel@intel.com>
----
- Documentation/networking/af_xdp.rst | 68 +++++++++++++++++++++++++++++++------
- 1 file changed, 58 insertions(+), 10 deletions(-)
+The implementation leans heavily on the existing bpf_sk_storage and
+hashtable iterators. However, there is a key difference for the sockmap
+iterator: we don't take any bucket locks during iteration. It seems to
+me that there is a risk of deadlock here if the iterator attempts to
+insert an item into the bucket that we are currently iterating. I think
+that the semantics are reasonable even without the lock.
 
-diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-index 5bc55a4..2ccc564 100644
---- a/Documentation/networking/af_xdp.rst
-+++ b/Documentation/networking/af_xdp.rst
-@@ -258,14 +258,21 @@ socket into zero-copy mode or fail.
- XDP_SHARED_UMEM bind flag
- -------------------------
- 
--This flag enables you to bind multiple sockets to the same UMEM, but
--only if they share the same queue id. In this mode, each socket has
--their own RX and TX rings, but the UMEM (tied to the fist socket
--created) only has a single FILL ring and a single COMPLETION
--ring. To use this mode, create the first socket and bind it in the normal
--way. Create a second socket and create an RX and a TX ring, or at
--least one of them, but no FILL or COMPLETION rings as the ones from
--the first socket will be used. In the bind call, set he
-+This flag enables you to bind multiple sockets to the same UMEM. It
-+works on the same queue id, between queue ids and between
-+netdevs/devices. In this mode, each socket has their own RX and TX
-+rings as usual, but you are going to have one or more FILL and
-+COMPLETION ring pairs. You have to create one of these pairs per
-+unique netdev and queue id tuple that you bind to.
-+
-+Starting with the case were we would like to share a UMEM between
-+sockets bound to the same netdev and queue id. The UMEM (tied to the
-+fist socket created) will only have a single FILL ring and a single
-+COMPLETION ring as there is only on unique netdev,queue_id tuple that
-+we have bound to. To use this mode, create the first socket and bind
-+it in the normal way. Create a second socket and create an RX and a TX
-+ring, or at least one of them, but no FILL or COMPLETION rings as the
-+ones from the first socket will be used. In the bind call, set he
- XDP_SHARED_UMEM option and provide the initial socket's fd in the
- sxdp_shared_umem_fd field. You can attach an arbitrary number of extra
- sockets this way.
-@@ -305,11 +312,41 @@ concurrently. There are no synchronization primitives in the
- libbpf code that protects multiple users at this point in time.
- 
- Libbpf uses this mode if you create more than one socket tied to the
--same umem. However, note that you need to supply the
-+same UMEM. However, note that you need to supply the
- XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD libbpf_flag with the
- xsk_socket__create calls and load your own XDP program as there is no
- built in one in libbpf that will route the traffic for you.
- 
-+The second case is when you share a UMEM between sockets that are
-+bound to different queue ids and/or netdevs. In this case you have to
-+create one FILL ring and one COMPLETION ring for each unique
-+netdev,queue_id pair. Let us say you want to create two sockets bound
-+to two different queue ids on the same netdev. Create the first socket
-+and bind it in the normal way. Create a second socket and create an RX
-+and a TX ring, or at least one of them, and then one FILL and
-+COMPLETION ring for this socket. Then in the bind call, set he
-+XDP_SHARED_UMEM option and provide the initial socket's fd in the
-+sxdp_shared_umem_fd field as you registered the UMEM on that
-+socket. These two sockets will now share one and the same UMEM.
-+
-+There is no need to supply an XDP program like the one in the previous
-+case where sockets were bound to the same queue id and
-+device. Instead, use the NIC's packet steering capabilities to steer
-+the packets to the right queue. In the previous example, there is only
-+one queue shared among sockets, so the NIC cannot do this steering. It
-+can only steer between queues.
-+
-+In libbpf, you need to use the xsk_socket__create_shared() API as it
-+takes a reference to a FILL ring and a COMPLETION ring that will be
-+created for you and bound to the shared UMEM. You can use this
-+function for all the sockets you create, or you can use it for the
-+second and following ones and use xsk_socket__create() for the first
-+one. Both methods yield the same result.
-+
-+Note that a UMEM can be shared between sockets on the same queue id
-+and device, as well as between queues on the same device and between
-+devices at the same time.
-+
- XDP_USE_NEED_WAKEUP bind flag
- -----------------------------
- 
-@@ -364,7 +401,7 @@ resources by only setting up one of them. Both the FILL ring and the
- COMPLETION ring are mandatory as you need to have a UMEM tied to your
- socket. But if the XDP_SHARED_UMEM flag is used, any socket after the
- first one does not have a UMEM and should in that case not have any
--FILL or COMPLETION rings created as the ones from the shared umem will
-+FILL or COMPLETION rings created as the ones from the shared UMEM will
- be used. Note, that the rings are single-producer single-consumer, so
- do not try to access them from multiple processes at the same
- time. See the XDP_SHARED_UMEM section.
-@@ -567,6 +604,17 @@ A: The short answer is no, that is not supported at the moment. The
-    switch, or other distribution mechanism, in your NIC to direct
-    traffic to the correct queue id and socket.
- 
-+Q: My packets are sometimes corrupted. What is wrong?
-+
-+A: Care has to be taken not to feed the same buffer in the UMEM into
-+   more than one ring at the same time. If you for example feed the
-+   same buffer into the FILL ring and the TX ring at the same time, the
-+   NIC might receive data into the buffer at the same time it is
-+   sending it. This will cause some packets to become corrupted. Same
-+   thing goes for feeding the same buffer into the FILL rings
-+   belonging to different queue ids or netdevs bound with the
-+   XDP_SHARED_UMEM flag.
-+
- Credits
- =======
- 
+In the iteration context I expose a PTR_TO_SOCKET_OR_NULL, aka struct
+bpf_sock*. This is in contrast to bpf_sk_storage which uses a
+PTR_TO_BTF_ID_OR_NULL, aka struct sock*. My personal preference would
+be to use PTR_TO_BTF_ID_OR_NULL for sockmap as well, however the
+verifier currently doesn't understand that PTR_TO_BTF_ID for struct
+sock can be coerced to PTR_TO_SOCKET_OR_NULL. So we can't call
+map_update_elem, etc. and the whole exercise is for naught. I'm
+considering teaching this trick to the verifier, does anyone have
+concerns or ideas how to achieve this?
+
+Thanks to Yonghong for guidance on how to go about this, and for
+adding bpf_iter in the first place!
+
+Lorenz Bauer (3):
+  net: Allow iterating sockmap and sockhash
+  selftests: bpf: Add helper to compare socket cookies
+  selftests: bpf: Test copying a sockmap via bpf_iter
+
+ net/core/sock_map.c                           | 283 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 129 +++++++-
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |   9 +
+ .../selftests/bpf/progs/bpf_iter_sockmap.c    |  50 ++++
+ 4 files changed, 457 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
+
 -- 
-2.7.4
+2.25.1
 
