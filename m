@@ -2,119 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5775925520D
-	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 03:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A007A255278
+	for <lists+bpf@lfdr.de>; Fri, 28 Aug 2020 03:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgH1BBF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Aug 2020 21:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727043AbgH1BBE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Aug 2020 21:01:04 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AADC06121B
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 18:01:04 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id r19so3624421qvw.11
-        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 18:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tk6QtLhNuynZ2/uc5+DBO8C0QQRF5WYIgM4ZJQi4M3I=;
-        b=iRUPG28Bu4FjAQK+lLcx02ZLMllmdQHUUSv7cCyiPd/9NOvUeLBOuGuf9+/BGhEYPG
-         ezSx8HWqSYzfvKdogYC2V8siR+YmA5DzYlcYPP4Cuwvc0Qz12o7h7tBakb87qk4y2uH6
-         tWOI3XWJkq5Qtm88WDBspgNaCy34nic5mgm2olagGoKLbSrFu8gBvZAQilm+OetrSuQQ
-         osoAtGpLUhlDH/2QkWSlLo8mDD63fXWqal6gQvMFU94+neR0+glBYc8cZ2Ys/1518YPP
-         iBAsrimD+NVDiN/XMM7w7JpsV1tNv0I7ZUXBHa2Nd6Q0zWk+1crA1X0BEpxjf6sbwWza
-         8P2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tk6QtLhNuynZ2/uc5+DBO8C0QQRF5WYIgM4ZJQi4M3I=;
-        b=bsbtT+AbtkNQDViF2iDCjBXmh49u6i8hvndbd6/Vbelpr97OJfNOpycCBFwYBJ2CFW
-         xk1bA9zDRxGTa/CEb8c1xm2FMlwHn7zEzSPm20+5lDuxOWhRnxSXqwu5wL66Um4S4U//
-         HBMqsrylnaO/uxhn3Gea2T4sCSjWfCvPvlx0KoKz9nSE1xLoxwjFanI9rp2ZAxJE/2vx
-         R3aW77UdknvsTEBPtREAoQj/K9JE3cfoOPyqVFSEHTukf2N/Gcxoj5NGLIZtiOBIFCkR
-         gNNzU+S9wTYHlTpwBKOj2YSuFCD68tUJ2phkGXhkQdOmMZ9ZrFU7ahcpfo8AbGNzG+6Y
-         7O4g==
-X-Gm-Message-State: AOAM532JL1GxfQBHX/kap/qQXMyc7aLXpkEO2/cHhg/PqS+IGJ/9+yJm
-        V2zNfOr4jNQO5bknikzh43lhOw==
-X-Google-Smtp-Source: ABdhPJx9ajYxjiQersuHdj9ETp3u6apxR/0lOc1LUaQzaqSrOLDO1mr9iU6Qxo4PHK4ifTSaHFunow==
-X-Received: by 2002:a0c:aedf:: with SMTP id n31mr21459300qvd.16.1598576463240;
-        Thu, 27 Aug 2020 18:01:03 -0700 (PDT)
-Received: from localhost.localdomain (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id d46sm3475565qtk.37.2020.08.27.18.01.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Aug 2020 18:01:02 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 2/5] bpf: Introduce sleepable BPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     daniel@iogearbox.net, bpoirier@suse.com, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-References: <20200827220114.69225-1-alexei.starovoitov@gmail.com>
- <20200827220114.69225-3-alexei.starovoitov@gmail.com>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <cd620460-c7cf-eed8-6ae2-16477b311107@toxicpanda.com>
-Date:   Thu, 27 Aug 2020 21:01:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726197AbgH1BSD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Aug 2020 21:18:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51760 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726147AbgH1BSC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 27 Aug 2020 21:18:02 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07S1C2K1030120
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 18:18:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=uH54ukcrNjtEL2V32/PN6QnHE2Ntk+ukHm4Qqmol6A8=;
+ b=J8cXt0KLK+3EaXQf+Gk26+IGRh89+g055YGrttY6Xqaj/qGxXD0L2FgG4YCyqaUmj43c
+ 0VUVjTUOoWYOChP1tb37cnJxYYqDSQ4bw5PD1tTRCEU98vtFE6t8u8WE62mjoUgFAFSl
+ K+2Ey7aYxCW9M7D4ZKIpVbkKNSp7dkClb3Y= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 335up9gkb0-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 27 Aug 2020 18:18:02 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 27 Aug 2020 18:18:01 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 9D59E2946559; Thu, 27 Aug 2020 18:18:00 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v3 bpf-next 0/3] bpf: Relax the max_entries check for inner map
+Date:   Thu, 27 Aug 2020 18:18:00 -0700
+Message-ID: <20200828011800.1970018-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200827220114.69225-3-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-27_14:2020-08-27,2020-08-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ clxscore=1015 suspectscore=13 bulkscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=720 lowpriorityscore=0 phishscore=0 mlxscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008280009
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/27/20 6:01 PM, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> Introduce sleepable BPF programs that can request such property for themselves
-> via BPF_F_SLEEPABLE flag at program load time. In such case they will be able
-> to use helpers like bpf_copy_from_user() that might sleep. At present only
-> fentry/fexit/fmod_ret and lsm programs can request to be sleepable and only
-> when they are attached to kernel functions that are known to allow sleeping.
-> 
-> The non-sleepable programs are relying on implicit rcu_read_lock() and
-> migrate_disable() to protect life time of programs, maps that they use and
-> per-cpu kernel structures used to pass info between bpf programs and the
-> kernel. The sleepable programs cannot be enclosed into rcu_read_lock().
-> migrate_disable() maps to preempt_disable() in non-RT kernels, so the progs
-> should not be enclosed in migrate_disable() as well. Therefore
-> rcu_read_lock_trace is used to protect the life time of sleepable progs.
-> 
-> There are many networking and tracing program types. In many cases the
-> 'struct bpf_prog *' pointer itself is rcu protected within some other kernel
-> data structure and the kernel code is using rcu_dereference() to load that
-> program pointer and call BPF_PROG_RUN() on it. All these cases are not touched.
-> Instead sleepable bpf programs are allowed with bpf trampoline only. The
-> program pointers are hard-coded into generated assembly of bpf trampoline and
-> synchronize_rcu_tasks_trace() is used to protect the life time of the program.
-> The same trampoline can hold both sleepable and non-sleepable progs.
-> 
-> When rcu_read_lock_trace is held it means that some sleepable bpf program is
-> running from bpf trampoline. Those programs can use bpf arrays and preallocated
-> hash/lru maps. These map types are waiting on programs to complete via
-> synchronize_rcu_tasks_trace();
-> 
-> Updates to trampoline now has to do synchronize_rcu_tasks_trace() and
-> synchronize_rcu_tasks() to wait for sleepable progs to finish and for
-> trampoline assembly to finish.
-> 
-> This is the first step of introducing sleepable progs. Eventually dynamically
-> allocated hash maps can be allowed and networking program types can become
-> sleepable too.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+v3:
+- Add map_meta_equal to bpf_map_ops and use it as an explict
+  opt-in support for map-in-map
+ =20
+v2:
+- New BPF_MAP_TYPE_FL to minimize code churns (Alexei)
+- s/capabilities/properties/ (Andrii)
+- Describe WHY in commit log (Andrii)
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+People has a use case that starts with a smaller inner map first and then
+replaces it with a larger inner map later when it is needed.
 
-Thanks,
+This series allows the outer map to be updated with inner map in differen=
+t
+size as long as it is safe (meaning the max_entries is not used in the
+verification time during prog load).
 
-Josef
+Please see individual patch for details.
+
+Martin KaFai Lau (3):
+  bpf: Add map_meta_equal map ops
+  bpf: Relax max_entries check for most of the inner map types
+  bpf: selftests: Add test for different inner map size
+
+ include/linux/bpf.h                           | 16 +++++++++
+ kernel/bpf/arraymap.c                         | 16 +++++++++
+ kernel/bpf/bpf_inode_storage.c                |  1 +
+ kernel/bpf/cpumap.c                           |  1 +
+ kernel/bpf/devmap.c                           |  2 ++
+ kernel/bpf/hashtab.c                          |  4 +++
+ kernel/bpf/lpm_trie.c                         |  1 +
+ kernel/bpf/map_in_map.c                       | 24 +++++--------
+ kernel/bpf/map_in_map.h                       |  2 --
+ kernel/bpf/queue_stack_maps.c                 |  2 ++
+ kernel/bpf/reuseport_array.c                  |  1 +
+ kernel/bpf/ringbuf.c                          |  1 +
+ kernel/bpf/stackmap.c                         |  1 +
+ kernel/bpf/syscall.c                          |  1 +
+ net/core/bpf_sk_storage.c                     |  1 +
+ net/core/sock_map.c                           |  2 ++
+ net/xdp/xskmap.c                              |  8 +++++
+ .../selftests/bpf/prog_tests/btf_map_in_map.c | 35 ++++++++++++++++++-
+ .../selftests/bpf/progs/test_btf_map_in_map.c | 31 ++++++++++++++++
+ 19 files changed, 132 insertions(+), 18 deletions(-)
+
+--=20
+2.24.1
+
