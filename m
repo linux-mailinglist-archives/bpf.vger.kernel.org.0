@@ -2,62 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC07125784A
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 13:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02D7257B82
+	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 16:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgHaLZt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 07:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
+        id S1728064AbgHaOwG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 10:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726695AbgHaLXp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:23:45 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F67CC0619C9;
-        Mon, 31 Aug 2020 04:13:18 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q9so4996267wmj.2;
-        Mon, 31 Aug 2020 04:13:18 -0700 (PDT)
+        with ESMTP id S1727902AbgHaOwF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 10:52:05 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5190BC061573;
+        Mon, 31 Aug 2020 07:52:05 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o5so2344656wrn.13;
+        Mon, 31 Aug 2020 07:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=uX5Ly7ZqVaAQckCHREFfffv/fmmQxht5QxYuCQbtBCs=;
-        b=RCQ8Y38IkEsRKfi7ilmBFtWJLuU8u0rog5ko6D5ad4AcsX59IjTVQdTgpPhcd1QRFO
-         rlfGKhIt95EiYEd24U/OuT/9WSaJFDgeTigJp0s0GZKKNv1+evNi/Ay0whKe3TmGJGp2
-         36gkIea694dwTpdn2a1M+yiVkE+TQGCcJdF6uxtbV2VKKVsBhQt7xLaiTc1ckSdaAxJT
-         z8ABYOGTNww+gJarP1uf2aWnbpYEx9V/Tl9owDWyjgB7+4BPyYEhVPwKqqMpQaPvt8Ib
-         GOBdlC4VN249tal7NfvacO7FloKwDk0bdLQiHCUIEdlCcMMlCn+7PHCTg4ICfRZ+Ad0z
-         sItA==
+        bh=i1NZkDztc/ANb1Hw59OqfV/yps0w4yw+bNcJTCGH+i4=;
+        b=Di2a9eIK50uM0R2hiAjT2TqNpmsMnxpMn53p/u3xV+yaclk6to3aPJ9l2ppzkf+FrI
+         3VbNLqjgcgOnUwRZD5WCa4/CxHgFPoChq2FvtWJSoibt5oEoczn8wqlsBWsEhCMefggu
+         HkIFe68VXBpaFKAzkLDoq3/Cy3V3/IIMNmtrmKmwdaft+SbM1C5wSYcEUX4fLUSC8rL0
+         Z8Ok4Uyn1BGuKrAHZ6bHpT96QkEWqnQjBHrvM8hSb9lXINNlQ/7SfmspyarBjcBYyuf5
+         LBNy4bmL9IoVSPzcIe6xIAFENnvFErS8rXuyJb71aZkJubvdqivN8QQ2kAMs5ubIo6iG
+         nWUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uX5Ly7ZqVaAQckCHREFfffv/fmmQxht5QxYuCQbtBCs=;
-        b=sAXtOBWAUkvFuP6rvLQE24/IlgWAXhF8xxfNQ8zBf6gtkMBFd5TWojQPvG+mgzjG4r
-         ABX2BCsfsRHmf3VFyeB+z60DnGaqhatre+eT8ma5nbxYNKnaAWLgGb22Nbj2DkiXSxgV
-         HFAvf1qNuzp1cRRMvGo66kNC1Lxq8Z5RMRc3TFn2G5tLsLf9Idmidq9n854y3HhlJlZT
-         9kO91Vu+fkf/Hlu9peKZ9UKmif+TRlaHSwMaUmQoRwyuFHzjpTP3PmTciD8QzqD72sa2
-         IV24hsec59cLQJ+aytZiGsJtxpSDvHsMhJYjIM8r+VvBQgOfCxYz27Y3Wi4yBEwl7tlE
-         BZkQ==
-X-Gm-Message-State: AOAM530MMMB/+gSThcYhiBm/1HArQLi/qeoDa12NGJs99e/yrpUw+D3S
-        /A6cB895LNgGcy2Fy2iaMGMOZBvWbjts9ZN+/D8=
-X-Google-Smtp-Source: ABdhPJyz4YJfhcMmmEjmx03mL8gMy9uDNs1OWGNAZnuoI5uc/4t/BfIU/xRp1W5iIK5K66/E+PYuiYgS6rwXR/8lSAY=
-X-Received: by 2002:a7b:c1d4:: with SMTP id a20mr940532wmj.30.1598872397144;
- Mon, 31 Aug 2020 04:13:17 -0700 (PDT)
+        bh=i1NZkDztc/ANb1Hw59OqfV/yps0w4yw+bNcJTCGH+i4=;
+        b=ApaS7poQ2euiAYS5sC9u3fRQ4CC93WjpVtkizX9oCxS1ECBrIXNc0d+El99gD7elkQ
+         IU9mt5yj38Nd/7qf5KdAIwcY3hX5vrCeAZ3KRJxzOa7GtkOsHtOxav+tva/dDwUjz1tx
+         tYRAJbeeVVmQb840b0BNAlgVp0dpVRXEPvJ1/qexK+f2VDAqshwVgTY6byGy+0EGb5eo
+         OCImqm3we4s1KoghSVy1wn4e+hTGOE8Un0GTI+Vp1oFVjKxjw7gIqP1dRsTSMjHDZO/R
+         1sC+gEnPecakhH8TyWKxjL3GYSz4LJg4htRgtuOr+eXBEGXxMM8tVuTNkv4gIDeNOQTR
+         5N4w==
+X-Gm-Message-State: AOAM531AjfqiZ0NnnzZqqpIsY+FynfVX+Wb2P5bigWyNZikw6SwBVmk/
+        ZXpiIwFyKPAEOJ3rITDhPzCi6zbpxNaySumyErQ=
+X-Google-Smtp-Source: ABdhPJyXZhOxgG1XA4QkDaXzTeTCuUER+/ij06gTyE3xgh1xmXkP0tuJbrV5tIi6DtKFpuvSfXGgdNA3znlo45SWfcg=
+X-Received: by 2002:adf:81c6:: with SMTP id 64mr1940077wra.176.1598885523700;
+ Mon, 31 Aug 2020 07:52:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200828161717.42705-1-weqaar.a.janjua@intel.com>
-In-Reply-To: <20200828161717.42705-1-weqaar.a.janjua@intel.com>
+References: <20200827220114.69225-1-alexei.starovoitov@gmail.com> <20200827220114.69225-3-alexei.starovoitov@gmail.com>
+In-Reply-To: <20200827220114.69225-3-alexei.starovoitov@gmail.com>
 From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 31 Aug 2020 13:13:06 +0200
-Message-ID: <CAJ+HfNjukM2SDFTHbiQcw=p9MGf4mBBhWMBhOhBX7RMvgjsxTA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] samples/bpf: fix to xdpsock to avoid recycling frames
-To:     Weqaar Janjua <weqaar.a.janjua@intel.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
+Date:   Mon, 31 Aug 2020 16:51:52 +0200
+Message-ID: <CAJ+HfNgsP+DhQ16N3N4VtXNbmyE8yhZU7XFBG6gPimm17196pg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/5] bpf: Introduce sleepable BPF programs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>, josef@toxicpanda.com,
+        bpoirier@suse.com, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -65,30 +63,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 28 Aug 2020 at 18:18, Weqaar Janjua <weqaar.a.janjua@intel.com> wro=
-te:
+On Fri, 28 Aug 2020 at 00:02, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+
 [...]
-> --
-> 2.20.1
->
-> --------------------------------------------------------------
-> Intel Research and Development Ireland Limited
-> Registered in Ireland
-> Registered Office: Collinstown Industrial Park, Leixlip, County Kildare
-> Registered Number: 308263
->
->
-> This e-mail and any attachments may contain confidential material for the=
- sole
-> use of the intended recipient(s). Any review or distribution by others is
-> strictly prohibited. If you are not the intended recipient, please contac=
-t the
-> sender and delete all copies.
->
 
-Make sure this footer is removed for future commits.
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6f5a9f51cc03..3ebfdb7bd427 100644
 
+[...]
 
-Thanks,
+>
+> +/* non exhaustive list of sleepable bpf_lsm_*() functions */
+> +BTF_SET_START(btf_sleepable_lsm_hooks)
+> +#ifdef CONFIG_BPF_LSM
+> +BTF_ID(func, bpf_lsm_file_mprotect)
+> +BTF_ID(func, bpf_lsm_bprm_committed_creds)
+> +#endif
+> +BTF_SET_END(btf_sleepable_lsm_hooks)
+> +
+
+I'm getting:
+  FAILED unresolved symbol btf_sleepable_lsm_hooks
+when CONFIG_BPF_LSM is not set.
+
+Adding a BTF_UNUSED_ID unconditionally to the set helps, but I'm on a
+BTF limb here, so there might be a more correct/obvious workaround
+here...
+
 Bj=C3=B6rn
