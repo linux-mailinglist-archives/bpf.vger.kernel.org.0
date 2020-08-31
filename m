@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5568B258275
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 22:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5D22582A1
+	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 22:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730012AbgHaUXv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 16:23:51 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41248 "EHLO
+        id S1728449AbgHaUdN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 16:33:13 -0400
+Received: from www62.your-server.de ([213.133.104.62]:42542 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730038AbgHaUXr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:23:47 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+        with ESMTP id S1728402AbgHaUdN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 16:33:13 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kCqLA-0004rm-99; Mon, 31 Aug 2020 22:23:44 +0200
+        id 1kCqUJ-0005Tu-Hd; Mon, 31 Aug 2020 22:33:11 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kCqLA-000Vd9-1j; Mon, 31 Aug 2020 22:23:44 +0200
-Subject: Re: [PATCH bpf-next 0/6] tools/bpftool: Fix cross and out-of-tree
- builds
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>, ast@kernel.org
-Cc:     bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org
-References: <20200827153629.3820891-1-jean-philippe@linaro.org>
+        id 1kCqUJ-000Tp3-90; Mon, 31 Aug 2020 22:33:11 +0200
+Subject: Re: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
+To:     Harshitha Ramamurthy <harshitha.ramamurthy@intel.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     dsahern@gmail.com, alexander.h.duyck@intel.com,
+        tom.herbert@intel.com
+References: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9bc29e23-abdc-a6ba-b9f3-537aba20aea4@iogearbox.net>
-Date:   Mon, 31 Aug 2020 22:23:43 +0200
+Message-ID: <0333522d-7b65-e665-f19e-d36d11bd7846@iogearbox.net>
+Date:   Mon, 31 Aug 2020 22:33:10 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200827153629.3820891-1-jean-philippe@linaro.org>
+In-Reply-To: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,33 +45,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/27/20 5:36 PM, Jean-Philippe Brucker wrote:
-> A few fixes for cross-building bpftool and runqslower, to build for
-> example an arm64 bpftool on a x86 host machine and run it on an embedded
-> platform. Also fix out-of-tree build, allowing for example to use the
-> same source tree for different target architectures.
-> 
-> Patch 1 factors the HOST variables definitions. Patches 2 and 3 fix the
-> bpftool build and patches 4-6 fix the runqslower build. I also have some
-> fixes for the BPF selftests build which I'll send later.
-> 
-> Jean-Philippe Brucker (6):
->    tools: Factor HOSTCC, HOSTLD, HOSTAR definitions
->    tools/bpftool: Force clean of out-of-tree build
->    tools/bpftool: Fix cross-build
->    tools/runqslower: Use Makefile.include
->    tools/runqslower: Enable out-of-tree build
->    tools/runqslower: Build bpftool using HOSTCC
-> 
->   tools/bpf/bpftool/Makefile        | 38 +++++++++++++----
->   tools/bpf/resolve_btfids/Makefile |  9 ----
->   tools/bpf/runqslower/Makefile     | 68 ++++++++++++++++++-------------
->   tools/build/Makefile              |  4 --
->   tools/objtool/Makefile            |  9 ----
->   tools/perf/Makefile.perf          |  4 --
->   tools/power/acpi/Makefile.config  |  1 -
->   tools/scripts/Makefile.include    | 10 +++++
->   8 files changed, 78 insertions(+), 65 deletions(-)
+On 8/31/20 9:25 PM, Harshitha Ramamurthy wrote:
+> This patch adds a helper function called bpf_get_xdp_hash to calculate
+> the hash for a packet at the XDP layer. In the helper function, we call
+> the kernel flow dissector in non-skb mode by passing the net pointer
+> to calculate the hash.
 
-Looks like this doesn't apply cleanly and thus needs a rebase. Pls submit a
-v2, thanks!
+So this commit msg says 'what' the patch does, but says nothing about 'why' it is
+needed especially given there's the 1 mio insn limit in place where it should be
+easy to write that up in BPF anyway. The commit msg needs to have a clear rationale
+which describes the motivation behind this helper.. why it cannot be done in BPF
+itself?
+
+> Changes since RFC:
+> - accounted for vlans(David Ahern)
+> - return the correct hash by not using skb_get_hash(David Ahern)
+> - call __skb_flow_dissect in non-skb mode
+> 
