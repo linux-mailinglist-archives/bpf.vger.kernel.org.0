@@ -2,136 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CDD257BA2
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 17:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C20257DB3
+	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 17:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgHaPHp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 11:07:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
+        id S1728909AbgHaPkO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 11:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgHaPHo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:07:44 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CE9C061573;
-        Mon, 31 Aug 2020 08:07:43 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 5so743155pgl.4;
-        Mon, 31 Aug 2020 08:07:43 -0700 (PDT)
+        with ESMTP id S1729432AbgHaPkE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 11:40:04 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91200C061573
+        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 08:40:03 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id w1so6300598qto.4
+        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 08:40:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3SmJLKrDgXgBqccBxSJYmecCh5R7fxNCtI0sf/gEQxk=;
-        b=UF7wi/z4/ARHOa8+CaY6JSik6HOqhrgezgftNqzT7SaTb81ikq2YfSr7X65gtCk/dm
-         xFJBJBX00+bs6N6zMHky48iZgSaPuXc/9Yjkzuan/P4/zZGLSQeds9/Q0z0HkFosFDp6
-         SE55tZ9COhiysM9+4BtN0MExypkHY/suyxUZph5P6GYEjkHQolmnNMlRzDj9otAXg1oW
-         kh7e8tsBbRpgsKovVvwi7u97M6Ug9Tt7XHPXQujl01u0sYuRcWPGGSJeHfVwqqjHDKSX
-         5/5IRPuMXWyKfJJ3n+nnPZqBxOBKPhkG8v2XdTbZzyWQT6TNAMNR26gXzh5Wu0hCVoU+
-         OcLw==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc:content-transfer-encoding;
+        bh=RQc4Gs8J/BBaaNWki/LzPLoPNRQPIMBktg43/BOIc6c=;
+        b=K2JOWsHrTvM49drsZ/+zbvutbvLOe58gPbLjsugL7glKmq/OlNbQHzCIjqDyd5v8dt
+         +LfvBbu2nt0p75fvY+Q83x8o0hcDdEl5dVq5ijXtPrdIzHOdBwBYPXxhdPS2wp5hwnod
+         LuWtoNjZMYVMOfWags2o94HPjIljPpetfQZj/7OKYxUz3lwClHYEEwwHI/NH6KlccVKc
+         0sIajgXblSFYbcc5WmGEoXkFj14Kw8BBkOjQoiKDZcw1kzL8wuFeSSzLlt2zz/XEEhIl
+         oLe9enHSMVOoke63PDxoCrLAHGGUAgXItbH47fe9WKqmrGT1nIQoguJwZX/8I+oRfHG7
+         9kEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3SmJLKrDgXgBqccBxSJYmecCh5R7fxNCtI0sf/gEQxk=;
-        b=japBdJsRJ6PYjbsryStIlirNOkVSWJFDriIeEGuQmlkV/I0te0bSqNa4FV29jxKmVS
-         LaPX4JC45j5Cz5Zkpg7K2gAYpDZ8IR00LKsmCJea8ZNnhLzswPf9mTgWQp5Heicpgnki
-         Wou+MjDV7XqRZ2ctfFw90YL6R6/uS1lpV05Yu21ef6oCF6ORTRbPaiOoixB+tyDs1obd
-         c08Y60KnfJqGiBvSKPcz1qDd148s7ur1tuY/rAxxi8C6Qsosvk6CyNIGtgfBXyIsS+sy
-         Fv29UmPUO5xQw94XjitiP7vxJIkY2xwVjUeuQoIHeRiBW1BnIZUp1yM8uXdjQrDbHol7
-         fUbw==
-X-Gm-Message-State: AOAM531yMd6XNFSr11Nj045K+H+mD7RoR2X+cLJ4toluFAwZ/ojNe562
-        m2iL3cWIdEgt/Xb+E0vhr8Mbr23Eru9ZmA==
-X-Google-Smtp-Source: ABdhPJz2fYwgR9K6KffXJTRCePR05PyLS82TB+AUykU0gSOs1iW5yQsF0wtJQzJZwtfWLp7g31mk+Q==
-X-Received: by 2002:aa7:8f03:: with SMTP id x3mr1543464pfr.256.1598886463096;
-        Mon, 31 Aug 2020 08:07:43 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id v22sm8353792pfe.75.2020.08.31.08.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 08:07:42 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org, toke@redhat.com,
-        brouer@redhat.com
-Subject: [PATCH bpf-next] bpf: change bq_enqueue() return type from int to void
-Date:   Mon, 31 Aug 2020 17:07:30 +0200
-Message-Id: <20200831150730.35530-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=RQc4Gs8J/BBaaNWki/LzPLoPNRQPIMBktg43/BOIc6c=;
+        b=RUSOHbAlAwN5SeRHu5DHtPWpz0wJpr0yUU4m4sbIi21l9BNiKivPPWFu5ml/nmgufy
+         hg/Ntwtidn9iSwcpnbkQl+wv1iYsRb38J/aokLVPGqBM9LN9qaFrajzhoH49pKbovNYF
+         72I39oV7uIAW85VFPiHMtIYToPYE/rSfGipl69gnnUbm5ENm90kK6d6aUqeR5mJTf7ns
+         gef+lFgvz9+NMIHU3VfI1vnfFX9049hfO5XS+wEMJOb1ZXwGCCjlVwNHzc1mze44qm0Q
+         ptitNNwryscqdUT3Vn/RxlXyPecC5Xx9qJl7lfEXnCxRbWjhn7sp4P+5ueQ+vxaO1AI6
+         cMNw==
+X-Gm-Message-State: AOAM532fAXL4XPj/F2pwoXplHl2xhg0k1H504eAht8ZJcKlSDt2aQ7O/
+        jADaMgtYJdGK1kS2Vc+VGbYyZlU=
+X-Google-Smtp-Source: ABdhPJy1aF1NnWBJMtyGyCGlP3UckuV+Pr3gioDY7uAWMnJ3esFkXN/9GH2DA4YvFhR31RWQgcwQlwc=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a05:6214:1742:: with SMTP id
+ dc2mr1606574qvb.90.1598888402770; Mon, 31 Aug 2020 08:40:02 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 08:40:01 -0700
+In-Reply-To: <874koma34d.fsf@toke.dk>
+Message-Id: <20200831154001.GC48607@google.com>
+Mime-Version: 1.0
+References: <20200828193603.335512-1-sdf@google.com> <20200828193603.335512-5-sdf@google.com>
+ <874koma34d.fsf@toke.dk>
+Subject: Re: [PATCH bpf-next v3 4/8] libbpf: implement bpf_prog_find_metadata
+From:   sdf@google.com
+To:     "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net,
+        YiFei Zhu <zhuyifei1999@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
-
-The bq_enqueue() functions for {DEV, CPU}MAP always return
-zero. Changing the return type from int to void makes the code easier
-to follow.
-
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- kernel/bpf/cpumap.c | 4 +---
- kernel/bpf/devmap.c | 9 ++++-----
- 2 files changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 8d2a8623d2a7..e486a84b1fce 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -708,7 +708,7 @@ static int bq_flush_to_queue(struct xdp_bulk_queue *bq)
- /* Runs under RCU-read-side, plus in softirq under NAPI protection.
-  * Thus, safe percpu variable access.
-  */
--static int bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
-+static void bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
- {
- 	struct list_head *flush_list = this_cpu_ptr(&cpu_map_flush_list);
- 	struct xdp_bulk_queue *bq = this_cpu_ptr(rcpu->bulkq);
-@@ -729,8 +729,6 @@ static int bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
- 
- 	if (!bq->flush_node.prev)
- 		list_add(&bq->flush_node, flush_list);
--
--	return 0;
- }
- 
- int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index a42052b85c35..ce29ff7ba51f 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -421,8 +421,8 @@ struct bpf_dtab_netdev *__dev_map_lookup_elem(struct bpf_map *map, u32 key)
- /* Runs under RCU-read-side, plus in softirq under NAPI protection.
-  * Thus, safe percpu variable access.
-  */
--static int bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
--		      struct net_device *dev_rx)
-+static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
-+		       struct net_device *dev_rx)
- {
- 	struct list_head *flush_list = this_cpu_ptr(&dev_flush_list);
- 	struct xdp_dev_bulk_queue *bq = this_cpu_ptr(dev->xdp_bulkq);
-@@ -441,8 +441,6 @@ static int bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 
- 	if (!bq->flush_node.prev)
- 		list_add(&bq->flush_node, flush_list);
--
--	return 0;
- }
- 
- static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-@@ -462,7 +460,8 @@ static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
- 	if (unlikely(!xdpf))
- 		return -EOVERFLOW;
- 
--	return bq_enqueue(dev, xdpf, dev_rx);
-+	bq_enqueue(dev, xdpf, dev_rx);
-+	return 0;
- }
- 
- static struct xdp_buff *dev_map_run_prog(struct net_device *dev,
--- 
-2.25.1
-
+T24gMDgvMjgsIFRva2UgSO+/vWlsYW5kLUrvv71yZ2Vuc2VuIHdyb3RlOg0KPiBTdGFuaXNsYXYg
+Rm9taWNoZXYgPHNkZkBnb29nbGUuY29tPiB3cml0ZXM6DQoNCj4gPiBUaGlzIGlzIGEgbG93LWxl
+dmVsIGZ1bmN0aW9uIChoZW5jZSBpbiBicGYuYykgdG8gZmluZCBvdXQgdGhlIG1ldGFkYXRhDQo+
+ID4gbWFwIGlkIGZvciB0aGUgcHJvdmlkZWQgcHJvZ3JhbSBmZC4NCj4gPiBJdCB3aWxsIGJlIHVz
+ZWQgaW4gdGhlIG5leHQgY29tbWl0cyBmcm9tIGJwZnRvb2wuDQo+ID4NCj4gPiBDYzogVG9rZSBI
+77+9aWxhbmQtSu+/vXJnZW5zZW4gPHRva2VAcmVkaGF0LmNvbT4NCj4gPiBDYzogWWlGZWkgWmh1
+IDx6aHV5aWZlaTE5OTlAZ21haWwuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFN0YW5pc2xhdiBG
+b21pY2hldiA8c2RmQGdvb2dsZS5jb20+DQo+ID4gLS0tDQo+ID4gIHRvb2xzL2xpYi9icGYvYnBm
+LmMgICAgICB8IDc0ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4g
+PiAgdG9vbHMvbGliL2JwZi9icGYuaCAgICAgIHwgIDEgKw0KPiA+ICB0b29scy9saWIvYnBmL2xp
+YmJwZi5tYXAgfCAgMSArDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgNzYgaW5zZXJ0aW9ucygrKQ0K
+PiA+DQo+ID4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi9icGYvYnBmLmMgYi90b29scy9saWIvYnBm
+L2JwZi5jDQo+ID4gaW5kZXggNWY2YzU2NzZjYzQ1Li4wMWMwZWRlMTYyNWQgMTAwNjQ0DQo+ID4g
+LS0tIGEvdG9vbHMvbGliL2JwZi9icGYuYw0KPiA+ICsrKyBiL3Rvb2xzL2xpYi9icGYvYnBmLmMN
+Cj4gPiBAQCAtODg1LDMgKzg4NSw3NyBAQCBpbnQgYnBmX3Byb2dfYmluZF9tYXAoaW50IHByb2df
+ZmQsIGludCBtYXBfZmQsDQo+ID4NCj4gPiAgCXJldHVybiBzeXNfYnBmKEJQRl9QUk9HX0JJTkRf
+TUFQLCAmYXR0ciwgc2l6ZW9mKGF0dHIpKTsNCj4gPiAgfQ0KPiA+ICsNCj4gPiAraW50IGJwZl9w
+cm9nX2ZpbmRfbWV0YWRhdGEoaW50IHByb2dfZmQpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCBicGZf
+cHJvZ19pbmZvIHByb2dfaW5mbyA9IHt9Ow0KPiA+ICsJc3RydWN0IGJwZl9tYXBfaW5mbyBtYXBf
+aW5mbzsNCj4gPiArCV9fdTMyIHByb2dfaW5mb19sZW47DQo+ID4gKwlfX3UzMiBtYXBfaW5mb19s
+ZW47DQo+ID4gKwlpbnQgc2F2ZWRfZXJybm87DQo+ID4gKwlfX3UzMiAqbWFwX2lkczsNCj4gPiAr
+CWludCBucl9tYXBzOw0KPiA+ICsJaW50IG1hcF9mZDsNCj4gPiArCWludCByZXQ7DQo+ID4gKwlp
+bnQgaTsNCj4gPiArDQo+ID4gKwlwcm9nX2luZm9fbGVuID0gc2l6ZW9mKHByb2dfaW5mbyk7DQo+
+ID4gKw0KPiA+ICsJcmV0ID0gYnBmX29ial9nZXRfaW5mb19ieV9mZChwcm9nX2ZkLCAmcHJvZ19p
+bmZvLCAmcHJvZ19pbmZvX2xlbik7DQo+ID4gKwlpZiAocmV0KQ0KPiA+ICsJCXJldHVybiByZXQ7
+DQo+ID4gKw0KPiA+ICsJaWYgKCFwcm9nX2luZm8ubnJfbWFwX2lkcykNCj4gPiArCQlyZXR1cm4g
+LTE7DQo+ID4gKw0KPiA+ICsJbWFwX2lkcyA9IGNhbGxvYyhwcm9nX2luZm8ubnJfbWFwX2lkcywg
+c2l6ZW9mKF9fdTMyKSk7DQo+ID4gKwlpZiAoIW1hcF9pZHMpDQo+ID4gKwkJcmV0dXJuIC0xOw0K
+PiA+ICsNCj4gPiArCW5yX21hcHMgPSBwcm9nX2luZm8ubnJfbWFwX2lkczsNCj4gPiArCW1lbXNl
+dCgmcHJvZ19pbmZvLCAwLCBzaXplb2YocHJvZ19pbmZvKSk7DQo+ID4gKwlwcm9nX2luZm8ubnJf
+bWFwX2lkcyA9IG5yX21hcHM7DQo+ID4gKwlwcm9nX2luZm8ubWFwX2lkcyA9IHB0cl90b191NjQo
+bWFwX2lkcyk7DQo+ID4gKwlwcm9nX2luZm9fbGVuID0gc2l6ZW9mKHByb2dfaW5mbyk7DQo+ID4g
+Kw0KPiA+ICsJcmV0ID0gYnBmX29ial9nZXRfaW5mb19ieV9mZChwcm9nX2ZkLCAmcHJvZ19pbmZv
+LCAmcHJvZ19pbmZvX2xlbik7DQo+ID4gKwlpZiAocmV0KQ0KPiA+ICsJCWdvdG8gZnJlZV9tYXBf
+aWRzOw0KPiA+ICsNCj4gPiArCXJldCA9IC0xOw0KPiA+ICsJZm9yIChpID0gMDsgaSA8IHByb2df
+aW5mby5ucl9tYXBfaWRzOyBpKyspIHsNCj4gPiArCQltYXBfZmQgPSBicGZfbWFwX2dldF9mZF9i
+eV9pZChtYXBfaWRzW2ldKTsNCj4gPiArCQlpZiAobWFwX2ZkIDwgMCkgew0KPiA+ICsJCQlyZXQg
+PSAtMTsNCj4gPiArCQkJZ290byBmcmVlX21hcF9pZHM7DQo+ID4gKwkJfQ0KPiA+ICsNCj4gPiAr
+CQltZW1zZXQoJm1hcF9pbmZvLCAwLCBzaXplb2YobWFwX2luZm8pKTsNCj4gPiArCQltYXBfaW5m
+b19sZW4gPSBzaXplb2YobWFwX2luZm8pOw0KPiA+ICsJCXJldCA9IGJwZl9vYmpfZ2V0X2luZm9f
+YnlfZmQobWFwX2ZkLCAmbWFwX2luZm8sICZtYXBfaW5mb19sZW4pOw0KPiA+ICsJCXNhdmVkX2Vy
+cm5vID0gZXJybm87DQo+ID4gKwkJY2xvc2UobWFwX2ZkKTsNCj4gPiArCQllcnJubyA9IHNhdmVk
+X2Vycm5vOw0KPiA+ICsJCWlmIChyZXQpDQo+ID4gKwkJCWdvdG8gZnJlZV9tYXBfaWRzOw0KDQo+
+IElmIHlvdSBnZXQgdG8gdGhpcyBwb2ludCBvbiB0aGUgbGFzdCBlbnRyeSBpbiB0aGUgbG9vcCwg
+cmV0IHdpbGwgYmUgMCwNCj4gYW5kIGFueSBvZiB0aGUgY29udGludWUgc3RhdGVtZW50cyBiZWxv
+dyB3aWxsIGVuZCB0aGUgbG9vcCwgY2F1c2luZyB0aGUNCj4gd2hvbGUgZnVuY3Rpb24gdG8gcmV0
+dXJuIDAuIFdoaWxlIHRoaXMgaXMgbm90IHRlY2huaWNhbGx5IGEgdmFsaWQgSUQsIGl0DQo+IHN0
+aWxsIHNlZW1zIG9kZCB0aGF0IHRoZSBmdW5jdGlvbiByZXR1cm5zIC0xIG9uIGFsbCBlcnJvciBj
+b25kaXRpb25zDQo+IGV4Y2VwdCB0aGlzIG9uZS4NCg0KPiBBbHNvLCBpdCB3b3VsZCBiZSBnb29k
+IHRvIGJlIGFibGUgdG8gdW5hbWJpZ3VvdXNseSBkaXN0aW5ndWlzaCBiZXR3ZWVuDQo+ICJ0aGlz
+IHByb2dyYW0gaGFzIG5vIG1ldGFkYXRhIGFzc29jaWF0ZWQiIGFuZCAic29tZXRoaW5nIHdlbnQg
+d3JvbmcNCj4gd2hpbGUgcXVlcnlpbmcgdGhlIGtlcm5lbCBmb3IgbWV0YWRhdGEgKGUuZy4sIHBl
+cm1pc3Npb24gZXJyb3IpIi4gU28NCj4gc29tZXRoaW5nIHRoYXQgYW1vdW50cyB0byBhIC1FTk9F
+TlQgcmV0dXJuOyBJIGd1ZXNzIHR1cm5pbmcgYWxsIHJldHVybg0KPiB2YWx1ZXMgaW50byBuZWdh
+dGl2ZSBlcnJvciBjb2RlcyB3b3VsZCBkbyB0aGF0IChhbmQgYWxzbyBkbyBhd2F5IHdpdGgNCj4g
+dGhlIG5lZWQgZm9yIHRoZSBzYXZlZF9lcnJubyBkYW5jZSBhYm92ZSksIGJ1dCBpZCBkb2VzIGNs
+YXNoIGEgYml0IHdpdGgNCj4gdGhlIGNvbnZlbnRpb24gaW4gdGhlIHJlc3Qgb2YgdGhlIGZpbGUg
+KHdoZXJlIGFsbCB0aGUgb3RoZXIgZnVuY3Rpb25zDQo+IGp1c3QgcmV0dXJuIC0xIGFuZCBzZXQg
+ZXJybm8pLi4uDQpHb29kIHBvaW50LiBJIHRoaW5rIEkgY2FuIGNoYW5nZSB0aGUgZnVuY3Rpb24g
+c2lnbmF0dXJlIHRvOg0KDQoJaW50IGJwZl9wcm9nX2ZpbmRfbWV0YWRhdGEoaW50IHByb2dfZmQs
+IGludCAqbWFwX2lkKQ0KDQpBbmQgZXhwbGljaXRseSByZXR1cm4gbWFwX2lkIHZpYSBhcmd1bWVu
+dC4gVGhlbiB0aGUgcmV0IGNhbiBiZSB1c2VkIGFzDQotMS8wIGVycm9yIGFuZCBJIGNhbiBzZXQg
+ZXJybm8gYXBwcm9wcmlhdGVseSB3aGVyZSBpdCBtYWtlcyBzZW5zZS4NClRoaXMgd2lsbCBiZXR0
+ZXIgbWF0Y2ggdGhlIGNvbnZlbnRpb24gd2UgaGF2ZSBpbiB0aGlzIGZpbGUuDQoNCldpbGwgcmVz
+cGluIHY0IGxhdGVyIHRoaXMgd2VlayB0byBnaXZlIHBlb3BsZSBvcHBvcnR1bml0eSB0byBsb29r
+IGF0IHRoZQ0Kb3RoZXIgcGF0Y2hlcyBpbiB0aGUgc2VyaWVzLiBUaGFua3MhDQo=
