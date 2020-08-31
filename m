@@ -2,82 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AB8258373
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 23:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E48725842A
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 00:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgHaVZf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 17:25:35 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48980 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728352AbgHaVZf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 17:25:35 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kCrIq-0001ul-7c; Mon, 31 Aug 2020 23:25:24 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kCrIq-0007yz-2B; Mon, 31 Aug 2020 23:25:24 +0200
-Subject: Re: [PATCH bpf-next] bpf: Remove bpf_lsm_file_mprotect from sleepable
- list.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-References: <20200831201651.82447-1-alexei.starovoitov@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c6df42da-6185-3958-0528-55a43d0a9444@iogearbox.net>
-Date:   Mon, 31 Aug 2020 23:25:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726192AbgHaWnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 18:43:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725814AbgHaWnV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 18:43:21 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E611B2083E;
+        Mon, 31 Aug 2020 22:43:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598913801;
+        bh=VxxiRYXm+BENu1Z1XNO+sHkQKJeMPfKFsWemYOVo92I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SEyqQGr/GAa+EiQiKi267EyEAQ3ZYaZww0hwaZCB4cKiSZUhZ/0R6HZfakIJ2qn6n
+         7gHgfC4BGreos32hmlsuJwnqDV/iZQ3vIuTt8KcSHPNDYBbNArGXqDvrLlxls7ol9o
+         akLRj6wTZmZvmPu3SeiUH6vhBOZCXOLzuUP2gDDE=
+Date:   Mon, 31 Aug 2020 15:43:19 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, yhs@fb.com,
+        David Ahern <dsahern@gmail.com>
+Subject: Re: [PATCH bpf] bpf: refer to struct xdp_md in user space comments
+Message-ID: <20200831154319.71a83484@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <ec62c928-429d-8bea-13ec-5c7744ebf121@iogearbox.net>
+References: <20200819192723.838228-1-kuba@kernel.org>
+        <ec62c928-429d-8bea-13ec-5c7744ebf121@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <20200831201651.82447-1-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25916/Mon Aug 31 15:26:49 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/31/20 10:16 PM, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On Thu, 20 Aug 2020 16:16:47 +0200 Daniel Borkmann wrote:
+> On 8/19/20 9:27 PM, Jakub Kicinski wrote:
+> > uAPI uses xdp_md, not xdp_buff. Fix comments.
+> > 
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > ---
+> >   include/uapi/linux/bpf.h | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 0480f893facd..cc3553a102d0 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1554,7 +1554,7 @@ union bpf_attr {  
 > 
-> Technically the bpf programs can sleep while attached to bpf_lsm_file_mprotect,
-> but such programs need to access user memory. So they're in might_fault()
-> category. Which means they cannot be called from file_mprotect lsm hook that
-> takes write lock on mm->mmap_lock.
-> Adjust the test accordingly.
+> Needs also tooling header copy, but once that is done, it needs fixup for libbpf:
 > 
-> Also add might_fault() to __bpf_prog_enter_sleepable() to catch such deadlocks early.
+> [root@pc-9 bpf]# make
+>    GEN      bpf_helper_defs.h
+> Unrecognized type 'struct xdp_md', please add it to known types!
+> make[1]: *** [Makefile:186: bpf_helper_defs.h] Error 1
+> make[1]: *** Deleting file 'bpf_helper_defs.h'
+> make: *** [Makefile:160: all] Error 2
+> [root@pc-9 bpf]#
 > 
-> Reported-by: Yonghong Song <yhs@fb.com>
-> Fixes: 1e6c62a88215 ("bpf: Introduce sleepable BPF programs")
-> Fixes: e68a144547fc ("selftests/bpf: Add sleepable tests")
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->   kernel/bpf/trampoline.c                 |  1 +
->   kernel/bpf/verifier.c                   |  1 -
->   tools/testing/selftests/bpf/progs/lsm.c | 34 ++++++++++++-------------
->   3 files changed, 18 insertions(+), 18 deletions(-)
-> 
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index c2b76545153c..7dd523a7e32d 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -409,6 +409,7 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
->   void notrace __bpf_prog_enter_sleepable(void)
->   {
->   	rcu_read_lock_trace();
-> +	might_fault();
+> Pls fix up and send v2, thanks.
 
-Makes sense, was wondering about a __might_sleep() but that will cover it internally
-too. Applied, thanks!
-
->   }
->   
->   void notrace __bpf_prog_exit_sleepable(void)
+FWIW upon closer inspection it appears that this is intentional
+(even if confusing) and bpf_helpers_doc.py swaps the types to 
+__sk_buff and xdp_md when generating man pages and the header.
