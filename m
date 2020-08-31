@@ -2,39 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5D22582A1
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 22:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C2225832B
+	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 23:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgHaUdN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 16:33:13 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42542 "EHLO
+        id S1727845AbgHaVCm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 17:02:42 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46236 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgHaUdN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:33:13 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+        with ESMTP id S1727019AbgHaVCm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 17:02:42 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kCqUJ-0005Tu-Hd; Mon, 31 Aug 2020 22:33:11 +0200
+        id 1kCqwm-0007RC-Sb; Mon, 31 Aug 2020 23:02:36 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kCqUJ-000Tp3-90; Mon, 31 Aug 2020 22:33:11 +0200
-Subject: Re: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
-To:     Harshitha Ramamurthy <harshitha.ramamurthy@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     dsahern@gmail.com, alexander.h.duyck@intel.com,
-        tom.herbert@intel.com
-References: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
+        id 1kCqwm-0007Bn-NH; Mon, 31 Aug 2020 23:02:36 +0200
+Subject: Re: [PATCH bpf-next] samples/bpf: optimize l2fwd performance in
+ xdpsock
+To:     Magnus Karlsson <magnus.karlsson@intel.com>, bjorn.topel@intel.com,
+        ast@kernel.org, netdev@vger.kernel.org, jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org
+References: <1598619065-1944-1-git-send-email-magnus.karlsson@intel.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0333522d-7b65-e665-f19e-d36d11bd7846@iogearbox.net>
-Date:   Mon, 31 Aug 2020 22:33:10 +0200
+Message-ID: <fce5d3bf-0363-f4e1-2bc8-31ef0d2428b0@iogearbox.net>
+Date:   Mon, 31 Aug 2020 23:02:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
+In-Reply-To: <1598619065-1944-1-git-send-email-magnus.karlsson@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,20 +44,23 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/31/20 9:25 PM, Harshitha Ramamurthy wrote:
-> This patch adds a helper function called bpf_get_xdp_hash to calculate
-> the hash for a packet at the XDP layer. In the helper function, we call
-> the kernel flow dissector in non-skb mode by passing the net pointer
-> to calculate the hash.
-
-So this commit msg says 'what' the patch does, but says nothing about 'why' it is
-needed especially given there's the 1 mio insn limit in place where it should be
-easy to write that up in BPF anyway. The commit msg needs to have a clear rationale
-which describes the motivation behind this helper.. why it cannot be done in BPF
-itself?
-
-> Changes since RFC:
-> - accounted for vlans(David Ahern)
-> - return the correct hash by not using skb_get_hash(David Ahern)
-> - call __skb_flow_dissect in non-skb mode
+On 8/28/20 2:51 PM, Magnus Karlsson wrote:
+> Optimize the throughput performance of the l2fwd sub-app in the
+> xdpsock sample application by removing a duplicate syscall and
+> increasing the size of the fill ring.
 > 
+> The latter needs some further explanation. We recommend that you set
+> the fill ring size >= HW RX ring size + AF_XDP RX ring size. Make sure
+> you fill up the fill ring with buffers at regular intervals, and you
+> will with this setting avoid allocation failures in the driver. These
+> are usually quite expensive since drivers have not been written to
+> assume that allocation failures are common. For regular sockets,
+> kernel allocated memory is used that only runs out in OOM situations
+> that should be rare.
+> 
+> These two performance optimizations together lead to a 6% percent
+> improvement for the l2fwd app on my machine.
+> 
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+
+Applied, thanks!
