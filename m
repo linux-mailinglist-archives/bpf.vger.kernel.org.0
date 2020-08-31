@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E45257719
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 12:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1791B2577D5
+	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 12:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbgHaKEC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 06:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        id S1726521AbgHaK6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 06:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgHaKEB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:04:01 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3840BC061573
-        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 03:04:01 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id q8so3164465lfb.6
-        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 03:04:01 -0700 (PDT)
+        with ESMTP id S1726427AbgHaK6i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 06:58:38 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9E3C061573
+        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 03:58:37 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id z17so3218720lfi.12
+        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 03:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=iS1OKR2WVG+oFG3cyCCRX51GGTXIDHLB0HFyTet9FNg=;
-        b=gp5W6OgoiydvbdyqHkTdQKMgyDjVwYR/VQax7vBFImxP1M9DaG3xF+zw/agTK8UHPp
-         9TDpQQ6w71eeXWEYsTZOjXy32s8ahFlP13zE/fQmpvm7VfPSFRJ/KeAmHl1cwPqrFrYk
-         CLZDGra3gXil8zjpw8MVRS+LSdQwy9+q9Mqco=
+        bh=IMcYBprP0b9U7wZJdjxxz1C2zPDmUF1GEZ569s+5iUQ=;
+        b=trxflmQN/OVDL0Nd0KDoqPXvmtGCoPT7JuT8LW+V0W5ZsJ5SDBti2nBgUgG3gvu7it
+         wWf0+Enny1gpcUggSZEG5fS6dDGHpqHUiaBZeni+4BvY5Igj8jeQG83C/3kgBANJ+8m7
+         xvlgHD+2pJXPrgoO+rrMrHrr+M4jKsVjzOps4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=iS1OKR2WVG+oFG3cyCCRX51GGTXIDHLB0HFyTet9FNg=;
-        b=J1I5dTEuu6NTWJfY2Gc23BuglLmLrRIYCK9emJcZIqaf0sdX863Rn70zaabHQebSSG
-         EWd59czhKyKJSbFbUFEtWUhUmQu0MKF5ChOxe9AnorPOk9K84fhBeGmRf9Bw4kO1GbhV
-         bmCb9G0zjpADOof06tys/pZKuYbmdStqzau1nDg1gUcQ/knbkZgyu5PW5blamxshcGDe
-         k0+LHzEUzM5uttWJuk+Z3P2chIbHXd8mJSdg2s7DauFZhSs+9BApUSpfc9he0rPtF48C
-         aZ6wxqp50MVU88lrKht2ZuSbrCBBG8WJTZpyAQ1RSdP5ruvtJM1+Ak29foYga1prBM+3
-         Zs3w==
-X-Gm-Message-State: AOAM532GBp45RpKmAba41XMekFGpfr415StiGrWE6GnjdBmd6Rvif0OB
-        wQrXREtaE0qAmyKtMTV+YCSN1A==
-X-Google-Smtp-Source: ABdhPJwrT61UTGfVvmgRWUZCMSR8UHmoCXU+igfp39tLZeG1StO8D+UeNm5cyiymvF+0CoN1fuK9tA==
-X-Received: by 2002:ac2:5547:: with SMTP id l7mr333054lfk.153.1598868239533;
-        Mon, 31 Aug 2020 03:03:59 -0700 (PDT)
+        bh=IMcYBprP0b9U7wZJdjxxz1C2zPDmUF1GEZ569s+5iUQ=;
+        b=C7JFxNH/gVCiufrRBDvZ5TNpd6KX6tGZXNYKIUN1bvlqtKtC53rz+Zih67+Bf0pEqS
+         NGtGFX3bNA2CXBXCOfInAKKy3V6z3LP8PhErviRYTxlDaidG1+zHfCwHxrjP5WVhpHoW
+         EHHe+rEs/kos611U0X6BDR8nbhEKaXcX52X01doZMDd4S3Aav73/jeKG1PZ0DVvGLevl
+         f63L4gzOxOww0S9lGw4nWHQqZfZdU0BP7iB6EkUyhzChg9y0eZOj59PFzFVVm9BM0MKJ
+         foYXU+NnSMVAFP3m/9F+XsFJsuy+0mQJz5bxCAS4EjaulQg2X/jPmP/OKrdkMg1pzmIV
+         T16g==
+X-Gm-Message-State: AOAM5334DZHWgpOF0bBkWroLhUwsORl/YJCm8SeY4A1kMgewGzeeZolP
+        WvG9rYq6fdsmzTHaL6IK88DomA==
+X-Google-Smtp-Source: ABdhPJyXru83n7PyM8J4ijHtwm06G3sR70e6EXcOl2kRzYN7daF2vNRQVdKxHgbYdFQuLwCbTcD1jA==
+X-Received: by 2002:a19:818a:: with SMTP id c132mr452710lfd.76.1598871516235;
+        Mon, 31 Aug 2020 03:58:36 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id z6sm1427618ljm.103.2020.08.31.03.03.58
+        by smtp.gmail.com with ESMTPSA id i16sm1497632ljn.100.2020.08.31.03.58.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 03:03:58 -0700 (PDT)
-References: <20200828094834.23290-1-lmb@cloudflare.com> <20200828094834.23290-2-lmb@cloudflare.com>
+        Mon, 31 Aug 2020 03:58:35 -0700 (PDT)
+References: <20200828094834.23290-1-lmb@cloudflare.com> <20200828094834.23290-4-lmb@cloudflare.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Lorenz Bauer <lmb@cloudflare.com>
 Cc:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net,
         john.fastabend@gmail.com, bpf@vger.kernel.org,
         kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf-next 1/3] net: Allow iterating sockmap and sockhash
-In-reply-to: <20200828094834.23290-2-lmb@cloudflare.com>
-Date:   Mon, 31 Aug 2020 12:03:57 +0200
-Message-ID: <87eennrv1u.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests: bpf: Test copying a sockmap via bpf_iter
+In-reply-to: <20200828094834.23290-4-lmb@cloudflare.com>
+Date:   Mon, 31 Aug 2020 12:58:34 +0200
+Message-ID: <87d037rsit.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -63,277 +63,225 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Aug 28, 2020 at 11:48 AM CEST, Lorenz Bauer wrote:
-> Add bpf_iter support for sockmap / sockhash, based on the bpf_sk_storage and
-> hashtable implementation. sockmap and sockhash share the same iteration
-> context: a pointer to an arbitrary key and a pointer to a socket. Both
-> pointers may be NULL, and so BPF has to perform a NULL check before accessing
-> them. Technically it's not possible for sockhash iteration to yield a NULL
-> socket, but we ignore this to be able to use a single iteration point.
->
-> Iteration will visit all keys that remain unmodified during the lifetime of
-> the iterator. It may or may not visit newly added ones.
+> Add a test that exercises a basic sockmap / sockhash copy using bpf_iter.
 >
 > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 > ---
->  net/core/sock_map.c | 283 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 283 insertions(+)
+>  .../selftests/bpf/prog_tests/sockmap_basic.c  | 78 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/bpf_iter.h  |  9 +++
+>  .../selftests/bpf/progs/bpf_iter_sockmap.c    | 50 ++++++++++++
+>  3 files changed, 137 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
 >
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index d6c6e1e312fc..31c4332f06e4 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -703,6 +703,116 @@ const struct bpf_func_proto bpf_msg_redirect_map_proto = {
->  	.arg4_type      = ARG_ANYTHING,
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> index b989f8760f1a..386aecf1f7ff 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> @@ -6,6 +6,7 @@
+>  #include "test_skmsg_load_helpers.skel.h"
+>  #include "test_sockmap_update.skel.h"
+>  #include "test_sockmap_invalid_update.skel.h"
+> +#include "bpf_iter_sockmap.skel.h"
+>
+>  #define TCP_REPAIR		19	/* TCP sock is under repair right now */
+>
+> @@ -194,6 +195,79 @@ static void test_sockmap_invalid_update(void)
+>  		test_sockmap_invalid_update__destroy(skel);
+>  }
+>
+> +static void test_sockmap_copy(enum bpf_map_type map_type)
+> +{
+> +	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+> +	int err, i, len, src_fd, iter_fd, num_sockets, duration;
+> +	struct bpf_iter_sockmap *skel;
+> +	struct bpf_map *src, *dst;
+> +	union bpf_iter_link_info linfo = {0};
+> +	__s64 sock_fd[2] = {-1, -1};
+
+With just two sockets and sockhash max_entries set to 3 (which means 4
+buckets), we're likely not exercising walking the bucket chain in the
+iterator code.
+
+How about a more generous value?
+
+> +	struct bpf_link *link;
+> +	char buf[64];
+> +	__u32 max_elems;
+> +
+> +	skel = bpf_iter_sockmap__open_and_load();
+> +	if (CHECK(!skel, "bpf_iter_sockmap__open_and_load",
+> +		  "skeleton open_and_load failed\n"))
+> +		return;
+> +
+> +	if (map_type == BPF_MAP_TYPE_SOCKMAP)
+> +		src = skel->maps.sockmap;
+> +	else
+> +		src = skel->maps.sockhash;
+> +
+> +	dst = skel->maps.dst;
+> +	src_fd = bpf_map__fd(src);
+> +	max_elems = bpf_map__max_entries(src);
+> +
+> +	num_sockets = ARRAY_SIZE(sock_fd);
+> +	for (i = 0; i < num_sockets; i++) {
+> +		sock_fd[i] = connected_socket_v4();
+> +		if (CHECK(sock_fd[i] == -1, "connected_socket_v4", "cannot connect\n"))
+> +			goto out;
+> +
+> +		err = bpf_map_update_elem(src_fd, &i, &sock_fd[i], BPF_NOEXIST);
+> +		if (CHECK(err, "map_update", "map_update failed\n"))
+
+Nit: No need to repeat what failed in the message when the tag already
+says it. In this case the message will look like:
+
+test_sockmap_copy:FAIL:map_update map_update failed
+
+What would be useful is to include the errno in the message. CHECK()
+doesn't print it by default.
+
+> +			goto out;
+> +	}
+> +
+> +	linfo.map.map_fd = src_fd;
+> +	opts.link_info = &linfo;
+> +	opts.link_info_len = sizeof(linfo);
+> +	link = bpf_program__attach_iter(skel->progs.copy_sockmap, &opts);
+> +	if (CHECK(IS_ERR(link), "attach_iter", "attach_iter failed\n"))
+> +		goto out;
+> +
+> +	iter_fd = bpf_iter_create(bpf_link__fd(link));
+> +	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
+> +		goto free_link;
+> +
+> +	/* do some tests */
+> +	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+> +		;
+> +	if (CHECK(len < 0, "read", "failed: %s\n", strerror(errno)))
+> +		goto close_iter;
+> +
+> +	/* test results */
+> +	if (CHECK(skel->bss->elems != max_elems, "elems", "got %u expected %u\n",
+> +		  skel->bss->elems, max_elems))
+> +		goto close_iter;
+> +
+> +	compare_cookies(src, dst);
+> +
+> +close_iter:
+> +	close(iter_fd);
+> +free_link:
+> +	bpf_link__destroy(link);
+> +out:
+> +	for (i = 0; i < num_sockets; i++) {
+> +		if (sock_fd[i] >= 0)
+> +			close(sock_fd[i]);
+> +	}
+> +	bpf_iter_sockmap__destroy(skel);
+> +}
+> +
+>  void test_sockmap_basic(void)
+>  {
+>  	if (test__start_subtest("sockmap create_update_free"))
+> @@ -210,4 +284,8 @@ void test_sockmap_basic(void)
+>  		test_sockmap_update(BPF_MAP_TYPE_SOCKHASH);
+>  	if (test__start_subtest("sockmap update in unsafe context"))
+>  		test_sockmap_invalid_update();
+> +	if (test__start_subtest("sockmap copy"))
+> +		test_sockmap_copy(BPF_MAP_TYPE_SOCKMAP);
+> +	if (test__start_subtest("sockhash copy"))
+> +		test_sockmap_copy(BPF_MAP_TYPE_SOCKHASH);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
+> index c196280df90d..ac32a29f5153 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_iter.h
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
+> @@ -13,6 +13,7 @@
+>  #define udp6_sock udp6_sock___not_used
+>  #define bpf_iter__bpf_map_elem bpf_iter__bpf_map_elem___not_used
+>  #define bpf_iter__bpf_sk_storage_map bpf_iter__bpf_sk_storage_map___not_used
+> +#define bpf_iter__sockmap bpf_iter__sockmap___not_used
+>  #include "vmlinux.h"
+>  #undef bpf_iter_meta
+>  #undef bpf_iter__bpf_map
+> @@ -26,6 +27,7 @@
+>  #undef udp6_sock
+>  #undef bpf_iter__bpf_map_elem
+>  #undef bpf_iter__bpf_sk_storage_map
+> +#undef bpf_iter__sockmap
+>
+>  struct bpf_iter_meta {
+>  	struct seq_file *seq;
+> @@ -96,3 +98,10 @@ struct bpf_iter__bpf_sk_storage_map {
+>  	struct sock *sk;
+>  	void *value;
 >  };
->
-> +struct sock_map_seq_info {
-> +	struct bpf_map *map;
-> +	struct sock *sk;
-> +	u32 index;
-> +};
 > +
 > +struct bpf_iter__sockmap {
-> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-> +	__bpf_md_ptr(struct bpf_map *, map);
-> +	__bpf_md_ptr(void *, key);
-> +	__bpf_md_ptr(struct bpf_sock *, sk);
-> +};
-> +
-> +DEFINE_BPF_ITER_FUNC(sockmap, struct bpf_iter_meta *meta,
-> +		     struct bpf_map *map, void *key,
-> +		     struct sock *sk)
-> +
-> +static void *sock_map_seq_lookup_elem(struct sock_map_seq_info *info)
-> +{
-> +	if (unlikely(info->index >= info->map->max_entries))
-> +		return NULL;
-> +
-> +	info->sk = __sock_map_lookup_elem(info->map, info->index);
-> +	if (!info->sk || !sk_fullsock(info->sk))
-
-As we've talked off-line, we don't expect neither timewait nor request
-sockets in sockmap so sk_fullsock() check is likely not needed.
-
-> +		info->sk = NULL;
-> +
-> +	/* continue iterating */
-> +	return info;
-> +}
-> +
-> +static void *sock_map_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +	struct sock_map_seq_info *info = seq->private;
-> +
-> +	if (*pos == 0)
-> +		++*pos;
-> +
-> +	/* pairs with sock_map_seq_stop */
-> +	rcu_read_lock();
-> +	return sock_map_seq_lookup_elem(info);
-> +}
-> +
-> +static void *sock_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> +{
-> +	struct sock_map_seq_info *info = seq->private;
-> +
-> +	++*pos;
-> +	++info->index;
-> +
-> +	return sock_map_seq_lookup_elem(info);
-> +}
-> +
-> +static int __sock_map_seq_show(struct seq_file *seq, void *v)
-> +{
-> +	struct sock_map_seq_info *info = seq->private;
-> +	struct bpf_iter__sockmap ctx = {};
-> +	struct bpf_iter_meta meta;
-> +	struct bpf_prog *prog;
-> +
-> +	meta.seq = seq;
-> +	prog = bpf_iter_get_info(&meta, !v);
-> +	if (!prog)
-> +		return 0;
-> +
-> +	ctx.meta = &meta;
-> +	ctx.map = info->map;
-> +	if (v) {
-> +		ctx.key = &info->index;
-> +		ctx.sk = (struct bpf_sock *)info->sk;
-> +	}
-> +
-> +	return bpf_iter_run_prog(prog, &ctx);
-> +}
-> +
-> +static int sock_map_seq_show(struct seq_file *seq, void *v)
-> +{
-> +	return __sock_map_seq_show(seq, v);
-> +}
-> +
-> +static void sock_map_seq_stop(struct seq_file *seq, void *v)
-> +{
-> +	if (!v)
-> +		(void)__sock_map_seq_show(seq, NULL);
-> +
-> +	/* pairs with sock_map_seq_start */
-> +	rcu_read_unlock();
-> +}
-> +
-> +static const struct seq_operations sock_map_seq_ops = {
-> +	.start	= sock_map_seq_start,
-> +	.next	= sock_map_seq_next,
-> +	.stop	= sock_map_seq_stop,
-> +	.show	= sock_map_seq_show,
-> +};
-> +
-> +static int sock_map_init_seq_private(void *priv_data,
-> +				     struct bpf_iter_aux_info *aux)
-> +{
-> +	struct sock_map_seq_info *info = priv_data;
-> +
-> +	info->map = aux->map;
-> +	return 0;
-> +}
-> +
-> +static const struct bpf_iter_seq_info sock_map_iter_seq_info = {
-> +	.seq_ops		= &sock_map_seq_ops,
-> +	.init_seq_private	= sock_map_init_seq_private,
-> +	.seq_priv_size		= sizeof(struct sock_map_seq_info),
-> +};
-> +
->  static int sock_map_btf_id;
->  const struct bpf_map_ops sock_map_ops = {
->  	.map_alloc		= sock_map_alloc,
-
-[...]
-
-> @@ -1198,6 +1309,120 @@ const struct bpf_func_proto bpf_msg_redirect_hash_proto = {
->  	.arg4_type      = ARG_ANYTHING,
->  };
->
-> +struct sock_hash_seq_info {
+> +	struct bpf_iter_meta *meta;
 > +	struct bpf_map *map;
-> +	struct bpf_shtab *htab;
-> +	u32 bucket_id;
+> +	void *key;
+> +	struct bpf_sock *sk;
 > +};
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
+> new file mode 100644
+> index 000000000000..1b4268c9cd31
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
+> @@ -0,0 +1,50 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020 Cloudflare */
+> +#include "bpf_iter.h"
+> +#include "bpf_tracing_net.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
 > +
-> +static void *sock_hash_seq_find_next(struct sock_hash_seq_info *info,
-> +				     struct bpf_shtab_elem *prev_elem)
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_SOCKMAP);
+> +	__uint(max_entries, 3);
+> +	__type(key, __u32);
+> +	__type(value, __u64);
+> +} sockmap SEC(".maps");
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_SOCKMAP);
+> +	__uint(max_entries, 3);
+> +	__type(key, __u32);
+> +	__type(value, __u64);
+> +} sockhash SEC(".maps");
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_SOCKHASH);
+> +	__uint(max_entries, 3);
+> +	__type(key, __u32);
+> +	__type(value, __u64);
+> +} dst SEC(".maps");
+> +
+> +__u32 elems = 0;
+> +
+> +SEC("iter/sockmap")
+> +int copy_sockmap(struct bpf_iter__sockmap *ctx)
 > +{
-> +	const struct bpf_shtab *htab = info->htab;
-> +	struct bpf_shtab_bucket *bucket;
-> +	struct bpf_shtab_elem *elem;
-> +	struct hlist_node *node;
+> +	__u32 tmp, *key = ctx->key;
+> +	struct bpf_sock *sk = ctx->sk;
 > +
-> +	/* try to find next elem in the same bucket */
-> +	if (prev_elem) {
-> +		node = rcu_dereference_raw(hlist_next_rcu(&prev_elem->node));
-
-I'm not convinced we need to go for the rcu_dereference_raw()
-variant. Access happens inside read-side critical section, which we
-entered with rcu_read_lock() in sock_hash_seq_start().
-
-That's typical and rcu_dereference() seems appropriate. Basing this on
-what I read in Documentation/RCU/rcu_dereference.rst.
-
-> +		elem = hlist_entry_safe(node, struct bpf_shtab_elem, node);
-> +		if (elem)
-> +			return elem;
-> +
-> +		/* no more elements, continue in the next bucket */
-> +		info->bucket_id++;
-> +	}
-> +
-> +	for (; info->bucket_id < htab->buckets_num; info->bucket_id++) {
-> +		bucket = &htab->buckets[info->bucket_id];
-> +		node = rcu_dereference_raw(hlist_first_rcu(&bucket->head));
-> +		elem = hlist_entry_safe(node, struct bpf_shtab_elem, node);
-> +		if (elem)
-> +			return elem;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static void *sock_hash_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +	struct sock_hash_seq_info *info = seq->private;
-> +
-> +	if (*pos == 0)
-> +		++*pos;
-> +
-> +	/* pairs with sock_hash_seq_stop */
-> +	rcu_read_lock();
-> +	return sock_hash_seq_find_next(info, NULL);
-> +}
-> +
-> +static void *sock_hash_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> +{
-> +	struct sock_hash_seq_info *info = seq->private;
-> +
-> +	++*pos;
-> +	return sock_hash_seq_find_next(info, v);
-> +}
-> +
-> +static int __sock_hash_seq_show(struct seq_file *seq, struct bpf_shtab_elem *elem)
-> +{
-> +	struct sock_hash_seq_info *info = seq->private;
-> +	struct bpf_iter__sockmap ctx = {};
-> +	struct bpf_iter_meta meta;
-> +	struct bpf_prog *prog;
-> +
-> +	meta.seq = seq;
-> +	prog = bpf_iter_get_info(&meta, !elem);
-> +	if (!prog)
+> +	if (key == (void *)0)
 > +		return 0;
 > +
-> +	ctx.meta = &meta;
-> +	ctx.map = info->map;
-> +	if (elem) {
-> +		ctx.key = elem->key;
-> +		ctx.sk = (struct bpf_sock *)elem->sk;
-> +	}
+> +	elems++;
+> +	tmp = *key;
+
+Is the tmp variable needed? We never inspect its value directly.
+Or it illustrates that they key can be modified on copy?
+
 > +
-> +	return bpf_iter_run_prog(prog, &ctx);
-> +}
+> +	if (sk != (void *)0)
+> +		return bpf_map_update_elem(&dst, &tmp, sk, 0) != 0;
 > +
-> +static int sock_hash_seq_show(struct seq_file *seq, void *v)
-> +{
-> +	return __sock_hash_seq_show(seq, v);
-> +}
-> +
-> +static void sock_hash_seq_stop(struct seq_file *seq, void *v)
-> +{
-> +	if (!v)
-> +		(void)__sock_hash_seq_show(seq, NULL);
-> +
-> +	/* pairs with sock_hash_seq_start */
-> +	rcu_read_unlock();
-> +}
-> +
-> +static const struct seq_operations sock_hash_seq_ops = {
-> +	.start	= sock_hash_seq_start,
-> +	.next	= sock_hash_seq_next,
-> +	.stop	= sock_hash_seq_stop,
-> +	.show	= sock_hash_seq_show,
-> +};
-> +
-> +static int sock_hash_init_seq_private(void *priv_data,
-> +				     struct bpf_iter_aux_info *aux)
-> +{
-> +	struct sock_hash_seq_info *info = priv_data;
-> +
-> +	info->map = aux->map;
+> +	bpf_map_delete_elem(&dst, &tmp);
+
+map_delete_elem in theory can fail too. Not sure why were ignoring the
+error here.
+
 > +	return 0;
 > +}
-> +
-> +static const struct bpf_iter_seq_info sock_hash_iter_seq_info = {
-> +	.seq_ops		= &sock_hash_seq_ops,
-> +	.init_seq_private	= sock_hash_init_seq_private,
-> +	.seq_priv_size		= sizeof(struct sock_hash_seq_info),
-> +};
-> +
->  static int sock_hash_map_btf_id;
->  const struct bpf_map_ops sock_hash_ops = {
->  	.map_alloc		= sock_hash_alloc,
-
-[...]
