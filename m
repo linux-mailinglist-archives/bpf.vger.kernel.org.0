@@ -2,140 +2,338 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D4D257324
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 06:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E45257719
+	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 12:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgHaEqX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 00:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgHaEqV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 00:46:21 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4796120738;
-        Mon, 31 Aug 2020 04:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598849180;
-        bh=z07VbWplmd8kSSWFmY0FC8S6ddQoGdWv7RYOj7vXwfA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hA4cUsX+crIRQIo8cVhAQix+pQ+n0mK3SA29ns+G5EITCchZ3Bhgw/P1g4goGmk7z
-         gyoCcF9DHqAHnAz3+Pvrgag0kqayl4u5A0BeDp7mlmQ3HOHnSv3II+YKxBnitEf2cL
-         viluqdlzhdJXdMkC4aPstOuLMjjQQMVVHu++V18s=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2205F35226AC; Sun, 30 Aug 2020 21:46:20 -0700 (PDT)
-Date:   Sun, 30 Aug 2020 21:46:20 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, josef@toxicpanda.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next] bpf: Fix build without BPF_SYSCALL, but with
- BPF_JIT.
-Message-ID: <20200831044620.GX2855@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200830204328.50419-1-alexei.starovoitov@gmail.com>
- <20200830220313.GV2855@paulmck-ThinkPad-P72>
- <20200831005321.75g5pw2xi4gyrb2i@ast-mbp.dhcp.thefacebook.com>
+        id S1726042AbgHaKEC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 06:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgHaKEB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 06:04:01 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3840BC061573
+        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 03:04:01 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id q8so3164465lfb.6
+        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 03:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=iS1OKR2WVG+oFG3cyCCRX51GGTXIDHLB0HFyTet9FNg=;
+        b=gp5W6OgoiydvbdyqHkTdQKMgyDjVwYR/VQax7vBFImxP1M9DaG3xF+zw/agTK8UHPp
+         9TDpQQ6w71eeXWEYsTZOjXy32s8ahFlP13zE/fQmpvm7VfPSFRJ/KeAmHl1cwPqrFrYk
+         CLZDGra3gXil8zjpw8MVRS+LSdQwy9+q9Mqco=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=iS1OKR2WVG+oFG3cyCCRX51GGTXIDHLB0HFyTet9FNg=;
+        b=J1I5dTEuu6NTWJfY2Gc23BuglLmLrRIYCK9emJcZIqaf0sdX863Rn70zaabHQebSSG
+         EWd59czhKyKJSbFbUFEtWUhUmQu0MKF5ChOxe9AnorPOk9K84fhBeGmRf9Bw4kO1GbhV
+         bmCb9G0zjpADOof06tys/pZKuYbmdStqzau1nDg1gUcQ/knbkZgyu5PW5blamxshcGDe
+         k0+LHzEUzM5uttWJuk+Z3P2chIbHXd8mJSdg2s7DauFZhSs+9BApUSpfc9he0rPtF48C
+         aZ6wxqp50MVU88lrKht2ZuSbrCBBG8WJTZpyAQ1RSdP5ruvtJM1+Ak29foYga1prBM+3
+         Zs3w==
+X-Gm-Message-State: AOAM532GBp45RpKmAba41XMekFGpfr415StiGrWE6GnjdBmd6Rvif0OB
+        wQrXREtaE0qAmyKtMTV+YCSN1A==
+X-Google-Smtp-Source: ABdhPJwrT61UTGfVvmgRWUZCMSR8UHmoCXU+igfp39tLZeG1StO8D+UeNm5cyiymvF+0CoN1fuK9tA==
+X-Received: by 2002:ac2:5547:: with SMTP id l7mr333054lfk.153.1598868239533;
+        Mon, 31 Aug 2020 03:03:59 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id z6sm1427618ljm.103.2020.08.31.03.03.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 03:03:58 -0700 (PDT)
+References: <20200828094834.23290-1-lmb@cloudflare.com> <20200828094834.23290-2-lmb@cloudflare.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net,
+        john.fastabend@gmail.com, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next 1/3] net: Allow iterating sockmap and sockhash
+In-reply-to: <20200828094834.23290-2-lmb@cloudflare.com>
+Date:   Mon, 31 Aug 2020 12:03:57 +0200
+Message-ID: <87eennrv1u.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200831005321.75g5pw2xi4gyrb2i@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 05:53:21PM -0700, Alexei Starovoitov wrote:
-> On Sun, Aug 30, 2020 at 03:03:13PM -0700, Paul E. McKenney wrote:
-> > On Sun, Aug 30, 2020 at 01:43:28PM -0700, Alexei Starovoitov wrote:
-> > > From: Alexei Starovoitov <ast@kernel.org>
-> > > 
-> > > When CONFIG_BPF_SYSCALL is not set, but CONFIG_BPF_JIT=y
-> > > the kernel build fails:
-> > > In file included from ../kernel/bpf/trampoline.c:11:
-> > > ../kernel/bpf/trampoline.c: In function ‘bpf_trampoline_update’:
-> > > ../kernel/bpf/trampoline.c:220:39: error: ‘call_rcu_tasks_trace’ undeclared
-> > > ../kernel/bpf/trampoline.c: In function ‘__bpf_prog_enter_sleepable’:
-> > > ../kernel/bpf/trampoline.c:411:2: error: implicit declaration of function ‘rcu_read_lock_trace’
-> > > ../kernel/bpf/trampoline.c: In function ‘__bpf_prog_exit_sleepable’:
-> > > ../kernel/bpf/trampoline.c:416:2: error: implicit declaration of function ‘rcu_read_unlock_trace’
-> > > 
-> > > Add these functions to rcupdate_trace.h.
-> > > The JIT won't call them and BPF trampoline logic won't be used without BPF_SYSCALL.
-> > > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Fixes: 1e6c62a88215 ("bpf: Introduce sleepable BPF programs")
-> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > 
-> > A couple of nits below, but overall:
-> > 
-> > Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > > ---
-> > >  include/linux/rcupdate_trace.h | 14 +++++++++++++-
-> > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
-> > > index d9015aac78c6..334840f4f245 100644
-> > > --- a/include/linux/rcupdate_trace.h
-> > > +++ b/include/linux/rcupdate_trace.h
-> > > @@ -82,7 +82,19 @@ static inline void rcu_read_unlock_trace(void)
-> > >  void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func);
-> > >  void synchronize_rcu_tasks_trace(void);
-> > >  void rcu_barrier_tasks_trace(void);
-> > > -
-> > > +#else
-> > 
-> > This formulation is a bit novel for RCU.  Could we therefore please add
-> > a comment something like this?
-> > 
-> > // The BPF JIT forms these addresses even when it doesn't call these
-> > // functions, so provide definitions that result in runtime errors.
-> 
-> ok. will add.
-> The root of the problem is:
-> obj-$(CONFIG_BPF_JIT) += trampoline.o
-> obj-$(CONFIG_BPF_JIT) += dispatcher.o
-> There is a number of functions that arch/x86/net/bpf_jit_comp.c is
-> using from these two files, but none of them will be used when
-> only cBPF is on (which is the case for BPF_SYSCALL=n BPF_JIT=y).
-> Don't confuse cBPF with eBPF ;)
+On Fri, Aug 28, 2020 at 11:48 AM CEST, Lorenz Bauer wrote:
+> Add bpf_iter support for sockmap / sockhash, based on the bpf_sk_storage and
+> hashtable implementation. sockmap and sockhash share the same iteration
+> context: a pointer to an arbitrary key and a pointer to a socket. Both
+> pointers may be NULL, and so BPF has to perform a NULL check before accessing
+> them. Technically it's not possible for sockhash iteration to yield a NULL
+> socket, but we ignore this to be able to use a single iteration point.
+>
+> Iteration will visit all keys that remain unmodified during the lifetime of
+> the iterator. It may or may not visit newly added ones.
+>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  net/core/sock_map.c | 283 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 283 insertions(+)
+>
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index d6c6e1e312fc..31c4332f06e4 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -703,6 +703,116 @@ const struct bpf_func_proto bpf_msg_redirect_map_proto = {
+>  	.arg4_type      = ARG_ANYTHING,
+>  };
+>
+> +struct sock_map_seq_info {
+> +	struct bpf_map *map;
+> +	struct sock *sk;
+> +	u32 index;
+> +};
+> +
+> +struct bpf_iter__sockmap {
+> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
+> +	__bpf_md_ptr(struct bpf_map *, map);
+> +	__bpf_md_ptr(void *, key);
+> +	__bpf_md_ptr(struct bpf_sock *, sk);
+> +};
+> +
+> +DEFINE_BPF_ITER_FUNC(sockmap, struct bpf_iter_meta *meta,
+> +		     struct bpf_map *map, void *key,
+> +		     struct sock *sk)
+> +
+> +static void *sock_map_seq_lookup_elem(struct sock_map_seq_info *info)
+> +{
+> +	if (unlikely(info->index >= info->map->max_entries))
+> +		return NULL;
+> +
+> +	info->sk = __sock_map_lookup_elem(info->map, info->index);
+> +	if (!info->sk || !sk_fullsock(info->sk))
 
-Perhaps I should avoid this confusion by having you generate the actual
-comment?  ;-)
+As we've talked off-line, we don't expect neither timewait nor request
+sockets in sockmap so sk_fullsock() check is likely not needed.
 
-> This patch is imo the lesser of three evils. The other two:
-> - some serious refactoring of trampoline.c and dipsatcher.c into
->   multiple files
-> - add 'depends on BPF_SYSCALL' to 'config BPF_JIT' in net/Kconfig
+> +		info->sk = NULL;
+> +
+> +	/* continue iterating */
+> +	return info;
+> +}
+> +
+> +static void *sock_map_seq_start(struct seq_file *seq, loff_t *pos)
+> +{
+> +	struct sock_map_seq_info *info = seq->private;
+> +
+> +	if (*pos == 0)
+> +		++*pos;
+> +
+> +	/* pairs with sock_map_seq_stop */
+> +	rcu_read_lock();
+> +	return sock_map_seq_lookup_elem(info);
+> +}
+> +
+> +static void *sock_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> +{
+> +	struct sock_map_seq_info *info = seq->private;
+> +
+> +	++*pos;
+> +	++info->index;
+> +
+> +	return sock_map_seq_lookup_elem(info);
+> +}
+> +
+> +static int __sock_map_seq_show(struct seq_file *seq, void *v)
+> +{
+> +	struct sock_map_seq_info *info = seq->private;
+> +	struct bpf_iter__sockmap ctx = {};
+> +	struct bpf_iter_meta meta;
+> +	struct bpf_prog *prog;
+> +
+> +	meta.seq = seq;
+> +	prog = bpf_iter_get_info(&meta, !v);
+> +	if (!prog)
+> +		return 0;
+> +
+> +	ctx.meta = &meta;
+> +	ctx.map = info->map;
+> +	if (v) {
+> +		ctx.key = &info->index;
+> +		ctx.sk = (struct bpf_sock *)info->sk;
+> +	}
+> +
+> +	return bpf_iter_run_prog(prog, &ctx);
+> +}
+> +
+> +static int sock_map_seq_show(struct seq_file *seq, void *v)
+> +{
+> +	return __sock_map_seq_show(seq, v);
+> +}
+> +
+> +static void sock_map_seq_stop(struct seq_file *seq, void *v)
+> +{
+> +	if (!v)
+> +		(void)__sock_map_seq_show(seq, NULL);
+> +
+> +	/* pairs with sock_map_seq_start */
+> +	rcu_read_unlock();
+> +}
+> +
+> +static const struct seq_operations sock_map_seq_ops = {
+> +	.start	= sock_map_seq_start,
+> +	.next	= sock_map_seq_next,
+> +	.stop	= sock_map_seq_stop,
+> +	.show	= sock_map_seq_show,
+> +};
+> +
+> +static int sock_map_init_seq_private(void *priv_data,
+> +				     struct bpf_iter_aux_info *aux)
+> +{
+> +	struct sock_map_seq_info *info = priv_data;
+> +
+> +	info->map = aux->map;
+> +	return 0;
+> +}
+> +
+> +static const struct bpf_iter_seq_info sock_map_iter_seq_info = {
+> +	.seq_ops		= &sock_map_seq_ops,
+> +	.init_seq_private	= sock_map_init_seq_private,
+> +	.seq_priv_size		= sizeof(struct sock_map_seq_info),
+> +};
+> +
+>  static int sock_map_btf_id;
+>  const struct bpf_map_ops sock_map_ops = {
+>  	.map_alloc		= sock_map_alloc,
 
-The first of these two occurred to me, the second not, but yes, this
-sort of reasoning eventually convinced me not to complain about the
-solution you chose.
+[...]
 
-> > > +static inline void call_rcu_tasks_trace(struct rcu_head *rhp, rcu_callback_t func)
-> > > +{
-> > > +	BUG();
-> > > +}
-> > > +static inline void rcu_read_lock_trace(void)
-> > > +{
-> > > +	BUG();
-> > > +}
-> > > +static inline void rcu_read_unlock_trace(void)
-> > > +{
-> > > +	BUG();
-> > > +}
-> > 
-> > People have been moving towards one-liner for things like these last two:
-> > 
-> > static inline void rcu_read_lock_trace(void) { BUG(); }
-> > static inline void rcu_read_unlock_trace(void) { BUG(); }
-> 
-> sure. will respin.
+> @@ -1198,6 +1309,120 @@ const struct bpf_func_proto bpf_msg_redirect_hash_proto = {
+>  	.arg4_type      = ARG_ANYTHING,
+>  };
+>
+> +struct sock_hash_seq_info {
+> +	struct bpf_map *map;
+> +	struct bpf_shtab *htab;
+> +	u32 bucket_id;
+> +};
+> +
+> +static void *sock_hash_seq_find_next(struct sock_hash_seq_info *info,
+> +				     struct bpf_shtab_elem *prev_elem)
+> +{
+> +	const struct bpf_shtab *htab = info->htab;
+> +	struct bpf_shtab_bucket *bucket;
+> +	struct bpf_shtab_elem *elem;
+> +	struct hlist_node *node;
+> +
+> +	/* try to find next elem in the same bucket */
+> +	if (prev_elem) {
+> +		node = rcu_dereference_raw(hlist_next_rcu(&prev_elem->node));
 
-Thank you!
+I'm not convinced we need to go for the rcu_dereference_raw()
+variant. Access happens inside read-side critical section, which we
+entered with rcu_read_lock() in sock_hash_seq_start().
 
-							Thanx, Paul
+That's typical and rcu_dereference() seems appropriate. Basing this on
+what I read in Documentation/RCU/rcu_dereference.rst.
+
+> +		elem = hlist_entry_safe(node, struct bpf_shtab_elem, node);
+> +		if (elem)
+> +			return elem;
+> +
+> +		/* no more elements, continue in the next bucket */
+> +		info->bucket_id++;
+> +	}
+> +
+> +	for (; info->bucket_id < htab->buckets_num; info->bucket_id++) {
+> +		bucket = &htab->buckets[info->bucket_id];
+> +		node = rcu_dereference_raw(hlist_first_rcu(&bucket->head));
+> +		elem = hlist_entry_safe(node, struct bpf_shtab_elem, node);
+> +		if (elem)
+> +			return elem;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static void *sock_hash_seq_start(struct seq_file *seq, loff_t *pos)
+> +{
+> +	struct sock_hash_seq_info *info = seq->private;
+> +
+> +	if (*pos == 0)
+> +		++*pos;
+> +
+> +	/* pairs with sock_hash_seq_stop */
+> +	rcu_read_lock();
+> +	return sock_hash_seq_find_next(info, NULL);
+> +}
+> +
+> +static void *sock_hash_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> +{
+> +	struct sock_hash_seq_info *info = seq->private;
+> +
+> +	++*pos;
+> +	return sock_hash_seq_find_next(info, v);
+> +}
+> +
+> +static int __sock_hash_seq_show(struct seq_file *seq, struct bpf_shtab_elem *elem)
+> +{
+> +	struct sock_hash_seq_info *info = seq->private;
+> +	struct bpf_iter__sockmap ctx = {};
+> +	struct bpf_iter_meta meta;
+> +	struct bpf_prog *prog;
+> +
+> +	meta.seq = seq;
+> +	prog = bpf_iter_get_info(&meta, !elem);
+> +	if (!prog)
+> +		return 0;
+> +
+> +	ctx.meta = &meta;
+> +	ctx.map = info->map;
+> +	if (elem) {
+> +		ctx.key = elem->key;
+> +		ctx.sk = (struct bpf_sock *)elem->sk;
+> +	}
+> +
+> +	return bpf_iter_run_prog(prog, &ctx);
+> +}
+> +
+> +static int sock_hash_seq_show(struct seq_file *seq, void *v)
+> +{
+> +	return __sock_hash_seq_show(seq, v);
+> +}
+> +
+> +static void sock_hash_seq_stop(struct seq_file *seq, void *v)
+> +{
+> +	if (!v)
+> +		(void)__sock_hash_seq_show(seq, NULL);
+> +
+> +	/* pairs with sock_hash_seq_start */
+> +	rcu_read_unlock();
+> +}
+> +
+> +static const struct seq_operations sock_hash_seq_ops = {
+> +	.start	= sock_hash_seq_start,
+> +	.next	= sock_hash_seq_next,
+> +	.stop	= sock_hash_seq_stop,
+> +	.show	= sock_hash_seq_show,
+> +};
+> +
+> +static int sock_hash_init_seq_private(void *priv_data,
+> +				     struct bpf_iter_aux_info *aux)
+> +{
+> +	struct sock_hash_seq_info *info = priv_data;
+> +
+> +	info->map = aux->map;
+> +	return 0;
+> +}
+> +
+> +static const struct bpf_iter_seq_info sock_hash_iter_seq_info = {
+> +	.seq_ops		= &sock_hash_seq_ops,
+> +	.init_seq_private	= sock_hash_init_seq_private,
+> +	.seq_priv_size		= sizeof(struct sock_hash_seq_info),
+> +};
+> +
+>  static int sock_hash_map_btf_id;
+>  const struct bpf_map_ops sock_hash_ops = {
+>  	.map_alloc		= sock_hash_alloc,
+
+[...]
