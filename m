@@ -2,140 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A89025822B
-	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 21:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FEF25823F
+	for <lists+bpf@lfdr.de>; Mon, 31 Aug 2020 22:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728904AbgHaTyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 15:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728724AbgHaTyR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Aug 2020 15:54:17 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790DEC061573;
-        Mon, 31 Aug 2020 12:54:17 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id x2so221319ilm.0;
-        Mon, 31 Aug 2020 12:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Faln3K+IvdWOjbeYMwsyYC3WPhW1jvtjWxGsIa7S4Bw=;
-        b=oRvPT/gyGQX726B70nPfF2QZeDAblEPb2aDrw/XMzqiUINh3mBS4oTqSSRjFzK/FeS
-         bBkHc3WF77KDyUHOZabtCe8YZ38Ph2Eo1l4LLMJ5xHyGTGonsvapfcnYmUa2HcX80DPJ
-         Co+PgUWky9NI9TFBQkYmRuKkxx/ezT4TqyV406EJUB2REkRh0guBaHnAfxvZBTZs46cQ
-         C8r9/b/GGr7a+tEQW1FkjbE0HeUGsMZdxRr8HjFZDeHJlGfTiwLRKx0iinV7T6ha7PN3
-         yk6IkJkSengB7V8xVDlpVjF8y9fCJdXyrD8SPzvmrzj4PNikWHe08hbiC22tLE7Zk0vH
-         H1LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Faln3K+IvdWOjbeYMwsyYC3WPhW1jvtjWxGsIa7S4Bw=;
-        b=qIjZgnjQKJsmaJb2JMItNEGWi+3a83UjNw/jmzhtsQ8HFArriP4C8LKOsjTH+PzNkT
-         W9rYAoWXBEHzNk2juBLPPF56d1hUnBf66ZdQtPolXM/pVg9qSVo2cGJqnYaXFZr+6lCK
-         zhlXoiq0J7AcQp0wYPcC/qTU2qwVfr0GHEEagx7Ie+wWoAp/4R4p0OYt0YuLJkOTG6wW
-         tWCeRhTvcisXdfGbwlmm1+7styKBMhBHbQfFOYk4FrO7YZkwBtwoqGXcDSlqftUy1wtN
-         BceoXu6ZzAONGQ1l4Lnmg1j3or/n1gUUaxF9kNUG7lEqVRX0VdzhmHizcEvJEP+Jc89q
-         G/3A==
-X-Gm-Message-State: AOAM532vJLdgquDBIKcIHsLXhIfGZ2ABf5kT2S7XsVWBZuFu00OdRoGH
-        nTum7YOmJybTgDtb1ADndnQ=
-X-Google-Smtp-Source: ABdhPJzgBRCtxZNFHFvqbeA9OxotGnpb5qB8X24GIyInO2g9tLM8P36RnbkHnz9DHaq/5ZP5ClOzpA==
-X-Received: by 2002:a92:a1c5:: with SMTP id b66mr2748547ill.71.1598903656829;
-        Mon, 31 Aug 2020 12:54:16 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:4c46:c3b0:e367:75b2])
-        by smtp.googlemail.com with ESMTPSA id r9sm5009648iln.18.2020.08.31.12.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 12:54:16 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
-To:     Harshitha Ramamurthy <harshitha.ramamurthy@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org
-Cc:     alexander.h.duyck@intel.com, tom.herbert@intel.com
-References: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <04856bca-0952-4dd7-3313-a13be6b2e95a@gmail.com>
-Date:   Mon, 31 Aug 2020 13:54:15 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1729042AbgHaUHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 16:07:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39058 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgHaUHm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 16:07:42 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kCq5R-0002uJ-9g; Mon, 31 Aug 2020 22:07:29 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kCq5R-000KJE-33; Mon, 31 Aug 2020 22:07:29 +0200
+Subject: Re: [PATCH v2 bpf-next] bpf: Fix build without BPF_SYSCALL, but with
+ BPF_JIT.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     paulmck@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+References: <20200831155155.62754-1-alexei.starovoitov@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <48c87341-7ad0-6aee-3a11-ba85598b0330@iogearbox.net>
+Date:   Mon, 31 Aug 2020 22:07:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200831155155.62754-1-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25916/Mon Aug 31 15:26:49 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/31/20 1:25 PM, Harshitha Ramamurthy wrote:
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index a613750d5515..bffe93b526e7 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3576,6 +3576,14 @@ union bpf_attr {
->   * 		the data in *dst*. This is a wrapper of copy_from_user().
->   * 	Return
->   * 		0 on success, or a negative error in case of failure.
-> + *
-> + * u32 bpf_get_xdp_hash(struct xdp_buff *xdp_md)
+On 8/31/20 5:51 PM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> When CONFIG_BPF_SYSCALL is not set, but CONFIG_BPF_JIT=y
+> the kernel build fails:
+> In file included from ../kernel/bpf/trampoline.c:11:
+> ../kernel/bpf/trampoline.c: In function ‘bpf_trampoline_update’:
+> ../kernel/bpf/trampoline.c:220:39: error: ‘call_rcu_tasks_trace’ undeclared
+> ../kernel/bpf/trampoline.c: In function ‘__bpf_prog_enter_sleepable’:
+> ../kernel/bpf/trampoline.c:411:2: error: implicit declaration of function ‘rcu_read_lock_trace’
+> ../kernel/bpf/trampoline.c: In function ‘__bpf_prog_exit_sleepable’:
+> ../kernel/bpf/trampoline.c:416:2: error: implicit declaration of function ‘rcu_read_unlock_trace’
+> 
+> This is due to:
+> obj-$(CONFIG_BPF_JIT) += trampoline.o
+> obj-$(CONFIG_BPF_JIT) += dispatcher.o
+> There is a number of functions that arch/x86/net/bpf_jit_comp.c is
+> using from these two files, but none of them will be used when
+> only cBPF is on (which is the case for BPF_SYSCALL=n BPF_JIT=y).
+> 
+> Add rcu_trace functions to rcupdate_trace.h. The JITed code won't execute them
+> and BPF trampoline logic won't be used without BPF_SYSCALL.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 1e6c62a88215 ("bpf: Introduce sleepable BPF programs")
+> Acked-by: Paul E. McKenney <paulmck@kernel.org>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-I thought there was a change recently making the uapi reference xdp_md;
-xdp_buff is not exported as part of the uapi.
-
-
-> + *	Description
-> + *		Return the hash for the xdp context passed. This function
-> + *		calls skb_flow_dissect in non-skb mode to calculate the
-> + *		hash for the packet.
-> + *	Return
-> + *		The 32-bit hash.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -3727,6 +3735,7 @@ union bpf_attr {
->  	FN(inode_storage_delete),	\
->  	FN(d_path),			\
->  	FN(copy_from_user),		\
-> +	FN(get_xdp_hash),		\
->  	/* */
->  
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 47eef9a0be6a..cfb5a6aea6c3 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3765,6 +3765,33 @@ static const struct bpf_func_proto bpf_xdp_redirect_map_proto = {
->  	.arg3_type      = ARG_ANYTHING,
->  };
->  
-> +BPF_CALL_1(bpf_get_xdp_hash, struct xdp_buff *, xdp)
-> +{
-> +	void *data_end = xdp->data_end;
-> +	struct ethhdr *eth = xdp->data;
-> +	void *data = xdp->data;
-> +	struct flow_keys keys;
-> +	u32 ret = 0;
-> +	int len;
-> +
-> +	len = data_end - data;
-> +	if (len <= 0)
-> +		return ret;
-
-you should verify len covers the ethernet header. Looking at
-__skb_flow_dissect use of hlen presumes it exists.
-
-> +	memset(&keys, 0, sizeof(keys));
-> +	__skb_flow_dissect(dev_net(xdp->rxq->dev), NULL, &flow_keys_dissector,
-> +			   &keys, data, eth->h_proto, sizeof(*eth), len,
-> +			   FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL);
-
-By STOP_AT_FLOW_LABEL I take it you want this to be an L3 hash. Why not
-add a flags argument to the helper and let the hash be L3 or L4?
-
-
-you should add test cases and have them cover the permutations - e.g.,
-vlan, Q-in-Q, ipv4, ipv6, non-IP packet for L3 hash and then udp, tcp
-for L4 hash.
-
+Applied, thanks!
