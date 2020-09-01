@@ -2,145 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E878259DE7
-	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 20:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93088259F36
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 21:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729882AbgIASMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 14:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726377AbgIASMl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 14:12:41 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A6AC061244;
-        Tue,  1 Sep 2020 11:12:39 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id i10so1318415ybt.11;
-        Tue, 01 Sep 2020 11:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fo76CB7ot38YXOx7Pt8T2DJw7Wwns+OpublnLmsqW58=;
-        b=DWGoneNm1E0H2TB0kRrtrEM4Z6g03YA3r+WDj4ntFFFH9GwIGOGQiGBcyz4KakgYdQ
-         ZMsLJWOKJNHY3IVCJ78DN+ZJ49+n/urFRj/hZ0ZwS0CNhqzEA9xo/RYCr+1lR4JZWcgK
-         MKFJeUnWuCzkPmZ13p3LNlIaVuLAyrxCMRRM2qzgtrtSBUxlsTVXl8nRNHpuQLpmwJja
-         P8osFyO/zEqQde54OD2UC9OmaWuz+yWjzfrRBc6IBKS9N67UWS0qzzCAAiri93W6lRwr
-         P5XzlbxVHlpVxbGH8vVEEtYA6RqZUEasi9JUcnrcnXeFRQTud30kGVL9uZsrIToNY7VV
-         mXfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fo76CB7ot38YXOx7Pt8T2DJw7Wwns+OpublnLmsqW58=;
-        b=CANnVMOTUKyGBwnvJ1+iCWB4XiFO6raobG+DmSGa2Vk7pVo3dC0wQGo50zBRdjfbmv
-         OGcusG2yG0JzGcUjL0jKEd4qg9rzjUQQGIZ4PNnzpEpAfeXUk2o6ARDL7vcBKgcG83EE
-         q359eb5g5GHbEGLI8QfJZWJKBDQc7HaQ+Uw5v1rmNm2lfRtuZcN9qsptGooivTmcSTPI
-         GNtlX+vs/o0lmdF8ssxGB/V/D/C3Z/yNwnHvPTG4Z/XOKhD7tKZsKkW0rOGVe4txR1Yn
-         7ky+yx1RA9SwRc4APevdOtosv52euxDNl65MgJKRDzKTwK5fNH9oyIChPg/9VYeHwOj8
-         IgHA==
-X-Gm-Message-State: AOAM533WZrLGFH0FFE8j6keRsK0SDgukWXKz+SCLNvjE9j2MgjXYqCOQ
-        fj7dtx9YrJS7+M0lpaN3F4Nq16QOJLqqaf3uLeE=
-X-Google-Smtp-Source: ABdhPJyNWB7lSMY+KzqZEo4eVLNYUtv6CMdaZ2Mlwnslc8xJRr/gmPTZ86hVWzmXcG5pEs8cqD9DnHuTb17F/JIgkFM=
-X-Received: by 2002:a25:6885:: with SMTP id d127mr4380112ybc.27.1598983957566;
- Tue, 01 Sep 2020 11:12:37 -0700 (PDT)
+        id S1728223AbgIAT3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 15:29:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30272 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728222AbgIAT27 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Sep 2020 15:28:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598988538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bPHc6szmZlbrOtOqbNs0/cg8yPELZXDQhp70mcSqITI=;
+        b=W7EQkesNsllP8KpcR7nfHgeGPYmO7Z/FZSDa0GUTkqvZVEjHBtRX7y/HMigUNBgO0ONm+p
+        ORIeIIJ8/axciuOxOY8/31MsgEOKHYf+CP7XFhiXOnBoLQMqbk+u86ClXpVckMjzK+iRHV
+        p3S4HDzRccEh9bhmaGfl1Yh6EZVtKnY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-SIVuUiKCMuis8cS7XOwf7A-1; Tue, 01 Sep 2020 15:28:56 -0400
+X-MC-Unique: SIVuUiKCMuis8cS7XOwf7A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AE07802B66;
+        Tue,  1 Sep 2020 19:28:55 +0000 (UTC)
+Received: from krava (unknown [10.40.193.186])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 11FA278B4F;
+        Tue,  1 Sep 2020 19:28:49 +0000 (UTC)
+Date:   Tue, 1 Sep 2020 21:28:48 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     daniel@iogearbox.net, ast@fb.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, jolsa@kernel.org
+Subject: Re: [PATCH bpf] tools/bpf: build: make sure resolve_btfids cleans up
+ after itself
+Message-ID: <20200901192848.GB470123@krava>
+References: <20200901144343.179552-1-toke@redhat.com>
+ <20200901152048.GA470123@krava>
+ <87sgc1iior.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-9-haoluo@google.com>
- <CAEf4BzYC0JRQusCxTrmraYQC7SZdkVjdy8DMUNECKwCbXP9-dw@mail.gmail.com> <CA+khW7jYWNT5aVe5vCinw5qwKKoB0w386qz2g+0ndv1LeeoGGg@mail.gmail.com>
-In-Reply-To: <CA+khW7jYWNT5aVe5vCinw5qwKKoB0w386qz2g+0ndv1LeeoGGg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Sep 2020 11:12:26 -0700
-Message-ID: <CAEf4Bza5+m72JQ1Q3a2GRetGB7C-Zemvd-ib0u_VKC2nrYkgdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 8/8] bpf/selftests: Test for bpf_per_cpu_ptr()
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87sgc1iior.fsf@toke.dk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 8:42 PM Hao Luo <haoluo@google.com> wrote:
->
-> Thanks for taking a look!
->
-> On Fri, Aug 21, 2020 at 8:30 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+On Tue, Sep 01, 2020 at 06:08:04PM +0200, Toke H�iland-J�rgensen wrote:
+> Jiri Olsa <jolsa@redhat.com> writes:
+> 
+> > On Tue, Sep 01, 2020 at 04:43:43PM +0200, Toke Høiland-Jørgensen wrote:
+> >> The new resolve_btfids tool did not clean up the feature detection folder
+> >> on 'make clean', and also was not called properly from the clean rule in
+> >> tools/make/ folder on its 'make clean'. This lead to stale objects being
+> >> left around, which could cause feature detection to fail on subsequent
+> >> builds.
+> >> 
+> >> Fixes: fbbb68de80a4 ("bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object")
+> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> >> ---
+> >>  tools/bpf/Makefile                | 4 ++--
+> >>  tools/bpf/resolve_btfids/Makefile | 1 +
+> >>  2 files changed, 3 insertions(+), 2 deletions(-)
+> >> 
+> >> diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
+> >> index 0a6d09a3e91f..39bb322707b4 100644
+> >> --- a/tools/bpf/Makefile
+> >> +++ b/tools/bpf/Makefile
+> >> @@ -38,7 +38,7 @@ FEATURE_TESTS = libbfd disassembler-four-args
+> >>  FEATURE_DISPLAY = libbfd disassembler-four-args
+> >>  
+> >>  check_feat := 1
+> >> -NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean
+> >> +NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean resolve_btfids_clean
+> >>  ifdef MAKECMDGOALS
+> >>  ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
+> >>    check_feat := 0
+> >> @@ -89,7 +89,7 @@ $(OUTPUT)bpf_exp.lex.c: $(OUTPUT)bpf_exp.yacc.c
+> >>  $(OUTPUT)bpf_exp.yacc.o: $(OUTPUT)bpf_exp.yacc.c
+> >>  $(OUTPUT)bpf_exp.lex.o: $(OUTPUT)bpf_exp.lex.c
+> >>  
+> >> -clean: bpftool_clean runqslower_clean
+> >> +clean: bpftool_clean runqslower_clean resolve_btfids_clean
+> >>  	$(call QUIET_CLEAN, bpf-progs)
+> >>  	$(Q)$(RM) -r -- $(OUTPUT)*.o $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg \
+> >>  	       $(OUTPUT)bpf_asm $(OUTPUT)bpf_exp.yacc.* $(OUTPUT)bpf_exp.lex.*
+> >> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> >> index a88cd4426398..fe8eb537688b 100644
+> >> --- a/tools/bpf/resolve_btfids/Makefile
+> >> +++ b/tools/bpf/resolve_btfids/Makefile
+> >> @@ -80,6 +80,7 @@ libbpf-clean:
+> >>  clean: libsubcmd-clean libbpf-clean fixdep-clean
+> >>  	$(call msg,CLEAN,$(BINARY))
+> >>  	$(Q)$(RM) -f $(BINARY); \
+> >> +	$(RM) -rf $(if $(OUTPUT),$(OUTPUT),.)/feature; \
 > >
-> > On Wed, Aug 19, 2020 at 3:42 PM Hao Luo <haoluo@google.com> wrote:
-> > >
-> > > Test bpf_per_cpu_ptr(). Test two paths in the kernel. If the base
-> > > pointer points to a struct, the returned reg is of type PTR_TO_BTF_ID.
-> > > Direct pointer dereference can be applied on the returned variable.
-> > > If the base pointer isn't a struct, the returned reg is of type
-> > > PTR_TO_MEM, which also supports direct pointer dereference.
-> > >
-> > > Signed-off-by: Hao Luo <haoluo@google.com>
-> > > ---
-> >
-> > Acked-by: Andrii Nakryiko <andriin@fb.com>
-> >
-> [...]
-> > >
-> > >  __u64 out__runqueues = -1;
-> > >  __u64 out__bpf_prog_active = -1;
-> > > +__u32 out__rq_cpu = -1;
-> > > +unsigned long out__process_counts = -1;
-> >
-> > try to not use long for variables, it is 32-bit integer in user-space
-> > but always 64-bit in BPF. This causes problems when using skeleton on
-> > 32-bit architecture.
-> >
->
-> Ack. I will use another variable of type 'int' instead.
+> > I forgot this one.. thanks for fixing this
+> 
+> You're welcome - it was a bit frustrating to track down, but a simple
+> fix once I figured out what was going on.
+> 
+> BTW, there's still an issue that a 'make clean' in the toplevel kernel
+> dir will not clean up this feature dir, so if someone doesn't know to do
+> 'cd tools/bpf && make clean' the main build may still break (I happened
+> upon this because my main kernel build broke :/). Couldn't figure out
+> how to convince make to fix that, so if you could take a look that would
+> be great! :)
 
-__u64 is fine as well
+will check, thanks
 
->
-> > >
-> > > -extern const struct rq runqueues __ksym; /* struct type global var. */
-> > > +extern const struct rq runqueues __ksym; /* struct type percpu var. */
-> > >  extern const int bpf_prog_active __ksym; /* int type global var. */
-> > > +extern const unsigned long process_counts __ksym; /* int type percpu var. */
-> > >
-> > >  SEC("raw_tp/sys_enter")
-> > >  int handler(const void *ctx)
-> > >  {
-> > > +       struct rq *rq;
-> > > +       unsigned long *count;
-> > > +
-> > >         out__runqueues = (__u64)&runqueues;
-> > >         out__bpf_prog_active = (__u64)&bpf_prog_active;
-> > >
-> > > +       rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, 1);
-> > > +       if (rq)
-> > > +               out__rq_cpu = rq->cpu;
-> >
-> > this is awesome!
-> >
-> > Are there any per-cpu variables that are arrays? Would be nice to test
-> > those too.
-> >
-> >
->
-> There are currently per-cpu arrays, but not common. There is a
-> 'pmc_prev_left' in arch/x86, I can add that in this test.
+jirka
 
-arch-specific variables are bad, because selftests will be failing on
-other architectures; let's not do this then.
-
->
-> [...]
