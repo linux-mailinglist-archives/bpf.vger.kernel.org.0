@@ -2,99 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1942592D1
-	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 17:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5232F259319
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 17:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgIAPRR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 11:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34522 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729383AbgIAPRM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:17:12 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729656AbgIAPVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 11:21:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31375 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729646AbgIAPU6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Sep 2020 11:20:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598973656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E+FRDxhNLNckt39TazxiFRMa93vd9C3zfcopiGmMH/g=;
+        b=DUmcy3znuPEJgbHnuGJ/qdLb/1KLdI/xVj/z8yky3MMMIqX1C2ma/QH7HvN6wS/aDjSe2g
+        eBvzexLmmPooQlydiB9DOx+ZH+Id9BJA3LKcjElAGvLgF+7DQUpfP3yHojvYIcMg2DnZnm
+        dwxcz2bwzXxy1Uy/qG1hU/Har+qXhVg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169--DhPxKgDM0m086E3ob1heQ-1; Tue, 01 Sep 2020 11:20:55 -0400
+X-MC-Unique: -DhPxKgDM0m086E3ob1heQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CDDB20767;
-        Tue,  1 Sep 2020 15:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973432;
-        bh=x2bRiouukbJBd8LT6tHebPJiKEStlGF3+9oAW9kOYlQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BaXEODKj/uloxN64+u2lfagyNrs1j/QEoGpLxR4/eBtPRK9NV0YlrtevSWb1V9nse
-         EfNMFM1BTq7jUkoCHxR3KQR/PB3rFELME554eHFWhtPvLMw1GAZvqkHsEbfM0m3bsr
-         FBf0guFqTVpWFPrG2a7kVD44et5g/mshVDzHxB0Q=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 28ED840D3D; Tue,  1 Sep 2020 12:17:10 -0300 (-03)
-Date:   Tue, 1 Sep 2020 12:17:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
-Cc:     tmricht@linux.ibm.com, hca@linux.ibm.com, svens@linux.ibm.com,
-        jolsa@redhat.com, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] perf test: Fix basic bpf filtering test
-Message-ID: <20200901151710.GD1424523@kernel.org>
-References: <20200817072754.58344-1-sumanthk@linux.ibm.com>
- <1954643f-e268-b7bc-7c6e-75205d9f5f92@linux.ibm.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E567F802B49;
+        Tue,  1 Sep 2020 15:20:53 +0000 (UTC)
+Received: from krava (unknown [10.40.193.186])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 566E25C1C4;
+        Tue,  1 Sep 2020 15:20:49 +0000 (UTC)
+Date:   Tue, 1 Sep 2020 17:20:48 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     daniel@iogearbox.net, ast@fb.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, jolsa@kernel.org
+Subject: Re: [PATCH bpf] tools/bpf: build: make sure resolve_btfids cleans up
+ after itself
+Message-ID: <20200901152048.GA470123@krava>
+References: <20200901144343.179552-1-toke@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1954643f-e268-b7bc-7c6e-75205d9f5f92@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200901144343.179552-1-toke@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Aug 25, 2020 at 10:32:45AM +0200, Sumanth Korikkar escreveu:
-> Kind Ping. Thank you.
-
-I've applied it already, will go to Linus today.
-
-- Arnaldo
- 
-> On 8/17/20 9:27 AM, Sumanth Korikkar wrote:
-> > BPF basic filtering test fails on s390x (when vmlinux debuginfo is
-> > utilized instead of /proc/kallsyms)
-> > 
-> > Info:
-> > - bpf_probe_load installs the bpf code at do_epoll_wait.
-> > - For s390x, do_epoll_wait resolves to 3 functions including inlines.
-> >    found inline addr: 0x43769e
-> >    Probe point found: __s390_sys_epoll_wait+6
-> >    found inline addr: 0x437290
-> >    Probe point found: do_epoll_wait+0
-> >    found inline addr: 0x4375d6
-> >    Probe point found: __se_sys_epoll_wait+6
-> > - add_bpf_event  creates evsel for every probe in a BPF object. This
-> >    results in 3 evsels.
-> > 
-> > Solution:
-> > - Expected result = 50% of the samples to be collected from epoll_wait *
-> >    number of entries present in the evlist.
-> > 
-> > Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-> > Reviewed-by: Thomas Richter <tmricht@linux.ibm.com>
-> > ---
-> >   tools/perf/tests/bpf.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-> > index 5d20bf8397f0..cd77e334e577 100644
-> > --- a/tools/perf/tests/bpf.c
-> > +++ b/tools/perf/tests/bpf.c
-> > @@ -197,7 +197,7 @@ static int do_test(struct bpf_object *obj, int (*func)(void),
-> >   		perf_mmap__read_done(&md->core);
-> >   	}
-> > -	if (count != expect) {
-> > +	if (count != expect * evlist->core.nr_entries) {
-> >   		pr_debug("BPF filter result incorrect, expected %d, got %d samples\n", expect, count);
-> >   		goto out_delete_evlist;
-> >   	}
+On Tue, Sep 01, 2020 at 04:43:43PM +0200, Toke Høiland-Jørgensen wrote:
+> The new resolve_btfids tool did not clean up the feature detection folder
+> on 'make clean', and also was not called properly from the clean rule in
+> tools/make/ folder on its 'make clean'. This lead to stale objects being
+> left around, which could cause feature detection to fail on subsequent
+> builds.
 > 
-> -- 
-> Sumanth Korikkar
+> Fixes: fbbb68de80a4 ("bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object")
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+>  tools/bpf/Makefile                | 4 ++--
+>  tools/bpf/resolve_btfids/Makefile | 1 +
+>  2 files changed, 3 insertions(+), 2 deletions(-)
 > 
+> diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
+> index 0a6d09a3e91f..39bb322707b4 100644
+> --- a/tools/bpf/Makefile
+> +++ b/tools/bpf/Makefile
+> @@ -38,7 +38,7 @@ FEATURE_TESTS = libbfd disassembler-four-args
+>  FEATURE_DISPLAY = libbfd disassembler-four-args
+>  
+>  check_feat := 1
+> -NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean
+> +NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean resolve_btfids_clean
+>  ifdef MAKECMDGOALS
+>  ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
+>    check_feat := 0
+> @@ -89,7 +89,7 @@ $(OUTPUT)bpf_exp.lex.c: $(OUTPUT)bpf_exp.yacc.c
+>  $(OUTPUT)bpf_exp.yacc.o: $(OUTPUT)bpf_exp.yacc.c
+>  $(OUTPUT)bpf_exp.lex.o: $(OUTPUT)bpf_exp.lex.c
+>  
+> -clean: bpftool_clean runqslower_clean
+> +clean: bpftool_clean runqslower_clean resolve_btfids_clean
+>  	$(call QUIET_CLEAN, bpf-progs)
+>  	$(Q)$(RM) -r -- $(OUTPUT)*.o $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg \
+>  	       $(OUTPUT)bpf_asm $(OUTPUT)bpf_exp.yacc.* $(OUTPUT)bpf_exp.lex.*
+> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> index a88cd4426398..fe8eb537688b 100644
+> --- a/tools/bpf/resolve_btfids/Makefile
+> +++ b/tools/bpf/resolve_btfids/Makefile
+> @@ -80,6 +80,7 @@ libbpf-clean:
+>  clean: libsubcmd-clean libbpf-clean fixdep-clean
+>  	$(call msg,CLEAN,$(BINARY))
+>  	$(Q)$(RM) -f $(BINARY); \
+> +	$(RM) -rf $(if $(OUTPUT),$(OUTPUT),.)/feature; \
 
--- 
+I forgot this one.. thanks for fixing this
 
-- Arnaldo
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+jirka
+
