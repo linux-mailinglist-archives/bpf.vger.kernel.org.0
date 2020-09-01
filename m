@@ -2,196 +2,354 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15BE258A85
-	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 10:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F799258ADE
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 10:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgIAIj5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 04:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
+        id S1726050AbgIAI7S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 04:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726913AbgIAIj5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 04:39:57 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F09BC061244;
-        Tue,  1 Sep 2020 01:39:57 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id c142so395975pfb.7;
-        Tue, 01 Sep 2020 01:39:57 -0700 (PDT)
+        with ESMTP id S1725989AbgIAI7S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Sep 2020 04:59:18 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F51C061244
+        for <bpf@vger.kernel.org>; Tue,  1 Sep 2020 01:59:17 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e23so522756otk.7
+        for <bpf@vger.kernel.org>; Tue, 01 Sep 2020 01:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pAUzFX3GHFt9VC8VV2i+/H/3rq3wYZlwv9O+CT0MnS4=;
-        b=JVvXhMOS6wiswcHFXVH9IWhgE4eAfvJMWlC4D2dp9D2Ub/9tLM1Lz6vIkl1e/dCAxx
-         QKoW59z02IMQ0UmwZSWYYN1Hia8Tr8HyzCgsbAGw0K2FeNoRzcXzkZ4qIQJrkxjJcfa+
-         haWdPAikYH5h/qCXfOszY8QD+vPUqkFTeoAW5SvC7gZwI1nF/pF2z9pxpkwQxIfAnSNq
-         jKBl1ei2V0pdViz3smqW1Vq4TxI4kvnuzoZUz7KH+Q2RUp9tbhQ+vSiEAp7euR5hVJdh
-         K/q013PM6bEp69XR7g6PlBktSRuVUNFSRJC/ziZegSKxB9Pl8GZlM4RfA3SYDa8qUnXY
-         JLWA==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gZGelRgSx9tGvEbKgctmQTp6Ie2NlqtL3znOcuFIrtE=;
+        b=ga8qXHRe5GGqYIL9KAcXkuSjXq9gEugm2OYp3NRw1ZmaAS7XVptj1v0mPx3lkI2Wvi
+         3Hy+5jXSyQQbTwgIAI6JQG2j/2TWTR1dbI+E4jw/zxMgVTav69WKrJXPQwIOnpl08N4r
+         SQzaKHH/06EBwYpxpGtkD7+Mzt1XG0qcsYyno=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pAUzFX3GHFt9VC8VV2i+/H/3rq3wYZlwv9O+CT0MnS4=;
-        b=uehv0HBhbXeAoLcfu3MmZ/7UaTJ1HJ+m68Hob55gPP20IbozNuxrj4EfO8fqZ7QnwC
-         +NOf0y0XyxNJYIGZ+E4aouCai+pev5ZyM+OrttvY/F/oqoiw+UB9+hC/IGa36HcNY7k+
-         GQ01fyWKwNF24GvTKt2M6i3qm1QrTikwiVDRv0/qMZ5tL1MU7K5Y5vUkDQa5WLdSJJo9
-         ksYekqUBSsmCddwJCiWPvw6y55IkUavdNR62z07CIMz8swyjNAN1iqLuJAIgFlUQDiYA
-         Kh7YU74xoh3g8G3i9Cziy7QY6aGMVHbRj3ss4d360PN2rnsQN9gefWKafJlSKSBfe7P0
-         qkcw==
-X-Gm-Message-State: AOAM533wFTbHcUnVu3ka0GUKpqHMo2hAAm5XYKnycrbU5FdqUMJnT7iP
-        gSJ3D28cyR2LGLQmipV0i2k=
-X-Google-Smtp-Source: ABdhPJwQx5aQ7+rcvwjWXN0C/kMWfCzdLW2RGzqNeH1F5KvTt+bAH8CXAJkKMsyNpTSXbXVRuluVFg==
-X-Received: by 2002:a63:1341:: with SMTP id 1mr615307pgt.144.1598949596604;
-        Tue, 01 Sep 2020 01:39:56 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
-        by smtp.gmail.com with ESMTPSA id c201sm979003pfb.216.2020.09.01.01.39.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 01:39:56 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org, toke@redhat.com,
-        brouer@redhat.com, dsahern@gmail.com
-Subject: [PATCH bpf-next v2] bpf: {cpu,dev}map: change various functions return type from int to void
-Date:   Tue,  1 Sep 2020 10:39:28 +0200
-Message-Id: <20200901083928.6199-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gZGelRgSx9tGvEbKgctmQTp6Ie2NlqtL3znOcuFIrtE=;
+        b=f/HufPqNgkGlslh3UXSVWMcq3MoAOYO+rskgvLfhGZX9xvz+U9IGt3/9rPJ/706Jbw
+         tJHSqrB1o3f+2Truzz8P2nNmYIZRua5wbbhInhkMfB0SDdJiHY0ZhSdReAYY6/bmkWkA
+         HLGBFNtzwe32s5EwNHJ6t7jKtJepRafRExUYbHss8CAPq3Nob9OgsrJbSUHkwSQSSlcq
+         CdeiIOh+dt+VWsq3zrnAzIEB13S7ZH0QjnTfXIVuTnFOSiXn5C980wN7vozITzAPsp4z
+         jDtNuR3BZkmHjQrLsrUvND5Ue1TyMnZTmc/oI26+ANzf/H1ITWFNk+G8tgJqPIdB2Iyx
+         GcJA==
+X-Gm-Message-State: AOAM530N36JaZr2Aj0XHjBrHqFcBrJfstQysYNMjrmFl0pt8XZQii1Ed
+        9P6gkXCWMfm7yLXt9p5wfIz6GWF6jQuwznJufeyfkz/oP2gKVw==
+X-Google-Smtp-Source: ABdhPJxL8cDRdOFd6b0msh/C6OK4Tdmf21F1ou2Ggdl4q6k9IBgGgzLEPs6vhLyc+v8NEWApEH++ncDtKoDD4TuiyhA=
+X-Received: by 2002:a9d:2f23:: with SMTP id h32mr699957otb.334.1598950756927;
+ Tue, 01 Sep 2020 01:59:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200828094834.23290-1-lmb@cloudflare.com> <20200828094834.23290-2-lmb@cloudflare.com>
+ <87eennrv1u.fsf@cloudflare.com>
+In-Reply-To: <87eennrv1u.fsf@cloudflare.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 1 Sep 2020 09:59:05 +0100
+Message-ID: <CACAyw9-dTaDEsDFLV8kX-Xd+ohjr5mmNRt=s2j7kiZArPrzwxQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] net: Allow iterating sockmap and sockhash
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Mon, 31 Aug 2020 at 11:04, Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> On Fri, Aug 28, 2020 at 11:48 AM CEST, Lorenz Bauer wrote:
+> > Add bpf_iter support for sockmap / sockhash, based on the bpf_sk_storage and
+> > hashtable implementation. sockmap and sockhash share the same iteration
+> > context: a pointer to an arbitrary key and a pointer to a socket. Both
+> > pointers may be NULL, and so BPF has to perform a NULL check before accessing
+> > them. Technically it's not possible for sockhash iteration to yield a NULL
+> > socket, but we ignore this to be able to use a single iteration point.
+> >
+> > Iteration will visit all keys that remain unmodified during the lifetime of
+> > the iterator. It may or may not visit newly added ones.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >  net/core/sock_map.c | 283 ++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 283 insertions(+)
+> >
+> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > index d6c6e1e312fc..31c4332f06e4 100644
+> > --- a/net/core/sock_map.c
+> > +++ b/net/core/sock_map.c
+> > @@ -703,6 +703,116 @@ const struct bpf_func_proto bpf_msg_redirect_map_proto = {
+> >       .arg4_type      = ARG_ANYTHING,
+> >  };
+> >
+> > +struct sock_map_seq_info {
+> > +     struct bpf_map *map;
+> > +     struct sock *sk;
+> > +     u32 index;
+> > +};
+> > +
+> > +struct bpf_iter__sockmap {
+> > +     __bpf_md_ptr(struct bpf_iter_meta *, meta);
+> > +     __bpf_md_ptr(struct bpf_map *, map);
+> > +     __bpf_md_ptr(void *, key);
+> > +     __bpf_md_ptr(struct bpf_sock *, sk);
+> > +};
+> > +
+> > +DEFINE_BPF_ITER_FUNC(sockmap, struct bpf_iter_meta *meta,
+> > +                  struct bpf_map *map, void *key,
+> > +                  struct sock *sk)
+> > +
+> > +static void *sock_map_seq_lookup_elem(struct sock_map_seq_info *info)
+> > +{
+> > +     if (unlikely(info->index >= info->map->max_entries))
+> > +             return NULL;
+> > +
+> > +     info->sk = __sock_map_lookup_elem(info->map, info->index);
+> > +     if (!info->sk || !sk_fullsock(info->sk))
+>
+> As we've talked off-line, we don't expect neither timewait nor request
+> sockets in sockmap so sk_fullsock() check is likely not needed.
 
-The functions bq_enqueue(), bq_flush_to_queue(), and bq_xmit_all() in
-{cpu,dev}map.c always return zero. Changing the return type from int
-to void makes the code easier to follow.
+Ack.
 
-Suggested-by: David Ahern <dsahern@gmail.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- kernel/bpf/cpumap.c | 11 +++--------
- kernel/bpf/devmap.c | 15 +++++++--------
- 2 files changed, 10 insertions(+), 16 deletions(-)
+>
+> > +             info->sk = NULL;
+> > +
+> > +     /* continue iterating */
+> > +     return info;
+> > +}
+> > +
+> > +static void *sock_map_seq_start(struct seq_file *seq, loff_t *pos)
+> > +{
+> > +     struct sock_map_seq_info *info = seq->private;
+> > +
+> > +     if (*pos == 0)
+> > +             ++*pos;
+> > +
+> > +     /* pairs with sock_map_seq_stop */
+> > +     rcu_read_lock();
+> > +     return sock_map_seq_lookup_elem(info);
+> > +}
+> > +
+> > +static void *sock_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> > +{
+> > +     struct sock_map_seq_info *info = seq->private;
+> > +
+> > +     ++*pos;
+> > +     ++info->index;
+> > +
+> > +     return sock_map_seq_lookup_elem(info);
+> > +}
+> > +
+> > +static int __sock_map_seq_show(struct seq_file *seq, void *v)
+> > +{
+> > +     struct sock_map_seq_info *info = seq->private;
+> > +     struct bpf_iter__sockmap ctx = {};
+> > +     struct bpf_iter_meta meta;
+> > +     struct bpf_prog *prog;
+> > +
+> > +     meta.seq = seq;
+> > +     prog = bpf_iter_get_info(&meta, !v);
+> > +     if (!prog)
+> > +             return 0;
+> > +
+> > +     ctx.meta = &meta;
+> > +     ctx.map = info->map;
+> > +     if (v) {
+> > +             ctx.key = &info->index;
+> > +             ctx.sk = (struct bpf_sock *)info->sk;
+> > +     }
+> > +
+> > +     return bpf_iter_run_prog(prog, &ctx);
+> > +}
+> > +
+> > +static int sock_map_seq_show(struct seq_file *seq, void *v)
+> > +{
+> > +     return __sock_map_seq_show(seq, v);
+> > +}
+> > +
+> > +static void sock_map_seq_stop(struct seq_file *seq, void *v)
+> > +{
+> > +     if (!v)
+> > +             (void)__sock_map_seq_show(seq, NULL);
+> > +
+> > +     /* pairs with sock_map_seq_start */
+> > +     rcu_read_unlock();
+> > +}
+> > +
+> > +static const struct seq_operations sock_map_seq_ops = {
+> > +     .start  = sock_map_seq_start,
+> > +     .next   = sock_map_seq_next,
+> > +     .stop   = sock_map_seq_stop,
+> > +     .show   = sock_map_seq_show,
+> > +};
+> > +
+> > +static int sock_map_init_seq_private(void *priv_data,
+> > +                                  struct bpf_iter_aux_info *aux)
+> > +{
+> > +     struct sock_map_seq_info *info = priv_data;
+> > +
+> > +     info->map = aux->map;
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct bpf_iter_seq_info sock_map_iter_seq_info = {
+> > +     .seq_ops                = &sock_map_seq_ops,
+> > +     .init_seq_private       = sock_map_init_seq_private,
+> > +     .seq_priv_size          = sizeof(struct sock_map_seq_info),
+> > +};
+> > +
+> >  static int sock_map_btf_id;
+> >  const struct bpf_map_ops sock_map_ops = {
+> >       .map_alloc              = sock_map_alloc,
+>
+> [...]
+>
+> > @@ -1198,6 +1309,120 @@ const struct bpf_func_proto bpf_msg_redirect_hash_proto = {
+> >       .arg4_type      = ARG_ANYTHING,
+> >  };
+> >
+> > +struct sock_hash_seq_info {
+> > +     struct bpf_map *map;
+> > +     struct bpf_shtab *htab;
+> > +     u32 bucket_id;
+> > +};
+> > +
+> > +static void *sock_hash_seq_find_next(struct sock_hash_seq_info *info,
+> > +                                  struct bpf_shtab_elem *prev_elem)
+> > +{
+> > +     const struct bpf_shtab *htab = info->htab;
+> > +     struct bpf_shtab_bucket *bucket;
+> > +     struct bpf_shtab_elem *elem;
+> > +     struct hlist_node *node;
+> > +
+> > +     /* try to find next elem in the same bucket */
+> > +     if (prev_elem) {
+> > +             node = rcu_dereference_raw(hlist_next_rcu(&prev_elem->node));
+>
+> I'm not convinced we need to go for the rcu_dereference_raw()
+> variant. Access happens inside read-side critical section, which we
+> entered with rcu_read_lock() in sock_hash_seq_start().
+>
+> That's typical and rcu_dereference() seems appropriate. Basing this on
+> what I read in Documentation/RCU/rcu_dereference.rst.
 
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 8d2a8623d2a7..cf548fc88780 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -79,8 +79,6 @@ struct bpf_cpu_map {
- 
- static DEFINE_PER_CPU(struct list_head, cpu_map_flush_list);
- 
--static int bq_flush_to_queue(struct xdp_bulk_queue *bq);
--
- static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
- {
- 	u32 value_size = attr->value_size;
-@@ -670,7 +668,7 @@ const struct bpf_map_ops cpu_map_ops = {
- 	.map_btf_id		= &cpu_map_btf_id,
- };
- 
--static int bq_flush_to_queue(struct xdp_bulk_queue *bq)
-+static void bq_flush_to_queue(struct xdp_bulk_queue *bq)
- {
- 	struct bpf_cpu_map_entry *rcpu = bq->obj;
- 	unsigned int processed = 0, drops = 0;
-@@ -679,7 +677,7 @@ static int bq_flush_to_queue(struct xdp_bulk_queue *bq)
- 	int i;
- 
- 	if (unlikely(!bq->count))
--		return 0;
-+		return;
- 
- 	q = rcpu->queue;
- 	spin_lock(&q->producer_lock);
-@@ -702,13 +700,12 @@ static int bq_flush_to_queue(struct xdp_bulk_queue *bq)
- 
- 	/* Feedback loop via tracepoints */
- 	trace_xdp_cpumap_enqueue(rcpu->map_id, processed, drops, to_cpu);
--	return 0;
- }
- 
- /* Runs under RCU-read-side, plus in softirq under NAPI protection.
-  * Thus, safe percpu variable access.
-  */
--static int bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
-+static void bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
- {
- 	struct list_head *flush_list = this_cpu_ptr(&cpu_map_flush_list);
- 	struct xdp_bulk_queue *bq = this_cpu_ptr(rcpu->bulkq);
-@@ -729,8 +726,6 @@ static int bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
- 
- 	if (!bq->flush_node.prev)
- 		list_add(&bq->flush_node, flush_list);
--
--	return 0;
- }
- 
- int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index a42052b85c35..2b5ca93c17de 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -341,14 +341,14 @@ bool dev_map_can_have_prog(struct bpf_map *map)
- 	return false;
- }
- 
--static int bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
-+static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
- {
- 	struct net_device *dev = bq->dev;
- 	int sent = 0, drops = 0, err = 0;
- 	int i;
- 
- 	if (unlikely(!bq->count))
--		return 0;
-+		return;
- 
- 	for (i = 0; i < bq->count; i++) {
- 		struct xdp_frame *xdpf = bq->q[i];
-@@ -369,7 +369,7 @@ static int bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
- 	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
- 	bq->dev_rx = NULL;
- 	__list_del_clearprev(&bq->flush_node);
--	return 0;
-+	return;
- error:
- 	/* If ndo_xdp_xmit fails with an errno, no frames have been
- 	 * xmit'ed and it's our responsibility to them free all.
-@@ -421,8 +421,8 @@ struct bpf_dtab_netdev *__dev_map_lookup_elem(struct bpf_map *map, u32 key)
- /* Runs under RCU-read-side, plus in softirq under NAPI protection.
-  * Thus, safe percpu variable access.
-  */
--static int bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
--		      struct net_device *dev_rx)
-+static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
-+		       struct net_device *dev_rx)
- {
- 	struct list_head *flush_list = this_cpu_ptr(&dev_flush_list);
- 	struct xdp_dev_bulk_queue *bq = this_cpu_ptr(dev->xdp_bulkq);
-@@ -441,8 +441,6 @@ static int bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 
- 	if (!bq->flush_node.prev)
- 		list_add(&bq->flush_node, flush_list);
--
--	return 0;
- }
- 
- static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-@@ -462,7 +460,8 @@ static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
- 	if (unlikely(!xdpf))
- 		return -EOVERFLOW;
- 
--	return bq_enqueue(dev, xdpf, dev_rx);
-+	bq_enqueue(dev, xdpf, dev_rx);
-+	return 0;
- }
- 
- static struct xdp_buff *dev_map_run_prog(struct net_device *dev,
+Yeah, that makes sense to me. However, sock_hash_get_next_key also
+uses rcu_dereference_raw. John, can you shed some light on why that
+is? Can we replace that with plain rcu_dereference as well?
+
+>
+> > +             elem = hlist_entry_safe(node, struct bpf_shtab_elem, node);
+> > +             if (elem)
+> > +                     return elem;
+> > +
+> > +             /* no more elements, continue in the next bucket */
+> > +             info->bucket_id++;
+> > +     }
+> > +
+> > +     for (; info->bucket_id < htab->buckets_num; info->bucket_id++) {
+> > +             bucket = &htab->buckets[info->bucket_id];
+> > +             node = rcu_dereference_raw(hlist_first_rcu(&bucket->head));
+> > +             elem = hlist_entry_safe(node, struct bpf_shtab_elem, node);
+> > +             if (elem)
+> > +                     return elem;
+> > +     }
+> > +
+> > +     return NULL;
+> > +}
+> > +
+> > +static void *sock_hash_seq_start(struct seq_file *seq, loff_t *pos)
+> > +{
+> > +     struct sock_hash_seq_info *info = seq->private;
+> > +
+> > +     if (*pos == 0)
+> > +             ++*pos;
+> > +
+> > +     /* pairs with sock_hash_seq_stop */
+> > +     rcu_read_lock();
+> > +     return sock_hash_seq_find_next(info, NULL);
+> > +}
+> > +
+> > +static void *sock_hash_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> > +{
+> > +     struct sock_hash_seq_info *info = seq->private;
+> > +
+> > +     ++*pos;
+> > +     return sock_hash_seq_find_next(info, v);
+> > +}
+> > +
+> > +static int __sock_hash_seq_show(struct seq_file *seq, struct bpf_shtab_elem *elem)
+> > +{
+> > +     struct sock_hash_seq_info *info = seq->private;
+> > +     struct bpf_iter__sockmap ctx = {};
+> > +     struct bpf_iter_meta meta;
+> > +     struct bpf_prog *prog;
+> > +
+> > +     meta.seq = seq;
+> > +     prog = bpf_iter_get_info(&meta, !elem);
+> > +     if (!prog)
+> > +             return 0;
+> > +
+> > +     ctx.meta = &meta;
+> > +     ctx.map = info->map;
+> > +     if (elem) {
+> > +             ctx.key = elem->key;
+> > +             ctx.sk = (struct bpf_sock *)elem->sk;
+> > +     }
+> > +
+> > +     return bpf_iter_run_prog(prog, &ctx);
+> > +}
+> > +
+> > +static int sock_hash_seq_show(struct seq_file *seq, void *v)
+> > +{
+> > +     return __sock_hash_seq_show(seq, v);
+> > +}
+> > +
+> > +static void sock_hash_seq_stop(struct seq_file *seq, void *v)
+> > +{
+> > +     if (!v)
+> > +             (void)__sock_hash_seq_show(seq, NULL);
+> > +
+> > +     /* pairs with sock_hash_seq_start */
+> > +     rcu_read_unlock();
+> > +}
+> > +
+> > +static const struct seq_operations sock_hash_seq_ops = {
+> > +     .start  = sock_hash_seq_start,
+> > +     .next   = sock_hash_seq_next,
+> > +     .stop   = sock_hash_seq_stop,
+> > +     .show   = sock_hash_seq_show,
+> > +};
+> > +
+> > +static int sock_hash_init_seq_private(void *priv_data,
+> > +                                  struct bpf_iter_aux_info *aux)
+> > +{
+> > +     struct sock_hash_seq_info *info = priv_data;
+> > +
+> > +     info->map = aux->map;
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct bpf_iter_seq_info sock_hash_iter_seq_info = {
+> > +     .seq_ops                = &sock_hash_seq_ops,
+> > +     .init_seq_private       = sock_hash_init_seq_private,
+> > +     .seq_priv_size          = sizeof(struct sock_hash_seq_info),
+> > +};
+> > +
+> >  static int sock_hash_map_btf_id;
+> >  const struct bpf_map_ops sock_hash_ops = {
+> >       .map_alloc              = sock_hash_alloc,
+>
+> [...]
+
+
+
 -- 
-2.25.1
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
