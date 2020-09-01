@@ -2,411 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F1225856A
-	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 03:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D902585CE
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 04:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgIABup (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Aug 2020 21:50:45 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60734 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727058AbgIABum (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 31 Aug 2020 21:50:42 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0811nN7N011705
-        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 18:50:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=0WGDoTwtCkfLjfaw3S08TJ1zbZDbtcNaDi58NHF9v44=;
- b=rMJu1ofKX0x6dIX0pioISN8eTwvu45R2PFwmX8DHkNAGhPZqPjkf8XDuNNvUtOFdzPW1
- h/N00qVTok/rNLnvG9ocl90kFDUTRyNaBtLmqGpP3HXmITHYxwdC+6qz//XK9AgcjAIH
- x6RCKbOSS5407eBgXxEUrrHKB+OOLRzgvEc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33879ng0t2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 18:50:41 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 31 Aug 2020 18:50:39 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 2E3BC2EC663B; Mon, 31 Aug 2020 18:50:36 -0700 (PDT)
-From:   Andrii Nakryiko <andriin@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH v2 bpf-next 14/14] selftests/bpf: convert cls_redirect selftest to use __noinline
-Date:   Mon, 31 Aug 2020 18:50:03 -0700
-Message-ID: <20200901015003.2871861-15-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200901015003.2871861-1-andriin@fb.com>
-References: <20200901015003.2871861-1-andriin@fb.com>
+        id S1726078AbgIAC6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Aug 2020 22:58:18 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:50896 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbgIAC6Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Aug 2020 22:58:16 -0400
+Received: by mail-il1-f198.google.com with SMTP id l8so4903545ilo.17
+        for <bpf@vger.kernel.org>; Mon, 31 Aug 2020 19:58:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=WexOQnXbthcYvRcB6BIN9debPbV2YkV5F6SBTRFrGAo=;
+        b=QhY8w6jHPi/N/1jRxDnSgB4jqOUB8hpk6OSl2k4chM7g6S1Edzi2RqZ2Mo+hgqUFoK
+         U0qPC8P9zj8XyU6EzRYmoS3g0HXZZL/ygGfGExY7nF8CbEUf4OoUzDA8UBnCWXhScv6l
+         RYU2ilJ3wzUEj0EhtB5N2QP2yBVPTWjCVX5sfUPEwvrxnxhrdxkLB9NX3Nl9XfXQ6l9p
+         TU4dTrLTsyD04o8PaAkTZ/vQOVUN/b1raIOSVQRnNCgxHpDRnoAonIXFQ5464CQvzMT2
+         ev9ywbokNSxep6qqE13pHtN4T20vUv2/425GMd7jsN9dfO/WNcP+AhoYpMGsZQOcq7IU
+         hwdg==
+X-Gm-Message-State: AOAM531S3ml4lFdEE0UT4dGDOEMvhOnyxoQzAXX82S5JAkgNkSyx7LMm
+        m0k71qx8LntkLlSOttavLmVoREtAwomoVhthib7O66g/03Xm
+X-Google-Smtp-Source: ABdhPJw3yQOMAzLshUBx3mglJ5xdVhoAQxwgjD3PIGjPgyXTMFAnfsS6746SXh0Ih6aaYeSsqHDbug1pulTtspuBEIGa0+LBf3bB
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-01_01:2020-08-31,2020-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- mlxlogscore=999 spamscore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 adultscore=0 malwarescore=0 phishscore=0 mlxscore=0
- clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009010014
-X-FB-Internal: deliver
+X-Received: by 2002:a92:6a09:: with SMTP id f9mr4024575ilc.273.1598929095740;
+ Mon, 31 Aug 2020 19:58:15 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 19:58:15 -0700
+In-Reply-To: <000000000000500e6f05a34ecc01@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c5d18605ae37b04c@google.com>
+Subject: Re: WARNING in bpf_cgroup_link_release
+From:   syzbot <syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com>
+To:     andrii.nakryiko@gmail.com, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, dan.carpenter@oracle.com,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As one of the most complicated and close-to-real-world programs, cls_redi=
-rect
-is a good candidate to excercise libbpf's logic of handling bpf2bpf calls=
-. So
-convert it to explicit __noinline for majority of functions except few mo=
-st
-basic ones. If those few functions are inlined, verifier starts to compla=
-in
-about program instruction limit of 1mln instructions being exceeded, most
-probably due to instruction overhead of doing a sub-program call.
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/progs/test_cls_redirect.c   | 99 ++++++++++---------
- 1 file changed, 50 insertions(+), 49 deletions(-)
+HEAD commit:    bb8872a1 tipc: fix using smp_processor_id() in preemptible
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=10aa0271900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a5dadc5c0b1d7055945
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1291cbde900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12896476900000
 
-diff --git a/tools/testing/selftests/bpf/progs/test_cls_redirect.c b/tool=
-s/testing/selftests/bpf/progs/test_cls_redirect.c
-index f0b72e86bee5..c3fc410f7d9c 100644
---- a/tools/testing/selftests/bpf/progs/test_cls_redirect.c
-+++ b/tools/testing/selftests/bpf/progs/test_cls_redirect.c
-@@ -125,7 +125,7 @@ typedef struct buf {
- 	uint8_t *const tail;
- } buf_t;
-=20
--static size_t buf_off(const buf_t *buf)
-+static __always_inline size_t buf_off(const buf_t *buf)
- {
- 	/* Clang seems to optimize constructs like
- 	 *    a - b + c
-@@ -145,7 +145,7 @@ static size_t buf_off(const buf_t *buf)
- 	return off;
- }
-=20
--static bool buf_copy(buf_t *buf, void *dst, size_t len)
-+static __always_inline bool buf_copy(buf_t *buf, void *dst, size_t len)
- {
- 	if (bpf_skb_load_bytes(buf->skb, buf_off(buf), dst, len)) {
- 		return false;
-@@ -155,7 +155,7 @@ static bool buf_copy(buf_t *buf, void *dst, size_t le=
-n)
- 	return true;
- }
-=20
--static bool buf_skip(buf_t *buf, const size_t len)
-+static __always_inline bool buf_skip(buf_t *buf, const size_t len)
- {
- 	/* Check whether off + len is valid in the non-linear part. */
- 	if (buf_off(buf) + len > buf->skb->len) {
-@@ -173,7 +173,7 @@ static bool buf_skip(buf_t *buf, const size_t len)
-  * If scratch is not NULL, the function will attempt to load non-linear
-  * data via bpf_skb_load_bytes. On success, scratch is returned.
-  */
--static void *buf_assign(buf_t *buf, const size_t len, void *scratch)
-+static __always_inline void *buf_assign(buf_t *buf, const size_t len, vo=
-id *scratch)
- {
- 	if (buf->head + len > buf->tail) {
- 		if (scratch =3D=3D NULL) {
-@@ -188,7 +188,7 @@ static void *buf_assign(buf_t *buf, const size_t len,=
- void *scratch)
- 	return ptr;
- }
-=20
--static bool pkt_skip_ipv4_options(buf_t *buf, const struct iphdr *ipv4)
-+static __noinline bool pkt_skip_ipv4_options(buf_t *buf, const struct ip=
-hdr *ipv4)
- {
- 	if (ipv4->ihl <=3D 5) {
- 		return true;
-@@ -197,13 +197,13 @@ static bool pkt_skip_ipv4_options(buf_t *buf, const=
- struct iphdr *ipv4)
- 	return buf_skip(buf, (ipv4->ihl - 5) * 4);
- }
-=20
--static bool ipv4_is_fragment(const struct iphdr *ip)
-+static __noinline bool ipv4_is_fragment(const struct iphdr *ip)
- {
- 	uint16_t frag_off =3D ip->frag_off & bpf_htons(IP_OFFSET_MASK);
- 	return (ip->frag_off & bpf_htons(IP_MF)) !=3D 0 || frag_off > 0;
- }
-=20
--static struct iphdr *pkt_parse_ipv4(buf_t *pkt, struct iphdr *scratch)
-+static __always_inline struct iphdr *pkt_parse_ipv4(buf_t *pkt, struct i=
-phdr *scratch)
- {
- 	struct iphdr *ipv4 =3D buf_assign(pkt, sizeof(*ipv4), scratch);
- 	if (ipv4 =3D=3D NULL) {
-@@ -222,7 +222,7 @@ static struct iphdr *pkt_parse_ipv4(buf_t *pkt, struc=
-t iphdr *scratch)
- }
-=20
- /* Parse the L4 ports from a packet, assuming a layout like TCP or UDP. =
-*/
--static bool pkt_parse_icmp_l4_ports(buf_t *pkt, flow_ports_t *ports)
-+static __noinline bool pkt_parse_icmp_l4_ports(buf_t *pkt, flow_ports_t =
-*ports)
- {
- 	if (!buf_copy(pkt, ports, sizeof(*ports))) {
- 		return false;
-@@ -237,7 +237,7 @@ static bool pkt_parse_icmp_l4_ports(buf_t *pkt, flow_=
-ports_t *ports)
- 	return true;
- }
-=20
--static uint16_t pkt_checksum_fold(uint32_t csum)
-+static __noinline uint16_t pkt_checksum_fold(uint32_t csum)
- {
- 	/* The highest reasonable value for an IPv4 header
- 	 * checksum requires two folds, so we just do that always.
-@@ -247,7 +247,7 @@ static uint16_t pkt_checksum_fold(uint32_t csum)
- 	return (uint16_t)~csum;
- }
-=20
--static void pkt_ipv4_checksum(struct iphdr *iph)
-+static __noinline void pkt_ipv4_checksum(struct iphdr *iph)
- {
- 	iph->check =3D 0;
-=20
-@@ -268,10 +268,11 @@ static void pkt_ipv4_checksum(struct iphdr *iph)
- 	iph->check =3D pkt_checksum_fold(acc);
- }
-=20
--static bool pkt_skip_ipv6_extension_headers(buf_t *pkt,
--					    const struct ipv6hdr *ipv6,
--					    uint8_t *upper_proto,
--					    bool *is_fragment)
-+static __noinline
-+bool pkt_skip_ipv6_extension_headers(buf_t *pkt,
-+				     const struct ipv6hdr *ipv6,
-+				     uint8_t *upper_proto,
-+				     bool *is_fragment)
- {
- 	/* We understand five extension headers.
- 	 * https://tools.ietf.org/html/rfc8200#section-4.1 states that all
-@@ -336,7 +337,7 @@ static bool pkt_skip_ipv6_extension_headers(buf_t *pk=
-t,
-  * scratch is allocated on the stack. However, this usage should be safe=
- since
-  * it's the callers stack after all.
-  */
--static inline __attribute__((__always_inline__)) struct ipv6hdr *
-+static __always_inline struct ipv6hdr *
- pkt_parse_ipv6(buf_t *pkt, struct ipv6hdr *scratch, uint8_t *proto,
- 	       bool *is_fragment)
- {
-@@ -354,20 +355,20 @@ pkt_parse_ipv6(buf_t *pkt, struct ipv6hdr *scratch,=
- uint8_t *proto,
-=20
- /* Global metrics, per CPU
-  */
--struct bpf_map_def metrics_map SEC("maps") =3D {
--	.type =3D BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size =3D sizeof(unsigned int),
--	.value_size =3D sizeof(metrics_t),
--	.max_entries =3D 1,
--};
--
--static metrics_t *get_global_metrics(void)
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, unsigned int);
-+	__type(value, metrics_t);
-+} metrics_map SEC(".maps");
-+
-+static __noinline metrics_t *get_global_metrics(void)
- {
- 	uint64_t key =3D 0;
- 	return bpf_map_lookup_elem(&metrics_map, &key);
- }
-=20
--static ret_t accept_locally(struct __sk_buff *skb, encap_headers_t *enca=
-p)
-+static __noinline ret_t accept_locally(struct __sk_buff *skb, encap_head=
-ers_t *encap)
- {
- 	const int payload_off =3D
- 		sizeof(*encap) +
-@@ -388,8 +389,8 @@ static ret_t accept_locally(struct __sk_buff *skb, en=
-cap_headers_t *encap)
- 	return bpf_redirect(skb->ifindex, BPF_F_INGRESS);
- }
-=20
--static ret_t forward_with_gre(struct __sk_buff *skb, encap_headers_t *en=
-cap,
--			      struct in_addr *next_hop, metrics_t *metrics)
-+static __noinline ret_t forward_with_gre(struct __sk_buff *skb, encap_he=
-aders_t *encap,
-+					 struct in_addr *next_hop, metrics_t *metrics)
- {
- 	metrics->forwarded_packets_total_gre++;
-=20
-@@ -509,8 +510,8 @@ static ret_t forward_with_gre(struct __sk_buff *skb, =
-encap_headers_t *encap,
- 	return bpf_redirect(skb->ifindex, 0);
- }
-=20
--static ret_t forward_to_next_hop(struct __sk_buff *skb, encap_headers_t =
-*encap,
--				 struct in_addr *next_hop, metrics_t *metrics)
-+static __noinline ret_t forward_to_next_hop(struct __sk_buff *skb, encap=
-_headers_t *encap,
-+					    struct in_addr *next_hop, metrics_t *metrics)
- {
- 	/* swap L2 addresses */
- 	/* This assumes that packets are received from a router.
-@@ -546,7 +547,7 @@ static ret_t forward_to_next_hop(struct __sk_buff *sk=
-b, encap_headers_t *encap,
- 	return bpf_redirect(skb->ifindex, 0);
- }
-=20
--static ret_t skip_next_hops(buf_t *pkt, int n)
-+static __noinline ret_t skip_next_hops(buf_t *pkt, int n)
- {
- 	switch (n) {
- 	case 1:
-@@ -566,8 +567,8 @@ static ret_t skip_next_hops(buf_t *pkt, int n)
-  * pkt is positioned just after the variable length GLB header
-  * iff the call is successful.
-  */
--static ret_t get_next_hop(buf_t *pkt, encap_headers_t *encap,
--			  struct in_addr *next_hop)
-+static __noinline ret_t get_next_hop(buf_t *pkt, encap_headers_t *encap,
-+				     struct in_addr *next_hop)
- {
- 	if (encap->unigue.next_hop > encap->unigue.hop_count) {
- 		return TC_ACT_SHOT;
-@@ -601,8 +602,8 @@ static ret_t get_next_hop(buf_t *pkt, encap_headers_t=
- *encap,
-  * return value, and calling code works while still being "generic" to
-  * IPv4 and IPv6.
-  */
--static uint64_t fill_tuple(struct bpf_sock_tuple *tuple, void *iph,
--			   uint64_t iphlen, uint16_t sport, uint16_t dport)
-+static __noinline uint64_t fill_tuple(struct bpf_sock_tuple *tuple, void=
- *iph,
-+				      uint64_t iphlen, uint16_t sport, uint16_t dport)
- {
- 	switch (iphlen) {
- 	case sizeof(struct iphdr): {
-@@ -630,9 +631,9 @@ static uint64_t fill_tuple(struct bpf_sock_tuple *tup=
-le, void *iph,
- 	}
- }
-=20
--static verdict_t classify_tcp(struct __sk_buff *skb,
--			      struct bpf_sock_tuple *tuple, uint64_t tuplen,
--			      void *iph, struct tcphdr *tcp)
-+static __noinline verdict_t classify_tcp(struct __sk_buff *skb,
-+					 struct bpf_sock_tuple *tuple, uint64_t tuplen,
-+					 void *iph, struct tcphdr *tcp)
- {
- 	struct bpf_sock *sk =3D
- 		bpf_skc_lookup_tcp(skb, tuple, tuplen, BPF_F_CURRENT_NETNS, 0);
-@@ -663,8 +664,8 @@ static verdict_t classify_tcp(struct __sk_buff *skb,
- 	return UNKNOWN;
- }
-=20
--static verdict_t classify_udp(struct __sk_buff *skb,
--			      struct bpf_sock_tuple *tuple, uint64_t tuplen)
-+static __noinline verdict_t classify_udp(struct __sk_buff *skb,
-+					 struct bpf_sock_tuple *tuple, uint64_t tuplen)
- {
- 	struct bpf_sock *sk =3D
- 		bpf_sk_lookup_udp(skb, tuple, tuplen, BPF_F_CURRENT_NETNS, 0);
-@@ -681,9 +682,9 @@ static verdict_t classify_udp(struct __sk_buff *skb,
- 	return UNKNOWN;
- }
-=20
--static verdict_t classify_icmp(struct __sk_buff *skb, uint8_t proto,
--			       struct bpf_sock_tuple *tuple, uint64_t tuplen,
--			       metrics_t *metrics)
-+static __noinline verdict_t classify_icmp(struct __sk_buff *skb, uint8_t=
- proto,
-+					  struct bpf_sock_tuple *tuple, uint64_t tuplen,
-+					  metrics_t *metrics)
- {
- 	switch (proto) {
- 	case IPPROTO_TCP:
-@@ -698,7 +699,7 @@ static verdict_t classify_icmp(struct __sk_buff *skb,=
- uint8_t proto,
- 	}
- }
-=20
--static verdict_t process_icmpv4(buf_t *pkt, metrics_t *metrics)
-+static __noinline verdict_t process_icmpv4(buf_t *pkt, metrics_t *metric=
-s)
- {
- 	struct icmphdr icmp;
- 	if (!buf_copy(pkt, &icmp, sizeof(icmp))) {
-@@ -745,7 +746,7 @@ static verdict_t process_icmpv4(buf_t *pkt, metrics_t=
- *metrics)
- 			     sizeof(tuple.ipv4), metrics);
- }
-=20
--static verdict_t process_icmpv6(buf_t *pkt, metrics_t *metrics)
-+static __noinline verdict_t process_icmpv6(buf_t *pkt, metrics_t *metric=
-s)
- {
- 	struct icmp6hdr icmp6;
- 	if (!buf_copy(pkt, &icmp6, sizeof(icmp6))) {
-@@ -797,8 +798,8 @@ static verdict_t process_icmpv6(buf_t *pkt, metrics_t=
- *metrics)
- 			     metrics);
- }
-=20
--static verdict_t process_tcp(buf_t *pkt, void *iph, uint64_t iphlen,
--			     metrics_t *metrics)
-+static __noinline verdict_t process_tcp(buf_t *pkt, void *iph, uint64_t =
-iphlen,
-+					metrics_t *metrics)
- {
- 	metrics->l4_protocol_packets_total_tcp++;
-=20
-@@ -819,8 +820,8 @@ static verdict_t process_tcp(buf_t *pkt, void *iph, u=
-int64_t iphlen,
- 	return classify_tcp(pkt->skb, &tuple, tuplen, iph, tcp);
- }
-=20
--static verdict_t process_udp(buf_t *pkt, void *iph, uint64_t iphlen,
--			     metrics_t *metrics)
-+static __noinline verdict_t process_udp(buf_t *pkt, void *iph, uint64_t =
-iphlen,
-+					metrics_t *metrics)
- {
- 	metrics->l4_protocol_packets_total_udp++;
-=20
-@@ -837,7 +838,7 @@ static verdict_t process_udp(buf_t *pkt, void *iph, u=
-int64_t iphlen,
- 	return classify_udp(pkt->skb, &tuple, tuplen);
- }
-=20
--static verdict_t process_ipv4(buf_t *pkt, metrics_t *metrics)
-+static __noinline verdict_t process_ipv4(buf_t *pkt, metrics_t *metrics)
- {
- 	metrics->l3_protocol_packets_total_ipv4++;
-=20
-@@ -874,7 +875,7 @@ static verdict_t process_ipv4(buf_t *pkt, metrics_t *=
-metrics)
- 	}
- }
-=20
--static verdict_t process_ipv6(buf_t *pkt, metrics_t *metrics)
-+static __noinline verdict_t process_ipv6(buf_t *pkt, metrics_t *metrics)
- {
- 	metrics->l3_protocol_packets_total_ipv6++;
-=20
---=20
-2.24.1
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8a5dadc5c0b1d7055945@syzkaller.appspotmail.com
+
+RBP: ffffffffffffffff R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000009
+R13: 00007ffeea853240 R14: 0000000000000000 R15: 0000000000000000
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6859 at kernel/bpf/cgroup.c:833 bpf_cgroup_link_release.part.0+0x28b/0x380 kernel/bpf/cgroup.c:833
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6859 Comm: syz-executor054 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x4a kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:bpf_cgroup_link_release.part.0+0x28b/0x380 kernel/bpf/cgroup.c:833
+Code: 01 e8 ce e0 cd ff e9 f1 fe ff ff e8 3f 60 e7 ff 48 c7 c7 00 d4 bf 89 e8 83 ad 68 06 5b 5d 41 5c e9 2a 60 e7 ff e8 25 60 e7 ff <0f> 0b e9 01 fe ff ff e8 19 60 e7 ff e8 e4 2a d4 ff 31 ff 89 c3 89
+RSP: 0018:ffffc90005367d38 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888094525700 RCX: ffffffff818cdceb
+RDX: ffff8880978ec240 RSI: ffffffff818cdeeb RDI: 0000000000000005
+RBP: 00000000fffffff4 R08: 0000000000000001 R09: ffffffff89c97453
+R10: 0000000000000000 R11: 0000000035383654 R12: ffff888094525768
+R13: ffffffffffffffa1 R14: 0000000000000022 R15: 0000000000000008
+ bpf_cgroup_link_release kernel/bpf/cgroup.c:822 [inline]
+ bpf_cgroup_link_detach+0x38/0x50 kernel/bpf/cgroup.c:854
+ link_detach kernel/bpf/syscall.c:4009 [inline]
+ __do_sys_bpf+0x667/0x4c20 kernel/bpf/syscall.c:4267
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x442229
+Code: e8 1c b4 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 6b 08 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffeea8531e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000442229
+RDX: 0000000000000008 RSI: 0000000020000040 RDI: 0000000000000022
+RBP: ffffffffffffffff R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000009
+R13: 00007ffeea853240 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
