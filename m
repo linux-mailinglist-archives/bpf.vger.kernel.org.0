@@ -2,121 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93088259F36
-	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 21:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA483259F62
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 21:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgIAT3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 15:29:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30272 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728222AbgIAT27 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 15:28:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598988538;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bPHc6szmZlbrOtOqbNs0/cg8yPELZXDQhp70mcSqITI=;
-        b=W7EQkesNsllP8KpcR7nfHgeGPYmO7Z/FZSDa0GUTkqvZVEjHBtRX7y/HMigUNBgO0ONm+p
-        ORIeIIJ8/axciuOxOY8/31MsgEOKHYf+CP7XFhiXOnBoLQMqbk+u86ClXpVckMjzK+iRHV
-        p3S4HDzRccEh9bhmaGfl1Yh6EZVtKnY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-SIVuUiKCMuis8cS7XOwf7A-1; Tue, 01 Sep 2020 15:28:56 -0400
-X-MC-Unique: SIVuUiKCMuis8cS7XOwf7A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AE07802B66;
-        Tue,  1 Sep 2020 19:28:55 +0000 (UTC)
-Received: from krava (unknown [10.40.193.186])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 11FA278B4F;
-        Tue,  1 Sep 2020 19:28:49 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 21:28:48 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     daniel@iogearbox.net, ast@fb.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, jolsa@kernel.org
-Subject: Re: [PATCH bpf] tools/bpf: build: make sure resolve_btfids cleans up
- after itself
-Message-ID: <20200901192848.GB470123@krava>
-References: <20200901144343.179552-1-toke@redhat.com>
- <20200901152048.GA470123@krava>
- <87sgc1iior.fsf@toke.dk>
+        id S1732009AbgIATrU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 15:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730121AbgIATrQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Sep 2020 15:47:16 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7D4C061246
+        for <bpf@vger.kernel.org>; Tue,  1 Sep 2020 12:47:15 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id d11so3338490ejt.13
+        for <bpf@vger.kernel.org>; Tue, 01 Sep 2020 12:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kTur4TszHq9523qD6iPQQf45ohXDEUrbbOabBCfKuUw=;
+        b=CWzyYuoBpHyopcW6UGJzCRrbzhPmoxUBaCxI7bRNujUqWrF5to/QhuZqjrS7nxWu0W
+         jAbOrW/VUjLw5eCygcxnnz4+H4WcP4zPwj0aufjfMcS7bjx3wkayFffr7Z6u5k2s8TFD
+         8tXV8kM+VzEYM9fO8VnSzWieJ5cQoi7lXniCotDInsAEJFLJ7zfDy2L/kUH4emO0IlvH
+         gpqmf3HLFgBRudRPyT4CD2lBOGN0UFZiJ0WwVcUE7jm9LSNP+IE3hPw9g59DEqCzfSEL
+         THiflFVqtJ+7m5QY2g3VNZ5cZdTzYUjw1h86UqHsaXiHTetSrbuY9+PWlnuAGvW1/UM7
+         Af1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kTur4TszHq9523qD6iPQQf45ohXDEUrbbOabBCfKuUw=;
+        b=bwmFIYym4XhLkOM7eoWVhf7ISkYHSLmOabw7b/MAgt72Xx1arJQF/W0id8Ld3U2pb3
+         HeeBkVdGQyzcSAZbt/yIxxfGi5YxbhbDfqXjQWfrm5ymv5a2qGhYsMMj6dkJn0Uvf5nv
+         7iMOCnZTk29GeQEGCJ24ENDRKvJCE5j93O969owBH6GMoy5XenuWxcwwVRjz9yKbdXSQ
+         i6kOtaU1M9Kvc4BOfqonamNB8bhnblCrwdYjfqDHIWbcyXSMqLz9K339rOy5ZaocDyfq
+         j59ExHUDA5/ULhhgIBNQL4N0m37JVZZDLscY1LcZ537miXLSuBhCNgREtmefTTP9hqwD
+         kxzw==
+X-Gm-Message-State: AOAM532jrOVwqv8wIYsgZNFzfmc6LjyNtcaWJUUcnVMJ3SiipgvNMvde
+        vCbTjSGyYOaz6o5yBDhVPGWwcPIafEgoxot/Zqs6Ag==
+X-Google-Smtp-Source: ABdhPJzf8T7FXtY0Q7Fx2epgXAQyimHZxDg5Mh5UyXW9wn394/QoJXCbMs9CPXEix3VkOUNcTb7yISndZZ2r4JYr/AI=
+X-Received: by 2002:a17:906:a209:: with SMTP id r9mr3270866ejy.413.1598989633789;
+ Tue, 01 Sep 2020 12:47:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87sgc1iior.fsf@toke.dk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-9-haoluo@google.com>
+ <CAEf4BzYC0JRQusCxTrmraYQC7SZdkVjdy8DMUNECKwCbXP9-dw@mail.gmail.com>
+ <CA+khW7jYWNT5aVe5vCinw5qwKKoB0w386qz2g+0ndv1LeeoGGg@mail.gmail.com> <CAEf4Bza5+m72JQ1Q3a2GRetGB7C-Zemvd-ib0u_VKC2nrYkgdQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bza5+m72JQ1Q3a2GRetGB7C-Zemvd-ib0u_VKC2nrYkgdQ@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 1 Sep 2020 12:47:02 -0700
+Message-ID: <CA+khW7iP+BsXnNg0E-K3npR74FqV0b+oHo9j27ymKWobi-QBVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 8/8] bpf/selftests: Test for bpf_per_cpu_ptr()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 06:08:04PM +0200, Toke H�iland-J�rgensen wrote:
-> Jiri Olsa <jolsa@redhat.com> writes:
-> 
-> > On Tue, Sep 01, 2020 at 04:43:43PM +0200, Toke Høiland-Jørgensen wrote:
-> >> The new resolve_btfids tool did not clean up the feature detection folder
-> >> on 'make clean', and also was not called properly from the clean rule in
-> >> tools/make/ folder on its 'make clean'. This lead to stale objects being
-> >> left around, which could cause feature detection to fail on subsequent
-> >> builds.
-> >> 
-> >> Fixes: fbbb68de80a4 ("bpf: Add resolve_btfids tool to resolve BTF IDs in ELF object")
-> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> >> ---
-> >>  tools/bpf/Makefile                | 4 ++--
-> >>  tools/bpf/resolve_btfids/Makefile | 1 +
-> >>  2 files changed, 3 insertions(+), 2 deletions(-)
-> >> 
-> >> diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
-> >> index 0a6d09a3e91f..39bb322707b4 100644
-> >> --- a/tools/bpf/Makefile
-> >> +++ b/tools/bpf/Makefile
-> >> @@ -38,7 +38,7 @@ FEATURE_TESTS = libbfd disassembler-four-args
-> >>  FEATURE_DISPLAY = libbfd disassembler-four-args
-> >>  
-> >>  check_feat := 1
-> >> -NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean
-> >> +NON_CHECK_FEAT_TARGETS := clean bpftool_clean runqslower_clean resolve_btfids_clean
-> >>  ifdef MAKECMDGOALS
-> >>  ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
-> >>    check_feat := 0
-> >> @@ -89,7 +89,7 @@ $(OUTPUT)bpf_exp.lex.c: $(OUTPUT)bpf_exp.yacc.c
-> >>  $(OUTPUT)bpf_exp.yacc.o: $(OUTPUT)bpf_exp.yacc.c
-> >>  $(OUTPUT)bpf_exp.lex.o: $(OUTPUT)bpf_exp.lex.c
-> >>  
-> >> -clean: bpftool_clean runqslower_clean
-> >> +clean: bpftool_clean runqslower_clean resolve_btfids_clean
-> >>  	$(call QUIET_CLEAN, bpf-progs)
-> >>  	$(Q)$(RM) -r -- $(OUTPUT)*.o $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg \
-> >>  	       $(OUTPUT)bpf_asm $(OUTPUT)bpf_exp.yacc.* $(OUTPUT)bpf_exp.lex.*
-> >> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> >> index a88cd4426398..fe8eb537688b 100644
-> >> --- a/tools/bpf/resolve_btfids/Makefile
-> >> +++ b/tools/bpf/resolve_btfids/Makefile
-> >> @@ -80,6 +80,7 @@ libbpf-clean:
-> >>  clean: libsubcmd-clean libbpf-clean fixdep-clean
-> >>  	$(call msg,CLEAN,$(BINARY))
-> >>  	$(Q)$(RM) -f $(BINARY); \
-> >> +	$(RM) -rf $(if $(OUTPUT),$(OUTPUT),.)/feature; \
+On Tue, Sep 1, 2020 at 11:12 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Aug 27, 2020 at 8:42 PM Hao Luo <haoluo@google.com> wrote:
 > >
-> > I forgot this one.. thanks for fixing this
-> 
-> You're welcome - it was a bit frustrating to track down, but a simple
-> fix once I figured out what was going on.
-> 
-> BTW, there's still an issue that a 'make clean' in the toplevel kernel
-> dir will not clean up this feature dir, so if someone doesn't know to do
-> 'cd tools/bpf && make clean' the main build may still break (I happened
-> upon this because my main kernel build broke :/). Couldn't figure out
-> how to convince make to fix that, so if you could take a look that would
-> be great! :)
+[...]
+> > > >
+> > > > -extern const struct rq runqueues __ksym; /* struct type global var. */
+> > > > +extern const struct rq runqueues __ksym; /* struct type percpu var. */
+> > > >  extern const int bpf_prog_active __ksym; /* int type global var. */
+> > > > +extern const unsigned long process_counts __ksym; /* int type percpu var. */
+> > > >
+> > > >  SEC("raw_tp/sys_enter")
+> > > >  int handler(const void *ctx)
+> > > >  {
+> > > > +       struct rq *rq;
+> > > > +       unsigned long *count;
+> > > > +
+> > > >         out__runqueues = (__u64)&runqueues;
+> > > >         out__bpf_prog_active = (__u64)&bpf_prog_active;
+> > > >
+> > > > +       rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, 1);
+> > > > +       if (rq)
+> > > > +               out__rq_cpu = rq->cpu;
+> > >
+> > > this is awesome!
+> > >
+> > > Are there any per-cpu variables that are arrays? Would be nice to test
+> > > those too.
+> > >
+> > >
+> >
+> > There are currently per-cpu arrays, but not common. There is a
+> > 'pmc_prev_left' in arch/x86, I can add that in this test.
+>
+> arch-specific variables are bad, because selftests will be failing on
+> other architectures; let's not do this then.
+>
 
-will check, thanks
+Yeah, no problem. Though not going to add this arch-specific variable
+in the posted patches, I tried array-typed ksyms locally in my test
+environment. It worked fine, except that the array size is not
+checked. For instance, if there is a percpu array in kernel as
 
-jirka
+DEFINE_PER_CPU(u32[64], foo);
 
+we can declare a ksym of different size and it passes libbpf checks
+and kernel verification.
+
+extern u32 foo[128] __ksyms;
+
+It seems that bpf_core_types_are_compat() doesn't check nr_elem. But
+it seems the kernel verifier does check out-of-bounds accesses, so
+this may not be a real problem. Just want to list what I saw.
+
+> >
+> > [...]
