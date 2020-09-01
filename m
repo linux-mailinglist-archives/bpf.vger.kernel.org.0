@@ -2,83 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A4A259BD9
-	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 19:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34570259CAB
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 19:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729470AbgIARIH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 13:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S1729530AbgIARSf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 13:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729467AbgIAPSM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:12 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AE0C061244;
-        Tue,  1 Sep 2020 08:18:11 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id j10so669184qvk.11;
-        Tue, 01 Sep 2020 08:18:11 -0700 (PDT)
+        with ESMTP id S1729600AbgIARSV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:18:21 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26445C061245
+        for <bpf@vger.kernel.org>; Tue,  1 Sep 2020 10:18:21 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f2so1703157qkh.3
+        for <bpf@vger.kernel.org>; Tue, 01 Sep 2020 10:18:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LSPbN6+pEjMV+xpddTd26AaYfZpdzQy4X//1J45BFMU=;
-        b=npEe+ZBaVYxoJTHXvduFysmSnA58RM43MK3pS41Uk6E/DWF3vBm4jFOhg00AnXeBP5
-         nQE1ZcNhOtddARcVjxxadI7lEo2B5dFKHSRtc1kbp/Xtq2odocq1KkHIYNlAV2ySkn8M
-         v70gTkTkr0cuTzEAfL0FUFsjwk9fr/jfwqmZ0bEmij2yw3LgsWg7PHDIhBYiEUOTH3au
-         qgITsMP99r8yj06RFuyD6FQYXzW8ptGltM0nfpM3DutAFa0idghXLxiczQ2ippyNbiq3
-         nz35EdXhRgMRgLawqrRtcu3LJddqdgseM4a3K797J2QOWDurbZz1dekWMx1Pjc79gcM2
-         0Vew==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BFVCoWvSC/F+kVcSqv3UBzsK7m9szdpNyGobTDVXbqE=;
+        b=lHNfP5jBkjJpfLBiRxwDFlzFv301FgN6JAkzoRTlLgL+NDDU+z3kcp+TCP63QQbB/P
+         7NW/vETIi0Jm4CCH+ER+qyeUs3Tk7ppTrOcCOSlKV9MKz2a/0X3sigjI0ydsbS4ZzR9n
+         cHv3Ph7OeomNqIL1HWoYZ9/I7XNLQ5xe/iYktyo/qstRWKbdYWN6yNgqxdgw4lQ4myYA
+         T3GPutel3WNGf1Oe5APDPaHzAYn+yR8zhuAjWQNOxK7ACMAU3dAcjDPYeIde2ogpg6GJ
+         V16T8dMVpJEqBQiq1nATqawDLayWeiz4r9f9qzKHuxsOaGK/QciNPCDBhpcGORdDOHvL
+         K1bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LSPbN6+pEjMV+xpddTd26AaYfZpdzQy4X//1J45BFMU=;
-        b=PirHXop3YFxulzsY6rrcH9B0NqlsWJmopxxrRvHoeRYOJJwGprFtB727dJpwkkh487
-         zvVk5lFTgzjxTlBISKIyTvBAaz4RmkRJdtq6Az7FWToQxzUii5jMbnsTOrI2bTrV0+t3
-         OKJ+WauHB35DhNWJjrjiP58bmPVRp9pzgD7UIG7sg1P4EcGrrv2ePneaZ8LYz0EuZmW+
-         ExQHVcxJRD2OiZM1MV3CsydDY4GjRa36fxIpee4IO1wldpErMNSNbHGwbP1G/RBypYkX
-         g5atIEZPsBAYZKm+2pDfARGhdwqN7hq5r7BxkscsNn1+XNrp9URGDidPRxCuILfvNIuK
-         94NQ==
-X-Gm-Message-State: AOAM533nmfmwPdwo9Zb641VrkjQKIv3EbLG8XWfbd6GOwPE/V19Wp/k5
-        UVtAR6JqRfQTjXq/Xwa81FreeDIQ3ZYOCFc9
-X-Google-Smtp-Source: ABdhPJyjYpa9sfomJf/xnDSFBjbkkKGYaWmfU2d3xG5XUFfpCWVu1HLs7HpX/ChqViWX9NzuP8NFLA==
-X-Received: by 2002:a0c:e783:: with SMTP id x3mr2556298qvn.114.1598973490393;
-        Tue, 01 Sep 2020 08:18:10 -0700 (PDT)
-Received: from leah-Ubuntu ([2601:4c3:200:c230:dd5a:a6db:5e16:1fed])
-        by smtp.gmail.com with ESMTPSA id n203sm1736574qke.66.2020.09.01.08.18.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Sep 2020 08:18:10 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 11:18:07 -0400
-From:   Leah Rumancik <leah.rumancik@gmail.com>
-To:     Tobias Klauser <tklauser@distanz.ch>
-Cc:     bpf@vger.kernel.org, linux-block@vger.kernel.org,
-        orbekk@google.com, harshads@google.com, jasiu@google.com,
-        saranyamohan@google.com, tytso@google.com, bvanassche@google.com
-Subject: Re: [RFC PATCH 4/4] bpf: add BPF_PROG_TYPE_LSM to bpftool name array
-Message-ID: <20200901151807.GA5599@leah-Ubuntu>
-References: <20200812163305.545447-1-leah.rumancik@gmail.com>
- <20200812163305.545447-5-leah.rumancik@gmail.com>
- <20200812181705.hadjvarvjxwj36ai@distanz.ch>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BFVCoWvSC/F+kVcSqv3UBzsK7m9szdpNyGobTDVXbqE=;
+        b=d/yNhMoNP2hzH4wn/133DQp2xwP5P+XwqYVt0tXMRfodd3R+wPJIZlWgZPpmQ0naOT
+         HamJKM/Bwhx6n+NLChfyVuXZisj81NojS7B/KcvEznOXFibxrvDgdY9u0bVEXMlKzx9u
+         42FHH99TfzxgEirf6yd2yULYsaODtBSVfLc2JfMpqHBBJGEZoV2tsE62iwDjCzjtY2fv
+         YZ1kluuAXH6l1UfdbLBs3BcB8VXNNPcAxxTyc2TOOISoolAU2vEDcXSGLZaWFs58swAZ
+         OPHLjHsC1qjYxPLMEC5YcmU9Uq5YD6pXzq77pxWv+zOvXqNQmDVAknyuLFcNwtU/cFZn
+         2UjA==
+X-Gm-Message-State: AOAM530ffzivbY41SCF/U4R/KCEdIH7uLxD4PWqybZgKImyedvMcMrH+
+        /CcuRqnNDh54A76OvO44bBN7Ug==
+X-Google-Smtp-Source: ABdhPJxVfnAjvAWMKfr1FDdRrLYw2on8rTQCSqo/OLP6gHpHJXMp+kNI0/6wyzHiVIOTAixbTX4x3Q==
+X-Received: by 2002:a37:a84a:: with SMTP id r71mr2846827qke.481.1598980700059;
+        Tue, 01 Sep 2020 10:18:20 -0700 (PDT)
+Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id v185sm2253715qki.128.2020.09.01.10.18.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 10:18:19 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: avoid iterating duplicated files for
+ task_file iterator
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+References: <20200828053815.817726-1-yhs@fb.com>
+ <20200828053815.817806-1-yhs@fb.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <01bc7a06-e294-7cfe-d284-1b7e834ba90f@toxicpanda.com>
+Date:   Tue, 1 Sep 2020 13:18:18 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200812181705.hadjvarvjxwj36ai@distanz.ch>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200828053815.817806-1-yhs@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 08:17:05PM +0200, Tobias Klauser wrote:
-> On 2020-08-12 at 18:33:05 +0200, Leah Rumancik <leah.rumancik@gmail.com> wrote:
-> > Update prog_type_name[] to include missing entry for BPF_PROG_TYPE_LSM
+On 8/28/20 1:38 AM, Yonghong Song wrote:
+> Currently, task_file iterator iterates all files from all tasks.
+> This may potentially visit a lot of duplicated files if there are
+> many tasks sharing the same files, e.g., typical pthreads
+> where these pthreads and the main thread are sharing the same files.
 > 
-> FWIW, this was already fixed in bpf-next by commit 9a97c9d2af5c ("tools,
-> bpftool: Add LSM type to array of prog names"), the definition of
-> prog_type_name also moved to tools/bpf/bpftool/prog.c from
-> tools/bpf/bpftool/main.h
+> This patch changed task_file iterator to skip a particular task
+> if that task shares the same files as its group_leader (the task
+> having the same tgid and also task->tgid == task->pid).
+> This will preserve the same result, visiting all files from all
+> tasks, and will reduce runtime cost significantl, e.g., if there are
+> a lot of pthreads and the process has a lot of open files.
+> 
+> Suggested-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>   kernel/bpf/task_iter.c | 14 +++++++++-----
+>   1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> It would be good if somebody familar with sched code can help check
+> whether I missed anything or not (e.g., locks, etc.)
+> for the code change
+>    task->files == task->group_leader->files
+> 
+> Note the change in this patch might have conflicts with
+> e60572b8d4c3 ("bpf: Avoid visit same object multiple times")
+> which is merged into bpf/net sometimes back.
+> 
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 232df29793e9..0c5c96bb6964 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -22,7 +22,8 @@ struct bpf_iter_seq_task_info {
+>   };
+>   
+>   static struct task_struct *task_seq_get_next(struct pid_namespace *ns,
+> -					     u32 *tid)
+> +					     u32 *tid,
+> +					     bool skip_if_dup_files)
+>   {
+>   	struct task_struct *task = NULL;
+>   	struct pid *pid;
+> @@ -32,7 +33,10 @@ static struct task_struct *task_seq_get_next(struct pid_namespace *ns,
+>   	pid = idr_get_next(&ns->idr, tid);
+>   	if (pid) {
+>   		task = get_pid_task(pid, PIDTYPE_PID);
+> -		if (!task) {
+> +		if (!task ||
+> +		    (skip_if_dup_files &&
+> +		     task->tgid != task->pid &&
+> +		     task->files == task->group_leader->files)) {
+>   			++*tid;
+>   			goto retry;
 
-I'll remove this patch and update the location of the change to
-prog_type_name in the first patch.
+Sorry I only checked the task->files and task->group_leader thing, I forgot to 
+actually pay attention to what the patch itself was doing.
 
-Thanks,
-Leah
+This will leak task structs, you need something like
+
+if (!task) {
+	++*tid;
+	goto retry;
+}
+if (skip_if_dup_files && etc) {
+	++*tid;
+	put_task_struct(task);
+	goto retry;
+}
+
+otherwise you'll leak tasks.  Thanks,
+
+Josef
