@@ -2,81 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EA325976D
-	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 18:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5632596EA
+	for <lists+bpf@lfdr.de>; Tue,  1 Sep 2020 18:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730679AbgIAQOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 12:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731206AbgIAPf3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:35:29 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB6AC061244;
-        Tue,  1 Sep 2020 08:35:28 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id o64so1326813qkb.10;
-        Tue, 01 Sep 2020 08:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Pt5riNry0LXCdMMDirjaAvuNNxR72mnnngurjuADZZo=;
-        b=OQ9fWUenknF9Q+nAncqv3JwfcFuORp9ef2xNGcB2GbZd1SeyaJtCYvuGT2hsWlAqmb
-         2I0s+TbyT6aN/1H4W+LX4oqLaVm6fElKHZ/3RF0MRHeObQD8S8UAoPjsVUtEEe5BkQR9
-         j9xZG86MQ+b0n/bT4QWLiPPRIgt8kmhTbMRfb3XMfXPZ/CmsIE/vn6bDdS+gdhi35OcD
-         lTeZOalVPTuJZ2AvYShSeC/yD05B0RzZ+mJYR+QE8NhqK9W3+n15AoeUfcIWNMHL4Hd2
-         CaZOr5GWGQqNEQqPsGiBjEhwGAEHbj0SXnIOpu8e0eq06KzxcjiB1IRFSu3dq9M0/O+u
-         xU0w==
+        id S1731123AbgIAQIY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 12:08:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27028 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731352AbgIAQIL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Sep 2020 12:08:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598976489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y6Pe1l+WjDC61EvtD//HCF/32BPYoKA6W4R0Ar3Xm+o=;
+        b=M13etXxTrzakPaHSjxbZegVzHpnGfamjibpj04lrTfDkrEsnxkwJMBNds4UhjxWV3++Gb0
+        5Lx0s56ZO6SsBKLnC11UWm+2KJ5gffnCG2y1qGwHuuRsk+WyvEFb8N4xrKH4X2Dm3hOnnT
+        DktrcPocoTkG8kltDtCRq3/MFZKRwf0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-weaW9X54NvqIzLFfFBObFg-1; Tue, 01 Sep 2020 12:08:08 -0400
+X-MC-Unique: weaW9X54NvqIzLFfFBObFg-1
+Received: by mail-ej1-f72.google.com with SMTP id by23so725110ejb.14
+        for <bpf@vger.kernel.org>; Tue, 01 Sep 2020 09:08:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Pt5riNry0LXCdMMDirjaAvuNNxR72mnnngurjuADZZo=;
-        b=MuoRdiBO7SaD3Dwy3odEkcuGwZidu2+z1GOZk9K0ch0sduMrf1F82RkwTUr2SABZuv
-         FelD1QfJdfbKWe0NPyO9e//v2CbR3BINik3mYGBUYbH4T/BYhFNL/6ULj9ZOO04lS0VN
-         4EojvyEEtMZoQUARJzQVnXyZoizRzFiHhV1M8mDQAKotGWacEPWhGvXq8FKEn3F/Zhyn
-         lXpTqYRhClK3wa3ej5TmBkIzQPlAD9hF3kQRpy9mPAeHbHwdFUK3G313dE3yHR4hzUX+
-         tyuuixEMoWU8YaDdu8MA2vw1msYENq+iPcZgp7woEGcpcTnie+csSIKekIOjw6FFQ6kY
-         ZLug==
-X-Gm-Message-State: AOAM533UmtX2JN136EBDBrunHzPVUKnc3BY+VeCR1CtG0SCu7+0LnagO
-        Z6m+Lo0h9/m5zqePhoytuDk=
-X-Google-Smtp-Source: ABdhPJxNPwyKBVSlUPOK2GEeBXN58bPo+Amwwb+B5yOvnjOXV0smnRsYTwJzbLJWIhWk8Ju0NzLxtA==
-X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr2437752qkg.353.1598974527257;
-        Tue, 01 Sep 2020 08:35:27 -0700 (PDT)
-Received: from leah-Ubuntu ([2601:4c3:200:c230:dd5a:a6db:5e16:1fed])
-        by smtp.gmail.com with ESMTPSA id f7sm1971818qkj.32.2020.09.01.08.35.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Sep 2020 08:35:26 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 11:35:25 -0400
-From:   Leah Rumancik <leah.rumancik@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     bpf@vger.kernel.org, linux-block@vger.kernel.org,
-        orbekk@google.com, harshads@google.com, jasiu@google.com,
-        saranyamohan@google.com, tytso@google.com, bvanassche@google.com
-Subject: Re: [RFC PATCH 3/4] bpf: add eBPF IO filter documentation
-Message-ID: <20200901153524.GB5599@leah-Ubuntu>
-References: <20200812163305.545447-1-leah.rumancik@gmail.com>
- <20200812163305.545447-4-leah.rumancik@gmail.com>
- <20200812115011.337c0099@lwn.net>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Y6Pe1l+WjDC61EvtD//HCF/32BPYoKA6W4R0Ar3Xm+o=;
+        b=g0wmIrDIgQVcGz+YwDISagn5O6/P4Kxci6KgR7AeLhQWDV6r9f12RO7SabLhJ1vpkc
+         Ww1L/jmxd+yidLwtVsnkG5ixcZjQv7na8qxQhl1O0uj8ufQ1PmPIHsZtg+Rwh46NP3Kk
+         EC/A/ywO1XvwtwThkjtmtT9+7MNtOiWgtZCbWIae4Fi86gaGim7k29mjXOPhzShyKdtF
+         0RKD9ThwmgmFZKk8oldk2ZHCFToaGLhwLJq0lu/7oZKWmnD9uYotGi3UZOyKAkSsH2L0
+         MvOoPZ9RvL847bnJcE5cktU2u8AOSIT31ueziAqHLGC6OhijubI7RRkaRgl1ewSUhbNF
+         zloA==
+X-Gm-Message-State: AOAM5325QCUlFTS9E4iuNpIwKKTbUK/5bDXbzzYjvSz9b8P1FE8LVBSR
+        E5Jg4YBKulGH2RzQSnup9HsK3ZyTbhx+M+UtoDge8rq7I5Yge2kUpjBR764nNDBcw9Wqq7Ds7N7
+        l3jnfG4qEDqC+
+X-Received: by 2002:a17:906:2858:: with SMTP id s24mr1943703ejc.399.1598976486611;
+        Tue, 01 Sep 2020 09:08:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxf4rJNDRun8zwi8xW7tBsqxccI0tzxxEHy5tlb4nz2mpp2kS6TKqmRoxAArSsBUNsyYYQWkw==
+X-Received: by 2002:a17:906:2858:: with SMTP id s24mr1943676ejc.399.1598976486356;
+        Tue, 01 Sep 2020 09:08:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id g26sm1458131edv.70.2020.09.01.09.08.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 09:08:05 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 30D691804A2; Tue,  1 Sep 2020 18:08:04 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     daniel@iogearbox.net, ast@fb.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, jolsa@kernel.org
+Subject: Re: [PATCH bpf] tools/bpf: build: make sure resolve_btfids cleans
+ up after itself
+In-Reply-To: <20200901152048.GA470123@krava>
+References: <20200901144343.179552-1-toke@redhat.com>
+ <20200901152048.GA470123@krava>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 01 Sep 2020 18:08:04 +0200
+Message-ID: <87sgc1iior.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200812115011.337c0099@lwn.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 12, 2020 at 11:50:11AM -0600, Jonathan Corbet wrote:
-> Please wrap your text to a reasonable column width just like with any
-> other kernel file.
-> 
-> Thanks,
-> 
-> jon
+Jiri Olsa <jolsa@redhat.com> writes:
 
-Will do.
+> On Tue, Sep 01, 2020 at 04:43:43PM +0200, Toke H=C3=83=C2=B8iland-J=C3=83=
+=C2=B8rgensen wrote:
+>> The new resolve_btfids tool did not clean up the feature detection folder
+>> on 'make clean', and also was not called properly from the clean rule in
+>> tools/make/ folder on its 'make clean'. This lead to stale objects being
+>> left around, which could cause feature detection to fail on subsequent
+>> builds.
+>>=20
+>> Fixes: fbbb68de80a4 ("bpf: Add resolve_btfids tool to resolve BTF IDs in=
+ ELF object")
+>> Signed-off-by: Toke H=C3=83=C2=B8iland-J=C3=83=C2=B8rgensen <toke@redhat=
+.com>
+>> ---
+>>  tools/bpf/Makefile                | 4 ++--
+>>  tools/bpf/resolve_btfids/Makefile | 1 +
+>>  2 files changed, 3 insertions(+), 2 deletions(-)
+>>=20
+>> diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
+>> index 0a6d09a3e91f..39bb322707b4 100644
+>> --- a/tools/bpf/Makefile
+>> +++ b/tools/bpf/Makefile
+>> @@ -38,7 +38,7 @@ FEATURE_TESTS =3D libbfd disassembler-four-args
+>>  FEATURE_DISPLAY =3D libbfd disassembler-four-args
+>>=20=20
+>>  check_feat :=3D 1
+>> -NON_CHECK_FEAT_TARGETS :=3D clean bpftool_clean runqslower_clean
+>> +NON_CHECK_FEAT_TARGETS :=3D clean bpftool_clean runqslower_clean resolv=
+e_btfids_clean
+>>  ifdef MAKECMDGOALS
+>>  ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
+>>    check_feat :=3D 0
+>> @@ -89,7 +89,7 @@ $(OUTPUT)bpf_exp.lex.c: $(OUTPUT)bpf_exp.yacc.c
+>>  $(OUTPUT)bpf_exp.yacc.o: $(OUTPUT)bpf_exp.yacc.c
+>>  $(OUTPUT)bpf_exp.lex.o: $(OUTPUT)bpf_exp.lex.c
+>>=20=20
+>> -clean: bpftool_clean runqslower_clean
+>> +clean: bpftool_clean runqslower_clean resolve_btfids_clean
+>>  	$(call QUIET_CLEAN, bpf-progs)
+>>  	$(Q)$(RM) -r -- $(OUTPUT)*.o $(OUTPUT)bpf_jit_disasm $(OUTPUT)bpf_dbg \
+>>  	       $(OUTPUT)bpf_asm $(OUTPUT)bpf_exp.yacc.* $(OUTPUT)bpf_exp.lex.*
+>> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfid=
+s/Makefile
+>> index a88cd4426398..fe8eb537688b 100644
+>> --- a/tools/bpf/resolve_btfids/Makefile
+>> +++ b/tools/bpf/resolve_btfids/Makefile
+>> @@ -80,6 +80,7 @@ libbpf-clean:
+>>  clean: libsubcmd-clean libbpf-clean fixdep-clean
+>>  	$(call msg,CLEAN,$(BINARY))
+>>  	$(Q)$(RM) -f $(BINARY); \
+>> +	$(RM) -rf $(if $(OUTPUT),$(OUTPUT),.)/feature; \
+>
+> I forgot this one.. thanks for fixing this
 
-Thanks,
-Leah
+You're welcome - it was a bit frustrating to track down, but a simple
+fix once I figured out what was going on.
+
+BTW, there's still an issue that a 'make clean' in the toplevel kernel
+dir will not clean up this feature dir, so if someone doesn't know to do
+'cd tools/bpf && make clean' the main build may still break (I happened
+upon this because my main kernel build broke :/). Couldn't figure out
+how to convince make to fix that, so if you could take a look that would
+be great! :)
+
+-Toke
+
