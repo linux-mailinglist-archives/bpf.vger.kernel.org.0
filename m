@@ -2,82 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAFCD25B472
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 21:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743D925B4C4
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 21:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgIBTcM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 15:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        id S1726310AbgIBTwn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 15:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgIBTcK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 15:32:10 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39A9C061244
-        for <bpf@vger.kernel.org>; Wed,  2 Sep 2020 12:32:07 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id f127so440521lfd.7
-        for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 12:32:07 -0700 (PDT)
+        with ESMTP id S1726226AbgIBTwk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 15:52:40 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8293C061244;
+        Wed,  2 Sep 2020 12:52:39 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id u6so476638ybf.1;
+        Wed, 02 Sep 2020 12:52:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pH4XKkEgGbSll51FkdLqlTjLkM+Hz+KxHBuKks/wLK4=;
-        b=Zd0lkWWxJyDy3tv1U0Jez8JXo4EpxheyqB4FC8oZC97r1wO70c9yxBNaiIlZtSa06I
-         3yWSnZRuuUoJUDgWspBqv4E3UX7TV2YZY+BJ+0InslezgGZN3Y4U9ryt+VRNXz/9XvNo
-         P7FQe1UFW3JGRdM1W1+RQ3jJbniSuh+uVzJOwpvwCu3mSr2zOdz01hJ8jVr8hwLE0lOt
-         KFX12RFnSfdRplYj/S9PldA2ht+L3EntkxcO7J1Up38ho8aFr05nfWqTXN10I4SmrmJG
-         16nIMdtBKM9v9SJfx22ZH6KFckgxWgeupLLGeyI9H2dlXPtwPTDU5Kca4C2gZ8H0EIzT
-         MWcQ==
+        bh=dj2750p0sregmEuLVCaZvkSO0triG/j2T/O2tveQBb4=;
+        b=RNqNwe/JY0XD2dWhBtH4DbdLdSnVD3Y/0BoWaYlKCpU4eCHgKL0udLsS7Xd7smEKEo
+         2rQ1EOY79rt1jZIn+opNTaiaYaa3UN+sx6+6Ql4KV4Cd5ccyfdkW+XW+REPnKyfp+/hp
+         RxHOlDY4PdPTeZTJ1FTMRRNPKDuAnEgugbpat36O5NAYGfNlvPU9z1UcRbNEm24whUvg
+         AdKTvq4QLgtw/ki/YvVENSoOnZkU7byIHO0RAhjc8YaS/lFDgndOiqEg2GSCl9MkGfbb
+         1hQbt9PmKWkoW7uZ1nnO6ZHL8fUEM5cR6l/VErVgyI5nrEXUr1GbJrcm8sG/hveJqMRU
+         gRnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pH4XKkEgGbSll51FkdLqlTjLkM+Hz+KxHBuKks/wLK4=;
-        b=PyCeT9IuyIfCyTPDLqqLMvJZCbrkGdj7XdRtiRqajx94y0ZlwiN4hPV2ml5Je+yttE
-         YjHCCCwoEeL/ceulpbboYksxGORRwbHMkaq3fpzndvx8oFeeHSF5o4wGl15CNBFbRe2J
-         O1goYDMxjscTAIIrQw155FTW04JV6LZSr6EX4LgJP/6RP20pEgZ59/STNjJ0xzrQKUdz
-         +hiGMNo/H9xnx8+lYpxywMKqKSkvuRkXzxh+5qaMVBOekl/c8pL1Zwfbyq0EzGjQSInL
-         ALamRZ2kYOXwAEnjntOuemC4KBL0kEQqcAyQ7vRW/ZsJriScqzRirPTG+vF/CBeFwMmf
-         OiBA==
-X-Gm-Message-State: AOAM530TBqZrDjvwwvfSYurFLptY48p4oAM1XrHSgmjvo5Xsb8JlpTeY
-        PxKuXP3i2O0EBSgPShdX0ItgzAPwr0q1Gv4MMHs=
-X-Google-Smtp-Source: ABdhPJyCHTYidwO2t0YeBfeSseVCjKMPjUrtG2pw9iYRqyOisE7Lhk3N9M/V8NQ5VfIfeyrMx5NFwAtojaGBYCr2NOM=
-X-Received: by 2002:ac2:5327:: with SMTP id f7mr2589385lfh.8.1599075124829;
- Wed, 02 Sep 2020 12:32:04 -0700 (PDT)
+        bh=dj2750p0sregmEuLVCaZvkSO0triG/j2T/O2tveQBb4=;
+        b=oyFyuGqtHypWGCNcmFGtORbnKuAFCCIc/BKWF0BucWPS/ICkxnmeWhITAsKhqseJ79
+         y9vIKt8z/TvMTnUhvnPJUoj8QFXZyd4YYAx8PXri9vcUyu4uYwNJHY1Udm2TH+Wqh5SB
+         g+8wf5JCdekiqvnEYWKOUWHNG0WOYa9erkXykl0hr+IuoRjbuhQECxaJRxF/Mu0bGyv0
+         fYKGfsVmNFpKec3huJAdgbHMbuSiGLI3/Q3RocJejx/vZqcP0NDbX/qIdhZ19uVQ9Pe5
+         ZVip2q1si3S6pg2z8nHgBb5aYX2n41n1IMAjRrWlB2ci2s1OJIRU1vg1TlTMU851HFqX
+         5OPw==
+X-Gm-Message-State: AOAM530S/pzitPW+jNr43i3UpJf5+jKgvCoajUaTu3vD4Tf+olK6n7M7
+        ef8oFCSJqjlpFHUf2eeAd7kMih7ScNdX8O1ezxc=
+X-Google-Smtp-Source: ABdhPJyG9bdDNHuoH7ijeXAIwntXUrl4wIH74VOnsmc2WeOmei2DGuarWcLJuxCYmXjRO2vQs1oeko7OnGkWeiTaSTM=
+X-Received: by 2002:a25:824a:: with SMTP id d10mr12629759ybn.260.1599076358917;
+ Wed, 02 Sep 2020 12:52:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <87mu282gay.fsf@oracle.com>
-In-Reply-To: <87mu282gay.fsf@oracle.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Sep 2020 12:31:53 -0700
-Message-ID: <CAADnVQ+AZvXTSitF+Fj5ohYiKWERN2yrPtOLR9udKcBTHSZzxA@mail.gmail.com>
-Subject: Re: EF_BPF_GNU_XBPF
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc:     bpf <bpf@vger.kernel.org>
+References: <20200901015003.2871861-1-andriin@fb.com> <20200901015003.2871861-5-andriin@fb.com>
+ <20200902053628.bqqytnpebrum7heh@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200902053628.bqqytnpebrum7heh@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Sep 2020 12:52:27 -0700
+Message-ID: <CAEf4BzYkpJWUqeNJfVpyC1Cf5ThHXkpxV-yrgY0XfAmEie6tKg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 04/14] libbpf: make RELO_CALL work for
+ multi-prog sections and sub-program calls
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 11:22 AM Jose E. Marchesi
-<jose.marchesi@oracle.com> wrote:
+On Tue, Sep 1, 2020 at 10:36 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
+> On Mon, Aug 31, 2020 at 06:49:53PM -0700, Andrii Nakryiko wrote:
+> > +
+> > +static int
+> > +bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
+> > +                    struct bpf_program *prog)
+> > +{
+> > +     size_t sub_insn_idx, insn_idx, new_cnt;
+> > +     struct bpf_program *subprog;
+> > +     struct bpf_insn *insns, *insn;
+> > +     struct reloc_desc *relo;
+> > +     int err;
+> > +
+> > +     err = reloc_prog_func_and_line_info(obj, main_prog, prog);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     for (insn_idx = 0; insn_idx < prog->sec_insn_cnt; insn_idx++) {
+> > +             insn = &main_prog->insns[prog->sub_insn_off + insn_idx];
+> > +             if (!insn_is_subprog_call(insn))
+> > +                     continue;
+> > +
+> > +             relo = find_prog_insn_relo(prog, insn_idx);
+> > +             if (relo && relo->type != RELO_CALL) {
+> > +                     pr_warn("prog '%s': unexpected relo for insn #%zu, type %d\n",
+> > +                             prog->name, insn_idx, relo->type);
+> > +                     return -LIBBPF_ERRNO__RELOC;
+> > +             }
+> > +             if (relo) {
+> > +                     /* sub-program instruction index is a combination of
+> > +                      * an offset of a symbol pointed to by relocation and
+> > +                      * call instruction's imm field; for global functions,
+> > +                      * call always has imm = -1, but for static functions
+> > +                      * relocation is against STT_SECTION and insn->imm
+> > +                      * points to a start of a static function
+> > +                      */
+> > +                     sub_insn_idx = relo->sym_off / BPF_INSN_SZ + insn->imm + 1;
+> > +             } else {
+> > +                     /* if subprogram call is to a static function within
+> > +                      * the same ELF section, there won't be any relocation
+> > +                      * emitted, but it also means there is no additional
+> > +                      * offset necessary, insns->imm is relative to
+> > +                      * instruction's original position within the section
+> > +                      */
 >
-> Hello BPF people!
+> Great two comments. Thanks.
 >
-> In order to ease the testing of the GCC bpf port we are adding a number
-> of extensions to the BPF ISA.
+> > +                     sub_insn_idx = prog->sec_insn_off + insn_idx + insn->imm + 1;
+> > +             }
+> > +
+> > +             /* we enforce that sub-programs should be in .text section */
+> > +             subprog = find_prog_by_sec_insn(obj, obj->efile.text_shndx, sub_insn_idx);
+> > +             if (!subprog) {
+> > +                     pr_warn("prog '%s': no .text section found yet sub-program call exists\n",
+> > +                             prog->name);
+> > +                     return -LIBBPF_ERRNO__RELOC;
+> > +             }
+> > +
+> > +             /* if subprogram hasn't been used in current main program,
+> > +              * relocate it and append at the end of main program code
+> > +              */
 >
-> We would like to use one bit in the e_flags field of the ELF header in
-> order to flag that the code in the ELF file is not plain eBPF:
->
-> For EM_BPF:
->
-> #define EF_BPF_GNU_XBPF 0x00000001
->
-> Any objection?
+> This one is quite confusing.
+> "hasn't been used" isn't right.
+> This subprog was used, but wasn't appeneded yet. That's what sub_insn_off is tracking.
 
-I've looked at your lpc slides and the extensions don't look like BPF
-extensions.
-At least I didn't see any attempt to make them verifiable.
-In that sense it's not BPF and it's not correct to use EM_BPF for it.
-I suggest to define your own EM for your ISA.
+"hasn't been used *yet*" would be more precise, meaning: up until the
+current instruction there were no calls to that subprogram.
+
+> Also "relocate and append it" is not right either.
+> It's "append and start relocating".
+
+Right, order of actions is wrong, I'll fix the wording.
+
+> Probably shouldn't call it 'main' and 'subprog'.
+> It equally applies to 'subprog' and 'another subprog'.
+
+Yes, you are right, I'll update comments to be less confusing.
+
+>
+> > +             if (subprog->sub_insn_off == 0) {
+> > +                     subprog->sub_insn_off = main_prog->insns_cnt;
+> > +
+> > +                     new_cnt = main_prog->insns_cnt + subprog->insns_cnt;
+> > +                     insns = libbpf_reallocarray(main_prog->insns, new_cnt, sizeof(*insns));
+> > +                     if (!insns) {
+> > +                             pr_warn("prog '%s': failed to realloc prog code\n", main_prog->name);
+> > +                             return -ENOMEM;
+> > +                     }
+> > +                     main_prog->insns = insns;
+> > +                     main_prog->insns_cnt = new_cnt;
+> > +
+> > +                     memcpy(main_prog->insns + subprog->sub_insn_off, subprog->insns,
+> > +                            subprog->insns_cnt * sizeof(*insns));
+> > +
+> > +                     pr_debug("prog '%s': added %zu insns from sub-prog '%s'\n",
+> > +                              main_prog->name, subprog->insns_cnt, subprog->name);
+> > +
+> > +                     err = bpf_object__reloc_code(obj, main_prog, subprog);
+> > +                     if (err)
+> > +                             return err;
+> > +             }
+> > +
+> > +             /* main_prog->insns memory could have been re-allocated, so
+> > +              * calculate pointer again
+> > +              */
+> > +             insn = &main_prog->insns[prog->sub_insn_off + insn_idx];
+> > +             /* calculate correct instruction position within main prog */
+>
+> may be: "calculate position within the prog being relocated?"
+
+no-no, in this case it's an instruction index within the main
+(entry-point) BPF program with all the used subprograms appended. So
+even if we have subprog1 calling another subprog2, all the instruction
+indices are calculated within the main BPF program's "system of
+coordinates", because each main BPF program can have a different
+subset of functions appended and subprogs might be in a different
+order and at different positions.
+
+>
+> > +             insn->imm = subprog->sub_insn_off - (prog->sub_insn_off + insn_idx) - 1;
+>
+> I think the algorithm is sound.
+> Could you add a better description of it?
+> May be some small diagram to illustrate how it recursively relocates?
+> That it starts with main, walks some number of insn, when it sees pseudo_call to
+> not yet appended subprog, it adds it to the end and recursively starts relocating it.
+> That subprog can have relos too. If they're pointing to not yet appended subprog it will be
+> added again and that 2nd subprog will start relocating while the main and 1st subprog
+> will be pending.
+
+Ok, I'll try to give some better overview in the comments.
+
+> The algorithm didn't have to be recursive, but I guess it's fine to keep this way.
+> It's simple enough. I haven't thought through how it can look without recursion.
+> Probably a bunch of book keeping of things to relocate would have been necessary.
+
+It's a graph traversing problem to figure out which subprograms need
+to be appended. I did it DFS style because it's a bit simpler that way
+(there is no separate pass for detecting used subprogs and then
+relocating all of them), plus libbpf already relies on recursion (at
+least for CO-RE), so I didn't feel bad about it. It's possible to do
+it with BFS, though, by maintaining a queue of to-be-processed
+subprogs, mark and append them. Then as a second pass relocate calls.
+But as you said, it's simple enough on a high-level, that I'd stick to
+what I have. I'll improve the comments, though.
