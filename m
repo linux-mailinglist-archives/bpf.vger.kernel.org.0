@@ -2,271 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407F725A26F
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 02:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318A925A274
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 02:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgIBAq6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 20:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIBAqz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 20:46:55 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AC2C061244
-        for <bpf@vger.kernel.org>; Tue,  1 Sep 2020 17:46:54 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id i26so4167827ejb.12
-        for <bpf@vger.kernel.org>; Tue, 01 Sep 2020 17:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3RFj3YnGQagsUtiAD7e8C2sZcfN3W2rXzRlDvYIWW7s=;
-        b=F+tEijnEaP6XzWJCoTEnnYfkcnfw9PHhdLwctg0OgJBsJLCwO1q29kG+mKooqkfm9z
-         wOzC8S6Ez7jRmfHjnYU4N+X3IRu9oa/76LjPtTGBhBbwaGeLxAsvvh8XkQtgjTEf3mEB
-         YKRynt7dccB8ewFztug3K7cwOhDsnxd5BibpUa1y1JgF/vGw8LE586JgYCNHrOr2sugi
-         /OvjPKT2oBbxnsRcystaJmpXO4zjXdkMglv7fH/FE9sNpXtdA2GjkWidyWGXOSbpIVzR
-         2WaU/MQmu79XeZs9220HMwjtl/Ya0oBX0Y//04++14V0MfomABlsI+Pc5YAm9zlNIOfd
-         cOcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3RFj3YnGQagsUtiAD7e8C2sZcfN3W2rXzRlDvYIWW7s=;
-        b=igDNGATMz185V2cQPdt3KDxVh92fR9Pd6CSu3WfmcbRgYqaOw1zK6nIKSsPy21mBlp
-         gMfQtp6/uoRJ/4NZIKZ7syXEvNotce1cta5FUCmN4kQh6fMC7lEgl5dJLKmL+ggjxJfV
-         G/Ga8gU7SpAnhzQAL+HE+MnjrSL69khwOT0e4Ykp5EeM0hE47v+7yjeu5ZKPFqq2LdPg
-         GqsXM545ns+CEPZChInb5LBSNW7x6lVjn+zuIXHK65wvbwfHdPAuTbRm0REhyC/ZIKo5
-         6n+PK7UOJ7wDgFKiGa9iKEqWv6NC5STD3O+qPBCWphzgKKVSxCU4O88Bu7vvF45fySV0
-         Mojw==
-X-Gm-Message-State: AOAM530JAnZdaA6Ib2GYpWPoRx0rDuqlhHNEqA6TJaebeqlqro/AAeu0
-        +6o1MhAfScRK0wpQ+VmbEg1DR6H4hTpI0J7WNh+6KQ==
-X-Google-Smtp-Source: ABdhPJz0K6j5oT35CiHd914OSml2+PMRWxSoQY2AqvDLmP1gICFZYH8Mj2pg+9u0ndap4hjHog2OrCMhOnuxFavp7yI=
-X-Received: by 2002:a17:907:72d2:: with SMTP id du18mr4212453ejc.359.1599007613121;
- Tue, 01 Sep 2020 17:46:53 -0700 (PDT)
+        id S1726078AbgIBAwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 20:52:35 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4208 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbgIBAwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Sep 2020 20:52:34 -0400
+IronPort-SDR: kTmXBF3BEoadklpK5VqWp0bk/GOZ5tSfGut4dGElNnGQqf9456PUwisda+bnhggGJlrUNNWufW
+ IWcVObQ1Hbdg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="154696254"
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
+   d="scan'208";a="154696254"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 17:52:28 -0700
+IronPort-SDR: RSOU/dw0QqA1VTa+w2Z7KuPxsLNNXEY5frGETkWrV3o1Csy3ih4mH+tI35D8dgBEJUvnOcR8Im
+ vWgKGo433PUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
+   d="scan'208";a="283565384"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2020 17:52:28 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 1 Sep 2020 17:52:27 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 1 Sep 2020 17:52:13 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 1 Sep 2020 17:52:13 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Tue, 1 Sep 2020 17:52:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ax91XkS5G+PxQJ2G+aflbrUEU20nOzlsMe7cT7HVH2YgDzTa1N572EEwJEQmlL29QxS3JCC5SYbtGlBB6hyYyLA5Mbvtw5xSf5iGGENSkv99wrLqrMU9CKpRwZgAaSwXvt6wHDTBHRHuDE5jfz8kFbm82Go6m0rHZHv1eQJzTfWHF7CaQKZK7STFVr8BlGxAepzsOdzGObYjwsIDTmcLDq0ycoCNBFdUNWoupFP73cUay4b9cJxF3Ab1wp5orR0Y2+WZUU92Tc5lchgjLJeFB/bNiPqhj96eqLUFaLYioVHN4pYyQb0mKlYCmqZXKLSDWyJdqItDAePaYwmn2cTdAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mFrx5oFipYT+9QNIoPEtmrK5HLBJMEKkVvx7y3oD5BM=;
+ b=LdX/N40LTkHYBhzpgeso8WNZAisujGaxPBz6330DfGHbXRegrYGyHG1ezGgP9mEmnrdAtbzQU3tjEym3Uf9LiqK5HjJy7MqYnkvU1x0r7G0ZCmzJjrfqaYZMlNiNipq7ZUqtf3MSb2tYsKZZKAqMQABIfPLZrOo7aNLMsvH9+H7V7b8fDuB9f/ao9hQ+IbGc4HEuTQQoveoiTZKhP8HUXAeisellmkFnQHx1wQKL3YbwK4PmjN4uvBfp2BAhNGgUw9pa8w+uTmJZtdzbae4Za3NaRyHvZkH8J6SB+A68QL3olkQ058arBkup35BSdUEnWyFaBq8WaPjIjVbPHmZIPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mFrx5oFipYT+9QNIoPEtmrK5HLBJMEKkVvx7y3oD5BM=;
+ b=Fvvipn05SpkGWNu35AU81YMrlp6JYT6mj6Sa+/ZsOg10fTacYkx0RNkAHPQqVSQY28SbDdPj9ja2Ym9JMkxSdEZ/XzZUj5Zl7dxaUF7VKVXosJc0TRhswuhsqYI2M5NJoQ/yz7byG9/w7YuR5oIv64DFwAzkp3qHT9k64cbUY4g=
+Received: from MW3PR11MB4522.namprd11.prod.outlook.com (2603:10b6:303:2d::8)
+ by MW3PR11MB4746.namprd11.prod.outlook.com (2603:10b6:303:5f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Wed, 2 Sep
+ 2020 00:52:10 +0000
+Received: from MW3PR11MB4522.namprd11.prod.outlook.com
+ ([fe80::a43e:b4a1:3c31:aecd]) by MW3PR11MB4522.namprd11.prod.outlook.com
+ ([fe80::a43e:b4a1:3c31:aecd%9]) with mapi id 15.20.3326.025; Wed, 2 Sep 2020
+ 00:52:10 +0000
+From:   "Ramamurthy, Harshitha" <harshitha.ramamurthy@intel.com>
+To:     David Ahern <dsahern@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "Duyck, Alexander H" <alexander.h.duyck@intel.com>,
+        "Herbert, Tom" <tom.herbert@intel.com>
+Subject: RE: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
+Thread-Topic: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
+Thread-Index: AQHWf8zo5S5nD8q420OtCeyQ23Z/hqlSoWiAgAHi1PA=
+Date:   Wed, 2 Sep 2020 00:52:09 +0000
+Message-ID: <MW3PR11MB45220F94F1E303CEC0F6C19C852F0@MW3PR11MB4522.namprd11.prod.outlook.com>
+References: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
+ <04856bca-0952-4dd7-3313-a13be6b2e95a@gmail.com>
+In-Reply-To: <04856bca-0952-4dd7-3313-a13be6b2e95a@gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiYzVmMTJkYzgtM2MyMC00N2JhLWIyZTctZDk4MDQ1NzdjNmYwIiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoieTJOR3U2WEZoMHVQcEJrTVJZaEFsMW5xXC9nbVZMY1I4d0FzR3FvOWJQZW5nNWxVNlVnM3prT2RXcThcL0NFK0M0In0=
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-ctpclassification: CTP_NT
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [71.63.191.211]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 675faf31-beec-4f9a-e2e6-08d84eda6c61
+x-ms-traffictypediagnostic: MW3PR11MB4746:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR11MB4746AF43795B80E40D09A4B2852F0@MW3PR11MB4746.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1KWelUmGCXtH+39F2tC5QrA3RoqOMP/i7x6gvBrkBJCdFA0NQHLhA/lZzYh8Og8H3+Ly3FGUzvfJNFnzTF1Vrv/n9P+0vwo9MptzGzqFWa77CHlE9w08rEzzRTiX4zyPmEmeW2pgetXY1xJzdPhClPppfe+lasAbJgpjd10bAWVPIzOWWoTahw8uQbf3qfYQLIiHkAZbJWR7+3ij6CNdtI5zmZKTsUw9V65OghMcrJxire0DTrH3OZVyF19gXun4xiVQt3V+3M9btY43tsuxyZzpiYr4f7gqoGu4o/5Gc1a9j1LtVRjeNkQduCMv3PvK4jHLfGKQz9kt+UuM0T7Wig==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4522.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(396003)(346002)(66446008)(26005)(107886003)(33656002)(6506007)(66946007)(186003)(83380400001)(64756008)(66556008)(53546011)(76116006)(86362001)(55016002)(4326008)(66476007)(5660300002)(478600001)(8676002)(7696005)(52536014)(2906002)(110136005)(54906003)(316002)(71200400001)(9686003)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: npFntKnvTG6qPFWiky3Z5fcwsJq41jIDy26Iwm9PHq5DxfIkMnbpdcdXJour84CHuACMOEAJ0R9K4UoeMJJIky4bSSXpvOM53bW7GvWy0q7J2hl0ctQ+z2ZwcKvG/8elsBmVXSVwwX0JLIBOvna8CuUvUiTJlujqFxyy28J0I95muTLVs5azOySYBlw6DkOZIOuMrgOAxCNiO4lwqA+LyWO+xbu0EXRv7BlSAejb+MaIOUgbryM1D0iycAboP2CBhTQCf+SMQ0b8JblobKyPCe6XXBcbccYXEe4v+Uik9j3BQsMcqkVxtsmPtnzfgCZ7hzzQDbhEi8UE7NOClvzfWRle12/Jxjbyg9Oua+L/3dBRzayEcilDvlupQr/AcGxA0ObkUKG+heOGEIN9YWBaESxad3Ahuz+eLF/Mp9FNttV/kzvRHYIYd9gwYiaLB8YfzAYfiga2AEJsK9Nrk1VrLfVPW4hrgIv7BGOhoZ1+iVvGTiyjb3ADOvIf0yv303Nq6J2vUgCcsHDrn6DKO6C2PpYWsEILbDNkePMJ8DWDjkSGyT1/lUUE5ibIyC51Z/+H4B1zIMbXrbzTkj2kbRIUxG5rWExcfElbuzP6xYAX6mJbfxWWcu2OT2SzWXBPn3Mq8BSJ+0KxQWbtuwlO/gnWhw==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-5-haoluo@google.com>
- <CAEf4BzYhjUwYH_BBgtHz9-Ha-54AQ_8L3_N=cXsuud=kayk5-A@mail.gmail.com>
- <CA+khW7jDYSvQcVvQ2dLHC9JOLFp9wC7fNtt4rzgBkdWOC=AVjQ@mail.gmail.com>
- <CAEf4BzaO_P1LiWDvFcZ3u1f2eaUEpqb+KXg0FqLMGYDLdRNBJQ@mail.gmail.com>
- <CA+khW7jnzZim6h9O+JH2AnXmvtU19-FxJDZBXfHZH9Xniq8zeg@mail.gmail.com> <CAEf4BzZrn44Y-38CPmZnAYFqtGkjEHXE5F8fZS5K8D4+-YpPug@mail.gmail.com>
-In-Reply-To: <CAEf4BzZrn44Y-38CPmZnAYFqtGkjEHXE5F8fZS5K8D4+-YpPug@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 1 Sep 2020 17:46:41 -0700
-Message-ID: <CA+khW7gyw1WMjwP23Gu4uEbucKwvfF1Jargzi_k=a1KbfbJ11g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/8] bpf/libbpf: BTF support for typed ksyms
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4522.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 675faf31-beec-4f9a-e2e6-08d84eda6c61
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 00:52:09.9792
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XpizdaPuhKBCRp6Dq9xMW9U5AIrUhpbPnJnMFpNIDtZi3fwNMFL6eDU4BVU/1QjUmUv9i5bWOud4H6Zwa7P4/n8JXsfHYLWatTVVUbJtELg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4746
+X-OriginatorOrg: intel.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 4:55 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Sep 1, 2020 at 1:35 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > On Tue, Sep 1, 2020 at 11:11 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Thu, Aug 27, 2020 at 3:29 PM Hao Luo <haoluo@google.com> wrote:
-> > > >
-> > > > On Fri, Aug 21, 2020 at 3:37 PM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Aug 19, 2020 at 3:42 PM Hao Luo <haoluo@google.com> wrote:
-> > > > > >
-> > > > > > If a ksym is defined with a type, libbpf will try to find the ksym's btf
-> > > > > > information from kernel btf. If a valid btf entry for the ksym is found,
-> > > > > > libbpf can pass in the found btf id to the verifier, which validates the
-> > > > > > ksym's type and value.
-> > > > > >
-> > > > > > Typeless ksyms (i.e. those defined as 'void') will not have such btf_id,
-> > > > > > but it has the symbol's address (read from kallsyms) and its value is
-> > > > > > treated as a raw pointer.
-> > > > > >
-> > > > > > Signed-off-by: Hao Luo <haoluo@google.com>
-> > > > > > ---
-> > > > > >  tools/lib/bpf/libbpf.c | 130 ++++++++++++++++++++++++++++++++++++-----
-> > > > > >  1 file changed, 114 insertions(+), 16 deletions(-)
-> > > > > >
-> > > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > > > > index 4a81c6b2d21b..94eff612c7c2 100644
-> > > > > > --- a/tools/lib/bpf/libbpf.c
-> > > > > > +++ b/tools/lib/bpf/libbpf.c
-> > > > > > @@ -357,7 +357,16 @@ struct extern_desc {
-> > > > > >                         bool is_signed;
-> > > > > >                 } kcfg;
-> > > > > >                 struct {
-> > > > > > -                       unsigned long long addr;
-> > > > > > +                       /*
-> > > > > > +                        *  1. If ksym is typeless, the field 'addr' is valid.
-> > > > > > +                        *  2. If ksym is typed, the field 'vmlinux_btf_id' is
-> > > > > > +                        *     valid.
-> > > > > > +                        */
-> > > > > > +                       bool is_typeless;
-> > > > > > +                       union {
-> > > > > > +                               unsigned long long addr;
-> > > > > > +                               int vmlinux_btf_id;
-> > > > > > +                       };
-> > > > >
-> > > > > ksym is 16 bytes anyways, union doesn't help to save space. I propose
-> > > > > to encode all this with just two fields: vmlinux_btf_id and addr. If
-> > > > > btf_id == 0, then extern is typeless.
-> > > >
-> > > > Ack on expanding the union. But I slightly preferred keeping
-> > > > is_typeless. IIUC, btf_id points a VAR_KIND, we need the following
-> > > > pointer chasing every time
-> > > >
-> > > > t = btf__type_by_id(obj->btf, ext->btf_id);
-> > > > t->type;
-> > > >
-> > > > which I felt is worse than keeping a is_typeless flag.
-> > >
-> > > Sorry, I'm not following. In all places where you would check
-> > > sym->is_typeless, you'd now just do:
-> > >
-> > > if (ext->ksym.vmlinux_btf_id) {
-> > >   /* typed, use ext->ksym.vmlinux_btf_id */
-> > > } else {
-> > >   /* typeless */
-> > > }
-> > >
-> >
-> > My apologies, I should be more specific.
-> >
-> > 'vmlinux_btf_id' gets its value in bpf_object__resolve_ksyms_btf_id().
-> > Before we call this function, there are three places that need to tell
-> > whether a ksym is typed, currently in v1. Specifically,
-> >
-> >  - in bpf_object__collect_externs(), typeless ksyms are rewritten as
-> > 'int', in contrast, typed ones are left untouched (though this may
-> > change in v2).
-> >  - bpf_object__load_vmlinux_btf() now is called before
-> > bpf_object__resolve_ksyms_btf_id(). In v1's design, if there is no
-> > typed ksym, we could skip loading vmlinux_btf potentially.
-> >  - even bpf_object__resolve_ksyms_btf_id() itself is conditionally
-> > called, depending on whether there is any typed ksym.
-> >
-> > At the time when these places are called, vmlinux_btf_id is
-> > unavailable and we can't use it for the purpose of telling whether a
-> > ksym is typed.
-> >
-> > However, rather than vmlinux_btf_id, there may be an alternative. We
-> > can record the ksym extern's type's btf_id and use that as
-> > 'is_typeless' flag. This also solves the problem below.
->
-> Oh, I was thinking that vmlinux_btf_id contains a local BTF ID this
-> whole time (clearly ignoring the "vmlinux_" part).
->
-> >
-> > [...]
-> >
-> > > > > >                 } else {
-> > > > > >                         pr_warn("unrecognized extern section '%s'\n", sec_name);
-> > > > > >                         return -ENOTSUP;
-> > > > > > @@ -2992,9 +3006,9 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
-> > > > > >         /* sort externs by type, for kcfg ones also by (align, size, name) */
-> > > > > >         qsort(obj->externs, obj->nr_extern, sizeof(*ext), cmp_externs);
-> > > > > >
-> > > > > > -       /* for .ksyms section, we need to turn all externs into allocated
-> > > > > > -        * variables in BTF to pass kernel verification; we do this by
-> > > > > > -        * pretending that each extern is a 8-byte variable
-> > > > > > +       /* for .ksyms section, we need to turn all typeless externs into
-> > > > > > +        * allocated variables in BTF to pass kernel verification; we do
-> > > > > > +        * this by pretending that each typeless extern is a 8-byte variable
-> > > > > >          */
-> > > > > >         if (ksym_sec) {
-> > > > > >                 /* find existing 4-byte integer type in BTF to use for fake
-> > > > > > @@ -3012,7 +3026,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
-> > > > > >
-> > > > > >                 sec = ksym_sec;
-> > > > > >                 n = btf_vlen(sec);
-> > > > > > -               for (i = 0, off = 0; i < n; i++, off += sizeof(int)) {
-> > > > > > +               for (i = 0, off = 0; i < n; i++) {
-> > > > > >                         struct btf_var_secinfo *vs = btf_var_secinfos(sec) + i;
-> > > > > >                         struct btf_type *vt;
-> > > > > >
-> > > > > > @@ -3025,9 +3039,14 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
-> > > > > >                                 return -ESRCH;
-> > > > > >                         }
-> > > > > >                         btf_var(vt)->linkage = BTF_VAR_GLOBAL_ALLOCATED;
-> > > > > > -                       vt->type = int_btf_id;
-> > > > > > +                       if (ext->ksym.is_typeless) {
-> > > > > > +                               vt->type = int_btf_id;
-> > > > > > +                               vs->size = sizeof(int);
-> > > > > > +                       }
-> > > > > >                         vs->offset = off;
-> > > > > > -                       vs->size = sizeof(int);
-> > > > > > +                       off += vs->size;
-> > > > > > +                       pr_debug("ksym var_secinfo: var '%s', type #%d, size %d, offset %d\n",
-> > > > > > +                                ext->name, vt->type, vs->size, vs->offset);
-> > > > >
-> > > > > It's a bit of a waste that we still allocate memory for those typed
-> > > > > ksym externs, as they don't really need space. But modifying BTF is a
-> > > > > pain right now, so I think we'll have to do it, until we have a better
-> > > > > BTF API. But let's make them integers for now to take a fixed and
-> > > > > small amount of space.
-> > > > >
-> > > >
-> > > > Do you mean making typed ksym externs of type integer? If so, we can't
-> > > > do that, I think. After collect_externs, we later need to compare the
-> > > > declared extern's type against the type defined in kernel. Better not
-> > > > rewrite their types in BTf.
-> > >
-> > > Then maybe we need to make btf_id to point to the actual type of the
-> > > variable, not BTF_KIND_VAR? Or just additionally record type's btf_id,
-> > > not sure which one makes more sense at the moment.
-> > >
-> > > >
-> > > > I am generally against modifying BTF. I initially didn't notice that
-> > > > all the ksym externs' types are modified to 'int' and the type
-> > > > comparison I mentioned above always failed. I dumped the btf in
-> > > > vmlinux and the btf in object file, checked the kernel variable's
-> > > > source code, printed out everything I could. The experience was very
-> > > > bad.
-> > > >
-> > >
-> > > It might be confusing, I agree, but the alternative is just a waste of
-> > > memory just to match the BTF definition of a DATASEC, which describes
-> > > externs. It seems sloppy to allocate a bunch of unused memory just to
-> > > match the kernel's variable size, while in reality we either use 8
-> > > bytes used (for typeless externs, storing ksym address) or none (for
-> > > typed externs).
-> > >
-> > > Another alternative is to not specify BTF ID for .ksyms map, but it's
-> > > not great for typeless externs case, as we are losing all type info
-> > > completely. Trade-offs...
-> > >
-> >
-> > I see. It looks like rewriting all ksym externs' type to integers is
-> > the most straightforward solution here, though I felt a bit hacky.
-> >
-> > I can record the btf_id of the var's type before rewriting, so
-> > bpf_core_type_are_compat() can find the true type for comparison. One
-> > good thing about recording the type's btf_id is that it can be used to
-> > tell whether the ksym extern is typed or not, before vmlinux_btf_id
->
-> that's what I've been getting at, but I missed that vmlinux_btf_id is
-> kernel BTF type ID. So let's record both local and target BTF type IDs
-> and use local_btf_id as an indicator of typed vs typeless?
->
-
-Yup, that sounds great!
-
-[...]
+PiBGcm9tOiBicGYtb3duZXJAdmdlci5rZXJuZWwub3JnIDxicGYtb3duZXJAdmdlci5rZXJuZWwu
+b3JnPiBPbiBCZWhhbGYNCj4gT2YgRGF2aWQgQWhlcm4NCj4gU2VudDogTW9uZGF5LCBBdWd1c3Qg
+MzEsIDIwMjAgMTI6NTQgUE0NCj4gVG86IFJhbWFtdXJ0aHksIEhhcnNoaXRoYSA8aGFyc2hpdGhh
+LnJhbWFtdXJ0aHlAaW50ZWwuY29tPjsNCj4gYnBmQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2QHZn
+ZXIua2VybmVsLm9yZzsgYXN0QGtlcm5lbC5vcmc7DQo+IGRhbmllbEBpb2dlYXJib3gubmV0OyBk
+YXZlbUBkYXZlbWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmcNCj4gQ2M6IER1eWNrLCBBbGV4YW5k
+ZXIgSCA8YWxleGFuZGVyLmguZHV5Y2tAaW50ZWwuY29tPjsgSGVyYmVydCwgVG9tDQo+IDx0b20u
+aGVyYmVydEBpbnRlbC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggYnBmLW5leHRdIGJwZjog
+YWRkIGJwZl9nZXRfeGRwX2hhc2ggaGVscGVyIGZ1bmN0aW9uDQo+IA0KPiBPbiA4LzMxLzIwIDE6
+MjUgUE0sIEhhcnNoaXRoYSBSYW1hbXVydGh5IHdyb3RlOg0KPiA+IGRpZmYgLS1naXQgYS9pbmNs
+dWRlL3VhcGkvbGludXgvYnBmLmggYi9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmggaW5kZXgNCj4g
+PiBhNjEzNzUwZDU1MTUuLmJmZmU5M2I1MjZlNyAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL3Vh
+cGkvbGludXgvYnBmLmgNCj4gPiArKysgYi9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmgNCj4gPiBA
+QCAtMzU3Niw2ICszNTc2LDE0IEBAIHVuaW9uIGJwZl9hdHRyIHsNCj4gPiAgICogCQl0aGUgZGF0
+YSBpbiAqZHN0Ki4gVGhpcyBpcyBhIHdyYXBwZXIgb2YgY29weV9mcm9tX3VzZXIoKS4NCj4gPiAg
+ICogCVJldHVybg0KPiA+ICAgKiAJCTAgb24gc3VjY2Vzcywgb3IgYSBuZWdhdGl2ZSBlcnJvciBp
+biBjYXNlIG9mIGZhaWx1cmUuDQo+ID4gKyAqDQo+ID4gKyAqIHUzMiBicGZfZ2V0X3hkcF9oYXNo
+KHN0cnVjdCB4ZHBfYnVmZiAqeGRwX21kKQ0KPiANCj4gSSB0aG91Z2h0IHRoZXJlIHdhcyBhIGNo
+YW5nZSByZWNlbnRseSBtYWtpbmcgdGhlIHVhcGkgcmVmZXJlbmNlIHhkcF9tZDsNCj4geGRwX2J1
+ZmYgaXMgbm90IGV4cG9ydGVkIGFzIHBhcnQgb2YgdGhlIHVhcGkuDQoNCk5vdCBzdXJlIHdoYXQg
+eW91IG1lYW4gLSBvdGhlciB4ZHAgcmVsYXRlZCBoZWxwZXIgZnVuY3Rpb25zIHN0aWxsIHVzZSB4
+ZHBfYnVmZiBhcyBhbiBhcmd1bWVudC4gQ291bGQgeW91IHBvaW50IG1lIHRvIGFuIGV4YW1wbGUg
+b2Ygd2hhdCB5b3UgYXJlIHJlZmVycmluZyB0bz8NCg0KPiANCj4gDQo+ID4gKyAqCURlc2NyaXB0
+aW9uDQo+ID4gKyAqCQlSZXR1cm4gdGhlIGhhc2ggZm9yIHRoZSB4ZHAgY29udGV4dCBwYXNzZWQu
+IFRoaXMgZnVuY3Rpb24NCj4gPiArICoJCWNhbGxzIHNrYl9mbG93X2Rpc3NlY3QgaW4gbm9uLXNr
+YiBtb2RlIHRvIGNhbGN1bGF0ZSB0aGUNCj4gPiArICoJCWhhc2ggZm9yIHRoZSBwYWNrZXQuDQo+
+ID4gKyAqCVJldHVybg0KPiA+ICsgKgkJVGhlIDMyLWJpdCBoYXNoLg0KPiA+ICAgKi8NCj4gPiAg
+I2RlZmluZSBfX0JQRl9GVU5DX01BUFBFUihGTikJCVwNCj4gPiAgCUZOKHVuc3BlYyksCQkJXA0K
+PiA+IEBAIC0zNzI3LDYgKzM3MzUsNyBAQCB1bmlvbiBicGZfYXR0ciB7DQo+ID4gIAlGTihpbm9k
+ZV9zdG9yYWdlX2RlbGV0ZSksCVwNCj4gPiAgCUZOKGRfcGF0aCksCQkJXA0KPiA+ICAJRk4oY29w
+eV9mcm9tX3VzZXIpLAkJXA0KPiA+ICsJRk4oZ2V0X3hkcF9oYXNoKSwJCVwNCj4gPiAgCS8qICov
+DQo+ID4NCj4gPiAgLyogaW50ZWdlciB2YWx1ZSBpbiAnaW1tJyBmaWVsZCBvZiBCUEZfQ0FMTCBp
+bnN0cnVjdGlvbiBzZWxlY3RzIHdoaWNoDQo+ID4gaGVscGVyIGRpZmYgLS1naXQgYS9uZXQvY29y
+ZS9maWx0ZXIuYyBiL25ldC9jb3JlL2ZpbHRlci5jIGluZGV4DQo+ID4gNDdlZWY5YTBiZTZhLi5j
+ZmI1YTZhZWE2YzMgMTAwNjQ0DQo+ID4gLS0tIGEvbmV0L2NvcmUvZmlsdGVyLmMNCj4gPiArKysg
+Yi9uZXQvY29yZS9maWx0ZXIuYw0KPiA+IEBAIC0zNzY1LDYgKzM3NjUsMzMgQEAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBicGZfZnVuY19wcm90bw0KPiBicGZfeGRwX3JlZGlyZWN0X21hcF9wcm90byA9
+IHsNCj4gPiAgCS5hcmczX3R5cGUgICAgICA9IEFSR19BTllUSElORywNCj4gPiAgfTsNCj4gPg0K
+PiA+ICtCUEZfQ0FMTF8xKGJwZl9nZXRfeGRwX2hhc2gsIHN0cnVjdCB4ZHBfYnVmZiAqLCB4ZHAp
+IHsNCj4gPiArCXZvaWQgKmRhdGFfZW5kID0geGRwLT5kYXRhX2VuZDsNCj4gPiArCXN0cnVjdCBl
+dGhoZHIgKmV0aCA9IHhkcC0+ZGF0YTsNCj4gPiArCXZvaWQgKmRhdGEgPSB4ZHAtPmRhdGE7DQo+
+ID4gKwlzdHJ1Y3QgZmxvd19rZXlzIGtleXM7DQo+ID4gKwl1MzIgcmV0ID0gMDsNCj4gPiArCWlu
+dCBsZW47DQo+ID4gKw0KPiA+ICsJbGVuID0gZGF0YV9lbmQgLSBkYXRhOw0KPiA+ICsJaWYgKGxl
+biA8PSAwKQ0KPiA+ICsJCXJldHVybiByZXQ7DQo+IA0KPiB5b3Ugc2hvdWxkIHZlcmlmeSBsZW4g
+Y292ZXJzIHRoZSBldGhlcm5ldCBoZWFkZXIuIExvb2tpbmcgYXQNCj4gX19za2JfZmxvd19kaXNz
+ZWN0IHVzZSBvZiBobGVuIHByZXN1bWVzIGl0IGV4aXN0cy4NCg0KWWVzLCAgSSB3aWxsIG1ha2Ug
+c3VyZSB0byByZXR1cm4gaWYgbGVuIDwgc2l6ZW9mKHN0cnVjdCBldGhoZHIpDQoNCj4gDQo+ID4g
+KwltZW1zZXQoJmtleXMsIDAsIHNpemVvZihrZXlzKSk7DQo+ID4gKwlfX3NrYl9mbG93X2Rpc3Nl
+Y3QoZGV2X25ldCh4ZHAtPnJ4cS0+ZGV2KSwgTlVMTCwNCj4gJmZsb3dfa2V5c19kaXNzZWN0b3Is
+DQo+ID4gKwkJCSAgICZrZXlzLCBkYXRhLCBldGgtPmhfcHJvdG8sIHNpemVvZigqZXRoKSwgbGVu
+LA0KPiA+ICsJCQkgICBGTE9XX0RJU1NFQ1RPUl9GX1NUT1BfQVRfRkxPV19MQUJFTCk7DQo+IA0K
+PiBCeSBTVE9QX0FUX0ZMT1dfTEFCRUwgSSB0YWtlIGl0IHlvdSB3YW50IHRoaXMgdG8gYmUgYW4g
+TDMgaGFzaC4gV2h5IG5vdA0KPiBhZGQgYSBmbGFncyBhcmd1bWVudCB0byB0aGUgaGVscGVyIGFu
+ZCBsZXQgdGhlIGhhc2ggYmUgTDMgb3IgTDQ/DQoNCkkgd3JvdGUgdGhpcyBleGFjdGx5IGhvdyBz
+a2JfZ2V0X2hhc2ggY2FsbHMgc2tiX2Zsb3dfZGlzc2VjdCAtIHdpdGggdGhlIHNhbWUgZmxhZyBT
+VE9QX0FUX0ZMT1dfTEFCRUwuICBTbyBpdCBzaG91bGQgYWxyZWFkeSBjb3ZlciBMMyBhbmQgTDQg
+aGFzaCwgcmlnaHQ/IEZyb20gd2hhdCBJIHVuZGVyc3RhbmQgU1RPUF9BVF9GTE9XX0xBQkVMIGZs
+YWcgaXMgdXNlZCB0byBvbmx5IHN0b3AgcGFyc2luZyB3aGVuIGEgZmxvdyBsYWJlbCBpcyBzZWVu
+IGluIGlwdjYgcGFja2V0cy4gDQoNCj4gDQo+IA0KPiB5b3Ugc2hvdWxkIGFkZCB0ZXN0IGNhc2Vz
+IGFuZCBoYXZlIHRoZW0gY292ZXIgdGhlIHBlcm11dGF0aW9ucyAtIGUuZy4sIHZsYW4sDQo+IFEt
+aW4tUSwgaXB2NCwgaXB2Niwgbm9uLUlQIHBhY2tldCBmb3IgTDMgaGFzaCBhbmQgdGhlbiB1ZHAs
+IHRjcCBmb3IgTDQgaGFzaC4NCg0KU3VyZSwgSSB3aWxsIGFkZCB0ZXN0IGNhc2VzIHVzaW5nIHRo
+aXMgaGVscGVyIGZ1bmN0aW9uLg0KDQpUaGFua3MgZm9yIHRoZSBmZWVkYmFjayENCkhhcnNoaXRo
+YQ0KDQo=
