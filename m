@@ -2,94 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B2825B5C4
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 23:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA3025B5EB
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 23:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgIBVRT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 17:17:19 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:41986 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgIBVRQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 17:17:16 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082LDcYB038068;
-        Wed, 2 Sep 2020 21:17:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=BV1HZq00dKXMzfyo3bfxru+4RrdF6fbWJfEcdUF7Um8=;
- b=bVhggRBmZFdJsFk0xvWMKx8m4pAN5dTX6+JSUtWA69CbFyphTUiwtKs7ygha9k/CVO2U
- pUpDh5SOILtRH0aKuQeyAMl7LBO4/Hvw8J1w/aEF/DzRvGOtKZ97GiwXuC09AG4Mvjz+
- AjiCxxQPmtIfdP0gu/mWr0UQvezFrio9htg4X0QE5Jtl1cr754mZWcXvTuNxUuaeKbKY
- 9JhfO2RoBNXVXEphGswmz7zq3QJnNh1X+Rhf/WWYxl9z8vtnzBuioO6nZoh3Bw38M05Q
- sdfUJfFehUBOiMWQaiTh2KrqehzPjczry/UO6PT9bqEJlf1LCyNfA/Wiag/ECE32Jeve Dw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 339dmn3qtm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 02 Sep 2020 21:17:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082LFNW7110656;
-        Wed, 2 Sep 2020 21:17:11 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 3380kqp812-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Sep 2020 21:17:11 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 082LHAkZ025417;
-        Wed, 2 Sep 2020 21:17:10 GMT
-Received: from termi.oracle.com (/10.175.48.72)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 02 Sep 2020 14:17:09 -0700
-From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
+        id S1726927AbgIBVdO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 17:33:14 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:46983 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726226AbgIBVdL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Sep 2020 17:33:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599082390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H368D3ZjVszsjbdmoLuZGFudZhOJwJboSRtKlrtcivk=;
+        b=FxDpm4Y+N4QTcA/vXbvoAHzwNGX/51LZ9FXWey007J7zgMgo3WmF6bgJUXS24OO4CMSOe0
+        wXudWg6hcacBTGjkKSL5NNP40ziRnFC1f/bFtPNTZlDHb54xL+xjiOU3TBi2lFqJ89zvCf
+        jjeIv0hCR8MUj15lEvPk7CfFZmeAKlg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-RF3zZ9UWM4-r51oRQkaw8w-1; Wed, 02 Sep 2020 17:33:08 -0400
+X-MC-Unique: RF3zZ9UWM4-r51oRQkaw8w-1
+Received: by mail-wr1-f70.google.com with SMTP id 3so211446wrm.4
+        for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 14:33:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=H368D3ZjVszsjbdmoLuZGFudZhOJwJboSRtKlrtcivk=;
+        b=lbWcaA1oizuiJVRlR6TL52/8jduC7AnRi3ghXj9CprXfQ36orcJAdCClH9FeSVmGVd
+         9Wo/FUj6SGjfW0W0yHXz2XnhHaIHH66CgdBMA9JL0MLjof6f2n3N4UGH/y+dvG3xOGQ+
+         4vJiGqhxGLCNH9vziR8RcgNi21h1u1CKbWbZCb13hdsycn5BYGF+p0aoI/HfrmnNBWWq
+         xlhCSw57wM0L+IgMQ2vbYrCaGd3RKRWMnZJJcccRhh8TM5OaG0afZTEtfOyozs0LWlam
+         8znwu1yJ32xa+N3Tr+jrd7uFcEygMdawz9ErIx5hUrVPWxeCTkSTvEtNggPMkMm714SE
+         VuzA==
+X-Gm-Message-State: AOAM530ISTMN9/elb22tFrHSh+XUk2ixn8IYLmvrfWg3QwLd5BvoJnLN
+        Z6qL0shdZAFAw9lWcQbecmNYrj8dWcqTTUAY7/fqilsfBWZfxlzlx0OxPzFs7eaEZTsqDqW8yGe
+        Bb4Xc4LPDm96p
+X-Received: by 2002:adf:fed1:: with SMTP id q17mr150048wrs.85.1599082387242;
+        Wed, 02 Sep 2020 14:33:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqjl/bk2vtNzUV5BZ+vtYlr0do4LkWozLBdXJxVrkZrd+zoFCCub4riumE9gvW2BKew1UZ3g==
+X-Received: by 2002:adf:fed1:: with SMTP id q17mr150031wrs.85.1599082386990;
+        Wed, 02 Sep 2020 14:33:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l126sm1217435wmf.39.2020.09.02.14.33.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 14:33:06 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 03798182009; Wed,  2 Sep 2020 23:33:05 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: EF_BPF_GNU_XBPF
-References: <87mu282gay.fsf@oracle.com>
-        <CAADnVQ+AZvXTSitF+Fj5ohYiKWERN2yrPtOLR9udKcBTHSZzxA@mail.gmail.com>
-        <87y2ls0w41.fsf@oracle.com>
-        <20200902203206.nx6ws4ixuo2bcic6@ast-mbp.dhcp.thefacebook.com>
-Date:   Wed, 02 Sep 2020 23:17:05 +0200
-In-Reply-To: <20200902203206.nx6ws4ixuo2bcic6@ast-mbp.dhcp.thefacebook.com>
-        (Alexei Starovoitov's message of "Wed, 2 Sep 2020 13:32:06 -0700")
-Message-ID: <87o8mn281a.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Cc:     sdf@google.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        YiFei Zhu <zhuyifei1999@gmail.com>, andriin@fb.com
+Subject: Re: [PATCH bpf-next v3 4/8] libbpf: implement bpf_prog_find_metadata
+In-Reply-To: <20200902210838.7a26mfi54dufou5a@ast-mbp.dhcp.thefacebook.com>
+References: <20200828193603.335512-1-sdf@google.com>
+ <20200828193603.335512-5-sdf@google.com> <874koma34d.fsf@toke.dk>
+ <20200831154001.GC48607@google.com>
+ <20200901225841.qpsugarocx523dmy@ast-mbp.dhcp.thefacebook.com>
+ <874kogike9.fsf@toke.dk>
+ <20200902210838.7a26mfi54dufou5a@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 02 Sep 2020 23:33:05 +0200
+Message-ID: <87mu27hnji.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
- mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=873 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009020199
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
- mlxlogscore=863 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=0
- spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009020199
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
->> As such, the property of being verifiable is irrelevant.
+> On Wed, Sep 02, 2020 at 11:43:26AM +0200, Toke H=C3=83=C6=92=C3=82=C2=B8i=
+land-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
+>> >
+>> > I don't feel great about this libbpf api. bpftool already does
+>> > bpf_obj_get_info_by_fd() for progs and for maps.
+>> > This extra step and extra set of syscalls is redundant work.
+>> > I think it's better to be done as part of bpftool.
+>> > It doesn't quite fit as generic api.
+>>=20
+>> Why not?=20
 >
-> No. It's a fundamental property of BPF.
-> If it's not verifiable it's not BPF.
+> It's a helper function on top of already provided api and implemented
+> in the most brute force and inefficient way.
+> bpftool implementation of the same will be more efficient.
 
-Sure.
+Right, certainly wouldn't mind something more efficient. But to me, the
+inefficiency is outweighed by convenience of having this canonical
+reference for 'this is the metadata map'.
 
-> It's not xBPF either.
+>> so. If we don't have it, people will have to go look at bpftool code,
+>> and we'll end up with copied code snippets, which seems less than ideal.
+>
+> I'd like to see the real use case first before hypothesising.
 
-Heh, beg to differ :)
+For me, that would be incorporating support for this into
+libxdp/xdp-tools; which was the reason I asked for this to be split into
+a separate API in the first place. But okay, not going to keep arguing
+about this, I can copy-paste code as well as the next person.
 
-> Please call it something else and don't confuse people that your ISA
-> has any overlap with BPF. It doesn't. It's not verifiable.
+-Toke
 
-Nonsense.  xBPF has as much overlap with BPF as it can have: around 99%.
-
-The purpose of having the e_flag is to avoid confusion, not to increase
-it.  xBPF objects are mainly used to test the GCC BPF backend (and other
-purposes we have in mind, like ease the debugging of BPF programs) but
-we want to eliminate the chance of these objects to be confused with
-legit BPF files, and used as such.
