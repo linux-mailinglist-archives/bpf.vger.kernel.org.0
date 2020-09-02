@@ -2,26 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D3125B76E
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 01:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BEA25B76F
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 01:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbgIBXxo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 19:53:44 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59618 "EHLO
+        id S1726941AbgIBXxq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 19:53:46 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61000 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726853AbgIBXxn (ORCPT
+        by vger.kernel.org with ESMTP id S1726900AbgIBXxn (ORCPT
         <rfc822;bpf@vger.kernel.org>); Wed, 2 Sep 2020 19:53:43 -0400
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 082NdjTC014534
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 082NdjTD014534
         for <bpf@vger.kernel.org>; Wed, 2 Sep 2020 16:53:43 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=6KVYEGgVE+DggEcnHSuNeaQ8HkmYRRdai6MNZex9/Jk=;
- b=RkGQncISZHck1f4VLlMmsqAEzfXBCrVV/mbFxEulqY/dLfzId2mCBbYLGMJ5fePrg6u/
- DFbnEnchUYdeirGqgLV+tOy6Z/Kx81lKCSXSg5ZYrGKKfJ34ykZG7qwzv0wL1DW7dTau
- M2IK1YXKJrfKhKcwYXEQD4fUcoyjrQPwNYs= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=BsOEk19++R8OQ9HRuWMY36bAvQupS16Y2QvJq78mUSg=;
+ b=pA+IY2Wp1zRo1jDYJHqUth6jqQqoOvJSWW4gly+JlwAsi/uUdFWaamNBntAo11eMe0/z
+ pQPRIgWI9I64lg6VGnpeKzVfV9MhpT/xzbihSAp1a62Clo+7EPDOsVGCF083uCBJdsn+
+ mrPvOvMZSnQGO+UrPszUZSlt83byS7Qayis= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33879nvgu3-1
+        by mx0a-00082601.pphosted.com with ESMTP id 33879nvgu3-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 16:53:43 -0700
 Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::f) by
@@ -29,16 +30,18 @@ Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::f) by
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.1979.3; Wed, 2 Sep 2020 16:53:42 -0700
 Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 407F63704F6D; Wed,  2 Sep 2020 16:53:40 -0700 (PDT)
+        id CF6FB3704F6D; Wed,  2 Sep 2020 16:53:41 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
         Martin KaFai Lau <kafai@fb.com>, <netdev@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf 0/2] bpf: do not use bucket_lock for hashmap iterator
-Date:   Wed, 2 Sep 2020 16:53:40 -0700
-Message-ID: <20200902235340.2001300-1-yhs@fb.com>
+Subject: [PATCH bpf 2/2] selftests/bpf: add bpf_{update,delete}_map_elem in hashmap iter program
+Date:   Wed, 2 Sep 2020 16:53:41 -0700
+Message-ID: <20200902235341.2001534-1-yhs@fb.com>
 X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200902235340.2001300-1-yhs@fb.com>
+References: <20200902235340.2001300-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
@@ -46,7 +49,7 @@ Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-02_17:2020-09-02,2020-09-02 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- mlxlogscore=570 spamscore=0 lowpriorityscore=0 bulkscore=0
+ mlxlogscore=825 spamscore=0 lowpriorityscore=0 bulkscore=0
  priorityscore=1501 adultscore=0 malwarescore=0 phishscore=0 mlxscore=0
  clxscore=1015 suspectscore=8 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2006250000 definitions=main-2009020222
@@ -56,39 +59,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, the bpf hashmap iterator takes a bucket_lock, a spin_lock,
-before visiting each element in the bucket. This will cause a deadlock
-if a map update/delete operates on an element with the same
-bucket id of the visited map.
+Added bpf_{updata,delete}_map_elem to the very map element the
+iter program is visiting. Due to rcu protection, the visited map
+elements, although stale, should still contain correct values.
+  $ ./test_progs -n 4/18
+  #4/18 bpf_hash_map:OK
+  #4 bpf_iter:OK
+  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 
-To avoid the deadlock, let us just use rcu_read_lock instead of
-bucket_lock. This may result in visiting stale elements, missing some ele=
-ments,
-or repeating some elements, if concurrent map delete/update happens for t=
-he
-same map. I think using rcu_read_lock is a reasonable compromise.
-For users caring stale/missing/repeating element issues, bpf map batch
-access syscall interface can be used.
-
-Note that another approach is during bpf_iter link stage, we check
-whether the iter program might be able to do update/delete to the visited
-map. If it is, reject the link_create. Verifier needs to record whether
-an update/delete operation happens for each map for this approach.
-I just feel this checking is too specialized, hence still prefer
-rcu_read_lock approach.
-
-Patch #1 has the kernel implementation and Patch #2 added a selftest
-which can trigger deadlock without Patch #1.
-
-Yonghong Song (2):
-  bpf: do not use bucket_lock for hashmap iterator
-  selftests/bpf: add bpf_{update,delete}_map_elem in hashmap iter
-    program
-
- kernel/bpf/hashtab.c                              | 15 ++++-----------
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
  .../selftests/bpf/progs/bpf_iter_bpf_hash_map.c   | 15 +++++++++++++++
- 2 files changed, 19 insertions(+), 11 deletions(-)
+ 1 file changed, 15 insertions(+)
 
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c b/=
+tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
+index 07ddbfdbcab7..6dfce3fd68bc 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_hash_map.c
+@@ -47,7 +47,10 @@ int dump_bpf_hash_map(struct bpf_iter__bpf_map_elem *c=
+tx)
+ 	__u32 seq_num =3D ctx->meta->seq_num;
+ 	struct bpf_map *map =3D ctx->map;
+ 	struct key_t *key =3D ctx->key;
++	struct key_t tmp_key;
+ 	__u64 *val =3D ctx->value;
++	__u64 tmp_val =3D 0;
++	int ret;
+=20
+ 	if (in_test_mode) {
+ 		/* test mode is used by selftests to
+@@ -61,6 +64,18 @@ int dump_bpf_hash_map(struct bpf_iter__bpf_map_elem *c=
+tx)
+ 		if (key =3D=3D (void *)0 || val =3D=3D (void *)0)
+ 			return 0;
+=20
++		/* update the value and then delete the <key, value> pair.
++		 * it should not impact the existing 'val' which is still
++		 * accessible under rcu.
++		 */
++		__builtin_memcpy(&tmp_key, key, sizeof(struct key_t));
++		ret =3D bpf_map_update_elem(&hashmap1, &tmp_key, &tmp_val, 0);
++		if (ret)
++			return 0;
++		ret =3D bpf_map_delete_elem(&hashmap1, &tmp_key);
++		if (ret)
++			return 0;
++
+ 		key_sum_a +=3D key->a;
+ 		key_sum_b +=3D key->b;
+ 		key_sum_c +=3D key->c;
 --=20
 2.24.1
 
