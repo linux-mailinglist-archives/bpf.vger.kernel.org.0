@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E7625B4DC
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 21:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1BD25B4EB
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 21:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgIBT5e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 15:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
+        id S1727107AbgIBT6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 15:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgIBT50 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 15:57:26 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F83FC061244;
-        Wed,  2 Sep 2020 12:57:25 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id h126so470614ybg.4;
-        Wed, 02 Sep 2020 12:57:25 -0700 (PDT)
+        with ESMTP id S1726312AbgIBT6t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 15:58:49 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12328C061245;
+        Wed,  2 Sep 2020 12:58:49 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id 189so477910ybw.3;
+        Wed, 02 Sep 2020 12:58:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RVwJ81Qtpdk1XpGW5J7CwHz1UYeI3dTDYRrlyLt13sM=;
-        b=AuJthCL6aO4RqJX/kWznJ3sHdv1Crb7oRuz4/AeJwn2AoaSXAPGLZrMwYOAxD6MCTa
-         tuL1MO6QL11N7qKolHCGvr4NB3kp/g+T1E5sI/VwNxfUXWN74CCpoUKV/GaWKnNUXQF+
-         C1feQ3RSDrL4/VjqkNWuGHTVuao8869fHZJxiyLSEo4b9XM9CdgHd4M+wsOza33RNeiT
-         96r/pzjG1fEUSBKdo/arM21CEODmy1MRWpTDIJr1zG7CeIuqNgephYuIXJIo3wBFQe4u
-         9UODwJn8wgptL/nkjdobdvMa75z9+G9VTR2OHAGYQPTvpkH9022eaIE9J2Y5e37IgO8V
-         qiAg==
+        bh=akPwGPVyEn01/5PkIcyW2RKrfHk8fuIlsFrNUzPRZ1c=;
+        b=XNJfBAlWfSkqadLD40GNInLlDVREKJC2hTQ0dXAR+p5lETrUjzv+0s/vmopQfFqWac
+         2T1Y9QcJ3KWt5+6F1pMqELeyHj4XlHdF2u6OXSap4r2UOiUan4U/O5Zgj1N6JLj3dxL6
+         3ZWpi45BC7/HzfkI3czPaatQdDhe6wuolNqjvRnkmHH8EUdknA4Ql9PLBvQ++emqSNUa
+         0U8rXypyroW7MuZwf+hmz+5jf88s1V5KXxmYMaZszzQcGUJ8XsokceSK3D8f8Dxgf/1x
+         A5T2W7YqpGC5yPUNkJpjMMMQIKce+DEIVSodbmF9USSp4DzLOzv/repVjaxeRTV9icjH
+         7Gvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RVwJ81Qtpdk1XpGW5J7CwHz1UYeI3dTDYRrlyLt13sM=;
-        b=oJjGw4OB9y6nDyfd6Ra7LpYt84Fx6/GYYrmVeOkhNWgleHG1RqLrVjVr6xd8cH0pjX
-         q/VqkvWZDZhD2OMgrUqYN48NZDBJsBuj9XZITG+ZpwMFDj9qdztfDD3qwIguTDDT4MAq
-         T0mSaTExoZqgOKbhHxNR2TlB7bPUYHQiuWOSVEfRzlJZ3kSXEa3eeNnjwku5hv0ipoGx
-         QnNEVH5vaPnvwEa2tHn25j86kph5oxEBe4gl37TfN3LWmF1cd4G4r6H5MfAoAknoNPdn
-         QDOWD2ZFMY8PFF041nyAJwo1t+Msh2MlxjuFRq/MePEylFUmIOPpARa+OHiUX+aVJmEg
-         HY9w==
-X-Gm-Message-State: AOAM5336mb6tPs8UiSBQ9s1sVYNcKJInif/gT7/IHmFTXj4z95qfO3ua
-        DSrQP00zYUn/cy0VtHgKHZYLIHCsx1h+vHJOgYU=
-X-Google-Smtp-Source: ABdhPJzpoTIUFvE14LX/tt+D4kj0VQHFDqttKFYDuoVwCcqEIXZT3of7Y20jbgkuLu+Gl6asJQ1QI5od67fV49gW2ZE=
-X-Received: by 2002:a5b:44d:: with SMTP id s13mr12423151ybp.403.1599076644849;
- Wed, 02 Sep 2020 12:57:24 -0700 (PDT)
+        bh=akPwGPVyEn01/5PkIcyW2RKrfHk8fuIlsFrNUzPRZ1c=;
+        b=SW3LmnihhwFVIxN7b+Rh+0Qtaay9WIcjf+hFtmVUvlSYuoJEH59m8MmV9zZRLqT42N
+         eOM5mU37YR2DwD6AydQ1i1ywrr6SGo4Y4qgi6Z9vpPmg4o7ooS1p0ZJA9tRp+Lqb5N6N
+         A7Dwq6ADNJvK9qzrkE570jHt7uo3s+HVheAL1XvyMlYhlSOgRJt+CnIDCPpm6MPjyVBj
+         7VGdYRsBIM1hFRhKOZM4o33W4oUMd/2HbqAAGVNNb1Va0jF9A5/b1CMKzVs271dBv7ca
+         8UEP8qnUjIFQWHxNFRKPNlDMg1v+MeHYwY/n4JMsE+5DS3ISjZS4dN97mbzgOYSVo1Mg
+         pz3g==
+X-Gm-Message-State: AOAM532ekfqg9US0hwTCkSC4QuuFjQdU86FnHuxJbm3UI4TQ6Fs3H6xa
+        hj2gTUvzHFR61I68wo2rB9AfbYUJMOBPrFfJfUc=
+X-Google-Smtp-Source: ABdhPJwOPal6LTKiDDmPc4/570Jux9htCERyCLT2zJNUur2Lg9rUg2LxAm+9uoypYTvriTZwntF84G5T5TiH8a4t9Ks=
+X-Received: by 2002:a25:c4c2:: with SMTP id u185mr13281539ybf.347.1599076728309;
+ Wed, 02 Sep 2020 12:58:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200901015003.2871861-1-andriin@fb.com> <20200901015003.2871861-8-andriin@fb.com>
- <20200902054132.y3p3spqt6vzxiy2t@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200902054132.y3p3spqt6vzxiy2t@ast-mbp.dhcp.thefacebook.com>
+References: <20200901015003.2871861-1-andriin@fb.com> <20200901015003.2871861-13-andriin@fb.com>
+ <20200902054529.5sjbmt2t6pgzi4sk@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200902054529.5sjbmt2t6pgzi4sk@ast-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Sep 2020 12:57:14 -0700
-Message-ID: <CAEf4BzbLo+BA=qvFdA_tupOy8SoN-kSHU6+TJw3aZ0m4VYvgDA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 07/14] selftests/bpf: add selftest for
- multi-prog sections and bpf-to-bpf calls
+Date:   Wed, 2 Sep 2020 12:58:37 -0700
+Message-ID: <CAEf4BzaaJtHNCz-J+XdRzMQbhdbmGwRQ+hnDCEO1VYfUATWJqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 12/14] selftests/bpf: convert pyperf,
+ strobemeta, and l4lb_noinline to __noinline
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
@@ -64,43 +64,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 10:41 PM Alexei Starovoitov
+On Tue, Sep 1, 2020 at 10:45 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Mon, Aug 31, 2020 at 06:49:56PM -0700, Andrii Nakryiko wrote:
-> > +
-> > +__noinline int sub1(int x)
-> > +{
-> > +     return x + 1;
-> > +}
-> > +
-> > +static __noinline int sub5(int v);
-> > +
-> > +__noinline int sub2(int y)
-> > +{
-> > +     return sub5(y + 2);
-> > +}
-> > +
-> > +static __noinline int sub3(int z)
-> > +{
-> > +     return z + 3 + sub1(4);
-> > +}
-> > +
-> > +static __noinline int sub4(int w)
-> > +{
-> > +     return w + sub3(5) + sub1(6);
+> On Mon, Aug 31, 2020 at 06:50:01PM -0700, Andrii Nakryiko wrote:
+> > diff --git a/tools/testing/selftests/bpf/progs/pyperf.h b/tools/testing/selftests/bpf/progs/pyperf.h
+> > index cc615b82b56e..13998aee887f 100644
+> > --- a/tools/testing/selftests/bpf/progs/pyperf.h
+> > +++ b/tools/testing/selftests/bpf/progs/pyperf.h
+> > @@ -67,7 +67,7 @@ typedef struct {
+> >       void* co_name; // PyCodeObject.co_name
+> >  } FrameData;
+> >
+> > -static __always_inline void *get_thread_state(void *tls_base, PidData *pidData)
+> > +static __noinline void *get_thread_state(void *tls_base, PidData *pidData)
+> >  {
+> >       void* thread_state;
+> >       int key;
+> > @@ -154,12 +154,10 @@ struct {
+> >       __uint(value_size, sizeof(long long) * 127);
+> >  } stackmap SEC(".maps");
+> >
+> > -#ifdef GLOBAL_FUNC
+> > -__attribute__((noinline))
+> > -#else
+> > -static __always_inline
+> > +#ifndef GLOBAL_FUNC
+> > +static
+> >  #endif
+> > -int __on_event(struct bpf_raw_tracepoint_args *ctx)
+> > +__noinline int __on_event(struct bpf_raw_tracepoint_args *ctx)
+> >  {
+> >       uint64_t pid_tgid = bpf_get_current_pid_tgid();
+> >       pid_t pid = (pid_t)(pid_tgid >> 32);
+> > diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testing/selftests/bpf/progs/strobemeta.h
+> > index ad61b722a9de..d307c67ce52e 100644
+> > --- a/tools/testing/selftests/bpf/progs/strobemeta.h
+> > +++ b/tools/testing/selftests/bpf/progs/strobemeta.h
+> > @@ -266,8 +266,7 @@ struct tls_index {
+> >       uint64_t offset;
+> >  };
+> >
+> > -static __always_inline void *calc_location(struct strobe_value_loc *loc,
+> > -                                        void *tls_base)
+> > +static __noinline void *calc_location(struct strobe_value_loc *loc, void *tls_base)
 >
-> Did you check that asm has these calls?
+> hmm. this reduces the existing test coverage. Unless I'm misreading it.
+> Could you keep existing strobemta tests and add new one?
+> With new ifdefs. Like this GLOBAL_FUNC.
 
-Yeah, I actually did check. All calls are there.
-
-> Since sub3 is static the compiler doesn't have to do the call.
-> 'static noinline' doesn't mean that compiler have to do the call.
-> It can compute the value and replace a call with a constant.
-> It only has to keep the body of the function if the address of it
-> was taken.
-
-All these subX() functions are either global or call global function
-(sub1() is global), which seems to keep Clang from optimizing all
-this. Clang has to assume the worst case for global functions,
-probably due to LD_PRELOAD, right?
+Oh, you mean testing single BPF program complexity when everything is
+inlined? Yeah, haven't thought about that. Ok, I'll add new variants
+with or without subprogram calls.
