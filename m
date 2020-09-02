@@ -2,28 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE57625B3CF
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 20:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6641E25B449
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 21:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgIBSgV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 14:36:21 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52302 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgIBSgU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 14:36:20 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDXcF-0004tt-Vh; Wed, 02 Sep 2020 20:36:16 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDXcF-000Xs7-Nq; Wed, 02 Sep 2020 20:36:15 +0200
-Subject: Re: [PATCH] xsk: Free variable on error path
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        id S1727894AbgIBTLr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 15:11:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgIBTLr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 15:11:47 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6070920758;
+        Wed,  2 Sep 2020 19:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599073906;
+        bh=WnSnslkA0WY55wziATC806B4vzwesvF3SmUSGozVyp4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rjELJqRH1dtygQUKHtxh2PN72TkvUYg/RLWeAFbJc/r1VFnEguEgCY0f9pXAt8/OV
+         lf76OXWhqnUdJbnmoY139V92IJBIWWsEU2vMS1YtG+6HGzjVSAOp4tW0NSAhyobU8B
+         f6o0zJEkYs4dfPLpfs2y/Ru52YvpB8Nxb1Ys/mzs=
+Date:   Wed, 2 Sep 2020 14:17:57 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -33,33 +36,34 @@ Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20200902163319.345284-1-alex.dewar90@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c631d5d4-4912-045b-8b4a-bb3e43229986@iogearbox.net>
-Date:   Wed, 2 Sep 2020 20:36:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Subject: Re: [PATCH][next] xsk: Fix null check on error return path
+Message-ID: <20200902191757.GD31464@embeddedor>
+References: <20200902150750.GA7257@embeddedor>
+ <9b7e36c3-0532-245c-763a-8f4e7e36b358@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <20200902163319.345284-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25918/Wed Sep  2 15:41:14 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b7e36c3-0532-245c-763a-8f4e7e36b358@iogearbox.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/2/20 6:33 PM, Alex Dewar wrote:
-> In xp_create_dma_map(), memory is allocated to dma_map->dma_pages, but
-> then dma_map is erroneously compared to NULL, rather than the member.
-> Fix this.
+On Wed, Sep 02, 2020 at 08:33:41PM +0200, Daniel Borkmann wrote:
+> On 9/2/20 5:07 PM, Gustavo A. R. Silva wrote:
+> > Currently, dma_map is being checked, when the right object identifier
+> > to be null-checked is dma_map->dma_pages, instead.
+> > 
+> > Fix this by null-checking dma_map->dma_pages.
+> > 
+> > Addresses-Coverity-ID: 1496811 ("Logically dead code")
+> > Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > 
-> Addresses-Coverity: ("Dead code")
-> Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> Applied, thanks!
 
-Thanks, already applied a fix that was sent earlier [0].
+Thanks, Daniel. :)
 
-   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=1d6fd78a213ee3874f46bdce083b7a41d208886d
+--
+Gustavo
