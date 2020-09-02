@@ -2,154 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DB225A241
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 02:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48C625A246
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 02:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgIBA0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 20:26:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:17880 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726623AbgIBA0k (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 1 Sep 2020 20:26:40 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0820Qbem031315
-        for <bpf@vger.kernel.org>; Tue, 1 Sep 2020 17:26:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=lWhyUqCAMrh3WNjXI8GGSxZ/gB+B24TZajA1aV3gpV8=;
- b=bWpf9nyLn5H9a1LnowcNfScep1DigbbxNbMuP+ZPk5keUzJIw6mOUIE2CL+rxFKXMbv7
- Rg1w+JModHpNXo+t072aX0b3a3it1Yny8+7w0KE34j9jLox53hbgvh+QLe0kZqieBIIy
- t6xfMv9T9AMvteAvW7pgnZppmqqOlI4buyw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 338734p2js-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 01 Sep 2020 17:26:39 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 1 Sep 2020 17:26:13 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id A2916370518A; Tue,  1 Sep 2020 17:26:09 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: test task_file iterator without visiting pthreads
-Date:   Tue, 1 Sep 2020 17:26:09 -0700
-Message-ID: <20200902002609.994834-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200902002608.994598-1-yhs@fb.com>
-References: <20200902002608.994598-1-yhs@fb.com>
+        id S1726312AbgIBA3Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 20:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgIBA3Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Sep 2020 20:29:16 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57313C061244
+        for <bpf@vger.kernel.org>; Tue,  1 Sep 2020 17:29:16 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id c17so1902124ybe.0
+        for <bpf@vger.kernel.org>; Tue, 01 Sep 2020 17:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1E1gk1XBS9BBka7KthAcYPF0o72m+yKDkUrp6VcVfcY=;
+        b=WBVbDIyEt2Vdwxq9tH+cdLKDGU/hkWeI/JTqPfVPtJiIqtTAHawyPGgfoF7Cwkfc0h
+         qahqrLIJUVL6uFKTZzMal//k3WvTeGSrlyfwVj03Mu3kWwR2SlByw6w6a9CFVzlQ4ZEk
+         m2KvzGQ/KoJyZfzKfcQLE+do2i5JpTkuZykBzFf1rIcej7FFVW/pLlGawhWINo3qFhL7
+         sEUliTCZCFtdfIVaj9CDstpV4mGjDvkSRnctVUOybuMUn5fzLWbxQe6n2kSiQx3TdjON
+         13AIdpsvgjo9jeWsth2ne/rp8oUKVN/suWsFSFytXcYLUEaFu8yr/ax0JYAOmtono47v
+         Tgkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1E1gk1XBS9BBka7KthAcYPF0o72m+yKDkUrp6VcVfcY=;
+        b=VUFMwCABTaVHhEoIS3CAsla9nMKR6iZ8ejz/z1h/ObAXg07BJmcrflJDoE6UreA1eS
+         rYJDZF89R5FAVwPocvuzaDHmElqdZqckSGqe/aaoDYHv4TEdSnJ+EcSuHEFFI3TmJ75+
+         GF4nZaaXjjdbIzQjzmZBeCGQTGRh8Dio1B9wSO0xUFLh84kqEaKS6OJ3FiHeb/Xk/hrN
+         wFkZgONUHQDrgZ00EsRg+RUVT26SXMeV4Y+1mA8WazWJi2OV+9pY1VepWyHAgwiExmas
+         6zdKPLcZBqMi67I3ROCuFFOJYJA9ekHDqGBl+H48SdX+Ys2vlpH2k1z+XFtK6Sow2Ph8
+         Sh1g==
+X-Gm-Message-State: AOAM531riJa4Sb6jbWfJJueRzxRhOIH3uq8RV4HoySK8dIKVUuSQLvZf
+        mTUwL8QusSjBMfQ+gudVrfoCR+iWU+Prn0JNhPA=
+X-Google-Smtp-Source: ABdhPJw1ul0yPC/L74Ndc/aSsZZchqye9vrcnIGTFnojGHTBFeHJnAFlvjZVpyq9UNdVhJiGQdxCzGvzx7iNTLo0O0Q=
+X-Received: by 2002:a25:cb57:: with SMTP id b84mr2622023ybg.425.1599006555375;
+ Tue, 01 Sep 2020 17:29:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-01_10:2020-09-01,2020-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- suspectscore=8 impostorscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
- malwarescore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009020002
-X-FB-Internal: deliver
+References: <CAGeTCaWAs9gX_Y17gXJhSVvsbuJF2aD3Tfi9+79JmndF2ERmOw@mail.gmail.com>
+ <e21c4dd9-9336-017f-752e-5b83704d86bf@fb.com> <CAGeTCaUtECKWZP2UpbeHNhrJgWRQkh0yfUimGnWVF4Q=K1iYkg@mail.gmail.com>
+In-Reply-To: <CAGeTCaUtECKWZP2UpbeHNhrJgWRQkh0yfUimGnWVF4Q=K1iYkg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Sep 2020 17:29:04 -0700
+Message-ID: <CAEf4BzbXvGLYLEeS7NjRG3YdYrMbKQSweNJ=c2uJgga5D-hY3w@mail.gmail.com>
+Subject: Re: perf event and data_sz
+To:     Borna Cafuk <borna.cafuk@sartura.hr>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Jakov Petrina <jakov.petrina@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Modified existing bpf_iter_test_file.c program to check whether
-all accessed files from the main thread or not.
+On Thu, Aug 27, 2020 at 3:02 AM Borna Cafuk <borna.cafuk@sartura.hr> wrote:
+>
+> On Wed, Aug 26, 2020 at 8:45 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> > On 8/26/20 7:11 AM, Borna Cafuk wrote:
+> > > Hi everyone,
+> > >
+> > > When examining BPF programs that use perf buffers, I have noticed that
+> > > the `data_sz` parameter in the sample callback has a different value than
+> > > the size passed to `bpf_perf_event_output`.
+> > >
+> > > Raw samples are padded in `perf_prepare_sample` so their size is a multiple of
+> > > `sizeof(u64)` (see [0]). The sample includes the size header, a `u32`.
+> > > The size stored in `raw->size` is then size of the sample, minus the 4 bytes for
+> > > the size header. This size, however, includes both the data and the padding.
+> > >
+> > > What I find confusing is that this size including the padding is eventually
+> > > passed as `data_sz` to the callback in the userspace, instead of
+> > > the size of the data that was passed as an argument to `bpf_perf_event_output`.
+> > >
+> > > Is this intended behaviour?
+> >
+> >  From the kernel source code, yes, this is expected behavior. What you
+> > described below matches what the kernel did. So raw->size = 68 is expected.
+>
+> I understand why this size that is stored in `raw->size` is needed.
+> What I don't see is how the value is of any use in the callback.
+>
+> >
+> > >
+> > > I have a use-case for getting only the size of the data in the
+> > > userspace, could this be done?
+> >
+> > In this case, since we know the kernel writes one record at a time,
+> > you check the size, it is 68 more than 62, you just read 62 bytes
+> > as your real data, ignore the rest as the padding. Does this work?
+>
+> The `data_sz` parameter seems a little pointless, then. What is its purpose
+> in the callback if it doesn't accurately represent the size of the data?
+>
+> >
+> > bcc callback passed the the buffer with raw->size to application.
+> > But applications are expected to know what the record layout is...
+>
+> I'm afraid that wouldn't work for the use-case, our application should be able
+> to read the raw data without having to know the record layout. It has to be
+> generic, we handle interpreting the records elsewhere and at another time.
 
-Modified existing bpf_iter_test_file program to check
-whether all accessed files from the main thread or not.
-  $ ./test_progs -n 4
-  ...
-  #4/7 task_file:OK
-  ...
-  #4 bpf_iter:OK
-  Summary: 1/24 PASSED, 0 SKIPPED, 0 FAILED
+I agree it's confusing and less useful (not exactly useless, though),
+but seems like PERF_SAMPLE_RAW doesn't store neither original size nor
+(equivalently) the added padding size, so libbpf has nothing to go off
+of, unfortunately.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 21 +++++++++++++++++++
- .../selftests/bpf/progs/bpf_iter_task_file.c  | 10 ++++++++-
- 2 files changed, 30 insertions(+), 1 deletion(-)
+I can only offer two suggestions:
+1. Make sure samples you are emitting are 8 byte aligned, in which
+case data_sz will always match actual data size. If you need different
+sizes for different structs, you'd have to artificially add extra
+bytes, though.
+2. Consider using BPF ringbuf, it's data_sz is exact and doesn't
+include padding (you need 5.8+ kernel).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index 7375d9a6d242..375ffaf85d78 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -132,17 +132,38 @@ static void test_task_stack(void)
- 	bpf_iter_task_stack__destroy(skel);
- }
-=20
-+static void *do_nothing(void *arg)
-+{
-+	pthread_exit(arg);
-+}
-+
- static void test_task_file(void)
- {
- 	struct bpf_iter_task_file *skel;
-+	pthread_t thread_id;
-+	void *ret;
-=20
- 	skel =3D bpf_iter_task_file__open_and_load();
- 	if (CHECK(!skel, "bpf_iter_task_file__open_and_load",
- 		  "skeleton open_and_load failed\n"))
- 		return;
-=20
-+	skel->bss->tgid =3D getpid();
-+
-+	if (CHECK(pthread_create(&thread_id, NULL, &do_nothing, NULL),
-+		  "pthread_create", "pthread_create failed\n"))
-+		goto done;
-+
- 	do_dummy_read(skel->progs.dump_task_file);
-=20
-+	if (CHECK(pthread_join(thread_id, &ret) || ret !=3D NULL,
-+		  "pthread_join", "pthread_join failed\n"))
-+		goto done;
-+
-+	CHECK(skel->bss->count !=3D 0, "",
-+	      "invalid non pthread file visit %d\n", skel->bss->count);
-+
-+done:
- 	bpf_iter_task_file__destroy(skel);
- }
-=20
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c b/too=
-ls/testing/selftests/bpf/progs/bpf_iter_task_file.c
-index 8b787baa2654..b2f7c7c5f952 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-@@ -6,6 +6,9 @@
-=20
- char _license[] SEC("license") =3D "GPL";
-=20
-+int count =3D 0;
-+int tgid =3D 0;
-+
- SEC("iter/task_file")
- int dump_task_file(struct bpf_iter__task_file *ctx)
- {
-@@ -17,8 +20,13 @@ int dump_task_file(struct bpf_iter__task_file *ctx)
- 	if (task =3D=3D (void *)0 || file =3D=3D (void *)0)
- 		return 0;
-=20
--	if (ctx->meta->seq_num =3D=3D 0)
-+	if (ctx->meta->seq_num =3D=3D 0) {
-+		count =3D 0;
- 		BPF_SEQ_PRINTF(seq, "    tgid      gid       fd      file\n");
-+	}
-+
-+	if (tgid =3D=3D task->tgid && task->tgid !=3D task->pid)
-+		count++;
-=20
- 	BPF_SEQ_PRINTF(seq, "%8d %8d %8d %lx\n", task->tgid, task->pid, fd,
- 		       (long)file->f_op);
---=20
-2.24.1
+>
+> >
+> > >
+> > > To demonstrate, I have prepared a minimal example by modifying
+> > > BCC's filelife example. It uses a kprobe on vfs_unlink to print some sizes
+> > > every time a file is unlinked. The sizes are:
+> > >   * the `sizeof(struct event)` measured in the userspace program,
+> > >   * the `sizeof(struct event)` measured in the BPF program, and
+> > >   * the `data_sz` parameter.
+> > >
+> > > The first two are 62, as expected, but `data_sz` is 68.
+> > > The 62 bytes of the struct and the 4 bytes of the sample header make 66 bytes.
+> > > This is rounded up to the first multiple of 8, which is 72.
+> > > The 4 bytes for the size header are then subtracted,
+> > > and 68 is written as the data size.
+> > >
+> > > Any input is much appreciated,
+> > >
+> > > Best regards,
+> > > Borna Cafuk
+> > >
+> > >
+> > > [0] https://github.com/torvalds/linux/blob/6a9dc5fd6170d0a41c8a14eb19e63d94bea5705a/kernel/events/core.c#L7035
+> > >
+> > >
+> > > example.h
 
+[...]
