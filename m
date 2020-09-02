@@ -2,212 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6159925A61F
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 09:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E1C25A6BA
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 09:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgIBHHz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 03:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgIBHHy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:07:54 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F24C061244;
-        Wed,  2 Sep 2020 00:07:54 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f18so2327750pfa.10;
-        Wed, 02 Sep 2020 00:07:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eKRJosbo+g0I7bg9/O9Hx0UMRK5lfTb++YcTo9JR86A=;
-        b=oQvoiIoaNZtVdcV3BUNju/hHwr8IkpTukwJHrEQrbFvG1ZZCbepiDvsOO1d5sp9Sz9
-         3ykvIAnjopyPlGnufaTi1sqxBMTWwvko4YOgHvWMBhDQTWD7GHOJYcpfqQCMhC+nsIgV
-         f2y/JG4mc946t0hBaiqt29AjVb/F9bHxpqgyrLRX+qK1pQHeVkVHrUjbMR+Kvt71M2Ts
-         51barXwGbP6c7E1/2v89Iucj3+ot+KeIgJBWsJDpmWOUDNvhW1XrgSY8OG7NC9hlTgW0
-         y8JhCs//ORgjrWLDw/UDCgllg3t+S30kCvOPjGrIyvgpjuKqb+/vNFFkAuKScwSpSIy3
-         qhBQ==
+        id S1726742AbgIBH1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 03:27:25 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:43639 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726311AbgIBH1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 03:27:24 -0400
+Received: by mail-io1-f70.google.com with SMTP id f19so2694382iol.10
+        for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 00:27:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eKRJosbo+g0I7bg9/O9Hx0UMRK5lfTb++YcTo9JR86A=;
-        b=RaJUA9XVjY4xBSP1PCPcAemnXfQ3iOKVTU2Xh4fmRcwp08uTPTB/DnLL3pxDIYpVbO
-         ec9ZOoEDxk04vOZglFMcIxfY+vQHGbHZhA45xdcc0caIL+j5IiTY1Ln7AVbEYaFQBcjk
-         ZEMRexOXjFcuoi8oZ/o865fI8w6l49Fc1bYDoPdtRW418UKRkDnz2AS94EVPhDAR0ye2
-         C5lnYescMIWw7sdLyctWeMiTFVP9jlA6WBaNOS2vKW6dMtLaQRX/o87NgNd6NntRXOgM
-         AMcjzO5V6y+PnzuENuTJWq4353en7rj8maQCO4tjytgA54qyRUo5qQ97L3Do92caTuN6
-         eFpA==
-X-Gm-Message-State: AOAM532vOnk3YvXlv1EpA83Ra1NY7BLbnNd4p8qLLNoCT2gyo0BhUWcX
-        P/kSwhH//XrGg6pSKFt1oRh62zyv8pD81+ksra0=
-X-Google-Smtp-Source: ABdhPJy2kvUDCWgLIqvGJ3sJmktN0ty3zmr6o+oVzLHFrn570b7aIv7a07S3SdnFmBreFphnkiuXBRcR3Wk5S2kK314=
-X-Received: by 2002:a63:29c7:: with SMTP id p190mr913126pgp.292.1599030473531;
- Wed, 02 Sep 2020 00:07:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=bPjCsLvf4YWVwJoyZQaDFqOqvUJtCilRH+5fagQZGJY=;
+        b=jrusBrTXgB6ClTlLZXp4OOWGxDrYavnk7tLoHCqnXYWuaBn2hX8l4msAAxXNmEqVaM
+         Q4fgoD4gZkSuonDPILJrZEJeuZKnbHqpVPTMpFU+nOdXNLG6AUWwveKQyD8UBkqeOoCO
+         CIJ24MWqI2SX9Wh6kjF3OI6AA2moy7Mq93xm4psgmzvaxv+QoKza6c3xo7kG/vs7lejB
+         MQZevR2Cc2IPWrU9UUDjINcB7ZrTCnY4iN/0Z5wU99EBsjxMD/AdsS1ZkUtnj4vlsXVG
+         CGcCF+lC4+QFCWyJVlEEQGwUPNbHTfjo76mo6cQqSVr5g9j1GHG1bVhaVsYtpYj/Zp7W
+         GQ8Q==
+X-Gm-Message-State: AOAM531zv1AgEK1mlNN8BjaMCWb+vTx3ZSWa0uxPdb9PgcYe9pSSszpq
+        6rY/gPd6s2b0AvJTpGNfBt0K350l2djJaidx5vqQj2iR0Jt7
+X-Google-Smtp-Source: ABdhPJx37j4oJkY7TNtoUOZeZICr35Z980EynEXxxYD5l4AiZWddQ/Uom0YH8so35oz8eZD0QABynd4WvzL4LfUymdDa2i2O8SSa
 MIME-Version: 1.0
-References: <000000000000bcdbb005ae4f25ce@google.com> <7795503d-e112-cc26-81d8-c7a9692675b0@iogearbox.net>
-In-Reply-To: <7795503d-e112-cc26-81d8-c7a9692675b0@iogearbox.net>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 2 Sep 2020 09:07:42 +0200
-Message-ID: <CAJ8uoz29gZzGGiWZesFTu32RnsmpknxRBOnDq5v3N3wztScu2w@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Write in xp_put_pool
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     syzbot <syzbot+5334f62e4d22804e646a@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@chromium.org,
+X-Received: by 2002:a92:dcc3:: with SMTP id b3mr162292ilr.285.1599031642741;
+ Wed, 02 Sep 2020 00:27:22 -0700 (PDT)
+Date:   Wed, 02 Sep 2020 00:27:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000cdfec05ae4f91da@google.com>
+Subject: general protection fault in xsk_is_setup_for_bpf_map
+From:   syzbot <syzbot+febe51d44243fbc564ee@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bjorn.topel@intel.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@chromium.org,
         kuba@kernel.org, linux-kernel@vger.kernel.org,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>, mingo@kernel.org,
-        Network Development <netdev@vger.kernel.org>,
-        paulmck@kernel.org, peterz@infradead.org,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        Yonghong Song <yhs@fb.com>
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 9:06 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 9/2/20 8:57 AM, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
->
-> Magnus/Bjorn, ptal, thanks!
+Hello,
 
-On it as we speak.
+syzbot found the following issue on:
 
-> > HEAD commit:    dc1a9bf2 octeontx2-pf: Add UDP segmentation offload support
-> > git tree:       net-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=16ff67de900000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=5334f62e4d22804e646a
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e9f279900000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125f3e1e900000
-> >
-> > The issue was bisected to:
-> >
-> > commit a1132430c2c55af62d13e9fca752d46f14d548b3
-> > Author: Magnus Karlsson <magnus.karlsson@intel.com>
-> > Date:   Fri Aug 28 08:26:26 2020 +0000
-> >
-> >      xsk: Add shared umem support between devices
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10a373de900000
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=12a373de900000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=14a373de900000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+5334f62e4d22804e646a@syzkaller.appspotmail.com
-> > Fixes: a1132430c2c5 ("xsk: Add shared umem support between devices")
-> >
-> > ==================================================================
-> > BUG: KASAN: use-after-free in instrument_atomic_write include/linux/instrumented.h:71 [inline]
-> > BUG: KASAN: use-after-free in atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
-> > BUG: KASAN: use-after-free in refcount_sub_and_test include/linux/refcount.h:266 [inline]
-> > BUG: KASAN: use-after-free in refcount_dec_and_test include/linux/refcount.h:294 [inline]
-> > BUG: KASAN: use-after-free in xp_put_pool+0x2c/0x1e0 net/xdp/xsk_buff_pool.c:262
-> > Write of size 4 at addr ffff8880a6a4d860 by task ksoftirqd/0/9
-> >
-> > CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.9.0-rc1-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >   __dump_stack lib/dump_stack.c:77 [inline]
-> >   dump_stack+0x18f/0x20d lib/dump_stack.c:118
-> >   print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
-> >   __kasan_report mm/kasan/report.c:513 [inline]
-> >   kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
-> >   check_memory_region_inline mm/kasan/generic.c:186 [inline]
-> >   check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
-> >   instrument_atomic_write include/linux/instrumented.h:71 [inline]
-> >   atomic_fetch_sub_release include/asm-generic/atomic-instrumented.h:220 [inline]
-> >   refcount_sub_and_test include/linux/refcount.h:266 [inline]
-> >   refcount_dec_and_test include/linux/refcount.h:294 [inline]
-> >   xp_put_pool+0x2c/0x1e0 net/xdp/xsk_buff_pool.c:262
-> >   xsk_destruct+0x7d/0xa0 net/xdp/xsk.c:1138
-> >   __sk_destruct+0x4b/0x860 net/core/sock.c:1764
-> >   rcu_do_batch kernel/rcu/tree.c:2428 [inline]
-> >   rcu_core+0x5c7/0x1190 kernel/rcu/tree.c:2656
-> >   __do_softirq+0x2de/0xa24 kernel/softirq.c:298
-> >   run_ksoftirqd kernel/softirq.c:652 [inline]
-> >   run_ksoftirqd+0x89/0x100 kernel/softirq.c:644
-> >   smpboot_thread_fn+0x655/0x9e0 kernel/smpboot.c:165
-> >   kthread+0x3b5/0x4a0 kernel/kthread.c:292
-> >   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> >
-> > Allocated by task 6854:
-> >   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
-> >   kasan_set_track mm/kasan/common.c:56 [inline]
-> >   __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
-> >   kmalloc_node include/linux/slab.h:577 [inline]
-> >   kvmalloc_node+0x61/0xf0 mm/util.c:574
-> >   kvmalloc include/linux/mm.h:750 [inline]
-> >   kvzalloc include/linux/mm.h:758 [inline]
-> >   xp_create_and_assign_umem+0x58/0x8d0 net/xdp/xsk_buff_pool.c:54
-> >   xsk_bind+0x9a0/0xed0 net/xdp/xsk.c:709
-> >   __sys_bind+0x1e9/0x250 net/socket.c:1656
-> >   __do_sys_bind net/socket.c:1667 [inline]
-> >   __se_sys_bind net/socket.c:1665 [inline]
-> >   __x64_sys_bind+0x6f/0xb0 net/socket.c:1665
-> >   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > Freed by task 6854:
-> >   kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
-> >   kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
-> >   kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
-> >   __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
-> >   __cache_free mm/slab.c:3418 [inline]
-> >   kfree+0x103/0x2c0 mm/slab.c:3756
-> >   kvfree+0x42/0x50 mm/util.c:603
-> >   xp_destroy net/xdp/xsk_buff_pool.c:44 [inline]
-> >   xp_destroy+0x45/0x60 net/xdp/xsk_buff_pool.c:38
-> >   xsk_bind+0xbdd/0xed0 net/xdp/xsk.c:719
-> >   __sys_bind+0x1e9/0x250 net/socket.c:1656
-> >   __do_sys_bind net/socket.c:1667 [inline]
-> >   __se_sys_bind net/socket.c:1665 [inline]
-> >   __x64_sys_bind+0x6f/0xb0 net/socket.c:1665
-> >   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > The buggy address belongs to the object at ffff8880a6a4d800
-> >   which belongs to the cache kmalloc-1k of size 1024
-> > The buggy address is located 96 bytes inside of
-> >   1024-byte region [ffff8880a6a4d800, ffff8880a6a4dc00)
-> > The buggy address belongs to the page:
-> > page:00000000dd5fc18f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xa6a4d
-> > flags: 0xfffe0000000200(slab)
-> > raw: 00fffe0000000200 ffffea00029cce48 ffffea00025f2148 ffff8880aa040700
-> > raw: 0000000000000000 ffff8880a6a4d000 0000000100000002 0000000000000000
-> > page dumped because: kasan: bad access detected
-> >
-> > Memory state around the buggy address:
-> >   ffff8880a6a4d700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> >   ffff8880a6a4d780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> >> ffff8880a6a4d800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >                                                         ^
-> >   ffff8880a6a4d880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >   ffff8880a6a4d900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> > ==================================================================
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> > syzbot can test patches for this issue, for details see:
-> > https://goo.gl/tpsmEJ#testing-patches
-> >
->
+HEAD commit:    dc1a9bf2 octeontx2-pf: Add UDP segmentation offload support
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1442d38e900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
+dashboard link: https://syzkaller.appspot.com/bug?extid=febe51d44243fbc564ee
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1019da25900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15988279900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+febe51d44243fbc564ee@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000020: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000100-0x0000000000000107]
+CPU: 1 PID: 8180 Comm: syz-executor241 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:xsk_is_setup_for_bpf_map+0xbd/0x140 net/xdp/xsk.c:39
+Code: 80 3c 02 00 0f 85 8b 00 00 00 4c 8b a3 e8 04 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bc 24 00 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 6f 49 83 bc 24 00 01 00 00 00 74 12 41 bc 01 00 00
+RSP: 0018:ffffc90005787c30 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff88808880f000 RCX: ffffffff87effd24
+RDX: 0000000000000020 RSI: ffffffff87efc58b RDI: 0000000000000100
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888094f6ea00
+R10: 000000000000002c R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888082808a80 R14: ffff88808880f000 R15: 000000000000002c
+FS:  0000000000767940(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000077fffb CR3: 00000000a939a000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ xsk_map_update_elem+0x1bc/0x9d0 net/xdp/xskmap.c:188
+ bpf_map_update_value.isra.0+0x715/0x900 kernel/bpf/syscall.c:200
+ map_update_elem kernel/bpf/syscall.c:1120 [inline]
+ __do_sys_bpf+0x320b/0x4b30 kernel/bpf/syscall.c:4186
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44c4f9
+Code: e8 1c e6 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 3b 04 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc6d766ac8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000044c4f9
+RDX: 000000000000002c RSI: 0000000020003000 RDI: 0000000000000002
+RBP: 0000000000000000 R08: fffffffffffffff5 R09: fffffffffffffff5
+R10: fffffffffffffff5 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 6b3dd16ce201e2fa ]---
+RIP: 0010:xsk_is_setup_for_bpf_map+0xbd/0x140 net/xdp/xsk.c:39
+Code: 80 3c 02 00 0f 85 8b 00 00 00 4c 8b a3 e8 04 00 00 48 b8 00 00 00 00 00 fc ff df 49 8d bc 24 00 01 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75 6f 49 83 bc 24 00 01 00 00 00 74 12 41 bc 01 00 00
+RSP: 0018:ffffc90005787c30 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff88808880f000 RCX: ffffffff87effd24
+RDX: 0000000000000020 RSI: ffffffff87efc58b RDI: 0000000000000100
+RBP: 0000000000000000 R08: 0000000000000001 R09: ffff888094f6ea00
+R10: 000000000000002c R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888082808a80 R14: ffff88808880f000 R15: 000000000000002c
+FS:  0000000000767940(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000077fffb CR3: 00000000a939a000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
