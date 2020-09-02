@@ -2,93 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E191B25B626
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 23:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25E725B650
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 00:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgIBVv2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 17:51:28 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57274 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgIBVv2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 17:51:28 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDaf9-0004ah-15; Wed, 02 Sep 2020 23:51:27 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDaf8-0008Ww-Qk; Wed, 02 Sep 2020 23:51:26 +0200
-Subject: Re: [PATCH] libbpf: Remove arch-specific include path in Makefile
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-References: <20200902084246.1513055-1-naveen.n.rao@linux.vnet.ibm.com>
- <CAEf4BzZXyJsJ6rFp7pj_0PhyE_df9Z08wE9pUkZBp8i1qz_h1Q@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <fc8b0c65-b74a-d924-4189-ff6359d1ebdc@iogearbox.net>
-Date:   Wed, 2 Sep 2020 23:51:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726247AbgIBWK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 18:10:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48786 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgIBWK1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 18:10:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082M9lAs120720;
+        Wed, 2 Sep 2020 22:10:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=uvO52K3sIUUlnay/t4Jn4g39CIBUuBgb8+11GXEL2Cw=;
+ b=vucxgcr+m5MCgOKIM+iWO4CWaGmYCeoV4boIRHRBfKEaKoKRU2GAsPwSiGHMPqUf7UXx
+ j2ItQDz2HxQi9oFwPVeIIMCETdSnfs+V8A03BWNd9pwUhh+iChFGdezyafz/KYwb4NPf
+ pnfNf8j3sc4Wzb0SxhP4SXM09bDBp97IEC/oDz/W5VhaYsaEFgzsVIDghgqpZGFx4+e1
+ vFp41Q2rGe2O4XNR9IzdYgeRh9ItpWrB9WVbqKqIzSm631KSif5LUKWT6juQo5L+BgN6
+ JhNINENJCX1hhQKtePWMtUwkRYslMjDfJhKGmv9JiyBm+t3AM0wHpdR6f3FccVD6GdwG SQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 339dmn3wyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Sep 2020 22:10:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082M4f37196543;
+        Wed, 2 Sep 2020 22:10:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 3380x7y5cy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Sep 2020 22:10:13 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 082MACgj013839;
+        Wed, 2 Sep 2020 22:10:12 GMT
+Received: from termi.oracle.com (/10.175.48.72)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Sep 2020 15:10:11 -0700
+From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: EF_BPF_GNU_XBPF
+References: <87mu282gay.fsf@oracle.com>
+        <CAADnVQ+AZvXTSitF+Fj5ohYiKWERN2yrPtOLR9udKcBTHSZzxA@mail.gmail.com>
+        <87y2ls0w41.fsf@oracle.com>
+        <20200902203206.nx6ws4ixuo2bcic6@ast-mbp.dhcp.thefacebook.com>
+        <87o8mn281a.fsf@oracle.com>
+        <d0a6eb38-76a4-b335-878b-647fe68f937a@iogearbox.net>
+Date:   Thu, 03 Sep 2020 00:10:07 +0200
+In-Reply-To: <d0a6eb38-76a4-b335-878b-647fe68f937a@iogearbox.net> (Daniel
+        Borkmann's message of "Wed, 2 Sep 2020 23:33:17 +0200")
+Message-ID: <87k0xb25kw.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZXyJsJ6rFp7pj_0PhyE_df9Z08wE9pUkZBp8i1qz_h1Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25918/Wed Sep  2 15:41:14 2020)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009020204
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020205
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/2/20 10:58 PM, Andrii Nakryiko wrote:
-> On Wed, Sep 2, 2020 at 1:43 AM Naveen N. Rao
-> <naveen.n.rao@linux.vnet.ibm.com> wrote:
->>
->> Ubuntu mainline builds for ppc64le are failing with the below error (*):
->>      CALL    /home/kernel/COD/linux/scripts/atomic/check-atomics.sh
->>      DESCEND  bpf/resolve_btfids
->>
->>    Auto-detecting system features:
->>    ...                        libelf: [ [32mon[m  ]
->>    ...                          zlib: [ [32mon[m  ]
->>    ...                           bpf: [ [31mOFF[m ]
->>
->>    BPF API too old
->>    make[6]: *** [Makefile:295: bpfdep] Error 1
->>    make[5]: *** [Makefile:54: /home/kernel/COD/linux/debian/build/build-generic/tools/bpf/resolve_btfids//libbpf.a] Error 2
->>    make[4]: *** [Makefile:71: bpf/resolve_btfids] Error 2
->>    make[3]: *** [/home/kernel/COD/linux/Makefile:1890: tools/bpf/resolve_btfids] Error 2
->>    make[2]: *** [/home/kernel/COD/linux/Makefile:335: __build_one_by_one] Error 2
->>    make[2]: Leaving directory '/home/kernel/COD/linux/debian/build/build-generic'
->>    make[1]: *** [Makefile:185: __sub-make] Error 2
->>    make[1]: Leaving directory '/home/kernel/COD/linux'
->>
->> resolve_btfids needs to be build as a host binary and it needs libbpf.
->> However, libbpf Makefile hardcodes an include path utilizing $(ARCH).
->> This results in mixing of cross-architecture headers resulting in a
->> build failure.
->>
->> The specific header include path doesn't seem necessary for a libbpf
->> build. Hence, remove the same.
->>
->> (*) https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.9-rc3/ppc64el/log
->>
->> Reported-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
->> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->> ---
-> 
-> This seems to still build fine for me, so I seems fine. Not sure why
-> that $(ARCH)/include/uapi path is there.
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Same here, builds fine from my side too. Looks like this was from the very early days,
-added in commit 1b76c13e4b36 ("bpf tools: Introduce 'bpf' library and add bpf feature
-check"). Applied, thanks!
+Hi Daniel.
+
+>>>> As such, the property of being verifiable is irrelevant.
+>>>
+>>> No. It's a fundamental property of BPF.
+>>> If it's not verifiable it's not BPF.
+>> Sure.
+>> 
+>>> It's not xBPF either.
+>> Heh, beg to differ :)
+>> 
+>>> Please call it something else and don't confuse people that your ISA
+>>> has any overlap with BPF. It doesn't. It's not verifiable.
+>> Nonsense.  xBPF has as much overlap with BPF as it can have: around
+>> 99%.
+>> The purpose of having the e_flag is to avoid confusion, not to
+>> increase
+>> it.  xBPF objects are mainly used to test the GCC BPF backend (and other
+>> purposes we have in mind, like ease the debugging of BPF programs) but
+>> we want to eliminate the chance of these objects to be confused with
+>> legit BPF files, and used as such.
+>
+> I fully agree with Alexei. Looking at [0], if some of these extensions are
+> useful and help/optimize code generation, why not add them to the BPF runtime
+> in the kernel so they can be properly used in general for code generation
+> from gcc/llvm in BPF backend?
+
+The reasons why xBPF came to existence are:
+
+1) Due to BPF being so restrictive, many hundreds of GCC tests won't
+   even build, because they use functions having more than 5 arguments,
+   or functions with too big stack frames, or indirect calls, etc.  We
+   want to be able to test our backend properly, so we added the -mxbpf
+   option in order to relax some of these restrictions.
+
+2) We are working on a BPF simulator that works with GDB.  For that to
+   work, we needed to add a "breakpoint" instruction that GDB can patch
+   in the program.  Having a simulator also allows us to run more GCC
+   tests.
+
+3) With some extensions, it becomes possible to support DWARF call frame
+   information, and therefore to debug BPF programs in GDB with
+   unwinding support.  You can build with -mxbpf, debug, then build
+   again without -mxbpf.
+
+[We have received messages from people saying that a more relaxed
+ variant of BPF would be useful in some userland contexts, and xbpf
+ could certainly be used for that, but that's secondary.]
+
+So, xBPF is mainly about compiler validation and debugging of BPF
+programs.  It is not about helping with code optimization, and the
+extensions it implements are clearly unsuitable for the kernel.
+
+That's why it is important to clearly flag the ELF files that make use
+of these extensions, and therefore our intention of using a bit in
+e_flags for that purpose, and this thread.
+
+The LLVM backend could also benefit from xBPF, for exactly the same
+reasons than GCC.  In fact, right now the LLVM backend generates
+non-conforming BPF instructions under certain circumstances, and the
+resulting (invalid) objects are not annotated at all.
+
+> xBPF would indeed be highly confusing if it cannot be used from the
+> runtime (unless these are properly integrated into the kernel,
+> verified and thus become a fixed part of eBPF ISA).
+>
+>   [0] https://linuxplumbersconf.org/event/7/contributions/724/attachments/636/1166/bpf.pdf
+
+My intention was to discuss about these matters during LPC in the
+Toolchain MC:
+
+https://linuxplumbersconf.org/event/7/contributions/752/attachments/689/1288/toolchain-MC-bpf-discussion.pdf
+
+Unfortunately no BPF people were present during the session, probably
+because of scheduling, but we can do so via email.
+
+We just want to provide good tools to you people :)
