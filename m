@@ -2,64 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E2525AE0F
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 16:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733E725AE81
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 17:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgIBO6n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 10:58:43 -0400
-Received: from www62.your-server.de ([213.133.104.62]:38572 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726922AbgIBO6f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:58:35 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDUDY-0001dF-AP; Wed, 02 Sep 2020 16:58:32 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDUDY-0008jg-4e; Wed, 02 Sep 2020 16:58:32 +0200
-Subject: Re: [PATCH bpf-next] xsk: fix possible segfault at xskmap entry
- insertion
-To:     Magnus Karlsson <magnus.karlsson@intel.com>, bjorn.topel@intel.com,
-        ast@kernel.org, netdev@vger.kernel.org, jonathan.lemon@gmail.com
-Cc:     bpf@vger.kernel.org
-References: <1599037569-26690-1-git-send-email-magnus.karlsson@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0c04fab7-8256-41ba-716c-c073fed03264@iogearbox.net>
-Date:   Wed, 2 Sep 2020 16:58:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727962AbgIBPNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 11:13:09 -0400
+Received: from mga12.intel.com ([192.55.52.136]:48194 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727894AbgIBPNB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:13:01 -0400
+IronPort-SDR: 4RFcDI+54DGBArQgUMgTRIZL+ZVSgJkpzJ3Co5jQm5jMMuF6p/GsXSp7Z0GlQdQtJHsi0/A8vW
+ iq/R0lbhroaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="136919855"
+X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
+   d="scan'208";a="136919855"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 08:12:55 -0700
+IronPort-SDR: yvtPt9TafLz36hZCHsDyQ9gNZ/wB7BqUwZ5VfNnECYGBUpRk1QpdS01s0uI0t/9xuIOHMMgBpd
+ 1HanuGyF3DKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
+   d="scan'208";a="297703764"
+Received: from ishaula-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.39.98])
+  by orsmga003.jf.intel.com with ESMTP; 02 Sep 2020 08:12:51 -0700
+Subject: Re: [PATCH][next] xsk: Fix null check on error return path
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200902150750.GA7257@embeddedor>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <7b3d5e02-852e-189b-7c0e-9f9827fca730@intel.com>
+Date:   Wed, 2 Sep 2020 17:12:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1599037569-26690-1-git-send-email-magnus.karlsson@intel.com>
+In-Reply-To: <20200902150750.GA7257@embeddedor>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25918/Wed Sep  2 15:41:14 2020)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/2/20 11:06 AM, Magnus Karlsson wrote:
-> Fix possible segfault when entry is inserted into xskmap. This can
-> happen if the socket is in a state where the umem has been set up, the
-> Rx ring created but it has yet to be bound to a device. In this case
-> the pool has not yet been created and we cannot reference it for the
-> existence of the fill ring. Fix this by removing the whole
-> xsk_is_setup_for_bpf_map function. Once upon a time, it was used to
-> make sure that the Rx and fill rings where set up before the driver
-> could call xsk_rcv, since there are no tests for the existence of
-> these rings in the data path. But these days, we have a state variable
-> that we test instead. When it is XSK_BOUND, everything has been set up
-> correctly and the socket has been bound. So no reason to have the
-> xsk_is_setup_for_bpf_map function anymore.
+On 2020-09-02 17:07, Gustavo A. R. Silva wrote:
+> Currently, dma_map is being checked, when the right object identifier
+> to be null-checked is dma_map->dma_pages, instead.
 > 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Reported-by: syzbot+febe51d44243fbc564ee@syzkaller.appspotmail.com
-> Fixes: 7361f9c3d719 ("xsk: move fill and completion rings to buffer pool")
+> Fix this by null-checking dma_map->dma_pages.
+> 
+> Addresses-Coverity-ID: 1496811 ("Logically dead code")
+> Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Applied & corrected Fixes tag, thanks!
+Nice catch!
+
+Acked-by: Björn Töpel <bjorn.topel@intel.com>
+
+> ---
+>   net/xdp/xsk_buff_pool.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> index 795d7c81c0ca..5b00bc5707f2 100644
+> --- a/net/xdp/xsk_buff_pool.c
+> +++ b/net/xdp/xsk_buff_pool.c
+> @@ -287,7 +287,7 @@ static struct xsk_dma_map *xp_create_dma_map(struct device *dev, struct net_devi
+>   		return NULL;
+>   
+>   	dma_map->dma_pages = kvcalloc(nr_pages, sizeof(*dma_map->dma_pages), GFP_KERNEL);
+> -	if (!dma_map) {
+> +	if (!dma_map->dma_pages) {
+>   		kfree(dma_map);
+>   		return NULL;
+>   	}
+> 
