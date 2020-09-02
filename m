@@ -2,79 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570AD25A52C
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 07:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E4F25A55D
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 08:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbgIBFqr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 01:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
+        id S1726298AbgIBGIi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 02:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgIBFqq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 01:46:46 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0241C061244;
-        Tue,  1 Sep 2020 22:46:46 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id c15so1767812plq.4;
-        Tue, 01 Sep 2020 22:46:46 -0700 (PDT)
+        with ESMTP id S1726140AbgIBGIg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 02:08:36 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00A4C061244;
+        Tue,  1 Sep 2020 23:08:35 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id c15so1792690plq.4;
+        Tue, 01 Sep 2020 23:08:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0ODfNlmdRj3BYDrmMO0SsBFQWCutglzBSXtyXt2nquw=;
-        b=gDp8Sw0+ieDRXSRjNLvLVwcBIFjvcElIDXREUoUXrGrokXi4L4CR4EslnALqBETAUf
-         xt71bOzv1kHOSvJsEOFC92fXZsiaQcEBQGFiAfb90g1QjRtu+l4JN2+E85Vq5Y8dfxeI
-         f9+kRFI4jl/UI3ZtkyemkWXbJdufh/yY0O77ByMpNWYC51IS1UhdndgLbx6HEXYUJx5D
-         q0k6qHaDP4VEm4BCxGEDt2v/te4XKuIR1GkgZVVmBAAg74FWuSx3xrV4TPesuHdED5IR
-         0yAi18Qg68oTr3F0vtUVKGIUJLH6NrbgnU5XGoNyeMG+zEh3NiI8+WZcdC3rdpYtGI6g
-         TH8A==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=ZMb0ASEzb/3ynYKyIXLW7eTGvZCyyhDBWoynwxmg0Fw=;
+        b=sO2pxPz7OOoSOuqbxP7hJ0HD5PWTjkscbcyYagBEG1e/eESBWjBIEnJZbj4DICWDDN
+         NET6EjT1Ww9kYOndk3XllDCIdGSNBIBgG0iuy40tWbV0eIfO1En/Gu5OTQj2R3DZOv0U
+         YopiLPQdEVdM/7526NuSboAw77CptJEWlKEqD9Cr0vBnCvA1wGfXUzepxwALwNR7Xx/9
+         3kHci5HA+bBSN2AAIBJJIsX+2zJGczThSDxPQYK9a7W7QLT665klMmNlFinafyzrEEsx
+         mbAwaTyse+xbB+epTyZkZkGdyqU/ZFDRDsbsOqOoSssoKYZ2M89Z4wdYTncQWFyONQsg
+         XyIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0ODfNlmdRj3BYDrmMO0SsBFQWCutglzBSXtyXt2nquw=;
-        b=fM3upHrOZQGOWDsDn35PRTRF0jNLvaZWr3HGjFD08EhkEETJJbXgk7DhdDAEykBRcU
-         x5gWcXiSIT1DGQjKB7i/zsuIxmCCNc6aCzVScaXgnE2y/sTiCVoBEmRXmsG6HxBXARlU
-         CmvVb/75fOlsjpmrt0GYPpBAQNIFNglHN5EUL75VytxTxErFhC+DRl/jCrGH8ER1JcM/
-         6CyZ6dpJFj7EugpvjMGO4TRlvXIzu/ORHZF6TBWJIqHoQJrbmTa+i5DCX44FP4I4YWc/
-         k7szWVyVGZ6URQbwO15hTRPgQkqBJwKFYpKuaOmLOXE8f20pxivK03ZIo7iDYVR2hg96
-         r22Q==
-X-Gm-Message-State: AOAM5315fwKlqyMk2CTCNILSpBYZXUG+5p8NT0pbDwd997VukO7cn25X
-        vOD5tgGeJE3fmxwcYgWwi8E=
-X-Google-Smtp-Source: ABdhPJxW+gU5pUEA4gogle3fy5UDYCV4fOYv0gKlKNgH8P3sl28woQG/x/OAapW7lv0Ps+lCeaA0Fg==
-X-Received: by 2002:a17:90a:ce:: with SMTP id v14mr778326pjd.123.1599025606473;
-        Tue, 01 Sep 2020 22:46:46 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:c38b])
-        by smtp.gmail.com with ESMTPSA id y3sm3409220pjg.8.2020.09.01.22.46.44
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=ZMb0ASEzb/3ynYKyIXLW7eTGvZCyyhDBWoynwxmg0Fw=;
+        b=qcn7MjyRQzbUcI5cwhDUcxnuCbJ9uos5MQTBLJQZWkeltgHpf6CDVC6sHG+U/708OY
+         pmwisVju42jRjMtnV6WcVWfSipWZYgjfMvn/Iwet6VV0S5xHna+berk/n2nUAkV7BkfG
+         Gw852INB2hEfzGFWxwR24flGE8+RlBUFxthGNq0umiqfkVX5sB1aNPubMqkXVpEEhlHT
+         cK6h1MeARUKFtw5chOJ/TII3ZjRm0z0kx3WxxF7gzPeJAM8yERcQtBl8HqYhtRMajH7r
+         OxSZX1FohKgxN3+D9d8rSOKlPu+TKyca4sHMWUfAbNtA9AE4aiWdmcDEIJwfNu8AekRs
+         rRCg==
+X-Gm-Message-State: AOAM530BftYCgbr4XtIRcJRRDwFjSftJlQxsKGwWDFRjRkJj+d2nfD/H
+        VoxAsqFQ8NjV0GqI1DV7i6xNWU72pui/tA==
+X-Google-Smtp-Source: ABdhPJx4hGmCN8R7DsOhBZRwvZeupayZTCzbIokai+AeMIa6h/T166l0aTPZVHC8tkLhgJ+bBnGbPA==
+X-Received: by 2002:a17:902:c086:: with SMTP id j6mr817790pld.230.1599026915152;
+        Tue, 01 Sep 2020 23:08:35 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id q3sm4270855pfb.201.2020.09.01.23.08.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 22:46:45 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 22:46:43 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 14/14] selftests/bpf: convert cls_redirect
- selftest to use __noinline
-Message-ID: <20200902054643.bvbtteoii2p7xyix@ast-mbp.dhcp.thefacebook.com>
+        Tue, 01 Sep 2020 23:08:34 -0700 (PDT)
+Date:   Tue, 01 Sep 2020 23:08:28 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Message-ID: <5f4f36dc134c5_5f39820836@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200901015003.2871861-3-andriin@fb.com>
 References: <20200901015003.2871861-1-andriin@fb.com>
- <20200901015003.2871861-15-andriin@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901015003.2871861-15-andriin@fb.com>
+ <20200901015003.2871861-3-andriin@fb.com>
+Subject: RE: [PATCH v2 bpf-next 02/14] libbpf: parse multi-function sections
+ into multiple BPF programs
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 06:50:03PM -0700, Andrii Nakryiko wrote:
-> -static bool ipv4_is_fragment(const struct iphdr *ip)
-> +static __noinline bool ipv4_is_fragment(const struct iphdr *ip)
->  {
->  	uint16_t frag_off = ip->frag_off & bpf_htons(IP_OFFSET_MASK);
->  	return (ip->frag_off & bpf_htons(IP_MF)) != 0 || frag_off > 0;
->  }
->  
-> -static struct iphdr *pkt_parse_ipv4(buf_t *pkt, struct iphdr *scratch)
-> +static __always_inline struct iphdr *pkt_parse_ipv4(buf_t *pkt, struct iphdr *scratch)
+Andrii Nakryiko wrote:
+> Teach libbpf how to parse code sections into potentially multiple bpf_program
+> instances, based on ELF FUNC symbols. Each BPF program will keep track of its
+> position within containing ELF section for translating section instruction
+> offsets into program instruction offsets: regardless of BPF program's location
+> in ELF section, it's first instruction is always at local instruction offset
+> 0, so when libbpf is working with relocations (which use section-based
+> instruction offsets) this is critical to make proper translations.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
 
-similar concern. Could you keep old and add new one with macro magic?
+Acked-by: John Fastabend <john.fastabend@gmail.com>
