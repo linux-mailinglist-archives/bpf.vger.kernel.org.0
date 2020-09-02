@@ -2,149 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A695A25A278
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 02:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181FC25A2E4
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 04:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgIBAyv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Sep 2020 20:54:51 -0400
-Received: from mga01.intel.com ([192.55.52.88]:61825 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726107AbgIBAyr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Sep 2020 20:54:47 -0400
-IronPort-SDR: lw8QZQiXEUdQtddqnRUq4OsG7woC/KlPd1oFjx+zLPwIAh7i9gsHxFkrE9FkAsjD+dZ+/6PLSU
- Gc+mJfO/woMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="175342828"
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="175342828"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 17:54:46 -0700
-IronPort-SDR: whXFeRnsdRw1RbFOBfWV9Ihhk1B7FZB7XlkwooTAfS7eONSQUN5kB7Ul0neDetpPOUhj267wRi
- qbTMv4uSe0gA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="446335761"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga004.jf.intel.com with ESMTP; 01 Sep 2020 17:54:46 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 1 Sep 2020 17:54:46 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 1 Sep 2020 17:54:46 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.55) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Tue, 1 Sep 2020 17:54:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K41YyMpxisIVVpf5GLzvv+q6YDL0mUUJYg95e35iFQca91uFazIUAZMgKzVpcx4YFPgn1eXzXhIK5M7XUoa5dlOqjLCsRoSVZEORmX1R0kJW77XAEklUmKjzH2sspgnxWmWs0+m495wxYjJ6gE2wghkwkcrCpJbLcYBmDdMq+8r/blCMKVuGcBaP/fpVTo7r2WCb4Yokr4AFlAsH6pHlXZbKRqb++sYPhyM+/n0B+3sQ5lghy9m8sz3LMOkOU7H8fGh0VSdx89JnaVyGKssnyzcQmt5+IOB5iq+YSTeQuE2RWjT+Pg18tS9VvjZBYqmMWfPDpuAoef2rREXWVAD0VQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A9W/KWUgBWFwZwsFJMEivso80vkyRzr0gth4Ndcw8+c=;
- b=aYHIsXlyQ+afPvsFMjIwFc5TgZYuaUpfDCVNMKf+p2AYK4SZrIWkyzHxX5flR88aPbeZfCAmWQ2lRCGDb6MF302F4KEzTwotYlzzoQipb8Kan9cdtsZNta2M5p27Bj4uegWuzvVnUjarlDX06SoUZ7RuA83fExenraVHQz5a6GZKa+tqQuPo+S5bSbJYIY7dlP3hBLTRxloMKASvugs0GBzskSpz84Ba5Vy1M6LVpc0XPFYLJUmxuoYYAXClHSL+WNB7kyKFNT7YHrzEirxBeXQnv2EpMFiq36qT5UCYB3/R9R1hamBmKqkv7TrJAnM9KlNg6lo5cOQADxmJIMLHgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A9W/KWUgBWFwZwsFJMEivso80vkyRzr0gth4Ndcw8+c=;
- b=mzCqYDJncb//9Uj7awGTrkc35JcjsLN4x47dtLhwtskT5T77ocRGHomeP6VANJ02Cz3zCtNd3BT1dxZJgwkerMyWt1c+wyFLy1hRi3aukBmXnnYEG3q0PNLCM9TpajssevShCsWuyKMOEWXJG8i6bTkl3viNVnmpX22AEpQJ+QA=
-Received: from MW3PR11MB4522.namprd11.prod.outlook.com (2603:10b6:303:2d::8)
- by MWHPR1101MB2093.namprd11.prod.outlook.com (2603:10b6:301:50::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.21; Wed, 2 Sep
- 2020 00:54:39 +0000
-Received: from MW3PR11MB4522.namprd11.prod.outlook.com
- ([fe80::a43e:b4a1:3c31:aecd]) by MW3PR11MB4522.namprd11.prod.outlook.com
- ([fe80::a43e:b4a1:3c31:aecd%9]) with mapi id 15.20.3326.025; Wed, 2 Sep 2020
- 00:54:39 +0000
-From:   "Ramamurthy, Harshitha" <harshitha.ramamurthy@intel.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
+        id S1726144AbgIBCJk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Sep 2020 22:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbgIBCJj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Sep 2020 22:09:39 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D30C061244;
+        Tue,  1 Sep 2020 19:09:39 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id q6so3624550ild.12;
+        Tue, 01 Sep 2020 19:09:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RvQ64wf9Wh48WwQaP0R20+deCJqQguDL1Pk8BjaeB6k=;
+        b=rqVZsP1zNJwZge4J3LP/4FGgzBO6lS/rO8tsBJDUetULTiPbGk/4n64Rx2x5JIJ8Rp
+         56R+bbvq3hZ6PU2P8bnZRrrhTKHek2i8ddAkYBzZTXjDtEs+V1LHGhpQVhLZr4oxwoPl
+         4hLuWeChldiGFPtP3ZcwHaxMIDmlhD9WXfWemEoalUqAFrfHy39JLVL+Ed6L2n82YmOb
+         gt27PHd5kIMgoIVsEaz7rRlFYLzx5mRBFa+GsGSX9TI8rGnH2OHG3auChxEnYiMd2HKi
+         MSDm2N5KLRq5vR//qRpIX7u7YbguY6Hoa4RXGc2xpNxaaspPknin7chzU9G9zX24+I7t
+         SMyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RvQ64wf9Wh48WwQaP0R20+deCJqQguDL1Pk8BjaeB6k=;
+        b=OvayyAoLRBe5NYAYsH42xNMitPKGEdSuV58fWNbgp+qExwr5dINMPuFV7cIYT9Ljbt
+         4C4g3bNpfts3qQimDkCQ5dupFfbQhu8+muLRRy2wJeWReSBxZAxPeUU26d+6Z5/uZKBz
+         t96X6LceSx4UjIuiTqV3KMxrCfS2piTRE9FbqhAHgUIuuokFh0zalomRg+Xa0ked/zQo
+         Equg8QObhY1Xz7QgbT6FCapKmtAANjuJG0kuG9+Z8S6WEdHrBE8MFin0MLYPR5OA0tGt
+         P7BvtJwttQh9vZGQDCYYkuxmopaXiqgepSgFOBlD/dNBQxeqX8OX4DBBJT4boArwxZ0R
+         HWsQ==
+X-Gm-Message-State: AOAM530Bs44QvJBa+D7czLYNh7PXDSyjjVdNdLZSfKioheffc4u1NFU4
+        Y4Hvaa6L/jJKfftFKIPTiQc=
+X-Google-Smtp-Source: ABdhPJxhDXZmvtt9rkjrKrsYRiB+nEvoM99FzH6pQ2xKBFG1M9226fII1Uu5ADK0A308ODrJldCMNA==
+X-Received: by 2002:a92:bad9:: with SMTP id t86mr1749383ill.308.1599012578388;
+        Tue, 01 Sep 2020 19:09:38 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:883e:eb9e:60a1:7cfb])
+        by smtp.googlemail.com with ESMTPSA id o17sm1453888ila.35.2020.09.01.19.09.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 19:09:37 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
+To:     "Ramamurthy, Harshitha" <harshitha.ramamurthy@intel.com>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "davem@davemloft.net" <davem@davemloft.net>,
         "kuba@kernel.org" <kuba@kernel.org>
-CC:     "dsahern@gmail.com" <dsahern@gmail.com>,
-        "Duyck, Alexander H" <alexander.h.duyck@intel.com>,
+Cc:     "Duyck, Alexander H" <alexander.h.duyck@intel.com>,
         "Herbert, Tom" <tom.herbert@intel.com>
-Subject: RE: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
-Thread-Topic: [PATCH bpf-next] bpf: add bpf_get_xdp_hash helper function
-Thread-Index: AQHWf8zo5S5nD8q420OtCeyQ23Z/hqlSrEcAgAHa41A=
-Date:   Wed, 2 Sep 2020 00:54:38 +0000
-Message-ID: <MW3PR11MB45225675894AFEE20F52BE7E852F0@MW3PR11MB4522.namprd11.prod.outlook.com>
 References: <20200831192506.28896-1-harshitha.ramamurthy@intel.com>
- <0333522d-7b65-e665-f19e-d36d11bd7846@iogearbox.net>
-In-Reply-To: <0333522d-7b65-e665-f19e-d36d11bd7846@iogearbox.net>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiZjEzNGUwYzItNGVhYy00NTQzLTg4ZjYtNmM5ODlhMmQxZDE0IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiSW9HTjVPanBtTENEQmE3Z0hnbitcL1Jhd1hBT1E0czFsXC92aVFQeTNYY0E2VzVOMkhhc3Q2Z0xKaXRBRk52aHJHIn0=
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-ctpclassification: CTP_NT
-authentication-results: iogearbox.net; dkim=none (message not signed)
- header.d=none;iogearbox.net; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [71.63.191.211]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7ca57663-0b0f-4840-32a3-08d84edac53d
-x-ms-traffictypediagnostic: MWHPR1101MB2093:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB2093847A4211353083AB0F62852F0@MWHPR1101MB2093.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3383;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kMgl2RlxbVBi8a7tDxOED5gCGijP+V6kHAs8+2Ul/X9EibttY+l1IXuUgSWZnOgXItednUJBCpXAYruya4Op0NZlqrRk1pFo2SxQEFmurCz/53t39YfstHUjGBt/V8AMmeC+UpWp8noUXiGnp6+E1jFODpLNoXHRXf5DKBw8ezBsTYMpr/vkCkw8brYCdOHz49nKw8w++DyXULzs+L4J0x+knC62FIn55B8+NpPFSB+g1LyQaM72XGvSeTJL5GRr1nALOEMUabISis0LCpSxE6EDSXQ/3Gk9iHieuB03z3HM7c7822nTmpAnorhdCrIJ/0dplj9+ZU2qHS1tcHoUsQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4522.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(376002)(346002)(396003)(54906003)(66946007)(86362001)(110136005)(66446008)(66556008)(66476007)(55016002)(64756008)(76116006)(107886003)(71200400001)(9686003)(2906002)(316002)(8936002)(8676002)(5660300002)(33656002)(7696005)(26005)(52536014)(4326008)(186003)(478600001)(6506007)(83380400001)(53546011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: +aTd21K7eEY0BfjYaCg/ghniBMkpdu1rp+tRYDsPYeWMjnF565BiT2Tacqg4iodXBB/TXqZshFVq638i6piKS1HgJyKl6uu+49h2X3jt84ag69QwFGtnJ6tkyO91PE3QIpBry3xh72HgLffByMlnfM7N8t5FpKLZdtN/yFogmBB5VAUuWkr3yeBYjJMWoBeiG0tPjW4+1VipgH+dscV4tE85Bzb5Q6W1NJoTfJDT5I/BnjGVwqwejaazItulpIGBzNGU0jBDLrGN3+rSKrxl87plsu3T/hwryiUuFoatAw44sQGhObhGc6TihiYePoznG+o84f39pGp1L0vOq/zZMm+X6xJa1wsnHjQruGkNF6npBDNBUIRj26r1G3qCSeefcesQI6AhtppAfs/l9yHQYHI7bSaAoNJbR8L+9Oi4AsXBcLGEmQrAJ+i9V9u+8gcOalhuINqDFktn/pdN9V/j74LFnEl420/9ytqiCGNIosd09SUFMMDoq5xadKIRR+28Kg+6wzvOz1hNOo3Ue1vHzinX6rP+Q84BsRQ1AznmlvisepUdBvf6edJ91T04fyHaYuCUwMTapYBy1IS4NR3cE4Vsi4C+R7Zg/35yHSwOSigw40WdM1YW4brtk3KDNjCrJcN15fo23EsMfEvM2EJSNQ==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <04856bca-0952-4dd7-3313-a13be6b2e95a@gmail.com>
+ <MW3PR11MB45220F94F1E303CEC0F6C19C852F0@MW3PR11MB4522.namprd11.prod.outlook.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f3fbdb56-6e7e-7b18-e160-3f402bee8083@gmail.com>
+Date:   Tue, 1 Sep 2020 20:09:36 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4522.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7ca57663-0b0f-4840-32a3-08d84edac53d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 00:54:39.0261
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Z6335lEjPHWipLg/NwKklpHWudEJIgfci7HLzudnchDv5UboGS05gafF5WN+jQETxc16mn9aXPB3d6LnzYC0CM7yr4UXJbxemdMRNr5Wbuo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2093
-X-OriginatorOrg: intel.com
+In-Reply-To: <MW3PR11MB45220F94F1E303CEC0F6C19C852F0@MW3PR11MB4522.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBEYW5pZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0Pg0KPiBTZW50OiBN
-b25kYXksIEF1Z3VzdCAzMSwgMjAyMCAxOjMzIFBNDQo+IFRvOiBSYW1hbXVydGh5LCBIYXJzaGl0
-aGEgPGhhcnNoaXRoYS5yYW1hbXVydGh5QGludGVsLmNvbT47DQo+IGJwZkB2Z2VyLmtlcm5lbC5v
-cmc7IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGFzdEBrZXJuZWwub3JnOw0KPiBkYXZlbUBkYXZl
-bWxvZnQubmV0OyBrdWJhQGtlcm5lbC5vcmcNCj4gQ2M6IGRzYWhlcm5AZ21haWwuY29tOyBEdXlj
-aywgQWxleGFuZGVyIEgNCj4gPGFsZXhhbmRlci5oLmR1eWNrQGludGVsLmNvbT47IEhlcmJlcnQs
-IFRvbSA8dG9tLmhlcmJlcnRAaW50ZWwuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIGJwZi1u
-ZXh0XSBicGY6IGFkZCBicGZfZ2V0X3hkcF9oYXNoIGhlbHBlciBmdW5jdGlvbg0KPiANCj4gT24g
-OC8zMS8yMCA5OjI1IFBNLCBIYXJzaGl0aGEgUmFtYW11cnRoeSB3cm90ZToNCj4gPiBUaGlzIHBh
-dGNoIGFkZHMgYSBoZWxwZXIgZnVuY3Rpb24gY2FsbGVkIGJwZl9nZXRfeGRwX2hhc2ggdG8gY2Fs
-Y3VsYXRlDQo+ID4gdGhlIGhhc2ggZm9yIGEgcGFja2V0IGF0IHRoZSBYRFAgbGF5ZXIuIEluIHRo
-ZSBoZWxwZXIgZnVuY3Rpb24sIHdlDQo+ID4gY2FsbCB0aGUga2VybmVsIGZsb3cgZGlzc2VjdG9y
-IGluIG5vbi1za2IgbW9kZSBieSBwYXNzaW5nIHRoZSBuZXQNCj4gPiBwb2ludGVyIHRvIGNhbGN1
-bGF0ZSB0aGUgaGFzaC4NCj4gDQo+IFNvIHRoaXMgY29tbWl0IG1zZyBzYXlzICd3aGF0JyB0aGUg
-cGF0Y2ggZG9lcywgYnV0IHNheXMgbm90aGluZyBhYm91dCAnd2h5Jw0KPiBpdCBpcyBuZWVkZWQg
-ZXNwZWNpYWxseSBnaXZlbiB0aGVyZSdzIHRoZSAxIG1pbyBpbnNuIGxpbWl0IGluIHBsYWNlIHdo
-ZXJlIGl0DQo+IHNob3VsZCBiZSBlYXN5IHRvIHdyaXRlIHRoYXQgdXAgaW4gQlBGIGFueXdheS4g
-VGhlIGNvbW1pdCBtc2cgbmVlZHMgdG8NCj4gaGF2ZSBhIGNsZWFyIHJhdGlvbmFsZSB3aGljaCBk
-ZXNjcmliZXMgdGhlIG1vdGl2YXRpb24gYmVoaW5kIHRoaXMgaGVscGVyLi4NCj4gd2h5IGl0IGNh
-bm5vdCBiZSBkb25lIGluIEJQRiBpdHNlbGY/DQoNCk9rYXksIHdpbGwgYWRkIGEgcmF0aW9uYWxl
-IGluIHRoZSBjb21taXQgbWVzc2FnZSBpbiB0aGUgbmV4dCB2ZXJzaW9uIGZvciB1c2UtY2FzZS4g
-DQoNClRoYW5rcywNCkhhcnNoaXRoYQ0KPiANCj4gPiBDaGFuZ2VzIHNpbmNlIFJGQzoNCj4gPiAt
-IGFjY291bnRlZCBmb3IgdmxhbnMoRGF2aWQgQWhlcm4pDQo+ID4gLSByZXR1cm4gdGhlIGNvcnJl
-Y3QgaGFzaCBieSBub3QgdXNpbmcgc2tiX2dldF9oYXNoKERhdmlkIEFoZXJuKQ0KPiA+IC0gY2Fs
-bCBfX3NrYl9mbG93X2Rpc3NlY3QgaW4gbm9uLXNrYiBtb2RlDQo+ID4NCg==
+On 9/1/20 6:52 PM, Ramamurthy, Harshitha wrote:
+>> On 8/31/20 1:25 PM, Harshitha Ramamurthy wrote:
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h index
+>>> a613750d5515..bffe93b526e7 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -3576,6 +3576,14 @@ union bpf_attr {
+>>>   * 		the data in *dst*. This is a wrapper of copy_from_user().
+>>>   * 	Return
+>>>   * 		0 on success, or a negative error in case of failure.
+>>> + *
+>>> + * u32 bpf_get_xdp_hash(struct xdp_buff *xdp_md)
+>>
+>> I thought there was a change recently making the uapi reference xdp_md;
+>> xdp_buff is not exported as part of the uapi.
+> 
+> Not sure what you mean - other xdp related helper functions still use xdp_buff as an argument. Could you point me to an example of what you are referring to?
+
+a patch from Jakub that is apparently not committed yet.
+
+
+>>
+>>> +	memset(&keys, 0, sizeof(keys));
+>>> +	__skb_flow_dissect(dev_net(xdp->rxq->dev), NULL,
+>> &flow_keys_dissector,
+>>> +			   &keys, data, eth->h_proto, sizeof(*eth), len,
+>>> +			   FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL);
+>>
+>> By STOP_AT_FLOW_LABEL I take it you want this to be an L3 hash. Why not
+>> add a flags argument to the helper and let the hash be L3 or L4?
+> 
+> I wrote this exactly how skb_get_hash calls skb_flow_dissect - with the same flag STOP_AT_FLOW_LABEL.  So it should already cover L3 and L4 hash, right? From what I understand STOP_AT_FLOW_LABEL flag is used to only stop parsing when a flow label is seen in ipv6 packets. 
+
+right; missed that. That means this new helper will always do an L4 hash
+for tcp/udp. Adding a flags argument now for the uapi allows a later
+change to make it an L3 hash.
