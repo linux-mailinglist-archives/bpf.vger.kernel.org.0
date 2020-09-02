@@ -2,90 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BDB25A6EE
-	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 09:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063DC25A7EC
+	for <lists+bpf@lfdr.de>; Wed,  2 Sep 2020 10:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgIBHkJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 03:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIBHkH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:40:07 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AB2C061244;
-        Wed,  2 Sep 2020 00:40:07 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id t4so4174585iln.1;
-        Wed, 02 Sep 2020 00:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=enevFwEATp2oYRs6BoPav4G3bpHin52el8vvfhkaxs4=;
-        b=NzWtwIrJUw88o8JdPCuclgKm5GhPbOUG7tJV2ZbkQoM5/IhphsG8MLTTWVfZEU6cu/
-         PBQnfIrE6mWAELal20uoxrwyUg3ARnqrn9cDVnmF7mN3DHChKMXSLX1IehHt92zPK0pw
-         v3cBdtz4lOzzjbYE5i+EU3H6fxav5IgnSdun89sCDw2IhXWwX1nI7AMfRzyX/ueVhuMa
-         ftwtsKuCK8VGSRlFE4W/dHUBp/1bBZZ2VaRzkKqocz2/RhuzltTnKHfrESyOap8OzJH5
-         svzwj/ep9e530USwSgaLHDRs7WNE7D+iPIU3VavxF7wkl85fjSNRNwZZBNqcQsjDzQEb
-         B+pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=enevFwEATp2oYRs6BoPav4G3bpHin52el8vvfhkaxs4=;
-        b=fjJBMy9Tkn23D/3jcREwp2FhoXt95HHHcOqzxNK7rBMY2oZljj+c7lPP3Mzgmu7cnv
-         +eIcR2yCVW3ABCM4GGHBAMN5bXzZsN3Hu9m8zJZLze5f/HcyLOQKuxG2Lc83sMhn1aq4
-         qlKjWRS7wDH6qSrki+OxDYiUJ5c5iPI0uIeNeH6pHvUbqpbl9nCb+V6FTKgsScg5ssN9
-         0/N9FyDVxTmU1ASpDlO1PskDvW0Oz2YsCIB6chAVkLhJcIH+B6AHtOxhHM0CAowQG2ri
-         nILe2V38PglB9aYQ1QghmdC35SEhjkiHOoBEYKYSkYYjDwSQeoLBkDu5xybwkZttRivd
-         /pxA==
-X-Gm-Message-State: AOAM531BNEVtWXZNHwjwEeXtRoBaEE3G9KdKuB5gGdurIdOpedVdKZqF
-        gssG9nVsyRsf2hEASyV5nL3s+2FSAYQDqZh3MZo=
-X-Google-Smtp-Source: ABdhPJyUvf+FKfSu5+5WRaB3nwtOD3MDeU/1ENRdjIHRrQ9Q67nkwjncBTT14tS1PMvEqwOmGqt/wV+G1694IJhNaMA=
-X-Received: by 2002:a92:5806:: with SMTP id m6mr2736398ilb.169.1599032406780;
- Wed, 02 Sep 2020 00:40:06 -0700 (PDT)
+        id S1726193AbgIBInI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 04:43:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53890 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726140AbgIBInH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Sep 2020 04:43:07 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0828Xag0030773;
+        Wed, 2 Sep 2020 04:42:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=6N8E/Fm3fViq5AOeD/pRzzN/BIBlXvWCEntWGmDFN1A=;
+ b=JEtESbOdYTVZUAbur4I07PFJvlgYmglSyQWG+HxWxpBr/rdeBw8ybxRIBpupAmmttBsO
+ zBCWs6pmU9H9LCMjlGnxfqM+wMtnnVxfEdYu0C/Qpvn2S6i3Al/fNvBJ9I7mYF8YGRMq
+ tYb60laRbXakglcPTdoqhvOB7sEKEM1Cxjo0cxmFCzYXdjUbSnZWZh3j+PQJoWkUK5JW
+ yQnLP7wLgYBJJoH2pg4+Kh7yd4Ez4kJQZbHv4Y8c4MbEQFzWNJ9F+Z1xfaT8ftb3eN2z
+ 16DplC41XUBQ5Jz1VAd/6sJK77RAY4GPjII4fr4OAiYq7RecbGGvkMuUkfBvD+04tzHX ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33a6cwjqq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Sep 2020 04:42:56 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0828YRm6032482;
+        Wed, 2 Sep 2020 04:42:55 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33a6cwjqph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Sep 2020 04:42:55 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0828gEG3003237;
+        Wed, 2 Sep 2020 08:42:54 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 337en7jrfx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Sep 2020 08:42:53 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0828gpYP11993498
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Sep 2020 08:42:51 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0DCCDAE045;
+        Wed,  2 Sep 2020 08:42:51 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A10BAE04D;
+        Wed,  2 Sep 2020 08:42:49 +0000 (GMT)
+Received: from naverao1-tp.ibmuc.com (unknown [9.102.21.218])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Sep 2020 08:42:48 +0000 (GMT)
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Subject: [PATCH] libbpf: Remove arch-specific include path in Makefile
+Date:   Wed,  2 Sep 2020 14:12:46 +0530
+Message-Id: <20200902084246.1513055-1-naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20200831000304.1696435-1-Tony.Ambardar@gmail.com> <5e77a6d0-3841-0de6-fd6d-6e6763f575bf@iogearbox.net>
-In-Reply-To: <5e77a6d0-3841-0de6-fd6d-6e6763f575bf@iogearbox.net>
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-Date:   Wed, 2 Sep 2020 00:39:57 -0700
-Message-ID: <CAPGftE9HxJG+3Lajk7x_+fTzjChNdu20R21H46dJVFq65pscDg@mail.gmail.com>
-Subject: Re: [PATCH bpf v1] libbpf: fix build failure from uninitialized
- variable warning
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-02_03:2020-09-02,2020-09-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1011 phishscore=0
+ lowpriorityscore=0 adultscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020074
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 31 Aug 2020 at 07:59, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/31/20 2:03 AM, Tony Ambardar wrote:
-> > While compiling libbpf, some GCC versions (at least 8.4.0) have difficulty
-> > determining control flow and a emit warning for potentially uninitialized
-> > usage of 'map', which results in a build error if using "-Werror":
-> >
-> > In file included from libbpf.c:56:
-> > libbpf.c: In function '__bpf_object__open':
-> > libbpf_internal.h:59:2: warning: 'map' may be used uninitialized in this function [-Wmaybe-uninitialized]
-> >    libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
-> >    ^~~~~~~~~~~~
-> > libbpf.c:5032:18: note: 'map' was declared here
-> >    struct bpf_map *map, *targ_map;
-> >                    ^~~
-> >
-> > The warning/error is false based on code inspection, so silence it with a
-> > NULL initialization.
-> >
-> > Fixes: 646f02ffdd49 ("libbpf: Add BTF-defined map-in-map support")
-> > Ref: 063e68813391 ("libbpf: Fix false uninitialized variable warning")
-> >
-> > Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
->
-> Applied, thanks!
+Ubuntu mainline builds for ppc64le are failing with the below error (*):
+    CALL    /home/kernel/COD/linux/scripts/atomic/check-atomics.sh
+    DESCEND  bpf/resolve_btfids
 
-Thanks, Daniel. I forgot to ask/confirm whether this will get applied
-to the 5.8.x stable branch, since it was first encountered there.
+  Auto-detecting system features:
+  ...                        libelf: [ [32mon[m  ]
+  ...                          zlib: [ [32mon[m  ]
+  ...                           bpf: [ [31mOFF[m ]
+
+  BPF API too old
+  make[6]: *** [Makefile:295: bpfdep] Error 1
+  make[5]: *** [Makefile:54: /home/kernel/COD/linux/debian/build/build-generic/tools/bpf/resolve_btfids//libbpf.a] Error 2
+  make[4]: *** [Makefile:71: bpf/resolve_btfids] Error 2
+  make[3]: *** [/home/kernel/COD/linux/Makefile:1890: tools/bpf/resolve_btfids] Error 2
+  make[2]: *** [/home/kernel/COD/linux/Makefile:335: __build_one_by_one] Error 2
+  make[2]: Leaving directory '/home/kernel/COD/linux/debian/build/build-generic'
+  make[1]: *** [Makefile:185: __sub-make] Error 2
+  make[1]: Leaving directory '/home/kernel/COD/linux'
+
+resolve_btfids needs to be build as a host binary and it needs libbpf.
+However, libbpf Makefile hardcodes an include path utilizing $(ARCH).
+This results in mixing of cross-architecture headers resulting in a
+build failure.
+
+The specific header include path doesn't seem necessary for a libbpf
+build. Hence, remove the same.
+
+(*) https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.9-rc3/ppc64el/log
+
+Reported-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+---
+This is a simpler fix that seems to work and I saw the proper headers 
+from within tools/ being included in both cross-architecture builds as 
+well as a native ppc64le build. I am not sure if there is a better way 
+to ask kbuild to build resolve_btfids/libbpf for the host architecture, 
+and if that will set $(ARCH) appropriately.
+
+- Naveen
+
+
+ tools/lib/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index adbe994610f2..fccc4dcda4b6 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -62,7 +62,7 @@ FEATURE_USER = .libbpf
+ FEATURE_TESTS = libelf zlib bpf
+ FEATURE_DISPLAY = libelf zlib bpf
+ 
+-INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/arch/$(ARCH)/include/uapi -I$(srctree)/tools/include/uapi
++INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
+ FEATURE_CHECK_CFLAGS-bpf = $(INCLUDES)
+ 
+ check_feat := 1
+
+base-commit: 0697fecf7ecd8abf70d0f46e6a352818e984cc9f
+-- 
+2.25.4
+
