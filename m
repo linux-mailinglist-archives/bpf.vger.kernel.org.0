@@ -2,231 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBE125BF11
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 12:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD22625C374
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 16:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgICK2G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 06:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgICK1v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:27:51 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D81C061246;
-        Thu,  3 Sep 2020 03:27:50 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k15so1307882pji.3;
-        Thu, 03 Sep 2020 03:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=amrhPCO1Gn5hvGtCm6mqruYACl33DJor3G3CHuTPXrE=;
-        b=johx+VxCmkrlMfCq9Q6NrgEkimWZHe50UR4WBcdAl9KoIlOJd4AYiCa8wuT7mG43N7
-         d/NhOhLl/gZPMVO1faq6PMqUu/+XDtiNqz7xjmnMLM+aB2pXViKRhkblzcLtF/OVawuU
-         5211IyBBtZWRohY5lR8gZS0n+MjUMirskfDJt3A7OTyrlRfifdM8NUxKkOc2pOA1IFKA
-         UMPtV9sRmrgy+Yol4DwefQGXthtnWahjqAsjL8J6V6kkFOyb18IfadRPdMEA1I7CnWhE
-         q74/U7UsQIj4GsCG+ngkRmWzJ1yms9Y46tSyJi16NZpfiu9ogxH0aDY/o8GmxpVatthp
-         EPvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=amrhPCO1Gn5hvGtCm6mqruYACl33DJor3G3CHuTPXrE=;
-        b=Xw6gFWu8xlPsx2mvuEJPKNqNaKG/RfIhS2oFXNZwcT9R0HVxPrgSIp3PpWK7rKZEh8
-         T5BYIUq7e20ifCjuYJQdmd2A6AreVNujaLg7CEclV8IoUIAXMj2Lk7830gNvaqr2bRfm
-         WbqDhWwhO4nu0n67L3rgqWV8xnJCuTTgg7GZe0eAFAU6rMq6X4v9ZvS4EL8RhQTWYWuu
-         TqpsgFQJ4lsE13ShRpYMSH3Paet3ZvpbxwAGx8mhJnfjXlRbAJZlTLQ9ojea0WOocT1v
-         uaPO4iO1SzI1YAvurDnWg+ckMAL8OQv3N5gIe9+bUHGA5re6w28Cc2auCMP3JtrIlQ/x
-         tRJA==
-X-Gm-Message-State: AOAM532A8Ih+EwtEAiLZBjlnlGzCCTTJxBD7D8Ap+sxQB+N4yfpvq9Ii
-        yFdoUoN0/0sp3PqulNrdNsv9vuKqFqKB/nRB
-X-Google-Smtp-Source: ABdhPJzvKkRd5CaChIdgFWNd0y6KS5GxQLbQWnJXrvrgviR8RoSUohqgwVqoKDaRwyH6UL0Bc5R5cA==
-X-Received: by 2002:a17:90a:39c8:: with SMTP id k8mr2717883pjf.19.1599128869891;
-        Thu, 03 Sep 2020 03:27:49 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x3sm2131929pgg.54.2020.09.03.03.27.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 03:27:49 -0700 (PDT)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv10 bpf-next 5/5] selftests/bpf: Add verifier tests for bpf arg ARG_CONST_MAP_PTR_OR_NULL
-Date:   Thu,  3 Sep 2020 18:27:01 +0800
-Message-Id: <20200903102701.3913258-6-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200903102701.3913258-1-liuhangbin@gmail.com>
-References: <20200826132002.2808380-1-liuhangbin@gmail.com>
- <20200903102701.3913258-1-liuhangbin@gmail.com>
+        id S1729387AbgICOv6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 10:51:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35936 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729058AbgICONn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:13:43 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kDpdy-0007al-SI; Thu, 03 Sep 2020 15:51:15 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kDpdy-0008BF-Ll; Thu, 03 Sep 2020 15:51:14 +0200
+Subject: Re: [PATCH] libbpf: Remove arch-specific include path in Makefile
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+References: <20200902084246.1513055-1-naveen.n.rao@linux.vnet.ibm.com>
+ <CAEf4BzZXyJsJ6rFp7pj_0PhyE_df9Z08wE9pUkZBp8i1qz_h1Q@mail.gmail.com>
+ <fc8b0c65-b74a-d924-4189-ff6359d1ebdc@iogearbox.net>
+ <1599111859.vtxbe8ojub.naveen@linux.ibm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c31ef991-25d0-dab4-819f-13eb38965a86@iogearbox.net>
+Date:   Thu, 3 Sep 2020 15:51:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <1599111859.vtxbe8ojub.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25918/Wed Sep  2 15:41:14 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use helper bpf_redirect_map() and bpf_redirect_map_multi() to test bpf
-arg ARG_CONST_MAP_PTR and ARG_CONST_MAP_PTR_OR_NULL. Make sure the
-map arg could be verified correctly when it is NULL or valid map
-pointer.
+On 9/3/20 7:46 AM, Naveen N. Rao wrote:
+> Daniel Borkmann wrote:
+>> On 9/2/20 10:58 PM, Andrii Nakryiko wrote:
+>>> On Wed, Sep 2, 2020 at 1:43 AM Naveen N. Rao
+>>> <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>>>>
+>>>> Ubuntu mainline builds for ppc64le are failing with the below error (*):
+>>>>      CALL    /home/kernel/COD/linux/scripts/atomic/check-atomics.sh
+>>>>      DESCEND  bpf/resolve_btfids
+>>>>
+>>>>    Auto-detecting system features:
+>>>>    ...                        libelf: [ [32mon[m  ]
+>>>>    ...                          zlib: [ [32mon[m  ]
+>>>>    ...                           bpf: [ [31mOFF[m ]
+>>>>
+>>>>    BPF API too old
+>>>>    make[6]: *** [Makefile:295: bpfdep] Error 1
+>>>>    make[5]: *** [Makefile:54: /home/kernel/COD/linux/debian/build/build-generic/tools/bpf/resolve_btfids//libbpf.a] Error 2
+>>>>    make[4]: *** [Makefile:71: bpf/resolve_btfids] Error 2
+>>>>    make[3]: *** [/home/kernel/COD/linux/Makefile:1890: tools/bpf/resolve_btfids] Error 2
+>>>>    make[2]: *** [/home/kernel/COD/linux/Makefile:335: __build_one_by_one] Error 2
+>>>>    make[2]: Leaving directory '/home/kernel/COD/linux/debian/build/build-generic'
+>>>>    make[1]: *** [Makefile:185: __sub-make] Error 2
+>>>>    make[1]: Leaving directory '/home/kernel/COD/linux'
+>>>>
+>>>> resolve_btfids needs to be build as a host binary and it needs libbpf.
+>>>> However, libbpf Makefile hardcodes an include path utilizing $(ARCH).
+>>>> This results in mixing of cross-architecture headers resulting in a
+>>>> build failure.
+>>>>
+>>>> The specific header include path doesn't seem necessary for a libbpf
+>>>> build. Hence, remove the same.
+>>>>
+>>>> (*) https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.9-rc3/ppc64el/log
+>>>>
+>>>> Reported-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+>>>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>>> ---
+>>>
+>>> This seems to still build fine for me, so I seems fine. Not sure why
+>>> that $(ARCH)/include/uapi path is there.
+>>>
+>>> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>>
+>> Same here, builds fine from my side too. Looks like this was from the very early days,
+>> added in commit 1b76c13e4b36 ("bpf tools: Introduce 'bpf' library and add bpf feature
+>> check"). Applied, thanks!
+> 
+> Thanks!
+> 
+> Daniel, I see that this has been applied to bpf-next. Can you please consider sending this in for v5.9-rc series so as to resolve the build failures?
 
-Add devmap and devmap_hash in struct bpf_test due to bpf_redirect_{map,
-map_multi} limit.
+Ok, done, I've moved it to bpf tree so its on track for 5.9.
 
-Test result:
- ]# ./test_verifier 702 705
- #702/p ARG_CONST_MAP_PTR: null pointer OK
- #703/p ARG_CONST_MAP_PTR: valid map pointer OK
- #704/p ARG_CONST_MAP_PTR_OR_NULL: null pointer for ex_map OK
- #705/p ARG_CONST_MAP_PTR_OR_NULL: valid map pointer for ex_map OK
- Summary: 4 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 22 +++++-
- .../testing/selftests/bpf/verifier/map_ptr.c  | 70 +++++++++++++++++++
- 2 files changed, 91 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 9be395d9dc64..f89a13e60692 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -50,7 +50,7 @@
- #define MAX_INSNS	BPF_MAXINSNS
- #define MAX_TEST_INSNS	1000000
- #define MAX_FIXUPS	8
--#define MAX_NR_MAPS	20
-+#define MAX_NR_MAPS	22
- #define MAX_TEST_RUNS	8
- #define POINTER_VALUE	0xcafe4all
- #define TEST_DATA_LEN	64
-@@ -87,6 +87,8 @@ struct bpf_test {
- 	int fixup_sk_storage_map[MAX_FIXUPS];
- 	int fixup_map_event_output[MAX_FIXUPS];
- 	int fixup_map_reuseport_array[MAX_FIXUPS];
-+	int fixup_map_devmap[MAX_FIXUPS];
-+	int fixup_map_devmap_hash[MAX_FIXUPS];
- 	const char *errstr;
- 	const char *errstr_unpriv;
- 	uint32_t insn_processed;
-@@ -640,6 +642,8 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	int *fixup_sk_storage_map = test->fixup_sk_storage_map;
- 	int *fixup_map_event_output = test->fixup_map_event_output;
- 	int *fixup_map_reuseport_array = test->fixup_map_reuseport_array;
-+	int *fixup_map_devmap = test->fixup_map_devmap;
-+	int *fixup_map_devmap_hash = test->fixup_map_devmap_hash;
- 
- 	if (test->fill_helper) {
- 		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-@@ -817,6 +821,22 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 			fixup_map_reuseport_array++;
- 		} while (*fixup_map_reuseport_array);
- 	}
-+	if (*fixup_map_devmap) {
-+		map_fds[20] = __create_map(BPF_MAP_TYPE_DEVMAP,
-+					   sizeof(u32), sizeof(u32), 1, 0);
-+		do {
-+			prog[*fixup_map_devmap].imm = map_fds[20];
-+			fixup_map_devmap++;
-+		} while (*fixup_map_devmap);
-+	}
-+	if (*fixup_map_devmap_hash) {
-+		map_fds[21] = __create_map(BPF_MAP_TYPE_DEVMAP_HASH,
-+					   sizeof(u32), sizeof(u32), 1, 0);
-+		do {
-+			prog[*fixup_map_devmap_hash].imm = map_fds[21];
-+			fixup_map_devmap_hash++;
-+		} while (*fixup_map_devmap_hash);
-+	}
- }
- 
- struct libcap {
-diff --git a/tools/testing/selftests/bpf/verifier/map_ptr.c b/tools/testing/selftests/bpf/verifier/map_ptr.c
-index b52209db8250..51df7d8784dc 100644
---- a/tools/testing/selftests/bpf/verifier/map_ptr.c
-+++ b/tools/testing/selftests/bpf/verifier/map_ptr.c
-@@ -60,3 +60,73 @@
- 	.result = ACCEPT,
- 	.retval = 1,
- },
-+{
-+	"ARG_CONST_MAP_PTR: null pointer",
-+	.insns = {
-+		/* bpf_redirect_map arg1 (map) */
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		/* bpf_redirect_map arg2 (ifindex) */
-+		BPF_MOV64_IMM(BPF_REG_2, 0),
-+		/* bpf_redirect_map arg3 (flags) */
-+		BPF_MOV64_IMM(BPF_REG_3, 0),
-+		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = REJECT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.errstr = "R1 type=inv expected=map_ptr",
-+},
-+{
-+	"ARG_CONST_MAP_PTR: valid map pointer",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		/* bpf_redirect_map arg1 (map) */
-+		BPF_LD_MAP_FD(BPF_REG_1, 0),
-+		/* bpf_redirect_map arg2 (ifindex) */
-+		BPF_MOV64_IMM(BPF_REG_2, 0),
-+		/* bpf_redirect_map arg3 (flags) */
-+		BPF_MOV64_IMM(BPF_REG_3, 0),
-+		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
-+		BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_devmap = { 1 },
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+},
-+{
-+	"ARG_CONST_MAP_PTR_OR_NULL: null pointer for ex_map",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		/* bpf_redirect_map_multi arg1 (in_map) */
-+		BPF_LD_MAP_FD(BPF_REG_1, 0),
-+		/* bpf_redirect_map_multi arg2 (ex_map) */
-+		BPF_MOV64_IMM(BPF_REG_2, 0),
-+		/* bpf_redirect_map_multi arg3 (flags) */
-+		BPF_MOV64_IMM(BPF_REG_3, 0),
-+		BPF_EMIT_CALL(BPF_FUNC_redirect_map_multi),
-+		BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_devmap = { 1 },
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.retval = 4,
-+},
-+{
-+	"ARG_CONST_MAP_PTR_OR_NULL: valid map pointer for ex_map",
-+	.insns = {
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		/* bpf_redirect_map_multi arg1 (in_map) */
-+		BPF_LD_MAP_FD(BPF_REG_1, 0),
-+		/* bpf_redirect_map_multi arg2 (ex_map) */
-+		BPF_LD_MAP_FD(BPF_REG_2, 1),
-+		/* bpf_redirect_map_multi arg3 (flags) */
-+		BPF_MOV64_IMM(BPF_REG_3, 0),
-+		BPF_EMIT_CALL(BPF_FUNC_redirect_map_multi),
-+		BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_devmap = { 1 },
-+	.fixup_map_devmap_hash = { 3 },
-+	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_XDP,
-+	.retval = 4,
-+},
--- 
-2.25.4
-
+Thanks,
+Daniel
