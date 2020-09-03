@@ -2,103 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9616725CB01
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 22:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB7B25CB9A
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 22:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgICUhN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 16:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729729AbgICUg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:36:57 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26802C061244;
-        Thu,  3 Sep 2020 13:36:57 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id q3so3054177ybp.7;
-        Thu, 03 Sep 2020 13:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2E7KS28zfC4tVsTRRkYzuj1mxceg9YfnccbGKN5EM2Y=;
-        b=b8Z56R9vFCgocfa8RWukYzYWSYA3gtr6wje77Wssz6K+yjxqD8f20ntZRZheoOVV+v
-         BDgrP0DtuIjNozxXUxj5gCg9caRvd/P+tM9finPeseB/BU1EGEVNuDDUCUhc6fRW0+nv
-         ipw4HTaUQsw0mD/UVxhcoksGGtRHcfpjSL9gdBe9rLiF683BWUicBR0v5tH9ve/YOECY
-         CRBkxBs6Drv3tPFtYRZzKysdE0NXzSFgndTRv8sHMiGEPIn/N3Hy6jz0Y1HBJtbaGfQs
-         2tl62L8jQBmWUR4YbZ+pMBird4XhD+ApWBH/laeIzawJImWgckQ8geGawy72noVBmYN7
-         2BYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2E7KS28zfC4tVsTRRkYzuj1mxceg9YfnccbGKN5EM2Y=;
-        b=F3Yb6WkV5Ht9SqyzXYDGFKnBQWJmOR0w2OhERh83PfsCB56mSjQhLx2QkGDgs+WXC3
-         a2hkwpVcjOPkGaUjadZhQYr4C3fNEejj6aYE9Q6y9j2tukXA2nqhDESGaMmNvGWfos5Q
-         xrfipchqB7H7gS4A5t1xZGXfvvPcRMRXLvtMrgQocMWBzHIXorc8WS5FHm7bJDx2shJR
-         nY1ooQk2T3yzTEYphbhLL6y5i+aezOKPRts4A5QG8u3FogP9zH0O9nLC+20Tl8+qbguP
-         p5Etq+bgxM2HN5l67lGt9U1TXOCYQim/J4WOtGaF5bQpMswMuXJcsec0/+vnZqeEbHYH
-         uI7w==
-X-Gm-Message-State: AOAM532HTyYh5kJKbsH9b59IZpJLToqbSoV5DHMjudwzLqo5KjOCFBjC
-        orA0XKfQruoENGPFoBBQILl6rgA7YPljT1itV5U=
-X-Google-Smtp-Source: ABdhPJyDQfdxjra9IKhfUae9dPcHOGQ0OPr4g2ImIt6wfz0b1j2FGZbTmo+bBtcrYt4XI6l5mjIApkQYAlXK5G6M1C4=
-X-Received: by 2002:a25:6885:: with SMTP id d127mr5150392ybc.27.1599165416443;
- Thu, 03 Sep 2020 13:36:56 -0700 (PDT)
+        id S1728061AbgICU7J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 16:59:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726088AbgICU7H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 16:59:07 -0400
+Received: from lore-desk.redhat.com (unknown [151.66.86.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA944206B8;
+        Thu,  3 Sep 2020 20:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599166747;
+        bh=eNqYbb2UwOFJOvg8nHjHg56kZ9XVLK+ZfxCwWscomT0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kZIgUr895BUcIAPmCIidt3UE9H44i+OZO7OPtbF8slSvdU5mXUc4nhs+dfpG211L4
+         Lwg3UvbbK5EPpo2yWoXiEM6ZBjq162GG94eOQti9OQcWyt7l08niCOeNtSLDhO8Vd7
+         AVuNsDxXwT+58QOFuWjtLRrgOkx2u4Rg0rjj1e7I=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, davem@davemloft.net,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com,
+        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net, ast@kernel.org,
+        shayagr@amazon.com
+Subject: [PATCH v2 net-next 0/9] mvneta: introduce XDP multi-buffer support
+Date:   Thu,  3 Sep 2020 22:58:44 +0200
+Message-Id: <cover.1599165031.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200903200528.747884-1-haoluo@google.com>
-In-Reply-To: <20200903200528.747884-1-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Sep 2020 13:36:45 -0700
-Message-ID: <CAEf4Bza6e+x8Rqy7cBzMG0F0D5WCzE7xPRoAqJgSbfyqXxtT5A@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix check in global_data_init.
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 1:06 PM Hao Luo <haoluo@google.com> wrote:
->
-> The returned value of bpf_object__open_file() should be checked with
-> libbpf_get_error() rather than NULL. This fix prevents test_progs from
-> crash when test_global_data.o is not present.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
+- Finalize XDP multi-buffer support for mvneta driver introducing the
+  capability to map non-linear buffers on tx side.
+- Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify if
+  shared_info area has been properly initialized.
+- Initialize multi-buffer bit (mb) to 0 in all XDP-capable drivers.
+- Add multi-buff support to xdp_return_{buff/frame} utility routines.
+- Introduce bpf_xdp_adjust_mb_header helper to adjust frame headers moving
+  *offset* bytes from/to the second buffer to/from the first one.
+  This helper can be used to move headers when the hw DMA SG is not able
+  to copy all the headers in the first fragment and split header and data
+  pages. A possible use case for bpf_xdp_adjust_mb_header is described
+  here [0]
+- Introduce bpf_xdp_get_frag_count and bpf_xdp_get_frags_total_size helpers to
+  report the total number/size of frags for a given xdp multi-buff.
 
-thanks!
+XDP multi-buffer design principles are described here [1]
+For the moment we have not implemented any self-test for the introduced the bpf
+helpers. We can address this in a follow up series if the proposed approach
+is accepted.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Changes since v1:
+- Fix use-after-free in xdp_return_{buff/frame}
+- Introduce bpf helpers
+- Introduce xdp_mb sample program
+- access skb_shared_info->nr_frags only on the last fragment
 
->  tools/testing/selftests/bpf/prog_tests/global_data_init.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> index 3bdaa5a40744..ee46b11f1f9a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> @@ -12,7 +12,8 @@ void test_global_data_init(void)
->         size_t sz;
->
->         obj = bpf_object__open_file(file, NULL);
-> -       if (CHECK_FAIL(!obj))
-> +       err = libbpf_get_error(obj);
-> +       if (CHECK_FAIL(err))
->                 return;
->
->         map = bpf_object__find_map_by_name(obj, "test_glo.rodata");
-> --
-> 2.28.0.526.ge36021eeef-goog
->
+Changes since RFC:
+- squash multi-buffer bit initialization in a single patch
+- add mvneta non-linear XDP buff support for tx side
+
+[0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+
+Lorenzo Bianconi (7):
+  xdp: introduce mb in xdp_buff/xdp_frame
+  xdp: initialize xdp_buff mb bit to 0 in all XDP drivers
+  net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+  xdp: add multi-buff support to xdp_return_{buff/frame}
+  net: mvneta: add multi buffer support to XDP_TX
+  bpf: helpers: add bpf_xdp_adjust_mb_header helper
+  net: mvneta: enable jumbo frames for XDP
+
+Sameeh Jubran (2):
+  bpf: helpers: add multibuffer support
+  samples/bpf: add bpf program that uses xdp mb helpers
+
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  |   1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |   1 +
+ .../net/ethernet/cavium/thunder/nicvf_main.c  |   1 +
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |   1 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   1 +
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   1 +
+ drivers/net/ethernet/marvell/mvneta.c         | 126 ++++++------
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |   1 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |   1 +
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |   1 +
+ .../ethernet/netronome/nfp/nfp_net_common.c   |   1 +
+ drivers/net/ethernet/qlogic/qede/qede_fp.c    |   1 +
+ drivers/net/ethernet/sfc/rx.c                 |   1 +
+ drivers/net/ethernet/socionext/netsec.c       |   1 +
+ drivers/net/ethernet/ti/cpsw.c                |   1 +
+ drivers/net/ethernet/ti/cpsw_new.c            |   1 +
+ drivers/net/hyperv/netvsc_bpf.c               |   1 +
+ drivers/net/tun.c                             |   2 +
+ drivers/net/veth.c                            |   1 +
+ drivers/net/virtio_net.c                      |   2 +
+ drivers/net/xen-netfront.c                    |   1 +
+ include/net/xdp.h                             |  26 ++-
+ include/uapi/linux/bpf.h                      |  39 +++-
+ net/core/dev.c                                |   1 +
+ net/core/filter.c                             |  93 +++++++++
+ net/core/xdp.c                                |  40 ++++
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_mb_kern.c                     |  68 +++++++
+ samples/bpf/xdp_mb_user.c                     | 182 ++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  40 +++-
+ 32 files changed, 572 insertions(+), 70 deletions(-)
+ create mode 100644 samples/bpf/xdp_mb_kern.c
+ create mode 100644 samples/bpf/xdp_mb_user.c
+
+-- 
+2.26.2
+
