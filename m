@@ -2,106 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB88D25C989
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 21:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FFE25C9A3
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 21:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgICTbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 15:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S1728382AbgICTpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 15:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729100AbgICTbu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 15:31:50 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD12C061245
-        for <bpf@vger.kernel.org>; Thu,  3 Sep 2020 12:31:49 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gr14so4322805ejb.1
-        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 12:31:49 -0700 (PDT)
+        with ESMTP id S1727065AbgICTpI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 15:45:08 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9ACFC061244;
+        Thu,  3 Sep 2020 12:45:08 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mw10so1966139pjb.2;
+        Thu, 03 Sep 2020 12:45:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7ju/sydS5Q9IaBUhC6NOUzji212D6APi15kEY10l2jM=;
-        b=lbrg7jCc44YPYHlwiPPcORp12NA43Sx5aUGnQyPqjAZQ5Q1+z1RgPw+CGG0dUOPJEj
-         kJGDDjgam1jWTW3bD6eQLxH3xOpG/BbB/aI6TuYBbYOK2ufE5kZLYsGVcwI8E76JMncU
-         1qMvJ0kvpTY6aJ2Xdtm32ZmteixI8ThusUxRh5s6VPVymfaGtdGYMNUWAL9DZVm/NXQi
-         1cGBTEWExtOQDHGxdV8X7JrgCcJOFDgRA9Bubiog5xFkI384UOsEB29j9ha2PplRjHec
-         hYTYbOHrDZgXRGwZTildKLwFfV/T2hngSupVSuZxPAeEmyq8zw+HnSntGFc4Yrr+ndAw
-         wTNA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n7mJSWhkBJhBXShSLzoJkI/HuFZrSq7ogCejn+AkwO0=;
+        b=H5+G2OK3Ta7MLW6rjCK4kdGQKfMDbbE3ABp251/mX8Zxxto2N98DG2klkLkxdi9p7v
+         /3PQ7iLBwTeeB8uWm4hVvAv6CenlZM2zWNBlemyFXDZtDos/WIhCqIfIDf/tQMYV/5tZ
+         v59PIp/8KaXH0EO9JBS2bT0pcS/lo3NMLLGB5Bu970WfllR88sooqv0a8W+XzE8PCf9U
+         S5Av7swRlY4aIW0kYYcmX6giNLn8/umerQHm3zuA5fL2k8Sbt0vMsyW5lW2cJpoRdcsf
+         yE4pfMCnVsZP5qvHOPwmiTiB026Oz+ABSua0hu++H2TAnUrkC8hMaNQJxPNvpdMgrEuG
+         9GVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ju/sydS5Q9IaBUhC6NOUzji212D6APi15kEY10l2jM=;
-        b=D3ooqpKet1ZngtOtDuinBdaGKhzZPo0lggxRyZVOt9ODjXOT9ZLbx0sSA1Aj4HUNA1
-         hnJR1+7fRExBGJ23HbA9hXRSFrf8JXwSxZbrmJGGfSnCSHI7zvoZB5HzTJOzfZ/eyYZB
-         01+7oHFnA0R1P45GsksfpDAgin8D7PwS3U/hbNjBpTJ7EM6efEb7h+8cdHVfjiy8swcD
-         T8gxkfU+MYeg59xV3+fOSc3JnDdHOuYDIt1Q/6zscwv47oF81ZukB0ZJqBkLwOQ4JGNk
-         PB0m+dA8pADCJ+UbYNTJgu8lC5Y5LfRt+hQaNq3SWZPrD379me77flFzVaiUBL3XQHGs
-         s4Sg==
-X-Gm-Message-State: AOAM531XAeMUV+lbzDI5pOuu4p1DfEKAvu1bjRpSCl8/TbZMgcNM3e+0
-        nZhNYonXYyAQJK2IqWxQBcmZ+aAAGFarmKuNUSaxiA==
-X-Google-Smtp-Source: ABdhPJykXItJHXfSEX+xWXdv9YgktkqyXhkFXzwTurtiCZASYxKs6/icUg7CX5hCLBz4dib5+dOrOGiccCfbzXdfQ5A=
-X-Received: by 2002:a17:906:7746:: with SMTP id o6mr3684224ejn.113.1599161508226;
- Thu, 03 Sep 2020 12:31:48 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n7mJSWhkBJhBXShSLzoJkI/HuFZrSq7ogCejn+AkwO0=;
+        b=qjiC+tWTxjQiHrXLrE2GOGk250B+wX2+tTKi7E5dB6CLzL6USigdaMRs161YI20Ny7
+         /B4/XLgrTSVKiX3jhvTZm4dTz420x4O/y1m4I9TDMMdg/hD32roJNd5XEncrIkkp4tHt
+         Ng0E1HaL2jSN58idPAfB2kGn3CsouGZlYeoQ/f2PQFMRXN6R0hxousKF1bRiqEo6KWos
+         kiviTjlyeNl3dftc9PpI0FheL5O37yFh7hL/A+qM2ww72Jaz0zga713u/LxPUf0ECE9u
+         VFbtWqrxcPkov5Lky+knWmTEdM3Pk/6MAxKXKiYOAYjf6RZ6wEwXjoLOLyg+MJtMKMik
+         XGMw==
+X-Gm-Message-State: AOAM530iD2arydL9AN+vMU0BNMhmwzmwJbMoMxGUpkgkSjTKZwN35uFH
+        zoEI+V2sfNIuokDYVYk1EM4=
+X-Google-Smtp-Source: ABdhPJyAiSobhOZbaKITM3bJRQfJhzq3v5ZzaGC9p2NwGzx6LKuZpKE676uIARfMkQ72k04QPA+Lpg==
+X-Received: by 2002:a17:90b:30cd:: with SMTP id hi13mr4817477pjb.82.1599162307576;
+        Thu, 03 Sep 2020 12:45:07 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:7ac4])
+        by smtp.gmail.com with ESMTPSA id v17sm3960294pfn.24.2020.09.03.12.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 12:45:06 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 12:45:04 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com
+Subject: Re: [PATCH v7 bpf-next 5/7] bpf: limit caller's stack depth 256 for
+ subprogs with tailcalls
+Message-ID: <20200903194504.yhx6wpz6wayxb6mg@ast-mbp.dhcp.thefacebook.com>
+References: <20200902200815.3924-1-maciej.fijalkowski@intel.com>
+ <20200902200815.3924-6-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
-References: <20200903180121.662887-1-haoluo@google.com> <CAEf4BzYtr6Tki8viGt0KBAwH5FF0don+j3Td86m0Kg95kUEAhw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYtr6Tki8viGt0KBAwH5FF0don+j3Td86m0Kg95kUEAhw@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 3 Sep 2020 12:31:36 -0700
-Message-ID: <CA+khW7hG4FFToxDcXHS29Gu3pz5tN-93sf90YyE6PqNDosjNdQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix check in global_data_init.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902200815.3924-6-maciej.fijalkowski@intel.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-No problem! Let me update and resend.
+On Wed, Sep 02, 2020 at 10:08:13PM +0200, Maciej Fijalkowski wrote:
+> Protect against potential stack overflow that might happen when bpf2bpf
+> calls get combined with tailcalls. Limit the caller's stack depth for
+> such case down to 256 so that the worst case scenario would result in 8k
+> stack size (32 which is tailcall limit * 256 = 8k).
+> 
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  include/linux/bpf_verifier.h |  1 +
+>  kernel/bpf/verifier.c        | 28 ++++++++++++++++++++++++++++
+>  2 files changed, 29 insertions(+)
+> 
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 53c7bd568c5d..5026b75db972 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -358,6 +358,7 @@ struct bpf_subprog_info {
+>  	u32 start; /* insn idx of function entry point */
+>  	u32 linfo_idx; /* The idx to the main_prog->aux->linfo */
+>  	u16 stack_depth; /* max. stack depth used by this function */
+> +	bool has_tail_call;
+>  };
+>  
+>  /* single container for all structs
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 8f9e95f5f73f..b12527d87edb 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1490,6 +1490,8 @@ static int check_subprogs(struct bpf_verifier_env *env)
+>  	for (i = 0; i < insn_cnt; i++) {
+>  		u8 code = insn[i].code;
+>  
+> +		if (insn[i].imm == BPF_FUNC_tail_call)
+> +			subprog[cur_subprog].has_tail_call = true;
 
-On Thu, Sep 3, 2020 at 11:50 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Sep 3, 2020 at 11:02 AM Hao Luo <haoluo@google.com> wrote:
-> >
-> > The returned value of bpf_object__open_file() should be checked with
-> > IS_ERR() rather than NULL. This fix makes test_progs not crash when
-> > test_global_data.o is not present.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/global_data_init.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> > index 3bdaa5a40744..1ece86d5c519 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> > @@ -12,7 +12,7 @@ void test_global_data_init(void)
-> >         size_t sz;
-> >
-> >         obj = bpf_object__open_file(file, NULL);
-> > -       if (CHECK_FAIL(!obj))
-> > +       if (CHECK_FAIL(IS_ERR(obj)))
->
-> Can you please use libbpf_get_error(obj) instead to set a good example
-> or not relying on kernel internal macros?
->
-> >                 return;
-> >
-> >         map = bpf_object__find_map_by_name(obj, "test_glo.rodata");
-> > --
-> > 2.28.0.402.g5ffc5be6b7-goog
-> >
+It will randomly match on other opcodes.
+This check probably should be moved few lines down after BPF_JMP && BPF_CALL &&
+insn->src_reg != BPF_PSEUDO_CALL.
+
+Another option would be to move it to check_helper_call(), since it
+already matches on:
+if (func_id == BPF_FUNC_tail_call) {
+                err = check_reference_leak(env);
+but adding find_subprog() there to mark seems less efficient than
+doing it during check_subprogs().
+
+>  		if (BPF_CLASS(code) != BPF_JMP && BPF_CLASS(code) != BPF_JMP32)
+>  			goto next;
+>  		if (BPF_OP(code) == BPF_EXIT || BPF_OP(code) == BPF_CALL)
