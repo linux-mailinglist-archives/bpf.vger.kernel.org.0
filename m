@@ -2,91 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6B225C859
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 20:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E9B25C88C
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 20:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbgICSBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 14:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgICSBl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 14:01:41 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44371C061244
-        for <bpf@vger.kernel.org>; Thu,  3 Sep 2020 11:01:41 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id c78so3622378ybf.6
-        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 11:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=Kysrwv2vyroocCwa+tcRYatIjOGKit3xRO3evVtQFbc=;
-        b=Cq3p3J6MuBLmXs4+BsJhTAo9WFB6do5dQd5DtPvLivFpB+4Ju12w4vUq6lbWXAzjlm
-         TbcW3W73CMNquCeiwEyKd9wULH55FwWxBcJpvqcNQcSVJIerstXZYAml83qKstkbK1SU
-         okUjrP6TZJ46ow8QUFxy4cJEvShbzmqd/tMJGhc/ubslAQw5E5fKNSN+mDR7fcIMvWkl
-         T5OyxJjCB5mabyFXVA/Kv+8UqCZMU/3HwpGbWxy6Qw6coOJcnVywx1qpwbmB4Rg2DxxW
-         vRrg6aEM7P7/YB4eK0LrHrEquLEDOltwMIB5NacuCaNG7muP/MqjrNPvcOSChtXfdvOR
-         opNA==
+        id S1728942AbgICSNJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 14:13:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41478 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726990AbgICSNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 14:13:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599156788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yg1AqJKscV91LZKYYyZNU28u8gvJLSRmrzFmVyxeuqY=;
+        b=Eg1HB62BeRXiEhN6vZgwqcTKorxMokKJSqCD8kHosrsblcjGpccoElueroEBjz15KT7ILS
+        L5TaYmibCZvk1Mm976dyJLErG7Eq6afJ6WbRtuOX6G25y79huWfm25/9V48/XArvUSodDj
+        3tAAr3cHusHLerRcYgk7aVXRdVTG/z4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-9Oo_tWyoOP-eicllCirvbQ-1; Thu, 03 Sep 2020 14:13:05 -0400
+X-MC-Unique: 9Oo_tWyoOP-eicllCirvbQ-1
+Received: by mail-wr1-f69.google.com with SMTP id a12so1366883wrg.13
+        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 11:13:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=Kysrwv2vyroocCwa+tcRYatIjOGKit3xRO3evVtQFbc=;
-        b=WxP6gLOkpP5yydAD+uKYgqU/alKVyRLETF52l2fIGPe1ZP5SgReJGhnsJyZa0MMWPB
-         wXWUXaHLKgJ7qYizLVP/8kllxGSsMpInjSK1/4L5dRLAiwfF+gNN7bydQfWNUQOyXzdB
-         EqlkJ3VyYo5MFcpnJM0E4GWKfoz/WTORO/qrF8JjswVKvL/lWu8tcNMQdkQEo0A5DRt6
-         WEpDy4YVW3zh2G8H5rmENnSbTeQvFKH+hDWXRxoRzB1CVr7hO588yLh5/ED0Ue5qLON8
-         W8iL67oQh7f5p02GZoQwRmWMA5uD7dav4XLccshVCxfrs353oUwHuiEw1/rCM4sMPM+a
-         GEOA==
-X-Gm-Message-State: AOAM533pbD8tnJRaCo4wDDeveX2G+kdAVMVJChBhKfqWct8UC52BS2RU
-        1ij4/r9zLz/NMLiIERt8LPm+9K3U0tw=
-X-Google-Smtp-Source: ABdhPJznIT58g0Z8TdpOroAqfZSJEPyQbKcKvYMhot5h+i6tLXl0hXMlUC/qJtrEQeftD65KiOHntPOzGCQ=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
- (user=haoluo job=sendgmr) by 2002:a25:70c6:: with SMTP id l189mr4414948ybc.263.1599156100416;
- Thu, 03 Sep 2020 11:01:40 -0700 (PDT)
-Date:   Thu,  3 Sep 2020 11:01:21 -0700
-Message-Id: <20200903180121.662887-1-haoluo@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH] selftests/bpf: Fix check in global_data_init.
-From:   Hao Luo <haoluo@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>,
-        KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Yg1AqJKscV91LZKYYyZNU28u8gvJLSRmrzFmVyxeuqY=;
+        b=Y1HgsBjVzo+t/ToSZkbhJigcKXuTIKxRkBN4RkeJ0QqMHrjilUHkBUrOlEJzcrVUUt
+         m8S3t1OduhwnDVY0WanV38GZPBSqVSIUeb/Styyo8UVlefoKUSa6kFA8jPWWcGqQH5qx
+         nQ4P4XJSk37ylTSnSMiQESoMLez5eZrWE3GAR1leiUNQXhAX6zpzBbssGQmM/+MYqw/J
+         f1la8sExPi2w69KevR5YVc2hKqyzWBc3loV1ZopGC9NlZAzaTiU9SkIaovV4eUdZyBzH
+         J+cgNe3+JlXfD0+aeNtg6tWqDDh6ithbh4lTy8pSilOe9bU+DptjaoM4hGEFVm780HuN
+         yWLg==
+X-Gm-Message-State: AOAM532MmDQH2/nIL4hDM8zcYCo7qPK05KKz+c7Hfv01X+s68p+bYhyd
+        SRTEcN9jIjgQzyIvOJprSf5UMz2oAAXJusY7DEBCxHHTndEfIM2QxA0vTt9VIm/3Hj3JdHh3K7e
+        zoyVv9dBcddU3hN9yrDhQ80yT94Et
+X-Received: by 2002:adf:ef0a:: with SMTP id e10mr3702005wro.362.1599156784827;
+        Thu, 03 Sep 2020 11:13:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsaUmQzW9WABvIoVGtIWkXt1PVBoXm1owF1RSXsLl1n8AAFIPFyH/rdK6/NBy6Jxq2VhXWV5woyAwzu8dMqkY=
+X-Received: by 2002:adf:ef0a:: with SMTP id e10mr3701992wro.362.1599156784677;
+ Thu, 03 Sep 2020 11:13:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200903140542.156624-1-yauheni.kaliuta@redhat.com>
+ <1ac6aef1-b38c-06c7-6e0d-b8459207d7d9@iogearbox.net> <CANoWswkX9xrG48HHO19Q67ogmNcOArpe4iZwWU4_S08A7H+_Cg@mail.gmail.com>
+In-Reply-To: <CANoWswkX9xrG48HHO19Q67ogmNcOArpe4iZwWU4_S08A7H+_Cg@mail.gmail.com>
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Date:   Thu, 3 Sep 2020 21:12:47 +0300
+Message-ID: <CANoWswkqEnnhtmCKpjShMEFKb0mzHni498jjEjc+M4UbniBYMA@mail.gmail.com>
+Subject: Re: [PATCH RFC] bpf: update current instruction on patching
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The returned value of bpf_object__open_file() should be checked with
-IS_ERR() rather than NULL. This fix makes test_progs not crash when
-test_global_data.o is not present.
+On Thu, Sep 3, 2020 at 7:13 PM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
 
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- tools/testing/selftests/bpf/prog_tests/global_data_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
+>
+> I have not investigated why on s390 it is zext'ed, but on x86 not,
+> it's related to the size of the register when it returns 32bit value.
+> There may be a bug there as well.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-index 3bdaa5a40744..1ece86d5c519 100644
---- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-+++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-@@ -12,7 +12,7 @@ void test_global_data_init(void)
- 	size_t sz;
- 
- 	obj = bpf_object__open_file(file, NULL);
--	if (CHECK_FAIL(!obj))
-+	if (CHECK_FAIL(IS_ERR(obj)))
- 		return;
- 
- 	map = bpf_object__find_map_by_name(obj, "test_glo.rodata");
+Nevermind, I missed that for x86 it's for 32 bits only. So, expected.
+
+[...]
+
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+WBR, Yauheni
 
