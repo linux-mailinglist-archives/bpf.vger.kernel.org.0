@@ -2,76 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F0625C977
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 21:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB88D25C989
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 21:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgICT0s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 15:26:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728304AbgICT0s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 15:26:48 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03550206EF;
-        Thu,  3 Sep 2020 19:26:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599161208;
-        bh=yS2vWoQBhhf3QSRyhF5rOIpprqbVA5TZG9bHqKjsrgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gpv1Qom+eMOgbXkpyj98wtFG3rFjKT/tP+A7ClmDHCZJfEaEunHQ/E685AF4Uigt7
-         uqQ42Ym9QmxcIyL5ZtDkKJTtIWrktP27m8a+J9RWfO1crXnKn9d2wxoj7Xe+M/Q6rH
-         Gx5ffmPf64zWSy3Ci7H9R03KCahXxiqgcsNZPPUo=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B80E340D3D; Thu,  3 Sep 2020 16:26:44 -0300 (-03)
-Date:   Thu, 3 Sep 2020 16:26:44 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] tools build feature: cleanup feature files on make clean
-Message-ID: <20200903192644.GK3495158@kernel.org>
-References: <159851841661.1072907.13770213104521805592.stgit@firesoul>
- <20200903190350.GI3495158@kernel.org>
- <eb3ad60a-68be-f350-9597-b999edae5244@iogearbox.net>
+        id S1729135AbgICTbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 15:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729100AbgICTbu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 15:31:50 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD12C061245
+        for <bpf@vger.kernel.org>; Thu,  3 Sep 2020 12:31:49 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id gr14so4322805ejb.1
+        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 12:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ju/sydS5Q9IaBUhC6NOUzji212D6APi15kEY10l2jM=;
+        b=lbrg7jCc44YPYHlwiPPcORp12NA43Sx5aUGnQyPqjAZQ5Q1+z1RgPw+CGG0dUOPJEj
+         kJGDDjgam1jWTW3bD6eQLxH3xOpG/BbB/aI6TuYBbYOK2ufE5kZLYsGVcwI8E76JMncU
+         1qMvJ0kvpTY6aJ2Xdtm32ZmteixI8ThusUxRh5s6VPVymfaGtdGYMNUWAL9DZVm/NXQi
+         1cGBTEWExtOQDHGxdV8X7JrgCcJOFDgRA9Bubiog5xFkI384UOsEB29j9ha2PplRjHec
+         hYTYbOHrDZgXRGwZTildKLwFfV/T2hngSupVSuZxPAeEmyq8zw+HnSntGFc4Yrr+ndAw
+         wTNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ju/sydS5Q9IaBUhC6NOUzji212D6APi15kEY10l2jM=;
+        b=D3ooqpKet1ZngtOtDuinBdaGKhzZPo0lggxRyZVOt9ODjXOT9ZLbx0sSA1Aj4HUNA1
+         hnJR1+7fRExBGJ23HbA9hXRSFrf8JXwSxZbrmJGGfSnCSHI7zvoZB5HzTJOzfZ/eyYZB
+         01+7oHFnA0R1P45GsksfpDAgin8D7PwS3U/hbNjBpTJ7EM6efEb7h+8cdHVfjiy8swcD
+         T8gxkfU+MYeg59xV3+fOSc3JnDdHOuYDIt1Q/6zscwv47oF81ZukB0ZJqBkLwOQ4JGNk
+         PB0m+dA8pADCJ+UbYNTJgu8lC5Y5LfRt+hQaNq3SWZPrD379me77flFzVaiUBL3XQHGs
+         s4Sg==
+X-Gm-Message-State: AOAM531XAeMUV+lbzDI5pOuu4p1DfEKAvu1bjRpSCl8/TbZMgcNM3e+0
+        nZhNYonXYyAQJK2IqWxQBcmZ+aAAGFarmKuNUSaxiA==
+X-Google-Smtp-Source: ABdhPJykXItJHXfSEX+xWXdv9YgktkqyXhkFXzwTurtiCZASYxKs6/icUg7CX5hCLBz4dib5+dOrOGiccCfbzXdfQ5A=
+X-Received: by 2002:a17:906:7746:: with SMTP id o6mr3684224ejn.113.1599161508226;
+ Thu, 03 Sep 2020 12:31:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb3ad60a-68be-f350-9597-b999edae5244@iogearbox.net>
-X-Url:  http://acmel.wordpress.com
+References: <20200903180121.662887-1-haoluo@google.com> <CAEf4BzYtr6Tki8viGt0KBAwH5FF0don+j3Td86m0Kg95kUEAhw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYtr6Tki8viGt0KBAwH5FF0don+j3Td86m0Kg95kUEAhw@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 3 Sep 2020 12:31:36 -0700
+Message-ID: <CA+khW7hG4FFToxDcXHS29Gu3pz5tN-93sf90YyE6PqNDosjNdQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix check in global_data_init.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Sep 03, 2020 at 09:20:35PM +0200, Daniel Borkmann escreveu:
-> Hi Arnaldo,
-> 
-> On 9/3/20 9:03 PM, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Aug 27, 2020 at 10:53:36AM +0200, Jesper Dangaard Brouer escreveu:
-> > > The system for "Auto-detecting system features" located under
-> > > tools/build/ are (currently) used by perf, libbpf and bpftool. It can
-> > > contain stalled feature detection files, which are not cleaned up by
-> > > libbpf and bpftool on make clean (side-note: perf tool is correct).
-> > > 
-> > > Fix this by making the users invoke the make clean target.
-> > > 
-> > > Some details about the changes. The libbpf Makefile already had a
-> > > clean-config target (which seems to be copy-pasted from perf), but this
-> > > target was not "connected" (a make dependency) to clean target. Choose
-> > > not to rename target as someone might be using it. Did change the output
-> > > from "CLEAN config" to "CLEAN feature-detect", to make it more clear
-> > > what happens.
-> > 
-> > Since this mostly touches BPF, should it go via the BPF tree?
-> 
-> Already applied roughly a week ago:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=661b37cd437ef49cd28444f79b9b0c71ea76e8c8
+No problem! Let me update and resend.
 
-Thanks!
-
-- Arnaldo
+On Thu, Sep 3, 2020 at 11:50 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Sep 3, 2020 at 11:02 AM Hao Luo <haoluo@google.com> wrote:
+> >
+> > The returned value of bpf_object__open_file() should be checked with
+> > IS_ERR() rather than NULL. This fix makes test_progs not crash when
+> > test_global_data.o is not present.
+> >
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/global_data_init.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
+> > index 3bdaa5a40744..1ece86d5c519 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
+> > @@ -12,7 +12,7 @@ void test_global_data_init(void)
+> >         size_t sz;
+> >
+> >         obj = bpf_object__open_file(file, NULL);
+> > -       if (CHECK_FAIL(!obj))
+> > +       if (CHECK_FAIL(IS_ERR(obj)))
+>
+> Can you please use libbpf_get_error(obj) instead to set a good example
+> or not relying on kernel internal macros?
+>
+> >                 return;
+> >
+> >         map = bpf_object__find_map_by_name(obj, "test_glo.rodata");
+> > --
+> > 2.28.0.402.g5ffc5be6b7-goog
+> >
