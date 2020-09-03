@@ -2,134 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932EF25B847
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 03:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A6525B84C
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 03:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgICB0M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Sep 2020 21:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
+        id S1726523AbgICBbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Sep 2020 21:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbgICB0L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Sep 2020 21:26:11 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3384C061244;
-        Wed,  2 Sep 2020 18:26:10 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id q3so955287ybp.7;
-        Wed, 02 Sep 2020 18:26:10 -0700 (PDT)
+        with ESMTP id S1726177AbgICBbp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Sep 2020 21:31:45 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C446DC061245
+        for <bpf@vger.kernel.org>; Wed,  2 Sep 2020 18:31:44 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id c17so997100ybe.0
+        for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 18:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Wk1QngnZveRkG+Rb9Te6BreL5IP4JNk/9WC7Z4W7xWw=;
-        b=WR0w0oiA7+ffGDKltlEFg7Xl6jFWWcuC8zsduLexb5JShwtBxZaaBoYSfBcU3Hu//C
-         WFpRtduIQjbASIkGqwYh7VUpR3L9prjMteeiPWFhbRwHT+iagjQSr7q6wzCcd2fpCt5e
-         tvWGprcw9HqW/DF6yYFHnqjqmdoFPpLOJS9CzPdJaNdt/pogy9IF2LKYgdHvjsTGaQuY
-         i7F5N/fYN3IVb2qPqmldwsXXkBokj732kCo4rXo5FEx5PQcnDcPl6Rub442jECA1IXU0
-         3/QHB1tDn+jaOGjYA6pRMuRQ73p32gX+tCI+DsYL78NZrun626b+2839bXta/knmPdUI
-         Z+jg==
+        bh=uR4ZtZeHS1/d83ho3BZ9S4Tp0tJrYvrXmakrWN1Hzqs=;
+        b=MEzjvz9HhDz7jyqyRKJgi0Cw5RlGIhW3aaq+swjQkCQMfyfTsAFd1oYKFwfc8XtJTV
+         WgeVXPMKGai4+KbJjV1u/KvMC2CNPKr2YhZdqZypTt0FGNC5Dkjuwsobf30e95x2nKZ8
+         ranEQa2cHGV7vJNaM7KLSgfU0YoQ1L3p3n1Nj//PGKIK+3rdlK7iooTUak6ux4WVmzld
+         DWi6qYptWlRafri245NZV11Spy9uz+8gcbUEb+JDiusjioWwd2lG7gaZoUNztfulpgjP
+         XU64vHUmm92EO4y0SH0zUfZFNcFFupe2MPM0i8ZcDJtGKNxU+QmDcrui/XNNMIT6NqeN
+         yedA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Wk1QngnZveRkG+Rb9Te6BreL5IP4JNk/9WC7Z4W7xWw=;
-        b=PnEJBfE+fSy4hcI3x4wic2Nr+8vmIyRN0jsXeiQGZyA28aeuPbm/hUDDF8iD9cpsCs
-         5DGTPVGeM7lQgtrI78+XawL3o0xFvf/pAvuTralPhGaCx5p63lTR5noKSspULAJAc25i
-         g4/lwyotMRNZuPu1g+WsHMoishaV7geVaMp63pUu9gHri5wztVG8azlhSjiPQ7ZwANDR
-         SM++ZmjJLAScC67SlxLWh8BrPU+vB4GiD7BVNIvXjboYXjKfwoG35TOObIUHXfru5JL2
-         B/crxN98BiPd6frEYUQCjNDBzAzrcb3s8592U28eAUjj5NIrtJ2G416kIKxFrnf45C/z
-         q1qQ==
-X-Gm-Message-State: AOAM531VRzKIMQYB6r1zDErL/dxGQghGKMS79UJKECPTe9PWT7E2JrqA
-        tEFTxZZNQ3X+em0SPDF7dahBIghWs5J6I8rwjV4=
-X-Google-Smtp-Source: ABdhPJyCnZQ872Fg/QMUc/AZGGmLaCS6mPNLLT2EBufUh+uUbIryGBfVCF757Qi15JvioxfKLTM4zL2NnxFf6rJTAuw=
-X-Received: by 2002:a25:cb57:: with SMTP id b84mr677859ybg.425.1599096368004;
- Wed, 02 Sep 2020 18:26:08 -0700 (PDT)
+        bh=uR4ZtZeHS1/d83ho3BZ9S4Tp0tJrYvrXmakrWN1Hzqs=;
+        b=PvbLRmP491TYXuPzXh62B5eQ2WXxINCsOgFjsgcPCZQREYnn69NbppKVtWTPz1kA2G
+         MmzCaDKj2unDekSie5T3eK1rmKti0dyBQBVQVzRm3LVSFC4zA6OGKhe3eXtgMzmieUp0
+         EDfkzGq3kLNu4zAQObus/OIpdvTGnQ8WJT60UDTXMajEXT/NvlMXObt8PQZoQkpzg4gg
+         ZY/UxIJZvJwPuEZVxx396u9F2vhEA1O9M2qGeN3KrmVt3qaePlIorkYUKLRpWvrLFsSV
+         FQ/xL0omSlucrWi0Ugmi06QRuSdn/vHYj4vdrdVkHh2XftKSoNPEllcHjK6FMwQIMU5H
+         +2cg==
+X-Gm-Message-State: AOAM533jDcBdElY0xesEUQQmVnXQ7bPLS1yE08+u7d3ztVXwc/K7+CLb
+        VERnkMD5Yx7xTORgMo5i9GhI12dF/Q6m1tfzaSW23hZK
+X-Google-Smtp-Source: ABdhPJzSpSCNhtbZ3QtiK88zoaSnK/rkAJQXNmbHziibs9cGt9Etr9cmFPdxxWL8j+HOEISxdJ/LTj9RntX/PSw2Y1A=
+X-Received: by 2002:a25:c4c2:: with SMTP id u185mr759902ybf.347.1599096703332;
+ Wed, 02 Sep 2020 18:31:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200902235340.2001300-1-yhs@fb.com> <20200902235340.2001375-1-yhs@fb.com>
-In-Reply-To: <20200902235340.2001375-1-yhs@fb.com>
+References: <20200901103210.54607-1-lmb@cloudflare.com> <20200901103210.54607-3-lmb@cloudflare.com>
+In-Reply-To: <20200901103210.54607-3-lmb@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Sep 2020 18:25:57 -0700
-Message-ID: <CAEf4BzaBxaPyWXOWOVRWCXcLW40FOFWkG7gUPSktGwS07duQVA@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: do not use bucket_lock for hashmap iterator
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Wed, 2 Sep 2020 18:31:32 -0700
+Message-ID: <CAEf4BzavEyerq8an-rwFi5GRGtrOqObnCBx7jAbx-GmxA4-9-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/4] net: Allow iterating sockmap and sockhash
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 4:56 PM Yonghong Song <yhs@fb.com> wrote:
+On Tue, Sep 1, 2020 at 3:33 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
-> Currently, for hashmap, the bpf iterator will grab a bucket lock, a
-> spinlock, before traversing the elements in the bucket. This can ensure
-> all bpf visted elements are valid. But this mechanism may cause
-> deadlock if update/deletion happens to the same bucket of the
-> visited map in the program. For example, if we added bpf_map_update_elem()
-> call to the same visited element in selftests bpf_iter_bpf_hash_map.c,
-> we will have the following deadlock:
+> Add bpf_iter support for sockmap / sockhash, based on the bpf_sk_storage and
+> hashtable implementation. sockmap and sockhash share the same iteration
+> context: a pointer to an arbitrary key and a pointer to a socket. Both
+> pointers may be NULL, and so BPF has to perform a NULL check before accessing
+> them. Technically it's not possible for sockhash iteration to yield a NULL
+> socket, but we ignore this to be able to use a single iteration point.
 >
-
-[...]
-
+> Iteration will visit all keys that remain unmodified during the lifetime of
+> the iterator. It may or may not visit newly added ones.
 >
-> Compared to old bucket_lock mechanism, if concurrent updata/delete happens,
-> we may visit stale elements, miss some elements, or repeat some elements.
-> I think this is a reasonable compromise. For users wanting to avoid
-
-I agree, the only reliable way to iterate map without duplicates and
-missed elements is to not update that map during iteration (unless we
-start supporting point-in-time snapshots, which is a very different
-matter).
-
-
-> stale, missing/repeated accesses, bpf_map batch access syscall interface
-> can be used.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 > ---
->  kernel/bpf/hashtab.c | 15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
+>  net/core/sock_map.c | 283 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 283 insertions(+)
 >
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 78dfff6a501b..7df28a45c66b 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -1622,7 +1622,6 @@ struct bpf_iter_seq_hash_map_info {
->         struct bpf_map *map;
->         struct bpf_htab *htab;
->         void *percpu_value_buf; // non-zero means percpu hash
-> -       unsigned long flags;
->         u32 bucket_id;
->         u32 skip_elems;
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index ffdf94a30c87..4767f9df2b8b 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -703,6 +703,114 @@ const struct bpf_func_proto bpf_msg_redirect_map_proto = {
+>         .arg4_type      = ARG_ANYTHING,
 >  };
-> @@ -1632,7 +1631,6 @@ bpf_hash_map_seq_find_next(struct bpf_iter_seq_hash_map_info *info,
->                            struct htab_elem *prev_elem)
->  {
->         const struct bpf_htab *htab = info->htab;
-> -       unsigned long flags = info->flags;
->         u32 skip_elems = info->skip_elems;
->         u32 bucket_id = info->bucket_id;
->         struct hlist_nulls_head *head;
-> @@ -1656,19 +1654,18 @@ bpf_hash_map_seq_find_next(struct bpf_iter_seq_hash_map_info *info,
 >
->                 /* not found, unlock and go to the next bucket */
->                 b = &htab->buckets[bucket_id++];
-> -               htab_unlock_bucket(htab, b, flags);
-> +               rcu_read_unlock();
+> +struct sock_map_seq_info {
+> +       struct bpf_map *map;
+> +       struct sock *sk;
+> +       u32 index;
+> +};
+> +
+> +struct bpf_iter__sockmap {
+> +       __bpf_md_ptr(struct bpf_iter_meta *, meta);
+> +       __bpf_md_ptr(struct bpf_map *, map);
+> +       __bpf_md_ptr(void *, key);
 
-Just double checking as I don't yet completely understand all the
-sleepable BPF implications. If the map is used from a sleepable BPF
-program, we are still ok doing just rcu_read_lock/rcu_read_unlock when
-accessing BPF map elements, right? No need for extra
-rcu_read_lock_trace/rcu_read_unlock_trace?
+For sockhash, the key can be of an arbitrary size, right? Should the
+key_size be part of bpf_iter__sockmap then?
 
->                 skip_elems = 0;
->         }
->
+> +       __bpf_md_ptr(struct bpf_sock *, sk);
+> +};
+> +
 
 [...]
