@@ -2,125 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E7225C9F8
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 22:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1FC25CB0D
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 22:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbgICUIi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 16:08:38 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56466 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728129AbgICUIg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Sep 2020 16:08:36 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 083K13W5015837;
-        Thu, 3 Sep 2020 13:08:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=nZdXOdEGW6qD8u3FFWK9zDtA9lB+PUOtD638RPFxEWk=;
- b=m+mvFAHms+fsa/YKeqDXaJajMTXGbam5VhEkkjQo7yiZEY9tn0ViYnwdKzWMak1UnXxR
- O2P1d59jVEb0CK62wEM1OfHb73qi1RcHEDPOTd5JewH0ipTyfvvEd6306PMvHodvX3MR
- 2M86ex7mJa6wOKvzw8AnhIrK0WWOzxJ+JS4= 
+        id S1729538AbgICUf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 16:35:57 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9046 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729273AbgICUfz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Sep 2020 16:35:55 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 083KWgLX032306
+        for <bpf@vger.kernel.org>; Thu, 3 Sep 2020 13:35:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=xJmp28btJh24nQluHJ6E+yjOaTdt15okri30qMaZNxY=;
+ b=NZ43jkcwc/mfee2RxliKq+gY8wOtPhZVjLfhCKN5Cjyjg/kEkwkteJavUEi3tECSSAy5
+ tOrdK7oWcINWWrtx1nkS6lMZJEtLDYcW5J7tftjCsrre4H/z96t8jl8z3Umj5OkB0Oah
+ 9v+BLnw8eWdOwFmrhy164pCdb+iEGnTVaEg= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33a4cnjpjg-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 03 Sep 2020 13:08:22 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+        by m0001303.ppops.net with ESMTP id 33b4crs702-10
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 13:35:53 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 3 Sep 2020 13:08:17 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lteDmRNax1Vp1yLR9KbAV/VQ5M01dLQqdFWfgycsLxYnBJ2YVzrJNu7Ojf6bmrp3iCOENbV5IM3j0BCzSeEWRL2GOJQSdMVj5HKWECcRxl7tJUfH5Io0XDsZ4LvSZgimW/Gys09U1j2qq+1fkcQSmHbKLtkdQRsL8HfIyPGLJFeEpYbIxiroxHIQ4URHyxCP7cqPby13nOXNMqN4f7EHFslajoc5a8OAy+MsPWEcu6MluTYzEJ+wGoGo64WzA7sTPCvlC3jYgOIU9ly4byFc5PdaeWtHVQwjRhAcxxez0Ms/DlDSsa7MscBEdYulu7AADG21pKVBfGi7m6vEDjw3Mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nZdXOdEGW6qD8u3FFWK9zDtA9lB+PUOtD638RPFxEWk=;
- b=LOwdbHEUdwQk2m8YczG25p9ClKt4vld50D7ddvjwoIoMK23Fk+9R2VGQs+/2FtwE0hgcS36UdwgTl3/jJfmw4RuXrrZqs1xtCCMdiUryuFzLLId+Y2KLPzELs1qshkkpjP1Pju/6M468oJc4gZAGk5qBMHoEM3viV6gq0J/t0A3Fq5kunjqNybVy1rZbsaTJ1bPi44pBvRYIceVMIp2Twpazw09SYzp628VO+OELSAgiIqjm3HqnMzJRCxnfCgKrmsGZohXimbdDGdtmQlQiAcHUpBRLIvEbud2aSNy7ztlXZr0ctHRruBlImldfWeBd+0kpX2jsNBJMgACWdwnHJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nZdXOdEGW6qD8u3FFWK9zDtA9lB+PUOtD638RPFxEWk=;
- b=j4CtzqBF78mcTcaR6IE3WnFBj6R/VhFew+C3MrpKWO8ORd2sOsrsH9aakd2nxPVsKU9ULwVysdZdnRtdZ0VQB+k3OEv2wW0CY/Ij7LURbHiHcjzRAncZWKbgD47ex0M3SxZYhU8LyTkC3hiLiPOnq9KlE5Z/J4QAO39suGi3hQE=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2407.namprd15.prod.outlook.com (2603:10b6:a02:8d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Thu, 3 Sep
- 2020 20:08:16 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3326.024; Thu, 3 Sep 2020
- 20:08:16 +0000
-Date:   Thu, 3 Sep 2020 13:08:10 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     <ast@kernel.org>, <yhs@fb.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <john.fastabend@gmail.com>,
-        <bpf@vger.kernel.org>, <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next v2 0/4] Sockmap iterator
-Message-ID: <20200903200810.lyxorvv2ocg2ibr2@kafai-mbp>
-References: <20200901103210.54607-1-lmb@cloudflare.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901103210.54607-1-lmb@cloudflare.com>
-X-ClientProxiedBy: BYAPR04CA0004.namprd04.prod.outlook.com
- (2603:10b6:a03:40::17) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+ 15.1.1979.3; Thu, 3 Sep 2020 13:35:50 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 596F72EC6814; Thu,  3 Sep 2020 13:35:43 -0700 (PDT)
+From:   Andrii Nakryiko <andriin@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH v3 bpf-next 00/14] Add libbpf full support for BPF-to-BPF calls
+Date:   Thu, 3 Sep 2020 13:35:28 -0700
+Message-ID: <20200903203542.15944-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by BYAPR04CA0004.namprd04.prod.outlook.com (2603:10b6:a03:40::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Thu, 3 Sep 2020 20:08:15 +0000
-X-Originating-IP: [2620:10d:c090:400::5:3935]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 791dba00-8e0b-4433-78ae-08d8504517e9
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2407:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2407B4E80384BEBBC9BB1650D52C0@BYAPR15MB2407.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ODfhQm0UkQISPrmRpq3ygLssPitODdbzRwtD+IJjKm9gYP8UHm2f9X/ZxYeHiDFU+BeXMh6t5wDiUpz7HFy4/XK+4DNuFDOaILv9v+cb1ACsQWBcH2hSfx3fKL6bd5NMw3+jALepYZ12imWcdpqDxNcnUdoNsdX0RvOl7rldAz9BwW9YOHKjj4Mx+CfXythn+eocsjVXDsTerQ/dJXGzPVSuX9LCAGgq8xX2sqzNUXtTet6urxv7iHF6LdZNo3+sLW2qACUDTmLwmqHnZbpwDbAp+zxTLkBEgUA3+6kB1l7pTbc451aH+JA3PPw877RAhlnY3u1YkPAUxuLLaK8Y9g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(346002)(39860400002)(366004)(136003)(396003)(376002)(86362001)(33716001)(186003)(316002)(6486002)(9686003)(8676002)(83380400001)(6916009)(16576012)(8936002)(66556008)(66476007)(52116002)(4744005)(66946007)(6666004)(5660300002)(478600001)(1076003)(956004)(2906002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 2xlfrHudVabY2KK0H/ZN3e/XpDQve+2Lh9XsyaIeCtxOe6ajkxLgAWDo1l73anetqxJQsxOn3tVkb4BwswdVw99d+VlrHh0w2YyVaeN4WUjLdeCZ97pffEUFhoajKdISG+cDiWDhhQIpzZe0qBR/5OnKPauTvMnVCv+YhPw0K9lM8BW5DDd/uyKIThTainEYX9Jw7FvWL1MJAiiROo9mt5PPQXEmmbuv4hk72rFnF7ZUt6R5m8XtNrFrLTsS7ayimEN+pCGtKtH435aFe0x2UdqccRKf9zqjeU/LxrgXaD61M/qaDAQ/m+f6rxKb2/of+XvXQkQQxhJvBegQW81cpkCdvK3HpCpTBuy/rpC+P+Su/goq35IH4ghRN8jzbSr2VEdZC/oW/aLqdL2Hn7KuN3T1JtbswVsBWfBIAgHG/nsuOzvfPjRA/xO1WtIxDyyQ5FLFjqy+/Zl2e+Emc28AMinLY6pu6NJV3rax2PKM5H+JteC9wlAYbLZ1/LQwxyjkjTvNouvNrtqkG47vWZJoZurqAJuYoqBiHfQmx0/2CYm6jt/wFI/w9+w2rHHG90pcmIglsWlPFym6Ouoe55HFS1tToUwqYflX9zohgWszVFLMW/Gffu1NtLgj0wPHdloamf89isPQtnc3NlK2z3R0LTXw+IIZG+aJESTZ6msdBNA=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 791dba00-8e0b-4433-78ae-08d8504517e9
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2020 20:08:16.3163
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9axbYCaNlMKNNcjhpAAnOO+M1DM9GzqiDOxp9VNuvz6lPrK1KVBCvtkcKy+4f+li
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2407
-X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-03_13:2020-09-03,2020-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 priorityscore=1501
- mlxlogscore=558 adultscore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
- clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009030181
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=8 priorityscore=1501
+ phishscore=0 bulkscore=0 malwarescore=0 spamscore=0 impostorscore=0
+ mlxlogscore=783 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030183
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 11:32:06AM +0100, Lorenz Bauer wrote:
-> * Can we teach the verifier that PTR_TO_BTF_ID can be the same as PTR_TO_SOCKET?
-I am working on a patch to teach the verifier to allow PTR_TO_SOCK* being used
-in the bpf_skc_to_*_sock() helper.
+Currently, libbpf supports a limited form of BPF-to-BPF subprogram calls.=
+ The
+restriction is that entry-point BPF program should use *all* of defined
+sub-programs in BPF .o file. If any of the subprograms is not used, such
+entry-point BPF program will be rejected by verifier as containing unreac=
+hable
+dead code. This is not a big limitation for cases with single entry-point=
+ BPF
+programs, but is quite a heavy restriction for multi-programs that use on=
+ly
+partially overlapping set of subprograms.
 
-The use case is, for example, use bpf_skc_to_tcp_sock() to cast the
-tc's __sk_buff->sk to a kernel "struct tcp_sock" (PTR_TO_BTF_ID) such
-that the bpf prog won't be limited by the fields in "struct bpf_tcp_sock"
-if the user has perfmon cap.   Thus, in general, should be doable.
-Hopefully I have something sharable next week.
+This patch set removes all such restrictions and adds complete support fo=
+r
+using BPF sub-program calls on BPF side. This is achieved through libbpf
+tracking subprograms individually and detecting which subprograms are use=
+d by
+any given entry-point BPF program, and subsequently only appending and
+relocating code for just those used subprograms.
 
-For the sockmap iter  (which is tracing), I think it is better
-to begin with PTR_TO_BTF_ID_OR_NULL such that the bpf iter prog
-can access the tcp_sock (or udp_sock) without another casting or
-bpf_probe_read_kernel().
+In addition, libbpf now also supports multiple entry-point BPF programs w=
+ithin
+the same ELF section. This allows to structure code so that there are few
+variants of BPF programs of the same type and attaching to the same targe=
+t
+(e.g., for tracepoints and kprobes) without the need to worry about ELF
+section name clashes.
+
+This patch set opens way for more wider adoption of BPF subprogram calls,
+especially for real-world production use-cases with complicated net of
+subprograms. This will allow to further scale BPF verification process th=
+rough
+good use of global functions, which can be verified independently. This i=
+s
+also important prerequisite for static linking which allows static BPF
+libraries to not worry about naming clashes for section names, as well as=
+ use
+static non-inlined functions (subprograms) without worries of verifier
+rejecting program due to dead code.
+
+Patch set is structured as follows:
+- patched 1-6 contain all the libbpf changes necessary to support multi-p=
+rog
+  sections and bpf2bpf subcalls;
+- patch 7 adds dedicated selftests validating all combinations of possibl=
+e
+  sub-calls (within and across sections, static vs global functions);
+- patch 8 deprecated bpf_program__title() in favor of
+  bpf_program__section_name(). The intent was to also deprecate
+  bpf_object__find_program_by_title() as it's now non-sensical with multi=
+ple
+  programs per section. But there were too many selftests uses of this an=
+d
+  I didn't want to delay this patches further and make it even bigger, so=
+ left
+  it for a follow up cleanup;
+- patches 9-10 remove uses for title-related APIs from bpftool and
+  bpf_program__title() use from selftests;
+- patch 11 is converting fexit_bpf2bpf to have explicit subtest (it does
+  contain 4 subtests, which are not handled as sub-tests);
+- patches 12-14 convert few complicated BPF selftests to use __noinline
+  functions to further validate correctness of libbpf's bpf2bpf processin=
+g
+  logic.
+=20
+v2->v3:
+  - explained subprog relocation algorithm in more details (Alexei);
+  - pyperf, strobelight and cls_redirect got new subprog variants, leavin=
+g
+    other modes intact (Alexei);
+v1->v2:
+  - rename DEPRECATED to LIBBPF_DEPRECATED to avoid name clashes;
+  - fix test_subprogs build;
+  - convert a bunch of complicated selftests to __noinline (Alexei).
+
+Andrii Nakryiko (14):
+  libbpf: ensure ELF symbols table is found before further ELF
+    processing
+  libbpf: parse multi-function sections into multiple BPF programs
+  libbpf: support CO-RE relocations for multi-prog sections
+  libbpf: make RELO_CALL work for multi-prog sections and sub-program
+    calls
+  libbpf: implement generalized .BTF.ext func/line info adjustment
+  libbpf: add multi-prog section support for struct_ops
+  selftests/bpf: add selftest for multi-prog sections and bpf-to-bpf
+    calls
+  tools/bpftool: replace bpf_program__title() with
+    bpf_program__section_name()
+  selftests/bpf: don't use deprecated libbpf APIs
+  libbpf: deprecate notion of BPF program "title" in favor of "section
+    name"
+  selftests/bpf: turn fexit_bpf2bpf into test with subtests
+  selftests/bpf: add subprogs to pyperf, strobemeta, and l4lb_noinline
+    tests
+  selftests/bpf: modernize xdp_noinline test w/ skeleton and __noinline
+  selftests/bpf: add __noinline variant of cls_redirect selftest
+
+ tools/bpf/bpftool/prog.c                      |    4 +-
+ tools/lib/bpf/btf.h                           |   18 +-
+ tools/lib/bpf/libbpf.c                        | 1287 +++++++++++------
+ tools/lib/bpf/libbpf.h                        |    5 +-
+ tools/lib/bpf/libbpf.map                      |    1 +
+ tools/lib/bpf/libbpf_common.h                 |    2 +
+ .../selftests/bpf/flow_dissector_load.h       |    8 +-
+ .../bpf/prog_tests/bpf_verif_scale.c          |    4 +
+ .../selftests/bpf/prog_tests/cls_redirect.c   |   72 +-
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |   21 +-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |    9 +-
+ .../bpf/prog_tests/reference_tracking.c       |    2 +-
+ .../selftests/bpf/prog_tests/subprogs.c       |   31 +
+ .../selftests/bpf/prog_tests/xdp_noinline.c   |   49 +-
+ tools/testing/selftests/bpf/progs/pyperf.h    |   11 +-
+ .../selftests/bpf/progs/pyperf_subprogs.c     |    5 +
+ .../testing/selftests/bpf/progs/strobemeta.h  |   30 +-
+ .../selftests/bpf/progs/strobemeta_subprogs.c |   10 +
+ .../selftests/bpf/progs/test_cls_redirect.c   |  105 +-
+ .../bpf/progs/test_cls_redirect_subprogs.c    |    2 +
+ .../selftests/bpf/progs/test_l4lb_noinline.c  |   41 +-
+ .../selftests/bpf/progs/test_subprogs.c       |  103 ++
+ .../selftests/bpf/progs/test_xdp_noinline.c   |   36 +-
+ .../selftests/bpf/test_socket_cookie.c        |    2 +-
+ 24 files changed, 1247 insertions(+), 611 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/subprogs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pyperf_subprogs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/strobemeta_subprogs=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_s=
+ubprogs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_subprogs.c
+
+--=20
+2.24.1
+
