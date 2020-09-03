@@ -2,183 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2391225B9F0
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 07:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0724D25BA09
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 07:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgICFAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 01:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33250 "EHLO
+        id S1725984AbgICFSi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 01:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbgICFAX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 01:00:23 -0400
+        with ESMTP id S1725919AbgICFSi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 01:18:38 -0400
 Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2681C061244;
-        Wed,  2 Sep 2020 22:00:22 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id u6so1292333ybf.1;
-        Wed, 02 Sep 2020 22:00:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB09C061244
+        for <bpf@vger.kernel.org>; Wed,  2 Sep 2020 22:18:38 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id r7so1169865ybl.6
+        for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 22:18:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hufVs9CSdVE99Y5iE4c1rRhMRkXCv/9nFdoUeT893t4=;
-        b=Z4dLMpK/Ltw6sZxSRFz+mrtj7QYzbmn6vKfoWbS6wQT0jnCOUtCak4a83kMKSXmHlD
-         u4Sk/gNH2vx/HXzExocRVxoiVIjYukQ4HESjZRblsHMnbs0AR9e5OqJXcwPzJIkVGUCS
-         TVURRCfpzkTz3qMwsJ9Br8o4BVyBrttUEdwMvK6aMvMs/NOxkMVlwpPi7Y0aAg5xUKzv
-         Jh8aUUr0aqO7SN/8Xf8MdbdP5HhNReQrauHQj7oNvWXEIB9s2wxS6JmyDqXQYIYQcnDv
-         ekKOLo9re0b0j4dGJdQBPo0QgDeB0uvOT2ce0Ba3ZN0EyaWRc5c3j16eRhQ3sYqg5T86
-         RxZA==
+        bh=c4wN4lD/jep7mqpuf3QbJO9XIKEOQ1+KPa51IloKKKU=;
+        b=YkSa10kBxqkzesxcKRKcV9zSYl8hWTwiXE/Vrs3RqAMp8h7z2DooH2o+Tyae9dx9lD
+         j2qBRZNVTPQEEUYNjtPaFclTQRxD3LmP/qFSqEGtj6uOO2K4Jaws3+8tZjXFCogOBTev
+         L7i/wzxfr+rMSQ8VSo95Q32qvgnIiHYCsB30dmOy4r4PyXg03hagk0PKxDbq9AHd7T/B
+         Jmn23rAzoplvtLlgji51E5pLR1yjkp/LsPzJd9pBoUb8kMQ53UT28RRFIcrOzOO8T6Pz
+         ++AEwhVHS9QPR5+mHxOuN6g0Cy8KCH+d5gj6WCd97ZTRFB5YgKZyRJnLekSinF9lPnKE
+         vxvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hufVs9CSdVE99Y5iE4c1rRhMRkXCv/9nFdoUeT893t4=;
-        b=jFVYGsRyZmMfqFRt8Pqh8an6Cyl42TPzHSyEYvgTTA7NKonJ/VrKrK4sG6PpVVMwr9
-         HljJes8WNGyUfUispYV+DpAnO3hAQ0BNYtM9Ms3tsNa+SLVKKLjHGgUO4DN5otJ6Cx5L
-         bPkPkDw1V7CoZgy4FbWfervrsgYYxExAHy+RhBmIFH0En5VnhZ7p52DQ85Poj0NE0SA6
-         KHaEzPFiyCCHcHrxUC5SKlkjVVaZ00AHJFxVNM33RSyU+sSsuhvTcn9mV+UQjXMsBWV+
-         Bx0WVN6vAzUtzHxSQDUDz2FYktkQv+ACa0lnprChzj8669cn35AiCl9KX5D+hZyOiJr9
-         GSpw==
-X-Gm-Message-State: AOAM532+WlFdFaoVTZqzbiKgvTk1eVXnjsGSJ77buDSKR/uf3jidMIog
-        rRZckg74N5IfyPIdoD0vnqaktBL/hDZf38XVhSk=
-X-Google-Smtp-Source: ABdhPJyGUYleZJ8S1sTpHSKvKvpQZFkIfAiCIViOaPKVVkplMijxzs/qfrjmGrHxRZdu5pw/Qo7gK5QhztE9qd+Jrvg=
-X-Received: by 2002:a25:c4c2:: with SMTP id u185mr266977ybf.347.1599109221681;
- Wed, 02 Sep 2020 22:00:21 -0700 (PDT)
+        bh=c4wN4lD/jep7mqpuf3QbJO9XIKEOQ1+KPa51IloKKKU=;
+        b=LI/kHdzWYEIDlGfcvMheVrByAs1vKVY/N/RRIZo1eQMG3XRCXHB+4/Oqcta8t0VSM0
+         Iq5T8mAiASXtBuIHpBnKuxis2aEOvJ1YI1L3UAZJ2cLAy4b9V13n1n85pSbTRxF0TGBM
+         peDlGD7sTQufZbe8T/z7JpZI6K/LoIKZzE/3BpvSVuhMXh0PevagNhXibUZhyukpd0rA
+         a4ZR/qJbV3tgqgx3eaiS970qLH4UdiH472Hi5TX1hRCekNCnxZQ9RwuWnRkrVe2yHCiR
+         7843+DGw0CL6J3ldJ3+L6LDSL0r1pHreUsO5iKe3b5Z86EkLOqqq8sXeKtZfKkecqt3n
+         IcRQ==
+X-Gm-Message-State: AOAM530HvuRvv49I5b8oYiIHmDGwtkNP+sZ2RoekoNgbbFYLoa2t2ofG
+        Aznsv2Igk2yxkmYpXb2tQGn/AkXpPFgXs9g5bs+0u/7B0XE=
+X-Google-Smtp-Source: ABdhPJzaLBi1DxMXF/L3wkn43iQb1NXmJNiA0e4k6WUb4UTlefzKNskgfDB9xNa3pfQIb3gbYE0UFJ/cVrgr9E5ZGVs=
+X-Received: by 2002:a25:ef43:: with SMTP id w3mr343172ybm.230.1599110317246;
+ Wed, 02 Sep 2020 22:18:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200828193603.335512-1-sdf@google.com> <20200828193603.335512-6-sdf@google.com>
-In-Reply-To: <20200828193603.335512-6-sdf@google.com>
+References: <cover.1597915265.git.zhuyifei@google.com> <9138c60f036c68f02c41dae0605ef587a8347f4c.1597915265.git.zhuyifei@google.com>
+ <CAEf4BzaGFP=Ob5MOcQgBjFOdY8aP1gvNV68wTAzA-V3kR5BKYg@mail.gmail.com> <20200828165931.GA48607@google.com>
+In-Reply-To: <20200828165931.GA48607@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Sep 2020 22:00:10 -0700
-Message-ID: <CAEf4BzZcb+CKwL72mgC5B+2wAi8hfT_OoVUNZCcZjKgu4zRxiA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/8] bpftool: support dumping metadata
+Date:   Wed, 2 Sep 2020 22:18:26 -0700
+Message-ID: <CAEf4BzZQbUgXhryXHG+_xFWmJaPMHL_ew-2EouPGYWaLTqTNkA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/5] bpftool: support dumping metadata
 To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        YiFei Zhu <zhuyifei@google.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>
+        Mahesh Bandewar <maheshb@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 12:37 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Fri, Aug 28, 2020 at 9:59 AM <sdf@google.com> wrote:
 >
-> From: YiFei Zhu <zhuyifei@google.com>
+> On 08/25, Andrii Nakryiko wrote:
+> > On Thu, Aug 20, 2020 at 2:44 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > >
+> > > From: YiFei Zhu <zhuyifei@google.com>
+> > >
+> > > Added a flag "--metadata" to `bpftool prog list` to dump the metadata
+> > > contents. For some formatting some BTF code is put directly in the
+> > > metadata dumping. Sanity checks on the map and the kind of the btf_type
+> > > to make sure we are actually dumping what we are expecting.
+> > >
+> > > A helper jsonw_reset is added to json writer so we can reuse the same
+> > > json writer without having extraneous commas.
+> > >
+> > > Sample output:
+> > >
+> > >   $ bpftool prog --metadata
+> > >   6: cgroup_skb  name prog  tag bcf7977d3b93787c  gpl
+> > >   [...]
+> > >         btf_id 4
+> > >         metadata:
+> > >                 metadata_a = "foo"
+> > >                 metadata_b = 1
+> > >
+> > >   $ bpftool prog --metadata --json --pretty
+> > >   [{
+> > >           "id": 6,
+> > >   [...]
+> > >           "btf_id": 4,
+> > >           "metadata": {
+> > >               "metadata_a": "foo",
+> > >               "metadata_b": 1
+> > >           }
+> > >       }
+> > >   ]
+> > >
+> > > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> > > ---
+> > >  tools/bpf/bpftool/json_writer.c |   6 ++
+> > >  tools/bpf/bpftool/json_writer.h |   3 +
+> > >  tools/bpf/bpftool/main.c        |  10 +++
+> > >  tools/bpf/bpftool/main.h        |   1 +
+> > >  tools/bpf/bpftool/prog.c        | 135 ++++++++++++++++++++++++++++++++
+> > >  5 files changed, 155 insertions(+)
+> > >
 >
-> Added a flag "--metadata" to `bpftool prog list` to dump the metadata
-> contents. For some formatting some BTF code is put directly in the
-> metadata dumping. Sanity checks on the map and the kind of the btf_type
-> to make sure we are actually dumping what we are expecting.
+> > [...]
 >
-> A helper jsonw_reset is added to json writer so we can reuse the same
-> json writer without having extraneous commas.
+> > > +       for (i = 0; i < prog_info.nr_map_ids; i++) {
+> > > +               map_fd = bpf_map_get_fd_by_id(map_ids[i]);
+> > > +               if (map_fd < 0)
+> > > +                       return;
+> > > +
+> > > +               err = bpf_obj_get_info_by_fd(map_fd, &map_info,
+> > &map_info_len);
+> > > +               if (err)
+> > > +                       goto out_close;
+> > > +
+> > > +               if (map_info.type != BPF_MAP_TYPE_ARRAY)
+> > > +                       goto next_map;
+> > > +               if (map_info.key_size != sizeof(int))
+> > > +                       goto next_map;
+> > > +               if (map_info.max_entries != 1)
+> > > +                       goto next_map;
+> > > +               if (!map_info.btf_value_type_id)
+> > > +                       goto next_map;
+> > > +               if (!strstr(map_info.name, ".metadata"))
 >
-> Sample output:
->
->   $ bpftool prog --metadata
->   6: cgroup_skb  name prog  tag bcf7977d3b93787c  gpl
->   [...]
->         btf_id 4
->         metadata:
->                 metadata_a = "foo"
->                 metadata_b = 1
->
->   $ bpftool prog --metadata --json --pretty
->   [{
->           "id": 6,
->   [...]
->           "btf_id": 4,
->           "metadata": {
->               "metadata_a": "foo",
->               "metadata_b": 1
->           }
->       }
->   ]
->
-> Cc: YiFei Zhu <zhuyifei1999@gmail.com>
-> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
->  tools/bpf/bpftool/json_writer.c |   6 ++
->  tools/bpf/bpftool/json_writer.h |   3 +
->  tools/bpf/bpftool/main.c        |  10 +++
->  tools/bpf/bpftool/main.h        |   1 +
->  tools/bpf/bpftool/prog.c        | 130 ++++++++++++++++++++++++++++++++
->  5 files changed, 150 insertions(+)
->
+> > This substring check sucks. Let's make libbpf call this map strictly
+> > ".metadata". Current convention of "some part of object name" + "." +
+> > {rodata,data,bss} is extremely confusing. In practice it's something
+> > incomprehensible and "unguessable" like "test_pr.rodata". I think it
+> > makes sense to call them just ".data", ".rodata", ".bss", and
+> > ".metadata". But that might break existing apps that do lookups based
+> > on map name (and might break skeleton as it is today, not sure). But
+> > let's at least start with ".metadata", as it's a new map and we can
+> > get it right from the start.
+> Isn't it bad from the consistency point of view? Even if it's bad,
+> at least it's consistent :-/
 
-[...]
+Just because we made a mistake once, doesn't mean we need to keep
+making it. ".metadata" is 9 characters already, which leaves 6
+characters for object name prefix, that's not a lot of useful
+information anyway. As I said, we should probably fix it for other
+global data maps as well, but we will have to do it gradually. For
+.metadata we can do a nice and clean ".metadata" immediately, no need
+to jump through migration and deprecation hoops.
 
-> +
-> +       if (bpf_map_lookup_elem(map_fd, &key, value)) {
-> +               p_err("metadata map lookup failed: %s", strerror(errno));
-> +               goto out_free;
-> +       }
-> +
-> +       err = btf__get_from_id(map_info.btf_id, &btf);
-
-what if the map has no btf_id associated (e.g., because of an old
-kernel?); why fail in this case?
-
-> +       if (err || !btf) {
-> +               p_err("metadata BTF get failed: %s", strerror(-err));
-> +               goto out_free;
-> +       }
-> +
-> +       t_datasec = btf__type_by_id(btf, map_info.btf_value_type_id);
-> +       if (BTF_INFO_KIND(t_datasec->info) != BTF_KIND_DATASEC) {
-
-btf_is_datasec(t_datasec)
-
-> +               p_err("bad metadata BTF");
-> +               goto out_free;
-> +       }
-> +
-> +       vlen = BTF_INFO_VLEN(t_datasec->info);
-
-btf_vlen(t_datasec)
-
-> +       vsi = (struct btf_var_secinfo *)(t_datasec + 1);
-
-btf_var_secinfos(t_datasec)
-
-> +
-> +       /* We don't proceed to check the kinds of the elements of the DATASEC.
-> +        * The verifier enforce then to be BTF_KIND_VAR.
-
-typo: then -> them
-
-> +        */
-> +
-> +       if (json_output) {
-> +               struct btf_dumper d = {
-> +                       .btf = btf,
-> +                       .jw = json_wtr,
-> +                       .is_plain_text = false,
-> +               };
-> +
-> +               jsonw_name(json_wtr, "metadata");
-> +
-> +               jsonw_start_object(json_wtr);
-> +               for (i = 0; i < vlen; i++) {
-
-nit: doing ++vsi here
-
-
-> +                       t_var = btf__type_by_id(btf, vsi[i].type);
-
-and vsi->type here and below would look a bit cleaner
-
-> +
-> +                       jsonw_name(json_wtr, btf__name_by_offset(btf, t_var->name_off));
-> +                       err = btf_dumper_type(&d, t_var->type, value + vsi[i].offset);
-> +                       if (err) {
-> +                               p_err("btf dump failed");
-> +                               break;
-> +                       }
-> +               }
-> +               jsonw_end_object(json_wtr);
-
-[...]
+Also, how is "test_vml.bss" consistent with "test_v.metadata"?
