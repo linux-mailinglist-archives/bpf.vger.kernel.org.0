@@ -2,161 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991B825BA28
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 07:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBC125BA98
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 07:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726994AbgICFfy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 01:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727866AbgICFfw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 01:35:52 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B447DC061244
-        for <bpf@vger.kernel.org>; Wed,  2 Sep 2020 22:35:52 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id c17so1349167ybe.0
-        for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 22:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E08Zk/9+6JHtl6QsUWwsuFdFIW7JNxG1i4fFwPEn8qs=;
-        b=DqBdbynu3FFOlxCn+HfxFdkzg7BDZe3EMRXQzQxiafIYKRF58fdPSkAxQ3ag5dH7IY
-         DRHeEKDdN4yq0A8wnwEK+VCgD/3p9AX2pPiOTMTTgTYM1eUBRhUEbJTeJ+8mo80Rd5x2
-         SN3OKa3Iv2/6qIvxT040KXFI5qFDc2KbT20wXhMuVkTkvT1L/6qY0mIvvs0ddHtszI5b
-         FnmYuqlmrrivtl9WLxdXqsdZJiwRJNdUqPUxz2uvI2B+RZM/Oc56dZ4rOaQ5pDWUS/5b
-         JRazvuVFskeE5rVL9idhsPClmDIrFTh+9S65droUySaRlEwFvg6wr0uBN0kJSg2+nW3Q
-         ub7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E08Zk/9+6JHtl6QsUWwsuFdFIW7JNxG1i4fFwPEn8qs=;
-        b=QrRogq3oyLBu8lHTdR82LVfr12ma0plVeN5u2GBNUv6z/4UYXhbgZQPnFIsuR4cuew
-         nv9+qjMRKI5B1BON0lmWKmKx+vueZZU40Axj7RmR0gDuDU9qq1xheyUO3lMtWlImfnli
-         NuapKjNfDr68QHWXEez0gC+VXRiwr0WOKRWKJWTBRMhMkaNZDp6o66ehmw7A+2t2/FHM
-         smMYDQqJfsd6OFX6elB+Ns53ILpE09KG1W076jivTjKlJzfzp1n1vfP9rwiVamKPZ6bJ
-         OQgfMAYbzqDVooDcXTDfnrH/DrW/PpqNtiXn3xuNdDkVAwr8N0A53fLNsjTw2EnaENa9
-         Hv4w==
-X-Gm-Message-State: AOAM533xZmGgHdAHzQV6+dQlfPbXcFklejsxhb4bYUZHIHWRRaInkFyt
-        5go7DfjLYfOCXcWmBbtwv1xSd9ucglmz3UIG1rY=
-X-Google-Smtp-Source: ABdhPJwvKBWr3d0bi9Kl2raVB5nUIO/iu/FZ5h6GXv/gZ8ltClrhFWvYbH5NAAQuqiAlJF+hH5eE2EIQaDtf6ZluxhY=
-X-Received: by 2002:a25:ae43:: with SMTP id g3mr403246ybe.459.1599111351980;
- Wed, 02 Sep 2020 22:35:51 -0700 (PDT)
+        id S1726317AbgICFqc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 01:46:32 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3324 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725919AbgICFqb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Sep 2020 01:46:31 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0835VoCL128582;
+        Thu, 3 Sep 2020 01:46:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=EEmfAEII1MFsjoFBO9r2yZjXFgAAI3FqsD9VQfebOoE=;
+ b=CzIuSojQTIPntS0vdfCwj461k1Z/PaVo/M+kDUeNSxHUCviaCKeu6g8R+XYTCsP8vMig
+ WSg37KR2gmDjG/pq+gQUDLflVAPXukKNbNqr7KBJTNH70+8dJzansvk2OefE6rbMv3BI
+ eddut5OSAyqPikzSUyDXRa1dKu4AziD+of0g5aEWZRL09qztmgYVrXfSzGbX0w1VUQf0
+ Wk6fzTDVwZYaAG3MY1WncJqyID7mb17fEvBUne8hJviu1HwxaPGWwsrdos5qEayojGpd
+ Ul8BtJHIt5oYdtbziI/C+ukhleB3mxXSclPiX28xW0Xnx7tcURrlwdb5fiFpPvW01KIJ Eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33asvus4x2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 01:46:19 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0835k1Ss163547;
+        Thu, 3 Sep 2020 01:46:19 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33asvus4wh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 01:46:19 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0835YHQ8008398;
+        Thu, 3 Sep 2020 05:46:17 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 337en83b2q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 05:46:17 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0835kF7M32506258
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Sep 2020 05:46:15 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06DD8A4055;
+        Thu,  3 Sep 2020 05:46:15 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 960C1A4053;
+        Thu,  3 Sep 2020 05:46:14 +0000 (GMT)
+Received: from localhost (unknown [9.102.26.23])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Sep 2020 05:46:14 +0000 (GMT)
+Date:   Thu, 03 Sep 2020 11:16:12 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH] libbpf: Remove arch-specific include path in Makefile
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Networking <netdev@vger.kernel.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+References: <20200902084246.1513055-1-naveen.n.rao@linux.vnet.ibm.com>
+        <CAEf4BzZXyJsJ6rFp7pj_0PhyE_df9Z08wE9pUkZBp8i1qz_h1Q@mail.gmail.com>
+        <fc8b0c65-b74a-d924-4189-ff6359d1ebdc@iogearbox.net>
+In-Reply-To: <fc8b0c65-b74a-d924-4189-ff6359d1ebdc@iogearbox.net>
 MIME-Version: 1.0
-References: <20200901103210.54607-1-lmb@cloudflare.com> <20200901103210.54607-5-lmb@cloudflare.com>
-In-Reply-To: <20200901103210.54607-5-lmb@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Sep 2020 22:35:41 -0700
-Message-ID: <CAEf4BzY5QwUdYzXvptKrY=iVjRZqZeHfRzjUm8DAR3YsUe4ZqQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] selftests: bpf: Test copying a sockmap
- via bpf_iter
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1599111859.vtxbe8ojub.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-02_17:2020-09-02,2020-09-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 bulkscore=0 spamscore=0
+ suspectscore=0 phishscore=0 mlxscore=0 impostorscore=0 malwarescore=0
+ mlxlogscore=979 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030048
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 3:33 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> Add a test that exercises a basic sockmap / sockhash copy using bpf_iter.
->
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> ---
+Daniel Borkmann wrote:
+> On 9/2/20 10:58 PM, Andrii Nakryiko wrote:
+>> On Wed, Sep 2, 2020 at 1:43 AM Naveen N. Rao
+>> <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>>>
+>>> Ubuntu mainline builds for ppc64le are failing with the below error (*)=
+:
+>>>      CALL    /home/kernel/COD/linux/scripts/atomic/check-atomics.sh
+>>>      DESCEND  bpf/resolve_btfids
+>>>
+>>>    Auto-detecting system features:
+>>>    ...                        libelf: [ [32mon[m  ]
+>>>    ...                          zlib: [ [32mon[m  ]
+>>>    ...                           bpf: [ [31mOFF[m ]
+>>>
+>>>    BPF API too old
+>>>    make[6]: *** [Makefile:295: bpfdep] Error 1
+>>>    make[5]: *** [Makefile:54: /home/kernel/COD/linux/debian/build/build=
+-generic/tools/bpf/resolve_btfids//libbpf.a] Error 2
+>>>    make[4]: *** [Makefile:71: bpf/resolve_btfids] Error 2
+>>>    make[3]: *** [/home/kernel/COD/linux/Makefile:1890: tools/bpf/resolv=
+e_btfids] Error 2
+>>>    make[2]: *** [/home/kernel/COD/linux/Makefile:335: __build_one_by_on=
+e] Error 2
+>>>    make[2]: Leaving directory '/home/kernel/COD/linux/debian/build/buil=
+d-generic'
+>>>    make[1]: *** [Makefile:185: __sub-make] Error 2
+>>>    make[1]: Leaving directory '/home/kernel/COD/linux'
+>>>
+>>> resolve_btfids needs to be build as a host binary and it needs libbpf.
+>>> However, libbpf Makefile hardcodes an include path utilizing $(ARCH).
+>>> This results in mixing of cross-architecture headers resulting in a
+>>> build failure.
+>>>
+>>> The specific header include path doesn't seem necessary for a libbpf
+>>> build. Hence, remove the same.
+>>>
+>>> (*) https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.9-rc3/ppc64el/log
+>>>
+>>> Reported-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+>>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>> ---
+>>=20
+>> This seems to still build fine for me, so I seems fine. Not sure why
+>> that $(ARCH)/include/uapi path is there.
+>>=20
+>> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>=20
+> Same here, builds fine from my side too. Looks like this was from the ver=
+y early days,
+> added in commit 1b76c13e4b36 ("bpf tools: Introduce 'bpf' library and add=
+ bpf feature
+> check"). Applied, thanks!
 
-just a bunch of nits, as I was passing by :-P
+Thanks!
 
->  .../selftests/bpf/prog_tests/sockmap_basic.c  | 88 +++++++++++++++++++
->  tools/testing/selftests/bpf/progs/bpf_iter.h  |  9 ++
->  .../selftests/bpf/progs/bpf_iter_sockmap.c    | 58 ++++++++++++
->  .../selftests/bpf/progs/bpf_iter_sockmap.h    |  3 +
->  4 files changed, 158 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> index 9569bbac7f6e..f5b7b27f096f 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-> @@ -6,6 +6,9 @@
->  #include "test_skmsg_load_helpers.skel.h"
->  #include "test_sockmap_update.skel.h"
->  #include "test_sockmap_invalid_update.skel.h"
-> +#include "bpf_iter_sockmap.skel.h"
-> +
-> +#include "progs/bpf_iter_sockmap.h"
->
->  #define TCP_REPAIR             19      /* TCP sock is under repair right now */
->
-> @@ -196,6 +199,87 @@ static void test_sockmap_invalid_update(void)
->                 test_sockmap_invalid_update__destroy(skel);
->  }
->
-> +static void test_sockmap_copy(enum bpf_map_type map_type)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> +       int err, len, src_fd, iter_fd, duration;
-> +       union bpf_iter_link_info linfo = {0};
+Daniel, I see that this has been applied to bpf-next. Can you please=20
+consider sending this in for v5.9-rc series so as to resolve the build=20
+failures?
 
-nit: misleading initialization, `= {}` is the same but doesn't imply
-that you can fill union/struct with non-zeroes like this
 
-> +       __s64 sock_fd[SOCKMAP_MAX_ENTRIES];
-> +       __u32 i, num_sockets, max_elems;
-> +       struct bpf_iter_sockmap *skel;
-> +       struct bpf_map *src, *dst;
-> +       struct bpf_link *link;
-> +       char buf[64];
-> +
+- Naveen
 
-[...]
-
-> +SEC("iter/sockmap")
-> +int copy_sockmap(struct bpf_iter__sockmap *ctx)
-> +{
-> +       struct bpf_sock *sk = ctx->sk;
-> +       __u32 tmp, *key = ctx->key;
-> +       int ret;
-> +
-> +       if (key == (void *)0)
-
-nit: seems like a verbose way to just write `if (!key)`?
-
-> +               return 0;
-> +
-> +       elems++;
-> +
-> +       /* We need a temporary buffer on the stack, since the verifier doesn't
-> +        * let us use the pointer from the context as an argument to the helper.
-> +        */
-> +       tmp = *key;
-> +       bpf_printk("key: %u\n", tmp);
-
-is this intentional or a debugging leftover?
-
-> +
-> +       if (sk != (void *)0)
-> +               return bpf_map_update_elem(&dst, &tmp, sk, 0) != 0;
-> +
-> +       ret = bpf_map_delete_elem(&dst, &tmp);
-> +       return ret && ret != -ENOENT;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
-> new file mode 100644
-> index 000000000000..f98ad727ac06
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
-> @@ -0,0 +1,3 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#define SOCKMAP_MAX_ENTRIES (64)
-> --
-> 2.25.1
->
