@@ -2,106 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD22625C374
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 16:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14C625C3EF
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 17:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729387AbgICOv6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 10:51:58 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35936 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729058AbgICONn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:13:43 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDpdy-0007al-SI; Thu, 03 Sep 2020 15:51:15 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kDpdy-0008BF-Ll; Thu, 03 Sep 2020 15:51:14 +0200
-Subject: Re: [PATCH] libbpf: Remove arch-specific include path in Makefile
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-References: <20200902084246.1513055-1-naveen.n.rao@linux.vnet.ibm.com>
- <CAEf4BzZXyJsJ6rFp7pj_0PhyE_df9Z08wE9pUkZBp8i1qz_h1Q@mail.gmail.com>
- <fc8b0c65-b74a-d924-4189-ff6359d1ebdc@iogearbox.net>
- <1599111859.vtxbe8ojub.naveen@linux.ibm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c31ef991-25d0-dab4-819f-13eb38965a86@iogearbox.net>
-Date:   Thu, 3 Sep 2020 15:51:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729493AbgICPAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 11:00:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24469 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728826AbgICOFx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Sep 2020 10:05:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599141948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5uWJk8uRW86VLHHEupzWNTmb59FoNkTg1geubDp8r00=;
+        b=AZuvTroMhaY4m0WvHf0jO+HciIHvnDBwtYzrmE2klRf/kbw4sXHr09OGcZAR0MCQ3x66t0
+        Y4h+iW3yQrY4KFHZo1OdisauAuil3B/1y4X1+AcpBcmyje9RZZ7cfu/v4+LV+iPGE9AREG
+        l+UT0Qj50zGGirRFjdRTzuxEn1nA6bs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-nEueuyFyPXOvNM9xTWcAag-1; Thu, 03 Sep 2020 10:05:46 -0400
+X-MC-Unique: nEueuyFyPXOvNM9xTWcAag-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DA171019629;
+        Thu,  3 Sep 2020 14:05:45 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-146.ams2.redhat.com [10.36.112.146])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DE82A811B5;
+        Thu,  3 Sep 2020 14:05:43 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, jolsa@redhat.com,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH RFC] bpf: update current instruction on patching
+Date:   Thu,  3 Sep 2020 17:05:42 +0300
+Message-Id: <20200903140542.156624-1-yauheni.kaliuta@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1599111859.vtxbe8ojub.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25918/Wed Sep  2 15:41:14 2020)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/3/20 7:46 AM, Naveen N. Rao wrote:
-> Daniel Borkmann wrote:
->> On 9/2/20 10:58 PM, Andrii Nakryiko wrote:
->>> On Wed, Sep 2, 2020 at 1:43 AM Naveen N. Rao
->>> <naveen.n.rao@linux.vnet.ibm.com> wrote:
->>>>
->>>> Ubuntu mainline builds for ppc64le are failing with the below error (*):
->>>>      CALL    /home/kernel/COD/linux/scripts/atomic/check-atomics.sh
->>>>      DESCEND  bpf/resolve_btfids
->>>>
->>>>    Auto-detecting system features:
->>>>    ...                        libelf: [ [32mon[m  ]
->>>>    ...                          zlib: [ [32mon[m  ]
->>>>    ...                           bpf: [ [31mOFF[m ]
->>>>
->>>>    BPF API too old
->>>>    make[6]: *** [Makefile:295: bpfdep] Error 1
->>>>    make[5]: *** [Makefile:54: /home/kernel/COD/linux/debian/build/build-generic/tools/bpf/resolve_btfids//libbpf.a] Error 2
->>>>    make[4]: *** [Makefile:71: bpf/resolve_btfids] Error 2
->>>>    make[3]: *** [/home/kernel/COD/linux/Makefile:1890: tools/bpf/resolve_btfids] Error 2
->>>>    make[2]: *** [/home/kernel/COD/linux/Makefile:335: __build_one_by_one] Error 2
->>>>    make[2]: Leaving directory '/home/kernel/COD/linux/debian/build/build-generic'
->>>>    make[1]: *** [Makefile:185: __sub-make] Error 2
->>>>    make[1]: Leaving directory '/home/kernel/COD/linux'
->>>>
->>>> resolve_btfids needs to be build as a host binary and it needs libbpf.
->>>> However, libbpf Makefile hardcodes an include path utilizing $(ARCH).
->>>> This results in mixing of cross-architecture headers resulting in a
->>>> build failure.
->>>>
->>>> The specific header include path doesn't seem necessary for a libbpf
->>>> build. Hence, remove the same.
->>>>
->>>> (*) https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.9-rc3/ppc64el/log
->>>>
->>>> Reported-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
->>>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->>>> ---
->>>
->>> This seems to still build fine for me, so I seems fine. Not sure why
->>> that $(ARCH)/include/uapi path is there.
->>>
->>> Acked-by: Andrii Nakryiko <andriin@fb.com>
->>
->> Same here, builds fine from my side too. Looks like this was from the very early days,
->> added in commit 1b76c13e4b36 ("bpf tools: Introduce 'bpf' library and add bpf feature
->> check"). Applied, thanks!
-> 
-> Thanks!
-> 
-> Daniel, I see that this has been applied to bpf-next. Can you please consider sending this in for v5.9-rc series so as to resolve the build failures?
+On code patching it may require to update branch destinations if the
+code size changed. bpf_adj_delta_to_imm/off increments offset only
+if the patched area is after the branch instruction. But it's
+possible, that the patched area itself is a branch instruction and
+requires destination update.
 
-Ok, done, I've moved it to bpf tree so its on track for 5.9.
+The problem was triggered by bpf selftest
 
-Thanks,
-Daniel
+test_progs -t global_funcs
+
+on s390, where the very first "call" instruction is patched from
+verifier.c:opt_subreg_zext_lo32_rnd_hi32() with zext_patch.
+
+The patch includes current instruction to the condition check.
+
+Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+---
+ kernel/bpf/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ed0b3578867c..b0a9a22491a5 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -340,7 +340,7 @@ static int bpf_adj_delta_to_imm(struct bpf_insn *insn, u32 pos, s32 end_old,
+ 	s32 delta = end_new - end_old;
+ 	s64 imm = insn->imm;
+ 
+-	if (curr < pos && curr + imm + 1 >= end_old)
++	if (curr <= pos && curr + imm + 1 >= end_old)
+ 		imm += delta;
+ 	else if (curr >= end_new && curr + imm + 1 < end_new)
+ 		imm -= delta;
+@@ -358,7 +358,7 @@ static int bpf_adj_delta_to_off(struct bpf_insn *insn, u32 pos, s32 end_old,
+ 	s32 delta = end_new - end_old;
+ 	s32 off = insn->off;
+ 
+-	if (curr < pos && curr + off + 1 >= end_old)
++	if (curr <= pos && curr + off + 1 >= end_old)
+ 		off += delta;
+ 	else if (curr >= end_new && curr + off + 1 < end_new)
+ 		off -= delta;
+-- 
+2.26.2
+
