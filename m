@@ -2,107 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D19425BA17
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 07:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991B825BA28
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 07:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgICF3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 01:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        id S1726994AbgICFfy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 01:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgICF3H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 01:29:07 -0400
+        with ESMTP id S1727866AbgICFfw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 01:35:52 -0400
 Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55433C061244;
-        Wed,  2 Sep 2020 22:29:07 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id s92so1333342ybi.2;
-        Wed, 02 Sep 2020 22:29:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B447DC061244
+        for <bpf@vger.kernel.org>; Wed,  2 Sep 2020 22:35:52 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id c17so1349167ybe.0
+        for <bpf@vger.kernel.org>; Wed, 02 Sep 2020 22:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aqSzJ+G6e3sItDAMEGO8323I5vOUOvMlVHBhDl0yekQ=;
-        b=Uk2NZA9Y6bbWDzHmEYkTzTD/xekG9voY1J+n9mxwJ4+ALoTFqBDICwWpq6/R+8d+vI
-         yKCWrlEc+RcRxR3jzOIM+5iVImoeONAuAtwQ886mTRXRSKLTxi72QVmk+Z2XiPbs5h1h
-         VXZv6V43lZAjfsmo6SLg07Ny7wUmdid/vL6t1QPmvUUb+WxS6lAYMrBZ13TanFWpqCvb
-         5xJzdmSdqh4ImXo7ktkMBsD0h+baSJC807sNKiYPjnq0MpaEO61VfpQf63jxb5Ay2D8e
-         D16buykU7kxpt9LOprHiTIn4btydJJnTm+gVRCjI9YGkhQHG2r5PzJD3oDZAa3earEbs
-         V4gg==
+        bh=E08Zk/9+6JHtl6QsUWwsuFdFIW7JNxG1i4fFwPEn8qs=;
+        b=DqBdbynu3FFOlxCn+HfxFdkzg7BDZe3EMRXQzQxiafIYKRF58fdPSkAxQ3ag5dH7IY
+         DRHeEKDdN4yq0A8wnwEK+VCgD/3p9AX2pPiOTMTTgTYM1eUBRhUEbJTeJ+8mo80Rd5x2
+         SN3OKa3Iv2/6qIvxT040KXFI5qFDc2KbT20wXhMuVkTkvT1L/6qY0mIvvs0ddHtszI5b
+         FnmYuqlmrrivtl9WLxdXqsdZJiwRJNdUqPUxz2uvI2B+RZM/Oc56dZ4rOaQ5pDWUS/5b
+         JRazvuVFskeE5rVL9idhsPClmDIrFTh+9S65droUySaRlEwFvg6wr0uBN0kJSg2+nW3Q
+         ub7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aqSzJ+G6e3sItDAMEGO8323I5vOUOvMlVHBhDl0yekQ=;
-        b=Dh7lL/axoK5opqXooztNcw6KbnAQavckdRF3StNaMHzrV7qgGliFvE/N/Kz0LjbkCK
-         gKDHVWsR+Ri5UuOIFvlREzxT2LaKdPn13efzoVAFuws/Y4yk4c81ndrllhaWqn+5BUcu
-         3JSgmLDdqN+9bA6/qlV+uSo8QrixFqbVdPfX/w4Hg9d7BTi5WPL4CTM6PH3Z/9Ee62QP
-         lSVHWuw7YegQtjfEOCgiZSrte6Y8r9UHQPgS/GoZPxDbhsKktVYlyUBBjD8cTIMndWrI
-         jzBOzPX1iwj6VazuMJ4cG8gQPJORPFb/go50c39rFJ9N90So2AbpDxOtq9AE8fvwIY/k
-         4dFg==
-X-Gm-Message-State: AOAM530R0u3kvkeHoRbk6uCFNAhbuPCkPl5q14YO3Ntl4f+2H9XcWwod
-        lZIJRBcT1q6hZW5UJ91XEP5lQidHEEQ1f9NX0Uw=
-X-Google-Smtp-Source: ABdhPJwyqZJvbDAyTq+F1ByuHXoZFOv7/Zgl1IH0ZUPttHP9J3S/Wq8QCE9p5aRb7dcXCiRDjcSSkakeTBxoLKQ0Ma8=
-X-Received: by 2002:a25:824a:: with SMTP id d10mr442313ybn.260.1599110946446;
- Wed, 02 Sep 2020 22:29:06 -0700 (PDT)
+        bh=E08Zk/9+6JHtl6QsUWwsuFdFIW7JNxG1i4fFwPEn8qs=;
+        b=QrRogq3oyLBu8lHTdR82LVfr12ma0plVeN5u2GBNUv6z/4UYXhbgZQPnFIsuR4cuew
+         nv9+qjMRKI5B1BON0lmWKmKx+vueZZU40Axj7RmR0gDuDU9qq1xheyUO3lMtWlImfnli
+         NuapKjNfDr68QHWXEez0gC+VXRiwr0WOKRWKJWTBRMhMkaNZDp6o66ehmw7A+2t2/FHM
+         smMYDQqJfsd6OFX6elB+Ns53ILpE09KG1W076jivTjKlJzfzp1n1vfP9rwiVamKPZ6bJ
+         OQgfMAYbzqDVooDcXTDfnrH/DrW/PpqNtiXn3xuNdDkVAwr8N0A53fLNsjTw2EnaENa9
+         Hv4w==
+X-Gm-Message-State: AOAM533xZmGgHdAHzQV6+dQlfPbXcFklejsxhb4bYUZHIHWRRaInkFyt
+        5go7DfjLYfOCXcWmBbtwv1xSd9ucglmz3UIG1rY=
+X-Google-Smtp-Source: ABdhPJwvKBWr3d0bi9Kl2raVB5nUIO/iu/FZ5h6GXv/gZ8ltClrhFWvYbH5NAAQuqiAlJF+hH5eE2EIQaDtf6ZluxhY=
+X-Received: by 2002:a25:ae43:: with SMTP id g3mr403246ybe.459.1599111351980;
+ Wed, 02 Sep 2020 22:35:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200831224933.2129891-1-brho@google.com>
-In-Reply-To: <20200831224933.2129891-1-brho@google.com>
+References: <20200901103210.54607-1-lmb@cloudflare.com> <20200901103210.54607-5-lmb@cloudflare.com>
+In-Reply-To: <20200901103210.54607-5-lmb@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Sep 2020 22:28:55 -0700
-Message-ID: <CAEf4BzauvG-1ED3jtgsYdjNULq5O3pVbO7GCakZR9tP5_6zUzQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] libbpf: Support setting map max_entries at runtime
-To:     Barret Rhoden <brho@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 2 Sep 2020 22:35:41 -0700
+Message-ID: <CAEf4BzY5QwUdYzXvptKrY=iVjRZqZeHfRzjUm8DAR3YsUe4ZqQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] selftests: bpf: Test copying a sockmap
+ via bpf_iter
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 4:03 PM Barret Rhoden <brho@google.com> wrote:
+On Tue, Sep 1, 2020 at 3:33 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
-> The max_entries for a BPF map may depend on runtime parameters.
-> Currently, we need to know the maximum value at BPF compile time.  For
-> instance, if you want an array map with NR_CPUS entries, you would hard
-> code your architecture's largest value for CONFIG_NR_CPUS.  This wastes
-> memory at runtime.
+> Add a test that exercises a basic sockmap / sockhash copy using bpf_iter.
 >
-> For the NR_CPU case, one could use a PERCPU map type, but those maps are
-> limited in functionality.  For instance, BPF programs can only access
-> their own PERCPU part of the map, and the maps are not mmappable.
->
-> This commit allows the use of sentinel values in BPF map definitions,
-> which libbpf patches at runtime.
->
-> For starters, we support NUM_POSSIBLE_CPUS: e.g.
->
-> struct {
->         __uint(type, BPF_MAP_TYPE_ARRAY);
->         __uint(max_entries, NUM_POSSIBLE_CPUS);
->         __type(key, u32);
->         __type(value, struct cpu_data);
-> } cpu_blobs SEC(".maps");
->
-> This can be extended to other runtime dependent values, such as the
-> maximum number of threads (/proc/sys/kernel/threads-max).
->
-> Signed-off-by: Barret Rhoden <brho@google.com>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 > ---
 
-libbpf provides bpf_map__set_max_entries() API exactly for such use
-cases, please use that.
+just a bunch of nits, as I was passing by :-P
 
->  tools/lib/bpf/bpf_helpers.h |  4 ++++
->  tools/lib/bpf/libbpf.c      | 40 ++++++++++++++++++++++++++++++-------
->  tools/lib/bpf/libbpf.h      |  4 ++++
->  3 files changed, 41 insertions(+), 7 deletions(-)
+>  .../selftests/bpf/prog_tests/sockmap_basic.c  | 88 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/bpf_iter.h  |  9 ++
+>  .../selftests/bpf/progs/bpf_iter_sockmap.c    | 58 ++++++++++++
+>  .../selftests/bpf/progs/bpf_iter_sockmap.h    |  3 +
+>  4 files changed, 158 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
 >
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> index 9569bbac7f6e..f5b7b27f096f 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> @@ -6,6 +6,9 @@
+>  #include "test_skmsg_load_helpers.skel.h"
+>  #include "test_sockmap_update.skel.h"
+>  #include "test_sockmap_invalid_update.skel.h"
+> +#include "bpf_iter_sockmap.skel.h"
+> +
+> +#include "progs/bpf_iter_sockmap.h"
+>
+>  #define TCP_REPAIR             19      /* TCP sock is under repair right now */
+>
+> @@ -196,6 +199,87 @@ static void test_sockmap_invalid_update(void)
+>                 test_sockmap_invalid_update__destroy(skel);
+>  }
+>
+> +static void test_sockmap_copy(enum bpf_map_type map_type)
+> +{
+> +       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+> +       int err, len, src_fd, iter_fd, duration;
+> +       union bpf_iter_link_info linfo = {0};
+
+nit: misleading initialization, `= {}` is the same but doesn't imply
+that you can fill union/struct with non-zeroes like this
+
+> +       __s64 sock_fd[SOCKMAP_MAX_ENTRIES];
+> +       __u32 i, num_sockets, max_elems;
+> +       struct bpf_iter_sockmap *skel;
+> +       struct bpf_map *src, *dst;
+> +       struct bpf_link *link;
+> +       char buf[64];
+> +
 
 [...]
+
+> +SEC("iter/sockmap")
+> +int copy_sockmap(struct bpf_iter__sockmap *ctx)
+> +{
+> +       struct bpf_sock *sk = ctx->sk;
+> +       __u32 tmp, *key = ctx->key;
+> +       int ret;
+> +
+> +       if (key == (void *)0)
+
+nit: seems like a verbose way to just write `if (!key)`?
+
+> +               return 0;
+> +
+> +       elems++;
+> +
+> +       /* We need a temporary buffer on the stack, since the verifier doesn't
+> +        * let us use the pointer from the context as an argument to the helper.
+> +        */
+> +       tmp = *key;
+> +       bpf_printk("key: %u\n", tmp);
+
+is this intentional or a debugging leftover?
+
+> +
+> +       if (sk != (void *)0)
+> +               return bpf_map_update_elem(&dst, &tmp, sk, 0) != 0;
+> +
+> +       ret = bpf_map_delete_elem(&dst, &tmp);
+> +       return ret && ret != -ENOENT;
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
+> new file mode 100644
+> index 000000000000..f98ad727ac06
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
+> @@ -0,0 +1,3 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#define SOCKMAP_MAX_ENTRIES (64)
+> --
+> 2.25.1
+>
