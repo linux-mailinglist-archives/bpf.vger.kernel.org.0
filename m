@@ -2,126 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B3925C90F
-	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 21:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B4025C94C
+	for <lists+bpf@lfdr.de>; Thu,  3 Sep 2020 21:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728677AbgICTEA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 15:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728525AbgICTDy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 15:03:54 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A92A5208FE;
-        Thu,  3 Sep 2020 19:03:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599159832;
-        bh=jMsS9s3JXZ5jBcNkxMfVH5KGVdkLZBPZSBaXJ+aFf/w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=etuQ0TO6/MGAEYKDoC3PIED6/OTXHLxf0MyK0e1KYxPDYlMWqLmOp5pzODSi342zw
-         UfVJePa1hNAuhiKhAcHTq2MjIbqnN3gQ8ijYP8yqtCRADj4zpsi1dONOD0p6jq6140
-         3/xiULuU4YWl6WyIhfG5Xujto2nivk1G2aWpw9Do=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D776240D3D; Thu,  3 Sep 2020 16:03:50 -0300 (-03)
-Date:   Thu, 3 Sep 2020 16:03:50 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1728304AbgICTUl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 15:20:41 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52030 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728312AbgICTUl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 15:20:41 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kDumi-0007YF-3R; Thu, 03 Sep 2020 21:20:36 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kDumh-000DXn-UD; Thu, 03 Sep 2020 21:20:35 +0200
+Subject: Re: [PATCH] tools build feature: cleanup feature files on make clean
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
         bpf@vger.kernel.org
-Subject: Re: [PATCH] tools build feature: cleanup feature files on make clean
-Message-ID: <20200903190350.GI3495158@kernel.org>
 References: <159851841661.1072907.13770213104521805592.stgit@firesoul>
+ <20200903190350.GI3495158@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <eb3ad60a-68be-f350-9597-b999edae5244@iogearbox.net>
+Date:   Thu, 3 Sep 2020 21:20:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159851841661.1072907.13770213104521805592.stgit@firesoul>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200903190350.GI3495158@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25919/Thu Sep  3 15:39:22 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Aug 27, 2020 at 10:53:36AM +0200, Jesper Dangaard Brouer escreveu:
-> The system for "Auto-detecting system features" located under
-> tools/build/ are (currently) used by perf, libbpf and bpftool. It can
-> contain stalled feature detection files, which are not cleaned up by
-> libbpf and bpftool on make clean (side-note: perf tool is correct).
-> 
-> Fix this by making the users invoke the make clean target.
-> 
-> Some details about the changes. The libbpf Makefile already had a
-> clean-config target (which seems to be copy-pasted from perf), but this
-> target was not "connected" (a make dependency) to clean target. Choose
-> not to rename target as someone might be using it. Did change the output
-> from "CLEAN config" to "CLEAN feature-detect", to make it more clear
-> what happens.
+Hi Arnaldo,
 
-Since this mostly touches BPF, should it go via the BPF tree?
+On 9/3/20 9:03 PM, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Aug 27, 2020 at 10:53:36AM +0200, Jesper Dangaard Brouer escreveu:
+>> The system for "Auto-detecting system features" located under
+>> tools/build/ are (currently) used by perf, libbpf and bpftool. It can
+>> contain stalled feature detection files, which are not cleaned up by
+>> libbpf and bpftool on make clean (side-note: perf tool is correct).
+>>
+>> Fix this by making the users invoke the make clean target.
+>>
+>> Some details about the changes. The libbpf Makefile already had a
+>> clean-config target (which seems to be copy-pasted from perf), but this
+>> target was not "connected" (a make dependency) to clean target. Choose
+>> not to rename target as someone might be using it. Did change the output
+>> from "CLEAN config" to "CLEAN feature-detect", to make it more clear
+>> what happens.
+> 
+> Since this mostly touches BPF, should it go via the BPF tree?
 
-- Arnaldo
- 
-> This is related to the complaint and troubleshooting in link:
-> Link: https://lore.kernel.org/lkml/20200818122007.2d1cfe2d@carbon/
-> 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  tools/build/Makefile |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 8462690a039b..02c99bc95c69 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -176,7 +176,11 @@ $(OUTPUT)bpftool: $(OBJS) $(LIBBPF)
->  $(OUTPUT)%.o: %.c
->  	$(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
->  
-> -clean: $(LIBBPF)-clean
-> +feature-detect-clean:
-> +	$(call QUIET_CLEAN, feature-detect)
-> +	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
-> +
-> +clean: $(LIBBPF)-clean feature-detect-clean
->  	$(call QUIET_CLEAN, bpftool)
->  	$(Q)$(RM) -- $(OUTPUT)bpftool $(OUTPUT)*.o $(OUTPUT)*.d
->  	$(Q)$(RM) -- $(BPFTOOL_BOOTSTRAP) $(OUTPUT)*.skel.h $(OUTPUT)vmlinux.h
-> diff --git a/tools/build/Makefile b/tools/build/Makefile
-> index 727050c40f09..722f1700d96a 100644
-> --- a/tools/build/Makefile
-> +++ b/tools/build/Makefile
-> @@ -38,6 +38,8 @@ clean:
->  	$(call QUIET_CLEAN, fixdep)
->  	$(Q)find $(if $(OUTPUT),$(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete
->  	$(Q)rm -f $(OUTPUT)fixdep
-> +	$(call QUIET_CLEAN, feature-detect)
-> +	$(Q)$(MAKE) -C feature/ clean >/dev/null
->  
->  $(OUTPUT)fixdep-in.o: FORCE
->  	$(Q)$(MAKE) $(build)=fixdep
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index bf8ed134cb8a..bbb89551468a 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -269,10 +269,10 @@ install: install_lib install_pkgconfig install_headers
->  ### Cleaning rules
->  
->  config-clean:
-> -	$(call QUIET_CLEAN, config)
-> +	$(call QUIET_CLEAN, feature-detect)
->  	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
->  
-> -clean:
-> +clean: config-clean
->  	$(call QUIET_CLEAN, libbpf) $(RM) -rf $(CMD_TARGETS)		     \
->  		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_HELPER_DEFS)		     \
->  		$(SHARED_OBJDIR) $(STATIC_OBJDIR)			     \
-> 
-> 
+Already applied roughly a week ago:
 
--- 
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=661b37cd437ef49cd28444f79b9b0c71ea76e8c8
 
-- Arnaldo
+Thanks,
+Daniel
