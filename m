@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA82525CDA7
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 00:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616C825CDA3
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 00:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbgICWeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1729471AbgICWeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 3 Sep 2020 18:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729371AbgICWdq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 18:33:46 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0655EC061249
-        for <bpf@vger.kernel.org>; Thu,  3 Sep 2020 15:33:46 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id v16so2447213qka.18
-        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 15:33:45 -0700 (PDT)
+        with ESMTP id S1729278AbgICWds (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 18:33:48 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2BDC06125E
+        for <bpf@vger.kernel.org>; Thu,  3 Sep 2020 15:33:47 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id r4so2459653qkb.12
+        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 15:33:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=9i0t6QWb3/RQSionlukUT9JC2EpIJE7Rdq9kEE4nRBE=;
-        b=wQY2ZOv4ZnWeqSNvQnlAtKTfs/MtMvPlJpYrujbAj3utXBR/a5ZX7wMIJDVsCUoJSo
-         1fvjuM5XZno4/Xu1ageYgSGEPgUFWGBOV+ugYZ7HHEPhEZPq5/b2nLB7oqkMgEiqCquC
-         FIskpfYRBe0q4mTCNypnGwT7pRUFyVyOZzXB6T240T54dZ4nTPrOiovViMFJveedxRgt
-         0NmgbI8xDYecZvyaL5em5lo7vfriN802driPBwsdFXDfOzrjJXcgegIxAIqXIyLwAp0l
-         2dFO7xqUW7j5lArbfu13xWlhD+b9114cROi84CqOEi685eepj//DeMlFJovvbw9uuIJU
-         GY+g==
+        bh=UW/0PGzjXFNLpgvsGBdXGPzkiQxfa78I9ft59r2N/eQ=;
+        b=XY11zWkKXAZxLJ9vRo4yHPqTSberWaYsHouzkHd91K67vZInZlS3w/HGq0e6ogCBTk
+         aWV/sMHfo1eQcJyerLI7GnKlBBw6dHNIXyb9+HBOVcwN4Eu6Gh7ZeoqqjsVoIQ2cqiA/
+         l9HJMYtuh5JT7LSWyWGQ78IAh6eOablm9ZpDUtYYfF0qFpYPnFP9sy8f3LYaHENDesw8
+         RXTn1dRHAmB893UlWGp5fxDBkKWRTOHqCRg/bm8MagpTOlA2yQbjin2MthfK9TUctbPA
+         03frbeRjM5BqgZSvjOTX8CFPwOmR8n5DJUoMvzjb+ymNh9bJR14WAChjo1380b2tzIr7
+         oCtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=9i0t6QWb3/RQSionlukUT9JC2EpIJE7Rdq9kEE4nRBE=;
-        b=gQPkvSag2ZranPezuPS+uK2A0vQvdkXkNUtZ32BhHDEKLGHcmZMrqeduc7Z4htlqBI
-         i3UTn7qzMaqSUOIvAtcqjWPGDSW9pIdavgEsM+svp1DV73uZEjj2828HIYJoM5V5g8wK
-         v6ci1ICmWE9XW+aEdhXKSfiINjWdSvy+Y30QOFHteepMq35+T6YjiUVhAGCqpt1rn/DB
-         pNDeyu4tLEdNXLBsIIuIRjEj9DJVyM3Jw5FpjUzxNGPUeAHtdizDzPHWjxkv0S/WAMaJ
-         4scY0A+v2WOlHqC9i4tlpoiHQaDdHseu62mOmwUm6qSTSP1aa+2GPUUXqUvwvcTKwYGn
-         NpNg==
-X-Gm-Message-State: AOAM530dU2Qhuo7TBE8cQJAtMD7Y/GpRz6Tq7oyRhvDv00JlV7YQ0OAz
-        y1CZCkXeV41dM9ig2xCHvDy8bddkOHI=
-X-Google-Smtp-Source: ABdhPJybi3nNfCHJvoO/aitmOVPd8wjroRs7m8AeqtNAymOVR52z8UV9xYyh6ny4zD1F6m7Yfjp2Pp4ogm4=
+        bh=UW/0PGzjXFNLpgvsGBdXGPzkiQxfa78I9ft59r2N/eQ=;
+        b=HMmyiKrFJJFLbZUzgAM2vra4WMT86m8WVLpdxHhoZ2tatCaeENQUKxPI7BalqM12eF
+         fqa3rtBe64X9Kl25aayQp7zNNY8ONv9IP9caNPVtGCDWBJM0V4NC/9yHk3tcQulBXdsA
+         GeGEZne0PXkRNFUU376jU3DEHEGoubGK1gGag3MAjdPoRWILPFc2kEVjuIS+egiYyd/o
+         G7z25s17AMQCf9XctKr0aukphUFApAhywqPO7LcRY0X6rBjO8ziFBILklCULFSMQgUnt
+         wEJnC9E5hwVhLgrM69FodCE1dQDyXstqLGwuJf/I01zz1lpfD75F0xrGs9RFO4i7pwXj
+         PN4w==
+X-Gm-Message-State: AOAM531BT60SBYz6V66zidfFrqYS3QzRK5aC2rmTvrwEpPrFt8n/XDTz
+        /qmxVkQ0uIACdOEvXvjktgQoX5Dm460=
+X-Google-Smtp-Source: ABdhPJwMqcx89txh5tXQBtUtjcZyiaptSRj7S1RflllH58s5G4zJUG+EC8RwDGjZKEdQQ1HYDhpzgYctmw0=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
- (user=haoluo job=sendgmr) by 2002:a0c:e188:: with SMTP id p8mr4011448qvl.9.1599172425120;
- Thu, 03 Sep 2020 15:33:45 -0700 (PDT)
-Date:   Thu,  3 Sep 2020 15:33:31 -0700
+ (user=haoluo job=sendgmr) by 2002:a0c:c712:: with SMTP id w18mr4106712qvi.7.1599172426915;
+ Thu, 03 Sep 2020 15:33:46 -0700 (PDT)
+Date:   Thu,  3 Sep 2020 15:33:32 -0700
 In-Reply-To: <20200903223332.881541-1-haoluo@google.com>
-Message-Id: <20200903223332.881541-6-haoluo@google.com>
+Message-Id: <20200903223332.881541-7-haoluo@google.com>
 Mime-Version: 1.0
 References: <20200903223332.881541-1-haoluo@google.com>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH bpf-next v2 5/6] bpf: Introduce bpf_this_cpu_ptr()
+Subject: [PATCH bpf-next v2 6/6] bpf/selftests: Test for bpf_per_cpu_ptr() and bpf_this_cpu_ptr()
 From:   Hao Luo <haoluo@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
@@ -72,160 +72,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add bpf_this_cpu_ptr() to help access percpu var on this cpu. This
-helper always returns a valid pointer, therefore no need to check
-returned value for NULL. Also note that all programs run with
-preemption disabled, which means that the returned pointer is stable
-during all the execution of the program.
+Test bpf_per_cpu_ptr() and bpf_this_cpu_ptr(). Test two paths in the
+kernel. If the base pointer points to a struct, the returned reg is
+of type PTR_TO_BTF_ID. Direct pointer dereference can be applied on
+the returned variable. If the base pointer isn't a struct, the
+returned reg is of type PTR_TO_MEM, which also supports direct pointer
+dereference.
 
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- include/linux/bpf.h            |  1 +
- include/uapi/linux/bpf.h       | 14 ++++++++++++++
- kernel/bpf/verifier.c          | 10 +++++++---
- kernel/trace/bpf_trace.c       | 14 ++++++++++++++
- tools/include/uapi/linux/bpf.h | 14 ++++++++++++++
- 5 files changed, 50 insertions(+), 3 deletions(-)
+ .../selftests/bpf/prog_tests/ksyms_btf.c      | 10 +++++++
+ .../selftests/bpf/progs/test_ksyms_btf.c      | 26 +++++++++++++++++++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 6b2034f7665e..506fdd5d0463 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -307,6 +307,7 @@ enum bpf_return_type {
- 	RET_PTR_TO_ALLOC_MEM_OR_NULL,	/* returns a pointer to dynamically allocated memory or NULL */
- 	RET_PTR_TO_BTF_ID_OR_NULL,	/* returns a pointer to a btf_id or NULL */
- 	RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL, /* returns a pointer to a valid memory or a btf_id or NULL */
-+	RET_PTR_TO_MEM_OR_BTF_ID,	/* returns a pointer to a valid memory or a btf_id */
- };
+diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
+index 7b6846342449..22cc642dbc0e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
+@@ -58,6 +58,16 @@ void test_ksyms_btf(void)
+ 	CHECK(data->out__bpf_prog_active != bpf_prog_active_addr, "bpf_prog_active",
+ 	      "got %llu, exp %llu\n", data->out__bpf_prog_active, bpf_prog_active_addr);
  
- /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index d0ec94d5bdbf..e7ca91c697ed 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3612,6 +3612,19 @@ union bpf_attr {
-  *             bpf_per_cpu_ptr() must check the returned value.
-  *     Return
-  *             A generic pointer pointing to the kernel percpu variable on *cpu*.
-+ *
-+ * void *bpf_this_cpu_ptr(const void *percpu_ptr)
-+ *	Description
-+ *		Take a pointer to a percpu ksym, *percpu_ptr*, and return a
-+ *		pointer to the percpu kernel variable on this cpu. See the
-+ *		description of 'ksym' in **bpf_per_cpu_ptr**\ ().
-+ *
-+ *		bpf_this_cpu_ptr() has the same semantic as this_cpu_ptr() in
-+ *		the kernel. Different from **bpf_per_cpu_ptr**\ (), it would
-+ *		never return NULL.
-+ *	Return
-+ *		A generic pointer pointing to the kernel percpu variable on
-+ *		this cpu.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3764,6 +3777,7 @@ union bpf_attr {
- 	FN(d_path),			\
- 	FN(copy_from_user),		\
- 	FN(bpf_per_cpu_ptr),            \
-+	FN(bpf_this_cpu_ptr),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a702600ff581..e070d2abc405 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5016,8 +5016,10 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 		regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
- 		regs[BPF_REG_0].id = ++env->id_gen;
- 		regs[BPF_REG_0].mem_size = meta.mem_size;
--	} else if (fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL) {
-+	} else if (fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL ||
-+		   fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID) {
- 		const struct btf_type *t;
-+		bool not_null = fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID;
- 
- 		mark_reg_known_zero(env, regs, BPF_REG_0);
- 		t = btf_type_skip_modifiers(btf_vmlinux, meta.ret_btf_id, NULL);
-@@ -5034,10 +5036,12 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 					tname, PTR_ERR(ret));
- 				return -EINVAL;
- 			}
--			regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
-+			regs[BPF_REG_0].type = not_null ?
-+				PTR_TO_MEM : PTR_TO_MEM_OR_NULL;
- 			regs[BPF_REG_0].mem_size = tsize;
- 		} else {
--			regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
-+			regs[BPF_REG_0].type = not_null ?
-+				PTR_TO_BTF_ID : PTR_TO_BTF_ID_OR_NULL;
- 			regs[BPF_REG_0].btf_id = meta.ret_btf_id;
- 		}
- 	} else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d474c1530f87..466acf82a9c7 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1160,6 +1160,18 @@ static const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
-+BPF_CALL_1(bpf_this_cpu_ptr, const void *, percpu_ptr)
-+{
-+	return (u64)this_cpu_ptr(percpu_ptr);
-+}
++	CHECK(data->out__rq_cpu == -1, "rq_cpu",
++	      "got %u, exp != -1\n", data->out__rq_cpu);
++	CHECK(data->out__percpu_bpf_prog_active == -1, "percpu_bpf_prog_active",
++	      "got %d, exp != -1\n", data->out__percpu_bpf_prog_active);
 +
-+static const struct bpf_func_proto bpf_this_cpu_ptr_proto = {
-+	.func		= bpf_this_cpu_ptr,
-+	.gpl_only	= false,
-+	.ret_type	= RET_PTR_TO_MEM_OR_BTF_ID,
-+	.arg1_type	= ARG_PTR_TO_PERCPU_BTF_ID,
-+};
++	CHECK(data->out__this_rq_cpu == -1, "this_rq_cpu",
++	      "got %u, exp != -1\n", data->out__this_rq_cpu);
++	CHECK(data->out__this_bpf_prog_active == -1, "this_bpf_prog_active",
++	      "got %d, exp != -1\n", data->out__this_bpf_prog_active);
 +
- const struct bpf_func_proto *
- bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ cleanup:
+ 	test_ksyms_btf__destroy(skel);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
+index e04e31117f84..02d564349892 100644
+--- a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
++++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
+@@ -8,15 +8,41 @@
+ __u64 out__runqueues = -1;
+ __u64 out__bpf_prog_active = -1;
+ 
++__u32 out__rq_cpu = -1; /* percpu struct fields */
++int out__percpu_bpf_prog_active = -1; /* percpu int */
++
++__u32 out__this_rq_cpu = -1;
++int out__this_bpf_prog_active = -1;
++
+ extern const struct rq runqueues __ksym; /* struct type global var. */
+ extern const int bpf_prog_active __ksym; /* int type global var. */
+ 
+ SEC("raw_tp/sys_enter")
+ int handler(const void *ctx)
  {
-@@ -1248,6 +1260,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return prog->aux->sleepable ? &bpf_copy_from_user_proto : NULL;
- 	case BPF_FUNC_bpf_per_cpu_ptr:
- 		return &bpf_per_cpu_ptr_proto;
-+	case BPF_FUNC_bpf_this_cpu_ptr:
-+		return &bpf_this_cpu_ptr_proto;
- 	default:
- 		return NULL;
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index d0ec94d5bdbf..e7ca91c697ed 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3612,6 +3612,19 @@ union bpf_attr {
-  *             bpf_per_cpu_ptr() must check the returned value.
-  *     Return
-  *             A generic pointer pointing to the kernel percpu variable on *cpu*.
-+ *
-+ * void *bpf_this_cpu_ptr(const void *percpu_ptr)
-+ *	Description
-+ *		Take a pointer to a percpu ksym, *percpu_ptr*, and return a
-+ *		pointer to the percpu kernel variable on this cpu. See the
-+ *		description of 'ksym' in **bpf_per_cpu_ptr**\ ().
-+ *
-+ *		bpf_this_cpu_ptr() has the same semantic as this_cpu_ptr() in
-+ *		the kernel. Different from **bpf_per_cpu_ptr**\ (), it would
-+ *		never return NULL.
-+ *	Return
-+ *		A generic pointer pointing to the kernel percpu variable on
-+ *		this cpu.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3764,6 +3777,7 @@ union bpf_attr {
- 	FN(d_path),			\
- 	FN(copy_from_user),		\
- 	FN(bpf_per_cpu_ptr),            \
-+	FN(bpf_this_cpu_ptr),		\
- 	/* */
++	struct rq *rq;
++	int *active;
++	__u32 cpu;
++
+ 	out__runqueues = (__u64)&runqueues;
+ 	out__bpf_prog_active = (__u64)&bpf_prog_active;
  
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
++	cpu = bpf_get_smp_processor_id();
++
++	/* test bpf_per_cpu_ptr() */
++	rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, cpu);
++	if (rq)
++		out__rq_cpu = rq->cpu;
++	active = (int *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
++	if (active)
++		out__percpu_bpf_prog_active = *active;
++
++	/* test bpf_this_cpu_ptr */
++	rq = (struct rq *)bpf_this_cpu_ptr(&runqueues);
++	out__this_rq_cpu = rq->cpu;
++	active = (int *)bpf_this_cpu_ptr(&bpf_prog_active);
++	out__this_bpf_prog_active = *active;
++
+ 	return 0;
+ }
+ 
 -- 
 2.28.0.526.ge36021eeef-goog
 
