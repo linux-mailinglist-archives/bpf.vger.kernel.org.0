@@ -2,88 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900ED25D03F
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 06:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9841325D0E0
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 07:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgIDEQZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 00:16:25 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56010 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725765AbgIDEQZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Sep 2020 00:16:25 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0844DXEh027673
-        for <bpf@vger.kernel.org>; Thu, 3 Sep 2020 21:16:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=n3DyQ6hup2hgi3k95ilMSadcTvm3ef7F/g6ukHpZaoU=;
- b=ECHunJtm1CeHT+LMklmv+sEnQgdrgu9Zw3kemuKxe6w6yJaOUjk0+TmTHSncfHbMI+Gh
- OePuHjOSSgupJZKhiQhBa7eSmZPmirJOjJQ/8a0aEWHZTTv8WvHRujfv9S+fobDpXWI+
- WZllFIxaUusO25CKQUXiJyR4OGPljcOfxsI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33am8efr34-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 21:16:24 -0700
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 3 Sep 2020 21:16:23 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 0FFE82EC6841; Thu,  3 Sep 2020 21:16:17 -0700 (PDT)
-From:   Andrii Nakryiko <andriin@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH bpf-next 2/2] libbpf: fix potential multiplication overflow
-Date:   Thu, 3 Sep 2020 21:16:11 -0700
-Message-ID: <20200904041611.1695163-2-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200904041611.1695163-1-andriin@fb.com>
-References: <20200904041611.1695163-1-andriin@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-04_02:2020-09-03,2020-09-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=8 clxscore=1015 impostorscore=0 malwarescore=0 mlxscore=0
- priorityscore=1501 spamscore=0 mlxlogscore=851 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009040038
-X-FB-Internal: deliver
+        id S1725892AbgIDF3r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 01:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgIDF3p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 01:29:45 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F743C061244
+        for <bpf@vger.kernel.org>; Thu,  3 Sep 2020 22:29:44 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id c142so3981022pfb.7
+        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 22:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=DZrCBcZ3aaSiwYLooOTzBa4G69EEd+WhJ+tVZ0KSKxs=;
+        b=JxPvlTkFJete+7P5/twMYhhz/hl6I1BhIvJOsePYMTjOLLPck/2HZHtHKyQ7DCjh69
+         GySs2jUPovgeDUmiFbiH5yYfj7EAUbjKztBbnWACbOi7fcStZeIJHGaJIBwWK4w7fJbQ
+         +j1HKFnJTARY4LmsANzLhQhgEm+n+CjDQOd0G/IerVk330Y5fbBUZK6ARpH1tzSCpipr
+         m8y49w2JUOl0L6X7DhukMmRRhZN32k+DA/WtLHEBYAUI+FI0npd2wiatv/7xMR5m1dx1
+         za566RVEpVcu8tX/A8zjWadDtcCMTo+FQqEeUydXsTPEu0PYN32pGchdqmK6GJwlR7ho
+         7/5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=DZrCBcZ3aaSiwYLooOTzBa4G69EEd+WhJ+tVZ0KSKxs=;
+        b=CjSB1dbmwcRZl9ktHWAume/jJIRrxKh3cj5F9cluYANNDLzW87hCmgcsStpxYNgdKO
+         y+AbSTgWOZA8eXB7uRs678qLb5GNakO2bW2H6sOqdUvbBAo3/3QwLxcaExJgCrH6X1v4
+         2IMdl/DkLMkQX0/9z2sz+GrVQNP5UwWi8QIskY4gp69145F1WBEdgXatnuYGTzT6ULq3
+         KMbr60u0I9JC7pzyzG5UpgB/YTpe+UyztCInigCtaHUc7+8oVdNJ72ZXaQXMOUSJKTyT
+         qI24BWHGVYU7A0snQL5eRLcYCKmMv3L7lK94ZrTEPa3tlmpbsbIMTCpzBwXI2jS8WDPr
+         DQsQ==
+X-Gm-Message-State: AOAM5313xF7wj047g75HRi5xTAA7VUda1eVt7FRvTs+2gMju2xRCBO+8
+        QjuNXrMwXxmZSG+OnLyK0s0=
+X-Google-Smtp-Source: ABdhPJzTBPsWrvU6vVKpSObqhQyY39FWOH2Ubm2IYCIaRaeesnkGJ853+SSJGexWAfL1EFsm/TWj3Q==
+X-Received: by 2002:a63:fc18:: with SMTP id j24mr5739417pgi.452.1599197384049;
+        Thu, 03 Sep 2020 22:29:44 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id o192sm1921085pfg.14.2020.09.03.22.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 22:29:43 -0700 (PDT)
+Date:   Thu, 03 Sep 2020 22:29:36 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Message-ID: <5f51d0c083804_3eceb2089f@john-XPS-13-9370.notmuch>
+In-Reply-To: <c26f372b-748e-2141-33bc-00d40c5e4205@fb.com>
+References: <20200825064608.2017878-1-yhs@fb.com>
+ <20200825064608.2017937-1-yhs@fb.com>
+ <CAEf4Bzb89dz_Sjy14LjQSDWrQ=TpSHAfgf=_Sa=bWUKGqJHCgQ@mail.gmail.com>
+ <465da51a-793e-5ea0-85dc-56ab4f36ae34@fb.com>
+ <5f4f2d24485ac_5f398208c@john-XPS-13-9370.notmuch>
+ <c26f372b-748e-2141-33bc-00d40c5e4205@fb.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: fix a verifier failure with xor
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Detected by LGTM static analyze in Github repo, fix potential multiplicat=
-ion
-overflow before result is casted to size_t.
+Yonghong Song wrote:
+> 
+> 
+> On 9/1/20 10:27 PM, John Fastabend wrote:
+> > Yonghong Song wrote:
+> >>
+> >>
+> >> On 9/1/20 1:07 PM, Andrii Nakryiko wrote:
+> >>> On Mon, Aug 24, 2020 at 11:47 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>>
+> >>>> bpf selftest test_progs/test_sk_assign failed with llvm 11 and llvm 12.
+> >>>> Compared to llvm 10, llvm 11 and 12 generates xor instruction which
+> >>>
+> >>> Does this mean that some perfectly working BPF programs will now fail
+> >>> to verify on older kernels, if compiled with llvm 11 or llvm 12? If
+> >>
+> >> Right.
+> >>
+> >>> yes, is there something that one can do to prevent Clang from using
+> >>> xor in such situations?
+> >>
+> >> The xor is generated by the combination of llvm simplifyCFG and
+> >> instrCombine phase.
+> > 
+> > Another option would be to move it out of the isAsCheapAsAMove on the
+> 
+> John, do you mean the following change?
+> 
+> diff --git a/llvm/lib/Target/BPF/BPFInstrInfo.td 
+> b/llvm/lib/Target/BPF/BPFInstrInfo.td
+> index 4298e2eaec04..7448a2499d40 100644
+> --- a/llvm/lib/Target/BPF/BPFInstrInfo.td
+> +++ b/llvm/lib/Target/BPF/BPFInstrInfo.td
+> @@ -293,9 +293,9 @@ let isAsCheapAsAMove = 1 in {
+>     defm AND : ALU<BPF_AND, "&=", and>;
+>     defm SLL : ALU<BPF_LSH, "<<=", shl>;
+>     defm SRL : ALU<BPF_RSH, ">>=", srl>;
+> -  defm XOR : ALU<BPF_XOR, "^=", xor>;
+>     defm SRA : ALU<BPF_ARSH, "s>>=", sra>;
+>   }
+> +  defm XOR : ALU<BPF_XOR, "^=", xor>;
+>     defm MUL : ALU<BPF_MUL, "*=", mul>;
+>     defm DIV : ALU<BPF_DIV, "/=", udiv>;
+>   }
+> 
+> Tried the above change with latest trunk. xor still generated :-(
+> I did not trace down to exact llvm optimization location for this
+> particular optimization instance.
 
-Fixes: 8505e8709b5e ("libbpf: Implement generalized .BTF.ext func/line in=
-fo adjustment")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Agh I assumed that would work. I might have some time to mess
+around with it tomorrow. Now I'm just curious why that is being
+generated.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 53be32a2b9fc..550950eb1860 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5802,7 +5802,7 @@ static int adjust_prog_btf_ext_info(const struct bp=
-f_object *obj,
- 		/* append func/line info of a given (sub-)program to the main
- 		 * program func/line info
- 		 */
--		old_sz =3D (*prog_rec_cnt) * ext_info->rec_size;
-+		old_sz =3D (size_t)(*prog_rec_cnt) * ext_info->rec_size;
- 		new_sz =3D old_sz + (copy_end - copy_start);
- 		new_prog_info =3D realloc(*prog_info, new_sz);
- 		if (!new_prog_info)
---=20
-2.24.1
-
+Thanks for trying!
