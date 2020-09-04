@@ -2,161 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46DC25CEA4
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 02:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B12125CEC5
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 02:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgIDADY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 20:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S1728015AbgIDAbr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 20:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgIDADX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 20:03:23 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B4AC061244;
-        Thu,  3 Sep 2020 17:03:22 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mm21so2328790pjb.4;
-        Thu, 03 Sep 2020 17:03:22 -0700 (PDT)
+        with ESMTP id S1726397AbgIDAbq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 20:31:46 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4649BC061244;
+        Thu,  3 Sep 2020 17:31:46 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 7so3403554pgm.11;
+        Thu, 03 Sep 2020 17:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Cj3+cdRjrtuvAOlnzoorb+VXke8olHrY8VsdlX1pr7Q=;
-        b=vBVFoYncSg1VNMXbjAmP480Fgjk2zYZEEUFIiJE+I92q2KGmVI+plyP1qtuJBQ8bVz
-         +/G1Ub3CsFWTdtpHL/Qtq7z2IL30gbLQjJNymEK26JOBS7if53okL2wvnEypnLeRoqWv
-         +mbEqulIjcUVLt4xSTF6u5DfuJCd5fSD7CvY2uz4BLtKBh6yV2n4Pkod7d26/hl+CTj6
-         xM6T60S8ovsCbEwoLEyewq53ujSHeGyJVhkAiCZKqy2cOchiamEKpe3npZgWA9buAApH
-         CJM40Fr7gErNcWLuXxLTpxGE3CEMW3z85Ll6ZWRrbFq1FMBDJdK/LWoZ1hEF+qY3UY+w
-         eDvA==
+        bh=Da/UPlvuCfPrmcDHalSMb8ED2kNEjjHNWBwxpRFuaZA=;
+        b=fznu/Vzjd08LMHqFp9CP5OhKqFdzklkincPmrI8jSbzdV+oiNRZj/Xgwjr8XHO7Ifg
+         kOn+G4fWLHWHHrMb3M51vNztvOr4Z/VsAaG2gLnnJjpME74eXvcP9w1YP+dvfFPiA/wn
+         6xTTHW9OgOnUOH9VlLOKVGrSvF5+sOtndrik+Wxer5FzVCdRGWNSfQHUxKjTxY1Y+53B
+         dafeFVNNRdn7f069S6gRkYya9HdXHQ9rMoeuumug7P5TwLOtcOl/y04e/F41GUTQI8ls
+         8LFqSqeSvToRiK3R3niCdZ0ERkCrzOfiqfwTzF4gZz0P80gD29C3uIlTshqDmJ0+Ha8w
+         BBbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Cj3+cdRjrtuvAOlnzoorb+VXke8olHrY8VsdlX1pr7Q=;
-        b=CFXR00NDc/slJrRSFnfraetNkFGS5aDf/Osogfvf5kPW1gy5ipJEeM0UQG36Dw7geR
-         lpZXh5LnaU9wQb4g/KvXoef/EJjdJ6+FSg5p2iZnzt3JBEdbZO0wr8kDoVCn5UOd1g5S
-         3F864lpq2Mh4Zig1Qj914CT0OaYpCgT/KLMPQMVwMmJ1jnjArY3WEt2wziO7q5qIgriV
-         aJOue6QiabY08hy2Z+KO9KVQN8NSrX2SB0FL5gn/OhY7YIuXiIDCZjie4A3eo9RPsAuv
-         DKmtJPwfCiwHmmpBVzQXuLUmmYcD4DN3BbWKexqI05ugb13oFeTQYVn30XlzxIVaeAA0
-         0pRw==
-X-Gm-Message-State: AOAM53007vtVe/HP7U0Z3vloJ/opCIsO567zpged0a+EDiKCgYd29Wp+
-        6ABayzft8wH1VVGYdiyHJDE=
-X-Google-Smtp-Source: ABdhPJy3XQhU/TIvlOj0y9muYNElxYKFRvQBDX4sMCq2XL0k+r/7CQ9Jf58zUomrXciFa1vF50tW7g==
-X-Received: by 2002:a17:90b:715:: with SMTP id s21mr5267731pjz.113.1599177801607;
-        Thu, 03 Sep 2020 17:03:21 -0700 (PDT)
+        bh=Da/UPlvuCfPrmcDHalSMb8ED2kNEjjHNWBwxpRFuaZA=;
+        b=nKjtXliugh5T5lSaxbSuEMZ1L1603Ws6soAS1cW9/P/I7rk2R6TdPr54hk2gHf5r9F
+         t/sv1z/qmviBx9yVDzvejMVMdm+4F4UhmSwTtZzuZcNj5Y+0Ze4yGRMQMPdnPnqgUwEz
+         nJaa9r4A1emGJwIo/mYkj9F4IpSyMflZ0UTap/0sjBwaWgJZXGtgAOiaQOw2ZsHPrXQN
+         qbK/AIIp62qS/ZyS6ZfTv5mtZpYHS7QHcWNO75y5iK5jBd2mCi2W9D+nc1CfF5z6dRPE
+         yfE0rZKtgO8N+lnnLRsEiXX6f5OnsxxVOnTp1aFF4Lg+cm9t1mloq11TWJCNThdochcI
+         jAbA==
+X-Gm-Message-State: AOAM5305H6CqWTTj52LAjQTf6TaNeYfj81ECIZk7i2xqp099C5phaXf8
+        3v+ta7Yp1muM0MoSo0vMgl4=
+X-Google-Smtp-Source: ABdhPJyFTEHUJD1b0NpYag0PQZOvuTt7didHkNmczFNjTEPNSCfTwtkgJEQkxMX/67OsaTzfFleN2g==
+X-Received: by 2002:a63:5b42:: with SMTP id l2mr4959386pgm.197.1599179505746;
+        Thu, 03 Sep 2020 17:31:45 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8159])
-        by smtp.gmail.com with ESMTPSA id x4sm4368098pfm.86.2020.09.03.17.03.19
+        by smtp.gmail.com with ESMTPSA id m20sm4438025pfa.115.2020.09.03.17.31.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 17:03:20 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 17:03:18 -0700
+        Thu, 03 Sep 2020 17:31:44 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 17:31:42 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf 1/2] bpf: do not use bucket_lock for hashmap iterator
-Message-ID: <20200904000318.2fvn22kwfpsoq7kd@ast-mbp.dhcp.thefacebook.com>
-References: <20200902235340.2001300-1-yhs@fb.com>
- <20200902235340.2001375-1-yhs@fb.com>
- <CAEf4BzaBxaPyWXOWOVRWCXcLW40FOFWkG7gUPSktGwS07duQVA@mail.gmail.com>
- <f93015c5-5fed-4775-93c3-6b85a8e7c0da@fb.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 00/14] Add libbpf full support for BPF-to-BPF
+ calls
+Message-ID: <20200904003142.krb4b2jzfqovev5o@ast-mbp.dhcp.thefacebook.com>
+References: <20200903203542.15944-1-andriin@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f93015c5-5fed-4775-93c3-6b85a8e7c0da@fb.com>
+In-Reply-To: <20200903203542.15944-1-andriin@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 07:44:34PM -0700, Yonghong Song wrote:
+On Thu, Sep 03, 2020 at 01:35:28PM -0700, Andrii Nakryiko wrote:
 > 
+> This patch set removes all such restrictions and adds complete support for
+> using BPF sub-program calls on BPF side. This is achieved through libbpf
+> tracking subprograms individually and detecting which subprograms are used by
+> any given entry-point BPF program, and subsequently only appending and
+> relocating code for just those used subprograms.
 > 
-> On 9/2/20 6:25 PM, Andrii Nakryiko wrote:
-> > On Wed, Sep 2, 2020 at 4:56 PM Yonghong Song <yhs@fb.com> wrote:
-> > > 
-> > > Currently, for hashmap, the bpf iterator will grab a bucket lock, a
-> > > spinlock, before traversing the elements in the bucket. This can ensure
-> > > all bpf visted elements are valid. But this mechanism may cause
-> > > deadlock if update/deletion happens to the same bucket of the
-> > > visited map in the program. For example, if we added bpf_map_update_elem()
-> > > call to the same visited element in selftests bpf_iter_bpf_hash_map.c,
-> > > we will have the following deadlock:
-> > > 
-> > 
-> > [...]
-> > 
-> > > 
-> > > Compared to old bucket_lock mechanism, if concurrent updata/delete happens,
-> > > we may visit stale elements, miss some elements, or repeat some elements.
-> > > I think this is a reasonable compromise. For users wanting to avoid
-> > 
-> > I agree, the only reliable way to iterate map without duplicates and
-> > missed elements is to not update that map during iteration (unless we
-> > start supporting point-in-time snapshots, which is a very different
-> > matter).
-> > 
-> > 
-> > > stale, missing/repeated accesses, bpf_map batch access syscall interface
-> > > can be used.
-> > > 
-> > > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > > ---
-> > >   kernel/bpf/hashtab.c | 15 ++++-----------
-> > >   1 file changed, 4 insertions(+), 11 deletions(-)
-> > > 
-> > > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> > > index 78dfff6a501b..7df28a45c66b 100644
-> > > --- a/kernel/bpf/hashtab.c
-> > > +++ b/kernel/bpf/hashtab.c
-> > > @@ -1622,7 +1622,6 @@ struct bpf_iter_seq_hash_map_info {
-> > >          struct bpf_map *map;
-> > >          struct bpf_htab *htab;
-> > >          void *percpu_value_buf; // non-zero means percpu hash
-> > > -       unsigned long flags;
-> > >          u32 bucket_id;
-> > >          u32 skip_elems;
-> > >   };
-> > > @@ -1632,7 +1631,6 @@ bpf_hash_map_seq_find_next(struct bpf_iter_seq_hash_map_info *info,
-> > >                             struct htab_elem *prev_elem)
-> > >   {
-> > >          const struct bpf_htab *htab = info->htab;
-> > > -       unsigned long flags = info->flags;
-> > >          u32 skip_elems = info->skip_elems;
-> > >          u32 bucket_id = info->bucket_id;
-> > >          struct hlist_nulls_head *head;
-> > > @@ -1656,19 +1654,18 @@ bpf_hash_map_seq_find_next(struct bpf_iter_seq_hash_map_info *info,
-> > > 
-> > >                  /* not found, unlock and go to the next bucket */
-> > >                  b = &htab->buckets[bucket_id++];
-> > > -               htab_unlock_bucket(htab, b, flags);
-> > > +               rcu_read_unlock();
-> > 
-> > Just double checking as I don't yet completely understand all the
-> > sleepable BPF implications. If the map is used from a sleepable BPF
-> > program, we are still ok doing just rcu_read_lock/rcu_read_unlock when
-> > accessing BPF map elements, right? No need for extra
-> > rcu_read_lock_trace/rcu_read_unlock_trace?
-> I think it is fine now since currently bpf_iter program cannot be sleepable
-> and the current sleepable program framework already allows the following
-> scenario.
->   - map1 is a preallocated hashmap shared by two programs,
->     prog1_nosleep and prog2_sleepable
-> 
-> ...				  ...
-> rcu_read_lock()			  rcu_read_lock_trace()
-> run prog1_nosleep                 run prog2_sleepable
->   lookup/update/delete map1 elem    lookup/update/delete map1 elem
-> rcu_read_unlock()		  rcu_read_unlock_trace()
-> ...				  ...
+> In addition, libbpf now also supports multiple entry-point BPF programs within
+> the same ELF section. This allows to structure code so that there are few
+> variants of BPF programs of the same type and attaching to the same target
+> (e.g., for tracepoints and kprobes) without the need to worry about ELF
+> section name clashes.
 
-rcu_trace doesn't protect the map. It protects the program. Even for
-prog2_sleepable the map is protected by rcu. The whole map including all
-elements will be freed after both sleepable and non-sleepable progs stop
-executing. This rcu_read_lock is needed for non-preallocated hash maps where
-individual elements are rcu protected. See free_htab_elem() doing call_rcu().
-When the combination of sleepable progs and non-prealloc hashmap is enabled
-we would need to revisit this iterator assumption.
+Applied. Thanks
