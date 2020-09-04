@@ -2,94 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FB125E0C3
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 19:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D76925E117
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 19:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgIDRaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 13:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726842AbgIDR37 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:29:59 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71316C061244;
-        Fri,  4 Sep 2020 10:29:59 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g128so7880944iof.11;
-        Fri, 04 Sep 2020 10:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iup/BPBU3NZvrPiN2q7hG6ObvdkJkFEtj83NMUIZ1KY=;
-        b=cx1YgDod4rlnCOWPokMbDrqgPNNXfF4RFsY4J24ShFyXyP15fGTYlzrgebtUR9i1qp
-         6T+Qd2yNsBkyETU02VdDXMOJvg4JKkPPTvbTwkMh7g4ttA0CZ0oTrOms0rp5Suvv2hkJ
-         o/Hjuk4phd23HJkGxlFOuDV4sdWzo5BHrfSebz4mZScVqEnROpgkgwsM2JkPY3Urp1PM
-         GJRXa7AtgIJKnnYlakaVajTT7ZONAocnWgzQ0+aF7vaOtNemDnZamR7eRUf1a8lxVVfr
-         Y/iRbX8CvkuJPvuDQHQQcQv4HaYnYGSH/bURHI1rTFONa1+HQE2+YyYjK2BzXPNRWnk0
-         Wt6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iup/BPBU3NZvrPiN2q7hG6ObvdkJkFEtj83NMUIZ1KY=;
-        b=jH8QSMHaKm89UgN9aUSxIqCeq0Jf8ZKPOmn3lyl4tuTzmvoeE5Uye+uL+MgxVE0c15
-         /eMT69tPIZVPAaReWKORsfrDvA26xLtpvaRoyGn21i7zlQIgJYqurwc2f/RUwO7avOpB
-         6Je6tN+IVIOoyVwcpGvCMVEboi+M7iZxaUOEUEAXwbyT/Nlo/OH3Na+8o0uG2H3P7v7y
-         4U1ui4bPlGm0B0W+7kmG8i6Qvnrm8lWPsraZljOp8e+1F7PHLV63ykH2ou5oZgByfDcS
-         B+uuxjYR7xatPw9BT2WIjQWI3B1cGXQyjoMTlCdb10005mizqcDQfsPDk4XXXrbn+ArG
-         P60Q==
-X-Gm-Message-State: AOAM5325ravfuXFxTRMjh22yv2sKqRJC10+0VBJzbMjb8VhN6dDpdsjp
-        917fQulocguM6YuJMQrpDKe5ZLloC99p9Dsf
-X-Google-Smtp-Source: ABdhPJzKEGTy0s+XClH8eBd580NUxzaUtvIhCksv0P9Mq6vYEIXPLYR9c9eA7SNTVNW8HoUddRifXg==
-X-Received: by 2002:a6b:e718:: with SMTP id b24mr8734820ioh.9.1599240598271;
-        Fri, 04 Sep 2020 10:29:58 -0700 (PDT)
-Received: from leah-Ubuntu ([2601:4c3:200:c230:e82f:35f2:cc6c:cdf5])
-        by smtp.gmail.com with ESMTPSA id d22sm390633ios.47.2020.09.04.10.29.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 04 Sep 2020 10:29:57 -0700 (PDT)
-Date:   Fri, 4 Sep 2020 13:29:55 -0400
-From:   Leah Rumancik <leah.rumancik@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf@vger.kernel.org, linux-block@vger.kernel.org,
-        orbekk@google.com, harshads@google.com, jasiu@google.com,
-        saranyamohan@google.com, tytso@google.com, bvanassche@google.com
-Subject: Re: [RFC PATCH 1/4] bpf: add new prog_type BPF_PROG_TYPE_IO_FILTER
-Message-ID: <20200904172954.GC2048@leah-Ubuntu>
-References: <20200812163305.545447-1-leah.rumancik@gmail.com>
- <20200812163305.545447-2-leah.rumancik@gmail.com>
- <87mu2sru7d.fsf@cloudflare.com>
+        id S1728001AbgIDRlS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 13:41:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727938AbgIDRlJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Sep 2020 13:41:09 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 084HVuD9192302;
+        Fri, 4 Sep 2020 13:40:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=XB3w9mxehQVk5XKAaxbFKucOSd20Lrz7GGvyrKY3C/Q=;
+ b=BVz84S5OtfvUmTy00F81ZOVG1teFbAtp2yrvzjv1cg8mGz7tk1wXFiXWuL1DD9y10K21
+ 4LU3To8shAJJsxCJ5ZKuMDukDr1nRHTZQ7uKoRBhoefI05f44rhN3uwdowc6jh2Fpb0T
+ 8aIbIMhW2+mhFYTcT4+5AVhTo2F+ti20vMBZa3cINZOPnkEjsjMxogz4w4YbIQ5Ges3q
+ MY/jOb7xbLcSI13V8FSRhLIobKbne29Ny5kfcvaq+tMI/lRdVe6vvelqpOWcvDoh+rC9
+ b8t2qTeAJQkimhhl+ZvKYPFsv6Ff3+gM0iOJ2YKpmNUJxHQFRYYM58VOqdHD8cC0eofm 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33bsb7sc8v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 13:40:40 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 084HVvLa192554;
+        Fri, 4 Sep 2020 13:40:39 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33bsb7sc7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 13:40:39 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 084HcAxp012905;
+        Fri, 4 Sep 2020 17:40:37 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 337en874e1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 17:40:37 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 084Hd3n5393936
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Sep 2020 17:39:03 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C01911C058;
+        Fri,  4 Sep 2020 17:40:35 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EBBB911C052;
+        Fri,  4 Sep 2020 17:40:34 +0000 (GMT)
+Received: from sig-9-145-16-19.uk.ibm.com (unknown [9.145.16.19])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Sep 2020 17:40:34 +0000 (GMT)
+Message-ID: <17838beb91c983ae586bea035475e787fb095a56.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC] bpf: update current instruction on patching
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        bpf@vger.kernel.org
+Cc:     jolsa@redhat.com, Jakub Kicinski <kuba@kernel.org>
+Date:   Fri, 04 Sep 2020 19:40:34 +0200
+In-Reply-To: <a38c5d977acb6c036bfeddfc6784a0fe58c29b80.camel@linux.ibm.com>
+References: <20200903140542.156624-1-yauheni.kaliuta@redhat.com>
+         <1ac6aef1-b38c-06c7-6e0d-b8459207d7d9@iogearbox.net>
+         <a38c5d977acb6c036bfeddfc6784a0fe58c29b80.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mu2sru7d.fsf@cloudflare.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-04_11:2020-09-04,2020-09-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 suspectscore=3 spamscore=0 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 impostorscore=0 bulkscore=0 adultscore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009040147
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 18, 2020 at 02:53:42PM +0200, Jakub Sitnicki wrote:
-> On Wed, Aug 12, 2020 at 06:33 PM CEST, Leah Rumancik wrote:
-> > +int io_filter_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > +{
-> > +	struct gendisk *disk;
-> > +	struct fd f;
-> > +	struct bpf_prog_array *old_array;
-> > +	struct bpf_prog_array *new_array;
-> > +	int ret;
-> > +
-> > +	if (attr->attach_flags)
-> > +		return -EINVAL;
-> > +
-> > +	f = fdget(attr->target_fd);
->             ^^^^^
+On Fri, 2020-09-04 at 17:17 +0200, Ilya Leoshkevich wrote:
+> On Thu, 2020-09-03 at 17:10 +0200, Daniel Borkmann wrote:
+> > On 9/3/20 4:05 PM, Yauheni Kaliuta wrote:
+> > > On code patching it may require to update branch destinations if
+> > > the
+> > > code size changed. bpf_adj_delta_to_imm/off increments offset
+> > > only
+> > > if the patched area is after the branch instruction. But it's
+> > > possible, that the patched area itself is a branch instruction
+> > > and
+> > > requires destination update.
+> > 
+> > Could you provide a concrete example and walk us through? I'm
+> > probably
+> > missing something but if the patchlet contains a branch
+> > instruction,
+> > then
+> > it should be 'self-contained'. In the sense that the patchlet is a
+> > 'black
+> > box' that replaces 1 insns with n insns but there is no awareness
+> > what's
+> > inside these insns and hence no fixup for that inside
+> > bpf_patch_insn_data().
+> > So, if we take an existing branch insns from the code, move it into
+> > the
+> > patchlet and extend beginning or end, then it feels more like a bug
+> > to the
+> > one that called bpf_patch_insn_data(), aka zext code here. Bit
+> > puzzled why
+> > this is only seen now, my impression was that Ilya was running
+> > s390x
+> > the
+> > BPF selftests quite recently?
+> > 
+> > > The problem was triggered by bpf selftest
+> > > 
+> > > test_progs -t global_funcs
+> > > 
+> > > on s390, where the very first "call" instruction is patched from
+> > > verifier.c:opt_subreg_zext_lo32_rnd_hi32() with zext_patch.
+> > > 
+> > > The patch includes current instruction to the condition check.
+> > > 
+> > > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> > > ---
+> > >   kernel/bpf/core.c | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > > index ed0b3578867c..b0a9a22491a5 100644
+> > > --- a/kernel/bpf/core.c
+> > > +++ b/kernel/bpf/core.c
+> > > @@ -340,7 +340,7 @@ static int bpf_adj_delta_to_imm(struct
+> > > bpf_insn
+> > > *insn, u32 pos, s32 end_old,
+> > >   	s32 delta = end_new - end_old;
+> > >   	s64 imm = insn->imm;
+> > >   
+> > > -	if (curr < pos && curr + imm + 1 >= end_old)
+> > > +	if (curr <= pos && curr + imm + 1 >= end_old)
+> > >   		imm += delta;
+> > >   	else if (curr >= end_new && curr + imm + 1 < end_new)
+> > >   		imm -= delta;
+> > > @@ -358,7 +358,7 @@ static int bpf_adj_delta_to_off(struct
+> > > bpf_insn
+> > > *insn, u32 pos, s32 end_old,
+> > >   	s32 delta = end_new - end_old;
+> > >   	s32 off = insn->off;
+> > >   
+> > > -	if (curr < pos && curr + off + 1 >= end_old)
+> > > +	if (curr <= pos && curr + off + 1 >= end_old)
+> > >   		off += delta;
+> > >   	else if (curr >= end_new && curr + off + 1 < end_new)
+> > >   		off -= delta;
+> > > 
 > 
-> Missing corresponding fdput?
+> Hi!
 > 
-> As per Martin's suggestion, with bpf_link this will become the
-> link_create callback, but the comment still stands.
+> Last time I ran selftests against bpf-next ~1 month ago, and I don't
+> remember seeing any test_progs failures. Now I tried it again, and I
+> see the same problem as Yauheni. So this must be relatively new -
+> I'll
+> try to bisect the commit that caused this.
 
-Yep, will add.
+Turns out it has been failing for quite some time. I stopped at
 
-Thanks,
-Leah
+commit 23ad04669f81f958e9a4121b0266228d2eb3c357 (HEAD)
+Author: Matteo Croce <mcroce@redhat.com>
+Date:   Mon May 11 13:32:34 2020 +0200
+
+    samples: bpf: Fix build error
+
+because I can't build earlier commits on my new Debian 10 VM due to
+linker errors. The asm in the failing test is quite simple, so it's
+unlikely that LLVM ouput has changed in the meantime. So I must have
+simply missed it. Sorry!
+
+I'll double check whether there have been more unnoticed failures.
+
