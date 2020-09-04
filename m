@@ -2,79 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CA225D288
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 09:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F1025D2A3
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 09:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgIDHkc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 03:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgIDHkc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:40:32 -0400
-Received: from localhost (unknown [151.66.86.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F5EA206A5;
-        Fri,  4 Sep 2020 07:40:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599205232;
-        bh=FOdk5hsqjXFV4tIITIMVatNZ+qAboAjUq6pSlLuEdI4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=epUNS6oA40LG8MYE5KHRci0weVfPq0ZSbyu9tL1SbU4kMYYnf5CMg4YxyMOanAq9l
-         0dA8LkUjVKsFgLQswqtkBtmnEsDZHlb94PkUiFSkyff+99b3PO1fw+stEzuNOQOkIm
-         IKubT6w3j5gNsUcxuQKU7p5CqcqsrFAtPvo3d9pc=
-Date:   Fri, 4 Sep 2020 09:40:27 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org,
-        john.fastabend@gmail.com, daniel@iogearbox.net, ast@kernel.org,
-        shayagr@amazon.com
-Subject: Re: [PATCH v2 net-next 0/9] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <20200904074027.GB2884@lore-desk>
-References: <cover.1599165031.git.lorenzo@kernel.org>
- <20200904010803.nt2jfuhrbqe5cj53@ast-mbp.dhcp.thefacebook.com>
+        id S1726415AbgIDHrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 03:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgIDHrL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 03:47:11 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B873C061244
+        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 00:47:11 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id u25so5107082otq.6
+        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 00:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0zpfaJWG5oeZQZBCxHY1rq0z3vspDy/xX0EDumGZq3E=;
+        b=PnXY0UEnTXs32JDyqeBntouti0hnAv5xdUHVM3H1czXmF6cfit4L/L8syLoL6jx78Y
+         hHyzPLGoKtgX2f2D5emv5x2EGRibYs270l38g+FmgCu/OJf5IK+cMl7q5F+uE15gwg7W
+         /19Da0J3GqYBq2pw7fCnmcMpOnusYyj2S9nbc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0zpfaJWG5oeZQZBCxHY1rq0z3vspDy/xX0EDumGZq3E=;
+        b=VB+fwpenvL6gfoF34ghC/sLqWz71k7GfMUaFGTpaO6okDIZwpMsPYQGpdzNqX7JJjJ
+         zvbDIqh4eKuHE0Jf8dWiRg/4tWwuyvLYUhlSdCJK5uv+gMtLC1mN+QSm7Hc05PeIsnNy
+         e0f8tSSMrIfwlFnqdnAUYjKOZi33I2RYUCji1LO5f+0hFY+fylbP7liN1TREWbYrxSkM
+         hV0NXYIk1SUg/nNZvRJsQ1YDbwUFSeyP21FvDNMPoq3Qu1D+GLmmMbIxmbATM+H6zJBY
+         mgyZA3Mmd/i9rJxvKBCOBgd9UIbOhOrxOgCqNk1bpqdKv/KNavmceFRAJJyz1p0jdDB2
+         FdWA==
+X-Gm-Message-State: AOAM531a8YHVRFj1TtuI3g0nugjl/KrWP5+KTAy5Co4FqGxNW/i3NGvp
+        nzFGIZ2jFJaqkOyX3dFqx65sEuOAX051B4+kA2j57A==
+X-Google-Smtp-Source: ABdhPJwY4ju0ap4JF1L76VlKVRIwupIyvGIQR29l3jAhT5DfC23KgDOVWFFEkdSlDpWruaQaUvJYVrkRrrv+W2EJUn0=
+X-Received: by 2002:a9d:2f23:: with SMTP id h32mr4722178otb.334.1599205630815;
+ Fri, 04 Sep 2020 00:47:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TRYliJ5NKNqkz5bu"
-Content-Disposition: inline
-In-Reply-To: <20200904010803.nt2jfuhrbqe5cj53@ast-mbp.dhcp.thefacebook.com>
+References: <20200901103210.54607-1-lmb@cloudflare.com> <20200903200810.lyxorvv2ocg2ibr2@kafai-mbp>
+In-Reply-To: <20200903200810.lyxorvv2ocg2ibr2@kafai-mbp>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 4 Sep 2020 08:46:59 +0100
+Message-ID: <CACAyw99qSjiqfpydAB2neBUwWRN_NzRniqxdKF6PHjenm_8Rag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/4] Sockmap iterator
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 3 Sep 2020 at 21:08, Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Sep 01, 2020 at 11:32:06AM +0100, Lorenz Bauer wrote:
+> > * Can we teach the verifier that PTR_TO_BTF_ID can be the same as PTR_TO_SOCKET?
+> I am working on a patch to teach the verifier to allow PTR_TO_SOCK* being used
+> in the bpf_skc_to_*_sock() helper.
+>
+> The use case is, for example, use bpf_skc_to_tcp_sock() to cast the
+> tc's __sk_buff->sk to a kernel "struct tcp_sock" (PTR_TO_BTF_ID) such
+> that the bpf prog won't be limited by the fields in "struct bpf_tcp_sock"
+> if the user has perfmon cap.   Thus, in general, should be doable.
+> Hopefully I have something sharable next week.
 
---TRYliJ5NKNqkz5bu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's great! I got carried away with refactoring check_func_arg with
+the same goal, it'll be interesting to see what you've come up with.
+I've decided to make a smaller change for the sake of landing this
+series, and then I'll follow up with my refactoring. Hopefully we
+won't be stepping on each others toes too much.
 
-> On Thu, Sep 03, 2020 at 10:58:44PM +0200, Lorenzo Bianconi wrote:
-> > For the moment we have not implemented any self-test for the introduced=
- the bpf
-> > helpers. We can address this in a follow up series if the proposed appr=
-oach
-> > is accepted.
->=20
-> selftest has to be part of the same patch set.
+>
+> For the sockmap iter  (which is tracing), I think it is better
+> to begin with PTR_TO_BTF_ID_OR_NULL such that the bpf iter prog
+> can access the tcp_sock (or udp_sock) without another casting or
+> bpf_probe_read_kernel().
 
-sure, I will add it in v3.
+Yes, that's what I'm going with as well.
 
-Regards,
-Lorenzo
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
---TRYliJ5NKNqkz5bu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX1HvaAAKCRA6cBh0uS2t
-rFILAPwO/r9LUFhyFy0pHYimeFVKGVwlVkQ69OqvwRCNHDUnmAEAvSAx7Y0JRWnW
-vgvCAZiB2kRrJ2P8iBJl6YFIhM0Tlgc=
-=1rYw
------END PGP SIGNATURE-----
-
---TRYliJ5NKNqkz5bu--
+www.cloudflare.com
