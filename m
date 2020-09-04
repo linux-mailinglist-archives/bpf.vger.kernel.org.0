@@ -2,92 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E36B25DDEE
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAA225DDF1
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbgIDPjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 11:39:25 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47125 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgIDPjX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:39:23 -0400
-IronPort-SDR: J540pS9ZcsTnRpga7v/0KLOqjrr+8AKqS2QONwvy7r12gluoQv6yKo192yHEGtyI6SxHQGtvrG
- L9HZPF2oSbTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9734"; a="155163339"
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
-   d="scan'208";a="155163339"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 08:39:21 -0700
-IronPort-SDR: t7x+QaKHtSufFhQd3YkwT+8LxVHUo4SRfHkBSEypptvX6xzHyNfDK00MbUn0O5gqnyu9g8uG07
- CO0nJxWRQUrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,390,1592895600"; 
-   d="scan'208";a="332198951"
-Received: from andreyfe-mobl2.ccr.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.37.82])
-  by orsmga008.jf.intel.com with ESMTP; 04 Sep 2020 08:39:18 -0700
-Subject: Re: [PATCH bpf-next 3/6] xsk: introduce xsk_do_redirect_rx_full()
- helper
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, magnus.karlsson@intel.com,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, intel-wired-lan@lists.osuosl.org
-References: <20200904135332.60259-1-bjorn.topel@gmail.com>
- <20200904135332.60259-4-bjorn.topel@gmail.com>
- <20200904171143.5868999a@carbon>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <dfa75afc-ceb7-76ce-6ba3-3b89c53f92f3@intel.com>
-Date:   Fri, 4 Sep 2020 17:39:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726092AbgIDPkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 11:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgIDPkR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 11:40:17 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35168C061244
+        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 08:40:17 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id e17so6487818wme.0
+        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 08:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=UepLnAGm5bpwluzF27iv5ycWf6F3L6iDFJ3ntJ9ckZg=;
+        b=jSPhItzH6eO3u/bMnEUH4xaq9AJJQ6o+lNBN59ZfglzixygO7mU4VVuLyE3D0dDuAq
+         TbJrs5fgZ/m/f/stUao8puIG6GCwidql8MqK+8rFbC5bO1b+F3AmXWw7teBa1bUUGxaL
+         fxwBMtBxeKPkFCEl7FukzhH4z9lxm8vtgFp7GtCQQAr6UJ1mJ7kuisOojJGNHxAcFvDd
+         TJc5red2dosvE6ZKsaJfkT+JeO45WzV8O4apR4v7b62k4Rt0D8ZQpCmEFdS2Efst6w/K
+         MBgRjZ18nGnX0s9CrEPyj6MDEeaN6yXFsCTxDOcJ11GrU5a4GU5kE5mh40panD0jXzX5
+         X6iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=UepLnAGm5bpwluzF27iv5ycWf6F3L6iDFJ3ntJ9ckZg=;
+        b=AKrw0Np4yJT5SpW7XsBTDmnNipc4e1LWF4r9g7+wnLz9xHCYAYvJFwatdBchMaZUvZ
+         0YIXCQpClBErXY4lNU1l1McdaWooBPZiDnHGCnqFnS4pUXTRfPUIN+DHw0U3suEDNC+C
+         z8r1GSIkbdlyMc2Tb0gLsFQTFnPZTV4XFiIMNEMZ3nKIgMVD/DqoBYaepNp2s/ZN2g/i
+         8Z5rrQtQ6KHUbFgJzEGBnGy3PfYKZO5/yZYzDdZT6B0fK9penRVwOzUIHWZ1EQBXPVG2
+         pC/M/hktKpcgV/9E1SB6DIsQTZ9xPnSX2otv6HMDs4f0PK8EBJ8HiDi3ZcrmPAslViY7
+         x6FA==
+X-Gm-Message-State: AOAM531dmqDSBmF6ObEcpD8Y5agZv65htOP2IMFq06Rb3KhAaVO1bS8q
+        YMmDXV+D09v/gutB6h3wltqhpcndwe/ojmjWUVfw1GsIttWLgCME
+X-Google-Smtp-Source: ABdhPJyOHGWdYHjjqz9taAXAaSUcXyhVQZWHBugoOMThXpF6W61e7ex+bOl9+1PKDtu/pFpLGyURNTEEWbGpAiZfChQ=
+X-Received: by 2002:a1c:28d5:: with SMTP id o204mr8635570wmo.104.1599234015016;
+ Fri, 04 Sep 2020 08:40:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200904171143.5868999a@carbon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Fri, 4 Sep 2020 11:40:03 -0400
+Message-ID: <CAOWid-e1m_S7_o35tDis1KMZcwaDPbCH8WTKrZG7_4QZsHS9XQ@mail.gmail.com>
+Subject: BTF for kernel module, and other general questions
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-09-04 17:11, Jesper Dangaard Brouer wrote:
-> On Fri,  4 Sep 2020 15:53:28 +0200 Björn Töpel
-> <bjorn.topel@gmail.com> wrote:
-> 
->> From: Björn Töpel <bjorn.topel@intel.com>
->> 
->> The xsk_do_redirect_rx_full() helper can be used to check if a
->> failure of xdp_do_redirect() was due to the AF_XDP socket had a
->> full Rx ring.
-> 
-> This is very AF_XDP specific.  I think that the cpumap could likely 
-> benefit from similar approach? e.g. if the cpumap kthread is
-> scheduled on the same CPU.
-> 
+Hi,
 
-At least I thought this was *very* AF_XDP specific, since the kernel is
-dependent of that userland runs. Allocation (source) and Rx ring (sink).
-Maybe I was wrong! :-)
+I have been reading this
+https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-portability-and-co-re.html
+and understand that btf is generated with CONFIG_DEBUG_INFO_BTF=y and
+is made available at /sys/kernel/btf/vmlinux.  Is it possible to have
+similar functionality for kernel modules?  For example, is it possible
+to generate BTF for the XFS kernel module and have it made available
+at /sys/kernel/btf/xfs ?
 
-The thing with AF_XDP zero-copy, is that we sort of assume that if a
-user enabled that most packets will have XDP_REDIRECT to an AF_XDP socket.
+An unrelated general question: are there
+documentation/guide/conference talk that talks about BPF from the
+kernel space perspective?  For example, is there a checklist of what
+needs to be done if I want to add additional hook or new bpf program
+type?  I have been doing some research and I have found a lot of
+guides and tutorials from the user space perspective (writing bpf
+programs, attaching them, etc.) and some deep bpf internal (like the
+verifier and jit) but I am having trouble finding something that
+covers the topics above.
 
-
-> But for cpumap we only want this behavior if sched on the same CPU
-> as RX-NAPI.  This could be "seen" by the cpumap code itself in the
-> case bq_flush_to_queue() drops packets, check if rcpu->cpu equal 
-> smp_processor_id().  Maybe I'm taking this too far?
-> 
-
-Interesting. So, if you're running on the same core, and redirect fail
-for CPUMAP, you'd like to yield the NAPI loop? Is that really OK from a
-fairness perspective? I mean, with AF_XDP zero-copy we pretty much know
-that all actions will be redirect to socket. For CPUMAP type of
-applications, can that assumption be made?
-
-
-Björn
-
+Regards,
+Kenny Ho
