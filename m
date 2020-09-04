@@ -2,133 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3AB25DEEC
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 18:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2C125DF7F
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 18:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgIDQDe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 12:03:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40108 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726511AbgIDQDd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:03:33 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-hb8g6iE0O5mrNFWlNdWvUA-1; Fri, 04 Sep 2020 12:03:28 -0400
-X-MC-Unique: hb8g6iE0O5mrNFWlNdWvUA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22B2E108050D;
-        Fri,  4 Sep 2020 16:03:15 +0000 (UTC)
-Received: from krava (ovpn-112-34.ams2.redhat.com [10.36.112.34])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 86FEE88F2A;
-        Fri,  4 Sep 2020 16:03:09 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 18:03:03 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
- attr->sample_period for libpfm4 events
-Message-ID: <20200904160303.GD939481@krava>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-3-irogers@google.com>
- <20200728155940.GC1319041@krava>
- <20200728160954.GD1319041@krava>
- <CAP-5=fVqto0LrwgW6dHQupp7jFA3wToRBonBaXXQW4wwYcTreg@mail.gmail.com>
- <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
+        id S1727081AbgIDQNj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 12:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727037AbgIDQNg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:13:36 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9A6C061246
+        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 09:13:34 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id l9so6589889wme.3
+        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 09:13:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5XwKJJOulBS/JAQ5qjXcGoOA/EcC/1Cru3JfpZwCM8U=;
+        b=B3kUqCvQoH9U1ob0b6+LpDyQVAUts8lGfQL5uJk6M4kWxxSqUmULquNpEUJ/bDEg4w
+         woPVuoh7kefsdaZsiIXqgrLccCmjLkOzwGVuXVzw2qVPrkKztuWLSbwlLn40D9R+xbmc
+         LOSrM3i+ok4MQZohzYtthpPW1EnH+davEwmrA0RXUvuhwaKRQcsZTYmx7sCk6xDEmSgk
+         lMiE6gmaENa+ob7l8rMsfXjoQ78yVVs1M33SbOJt2KDijqAFAWPk5UVP7FRT8Bkwgk5e
+         +h0fwjvgQbQHuJHqIKNTH0woAv5dWgrSJ5uj6EhqToHEL4ZWj430Memy8E6TAVmay60X
+         KjpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5XwKJJOulBS/JAQ5qjXcGoOA/EcC/1Cru3JfpZwCM8U=;
+        b=e5i9AmM+oj8aNm/4ATCPMJIgCpKvZe5xUQmQ2TALm4T2i43jg9TXAnkkxy4sRSAlOE
+         ztjvf9HwIGeNGRUaoauznjresMAaYMz+8FFr7FcvnXCQYSPXzC+146v4blc+5wP1C+s9
+         WN7iyTnRt9/yV1OcdKKeagfWHUW6ovkANyLR4tICZkQiN1iJ7zq1UJEVeq2Ua1s7i19F
+         dcjYZxfu/fZ4nyBj/6gvk1P6sygVCCfyC4WBj37o5a/elDjoeekfSyaR1v8TKlUjE2G7
+         mhDs+WLMUn7UZtA+QMxOs/RnPiWPIMhn769pNnMA3gSunK/+pCZGeGomiNE2tBHzKgxD
+         1LeA==
+X-Gm-Message-State: AOAM533BLz3s3Q6ZsxR58T0TeAJF1dtBeKaGNUvvH095ETcxVFCuYN8j
+        buOz+T0xGri2j6AgBCp+be+L5YbcHhMIY6yl
+X-Google-Smtp-Source: ABdhPJynph/2MaDoBgxX8x5WrKlgpTKOTsczn63kHdmbh9hEfGNMNxjE9RFqSLDhDp9w92mBDQNnog==
+X-Received: by 2002:a1c:7d55:: with SMTP id y82mr8399491wmc.100.1599236010376;
+        Fri, 04 Sep 2020 09:13:30 -0700 (PDT)
+Received: from localhost.localdomain ([194.35.117.134])
+        by smtp.gmail.com with ESMTPSA id a83sm11909611wmh.48.2020.09.04.09.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 09:13:29 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Martynas Pumputis <m@lambda.lt>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next 0/2] tools: bpftool: support creating and dumping outer maps
+Date:   Fri,  4 Sep 2020 17:13:11 +0100
+Message-Id: <20200904161313.29535-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 10:41:14PM -0700, Ian Rogers wrote:
-> On Wed, Jul 29, 2020 at 4:24 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Tue, Jul 28, 2020 at 9:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote:
-> > > > On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
-> > > > > From: Stephane Eranian <eranian@google.com>
-> > > > >
-> > > > > Before:
-> > > > > $ perf record -c 10000 --pfm-events=cycles:period=77777
-> > > > >
-> > > > > Would yield a cycles event with period=10000, instead of 77777.
-> > > > >
-> > > > > This was due to an ordering issue between libpfm4 parsing
-> > > > > the event string and perf record initializing the event.
-> > > > >
-> > > > > This patch fixes the problem by preventing override for
-> > > > > events with attr->sample_period != 0 by the time
-> > > > > perf_evsel__config() is invoked. This seems to have been the
-> > > > > intent of the author.
-> > > > >
-> > > > > Signed-off-by: Stephane Eranian <eranian@google.com>
-> > > > > Reviewed-by: Ian Rogers <irogers@google.com>
-> > > > > ---
-> > > > >  tools/perf/util/evsel.c | 3 +--
-> > > > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > > > > index 811f538f7d77..8afc24e2ec52 100644
-> > > > > --- a/tools/perf/util/evsel.c
-> > > > > +++ b/tools/perf/util/evsel.c
-> > > > > @@ -976,8 +976,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
-> > > > >      * We default some events to have a default interval. But keep
-> > > > >      * it a weak assumption overridable by the user.
-> > > > >      */
-> > > > > -   if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
-> > > > > -                                opts->user_interval != ULLONG_MAX)) {
-> > > > > +   if (!attr->sample_period) {
-> > > >
-> > > > I was wondering why this wouldn't break record/top
-> > > > but we take care of the via record_opts__config
-> > > >
-> > > > as long as 'perf test attr' works it looks ok to me
-> > >
-> > > hum ;-)
-> > >
-> > > [jolsa@krava perf]$ sudo ./perf test 17 -v
-> > > 17: Setup struct perf_event_attr                          :
-> > > ...
-> > > running './tests/attr/test-record-C0'
-> > > expected sample_period=4000, got 3000
-> > > FAILED './tests/attr/test-record-C0' - match failure
-> >
-> > I'm not able to reproduce this. Do you have a build configuration or
-> > something else to look at? The test doesn't seem obviously connected
-> > with this patch.
-> >
-> > Thanks,
-> > Ian
-> 
-> Jiri, any update? Thanks,
+This series makes bpftool able to create and dump the content for outer
+maps (maps of types array-of-maps and hash-of-maps). The modifications are
+rather succinct: dumping works if we remove the related restriction in
+bpftool's code, and creation is just a matter of passing the relevant
+inner_map_fd, which we do through a new command-line keyword.
 
-sorry, I rebased and ran it again and it passes for me now,
-so it got fixed along the way
+Quentin Monnet (2):
+  tools: bpftool: dump outer maps content
+  tools: bpftool: add "inner_map" to "bpftool map create" outer maps
 
-jirka
+ .../bpf/bpftool/Documentation/bpftool-map.rst | 10 +++-
+ tools/bpf/bpftool/bash-completion/bpftool     | 22 +++++++-
+ tools/bpf/bpftool/map.c                       | 52 ++++++++++++-------
+ 3 files changed, 62 insertions(+), 22 deletions(-)
+
+-- 
+2.25.1
 
