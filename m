@@ -2,174 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB8725E282
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 22:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA3725E2C2
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 22:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgIDUPk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 16:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57242 "EHLO
+        id S1727020AbgIDUbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 16:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726791AbgIDUPi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 16:15:38 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7875DC061244;
-        Fri,  4 Sep 2020 13:15:37 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id s92so5255213ybi.2;
-        Fri, 04 Sep 2020 13:15:37 -0700 (PDT)
+        with ESMTP id S1726791AbgIDUbI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 16:31:08 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01530C061244;
+        Fri,  4 Sep 2020 13:31:07 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id c17so5282185ybe.0;
+        Fri, 04 Sep 2020 13:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=97wzGZNbKGw+kQNf1bsqW3kl5yXeq4pPu+Jx+t1WtzM=;
-        b=hICa4+M6d+Nqw5YUWT81HMx3smIYig/Jb+N+cjagh6RRYrH4CymwW47A+c3FbXFvMD
-         KzRJm49qOCVX8WdxXV6cFGGI3PS/dzHRcR6XMyicTXS+DOfqlK/9m/bgTkWcJHOVQGW4
-         qQcLjethrLRfvElVjKdxMFKTPR+Q+DOTXx4aFP/1heVBGhoTAXziqG9ifVJzqrOStkxI
-         QZbEjM/qc8NZXq80lAyk51ahNuv+ICL7LOyNy1AEoeHYnu+8bEnCrYjyZSCwvxBG2S2B
-         zjoXMw0mAnoIQsRwF1p+rmcSgvGLfs7MjSxMi4V1wAUrJjqoNcLx1bQDVJGmeyM4csK4
-         uZAQ==
+        bh=zTe3Mx2s33ZrVvXymlinvaXGi3RaFuG6B/IAiGNQ5rs=;
+        b=bXq1pMwaRwQVggUO4Ptcv/YIYF+DOLFLGHEurYYZP8qlgil53eWi/z0vogf2RcYCZC
+         Ro6ThynCuvncXKHb1mTaL8eSscapbHD+mjhwFZ+rJBXaxPDZll/KYQeId9BqKWwM6nkJ
+         RZBa4G9ZcgezwEq9fX5whvvESKtaQP7t3woLBYXIB6zw+ROCjMLqKpL/Bf4Kr0c3e+IJ
+         1z2Ki/Hcmm8j0n670X+kKR+06K/N5NF50tTMgVy+9zzQatGb8WKwBfpOJ0MLh/FaHe4E
+         MCd/zIX4wYUodoCxGf8F9ldDUbp3F0IzA1CfGac/0gRQLnTNqWTOKKjOoXTW8VgLcMVQ
+         KM3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=97wzGZNbKGw+kQNf1bsqW3kl5yXeq4pPu+Jx+t1WtzM=;
-        b=uYT+5aNttDllwPsDvNEjyA5/e4FZJz7PumU8as6VSOA2ZkOovxkv8wB0CnhuTQp5oZ
-         4J+LloSx9SSPgJG83JK+qsYkL3OzLGrYlZMueEIgs1/2iMbsjF7ousa3ggzFgFalcFXy
-         4wqyuGCrF+0KDPSTnXXumANDJU9N3BSiUgRd7l8n8ILHbebQgGHrYk/XcXRl3Y6CKSwx
-         XhPu+haCB/2UzUQdvEoIpkeeQZHHov5tGqv3TH/c6yssTOhrcY0I4VIDU2adXhZYkChK
-         d7jxmYky+ZfrUlTj8U4nBeLHldZYRas6nhYSS9rZgrT790HkvFAbhIkuSuT9+GNaBDor
-         amfQ==
-X-Gm-Message-State: AOAM530tOPv6jxrbcax4xYBsRza8Gx7Gut786hOGikZHaZ0dibMncWhc
-        bpJpjAvrwgiHRGnXPaqjUQIH2WL7IxoweyOjrwo=
-X-Google-Smtp-Source: ABdhPJw921xqUNKFTY3kqidSmF8NHNWMNXNRdfJiST4Nyh8faFKrC8j/KeTMJYoUzHNrK/iv4c2bwDoqDZKN0FOG5sk=
-X-Received: by 2002:a25:cb57:: with SMTP id b84mr12280536ybg.425.1599250536285;
- Fri, 04 Sep 2020 13:15:36 -0700 (PDT)
+        bh=zTe3Mx2s33ZrVvXymlinvaXGi3RaFuG6B/IAiGNQ5rs=;
+        b=PHkwwjwyUaZ9/ujFNT8A4cAZhtPPNVAmArw3jF5TNFpqsZQW9PxauMqaykL0NO3t7t
+         wXPXuzHXXI6MozuLMe/I5uZo4DzyV+P0WWdnl4EAn6oqzfgckQguf0OafoMdfrJCVxO/
+         qDsbzeorQyHxmVUAuRjHaNFDrtbnGG8legFnIKLRd/R0vCVmBbUOYBBQz6/24auTmBV6
+         X07ujARu0MRmIAHVqm2ej1JBmqLNcuwwP2iTKdHsrnbdw13NvOvLhuZvMHzOegCHPwvH
+         6x3nyx4YwmJwy7ksi0NEMv8JqSvH0qSbGXm7VZQW8e/eGUPrBpvbn+xGuqlqVukWsYZg
+         0KSA==
+X-Gm-Message-State: AOAM531cxBmWHgWsDbPdFxcx3jlcRcSHslmVoceLuIcJGmsK9b1H5Zrl
+        wInVyXcn1BtV3X9aLASaprtir8kxvrOEyxNGueI=
+X-Google-Smtp-Source: ABdhPJwNV/A0GEf144SXS3gF1pclDXRgHiyZ0LP/quE5bcqB/zFmX5pQ9eJfnmWYUWx+1P6jj9M+jRzIkiGakYBAqOQ=
+X-Received: by 2002:a25:ad5a:: with SMTP id l26mr11862621ybe.510.1599251466796;
+ Fri, 04 Sep 2020 13:31:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903223332.881541-1-haoluo@google.com> <20200903223332.881541-7-haoluo@google.com>
-In-Reply-To: <20200903223332.881541-7-haoluo@google.com>
+References: <20200904194900.3031319-1-yhs@fb.com> <20200904194900.3031377-1-yhs@fb.com>
+In-Reply-To: <20200904194900.3031377-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Sep 2020 13:15:25 -0700
-Message-ID: <CAEf4BzZ9krnVzAR=0oQMe+f96cZff5MSdV3_EHiS-mSNF8MieQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 6/6] bpf/selftests: Test for bpf_per_cpu_ptr()
- and bpf_this_cpu_ptr()
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+Date:   Fri, 4 Sep 2020 13:30:55 -0700
+Message-ID: <CAEf4BzboqpYa7Zq=6xcpGez+jk--NTDA0=FQi5utwcFaHwC7bA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: permit map_ptr arithmetic with opcode
+ add and offset 0
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 3:35 PM Hao Luo <haoluo@google.com> wrote:
+On Fri, Sep 4, 2020 at 12:49 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Test bpf_per_cpu_ptr() and bpf_this_cpu_ptr(). Test two paths in the
-> kernel. If the base pointer points to a struct, the returned reg is
-> of type PTR_TO_BTF_ID. Direct pointer dereference can be applied on
-> the returned variable. If the base pointer isn't a struct, the
-> returned reg is of type PTR_TO_MEM, which also supports direct pointer
-> dereference.
+> Commit 41c48f3a98231 ("bpf: Support access
+> to bpf map fields") added support to access map fields
+> with CORE support. For example,
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Hao Luo <haoluo@google.com>
+>             struct bpf_map {
+>                     __u32 max_entries;
+>             } __attribute__((preserve_access_index));
+>
+>             struct bpf_array {
+>                     struct bpf_map map;
+>                     __u32 elem_size;
+>             } __attribute__((preserve_access_index));
+>
+>             struct {
+>                     __uint(type, BPF_MAP_TYPE_ARRAY);
+>                     __uint(max_entries, 4);
+>                     __type(key, __u32);
+>                     __type(value, __u32);
+>             } m_array SEC(".maps");
+>
+>             SEC("cgroup_skb/egress")
+>             int cg_skb(void *ctx)
+>             {
+>                     struct bpf_array *array = (struct bpf_array *)&m_array;
+>
+>                     /* .. array->map.max_entries .. */
+>             }
+>
+> In kernel, bpf_htab has similar structure,
+>
+>             struct bpf_htab {
+>                     struct bpf_map map;
+>                     ...
+>             }
+>
+> In the above cg_skb(), to access array->map.max_entries, with CORE, the clang will
+> generate two builtin's.
+>             base = &m_array;
+>             /* access array.map */
+>             map_addr = __builtin_preserve_struct_access_info(base, 0, 0);
+>             /* access array.map.max_entries */
+>             max_entries_addr = __builtin_preserve_struct_access_info(map_addr, 0, 0);
+>             max_entries = *max_entries_addr;
+>
+> In the current llvm, if two builtin's are in the same function or
+> in the same function after inlining, the compiler is smart enough to chain
+> them together and generates like below:
+>             base = &m_array;
+>             max_entries = *(base + reloc_offset); /* reloc_offset = 0 in this case */
+> and we are fine.
+>
+> But if we force no inlining for one of functions in test_map_ptr() selftest, e.g.,
+> check_default(), the above two __builtin_preserve_* will be in two different
+> functions. In this case, we will have code like:
+>    func check_hash():
+>             reloc_offset_map = 0;
+>             base = &m_array;
+>             map_base = base + reloc_offset_map;
+>             check_default(map_base, ...)
+>    func check_default(map_base, ...):
+>             max_entries = *(map_base + reloc_offset_max_entries);
+>
+> In kernel, map_ptr (CONST_PTR_TO_MAP) does not allow any arithmetic.
+> The above "map_base = base + reloc_offset_map" will trigger a verifier failure.
+>   ; VERIFY(check_default(&hash->map, map));
+>   0: (18) r7 = 0xffffb4fe8018a004
+>   2: (b4) w1 = 110
+>   3: (63) *(u32 *)(r7 +0) = r1
+>    R1_w=invP110 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
+>   ; VERIFY_TYPE(BPF_MAP_TYPE_HASH, check_hash);
+>   4: (18) r1 = 0xffffb4fe8018a000
+>   6: (b4) w2 = 1
+>   7: (63) *(u32 *)(r1 +0) = r2
+>    R1_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R2_w=invP1 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
+>   8: (b7) r2 = 0
+>   9: (18) r8 = 0xffff90bcb500c000
+>   11: (18) r1 = 0xffff90bcb500c000
+>   13: (0f) r1 += r2
+>   R1 pointer arithmetic on map_ptr prohibited
+>
+> To fix the issue, let us permit map_ptr + 0 arithmetic which will
+> result in exactly the same map_ptr.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  .../selftests/bpf/prog_tests/ksyms_btf.c      | 10 +++++++
->  .../selftests/bpf/progs/test_ksyms_btf.c      | 26 +++++++++++++++++++
->  2 files changed, 36 insertions(+)
+>  kernel/bpf/verifier.c | 3 +++
+>  1 file changed, 3 insertions(+)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> index 7b6846342449..22cc642dbc0e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> @@ -58,6 +58,16 @@ void test_ksyms_btf(void)
->         CHECK(data->out__bpf_prog_active != bpf_prog_active_addr, "bpf_prog_active",
->               "got %llu, exp %llu\n", data->out__bpf_prog_active, bpf_prog_active_addr);
->
-> +       CHECK(data->out__rq_cpu == -1, "rq_cpu",
-> +             "got %u, exp != -1\n", data->out__rq_cpu);
-> +       CHECK(data->out__percpu_bpf_prog_active == -1, "percpu_bpf_prog_active",
-> +             "got %d, exp != -1\n", data->out__percpu_bpf_prog_active);
-> +
-> +       CHECK(data->out__this_rq_cpu == -1, "this_rq_cpu",
-> +             "got %u, exp != -1\n", data->out__this_rq_cpu);
-> +       CHECK(data->out__this_bpf_prog_active == -1, "this_bpf_prog_active",
-> +             "got %d, exp != -1\n", data->out__this_bpf_prog_active);
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b4e9c56b8b32..92aa985e99df 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5317,6 +5317,9 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+>                         dst, reg_type_str[ptr_reg->type]);
+>                 return -EACCES;
+>         case CONST_PTR_TO_MAP:
+> +               if (known && smin_val == 0 && opcode == BPF_ADD)
 
-see below for few suggestions to make these test more specific
+does smin_val imply that var_off is strictly zero? if that's the case,
+can you please leave a comment stating this clearly, it's hard to tell
+if that's enough of a check.
 
-out__this_bpf_prog_active it should always be > 0, no?
-
-> +
->  cleanup:
->         test_ksyms_btf__destroy(skel);
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> index e04e31117f84..02d564349892 100644
-> --- a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> @@ -8,15 +8,41 @@
->  __u64 out__runqueues = -1;
->  __u64 out__bpf_prog_active = -1;
->
-> +__u32 out__rq_cpu = -1; /* percpu struct fields */
-> +int out__percpu_bpf_prog_active = -1; /* percpu int */
-> +
-> +__u32 out__this_rq_cpu = -1;
-> +int out__this_bpf_prog_active = -1;
-> +
->  extern const struct rq runqueues __ksym; /* struct type global var. */
->  extern const int bpf_prog_active __ksym; /* int type global var. */
->
->  SEC("raw_tp/sys_enter")
->  int handler(const void *ctx)
->  {
-> +       struct rq *rq;
-> +       int *active;
-> +       __u32 cpu;
-> +
->         out__runqueues = (__u64)&runqueues;
->         out__bpf_prog_active = (__u64)&bpf_prog_active;
->
-> +       cpu = bpf_get_smp_processor_id();
-> +
-> +       /* test bpf_per_cpu_ptr() */
-> +       rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, cpu);
-> +       if (rq)
-> +               out__rq_cpu = rq->cpu;
-> +       active = (int *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
-> +       if (active)
-> +               out__percpu_bpf_prog_active = *active;
-
-this is equivalent to using bpf_this_cpu_ptr(), so:
-
-1. you can compare value with out__this_xxx in user-space
-
-2. it's interesting to also test that you can read value from some
-other CPU. Can you add another variable and get value from CPU #0
-always? E.g., for out__cpu_0_rq_cpu it should always be zero, right?
-
-> +
-> +       /* test bpf_this_cpu_ptr */
-> +       rq = (struct rq *)bpf_this_cpu_ptr(&runqueues);
-> +       out__this_rq_cpu = rq->cpu;
-> +       active = (int *)bpf_this_cpu_ptr(&bpf_prog_active);
-> +       out__this_bpf_prog_active = *active;
-> +
->         return 0;
->  }
->
+> +                       break;
+> +               /* fall-through */
+>         case PTR_TO_PACKET_END:
+>         case PTR_TO_SOCKET:
+>         case PTR_TO_SOCKET_OR_NULL:
 > --
-> 2.28.0.526.ge36021eeef-goog
+> 2.24.1
 >
