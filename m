@@ -2,67 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED4025DC80
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 16:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AFB25DCE8
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730257AbgIDO4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 10:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730204AbgIDO4X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:56:23 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFF1C061244
-        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 07:56:22 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id z13so3333313iom.8
-        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 07:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=ORI5ML3L/W9cUJMK9DOu1RwphEPRbFAjkrEVN5IxHJk=;
-        b=d/eRqzbuQeV60E7w8rM0ZymJaspSvlai6gF+e7TXHY7XimUBsl3rZwfskZlbhUgDi6
-         9RqAN7zqDxpMplz/08KjEb4JYPDR56hdSeaqUTelJ1LUFYlnjPh56uqTdgNjEKDwZGSh
-         F1G96y6SfX+6yBDCbT1ixuk+K90a7W7QF6PATPDXeDhaxsftmbmM8BsNKm1suCI6OT3f
-         9q356dIKuwNmpVU3kleqrZtloyciXZu90miT+tBPCVi2hpiMrXaUOtbfT+kk0yhpY8Az
-         bVnW+8yTFUcS3XbOaZUlhHY96zXqrpURac1PH7V3tCgvJylmXbd9x9nc692A/79bUMPa
-         nlEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=ORI5ML3L/W9cUJMK9DOu1RwphEPRbFAjkrEVN5IxHJk=;
-        b=F1TGpJPEs5AK+1j+EEUSCIv61hcBYSihxnjKjlkowOK8i2HiWR94QeA91hopgF2vuL
-         KtWwPi61/cHuA465OcjU/H3mEHhAFA/EAaJLZUaDIJJGrYW2lEENjIMTjDTssiMXo0a8
-         MIgKzlIwG7uIThmj4uXGTLVL1HVDX3RDH+/MJcUJrv9/7Ppool9FCHvpgiSc2rOAGKH4
-         LJH+crltzvCDKaKAtYVQXYjoosiNwcNuy8RhfmZL5RTL7V+0vqyIRIL5Rlz6S6D0zbCb
-         BiUx25/AqjIq5dYk2/Y+LwHvPETRuVIj2ZBZQUJ8u2tODQ4KKXiCO02cyivLczbs5NeO
-         V3nQ==
-X-Gm-Message-State: AOAM531X/sZgYUjzcfoJRJ0G87kiVXrVKdqw3P3Ak0fK9+TB55zpJ1Wy
-        yVZR88xHEWqw93cKfFHWkSxC97ST63mWMEnMlzJYOtjGypHpzuvi
-X-Google-Smtp-Source: ABdhPJzv/LkCJYU8YYwZTBHrcrw+S56AfpnVnmCsVgq/BR65kk6zfBLUdofn/PwUG589w1tJ04hBp+v2de7n7F8/tnY=
-X-Received: by 2002:a02:b70c:: with SMTP id g12mr8386548jam.62.1599231381580;
- Fri, 04 Sep 2020 07:56:21 -0700 (PDT)
+        id S1730778AbgIDPL4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Sep 2020 11:11:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51425 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730220AbgIDPL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 11:11:56 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-ihUSZxV2O2O6a8T76iYLLw-1; Fri, 04 Sep 2020 11:11:54 -0400
+X-MC-Unique: ihUSZxV2O2O6a8T76iYLLw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 435B018A2257;
+        Fri,  4 Sep 2020 15:11:52 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 359365D9D2;
+        Fri,  4 Sep 2020 15:11:44 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 17:11:43 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBl?= =?UTF-8?B?bA==?= 
+        <bjorn.topel@intel.com>, magnus.karlsson@intel.com,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH bpf-next 3/6] xsk: introduce xsk_do_redirect_rx_full()
+ helper
+Message-ID: <20200904171143.5868999a@carbon>
+In-Reply-To: <20200904135332.60259-4-bjorn.topel@gmail.com>
+References: <20200904135332.60259-1-bjorn.topel@gmail.com>
+        <20200904135332.60259-4-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-From:   Borna Cafuk <borna.cafuk@sartura.hr>
-Date:   Fri, 4 Sep 2020 16:56:10 +0200
-Message-ID: <CAGeTCaU1fEGVVWnXKR_zv4ZSoCrBGSN65-RpFuKg9Gf-_z6TOw@mail.gmail.com>
-Subject: HASH_OF_MAPS inner map allocation from BPF
-To:     bpf@vger.kernel.org
-Cc:     Luka Perkov <luka.perkov@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello everyone,
+On Fri,  4 Sep 2020 15:53:28 +0200
+Björn Töpel <bjorn.topel@gmail.com> wrote:
 
-Judging by [0], the inner maps in BPF_MAP_TYPE_HASH_OF_MAPS can only be created
-from the userspace. This seems quite limiting in regard to what can be done
-with them.
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> The xsk_do_redirect_rx_full() helper can be used to check if a failure
+> of xdp_do_redirect() was due to the AF_XDP socket had a full Rx ring.
 
-Are there any plans to allow for creating the inner maps from BPF programs?
+This is very AF_XDP specific.  I think that the cpumap could likely
+benefit from similar approach? e.g. if the cpumap kthread is scheduled
+on the same CPU.
 
-[0] https://stackoverflow.com/a/63391528
+But for cpumap we only want this behavior if sched on the same CPU as
+RX-NAPI.  This could be "seen" by the cpumap code itself in the case
+bq_flush_to_queue() drops packets, check if rcpu->cpu equal
+smp_processor_id().  Maybe I'm taking this too far?
 
+-- 
 Best regards,
-Borna Cafuk
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
