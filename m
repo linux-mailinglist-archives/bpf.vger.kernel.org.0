@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386EF25D747
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 13:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024D625D73A
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 13:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730143AbgIDL3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 07:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S1726171AbgIDL2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 07:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730196AbgIDL0C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1730197AbgIDL0C (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 4 Sep 2020 07:26:02 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38654C0611E0
-        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 04:24:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x14so6332418wrl.12
-        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 04:24:17 -0700 (PDT)
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C651C0619C2
+        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 04:24:18 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id w5so6369042wrp.8
+        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 04:24:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=owpNQQ+uIJCQXVSt0+1sgwOe70+wghAb9TxeyhOSzdA=;
-        b=LQLaK3E4hhgF0sqaa0xcxlqC4hcBE8zEPudcwELM/WbxI905d8LURtEJjAXPqG+q47
-         b6yOTtoRGYqonMVvHroDJW+iavdF/IQ8n4XQqHeu/AxzXXyJalJAPvrl1UZYCkzGPl+X
-         1nZgnwHgh0euMJFvEWXHynGxVt4J43Rq2eizo=
+        bh=KaDl48Pga4QEbzcA0z5fJMx4Mo2Pt/XvOLNWfi7T27A=;
+        b=BclZNy566ovAagP2odZPY0wMHOwiqUO5dP3BPTBIwcJ8axSeP+m5DlRyFSNG5n9Ncy
+         iGoFgglP8Rg52SzdlR2wFqUC2WeGvq2N4NScgHB2brde3TM1yg77mNNktPguAz920y69
+         Q8/kg2homlZPRww6CQ6nUiQyOHCWfDUZ0OXW0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=owpNQQ+uIJCQXVSt0+1sgwOe70+wghAb9TxeyhOSzdA=;
-        b=Myn5anc0nb37YB3nV03FwavCMOMU5PL8MHcRjYO7J/hHbay0mCAb/lmHQuj+6iCDO+
-         Tmpk3gmT+2/S7Am0ZVff5ZQsHIy1imCYf3M0Rjyn63maxRPzXOoSbdb0pV2RdTnj7Rof
-         YzW8N2KAAlNTuD1c1nGAmuYxCsbJqs6axnFHorK5lLkHfi5zBLXchiuwtenvRkheYQdH
-         gMbIN698CqBP0QXld7BIUHZpwGOAoyLJ31V4ZymRj/5jqUsOmb48GDTD6I2bymNYFjdR
-         Oz0Guq/tw5iJzqY9c6OoynSYX6hJMe/stVosGeorzEmrIisAzb/wb3oandP6PuMcVTgM
-         w5oQ==
-X-Gm-Message-State: AOAM532spqdVlRaQaffxEHa+sEITU9diNh7+DK6Ngn8Z6odtQrBhuWrn
-        N5d4xysYALMJywyHSzVKQBeeMQ==
-X-Google-Smtp-Source: ABdhPJyRYozlZl96pAlyrtGQZ0j5cFKkqb1QRVHAHa/ObAd1annJ6d+ETPAwRDlJQ5te7Eb7L37ccA==
-X-Received: by 2002:adf:8b48:: with SMTP id v8mr7121008wra.21.1599218655945;
-        Fri, 04 Sep 2020 04:24:15 -0700 (PDT)
+        bh=KaDl48Pga4QEbzcA0z5fJMx4Mo2Pt/XvOLNWfi7T27A=;
+        b=XuXp6hlMTI+ls4leqr7WCMY7J2bPItKTRkpiQExoTNTUSm0AUtvtwHBkRboBPhTZZp
+         FDmpbxEplTGLXXnZAaaYpfjpwkIjngs5LAcCSCw38V3/e2T6q9ndJU2QypbXD2xN0OeK
+         LF/3waPT6Ag6ljjsdZsmX0/r/N3l+Vn1r1KQRXlGXS6w2EXKJVJMUtGvq/NxhF/xD7X7
+         4qaOkoeHOVhwko58q8KUgw6h0KKF0noMleipuJsuI66cVX72biswbtuIaiiS2YKvNX7+
+         GxfzhUoGQzKYF26mBgBO78MXJSSB9BYQM4ZkEGeaykNYBlBVLrO7fwY3xaSDXPNci9WO
+         jvtg==
+X-Gm-Message-State: AOAM530kCTSZy6el+nlXUpi7zDquXAevF8SXztYk3m5f7PXcySYo94+Z
+        w6nns3DV3zjvscmR0q1MS0shIw==
+X-Google-Smtp-Source: ABdhPJxcHsE2SFbxXWtbozn4SX6A2LJf/kFtMUYuhgZQk8aqbDWNcGPPNK17VEzVQDxLsfOgn67Txg==
+X-Received: by 2002:a05:6000:1c4:: with SMTP id t4mr2815717wrx.350.1599218657081;
+        Fri, 04 Sep 2020 04:24:17 -0700 (PDT)
 Received: from antares.lan (111.253.187.81.in-addr.arpa. [81.187.253.111])
-        by smtp.gmail.com with ESMTPSA id v2sm9104408wrm.16.2020.09.04.04.24.14
+        by smtp.gmail.com with ESMTPSA id v2sm9104408wrm.16.2020.09.04.04.24.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 04:24:15 -0700 (PDT)
+        Fri, 04 Sep 2020 04:24:16 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
 To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net, kafai@fb.com
 Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
         Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next 03/11] btf: make btf_set_contains take a const pointer
-Date:   Fri,  4 Sep 2020 12:23:53 +0100
-Message-Id: <20200904112401.667645-4-lmb@cloudflare.com>
+Subject: [PATCH bpf-next 04/11] bpf: check scalar or invalid register in check_helper_mem_access
+Date:   Fri,  4 Sep 2020 12:23:54 +0100
+Message-Id: <20200904112401.667645-5-lmb@cloudflare.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200904112401.667645-1-lmb@cloudflare.com>
 References: <20200904112401.667645-1-lmb@cloudflare.com>
@@ -61,39 +61,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bsearch doesn't modify the contents of the array, so we can take a const pointer.
+Move the check for a NULL or zero register to check_helper_mem_access. This
+makes check_stack_boundary easier to understand.
 
 Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 ---
- include/linux/bpf.h | 2 +-
- kernel/bpf/btf.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index c6d9f2c444f4..6b72cdf52ebc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1900,6 +1900,6 @@ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 		       void *addr1, void *addr2);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 509754c3aa7d..649bcfb4535e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3594,18 +3594,6 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+ 	struct bpf_func_state *state = func(env, reg);
+ 	int err, min_off, max_off, i, j, slot, spi;
  
- struct btf_id_set;
--bool btf_id_set_contains(struct btf_id_set *set, u32 id);
-+bool btf_id_set_contains(const struct btf_id_set *set, u32 id);
- 
- #endif /* _LINUX_BPF_H */
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index f9ac6935ab3c..a2330f6fe2e6 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4772,7 +4772,7 @@ static int btf_id_cmp_func(const void *a, const void *b)
- 	return *pa - *pb;
+-	if (reg->type != PTR_TO_STACK) {
+-		/* Allow zero-byte read from NULL, regardless of pointer type */
+-		if (zero_size_allowed && access_size == 0 &&
+-		    register_is_null(reg))
+-			return 0;
+-
+-		verbose(env, "R%d type=%s expected=%s\n", regno,
+-			reg_type_str[reg->type],
+-			reg_type_str[PTR_TO_STACK]);
+-		return -EACCES;
+-	}
+-
+ 	if (tnum_is_const(reg->var_off)) {
+ 		min_off = max_off = reg->var_off.value + reg->off;
+ 		err = __check_stack_boundary(env, regno, min_off, access_size,
+@@ -3750,9 +3738,19 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+ 					   access_size, zero_size_allowed,
+ 					   "rdwr",
+ 					   &env->prog->aux->max_rdwr_access);
+-	default: /* scalar_value|ptr_to_stack or invalid ptr */
++	case PTR_TO_STACK:
+ 		return check_stack_boundary(env, regno, access_size,
+ 					    zero_size_allowed, meta);
++	default: /* scalar_value or invalid ptr */
++		/* Allow zero-byte read from NULL, regardless of pointer type */
++		if (zero_size_allowed && access_size == 0 &&
++		    register_is_null(reg))
++			return 0;
++
++		verbose(env, "R%d type=%s expected=%s\n", regno,
++			reg_type_str[reg->type],
++			reg_type_str[PTR_TO_STACK]);
++		return -EACCES;
+ 	}
  }
  
--bool btf_id_set_contains(struct btf_id_set *set, u32 id)
-+bool btf_id_set_contains(const struct btf_id_set *set, u32 id)
- {
- 	return bsearch(&id, set->ids, set->cnt, sizeof(u32), btf_id_cmp_func) != NULL;
- }
 -- 
 2.25.1
 
