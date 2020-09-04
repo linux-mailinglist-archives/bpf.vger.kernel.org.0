@@ -2,157 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616C825CDA3
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 00:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46DC25CEA4
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 02:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgICWeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Sep 2020 18:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54414 "EHLO
+        id S1728134AbgIDADY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Sep 2020 20:03:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbgICWds (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Sep 2020 18:33:48 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2BDC06125E
-        for <bpf@vger.kernel.org>; Thu,  3 Sep 2020 15:33:47 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id r4so2459653qkb.12
-        for <bpf@vger.kernel.org>; Thu, 03 Sep 2020 15:33:47 -0700 (PDT)
+        with ESMTP id S1725782AbgIDADX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Sep 2020 20:03:23 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B4AC061244;
+        Thu,  3 Sep 2020 17:03:22 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mm21so2328790pjb.4;
+        Thu, 03 Sep 2020 17:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=UW/0PGzjXFNLpgvsGBdXGPzkiQxfa78I9ft59r2N/eQ=;
-        b=XY11zWkKXAZxLJ9vRo4yHPqTSberWaYsHouzkHd91K67vZInZlS3w/HGq0e6ogCBTk
-         aWV/sMHfo1eQcJyerLI7GnKlBBw6dHNIXyb9+HBOVcwN4Eu6Gh7ZeoqqjsVoIQ2cqiA/
-         l9HJMYtuh5JT7LSWyWGQ78IAh6eOablm9ZpDUtYYfF0qFpYPnFP9sy8f3LYaHENDesw8
-         RXTn1dRHAmB893UlWGp5fxDBkKWRTOHqCRg/bm8MagpTOlA2yQbjin2MthfK9TUctbPA
-         03frbeRjM5BqgZSvjOTX8CFPwOmR8n5DJUoMvzjb+ymNh9bJR14WAChjo1380b2tzIr7
-         oCtQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Cj3+cdRjrtuvAOlnzoorb+VXke8olHrY8VsdlX1pr7Q=;
+        b=vBVFoYncSg1VNMXbjAmP480Fgjk2zYZEEUFIiJE+I92q2KGmVI+plyP1qtuJBQ8bVz
+         +/G1Ub3CsFWTdtpHL/Qtq7z2IL30gbLQjJNymEK26JOBS7if53okL2wvnEypnLeRoqWv
+         +mbEqulIjcUVLt4xSTF6u5DfuJCd5fSD7CvY2uz4BLtKBh6yV2n4Pkod7d26/hl+CTj6
+         xM6T60S8ovsCbEwoLEyewq53ujSHeGyJVhkAiCZKqy2cOchiamEKpe3npZgWA9buAApH
+         CJM40Fr7gErNcWLuXxLTpxGE3CEMW3z85Ll6ZWRrbFq1FMBDJdK/LWoZ1hEF+qY3UY+w
+         eDvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=UW/0PGzjXFNLpgvsGBdXGPzkiQxfa78I9ft59r2N/eQ=;
-        b=HMmyiKrFJJFLbZUzgAM2vra4WMT86m8WVLpdxHhoZ2tatCaeENQUKxPI7BalqM12eF
-         fqa3rtBe64X9Kl25aayQp7zNNY8ONv9IP9caNPVtGCDWBJM0V4NC/9yHk3tcQulBXdsA
-         GeGEZne0PXkRNFUU376jU3DEHEGoubGK1gGag3MAjdPoRWILPFc2kEVjuIS+egiYyd/o
-         G7z25s17AMQCf9XctKr0aukphUFApAhywqPO7LcRY0X6rBjO8ziFBILklCULFSMQgUnt
-         wEJnC9E5hwVhLgrM69FodCE1dQDyXstqLGwuJf/I01zz1lpfD75F0xrGs9RFO4i7pwXj
-         PN4w==
-X-Gm-Message-State: AOAM531BT60SBYz6V66zidfFrqYS3QzRK5aC2rmTvrwEpPrFt8n/XDTz
-        /qmxVkQ0uIACdOEvXvjktgQoX5Dm460=
-X-Google-Smtp-Source: ABdhPJwMqcx89txh5tXQBtUtjcZyiaptSRj7S1RflllH58s5G4zJUG+EC8RwDGjZKEdQQ1HYDhpzgYctmw0=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
- (user=haoluo job=sendgmr) by 2002:a0c:c712:: with SMTP id w18mr4106712qvi.7.1599172426915;
- Thu, 03 Sep 2020 15:33:46 -0700 (PDT)
-Date:   Thu,  3 Sep 2020 15:33:32 -0700
-In-Reply-To: <20200903223332.881541-1-haoluo@google.com>
-Message-Id: <20200903223332.881541-7-haoluo@google.com>
-Mime-Version: 1.0
-References: <20200903223332.881541-1-haoluo@google.com>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH bpf-next v2 6/6] bpf/selftests: Test for bpf_per_cpu_ptr() and bpf_this_cpu_ptr()
-From:   Hao Luo <haoluo@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cj3+cdRjrtuvAOlnzoorb+VXke8olHrY8VsdlX1pr7Q=;
+        b=CFXR00NDc/slJrRSFnfraetNkFGS5aDf/Osogfvf5kPW1gy5ipJEeM0UQG36Dw7geR
+         lpZXh5LnaU9wQb4g/KvXoef/EJjdJ6+FSg5p2iZnzt3JBEdbZO0wr8kDoVCn5UOd1g5S
+         3F864lpq2Mh4Zig1Qj914CT0OaYpCgT/KLMPQMVwMmJ1jnjArY3WEt2wziO7q5qIgriV
+         aJOue6QiabY08hy2Z+KO9KVQN8NSrX2SB0FL5gn/OhY7YIuXiIDCZjie4A3eo9RPsAuv
+         DKmtJPwfCiwHmmpBVzQXuLUmmYcD4DN3BbWKexqI05ugb13oFeTQYVn30XlzxIVaeAA0
+         0pRw==
+X-Gm-Message-State: AOAM53007vtVe/HP7U0Z3vloJ/opCIsO567zpged0a+EDiKCgYd29Wp+
+        6ABayzft8wH1VVGYdiyHJDE=
+X-Google-Smtp-Source: ABdhPJy3XQhU/TIvlOj0y9muYNElxYKFRvQBDX4sMCq2XL0k+r/7CQ9Jf58zUomrXciFa1vF50tW7g==
+X-Received: by 2002:a17:90b:715:: with SMTP id s21mr5267731pjz.113.1599177801607;
+        Thu, 03 Sep 2020 17:03:21 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8159])
+        by smtp.gmail.com with ESMTPSA id x4sm4368098pfm.86.2020.09.03.17.03.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 17:03:20 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 17:03:18 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Lorenz Bauer <lmb@cloudflare.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf 1/2] bpf: do not use bucket_lock for hashmap iterator
+Message-ID: <20200904000318.2fvn22kwfpsoq7kd@ast-mbp.dhcp.thefacebook.com>
+References: <20200902235340.2001300-1-yhs@fb.com>
+ <20200902235340.2001375-1-yhs@fb.com>
+ <CAEf4BzaBxaPyWXOWOVRWCXcLW40FOFWkG7gUPSktGwS07duQVA@mail.gmail.com>
+ <f93015c5-5fed-4775-93c3-6b85a8e7c0da@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f93015c5-5fed-4775-93c3-6b85a8e7c0da@fb.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test bpf_per_cpu_ptr() and bpf_this_cpu_ptr(). Test two paths in the
-kernel. If the base pointer points to a struct, the returned reg is
-of type PTR_TO_BTF_ID. Direct pointer dereference can be applied on
-the returned variable. If the base pointer isn't a struct, the
-returned reg is of type PTR_TO_MEM, which also supports direct pointer
-dereference.
+On Wed, Sep 02, 2020 at 07:44:34PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 9/2/20 6:25 PM, Andrii Nakryiko wrote:
+> > On Wed, Sep 2, 2020 at 4:56 PM Yonghong Song <yhs@fb.com> wrote:
+> > > 
+> > > Currently, for hashmap, the bpf iterator will grab a bucket lock, a
+> > > spinlock, before traversing the elements in the bucket. This can ensure
+> > > all bpf visted elements are valid. But this mechanism may cause
+> > > deadlock if update/deletion happens to the same bucket of the
+> > > visited map in the program. For example, if we added bpf_map_update_elem()
+> > > call to the same visited element in selftests bpf_iter_bpf_hash_map.c,
+> > > we will have the following deadlock:
+> > > 
+> > 
+> > [...]
+> > 
+> > > 
+> > > Compared to old bucket_lock mechanism, if concurrent updata/delete happens,
+> > > we may visit stale elements, miss some elements, or repeat some elements.
+> > > I think this is a reasonable compromise. For users wanting to avoid
+> > 
+> > I agree, the only reliable way to iterate map without duplicates and
+> > missed elements is to not update that map during iteration (unless we
+> > start supporting point-in-time snapshots, which is a very different
+> > matter).
+> > 
+> > 
+> > > stale, missing/repeated accesses, bpf_map batch access syscall interface
+> > > can be used.
+> > > 
+> > > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > > ---
+> > >   kernel/bpf/hashtab.c | 15 ++++-----------
+> > >   1 file changed, 4 insertions(+), 11 deletions(-)
+> > > 
+> > > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > > index 78dfff6a501b..7df28a45c66b 100644
+> > > --- a/kernel/bpf/hashtab.c
+> > > +++ b/kernel/bpf/hashtab.c
+> > > @@ -1622,7 +1622,6 @@ struct bpf_iter_seq_hash_map_info {
+> > >          struct bpf_map *map;
+> > >          struct bpf_htab *htab;
+> > >          void *percpu_value_buf; // non-zero means percpu hash
+> > > -       unsigned long flags;
+> > >          u32 bucket_id;
+> > >          u32 skip_elems;
+> > >   };
+> > > @@ -1632,7 +1631,6 @@ bpf_hash_map_seq_find_next(struct bpf_iter_seq_hash_map_info *info,
+> > >                             struct htab_elem *prev_elem)
+> > >   {
+> > >          const struct bpf_htab *htab = info->htab;
+> > > -       unsigned long flags = info->flags;
+> > >          u32 skip_elems = info->skip_elems;
+> > >          u32 bucket_id = info->bucket_id;
+> > >          struct hlist_nulls_head *head;
+> > > @@ -1656,19 +1654,18 @@ bpf_hash_map_seq_find_next(struct bpf_iter_seq_hash_map_info *info,
+> > > 
+> > >                  /* not found, unlock and go to the next bucket */
+> > >                  b = &htab->buckets[bucket_id++];
+> > > -               htab_unlock_bucket(htab, b, flags);
+> > > +               rcu_read_unlock();
+> > 
+> > Just double checking as I don't yet completely understand all the
+> > sleepable BPF implications. If the map is used from a sleepable BPF
+> > program, we are still ok doing just rcu_read_lock/rcu_read_unlock when
+> > accessing BPF map elements, right? No need for extra
+> > rcu_read_lock_trace/rcu_read_unlock_trace?
+> I think it is fine now since currently bpf_iter program cannot be sleepable
+> and the current sleepable program framework already allows the following
+> scenario.
+>   - map1 is a preallocated hashmap shared by two programs,
+>     prog1_nosleep and prog2_sleepable
+> 
+> ...				  ...
+> rcu_read_lock()			  rcu_read_lock_trace()
+> run prog1_nosleep                 run prog2_sleepable
+>   lookup/update/delete map1 elem    lookup/update/delete map1 elem
+> rcu_read_unlock()		  rcu_read_unlock_trace()
+> ...				  ...
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- .../selftests/bpf/prog_tests/ksyms_btf.c      | 10 +++++++
- .../selftests/bpf/progs/test_ksyms_btf.c      | 26 +++++++++++++++++++
- 2 files changed, 36 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-index 7b6846342449..22cc642dbc0e 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-@@ -58,6 +58,16 @@ void test_ksyms_btf(void)
- 	CHECK(data->out__bpf_prog_active != bpf_prog_active_addr, "bpf_prog_active",
- 	      "got %llu, exp %llu\n", data->out__bpf_prog_active, bpf_prog_active_addr);
- 
-+	CHECK(data->out__rq_cpu == -1, "rq_cpu",
-+	      "got %u, exp != -1\n", data->out__rq_cpu);
-+	CHECK(data->out__percpu_bpf_prog_active == -1, "percpu_bpf_prog_active",
-+	      "got %d, exp != -1\n", data->out__percpu_bpf_prog_active);
-+
-+	CHECK(data->out__this_rq_cpu == -1, "this_rq_cpu",
-+	      "got %u, exp != -1\n", data->out__this_rq_cpu);
-+	CHECK(data->out__this_bpf_prog_active == -1, "this_bpf_prog_active",
-+	      "got %d, exp != -1\n", data->out__this_bpf_prog_active);
-+
- cleanup:
- 	test_ksyms_btf__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-index e04e31117f84..02d564349892 100644
---- a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-@@ -8,15 +8,41 @@
- __u64 out__runqueues = -1;
- __u64 out__bpf_prog_active = -1;
- 
-+__u32 out__rq_cpu = -1; /* percpu struct fields */
-+int out__percpu_bpf_prog_active = -1; /* percpu int */
-+
-+__u32 out__this_rq_cpu = -1;
-+int out__this_bpf_prog_active = -1;
-+
- extern const struct rq runqueues __ksym; /* struct type global var. */
- extern const int bpf_prog_active __ksym; /* int type global var. */
- 
- SEC("raw_tp/sys_enter")
- int handler(const void *ctx)
- {
-+	struct rq *rq;
-+	int *active;
-+	__u32 cpu;
-+
- 	out__runqueues = (__u64)&runqueues;
- 	out__bpf_prog_active = (__u64)&bpf_prog_active;
- 
-+	cpu = bpf_get_smp_processor_id();
-+
-+	/* test bpf_per_cpu_ptr() */
-+	rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, cpu);
-+	if (rq)
-+		out__rq_cpu = rq->cpu;
-+	active = (int *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
-+	if (active)
-+		out__percpu_bpf_prog_active = *active;
-+
-+	/* test bpf_this_cpu_ptr */
-+	rq = (struct rq *)bpf_this_cpu_ptr(&runqueues);
-+	out__this_rq_cpu = rq->cpu;
-+	active = (int *)bpf_this_cpu_ptr(&bpf_prog_active);
-+	out__this_bpf_prog_active = *active;
-+
- 	return 0;
- }
- 
--- 
-2.28.0.526.ge36021eeef-goog
-
+rcu_trace doesn't protect the map. It protects the program. Even for
+prog2_sleepable the map is protected by rcu. The whole map including all
+elements will be freed after both sleepable and non-sleepable progs stop
+executing. This rcu_read_lock is needed for non-preallocated hash maps where
+individual elements are rcu protected. See free_htab_elem() doing call_rcu().
+When the combination of sleepable progs and non-prealloc hashmap is enabled
+we would need to revisit this iterator assumption.
