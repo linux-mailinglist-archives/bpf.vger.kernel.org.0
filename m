@@ -2,162 +2,368 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49F225DD07
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C36525DD28
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730271AbgIDPSI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 11:18:08 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17142 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729942AbgIDPSI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Sep 2020 11:18:08 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 084F2CT9133804;
-        Fri, 4 Sep 2020 11:17:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=DkIx5un8dmmC2AixxyorDisomuNuJIxtGAZLMTmL6Z0=;
- b=X8Kk3HD533WGAcAUcyoLLtaI8YggYr9NKulFRsRCK/iQCZb46CXskPm4L6gjGsnsK8+8
- 9lJ8klRZ9PF5v5+M60hUP+RZuD7MFxBOLugejv+ICDNABXnIrGdZt1ygZ5ItQwEt/cKi
- GxHCbGvCBaN0oawAFgbpkE805ayHZ4ggglg7Is7vUIcAEuEqdofXEgto7KUJERjlV/Iq
- E/yPLY23sdvj0Zp+dnTXE2bLLI/jHM1FFWRuVcxQMAchtef+M0uE15JAFQacDuydsTfa
- KYa07yyzsJhof78HTWkmrXGyGc88EOGrvTaIs8Jd9ArQbF46A2MKvIAqtfYQ7zmxCyCP XQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33bqebh750-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Sep 2020 11:17:55 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 084F2cm4135382;
-        Fri, 4 Sep 2020 11:17:54 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33bqebh74a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Sep 2020 11:17:54 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 084F1hSt032612;
-        Fri, 4 Sep 2020 15:17:53 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 33bpfy02sm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Sep 2020 15:17:52 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 084FHo8237552512
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Sep 2020 15:17:50 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 865E311C04A;
-        Fri,  4 Sep 2020 15:17:50 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A0E111C052;
-        Fri,  4 Sep 2020 15:17:50 +0000 (GMT)
-Received: from sig-9-145-16-19.uk.ibm.com (unknown [9.145.16.19])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Sep 2020 15:17:50 +0000 (GMT)
-Message-ID: <a38c5d977acb6c036bfeddfc6784a0fe58c29b80.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC] bpf: update current instruction on patching
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        bpf@vger.kernel.org
-Cc:     jolsa@redhat.com, Jakub Kicinski <kuba@kernel.org>
-Date:   Fri, 04 Sep 2020 17:17:49 +0200
-In-Reply-To: <1ac6aef1-b38c-06c7-6e0d-b8459207d7d9@iogearbox.net>
-References: <20200903140542.156624-1-yauheni.kaliuta@redhat.com>
-         <1ac6aef1-b38c-06c7-6e0d-b8459207d7d9@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
+        id S1730300AbgIDPX1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 11:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730220AbgIDPX0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 11:23:26 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB4DC061244;
+        Fri,  4 Sep 2020 08:23:25 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id q3so1297654pls.11;
+        Fri, 04 Sep 2020 08:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=BNzxX5yswr/CKFrK+Jwu1Ic66M3652mEwr8rk1bhwog=;
+        b=fnjWtVukf5lII0b5cqY6J6XJoFvaNpudxzWbcHy9zX8EV73fQyh78Ay9kOxsmkX0/6
+         AaSbccEdP6qs3YT+ZP9h5M1z+MvcaayomJOmDnrQxjICYtckosQQHEwmLd11R8dze7RM
+         VJDO0yP0OilYFpo/azBF/2pThtwPb7pgKLl3rEJkXmG1FEdNSg5NWaRPcDNWNFwk/PXQ
+         db9w6X4zLfdRGBWXCUUHSBXseiCwz9PR1dHx2VRGoJVKD6MzTOEsJPT96pQbELuNwWfq
+         w6y7Y2zoMfuygMbKnQfwcn70ulxOShO6MUd/PBAHJOshn4658phuYJ0+Vi7PfmPHeTBQ
+         43/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=BNzxX5yswr/CKFrK+Jwu1Ic66M3652mEwr8rk1bhwog=;
+        b=J9faq/i4RCDbxH494gl8dpcmQhA5fIKkMY/a0UIKO8B0kq0nad6BwBY2wFf5CSC+l+
+         9b0rjQ372njRa/3VhQhW3y1k+k6R40akTvKOQSfb6eGTI+aqjuJCRiNItp838aulRo9v
+         /jvfD2ulF/0pBmWzyswzK0bqIr77BiYPj8Wo29tam2ucOLutysr+b6ELJCjbJISO2nrd
+         i4LxkrxJyWsmFIHYzL8F55JEwcPcSljbW2JC0W53A0I5yYt7efjt3aiQGmSN/s1Aj6/2
+         +U5CFhMsz55SvFlblFre7z3vqQm81SvVPeBJwKu5e70RzJgoCf8MIOjp2F5QI+w5/tWJ
+         eWAw==
+X-Gm-Message-State: AOAM531t3Sc1qoH4N/xFdbwJoKQ+ziSCOhqniD4uXRtNN/oVsTq2hvJ2
+        ODcv1OP13nRcF2OkDrFICRM=
+X-Google-Smtp-Source: ABdhPJym5zbHJRnph18F3FfJegDw5GrsuE7LozSWuSscmaAmWFbBPvurKFpfjpv9qJSqe1EZGRdspA==
+X-Received: by 2002:a17:90a:ead8:: with SMTP id ev24mr8709451pjb.89.1599233004357;
+        Fri, 04 Sep 2020 08:23:24 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id k5sm5840378pjq.5.2020.09.04.08.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 08:23:23 -0700 (PDT)
+Date:   Fri, 04 Sep 2020 08:23:15 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com,
+        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
+        edumazet@google.com
+Message-ID: <5f525be3da548_1932208b6@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200904094511.GF2884@lore-desk>
+References: <cover.1599165031.git.lorenzo@kernel.org>
+ <b7475687bb09aac6ec051596a8ccbb311a54cb8a.1599165031.git.lorenzo@kernel.org>
+ <5f51e2f2eb22_3eceb20837@john-XPS-13-9370.notmuch>
+ <20200904094511.GF2884@lore-desk>
+Subject: Re: [PATCH v2 net-next 6/9] bpf: helpers: add
+ bpf_xdp_adjust_mb_header helper
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-04_07:2020-09-04,2020-09-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=3 malwarescore=0
- impostorscore=0 priorityscore=1501 phishscore=0 adultscore=0 clxscore=1011
- mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009040130
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2020-09-03 at 17:10 +0200, Daniel Borkmann wrote:
-> On 9/3/20 4:05 PM, Yauheni Kaliuta wrote:
-> > On code patching it may require to update branch destinations if
-> > the
-> > code size changed. bpf_adj_delta_to_imm/off increments offset only
-> > if the patched area is after the branch instruction. But it's
-> > possible, that the patched area itself is a branch instruction and
-> > requires destination update.
+Lorenzo Bianconi wrote:
+> > Lorenzo Bianconi wrote:
+> > > Introduce bpf_xdp_adjust_mb_header helper in order to adjust frame
+> > > headers moving *offset* bytes from/to the second buffer to/from the
+> > > first one.
+> > > This helper can be used to move headers when the hw DMA SG is not able
+> > > to copy all the headers in the first fragment and split header and data
+> > > pages.
+> > > 
+> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > ---
+> > >  include/uapi/linux/bpf.h       | 25 ++++++++++++----
+> > >  net/core/filter.c              | 54 ++++++++++++++++++++++++++++++++++
+> > >  tools/include/uapi/linux/bpf.h | 26 ++++++++++++----
+> > >  3 files changed, 95 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 8dda13880957..c4a6d245619c 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -3571,11 +3571,25 @@ union bpf_attr {
+> > >   *		value.
+> > >   *
+> > >   * long bpf_copy_from_user(void *dst, u32 size, const void *user_ptr)
+> > > - * 	Description
+> > > - * 		Read *size* bytes from user space address *user_ptr* and store
+> > > - * 		the data in *dst*. This is a wrapper of copy_from_user().
+> > > - * 	Return
+> > > - * 		0 on success, or a negative error in case of failure.
+> > > + *	Description
+> > > + *		Read *size* bytes from user space address *user_ptr* and store
+> > > + *		the data in *dst*. This is a wrapper of copy_from_user().
+> > > + *
+> > > + * long bpf_xdp_adjust_mb_header(struct xdp_buff *xdp_md, int offset)
+> > > + *	Description
+> > > + *		Adjust frame headers moving *offset* bytes from/to the second
+> > > + *		buffer to/from the first one. This helper can be used to move
+> > > + *		headers when the hw DMA SG does not copy all the headers in
+> > > + *		the first fragment.
 > 
-> Could you provide a concrete example and walk us through? I'm
-> probably
-> missing something but if the patchlet contains a branch instruction,
-> then
-> it should be 'self-contained'. In the sense that the patchlet is a
-> 'black
-> box' that replaces 1 insns with n insns but there is no awareness
-> what's
-> inside these insns and hence no fixup for that inside
-> bpf_patch_insn_data().
-> So, if we take an existing branch insns from the code, move it into
-> the
-> patchlet and extend beginning or end, then it feels more like a bug
-> to the
-> one that called bpf_patch_insn_data(), aka zext code here. Bit
-> puzzled why
-> this is only seen now, my impression was that Ilya was running s390x
-> the
-> BPF selftests quite recently?
+> + Eric to the discussion
 > 
-> > The problem was triggered by bpf selftest
 > > 
-> > test_progs -t global_funcs
-> > 
-> > on s390, where the very first "call" instruction is patched from
-> > verifier.c:opt_subreg_zext_lo32_rnd_hi32() with zext_patch.
-> > 
-> > The patch includes current instruction to the condition check.
-> > 
-> > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-> > ---
-> >   kernel/bpf/core.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index ed0b3578867c..b0a9a22491a5 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -340,7 +340,7 @@ static int bpf_adj_delta_to_imm(struct bpf_insn
-> > *insn, u32 pos, s32 end_old,
-> >   	s32 delta = end_new - end_old;
-> >   	s64 imm = insn->imm;
-> >   
-> > -	if (curr < pos && curr + imm + 1 >= end_old)
-> > +	if (curr <= pos && curr + imm + 1 >= end_old)
-> >   		imm += delta;
-> >   	else if (curr >= end_new && curr + imm + 1 < end_new)
-> >   		imm -= delta;
-> > @@ -358,7 +358,7 @@ static int bpf_adj_delta_to_off(struct bpf_insn
-> > *insn, u32 pos, s32 end_old,
-> >   	s32 delta = end_new - end_old;
-> >   	s32 off = insn->off;
-> >   
-> > -	if (curr < pos && curr + off + 1 >= end_old)
-> > +	if (curr <= pos && curr + off + 1 >= end_old)
-> >   		off += delta;
-> >   	else if (curr >= end_new && curr + off + 1 < end_new)
-> >   		off -= delta;
-> > 
+> > This is confusing to read. Does this mean I can "move bytes to the second
+> > buffer from the first one" or "move bytes from the second buffer to the first
+> > one" And what are frame headers? I'm sure I can read below code and work
+> > it out, but users reading the header file should be able to parse this.
+> 
+> Our main goal with this helper is to fix the use-case where we request the hw
+> to put L2/L3/L4 headers (and all the TCP options) in the first fragment and TCP
+> data starting from the second fragment (headers split) but for some reasons
+> the hw puts the TCP options in the second fragment (if we understood correctly
+> this issue has been introduced by Eric @ NetDevConf 0x14).
+> bpf_xdp_adjust_mb_header() can fix this use-case moving bytes from the second fragment
+> to the first one (offset > 0) or from the first buffer to the second one (offset < 0).
 
-Hi!
+Ah OK, so the description needs the information about how to use offset then it
+would have been clear I think. Something like that last line "moving bytes from
+the second fragment ...."
 
-Last time I ran selftests against bpf-next ~1 month ago, and I don't
-remember seeing any test_progs failures. Now I tried it again, and I
-see the same problem as Yauheni. So this must be relatively new - I'll
-try to bisect the commit that caused this.
+So this is to fixup header-spit for RX zerocopy? Add that to the commit
+message then.
 
-Best regards,
-Ilya
+> 
+> > 
+> > Also we want to be able to read all data not just headers. Reading the
+> > payload of a TCP packet is equally important for many l7 load balancers.
+> > 
+> 
+> In order to avoid to slow down performances we require that eBPF sandbox can
+> read/write only buff0 in a xdp multi-buffer. The xdp program can only
+> perform some restricted changes to buff<n> (n >= 1) (e.g. what we did in
+> bpf_xdp_adjust_mb_header()).
+> You can find the xdp multi-buff design principles here [0][1]
+> 
+> [0] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+> [1] http://people.redhat.com/lbiancon/conference/NetDevConf2020-0x14/add-xdp-on-driver.html - XDP multi-buffers section (slide 40)
+> 
+> > > + *
+> > > + *		A call to this helper is susceptible to change the underlying
+> > > + *		packet buffer. Therefore, at load time, all checks on pointers
+> > > + *		previously done by the verifier are invalidated and must be
+> > > + *		performed again, if the helper is used in combination with
+> > > + *		direct packet access.
+> > > + *
+> > > + *	Return
+> > > + *		0 on success, or a negative error in case of failure.
+> > >   */
+> > >  #define __BPF_FUNC_MAPPER(FN)		\
+> > >  	FN(unspec),			\
+> > > @@ -3727,6 +3741,7 @@ union bpf_attr {
+> > >  	FN(inode_storage_delete),	\
+> > >  	FN(d_path),			\
+> > >  	FN(copy_from_user),		\
+> > > +	FN(xdp_adjust_mb_header),	\
+> > >  	/* */
+> > >  
+> > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index 47eef9a0be6a..ae6b10cf062d 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -3475,6 +3475,57 @@ static const struct bpf_func_proto bpf_xdp_adjust_head_proto = {
+> > >  	.arg2_type	= ARG_ANYTHING,
+> > >  };
+> > >  
+> > > +BPF_CALL_2(bpf_xdp_adjust_mb_header, struct  xdp_buff *, xdp,
+> > > +	   int, offset)
+> > > +{
+> > > +	void *data_hard_end, *data_end;
+> > > +	struct skb_shared_info *sinfo;
+> > > +	int frag_offset, frag_len;
+> > > +	u8 *addr;
+> > > +
+> > > +	if (!xdp->mb)
+> > > +		return -EOPNOTSUPP;
+
+Not required for this patch necessarily but I think it would be better user
+experience if instead of EOPNOTSUPP here we did the header split. This
+would allocate a frag and copy the bytes around as needed. Yes it might
+be slow if you don't have a frag free in the driver, but if user wants to
+do header split and their hardware can't do it we would have a way out.
+
+I guess it could be an improvement for later though.
+
+
+> > > +
+> > > +	sinfo = xdp_get_shared_info_from_buff(xdp);
+> > > +
+> > > +	frag_len = skb_frag_size(&sinfo->frags[0]);
+> > > +	if (offset > frag_len)
+> > > +		return -EINVAL;
+> > 
+> > What if we want data in frags[1] and so on.
+> > 
+> > > +
+> > > +	frag_offset = skb_frag_off(&sinfo->frags[0]);
+> > > +	data_end = xdp->data_end + offset;
+> > > +
+> > > +	if (offset < 0 && (-offset > frag_offset ||
+> > > +			   data_end < xdp->data + ETH_HLEN))
+> > > +		return -EINVAL;
+> > > +
+> > > +	data_hard_end = xdp_data_hard_end(xdp); /* use xdp->frame_sz */
+> > > +	if (data_end > data_hard_end)
+> > > +		return -EINVAL;
+> > > +
+> > > +	addr = page_address(skb_frag_page(&sinfo->frags[0])) + frag_offset;
+> > > +	if (offset > 0) {
+> > > +		memcpy(xdp->data_end, addr, offset);
+> > 
+> > But this could get expensive for large amount of data? And also
+> > limiting because we require the room to do the copy. Presumably
+> > the reason we have fargs[1] is because the normal page or half
+> > page is in use?
+> > 
+> > > +	} else {
+> > > +		memcpy(addr + offset, xdp->data_end + offset, -offset);
+> > > +		memset(xdp->data_end + offset, 0, -offset);
+> > > +	}
+> > > +
+> > > +	skb_frag_size_sub(&sinfo->frags[0], offset);
+> > > +	skb_frag_off_add(&sinfo->frags[0], offset);
+> > > +	xdp->data_end = data_end;
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > So overall I don't see the point of copying bytes from one frag to
+> > another. Create an API that adjusts the data pointers and then
+> > copies are avoided and manipulating frags is not needed.
+> 
+> please see above.
+
+OK it makes more sense with the context. It doesn't have much if anything
+to do about making data visible to the BPF program. This is about
+changing the layout of the frags list.
+
+How/when does the header split go wrong on the mvneta device? I guess
+this is to fix a real bug/issue not some theoritical one? An example
+in the commit message would make this concrete. Soemthing like,
+"When using RX zerocopy to mmap data into userspace application if
+a packet with [all these wild headers] is received rx zerocopy breaks
+because header split puts headers X in the data frag confusing apps".
+
+> 
+> > 
+> > Also and even more concerning I think this API requires the
+> > driver to populate shinfo. If we use TX_REDIRECT a lot or TX_XMIT
+> > this means we need to populate shinfo when its probably not ever
+> > used. If our driver is smart L2/L3 headers are in the readable
+> > data and prefetched. Writing frags into the end of a page is likely
+> > not free.
+> 
+> Sorry I did not get what you mean with "populate shinfo" here. We need to
+> properly set shared_info in order to create the xdp multi-buff.
+> Apart of header splits, please consider the main uses-cases for
+> xdp multi-buff are XDP with TSO and Jumbo frames.
+
+The use case I have in mind is a XDP_TX or XDP_REDIRECT load balancer.
+I wont know this at the driver level and now I'll have to write into
+the back of every page with this shinfo just in case. If header
+split is working I should never need to even touch the page outside
+the first N bytes that were DMAd and in cache with DDIO. So its extra
+overhead for something that is unlikely to happen in the LB case.
+
+If you take the simplest possible program that just returns XDP_TX
+and run a pkt generator against it. I believe (haven't run any
+tests) that you will see overhead now just from populating this
+shinfo. I think it needs to only be done when its needed e.g. when
+user makes this helper call or we need to build the skb and populate
+the frags there.
+
+I think a smart driver will just keep the frags list in whatever
+form it has them (rx descriptors?) and push them over to the
+tx descriptors without having to do extra work with frag lists.
+
+> 
+> > 
+> > Did you benchmark this?
+> 
+> will do, I need to understand if we can use tiny buffers in mvneta.
+
+Why tiny buffers? How does mvneta layout the frags when doing
+header split? Can we just benchmark what mvneta is doing at the
+end of this patch series?
+
+Also can you try the basic XDP_TX case mentioned above.
+I don't want this to degrade existing use cases if at all
+possible.
+
+> 
+> > 
+> > In general users of this API should know the bytes they want
+> > to fetch. Use an API like this,
+> > 
+> >   bpf_xdp_adjust_bytes(xdp, start, end)
+> > 
+> > Where xdp is the frame, start is the first byte the user wants
+> > and end is the last byte. Then usually you can skip the entire
+> > copy part and just move the xdp pointesr around. The ugly case
+> > is if the user puts start/end across a frag boundary and a copy
+> > is needed. In that case maybe we use end as a hint and not a
+> > hard requirement.
+> > 
+> > The use case I see is I read L2/L3/L4 headers and I need the
+> > first N bytes of the payload. I know where the payload starts
+> > and I know how many bytes I need so,
+> > 
+> >   bpf_xdp_adjust_bytes(xdp, payload_offset, bytes_needed);
+> > 
+> > Then hopefully that is all in one frag. If its not I'll need
+> > to do a second helper call. Still nicer than forcing drivers
+> > to populate this shinfo I think. If you think I'm wrong try
+> > a benchmark. Benchmarks aside I get stuck when data_end and
+> > data_hard_end are too close together.
+> 
+> IIUC what you mean here is to expose L2/L3/L4 headers + some data to
+> the ebpf program to perform like L7 load-balancing, right?
+
+Correct, but with extra context I see in this patch you are trying
+to build an XDP controlled header split. This seems like a different
+use case from mine.
+
+> Let's consider the Jumbo frames use-case (so the data are split in multiple
+> buffers). I can see to issues here:
+> - since in XDP we can't linearize the buffer if start and end are on the
+>   different pages (like we do in bpf_msg_pull_data()), are we ending up
+>   in the case where requested data are all in buff0? 
+
+In this case I would expect either the helper returns how many bytes
+were pulled in, maybe just (start, end_of_frag) or user can find
+it from data_end pointer. Here end is just a hint.
+
+> - if  start and end are in buff<2>, we should report the fragment number to the
+>   ebpf program to "fetch" the data. Are we exposing too low-level details to
+>   user-space?
+
+Why do you need the frag number? Just say I want bytes (X,Y) if that
+happens to be on buff<2> let the helper find it.
+
+I think having a helper to read/write any bytes is important and
+necessary, but the helper implemented in this patch is something
+else. I get naming is hard what if we called it xdp_header_split().
+
+> 
+> Regards,
+> Lorenzo
+> 
+> > 
+> > Thanks,
+> > John
+
 
