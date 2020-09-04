@@ -2,150 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3151725DD02
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49F225DD07
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730696AbgIDPPS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 11:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730727AbgIDPPL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:15:11 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE85C061244;
-        Fri,  4 Sep 2020 08:15:11 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id b17so6664868ilh.4;
-        Fri, 04 Sep 2020 08:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1Qa8fhc7JYJpC9lwMaaW4xA5K2UzS0TV73tMcjhZtCs=;
-        b=S9i3O95rePrpmaPLkcBFOXSi5iPZLI9WNOCAgO2DHStDf/Do/RF1f+Ern5MeQUeFoQ
-         ssMXmQmtcsqQLTUspcXKt97H438pQPTjmjcpWR0Ixc66RldWFU2L2Te+pZM2Mlay891Y
-         89iMH3dVqyJKSeii9XiRDHokMgFocnz6JgvmdNJGo6ZnkmskMGbX4EZlDMNM9v0WCdW2
-         pyKuMBX1Z7UJBrCkI4gjHVTKU6A0ZZfWsbFG03lZl8holxYqUIhdQPaE3xCEUnHHGOf4
-         a4MsRKZusmvZhaNSDx3CBFelGuPPOl9sioa2SdRnH+SIN+cLpPCsLJN33xgj7CQ7rGsd
-         brQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1Qa8fhc7JYJpC9lwMaaW4xA5K2UzS0TV73tMcjhZtCs=;
-        b=lH8TXlShukvqABCpfqRX7JnNsi88xyqehPg5RJHS4tpWAkBKtSdOFhLqo2vrPURBHn
-         u37ZlA1JBX5IiB2V1HvYYHl8xCNbnWUayh2D4VZp4qLlnuejnqX0ZjI/ZxI+iBF3cb79
-         s06KdYue6WPfpw69yj8ZIjo4K259fV/hinP+TVjC6xRUfN3fkBl7TTL8+ryMMuGjWdYH
-         0C7MJ6lO2bwU38PxW/C7ZZ/GvWsTIg4NA2d5K7Sc0M3aPu66Wq9LdEw4r3fIXvYak73R
-         uoyn6nsRWsw3KoEkS70bSFO7dT7oxtVWNtQvCHJ+EAcBu5IPZM/rnhTYriXirLxUtGBS
-         g24w==
-X-Gm-Message-State: AOAM530QkZoszIokxA4yg7NtvtJHf9Jw/IHrrz8v5qMgknIN7Xi78P9X
-        6DYKxJkDD5FlTcbyUC2iPTI=
-X-Google-Smtp-Source: ABdhPJxlThJea46SCuuurcn+15CuwfdbIJxQSquibYLRfx/GtvZI809KLZHt+vd2k47FuYUVD1rR5w==
-X-Received: by 2002:a05:6e02:cd4:: with SMTP id c20mr8878530ilj.0.1599232510015;
-        Fri, 04 Sep 2020 08:15:10 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:c464:3333:84b2:9eff])
-        by smtp.googlemail.com with ESMTPSA id 2sm3196562ilj.24.2020.09.04.08.15.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Sep 2020 08:15:09 -0700 (PDT)
-Subject: Re: [PATCH v2 net-next 1/9] xdp: introduce mb in xdp_buff/xdp_frame
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, echaudro@redhat.com,
-        sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
-        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        David Ahern <dsahern@kernel.org>
-References: <cover.1599165031.git.lorenzo@kernel.org>
- <1e8e82f72e46264b7a7a1ac704d24e163ebed100.1599165031.git.lorenzo@kernel.org>
- <20200904010705.jm6dnuyj3oq4cpjd@ast-mbp.dhcp.thefacebook.com>
- <20200904091939.069592e4@carbon>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <1c3e478c-5000-1726-6ce9-9b0a3ccfe1e5@gmail.com>
-Date:   Fri, 4 Sep 2020 09:15:04 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1730271AbgIDPSI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 11:18:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17142 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729942AbgIDPSI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Sep 2020 11:18:08 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 084F2CT9133804;
+        Fri, 4 Sep 2020 11:17:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=DkIx5un8dmmC2AixxyorDisomuNuJIxtGAZLMTmL6Z0=;
+ b=X8Kk3HD533WGAcAUcyoLLtaI8YggYr9NKulFRsRCK/iQCZb46CXskPm4L6gjGsnsK8+8
+ 9lJ8klRZ9PF5v5+M60hUP+RZuD7MFxBOLugejv+ICDNABXnIrGdZt1ygZ5ItQwEt/cKi
+ GxHCbGvCBaN0oawAFgbpkE805ayHZ4ggglg7Is7vUIcAEuEqdofXEgto7KUJERjlV/Iq
+ E/yPLY23sdvj0Zp+dnTXE2bLLI/jHM1FFWRuVcxQMAchtef+M0uE15JAFQacDuydsTfa
+ KYa07yyzsJhof78HTWkmrXGyGc88EOGrvTaIs8Jd9ArQbF46A2MKvIAqtfYQ7zmxCyCP XQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33bqebh750-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 11:17:55 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 084F2cm4135382;
+        Fri, 4 Sep 2020 11:17:54 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33bqebh74a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 11:17:54 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 084F1hSt032612;
+        Fri, 4 Sep 2020 15:17:53 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 33bpfy02sm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 15:17:52 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 084FHo8237552512
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Sep 2020 15:17:50 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 865E311C04A;
+        Fri,  4 Sep 2020 15:17:50 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A0E111C052;
+        Fri,  4 Sep 2020 15:17:50 +0000 (GMT)
+Received: from sig-9-145-16-19.uk.ibm.com (unknown [9.145.16.19])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Sep 2020 15:17:50 +0000 (GMT)
+Message-ID: <a38c5d977acb6c036bfeddfc6784a0fe58c29b80.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC] bpf: update current instruction on patching
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        bpf@vger.kernel.org
+Cc:     jolsa@redhat.com, Jakub Kicinski <kuba@kernel.org>
+Date:   Fri, 04 Sep 2020 17:17:49 +0200
+In-Reply-To: <1ac6aef1-b38c-06c7-6e0d-b8459207d7d9@iogearbox.net>
+References: <20200903140542.156624-1-yauheni.kaliuta@redhat.com>
+         <1ac6aef1-b38c-06c7-6e0d-b8459207d7d9@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200904091939.069592e4@carbon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-04_07:2020-09-04,2020-09-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=3 malwarescore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 adultscore=0 clxscore=1011
+ mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009040130
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/4/20 1:19 AM, Jesper Dangaard Brouer wrote:
-> On Thu, 3 Sep 2020 18:07:05 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Thu, 2020-09-03 at 17:10 +0200, Daniel Borkmann wrote:
+> On 9/3/20 4:05 PM, Yauheni Kaliuta wrote:
+> > On code patching it may require to update branch destinations if
+> > the
+> > code size changed. bpf_adj_delta_to_imm/off increments offset only
+> > if the patched area is after the branch instruction. But it's
+> > possible, that the patched area itself is a branch instruction and
+> > requires destination update.
 > 
->> On Thu, Sep 03, 2020 at 10:58:45PM +0200, Lorenzo Bianconi wrote:
->>> Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify
->>> if shared_info area has been properly initialized for non-linear
->>> xdp buffers
->>>
->>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
->>> ---
->>>  include/net/xdp.h | 8 ++++++--
->>>  net/core/xdp.c    | 1 +
->>>  2 files changed, 7 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/include/net/xdp.h b/include/net/xdp.h
->>> index 3814fb631d52..42f439f9fcda 100644
->>> --- a/include/net/xdp.h
->>> +++ b/include/net/xdp.h
->>> @@ -72,7 +72,8 @@ struct xdp_buff {
->>>  	void *data_hard_start;
->>>  	struct xdp_rxq_info *rxq;
->>>  	struct xdp_txq_info *txq;
->>> -	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
->>> +	u32 frame_sz:31; /* frame size to deduce data_hard_end/reserved tailroom*/
->>> +	u32 mb:1; /* xdp non-linear buffer */
->>>  };
->>>  
->>>  /* Reserve memory area at end-of data area.
->>> @@ -96,7 +97,8 @@ struct xdp_frame {
->>>  	u16 len;
->>>  	u16 headroom;
->>>  	u32 metasize:8;
->>> -	u32 frame_sz:24;
->>> +	u32 frame_sz:23;
->>> +	u32 mb:1; /* xdp non-linear frame */  
->>
->> Hmm. Last time I checked compilers were generating ugly code with bitfields.
->> Not performant and not efficient.
->> frame_sz is used in the fast path.
->> I suspect the first hunk alone will cause performance degradation.
->> Could you use normal u8 or u32 flag field?
+> Could you provide a concrete example and walk us through? I'm
+> probably
+> missing something but if the patchlet contains a branch instruction,
+> then
+> it should be 'self-contained'. In the sense that the patchlet is a
+> 'black
+> box' that replaces 1 insns with n insns but there is no awareness
+> what's
+> inside these insns and hence no fixup for that inside
+> bpf_patch_insn_data().
+> So, if we take an existing branch insns from the code, move it into
+> the
+> patchlet and extend beginning or end, then it feels more like a bug
+> to the
+> one that called bpf_patch_insn_data(), aka zext code here. Bit
+> puzzled why
+> this is only seen now, my impression was that Ilya was running s390x
+> the
+> BPF selftests quite recently?
 > 
-> For struct xdp_buff sure we can do this.  For struct xdp_frame, I'm not
-> sure, as it is a state compressed version of xdp_buff + extra
-> information.  The xdp_frame have been called skb-light, and I know
-> people (e.g Ahern) wants to add more info to this, vlan, RX-hash, csum,
-> and we must keep this to 1-cache-line, for performance reasons.
-> 
-> You do make a good point, that these bit-fields might hurt performance
-> more.  I guess, we need to test this.  As I constantly worry that we
-> will slowly kill XDP performance with a 1000 paper-cuts.
-> 
+> > The problem was triggered by bpf selftest
+> > 
+> > test_progs -t global_funcs
+> > 
+> > on s390, where the very first "call" instruction is patched from
+> > verifier.c:opt_subreg_zext_lo32_rnd_hi32() with zext_patch.
+> > 
+> > The patch includes current instruction to the condition check.
+> > 
+> > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> > ---
+> >   kernel/bpf/core.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index ed0b3578867c..b0a9a22491a5 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -340,7 +340,7 @@ static int bpf_adj_delta_to_imm(struct bpf_insn
+> > *insn, u32 pos, s32 end_old,
+> >   	s32 delta = end_new - end_old;
+> >   	s64 imm = insn->imm;
+> >   
+> > -	if (curr < pos && curr + imm + 1 >= end_old)
+> > +	if (curr <= pos && curr + imm + 1 >= end_old)
+> >   		imm += delta;
+> >   	else if (curr >= end_new && curr + imm + 1 < end_new)
+> >   		imm -= delta;
+> > @@ -358,7 +358,7 @@ static int bpf_adj_delta_to_off(struct bpf_insn
+> > *insn, u32 pos, s32 end_old,
+> >   	s32 delta = end_new - end_old;
+> >   	s32 off = insn->off;
+> >   
+> > -	if (curr < pos && curr + off + 1 >= end_old)
+> > +	if (curr <= pos && curr + off + 1 >= end_old)
+> >   		off += delta;
+> >   	else if (curr >= end_new && curr + off + 1 < end_new)
+> >   		off -= delta;
+> > 
 
-That struct is tight on space, and we have to be very smart about
-additions. dev_rx for example seems like it could just be the netdev
-index rather than a pointer or perhaps can be removed completely. I
-believe it is only used for 1 use case (redirects to CPUMAP); maybe that
-code can be refactored to handle the dev outside of xdp_frame.
+Hi!
 
-xdp_mem_info is 2 u32's; the type in that struct really could be a u8.
-In this case it means removing struct in favor of 2 elements to reclaim
-the space, but as we reach the 64B limit this is a place to change.
-e.g., make it a single u32 with the id only 24 bits though the
-rhashtable key can stay u32 but now with the combined type + id.
+Last time I ran selftests against bpf-next ~1 month ago, and I don't
+remember seeing any test_progs failures. Now I tried it again, and I
+see the same problem as Yauheni. So this must be relatively new - I'll
+try to bisect the commit that caused this.
 
-As for frame_sz, why does it need to be larger than a u16?
-
-If it really needs to be larger than u16, there are several examples of
-using a bit (or bits) in the data path. dst metrics for examples uses
-lowest 4 bits of the dst pointer as a bitfield. It does so using a mask
-with accessors vs a bitfield. Perhaps that is the way to go here.
+Best regards,
+Ilya
 
