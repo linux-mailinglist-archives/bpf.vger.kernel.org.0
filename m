@@ -2,277 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211AF25DF98
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 18:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AC525DFB5
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 18:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgIDQPw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 12:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48436 "EHLO
+        id S1727115AbgIDQW1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 12:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgIDQPF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:15:05 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E58C061247
-        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 09:15:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id c18so7271828wrm.9
-        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 09:15:05 -0700 (PDT)
+        with ESMTP id S1726196AbgIDQWZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:22:25 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB5BC061245
+        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 09:22:23 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so7294738wrm.9
+        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 09:22:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dj0v8uocnLX7SPxCOZg2mHARUJRyp9/6UtI4Yc3fo0U=;
-        b=xdPIdmu8w9q8Kg37s7sRtRU1Q7RgNDRSIFRz8ZMWrRAe8lPwVrlsis97wl3fa9vCrJ
-         qZIToHnL01U+l5ysZz30Tq96eclx6Mjr+9ysQPcxsN8Ve4w2RqTf4VfNG8QbHsuDeUdh
-         kVmSLGKyDBqPTTv6jUD2J47LzQYio6lkkL84Ml/bxFNt74sLQb+jYsSEJJoPB6fQrLXc
-         tMCqiWntdKv4demO0xtuSAMjw9bVzpj/CwiQl9YCff8WNjSh/uih6NsyGx5WutuRTiVF
-         PnulBL1+leJwFr+6UzwFG947gqvrOAqmIcpeM8Pd8uK1k0+ZHgq+n5APOAh+1yMIbPR5
-         qyrg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iUBmsm1x2IjnP/vvaMS9kAvkCHrQJaf0jWdnYFgluME=;
+        b=pM4zSYEDH8rIALEQFgas6IpcrK9Kwnfi0QTIA+JO1xCa+et9UJk/Y5Uja1ezkn37Hu
+         E56ZnTwuPhX33oHp0FNw9Ku43IDcnxNe6YfpoGyk+5c2+FZKe4x9gUkn2ZEFCpv6fEwy
+         6r1bmx7G3efw7aVCikhg9ESQgCiEe6+PgKBCy5s2hVeBlVLUvpg2IMQ+eUpLpk2Q3da9
+         XcMZOTIC2SaQJP8HTUuJXiyu6gol5/gm+ZXZdS8Hz+E0Nh99XY6bY4BsvYwIii+S16OK
+         0IjjpP3RCLCn3VdHVSTNju8NoBPA3JNpUkfwz9po5oXprvtgF4qjPsScxIzhJxNiNTzK
+         hv7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dj0v8uocnLX7SPxCOZg2mHARUJRyp9/6UtI4Yc3fo0U=;
-        b=EfdSjDrVbUm+6iwS9qFDi3fUYDdh2BOMrmSOGvBlmgTbJWzjJ26oBi9EYY0HNlUJMc
-         KQoa+tBlIzscSsRt3L/QE3TyHJuJndL92Bp9BeJ8AeSpFlZ7hqFN0dRfxIQSLK3Hzpm5
-         0aLqlOMpfsRyKnTxeZh0VWGlzUDzIThz00bh7AAVEIK8Erlilb/P0fpgctZ51/064hHr
-         Nh5Q9SGvSyjl89zb7Dm8I4cXKLbW2roNGFeoQeNT2HMko59Uu+BvE3LMcEWCkxnzGFfH
-         +dLLK8BDxyPvVWRdWNwVQpY/u94L+/Pb1jk5HCfdBt6to9rvuR6q92BgPciYYz+jargH
-         uONQ==
-X-Gm-Message-State: AOAM5306TVDcctwz/ungTepkZ42GMAOKtZX+xrjI65yVc1vysUe9ufpe
-        xuoSKFLApxzmASs9UsvTmWyZCw==
-X-Google-Smtp-Source: ABdhPJyLLBh8OQmAhPXt7AL0GttfjQqdcZzKjPHpLAeMkkr4/UGToCujKQSZFdjbkcd5d/XknP4Uew==
-X-Received: by 2002:adf:f903:: with SMTP id b3mr8722362wrr.142.1599236103851;
-        Fri, 04 Sep 2020 09:15:03 -0700 (PDT)
-Received: from localhost.localdomain ([194.35.117.187])
-        by smtp.gmail.com with ESMTPSA id p1sm28859352wma.0.2020.09.04.09.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 09:15:03 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 3/3] tools, bpf: synchronise BPF UAPI header with tools
-Date:   Fri,  4 Sep 2020 17:14:54 +0100
-Message-Id: <20200904161454.31135-4-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200904161454.31135-1-quentin@isovalent.com>
-References: <20200904161454.31135-1-quentin@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iUBmsm1x2IjnP/vvaMS9kAvkCHrQJaf0jWdnYFgluME=;
+        b=NxopWxEVWdqvYWyxk4dHDEZUCZgZ14B9U9O/YZ9RTQM/Gvb8O4uFHojjvTZEoW4HYN
+         e+hNji63dxg3al1i2gnRQ1u6RDBInsb9qJ6Ks02feW3yNAp0tFBq8gqTmNRW/qZSdk1d
+         CuWVGwp5le6RjmmswGlwjmw9ApKGLLOiqUEGKZBpTDmiHPPINPvFRaIZ0ZpD68WBnqzN
+         JAKElIw4lsiHH4JMAIuMQIYuAoMWJkozzgkS0bwQm8oesB1gHeDxgrUQaa2w6PqG7FqV
+         4cnvrxOuKPCZxDtsq0FCmtEZYnCrPhNrQ8QYjOtn0Z4XSZAnqbBXpctVSNP5bhxesP7u
+         8qVA==
+X-Gm-Message-State: AOAM5334Yv0mHCVyrpfbJ8ZMHvBPDrQtbv2tUVPBI5/CHljGRpUbnp0Z
+        TRCrcoTPGi8f1MhK+tGk5gRfkXNuvKD0Pji+YlQm7w==
+X-Google-Smtp-Source: ABdhPJySfIz8aAcQ9J1AamPC0cWNdBGNAI75Wc0N8M5+kih7VPDyB0ZJhly7HEz5L6PjHFBOXOFNgYbe/rcGjkqCQKg=
+X-Received: by 2002:adf:f88b:: with SMTP id u11mr8134820wrp.376.1599236542160;
+ Fri, 04 Sep 2020 09:22:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200728085734.609930-1-irogers@google.com> <20200728085734.609930-3-irogers@google.com>
+ <20200728155940.GC1319041@krava> <20200728160954.GD1319041@krava>
+ <CAP-5=fVqto0LrwgW6dHQupp7jFA3wToRBonBaXXQW4wwYcTreg@mail.gmail.com>
+ <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com> <20200904160303.GD939481@krava>
+In-Reply-To: <20200904160303.GD939481@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 4 Sep 2020 09:22:10 -0700
+Message-ID: <CAP-5=fWOSi4B3g1DARkh6Di-gU4FgmjnhbPYRBdvSdLSy_KC5Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
+ attr->sample_period for libpfm4 events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Synchronise the bpf.h header under tools, to report the fixes recently
-brought to the documentation for the BPF helpers.
+On Fri, Sep 4, 2020 at 9:03 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Sep 03, 2020 at 10:41:14PM -0700, Ian Rogers wrote:
+> > On Wed, Jul 29, 2020 at 4:24 PM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > On Tue, Jul 28, 2020 at 9:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote:
+> > > > > On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
+> > > > > > From: Stephane Eranian <eranian@google.com>
+> > > > > >
+> > > > > > Before:
+> > > > > > $ perf record -c 10000 --pfm-events=cycles:period=77777
+> > > > > >
+> > > > > > Would yield a cycles event with period=10000, instead of 77777.
+> > > > > >
+> > > > > > This was due to an ordering issue between libpfm4 parsing
+> > > > > > the event string and perf record initializing the event.
+> > > > > >
+> > > > > > This patch fixes the problem by preventing override for
+> > > > > > events with attr->sample_period != 0 by the time
+> > > > > > perf_evsel__config() is invoked. This seems to have been the
+> > > > > > intent of the author.
+> > > > > >
+> > > > > > Signed-off-by: Stephane Eranian <eranian@google.com>
+> > > > > > Reviewed-by: Ian Rogers <irogers@google.com>
+> > > > > > ---
+> > > > > >  tools/perf/util/evsel.c | 3 +--
+> > > > > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > > > >
+> > > > > > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > > > > > index 811f538f7d77..8afc24e2ec52 100644
+> > > > > > --- a/tools/perf/util/evsel.c
+> > > > > > +++ b/tools/perf/util/evsel.c
+> > > > > > @@ -976,8 +976,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+> > > > > >      * We default some events to have a default interval. But keep
+> > > > > >      * it a weak assumption overridable by the user.
+> > > > > >      */
+> > > > > > -   if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
+> > > > > > -                                opts->user_interval != ULLONG_MAX)) {
+> > > > > > +   if (!attr->sample_period) {
+> > > > >
+> > > > > I was wondering why this wouldn't break record/top
+> > > > > but we take care of the via record_opts__config
+> > > > >
+> > > > > as long as 'perf test attr' works it looks ok to me
+> > > >
+> > > > hum ;-)
+> > > >
+> > > > [jolsa@krava perf]$ sudo ./perf test 17 -v
+> > > > 17: Setup struct perf_event_attr                          :
+> > > > ...
+> > > > running './tests/attr/test-record-C0'
+> > > > expected sample_period=4000, got 3000
+> > > > FAILED './tests/attr/test-record-C0' - match failure
+> > >
+> > > I'm not able to reproduce this. Do you have a build configuration or
+> > > something else to look at? The test doesn't seem obviously connected
+> > > with this patch.
+> > >
+> > > Thanks,
+> > > Ian
+> >
+> > Jiri, any update? Thanks,
+>
+> sorry, I rebased and ran it again and it passes for me now,
+> so it got fixed along the way
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/include/uapi/linux/bpf.h | 87 ++++++++++++++++++----------------
- 1 file changed, 45 insertions(+), 42 deletions(-)
+No worries, thanks for the update! It'd be nice to land this and the
+other libpfm fixes.
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 8dda13880957..90359cab501d 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3349,38 +3349,38 @@ union bpf_attr {
-  *	Description
-  *		Dynamically cast a *sk* pointer to a *tcp6_sock* pointer.
-  *	Return
-- *		*sk* if casting is valid, or NULL otherwise.
-+ *		*sk* if casting is valid, or **NULL** otherwise.
-  *
-  * struct tcp_sock *bpf_skc_to_tcp_sock(void *sk)
-  *	Description
-  *		Dynamically cast a *sk* pointer to a *tcp_sock* pointer.
-  *	Return
-- *		*sk* if casting is valid, or NULL otherwise.
-+ *		*sk* if casting is valid, or **NULL** otherwise.
-  *
-  * struct tcp_timewait_sock *bpf_skc_to_tcp_timewait_sock(void *sk)
-  * 	Description
-  *		Dynamically cast a *sk* pointer to a *tcp_timewait_sock* pointer.
-  *	Return
-- *		*sk* if casting is valid, or NULL otherwise.
-+ *		*sk* if casting is valid, or **NULL** otherwise.
-  *
-  * struct tcp_request_sock *bpf_skc_to_tcp_request_sock(void *sk)
-  * 	Description
-  *		Dynamically cast a *sk* pointer to a *tcp_request_sock* pointer.
-  *	Return
-- *		*sk* if casting is valid, or NULL otherwise.
-+ *		*sk* if casting is valid, or **NULL** otherwise.
-  *
-  * struct udp6_sock *bpf_skc_to_udp6_sock(void *sk)
-  * 	Description
-  *		Dynamically cast a *sk* pointer to a *udp6_sock* pointer.
-  *	Return
-- *		*sk* if casting is valid, or NULL otherwise.
-+ *		*sk* if casting is valid, or **NULL** otherwise.
-  *
-  * long bpf_get_task_stack(struct task_struct *task, void *buf, u32 size, u64 flags)
-  *	Description
-  *		Return a user or a kernel stack in bpf program provided buffer.
-  *		To achieve this, the helper needs *task*, which is a valid
-- *		pointer to struct task_struct. To store the stacktrace, the
-- *		bpf program provides *buf* with	a nonnegative *size*.
-+ *		pointer to **struct task_struct**. To store the stacktrace, the
-+ *		bpf program provides *buf* with a nonnegative *size*.
-  *
-  *		The last argument, *flags*, holds the number of stack frames to
-  *		skip (from 0 to 255), masked with
-@@ -3410,12 +3410,12 @@ union bpf_attr {
-  * long bpf_load_hdr_opt(struct bpf_sock_ops *skops, void *searchby_res, u32 len, u64 flags)
-  *	Description
-  *		Load header option.  Support reading a particular TCP header
-- *		option for bpf program (BPF_PROG_TYPE_SOCK_OPS).
-+ *		option for bpf program (**BPF_PROG_TYPE_SOCK_OPS**).
-  *
-  *		If *flags* is 0, it will search the option from the
-- *		sock_ops->skb_data.  The comment in "struct bpf_sock_ops"
-+ *		*skops*\ **->skb_data**.  The comment in **struct bpf_sock_ops**
-  *		has details on what skb_data contains under different
-- *		sock_ops->op.
-+ *		*skops*\ **->op**.
-  *
-  *		The first byte of the *searchby_res* specifies the
-  *		kind that it wants to search.
-@@ -3435,7 +3435,7 @@ union bpf_attr {
-  *		[ 254, 4, 0xeB, 0x9F, 0, 0, .... 0 ].
-  *
-  *		To search for the standard window scale option (3),
-- *		the searchby_res should be [ 3, 0, 0, .... 0 ].
-+ *		the *searchby_res* should be [ 3, 0, 0, .... 0 ].
-  *		Note, kind-length must be 0 for regular option.
-  *
-  *		Searching for No-Op (0) and End-of-Option-List (1) are
-@@ -3445,27 +3445,30 @@ union bpf_attr {
-  *		of a header option.
-  *
-  *		Supported flags:
-+ *
-  *		* **BPF_LOAD_HDR_OPT_TCP_SYN** to search from the
-  *		  saved_syn packet or the just-received syn packet.
-  *
-  *	Return
-- *		>0 when found, the header option is copied to *searchby_res*.
-- *		The return value is the total length copied.
-+ *		> 0 when found, the header option is copied to *searchby_res*.
-+ *		The return value is the total length copied. On failure, a
-+ *		negative error code is returned:
-  *
-- *		**-EINVAL** If param is invalid
-+ *		**-EINVAL** if a parameter is invalid.
-  *
-- *		**-ENOMSG** The option is not found
-+ *		**-ENOMSG** if the option is not found.
-  *
-- *		**-ENOENT** No syn packet available when
-- *			    **BPF_LOAD_HDR_OPT_TCP_SYN** is used
-+ *		**-ENOENT** if no syn packet is available when
-+ *		**BPF_LOAD_HDR_OPT_TCP_SYN** is used.
-  *
-- *		**-ENOSPC** Not enough space.  Only *len* number of
-- *			    bytes are copied.
-+ *		**-ENOSPC** if there is not enough space.  Only *len* number of
-+ *		bytes are copied.
-  *
-- *		**-EFAULT** Cannot parse the header options in the packet
-+ *		**-EFAULT** on failure to parse the header options in the
-+ *		packet.
-  *
-- *		**-EPERM** This helper cannot be used under the
-- *			   current sock_ops->op.
-+ *		**-EPERM** if the helper cannot be used under the current
-+ *		*skops*\ **->op**.
-  *
-  * long bpf_store_hdr_opt(struct bpf_sock_ops *skops, const void *from, u32 len, u64 flags)
-  *	Description
-@@ -3483,44 +3486,44 @@ union bpf_attr {
-  *		by searching the same option in the outgoing skb.
-  *
-  *		This helper can only be called during
-- *		BPF_SOCK_OPS_WRITE_HDR_OPT_CB.
-+ *		**BPF_SOCK_OPS_WRITE_HDR_OPT_CB**.
-  *
-  *	Return
-  *		0 on success, or negative error in case of failure:
-  *
-- *		**-EINVAL** If param is invalid
-+ *		**-EINVAL** If param is invalid.
-  *
-- *		**-ENOSPC** Not enough space in the header.
-- *			    Nothing has been written
-+ *		**-ENOSPC** if there is not enough space in the header.
-+ *		Nothing has been written
-  *
-- *		**-EEXIST** The option has already existed
-+ *		**-EEXIST** if the option already exists.
-  *
-- *		**-EFAULT** Cannot parse the existing header options
-+ *		**-EFAULT** on failrue to parse the existing header options.
-  *
-- *		**-EPERM** This helper cannot be used under the
-- *			   current sock_ops->op.
-+ *		**-EPERM** if the helper cannot be used under the current
-+ *		*skops*\ **->op**.
-  *
-  * long bpf_reserve_hdr_opt(struct bpf_sock_ops *skops, u32 len, u64 flags)
-  *	Description
-  *		Reserve *len* bytes for the bpf header option.  The
-- *		space will be used by bpf_store_hdr_opt() later in
-- *		BPF_SOCK_OPS_WRITE_HDR_OPT_CB.
-+ *		space will be used by **bpf_store_hdr_opt**\ () later in
-+ *		**BPF_SOCK_OPS_WRITE_HDR_OPT_CB**.
-  *
-- *		If bpf_reserve_hdr_opt() is called multiple times,
-+ *		If **bpf_reserve_hdr_opt**\ () is called multiple times,
-  *		the total number of bytes will be reserved.
-  *
-  *		This helper can only be called during
-- *		BPF_SOCK_OPS_HDR_OPT_LEN_CB.
-+ *		**BPF_SOCK_OPS_HDR_OPT_LEN_CB**.
-  *
-  *	Return
-  *		0 on success, or negative error in case of failure:
-  *
-- *		**-EINVAL** if param is invalid
-+ *		**-EINVAL** if a parameter is invalid.
-  *
-- *		**-ENOSPC** Not enough space in the header.
-+ *		**-ENOSPC** if there is not enough space in the header.
-  *
-- *		**-EPERM** This helper cannot be used under the
-- *			   current sock_ops->op.
-+ *		**-EPERM** if the helper cannot be used under the current
-+ *		*skops*\ **->op**.
-  *
-  * void *bpf_inode_storage_get(struct bpf_map *map, void *inode, void *value, u64 flags)
-  *	Description
-@@ -3560,9 +3563,9 @@ union bpf_attr {
-  *
-  * long bpf_d_path(struct path *path, char *buf, u32 sz)
-  *	Description
-- *		Return full path for given 'struct path' object, which
-- *		needs to be the kernel BTF 'path' object. The path is
-- *		returned in the provided buffer 'buf' of size 'sz' and
-+ *		Return full path for given **struct path** object, which
-+ *		needs to be the kernel BTF *path* object. The path is
-+ *		returned in the provided buffer *buf* of size *sz* and
-  *		is zero terminated.
-  *
-  *	Return
-@@ -3573,7 +3576,7 @@ union bpf_attr {
-  * long bpf_copy_from_user(void *dst, u32 size, const void *user_ptr)
-  * 	Description
-  * 		Read *size* bytes from user space address *user_ptr* and store
-- * 		the data in *dst*. This is a wrapper of copy_from_user().
-+ * 		the data in *dst*. This is a wrapper of **copy_from_user**\ ().
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  */
--- 
-2.20.1
+Ian
 
+> jirka
+>
