@@ -2,86 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D044325E096
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 19:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FB125E0C3
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 19:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgIDROS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 13:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        id S1726877AbgIDRaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 13:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgIDROR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:14:17 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF34C061244;
-        Fri,  4 Sep 2020 10:14:16 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id h20so4909848ybj.8;
-        Fri, 04 Sep 2020 10:14:16 -0700 (PDT)
+        with ESMTP id S1726842AbgIDR37 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 13:29:59 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71316C061244;
+        Fri,  4 Sep 2020 10:29:59 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g128so7880944iof.11;
+        Fri, 04 Sep 2020 10:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZsYPLVwblcuEmaIyau2OYJj/wD7sHwvaDVgfKuOsMQ0=;
-        b=B1q3l07sIL9PRuo6wx6SkHd36fr+M4LfptwD3VejtzlZnZ+zIQbRTzJ2gkOTmXA3Ks
-         VSs/1rjC6I5FM2TSF3eHwreHLJDqwTYTR/LoQa0i5hdhZb2XELWTarhqYUggMWpfIBze
-         oXECMOlB2F2mWq9gRgeHUplBaaHCXpX0Lp1SSr5G/RxwbvWAsD9suB9epZSP2j1ZZaBd
-         Gn3fxWc41fhTiF72db+5v7lcpreBAWaEosh9LipXu030mWwCLm/F0T0HVIec0e6Yp1/I
-         wLTkj6zH8MvztnkVrTBM5sP0OM0SP1RMXOX1nh1WpwwDWP0okQXgUlQQe0X8BWXzyzQ7
-         vSlA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=iup/BPBU3NZvrPiN2q7hG6ObvdkJkFEtj83NMUIZ1KY=;
+        b=cx1YgDod4rlnCOWPokMbDrqgPNNXfF4RFsY4J24ShFyXyP15fGTYlzrgebtUR9i1qp
+         6T+Qd2yNsBkyETU02VdDXMOJvg4JKkPPTvbTwkMh7g4ttA0CZ0oTrOms0rp5Suvv2hkJ
+         o/Hjuk4phd23HJkGxlFOuDV4sdWzo5BHrfSebz4mZScVqEnROpgkgwsM2JkPY3Urp1PM
+         GJRXa7AtgIJKnnYlakaVajTT7ZONAocnWgzQ0+aF7vaOtNemDnZamR7eRUf1a8lxVVfr
+         Y/iRbX8CvkuJPvuDQHQQcQv4HaYnYGSH/bURHI1rTFONa1+HQE2+YyYjK2BzXPNRWnk0
+         Wt6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZsYPLVwblcuEmaIyau2OYJj/wD7sHwvaDVgfKuOsMQ0=;
-        b=Iqm2HfRrBon9ZhaDkNYtS4HnfN0g95xoRjWXJ+GhfMIQ4Egn+dtQvughwwwmnTT1qb
-         QqdUplNUfF0FZiVSIapcozD2boCQNHtBDL6KAFqUbeysnxdZUhpza71SjIVmE3LOTC+h
-         kOaP2nbi5UOzoqBfc7qgwBWBSGvm4htYFtLVqFPSPiWlfC/S0v1S0w35OavFGJPYZC0o
-         657NhDQxpcVj+EY2nyM+EeZL+njvcE+SEOhL38iMrt818ty0x1tBknyQCdeg+DrANvb4
-         B1eCNQgcneSE1c5H2A2mYWcDs99kUH71gMSuJ9zpv0tWoYvjOv1hJl9IOGYl6HKLcxX9
-         5fxw==
-X-Gm-Message-State: AOAM530u9cF7T1wp37QySf0e9MU/SY1N4UJEB4KVQ+BXq6T2Y/63Gw0J
-        6voWY87VrLLcN4HP7mgS601TsMUTYUl9oY1++ZUq3cvNZgY=
-X-Google-Smtp-Source: ABdhPJzBZ8oT9LLFnb+A3VFcJNz88uGrI6OhgceFxci9ai4lAcIryynW7izY/fxJdCag7YDWB6o+iuSDkxoGMO4Riq8=
-X-Received: by 2002:a25:ad5a:: with SMTP id l26mr10774919ybe.510.1599239654824;
- Fri, 04 Sep 2020 10:14:14 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=iup/BPBU3NZvrPiN2q7hG6ObvdkJkFEtj83NMUIZ1KY=;
+        b=jH8QSMHaKm89UgN9aUSxIqCeq0Jf8ZKPOmn3lyl4tuTzmvoeE5Uye+uL+MgxVE0c15
+         /eMT69tPIZVPAaReWKORsfrDvA26xLtpvaRoyGn21i7zlQIgJYqurwc2f/RUwO7avOpB
+         6Je6tN+IVIOoyVwcpGvCMVEboi+M7iZxaUOEUEAXwbyT/Nlo/OH3Na+8o0uG2H3P7v7y
+         4U1ui4bPlGm0B0W+7kmG8i6Qvnrm8lWPsraZljOp8e+1F7PHLV63ykH2ou5oZgByfDcS
+         B+uuxjYR7xatPw9BT2WIjQWI3B1cGXQyjoMTlCdb10005mizqcDQfsPDk4XXXrbn+ArG
+         P60Q==
+X-Gm-Message-State: AOAM5325ravfuXFxTRMjh22yv2sKqRJC10+0VBJzbMjb8VhN6dDpdsjp
+        917fQulocguM6YuJMQrpDKe5ZLloC99p9Dsf
+X-Google-Smtp-Source: ABdhPJzKEGTy0s+XClH8eBd580NUxzaUtvIhCksv0P9Mq6vYEIXPLYR9c9eA7SNTVNW8HoUddRifXg==
+X-Received: by 2002:a6b:e718:: with SMTP id b24mr8734820ioh.9.1599240598271;
+        Fri, 04 Sep 2020 10:29:58 -0700 (PDT)
+Received: from leah-Ubuntu ([2601:4c3:200:c230:e82f:35f2:cc6c:cdf5])
+        by smtp.gmail.com with ESMTPSA id d22sm390633ios.47.2020.09.04.10.29.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 04 Sep 2020 10:29:57 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 13:29:55 -0400
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf@vger.kernel.org, linux-block@vger.kernel.org,
+        orbekk@google.com, harshads@google.com, jasiu@google.com,
+        saranyamohan@google.com, tytso@google.com, bvanassche@google.com
+Subject: Re: [RFC PATCH 1/4] bpf: add new prog_type BPF_PROG_TYPE_IO_FILTER
+Message-ID: <20200904172954.GC2048@leah-Ubuntu>
+References: <20200812163305.545447-1-leah.rumancik@gmail.com>
+ <20200812163305.545447-2-leah.rumancik@gmail.com>
+ <87mu2sru7d.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20200904063434.24963-1-danieltimlee@gmail.com>
-In-Reply-To: <20200904063434.24963-1-danieltimlee@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Sep 2020 10:14:04 -0700
-Message-ID: <CAEf4BzZgvw2zx7SCL5JPb42pDfAnrvVVrF2FZu8xX3gN3htEpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] samples: bpf: Replace bpf_program__title()
- with bpf_program__section_name()
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mu2sru7d.fsf@cloudflare.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 11:34 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
->
-> From commit 521095842027 ("libbpf: Deprecate notion of BPF program
-> "title" in favor of "section name""), the term title has been replaced
-> with section name in libbpf.
->
-> Since the bpf_program__title() has been deprecated, this commit
-> switches this function to bpf_program__section_name(). Due to
-> this commit, the compilation warning issue has also been resolved.
->
-> Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
-> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> ---
+On Tue, Aug 18, 2020 at 02:53:42PM +0200, Jakub Sitnicki wrote:
+> On Wed, Aug 12, 2020 at 06:33 PM CEST, Leah Rumancik wrote:
+> > +int io_filter_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> > +{
+> > +	struct gendisk *disk;
+> > +	struct fd f;
+> > +	struct bpf_prog_array *old_array;
+> > +	struct bpf_prog_array *new_array;
+> > +	int ret;
+> > +
+> > +	if (attr->attach_flags)
+> > +		return -EINVAL;
+> > +
+> > +	f = fdget(attr->target_fd);
+>             ^^^^^
+> 
+> Missing corresponding fdput?
+> 
+> As per Martin's suggestion, with bpf_link this will become the
+> link_create callback, but the comment still stands.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Yep, will add.
 
->  samples/bpf/sockex3_user.c          | 6 +++---
->  samples/bpf/spintest_user.c         | 6 +++---
->  samples/bpf/tracex5_user.c          | 6 +++---
->  samples/bpf/xdp_redirect_cpu_user.c | 2 +-
->  4 files changed, 10 insertions(+), 10 deletions(-)
->
-
-[...]
+Thanks,
+Leah
