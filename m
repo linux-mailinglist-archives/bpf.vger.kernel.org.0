@@ -2,137 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8717725E19E
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 20:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB8E25E19B
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 20:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726135AbgIDSua (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 14:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727776AbgIDSuV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:50:21 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C42C061244;
-        Fri,  4 Sep 2020 11:50:20 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id t23so9192784ljc.3;
-        Fri, 04 Sep 2020 11:50:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YtKx/BkJtpRlTWwmfq1br0XSeXd7ZgOWgZ7CcNA6fU4=;
-        b=UB4c4dgv5HvkI1cloRBNUnahHpluNnVf7Ci6WUQSTQkAkfbf0rM0GeQP49L0GvGqTY
-         fgh7HiLOU3n/kSes7dmEwuuxI3dGwr3P+qku0qLVnwD+ezBRVPHT8bkGTTAEjNbgNjyp
-         +JD2BgESFH/OqWfQP8HlZ7q3mZ0r50oFCqIZSBSi+btjo6iwJSRxPvtCMFcZp7eNNU7E
-         kRVTkVlL93DLO6GkkLeGZMAhmXaBEMwyMlM/mWTwNqi1ZNgv7PexTrnscnJ1q2eY0ZIF
-         WGwj8Qx3G8s5s42OpMN0qL980ygLXLgNIk4I32eHqRkDJNnUKZ9vyhgm238Ozc8MLsmw
-         pDtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YtKx/BkJtpRlTWwmfq1br0XSeXd7ZgOWgZ7CcNA6fU4=;
-        b=Ol/PuGxZ2ScBs92Z36YF3iT1qYPhVROuYAmSgDr2TAcrIzNzri7CrPSS2CfWgygxC8
-         qsAhttJBm+Vui9/7jAvprdFHrIUp3k8Z0IKWU/edJZU3k56S8OXL+K+R9elfnrduudJx
-         M+QnbfIbeeTf+o8WrokIztE/5fai46Nx/ZHwrGXRyXBwQtEA+29LVIZNbwXvXbMaqYrM
-         qjV+/u7V0cBtVC/WQTXYH2j3nK01XTF9Vnx6sqXQ9iS6PL5zOPfyFtQDgAa7ucwoF36V
-         XBNQGyliQ71MOegticFOH/TkxgFGkPa0LJc18gPTUXFzo8opGcoRj8qdJ/sogc2O97ss
-         EVmQ==
-X-Gm-Message-State: AOAM531Ae2+1uXWO0v0Zrd9FgQAYorrt5jAynkkdfXzAZ3dLhRgX4HyL
-        4nvEprt6MQOCRoMOC4uf1pNnuUNE5fywfy+JiClFbtLW
-X-Google-Smtp-Source: ABdhPJyjC2mdiG2BYeodygZPZL0MK5GS6pcPsLA2b9DxuOy5u60byR0+dfXSOQdjCw7F8TCKi4UiXkCaV51eeXVeC5I=
-X-Received: by 2002:a2e:4e09:: with SMTP id c9mr4790625ljb.283.1599245418496;
- Fri, 04 Sep 2020 11:50:18 -0700 (PDT)
+        id S1726938AbgIDSuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 14:50:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726135AbgIDSuP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 14:50:15 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2487920665;
+        Fri,  4 Sep 2020 18:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599245415;
+        bh=VCLWBRtgGFFIevAtuNkp7sXJXXOh2ElWVKnbEuz7028=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IkKyMDnc2bVRAEON6+yxtIzWGqkojucKh55fuxOr9UqtZAgP9TDUE19+rDRpkszkf
+         lWVjqkqcPVT3QWXSqCeP8mC+wN76qO2toh5jySLM+gMVJCtGlEa2gjvQoWKVzYqPs7
+         vwNgLIFeEZqgdWuyUG7G4tAnNjbFDuvAsyI1HX8g=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4A24C40D3D; Fri,  4 Sep 2020 15:50:13 -0300 (-03)
+Date:   Fri, 4 Sep 2020 15:50:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
+ attr->sample_period for libpfm4 events
+Message-ID: <20200904185013.GA3752059@kernel.org>
+References: <20200728085734.609930-1-irogers@google.com>
+ <20200728085734.609930-3-irogers@google.com>
+ <20200728155940.GC1319041@krava>
+ <20200728160954.GD1319041@krava>
+ <CAP-5=fVqto0LrwgW6dHQupp7jFA3wToRBonBaXXQW4wwYcTreg@mail.gmail.com>
+ <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
+ <20200904160303.GD939481@krava>
+ <CAP-5=fWOSi4B3g1DARkh6Di-gU4FgmjnhbPYRBdvSdLSy_KC5Q@mail.gmail.com>
+ <20200904184803.GA3749996@kernel.org>
 MIME-Version: 1.0
-References: <20200812163305.545447-1-leah.rumancik@gmail.com>
- <20200812163305.545447-2-leah.rumancik@gmail.com> <a0a97488-58c7-1f00-c987-d75e1329159c@oracle.com>
- <20200817163207.p53guehd7kpxfvat@ast-mbp.dhcp.thefacebook.com> <20200904164605.GB2048@leah-Ubuntu>
-In-Reply-To: <20200904164605.GB2048@leah-Ubuntu>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 4 Sep 2020 11:50:06 -0700
-Message-ID: <CAADnVQK3VVzUHsteMcZ_iBFqQaoUJc5q-Rx9zxtCMw+-OhTHbA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/4] bpf: add new prog_type BPF_PROG_TYPE_IO_FILTER
-To:     Leah Rumancik <leah.rumancik@gmail.com>
-Cc:     Bob Liu <bob.liu@oracle.com>, bpf <bpf@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        =?UTF-8?Q?KJ_=C3=98rbekk?= <orbekk@google.com>,
-        Harshad Shirwadkar <harshads@google.com>,
-        Michal Jaszczyk <jasiu@google.com>, saranyamohan@google.com,
-        Theodore Tso <tytso@google.com>,
-        Bart Van Assche <bvanassche@google.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904184803.GA3749996@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 9:46 AM Leah Rumancik <leah.rumancik@gmail.com> wrote:
->
-> On Mon, Aug 17, 2020 at 09:32:07AM -0700, Alexei Starovoitov wrote:
-> > On Mon, Aug 17, 2020 at 10:18:47PM +0800, Bob Liu wrote:
-> > > > +
-> > > > +/* allows IO by default if no programs attached */
-> > > > +int io_filter_bpf_run(struct bio *bio)
-> > > > +{
-> > > > + struct bpf_io_request io_req = {
-> > > > +         .sector_start = bio->bi_iter.bi_sector,
-> > > > +         .sector_cnt = bio_sectors(bio),
-> > > > +         .opf = bio->bi_opf,
-> > > > + };
-> > > > +
-> > > > + return BPF_PROG_RUN_ARRAY_CHECK(bio->bi_disk->progs, &io_req, BPF_PROG_RUN);
-> > >
-> > >
-> > > I think pass "struct bpf_io_request" is not enough, since we may want to do the filter based on
-> > > some special patterns against the io data.
-> > >
-> > > I used to pass "page_to_virt(bio->bi_io_vec->bv_page)" into ebpf program..
-> >
-> > Bob,
-> >
-> > Just like other bpf uapi structs the bpf_io_request is extensible and
-> > such pointer can be added later, but I have a different question.
-> >
-> > Leah,
-> >
-> > Do you really need the arguments to be stable?
-> > If so 'opf' above is not enough.
-> > sector_start, sector_cnt are clean from uapi pov,
-> > but 'opf' exposes kernel internals.
-> > The patch 2 is doing:
-> > +int protect_gpt(struct bpf_io_request *io_req)
-> > +{
-> > +       /* within GPT and not a read operation */
-> > +       if (io_req->sector_start < GPT_SECTORS && (io_req->opf & REQ_OP_MASK) != REQ_OP_READ)
-> > +               return IO_BLOCK;
-> >
-> > The way ops are encoded changed quite a bit over the kernel releases.
-> > First it was REQ_WRITE, then REQ_OP_SHIFT, now REQ_OP_MASK.
-> > From kernel pov it would be simpler if bpf side didn't impose stability
-> > requriment on the program arguments. Then the kernel will be free to change
-> > REG_OP_READ into something else. The progs would break, of course, and would
-> > have to be adjusted. That's what we've been doing with tools like biosnoop.
-> > If you're ok with unstable arguments then you wouldn't need to introduce
-> > new prog type and this patch set.
-> > You can do this filtering already with should_fail_bio().
-> > bpf prog can attach to should_fail_bio() and walk all bio arguments
-> > in unstable way.
-> > Instead of:
-> > +       if (io_req->sector_start < GPT_SECTORS && (io_req->opf & REQ_OP_MASK) != REQ_OP_READ)
-> > you'll write:
-> >   if (bio->bi_iter.bi_sector < GPT_SECTORS && (bio->bi_opf & REQ_OP_MASK) != REQ_OP_READ)
-> > It will also work on different kernels because libbpf can adjust field offsets and
-> > check for type matching via CO-RE facility.
-> > Will that work for you?
->
-> Alexei,
->
-> I need the arguments to be stable. What would be the best way to go
-> about this? Pulling selected information from the opf field and defining
-> my own constants?
+Em Fri, Sep 04, 2020 at 03:48:03PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Sep 04, 2020 at 09:22:10AM -0700, Ian Rogers escreveu:
+> > On Fri, Sep 4, 2020 at 9:03 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > On Thu, Sep 03, 2020 at 10:41:14PM -0700, Ian Rogers wrote:
+> > > > On Wed, Jul 29, 2020 at 4:24 PM Ian Rogers <irogers@google.com> wrote:
+> > > > > On Tue, Jul 28, 2020 at 9:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > > > On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote:
+> > > > > > > On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
+> > > > > > [jolsa@krava perf]$ sudo ./perf test 17 -v
+> > > > > > 17: Setup struct perf_event_attr                          :
+> 
+> > > > > > running './tests/attr/test-record-C0'
+> > > > > > expected sample_period=4000, got 3000
+> > > > > > FAILED './tests/attr/test-record-C0' - match failure
+> 
+> > > > > I'm not able to reproduce this. Do you have a build configuration or
+> > > > > something else to look at? The test doesn't seem obviously connected
+> > > > > with this patch.
+> 
+> > > > Jiri, any update? Thanks,
+> 
+> > > sorry, I rebased and ran it again and it passes for me now,
+> > > so it got fixed along the way
+> 
+> > No worries, thanks for the update! It'd be nice to land this and the
+> > other libpfm fixes.
+> 
+> I applied it and it generated this regression:
+> 
+> FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period' - match failure
+> 
+> I'll look at the other patches that are pending in this regard to see
+> what needs to be squashed so that we don't break bisect.
 
-"stable" in what sense? To run on different kernels ?
-CO-RE already achieves that.
-I think what I proposed above is "stable" enough based on the description
-of what you wanted to achieve.
+So, more context:
+
+running '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period'
+expected exclude_hv=0, got 1
+FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period' - match failure
+test child finished with -1
+---- end ----
+Setup struct perf_event_attr: FAILED!
+[root@five ~]#
+
+Ian, can you take a look at this?
+
+- Arnaldo
