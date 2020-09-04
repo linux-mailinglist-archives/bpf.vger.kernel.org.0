@@ -2,170 +2,285 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D91E25E1A2
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 20:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127A625E1B4
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 21:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgIDSvK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 14:51:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726618AbgIDSvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:51:09 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9B5A20665;
-        Fri,  4 Sep 2020 18:51:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599245468;
-        bh=Twj18k+c6SsPkUog9LNw71943z1B88d4+qHItMScd4g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iB7/I4m6L5ixT8RwW+Sq/m27FvNI9TLhbt00GurT02Iuvm6pGlib+/R7T+sPbku3s
-         IO0iF5B/G5l1YRR+XTsXkhBI0WQV3EJsBp+GRPXdHdzzzPQ5PpMoU7Q4Ey/NkLhe45
-         tAOX/Rl6tNToULAzEA27OcLiwAylgNVxoMlPJvZw=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 16EF940D3D; Fri,  4 Sep 2020 15:51:06 -0300 (-03)
-Date:   Fri, 4 Sep 2020 15:51:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1726208AbgIDTFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 15:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbgIDTFg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 15:05:36 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3140C061244;
+        Fri,  4 Sep 2020 12:05:30 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id s92so5141780ybi.2;
+        Fri, 04 Sep 2020 12:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BMiPCZuP6GEHaaEZM7q9rB4THO4vE8QHXy0T6I+My7o=;
+        b=F7ZyLaAZQJJlcTUmdXe7IDxofHvzPb3lN7cv5yCTznfeR/n/ZDsOaWUu7M0+/MNbvy
+         KRnUGg7Lz9XqBYH9fOn5XChqjN++KGjwxL75GRZKSrd9be8ARQla2L7nwFujaW971B7p
+         mo4IkgFTtPtNghEM4DRBWEl9J3g/RqBL3Aask37wknQ15avvoi28IanbVs3xaNkrWXBe
+         Ycvs9W8WVhmgPzh06AEK3lYi/OGNq19LsEDkCDr2CHvo0ICcShkFs2RBZTOqoQpD4GTh
+         0y7DS/JDm5trsepTQPIPUvV1J9119eeNpzdcFkHgbx9qWoH9u2xBM5ZIe344ePfYtpc2
+         xfuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BMiPCZuP6GEHaaEZM7q9rB4THO4vE8QHXy0T6I+My7o=;
+        b=t+KE18mMDCB8usd/xTI/neC/tTowUF16DlVEVmOE4Z4RbBkmyB9OdpkaprNcRLSOTd
+         LzjWlyKYyj3gpJciEFL5qyqiAcP3QvlcCtCrRNTIVsgdzFcrnCLM1tXhDDIdgpeGRufj
+         Zn0QBkZsNuWqTlRxOUcHkQ8GbQY9bxTzl7+XUO8VHZsf7LWUUPEmQL8raYmB7t9aKa9X
+         py3VpaIUsG9JzHoZ9NZS3izVqO/bhac8Q6/2RGdgJbKguP8VRbU/Vy7u6xCirPqEC8Ex
+         +Cq1kWXFl0vy/6JIGg2aetEGWbXovOVte3OI9Js0X+YcNwwIpmS3s/xBFzRSK1z5bx11
+         uzHg==
+X-Gm-Message-State: AOAM530CEFFGdHqnTLfgPF07vJ2KWku5z36khl3JCkidDMXi+GVb9QpZ
+        jGyacq/DZL1y6fMocWiuCtB1359c/hrwqU0p4Po=
+X-Google-Smtp-Source: ABdhPJzCRTy5EXwAaEHZq7hDMa8YJ88II1pb5Fv8DdjuniM8MsDZQIvWiSTeQsBa6xBA4MAWc4KVKTUPUWn0J0dZBFE=
+X-Received: by 2002:a25:ad5a:: with SMTP id l26mr11411579ybe.510.1599246329545;
+ Fri, 04 Sep 2020 12:05:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200903223332.881541-1-haoluo@google.com> <20200903223332.881541-2-haoluo@google.com>
+In-Reply-To: <20200903223332.881541-2-haoluo@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Sep 2020 12:05:18 -0700
+Message-ID: <CAEf4BzZSPb0qWc5_FxsrzykUJa245VgkX-U6xstDM7Durh50gw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/6] bpf: Introduce pseudo_btf_id
+To:     Hao Luo <haoluo@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
- attr->sample_period for libpfm4 events
-Message-ID: <20200904185106.GB3752059@kernel.org>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-3-irogers@google.com>
- <20200728155940.GC1319041@krava>
- <20200728160954.GD1319041@krava>
- <CAP-5=fVqto0LrwgW6dHQupp7jFA3wToRBonBaXXQW4wwYcTreg@mail.gmail.com>
- <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
- <20200904160303.GD939481@krava>
- <CAP-5=fWOSi4B3g1DARkh6Di-gU4FgmjnhbPYRBdvSdLSy_KC5Q@mail.gmail.com>
- <20200904184803.GA3749996@kernel.org>
- <20200904185013.GA3752059@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904185013.GA3752059@kernel.org>
-X-Url:  http://acmel.wordpress.com
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Sep 04, 2020 at 03:50:13PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Sep 04, 2020 at 03:48:03PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Sep 04, 2020 at 09:22:10AM -0700, Ian Rogers escreveu:
-> > > On Fri, Sep 4, 2020 at 9:03 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > On Thu, Sep 03, 2020 at 10:41:14PM -0700, Ian Rogers wrote:
-> > > > > On Wed, Jul 29, 2020 at 4:24 PM Ian Rogers <irogers@google.com> wrote:
-> > > > > > On Tue, Jul 28, 2020 at 9:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > > > > On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote:
-> > > > > > > > On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
-> > > > > > > [jolsa@krava perf]$ sudo ./perf test 17 -v
-> > > > > > > 17: Setup struct perf_event_attr                          :
-> > 
-> > > > > > > running './tests/attr/test-record-C0'
-> > > > > > > expected sample_period=4000, got 3000
-> > > > > > > FAILED './tests/attr/test-record-C0' - match failure
-> > 
-> > > > > > I'm not able to reproduce this. Do you have a build configuration or
-> > > > > > something else to look at? The test doesn't seem obviously connected
-> > > > > > with this patch.
-> > 
-> > > > > Jiri, any update? Thanks,
-> > 
-> > > > sorry, I rebased and ran it again and it passes for me now,
-> > > > so it got fixed along the way
-> > 
-> > > No worries, thanks for the update! It'd be nice to land this and the
-> > > other libpfm fixes.
-> > 
-> > I applied it and it generated this regression:
-> > 
-> > FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period' - match failure
-> > 
-> > I'll look at the other patches that are pending in this regard to see
-> > what needs to be squashed so that we don't break bisect.
-> 
-> So, more context:
-> 
-> running '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period'
-> expected exclude_hv=0, got 1
-> FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period' - match failure
-> test child finished with -1
-> ---- end ----
-> Setup struct perf_event_attr: FAILED!
-> [root@five ~]#
-> 
-> Ian, can you take a look at this?
+On Thu, Sep 3, 2020 at 3:34 PM Hao Luo <haoluo@google.com> wrote:
+>
+> Pseudo_btf_id is a type of ld_imm insn that associates a btf_id to a
+> ksym so that further dereferences on the ksym can use the BTF info
+> to validate accesses. Internally, when seeing a pseudo_btf_id ld insn,
+> the verifier reads the btf_id stored in the insn[0]'s imm field and
+> marks the dst_reg as PTR_TO_BTF_ID. The btf_id points to a VAR_KIND,
+> which is encoded in btf_vminux by pahole. If the VAR is not of a struct
+> type, the dst reg will be marked as PTR_TO_MEM instead of PTR_TO_BTF_ID
+> and the mem_size is resolved to the size of the VAR's type.
+>
+> From the VAR btf_id, the verifier can also read the address of the
+> ksym's corresponding kernel var from kallsyms and use that to fill
+> dst_reg.
+>
+> Therefore, the proper functionality of pseudo_btf_id depends on (1)
+> kallsyms and (2) the encoding of kernel global VARs in pahole, which
+> should be available since pahole v1.18.
+>
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
 
-Further tests I've performed:
+Logic looks correct, but I have a few suggestions for naming things
+and verifier logs. Please see below.
 
-    Committer testing:
+>  include/linux/bpf_verifier.h   |   4 ++
+>  include/linux/btf.h            |  15 +++++
+>  include/uapi/linux/bpf.h       |  38 ++++++++---
+>  kernel/bpf/btf.c               |  15 -----
+>  kernel/bpf/verifier.c          | 112 ++++++++++++++++++++++++++++++---
+>  tools/include/uapi/linux/bpf.h |  38 ++++++++---
+>  6 files changed, 182 insertions(+), 40 deletions(-)
+>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 53c7bd568c5d..a14063f64d96 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -308,6 +308,10 @@ struct bpf_insn_aux_data {
+>                         u32 map_index;          /* index into used_maps[] */
+>                         u32 map_off;            /* offset from value base address */
+>                 };
+> +               struct {
+> +                       u32 pseudo_btf_id_type; /* type of pseudo_btf_id */
+> +                       u32 pseudo_btf_id_meta; /* memsize or btf_id */
 
-    Not linking with libpfm:
+a bit misleading names, not clear at all in the code what's in there.
+This section is for ldimm64 insns that are loading BTF variables,
+right? so how about this:
 
-      # ldd ~/bin/perf | grep libpfm
-      #
+struct {
+    u32 reg_type;
+    union {
+        u32 btf_id;
+        u32 memsize;
+    };
+} btf_var;
 
-    Before:
+In case someone hates non-anonymous structs, I'd still go with
+btf_var_reg_type, btf_var_btf_id and btf_var_memsize.
 
-      # perf record -c 10000 -e cycles/period=12345/,instructions sleep 0.0001
-      [ perf record: Woken up 1 times to write data ]
-      [ perf record: Captured and wrote 0.052 MB perf.data (258 samples) ]
-      # perf evlist -v
-      cycles/period=12345/: size: 120, { sample_period, sample_freq }: 12345, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-      instructions: size: 120, config: 0x1, { sample_period, sample_freq }: 10000, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-      #
+> +               };
+>         };
+>         u64 map_key_state; /* constant (32 bit) key tracking for maps */
+>         int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index a9af5e7a7ece..592373d359b9 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -106,6 +106,21 @@ static inline bool btf_type_is_func_proto(const struct btf_type *t)
+>         return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC_PROTO;
+>  }
+>
 
-    After:
+[...]
 
-      #
-      # perf record -c 10000 -e cycles/period=12345/,instructions sleep 0.0001
-      [ perf record: Woken up 1 times to write data ]
-      [ perf record: Captured and wrote 0.053 MB perf.data (284 samples) ]
-      # perf evlist -v
-      cycles/period=12345/: size: 120, { sample_period, sample_freq }: 12345, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-      instructions: size: 120, config: 0x1, { sample_period, sample_freq }: 10000, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-      #
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b4e9c56b8b32..3b382c080cfd 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7398,6 +7398,24 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
+>                 return 0;
+>         }
+>
+> +       if (insn->src_reg == BPF_PSEUDO_BTF_ID) {
+> +               u32 type = aux->pseudo_btf_id_type;
+> +               u32 meta = aux->pseudo_btf_id_meta;
+> +
+> +               mark_reg_known_zero(env, regs, insn->dst_reg);
+> +
+> +               regs[insn->dst_reg].type = type;
+> +               if (type == PTR_TO_MEM) {
+> +                       regs[insn->dst_reg].mem_size = meta;
+> +               } else if (type == PTR_TO_BTF_ID) {
+> +                       regs[insn->dst_reg].btf_id = meta;
 
-    Linking with libpfm:
+nit: probably worthwhile to introduce a local variable (dst_reg) to
+capture pointer to regs[insn->dst_reg] in this entire function. Then
+no reall need for type and meta local vars above, everything is going
+to be short and sweet.
 
-      # ldd ~/bin/perf | grep libpfm
-            libpfm.so.4 => /lib64/libpfm.so.4 (0x00007f54c7d75000)
-      #
+> +               } else {
+> +                       verbose(env, "bpf verifier is misconfigured\n");
+> +                       return -EFAULT;
+> +               }
+> +               return 0;
+> +       }
+> +
+>         map = env->used_maps[aux->map_index];
+>         mark_reg_known_zero(env, regs, insn->dst_reg);
+>         regs[insn->dst_reg].map_ptr = map;
+> @@ -9284,6 +9302,74 @@ static int do_check(struct bpf_verifier_env *env)
+>         return 0;
+>  }
+>
+> +/* replace pseudo btf_id with kernel symbol address */
+> +static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+> +                              struct bpf_insn *insn,
+> +                              struct bpf_insn_aux_data *aux)
+> +{
+> +       u32 type, id = insn->imm;
+> +       const struct btf_type *t;
+> +       const char *sym_name;
+> +       u64 addr;
+> +
+> +       if (!btf_vmlinux) {
+> +               verbose(env, "%s: btf not available. verifier misconfigured.\n",
+> +                       __func__);
 
-      # perf record -c 10000 --pfm-events=cycles:period=77777 sleep 1
-      [ perf record: Woken up 1 times to write data ]
-      [ perf record: Captured and wrote 0.043 MB perf.data (141 samples) ]
-      # perf evlist -v
-      cycles:period=77777: size: 120, { sample_period, sample_freq }: 10000, sample_type: IP|TID|TIME, read_format: ID, disabled: 1, inherit: 1, exclude_hv: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-      #
+verifier logs so far hasn't used __func__ and it's not all that
+meaningful to users and might change due to later refactorings.
 
-    After:
+Also, in this particular case, it's not a verifier misconfiguration,
+but rather that the kernel doesn't have a built-in BTF, so suggest
+enabling CONFIG_DEBUG_INFO_BTF=y.
 
-      # perf record -c 10000 --pfm-events=cycles:period=77777 sleep 1
-      [ perf record: Woken up 1 times to write data ]
-      [ perf record: Captured and wrote 0.039 MB perf.data (19 samples) ]
-      # perf evlist -v
-      cycles:period=77777: size: 120, { sample_period, sample_freq }: 77777, sample_type: IP|TID|TIME, read_format: ID, disabled: 1, inherit: 1, exclude_hv: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-      #
+"kernel is missing BTF, make sure CONFIG_DEBUG_INFO_BTF=y is specified
+in Kconfig"
 
+> +               return -EINVAL;
+> +       }
+> +
+> +       t = btf_type_by_id(btf_vmlinux, id);
+> +       if (!t) {
+> +               verbose(env, "%s: invalid btf_id %d\n", __func__, id);
+
+"ldimm64 insn specifies invalid btf_id %d"? add similar context below
+
+> +               return -ENOENT;
+> +       }
+> +
+> +       if (insn[1].imm != 0) {
+> +               verbose(env, "%s: BPF_PSEUDO_BTF_ID uses reserved fields\n",
+> +                       __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (!btf_type_is_var(t)) {
+> +               verbose(env, "%s: btf_id %d isn't KIND_VAR\n", __func__, id);
+> +               return -EINVAL;
+> +       }
+> +
+> +       sym_name = btf_name_by_offset(btf_vmlinux, t->name_off);
+> +       addr = kallsyms_lookup_name(sym_name);
+> +       if (!addr) {
+> +               verbose(env, "%s: failed to find the address of symbol '%s'.\n",
+> +                       __func__, sym_name);
+> +               return -ENOENT;
+> +       }
+> +
+
+[...]
+
+> @@ -9394,10 +9480,14 @@ static bool bpf_map_is_cgroup_storage(struct bpf_map *map)
+>                 map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
+>  }
+>
+> -/* look for pseudo eBPF instructions that access map FDs and
+> - * replace them with actual map pointers
+> +/* find and rewrite pseudo imm in ld_imm64 instructions:
+> + *
+> + * 1. if it accesses map FD, replace it with actual map pointer.
+> + * 2. if it accesses btf_id of a VAR, replace it with pointer to the var.
+> + *
+> + * NOTE: btf_vmlinux is required for converting pseudo btf_id.
+>   */
+> -static int replace_map_fd_with_map_ptr(struct bpf_verifier_env *env)
+> +static int replace_pseudo_imm_with_ptr(struct bpf_verifier_env *env)
+
+nit: I'd call this something like "resolve_pseudo_ldimm64" instead.
+ptr here is an implementation detail of map pointers ldimm64 and
+doesn't even match what we are doing for pseudo_btf_id
+
+>  {
+>         struct bpf_insn *insn = env->prog->insnsi;
+>         int insn_cnt = env->prog->len;
+> @@ -9438,6 +9528,14 @@ static int replace_map_fd_with_map_ptr(struct bpf_verifier_env *env)
+>                                 /* valid generic load 64-bit imm */
+>                                 goto next_insn;
+>
+> +                       if (insn[0].src_reg == BPF_PSEUDO_BTF_ID) {
+> +                               aux = &env->insn_aux_data[i];
+> +                               err = check_pseudo_btf_id(env, insn, aux);
+> +                               if (err)
+> +                                       return err;
+> +                               goto next_insn;
+> +                       }
+> +
+>                         /* In final convert_pseudo_ld_imm64() step, this is
+>                          * converted into regular 64-bit imm load insn.
+>                          */
+
+[...]
