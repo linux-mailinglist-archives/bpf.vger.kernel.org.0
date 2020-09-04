@@ -2,168 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090B425DDDA
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E36B25DDEE
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 17:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgIDPf4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Sep 2020 11:35:56 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50326 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726259AbgIDPfz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Sep 2020 11:35:55 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-kGKBJwK8OvGiLSRrqb5OtA-1; Fri, 04 Sep 2020 11:35:52 -0400
-X-MC-Unique: kGKBJwK8OvGiLSRrqb5OtA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FC341007474;
-        Fri,  4 Sep 2020 15:35:50 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF38465C74;
-        Fri,  4 Sep 2020 15:35:42 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 17:35:40 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBl?= =?UTF-8?B?bA==?= 
-        <bjorn.topel@intel.com>, magnus.karlsson@intel.com,
-        davem@davemloft.net, kuba@kernel.org, john.fastabend@gmail.com,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH bpf-next 6/6] ixgbe, xsk: finish napi loop if AF_XDP Rx
- queue is full
-Message-ID: <20200904173540.3a617eee@carbon>
-In-Reply-To: <20200904135332.60259-7-bjorn.topel@gmail.com>
+        id S1726304AbgIDPjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 11:39:25 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47125 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725984AbgIDPjX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 11:39:23 -0400
+IronPort-SDR: J540pS9ZcsTnRpga7v/0KLOqjrr+8AKqS2QONwvy7r12gluoQv6yKo192yHEGtyI6SxHQGtvrG
+ L9HZPF2oSbTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9734"; a="155163339"
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
+   d="scan'208";a="155163339"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 08:39:21 -0700
+IronPort-SDR: t7x+QaKHtSufFhQd3YkwT+8LxVHUo4SRfHkBSEypptvX6xzHyNfDK00MbUn0O5gqnyu9g8uG07
+ CO0nJxWRQUrA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,390,1592895600"; 
+   d="scan'208";a="332198951"
+Received: from andreyfe-mobl2.ccr.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.37.82])
+  by orsmga008.jf.intel.com with ESMTP; 04 Sep 2020 08:39:18 -0700
+Subject: Re: [PATCH bpf-next 3/6] xsk: introduce xsk_do_redirect_rx_full()
+ helper
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, magnus.karlsson@intel.com,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, intel-wired-lan@lists.osuosl.org
 References: <20200904135332.60259-1-bjorn.topel@gmail.com>
-        <20200904135332.60259-7-bjorn.topel@gmail.com>
+ <20200904135332.60259-4-bjorn.topel@gmail.com>
+ <20200904171143.5868999a@carbon>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <dfa75afc-ceb7-76ce-6ba3-3b89c53f92f3@intel.com>
+Date:   Fri, 4 Sep 2020 17:39:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200904171143.5868999a@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri,  4 Sep 2020 15:53:31 +0200
-Björn Töpel <bjorn.topel@gmail.com> wrote:
-
-> From: Björn Töpel <bjorn.topel@intel.com>
+On 2020-09-04 17:11, Jesper Dangaard Brouer wrote:
+> On Fri,  4 Sep 2020 15:53:28 +0200 Björn Töpel
+> <bjorn.topel@gmail.com> wrote:
 > 
-> Make the AF_XDP zero-copy path aware that the reason for redirect
-> failure was due to full Rx queue. If so, exit the napi loop as soon as
-> possible (exit the softirq processing), so that the userspace AF_XDP
-> process can hopefully empty the Rx queue. This mainly helps the "one
-> core scenario", where the userland process and Rx softirq processing
-> is on the same core.
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>> 
+>> The xsk_do_redirect_rx_full() helper can be used to check if a
+>> failure of xdp_do_redirect() was due to the AF_XDP socket had a
+>> full Rx ring.
 > 
-> Note that the early exit can only be performed if the "need wakeup"
-> feature is enabled, because otherwise there is no notification
-> mechanism available from the kernel side.
+> This is very AF_XDP specific.  I think that the cpumap could likely 
+> benefit from similar approach? e.g. if the cpumap kthread is
+> scheduled on the same CPU.
 > 
-> This requires that the driver starts using the newly introduced
-> xdp_do_redirect_ext() and xsk_do_redirect_rx_full() functions.
+
+At least I thought this was *very* AF_XDP specific, since the kernel is
+dependent of that userland runs. Allocation (source) and Rx ring (sink).
+Maybe I was wrong! :-)
+
+The thing with AF_XDP zero-copy, is that we sort of assume that if a
+user enabled that most packets will have XDP_REDIRECT to an AF_XDP socket.
+
+
+> But for cpumap we only want this behavior if sched on the same CPU
+> as RX-NAPI.  This could be "seen" by the cpumap code itself in the
+> case bq_flush_to_queue() drops packets, check if rcpu->cpu equal 
+> smp_processor_id().  Maybe I'm taking this too far?
 > 
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-> ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 23 ++++++++++++++------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> index 3771857cf887..a4aebfd986b3 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-> @@ -93,9 +93,11 @@ int ixgbe_xsk_pool_setup(struct ixgbe_adapter *adapter,
->  
->  static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
->  			    struct ixgbe_ring *rx_ring,
-> -			    struct xdp_buff *xdp)
-> +			    struct xdp_buff *xdp,
-> +			    bool *early_exit)
->  {
->  	int err, result = IXGBE_XDP_PASS;
-> +	enum bpf_map_type map_type;
->  	struct bpf_prog *xdp_prog;
->  	struct xdp_frame *xdpf;
->  	u32 act;
-> @@ -116,8 +118,13 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *adapter,
->  		result = ixgbe_xmit_xdp_ring(adapter, xdpf);
->  		break;
->  	case XDP_REDIRECT:
-> -		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
-> -		result = !err ? IXGBE_XDP_REDIR : IXGBE_XDP_CONSUMED;
-> +		err = xdp_do_redirect_ext(rx_ring->netdev, xdp, xdp_prog, &map_type);
-> +		if (err) {
-> +			*early_exit = xsk_do_redirect_rx_full(err, map_type);
 
-Have you tried calling xdp_do_flush (that calls __xsk_map_flush()) and
-(I guess) xsk_set_rx_need_wakeup() here, instead of stopping the loop?
-(Or doing this in xsk core).
-
-Looking at the code, the AF_XDP frames are "published" in the queue
-rather late for AF_XDP.  Maybe in an orthogonal optimization, have you
-considered "publishing" the ring producer when e.g. the queue is
-half-full?
+Interesting. So, if you're running on the same core, and redirect fail
+for CPUMAP, you'd like to yield the NAPI loop? Is that really OK from a
+fairness perspective? I mean, with AF_XDP zero-copy we pretty much know
+that all actions will be redirect to socket. For CPUMAP type of
+applications, can that assumption be made?
 
 
-> +			result = IXGBE_XDP_CONSUMED;
-> +		} else {
-> +			result = IXGBE_XDP_REDIR;
-> +		}
->  		break;
->  	default:
->  		bpf_warn_invalid_xdp_action(act);
-> @@ -235,8 +242,8 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
->  	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
->  	struct ixgbe_adapter *adapter = q_vector->adapter;
->  	u16 cleaned_count = ixgbe_desc_unused(rx_ring);
-> +	bool early_exit = false, failure = false;
->  	unsigned int xdp_res, xdp_xmit = 0;
-> -	bool failure = false;
->  	struct sk_buff *skb;
->  
->  	while (likely(total_rx_packets < budget)) {
-> @@ -288,7 +295,7 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
->  
->  		bi->xdp->data_end = bi->xdp->data + size;
->  		xsk_buff_dma_sync_for_cpu(bi->xdp, rx_ring->xsk_pool);
-> -		xdp_res = ixgbe_run_xdp_zc(adapter, rx_ring, bi->xdp);
-> +		xdp_res = ixgbe_run_xdp_zc(adapter, rx_ring, bi->xdp, &early_exit);
->  
->  		if (xdp_res) {
->  			if (xdp_res & (IXGBE_XDP_TX | IXGBE_XDP_REDIR))
-> @@ -302,6 +309,8 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
->  
->  			cleaned_count++;
->  			ixgbe_inc_ntc(rx_ring);
-> +			if (early_exit)
-> +				break;
->  			continue;
->  		}
->  
-> @@ -346,12 +355,12 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
->  	q_vector->rx.total_bytes += total_rx_bytes;
->  
->  	if (xsk_uses_need_wakeup(rx_ring->xsk_pool)) {
-> -		if (failure || rx_ring->next_to_clean == rx_ring->next_to_use)
-> +		if (early_exit || failure || rx_ring->next_to_clean == rx_ring->next_to_use)
->  			xsk_set_rx_need_wakeup(rx_ring->xsk_pool);
->  		else
->  			xsk_clear_rx_need_wakeup(rx_ring->xsk_pool);
->  
-> -		return (int)total_rx_packets;
-> +		return early_exit ? 0 : (int)total_rx_packets;
->  	}
->  	return failure ? budget : (int)total_rx_packets;
->  }
-
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Björn
 
