@@ -2,105 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36FE25DFD0
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 18:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700DB25E018
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 18:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726220AbgIDQax (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 12:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        id S1726133AbgIDQqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 12:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgIDQav (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:30:51 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E12DC061244;
-        Fri,  4 Sep 2020 09:30:51 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id t16so6832329ilf.13;
-        Fri, 04 Sep 2020 09:30:51 -0700 (PDT)
+        with ESMTP id S1726063AbgIDQqP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:46:15 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81ABC061244;
+        Fri,  4 Sep 2020 09:46:13 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id u126so7724273iod.12;
+        Fri, 04 Sep 2020 09:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AucqkqOTnevc2PIKOu4c21DStTgschtt1uKUphcYlKE=;
-        b=MFYN0XWJ+ULODIKnOj1t9aUH5WrufIKOvg/5h8CMiwjm7XwOoofhOSoi2qOp/AoPZT
-         ZP/deBWdhXfhTqUBqiGyxYmhiDHl8sBksqLMYMT/l4Rq7N4MkyIt8y2mTCAKtVcUtRJt
-         Vupt21q9xmeL95D67gfrCsjAyjL/ofCG4agHdxs81IEgjZ++EBPIO3R487LIMWIpuRTP
-         d2Md0fqkOC8KAxdfgj71b9hJSxd6w/eCqQ1u4fEznP2YILj2Q8b5eT5I55lDgbkvTNmg
-         ZwFT948OSZVBa0su9qHi8eyFE9MbZV5q4ac5W0VZkDAYKlnCgqBMChBXl3Yz0tcL+Mkl
-         +lbw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dpQ6nvSXQb2Xj+J3gZcbN6uDebmKzL9sxBjJW/LYckg=;
+        b=X1Om7gP+mhlsQhbr4nVkes3gD+XSnwIX25mawKB/yCPnX9ZrKoQfM8ZH+KWmXURG3c
+         S3SSkiylp1qTQeKXQO78bcZoh8drJZMwMgXp0RfX48Bs1rur6FE81N2/a0SR1pmLyKFb
+         qvz7ePjfcnuKoN+QPw3NDxusgQLytCcKbg6aGp9k7MOAfNyp0Jpl8iMXUXYDFVU8kKNA
+         ASm8iJMZL3hPhSPchewYrOPMZKgQCNqfV2jLvRgw2dThMJVEXF8mIdXps72foOMeETky
+         R73c1mzFQTk6PqNc8IheQfP+AujAwmmVGDDGQu/ZLyo07oZzo0zDgWZ7opxXXujvddLL
+         CsYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AucqkqOTnevc2PIKOu4c21DStTgschtt1uKUphcYlKE=;
-        b=CfPMM+AhK0Q0Py4hKAT18zO1qWwJoox4/dBhFQJ7uncN3u/6XqxD/dvYADaZH7B1w7
-         HE7bQNbC34SGjyD0I+EI8k2m+w4qVP8aoRV4+GQrTgqKRdIlzYd3B/XMjtqCEetfkQx4
-         j6EdYjZkqc3lWf/FE9OALyBjFuLCGo7kNlPk84vNynsUGb3NjDHXTxCKqnFCM6nxt3x5
-         SGtnJGGmqi0OXgoj0RxTMGhbUaocnqD8D9FS6Dsz53CK/saTcp9nbmjOlPLk8Aikp+We
-         9fZiFHq2jDwJ9a9ObBOdos3XIlfx1PRye9I4r61yxmSVaiJpAWlQttitohNOsWd4UIFI
-         AQ5A==
-X-Gm-Message-State: AOAM530nTwTnM0zgxCsvPv2YxT4u64P4ZrjP0f0R+CAsiAJoHEqKfGmi
-        oPTIrAZWO4C4XYpxbkDSHMI=
-X-Google-Smtp-Source: ABdhPJzzA8eSlAyBMn/5v3iWfyqD/oFQof/S134rdB6qL0SSWNSKiqvrzdSeu3LrVsWHh/Hhpt/Ggw==
-X-Received: by 2002:a05:6e02:ed1:: with SMTP id i17mr8563170ilk.8.1599237050590;
-        Fri, 04 Sep 2020 09:30:50 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:de4:1e22:81ff:2d93])
-        by smtp.googlemail.com with ESMTPSA id z4sm2341690iol.52.2020.09.04.09.30.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Sep 2020 09:30:50 -0700 (PDT)
-Subject: Re: [PATCH v2 net-next 1/9] xdp: introduce mb in xdp_buff/xdp_frame
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, echaudro@redhat.com,
-        sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
-        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        David Ahern <dsahern@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-References: <cover.1599165031.git.lorenzo@kernel.org>
- <1e8e82f72e46264b7a7a1ac704d24e163ebed100.1599165031.git.lorenzo@kernel.org>
- <20200904010705.jm6dnuyj3oq4cpjd@ast-mbp.dhcp.thefacebook.com>
- <20200904091939.069592e4@carbon>
- <1c3e478c-5000-1726-6ce9-9b0a3ccfe1e5@gmail.com>
- <20200904175946.6be0f565@carbon>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <107260d3-1fea-b582-84d3-2d092f3112b1@gmail.com>
-Date:   Fri, 4 Sep 2020 10:30:48 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dpQ6nvSXQb2Xj+J3gZcbN6uDebmKzL9sxBjJW/LYckg=;
+        b=M4k4hPH3xm75+dHiDCMxgyQBphqvhOfo3wqVUEaTBjq3/1721QKAIWlcgJNLoE5Qez
+         p4dnzgYxfc1FZxgPplYvuNSqNLm1uCNnMe5cl0LwTXHC/y3qNHz1a+LzyQ+TAlATDH8Q
+         5TTP9au7FiGw6trRQupEEqiMDXyrYjZbmfAzfZuL9VrT+j788WfBUmIIB9VkbYw+GS0n
+         vDOWhS98F/CBonrLQavpvzHkUOOE/z8cZH4JafEQ72SSd8uABMLywa0+YZSVrybLopRZ
+         zf9ExyxddXJByWwzmt8BSQtq7JX0ZuBBh4twGf4+6vZL7GrczTz84anHwgFed4c9sTkq
+         r7oA==
+X-Gm-Message-State: AOAM530bZdo7QGsMQUM/JOJi46e2lx6OBJYLxpf2wlMCi9VwO1uKa+ph
+        HYlit/V5aXeYnzbKvEG7fDA=
+X-Google-Smtp-Source: ABdhPJzjDpENyYycFKhxs3HhiQlrOfWZDK7RymkTSxuUXu+4GCH/Prulk2zNhKFwcrKqCBOVvrrz6w==
+X-Received: by 2002:a5d:980f:: with SMTP id a15mr8219405iol.12.1599237969388;
+        Fri, 04 Sep 2020 09:46:09 -0700 (PDT)
+Received: from leah-Ubuntu ([2601:4c3:200:c230:e82f:35f2:cc6c:cdf5])
+        by smtp.gmail.com with ESMTPSA id s6sm2364578ilp.4.2020.09.04.09.46.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 04 Sep 2020 09:46:09 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 12:46:06 -0400
+From:   Leah Rumancik <leah.rumancik@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Bob Liu <bob.liu@oracle.com>, bpf@vger.kernel.org,
+        linux-block@vger.kernel.org, orbekk@google.com,
+        harshads@google.com, jasiu@google.com, saranyamohan@google.com,
+        tytso@google.com, bvanassche@google.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [RFC PATCH 1/4] bpf: add new prog_type BPF_PROG_TYPE_IO_FILTER
+Message-ID: <20200904164605.GB2048@leah-Ubuntu>
+References: <20200812163305.545447-1-leah.rumancik@gmail.com>
+ <20200812163305.545447-2-leah.rumancik@gmail.com>
+ <a0a97488-58c7-1f00-c987-d75e1329159c@oracle.com>
+ <20200817163207.p53guehd7kpxfvat@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200904175946.6be0f565@carbon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817163207.p53guehd7kpxfvat@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/4/20 9:59 AM, Jesper Dangaard Brouer wrote:
->> dev_rx for example seems like it could just be the netdev
->> index rather than a pointer or perhaps can be removed completely. I
->> believe it is only used for 1 use case (redirects to CPUMAP); maybe that
->> code can be refactored to handle the dev outside of xdp_frame.
+On Mon, Aug 17, 2020 at 09:32:07AM -0700, Alexei Starovoitov wrote:
+> On Mon, Aug 17, 2020 at 10:18:47PM +0800, Bob Liu wrote:
+> > > +
+> > > +/* allows IO by default if no programs attached */
+> > > +int io_filter_bpf_run(struct bio *bio)
+> > > +{
+> > > +	struct bpf_io_request io_req = {
+> > > +		.sector_start = bio->bi_iter.bi_sector,
+> > > +		.sector_cnt = bio_sectors(bio),
+> > > +		.opf = bio->bi_opf,
+> > > +	};
+> > > +
+> > > +	return BPF_PROG_RUN_ARRAY_CHECK(bio->bi_disk->progs, &io_req, BPF_PROG_RUN);
+> > 
+> > 
+> > I think pass "struct bpf_io_request" is not enough, since we may want to do the filter based on
+> > some special patterns against the io data.
+> > 
+> > I used to pass "page_to_virt(bio->bi_io_vec->bv_page)" into ebpf program..
 > 
-> The dev_rx is needed when creating an SKB from a xdp_frame (basically
-> skb->dev = rx_dev). Yes, that is done in cpumap, but I want to
-> generalize this.  The veth also creates SKBs from xdp_frame, but use
-> itself as skb->dev.
+> Bob,
 > 
-> And yes, we could save some space storing the index instead, and trade
-> space for cycles in a lookup.
+> Just like other bpf uapi structs the bpf_io_request is extensible and
+> such pointer can be added later, but I have a different question.
+> 
+> Leah,
+> 
+> Do you really need the arguments to be stable?
+> If so 'opf' above is not enough.
+> sector_start, sector_cnt are clean from uapi pov,
+> but 'opf' exposes kernel internals.
+> The patch 2 is doing:
+> +int protect_gpt(struct bpf_io_request *io_req)
+> +{
+> +       /* within GPT and not a read operation */
+> +       if (io_req->sector_start < GPT_SECTORS && (io_req->opf & REQ_OP_MASK) != REQ_OP_READ)
+> +               return IO_BLOCK;
+> 
+> The way ops are encoded changed quite a bit over the kernel releases.
+> First it was REQ_WRITE, then REQ_OP_SHIFT, now REQ_OP_MASK.
+> From kernel pov it would be simpler if bpf side didn't impose stability
+> requriment on the program arguments. Then the kernel will be free to change
+> REG_OP_READ into something else. The progs would break, of course, and would
+> have to be adjusted. That's what we've been doing with tools like biosnoop.
+> If you're ok with unstable arguments then you wouldn't need to introduce
+> new prog type and this patch set.
+> You can do this filtering already with should_fail_bio().
+> bpf prog can attach to should_fail_bio() and walk all bio arguments
+> in unstable way.
+> Instead of:
+> +       if (io_req->sector_start < GPT_SECTORS && (io_req->opf & REQ_OP_MASK) != REQ_OP_READ)
+> you'll write:
+>   if (bio->bi_iter.bi_sector < GPT_SECTORS && (bio->bi_opf & REQ_OP_MASK) != REQ_OP_READ)
+> It will also work on different kernels because libbpf can adjust field offsets and
+> check for type matching via CO-RE facility.
+> Will that work for you?
 
-I think this can be managed without adding a reference to the xdp_frame.
-I'll start a separate thread on that.
+Alexei,
 
->>
->> As for frame_sz, why does it need to be larger than a u16?
-> 
-> Because PAGE_SIZE can be 64KiB on some archs.
-> 
+I need the arguments to be stable. What would be the best way to go
+about this? Pulling selected information from the opf field and defining
+my own constants?
 
-ok, is there any alignment requirement? can frame_sz be number of 32-bit
-words? I believe bit shifts are cheap.
+Thanks,
+Leah
