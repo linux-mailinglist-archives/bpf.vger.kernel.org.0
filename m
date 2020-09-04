@@ -2,108 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1893C25D331
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 10:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E89D25D50C
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 11:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgIDIHf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 04:07:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726251AbgIDIHe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 04:07:34 -0400
-Received: from localhost (unknown [151.66.86.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730269AbgIDJal (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 05:30:41 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37228 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730301AbgIDJaj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Sep 2020 05:30:39 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-R-LpmBUaOPWhtLJBzQNE5w-1; Fri, 04 Sep 2020 05:30:36 -0400
+X-MC-Unique: R-LpmBUaOPWhtLJBzQNE5w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D7E6206B8;
-        Fri,  4 Sep 2020 08:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599206854;
-        bh=51bpI3bjUxtI3call4hbqi7swrIWd58IgrWWgN9xq2Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ONgBD/NZslOJRQaxaczJvCMCkeIiitiu14SkFQFkBkVTPYvwevHMUue8u28vZT6uX
-         qnQ2He8SFFye5W1la0Ww+mUxrAtR5QS1S6FjU/QOC5c3VgY18JzC3nkHOoGdP2gGlf
-         EtmdXOqPDO8kqAuR7wkxptdpB9c0o8VVr0672RWw=
-Date:   Fri, 4 Sep 2020 10:07:29 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org,
-        john.fastabend@gmail.com, daniel@iogearbox.net, ast@kernel.org,
-        shayagr@amazon.com
-Subject: Re: [PATCH v2 net-next 6/9] bpf: helpers: add
- bpf_xdp_adjust_mb_header helper
-Message-ID: <20200904080729.GE2884@lore-desk>
-References: <cover.1599165031.git.lorenzo@kernel.org>
- <b7475687bb09aac6ec051596a8ccbb311a54cb8a.1599165031.git.lorenzo@kernel.org>
- <20200904010924.m7h434gms27a3r77@ast-mbp.dhcp.thefacebook.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2BF86408E;
+        Fri,  4 Sep 2020 09:30:35 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B8F6574E33;
+        Fri,  4 Sep 2020 09:30:29 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 895DC30736C8B;
+        Fri,  4 Sep 2020 11:30:28 +0200 (CEST)
+Subject: [PATCH bpf-next] bpf: don't check against device MTU in
+ __bpf_skb_max_len
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Date:   Fri, 04 Sep 2020 11:30:28 +0200
+Message-ID: <159921182827.1260200.9699352760916903781.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="a+b56+3nqLzpiR9O"
-Content-Disposition: inline
-In-Reply-To: <20200904010924.m7h434gms27a3r77@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Multiple BPF-helpers that can manipulate/increase the size of the SKB uses
+__bpf_skb_max_len() as the max-length. This function limit size against the
+current net_device MTU (skb->dev->mtu).
 
---a+b56+3nqLzpiR9O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Often packets gets redirected to another net_device, that can have a larger
+MTU, and this is the MTU that should count. The MTU limiting at this stage
+seems wrong and redundant as the netstack will handle MTU checking
+elsewhere.
 
-On Sep 03, Alexei Starovoitov wrote:
-> On Thu, Sep 03, 2020 at 10:58:50PM +0200, Lorenzo Bianconi wrote:
-> > Introduce bpf_xdp_adjust_mb_header helper in order to adjust frame
-> > headers moving *offset* bytes from/to the second buffer to/from the
-> > first one.
-> > This helper can be used to move headers when the hw DMA SG is not able
-> > to copy all the headers in the first fragment and split header and data
-> > pages.
-> >=20
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  include/uapi/linux/bpf.h       | 25 ++++++++++++----
-> >  net/core/filter.c              | 54 ++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 26 ++++++++++++----
-> >  3 files changed, 95 insertions(+), 10 deletions(-)
-> >=20
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 8dda13880957..c4a6d245619c 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3571,11 +3571,25 @@ union bpf_attr {
-> >   *		value.
-> >   *
-> >   * long bpf_copy_from_user(void *dst, u32 size, const void *user_ptr)
-> > - * 	Description
-> > - * 		Read *size* bytes from user space address *user_ptr* and store
-> > - * 		the data in *dst*. This is a wrapper of copy_from_user().
-> > - * 	Return
-> > - * 		0 on success, or a negative error in case of failure.
-> > + *	Description
-> > + *		Read *size* bytes from user space address *user_ptr* and store
-> > + *		the data in *dst*. This is a wrapper of copy_from_user().
-> > + *
-> > + * long bpf_xdp_adjust_mb_header(struct xdp_buff *xdp_md, int offset)
->=20
-> botched rebase?
+Redirecting into sockmap by sk_skb programs already skip this MTU check.
+Keep what commit 0c6bc6e531a6 ("bpf: fix sk_skb programs without skb->dev
+assigned") did, and limit the max_len to SKB_MAX_ALLOC.
 
-Yes, sorry. I will fix in v3.
+Also notice that the max_len MTU check is already skipped for GRO SKBs
+(skb_is_gso), in both bpf_skb_adjust_room() and bpf_skb_change_head().
+Thus, it is clearly safe to remove this check.
 
-Regards,
-Lorenzo
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ net/core/filter.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---a+b56+3nqLzpiR9O
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 47eef9a0be6a..ec0ed107fa37 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3211,8 +3211,7 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+ 
+ static u32 __bpf_skb_max_len(const struct sk_buff *skb)
+ {
+-	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
+-			  SKB_MAX_ALLOC;
++	return SKB_MAX_ALLOC;
+ }
+ 
+ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX1H1vgAKCRA6cBh0uS2t
-rCQoAQDRwbWXFa91rQQ9h2A9he7g5Xkx6pPbCEP4tbMem4t8nQD9ErfxhYill3pH
-BnPLXhzHRZzMm1LDVjmKxyLHBCWS9gA=
-=RhEV
------END PGP SIGNATURE-----
-
---a+b56+3nqLzpiR9O--
