@@ -2,102 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1029E25D23D
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 09:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059B825D280
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 09:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgIDHT5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 03:19:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43193 "EHLO
+        id S1726415AbgIDHf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 03:35:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24181 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726089AbgIDHT4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:19:56 -0400
+        with ESMTP id S1726151AbgIDHf7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 03:35:59 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-h0Zsa4psMzm5VGbC6ly0rw-1; Fri, 04 Sep 2020 03:19:54 -0400
-X-MC-Unique: h0Zsa4psMzm5VGbC6ly0rw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-425-8I2tKuALN4GdHpuv0fjZjQ-1; Fri, 04 Sep 2020 03:35:55 -0400
+X-MC-Unique: 8I2tKuALN4GdHpuv0fjZjQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0924E107464E;
-        Fri,  4 Sep 2020 07:19:52 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0137801AEE;
+        Fri,  4 Sep 2020 07:35:53 +0000 (UTC)
 Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8DD0F5C1C2;
-        Fri,  4 Sep 2020 07:19:41 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 09:19:39 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0224A18B59;
+        Fri,  4 Sep 2020 07:35:43 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 09:35:42 +0200
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net,
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
         lorenzo.bianconi@redhat.com, echaudro@redhat.com,
         sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
         daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        brouer@redhat.com, David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH v2 net-next 1/9] xdp: introduce mb in xdp_buff/xdp_frame
-Message-ID: <20200904091939.069592e4@carbon>
-In-Reply-To: <20200904010705.jm6dnuyj3oq4cpjd@ast-mbp.dhcp.thefacebook.com>
+        brouer@redhat.com,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
+Subject: Re: [PATCH v2 net-next 2/9] xdp: initialize xdp_buff mb bit to 0 in
+ all XDP drivers
+Message-ID: <20200904093542.4dc43682@carbon>
+In-Reply-To: <05822dfe200c5d581d6a6cad89c1b63bb7a1c566.1599165031.git.lorenzo@kernel.org>
 References: <cover.1599165031.git.lorenzo@kernel.org>
-        <1e8e82f72e46264b7a7a1ac704d24e163ebed100.1599165031.git.lorenzo@kernel.org>
-        <20200904010705.jm6dnuyj3oq4cpjd@ast-mbp.dhcp.thefacebook.com>
+        <05822dfe200c5d581d6a6cad89c1b63bb7a1c566.1599165031.git.lorenzo@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 3 Sep 2020 18:07:05 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Thu,  3 Sep 2020 22:58:46 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-> On Thu, Sep 03, 2020 at 10:58:45PM +0200, Lorenzo Bianconi wrote:
-> > Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer to specify
-> > if shared_info area has been properly initialized for non-linear
-> > xdp buffers
-> > 
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  include/net/xdp.h | 8 ++++++--
-> >  net/core/xdp.c    | 1 +
-> >  2 files changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > index 3814fb631d52..42f439f9fcda 100644
-> > --- a/include/net/xdp.h
-> > +++ b/include/net/xdp.h
-> > @@ -72,7 +72,8 @@ struct xdp_buff {
-> >  	void *data_hard_start;
-> >  	struct xdp_rxq_info *rxq;
-> >  	struct xdp_txq_info *txq;
-> > -	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
-> > +	u32 frame_sz:31; /* frame size to deduce data_hard_end/reserved tailroom*/
-> > +	u32 mb:1; /* xdp non-linear buffer */
-> >  };
-> >  
-> >  /* Reserve memory area at end-of data area.
-> > @@ -96,7 +97,8 @@ struct xdp_frame {
-> >  	u16 len;
-> >  	u16 headroom;
-> >  	u32 metasize:8;
-> > -	u32 frame_sz:24;
-> > +	u32 frame_sz:23;
-> > +	u32 mb:1; /* xdp non-linear frame */  
-> 
-> Hmm. Last time I checked compilers were generating ugly code with bitfields.
-> Not performant and not efficient.
-> frame_sz is used in the fast path.
-> I suspect the first hunk alone will cause performance degradation.
-> Could you use normal u8 or u32 flag field?
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index 0b675c34ce49..20c8fd3cd4a3 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -2298,6 +2298,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+>  #if (PAGE_SIZE < 8192)
+>  	xdp.frame_sz = ixgbe_rx_frame_truesize(rx_ring, 0);
+>  #endif
+> +	xdp.mb = 0;
+>  
+>  	while (likely(total_rx_packets < budget)) {
+>  		union ixgbe_adv_rx_desc *rx_desc;
 
-For struct xdp_buff sure we can do this.  For struct xdp_frame, I'm not
-sure, as it is a state compressed version of xdp_buff + extra
-information.  The xdp_frame have been called skb-light, and I know
-people (e.g Ahern) wants to add more info to this, vlan, RX-hash, csum,
-and we must keep this to 1-cache-line, for performance reasons.
-
-You do make a good point, that these bit-fields might hurt performance
-more.  I guess, we need to test this.  As I constantly worry that we
-will slowly kill XDP performance with a 1000 paper-cuts.
+In this ixgbe driver you are smart and init the xdp.mb bit outside the
+(like xdp.frame_sz, when frame_sz is constant).   This is a nice
+optimization, but the driver developer that adds XDP multi-buffer
+support must remember to reset it.  The patch itself is okay, it is
+just something to keep in-mind when reviewing/changing drivers.
 
 -- 
 Best regards,
