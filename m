@@ -2,420 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0364225E322
-	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 22:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F05F25E367
+	for <lists+bpf@lfdr.de>; Fri,  4 Sep 2020 23:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgIDU53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 16:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
+        id S1728001AbgIDVk4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 17:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728057AbgIDU5R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 16:57:17 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F97DC061251
-        for <bpf@vger.kernel.org>; Fri,  4 Sep 2020 13:57:17 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id m6so8571069wrn.0
-        for <bpf@vger.kernel.org>; Fri, 04 Sep 2020 13:57:17 -0700 (PDT)
+        with ESMTP id S1727020AbgIDVkz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 17:40:55 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DC9C061244;
+        Fri,  4 Sep 2020 14:40:55 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id h126so5370573ybg.4;
+        Fri, 04 Sep 2020 14:40:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=To4S7LjyUWtP7KUdnpYu2HjEawfwj/tPoQQdRfIdQL8=;
-        b=SsQ50jED4ToQXn1g62l+546zd57QLcVzHkUgoxNC8aBeM+imsO+V8BvFKWfDgqbjX0
-         TypAC+OgIePl5vwioohEx/7MlR5JpWigFrLvl0PM+0UT0UzgSFZTlE1DVH9CR9jzEEPi
-         WS3+kIT06ZYySC7x9HG2f4JVI1eSRae09Iw4zJqArYYzqCdRJnjrKuLeCIYzmsAZZynE
-         UVyNZP/LVs+6ZjZX0+D4HlxqIrNvJaZY49UYgBuNZd01ycH4mnxRNIu4dthQxXMIso2P
-         oxdjPHAbBbq8GCQanPjSpVCfd1B1KG3UDDCsc92wbGf1yQz/7R1l3OlwgABwLUS3VDgn
-         H4xg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YGavqY1LAAfivBSvDQ5+2tSM73w9eC3O1SDrKV6HmoI=;
+        b=EpiDpDkVqHB1RHFUe6l+1P4dexP7L8Wn301/pn/tA2gmP46++vhNS5fHBgUjgVFI/b
+         iWLxoyQIh5yZhGkGHcuXjbm/dq30Lt0C6JeStZkiuzYjHN6xYh67phg1mareBF+MANdH
+         L59doE1IkLmAVuxAktQz0vOB9v8RewlUX6GrgpMkwkKeS/UmRYk8FN4eUZWhtyFdwwNb
+         mgPJW2y9xgYWdwWIDjDhXLZg6FS1WJLQjQwnAiiJIIK3lZcxRDiVDRFawUR2GhHN4ruQ
+         b5Gvs/Oniqk5IlJKdLEpQcDrsS4vRzy6gcc++KDQ0JnGlT5MsxzkD9jiCMiBBCamXqC7
+         FMsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=To4S7LjyUWtP7KUdnpYu2HjEawfwj/tPoQQdRfIdQL8=;
-        b=JFbR4UkVi3UPFvDR8qMHtsmEtbtt2eYLCpYBeFneb5eZRCV2lJNlzZfqfoEDnhbbPr
-         DDHjPmvEL/KnY4yP4mXI2tLSfXE6ktB5MS9v2DDjbnEu/q2fOmzioidDNFm+wowaZbP+
-         m2KzT+xyuhQNalfbRy9RLa/LkSUy5ZdyUNPEtnEgn7XlZYkADVUXLhY9uCImP4sUj3/5
-         Yk0dnq8/bfcuWNYqIQrjvksoA6h6NF5AQa0fBfX+DYJXfcdQaRHIp6kdEjS2VL5LKOh4
-         +O9ayILFQMGCsBD0r9TZGKSM0in7I7/GF9wZkzVNYswzxytYvudj7iQrY8m6Onb+J3HB
-         Tr+A==
-X-Gm-Message-State: AOAM531IjmfVpex9D2671/lQeHzQaQRMLIw6Q0MwS8InFLbEk1AlHj3t
-        +gjBR3nb103g8MDDNUht68q/anEI8SjPtY5E
-X-Google-Smtp-Source: ABdhPJzYQ1u4JmSEEIRjbHCIhf823iY+Uy0yhqgxodtqUhYGZ/zdOEL6g2Nk4uies7mXBjT7UtENow==
-X-Received: by 2002:adf:9c93:: with SMTP id d19mr9440821wre.275.1599253034223;
-        Fri, 04 Sep 2020 13:57:14 -0700 (PDT)
-Received: from localhost.localdomain ([194.35.117.177])
-        by smtp.gmail.com with ESMTPSA id u17sm12985395wmm.4.2020.09.04.13.57.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 13:57:13 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 3/3] tools: bpftool: automate generation for "SEE ALSO" sections in man pages
-Date:   Fri,  4 Sep 2020 21:56:57 +0100
-Message-Id: <20200904205657.27922-4-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200904205657.27922-1-quentin@isovalent.com>
-References: <20200904205657.27922-1-quentin@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YGavqY1LAAfivBSvDQ5+2tSM73w9eC3O1SDrKV6HmoI=;
+        b=PqMB5p1ox2gpR//asttpNZR+F52EXNG47VsYzBe7BqYBW0Pxnerj+fCIgREN16jcui
+         SW3h8WNssTiYo8PCvSopAmjTq6KjDmGdZjkZEo9Povk8W/RLn/Q7gVEJuweulsXViDMK
+         NZVuZCOCHI9dha1j8T8iWJP77cNjLrH6I0mib2xNjcqlRrt9kxHfPEPBJR9q2AGkk7PG
+         7iFjICYZ7DLTjCG0jCO4X3PnJLJHCiJxOt8OKtizEfsf6tWJOZPyXQdSvWwH8hu0gfo/
+         XHiKmCuj2WxLJ2yZGMmmsxpdDXJl8Qbq8qir/S2KgAZHWIAfsFelDz+dZhcxWNnL74LY
+         DLnA==
+X-Gm-Message-State: AOAM532I70+UB6pc1JUKDFaRR1FoRxsvIcflEiGdeIHBuiHT5cYq3bw+
+        2muBHVcARLSzZP0adufWUrccOZQNm/X+fWH6zRM=
+X-Google-Smtp-Source: ABdhPJylq+GVPvRwwyluWxo3O4wQ0/yE+LF27Hsi7rzdWCVMyFv0fNFDCcV4zD1c7V/D9eF0NoaJVRhOYOmwo8mX1Ls=
+X-Received: by 2002:a25:aa8f:: with SMTP id t15mr3527068ybi.459.1599255654650;
+ Fri, 04 Sep 2020 14:40:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200904161454.31135-1-quentin@isovalent.com>
+In-Reply-To: <20200904161454.31135-1-quentin@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Sep 2020 14:40:43 -0700
+Message-ID: <CAEf4BzYi8ELhNhxPikFQLQmB7HAXr7sRsyKi6QYJs+XBoDiwhw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] bpf: format fixes for BPF helpers and
+ bpftool documentation
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The "SEE ALSO" sections of bpftool's manual pages refer to bpf(2),
-bpf-helpers(7), then all existing bpftool man pages (save the current
-one).
+On Fri, Sep 4, 2020 at 9:15 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> This series contains minor fixes (or harmonisation edits) for the
+> bpftool-link documentation (first patch) and BPF helpers documentation
+> (last two patches), so that all related man pages can build without errors.
+>
+> Quentin Monnet (3):
+>   tools: bpftool: fix formatting in bpftool-link documentation
+>   bpf: fix formatting in documentation for BPF helpers
+>   tools, bpf: synchronise BPF UAPI header with tools
+>
+>  include/uapi/linux/bpf.h                      | 87 ++++++++++---------
+>  .../bpftool/Documentation/bpftool-link.rst    |  2 +-
+>  tools/include/uapi/linux/bpf.h                | 87 ++++++++++---------
+>  3 files changed, 91 insertions(+), 85 deletions(-)
+>
+> --
+> 2.20.1
+>
 
-This leads to nearly-identical lists being duplicated in all manual
-pages. Ideally, when a new page is created, all lists should be updated
-accordingly, but this has led to omissions and inconsistencies multiple
-times in the past.
+This obviously looks good to me:
 
-Let's take it out of the RST files and generate the "SEE ALSO" sections
-automatically in the Makefile when generating the man pages. The lists
-are not really useful in the RST anyway because all other pages are
-available in the same directory.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/Documentation/Makefile        | 12 +++++++++++-
- tools/bpf/bpftool/Documentation/bpftool-btf.rst | 17 -----------------
- .../bpftool/Documentation/bpftool-cgroup.rst    | 16 ----------------
- .../bpftool/Documentation/bpftool-feature.rst   | 16 ----------------
- tools/bpf/bpftool/Documentation/bpftool-gen.rst | 16 ----------------
- .../bpf/bpftool/Documentation/bpftool-iter.rst  | 16 ----------------
- .../bpf/bpftool/Documentation/bpftool-link.rst  | 17 -----------------
- tools/bpf/bpftool/Documentation/bpftool-map.rst | 16 ----------------
- tools/bpf/bpftool/Documentation/bpftool-net.rst | 17 -----------------
- .../bpf/bpftool/Documentation/bpftool-perf.rst  | 17 -----------------
- .../bpf/bpftool/Documentation/bpftool-prog.rst  | 16 ----------------
- .../Documentation/bpftool-struct_ops.rst        | 17 -----------------
- tools/bpf/bpftool/Documentation/bpftool.rst     | 16 ----------------
- 13 files changed, 11 insertions(+), 198 deletions(-)
-
-diff --git a/tools/bpf/bpftool/Documentation/Makefile b/tools/bpf/bpftool/Documentation/Makefile
-index becbb8c52257..86233619215c 100644
---- a/tools/bpf/bpftool/Documentation/Makefile
-+++ b/tools/bpf/bpftool/Documentation/Makefile
-@@ -29,11 +29,21 @@ man8: $(DOC_MAN8)
- 
- RST2MAN_DEP := $(shell command -v rst2man 2>/dev/null)
- 
-+list_pages = $(sort $(basename $(filter-out $(1),$(MAN8_RST))))
-+see_also = $(subst " ",, \
-+	"\n" \
-+	"SEE ALSO\n" \
-+	"========\n" \
-+	"\t**bpf**\ (2),\n" \
-+	"\t**bpf-helpers**\\ (7)" \
-+	$(foreach page,$(call list_pages,$(1)),",\n\t**$(page)**\\ (8)") \
-+	"\n")
-+
- $(OUTPUT)%.8: %.rst
- ifndef RST2MAN_DEP
- 	$(error "rst2man not found, but required to generate man pages")
- endif
--	$(QUIET_GEN)rst2man $< > $@
-+	$(QUIET_GEN)( cat $< ; printf $(call see_also,$<) ) | rst2man > $@
- 
- clean: helpers-clean
- 	$(call QUIET_CLEAN, Documentation)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-index 0020bb55cf7e..b3e909ef6791 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-@@ -214,20 +214,3 @@ All the standard ways to specify map or program are supported:
- **# bpftool btf dump prog tag b88e0a09b1d9759d**
- 
- **# bpftool btf dump prog pinned /sys/fs/bpf/prog_name**
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-index 3dba89db000e..790944c35602 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
-@@ -143,19 +143,3 @@ EXAMPLES
- ::
- 
-     ID       AttachType      AttachFlags     Name
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-index f1aae5690e3c..dd3771bdbc57 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-@@ -72,19 +72,3 @@ DESCRIPTION
- OPTIONS
- =======
- 	.. include:: common_options.rst
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index e3b7ff3c09d7..8b4a18463d55 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -275,19 +275,3 @@ and global variables.
-   my_static_var: 7
- 
- This is a stripped-out version of skeleton generated for above example code.
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-iter.rst b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-index b688cf11805c..51f49bead619 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-iter.rst
-@@ -68,19 +68,3 @@ EXAMPLES
- 
-    Create a file-based bpf iterator from bpf_iter_hashmap.o and map with
-    id 20, and pin it to /sys/fs/bpf/my_hashmap
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-link.rst b/tools/bpf/bpftool/Documentation/bpftool-link.rst
-index 001689efc7fa..8e4e28c1b78a 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-link.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-link.rst
-@@ -106,20 +106,3 @@ EXAMPLES
- ::
- 
-     -rw------- 1 root root 0 Apr 23 21:39 link
--
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index e06a65cd467e..4fe8632bb3a3 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -261,19 +261,3 @@ would be lost as soon as bpftool exits).
- 
-   key: 00 00 00 00  value: 22 02 00 00
-   Found 1 element
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-net.rst b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-index 56439c32934d..d8165d530937 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-net.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-net.rst
-@@ -172,20 +172,3 @@ EXAMPLES
- ::
- 
-       xdp:
--
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-perf.rst b/tools/bpf/bpftool/Documentation/bpftool-perf.rst
-index 36d257a36e9b..e958ce91de72 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-perf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-perf.rst
-@@ -63,20 +63,3 @@ EXAMPLES
-      {"pid":21765,"fd":5,"prog_id":7,"fd_type":"kretprobe","func":"__x64_sys_nanosleep","offset":0}, \
-      {"pid":21767,"fd":5,"prog_id":8,"fd_type":"tracepoint","tracepoint":"sys_enter_nanosleep"}, \
-      {"pid":21800,"fd":5,"prog_id":9,"fd_type":"uprobe","filename":"/home/yhs/a.out","offset":1159}]
--
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 9b2b18e2a3ac..358c7309d419 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -326,19 +326,3 @@ EXAMPLES
-       40176203 cycles                                                 (83.05%)
-       42518139 instructions    #   1.06 insns per cycle               (83.39%)
-            123 llc_misses      #   2.89 LLC misses per million insns  (83.15%)
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-struct_ops**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
-index 315f1f21f2ba..506e70ee78e9 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-struct_ops.rst
-@@ -82,20 +82,3 @@ EXAMPLES
- ::
- 
-    Registered tcp_congestion_ops cubic id 110
--
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool**\ (8),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
-index b87f8c2df49d..e7d949334961 100644
---- a/tools/bpf/bpftool/Documentation/bpftool.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool.rst
-@@ -54,19 +54,3 @@ OPTIONS
- 	-n, --nomount
- 		  Do not automatically attempt to mount any virtual file system
- 		  (such as tracefs or BPF virtual file system) when necessary.
--
--SEE ALSO
--========
--	**bpf**\ (2),
--	**bpf-helpers**\ (7),
--	**bpftool-btf**\ (8),
--	**bpftool-cgroup**\ (8),
--	**bpftool-feature**\ (8),
--	**bpftool-gen**\ (8),
--	**bpftool-iter**\ (8),
--	**bpftool-link**\ (8),
--	**bpftool-map**\ (8),
--	**bpftool-net**\ (8),
--	**bpftool-perf**\ (8),
--	**bpftool-prog**\ (8),
--	**bpftool-struct_ops**\ (8)
--- 
-2.25.1
-
+But do you think we can somehow prevent issues like this? Consider
+adding building/testing of documentation to selftests or something.
+Not sure if that will catch all the issues you've fixed, but that
+would be a good start.
