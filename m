@@ -2,210 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026AA25E48C
-	for <lists+bpf@lfdr.de>; Sat,  5 Sep 2020 02:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F9425E519
+	for <lists+bpf@lfdr.de>; Sat,  5 Sep 2020 04:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728239AbgIEAKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Sep 2020 20:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgIEAKb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Sep 2020 20:10:31 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D37EC061244;
-        Fri,  4 Sep 2020 17:10:31 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id c2so9854706ljj.12;
-        Fri, 04 Sep 2020 17:10:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tbo/fP80u13iaVfzepEzqs/nlhrTTDUJVYz/xjFhpiY=;
-        b=tvOw2VmHnmvPRCBzH7VgtWc8Wsc+Gk/uP/o5QXY02NXUlmLol1njnXZLMRS/3KBGge
-         juy9sY//p5FIQmnxDSEMLJFkOsRsOdL1NAcNaWDD8D3FI4DytcId2NHlQTqU9PcwP7G7
-         yVxYtuK75PZuvcNHQ0Tz4xD4+jFAmLecwd9r1juteFEDTR13id8vhYr1uMoD3kArDklF
-         WpOk8p35TI7HVXHR3lOCkEUBhcB5HLTzp5e35b+ew9oEtulhgRCQnWLZj/a+OaJoHdrW
-         Ns6l9KOFQeeFPif1Hlk7yf5wW/RcfMrX3u4VUMjUwCIuWufEiMworZhXFfRVdIiTCOPm
-         VfXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tbo/fP80u13iaVfzepEzqs/nlhrTTDUJVYz/xjFhpiY=;
-        b=Rpzxgl00int2yJgp8l8fBV8dbcfOATAmipBCAqMERgESPF29k/JhuFmSVNAEp4CR5f
-         MwBb477LH6rz2gtqi5RtW8lVvXiRLO7b5cl9j9XTiQRr0thb2YNR1wzg4MaUpOcXuzcW
-         DUTxNhGSL8hGSohSgxSlyZ4Awxa0qo3amf/8xex7fErsT4ts0veNTb6zhj3Lx97QTxSX
-         /8WQBNff8c4tTXQy3FR8nBxwN8WUlmkgjHqi+AY29J6Zc9tCFpN1Ef6mpcvJmuWL8avR
-         7bVsBPUbfMP+eB0Uq9BtwoaNBhGDwQ1ZuVW06OAGvUPdd5NKPeFFRRUMDe7aBNb4ntm+
-         DHsQ==
-X-Gm-Message-State: AOAM532F3e8M0y16jdaDMs7gkd4Jq5RdHwv58wMJLKJxCinjIgFuzqJa
-        l0KsuNYOAukApzTmNgC6QwQNOnj9QZ78+rTTAZA=
-X-Google-Smtp-Source: ABdhPJwwubiU5GVA+BR62Zh8dV3eHyJL/xzfYHfblB/N9GQ/A2CAC7943eTw3V7Pre/jP/RCFUrDoDObHxzlzjzo7WU=
-X-Received: by 2002:a2e:8593:: with SMTP id b19mr4779116lji.290.1599264629814;
- Fri, 04 Sep 2020 17:10:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200904194900.3031319-1-yhs@fb.com> <20200904194900.3031377-1-yhs@fb.com>
- <CAEf4BzboqpYa7Zq=6xcpGez+jk--NTDA0=FQi5utwcFaHwC7bA@mail.gmail.com>
- <c016695c-3d22-ac74-5e2f-9210fb5b58af@fb.com> <CAEf4BzaWZqLnR78B3F38bkDP62aDy81oQSAiZMXDULembVyhkA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaWZqLnR78B3F38bkDP62aDy81oQSAiZMXDULembVyhkA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 4 Sep 2020 17:10:18 -0700
-Message-ID: <CAADnVQJrjPynzVZTDvDh7qosBVFO8+iKEKDbC4=yK+4HVZ6Tng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: permit map_ptr arithmetic with opcode
- add and offset 0
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
+        id S1726406AbgIECwa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Sep 2020 22:52:30 -0400
+Received: from mga02.intel.com ([134.134.136.20]:10361 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726329AbgIECw3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Sep 2020 22:52:29 -0400
+IronPort-SDR: 9rbNK/iTOJYEKHd+KcUERCF0Pksgts8UxVJRBvBgJR07rvtapvkHBU9gRZALG3yUEORYuiOPoo
+ wNV6xHmEbToQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9734"; a="145566255"
+X-IronPort-AV: E=Sophos;i="5.76,392,1592895600"; 
+   d="scan'208";a="145566255"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 19:52:28 -0700
+IronPort-SDR: XZhlot/3ryxZXnOsBli51gkPG/7/QWHGXAlIS2yGX/0G/ABjkVcEUbuW7a+xYLGtoTWGWlNWsX
+ 7DSYNWbPLJfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,392,1592895600"; 
+   d="scan'208";a="339978701"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Sep 2020 19:52:27 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 4 Sep 2020 19:52:26 -0700
+Received: from orsmsx105.amr.corp.intel.com (10.22.225.132) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 4 Sep 2020 19:52:26 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ ORSMSX105.amr.corp.intel.com (10.22.225.132) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 4 Sep 2020 19:52:26 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Fri, 4 Sep 2020 19:52:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LmKJfJR0S2Q2vXKAABjgGdICzbM9w63QiDo6gTa8rKb9YIaJSWSIusBmwmnk7babi83VmvMzbk0Ovqoa81gCdfUaAD9ZuS8dz6pRRJJjHY7AMWnKwT2m7CxpJ9qG76xHyKCUy8OVDW3cOW+Hr7veYm3XkO3pg6Smlkn/SYR8ef7klkHCtO0JrrXHLMfxP1MjYXBTI6tStl4Ys5ZKVc9O2hAVJqNoJ3ifnshRZDqtefDFbR0EYU5Dgs58lyMu5jYlh+7K22tWK29ZsDgxJJbU6zgigkx5EV6aAaB2pm5JTDQvL4fQTRUNkGoyL4vpfYSSoAChAwTm61Ej+keMxbcl7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0EKusrxbKiFs3c5TYBLjlNICFhALnR8DSDy9WRMk2Oc=;
+ b=CbVEmupxe5UffSduF2wOJxvBSxLI0cls+XLgPqdMG6CP+UCRM4Eqx6N5G2baqP3c2Mg7qBuNxqltSjYmV9ymUDetrlIE/oEvPd9Lo1FGMAmTCiJEOK8suKvsgKoS6pE6fjdWMYb5hmboXOh4l2RIynLQYIFclSISOXEDgHutncgT+Lz/bcbcYKrcG0SXQSFoMcpUSV42xHix1s8xFfH/2P8djKHqoHqkbFbvV4f2VaPIUSjeUTZYEdw7GLXs7C2wekuBKvfVsx4m02yGgw4yYdGWQFdR+90xGK2KPoEeStQk123ThXm55tBeTQ6cTeaytX0lJxNnToR+IjA7jc4dvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0EKusrxbKiFs3c5TYBLjlNICFhALnR8DSDy9WRMk2Oc=;
+ b=Xp82wJ+IShkBVMGA/yPdq++S7c8zcIUxSdUD9XFMSv4iiIIJUOasYWhRYLH/t+roi4R71W3IfOcDkLAHMgHlnQq/novIwVCKEhA1hlRX4ngI4NB6eIz9G8JJA0xhdtnz1CUZL+QBGgP+xpUr6fJoL9MM9CeU5AslysbJJWscdN0=
+Received: from DM6PR11MB2890.namprd11.prod.outlook.com (2603:10b6:5:63::20) by
+ DM6PR11MB3322.namprd11.prod.outlook.com (2603:10b6:5:55::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3348.15; Sat, 5 Sep 2020 02:52:24 +0000
+Received: from DM6PR11MB2890.namprd11.prod.outlook.com
+ ([fe80::25c4:e65e:4d75:f45f]) by DM6PR11MB2890.namprd11.prod.outlook.com
+ ([fe80::25c4:e65e:4d75:f45f%7]) with mapi id 15.20.3326.025; Sat, 5 Sep 2020
+ 02:52:24 +0000
+From:   "Brown, Aaron F" <aaron.f.brown@intel.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, "kjlu@umn.edu" <kjlu@umn.edu>
+CC:     "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH] ice: Fix memleak in ice_set_ringparam
+Thread-Topic: [PATCH] ice: Fix memleak in ice_set_ringparam
+Thread-Index: AQHWfBq134ZnMgvhn0+BpxY5ermW4qlZZvIA
+Date:   Sat, 5 Sep 2020 02:52:23 +0000
+Message-ID: <DM6PR11MB2890B209C860067C2EF3AC60BC2A0@DM6PR11MB2890.namprd11.prod.outlook.com>
+References: <20200827023410.3677-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200827023410.3677-1-dinghao.liu@zju.edu.cn>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: zju.edu.cn; dkim=none (message not signed)
+ header.d=none;zju.edu.cn; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [97.120.215.99]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 21e2543b-e86e-484e-02d6-08d85146b790
+x-ms-traffictypediagnostic: DM6PR11MB3322:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB33228C9D63D5BF3F8E10D8C6BC2A0@DM6PR11MB3322.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2582;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: C4hX8P/UY4ss1trXXy8R24pfqEu65tp9ESKRREwPyUzu/5fCSH9z2mnl7Vvec0SJ4DxCSy6kEk9a2grAzYXgCaAMuYZJ/Q3ub+a9Wyo80qwKBVmuJlFdXlrZncD8TCYgzU5YdiaPIcFW7KmeoDr3C5oebsXwnQAj6u3f6UpIT8s5xE+x3eHgu1rsY9ZjrdpYJz6hZjnN2aJTDO4TYEpmzmZ/CLV67gwnlesVX1dbes0kuGBun9/XUvAvTnFK+/eRDqGJGQyJX9dIVeA5EtpQcUgo3iys+vyANlIT+cKmLLh50tK/abRi9RanSHlqEoVDdxGBXFK5BZVMYPtu5dxGdQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2890.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(346002)(376002)(39860400002)(316002)(83380400001)(54906003)(2906002)(8676002)(55016002)(7696005)(6506007)(7416002)(110136005)(53546011)(86362001)(66946007)(186003)(66476007)(52536014)(33656002)(8936002)(76116006)(478600001)(5660300002)(66446008)(9686003)(4744005)(64756008)(71200400001)(4326008)(26005)(66556008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: x5M1m3MVseibNYLqn0ajFxjZgLAk6lyMmuhmpAoUPS3TA2kEwbweX5G3tkItRnubQBL1/vLigqkq26H2s02B7MhpzqD8dyvHqMaeCmfGkJ2JZogsNI/IWPaDKEGmxbzH03laO6tqRFiNYj86cfguORh54S9IGUkVT+a6YCk2D+O48EKj3LpH+cADIfhAzvuEeBSt9ttMOrGWlI14C0EGqcAEzyjAvuIZ2ua65Wt5hGXMPd3t/G6mt8t2q//Y+v734VIalWFjWnSc/X9suAeT1sevinkCllbiSCqn9YMgNVHPjhl1fz8/raI5kL767kp5nuHtK4UKqXrD7GL08RjNRnKAwmHs9KeIDxiN/SqFSDCRhevn+ESBRQYMdBCie1Ow7NY90afSCStge0GMoDJUwVVSc5a8JICfIBvtU3U8V8C3ViVwqWi2wA2Tu0tIsJBrkXHo2lrhFGdhV5tk+bXexUbtFMi6nzypi7paOhPySLguvgGgf3YpmNfGs+LcFbWsYhBMnHuPR9b/krwbVoIEFQbtGz2fJ54PomnHhHSr7nv9pXAjEZ9V1m90g7MqB8VqJQDslmCHQwKh4JyH/aKfJLXTad7JOB74r1ROXSUINDDb5+gEx4MukSYnBJnWk3C3PWbjjEpNh8qRiXKAvyMx/Q==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2890.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21e2543b-e86e-484e-02d6-08d85146b790
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2020 02:52:23.8286
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YGNYwkQbWtPtqUzbqoZsizLNHG5WUpPpTPui2G+K/jmfPcYrj0pD8TCVFfWJ5+Rnvh7uKsbzVP2EXYUMi7ImkA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3322
+X-OriginatorOrg: intel.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 5:08 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Sep 4, 2020 at 4:20 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> >
-> > On 9/4/20 1:30 PM, Andrii Nakryiko wrote:
-> > > On Fri, Sep 4, 2020 at 12:49 PM Yonghong Song <yhs@fb.com> wrote:
-> > >>
-> > >> Commit 41c48f3a98231 ("bpf: Support access
-> > >> to bpf map fields") added support to access map fields
-> > >> with CORE support. For example,
-> > >>
-> > >>              struct bpf_map {
-> > >>                      __u32 max_entries;
-> > >>              } __attribute__((preserve_access_index));
-> > >>
-> > >>              struct bpf_array {
-> > >>                      struct bpf_map map;
-> > >>                      __u32 elem_size;
-> > >>              } __attribute__((preserve_access_index));
-> > >>
-> > >>              struct {
-> > >>                      __uint(type, BPF_MAP_TYPE_ARRAY);
-> > >>                      __uint(max_entries, 4);
-> > >>                      __type(key, __u32);
-> > >>                      __type(value, __u32);
-> > >>              } m_array SEC(".maps");
-> > >>
-> > >>              SEC("cgroup_skb/egress")
-> > >>              int cg_skb(void *ctx)
-> > >>              {
-> > >>                      struct bpf_array *array = (struct bpf_array *)&m_array;
-> > >>
-> > >>                      /* .. array->map.max_entries .. */
-> > >>              }
-> > >>
-> > >> In kernel, bpf_htab has similar structure,
-> > >>
-> > >>              struct bpf_htab {
-> > >>                      struct bpf_map map;
-> > >>                      ...
-> > >>              }
-> > >>
-> > >> In the above cg_skb(), to access array->map.max_entries, with CORE, the clang will
-> > >> generate two builtin's.
-> > >>              base = &m_array;
-> > >>              /* access array.map */
-> > >>              map_addr = __builtin_preserve_struct_access_info(base, 0, 0);
-> > >>              /* access array.map.max_entries */
-> > >>              max_entries_addr = __builtin_preserve_struct_access_info(map_addr, 0, 0);
-> > >>              max_entries = *max_entries_addr;
-> > >>
-> > >> In the current llvm, if two builtin's are in the same function or
-> > >> in the same function after inlining, the compiler is smart enough to chain
-> > >> them together and generates like below:
-> > >>              base = &m_array;
-> > >>              max_entries = *(base + reloc_offset); /* reloc_offset = 0 in this case */
-> > >> and we are fine.
-> > >>
-> > >> But if we force no inlining for one of functions in test_map_ptr() selftest, e.g.,
-> > >> check_default(), the above two __builtin_preserve_* will be in two different
-> > >> functions. In this case, we will have code like:
-> > >>     func check_hash():
-> > >>              reloc_offset_map = 0;
-> > >>              base = &m_array;
-> > >>              map_base = base + reloc_offset_map;
-> > >>              check_default(map_base, ...)
-> > >>     func check_default(map_base, ...):
-> > >>              max_entries = *(map_base + reloc_offset_max_entries);
-> > >>
-> > >> In kernel, map_ptr (CONST_PTR_TO_MAP) does not allow any arithmetic.
-> > >> The above "map_base = base + reloc_offset_map" will trigger a verifier failure.
-> > >>    ; VERIFY(check_default(&hash->map, map));
-> > >>    0: (18) r7 = 0xffffb4fe8018a004
-> > >>    2: (b4) w1 = 110
-> > >>    3: (63) *(u32 *)(r7 +0) = r1
-> > >>     R1_w=invP110 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
-> > >>    ; VERIFY_TYPE(BPF_MAP_TYPE_HASH, check_hash);
-> > >>    4: (18) r1 = 0xffffb4fe8018a000
-> > >>    6: (b4) w2 = 1
-> > >>    7: (63) *(u32 *)(r1 +0) = r2
-> > >>     R1_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R2_w=invP1 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
-> > >>    8: (b7) r2 = 0
-> > >>    9: (18) r8 = 0xffff90bcb500c000
-> > >>    11: (18) r1 = 0xffff90bcb500c000
-> > >>    13: (0f) r1 += r2
-> > >>    R1 pointer arithmetic on map_ptr prohibited
-> > >>
-> > >> To fix the issue, let us permit map_ptr + 0 arithmetic which will
-> > >> result in exactly the same map_ptr.
-> > >>
-> > >> Signed-off-by: Yonghong Song <yhs@fb.com>
-> > >> ---
-> > >>   kernel/bpf/verifier.c | 3 +++
-> > >>   1 file changed, 3 insertions(+)
-> > >>
-> > >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > >> index b4e9c56b8b32..92aa985e99df 100644
-> > >> --- a/kernel/bpf/verifier.c
-> > >> +++ b/kernel/bpf/verifier.c
-> > >> @@ -5317,6 +5317,9 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
-> > >>                          dst, reg_type_str[ptr_reg->type]);
-> > >>                  return -EACCES;
-> > >>          case CONST_PTR_TO_MAP:
-> > >> +               if (known && smin_val == 0 && opcode == BPF_ADD)
-> > >
-> > > does smin_val imply that var_off is strictly zero? if that's the case,
-> > > can you please leave a comment stating this clearly, it's hard to tell
-> > > if that's enough of a check.
-> >
-> > It should be, if register state is maintained properly, the following
-> > function (or its functionality) should have been called.
-> >
-> > static void __update_reg64_bounds(struct bpf_reg_state *reg)
-> > {
-> >          /* min signed is max(sign bit) | min(other bits) */
-> >          reg->smin_value = max_t(s64, reg->smin_value,
-> >                                  reg->var_off.value | (reg->var_off.mask
-> > & S64_MIN));
-> >          /* max signed is min(sign bit) | max(other bits) */
-> >          reg->smax_value = min_t(s64, reg->smax_value,
-> >                                  reg->var_off.value | (reg->var_off.mask
-> > & S64_MAX));
-> >          reg->umin_value = max(reg->umin_value, reg->var_off.value);
-> >          reg->umax_value = min(reg->umax_value,
-> >                                reg->var_off.value | reg->var_off.mask);
-> > }
-> >
-> > for scalar constant, reg->var_off.mask should be 0. so we will have
-> > reg->smin_value = reg->smax_value = (s64)reg->var_off.value.
-> >
-> > The smin_val is also used below, e.g., BPF_ADD, for a known value.
-> > That is why I am using smin_val here.
-> >
-> > Will add a comment and submit v2.
->
-> it would be way-way more obvious (and reliable in the long run,
-> probably) if you just used (known && reg->var_off.value == 0). or just
-> tnum_equals_const(reg->var_off, 0)?
+> From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> Sent: Wednesday, August 26, 2020 7:34 PM
+> To: dinghao.liu@zju.edu.cn; kjlu@umn.edu
+> Cc: Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>; David S. Miller
+> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Alexei
+> Starovoitov <ast@kernel.org>; Daniel Borkmann <daniel@iogearbox.net>;
+> Jesper Dangaard Brouer <hawk@kernel.org>; John Fastabend
+> <john.fastabend@gmail.com>; intel-wired-lan@lists.osuosl.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+> bpf@vger.kernel.org
+> Subject: [PATCH] ice: Fix memleak in ice_set_ringparam
+>=20
+> When kcalloc() on rx_rings fails, we should free tx_rings
+> and xdp_rings to prevent memleak. Similarly, when
+> ice_alloc_rx_bufs() fails, we should free xdp_rings.
+>=20
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_ethtool.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 
-Pls dont. smin_val == 0 is a standard way to do this.
-Just check all other places in this function and everywhere else.
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+
