@@ -2,428 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A87825EDFB
-	for <lists+bpf@lfdr.de>; Sun,  6 Sep 2020 15:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0708425F0F3
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 00:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgIFNkd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Sep 2020 09:40:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728891AbgIFNgp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Sep 2020 09:36:45 -0400
-Received: from localhost (unknown [151.66.86.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC06620760;
-        Sun,  6 Sep 2020 13:36:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599399382;
-        bh=nEloTPaT/0aLose1iS1izcHESMbU05uQXq7UpdamaLU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QSGkBpuNAOXNwJvavRTSq38wxv4gy20ysVePUfpZlJ1/y5fETDNbEIH0M9lgVMRYm
-         gBDHZJDtj2b8sr6mTZjY95aA1P4YquXbz+F8yUYNkg3oLdUiH0xNZvSyuG0RfU0dPI
-         lwGmfo/M/9uD8xRSNk+M+hBphwKUGN+A7o2PveXY=
-Date:   Sun, 6 Sep 2020 15:36:17 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        edumazet@google.com
-Subject: Re: [PATCH v2 net-next 6/9] bpf: helpers: add
- bpf_xdp_adjust_mb_header helper
-Message-ID: <20200906133617.GC2785@lore-desk>
-References: <cover.1599165031.git.lorenzo@kernel.org>
- <b7475687bb09aac6ec051596a8ccbb311a54cb8a.1599165031.git.lorenzo@kernel.org>
- <5f51e2f2eb22_3eceb20837@john-XPS-13-9370.notmuch>
- <20200904094511.GF2884@lore-desk>
- <5f525be3da548_1932208b6@john-XPS-13-9370.notmuch>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="8NvZYKFJsRX2Djef"
+        id S1726476AbgIFWlC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Sep 2020 18:41:02 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41474 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726165AbgIFWk6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 6 Sep 2020 18:40:58 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 086MegNU020990;
+        Sun, 6 Sep 2020 15:40:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=h3ZkudP0/W+pAsVvNqAnFbYl1DZAbLGMrejlAfGvwcc=;
+ b=Ls7vuBFNMdT9VxXB5UMzCnZrJc6Uc/MCZwI/bsYKbQWTTYbK38Lq+icFU04P+9IJKuEr
+ T/qDoHrkvj+CPycwh/pspPp2G0nJLuynBxp2S5bH+cnCozZPYgL7e2vSYA9wl6vTWU/f
+ ZlGHkwYwE/pHso/tn9A32lBfj3gQmk/3QT4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33c8dw51dg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 06 Sep 2020 15:40:42 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 6 Sep 2020 15:40:15 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=INEzP17/SkTxcNNZmchLfrVoxVXF+PWd0IhVtSNTZ5RnGkmzwOQ8wrEqxnqURRFg5gpkn1r2KzvYQ8jWxQl80pBFsBms9QIh7QWpiecseywEp1lvCdt02flu2x9THzLXmaifr6n7s6yFgOYsUPbjVeiFgJYb5N2XSacZraMOZxma89D/By+aFxCWbcH9Q6HofMIREQVJWkopS3dE+TmGT9IP/F2ZBk1ZIB2mMAoevQ0SW5zFZ+vhKASiSoPYUoG5mw49TVNnS/AbRDjagAtMNsjE6jBOUJ3dFZl6sxPgEo/ZoqseBtUABG35LA7vKRQH+BcE4/WibdVJDT57Wrr3WA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3ZkudP0/W+pAsVvNqAnFbYl1DZAbLGMrejlAfGvwcc=;
+ b=BVoUzWKhKHpVsZ2c+wql3EWzAreHNfAk0O9yNgL0dKfaF11Qt6vvEo2xKxruHNs2bpxKjv7eY++h6zWvM1MuG1BJHTzrTYUuK5A+snSqJDpjdGjvOv/LaO/ExgT5tUYLhay3ysTeRfmgEV/JgRMWhNSx7fwpYiv7tlQVIrpZZFb/apKt3/ptzaWiG6QCdXOOeKZug/EZNhHDCGtYjPVosztrOovS8bdfT83qP6iqDtTtT38ttXmUBoaVqCWmvWd97c8wMPhsoF1UOvGeb4SstMJDYz/felZKPn+KqYb55hjkCN3npsUTcfxTEEG0Pb5CsF++l6G+Mb+W+EpgcaZjlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3ZkudP0/W+pAsVvNqAnFbYl1DZAbLGMrejlAfGvwcc=;
+ b=WIPDT+WrH2wEBqPgo89SDfFAw+Yg0B2PfqydA+8is7SQyJmkVLZfOkIU7q6a1dAarED4N/HjJFVaipfTB618rHw5/v/B92JMdXC/KGZ8fKNOC4Ky7w5tiWsoQv7mv51VohOZkWAhTviUYYgVE/4FVedJQw9/Oo1oGNICbzCPQ+8=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3255.namprd15.prod.outlook.com (2603:10b6:a03:107::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Sun, 6 Sep
+ 2020 22:40:14 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3348.019; Sun, 6 Sep 2020
+ 22:40:14 +0000
+Date:   Sun, 6 Sep 2020 15:40:08 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     <ast@kernel.org>, <yhs@fb.com>, <daniel@iogearbox.net>,
+        <jakub@cloudflare.com>, <john.fastabend@gmail.com>,
+        <bpf@vger.kernel.org>, <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 1/6] bpf: Allow passing BTF pointers as
+ PTR_TO_SOCKET
+Message-ID: <20200906224008.fph4frjkkegs6w3b@kafai-mbp.dhcp.thefacebook.com>
+References: <20200904095904.612390-1-lmb@cloudflare.com>
+ <20200904095904.612390-2-lmb@cloudflare.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f525be3da548_1932208b6@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200904095904.612390-2-lmb@cloudflare.com>
+X-ClientProxiedBy: BY5PR03CA0023.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::33) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:1a4) by BY5PR03CA0023.namprd03.prod.outlook.com (2603:10b6:a03:1e0::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Sun, 6 Sep 2020 22:40:13 +0000
+X-Originating-IP: [2620:10d:c090:400::5:1a4]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6b47ea23-07d4-4142-d655-08d852b5d1d8
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3255:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3255D6AE7D3CF15B3C92D714D52B0@BYAPR15MB3255.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uVr0WAe87+mSUMFy8EXvHESDserz55OkyYkDQpbtk9J3C4SMoj9OivQErgQ3CvGK09kZmZl8cxKd5FF0y0pPQ0xMEFqsK/4+vsR7eAS24xvOW4sqjP2uyz7sDJFmJphg26UHqFTSN6J73BwcO154ra87cdr+kdmqO2Hz3DMtUx6yNpj9GpO+TZVg9y6yW/pArYTdCZgyiZMXYYuQM8XPwKW6DeR3NczOEHr0EmUJlM8H1zRu9RgcfdFuRdWLPLgZdTY4J5HsPbw7bSarfxywkP9btJCBKwix1W0O2om9xUyB7Fxz5MR+F5RXVOrhSUOm1oqYJ5GuIAj+vAfZQIa8B3puRfGmNA43A0DCB5NFgTpTU3FBt482uzUPl+Wq0k/1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(376002)(346002)(136003)(396003)(1076003)(8936002)(8676002)(5660300002)(2906002)(6916009)(6506007)(9686003)(4326008)(66476007)(52116002)(7696005)(66556008)(316002)(66946007)(186003)(55016002)(16526019)(6666004)(83380400001)(478600001)(86362001)(21314003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: /yKJENvEgTrr1w4HY6180bPyFcyYBKCYwY3uIO0SzcjGnSfQb5cbx08IzIwmvJ1uPX80N0gxFAVqc1CpQdTE003dmz9WFAIwrtMlAzFwmIDh6oZJ37/b8bPQef+dx50jrz9KrJ3QUkH4FZGQXobwPGparxYfxZHjLIuYN7EAQpKls1LsOUvnaxXSG3ZJ4XCYMqe2iswF64ha9pz6oKFWzkNfx1aUGmb7sq+b0eux16ShcI+bQbdv0ejHVSFgTtDe7Ik7ucY2g8HLtaGmUMl2rK088pHIESkOKtmjm+yBX7jHMS732rGSnTV+AomIohb+LpAIfq/GpAOBNYKzuR9wVhhidcDNeeNmpFGE8dczEgJztCwinLaae/0lf0wRoOPssty88Crz0TQAe7Z2CZEwyZHqf9YpivG4Hw5n0tT3qvsa+prlvAacq5Yi/0Edjk/Mh+kctWicU34V3JjIqucUfWV7m0em4V7Upjoh/fQaRUeJGUL9Z0n9irSdlfvAULHUgjI2d5ulGyydP0vnVCI1B6Ty805ysaaRGDgRP5cJkBfXnQDpA+67YGrcuDPCi5fsjSEIvKkVpB3Ahj6ylP/x751qsRmBVJL/AvIumq1TRcWKYTKlA6R/SPrkapcEQaEPUvCLgSCLxR9PCZ2n3HhnzTfC7JFCOnIlHAVgTWgzEn8=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b47ea23-07d4-4142-d655-08d852b5d1d8
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2020 22:40:14.0049
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: djcy4iwnfdd4DM504WP55eaDrlLUbVonoigwr0WDDcgCK4eUsjEhK2Ia+Fm70YiC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3255
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-06_18:2020-09-04,2020-09-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 impostorscore=0
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009060233
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Sep 04, 2020 at 10:58:59AM +0100, Lorenz Bauer wrote:
+> Tracing programs can derive struct sock pointers from a variety
+> of sources, e.g. a bpf_iter for sk_storage maps receives one as
+> part of the context. It's desirable to be able to pass these to
+> functions that expect PTR_TO_SOCKET. For example, it enables us
+> to insert such a socket into a sockmap via map_elem_update.
+> 
+> Teach the verifier that a PTR_TO_BTF_ID for a struct sock is
+> equivalent to PTR_TO_SOCKET. There is one hazard here:
+> bpf_sk_release also takes a PTR_TO_SOCKET, but expects it to be
+> refcounted. Since this isn't the case for pointers derived from
+> BTF we must prevent them from being passed to the function.
+> Luckily, we can simply check that the ref_obj_id is not zero
+> in release_reference, and return an error otherwise.
+> 
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> ---
+>  kernel/bpf/verifier.c | 61 +++++++++++++++++++++++++------------------
+>  1 file changed, 36 insertions(+), 25 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b4e9c56b8b32..509754c3aa7d 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3908,6 +3908,9 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
+>  	return 0;
+>  }
+>  
+> +BTF_ID_LIST(btf_fullsock_ids)
+> +BTF_ID(struct, sock)
+It may be fine for the sockmap iter case to treat the "struct sock" BTF_ID
+as a fullsock (i.e. PTR_TO_SOCKET).
 
---8NvZYKFJsRX2Djef
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is a generic verifier change though.  For tracing, it is not always the
+case.  It cannot always assume that the "struct sock *" in the function being
+traced is always a fullsock.
 
-> Lorenzo Bianconi wrote:
-> > > Lorenzo Bianconi wrote:
+Currently, the func_proto taking ARG_PTR_TO_SOCKET can safely
+assume it must be a fullsock.  If it is allowed to also take BTF_ID
+"struct sock" in verification time,  I think the sk_fullsock()
+check in runtime is needed and this check should be pretty
+cheap to do.
 
-[...]
+> +
+>  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  			  struct bpf_call_arg_meta *meta,
+>  			  const struct bpf_func_proto *fn)
+> @@ -4000,37 +4003,15 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		expected_type = PTR_TO_SOCKET;
+>  		if (!(register_is_null(reg) &&
+>  		      arg_type == ARG_PTR_TO_SOCKET_OR_NULL)) {
+> -			if (type != expected_type)
+> +			if (type != expected_type &&
+> +			    type != PTR_TO_BTF_ID)
+>  				goto err_type;
+>  		}
+> +		meta->btf_id = btf_fullsock_ids[0];
+>  	} else if (arg_type == ARG_PTR_TO_BTF_ID) {
+> -		bool ids_match = false;
+> -
+>  		expected_type = PTR_TO_BTF_ID;
+>  		if (type != expected_type)
+>  			goto err_type;
+> -		if (!fn->check_btf_id) {
+> -			if (reg->btf_id != meta->btf_id) {
+> -				ids_match = btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
+> -								 meta->btf_id);
+> -				if (!ids_match) {
+> -					verbose(env, "Helper has type %s got %s in R%d\n",
+> -						kernel_type_name(meta->btf_id),
+> -						kernel_type_name(reg->btf_id), regno);
+> -					return -EACCES;
+> -				}
+> -			}
+> -		} else if (!fn->check_btf_id(reg->btf_id, arg)) {
+> -			verbose(env, "Helper does not support %s in R%d\n",
+> -				kernel_type_name(reg->btf_id), regno);
+> -
+> -			return -EACCES;
+> -		}
+> -		if ((reg->off && !ids_match) || !tnum_is_const(reg->var_off) || reg->var_off.value) {
+> -			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
+> -				regno);
+> -			return -EACCES;
+> -		}
+>  	} else if (arg_type == ARG_PTR_TO_SPIN_LOCK) {
+>  		if (meta->func_id == BPF_FUNC_spin_lock) {
+>  			if (process_spin_lock(env, regno, true))
+> @@ -4085,6 +4066,33 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  		return -EFAULT;
+>  	}
+>  
+> +	if (type == PTR_TO_BTF_ID) {
+> +		bool ids_match = false;
+> +
+> +		if (!fn->check_btf_id) {
+> +			if (reg->btf_id != meta->btf_id) {
+> +				ids_match = btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
+> +								 meta->btf_id);
+> +				if (!ids_match) {
+> +					verbose(env, "Helper has type %s got %s in R%d\n",
+> +						kernel_type_name(meta->btf_id),
+> +						kernel_type_name(reg->btf_id), regno);
+> +					return -EACCES;
+> +				}
+> +			}
+> +		} else if (!fn->check_btf_id(reg->btf_id, arg)) {
+> +			verbose(env, "Helper does not support %s in R%d\n",
+> +				kernel_type_name(reg->btf_id), regno);
+> +
+> +			return -EACCES;
+> +		}
+> +		if ((reg->off && !ids_match) || !tnum_is_const(reg->var_off) || reg->var_off.value) {
+> +			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
+> +				regno);
+> +			return -EACCES;
+> +		}
+> +	}
+> +
+>  	if (arg_type == ARG_CONST_MAP_PTR) {
+>  		/* bpf_map_xxx(map_ptr) call: remember that map_ptr */
+>  		meta->map_ptr = reg->map_ptr;
+> @@ -4561,6 +4569,9 @@ static int release_reference(struct bpf_verifier_env *env,
+>  	int err;
+>  	int i;
+>  
+> +	if (!ref_obj_id)
+> +		return -EINVAL;
+hmm...... Is it sure this is needed?  If it was, it seems there was
+an existing bug in release_reference_state() below which could not catch
+the case where "bpf_sk_release()" is called on a pointer that has no
+reference acquired before.
 
-> > > > + *	Description
-> > > > + *		Adjust frame headers moving *offset* bytes from/to the second
-> > > > + *		buffer to/from the first one. This helper can be used to move
-> > > > + *		headers when the hw DMA SG does not copy all the headers in
-> > > > + *		the first fragment.
-> >=20
-> > + Eric to the discussion
-> >=20
-> > >=20
-> > > This is confusing to read. Does this mean I can "move bytes to the se=
-cond
-> > > buffer from the first one" or "move bytes from the second buffer to t=
-he first
-> > > one" And what are frame headers? I'm sure I can read below code and w=
-ork
-> > > it out, but users reading the header file should be able to parse thi=
-s.
-> >=20
-> > Our main goal with this helper is to fix the use-case where we request =
-the hw
-> > to put L2/L3/L4 headers (and all the TCP options) in the first fragment=
- and TCP
-> > data starting from the second fragment (headers split) but for some rea=
-sons
-> > the hw puts the TCP options in the second fragment (if we understood co=
-rrectly
-> > this issue has been introduced by Eric @ NetDevConf 0x14).
-> > bpf_xdp_adjust_mb_header() can fix this use-case moving bytes from the =
-second fragment
-> > to the first one (offset > 0) or from the first buffer to the second on=
-e (offset < 0).
->=20
-> Ah OK, so the description needs the information about how to use offset t=
-hen it
-> would have been clear I think. Something like that last line "moving byte=
-s from
-> the second fragment ...."
+Can you write a verifier test to demonstrate the issue?
 
-ack, right. I will do in v3.
-
->=20
-> So this is to fixup header-spit for RX zerocopy? Add that to the commit
-> message then.
-
-Right. I will improve comments in v3.
-
->=20
-> >=20
-> > >=20
-> > > Also we want to be able to read all data not just headers. Reading the
-> > > payload of a TCP packet is equally important for many l7 load balance=
-rs.
-> > >=20
-> >=20
-> > In order to avoid to slow down performances we require that eBPF sandbo=
-x can
-> > read/write only buff0 in a xdp multi-buffer. The xdp program can only
-> > perform some restricted changes to buff<n> (n >=3D 1) (e.g. what we did=
- in
-> > bpf_xdp_adjust_mb_header()).
-> > You can find the xdp multi-buff design principles here [0][1]
-> >=20
-> > [0] https://github.com/xdp-project/xdp-project/blob/master/areas/core/x=
-dp-multi-buffer01-design.org
-> > [1] http://people.redhat.com/lbiancon/conference/NetDevConf2020-0x14/ad=
-d-xdp-on-driver.html - XDP multi-buffers section (slide 40)
-> >=20
-> > > > + *
-> > > > + *		A call to this helper is susceptible to change the underlying
-> > > > + *		packet buffer. Therefore, at load time, all checks on pointers
-> > > > + *		previously done by the verifier are invalidated and must be
-> > > > + *		performed again, if the helper is used in combination with
-> > > > + *		direct packet access.
-> > > > + *
-> > > > + *	Return
-> > > > + *		0 on success, or a negative error in case of failure.
-> > > >   */
-> > > >  #define __BPF_FUNC_MAPPER(FN)		\
-> > > >  	FN(unspec),			\
-> > > > @@ -3727,6 +3741,7 @@ union bpf_attr {
-> > > >  	FN(inode_storage_delete),	\
-> > > >  	FN(d_path),			\
-> > > >  	FN(copy_from_user),		\
-> > > > +	FN(xdp_adjust_mb_header),	\
-> > > >  	/* */
-> > > > =20
-> > > >  /* integer value in 'imm' field of BPF_CALL instruction selects wh=
-ich helper
-> > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > index 47eef9a0be6a..ae6b10cf062d 100644
-> > > > --- a/net/core/filter.c
-> > > > +++ b/net/core/filter.c
-> > > > @@ -3475,6 +3475,57 @@ static const struct bpf_func_proto bpf_xdp_a=
-djust_head_proto =3D {
-> > > >  	.arg2_type	=3D ARG_ANYTHING,
-> > > >  };
-> > > > =20
-> > > > +BPF_CALL_2(bpf_xdp_adjust_mb_header, struct  xdp_buff *, xdp,
-> > > > +	   int, offset)
-> > > > +{
-> > > > +	void *data_hard_end, *data_end;
-> > > > +	struct skb_shared_info *sinfo;
-> > > > +	int frag_offset, frag_len;
-> > > > +	u8 *addr;
-> > > > +
-> > > > +	if (!xdp->mb)
-> > > > +		return -EOPNOTSUPP;
->=20
-> Not required for this patch necessarily but I think it would be better us=
-er
-> experience if instead of EOPNOTSUPP here we did the header split. This
-> would allocate a frag and copy the bytes around as needed. Yes it might
-> be slow if you don't have a frag free in the driver, but if user wants to
-> do header split and their hardware can't do it we would have a way out.
->=20
-> I guess it could be an improvement for later though.
-
-I have no a strong opinion on this, I did it in this way to respect the rul=
-e "we
-do not allocate memory for XDP".
-
-@Jesper, David: thoughts?
-
->=20
->=20
-> > > > +
-> > > > +	sinfo =3D xdp_get_shared_info_from_buff(xdp);
-> > > > +
-> > > > +	frag_len =3D skb_frag_size(&sinfo->frags[0]);
-> > > > +	if (offset > frag_len)
-> > > > +		return -EINVAL;
-> > >=20
-> > > What if we want data in frags[1] and so on.
-> > >=20
-> > > > +
-> > > > +	frag_offset =3D skb_frag_off(&sinfo->frags[0]);
-> > > > +	data_end =3D xdp->data_end + offset;
-> > > > +
-> > > > +	if (offset < 0 && (-offset > frag_offset ||
-> > > > +			   data_end < xdp->data + ETH_HLEN))
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	data_hard_end =3D xdp_data_hard_end(xdp); /* use xdp->frame_sz */
-> > > > +	if (data_end > data_hard_end)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	addr =3D page_address(skb_frag_page(&sinfo->frags[0])) + frag_off=
-set;
-> > > > +	if (offset > 0) {
-> > > > +		memcpy(xdp->data_end, addr, offset);
-> > >=20
-> > > But this could get expensive for large amount of data? And also
-> > > limiting because we require the room to do the copy. Presumably
-> > > the reason we have fargs[1] is because the normal page or half
-> > > page is in use?
-> > >=20
-> > > > +	} else {
-> > > > +		memcpy(addr + offset, xdp->data_end + offset, -offset);
-> > > > +		memset(xdp->data_end + offset, 0, -offset);
-> > > > +	}
-> > > > +
-> > > > +	skb_frag_size_sub(&sinfo->frags[0], offset);
-> > > > +	skb_frag_off_add(&sinfo->frags[0], offset);
-> > > > +	xdp->data_end =3D data_end;
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > >=20
-> > > So overall I don't see the point of copying bytes from one frag to
-> > > another. Create an API that adjusts the data pointers and then
-> > > copies are avoided and manipulating frags is not needed.
-> >=20
-> > please see above.
->=20
-> OK it makes more sense with the context. It doesn't have much if anything
-> to do about making data visible to the BPF program. This is about
-> changing the layout of the frags list.
-
-correct.
-
->=20
-> How/when does the header split go wrong on the mvneta device? I guess
-> this is to fix a real bug/issue not some theoritical one? An example
-> in the commit message would make this concrete. Soemthing like,
-> "When using RX zerocopy to mmap data into userspace application if
-> a packet with [all these wild headers] is received rx zerocopy breaks
-> because header split puts headers X in the data frag confusing apps".
-
-This issue does not occur with mvneta since the driver is not capable of
-performing header split AFAIK. The helper has been introduced to cover the
-"issue" reported by Eric in his NetDevConf presentation. In order to test t=
-he
-helper I modified the mventa rx napi loop in a controlled way (this patch c=
-an't
-be sent upstream, it is for testing only :))
-I will improve commit message in v3.
-
->=20
-> >=20
-> > >=20
-> > > Also and even more concerning I think this API requires the
-> > > driver to populate shinfo. If we use TX_REDIRECT a lot or TX_XMIT
-> > > this means we need to populate shinfo when its probably not ever
-> > > used. If our driver is smart L2/L3 headers are in the readable
-> > > data and prefetched. Writing frags into the end of a page is likely
-> > > not free.
-> >=20
-> > Sorry I did not get what you mean with "populate shinfo" here. We need =
-to
-> > properly set shared_info in order to create the xdp multi-buff.
-> > Apart of header splits, please consider the main uses-cases for
-> > xdp multi-buff are XDP with TSO and Jumbo frames.
->=20
-> The use case I have in mind is a XDP_TX or XDP_REDIRECT load balancer.
-> I wont know this at the driver level and now I'll have to write into
-> the back of every page with this shinfo just in case. If header
-> split is working I should never need to even touch the page outside
-> the first N bytes that were DMAd and in cache with DDIO. So its extra
-> overhead for something that is unlikely to happen in the LB case.
-
-So far the skb_shared_info in constructed in mvneta only if the hw splits
-the received data in multiple buffers (so if the MTU is greater than 1 PAGE,
-please see comments below). Moreover the shared_info is present only in the
-first buffer.
-
->=20
-> If you take the simplest possible program that just returns XDP_TX
-> and run a pkt generator against it. I believe (haven't run any
-> tests) that you will see overhead now just from populating this
-> shinfo. I think it needs to only be done when its needed e.g. when
-> user makes this helper call or we need to build the skb and populate
-> the frags there.
-
-sure, I will carry out some tests.
-
->=20
-> I think a smart driver will just keep the frags list in whatever
-> form it has them (rx descriptors?) and push them over to the
-> tx descriptors without having to do extra work with frag lists.
-
-I think there are many use-cases where we want to have this info available =
-in
-xdp_buff/xdp_frame. E.g: let's consider the following Jumbo frame example:
-- MTU > 1 PAGE (so we the driver will split the received data in multiple rx
-  descriptors)
-- the driver performs a XDP_REDIRECT to a veth or cpumap
-
-Relying on the proposed architecture we could enable GRO in veth or cpumap I
-guess since we can build a non-linear skb from the xdp multi-buff, right?
-
->=20
-> >=20
-> > >=20
-> > > Did you benchmark this?
-> >=20
-> > will do, I need to understand if we can use tiny buffers in mvneta.
->=20
-> Why tiny buffers? How does mvneta layout the frags when doing
-> header split? Can we just benchmark what mvneta is doing at the
-> end of this patch series?
-
-for the moment mvneta can split the received data when the previous buffer =
-is
-full (e.g. when we the first page is completely written). I want to explore=
- if
-I can set a tiny buffer (e.g. 128B) as max received buffer to run some perf=
-ormance
-tests and have some "comparable" results respect to the ones I got when I a=
-dded XDP
-support to mvneta.
-
->=20
-> Also can you try the basic XDP_TX case mentioned above.
-> I don't want this to degrade existing use cases if at all
-> possible.
-
-sure, will do.
-
->=20
-> >=20
-> > >=20
-> > > In general users of this API should know the bytes they want
-> > > to fetch. Use an API like this,
-> > >=20
-> > >   bpf_xdp_adjust_bytes(xdp, start, end)
-> > >=20
-> > > Where xdp is the frame, start is the first byte the user wants
-> > > and end is the last byte. Then usually you can skip the entire
-> > > copy part and just move the xdp pointesr around. The ugly case
-> > > is if the user puts start/end across a frag boundary and a copy
-> > > is needed. In that case maybe we use end as a hint and not a
-> > > hard requirement.
-> > >=20
-> > > The use case I see is I read L2/L3/L4 headers and I need the
-> > > first N bytes of the payload. I know where the payload starts
-> > > and I know how many bytes I need so,
-> > >=20
-> > >   bpf_xdp_adjust_bytes(xdp, payload_offset, bytes_needed);
-> > >=20
-> > > Then hopefully that is all in one frag. If its not I'll need
-> > > to do a second helper call. Still nicer than forcing drivers
-> > > to populate this shinfo I think. If you think I'm wrong try
-> > > a benchmark. Benchmarks aside I get stuck when data_end and
-> > > data_hard_end are too close together.
-> >=20
-> > IIUC what you mean here is to expose L2/L3/L4 headers + some data to
-> > the ebpf program to perform like L7 load-balancing, right?
->=20
-> Correct, but with extra context I see in this patch you are trying
-> to build an XDP controlled header split. This seems like a different
-> use case from mine.
-
-I agree.
-
->=20
-> > Let's consider the Jumbo frames use-case (so the data are split in mult=
-iple
-> > buffers). I can see to issues here:
-> > - since in XDP we can't linearize the buffer if start and end are on the
-> >   different pages (like we do in bpf_msg_pull_data()), are we ending up
-> >   in the case where requested data are all in buff0?=20
->=20
-> In this case I would expect either the helper returns how many bytes
-> were pulled in, maybe just (start, end_of_frag) or user can find
-> it from data_end pointer. Here end is just a hint.
->=20
-> > - if  start and end are in buff<2>, we should report the fragment numbe=
-r to the
-> >   ebpf program to "fetch" the data. Are we exposing too low-level detai=
-ls to
-> >   user-space?
->=20
-> Why do you need the frag number? Just say I want bytes (X,Y) if that
-> happens to be on buff<2> let the helper find it.
->=20
-> I think having a helper to read/write any bytes is important and
-> necessary, but the helper implemented in this patch is something
-> else. I get naming is hard what if we called it xdp_header_split().
-
-ack, sure. I will fix it in v3.
-
-Regards,
-Lorenzo
-
->=20
-> >=20
-> > Regards,
-> > Lorenzo
-> >=20
-> > >=20
-> > > Thanks,
-> > > John
->=20
->=20
-
---8NvZYKFJsRX2Djef
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX1TlzgAKCRA6cBh0uS2t
-rEQGAP4gsJGAQc0wkLn/ke+OHX7pBPvlFAnbpAZIhWPX+5PrqQEA5KtGjrK+zopP
-DIpLGx2zyK9LI8dsUbS3EtmYZP451A8=
-=Bngg
------END PGP SIGNATURE-----
-
---8NvZYKFJsRX2Djef--
+> +
+>  	err = release_reference_state(cur_func(env), ref_obj_id);
+>  	if (err)
+>  		return err;
+> -- 
+> 2.25.1
+> 
