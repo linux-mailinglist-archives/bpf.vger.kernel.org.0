@@ -2,129 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9258125EB16
-	for <lists+bpf@lfdr.de>; Sat,  5 Sep 2020 23:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A68E25EC72
+	for <lists+bpf@lfdr.de>; Sun,  6 Sep 2020 06:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbgIEVtD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Sep 2020 17:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37356 "EHLO
+        id S1725283AbgIFEQj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Sep 2020 00:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728103AbgIEVtC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Sep 2020 17:49:02 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2DAC061244;
-        Sat,  5 Sep 2020 14:49:02 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id v15so6145007pgh.6;
-        Sat, 05 Sep 2020 14:49:02 -0700 (PDT)
+        with ESMTP id S1725275AbgIFEQi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Sep 2020 00:16:38 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9491CC061573;
+        Sat,  5 Sep 2020 21:16:38 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id d18so10851812iop.13;
+        Sat, 05 Sep 2020 21:16:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h9kxAFny5FJw8YnE6dK8aDApZjgYQA9YlON014R67oU=;
-        b=D1L1wvm0MIJsymgAugs62yQbiC53LsvCzN6jysg32pb23GBUx2uy8pZ7O1TUJzXjgy
-         Qi99s6ctCegyX6FO+viYaUf6OcGUYbn/yGgBu/PKBQwGEL/pAha+ePQquRyArTveBMkL
-         DKWmhraBOOAloF1JAyxK3IB/mlqpKZqi+nGgK59SqyJh1IMfmKavvnhmyeYsKICtCyzz
-         83kFPygDZYjMbKk9wOoys/A/qbuoK6+alUbNBeqxA3NH8Dpe65pihhk06T4upOKUwRVG
-         cYrOY7cGj75ATgjybjox721jDRhg9+9jK1cvzTuLr3rLxwt/U2sf2dPEpRP9RKzett/A
-         rrQQ==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Z/fGL94ajDI5pDOUTAQoK2bBKVk8IqTDMiT7vswB5Vc=;
+        b=rnB9oeb9uAiNdxico8gQ/Uu6PpV+qFWrCd2pTcN2Fmdb18UpWf0HjBo+NgPEtr2pf5
+         c6eX5YrN2kBgZLTovSqtgKkE++G5zGTRNNmuHn2t0jRh3YzeIiz9DvhMjqnIaXyz84bC
+         +uv8bT9iZ0yHlP1pi1SDL7fCh2LdBh/Xb17DasEaqNmdFQ2XFGrKVQiZSyk/gmVXuXNL
+         HPd1zUEo6MOfCCUp7DWQnQYzbh0Km+MuhehLS5A0LP2TZ8TW3+JG+/dX0dkEz56jXH/c
+         9I7ww9xOPNYx/ieoeFqv/wOl0JV7FC5KzyeBDDnxUxzBmyzs6+M0p7iNNYGHDH3iCwcP
+         uyRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h9kxAFny5FJw8YnE6dK8aDApZjgYQA9YlON014R67oU=;
-        b=GN9M843jUr1V/4wwd7EHEtD26B9bL3NU5U6AMNzfug7hzzrD2r8CGd+LTDoeZHMu/d
-         gX80HD3bWmd3wChAChLokv3p516xZap7MlwBu5AX7MqPlOkznbTm6aELzHB7C212qhUc
-         DqyBOVWSLDOoCZ8nHo2XhqGi9wbqYN2hGQg+ie8wDTQvVh2kw0GQEl4PK/MuRRMBHzA+
-         gOox/q1b2z61YoeL3lfzdWPbWaeUdevE1DA9tQrlGt8Zx5udV5HlpZs0BRNPCvAlBVce
-         3yE+dJQlIjl3I8Omz3uOX/6c0GHl+KkcuL9BB4yeUCymKStFePuxWY1bs7dwG6xzPrMJ
-         n2tQ==
-X-Gm-Message-State: AOAM532H2FEb8gSvO5WWgFoyQxelyOk8QAOAqqkZL9XGRP7R9/WEeisU
-        8glfYd8s6S9IdLC5yECF0/z8/ROtdhndOg==
-X-Google-Smtp-Source: ABdhPJzPDXsjtTUp6flqeq21tWPefZfr1H/UbsW1i1xDxOQaZLnILrOJ/4AwYQ8S/5i/dMFc1knthA==
-X-Received: by 2002:a63:af01:: with SMTP id w1mr12015829pge.23.1599342536963;
-        Sat, 05 Sep 2020 14:48:56 -0700 (PDT)
-Received: from localhost.localdomain ([2001:470:e92d:10:79f7:a90d:5997:d01])
-        by smtp.gmail.com with ESMTPSA id s129sm10611842pfb.39.2020.09.05.14.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Sep 2020 14:48:56 -0700 (PDT)
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrey Ignatov <rdna@fb.com>
-Subject: [PATCH bpf v1] tools/libbpf: avoid counting local symbols in ABI check
-Date:   Sat,  5 Sep 2020 14:48:31 -0700
-Message-Id: <20200905214831.1565465-1-Tony.Ambardar@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Z/fGL94ajDI5pDOUTAQoK2bBKVk8IqTDMiT7vswB5Vc=;
+        b=qRfTNOjxplhwZ8LwH30PD3plzpaD3CGMMrZFVN4apRktHEhsGpzTqgCM5YBFt/awX5
+         CU2rX8YwLREF4rwnvtlA4Z15Hj2ZlyzOD2IZxhhK99iTOoCkPJRKGvgrEx/WnPNsJyWA
+         cRVmPDlCJhAlrwx6ZqWVaoaqDltvjTNWNC06Rt3P+zSj+E2zM2igbtzEak3Q81AdMme9
+         ri1GgYmM3zq3Nur+uUCw65YiqljeF4R22kJMq5E1jtuIpR3qRAK4PZ463wNHZI23nSVX
+         XxOO/KzqIEKVWBN0Ucc4W4vo6p6tCarY5EoRE0fNwOKTF1FaFc2Gy+MYDSaZC3l1Fe0K
+         Px4g==
+X-Gm-Message-State: AOAM531DTeTdtusfX7NPuQxf6UH3EHO09bVzIVODuaqjEreNUwe0Uo/9
+        QfJHtyqgIn8Ic0s4p/KV5UYtMwhIT/om9v8X6tOc72mgqHtodA==
+X-Google-Smtp-Source: ABdhPJwCoI42ih5aArUUmiOJR/2BMvhkFDr7wupnF1B1JsbP1K10yQELOXzkBL4PH5HND7W8HNGHs3o9k9j7loqWGi4=
+X-Received: by 2002:a5e:881a:: with SMTP id l26mr12929738ioj.51.1599365794492;
+ Sat, 05 Sep 2020 21:16:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+Date:   Sat, 5 Sep 2020 21:16:23 -0700
+Message-ID: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
+Subject: Problem with endianess of pahole BTF output for vmlinux
+To:     bpf@vger.kernel.org, dwarves@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Encountered the following failure building libbpf from kernel 5.8.5 sources
-with GCC 8.4.0 and binutils 2.34: (long paths shortened)
+Hello,
 
-  Warning: Num of global symbols in sharedobjs/libbpf-in.o (234) does NOT
-  match with num of versioned symbols in libbpf.so (236). Please make sure
-  all LIBBPF_API symbols are versioned in libbpf.map.
-  --- libbpf_global_syms.tmp    2020-09-02 07:30:58.920084380 +0000
-  +++ libbpf_versioned_syms.tmp 2020-09-02 07:30:58.924084388 +0000
-  @@ -1,3 +1,5 @@
-  +_fini
-  +_init
-   bpf_btf_get_fd_by_id
-   bpf_btf_get_next_id
-   bpf_create_map
-  make[4]: *** [Makefile:210: check_abi] Error 1
+I'm using GCC 8.4.0, binutils 2.34 and pahole 1.17, compiling on an
+Ubuntu/x86_64 host and targeting both little- and big-endian mips
+running on malta/qemu. When cross-compiling Linux 5.4.x LTS and
+testing bpftool/BTF functionality on the target, I encounter errors on
+big-endian targets:
 
-Investigation shows _fini and _init are actually local symbols counted
-amongst global ones:
+> root@OpenWrt:/# bpftool btf dump file /sys/kernel/btf/vmlinux
+> libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux
+> Error: failed to load BTF from /sys/kernel/btf/vmlinux: No error information
 
-  $ readelf --dyn-syms --wide libbpf.so|head -10
+After investigating, the problem appears to be that "pahole -J"
+running on the x86_64 little-endian host will always generate raw BTF
+of native endianness (based on BTF magic), which causes the error
+above on big-endian targets.
 
-  Symbol table '.dynsym' contains 343 entries:
-     Num:    Value  Size Type    Bind   Vis      Ndx Name
-       0: 00000000     0 NOTYPE  LOCAL  DEFAULT  UND
-       1: 00004098     0 SECTION LOCAL  DEFAULT   11
-       2: 00004098     8 FUNC    LOCAL  DEFAULT   11 _init@@LIBBPF_0.0.1
-       3: 00023040     8 FUNC    LOCAL  DEFAULT   14 _fini@@LIBBPF_0.0.1
-       4: 00000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.0.4
-       5: 00000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.0.1
-       6: 0000ffa4     8 FUNC    GLOBAL DEFAULT   12 bpf_object__find_map_by_offset@@LIBBPF_0.0.1
+Is this expected? Is DEBUG_INFO_BTF supported in general when
+cross-compiling? How does one generate BTF encoded for the target
+endianness with pahole?
 
-A previous commit filtered global symbols in sharedobjs/libbpf-in.o. Do the
-same with the libbpf.so DSO for consistent comparison.
-
-Fixes: 306b267cb3c4 ("libbpf: Verify versioned symbols")
-
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
----
- tools/lib/bpf/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index b78484e7a608..9ae8f4ef0aac 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -152,6 +152,7 @@ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
- 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
- 			   sort -u | wc -l)
- VERSIONED_SYM_COUNT = $(shell readelf --dyn-syms --wide $(OUTPUT)libbpf.so | \
-+			      awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
- 			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
- 
- CMD_TARGETS = $(LIB_TARGET) $(PC_FILE)
-@@ -219,6 +220,7 @@ check_abi: $(OUTPUT)libbpf.so
- 		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
- 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
- 		readelf --dyn-syms --wide $(OUTPUT)libbpf.so |		 \
-+		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
- 		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
- 		    sort -u > $(OUTPUT)libbpf_versioned_syms.tmp; 	 \
- 		diff -u $(OUTPUT)libbpf_global_syms.tmp			 \
--- 
-2.25.1
-
+Thanks for any feedback or suggestions,
+Tony
