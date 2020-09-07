@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF95260002
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE6A260005
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730991AbgIGQmu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1730885AbgIGQmu (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 7 Sep 2020 12:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730901AbgIGQgm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:36:42 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D8FC061573
-        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 09:36:41 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id o5so16373423wrn.13
-        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 09:36:41 -0700 (PDT)
+        with ESMTP id S1730910AbgIGQgn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:36:43 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E710C061755
+        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 09:36:42 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a17so16392464wrn.6
+        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 09:36:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QWC8ABqOj9tnGBywTcIQeelbRdA8/0ZzqwQDNhLengM=;
-        b=WuomelGJnWurYaBUF2nmtrnHY+KjbPYEBfz8tqpfeXDstSfVNlxEc5pAGGDjiEx4p8
-         rwuIr/MS02JMRmUkl4w5HgrXGYTQoeyGlD4Yw7ipAtlTsE9vyiZ42bfQYdrbaC3NR1Xx
-         pAS+fsQVBsrk0OkitURXQt2DlKp0z/P19z3OcLPh24lqpXmavlp6SnLpJBRrlUIxKfcY
-         eOrPdEKgrPROdEz5mcoTcmUWRV56iAWx1o62pKATZsbqYEugPH0DWnZZRAVAkoYSsyTU
-         ao5vMa7Fz4B/VggMIK3+pOvcNC/bWqmYCRyJzyWsaCbBeyLVsmJIX3nM9pVLtGfFLlG/
-         MVVw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=w1o8W2B7Zhme6wXQ+MUTOwcBEeetzzjkb46yP9OL+9Y=;
+        b=Fk8rzZu74dzkud4w0RH5Tq8dgt5syuBgJ0kA77yLP2SixiisbRuNRjUk45JBTd5v5G
+         CLGr5Q4XC4pMMXQIAyhiaGdT/eWrEKRI2GTYCF9ACIklsxlw9fPHZgPhtKyvLQxmAPDt
+         V1q5IKg8HvrMrX57Rns5CPXbWavAPn6a69nAmOmKZgnY5IW/s+56XQz/HDEwlb2RgQC2
+         4Byth4ZekzJneVL+6I1KZUPoBHZTtrIPt7+MzYX6GNcqGT/bn0DqHwCIbYi0aSkgC5xk
+         bBKG7OpFwxUhkAO8th0nH+ZWoJh1I8PAlxykD3+6jKRSWfFzNA1fAPxFrXTEOqb5Rx7t
+         GrEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QWC8ABqOj9tnGBywTcIQeelbRdA8/0ZzqwQDNhLengM=;
-        b=CpUjYcUu4hYf/+YXp+icxRf8DinVoHCmchpnEtxpAb1lIKjGkvuiEq8/VRtAhIS2kr
-         SVQIthrFhcFhli/RuF7Bm342yWbw/Lngueg+f520EjrBg3wYJNpyQq3QRqqTjAjXBeqC
-         Y+v8H+HKHag2dNTTstGiFI3Hv3/p3lbAEHEoddC4MS0qIQ/GZAd+6BPFUQyZvI1agHrK
-         ByauIdh7q4zVP8h27jR3dySQs49pRHWwBcB5frtzrmP/jQAbiO3BPZWgwygLguWUKI95
-         IfbWesUdsJrGTRxWr7JEIgSpoVa+dva4sAf1nwg0wuwXBS+iVb22weXLv3oQ8ssSVMG8
-         s5Tg==
-X-Gm-Message-State: AOAM531XRho72pg/72MPv8NStUlJ30l1dVBK10KSxBdeQjcxuxMmjTki
-        unGudzNdxrR2Vbf7T7SX8RsrOw==
-X-Google-Smtp-Source: ABdhPJx7ybduonsODy8DQshJzntV5ZBDwmr061Tj42v2kmVoMKExLWWqKRntYKJq9qFKJwAKVTJyGQ==
-X-Received: by 2002:a5d:60cc:: with SMTP id x12mr21913343wrt.84.1599496600562;
-        Mon, 07 Sep 2020 09:36:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=w1o8W2B7Zhme6wXQ+MUTOwcBEeetzzjkb46yP9OL+9Y=;
+        b=S9gk0PrBS0UlaGMXTxW7Eqex07r6f/e1l8vCNAymXQsJ+dlrLYgqzClCCT6v5AR+om
+         VNiRzPplMH912OeBMJ9CF5AoZgXyLqyV37vbHhNYuPB503m39CwzyyLJV/IizGKBTtJH
+         G6t92lHj1nm38ICpxMA715BfC6ZHRr9p8hncytW9XUE7DuKPv4ZbaQis6+Qya9V5o3rk
+         qtfWgSOKHrXwehP190MqhVqg1kWcJPlfAXQnpiThrvy8sMMAeQLttsO4Wdu9b3GRBh5l
+         MtmOmgJesDDh+al9wDRl2JTikI+6znaIKd2gnayYzu+dknaky/NMaTS4kY0DAs9d9MLt
+         +tBg==
+X-Gm-Message-State: AOAM533Nuw08zsjdDnHWoyuWVTdvWLC+CcIuEqAKCMUQ0n2/cx6eucVV
+        rOkcLUrd9oh9XirLMK5Fuw0z2A==
+X-Google-Smtp-Source: ABdhPJx/YhoGx9+d1gk+CLtrXEOer35LvJlBjS9IhQXG+fqw3H36DLFpDYSzCbtWr8BrBfgOJTg3nA==
+X-Received: by 2002:a5d:668b:: with SMTP id l11mr18448771wru.89.1599496601559;
+        Mon, 07 Sep 2020 09:36:41 -0700 (PDT)
 Received: from localhost.localdomain ([194.35.119.17])
-        by smtp.gmail.com with ESMTPSA id p11sm26443677wma.11.2020.09.07.09.36.39
+        by smtp.gmail.com with ESMTPSA id p11sm26443677wma.11.2020.09.07.09.36.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 07 Sep 2020 09:36:40 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
@@ -53,10 +53,12 @@ To:     Alexei Starovoitov <ast@kernel.org>,
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2 0/2] tools: bpftool: support creating outer maps
-Date:   Mon,  7 Sep 2020 17:36:32 +0100
-Message-Id: <20200907163634.27469-1-quentin@isovalent.com>
+Subject: [PATCH bpf-next v2 1/2] tools: bpftool: clean up function to dump map entry
+Date:   Mon,  7 Sep 2020 17:36:33 +0100
+Message-Id: <20200907163634.27469-2-quentin@isovalent.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200907163634.27469-1-quentin@isovalent.com>
+References: <20200907163634.27469-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -64,26 +66,160 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This series makes bpftool able to create outer maps (maps of types
-array-of-maps and hash-of-maps). This is done by passing the relevant
-inner_map_fd, which we do through a new command-line keyword.
-
-A first patch also cleans up the function related to dumping map elements.
+The function used to dump a map entry in bpftool is a bit difficult to
+follow, as a consequence to earlier refactorings. There is a variable
+("num_elems") which does not appear to be necessary, and the error
+handling would look cleaner if moved to its own function. Let's clean it
+up. No functional change.
 
 v2:
-- v1 was wrongly expected to allow bpftool to dump the content of outer
-  maps (already supported). v2 skipped that patch, and instead replaced it
-  with a clean-up for the dump_map_elem() function.
+- v1 was erroneously removing the check on fd maps in an attempt to get
+  support for outer map dumps. This is already working. Instead, v2
+  focuses on cleaning up the dump_map_elem() function, to avoid
+  similar confusion in the future.
 
-Quentin Monnet (2):
-  tools: bpftool: clean up function to dump map entry
-  tools: bpftool: add "inner_map" to "bpftool map create" outer maps
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ tools/bpf/bpftool/map.c | 101 +++++++++++++++++++++-------------------
+ 1 file changed, 52 insertions(+), 49 deletions(-)
 
- .../bpf/bpftool/Documentation/bpftool-map.rst |  10 +-
- tools/bpf/bpftool/bash-completion/bpftool     |  22 ++-
- tools/bpf/bpftool/map.c                       | 149 ++++++++++--------
- 3 files changed, 114 insertions(+), 67 deletions(-)
-
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index bc0071228f88..c8159cb4fb1e 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -213,8 +213,9 @@ static void print_entry_json(struct bpf_map_info *info, unsigned char *key,
+ 	jsonw_end_object(json_wtr);
+ }
+ 
+-static void print_entry_error(struct bpf_map_info *info, unsigned char *key,
+-			      const char *error_msg)
++static void
++print_entry_error_msg(struct bpf_map_info *info, unsigned char *key,
++		      const char *error_msg)
+ {
+ 	int msg_size = strlen(error_msg);
+ 	bool single_line, break_names;
+@@ -232,6 +233,40 @@ static void print_entry_error(struct bpf_map_info *info, unsigned char *key,
+ 	printf("\n");
+ }
+ 
++static void
++print_entry_error(struct bpf_map_info *map_info, void *key, int lookup_errno)
++{
++	/* For prog_array maps or arrays of maps, failure to lookup the value
++	 * means there is no entry for that key. Do not print an error message
++	 * in that case.
++	 */
++	if (map_is_map_of_maps(map_info->type) ||
++	    map_is_map_of_progs(map_info->type))
++		return;
++
++	if (json_output) {
++		jsonw_start_object(json_wtr);	/* entry */
++		jsonw_name(json_wtr, "key");
++		print_hex_data_json(key, map_info->key_size);
++		jsonw_name(json_wtr, "value");
++		jsonw_start_object(json_wtr);	/* error */
++		jsonw_string_field(json_wtr, "error", strerror(lookup_errno));
++		jsonw_end_object(json_wtr);	/* error */
++		jsonw_end_object(json_wtr);	/* entry */
++	} else {
++		const char *msg = NULL;
++
++		if (lookup_errno == ENOENT)
++			msg = "<no entry>";
++		else if (lookup_errno == ENOSPC &&
++			 map_info->type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY)
++			msg = "<cannot read>";
++
++		print_entry_error_msg(map_info, key,
++				      msg ? : strerror(lookup_errno));
++	}
++}
++
+ static void print_entry_plain(struct bpf_map_info *info, unsigned char *key,
+ 			      unsigned char *value)
+ {
+@@ -713,56 +748,23 @@ static int dump_map_elem(int fd, void *key, void *value,
+ 			 struct bpf_map_info *map_info, struct btf *btf,
+ 			 json_writer_t *btf_wtr)
+ {
+-	int num_elems = 0;
+-	int lookup_errno;
+-
+-	if (!bpf_map_lookup_elem(fd, key, value)) {
+-		if (json_output) {
+-			print_entry_json(map_info, key, value, btf);
+-		} else {
+-			if (btf) {
+-				struct btf_dumper d = {
+-					.btf = btf,
+-					.jw = btf_wtr,
+-					.is_plain_text = true,
+-				};
+-
+-				do_dump_btf(&d, map_info, key, value);
+-			} else {
+-				print_entry_plain(map_info, key, value);
+-			}
+-			num_elems++;
+-		}
+-		return num_elems;
++	if (bpf_map_lookup_elem(fd, key, value)) {
++		print_entry_error(map_info, key, errno);
++		return -1;
+ 	}
+ 
+-	/* lookup error handling */
+-	lookup_errno = errno;
+-
+-	if (map_is_map_of_maps(map_info->type) ||
+-	    map_is_map_of_progs(map_info->type))
+-		return 0;
+-
+ 	if (json_output) {
+-		jsonw_start_object(json_wtr);
+-		jsonw_name(json_wtr, "key");
+-		print_hex_data_json(key, map_info->key_size);
+-		jsonw_name(json_wtr, "value");
+-		jsonw_start_object(json_wtr);
+-		jsonw_string_field(json_wtr, "error", strerror(lookup_errno));
+-		jsonw_end_object(json_wtr);
+-		jsonw_end_object(json_wtr);
+-	} else {
+-		const char *msg = NULL;
+-
+-		if (lookup_errno == ENOENT)
+-			msg = "<no entry>";
+-		else if (lookup_errno == ENOSPC &&
+-			 map_info->type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY)
+-			msg = "<cannot read>";
++		print_entry_json(map_info, key, value, btf);
++	} else if (btf) {
++		struct btf_dumper d = {
++			.btf = btf,
++			.jw = btf_wtr,
++			.is_plain_text = true,
++		};
+ 
+-		print_entry_error(map_info, key,
+-				  msg ? : strerror(lookup_errno));
++		do_dump_btf(&d, map_info, key, value);
++	} else {
++		print_entry_plain(map_info, key, value);
+ 	}
+ 
+ 	return 0;
+@@ -873,7 +875,8 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
+ 				err = 0;
+ 			break;
+ 		}
+-		num_elems += dump_map_elem(fd, key, value, info, btf, wtr);
++		if (!dump_map_elem(fd, key, value, info, btf, wtr))
++			num_elems++;
+ 		prev_key = key;
+ 	}
+ 
 -- 
 2.25.1
 
