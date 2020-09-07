@@ -2,117 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C544E25F59B
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 10:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D7825F5C7
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 10:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgIGItJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 04:49:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26979 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728229AbgIGItG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 04:49:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599468545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RyuK4QheFNs+ZzxmRLfvINj0ku6nCHpjGbKxWgmmADk=;
-        b=MY9613CHX18uT3MnaUbK7FK/EHrkjSqVE/C9pCYMy5NzckAmftRDyZfjyMgzDkfVjLeDFA
-        n/9ZctSYeJyzJjdYg+2Vbi/q9l7C9wqm5vqAABkYCuApdjYyP8h+eLCJ9idNdEmDFfcZ0f
-        HOD7ZIkWd6/lm8OxwKl9B3SDKFfg29U=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-pd6vk9zxP_OJv4hHaWtRoA-1; Mon, 07 Sep 2020 04:49:03 -0400
-X-MC-Unique: pd6vk9zxP_OJv4hHaWtRoA-1
-Received: by mail-wm1-f70.google.com with SMTP id s24so2620656wmh.1
-        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 01:49:03 -0700 (PDT)
+        id S1728069AbgIGI5V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 04:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728190AbgIGI5U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 04:57:20 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5778C061573
+        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 01:57:19 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id t76so12961448oif.7
+        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 01:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0rZwqZuWU+idY8p1gVUzMuyhMd4eBLh7Qt7rrWHUZuU=;
+        b=rGIGzkI+P74Wp6CkJJ/OqePEn+7arx805fjI6iGwoa2vQpmBWrZylDsV4KYuor2qOE
+         +ZVp+581BPHdH0zZzLahxtaCmAlBtw+9xPFmOc7L4qfwoM2MJxQHr/+oFv4WePJ3K1mH
+         JW2dyVPzF4hysOp1DrHFSOKC6L8oYWzjlX2s0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=RyuK4QheFNs+ZzxmRLfvINj0ku6nCHpjGbKxWgmmADk=;
-        b=FD8iKKo286P8Km6qo/312USBiWIFbhbUqpcmIOS8TAtxOvYER3EfYyA7zfKFBE7F95
-         eTwRqzEJJLkiqapG2cRXXhYRe9rMCgO85eNJKELpvys9+Xnu1WGSPK1nEijKa6mGkaTs
-         s0xXMilFrZ51hFWCGg0iCZlrBVeEWSyDsaQuvGYng5sdebX2RWfxU00zvg+VdZZn7C/t
-         B2v051gU0Nt25SohhF4fBiQqmRIxTKDeEpynhoPjO8YEYAW/06EvwNkQo8GZkNRNhk2/
-         iccElkL+A3Fn/e/0h8p8rEy8aYs2k71lCp0ye/Byzq7+zIZFRDqVc/edbwONrT2bqZ67
-         Vrew==
-X-Gm-Message-State: AOAM530f8CVaHlqYHOmjzRJ6kbEIIdq+JYuyzGUQZ61x7hRsOymPVLWz
-        oLQCnYLfQU0/I8d6ymZ5aPX3LAboI4en9G4KpsL7uHR6IIVG6kl7xFrPdQ3mL3dMX547TC1X0nD
-        OMVhR8sj782S8
-X-Received: by 2002:adf:cc8c:: with SMTP id p12mr21255463wrj.92.1599468542283;
-        Mon, 07 Sep 2020 01:49:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqcqexWNGCJc6p20AynkOEQeme23ZbVnd40KRuFY0Z6fGMqlUuXaSqHbyECjS5GsllJaaJ4g==
-X-Received: by 2002:adf:cc8c:: with SMTP id p12mr21255446wrj.92.1599468542093;
-        Mon, 07 Sep 2020 01:49:02 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id h186sm26638375wmf.24.2020.09.07.01.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 01:49:01 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id ECF78180497; Mon,  7 Sep 2020 10:49:00 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        YiFei Zhu <zhuyifei@google.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Andrey Ignatov <rdna@fb.com>
-Subject: Re: [PATCH bpf-next v3 3/8] libbpf: Add BPF_PROG_BIND_MAP syscall
- and use it on .metadata section
-In-Reply-To: <CAEf4BzZp4ODLbjEiv=W7byoR9XzTqAQ052wZM_wD4=aTPmkjbw@mail.gmail.com>
-References: <20200828193603.335512-1-sdf@google.com>
- <20200828193603.335512-4-sdf@google.com>
- <CAEf4BzZtYTyBT=jURkF4RQLHXORooVwXrRRRkoSWDqCemyGQeA@mail.gmail.com>
- <20200904012909.c7cx5adhy5f23ovo@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZp4ODLbjEiv=W7byoR9XzTqAQ052wZM_wD4=aTPmkjbw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 07 Sep 2020 10:49:00 +0200
-Message-ID: <87mu22ottv.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0rZwqZuWU+idY8p1gVUzMuyhMd4eBLh7Qt7rrWHUZuU=;
+        b=bw9GKDEeqq+ti/GzjYyN622K5UP5QW96p2utAn3HsjP1YTkZ7qsanp0ttvLCPDG2N0
+         qs0D7/VNAKmKV7l17EwjDh69TgcG0v/rjcSrksr2AbXi+53JK8XD7SCOjoKPOJHxZZaL
+         p2r7qdaHOUxyKMqi0ge/EjC8evLjlGwnBnNI89KL1Fh20siKkaSd2zOg1aTFnk1pLYfu
+         k8op7dTsR+AMp6bQbd/Rty8SePubynF2YXAwITzdutHLI1oZz23Vg4/4ZCGGTAgWnGOC
+         2KXiMLrd4gDjTj7FTlX6+bzI+S/VrlPmwzhLNtvC7SYqry88Do54UuiQX1aHOsnqt3+M
+         vLIQ==
+X-Gm-Message-State: AOAM5332vuhjnBl0m4pGKqTVS/u6zzIUB5LS4ik0NI3TM+ml7Ej5fPqJ
+        GTkoaeG0R7Tk4pf0SgyMQoV5N76C+oZgCbO3/UVzcw==
+X-Google-Smtp-Source: ABdhPJwsIWgyCFd2NjXxYMQyVV9nBRLoGtfxHxu8IyGZz9jVmmJwSEkRKzKkCWmEMu24oJtmVROe/wePybhKsnv7BwY=
+X-Received: by 2002:aca:f0a:: with SMTP id 10mr6516518oip.13.1599469037944;
+ Mon, 07 Sep 2020 01:57:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200904095904.612390-1-lmb@cloudflare.com> <20200904095904.612390-2-lmb@cloudflare.com>
+ <20200906224008.fph4frjkkegs6w3b@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200906224008.fph4frjkkegs6w3b@kafai-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 7 Sep 2020 09:57:06 +0100
+Message-ID: <CACAyw9-ftMBnoqOt_0dhir+Y=2EW4iLsh=LYSH78hEF=STA1iw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/6] bpf: Allow passing BTF pointers as PTR_TO_SOCKET
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
->> May be we should talk about problem statement and goals.
->> Do we actually need metadata per program or metadata per single .o
->> or metadata per final .o with multiple .o linked together?
->> What is this metadata?
+On Sun, 6 Sep 2020 at 23:40, Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Yep, that's a very valid question. I've also CC'ed Andrey.
+> On Fri, Sep 04, 2020 at 10:58:59AM +0100, Lorenz Bauer wrote:
+> > Tracing programs can derive struct sock pointers from a variety
+> > of sources, e.g. a bpf_iter for sk_storage maps receives one as
+> > part of the context. It's desirable to be able to pass these to
+> > functions that expect PTR_TO_SOCKET. For example, it enables us
+> > to insert such a socket into a sockmap via map_elem_update.
+> >
+> > Teach the verifier that a PTR_TO_BTF_ID for a struct sock is
+> > equivalent to PTR_TO_SOCKET. There is one hazard here:
+> > bpf_sk_release also takes a PTR_TO_SOCKET, but expects it to be
+> > refcounted. Since this isn't the case for pointers derived from
+> > BTF we must prevent them from being passed to the function.
+> > Luckily, we can simply check that the ref_obj_id is not zero
+> > in release_reference, and return an error otherwise.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >  kernel/bpf/verifier.c | 61 +++++++++++++++++++++++++------------------
+> >  1 file changed, 36 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index b4e9c56b8b32..509754c3aa7d 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3908,6 +3908,9 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
+> >       return 0;
+> >  }
+> >
+> > +BTF_ID_LIST(btf_fullsock_ids)
+> > +BTF_ID(struct, sock)
+> It may be fine for the sockmap iter case to treat the "struct sock" BTF_ID
+> as a fullsock (i.e. PTR_TO_SOCKET).
 
-For the libxdp use case, I need metadata per program. But I'm already
-sticking that in a single section and disambiguating by struct name
-(just prefixing the function name with a _ ), so I think it's fine to
-have this kind of "concatenated metadata" per elf file and parse out the
-per-program information from that. This is similar to the BTF-encoded
-"metadata" we can do today.
+I think it's unsafe even for the sockmap iter. Since it's a tracing
+prog there might
+be other ways for it to obtain a struct sock * in the future.
 
->> If it's just unreferenced by program read only data then no special names or
->> prefixes are needed. We can introduce BPF_PROG_BIND_MAP to bind any map to any
->> program and it would be up to tooling to decide the meaning of the data in the
->> map. For example, bpftool can choose to print all variables from all read only
->> maps that match "bpf_metadata_" prefix, but it will be bpftool convention only
->> and not hard coded in libbpf.
+> This is a generic verifier change though.  For tracing, it is not always the
+> case.  It cannot always assume that the "struct sock *" in the function being
+> traced is always a fullsock.
+
+Yes, I see, thanks for reminding me. What a footgun. I think the
+problem boils down
+to the fact that we can't express "this is a full socket" in BTF,
+since there is no such
+type in the kernel.
+
+Which makes me wonder: how do tracing programs deal with struct sock*
+that really
+is a request sock or something?
+
+> Currently, the func_proto taking ARG_PTR_TO_SOCKET can safely
+> assume it must be a fullsock.  If it is allowed to also take BTF_ID
+> "struct sock" in verification time,  I think the sk_fullsock()
+> check in runtime is needed and this check should be pretty
+> cheap to do.
+
+Can you elaborate a little? Where do you think the check could happen?
+
+I could change the patch to treat struct sock * as PTR_TO_SOCK_COMMON,
+and adjust the sockmap helpers accordingly. The implication is that
+over time, helpers will migrate to PTR_TO_SOCK_COMMON because that is
+compatible with BTF. PTR_TO_SOCKET will become unused except to
+maintain the ABI for access to struct bpf_sock. Maybe that's OK
+though?
+
+> > +
+> >  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >                         struct bpf_call_arg_meta *meta,
+> >                         const struct bpf_func_proto *fn)
+> > @@ -4000,37 +4003,15 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >               expected_type = PTR_TO_SOCKET;
+> >               if (!(register_is_null(reg) &&
+> >                     arg_type == ARG_PTR_TO_SOCKET_OR_NULL)) {
+> > -                     if (type != expected_type)
+> > +                     if (type != expected_type &&
+> > +                         type != PTR_TO_BTF_ID)
+> >                               goto err_type;
+> >               }
+> > +             meta->btf_id = btf_fullsock_ids[0];
+> >       } else if (arg_type == ARG_PTR_TO_BTF_ID) {
+> > -             bool ids_match = false;
+> > -
+> >               expected_type = PTR_TO_BTF_ID;
+> >               if (type != expected_type)
+> >                       goto err_type;
+> > -             if (!fn->check_btf_id) {
+> > -                     if (reg->btf_id != meta->btf_id) {
+> > -                             ids_match = btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
+> > -                                                              meta->btf_id);
+> > -                             if (!ids_match) {
+> > -                                     verbose(env, "Helper has type %s got %s in R%d\n",
+> > -                                             kernel_type_name(meta->btf_id),
+> > -                                             kernel_type_name(reg->btf_id), regno);
+> > -                                     return -EACCES;
+> > -                             }
+> > -                     }
+> > -             } else if (!fn->check_btf_id(reg->btf_id, arg)) {
+> > -                     verbose(env, "Helper does not support %s in R%d\n",
+> > -                             kernel_type_name(reg->btf_id), regno);
+> > -
+> > -                     return -EACCES;
+> > -             }
+> > -             if ((reg->off && !ids_match) || !tnum_is_const(reg->var_off) || reg->var_off.value) {
+> > -                     verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
+> > -                             regno);
+> > -                     return -EACCES;
+> > -             }
+> >       } else if (arg_type == ARG_PTR_TO_SPIN_LOCK) {
+> >               if (meta->func_id == BPF_FUNC_spin_lock) {
+> >                       if (process_spin_lock(env, regno, true))
+> > @@ -4085,6 +4066,33 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >               return -EFAULT;
+> >       }
+> >
+> > +     if (type == PTR_TO_BTF_ID) {
+> > +             bool ids_match = false;
+> > +
+> > +             if (!fn->check_btf_id) {
+> > +                     if (reg->btf_id != meta->btf_id) {
+> > +                             ids_match = btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
+> > +                                                              meta->btf_id);
+> > +                             if (!ids_match) {
+> > +                                     verbose(env, "Helper has type %s got %s in R%d\n",
+> > +                                             kernel_type_name(meta->btf_id),
+> > +                                             kernel_type_name(reg->btf_id), regno);
+> > +                                     return -EACCES;
+> > +                             }
+> > +                     }
+> > +             } else if (!fn->check_btf_id(reg->btf_id, arg)) {
+> > +                     verbose(env, "Helper does not support %s in R%d\n",
+> > +                             kernel_type_name(reg->btf_id), regno);
+> > +
+> > +                     return -EACCES;
+> > +             }
+> > +             if ((reg->off && !ids_match) || !tnum_is_const(reg->var_off) || reg->var_off.value) {
+> > +                     verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
+> > +                             regno);
+> > +                     return -EACCES;
+> > +             }
+> > +     }
+> > +
+> >       if (arg_type == ARG_CONST_MAP_PTR) {
+> >               /* bpf_map_xxx(map_ptr) call: remember that map_ptr */
+> >               meta->map_ptr = reg->map_ptr;
+> > @@ -4561,6 +4569,9 @@ static int release_reference(struct bpf_verifier_env *env,
+> >       int err;
+> >       int i;
+> >
+> > +     if (!ref_obj_id)
+> > +             return -EINVAL;
+> hmm...... Is it sure this is needed?  If it was, it seems there was
+> an existing bug in release_reference_state() below which could not catch
+> the case where "bpf_sk_release()" is called on a pointer that has no
+> reference acquired before.
+
+Since sk_release takes a PTR_TO_SOCKET, it's possible to pass a tracing
+struct sock * to it after this patch. Adding this check prevents the
+release from
+succeeding.
+
 >
-> Agree as well. It feels a bit odd for libbpf to handle ".metadata"
-> specially, given libbpf itself doesn't care about its contents at all.
+> Can you write a verifier test to demonstrate the issue?
+
+There is a selftest in this series that ensures calling sk_release
+doesn't work, which exercises this.
+
 >
-> So thanks for bringing this up, I think this is an important
-> discussion to have.
+> > +
+> >       err = release_reference_state(cur_func(env), ref_obj_id);
+> >       if (err)
+> >               return err;
+> > --
+> > 2.25.1
+> >
 
-I'm fine with having this be part of .rodata. One drawback, though, is
-that if any metadata is defined, it becomes a bit more complicated to
-use bpf_map__set_initial_value() because that now also has to include
-the metadata. Any way we can improve upon that?
 
--Toke
 
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
