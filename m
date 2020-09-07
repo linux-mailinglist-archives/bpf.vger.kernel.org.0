@@ -2,292 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CAC25FDD7
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 17:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9728E25FDB4
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 17:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730006AbgIGP7M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 11:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
+        id S1730178AbgIGP40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 11:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730005AbgIGOtE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:49:04 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DB5C061797
-        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 07:48:38 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id z9so14475111wmk.1
-        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 07:48:38 -0700 (PDT)
+        with ESMTP id S1730013AbgIGOuk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:50:40 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2B2C061574
+        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 07:50:39 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id e11so12480489wme.0
+        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 07:50:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CG6pfa8grmhbhWsnM+Yrdzr0cEQrHTB9JZN/vMnBbo8=;
-        b=PvmMw1oNa+Rcn1KwdNg+gTs+dVGEzQ6Auz202r+OnwdXH11O8R6dl/0+mKrCtu0O2J
-         PP8pJjUbk7u2F8p9tIsvvvY+W7rOzBU9XIUiGJm5kxWpJGYrK+wPixVMD7HA28pQ5pWj
-         OaWx7su0XoUjUoqTIApF8ZfAo682hBUtLd4+0=
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DinUSQlSNAtBZl1poOuoTi8r63ZyczWh89UGQokdimg=;
+        b=zVxkI05+Lzjv1QKQLFyDIqCe+3maw5Wwz4fbaRSokoA4LeQLM+HrfTXeMCEVGPV1Q3
+         b6WdkBjOuZB2lq9VcrB/xew5mV14f62DAzDrWsXhhWGinorDyzuOPLb92zMNg0+XJnBe
+         Ob0dAcm2uNIVZwL3xPDW3c9MWpHz7wnODe96tw0izmRZJX83vEEz1v1bfPp4LNtCHDUB
+         qzIaBTZXD4rVKnDk/iDjiqkVdfRVKSh2OItjPO+dFuxUIWZzJ66LGDDryObpAY7pnDDR
+         kIfzRXNG2J3MH4wmd6cwNH9fmm1129pFCwaSz8eUZWy2C98r+7uhwGNHCz6pF9D8tMZ3
+         dniA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CG6pfa8grmhbhWsnM+Yrdzr0cEQrHTB9JZN/vMnBbo8=;
-        b=dgLEvejAQaGoje+10gqUNdJDcx4tWaCZ4ffUymeXixqHSuIc6NKzxj375LQ6hNQAfn
-         rR06JkseM8T3c7gOlh4kiEGksIVD9cg12l9BPJq46eMYS3QXpaBJCLAIr8ObtMncs8Xi
-         O7O2csTTZ+5H5Ty7S9UUS4L/5aOdjEvsSKIJk9aRnajB390KmscLVcg4YnWAb0H85R2r
-         TOfSihj6cSmN01dCbDGAGvlA0W8rbDzfI/OPu9JQpsXohxQ8ZxiPP6bFyFAtvNCeS7jV
-         OGiegjR4fpXV7DQO9u8NPQhFBUSehlvLEHSq2hPZAzfvOeyqDfcSM6o9dOrWyhz27Tm3
-         yzSA==
-X-Gm-Message-State: AOAM53209qgqvWRDOK722MhEfZOchsQmIPSUFmf3rWKbOHXf0OxaFSnm
-        jZMnKltyWWUkvp6WI5uWC+YPDg==
-X-Google-Smtp-Source: ABdhPJz/xsWSmRnD42infgl/U5iXNuFuQGbUi/KUIQmJLcgEuUgsY6v6LjsMaNGl9gycY9Tmey1iMQ==
-X-Received: by 2002:a7b:c768:: with SMTP id x8mr22635774wmk.189.1599490116808;
-        Mon, 07 Sep 2020 07:48:36 -0700 (PDT)
-Received: from antares.lan (2.e.3.8.e.0.6.b.6.2.5.e.8.e.4.b.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:b4e8:e526:b60e:83e2])
-        by smtp.gmail.com with ESMTPSA id 59sm8816834wro.82.2020.09.07.07.48.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 07:48:36 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net,
-        jakub@cloudflare.com, john.fastabend@gmail.com, kafai@fb.com
-Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next v4 7/7] selftests: bpf: Test copying a sockmap via bpf_iter
-Date:   Mon,  7 Sep 2020 15:47:01 +0100
-Message-Id: <20200907144701.44867-8-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200907144701.44867-1-lmb@cloudflare.com>
-References: <20200907144701.44867-1-lmb@cloudflare.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DinUSQlSNAtBZl1poOuoTi8r63ZyczWh89UGQokdimg=;
+        b=fH/9bXGWYn2N/9epY4wltAc57UoPC0u994IkphK5fj/uNtBgit7XVu89fWKjCKzdAe
+         rnae1M1VF0FUlOT0JQtXJoq/dtavrbnvIgEds+4KBvw9MgTrZkkDyR0VQMnpJHe7Xy5g
+         cIBvyvuraUshQBCl+zATXQ4O+xlAO9tossoA9QS6iIQi2HesRCWRp53oWaNH1Xs70NVm
+         RQZFBdwstR2CtknW/krbOaIgIrI+lxcRVYMWIH6xyl3NvQLNKP3t0K/Kokzrz6PNTIJ6
+         5XqJoylWupb2CjPrDRcuYdlnSqd4lopkOzRuigJUP0kjOjy1YtHbVJeJGwQTOGuO01Mh
+         vb4w==
+X-Gm-Message-State: AOAM531EXungTuPVULiBnm2pbRqt+IgWR5cTI//EII1VE4mmWJWFJyum
+        Jivo1/b58OC8+5v+W8UEhcjbhg==
+X-Google-Smtp-Source: ABdhPJxmuPA2M4lnE9NsRAz2mPX4QG5I05M4IYHHAfAH5+Xqn3PLwXdtfryUfO6kViHxXLdydjC8tA==
+X-Received: by 2002:a1c:28c1:: with SMTP id o184mr22014621wmo.91.1599490237107;
+        Mon, 07 Sep 2020 07:50:37 -0700 (PDT)
+Received: from [192.168.1.12] ([194.35.119.8])
+        by smtp.gmail.com with ESMTPSA id o9sm28010621wrw.58.2020.09.07.07.50.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 07 Sep 2020 07:50:36 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 1/3] tools: bpftool: print optional built-in
+ features along with version
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+References: <20200904205657.27922-1-quentin@isovalent.com>
+ <20200904205657.27922-2-quentin@isovalent.com>
+ <CAEf4Bzbf_igYVP+NfrVV86AZGQT7+2NF1JR6GzcEOymV9_vgNA@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <05b0ff4c-cf69-a452-6c0e-187ec2961063@isovalent.com>
+Date:   Mon, 7 Sep 2020 15:50:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzbf_igYVP+NfrVV86AZGQT7+2NF1JR6GzcEOymV9_vgNA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test that exercises a basic sockmap / sockhash copy using bpf_iter.
+On 04/09/2020 22:45, Andrii Nakryiko wrote:
+> On Fri, Sep 4, 2020 at 1:57 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> Bpftool has a number of features that can be included or left aside
+>> during compilation. This includes:
+>>
+>> - Support for libbfd, providing the disassembler for JIT-compiled
+>>   programs.
+>> - Support for BPF skeletons, used for profiling programs or iterating on
+>>   the PIDs of processes associated with BPF objects.
+>>
+>> In order to make it easy for users to understand what features were
+>> compiled for a given bpftool binary, print the status of the two
+>> features above when showing the version number for bpftool ("bpftool -V"
+>> or "bpftool version"). Document this in the main manual page. Example
+>> invocation:
+>>
+>>     $ bpftool -p version
+>>     {
+>>         "version": "5.9.0-rc1",
+>>         "features": [
+>>             "libbfd": true,
+>>             "skeletons": true
+>>         ]
+> 
+> Is this a valid JSON? array of key/value pairs?
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 88 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_iter.h  |  9 ++
- .../selftests/bpf/progs/bpf_iter_sockmap.c    | 57 ++++++++++++
- .../selftests/bpf/progs/bpf_iter_sockmap.h    |  3 +
- 4 files changed, 157 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
+No it's not, silly me :'(. I'll fix that, thanks for spotting it.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 0fe2a737fc8e..088903bdf10c 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -6,6 +6,9 @@
- #include "test_skmsg_load_helpers.skel.h"
- #include "test_sockmap_update.skel.h"
- #include "test_sockmap_invalid_update.skel.h"
-+#include "bpf_iter_sockmap.skel.h"
-+
-+#include "progs/bpf_iter_sockmap.h"
- 
- #define TCP_REPAIR		19	/* TCP sock is under repair right now */
- 
-@@ -193,6 +196,87 @@ static void test_sockmap_invalid_update(void)
- 		test_sockmap_invalid_update__destroy(skel);
- }
- 
-+static void test_sockmap_copy(enum bpf_map_type map_type)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	int err, len, src_fd, iter_fd, duration;
-+	union bpf_iter_link_info linfo = {0};
-+	__s64 sock_fd[SOCKMAP_MAX_ENTRIES];
-+	__u32 i, num_sockets, max_elems;
-+	struct bpf_iter_sockmap *skel;
-+	struct bpf_map *src, *dst;
-+	struct bpf_link *link;
-+	char buf[64];
-+
-+	skel = bpf_iter_sockmap__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_sockmap__open_and_load", "skeleton open_and_load failed\n"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(sock_fd); i++)
-+		sock_fd[i] = -1;
-+
-+	/* Make sure we have at least one "empty" entry to test iteration of
-+	 * an empty slot in an array.
-+	 */
-+	num_sockets = ARRAY_SIZE(sock_fd) - 1;
-+
-+	if (map_type == BPF_MAP_TYPE_SOCKMAP) {
-+		src = skel->maps.sockmap;
-+		max_elems = bpf_map__max_entries(src);
-+	} else {
-+		src = skel->maps.sockhash;
-+		max_elems = num_sockets;
-+	}
-+
-+	dst = skel->maps.dst;
-+	src_fd = bpf_map__fd(src);
-+
-+	for (i = 0; i < num_sockets; i++) {
-+		sock_fd[i] = connected_socket_v4();
-+		if (CHECK(sock_fd[i] == -1, "connected_socket_v4", "cannot connect\n"))
-+			goto out;
-+
-+		err = bpf_map_update_elem(src_fd, &i, &sock_fd[i], BPF_NOEXIST);
-+		if (CHECK(err, "map_update", "failed: %s\n", strerror(errno)))
-+			goto out;
-+	}
-+
-+	linfo.map.map_fd = src_fd;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+	link = bpf_program__attach_iter(skel->progs.copy_sockmap, &opts);
-+	if (CHECK(IS_ERR(link), "attach_iter", "attach_iter failed\n"))
-+		goto out;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
-+		goto free_link;
-+
-+	/* do some tests */
-+	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-+		;
-+	if (CHECK(len < 0, "read", "failed: %s\n", strerror(errno)))
-+		goto close_iter;
-+
-+	/* test results */
-+	if (CHECK(skel->bss->elems != max_elems, "elems", "got %u expected %u\n",
-+		  skel->bss->elems, max_elems))
-+		goto close_iter;
-+
-+	compare_cookies(src, dst);
-+
-+close_iter:
-+	close(iter_fd);
-+free_link:
-+	bpf_link__destroy(link);
-+out:
-+	for (i = 0; i < num_sockets; i++) {
-+		if (sock_fd[i] >= 0)
-+			close(sock_fd[i]);
-+	}
-+	bpf_iter_sockmap__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -209,4 +293,8 @@ void test_sockmap_basic(void)
- 		test_sockmap_update(BPF_MAP_TYPE_SOCKHASH);
- 	if (test__start_subtest("sockmap update in unsafe context"))
- 		test_sockmap_invalid_update();
-+	if (test__start_subtest("sockmap copy"))
-+		test_sockmap_copy(BPF_MAP_TYPE_SOCKMAP);
-+	if (test__start_subtest("sockhash copy"))
-+		test_sockmap_copy(BPF_MAP_TYPE_SOCKHASH);
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-index c196280df90d..df682af75510 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -13,6 +13,7 @@
- #define udp6_sock udp6_sock___not_used
- #define bpf_iter__bpf_map_elem bpf_iter__bpf_map_elem___not_used
- #define bpf_iter__bpf_sk_storage_map bpf_iter__bpf_sk_storage_map___not_used
-+#define bpf_iter__sockmap bpf_iter__sockmap___not_used
- #include "vmlinux.h"
- #undef bpf_iter_meta
- #undef bpf_iter__bpf_map
-@@ -26,6 +27,7 @@
- #undef udp6_sock
- #undef bpf_iter__bpf_map_elem
- #undef bpf_iter__bpf_sk_storage_map
-+#undef bpf_iter__sockmap
- 
- struct bpf_iter_meta {
- 	struct seq_file *seq;
-@@ -96,3 +98,10 @@ struct bpf_iter__bpf_sk_storage_map {
- 	struct sock *sk;
- 	void *value;
- };
-+
-+struct bpf_iter__sockmap {
-+	struct bpf_iter_meta *meta;
-+	struct bpf_map *map;
-+	void *key;
-+	struct sock *sk;
-+};
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
-new file mode 100644
-index 000000000000..d8d107c80b7b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Cloudflare */
-+#include "bpf_iter.h"
-+#include "bpf_tracing_net.h"
-+#include "bpf_iter_sockmap.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <errno.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, SOCKMAP_MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sockmap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKHASH);
-+	__uint(max_entries, SOCKMAP_MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sockhash SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKHASH);
-+	__uint(max_entries, SOCKMAP_MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} dst SEC(".maps");
-+
-+__u32 elems = 0;
-+
-+SEC("iter/sockmap")
-+int copy_sockmap(struct bpf_iter__sockmap *ctx)
-+{
-+	struct sock *sk = ctx->sk;
-+	__u32 tmp, *key = ctx->key;
-+	int ret;
-+
-+	if (!key)
-+		return 0;
-+
-+	elems++;
-+
-+	/* We need a temporary buffer on the stack, since the verifier doesn't
-+	 * let us use the pointer from the context as an argument to the helper.
-+	 */
-+	tmp = *key;
-+
-+	if (sk)
-+		return bpf_map_update_elem(&dst, &tmp, sk, 0) != 0;
-+
-+	ret = bpf_map_delete_elem(&dst, &tmp);
-+	return ret && ret != -ENOENT;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
-new file mode 100644
-index 000000000000..f98ad727ac06
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
-@@ -0,0 +1,3 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define SOCKMAP_MAX_ENTRIES (64)
--- 
-2.25.1
+>>     }
+>>
+>> Some other parameters are optional at compilation
+>> ("DISASM_FOUR_ARGS_SIGNATURE", LIBCAP support) but they do not impact
+>> significantly bpftool's behaviour from a user's point of view, so their
+>> status is not reported.
+>>
+>> Available commands and supported program types depend on the version
+>> number, and are therefore not reported either. Note that they are
+>> already available, albeit without JSON, via bpftool's help messages.
+>>
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>> ---
+>>  tools/bpf/bpftool/Documentation/bpftool.rst |  8 +++++++-
+>>  tools/bpf/bpftool/main.c                    | 22 +++++++++++++++++++++
+>>  2 files changed, 29 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
+>> index 420d4d5df8b6..a3629a3f1175 100644
+>> --- a/tools/bpf/bpftool/Documentation/bpftool.rst
+>> +++ b/tools/bpf/bpftool/Documentation/bpftool.rst
+>> @@ -50,7 +50,13 @@ OPTIONS
+>>                   Print short help message (similar to **bpftool help**).
+>>
+>>         -V, --version
+>> -                 Print version number (similar to **bpftool version**).
+>> +                 Print version number (similar to **bpftool version**), and
+>> +                 optional features that were included when bpftool was
+>> +                 compiled. Optional features include linking against libbfd to
+>> +                 provide the disassembler for JIT-ted programs (**bpftool prog
+>> +                 dump jited**) and usage of BPF skeletons (some features like
+>> +                 **bpftool prog profile** or showing pids associated to BPF
+>> +                 objects may rely on it).
+> 
+> nit: I'd emit it as a list, easier to see list of features visually
+> 
+>>
+>>         -j, --json
+>>                   Generate JSON output. For commands that cannot produce JSON, this
+>> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+>> index 4a191fcbeb82..2ae8c0d82030 100644
+>> --- a/tools/bpf/bpftool/main.c
+>> +++ b/tools/bpf/bpftool/main.c
+>> @@ -70,13 +70,35 @@ static int do_help(int argc, char **argv)
+>>
+>>  static int do_version(int argc, char **argv)
+>>  {
+>> +#ifdef HAVE_LIBBFD_SUPPORT
+>> +       const bool has_libbfd = true;
+>> +#else
+>> +       const bool has_libbfd = false;
+>> +#endif
+>> +#ifdef BPFTOOL_WITHOUT_SKELETONS
+>> +       const bool has_skeletons = false;
+>> +#else
+>> +       const bool has_skeletons = true;
+>> +#endif
+>> +
+>>         if (json_output) {
+>>                 jsonw_start_object(json_wtr);
+>> +
+>>                 jsonw_name(json_wtr, "version");
+>>                 jsonw_printf(json_wtr, "\"%s\"", BPFTOOL_VERSION);
+>> +
+>> +               jsonw_name(json_wtr, "features");
+>> +               jsonw_start_array(json_wtr);
+>> +               jsonw_bool_field(json_wtr, "libbfd", has_libbfd);
+>> +               jsonw_bool_field(json_wtr, "skeletons", has_skeletons);
+>> +               jsonw_end_array(json_wtr);
+>> +
+>>                 jsonw_end_object(json_wtr);
+>>         } else {
+>>                 printf("%s v%s\n", bin_name, BPFTOOL_VERSION);
+>> +               printf("features: libbfd=%s, skeletons=%s\n",
+>> +                      has_libbfd ? "true" : "false",
+>> +                      has_skeletons ? "true" : "false");
+> 
+> now imagine parsing this with CLI text tools, you'll have to find
+> "skeletons=(false|true)" and then parse "true" to know skeletons are
+> supported. Why not just print out features that are supported?
 
+You could just grep for "skeletons=true" (not too hard) (And generally
+speaking I'd recommend against parsing bpftool's plain output, JSON is
+more stable - Once you're parsing the JSON, checking the feature is
+present or checking whether it's at "true" does not make a great
+difference).
+
+Anyway, the reason I have those booleans is that if you just list the
+features and run "bpftool version | grep libbpfd" and get no result, you
+cannot tell if the binary has been compiled without the disassembler or
+if you are running an older version of bpftool that does not list
+built-in features. You could then parse the version number and double
+check, but you need to find in what version the change has been added.
+Besides libbfd and skeletons, this could happen again for future
+optional features if we add them to bpftool but forget to immediately
+add the related check for "bpftool version".
+
+So I would be inclined to keep the booleans. Or do you still believe a
+list is preferable?
+
+Quentin
