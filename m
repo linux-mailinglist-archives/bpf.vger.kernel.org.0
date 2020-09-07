@@ -2,117 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05062260265
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 19:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6927B260261
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 19:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729577AbgIGRYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 13:24:51 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:49418 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729624AbgIGNlY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 7 Sep 2020 09:41:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599486082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mx0HitpHOfVEuxavEK5m2SMEcJVCFnXIoy6pEZlAL9w=;
-        b=KSy7/aimN1Tc/FMrvJvulDHfb/MYTVTVaxFXDXhINm+1LuHx2JFBcNjC16//xK6tmc8x9F
-        emhW1VIGiSMoZUzvAxF6t+VgRU+/p37CN9ZJKgyTUlZz7VxjtoQvKI1pnmuGBRtUFyXQcZ
-        nOyobn2GCJktid/9eHZoMs4mn/MlmUw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-CyjkLx4kN5Km9b8_puugSQ-1; Mon, 07 Sep 2020 09:33:00 -0400
-X-MC-Unique: CyjkLx4kN5Km9b8_puugSQ-1
-Received: by mail-wr1-f70.google.com with SMTP id v12so5718871wrm.9
-        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 06:33:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=mx0HitpHOfVEuxavEK5m2SMEcJVCFnXIoy6pEZlAL9w=;
-        b=seRA5xWxYU83VdMrVLtHF1Eatqqkw31ga6qcyMBfJd+s3QPgBx6g+m4DYH4pvRRXGR
-         jczirAIlRfV2UI1tHi1gioMFawIR/5VYinHBKhnK4AXeTpyuU8rhwBe+xz6/pGK9D8wF
-         OVVt3jyIMYLV+rSFg49uvYePMuAPwuKt7W5vh8yhCAYWkMXfUeCWtUwHxfMUI7bGWnJm
-         zDmgPrvn0L0TAlDTowtsOSR/h+zCvLygMY0s3/nYIT6RxKJzNr8cJ2MYmX+NcQDAOv48
-         D9jA179S6jzp+u2ZcH9Fs3WjgXUt/1unPj4CKRcXX8WrmqBdO9kFNhJmnQLF5/h1cNyf
-         p6Cg==
-X-Gm-Message-State: AOAM532TRjW8Hq17NyrMM8N01/nc4KFVV3h7bqSMdKg4iXO38ArueLi+
-        oJQeHdU9pXlrOiblyfLuaQY7MTpJ/YhftbQPSy9/Fk6FZYxGPBHVRVGdjFMZf6EGRKN6KqNvq42
-        nup/tp77YPAbg
-X-Received: by 2002:adf:a18c:: with SMTP id u12mr22429550wru.90.1599485578833;
-        Mon, 07 Sep 2020 06:32:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTQDEUKyKYpoKhV6e9kqnUpqInxvY6mXvKDlN1WLTG+p30H/JZ2ZVv0WLVSsrs9mojCzV9xg==
-X-Received: by 2002:adf:a18c:: with SMTP id u12mr22429519wru.90.1599485578415;
-        Mon, 07 Sep 2020 06:32:58 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id t22sm20618520wmt.1.2020.09.07.06.32.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 06:32:57 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 64EF1180497; Mon,  7 Sep 2020 15:32:57 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Borna Cafuk <borna.cafuk@sartura.hr>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
-        kpsingh@google.com
-Subject: Re: HASH_OF_MAPS inner map allocation from BPF
-In-Reply-To: <CAGeTCaWSSBJye72NCQW4N=XtsFx-rv-EEgTowTT3VEtus=pFtA@mail.gmail.com>
-References: <CAGeTCaU1fEGVVWnXKR_zv4ZSoCrBGSN65-RpFuKg9Gf-_z6TOw@mail.gmail.com>
- <CAADnVQKsbbd9dbPYQqa5=QsRfLo07hEjr1rSC=5DfVpzUK7Ajw@mail.gmail.com>
- <CAGeTCaWSSBJye72NCQW4N=XtsFx-rv-EEgTowTT3VEtus=pFtA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 07 Sep 2020 15:32:57 +0200
-Message-ID: <878sdlpv92.fsf@toke.dk>
+        id S1729611AbgIGNll (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 09:41:41 -0400
+Received: from mga11.intel.com ([192.55.52.93]:19032 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729602AbgIGNk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 09:40:58 -0400
+IronPort-SDR: n4o/aJ8XEyaz/Uv0s/LrYbfq2lLtMTG5d4t9A5/tkUZvcRMTCLgbXjQYQYGY8jjHtF/FUIQqtm
+ aRU1nwFDJIvg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="155500088"
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="155500088"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 06:37:47 -0700
+IronPort-SDR: MXbziBHXdLofMRVjhmFogHuU7akOLzGtpfMQCHdquu/U/fDRatsd7XICx8Fn931ptEmH5CxKBM
+ MUZVua/bUfcA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
+   d="scan'208";a="333166580"
+Received: from clroth-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.57.7])
+  by orsmga008.jf.intel.com with ESMTP; 07 Sep 2020 06:37:41 -0700
+Subject: Re: [PATCH bpf-next 0/6] xsk: exit NAPI loop when AF_XDP Rx ring is
+ full
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, davem@davemloft.net,
+        john.fastabend@gmail.com, intel-wired-lan@lists.osuosl.org
+References: <20200904135332.60259-1-bjorn.topel@gmail.com>
+ <20200904162751.632c4443@carbon>
+ <27e05518-99c6-15e2-b801-cbc0310630ef@intel.com>
+ <20200904165837.16d8ecfd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <1d2e781e-b26d-4cf0-0178-25b8835dbe26@intel.com>
+Date:   Mon, 7 Sep 2020 15:37:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200904165837.16d8ecfd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Borna Cafuk <borna.cafuk@sartura.hr> writes:
+On 2020-09-05 01:58, Jakub Kicinski wrote:
+ > On Fri, 4 Sep 2020 16:32:56 +0200 Björn Töpel wrote:
+ >> On 2020-09-04 16:27, Jesper Dangaard Brouer wrote:
+ >>> On Fri,  4 Sep 2020 15:53:25 +0200
+ >>> Björn Töpel <bjorn.topel@gmail.com> wrote:
+ >>>
+ >>>> On my machine the "one core scenario Rx drop" performance went from
+ >>>> ~65Kpps to 21Mpps. In other words, from "not usable" to
+ >>>> "usable". YMMV.
+ >>>
+ >>> We have observed this kind of dropping off an edge before with softirq
+ >>> (when userspace process runs on same RX-CPU), but I thought that Eric
+ >>> Dumazet solved it in 4cd13c21b207 ("softirq: Let ksoftirqd do its 
+job").
+ >>>
+ >>> I wonder what makes AF_XDP different or if the problem have come back?
+ >>>
+ >>
+ >> I would say this is not the same issue. The problem is that the softirq
+ >> is busy dropping packets since the AF_XDP Rx is full. So, the cycles
+ >> *are* split 50/50, which is not what we want in this case. :-)
+ >>
+ >> This issue is more of a "Intel AF_XDP ZC drivers does stupid work", than
+ >> fairness. If the Rx ring is full, then there is really no use to let the
+ >> NAPI loop continue.
+ >>
+ >> Would you agree, or am I rambling? :-P
+ >
+ > I wonder if ksoftirqd never kicks in because we are able to discard
+ > the entire ring before we run out of softirq "slice".
+ >
 
-> On Sat, Sep 5, 2020 at 12:47 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> On Fri, Sep 4, 2020 at 7:57 AM Borna Cafuk <borna.cafuk@sartura.hr> wrote:
->> >
->> > Hello everyone,
->> >
->> > Judging by [0], the inner maps in BPF_MAP_TYPE_HASH_OF_MAPS can only be created
->> > from the userspace. This seems quite limiting in regard to what can be done
->> > with them.
->> >
->> > Are there any plans to allow for creating the inner maps from BPF programs?
->> >
->> > [0] https://stackoverflow.com/a/63391528
->>
->> Did you ask that question or your use case is different?
->> Creating a new map for map_in_map from bpf prog can be implemented.
->> bpf_map_update_elem() is doing memory allocation for map elements.
->> In such a case calling this helper on map_in_map can, in theory, create a new
->> inner map and insert it into the outer map.
->
-> No, it wasn't me who asked that question, but it seemed close enough to
-> my issue. My use case calls for modifying the syscount example from BCC[1].
->
-> The idea is to have an outer map where the keys are PIDs, and inner maps where
-> the keys are system call numbers. This would enable tracking the number of
-> syscalls made by each process and the makeup of those calls for all processes
-> simultaneously.
->
-> [1] https://github.com/iovisor/bcc/blob/master/libbpf-tools/syscount.bpf.c
+This is exactly what's happening, so we're entering a "busy poll like"
+behavior; syscall, return from syscall softirq/napi, userland.
 
-Well, if you just want to count, map-in-map seems a bit overkill? You
-could just do:
+ >
+ > I've been pondering the exact problem you're solving with Maciej
+ > recently. The efficiency of AF_XDP on one core with the NAPI processing.
+ >
+ > Your solution (even though it admittedly helps, and is quite simple)
+ > still has the application potentially not able to process packets
+ > until the queue fills up. This will be bad for latency.
+ >
+ > Why don't we move closer to application polling? Never re-arm the NAPI
+ > after RX, let the application ask for packets, re-arm if 0 polled.
+ > You'd get max batching, min latency.
+ >
+ > Who's the rambling one now? :-D
+ >
 
-struct {
-  u32 pid;
-  u32 syscall;
-} map_key;
+:-D No, these are all very good ideas! We've actually experimented
+with it with the busy-poll series a while back -- NAPI busy-polling
+does exactly "application polling".
 
-and use that?
+However, I wonder if the busy-polling would have better performance
+than the scenario above (i.e. when the ksoftirqd never kicks in)?
+Executing the NAPI poll *explicitly* in the syscall, or implicitly
+from the softirq.
 
--Toke
+Hmm, thinking out loud here. A simple(r) patch enabling busy poll;
+Exporting the napi_id to the AF_XDP socket (xdp->rxq->napi_id to
+sk->sk_napi_id), and do the sk_busy_poll_loop() in sendmsg.
 
+Or did you have something completely different in mind?
+
+As for this patch set, I think it would make sense to pull it in since
+it makes the single-core scenario *much* better, and it is pretty
+simple. Then do the application polling as another, potentially,
+improvement series.
+
+
+Thoughts? Thanks a lot for the feedback!
+Björn
