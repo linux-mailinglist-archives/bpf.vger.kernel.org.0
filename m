@@ -2,87 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C00525FBDC
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 16:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6573A25FBFE
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 16:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729761AbgIGOI5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 10:08:57 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52195 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729790AbgIGOIj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 7 Sep 2020 10:08:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599487690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OWiEwbKTV7E2xnnNVFq3xGVSzUyW2sxaJcO4BqWhJU8=;
-        b=O3zMZqVUNNYxRjjjFAU5XNgiu7PvIWiRr/bYgxV3IN3nXriNbebnTYOLGirVFV36C017DB
-        SZb0hRFBvE5njOsnvgHCMJLOyNbI542ZDcWavaXtpaNruI16vdQAbIwTBmmnWWlNwjrpu9
-        kVEGYioRWn3i7nTSjm1G8mMR/6JjlEI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-pMixxMfnMbu5ORrtS7mCOA-1; Mon, 07 Sep 2020 10:08:05 -0400
-X-MC-Unique: pMixxMfnMbu5ORrtS7mCOA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6F19B80B70F;
-        Mon,  7 Sep 2020 14:08:04 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 14A865D9D2;
-        Mon,  7 Sep 2020 14:07:58 +0000 (UTC)
-Date:   Mon, 7 Sep 2020 16:07:57 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>, brouer@redhat.com,
-        Maciej Zenczykowski <maze@google.com>
-Subject: Re: [PATCH bpf-next] bpf: don't check against device MTU in
- __bpf_skb_max_len
-Message-ID: <20200907160757.1f249256@carbon>
-In-Reply-To: <20200904163947.20839d7e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <159921182827.1260200.9699352760916903781.stgit@firesoul>
-        <20200904163947.20839d7e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1729829AbgIGOYR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 10:24:17 -0400
+Received: from www62.your-server.de ([213.133.104.62]:55104 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729803AbgIGOWG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:22:06 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kFI1L-0008Bi-TZ; Mon, 07 Sep 2020 16:21:23 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kFI1L-0001xa-M0; Mon, 07 Sep 2020 16:21:23 +0200
+Subject: Re: [PATCH bpf-next 1/2] bpf: permit map_ptr arithmetic with opcode
+ add and offset 0
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20200904194900.3031319-1-yhs@fb.com>
+ <20200904194900.3031377-1-yhs@fb.com>
+ <CAEf4BzboqpYa7Zq=6xcpGez+jk--NTDA0=FQi5utwcFaHwC7bA@mail.gmail.com>
+ <c016695c-3d22-ac74-5e2f-9210fb5b58af@fb.com>
+ <CAEf4BzaWZqLnR78B3F38bkDP62aDy81oQSAiZMXDULembVyhkA@mail.gmail.com>
+ <CAADnVQJrjPynzVZTDvDh7qosBVFO8+iKEKDbC4=yK+4HVZ6Tng@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <417158cc-4b80-83df-0544-e8e6defb44b4@iogearbox.net>
+Date:   Mon, 7 Sep 2020 16:21:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAADnVQJrjPynzVZTDvDh7qosBVFO8+iKEKDbC4=yK+4HVZ6Tng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25922/Sun Sep  6 15:39:20 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 4 Sep 2020 16:39:47 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
-
-> On Fri, 04 Sep 2020 11:30:28 +0200 Jesper Dangaard Brouer wrote:
-> > @@ -3211,8 +3211,7 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-> >  
-> >  static u32 __bpf_skb_max_len(const struct sk_buff *skb)
-> >  {
-> > -	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
-> > -			  SKB_MAX_ALLOC;
-> > +	return SKB_MAX_ALLOC;
-> >  }
-> >  
-> >  BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
-> >   
+On 9/5/20 2:10 AM, Alexei Starovoitov wrote:
+> On Fri, Sep 4, 2020 at 5:08 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>> On Fri, Sep 4, 2020 at 4:20 PM Yonghong Song <yhs@fb.com> wrote:
+[...]
+>>> for scalar constant, reg->var_off.mask should be 0. so we will have
+>>> reg->smin_value = reg->smax_value = (s64)reg->var_off.value.
+>>>
+>>> The smin_val is also used below, e.g., BPF_ADD, for a known value.
+>>> That is why I am using smin_val here.
+>>>
+>>> Will add a comment and submit v2.
+>>
+>> it would be way-way more obvious (and reliable in the long run,
+>> probably) if you just used (known && reg->var_off.value == 0). or just
+>> tnum_equals_const(reg->var_off, 0)?
 > 
-> Looks familiar:
-> https://lore.kernel.org/netdev/20200420231427.63894-1-zenczykowski@gmail.com/
-> 
+> Pls dont. smin_val == 0 is a standard way to do this.
+> Just check all other places in this function and everywhere else.
 
-Great to see that others have proposed same fix before.  Unfortunately
-it seems that the thread have died, and no patch got applied to
-address this.  (Cc. Maze since he was "mull this over a bit more"...)
+Also, we taint the reg earlier in that function if its known and min != max:
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+         if ((known && (smin_val != smax_val || umin_val != umax_val)) ||
+             smin_val > smax_val || umin_val > umax_val) {
+                 /* Taint dst register if offset had invalid bounds derived from
+                  * e.g. dead branches.
+                  */
+                 __mark_reg_unknown(env, dst_reg);
+                 return 0;
+         }
