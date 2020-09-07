@@ -2,207 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B1425F345
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 08:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A732025F51F
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 10:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgIGGgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 02:36:55 -0400
-Received: from mga05.intel.com ([192.55.52.43]:13385 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726278AbgIGGgz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 02:36:55 -0400
-IronPort-SDR: 39lQe0af65hZiTcIiYzvje7BTomVwBmuIz0besQbNFzSgEpyKvUe7dpzz1IIepG6uW9lOAXuVB
- PF1Qn5FOgSVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9736"; a="242776996"
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="242776996"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2020 23:36:54 -0700
-IronPort-SDR: j9jvOKcV7TCFI0Sww+53PtsDvExwrk2f628yc+m5JU26xi67Rjd+hOfs9IwdJNqrspzmV9SQGx
- QyypmOkqFO6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,401,1592895600"; 
-   d="scan'208";a="503927007"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by fmsmga006.fm.intel.com with ESMTP; 06 Sep 2020 23:36:49 -0700
-Subject: Re: [PATCH v2 4/5] perf record: Don't clear event's period if set by
- a term
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1728091AbgIGI1p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 04:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728238AbgIGI1o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 04:27:44 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA0EC061573;
+        Mon,  7 Sep 2020 01:27:42 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id n3so7178667pjq.1;
+        Mon, 07 Sep 2020 01:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rr+tlxBlRV0PoWeqX9mz0+xlIagOpr5ULHpySgGVztQ=;
+        b=dgIru0ODmLstoJLyrspsCDMLyxdTzAlbU7IVyuMjRVxwt3PozXloG1kxIJe2hCo1lk
+         rq1vDu55VydI1+6+PRSKEkpNP7f5j0LRzf4jQP08ZxCJiMWayJ9kM8kCzDjC5yiG7Gyd
+         0CbOIMstczK3dv/VQb/U/4fP0lLEKOJcUaWtIH5Hh9T3v3bOnaMN4DKv+BCft86/Owjo
+         ArGCt6ReZsIc7Z+lwYAf9LmaTHLssY5NbVdlsMankVDABVnGRgXFIX29bJDLARpGTKEj
+         TiPrUawJBuAFnJfL2Jglos/5k48c7vYvaFbUSVOREcjfNwqnJ9/OvblnoQaZcmaX/Qmj
+         LrIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rr+tlxBlRV0PoWeqX9mz0+xlIagOpr5ULHpySgGVztQ=;
+        b=kwnRTYQc/m9CBeaF4sS962wPROvXHmBgbaEQ3aG0V32VTV5ZzffF2UF61xImhZzurq
+         f5NVTfIh/6FtIsT/wLdZKvLa8fEJ7L/qIma9Y3PCPyfq3mQ9uYnFQcrMZw3qhkuNw4sW
+         Q0Zh4WItsdU10anJbiEAsGG+1G+Z90Jz4b/3f+f8+pxEOAeay7b1bMLF7LMPCLfIx7dE
+         xZfkfVRaoBCQujC4UNlvQRt8mxXeFw9l8qq0/Reux3Lc8mS+6g6m0SOO5AVz5Ns0Bdt9
+         UxHXpn0ITGAocmc/NI9+qdbp8RXWHVv/a1ohtSKb31v6s6Zlx3bficQ9IT8d8h/0DzSN
+         d5uA==
+X-Gm-Message-State: AOAM532zODeUHzQIrFb9ogP1e4M5hPTxKSAWlqZ1uogDloB7Pe4aeT1D
+        3aXrn3rjDDASzOCJ3Hjwo2g7FFXxF46gkg==
+X-Google-Smtp-Source: ABdhPJzfo47EnUdeAD8E4vdBhToqKTqRCPWTPywz+s55TbngdxsanU4mzd+WlwVCzL8ngs+Ym0S0GA==
+X-Received: by 2002:a17:90a:d246:: with SMTP id o6mr12371805pjw.211.1599467261760;
+        Mon, 07 Sep 2020 01:27:41 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id i20sm11756311pgk.77.2020.09.07.01.27.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 01:27:41 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-5-irogers@google.com>
- <969ef797-59ea-69d0-24b9-33bcdff106a1@intel.com>
- <CAP-5=fUCnBGX0L0Tt3_gmVnt+hvaouJMx6XFErFKk72+xuw9fw@mail.gmail.com>
- <86324041-aafb-f556-eda7-6250ba678f24@intel.com>
- <CAP-5=fXfBkXovaK3DuSCnwfsnxqW7ZR8-LigtGATgs4gMpZP9A@mail.gmail.com>
- <CAP-5=fXGpQ7awq7-99KJsPhwMS91hvFXEvN4YWfdoVpq7mRvDw@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <3ab220cd-0b8f-427f-4832-b45bcf0851e9@intel.com>
-Date:   Mon, 7 Sep 2020 09:36:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv11 bpf-next 0/5] xdp: add a new helper for dev map multicast support
+Date:   Mon,  7 Sep 2020 16:27:19 +0800
+Message-Id: <20200907082724.1721685-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200903102701.3913258-1-liuhangbin@gmail.com>
+References: <20200903102701.3913258-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fXGpQ7awq7-99KJsPhwMS91hvFXEvN4YWfdoVpq7mRvDw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/09/20 8:43 am, Ian Rogers wrote:
-> On Tue, Aug 4, 2020 at 8:50 AM Ian Rogers <irogers@google.com> wrote:
->> On Tue, Aug 4, 2020 at 7:49 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>> On 4/08/20 4:33 pm, Ian Rogers wrote:
->>>> On Tue, Aug 4, 2020 at 3:08 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>> On 28/07/20 11:57 am, Ian Rogers wrote:
->>>>>> If events in a group explicitly set a frequency or period with leader
->>>>>> sampling, don't disable the samples on those events.
->>>>>>
->>>>>> Prior to 5.8:
->>>>>> perf record -e '{cycles/period=12345000/,instructions/period=6789000/}:S'
->>>>> Might be worth explaining this use-case some more.
->>>>> Perhaps add it to the leader sampling documentation for perf-list.
->>>>>
->>>>>> would clear the attributes then apply the config terms. In commit
->>>>>> 5f34278867b7 leader sampling configuration was moved to after applying the
->>>>>> config terms, in the example, making the instructions' event have its period
->>>>>> cleared.
->>>>>> This change makes it so that sampling is only disabled if configuration
->>>>>> terms aren't present.
->>>>>>
->>>>>> Fixes: 5f34278867b7 ("perf evlist: Move leader-sampling configuration")
->>>>>> Signed-off-by: Ian Rogers <irogers@google.com>
->>>>>> ---
->>>>>>  tools/perf/util/record.c | 28 ++++++++++++++++++++--------
->>>>>>  1 file changed, 20 insertions(+), 8 deletions(-)
->>>>>>
->>>>>> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
->>>>>> index a4cc11592f6b..01d1c6c613f7 100644
->>>>>> --- a/tools/perf/util/record.c
->>>>>> +++ b/tools/perf/util/record.c
->>>>>> @@ -2,6 +2,7 @@
->>>>>>  #include "debug.h"
->>>>>>  #include "evlist.h"
->>>>>>  #include "evsel.h"
->>>>>> +#include "evsel_config.h"
->>>>>>  #include "parse-events.h"
->>>>>>  #include <errno.h>
->>>>>>  #include <limits.h>
->>>>>> @@ -38,6 +39,9 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
->>>>>>       struct perf_event_attr *attr = &evsel->core.attr;
->>>>>>       struct evsel *leader = evsel->leader;
->>>>>>       struct evsel *read_sampler;
->>>>>> +     struct evsel_config_term *term;
->>>>>> +     struct list_head *config_terms = &evsel->config_terms;
->>>>>> +     int term_types, freq_mask;
->>>>>>
->>>>>>       if (!leader->sample_read)
->>>>>>               return;
->>>>>> @@ -47,16 +51,24 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
->>>>>>       if (evsel == read_sampler)
->>>>>>               return;
->>>>>>
->>>>>> +     /* Determine the evsel's config term types. */
->>>>>> +     term_types = 0;
->>>>>> +     list_for_each_entry(term, config_terms, list) {
->>>>>> +             term_types |= 1 << term->type;
->>>>>> +     }
->>>>>>       /*
->>>>>> -      * Disable sampling for all group members other than the leader in
->>>>>> -      * case the leader 'leads' the sampling, except when the leader is an
->>>>>> -      * AUX area event, in which case the 2nd event in the group is the one
->>>>>> -      * that 'leads' the sampling.
->>>>>> +      * Disable sampling for all group members except those with explicit
->>>>>> +      * config terms or the leader. In the case of an AUX area event, the 2nd
->>>>>> +      * event in the group is the one that 'leads' the sampling.
->>>>>>        */
->>>>>> -     attr->freq           = 0;
->>>>>> -     attr->sample_freq    = 0;
->>>>>> -     attr->sample_period  = 0;
->>>>>> -     attr->write_backward = 0;
->>>>>> +     freq_mask = (1 << EVSEL__CONFIG_TERM_FREQ) | (1 << EVSEL__CONFIG_TERM_PERIOD);
->>>>>> +     if ((term_types & freq_mask) == 0) {
->>>>> It would be nicer to have a helper e.g.
->>>>>
->>>>>         if (!evsel__have_config_term(evsel, FREQ) &&
->>>>>             !evsel__have_config_term(evsel, PERIOD)) {
->>>> Sure. The point of doing it this way was to avoid repeatedly iterating
->>>> over the config term list.
->>> But perhaps it is premature optimization
->> The alternative is more loc. I think we can bike shed on this but it's
->> not really changing the substance of the change. I'm keen to try to be
->> efficient where we can as we see issues at scale.
->>
->> Thanks,
->> Ian
-> Ping. Do we want to turn this into multiple O(N) searches using a
-> helper rather than 1 as coded here?
+This patch is for xdp multicast support. which has been discussed before[0],
+The goal is to be able to implement an OVS-like data plane in XDP, i.e.,
+a software switch that can forward XDP frames to multiple ports.
 
-Actually max. 30 iterations vs max. 15 iterations for the 15 current
-possible config terms.
+To achieve this, an application needs to specify a group of interfaces
+to forward a packet to. It is also common to want to exclude one or more
+physical interfaces from the forwarding operation - e.g., to forward a
+packet to all interfaces in the multicast group except the interface it
+arrived on. While this could be done simply by adding more groups, this
+quickly leads to a combinatorial explosion in the number of groups an
+application has to maintain.
 
-At least please don't open code the config term implementation details.
+To avoid the combinatorial explosion, we propose to include the ability
+to specify an "exclude group" as part of the forwarding operation. This
+needs to be a group (instead of just a single port index), because there
+may have multi interfaces you want to exclude.
 
-For example, make evsel__have_config_term() accept multiple terms or introduce
+Thus, the logical forwarding operation becomes a "set difference"
+operation, i.e. "forward to all ports in group A that are not also in
+group B". This series implements such an operation using device maps to
+represent the groups. This means that the XDP program specifies two
+device maps, one containing the list of netdevs to redirect to, and the
+other containing the exclude list.
 
-u64 term_mask = evsel__config_term_mask(evsel);
+To achieve this, I re-implement a new helper bpf_redirect_map_multi()
+to accept two maps, the forwarding map and exclude map. If user
+don't want to use exclude map and just want simply stop redirecting back
+to ingress device, they can use flag BPF_F_EXCLUDE_INGRESS.
 
-has_config_term(term_mask, FREQ) etc
+The 1st patch add a new bpf arg to allow NULL map pointer.
+The 2nd patch add the new bpf_redirect_map_multi() helper.
+The 3rd and 4th patches are for usage sample and testing purpose, there
+is no effort has been made on performance optimisation.
+The 5th patch added some verifier test for new bpf arg ARG_CONST_MAP_PTR_OR_NULL
 
-or whatever.
+I did same tests with pktgen(pkt size 64) to compire with xdp_redirect_map().
+Here is the test result(the veth peer has a dummy xdp program with XDP_DROP
+directly):
 
->
-> Thanks,
-> Ian
->
->>>>>> +             attr->freq           = 0;
->>>>>> +             attr->sample_freq    = 0;
->>>>>> +             attr->sample_period  = 0;
->>>>> If we are not sampling, then maybe we should also put here:
->>>>>
->>>>>                 attr->write_backward = 0;
->>>>>
->>>>>> +     }
->>>>> Then, if we are sampling this evsel shouldn't the backward setting
->>>>> match the leader? e.g.
->>>>>
->>>>>         if (attr->sample_freq)
->>>>>                 attr->write_backward = leader->core.attr.write_backward;
->>>> Perhaps that should be a follow up change? This change is trying to
->>>> make the behavior match the previous behavior.
->>> Sure
->>>
->>>> Thanks,
->>>> Ian
->>>>
->>>>>> +     if ((term_types & (1 << EVSEL__CONFIG_TERM_OVERWRITE)) == 0)
->>>>>> +             attr->write_backward = 0;
->>>>>>
->>>>>>       /*
->>>>>>        * We don't get a sample for slave events, we make them when delivering
->>>>>>
+Version         | Test                                   | Native | Generic
+5.9 rc1         | xdp_redirect_map       i40e->i40e      |  10.4M |  1.9M
+5.9 rc1         | xdp_redirect_map       i40e->veth      |  14.2M |  2.2M
+5.9 rc1 + patch | xdp_redirect_map       i40e->i40e      |  10.3M |  1.9M
+5.9 rc1 + patch | xdp_redirect_map       i40e->veth      |  14.2M |  2.2M
+5.9 rc1 + patch | xdp_redirect_map_multi i40e->i40e      |   8.0M |  1.5M
+5.9 rc1 + patch | xdp_redirect_map_multi i40e->veth      |  11.2M |  1.6M
+5.9 rc1 + patch | xdp_redirect_map_multi i40e->i40e+veth |   3.5M |  1.1M
+
+The bpf_redirect_map_multi() is slower than bpf_redirect_map() as we loop
+the map and do clone skb/xdpf. The generic path is slower than native
+path as we send skbs by pktgen. So the result looks reasonable. There is
+some performance improvement for veth port compared with 5.8 rc1.
+
+Last but not least, thanks a lot to Toke, Jesper, Jiri and Eelco for
+suggestions and help on implementation.
+
+[0] https://xdp-project.net/#Handling-multicast
+
+v11:
+Fix bpf_redirect_map_multi() helper description typo.
+Add loop limit for devmap_get_next_obj() and dev_map_redirect_multi().
+
+v10:
+Rebase the code to latest bpf-next.
+Update helper bpf_xdp_redirect_map_multi()
+- No need to check map pointer as we will do the check in verifier.
+
+v9:
+Update helper bpf_xdp_redirect_map_multi()
+- Use ARG_CONST_MAP_PTR_OR_NULL for helper arg2
+
+v8:
+a) Update function dev_in_exclude_map():
+   - remove duplicate ex_map map_type check in
+   - lookup the element in dev map by obj dev index directly instead
+     of looping all the map
+
+v7:
+a) Fix helper flag check
+b) Limit the *ex_map* to use DEVMAP_HASH only and update function
+   dev_in_exclude_map() to get better performance.
+
+v6: converted helper return types from int to long
+
+v5:
+a) Check devmap_get_next_key() return value.
+b) Pass through flags to __bpf_tx_xdp_map() instead of bool value.
+c) In function dev_map_enqueue_multi(), consume xdpf for the last
+   obj instead of the first on.
+d) Update helper description and code comments to explain that we
+   use NULL target value to distinguish multicast and unicast
+   forwarding.
+e) Update memory model, memory id and frame_sz in xdpf_clone().
+f) Split the tests from sample and add a bpf kernel selftest patch.
+
+v4: Fix bpf_xdp_redirect_map_multi_proto arg2_type typo
+
+v3: Based on Toke's suggestion, do the following update
+a) Update bpf_redirect_map_multi() description in bpf.h.
+b) Fix exclude_ifindex checking order in dev_in_exclude_map().
+c) Fix one more xdpf clone in dev_map_enqueue_multi().
+d) Go find next one in dev_map_enqueue_multi() if the interface is not
+   able to forward instead of abort the whole loop.
+e) Remove READ_ONCE/WRITE_ONCE for ex_map.
+
+v2: Add new syscall bpf_xdp_redirect_map_multi() which could accept
+include/exclude maps directly.
+
+Hangbin Liu (5):
+  bpf: add a new bpf argument type ARG_CONST_MAP_PTR_OR_NULL
+  xdp: add a new helper for dev map multicast support
+  sample/bpf: add xdp_redirect_map_multicast test
+  selftests/bpf: add xdp_redirect_multi test
+  selftests/bpf: Add verifier tests for bpf arg
+    ARG_CONST_MAP_PTR_OR_NULL
+
+ include/linux/bpf.h                           |  21 +++
+ include/linux/filter.h                        |   1 +
+ include/net/xdp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  27 +++
+ kernel/bpf/devmap.c                           | 132 +++++++++++++
+ kernel/bpf/verifier.c                         |  20 +-
+ net/core/filter.c                             | 118 +++++++++++-
+ net/core/xdp.c                                |  29 +++
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  43 +++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 166 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  27 +++
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  77 ++++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  22 ++-
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 164 +++++++++++++++++
+ .../testing/selftests/bpf/verifier/map_ptr.c  |  70 +++++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 173 ++++++++++++++++++
+ 18 files changed, 1086 insertions(+), 12 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
+
+-- 
+2.25.4
 
