@@ -2,106 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B9E25FF17
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF95260002
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbgIGQ1f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 12:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
+        id S1730991AbgIGQmu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 12:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730372AbgIGQ13 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:27:29 -0400
-Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3D1C061573;
-        Mon,  7 Sep 2020 09:27:28 -0700 (PDT)
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4BlYbL5f6Gzvjc1; Mon,  7 Sep 2020 18:27:26 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 18:27:26 +0200
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH] perf tools: Do not use deprecated bpf_program__title
-Message-ID: <20200907162726.o36peh673a7l46kn@distanz.ch>
-References: <20200907110237.1329532-1-jolsa@kernel.org>
- <20200907110549.GI1199773@krava>
- <20200907155945.2ynl7dojgx572j62@distanz.ch>
- <20200907162249.GO1199773@krava>
+        with ESMTP id S1730901AbgIGQgm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:36:42 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D8FC061573
+        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 09:36:41 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id o5so16373423wrn.13
+        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 09:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QWC8ABqOj9tnGBywTcIQeelbRdA8/0ZzqwQDNhLengM=;
+        b=WuomelGJnWurYaBUF2nmtrnHY+KjbPYEBfz8tqpfeXDstSfVNlxEc5pAGGDjiEx4p8
+         rwuIr/MS02JMRmUkl4w5HgrXGYTQoeyGlD4Yw7ipAtlTsE9vyiZ42bfQYdrbaC3NR1Xx
+         pAS+fsQVBsrk0OkitURXQt2DlKp0z/P19z3OcLPh24lqpXmavlp6SnLpJBRrlUIxKfcY
+         eOrPdEKgrPROdEz5mcoTcmUWRV56iAWx1o62pKATZsbqYEugPH0DWnZZRAVAkoYSsyTU
+         ao5vMa7Fz4B/VggMIK3+pOvcNC/bWqmYCRyJzyWsaCbBeyLVsmJIX3nM9pVLtGfFLlG/
+         MVVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QWC8ABqOj9tnGBywTcIQeelbRdA8/0ZzqwQDNhLengM=;
+        b=CpUjYcUu4hYf/+YXp+icxRf8DinVoHCmchpnEtxpAb1lIKjGkvuiEq8/VRtAhIS2kr
+         SVQIthrFhcFhli/RuF7Bm342yWbw/Lngueg+f520EjrBg3wYJNpyQq3QRqqTjAjXBeqC
+         Y+v8H+HKHag2dNTTstGiFI3Hv3/p3lbAEHEoddC4MS0qIQ/GZAd+6BPFUQyZvI1agHrK
+         ByauIdh7q4zVP8h27jR3dySQs49pRHWwBcB5frtzrmP/jQAbiO3BPZWgwygLguWUKI95
+         IfbWesUdsJrGTRxWr7JEIgSpoVa+dva4sAf1nwg0wuwXBS+iVb22weXLv3oQ8ssSVMG8
+         s5Tg==
+X-Gm-Message-State: AOAM531XRho72pg/72MPv8NStUlJ30l1dVBK10KSxBdeQjcxuxMmjTki
+        unGudzNdxrR2Vbf7T7SX8RsrOw==
+X-Google-Smtp-Source: ABdhPJx7ybduonsODy8DQshJzntV5ZBDwmr061Tj42v2kmVoMKExLWWqKRntYKJq9qFKJwAKVTJyGQ==
+X-Received: by 2002:a5d:60cc:: with SMTP id x12mr21913343wrt.84.1599496600562;
+        Mon, 07 Sep 2020 09:36:40 -0700 (PDT)
+Received: from localhost.localdomain ([194.35.119.17])
+        by smtp.gmail.com with ESMTPSA id p11sm26443677wma.11.2020.09.07.09.36.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 09:36:40 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next v2 0/2] tools: bpftool: support creating outer maps
+Date:   Mon,  7 Sep 2020 17:36:32 +0100
+Message-Id: <20200907163634.27469-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907162249.GO1199773@krava>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-09-07 at 18:22:49 +0200, Jiri Olsa <jolsa@redhat.com> wrote:
-> On Mon, Sep 07, 2020 at 05:59:46PM +0200, Tobias Klauser wrote:
-> > On 2020-09-07 at 13:05:49 +0200, Jiri Olsa <jolsa@redhat.com> wrote:
-> > > On Mon, Sep 07, 2020 at 01:02:37PM +0200, Jiri Olsa wrote:
-> > > > The bpf_program__title function got deprecated in libbpf,
-> > > > use the suggested alternative.
-> > > > 
-> > > > Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > 
-> > > Arnaldo,
-> > > the commit in 'Fixes' is not yet in your tree yet and the patch
-> > > below will make the perf compilation fail in your perf/core..
-> > > 
-> > > it fixes perf compilation on top of bpf-next tree.. so I think it
-> > > should go in through bpf-next tree
-> > > 
-> > > thanks,
-> > > jirka
-> > > 
-> > > > ---
-> > > >  tools/perf/util/bpf-loader.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> > > > index 2feb751516ab..73de3973c8ec 100644
-> > > > --- a/tools/perf/util/bpf-loader.c
-> > > > +++ b/tools/perf/util/bpf-loader.c
-> > > > @@ -328,7 +328,7 @@ config_bpf_program(struct bpf_program *prog)
-> > > >  	probe_conf.no_inlines = false;
-> > > >  	probe_conf.force_add = false;
-> > > >  
-> > > > -	config_str = bpf_program__title(prog, false);
-> > > > +	config_str = bpf_program__section_name(prog);
-> > > >  	if (IS_ERR(config_str)) {
-> > > >  		pr_debug("bpf: unable to get title for program\n");
-> > > >  		return PTR_ERR(config_str);
-> > > > @@ -454,7 +454,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
-> > > >  	if (err) {
-> > > >  		const char *title;
-> > > >  
-> > > > -		title = bpf_program__title(prog, false);
-> > > > +		title = bpf_program__section_name(prog);
-> > > >  		if (!title)
-> > > >  			title = "[unknown]";
-> > 
-> > I think bpf_program__title at line 457 in preproc_gen_prologue also needs to be
-> > changed given the following build failure:
-> 
-> hum, that's where the 2nd hunk, right? I dont see any other instance
-> of bpf_program__title after the patch is applied
+This series makes bpftool able to create outer maps (maps of types
+array-of-maps and hash-of-maps). This is done by passing the relevant
+inner_map_fd, which we do through a new command-line keyword.
 
-Sorry for the noise, I didn't read the patch correctly. You're of course
-correct. I was confused because it is still assigned to variable
-`title`.
+A first patch also cleans up the function related to dumping map elements.
 
-Reviewed-by: Tobias Klauser <tklauser@distanz.ch>
+v2:
+- v1 was wrongly expected to allow bpftool to dump the content of outer
+  maps (already supported). v2 skipped that patch, and instead replaced it
+  with a clean-up for the dump_map_elem() function.
 
-Thanks
-Tobias
+Quentin Monnet (2):
+  tools: bpftool: clean up function to dump map entry
+  tools: bpftool: add "inner_map" to "bpftool map create" outer maps
+
+ .../bpf/bpftool/Documentation/bpftool-map.rst |  10 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  22 ++-
+ tools/bpf/bpftool/map.c                       | 149 ++++++++++--------
+ 3 files changed, 114 insertions(+), 67 deletions(-)
+
+-- 
+2.25.1
+
