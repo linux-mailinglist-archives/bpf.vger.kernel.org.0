@@ -2,99 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C9525FDF5
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B59525FDED
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbgIGQDQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 12:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729966AbgIGP76 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 11:59:58 -0400
-Received: from sym2.noone.org (sym2.noone.org [IPv6:2a01:4f8:120:4161::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C43C061573;
-        Mon,  7 Sep 2020 08:59:54 -0700 (PDT)
-Received: by sym2.noone.org (Postfix, from userid 1002)
-        id 4BlXzQ607Bzvjc1; Mon,  7 Sep 2020 17:59:46 +0200 (CEST)
-Date:   Mon, 7 Sep 2020 17:59:46 +0200
-From:   Tobias Klauser <tklauser@distanz.ch>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH] perf tools: Do not use deprecated bpf_program__title
-Message-ID: <20200907155945.2ynl7dojgx572j62@distanz.ch>
-References: <20200907110237.1329532-1-jolsa@kernel.org>
- <20200907110549.GI1199773@krava>
+        id S1730331AbgIGQCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 12:02:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4586 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729998AbgIGQAN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Sep 2020 12:00:13 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 087FWF4q047733;
+        Mon, 7 Sep 2020 12:00:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : date : in-reply-to : references : content-type : mime-version
+ : content-transfer-encoding; s=pp1;
+ bh=S7T/TXOrEn9Vrt5dzPb/xYrfynM/Jiz4+yngT9IfgsM=;
+ b=YQ5kAaBVSeE7XHsZlII8D0tWxmRncFcAT5OjwvaqBPzekJwYR0/Otyvh4t03o7+zyrpp
+ oulOihLETxngS0R6TdekyO8axZPa7RubyJRDBw11R4J3o3IdLmAWrp7AXJw28OG1BbEJ
+ YI4Dw9cQ/mSXeeENIA7A3DYuL6mdZNEyjPd0GGmEYW7LkdX3ZdBVnc4Jcg4/OWOEQnlo
+ VQwM3MBn5L2leNLtr6xNVf64CmOnmBDVCr4XzfQJQB/fg/3dAeIqHVF1RUAwndnBwysT
+ 5CZTPmrm8pnK9UmJDWJEJ2HlMPNny7gbLCIDT+pPQN4GERUeJ7RndOzXmy9+gU46yodY Rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33dpm8j7qv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Sep 2020 12:00:01 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 087FWVVl048563;
+        Mon, 7 Sep 2020 12:00:01 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33dpm8j7qa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Sep 2020 12:00:01 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 087Fv89V004917;
+        Mon, 7 Sep 2020 15:59:59 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 33c2a89j9m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Sep 2020 15:59:59 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 087Fxv9636372792
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Sep 2020 15:59:57 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2908511C050;
+        Mon,  7 Sep 2020 15:59:57 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E37FD11C04C;
+        Mon,  7 Sep 2020 15:59:56 +0000 (GMT)
+Received: from sig-9-145-16-19.uk.ibm.com (unknown [9.145.16.19])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  7 Sep 2020 15:59:56 +0000 (GMT)
+Message-ID: <9e99c5301fbbb4f5f601b69816ee1dc9ab0df948.camel@linux.ibm.com>
+Subject: Re: Problem with endianess of pahole BTF output for vmlinux
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org,
+        dwarves@vger.kernel.org
+Date:   Mon, 07 Sep 2020 17:59:56 +0200
+In-Reply-To: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
+References: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907110549.GI1199773@krava>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-07_10:2020-09-07,2020-09-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 clxscore=1011 adultscore=0 suspectscore=3
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009070149
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-09-07 at 13:05:49 +0200, Jiri Olsa <jolsa@redhat.com> wrote:
-> On Mon, Sep 07, 2020 at 01:02:37PM +0200, Jiri Olsa wrote:
-> > The bpf_program__title function got deprecated in libbpf,
-> > use the suggested alternative.
-> > 
-> > Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Sat, 2020-09-05 at 21:16 -0700, Tony Ambardar wrote:
+> Hello,
 > 
-> Arnaldo,
-> the commit in 'Fixes' is not yet in your tree yet and the patch
-> below will make the perf compilation fail in your perf/core..
+> I'm using GCC 8.4.0, binutils 2.34 and pahole 1.17, compiling on an
+> Ubuntu/x86_64 host and targeting both little- and big-endian mips
+> running on malta/qemu. When cross-compiling Linux 5.4.x LTS and
+> testing bpftool/BTF functionality on the target, I encounter errors
+> on
+> big-endian targets:
 > 
-> it fixes perf compilation on top of bpf-next tree.. so I think it
-> should go in through bpf-next tree
+> > root@OpenWrt:/# bpftool btf dump file /sys/kernel/btf/vmlinux
+> > libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux
+> > Error: failed to load BTF from /sys/kernel/btf/vmlinux: No error
+> > information
 > 
-> thanks,
-> jirka
+> After investigating, the problem appears to be that "pahole -J"
+> running on the x86_64 little-endian host will always generate raw BTF
+> of native endianness (based on BTF magic), which causes the error
+> above on big-endian targets.
 > 
-> > ---
-> >  tools/perf/util/bpf-loader.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> > index 2feb751516ab..73de3973c8ec 100644
-> > --- a/tools/perf/util/bpf-loader.c
-> > +++ b/tools/perf/util/bpf-loader.c
-> > @@ -328,7 +328,7 @@ config_bpf_program(struct bpf_program *prog)
-> >  	probe_conf.no_inlines = false;
-> >  	probe_conf.force_add = false;
-> >  
-> > -	config_str = bpf_program__title(prog, false);
-> > +	config_str = bpf_program__section_name(prog);
-> >  	if (IS_ERR(config_str)) {
-> >  		pr_debug("bpf: unable to get title for program\n");
-> >  		return PTR_ERR(config_str);
-> > @@ -454,7 +454,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
-> >  	if (err) {
-> >  		const char *title;
-> >  
-> > -		title = bpf_program__title(prog, false);
-> > +		title = bpf_program__section_name(prog);
-> >  		if (!title)
-> >  			title = "[unknown]";
+> Is this expected? Is DEBUG_INFO_BTF supported in general when
+> cross-compiling? How does one generate BTF encoded for the target
+> endianness with pahole?
+> 
+> Thanks for any feedback or suggestions,
+> Tony
 
-I think bpf_program__title at line 457 in preproc_gen_prologue also needs to be
-changed given the following build failure:
+We have the same problem on s390, and I'm not aware of any solution at
+the moment. It would be great if we could figure out how to resolve 
+this.
 
-util/bpf-loader.c: In function 'preproc_gen_prologue':
-util/bpf-loader.c:457:3: error: 'bpf_program__title' is deprecated: BPF program title is confusing term; please use bpf_program__section_name() instead [-Werror=deprecated-declarations]
-  457 |   title = bpf_program__title(prog, false);
-      |   ^~~~~
-In file included from util/bpf-loader.c:10:
-/home/tklauser/src/linux/tools/lib/bpf/libbpf.h:203:13: note: declared here
-  203 | const char *bpf_program__title(const struct bpf_program *prog, bool needs_copy);
-      |             ^~~~~~~~~~~~~~~~~~
+Best regards,
+Ilya
+
