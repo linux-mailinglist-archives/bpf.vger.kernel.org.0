@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C1525FDFB
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD9025FDF8
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730344AbgIGQEJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 12:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
+        id S1730173AbgIGP76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 11:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729997AbgIGOsa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 10:48:30 -0400
+        with ESMTP id S1729998AbgIGOsb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 10:48:31 -0400
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B4BC061756
-        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 07:48:29 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id a9so14468483wmm.2
-        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 07:48:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD830C061757
+        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 07:48:30 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l9so14464775wme.3
+        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 07:48:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lmVqWjcSMQaUhOrqAhhgjsf1XhmhvdxSOSZRzY4PrPY=;
-        b=P6W93AJI2TuCIV+txKN1dFEZnN675MBF6B8HGrQ67CRDnKXcGg24L5XlpfUy3WOVVb
-         8Fw3irXJJdqGEhYppUujcCew1+WIK79AaOcUg67Yq1IJRIN5hhYQtoJhnkSU0Fz8Ttbe
-         NBLh+HUGKH8OgIabYtk9RdrCSF0OdnedEw/EU=
+        bh=Vfp8n6DVc0oODsUGu6ZVYaW1CH61INrkZIfFkv2gVnw=;
+        b=BHf/AKJz1829Lg83WzSwfGXrEifbEg5SkqK29SEqyBsM5Srjhu2Qr2LlgkAE8LIR69
+         s2EJvfw4c9dytNVFjs3qGABTKo59V214wYl/v/+rzcb14fVirkF55wY2xTZZVXN3J1/0
+         ilJVzNQD3LTU+4SNdZLmM94zCKQr/RrJWh7uE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lmVqWjcSMQaUhOrqAhhgjsf1XhmhvdxSOSZRzY4PrPY=;
-        b=cpcS/ekOp5QcJmtYs6+pwPDyFpTQO/GgFxBnSCOAHgAeupbvFYRnck7omuaGZ0aMau
-         nhOeGbbDMq8Kew8DlJL39LYuj0TD6W9NTOSpsBSqJF9Yt2WMEQhxx7tJkD1wJ+OZS//W
-         6E0g0Gea8+Zq07xxwS5PTsKkiJ0oSU/fQerXjE1yVqI2/mD59DNkvgfKQBwr0fHxEBLc
-         PVr4FwmLbApm0kiJchBiCfMwU9AIJpq6+OkbSJdTLmxjpFaArtj0ZlEPLIKO3pTTEJkl
-         dEM+ZraEFbjYdPUN1R0yEfMEV35406BJBwkOEfO6pF1z5m39x1IWgj6OTtaL7SMVlLfy
-         UBkA==
-X-Gm-Message-State: AOAM532kG4+juihIhXt0bVgh8BXIcdJtzoVO79RUZfMf8514UgHdTk4u
-        IF4+JhoWSsxmJ9LhvH59DAcutA==
-X-Google-Smtp-Source: ABdhPJxKoIxaPLnvtZgRAKldcf+5DA+XYcxlgEZjcrxY4f5XFhOWlkutUeH3mS+IUTlmeMKyIkfRLA==
-X-Received: by 2002:a1c:1b93:: with SMTP id b141mr20423690wmb.166.1599490108258;
-        Mon, 07 Sep 2020 07:48:28 -0700 (PDT)
+        bh=Vfp8n6DVc0oODsUGu6ZVYaW1CH61INrkZIfFkv2gVnw=;
+        b=jHOMox0t+qK5UkJkrG0/H2Yk6QDFAKVZD/ZqoCFryEjQCzHjjEXyRhi6YbQ2tQ4CUP
+         aWE+DD493G4BkS+AL7OCwq9XaUqYuUu/V4IaLFnK7aDiHOCzuDhclEw3CgzcJnPgGKsb
+         Iw/Dbohx5CaOuQtwV2R70/dhOoRVHniHzXWmt4NFaX3KJCLhVotbzc2DejxkhdfLVhOM
+         yQGkcvUHtqUUYq20LS7ebAQX8Tc/SbLXfF1LT/1zsgyCNP8EnwvurRL0LAptTb8x+vzc
+         Li+eYo9F6tUhTXXJbgxD/1BparesoUhk+goDJO9NHWIfNlKUw97O3DCitRbxiMpdy97n
+         zwKA==
+X-Gm-Message-State: AOAM530KXOPOG2Yj66nnPjODwwrVxBJ3orYEnf2e13Vo81xBbyz3gW98
+        AXCK25xWIF53yQleHQOKrNamQsjk1H+4SQ==
+X-Google-Smtp-Source: ABdhPJwre4LBfpd379RDlo7a3r1LMQ6ygrSI4EHa7LhG7VQXhF3YxWzMUWSUp7eSA1+71JwZprszuQ==
+X-Received: by 2002:a7b:c2aa:: with SMTP id c10mr20937949wmk.86.1599490109486;
+        Mon, 07 Sep 2020 07:48:29 -0700 (PDT)
 Received: from antares.lan (2.e.3.8.e.0.6.b.6.2.5.e.8.e.4.b.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:b4e8:e526:b60e:83e2])
-        by smtp.gmail.com with ESMTPSA id 59sm8816834wro.82.2020.09.07.07.48.27
+        by smtp.gmail.com with ESMTPSA id 59sm8816834wro.82.2020.09.07.07.48.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 07:48:27 -0700 (PDT)
+        Mon, 07 Sep 2020 07:48:28 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
 To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net,
         jakub@cloudflare.com, john.fastabend@gmail.com, kafai@fb.com
 Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
         Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next v4 1/7] bpf: Allow passing BTF pointers as PTR_TO_SOCK_COMMON
-Date:   Mon,  7 Sep 2020 15:46:55 +0100
-Message-Id: <20200907144701.44867-2-lmb@cloudflare.com>
+Subject: [PATCH bpf-next v4 2/7] net: sockmap: Remove unnecessary sk_fullsock checks
+Date:   Mon,  7 Sep 2020 15:46:56 +0100
+Message-Id: <20200907144701.44867-3-lmb@cloudflare.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200907144701.44867-1-lmb@cloudflare.com>
 References: <20200907144701.44867-1-lmb@cloudflare.com>
@@ -62,140 +62,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tracing programs can derive struct sock pointers from a variety
-of sources, e.g. a bpf_iter for sk_storage maps receives one as
-part of the context. It's desirable to be able to pass these to
-functions that expect PTR_TO_SOCK_COMMON. For example, it enables us
-to insert such a socket into a sockmap via map_elem_update.
+The lookup paths for sockmap and sockhash currently include a check
+that returns NULL if the socket we just found is not a full socket.
+However, this check is not necessary. On insertion we ensure that
+we have a full socket (caveat around sock_ops), so request sockets
+are not a problem. Time-wait sockets are allocated separate from
+the original socket and then fed into the hashdance. They don't
+affect the sockets already stored in the sockmap.
 
-Note that we can't use struct sock* in cases where a function
-expects PTR_TO_SOCKET: not all struct sock* that a tracing program
-may derive are indeed for a full socket, code must check the
-socket state instead.
-
-Teach the verifier that a PTR_TO_BTF_ID for a struct sock is
-equivalent to PTR_TO_SOCK_COMMON. There is one hazard here:
-bpf_sk_release also takes a PTR_TO_SOCK_COMMON, but expects it to be
-refcounted. Since this isn't the case for pointers derived from
-BTF we must prevent them from being passed to the function.
-Luckily, we can simply check that the ref_obj_id is not zero
-in release_reference, and return an error otherwise.
-
+Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
 Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 ---
- kernel/bpf/verifier.c | 61 +++++++++++++++++++++++++------------------
- 1 file changed, 36 insertions(+), 25 deletions(-)
+ net/core/sock_map.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b4e9c56b8b32..f1f45ce42d60 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3908,6 +3908,9 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
- 	return 0;
- }
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 078386d7d9a2..82494810d0ee 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -382,7 +382,7 @@ static void *sock_map_lookup(struct bpf_map *map, void *key)
+ 	struct sock *sk;
  
-+BTF_ID_LIST(btf_sock_common_ids)
-+BTF_ID(struct, sock)
-+
- static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			  struct bpf_call_arg_meta *meta,
- 			  const struct bpf_func_proto *fn)
-@@ -3984,7 +3987,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 	} else if (arg_type == ARG_PTR_TO_SOCK_COMMON) {
- 		expected_type = PTR_TO_SOCK_COMMON;
- 		/* Any sk pointer can be ARG_PTR_TO_SOCK_COMMON */
--		if (!type_is_sk_pointer(type))
-+		if (!type_is_sk_pointer(type) &&
-+		    type != PTR_TO_BTF_ID)
- 			goto err_type;
- 		if (reg->ref_obj_id) {
- 			if (meta->ref_obj_id) {
-@@ -3995,6 +3999,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			}
- 			meta->ref_obj_id = reg->ref_obj_id;
- 		}
-+		meta->btf_id = btf_sock_common_ids[0];
- 	} else if (arg_type == ARG_PTR_TO_SOCKET ||
- 		   arg_type == ARG_PTR_TO_SOCKET_OR_NULL) {
- 		expected_type = PTR_TO_SOCKET;
-@@ -4004,33 +4009,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 				goto err_type;
- 		}
- 	} else if (arg_type == ARG_PTR_TO_BTF_ID) {
--		bool ids_match = false;
--
- 		expected_type = PTR_TO_BTF_ID;
- 		if (type != expected_type)
- 			goto err_type;
--		if (!fn->check_btf_id) {
--			if (reg->btf_id != meta->btf_id) {
--				ids_match = btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
--								 meta->btf_id);
--				if (!ids_match) {
--					verbose(env, "Helper has type %s got %s in R%d\n",
--						kernel_type_name(meta->btf_id),
--						kernel_type_name(reg->btf_id), regno);
--					return -EACCES;
--				}
--			}
--		} else if (!fn->check_btf_id(reg->btf_id, arg)) {
--			verbose(env, "Helper does not support %s in R%d\n",
--				kernel_type_name(reg->btf_id), regno);
--
--			return -EACCES;
--		}
--		if ((reg->off && !ids_match) || !tnum_is_const(reg->var_off) || reg->var_off.value) {
--			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
--				regno);
--			return -EACCES;
--		}
- 	} else if (arg_type == ARG_PTR_TO_SPIN_LOCK) {
- 		if (meta->func_id == BPF_FUNC_spin_lock) {
- 			if (process_spin_lock(env, regno, true))
-@@ -4085,6 +4066,33 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		return -EFAULT;
- 	}
+ 	sk = __sock_map_lookup_elem(map, *(u32 *)key);
+-	if (!sk || !sk_fullsock(sk))
++	if (!sk)
+ 		return NULL;
+ 	if (sk_is_refcounted(sk) && !refcount_inc_not_zero(&sk->sk_refcnt))
+ 		return NULL;
+@@ -1110,7 +1110,7 @@ static void *sock_hash_lookup(struct bpf_map *map, void *key)
+ 	struct sock *sk;
  
-+	if (type == PTR_TO_BTF_ID) {
-+		bool ids_match = false;
-+
-+		if (!fn->check_btf_id) {
-+			if (reg->btf_id != meta->btf_id) {
-+				ids_match = btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
-+								 meta->btf_id);
-+				if (!ids_match) {
-+					verbose(env, "Helper has type %s got %s in R%d\n",
-+						kernel_type_name(meta->btf_id),
-+						kernel_type_name(reg->btf_id), regno);
-+					return -EACCES;
-+				}
-+			}
-+		} else if (!fn->check_btf_id(reg->btf_id, arg)) {
-+			verbose(env, "Helper does not support %s in R%d\n",
-+				kernel_type_name(reg->btf_id), regno);
-+
-+			return -EACCES;
-+		}
-+		if ((reg->off && !ids_match) || !tnum_is_const(reg->var_off) || reg->var_off.value) {
-+			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
-+				regno);
-+			return -EACCES;
-+		}
-+	}
-+
- 	if (arg_type == ARG_CONST_MAP_PTR) {
- 		/* bpf_map_xxx(map_ptr) call: remember that map_ptr */
- 		meta->map_ptr = reg->map_ptr;
-@@ -4561,6 +4569,9 @@ static int release_reference(struct bpf_verifier_env *env,
- 	int err;
- 	int i;
- 
-+	if (!ref_obj_id)
-+		return -EINVAL;
-+
- 	err = release_reference_state(cur_func(env), ref_obj_id);
- 	if (err)
- 		return err;
+ 	sk = __sock_hash_lookup_elem(map, key);
+-	if (!sk || !sk_fullsock(sk))
++	if (!sk)
+ 		return NULL;
+ 	if (sk_is_refcounted(sk) && !refcount_inc_not_zero(&sk->sk_refcnt))
+ 		return NULL;
 -- 
 2.25.1
 
