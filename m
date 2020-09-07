@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C48125FFE4
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A26B25FFE2
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 18:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730678AbgIGQlI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 12:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
+        id S1731020AbgIGQkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 12:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730905AbgIGQkY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 12:40:24 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7491C061755
-        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 09:40:23 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id l9so14756259wme.3
-        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 09:40:23 -0700 (PDT)
+        with ESMTP id S1730829AbgIGQk2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Sep 2020 12:40:28 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92D7C061757
+        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 09:40:24 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x14so16378451wrl.12
+        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 09:40:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I8wCFuJU0Og2ORXiyJtRFP7tNYq0Nqq6buOkhSo/qnU=;
-        b=tFC8ebq1Igo6X1/lUQDrP/oRFNwnslRG5ImFqF9wTFCMMSUKhmtiykxfLpNKZdNs7G
-         C10Tm0UO94ZolKIs07XKREWA+lyv6lQkKA28E3HOYEfkATEoTyRN87M1r8nWqu9MZUaX
-         ym8IfpMsIIBs8+iDbZ/WN3UfoQ1wpCw6Akfbub/H4XEfFWjnH463ZSJT7UcZj+Nu7uIq
-         OB4PkxkbQuVjLzyiATlmepfdL1x4MabwcQwKlxlIv5Bi7Nva4pIyoEzNkE6TPnu41Wih
-         gPQCy7KTd7RCt380YeV5ks7c8J22P85L4rV6QUJg6A4yF1qhHsWL0lechaocV79HqxMu
-         dq+A==
+        bh=dmD2b8RGT1c+PL+8f8t7lEov0+eIeTHs2a/hYyfmvv8=;
+        b=EdcltclXIb0L7iqZaFmlFZpp8qdLKnXAL2omTAKGhcG8eJ1b8SX9dco7Ui4ka/6NNx
+         IwfQRvVzZwfMBfKYiJDpPlKc2zvGfkhD8ZpWj/NvwV3zgNg3BR8hFsdudATYLrTNXI3E
+         8pEGDzFatNWDuxjELS9idZmiXPizgK1NaCAwaGldEOLvOTXzn7bmYaGx2aXve+UZfwCa
+         siFf6dWudNRU2iXdD1cMa96vJOKsHWSXUAfbMcLzMRWCXqv8Pwzv5cFSQ6nrMYuPmNoH
+         cLEBjQKJaf994SciO1CLyfmlaILNTTabTt0kzaHcb2ehkNqV+anJlifzWjARz9KkuPEi
+         I20Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I8wCFuJU0Og2ORXiyJtRFP7tNYq0Nqq6buOkhSo/qnU=;
-        b=VY6LXFDx16Y7KVctPbSvAkZssE67HtIYTl138NTIoU7tYaaAv1JD2WHvUXdQ+OJ60a
-         hxATsGGeSkSp0m+XYjlmOE7bS/UuJ/iJ16rvmwA1gxVUNbQwqwDahLje7WrZAq+AeGHa
-         itYqEYCJY+INHqZkopb+QBIWgz7HY+kBZMP8aS3BjW8BiioPdGVU8dI7UhCkT94SST5j
-         J2088tlFeSoCykfExswAL9V7iiOXcDmSPP9wgARTu2SzoElGWOM+Qh/5juQBn7ftgjrI
-         3PsyiyoaQ3G53M4LBzUel294jt5s/BgqaYWTZkdQl7IzfWoqBpZwvQA5w7VdG+cpCx8o
-         ozXA==
-X-Gm-Message-State: AOAM5334xYhVwPD3IqEUQPRIh4KO8Itlcd/p8WnWXIQ8u6ctHgafUuAn
-        9BWr2t8jSrO08rPzZ0mkQPBz7A==
-X-Google-Smtp-Source: ABdhPJwErNckX12lW8vfabhGZNcDE0Ix0dGRrtXPvdbluPRU4j4HJ5FQIMqfX9rwlE4TaMhnfuP/4Q==
-X-Received: by 2002:a1c:2903:: with SMTP id p3mr183752wmp.170.1599496821731;
-        Mon, 07 Sep 2020 09:40:21 -0700 (PDT)
+        bh=dmD2b8RGT1c+PL+8f8t7lEov0+eIeTHs2a/hYyfmvv8=;
+        b=NFKr+t0shLGdVmwG0cLnY2qGC0BEVV1/bb70HvakHQEGE+PjBE4nVAqlm9xHOzFP0n
+         8DPnR9pib5tSt0hlbfdV8tT6dcmCT7ZQGUZJFcgtBTfpOqH3EQFB8mx3SM7a5cKxmPlq
+         dfoZ4uDYaWp4R1OUzMrQMfkX/SK1iJlSFPIwwgQimi1zG9+TLcTgsKGtpFjl3cGn2i/r
+         9dhPjDw+dJEKTbKIzF6mwZuoWrGAKKzPb7QUoNMX6uFMXjBo9nUaLg8DmaJk0FaLkg05
+         ftGo0P2Ng9rpfx9b9d/VPKqFJ42/RhtMqyjQAG6uLzqYSgluTGx/2FlLYae2MLUZPWlp
+         OPMA==
+X-Gm-Message-State: AOAM531ECK2xf04EiAiI2RJUkRlTFVODHufI8FkS/cF0rBN2AsCNGQpH
+        RqC0nHN9gBFfxpXqYzWR1kSIwA==
+X-Google-Smtp-Source: ABdhPJx9mk/XHsQJvxR3aFpKfZrDwQhWme7+dEKdu79Tn4K1QRVInFlJLIEkcma3dF/ouM+DPChCIg==
+X-Received: by 2002:a5d:69c9:: with SMTP id s9mr4767972wrw.348.1599496822762;
+        Mon, 07 Sep 2020 09:40:22 -0700 (PDT)
 Received: from localhost.localdomain ([194.35.119.187])
-        by smtp.gmail.com with ESMTPSA id d2sm9934895wro.34.2020.09.07.09.40.20
+        by smtp.gmail.com with ESMTPSA id d2sm9934895wro.34.2020.09.07.09.40.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Sep 2020 09:40:21 -0700 (PDT)
+        Mon, 07 Sep 2020 09:40:22 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 1/2] tools: bpftool: log info-level messages when building bpftool man pages
-Date:   Mon,  7 Sep 2020 17:40:16 +0100
-Message-Id: <20200907164017.30644-2-quentin@isovalent.com>
+Subject: [PATCH bpf-next 2/2] selftests, bpftool: add bpftool (and eBPF helpers) documentation build
+Date:   Mon,  7 Sep 2020 17:40:17 +0100
+Message-Id: <20200907164017.30644-3-quentin@isovalent.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200907164017.30644-1-quentin@isovalent.com>
 References: <20200907164017.30644-1-quentin@isovalent.com>
@@ -66,127 +66,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To build man pages for bpftool (and for eBPF helper functions), rst2man
-can log different levels of information. Let's make it log all levels
-to keep the RST files clean.
+eBPF selftests include a script to check that bpftool builds correctly
+with different command lines. Let's add one build for bpftool's
+documentation so as to detect errors or warning reported by rst2man when
+compiling the man pages.
 
-Doing so, rst2man complains about double colons, used for literal
-blocks, that look like underlines for section titles. Let's add the
-necessary blank lines.
+This also builds and checks warnings for the man page for eBPF helpers,
+which is built along bpftool's documentation.
 
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- tools/bpf/bpftool/Documentation/Makefile        | 2 +-
- tools/bpf/bpftool/Documentation/bpftool-btf.rst | 3 +++
- tools/bpf/bpftool/Documentation/bpftool-gen.rst | 4 ++++
- tools/bpf/bpftool/Documentation/bpftool-map.rst | 3 +++
- 4 files changed, 11 insertions(+), 1 deletion(-)
+ .../selftests/bpf/test_bpftool_build.sh       | 23 +++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/tools/bpf/bpftool/Documentation/Makefile b/tools/bpf/bpftool/Documentation/Makefile
-index 815ac9804aee..e871f28a5312 100644
---- a/tools/bpf/bpftool/Documentation/Makefile
-+++ b/tools/bpf/bpftool/Documentation/Makefile
-@@ -33,7 +33,7 @@ $(OUTPUT)%.8: %.rst
- ifndef RST2MAN_DEP
- 	$(error "rst2man not found, but required to generate man pages")
- endif
--	$(QUIET_GEN)rst2man $< > $@
-+	$(QUIET_GEN)rst2man -r 1 $< > $@
+diff --git a/tools/testing/selftests/bpf/test_bpftool_build.sh b/tools/testing/selftests/bpf/test_bpftool_build.sh
+index ac349a5cea7e..22fbf1bf6eec 100755
+--- a/tools/testing/selftests/bpf/test_bpftool_build.sh
++++ b/tools/testing/selftests/bpf/test_bpftool_build.sh
+@@ -85,6 +85,25 @@ make_with_tmpdir() {
+ 	echo
+ }
  
- clean: helpers-clean
- 	$(call QUIET_CLEAN, Documentation)
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-index 896f4c6c2870..864553e62af4 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
-@@ -91,6 +91,7 @@ OPTIONS
- EXAMPLES
- ========
- **# bpftool btf dump id 1226**
++make_doc_and_clean() {
++	echo -e "\$PWD:    $PWD"
++	echo -e "command: make -s $* doc >/dev/null"
++	# rst2man returns 0 even in case of warnings/errors, so we check that
++	# stderr is empty.
++	make $J -s $* doc |& tee /dev/stderr | [ $(wc -l) -eq 0 ] || false
++	if [ $? -ne 0 ] ; then
++		ERROR=1
++		printf "FAILURE: Errors or warnings when building documentation\n"
++	fi
++	(
++		if [ $# -ge 1 ] ; then
++			cd ${@: -1}
++		fi
++		make -s doc-clean
++	)
++	echo
++}
 +
- ::
+ echo "Trying to build bpftool"
+ echo -e "... through kbuild\n"
  
-   [1] PTR '(anon)' type_id=2
-@@ -104,6 +105,7 @@ EXAMPLES
- This gives an example of default output for all supported BTF kinds.
+@@ -145,3 +164,7 @@ make_and_clean
+ make_with_tmpdir OUTPUT
  
- **$ cat prog.c**
+ make_with_tmpdir O
 +
- ::
- 
-   struct fwd_struct;
-@@ -144,6 +146,7 @@ This gives an example of default output for all supported BTF kinds.
-   }
- 
- **$ bpftool btf dump file prog.o**
-+
- ::
- 
-   [1] PTR '(anon)' type_id=2
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index df85dbd962c0..d52b03a352d7 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -146,6 +146,7 @@ OPTIONS
- EXAMPLES
- ========
- **$ cat example.c**
-+
- ::
- 
-   #include <stdbool.h>
-@@ -187,6 +188,7 @@ This is example BPF application with two BPF programs and a mix of BPF maps
- and global variables.
- 
- **$ bpftool gen skeleton example.o**
-+
- ::
- 
-   /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-@@ -241,6 +243,7 @@ and global variables.
-   #endif /* __EXAMPLE_SKEL_H__ */
- 
- **$ cat example_user.c**
-+
- ::
- 
-   #include "example.skel.h"
-@@ -283,6 +286,7 @@ and global variables.
-   }
- 
- **# ./example_user**
-+
- ::
- 
-   my_map name: my_map
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index 083db6c2fc67..8f187c6416cd 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -182,6 +182,7 @@ OPTIONS
- EXAMPLES
- ========
- **# bpftool map show**
-+
- ::
- 
-   10: hash  name some_map  flags 0x0
-@@ -203,6 +204,7 @@ The following three commands are equivalent:
- 
- 
- **# bpftool map dump id 10**
-+
- ::
- 
-   key: 00 01 02 03  value: 00 01 02 03 04 05 06 07
-@@ -210,6 +212,7 @@ The following three commands are equivalent:
-   Found 2 elements
- 
- **# bpftool map getnext id 10 key 0 1 2 3**
-+
- ::
- 
-   key:
++echo -e "Checking documentation build\n"
++# From tools/bpf/bpftool
++make_doc_and_clean
 -- 
 2.25.1
 
