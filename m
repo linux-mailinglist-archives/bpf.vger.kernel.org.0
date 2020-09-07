@@ -2,111 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BDA25F616
-	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 11:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B682325F953
+	for <lists+bpf@lfdr.de>; Mon,  7 Sep 2020 13:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgIGJQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 05:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727122AbgIGJQF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 05:16:05 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF97C061573
-        for <bpf@vger.kernel.org>; Mon,  7 Sep 2020 02:16:05 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id 11so4676630oiq.6
-        for <bpf@vger.kernel.org>; Mon, 07 Sep 2020 02:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JCrN35Zsb6HWTfr4amlFhDV3wfsfMyg2S/fuCqhlb1k=;
-        b=q3EzivVe0WoPKYyLWrWKonf/MLlkGDMzzNZ7uwqShudRya+TgZZjGnEAq0M2/qzPUW
-         IV2z6Bnpnl7+GQuLiXCKLVhYwV+0jfJtgDzhgFgRletcekdenCgIrStN8IaRK8AaZDE8
-         nHE71XHrfBPm2MEhliw8BmdpLXUeNkUXarKBw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JCrN35Zsb6HWTfr4amlFhDV3wfsfMyg2S/fuCqhlb1k=;
-        b=Frr+5Kt69ic5rDBCH7z9oJxGdJubu2RHMwSuqjtdB+CpbC0uG+DuamfV/K29eQd6mj
-         tpiw6WCC89rckH+XrlI41Mq8Fn+eZg4rnGgD9rkaqXfP6xdRfOuN5iDvrhF9vzAy1ga/
-         rS0SRN36/Gbivi6VGlM0gHfUQj65pj38MZiSVPyNRE1hIQTKQN3asXfmpab7IlZg+PLZ
-         hoHM7Rw++a2wWO/+gu5PHx08tYbWc8Nm1zuoYDN4h1vAdOvz28wFO4XgzzMMtqJneyI/
-         9//OlOPjeq3KYz/Jetw/deTnErMUxDwdizQZ2x3SWtdpGrzbsjwmlVfhnAdJsrl49654
-         2stw==
-X-Gm-Message-State: AOAM530gqq8Sm9EczymDTJQVzhrfZIVPKZ4QyLhPSrj7ogynfkB3PHMm
-        VADaz63hXiTQF5opQjs0ryv8+0iQ70h29xieASdUrA==
-X-Google-Smtp-Source: ABdhPJxtg1b6/aKfZf/mK6W5Dexa56+Q10vCwm2nsStjzIqjofZJ4lprScuZcNP6PLeVNk11iD7TF9vQz9wbqB217sQ=
-X-Received: by 2002:aca:3e8b:: with SMTP id l133mr12385967oia.110.1599470164895;
- Mon, 07 Sep 2020 02:16:04 -0700 (PDT)
+        id S1728666AbgIGLZS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Sep 2020 07:25:18 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:60244 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728608AbgIGLZL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Sep 2020 07:25:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599477910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DVXpD394ENZfUXuAbhjrpM4nV+8/n/+Aiiu1MAlDqfY=;
+        b=baiRR+HEK99LG8kiq3biikFJQlm3wjJzYRgTRoww/MgtrlDTpLtZSoJSK9LNY9kfdj364V
+        jy+AVP8kUi/bKbICpM0kyDHs1bqQrtpBa62ZUAwdyr1YwtLfCPwaNqnViyDP/wmeTaqIvR
+        9gBk4uV81i+Pvx7nwZs6FMva2x/vtWI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-2AYx_M5GO3KM1K91XFl6cQ-1; Mon, 07 Sep 2020 07:05:58 -0400
+X-MC-Unique: 2AYx_M5GO3KM1K91XFl6cQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4599C2FD0B;
+        Mon,  7 Sep 2020 11:05:56 +0000 (UTC)
+Received: from krava (ovpn-112-180.ams2.redhat.com [10.36.112.180])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 682E29CBA;
+        Mon,  7 Sep 2020 11:05:50 +0000 (UTC)
+Date:   Mon, 7 Sep 2020 13:05:49 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH] perf tools: Do not use deprecated bpf_program__title
+Message-ID: <20200907110549.GI1199773@krava>
+References: <20200907110237.1329532-1-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <20200904112401.667645-1-lmb@cloudflare.com> <20200904112401.667645-6-lmb@cloudflare.com>
- <20200906230448.rd5rzcgg47qdzblj@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200906230448.rd5rzcgg47qdzblj@kafai-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 7 Sep 2020 10:15:53 +0100
-Message-ID: <CACAyw99AynYAcV9rE4keTpOfNhEfT4PzEsxGxCYuzwU+BwhJZA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 05/11] bpf: allow specifying a set of BTF IDs for
- helper arguments
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907110237.1329532-1-jolsa@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 7 Sep 2020 at 00:05, Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Fri, Sep 04, 2020 at 12:23:55PM +0100, Lorenz Bauer wrote:
-> > Function prototypes using ARG_PTR_TO_BTF_ID currently use two ways to signal
-> > which BTF IDs are acceptable. First, bpf_func_proto.btf_id is an array of
-> > IDs, one for each argument. This array is only accessed up to the highest
-> > numbered argument that uses ARG_PTR_TO_BTF_ID and may therefore be less than
-> > five arguments long. It usually points at a BTF_ID_LIST. Second, check_btf_id
-> > is a function pointer that is called by the verifier if present. It gets the
-> > actual BTF ID of the register, and the argument number we're currently checking.
-> > It turns out that the only user check_arg_btf_id ignores the argument, and is
-> > simply used to check whether the BTF ID matches one of the socket types.
-> I believe the second way, ".check_btf_id", can be removed.  It currently ensures
-> it can accept socket types that has "struct sock_common" in it.
->
-> Since then, btf_struct_ids_match() has been introduced which I think can be
-> used here.  A ".btf_id" pointing to the "struct sock_common" alone is enough.
+On Mon, Sep 07, 2020 at 01:02:37PM +0200, Jiri Olsa wrote:
+> The bpf_program__title function got deprecated in libbpf,
+> use the suggested alternative.
+> 
+> Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Yes, I think that is a nice simplification!
+Arnaldo,
+the commit in 'Fixes' is not yet in your tree yet and the patch
+below will make the perf compilation fail in your perf/core..
 
->
-> If the above is doable, is this change still needed?
+it fixes perf compilation on top of bpf-next tree.. so I think it
+should go in through bpf-next tree
 
-I find .btf_id is really unintuitive. By looking at struct
-bpf_func_proto is not at all clear how it's used. Having to use the
-correct number of BTF_UNUSED to match the right argument also seems
-really bug prone to me, and makes it unlikely that the BTF_ID_LIST
-will be reused across function prototypes. So I think this is still a
-good refactoring.
+thanks,
+jirka
 
-That said, with your suggestion it would be possible to use a u32 (or
-*u32 to ease initialization) instead of struct btf_id_set*.
+> ---
+>  tools/perf/util/bpf-loader.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> index 2feb751516ab..73de3973c8ec 100644
+> --- a/tools/perf/util/bpf-loader.c
+> +++ b/tools/perf/util/bpf-loader.c
+> @@ -328,7 +328,7 @@ config_bpf_program(struct bpf_program *prog)
+>  	probe_conf.no_inlines = false;
+>  	probe_conf.force_add = false;
+>  
+> -	config_str = bpf_program__title(prog, false);
+> +	config_str = bpf_program__section_name(prog);
+>  	if (IS_ERR(config_str)) {
+>  		pr_debug("bpf: unable to get title for program\n");
+>  		return PTR_ERR(config_str);
+> @@ -454,7 +454,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
+>  	if (err) {
+>  		const char *title;
+>  
+> -		title = bpf_program__title(prog, false);
+> +		title = bpf_program__section_name(prog);
+>  		if (!title)
+>  			title = "[unknown]";
+>  
+> -- 
+> 2.26.2
+> 
 
->
-> >
-> > Replace both of these mechanisms with explicit btf_id_sets for each argument
-> > in a function proto. The verifier can now check that a PTR_TO_BTF_ID is one
-> > of several IDs, and the code that does the type checking becomes simpler.
-> >
-> > Add a small optimisation to btf_set_contains for the common case of a set with
-> > a single entry.
-> >
-
-
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
