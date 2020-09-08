@@ -2,217 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C4C26233B
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 00:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B16262358
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 01:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729422AbgIHWty (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 18:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
+        id S1726683AbgIHXEj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 19:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728954AbgIHWtv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Sep 2020 18:49:51 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE6DC061573
-        for <bpf@vger.kernel.org>; Tue,  8 Sep 2020 15:49:51 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id q5so776926qkc.2
-        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 15:49:51 -0700 (PDT)
+        with ESMTP id S1726657AbgIHXEi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 19:04:38 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB76DC061573;
+        Tue,  8 Sep 2020 16:04:37 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id h126so539289ybg.4;
+        Tue, 08 Sep 2020 16:04:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2HU8g9qnV1VDaV0c9lrq6EKArLaVEN3j7/XSwFN0QqM=;
-        b=Z90ztMUO1TxEDOS9VSXxPep7MEvzQ/PUL1Gm19hoct4oUV5LuIm+DMe1gEeeWMknn4
-         vG8AxfZ8PSDvxl3CDJywWkGtfBDYb3RxDgOhi+OhQfRKObpTO9Z7V/Lw6pjYQdgjEbKJ
-         ByFOHgE6rAsm1E5Sx5iqan6ySYKvh39UM/cnfJmnmKQ/W8M9g0uB4BdREry8hmgaRfs2
-         w9YtCtPe/YCyD8ZGQePI6zXSmaKMvaIcOXzAm94JQzuz/hPcwJWcYOxY9Rt127vuwhvK
-         gVgXFiO97+fFsW5/d5uvvbR3ZQGH4lpE4VUrarKeAXqvUYbTDqUWCxxiq78jFMWAMHxk
-         jl8g==
+        bh=Y8hsXVohB2iOf+eEUTcp5spGfGJv7tXbMnt02En1QW8=;
+        b=AC3II7FbJR44XH6KwMcicoguO9wiKmQ7ZIFY6i/YwT7VeNtiyRNnJpnaR9NqLoN/fl
+         /fip7DwKKKEUyM6oDkAsMLN/lK2j/B7+y/3mHqx55qv4WO9zQZQhxkZWwCUHbljseEtf
+         QXQ3zWFkL45+wtxErwZO+bUAbYzSdQxTCfsqg/PhvwBiXwaktZNopCYjS53oGR844fI4
+         kzz+e+zR+KkhHWzkSACvqd71Bc5SUSvnJraID0vXcOv/6iu1dI++fLtct0cjGuEo3C9S
+         kX03u6F3vuujVx7QPmxfouqMThn1Do8le0+BQuN2lI40bjByZ+3xjBw+KL05eKrS5Qy7
+         XZHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2HU8g9qnV1VDaV0c9lrq6EKArLaVEN3j7/XSwFN0QqM=;
-        b=sMvyDc7SqGfTqs/x6JekoFEyx0qv9DRA4Cboq6FNiVeUSNj3+L3RANWHHcEpeSyJA9
-         Stc3LF23hOtZPPlyxJeSa+b091289GEdrBMxdOrLiIccLiUgo3rnoSK35sErAXT9Q8I3
-         Istot8HIlm3jM8OK62eTUD3Ex+BWUJsr+/KqRFSEAxzi3OcDkzTHpnu/IhBocA2RGOSm
-         Jv1zjcY2+peB+a3uCwO94Qlx7mPbZAcDt4284fw58ngovB0LEp31Wra4oZ5UXYjU0wkR
-         ZdNFcx+gxG9foAqbPbKq/bmHJfr4yM/xEU1+vNmHAshQNjEmbfMx2WuZovrrlx2qE/2T
-         G5WA==
-X-Gm-Message-State: AOAM5303ZqYd8leWh7UHDPZ14DODGw/42QYeCtHRiM064S/OrX1OKJCR
-        OubKvl6XOBiCCBO4Onv3qmUWXagVy80HXD15GMlwrw==
-X-Google-Smtp-Source: ABdhPJwMZr5tfILQWxCkB86iuiDFlgJCHkE0UTPXQEawQTrBnbi+P36FkaZN87wIx5usm4wSKq3JjZkYSY4YExbhvhg=
-X-Received: by 2002:a37:4a57:: with SMTP id x84mr776229qka.17.1599605389903;
- Tue, 08 Sep 2020 15:49:49 -0700 (PDT)
+        bh=Y8hsXVohB2iOf+eEUTcp5spGfGJv7tXbMnt02En1QW8=;
+        b=fPuFQnCSeR1r+6eccj6A4xrm4CJfHGAuVOWcF5Gk8UohLuJGdpkqjNnuzq1bC3sJ79
+         2ltiyM5qxn+VBlKt0W6xxa4EhGiaY64jtRo4Rp0IvrOzDklEfhSV4nDUwyKHKa47YUVe
+         qJGfWPKo7DGzl3apCl2TNUgCl8z6xCR1G7IIGhXzFD0XJIWtqwyfKS2YqckK75OU499e
+         PgHtlNIYz0PtKLlWgc7+clFfNIw1d4ZZAnbbl0cXpyrR6rUG9a/QeI0SKqXWmgIr3vZf
+         Bth4ZsAvd9o8Dxea/5mNWVn8IbKH+vcZ5Tsfl3ShUadW/MTDb2vxICvTpEw7laStpekh
+         3oDA==
+X-Gm-Message-State: AOAM533MEyOug81Sm7q2+IUZhGU5AO4GUAw5BwTlGJXyCn8FQVFebiYC
+        uqJnDWmS0gGTtLkJXbIITERfUB5gNT7jsFeX8yU=
+X-Google-Smtp-Source: ABdhPJznIm7fSl1Zlha33yud+kajXZ1VkQVDiHphdq+zXsEm4Baaf62L5U97HZX3/nmiSsvgkFmTEe8rO5DBU6kqFpU=
+X-Received: by 2002:a25:aa8f:: with SMTP id t15mr1722729ybi.459.1599606276899;
+ Tue, 08 Sep 2020 16:04:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200828193603.335512-1-sdf@google.com> <20200828193603.335512-6-sdf@google.com>
- <CAEf4BzZcb+CKwL72mgC5B+2wAi8hfT_OoVUNZCcZjKgu4zRxiA@mail.gmail.com>
- <CAKH8qBvkRrRWGX8HjKuCCoE1x2BB7tXmyJv1HotEyp7D_D+mLg@mail.gmail.com> <CAEf4BzYi+DjDHZTWWOPyJaU13civjeFRO-bGOzvEPjsimk906A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYi+DjDHZTWWOPyJaU13civjeFRO-bGOzvEPjsimk906A@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 8 Sep 2020 15:49:38 -0700
-Message-ID: <CAKH8qBvCQ0q+R0RPX-nhSwXqybKHFYZ0ovu08W6Z6tiFSkzsGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/8] bpftool: support dumping metadata
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        YiFei Zhu <zhuyifei@google.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>
+References: <20200908132201.184005-1-chenzhou10@huawei.com>
+In-Reply-To: <20200908132201.184005-1-chenzhou10@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Sep 2020 16:04:26 -0700
+Message-ID: <CAEf4BzanC5xCLjq8tOyZKQ=ojhcyDYBhJkGVTcqCB-=uLctUvw@mail.gmail.com>
+Subject: Re: [PATCH -next] bpf: Remove duplicate headers
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 3:35 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Sep 8, 2020 at 1:07 PM Chen Zhou <chenzhou10@huawei.com> wrote:
 >
-> On Tue, Sep 8, 2020 at 1:53 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > On Wed, Sep 2, 2020 at 10:00 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Fri, Aug 28, 2020 at 12:37 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > >
-> > > > From: YiFei Zhu <zhuyifei@google.com>
-> > > >
-> > > > Added a flag "--metadata" to `bpftool prog list` to dump the metadata
-> > > > contents. For some formatting some BTF code is put directly in the
-> > > > metadata dumping. Sanity checks on the map and the kind of the btf_type
-> > > > to make sure we are actually dumping what we are expecting.
-> > > >
-> > > > A helper jsonw_reset is added to json writer so we can reuse the same
-> > > > json writer without having extraneous commas.
-> > > >
-> > > > Sample output:
-> > > >
-> > > >   $ bpftool prog --metadata
-> > > >   6: cgroup_skb  name prog  tag bcf7977d3b93787c  gpl
-> > > >   [...]
-> > > >         btf_id 4
-> > > >         metadata:
-> > > >                 metadata_a = "foo"
-> > > >                 metadata_b = 1
-> > > >
-> > > >   $ bpftool prog --metadata --json --pretty
-> > > >   [{
-> > > >           "id": 6,
-> > > >   [...]
-> > > >           "btf_id": 4,
-> > > >           "metadata": {
-> > > >               "metadata_a": "foo",
-> > > >               "metadata_b": 1
-> > > >           }
-> > > >       }
-> > > >   ]
-> > > >
-> > > > Cc: YiFei Zhu <zhuyifei1999@gmail.com>
-> > > > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > ---
-> > > >  tools/bpf/bpftool/json_writer.c |   6 ++
-> > > >  tools/bpf/bpftool/json_writer.h |   3 +
-> > > >  tools/bpf/bpftool/main.c        |  10 +++
-> > > >  tools/bpf/bpftool/main.h        |   1 +
-> > > >  tools/bpf/bpftool/prog.c        | 130 ++++++++++++++++++++++++++++++++
-> > > >  5 files changed, 150 insertions(+)
-> > > >
-> > >
-> > > [...]
-> > >
-> > > > +
-> > > > +       if (bpf_map_lookup_elem(map_fd, &key, value)) {
-> > > > +               p_err("metadata map lookup failed: %s", strerror(errno));
-> > > > +               goto out_free;
-> > > > +       }
-> > > > +
-> > > > +       err = btf__get_from_id(map_info.btf_id, &btf);
-> > >
-> > > what if the map has no btf_id associated (e.g., because of an old
-> > > kernel?); why fail in this case?
-> > Thank you for the review, coming back at it a bit late :-(
-> >
-> > This functionality is guarded by --metadata bpftool flag (off by default).
-> > In case of no btf_id, it might be helpful to show why we don't have
-> > the metadata rather than just quietly failing.
-> > WDYT?
+> Remove duplicate headers which are included twice.
 >
-> we might do it similarly to PID info I added with bpf_iter: if it's
-> supported -- emit it, if not -- skip and still succeed. So maybe we
-> don't really need extra --metadata flag and should do all this always?
-Sounds reasonable, especially if there is an existing precedent.
-Let me explore that option.
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> ---
 
-> > > > +       if (err || !btf) {
-> > > > +               p_err("metadata BTF get failed: %s", strerror(-err));
-> > > > +               goto out_free;
-> > > > +       }
-> > > > +
-> > > > +       t_datasec = btf__type_by_id(btf, map_info.btf_value_type_id);
-> > > > +       if (BTF_INFO_KIND(t_datasec->info) != BTF_KIND_DATASEC) {
-> > >
-> > > btf_is_datasec(t_datasec)
-> > >
-> > > > +               p_err("bad metadata BTF");
-> > > > +               goto out_free;
-> > > > +       }
-> > > > +
-> > > > +       vlen = BTF_INFO_VLEN(t_datasec->info);
-> > >
-> > > btf_vlen(t_datasec)
-> > >
-> > > > +       vsi = (struct btf_var_secinfo *)(t_datasec + 1);
-> > >
-> > > btf_var_secinfos(t_datasec)
-> > >
-> > > > +
-> > > > +       /* We don't proceed to check the kinds of the elements of the DATASEC.
-> > > > +        * The verifier enforce then to be BTF_KIND_VAR.
-> > >
-> > > typo: then -> them
-> > >
-> > > > +        */
-> > > > +
-> > > > +       if (json_output) {
-> > > > +               struct btf_dumper d = {
-> > > > +                       .btf = btf,
-> > > > +                       .jw = json_wtr,
-> > > > +                       .is_plain_text = false,
-> > > > +               };
-> > > > +
-> > > > +               jsonw_name(json_wtr, "metadata");
-> > > > +
-> > > > +               jsonw_start_object(json_wtr);
-> > > > +               for (i = 0; i < vlen; i++) {
-> > >
-> > > nit: doing ++vsi here
-> > Agreed with all the above, except this one.
-> > It feels like it's safer to do [i] in case somebody adds a 'continue'
-> > clause later and we miss that '++vsi'.
-> > Let me know if you feel strongly about it.
->
-> I meant to add vsi++ inside the for clause, no way to miss it:
->
-> for (i = 0; i < vlen, i++, vsi++) {
->   continue/break/whatever you want, except extra i++ or vsi++
-> }
->
-> it's the safest way, imo
-Ack, I can do that, thanks!
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> > > > +                       t_var = btf__type_by_id(btf, vsi[i].type);
-> > >
-> > > and vsi->type here and below would look a bit cleaner
-> > >
-> > > > +
-> > > > +                       jsonw_name(json_wtr, btf__name_by_offset(btf, t_var->name_off));
-> > > > +                       err = btf_dumper_type(&d, t_var->type, value + vsi[i].offset);
-> > > > +                       if (err) {
-> > > > +                               p_err("btf dump failed");
-> > > > +                               break;
-> > > > +                       }
-> > > > +               }
-> > > > +               jsonw_end_object(json_wtr);
-> > >
-> > > [...]
+>  net/core/bpf_sk_storage.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+> index a0d1a3265b71..4a86ea34f29e 100644
+> --- a/net/core/bpf_sk_storage.c
+> +++ b/net/core/bpf_sk_storage.c
+> @@ -12,7 +12,6 @@
+>  #include <net/sock.h>
+>  #include <uapi/linux/sock_diag.h>
+>  #include <uapi/linux/btf.h>
+> -#include <linux/btf_ids.h>
+>
+>  DEFINE_BPF_STORAGE_CACHE(sk_cache);
+>
+> --
+> 2.17.1
+>
