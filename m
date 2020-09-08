@@ -2,130 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053CE2613CF
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 17:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C3F26146B
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 18:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730832AbgIHPvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 11:51:48 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16276 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730829AbgIHPux (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Sep 2020 11:50:53 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 088FoCKA016185
-        for <bpf@vger.kernel.org>; Tue, 8 Sep 2020 08:50:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=9JwYIjoC0IbU1GFXnenfpT1paK1+I3w8jYW2p5RWCz8=;
- b=qLXdLXVzdzmH5lrYSPk0A3W2CT8YxrmmoQq/RQaeWhUWvlJBtkM32QtdiqJdFuh7uPz3
- pAGJrocbkyLtcYDoFBok5CyEQszyAGzWyGUPv/D/MO/+Li0/dDf0SK2oOzDB7MCeSKuN
- a6CjEXmMkrKhziwEU12CFnkLljMf3OCEz9Y= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 33c6624xpb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 08:50:40 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 8 Sep 2020 08:50:39 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 2E0AD3701AD2; Tue,  8 Sep 2020 08:50:33 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: add test for map_ptr arithmetic
-Date:   Tue, 8 Sep 2020 08:50:33 -0700
-Message-ID: <20200908155033.1502860-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200908155032.1502450-1-yhs@fb.com>
-References: <20200908155032.1502450-1-yhs@fb.com>
+        id S1731887AbgIHQUw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 12:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731442AbgIHQUe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 12:20:34 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454E1C061755;
+        Tue,  8 Sep 2020 09:20:34 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id k25so8241784ljk.0;
+        Tue, 08 Sep 2020 09:20:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+wPlOm5QGCDqS1iz36b73Yrjc2ZOjFBBzVPqfqSTkRU=;
+        b=q9ep2VefGV3tnh1gc6k2bD4tOieJ9IWqWneNunCFsbLBb4ERqckJ+2JeLGZEK4XW/a
+         JJEfzALL4HkOtfXCEc6yb/WPGrI38fGy7D7rIN+RZCeFkc9lS716ATlu/6BP8T0+HMO3
+         qZrgQNobDnTlp+5/Pe67V8RekhvXZdWT4PnihyvRuo6mO5JjenjIfxpr0j2K0Se1oMic
+         rBYc6FOCdLoc+vcEuYQztTqYYE5mARtYmSyCSU/U8WKotCPvtsDA0kmCVB5LpR/s72i9
+         j6k0emAoVQbnPDgWntWVPGO+mtgoO/gTfOEe3Jxz4mhhsxvdVpWY0qQbNprMD/srILNx
+         37gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+wPlOm5QGCDqS1iz36b73Yrjc2ZOjFBBzVPqfqSTkRU=;
+        b=K4XhcKkD1FceLECP1km0SQ01x0TWty67O6hPK5sv38nKtdVCWpphDjXByzPQgzZGi5
+         uUAAc16QiiTbjSnvJ27gcO7qktJbFSYLAoEjz7pwpiIWtDBwb7/pLdR1dD+UYVoaAR4r
+         bq6BqQ0bG7ghEVTJSUHwSbjnG/XXggbV2Qj6xPPZ7JEdsBKDfMRTW7BK2q73PiIMxNLE
+         NychsvSjfh0kdEtXzhRoY9Ou8ZgdywkAyEfqEUb+dzXQl++9kzg3KAzpSKD7AMtNMzqe
+         IKk0KTwIFNjXKq1//Jn8ATD6A6HzKFRTctjiUTbCcVzqlqPanOgThMKywkP1ZYTsCnhm
+         AZAg==
+X-Gm-Message-State: AOAM530FoZgc2r/6v51FvSGi7DSEwqRR2LHQTOtGum2IBVrrjsObI1kk
+        26Pzl60PUCASTZbD7Y5szX45jTVXLKeIC/D6ljQ=
+X-Google-Smtp-Source: ABdhPJza0z8ybBhHjq6D1GgCSx5raB9QWiBPxOGch4dtPYCzvpBunYHBeGM0H23wmyTQrtglEspqjh6+FU+Y/dC/qkw=
+X-Received: by 2002:a2e:9782:: with SMTP id y2mr13292774lji.91.1599582032702;
+ Tue, 08 Sep 2020 09:20:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_08:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- adultscore=0 mlxscore=0 mlxlogscore=961 impostorscore=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 spamscore=0 suspectscore=8 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080151
-X-FB-Internal: deliver
+References: <cace836e4d07bb63b1a53e49c5dfb238a040c298.1599512096.git.daniel@iogearbox.net>
+In-Reply-To: <cace836e4d07bb63b1a53e49c5dfb238a040c298.1599512096.git.daniel@iogearbox.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 8 Sep 2020 09:20:21 -0700
+Message-ID: <CAADnVQ+woTCQ5JaEJvtWWsgU5OC+EA9NuRXhd2RmywU6mEYoEg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Fix clobbering of r2 in bpf_gen_ld_abs
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bryce.kahle@datadoghq.com,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-change selftest map_ptr_kern.c which will fail without previous
-verifier change. Also added to verifier test for both
-"map_ptr +=3D scalar" and "scalar +=3D map_ptr" arithmetic.
+On Mon, Sep 7, 2020 at 3:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Bryce reported that he saw the following with:
+>
+>   0:  r6 = r1
+>   1:  r1 = 12
+>   2:  r0 = *(u16 *)skb[r1]
+>
+> The xlated sequence was incorrectly clobbering r2 with pointer
+> value of r6 ...
+>
+>   0: (bf) r6 = r1
+>   1: (b7) r1 = 12
+>   2: (bf) r1 = r6
+>   3: (bf) r2 = r1
+>   4: (85) call bpf_skb_load_helper_16_no_cache#7692160
+>
+> ... and hence call to the load helper never succeeded given the
+> offset was too high. Fix it by reordering the load of r6 to r1.
+>
+> Other than that the insn has similar calling convention than BPF
+> helpers, that is, r0 - r5 are scratch regs, so nothing else
+> affected after the insn.
+>
+> Fixes: e0cea7ce988c ("bpf: implement ld_abs/ld_ind in native bpf")
+> Reported-by: Bryce Kahle <bryce.kahle@datadoghq.com>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/progs/map_ptr_kern.c        |  4 +--
- .../testing/selftests/bpf/verifier/map_ptr.c  | 32 +++++++++++++++++++
- 2 files changed, 34 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/tes=
-ting/selftests/bpf/progs/map_ptr_kern.c
-index 982a2d8aa844..d93413d24128 100644
---- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -74,8 +74,8 @@ static inline int check(struct bpf_map *indirect, struc=
-t bpf_map *direct,
- 	return 1;
- }
-=20
--static inline int check_default(struct bpf_map *indirect,
--				struct bpf_map *direct)
-+static __attribute__ ((noinline)) int
-+check_default(struct bpf_map *indirect, struct bpf_map *direct)
- {
- 	VERIFY(check(indirect, direct, sizeof(__u32), sizeof(__u32),
- 		     MAX_ENTRIES));
-diff --git a/tools/testing/selftests/bpf/verifier/map_ptr.c b/tools/testi=
-ng/selftests/bpf/verifier/map_ptr.c
-index b52209db8250..637f9293bda8 100644
---- a/tools/testing/selftests/bpf/verifier/map_ptr.c
-+++ b/tools/testing/selftests/bpf/verifier/map_ptr.c
-@@ -60,3 +60,35 @@
- 	.result =3D ACCEPT,
- 	.retval =3D 1,
- },
-+{
-+	"bpf_map_ptr: r =3D 0, map_ptr =3D map_ptr + r",
-+	.insns =3D {
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_hash_16b =3D { 4 },
-+	.result =3D ACCEPT,
-+},
-+{
-+	"bpf_map_ptr: r =3D 0, r =3D r + map_ptr",
-+	.insns =3D {
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_MOV64_IMM(BPF_REG_1, 0),
-+	BPF_LD_MAP_FD(BPF_REG_0, 0),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_hash_16b =3D { 4 },
-+	.result =3D ACCEPT,
-+},
---=20
-2.24.1
-
+Applied. Thanks
