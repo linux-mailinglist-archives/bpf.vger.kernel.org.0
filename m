@@ -2,103 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A9E26245D
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 03:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE24C262547
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 04:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgIIBFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 21:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55270 "EHLO
+        id S1729048AbgIICi5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 22:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgIIBFw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Sep 2020 21:05:52 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27420C061573;
-        Tue,  8 Sep 2020 18:05:51 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gf14so473146pjb.5;
-        Tue, 08 Sep 2020 18:05:51 -0700 (PDT)
+        with ESMTP id S1726657AbgIICiw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 22:38:52 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532C9C061573;
+        Tue,  8 Sep 2020 19:38:50 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id j11so1331536ejk.0;
+        Tue, 08 Sep 2020 19:38:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zr6cnsJrgGJ7VyctdOhrp3MO2aQmMSjefw9UvSk2yzk=;
-        b=kHr8dTzJ2Zha+Du3DjsnzZDE2WU0Ygh7mE+tPAEPc9+Ol92EDfIY7UZcIyJoOCQjE/
-         Ng7GWuzA8UQpNUU8kTBDrFwXbrWGAZ6m5SkYDpIcgRZ00bzq0qiCdvg0lPuMuDsPu+dB
-         YrHE6xHmTFhildA5rPc+UyQImJMX4VtzyNN2MpQi5ETiSFYZ8qQmaUTJBdCRTMBrdxYK
-         cf2kLCvZtnBPxITWJB3g+a/jHTfk/xUqS2VyqmPRgTUrcxr+Db+oWgeF9+8IHFMCjiIp
-         8bO8+sXlHLVD/W0kKmKotOUY3QSqRTjYC7pbNU8JZ+1hWJBEPDKA6ppnp/4B+e25Zj0Z
-         buuw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c0LG+vk1ojJvbaF+oWlNIKJX2tMsE657ayPjppgcqDA=;
+        b=tQLUGce1kM+Ambd5UX5C/U6nBufPVlR1fZEO0J8r+c4VUfQqLYRYZzkU5le65aXAAo
+         PxzcQiqBISVYM+ZxB1i5ZNKU5/vj5XWW9oaHgMMIpaVeoEo/3aG7XXCmVhbvPNJFBYzr
+         dGvLlKYwIaRAtoBAjYKQWrhspgWbIn5IJ64CRArRRFxReQoxSvD2yE2xosst2MIAJFik
+         H2N29P0T3JVU1OKFuB/t0HEPHBj2Veex8gUexQ9DpjkbSUYP0SEswKiEfcN1XFCZIXm9
+         XROCc4dlNnHzViVm7VvMf27Y3/KU8ic3zIJ3AZ6pbRpuRkG0iVUC/vIYNXPGhZ32Gm7v
+         eLrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zr6cnsJrgGJ7VyctdOhrp3MO2aQmMSjefw9UvSk2yzk=;
-        b=G2a/golNWUsW0dUbvCtGLqDdBvGzBtCuQsLm4o5BFzP4jGuFpPiRajLEOQ3PiLBGfW
-         SHpE+hwGv+tMrej1kR11+FxIk/svElv2GcBhnmTNZ+F8vhJeHkmcX6awvegSnWKWo0dV
-         5IGISJbgs7KbuyXLx6UuKlIYRukFwtIKPAnHK44b8QyboPk/P4MG4dKm1pRY5XjCUiCI
-         Cq2s6QDN/qAwzUjej/gK7SPqX1OX0XxaY9sBm2zJc9YbZTT2Qz9fC2NCaghFktj6KkEh
-         gTMkZBI7P/Jg4UPJZkf2+Vg6nQxlHAjK8DTAHe88xfhxswtXI52gcYQy8mwJflmXVIBU
-         MoBA==
-X-Gm-Message-State: AOAM533SXOzIL7ettiH6yt4bAlRNGexzaIAfHO13DQ9cT7zv6cxPpehk
-        92gC6Bi4gPM99s5W1HgHWeM=
-X-Google-Smtp-Source: ABdhPJyO8D8EaICbd5KYVI64MaDJvzPXVnFgMcZYSKA+UeY0fuEonhQoNZoNuIBJQcKimWZl1l5zng==
-X-Received: by 2002:a17:90a:5304:: with SMTP id x4mr1298263pjh.16.1599613550538;
-        Tue, 08 Sep 2020 18:05:50 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:39bb])
-        by smtp.gmail.com with ESMTPSA id f207sm620986pfa.54.2020.09.08.18.05.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 18:05:49 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 18:05:47 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: add test for map_ptr
- arithmetic
-Message-ID: <20200909010547.4xvmkqjt4x264wk7@ast-mbp.dhcp.thefacebook.com>
-References: <20200908175702.2463416-1-yhs@fb.com>
- <20200908175703.2463721-1-yhs@fb.com>
- <CAEf4BzZJ5MfLryVjZfp4TLHLmbukTm9k9EUgko1eyPAds+A2pw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c0LG+vk1ojJvbaF+oWlNIKJX2tMsE657ayPjppgcqDA=;
+        b=TjnUTrT9jq38jgWvvp4Ywk33EBJuj4aSKNXxNUKOpXQ4xaRdNe0IBgOsQRdLwhTNEk
+         MnjAKtffS493+u0MQNImkV/cyBsSGIXeB2ST/+R5yq5li4Jtln/mAbCz31tSTlTd34/T
+         fMZiemveJFNPkryc6brLLKGw+kKL4b/lxEFffMyvSbU39aoKRtJYCfbwszmj4xDer9h9
+         vv5rGqG7DusETMi9y2xmKqd6MOr9I2dMfzVfC25xDxF445bCy1a7+bU0K6letgYln04v
+         HaP7TCK4ixGfVpbJQ0Z7KJfMz2mYH2YU/m3T8WzQiDVKYa1+RUMy2+1WpubqUC5F/4DF
+         sVlw==
+X-Gm-Message-State: AOAM531zYqKQjYl4HPXUH5LHGJXVA/sEBCk9DnwqZtdG5DIdT+b9UDQI
+        L3Ja3ZW4GUpDEHPpM6xTFzBJr0DH5EV7/hCy/Gdkc/AyKw==
+X-Google-Smtp-Source: ABdhPJx0uyCHYlMDgFzFnM942bI3iP0KfOS+PYYCVHo6EXx0kCmCLrNmfIYzA8A8Dorbvk9Y8qQHNedt9iLULOYEIdA=
+X-Received: by 2002:a17:906:9491:: with SMTP id t17mr1432099ejx.227.1599619129060;
+ Tue, 08 Sep 2020 19:38:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZJ5MfLryVjZfp4TLHLmbukTm9k9EUgko1eyPAds+A2pw@mail.gmail.com>
+References: <20200905154137.24800-1-danieltimlee@gmail.com> <CAEf4BzZ+tGgeqpPiKmChRYQ7FH==3AHXUK5V+Sy2tjZiO58u+w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ+tGgeqpPiKmChRYQ7FH==3AHXUK5V+Sy2tjZiO58u+w@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Wed, 9 Sep 2020 02:38:26 +0900
+Message-ID: <CAEKGpzhxyrNkRQ5Feu-DH8j4s+sMUCfGD-+JuYEv1rjS5_qcyg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] samples: bpf: refactor xdp_sample_pkts_kern with
+ BTF-defined map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 04:11:21PM -0700, Andrii Nakryiko wrote:
-> On Tue, Sep 8, 2020 at 10:58 AM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Sep 9, 2020 at 8:24 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, Sep 5, 2020 at 8:41 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 > >
-> > Change selftest map_ptr_kern.c with disabling inlining for
-> > one of subtests, which will fail the test without previous
-> > verifier change. Also added to verifier test for both
-> > "map_ptr += scalar" and "scalar += map_ptr" arithmetic.
+> > Most of the samples were converted to use the new BTF-defined MAP as
+> > they moved to libbbpf, but some of the samples were missing.
 > >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > Instead of using the previous BPF MAP definition, this commit refactors
+> > xdp_sample_pkts_kern MAP definition with the new BTF-defined MAP format.
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
 > > ---
-> 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> >  .../selftests/bpf/progs/map_ptr_kern.c        | 10 +++++-
-> >  .../testing/selftests/bpf/verifier/map_ptr.c  | 32 +++++++++++++++++++
-> >  2 files changed, 41 insertions(+), 1 deletion(-)
+> >  samples/bpf/xdp_sample_pkts_kern.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> > index 982a2d8aa844..0b754106407d 100644
-> > --- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> > +++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-> > @@ -82,6 +82,14 @@ static inline int check_default(struct bpf_map *indirect,
-> >         return 1;
-> >  }
+> > diff --git a/samples/bpf/xdp_sample_pkts_kern.c b/samples/bpf/xdp_sample_pkts_kern.c
+> > index 33377289e2a8..b15172b7d455 100644
+> > --- a/samples/bpf/xdp_sample_pkts_kern.c
+> > +++ b/samples/bpf/xdp_sample_pkts_kern.c
+> > @@ -7,12 +7,12 @@
+> >  #define SAMPLE_SIZE 64ul
+> >  #define MAX_CPUS 128
 > >
-> > +static __attribute__ ((noinline)) int
-> 
-> just fyi: there is now __noinline defined in bpf_helpers.h, saving a
-> bunch of typing
+> > -struct bpf_map_def SEC("maps") my_map = {
+> > -       .type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
+> > -       .key_size = sizeof(int),
+> > -       .value_size = sizeof(u32),
+> > -       .max_entries = MAX_CPUS,
+> > -};
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+> > +       __uint(key_size, sizeof(int));
+> > +       __uint(value_size, sizeof(u32));
+> > +       __uint(max_entries, MAX_CPUS);
+>
+> if you drop max_entries property, libbpf will set it to the maximum
+> configured number of CPUs on the host, which is what you probably
+> want. Do you might sending v2 without MAX_CPUS (check if macro is
+> still used anywhere else). Thanks!
+>
 
-I fixed it manually while applying.
-Thanks everyone.
+Thanks for your time and effort for the review.
+
+I'll check and send the next version of patch.
+
+
+> > +} my_map SEC(".maps");
+> >
+> >  SEC("xdp_sample")
+> >  int xdp_sample_prog(struct xdp_md *ctx)
+> > --
+> > 2.25.1
+> >
+
+-- 
+Best,
+Daniel T. Lee
