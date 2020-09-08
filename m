@@ -2,98 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8F92607FD
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 03:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0623260A31
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 07:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728275AbgIHBWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Sep 2020 21:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728272AbgIHBWm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Sep 2020 21:22:42 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA19C061573;
-        Mon,  7 Sep 2020 18:22:42 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id h4so15406728ioe.5;
-        Mon, 07 Sep 2020 18:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GYsBegW1E1w/duSqDumQ/6BnVkxD+sj7KRg+kol7Kug=;
-        b=l5oEidU4eqtXGLWGLe1fzYnlCUDss0wiSthgavfD3Ks/2ByU6oI+lRZfV6wcmbMaIm
-         zpPJtrZOHi9kheoXQrloUsnaXWl2XWIusXpAwukjvo4YoBvF68JZcxjgCgLUBTknPcRW
-         oZq7D8hBdTJqzaG/mYESCHT1WpGMw7+mnu/AtV8NrT1rcd7uKbCL14+oI0dsKgTgxZ+U
-         uEh97oUWAXeyY33QnNjR6dTrEQwQ6c9B/3emFNKb765aCWWsXzChz1Ompoa68g0TcCA5
-         WDb7j/BiAUKKIXWFy7uLVUCwPiDqfLlDJmpiJjry46zFUm+0DXaVJ4aSzDArF/6HxhM/
-         0wMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GYsBegW1E1w/duSqDumQ/6BnVkxD+sj7KRg+kol7Kug=;
-        b=c8sf04au4W3mQalZcs+HdE7Rp5JtqfcKKRZG/CMlzdkopkb7MMGhNurWV6Rvv5sM9F
-         9Pot5Kmjbk/l+X7xmQZrJZF0wgiULgzaBS6/puXJDIo7gUvclpHqnpD+9BjNevMSf9So
-         r7v7YXNw91nafqrtq45HZKpW86nrscv4lLIEL623x451s6hkEMy0PCXsz5622RvPsOo3
-         I60ZuZovCcAuuQ3ByQS6jMz/22wJ2thm65IFU7MjVVrn4sWnwE61oN0qgLueUEq5/vTT
-         L/63ByLc2q7uocI4nZtuaB+gA/NSmgAGAzGWwDVQ09bxybLIekbkbC+B9NBbkH+mx+qJ
-         Lesg==
-X-Gm-Message-State: AOAM532Il2eXN9HbLFuhB8fBNjL1IlYYq7a/WZ/7KNeDF7cGPxyP0nPe
-        /m1gWWyiE3rcAsO6jG2RrZg=
-X-Google-Smtp-Source: ABdhPJwERJE2LQcnaY1cCja1hcI+xA8jnnTh2yEeIvsOumlVGQ+OPL6svAhcQHGsH+B5Gxm2xduyNA==
-X-Received: by 2002:a05:6638:2a6:: with SMTP id d6mr10971376jaq.132.1599528161672;
-        Mon, 07 Sep 2020 18:22:41 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:55f5:1bb7:a67a:a2c6])
-        by smtp.googlemail.com with ESMTPSA id m15sm2006038iow.9.2020.09.07.18.22.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Sep 2020 18:22:40 -0700 (PDT)
-Subject: Re: [PATCH v2 net-next 1/9] xdp: introduce mb in xdp_buff/xdp_frame
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net,
-        lorenzo.bianconi@redhat.com, echaudro@redhat.com,
-        sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
-        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        David Ahern <dsahern@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-References: <cover.1599165031.git.lorenzo@kernel.org>
- <1e8e82f72e46264b7a7a1ac704d24e163ebed100.1599165031.git.lorenzo@kernel.org>
- <20200904010705.jm6dnuyj3oq4cpjd@ast-mbp.dhcp.thefacebook.com>
- <20200904091939.069592e4@carbon>
- <1c3e478c-5000-1726-6ce9-9b0a3ccfe1e5@gmail.com>
- <20200904175946.6be0f565@carbon>
- <107260d3-1fea-b582-84d3-2d092f3112b1@gmail.com>
- <20200907200245.0cdb63f1@carbon>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <51b88537-877a-c6bb-b4fb-0d629f37c0e6@gmail.com>
-Date:   Mon, 7 Sep 2020 19:22:39 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1728759AbgIHFil (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 01:38:41 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11446 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728712AbgIHFij (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 01:38:39 -0400
+IronPort-SDR: OFIJU24GyUJ6tV9r1AIe1KSvypytrk92txw4y0BMy+2Req22gW3CKdZ05WrYbu6mAMBhKCAqia
+ K/tus6eoi8hw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="137592596"
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="137592596"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2020 22:38:39 -0700
+IronPort-SDR: /VDwcnpzM+ij/iCxij7/hOHyzBuMA1Pi+N1riBWyfTPyBI3gPsfs7AEjj3CQX0kU82u1JQ9yA1
+ yr2ZR3TyxZag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,404,1592895600"; 
+   d="scan'208";a="284393907"
+Received: from pgierasi-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.39.2])
+  by fmsmga007.fm.intel.com with ESMTP; 07 Sep 2020 22:38:37 -0700
+Subject: Re: [PATCH bpf-next 4/4] ixgbe, xsk: use XSK_NAPI_WEIGHT as NAPI poll
+ budget
+To:     Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, magnus.karlsson@intel.com,
+        intel-wired-lan@lists.osuosl.org
+References: <20200907150217.30888-1-bjorn.topel@gmail.com>
+ <20200907150217.30888-5-bjorn.topel@gmail.com>
+ <20200907123241.447371e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <c8ce6b24-bded-5ed1-bf5c-6d2409972e57@intel.com>
+Date:   Tue, 8 Sep 2020 07:38:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200907200245.0cdb63f1@carbon>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200907123241.447371e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/7/20 12:02 PM, Jesper Dangaard Brouer wrote:
+On 2020-09-07 21:32, Jakub Kicinski wrote:
+> On Mon,  7 Sep 2020 17:02:17 +0200 Björn Töpel wrote:
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> Start using XSK_NAPI_WEIGHT as NAPI poll budget for the AF_XDP Rx
+>> zero-copy path.
+>>
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> ---
+>>   drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+>> index 3771857cf887..f32c1ba0d237 100644
+>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+>> @@ -239,7 +239,7 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
+>>   	bool failure = false;
+>>   	struct sk_buff *skb;
+>>   
+>> -	while (likely(total_rx_packets < budget)) {
+>> +	while (likely(total_rx_packets < XSK_NAPI_WEIGHT)) {
 > 
->> ok, is there any alignment requirement? can frame_sz be number of 32-bit
->> words? I believe bit shifts are cheap.
-> 
-> No that is not possible, because some drivers and generic-XDP have a
-> fully dynamic frame_sz.
-> 
+> I was thinking that we'd multiply 'budget' here, not replace it with a
+> constant. Looks like ixgbe dutifully passes 'per_ring_budget' into the
+> clean_rx functions, not a complete NAPI budget.
+>
 
-frame_sz represents allocated memory right? What is the real range that
-needs to be supported for frame_sz? Surely there is some upper limit,
-and I thought it was 64kB.
+Correct, and i40e/ice does the same ("per_ring_budget").
 
-Allocated memory will not be on an odd number, so fair to assume at a
-minimum it is a multiple of 2. correct? At a minimum we should be able
-to shift frame_sz by 1 which now covers 64kB in a u16.
+As for budget << XSK_NAPI_MULT vs replacing; Replacing the budget is 
+more in line with what the drivers do for the Tx cleanup 
+(xxx_clean_tx_irq), where the napi budget is discarded completely; 
+Again, with the idea that "this is much cheaper than a "per-packet 
+through the stack".
+
+Do you prefer the multiplier way that you describe?
+
+
+Cheers,
+Björn
+
+
+>>   		union ixgbe_adv_rx_desc *rx_desc;
+>>   		struct ixgbe_rx_buffer *bi;
+>>   		unsigned int size;
+> 
