@@ -2,110 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0907C2618BF
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 20:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5CD26193C
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 20:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbgIHSBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 14:01:44 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62384 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731548AbgIHSBf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Sep 2020 14:01:35 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088I0ZXp032050
-        for <bpf@vger.kernel.org>; Tue, 8 Sep 2020 11:01:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=QcZNytBp4an3COkPG96D0v1/8brsO2t1w7s3YhRQU10=;
- b=EOcbAo98BXA8LhDMedyDPSy02HpF+yGxiPASAbqoakKdkmaD5ZRF7eB4sd7jn8IefMEH
- rkXrcXqbgWuSdINMTtwVkDk4gkkaKedCeOilWhA6WM67YNT+r/Pe9WXnzFXr0rXAA4QE
- D7RBRrh8Fi7X35qcBAOkiVRHoNYlhTP9nOg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33ct5ttuft-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 11:01:35 -0700
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 8 Sep 2020 11:01:33 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 1FA902EC6B09; Tue,  8 Sep 2020 11:01:31 -0700 (PDT)
-From:   Andrii Nakryiko <andriin@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <acme@kernel.org>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH bpf-next] perf: stop using deprecated bpf_program__title()
-Date:   Tue, 8 Sep 2020 11:01:27 -0700
-Message-ID: <20200908180127.1249-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1731968AbgIHSK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 14:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731734AbgIHSKx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 14:10:53 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6AEC061573;
+        Tue,  8 Sep 2020 11:10:52 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id p81so37140ybc.12;
+        Tue, 08 Sep 2020 11:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Wk35TRg0KarJCkBorT18pPV0KW1IK21mPUdma5sS7zA=;
+        b=sjC5cL15c0YwdTtbJkcnmitN0NKT4Y8Cm++eqUlJuNf72GwLxOZvGOcSiMBNlrcvBM
+         JNfsd0Cwk8wM+cwVWpGCqzGwdLelpMPhPq9mw1Hb67gA+ULvW/edCuPX7CdOhm/+2xiv
+         6sgz1qC9YhHzV/vnDZkx6OQ8FEF0W6ZjXtDm4NyrPUllWUXf0JeXW620SfRvV1H7D+3W
+         5955ka2sW7r7F8ztDiX57HEWzN6PZMWGLfNgTG/pN766n0zo0HTLqEuaL1pGtGdyQ6QU
+         qkleTky8k84yR3PTqciBEyFgWWtEPz4+W6N58ER22/1gOSRfmuybq1ZjvHremawf+ndR
+         u00w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Wk35TRg0KarJCkBorT18pPV0KW1IK21mPUdma5sS7zA=;
+        b=ITqWKRjljOpzZge/8SLl4iaBYdTKGe/EFVwlq6xLoteIVJWSF1bhtbfRveVbvyamdq
+         gXol+oWmkngi+APHIlvFx9+JTo22d4a53ipe7hC5fyd6ipEW51g4bpXKAckd0fy61FrV
+         6KWthHrLnEb2Tzf/bL5Vra15HB74hzQLRbPdvBQVWoFlBwPPhlUcDdWjgTsyHXxSsvYu
+         qBXUFYi3z7jhiQ6B5eIP6yIgb5j7UEZFOxO99DB8qRw5/rY13RGmoTNS1cmOdF0VkY4k
+         PP8oT2oBaVgwPG788mW3qNe4QdCI2psd8A2R50p5xW76QDGYSuau/6hzxfKVXffcGy5y
+         IUKQ==
+X-Gm-Message-State: AOAM533LNyr1l+R/PhyJPSLZRYkTVaNBGhhDCuJuuJ3SH3bxfInKEktS
+        yl+moLxJgqlZ0pRUe+XWpAd3/z2na/4Iqp3EMKM=
+X-Google-Smtp-Source: ABdhPJxt3fKeoMPdw/BJfj+oqrvydTt1wNmzyDDQSOSa5L2V4KlUFx7zqXe/pCxFyyOB6j70A2oM2Vz/0W57w0b6OGY=
+X-Received: by 2002:a25:ad5a:: with SMTP id l26mr140392ybe.510.1599588651271;
+ Tue, 08 Sep 2020 11:10:51 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200828193603.335512-1-sdf@google.com> <20200828193603.335512-4-sdf@google.com>
+ <CAEf4BzZtYTyBT=jURkF4RQLHXORooVwXrRRRkoSWDqCemyGQeA@mail.gmail.com>
+ <20200904012909.c7cx5adhy5f23ovo@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZp4ODLbjEiv=W7byoR9XzTqAQ052wZM_wD4=aTPmkjbw@mail.gmail.com> <87mu22ottv.fsf@toke.dk>
+In-Reply-To: <87mu22ottv.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Sep 2020 11:10:40 -0700
+Message-ID: <CAEf4BzbywFBSW+KypeWkG7CF8rNSu5XxS8HZz7BFuUsC9kZ1ug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/8] libbpf: Add BPF_PROG_BIND_MAP syscall and
+ use it on .metadata section
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        YiFei Zhu <zhuyifei@google.com>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        Andrey Ignatov <rdna@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
- malwarescore=0 impostorscore=0 priorityscore=1501 clxscore=1015
- phishscore=0 bulkscore=0 mlxlogscore=976 mlxscore=0 adultscore=0
- spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009080171
-X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Switch from deprecated bpf_program__title() API to
-bpf_program__section_name(). Also drop unnecessary error checks because
-neither bpf_program__title() nor bpf_program__section_name() can fail or
-return NULL.
+On Mon, Sep 7, 2020 at 1:49 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> >> May be we should talk about problem statement and goals.
+> >> Do we actually need metadata per program or metadata per single .o
+> >> or metadata per final .o with multiple .o linked together?
+> >> What is this metadata?
+> >
+> > Yep, that's a very valid question. I've also CC'ed Andrey.
+>
+> For the libxdp use case, I need metadata per program. But I'm already
+> sticking that in a single section and disambiguating by struct name
+> (just prefixing the function name with a _ ), so I think it's fine to
+> have this kind of "concatenated metadata" per elf file and parse out the
+> per-program information from that. This is similar to the BTF-encoded
+> "metadata" we can do today.
+>
+> >> If it's just unreferenced by program read only data then no special na=
+mes or
+> >> prefixes are needed. We can introduce BPF_PROG_BIND_MAP to bind any ma=
+p to any
+> >> program and it would be up to tooling to decide the meaning of the dat=
+a in the
+> >> map. For example, bpftool can choose to print all variables from all r=
+ead only
+> >> maps that match "bpf_metadata_" prefix, but it will be bpftool convent=
+ion only
+> >> and not hard coded in libbpf.
+> >
+> > Agree as well. It feels a bit odd for libbpf to handle ".metadata"
+> > specially, given libbpf itself doesn't care about its contents at all.
+> >
+> > So thanks for bringing this up, I think this is an important
+> > discussion to have.
+>
+> I'm fine with having this be part of .rodata. One drawback, though, is
+> that if any metadata is defined, it becomes a bit more complicated to
+> use bpf_map__set_initial_value() because that now also has to include
+> the metadata. Any way we can improve upon that?
 
-Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in =
-favor of "section name"")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/perf/util/bpf-loader.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+I know that skeleton is not an answer for you, so you'll have to find
+DATASEC and corresponding variable offset and size (libbpf provides
+APIs for all those operations, but you'll need to combine them
+together). Then mmap() map and then you can do partial updates. There
+is no other way to update only portions of an ARRAY map, except
+through memory-mapping.
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 2feb751516ab..0374adcb223c 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -328,12 +328,6 @@ config_bpf_program(struct bpf_program *prog)
- 	probe_conf.no_inlines =3D false;
- 	probe_conf.force_add =3D false;
-=20
--	config_str =3D bpf_program__title(prog, false);
--	if (IS_ERR(config_str)) {
--		pr_debug("bpf: unable to get title for program\n");
--		return PTR_ERR(config_str);
--	}
--
- 	priv =3D calloc(sizeof(*priv), 1);
- 	if (!priv) {
- 		pr_debug("bpf: failed to alloc priv\n");
-@@ -341,6 +335,7 @@ config_bpf_program(struct bpf_program *prog)
- 	}
- 	pev =3D &priv->pev;
-=20
-+	config_str =3D bpf_program__section_name(prog);
- 	pr_debug("bpf: config program '%s'\n", config_str);
- 	err =3D parse_prog_config(config_str, &main_str, &is_tp, pev);
- 	if (err)
-@@ -454,10 +449,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n=
-,
- 	if (err) {
- 		const char *title;
-=20
--		title =3D bpf_program__title(prog, false);
--		if (!title)
--			title =3D "[unknown]";
--
-+		title =3D bpf_program__section_name(prog);
- 		pr_debug("Failed to generate prologue for program %s\n",
- 			 title);
- 		return err;
---=20
-2.24.1
-
+>
+> -Toke
+>
