@@ -2,90 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C3F26146B
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 18:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917E6261710
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 19:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731887AbgIHQUw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 12:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731442AbgIHQUe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Sep 2020 12:20:34 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454E1C061755;
-        Tue,  8 Sep 2020 09:20:34 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id k25so8241784ljk.0;
-        Tue, 08 Sep 2020 09:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+wPlOm5QGCDqS1iz36b73Yrjc2ZOjFBBzVPqfqSTkRU=;
-        b=q9ep2VefGV3tnh1gc6k2bD4tOieJ9IWqWneNunCFsbLBb4ERqckJ+2JeLGZEK4XW/a
-         JJEfzALL4HkOtfXCEc6yb/WPGrI38fGy7D7rIN+RZCeFkc9lS716ATlu/6BP8T0+HMO3
-         qZrgQNobDnTlp+5/Pe67V8RekhvXZdWT4PnihyvRuo6mO5JjenjIfxpr0j2K0Se1oMic
-         rBYc6FOCdLoc+vcEuYQztTqYYE5mARtYmSyCSU/U8WKotCPvtsDA0kmCVB5LpR/s72i9
-         j6k0emAoVQbnPDgWntWVPGO+mtgoO/gTfOEe3Jxz4mhhsxvdVpWY0qQbNprMD/srILNx
-         37gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+wPlOm5QGCDqS1iz36b73Yrjc2ZOjFBBzVPqfqSTkRU=;
-        b=K4XhcKkD1FceLECP1km0SQ01x0TWty67O6hPK5sv38nKtdVCWpphDjXByzPQgzZGi5
-         uUAAc16QiiTbjSnvJ27gcO7qktJbFSYLAoEjz7pwpiIWtDBwb7/pLdR1dD+UYVoaAR4r
-         bq6BqQ0bG7ghEVTJSUHwSbjnG/XXggbV2Qj6xPPZ7JEdsBKDfMRTW7BK2q73PiIMxNLE
-         NychsvSjfh0kdEtXzhRoY9Ou8ZgdywkAyEfqEUb+dzXQl++9kzg3KAzpSKD7AMtNMzqe
-         IKk0KTwIFNjXKq1//Jn8ATD6A6HzKFRTctjiUTbCcVzqlqPanOgThMKywkP1ZYTsCnhm
-         AZAg==
-X-Gm-Message-State: AOAM530FoZgc2r/6v51FvSGi7DSEwqRR2LHQTOtGum2IBVrrjsObI1kk
-        26Pzl60PUCASTZbD7Y5szX45jTVXLKeIC/D6ljQ=
-X-Google-Smtp-Source: ABdhPJza0z8ybBhHjq6D1GgCSx5raB9QWiBPxOGch4dtPYCzvpBunYHBeGM0H23wmyTQrtglEspqjh6+FU+Y/dC/qkw=
-X-Received: by 2002:a2e:9782:: with SMTP id y2mr13292774lji.91.1599582032702;
- Tue, 08 Sep 2020 09:20:32 -0700 (PDT)
+        id S1728647AbgIHRYy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 13:24:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731742AbgIHRYo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 13:24:44 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB959206B5;
+        Tue,  8 Sep 2020 17:24:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599585883;
+        bh=G0TuQ82fo+GvEL2cxufvVOauUBhWkmjojqObsOrnW3U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A8EAdpexRDHFNVyoeRKruq7rvuO4/s7lZFJrsAj9lHWyN3xDZShJg0vUmdwjEmKqd
+         AZVxlayjy5Skf/iTKz0yalbe/v+rDusInFU/cp6U18+gmju+KC77+8UxgnnIT6xYb2
+         6dvUfcZwRmaJ8l04YCSKmjf2lR1IJW+MmtV8iBWc=
+Date:   Tue, 8 Sep 2020 10:24:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBl?= =?UTF-8?B?bA==?= 
+        <bjorn.topel@gmail.com>, Eric Dumazet <eric.dumazet@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, magnus.karlsson@intel.com,
+        davem@davemloft.net, john.fastabend@gmail.com,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH bpf-next 0/6] xsk: exit NAPI loop when AF_XDP Rx ring is
+ full
+Message-ID: <20200908102438.28351aab@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <8f698ac5-916f-9bb0-cce2-f00fba6ba407@intel.com>
+References: <20200904135332.60259-1-bjorn.topel@gmail.com>
+        <20200904162751.632c4443@carbon>
+        <27e05518-99c6-15e2-b801-cbc0310630ef@intel.com>
+        <20200904165837.16d8ecfd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <1d2e781e-b26d-4cf0-0178-25b8835dbe26@intel.com>
+        <20200907114055.27c95483@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <8f698ac5-916f-9bb0-cce2-f00fba6ba407@intel.com>
 MIME-Version: 1.0
-References: <cace836e4d07bb63b1a53e49c5dfb238a040c298.1599512096.git.daniel@iogearbox.net>
-In-Reply-To: <cace836e4d07bb63b1a53e49c5dfb238a040c298.1599512096.git.daniel@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 8 Sep 2020 09:20:21 -0700
-Message-ID: <CAADnVQ+woTCQ5JaEJvtWWsgU5OC+EA9NuRXhd2RmywU6mEYoEg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix clobbering of r2 in bpf_gen_ld_abs
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bryce.kahle@datadoghq.com,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 3:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> Bryce reported that he saw the following with:
->
->   0:  r6 = r1
->   1:  r1 = 12
->   2:  r0 = *(u16 *)skb[r1]
->
-> The xlated sequence was incorrectly clobbering r2 with pointer
-> value of r6 ...
->
->   0: (bf) r6 = r1
->   1: (b7) r1 = 12
->   2: (bf) r1 = r6
->   3: (bf) r2 = r1
->   4: (85) call bpf_skb_load_helper_16_no_cache#7692160
->
-> ... and hence call to the load helper never succeeded given the
-> offset was too high. Fix it by reordering the load of r6 to r1.
->
-> Other than that the insn has similar calling convention than BPF
-> helpers, that is, r0 - r5 are scratch regs, so nothing else
-> affected after the insn.
->
-> Fixes: e0cea7ce988c ("bpf: implement ld_abs/ld_ind in native bpf")
-> Reported-by: Bryce Kahle <bryce.kahle@datadoghq.com>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+On Tue, 8 Sep 2020 08:58:30 +0200 Bj=C3=B6rn T=C3=B6pel wrote:
+> >> As for this patch set, I think it would make sense to pull it in since
+> >> it makes the single-core scenario *much* better, and it is pretty
+> >> simple. Then do the application polling as another, potentially,
+> >> improvement series. =20
+> >=20
+> > Up to you, it's extra code in the driver so mostly your code to
+> > maintain.
+> >=20
+> > I think that if we implement what I described above - everyone will
+> > use that on a single core setup, so this set would be dead code
+> > (assuming RQ is sized appropriately). But again, your call :)
+>=20
+> Now, I agree that the busy-poll you describe above would be the best
+> option, but from my perspective it's a much larger set that involves
+> experimenting. I will explore that, but I still think this series should
+> go in sooner to make the single core scenario usable *today*.
+>=20
+> Ok, back to the busy-poll ideas. I'll call your idea "strict busy-poll",
+> i.e. the NAPI loop is *only* driven by userland, and interrupts stay
+> disabled. "Syscall driven poll-mode driver". :-)
+>=20
+> On the driver side (again, only talking Intel here, since that's what I
+> know the details of), the NAPI context would only cover AF_XDP queues,
+> so that other queues are not starved.
+>=20
+> Any ideas how strict busy-poll would look, API/implmentation-wise? An
+> option only for AF_XDP sockets? Would this make sense to regular
+> sockets? If so, maybe extend the existing NAPI busy-poll with a "strict"
+> mode?
 
-Applied. Thanks
+For AF_XDP and other sockets I think it should be quite straightforward.
+
+For AF_XDP just implement current busy poll.
+
+Then for all socket types add a new sockopt which sets "timeout" on how
+long the IRQs can be suppressed for (we don't want application crash or
+hang to knock the system off the network), or just enables the feature
+and the timeout is from a sysctl.
+
+Then make sure that at the end of polling napi doesn't get scheduled,
+and set some bit which will prevent napi_schedule_prep() from letting
+normal IRQ processing from scheduling it, too. Set a timer for the
+timeout handling to undo all this.
+
+What I haven't figured out in my head is how/if this relates to the
+ongoing wq/threaded NAPI polling work =F0=9F=A4=94 but that shouldn't stop =
+you.
+
+> I'll start playing around a bit, but again, I think this simple series
+> should go in just to make AF_XDP single core usable *today*.
+
+No objection from me.
