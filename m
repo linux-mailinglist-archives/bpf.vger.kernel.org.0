@@ -2,163 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB26E2610FC
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 13:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E4626115E
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 14:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgIHLtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 07:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729305AbgIHLjl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Sep 2020 07:39:41 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A55C061796;
-        Tue,  8 Sep 2020 04:37:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l191so9844490pgd.5;
-        Tue, 08 Sep 2020 04:37:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qZQdroSdlZPgLxB0axJE1VbD4VyjCyb0ExGeUn8jyYA=;
-        b=feiWwlY5m5X/poukLCIXVUznp1v6YzwSnrYGs57mOqH1uqdlruhrRqUXK9I+yCkwZ9
-         TF9cPtT9oE2gaTO+H5qgQMOhzLHULt6x95wPpYqi73TT+wh162RuJGlxgT4x5J3l2TUX
-         bsPEd55MsOgYs51TVmFn7DzrVe2Bfmf2bAi33wH5MMn/0cmsigP3X/AmTWo5r/7r0wkE
-         9UeTIMSmUGXeEZ++AVhACt6VwszBqAtDxBco7t032wfN79Q56dSW5aZIrCivqshweMYz
-         ICQvCrqVZT2sJq4QXZbwl8HlqAVNrZZb3FL8Q/8Hf6HVOq4HtGAIy44KzVq2mX2eVPWm
-         kzIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qZQdroSdlZPgLxB0axJE1VbD4VyjCyb0ExGeUn8jyYA=;
-        b=SR09nKTG2nJeqGo7KDF/SMcid2EnWVWQOYXgJYunjrp3fjWYFHpAPwAiu7y7V3sJAO
-         ctCmHpd+odNaA+7+Cyyew46x5bXdCEHIqO4giHugij7VxOOsCVZd92dkt4GMFO2B/bPS
-         iUx6Zo1XmgBAa3ChK84nK3Gt7BqBLwueMzPql2GELY2zq3wLTpwSyPUH5WBdX+5CxK/R
-         fseqnrwwOpQXsrK1WaU0JrnPKPNOd86cMj+yPKy0ZA9hsyOFFjlleDQ1lFHhWLQ05zNd
-         1+o/DPXoRCX3WwMcDvbE59vDu6zyu5RnjIwjbdA95aN6xsWag7n92VXQ3SBpAdi1AHPi
-         JP6w==
-X-Gm-Message-State: AOAM532hFGG9fofJLKOjOvG9io/OvMcY1vvIgJS2GVlkuR8w3jcoa7CL
-        /R9Q5sR9rT+XGHClFpTp3AqgmlK0niR74d9Yjp8=
-X-Google-Smtp-Source: ABdhPJxvB/UAQ9/+LyteEXl5IYO+BqxIZARWPRi6EvCAUoapDZUTrScpa0vMM9G7scfpXEiQ5GcqmCkc4UEDn+aEC5k=
-X-Received: by 2002:aa7:80d3:: with SMTP id a19mr24557164pfn.102.1599565055486;
- Tue, 08 Sep 2020 04:37:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200904135332.60259-1-bjorn.topel@gmail.com> <0257f769-0f43-a5b7-176d-7c5ff8eaac3a@intel.com>
- <11f663ec-5ea7-926c-370d-0b67d3052583@nvidia.com>
-In-Reply-To: <11f663ec-5ea7-926c-370d-0b67d3052583@nvidia.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Tue, 8 Sep 2020 13:37:24 +0200
-Message-ID: <CAJ8uoz3WbS7E1OiC5p8x+o48vwkN43R9JxMwvRvgVk4n3SNiZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/6] xsk: exit NAPI loop when AF_XDP Rx ring is full
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        id S1730183AbgIHMb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 08:31:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:46270 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730173AbgIHLvj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 07:51:39 -0400
+IronPort-SDR: HXtBUuOkDAc6tMlC4VIcrD9k3IvNMObdZnla9KtNpk1j/B7043z9mTcEXPtGHjOGAuK4IA6NW0
+ 7/jQDvqsqKpw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9737"; a="138159970"
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="138159970"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2020 04:43:25 -0700
+IronPort-SDR: /KW5xN9tmU+/VP+yjJ+PMtZ4bqPvEQwsINO0yacB5Yo53ixbt1zCcyaO1/L/qDpSkx+PrqXyl6
+ dIVPtvcrIJmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,405,1592895600"; 
+   d="scan'208";a="284485960"
+Received: from pgierasi-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.39.2])
+  by fmsmga007.fm.intel.com with ESMTP; 08 Sep 2020 04:43:23 -0700
+Subject: Re: [Intel-wired-lan] [PATCH bpf-next 4/4] ixgbe, xsk: use
+ XSK_NAPI_WEIGHT as NAPI poll budget
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        hawk@kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kuba@kernel.org, intel-wired-lan@lists.osuosl.org,
+        magnus.karlsson@intel.com
+References: <20200907150217.30888-1-bjorn.topel@gmail.com>
+ <20200907150217.30888-5-bjorn.topel@gmail.com>
+ <82901368-8e17-a63d-0e46-2434b5777c04@molgen.mpg.de>
+ <0fb03a39-d098-8fc9-ba70-e919ef8e091e@intel.com>
+ <0b927a07-6fbb-0e5b-e791-9558c9ea8e63@molgen.mpg.de>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <9d488b02-b03f-e1ee-d4c5-12e330d567b1@intel.com>
+Date:   Tue, 8 Sep 2020 13:43:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <0b927a07-6fbb-0e5b-e791-9558c9ea8e63@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 12:33 PM Maxim Mikityanskiy <maximmi@nvidia.com> wro=
-te:
->
-> On 2020-09-04 16:59, Bj=C3=B6rn T=C3=B6pel wrote:
-> > On 2020-09-04 15:53, Bj=C3=B6rn T=C3=B6pel wrote:
-> >> This series addresses a problem that arises when AF_XDP zero-copy is
-> >> enabled, and the kernel softirq Rx processing and userland process
-> >> is running on the same core.
-> >>
-> > [...]
-> >>
-> >
-> > @Maxim I'm not well versed in Mellanox drivers. Would this be relevant
-> > to mlx5 as well?
->
-> Thanks for letting me know about this series! So the basic idea is to
-> stop processing hardware completions if the RX ring gets full, because
-> the application didn't have chance to run? Yes, I think it's also
-> relevant to mlx5, the issue is not driver-specific, and a similar fix is
-> applicable. However, it may lead to completion queue overflows - some
-> analysis is needed to understand what happens then and how to handle it.
->
-> Regarding the feature, I think it should be opt-in (disabled by
-> default), because old applications may not wakeup RX after they process
-> packets in the RX ring.
+On 2020-09-08 13:20, Paul Menzel wrote:
+[...]>> Paul, thanks for the input! The netdev/bpf trees always include the
+>> cover letter in the merge commit.
+> 
+> Yes, for pull/merge requests. But you posted them to the list, so I’d 
+> assume they will be applied with `git am` and not merged, or am I 
+> missing something. Could you please point me to a merge commit where the 
+> patches were posted to the list?
+> 
 
-How about need_wakeup enable/disable at bind time being that opt-in,
-instead of a new option? It is off by default, and when it is off, the
-driver busy-spins on the Rx ring until it can put an entry there. It
-will not yield to the application by returning something less than
-budget. Applications need not check the need_wakeup flag. If
-need_wakeup is enabled by the user, the contract is that user-space
-needs to check the need_wakeup flag and act on it. If it does not,
-then that is a programming error and it can be set for any unspecified
-reason. No reason to modify the application, if it checks need_wakeup.
-But if this patch behaves like that I have not checked.
+An example: A series is posted to the list [1], and when merged the 
+merge commit look like [2].
 
-Good points in the rest of the mail, that I think should be addressed.
 
-/Magnus
+Thanks,
+Björn
 
-> Is it required to change xdpsock accordingly?
-> Also, when need_wakeup is disabled, your driver implementation seems to
-> quit NAPI anyway, but it shouldn't happen, because no one will send a
-> wakeup.
->
-> Waiting until the RX ring fills up, then passing control to the
-> application and waiting until the hardware completion queue fills up,
-> and so on increases latency - the busy polling approach sounds more
-> legit here.
->
-> The behavior may be different depending on the driver implementation:
->
-> 1. If you arm the completion queue and leave interrupts enabled on early
-> exit too, the application will soon be interrupted anyway and won't have
-> much time to process many packets, leading to app <-> NAPI ping-pong one
-> packet at a time, making NAPI inefficient.
->
-> 2. If you don't arm the completion queue on early exit and wait for the
-> explicit wakeup from the application, it will easily overflow the
-> hardware completion queue, because we don't have a symmetric mechanism
-> to stop the application on imminent hardware queue overflow. It doesn't
-> feel correct and may be trickier to handle: if the application is too
-> slow, such drops should happen on driver/kernel level, not in hardware.
->
-> Which behavior is used in your drivers? Or am I missing some more options=
-?
->
-> BTW, it should be better to pass control to the application before the
-> first dropped packet, not after it has been dropped.
->
-> Some workloads different from pure AF_XDP, for example, 50/50 AF_XDP and
-> XDP_TX may suffer from such behavior, so it's another point to make a
-> knob on the application layer to enable/disable it.
->
->  From the driver API perspective, I would prefer to see a simpler API if
-> possible. The current API exposes things that the driver shouldn't know
-> (BPF map type), and requires XSK-specific handling. It would be better
-> if some specific error code returned from xdp_do_redirect was reserved
-> to mean "exit NAPI early if you support it". This way we wouldn't need
-> two new helpers, two xdp_do_redirect functions, and this approach would
-> be extensible to other non-XSK use cases without further changes in the
-> driver, and also the logic to opt-in the feature could be put inside the
-> kernel.
->
-> Thanks,
-> Max
->
-> >
-> > Cheers,
-> > Bj=C3=B6rn
->
+
+[1] 
+https://lore.kernel.org/bpf/20200520192103.355233-1-bjorn.topel@gmail.com/
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=79917b242c3fe0d89e4752bc25ffef4574c2194b
