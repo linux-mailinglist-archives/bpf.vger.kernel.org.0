@@ -2,144 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B4B26188D
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 19:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0907C2618BF
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 20:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732158AbgIHR5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 13:57:31 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6728 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732147AbgIHR53 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Sep 2020 13:57:29 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 088HvH2T007609
-        for <bpf@vger.kernel.org>; Tue, 8 Sep 2020 10:57:29 -0700
+        id S1731681AbgIHSBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 14:01:44 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62384 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731548AbgIHSBf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 8 Sep 2020 14:01:35 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 088I0ZXp032050
+        for <bpf@vger.kernel.org>; Tue, 8 Sep 2020 11:01:35 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=9dIqUSAOyW4JTjJ0Sx+D38qoYSVKeVPCJyRl+wMhUAU=;
- b=eXlFAnjeRGKpvARRqEY6uP8OxxfZKAJlyiSh8+wFrQzSDS+Isnnd62gSqicZUFbkUrFb
- VtfMWWMXzrTOIvt7vBUHKkCoA5FRlO2fc2lh60QC29WP5068KcTnWXOv95693c82BJGt
- eUU8Cd+Wz6xOm0Awnt/PiPZevocoxcYUT6U= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 33c91hdmt9-11
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=QcZNytBp4an3COkPG96D0v1/8brsO2t1w7s3YhRQU10=;
+ b=EOcbAo98BXA8LhDMedyDPSy02HpF+yGxiPASAbqoakKdkmaD5ZRF7eB4sd7jn8IefMEH
+ rkXrcXqbgWuSdINMTtwVkDk4gkkaKedCeOilWhA6WM67YNT+r/Pe9WXnzFXr0rXAA4QE
+ D7RBRrh8Fi7X35qcBAOkiVRHoNYlhTP9nOg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33ct5ttuft-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 10:57:29 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 11:01:35 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 8 Sep 2020 10:57:11 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id E2C013704E21; Tue,  8 Sep 2020 10:57:03 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: add test for map_ptr arithmetic
-Date:   Tue, 8 Sep 2020 10:57:03 -0700
-Message-ID: <20200908175703.2463721-1-yhs@fb.com>
+ 15.1.1979.3; Tue, 8 Sep 2020 11:01:33 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 1FA902EC6B09; Tue,  8 Sep 2020 11:01:31 -0700 (PDT)
+From:   Andrii Nakryiko <andriin@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <acme@kernel.org>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH bpf-next] perf: stop using deprecated bpf_program__title()
+Date:   Tue, 8 Sep 2020 11:01:27 -0700
+Message-ID: <20200908180127.1249-1-andriin@fb.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200908175702.2463416-1-yhs@fb.com>
-References: <20200908175702.2463416-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-08_09:2020-09-08,2020-09-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 suspectscore=8 adultscore=0 spamscore=0
- bulkscore=0 mlxlogscore=957 impostorscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009080170
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
+ malwarescore=0 impostorscore=0 priorityscore=1501 clxscore=1015
+ phishscore=0 bulkscore=0 mlxlogscore=976 mlxscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009080171
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Change selftest map_ptr_kern.c with disabling inlining for
-one of subtests, which will fail the test without previous
-verifier change. Also added to verifier test for both
-"map_ptr +=3D scalar" and "scalar +=3D map_ptr" arithmetic.
+Switch from deprecated bpf_program__title() API to
+bpf_program__section_name(). Also drop unnecessary error checks because
+neither bpf_program__title() nor bpf_program__section_name() can fail or
+return NULL.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in =
+favor of "section name"")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- .../selftests/bpf/progs/map_ptr_kern.c        | 10 +++++-
- .../testing/selftests/bpf/verifier/map_ptr.c  | 32 +++++++++++++++++++
- 2 files changed, 41 insertions(+), 1 deletion(-)
+ tools/perf/util/bpf-loader.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/tes=
-ting/selftests/bpf/progs/map_ptr_kern.c
-index 982a2d8aa844..0b754106407d 100644
---- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -82,6 +82,14 @@ static inline int check_default(struct bpf_map *indire=
-ct,
- 	return 1;
- }
+diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+index 2feb751516ab..0374adcb223c 100644
+--- a/tools/perf/util/bpf-loader.c
++++ b/tools/perf/util/bpf-loader.c
+@@ -328,12 +328,6 @@ config_bpf_program(struct bpf_program *prog)
+ 	probe_conf.no_inlines =3D false;
+ 	probe_conf.force_add =3D false;
 =20
-+static __attribute__ ((noinline)) int
-+check_default_noinline(struct bpf_map *indirect, struct bpf_map *direct)
-+{
-+	VERIFY(check(indirect, direct, sizeof(__u32), sizeof(__u32),
-+		     MAX_ENTRIES));
-+	return 1;
-+}
-+
- typedef struct {
- 	int counter;
- } atomic_t;
-@@ -107,7 +115,7 @@ static inline int check_hash(void)
- 	struct bpf_map *map =3D (struct bpf_map *)&m_hash;
- 	int i;
+-	config_str =3D bpf_program__title(prog, false);
+-	if (IS_ERR(config_str)) {
+-		pr_debug("bpf: unable to get title for program\n");
+-		return PTR_ERR(config_str);
+-	}
+-
+ 	priv =3D calloc(sizeof(*priv), 1);
+ 	if (!priv) {
+ 		pr_debug("bpf: failed to alloc priv\n");
+@@ -341,6 +335,7 @@ config_bpf_program(struct bpf_program *prog)
+ 	}
+ 	pev =3D &priv->pev;
 =20
--	VERIFY(check_default(&hash->map, map));
-+	VERIFY(check_default_noinline(&hash->map, map));
++	config_str =3D bpf_program__section_name(prog);
+ 	pr_debug("bpf: config program '%s'\n", config_str);
+ 	err =3D parse_prog_config(config_str, &main_str, &is_tp, pev);
+ 	if (err)
+@@ -454,10 +449,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n=
+,
+ 	if (err) {
+ 		const char *title;
 =20
- 	VERIFY(hash->n_buckets =3D=3D MAX_ENTRIES);
- 	VERIFY(hash->elem_size =3D=3D 64);
-diff --git a/tools/testing/selftests/bpf/verifier/map_ptr.c b/tools/testi=
-ng/selftests/bpf/verifier/map_ptr.c
-index b52209db8250..637f9293bda8 100644
---- a/tools/testing/selftests/bpf/verifier/map_ptr.c
-+++ b/tools/testing/selftests/bpf/verifier/map_ptr.c
-@@ -60,3 +60,35 @@
- 	.result =3D ACCEPT,
- 	.retval =3D 1,
- },
-+{
-+	"bpf_map_ptr: r =3D 0, map_ptr =3D map_ptr + r",
-+	.insns =3D {
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_hash_16b =3D { 4 },
-+	.result =3D ACCEPT,
-+},
-+{
-+	"bpf_map_ptr: r =3D 0, r =3D r + map_ptr",
-+	.insns =3D {
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_MOV64_IMM(BPF_REG_1, 0),
-+	BPF_LD_MAP_FD(BPF_REG_0, 0),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_hash_16b =3D { 4 },
-+	.result =3D ACCEPT,
-+},
+-		title =3D bpf_program__title(prog, false);
+-		if (!title)
+-			title =3D "[unknown]";
+-
++		title =3D bpf_program__section_name(prog);
+ 		pr_debug("Failed to generate prologue for program %s\n",
+ 			 title);
+ 		return err;
 --=20
 2.24.1
 
