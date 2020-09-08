@@ -2,159 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6BF2610B8
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 13:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB26E2610FC
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 13:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730064AbgIHLeh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 07:34:37 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:49899 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729869AbgIHLcI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Sep 2020 07:32:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599564722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qJOK6TJNvITfrbUqg2poQb5ZILvHFMf3hPNolITcdKo=;
-        b=GkNzZEYv8MePUEo9B68CsJcLvgW9/JzUAlWUEJfT8zTi3jnVZqUY/kSQcdmsvYd7rbi4Ml
-        53Xs6MIX+A0yLnE15hOYmYMq4gI9gDo4bv5n2NkCLpnAthmE0e5D2SoH7DQ8qNCrPZ4pzH
-        rkz/UbyFp4BV1xEaJtCaZYVxy/sQzno=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-8n2UFsmuNOaDzqtkgM-gpw-1; Tue, 08 Sep 2020 07:32:01 -0400
-X-MC-Unique: 8n2UFsmuNOaDzqtkgM-gpw-1
-Received: by mail-wm1-f70.google.com with SMTP id c186so4619636wmd.9
-        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 04:32:00 -0700 (PDT)
+        id S1729992AbgIHLtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 07:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729305AbgIHLjl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 07:39:41 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A55C061796;
+        Tue,  8 Sep 2020 04:37:36 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l191so9844490pgd.5;
+        Tue, 08 Sep 2020 04:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qZQdroSdlZPgLxB0axJE1VbD4VyjCyb0ExGeUn8jyYA=;
+        b=feiWwlY5m5X/poukLCIXVUznp1v6YzwSnrYGs57mOqH1uqdlruhrRqUXK9I+yCkwZ9
+         TF9cPtT9oE2gaTO+H5qgQMOhzLHULt6x95wPpYqi73TT+wh162RuJGlxgT4x5J3l2TUX
+         bsPEd55MsOgYs51TVmFn7DzrVe2Bfmf2bAi33wH5MMn/0cmsigP3X/AmTWo5r/7r0wkE
+         9UeTIMSmUGXeEZ++AVhACt6VwszBqAtDxBco7t032wfN79Q56dSW5aZIrCivqshweMYz
+         ICQvCrqVZT2sJq4QXZbwl8HlqAVNrZZb3FL8Q/8Hf6HVOq4HtGAIy44KzVq2mX2eVPWm
+         kzIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qJOK6TJNvITfrbUqg2poQb5ZILvHFMf3hPNolITcdKo=;
-        b=Q5OUiEjMBpwhH97LssPygf0NElsmwGMKDaMgZHD1CmFQKo7YQ3LKgnRiJvHNbftzUD
-         B0j43GDHjBtONt3LdKYaG3tN+TiqQ7Oq9+ZKsllEe1W4FT7bBXsiTiH0y1ZnqnjeWFDd
-         aXDmJo4yIaBYoHD7k3byQFEsno4UiLicEYijYUM/bw3Nvyr4TxD1GhNsy99ablhmH17f
-         Ca+gGZrEb0Ph3BPRy2dDn7VtqGFkFD/Ucf6XV1w9qjpbmwIH6tD/PKZIsAfeeWHxo5V/
-         rvwAve5TgqOzpmNw5IqgfXzl4ih/CMqO3bAEkiUaTE/n1P7VizlkyQ1jbGFZHyI191Ik
-         RtFA==
-X-Gm-Message-State: AOAM5314cUyhxfq3NFDaGbkSeIoNtKZ7V4Zia3mmf66Fm2471mhS4JLO
-        KixkOq4h2VALgUdPHvbBMwtgzPBjwAAoV/eHXEdSF3H25QmXGUbNYJ0N0eHXTbTZ05MObULBDa9
-        r1QOS1VL77XCVLHSIqI66Xo3GPCFN
-X-Received: by 2002:adf:ec87:: with SMTP id z7mr28434521wrn.57.1599564719759;
-        Tue, 08 Sep 2020 04:31:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUOWkdXN7QQTinUyEwo+4yowl4NNkJ+HqJnZwZ73aBZNS2bIbARUjM8eh1nFLlsFmFg9r+dIH7TyKdiD9mxw0=
-X-Received: by 2002:adf:ec87:: with SMTP id z7mr28434498wrn.57.1599564719494;
- Tue, 08 Sep 2020 04:31:59 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qZQdroSdlZPgLxB0axJE1VbD4VyjCyb0ExGeUn8jyYA=;
+        b=SR09nKTG2nJeqGo7KDF/SMcid2EnWVWQOYXgJYunjrp3fjWYFHpAPwAiu7y7V3sJAO
+         ctCmHpd+odNaA+7+Cyyew46x5bXdCEHIqO4giHugij7VxOOsCVZd92dkt4GMFO2B/bPS
+         iUx6Zo1XmgBAa3ChK84nK3Gt7BqBLwueMzPql2GELY2zq3wLTpwSyPUH5WBdX+5CxK/R
+         fseqnrwwOpQXsrK1WaU0JrnPKPNOd86cMj+yPKy0ZA9hsyOFFjlleDQ1lFHhWLQ05zNd
+         1+o/DPXoRCX3WwMcDvbE59vDu6zyu5RnjIwjbdA95aN6xsWag7n92VXQ3SBpAdi1AHPi
+         JP6w==
+X-Gm-Message-State: AOAM532hFGG9fofJLKOjOvG9io/OvMcY1vvIgJS2GVlkuR8w3jcoa7CL
+        /R9Q5sR9rT+XGHClFpTp3AqgmlK0niR74d9Yjp8=
+X-Google-Smtp-Source: ABdhPJxvB/UAQ9/+LyteEXl5IYO+BqxIZARWPRi6EvCAUoapDZUTrScpa0vMM9G7scfpXEiQ5GcqmCkc4UEDn+aEC5k=
+X-Received: by 2002:aa7:80d3:: with SMTP id a19mr24557164pfn.102.1599565055486;
+ Tue, 08 Sep 2020 04:37:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903140542.156624-1-yauheni.kaliuta@redhat.com>
- <1ac6aef1-b38c-06c7-6e0d-b8459207d7d9@iogearbox.net> <CANoWswkX9xrG48HHO19Q67ogmNcOArpe4iZwWU4_S08A7H+_Cg@mail.gmail.com>
- <7510248caa08a521150b3089e12ded4312eaf14b.camel@linux.ibm.com>
-In-Reply-To: <7510248caa08a521150b3089e12ded4312eaf14b.camel@linux.ibm.com>
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Tue, 8 Sep 2020 14:31:43 +0300
-Message-ID: <CANoWswmGO45kBwtfPLCwd7LeUQstDS5L3yqDVUny1y2r=VcACw@mail.gmail.com>
-Subject: Re: [PATCH RFC] bpf: update current instruction on patching
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Jakub Kicinski <kuba@kernel.org>
+References: <20200904135332.60259-1-bjorn.topel@gmail.com> <0257f769-0f43-a5b7-176d-7c5ff8eaac3a@intel.com>
+ <11f663ec-5ea7-926c-370d-0b67d3052583@nvidia.com>
+In-Reply-To: <11f663ec-5ea7-926c-370d-0b67d3052583@nvidia.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 8 Sep 2020 13:37:24 +0200
+Message-ID: <CAJ8uoz3WbS7E1OiC5p8x+o48vwkN43R9JxMwvRvgVk4n3SNiZg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/6] xsk: exit NAPI loop when AF_XDP Rx ring is full
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        hawk@kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi!
-
-On Mon, Sep 7, 2020 at 7:14 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Tue, Sep 8, 2020 at 12:33 PM Maxim Mikityanskiy <maximmi@nvidia.com> wro=
+te:
 >
-> On Thu, 2020-09-03 at 19:13 +0300, Yauheni Kaliuta wrote:
-> > On Thu, Sep 3, 2020 at 6:10 PM Daniel Borkmann <daniel@iogearbox.net>
-> > wrote:
-> > > On 9/3/20 4:05 PM, Yauheni Kaliuta wrote:
-> > > > On code patching it may require to update branch destinations if
-> > > > the
-> > > > code size changed. bpf_adj_delta_to_imm/off increments offset
-> > > > only
-> > > > if the patched area is after the branch instruction. But it's
-> > > > possible, that the patched area itself is a branch instruction
-> > > > and
-> > > > requires destination update.
-> > >
-> > > Could you provide a concrete example and walk us through? I'm
-> > > probably
-> > > missing something but if the patchlet contains a branch
-> > > instruction, then
-> > > it should be 'self-contained'. In the sense that the patchlet is a
-> > > 'black
-> > > box' that replaces 1 insns with n insns but there is no awareness
-> > > what's
-> > > inside these insns and hence no fixup for that inside
-> > > bpf_patch_insn_data().
-> >
-> > The code is
-> > Disassembly of section classifier/test:
-> >
-> > 0000000000000000 test_cls:
-> >        0:       85 01 00 00 ff ff ff ff call -1
-> >                 0000000000000000:  R_BPF_64_32  f7
-> >        1:       95 00 00 00 00 00 00 00 exit
-> > 0000000000000000 f1:
-> >        0:       61 01 00 00 00 00 00 00 r0 = *(u32 *)(r1 + 0)
-> >        1:       95 00 00 00 00 00 00 00 exit
+> On 2020-09-04 16:59, Bj=C3=B6rn T=C3=B6pel wrote:
+> > On 2020-09-04 15:53, Bj=C3=B6rn T=C3=B6pel wrote:
+> >> This series addresses a problem that arises when AF_XDP zero-copy is
+> >> enabled, and the kernel softirq Rx processing and userland process
+> >> is running on the same core.
+> >>
 > > [...]
-> > 00000000000000a8 f7:
-> >       21:       85 01 00 00 ff ff ff ff call -1
-> >                 00000000000000a8:  R_BPF_64_32  f6
-> >       22:       95 00 00 00 00 00 00 00 exit
+> >>
 > >
-> > Before the patching the bytecode is:
-> >
-> > 00000000: 85 01 00 00 00 00 00 16 95 00 00 00 00 00 00 00
-> > 00000010: 61 01 00 00 00 00 00 00 95 00 00 00 00 00 00 00
-> > [...]
-> >
-> > It becomes
-> >
-> >
-> > 00000000: 85 01 00 00 00 00 00 2b bc 00 00 00 00 00 00 01
-> > 00000010: 95 00 00 00 00 00 00 00 61 01 00 80 00 00 00 00
-> >
-> > at the end, the 2b offset is incorrect.
-> >
-> > With that zext patching the code "85 01 00 00 00 00 00 16" is
-> > replaced
-> > with "85 01 00 00 00 00 00 16 bc 00 00 00 00 00 00 01", 0x16 is not
-> > changed, but the real offset has changed.
-> >
-> > > So, if we take an existing branch insns from the code, move it into
-> > > the
-> > > patchlet and extend beginning or end, then it feels more like a bug
-> > > to the
-> > > one that called bpf_patch_insn_data(), aka zext code here. Bit
-> > > puzzled why
-> > > this is only seen now, my impression was that Ilya was running
-> > > s390x the
-> > > BPF selftests quite recently?
-> >
-> > I have not investigated why on s390 it is zext'ed, but on x86 not,
-> > it's related to the size of the register when it returns 32bit value.
-> > There may be a bug there as well.
-> >
-> > I did think a bit more on your words, making the zext patching code
-> > specially check jumps and adjust the offset in the patchlet looks
-> > more
-> > correct. But duplicates the existing code. I should spend more time
-> > on
-> > that.
+> > @Maxim I'm not well versed in Mellanox drivers. Would this be relevant
+> > to mlx5 as well?
 >
-> I guess copying the existing insn into the patchlet was introduced
-> because there is nothing like bpf_insert_insns()? I.e. we can replace
-> an existing insn with a patchlet, but cannot append anything to it.
-> Would introducing such function solve this problem?
+> Thanks for letting me know about this series! So the basic idea is to
+> stop processing hardware completions if the RX ring gets full, because
+> the application didn't have chance to run? Yes, I think it's also
+> relevant to mlx5, the issue is not driver-specific, and a similar fix is
+> applicable. However, it may lead to completion queue overflows - some
+> analysis is needed to understand what happens then and how to handle it.
+>
+> Regarding the feature, I think it should be opt-in (disabled by
+> default), because old applications may not wakeup RX after they process
+> packets in the RX ring.
 
-Sounds as a plan!
+How about need_wakeup enable/disable at bind time being that opt-in,
+instead of a new option? It is off by default, and when it is off, the
+driver busy-spins on the Rx ring until it can put an entry there. It
+will not yield to the application by returning something less than
+budget. Applications need not check the need_wakeup flag. If
+need_wakeup is enabled by the user, the contract is that user-space
+needs to check the need_wakeup flag and act on it. If it does not,
+then that is a programming error and it can be set for any unspecified
+reason. No reason to modify the application, if it checks need_wakeup.
+But if this patch behaves like that I have not checked.
 
+Good points in the rest of the mail, that I think should be addressed.
 
--- 
-WBR, Yauheni
+/Magnus
 
+> Is it required to change xdpsock accordingly?
+> Also, when need_wakeup is disabled, your driver implementation seems to
+> quit NAPI anyway, but it shouldn't happen, because no one will send a
+> wakeup.
+>
+> Waiting until the RX ring fills up, then passing control to the
+> application and waiting until the hardware completion queue fills up,
+> and so on increases latency - the busy polling approach sounds more
+> legit here.
+>
+> The behavior may be different depending on the driver implementation:
+>
+> 1. If you arm the completion queue and leave interrupts enabled on early
+> exit too, the application will soon be interrupted anyway and won't have
+> much time to process many packets, leading to app <-> NAPI ping-pong one
+> packet at a time, making NAPI inefficient.
+>
+> 2. If you don't arm the completion queue on early exit and wait for the
+> explicit wakeup from the application, it will easily overflow the
+> hardware completion queue, because we don't have a symmetric mechanism
+> to stop the application on imminent hardware queue overflow. It doesn't
+> feel correct and may be trickier to handle: if the application is too
+> slow, such drops should happen on driver/kernel level, not in hardware.
+>
+> Which behavior is used in your drivers? Or am I missing some more options=
+?
+>
+> BTW, it should be better to pass control to the application before the
+> first dropped packet, not after it has been dropped.
+>
+> Some workloads different from pure AF_XDP, for example, 50/50 AF_XDP and
+> XDP_TX may suffer from such behavior, so it's another point to make a
+> knob on the application layer to enable/disable it.
+>
+>  From the driver API perspective, I would prefer to see a simpler API if
+> possible. The current API exposes things that the driver shouldn't know
+> (BPF map type), and requires XSK-specific handling. It would be better
+> if some specific error code returned from xdp_do_redirect was reserved
+> to mean "exit NAPI early if you support it". This way we wouldn't need
+> two new helpers, two xdp_do_redirect functions, and this approach would
+> be extensible to other non-XSK use cases without further changes in the
+> driver, and also the logic to opt-in the feature could be put inside the
+> kernel.
+>
+> Thanks,
+> Max
+>
+> >
+> > Cheers,
+> > Bj=C3=B6rn
+>
