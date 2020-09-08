@@ -2,68 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0F5261F73
-	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 22:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0385261FD7
+	for <lists+bpf@lfdr.de>; Tue,  8 Sep 2020 22:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730338AbgIHUDg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Sep 2020 16:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
+        id S1730673AbgIHUHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Sep 2020 16:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730453AbgIHPXz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Sep 2020 11:23:55 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53DFC0A3BFD
-        for <bpf@vger.kernel.org>; Tue,  8 Sep 2020 08:20:07 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id h6so4386872qtd.6
-        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 08:20:07 -0700 (PDT)
+        with ESMTP id S1730079AbgIHUHQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Sep 2020 16:07:16 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CB4C061755
+        for <bpf@vger.kernel.org>; Tue,  8 Sep 2020 13:07:15 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id c17so289034ybe.0
+        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 13:07:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Z2zEcPrDOEXtenqcSm/YjsHy5a17RGaHKUKz5UTd9dw=;
-        b=Cu/56IEHMRAN0rbp0KcVFoAxNXRiG8uj7NNBgaqPg1pihWNsPtbInLktB0tNhJviiV
-         atY5oBOocekRqdx06+245jPcK9RxrJngS84/SPWgs7TyRI2Am99FBaYSsYBYECrNHyUF
-         kzn+AGkte+wKaYdhfaIPfpEHGqOUT0USUZMezTJUDcHM5Mez8oo1t8e3iC1qr7GDRzx9
-         XyFSrnVSO+nbdfzXdiBcvFcwCQaapKyXAgRpXwnj8upuJacWFZQroWONgByJPjAj1FrD
-         hrH2VJ+hSKf0fpwsfD0sZRvs6Ux92eTgWXvz4a8Ie63ZW619BhbxMH1qIi/9jUjsvyuz
-         u3nQ==
+        bh=XgVQ3QbFarEDILyufFnpyBmVmGtIcKPA8eUKLoYj4c4=;
+        b=ss2Bwf4EkWNn5p6U7f08VMVlIhYP3eN+HiuxaWroqm+VZ6aIdumFnzUxf92TPF4gZf
+         b4rQNOP37OnmS0VxyAlH7jegtrmSjcM4JADYyaQ5oHg1GyEcz5Tj0caRxnDbPGfPAkza
+         kXD7gUCNePyPLzwu4ZmVx5me0aAAsxCiMyePhAD507W0ZvO0dSfye8tnVwWpFs0Pt3bD
+         D2nbAKtFHyrArAyAF65FJGPx5rBdPqAhOZJfAJBnJuCZ2NC40BPtz0WQS6IB+2/+nzDX
+         Cphq9Zlj9QZ+umXq7yNkewfCuXffXYO8+2rGczO0P2buURTUXCObF0TrnGIPHNp/XAOV
+         6hRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z2zEcPrDOEXtenqcSm/YjsHy5a17RGaHKUKz5UTd9dw=;
-        b=roxeWJFfP2rBXteQteukiuWpVwHBAW8RMK7J8ZA25vpFdde1EKuyGggufHmZ0MxZx4
-         JvJV3LhjlI6nkqfKNhKQON0x3z7kpP+EoDYU9Z5uOp+vqbBooXbI9vqRF9FWYNwKnD8j
-         6fVeRn349LXxqq4dggFcZ2UJ9ZcsN78iQqvE63LvRtx0awb4Zm0uXvFsHtvFHTTHCitX
-         3iqi1KihrsupgZwekgI7Zpc0+UsjBfYVuhDk3QL5JWqEElpa0QpJKhCaCS0xudlLr806
-         D3uhlEV7DgdI5/n3kaucib7MHIcKuWcmiVTSQeHY55kilKnfWlnKy2kvlq7lOZZD1/Xd
-         t4pQ==
-X-Gm-Message-State: AOAM531xoK7JhsEWCd1pDIxOvr30N69cwl+MqSfYY7D8N5GWW08/vChA
-        Fxxu47LVm74SM1QNGfqHZ4US6zBEClDJ+BKCocjUcQ==
-X-Google-Smtp-Source: ABdhPJxfZqPPo92H7ajgNrQCy8SRwH8pjaiQof6spmn2G4AhL3ZYJyUzlgpka/jybSCW+X6+AVnE9rabmY9IXTcvS+4=
-X-Received: by 2002:ac8:6648:: with SMTP id j8mr574001qtp.326.1599578405126;
- Tue, 08 Sep 2020 08:20:05 -0700 (PDT)
+        bh=XgVQ3QbFarEDILyufFnpyBmVmGtIcKPA8eUKLoYj4c4=;
+        b=g0aiyjCEauRhvaAiqrnPKXPomKsxwra8oC8GEY58SlyixtEbPMM5JmXhJfPtOIwczE
+         za6mopZYeGfnyHFTRG/TLXXyg8AXjKmUrbDHYWdqJc7RldFUobwJ2NQoSyf1jhaZN258
+         ZinQYJOVsFA+jl0tvOpGa7khi5Dzre2wZdc66cep3GGQR/rLU+nemhgstdwrSQghouYg
+         mD2H6JhqF6gYaGTT3ZmD5ow1rfGsd1yQN/Yr1tmVoADf95E3/OF7R8jLHsxxXXMaXiXJ
+         fQlBdVLM4qCrzEebEWB1/+McWQ9opTVVZ0yYFykMsr4y+75+ouMBMTGOc0woM692/XXs
+         VdpA==
+X-Gm-Message-State: AOAM533WbggKEoiyo+Doi4H2stv5w54+kGw0vGeOuyuFou1RqjRAIzNI
+        5+sJ7jaUFE8n4NnifVj0AC0PMWwnE3IE4DxsC5pREVjT5qw=
+X-Google-Smtp-Source: ABdhPJxGgDFvIh/MCDIR0LQsseXoEeHuzznYBRGOyOvSKa4g+WAYrfYTJBeTcV9yY7sQ2T34AzLyBJL6ISB0dUQuBac=
+X-Received: by 2002:a25:ad5a:: with SMTP id l26mr839953ybe.510.1599595635086;
+ Tue, 08 Sep 2020 13:07:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200828193603.335512-1-sdf@google.com> <20200828193603.335512-4-sdf@google.com>
- <CAEf4BzZtYTyBT=jURkF4RQLHXORooVwXrRRRkoSWDqCemyGQeA@mail.gmail.com>
- <20200904012909.c7cx5adhy5f23ovo@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZp4ODLbjEiv=W7byoR9XzTqAQ052wZM_wD4=aTPmkjbw@mail.gmail.com> <87mu22ottv.fsf@toke.dk>
-In-Reply-To: <87mu22ottv.fsf@toke.dk>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 8 Sep 2020 08:19:59 -0700
-Message-ID: <CAKH8qBuTwNhCjdE91d+9bYsLko08qNf4E2B_33x8Zcc4KAK36g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/8] libbpf: Add BPF_PROG_BIND_MAP syscall and
- use it on .metadata section
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        YiFei Zhu <zhuyifei@google.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Andrey Ignatov <rdna@fb.com>
+References: <CAO__=G6kqajLdP_cWJiAUjXMRdJe2xBy2FJGiM1v4h6YquD3kg@mail.gmail.com>
+In-Reply-To: <CAO__=G6kqajLdP_cWJiAUjXMRdJe2xBy2FJGiM1v4h6YquD3kg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Sep 2020 13:07:04 -0700
+Message-ID: <CAEf4Bza2VA=eAOtmLaL23Fz07giN6AG3f5okwOdAcmrHda6AhQ@mail.gmail.com>
+Subject: Re: Problem with atomic operations on arm32 with BPF
+To:     David Marcinkovic <david.marcinkovic@sartura.hr>
+Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
+        Borna Cafuk <borna.cafuk@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -71,60 +61,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 1:49 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Mon, Sep 7, 2020 at 5:18 AM David Marcinkovic
+<david.marcinkovic@sartura.hr> wrote:
 >
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> Hello everyone,
 >
-> >> May be we should talk about problem statement and goals.
-> >> Do we actually need metadata per program or metadata per single .o
-> >> or metadata per final .o with multiple .o linked together?
-> >> What is this metadata?
-> >
-> > Yep, that's a very valid question. I've also CC'ed Andrey.
+> I am trying to run a simple BPF example that uses the
+> `__sync_fetch_and_add` built-in function for atomic memory access.  It
+> fails with `libbpf: load bpf program failed: ERROR:
+> strerror_r(524)=3D22` error message.
 >
-> For the libxdp use case, I need metadata per program. But I'm already
-> sticking that in a single section and disambiguating by struct name
-> (just prefixing the function name with a _ ), so I think it's fine to
-> have this kind of "concatenated metadata" per elf file and parse out the
-> per-program information from that. This is similar to the BTF-encoded
-> "metadata" we can do today.
-We've come full circle :-)
-I think we discussed that approach originally - to stick everything
-into existing global .data/.rodata and use some variable prefix for
-the metadata. I'm fine with that approach. The only thing I don't
-understand is - why bother with the additional .rodata.metadata
-section and merging?
-Can we unconditionally do BPF_PROG_BIND_MAP(.rodata) from libbpf (and
-ignore the error) and be done?
+> This error does not seem to occur on the amd64 architecture. I am
+> using clang version 10 for both, compiling on amd64 and
+> cross-compiling for arm32.
+>
+> I am aware that those built-in functions are available for arm32. [0].
+> Why is this error occurring?
+>
 
-Sticking to the original question: for our use-case, the metadata is
-per .o file. I'm not sure how it would work in the 'multiple .o linked
-together' use case. Ideally, we'd need to preserve all metadata?
+Seems like BPF JIT for arm32 doesn't yet support those atomic
+operations, see [0]
 
-> >> If it's just unreferenced by program read only data then no special na=
-mes or
-> >> prefixes are needed. We can introduce BPF_PROG_BIND_MAP to bind any ma=
-p to any
-> >> program and it would be up to tooling to decide the meaning of the dat=
-a in the
-> >> map. For example, bpftool can choose to print all variables from all r=
-ead only
-> >> maps that match "bpf_metadata_" prefix, but it will be bpftool convent=
-ion only
-> >> and not hard coded in libbpf.
-> >
-> > Agree as well. It feels a bit odd for libbpf to handle ".metadata"
-> > specially, given libbpf itself doesn't care about its contents at all.
-> >
-> > So thanks for bringing this up, I think this is an important
-> > discussion to have.
+  [0] https://github.com/torvalds/linux/blob/master/arch/arm/net/bpf_jit_32=
+.c#L1627
+
+You might want to try running in interpreted mode and see if that
+works for you. You'll lose speed, but will get functionality you need.
+
+> To demonstrate I have prepared one simple example program that uses
+> that built-in function for atomic memory access.
 >
-> I'm fine with having this be part of .rodata. One drawback, though, is
-> that if any metadata is defined, it becomes a bit more complicated to
-> use bpf_map__set_initial_value() because that now also has to include
-> the metadata. Any way we can improve upon that?
-Right. One additional thing we wanted this metadata to have is the
-comm of the process who loaded this bpf program (to be filled/added by
-libbpf).
-I suppose .rodata.metadata section can help with that?
+> Any input is much appreciated,
+>
+> Best regards,
+> David Mar=C4=8Dinkovi=C4=87
+>
+> [0] https://developer.arm.com/documentation/dui0491/c/compiler-specific-f=
+eatures/gnu-builtin-functions?lang=3Den
+>
+
+[...]
