@@ -2,102 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFAD2638AD
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 23:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A32D2638AE
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 23:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgIIVvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 17:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
+        id S1726976AbgIIVwQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 17:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgIIVvG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 17:51:06 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58DDC061573
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 14:51:05 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id p13so3818463ils.3
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 14:51:05 -0700 (PDT)
+        with ESMTP id S1726440AbgIIVwM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 17:52:12 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A59C061756;
+        Wed,  9 Sep 2020 14:52:12 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id l191so3049278pgd.5;
+        Wed, 09 Sep 2020 14:52:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dbmcFvblMf2fD8HTFQnrfzBnp6Lnk39k8oBgB6/Ch44=;
-        b=Jhu9tputUMQA/PN7jGIdy//oXokB0qOMwqEcjIRdaSBrAEBC9sKrYHVVpc+JyHfAGT
-         Hp1Eq1uxYq3S3OwVAJeqw9gjJqB0FQKz9QT9vVcQWPjkUa8+A791YNlyoF6Pvz7D43ZE
-         Ex6aVhY+vybdYlkKYvPWEYFxHf9gWf2u/BLag=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZhowZWGtDmhls7G45pPDIJmqABEidVRkH3gLzPOI/UY=;
+        b=WK56sLlOjm+fXoA5s3BiLTqFP68YyTSPoZ21+4LS1pdTHXdSVgjG36wEi6fKBGYA+/
+         mOkL47NBgQgoA8skxV4VCFp1Av8M/EyruHej18r0Me5lXTVK669/p0BBLDgnFwedflCQ
+         VAyuGy+rulqYbHLISGHMFJ6SbDqzBafW59ZugtBAhWPDbTsZSxTKdnIqFjo0gycyDHj4
+         8fKJ2E101GbtLV4i+FmDg4C70Hrfv8b3Y9yISJm4HYelZ8UD1kK1PJUux37j5mR9b1ZE
+         vRvQx9Ndnr4Z37hrvPMByyg7IxznI6aSInNzrlqTdgD2mJmA7ubxAi1fT0X+eFaQTwA8
+         uqKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dbmcFvblMf2fD8HTFQnrfzBnp6Lnk39k8oBgB6/Ch44=;
-        b=dGvmZjvPyloidvxplf7xU+eDfr08sAaaW/mVtHgDS48cD5bZTcTzYdZUoNil81t190
-         h+Qpm6HNSI4Gy1LtdNPjczN9uPui5/ukc5qRxHFronN+NqQCkbKI+9b7dyGWXYLRZ/ln
-         gduGpKTvWs9fnkHiLJtQ32jOhNi/0fIRNd4FB6arXEp5++Km6mtV/jpceI0XedC1J8u5
-         3T5KUwRLG/L1/IyoUg14Xx6nwJdbFsw3WBCXnjhe8gPVaBpzPi0kYtov6Bs23mqXGYUe
-         8W6sDJowYoOYW1gbQXWlNIG0zCDFVY5lBLMV1Hb0anAXJERC+PZjrwpyXNgG7URYYYlW
-         0AOg==
-X-Gm-Message-State: AOAM532XpP1npPKeiUork91f+PAr+UbemzlonDRVAvwtA+4GwgfYQfRi
-        wlkn2rfV3bJnyZGLZNE0x23jwS5wjuQe2GwIWab9Fw==
-X-Google-Smtp-Source: ABdhPJxaWXGMLToZGmahA1JCKVhfC9ElSxoh3o3rzqAopMHqLx49PzZ0KsO3gMwwGzwawspawVg1SFmIThddHmJcnwk=
-X-Received: by 2002:a05:6e02:10d1:: with SMTP id s17mr4103439ilj.24.1599688264864;
- Wed, 09 Sep 2020 14:51:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZhowZWGtDmhls7G45pPDIJmqABEidVRkH3gLzPOI/UY=;
+        b=IkXWUuMXuCT+Rft+jw7u6Z3ziF9aEG4ZPXpMC8qtCi+fn4Jj6UcRb9hgnOFUDpWoNw
+         rBeobtumjeAJygoXlOwT53BIZMMVsOt8Ue2z+hb/dSrnzKcB0Xd4h/iVnzOuJVWVpSZa
+         PxoVJyfaOMfFMdkvyxi+DQhvh5ReXdRCviUvTP0VU3MPfqL9ALCEbOcOhShzNHTksswu
+         0CXTt7wLvJcsfoetvFCNJcHTOs7T2+TLy38kGZlhqh7lzTj+v93EpUx+OH+L0u46olrx
+         paKiqKZgeLHvwR6eBRgcDst7QsuKanZrjToRjxp+ZO/sV/YyBk3VGFpaT8VgiaocKzAw
+         AUnQ==
+X-Gm-Message-State: AOAM532HrjBcPABwh/NU+p2+Jo3O7eo56cxHKA8Yix1KKOl0KETIZaqV
+        UfmiWOb+rVpC6abeGCAnF+s=
+X-Google-Smtp-Source: ABdhPJyKD9RUZfg0Dc6rZnJSOyrcqOlYqzxQeeM7v+pWuoJUPRE9BY6KeDjVlwV9+w0TglR9jY6kyw==
+X-Received: by 2002:a63:8343:: with SMTP id h64mr2004022pge.445.1599688331661;
+        Wed, 09 Sep 2020 14:52:11 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8178])
+        by smtp.gmail.com with ESMTPSA id gb19sm157484pjb.38.2020.09.09.14.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 14:52:10 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 14:52:06 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCHv11 bpf-next 2/5] xdp: add a new helper for dev map
+ multicast support
+Message-ID: <20200909215206.bg62lvbvkmdc5phf@ast-mbp.dhcp.thefacebook.com>
+References: <20200903102701.3913258-1-liuhangbin@gmail.com>
+ <20200907082724.1721685-1-liuhangbin@gmail.com>
+ <20200907082724.1721685-3-liuhangbin@gmail.com>
 MIME-Version: 1.0
-References: <CANoWswkaj1HysW3BxBMG9_nd48fm0MxM5egdtmHU6YsEc_GUtQ@mail.gmail.com>
-In-Reply-To: <CANoWswkaj1HysW3BxBMG9_nd48fm0MxM5egdtmHU6YsEc_GUtQ@mail.gmail.com>
-From:   Luke Nelson <lukenels@cs.washington.edu>
-Date:   Wed, 9 Sep 2020 14:50:29 -0700
-Message-ID: <CADasFoCaEYQCuF+SVF7PBTB6-dU7MZj1NHwxQ0=qacTi516SPw@mail.gmail.com>
-Subject: Re: arm64 jit ctx.offset[-1] access
-To:     Yauheni Kaliuta <ykaliuta@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907082724.1721685-3-liuhangbin@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Yauheni,
+On Mon, Sep 07, 2020 at 04:27:21PM +0800, Hangbin Liu wrote:
+> This patch is for xdp multicast support. which has been discussed
+> before[0], The goal is to be able to implement an OVS-like data plane in
+> XDP, i.e., a software switch that can forward XDP frames to multiple ports.
+> 
+> To achieve this, an application needs to specify a group of interfaces
+> to forward a packet to. It is also common to want to exclude one or more
+> physical interfaces from the forwarding operation - e.g., to forward a
+> packet to all interfaces in the multicast group except the interface it
+> arrived on. While this could be done simply by adding more groups, this
+> quickly leads to a combinatorial explosion in the number of groups an
+> application has to maintain.
+> 
+> To avoid the combinatorial explosion, we propose to include the ability
+> to specify an "exclude group" as part of the forwarding operation. This
+> needs to be a group (instead of just a single port index), because a
+> physical interface can be part of a logical grouping, such as a bond
+> device.
+> 
+> Thus, the logical forwarding operation becomes a "set difference"
+> operation, i.e. "forward to all ports in group A that are not also in
+> group B". This series implements such an operation using device maps to
+> represent the groups. This means that the XDP program specifies two
+> device maps, one containing the list of netdevs to redirect to, and the
+> other containing the exclude list.
 
-Thanks for the report!
-
->
-> Jitting the program causes invocation of bpf2a64_offset(-1, 2, ctx)
-> from
->         jmp_offset = bpf2a64_offset(i + off, i, ctx);
->
-> which does ctx->offset[-1] then (and works by accident when it
-> returns 0).
->
-
-This definitely looks like a bug to me, I ran your test program and
-printed out the values of bpf_to in bpf2a64_offset and it is being called
-with bpf_to = -1.
-
-One way to fix this is to do something similar to what the RISC-V JITs
-do here, by checking for the < 0 case explicitly:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/riscv/net/bpf_jit.h?h=v5.8.8#n145
-
-I imagine it would look something like the following:
-
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -146,11 +146,11 @@ static inline void emit_addr_mov_i64(const int
-reg, const u64 val,
- static inline int bpf2a64_offset(int bpf_to, int bpf_from,
-                                 const struct jit_ctx *ctx)
- {
--       int to = ctx->offset[bpf_to];
--       /* -1 to account for the Branch instruction */
--       int from = ctx->offset[bpf_from] - 1;
-+       int to = (bpf_to >= 0) ? ctx->offset[bpf_to] : 0;
-+       int from = (bpf_from >= 0) ? ctx->offset[bpf_from] : 0;
-
--       return to - from;
-+       /* -1 to account for the Branch instruction. */
-+       return to - (from - 1);
- }
-
-Anybody else have any thoughts? I can turn around and submit this as an
-actual patch if it seems reasonable to others.
-
-- Luke
+"set difference" and BPF_F_EXCLUDE_INGRESS makes sense to me as high level api,
+but I don't see how program or helper is going to modify the packet
+before multicasting it.
+Even to implement a basic switch the program would need to modify destination
+mac addresses before xmiting it on the device.
+In case of XDP_TX the bpf program is doing it manually.
+With this api the program is out of the loop.
+It can prepare a packet for one target netdev, but sending the same
+packet as-is to other netdevs isn't going to to work correctly.
+Veth-s and tap-s don't care about mac and the stack will silently accept
+packets even with wrong mac.
+The same thing may happen with physical netdevs. The driver won't care
+that dst mac is wrong. It will xmit it out, but the other side of the wire
+will likely drop that packet unless it's promisc.
+Properly implemented bridge shouldn't be doing it, but
+I really don't see how this api can work in practice to implement real bridge.
+What am I missing?
