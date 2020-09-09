@@ -2,159 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15F72635BD
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 20:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CF82635DC
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 20:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgIISSz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 14:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        id S1727856AbgIISYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 14:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgIISSy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:18:54 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7473BC061573;
-        Wed,  9 Sep 2020 11:18:54 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id p81so2354804ybc.12;
-        Wed, 09 Sep 2020 11:18:54 -0700 (PDT)
+        with ESMTP id S1725772AbgIISYK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 14:24:10 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A395C061573
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 11:24:10 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v3so3041706ybb.22
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 11:24:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kHN9J8vO/6FG0Tu/210yPV41VNHXVErg1oo0rjDScZM=;
-        b=QlDKxfyFTgAqgjZz9oE+qH4hvikVkrhMa1kTKYuCqNuEfoEBRD87s5I0MurDMMxA6G
-         NA3H2cIk/e8Su8tKDc0pOdndLJZHKvEiiDLfhiRoLEhKHZe2OLdExm6X/8jOUC8mIKEj
-         KF0k9wnNZ3BvyPNAD5fpVaL7SjQIMwmnTz/vi0nAUboFfWO8UF0pWvECLhxvWVrsonAA
-         8+VWgiVVPfuFkBDbbAVn3eHLqYOAuIOncFXvjqBXbjxLQJv1E+GGd7pDE0RvEuiToDpX
-         ZVtBUEkFrR2Fj37CQQIwCa68OgDhIf+QfW9oumoRVThpV9bDthp0GDfhgbFFpUQmZQK/
-         Mveg==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=JqSfgROtJDDRj7H2nqYPi9k7xMNwm4SmLBIOYDJz6SM=;
+        b=fTseVQZQss6IIwjSQbWhU9yx7DtAOr4ICOfnXVRv45GeZeoxRT+NHgSqvx0p1mvFoh
+         MvXlijZlA6UidH/P0+86ADVQAR7bPr5tCDKlN4lptHzq1uXJ5JskngTdWlIDafHguwbR
+         qhe1bV7JWvGxOkH5fbmGKOkAH43wGAYDllSz2kYPh7iK1CFnEBTjZAe+hNXhy3bm0MiF
+         YSghLoqPht5sWTI6UdImp05/ypiUKs2XCEUjlDUxTUv4IYBjE4zZ/9eEHx8tsMl4Ubvc
+         sex2fFCBRbUCoDG6IWzWdD/9tB6hTl7GhrO5dYsZwtGp35Z/UqeOnapjoTY5BfYUpjoB
+         Mjpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kHN9J8vO/6FG0Tu/210yPV41VNHXVErg1oo0rjDScZM=;
-        b=Cv7nLZn/vPDbnCjz7jMBdkwqq7CmJfpmPEKE0/4USdyG5s4nxVtMBSUx6OHYK7+tg3
-         Y4xsPlSU2yOBC8FDIQVCme2yFeoGUWEkAQCvm/ii0NOSXQnHcdC2hc4SbaYTwgFBeYox
-         3c/G7yngmrPhQp26EzFIzzw8K2I7Po8QD91ej7Rm/I5QGtG+AuveBKJH9vdGNLUNPQCh
-         ghwTldT5IECkqkvLJ/m7xpLzr/fVOPa6fFB8BqKm1iNnJ9R0hkT/tdyrIzdqOjHLFS+L
-         Qr+I3ZqgZO6qouYaVV7P/OiHND8rlJbGbYUj/EEsYRWcvO8loyOJwS0U2HHQYWtSvsVC
-         YgLA==
-X-Gm-Message-State: AOAM53204FViUxJGz9BkQmmgq6+WOf3TBkVYCjD0kVk1FLR4teulllI4
-        ND9XCwBR3AbYkxNQ2rS27khA95mw6RlPhUyYcy0=
-X-Google-Smtp-Source: ABdhPJzcVwBJM0cgfTn8gpFZmRXQppO4ULnkfP9+z0eBxUVJiLRrFOBGPoH3hCfNhFwV/WauPLdV3s2mj//sca7HJk4=
-X-Received: by 2002:a25:cb57:: with SMTP id b84mr7393134ybg.425.1599675533578;
- Wed, 09 Sep 2020 11:18:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200909171542.3673449-1-yhs@fb.com>
-In-Reply-To: <20200909171542.3673449-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Sep 2020 11:18:42 -0700
-Message-ID: <CAEf4Bza_1Q1Ym513JN4aDEunC49BaBHigJBKmj6N6snbChfwzA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: fix test_sysctl_loop{1,2}
- failure due to clang change
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc:content-transfer-encoding;
+        bh=JqSfgROtJDDRj7H2nqYPi9k7xMNwm4SmLBIOYDJz6SM=;
+        b=hJ3jqSihoLFeWA7kafbwkppOX+8d2+QPrX3PQJfSCjtRZOJUsU+Ds/HgPixfFPNg1F
+         pgT4Fw55FgENW69zP697mS1mLvC9xLRVbDzlbQeEyJ1iQNaXeBMN5cJT2NbWiERawSZh
+         qmYo5KqK+grD8eWUmiogF+212X314EXS+W9KSQZhBPFWZJt8AOTEcMH0A79qg0T+Vd4t
+         QdTv95mk4ode9Pb6XHjwhfbqmxxADofRQ6HFZ2UZZ2YNla2QCd4L9ZAYh5E+Qa97XKbs
+         yhylwGcpBQpZYQ7+5UWr4lVLWHbw7erFrpEDL+HqKIUDFZzhQkDvRN8k5R4/xqVXQCbl
+         gcEA==
+X-Gm-Message-State: AOAM532D3mTHviEpIBBA2M0yvySVsOs+015gahk+oTlzEk8W0QZdIV78
+        hSsMnxBJcUY8Oy0XhnJCzN7AuNg=
+X-Google-Smtp-Source: ABdhPJxJmQVxTU98C41fqE/lL9MHjoRLgXZV1Wnqo9OJPNfcomI+5SM7Aj7q4r0Gc1YeQNvTJK0RVSI=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a25:df15:: with SMTP id w21mr7929297ybg.138.1599675848168;
+ Wed, 09 Sep 2020 11:24:08 -0700 (PDT)
+Date:   Wed,  9 Sep 2020 11:24:01 -0700
+Message-Id: <20200909182406.3147878-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH bpf-next v4 0/5] Allow storage of flexible metadata
+ information for eBPF programs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        YiFei Zhu <zhuyifei1999@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 10:16 AM Yonghong Song <yhs@fb.com> wrote:
->
-> Andrii reported that with latest clang, when building selftests, we have
-> error likes:
->   error: progs/test_sysctl_loop1.c:23:16: in function sysctl_tcp_mem i32 (%struct.bpf_sysctl*):
->   Looks like the BPF stack limit of 512 bytes is exceeded.
->   Please move large on stack variables into BPF per-cpu array map.
->
-> The error is triggered by the following LLVM patch:
->   https://reviews.llvm.org/D87134
->
-> For example, the following code is from test_sysctl_loop1.c:
->   static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
->   {
->     volatile char tcp_mem_name[] = "net/ipv4/tcp_mem/very_very_very_very_long_pointless_string";
->     ...
->   }
-> Without the above LLVM patch, the compiler did optimization to load the string
-> (59 bytes long) with 7 64bit loads, 1 8bit load and 1 16bit load,
-> occupying 64 byte stack size.
->
-> With the above LLVM patch, the compiler only uses 8bit loads, but subregister is 32bit.
-> So stack requirements become 4 * 59 = 236 bytes. Together with other stuff on
-> the stack, total stack size exceeds 512 bytes, hence compiler complains and quits.
->
-> To fix the issue, removing "volatile" key word or changing "volatile" to
-> "const"/"static const" does not work, the string is put in .rodata.str1.1 section,
-> which libbpf did not process it and errors out with
->   libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
->   libbpf: prog 'sysctl_tcp_mem': bad map relo against '.L__const.is_tcp_mem.tcp_mem_name'
->           in section '.rodata.str1.1'
->
-> Defining the string const as global variable can fix the issue as it puts the string constant
-> in '.rodata' section which is recognized by libbpf. In the future, when libbpf can process
-> '.rodata.str*.*' properly, the global definition can be changed back to local definition.
->
-> Defining tcp_mem_name as a global, however, triggered a verifier failure.
->    ./test_progs -n 7/21
->   libbpf: load bpf program failed: Permission denied
->   libbpf: -- BEGIN DUMP LOG ---
->   libbpf:
->   invalid stack off=0 size=1
->   verification time 6975 usec
->   stack depth 160+64
->   processed 889 insns (limit 1000000) max_states_per_insn 4 total_states
->   14 peak_states 14 mark_read 10
->
->   libbpf: -- END LOG --
->   libbpf: failed to load program 'sysctl_tcp_mem'
->   libbpf: failed to load object 'test_sysctl_loop2.o'
->   test_bpf_verif_scale:FAIL:114
->   #7/21 test_sysctl_loop2.o:FAIL
-> This actually exposed a bpf program bug. In test_sysctl_loop{1,2}, we have code
-> like
->   const char tcp_mem_name[] = "<...long string...>";
->   ...
->   char name[64];
->   ...
->   for (i = 0; i < sizeof(tcp_mem_name); ++i)
->       if (name[i] != tcp_mem_name[i])
->           return 0;
-> In the above code, if sizeof(tcp_mem_name) > 64, name[i] access may be
-> out of bound. The sizeof(tcp_mem_name) is 59 for test_sysctl_loop1.c and
-> 79 for test_sysctl_loop2.c.
->
-> Without promotion-to-global change, old compiler generates code where
-> the overflowed stack access is actually filled with valid value, so hiding
-> the bpf program bug. With promotion-to-global change, the code is different,
-> more specifically, the previous loading constants to stack is gone, and
-> "name" occupies stack[-64:0] and overflow access triggers a verifier error.
-> To fix the issue, adjust "name" buffer size properly.
->
-> Reported-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+Currently, if a user wants to store arbitrary metadata for an eBPF
+program, for example, the program build commit hash or version, they
+could store it in a map, and conveniently libbpf uses .data section to
+populate an internal map. However, if the program does not actually
+reference the map, then the map would be de-refcounted and freed.
 
-LGTM.
+This patch set introduces a new syscall BPF_PROG_BIND_MAP to add a map
+to a program's used_maps, even if the program instructions does not
+reference the map.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+libbpf is extended to always BPF_PROG_BIND_MAP .rodata section so the
+metadata is kept in place.
+bpftool is also extended to print metadata in the 'bpftool prog' list.
 
->  tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 4 ++--
->  tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> Changelog:
->   v2 -> v3:
->     . using sizeof(tcp_mem_name) instead of hardcoded value for
->       local buf "name". (Andrii)
->   v1 -> v2:
->     . The tcp_mem_name change actually triggers a verifier failure due to
->       a bpf program bug. Fixing the bpf program bug can make test pass
->       with both old and latest llvm. (Alexei)
->
+The variable is considered metadata if it starts with the
+magic 'bpf_metadata_' prefix; everything after the prefix is the
+metadata name.
 
-[...]
+An example use of this would be BPF C file declaring:
+
+  const char bpf_metadata_commit_hash[] SEC(".rodata") =3D "abcdef123456";
+
+and bpftool would emit:
+
+  $ bpftool prog
+  [...]
+        metadata:
+                commit_hash =3D "abcdef123456"
+
+v4 changes:
+* Don't return EEXIST from syscall if already bound (Andrii Nakryiko)
+* Removed --metadata argument (Andrii Nakryiko)
+* Removed custom .metadata section (Alexei Starovoitov)
+* Addressed Andrii's suggestions about btf helpers and vsi (Andrii Nakryiko=
+)
+* Moved bpf_prog_find_metadata into bpftool (Alexei Starovoitov)
+
+v3 changes:
+* API changes for bpf_prog_find_metadata (Toke H=C3=B8iland-J=C3=B8rgensen)
+
+v2 changes:
+* Made struct bpf_prog_bind_opts in libbpf so flags is optional.
+* Deduped probe_kern_global_data and probe_prog_bind_map into a common
+  helper.
+* Added comment regarding why EEXIST is ignored in libbpf bind map.
+* Froze all LIBBPF_MAP_METADATA internal maps.
+* Moved bpf_prog_bind_map into new LIBBPF_0.1.1 in libbpf.map.
+* Added p_err() calls on error cases in bpftool show_prog_metadata.
+* Reverse christmas tree coding style in bpftool show_prog_metadata.
+* Made bpftool gen skeleton recognize .metadata as an internal map and
+  generate datasec definition in skeleton.
+* Added C test using skeleton to see asset that the metadata is what we
+  expect and rebinding causes EEXIST.
+
+v1 changes:
+* Fixed a few missing unlocks, and missing close while iterating map fds.
+* Move mutex initialization to right after prog aux allocation, and mutex
+  destroy to right after prog aux free.
+* s/ADD_MAP/BIND_MAP/
+* Use mutex only instead of RCU to protect the used_map array & count.
+
+Cc: YiFei Zhu <zhuyifei1999@gmail.com>
+
+YiFei Zhu (5):
+  bpf: Mutex protect used_maps array and count
+  bpf: Add BPF_PROG_BIND_MAP syscall
+  libbpf: Add BPF_PROG_BIND_MAP syscall and use it on .metadata section
+  bpftool: support dumping metadata
+  selftests/bpf: Test load and dump metadata with btftool and skel
+
+ .../net/ethernet/netronome/nfp/bpf/offload.c  |  18 +-
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |   7 +
+ kernel/bpf/core.c                             |  15 +-
+ kernel/bpf/syscall.c                          |  79 ++++++-
+ net/core/dev.c                                |  11 +-
+ tools/bpf/bpftool/json_writer.c               |   6 +
+ tools/bpf/bpftool/json_writer.h               |   3 +
+ tools/bpf/bpftool/prog.c                      | 222 ++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |   7 +
+ tools/lib/bpf/bpf.c                           |  13 +
+ tools/lib/bpf/bpf.h                           |   8 +
+ tools/lib/bpf/libbpf.c                        |  94 ++++++--
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/prog_tests/metadata.c       |  81 +++++++
+ .../selftests/bpf/progs/metadata_unused.c     |  15 ++
+ .../selftests/bpf/progs/metadata_used.c       |  15 ++
+ .../selftests/bpf/test_bpftool_metadata.sh    |  82 +++++++
+ 19 files changed, 645 insertions(+), 36 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
+ create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
+
+--=20
+2.28.0.526.ge36021eeef-goog
+
