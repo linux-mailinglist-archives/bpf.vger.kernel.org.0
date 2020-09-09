@@ -2,101 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1500263A50
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 04:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233E5263AFD
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 04:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729993AbgIJC07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 22:26:59 -0400
-Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:41384 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729413AbgIJCYQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 22:24:16 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 55AC918027FA3;
-        Wed,  9 Sep 2020 22:47:33 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A42B7181D337B;
-        Wed,  9 Sep 2020 22:47:32 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2898:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:5007:6742:6743:8700:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:21939:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sort28_6003546270e1
-X-Filterd-Recvd-Size: 3292
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  9 Sep 2020 22:47:25 +0000 (UTC)
-Message-ID: <b3d6f71aea87f4bb88554f1a3fdaee0b2feb158c.camel@perches.com>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-From:   Joe Perches <joe@perches.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        storagedev@microchip.com, sparclinux@vger.kernel.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-        alsa-devel <alsa-devel@alsa-project.org>
-Date:   Wed, 09 Sep 2020 15:47:24 -0700
-In-Reply-To: <20200909223602.GJ87483@ziepe.ca>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-         <20200909223602.GJ87483@ziepe.ca>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1730255AbgIJB6a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 21:58:30 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3614 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727055AbgIJBfW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 21:35:22 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089N1uLR025476;
+        Wed, 9 Sep 2020 19:25:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=Ppmp+LdKfRhGSOfxacmlYmZEN1CSIgx406jU2hr8aDY=;
+ b=TjYSNa89poNFn/QEK9CQsIcvYMkxWbpf+Fxvmgn7uf0Dl7iyjtox/LGRov7RBDmjVC5N
+ FlK8nVHrlCaZH4U6E2b8GAcn+SlNJqIKvcRG6bnd2dENlf22uUAVzVgFthv/BgWPbUd0
+ QEC5AKt6tUD9c100CjPVEumTABLVw521eLjfq9B7JyKDxyIOVE4M6rgOn/PEEL701WKr
+ 1hDrhApzTBYV+GCzKgEnZRsmhsLjDc/mtUizBXixFpPQatURmL8tCGdKaTmW49Tl+oxF
+ PJja3WisfrdVEZw2lDtE6CsuwwBdrq4XLHeXzSgq7gh9ZMs0t91w2/lNAQwTDtfkTlUd nw== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33f8310tt4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 19:25:04 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 089NIn4I031119;
+        Wed, 9 Sep 2020 23:25:02 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 33cm5hjnyq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 23:25:02 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 089NOx8724117540
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Sep 2020 23:24:59 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F9C311C058;
+        Wed,  9 Sep 2020 23:24:59 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1A99111C054;
+        Wed,  9 Sep 2020 23:24:59 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.5.224])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Sep 2020 23:24:59 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next 1/3] selftests/bpf: Fix endianness issue in test_sockopt_sk
+Date:   Thu, 10 Sep 2020 01:24:41 +0200
+Message-Id: <20200909232443.3099637-2-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200909232443.3099637-1-iii@linux.ibm.com>
+References: <20200909232443.3099637-1-iii@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-09_17:2020-09-09,2020-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ adultscore=0 phishscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090197
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2020-09-09 at 19:36 -0300, Jason Gunthorpe wrote:
-> On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
-> > fallthrough to a separate case/default label break; isn't very readable.
-> > 
-> > Convert pseudo-keyword fallthrough; statements to a simple break; when
-> > the next label is case or default and the only statement in the next
-> > label block is break;
-> > 
-> > Found using:
-> > 
-> > $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
-> > 
-> > Miscellanea:
-> > 
-> > o Move or coalesce a couple label blocks above a default: block.
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> > ---
-> > 
-> > Compiled allyesconfig x86-64 only.
-> > A few files for other arches were not compiled.
-> 
-> IB part looks OK, I prefer it like this
-> 
-> You could do the same for continue as well, I saw a few of those..
+getsetsockopt() calls getsockopt() with optlen == 1, but then checks
+the resulting int. It is ok on little endian, but not on big endian.
 
-I saw some continue uses as well but wasn't sure
-and didn't look to see if the switch/case with
-continue was in a for/while loop.
+Fix by checking char instead.
 
+Fixes: 8a027dc0 ("selftests/bpf: add sockopt test that exercises sk helpers")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/prog_tests/sockopt_sk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+index 5f54c6aec7f0..ba4da50987d6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+@@ -45,7 +45,7 @@ static int getsetsockopt(void)
+ 		goto err;
+ 	}
+ 
+-	if (*(int *)big_buf != 0x08) {
++	if (*big_buf != 0x08) {
+ 		log_err("Unexpected getsockopt(IP_TOS) optval 0x%x != 0x08",
+ 			*(int *)big_buf);
+ 		goto err;
+-- 
+2.25.4
 
