@@ -2,281 +2,287 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B198C2631D3
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 18:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F52F263266
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 18:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731071AbgIIQ2R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 12:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731046AbgIIQ1t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:27:49 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B046EC061757
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 09:27:48 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id y15so3025445wmi.0
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 09:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HtsqvNaSHRzCnXBII+0kyAhJnLOvNJ6BcwljUxH8UBk=;
-        b=queMOmYsiqOwRt63RiZ39vvwzgyZBbtMJdcUzQz4UBh/3TyfGVqdnzjK2e45U3rjHe
-         zdUj0FC+XaCIQz0uPAzo4XkPCxbP0Ym6Hxn85GKMD4r2VgxHL6bVoxNb7iAtL1PAbqzN
-         gv5REjf28wbmAKZHkdnNRgKHHk7zPNd/OkqdU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HtsqvNaSHRzCnXBII+0kyAhJnLOvNJ6BcwljUxH8UBk=;
-        b=T13jriVM0yKzhKV6mN/FxAe2JJV6TLYLuRoADKGKOCoYIHsMDc4E5ZfulkjJDpzGML
-         zFoyz5Qmx19bo9GNWgWK051pfhBR3E/vOgG0LrdmpCebJ/JoHUF3MIR40jpcAAOCcVRI
-         oQim8yDMkEqPhvIH6jwuYms8kV1hR4kfz4YRh2DHR1DTt6ev0etBZnXJCLy2iAmLB9VM
-         NyIeAkt/BKe/JW3jhk6seEqtXAT/IP0W9PD9uqhTjD2TVF4kX3LzlmZphfgKYCk+VQx3
-         aDAwTA7ozll1qmT4CYimowx8kFvNO+3LYCK1JH9fiOvb1z5bXTGUbNbDwrJjjoVsZnDA
-         bApQ==
-X-Gm-Message-State: AOAM530zgQEUkXBvgkngB8tyjLhAxNWQtGnT0Nw8yOjrHLwwHyavGaLc
-        Ce5UrNnyN8L3lTv5IpcXp0UYkg==
-X-Google-Smtp-Source: ABdhPJyY2fgojew0kKZt0rz0jAEzDXXI3MZGQn5osxGu5wBgIyAvALeXJYzBfulmIDi/sxsCmi1mVw==
-X-Received: by 2002:a1c:f608:: with SMTP id w8mr4586697wmc.161.1599668867287;
-        Wed, 09 Sep 2020 09:27:47 -0700 (PDT)
-Received: from antares.lan (111.253.187.81.in-addr.arpa. [81.187.253.111])
-        by smtp.gmail.com with ESMTPSA id l16sm5644276wrb.70.2020.09.09.09.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 09:27:46 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net,
-        jakub@cloudflare.com, john.fastabend@gmail.com, kafai@fb.com
-Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next v5 3/3] selftests: bpf: Test iterating a sockmap
-Date:   Wed,  9 Sep 2020 17:27:12 +0100
-Message-Id: <20200909162712.221874-4-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200909162712.221874-1-lmb@cloudflare.com>
-References: <20200909162712.221874-1-lmb@cloudflare.com>
+        id S1731041AbgIIQmM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 12:42:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730723AbgIIQQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:16:29 -0400
+Received: from coco.lan (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98804206A2;
+        Wed,  9 Sep 2020 14:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599660018;
+        bh=T9JYiXS8GL05l1tqFNRNBraSvHr9QrLWPaj3a7uoPIQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Qfh8ZSAuwIvidjJ8ad5XeugdQGqnoc/O3FHnkddYA5ilAmTFsiCy0nTvm1jHHSiJI
+         bSrfqKTOmr+PBHmWDEUgHPCV+TySq8/GxdD/jisf0lpVCLLZZbvjbNxO/ctaD/NBOX
+         P/P9zC+qxYGDWa5JCWKBfg2Ao/Ymbj1NzeCWh/T0=
+Date:   Wed, 9 Sep 2020 16:00:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Andrii Nakryiko <andriin@fb.com>, <andrii.nakryiko@gmail.com>
+Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 bpf-next 5/5] docs/bpf: add BPF ring buffer design
+ notes
+Message-ID: <20200909160012.02622870@coco.lan>
+In-Reply-To: <20200909155305.21380532@coco.lan>
+References: <20200529075424.3139988-1-andriin@fb.com>
+        <20200529075424.3139988-6-andriin@fb.com>
+        <20200909155305.21380532@coco.lan>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test that exercises a basic sockmap / sockhash iteration. For
-now we simply count the number of elements seen. Once sockmap update
-from iterators works we can extend this to perform a full copy.
+Em Wed, 9 Sep 2020 15:53:05 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 89 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_iter.h  |  9 ++
- .../selftests/bpf/progs/bpf_iter_sockmap.c    | 43 +++++++++
- .../selftests/bpf/progs/bpf_iter_sockmap.h    |  3 +
- 4 files changed, 144 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
+> Em Fri, 29 May 2020 00:54:24 -0700
+> Andrii Nakryiko <andriin@fb.com> escreveu:
+> 
+> > Add commit description from patch #1 as a stand-alone documentation under
+> > Documentation/bpf, as it might be more convenient format, in long term
+> > perspective.
+> > 
+> > Suggested-by: Stanislav Fomichev <sdf@google.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  Documentation/bpf/ringbuf.rst | 209 ++++++++++++++++++++++++++++++++++
+> >  1 file changed, 209 insertions(+)
+> >  create mode 100644 Documentation/bpf/ringbuf.rst
+> > 
+> > diff --git a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
+> > new file mode 100644
+> > index 000000000000..75f943f0009d
+> > --- /dev/null
+> > +++ b/Documentation/bpf/ringbuf.rst
+> > @@ -0,0 +1,209 @@
+> > +===============
+> > +BPF ring buffer
+> > +===============
+> > +
+> > +This document describes BPF ring buffer design, API, and implementation details.
+> > +
+> > +.. contents::
+> > +    :local:
+> > +    :depth: 2
+> > +
+> > +Motivation
+> > +----------
+> > +
+> > +There are two distinctive motivators for this work, which are not satisfied by
+> > +existing perf buffer, which prompted creation of a new ring buffer
+> > +implementation.
+> > +
+> > +- more efficient memory utilization by sharing ring buffer across CPUs;
+> > +- preserving ordering of events that happen sequentially in time, even across
+> > +  multiple CPUs (e.g., fork/exec/exit events for a task).
+> > +
+> > +These two problems are independent, but perf buffer fails to satisfy both.
+> > +Both are a result of a choice to have per-CPU perf ring buffer.  Both can be
+> > +also solved by having an MPSC implementation of ring buffer. The ordering
+> > +problem could technically be solved for perf buffer with some in-kernel
+> > +counting, but given the first one requires an MPSC buffer, the same solution
+> > +would solve the second problem automatically.
+> > +
+> > +Semantics and APIs
+> > +------------------
+> > +
+> > +Single ring buffer is presented to BPF programs as an instance of BPF map of
+> > +type ``BPF_MAP_TYPE_RINGBUF``. Two other alternatives considered, but
+> > +ultimately rejected.
+> > +
+> > +One way would be to, similar to ``BPF_MAP_TYPE_PERF_EVENT_ARRAY``, make
+> > +``BPF_MAP_TYPE_RINGBUF`` could represent an array of ring buffers, but not
+> > +enforce "same CPU only" rule. This would be more familiar interface compatible
+> > +with existing perf buffer use in BPF, but would fail if application needed more
+> > +advanced logic to lookup ring buffer by arbitrary key.
+> > +``BPF_MAP_TYPE_HASH_OF_MAPS`` addresses this with current approach.
+> > +Additionally, given the performance of BPF ringbuf, many use cases would just
+> > +opt into a simple single ring buffer shared among all CPUs, for which current
+> > +approach would be an overkill.
+> > +
+> > +Another approach could introduce a new concept, alongside BPF map, to represent
+> > +generic "container" object, which doesn't necessarily have key/value interface
+> > +with lookup/update/delete operations. This approach would add a lot of extra
+> > +infrastructure that has to be built for observability and verifier support. It
+> > +would also add another concept that BPF developers would have to familiarize
+> > +themselves with, new syntax in libbpf, etc. But then would really provide no
+> > +additional benefits over the approach of using a map.  ``BPF_MAP_TYPE_RINGBUF``
+> > +doesn't support lookup/update/delete operations, but so doesn't few other map
+> > +types (e.g., queue and stack; array doesn't support delete, etc).
+> > +
+> > +The approach chosen has an advantage of re-using existing BPF map
+> > +infrastructure (introspection APIs in kernel, libbpf support, etc), being
+> > +familiar concept (no need to teach users a new type of object in BPF program),
+> > +and utilizing existing tooling (bpftool). For common scenario of using a single
+> > +ring buffer for all CPUs, it's as simple and straightforward, as would be with
+> > +a dedicated "container" object. On the other hand, by being a map, it can be
+> > +combined with ``ARRAY_OF_MAPS`` and ``HASH_OF_MAPS`` map-in-maps to implement
+> > +a wide variety of topologies, from one ring buffer for each CPU (e.g., as
+> > +a replacement for perf buffer use cases), to a complicated application
+> > +hashing/sharding of ring buffers (e.g., having a small pool of ring buffers
+> > +with hashed task's tgid being a look up key to preserve order, but reduce
+> > +contention).
+> > +
+> > +Key and value sizes are enforced to be zero. ``max_entries`` is used to specify
+> > +the size of ring buffer and has to be a power of 2 value.
+> > +
+> > +There are a bunch of similarities between perf buffer
+> > +(``BPF_MAP_TYPE_PERF_EVENT_ARRAY``) and new BPF ring buffer semantics:
+> > +
+> > +- variable-length records;
+> > +- if there is no more space left in ring buffer, reservation fails, no
+> > +  blocking;
+> > +- memory-mappable data area for user-space applications for ease of
+> > +  consumption and high performance;
+> > +- epoll notifications for new incoming data;
+> > +- but still the ability to do busy polling for new data to achieve the
+> > +  lowest latency, if necessary.
+> > +
+> > +BPF ringbuf provides two sets of APIs to BPF programs:
+> > +
+> > +- ``bpf_ringbuf_output()`` allows to *copy* data from one place to a ring
+> > +  buffer, similarly to ``bpf_perf_event_output()``;
+> > +- ``bpf_ringbuf_reserve()``/``bpf_ringbuf_commit()``/``bpf_ringbuf_discard()``
+> > +  APIs split the whole process into two steps. First, a fixed amount of space
+> > +  is reserved. If successful, a pointer to a data inside ring buffer data
+> > +  area is returned, which BPF programs can use similarly to a data inside
+> > +  array/hash maps. Once ready, this piece of memory is either committed or
+> > +  discarded. Discard is similar to commit, but makes consumer ignore the
+> > +  record.
+> > +
+> > +``bpf_ringbuf_output()`` has disadvantage of incurring extra memory copy,
+> > +because record has to be prepared in some other place first. But it allows to
+> > +submit records of the length that's not known to verifier beforehand. It also
+> > +closely matches ``bpf_perf_event_output()``, so will simplify migration
+> > +significantly.
+> > +
+> > +``bpf_ringbuf_reserve()`` avoids the extra copy of memory by providing a memory
+> > +pointer directly to ring buffer memory. In a lot of cases records are larger
+> > +than BPF stack space allows, so many programs have use extra per-CPU array as
+> > +a temporary heap for preparing sample. bpf_ringbuf_reserve() avoid this needs
+> > +completely. But in exchange, it only allows a known constant size of memory to
+> > +be reserved, such that verifier can verify that BPF program can't access memory
+> > +outside its reserved record space. bpf_ringbuf_output(), while slightly slower
+> > +due to extra memory copy, covers some use cases that are not suitable for
+> > +``bpf_ringbuf_reserve()``.
+> > +
+> > +The difference between commit and discard is very small. Discard just marks
+> > +a record as discarded, and such records are supposed to be ignored by consumer
+> > +code. Discard is useful for some advanced use-cases, such as ensuring
+> > +all-or-nothing multi-record submission, or emulating temporary
+> > +``malloc()``/``free()`` within single BPF program invocation.
+> > +
+> > +Each reserved record is tracked by verifier through existing
+> > +reference-tracking logic, similar to socket ref-tracking. It is thus
+> > +impossible to reserve a record, but forget to submit (or discard) it.
+> > +
+> > +``bpf_ringbuf_query()`` helper allows to query various properties of ring
+> > +buffer.  Currently 4 are supported:
+> > +
+> > +- ``BPF_RB_AVAIL_DATA`` returns amount of unconsumed data in ring buffer;
+> > +- ``BPF_RB_RING_SIZE`` returns the size of ring buffer;
+> > +- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical possition
+> > +  of consumer/producer, respectively.
+> > +
+> > +Returned values are momentarily snapshots of ring buffer state and could be
+> > +off by the time helper returns, so this should be used only for
+> > +debugging/reporting reasons or for implementing various heuristics, that take
+> > +into account highly-changeable nature of some of those characteristics.
+> > +
+> > +One such heuristic might involve more fine-grained control over poll/epoll
+> > +notifications about new data availability in ring buffer. Together with
+> > +``BPF_RB_NO_WAKEUP``/``BPF_RB_FORCE_WAKEUP`` flags for output/commit/discard
+> > +helpers, it allows BPF program a high degree of control and, e.g., more
+> > +efficient batched notifications. Default self-balancing strategy, though,
+> > +should be adequate for most applications and will work reliable and efficiently
+> > +already.
+> > +
+> > +Design and Implementation
+> > +-------------------------
+> > +
+> > +This reserve/commit schema allows a natural way for multiple producers, either
+> > +on different CPUs or even on the same CPU/in the same BPF program, to reserve
+> > +independent records and work with them without blocking other producers. This
+> > +means that if BPF program was interruped by another BPF program sharing the
+> > +same ring buffer, they will both get a record reserved (provided there is
+> > +enough space left) and can work with it and submit it independently. This
+> > +applies to NMI context as well, except that due to using a spinlock during
+> > +reservation, in NMI context, ``bpf_ringbuf_reserve()`` might fail to get
+> > +a lock, in which case reservation will fail even if ring buffer is not full.
+> > +
+> > +The ring buffer itself internally is implemented as a power-of-2 sized
+> > +circular buffer, with two logical and ever-increasing counters (which might
+> > +wrap around on 32-bit architectures, that's not a problem):
+> > +
+> > +- consumer counter shows up to which logical position consumer consumed the
+> > +  data;
+> > +- producer counter denotes amount of data reserved by all producers.
+> > +
+> > +Each time a record is reserved, producer that "owns" the record will
+> > +successfully advance producer counter. At that point, data is still not yet
+> > +ready to be consumed, though. Each record has 8 byte header, which contains the
+> > +length of reserved record, as well as two extra bits: busy bit to denote that
+> > +record is still being worked on, and discard bit, which might be set at commit
+> > +time if record is discarded. In the latter case, consumer is supposed to skip
+> > +the record and move on to the next one. Record header also encodes record's
+> > +relative offset from the beginning of ring buffer data area (in pages). This
+> > +allows ``bpf_ringbuf_commit()``/``bpf_ringbuf_discard()`` to accept only the
+> > +pointer to the record itself, without requiring also the pointer to ring buffer
+> > +itself. Ring buffer memory location will be restored from record metadata
+> > +header. This significantly simplifies verifier, as well as improving API
+> > +usability.
+> > +
+> > +Producer counter increments are serialized under spinlock, so there is
+> > +a strict ordering between reservations. Commits, on the other hand, are
+> > +completely lockless and independent. All records become available to consumer
+> > +in the order of reservations, but only after all previous records where
+> > +already committed. It is thus possible for slow producers to temporarily hold
+> > +off submitted records, that were reserved later.
+> > +
+> > +Reservation/commit/consumer protocol is verified by litmus tests in
+> > +Documentation/litmus_tests/bpf-rb/_.
+> 
+> Are there any missing patch that were supposed to be merged before this
+> one:
+> 
+> There's no Documentation/litmus_tests/bpf-rb/_. This currently
+> causes a warning at the Kernel's building system:
+> 
+> 	$ ./scripts/documentation-file-ref-check 
+> 	Documentation/bpf/ringbuf.rst: Documentation/litmus_tests/bpf-rb/_
+> 
+> (This is reported when someone calls "make htmldocs")
+> 
+> Could you please fix this?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index 0b79d78b98db..3215f4d22720 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -6,6 +6,9 @@
- #include "test_skmsg_load_helpers.skel.h"
- #include "test_sockmap_update.skel.h"
- #include "test_sockmap_invalid_update.skel.h"
-+#include "bpf_iter_sockmap.skel.h"
-+
-+#include "progs/bpf_iter_sockmap.h"
- 
- #define TCP_REPAIR		19	/* TCP sock is under repair right now */
- 
-@@ -171,6 +174,88 @@ static void test_sockmap_invalid_update(void)
- 		test_sockmap_invalid_update__destroy(skel);
- }
- 
-+static void test_sockmap_iter(enum bpf_map_type map_type)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	int err, len, src_fd, iter_fd, duration;
-+	union bpf_iter_link_info linfo = {0};
-+	__s64 sock_fd[SOCKMAP_MAX_ENTRIES];
-+	__u32 i, num_sockets, max_elems;
-+	struct bpf_iter_sockmap *skel;
-+	struct bpf_link *link;
-+	struct bpf_map *src;
-+	char buf[64];
-+
-+	skel = bpf_iter_sockmap__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_sockmap__open_and_load", "skeleton open_and_load failed\n"))
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(sock_fd); i++)
-+		sock_fd[i] = -1;
-+
-+	/* Make sure we have at least one "empty" entry to test iteration of
-+	 * an empty slot.
-+	 */
-+	num_sockets = ARRAY_SIZE(sock_fd) - 1;
-+
-+	if (map_type == BPF_MAP_TYPE_SOCKMAP) {
-+		src = skel->maps.sockmap;
-+		max_elems = bpf_map__max_entries(src);
-+	} else {
-+		src = skel->maps.sockhash;
-+		max_elems = num_sockets;
-+	}
-+
-+	src_fd = bpf_map__fd(src);
-+
-+	for (i = 0; i < num_sockets; i++) {
-+		sock_fd[i] = connected_socket_v4();
-+		if (CHECK(sock_fd[i] == -1, "connected_socket_v4", "cannot connect\n"))
-+			goto out;
-+
-+		err = bpf_map_update_elem(src_fd, &i, &sock_fd[i], BPF_NOEXIST);
-+		if (CHECK(err, "map_update", "failed: %s\n", strerror(errno)))
-+			goto out;
-+	}
-+
-+	linfo.map.map_fd = src_fd;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+	link = bpf_program__attach_iter(skel->progs.count_elems, &opts);
-+	if (CHECK(IS_ERR(link), "attach_iter", "attach_iter failed\n"))
-+		goto out;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
-+		goto free_link;
-+
-+	/* do some tests */
-+	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-+		;
-+	if (CHECK(len < 0, "read", "failed: %s\n", strerror(errno)))
-+		goto close_iter;
-+
-+	/* test results */
-+	if (CHECK(skel->bss->elems != max_elems, "elems", "got %u expected %u\n",
-+		  skel->bss->elems, max_elems))
-+		goto close_iter;
-+
-+	if (CHECK(skel->bss->socks != num_sockets, "socks", "got %u expected %u\n",
-+		  skel->bss->socks, num_sockets))
-+		goto close_iter;
-+
-+close_iter:
-+	close(iter_fd);
-+free_link:
-+	bpf_link__destroy(link);
-+out:
-+	for (i = 0; i < num_sockets; i++) {
-+		if (sock_fd[i] >= 0)
-+			close(sock_fd[i]);
-+	}
-+	bpf_iter_sockmap__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -187,4 +272,8 @@ void test_sockmap_basic(void)
- 		test_sockmap_update(BPF_MAP_TYPE_SOCKHASH);
- 	if (test__start_subtest("sockmap update in unsafe context"))
- 		test_sockmap_invalid_update();
-+	if (test__start_subtest("sockmap iter"))
-+		test_sockmap_iter(BPF_MAP_TYPE_SOCKMAP);
-+	if (test__start_subtest("sockhash iter"))
-+		test_sockmap_iter(BPF_MAP_TYPE_SOCKHASH);
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-index c196280df90d..df682af75510 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -13,6 +13,7 @@
- #define udp6_sock udp6_sock___not_used
- #define bpf_iter__bpf_map_elem bpf_iter__bpf_map_elem___not_used
- #define bpf_iter__bpf_sk_storage_map bpf_iter__bpf_sk_storage_map___not_used
-+#define bpf_iter__sockmap bpf_iter__sockmap___not_used
- #include "vmlinux.h"
- #undef bpf_iter_meta
- #undef bpf_iter__bpf_map
-@@ -26,6 +27,7 @@
- #undef udp6_sock
- #undef bpf_iter__bpf_map_elem
- #undef bpf_iter__bpf_sk_storage_map
-+#undef bpf_iter__sockmap
- 
- struct bpf_iter_meta {
- 	struct seq_file *seq;
-@@ -96,3 +98,10 @@ struct bpf_iter__bpf_sk_storage_map {
- 	struct sock *sk;
- 	void *value;
- };
-+
-+struct bpf_iter__sockmap {
-+	struct bpf_iter_meta *meta;
-+	struct bpf_map *map;
-+	void *key;
-+	struct sock *sk;
-+};
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
-new file mode 100644
-index 000000000000..0e27f73dd803
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Cloudflare */
-+#include "bpf_iter.h"
-+#include "bpf_tracing_net.h"
-+#include "bpf_iter_sockmap.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <errno.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, SOCKMAP_MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sockmap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKHASH);
-+	__uint(max_entries, SOCKMAP_MAX_ENTRIES);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sockhash SEC(".maps");
-+
-+__u32 elems = 0;
-+__u32 socks = 0;
-+
-+SEC("iter/sockmap")
-+int count_elems(struct bpf_iter__sockmap *ctx)
-+{
-+	struct sock *sk = ctx->sk;
-+	__u32 tmp, *key = ctx->key;
-+	int ret;
-+
-+	if (key)
-+		elems++;
-+
-+	if (sk)
-+		socks++;
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
-new file mode 100644
-index 000000000000..35a675d13c0f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
-@@ -0,0 +1,3 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#define SOCKMAP_MAX_ENTRIES (64)
--- 
-2.25.1
+Btw, make htmldocs also complains with:
 
+	Documentation/bpf/ringbuf.rst:197: WARNING: Unknown target name: "bench_ringbuf.c".
+
+(this one is reported by Sphinx)
+
+
+> 
+> Thanks,
+> Mauro
+
+
+
+Thanks,
+Mauro
