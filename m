@@ -2,72 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16A4262780
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 08:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F76F262857
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 09:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgIIG5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 02:57:16 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:26376 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgIIG5P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 02:57:15 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 0896u51D043736
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 9 Sep 2020 14:56:05 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 9 Sep 2020 14:56:07 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <axboe@kernel.dk>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@chromium.org>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] block: remove redundant empty check of mq_list
-Date:   Wed, 9 Sep 2020 14:48:14 +0800
-Message-ID: <20200909064814.5704-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726738AbgIIHTj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 03:19:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727856AbgIIHTg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 03:19:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599635975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4/Zhf5Z+jZ436SZtx+o89mZ+e13eKs2R9HrVqMiSNpw=;
+        b=ES/nmpiNjjufAG5+lRcKgr5ak8CswsjmFAo3ePv0doPLd9eGArjyZ6YHSKhYH54KWCMMxf
+        nz9xUw2BL8Q6h26JebLd8bnTfyeJL5ubzgEz4npxY0ogXIyJVoDXWNjnPwVVn5mcHI4HwU
+        JDZUhhS8hQgS4qwQXFAPvA3OH0Rnsjw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-vgLGSoqxNfKm1BQ10I75BA-1; Wed, 09 Sep 2020 03:19:26 -0400
+X-MC-Unique: vgLGSoqxNfKm1BQ10I75BA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CFFB801AFF;
+        Wed,  9 Sep 2020 07:19:24 +0000 (UTC)
+Received: from krava (unknown [10.40.194.91])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 654945D9E8;
+        Wed,  9 Sep 2020 07:19:21 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 09:19:20 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH] perf tools: Do not use deprecated bpf_program__title
+Message-ID: <20200909071920.GA1498025@krava>
+References: <20200907110237.1329532-1-jolsa@kernel.org>
+ <CAEf4BzZpD2mjEA2Qo2cZ4Bp01fSwZkMPFAZOSw8VvOSAqOWNsA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 0896u51D043736
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZpD2mjEA2Qo2cZ4Bp01fSwZkMPFAZOSw8VvOSAqOWNsA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-blk_mq_flush_plug_list() itself will do the empty check of mq_list,
-so remove such check in blk_flush_plug_list().
-Actually normally mq_list is not empty when blk_flush_plug_list is
-called.
+On Tue, Sep 08, 2020 at 01:11:36PM -0700, Andrii Nakryiko wrote:
+> On Mon, Sep 7, 2020 at 10:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > The bpf_program__title function got deprecated in libbpf,
+> > use the suggested alternative.
+> >
+> > Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> 
+> Hey Jiri,
+> 
+> Didn't see your patch before I sent mine against bpf-next. I also
+> removed some unnecessary checks there. Please see [0]. I don't care
+> which one gets applied, btw.
+> 
+>   [0] https://patchwork.ozlabs.org/project/netdev/patch/20200908180127.1249-1-andriin@fb.com/
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- block/blk-core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+perfect, let's take yours with that extra check removed
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 10c08ac50..dda301610 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1864,8 +1864,7 @@ void blk_flush_plug_list(struct blk_plug *plug, bool from_schedule)
- {
- 	flush_plug_callbacks(plug, from_schedule);
- 
--	if (!list_empty(&plug->mq_list))
--		blk_mq_flush_plug_list(plug, from_schedule);
-+	blk_mq_flush_plug_list(plug, from_schedule);
- }
- 
- /**
--- 
-2.17.1
+thanks,
+jirka
+
+> 
+> >  tools/perf/util/bpf-loader.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> > index 2feb751516ab..73de3973c8ec 100644
+> > --- a/tools/perf/util/bpf-loader.c
+> > +++ b/tools/perf/util/bpf-loader.c
+> > @@ -328,7 +328,7 @@ config_bpf_program(struct bpf_program *prog)
+> >         probe_conf.no_inlines = false;
+> >         probe_conf.force_add = false;
+> >
+> > -       config_str = bpf_program__title(prog, false);
+> > +       config_str = bpf_program__section_name(prog);
+> >         if (IS_ERR(config_str)) {
+> >                 pr_debug("bpf: unable to get title for program\n");
+> >                 return PTR_ERR(config_str);
+> > @@ -454,7 +454,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
+> >         if (err) {
+> >                 const char *title;
+> >
+> > -               title = bpf_program__title(prog, false);
+> > +               title = bpf_program__section_name(prog);
+> >                 if (!title)
+> >                         title = "[unknown]";
+> >
+> > --
+> > 2.26.2
+> >
+> 
 
