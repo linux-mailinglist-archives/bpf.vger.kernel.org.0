@@ -2,116 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ED72637A0
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 22:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CDE2637DA
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 22:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgIIUnR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 16:43:17 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29618 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726414AbgIIUnQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 16:43:16 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089KfvoO026803;
-        Wed, 9 Sep 2020 13:43:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=K5uCWxfgrcAvbCH0I+G2vNObsNff58dlWyYsdgrVUyo=;
- b=Oec3MIA1kzrMyhlD6h9KR5eSJxXAJkWVzABRB8Xz3iDdeBZpLBROfTbCyijukw2uBBDV
- O7uTV/wjBFdNNk1wnN5RutVZfUrU+XGwnm/A37G18UzHYL7tOJclgB6eJqMMuF2vaswI
- U9pton/kY2Dxvf+pnCIJX9N1C38D9pmwCf0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33ct69sj2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 09 Sep 2020 13:43:02 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 9 Sep 2020 13:43:01 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A9efaa/sNlxRMMNroaI0WhkLlrXOtmduOCL9YGAhYLkVkyzukj7OzrqmQ8VqVPpTLM+fj5V+FwG00MuTbDgIAClfM9hK2xXXWua2U7kYosPnjHDpvmvBs3yW4bpvristiMpDWvlC6UKHoR/WXKyXNPDlMzBDRRS6KoTGjbc+c2BOg6tVUiMU8dcPftvj64V+k25sOcqWHkIMTnIOmPOYazMrW0U0Fzq0t+4V9CZvk9Wit9J2XaFweLZY7A+sNpiiZLkZuLnwGFPdouIh0g8ob09ITHzF8y5Kj0L85/E6Kme6Xw3jUheYJVwhY9DJkAIeKhMlRtpeO9pF2Udebl8WZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K5uCWxfgrcAvbCH0I+G2vNObsNff58dlWyYsdgrVUyo=;
- b=BY0DYAUcZAEy93VJl1/pcjtXOoVX/wD1Jns043LicR1NEU7r5E03cjOjpNAnrE/6xT2bYcAdNdAQs1Rku97eltS2MzsNgbKWwOlR6FdLIxGr3lgGNF4e/lvgrLejItDHjcVplCAJZ5I2rtwdgWXzMR/k8DKM57/IHKvvXo9jNyawpVF6055bBsiftMqN0v7d22XGzzpdAazK4wAR/0fQLRXG6DoEIohHxbusYkXX32IjvZb4iMPLKXjrH0/lYeY378RIbYOEu0o7vo9LYIehXL+YB6Hwl0EmuJlBY5yYxGKIPXHfL+IlkEoNDlMT9N/K2c2Bimk+69ziPWQeH8S/bg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K5uCWxfgrcAvbCH0I+G2vNObsNff58dlWyYsdgrVUyo=;
- b=Bolnig0cBpsfNeEPudoFIToG93mNNiw0mExKqcbNxOHPC2T83RVI1rVPAGhXnWQQsS6BxzzU5RuF9rsyk2Vb8qidgmuFcJ2qOgTozr2a6/6jrKBi+BUfmb3oz8/3AYA/7Kq6qF3lMvfqW4rJM3W20RImh9TYyvb/NBHzgIeC6Vc=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2407.namprd15.prod.outlook.com (2603:10b6:a02:8d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 20:43:00 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
- 20:43:00 +0000
-Date:   Wed, 9 Sep 2020 13:42:52 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     <ast@kernel.org>, <yhs@fb.com>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <bpf@vger.kernel.org>,
-        <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next v2 07/11] bpf: make context access check generic
-Message-ID: <20200909204252.7aepntaii2hwap7e@kafai-mbp.dhcp.thefacebook.com>
-References: <20200909171155.256601-1-lmb@cloudflare.com>
- <20200909171155.256601-8-lmb@cloudflare.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909171155.256601-8-lmb@cloudflare.com>
-X-ClientProxiedBy: MWHPR17CA0091.namprd17.prod.outlook.com
- (2603:10b6:300:c2::29) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1728463AbgIIUv6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 16:51:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45814 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726534AbgIIUvv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 16:51:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599684710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7VaKgUYdoCYfXk1gvLwhUDgt15+ghTv7BWTFQdxogQ0=;
+        b=fOE5rAXXlzjOSQsQQ+WkpCSyaGt4SsKK3bLdczBXKdYkalvZ74QEEnJN+tXsKpNw340Y3n
+        Vsc0mkBZccuYT8A6bGsyWYR8VqTQu549DA3nizma7E+IQEioJJw30fLF0IZQHgWzzWIHmy
+        aY92eHoCu+hIjkPOdVkFLufCnzW1hOY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-OocQ_WMWPD6EgBRINWXKkA-1; Wed, 09 Sep 2020 16:51:48 -0400
+X-MC-Unique: OocQ_WMWPD6EgBRINWXKkA-1
+Received: by mail-wr1-f72.google.com with SMTP id 33so1408254wre.0
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 13:51:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7VaKgUYdoCYfXk1gvLwhUDgt15+ghTv7BWTFQdxogQ0=;
+        b=PBrQIm4nbQcVejbcwhEwEjeXlslZz8cPGeGH/yp7k6fS6XkRLW5LZyJ/UWq8cdiSQR
+         ZizsNpiPN3Cu/PmYN4wkM59QyhqX9fD8zJQu2TlziyaVteTqOcbKqV2rXpXya01MbD+h
+         JvbMDqg48o2hWXqEQ6mKM4RcFuV3lRXagGchEOMEQjYnCrAX7lZVAeWp0iJ59CNGP9po
+         JgcLZXa+WSoOMWvub9V8UKb2LdPM+ywDgdUhHoGMisgH1gDtYTGVuqEfRigcuLTxvrk8
+         QhZ33tzlXjIKFimjyk6Cs+FhJH5GL+qBeh4M3v0EXtJ/giODef4zG/UE8Aa+S+xgN9D4
+         Ih2Q==
+X-Gm-Message-State: AOAM53316dpJ8lFlYxEwW3S5L8+zHfYHIVsYXTtUwCa8N6mOjGvwdM1U
+        TBu0GqpZb878s75Qu6zUoQptCth80HqBc7MP/DfLPKwB+rvWpoWgIZtCR2QdmDd2G7i2ahEd2q+
+        R5eowxCJn/ivS
+X-Received: by 2002:a1c:a444:: with SMTP id n65mr5164237wme.122.1599684706501;
+        Wed, 09 Sep 2020 13:51:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzTsshEUN4ySdeMCxYKlzNGfrdu5a03Ova6UB6adHF1KnVbcAHYyz4dJnCe2ROsJstwihTxFw==
+X-Received: by 2002:a1c:a444:: with SMTP id n65mr5164211wme.122.1599684706173;
+        Wed, 09 Sep 2020 13:51:46 -0700 (PDT)
+Received: from localhost ([151.66.86.87])
+        by smtp.gmail.com with ESMTPSA id r14sm5658072wrn.56.2020.09.09.13.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 13:51:45 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 22:51:41 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, brouer@redhat.com,
+        echaudro@redhat.com, sameehj@amazon.com, kuba@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
+        edumazet@google.com
+Subject: Re: [PATCH v2 net-next 6/9] bpf: helpers: add
+ bpf_xdp_adjust_mb_header helper
+Message-ID: <20200909205141.GA6369@lore-desk>
+References: <cover.1599165031.git.lorenzo@kernel.org>
+ <b7475687bb09aac6ec051596a8ccbb311a54cb8a.1599165031.git.lorenzo@kernel.org>
+ <5f51e2f2eb22_3eceb20837@john-XPS-13-9370.notmuch>
+ <20200904094511.GF2884@lore-desk>
+ <5f525be3da548_1932208b6@john-XPS-13-9370.notmuch>
+ <20200906133617.GC2785@lore-desk>
+ <5f57e23e513b2_10343208e0@john-XPS-13-9370.notmuch>
+ <20200908213120.GA27040@lore-desk>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:f23a) by MWHPR17CA0091.namprd17.prod.outlook.com (2603:10b6:300:c2::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 20:42:59 +0000
-X-Originating-IP: [2620:10d:c090:400::5:f23a]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 844da6cb-6908-42f5-1510-08d85500f0a3
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2407:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB24073B621F54C35AF215732CD5260@BYAPR15MB2407.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wO2bxh3ZMHEZJjza+iY0W1kgv0zsfFan5egz7mHc2lhGRvGNGqubW8UnlqYa6ZZLXqutEpwwZMYOnKN52p5hn+RvgkdAGq7+/LQZi1xVIwfFW0NbN9Cy8bKw7Pit77bpC5wvHkr/BdJNQ7Fq7v+nSH9uufuVbIQM3df3KpNStgH5zsWLQHlcUS/ehlvqrCZMWIHhn1fjM3vy/l4jONtAo6mHXVVX/ouQUq9gJ5TmS0aAtWYc+QG+2VfdomFE2oVIir8djMpO03dYas/sg6DSNh/gwg/cUtFsuGUTT9sT21szmlOv8RLy+5J4FpHGXJutcRzYiSsv4aJWjaPSHucBWm3lsPB4aGI/BmMgdUIrSod2ch1Pj1M1TW2+PeAszKAr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(39860400002)(346002)(396003)(2906002)(83380400001)(52116002)(7696005)(316002)(16526019)(6916009)(6506007)(66556008)(478600001)(66946007)(186003)(8676002)(66476007)(55016002)(9686003)(8936002)(4326008)(86362001)(5660300002)(558084003)(6666004)(1076003)(41533002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Al2lnjNIeb+xxEJBTe/0OtYdi7RIQvkrSeX9aAsgzE99xNPsP82VVWlxUBGUFLJsJKxfCR+JZTLURqtGNH4TzAk3xHyUnbVN41asDL3xlf/r2BVrs99/ZLdklxRwKIkvIkRuva4o+2XRl+bbBsQXmXv1HVOdHUf2bWhjlFA4jOO2h4MocjM1Iv5Og4VYbvBAFq1PEcmfVwNzDsDuZTL9C5rIQSdrAiTRWlFy+SmtG81yDCxl1YTMCrkSdTivCulDrKvGAZjR8FkG+azqrDKETxk40kfF4P0La8ii4tl4Hx20ew2SQRiY8lQw9yUnhl+n9M62Ks9AbgBch6nrELmX/rZDTrOusohya0NGGU7Nld79y81TyTvM/qh0t80+vaYaTZA9wvx1rnTLIZ0wOLx3mBZ7G4869Nw57LmtbDTkpxt97e+fZGMrgwX8nYhbg6J78BV7B/ymIv++i8lqjlv9LPENJOYDAyyvZHfijdxCZ6VNP+BUwpLqWoBFdrikYcI1CLk06Ed4FATcgjMiDt9OYbEgCl1YMOgSHPV/2tFy51igWIdTagCdqp9fRN5Jw47nalos6LsT7nq/rzd2k3sBj6kmdZSw1huTRH3R3Y7wan3jyk55P/ZvIzuMdfqlU4c+tVY2565SvDvYyMeXHTtnG1UFJuDzI0bWFiOboV+lDJs=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 844da6cb-6908-42f5-1510-08d85500f0a3
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 20:43:00.1923
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Atnx5hk1iR2FyNQcJLZsWQ3T4n2WGZbXhqadS911djiX1yKfZcWuF8DbdLwi04Xy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2407
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-09_16:2020-09-09,2020-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 phishscore=0 clxscore=1015
- mlxlogscore=850 impostorscore=0 bulkscore=0 malwarescore=0 adultscore=0
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090185
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
+Content-Disposition: inline
+In-Reply-To: <20200908213120.GA27040@lore-desk>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 06:11:51PM +0100, Lorenz Bauer wrote:
-> Always check context access if the register we're operating on is
-> PTR_TO_CTX, rather than relying on ARG_PTR_TO_CTX. This allows
-> simplifying the arg_type checking section of the function.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+
+--/9DWx/yDrRhgMJTb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> > Lorenzo Bianconi wrote:
+> > > > Lorenzo Bianconi wrote:
+> > > > > > Lorenzo Bianconi wrote:
+> > >=20
+> > > [...]
+> > >=20
+> > > > > > > + *	Description
+> > > > > > > + *		Adjust frame headers moving *offset* bytes from/to the s=
+econd
+> > > > > > > + *		buffer to/from the first one. This helper can be used to=
+ move
+> > > > > > > + *		headers when the hw DMA SG does not copy all the headers=
+ in
+> > > > > > > + *		the first fragment.
+> > > > >=20
+> > > > > + Eric to the discussion
+> > > > >=20
+> >=20
+> > [...]
+> >=20
+
+[...]
+
+> >=20
+> > Still in a normal L2/L3/L4 use case I expect all the headers you
+> > need to be in the fist buffer so its unlikely for use cases that
+> > send most traffic via XDP_TX for example to ever need the extra
+> > info. In these cases I think you are paying some penalty for
+> > having to do the work of populating the shinfo. Maybe its measurable
+> > maybe not I'm not sure.
+> >=20
+> > Also if we make it required for multi-buffer than we also need
+> > the shinfo on 40gbps or 100gbps nics and now even small costs
+> > matter.
+>=20
+> Now I realized I used the word "split" in a not clear way here,
+> I apologize for that.
+> What I mean is not related "header" split, I am referring to the case whe=
+re
+> the hw is configured with a given rx buffer size (e.g. 1 PAGE) and we have
+> set a higher MTU/max received size (e.g. 9K).
+> In this case the hw will "split" the jumbo received frame over multiple rx
+> buffers/descriptors. Populating the "xdp_shared_info" we will forward this
+> layout info to the eBPF sandbox and to a remote driver/cpu.
+> Please note this use case is not currently covered by XDP so if we develo=
+p it a
+> proper way I guess we should not get any performance hit for the legacy s=
+ingle-buffer
+> mode since we will not populate the shared_info for it (I think you refer=
+ to
+> the "legacy" use-case in your "normal L2/L3/L4" example, right?)
+> Anyway I will run some tests to verify the performances for the single bu=
+ffer
+> use-case are not hit.
+>=20
+> Regards,
+> Lorenzo
+
+I carried out some performance measurements on my Espressobin to check if t=
+he
+XDP "single buffer" use-case has been hit introducing xdp multi-buff suppor=
+t.
+Each test has been carried out sending ~900Kpps (pkt length 64B). The rx
+buffer size was set to 1 PAGE (default value).
+The results are roughly the same:
+
+commit: f2ca673d2cd5 "net: mvneta: fix use of state->speed"
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+- XDP-DROP: ~ 740 Kpps
+- XDP-TX: ~ 286 Kpps
+- XDP-PASS + tc drop: ~ 219.5 Kpps
+
+xdp multi-buff:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+- XDP-DROP: ~ 739-740 Kpps
+- XDP-TX: ~ 285 Kpps
+- XDP-PASS + tc drop: ~ 223 Kpps
+
+I will add these results to v3 cover letter.
+
+Regards,
+Lorenzo
+
+>=20
+> >=20
+> > >=20
+> > > >=20
+> > > > If you take the simplest possible program that just returns XDP_TX
+> > > > and run a pkt generator against it. I believe (haven't run any
+> > > > tests) that you will see overhead now just from populating this
+> > > > shinfo. I think it needs to only be done when its needed e.g. when
+> > > > user makes this helper call or we need to build the skb and populate
+> > > > the frags there.
+> > >=20
+> > > sure, I will carry out some tests.
+> >=20
+> > Thanks!
+> >=20
+> > >=20
+> > > >=20
+> > > > I think a smart driver will just keep the frags list in whatever
+> > > > form it has them (rx descriptors?) and push them over to the
+> > > > tx descriptors without having to do extra work with frag lists.
+> > >=20
+> > > I think there are many use-cases where we want to have this info avai=
+lable in
+> > > xdp_buff/xdp_frame. E.g: let's consider the following Jumbo frame exa=
+mple:
+> > > - MTU > 1 PAGE (so we the driver will split the received data in mult=
+iple rx
+> > >   descriptors)
+> > > - the driver performs a XDP_REDIRECT to a veth or cpumap
+> > >=20
+> > > Relying on the proposed architecture we could enable GRO in veth or c=
+pumap I
+> > > guess since we can build a non-linear skb from the xdp multi-buff, ri=
+ght?
+> >=20
+> > I'm not disputing there are use-cases. But, I'm trying to see if we
+> > can cover those without introducing additional latency in other
+> > cases. Hence the extra benchmarks request ;)
+> >=20
+> > >=20
+> > > >=20
+> > > > >=20
+> > > > > >=20
+> > > > > > Did you benchmark this?
+> > > > >=20
+> > > > > will do, I need to understand if we can use tiny buffers in mvnet=
+a.
+> > > >=20
+> > > > Why tiny buffers? How does mvneta layout the frags when doing
+> > > > header split? Can we just benchmark what mvneta is doing at the
+> > > > end of this patch series?
+> > >=20
+> > > for the moment mvneta can split the received data when the previous b=
+uffer is
+> > > full (e.g. when we the first page is completely written). I want to e=
+xplore if
+> > > I can set a tiny buffer (e.g. 128B) as max received buffer to run som=
+e performance
+> > > tests and have some "comparable" results respect to the ones I got wh=
+en I added XDP
+> > > support to mvneta.
+> >=20
+> > OK would be great.
+> >=20
+> > >=20
+> > > >=20
+> > > > Also can you try the basic XDP_TX case mentioned above.
+> > > > I don't want this to degrade existing use cases if at all
+> > > > possible.
+> > >=20
+> > > sure, will do.
+> >=20
+> > Thanks!
+> >=20
+
+
+
+--/9DWx/yDrRhgMJTb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX1lAWwAKCRA6cBh0uS2t
+rO1TAQCjzao5yMool1muTgooRW/xpARCm0LRjGPZblaEI96c1gD/Y4qpPX069sT3
+aySbVadRlnSZ46wtd+KvVOZbUvFiVQs=
+=zFfe
+-----END PGP SIGNATURE-----
+
+--/9DWx/yDrRhgMJTb--
+
