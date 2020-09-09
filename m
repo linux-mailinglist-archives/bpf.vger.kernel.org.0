@@ -2,183 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B580262B8D
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 11:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74809262C81
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 11:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgIIJQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 05:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S1728350AbgIIJuJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 05:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgIIJQg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:16:36 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C71FC061573
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 02:16:36 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id h17so1725029otr.1
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 02:16:36 -0700 (PDT)
+        with ESMTP id S1726489AbgIIJuH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:50:07 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D57C061573
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 02:50:07 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t13so1705165ile.9
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 02:50:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cjOi/bbWMad20Ec0QztnNmD+ndSvVpYoN56P1CtMeqU=;
-        b=XNULoNdpK6mF/hptn3B4F711PvI4Ltj5FvJpMYYPjddU+tNhSeoI3wzDynatrcvXrN
-         RtnkeyfZI0n1nVl8QOybIM1eR/qXJSUXjM7WJiFigWy5BuHs0o6pUY8DjNySi1Tr9IO4
-         LbGf9qwyo5q7jsX+YaVkm49KKjrkMw5Xa2vC4=
+         :cc:content-transfer-encoding;
+        bh=AByC7SM7WYk081vXb3/jRTzygXFUSdG9LyGSgV6OFXc=;
+        b=ZbkxlP9QHmsI1edfuDb+WHvkeEjjbYDZb/UwnXPO2O7tuye86SKjQCdC+sjuGIBH/c
+         7hNQr8Giev/UpygR2Krjp0KI4zOFgNeCnp85dRbHh0tY1HyN3Y7FRtyGLaHRrU0bheOJ
+         gneGoJNGjXOQ6xbsSPlueXJSF32L+zLbzbkXIm21O7H2w3bAuOR8pQfkLI2eDZR8dDSL
+         8bNGVIj6iKB3sTZ384lUhVW/hdeA+F5xiOapnqiqd2GPfiJ4d+z1wt8tA9IsIgNRLT9J
+         r+UefVo/fajWKtICIVE6yiWr/4KPjkMIiTp6winBZ0GGduHpw0yRyqhF9RQxrjU6awP7
+         EzFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cjOi/bbWMad20Ec0QztnNmD+ndSvVpYoN56P1CtMeqU=;
-        b=d5xsdrDq5gokd30oJcdd4j6CVB2JmM6JKBrkCWCiUX4NWa1BUJmPc8AxDuXE00AjvY
-         eLY/YVVAnUDkeVIk/cLnI088NGtbjxcrlfYyGEmPpPukAhr7HKqeVKTBcId/TA/hhQpD
-         e4/PJLo93Zn08styZJkMcFgekgs0o7ljRZf66aRRz4q9UYTUR3qylsq6SUgjqxBvG05h
-         eB2Om0lhk1AidcEx5cS7um81drEy4tTy6unpOyWfir7J4xC9Tzo1JMDtDU7dr/fuN7jl
-         OPbdnhmx28a53asAGBZMMDgImdxG6lYpuGSxCio/HnDrE5Lk28xopWhniLmGevGoQmpv
-         CpJA==
-X-Gm-Message-State: AOAM532g8kChycO0MqsLbimtkNWBUkxq4MPODttpcrHaqgjJ8r11e2TR
-        D9VNXU9uP7woj+xzcH1I93bxU/n++3jqo/w0cH4AUUK0EVmcOA==
-X-Google-Smtp-Source: ABdhPJzMj5a3W8oLrwIpYbff8Up2JkBuMUKouwSSNSk90zRk0Pq42h5q6rZuSDqvJLJTtUjUN8orAfcC+47NM+HzFn0=
-X-Received: by 2002:a05:6830:12c7:: with SMTP id a7mr57530otq.334.1599642995813;
- Wed, 09 Sep 2020 02:16:35 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AByC7SM7WYk081vXb3/jRTzygXFUSdG9LyGSgV6OFXc=;
+        b=q/sAZk28URqdunpRH7HAb2ev08yKb7J4/vbAvtdAxRKUDDDp6jLPReA2lrWr5K6etD
+         ZbTfvDZsmiL/4kuWIST1+6rD71oJI6r7TKEUjcsTX0+vOJI+99S+hMbv6WaUgKQ7UYso
+         ExYB3n+eiKf/oKbzlwhA/WffZN8PUsmDZNa7IennJg3cUFqTd8PjvjAVLbE+uWoWLRM1
+         PJllXe4kCdWFPnx6AEznJnX4TU9rlvXGEp4T+ohRVBr7Pzg0Y3EQrarwn92SnqmBjGLn
+         tmZFXPA92gBjnQ/911HykJtd7sP6VcyqgSc/g3FpMd0MvWo/f7Hp9VlFvR4s22YSsxCM
+         pXvg==
+X-Gm-Message-State: AOAM533YJX2F01YErVuHlFYBAXI0tVTkNDsbMXI6wv9CG1z38lk+khG+
+        C8xS3xHUqW+fWnCEHyMW5z49T6EytewQocuE6k/qfg==
+X-Google-Smtp-Source: ABdhPJx53jSVp4MJzAr921QvXzf9PYPAObbNkewW8nXbjteTChpLMZHgfVvcTXnLZae8IVwbuD/njzMK6ce+A2QWTlQ=
+X-Received: by 2002:a92:c991:: with SMTP id y17mr2904121iln.148.1599645005983;
+ Wed, 09 Sep 2020 02:50:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200904095904.612390-1-lmb@cloudflare.com> <20200904095904.612390-2-lmb@cloudflare.com>
- <20200906224008.fph4frjkkegs6w3b@kafai-mbp.dhcp.thefacebook.com>
- <CACAyw9-ftMBnoqOt_0dhir+Y=2EW4iLsh=LYSH78hEF=STA1iw@mail.gmail.com> <20200908195212.ekr3jn6ejnowhlz3@kafai-mbp>
-In-Reply-To: <20200908195212.ekr3jn6ejnowhlz3@kafai-mbp>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 9 Sep 2020 10:16:24 +0100
-Message-ID: <CACAyw9-HZ0AzVYOg_2=PF9Y=xNwxNWUBk4VonxQLgRE6TmoZdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] bpf: Allow passing BTF pointers as PTR_TO_SOCKET
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
+References: <CAGeTCaU1fEGVVWnXKR_zv4ZSoCrBGSN65-RpFuKg9Gf-_z6TOw@mail.gmail.com>
+ <CAADnVQKsbbd9dbPYQqa5=QsRfLo07hEjr1rSC=5DfVpzUK7Ajw@mail.gmail.com>
+ <CAGeTCaWSSBJye72NCQW4N=XtsFx-rv-EEgTowTT3VEtus=pFtA@mail.gmail.com> <878sdlpv92.fsf@toke.dk>
+In-Reply-To: <878sdlpv92.fsf@toke.dk>
+From:   Borna Cafuk <borna.cafuk@sartura.hr>
+Date:   Wed, 9 Sep 2020 11:49:54 +0200
+Message-ID: <CAGeTCaWDk_ok38Xm8H8-8HQYP-bbPqMuwWDpEYM=i1=e0e88bw@mail.gmail.com>
+Subject: Re: HASH_OF_MAPS inner map allocation from BPF
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
+        KP Singh <kpsingh@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 8 Sep 2020 at 20:52, Martin KaFai Lau <kafai@fb.com> wrote:
+On Mon, Sep 7, 2020 at 3:33 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> On Mon, Sep 07, 2020 at 09:57:06AM +0100, Lorenz Bauer wrote:
-> > On Sun, 6 Sep 2020 at 23:40, Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Fri, Sep 04, 2020 at 10:58:59AM +0100, Lorenz Bauer wrote:
-> > > > Tracing programs can derive struct sock pointers from a variety
-> > > > of sources, e.g. a bpf_iter for sk_storage maps receives one as
-> > > > part of the context. It's desirable to be able to pass these to
-> > > > functions that expect PTR_TO_SOCKET. For example, it enables us
-> > > > to insert such a socket into a sockmap via map_elem_update.
-> > > >
-> > > > Teach the verifier that a PTR_TO_BTF_ID for a struct sock is
-> > > > equivalent to PTR_TO_SOCKET. There is one hazard here:
-> > > > bpf_sk_release also takes a PTR_TO_SOCKET, but expects it to be
-> > > > refcounted. Since this isn't the case for pointers derived from
-> > > > BTF we must prevent them from being passed to the function.
-> > > > Luckily, we can simply check that the ref_obj_id is not zero
-> > > > in release_reference, and return an error otherwise.
-> > > >
-> > > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > > > ---
-> > > >  kernel/bpf/verifier.c | 61 +++++++++++++++++++++++++------------------
-> > > >  1 file changed, 36 insertions(+), 25 deletions(-)
-> > > >
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index b4e9c56b8b32..509754c3aa7d 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -3908,6 +3908,9 @@ static int resolve_map_arg_type(struct bpf_verifier_env *env,
-> > > >       return 0;
-> > > >  }
-> > > >
-> > > > +BTF_ID_LIST(btf_fullsock_ids)
-> > > > +BTF_ID(struct, sock)
-> > > It may be fine for the sockmap iter case to treat the "struct sock" BTF_ID
-> > > as a fullsock (i.e. PTR_TO_SOCKET).
-> >
-> > I think it's unsafe even for the sockmap iter. Since it's a tracing
-> > prog there might
-> > be other ways for it to obtain a struct sock * in the future.
-> >
-> > > This is a generic verifier change though.  For tracing, it is not always the
-> > > case.  It cannot always assume that the "struct sock *" in the function being
-> > > traced is always a fullsock.
-> >
-> > Yes, I see, thanks for reminding me. What a footgun. I think the
-> > problem boils down
-> > to the fact that we can't express "this is a full socket" in BTF,
-> > since there is no such
-> > type in the kernel.
-> >
-> > Which makes me wonder: how do tracing programs deal with struct sock*
-> > that really
-> > is a request sock or something?
-> PTR_TO_BTF_ID is handled differently, by BPF_PROBE_MEM, to take care
-> of cases like this.  bpf_jit_comp.c has some more details.
-
-Thanks, that helps a lot. I also dug into the BTF pointer patchset as
-well, and now your comment about PTR_TO_BTF_ID being NULL makes sense
-as well. Sigh, I should've looked at this from the start.
-
-What I still don't understand is how PTR_TO_BTF_ID is safe for a
-struct sock* that points at a smaller reqsk for example. How do we
-prevent a valid, non-faulting BPF read from accessing memory beyond
-the reqsk?
-
+> Borna Cafuk <borna.cafuk@sartura.hr> writes:
 >
-> [ ... ]
->
-> > > > @@ -4561,6 +4569,9 @@ static int release_reference(struct bpf_verifier_env *env,
-> > > >       int err;
-> > > >       int i;
-> > > >
-> > > > +     if (!ref_obj_id)
-> > > > +             return -EINVAL;
-> > > hmm...... Is it sure this is needed?  If it was, it seems there was
-> > > an existing bug in release_reference_state() below which could not catch
-> > > the case where "bpf_sk_release()" is called on a pointer that has no
-> > > reference acquired before.
+> > On Sat, Sep 5, 2020 at 12:47 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> On Fri, Sep 4, 2020 at 7:57 AM Borna Cafuk <borna.cafuk@sartura.hr> wr=
+ote:
+> >> >
+> >> > Hello everyone,
+> >> >
+> >> > Judging by [0], the inner maps in BPF_MAP_TYPE_HASH_OF_MAPS can only=
+ be created
+> >> > from the userspace. This seems quite limiting in regard to what can =
+be done
+> >> > with them.
+> >> >
+> >> > Are there any plans to allow for creating the inner maps from BPF pr=
+ograms?
+> >> >
+> >> > [0] https://stackoverflow.com/a/63391528
+> >>
+> >> Did you ask that question or your use case is different?
+> >> Creating a new map for map_in_map from bpf prog can be implemented.
+> >> bpf_map_update_elem() is doing memory allocation for map elements.
+> >> In such a case calling this helper on map_in_map can, in theory, creat=
+e a new
+> >> inner map and insert it into the outer map.
 > >
-> > Since sk_release takes a PTR_TO_SOCKET, it's possible to pass a tracing
-> > struct sock * to it after this patch. Adding this check prevents the
-> > release from
-> > succeeding.
-> Not all existing PTR_TO_SOCK_COMMON takes a reference also.
-> Does it mean all these existing cases are broken?
-> For example, bpf_sk_release(__sk_buff->sk) is allowed now?
-
-I'll look into this. It's very possible I got the refcounting logic
-wrong, again.
-
->
+> > No, it wasn't me who asked that question, but it seemed close enough to
+> > my issue. My use case calls for modifying the syscount example from BCC=
+[1].
 > >
-> > >
-> > > Can you write a verifier test to demonstrate the issue?
+> > The idea is to have an outer map where the keys are PIDs, and inner map=
+s where
+> > the keys are system call numbers. This would enable tracking the number=
+ of
+> > syscalls made by each process and the makeup of those calls for all pro=
+cesses
+> > simultaneously.
 > >
-> > There is a selftest in this series that ensures calling sk_release
-> > doesn't work, which exercises this.b
-> I am not sure what Patch 4 of this series is testing.
-> bpf_sk_release is not even available in bpf tracing iter program.
-
-I built a patched kernel where sk_release is available, and verified
-the behaviour that way. My idea was that as long as the test fails
-we've proven that releasing the sk is not possible. I realize this is
-counterintuitive and kind of brittle. Maybe your point about
-__sk_buff->sk will allow me to write a better test.
-
+> > [1] https://github.com/iovisor/bcc/blob/master/libbpf-tools/syscount.bp=
+f.c
 >
-> There are ref tracking tests in tools/testing/selftests/bpf/verifier/ref_tracking.c.
-> Please add all ref count related test there to catch the issue.
+> Well, if you just want to count, map-in-map seems a bit overkill? You
+> could just do:
+>
+> struct {
+>   u32 pid;
+>   u32 syscall;
+> } map_key;
+>
+> and use that?
+>
+> -Toke
+>
 
-Ack.
+I have considered that, but maps in maps seem better for when I need to get=
+ the
+data about a single process's syscalls: It requires reading only one of the
+inner maps in its entirety. If I have a composite key like that, I don't se=
+e
+any way, other than:
+ * either iterating through all the possible keys for a process
+   (i.e. over all syscalls) and looking them up in the map, or
+ * iterating over all entries in the map and filtering them.
 
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Looking at it again, the first option does not seem _that_ bad, but just
+iterating over one (inner) map would be easier to fit into our use-case.
