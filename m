@@ -2,191 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30872631F9
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 18:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC555263218
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 18:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731022AbgIIQcn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 12:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
+        id S1731179AbgIIQe4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 12:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730785AbgIIQcj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:32:39 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE5CC061755;
-        Wed,  9 Sep 2020 09:32:16 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id q3so2161762ybp.7;
-        Wed, 09 Sep 2020 09:32:16 -0700 (PDT)
+        with ESMTP id S1731096AbgIIQem (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:34:42 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CD0C061573;
+        Wed,  9 Sep 2020 09:34:42 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id q3so2166714ybp.7;
+        Wed, 09 Sep 2020 09:34:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ukEjxfb+1NHDtvdcqh0sH5s3JNgB8HHy1ACIbDfp5WE=;
-        b=nCTzEYiMneIdA9f1xe6gyc6JZtf86C8g7xesh9TO/Mr/HwHopBiGo6vS9x3b70uJ/1
-         l0B2VP4FNTk+dNFM903kg36P9AOrrKHDoM08TT6RQUgW7O08jNP3Gu483QR7WARhCeeP
-         XVm0yHBFHpLhCTF5J9w3SZhqXNyTOw58f/D0nZBZujDFhJbbcO+9YbFx4LM8F/ej6mLq
-         a384k1pCLAp8oztq6ir9IrUrsjzaiQSCaTotL6Cff4zuthfROlGcshJb3ASmJIR5eQWA
-         z6MhLNa9/9d4d84/G4q0ghC0rthbQHxWNQBFvnqVtC+4174cWLQdvMC1opFwaA+mLVz0
-         LVZA==
+         :cc:content-transfer-encoding;
+        bh=bz7rEhxYp3SlW/L1/DoGXJkXqWRJ/MVplIqXHQoZUfk=;
+        b=pd+uoqlqxUrm3nzrqpIm3QY0eORPpJdndeSmE3zYpQOjab2SWJP5nT9bkG8XyMGek7
+         5ZOn31GidWomgOQ95C89K4nHkekGR+OLHloxGd8JsrOJAcYwhdp4rQMCDmrnXrpXOA4T
+         IwYYIWT2LUnrUPNUt0rpM0PvvFkbOTo9nh1adsjT+yV4MFTJwuCb1p/wsfBtF58ZX4W2
+         NHTnJHQ+7dDxNWaC+iRO0ZLYugububaNnN5l9rEoz3faVAxVXTC+uzq94+BBSyoCjbgV
+         En4tI5Ivw/xb8A1ltryznSdezcjEOyJU2PmTxZKWHdN70nscv8qFx87G9uz2So8ZotLb
+         v7vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ukEjxfb+1NHDtvdcqh0sH5s3JNgB8HHy1ACIbDfp5WE=;
-        b=XaCWps49j2fohKNOaPUpxetoue1U3rTSxBZJ2WFO2Y5DvFfWfFVrBw3DBBCfGEVulm
-         iqm4SpFSvxNW7tU5H3Sy8XOts1RTyFIb0FyFuDcRAGhji7QYmIdpnLg+X3jDj4j0VVru
-         yZyLvHL0p2moZxtemIOVOt0ADl6sgXyiTRlBUED4GaZ4vwjmFF0WLZ1B8agTLjZG/IVl
-         9sTPkH6UZiT+SKXfxc4ScG2TQcwV98XpUim6BVZ6Z+cHVw7v1yCQxIv1vlOIOLlyg0FJ
-         COKjmw2yD5uPTCf++Z4BtV8QEkB9KQERSjkkKBV+m6ahxpTgQ9BVjlErfppLjQwHecX7
-         egSw==
-X-Gm-Message-State: AOAM5322u5a5HSPVSHCp9ZIFhzkWLeaRlveQbukzum21WJqGDvPKH5Lh
-        WHZjqHJAxYQAYV4k/nVb/C3FHi/XsV0RMEJb3oOI8mEs
-X-Google-Smtp-Source: ABdhPJwF4jzCA2HNcfoVoMH5OA+I2c1B/FTKEPwKXm/kk9hSKzIlrOHcr/KyO9RctifcmGP2lrA9C1VOBYolpjQNn3s=
-X-Received: by 2002:a25:7b81:: with SMTP id w123mr7138417ybc.260.1599669135410;
- Wed, 09 Sep 2020 09:32:15 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bz7rEhxYp3SlW/L1/DoGXJkXqWRJ/MVplIqXHQoZUfk=;
+        b=Db91r8RS9V7esJZeALD/23Lcn8DqQDLp6/Z8uK8HAhvw7k33xW34TUgJg4AtwuZ8cJ
+         aeLu0zCoKGGKUSCe3oKQ/1t/abuhgcV/5TRm/MItllNG7mhAeqU/6Hr2g5FFdoubZdi6
+         xfWFG1+uiIWFt3HIx/0qo93tY+0Et42dGFDGu4lstQSH56cDKs2hyJCmkBqAcTEve2/g
+         LW90VPjBBNvP3Y6OcAILP5eTCGxC9Nck/6QtPoiCJU9iDV6TiblKYXD5wyKps9y+319e
+         oQI5516zM5Lx0aph6fCtS0aPIF4pa43jkXbi/a7DhzkeRI0kgRTdE31rLpy/tj9c0tZq
+         72Mw==
+X-Gm-Message-State: AOAM5320fL/Y7no9iceUQ1fhwUy/RIixrjcB3HQcNrVlBPM3fD6ufTeX
+        ccEAGL1RzDFFNfeVTw5F+Q4EHj0pxiKEUK/EeX8=
+X-Google-Smtp-Source: ABdhPJzekXdvMgtQk4KQkK6/fwW8QtqagN0dvuxWXPqC4jSpt6DayWXW1Yl0yqXIb/SnyhiEIG68rt3sjYsxBKvouiQ=
+X-Received: by 2002:a25:6885:: with SMTP id d127mr6560959ybc.27.1599669281507;
+ Wed, 09 Sep 2020 09:34:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909063943.1653670-1-yhs@fb.com>
-In-Reply-To: <20200909063943.1653670-1-yhs@fb.com>
+References: <20200828193603.335512-1-sdf@google.com> <20200828193603.335512-4-sdf@google.com>
+ <CAEf4BzZtYTyBT=jURkF4RQLHXORooVwXrRRRkoSWDqCemyGQeA@mail.gmail.com>
+ <20200904012909.c7cx5adhy5f23ovo@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZp4ODLbjEiv=W7byoR9XzTqAQ052wZM_wD4=aTPmkjbw@mail.gmail.com>
+ <87mu22ottv.fsf@toke.dk> <CAEf4BzbywFBSW+KypeWkG7CF8rNSu5XxS8HZz7BFuUsC9kZ1ug@mail.gmail.com>
+ <87eenbnrmy.fsf@toke.dk>
+In-Reply-To: <87eenbnrmy.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Sep 2020 09:32:04 -0700
-Message-ID: <CAEf4BzYRG=q_0BZwc+K89+OF9M4w7h2SoS3Qb_A6BiUNGPg4hg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix test_sysctl_loop{1,2}
- failure due to clang change
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+Date:   Wed, 9 Sep 2020 09:34:30 -0700
+Message-ID: <CAEf4BzaiwjLkKpJHgU3i0r0REPVOc6zEgF2MUHNBfGQ9S=gz_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/8] libbpf: Add BPF_PROG_BIND_MAP syscall and
+ use it on .metadata section
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
+        YiFei Zhu <zhuyifei@google.com>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        Andrey Ignatov <rdna@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 11:40 PM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Sep 9, 2020 at 3:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> Andrii reported that with latest clang, when building selftests, we have
-> error likes:
->   error: progs/test_sysctl_loop1.c:23:16: in function sysctl_tcp_mem i32 (%struct.bpf_sysctl*):
->   Looks like the BPF stack limit of 512 bytes is exceeded.
->   Please move large on stack variables into BPF per-cpu array map.
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
-> The error is triggered by the following LLVM patch:
->   https://reviews.llvm.org/D87134
+> > On Mon, Sep 7, 2020 at 1:49 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+> >>
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >>
+> >> >> May be we should talk about problem statement and goals.
+> >> >> Do we actually need metadata per program or metadata per single .o
+> >> >> or metadata per final .o with multiple .o linked together?
+> >> >> What is this metadata?
+> >> >
+> >> > Yep, that's a very valid question. I've also CC'ed Andrey.
+> >>
+> >> For the libxdp use case, I need metadata per program. But I'm already
+> >> sticking that in a single section and disambiguating by struct name
+> >> (just prefixing the function name with a _ ), so I think it's fine to
+> >> have this kind of "concatenated metadata" per elf file and parse out t=
+he
+> >> per-program information from that. This is similar to the BTF-encoded
+> >> "metadata" we can do today.
+> >>
+> >> >> If it's just unreferenced by program read only data then no special=
+ names or
+> >> >> prefixes are needed. We can introduce BPF_PROG_BIND_MAP to bind any=
+ map to any
+> >> >> program and it would be up to tooling to decide the meaning of the =
+data in the
+> >> >> map. For example, bpftool can choose to print all variables from al=
+l read only
+> >> >> maps that match "bpf_metadata_" prefix, but it will be bpftool conv=
+ention only
+> >> >> and not hard coded in libbpf.
+> >> >
+> >> > Agree as well. It feels a bit odd for libbpf to handle ".metadata"
+> >> > specially, given libbpf itself doesn't care about its contents at al=
+l.
+> >> >
+> >> > So thanks for bringing this up, I think this is an important
+> >> > discussion to have.
+> >>
+> >> I'm fine with having this be part of .rodata. One drawback, though, is
+> >> that if any metadata is defined, it becomes a bit more complicated to
+> >> use bpf_map__set_initial_value() because that now also has to include
+> >> the metadata. Any way we can improve upon that?
+> >
+> > I know that skeleton is not an answer for you, so you'll have to find
+> > DATASEC and corresponding variable offset and size (libbpf provides
+> > APIs for all those operations, but you'll need to combine them
+> > together). Then mmap() map and then you can do partial updates. There
+> > is no other way to update only portions of an ARRAY map, except
+> > through memory-mapping.
 >
-> For example, the following code is from test_sysctl_loop1.c:
->   static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
->   {
->     volatile char tcp_mem_name[] = "net/ipv4/tcp_mem/very_very_very_very_long_pointless_string";
->     ...
->   }
-> Without the above LLVM patch, the compiler did optimization to load the string
-> (59 bytes long) with 7 64bit loads, 1 8bit load and 1 16bit load,
-> occupying 64 byte stack size.
+> Well, I wouldn't mind having to go digging through the section. But is
+> it really possible to pick out and modify parts of it my mmap() before
+> the object is loaded (and the map frozen)? How? I seem to recall we
+> added bpf_map__set_initial_value() because this was *not* possible with
+> the public API?
 >
-> With the above LLVM patch, the compiler only uses 8bit loads, but subregister is 32bit.
-> So stack requirements become 4 * 59 = 236 bytes. Together with other stuff on
-> the stack, total stack size exceeds 512 bytes, hence compiler complains and quits.
->
-> To fix the issue, removing "volatile" key word or changing "volatile" to
-> "const"/"static const" does not work, the string is put in .rodata.str1.1 section,
-> which libbpf did not process it and errors out with
->   libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
->   libbpf: prog 'sysctl_tcp_mem': bad map relo against '.L__const.is_tcp_mem.tcp_mem_name'
->           in section '.rodata.str1.1'
->
-> Defining the string const as global variable can fix the issue as it puts the string constant
-> in '.rodata' section which is recognized by libbpf. In the future, when libbpf can process
-> '.rodata.str*.*' properly, the global definition can be changed back to local definition.
->
-> Defining tcp_mem_name as a global, however, triggered a verifier failure.
->    ./test_progs -n 7/21
->   libbpf: load bpf program failed: Permission denied
->   libbpf: -- BEGIN DUMP LOG ---
->   libbpf:
->   invalid stack off=0 size=1
->   verification time 6975 usec
->   stack depth 160+64
->   processed 889 insns (limit 1000000) max_states_per_insn 4 total_states
->   14 peak_states 14 mark_read 10
->
->   libbpf: -- END LOG --
->   libbpf: failed to load program 'sysctl_tcp_mem'
->   libbpf: failed to load object 'test_sysctl_loop2.o'
->   test_bpf_verif_scale:FAIL:114
->   #7/21 test_sysctl_loop2.o:FAIL
-> This actually exposed a bpf program bug. In test_sysctl_loop{1,2}, we have code
-> like
->   const char tcp_mem_name[] = "<...long string...>";
->   ...
->   char name[64];
->   ...
->   for (i = 0; i < sizeof(tcp_mem_name); ++i)
->       if (name[i] != tcp_mem_name[i])
->           return 0;
-> In the above code, if sizeof(tcp_mem_name) > 64, name[i] access may be
-> out of bound. The sizeof(tcp_mem_name) is 59 for test_sysctl_loop1.c and
-> 79 for test_sysctl_loop2.c.
->
-> Without promotion-to-global change, old compiler generates code where
-> the overflowed stack access is actually filled with valid value, so hiding
-> the bpf program bug. With promotion-to-global change, the code is different,
-> more specifically, the previous loading constants to stack is gone, and
-> "name" occupies stack[-64:0] and overflow access triggers a verifier error.
-> To fix the issue, adjust "name" buffer size properly.
->
-> Reported-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 2 +-
->  tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 5 +++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
->
-> Changelog:
->   v1 -> v2:
->     . The tcp_mem_name change actually triggers a verifier failure due to
->       a bpf program bug. Fixing the bpf program bug can make test pass
->       with both old and latest llvm. (Alexei)
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c b/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
-> index 458b0d69133e..4b600b1f522f 100644
-> --- a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
-> +++ b/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
-> @@ -18,9 +18,9 @@
->  #define MAX_ULONG_STR_LEN 7
->  #define MAX_VALUE_STR_LEN (TCP_MEM_LOOPS * MAX_ULONG_STR_LEN)
->
-> +const char tcp_mem_name[] = "net/ipv4/tcp_mem/very_very_very_very_long_pointless_string";
->  static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
->  {
-> -       volatile char tcp_mem_name[] = "net/ipv4/tcp_mem/very_very_very_very_long_pointless_string";
->         unsigned char i;
->         char name[64];
->         int ret;
-> diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c b/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
-> index b2e6f9b0894d..d01056142520 100644
-> --- a/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
-> +++ b/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
-> @@ -18,11 +18,12 @@
->  #define MAX_ULONG_STR_LEN 7
->  #define MAX_VALUE_STR_LEN (TCP_MEM_LOOPS * MAX_ULONG_STR_LEN)
->
-> +const char tcp_mem_name[] = "net/ipv4/tcp_mem/very_very_very_very_long_pointless_string_to_stress_byte_loop";
->  static __attribute__((noinline)) int is_tcp_mem(struct bpf_sysctl *ctx)
->  {
-> -       volatile char tcp_mem_name[] = "net/ipv4/tcp_mem/very_very_very_very_long_pointless_string_to_stress_byte_loop";
->         unsigned char i;
-> -       char name[64];
-> +       /* the above tcp_mem_name length is 79, make name buffer length 80 */
-> +       char name[80];
+
+Ah, right, .rodata is frozen on load, forgot we are talking about .rodata h=
+ere.
 
 
-Wow, did you really count? Why not use sizeof(tcp_mem_name) and drop
-the comment entirely?
+> Also, for this, a bpf_map__get_initial_value() could be a simple way to
+> allow partial modifications. The caller could just get the whole map
+> value, modify it, and set it again afterwards with
+> __set_initial_value(). Any objections to adding that?
 
->         int ret;
+Yeah, I think having an API for getting initial map value makes sense.
+But please follow the naming convention for getters and call it
+bpf_map__initial_value().
+
 >
->         memset(name, 0, sizeof(name));
-> --
-> 2.24.1
+> -Toke
 >
