@@ -2,163 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2D22639A0
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 03:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1500263A50
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 04:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgIJB7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 21:59:02 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44908 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729824AbgIJBpB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 21:45:01 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089NZI5e128144;
-        Wed, 9 Sep 2020 19:37:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=pBMLCZNcYuWQcclrP/ceXhKw5ZPXEsDgH8qPadhIZMA=;
- b=BT4b1AhXzbLFM8c947LEhRa+9tapDmN9/i/o4lOvmhePIX5TxydtYe+88ljywoh92Xq8
- rpnMTlei+TaYQmFf75zXkhsnQQYz+IDMVIMWInUbFntrFMVPSKCbvKyQ7elWtNPc9TeG
- jBluvlRLAcuu/LttF6n20OZ/0kCGjY/cdRWW1oPlqV8WXp1UEOWib+/wbL4ov2tzOvjy
- Aak9T7juM9dFI3VmkI7tNtPA3JsE56jTOLFCG1MsRwpRMO48MsOIpZT9wGB+U9OJuzKx
- 69kupZSa4TR8rGdKa8ypNR9Hbwc4sBTgWD0rPX9esRtnBlvcw1gKK7jbmEQYIVKSIHt3 dA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33f7v598b2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 19:37:15 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 089NZxjv131604;
-        Wed, 9 Sep 2020 19:37:15 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33f7v598ap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 19:37:14 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 089NbDhW028000;
-        Wed, 9 Sep 2020 23:37:13 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 33c2a8dbcv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 23:37:13 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 089NbAIu34406714
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Sep 2020 23:37:10 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AD1FA4040;
-        Wed,  9 Sep 2020 23:37:10 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 271D1A404D;
-        Wed,  9 Sep 2020 23:37:10 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.5.224])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Sep 2020 23:37:10 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH RFC bpf-next 5/5] bpf: Do not include the original insn in zext patchlet
-Date:   Thu, 10 Sep 2020 01:34:39 +0200
-Message-Id: <20200909233439.3100292-6-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200909233439.3100292-1-iii@linux.ibm.com>
-References: <20200909233439.3100292-1-iii@linux.ibm.com>
+        id S1729993AbgIJC07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 22:26:59 -0400
+Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:41384 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729413AbgIJCYQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 22:24:16 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id 55AC918027FA3;
+        Wed,  9 Sep 2020 22:47:33 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id A42B7181D337B;
+        Wed,  9 Sep 2020 22:47:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2898:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:5007:6742:6743:8700:10004:10400:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:21939:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: sort28_6003546270e1
+X-Filterd-Recvd-Size: 3292
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Wed,  9 Sep 2020 22:47:25 +0000 (UTC)
+Message-ID: <b3d6f71aea87f4bb88554f1a3fdaee0b2feb158c.camel@perches.com>
+Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
+ break;
+From:   Joe Perches <joe@perches.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Kees Cook <kees.cook@canonical.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        storagedev@microchip.com, sparclinux@vger.kernel.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
+        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
+        alsa-devel <alsa-devel@alsa-project.org>
+Date:   Wed, 09 Sep 2020 15:47:24 -0700
+In-Reply-To: <20200909223602.GJ87483@ziepe.ca>
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+         <20200909223602.GJ87483@ziepe.ca>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-09_17:2020-09-09,2020-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 mlxscore=0 suspectscore=0 mlxlogscore=987 priorityscore=1501
- malwarescore=0 impostorscore=0 adultscore=0 spamscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090202
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If the original insn is a jump, then it is not subjected to branch
-adjustment, which is incorrect. As discovered by Yauheni in
+On Wed, 2020-09-09 at 19:36 -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
+> > fallthrough to a separate case/default label break; isn't very readable.
+> > 
+> > Convert pseudo-keyword fallthrough; statements to a simple break; when
+> > the next label is case or default and the only statement in the next
+> > label block is break;
+> > 
+> > Found using:
+> > 
+> > $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
+> > 
+> > Miscellanea:
+> > 
+> > o Move or coalesce a couple label blocks above a default: block.
+> > 
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> > 
+> > Compiled allyesconfig x86-64 only.
+> > A few files for other arches were not compiled.
+> 
+> IB part looks OK, I prefer it like this
+> 
+> You could do the same for continue as well, I saw a few of those..
 
-https://lore.kernel.org/bpf/20200903140542.156624-1-yauheni.kaliuta@redhat.com/
+I saw some continue uses as well but wasn't sure
+and didn't look to see if the switch/case with
+continue was in a for/while loop.
 
-this causes `test_progs -t global_funcs` failures on s390.
-
-Most likely, the current code includes the original insn in the
-patchlet, because there was no infrastructure to insert new insns, only
-to replace the existing ones. Now that bpf_patch_insns_data() can do
-insertions, stop including the original insns in zext patchlets.
-
-Fixes: a4b1d3c1ddf6 ("bpf: verifier: insert zero extension according to analysis result")
-Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- kernel/bpf/verifier.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 17c2e926e436..64a04953c631 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9911,7 +9911,7 @@ static int opt_remove_nops(struct bpf_verifier_env *env)
- static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- 					 const union bpf_attr *attr)
- {
--	struct bpf_insn *patch, zext_patch[2], rnd_hi32_patch[4];
-+	struct bpf_insn *patch, zext_patch, rnd_hi32_patch[4];
- 	struct bpf_insn_aux_data *aux = env->insn_aux_data;
- 	int i, patch_len, delta = 0, len = env->prog->len;
- 	struct bpf_insn *insns = env->prog->insnsi;
-@@ -9919,13 +9919,14 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- 	bool rnd_hi32;
- 
- 	rnd_hi32 = attr->prog_flags & BPF_F_TEST_RND_HI32;
--	zext_patch[1] = BPF_ZEXT_REG(0);
-+	zext_patch = BPF_ZEXT_REG(0);
- 	rnd_hi32_patch[1] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_AX, 0);
- 	rnd_hi32_patch[2] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_AX, 32);
- 	rnd_hi32_patch[3] = BPF_ALU64_REG(BPF_OR, 0, BPF_REG_AX);
- 	for (i = 0; i < len; i++) {
- 		int adj_idx = i + delta;
- 		struct bpf_insn insn;
-+		int len_old = 1;
- 
- 		insn = insns[adj_idx];
- 		if (!aux[adj_idx].zext_dst) {
-@@ -9968,20 +9969,21 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- 		if (!bpf_jit_needs_zext())
- 			continue;
- 
--		zext_patch[0] = insn;
--		zext_patch[1].dst_reg = insn.dst_reg;
--		zext_patch[1].src_reg = insn.dst_reg;
--		patch = zext_patch;
--		patch_len = 2;
-+		zext_patch.dst_reg = insn.dst_reg;
-+		zext_patch.src_reg = insn.dst_reg;
-+		patch = &zext_patch;
-+		patch_len = 1;
-+		adj_idx++;
-+		len_old = 0;
- apply_patch_buffer:
--		new_prog = bpf_patch_insns_data(env, adj_idx, 1, patch,
-+		new_prog = bpf_patch_insns_data(env, adj_idx, len_old, patch,
- 						patch_len);
- 		if (!new_prog)
- 			return -ENOMEM;
- 		env->prog = new_prog;
- 		insns = new_prog->insnsi;
- 		aux = env->insn_aux_data;
--		delta += patch_len - 1;
-+		delta += patch_len - len_old;
- 	}
- 
- 	return 0;
--- 
-2.25.4
 
