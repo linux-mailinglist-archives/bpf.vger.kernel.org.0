@@ -2,178 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA1A263580
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 20:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAA3263599
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 20:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728663AbgIISF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 14:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729822AbgIISE4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:04:56 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01864C061786
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 11:04:22 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s65so1574225pgb.0
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 11:04:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tG9agVj0GMRVKH1QLoL/lKaoBXW6B6XLK0Iu5QYQprk=;
-        b=aJA4if0O1IlOC9dudFG+Q8j1MjEmDn+jq0+mZNXBK02FtB/rMzLumjcHYQl/zMVNzi
-         DUQKOhRqehjpULtlize+xh6K3GPl3r+AFEl66lipPSiLzmGVem7vaoFIP+aeJSl/5aMA
-         bywNoh1wOAL/7fhNZh3Hz1TUOeSMKVPudFqe5dZy79OexNRfuLSD17sBR6BZPm3IV746
-         kpWbV5cD8e/hMHKvcyTulnmtq3Ok2yFc88I8ynoYRa/he6n3QhI1cFmq5e+wDbePLpe2
-         JZXakAkf9fpKiLD69aurRSoi8adKKzqZQzM3pZjF83fJycJXkAnQd0rRNn+tt/AHjiXb
-         lFPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tG9agVj0GMRVKH1QLoL/lKaoBXW6B6XLK0Iu5QYQprk=;
-        b=TJvzKroYLc3DOhzUErFqxMhUJfUxFoHJQKp64L68IB2mUnzbCm+PYUzB9qMas5m8iE
-         Ufb1URzZWmwWUj2KuGl6Zrxe6dLnnzty3kssIk3LFeeFY5go2ua0mR73KWJhU60FEOXE
-         yp/cCI4MAyEAdx7nZ5Jr5h05thl1DGCntvD+gEHkqe3oJl2aK8VA8p/4NFdHdbyGgBo3
-         p2IamKoICqw9ZJwXlAspYDau3HpXkL0ru0VB9AHBgbPl53Vz/DwQCzGV9shBEvxrrtWf
-         4eqywun6weWFAAyvPe16+H+SnSjdH+sKuXs190Nk9fMQ/LrMoLgHMsOOUIu/+hv8waKf
-         0CKA==
-X-Gm-Message-State: AOAM533X0JcelpA9g38q1JY7WZfYEDFYyKn7COmv3mAsdUDhjVZavsTA
-        lZX4AcDdwiMPO1Am20Z2KLti05vHw7U=
-X-Google-Smtp-Source: ABdhPJzqYauEiDjo8ESVZzi1W5NQLfB8vNY7CPbqMKkzpakK+orCm0oj20IY2CwVPbvFrGrAeihkgw==
-X-Received: by 2002:a17:902:aa06:b029:cf:85a7:8374 with SMTP id be6-20020a170902aa06b02900cf85a78374mr2047271plb.3.1599674661468;
-        Wed, 09 Sep 2020 11:04:21 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8178])
-        by smtp.gmail.com with ESMTPSA id 31sm2820121pgs.59.2020.09.09.11.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 11:04:20 -0700 (PDT)
-Date:   Wed, 9 Sep 2020 11:04:18 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: slow sync rcu_tasks_trace
-Message-ID: <20200909180418.hlivoaekhkchlidw@ast-mbp.dhcp.thefacebook.com>
-References: <CAADnVQK_AiX+S_L_A4CQWT11XyveppBbQSQgH_qWGyzu_E8Yeg@mail.gmail.com>
- <20200909113858.GF29330@paulmck-ThinkPad-P72>
- <20200909171228.dw7ra5mkmvqrvptp@ast-mbp.dhcp.thefacebook.com>
- <20200909173512.GI29330@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
+        id S1725826AbgIISJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 14:09:49 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52110 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725772AbgIISJr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 14:09:47 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089I4ju4019975;
+        Wed, 9 Sep 2020 11:09:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=mgGglJbQAd3bz37I0JI/NltmQ7OwIF4JoVKATo8SUGc=;
+ b=GqncOz4p2jAONGBj/7yIYCasXIa8gyeg09LQ2G+GAADX95kJe/VicvWb+WDJtU2MoYOj
+ 3ijJackzr0NbtyM2GtYACbA5x9OdZ47+H1HlbjgE6g2CWJgIu2RsZqeYpRwSUbFUmuJl
+ xrIMuFzwVkuj3CftGu7wBXT3dLPq3/mktLY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33ctxn8qqk-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 09 Sep 2020 11:09:33 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 9 Sep 2020 11:09:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mWyMvLMO0SKmwESC+CXD0vT1xXaMhbbSQuf1LSPNlsxFLrlxz4iYog0Db+S5Mpmd42MJqX/fv+K+lz9lA0qVnEvzFkydNjqodjid9/SVtS7X3TjsI/F9pFfM6UMZfCU9X3sOF3x5IuVpe2Lpxw/LHz0+t2S2xGFymUkqiCYzRoryX2H4l2N/wd9Szmb6xioQcvjU24nEQ+GXkqYMlHf9p6AOSRSy1E8H9zhyLcxuGK46eul3o2W5Sc0fNRtvy88KtANdb9olJnNhKlN9wrjWT1nL1MMij/ME/P6QyAO9DtzdtxiUSEOdtKFXzIkv30F0NZwfpkRDwlzlF8Xp0giP4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mgGglJbQAd3bz37I0JI/NltmQ7OwIF4JoVKATo8SUGc=;
+ b=ehFPkhYXsKc5VSzlJazE38CV6rU58zrT25Rbj+7nYdgoZNBldtIyYgPPipV5gRJ5roicfagpc8DODaKmRHmQ+CwU6STuDc6vJfD4yTQ9EL5YiL1hvfqTG5eC718fvX6P7Y9G5Z5mHAnQfiDnt3FWrwK+Nfh99yrSG6+RJP/HIhz4IfchC7VGO5WGIl950ZqB4I3XQuwT4OhxMnDNdocDb2+IR5gFkV3hFw10GM1gseETsuXZDF325pjCQBStNijUgl2RLj80VEcAa6Fjp0aeEP/j4Y2Jb2BWI3v5Lvvbak2SehfugRHTFX7AyhS5JVJs8LrypqfGj1UYlkX8v18r4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mgGglJbQAd3bz37I0JI/NltmQ7OwIF4JoVKATo8SUGc=;
+ b=SFOa+xNhZnymdb/MC7mw2N4aM3FN7GTdp0hlGlpbL3n9ub8ekI0il9fOaE2qWesGnr0x99X7eMefG6vkZm6oFITxsF740mNd4IJqpYmteb0QkxBng4mMnX47TzmkAWEHZNvIBIzRP2OC6dyc3LQ08W742ZQxBAVRh8FCcjOuIZs=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2326.namprd15.prod.outlook.com (2603:10b6:a02:84::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
+ 2020 18:09:20 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3370.016; Wed, 9 Sep 2020
+ 18:09:20 +0000
+Date:   Wed, 9 Sep 2020 11:09:12 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     <ast@kernel.org>, <yhs@fb.com>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <bpf@vger.kernel.org>,
+        <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 03/11] btf: Add BTF_ID_LIST_SINGLE macro
+Message-ID: <20200909180912.5xnrrduocdjdz5dc@kafai-mbp.dhcp.thefacebook.com>
+References: <20200909171155.256601-1-lmb@cloudflare.com>
+ <20200909171155.256601-4-lmb@cloudflare.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909173512.GI29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200909171155.256601-4-lmb@cloudflare.com>
+X-ClientProxiedBy: MWHPR19CA0088.namprd19.prod.outlook.com
+ (2603:10b6:320:1f::26) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:cc17) by MWHPR19CA0088.namprd19.prod.outlook.com (2603:10b6:320:1f::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Wed, 9 Sep 2020 18:09:18 +0000
+X-Originating-IP: [2620:10d:c090:400::5:cc17]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c8790ca3-8cd0-4a4e-82f7-08d854eb78e6
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2326:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB23266D8F6A04004463DCFFD1D5260@BYAPR15MB2326.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6dEPgOOge75W2wB1mIZMqw8o1qd6bumKmMZuVC04HSqXzyOExO98vPxWf4fwQCs5sK7IJiflO/F0BfRV+PPoBp+U56aEoOhsMhmRb4+D+vw7/f834xs3ksQ4G/BScai7Jej2SPeQ4waGWseGcVlGghlPIBo+vrXJmO05+WfohwIARj/ecA93A/DQrN+dSVAzACbPp7K6L5evYFth3warcEJksK4fOVhHIG5+mi1jLsvvtDRjZuEiWnk5C+ub8kWm9BOWRKUrmpEZzuN/4e5qOkOVbwl/GrGHGBnpwHKtfUU9X/HI8Tyf12OVhjEc6LrIkAHQu0NxTwo0jgOSifTyyw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(346002)(366004)(39860400002)(66946007)(6666004)(66476007)(55016002)(1076003)(4744005)(52116002)(5660300002)(66556008)(7696005)(8936002)(8676002)(6506007)(9686003)(316002)(16526019)(4326008)(6916009)(478600001)(186003)(2906002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: TAL9kyrDtxA6fVZd+8OLBZ9TkRw+RHeb9MKC1FAJe+1YxZEfk7GS6hJd07QGaJkGOm6BbtKDiF+xrmVbS7b8Cg78UiL1ndDE0v712vyppUO2Qn3p/aSzLjbEaC5qJf/+wlp/BE7eZ07+nQ6aCwlEl9QnwRrSfROZJAyZkjK1mdsEDV2tf7B+gyEkfFMVzu6b5PafuN0jfWzqtcoU5oR3oFOa+xo7SPBJa39FnL65aCAJ82aKk+SKZQbRWabsKouqyo0naTTBKSe2pHdir9vwGlPPnR3M9c01MfaKy7i0ddBwxK056oGbBo/0aJD2BI+k9MvzxOS2wiapVNVWp0zP9hMev7UMFb+lxz6cFj1W6UywbguFAGQLv7jmux5X/7mDlvzdp6UpVLalhouma7bswPaPyP8/ekwNw/OVXAk4o4WJByIptWnsZr+awFw/YiO+UbL/hGK4Rc3fk+3iyRZ+8lmJX/VcWrSlFkOLGr7eFZm/bIlozs5fFxiZ84tDf+A2W46HZ/nchk5OWK0KaNI1TJwZEUyV0sJWH8NMpUKf5/qpcnDdRp6pP7Ll3hLMNAS4hglN5t5A0hoUrxq4F+pztYx1yzPTQGAEti1E270gShMWaArmZj7CvGBwGo/tipkxUtPU6NOSn9+tG8CgT8sOcCb4ZK2HCLLTvg3PMI2LHbU=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8790ca3-8cd0-4a4e-82f7-08d854eb78e6
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 18:09:20.0382
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: p/9sQDIjbprMrSug0mw6xmcpJ6msXyzFf9onAGmUgW6zY08FTAfTmERkPARnPI5D
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2326
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-09_13:2020-09-09,2020-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
+ clxscore=1015 mlxscore=0 spamscore=0 suspectscore=1 bulkscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009090161
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 10:35:12AM -0700, Paul E. McKenney wrote:
-> On Wed, Sep 09, 2020 at 10:12:28AM -0700, Alexei Starovoitov wrote:
-> > On Wed, Sep 09, 2020 at 04:38:58AM -0700, Paul E. McKenney wrote:
-> > > On Tue, Sep 08, 2020 at 07:34:20PM -0700, Alexei Starovoitov wrote:
-> > > > Hi Paul,
-> > > > 
-> > > > Looks like sync rcu_tasks_trace got slower or we simply didn't notice
-> > > > it earlier.
-> > > > 
-> > > > In selftests/bpf try:
-> > > > time ./test_progs -t trampoline_count
-> > > > #101 trampoline_count:OK
-> > > > Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > > > 
-> > > > real    1m17.082s
-> > > > user    0m0.145s
-> > > > sys    0m1.369s
-> > > > 
-> > > > so it's really something going on with sync rcu_tasks_trace.
-> > > > Could you please take a look?
-> > > 
-> > > I am guessing that your .config has CONFIG_TASKS_TRACE_RCU_READ_MB=n.
-> > > If I am wrong, please try CONFIG_TASKS_TRACE_RCU_READ_MB=y.
-> > 
-> > I've added
-> > CONFIG_RCU_EXPERT=y
-> > CONFIG_TASKS_TRACE_RCU_READ_MB=y
-> > 
-> > and it helped:
-> > 
-> > time ./test_progs -t trampoline_count
-> > #101 trampoline_count:OK
-> > Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > real	0m8.924s
-> > user	0m0.138s
-> > sys	0m1.408s
-> > 
-> > But this is still bad. It's 4 times slower vs rcu_tasks
-> > and isn't really usable for bpf, since it adds memory barriers exactly
-> > where we need them removed.
-> > 
-> > In the default configuration rcu_tasks_trace is 40! times slower than rcu_tasks.
-> > This huge difference in sync times concerns me a lot.
-> > If bpf has to use memory barriers in rcu_read_lock_trace
-> > and still be 4 times slower than rcu_tasks in the best case
-> > then there is no much point in rcu_tasks_trace.
-> > Converting everything to srcu would be better, but I really hope
-> > you can find a solution to this tasks_trace issue.
-> > 
-> > > Otherwise (or alternatively), could you please try booting with
-> > > rcupdate.rcu_task_ipi_delay=50?  The default value is 500, or half a
-> > > second on a HZ=1000 system, which on a busy system could easily result
-> > > in the grace-period delays that you are seeing.  The value of this
-> > > kernel boot parameter does interact with the tasklist-scan backoffs,
-> > > so its effect will not likely be linear.
-> > 
-> > The tests were run on freshly booted VM with 4 cpus. The VM is idle.
-> > The host is idle too.
-> > 
-> > Adding rcupdate.rcu_task_ipi_delay=50 boot param sort-of helped:
-> > time ./test_progs -t trampoline_count
-> > #101 trampoline_count:OK
-> > Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > 
-> > real	0m25.890s
-> > user	0m0.124s
-> > sys	0m1.507s
-> > It is still awful.
-> > 
-> > >From "perf report" there is little time spend in the kernel. The kernel is
-> > waiting on something. I thought in theory the rcu_tasks_trace should have been
-> > faster on update side vs rcu_tasks ? Could it be a bug somewhere and some
-> > missing wakeup? It doesn't feel that it works as intended. Whatever it is
-> > please try to reproduce it to remove me as a middle man.
+On Wed, Sep 09, 2020 at 06:11:47PM +0100, Lorenz Bauer wrote:
+> Add a convenience macro that allows defining a BTF ID list with
+> a single item. This lets us cut down on repetitive macros.
 > 
-> On it.
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Suggested-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  include/linux/btf_ids.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> To be fair, I was designing for a nominal one-second grace period,
-> which was also the rough goal for rcu_tasks.
-> 
-> When do you need this by?
-> 
-> Left to myself, I will aim for the merge window after the upcoming one,
-> and then backport to the prior -stable versions having RCU tasks trace.
-
-That would be too late.
-We would have to disable sleepable bpf progs or convert them to srcu.
-bcc/bpftrace have a limit of 1000 probes for regexes to make sure
-these tools don't add too many kprobes to the kernel at once.
-Right now fentry/fexit/freplace are using trampoline which does
-synchronize_rcu_tasks(). My measurements show that it's roughly
-equal to synchronize_rcu() on idle box and perfectly capable to
-be a replacement for kprobe based attaching.
-It's not uncommon to attach a hundred kprobes or fentry probes at
-a start time. So bpf trampoline has to be able to do 1000 in a second.
-And it was the case before sleepable got added to the trampoline.
-Now it's doing:
-synchronize_rcu_mult(call_rcu_tasks, call_rcu_tasks_trace);
-and it's causing this massive slowdown which makes bpf trampoline
-pretty much unusable and everything that builds on top suffers.
-I can add a counter of sleepable progs to trampoline and do
-either sync rcu_tasks or sync_mult(tasks, tasks_trace),
-but we've discussed exactly that idea few months back and concluded that
-rcu_tasks is likely to be heavier than rcu_tasks_trace, so I didn't
-bother with the counter. I can still add it, but slow rcu_tasks_trace
-means that sleepable progs are not usable due to slow startup time,
-so have to do something with sleepable anyway.
-So "when do you need this by?" the answer is asap.
-I'm considering such changes to be a bugfix, not a feture.
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index 210b086188a3..d6a959572175 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -76,6 +76,13 @@ extern u32 name[];
+>  #define BTF_ID_LIST_GLOBAL(name)			\
+>  __BTF_ID_LIST(name, globl)
+>  
+> +/* The BTF_ID_LIST_SINGLE macro defines a BTF_ID_LIST with
+> + * a single entry.
+> + */
+> +#define BTF_ID_LIST_SINGLE(name, prefix, typename)	\
+> +	BTF_ID_LIST(name) \
+> +	BTF_ID(prefix, typename)
+> +
+The same is needed for the "#else" part when CONFIG_DEBUG_INFO_BTF is
+not enabled.
