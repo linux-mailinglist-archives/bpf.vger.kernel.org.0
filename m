@@ -2,56 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187BB262CC6
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 12:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B517262CD5
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 12:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgIIKCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 06:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
+        id S1726683AbgIIKG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 06:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgIIKCg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 06:02:36 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6731AC061573
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 03:02:36 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id g96so1755555otb.12
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 03:02:36 -0700 (PDT)
+        with ESMTP id S1725948AbgIIKG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 06:06:28 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DEEC061573
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 03:06:28 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id x19so1801317oix.3
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 03:06:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wRtKp7QC+YB5u8HTnpR2R+YBfSIQAK3FwGjwQja3fd0=;
-        b=DFlyq783l79qka3ijYGQEPXnS/9sCYsb2Ixm1zEa1wH+yL5kDFmDDbLpEotlAskrfD
-         LiR3clKnE38Y8A1BOZ0mZyO/PlF3ps3X1VFeOV9CcocqDHr8TbX4O1VXPD4g8N/svRat
-         5855zAm4HXmcDxfN66vw7+ow1QS3cyDQwD/3g=
+        bh=DyUasSaWsuqYqyOyKvhzNc5LKNDVaERwvWWg1aZ0k8g=;
+        b=D57FHro8dIPfk9lesNUmgvmTr1UnifpyTfRIT2FEBON1lTQW6ntpO7oW3swXnQaPKO
+         1YidovV/H9GbtCWrRdJ5mawLpRkwvNssnAFkXPBkYslE0FWe/HuKa5a7c3xLYXYYMqip
+         t/Kb+KSJfJN23AHdLZYQGmtmgsT+droPgf5UU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wRtKp7QC+YB5u8HTnpR2R+YBfSIQAK3FwGjwQja3fd0=;
-        b=KLbrtmgf8jAtt6WQ3GQwrx2IokZO/fKjo1LAQvp261ICm7cuYRQSTR8SrPPYdIzx26
-         9VGXMXUltxsIsu0Yz3DEcbChBDFcU1mvV2/oWUhb+y3DsH/6qvW5jer5QntSGrUAecDA
-         trH9GhsJmqo0dgGQ1qmgOtgxpLiV9H1ZC6XSUgaGA4TWCA4H2piME+M+JIF/xaf8N8EB
-         kKOCQ+Y3Px9NRRVZKvxsNXY0m1dq+iiOl3tWfo+jPcsirZk0i9m13NC2o9lmVH6vN+Fg
-         NkijdNaE/sUpPkbowxk3LO9ug4k85VHaFmjeZWkpc/7y2gILKGedpxBrbBZsNKwK2ZxM
-         u6pA==
-X-Gm-Message-State: AOAM533DvSD/bZiLpasxHVtEtUwjQ/VIs3X1ZHOvuAjXRLhLJ0oi7hXz
-        VqGVCf5qOqtfXdSCBvVreUnKaRE2nf06cQSKrzHz1bGwJhMnEg==
-X-Google-Smtp-Source: ABdhPJyXFkHar8ENX+hfjavP3x3StuDqTEi+do7ZT25+TlVxR1W6wFgZZ7zRiE+v4UXdUzYIb8FF/+qtwqOjcjCx7sU=
-X-Received: by 2002:a9d:7e93:: with SMTP id m19mr151095otp.132.1599645755831;
- Wed, 09 Sep 2020 03:02:35 -0700 (PDT)
+        bh=DyUasSaWsuqYqyOyKvhzNc5LKNDVaERwvWWg1aZ0k8g=;
+        b=G2IMGewbukLhKkVn2gxgTJSlTffxoa930MSFQTavH/fqYFUcGOAz9OvVy5ZNpf4n0f
+         R8cT5GhQrm2cwmZIoA898zj+AW76/sWgla9yaltfHG1w1IE2ivZf611OUAL0xE+3I3Js
+         QlLNnaOGl0bTaOOVtsPkCoRgT9yO2Mhgj5rcvSWBSv0YlZP2osRY2uhIQr2HNV/0C9Vt
+         V9y96TKJgwgGnvWFbgGEQhYaCDeNFQwu9HqVw3F3y7Of1d90X1MggDSzEj4db0RnHyhx
+         eyVLBNt4+FrIx5bn46AfRpG8iSaAimRHK37ZQh7kmeQuQFAmAvXCkE+uScfKEeA8a7dM
+         8SKg==
+X-Gm-Message-State: AOAM5311xaiknvrCzfrgngj1t0EcCgnxdoIUcjyGCXK9P+MMWSqiXZci
+        kZSrLsd2guSK12/y0jbgctvyfrU8jZg2p5qiM4k5pA==
+X-Google-Smtp-Source: ABdhPJwz3egmANBNDZuPjRohf4QCKEI7sO/rdUbaOs87SpmOLdT2Y1AEXBbq7wxUTASB6eq9Hds56s9qcsCcUATHGRg=
+X-Received: by 2002:aca:3e8b:: with SMTP id l133mr120814oia.110.1599645987660;
+ Wed, 09 Sep 2020 03:06:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200904112401.667645-1-lmb@cloudflare.com> <20200904112401.667645-5-lmb@cloudflare.com>
- <CAEf4BzaSDWCjCCFQ4mvU2ORVN8CQVHHL4doKipcjo4EC+vm_5A@mail.gmail.com>
-In-Reply-To: <CAEf4BzaSDWCjCCFQ4mvU2ORVN8CQVHHL4doKipcjo4EC+vm_5A@mail.gmail.com>
+References: <20200904112401.667645-1-lmb@cloudflare.com> <20200904112401.667645-6-lmb@cloudflare.com>
+ <CAEf4BzbPJKK+YPTgPmaUVsKg3GQdwJKypfSZXg09M+sY8BzDbQ@mail.gmail.com> <20200909055654.sge564w5nws5krlj@kafai-mbp>
+In-Reply-To: <20200909055654.sge564w5nws5krlj@kafai-mbp>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 9 Sep 2020 11:02:24 +0100
-Message-ID: <CACAyw9_JsAGse9Uq=Lc+_f-4kHLmddwRztsEcxgR6TLj2B7hdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 04/11] bpf: check scalar or invalid register in check_helper_mem_access
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+Date:   Wed, 9 Sep 2020 11:06:16 +0100
+Message-ID: <CACAyw9_6Pksm3d0n5me5A9bpEyh10fkbbDCcg7652xGZO6N2iQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 05/11] bpf: allow specifying a set of BTF IDs for
+ helper arguments
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
@@ -59,86 +62,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 9 Sep 2020 at 05:22, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Wed, 9 Sep 2020 at 06:57, Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Fri, Sep 4, 2020 at 4:29 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> On Tue, Sep 08, 2020 at 09:47:04PM -0700, Andrii Nakryiko wrote:
+> > On Fri, Sep 4, 2020 at 4:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > >
+> > > Function prototypes using ARG_PTR_TO_BTF_ID currently use two ways to signal
+> > > which BTF IDs are acceptable. First, bpf_func_proto.btf_id is an array of
+> > > IDs, one for each argument. This array is only accessed up to the highest
+> > > numbered argument that uses ARG_PTR_TO_BTF_ID and may therefore be less than
+> > > five arguments long. It usually points at a BTF_ID_LIST. Second, check_btf_id
+> > > is a function pointer that is called by the verifier if present. It gets the
+> > > actual BTF ID of the register, and the argument number we're currently checking.
+> > > It turns out that the only user check_arg_btf_id ignores the argument, and is
+> > > simply used to check whether the BTF ID matches one of the socket types.
+> > >
+> > > Replace both of these mechanisms with explicit btf_id_sets for each argument
+> > > in a function proto. The verifier can now check that a PTR_TO_BTF_ID is one
+> > > of several IDs, and the code that does the type checking becomes simpler.
+> > >
+> > > Add a small optimisation to btf_set_contains for the common case of a set with
+> > > a single entry.
+> > >
+> > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > > ---
 > >
-> > Move the check for a NULL or zero register to check_helper_mem_access. This
-> > makes check_stack_boundary easier to understand.
+> > You are replacing a more generic and powerful capability with a more
+> > restricted one because no one is yet using a generic one fully. It
+> > might be ok and we'll never need a more generic way to check BTF IDs.
+> > But it will be funny if we will be adding this back soon because a
+> > static set of BTF IDs don't cut it for some cases :)
 > >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> > ---
+> > I don't mind this change, but I wonder what others think about this.
+> With btf_struct_ids_match(), the only check_btf_id() use case is gone.
+> It is better to keep one way of doing thing.  The check_btf_id can be
+> added back if there is a need.
 >
-> Looks good as is, but I'm curious about the question below.
+> I think this only existing check_btf_id() use case should be removed
+> and consolidate to the bpf_func_proto.btf_id.
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-> >  kernel/bpf/verifier.c | 24 +++++++++++-------------
-> >  1 file changed, 11 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 509754c3aa7d..649bcfb4535e 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -3594,18 +3594,6 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
-> >         struct bpf_func_state *state = func(env, reg);
-> >         int err, min_off, max_off, i, j, slot, spi;
-> >
-> > -       if (reg->type != PTR_TO_STACK) {
-> > -               /* Allow zero-byte read from NULL, regardless of pointer type */
-> > -               if (zero_size_allowed && access_size == 0 &&
-> > -                   register_is_null(reg))
-> > -                       return 0;
-> > -
-> > -               verbose(env, "R%d type=%s expected=%s\n", regno,
-> > -                       reg_type_str[reg->type],
-> > -                       reg_type_str[PTR_TO_STACK]);
-> > -               return -EACCES;
-> > -       }
-> > -
-> >         if (tnum_is_const(reg->var_off)) {
-> >                 min_off = max_off = reg->var_off.value + reg->off;
-> >                 err = __check_stack_boundary(env, regno, min_off, access_size,
-> > @@ -3750,9 +3738,19 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
-> >                                            access_size, zero_size_allowed,
-> >                                            "rdwr",
-> >                                            &env->prog->aux->max_rdwr_access);
-> > -       default: /* scalar_value|ptr_to_stack or invalid ptr */
-> > +       case PTR_TO_STACK:
-> >                 return check_stack_boundary(env, regno, access_size,
-> >                                             zero_size_allowed, meta);
-> > +       default: /* scalar_value or invalid ptr */
-> > +               /* Allow zero-byte read from NULL, regardless of pointer type */
-> > +               if (zero_size_allowed && access_size == 0 &&
-> > +                   register_is_null(reg))
-> > +                       return 0;
->
-> Given comment explicitly states "regardless of pointer type",
-> shouldn't this be checked before we do pointer type-specific checks?
+> Also, for the "struct btf_id_set *arg_btf_ids[5]" change,
+> there is currently no use case that a helper can take two different
+> btf_ids (i.e. two different kernel structs) at the verification time.
+> The btf_id_set will always have one element then.  May be we can cross
+> that bridge when there is a solid use case.
 
-That's a good question. As I understand it, this the check that the
-various comments in check_func_arg refer to:
-
-    /* final test in check_stack_boundary() */
-
-I think "regardless of pointer type" here means: we don't care what
-enum arg_type we're dealing with, since all NULL
-pointers are represented as SCALAR_VALUE with value 0.
-
->
-> > +
-> > +               verbose(env, "R%d type=%s expected=%s\n", regno,
-> > +                       reg_type_str[reg->type],
-> > +                       reg_type_str[PTR_TO_STACK]);
-> > +               return -EACCES;
-> >         }
-> >  }
-> >
-> > --
-> > 2.25.1
-> >
-
-
+Sounds good to me, I'll give this a try.
 
 -- 
 Lorenz Bauer  |  Systems Engineer
