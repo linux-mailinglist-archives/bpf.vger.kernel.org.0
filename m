@@ -2,157 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3D5262711
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 08:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1E4262749
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 08:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725840AbgIIGRr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 02:17:47 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14246 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725826AbgIIGRq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 02:17:46 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0896AMHx020615;
-        Tue, 8 Sep 2020 23:17:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=bAqtFt4HG8p6UA8OrrAmiZh/xOYgmPInzTufYtAsBfM=;
- b=HADDi6DmdSvAl2AT47lg+4SIfjr7SPpIin9U6rowyZ2NUEkhZBwXGXLNrmGoPefkr4RM
- FFFgntMRYSbo8z0Vwki2vr5TU+fP78K0d8e4qtUMnFYog+RGN8a/d7lCfy7AjIYO5YKq
- uQvE5KgJ34fO8PXoEAoCdfouYKvycjZhuyI= 
+        id S1725917AbgIIGjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 02:39:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37464 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725772AbgIIGjs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 02:39:48 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0896bQVR021672
+        for <bpf@vger.kernel.org>; Tue, 8 Sep 2020 23:39:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Twtp805V2qOM4MF4pd73mJn2zK8AIezgWIjkBe5maXQ=;
+ b=SPVPhBybJRU6SeishsFIQ33c9B84rLjkIY+QBpVVHuFg2IKhpaQm7uOzyoiDSvN+Gxdw
+ 3xZWxR5fLvTVlv4emA0rs3qLM3sgYoRgSvJCm6ir/vB/8Eltclg9y6DyDNhyIRmD2Dsy
+ EMZ92h/m+OkwJImB1domMHC4xfz4xCz0BBY= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33c86mgjfc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 08 Sep 2020 23:17:31 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+        by m0001303.ppops.net with ESMTP id 33c91hgh2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 08 Sep 2020 23:39:47 -0700
+Received: from intmgw002.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 8 Sep 2020 23:17:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kiVLhLDyop2kNwEZgUfdBZ/ggJCaVFtUSSB8LDa4dJ4qyJhcPze3f3UmBqomJxAxZg0HC8/rviGg/leO2FasqEWsoBAOa2EB/dG834OwLnPreluTBHl1oZcYHZUkfN/yg5n/hPsL2cNFBhr0pnfjX1GeiDzzYNITmssMfPR4kc1CR2R1AQhi6MHy48aqB1hAuZZkEKjI5KIyRVpVIuMNEqLQKyA8kPFYDGf7xoKrOJuIh44oNzRfbyUST7sHgG/xN8AUWe0sjohR4gcQzNF4ns2tM3RM0l5dCmfZAUf0J7n/vScvcFFqVt6QDCtty7vhR/2ZKlcXqBJJsgdoX9uvYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bAqtFt4HG8p6UA8OrrAmiZh/xOYgmPInzTufYtAsBfM=;
- b=gOOgpstJTL4mcB2KKkQ1RFJQXFE0/+VBf58vugn7uWcZn7LlLCyifVQ1cG0j4ynVCtHRzpS2sRcwy6/E+EiufJgTEP3X9XWjfVEMS9NXNxnMBvfdM/SulzIeZEq/93U6sSiRtLm8IptUEQMzQqANwSIuJtyBqZua8LRaIRuKiNBIylUyOlP+MuNE+CREV0IlWEU3F5/12LMucqiMstH7LyRRcxLJGCRcu685Ww3umg0yZMyBeR3i8XaqXXELd1iGHC/ZxiujHGxmn5cnVIsy8r9K7tfywtZRntHNZD15EifElo8y+D0Pg6Ggcs3dAMdHfjjdyfLSLVohjMHYLdLfTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bAqtFt4HG8p6UA8OrrAmiZh/xOYgmPInzTufYtAsBfM=;
- b=Qp8qEoOEdEUNZhe3qSinK6TJlb6EWk/TrW78h9pe8kpYisktQrRJL6UvPY+iiCUz0ulPFmfzV12DrkdFief9LQ6+XCRgil1Nqj+0sy5iclbMmd7ePMoZxKLY7b4ur3WsXGnJw1gGdiu31fuLJiM1mQvMKO0kb2QdHCfYl0SnCek=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3047.namprd15.prod.outlook.com (2603:10b6:a03:f8::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Wed, 9 Sep
- 2020 06:17:28 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3348.019; Wed, 9 Sep 2020
- 06:17:27 +0000
-Date:   Tue, 8 Sep 2020 23:17:22 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     <ast@kernel.org>, <yhs@fb.com>, <daniel@iogearbox.net>,
-        <bpf@vger.kernel.org>, <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next 00/11] RFC: Make check_func_arg table driven
-Message-ID: <20200909061722.pvjjhmzfh3xdrxcw@kafai-mbp>
-References: <20200904112401.667645-1-lmb@cloudflare.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904112401.667645-1-lmb@cloudflare.com>
-X-ClientProxiedBy: BY5PR13CA0009.namprd13.prod.outlook.com
- (2603:10b6:a03:180::22) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+ 15.1.1979.3; Tue, 8 Sep 2020 23:39:45 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 2FE6137052B7; Tue,  8 Sep 2020 23:39:43 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH bpf-next v2] selftests/bpf: fix test_sysctl_loop{1,2} failure due to clang change
+Date:   Tue, 8 Sep 2020 23:39:43 -0700
+Message-ID: <20200909063943.1653670-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:d222) by BY5PR13CA0009.namprd13.prod.outlook.com (2603:10b6:a03:180::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.8 via Frontend Transport; Wed, 9 Sep 2020 06:17:27 +0000
-X-Originating-IP: [2620:10d:c090:400::5:d222]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e85117a5-c9b7-455e-740b-08d85488067a
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3047:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3047FBF33BC33A1F322B109AD5260@BYAPR15MB3047.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b1zM7XV5NBbRmpxoHBG0LI0UWuMlMSnDdT4e7zY4v+/MANm2gA8coak2izJnxYPkcu0TdD2aloZIKWrKvNFiEnJTpzq/vTnxjYvaGRLx0Q6nQloEcQxsJs/7kHMh89jPT46nEfrIGh4d8OD+/hVnNeAMyPJVkoW2uP/gnPVdRdO6KxRgEK7nKYLRJgwYpotw1R2P8SS4tKshF0mNs4NfNeSxZmHHxJFNsWsPiX+PLcpa7lpd2HUCXcTr5+G2hQKTDO9GpvlwrM5IFXrqUhVKFcbZyBNqYFXKJIIhfuSzhsEa8rGJ2EvsmqiN5/cLs++M1FQLda6hnEHZQ5zfijkhHw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(346002)(396003)(376002)(39860400002)(4326008)(1076003)(16526019)(8676002)(186003)(478600001)(55016002)(9686003)(86362001)(33716001)(52116002)(83380400001)(6496006)(66946007)(66556008)(66476007)(2906002)(6916009)(5660300002)(6666004)(8936002)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Q39JPMGWx0ZrNW5mBAQzmoskWWX0Z4JHp1OgtTBg66+VlyLUslYni/pJrCKNe44ysN8Ksf1fz2sWzKRDeBuygjj25jJpiNOQjoBxx1q1EeBGah6CJGk6MgoiP1yyYEJIC7XpGCP00BEA1J+Rzf59rmvhqBmJKSETAp8nLoyf+rJ9sp65Ehytp1Qz86pr95t5c0V24sD0bMfU8rDaapngS8gYffMuZhiO7KsFxkDYgf5j8ROx6kHUREdn47v76OIGusMQoZ7gXqA4advcwJEGECjXDhv+vxhmlNqAEbrVK75ImILQV9E0DudzQBNTe9W3JDkLTKP0YhfBVX9VIFjpmWn1gPYJjNszdbFRg0m9I1KcTpj7i8pHXe6707C/lX/UubN4BBp3DXwNmfFOa39Mr80u9tYkJUvYURvtuInAA8JoFw8aIpwnUBaSzKdlhotuX2W13IgXpqqOmy/P7c5BiCoAaAm/PB5tzG7NNB7pCALHsKbasR1Js+73KvBa4T4kLC9jKZoXTSuTMD5gLpZv2PCrLk8GchVrYjF5JUOWOeaCAISGtDOdg61zvwikYiFtPgyepMfUnZBtU0TttQVLHsA3RA+WKaldCeHxrc0hZiAMcuiJvrnLxS6KOdrkPRYsF9TvLmQ5KRBQgsRWnQFDfhb7iy6jLBPVVlrPBxJOdII=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e85117a5-c9b7-455e-740b-08d85488067a
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Sep 2020 06:17:27.6007
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XDQdJIVIPBQW8O6wdeAOjmDF6lEI034flSJY/asT42A0bXUnR+gXAnPkfMWjJmwF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3047
-X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-09_03:2020-09-08,2020-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- suspectscore=1 lowpriorityscore=0 spamscore=0 mlxlogscore=944
- clxscore=1015 bulkscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090057
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090060
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 12:23:50PM +0100, Lorenz Bauer wrote:
-> This is what happened when I got sidetracked from my work on sockmap
-> bpf_iter support [1]. For that I wanted to allow passing a BTF pointer
-> to functions expecting a PTR_TO_SOCKET. At first it wasn't at all
-> obvious to me how to add this to check_func_arg, so I started refactoring
-> the function bit by bit. This RFC series is the result of that.
-> 
-> Note: this series is based on top of sockmap iterator, hence the RFC status.
-> 
-> Currently, check_func_arg has this pretty gnarly if statement that
-> compares the valid arg_type with the actualy reg_type. Sprinkled
-> in-between are checks for register_is_null, to short circuit these
-> tests if we're dealing with a nullable arg_type. There is also some
-> code for later bounds / access checking hidden away in there.
-> 
-> This series of patches refactors the function into something like this:
-> 
->    if (reg_is_null && arg_type_is_nullable)
->      skip type checking
-> 
->    do type checking, including BTF validation
-> 
->    do bounds / access checking
-> 
-> The type checking is now table driven, which makes it easy to extend
-> the acceptable types. Maybe more importantly, using a table makes it
-> easy to provide more helpful verifier output (see the last patch).
-> 
-> I realise there are quite a few patches here. The most interesting
-> ones are #5 where I introduce a btf_id_set for each helper arg,
-> #10 where I simplify the nullable type checking and finally #11
-> where I add the table of compatible types.
-> 
-> There are some more simplifications that we could do that could get
-> rid of resolve_map_arg_type, but the series is already too long.
-> 
-> Martin: you said that you're working on extending PTR_TO_SOCK_COMMON,
-> would this series help you with that?
-I skimmed through the set.  Patch 5 to 11 are useful.  It is a nice refactoring
-and clean up.  Thanks for the work.  I like the idea of moving out the logic
-after "if (!type_is_sk_pointer(type)) goto err_type;" and moving the null
-register check to the beginning.
+Andrii reported that with latest clang, when building selftests, we have
+error likes:
+  error: progs/test_sysctl_loop1.c:23:16: in function sysctl_tcp_mem i32 =
+(%struct.bpf_sysctl*):
+  Looks like the BPF stack limit of 512 bytes is exceeded.
+  Please move large on stack variables into BPF per-cpu array map.
 
-I don't think this set should depend on the sockmap iter set.
-I think the sockmap iter patches should depend on this set instead.
-For example, the changes in patch 1 of the sockmap iter patchset that
-moves out the "btf_struct_ids_match()" logic after the
-"if (!type_is_sk_pointer(type)) goto err_type;" should belong to this set.
+The error is triggered by the following LLVM patch:
+  https://reviews.llvm.org/D87134
+
+For example, the following code is from test_sysctl_loop1.c:
+  static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
+  {
+    volatile char tcp_mem_name[] =3D "net/ipv4/tcp_mem/very_very_very_ver=
+y_long_pointless_string";
+    ...
+  }
+Without the above LLVM patch, the compiler did optimization to load the s=
+tring
+(59 bytes long) with 7 64bit loads, 1 8bit load and 1 16bit load,
+occupying 64 byte stack size.
+
+With the above LLVM patch, the compiler only uses 8bit loads, but subregi=
+ster is 32bit.
+So stack requirements become 4 * 59 =3D 236 bytes. Together with other st=
+uff on
+the stack, total stack size exceeds 512 bytes, hence compiler complains a=
+nd quits.
+
+To fix the issue, removing "volatile" key word or changing "volatile" to
+"const"/"static const" does not work, the string is put in .rodata.str1.1=
+ section,
+which libbpf did not process it and errors out with
+  libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
+  libbpf: prog 'sysctl_tcp_mem': bad map relo against '.L__const.is_tcp_m=
+em.tcp_mem_name'
+          in section '.rodata.str1.1'
+
+Defining the string const as global variable can fix the issue as it puts=
+ the string constant
+in '.rodata' section which is recognized by libbpf. In the future, when l=
+ibbpf can process
+'.rodata.str*.*' properly, the global definition can be changed back to l=
+ocal definition.
+
+Defining tcp_mem_name as a global, however, triggered a verifier failure.
+   ./test_progs -n 7/21
+  libbpf: load bpf program failed: Permission denied
+  libbpf: -- BEGIN DUMP LOG ---
+  libbpf:
+  invalid stack off=3D0 size=3D1
+  verification time 6975 usec
+  stack depth 160+64
+  processed 889 insns (limit 1000000) max_states_per_insn 4 total_states
+  14 peak_states 14 mark_read 10
+
+  libbpf: -- END LOG --
+  libbpf: failed to load program 'sysctl_tcp_mem'
+  libbpf: failed to load object 'test_sysctl_loop2.o'
+  test_bpf_verif_scale:FAIL:114
+  #7/21 test_sysctl_loop2.o:FAIL
+This actually exposed a bpf program bug. In test_sysctl_loop{1,2}, we hav=
+e code
+like
+  const char tcp_mem_name[] =3D "<...long string...>";
+  ...
+  char name[64];
+  ...
+  for (i =3D 0; i < sizeof(tcp_mem_name); ++i)
+      if (name[i] !=3D tcp_mem_name[i])
+          return 0;
+In the above code, if sizeof(tcp_mem_name) > 64, name[i] access may be
+out of bound. The sizeof(tcp_mem_name) is 59 for test_sysctl_loop1.c and
+79 for test_sysctl_loop2.c.
+
+Without promotion-to-global change, old compiler generates code where
+the overflowed stack access is actually filled with valid value, so hidin=
+g
+the bpf program bug. With promotion-to-global change, the code is differe=
+nt,
+more specifically, the previous loading constants to stack is gone, and
+"name" occupies stack[-64:0] and overflow access triggers a verifier erro=
+r.
+To fix the issue, adjust "name" buffer size properly.
+
+Reported-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 2 +-
+ tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+Changelog:
+  v1 -> v2:
+    . The tcp_mem_name change actually triggers a verifier failure due to
+      a bpf program bug. Fixing the bpf program bug can make test pass
+      with both old and latest llvm. (Alexei)
+
+diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c b/tool=
+s/testing/selftests/bpf/progs/test_sysctl_loop1.c
+index 458b0d69133e..4b600b1f522f 100644
+--- a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
++++ b/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
+@@ -18,9 +18,9 @@
+ #define MAX_ULONG_STR_LEN 7
+ #define MAX_VALUE_STR_LEN (TCP_MEM_LOOPS * MAX_ULONG_STR_LEN)
+=20
++const char tcp_mem_name[] =3D "net/ipv4/tcp_mem/very_very_very_very_long=
+_pointless_string";
+ static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
+ {
+-	volatile char tcp_mem_name[] =3D "net/ipv4/tcp_mem/very_very_very_very_=
+long_pointless_string";
+ 	unsigned char i;
+ 	char name[64];
+ 	int ret;
+diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c b/tool=
+s/testing/selftests/bpf/progs/test_sysctl_loop2.c
+index b2e6f9b0894d..d01056142520 100644
+--- a/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
++++ b/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
+@@ -18,11 +18,12 @@
+ #define MAX_ULONG_STR_LEN 7
+ #define MAX_VALUE_STR_LEN (TCP_MEM_LOOPS * MAX_ULONG_STR_LEN)
+=20
++const char tcp_mem_name[] =3D "net/ipv4/tcp_mem/very_very_very_very_long=
+_pointless_string_to_stress_byte_loop";
+ static __attribute__((noinline)) int is_tcp_mem(struct bpf_sysctl *ctx)
+ {
+-	volatile char tcp_mem_name[] =3D "net/ipv4/tcp_mem/very_very_very_very_=
+long_pointless_string_to_stress_byte_loop";
+ 	unsigned char i;
+-	char name[64];
++	/* the above tcp_mem_name length is 79, make name buffer length 80 */
++	char name[80];
+ 	int ret;
+=20
+ 	memset(name, 0, sizeof(name));
+--=20
+2.24.1
+
