@@ -2,112 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BDA263329
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 18:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44126263256
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 18:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730785AbgIIQ6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 12:58:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730656AbgIIPvM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:51:12 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0429C215A4;
-        Wed,  9 Sep 2020 14:27:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599661673;
-        bh=3QKU+0GVeB+96nroBMgZ91EUK9wdQehsjmiYIqtH7tQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uPNLSBCa6BNOy67iY1Xp2gyqEo18XLg11tYEJvqhQnEHVDAj2Ob/mhiQjCUALDEBX
-         7nt9hBIYM2LFaEoStBq1pNgpwRcQhA3P6LKbJKi6kRlvyEHP8eZ+eqCeFezbmk1JOi
-         3ZIucEJDBz3ZVwRQFMq5Z5x9eU3aiPl1ByOE/aac=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0AC6340D3D; Wed,  9 Sep 2020 11:27:51 -0300 (-03)
-Date:   Wed, 9 Sep 2020 11:27:50 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
-        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org
-Subject: Re: Problem with endianess of pahole BTF output for vmlinux
-Message-ID: <20200909142750.GC3788224@kernel.org>
-References: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
- <9e99c5301fbbb4f5f601b69816ee1dc9ab0df948.camel@linux.ibm.com>
- <CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com>
- <8cf42e2752e442bb54e988261d8bf3cd22ad00f2.camel@linux.ibm.com>
+        id S1730570AbgIIQZF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 12:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730953AbgIIQXI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:23:08 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8929AC061757
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 09:22:55 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id g4so3630547wrs.5
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 09:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lUTQ7wjwTJ+TAAblcFAmVW5okwBV1FuPt1Figo65gko=;
+        b=SA8mxauCZHhys4AY9RnLusQACh/4c3QjGYXAfds8TZfUIwXDOWF7VVrg/hQyjIJk86
+         ycXtmyUSiREfFLGxwtps9e/IJetitYFiMwzLaljUTSgev+0o2CGUFooRIrx77w3BOozD
+         mSWKinjNGps4UDzHhA9Oe4E0R1mPM0h88H7AL18UJFESZtvy4Hinn78RVlpk+9G49Slj
+         hqFk3jVcR6Rzzpl2S1O1fU2TT8BPCUAdDRIfQf6gLhyD7cKDI3rzNLVEIexB9X9+mmL9
+         +T3VmQalbPouKLl2wLRJCoRGTb6YsPy0LCW+DA4KLkQ4cB8VJH8Vyj9XjxIjg24tGV/c
+         Y16w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lUTQ7wjwTJ+TAAblcFAmVW5okwBV1FuPt1Figo65gko=;
+        b=OKho5TuQTGS7OFbRdgplGSvsDm87GKFakShUvd/xGc6FW6Dt4ewz5L3e8PrKmU1CpR
+         TO5yWoMrefdqvnIfGVGP+uDnbna5B+205nhxGdDxSx6pHz4LQ4SZipXIwUiqI5bKFveS
+         bd7aKPnaJ+QamCE+RnVqfrHNEYOcIHLs/3InSks5cHjIPxFLfovABVz/GLOtI1F3Hv59
+         uTzLS9kfw7ZUh1WI0F+SBdzVOF9hM7/rMiXZWftFZg4h836HOKC+aqmOACQKPDCqha1E
+         wJGaBmGWE5qGgUwc0ctQA7PFDlLzVwnI/RctfjiwwOP/JBXPUavwkBx3dNkj3b19kvrM
+         +qRA==
+X-Gm-Message-State: AOAM530Joiz7TWsq/M0b9KTKGuG/61CYKS2TEUEHGwh50fJtduYkGFLy
+        Md7oKwnfSwyeDC0whdVzZxiRRrPzcPvPJ/Yo6TM=
+X-Google-Smtp-Source: ABdhPJxWjRBMchnrLLSUaxfRCoZrWEzjzCUuxR411iSq7GyrTXMlZOgbT8bUKL99RTCZwc1+IvugYw==
+X-Received: by 2002:a5d:4c52:: with SMTP id n18mr4583138wrt.267.1599668573655;
+        Wed, 09 Sep 2020 09:22:53 -0700 (PDT)
+Received: from localhost.localdomain ([194.35.119.149])
+        by smtp.gmail.com with ESMTPSA id m1sm4747787wmc.28.2020.09.09.09.22.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Sep 2020 09:22:53 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next v2 0/2] bpf: detect build errors for man pages for bpftool and eBPF helpers
+Date:   Wed,  9 Sep 2020 17:22:49 +0100
+Message-Id: <20200909162251.15498-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8cf42e2752e442bb54e988261d8bf3cd22ad00f2.camel@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Sep 09, 2020 at 11:02:24AM +0200, Ilya Leoshkevich escreveu:
-> On Tue, 2020-09-08 at 13:18 -0700, Andrii Nakryiko wrote:
-> > On Mon, Sep 7, 2020 at 9:02 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
-> > > On Sat, 2020-09-05 at 21:16 -0700, Tony Ambardar wrote:
+This set aims at improving the checks for building bpftool's documentation
+(including the man page for eBPF helper functions). The first patch lowers
+the log-level from rst2man and fix the reported informational messages. The
+second one extends the script used to build bpftool in the eBPF selftests,
+so that we also check a documentation build.
 
-> > > > I'm using GCC 8.4.0, binutils 2.34 and pahole 1.17, compiling on
-> > > > an Ubuntu/x86_64 host and targeting both little- and big-endian
-> > > > mips running on malta/qemu. When cross-compiling Linux 5.4.x LTS
-> > > > and testing bpftool/BTF functionality on the target, I encounter
-> > > > errors on big-endian targets:
+This is after a suggestion from Andrii Nakryiko.
 
-> > > > > root@OpenWrt:/# bpftool btf dump file /sys/kernel/btf/vmlinux
-> > > > > libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux Error:
-> > > > > failed to load BTF from /sys/kernel/btf/vmlinux: No error
-> > > > > information
->
-> > > > After investigating, the problem appears to be that "pahole -J"
-> > > > running on the x86_64 little-endian host will always generate
-> > > > raw BTF of native endianness (based on BTF magic), which causes
-> > > > the error above on big-endian targets.
+v2:
+- Pass rst2man option through a dedicated variable, use it to ask for a
+  non-zero exit value on errors.
+- Also build doc right after bpftool when building (not only running) the
+  selftests.
 
-> > > > Is this expected? Is DEBUG_INFO_BTF supported in general when
-> > > > cross-compiling? How does one generate BTF encoded for the
-> > > > target endianness with pahole?
+Quentin Monnet (2):
+  tools: bpftool: log info-level messages when building bpftool man
+    pages
+  selftests, bpftool: add bpftool (and eBPF helpers) documentation build
 
-The BTF loader has support for endianness, its just the encoder that
-doesn't :-\
+ tools/bpf/bpftool/Documentation/Makefile      |  3 ++-
+ .../bpf/bpftool/Documentation/bpftool-btf.rst |  3 +++
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |  4 ++++
+ .../bpf/bpftool/Documentation/bpftool-map.rst |  3 +++
+ tools/testing/selftests/bpf/Makefile          |  5 +++++
+ .../selftests/bpf/test_bpftool_build.sh       | 21 +++++++++++++++++++
+ 6 files changed, 38 insertions(+), 1 deletion(-)
 
-I.e. pahole can grok a big endian BTF payload on a little endian machine
-and vice-versa, just can't cross-build BTF payloads ATM.
+-- 
+2.25.1
 
-> > Yes, it's expected, unfortunately. Right now cross-compiling to a
-> > different endianness isn't supported. You can cross-compile only if
-> > target endianness matches host endianness.
-
-I agree that having this in libbpf is better, it should be done as part
-of producing the result of the deduplication phase.
-
-> > > > Thanks for any feedback or suggestions,
-> > > > Tony
-> > > 
-> > > We have the same problem on s390, and I'm not aware of any solution
-> > > at
-> > > the moment. It would be great if we could figure out how to resolve
-> > > this.
-> > 
-> > I'm working on extending BTF APIs in libbpf at the moment. Switching
-> > endianness would be rather easy once all that is done. With these new
-> > APIs it will be possible to switch pahole to use libbpf APIs to
-> > produce BTF output and support arbitrary endianness as well. Right
-> > now, I'd rather avoid implementing this in pahole, libbpf is a much
-> > better place for this (and will require ongoing updates if/when we
-> > introduce new types and fields to BTF).
-
-Right, we could do it right after btf_dedup() and before
-btf_elf__write(), doing the same process as in btf_loader.c, i.e.
-checking if the ELF target arch is different in endianness and doing the
-reverse of the loader.
-
-> > Hope this plan works for you guys.
-> 
-> That sounds really good to me, thanks!
-
-- Arnaldo
