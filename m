@@ -2,114 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F76F262857
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 09:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CAA262866
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 09:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgIIHTj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 03:19:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21363 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727856AbgIIHTg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 03:19:36 -0400
+        id S1726683AbgIIHVM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 03:21:12 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:34872 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727006AbgIIHVJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 03:21:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599635975;
+        s=mimecast20190719; t=1599636068;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=4/Zhf5Z+jZ436SZtx+o89mZ+e13eKs2R9HrVqMiSNpw=;
-        b=ES/nmpiNjjufAG5+lRcKgr5ak8CswsjmFAo3ePv0doPLd9eGArjyZ6YHSKhYH54KWCMMxf
-        nz9xUw2BL8Q6h26JebLd8bnTfyeJL5ubzgEz4npxY0ogXIyJVoDXWNjnPwVVn5mcHI4HwU
-        JDZUhhS8hQgS4qwQXFAPvA3OH0Rnsjw=
+        bh=yiH+x94EcrDjaJ/4+l07upDx3I8qG7SJjDhjeOX+txQ=;
+        b=QqWruHvJPduJNaE6JH5Vj5FXYJ3ca9oRm/jDiD1cQZ50wYlRcsMwXlCXZl7nMfxljWrygG
+        Am8fp9VarHvKv1SWz4nzLtUgiYvEZL6BgaW4Qtk8iyX3Qj358ivXd+t/q6oYgx36y3jvZL
+        DK/IwBqX8WPIYnT7O0jBGTPYLuCmItM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-vgLGSoqxNfKm1BQ10I75BA-1; Wed, 09 Sep 2020 03:19:26 -0400
-X-MC-Unique: vgLGSoqxNfKm1BQ10I75BA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-502-fv_6LOWXMyOJkU8d3XytzA-1; Wed, 09 Sep 2020 03:21:04 -0400
+X-MC-Unique: fv_6LOWXMyOJkU8d3XytzA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CFFB801AFF;
-        Wed,  9 Sep 2020 07:19:24 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 70F8410BBED3;
+        Wed,  9 Sep 2020 07:21:03 +0000 (UTC)
 Received: from krava (unknown [10.40.194.91])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 654945D9E8;
-        Wed,  9 Sep 2020 07:19:21 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 09:19:20 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id B26157E187;
+        Wed,  9 Sep 2020 07:21:01 +0000 (UTC)
+Date:   Wed, 9 Sep 2020 09:21:00 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH] perf tools: Do not use deprecated bpf_program__title
-Message-ID: <20200909071920.GA1498025@krava>
-References: <20200907110237.1329532-1-jolsa@kernel.org>
- <CAEf4BzZpD2mjEA2Qo2cZ4Bp01fSwZkMPFAZOSw8VvOSAqOWNsA@mail.gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, acme@kernel.org, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] perf: stop using deprecated bpf_program__title()
+Message-ID: <20200909072100.GB1498025@krava>
+References: <20200908180127.1249-1-andriin@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZpD2mjEA2Qo2cZ4Bp01fSwZkMPFAZOSw8VvOSAqOWNsA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200908180127.1249-1-andriin@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 01:11:36PM -0700, Andrii Nakryiko wrote:
-> On Mon, Sep 7, 2020 at 10:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > The bpf_program__title function got deprecated in libbpf,
-> > use the suggested alternative.
-> >
-> > Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
+On Tue, Sep 08, 2020 at 11:01:27AM -0700, Andrii Nakryiko wrote:
+> Switch from deprecated bpf_program__title() API to
+> bpf_program__section_name(). Also drop unnecessary error checks because
+> neither bpf_program__title() nor bpf_program__section_name() can fail or
+> return NULL.
 > 
-> Hey Jiri,
-> 
-> Didn't see your patch before I sent mine against bpf-next. I also
-> removed some unnecessary checks there. Please see [0]. I don't care
-> which one gets applied, btw.
-> 
->   [0] https://patchwork.ozlabs.org/project/netdev/patch/20200908180127.1249-1-andriin@fb.com/
+> Fixes: 521095842027 ("libbpf: Deprecate notion of BPF program "title" in favor of "section name"")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-perfect, let's take yours with that extra check removed
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
 thanks,
 jirka
 
+> ---
+>  tools/perf/util/bpf-loader.c | 12 ++----------
+>  1 file changed, 2 insertions(+), 10 deletions(-)
 > 
-> >  tools/perf/util/bpf-loader.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> > index 2feb751516ab..73de3973c8ec 100644
-> > --- a/tools/perf/util/bpf-loader.c
-> > +++ b/tools/perf/util/bpf-loader.c
-> > @@ -328,7 +328,7 @@ config_bpf_program(struct bpf_program *prog)
-> >         probe_conf.no_inlines = false;
-> >         probe_conf.force_add = false;
-> >
-> > -       config_str = bpf_program__title(prog, false);
-> > +       config_str = bpf_program__section_name(prog);
-> >         if (IS_ERR(config_str)) {
-> >                 pr_debug("bpf: unable to get title for program\n");
-> >                 return PTR_ERR(config_str);
-> > @@ -454,7 +454,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
-> >         if (err) {
-> >                 const char *title;
-> >
-> > -               title = bpf_program__title(prog, false);
-> > +               title = bpf_program__section_name(prog);
-> >                 if (!title)
-> >                         title = "[unknown]";
-> >
-> > --
-> > 2.26.2
-> >
+> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> index 2feb751516ab..0374adcb223c 100644
+> --- a/tools/perf/util/bpf-loader.c
+> +++ b/tools/perf/util/bpf-loader.c
+> @@ -328,12 +328,6 @@ config_bpf_program(struct bpf_program *prog)
+>  	probe_conf.no_inlines = false;
+>  	probe_conf.force_add = false;
+>  
+> -	config_str = bpf_program__title(prog, false);
+> -	if (IS_ERR(config_str)) {
+> -		pr_debug("bpf: unable to get title for program\n");
+> -		return PTR_ERR(config_str);
+> -	}
+> -
+>  	priv = calloc(sizeof(*priv), 1);
+>  	if (!priv) {
+>  		pr_debug("bpf: failed to alloc priv\n");
+> @@ -341,6 +335,7 @@ config_bpf_program(struct bpf_program *prog)
+>  	}
+>  	pev = &priv->pev;
+>  
+> +	config_str = bpf_program__section_name(prog);
+>  	pr_debug("bpf: config program '%s'\n", config_str);
+>  	err = parse_prog_config(config_str, &main_str, &is_tp, pev);
+>  	if (err)
+> @@ -454,10 +449,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
+>  	if (err) {
+>  		const char *title;
+>  
+> -		title = bpf_program__title(prog, false);
+> -		if (!title)
+> -			title = "[unknown]";
+> -
+> +		title = bpf_program__section_name(prog);
+>  		pr_debug("Failed to generate prologue for program %s\n",
+>  			 title);
+>  		return err;
+> -- 
+> 2.24.1
 > 
 
