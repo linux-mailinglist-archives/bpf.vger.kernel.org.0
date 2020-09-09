@@ -2,135 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74809262C81
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 11:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA4E262C85
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 11:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgIIJuJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 05:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
+        id S1725877AbgIIJvh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 05:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726489AbgIIJuH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:50:07 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D57C061573
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 02:50:07 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t13so1705165ile.9
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 02:50:07 -0700 (PDT)
+        with ESMTP id S1725826AbgIIJvg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 05:51:36 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D6EC061573
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 02:51:36 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id r4so431326ooq.7
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 02:51:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AByC7SM7WYk081vXb3/jRTzygXFUSdG9LyGSgV6OFXc=;
-        b=ZbkxlP9QHmsI1edfuDb+WHvkeEjjbYDZb/UwnXPO2O7tuye86SKjQCdC+sjuGIBH/c
-         7hNQr8Giev/UpygR2Krjp0KI4zOFgNeCnp85dRbHh0tY1HyN3Y7FRtyGLaHRrU0bheOJ
-         gneGoJNGjXOQ6xbsSPlueXJSF32L+zLbzbkXIm21O7H2w3bAuOR8pQfkLI2eDZR8dDSL
-         8bNGVIj6iKB3sTZ384lUhVW/hdeA+F5xiOapnqiqd2GPfiJ4d+z1wt8tA9IsIgNRLT9J
-         r+UefVo/fajWKtICIVE6yiWr/4KPjkMIiTp6winBZ0GGduHpw0yRyqhF9RQxrjU6awP7
-         EzFg==
+         :cc;
+        bh=g4WUXHDWFZvJy1/7jXKeiLjWh2fowCbZTO1qyW7ffHA=;
+        b=x8tFfju7N9SPFJQIRlyMKIgWPTGwr/ckd5QsUxiymr2tT7kjeo9p2n8CB0iy6ssTT9
+         /OuNHVLjPgrR+Opc7ELkuQYJYUDWBpJ7u/Qr0QYvq4yUE0W+A6cMlmgXFiI3kJYM+bFi
+         5jqfjvthqLAn870OM1oWD15E0nuFrDQXOKMDE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AByC7SM7WYk081vXb3/jRTzygXFUSdG9LyGSgV6OFXc=;
-        b=q/sAZk28URqdunpRH7HAb2ev08yKb7J4/vbAvtdAxRKUDDDp6jLPReA2lrWr5K6etD
-         ZbTfvDZsmiL/4kuWIST1+6rD71oJI6r7TKEUjcsTX0+vOJI+99S+hMbv6WaUgKQ7UYso
-         ExYB3n+eiKf/oKbzlwhA/WffZN8PUsmDZNa7IennJg3cUFqTd8PjvjAVLbE+uWoWLRM1
-         PJllXe4kCdWFPnx6AEznJnX4TU9rlvXGEp4T+ohRVBr7Pzg0Y3EQrarwn92SnqmBjGLn
-         tmZFXPA92gBjnQ/911HykJtd7sP6VcyqgSc/g3FpMd0MvWo/f7Hp9VlFvR4s22YSsxCM
-         pXvg==
-X-Gm-Message-State: AOAM533YJX2F01YErVuHlFYBAXI0tVTkNDsbMXI6wv9CG1z38lk+khG+
-        C8xS3xHUqW+fWnCEHyMW5z49T6EytewQocuE6k/qfg==
-X-Google-Smtp-Source: ABdhPJx53jSVp4MJzAr921QvXzf9PYPAObbNkewW8nXbjteTChpLMZHgfVvcTXnLZae8IVwbuD/njzMK6ce+A2QWTlQ=
-X-Received: by 2002:a92:c991:: with SMTP id y17mr2904121iln.148.1599645005983;
- Wed, 09 Sep 2020 02:50:05 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=g4WUXHDWFZvJy1/7jXKeiLjWh2fowCbZTO1qyW7ffHA=;
+        b=oGYuBPoYdjALadPeKpn95N4reODxYfnj2WKUKgv0VadwLeSTFhryLOMx5wy75gvxU1
+         IGAhp3RKa1aqKmYUR0I7rqVny42lzyRmIENJp1fC/uATtHt3fZqJ1RRTYzwbTCVBiHj5
+         b7m5jnTK3Qfp3dneZPzuhB0FqnDd4TD4Nk454wUyYPev+BCoXDakHUrSE0wzwmsyUlDJ
+         D86WaoDL8HplVpT3E86lV4R6Tmgg6e5wbJfHtEcFdLiGonF26JISOVXjuC2X8TtP32rO
+         8vIyWaEWeM3YUKE3Nq6z9NAS32OBvubVC+LZcDlRRVHEfozYWafTIMNMTspruPpluMeY
+         oAtw==
+X-Gm-Message-State: AOAM5334W9rW1vFIjcCq05o5FjQA5hM3TkeQYcNL4PiL0mkmMc5WfW2i
+        o0bNqrdr+3i4qhFujhHf7beidNSj15w2KVs7iKbDTA==
+X-Google-Smtp-Source: ABdhPJyxwFuHg09QETQJPjKf+5YBfkECm2EDRA0nTCFbo38bZz0Yog1ECCNEd1nuFDk1uzV/19N099b1CKWh1WZpZXA=
+X-Received: by 2002:a4a:3516:: with SMTP id l22mr161854ooa.6.1599645095530;
+ Wed, 09 Sep 2020 02:51:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAGeTCaU1fEGVVWnXKR_zv4ZSoCrBGSN65-RpFuKg9Gf-_z6TOw@mail.gmail.com>
- <CAADnVQKsbbd9dbPYQqa5=QsRfLo07hEjr1rSC=5DfVpzUK7Ajw@mail.gmail.com>
- <CAGeTCaWSSBJye72NCQW4N=XtsFx-rv-EEgTowTT3VEtus=pFtA@mail.gmail.com> <878sdlpv92.fsf@toke.dk>
-In-Reply-To: <878sdlpv92.fsf@toke.dk>
-From:   Borna Cafuk <borna.cafuk@sartura.hr>
-Date:   Wed, 9 Sep 2020 11:49:54 +0200
-Message-ID: <CAGeTCaWDk_ok38Xm8H8-8HQYP-bbPqMuwWDpEYM=i1=e0e88bw@mail.gmail.com>
-Subject: Re: HASH_OF_MAPS inner map allocation from BPF
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
-        KP Singh <kpsingh@google.com>
+References: <20200904112401.667645-1-lmb@cloudflare.com> <20200904112401.667645-2-lmb@cloudflare.com>
+ <CAEf4BzbyRGR0zcxcKU3qudgoJnm7gB7qgfOj-5g7u68LyHqxvQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbyRGR0zcxcKU3qudgoJnm7gB7qgfOj-5g7u68LyHqxvQ@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 9 Sep 2020 10:51:24 +0100
+Message-ID: <CACAyw9-8cnMq-Ya0-aEq540mJy8CrgB5FZbtBcJmLSRfzk8vJA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/11] btf: Fix BTF_SET_START_GLOBAL macro
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 3:33 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Wed, 9 Sep 2020 at 05:04, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> Borna Cafuk <borna.cafuk@sartura.hr> writes:
->
-> > On Sat, Sep 5, 2020 at 12:47 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >>
-> >> On Fri, Sep 4, 2020 at 7:57 AM Borna Cafuk <borna.cafuk@sartura.hr> wr=
-ote:
-> >> >
-> >> > Hello everyone,
-> >> >
-> >> > Judging by [0], the inner maps in BPF_MAP_TYPE_HASH_OF_MAPS can only=
- be created
-> >> > from the userspace. This seems quite limiting in regard to what can =
-be done
-> >> > with them.
-> >> >
-> >> > Are there any plans to allow for creating the inner maps from BPF pr=
-ograms?
-> >> >
-> >> > [0] https://stackoverflow.com/a/63391528
-> >>
-> >> Did you ask that question or your use case is different?
-> >> Creating a new map for map_in_map from bpf prog can be implemented.
-> >> bpf_map_update_elem() is doing memory allocation for map elements.
-> >> In such a case calling this helper on map_in_map can, in theory, creat=
-e a new
-> >> inner map and insert it into the outer map.
+> On Fri, Sep 4, 2020 at 4:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 > >
-> > No, it wasn't me who asked that question, but it seemed close enough to
-> > my issue. My use case calls for modifying the syscount example from BCC=
-[1].
-> >
-> > The idea is to have an outer map where the keys are PIDs, and inner map=
-s where
-> > the keys are system call numbers. This would enable tracking the number=
- of
-> > syscalls made by each process and the makeup of those calls for all pro=
-cesses
-> > simultaneously.
-> >
-> > [1] https://github.com/iovisor/bcc/blob/master/libbpf-tools/syscount.bp=
-f.c
+> > The extern symbol declaration should be on the BTF_SET_START macro, not
+> > on BTF_SET_START_GLOBAL, since in the global case the symbol will be
+> > declared in a header somewhere.
 >
-> Well, if you just want to count, map-in-map seems a bit overkill? You
-> could just do:
->
-> struct {
->   u32 pid;
->   u32 syscall;
-> } map_key;
->
-> and use that?
->
-> -Toke
->
+> See below about my confusion. But besides that, is there any problem
+> to have this extern in both BTF_SET_START and BTF_SET_START_GLOBAL?
+> Are there any problems caused by this? This commit message doesn't
+> explain what problem it's trying to solve.
 
-I have considered that, but maps in maps seem better for when I need to get=
- the
-data about a single process's syscalls: It requires reading only one of the
-inner maps in its entirety. If I have a composite key like that, I don't se=
-e
-any way, other than:
- * either iterating through all the possible keys for a process
-   (i.e. over all syscalls) and looking them up in the map, or
- * iterating over all entries in the map and filtering them.
+I was getting compilation errors, and moving the extern to match what
+the BTF_ID_LIST did fixed it. Of course I now can't reproduce it when
+dropping the patch, so the mistake was on my side.
 
-Looking at it again, the first option does not seem _that_ bad, but just
-iterating over one (inner) map would be easier to fit into our use-case.
+>
+> >
+> > Fixes: eae2e83e6263 ("bpf: Add BTF_SET_START/END macros")
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >  include/linux/btf_ids.h       | 6 +++---
+> >  tools/include/linux/btf_ids.h | 6 +++---
+> >  2 files changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> > index 210b086188a3..42aa667d4433 100644
+> > --- a/include/linux/btf_ids.h
+> > +++ b/include/linux/btf_ids.h
+> > @@ -121,7 +121,8 @@ asm(                                                        \
+> >
+> >  #define BTF_SET_START(name)                            \
+> >  __BTF_ID_LIST(name, local)                             \
+> > -__BTF_SET_START(name, local)
+> > +__BTF_SET_START(name, local)                           \
+> > +extern struct btf_id_set name;
+> >
+> >  #define BTF_SET_START_GLOBAL(name)                     \
+> >  __BTF_ID_LIST(name, globl)                             \
+> > @@ -131,8 +132,7 @@ __BTF_SET_START(name, globl)
+> >  asm(                                                   \
+> >  ".pushsection " BTF_IDS_SECTION ",\"a\";      \n"      \
+> >  ".size __BTF_ID__set__" #name ", .-" #name "  \n"      \
+> > -".popsection;                                 \n");    \
+> > -extern struct btf_id_set name;
+> > +".popsection;                                 \n");
+> >
+> >  #else
+> >
+> > diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
+> > index 210b086188a3..42aa667d4433 100644
+> > --- a/tools/include/linux/btf_ids.h
+> > +++ b/tools/include/linux/btf_ids.h
+> > @@ -121,7 +121,8 @@ asm(                                                        \
+> >
+> >  #define BTF_SET_START(name)                            \
+> >  __BTF_ID_LIST(name, local)                             \
+> > -__BTF_SET_START(name, local)
+> > +__BTF_SET_START(name, local)                           \
+> > +extern struct btf_id_set name;
+> >
+> >  #define BTF_SET_START_GLOBAL(name)                     \
+> >  __BTF_ID_LIST(name, globl)                             \
+> > @@ -131,8 +132,7 @@ __BTF_SET_START(name, globl)
+> >  asm(                                                   \
+> >  ".pushsection " BTF_IDS_SECTION ",\"a\";      \n"      \
+> >  ".size __BTF_ID__set__" #name ", .-" #name "  \n"      \
+> > -".popsection;                                 \n");    \
+> > -extern struct btf_id_set name;
+> > +".popsection;                                 \n");
+> >
+>
+> This diff is extremely misleading. It's actually BTF_SET_END macro.
+> Coupled with your commit message, it's double-misleading, because you
+> are moving extern declaration from BTF_SET_END (which is used with
+> both BTF_SET_START and BTF_SET_START_GLOBAL) to BTF_SET_START. Not
+> from BTF_SET_START_GLOBAL to BTF_SET_START (as your commit message
+> implies, at least that's how I read it).
+
+Yeah, that's true. Probably that's why I got the commit message wrong
+as well. I think this is because the diff heuristics think
+__BTF_SET_START() is a function like thing? Adding some indentation
+might fix this, but I couldn't find details on what diff does with a
+quick search.
+
+>
+> >  #else
+> >
+> > --
+> > 2.25.1
+> >
+
+
+
+
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
