@@ -2,238 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D761262A6E
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 10:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA93262B3C
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 11:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgIIIfx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 04:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725864AbgIIIfs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:35:48 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFCBC061573
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 01:35:48 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id s13so1428902wmh.4
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 01:35:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VZ2kWh7JwmJsgOQ0DxpOoUNqZu7b8hlqeuOdH1m8tuc=;
-        b=TUnI0Z7rhCtpTEQSvdf94Tg+oft1RaPTFS/70DEXeN3wLA7CLaKmqD6prW0yikVcNO
-         sPJW3Itt1fgJzyBAYzscgJ7HvoqIw0kKX6Ru2oQ+MSqLHkanrbBmX9HThpTm/LgxL8D/
-         YvD9h8GowjaRNM+PQchrL0z3ZcHG2W72jEmFh3ZHxAmNLyVn9K6fQPJ6Q0+jZj/+MK6r
-         /7p79fBiONyCArFkN9+8PGPqenLNvYPVFmah9rW1y/B2IJehhrg8Ge8Tr6dLJST9/xTv
-         S8vjo0L+kQPjFxNWo40gYRJHgfy4TutfmZXAXsFXwC3MjUE4cyse+6jr3CEyi5oMEtAn
-         D5HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VZ2kWh7JwmJsgOQ0DxpOoUNqZu7b8hlqeuOdH1m8tuc=;
-        b=GjL2eMHfQ+YNc6WRBP2kW8XT71PwKg9N9/ONBA8CAdp9LFkW/TNV7muyuFPl4Rl0SP
-         ws6rZLvIgt0UE11lDezFgClFARtgSTGrgjey+4mZJMiOBPeFdHqJ9i3YVzc07TOuv6vT
-         70VRnIbCMvQfDzg+MFYkLdWYGJYUyePcmIhhT9ptVAOGtkqHEik3M7/a4ao76IuNuyii
-         JDUt7VdlDpVy7i+eVG9vgf5rNmOm5fG9ZHGsSk40MEWWTC4vf1N5L6Gc3QJUf5MFbh+n
-         hVplESvkhWr9HYkjKgTc4cpJVxZ69uSGHaNd/wU5DxWmWkyE93lKrwYinXZxojqVvPoI
-         czwQ==
-X-Gm-Message-State: AOAM5328auZFyDB4vgukGrRBh6YcMHjrQkgfvrqvSD9gEpROhmhS/N3l
-        LO2WCEdQm72QbmMwgWAHu1Cv9A==
-X-Google-Smtp-Source: ABdhPJzy6nXKkJlvlFD0SLGJ21dA1FRDWGZ/ehuAJps0tt+pTZeF4YwmfEiGDfK55CO3H84k3Aq1wA==
-X-Received: by 2002:a1c:4c0d:: with SMTP id z13mr2310116wmf.115.1599640547012;
-        Wed, 09 Sep 2020 01:35:47 -0700 (PDT)
-Received: from [192.168.1.12] ([194.35.119.93])
-        by smtp.gmail.com with ESMTPSA id c18sm3137346wrx.63.2020.09.09.01.35.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 01:35:46 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/3] tools: bpftool: print optional built-in
- features along with version
+        id S1727085AbgIIJCd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 05:02:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54010 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727055AbgIIJCb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 05:02:31 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08991YFD054148;
+        Wed, 9 Sep 2020 05:02:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=c9jKA4JzNJW8bmQwDF/rotdqpPJZsk5gVY2Dv7bE9ok=;
+ b=rPN1C6hoGUxzsOaSxZ/mGH1sdHhx8vP8N3H7JTrRHBpzp1CX2aMMBwW5J8WYTyCFqR5p
+ Notaon9fwJNzb05P8mwEu7QtkbUG2k+bKAB1Ug25WXUE4yDAPsZ5hMf2X7hEuMm8t9TN
+ A+3IoxhXd7+Uq4ytgNV4PQ6Q4dQu1UDM2hwwJBUHe391qCQMmOZC4mHjRjdNnON6GxyK
+ 2QGhLdka+IJN4iYwgiZXbaEUsZl/ATKj8I7GIyMmpdQ2GdN526/pYryiD4mMqLb9Domu
+ Nmqd007ot+6GQI8KV4GsOWAcw2Y0iLanGDNFSReVrXike8FxV809tBmzS1dbw0/tYQi0 +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33etvyj6nv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 05:02:30 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08991XBI053978;
+        Wed, 9 Sep 2020 05:02:29 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33etvyj6mj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 05:02:29 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0898q7Xs012384;
+        Wed, 9 Sep 2020 09:02:27 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04fra.de.ibm.com with ESMTP id 33cm5hj5cc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Sep 2020 09:02:27 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08992Pct37749212
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Sep 2020 09:02:25 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA7C1AE051;
+        Wed,  9 Sep 2020 09:02:24 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F705AE05A;
+        Wed,  9 Sep 2020 09:02:24 +0000 (GMT)
+Received: from sig-9-145-16-19.uk.ibm.com (unknown [9.145.16.19])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Sep 2020 09:02:24 +0000 (GMT)
+Message-ID: <8cf42e2752e442bb54e988261d8bf3cd22ad00f2.camel@linux.ibm.com>
+Subject: Re: Problem with endianess of pahole BTF output for vmlinux
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-References: <20200904205657.27922-1-quentin@isovalent.com>
- <20200904205657.27922-2-quentin@isovalent.com>
- <CAEf4Bzbf_igYVP+NfrVV86AZGQT7+2NF1JR6GzcEOymV9_vgNA@mail.gmail.com>
- <05b0ff4c-cf69-a452-6c0e-187ec2961063@isovalent.com>
- <CAEf4BzZwFsVPjR+cwvvuuhfAMy0AW=+=oe4bF-1fH8rxsOmeBw@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <16fe069f-7e3e-70fe-11c3-6cc2147e5ce2@isovalent.com>
-Date:   Wed, 9 Sep 2020 09:35:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+Cc:     Tony Ambardar <tony.ambardar@gmail.com>, bpf <bpf@vger.kernel.org>,
+        dwarves@vger.kernel.org
+Date:   Wed, 09 Sep 2020 11:02:24 +0200
+In-Reply-To: <CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com>
+References: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
+         <9e99c5301fbbb4f5f601b69816ee1dc9ab0df948.camel@linux.ibm.com>
+         <CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZwFsVPjR+cwvvuuhfAMy0AW=+=oe4bF-1fH8rxsOmeBw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-09_03:2020-09-08,2020-09-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
+ clxscore=1015 malwarescore=0 phishscore=0 bulkscore=0 impostorscore=0
+ suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090076
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/09/2020 00:20, Andrii Nakryiko wrote:
-> On Mon, Sep 7, 2020 at 7:50 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>
->> On 04/09/2020 22:45, Andrii Nakryiko wrote:
->>> On Fri, Sep 4, 2020 at 1:57 PM Quentin Monnet <quentin@isovalent.com> wrote:
->>>>
->>>> Bpftool has a number of features that can be included or left aside
->>>> during compilation. This includes:
->>>>
->>>> - Support for libbfd, providing the disassembler for JIT-compiled
->>>>   programs.
->>>> - Support for BPF skeletons, used for profiling programs or iterating on
->>>>   the PIDs of processes associated with BPF objects.
->>>>
->>>> In order to make it easy for users to understand what features were
->>>> compiled for a given bpftool binary, print the status of the two
->>>> features above when showing the version number for bpftool ("bpftool -V"
->>>> or "bpftool version"). Document this in the main manual page. Example
->>>> invocation:
->>>>
->>>>     $ bpftool -p version
->>>>     {
->>>>         "version": "5.9.0-rc1",
->>>>         "features": [
->>>>             "libbfd": true,
->>>>             "skeletons": true
->>>>         ]
->>>
->>> Is this a valid JSON? array of key/value pairs?
->>
->> No it's not, silly me :'(. I'll fix that, thanks for spotting it.
->>
->>>>     }
->>>>
->>>> Some other parameters are optional at compilation
->>>> ("DISASM_FOUR_ARGS_SIGNATURE", LIBCAP support) but they do not impact
->>>> significantly bpftool's behaviour from a user's point of view, so their
->>>> status is not reported.
->>>>
->>>> Available commands and supported program types depend on the version
->>>> number, and are therefore not reported either. Note that they are
->>>> already available, albeit without JSON, via bpftool's help messages.
->>>>
->>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
->>>> ---
->>>>  tools/bpf/bpftool/Documentation/bpftool.rst |  8 +++++++-
->>>>  tools/bpf/bpftool/main.c                    | 22 +++++++++++++++++++++
->>>>  2 files changed, 29 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
->>>> index 420d4d5df8b6..a3629a3f1175 100644
->>>> --- a/tools/bpf/bpftool/Documentation/bpftool.rst
->>>> +++ b/tools/bpf/bpftool/Documentation/bpftool.rst
->>>> @@ -50,7 +50,13 @@ OPTIONS
->>>>                   Print short help message (similar to **bpftool help**).
->>>>
->>>>         -V, --version
->>>> -                 Print version number (similar to **bpftool version**).
->>>> +                 Print version number (similar to **bpftool version**), and
->>>> +                 optional features that were included when bpftool was
->>>> +                 compiled. Optional features include linking against libbfd to
->>>> +                 provide the disassembler for JIT-ted programs (**bpftool prog
->>>> +                 dump jited**) and usage of BPF skeletons (some features like
->>>> +                 **bpftool prog profile** or showing pids associated to BPF
->>>> +                 objects may rely on it).
->>>
->>> nit: I'd emit it as a list, easier to see list of features visually
->>>
->>>>
->>>>         -j, --json
->>>>                   Generate JSON output. For commands that cannot produce JSON, this
->>>> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
->>>> index 4a191fcbeb82..2ae8c0d82030 100644
->>>> --- a/tools/bpf/bpftool/main.c
->>>> +++ b/tools/bpf/bpftool/main.c
->>>> @@ -70,13 +70,35 @@ static int do_help(int argc, char **argv)
->>>>
->>>>  static int do_version(int argc, char **argv)
->>>>  {
->>>> +#ifdef HAVE_LIBBFD_SUPPORT
->>>> +       const bool has_libbfd = true;
->>>> +#else
->>>> +       const bool has_libbfd = false;
->>>> +#endif
->>>> +#ifdef BPFTOOL_WITHOUT_SKELETONS
->>>> +       const bool has_skeletons = false;
->>>> +#else
->>>> +       const bool has_skeletons = true;
->>>> +#endif
->>>> +
->>>>         if (json_output) {
->>>>                 jsonw_start_object(json_wtr);
->>>> +
->>>>                 jsonw_name(json_wtr, "version");
->>>>                 jsonw_printf(json_wtr, "\"%s\"", BPFTOOL_VERSION);
->>>> +
->>>> +               jsonw_name(json_wtr, "features");
->>>> +               jsonw_start_array(json_wtr);
->>>> +               jsonw_bool_field(json_wtr, "libbfd", has_libbfd);
->>>> +               jsonw_bool_field(json_wtr, "skeletons", has_skeletons);
->>>> +               jsonw_end_array(json_wtr);
->>>> +
->>>>                 jsonw_end_object(json_wtr);
->>>>         } else {
->>>>                 printf("%s v%s\n", bin_name, BPFTOOL_VERSION);
->>>> +               printf("features: libbfd=%s, skeletons=%s\n",
->>>> +                      has_libbfd ? "true" : "false",
->>>> +                      has_skeletons ? "true" : "false");
->>>
->>> now imagine parsing this with CLI text tools, you'll have to find
->>> "skeletons=(false|true)" and then parse "true" to know skeletons are
->>> supported. Why not just print out features that are supported?
->>
->> You could just grep for "skeletons=true" (not too hard) (And generally
->> speaking I'd recommend against parsing bpftool's plain output, JSON is
->> more stable - Once you're parsing the JSON, checking the feature is
->> present or checking whether it's at "true" does not make a great
->> difference).
->>
->> Anyway, the reason I have those booleans is that if you just list the
->> features and run "bpftool version | grep libbpfd" and get no result, you
->> cannot tell if the binary has been compiled without the disassembler or
->> if you are running an older version of bpftool that does not list
->> built-in features. You could then parse the version number and double
->> check, but you need to find in what version the change has been added.
->> Besides libbfd and skeletons, this could happen again for future
->> optional features if we add them to bpftool but forget to immediately
->> add the related check for "bpftool version".
+On Tue, 2020-09-08 at 13:18 -0700, Andrii Nakryiko wrote:
+> On Mon, Sep 7, 2020 at 9:02 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
+> > On Sat, 2020-09-05 at 21:16 -0700, Tony Ambardar wrote:
+> > > Hello,
+> > > 
+> > > I'm using GCC 8.4.0, binutils 2.34 and pahole 1.17, compiling on
+> > > an
+> > > Ubuntu/x86_64 host and targeting both little- and big-endian mips
+> > > running on malta/qemu. When cross-compiling Linux 5.4.x LTS and
+> > > testing bpftool/BTF functionality on the target, I encounter
+> > > errors
+> > > on
+> > > big-endian targets:
+> > > 
+> > > > root@OpenWrt:/# bpftool btf dump file /sys/kernel/btf/vmlinux
+> > > > libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux
+> > > > Error: failed to load BTF from /sys/kernel/btf/vmlinux: No
+> > > > error
+> > > > information
+> > > 
+> > > After investigating, the problem appears to be that "pahole -J"
+> > > running on the x86_64 little-endian host will always generate raw
+> > > BTF
+> > > of native endianness (based on BTF magic), which causes the error
+> > > above on big-endian targets.
+> > > 
+> > > Is this expected? Is DEBUG_INFO_BTF supported in general when
+> > > cross-compiling? How does one generate BTF encoded for the target
+> > > endianness with pahole?
 > 
-> Now you are making this into a list of potential features that could
-> be supported if only they were built with proper dependencies, don't
-> you think?
-
-(That will be the case for new versions of bpftool that will be able to
-dump their features, won't it? Anyway.)
-
+> Yes, it's expected, unfortunately. Right now cross-compiling to a
+> different endianness isn't supported. You can cross-compile only if
+> target endianness matches host endianness.
 > 
-> I thought the idea is to detect if a given bpftool that you have
-> supports, say, skeleton feature. Whether it's too old to support it or
-> it doesn't support because it wasn't built with necessary dependencies
-> is immaterial -- it doesn't support the feature, if there is no
-> "skeleton" in a list of features.
-
-I agree the reason does not matter, if the feature is not available then
-we cannot use it, period. The concern I have is false negatives. If a
-script does "bpftool version | grep libbfd" and gets no output, then it
-may skip dumping the JITed instructions, although bpftool might simply
-be too old to dump the feature.
-
+> > > Thanks for any feedback or suggestions,
+> > > Tony
+> > 
+> > We have the same problem on s390, and I'm not aware of any solution
+> > at
+> > the moment. It would be great if we could figure out how to resolve
+> > this.
 > 
-> Continuing your logic -- parse JSON if you want to know this. In JSON
-> having {"skeleton": false, "libbfd": true"} feels natural. In
-> human-oriented plain text output seeing "features: libbpf=false,
-> skeleton=true" looks weird, instead of just "features: skeleton", IMO.
+> I'm working on extending BTF APIs in libbpf at the moment. Switching
+> endianness would be rather easy once all that is done. With these new
+> APIs it will be possible to switch pahole to use libbpf APIs to
+> produce BTF output and support arbitrary endianness as well. Right
+> now, I'd rather avoid implementing this in pahole, libbpf is a much
+> better place for this (and will require ongoing updates if/when we
+> introduce new types and fields to BTF).
+> 
+> Hope this plan works for you guys.
 
-Ok, so we agree we can have the booleans in JSON to have a way to avoid
-the "false negative" issue. In that case I'm fine with having a simpler
-list for plain output, this will make a small difference in the info
-provided between plain output and JSON but it seems acceptable. I'll
-send a new version with that change soon.
+That sounds really good to me, thanks!
 
-Thanks,
-Quentin
