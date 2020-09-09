@@ -2,136 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00555263656
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 20:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0B4263697
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 21:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728207AbgIIS7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 14:59:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29014 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725975AbgIIS7F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:59:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599677943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tIwdcKEFHnsM+XiZhz0XH+MlJswdkMBFHeWkGLG/J7w=;
-        b=VkuxdGfhfmRPZhhc+W10WHQ1DGb+UB1iCGVIFVssIBmGKqyPuFUGHw/LuNlx2qyw1eVUD1
-        a+bQzdxjGFQz3FY/zuIj82NescbfEXTV840Rk24+GIzIL/KxhqAZ1k7f0hkQHNc4idDKxA
-        BgvFCDwtNG7T9OO2OFhKbZWytnW3M4U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-312-3bMlHFfDNWqN2YT4CViSJg-1; Wed, 09 Sep 2020 14:59:01 -0400
-X-MC-Unique: 3bMlHFfDNWqN2YT4CViSJg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC6F2100855A;
-        Wed,  9 Sep 2020 18:58:59 +0000 (UTC)
-Received: from krava (unknown [10.40.192.96])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A41C6E70B;
-        Wed,  9 Sep 2020 18:58:39 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 20:58:38 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eelco Chaudron <echaudro@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix context type resolving for
- extension programs
-Message-ID: <20200909185838.GG1498025@krava>
-References: <20200909151115.1559418-1-jolsa@kernel.org>
- <871rjbc5d9.fsf@toke.dk>
+        id S1726226AbgIITZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 15:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726184AbgIITZY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 15:25:24 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B95C061573;
+        Wed,  9 Sep 2020 12:25:23 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id x8so2510334ybm.3;
+        Wed, 09 Sep 2020 12:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wyzDLyY4k3lhhyfUcNsRSImNxXW952jRT3/3oirpdp8=;
+        b=TM7DA9epLanpngvVGbZFPdXIRr2/TtUBJnUyvgsuSAzL+pYjsj7a7GA9Y8KETTZvkH
+         pHedXw06DeryyZ2pv92w4d7ombC/LHR8ZZ2Z4oqhXEQVizuOVpSljWT+8E7rmlBQk8Pv
+         pAawv07y6MPZz9pZExcHE2juj7kETW2zBArmDIYvGNCpPRwhq3hbLIsqQgjwEYMwglHt
+         8F56YI2d4/jXIrulxv+ZOkYtZKEMbaTRvyXEAN4sghc+OZ8YsZw2I8/8EEYkFkJ+9Kcq
+         qfQ57sXtDbcoYVMg9xWXjjL1VrE6vT+atZK1znwQuz8BlYHqUloITefUZLzN80zaOV6N
+         4NTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wyzDLyY4k3lhhyfUcNsRSImNxXW952jRT3/3oirpdp8=;
+        b=M3Hc3D+qnGZ+xqTkTdUu0IFDFx7WNarDkuWWf7bVoha4lFriuNrfmeWbFjhrCR7EOP
+         c/I73tC7dzkIc1KNgK6UxAObpN1WF51EV5+1Uro/dhJIHOwBtKZMG+6DDUFparUKognl
+         s0bbxhJ+dVG/pJ8DKHZqHaI4spyQMvMbSH3iG5kzyF5ibOHSroUSR3f8X4u167Hh9a3S
+         PDKQe6L7lCYNJBa0Z87Oza/q+zT2qCazHSKq6EKRkpkdCySuncqocGglLG044Bfyvxd/
+         Ex17kLxQqVYzMdPCUEHQx7DrJi+xeB5pFA3SBlmpT1h3ipqoNZsdW0YfbPENqR+gTCHn
+         MJTA==
+X-Gm-Message-State: AOAM5328n5wMmROB94YiGskJ3OfwFYnY5tZocxv/Lm7kaQs5oHIfSg9T
+        r41Lr9YwVk+6QwC3GQuPth/G+FwYkbqQN4OyGEYDSQI6
+X-Google-Smtp-Source: ABdhPJx2KtzsBWY5wn69hGs8WLuWBDznLZ7l8uIwl8IK22usFMCdRvfQ3tkjw4Cw+wwyidzYTbZyUvVL4WKWiEYSC3w=
+X-Received: by 2002:a25:c049:: with SMTP id c70mr8001739ybf.403.1599679522505;
+ Wed, 09 Sep 2020 12:25:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <871rjbc5d9.fsf@toke.dk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20200907163634.27469-1-quentin@isovalent.com> <20200907163634.27469-2-quentin@isovalent.com>
+ <CAEf4Bzb8QLVdjBY9hRCP7QdnqE-JwWqDn8hFytOL40S=Z+KW-w@mail.gmail.com>
+ <b89b4bbd-a28e-4dde-b400-4d64fc391bfe@isovalent.com> <CAEf4Bzb0SdZBfDfd2ZBXOBgpneAc6mKFhzULj_Msd0MoNSG5ng@mail.gmail.com>
+ <5a002828-c082-3cd7-9ee3-7d783cce2a2a@isovalent.com> <CAEf4BzZA3Zcf9imXVEQ_x0cTiC8JV8jXV-iaaQC+NP4mqt_V_Q@mail.gmail.com>
+ <997410b6-7428-173c-8197-ac9eae036e34@isovalent.com>
+In-Reply-To: <997410b6-7428-173c-8197-ac9eae036e34@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 9 Sep 2020 12:25:11 -0700
+Message-ID: <CAEf4BzYcG-893GAo_NeTKYBwpFFwi9joccasMH-AvSSeb07Xgw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] tools: bpftool: clean up function to dump
+ map entry
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 05:54:58PM +0200, Toke Høiland-Jørgensen wrote:
-> Jiri Olsa <jolsa@kernel.org> writes:
-> 
-> > Eelco reported we can't properly access arguments if the tracing
-> > program is attached to extension program.
+On Wed, Sep 9, 2020 at 9:59 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> On 09/09/2020 17:46, Andrii Nakryiko wrote:
+> > On Wed, Sep 9, 2020 at 9:38 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>
+> >> On 09/09/2020 17:30, Andrii Nakryiko wrote:
+> >>> On Wed, Sep 9, 2020 at 1:19 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>>>
+> >>>> On 09/09/2020 04:25, Andrii Nakryiko wrote:
+> >>>>> On Mon, Sep 7, 2020 at 9:36 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>>>>>
+> >>>>>> The function used to dump a map entry in bpftool is a bit difficult to
+> >>>>>> follow, as a consequence to earlier refactorings. There is a variable
+> >>>>>> ("num_elems") which does not appear to be necessary, and the error
+> >>>>>> handling would look cleaner if moved to its own function. Let's clean it
+> >>>>>> up. No functional change.
+> >>>>>>
+> >>>>>> v2:
+> >>>>>> - v1 was erroneously removing the check on fd maps in an attempt to get
+> >>>>>>   support for outer map dumps. This is already working. Instead, v2
+> >>>>>>   focuses on cleaning up the dump_map_elem() function, to avoid
+> >>>>>>   similar confusion in the future.
+> >>>>>>
+> >>>>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> >>>>>> ---
+> >>>>>>  tools/bpf/bpftool/map.c | 101 +++++++++++++++++++++-------------------
+> >>>>>>  1 file changed, 52 insertions(+), 49 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> >>>>>> index bc0071228f88..c8159cb4fb1e 100644
+> >>>>>> --- a/tools/bpf/bpftool/map.c
+> >>>>>> +++ b/tools/bpf/bpftool/map.c
+> >>>>>> @@ -213,8 +213,9 @@ static void print_entry_json(struct bpf_map_info *info, unsigned char *key,
+> >>>>>>         jsonw_end_object(json_wtr);
+> >>>>>>  }
+> >>>>>>
+> >>>>>> -static void print_entry_error(struct bpf_map_info *info, unsigned char *key,
+> >>>>>> -                             const char *error_msg)
+> >>>>>> +static void
+> >>>>>> +print_entry_error_msg(struct bpf_map_info *info, unsigned char *key,
+> >>>>>> +                     const char *error_msg)
+> >>>>>>  {
+> >>>>>>         int msg_size = strlen(error_msg);
+> >>>>>>         bool single_line, break_names;
+> >>>>>> @@ -232,6 +233,40 @@ static void print_entry_error(struct bpf_map_info *info, unsigned char *key,
+> >>>>>>         printf("\n");
+> >>>>>>  }
+> >>>>>>
+> >>>>>> +static void
+> >>>>>> +print_entry_error(struct bpf_map_info *map_info, void *key, int lookup_errno)
+> >>>>>> +{
+> >>>>>> +       /* For prog_array maps or arrays of maps, failure to lookup the value
+> >>>>>> +        * means there is no entry for that key. Do not print an error message
+> >>>>>> +        * in that case.
+> >>>>>> +        */
+> >>>>>
+> >>>>> this is the case when error is ENOENT, all the other ones should be
+> >>>>> treated the same, no?
+> >>>>
+> >>>> Do you mean all map types should be treated the same? If so, I can
+> >>>> remove the check below, as in v1. Or do you mean there is a missing
+> >>>> check on the error value? In which case I can extend this check to
+> >>>> verify we have ENOENT.
+> >>>
+> >>> The former, probably. I don't see how map-in-map is different for
+> >>> lookups and why it needs special handling.
+> >>
+> >> I didn't find a particular reason in the logs. My guess is that they may
+> >> be more likely to have "empty" entries than other types, and that it
+> >> might be more difficult to spot the existing entries in the middle of a
+> >> list of "<no entry>" messages.
+> >>
+> >> But I agree, let's get rid of this special case and have the same output
+> >> for all types. I'll respin.
 > >
-> > Having following program:
-> >
-> >   SEC("classifier/test_pkt_md_access")
-> >   int test_pkt_md_access(struct __sk_buff *skb)
-> >
-> > with its extension:
-> >
-> >   SEC("freplace/test_pkt_md_access")
-> >   int test_pkt_md_access_new(struct __sk_buff *skb)
-> >
-> > and tracing that extension with:
-> >
-> >   SEC("fentry/test_pkt_md_access_new")
-> >   int BPF_PROG(fentry, struct sk_buff *skb)
-> >
-> > It's not possible to access skb argument in the fentry program,
-> > with following error from verifier:
-> >
-> >   ; int BPF_PROG(fentry, struct sk_buff *skb)
-> >   0: (79) r1 = *(u64 *)(r1 +0)
-> >   invalid bpf_context access off=0 size=8
-> >
-> > The problem is that btf_ctx_access gets the context type for the
-> > traced program, which is in this case the extension.
-> >
-> > But when we trace extension program, we want to get the context
-> > type of the program that the extension is attached to, so we can
-> > access the argument properly in the trace program.
-> >
-> > Reported-by: Eelco Chaudron <echaudro@redhat.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/bpf/btf.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index f9ac6935ab3c..37ad01c32e5a 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -3859,6 +3859,14 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> >  	}
-> >  
-> >  	info->reg_type = PTR_TO_BTF_ID;
-> > +
-> > +	/* When we trace extension program, we want to get the context
-> > +	 * type of the program that the extension is attached to, so
-> > +	 * we can access the argument properly in the trace program.
-> > +	 */
-> > +	if (tgt_prog && tgt_prog->type == BPF_PROG_TYPE_EXT)
-> > +		tgt_prog = tgt_prog->aux->linked_prog;
-> > +
-> 
-> In the discussion about multi-attach for freplace we kinda concluded[0]
-> that this linked_prog pointer was going away after attach. I have this
-> basically working, but need to test a bit more before posting it (see
-> [1] for current status).
+> > Oh, wait, I think what I had in mind is to special case ENOENT for
+> > map-in-map and just skip those. So yeah, sorry, there is still a bit
+> > of a special handling, but **only** for -ENOENT. When I was replying I
+> > forgot bpftool emits "<no entry>" for each -ENOENT by default.
+>
+> So do you prefer me to extend the check with errno == -ENOENT? Or shall
+> I remove it entirely and just have the "<no entry>" messages like for
+> the other map types?
 
-ok, feel free to use the test case from patch 2 ;-)
+Extend with -ENOENT check.
 
-> 
-> But with this I guess we'll need to either do something different? Maybe
-> go chase down the target via the bpf_link or something?
-
-I'll check, could you please CC me on your next post?
-
-thanks,
-jirka
-
+>
+> Quentin
