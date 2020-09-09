@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA4E262C85
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 11:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187BB262CC6
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 12:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgIIJvh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 05:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
+        id S1726683AbgIIKCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 06:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgIIJvg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 05:51:36 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D6EC061573
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 02:51:36 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id r4so431326ooq.7
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 02:51:36 -0700 (PDT)
+        with ESMTP id S1725877AbgIIKCg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 06:02:36 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6731AC061573
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 03:02:36 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id g96so1755555otb.12
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 03:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g4WUXHDWFZvJy1/7jXKeiLjWh2fowCbZTO1qyW7ffHA=;
-        b=x8tFfju7N9SPFJQIRlyMKIgWPTGwr/ckd5QsUxiymr2tT7kjeo9p2n8CB0iy6ssTT9
-         /OuNHVLjPgrR+Opc7ELkuQYJYUDWBpJ7u/Qr0QYvq4yUE0W+A6cMlmgXFiI3kJYM+bFi
-         5jqfjvthqLAn870OM1oWD15E0nuFrDQXOKMDE=
+        bh=wRtKp7QC+YB5u8HTnpR2R+YBfSIQAK3FwGjwQja3fd0=;
+        b=DFlyq783l79qka3ijYGQEPXnS/9sCYsb2Ixm1zEa1wH+yL5kDFmDDbLpEotlAskrfD
+         LiR3clKnE38Y8A1BOZ0mZyO/PlF3ps3X1VFeOV9CcocqDHr8TbX4O1VXPD4g8N/svRat
+         5855zAm4HXmcDxfN66vw7+ow1QS3cyDQwD/3g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g4WUXHDWFZvJy1/7jXKeiLjWh2fowCbZTO1qyW7ffHA=;
-        b=oGYuBPoYdjALadPeKpn95N4reODxYfnj2WKUKgv0VadwLeSTFhryLOMx5wy75gvxU1
-         IGAhp3RKa1aqKmYUR0I7rqVny42lzyRmIENJp1fC/uATtHt3fZqJ1RRTYzwbTCVBiHj5
-         b7m5jnTK3Qfp3dneZPzuhB0FqnDd4TD4Nk454wUyYPev+BCoXDakHUrSE0wzwmsyUlDJ
-         D86WaoDL8HplVpT3E86lV4R6Tmgg6e5wbJfHtEcFdLiGonF26JISOVXjuC2X8TtP32rO
-         8vIyWaEWeM3YUKE3Nq6z9NAS32OBvubVC+LZcDlRRVHEfozYWafTIMNMTspruPpluMeY
-         oAtw==
-X-Gm-Message-State: AOAM5334W9rW1vFIjcCq05o5FjQA5hM3TkeQYcNL4PiL0mkmMc5WfW2i
-        o0bNqrdr+3i4qhFujhHf7beidNSj15w2KVs7iKbDTA==
-X-Google-Smtp-Source: ABdhPJyxwFuHg09QETQJPjKf+5YBfkECm2EDRA0nTCFbo38bZz0Yog1ECCNEd1nuFDk1uzV/19N099b1CKWh1WZpZXA=
-X-Received: by 2002:a4a:3516:: with SMTP id l22mr161854ooa.6.1599645095530;
- Wed, 09 Sep 2020 02:51:35 -0700 (PDT)
+        bh=wRtKp7QC+YB5u8HTnpR2R+YBfSIQAK3FwGjwQja3fd0=;
+        b=KLbrtmgf8jAtt6WQ3GQwrx2IokZO/fKjo1LAQvp261ICm7cuYRQSTR8SrPPYdIzx26
+         9VGXMXUltxsIsu0Yz3DEcbChBDFcU1mvV2/oWUhb+y3DsH/6qvW5jer5QntSGrUAecDA
+         trH9GhsJmqo0dgGQ1qmgOtgxpLiV9H1ZC6XSUgaGA4TWCA4H2piME+M+JIF/xaf8N8EB
+         kKOCQ+Y3Px9NRRVZKvxsNXY0m1dq+iiOl3tWfo+jPcsirZk0i9m13NC2o9lmVH6vN+Fg
+         NkijdNaE/sUpPkbowxk3LO9ug4k85VHaFmjeZWkpc/7y2gILKGedpxBrbBZsNKwK2ZxM
+         u6pA==
+X-Gm-Message-State: AOAM533DvSD/bZiLpasxHVtEtUwjQ/VIs3X1ZHOvuAjXRLhLJ0oi7hXz
+        VqGVCf5qOqtfXdSCBvVreUnKaRE2nf06cQSKrzHz1bGwJhMnEg==
+X-Google-Smtp-Source: ABdhPJyXFkHar8ENX+hfjavP3x3StuDqTEi+do7ZT25+TlVxR1W6wFgZZ7zRiE+v4UXdUzYIb8FF/+qtwqOjcjCx7sU=
+X-Received: by 2002:a9d:7e93:: with SMTP id m19mr151095otp.132.1599645755831;
+ Wed, 09 Sep 2020 03:02:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200904112401.667645-1-lmb@cloudflare.com> <20200904112401.667645-2-lmb@cloudflare.com>
- <CAEf4BzbyRGR0zcxcKU3qudgoJnm7gB7qgfOj-5g7u68LyHqxvQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbyRGR0zcxcKU3qudgoJnm7gB7qgfOj-5g7u68LyHqxvQ@mail.gmail.com>
+References: <20200904112401.667645-1-lmb@cloudflare.com> <20200904112401.667645-5-lmb@cloudflare.com>
+ <CAEf4BzaSDWCjCCFQ4mvU2ORVN8CQVHHL4doKipcjo4EC+vm_5A@mail.gmail.com>
+In-Reply-To: <CAEf4BzaSDWCjCCFQ4mvU2ORVN8CQVHHL4doKipcjo4EC+vm_5A@mail.gmail.com>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 9 Sep 2020 10:51:24 +0100
-Message-ID: <CACAyw9-8cnMq-Ya0-aEq540mJy8CrgB5FZbtBcJmLSRfzk8vJA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/11] btf: Fix BTF_SET_START_GLOBAL macro
+Date:   Wed, 9 Sep 2020 11:02:24 +0100
+Message-ID: <CACAyw9_JsAGse9Uq=Lc+_f-4kHLmddwRztsEcxgR6TLj2B7hdQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 04/11] bpf: check scalar or invalid register in check_helper_mem_access
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,94 +59,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 9 Sep 2020 at 05:04, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Wed, 9 Sep 2020 at 05:22, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Sep 4, 2020 at 4:30 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> On Fri, Sep 4, 2020 at 4:29 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 > >
-> > The extern symbol declaration should be on the BTF_SET_START macro, not
-> > on BTF_SET_START_GLOBAL, since in the global case the symbol will be
-> > declared in a header somewhere.
->
-> See below about my confusion. But besides that, is there any problem
-> to have this extern in both BTF_SET_START and BTF_SET_START_GLOBAL?
-> Are there any problems caused by this? This commit message doesn't
-> explain what problem it's trying to solve.
-
-I was getting compilation errors, and moving the extern to match what
-the BTF_ID_LIST did fixed it. Of course I now can't reproduce it when
-dropping the patch, so the mistake was on my side.
-
->
+> > Move the check for a NULL or zero register to check_helper_mem_access. This
+> > makes check_stack_boundary easier to understand.
 > >
-> > Fixes: eae2e83e6263 ("bpf: Add BTF_SET_START/END macros")
 > > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 > > ---
-> >  include/linux/btf_ids.h       | 6 +++---
-> >  tools/include/linux/btf_ids.h | 6 +++---
-> >  2 files changed, 6 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > index 210b086188a3..42aa667d4433 100644
-> > --- a/include/linux/btf_ids.h
-> > +++ b/include/linux/btf_ids.h
-> > @@ -121,7 +121,8 @@ asm(                                                        \
-> >
-> >  #define BTF_SET_START(name)                            \
-> >  __BTF_ID_LIST(name, local)                             \
-> > -__BTF_SET_START(name, local)
-> > +__BTF_SET_START(name, local)                           \
-> > +extern struct btf_id_set name;
-> >
-> >  #define BTF_SET_START_GLOBAL(name)                     \
-> >  __BTF_ID_LIST(name, globl)                             \
-> > @@ -131,8 +132,7 @@ __BTF_SET_START(name, globl)
-> >  asm(                                                   \
-> >  ".pushsection " BTF_IDS_SECTION ",\"a\";      \n"      \
-> >  ".size __BTF_ID__set__" #name ", .-" #name "  \n"      \
-> > -".popsection;                                 \n");    \
-> > -extern struct btf_id_set name;
-> > +".popsection;                                 \n");
-> >
-> >  #else
-> >
-> > diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
-> > index 210b086188a3..42aa667d4433 100644
-> > --- a/tools/include/linux/btf_ids.h
-> > +++ b/tools/include/linux/btf_ids.h
-> > @@ -121,7 +121,8 @@ asm(                                                        \
-> >
-> >  #define BTF_SET_START(name)                            \
-> >  __BTF_ID_LIST(name, local)                             \
-> > -__BTF_SET_START(name, local)
-> > +__BTF_SET_START(name, local)                           \
-> > +extern struct btf_id_set name;
-> >
-> >  #define BTF_SET_START_GLOBAL(name)                     \
-> >  __BTF_ID_LIST(name, globl)                             \
-> > @@ -131,8 +132,7 @@ __BTF_SET_START(name, globl)
-> >  asm(                                                   \
-> >  ".pushsection " BTF_IDS_SECTION ",\"a\";      \n"      \
-> >  ".size __BTF_ID__set__" #name ", .-" #name "  \n"      \
-> > -".popsection;                                 \n");    \
-> > -extern struct btf_id_set name;
-> > +".popsection;                                 \n");
-> >
 >
-> This diff is extremely misleading. It's actually BTF_SET_END macro.
-> Coupled with your commit message, it's double-misleading, because you
-> are moving extern declaration from BTF_SET_END (which is used with
-> both BTF_SET_START and BTF_SET_START_GLOBAL) to BTF_SET_START. Not
-> from BTF_SET_START_GLOBAL to BTF_SET_START (as your commit message
-> implies, at least that's how I read it).
+> Looks good as is, but I'm curious about the question below.
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>
+> >  kernel/bpf/verifier.c | 24 +++++++++++-------------
+> >  1 file changed, 11 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 509754c3aa7d..649bcfb4535e 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3594,18 +3594,6 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+> >         struct bpf_func_state *state = func(env, reg);
+> >         int err, min_off, max_off, i, j, slot, spi;
+> >
+> > -       if (reg->type != PTR_TO_STACK) {
+> > -               /* Allow zero-byte read from NULL, regardless of pointer type */
+> > -               if (zero_size_allowed && access_size == 0 &&
+> > -                   register_is_null(reg))
+> > -                       return 0;
+> > -
+> > -               verbose(env, "R%d type=%s expected=%s\n", regno,
+> > -                       reg_type_str[reg->type],
+> > -                       reg_type_str[PTR_TO_STACK]);
+> > -               return -EACCES;
+> > -       }
+> > -
+> >         if (tnum_is_const(reg->var_off)) {
+> >                 min_off = max_off = reg->var_off.value + reg->off;
+> >                 err = __check_stack_boundary(env, regno, min_off, access_size,
+> > @@ -3750,9 +3738,19 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+> >                                            access_size, zero_size_allowed,
+> >                                            "rdwr",
+> >                                            &env->prog->aux->max_rdwr_access);
+> > -       default: /* scalar_value|ptr_to_stack or invalid ptr */
+> > +       case PTR_TO_STACK:
+> >                 return check_stack_boundary(env, regno, access_size,
+> >                                             zero_size_allowed, meta);
+> > +       default: /* scalar_value or invalid ptr */
+> > +               /* Allow zero-byte read from NULL, regardless of pointer type */
+> > +               if (zero_size_allowed && access_size == 0 &&
+> > +                   register_is_null(reg))
+> > +                       return 0;
+>
+> Given comment explicitly states "regardless of pointer type",
+> shouldn't this be checked before we do pointer type-specific checks?
 
-Yeah, that's true. Probably that's why I got the commit message wrong
-as well. I think this is because the diff heuristics think
-__BTF_SET_START() is a function like thing? Adding some indentation
-might fix this, but I couldn't find details on what diff does with a
-quick search.
+That's a good question. As I understand it, this the check that the
+various comments in check_func_arg refer to:
+
+    /* final test in check_stack_boundary() */
+
+I think "regardless of pointer type" here means: we don't care what
+enum arg_type we're dealing with, since all NULL
+pointers are represented as SCALAR_VALUE with value 0.
 
 >
-> >  #else
+> > +
+> > +               verbose(env, "R%d type=%s expected=%s\n", regno,
+> > +                       reg_type_str[reg->type],
+> > +                       reg_type_str[PTR_TO_STACK]);
+> > +               return -EACCES;
+> >         }
+> >  }
 > >
 > > --
 > > 2.25.1
@@ -154,8 +140,7 @@ quick search.
 
 
 
-
---
+-- 
 Lorenz Bauer  |  Systems Engineer
 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
