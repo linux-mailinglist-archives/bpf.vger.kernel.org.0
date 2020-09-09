@@ -2,67 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C892629CD
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 10:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0616262A0C
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 10:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgIIIMq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 04:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36020 "EHLO
+        id S1728214AbgIIITl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 04:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728970AbgIIIMm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 04:12:42 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9175FC061573
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 01:12:42 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c19so1261698wmd.1
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 01:12:42 -0700 (PDT)
+        with ESMTP id S1726060AbgIIITk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 04:19:40 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237C5C061573
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 01:19:40 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c18so1897413wrm.9
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 01:19:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y4mg3/crLg7i+YSHd//57w46nzas9VKoqhALJzI4hmw=;
-        b=SPmrGq+R+6IS8rQk1qz+5m4gmYD+ClPV9BHLLx9ll+4Qu0kFKIglG2p5uaBEbRji9u
-         KB10BXSOrdfMTPM70OdFWtQRNQDZbvsmjTTu8zbXcYgV309kTe9QHjipe3BNSZ3sLUdA
-         ZxGXPzmNb+wqzaYA/v0CRjDgHXvfcC0zH5w5Tx1ar3HqUA4pk8Si6pY2bKUttsUWo/xc
-         TAy/61JaQBBQHcg5T0o8z+GKVpZ3xvxBXIO8v7UBSKse/UGcoioTLPsrpcqpNy1bAcc4
-         HugTt9l3L8ugFNLvd0jMRNzLq1ruSfrdphuyhcL31anVGszzX6KpImjYcbZHPmBmWsZG
-         +YvQ==
+        bh=3Oevd7iVtCDsmoMCjCDsQDgHNREENuQUSSMZLjv8SJY=;
+        b=oTUiET38UXprPQVuamW2Qi51yJm2OStVaxWSwfBBZrM+OIrPco4rVDJOpW9ZebC1tW
+         0hfWTkvnGQMVyVjd0Qoc8YGYw+IIZ4ewIEToCCXcZjRHYQrCYTEo3+Ci2rjGIUhEdsTn
+         jQtyvCa1SzINq+J/VEkhwFFs8WCuv9/Ue8M8mki8LTpu75uRHvLJk7PMIjdi6Z6VqMm/
+         YVZekZ7m/1aEEYiCf35Wd+DW1ePa34HxPXn4oeQucAbI+OB3O2gLtHfWFliqIDYf9n9g
+         2Rkm5HaYZzj9vHe5jkVLxx+xeZx5Yjau9MVN4SzXiG81ZIsjpuYflryeyM08rEjE4R5f
+         pgdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Y4mg3/crLg7i+YSHd//57w46nzas9VKoqhALJzI4hmw=;
-        b=UU82LpP4f7eiTKRp7NjOKMrM77ZrygiU0z+bZOZ74X9+yoodAzaPlJyWON+RwqOUI0
-         rHzfZ4p/ak3vHNbz6PT2NQ5Spn1ug7ep+JNfC3O5E+Wt9LMtqIRYmWdfTd9zcOZt2Oxk
-         s09NHCGvf88j2vZHR6vAjiB3kdZ+zYjNtS798L7SQYQx3Q2OLxQmCUXzoTwCr2QLV7I5
-         o74a/jY2bhDD7XmoL0Ysut9ooKzu5ffEoSlP63CpsMCSKjmmahO1rU1XIp3apGa0N07z
-         027w1QRXJOTlR89NepNJBI5Q2EUgvwzsdBDCbwU0xJ2coQf56HbVjNW9AaIn1l1JEGzP
-         0ugw==
-X-Gm-Message-State: AOAM532bDNK/6ja+sAnWRJNm7OQ2bPXyb2v4KKtihxAY07/hFthsjwU1
-        mCvTSR11iZlciagdN3UF9ISPyYZtr/3giTpEI7Y=
-X-Google-Smtp-Source: ABdhPJz386Vt9TTjl6o/8TnQOz9XYMOrLHbFAV1hHyyuId1dPk7YaVLl2eu9NlgcKWeci4v4Ohg0wQ==
-X-Received: by 2002:a1c:1902:: with SMTP id 2mr2493727wmz.26.1599639161042;
-        Wed, 09 Sep 2020 01:12:41 -0700 (PDT)
-Received: from [192.168.1.12] ([194.35.119.237])
-        by smtp.gmail.com with ESMTPSA id z19sm2679016wmi.3.2020.09.09.01.12.40
+        bh=3Oevd7iVtCDsmoMCjCDsQDgHNREENuQUSSMZLjv8SJY=;
+        b=isC8M7p/Dinz2lDQpfTuTaiYUZzCnGjclH2Ttb7IBD1qc5OliJ2emfVPS4fa2bmLFP
+         3tjaislG8oCgmjrBeQrdK9DBbfijMr+UG2AWbkLEwqY32zrxTEit9VTFsMsxzUwXfy2I
+         y/IqSyxjlgrQ2z80iYAXmF8Wif9sFqsSuM2/rs+weT5a9nUaMe5PyIZei5129E0Ly+h4
+         GzrF5aq8KR1IaIYPt9Il/KJc+JVUraEyapnFbnhYviU0czysoE2hYTWvOkAA8OeNsllH
+         +jGhtPU3jOKssIr5JrX1ZxpllHgCJbbRo9ZAj0KbUxhHSkJKqrs+D18VGagASqZxOd6Z
+         hHvw==
+X-Gm-Message-State: AOAM532PGcvtYrrChRcKZQ1FQ/9HTarIzenCI9nR6emHa7GhLo9KYcQj
+        aNsjqOV3N+NJopN5yLUp1wAUOi9KVdpQd6Ai9Xw=
+X-Google-Smtp-Source: ABdhPJzuIUQ3D0Sn6FNu5ARK7tlponD66y4IQe7I9qqRksdNKM/7Te7pLVhcjZZfgYIPUqoxIj0o2Q==
+X-Received: by 2002:adf:cc8c:: with SMTP id p12mr2876875wrj.92.1599639578773;
+        Wed, 09 Sep 2020 01:19:38 -0700 (PDT)
+Received: from [192.168.1.12] ([194.35.119.152])
+        by smtp.gmail.com with ESMTPSA id s11sm3015593wrt.43.2020.09.09.01.19.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Sep 2020 01:12:40 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 0/2] bpf: detect build errors for man pages for
- bpftool and eBPF helpers
+        Wed, 09 Sep 2020 01:19:38 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v2 1/2] tools: bpftool: clean up function to dump
+ map entry
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-References: <20200907164017.30644-1-quentin@isovalent.com>
- <CAEf4BzZNfsSyeJv7VXv-Z0p8EKV=pdDjfQVzNY3X8Y1=oWMwaQ@mail.gmail.com>
+References: <20200907163634.27469-1-quentin@isovalent.com>
+ <20200907163634.27469-2-quentin@isovalent.com>
+ <CAEf4Bzb8QLVdjBY9hRCP7QdnqE-JwWqDn8hFytOL40S=Z+KW-w@mail.gmail.com>
 From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <fb5efa4d-5f3d-adcb-a18c-14899c1651b0@isovalent.com>
-Date:   Wed, 9 Sep 2020 09:12:39 +0100
+Message-ID: <b89b4bbd-a28e-4dde-b400-4d64fc391bfe@isovalent.com>
+Date:   Wed, 9 Sep 2020 09:19:37 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZNfsSyeJv7VXv-Z0p8EKV=pdDjfQVzNY3X8Y1=oWMwaQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb8QLVdjBY9hRCP7QdnqE-JwWqDn8hFytOL40S=Z+KW-w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -71,50 +72,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/09/2020 04:48, Andrii Nakryiko wrote:
-> On Mon, Sep 7, 2020 at 9:40 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On 09/09/2020 04:25, Andrii Nakryiko wrote:
+> On Mon, Sep 7, 2020 at 9:36 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >>
->> This set aims at improving the checks for building bpftool's documentation
->> (including the man page for eBPF helper functions). The first patch lowers
->> the log-level from rst2man and fix the reported informational messages. The
->> second one extends the script used to build bpftool in the eBPF selftests,
->> so that we also check a documentation build.
+>> The function used to dump a map entry in bpftool is a bit difficult to
+>> follow, as a consequence to earlier refactorings. There is a variable
+>> ("num_elems") which does not appear to be necessary, and the error
+>> handling would look cleaner if moved to its own function. Let's clean it
+>> up. No functional change.
 >>
->> This is after a suggestion from Andrii Nakryiko.
+>> v2:
+>> - v1 was erroneously removing the check on fd maps in an attempt to get
+>>   support for outer map dumps. This is already working. Instead, v2
+>>   focuses on cleaning up the dump_map_elem() function, to avoid
+>>   similar confusion in the future.
 >>
->> Quentin Monnet (2):
->>   tools: bpftool: log info-level messages when building bpftool man
->>     pages
->>   selftests, bpftool: add bpftool (and eBPF helpers) documentation build
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>> ---
+>>  tools/bpf/bpftool/map.c | 101 +++++++++++++++++++++-------------------
+>>  1 file changed, 52 insertions(+), 49 deletions(-)
 >>
->>  tools/bpf/bpftool/Documentation/Makefile      |  2 +-
->>  .../bpf/bpftool/Documentation/bpftool-btf.rst |  3 +++
->>  .../bpf/bpftool/Documentation/bpftool-gen.rst |  4 ++++
->>  .../bpf/bpftool/Documentation/bpftool-map.rst |  3 +++
->>  .../selftests/bpf/test_bpftool_build.sh       | 23 +++++++++++++++++++
->>  5 files changed, 34 insertions(+), 1 deletion(-)
+>> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+>> index bc0071228f88..c8159cb4fb1e 100644
+>> --- a/tools/bpf/bpftool/map.c
+>> +++ b/tools/bpf/bpftool/map.c
+>> @@ -213,8 +213,9 @@ static void print_entry_json(struct bpf_map_info *info, unsigned char *key,
+>>         jsonw_end_object(json_wtr);
+>>  }
 >>
->> --
->> 2.25.1
+>> -static void print_entry_error(struct bpf_map_info *info, unsigned char *key,
+>> -                             const char *error_msg)
+>> +static void
+>> +print_entry_error_msg(struct bpf_map_info *info, unsigned char *key,
+>> +                     const char *error_msg)
+>>  {
+>>         int msg_size = strlen(error_msg);
+>>         bool single_line, break_names;
+>> @@ -232,6 +233,40 @@ static void print_entry_error(struct bpf_map_info *info, unsigned char *key,
+>>         printf("\n");
+>>  }
 >>
+>> +static void
+>> +print_entry_error(struct bpf_map_info *map_info, void *key, int lookup_errno)
+>> +{
+>> +       /* For prog_array maps or arrays of maps, failure to lookup the value
+>> +        * means there is no entry for that key. Do not print an error message
+>> +        * in that case.
+>> +        */
 > 
-> LGTM.
+> this is the case when error is ENOENT, all the other ones should be
+> treated the same, no?
+
+Do you mean all map types should be treated the same? If so, I can
+remove the check below, as in v1. Or do you mean there is a missing
+check on the error value? In which case I can extend this check to
+verify we have ENOENT.
+
+>> +       if (map_is_map_of_maps(map_info->type) ||
+>> +           map_is_map_of_progs(map_info->type))
+>> +               return;
+>> +
+>> +       if (json_output) {
+>> +               jsonw_start_object(json_wtr);   /* entry */
+>> +               jsonw_name(json_wtr, "key");
+>> +               print_hex_data_json(key, map_info->key_size);
+>> +               jsonw_name(json_wtr, "value");
+>> +               jsonw_start_object(json_wtr);   /* error */
+>> +               jsonw_string_field(json_wtr, "error", strerror(lookup_errno));
+>> +               jsonw_end_object(json_wtr);     /* error */
+>> +               jsonw_end_object(json_wtr);     /* entry */
+>> +       } else {
+>> +               const char *msg = NULL;
+>> +
+>> +               if (lookup_errno == ENOENT)
+>> +                       msg = "<no entry>";
+>> +               else if (lookup_errno == ENOSPC &&
+>> +                        map_info->type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY)
+>> +                       msg = "<cannot read>";
+>> +
+>> +               print_entry_error_msg(map_info, key,
+>> +                                     msg ? : strerror(lookup_errno));
+>> +       }
+>> +}
+>> +
 > 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> But this still won't be run every time someone makes selftests. We do
-> build bpftool during selftests build, so it would be good to run doc
-> build there as well to ensure everyone is executing this. But this is
-> a good first step for sure.
+> [...]
 > 
 
-I see, indeed with this patch we would only build the doc on "make
-run_tests", not when building the selftests. I'll send another version
-that builds the doc at the same time as we build bpftool then.
-
-I also had another look at rst2man's options, and there's probably
-cleaner a way to get rid of the stderr redirection/line counting that
-I'm doing in this version. I'll fix that too.
-
-Thanks for the feedback.
-Quentin
