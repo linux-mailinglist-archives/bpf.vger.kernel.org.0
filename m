@@ -2,55 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8C62635E5
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 20:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0CB2635E2
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 20:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgIISYr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 14:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
+        id S1727005AbgIISY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 14:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbgIISYR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 14:24:17 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F460C061795
-        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 11:24:16 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 125so3083386ybg.12
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 11:24:16 -0700 (PDT)
+        with ESMTP id S1728350AbgIISYW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 14:24:22 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68382C061798
+        for <bpf@vger.kernel.org>; Wed,  9 Sep 2020 11:24:18 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id h15so2771279pfr.3
+        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 11:24:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=b0qCV0C2cjdPMv4ejLiY/AMfUzUSAd07vJk0w5XDbZE=;
-        b=T1fjKqnynJhcVChZR80gQuP+D+tCnKgekk2pvC+8d8lezX9nqtC4Pfi1V7EsmB1QaN
-         aKZBdm1t/eGzrpRGrgv9iDYvFkQE1W4B/Jdc/b1J/TFXBF0GVrZQI4Ugl6MEnWxm7JRn
-         AaToExAzcF23Ox76hH+yTAGyauJX7Y0mVZ56jIuFIyGXDhNiDFnFrVvqe6FnHiddLt0x
-         /1TMbfwZZDz5V5UVP3KHs78F3+h3VrQKkvJWyYbcOeSPZocb/AUMAovBJsiM1KuW3zj4
-         RnEAkbEMAPO4/O7N/dXkmZVxREe9gEiL5kWKYS94OTSXY7utkf3eF48UzrkGEthlR/8g
-         dDQQ==
+        bh=uSHodFLWlUfGlLydQ5jSJNN2VPiTPUOh7WGERwhNze8=;
+        b=iLN622kq/vPefBvo2kPG5W5adhvxLANF+wV1Nk6ycxoV/BbV2A6BoBw5VL5Z0b2azc
+         AHL87109oHIfZ+F5GpZ4iy0gxZvHLuE3oqr6O8zAon6AY+bBvT9bYwVXRo/rYqtfMQg5
+         77vnED+/SKD+zcP9Qx/WmQk9+loVQ0gVXTZr/pkourwKw4oAiDuRLdsh0Bgkbul3iT9p
+         vgRthcuVZ41veOS4yc7CYekDU71HxGjfRr/KDpMAlw7pa4jAIXmc1ag0DhjfvmLyS3hM
+         1uRynXIj/orGCKBMunYdvdbkmDi0MhhC7H0uxJMo14qXLN1dogw3PVRxYpZMoX+f9iBj
+         jEQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=b0qCV0C2cjdPMv4ejLiY/AMfUzUSAd07vJk0w5XDbZE=;
-        b=UPuaUL/m0ftGT77Z24DgLh0DuW+zi3bFOroqNltOyyboWVi+B1tfJqs5jMogRNHy29
-         yQtoZnfMITFFpszcr+VDMl7kHpFotDwnGkfCJUqAH2OKaXReHfr7DoK/wDJgXenk2DXe
-         bg+65l4cZiAoWwVGv1iycbHtwcgFyMCsLhXXQKtRASHekJih7r+fl8GpD+Oha4s/ztg9
-         Fm9lP+J+1rkL9+rBm3xFHa6mQm6wVo6+2pMWSeTrEbmWbUnkfq3aSexhzyvre0j7tl7B
-         CJ+k0guIkOYoKvpdHFd7t0jisNxkcS+RrczSpsWWEB+M4Hm3NStKu460eiDNdQH9AygC
-         1QkA==
-X-Gm-Message-State: AOAM530DF/s1Jr4qZObQvIJVFWEqWMxS0GTFuwxpQBCYun/6EbFkOWSr
-        JBATEfhD/SehCpPxHlNyz/y7KBk=
-X-Google-Smtp-Source: ABdhPJy7KgmqOZMSgq+Dbb9B/W9oXpEERO9XLv8Oj6xqefNb3AHWo9v0NhRCQ7thZWLQ3NAqhLVIzAA=
+        bh=uSHodFLWlUfGlLydQ5jSJNN2VPiTPUOh7WGERwhNze8=;
+        b=lGhLJ/ym9JsWsYwtlu3K8t8fjhwkyBq4wiIIb4JWBElWFWpNxv62EDAunZtC6d6mjp
+         6tzuNI3CB7CKWmegGpTt1b9CEFXO3TvopkKi0TtZlk4FpJdIqrchY/ayqK0ZmCrpOsD/
+         2cRDlDQ2j9+MbmbZjGTr24jGTY1NucZmjqy6oKxLh+UrzpxvUYdGiMS9grx/KV7W7fYG
+         5I3yz+a4WVH5lSnOU7KGaAi5bbcLGdCiH0ClM8ZvzRzUf4BXpu7n3h0q6P1WH8bcMcT3
+         /d6T+Ql4AEgvY14n9vAQRjqSsmybVHDV3p+N7vZVBKsXMDOB9qrI7vGEkX3SPJojlfmQ
+         9IrA==
+X-Gm-Message-State: AOAM5320pLAo/RpRJMNohXTg7BJoowHFyT5I+qxKa0A0bYcvJxFAK66F
+        5Og89MmpTqTCiNhWE/OWn0dw+Ag=
+X-Google-Smtp-Source: ABdhPJz+bGhWOfL72GGVzPXMqEYGoHT6OqqWTwt85QJ6f4FAo2TklVE2vVi6Uxr435KfPw3mne+Fp6M=
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a05:6902:4e3:: with SMTP id
- w3mr8272813ybs.172.1599675855681; Wed, 09 Sep 2020 11:24:15 -0700 (PDT)
-Date:   Wed,  9 Sep 2020 11:24:05 -0700
+ (user=sdf job=sendgmr) by 2002:aa7:9548:0:b029:13e:d13d:a08d with SMTP id
+ w8-20020aa795480000b029013ed13da08dmr1952356pfq.36.1599675857829; Wed, 09 Sep
+ 2020 11:24:17 -0700 (PDT)
+Date:   Wed,  9 Sep 2020 11:24:06 -0700
 In-Reply-To: <20200909182406.3147878-1-sdf@google.com>
-Message-Id: <20200909182406.3147878-5-sdf@google.com>
+Message-Id: <20200909182406.3147878-6-sdf@google.com>
 Mime-Version: 1.0
 References: <20200909182406.3147878-1-sdf@google.com>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH bpf-next v4 4/5] bpftool: support dumping metadata
+Subject: [PATCH bpf-next v4 5/5] selftests/bpf: Test load and dump metadata
+ with btftool and skel
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -65,330 +67,259 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <zhuyifei@google.com>
 
-Dump metadata in the 'bpftool prog' list if it's present.
-For some formatting some BTF code is put directly in the
-metadata dumping. Sanity checks on the map and the kind of the btf_type
-to make sure we are actually dumping what we are expecting.
+This is a simple test to check that loading and dumping metadata
+in btftool works, whether or not metadata contents are used by the
+program.
 
-A helper jsonw_reset is added to json writer so we can reuse the same
-json writer without having extraneous commas.
-
-Sample output:
-
-  $ bpftool prog
-  6: cgroup_skb  name prog  tag bcf7977d3b93787c  gpl
-  [...]
-  	btf_id 4
-  	metadata:
-  		a = "foo"
-  		b = 1
-
-  $ bpftool prog --json --pretty
-  [{
-          "id": 6,
-  [...]
-          "btf_id": 4,
-          "metadata": {
-              "a": "foo",
-              "b": 1
-          }
-      }
-  ]
+A C test is also added to make sure the skeleton code can read the
+metadata values.
 
 Cc: YiFei Zhu <zhuyifei1999@gmail.com>
 Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/bpf/bpftool/json_writer.c |   6 +
- tools/bpf/bpftool/json_writer.h |   3 +
- tools/bpf/bpftool/prog.c        | 222 ++++++++++++++++++++++++++++++++
- 3 files changed, 231 insertions(+)
+ tools/testing/selftests/bpf/Makefile          |  3 +-
+ .../selftests/bpf/prog_tests/metadata.c       | 81 ++++++++++++++++++
+ .../selftests/bpf/progs/metadata_unused.c     | 15 ++++
+ .../selftests/bpf/progs/metadata_used.c       | 15 ++++
+ .../selftests/bpf/test_bpftool_metadata.sh    | 82 +++++++++++++++++++
+ 5 files changed, 195 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/metadata.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
+ create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
+ create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
 
-diff --git a/tools/bpf/bpftool/json_writer.c b/tools/bpf/bpftool/json_writer.c
-index 86501cd3c763..7fea83bedf48 100644
---- a/tools/bpf/bpftool/json_writer.c
-+++ b/tools/bpf/bpftool/json_writer.c
-@@ -119,6 +119,12 @@ void jsonw_pretty(json_writer_t *self, bool on)
- 	self->pretty = on;
- }
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 65d3d9aaeb31..3c92db8a189a 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -68,7 +68,8 @@ TEST_PROGS := test_kmod.sh \
+ 	test_tc_edt.sh \
+ 	test_xdping.sh \
+ 	test_bpftool_build.sh \
+-	test_bpftool.sh
++	test_bpftool.sh \
++	test_bpftool_metadata.sh \
  
-+void jsonw_reset(json_writer_t *self)
+ TEST_PROGS_EXTENDED := with_addr.sh \
+ 	with_tunnels.sh \
+diff --git a/tools/testing/selftests/bpf/prog_tests/metadata.c b/tools/testing/selftests/bpf/prog_tests/metadata.c
+new file mode 100644
+index 000000000000..dea8fa86b5fb
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/metadata.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++/*
++ * Copyright 2020 Google LLC.
++ */
++
++#include <test_progs.h>
++#include <cgroup_helpers.h>
++#include <network_helpers.h>
++
++#include "metadata_unused.skel.h"
++#include "metadata_used.skel.h"
++
++static int duration;
++
++static void test_metadata_unused(void)
 +{
-+	assert(self->depth == 0);
-+	self->sep = '\0';
-+}
-+
- /* Basic blocks */
- static void jsonw_begin(json_writer_t *self, int c)
- {
-diff --git a/tools/bpf/bpftool/json_writer.h b/tools/bpf/bpftool/json_writer.h
-index 35cf1f00f96c..8ace65cdb92f 100644
---- a/tools/bpf/bpftool/json_writer.h
-+++ b/tools/bpf/bpftool/json_writer.h
-@@ -27,6 +27,9 @@ void jsonw_destroy(json_writer_t **self_p);
- /* Cause output to have pretty whitespace */
- void jsonw_pretty(json_writer_t *self, bool on);
- 
-+/* Reset separator to create new JSON */
-+void jsonw_reset(json_writer_t *self);
-+
- /* Add property name */
- void jsonw_name(json_writer_t *self, const char *name);
- 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index f7923414a052..ca264dc22434 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -29,6 +29,9 @@
- #include "main.h"
- #include "xlated_dumper.h"
- 
-+#define BPF_METADATA_PREFIX "bpf_metadata_"
-+#define BPF_METADATA_PREFIX_LEN strlen(BPF_METADATA_PREFIX)
-+
- const char * const prog_type_name[] = {
- 	[BPF_PROG_TYPE_UNSPEC]			= "unspec",
- 	[BPF_PROG_TYPE_SOCKET_FILTER]		= "socket_filter",
-@@ -151,6 +154,221 @@ static void show_prog_maps(int fd, __u32 num_maps)
- 	}
- }
- 
-+static int bpf_prog_find_metadata(int prog_fd, int *map_id)
-+{
-+	struct bpf_prog_info prog_info = {};
-+	struct bpf_map_info map_info;
-+	__u32 prog_info_len;
-+	__u32 map_info_len;
-+	int saved_errno;
-+	__u32 *map_ids;
-+	int nr_maps;
-+	int map_fd;
-+	int ret;
-+	__u32 i;
-+
-+	prog_info_len = sizeof(prog_info);
-+
-+	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
-+	if (ret)
-+		return ret;
-+
-+	if (!prog_info.nr_map_ids) {
-+		errno = ENOENT;
-+		return -1;
-+	}
-+
-+	map_ids = calloc(prog_info.nr_map_ids, sizeof(__u32));
-+	if (!map_ids) {
-+		errno = ENOMEM;
-+		return -1;
-+	}
-+
-+	nr_maps = prog_info.nr_map_ids;
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	prog_info.nr_map_ids = nr_maps;
-+	prog_info.map_ids = ptr_to_u64(map_ids);
-+	prog_info_len = sizeof(prog_info);
-+
-+	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
-+	if (ret)
-+		goto free_map_ids;
-+
-+	for (i = 0; i < prog_info.nr_map_ids; i++) {
-+		map_fd = bpf_map_get_fd_by_id(map_ids[i]);
-+		if (map_fd < 0) {
-+			ret = -1;
-+			goto free_map_ids;
-+		}
-+
-+		memset(&map_info, 0, sizeof(map_info));
-+		map_info_len = sizeof(map_info);
-+		ret = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
-+
-+		saved_errno = errno;
-+		close(map_fd);
-+		errno = saved_errno;
-+		if (ret)
-+			goto free_map_ids;
-+
-+		if (map_info.type != BPF_MAP_TYPE_ARRAY)
-+			continue;
-+		if (map_info.key_size != sizeof(int))
-+			continue;
-+		if (map_info.max_entries != 1)
-+			continue;
-+		if (!map_info.btf_value_type_id)
-+			continue;
-+		if (!strstr(map_info.name, ".rodata"))
-+			continue;
-+
-+		*map_id = map_ids[i];
-+		goto free_map_ids;
-+	}
-+
-+	ret = -1;
-+	errno = ENOENT;
-+
-+free_map_ids:
-+	saved_errno = errno;
-+	free(map_ids);
-+	errno = saved_errno;
-+	return ret;
-+}
-+
-+static bool has_metadata_prefix(const char *s)
-+{
-+	return strstr(s, BPF_METADATA_PREFIX) == s;
-+}
-+
-+static void show_prog_metadata(int fd, __u32 num_maps)
-+{
-+	const struct btf_type *t_datasec, *t_var;
-+	struct bpf_map_info map_info = {};
-+	struct btf_var_secinfo *vsi;
-+	bool printed_header = false;
-+	struct btf *btf = NULL;
-+	unsigned int i, vlen;
-+	__u32 map_info_len;
-+	void *value = NULL;
-+	const char *name;
-+	int map_id = 0;
-+	int key = 0;
-+	int map_fd;
++	struct metadata_unused *obj;
 +	int err;
 +
-+	if (!num_maps)
++	obj = metadata_unused__open_and_load();
++	if (CHECK(!obj, "skel-load", "errno %d", errno))
 +		return;
 +
-+	err = bpf_prog_find_metadata(fd, &map_id);
-+	if (err < 0)
-+		return;
-+
-+	map_fd = bpf_map_get_fd_by_id(map_id);
-+	if (map_fd < 0)
-+		return;
-+
-+	map_info_len = sizeof(map_info);
-+	err = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
-+	if (err)
-+		goto out_close;
-+
-+	value = malloc(map_info.value_size);
-+	if (!value)
-+		goto out_close;
-+
-+	if (bpf_map_lookup_elem(map_fd, &key, value))
-+		goto out_free;
-+
-+	err = btf__get_from_id(map_info.btf_id, &btf);
-+	if (err || !btf)
-+		goto out_free;
-+
-+	t_datasec = btf__type_by_id(btf, map_info.btf_value_type_id);
-+	if (!btf_is_datasec(t_datasec))
-+		goto out_free;
-+
-+	vlen = btf_vlen(t_datasec);
-+	vsi = btf_var_secinfos(t_datasec);
-+
-+	/* We don't proceed to check the kinds of the elements of the DATASEC.
-+	 * The verifier enforces them to be BTF_KIND_VAR.
++	/* Assert that we can access the metadata in skel and the values are
++	 * what we expect.
 +	 */
++	if (CHECK(strncmp(obj->rodata->bpf_metadata_a, "foo",
++			  sizeof(obj->rodata->bpf_metadata_a)),
++		  "bpf_metadata_a", "expected \"foo\", value differ"))
++		goto close_bpf_object;
++	if (CHECK(obj->rodata->bpf_metadata_b != 1, "bpf_metadata_b",
++		  "expected 1, got %d", obj->rodata->bpf_metadata_b))
++		goto close_bpf_object;
 +
-+	if (json_output) {
-+		struct btf_dumper d = {
-+			.btf = btf,
-+			.jw = json_wtr,
-+			.is_plain_text = false,
-+		};
++	/* Assert that binding metadata map to prog again succeeds. */
++	err = bpf_prog_bind_map(bpf_program__fd(obj->progs.prog),
++				bpf_map__fd(obj->maps.rodata), NULL);
++	CHECK(err, "rebind_map", "errno %d, expected 0", errno);
 +
-+		for (i = 0; i < vlen; i++, vsi++) {
-+			t_var = btf__type_by_id(btf, vsi->type);
-+			name = btf__name_by_offset(btf, t_var->name_off);
-+
-+			if (!has_metadata_prefix(name))
-+				continue;
-+
-+			if (!printed_header) {
-+				jsonw_name(json_wtr, "metadata");
-+				jsonw_start_object(json_wtr);
-+				printed_header = true;
-+			}
-+
-+			jsonw_name(json_wtr, name + BPF_METADATA_PREFIX_LEN);
-+			err = btf_dumper_type(&d, t_var->type, value + vsi->offset);
-+			if (err) {
-+				p_err("btf dump failed: %d", err);
-+				break;
-+			}
-+		}
-+		if (printed_header)
-+			jsonw_end_object(json_wtr);
-+	} else {
-+		json_writer_t *btf_wtr = jsonw_new(stdout);
-+		struct btf_dumper d = {
-+			.btf = btf,
-+			.jw = btf_wtr,
-+			.is_plain_text = true,
-+		};
-+		if (!btf_wtr) {
-+			p_err("jsonw alloc failed");
-+			goto out_free;
-+		}
-+
-+		for (i = 0; i < vlen; i++, vsi++) {
-+			t_var = btf__type_by_id(btf, vsi->type);
-+			name = btf__name_by_offset(btf, t_var->name_off);
-+
-+			if (!has_metadata_prefix(name))
-+				continue;
-+
-+			if (!printed_header) {
-+				printf("\tmetadata:");
-+				printed_header = true;
-+			}
-+
-+			printf("\n\t\t%s = ", name + BPF_METADATA_PREFIX_LEN);
-+
-+			jsonw_reset(btf_wtr);
-+			err = btf_dumper_type(&d, t_var->type, value + vsi->offset);
-+			if (err) {
-+				p_err("btf dump failed: %d", err);
-+				break;
-+			}
-+		}
-+		if (printed_header)
-+			jsonw_destroy(&btf_wtr);
-+	}
-+
-+out_free:
-+	btf__free(btf);
-+	free(value);
-+
-+out_close:
-+	close(map_fd);
++close_bpf_object:
++	metadata_unused__destroy(obj);
 +}
 +
- static void print_prog_header_json(struct bpf_prog_info *info)
- {
- 	jsonw_uint_field(json_wtr, "id", info->id);
-@@ -228,6 +446,8 @@ static void print_prog_json(struct bpf_prog_info *info, int fd)
- 
- 	emit_obj_refs_json(&refs_table, info->id, json_wtr);
- 
-+	show_prog_metadata(fd, info->nr_map_ids);
++static void test_metadata_used(void)
++{
++	struct metadata_used *obj;
++	int err;
 +
- 	jsonw_end_object(json_wtr);
- }
- 
-@@ -297,6 +517,8 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd)
- 	emit_obj_refs_plain(&refs_table, info->id, "\n\tpids ");
- 
- 	printf("\n");
++	obj = metadata_used__open_and_load();
++	if (CHECK(!obj, "skel-load", "errno %d", errno))
++		return;
 +
-+	show_prog_metadata(fd, info->nr_map_ids);
- }
- 
- static int show_prog(int fd)
++	/* Assert that we can access the metadata in skel and the values are
++	 * what we expect.
++	 */
++	if (CHECK(strncmp(obj->rodata->bpf_metadata_a, "bar",
++			  sizeof(obj->rodata->bpf_metadata_a)),
++		  "metadata_a", "expected \"bar\", value differ"))
++		goto close_bpf_object;
++	if (CHECK(obj->rodata->bpf_metadata_b != 2, "metadata_b",
++		  "expected 2, got %d", obj->rodata->bpf_metadata_b))
++		goto close_bpf_object;
++
++	/* Assert that binding metadata map to prog again succeeds. */
++	err = bpf_prog_bind_map(bpf_program__fd(obj->progs.prog),
++				bpf_map__fd(obj->maps.rodata), NULL);
++	CHECK(err, "rebind_map", "errno %d, expected 0", errno);
++
++close_bpf_object:
++	metadata_used__destroy(obj);
++}
++
++void test_metadata(void)
++{
++	if (test__start_subtest("unused"))
++		test_metadata_unused();
++
++	if (test__start_subtest("used"))
++		test_metadata_used();
++}
+diff --git a/tools/testing/selftests/bpf/progs/metadata_unused.c b/tools/testing/selftests/bpf/progs/metadata_unused.c
+new file mode 100644
+index 000000000000..db5b804f6f4c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/metadata_unused.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++const char bpf_metadata_a[] SEC(".rodata") = "foo";
++const int bpf_metadata_b SEC(".rodata") = 1;
++
++SEC("cgroup_skb/egress")
++int prog(struct xdp_md *ctx)
++{
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/metadata_used.c b/tools/testing/selftests/bpf/progs/metadata_used.c
+new file mode 100644
+index 000000000000..0dcb1ba2f0ae
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/metadata_used.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++const char bpf_metadata_a[] SEC(".rodata") = "bar";
++const int bpf_metadata_b SEC(".rodata") = 2;
++
++SEC("cgroup_skb/egress")
++int prog(struct xdp_md *ctx)
++{
++	return bpf_metadata_b ? 1 : 0;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_bpftool_metadata.sh b/tools/testing/selftests/bpf/test_bpftool_metadata.sh
+new file mode 100755
+index 000000000000..1bf81b49457a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/test_bpftool_metadata.sh
+@@ -0,0 +1,82 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++# Kselftest framework requirement - SKIP code is 4.
++ksft_skip=4
++
++TESTNAME=bpftool_metadata
++BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
++BPF_DIR=$BPF_FS/test_$TESTNAME
++
++_cleanup()
++{
++	set +e
++	rm -rf $BPF_DIR 2> /dev/null
++}
++
++cleanup_skip()
++{
++	echo "selftests: $TESTNAME [SKIP]"
++	_cleanup
++
++	exit $ksft_skip
++}
++
++cleanup()
++{
++	if [ "$?" = 0 ]; then
++		echo "selftests: $TESTNAME [PASS]"
++	else
++		echo "selftests: $TESTNAME [FAILED]"
++	fi
++	_cleanup
++}
++
++if [ $(id -u) -ne 0 ]; then
++	echo "selftests: $TESTNAME [SKIP] Need root privileges"
++	exit $ksft_skip
++fi
++
++if [ -z "$BPF_FS" ]; then
++	echo "selftests: $TESTNAME [SKIP] Could not run test without bpffs mounted"
++	exit $ksft_skip
++fi
++
++if ! bpftool version > /dev/null 2>&1; then
++	echo "selftests: $TESTNAME [SKIP] Could not run test without bpftool"
++	exit $ksft_skip
++fi
++
++set -e
++
++trap cleanup_skip EXIT
++
++mkdir $BPF_DIR
++
++trap cleanup EXIT
++
++bpftool prog load metadata_unused.o $BPF_DIR/unused
++
++METADATA_PLAIN="$(bpftool prog)"
++echo "$METADATA_PLAIN" | grep 'a = "foo"' > /dev/null
++echo "$METADATA_PLAIN" | grep 'b = 1' > /dev/null
++
++bpftool prog --json | grep '"metadata":{"a":"foo","b":1}' > /dev/null
++
++bpftool map | grep 'metadata.rodata' > /dev/null
++
++rm $BPF_DIR/unused
++
++bpftool prog load metadata_used.o $BPF_DIR/used
++
++METADATA_PLAIN="$(bpftool prog)"
++echo "$METADATA_PLAIN" | grep 'a = "bar"' > /dev/null
++echo "$METADATA_PLAIN" | grep 'b = 2' > /dev/null
++
++bpftool prog --json | grep '"metadata":{"a":"bar","b":2}' > /dev/null
++
++bpftool map | grep 'metadata.rodata' > /dev/null
++
++rm $BPF_DIR/used
++
++exit 0
 -- 
 2.28.0.526.ge36021eeef-goog
 
