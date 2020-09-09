@@ -2,183 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058D326399D
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 03:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D864826399E
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 03:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgIJB6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 21:58:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61396 "EHLO
+        id S1730270AbgIJB64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 21:58:56 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33918 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728971AbgIJBkX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 21:40:23 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089MWYau086231;
-        Wed, 9 Sep 2020 18:50:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : date : in-reply-to : references : content-type : mime-version
- : content-transfer-encoding; s=pp1;
- bh=RRr2AhMntElCE2e8/bydu4WrV9n+FB7z0ZGETqXa5HI=;
- b=ip8DcvwDfi3ym3nC5/W9ZPfnZobJMmak84saep+XgpDs9/eAqupv/Ia1Pjy/J3qrxhop
- WgQEtyfZDViMtcEZ5EjO7G7rKQDmeg96b8rdflh1WkwzTeNXJtxzqCC3+MDOb5u5UqgA
- a7MSZbGzxBVlF5fOhsoo070TMx8B1fUrFanvK0vRNR9Q9SYfH64GSdIOVPeBUMsPXqcw
- UXCEuu2xv0Lg+lcskH+/9AKI2rCNFz0LwwF3NOT0V4zPCprWyekq+7SykVZUyr9xAZb8
- 4evJ713jeEuFViGV4WrSF2qNvetkYk4evtFwTrr+k8yeT24ZJ2RQdZbzROQnK3HvjXVz nA== 
+        by vger.kernel.org with ESMTP id S1729161AbgIJBk1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Sep 2020 21:40:27 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 089N39FT093847;
+        Wed, 9 Sep 2020 19:21:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=0ObmlIaqZCCPTCEiq1V4O0N6iHP+bfImgDug7JXh0rw=;
+ b=R22iXF94MadTHojVA0JAb+NVUdqEFRpwvYiK9/6LuXWPy/haWhBHTy3c3XEtTQLURNJT
+ QxBtgb6m45d/YPU5pCOeQ+OzikVHrIRhYzLM1IKI/xceD2UVch/rRu7DIp4VmHJ5HoKa
+ rRpqSQvMmGwcNmHAAyYwc4bAZMxNxh6FkxoyvcjjmDm8lleSSu/IaJx+Fc0hniIEVzXX
+ m8sXV4aKLOSO8LcLcVjpdqleBA+7h9TDePzudzlPSywib04jSNBzWAwa2CdrrqZPL5gn
+ mgxizITqtv1h0FIgaP0SoCzdMPLai0iqiotKCJmZfQ5PD6KGbPhVEa9TcSopUN2FSl9x rA== 
 Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33f78vsbfu-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33f7nhh9h5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 18:50:27 -0400
+        Wed, 09 Sep 2020 19:21:50 -0400
 Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 089MgeM2026463;
-        Wed, 9 Sep 2020 22:50:25 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 33dxdr2f97-1
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 089NHK7v030452;
+        Wed, 9 Sep 2020 23:21:48 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 33dxdr2ggg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Sep 2020 22:50:24 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 089MoMY627197742
+        Wed, 09 Sep 2020 23:21:48 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 089NLjXQ29622600
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Sep 2020 22:50:22 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B09BBA4057;
-        Wed,  9 Sep 2020 22:50:22 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7E4EEA4040;
-        Wed,  9 Sep 2020 22:50:22 +0000 (GMT)
-Received: from sig-9-145-5-224.uk.ibm.com (unknown [9.145.5.224])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Sep 2020 22:50:22 +0000 (GMT)
-Message-ID: <ba11b067a4d9635ee4e28ccc1b2896cc9c8c5be1.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 bpf-next 3/9] selftests/bpf: add __ksym extern
- selftest
+        Wed, 9 Sep 2020 23:21:45 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42EA95204F;
+        Wed,  9 Sep 2020 23:21:45 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.5.224])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id DF2C752051;
+        Wed,  9 Sep 2020 23:21:44 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org
-Date:   Thu, 10 Sep 2020 00:50:22 +0200
-In-Reply-To: <20200619231703.738941-4-andriin@fb.com>
-References: <20200619231703.738941-1-andriin@fb.com>
-         <20200619231703.738941-4-andriin@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] s390/bpf: Fix multiple tail calls
+Date:   Thu, 10 Sep 2020 01:21:41 +0200
+Message-Id: <20200909232141.3099367-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-09_17:2020-09-09,2020-09-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 impostorscore=0
- priorityscore=1501 spamscore=0 suspectscore=3 clxscore=1015 phishscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009090192
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009090202
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi!
+In order to branch around tail calls (due to out-of-bounds index,
+exceeding tail call count or missing tail call target), JIT uses
+label[0] field, which contains the address of the instruction following
+the tail call. When there are multiple tail calls, label[0] value comes
+from handling of a previous tail call, which is incorrect.
 
-On Fri, 2020-06-19 at 16:16 -0700, Andrii Nakryiko wrote:
-> Validate libbpf is able to handle weak and strong kernel symbol
-> externs in BPF
-> code correctly.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../testing/selftests/bpf/prog_tests/ksyms.c  | 71
-> +++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_ksyms.c  | 32 +++++++++
->  2 files changed, 103 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> new file mode 100644
-> index 000000000000..e3d6777226a8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2019 Facebook */
-> +
-> +#include <test_progs.h>
-> +#include "test_ksyms.skel.h"
-> +#include <sys/stat.h>
-> +
-> +static int duration;
-> +
-> +static __u64 kallsyms_find(const char *sym)
-> +{
-> +	char type, name[500];
-> +	__u64 addr, res = 0;
-> +	FILE *f;
-> +
-> +	f = fopen("/proc/kallsyms", "r");
-> +	if (CHECK(!f, "kallsyms_fopen", "failed to open: %d\n", errno))
-> +		return 0;
-> +
-> +	while (fscanf(f, "%llx %c %499s%*[^\n]\n", &addr, &type, name)
-> > 0) {
-> +		if (strcmp(name, sym) == 0) {
-> +			res = addr;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	CHECK(false, "not_found", "symbol %s not found\n", sym);
-> +out:
-> +	fclose(f);
-> +	return res;
-> +}
-> +
-> +void test_ksyms(void)
-> +{
-> +	__u64 link_fops_addr = kallsyms_find("bpf_link_fops");
-> +	const char *btf_path = "/sys/kernel/btf/vmlinux";
-> +	struct test_ksyms *skel;
-> +	struct test_ksyms__data *data;
-> +	struct stat st;
-> +	__u64 btf_size;
-> +	int err;
-> +
-> +	if (CHECK(stat(btf_path, &st), "stat_btf", "err %d\n", errno))
-> +		return;
-> +	btf_size = st.st_size;
-> +
-> +	skel = test_ksyms__open_and_load();
-> +	if (CHECK(!skel, "skel_open", "failed to open and load
-> skeleton\n"))
-> +		return;
-> +
-> +	err = test_ksyms__attach(skel);
-> +	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n",
-> err))
-> +		goto cleanup;
-> +
-> +	/* trigger tracepoint */
-> +	usleep(1);
-> +
-> +	data = skel->data;
-> +	CHECK(data->out__bpf_link_fops != link_fops_addr,
-> "bpf_link_fops",
-> +	      "got 0x%llx, exp 0x%llx\n",
-> +	      data->out__bpf_link_fops, link_fops_addr);
-> +	CHECK(data->out__bpf_link_fops1 != 0, "bpf_link_fops1",
-> +	      "got %llu, exp %llu\n", data->out__bpf_link_fops1,
-> (__u64)0);
-> +	CHECK(data->out__btf_size != btf_size, "btf_size",
-> +	      "got %llu, exp %llu\n", data->out__btf_size, btf_size);
-> +	CHECK(data->out__per_cpu_start != 0, "__per_cpu_start",
-> +	      "got %llu, exp %llu\n", data->out__per_cpu_start,
-> (__u64)0);
-> +
-> +cleanup:
-> +	test_ksyms__destroy(skel);
-> +}
+Fix by getting rid of label array and resolving the label address
+locally: for all 3 branches that jump to it, emit 0 offsets at the
+beginning, and then backpatch them with the correct value.
 
-Why is __per_cpu_start expected to be 0? On my x86_64 Debian VM it is
-something like ffffffffxxxxxxxx, and this test fails. Wouldn't
-it be better to take the value from kallsyms, like it's done with
-bpf_link_fops, or am I missing something in my setup?
+Also, do not use the long jump infrastructure: the tail call sequence
+is known to be short, so make all 3 jumps short.
 
-Best regards,
-Ilya
+Fixes: 6651ee070b31 ("s390/bpf: implement bpf_tail_call() helper")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ arch/s390/net/bpf_jit_comp.c | 61 ++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 34 deletions(-)
+
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index be4b8532dd3c..0a4182792876 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -50,7 +50,6 @@ struct bpf_jit {
+ 	int r14_thunk_ip;	/* Address of expoline thunk for 'br %r14' */
+ 	int tail_call_start;	/* Tail call start offset */
+ 	int excnt;		/* Number of exception table entries */
+-	int labels[1];		/* Labels for local jumps */
+ };
+ 
+ #define SEEN_MEM	BIT(0)		/* use mem[] for temporary storage */
+@@ -229,18 +228,18 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
+ 	REG_SET_SEEN(b3);					\
+ })
+ 
+-#define EMIT6_PCREL_LABEL(op1, op2, b1, b2, label, mask)	\
++#define EMIT6_PCREL_RIEB(op1, op2, b1, b2, mask, target)	\
+ ({								\
+-	int rel = (jit->labels[label] - jit->prg) >> 1;		\
++	unsigned int rel = (int)((target) - jit->prg) / 2;	\
+ 	_EMIT6((op1) | reg(b1, b2) << 16 | (rel & 0xffff),	\
+ 	       (op2) | (mask) << 12);				\
+ 	REG_SET_SEEN(b1);					\
+ 	REG_SET_SEEN(b2);					\
+ })
+ 
+-#define EMIT6_PCREL_IMM_LABEL(op1, op2, b1, imm, label, mask)	\
++#define EMIT6_PCREL_RIEC(op1, op2, b1, imm, mask, target)	\
+ ({								\
+-	int rel = (jit->labels[label] - jit->prg) >> 1;		\
++	unsigned int rel = (int)((target) - jit->prg) / 2;	\
+ 	_EMIT6((op1) | (reg_high(b1) | (mask)) << 16 |		\
+ 		(rel & 0xffff), (op2) | ((imm) & 0xff) << 8);	\
+ 	REG_SET_SEEN(b1);					\
+@@ -1282,7 +1281,9 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		EMIT4(0xb9040000, BPF_REG_0, REG_2);
+ 		break;
+ 	}
+-	case BPF_JMP | BPF_TAIL_CALL:
++	case BPF_JMP | BPF_TAIL_CALL: {
++		int patch_1_clrj, patch_2_clij, patch_3_brc;
++
+ 		/*
+ 		 * Implicit input:
+ 		 *  B1: pointer to ctx
+@@ -1300,16 +1301,10 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		EMIT6_DISP_LH(0xe3000000, 0x0016, REG_W1, REG_0, BPF_REG_2,
+ 			      offsetof(struct bpf_array, map.max_entries));
+ 		/* if ((u32)%b3 >= (u32)%w1) goto out; */
+-		if (!is_first_pass(jit) && can_use_rel(jit, jit->labels[0])) {
+-			/* clrj %b3,%w1,0xa,label0 */
+-			EMIT6_PCREL_LABEL(0xec000000, 0x0077, BPF_REG_3,
+-					  REG_W1, 0, 0xa);
+-		} else {
+-			/* clr %b3,%w1 */
+-			EMIT2(0x1500, BPF_REG_3, REG_W1);
+-			/* brcl 0xa,label0 */
+-			EMIT6_PCREL_RILC(0xc0040000, 0xa, jit->labels[0]);
+-		}
++		/* clrj %b3,%w1,0xa,out */
++		patch_1_clrj = jit->prg;
++		EMIT6_PCREL_RIEB(0xec000000, 0x0077, BPF_REG_3, REG_W1, 0xa,
++				 jit->prg);
+ 
+ 		/*
+ 		 * if (tail_call_cnt++ > MAX_TAIL_CALL_CNT)
+@@ -1324,16 +1319,10 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		EMIT4_IMM(0xa7080000, REG_W0, 1);
+ 		/* laal %w1,%w0,off(%r15) */
+ 		EMIT6_DISP_LH(0xeb000000, 0x00fa, REG_W1, REG_W0, REG_15, off);
+-		if (!is_first_pass(jit) && can_use_rel(jit, jit->labels[0])) {
+-			/* clij %w1,MAX_TAIL_CALL_CNT,0x2,label0 */
+-			EMIT6_PCREL_IMM_LABEL(0xec000000, 0x007f, REG_W1,
+-					      MAX_TAIL_CALL_CNT, 0, 0x2);
+-		} else {
+-			/* clfi %w1,MAX_TAIL_CALL_CNT */
+-			EMIT6_IMM(0xc20f0000, REG_W1, MAX_TAIL_CALL_CNT);
+-			/* brcl 0x2,label0 */
+-			EMIT6_PCREL_RILC(0xc0040000, 0x2, jit->labels[0]);
+-		}
++		/* clij %w1,MAX_TAIL_CALL_CNT,0x2,out */
++		patch_2_clij = jit->prg;
++		EMIT6_PCREL_RIEC(0xec000000, 0x007f, REG_W1, MAX_TAIL_CALL_CNT,
++				 2, jit->prg);
+ 
+ 		/*
+ 		 * prog = array->ptrs[index];
+@@ -1348,13 +1337,9 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		/* ltg %r1,prog(%b2,%r1) */
+ 		EMIT6_DISP_LH(0xe3000000, 0x0002, REG_1, BPF_REG_2,
+ 			      REG_1, offsetof(struct bpf_array, ptrs));
+-		if (!is_first_pass(jit) && can_use_rel(jit, jit->labels[0])) {
+-			/* brc 0x8,label0 */
+-			EMIT4_PCREL_RIC(0xa7040000, 0x8, jit->labels[0]);
+-		} else {
+-			/* brcl 0x8,label0 */
+-			EMIT6_PCREL_RILC(0xc0040000, 0x8, jit->labels[0]);
+-		}
++		/* brc 0x8,out */
++		patch_3_brc = jit->prg;
++		EMIT4_PCREL_RIC(0xa7040000, 8, jit->prg);
+ 
+ 		/*
+ 		 * Restore registers before calling function
+@@ -1371,8 +1356,16 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+ 		/* bc 0xf,tail_call_start(%r1) */
+ 		_EMIT4(0x47f01000 + jit->tail_call_start);
+ 		/* out: */
+-		jit->labels[0] = jit->prg;
++		if (jit->prg_buf) {
++			*(u16 *)(jit->prg_buf + patch_1_clrj + 2) =
++				(jit->prg - patch_1_clrj) >> 1;
++			*(u16 *)(jit->prg_buf + patch_2_clij + 2) =
++				(jit->prg - patch_2_clij) >> 1;
++			*(u16 *)(jit->prg_buf + patch_3_brc + 2) =
++				(jit->prg - patch_3_brc) >> 1;
++		}
+ 		break;
++	}
+ 	case BPF_JMP | BPF_EXIT: /* return b0 */
+ 		last = (i == fp->len - 1) ? 1 : 0;
+ 		if (last)
+-- 
+2.25.4
 
