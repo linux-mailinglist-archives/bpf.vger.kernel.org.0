@@ -2,146 +2,270 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C3026310F
-	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 17:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD302631B4
+	for <lists+bpf@lfdr.de>; Wed,  9 Sep 2020 18:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730411AbgIIP4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Sep 2020 11:56:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29468 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730587AbgIIPzF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Sep 2020 11:55:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599666903;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2VaXpUx2RgFYaGXvPxTF0x5NFUabOVTHG+USRhiruLc=;
-        b=i53HO3r3SPcLzM7AYb97AHgK3Im5qD7ih1rwfmMvFBgt9IBN6dgEJMs3ZBhQWpeF9CPwI+
-        MQxd7KwRuRSefvGVlOC190i1DVh99xfNqjgwnpx9XlQke49EeWgk/v41Xf0k38PJ4wJ7So
-        x3pU9nm/Vxxx3S3K2n+0k7qdGoMNfnM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-HETPSC4hNx-vcrrsQNfsGA-1; Wed, 09 Sep 2020 11:55:02 -0400
-X-MC-Unique: HETPSC4hNx-vcrrsQNfsGA-1
-Received: by mail-wr1-f69.google.com with SMTP id s8so1116445wrb.15
-        for <bpf@vger.kernel.org>; Wed, 09 Sep 2020 08:55:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=2VaXpUx2RgFYaGXvPxTF0x5NFUabOVTHG+USRhiruLc=;
-        b=TaI2ywdOQP03rCnFS2UdMzj7Ul29Ii3c+xFerg9R+pZzuYDc00nzQJ8vyQJ6w8tLn4
-         JKf63OlDeixGVqXQl9kKBrWRj76QvlxhkZLEk0SA8TGL8qLSxRFgUmhJN0h44CRPdHyp
-         MSgviGJhfb/9VK2FsRnpN8NIa8LXYqxW5ZzkAEmb+87Wnm7fvkmir9NHM9g0DR6+r+ul
-         VCPjLJ3XYB1VGAz/V786o+YyLy0sav/tH7nuKToxbt26T6ixjCnojrg3xNYOas2/IppA
-         /QTAhzEFS2wJXvRnrznI1swIj4/JrqOa9vO55xqPFbwOLSn4bzQuzRrP3zBBNa1WwYmi
-         b46A==
-X-Gm-Message-State: AOAM530R8dHIRTY6nSPkHMtXDwj8B+z+rDxxqnxFeEqCLHqAKYsJ3RbJ
-        6vFCtr65xQerYDar6Epx9qvo6/5do+67PIkzbCMLeANFXx7XERyPsjbIIlF7mXWXGTmGpWigOMM
-        NNtbfySFvu1NY
-X-Received: by 2002:a5d:608a:: with SMTP id w10mr4501723wrt.48.1599666899946;
-        Wed, 09 Sep 2020 08:54:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzaMzx/VEi+OD4KdcdvBWVIyUWE9NHTFTuqvs+ds8e6vK9qDG97AejivLuFgbBm5xOBHbzs9w==
-X-Received: by 2002:a5d:608a:: with SMTP id w10mr4501693wrt.48.1599666899595;
-        Wed, 09 Sep 2020 08:54:59 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id h184sm4718859wmh.41.2020.09.09.08.54.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 08:54:59 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 68F4D1829D4; Wed,  9 Sep 2020 17:54:58 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Eelco Chaudron <echaudro@redhat.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Fix context type resolving for
- extension programs
-In-Reply-To: <20200909151115.1559418-1-jolsa@kernel.org>
-References: <20200909151115.1559418-1-jolsa@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 09 Sep 2020 17:54:58 +0200
-Message-ID: <871rjbc5d9.fsf@toke.dk>
+        id S1730952AbgIIQX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Sep 2020 12:23:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730358AbgIIQX4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Sep 2020 12:23:56 -0400
+Received: from coco.lan (ip5f5ad5d6.dynamic.kabel-deutschland.de [95.90.213.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A5D332087C;
+        Wed,  9 Sep 2020 13:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599659591;
+        bh=rJBfeeTXfNkiLHWwQizTse5alallYawtzifzWGS4E8g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u9uSb6rV4/oX10V4lkoRj5rGgDATfOwQM1PuGh9Nb3NN1BzzkEoXYB1MF6cesgA+3
+         axeCYig+MsDAsrwSsGWGBCAvUjzlN5r3dQ+ISkfaEcjREKS8CZWJffFhR+/6lnDDso
+         RfOSbvNyvGsQJYi2IoFYBVFFKJz+cXEAsrE5b3xg=
+Date:   Wed, 9 Sep 2020 15:53:05 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Andrii Nakryiko <andriin@fb.com>, <andrii.nakryiko@gmail.com>
+Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 bpf-next 5/5] docs/bpf: add BPF ring buffer design
+ notes
+Message-ID: <20200909155305.21380532@coco.lan>
+In-Reply-To: <20200529075424.3139988-6-andriin@fb.com>
+References: <20200529075424.3139988-1-andriin@fb.com>
+        <20200529075424.3139988-6-andriin@fb.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa <jolsa@kernel.org> writes:
+Em Fri, 29 May 2020 00:54:24 -0700
+Andrii Nakryiko <andriin@fb.com> escreveu:
 
-> Eelco reported we can't properly access arguments if the tracing
-> program is attached to extension program.
->
-> Having following program:
->
->   SEC("classifier/test_pkt_md_access")
->   int test_pkt_md_access(struct __sk_buff *skb)
->
-> with its extension:
->
->   SEC("freplace/test_pkt_md_access")
->   int test_pkt_md_access_new(struct __sk_buff *skb)
->
-> and tracing that extension with:
->
->   SEC("fentry/test_pkt_md_access_new")
->   int BPF_PROG(fentry, struct sk_buff *skb)
->
-> It's not possible to access skb argument in the fentry program,
-> with following error from verifier:
->
->   ; int BPF_PROG(fentry, struct sk_buff *skb)
->   0: (79) r1 = *(u64 *)(r1 +0)
->   invalid bpf_context access off=0 size=8
->
-> The problem is that btf_ctx_access gets the context type for the
-> traced program, which is in this case the extension.
->
-> But when we trace extension program, we want to get the context
-> type of the program that the extension is attached to, so we can
-> access the argument properly in the trace program.
->
-> Reported-by: Eelco Chaudron <echaudro@redhat.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Add commit description from patch #1 as a stand-alone documentation under
+> Documentation/bpf, as it might be more convenient format, in long term
+> perspective.
+> 
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
->  kernel/bpf/btf.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index f9ac6935ab3c..37ad01c32e5a 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3859,6 +3859,14 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
->  	}
->  
->  	info->reg_type = PTR_TO_BTF_ID;
+>  Documentation/bpf/ringbuf.rst | 209 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 209 insertions(+)
+>  create mode 100644 Documentation/bpf/ringbuf.rst
+> 
+> diff --git a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
+> new file mode 100644
+> index 000000000000..75f943f0009d
+> --- /dev/null
+> +++ b/Documentation/bpf/ringbuf.rst
+> @@ -0,0 +1,209 @@
+> +===============
+> +BPF ring buffer
+> +===============
 > +
-> +	/* When we trace extension program, we want to get the context
-> +	 * type of the program that the extension is attached to, so
-> +	 * we can access the argument properly in the trace program.
-> +	 */
-> +	if (tgt_prog && tgt_prog->type == BPF_PROG_TYPE_EXT)
-> +		tgt_prog = tgt_prog->aux->linked_prog;
+> +This document describes BPF ring buffer design, API, and implementation details.
 > +
+> +.. contents::
+> +    :local:
+> +    :depth: 2
+> +
+> +Motivation
+> +----------
+> +
+> +There are two distinctive motivators for this work, which are not satisfied by
+> +existing perf buffer, which prompted creation of a new ring buffer
+> +implementation.
+> +
+> +- more efficient memory utilization by sharing ring buffer across CPUs;
+> +- preserving ordering of events that happen sequentially in time, even across
+> +  multiple CPUs (e.g., fork/exec/exit events for a task).
+> +
+> +These two problems are independent, but perf buffer fails to satisfy both.
+> +Both are a result of a choice to have per-CPU perf ring buffer.  Both can be
+> +also solved by having an MPSC implementation of ring buffer. The ordering
+> +problem could technically be solved for perf buffer with some in-kernel
+> +counting, but given the first one requires an MPSC buffer, the same solution
+> +would solve the second problem automatically.
+> +
+> +Semantics and APIs
+> +------------------
+> +
+> +Single ring buffer is presented to BPF programs as an instance of BPF map of
+> +type ``BPF_MAP_TYPE_RINGBUF``. Two other alternatives considered, but
+> +ultimately rejected.
+> +
+> +One way would be to, similar to ``BPF_MAP_TYPE_PERF_EVENT_ARRAY``, make
+> +``BPF_MAP_TYPE_RINGBUF`` could represent an array of ring buffers, but not
+> +enforce "same CPU only" rule. This would be more familiar interface compatible
+> +with existing perf buffer use in BPF, but would fail if application needed more
+> +advanced logic to lookup ring buffer by arbitrary key.
+> +``BPF_MAP_TYPE_HASH_OF_MAPS`` addresses this with current approach.
+> +Additionally, given the performance of BPF ringbuf, many use cases would just
+> +opt into a simple single ring buffer shared among all CPUs, for which current
+> +approach would be an overkill.
+> +
+> +Another approach could introduce a new concept, alongside BPF map, to represent
+> +generic "container" object, which doesn't necessarily have key/value interface
+> +with lookup/update/delete operations. This approach would add a lot of extra
+> +infrastructure that has to be built for observability and verifier support. It
+> +would also add another concept that BPF developers would have to familiarize
+> +themselves with, new syntax in libbpf, etc. But then would really provide no
+> +additional benefits over the approach of using a map.  ``BPF_MAP_TYPE_RINGBUF``
+> +doesn't support lookup/update/delete operations, but so doesn't few other map
+> +types (e.g., queue and stack; array doesn't support delete, etc).
+> +
+> +The approach chosen has an advantage of re-using existing BPF map
+> +infrastructure (introspection APIs in kernel, libbpf support, etc), being
+> +familiar concept (no need to teach users a new type of object in BPF program),
+> +and utilizing existing tooling (bpftool). For common scenario of using a single
+> +ring buffer for all CPUs, it's as simple and straightforward, as would be with
+> +a dedicated "container" object. On the other hand, by being a map, it can be
+> +combined with ``ARRAY_OF_MAPS`` and ``HASH_OF_MAPS`` map-in-maps to implement
+> +a wide variety of topologies, from one ring buffer for each CPU (e.g., as
+> +a replacement for perf buffer use cases), to a complicated application
+> +hashing/sharding of ring buffers (e.g., having a small pool of ring buffers
+> +with hashed task's tgid being a look up key to preserve order, but reduce
+> +contention).
+> +
+> +Key and value sizes are enforced to be zero. ``max_entries`` is used to specify
+> +the size of ring buffer and has to be a power of 2 value.
+> +
+> +There are a bunch of similarities between perf buffer
+> +(``BPF_MAP_TYPE_PERF_EVENT_ARRAY``) and new BPF ring buffer semantics:
+> +
+> +- variable-length records;
+> +- if there is no more space left in ring buffer, reservation fails, no
+> +  blocking;
+> +- memory-mappable data area for user-space applications for ease of
+> +  consumption and high performance;
+> +- epoll notifications for new incoming data;
+> +- but still the ability to do busy polling for new data to achieve the
+> +  lowest latency, if necessary.
+> +
+> +BPF ringbuf provides two sets of APIs to BPF programs:
+> +
+> +- ``bpf_ringbuf_output()`` allows to *copy* data from one place to a ring
+> +  buffer, similarly to ``bpf_perf_event_output()``;
+> +- ``bpf_ringbuf_reserve()``/``bpf_ringbuf_commit()``/``bpf_ringbuf_discard()``
+> +  APIs split the whole process into two steps. First, a fixed amount of space
+> +  is reserved. If successful, a pointer to a data inside ring buffer data
+> +  area is returned, which BPF programs can use similarly to a data inside
+> +  array/hash maps. Once ready, this piece of memory is either committed or
+> +  discarded. Discard is similar to commit, but makes consumer ignore the
+> +  record.
+> +
+> +``bpf_ringbuf_output()`` has disadvantage of incurring extra memory copy,
+> +because record has to be prepared in some other place first. But it allows to
+> +submit records of the length that's not known to verifier beforehand. It also
+> +closely matches ``bpf_perf_event_output()``, so will simplify migration
+> +significantly.
+> +
+> +``bpf_ringbuf_reserve()`` avoids the extra copy of memory by providing a memory
+> +pointer directly to ring buffer memory. In a lot of cases records are larger
+> +than BPF stack space allows, so many programs have use extra per-CPU array as
+> +a temporary heap for preparing sample. bpf_ringbuf_reserve() avoid this needs
+> +completely. But in exchange, it only allows a known constant size of memory to
+> +be reserved, such that verifier can verify that BPF program can't access memory
+> +outside its reserved record space. bpf_ringbuf_output(), while slightly slower
+> +due to extra memory copy, covers some use cases that are not suitable for
+> +``bpf_ringbuf_reserve()``.
+> +
+> +The difference between commit and discard is very small. Discard just marks
+> +a record as discarded, and such records are supposed to be ignored by consumer
+> +code. Discard is useful for some advanced use-cases, such as ensuring
+> +all-or-nothing multi-record submission, or emulating temporary
+> +``malloc()``/``free()`` within single BPF program invocation.
+> +
+> +Each reserved record is tracked by verifier through existing
+> +reference-tracking logic, similar to socket ref-tracking. It is thus
+> +impossible to reserve a record, but forget to submit (or discard) it.
+> +
+> +``bpf_ringbuf_query()`` helper allows to query various properties of ring
+> +buffer.  Currently 4 are supported:
+> +
+> +- ``BPF_RB_AVAIL_DATA`` returns amount of unconsumed data in ring buffer;
+> +- ``BPF_RB_RING_SIZE`` returns the size of ring buffer;
+> +- ``BPF_RB_CONS_POS``/``BPF_RB_PROD_POS`` returns current logical possition
+> +  of consumer/producer, respectively.
+> +
+> +Returned values are momentarily snapshots of ring buffer state and could be
+> +off by the time helper returns, so this should be used only for
+> +debugging/reporting reasons or for implementing various heuristics, that take
+> +into account highly-changeable nature of some of those characteristics.
+> +
+> +One such heuristic might involve more fine-grained control over poll/epoll
+> +notifications about new data availability in ring buffer. Together with
+> +``BPF_RB_NO_WAKEUP``/``BPF_RB_FORCE_WAKEUP`` flags for output/commit/discard
+> +helpers, it allows BPF program a high degree of control and, e.g., more
+> +efficient batched notifications. Default self-balancing strategy, though,
+> +should be adequate for most applications and will work reliable and efficiently
+> +already.
+> +
+> +Design and Implementation
+> +-------------------------
+> +
+> +This reserve/commit schema allows a natural way for multiple producers, either
+> +on different CPUs or even on the same CPU/in the same BPF program, to reserve
+> +independent records and work with them without blocking other producers. This
+> +means that if BPF program was interruped by another BPF program sharing the
+> +same ring buffer, they will both get a record reserved (provided there is
+> +enough space left) and can work with it and submit it independently. This
+> +applies to NMI context as well, except that due to using a spinlock during
+> +reservation, in NMI context, ``bpf_ringbuf_reserve()`` might fail to get
+> +a lock, in which case reservation will fail even if ring buffer is not full.
+> +
+> +The ring buffer itself internally is implemented as a power-of-2 sized
+> +circular buffer, with two logical and ever-increasing counters (which might
+> +wrap around on 32-bit architectures, that's not a problem):
+> +
+> +- consumer counter shows up to which logical position consumer consumed the
+> +  data;
+> +- producer counter denotes amount of data reserved by all producers.
+> +
+> +Each time a record is reserved, producer that "owns" the record will
+> +successfully advance producer counter. At that point, data is still not yet
+> +ready to be consumed, though. Each record has 8 byte header, which contains the
+> +length of reserved record, as well as two extra bits: busy bit to denote that
+> +record is still being worked on, and discard bit, which might be set at commit
+> +time if record is discarded. In the latter case, consumer is supposed to skip
+> +the record and move on to the next one. Record header also encodes record's
+> +relative offset from the beginning of ring buffer data area (in pages). This
+> +allows ``bpf_ringbuf_commit()``/``bpf_ringbuf_discard()`` to accept only the
+> +pointer to the record itself, without requiring also the pointer to ring buffer
+> +itself. Ring buffer memory location will be restored from record metadata
+> +header. This significantly simplifies verifier, as well as improving API
+> +usability.
+> +
+> +Producer counter increments are serialized under spinlock, so there is
+> +a strict ordering between reservations. Commits, on the other hand, are
+> +completely lockless and independent. All records become available to consumer
+> +in the order of reservations, but only after all previous records where
+> +already committed. It is thus possible for slow producers to temporarily hold
+> +off submitted records, that were reserved later.
+> +
+> +Reservation/commit/consumer protocol is verified by litmus tests in
+> +Documentation/litmus_tests/bpf-rb/_.
 
-In the discussion about multi-attach for freplace we kinda concluded[0]
-that this linked_prog pointer was going away after attach. I have this
-basically working, but need to test a bit more before posting it (see
-[1] for current status).
+Are there any missing patch that were supposed to be merged before this
+one:
 
-But with this I guess we'll need to either do something different? Maybe
-go chase down the target via the bpf_link or something?
+There's no Documentation/litmus_tests/bpf-rb/_. This currently
+causes a warning at the Kernel's building system:
 
--Toke
+	$ ./scripts/documentation-file-ref-check 
+	Documentation/bpf/ringbuf.rst: Documentation/litmus_tests/bpf-rb/_
 
-[0] https://lore.kernel.org/bpf/20200722002918.574pruibvlxfblyq@ast-mbp.dhcp.thefacebook.com/
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/log/?h=bpf-freplace-multi-attach-alt-03
+(This is reported when someone calls "make htmldocs")
 
+Could you please fix this?
+
+Thanks,
+Mauro
