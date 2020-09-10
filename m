@@ -2,127 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750B1265142
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEAC2650E9
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgIJUt4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 16:49:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726932AbgIJUU4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:20:56 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8777B221EA;
-        Thu, 10 Sep 2020 20:20:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599769255;
-        bh=EN8Ux1f40Gwbt7c8BI9OtZebo/fiQdq5Hs8XaO02MuA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cC54oQPVSUHFiKwGk7Ytv6VTyCltQC2OYgYqIL1BN7knZVhOZKy9523c6vulodT6j
-         uw1bWHuvSxSna8xmJFeZcdwzCCjpNygLqz4qpcurELJfipR6uu/j8tEQfaf+HlZuU9
-         qqhlv25t2ibIMDqKO/q7FgPwVVXM7rBpX933Q+4I=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        jolsa@redhat.com, bpf@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC tip/core/rcu 4/4] rcu-tasks: Shorten per-grace-period sleep for RCU Tasks Trace
-Date:   Thu, 10 Sep 2020 13:20:52 -0700
-Message-Id: <20200910202052.5073-4-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200910201956.GA24190@paulmck-ThinkPad-P72>
-References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
+        id S1726535AbgIJUgF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 16:36:05 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11390 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727026AbgIJUd1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 16:33:27 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AKU5kf009145
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 13:33:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=ylkNWm6vTtLh/RoObbSI3QJcpP1ZOVZUqQdI4iq5gF4=;
+ b=HOD+FKMKVZdqCqNyoMo8gqxAYDuDef+gBli435XEvWfZXU3mjALhBN52Od+sHpHgDKea
+ kxBnoDQhDjGKEZxj/c51rmpK3vNc0tJXGvl0pHX+UyBpb7lg6fQSXojRq+msAliCaLfB
+ UyUSiY1cTysCXAxx/yOHpousdTzR/BVa1rg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33fqw11b6c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 13:33:24 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 10 Sep 2020 13:33:23 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 4659C62E5379; Thu, 10 Sep 2020 13:33:18 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Song Liu <songliubraving@fb.com>, <stable@vger.kernel.org>
+Subject: [PATCH bpf-next] bpf: fix comment for helper bpf_current_task_under_cgroup()
+Date:   Thu, 10 Sep 2020 13:33:14 -0700
+Message-ID: <20200910203314.70018-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-10_09:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ suspectscore=13 bulkscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=696
+ spamscore=0 malwarescore=0 phishscore=0 impostorscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009100184
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+This should be "current" not "skb".
 
-The various RCU tasks flavors currently wait 100 milliseconds between each
-grace period in order to prevent CPU-bound loops and to favor efficiency
-over latency.  However, RCU Tasks Trace needs to have a grace-period
-latency of roughly 25 milliseconds, which is completely infeasible given
-the 100-millisecond per-grace-period sleep.  This commit therefore reduces
-this sleep duration to 5 milliseconds (or one jiffy, whichever is longer)
-in kernels built with CONFIG_TASKS_TRACE_RCU_READ_MB=y.
-
-Link: https://lore.kernel.org/bpf/CAADnVQK_AiX+S_L_A4CQWT11XyveppBbQSQgH_qWGyzu_E8Yeg@mail.gmail.com/
-Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: <bpf@vger.kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Fixes: c6b5fb8690fa ("bpf: add documentation for eBPF helpers (42-50)")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- kernel/rcu/tasks.h | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ include/uapi/linux/bpf.h       | 4 ++--
+ tools/include/uapi/linux/bpf.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 2b4df23..a0eaed5 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -28,6 +28,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @kthread_ptr: This flavor's grace-period/callback-invocation kthread.
-  * @gp_func: This flavor's grace-period-wait function.
-  * @gp_state: Grace period's most recent state transition (debugging).
-+ * @gp_sleep: Per-grace-period sleep to prevent CPU-bound looping.
-  * @init_fract: Initial backoff sleep interval.
-  * @gp_jiffies: Time of last @gp_state transition.
-  * @gp_start: Most recent grace-period start in jiffies.
-@@ -49,6 +50,7 @@ struct rcu_tasks {
- 	struct wait_queue_head cbs_wq;
- 	raw_spinlock_t cbs_lock;
- 	int gp_state;
-+	int gp_sleep;
- 	int init_fract;
- 	unsigned long gp_jiffies;
- 	unsigned long gp_start;
-@@ -233,7 +235,7 @@ static int __noreturn rcu_tasks_kthread(void *arg)
- 			cond_resched();
- 		}
- 		/* Paranoid sleep to keep this from entering a tight loop */
--		schedule_timeout_idle(HZ/10);
-+		schedule_timeout_idle(rtp->gp_sleep);
- 
- 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
- 	}
-@@ -557,6 +559,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks);
- 
- static int __init rcu_spawn_tasks_kthread(void)
- {
-+	rcu_tasks.gp_sleep = HZ / 10;
- 	rcu_tasks.init_fract = 10;
- 	rcu_tasks.pregp_func = rcu_tasks_pregp_step;
- 	rcu_tasks.pertask_func = rcu_tasks_pertask;
-@@ -690,6 +693,7 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_rude);
- 
- static int __init rcu_spawn_tasks_rude_kthread(void)
- {
-+	rcu_tasks_rude.gp_sleep = HZ / 10;
- 	rcu_spawn_tasks_kthread_generic(&rcu_tasks_rude);
- 	return 0;
- }
-@@ -1170,8 +1174,12 @@ EXPORT_SYMBOL_GPL(rcu_barrier_tasks_trace);
- static int __init rcu_spawn_tasks_trace_kthread(void)
- {
- 	if (IS_ENABLED(CONFIG_TASKS_TRACE_RCU_READ_MB)) {
-+		rcu_tasks_trace.gp_sleep = HZ / 10;
- 		rcu_tasks_trace.init_fract = 10;
- 	} else {
-+		rcu_tasks_trace.gp_sleep = HZ / 200;
-+		if (rcu_tasks_trace.gp_sleep <= 0)
-+			rcu_tasks_trace.gp_sleep = 1;
- 		rcu_tasks_trace.init_fract = HZ / 5;
- 		if (rcu_tasks_trace.init_fract <= 0)
- 			rcu_tasks_trace.init_fract = 1;
--- 
-2.9.5
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 90359cab501d1..7dd314176df76 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1447,8 +1447,8 @@ union bpf_attr {
+  * 	Return
+  * 		The return value depends on the result of the test, and can be:
+  *
+- * 		* 0, if the *skb* task belongs to the cgroup2.
+- * 		* 1, if the *skb* task does not belong to the cgroup2.
++ *		* 0, if current task belongs to the cgroup2.
++ *		* 1, if current task does not belong to the cgroup2.
+  * 		* A negative error code, if an error occurred.
+  *
+  * long bpf_skb_change_tail(struct sk_buff *skb, u32 len, u64 flags)
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 90359cab501d1..7dd314176df76 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1447,8 +1447,8 @@ union bpf_attr {
+  * 	Return
+  * 		The return value depends on the result of the test, and can be:
+  *
+- * 		* 0, if the *skb* task belongs to the cgroup2.
+- * 		* 1, if the *skb* task does not belong to the cgroup2.
++ *		* 0, if current task belongs to the cgroup2.
++ *		* 1, if current task does not belong to the cgroup2.
+  * 		* A negative error code, if an error occurred.
+  *
+  * long bpf_skb_change_tail(struct sk_buff *skb, u32 len, u64 flags)
+--=20
+2.24.1
 
