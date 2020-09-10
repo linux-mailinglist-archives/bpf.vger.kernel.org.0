@@ -2,210 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17692654F7
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 00:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714A8265520
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 00:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725308AbgIJWW0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 18:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        id S1725275AbgIJWej (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 18:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgIJWWW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 18:22:22 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EA3C061573;
-        Thu, 10 Sep 2020 15:22:22 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id e11so1981678ybk.1;
-        Thu, 10 Sep 2020 15:22:22 -0700 (PDT)
+        with ESMTP id S1725274AbgIJWei (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 18:34:38 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B043DC061573;
+        Thu, 10 Sep 2020 15:34:37 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id s19so93944ybc.5;
+        Thu, 10 Sep 2020 15:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Z+A4SCNAFToljw8w/XJH2Ymoq34r4ypOMBE3039GCcY=;
-        b=GswCUB/wYIG+bQGbNur7KU4RAtzAa+5GwmmsmqPqhID0klUmwcIPjQJXRJnz+FR2Fl
-         UU08JgoiquXePP3oh1InBFquIr78WAIu6Z4C9tm+mMZ3S4Ke7n+Q4UYwL04OtX5pWAZ9
-         upDaIQFqz7/ewKqnrp6A6aMOOzQZJXpNnEYWMzXPPXzHmPYjOs4FQu7jlCiEU1pLyARX
-         W72EY2YKpNJhpIjrGmEKrWBY7mQ2fYKZIviz82CPc2AgmBXOh5XxT7YN/lGyxF7lwIaB
-         bJ+vesIbkFXftslFjQ5o7kc3/PiS5Dsz9K2wpG36x1a3KnJtnnRiBPy0dkOSM+gYiJPK
-         B6jA==
+        bh=26Kn2rhsa3xJivd2y4pBgAN2IoN23FJyYykJzBjpe7M=;
+        b=Bff8oa2xCRWxrgHhixxfFe4FLc/9PYNmLczTjY+l2nbj1zGeWbbmHFOYKByesmlQP4
+         7InaCj2RFix3eod8D9l1yTXY0G6D+DPC8cwBb2uIYSaFVtsDIueclR85js4uJvR4VxHJ
+         TpNrECfhMVyN6Y6bOCJ/VGW2UB1jeTQ1KARBw61bHFHqrGkXeWBbiasi34HGv+P1lOmK
+         RD13IoEgHb+//td3lsh3TMh6BMRxdsaOSlIYvFfGV5mPP0+NqgRTiV6a0GTduFFN0k8Q
+         DUwoe9INtMzXiXOeUufozvUXMNAdS/skF/9aAGc6+O2kVOgyN9hFO95oC7cj1RVKMTeH
+         NQdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Z+A4SCNAFToljw8w/XJH2Ymoq34r4ypOMBE3039GCcY=;
-        b=g/+AZkSx5OaymCW9vZCUEB5oNo7JfAXZzFzZHFccW7qYPDXPGvmnO1Uj3u7zAjLEb7
-         UrQwMOkOAadts++hdnOReSxhAWTGbXha+oYammbIdhiLv1efiH3R+cU/EIefDTc+12LX
-         csfa2Ij/WGfjeRlGQHptTgLb+FOFqE3PDLC55VAeznApmm/awbzZm0ZojDTpLs0+ZNHb
-         Mj48uaxJcq6JcwJhKyjx1q0BpmrmGY9AAmWXy7ecpcipQIP8WYIDFlnV2yszlli5hWkV
-         iAhxc0IrhJrnr0bUhYwTY39zgaNl2ciyPNpLoogaPMdpy4/ECYQuuMqXPuyNVHAuCct6
-         6gFw==
-X-Gm-Message-State: AOAM530j/TZRNTRe7bdQfv6UNkluLllsW6DkNKvc096/Bvi47I4k6INB
-        L1p+XsfDNlTtFzJgWehrxKoj4Cchz0XknWvHEGc=
-X-Google-Smtp-Source: ABdhPJxOkyBIjcvJ8q21FaDnMqdsx2F8RfxM90h2Ivq4wFUFBDJWeUsv9xyhVWup6sGcrscWrYAW4oKT58GhHKQmE5g=
-X-Received: by 2002:a25:e655:: with SMTP id d82mr17256744ybh.347.1599776541456;
- Thu, 10 Sep 2020 15:22:21 -0700 (PDT)
+        bh=26Kn2rhsa3xJivd2y4pBgAN2IoN23FJyYykJzBjpe7M=;
+        b=OLe75qHRSN2qBguau4Iu1LH3M7aFfyr9DPmJyAloi7+VbwZYTNpukTeh8qOL72Xnt1
+         sb7j/eVWWSxNfZ/3deRqq8AeGVNYYNbbDKE4OHJMA+2QU5sZN3P5AMSIZbNzUShZ/T8w
+         sygpy0/5YFcRdwSxmk4EJnp4ayDpC9grX8hFS8X37nsBNy2x7auZZemeg8Gb5tRTGRPQ
+         4qkrbZT6h97gRrSNLfueZoySXVcvsQONteK7+y8kqm1exA2wkv9alz5pzSa7L01wJy5D
+         ac2oPBeEBXfddAbCXjtOcLWg19ln7qmYjWuxt7GBb1NmdHBANUY7MFUp7laih0gl+hk+
+         wi/A==
+X-Gm-Message-State: AOAM530uHfsSTk80cr5Nfpv/l6lRsCNAe07F2n7c10rSdn+gjFVbUeEN
+        VLnMh4yY7rBoNYt13o9k5xRFY8WWYoMvv2nSeXE=
+X-Google-Smtp-Source: ABdhPJyvJ/p87NeXapSWZ0Ub8O3hBJie+jISKLaezMybzzjVtKEsnN54NXw+ExrMrIScKGTldLsXCgoONjA1zmb/XUc=
+X-Received: by 2002:a25:7b81:: with SMTP id w123mr16797765ybc.260.1599777276885;
+ Thu, 10 Sep 2020 15:34:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910122224.1683258-1-jolsa@kernel.org>
-In-Reply-To: <20200910122224.1683258-1-jolsa@kernel.org>
+References: <20200909151115.1559418-1-jolsa@kernel.org> <20200909151115.1559418-2-jolsa@kernel.org>
+In-Reply-To: <20200909151115.1559418-2-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Sep 2020 15:22:10 -0700
-Message-ID: <CAEf4BzbVT+DmjPXLrcFG0ZFMCw0P_cb0W9abiaygfBAFu+nh7Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Check trampoline execution in
- d_path test
+Date:   Thu, 10 Sep 2020 15:34:26 -0700
+Message-ID: <CAEf4BzbY3zV-xYDBvCYztXOkn=MJwHxOVyAH7YRH8JH869qtDg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Adding test for arg
+ dereference in extension trace
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 5:25 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Sep 9, 2020 at 8:38 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Some kernels builds might inline vfs_getattr call within
-> fstat syscall code path, so fentry/vfs_getattr trampoline
-> is not called.
+> Adding test that setup following program:
 >
-> I'm not sure how to handle this in some generic way other
-> than use some other function, but that might get inlined at
-> some point as well.
+>   SEC("classifier/test_pkt_md_access")
+>   int test_pkt_md_access(struct __sk_buff *skb)
 >
-> Adding flags that indicate trampolines were called and failing
-> the test if neither of them got called.
+> with its extension:
 >
->   $ sudo ./test_progs -t d_path
->   test_d_path:PASS:setup 0 nsec
->   ...
->   trigger_fstat_events:PASS:trigger 0 nsec
->   test_d_path:FAIL:124 trampolines not called
->   #22 d_path:FAIL
->   Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>   SEC("freplace/test_pkt_md_access")
+>   int test_pkt_md_access_new(struct __sk_buff *skb)
 >
-> If only one trampoline is called, it's still enough to test
-> the helper, so only warn about missing trampoline call and
-> continue in test.
+> and tracing that extension with:
 >
->   $ sudo ./test_progs -t d_path -v
->   test_d_path:PASS:setup 0 nsec
->   ...
->   trigger_fstat_events:PASS:trigger 0 nsec
->   fentry/vfs_getattr not called
->   #22 d_path:OK
->   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>   SEC("fentry/test_pkt_md_access_new")
+>   int BPF_PROG(fentry, struct sk_buff *skb)
 >
-> Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+> The test verifies that the tracing program can
+> dereference skb argument properly.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  .../testing/selftests/bpf/prog_tests/d_path.c | 25 +++++++++++++++----
->  .../testing/selftests/bpf/progs/test_d_path.c |  7 ++++++
->  2 files changed, 27 insertions(+), 5 deletions(-)
+>  .../selftests/bpf/prog_tests/trace_ext.c      | 93 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_trace_ext.c      | 18 ++++
+>  .../bpf/progs/test_trace_ext_tracing.c        | 25 +++++
+>  3 files changed, 136 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_ext.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_trace_ext.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> index fc12e0d445ff..ec15f7d1dd0a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> @@ -120,26 +120,41 @@ void test_d_path(void)
->         if (err < 0)
->                 goto cleanup;
->
-> +       if (!bss->called_stat && !bss->called_close) {
-> +               PRINT_FAIL("trampolines not called\n");
+> diff --git a/tools/testing/selftests/bpf/prog_tests/trace_ext.c b/tools/testing/selftests/bpf/prog_tests/trace_ext.c
+> new file mode 100644
+> index 000000000000..1089dafb4653
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/trace_ext.c
+> @@ -0,0 +1,93 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#define _GNU_SOURCE
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +#include <sys/stat.h>
+> +#include <linux/sched.h>
+> +#include <sys/syscall.h>
+> +
+> +#include "test_trace_ext.skel.h"
+> +#include "test_trace_ext_tracing.skel.h"
+> +
+> +static __u32 duration;
+> +
+> +void test_trace_ext(void)
+> +{
+> +       struct test_trace_ext_tracing *skel_trace = NULL;
+> +       struct test_trace_ext_tracing__bss *bss_trace;
+> +       const char *file = "./test_pkt_md_access.o";
+> +       struct test_trace_ext *skel_ext = NULL;
+> +       struct test_trace_ext__bss *bss_ext;
+> +       int err, prog_fd, ext_fd;
+> +       struct bpf_object *obj;
+> +       char buf[100];
+> +       __u32 retval;
+> +       __u64 len;
+> +
+> +       err = bpf_prog_load(file, BPF_PROG_TYPE_SCHED_CLS, &obj, &prog_fd);
+> +       if (CHECK_FAIL(err))
+> +               return;
+
+We should avoid using bpf_prog_load() for new code. Can you please
+just skeleton instead? Or at least bpf_object__open_file()?
+
+> +
+> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+> +                           .attach_prog_fd = prog_fd,
+> +       );
+
+DECLARE_LIBBPF_OPTS does declare a variable, so should be together
+with all the other variables above, otherwise some overly strict C89
+mode compiler will start complaining. You can assign
+`opts.attach_prog_fd = prog_fd;` outside of declaration. But I also
+don't think you need this one. Having .attach_prog_fd in open_opts is
+not great, because it's a per-program setting specified at bpf_object
+level. Would bpf_program__set_attach_target() work here?
+
+> +
+> +       skel_ext = test_trace_ext__open_opts(&opts);
+> +       if (CHECK(!skel_ext, "setup", "freplace/test_pkt_md_access open failed\n"))
+> +               goto cleanup;
+> +
+> +       err = test_trace_ext__load(skel_ext);
+> +       if (CHECK(err, "setup", "freplace/test_pkt_md_access load failed\n")) {
+> +               libbpf_strerror(err, buf, sizeof(buf));
+> +               fprintf(stderr, "%s\n", buf);
 > +               goto cleanup;
 > +       }
 > +
-> +       if (!bss->called_stat) {
-> +               fprintf(stdout, "fentry/vfs_getattr not called\n");
+> +       err = test_trace_ext__attach(skel_ext);
+> +       if (CHECK(err, "setup", "freplace/test_pkt_md_access attach failed: %d\n", err))
+> +               goto cleanup;
+> +
+> +       ext_fd = bpf_program__fd(skel_ext->progs.test_pkt_md_access_new);
+> +
+> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts_trace,
+> +                           .attach_prog_fd = ext_fd,
+> +       );
+> +
+
+same
+
+> +       skel_trace = test_trace_ext_tracing__open_opts(&opts_trace);
+> +       if (CHECK(!skel_trace, "setup", "tracing/test_pkt_md_access_new open failed\n"))
+> +               goto cleanup;
+> +
+> +       err = test_trace_ext_tracing__load(skel_trace);
+> +       if (CHECK(err, "setup", "tracing/test_pkt_md_access_new load failed\n")) {
+> +               libbpf_strerror(err, buf, sizeof(buf));
+> +               fprintf(stderr, "%s\n", buf);
 > +               goto cleanup;
 > +       }
 > +
-> +       if (!bss->called_close) {
-> +               fprintf(stdout, "fentry/filp_close not called\n");
+> +       err = test_trace_ext_tracing__attach(skel_trace);
+> +       if (CHECK(err, "setup", "tracing/test_pkt_md_access_new attach failed: %d\n", err))
 > +               goto cleanup;
-> +       }
+> +
+> +       err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
+> +                               NULL, NULL, &retval, &duration);
+> +       CHECK(err || retval, "",
+> +             "err %d errno %d retval %d duration %d\n",
+> +             err, errno, retval, duration);
+> +
+> +       bss_ext = skel_ext->bss;
+> +       bss_trace = skel_trace->bss;
+> +
+> +       len = bss_ext->ext_called;
+> +
+> +       CHECK(bss_ext->ext_called == 0,
+> +               "check", "failed to trigger freplace/test_pkt_md_access\n");
+> +       CHECK(bss_trace->fentry_called != len,
+> +               "check", "failed to trigger fentry/test_pkt_md_access_new\n");
+> +       CHECK(bss_trace->fexit_called != len,
+> +               "check", "failed to trigger fexit/test_pkt_md_access_new\n");
+> +
+> +cleanup:
+> +       test_trace_ext__destroy(skel_ext);
+> +       bpf_object__close(obj);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_trace_ext.c b/tools/testing/selftests/bpf/progs/test_trace_ext.c
+> new file mode 100644
+> index 000000000000..a6318f6b52ee
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_trace_ext.c
+> @@ -0,0 +1,18 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2019 Facebook
+> +#include <linux/bpf.h>
+> +#include <stdbool.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +volatile __u64 ext_called = 0;
 
-not sure why you didn't go with `if (CHECK(!bss->called_close, ...`
-for these checks, would even save you some typing.
+nit: no need for volatile, global variables are not going anywhere;
+same below in two places
 
 > +
->         for (int i = 0; i < MAX_FILES; i++) {
-> -               CHECK(strncmp(src.paths[i], bss->paths_stat[i], MAX_PATH_LEN),
-> +               CHECK(bss->called_stat && strncmp(src.paths[i], bss->paths_stat[i], MAX_PATH_LEN),
->                       "check",
->                       "failed to get stat path[%d]: %s vs %s\n",
->                       i, src.paths[i], bss->paths_stat[i]);
-> -               CHECK(strncmp(src.paths[i], bss->paths_close[i], MAX_PATH_LEN),
-> +               CHECK(bss->called_close && strncmp(src.paths[i], bss->paths_close[i], MAX_PATH_LEN),
->                       "check",
->                       "failed to get close path[%d]: %s vs %s\n",
->                       i, src.paths[i], bss->paths_close[i]);
->                 /* The d_path helper returns size plus NUL char, hence + 1 */
-> -               CHECK(bss->rets_stat[i] != strlen(bss->paths_stat[i]) + 1,
-> +               CHECK(bss->called_stat && bss->rets_stat[i] != strlen(bss->paths_stat[i]) + 1,
->                       "check",
->                       "failed to match stat return [%d]: %d vs %zd [%s]\n",
->                       i, bss->rets_stat[i], strlen(bss->paths_stat[i]) + 1,
->                       bss->paths_stat[i]);
-> -               CHECK(bss->rets_close[i] != strlen(bss->paths_stat[i]) + 1,
-> +               CHECK(bss->called_close && bss->rets_close[i] != strlen(bss->paths_close[i]) + 1,
->                       "check",
->                       "failed to match stat return [%d]: %d vs %zd [%s]\n",
->                       i, bss->rets_close[i], strlen(bss->paths_close[i]) + 1,
-> -                     bss->paths_stat[i]);
-> +                     bss->paths_close[i]);
-
-
-those `bss->called_xxx` guard conditions are a bit lost on reading, if
-you reordered CHECKs, you could be more explicit:
-
-if (bss->called_stat) {
-    CHECK(...);
-    CHECK(...);
-}
-if (bss->called_close) { ... }
-
->         }
->
->  cleanup:
-> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-> index 61f007855649..9e7223b4a555 100644
-> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
-> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-> @@ -15,6 +15,9 @@ char paths_close[MAX_FILES][MAX_PATH_LEN] = {};
->  int rets_stat[MAX_FILES] = {};
->  int rets_close[MAX_FILES] = {};
->
-> +int called_stat = 0;
-> +int called_close = 0;
+> +SEC("freplace/test_pkt_md_access")
+> +int test_pkt_md_access_new(struct __sk_buff *skb)
+> +{
+> +       ext_called = skb->len;
+> +       return 0;
+> +}
 > +
->  SEC("fentry/vfs_getattr")
->  int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
->              __u32 request_mask, unsigned int query_flags)
-> @@ -23,6 +26,8 @@ int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
->         __u32 cnt = cnt_stat;
->         int ret;
->
-> +       called_stat = 1;
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c b/tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c
+> new file mode 100644
+> index 000000000000..9e52a831446f
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
->         if (pid != my_pid)
->                 return 0;
->
-> @@ -42,6 +47,8 @@ int BPF_PROG(prog_close, struct file *file, void *id)
->         __u32 cnt = cnt_close;
->         int ret;
->
-> +       called_close = 1;
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
 > +
->         if (pid != my_pid)
->                 return 0;
->
+> +volatile __u64 fentry_called = 0;
+> +
+> +SEC("fentry/test_pkt_md_access_new")
+> +int BPF_PROG(fentry, struct sk_buff *skb)
+> +{
+> +       fentry_called = skb->len;
+> +       return 0;
+> +}
+> +
+> +volatile __u64 fexit_called = 0;
+> +
+> +SEC("fexit/test_pkt_md_access_new")
+> +int BPF_PROG(fexit, struct sk_buff *skb)
+> +{
+> +       fexit_called = skb->len;
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 > --
 > 2.26.2
 >
