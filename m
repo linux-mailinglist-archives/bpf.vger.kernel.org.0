@@ -2,185 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6E92641F5
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 11:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C9C2641F7
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 11:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730554AbgIJJ3T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726760AbgIJJao (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 05:30:44 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:32864 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729525AbgIJJ3T (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 10 Sep 2020 05:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730358AbgIJJYi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:24:38 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140A9C061573;
-        Thu, 10 Sep 2020 02:24:37 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z25so6271818iol.10;
-        Thu, 10 Sep 2020 02:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UyqGiyvWtrvEPIbfLtgakvWHIPcO7f2wwjJnMPORWG0=;
-        b=BoSxMiljYiAjMP/XBn/hYGNVKL/oHxnqnEUJ7qSdwoJLG0pxR2qK3V4/fkUTSaV51s
-         3pvr292/IyS8ps68VC6dxn72XHdiWpnrMVrw8xogJTOMYamirEZ059PvshX7H4Z5GWuh
-         Vr7j8283bIhfaNsK7sxUGLf6s0Z2Efi6Yl4vefoBSqVlIDK265aYxjjSjS69bDYpqbGV
-         /GSb5UhzJJFq63scKHt5GhqSRkybY6g2zuA571aN2zohyHumpin0aZgpFfaeOPy0WbSg
-         Mpw6iHtgik0cTA/OjEeiGwKuBqjHR2p7i1mxyZ7WrSW4CGvjjQTt8jjc//sWyeGDOFMK
-         9KBQ==
+Received: by mail-il1-f205.google.com with SMTP id c11so4091115ilm.0
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 02:29:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UyqGiyvWtrvEPIbfLtgakvWHIPcO7f2wwjJnMPORWG0=;
-        b=O/2XUnV1EtfgfgEoeb0tWhNcir4xfPnAGynDycHILp/UjjoK+MkhZcdiMLOsBL6sdx
-         ueBZJVL79C2C9MYcsMGOL5bdh4O3PQW2D9Pvgjq4HoEkSZEPII9X+aymHemdtnjE0Alr
-         0WZSMVhmEj8voYJ03ltlEthJhY6lv0tbZJuxabeIV0pa9EMhXA9un7B+DH/ntObBIf+9
-         BmpMd/WrGD0wwAbHbSMBDvQItIHDUC0d9E+sFnVFDAaI8gr/N227J5uMxl5cT6wXoE10
-         IPnjMS2l7nvI//BN//lgm0N0g8L3K4kq5Py7WD00fgh6oDALQkzp7TRutHF6MYjxWahv
-         sM6A==
-X-Gm-Message-State: AOAM532ywlPycKW7BigrvrbeI5fmmYuKtgIlMY+CTkpgz3ykrSwmz6YG
-        yk2jcSj2kjVBOGcpW+CrBpuFuh7r23UhtnrKsec=
-X-Google-Smtp-Source: ABdhPJzJ/LFpexv9kLm1kjwc0/B+7GHCOB8WQagf03Hz+gzhVFwgLWrpkGefOcCCEeSFlcKtCwndocR5oDNlZlvNymM=
-X-Received: by 2002:a5d:8846:: with SMTP id t6mr7056972ios.123.1599729876856;
- Thu, 10 Sep 2020 02:24:36 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wbQ5hEj6rADmWVMRkDe2eqg2V1dhGor68kn9Ygqa8iA=;
+        b=s8tzOfxedzxZEJQKsrn8cQrhoYIcjERy4B2qy0sMRhLI+e+gdYaO2z3ZKp4m/7PLmu
+         OEa/9qBxYHv3NuvtY1HsWpzcS8OAUZLOd7vt74YkVTwG4jnXVlgol3Ckr+CnrKQsKLuG
+         CnyQTUwQ5hBmIobfgVuwpCQe6wuDM+er+xW4P/8nSyEy8Nt3UTsaVJNz+W9i1+watI3D
+         wjoV1RkxgNo8veo+MI2b/LmLHklPyhutqmh5GfMyrbO+qYPMg2LOLKYZxBFT2GsboGz4
+         PSh+QfVGGsjJELPhVD4DnVZTeI82+Ilf535U1oZSJj72QjrgeSYXbt5NH6XsiZl3Bo7d
+         5IoA==
+X-Gm-Message-State: AOAM530UlEIxf0u7Dq5uT+HtEwvQQIMqn4vpsrRMgQRrOMHhIFa/nVxk
+        mM3AsJ5DKHmyQlAwdeuGFUR4Hhhju6S7pwXHDA61cd8ISohv
+X-Google-Smtp-Source: ABdhPJysA8PxfONSscctagFdb07Pwycnr+IyT1EJoVzpbEd5spAORPGz6sq4E1/U597TkUzi0Uji6askr1L0y35jAufu+PZB7B5v
 MIME-Version: 1.0
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Thu, 10 Sep 2020 11:24:26 +0200
-Message-ID: <CAOi1vP-v77pj3G5Ez94CDYVs2jSO828c4uV_wzNi6sRKp=Yvyg@mail.gmail.com>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to break;
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-ide@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
-        netdev <netdev@vger.kernel.org>, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org,
-        dm-devel@redhat.com, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@netronome.com,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, storagedev@microchip.com,
-        sparclinux@vger.kernel.org, linux-serial@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-afs@lists.infradead.org,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-        alsa-devel <alsa-devel@alsa-project.org>
+X-Received: by 2002:a05:6e02:d2:: with SMTP id r18mr6888793ilq.303.1599730157627;
+ Thu, 10 Sep 2020 02:29:17 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 02:29:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c82fe505aef233c6@google.com>
+Subject: WARNING in bpf_raw_tp_link_fill_link_info
+From:   syzbot <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 10:10 PM Joe Perches <joe@perches.com> wrote:
->
-> fallthrough to a separate case/default label break; isn't very readable.
->
-> Convert pseudo-keyword fallthrough; statements to a simple break; when
-> the next label is case or default and the only statement in the next
-> label block is break;
->
-> Found using:
->
-> $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
->
-> Miscellanea:
->
-> o Move or coalesce a couple label blocks above a default: block.
->
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->
-> Compiled allyesconfig x86-64 only.
-> A few files for other arches were not compiled.
->
->  arch/arm/mach-mmp/pm-pxa910.c                             |  2 +-
->  arch/arm64/kvm/handle_exit.c                              |  2 +-
->  arch/mips/kernel/cpu-probe.c                              |  2 +-
->  arch/mips/math-emu/cp1emu.c                               |  2 +-
->  arch/s390/pci/pci.c                                       |  2 +-
->  crypto/tcrypt.c                                           |  4 ++--
->  drivers/ata/sata_mv.c                                     |  2 +-
->  drivers/atm/lanai.c                                       |  2 +-
->  drivers/gpu/drm/i915/display/intel_sprite.c               |  2 +-
->  drivers/gpu/drm/nouveau/nvkm/engine/disp/hdmi.c           |  2 +-
->  drivers/hid/wacom_wac.c                                   |  2 +-
->  drivers/i2c/busses/i2c-i801.c                             |  2 +-
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c                    | 14 +++++++-------
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c                    |  6 +++---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c               |  2 +-
->  drivers/irqchip/irq-vic.c                                 |  4 ++--
->  drivers/md/dm.c                                           |  2 +-
->  drivers/media/dvb-frontends/drxd_hard.c                   |  2 +-
->  drivers/media/i2c/ov5640.c                                |  2 +-
->  drivers/media/i2c/ov6650.c                                |  5 ++---
->  drivers/media/i2c/smiapp/smiapp-core.c                    |  2 +-
->  drivers/media/i2c/tvp5150.c                               |  2 +-
->  drivers/media/pci/ddbridge/ddbridge-core.c                |  2 +-
->  drivers/media/usb/cpia2/cpia2_core.c                      |  2 +-
->  drivers/mfd/iqs62x.c                                      |  3 +--
->  drivers/mmc/host/atmel-mci.c                              |  2 +-
->  drivers/mtd/nand/raw/nandsim.c                            |  2 +-
->  drivers/net/ethernet/intel/e1000e/phy.c                   |  2 +-
->  drivers/net/ethernet/intel/fm10k/fm10k_pf.c               |  2 +-
->  drivers/net/ethernet/intel/i40e/i40e_adminq.c             |  2 +-
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c               |  2 +-
->  drivers/net/ethernet/intel/iavf/iavf_txrx.c               |  2 +-
->  drivers/net/ethernet/intel/igb/e1000_phy.c                |  2 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_82599.c            |  2 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c             |  2 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c            |  2 +-
->  drivers/net/ethernet/intel/ixgbevf/vf.c                   |  2 +-
->  drivers/net/ethernet/netronome/nfp/nfpcore/nfp6000_pcie.c |  2 +-
->  drivers/net/ethernet/qlogic/qed/qed_mcp.c                 |  2 +-
->  drivers/net/ethernet/sfc/falcon/farch.c                   |  2 +-
->  drivers/net/ethernet/sfc/farch.c                          |  2 +-
->  drivers/net/phy/adin.c                                    |  3 +--
->  drivers/net/usb/pegasus.c                                 |  4 ++--
->  drivers/net/usb/usbnet.c                                  |  2 +-
->  drivers/net/wireless/ath/ath5k/eeprom.c                   |  2 +-
->  drivers/net/wireless/mediatek/mt7601u/dma.c               |  8 ++++----
->  drivers/nvme/host/core.c                                  | 12 ++++++------
->  drivers/pcmcia/db1xxx_ss.c                                |  4 ++--
->  drivers/power/supply/abx500_chargalg.c                    |  2 +-
->  drivers/power/supply/charger-manager.c                    |  2 +-
->  drivers/rtc/rtc-pcf85063.c                                |  2 +-
->  drivers/s390/scsi/zfcp_fsf.c                              |  2 +-
->  drivers/scsi/aic7xxx/aic79xx_core.c                       |  4 ++--
->  drivers/scsi/aic94xx/aic94xx_tmf.c                        |  2 +-
->  drivers/scsi/lpfc/lpfc_sli.c                              |  2 +-
->  drivers/scsi/smartpqi/smartpqi_init.c                     |  2 +-
->  drivers/scsi/sr.c                                         |  2 +-
->  drivers/tty/serial/sunsu.c                                |  2 +-
->  drivers/tty/serial/sunzilog.c                             |  2 +-
->  drivers/tty/vt/vt_ioctl.c                                 |  2 +-
->  drivers/usb/dwc3/core.c                                   |  2 +-
->  drivers/usb/gadget/legacy/inode.c                         |  2 +-
->  drivers/usb/gadget/udc/pxa25x_udc.c                       |  4 ++--
->  drivers/usb/host/ohci-hcd.c                               |  2 +-
->  drivers/usb/isp1760/isp1760-hcd.c                         |  2 +-
->  drivers/usb/musb/cppi_dma.c                               |  2 +-
->  drivers/usb/phy/phy-fsl-usb.c                             |  2 +-
->  drivers/video/fbdev/stifb.c                               |  2 +-
->  fs/afs/yfsclient.c                                        |  8 ++++----
->  fs/ceph/dir.c                                             |  2 +-
+Hello,
 
-For ceph:
+syzbot found the following issue on:
 
-Acked-by: Ilya Dryomov <idryomov@gmail.com>
+HEAD commit:    7fb5eefd selftests/bpf: Fix test_sysctl_loop{1, 2} failure..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1424fdb3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
+dashboard link: https://syzkaller.appspot.com/bug?extid=976d5ecfab0c7eb43ac3
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a1f411900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10929c11900000
 
-Thanks,
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com
 
-                Ilya
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 check_copy_size include/linux/thread_info.h:150 [inline]
+WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 copy_to_user include/linux/uaccess.h:167 [inline]
+WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6854 Comm: syz-executor574 Not tainted 5.9.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x4a kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:check_copy_size include/linux/thread_info.h:150 [inline]
+RIP: 0010:copy_to_user include/linux/uaccess.h:167 [inline]
+RIP: 0010:bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
+Code: 41 bc ea ff ff ff e9 35 ff ff ff 4c 89 ff e8 41 66 33 00 e9 d0 fd ff ff 4c 89 ff e8 a4 66 33 00 e9 06 ff ff ff e8 ca ed f2 ff <0f> 0b eb 94 48 89 ef e8 2e 66 33 00 e9 65 fd ff ff e8 24 66 33 00
+RSP: 0018:ffffc900051c7bd0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc900051c7c60 RCX: ffffffff818179d6
+RDX: ffff88808b490000 RSI: ffffffff81817a96 RDI: 0000000000000006
+RBP: 0000000000000019 R08: 0000000000000000 R09: ffffc900051c7c7f
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000019
+R13: 0000000000001265 R14: ffffffff8986ecc0 R15: ffffc900051c7c78
+ bpf_link_get_info_by_fd kernel/bpf/syscall.c:3626 [inline]
+ bpf_obj_get_info_by_fd+0x43a/0xc40 kernel/bpf/syscall.c:3664
+ __do_sys_bpf+0x1906/0x4b30 kernel/bpf/syscall.c:4237
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4405f9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff47155808 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004405f9
+RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 000000000000000f
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401e00
+R13: 0000000000401e90 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
