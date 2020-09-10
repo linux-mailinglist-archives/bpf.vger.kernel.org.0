@@ -2,146 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D180B2654B5
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 00:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17692654F7
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 00:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725776AbgIJWBJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 18:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
+        id S1725308AbgIJWW0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 18:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgIJWBG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 18:01:06 -0400
+        with ESMTP id S1725294AbgIJWWW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 18:22:22 -0400
 Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0955C061573;
-        Thu, 10 Sep 2020 15:01:05 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id p6so5047626ybk.10;
-        Thu, 10 Sep 2020 15:01:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EA3C061573;
+        Thu, 10 Sep 2020 15:22:22 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id e11so1981678ybk.1;
+        Thu, 10 Sep 2020 15:22:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NqyY0998nnTOOx9j6km0P/zJSInnI5dSi92OehQyjG8=;
-        b=UiUbvVLCF7pkYoifxWjoGeHF94Pvk61F3V2rzi2kA+rcKJlCbkUfKw3lx+VE4VN0uW
-         t3yIY/H64pDtRYoqYeLAto/MznOtX0B6pl1ONIYEt61St+d50gHAOc3MWX1+sr4n2Q03
-         pjDtltvSwqJ8Fspx0tHxF2eD6SNxevNOCvojCm2706UOdrTwJYhMjlanY0FMs8XzyemZ
-         xrp3PVLvqoQJeluueuuyBZQRync+rzo5RMR6iyoDvJ/l+y8UDE4rz8IqK8XMEc7pY88J
-         rZP8KM6KFBprO5H0fLOkJmT50uKNNQYAuCmNrStgpTeS+OiukQOST7/117mvnYVUXbvk
-         Q91w==
+        bh=Z+A4SCNAFToljw8w/XJH2Ymoq34r4ypOMBE3039GCcY=;
+        b=GswCUB/wYIG+bQGbNur7KU4RAtzAa+5GwmmsmqPqhID0klUmwcIPjQJXRJnz+FR2Fl
+         UU08JgoiquXePP3oh1InBFquIr78WAIu6Z4C9tm+mMZ3S4Ke7n+Q4UYwL04OtX5pWAZ9
+         upDaIQFqz7/ewKqnrp6A6aMOOzQZJXpNnEYWMzXPPXzHmPYjOs4FQu7jlCiEU1pLyARX
+         W72EY2YKpNJhpIjrGmEKrWBY7mQ2fYKZIviz82CPc2AgmBXOh5XxT7YN/lGyxF7lwIaB
+         bJ+vesIbkFXftslFjQ5o7kc3/PiS5Dsz9K2wpG36x1a3KnJtnnRiBPy0dkOSM+gYiJPK
+         B6jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NqyY0998nnTOOx9j6km0P/zJSInnI5dSi92OehQyjG8=;
-        b=Fn58vwfi5mcPOzJuU5m8nzBa3clykJduemeGV6cjcmMf63820QLEMcLZOFqFJmzkD/
-         PBfVVWLO0fPR2vo7450P+E0NV/lrBs2U4goWFMcTR4Z7gCj5cl5DYRLKBWJKRcxj4SBH
-         yPRvuvhvEqbnVHWZfd2QIDYrOu1vaZRMMi4l4HQEW9pGjEP9hFtsSO5CgPYHtEVuzSDJ
-         CtvHd8xHrhTPSe/6N5oj5uRk+bfVeGyfXJmLiysuSOrfZbeCX93uOdX1vI+4OJQwz6fF
-         63WJubUyEPEXSH7GrrofxmTZ1lz7rJh3pTUaoyKBjzhfTv3C9kGF3uMUfYfdT5wOpUpM
-         5uVQ==
-X-Gm-Message-State: AOAM531PhImTpUGnKCdwBwyWRp12HtXEkLmnHD+NvHDimYYN8RTi9wQi
-        gxvpID+gW/dPcNkT83qRkqx6Q+/8srXbf7L/wbA=
-X-Google-Smtp-Source: ABdhPJwwJaJVkvBKNQpfSNCAzEM3ujd4iniWp5aQeouKQJp3UeGDkrhhhdijSfKOsiJ3r0E5PNKHrJJ9eDRzFsLpEbs=
-X-Received: by 2002:a25:aa8f:: with SMTP id t15mr15916005ybi.459.1599775264934;
- Thu, 10 Sep 2020 15:01:04 -0700 (PDT)
+        bh=Z+A4SCNAFToljw8w/XJH2Ymoq34r4ypOMBE3039GCcY=;
+        b=g/+AZkSx5OaymCW9vZCUEB5oNo7JfAXZzFzZHFccW7qYPDXPGvmnO1Uj3u7zAjLEb7
+         UrQwMOkOAadts++hdnOReSxhAWTGbXha+oYammbIdhiLv1efiH3R+cU/EIefDTc+12LX
+         csfa2Ij/WGfjeRlGQHptTgLb+FOFqE3PDLC55VAeznApmm/awbzZm0ZojDTpLs0+ZNHb
+         Mj48uaxJcq6JcwJhKyjx1q0BpmrmGY9AAmWXy7ecpcipQIP8WYIDFlnV2yszlli5hWkV
+         iAhxc0IrhJrnr0bUhYwTY39zgaNl2ciyPNpLoogaPMdpy4/ECYQuuMqXPuyNVHAuCct6
+         6gFw==
+X-Gm-Message-State: AOAM530j/TZRNTRe7bdQfv6UNkluLllsW6DkNKvc096/Bvi47I4k6INB
+        L1p+XsfDNlTtFzJgWehrxKoj4Cchz0XknWvHEGc=
+X-Google-Smtp-Source: ABdhPJxOkyBIjcvJ8q21FaDnMqdsx2F8RfxM90h2Ivq4wFUFBDJWeUsv9xyhVWup6sGcrscWrYAW4oKT58GhHKQmE5g=
+X-Received: by 2002:a25:e655:: with SMTP id d82mr17256744ybh.347.1599776541456;
+ Thu, 10 Sep 2020 15:22:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000c82fe505aef233c6@google.com>
-In-Reply-To: <000000000000c82fe505aef233c6@google.com>
+References: <20200910122224.1683258-1-jolsa@kernel.org>
+In-Reply-To: <20200910122224.1683258-1-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Sep 2020 15:00:54 -0700
-Message-ID: <CAEf4BzbuUDEktVCYZAonUTM6iYBcAOPjKho2gMRD+9Q=N5cYxQ@mail.gmail.com>
-Subject: Re: WARNING in bpf_raw_tp_link_fill_link_info
-To:     syzbot <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Thu, 10 Sep 2020 15:22:10 -0700
+Message-ID: <CAEf4BzbVT+DmjPXLrcFG0ZFMCw0P_cb0W9abiaygfBAFu+nh7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Check trampoline execution in
+ d_path test
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 2:31 AM syzbot
-<syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com> wrote:
+On Thu, Sep 10, 2020 at 5:25 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Hello,
+> Some kernels builds might inline vfs_getattr call within
+> fstat syscall code path, so fentry/vfs_getattr trampoline
+> is not called.
 >
-> syzbot found the following issue on:
+> I'm not sure how to handle this in some generic way other
+> than use some other function, but that might get inlined at
+> some point as well.
 >
-> HEAD commit:    7fb5eefd selftests/bpf: Fix test_sysctl_loop{1, 2} failure..
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1424fdb3900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=976d5ecfab0c7eb43ac3
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a1f411900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10929c11900000
+> Adding flags that indicate trampolines were called and failing
+> the test if neither of them got called.
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com
+>   $ sudo ./test_progs -t d_path
+>   test_d_path:PASS:setup 0 nsec
+>   ...
+>   trigger_fstat_events:PASS:trigger 0 nsec
+>   test_d_path:FAIL:124 trampolines not called
+>   #22 d_path:FAIL
+>   Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
 >
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 check_copy_size include/linux/thread_info.h:150 [inline]
-> WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 copy_to_user include/linux/uaccess.h:167 [inline]
-> WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
-> Kernel panic - not syncing: panic_on_warn set ...
-> CPU: 0 PID: 6854 Comm: syz-executor574 Not tainted 5.9.0-rc1-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x18f/0x20d lib/dump_stack.c:118
->  panic+0x2e3/0x75c kernel/panic.c:231
->  __warn.cold+0x20/0x4a kernel/panic.c:600
->  report_bug+0x1bd/0x210 lib/bug.c:198
->  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
->  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
->  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> RIP: 0010:check_copy_size include/linux/thread_info.h:150 [inline]
-> RIP: 0010:copy_to_user include/linux/uaccess.h:167 [inline]
-> RIP: 0010:bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
-> Code: 41 bc ea ff ff ff e9 35 ff ff ff 4c 89 ff e8 41 66 33 00 e9 d0 fd ff ff 4c 89 ff e8 a4 66 33 00 e9 06 ff ff ff e8 ca ed f2 ff <0f> 0b eb 94 48 89 ef e8 2e 66 33 00 e9 65 fd ff ff e8 24 66 33 00
-> RSP: 0018:ffffc900051c7bd0 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: ffffc900051c7c60 RCX: ffffffff818179d6
-> RDX: ffff88808b490000 RSI: ffffffff81817a96 RDI: 0000000000000006
-> RBP: 0000000000000019 R08: 0000000000000000 R09: ffffc900051c7c7f
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000019
-> R13: 0000000000001265 R14: ffffffff8986ecc0 R15: ffffc900051c7c78
->  bpf_link_get_info_by_fd kernel/bpf/syscall.c:3626 [inline]
->  bpf_obj_get_info_by_fd+0x43a/0xc40 kernel/bpf/syscall.c:3664
->  __do_sys_bpf+0x1906/0x4b30 kernel/bpf/syscall.c:4237
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x4405f9
-> Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007fff47155808 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004405f9
-> RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 000000000000000f
-> RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-> R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401e00
-> R13: 0000000000401e90 R14: 0000000000000000 R15: 0000000000000000
-> Kernel Offset: disabled
-> Rebooting in 86400 seconds..
+> If only one trampoline is called, it's still enough to test
+> the helper, so only warn about missing trampoline call and
+> continue in test.
 >
-
-#syz fix: b474959d5afd ("bpf: Fix a buffer out-of-bound access when
-filling raw_tp link_info")
-
+>   $ sudo ./test_progs -t d_path -v
+>   test_d_path:PASS:setup 0 nsec
+>   ...
+>   trigger_fstat_events:PASS:trigger 0 nsec
+>   fentry/vfs_getattr not called
+>   #22 d_path:OK
+>   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
 >
+> Signed-off-by: Jiri Olsa <jolsa@redhat.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  .../testing/selftests/bpf/prog_tests/d_path.c | 25 +++++++++++++++----
+>  .../testing/selftests/bpf/progs/test_d_path.c |  7 ++++++
+>  2 files changed, 27 insertions(+), 5 deletions(-)
 >
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+> diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
+> index fc12e0d445ff..ec15f7d1dd0a 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
+> @@ -120,26 +120,41 @@ void test_d_path(void)
+>         if (err < 0)
+>                 goto cleanup;
+>
+> +       if (!bss->called_stat && !bss->called_close) {
+> +               PRINT_FAIL("trampolines not called\n");
+> +               goto cleanup;
+> +       }
+> +
+> +       if (!bss->called_stat) {
+> +               fprintf(stdout, "fentry/vfs_getattr not called\n");
+> +               goto cleanup;
+> +       }
+> +
+> +       if (!bss->called_close) {
+> +               fprintf(stdout, "fentry/filp_close not called\n");
+> +               goto cleanup;
+> +       }
+
+not sure why you didn't go with `if (CHECK(!bss->called_close, ...`
+for these checks, would even save you some typing.
+
+> +
+>         for (int i = 0; i < MAX_FILES; i++) {
+> -               CHECK(strncmp(src.paths[i], bss->paths_stat[i], MAX_PATH_LEN),
+> +               CHECK(bss->called_stat && strncmp(src.paths[i], bss->paths_stat[i], MAX_PATH_LEN),
+>                       "check",
+>                       "failed to get stat path[%d]: %s vs %s\n",
+>                       i, src.paths[i], bss->paths_stat[i]);
+> -               CHECK(strncmp(src.paths[i], bss->paths_close[i], MAX_PATH_LEN),
+> +               CHECK(bss->called_close && strncmp(src.paths[i], bss->paths_close[i], MAX_PATH_LEN),
+>                       "check",
+>                       "failed to get close path[%d]: %s vs %s\n",
+>                       i, src.paths[i], bss->paths_close[i]);
+>                 /* The d_path helper returns size plus NUL char, hence + 1 */
+> -               CHECK(bss->rets_stat[i] != strlen(bss->paths_stat[i]) + 1,
+> +               CHECK(bss->called_stat && bss->rets_stat[i] != strlen(bss->paths_stat[i]) + 1,
+>                       "check",
+>                       "failed to match stat return [%d]: %d vs %zd [%s]\n",
+>                       i, bss->rets_stat[i], strlen(bss->paths_stat[i]) + 1,
+>                       bss->paths_stat[i]);
+> -               CHECK(bss->rets_close[i] != strlen(bss->paths_stat[i]) + 1,
+> +               CHECK(bss->called_close && bss->rets_close[i] != strlen(bss->paths_close[i]) + 1,
+>                       "check",
+>                       "failed to match stat return [%d]: %d vs %zd [%s]\n",
+>                       i, bss->rets_close[i], strlen(bss->paths_close[i]) + 1,
+> -                     bss->paths_stat[i]);
+> +                     bss->paths_close[i]);
+
+
+those `bss->called_xxx` guard conditions are a bit lost on reading, if
+you reordered CHECKs, you could be more explicit:
+
+if (bss->called_stat) {
+    CHECK(...);
+    CHECK(...);
+}
+if (bss->called_close) { ... }
+
+>         }
+>
+>  cleanup:
+> diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
+> index 61f007855649..9e7223b4a555 100644
+> --- a/tools/testing/selftests/bpf/progs/test_d_path.c
+> +++ b/tools/testing/selftests/bpf/progs/test_d_path.c
+> @@ -15,6 +15,9 @@ char paths_close[MAX_FILES][MAX_PATH_LEN] = {};
+>  int rets_stat[MAX_FILES] = {};
+>  int rets_close[MAX_FILES] = {};
+>
+> +int called_stat = 0;
+> +int called_close = 0;
+> +
+>  SEC("fentry/vfs_getattr")
+>  int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
+>              __u32 request_mask, unsigned int query_flags)
+> @@ -23,6 +26,8 @@ int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
+>         __u32 cnt = cnt_stat;
+>         int ret;
+>
+> +       called_stat = 1;
+> +
+>         if (pid != my_pid)
+>                 return 0;
+>
+> @@ -42,6 +47,8 @@ int BPF_PROG(prog_close, struct file *file, void *id)
+>         __u32 cnt = cnt_close;
+>         int ret;
+>
+> +       called_close = 1;
+> +
+>         if (pid != my_pid)
+>                 return 0;
+>
+> --
+> 2.26.2
+>
