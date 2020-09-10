@@ -2,98 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B73526502A
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707572650A8
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgIJUGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 16:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgIJUDS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:03:18 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B64C061573;
-        Thu, 10 Sep 2020 13:03:15 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id v78so4869082ybv.5;
-        Thu, 10 Sep 2020 13:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=N2jWB4I7nmsk1+BJexevBsZfunbJb26Z1pd8MeqEp+w=;
-        b=No1fgGjYZ0wXuPPNMSFxHucda2V8inLy/TrUnVi5IRO5F2S1fNuY6wE0OpbC+nCw1M
-         OfrRYqPbmkLLQO4kFMqo3aL66+lddsKG9nmRyD7l86QFmcn0Im2ZOfpUonajj/acqS4D
-         SGUb8Rwk+GOrK7/xx2S9oxOU0BD8c2+8YPvFz1GimvNgbPeC/491M/PL84u5R0YymYWV
-         W7BEMyfeb3AXGfqduD+jU717f6Ru4hmLcbOsp8avj36ZZfx5/tMefXwYPtHj+qeBYa26
-         7yVh0JEKsBGK+Wuf9UpMVqvkul/yqYQC82U+iW5v1qXSBG0R5Ftrzq/bdoxiU8jc7+1k
-         wgBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=N2jWB4I7nmsk1+BJexevBsZfunbJb26Z1pd8MeqEp+w=;
-        b=gFIJvjRvOBXfbYlvJ4JQU/2/vpQiXCDj1BzimxzOHE5AEm56bOfzSwrP5PtN1clFjB
-         EroMNDOQaIdNdQrCfOoaNKMpeL/t5K4Joi2CcaTaDz2PKl25tATf9YtaKkUEjacy6TU1
-         KnNmpWwV+y13hqbeeeMkonnXtCn3ThweSIuuqdxbre6iA9j0a4eimKNHYiVKqyVMn4l9
-         mShNnG27ImdDfwBDWxSOmFd0hOQTOnkkU2LztN0S+INi9lpTdErlztHoPZJYLdHnXC6l
-         TR52zGcHkEHscC02ZfRX57LyOY7nKOseeOfbvRqAoppsmhgEalmtkZ6hEXHNYNxxJv6L
-         Ld/A==
-X-Gm-Message-State: AOAM533RqXrSqRFmnqUa3DGg/XYe7/V/S+A9YV43Mqy0AIffkkSmzcr3
-        xIRvbiJgIv+YkIF340m8gnqMS0OnNuV/rEiPEoNImXmM
-X-Google-Smtp-Source: ABdhPJyNZ4UwlOnjgQ2LM67nABCkqxQ6F77vUp1VrlJjEcrPskpTTjNoPhLBHe67UzjoPAVyJjpXc3/cQYKx1XCTqmU=
-X-Received: by 2002:a25:9d06:: with SMTP id i6mr13887717ybp.510.1599768194218;
- Thu, 10 Sep 2020 13:03:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <159974338947.129227.5610774877906475683.stgit@toke.dk> <159974339060.129227.10384464703530448748.stgit@toke.dk>
-In-Reply-To: <159974339060.129227.10384464703530448748.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Sep 2020 13:03:03 -0700
-Message-ID: <CAEf4BzZ-K7Myp7_2a==ic5y+TRCFL4Gf4gGWwqm8yAb0icOi5g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/9] bpf: change logging calls from verbose()
- to bpf_log() and use log pointer
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726518AbgIJUYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 16:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725844AbgIJUYP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 16:24:15 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C473520829;
+        Thu, 10 Sep 2020 20:24:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599769443;
+        bh=9F9ingtmG8Fkn644uUwCvSuErdD0b3SWq+05tV2Lt24=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TV3sMktVjOb/4HzNWkMSzADNK/F8B56+1OrUYzgb64z7szyGtD2mFgYxfweVBlZyE
+         pIyANkOgE6m7iV3XcC8u0gN4bh1Ep0AI35fOYIWA/EjFH1iksDaA53NlfgZCmI2sNJ
+         SvMvt+BjmKIv4X4tkOjMZiHGAeTwpbnsGWHKcIX8=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 7AD343523080; Thu, 10 Sep 2020 13:24:03 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 13:24:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: slow sync rcu_tasks_trace
+Message-ID: <20200910202403.GT29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200909173512.GI29330@paulmck-ThinkPad-P72>
+ <20200909180418.hlivoaekhkchlidw@ast-mbp.dhcp.thefacebook.com>
+ <20200909193900.GK29330@paulmck-ThinkPad-P72>
+ <20200909194828.urz6islrqajifukj@ast-mbp.dhcp.thefacebook.com>
+ <20200909210447.GL29330@paulmck-ThinkPad-P72>
+ <20200909212212.GA21795@paulmck-ThinkPad-P72>
+ <20200910052727.GA4351@paulmck-ThinkPad-P72>
+ <619554b2-4746-635e-22f3-7f0f09d97760@fb.com>
+ <20200910185149.GR29330@paulmck-ThinkPad-P72>
+ <e6d7e0c9-1ca0-ec28-c306-b3c474e83daf@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6d7e0c9-1ca0-ec28-c306-b3c474e83daf@fb.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> In preparation for moving code around, change a bunch of references to
-> env->log (and the verbose() logging helper) to use bpf_log() and a direct
-> pointer to struct bpf_verifier_log. While we're touching the function
-> signature, mark the 'prog' argument to bpf_check_type_match() as const.
->
-> Also enhance the bpf_verifier_log_needed() check to handle NULL pointers
-> for the log struct so we can re-use the code with logging disabled.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
+On Thu, Sep 10, 2020 at 12:04:32PM -0700, Alexei Starovoitov wrote:
+> On 9/10/20 11:51 AM, Paul E. McKenney wrote:
+> > On Thu, Sep 10, 2020 at 11:33:58AM -0700, Alexei Starovoitov wrote:
+> > > On 9/9/20 10:27 PM, Paul E. McKenney wrote:
+> > > > On Wed, Sep 09, 2020 at 02:22:12PM -0700, Paul E. McKenney wrote:
+> > > > > On Wed, Sep 09, 2020 at 02:04:47PM -0700, Paul E. McKenney wrote:
+> > > > > > On Wed, Sep 09, 2020 at 12:48:28PM -0700, Alexei Starovoitov wrote:
+> > > > > > > On Wed, Sep 09, 2020 at 12:39:00PM -0700, Paul E. McKenney wrote:
+> > > > 
+> > > > [ . . . ]
+> > > > 
+> > > > > > > > My plan is to try the following:
+> > > > > > > > 
+> > > > > > > > 1.	Parameterize the backoff sequence so that RCU Tasks Trace
+> > > > > > > > 	uses faster rechecking than does RCU Tasks.  Experiment as
+> > > > > > > > 	needed to arrive at a good backoff value.
+> > > > > > > > 
+> > > > > > > > 2.	If the tasks-list scan turns out to be a tighter bottleneck
+> > > > > > > > 	than the backoff waits, look into parallelizing this scan.
+> > > > > > > > 	(This seems unlikely, but the fact remains that RCU Tasks
+> > > > > > > > 	Trace must do a bit more work per task than RCU Tasks.)
+> > > > > > > > 
+> > > > > > > > 3.	If these two approaches, still don't get the update-side
+> > > > > > > > 	latency where it needs to be, improvise.
+> > > > > > > > 
+> > > > > > > > The exact path into mainline will of course depend on how far down this
+> > > > > > > > list I must go, but first to get a solution.
+> > > > > > > 
+> > > > > > > I think there is a case of 4. Nothing is inside rcu_trace critical section.
+> > > > > > > I would expect single ipi would confirm that.
+> > > > > > 
+> > > > > > Unless the task moves, yes.  So a single IPI should suffice in the
+> > > > > > common case.
+> > > > > 
+> > > > > And what I am doing now is checking code paths.
+> > > > 
+> > > > And the following diff from a set of three patches gets my average
+> > > > RCU Tasks Trace grace-period latencies down to about 20 milliseconds,
+> > > > almost a 50x improvement from earlier today.
+> > > > 
+> > > > These are still quite rough and not yet suited for production use, but
+> > > > I will be testing.  If that goes well, I hope to send a more polished
+> > > > set of patches by end of day tomorrow, Pacific Time.  But if you get a
+> > > > chance to test them, I would value any feedback that you might have.
+> > > > 
+> > > > These patches do not require hand-tuning, they instead adjust the
+> > > > behavior according to CONFIG_TASKS_TRACE_RCU_READ_MB, which in turn
+> > > > adjusts according to CONFIG_PREEMPT_RT.  So you should get the desired
+> > > > latency reductions "out of the box", again, without tuning.
+> > > 
+> > > Great. Confirming improvement :)
+> > > 
+> > > time ./test_progs -t trampoline_count
+> > > #101 trampoline_count:OK
+> > > Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+> > > 
+> > > real	0m2.897s
+> > > user	0m0.128s
+> > > sys	0m1.527s
+> > > 
+> > > This is without CONFIG_TASKS_TRACE_RCU_READ_MB, of course.
+> > 
+> > Good to hear, thank you!
+> > 
+> > or is more required?  I can tweak to get more.  There is never a free
+> > lunch, though, and in this case the downside of further tweaking would
+> > be greater CPU overhead.  Alternatively, I could just as easily tweak
+> > it to be slower, thereby reducing the CPU overhead.
+> > 
+> > If I don't hear otherwise, I will assume that the current settings
+> > work fine.
+> 
+> Now it looks like that sync rcu_tasks_trace is not slower than rcu_tasks, so
+> if it would only makes sense to accelerate both at the same time.
+> I think for now it's good.
 
-Only 4 out of 9 emails arrived, can you please resubmit your entire
-patch set again?
+Music to my ears!
 
->  include/linux/bpf.h          |    2 +-
->  include/linux/bpf_verifier.h |    5 +++-
->  kernel/bpf/btf.c             |    6 +++--
->  kernel/bpf/verifier.c        |   48 +++++++++++++++++++++---------------=
-------
->  4 files changed, 31 insertions(+), 30 deletions(-)
->
+I have sent the official RFC patch series, CCing the people active on this
+thread and also the BPF email list, as well as the usual RCU suspects.
+Anyone else I should solicit testing/review from?
 
-[...]
+> > Of course, if people start removing thousands of BPF programs at one go,
+> > I suspect that it will be necessary to provide a bulk-removal operation,
+> > similar to some of the bulk-configuration-change operations provided by
+> > networking.  The idea is to have a single RCU Tasks Trace grace period
+> > cover all of the thousands of BPF removal operations.
+> 
+> bulk api won't really work for user space.
+> There is no good way to coordinate attaching different progs (or the same
+> prog) to many different places.
+
+Fair enough for now, especially unless and until it becomes a problem.
+
+							Thanx, Paul
