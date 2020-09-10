@@ -2,112 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB1F264BD6
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 19:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EFC264BF9
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 19:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgIJRuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 13:50:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22521 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727083AbgIJRuf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 13:50:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599760233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oc9SSvuXxYHkBDg1JbnZA739FJDROj6mx8oujVN34Go=;
-        b=CAiDn31T0Waf0jLLLyyhsBuV+q8q2JaOZ/0+yqLLycGKGbTldr/jw3yGJWJQ724wAx5pvJ
-        g49UjBgo59faUPNorRWGyRV/uXRClv1N5RZuX2360KFRYLs/9JYRGlYmPrZlmrOGzbE+/O
-        +5oFzBhqhZ5k0zFQRvpvdpIzlm00KK8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-qlFLwe6bPgaMKD8d8SVWJw-1; Thu, 10 Sep 2020 13:50:30 -0400
-X-MC-Unique: qlFLwe6bPgaMKD8d8SVWJw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 923341007479;
-        Thu, 10 Sep 2020 17:50:28 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1BA27E8EB;
-        Thu, 10 Sep 2020 17:50:15 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 19:50:14 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        David Ahern <dsahern@gmail.com>,
-        Hangbin Liu <liuhangbin@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>, brouer@redhat.com
-Subject: Re: [PATCHv11 bpf-next 2/5] xdp: add a new helper for dev map
- multicast support
-Message-ID: <20200910195014.13ff24e4@carbon>
-In-Reply-To: <87o8mearu5.fsf@toke.dk>
-References: <20200903102701.3913258-1-liuhangbin@gmail.com>
-        <20200907082724.1721685-1-liuhangbin@gmail.com>
-        <20200907082724.1721685-3-liuhangbin@gmail.com>
-        <20200909215206.bg62lvbvkmdc5phf@ast-mbp.dhcp.thefacebook.com>
-        <20200910023506.GT2531@dhcp-12-153.nay.redhat.com>
-        <a1bcd5e8-89dd-0eca-f779-ac345b24661e@gmail.com>
-        <CAADnVQ+CooPL7Zu4Y-AJZajb47QwNZJU_rH7A3GSbV8JgA4AcQ@mail.gmail.com>
-        <87o8mearu5.fsf@toke.dk>
+        id S1726005AbgIJR4K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 13:56:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:33372 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726424AbgIJRyf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 13:54:35 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08AHrdZX015668;
+        Thu, 10 Sep 2020 10:53:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Tq6Egt4EziPQh8FRHHLaMIApx5T/xaC9Wgodg4gok64=;
+ b=EdHgeQhHdgB/GbJVv6Swd3T3AphfK5BgVKBn2VLYLY3apAwHSaTq1XML9hxM8h5xhn2H
+ K/nR7zNkzj0yWclzVUAaE98r8CwKEd3qqmrJy/7RHelZLopd6UgAIUireix1bZwmgiVj
+ ugDFQMxQeQMPyl5kax5v44Jh60tjnk/9zWs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 33exvhyqhc-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 10 Sep 2020 10:53:44 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 10 Sep 2020 10:53:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=THV56JkZIN/2/GLOCU8EgYTxXTnJitWF+yRtabWa7qukclQcIQUI4T5JYvKAITQK4WfsyFNvA4skLxLIF8cfQ6nDsjA82lTp8x7OZ7NvVOEd/4ZxX7sGqcPJjiS9Zq6WfwCPsMrTKi2WO1+obaqCRGmoXtax6eNFc9CPnaA96tQtU4wb1ispNiFFPuMFghkHD/wHpS2Rk6lo3tLmTZHZYqnHdXP8bR3BcpLtD8nKHmuAuqBjAGtTj/Afq55RpSdrf7bVH0psT+8//ggdrPTwip2Jrr1a43YRz8Pvx3kzNuaOQ4Bz5TIPe7Cf3PkYZgOSQcOwKIEdyUbbhuzsySO8Tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tq6Egt4EziPQh8FRHHLaMIApx5T/xaC9Wgodg4gok64=;
+ b=ZyvZU1gJlmJsPQS9GK+8DqnC3bNcQpZ2XUTYZzMJX+NaK7xNI2NOFgoH0vvHZShvYpp/whUwnztK+qnlIrjCQysOctLtneOZWF3FpTSSnjqHMTU00VLZS/nnHptV7xI5W1+2rPF4DBiaAeH6KAzTTiMgPLGtfm9LJgwwOGV3GllTCfZKcYfWyDEmItKc0yRloZoMxz//mn0BjexE9XYv0Hw4Rywzf+z93lwMFp06y3ZAaxxmv/vSsiLoPJdzlri5UVunziB0a7jKqXvSg0fPMnhIH7LQKa7MG+m648RHPrHv8S27JJ+TdDpEUYhY44TP0kExTj7Aj49qIAqXS+MdMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tq6Egt4EziPQh8FRHHLaMIApx5T/xaC9Wgodg4gok64=;
+ b=H/Eh9yuP7pV0wwgjgze8RXLx8a7mOMwZl5AN0bxgr/w9PPHi6AHi8eWjCo6NkKpjdzvv6EcYymoCBboGCuIB+FP2eDqnKgUlJcStcJeTc9m/15vVOrQCUaGjQPyQHr3WJw1Xz18Jud54R4jnflfe4/wZQKKQav/twVi5yTi+IEg=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2997.namprd15.prod.outlook.com (2603:10b6:a03:b0::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Thu, 10 Sep
+ 2020 17:53:27 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
+ 17:53:27 +0000
+Date:   Thu, 10 Sep 2020 10:53:19 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     <ast@kernel.org>, <yhs@fb.com>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <bpf@vger.kernel.org>,
+        <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 11/11] bpf: use a table to drive helper arg
+ type checks
+Message-ID: <20200910175319.axax5tbm64wfkavu@kafai-mbp>
+References: <20200910125631.225188-1-lmb@cloudflare.com>
+ <20200910125631.225188-12-lmb@cloudflare.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910125631.225188-12-lmb@cloudflare.com>
+X-ClientProxiedBy: MWHPR17CA0087.namprd17.prod.outlook.com
+ (2603:10b6:300:c2::25) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:f5ef) by MWHPR17CA0087.namprd17.prod.outlook.com (2603:10b6:300:c2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 17:53:26 +0000
+X-Originating-IP: [2620:10d:c090:400::5:f5ef]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 96637510-430f-4398-14ff-08d855b26b74
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2997:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB299790CB446F437FC9159B7CD5270@BYAPR15MB2997.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B7+GwoUnc6Pz829WBM3WPcGOD6s2h0+41y6LSlQwtDy0DFtUHaQLUUNSbEthilltRqyeNPLy0s11S1eDPKGaVPfN7h1BHJnwhvgQm6yMPdM+wm0nUC9J942RpbqS6LBfOUNkY0BfronNi8q1rqu/1tJQnceM3vuFir5utAQZBmz1+gSA6VFkqbXDAJKhiCBdHDMwjgV/neG81csx99Hi/CP3TVnxBQYN+A8JZUSRGU4nl4EsJIqo6Dp6ooiKPUmaP5AnT4MI5M+XNw3rqBUP3jN6wnneIOmoUNWgRzJERuwlceCcmSg6YZeSAsDhR6feNJ+AjFh/xCYsoWrK7WtuUQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(376002)(346002)(366004)(2906002)(186003)(52116002)(55016002)(33716001)(8676002)(66476007)(8936002)(9686003)(66556008)(6666004)(6496006)(66946007)(6916009)(316002)(16526019)(5660300002)(4326008)(86362001)(1076003)(4744005)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: TBl9mIiETC2ozqzjJQvfN9ud8D9kivf8L9I+Nm/Q8/8HHUuQNSjCEGVT9hkHMh0YZV+hvnPkdoJPBiiHAUDXCz2jnz1XLv2kmt+mda94cAsyHo3+l1w9FXFXap4NYMXXQPyqT7HI2evPUenpL//psR3jhJXS1T9kOZUHblEmcM02xpTy1qBGKmURM7zphtocBdof2BLzQKhs4fqQhdj/Q5GNtU7LW6HtEdJTLVwo4SpT1htksUSoqVVSS7mYz9mt9K4mLde7NEAhkeQMi1RJq0YVxG/Xtu4gHTVsscHn28vQHdLZy9pXbklI1UayMja//3TFn8xqx9Tw9caw4EpqgpdmQfeMuqI9mIEFAl6mmLanfr7sUBJyXT+Tr2VMD/ZZ2RVuOhB/4hurkn0xBNqsFnwfNVHaDewn5Cn3v4poQpgySqhdRpMagEtqHwF7dL2XdvdGRiGDP1TketwSr2smJ4oGUvsL2asW1ePbDsE4/YD44J6alMeBzRApZbkaFnuVgjA52SK95wtDJrSuGbhea4SUf5WGPLdNNwvJgMAZY4hljR8+mMLJGbn9FMuKPL5zlfyvqydN6nIIDtvh9Kg18ORNksUqqONKCh8iXkwGGN/d9MVhUq+XcgdDxuRRR+3eiupmURIkM1STnYNGdS03TDAEuULchvGSCdneSRyqZ+/vcJwJzvbJmd8HBHT1wJOb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96637510-430f-4398-14ff-08d855b26b74
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 17:53:26.9963
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W3r+COgbMv+p/C+FjcvH7pLiQLYMaszLyyRstScCmdE9h0I6lezWXyyiezqHw8Zh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2997
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-10_05:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=1 clxscore=1015
+ adultscore=0 impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=979 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009100166
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 10 Sep 2020 11:44:50 +0200
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
-
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->=20
-> > On Wed, Sep 9, 2020 at 8:30 PM David Ahern <dsahern@gmail.com> wrote: =
-=20
-> >> >
-> >> > I think the packets modification (edit dst mac, add vlan tag, etc) s=
-hould be
-> >> > done on egress, which rely on David's XDP egress support. =20
-> >>
-> >> agreed. The DEVMAP used for redirect can have programs attached that
-> >> update the packet headers - assuming you want to update them. =20
-> >
-> > Then you folks have to submit them as one set.
-> > As-is the programmer cannot achieve correct behavior. =20
->=20
-> The ability to attach a program to devmaps is already there. See:
->=20
-> fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
->=20
-> But now that you mention it, it does appear that this series is skipping
-> the hook that will actually run such a program. Didn't realise that was
-> in the caller of bq_enqueue() and not inside bq_enqueue() itself...
-
-In the first revisions of Ahern's patchset (before fully integrated in
-devmap), this was the case, but it changed in some of the last
-revisions. (This also lost the sort-n-bulk effect in the process, that
-optimize I-cache).  In these earlier revisions it operated on
-xdp_frame's.  It would have been a lot easier for Hangbin's patch if
-the devmap-prog operated on these xdp_frame's.
-
-Maybe we should change the devmap-prog approach, and run this on the
-xdp_frame's (in bq_xmit_all() to be precise) .  Hangbin's patchset
-clearly shows that we need this "layer" between running the xdp_prog and
-the devmap-prog.=20
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+On Thu, Sep 10, 2020 at 01:56:31PM +0100, Lorenz Bauer wrote:
+> The mapping between bpf_arg_type and bpf_reg_type is encoded in a big
+> hairy if statement that is hard to follow. The debug output also leaves
+> to be desired: if a reg_type doesn't match we only print one of the
+> options, instead printing all the valid ones.
+> 
+> Convert the if statement into a table which is then used to drive type
+> checking. If none of the reg_types match we print all options, e.g.:
+> 
+>     R2 type=rdonly_buf expected=fp, pkt, pkt_meta, map_value
+Acked-by: Martin KaFai Lau <kafai@fb.com>
