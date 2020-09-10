@@ -2,130 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB07B2643A5
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 12:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A9D26440D
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 12:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730774AbgIJKQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 06:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        id S1730873AbgIJK2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 06:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730260AbgIJKQi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:16:38 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656B6C061756;
-        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id s13so5065195wmh.4;
-        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
+        with ESMTP id S1730984AbgIJK1E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:27:04 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF51C061756
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 03:27:03 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t10so6125357wrv.1
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 03:27:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
-        b=TyMbFj/CCKS/yEhzmJyx0SXASPCumWs129eaMWwliNPHoe9nGlJZk2Tsw17ABtL/mL
-         mWke72l5dRMmrFg9ieYmDr1jVfXiMwSmIMEMsNuXAYrMDmbRSlu2SEhpSFeukLVe3cg9
-         +5O+wBu+Jx7JfEyF9JNwdrWebHIVozT6N0VTqxSNEjrIsLOZ3R3dejl3APk21PLF2Oj8
-         +Kb8ACZuKGttnfzoDexc2yloyF3/YUcCQzcDsr90PZvO0KOXZEocClY8eSC4NnFPV4xO
-         lvhsU6vpfnm+pvKWrckJN/8r5bLtL/kaV4lfgkeSIGRnLzVQeQ+BBL7u23nOrwhO07G+
-         JHEw==
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WO5vaAWz6zN0FZiYh2WcgshVBm9JSmYHIvf75JDkwkc=;
+        b=povkCprx1nxa7PduohZnkEFMgX5YQaqAYI9H6/+Pt3k/kEzF5HderxhGIa2vT/fsgw
+         ZyOfJFgzKCFTYNVEbgg7CU5fHRat+n+r+Na952Iv6HUywTMntGb8E15OupOt1VrCJ5/E
+         e1Lgw/HzB7INnm7UE2nGFRh3hY8Ci4Xv6/WZD/g+Ul3FR7RWV1++AS/hFXiGYwLJLHRd
+         QhznOVYPDFqMRSRM1k64elgCIG92IyakCsqpd2m5BfmLMvGwOSVy/W+Pn0JOPsORGYWx
+         afDN+vKw1Wkddg++vblEb3MhXLp5s60H1Go8N1fqqmHGt8nRFlsxm/LMyqkY97BSawc5
+         AsUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
-        b=pmUw8PMCpmIHzSROi++DPz4KjuYgWtg1+Y5TE231Bqiqr8R2N1C3xqoxsiwBj6o1cg
-         uH2BXtjGnMGGoluHj644z5xr7xlqF6U2gftY836V0P2i1eGVJRbd6Kt5NRdxnuMIEUiL
-         l2iyGGPzmqplYZFS9cH521ZnO3ebnALHjbVC/Yy86VDwVom/j1SkB7EzjdV3z887JSV1
-         vBn2sxOKogw/Qr4Wwks6/Tsd6y+ZPpXYP0rtp5M7H0Cz9R+tTExVNwpFLc4afNM8kBHv
-         sPRTlUxnMhVTJVsmuIxtZtgT2oyddp39osiyXrTv8c0GKDU7rTuLb07sCHlL7FBgK0nz
-         qKBw==
-X-Gm-Message-State: AOAM531fehkY9RO3xn+p429hIZbAH2vvrEoH04VI6Oae8Aw4ljanDWzg
-        xuso8Ww0yrtKmBUnjJW0R1g=
-X-Google-Smtp-Source: ABdhPJxz+CTfYBRsr9wPZ8ehDJQEmTq++yYJr4Xo0s0U0R6hQKoUpOmBLcC8LM7TIOPThVoU3WYKbg==
-X-Received: by 2002:a1c:234b:: with SMTP id j72mr7837172wmj.153.1599732997083;
-        Thu, 10 Sep 2020 03:16:37 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id a127sm2936155wmh.34.2020.09.10.03.16.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 03:16:36 -0700 (PDT)
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
-        linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-rtc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, coreteam@netfilter.org,
-        intel-wired-lan@lists.osuosl.org, linux-serial@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Kees Cook <kees.cook@canonical.com>,
-        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
-        storagedev@microchip.com, ceph-devel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org,
-        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <81d852d4-115f-c6c6-ef80-17c47ec4849a@gmail.com>
-Date:   Thu, 10 Sep 2020 12:16:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        bh=WO5vaAWz6zN0FZiYh2WcgshVBm9JSmYHIvf75JDkwkc=;
+        b=djC8xBhDbiZGAMidNeld0YIdRIF+o3q5hVwAUmj8Mt6/F/Y/Dy0Vw9xl8DKSFjf2Ww
+         o8Bljpc4O8BCSPOdX65EpywHD72ruL5GbYP63BtGdID8eHnfYRM/VYjFDkAVhAlpHd3u
+         iccUR1G8FQkqYCK6o4zzrQApsmVdrkPEXNFqdxzoFc6NoKxmD5GSnW/sVJfVRNAZYMNc
+         zQS8KA85T4oLm3skdHxR9wMWvir4AhSlXgTsLVIBqqeXhbwOx8CZNCNNKtPDTSlpKVJU
+         D6wOi1Jsvw09bzc+yBWjitHUK5tDMksx56YQLGddAYoQL/z1CEgx7BlX17q9pGx2XUB7
+         U7eA==
+X-Gm-Message-State: AOAM530DPX4+Vicf2TxZYiIVlrFz5e4PIL1P255RgKGPwtnMdqij3rpA
+        lCGi1kM0ksUVqODUYvq2FgWaUg==
+X-Google-Smtp-Source: ABdhPJw9kVA0zePHLa3oFTsXrh+4IQhuYDnz3JWs3wTwEUBmjCOCKYftMlpOsnmtsgMtWz+z+omBMg==
+X-Received: by 2002:adf:f7ca:: with SMTP id a10mr8165621wrq.321.1599733622416;
+        Thu, 10 Sep 2020 03:27:02 -0700 (PDT)
+Received: from localhost.localdomain ([194.35.119.178])
+        by smtp.gmail.com with ESMTPSA id h186sm3039494wmf.24.2020.09.10.03.27.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 03:27:01 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next v3 0/2] tools: bpftool: support creating outer maps
+Date:   Thu, 10 Sep 2020 11:26:49 +0100
+Message-Id: <20200910102652.10509-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This series makes bpftool able to create outer maps (maps of types
+array-of-maps and hash-of-maps). This is done by passing the relevant
+inner_map_fd, which we do through a new command-line keyword.
 
+The first two patches also clean up the function related to dumping map
+elements.
 
-On 09/09/2020 22:06, Joe Perches wrote:
-> diff --git a/drivers/net/wireless/mediatek/mt7601u/dma.c b/drivers/net/wireless/mediatek/mt7601u/dma.c
-> index 09f931d4598c..778be26d329f 100644
-> --- a/drivers/net/wireless/mediatek/mt7601u/dma.c
-> +++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
-> @@ -193,11 +193,11 @@ static void mt7601u_complete_rx(struct urb *urb)
->   	case -ESHUTDOWN:
->   	case -ENOENT:
->   		return;
-> +	case 0:
-> +		break;
->   	default:
->   		dev_err_ratelimited(dev->dev, "rx urb failed: %d\n",
->   				    urb->status);
-> -		fallthrough;
-> -	case 0:
->   		break;
->   	}
->   
-> @@ -238,11 +238,11 @@ static void mt7601u_complete_tx(struct urb *urb)
->   	case -ESHUTDOWN:
->   	case -ENOENT:
->   		return;
-> +	case 0:
-> +		break;
->   	default:
->   		dev_err_ratelimited(dev->dev, "tx urb failed: %d\n",
->   				    urb->status);
-> -		fallthrough;
-> -	case 0:
->   		break;
->   	}
+v3:
+- Add a check on errno being ENOENT before skipping outer map entry in
+  dumps.
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+v2:
+- v1 was wrongly expected to allow bpftool to dump the content of outer
+  maps (already supported). v2 skipped that patch, and instead replaced it
+  with a clean-up for the dump_map_elem() function.
+
+Quentin Monnet (3):
+  tools: bpftool: clean up function to dump map entry
+  tools: bpftool: keep errors for map-of-map dumps if distinct from
+    ENOENT
+  tools: bpftool: add "inner_map" to "bpftool map create" outer maps
+
+ .../bpf/bpftool/Documentation/bpftool-map.rst |  10 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  22 ++-
+ tools/bpf/bpftool/map.c                       | 149 ++++++++++--------
+ 3 files changed, 114 insertions(+), 67 deletions(-)
+
+-- 
+2.25.1
+
