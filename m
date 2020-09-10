@@ -2,162 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551F6264161
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 11:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EF12641BB
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 11:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730170AbgIJJT3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 05:19:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34946 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730093AbgIJJTZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 05:19:25 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08A92VZj043273;
-        Thu, 10 Sep 2020 05:18:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
- : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=lbijph5Taiyv+LvsJ/sM7F9hRJYgXJ1/OeIBGv1V4zI=;
- b=m+S0uISl4zEUpQGOdqBmign+zGpGsKWZr0M8gyz4QB85tpAWWy9P9TsdEALPMOQc3bzS
- HTmLUO+a8FzA6nkFFUM33SJxJVALimBUdqlyOa2QZAPtF+c5k3tdLE9Ja5lY/NITAiC6
- 7HCRwKAifhDAW7efbtBkvvOJ9noreWSpBIsRvblR2Hd6QlL3Ql+0LiOJ/5ZV1/0dyGOl
- ERG9aDbHT//+EVNVz7T31D+HrD6qNbB+7sB3Bj+uKnN/s2x03LNnlPZVOOElWWQIxfaC
- VUv4NZ3PEML96IaUY9CGtxDOOL3o1HTtA4I8YY6eO/McXjX1bfFSSUd+pDdF2Re/VmW7 tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33fh5s0eur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 05:18:39 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08A92b39043665;
-        Thu, 10 Sep 2020 05:18:37 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33fh5s0etk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 05:18:37 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08A9DDHx028675;
-        Thu, 10 Sep 2020 09:18:34 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 33c2a8bckn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 09:18:34 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08A9GxlP65470906
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 09:16:59 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C217AE055;
-        Thu, 10 Sep 2020 09:18:32 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 299C6AE04D;
-        Thu, 10 Sep 2020 09:18:30 +0000 (GMT)
-Received: from oc4120165700.ibm.com (unknown [9.145.14.177])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Sep 2020 09:18:30 +0000 (GMT)
-From:   Steffen Maier <maier@linux.ibm.com>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Benjamin Block <bblock@linux.ibm.com>
-Cc:     Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        storagedev@microchip.com, sparclinux@vger.kernel.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-        alsa-devel <alsa-devel@alsa-project.org>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-Message-ID: <0c66fbe5-c48b-7dc1-f7fe-1498da9cc1a3@linux.ibm.com>
-Date:   Thu, 10 Sep 2020 11:18:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1730375AbgIJJ1T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 05:27:19 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33850 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729005AbgIJJZc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:25:32 -0400
+IronPort-SDR: aM9dGmQSLwx43RrClft7x7Yz6tuRiNxSVOZKfS+bBrFhPlECIDHL22Cj8VLVgBmynMPlCiksWy
+ FE+Sg/axZ0uQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="155959305"
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="155959305"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 02:24:53 -0700
+IronPort-SDR: sPzzQTW+zCXHCnDWyIItGACI5PKsO8xVROYydDVE3K7qjLI3/37RsfJoX090uiUVr0A7ZCvtq0
+ Nb7MlwO6207w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="505775687"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by fmsmga005.fm.intel.com with ESMTP; 10 Sep 2020 02:24:52 -0700
+Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 10 Sep 2020 10:24:51 +0100
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
+ IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.1713.004;
+ Thu, 10 Sep 2020 10:24:51 +0100
+From:   "Loftus, Ciara" <ciara.loftus@intel.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+CC:     "Topel, Bjorn" <bjorn.topel@intel.com>,
+        "maximmi@nvidia.com" <maximmi@nvidia.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>
+Subject: RE: [PATCH bpf] xsk: fix number of pinned pages/umem size discrepancy
+Thread-Topic: [PATCH bpf] xsk: fix number of pinned pages/umem size
+ discrepancy
+Thread-Index: AQHWh0fv2JgIUnGE6kGbQm4dy+htC6lhmY6A
+Date:   Thu, 10 Sep 2020 09:24:51 +0000
+Message-ID: <f83087dfb41043648825c382ce6efa61@intel.com>
+References: <20200910075609.7904-1-bjorn.topel@gmail.com>
+In-Reply-To: <20200910075609.7904-1-bjorn.topel@gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_01:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- mlxlogscore=940 adultscore=0 bulkscore=0 clxscore=1011 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100080
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/9/20 10:06 PM, Joe Perches wrote:
-> fallthrough to a separate case/default label break; isn't very readable.
-> 
-> Convert pseudo-keyword fallthrough; statements to a simple break; when
-> the next label is case or default and the only statement in the next
-> label block is break;
-> 
-> Found using:
-> 
-> $ grep-2.5.4 -rP --include=*.[ch] -n "fallthrough;(\s*(case\s+\w+|default)\s*:\s*){1,7}break;" *
-> 
-> Miscellanea:
-> 
-> o Move or coalesce a couple label blocks above a default: block.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
-> 
-> Compiled allyesconfig x86-64 only.
-> A few files for other arches were not compiled.
-
->   drivers/s390/scsi/zfcp_fsf.c                              |  2 +-
-
->   82 files changed, 109 insertions(+), 112 deletions(-)
-
-> diff --git a/drivers/s390/scsi/zfcp_fsf.c b/drivers/s390/scsi/zfcp_fsf.c
-> index 140186fe1d1e..2741a07df692 100644
-> --- a/drivers/s390/scsi/zfcp_fsf.c
-> +++ b/drivers/s390/scsi/zfcp_fsf.c
-> @@ -2105,7 +2105,7 @@ static void zfcp_fsf_open_lun_handler(struct zfcp_fsf_req *req)
->   
->   	case FSF_PORT_HANDLE_NOT_VALID:
->   		zfcp_erp_adapter_reopen(adapter, 0, "fsouh_1");
-> -		fallthrough;
-> +		break;
->   	case FSF_LUN_ALREADY_OPEN:
->   		break;
->   	case FSF_PORT_BOXED:
-
-Acked-by: Steffen Maier <maier@linux.ibm.com> # for zfcp
-
-
--- 
-Mit freundlichen Gruessen / Kind regards
-Steffen Maier
-
-Linux on IBM Z Development
-
-https://www.ibm.com/privacy/us/en/
-IBM Deutschland Research & Development GmbH
-Vorsitzender des Aufsichtsrats: Matthias Hartmann
-Geschaeftsfuehrung: Dirk Wittkopp
-Sitz der Gesellschaft: Boeblingen
-Registergericht: Amtsgericht Stuttgart, HRB 243294
+PiANCj4gRnJvbTogQmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAaW50ZWwuY29tPg0KPiANCj4g
+Rm9yIEFGX1hEUCBzb2NrZXRzLCB0aGVyZSB3YXMgYSBkaXNjcmVwYW5jeSBiZXR3ZWVuIHRoZSBu
+dW1iZXIgb2Ygb2YNCj4gcGlubmVkIHBhZ2VzIGFuZCB0aGUgc2l6ZSBvZiB0aGUgdW1lbSByZWdp
+b24uDQo+IA0KPiBUaGUgc2l6ZSBvZiB0aGUgdW1lbSByZWdpb24gaXMgdXNlZCB0byB2YWxpZGF0
+ZSB0aGUgQUZfWERQIGRlc2NyaXB0b3INCj4gYWRkcmVzc2VzLiBUaGUgbG9naWMgdGhhdCBwaW5u
+ZWQgdGhlIHBhZ2VzIGNvdmVyZWQgYnkgdGhlIHJlZ2lvbiBvbmx5DQo+IHRvb2sgd2hvbGUgcGFn
+ZXMgaW50byBjb25zaWRlcmF0aW9uLCBjcmVhdGluZyBhIG1pc21hdGNoIGJldHdlZW4gdGhlDQo+
+IHNpemUgYW5kIHBpbm5lZCBwYWdlcy4gQSB1c2VyIGNvdWxkIHRoZW4gcGFzcyBBRl9YRFAgYWRk
+cmVzc2VzIG91dHNpZGUNCj4gdGhlIHJhbmdlIG9mIHBpbm5lZCBwYWdlcywgYnV0IHN0aWxsIHdp
+dGhpbiB0aGUgc2l6ZSBvZiB0aGUgcmVnaW9uLA0KPiBjcmFzaGluZyB0aGUga2VybmVsLg0KPiAN
+Cj4gVGhpcyBjaGFuZ2UgY29ycmVjdGx5IGNhbGN1bGF0ZXMgdGhlIG51bWJlciBvZiBwYWdlcyB0
+byBiZQ0KPiBwaW5uZWQuIEZ1cnRoZXIsIHRoZSBzaXplIGNoZWNrIGZvciB0aGUgYWxpZ25lZCBt
+b2RlIGlzDQo+IHNpbXBsaWZpZWQuIE5vdyB0aGUgY29kZSBzaW1wbHkgY2hlY2tzIGlmIHRoZSBz
+aXplIGlzIGRpdmlzaWJsZSBieSB0aGUNCj4gY2h1bmsgc2l6ZS4NCj4gDQo+IEZpeGVzOiBiYmZm
+MmYzMjFhODYgKCJ4c2s6IG5ldyBkZXNjcmlwdG9yIGFkZHJlc3Npbmcgc2NoZW1lIikNCj4gUmVw
+b3J0ZWQtYnk6IENpYXJhIExvZnR1cyA8Y2lhcmEubG9mdHVzQGludGVsLmNvbT4NCj4gU2lnbmVk
+LW9mZi1ieTogQmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAaW50ZWwuY29tPg0KDQpUaGFua3Mg
+Zm9yIHRoZSBwYXRjaCBCasO2cm4uDQoNClRlc3RlZC1ieTogQ2lhcmEgTG9mdHVzIDxjaWFyYS5s
+b2Z0dXNAaW50ZWwuY29tPg0KDQo+IC0tLQ0KPiAgbmV0L3hkcC94ZHBfdW1lbS5jIHwgMTcgKysr
+KysrKystLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDkgZGVs
+ZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvbmV0L3hkcC94ZHBfdW1lbS5jIGIvbmV0L3hk
+cC94ZHBfdW1lbS5jDQo+IGluZGV4IGU5N2RiMzczNTRlNC4uYjAxMGJmZGUwMTQ5IDEwMDY0NA0K
+PiAtLS0gYS9uZXQveGRwL3hkcF91bWVtLmMNCj4gKysrIGIvbmV0L3hkcC94ZHBfdW1lbS5jDQo+
+IEBAIC0zMDMsMTAgKzMwMywxMCBAQCBzdGF0aWMgaW50IHhkcF91bWVtX2FjY291bnRfcGFnZXMo
+c3RydWN0DQo+IHhkcF91bWVtICp1bWVtKQ0KPiANCj4gIHN0YXRpYyBpbnQgeGRwX3VtZW1fcmVn
+KHN0cnVjdCB4ZHBfdW1lbSAqdW1lbSwgc3RydWN0IHhkcF91bWVtX3JlZw0KPiAqbXIpDQo+ICB7
+DQo+ICsJdTMyIG5wZ3NfcmVtLCBjaHVua19zaXplID0gbXItPmNodW5rX3NpemUsIGhlYWRyb29t
+ID0gbXItDQo+ID5oZWFkcm9vbTsNCj4gIAlib29sIHVuYWxpZ25lZF9jaHVua3MgPSBtci0+Zmxh
+Z3MgJg0KPiBYRFBfVU1FTV9VTkFMSUdORURfQ0hVTktfRkxBRzsNCj4gLQl1MzIgY2h1bmtfc2l6
+ZSA9IG1yLT5jaHVua19zaXplLCBoZWFkcm9vbSA9IG1yLT5oZWFkcm9vbTsNCj4gIAl1NjQgbnBn
+cywgYWRkciA9IG1yLT5hZGRyLCBzaXplID0gbXItPmxlbjsNCj4gLQl1bnNpZ25lZCBpbnQgY2h1
+bmtzLCBjaHVua3NfcGVyX3BhZ2U7DQo+ICsJdW5zaWduZWQgaW50IGNodW5rcywgY2h1bmtzX3Jl
+bTsNCj4gIAlpbnQgZXJyOw0KPiANCj4gIAlpZiAoY2h1bmtfc2l6ZSA8IFhEUF9VTUVNX01JTl9D
+SFVOS19TSVpFIHx8IGNodW5rX3NpemUgPg0KPiBQQUdFX1NJWkUpIHsNCj4gQEAgLTMzNiwxOSAr
+MzM2LDE4IEBAIHN0YXRpYyBpbnQgeGRwX3VtZW1fcmVnKHN0cnVjdCB4ZHBfdW1lbQ0KPiAqdW1l
+bSwgc3RydWN0IHhkcF91bWVtX3JlZyAqbXIpDQo+ICAJaWYgKChhZGRyICsgc2l6ZSkgPCBhZGRy
+KQ0KPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gDQo+IC0JbnBncyA9IHNpemUgPj4gUEFHRV9TSElG
+VDsNCj4gKwlucGdzID0gZGl2X3U2NF9yZW0oc2l6ZSwgUEFHRV9TSVpFLCAmbnBnc19yZW0pOw0K
+PiArCWlmIChucGdzX3JlbSkNCj4gKwkJbnBncysrOw0KPiAgCWlmIChucGdzID4gVTMyX01BWCkN
+Cj4gIAkJcmV0dXJuIC1FSU5WQUw7DQo+IA0KPiAtCWNodW5rcyA9ICh1bnNpZ25lZCBpbnQpZGl2
+X3U2NChzaXplLCBjaHVua19zaXplKTsNCj4gKwljaHVua3MgPSAodW5zaWduZWQgaW50KWRpdl91
+NjRfcmVtKHNpemUsIGNodW5rX3NpemUsDQo+ICZjaHVua3NfcmVtKTsNCj4gIAlpZiAoY2h1bmtz
+ID09IDApDQo+ICAJCXJldHVybiAtRUlOVkFMOw0KPiANCj4gLQlpZiAoIXVuYWxpZ25lZF9jaHVu
+a3MpIHsNCj4gLQkJY2h1bmtzX3Blcl9wYWdlID0gUEFHRV9TSVpFIC8gY2h1bmtfc2l6ZTsNCj4g
+LQkJaWYgKGNodW5rcyA8IGNodW5rc19wZXJfcGFnZSB8fCBjaHVua3MgJQ0KPiBjaHVua3NfcGVy
+X3BhZ2UpDQo+IC0JCQlyZXR1cm4gLUVJTlZBTDsNCj4gLQl9DQo+ICsJaWYgKCF1bmFsaWduZWRf
+Y2h1bmtzICYmIGNodW5rc19yZW0pDQo+ICsJCXJldHVybiAtRUlOVkFMOw0KPiANCj4gIAlpZiAo
+aGVhZHJvb20gPj0gY2h1bmtfc2l6ZSAtIFhEUF9QQUNLRVRfSEVBRFJPT00pDQo+ICAJCXJldHVy
+biAtRUlOVkFMOw0KPiANCj4gYmFzZS1jb21taXQ6IDc0NmY1MzRhNDgwOWUwN2Y0MjdmN2QxM2Qx
+MGYzYTZhOTY0MWU1YzMNCj4gLS0NCj4gMi4yNS4xDQoNCg==
