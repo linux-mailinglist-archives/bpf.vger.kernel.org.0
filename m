@@ -2,115 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D63263DA4
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 08:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E921F263DDD
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 09:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgIJGxS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 02:53:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726961AbgIJGxQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:53:16 -0400
-Received: from localhost (p5486ceec.dip0.t-ipconnect.de [84.134.206.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730261AbgIJHCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 03:02:02 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45692 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730127AbgIJG7u (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 02:59:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599721189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g/dN2Mc0YhDZG8/fW6zj0Wql29qoTWx3jdFpwth6400=;
+        b=fbyGtF6kWjrO648yJaKoNEs9hN1GY9lmRqmzhPDqtylwKCIoDpIcOxS69b0P1KNDkjoWLD
+        pMo6JptZKq1grlhQ9Xqa6GEoqO265dy3kwMvLyAM1/3sfbvRl7av9zjnBdJPeXK5o+3P+I
+        cCyKB1WYc4ltVz6pbPmxi9NG0ZayNAU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-572-Hd3nEurbMn-jh5G_q973aA-1; Thu, 10 Sep 2020 02:59:47 -0400
+X-MC-Unique: Hd3nEurbMn-jh5G_q973aA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93A222078E;
-        Thu, 10 Sep 2020 06:53:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599720795;
-        bh=/LOePKGDUR83plqAhx1ySvpBeTmOBTt4AYD41Ar10p8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e3Jk9M7ZKtsnsBd892ykDqq6ldjJyX23IqJ7DyDWgKOR2vkDHWpTUx3L4W3ZSGRl8
-         gbJ25CK/q4T0DRgLEQdFDMLfOBf9AoSauHV2UkWklXje0SfXK1Ub2yM0Bl5ncgFE73
-         tRqSbJwVN+gRudxLpTtOTt3VxbQSMkA19oVYS08w=
-Date:   Thu, 10 Sep 2020 08:53:12 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
-        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
-        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        storagedev@microchip.com, sparclinux@vger.kernel.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
-        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
-        alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-Message-ID: <20200910065312.GH1031@ninjato>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4D518015C6;
+        Thu, 10 Sep 2020 06:59:45 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-127.ams2.redhat.com [10.36.112.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CFF7060C07;
+        Thu, 10 Sep 2020 06:59:43 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH RFC bpf-next 5/5] bpf: Do not include the original insn
+ in zext patchlet
+References: <20200909233439.3100292-1-iii@linux.ibm.com>
+        <20200909233439.3100292-6-iii@linux.ibm.com>
+Date:   Thu, 10 Sep 2020 09:59:41 +0300
+In-Reply-To: <20200909233439.3100292-6-iii@linux.ibm.com> (Ilya Leoshkevich's
+        message of "Thu, 10 Sep 2020 01:34:39 +0200")
+Message-ID: <xuny363qazhe.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OpLPJvDmhXTZE4Lg"
-Content-Disposition: inline
-In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi, Ilya!
 
---OpLPJvDmhXTZE4Lg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cool, thanks!
+
+Shouldn't the rnd patch be done the same way for completeness?
+Even if it is unlikely there to hit the problem.
+
+>>>>> On Thu, 10 Sep 2020 01:34:39 +0200, Ilya Leoshkevich  wrote:
+
+ > If the original insn is a jump, then it is not subjected to branch
+ > adjustment, which is incorrect. As discovered by Yauheni in
+
+ > https://lore.kernel.org/bpf/20200903140542.156624-1-yauheni.kaliuta@redhat.com/
+
+ > this causes `test_progs -t global_funcs` failures on s390.
+
+ > Most likely, the current code includes the original insn in the
+ > patchlet, because there was no infrastructure to insert new insns, only
+ > to replace the existing ones. Now that bpf_patch_insns_data() can do
+ > insertions, stop including the original insns in zext patchlets.
+
+ > Fixes: a4b1d3c1ddf6 ("bpf: verifier: insert zero extension according
+ > to analysis result")
+ > Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+ > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+ > ---
+ >  kernel/bpf/verifier.c | 20 +++++++++++---------
+ >  1 file changed, 11 insertions(+), 9 deletions(-)
+
+ > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+ > index 17c2e926e436..64a04953c631 100644
+ > --- a/kernel/bpf/verifier.c
+ > +++ b/kernel/bpf/verifier.c
+ > @@ -9911,7 +9911,7 @@ static int opt_remove_nops(struct bpf_verifier_env *env)
+ >  static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ >  					 const union bpf_attr *attr)
+ >  {
+ > -	struct bpf_insn *patch, zext_patch[2], rnd_hi32_patch[4];
+ > +	struct bpf_insn *patch, zext_patch, rnd_hi32_patch[4];
+ >  	struct bpf_insn_aux_data *aux = env->insn_aux_data;
+ >  	int i, patch_len, delta = 0, len = env->prog->len;
+ >  	struct bpf_insn *insns = env->prog->insnsi;
+ > @@ -9919,13 +9919,14 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ >  	bool rnd_hi32;
+ 
+ >  	rnd_hi32 = attr->prog_flags & BPF_F_TEST_RND_HI32;
+ > -	zext_patch[1] = BPF_ZEXT_REG(0);
+ > +	zext_patch = BPF_ZEXT_REG(0);
+ >  	rnd_hi32_patch[1] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_AX, 0);
+ >  	rnd_hi32_patch[2] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_AX, 32);
+ >  	rnd_hi32_patch[3] = BPF_ALU64_REG(BPF_OR, 0, BPF_REG_AX);
+ >  	for (i = 0; i < len; i++) {
+ >  		int adj_idx = i + delta;
+ >  		struct bpf_insn insn;
+ > +		int len_old = 1;
+ 
+ >  		insn = insns[adj_idx];
+ >  		if (!aux[adj_idx].zext_dst) {
+ > @@ -9968,20 +9969,21 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ >  		if (!bpf_jit_needs_zext())
+ >  			continue;
+ 
+ > -		zext_patch[0] = insn;
+ > -		zext_patch[1].dst_reg = insn.dst_reg;
+ > -		zext_patch[1].src_reg = insn.dst_reg;
+ > -		patch = zext_patch;
+ > -		patch_len = 2;
+ > +		zext_patch.dst_reg = insn.dst_reg;
+ > +		zext_patch.src_reg = insn.dst_reg;
+ > +		patch = &zext_patch;
+ > +		patch_len = 1;
+ > +		adj_idx++;
+ > +		len_old = 0;
+ >  apply_patch_buffer:
+ > -		new_prog = bpf_patch_insns_data(env, adj_idx, 1, patch,
+ > +		new_prog = bpf_patch_insns_data(env, adj_idx, len_old, patch,
+ >  						patch_len);
+ >  		if (!new_prog)
+ >  			return -ENOMEM;
+ env-> prog = new_prog;
+ >  		insns = new_prog->insnsi;
+ >  		aux = env->insn_aux_data;
+ > -		delta += patch_len - 1;
+ > +		delta += patch_len - len_old;
+ >  	}
+ 
+ >  	return 0;
+ > -- 
+
+ > 2.25.4
 
 
-> diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> index e32ef3f01fe8..b13b1cbcac29 100644
-> --- a/drivers/i2c/busses/i2c-i801.c
-> +++ b/drivers/i2c/busses/i2c-i801.c
-> @@ -1785,7 +1785,7 @@ static int i801_probe(struct pci_dev *dev, const struct pci_device_id *id)
->  		fallthrough;
->  	case PCI_DEVICE_ID_INTEL_82801CA_3:
->  		priv->features |= FEATURE_HOST_NOTIFY;
-> -		fallthrough;
-> +		break;
->  	case PCI_DEVICE_ID_INTEL_82801BA_2:
->  	case PCI_DEVICE_ID_INTEL_82801AB_3:
->  	case PCI_DEVICE_ID_INTEL_82801AA_3:
+-- 
+WBR,
+Yauheni Kaliuta
 
-I am not the maintainer (Jean is) but I suggest to drop this hunk. The
-code is more complex with multiple 'fallthrough', so this change alone
-actually makes the code inconsistent. A rework would need a seperate
-patch.
-
-
---OpLPJvDmhXTZE4Lg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9ZzVQACgkQFA3kzBSg
-KbYNuA//cymFe0KsFqywRHv3eBWJhoqwvWN2Xhwrx5/b6N3kkKGTo61aOo1ZI2gU
-55rQoGusy8OzGXaxlyhNS8Ea9ztPZc/tHEohOHKPYr52ErUMXlbMo3I3q7sZAZEI
-O/bRlnPKUCKqKOpZBin0ri6NE3FNYybTW30HgIk/LFUeCuaup10cUcxCmPfXHlNc
-M/2M2tBVyyBOqlVVsPxIfEZ4jGDaikxt7mBZDj4QMJnivnuMFuuz8U7gYzkXIHfO
-4ahGx+dBLCCInwFNFjEIPr+biq6Bgt/Vl9bbgN/BYbzdgbbJcikEhWHd9FxEoxQ5
-Y4M6/HxLDuCwTLIoFHjVifsFHK4Emk5ECc0xBWjHu3CJDunZSmy6yS5gbD1BrstW
-Djf0Ue1kyqnVPBDKE0EwFmwz1z1V14bhhXVC1fkiJjTpYRA6g3zMwH1oan6XIbGj
-v4OuWFDkQLEfzCCBIASGS849HtQ4rNafKxX3KQ3qxngh7XBrK7X92SLf3qRJurdt
-h5Ozd/zYDzyKQ1nOf/XWAOP5SKZH2ANjTrFKgIZE8MRkTmbzrlZkCnDnFD0pKPlB
-Z9h9uPZ7kifAejwaRPfsTu6/B9XJafMKfLa3hKTg2kgO+p67ItBEQ0W8wrXLE1/1
-c5FW5PqdkjKnx/9yUqosjEsHV2goh1guE4cziLkF1pZXcrElbtk=
-=ZP3J
------END PGP SIGNATURE-----
-
---OpLPJvDmhXTZE4Lg--
