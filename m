@@ -2,116 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C9C2641F7
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 11:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3102642AA
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 11:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgIJJao (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 05:30:44 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:32864 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729525AbgIJJ3T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:29:19 -0400
-Received: by mail-il1-f205.google.com with SMTP id c11so4091115ilm.0
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 02:29:18 -0700 (PDT)
+        id S1730172AbgIJJpD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 05:45:03 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40456 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730179AbgIJJo4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 05:44:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599731094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aCy+XOEaRsEQY0LQO/vOTZfwSOMrqiVn05uKYSgtpvo=;
+        b=iHJcvySfzhYsCXoPn/5141QU/+UV4kn88ljXmM9vHfi588WfvjY1ZVcsiBc8u64zYvDCsv
+        rSt+O4NMON5iRmrHNbSGZMSxJLeinSOVI1Snxvp2vD7TQ+FXeEE87ssx9TgUEImaAgNojh
+        j46LyWkBUCQY1zSZ7eoPu/82UfeCkfo=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-6_73DCNoMf-ljEMn55CqMA-1; Thu, 10 Sep 2020 05:44:52 -0400
+X-MC-Unique: 6_73DCNoMf-ljEMn55CqMA-1
+Received: by mail-wr1-f69.google.com with SMTP id r15so2042471wrt.8
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 02:44:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wbQ5hEj6rADmWVMRkDe2eqg2V1dhGor68kn9Ygqa8iA=;
-        b=s8tzOfxedzxZEJQKsrn8cQrhoYIcjERy4B2qy0sMRhLI+e+gdYaO2z3ZKp4m/7PLmu
-         OEa/9qBxYHv3NuvtY1HsWpzcS8OAUZLOd7vt74YkVTwG4jnXVlgol3Ckr+CnrKQsKLuG
-         CnyQTUwQ5hBmIobfgVuwpCQe6wuDM+er+xW4P/8nSyEy8Nt3UTsaVJNz+W9i1+watI3D
-         wjoV1RkxgNo8veo+MI2b/LmLHklPyhutqmh5GfMyrbO+qYPMg2LOLKYZxBFT2GsboGz4
-         PSh+QfVGGsjJELPhVD4DnVZTeI82+Ilf535U1oZSJj72QjrgeSYXbt5NH6XsiZl3Bo7d
-         5IoA==
-X-Gm-Message-State: AOAM530UlEIxf0u7Dq5uT+HtEwvQQIMqn4vpsrRMgQRrOMHhIFa/nVxk
-        mM3AsJ5DKHmyQlAwdeuGFUR4Hhhju6S7pwXHDA61cd8ISohv
-X-Google-Smtp-Source: ABdhPJysA8PxfONSscctagFdb07Pwycnr+IyT1EJoVzpbEd5spAORPGz6sq4E1/U597TkUzi0Uji6askr1L0y35jAufu+PZB7B5v
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=aCy+XOEaRsEQY0LQO/vOTZfwSOMrqiVn05uKYSgtpvo=;
+        b=JhDJVe5wyECg+utLGvoKAnzN7MISokCRg6gYeNhfjMMZQmb0SH/QvdOESvWeVm2wbZ
+         /M+na25liOFBOpQvRBLSNE4fVfHygd0wuIG8BYdlUr9biCk9nglsA4GhCd/cRZpeAV0y
+         I+Y9egt0gSsRnRVTTvxxdafAE7n7o/vp6ZTA4IbZa5SFjNu7cI8XOHV75lj6sjgJkZPC
+         HNGPq9ejpw597duOF0mcNjFeTWbaG4rfuF7O3w/nlcy5JxqC5RHx0J1zC6J8L3lKTSPL
+         SiNOk4tLbK8bz+9mrVFiRrp7qessZ1TXXobCdiuyLKW5b/hBhHAxViplJ0n4+6pb3cVS
+         SPBg==
+X-Gm-Message-State: AOAM533eEVZVv23E9UPHJpl2aYFu9EW0yq1l1oyr4491M7NzHpEX16M/
+        iBDMhhwfIHKzpPNOBVQqjIrChkjqNkXq9TWvwbnFO4KUml/kA2Rx628tuT3e7CRZGNI7vQ2HP1O
+        Eoxv2I2ME2EP/
+X-Received: by 2002:adf:c44d:: with SMTP id a13mr7883851wrg.11.1599731091781;
+        Thu, 10 Sep 2020 02:44:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfCeAoXe3tOPQILTBWWxMnePItSYSr/aajG3+6ac5qGnErTf+SK51jURDCq9LkJoZlD7FQcA==
+X-Received: by 2002:adf:c44d:: with SMTP id a13mr7883838wrg.11.1599731091629;
+        Thu, 10 Sep 2020 02:44:51 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id n21sm2870497wmi.21.2020.09.10.02.44.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 02:44:50 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7D2D11829D4; Thu, 10 Sep 2020 11:44:50 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+Cc:     Hangbin Liu <liuhangbin@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCHv11 bpf-next 2/5] xdp: add a new helper for dev map
+ multicast support
+In-Reply-To: <CAADnVQ+CooPL7Zu4Y-AJZajb47QwNZJU_rH7A3GSbV8JgA4AcQ@mail.gmail.com>
+References: <20200903102701.3913258-1-liuhangbin@gmail.com>
+ <20200907082724.1721685-1-liuhangbin@gmail.com>
+ <20200907082724.1721685-3-liuhangbin@gmail.com>
+ <20200909215206.bg62lvbvkmdc5phf@ast-mbp.dhcp.thefacebook.com>
+ <20200910023506.GT2531@dhcp-12-153.nay.redhat.com>
+ <a1bcd5e8-89dd-0eca-f779-ac345b24661e@gmail.com>
+ <CAADnVQ+CooPL7Zu4Y-AJZajb47QwNZJU_rH7A3GSbV8JgA4AcQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 10 Sep 2020 11:44:50 +0200
+Message-ID: <87o8mearu5.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:d2:: with SMTP id r18mr6888793ilq.303.1599730157627;
- Thu, 10 Sep 2020 02:29:17 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 02:29:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c82fe505aef233c6@google.com>
-Subject: WARNING in bpf_raw_tp_link_fill_link_info
-From:   syzbot <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-syzbot found the following issue on:
+> On Wed, Sep 9, 2020 at 8:30 PM David Ahern <dsahern@gmail.com> wrote:
+>> >
+>> > I think the packets modification (edit dst mac, add vlan tag, etc) should be
+>> > done on egress, which rely on David's XDP egress support.
+>>
+>> agreed. The DEVMAP used for redirect can have programs attached that
+>> update the packet headers - assuming you want to update them.
+>
+> Then you folks have to submit them as one set.
+> As-is the programmer cannot achieve correct behavior.
 
-HEAD commit:    7fb5eefd selftests/bpf: Fix test_sysctl_loop{1, 2} failure..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1424fdb3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
-dashboard link: https://syzkaller.appspot.com/bug?extid=976d5ecfab0c7eb43ac3
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a1f411900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10929c11900000
+The ability to attach a program to devmaps is already there. See:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com
+fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 check_copy_size include/linux/thread_info.h:150 [inline]
-WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 copy_to_user include/linux/uaccess.h:167 [inline]
-WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 6854 Comm: syz-executor574 Not tainted 5.9.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:231
- __warn.cold+0x20/0x4a kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:check_copy_size include/linux/thread_info.h:150 [inline]
-RIP: 0010:copy_to_user include/linux/uaccess.h:167 [inline]
-RIP: 0010:bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
-Code: 41 bc ea ff ff ff e9 35 ff ff ff 4c 89 ff e8 41 66 33 00 e9 d0 fd ff ff 4c 89 ff e8 a4 66 33 00 e9 06 ff ff ff e8 ca ed f2 ff <0f> 0b eb 94 48 89 ef e8 2e 66 33 00 e9 65 fd ff ff e8 24 66 33 00
-RSP: 0018:ffffc900051c7bd0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc900051c7c60 RCX: ffffffff818179d6
-RDX: ffff88808b490000 RSI: ffffffff81817a96 RDI: 0000000000000006
-RBP: 0000000000000019 R08: 0000000000000000 R09: ffffc900051c7c7f
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000019
-R13: 0000000000001265 R14: ffffffff8986ecc0 R15: ffffc900051c7c78
- bpf_link_get_info_by_fd kernel/bpf/syscall.c:3626 [inline]
- bpf_obj_get_info_by_fd+0x43a/0xc40 kernel/bpf/syscall.c:3664
- __do_sys_bpf+0x1906/0x4b30 kernel/bpf/syscall.c:4237
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4405f9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fff47155808 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004405f9
-RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 000000000000000f
-RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401e00
-R13: 0000000000401e90 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+But now that you mention it, it does appear that this series is skipping
+the hook that will actually run such a program. Didn't realise that was
+in the caller of bq_enqueue() and not inside bq_enqueue() itself...
 
+Hangbin, you'll need to add the hook for dev_map_run_prog() before
+bq_enqueue(); see the existing dev_map_enqueue() function.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+-Toke
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
