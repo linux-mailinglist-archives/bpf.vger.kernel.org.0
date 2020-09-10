@@ -2,151 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707572650A8
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6962650B1
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgIJUYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 16:24:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725844AbgIJUYP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:24:15 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C473520829;
-        Thu, 10 Sep 2020 20:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599769443;
-        bh=9F9ingtmG8Fkn644uUwCvSuErdD0b3SWq+05tV2Lt24=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TV3sMktVjOb/4HzNWkMSzADNK/F8B56+1OrUYzgb64z7szyGtD2mFgYxfweVBlZyE
-         pIyANkOgE6m7iV3XcC8u0gN4bh1Ep0AI35fOYIWA/EjFH1iksDaA53NlfgZCmI2sNJ
-         SvMvt+BjmKIv4X4tkOjMZiHGAeTwpbnsGWHKcIX8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 7AD343523080; Thu, 10 Sep 2020 13:24:03 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 13:24:03 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: slow sync rcu_tasks_trace
-Message-ID: <20200910202403.GT29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200909173512.GI29330@paulmck-ThinkPad-P72>
- <20200909180418.hlivoaekhkchlidw@ast-mbp.dhcp.thefacebook.com>
- <20200909193900.GK29330@paulmck-ThinkPad-P72>
- <20200909194828.urz6islrqajifukj@ast-mbp.dhcp.thefacebook.com>
- <20200909210447.GL29330@paulmck-ThinkPad-P72>
- <20200909212212.GA21795@paulmck-ThinkPad-P72>
- <20200910052727.GA4351@paulmck-ThinkPad-P72>
- <619554b2-4746-635e-22f3-7f0f09d97760@fb.com>
- <20200910185149.GR29330@paulmck-ThinkPad-P72>
- <e6d7e0c9-1ca0-ec28-c306-b3c474e83daf@fb.com>
+        id S1726942AbgIJUZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 16:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgIJUZI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 16:25:08 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E18AC061756
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 13:25:07 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id b13so4029832qvl.2
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 13:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YkhahZJmcVyE+N6qWWXQFYNHp32pWxDW4FSredXVabk=;
+        b=elbc94XM3ceVgQnnBSjGH0KOEfAlih9DKT3WB164JIbH1ngVEN5n0B+q4F69a6JXQn
+         IIgxKy/oCmLQn/MFT2gURpv3W5esAD/Y8dLPleaUzAfC81mqTLoAYSXCgJaXWUPN/oUv
+         v8jXCzun5km/4A/zVfqszgAEaPl5Mr7YNuTL1tOEy8+tPsYf2KliZHe6HJfJAsrKl+5v
+         Sdk0/n5Z4zAmPnl4KCM5oir4KlbbvH66HjL3rTiYunn1+az+WFqRhL//vmVWcDOvjG1I
+         /BFTdJ/BGAX+/hDg9QR4IYlkxMomeup+ORC5T4MlIpl8gIn6UNqbDPs8ojCFt8xVfFcK
+         v8SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YkhahZJmcVyE+N6qWWXQFYNHp32pWxDW4FSredXVabk=;
+        b=NxSS4cO26AY/w9iKcpBC+FbID/NH/l85DW/6z2RZwwWXYXidf/IOkVzJ2VD9iCvP+N
+         wB67ykSKmZZEpdJj0ptZBZLzLMQUPOzXwaCGVWZViQ/h86Vy47Df8xe1yP2TalhHw6wT
+         nnzTPi8sUDEimPbeScqCRYKvhLbcdq6Md1rPj4tgLf1JUv2LTtmKaCHbg98wgNvGnIMG
+         28aKHxtNeafunZ7KNReb3O1nXGlbos3x5Kiv9MKtxJSWZh0fJVA2jZmjxZx3uvxVGrAy
+         EbQcCSFLQIzw3wZBdEs+4yD2zrJXzTeYCyu/Ama1Wwg8bB5EcjU3pTTc0T1kEzJZ/Hyk
+         ZucQ==
+X-Gm-Message-State: AOAM531Eqityq1hmkyoUcdVPn08mH8t97z2tgIJVXxoETs8SLxvCYpP8
+        iaBSDiQNPzt1Nh1m/4+TdwBMU/i2JArek9gL+zNoag==
+X-Google-Smtp-Source: ABdhPJxfUjwCVnP2CmMuW0g6X2PvyXN4nGc8maiaODTngttgx/cBIYS/jAj3t6JAy3WXzPpYHoFw6wLHHi3RGU1eq6M=
+X-Received: by 2002:a0c:f48e:: with SMTP id i14mr10388494qvm.5.1599769506460;
+ Thu, 10 Sep 2020 13:25:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e6d7e0c9-1ca0-ec28-c306-b3c474e83daf@fb.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200909162500.17010-1-quentin@isovalent.com> <20200909162500.17010-4-quentin@isovalent.com>
+ <CAADnVQ+b3y1LFRppZu5GYW6hZY6nSZc3wQKqpqHbevdNHNSCSA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+b3y1LFRppZu5GYW6hZY6nSZc3wQKqpqHbevdNHNSCSA@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Thu, 10 Sep 2020 21:24:55 +0100
+Message-ID: <CACdoK4+1mbhkJ=uGrfhUF3hRnX3-+Ai2FcMfBkgqs6YB++=mkw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] tools: bpftool: automate generation for
+ "SEE ALSO" sections in man pages
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 12:04:32PM -0700, Alexei Starovoitov wrote:
-> On 9/10/20 11:51 AM, Paul E. McKenney wrote:
-> > On Thu, Sep 10, 2020 at 11:33:58AM -0700, Alexei Starovoitov wrote:
-> > > On 9/9/20 10:27 PM, Paul E. McKenney wrote:
-> > > > On Wed, Sep 09, 2020 at 02:22:12PM -0700, Paul E. McKenney wrote:
-> > > > > On Wed, Sep 09, 2020 at 02:04:47PM -0700, Paul E. McKenney wrote:
-> > > > > > On Wed, Sep 09, 2020 at 12:48:28PM -0700, Alexei Starovoitov wrote:
-> > > > > > > On Wed, Sep 09, 2020 at 12:39:00PM -0700, Paul E. McKenney wrote:
-> > > > 
-> > > > [ . . . ]
-> > > > 
-> > > > > > > > My plan is to try the following:
-> > > > > > > > 
-> > > > > > > > 1.	Parameterize the backoff sequence so that RCU Tasks Trace
-> > > > > > > > 	uses faster rechecking than does RCU Tasks.  Experiment as
-> > > > > > > > 	needed to arrive at a good backoff value.
-> > > > > > > > 
-> > > > > > > > 2.	If the tasks-list scan turns out to be a tighter bottleneck
-> > > > > > > > 	than the backoff waits, look into parallelizing this scan.
-> > > > > > > > 	(This seems unlikely, but the fact remains that RCU Tasks
-> > > > > > > > 	Trace must do a bit more work per task than RCU Tasks.)
-> > > > > > > > 
-> > > > > > > > 3.	If these two approaches, still don't get the update-side
-> > > > > > > > 	latency where it needs to be, improvise.
-> > > > > > > > 
-> > > > > > > > The exact path into mainline will of course depend on how far down this
-> > > > > > > > list I must go, but first to get a solution.
-> > > > > > > 
-> > > > > > > I think there is a case of 4. Nothing is inside rcu_trace critical section.
-> > > > > > > I would expect single ipi would confirm that.
-> > > > > > 
-> > > > > > Unless the task moves, yes.  So a single IPI should suffice in the
-> > > > > > common case.
-> > > > > 
-> > > > > And what I am doing now is checking code paths.
-> > > > 
-> > > > And the following diff from a set of three patches gets my average
-> > > > RCU Tasks Trace grace-period latencies down to about 20 milliseconds,
-> > > > almost a 50x improvement from earlier today.
-> > > > 
-> > > > These are still quite rough and not yet suited for production use, but
-> > > > I will be testing.  If that goes well, I hope to send a more polished
-> > > > set of patches by end of day tomorrow, Pacific Time.  But if you get a
-> > > > chance to test them, I would value any feedback that you might have.
-> > > > 
-> > > > These patches do not require hand-tuning, they instead adjust the
-> > > > behavior according to CONFIG_TASKS_TRACE_RCU_READ_MB, which in turn
-> > > > adjusts according to CONFIG_PREEMPT_RT.  So you should get the desired
-> > > > latency reductions "out of the box", again, without tuning.
-> > > 
-> > > Great. Confirming improvement :)
-> > > 
-> > > time ./test_progs -t trampoline_count
-> > > #101 trampoline_count:OK
-> > > Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > > 
-> > > real	0m2.897s
-> > > user	0m0.128s
-> > > sys	0m1.527s
-> > > 
-> > > This is without CONFIG_TASKS_TRACE_RCU_READ_MB, of course.
-> > 
-> > Good to hear, thank you!
-> > 
-> > or is more required?  I can tweak to get more.  There is never a free
-> > lunch, though, and in this case the downside of further tweaking would
-> > be greater CPU overhead.  Alternatively, I could just as easily tweak
-> > it to be slower, thereby reducing the CPU overhead.
-> > 
-> > If I don't hear otherwise, I will assume that the current settings
-> > work fine.
-> 
-> Now it looks like that sync rcu_tasks_trace is not slower than rcu_tasks, so
-> if it would only makes sense to accelerate both at the same time.
-> I think for now it's good.
+On Thu, 10 Sep 2020 at 19:18, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Sep 9, 2020 at 9:25 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >
+> > The "SEE ALSO" sections of bpftool's manual pages refer to bpf(2),
+> > bpf-helpers(7), then all existing bpftool man pages (save the current
+> > one).
+> >
+> > This leads to nearly-identical lists being duplicated in all manual
+> > pages. Ideally, when a new page is created, all lists should be updated
+> > accordingly, but this has led to omissions and inconsistencies multiple
+> > times in the past.
+> >
+> > Let's take it out of the RST files and generate the "SEE ALSO" sections
+> > automatically in the Makefile when generating the man pages. The lists
+> > are not really useful in the RST anyway because all other pages are
+> > available in the same directory.
+> >
+> > v2:
+> > - Use "echo -n" instead of "printf" in Makefile, to avoid any risk of
+> >   passing a format string directly to the command.
+> >
+> > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+>
+> This patch failed to git am, but I've applied the first two patches.
+> Thanks
 
-Music to my ears!
+Right, there is a conflict with the other patchset passing
+$(RST2MAN_OPTS) to rst2man when building the doc. I'll rebase and
+repost this one. Thank you Alexei.
 
-I have sent the official RFC patch series, CCing the people active on this
-thread and also the BPF email list, as well as the usual RCU suspects.
-Anyone else I should solicit testing/review from?
-
-> > Of course, if people start removing thousands of BPF programs at one go,
-> > I suspect that it will be necessary to provide a bulk-removal operation,
-> > similar to some of the bulk-configuration-change operations provided by
-> > networking.  The idea is to have a single RCU Tasks Trace grace period
-> > cover all of the thousands of BPF removal operations.
-> 
-> bulk api won't really work for user space.
-> There is no good way to coordinate attaching different progs (or the same
-> prog) to many different places.
-
-Fair enough for now, especially unless and until it becomes a problem.
-
-							Thanx, Paul
+Quentin
