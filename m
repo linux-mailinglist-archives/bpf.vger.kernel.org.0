@@ -2,151 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E921F263DDD
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 09:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E017263F2A
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 09:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730261AbgIJHCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 03:02:02 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45692 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730127AbgIJG7u (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 02:59:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599721189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/dN2Mc0YhDZG8/fW6zj0Wql29qoTWx3jdFpwth6400=;
-        b=fbyGtF6kWjrO648yJaKoNEs9hN1GY9lmRqmzhPDqtylwKCIoDpIcOxS69b0P1KNDkjoWLD
-        pMo6JptZKq1grlhQ9Xqa6GEoqO265dy3kwMvLyAM1/3sfbvRl7av9zjnBdJPeXK5o+3P+I
-        cCyKB1WYc4ltVz6pbPmxi9NG0ZayNAU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-Hd3nEurbMn-jh5G_q973aA-1; Thu, 10 Sep 2020 02:59:47 -0400
-X-MC-Unique: Hd3nEurbMn-jh5G_q973aA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4D518015C6;
-        Thu, 10 Sep 2020 06:59:45 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-127.ams2.redhat.com [10.36.112.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CFF7060C07;
-        Thu, 10 Sep 2020 06:59:43 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH RFC bpf-next 5/5] bpf: Do not include the original insn
- in zext patchlet
-References: <20200909233439.3100292-1-iii@linux.ibm.com>
-        <20200909233439.3100292-6-iii@linux.ibm.com>
-Date:   Thu, 10 Sep 2020 09:59:41 +0300
-In-Reply-To: <20200909233439.3100292-6-iii@linux.ibm.com> (Ilya Leoshkevich's
-        message of "Thu, 10 Sep 2020 01:34:39 +0200")
-Message-ID: <xuny363qazhe.fsf@redhat.com>
+        id S1726746AbgIJH4x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 03:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726816AbgIJH4r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:56:47 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B66DC061573;
+        Thu, 10 Sep 2020 00:56:47 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id m15so522552pls.8;
+        Thu, 10 Sep 2020 00:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JNiVOnXoOmxnAqeInt5hP731APRpSiA1TTMc4u8CbeY=;
+        b=eJMQUEeROFf5Pr5SDTd6xxzG1DUkMZs7oscC84zhAORZtUKSgHlPCFeUXd0VXt4jX8
+         NBE5I+PQA60uy6V/YSEI2BovVkMNac53s5Ivmw1CQSoXooWfbHnhVX6Mtq1YffKUOP/b
+         nRXvBYctQgXQKTNe//xAHLh5Gpvzzk/bxtndANcSIl5Pn3/eIlx+YqsrrgLJGwcTuKqv
+         vfAx3pYBS9fwmS/C+XytUUFBD6UnZ1ruiNQT6aOxd35ChgLNz/ssmRb2UKUhPcSVlQH+
+         wArASng+GVtqA77XhK8sWOI0Itdq4cLFlLanTYi0dzT0RpWzcmm3J5CHP8cQLFWjoyuj
+         NdDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JNiVOnXoOmxnAqeInt5hP731APRpSiA1TTMc4u8CbeY=;
+        b=DMWebERPL4pbbgFbasq4Q1C7Cdc7y2A2pmedHW7BFyCp8YyF3vG0zsuHB0WCAdNu5/
+         Zp4zFNgGyZ77WXe136P4P9oMRtj5rpEk6N8U3LOccdFe42QuoBJOqD5Ij5qy9LD9x84G
+         YewdG32JcLJ7rEbcTJBZBkvYwVzxj4bSsgsDIBSfacw6nVf0CmliWrZvjwuKztmWLwv3
+         nGqZaKFhLG0eqYpWhUVheaxf+rue670WxP1MAHP0G8k+QzKRnSL09nedHfOUp1cxM5HA
+         KwwFlvUAEfnbxJhzwNNNgxID4UZGddz8H8uW9GNrJtDD2S3GxdAGXbqE1s+9zqxogB3l
+         0Bew==
+X-Gm-Message-State: AOAM530B0Aj8PoEXzKT/KsSNSb7H/SJftcPM28HsEA8UQ0HUXkVygCF6
+        ieaJ6p6zI25P8oXvALIqje464kqy/JjpSVHy
+X-Google-Smtp-Source: ABdhPJw6VhWR5D1jFVLOmkYyYca+xejAQj1GUf1+HxVZAIPNNLnOE2s/x3Mwu/vqBpuR8IbF4eciCg==
+X-Received: by 2002:a17:902:74c7:: with SMTP id f7mr4531949plt.144.1599724606163;
+        Thu, 10 Sep 2020 00:56:46 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.43])
+        by smtp.gmail.com with ESMTPSA id j20sm4756070pfh.146.2020.09.10.00.56.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 00:56:45 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        maximmi@nvidia.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, ciara.loftus@intel.com
+Subject: [PATCH bpf] xsk: fix number of pinned pages/umem size discrepancy
+Date:   Thu, 10 Sep 2020 09:56:09 +0200
+Message-Id: <20200910075609.7904-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Ilya!
+From: Björn Töpel <bjorn.topel@intel.com>
 
-Cool, thanks!
+For AF_XDP sockets, there was a discrepancy between the number of of
+pinned pages and the size of the umem region.
 
-Shouldn't the rnd patch be done the same way for completeness?
-Even if it is unlikely there to hit the problem.
+The size of the umem region is used to validate the AF_XDP descriptor
+addresses. The logic that pinned the pages covered by the region only
+took whole pages into consideration, creating a mismatch between the
+size and pinned pages. A user could then pass AF_XDP addresses outside
+the range of pinned pages, but still within the size of the region,
+crashing the kernel.
 
->>>>> On Thu, 10 Sep 2020 01:34:39 +0200, Ilya Leoshkevich  wrote:
+This change correctly calculates the number of pages to be
+pinned. Further, the size check for the aligned mode is
+simplified. Now the code simply checks if the size is divisible by the
+chunk size.
 
- > If the original insn is a jump, then it is not subjected to branch
- > adjustment, which is incorrect. As discovered by Yauheni in
+Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
+Reported-by: Ciara Loftus <ciara.loftus@intel.com>
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+ net/xdp/xdp_umem.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
- > https://lore.kernel.org/bpf/20200903140542.156624-1-yauheni.kaliuta@redhat.com/
-
- > this causes `test_progs -t global_funcs` failures on s390.
-
- > Most likely, the current code includes the original insn in the
- > patchlet, because there was no infrastructure to insert new insns, only
- > to replace the existing ones. Now that bpf_patch_insns_data() can do
- > insertions, stop including the original insns in zext patchlets.
-
- > Fixes: a4b1d3c1ddf6 ("bpf: verifier: insert zero extension according
- > to analysis result")
- > Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
- > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
- > ---
- >  kernel/bpf/verifier.c | 20 +++++++++++---------
- >  1 file changed, 11 insertions(+), 9 deletions(-)
-
- > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
- > index 17c2e926e436..64a04953c631 100644
- > --- a/kernel/bpf/verifier.c
- > +++ b/kernel/bpf/verifier.c
- > @@ -9911,7 +9911,7 @@ static int opt_remove_nops(struct bpf_verifier_env *env)
- >  static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- >  					 const union bpf_attr *attr)
- >  {
- > -	struct bpf_insn *patch, zext_patch[2], rnd_hi32_patch[4];
- > +	struct bpf_insn *patch, zext_patch, rnd_hi32_patch[4];
- >  	struct bpf_insn_aux_data *aux = env->insn_aux_data;
- >  	int i, patch_len, delta = 0, len = env->prog->len;
- >  	struct bpf_insn *insns = env->prog->insnsi;
- > @@ -9919,13 +9919,14 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- >  	bool rnd_hi32;
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index e97db37354e4..b010bfde0149 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -303,10 +303,10 @@ static int xdp_umem_account_pages(struct xdp_umem *umem)
  
- >  	rnd_hi32 = attr->prog_flags & BPF_F_TEST_RND_HI32;
- > -	zext_patch[1] = BPF_ZEXT_REG(0);
- > +	zext_patch = BPF_ZEXT_REG(0);
- >  	rnd_hi32_patch[1] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_AX, 0);
- >  	rnd_hi32_patch[2] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_AX, 32);
- >  	rnd_hi32_patch[3] = BPF_ALU64_REG(BPF_OR, 0, BPF_REG_AX);
- >  	for (i = 0; i < len; i++) {
- >  		int adj_idx = i + delta;
- >  		struct bpf_insn insn;
- > +		int len_old = 1;
+ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+ {
++	u32 npgs_rem, chunk_size = mr->chunk_size, headroom = mr->headroom;
+ 	bool unaligned_chunks = mr->flags & XDP_UMEM_UNALIGNED_CHUNK_FLAG;
+-	u32 chunk_size = mr->chunk_size, headroom = mr->headroom;
+ 	u64 npgs, addr = mr->addr, size = mr->len;
+-	unsigned int chunks, chunks_per_page;
++	unsigned int chunks, chunks_rem;
+ 	int err;
  
- >  		insn = insns[adj_idx];
- >  		if (!aux[adj_idx].zext_dst) {
- > @@ -9968,20 +9969,21 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
- >  		if (!bpf_jit_needs_zext())
- >  			continue;
+ 	if (chunk_size < XDP_UMEM_MIN_CHUNK_SIZE || chunk_size > PAGE_SIZE) {
+@@ -336,19 +336,18 @@ static int xdp_umem_reg(struct xdp_umem *umem, struct xdp_umem_reg *mr)
+ 	if ((addr + size) < addr)
+ 		return -EINVAL;
  
- > -		zext_patch[0] = insn;
- > -		zext_patch[1].dst_reg = insn.dst_reg;
- > -		zext_patch[1].src_reg = insn.dst_reg;
- > -		patch = zext_patch;
- > -		patch_len = 2;
- > +		zext_patch.dst_reg = insn.dst_reg;
- > +		zext_patch.src_reg = insn.dst_reg;
- > +		patch = &zext_patch;
- > +		patch_len = 1;
- > +		adj_idx++;
- > +		len_old = 0;
- >  apply_patch_buffer:
- > -		new_prog = bpf_patch_insns_data(env, adj_idx, 1, patch,
- > +		new_prog = bpf_patch_insns_data(env, adj_idx, len_old, patch,
- >  						patch_len);
- >  		if (!new_prog)
- >  			return -ENOMEM;
- env-> prog = new_prog;
- >  		insns = new_prog->insnsi;
- >  		aux = env->insn_aux_data;
- > -		delta += patch_len - 1;
- > +		delta += patch_len - len_old;
- >  	}
+-	npgs = size >> PAGE_SHIFT;
++	npgs = div_u64_rem(size, PAGE_SIZE, &npgs_rem);
++	if (npgs_rem)
++		npgs++;
+ 	if (npgs > U32_MAX)
+ 		return -EINVAL;
  
- >  	return 0;
- > -- 
+-	chunks = (unsigned int)div_u64(size, chunk_size);
++	chunks = (unsigned int)div_u64_rem(size, chunk_size, &chunks_rem);
+ 	if (chunks == 0)
+ 		return -EINVAL;
+ 
+-	if (!unaligned_chunks) {
+-		chunks_per_page = PAGE_SIZE / chunk_size;
+-		if (chunks < chunks_per_page || chunks % chunks_per_page)
+-			return -EINVAL;
+-	}
++	if (!unaligned_chunks && chunks_rem)
++		return -EINVAL;
+ 
+ 	if (headroom >= chunk_size - XDP_PACKET_HEADROOM)
+ 		return -EINVAL;
 
- > 2.25.4
-
-
+base-commit: 746f534a4809e07f427f7d13d10f3a6a9641e5c3
 -- 
-WBR,
-Yauheni Kaliuta
+2.25.1
 
