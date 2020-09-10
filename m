@@ -2,101 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E821426501D
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B73526502A
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 22:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgIJUEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 16:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
+        id S1726890AbgIJUGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 16:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgIJUBz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:01:55 -0400
+        with ESMTP id S1726794AbgIJUDS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 16:03:18 -0400
 Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB3EC061786
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 13:01:06 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id c17so4882197ybe.0
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 13:01:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B64C061573;
+        Thu, 10 Sep 2020 13:03:15 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id v78so4869082ybv.5;
+        Thu, 10 Sep 2020 13:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mwYQJNbGKe1uc+ehMFEmYhgcYpURmPzs3fUngECFASw=;
-        b=AMyj2OWKYShQOyHjOabXROd0ncvtC34PBKwF+rVx87f2jcW6KrrW0HZM59tExyQ28A
-         2e3GEc6q8nLQeEstQX0R6Fuhanzz7YDKDOAhCIVDAzq4j2RWCzbxh9X2WJmQ838Sucnv
-         mk7Z37CZuOXEko4XWLGqlJ2g2iHUqkJkURZA+3jYfLs5WoGluh1wI1iWS6S9CD++f6zf
-         dXHdW+6Sp+Md7uyx0C+e9arnSYUGtMDSonmCGaisL/Fmv6dTPhb69gLCgqDQ0N6Ww8PE
-         JsZaumXs/Ee/j+L/MA/NEeDHZzGRTJAPtbvKn42L1kV847Tri0dsCz9xyEbOQ1rIJM9C
-         Z9/g==
+         :cc:content-transfer-encoding;
+        bh=N2jWB4I7nmsk1+BJexevBsZfunbJb26Z1pd8MeqEp+w=;
+        b=No1fgGjYZ0wXuPPNMSFxHucda2V8inLy/TrUnVi5IRO5F2S1fNuY6wE0OpbC+nCw1M
+         OfrRYqPbmkLLQO4kFMqo3aL66+lddsKG9nmRyD7l86QFmcn0Im2ZOfpUonajj/acqS4D
+         SGUb8Rwk+GOrK7/xx2S9oxOU0BD8c2+8YPvFz1GimvNgbPeC/491M/PL84u5R0YymYWV
+         W7BEMyfeb3AXGfqduD+jU717f6Ru4hmLcbOsp8avj36ZZfx5/tMefXwYPtHj+qeBYa26
+         7yVh0JEKsBGK+Wuf9UpMVqvkul/yqYQC82U+iW5v1qXSBG0R5Ftrzq/bdoxiU8jc7+1k
+         wgBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mwYQJNbGKe1uc+ehMFEmYhgcYpURmPzs3fUngECFASw=;
-        b=drbAmKR68iGhB4mNIokjKFg/IpT8HNloHBJBdbUVxlM6sTM94p7WNmqpqMD+flSmdC
-         rSmWqFI1In1zGBwZfTK3LaIQkGOjx2nuv7M5jKUmfLb6w0aE001ewBWqHJdvaAmJwyyO
-         aKDcJtQYks/MmHTFbC30pH4TCJK3wDnMXCY6XxCxLOJ4EbwEw933cloSpFVY0+WEmiPT
-         B+BNAVySKdD+YyTCZxYTH/cofOvYx2mzUz+CYEP/7U8A7Jv8GAjqYDvrwwrVYaPwi5Me
-         KoS8QXdTsVMZPueixOgIUmGHkvfEmcriGihQS1a1agXzLsK+ZUmpmkM+Kyvn0yibXEJB
-         iYVQ==
-X-Gm-Message-State: AOAM5323Wp1Ng7CHr7lW9yD+qv6s9s6WkDbexI3fCClaDqSJAUpESSi9
-        fRx8AH+qhFl+TnrPgrT7/0U+kWwDofJBIec+Zxc=
-X-Google-Smtp-Source: ABdhPJxIYP6yFfPLPMbsB4OSpt4f5K7V4+wLcRXM6ImtdMv+2d8jrzzTDA6YJWC14kAReUmekmejtXSfVTFmUqzsnoY=
-X-Received: by 2002:a25:6885:: with SMTP id d127mr14589944ybc.27.1599768065408;
- Thu, 10 Sep 2020 13:01:05 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N2jWB4I7nmsk1+BJexevBsZfunbJb26Z1pd8MeqEp+w=;
+        b=gFIJvjRvOBXfbYlvJ4JQU/2/vpQiXCDj1BzimxzOHE5AEm56bOfzSwrP5PtN1clFjB
+         EroMNDOQaIdNdQrCfOoaNKMpeL/t5K4Joi2CcaTaDz2PKl25tATf9YtaKkUEjacy6TU1
+         KnNmpWwV+y13hqbeeeMkonnXtCn3ThweSIuuqdxbre6iA9j0a4eimKNHYiVKqyVMn4l9
+         mShNnG27ImdDfwBDWxSOmFd0hOQTOnkkU2LztN0S+INi9lpTdErlztHoPZJYLdHnXC6l
+         TR52zGcHkEHscC02ZfRX57LyOY7nKOseeOfbvRqAoppsmhgEalmtkZ6hEXHNYNxxJv6L
+         Ld/A==
+X-Gm-Message-State: AOAM533RqXrSqRFmnqUa3DGg/XYe7/V/S+A9YV43Mqy0AIffkkSmzcr3
+        xIRvbiJgIv+YkIF340m8gnqMS0OnNuV/rEiPEoNImXmM
+X-Google-Smtp-Source: ABdhPJyNZ4UwlOnjgQ2LM67nABCkqxQ6F77vUp1VrlJjEcrPskpTTjNoPhLBHe67UzjoPAVyJjpXc3/cQYKx1XCTqmU=
+X-Received: by 2002:a25:9d06:: with SMTP id i6mr13887717ybp.510.1599768194218;
+ Thu, 10 Sep 2020 13:03:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910171336.3161995-1-iii@linux.ibm.com>
-In-Reply-To: <20200910171336.3161995-1-iii@linux.ibm.com>
+References: <159974338947.129227.5610774877906475683.stgit@toke.dk> <159974339060.129227.10384464703530448748.stgit@toke.dk>
+In-Reply-To: <159974339060.129227.10384464703530448748.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Sep 2020 13:00:54 -0700
-Message-ID: <CAEf4BzbNfKhGfMM2N=016NGA0X4jpK2Nu_=tXs1bLhxBZXgo=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_ksyms on non-SMP kernels
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Date:   Thu, 10 Sep 2020 13:03:03 -0700
+Message-ID: <CAEf4BzZ-K7Myp7_2a==ic5y+TRCFL4Gf4gGWwqm8yAb0icOi5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/9] bpf: change logging calls from verbose()
+ to bpf_log() and use log pointer
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:13 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Thu, Sep 10, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On non-SMP kernels __per_cpu_start is not 0, so look it up in kallsyms.
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> In preparation for moving code around, change a bunch of references to
+> env->log (and the verbose() logging helper) to use bpf_log() and a direct
+> pointer to struct bpf_verifier_log. While we're touching the function
+> signature, mark the 'prog' argument to bpf_check_type_match() as const.
+>
+> Also enhance the bpf_verifier_log_needed() check to handle NULL pointers
+> for the log struct so we can re-use the code with logging disabled.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Only 4 out of 9 emails arrived, can you please resubmit your entire
+patch set again?
 
->  tools/testing/selftests/bpf/prog_tests/ksyms.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  include/linux/bpf.h          |    2 +-
+>  include/linux/bpf_verifier.h |    5 +++-
+>  kernel/bpf/btf.c             |    6 +++--
+>  kernel/bpf/verifier.c        |   48 +++++++++++++++++++++---------------=
+------
+>  4 files changed, 31 insertions(+), 30 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> index e3d6777226a8..b771804b2342 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-> @@ -32,6 +32,7 @@ static __u64 kallsyms_find(const char *sym)
->
->  void test_ksyms(void)
->  {
-> +       __u64 per_cpu_start_addr = kallsyms_find("__per_cpu_start");
->         __u64 link_fops_addr = kallsyms_find("bpf_link_fops");
->         const char *btf_path = "/sys/kernel/btf/vmlinux";
->         struct test_ksyms *skel;
-> @@ -63,8 +64,9 @@ void test_ksyms(void)
->               "got %llu, exp %llu\n", data->out__bpf_link_fops1, (__u64)0);
->         CHECK(data->out__btf_size != btf_size, "btf_size",
->               "got %llu, exp %llu\n", data->out__btf_size, btf_size);
-> -       CHECK(data->out__per_cpu_start != 0, "__per_cpu_start",
-> -             "got %llu, exp %llu\n", data->out__per_cpu_start, (__u64)0);
-> +       CHECK(data->out__per_cpu_start != per_cpu_start_addr, "__per_cpu_start",
-> +             "got %llu, exp %llu\n", data->out__per_cpu_start,
-> +             per_cpu_start_addr);
->
->  cleanup:
->         test_ksyms__destroy(skel);
-> --
-> 2.25.4
->
+
+[...]
