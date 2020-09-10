@@ -2,146 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCE7264366
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 12:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB07B2643A5
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 12:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730526AbgIJKLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 06:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43838 "EHLO
+        id S1730774AbgIJKQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 06:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgIJKLM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:11:12 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D18C061756
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 03:11:11 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id l4so5137045ilq.2
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 03:11:11 -0700 (PDT)
+        with ESMTP id S1730260AbgIJKQi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:16:38 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656B6C061756;
+        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id s13so5065195wmh.4;
+        Thu, 10 Sep 2020 03:16:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dYn711/ecEMa9YkRKRtL12MOp1Pmr/gkc97vbP51zKs=;
-        b=0pUmmi0kKFjMFtMFkm81POxlGd8OLWHIbb357w8LJEutcKtX2TJY2D84oFNqpaKkWj
-         LIZu8CjdTYcnK+j9/EGSdH0gxwP/ueYIs5FPFgQm8Sq5hOBWafg1XHeunzk02ZZTN1/H
-         xt5iPuSprTSuTlJuVcu1Re0MnUq1SMx7pPtpkIWKnsmYIq4PxcC1cTC+6p0E/2V01yBf
-         cWoyykLWj+7Ek7CEAl91yA2xB87BligfWuoTeEfAQH8Nch1eYqHbu9XDDVUcsYJQZx6/
-         PwzbWib+tGdPfZZohCcvXg4rknkfDVdQV3v7niGO6T+6FQhL0/4txIB+K4vNxyvLL0Ps
-         3wgA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
+        b=TyMbFj/CCKS/yEhzmJyx0SXASPCumWs129eaMWwliNPHoe9nGlJZk2Tsw17ABtL/mL
+         mWke72l5dRMmrFg9ieYmDr1jVfXiMwSmIMEMsNuXAYrMDmbRSlu2SEhpSFeukLVe3cg9
+         +5O+wBu+Jx7JfEyF9JNwdrWebHIVozT6N0VTqxSNEjrIsLOZ3R3dejl3APk21PLF2Oj8
+         +Kb8ACZuKGttnfzoDexc2yloyF3/YUcCQzcDsr90PZvO0KOXZEocClY8eSC4NnFPV4xO
+         lvhsU6vpfnm+pvKWrckJN/8r5bLtL/kaV4lfgkeSIGRnLzVQeQ+BBL7u23nOrwhO07G+
+         JHEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dYn711/ecEMa9YkRKRtL12MOp1Pmr/gkc97vbP51zKs=;
-        b=LqsPBiAHRoHT5XNcUOSVCwH5wQenxLwc2CiEww8buFL9rTD5CgygfR4gcDB51eR4y7
-         SlN4cPFjDwQvDKvgpIhE0bvTqDEUX3urn5B9LTrjhhxZenpphjpse3e2mRhiMr/PgWZh
-         JAAosHbLPnFvaPeaJA3hkEiqH2g/b8FIqMtGRnyHHe7PYdnBdzBfv42KAF3yJstUyOKX
-         vqJ/iew9zpfMyUSvv7O3InsKaXHHiTdn54sYpXd4ZD8Into4nGGO3Oy8uHLM+Cp2xqL8
-         ekJI+V6hZQWmM64bc0ZVuhwmtdgnONREq0Pmi/+uxPB6IntPYtMjFuVnIQgqmojdwbTU
-         DFxw==
-X-Gm-Message-State: AOAM533Yu1ngmhsoXyxonmTggVXq+UlScjsdIeXvRT0zXLCQSGRjkCEN
-        wxauVZOni+Z33LjfM775iFAlIpp1WWUYX3nahk4YFw==
-X-Google-Smtp-Source: ABdhPJxsUK2w96KVp27uVBQuyvQ3vG3xd0ASnK210PCB3wzoJVXqDsJLG6KiuIhl1SK9e7YXDDkcbt+3siRcpE26a30=
-X-Received: by 2002:a92:ba45:: with SMTP id o66mr7609998ili.38.1599732670989;
- Thu, 10 Sep 2020 03:11:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DqY3ytm1lW24L4dBr5ZhfVe1Kl4JG7b6aElJixa0DtQ=;
+        b=pmUw8PMCpmIHzSROi++DPz4KjuYgWtg1+Y5TE231Bqiqr8R2N1C3xqoxsiwBj6o1cg
+         uH2BXtjGnMGGoluHj644z5xr7xlqF6U2gftY836V0P2i1eGVJRbd6Kt5NRdxnuMIEUiL
+         l2iyGGPzmqplYZFS9cH521ZnO3ebnALHjbVC/Yy86VDwVom/j1SkB7EzjdV3z887JSV1
+         vBn2sxOKogw/Qr4Wwks6/Tsd6y+ZPpXYP0rtp5M7H0Cz9R+tTExVNwpFLc4afNM8kBHv
+         sPRTlUxnMhVTJVsmuIxtZtgT2oyddp39osiyXrTv8c0GKDU7rTuLb07sCHlL7FBgK0nz
+         qKBw==
+X-Gm-Message-State: AOAM531fehkY9RO3xn+p429hIZbAH2vvrEoH04VI6Oae8Aw4ljanDWzg
+        xuso8Ww0yrtKmBUnjJW0R1g=
+X-Google-Smtp-Source: ABdhPJxz+CTfYBRsr9wPZ8ehDJQEmTq++yYJr4Xo0s0U0R6hQKoUpOmBLcC8LM7TIOPThVoU3WYKbg==
+X-Received: by 2002:a1c:234b:: with SMTP id j72mr7837172wmj.153.1599732997083;
+        Thu, 10 Sep 2020 03:16:37 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id a127sm2936155wmh.34.2020.09.10.03.16.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 03:16:36 -0700 (PDT)
+Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
+ break;
+To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+        linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-rtc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-serial@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Kees Cook <kees.cook@canonical.com>,
+        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
+        storagedev@microchip.com, ceph-devel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <81d852d4-115f-c6c6-ef80-17c47ec4849a@gmail.com>
+Date:   Thu, 10 Sep 2020 12:16:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <CAGeTCaU1fEGVVWnXKR_zv4ZSoCrBGSN65-RpFuKg9Gf-_z6TOw@mail.gmail.com>
- <CAADnVQKsbbd9dbPYQqa5=QsRfLo07hEjr1rSC=5DfVpzUK7Ajw@mail.gmail.com>
- <CAGeTCaWSSBJye72NCQW4N=XtsFx-rv-EEgTowTT3VEtus=pFtA@mail.gmail.com>
- <878sdlpv92.fsf@toke.dk> <CAGeTCaWDk_ok38Xm8H8-8HQYP-bbPqMuwWDpEYM=i1=e0e88bw@mail.gmail.com>
- <87mu1znt7q.fsf@toke.dk> <CAFLU3KteR+snvWpth3PBoQARTtpeBhEEVWH+a2bg0y=cxR81MQ@mail.gmail.com>
-In-Reply-To: <CAFLU3KteR+snvWpth3PBoQARTtpeBhEEVWH+a2bg0y=cxR81MQ@mail.gmail.com>
-From:   Borna Cafuk <borna.cafuk@sartura.hr>
-Date:   Thu, 10 Sep 2020 12:11:00 +0200
-Message-ID: <CAGeTCaXOT0Nq=6m39Xn7NNP+Bz+iOdH8tR8ZKQ3jMibmgMtxew@mail.gmail.com>
-Subject: Re: HASH_OF_MAPS inner map allocation from BPF
-To:     KP Singh <kpsingh@google.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 12:36 PM KP Singh <kpsingh@google.com> wrote:
->
-> On Wed, Sep 9, 2020 at 12:24 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
-> >
-> > Borna Cafuk <borna.cafuk@sartura.hr> writes:
-> >
-> > > On Mon, Sep 7, 2020 at 3:33 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
-> > >>
-> > >> Borna Cafuk <borna.cafuk@sartura.hr> writes:
-> > >>
-> > >> > On Sat, Sep 5, 2020 at 12:47 AM Alexei Starovoitov
-> > >> > <alexei.starovoitov@gmail.com> wrote:
->
-> [...]
->
-> > >> >
-> > >> > The idea is to have an outer map where the keys are PIDs, and inne=
-r maps where
-> > >> > the keys are system call numbers. This would enable tracking the n=
-umber of
-> > >> > syscalls made by each process and the makeup of those calls for al=
-l processes
-> > >> > simultaneously.
-> > >> >
-> > >> > [1] https://github.com/iovisor/bcc/blob/master/libbpf-tools/syscou=
-nt.bpf.c
-> > >>
-> > >> Well, if you just want to count, map-in-map seems a bit overkill? Yo=
-u
-> > >> could just do:
-> > >>
-> > >> struct {
-> > >>   u32 pid;
-> > >>   u32 syscall;
-> > >> } map_key;
-> > >>
-> > >> and use that?
-> > >>
-> > >> -Toke
-> > >>
-> > >
-> > > I have considered that, but maps in maps seem better for when I need =
-to get the
-> > > data about a single process's syscalls: It requires reading only one =
-of the
-> > > inner maps in its entirety. If I have a composite key like that, I do=
-n't see
-> > > any way, other than:
-> > >  * either iterating through all the possible keys for a process
-> > >    (i.e. over all syscalls) and looking them up in the map, or
-> > >  * iterating over all entries in the map and filtering them.
-> > >
-> > > Looking at it again, the first option does not seem _that_ bad,
-> >
-> > You could even use BPF_MAP_LOOKUP_BATCH to do this in one operation, I
-> > suppose...
-> >
-> > > but just iterating over one (inner) map would be easier to fit into
-> > > our use-case.
-> >
-> > ...but yeah, I see what you mean. Well, maybe BPF local storage per
-> > process would also be a nice fit here?
 
-Thank you for the insight.
 
->
-> Yes, task local storage does seem like a good fit and is the next one I w=
-as
-> thinking of implementing.
->
-> - KP
+On 09/09/2020 22:06, Joe Perches wrote:
+> diff --git a/drivers/net/wireless/mediatek/mt7601u/dma.c b/drivers/net/wireless/mediatek/mt7601u/dma.c
+> index 09f931d4598c..778be26d329f 100644
+> --- a/drivers/net/wireless/mediatek/mt7601u/dma.c
+> +++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
+> @@ -193,11 +193,11 @@ static void mt7601u_complete_rx(struct urb *urb)
+>   	case -ESHUTDOWN:
+>   	case -ENOENT:
+>   		return;
+> +	case 0:
+> +		break;
+>   	default:
+>   		dev_err_ratelimited(dev->dev, "rx urb failed: %d\n",
+>   				    urb->status);
+> -		fallthrough;
+> -	case 0:
+>   		break;
+>   	}
+>   
+> @@ -238,11 +238,11 @@ static void mt7601u_complete_tx(struct urb *urb)
+>   	case -ESHUTDOWN:
+>   	case -ENOENT:
+>   		return;
+> +	case 0:
+> +		break;
+>   	default:
+>   		dev_err_ratelimited(dev->dev, "tx urb failed: %d\n",
+>   				    urb->status);
+> -		fallthrough;
+> -	case 0:
+>   		break;
+>   	}
 
-I'm looking forward to the patches.
-
->
-> >
-> > -Toke
-> >
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
