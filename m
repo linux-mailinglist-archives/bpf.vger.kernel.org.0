@@ -2,149 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4C4263FF4
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 10:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DE1264076
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 10:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730302AbgIJIc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 04:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730538AbgIJIb3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:31:29 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7369C0613ED;
-        Thu, 10 Sep 2020 01:31:28 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id o16so2670813pjr.2;
-        Thu, 10 Sep 2020 01:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sSNYJQoq7VIn+vtERBylFPcQxQX6LuWyosQXlSFU3cQ=;
-        b=UHcE0TK6XW0LUH+yA9/uVjm3cxevVJQZX3lUOg1MBIyA9raAg0xLnbcs8J3VQDy5xs
-         3pdHdQuPgGTt+7dXNFyL3pgB5Oin7dT3RhoPtZXZtoQiePs3LaoEDedgQgI7NDcMB1Pc
-         gY0cndgg9+n6pGnoJ84OdmJwt55+iWcfV83TcsVsTujfdSE69tlFJcdDH/bmYP3SATLo
-         3uPKm4MoW6LqvVCDRUw8KeKYr7TuuMPBMPF1RwaszfS2rh2GLcKSAY59iNmq3FnCJdF1
-         SCKhIhHUcYyn/6Z0zSUIZ9EWRmakE9kQIiRVKMvzib2IofPZ/NB5DkNhlRzR4hoR8zQ7
-         xk3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sSNYJQoq7VIn+vtERBylFPcQxQX6LuWyosQXlSFU3cQ=;
-        b=LBntxdedNatSoTO3Qtoz4ZuuCdCAZcs3yOoMsB+t3VANwkyokSLciIbB2sxBX0zTiv
-         pL3ZIMskOy0MnCgPy+keV3/SSq3Nw5olEjml1WjJhGJfY36Pi44VMcksvpzLVslY4PN3
-         YtM5iEcjEWVMY4TJ+jen4dJOKT1y1FL2DzosjAALoaQB51ws9vCaVmjEnIBhLcXviMC6
-         8G1DZyju5/JdDR5oxqqqVGXZyNg66Pqgws6cKuyWsfRipmHVOS3puNDuSA5whsZdg2Wg
-         INHEuqEx3kZmwWi949O0oMXFr2A5HIgFzGayHCuoPLRnVBWBWSzTC5WK35zGWWdTZP/2
-         RQsw==
-X-Gm-Message-State: AOAM533BHUrT+ZP9VFtclDekiZEPwXxZtexqULBUwU/IiQ7yiC2VZf3R
-        EnlvYwnCKKlrPGRKZGHCCM0=
-X-Google-Smtp-Source: ABdhPJxXAfEgM9tV8AlLz+vaUk2lc/oSuiwnQ6x9FyFJ93oagdyTA1EpdzmQ7jg/MS4Pcgc61E2aaQ==
-X-Received: by 2002:a17:902:9303:: with SMTP id bc3mr4616620plb.170.1599726688316;
-        Thu, 10 Sep 2020 01:31:28 -0700 (PDT)
-Received: from VM.ger.corp.intel.com ([192.55.54.40])
-        by smtp.gmail.com with ESMTPSA id c7sm5183438pfj.100.2020.09.10.01.31.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Sep 2020 01:31:27 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] samples/bpf: add quiet option to xdpsock
-Date:   Thu, 10 Sep 2020 10:31:06 +0200
-Message-Id: <1599726666-8431-4-git-send-email-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599726666-8431-1-git-send-email-magnus.karlsson@gmail.com>
-References: <1599726666-8431-1-git-send-email-magnus.karlsson@gmail.com>
+        id S1730116AbgIJIrv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 04:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726847AbgIJIru (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 04:47:50 -0400
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C4F920770;
+        Thu, 10 Sep 2020 08:47:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599727668;
+        bh=RPokpgxyglYjppmxdwE4ETpgoWb+FLMn8txdhEbALdk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=caMPoUSKexLI6/Cqhtg8fT99cl3GRCJBgwM+b8CDUH4fpndiULhN2ZxxlePCqMtm8
+         o+PPIhKL0Yab4dKBUBJb9PAX9HTFJdHyhq4ZrB98n0hws/gO34J2oo99WhyXQG8LAo
+         ih4L+nIDe5nvGNhsdtsxYZAUrexQb+0pD4TKBRdk=
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     Kees Cook <kees.cook@canonical.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dm-devel@redhat.com,
+        linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mtd@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
+        oss-drivers@netronome.com, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-nvme@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        storagedev@microchip.com, sparclinux@vger.kernel.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, bpf@vger.kernel.org,
+        dccp@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-sctp@vger.kernel.org,
+        alsa-devel <alsa-devel@alsa-project.org>
+Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
+ break;
+In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+Date:   Thu, 10 Sep 2020 11:47:27 +0300
+Message-ID: <878sdikogw.fsf@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Add a quiet option (-Q) that disables the statistics print outs of
-xdpsock. This is good to have when measuring 0% loss rate performance
-as it will be quite terrible if the application uses printfs.
+Hi,
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- samples/bpf/xdpsock_user.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+Joe Perches <joe@perches.com> writes:
+>  drivers/usb/dwc3/core.c                                   |  2 +-
+>  drivers/usb/gadget/legacy/inode.c                         |  2 +-
+>  drivers/usb/gadget/udc/pxa25x_udc.c                       |  4 ++--
+>  drivers/usb/phy/phy-fsl-usb.c                             |  2 +-
 
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index b60bf4e..b220173 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -78,6 +78,7 @@ static int opt_pkt_count;
- static u16 opt_pkt_size = MIN_PKT_SIZE;
- static u32 opt_pkt_fill_pattern = 0x12345678;
- static bool opt_extra_stats;
-+static bool opt_quiet;
- static int opt_poll;
- static int opt_interval = 1;
- static u32 opt_xdp_bind_flags = XDP_USE_NEED_WAKEUP;
-@@ -718,6 +719,7 @@ static struct option long_options[] = {
- 	{"tx-pkt-size", required_argument, 0, 's'},
- 	{"tx-pkt-pattern", required_argument, 0, 'P'},
- 	{"extra-stats", no_argument, 0, 'x'},
-+	{"quiet", no_argument, 0, 'Q'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -753,6 +755,7 @@ static void usage(const char *prog)
- 		"			Min size: %d, Max size %d.\n"
- 		"  -P, --tx-pkt-pattern=nPacket fill pattern. Default: 0x%x\n"
- 		"  -x, --extra-stats	Display extra statistics.\n"
-+		"  -Q, --quiet          Do not display any stats.\n"
- 		"\n";
- 	fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE,
- 		opt_batch_size, MIN_PKT_SIZE, MIN_PKT_SIZE,
-@@ -768,7 +771,7 @@ static void parse_command_line(int argc, char **argv)
- 	opterr = 0;
- 
- 	for (;;) {
--		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:x",
-+		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:xQ",
- 				long_options, &option_index);
- 		if (c == -1)
- 			break;
-@@ -852,6 +855,9 @@ static void parse_command_line(int argc, char **argv)
- 		case 'x':
- 			opt_extra_stats = 1;
- 			break;
-+		case 'Q':
-+			opt_quiet = 1;
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 		}
-@@ -1286,9 +1292,11 @@ int main(int argc, char **argv)
- 
- 	setlocale(LC_ALL, "");
- 
--	ret = pthread_create(&pt, NULL, poller, NULL);
--	if (ret)
--		exit_with_error(ret);
-+	if (!opt_quiet) {
-+		ret = pthread_create(&pt, NULL, poller, NULL);
-+		if (ret)
-+			exit_with_error(ret);
-+	}
- 
- 	prev_time = get_nsecs();
- 	start_time = prev_time;
-@@ -1302,7 +1310,8 @@ int main(int argc, char **argv)
- 
- 	benchmark_done = true;
- 
--	pthread_join(pt, NULL);
-+	if (!opt_quiet)
-+		pthread_join(pt, NULL);
- 
- 	xdpsock_cleanup();
- 
--- 
-2.7.4
+for the drivers above:
 
+Acked-by: Felipe Balbi <balbi@kernel.org>
+
+=2D-=20
+balbi
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9Z6B8RHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQZSCRAAuTv1hrqhd9iVfnwXFrfx8dYquoCMc3VI
+y1IiULV6avnZvLQTqKviHDvZw05WY6dna714mpLFW1laW3WuhLSD4elIu6cqHaiz
+ZgtvtA4bZ/s7ipV+jlZ86S9oIz4MMBbZYhqSN1ZVk50NsUA/1thpcjS0aLI5SAgX
+j2dV6BEEHBSgMDwcWLPNwr6f5R/ycEBx3i6HYSSdNtBr1SK+UhbSkwNxdCA9IzH8
+1WCugmJdohP26DIYNzFZcssjcSFb5wu2iuHXQXuvOmmAfQmro+gRcnq1SOElae7v
+cas67L69RQ5fxskM/XpIYH2AURFnRUNondcJWViUQXHwXF1U0r+FdwXUr8OeFi19
+sVEI4FNu7ZqgvhfUlKMpldyUZRIrWb+WZZ5toBQAKFee/3tqTs4Tqh9cwfLL9IU4
+ho4tG7J/bd6hASfr0x2dH5Pm7oXKskxmtUpmmSVlNaTpXytiD30+pUvOl9Qg7A+X
+tc9h6N3Z6kdVxkJlm1KpUUccPeUtHox549ukAtzKQL4x6PDCdNqBkNDVSIx04FA4
+dgyt4O7w4HaWT1GPHH322pG5nNT1dsGT0CC9QA/2AJkoXTY03YGR3dgDw89GNUrP
+WPj73gtBbWTwRFuwHQQs8F/E8x2UjBC005aawoKcK2bxBR1fzqz1y8daUaiCftnV
+ocu1QwRIgL8=
+=BFTp
+-----END PGP SIGNATURE-----
+--=-=-=--
