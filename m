@@ -2,81 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3049264C77
-	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 20:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF4A264D5A
+	for <lists+bpf@lfdr.de>; Thu, 10 Sep 2020 20:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726978AbgIJSMv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 14:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
+        id S1727072AbgIJSk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 14:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgIJSMk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:12:40 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894DBC061573;
-        Thu, 10 Sep 2020 11:12:39 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x69so4120572lff.3;
-        Thu, 10 Sep 2020 11:12:39 -0700 (PDT)
+        with ESMTP id S1726729AbgIJSTA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:19:00 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E02C06179A;
+        Thu, 10 Sep 2020 11:18:55 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b19so9397082lji.11;
+        Thu, 10 Sep 2020 11:18:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=b5/4a+sPvp8g91eIz2Z6rfUfGamXw5eXD4uHR8QWOaM=;
-        b=ky7IcoAeI9W72Xv/muSnxQTnjLzwQLDqYwwj6XOPqiKs5eqMfeXt4aTVfSYUUZcvxV
-         egVxu/RoNItYqk7eclHd7KRGK4XRcoueOSy6KvXVi7pQObr8qdLHfp85hsW359pxUGer
-         CB/NlRHe+Jla5pn6W+k+WR/2xtyRoelRADvDfu3kW/bcgcCwiGH1iveO0gk321J+qS2l
-         CuYvz1pI51nyi0n2Cel7as9oe12fyy/KHViTCtcVNwmXv2jhaGLPw8lZxCLTNt+9mGBw
-         j+etyRdqqnRG62rl8UKOY+K1Em7v3TN6sEwHjRskBnfV/b18ALPeJpRJKx9M3LyBG1ON
-         zD4g==
+        bh=u0QoUpdiWuk/TleG1WhXpC/jMx3rJkmmsyPPORRnaNA=;
+        b=DkxDHZCeEq8gImW5b5s9dmFvlHa7JdgopAVHLW/ZIzpQoQYlG1BQYvWo9DEfzyX5VS
+         XJJ/yAafniBhM+cS9/LPxScGdLhajuJwnRmQnqlj6tBczIFlJ0wSo7+cR7XA3BUT2x7E
+         8RuxLMxEPJ18bJrs/9uRZbV/MP6Xcw7AMCfc/xz0U5Nmib3IxJEID2mjR0t6h/NIND+O
+         qups0J0Kc09djdWDzYfxNS6Q5tbHVOVU9BoCmL7/dDUSmBbrNkrOzxnG3cNu5WfwnhSx
+         VzJyjItHcEqp0osjRRLSk2JfDUnaQoaMnMfnEQ0BDcReJXzFrksAeWuFv/xjCcyUVtHZ
+         RVhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=b5/4a+sPvp8g91eIz2Z6rfUfGamXw5eXD4uHR8QWOaM=;
-        b=rLr/mk9Te9E+hXcUYwE8MOKZ94cwAlTg14f92aWH/uPLF44WBOp4N3hZL0OUXCzaxe
-         dgMfvAR9VlbEVFW8KX5mKhObNSUH7uV2/7eCK+MLcA5IHr1rL1Og6Pb7MVvC/1CkxKLl
-         /bpYDQ69vuyo4Wil/TkwdoZijDk3pTX2vxJbtUDjZAgZMPG81ewuTADL0O8DNPskD5ZQ
-         9BTD2oVDWhmsIvy88MtDWudKlxOQEjRJ+GF1xbx1aYBMjXtVJeI4DAeOVMyecfm2hxn8
-         NEDqKeBa15ELkxf3j9Kz7MUCke2KxBBFi303cWp5wPQGp00n7+7AJ8bzZI+yJBZyQujO
-         uY8w==
-X-Gm-Message-State: AOAM531pdL4Lt5fndK7KAeV9nTCLwcK9iz+JRX9t2ab4Y2Pow9b0Kgde
-        5r96yfWcQcjgcMRh7Yd+/cXZ3+J9rA93cy3GDEALnxCx
-X-Google-Smtp-Source: ABdhPJzq7sD6mMA21QyhekBRFxWffMRoLh8fU11va4nVPybxmhxHU5cJ9WklMWms2WyqfSb74Y21nwSBnTANJLbmvIk=
-X-Received: by 2002:ac2:5327:: with SMTP id f7mr4800600lfh.8.1599761557648;
- Thu, 10 Sep 2020 11:12:37 -0700 (PDT)
+        bh=u0QoUpdiWuk/TleG1WhXpC/jMx3rJkmmsyPPORRnaNA=;
+        b=EHtUriED04c5mk6R9VGzcVxj2oZB/xQspkGuMqtX10gty3SVU9wEgKBqSnKflFk6Ia
+         lCKfERwkxJ3hHuzGlkJ5WaxerYpV0zYPmVwW06MuYAE0/HZPdbGF6HUPzKAiK4s9XKk+
+         PxCjtmfamIvjakI+el6VqN1lGtYMqBfcF2uvOdblqQ3TLJtqMjzr3Mi4GlJLyfZkbY7B
+         KKNUmsyBtZ4kILeRjAVcovN/9P1PrlQzeJG+Sfv1ToX6mFwk4QctbDtsIydBEy2nGvif
+         dBCtwdmzLlyC6nV6yK/71pVhzmYM0xfr2ncF2CiThzM2kJHZkgAyNi72DWMqE39aCLvI
+         NA7A==
+X-Gm-Message-State: AOAM530O2JBz377OacMgzlZ/+gJJYtT3XGYCHWgjz3KGAJRIynThg0i1
+        oTAwbgqsyEoXtgtEzMOFSzWkhorVUpJIAIaIW+w=
+X-Google-Smtp-Source: ABdhPJyRz5V7THDsiTRBjlBEFsRmiRLAIZm1vHZm6P/v2qrNprvpIZsrwl+bOqx70qaO+kvUOtzO44C61GDp+vedvJM=
+X-Received: by 2002:a2e:808f:: with SMTP id i15mr4815444ljg.51.1599761933699;
+ Thu, 10 Sep 2020 11:18:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909162251.15498-1-quentin@isovalent.com>
-In-Reply-To: <20200909162251.15498-1-quentin@isovalent.com>
+References: <20200909162500.17010-1-quentin@isovalent.com> <20200909162500.17010-4-quentin@isovalent.com>
+In-Reply-To: <20200909162500.17010-4-quentin@isovalent.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Sep 2020 11:12:26 -0700
-Message-ID: <CAADnVQLjGgz9sXanrkp2z0-uMETRZN+GPcqf4FLtVgvSPXhVbg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/2] bpf: detect build errors for man pages
- for bpftool and eBPF helpers
+Date:   Thu, 10 Sep 2020 11:18:42 -0700
+Message-ID: <CAADnVQ+b3y1LFRppZu5GYW6hZY6nSZc3wQKqpqHbevdNHNSCSA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] tools: bpftool: automate generation for
+ "SEE ALSO" sections in man pages
 To:     Quentin Monnet <quentin@isovalent.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 9:22 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On Wed, Sep 9, 2020 at 9:25 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> This set aims at improving the checks for building bpftool's documentation
-> (including the man page for eBPF helper functions). The first patch lowers
-> the log-level from rst2man and fix the reported informational messages. The
-> second one extends the script used to build bpftool in the eBPF selftests,
-> so that we also check a documentation build.
+> The "SEE ALSO" sections of bpftool's manual pages refer to bpf(2),
+> bpf-helpers(7), then all existing bpftool man pages (save the current
+> one).
 >
-> This is after a suggestion from Andrii Nakryiko.
+> This leads to nearly-identical lists being duplicated in all manual
+> pages. Ideally, when a new page is created, all lists should be updated
+> accordingly, but this has led to omissions and inconsistencies multiple
+> times in the past.
+>
+> Let's take it out of the RST files and generate the "SEE ALSO" sections
+> automatically in the Makefile when generating the man pages. The lists
+> are not really useful in the RST anyway because all other pages are
+> available in the same directory.
 >
 > v2:
-> - Pass rst2man option through a dedicated variable, use it to ask for a
->   non-zero exit value on errors.
-> - Also build doc right after bpftool when building (not only running) the
->   selftests.
+> - Use "echo -n" instead of "printf" in Makefile, to avoid any risk of
+>   passing a format string directly to the command.
+>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Applied. Thanks
+This patch failed to git am, but I've applied the first two patches.
+Thanks
