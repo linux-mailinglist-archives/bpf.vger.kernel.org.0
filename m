@@ -2,122 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D7026581A
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 06:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE90265867
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 06:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725385AbgIKEUo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 00:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgIKEUl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Sep 2020 00:20:41 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0D3C061573;
-        Thu, 10 Sep 2020 21:20:41 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x77so4797954lfa.0;
-        Thu, 10 Sep 2020 21:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WCD5sAY3q1xf3zuoTVAQhjlZUF+7j2sllfT56EASGbw=;
-        b=LTf5O1CWxtJhz6pajoo09m3m1aMboW7ayu+jhI/0Ca46mPDVbXweRxaTrcm8vTGdQm
-         zd2WrWf80sZWkByM8gofNsp3k11gTDDeMhhBj7AE/WsvkA2XI5Ba8NhxTxPAft/FOI8c
-         IHHChpCWcBUc8sKb4TMdnvEmVsAj75i5MfM08kAYnuz5miJstt9d0aS5oV3MNP8oJLLW
-         MJ0JvzfdvifUYaCMQ7vrvW21lMEd4aTKVmkOovW0/HIjUGM0r5gdeGup3aFfgtJErLTQ
-         Hn06t4FlKn1L+PhWaLCFOfEmMfWb/a3qywqZ+KlhFqAt04X5Qd3c9eS2gu8LcHRyOQxn
-         AGNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WCD5sAY3q1xf3zuoTVAQhjlZUF+7j2sllfT56EASGbw=;
-        b=rlrnWNNnQXtwYedP6OYq56613U6YS9+NzJpdhAa2CnRMQTzmPtKPhI4pCP5SfrK+H3
-         n56r1Xq3FvNwvPMKTus+NlHLw/kw8uvcmoqcHE6izg/MTDVZILLbqCXhSIdJXRGfT+nQ
-         iftu0UiEfApp3lF+Lol/NiNVTd0jY44UVJTkzrjK/mA/VUai0VIFA0F9tDry5spwoxW3
-         4hpYAqxck7jTDEpQN0vzPK3TM/0dASff/ak78j7ZP1uGX6+8du+tn8Yp4wfcNo+1y63p
-         FlAjHKE4g1JGbfUObtji0/MLl2O04GfFbTPblvjAbKISLy40SG7DJbwPeBLyTc5L/Jqu
-         yTKg==
-X-Gm-Message-State: AOAM533AzeExA/2bGHPEaWTO9O0V67U4r3jP6aA4pusDLzUCfvBKGyTM
-        wLkpgVOjI/y5ZBTXnFEHty2Hhqm+zY8jjFg0YRg=
-X-Google-Smtp-Source: ABdhPJzQGlm4EJ3R2SElL2AvGfMxCaNbtwliG7i2nJLKXCRIS4fRYdp390R/EfwkEZf/ax9HN6hr/t/M97vEumKWEMI=
-X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr5586269lfr.157.1599798039600;
- Thu, 10 Sep 2020 21:20:39 -0700 (PDT)
+        id S1725772AbgIKEhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 00:37:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725681AbgIKEhK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 00:37:10 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E00B221E7;
+        Fri, 11 Sep 2020 04:37:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599799030;
+        bh=JoKwh3qJRTbkpXb29zLQsepECW/mXTdadxrZ5Cy/rWU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sMmGkDvVrjiz4rR868arhRuUIpkNr7QfTtdszWewk1mHMDVPYU0SvtkVrIi0YzRMU
+         eupPSaIYpZbxuBOIr8PKtAnDb30LSbuf09BaiTdSAt76tMNRNpjtohPHTJ5B7Fd42D
+         hUmTHqi4ojct/WE85x3D9UBqtLZ8gzYnPsVgQ6nE=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id F09BB3522DD2; Thu, 10 Sep 2020 21:37:09 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 21:37:09 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>, dipankar@in.ibm.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH RFC tip/core/rcu 4/4] rcu-tasks: Shorten per-grace-period
+ sleep for RCU Tasks Trace
+Message-ID: <20200911043709.GV29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
+ <20200910202052.5073-4-paulmck@kernel.org>
+ <CAADnVQK4Rgrzq+cUKCMkr5anZF+UbHmAc7-FH4BjA23aMM03rQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200910193536.2980613-1-ncardwell.kernel@gmail.com> <20200911032844.wrlgcpoc6fkk2gw4@kafai-mbp>
-In-Reply-To: <20200911032844.wrlgcpoc6fkk2gw4@kafai-mbp>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Sep 2020 21:20:28 -0700
-Message-ID: <CAADnVQJ8FnZEJ0fnODoRP-kKYsM4wj=H=cRx18DbEhgn=376Tw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/5] tcp: increase flexibility of EBPF
- congestion control initialization
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Neal Cardwell <ncardwell.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Neal Cardwell <ncardwell@google.com>,
-        bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQK4Rgrzq+cUKCMkr5anZF+UbHmAc7-FH4BjA23aMM03rQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 8:28 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Sep 10, 2020 at 03:35:31PM -0400, Neal Cardwell wrote:
-> > From: Neal Cardwell <ncardwell@google.com>
+On Thu, Sep 10, 2020 at 08:18:01PM -0700, Alexei Starovoitov wrote:
+> On Thu, Sep 10, 2020 at 1:20 PM <paulmck@kernel.org> wrote:
 > >
-> > This patch series reorganizes TCP congestion control initialization so that if
-> > EBPF code called by tcp_init_transfer() sets the congestion control algorithm
-> > by calling setsockopt(TCP_CONGESTION) then the TCP stack initializes the
-> > congestion control module immediately, instead of having tcp_init_transfer()
-> > later initialize the congestion control module.
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
 > >
-> > This increases flexibility for the EBPF code that runs at connection
-> > establishment time, and simplifies the code.
-> >
-> > This has the following benefits:
-> >
-> > (1) This allows CC module customizations made by the EBPF called in
-> >     tcp_init_transfer() to persist, and not be wiped out by a later
-> >     call to tcp_init_congestion_control() in tcp_init_transfer().
-> >
-> > (2) Does not flip the order of EBPF and CC init, to avoid causing bugs
-> >     for existing code upstream that depends on the current order.
-> >
-> > (3) Does not cause 2 initializations for for CC in the case where the
-> >     EBPF called in tcp_init_transfer() wants to set the CC to a new CC
-> >     algorithm.
-> >
-> > (4) Allows follow-on simplifications to the code in net/core/filter.c
-> >     and net/ipv4/tcp_cong.c, which currently both have some complexity
-> >     to special-case CC initialization to avoid double CC
-> >     initialization if EBPF sets the CC.
-> >
-> > changes in v2:
-> >
-> > o rebase onto bpf-next
-> >
-> > o add another follow-on simplification suggested by Martin KaFai Lau:
-> >    "tcp: simplify tcp_set_congestion_control() load=false case"
-> >
-> > changes in v3:
-> >
-> > o no change in commits
-> >
-> > o resent patch series from @gmail.com, since mail from ncardwell@google.com
-> >   stopped being accepted at netdev@vger.kernel.org mid-way through processing
-> >   the v2 patch series (between patches 2 and 3), confusing patchwork about
-> >   which patches belonged to the v2 patch series
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> > The various RCU tasks flavors currently wait 100 milliseconds between each
+> > grace period in order to prevent CPU-bound loops and to favor efficiency
+> > over latency.  However, RCU Tasks Trace needs to have a grace-period
+> > latency of roughly 25 milliseconds, which is completely infeasible given
+> > the 100-millisecond per-grace-period sleep.  This commit therefore reduces
+> > this sleep duration to 5 milliseconds (or one jiffy, whichever is longer)
+> > in kernels built with CONFIG_TASKS_TRACE_RCU_READ_MB=y.
+> 
+> The commit log is either misleading or wrong?
+> If I read the code correctly in CONFIG_TASKS_TRACE_RCU_READ_MB=y
+> case the existing HZ/10 "paranoid sleep" is preserved.
 
-Applied.
+Yes, for CONFIG_TASKS_TRACE_RCU_READ_MB=y, the previous 100-millisecond
+"paranoid sleep" is preserved.  Preserving previous behavior is of course
+especially important for rcupdate.rcu_task_ipi_delay, given that real-time
+applications are degraded by IPIs.  And given that we are avoiding IPIs
+in this case, speeding up the polling is not all that helpful.
 
-Martin, thanks for the review.
+> It's for the MB=n case it is reduced to HZ/200.
 
-Neal, please keep Acks when you resubmit patches without changes in the future.
-Also please follow up with a selftests/bpf based on test_progs to
-cover new functionality.
+Yes, that is, to roughly 5 milliseconds for large HZ or to one jiffy
+for HZ<200.  Here, we send IPIs much more aggressively, so polling
+more frequently does help a lot.
 
-Thanks
+> Also I don't understand why you're talking about milliseconds but
+> all numbers are HZ based. HZ/10 gives different number of
+> milliseconds depending on HZ.
+
+As long as HZ is 10 or greater, HZ/10 jiffies is roughly 100 milliseconds.
+In the unlikely event that HZ is less than 10, the code clamps to one
+jiffy.  Since schedule_timeout_idle() sleep time is specified in jiffies,
+it all works out.
+
+							Thanx, Paul
