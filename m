@@ -2,102 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B672660FF
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 16:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B307426616D
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 16:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgIKOMx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 10:12:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37538 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726187AbgIKNQs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 11 Sep 2020 09:16:48 -0400
+        id S1725899AbgIKOn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 10:43:27 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21666 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726192AbgIKNDR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:03:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599830167;
+        s=mimecast20190719; t=1599829368;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=rkS7T2t+cwHMdDgfJc0SznulsmzvAzCieOLQud/9Bcc=;
-        b=VhjCyK7GWBBZNNNjiofs6YSUME5SFqilJkOS9H7VyZO6PrW5ZJGtxPwyCKZbepNjBSu58k
-        1betRcWmTvOwrqMitw63kFiYNgv4DrnqF44+UBV5pTKs57m9adE4DqbwJMp7Ee7tQOIwBp
-        9gbJmTIE7tQ6qRCdmifz67HpjyWzBCg=
+        bh=Oqtp+pU6EVX5K85gU9EYn6QWRvb00undsqSAgRZGvwg=;
+        b=RTpDK0Th+/1iYevBS8TVp63NXYXnNBcc2fmuX1p9OcZ424O+72UegBbxIlHM3r8idOo/qk
+        JmlUX0c6DJ/gtWwxEhf2QLzQRi7aKmNA+Nwf0PS/2M58Wt0dzUNK5itVIqwXjBcdsIvjS+
+        EzBDM5hWP/qxgxRJMutSQDnjXrh2ttk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-c1THySt4MBOTG0_EC_WAnA-1; Fri, 11 Sep 2020 09:16:03 -0400
-X-MC-Unique: c1THySt4MBOTG0_EC_WAnA-1
+ us-mta-595-kt3iaoLZOAWSvM6rs-mcOA-1; Fri, 11 Sep 2020 09:02:47 -0400
+X-MC-Unique: kt3iaoLZOAWSvM6rs-mcOA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DD7981F00F;
-        Fri, 11 Sep 2020 13:16:02 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CC75802B46;
+        Fri, 11 Sep 2020 13:02:45 +0000 (UTC)
 Received: from krava (unknown [10.40.192.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 54B7875136;
-        Fri, 11 Sep 2020 13:15:59 +0000 (UTC)
-Date:   Fri, 11 Sep 2020 15:15:58 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 39C7B75129;
+        Fri, 11 Sep 2020 13:02:34 +0000 (UTC)
+Date:   Fri, 11 Sep 2020 15:02:32 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Check trampoline execution in
- d_path test
-Message-ID: <20200911131558.GD1714160@krava>
-References: <20200910122224.1683258-1-jolsa@kernel.org>
- <CAADnVQJ0FchoPqNWm+dEppyij-MOvvEG_trEfyrHdabtcEuZGg@mail.gmail.com>
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Adding test for arg
+ dereference in extension trace
+Message-ID: <20200911130232.GB1714160@krava>
+References: <20200909151115.1559418-1-jolsa@kernel.org>
+ <20200909151115.1559418-2-jolsa@kernel.org>
+ <CAEf4BzbY3zV-xYDBvCYztXOkn=MJwHxOVyAH7YRH8JH869qtDg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJ0FchoPqNWm+dEppyij-MOvvEG_trEfyrHdabtcEuZGg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbY3zV-xYDBvCYztXOkn=MJwHxOVyAH7YRH8JH869qtDg@mail.gmail.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 05:46:21PM -0700, Alexei Starovoitov wrote:
-> On Thu, Sep 10, 2020 at 5:22 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Some kernels builds might inline vfs_getattr call within
-> > fstat syscall code path, so fentry/vfs_getattr trampoline
-> > is not called.
-> >
-> > I'm not sure how to handle this in some generic way other
-> > than use some other function, but that might get inlined at
-> > some point as well.
+On Thu, Sep 10, 2020 at 03:34:26PM -0700, Andrii Nakryiko wrote:
+
+SNIP
+
+> > +
+> > +void test_trace_ext(void)
+> > +{
+> > +       struct test_trace_ext_tracing *skel_trace = NULL;
+> > +       struct test_trace_ext_tracing__bss *bss_trace;
+> > +       const char *file = "./test_pkt_md_access.o";
+> > +       struct test_trace_ext *skel_ext = NULL;
+> > +       struct test_trace_ext__bss *bss_ext;
+> > +       int err, prog_fd, ext_fd;
+> > +       struct bpf_object *obj;
+> > +       char buf[100];
+> > +       __u32 retval;
+> > +       __u64 len;
+> > +
+> > +       err = bpf_prog_load(file, BPF_PROG_TYPE_SCHED_CLS, &obj, &prog_fd);
+> > +       if (CHECK_FAIL(err))
+> > +               return;
 > 
-> It's great that we had the test and it failed.
-> Doing the test skipping will only hide the problem.
-> Please don't do it here and in the future.
-> Instead let's figure out the real solution.
-> Assuming that vfs_getattr was added to btf_allowlist_d_path
-> for a reason we have to make this introspection place
-> reliable regardless of compiler inlining decisions.
-> We can mark it as 'noinline', but that's undesirable.
-> I suggest we remove it from the allowlist and replace it with
-> security_inode_getattr.
-> I think that is a better long term fix.
+> We should avoid using bpf_prog_load() for new code. Can you please
+> just skeleton instead? Or at least bpf_object__open_file()?
 
-in my case vfs_getattr got inlined in vfs_statx_fd and both
-of them are defined in fs/stat.c 
+ok
 
-so the idea is that inlining will not happen if the function
-is defined in another object? or less likely..?
+> 
+> > +
+> > +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+> > +                           .attach_prog_fd = prog_fd,
+> > +       );
+> 
+> DECLARE_LIBBPF_OPTS does declare a variable, so should be together
+> with all the other variables above, otherwise some overly strict C89
+> mode compiler will start complaining. You can assign
+> `opts.attach_prog_fd = prog_fd;` outside of declaration. But I also
+> don't think you need this one. Having .attach_prog_fd in open_opts is
+> not great, because it's a per-program setting specified at bpf_object
+> level. Would bpf_program__set_attach_target() work here?
 
-we should be safe when it's called from module
+right, I'll try it, it should be enough
 
-> While at it I would apply the same critical thinking to other
-> functions in the allowlist. They might suffer the same issue.
-> So s/vfs_truncate/security_path_truncate/ and so on?
-> Things won't work when CONFIG_SECURITY is off, but that is a rare kernel config?
-> Or add both security_* and vfs_* variants and switch tests to use security_* ?
-> but it feels fragile to allow inline-able funcs in allowlist.
+SNIP
 
-hm, what's the difference between vfs_getattr and security_inode_getattr
-in this regard? I'd expect compiler could inline it same way as for vfs_getattr
+> > +
+> > +cleanup:
+> > +       test_trace_ext__destroy(skel_ext);
+> > +       bpf_object__close(obj);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/test_trace_ext.c b/tools/testing/selftests/bpf/progs/test_trace_ext.c
+> > new file mode 100644
+> > index 000000000000..a6318f6b52ee
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_trace_ext.c
+> > @@ -0,0 +1,18 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +// Copyright (c) 2019 Facebook
+> > +#include <linux/bpf.h>
+> > +#include <stdbool.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_endian.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +volatile __u64 ext_called = 0;
+> 
+> nit: no need for volatile, global variables are not going anywhere;
+> same below in two places
+
+ok, thanks
 
 jirka
 
