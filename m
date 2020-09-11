@@ -2,111 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99330265537
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 00:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39689265602
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 02:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725385AbgIJWw5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 18:52:57 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39794 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725497AbgIJWww (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Sep 2020 18:52:52 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08AMlgio030610
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 15:52:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=Tkj11c3eG/WxbgYHibOAwXdS4x/vdvYRGmRn4MTjy7Q=;
- b=pbvZNl8v7niXBDjSsmQlygBfYZsQjFxHs23Nd2l3eICkUEZNfqXDaioeTVgnDQ08OIi4
- hmIBXxEsbYdBlr9wyP7lYS+Fuy29CfMXEK8ugCcYQbZTfUXdT1Pz5t7+zo3CZ0MLudU5
- PA8wlHQvhUzSm6mt88zwteAudA7t1wd0uk8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 33exvj198u-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 15:52:50 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 10 Sep 2020 15:52:49 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 1FAA62EC6C39; Thu, 10 Sep 2020 15:52:48 -0700 (PDT)
-From:   Andrii Nakryiko <andriin@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH bpf] docs/bpf: fix ringbuf documentation
-Date:   Thu, 10 Sep 2020 15:52:45 -0700
-Message-ID: <20200910225245.2896991-1-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1725298AbgIKAZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 20:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725294AbgIKAZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 20:25:57 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B32C061573
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:25:56 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b19so10470999lji.11
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LyC7HwfK23FPwbJFXodypHnuVv0Nu47CRBtkkOz3tHc=;
+        b=F1jxNm2PkJJ2bDsduuXMCrEd8l1sy8IW89LJBCzpJKt160vxjYUrg8X/Hpzfkrt9gd
+         MoshSkZVwAlHYPCyt8tofQx096A/ts2ZivAbwUIofmCkElN/mIuUt1MkDON/b2H3Ai9g
+         0KKs11ax4DK634RHfOdRi1458THHJ249cBxbx3iC/Il3+8dAOz3tAkQsiuFu6UIXBfyG
+         +XGKEzyBs1S93nwGPukyDYOnxykDi5MmypLYtIfPOqJ9eVh0UU3/kT8+1aug8+WHeXUi
+         JF8JzZFJAjkXaMwCIc4ot1Ohb9m1aPRm2dlyEpeFU6CDcBKPOTm6SR8fP6wPPAZ6eqY4
+         7qZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LyC7HwfK23FPwbJFXodypHnuVv0Nu47CRBtkkOz3tHc=;
+        b=SAsSaJl99b62WopW/FVCYuiLmyCRyNW5Ooo2tOB/qVBPDVl8bnAlBOE7dvzh/fAapk
+         WLV0KhqEWkzzlvR4WM/0x+xg5oaSrx5HN5AazwCYGYbkLwbziP2fBhZQZsD/8C+6sESY
+         BuG5CCJ23VUD94SpxSya2yqTxIlyLkPi/DjWa87eYOqVXMpIBvFKzefsnPnawcf/ywXl
+         blC3sVbN7nIs7bw84Yn2Ao6xR8DRHCxUbXqJdr70Odpi5ddZGSYO964v29Wl6czTZvb+
+         eTEAJsb7eYEb8X8c5ny7y20u/tKnhyznxpie9sWR0Ol2M4zQuo7/T4rZiv8kW+qW55Ia
+         kfRQ==
+X-Gm-Message-State: AOAM533O7TdP8gTOatrCLZozgl+HJqr2uXmiyI+isJFvkgjWrmuYcEY7
+        W9P2R7PmVVa+oocdwMIeza0HGRyHXN+GH/LEhCg=
+X-Google-Smtp-Source: ABdhPJyM1ybos967q0V8khoON78NtQK7OXd2AG9RupIGtR2p0GFcpQ1TsSyeI1QnpbmGFe8biykwdyXi4n0pmZGDq0Y=
+X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr5873812ljr.2.1599783954743;
+ Thu, 10 Sep 2020 17:25:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_10:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=8 clxscore=1015
- adultscore=0 impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=951 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009100199
-X-FB-Internal: deliver
+References: <20200909233439.3100292-1-iii@linux.ibm.com> <20200909233439.3100292-6-iii@linux.ibm.com>
+In-Reply-To: <20200909233439.3100292-6-iii@linux.ibm.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 10 Sep 2020 17:25:43 -0700
+Message-ID: <CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 5/5] bpf: Do not include the original insn in
+ zext patchlet
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove link to litmus tests that didn't make it to upstream. Fix ringbuf
-benchmark link.
+On Wed, Sep 9, 2020 at 4:37 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> If the original insn is a jump, then it is not subjected to branch
+> adjustment, which is incorrect. As discovered by Yauheni in
 
-I wasn't able to test this with `make htmldocs`, unfortunately, because o=
-f
-Sphinx dependencies. But bench_ringbufs.c path is certainly correct now.
-
-Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Fixes: 97abb2b39682 ("docs/bpf: Add BPF ring buffer design notes")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- Documentation/bpf/ringbuf.rst | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rs=
-t
-index 75f943f0009d..4d4f3bcb1477 100644
---- a/Documentation/bpf/ringbuf.rst
-+++ b/Documentation/bpf/ringbuf.rst
-@@ -182,9 +182,6 @@ in the order of reservations, but only after all prev=
-ious records where
- already committed. It is thus possible for slow producers to temporarily=
- hold
- off submitted records, that were reserved later.
-=20
--Reservation/commit/consumer protocol is verified by litmus tests in
--Documentation/litmus_tests/bpf-rb/_.
--
- One interesting implementation bit, that significantly simplifies (and t=
-hus
- speeds up as well) implementation of both producers and consumers is how=
- data
- area is mapped twice contiguously back-to-back in the virtual memory. Th=
-is
-@@ -200,7 +197,7 @@ a self-pacing notifications of new data being availab=
-ility.
- being available after commit only if consumer has already caught up righ=
-t up to
- the record being committed. If not, consumer still has to catch up and t=
-hus
- will see new data anyways without needing an extra poll notification.
--Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbuf.c_) sho=
-w that
-+Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbufs.c_) sh=
-ow that
- this allows to achieve a very high throughput without having to resort t=
-o
- tricks like "notify only every Nth sample", which are necessary with per=
-f
- buffer. For extreme cases, when BPF program wants more manual control of
---=20
-2.24.1
-
+I think the problem is elsewhere.
+Something is wrong with zext logic.
+the branch insn should not have been marked as zext_dst.
+and in the line:
+zext_patch[0] = insn;
+this 'insn' should never be a branch.
+See insn_no_def().
