@@ -2,171 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E482664B2
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 18:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779362664BA
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 18:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgIKQoQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 12:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58720 "EHLO
+        id S1725778AbgIKQoy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 12:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgIKPIW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1726076AbgIKPIW (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 11 Sep 2020 11:08:22 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F1CC06136A
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:31:21 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id z22so14078184ejl.7
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:31:21 -0700 (PDT)
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7685EC061757
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:57:09 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id t13so9227941ile.9
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AifmCwlGQkYNJWlBnZAsy/4oYCtlJh2CI6z+GloOpvw=;
-        b=mq0+Z2otTHI4q6BWKiid1j5pubgJEivA198+nK7hLJEC/gmULm+cPFKIChKQ1QIXXT
-         VfP69f6jo2c/djHc4Ptm9Vmz9NLArYKToVGHHKzKzYpLIT6v1Xlcfr+zEpNWLebmfasV
-         A1V1xIpjsS+9MtmrnQcWeJJTNfPtm44TjzXo2ZmNM94e9OpmE1JnuWO/kAEO1itG+EO/
-         r8Nd2bYlLPI2BzGI9BuQpL9OhAx9rOgDDVlQ5Fgp2tNYKo9cR2b5tqHGBIoX54XR1lpH
-         Y5aoqaILSDiOPn7a7zj9IB6LIepvIcStRyCkLZRoiqiLpI11U+VfTGIaWKzHgPd/YgT2
-         d2Hg==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=ykseYhJ90a1CbPCcoVWkcQnnJUIuSYT5dh8aD3YbFOE=;
+        b=D2eebW1OrS1EsxnjO/gPjG8eT62idCz9IEXRv1DYKyJK8PvR6/k9DjbkqiItuM3R6p
+         vocaqHBtsvDa0KWILYY3NhewAuLbWsZdyBMyu3T6SSJt/F252jjj6/iqRqKGJCs8Tdq2
+         gzf1u9gFjNrHkJLLDZf9jldzG3mGoJwAHWlqPjMu3zGjOgIBFFJ2sRoAjUMqC5hciDvY
+         h3Skykro16zLlTrLbG+l9HMae10Oa/9O2xQj4K+a+hYpyV6YjhEXyuPjPJlCkfWYV4NE
+         oBPT+k47UK6d9moi/2hOZkqPWrBVBXapWPUGJVTwnyrbCM+wrBMcQaMmgLBH5U7GLlw8
+         Ysyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AifmCwlGQkYNJWlBnZAsy/4oYCtlJh2CI6z+GloOpvw=;
-        b=pfjq1xrUK2+bvcZY3fcP6YQHpy95ooSkHeVQVJLjjGQYRy4oXJEI+VEFhOTjhAPnz9
-         7TXS56/7l2C+BenEvkj2MTrqyi8ba5gDiPa2xUpl5tbKdBoqRxiUDwHPTm3ZEMyJeaH1
-         VUlehLqO6lVCCXOOwUlLGJLJyzwk7I1BMr2yLc2+cL6pjWGX4gsh6Az0mKd9nmq1LBpm
-         lfenJSEnydcDaLbO2upiOl1Dt+akkgJ1/O01vJV3AACFNgLgduEFUCfeBct8ubOPgWDK
-         nFb5FGELjDg4muMrrXU5CrlblE39Ot3GKBuamAkLo5AfHMsaKBZxtDxMuozoA+GJIlIb
-         Zs+g==
-X-Gm-Message-State: AOAM531xg5DN81B2a5cljcOFHKI+gBcSZ0EPbWKUlYijnd590171pavY
-        two68B6Tk6VuJ3OOqtD74OKwSg==
-X-Google-Smtp-Source: ABdhPJzugQqj4flmudtLUAs/WO1IQQCcBDyfUkw8ekBI2jy8c9MqX9LqDLSC4uGs7wvGyrfUUU2uUA==
-X-Received: by 2002:a17:906:4951:: with SMTP id f17mr2295162ejt.29.1599834680288;
-        Fri, 11 Sep 2020 07:31:20 -0700 (PDT)
-Received: from localhost.localdomain ([87.66.33.240])
-        by smtp.gmail.com with ESMTPSA id y21sm1716261eju.46.2020.09.11.07.31.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 07:31:19 -0700 (PDT)
-From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2 5/5] bpf: selftests: add bpf_mptcp_sock() verifier tests
-Date:   Fri, 11 Sep 2020 16:30:20 +0200
-Message-Id: <20200911143022.414783-5-nicolas.rybowski@tessares.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ykseYhJ90a1CbPCcoVWkcQnnJUIuSYT5dh8aD3YbFOE=;
+        b=K57h/KGRwL0F2wSXkpRrwaQjSNDUexKpD8pVo0d3u9a56ZQDzk3Bny68ETzbVdTGvY
+         Rpp84L+CJSSYgDPRk4YD3gBPOfaWBIhKTWfA2R/BiGYos/fFD7SDfHHoW4RO7vZFGhDt
+         b8dg4Q3tKvCvYsOxJsgmQbZESl/qqR7SQi1gAzyNSJDASXzWhj7H6n8vteJ0Sgr+bHbQ
+         Ie79mzMORAFdQvagcortWBf7PXtfkOBwCDIjvR6TmVVoz+Ppsb7rp2uqsBBlrJmJv4Js
+         TBJUk7DsOljAqW5ttqu4ERmpLubDE9caSGzWSeRLftnHz3GJpnhpJVBVO5+5VK6/MA/K
+         Zf/w==
+X-Gm-Message-State: AOAM530K/dB6ggSH/ce2JTfot7H5fXLlvTlerI9RNXJPzgwFUcQjhNgb
+        NkMNuHG1tyb/miI2oVZZ0bQ7uelFh4L8sIrGymK9ZBtWF+8Lcw==
+X-Google-Smtp-Source: ABdhPJy8jm85kawKVsCdI4q9H2rZ5aCR21bsoD1aH3lHeY29rFSzv/bG3y8qmxnI8f06SBgVNmm17UOzuOoT29D6aj8=
+X-Received: by 2002:a92:6b04:: with SMTP id g4mr2095402ilc.203.1599836226724;
+ Fri, 11 Sep 2020 07:57:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Luka Oreskovic <luka.oreskovic@sartura.hr>
+Date:   Fri, 11 Sep 2020 16:56:56 +0200
+Message-ID: <CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com>
+Subject: Problems with pointer offsets on ARM32
+To:     bpf@vger.kernel.org
+Cc:     Luka Perkov <luka.perkov@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds verifier side tests for the new bpf_mptcp_sock() helper.
+Greetings everyone,
 
-Here are the new tests :
-- NULL bpf_sock is correctly handled
-- We cannot access a field from bpf_mptcp_sock if the latter is NULL
-- We can access a field from bpf_mptcp_sock if the latter is not NULL
-- We cannot modify a field from bpf_mptcp_sock.
+I have been testing various BPF programs on the ARM32 architecture and
+have encountered a strange error.
 
-Note that "token" is currently the only field in bpf_mptcp_sock.
+When trying to run a simple program that prints out the arguments of
+the open syscall,
+I found some strange behaviour with the pointer offsets when accessing
+the arguments:
+The output of llvm-objdump differed from the verifier error dump log.
+Notice the differences in lines 0 and 1. Why is the bytecode being
+altered at runtime?
 
-Currently, there is no easy way to test the token field since we cannot
-get back the mptcp_sock in userspace, this could be a future amelioration.
+I attached the program, the llvm-objdump result and the verifier dump below.
 
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
----
+Best wishes,
+Luka Oreskovic
 
-Notes:
-    v1 -> v2:
-    - new patch: mandatory selftests (Alexei)
+BPF program
+--------------------------------------------
+#include "vmlinux.h"
+#include <bpf/bpf_helpers.h>
 
- tools/testing/selftests/bpf/verifier/sock.c | 63 +++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+SEC("tracepoint/syscalls/sys_enter_open")
+int tracepoint__syscalls__sys_enter_open(struct trace_event_raw_sys_enter* ctx)
+{
+        const char *arg1 = (const char *)ctx->args[0];
+        int arg2 = (int)ctx->args[1];
 
-diff --git a/tools/testing/selftests/bpf/verifier/sock.c b/tools/testing/selftests/bpf/verifier/sock.c
-index b1aac2641498..9ce7c7ec3b5e 100644
---- a/tools/testing/selftests/bpf/verifier/sock.c
-+++ b/tools/testing/selftests/bpf/verifier/sock.c
-@@ -631,3 +631,66 @@
- 	.prog_type = BPF_PROG_TYPE_SK_REUSEPORT,
- 	.result = ACCEPT,
- },
-+{
-+	"bpf_mptcp_sock(skops->sk): no !skops->sk check",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct bpf_sock_ops, sk)),
-+	BPF_EMIT_CALL(BPF_FUNC_mptcp_sock),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+	.result = REJECT,
-+	.errstr = "type=sock_or_null expected=sock_common",
-+},
-+{
-+	"bpf_mptcp_sock(skops->sk): no NULL check on ret",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct bpf_sock_ops, sk)),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_EMIT_CALL(BPF_FUNC_mptcp_sock),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_mptcp_sock, token)),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+	.result = REJECT,
-+	.errstr = "invalid mem access 'mptcp_sock_or_null'",
-+},
-+{
-+	"bpf_mptcp_sock(skops->sk): msk->token",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct bpf_sock_ops, sk)),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_EMIT_CALL(BPF_FUNC_mptcp_sock),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_mptcp_sock, token)),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+	.result = ACCEPT,
-+},
-+{
-+	"bpf_mptcp_sock(skops->sk): msk->token cannot be modified",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct bpf_sock_ops, sk)),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_EMIT_CALL(BPF_FUNC_mptcp_sock),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_ST_MEM(BPF_W, BPF_REG_0, offsetof(struct bpf_mptcp_sock, token), 0x2a),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SOCK_OPS,
-+	.result = REJECT,
-+	.errstr = "cannot write into mptcp_sock",
-+},
--- 
-2.28.0
+        bpf_printk("Open arg 1: %s\n", arg1);
+        bpf_printk("Open arg 2: %d\n", arg2);
 
+        return 0;
+}
+
+char LICENSE[] SEC("license") = "GPL";
+
+
+llvm-objdump of program
+--------------------------------------------
+Disassembly of section tracepoint/syscalls/sys_enter_open:
+
+0000000000000000 tracepoint__syscalls__sys_enter_open:
+;       int arg2 = (int)ctx->args[1];
+       0:       79 16 18 00 00 00 00 00 r6 = *(u64 *)(r1 + 24)
+;       const char *arg1 = (const char *)ctx->args[0];
+       1:       79 13 10 00 00 00 00 00 r3 = *(u64 *)(r1 + 16)
+       2:       18 01 00 00 20 31 3a 20 00 00 00 00 25 73 0a 00 r1 =
+2941353058775328 ll
+;       bpf_printk("Open arg 1: %s\n", arg1);
+       4:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) = r1
+       5:       18 07 00 00 4f 70 65 6e 00 00 00 00 20 61 72 67 r7 =
+7454127125170581583 ll
+       7:       7b 7a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r7
+       8:       bf a1 00 00 00 00 00 00 r1 = r10
+       9:       07 01 00 00 f0 ff ff ff r1 += -16
+      10:       b7 02 00 00 10 00 00 00 r2 = 16
+      11:       85 00 00 00 06 00 00 00 call 6
+      12:       18 01 00 00 20 32 3a 20 00 00 00 00 25 64 0a 00 r1 =
+2924860384358944 ll
+;       bpf_printk("Open arg 2: %d\n", arg2);
+      14:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) = r1
+      15:       7b 7a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r7
+      16:       bf a1 00 00 00 00 00 00 r1 = r10
+      17:       07 01 00 00 f0 ff ff ff r1 += -16
+      18:       b7 02 00 00 10 00 00 00 r2 = 16
+      19:       bf 63 00 00 00 00 00 00 r3 = r6
+      20:       85 00 00 00 06 00 00 00 call 6
+;       return 0;
+      21:       b7 00 00 00 00 00 00 00 r0 = 0
+      22:       95 00 00 00 00 00 00 00 exit
+
+
+verifier output when running program
+--------------------------------------------
+libbpf: -- BEGIN DUMP LOG ---
+libbpf:
+Unrecognized arg#0 type PTR
+; int arg2 = (int)ctx->args[1];
+0: (79) r6 = *(u64 *)(r1 +16)
+; const char *arg1 = (const char *)ctx->args[0];
+1: (79) r3 = *(u64 *)(r1 +12)
+invalid bpf_context access off=12 size=8
+processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read 0
+
+libbpf: -- END LOG --
