@@ -2,76 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39689265602
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 02:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66749265607
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 02:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725298AbgIKAZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 20:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        id S1725290AbgIKAbG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 20:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgIKAZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 20:25:57 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B32C061573
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:25:56 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id b19so10470999lji.11
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:25:56 -0700 (PDT)
+        with ESMTP id S1725280AbgIKAbB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 20:31:01 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CE9C061573;
+        Thu, 10 Sep 2020 17:31:00 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k25so10543900ljk.0;
+        Thu, 10 Sep 2020 17:31:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LyC7HwfK23FPwbJFXodypHnuVv0Nu47CRBtkkOz3tHc=;
-        b=F1jxNm2PkJJ2bDsduuXMCrEd8l1sy8IW89LJBCzpJKt160vxjYUrg8X/Hpzfkrt9gd
-         MoshSkZVwAlHYPCyt8tofQx096A/ts2ZivAbwUIofmCkElN/mIuUt1MkDON/b2H3Ai9g
-         0KKs11ax4DK634RHfOdRi1458THHJ249cBxbx3iC/Il3+8dAOz3tAkQsiuFu6UIXBfyG
-         +XGKEzyBs1S93nwGPukyDYOnxykDi5MmypLYtIfPOqJ9eVh0UU3/kT8+1aug8+WHeXUi
-         JF8JzZFJAjkXaMwCIc4ot1Ohb9m1aPRm2dlyEpeFU6CDcBKPOTm6SR8fP6wPPAZ6eqY4
-         7qZw==
+        bh=a0412DC0gQCVcXT+eeBHfu/FCDxETiEv+yph20SP+sE=;
+        b=AEei3ItF+8C6FfG+sVweFwNxLYTOZ/xn0oiVVTB7u6LY9fhlk6ZjjoNEgOAPugQQ9h
+         CFOsKAQBCLAluD9qJKCiIiknuCTx1kS+4Mht3J0NgfYSUrggYH3DksoGUiEi+aszJuTb
+         U+qGbtLsrfqbon4JXSd101Bni+/PZwYGdPjJ6dQwVDFBFNXWsyTJ/b+vgKdHnCwQ68SM
+         a1SRgACnS7dPEYY/3lL96O/sx2KazbJRt1/FDs0cXeoa8ldd+HCbocQuZlDqU0s+/Bjw
+         F4GdQJMaxLWLrrRMIgD9ZmyGdK8+jZF3yLCve5ECq80AsWe6+SNzRbO/AQitw6VC5Pq1
+         uVmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LyC7HwfK23FPwbJFXodypHnuVv0Nu47CRBtkkOz3tHc=;
-        b=SAsSaJl99b62WopW/FVCYuiLmyCRyNW5Ooo2tOB/qVBPDVl8bnAlBOE7dvzh/fAapk
-         WLV0KhqEWkzzlvR4WM/0x+xg5oaSrx5HN5AazwCYGYbkLwbziP2fBhZQZsD/8C+6sESY
-         BuG5CCJ23VUD94SpxSya2yqTxIlyLkPi/DjWa87eYOqVXMpIBvFKzefsnPnawcf/ywXl
-         blC3sVbN7nIs7bw84Yn2Ao6xR8DRHCxUbXqJdr70Odpi5ddZGSYO964v29Wl6czTZvb+
-         eTEAJsb7eYEb8X8c5ny7y20u/tKnhyznxpie9sWR0Ol2M4zQuo7/T4rZiv8kW+qW55Ia
-         kfRQ==
-X-Gm-Message-State: AOAM533O7TdP8gTOatrCLZozgl+HJqr2uXmiyI+isJFvkgjWrmuYcEY7
-        W9P2R7PmVVa+oocdwMIeza0HGRyHXN+GH/LEhCg=
-X-Google-Smtp-Source: ABdhPJyM1ybos967q0V8khoON78NtQK7OXd2AG9RupIGtR2p0GFcpQ1TsSyeI1QnpbmGFe8biykwdyXi4n0pmZGDq0Y=
-X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr5873812ljr.2.1599783954743;
- Thu, 10 Sep 2020 17:25:54 -0700 (PDT)
+        bh=a0412DC0gQCVcXT+eeBHfu/FCDxETiEv+yph20SP+sE=;
+        b=EsdZFhfzeDlv6sn+OYiwd6voqXntmb8kaf9o2oryUNyoswsdaxWfGFskuSVko+ZxB1
+         bpffYP9md3ZN8B13fUP8v/spuJeLdThLBy2HY1gmZOSwbVMo6Ly2XXSn4UOeuQzYqoj7
+         7FWZX7VYwIJDyqwxDeX8W5bdpaURGm5wxiDTHiBDlU5jWoBziOQGzV85KPxG83l7gcKu
+         bF/NDks+M/e8D+TIEEsVL5h8p43NKKPVoN+Pfrb3TlHm/4Fo+KvbzO4GAvhcEtRfMrGW
+         R+PKazM3wxzHevLUDTJAZX3F3iVTMChVQx9u7zbn13mwn29zp8RueIIGpp0qfpCZ/wzX
+         JLfw==
+X-Gm-Message-State: AOAM533ezgLyTvBezuQ+TehzSiYvoQsk6GwSL0ViI/+sNNYWCKOqNNgI
+        +DURjcAHbtkI5jl3ZAr+g555s7BCzzWTwEX44N4=
+X-Google-Smtp-Source: ABdhPJyzPyxp6XVgdVbKJ5ADP0AZmPtun87TSId/OrRh3h3cA2gUSJ6DqQwR6mOTPUvEIWOWYNQnOddAfNb3W83n2WE=
+X-Received: by 2002:a2e:8593:: with SMTP id b19mr5419511lji.290.1599784258709;
+ Thu, 10 Sep 2020 17:30:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909233439.3100292-1-iii@linux.ibm.com> <20200909233439.3100292-6-iii@linux.ibm.com>
-In-Reply-To: <20200909233439.3100292-6-iii@linux.ibm.com>
+References: <20200910102652.10509-1-quentin@isovalent.com>
+In-Reply-To: <20200910102652.10509-1-quentin@isovalent.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Sep 2020 17:25:43 -0700
-Message-ID: <CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 5/5] bpf: Do not include the original insn in
- zext patchlet
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Date:   Thu, 10 Sep 2020 17:30:47 -0700
+Message-ID: <CAADnVQL=7+owiok=-uH3HYjMiLGbq0bWnH_E2eBr8CrsQiLuUg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/2] tools: bpftool: support creating outer maps
+To:     Quentin Monnet <quentin@isovalent.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 4:37 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Thu, Sep 10, 2020 at 3:27 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> If the original insn is a jump, then it is not subjected to branch
-> adjustment, which is incorrect. As discovered by Yauheni in
+> This series makes bpftool able to create outer maps (maps of types
+> array-of-maps and hash-of-maps). This is done by passing the relevant
+> inner_map_fd, which we do through a new command-line keyword.
+>
+> The first two patches also clean up the function related to dumping map
+> elements.
+>
+> v3:
+> - Add a check on errno being ENOENT before skipping outer map entry in
+>   dumps.
 
-I think the problem is elsewhere.
-Something is wrong with zext logic.
-the branch insn should not have been marked as zext_dst.
-and in the line:
-zext_patch[0] = insn;
-this 'insn' should never be a branch.
-See insn_no_def().
+Applied. Thanks
