@@ -2,122 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD37C2661E6
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 17:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C12266285
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 17:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgIKPPL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 11:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S1725851AbgIKPue (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 11:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgIKPM7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:12:59 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC792C06136E
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:31:32 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g4so10215370edk.0
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:31:32 -0700 (PDT)
+        with ESMTP id S1725927AbgIKPtu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:49:50 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4807C061757
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 08:49:37 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id w16so10300741qkj.7
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 08:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b0QD34+bxOAz0p5Ruf1S0pwezgoC99GUrOiFTRHr1WU=;
-        b=s7+XJKuz3oEy3pnN/elhmjMP3fwttIcgzseKr38icNThXbOY0LirJo1to8ih0eNwQA
-         1KVmgArwT9O0ardNtiHkXQr8ohGLQ3earWaQz2bNkJyavHpjUOfqH+Rutql5evnZd+Wh
-         ElzqI1mWKCmB58u26vkRGzBC30VJZaPuMrtCYlhX61qRdr1KXozuXbPHYa6PCfyjzIaD
-         fvfOOfdUXUj4+OUuH2PQ2U1nJ34ARaYMY27CZuB+H1DB8Dwubq3h+SEl5oAvEQ3z2Pde
-         LMYbLS+kf5N+T2N3Psx1V3ZEDhgWCrTGE48hCzhGy1NvpqiM/I1E80W0/usazP+4Lz07
-         5TWA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KK9DqDT0nRrrH1BnI4TG9/GxMoG/9TkPvavel0k2iEE=;
+        b=OqKkm9m3GqjIFqLrSgv2aIJOycuG4TfjBYNODlxu6GOChwl5JD6GtO+/nhSsUlhsEs
+         1+ak2c/fzhQUsmA4OnAUjxE/E7ANlooVJwmIQbg/fLF7nDcBDCYrZRAKW96g+mauow6j
+         Xva5HvSsBHWgKmMx6anHFijKeKKkpz+wLHeJXJyQJKJDK+lQQ2KoHPX8xDo0ca5CvEXU
+         5R7f4C6A404p4qsMetxqb9GtC5z8GxTo99DW6UA7m0T66IwIMOsmqXUJnuYT7c4xX/Gx
+         K33g1XXQIxnxwQlYNHmoF+2I5I61hIw3zlo4C+hjELf1z4OZ9od70S76dPpDGDkpb+fL
+         4euQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b0QD34+bxOAz0p5Ruf1S0pwezgoC99GUrOiFTRHr1WU=;
-        b=aCsUatlITuVc1IIVw0gTRzMGgY3VcNsF037yz3Gakpu2c6mIbPNISoagOZ1a16q+77
-         vuVyZMfv98CiHXazjgT44Q/poalJiYT6YFVCU68awK4gd4wh5HLRBgs+mjqkrQHHoC3l
-         byazlCtbg1Mwc9+ZwvT9Z0xVWdsZO2V6uEDIPaFFyjqUqwqfcBrXaB718gkdxBtNIJXn
-         N/QzBOIKrrL3b2JdLbwF5sQnWbaTj4qsY2O8nxY+2bWagZ9OtS7zQQVpg1/QiCiHtaGW
-         CvU0NfAvF4EBa1s0DDggmyAJskbZAFDId9G82sVxwO05gie50uapYHLflDudbWdyWb9E
-         h70w==
-X-Gm-Message-State: AOAM531/QnXDiQQRdvQ5FLZEb/1bHd6T10h48njsVkcX+KYObcJ+3sB0
-        MGeiRzr3Pjdta5nqBCXLpXjJ1w==
-X-Google-Smtp-Source: ABdhPJyNl/jj9IvK4T0bkJprq/8BXcKllYou73+Al1l1qxTjRLji8C3rkP9NSSxO0s2oL8lobF2CFA==
-X-Received: by 2002:a05:6402:1710:: with SMTP id y16mr2416437edu.197.1599834691462;
-        Fri, 11 Sep 2020 07:31:31 -0700 (PDT)
-Received: from localhost.localdomain ([87.66.33.240])
-        by smtp.gmail.com with ESMTPSA id y21sm1716261eju.46.2020.09.11.07.31.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 07:31:30 -0700 (PDT)
-From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, mptcp@lists.01.org,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 0/5] bpf: add MPTCP subflow support
-Date:   Fri, 11 Sep 2020 16:30:21 +0200
-Message-Id: <20200911143022.414783-6-nicolas.rybowski@tessares.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KK9DqDT0nRrrH1BnI4TG9/GxMoG/9TkPvavel0k2iEE=;
+        b=qgRr7xR+2VjpZYdlQrp+/lQhzxD1EpMTsI1E7QmIEclZFtBrNA/lNHkjg/A/eoALRt
+         QTEXdDrYXFaJ37dhaJc2nN50msJINEQJH7HaukiqqQpZcPhs2Zmp5+d1vUgfbf28U6NX
+         xS0drR1sJO57INoA3zvYT/3OqGSiVMdT9ZX9t5GLQE/jV810AYSE2p6+NFXBYWxe8jj5
+         hZK2SAkaHz9b/o45dWLmHzgffHZdYPG1HWTH1sfU8vEmRdfnO3Uyagr8Q5EsUBbrv+1z
+         ccTts3hF4Dnxu3QBz3FJ3HK84TNRRunpNhXvNY3KNY4vWtoSY+Qx0xx7lWGEvzM+eWWJ
+         jd9A==
+X-Gm-Message-State: AOAM5331RVuyxc2akfoTE5xhloT+omvArM3FR9QGBx2mjcKy6H/gf84K
+        klSTUS8xBIZbBzagpT4tazm0RWDZHRu/36SDtLmJQjNEjvmerg==
+X-Google-Smtp-Source: ABdhPJyV20mOCwhrDag0+eZAX1vU/Jz/dfXavw/33DwtltASXUYEAJVFmM/510FVmVyZ62iheN+xfYrfiRZLDEttqIk=
+X-Received: by 2002:a37:a6c3:: with SMTP id p186mr2077408qke.237.1599839376654;
+ Fri, 11 Sep 2020 08:49:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200909182406.3147878-1-sdf@google.com> <20200909182406.3147878-4-sdf@google.com>
+ <CAEf4BzaOmaOHdc2kkWk9KEByZqU+cKWHnFmFin4D3C2+xNubew@mail.gmail.com>
+In-Reply-To: <CAEf4BzaOmaOHdc2kkWk9KEByZqU+cKWHnFmFin4D3C2+xNubew@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 11 Sep 2020 08:49:25 -0700
+Message-ID: <CAKH8qBtJoZpacMj+4sEJkt1BcQ1-oju=Z9SOVq-GxitUTJch=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/5] libbpf: Add BPF_PROG_BIND_MAP syscall and
+ use it on .metadata section
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        YiFei Zhu <zhuyifei1999@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Previously it was not possible to make a distinction between plain TCP
-sockets and MPTCP subflow sockets on the BPF_PROG_TYPE_SOCK_OPS hook.
+On Thu, Sep 10, 2020 at 12:41 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Sep 9, 2020 at 11:25 AM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > From: YiFei Zhu <zhuyifei@google.com>
+> >
+> > The patch adds a simple wrapper bpf_prog_bind_map around the syscall.
+> > When the libbpf tries to load a program, it will probe the kernel for
+> > the support of this syscall and unconditionally bind .rodata section
+>
+> btw, you subject is out of sync, still mentions .metadata
+Ooops, will fix, thanks!
 
-This patch series now enables a fine control of subflow sockets. In its
-current state, it allows to put different sockopt on each subflow from a
-same MPTCP connection (socket mark, TCP congestion algorithm, ...) using
-BPF programs.
+> > to the program.
+> >
+> > Cc: YiFei Zhu <zhuyifei1999@gmail.com>
+> > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+>
+> Please drop zhuyifei@google.com from CC list (it's unreachable), when
+> you submit a new version.
+I think git-send-email automatically adds it because of the sign-off,
+let me try to see if I can remove it. I guess I can just do
+s/zhuyifei@google.com/zhuyifei1999@gmail.com/ to make
+it quiet.
 
-It should also be the basis of exposing MPTCP-specific fields through BPF.
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/lib/bpf/bpf.c      | 13 ++++++
+> >  tools/lib/bpf/bpf.h      |  8 ++++
+> >  tools/lib/bpf/libbpf.c   | 94 ++++++++++++++++++++++++++++++++--------
+> >  tools/lib/bpf/libbpf.map |  1 +
+> >  4 files changed, 98 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> > index 82b983ff6569..5f6c5676cc45 100644
+> > --- a/tools/lib/bpf/bpf.c
+> > +++ b/tools/lib/bpf/bpf.c
+> > @@ -872,3 +872,16 @@ int bpf_enable_stats(enum bpf_stats_type type)
+> >
+> >         return sys_bpf(BPF_ENABLE_STATS, &attr, sizeof(attr));
+> >  }
+> > +
+> > +int bpf_prog_bind_map(int prog_fd, int map_fd,
+> > +                     const struct bpf_prog_bind_opts *opts)
+> > +{
+> > +       union bpf_attr attr;
+> > +
+>
+> you forgot OPTS_VALID check here
+Good point, will do!
 
-v1 -> v2:
-- add basic mandatory selftests for the new helper and is_mptcp field (Alexei)
-- rebase on latest bpf-next
+> > @@ -3748,26 +3749,40 @@ static int probe_kern_global_data(void)
+> >         map_attr.value_size = 32;
+> >         map_attr.max_entries = 1;
+> >
+> > -       map = bpf_create_map_xattr(&map_attr);
+> > -       if (map < 0) {
+> > -               ret = -errno;
+> > -               cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+> > +       *map = bpf_create_map_xattr(&map_attr);
+> > +       if (*map < 0) {
+> > +               err = errno;
+> > +               cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+> >                 pr_warn("Error in %s():%s(%d). Couldn't create simple array map.\n",
+> > -                       __func__, cp, -ret);
+> > -               return ret;
+> > +                       __func__, cp, -err);
+> > +               return;
+> >         }
+> >
+> > -       insns[0].imm = map;
+> > +       insns[0].imm = *map;
+>
+> I think I already complained about this? You are assuming that
+> insns[0] is BPF_LD_MAP_VALUE, which is true only for one case out of
+> two already! It's just by luck that probe_prog_bind_map works because
+> the verifier ignores the exit code, apparently.
+>
+> If this doesn't generalize well, don't generalize. But let's not do a
+> blind instruction rewrite, which will cause tons of confusion later.
+I might have missed your previous comment, sorry about that.
+Agreed, it might be easier to just copy-paste the original function
+and explicitly change the insns.
 
-Nicolas Rybowski (5):
-  bpf: expose is_mptcp flag to bpf_tcp_sock
-  mptcp: attach subflow socket to parent cgroup
-  bpf: add 'bpf_mptcp_sock' structure and helper
-  bpf: selftests: add MPTCP test base
-  bpf: selftests: add bpf_mptcp_sock() verifier tests
-
- include/linux/bpf.h                           |  33 +++++
- include/uapi/linux/bpf.h                      |  15 +++
- kernel/bpf/verifier.c                         |  30 +++++
- net/core/filter.c                             |  13 +-
- net/mptcp/Makefile                            |   2 +
- net/mptcp/bpf.c                               |  72 +++++++++++
- net/mptcp/subflow.c                           |  27 ++++
- scripts/bpf_helpers_doc.py                    |   2 +
- tools/include/uapi/linux/bpf.h                |  15 +++
- tools/testing/selftests/bpf/config            |   1 +
- tools/testing/selftests/bpf/network_helpers.c |  37 +++++-
- tools/testing/selftests/bpf/network_helpers.h |   3 +
- .../testing/selftests/bpf/prog_tests/mptcp.c  | 119 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/mptcp.c     |  48 +++++++
- tools/testing/selftests/bpf/verifier/sock.c   |  63 ++++++++++
- 15 files changed, 474 insertions(+), 6 deletions(-)
- create mode 100644 net/mptcp/bpf.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/mptcp.c
- create mode 100644 tools/testing/selftests/bpf/progs/mptcp.c
-
--- 
-2.28.0
-
+> [...]
+>
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index 92ceb48a5ca2..0b7830f4ff8b 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -308,4 +308,5 @@ LIBBPF_0.2.0 {
+> >                 perf_buffer__epoll_fd;
+> >                 perf_buffer__consume_buffer;
+> >                 xsk_socket__create_shared;
+> > +               bpf_prog_bind_map;
+>
+> please keep this list sorted
+Sure, will do!
