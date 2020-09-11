@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C12266285
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 17:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB832662BF
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 18:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbgIKPue (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 11:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
+        id S1726527AbgIKP77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 11:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgIKPtu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:49:50 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4807C061757
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 08:49:37 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id w16so10300741qkj.7
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 08:49:37 -0700 (PDT)
+        with ESMTP id S1726537AbgIKP4b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:56:31 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7425AC061757
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 08:56:31 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id h6so8205912qtd.6
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 08:56:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KK9DqDT0nRrrH1BnI4TG9/GxMoG/9TkPvavel0k2iEE=;
-        b=OqKkm9m3GqjIFqLrSgv2aIJOycuG4TfjBYNODlxu6GOChwl5JD6GtO+/nhSsUlhsEs
-         1+ak2c/fzhQUsmA4OnAUjxE/E7ANlooVJwmIQbg/fLF7nDcBDCYrZRAKW96g+mauow6j
-         Xva5HvSsBHWgKmMx6anHFijKeKKkpz+wLHeJXJyQJKJDK+lQQ2KoHPX8xDo0ca5CvEXU
-         5R7f4C6A404p4qsMetxqb9GtC5z8GxTo99DW6UA7m0T66IwIMOsmqXUJnuYT7c4xX/Gx
-         K33g1XXQIxnxwQlYNHmoF+2I5I61hIw3zlo4C+hjELf1z4OZ9od70S76dPpDGDkpb+fL
-         4euQ==
+        bh=HB1wLkJBUPBITqr249AFzq+PR4Y7nrQ2PRnzX2SICNU=;
+        b=q6mTZynvnuOIdXFxtOD49r+38vJ9B5saRc3IwrULNNlQw4i2QImBldf6kJg536NWqQ
+         GuKZ/xQg/z2eqdHj+zDrvIhQNnmNLfLw8ECIGw+EwdIEgxnu0xezOYq9N/7fndQWfmag
+         6k+kkjfPeDFhTJC/hptFfjQQV38r2owSheIlqMRlvKQ+bcAIVgYNuNe9Bvzi1nbxTduG
+         /u4KOemjjBSZk5dPMYz7NCp2aWO/jA58SA8yHuUSzGtFHCHJ0/7X5MYTKzb3Ks50byML
+         85feoiOX3GWXU03Gi6PcPD2H0JbSQvT5ljbgA+baUamBozteFMGwONWP3fwYRozpHxCy
+         Ojpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KK9DqDT0nRrrH1BnI4TG9/GxMoG/9TkPvavel0k2iEE=;
-        b=qgRr7xR+2VjpZYdlQrp+/lQhzxD1EpMTsI1E7QmIEclZFtBrNA/lNHkjg/A/eoALRt
-         QTEXdDrYXFaJ37dhaJc2nN50msJINEQJH7HaukiqqQpZcPhs2Zmp5+d1vUgfbf28U6NX
-         xS0drR1sJO57INoA3zvYT/3OqGSiVMdT9ZX9t5GLQE/jV810AYSE2p6+NFXBYWxe8jj5
-         hZK2SAkaHz9b/o45dWLmHzgffHZdYPG1HWTH1sfU8vEmRdfnO3Uyagr8Q5EsUBbrv+1z
-         ccTts3hF4Dnxu3QBz3FJ3HK84TNRRunpNhXvNY3KNY4vWtoSY+Qx0xx7lWGEvzM+eWWJ
-         jd9A==
-X-Gm-Message-State: AOAM5331RVuyxc2akfoTE5xhloT+omvArM3FR9QGBx2mjcKy6H/gf84K
-        klSTUS8xBIZbBzagpT4tazm0RWDZHRu/36SDtLmJQjNEjvmerg==
-X-Google-Smtp-Source: ABdhPJyV20mOCwhrDag0+eZAX1vU/Jz/dfXavw/33DwtltASXUYEAJVFmM/510FVmVyZ62iheN+xfYrfiRZLDEttqIk=
-X-Received: by 2002:a37:a6c3:: with SMTP id p186mr2077408qke.237.1599839376654;
- Fri, 11 Sep 2020 08:49:36 -0700 (PDT)
+        bh=HB1wLkJBUPBITqr249AFzq+PR4Y7nrQ2PRnzX2SICNU=;
+        b=llbGSuLv6BDp7JyrT2KydIPACoEiP3cmyoTgxd6CopV1U5TUJ4cfPuTBxOTlp9d2ei
+         dp4O4/F/9Rf3VSAdN/ScPfjIGrMLN571nSBXN0E9ohGFhlV7rZuAmXUEGo/ivHpPQYLN
+         YDxUEQq0xoDQa4mMkOnQ+j95IgF4pvO6RDxTUO0lVAXbjsUwM2gMcoubLYwzJfLyGIql
+         4EBKMehNvdF+o65+OXmoIeJkrQwwuQOxXyEhP1UpRTiNIt3Essur++4GS4pj4kqBZteH
+         pKv4dtZ5n7Vw1kv8UCmV6WVWpMO1WWQCu21tHyXEFKdoyQbmAhlbHI9zPUGrzdoyH1mN
+         CaMQ==
+X-Gm-Message-State: AOAM5313JUNSmzt+lwvjGS1Fb/Wfl29wjak5pUJM2phm0OW9xSAQyGrT
+        Lt9A83I1b3m6e0N2I/vKKohJjViLCyvPBq/45aS3Og==
+X-Google-Smtp-Source: ABdhPJwX6e9cju+FL0v94+Z0/0T0ORtkFdzm5HvbrtkrybQyiKcZ93D1C9S02/CEAgsWDiMYufPy6anpHcb8ShTao1Q=
+X-Received: by 2002:ac8:4784:: with SMTP id k4mr2595978qtq.266.1599839790431;
+ Fri, 11 Sep 2020 08:56:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200909182406.3147878-1-sdf@google.com> <20200909182406.3147878-4-sdf@google.com>
- <CAEf4BzaOmaOHdc2kkWk9KEByZqU+cKWHnFmFin4D3C2+xNubew@mail.gmail.com>
-In-Reply-To: <CAEf4BzaOmaOHdc2kkWk9KEByZqU+cKWHnFmFin4D3C2+xNubew@mail.gmail.com>
+References: <20200909182406.3147878-1-sdf@google.com> <20200909182406.3147878-5-sdf@google.com>
+ <CAEf4BzaWxnm_X=nZWn0tcq7bMnbL8ZFDuU=qzMNDh_aSAayXsA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaWxnm_X=nZWn0tcq7bMnbL8ZFDuU=qzMNDh_aSAayXsA@mail.gmail.com>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 11 Sep 2020 08:49:25 -0700
-Message-ID: <CAKH8qBtJoZpacMj+4sEJkt1BcQ1-oju=Z9SOVq-GxitUTJch=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/5] libbpf: Add BPF_PROG_BIND_MAP syscall and
- use it on .metadata section
+Date:   Fri, 11 Sep 2020 08:56:19 -0700
+Message-ID: <CAKH8qBtiMh1evaQ-CQ83nESSS2UQLCM7avydoXvqY6aM+GHwDw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/5] bpftool: support dumping metadata
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
@@ -64,102 +63,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 12:41 PM Andrii Nakryiko
+On Thu, Sep 10, 2020 at 12:54 PM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
 > On Wed, Sep 9, 2020 at 11:25 AM Stanislav Fomichev <sdf@google.com> wrote:
+> > diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> > index f7923414a052..ca264dc22434 100644
+> > --- a/tools/bpf/bpftool/prog.c
+> > +++ b/tools/bpf/bpftool/prog.c
+> > @@ -29,6 +29,9 @@
+> >  #include "main.h"
+> >  #include "xlated_dumper.h"
 > >
-> > From: YiFei Zhu <zhuyifei@google.com>
-> >
-> > The patch adds a simple wrapper bpf_prog_bind_map around the syscall.
-> > When the libbpf tries to load a program, it will probe the kernel for
-> > the support of this syscall and unconditionally bind .rodata section
+> > +#define BPF_METADATA_PREFIX "bpf_metadata_"
+> > +#define BPF_METADATA_PREFIX_LEN strlen(BPF_METADATA_PREFIX)
 >
-> btw, you subject is out of sync, still mentions .metadata
-Ooops, will fix, thanks!
+> this is a runtime check, why not (sizeof(BPF_METADATA_PREFIX) - 1) instead?
+Make sense, will fix.
 
-> > to the program.
-> >
-> > Cc: YiFei Zhu <zhuyifei1999@gmail.com>
-> > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+> > +static int bpf_prog_find_metadata(int prog_fd, int *map_id)
+> > ...
+> > +free_map_ids:
+> > +       saved_errno = errno;
+> > +       free(map_ids);
+> > +       errno = saved_errno;
 >
-> Please drop zhuyifei@google.com from CC list (it's unreachable), when
-> you submit a new version.
-I think git-send-email automatically adds it because of the sign-off,
-let me try to see if I can remove it. I guess I can just do
-s/zhuyifei@google.com/zhuyifei1999@gmail.com/ to make
-it quiet.
+> not clear why all this fussing with saving/restoring errno and then
+> just returning 0 or -1? Just return -ENOMEM or -ENOENT as a result of
+> this function?
+Yeah, I just moved this function from it's original (libbpf) location as is.
+I guess it makes sense to simplify the error handling now that
+it's not in exported from libbpf.
 
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/lib/bpf/bpf.c      | 13 ++++++
-> >  tools/lib/bpf/bpf.h      |  8 ++++
-> >  tools/lib/bpf/libbpf.c   | 94 ++++++++++++++++++++++++++++++++--------
-> >  tools/lib/bpf/libbpf.map |  1 +
-> >  4 files changed, 98 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > index 82b983ff6569..5f6c5676cc45 100644
-> > --- a/tools/lib/bpf/bpf.c
-> > +++ b/tools/lib/bpf/bpf.c
-> > @@ -872,3 +872,16 @@ int bpf_enable_stats(enum bpf_stats_type type)
-> >
-> >         return sys_bpf(BPF_ENABLE_STATS, &attr, sizeof(attr));
-> >  }
+> > +       if (bpf_map_lookup_elem(map_fd, &key, value))
+> > +               goto out_free;
 > > +
-> > +int bpf_prog_bind_map(int prog_fd, int map_fd,
-> > +                     const struct bpf_prog_bind_opts *opts)
-> > +{
-> > +       union bpf_attr attr;
-> > +
+> > +       err = btf__get_from_id(map_info.btf_id, &btf);
+> > +       if (err || !btf)
+> > +               goto out_free;
 >
-> you forgot OPTS_VALID check here
-Good point, will do!
-
-> > @@ -3748,26 +3749,40 @@ static int probe_kern_global_data(void)
-> >         map_attr.value_size = 32;
-> >         map_attr.max_entries = 1;
-> >
-> > -       map = bpf_create_map_xattr(&map_attr);
-> > -       if (map < 0) {
-> > -               ret = -errno;
-> > -               cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
-> > +       *map = bpf_create_map_xattr(&map_attr);
-> > +       if (*map < 0) {
-> > +               err = errno;
-> > +               cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
-> >                 pr_warn("Error in %s():%s(%d). Couldn't create simple array map.\n",
-> > -                       __func__, cp, -ret);
-> > -               return ret;
-> > +                       __func__, cp, -err);
-> > +               return;
-> >         }
-> >
-> > -       insns[0].imm = map;
-> > +       insns[0].imm = *map;
->
-> I think I already complained about this? You are assuming that
-> insns[0] is BPF_LD_MAP_VALUE, which is true only for one case out of
-> two already! It's just by luck that probe_prog_bind_map works because
-> the verifier ignores the exit code, apparently.
->
-> If this doesn't generalize well, don't generalize. But let's not do a
-> blind instruction rewrite, which will cause tons of confusion later.
-I might have missed your previous comment, sorry about that.
-Agreed, it might be easier to just copy-paste the original function
-and explicitly change the insns.
-
-> [...]
->
-> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > index 92ceb48a5ca2..0b7830f4ff8b 100644
-> > --- a/tools/lib/bpf/libbpf.map
-> > +++ b/tools/lib/bpf/libbpf.map
-> > @@ -308,4 +308,5 @@ LIBBPF_0.2.0 {
-> >                 perf_buffer__epoll_fd;
-> >                 perf_buffer__consume_buffer;
-> >                 xsk_socket__create_shared;
-> > +               bpf_prog_bind_map;
->
-> please keep this list sorted
-Sure, will do!
+> if you make bpf_prog_find_metadata() to do this value lookup and pass
+> &info, it would probably make bpf_prog_find_metadata a bit more
+> usable? You'll just need to ensure that callers free allocated memory.
+> Then show_prog_metadata() would take care of processing BTF info.
+Sounds reasonable. I can maybe keep existing
+bpf_prog_find_metadata (rename to bpf_prog_find_metadata_map_id?)
+and add another wrapper that does that map lookup.
