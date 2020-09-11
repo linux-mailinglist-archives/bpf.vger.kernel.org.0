@@ -2,121 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FE7265AF4
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 09:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C81265B14
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 10:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbgIKH6q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 03:58:46 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21696 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725791AbgIKH6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:58:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599811122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XErkIQ5mdeKAcHJcnRXSH+TaJIkkP4+grW1KLUdXd9A=;
-        b=AqhGXLBiYiHnq3l//bETnl+EK1zNg/T0d2Ag4UWTK7YvMjAQK3TQcofKjgNnCGI+MFmWob
-        5l/99So7x/d4kNePF/9wBvL6KlRf/QSpmqNktyYXxiTLARc8H54OEL8FSL7HwgO9Cvisij
-        t+GE8Wj19Pi8800D6Tt9Z5iJL2AFO+Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-497-o5ppQwdiOJWTSU3wDVbcig-1; Fri, 11 Sep 2020 03:58:36 -0400
-X-MC-Unique: o5ppQwdiOJWTSU3wDVbcig-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF9A81007B01;
-        Fri, 11 Sep 2020 07:58:34 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E2A6275121;
-        Fri, 11 Sep 2020 07:58:21 +0000 (UTC)
-Date:   Fri, 11 Sep 2020 09:58:20 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Hangbin Liu <liuhangbin@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>, brouer@redhat.com
-Subject: Re: [PATCHv11 bpf-next 2/5] xdp: add a new helper for dev map
- multicast support
-Message-ID: <20200911095820.304d9877@carbon>
-In-Reply-To: <47566856-75e2-8f2b-4347-f03a7cb5493b@gmail.com>
-References: <20200903102701.3913258-1-liuhangbin@gmail.com>
-        <20200907082724.1721685-1-liuhangbin@gmail.com>
-        <20200907082724.1721685-3-liuhangbin@gmail.com>
-        <20200909215206.bg62lvbvkmdc5phf@ast-mbp.dhcp.thefacebook.com>
-        <20200910023506.GT2531@dhcp-12-153.nay.redhat.com>
-        <a1bcd5e8-89dd-0eca-f779-ac345b24661e@gmail.com>
-        <CAADnVQ+CooPL7Zu4Y-AJZajb47QwNZJU_rH7A3GSbV8JgA4AcQ@mail.gmail.com>
-        <87o8mearu5.fsf@toke.dk>
-        <20200910195014.13ff24e4@carbon>
-        <47566856-75e2-8f2b-4347-f03a7cb5493b@gmail.com>
+        id S1725554AbgIKIFp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 04:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgIKIFn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 04:05:43 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126BAC061573
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 01:05:43 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id u126so8598914oif.13
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 01:05:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=skaKVZKdB1bdH+H2I7ljXdzwzvi2envl57NAkGAzg3A=;
+        b=KWwERfqo48Ec4RU1zZlvBBjXoigCgRdvlAUpW6w57ELTPj0YVThRq3DW0RgjFxyM+O
+         vq0IO7FcQPUKpvcZIc7RuSfiGz3ADKlmYxnuITSCJ2Ec2KYUHKRHLkglDIVsGJv4yA3u
+         bqzE30mTx3O8X5yevrPulqBLlZncWnLRgMZB0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=skaKVZKdB1bdH+H2I7ljXdzwzvi2envl57NAkGAzg3A=;
+        b=q1CgyVn4qft9m7FMsxDTFlauON5UJqRz8T6LxjHH9E/UfeV8rgIwVm6lqQRZe9T3l3
+         d8QC6u/hQg9XAFNWC5hFn1f3JpFowwuWPKe97wA4ny9B02QMGsWigUmvLlFSinB1y8jf
+         Z38kGtCmhrDfOsYClxMMwwhAPAJLbS0RcFYw0dkkRgELUC3BckD++ntkNBIQnZ7Sgu9H
+         im3mbbbY7tZwltu0QVR9VcGM4XjxGQNSKTKc/8e1wki6PMDlcrS2IN+2qfRmxsvHDDQr
+         dWB6Lje9+JiylCj0u7BnBIRq4D4zC3lU9lL0lQACCc+4w0RYeV/pik4JGRmPWnKe1w7p
+         bA9w==
+X-Gm-Message-State: AOAM532iTaMe/tRMLryzqbI3jQjRKVl/XnqjT75XcbrISnIAQD64sYhi
+        vAMG2t475dRpn7S2gjO4e2nXVdvuOLm0dBZ4yNJxaw==
+X-Google-Smtp-Source: ABdhPJwI5XG8chfPrJukQVpzRJXrk/3Sk3d2vBzAROzCX6cmZM4HwbfMtxCDEXVo3wPjssrYVV+GhzxUhc4NPuIzh6w=
+X-Received: by 2002:aca:3087:: with SMTP id w129mr566088oiw.102.1599811542425;
+ Fri, 11 Sep 2020 01:05:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200910110248.198326-1-lmb@cloudflare.com> <CAADnVQ+FuthVsgOGeSLA27js-JKi5-OvheQDuFN4cM3V-MpN1g@mail.gmail.com>
+In-Reply-To: <CAADnVQ+FuthVsgOGeSLA27js-JKi5-OvheQDuFN4cM3V-MpN1g@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 11 Sep 2020 09:05:31 +0100
+Message-ID: <CACAyw99=RgHKprsM-jNUCWhjBMCTDD_zmoGw4R3sS9Ry=S=Btg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: plug hole in struct bpf_sk_lookup_kern
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 10 Sep 2020 12:35:33 -0600
-David Ahern <dsahern@gmail.com> wrote:
+On Fri, 11 Sep 2020 at 01:53, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Sep 10, 2020 at 4:03 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > As Alexei points out, struct bpf_sk_lookup_kern has two 4-byte holes.
+> > This leads to suboptimal instructions being generated (IPv4, x86):
+> >
+> > Fix this by moving around sport and dport. pahole confirms there
+> > are no more holes:
+> >
+> > Fixes: e9ddbb7707ff ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point")
+> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+>
+> Applied to bpf-next.
+> I feel it's a bit of a stretch to consider it a fix, but if you really
+> insist I can let it go as a fix
+> and reapply to a different tree. Just let me know.
 
-> On 9/10/20 11:50 AM, Jesper Dangaard Brouer wrote:
-> > Maybe we should change the devmap-prog approach, and run this on the
-> > xdp_frame's (in bq_xmit_all() to be precise) .  Hangbin's patchset
-> > clearly shows that we need this "layer" between running the xdp_prog and
-> > the devmap-prog.   
-> 
-> I would prefer to leave it in dev_map_enqueue.
-> 
-> The main premise at the moment is that the program attached to the
-> DEVMAP entry is an ACL specific to that dev. If the program is going to
-> drop the packet, then no sense queueing it.
-> 
-> I also expect a follow on feature will be useful to allow the DEVMAP
-> program to do another REDIRECT (e.g., potentially after modifying). It
-> is not handled at the moment as it needs thought - e.g., limiting the
-> number of iterative redirects. If such a feature does happen, then no
-> sense queueing it to the current device.
+Thanks, bpf-next is fine by me.
 
-It makes a lot of sense to do queuing before redirecting again.  The
-(hidden) bulking we do at XDP redirect is the primary reason for the
-performance boost. We all remember performance difference between
-non-map version of redirect (which Toke fixed via always having the
-bulking available in net_device->xdp_bulkq).
-
-In a simple micro-benchmark I bet it will look better running the
-devmap-prog right after the xdp_prog (which is what we have today). But
-I claim this is the wrong approach, as soon as (1) traffic is more
-intermixed, and (2) devmap-prog gets bigger and becomes more specific
-to the egress-device (e.g. BPF update constants per egress-device).
-When this happens performance suffers, as I-cache and data-access to
-each egress-device gets pushed out of cache. (Hint VPP/fd.io approach)
-
-Queuing xdp_frames up for your devmap-prog makes sense, as these share
-common properties.  With intermix traffic the first xdp_prog will sort
-packets into egress-devices, and then the devmap-prog can operate on
-these.  The best illustration[1] of this sorting I saw in a Netflix
-blogpost[2] about FreeBSD, section "RSS Assisted LRO" (not directly
-related, but illustration was good).
-
-
-[1] https://miro.medium.com/max/700/1%2alTGL1_D6hTMEMa7EDV8yZA.png
-[2] https://netflixtechblog.com/serving-100-gbps-from-an-open-connect-appliance-cdb51dda3b99
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
