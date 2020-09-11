@@ -2,136 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B307426616D
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 16:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E672661E0
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 17:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbgIKOn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 10:43:27 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21666 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726192AbgIKNDR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:03:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599829368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oqtp+pU6EVX5K85gU9EYn6QWRvb00undsqSAgRZGvwg=;
-        b=RTpDK0Th+/1iYevBS8TVp63NXYXnNBcc2fmuX1p9OcZ424O+72UegBbxIlHM3r8idOo/qk
-        JmlUX0c6DJ/gtWwxEhf2QLzQRi7aKmNA+Nwf0PS/2M58Wt0dzUNK5itVIqwXjBcdsIvjS+
-        EzBDM5hWP/qxgxRJMutSQDnjXrh2ttk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-kt3iaoLZOAWSvM6rs-mcOA-1; Fri, 11 Sep 2020 09:02:47 -0400
-X-MC-Unique: kt3iaoLZOAWSvM6rs-mcOA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CC75802B46;
-        Fri, 11 Sep 2020 13:02:45 +0000 (UTC)
-Received: from krava (unknown [10.40.192.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 39C7B75129;
-        Fri, 11 Sep 2020 13:02:34 +0000 (UTC)
-Date:   Fri, 11 Sep 2020 15:02:32 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726073AbgIKPMV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 11:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726400AbgIKPKM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:10:12 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1941C06135A
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:31:00 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id q21so10198671edv.1
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 07:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7mgZuX+I018CPLyKtPUh7k/9HodG7wIMhXXoeD6+JKU=;
+        b=jkpy5S66o1feRhrtlzl6PzU1fYz4TE/zZjvhcBHu8qQD+l2uP0ug6wbXuJK9XU4+zS
+         Ml+05QzSwfORDdn+2bQvu4VdPK2hc1MOc+CNLNakaj+5eG4vOqQ+6C4yyw6O78nMtoDL
+         fYu9Skcyyh6a42fCJ70NDglzYCpuwLP8yZDm3HKrrSLSbHoGhva5SKerC7dFzpZNzzWf
+         QXwz7BMUIkVhL2MFmhQEV8f0wCTcrqy83/EsGthbVOTMtERTPPy0pauQg8lD+Eyvz4U8
+         e+xRRDyuXs0jNQBiTm6Ybs236Zx5Na+0jiuaPpAphBmFuJAz0xli0/wSs3jTZHX11Ryr
+         XlUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7mgZuX+I018CPLyKtPUh7k/9HodG7wIMhXXoeD6+JKU=;
+        b=frwIpidDJRrkeRTOz60SvdP0glZpN5c+S76wPxiFUgICvg87nqK6GHKBlClLFTZaEE
+         M+LkzrWIgxUOEHJWLBm7o3wIKkAGwN99uMzAGTtODYJQnUIdLwGhC57gAE+HcHeM4kjn
+         6Y8EzvjDDGQFgy9GL1+mPVdf5J8W2qKMdVwOSTvaxllxmLHNsAvZtwFL9ZC/03QzJxJY
+         EGSf6DBlZmpW2HKmzRGBTx0WQdpiTkIw1luSKnodbHtVBQ2kYAlkfltuJZ1E1C1yAOMF
+         k/eE8YUXsJYbue+t2j5/DikFD6/a6aGkcTl7oJLE1TfxD0LnBe0zyYrzw0UAHqFF6TyO
+         v1ew==
+X-Gm-Message-State: AOAM5329Zr8h2OMDIumqjKy9ojXISrhFIwY6fK32vquUyT3OzL2M1gbY
+        2d8F2JIzDdSI/b5ihcYP9mXEaQ==
+X-Google-Smtp-Source: ABdhPJwhmYbA1MMaXCK6kWdSVFv5YuQOmbMnYfXF79rYVkrYaDq+fAD+mllnm22XYjlgKXbocLQ7ng==
+X-Received: by 2002:aa7:d29a:: with SMTP id w26mr2271422edq.106.1599834659332;
+        Fri, 11 Sep 2020 07:30:59 -0700 (PDT)
+Received: from localhost.localdomain ([87.66.33.240])
+        by smtp.gmail.com with ESMTPSA id y21sm1716261eju.46.2020.09.11.07.30.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 07:30:58 -0700 (PDT)
+From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Adding test for arg
- dereference in extension trace
-Message-ID: <20200911130232.GB1714160@krava>
-References: <20200909151115.1559418-1-jolsa@kernel.org>
- <20200909151115.1559418-2-jolsa@kernel.org>
- <CAEf4BzbY3zV-xYDBvCYztXOkn=MJwHxOVyAH7YRH8JH869qtDg@mail.gmail.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/5] bpf: expose is_mptcp flag to bpf_tcp_sock
+Date:   Fri, 11 Sep 2020 16:30:16 +0200
+Message-Id: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbY3zV-xYDBvCYztXOkn=MJwHxOVyAH7YRH8JH869qtDg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 03:34:26PM -0700, Andrii Nakryiko wrote:
+is_mptcp is a field from struct tcp_sock used to indicate that the
+current tcp_sock is part of the MPTCP protocol.
 
-SNIP
+In this protocol, a first socket (mptcp_sock) is created with
+sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
+isn't directly on the wire. This is the role of the subflow (kernel)
+sockets which are classical tcp_sock with sk_protocol set to
+IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
+sockets is the is_mptcp field from tcp_sock.
 
-> > +
-> > +void test_trace_ext(void)
-> > +{
-> > +       struct test_trace_ext_tracing *skel_trace = NULL;
-> > +       struct test_trace_ext_tracing__bss *bss_trace;
-> > +       const char *file = "./test_pkt_md_access.o";
-> > +       struct test_trace_ext *skel_ext = NULL;
-> > +       struct test_trace_ext__bss *bss_ext;
-> > +       int err, prog_fd, ext_fd;
-> > +       struct bpf_object *obj;
-> > +       char buf[100];
-> > +       __u32 retval;
-> > +       __u64 len;
-> > +
-> > +       err = bpf_prog_load(file, BPF_PROG_TYPE_SCHED_CLS, &obj, &prog_fd);
-> > +       if (CHECK_FAIL(err))
-> > +               return;
-> 
-> We should avoid using bpf_prog_load() for new code. Can you please
-> just skeleton instead? Or at least bpf_object__open_file()?
+Such an exposure in BPF is thus required to be able to differentiate
+plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
+programs.
 
-ok
+The choice has been made to silently pass the case when CONFIG_MPTCP is
+unset by defaulting is_mptcp to 0 in order to make BPF independent of
+the MPTCP configuration. Another solution is to make the verifier fail
+in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
+'#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
+will not run if MPTCP is not set.
 
-> 
-> > +
-> > +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-> > +                           .attach_prog_fd = prog_fd,
-> > +       );
-> 
-> DECLARE_LIBBPF_OPTS does declare a variable, so should be together
-> with all the other variables above, otherwise some overly strict C89
-> mode compiler will start complaining. You can assign
-> `opts.attach_prog_fd = prog_fd;` outside of declaration. But I also
-> don't think you need this one. Having .attach_prog_fd in open_opts is
-> not great, because it's a per-program setting specified at bpf_object
-> level. Would bpf_program__set_attach_target() work here?
+An example use-case is provided in
+https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
 
-right, I'll try it, it should be enough
+Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+---
+ include/uapi/linux/bpf.h       | 1 +
+ net/core/filter.c              | 9 ++++++++-
+ tools/include/uapi/linux/bpf.h | 1 +
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-SNIP
-
-> > +
-> > +cleanup:
-> > +       test_trace_ext__destroy(skel_ext);
-> > +       bpf_object__close(obj);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/test_trace_ext.c b/tools/testing/selftests/bpf/progs/test_trace_ext.c
-> > new file mode 100644
-> > index 000000000000..a6318f6b52ee
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_trace_ext.c
-> > @@ -0,0 +1,18 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2019 Facebook
-> > +#include <linux/bpf.h>
-> > +#include <stdbool.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_endian.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +volatile __u64 ext_called = 0;
-> 
-> nit: no need for volatile, global variables are not going anywhere;
-> same below in two places
-
-ok, thanks
-
-jirka
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 7dd314176df7..7d179eada1c3 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
+ 
+ struct bpf_sock_tuple {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index d266c6941967..dab48528dceb 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5837,7 +5837,7 @@ bool bpf_tcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 				  struct bpf_insn_access_aux *info)
+ {
+ 	if (off < 0 || off >= offsetofend(struct bpf_tcp_sock,
+-					  icsk_retransmits))
++					  is_mptcp))
+ 		return false;
+ 
+ 	if (off % size != 0)
+@@ -5971,6 +5971,13 @@ u32 bpf_tcp_sock_convert_ctx_access(enum bpf_access_type type,
+ 	case offsetof(struct bpf_tcp_sock, icsk_retransmits):
+ 		BPF_INET_SOCK_GET_COMMON(icsk_retransmits);
+ 		break;
++	case offsetof(struct bpf_tcp_sock, is_mptcp):
++#ifdef CONFIG_MPTCP
++		BPF_TCP_SOCK_GET_COMMON(is_mptcp);
++#else
++		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
++#endif
++		break;
+ 	}
+ 
+ 	return insn - insn_buf;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 7dd314176df7..7d179eada1c3 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
+ 
+ struct bpf_sock_tuple {
+-- 
+2.28.0
 
