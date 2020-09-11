@@ -2,76 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4777026572E
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 04:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925ED265737
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 05:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725831AbgIKC5s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 22:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
+        id S1725355AbgIKDDu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 23:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgIKC5j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 22:57:39 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DA2C061796
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 19:57:38 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id u4so10792483ljd.10
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 19:57:38 -0700 (PDT)
+        with ESMTP id S1725300AbgIKDDt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 23:03:49 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3D1C061573;
+        Thu, 10 Sep 2020 20:03:46 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s205so10833177lja.7;
+        Thu, 10 Sep 2020 20:03:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7Kh1b57N5y0+2My+aTuSilvFyjhKJHunU+vR0NlYoZA=;
-        b=u0xK2PEnpc1JV9+hpEmyNLnck+738TU4/arHjn+L7vXY5G3grN0Zg6n7+lRPybNM1h
-         Pb9wRjAF1y8QrkQ2J1agG5mzj8sTploVZU9TY3yvNBuu/Xi4vohLnaTd8u1kjfHluf4R
-         SoCkMp9dydT8Evf+C6in+PElcKk6JxNZCfYoPKcnyLi2stiaqmqzgzZOOJLJSxy5YpRR
-         owxQAJHmoUmGpYzM6VEzWjE8f5beKG9g4e53Thh8+DeKjLAxNusSB+Wh0vLEKZEUDQHR
-         zqNbEyxEjFwIb4HTUpqJIh/YyYXusPOtv0H+1FsMNtGuI+eupapSmuHc1JWEEfINTTJt
-         UhMQ==
+        bh=pjDuSWQDMIfFRrtnCSZ2cjlpYS9X+lyOuSgqN7r89ZE=;
+        b=PRe8gHqX4Pif+KsN6JkFnBn2ZrCikKhFYk0ljtN2c3m41SQtCzMrytU2AviU9TsP1d
+         tJHL4jzn4Od/RCgbA1awbBveBQz/BhwL9YatUM+k2w7nwW+TCVi7GmW0tuB+kIyNb4oB
+         7Gl3xandp7c+SJGAFJqMRPFqh+q8YKqbEACoIb6cMP3lAIpuTPhX8lvfql7f2clf90r/
+         VkuMpsB71zF/hLufAs8LhX5j1f1VTpSEUEqHDnKSagBn4dUHGu85hzOc3KOeMsG80g32
+         AOMXep6cA4m111wz9SXO6vDM4abNx9XDgPk7zNkYFw3ciAhJhfU8Sl2p471gtRS1d++y
+         emew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7Kh1b57N5y0+2My+aTuSilvFyjhKJHunU+vR0NlYoZA=;
-        b=FeGD/5D+r+fvZluOcMAoxqpQcvfJBlk7khzCtqUvmDPNdUe1ZnTUi4TyMO0QuxdEiZ
-         uC0VycgXBjtSeM8I/yLL0imOwlQTMXfrJW6itg8kLEatwE6iQ5z/xkraS+DoBhz/eLs+
-         QRzDW+NistDC1c+6vQcjo+HwL8NG1OpZrBBOmotRXyeQSOn8i1BhMZDNx6m+zPMWAa/M
-         HwEE8tgf9tW4OZZ8yFYBYrkPzXiSYU/3OZEH0ylN5QHRZ2Ov62tBfDlnwqh8PAaKz6AH
-         ydcfalwygE4DAOAFB+dQV9MXmJKBPUbe4P6VVIuhCIxcke3bViRIZl+DwbjrO//wCmwE
-         9/ww==
-X-Gm-Message-State: AOAM530tHdgZjSItnXBeFTEqz+xR2s/4lf5OcKATnUps4hFcsQ8P5nbq
-        BfC5iFp3nlJt8LGqotDnCLiL4Wq7K3e3O5tG545ycAYm
-X-Google-Smtp-Source: ABdhPJyEisYBe/UiTAv8hQCO1wBZSbGDYPPve29QojsYlzsSUpvQKxZ6mlvX1nifbyMeQvNbLJoP6Aj5ir3zOV70M1M=
-X-Received: by 2002:a2e:9782:: with SMTP id y2mr6132780lji.91.1599793056983;
- Thu, 10 Sep 2020 19:57:36 -0700 (PDT)
+        bh=pjDuSWQDMIfFRrtnCSZ2cjlpYS9X+lyOuSgqN7r89ZE=;
+        b=ED8CQj4hszXBg1fdZU7d3tqr16aIS2NMjDGyGUzuuUmTRTX3ABVjrgcTzCoJPQhmht
+         TtfL9ZKaZwS8yQW3uwuajqjkuEegxUBxjmq3KOadMnDOtICXgG6Bkk9dzAXLZIU2RxXR
+         zC0b2Rvr5SB8jF5sIeWh7ClpJ1q7SPWULMoQmd1g5d8ibtPvDSCLjqUxYtd7tUKa7Ad+
+         W8RO7huAMis+zl1iY89CpjFWtNHZzNnc/GX0wn9hosQCO6qGvbGfkzWKUARV6gOiciiP
+         lOYxe4Bm9fR2+osKei7uZ0pYSeMG+LCgi7HegWCHtwwMkIrfm/S/E+z0qVAMwjAGLPLj
+         25nQ==
+X-Gm-Message-State: AOAM533Eu9L6x9jGiGW4pxakCsocngtwuAIvO9Z1h/ln5vKvLUqXwiD1
+        NuDpZLDqZTVxDjajgFGxTh0eCPS+YkhTTYXUfY8=
+X-Google-Smtp-Source: ABdhPJxTNWvDUF92znyBRyBTLaEGFZtA35jDlxbruoWX12oUjyVUGRxNHSQcN3HXTQ0w+7RXlhpMT2ThWqfUdhCTCD0=
+X-Received: by 2002:a2e:808f:: with SMTP id i15mr5582922ljg.51.1599793425119;
+ Thu, 10 Sep 2020 20:03:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910171336.3161995-1-iii@linux.ibm.com> <CAEf4BzbNfKhGfMM2N=016NGA0X4jpK2Nu_=tXs1bLhxBZXgo=A@mail.gmail.com>
-In-Reply-To: <CAEf4BzbNfKhGfMM2N=016NGA0X4jpK2Nu_=tXs1bLhxBZXgo=A@mail.gmail.com>
+References: <20200910202718.956042-1-yhs@fb.com>
+In-Reply-To: <20200910202718.956042-1-yhs@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Sep 2020 19:57:25 -0700
-Message-ID: <CAADnVQJU6ibcmB-p_o3oNDX2Rso_KGnjtbXX9-3yuRUjZPk=bw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_ksyms on non-SMP kernels
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+Date:   Thu, 10 Sep 2020 20:03:33 -0700
+Message-ID: <CAADnVQ+cFw-b5GsyeUpFeSLJinbg5kNyHexf0hrERdj1eWUzAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: define string const as global for test_sysctl_prog.c
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 1:01 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Sep 10, 2020 at 1:27 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Thu, Sep 10, 2020 at 10:13 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
-> >
-> > On non-SMP kernels __per_cpu_start is not 0, so look it up in kallsyms.
-> >
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
+> When tweaking llvm optimizations, I found that selftest build failed
+> with the following error:
+>   libbpf: elf: skipping unrecognized data section(6) .rodata.str1.1
+>   libbpf: prog 'sysctl_tcp_mem': bad map relo against '.L__const.is_tcp_mem.tcp_mem_name'
+>           in section '.rodata.str1.1'
+>   Error: failed to open BPF object file: Relocation failed
+>   make: *** [/work/net-next/tools/testing/selftests/bpf/test_sysctl_prog.skel.h] Error 255
+>   make: *** Deleting file `/work/net-next/tools/testing/selftests/bpf/test_sysctl_prog.skel.h'
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> The local string constant "tcp_mem_name" is put into '.rodata.str1.1' section
+> which libbpf cannot handle. Using untweaked upstream llvm, "tcp_mem_name"
+> is completely inlined after loop unrolling.
+>
+> Commit 7fb5eefd7639 ("selftests/bpf: Fix test_sysctl_loop{1, 2}
+> failure due to clang change") solved a similar problem by defining
+> the string const as a global. Let us do the same here
+> for test_sysctl_prog.c so it can weather future potential llvm changes.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 
 Applied. Thanks
