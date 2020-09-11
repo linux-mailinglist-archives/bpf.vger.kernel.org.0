@@ -2,94 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C21F265623
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 02:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E193265634
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 02:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725298AbgIKAqg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 20:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        id S1725300AbgIKAxv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 20:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgIKAqf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 20:46:35 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95414C061573;
-        Thu, 10 Sep 2020 17:46:34 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id w3so10552033ljo.5;
-        Thu, 10 Sep 2020 17:46:34 -0700 (PDT)
+        with ESMTP id S1725298AbgIKAxt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 20:53:49 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11C5C061573
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:53:48 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b12so4577986lfp.9
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:53:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3Bntk5P8WQMO2ngB+gk8CfDkbfILL526E54cdytBuuM=;
-        b=Z/Kd2S0bGVJCT2b6d+XnZvx2xXo/R4UV0vIO+6sqvDBt9VrbjYZSLMHUTObiltiggk
-         tFhDluhJ25xBPonE+LEhZFiZgxPP9QGabpjtxcA4o6+dTetHBTe8W3zqacC8LOTAuKId
-         SYG44SXBxe6q+yM23ujjLjOQtaLPH5hx8Nm7SU31e/CeuWqtDMTm/m72WHjivRWjXq4l
-         1zFDUsNwkNX2SkVKuYUOvGV9hmimeXHIX1d+o7rPvj6l4MJmF2lEXYnJy9jf1dw4w4wu
-         IH9IHmrLFqTtw03C4Inn6+4YsBF+OZs201VjPs78a8U43X4kLARM0asxp+iSuFQbxduu
-         S39w==
+        bh=5kjhRCz3N7HYsmLDkYpqLl5xVkjaxnKuKdhSit7HuDo=;
+        b=JCTa7yg7nHik/yqVoKB7E/n1LLghJGpCtldPatpxD6pUGfAEFsVnr5Di8eGkqjfAJ6
+         QDzrYgAw5rIWu2jqguvpO7GLZjN65qR3IC9Q5a4YG92GsxyhEx8uz+vUNtMP6e1I15V1
+         Vb518p+eoXcYsMS9GIeoFNs9EmffOhYe82CCykD3CWvXIApaVhTNNA+WF9tIq9wgSQFe
+         kwvvNE1IYxAXJ2KiWm94EICWB2NuTHsL8u/axhc3LRXx4IeWAmhnBoBV+xBheypHxJq4
+         mn0ieN3qIomo16IR2+hSIkTJGvxIeFbXPC6qnCPLNmgqdFsG1/DN/wIJPUqy46huzFKI
+         hksQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3Bntk5P8WQMO2ngB+gk8CfDkbfILL526E54cdytBuuM=;
-        b=npCZvnqdv/B9mnkxTwaPfxiaT9bzi5eDKN/5TmvWQX2OO6ONeK/VEKh0M7Dd9g1BxY
-         GMjPCVbII2nhB80soRsSMZM2uhxwS2dD2ESSsNtgGk7FKTI0zAUIcN9KqQ8M3gsIuIXZ
-         OtXbw11RrbftemkbJpsdiMJS6IZP1T2R/nhHYret4H/p/NOHmdVirMW+QU98+C5RVRtB
-         E41MbKD5a9MkUApPLdrb4hYJN8iSo1/fpP+0rF/v2MIgs9QFzltikfAAibkOzDkUvnlU
-         tDL1aFgyXhiTJcTMn6HFrP11eoaDSmZNlakpoKA9VdkhZuQUNeAecw/NoPGH/O/83Cxv
-         hCzA==
-X-Gm-Message-State: AOAM5316YzRheYC6Scj6w68UiEuYY5UeYtz9hFCffxjRPEtNtXZVx7dd
-        R5yoHb9C68MeUHu9M26rzDw9sTlDxfMYGPIjtfE=
-X-Google-Smtp-Source: ABdhPJw7wsqTm/BvecjsHYjjhqZBVIDUkub9vuA1Pq/Y35F0U3uSqSpHXA+3i91UFn7mtaD8cEKDTac+B3SVo2mZDIE=
-X-Received: by 2002:a2e:4554:: with SMTP id s81mr5995747lja.121.1599785192995;
- Thu, 10 Sep 2020 17:46:32 -0700 (PDT)
+        bh=5kjhRCz3N7HYsmLDkYpqLl5xVkjaxnKuKdhSit7HuDo=;
+        b=c+x/sLqTpnZlYuG2KPctJuurS+WfXbYCE3x3kID39YZD0ySVmzeYU4Gv4LVESPK5pn
+         u411R13tTKssGb4pJaszf+fU1bxu2OApyXZFS6BhTE6nF5MyH5iEiMre4xUv/h5//lV1
+         YZxRn8GF0Qp/khTsuAP0gN4B6+GSDPq9kGNVsfqIX0Yqm8ZQUr87WvaWb53uFQBDc+bp
+         VhBFrOT+xXjFJ/jyHcGfBzlt8wk1SWnkYZwGv9NbRKh6CsFSFzc89jSDwM4wONFRxkR7
+         UZzu6EuUq7gffrc6th/fPGfIgvfiDb6zQHNZJbzTFxuKNP5Bl79iybo+6A09D4GpsASP
+         p8Xw==
+X-Gm-Message-State: AOAM530Dg0Gd/zJk+aZyf1ZYkTX/lJ2kVQfATKKiyzMXGyCxtbLORKmA
+        3NGiDqmOwNWM8/qk45lBNJFloKZTRVWrFHx/oJs=
+X-Google-Smtp-Source: ABdhPJwQtaA6qKW/5cn3xBL6RqFcMdz7D10mE5oWpPiaJr3qPIcjY7nXbboen0jqLqPNtWDSXmaJtBhA940Ca0boiLE=
+X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr5321451lfr.157.1599785627053;
+ Thu, 10 Sep 2020 17:53:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910122224.1683258-1-jolsa@kernel.org>
-In-Reply-To: <20200910122224.1683258-1-jolsa@kernel.org>
+References: <20200910110248.198326-1-lmb@cloudflare.com>
+In-Reply-To: <20200910110248.198326-1-lmb@cloudflare.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Sep 2020 17:46:21 -0700
-Message-ID: <CAADnVQJ0FchoPqNWm+dEppyij-MOvvEG_trEfyrHdabtcEuZGg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Check trampoline execution in
- d_path test
-To:     Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 10 Sep 2020 17:53:35 -0700
+Message-ID: <CAADnVQ+FuthVsgOGeSLA27js-JKi5-OvheQDuFN4cM3V-MpN1g@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: plug hole in struct bpf_sk_lookup_kern
+To:     Lorenz Bauer <lmb@cloudflare.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 5:22 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Sep 10, 2020 at 4:03 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
-> Some kernels builds might inline vfs_getattr call within
-> fstat syscall code path, so fentry/vfs_getattr trampoline
-> is not called.
+> As Alexei points out, struct bpf_sk_lookup_kern has two 4-byte holes.
+> This leads to suboptimal instructions being generated (IPv4, x86):
 >
-> I'm not sure how to handle this in some generic way other
-> than use some other function, but that might get inlined at
-> some point as well.
+> Fix this by moving around sport and dport. pahole confirms there
+> are no more holes:
+>
+> Fixes: e9ddbb7707ff ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point")
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 
-It's great that we had the test and it failed.
-Doing the test skipping will only hide the problem.
-Please don't do it here and in the future.
-Instead let's figure out the real solution.
-Assuming that vfs_getattr was added to btf_allowlist_d_path
-for a reason we have to make this introspection place
-reliable regardless of compiler inlining decisions.
-We can mark it as 'noinline', but that's undesirable.
-I suggest we remove it from the allowlist and replace it with
-security_inode_getattr.
-I think that is a better long term fix.
-While at it I would apply the same critical thinking to other
-functions in the allowlist. They might suffer the same issue.
-So s/vfs_truncate/security_path_truncate/ and so on?
-Things won't work when CONFIG_SECURITY is off, but that is a rare kernel config?
-Or add both security_* and vfs_* variants and switch tests to use security_* ?
-but it feels fragile to allow inline-able funcs in allowlist.
+Applied to bpf-next.
+I feel it's a bit of a stretch to consider it a fix, but if you really
+insist I can let it go as a fix
+and reapply to a different tree. Just let me know.
