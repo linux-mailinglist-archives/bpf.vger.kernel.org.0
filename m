@@ -2,79 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E193265634
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 02:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4777026572E
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 04:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725300AbgIKAxv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Sep 2020 20:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        id S1725831AbgIKC5s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Sep 2020 22:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbgIKAxt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Sep 2020 20:53:49 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11C5C061573
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:53:48 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id b12so4577986lfp.9
-        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 17:53:48 -0700 (PDT)
+        with ESMTP id S1725440AbgIKC5j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Sep 2020 22:57:39 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DA2C061796
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 19:57:38 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id u4so10792483ljd.10
+        for <bpf@vger.kernel.org>; Thu, 10 Sep 2020 19:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5kjhRCz3N7HYsmLDkYpqLl5xVkjaxnKuKdhSit7HuDo=;
-        b=JCTa7yg7nHik/yqVoKB7E/n1LLghJGpCtldPatpxD6pUGfAEFsVnr5Di8eGkqjfAJ6
-         QDzrYgAw5rIWu2jqguvpO7GLZjN65qR3IC9Q5a4YG92GsxyhEx8uz+vUNtMP6e1I15V1
-         Vb518p+eoXcYsMS9GIeoFNs9EmffOhYe82CCykD3CWvXIApaVhTNNA+WF9tIq9wgSQFe
-         kwvvNE1IYxAXJ2KiWm94EICWB2NuTHsL8u/axhc3LRXx4IeWAmhnBoBV+xBheypHxJq4
-         mn0ieN3qIomo16IR2+hSIkTJGvxIeFbXPC6qnCPLNmgqdFsG1/DN/wIJPUqy46huzFKI
-         hksQ==
+        bh=7Kh1b57N5y0+2My+aTuSilvFyjhKJHunU+vR0NlYoZA=;
+        b=u0xK2PEnpc1JV9+hpEmyNLnck+738TU4/arHjn+L7vXY5G3grN0Zg6n7+lRPybNM1h
+         Pb9wRjAF1y8QrkQ2J1agG5mzj8sTploVZU9TY3yvNBuu/Xi4vohLnaTd8u1kjfHluf4R
+         SoCkMp9dydT8Evf+C6in+PElcKk6JxNZCfYoPKcnyLi2stiaqmqzgzZOOJLJSxy5YpRR
+         owxQAJHmoUmGpYzM6VEzWjE8f5beKG9g4e53Thh8+DeKjLAxNusSB+Wh0vLEKZEUDQHR
+         zqNbEyxEjFwIb4HTUpqJIh/YyYXusPOtv0H+1FsMNtGuI+eupapSmuHc1JWEEfINTTJt
+         UhMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5kjhRCz3N7HYsmLDkYpqLl5xVkjaxnKuKdhSit7HuDo=;
-        b=c+x/sLqTpnZlYuG2KPctJuurS+WfXbYCE3x3kID39YZD0ySVmzeYU4Gv4LVESPK5pn
-         u411R13tTKssGb4pJaszf+fU1bxu2OApyXZFS6BhTE6nF5MyH5iEiMre4xUv/h5//lV1
-         YZxRn8GF0Qp/khTsuAP0gN4B6+GSDPq9kGNVsfqIX0Yqm8ZQUr87WvaWb53uFQBDc+bp
-         VhBFrOT+xXjFJ/jyHcGfBzlt8wk1SWnkYZwGv9NbRKh6CsFSFzc89jSDwM4wONFRxkR7
-         UZzu6EuUq7gffrc6th/fPGfIgvfiDb6zQHNZJbzTFxuKNP5Bl79iybo+6A09D4GpsASP
-         p8Xw==
-X-Gm-Message-State: AOAM530Dg0Gd/zJk+aZyf1ZYkTX/lJ2kVQfATKKiyzMXGyCxtbLORKmA
-        3NGiDqmOwNWM8/qk45lBNJFloKZTRVWrFHx/oJs=
-X-Google-Smtp-Source: ABdhPJwQtaA6qKW/5cn3xBL6RqFcMdz7D10mE5oWpPiaJr3qPIcjY7nXbboen0jqLqPNtWDSXmaJtBhA940Ca0boiLE=
-X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr5321451lfr.157.1599785627053;
- Thu, 10 Sep 2020 17:53:47 -0700 (PDT)
+        bh=7Kh1b57N5y0+2My+aTuSilvFyjhKJHunU+vR0NlYoZA=;
+        b=FeGD/5D+r+fvZluOcMAoxqpQcvfJBlk7khzCtqUvmDPNdUe1ZnTUi4TyMO0QuxdEiZ
+         uC0VycgXBjtSeM8I/yLL0imOwlQTMXfrJW6itg8kLEatwE6iQ5z/xkraS+DoBhz/eLs+
+         QRzDW+NistDC1c+6vQcjo+HwL8NG1OpZrBBOmotRXyeQSOn8i1BhMZDNx6m+zPMWAa/M
+         HwEE8tgf9tW4OZZ8yFYBYrkPzXiSYU/3OZEH0ylN5QHRZ2Ov62tBfDlnwqh8PAaKz6AH
+         ydcfalwygE4DAOAFB+dQV9MXmJKBPUbe4P6VVIuhCIxcke3bViRIZl+DwbjrO//wCmwE
+         9/ww==
+X-Gm-Message-State: AOAM530tHdgZjSItnXBeFTEqz+xR2s/4lf5OcKATnUps4hFcsQ8P5nbq
+        BfC5iFp3nlJt8LGqotDnCLiL4Wq7K3e3O5tG545ycAYm
+X-Google-Smtp-Source: ABdhPJyEisYBe/UiTAv8hQCO1wBZSbGDYPPve29QojsYlzsSUpvQKxZ6mlvX1nifbyMeQvNbLJoP6Aj5ir3zOV70M1M=
+X-Received: by 2002:a2e:9782:: with SMTP id y2mr6132780lji.91.1599793056983;
+ Thu, 10 Sep 2020 19:57:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910110248.198326-1-lmb@cloudflare.com>
-In-Reply-To: <20200910110248.198326-1-lmb@cloudflare.com>
+References: <20200910171336.3161995-1-iii@linux.ibm.com> <CAEf4BzbNfKhGfMM2N=016NGA0X4jpK2Nu_=tXs1bLhxBZXgo=A@mail.gmail.com>
+In-Reply-To: <CAEf4BzbNfKhGfMM2N=016NGA0X4jpK2Nu_=tXs1bLhxBZXgo=A@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Sep 2020 17:53:35 -0700
-Message-ID: <CAADnVQ+FuthVsgOGeSLA27js-JKi5-OvheQDuFN4cM3V-MpN1g@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: plug hole in struct bpf_sk_lookup_kern
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 10 Sep 2020 19:57:25 -0700
+Message-ID: <CAADnVQJU6ibcmB-p_o3oNDX2Rso_KGnjtbXX9-3yuRUjZPk=bw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_ksyms on non-SMP kernels
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 4:03 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Thu, Sep 10, 2020 at 1:01 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> As Alexei points out, struct bpf_sk_lookup_kern has two 4-byte holes.
-> This leads to suboptimal instructions being generated (IPv4, x86):
+> On Thu, Sep 10, 2020 at 10:13 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+> >
+> > On non-SMP kernels __per_cpu_start is not 0, so look it up in kallsyms.
+> >
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
 >
-> Fix this by moving around sport and dport. pahole confirms there
-> are no more holes:
->
-> Fixes: e9ddbb7707ff ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point")
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Applied to bpf-next.
-I feel it's a bit of a stretch to consider it a fix, but if you really
-insist I can let it go as a fix
-and reapply to a different tree. Just let me know.
+Applied. Thanks
