@@ -2,102 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE90265867
-	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 06:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44678265967
+	for <lists+bpf@lfdr.de>; Fri, 11 Sep 2020 08:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725772AbgIKEhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 00:37:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725681AbgIKEhK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Sep 2020 00:37:10 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725535AbgIKGeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 02:34:01 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22161 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725468AbgIKGeB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 02:34:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599806040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HwIuVWCp6IGPsQDBIiSkMo+i0w+JFDcylc+ewi7PKJI=;
+        b=ZT3fEyxyhHwvjF1GWhtVbqqoktOpgNylPJER1O3B8HOJMGZ7cw1m/YZCFSYKfoAAGIx8GT
+        vm/agUqG5Vlo3Dgc23U9R8yxBp3OT8CDiwuSrbCQp91BwIeCdIO+CSOZVEfFxuUpvdQbqb
+        62scJXgZ7Sq6BEfksUdCfObb3P1ltgk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-JIbiQy6fPteN9ZKBb_CGSg-1; Fri, 11 Sep 2020 02:33:56 -0400
+X-MC-Unique: JIbiQy6fPteN9ZKBb_CGSg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E00B221E7;
-        Fri, 11 Sep 2020 04:37:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599799030;
-        bh=JoKwh3qJRTbkpXb29zLQsepECW/mXTdadxrZ5Cy/rWU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sMmGkDvVrjiz4rR868arhRuUIpkNr7QfTtdszWewk1mHMDVPYU0SvtkVrIi0YzRMU
-         eupPSaIYpZbxuBOIr8PKtAnDb30LSbuf09BaiTdSAt76tMNRNpjtohPHTJ5B7Fd42D
-         hUmTHqi4ojct/WE85x3D9UBqtLZ8gzYnPsVgQ6nE=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F09BB3522DD2; Thu, 10 Sep 2020 21:37:09 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 21:37:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC8FE1084CA4;
+        Fri, 11 Sep 2020 06:33:54 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-109.ams2.redhat.com [10.36.112.109])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B93625D9E8;
+        Fri, 11 Sep 2020 06:33:52 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, dipankar@in.ibm.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH RFC tip/core/rcu 4/4] rcu-tasks: Shorten per-grace-period
- sleep for RCU Tasks Trace
-Message-ID: <20200911043709.GV29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200910201956.GA24190@paulmck-ThinkPad-P72>
- <20200910202052.5073-4-paulmck@kernel.org>
- <CAADnVQK4Rgrzq+cUKCMkr5anZF+UbHmAc7-FH4BjA23aMM03rQ@mail.gmail.com>
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH RFC bpf-next 5/5] bpf: Do not include the original insn
+ in zext patchlet
+References: <20200909233439.3100292-1-iii@linux.ibm.com>
+        <20200909233439.3100292-6-iii@linux.ibm.com>
+        <CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com>
+Date:   Fri, 11 Sep 2020 09:33:50 +0300
+In-Reply-To: <CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com>
+        (Alexei Starovoitov's message of "Thu, 10 Sep 2020 17:25:43 -0700")
+Message-ID: <xunyk0x0styp.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQK4Rgrzq+cUKCMkr5anZF+UbHmAc7-FH4BjA23aMM03rQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 08:18:01PM -0700, Alexei Starovoitov wrote:
-> On Thu, Sep 10, 2020 at 1:20 PM <paulmck@kernel.org> wrote:
-> >
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> >
-> > The various RCU tasks flavors currently wait 100 milliseconds between each
-> > grace period in order to prevent CPU-bound loops and to favor efficiency
-> > over latency.  However, RCU Tasks Trace needs to have a grace-period
-> > latency of roughly 25 milliseconds, which is completely infeasible given
-> > the 100-millisecond per-grace-period sleep.  This commit therefore reduces
-> > this sleep duration to 5 milliseconds (or one jiffy, whichever is longer)
-> > in kernels built with CONFIG_TASKS_TRACE_RCU_READ_MB=y.
-> 
-> The commit log is either misleading or wrong?
-> If I read the code correctly in CONFIG_TASKS_TRACE_RCU_READ_MB=y
-> case the existing HZ/10 "paranoid sleep" is preserved.
+Hi, Alexei!
 
-Yes, for CONFIG_TASKS_TRACE_RCU_READ_MB=y, the previous 100-millisecond
-"paranoid sleep" is preserved.  Preserving previous behavior is of course
-especially important for rcupdate.rcu_task_ipi_delay, given that real-time
-applications are degraded by IPIs.  And given that we are avoiding IPIs
-in this case, speeding up the polling is not all that helpful.
+>>>>> On Thu, 10 Sep 2020 17:25:43 -0700, Alexei Starovoitov  wrote:
 
-> It's for the MB=n case it is reduced to HZ/200.
+ > On Wed, Sep 9, 2020 at 4:37 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+ >> 
+ >> If the original insn is a jump, then it is not subjected to branch
+ >> adjustment, which is incorrect. As discovered by Yauheni in
 
-Yes, that is, to roughly 5 milliseconds for large HZ or to one jiffy
-for HZ<200.  Here, we send IPIs much more aggressively, so polling
-more frequently does help a lot.
+ > I think the problem is elsewhere.
+ > Something is wrong with zext logic.
+ > the branch insn should not have been marked as zext_dst.
+ > and in the line:
+ > zext_patch[0] = insn;
+ > this 'insn' should never be a branch.
+ > See insn_no_def().
 
-> Also I don't understand why you're talking about milliseconds but
-> all numbers are HZ based. HZ/10 gives different number of
-> milliseconds depending on HZ.
+Yes, it may be the case, as I mentioned in my analysis, but the
+patching itself looks much more clear with Ilya's changes.
 
-As long as HZ is 10 or greater, HZ/10 jiffies is roughly 100 milliseconds.
-In the unlikely event that HZ is less than 10, the code clamps to one
-jiffy.  Since schedule_timeout_idle() sleep time is specified in jiffies,
-it all works out.
+-- 
+WBR,
+Yauheni Kaliuta
 
-							Thanx, Paul
