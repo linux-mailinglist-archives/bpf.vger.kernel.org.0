@@ -2,66 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F982675F7
-	for <lists+bpf@lfdr.de>; Sat, 12 Sep 2020 00:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC3826774D
+	for <lists+bpf@lfdr.de>; Sat, 12 Sep 2020 04:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgIKWef (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Sep 2020 18:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
+        id S1725804AbgILC5B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Sep 2020 22:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgIKWe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:34:28 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994C1C0613ED
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 15:34:27 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id z1so12887908wrt.3
-        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 15:34:27 -0700 (PDT)
+        with ESMTP id S1725799AbgILC46 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Sep 2020 22:56:58 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB22C061757
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 19:56:58 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 125so10865794ybg.12
+        for <bpf@vger.kernel.org>; Fri, 11 Sep 2020 19:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s9eD60+EBxHRn5HkCgdAAnDMIN2I4k3svQO2Ym6pIOI=;
-        b=Z78DqAELSBmN6zTx1+yWiIR34ifT55bYax3ENgP8PzqJbdMVEV7Ms9HqBG8kUU87Eh
-         rhHlPiryVxyhf7JczwI7eCKfN6OYa7IS61mX65Ln0vhj/jVc6hR6L1qKhhBkt27jQ1f1
-         Y1AAkT6b36KKhuD8IkOLtNQtcGRX+SaRlLilE7S6R+JLWTZOYplGQ4kI74yuk1EttlWY
-         okXOUgkdDo1NZ7Cq54wkP0gtVVN04TdlJd8KQrj8+E+DULEha5NJWz9NeLGYbXz94C08
-         FfCoO3SjpzSeUzJLaN+xW8fSuJqq4riQ8mDiTnqTAMwcoes9s2s002Ee7VPaZGNHyAYD
-         pp7g==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=m07aqYCBr3BugQcnNhbXBunb8rguqcPxK+1uBceisy4=;
+        b=o8gd8L6cwO7USS+zSeJvNGNPvSjkj3df9QrcXoii7Dj+MjLEgMkReLgRPFgPNejXYo
+         g8ctX6BQLS0y8MwnOS362iGE3i9SUp5J8rdAlKvTa185XVXDVpcz4oY0k1uzXGqfyOfW
+         AZzBINXmWkoh1485ZYyiWuYBI/48wE9i3tZEzW0MhwhDv1rTj+qkIxDXS5A1WnKz+Dxt
+         s6vvazXjmoUb+Usq+xx++LL4WgmbkH6qytSUPmIKE/nmRuLZE2CNbUMo10l/uQ+meKOD
+         m6W770lNlKtciQ6ta5gSZnzO5pMnznEX2vzg5toDhjVhUdVaAUk5OAlmA7QJBwfs7B+z
+         4Esg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s9eD60+EBxHRn5HkCgdAAnDMIN2I4k3svQO2Ym6pIOI=;
-        b=m3HpOdQEweRuvbPfp369365Bokxognvc520dlEBXE/sVwZZMQ7xQHn0wdBi4sH8ppj
-         wDPdJ6fYX4AdF4tI6qhmbT/fgPqsBgDu439WhK6UKWz/M7I/Q3rTGE11O3htCKg+xdPA
-         zlaF9PyaAniu4pvOzolbUkRzSsMHpTmJLYWdsg857CimSh1EMj0Teo4NCVCw2Uds8FNc
-         wgPtv/owSyZj26Vm/6GsCAwAM6p9dRtvhMniY1KOFGFvQraEEiOZgTwosdFdwLInVQyL
-         6O1Q3+ntL0uKmF2G+Drd6HxoQoFuBZZw49n4gFF2s1nEPgFtNvN244r0k2gZTQdN7DlZ
-         efBQ==
-X-Gm-Message-State: AOAM532JRq6vIq9AylyiLIK6QNyh7fVZbpn4+HjNQHhGR3cHZnFn0WOD
-        mtiUorVHS4gnSVmrGqfDr7NyH0aW3vDSqGUnYogklw==
-X-Google-Smtp-Source: ABdhPJzpxSXARoJ7MR+weI9o3sCg15ocmJabVb4PObSHAgKEilDM7scfi80eN6kqgsSh6sWhvl2TFQCUCLRLvcXzV48=
-X-Received: by 2002:a5d:458a:: with SMTP id p10mr3961913wrq.282.1599863665870;
- Fri, 11 Sep 2020 15:34:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200728085734.609930-1-irogers@google.com> <20200728085734.609930-3-irogers@google.com>
- <20200728155940.GC1319041@krava> <20200728160954.GD1319041@krava>
- <CAP-5=fVqto0LrwgW6dHQupp7jFA3wToRBonBaXXQW4wwYcTreg@mail.gmail.com>
- <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
- <20200904160303.GD939481@krava> <CAP-5=fWOSi4B3g1DARkh6Di-gU4FgmjnhbPYRBdvSdLSy_KC5Q@mail.gmail.com>
- <20200904184803.GA3749996@kernel.org> <20200904185013.GA3752059@kernel.org> <20200904185106.GB3752059@kernel.org>
-In-Reply-To: <20200904185106.GB3752059@kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=m07aqYCBr3BugQcnNhbXBunb8rguqcPxK+1uBceisy4=;
+        b=Dp9nhocxzdSpaBzcayLtUCAznVVhZquZTWqwx6+uXfDbRlPXv1VABMGej2+6MoGGl2
+         lMI9qdI8UlfLlm5wX6Xc9AK0XjRwkt9vV9+B3oV6ZO3DATYYvjuYVfVA+bdehkEd0mRS
+         dunC87qar/aINyq12872ZLg58XGCLba/TgzYdr0Ingz5qehHmHrDaQ5iGWxnIT2wf+Cy
+         yln+1aUDiyptxljFCdInMQ2uImGEs04kn/h9LSuxPUfntt5/4A0h2rCh+9uv35tI1nyv
+         Ivli4Wsi9jMARhdD8DGNGlTUdhAHS8CHnnORYhOgpoYCKKyFmPlt0bVv8ZjjrNOLI0pu
+         fVrA==
+X-Gm-Message-State: AOAM530KuW5dKTsTbYJGFb92Gv9hEDdK7S5lqUhIi2l13ZbsU506eLzi
+        l9U83kta8svbXGT/73kuwGdbVQWXRjhh
+X-Google-Smtp-Source: ABdhPJykicvlDlpk6vddU+n3i8ZICnShO591arsdtiL3sRk9G5NjJiJWw/dwGWCtCVTJAvwbSYst8tq9iAnr
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a25:d010:: with SMTP id
+ h16mr6745698ybg.439.1599879416979; Fri, 11 Sep 2020 19:56:56 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 19:56:51 -0700
+Message-Id: <20200912025655.1337192-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [PATCH v3 0/4] Fixes for setting event freq/periods
 From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 11 Sep 2020 15:34:11 -0700
-Message-ID: <CAP-5=fXn74c-TAzOCLz2O1XZ773dwUz5nCHwQXp5nuQzWBS64A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
- attr->sample_period for libpfm4 events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -73,155 +66,41 @@ Cc:     Jiri Olsa <jolsa@redhat.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 11:51 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, Sep 04, 2020 at 03:50:13PM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Fri, Sep 04, 2020 at 03:48:03PM -0300, Arnaldo Carvalho de Melo escr=
-eveu:
-> > > Em Fri, Sep 04, 2020 at 09:22:10AM -0700, Ian Rogers escreveu:
-> > > > On Fri, Sep 4, 2020 at 9:03 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > > On Thu, Sep 03, 2020 at 10:41:14PM -0700, Ian Rogers wrote:
-> > > > > > On Wed, Jul 29, 2020 at 4:24 PM Ian Rogers <irogers@google.com>=
- wrote:
-> > > > > > > On Tue, Jul 28, 2020 at 9:10 AM Jiri Olsa <jolsa@redhat.com> =
-wrote:
-> > > > > > > > On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote:
-> > > > > > > > > On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrot=
-e:
-> > > > > > > > [jolsa@krava perf]$ sudo ./perf test 17 -v
-> > > > > > > > 17: Setup struct perf_event_attr                          :
-> > >
-> > > > > > > > running './tests/attr/test-record-C0'
-> > > > > > > > expected sample_period=3D4000, got 3000
-> > > > > > > > FAILED './tests/attr/test-record-C0' - match failure
-> > >
-> > > > > > > I'm not able to reproduce this. Do you have a build configura=
-tion or
-> > > > > > > something else to look at? The test doesn't seem obviously co=
-nnected
-> > > > > > > with this patch.
-> > >
-> > > > > > Jiri, any update? Thanks,
-> > >
-> > > > > sorry, I rebased and ran it again and it passes for me now,
-> > > > > so it got fixed along the way
-> > >
-> > > > No worries, thanks for the update! It'd be nice to land this and th=
-e
-> > > > other libpfm fixes.
-> > >
-> > > I applied it and it generated this regression:
-> > >
-> > > FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-perio=
-d' - match failure
-> > >
-> > > I'll look at the other patches that are pending in this regard to see
-> > > what needs to be squashed so that we don't break bisect.
-> >
-> > So, more context:
-> >
-> > running '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period=
-'
-> > expected exclude_hv=3D0, got 1
-> > FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-period'=
- - match failure
-> > test child finished with -1
-> > ---- end ----
-> > Setup struct perf_event_attr: FAILED!
-> > [root@five ~]#
-> >
-> > Ian, can you take a look at this?
->
-> Further tests I've performed:
->
->     Committer testing:
->
->     Not linking with libpfm:
->
->       # ldd ~/bin/perf | grep libpfm
->       #
->
->     Before:
->
->       # perf record -c 10000 -e cycles/period=3D12345/,instructions sleep=
- 0.0001
->       [ perf record: Woken up 1 times to write data ]
->       [ perf record: Captured and wrote 0.052 MB perf.data (258 samples) =
-]
->       # perf evlist -v
->       cycles/period=3D12345/: size: 120, { sample_period, sample_freq }: =
-12345, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit: =
-1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_=
-guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
->       instructions: size: 120, config: 0x1, { sample_period, sample_freq =
-}: 10000, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inheri=
-t: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
->       #
->
->     After:
->
->       #
->       # perf record -c 10000 -e cycles/period=3D12345/,instructions sleep=
- 0.0001
->       [ perf record: Woken up 1 times to write data ]
->       [ perf record: Captured and wrote 0.053 MB perf.data (284 samples) =
-]
->       # perf evlist -v
->       cycles/period=3D12345/: size: 120, { sample_period, sample_freq }: =
-12345, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit: =
-1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_=
-guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
->       instructions: size: 120, config: 0x1, { sample_period, sample_freq =
-}: 10000, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inheri=
-t: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
->       #
->
->     Linking with libpfm:
->
->       # ldd ~/bin/perf | grep libpfm
->             libpfm.so.4 =3D> /lib64/libpfm.so.4 (0x00007f54c7d75000)
->       #
->
->       # perf record -c 10000 --pfm-events=3Dcycles:period=3D77777 sleep 1
->       [ perf record: Woken up 1 times to write data ]
->       [ perf record: Captured and wrote 0.043 MB perf.data (141 samples) =
-]
->       # perf evlist -v
->       cycles:period=3D77777: size: 120, { sample_period, sample_freq }: 1=
-0000, sample_type: IP|TID|TIME, read_format: ID, disabled: 1, inherit: 1, e=
-xclude_hv: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: =
-1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
->       #
->
->     After:
->
->       # perf record -c 10000 --pfm-events=3Dcycles:period=3D77777 sleep 1
->       [ perf record: Woken up 1 times to write data ]
->       [ perf record: Captured and wrote 0.039 MB perf.data (19 samples) ]
->       # perf evlist -v
->       cycles:period=3D77777: size: 120, { sample_period, sample_freq }: 7=
-7777, sample_type: IP|TID|TIME, read_format: ID, disabled: 1, inherit: 1, e=
-xclude_hv: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: =
-1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
->       #
->
-Hi Arnaldo,
+Some fixes that address issues for regular and pfm4 events with 2
+additional perf_event_attr tests. Various authors, David Sharp isn't
+currently at Google.
 
-I've been trying to reproduce the test failure you mention and I've
-not been able to. This follow up e-mail seems to show things working
-as intended. Did the issue resolve itself?
+v3. moved a loop into a helper following Adrian Hunter's suggestion. 
+v2. corrects the commit message following Athira Rajeev's suggestion.
 
-Thanks,
-Ian
+David Sharp (1):
+  perf record: Set PERF_RECORD_PERIOD if attr->freq is set.
+
+Ian Rogers (2):
+  perf record: Don't clear event's period if set by a term
+  perf test: Leader sampling shouldn't clear sample period
+
+Stephane Eranian (1):
+  perf record: Prevent override of attr->sample_period for libpfm4
+    events
+
+ tools/perf/tests/attr/README             |  1 +
+ tools/perf/tests/attr/test-record-group2 | 29 ++++++++++++++++++++
+ tools/perf/util/evsel.c                  | 10 ++++---
+ tools/perf/util/record.c                 | 34 ++++++++++++++++++------
+ 4 files changed, 63 insertions(+), 11 deletions(-)
+ create mode 100644 tools/perf/tests/attr/test-record-group2
+
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
