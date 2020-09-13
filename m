@@ -2,103 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418ED267C4B
-	for <lists+bpf@lfdr.de>; Sat, 12 Sep 2020 22:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47708267F5E
+	for <lists+bpf@lfdr.de>; Sun, 13 Sep 2020 13:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgILUtU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Sep 2020 16:49:20 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:27435 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725928AbgILUtP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 12 Sep 2020 16:49:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599943754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4AxzX4krOcHBm8+hBaUbmqWLp68cQ/w1UdDPA60DZiY=;
-        b=HSKmxHhV6/HuNST98KXWYy0z/B4FI0pKh1TIntFpf1aKHEyZvxXldH9UivM7lDk1w1PVuF
-        kMvPbYjsUDq3qqnSvLG4UOoNh84bvFfZvjYRAYlunSMBObGYdz3myXv7Cn1cn9K9Kv4/P5
-        saQlWvpDMbnfXtQfVUUaNfChO+dDMiE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-BCe_ZU25N7ChGLLBGdRJxA-1; Sat, 12 Sep 2020 16:49:10 -0400
-X-MC-Unique: BCe_ZU25N7ChGLLBGdRJxA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1725938AbgIMLtL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Sep 2020 07:49:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgIMLtH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Sep 2020 07:49:07 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CF081074657;
-        Sat, 12 Sep 2020 20:49:07 +0000 (UTC)
-Received: from krava (unknown [10.40.192.28])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0EC7A5D9D2;
-        Sat, 12 Sep 2020 20:49:02 +0000 (UTC)
-Date:   Sat, 12 Sep 2020 22:49:02 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3 0/4] Fixes for setting event freq/periods
-Message-ID: <20200912204902.GE1714160@krava>
-References: <20200912025655.1337192-1-irogers@google.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 35C002158C;
+        Sun, 13 Sep 2020 11:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599997746;
+        bh=nNNZtKQ9vNpyp0AU2mlHeeJpLKdX3ZCosPfSE/RvRU8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dIEYq1U0ypah+NkLQx6/szK3jNn/P2s5pW8bE/k+RYZmRvX5s4Y+3fpc0Wq5nCEna
+         Ae4d/YEh7AX6GiKlRk9vB5oAno4HWt2fv5+SuQyi8gYgEY9Y5xUw6VfCoUtYUgINuH
+         qJpylynfpOVa6A78zqv2iz+JLb7gNgF/g0+mc6RQ=
+Date:   Sun, 13 Sep 2020 13:49:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Using a pointer and kzalloc in place of a struct directly
+Message-ID: <20200913114908.GA929395@kroah.com>
+References: <000000000000c82fe505aef233c6@google.com>
+ <20200912113804.6465-1-anant.thazhemadam@gmail.com>
+ <20200912114706.GA171774@kroah.com>
+ <09477eb1-bbeb-74e8-eba9-d72cce6104db@gmail.com>
+ <20200912145525.GA769913@kroah.com>
+ <45d9f933-a5c8-ddbd-c014-2bdd5d911e13@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200912025655.1337192-1-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <45d9f933-a5c8-ddbd-c014-2bdd5d911e13@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 07:56:51PM -0700, Ian Rogers wrote:
-> Some fixes that address issues for regular and pfm4 events with 2
-> additional perf_event_attr tests. Various authors, David Sharp isn't
-> currently at Google.
+On Sun, Sep 13, 2020 at 01:32:43AM +0530, Anant Thazhemadam wrote:
+> On 12/09/20 8:25 pm, Greg KH wrote:
+> > On Sat, Sep 12, 2020 at 05:43:38PM +0530, Anant Thazhemadam wrote:
+> >> On 12/09/20 5:17 pm, Greg KH wrote:
+> >>> Note, your "To:" line seemed corrupted, and why not cc: the bpf mailing
+> >>> list as well?
+> >> Oh, I'm sorry about that. I pulled the emails of all the people to whom
+> >> this mail was sent off from the header in lkml mail, and just cc-ed
+> >> everyone.
+> >>
+> >>> You leaked memory :(
+> >>>
+> >>> Did you test this patch?  Where do you free this memory, I don't see
+> >>> that happening anywhere in this patch, did I miss it?
+> >> Yes, I did test this patch, which didn't seem to trigger any issues.
+> >> It surprised me so much, that I ended up sending it in, to have
+> >> it checked out.
+> > You might not have noticed the memory leak if you were not looking for
+> > it.
+> >
+> > How did you test this?
+> Ah, that must be it. I tested this using syzbot, which wouldn't have looked
+> for memory leaks, but only the issue that was reported. My apologies.
+> >> I wasn't sure where exactly the memory allocated here was
+> >> supposed to be freed (might be why the current implementation
+> >> isn't exactly using kzalloc). I forgot to mention it in the initial mail,
+> >> and I was hoping that someone would point me in the right direction
+> >> (if this approach was actually going to be considered, that is, which in
+> >> retrospect I now feel might not be the best thing)
+> > It has to be freed somewhere, you wrote the patch  :)
+> >
+> > But back to the original question here, why do you feel this change is
+> > needed?  What does this do better/faster/more correct than the code that
+> > is currently there?  Unless you can provide that, the change should not
+> > be needed, right?
+> I was initially trying to see if allocating memory would be an appropriate
+> heuristic in trying to get a better sense of the bug and crash report, and
+> at that moment, that was my goal, and figured that I'd deal with rest
+> (such as freeing the memory) later on, if this was a something that could work.
 > 
-> v3. moved a loop into a helper following Adrian Hunter's suggestion. 
-> v2. corrects the commit message following Athira Rajeev's suggestion.
+> I was surprised when the patch (although it caused a memory leak), seemed
+> to pass the test for the bug, without triggering any issues; since this patch
+> basically only allocates memory as compared to locally declaring variables.
 > 
-> David Sharp (1):
->   perf record: Set PERF_RECORD_PERIOD if attr->freq is set.
-> 
-> Ian Rogers (2):
->   perf record: Don't clear event's period if set by a term
->   perf test: Leader sampling shouldn't clear sample period
-> 
-> Stephane Eranian (1):
->   perf record: Prevent override of attr->sample_period for libpfm4
->     events
+> I wanted some input or explanation, about how is it that doing this no longer
+> triggers the bug?
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+That really is up to you to work out, sorry.
 
-thanks,
-jirka
+Look at what the syzbot is testing, and look at the code change to see
+the difference, and you should notice what memory is now being cleared
+that previously was not.
 
-> 
->  tools/perf/tests/attr/README             |  1 +
->  tools/perf/tests/attr/test-record-group2 | 29 ++++++++++++++++++++
->  tools/perf/util/evsel.c                  | 10 ++++---
->  tools/perf/util/record.c                 | 34 ++++++++++++++++++------
->  4 files changed, 63 insertions(+), 11 deletions(-)
->  create mode 100644 tools/perf/tests/attr/test-record-group2
-> 
-> -- 
-> 2.28.0.618.gf4bc123cb7-goog
-> 
+good luck!
 
+greg k-h
