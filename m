@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED7426950D
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0AF2694FB
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725984AbgINSjV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 14:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
+        id S1726087AbgINSgf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 14:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgINSgV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:36:21 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1F1C06174A
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:21 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id b127so610296ybh.21
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:21 -0700 (PDT)
+        with ESMTP id S1726013AbgINSgX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:36:23 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66603C061797
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:23 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id fs5so623986pjb.7
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=2zAlitpz1bSHaXpmOBe1sEwQjxsIHDKKWn1soexKc5A=;
-        b=NWFg5GIQ7/lCJ8rJPXclzGK9Ioj0v57JBpc6Mgf6Do87IAfWr7CkaiOjHcPcasb6Jt
-         7/uDFPZ4J8C6Ot5NvFlwvuAOBycoNst4FL7JFGQTSCaH6YUfp0pvEfQ2+TWldYNGjFXv
-         HyUzDHqtorf6M+XBG1+m+0zkGfZCOSImmfHEyUYEJCA78lKWwd3/sHDiTWN/Z+C4QYpn
-         vwdfrgL/+fy3CcAxOF3xxWnDCgXW/cYLwL9lFJExwoOz1b40wpv+IWS8lB5JKfuRykqU
-         kIBxrjLJK62Cw0uJ/TJ1o4fTpgL1kbF99LIz/cM+wBqnlSdwsRh4HMFYrYwY44SU5ZEI
-         mGrg==
+        bh=jqsc+1d2ynBuBqET+rkKoXJHN1R2Af7JEusEUeR6x9I=;
+        b=E1/s6+lbfZ9KGbZcqp9LYf2HG9JFQ/s6uMO4OucTpDYUOol+ffV08+DB74ivwNhbXK
+         9DvNUEYYtbJigLt7k6CV4T3lHwFYszMr75Qx8xJVpu4GX9Ob9bLkVpvCgzaRWqkce940
+         VoENTVDP2+NXmOiJukn1Qxp5HyrjTZHkJ+3MlbM502EW+RcqczILRjANDIqK9aoR62DJ
+         W1XZBugqbJ6xBno/TcR0sZ5owmE18ABVgho61kc3yjsgKUYRo3phxx71XxLTJPj+Wgi4
+         f0YIdzx74iijLQNHPR9f2yqo2J9TOBP2BcVDJX9uZaNmfWpsrKgNQvXlz0sdD8/tzfh3
+         Earg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2zAlitpz1bSHaXpmOBe1sEwQjxsIHDKKWn1soexKc5A=;
-        b=t5prWbTqPA2uyHymE9s3JpzBF2+OtCBDTsp1zDZldOhgGIj/3AkdjMnPnNitXxXZc7
-         Kyg9eO8R20dZ+DPAZ1wgi71tUiVONG0qfWGJIvaJzrgvo1QnxppuoaBUu8X3jXLglj9E
-         q5HlYxqZJ84y/TcM47dvRLywVlSrSPVWKJo4k5Y1rfLs0OfZNzEFIJOP9HEEJW+jqOW9
-         e1/xVWhfmmXdDrE9BET++TIcBUelHGkaNrAknkV23R29TN8mmMuhB4pcs3XEUkVd2Zpr
-         zbRFMANzSFbxGwDuu/yKRkIXjDQSKflheiOJ8+QSTP5gd4MSMp25lkJ2H/OhpJkLIrEs
-         f8yg==
-X-Gm-Message-State: AOAM533ESpCmkkwGFSBRGCaWSI+A2hLiYNpS1k8Uyg8LT0Ej2+8ncVu6
-        dsY97bGa3W5+fmHZsp0Vv+aybzE=
-X-Google-Smtp-Source: ABdhPJzIIuHBD5Fem6UtPdobHRoqcsOF6vZLREqUydtxySAZLgt3Bs4bkL3LYQvbBfPwCZe3QNYw9lc=
+        bh=jqsc+1d2ynBuBqET+rkKoXJHN1R2Af7JEusEUeR6x9I=;
+        b=om0ITgSP3DmGWCVfcV+yr7Vc5RV8xGPR7N0EbECPAlLji0bWAi0xqd1STJIL7r2YL/
+         jDZkpCSctngwaWRmfk8uPymqFCO7u7+4zPnqpC5hRNHUhbfC50/6QMPaO5a5bbCB+IFK
+         803aD7cmhjEdN7ii4lC1VyaewImOIcAOe3edsAJ2B/4WggyHlNOXGMliKPq7DE1UGSCS
+         0vLCAlN8kQmqGXbO853qAxF0S7dxS4hnFDY+9SFj4YmOmuQDtahM3i7lt1x378W4/NaJ
+         4XEd1dRVvfMMH/Pra/K6R0JJblmDtGG6Hzoqi6DZsKgHNG9v2d8H6pKscEozRWLuXvGu
+         c6og==
+X-Gm-Message-State: AOAM531i0YYnpAaHtH1+RVdH363aJGKrz1yauK3StRvGE1QNOElgGnEo
+        JbmevfBa5EirV0vRhJD29fGq+YI=
+X-Google-Smtp-Source: ABdhPJwE120pXjv27VS9DhC/+c5eROjsa4niAXganasQ9i8N010Jt3x/tw5jFq4+ZhkYEq+pxJ8ZG2M=
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a25:ae59:: with SMTP id g25mr10874818ybe.317.1600108580862;
- Mon, 14 Sep 2020 11:36:20 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 11:36:12 -0700
+ (user=sdf job=sendgmr) by 2002:a17:90a:7ac1:: with SMTP id
+ b1mr599998pjl.121.1600108582911; Mon, 14 Sep 2020 11:36:22 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 11:36:13 -0700
 In-Reply-To: <20200914183615.2038347-1-sdf@google.com>
-Message-Id: <20200914183615.2038347-3-sdf@google.com>
+Message-Id: <20200914183615.2038347-4-sdf@google.com>
 Mime-Version: 1.0
 References: <20200914183615.2038347-1-sdf@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH bpf-next v5 2/5] bpf: Add BPF_PROG_BIND_MAP syscall
+Subject: [PATCH bpf-next v5 3/5] libbpf: Add BPF_PROG_BIND_MAP syscall and use
+ it on .rodata section
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Andrii Nakryiko <andriin@fb.com>,
         YiFei Zhu <zhuyifei1999@gmail.com>,
         Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -65,150 +65,201 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <zhuyifei@google.com>
 
-This syscall binds a map to a program. Returns success if the map is
-already bound to the program.
+The patch adds a simple wrapper bpf_prog_bind_map around the syscall.
+When the libbpf tries to load a program, it will probe the kernel for
+the support of this syscall and unconditionally bind .rodata section
+to the program.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
 Cc: YiFei Zhu <zhuyifei1999@gmail.com>
 Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/uapi/linux/bpf.h       |  7 ++++
- kernel/bpf/syscall.c           | 63 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  7 ++++
- 3 files changed, 77 insertions(+)
+ tools/lib/bpf/bpf.c      | 16 +++++++++
+ tools/lib/bpf/bpf.h      |  8 +++++
+ tools/lib/bpf/libbpf.c   | 72 ++++++++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.map |  1 +
+ 4 files changed, 97 insertions(+)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 7dd314176df7..a22812561064 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -124,6 +124,7 @@ enum bpf_cmd {
- 	BPF_ENABLE_STATS,
- 	BPF_ITER_CREATE,
- 	BPF_LINK_DETACH,
-+	BPF_PROG_BIND_MAP,
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 82b983ff6569..2baa1308737c 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -872,3 +872,19 @@ int bpf_enable_stats(enum bpf_stats_type type)
+ 
+ 	return sys_bpf(BPF_ENABLE_STATS, &attr, sizeof(attr));
+ }
++
++int bpf_prog_bind_map(int prog_fd, int map_fd,
++		      const struct bpf_prog_bind_opts *opts)
++{
++	union bpf_attr attr;
++
++	if (!OPTS_VALID(opts, bpf_prog_bind_opts))
++		return -EINVAL;
++
++	memset(&attr, 0, sizeof(attr));
++	attr.prog_bind_map.prog_fd = prog_fd;
++	attr.prog_bind_map.map_fd = map_fd;
++	attr.prog_bind_map.flags = OPTS_GET(opts, flags, 0);
++
++	return sys_bpf(BPF_PROG_BIND_MAP, &attr, sizeof(attr));
++}
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 015d13f25fcc..8c1ac4b42f90 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -243,6 +243,14 @@ LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf,
+ enum bpf_stats_type; /* defined in up-to-date linux/bpf.h */
+ LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
+ 
++struct bpf_prog_bind_opts {
++	size_t sz; /* size of this struct for forward/backward compatibility */
++	__u32 flags;
++};
++#define bpf_prog_bind_opts__last_field flags
++
++LIBBPF_API int bpf_prog_bind_map(int prog_fd, int map_fd,
++				 const struct bpf_prog_bind_opts *opts);
+ #ifdef __cplusplus
+ } /* extern "C" */
+ #endif
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 550950eb1860..b68fa08e2fa9 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -174,6 +174,8 @@ enum kern_feature_id {
+ 	FEAT_EXP_ATTACH_TYPE,
+ 	/* bpf_probe_read_{kernel,user}[_str] helpers */
+ 	FEAT_PROBE_READ_KERN,
++	/* BPF_PROG_BIND_MAP is supported */
++	FEAT_PROG_BIND_MAP,
+ 	__FEAT_CNT,
  };
  
- enum bpf_map_type {
-@@ -658,6 +659,12 @@ union bpf_attr {
- 		__u32		flags;
- 	} iter_create;
+@@ -409,6 +411,7 @@ struct bpf_object {
+ 	struct extern_desc *externs;
+ 	int nr_extern;
+ 	int kconfig_map_idx;
++	int rodata_map_idx;
  
-+	struct { /* struct used by BPF_PROG_BIND_MAP command */
-+		__u32		prog_fd;
-+		__u32		map_fd;
-+		__u32		flags;		/* extra flags */
-+	} prog_bind_map;
+ 	bool loaded;
+ 	bool has_subcalls;
+@@ -1070,6 +1073,7 @@ static struct bpf_object *bpf_object__new(const char *path,
+ 	obj->efile.bss_shndx = -1;
+ 	obj->efile.st_ops_shndx = -1;
+ 	obj->kconfig_map_idx = -1;
++	obj->rodata_map_idx = -1;
+ 
+ 	obj->kern_version = get_kernel_version();
+ 	obj->loaded = false;
+@@ -1428,6 +1432,8 @@ static int bpf_object__init_global_data_maps(struct bpf_object *obj)
+ 						    obj->efile.rodata->d_size);
+ 		if (err)
+ 			return err;
 +
- } __attribute__((aligned(8)));
- 
- /* The description below is an attempt at providing documentation to eBPF
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a67b8c6746be..2ce32cad5c8e 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -4161,6 +4161,66 @@ static int bpf_iter_create(union bpf_attr *attr)
- 	return err;
++		obj->rodata_map_idx = obj->nr_maps - 1;
+ 	}
+ 	if (obj->efile.bss_shndx >= 0) {
+ 		err = bpf_object__init_internal_map(obj, LIBBPF_MAP_BSS,
+@@ -3894,6 +3900,55 @@ static int probe_kern_probe_read_kernel(void)
+ 	return probe_fd(bpf_load_program_xattr(&attr, NULL, 0));
  }
  
-+#define BPF_PROG_BIND_MAP_LAST_FIELD prog_bind_map.flags
-+
-+static int bpf_prog_bind_map(union bpf_attr *attr)
++static int probe_prog_bind_map(void)
 +{
-+	struct bpf_prog *prog;
-+	struct bpf_map *map;
-+	struct bpf_map **used_maps_old, **used_maps_new;
-+	int i, ret = 0;
++	struct bpf_load_program_attr prg_attr;
++	struct bpf_create_map_attr map_attr;
++	char *cp, errmsg[STRERR_BUFSIZE];
++	struct bpf_insn insns[] = {
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	};
++	int ret, map, prog;
 +
-+	if (CHECK_ATTR(BPF_PROG_BIND_MAP))
-+		return -EINVAL;
++	if (!kernel_supports(FEAT_GLOBAL_DATA))
++		return 0;
 +
-+	if (attr->prog_bind_map.flags)
-+		return -EINVAL;
++	memset(&map_attr, 0, sizeof(map_attr));
++	map_attr.map_type = BPF_MAP_TYPE_ARRAY;
++	map_attr.key_size = sizeof(int);
++	map_attr.value_size = 32;
++	map_attr.max_entries = 1;
 +
-+	prog = bpf_prog_get(attr->prog_bind_map.prog_fd);
-+	if (IS_ERR(prog))
-+		return PTR_ERR(prog);
-+
-+	map = bpf_map_get(attr->prog_bind_map.map_fd);
-+	if (IS_ERR(map)) {
-+		ret = PTR_ERR(map);
-+		goto out_prog_put;
++	map = bpf_create_map_xattr(&map_attr);
++	if (map < 0) {
++		ret = -errno;
++		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
++		pr_warn("Error in %s():%s(%d). Couldn't create simple array map.\n",
++			__func__, cp, -ret);
++		return ret;
 +	}
 +
-+	mutex_lock(&prog->aux->used_maps_mutex);
++	memset(&prg_attr, 0, sizeof(prg_attr));
++	prg_attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
++	prg_attr.insns = insns;
++	prg_attr.insns_cnt = ARRAY_SIZE(insns);
++	prg_attr.license = "GPL";
 +
-+	used_maps_old = prog->aux->used_maps;
-+
-+	for (i = 0; i < prog->aux->used_map_cnt; i++)
-+		if (used_maps_old[i] == map)
-+			goto out_unlock;
-+
-+	used_maps_new = kmalloc_array(prog->aux->used_map_cnt + 1,
-+				      sizeof(used_maps_new[0]),
-+				      GFP_KERNEL);
-+	if (!used_maps_new) {
-+		ret = -ENOMEM;
-+		goto out_unlock;
++	prog = bpf_load_program_xattr(&prg_attr, NULL, 0);
++	if (prog < 0) {
++		close(map);
++		return 0;
 +	}
 +
-+	memcpy(used_maps_new, used_maps_old,
-+	       sizeof(used_maps_old[0]) * prog->aux->used_map_cnt);
-+	used_maps_new[prog->aux->used_map_cnt] = map;
++	ret = bpf_prog_bind_map(prog, map, NULL);
 +
-+	prog->aux->used_map_cnt++;
-+	prog->aux->used_maps = used_maps_new;
++	close(map);
++	close(prog);
 +
-+	kfree(used_maps_old);
-+
-+out_unlock:
-+	mutex_unlock(&prog->aux->used_maps_mutex);
-+
-+	if (ret)
-+		bpf_map_put(map);
-+out_prog_put:
-+	bpf_prog_put(prog);
-+	return ret;
++	return ret >= 0;
 +}
 +
- SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, size)
- {
- 	union bpf_attr attr;
-@@ -4294,6 +4354,9 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
- 	case BPF_LINK_DETACH:
- 		err = link_detach(&attr);
- 		break;
-+	case BPF_PROG_BIND_MAP:
-+		err = bpf_prog_bind_map(&attr);
-+		break;
- 	default:
- 		err = -EINVAL;
- 		break;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 7dd314176df7..a22812561064 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -124,6 +124,7 @@ enum bpf_cmd {
- 	BPF_ENABLE_STATS,
- 	BPF_ITER_CREATE,
- 	BPF_LINK_DETACH,
-+	BPF_PROG_BIND_MAP,
+ enum kern_feature_result {
+ 	FEAT_UNKNOWN = 0,
+ 	FEAT_SUPPORTED = 1,
+@@ -3934,6 +3989,9 @@ static struct kern_feature_desc {
+ 	},
+ 	[FEAT_PROBE_READ_KERN] = {
+ 		"bpf_probe_read_kernel() helper", probe_kern_probe_read_kernel,
++	},
++	[FEAT_PROG_BIND_MAP] = {
++		"BPF_PROG_BIND_MAP support", probe_prog_bind_map,
+ 	}
  };
  
- enum bpf_map_type {
-@@ -658,6 +659,12 @@ union bpf_attr {
- 		__u32		flags;
- 	} iter_create;
- 
-+	struct { /* struct used by BPF_PROG_BIND_MAP command */
-+		__u32		prog_fd;
-+		__u32		map_fd;
-+		__u32		flags;		/* extra flags */
-+	} prog_bind_map;
+@@ -6468,6 +6526,20 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
+ 	if (ret >= 0) {
+ 		if (log_buf && load_attr.log_level)
+ 			pr_debug("verifier log:\n%s", log_buf);
 +
- } __attribute__((aligned(8)));
++		if (prog->obj->rodata_map_idx >= 0 &&
++		    kernel_supports(FEAT_PROG_BIND_MAP)) {
++			struct bpf_map *rodata_map =
++				&prog->obj->maps[prog->obj->rodata_map_idx];
++
++			if (bpf_prog_bind_map(ret, bpf_map__fd(rodata_map), NULL)) {
++				cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
++				pr_warn("prog '%s': failed to bind .rodata map: %s\n",
++					prog->name, cp);
++				/* Don't fail hard if can't bind rodata. */
++			}
++		}
++
+ 		*pfd = ret;
+ 		ret = 0;
+ 		goto out;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 92ceb48a5ca2..5f054dadf082 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -302,6 +302,7 @@ LIBBPF_0.1.0 {
  
- /* The description below is an attempt at providing documentation to eBPF
+ LIBBPF_0.2.0 {
+ 	global:
++		bpf_prog_bind_map;
+ 		bpf_program__section_name;
+ 		perf_buffer__buffer_cnt;
+ 		perf_buffer__buffer_fd;
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
