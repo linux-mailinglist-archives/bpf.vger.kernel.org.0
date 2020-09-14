@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0AF2694FB
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B311A269500
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgINSgf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 14:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
+        id S1726100AbgINShG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 14:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgINSgX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:36:23 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66603C061797
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:23 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id fs5so623986pjb.7
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:23 -0700 (PDT)
+        with ESMTP id S1726058AbgINSgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:36:25 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A2DC061351
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:25 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id k13so343779pfh.4
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 11:36:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=jqsc+1d2ynBuBqET+rkKoXJHN1R2Af7JEusEUeR6x9I=;
-        b=E1/s6+lbfZ9KGbZcqp9LYf2HG9JFQ/s6uMO4OucTpDYUOol+ffV08+DB74ivwNhbXK
-         9DvNUEYYtbJigLt7k6CV4T3lHwFYszMr75Qx8xJVpu4GX9Ob9bLkVpvCgzaRWqkce940
-         VoENTVDP2+NXmOiJukn1Qxp5HyrjTZHkJ+3MlbM502EW+RcqczILRjANDIqK9aoR62DJ
-         W1XZBugqbJ6xBno/TcR0sZ5owmE18ABVgho61kc3yjsgKUYRo3phxx71XxLTJPj+Wgi4
-         f0YIdzx74iijLQNHPR9f2yqo2J9TOBP2BcVDJX9uZaNmfWpsrKgNQvXlz0sdD8/tzfh3
-         Earg==
+        bh=9mF1wu9YAVbESEtRpES8F47zk2lYofif/6x6S14NsHU=;
+        b=m/8naySINgNLFBdE9Eg5L1cny/nTj2yT4Ke2qBucrj/EmhaKkWqVqBw9DKcWuczucx
+         wTSr3RxO+ryAmUWZ15bCuN5IUEy2gVkPaxuYCGY5k2YOjRCBVO308KeMAB1sAG3xxj/k
+         ETsH/oGkimTNdEaLrIdyN4p4frKre1tq0yQQbCAPXq/eThq/lwSuzzMqsg+ehVPZBp7d
+         1bZZMl0B7oyA3O78kYD0bIrMjmBPyDUfCl8S0rBDbYps/FU2TUkXhioYzM4LBj/zgmvK
+         ra+DZmOmzONe26B54lQu+kcpWTEbnM/9+CeaVNaO4WIrcYIaJToeuJclnM39y6Efs8Vh
+         K0zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=jqsc+1d2ynBuBqET+rkKoXJHN1R2Af7JEusEUeR6x9I=;
-        b=om0ITgSP3DmGWCVfcV+yr7Vc5RV8xGPR7N0EbECPAlLji0bWAi0xqd1STJIL7r2YL/
-         jDZkpCSctngwaWRmfk8uPymqFCO7u7+4zPnqpC5hRNHUhbfC50/6QMPaO5a5bbCB+IFK
-         803aD7cmhjEdN7ii4lC1VyaewImOIcAOe3edsAJ2B/4WggyHlNOXGMliKPq7DE1UGSCS
-         0vLCAlN8kQmqGXbO853qAxF0S7dxS4hnFDY+9SFj4YmOmuQDtahM3i7lt1x378W4/NaJ
-         4XEd1dRVvfMMH/Pra/K6R0JJblmDtGG6Hzoqi6DZsKgHNG9v2d8H6pKscEozRWLuXvGu
-         c6og==
-X-Gm-Message-State: AOAM531i0YYnpAaHtH1+RVdH363aJGKrz1yauK3StRvGE1QNOElgGnEo
-        JbmevfBa5EirV0vRhJD29fGq+YI=
-X-Google-Smtp-Source: ABdhPJwE120pXjv27VS9DhC/+c5eROjsa4niAXganasQ9i8N010Jt3x/tw5jFq4+ZhkYEq+pxJ8ZG2M=
+        bh=9mF1wu9YAVbESEtRpES8F47zk2lYofif/6x6S14NsHU=;
+        b=dHezDyD7tI19sLPyH8PN2z39W+FzALCuze1zmLIzU7TH6eF7S55D94LASEta49UTsB
+         cZ+bAqbyMdIyQBKdkHDVA/4t5hRlka9CL6o6jQR8gCpr+aW9pFsDlBYId5pzTre3J/Z+
+         tRzkW4psdJYmn6sCUEUlpYryYn7jIoP+Xw8d3iVfeFZpQbNV0phjfzhYwsZm9g2TiMbC
+         TWj6xCAPOG+TLYfexCyIIdQ3o/ilnMtFUlhQBVk54tQYSxpZqgIqGGJgQKv7SctaCN/k
+         oH/nk0xghhXhAt9huhVQiccJjU2BJmfzylTYorAVji1S3p4eI3mKxO6oCn0sUriQ1QsM
+         1wog==
+X-Gm-Message-State: AOAM5320hyJhTG/z1PDVOxv2p0fleoqhIgzLkcWB6tg/Xs2E+cG88vjz
+        1VNaxUD933gHaX/uaeO4T6edrjg=
+X-Google-Smtp-Source: ABdhPJxcD9nGOW9pSIN7Db9InDKHwxc992XoH5JXCbwh5oyGKceV3pMMSzmUqWkvVgpvsy+QAJtBF24=
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a17:90a:7ac1:: with SMTP id
- b1mr599998pjl.121.1600108582911; Mon, 14 Sep 2020 11:36:22 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 11:36:13 -0700
+ (user=sdf job=sendgmr) by 2002:a65:691a:: with SMTP id s26mr12105376pgq.103.1600108585092;
+ Mon, 14 Sep 2020 11:36:25 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 11:36:14 -0700
 In-Reply-To: <20200914183615.2038347-1-sdf@google.com>
-Message-Id: <20200914183615.2038347-4-sdf@google.com>
+Message-Id: <20200914183615.2038347-5-sdf@google.com>
 Mime-Version: 1.0
 References: <20200914183615.2038347-1-sdf@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH bpf-next v5 3/5] libbpf: Add BPF_PROG_BIND_MAP syscall and use
- it on .rodata section
+Subject: [PATCH bpf-next v5 4/5] bpftool: support dumping metadata
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -65,201 +64,340 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <zhuyifei@google.com>
 
-The patch adds a simple wrapper bpf_prog_bind_map around the syscall.
-When the libbpf tries to load a program, it will probe the kernel for
-the support of this syscall and unconditionally bind .rodata section
-to the program.
+Dump metadata in the 'bpftool prog' list if it's present.
+For some formatting some BTF code is put directly in the
+metadata dumping. Sanity checks on the map and the kind of the btf_type
+to make sure we are actually dumping what we are expecting.
+
+A helper jsonw_reset is added to json writer so we can reuse the same
+json writer without having extraneous commas.
+
+Sample output:
+
+  $ bpftool prog
+  6: cgroup_skb  name prog  tag bcf7977d3b93787c  gpl
+  [...]
+  	btf_id 4
+  	metadata:
+  		a = "foo"
+  		b = 1
+
+  $ bpftool prog --json --pretty
+  [{
+          "id": 6,
+  [...]
+          "btf_id": 4,
+          "metadata": {
+              "a": "foo",
+              "b": 1
+          }
+      }
+  ]
 
 Cc: YiFei Zhu <zhuyifei1999@gmail.com>
 Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/lib/bpf/bpf.c      | 16 +++++++++
- tools/lib/bpf/bpf.h      |  8 +++++
- tools/lib/bpf/libbpf.c   | 72 ++++++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/libbpf.map |  1 +
- 4 files changed, 97 insertions(+)
+ tools/bpf/bpftool/json_writer.c |   6 +
+ tools/bpf/bpftool/json_writer.h |   3 +
+ tools/bpf/bpftool/prog.c        | 232 ++++++++++++++++++++++++++++++++
+ 3 files changed, 241 insertions(+)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 82b983ff6569..2baa1308737c 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -872,3 +872,19 @@ int bpf_enable_stats(enum bpf_stats_type type)
- 
- 	return sys_bpf(BPF_ENABLE_STATS, &attr, sizeof(attr));
+diff --git a/tools/bpf/bpftool/json_writer.c b/tools/bpf/bpftool/json_writer.c
+index 86501cd3c763..7fea83bedf48 100644
+--- a/tools/bpf/bpftool/json_writer.c
++++ b/tools/bpf/bpftool/json_writer.c
+@@ -119,6 +119,12 @@ void jsonw_pretty(json_writer_t *self, bool on)
+ 	self->pretty = on;
  }
-+
-+int bpf_prog_bind_map(int prog_fd, int map_fd,
-+		      const struct bpf_prog_bind_opts *opts)
+ 
++void jsonw_reset(json_writer_t *self)
 +{
-+	union bpf_attr attr;
-+
-+	if (!OPTS_VALID(opts, bpf_prog_bind_opts))
-+		return -EINVAL;
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.prog_bind_map.prog_fd = prog_fd;
-+	attr.prog_bind_map.map_fd = map_fd;
-+	attr.prog_bind_map.flags = OPTS_GET(opts, flags, 0);
-+
-+	return sys_bpf(BPF_PROG_BIND_MAP, &attr, sizeof(attr));
++	assert(self->depth == 0);
++	self->sep = '\0';
 +}
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 015d13f25fcc..8c1ac4b42f90 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -243,6 +243,14 @@ LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf,
- enum bpf_stats_type; /* defined in up-to-date linux/bpf.h */
- LIBBPF_API int bpf_enable_stats(enum bpf_stats_type type);
- 
-+struct bpf_prog_bind_opts {
-+	size_t sz; /* size of this struct for forward/backward compatibility */
-+	__u32 flags;
-+};
-+#define bpf_prog_bind_opts__last_field flags
 +
-+LIBBPF_API int bpf_prog_bind_map(int prog_fd, int map_fd,
-+				 const struct bpf_prog_bind_opts *opts);
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 550950eb1860..b68fa08e2fa9 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -174,6 +174,8 @@ enum kern_feature_id {
- 	FEAT_EXP_ATTACH_TYPE,
- 	/* bpf_probe_read_{kernel,user}[_str] helpers */
- 	FEAT_PROBE_READ_KERN,
-+	/* BPF_PROG_BIND_MAP is supported */
-+	FEAT_PROG_BIND_MAP,
- 	__FEAT_CNT,
- };
+ /* Basic blocks */
+ static void jsonw_begin(json_writer_t *self, int c)
+ {
+diff --git a/tools/bpf/bpftool/json_writer.h b/tools/bpf/bpftool/json_writer.h
+index 35cf1f00f96c..8ace65cdb92f 100644
+--- a/tools/bpf/bpftool/json_writer.h
++++ b/tools/bpf/bpftool/json_writer.h
+@@ -27,6 +27,9 @@ void jsonw_destroy(json_writer_t **self_p);
+ /* Cause output to have pretty whitespace */
+ void jsonw_pretty(json_writer_t *self, bool on);
  
-@@ -409,6 +411,7 @@ struct bpf_object {
- 	struct extern_desc *externs;
- 	int nr_extern;
- 	int kconfig_map_idx;
-+	int rodata_map_idx;
- 
- 	bool loaded;
- 	bool has_subcalls;
-@@ -1070,6 +1073,7 @@ static struct bpf_object *bpf_object__new(const char *path,
- 	obj->efile.bss_shndx = -1;
- 	obj->efile.st_ops_shndx = -1;
- 	obj->kconfig_map_idx = -1;
-+	obj->rodata_map_idx = -1;
- 
- 	obj->kern_version = get_kernel_version();
- 	obj->loaded = false;
-@@ -1428,6 +1432,8 @@ static int bpf_object__init_global_data_maps(struct bpf_object *obj)
- 						    obj->efile.rodata->d_size);
- 		if (err)
- 			return err;
++/* Reset separator to create new JSON */
++void jsonw_reset(json_writer_t *self);
 +
-+		obj->rodata_map_idx = obj->nr_maps - 1;
+ /* Add property name */
+ void jsonw_name(json_writer_t *self, const char *name);
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index f7923414a052..f3eb4f53dd43 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -29,6 +29,9 @@
+ #include "main.h"
+ #include "xlated_dumper.h"
+ 
++#define BPF_METADATA_PREFIX "bpf_metadata_"
++#define BPF_METADATA_PREFIX_LEN (sizeof(BPF_METADATA_PREFIX) - 1)
++
+ const char * const prog_type_name[] = {
+ 	[BPF_PROG_TYPE_UNSPEC]			= "unspec",
+ 	[BPF_PROG_TYPE_SOCKET_FILTER]		= "socket_filter",
+@@ -151,6 +154,231 @@ static void show_prog_maps(int fd, __u32 num_maps)
  	}
- 	if (obj->efile.bss_shndx >= 0) {
- 		err = bpf_object__init_internal_map(obj, LIBBPF_MAP_BSS,
-@@ -3894,6 +3900,55 @@ static int probe_kern_probe_read_kernel(void)
- 	return probe_fd(bpf_load_program_xattr(&attr, NULL, 0));
  }
  
-+static int probe_prog_bind_map(void)
++static int find_metadata_map_id(int prog_fd, int *map_id)
 +{
-+	struct bpf_load_program_attr prg_attr;
-+	struct bpf_create_map_attr map_attr;
-+	char *cp, errmsg[STRERR_BUFSIZE];
-+	struct bpf_insn insns[] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	int ret, map, prog;
++	struct bpf_prog_info prog_info = {};
++	struct bpf_map_info map_info;
++	__u32 prog_info_len;
++	__u32 map_info_len;
++	__u32 *map_ids;
++	int nr_maps;
++	int map_fd;
++	int ret;
++	__u32 i;
 +
-+	if (!kernel_supports(FEAT_GLOBAL_DATA))
-+		return 0;
++	prog_info_len = sizeof(prog_info);
 +
-+	memset(&map_attr, 0, sizeof(map_attr));
-+	map_attr.map_type = BPF_MAP_TYPE_ARRAY;
-+	map_attr.key_size = sizeof(int);
-+	map_attr.value_size = 32;
-+	map_attr.max_entries = 1;
++	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
++	if (ret)
++		return -errno;
 +
-+	map = bpf_create_map_xattr(&map_attr);
-+	if (map < 0) {
++	if (!prog_info.nr_map_ids)
++		return -ENOENT;
++
++	map_ids = calloc(prog_info.nr_map_ids, sizeof(__u32));
++	if (!map_ids)
++		return -ENOMEM;
++
++	nr_maps = prog_info.nr_map_ids;
++	memset(&prog_info, 0, sizeof(prog_info));
++	prog_info.nr_map_ids = nr_maps;
++	prog_info.map_ids = ptr_to_u64(map_ids);
++	prog_info_len = sizeof(prog_info);
++
++	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
++	if (ret) {
 +		ret = -errno;
-+		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
-+		pr_warn("Error in %s():%s(%d). Couldn't create simple array map.\n",
-+			__func__, cp, -ret);
-+		return ret;
++		goto free_map_ids;
 +	}
 +
-+	memset(&prg_attr, 0, sizeof(prg_attr));
-+	prg_attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-+	prg_attr.insns = insns;
-+	prg_attr.insns_cnt = ARRAY_SIZE(insns);
-+	prg_attr.license = "GPL";
-+
-+	prog = bpf_load_program_xattr(&prg_attr, NULL, 0);
-+	if (prog < 0) {
-+		close(map);
-+		return 0;
-+	}
-+
-+	ret = bpf_prog_bind_map(prog, map, NULL);
-+
-+	close(map);
-+	close(prog);
-+
-+	return ret >= 0;
-+}
-+
- enum kern_feature_result {
- 	FEAT_UNKNOWN = 0,
- 	FEAT_SUPPORTED = 1,
-@@ -3934,6 +3989,9 @@ static struct kern_feature_desc {
- 	},
- 	[FEAT_PROBE_READ_KERN] = {
- 		"bpf_probe_read_kernel() helper", probe_kern_probe_read_kernel,
-+	},
-+	[FEAT_PROG_BIND_MAP] = {
-+		"BPF_PROG_BIND_MAP support", probe_prog_bind_map,
- 	}
- };
- 
-@@ -6468,6 +6526,20 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
- 	if (ret >= 0) {
- 		if (log_buf && load_attr.log_level)
- 			pr_debug("verifier log:\n%s", log_buf);
-+
-+		if (prog->obj->rodata_map_idx >= 0 &&
-+		    kernel_supports(FEAT_PROG_BIND_MAP)) {
-+			struct bpf_map *rodata_map =
-+				&prog->obj->maps[prog->obj->rodata_map_idx];
-+
-+			if (bpf_prog_bind_map(ret, bpf_map__fd(rodata_map), NULL)) {
-+				cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
-+				pr_warn("prog '%s': failed to bind .rodata map: %s\n",
-+					prog->name, cp);
-+				/* Don't fail hard if can't bind rodata. */
-+			}
++	for (i = 0; i < prog_info.nr_map_ids; i++) {
++		map_fd = bpf_map_get_fd_by_id(map_ids[i]);
++		if (map_fd < 0) {
++			ret = -errno;
++			goto free_map_ids;
 +		}
 +
- 		*pfd = ret;
- 		ret = 0;
- 		goto out;
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 92ceb48a5ca2..5f054dadf082 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -302,6 +302,7 @@ LIBBPF_0.1.0 {
++		memset(&map_info, 0, sizeof(map_info));
++		map_info_len = sizeof(map_info);
++		ret = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
++		if (ret < 0) {
++			ret = -errno;
++			close(map_fd);
++			goto free_map_ids;
++		}
++		close(map_fd);
++
++		if (map_info.type != BPF_MAP_TYPE_ARRAY)
++			continue;
++		if (map_info.key_size != sizeof(int))
++			continue;
++		if (map_info.max_entries != 1)
++			continue;
++		if (!map_info.btf_value_type_id)
++			continue;
++		if (!strstr(map_info.name, ".rodata"))
++			continue;
++
++		*map_id = map_ids[i];
++		goto free_map_ids;
++	}
++
++	ret = -ENOENT;
++
++free_map_ids:
++	free(map_ids);
++	return ret;
++}
++
++static void *find_metadata(int prog_fd, struct bpf_map_info *map_info)
++{
++	__u32 map_info_len;
++	void *value = NULL;
++	int map_id = 0;
++	int key = 0;
++	int map_fd;
++	int err;
++
++	err = find_metadata_map_id(prog_fd, &map_id);
++	if (err < 0)
++		return NULL;
++
++	map_fd = bpf_map_get_fd_by_id(map_id);
++	if (map_fd < 0)
++		return NULL;
++
++	map_info_len = sizeof(*map_info);
++	err = bpf_obj_get_info_by_fd(map_fd, map_info, &map_info_len);
++	if (err)
++		goto out_close;
++
++	value = malloc(map_info->value_size);
++	if (!value)
++		goto out_close;
++
++	if (bpf_map_lookup_elem(map_fd, &key, value))
++		goto out_free;
++
++	close(map_fd);
++	return value;
++
++out_free:
++	free(value);
++out_close:
++	close(map_fd);
++	return NULL;
++}
++
++static bool has_metadata_prefix(const char *s)
++{
++	return strstr(s, BPF_METADATA_PREFIX) == s;
++}
++
++static void show_prog_metadata(int fd, __u32 num_maps)
++{
++	const struct btf_type *t_datasec, *t_var;
++	struct bpf_map_info map_info = {};
++	struct btf_var_secinfo *vsi;
++	bool printed_header = false;
++	struct btf *btf = NULL;
++	unsigned int i, vlen;
++	void *value = NULL;
++	const char *name;
++	int err;
++
++	if (!num_maps)
++		return;
++
++	value = find_metadata(fd, &map_info);
++	if (!value)
++		return;
++
++	err = btf__get_from_id(map_info.btf_id, &btf);
++	if (err || !btf)
++		goto out_free;
++
++	t_datasec = btf__type_by_id(btf, map_info.btf_value_type_id);
++	if (!btf_is_datasec(t_datasec))
++		goto out_free;
++
++	vlen = btf_vlen(t_datasec);
++	vsi = btf_var_secinfos(t_datasec);
++
++	/* We don't proceed to check the kinds of the elements of the DATASEC.
++	 * The verifier enforces them to be BTF_KIND_VAR.
++	 */
++
++	if (json_output) {
++		struct btf_dumper d = {
++			.btf = btf,
++			.jw = json_wtr,
++			.is_plain_text = false,
++		};
++
++		for (i = 0; i < vlen; i++, vsi++) {
++			t_var = btf__type_by_id(btf, vsi->type);
++			name = btf__name_by_offset(btf, t_var->name_off);
++
++			if (!has_metadata_prefix(name))
++				continue;
++
++			if (!printed_header) {
++				jsonw_name(json_wtr, "metadata");
++				jsonw_start_object(json_wtr);
++				printed_header = true;
++			}
++
++			jsonw_name(json_wtr, name + BPF_METADATA_PREFIX_LEN);
++			err = btf_dumper_type(&d, t_var->type, value + vsi->offset);
++			if (err) {
++				p_err("btf dump failed: %d", err);
++				break;
++			}
++		}
++		if (printed_header)
++			jsonw_end_object(json_wtr);
++	} else {
++		json_writer_t *btf_wtr = jsonw_new(stdout);
++		struct btf_dumper d = {
++			.btf = btf,
++			.jw = btf_wtr,
++			.is_plain_text = true,
++		};
++		if (!btf_wtr) {
++			p_err("jsonw alloc failed");
++			goto out_free;
++		}
++
++		for (i = 0; i < vlen; i++, vsi++) {
++			t_var = btf__type_by_id(btf, vsi->type);
++			name = btf__name_by_offset(btf, t_var->name_off);
++
++			if (!has_metadata_prefix(name))
++				continue;
++
++			if (!printed_header) {
++				printf("\tmetadata:");
++				printed_header = true;
++			}
++
++			printf("\n\t\t%s = ", name + BPF_METADATA_PREFIX_LEN);
++
++			jsonw_reset(btf_wtr);
++			err = btf_dumper_type(&d, t_var->type, value + vsi->offset);
++			if (err) {
++				p_err("btf dump failed: %d", err);
++				break;
++			}
++		}
++		if (printed_header)
++			jsonw_destroy(&btf_wtr);
++	}
++
++out_free:
++	btf__free(btf);
++	free(value);
++}
++
+ static void print_prog_header_json(struct bpf_prog_info *info)
+ {
+ 	jsonw_uint_field(json_wtr, "id", info->id);
+@@ -228,6 +456,8 @@ static void print_prog_json(struct bpf_prog_info *info, int fd)
  
- LIBBPF_0.2.0 {
- 	global:
-+		bpf_prog_bind_map;
- 		bpf_program__section_name;
- 		perf_buffer__buffer_cnt;
- 		perf_buffer__buffer_fd;
+ 	emit_obj_refs_json(&refs_table, info->id, json_wtr);
+ 
++	show_prog_metadata(fd, info->nr_map_ids);
++
+ 	jsonw_end_object(json_wtr);
+ }
+ 
+@@ -297,6 +527,8 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd)
+ 	emit_obj_refs_plain(&refs_table, info->id, "\n\tpids ");
+ 
+ 	printf("\n");
++
++	show_prog_metadata(fd, info->nr_map_ids);
+ }
+ 
+ static int show_prog(int fd)
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
