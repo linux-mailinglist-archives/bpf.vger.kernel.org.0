@@ -2,88 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC976269718
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 22:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2DD269745
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 23:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgINUwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 16:52:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52618 "EHLO mail.kernel.org"
+        id S1726086AbgINVBI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 17:01:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726062AbgINUwi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:52:38 -0400
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+        id S1725926AbgINVBB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:01:01 -0400
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60BF4218AC;
-        Mon, 14 Sep 2020 20:52:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14C2821D24;
+        Mon, 14 Sep 2020 21:01:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600116757;
-        bh=yHgI+Sr9jwoe9TRfWW90cuxRyTn1tAIe+oD9RF6J39I=;
+        s=default; t=1600117260;
+        bh=F3PEmIDj5PsX21DEDZlDPQZKaY42uEMzhiOeDRcD5kE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BiwqpdTYQOBtWTC2wBZqEgxqKSuqHFfEX20AViyi4dkm/ognyC4pTDIR5V9HPZFNQ
-         E6jQkxi15JO6Q+AdtrI1gS84y6312OMwYBRReQAC0EZmHQqtJmGqN1Ihkb4FAPY2TD
-         3eV87Pi7f//JQQHWareSEAHe67Bys8Tz8IBSJOi8=
-Received: by mail-lj1-f179.google.com with SMTP id u21so871808ljl.6;
-        Mon, 14 Sep 2020 13:52:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533J7+yZi7jAuOPxJbOvoaOLPUyMX7Cl1hXpTFayzYR6t8jC4GbL
-        0f185ZOSwAITv2YOk3PQC1gAcj6Zk/UaisvoN3Y=
-X-Google-Smtp-Source: ABdhPJzgo4USz8FapNukkkeuwuITZpww0+o3fFIGc8iwBX2Mv5WYcVLyp+M3WrCT8GWHcsTG4onew9xmu5X0P1nPJaE=
-X-Received: by 2002:a2e:9c8d:: with SMTP id x13mr5290616lji.392.1600116755650;
- Mon, 14 Sep 2020 13:52:35 -0700 (PDT)
+        b=qHDu01Ep74IqEUFVflDvaWVFS/AXlHDFkVM8UfKuN216aGOUOgOEoEodgL5PToGjK
+         KxtFM9RApBwVur20DYVSW9F78Un/LpzZgmpzIzJlCdaEQe5cZPlj95WFSqFHamg95j
+         7YD/zLIqTW1QyxL51ntIE1vmMu7NH8iYuVRzhPnc=
+Received: by mail-lj1-f171.google.com with SMTP id v23so922422ljd.1;
+        Mon, 14 Sep 2020 14:00:59 -0700 (PDT)
+X-Gm-Message-State: AOAM5314my43e3uhPcx+XCYUeStieHi47CUsTbb7V2GnxOH7FJo/pUwh
+        exFZp1uz2nXPrfp1R1+ipNbI3eZmqEWpMhzLSiI=
+X-Google-Smtp-Source: ABdhPJx7qdiVmj1sX187oBLQwliwXcyi7XyVZXjqUwGWJBMJBcFKfvZdMyg112+oyHMwCpu3E4TZfx7dpSSnbVt5VAM=
+X-Received: by 2002:a2e:9c15:: with SMTP id s21mr5790370lji.27.1600117258411;
+ Mon, 14 Sep 2020 14:00:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net> <20200911143022.414783-2-nicolas.rybowski@tessares.net>
-In-Reply-To: <20200911143022.414783-2-nicolas.rybowski@tessares.net>
+References: <20200911143022.414783-1-nicolas.rybowski@tessares.net> <20200911143022.414783-3-nicolas.rybowski@tessares.net>
+In-Reply-To: <20200911143022.414783-3-nicolas.rybowski@tessares.net>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Sep 2020 13:52:24 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4xqPD641gHAs7GjhmW7SANMhz75VKbP02Xyja9CnpZ-g@mail.gmail.com>
-Message-ID: <CAPhsuW4xqPD641gHAs7GjhmW7SANMhz75VKbP02Xyja9CnpZ-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/5] mptcp: attach subflow socket to parent cgroup
+Date:   Mon, 14 Sep 2020 14:00:47 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7Qk8bea0efQspCOBbBaahgYt5eebvwvnGrA3xz9tw1Tg@mail.gmail.com>
+Message-ID: <CAPhsuW7Qk8bea0efQspCOBbBaahgYt5eebvwvnGrA3xz9tw1Tg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/5] bpf: add 'bpf_mptcp_sock' structure and helper
 To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Networking <netdev@vger.kernel.org>, mptcp@lists.01.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
         open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        mptcp@lists.01.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 9:43 AM Nicolas Rybowski
+On Fri, Sep 11, 2020 at 8:15 AM Nicolas Rybowski
 <nicolas.rybowski@tessares.net> wrote:
 >
-> It has been observed that the kernel sockets created for the subflows
-> (except the first one) are not in the same cgroup as their parents.
-> That's because the additional subflows are created by kernel workers.
+> In order to precisely identify the parent MPTCP connection of a subflow,
+> it is required to access the mptcp_sock's token which uniquely identify a
+> MPTCP connection.
 >
-> This is a problem with eBPF programs attached to the parent's
-> cgroup won't be executed for the children. But also with any other features
-> of CGroup linked to a sk.
+> This patch adds a new structure 'bpf_mptcp_sock' exposing the 'token' field
+> of the 'mptcp_sock' extracted from a subflow's 'tcp_sock'. It also adds the
+> declaration of a new BPF helper of the same name to expose the newly
+> defined structure in the userspace BPF API.
 >
-> This patch fixes this behaviour.
+> This is the foundation to expose more MPTCP-specific fields through BPF.
 >
-> As the subflow sockets are created by the kernel, we can't use
-> 'mem_cgroup_sk_alloc' because of the current context being the one of the
-> kworker. This is why we have to do low level memcg manipulation, if
-> required.
+> Currently, it is limited to the field 'token' of the msk but it is
+> easily extensible.
 >
-> Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Suggested-by: Paolo Abeni <pabeni@redhat.com>
 > Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+> Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
 > Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
 
 Acked-by: Song Liu <songliubraving@fb.com>
-
-[...]
