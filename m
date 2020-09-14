@@ -2,285 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849F026917F
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 18:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FA626915B
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 18:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgINQ07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 12:26:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726535AbgINQNt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 14 Sep 2020 12:13:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600100016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bKxu0gI3NP8CcGDo/E56sTrTiNg8cMjHfGpHFMTcnpo=;
-        b=Hcwz/gPXcyrJfyt92pRROPT2UDJ/ywyjUiD0rgdfzqvnu3K/J6euXqB/7TYirmc+Qtb3Vf
-        d71vDKg2NeT0GRxaNpEoBxfoizxv+YFzA+oSIOv/zNrgswlnn2AsFK//2b16Xcpe89AUYP
-        lwflx5eyjKsb/07DUUUsOum2elgnFys=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-YRioooCKO3WV76r21P4GbQ-1; Mon, 14 Sep 2020 12:13:34 -0400
-X-MC-Unique: YRioooCKO3WV76r21P4GbQ-1
-Received: by mail-wr1-f71.google.com with SMTP id 33so56131wrk.12
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 09:13:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=bKxu0gI3NP8CcGDo/E56sTrTiNg8cMjHfGpHFMTcnpo=;
-        b=KaoGKWQAVHGQs5W4giBcAqu36MTGHxpDy8zfvNgPgOktrc62vnCNtnIsMLRCNaTexp
-         iosizi2RqjP5mgGn/mJemllSgJKXM/SHZ1CctVconLOmTLnTtmgQsKQAJ34sndcwifUj
-         wpZWJ1q2mf/C8w4S4TnWQuB46cRZbSZr/MJQ/to7heH5MDVJX08HFD2oX8UyiJKOWJ5l
-         +QgRHlSGCpEQtykTJFVBBzgwYDELhAU71HM59L65v7OrFUEpFSLMAuM9eY/i93TKTYaD
-         9J5mdzbqZ3fJaavG8tn2yoLQvYDcTJw2aHBYT6o32NRw2q1KLSLXnXiku5zE0FaUTE0q
-         4+FQ==
-X-Gm-Message-State: AOAM531kUYcIuS7Bbi1xs0n3JBE7aLMyFbdfzm03ww7L8Bsk2m0lbma+
-        V6DY1pdEyuZXYV+AIqJh1Uoxaf8HswYJ4wzyw+pWBn3dN3csLQ/4eHfyEtsPmfUyw6SMBVfjbmx
-        +LQDsj7JOrd6T
-X-Received: by 2002:a1c:2b43:: with SMTP id r64mr133917wmr.164.1600100012839;
-        Mon, 14 Sep 2020 09:13:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzymn38Sc1H6g+2Td4p8iEhWnIPoL9wyn8Ds+kBBjuvjCm7o257Rq+nbxsI5IULwchqn8b4NQ==
-X-Received: by 2002:a1c:2b43:: with SMTP id r64mr133896wmr.164.1600100012545;
-        Mon, 14 Sep 2020 09:13:32 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id x2sm21488767wrl.13.2020.09.14.09.13.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 09:13:32 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A2C651829CC; Mon, 14 Sep 2020 18:13:31 +0200 (CEST)
-Subject: [PATCH bpf-next v4 8/8] selftests/bpf: Adding test for arg
- dereference in extension trace
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Mon, 14 Sep 2020 18:13:31 +0200
-Message-ID: <160010001156.80898.2494172135831865551.stgit@toke.dk>
-In-Reply-To: <160010000272.80898.13117015273092905112.stgit@toke.dk>
-References: <160010000272.80898.13117015273092905112.stgit@toke.dk>
-User-Agent: StGit/0.23
+        id S1726482AbgINQVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 12:21:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726098AbgINQVG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:21:06 -0400
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 577BC20EDD;
+        Mon, 14 Sep 2020 16:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600100465;
+        bh=eAVAzgvUkh0wc/I1j1/s8lyQbeYVFTOGhBfWS8xzoY0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xVLWwgJwu9iq1HXV108sMD+XNOpS4ODsXAKTu4PFwOeB7Q+pGs4qxy+Al3QyU9Vsz
+         GZNDkbbHKXyx+mwQUPDAKU1uInzXhTEOnT0hh7vGs+uM0RV0EnUODvSC+2WzEDhC3Q
+         DhpE106v1VJBq8OqdhjMejVWFX2hljIgmnryzE+8=
+Received: by mail-lj1-f178.google.com with SMTP id c2so151320ljj.12;
+        Mon, 14 Sep 2020 09:21:05 -0700 (PDT)
+X-Gm-Message-State: AOAM533vAPu0a9IZWm1tNINkBrbubPswf6Zb3PZmFNJob79AHpxUnQsy
+        QDlYKXWfU1O9FQTdUTvZKXO1zJWjdB7r3nGEomg=
+X-Google-Smtp-Source: ABdhPJwO3e8CVSM2h2kC53VTIZbFnvCMMpuEr2dDAgBR5ieztpYgRR6Cek/gSMFtFBdL6SgpgfNsPvTXlL3FMDQwm8Q=
+X-Received: by 2002:a2e:98cf:: with SMTP id s15mr5625684ljj.446.1600100463625;
+ Mon, 14 Sep 2020 09:21:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200914061206.2625395-1-yhs@fb.com> <b942625c-7140-0a57-337e-3a95020cfa99@isovalent.com>
+In-Reply-To: <b942625c-7140-0a57-337e-3a95020cfa99@isovalent.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 14 Sep 2020 09:20:52 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5Ja5if-DOPQn1FrbiEsH-YXXYVGzM59XQkyG5_xNmD-A@mail.gmail.com>
+Message-ID: <CAPhsuW5Ja5if-DOPQn1FrbiEsH-YXXYVGzM59XQkyG5_xNmD-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpftool: fix build failure
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Mon, Sep 14, 2020 at 1:20 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> On 14/09/2020 07:12, Yonghong Song wrote:
+> > When building bpf selftests like
+> >   make -C tools/testing/selftests/bpf -j20
+> > I hit the following errors:
+> >   ...
+> >   GEN      /net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-gen.8
+> >   <stdin>:75: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+> >   <stdin>:71: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+> >   <stdin>:85: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+> >   <stdin>:57: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+> >   <stdin>:66: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+> >   <stdin>:109: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+> >   <stdin>:175: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+> >   <stdin>:273: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+> >   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-perf.8] Error 12
+> >   make[1]: *** Waiting for unfinished jobs....
+> >   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-iter.8] Error 12
+> >   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-struct_ops.8] Error 12
+> >   ...
+> >
+> > I am using:
+> >   -bash-4.4$ rst2man --version
+> >   rst2man (Docutils 0.11 [repository], Python 2.7.5, on linux2)
+> >   -bash-4.4$
+> >
+> > Looks like that particular version of rst2man prefers to have a blank line
+> > after literal blocks. This patch added block lines in related .rst files
+> > and compilation can then pass.
+> >
+> > Cc: Quentin Monnet <quentin@isovalent.com>
+> > Fixes: 18841da98100 ("tools: bpftool: Automate generation for "SEE ALSO" sections in man pages")
+> > Signed-off-by: Yonghong Song <yhs@fb.com>
+>
+>
+> Hi Yonghong, thanks for the fix! I didn't see those warnings on my
+> setup. For the record my rst2man version is:
+>
+>         rst2man (Docutils 0.16 [release], Python 3.8.2, on linux)
+>
+> Your patch looks good, but instead of having blank lines at the end of
+> most files, could you please check if the following works?
+>
+> ------
+>
+> diff --git a/tools/bpf/bpftool/Documentation/Makefile
+> b/tools/bpf/bpftool/Documentation/Makefile
+> index 4c9dd1e45244..01b30ed86eac 100644
+> --- a/tools/bpf/bpftool/Documentation/Makefile
+> +++ b/tools/bpf/bpftool/Documentation/Makefile
+> @@ -32,7 +32,7 @@ RST2MAN_OPTS += --verbose
+>
+>  list_pages = $(sort $(basename $(filter-out $(1),$(MAN8_RST))))
+>  see_also = $(subst " ",, \
+> -       "\n" \
+> +       "\n\n" \
+>         "SEE ALSO\n" \
+>         "========\n" \
+>         "\t**bpf**\ (2),\n" \
 
-Adding test that setup following program:
+Yes, this works (I am using the same rst2man as Yonghong's).
 
-  SEC("classifier/test_pkt_md_access")
-  int test_pkt_md_access(struct __sk_buff *skb)
-
-with its extension:
-
-  SEC("freplace/test_pkt_md_access")
-  int test_pkt_md_access_new(struct __sk_buff *skb)
-
-and tracing that extension with:
-
-  SEC("fentry/test_pkt_md_access_new")
-  int BPF_PROG(fentry, struct sk_buff *skb)
-
-The test verifies that the tracing program can
-dereference skb argument properly.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/testing/selftests/bpf/prog_tests/trace_ext.c |  113 ++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_trace_ext.c |   18 +++
- .../selftests/bpf/progs/test_trace_ext_tracing.c   |   25 ++++
- 3 files changed, 156 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_ext.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_trace_ext.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/trace_ext.c b/tools/testing/selftests/bpf/prog_tests/trace_ext.c
-new file mode 100644
-index 000000000000..49b554f560a4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trace_ext.c
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define _GNU_SOURCE
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include <sys/stat.h>
-+#include <linux/sched.h>
-+#include <sys/syscall.h>
-+
-+#include "test_pkt_md_access.skel.h"
-+#include "test_trace_ext.skel.h"
-+#include "test_trace_ext_tracing.skel.h"
-+
-+static __u32 duration;
-+
-+void test_trace_ext(void)
-+{
-+	struct test_pkt_md_access *skel_pkt = NULL;
-+	struct test_trace_ext_tracing *skel_trace = NULL;
-+	struct test_trace_ext_tracing__bss *bss_trace;
-+	struct test_trace_ext *skel_ext = NULL;
-+	struct test_trace_ext__bss *bss_ext;
-+	int err, pkt_fd, ext_fd;
-+	struct bpf_program *prog;
-+	char buf[100];
-+	__u32 retval;
-+	__u64 len;
-+
-+	/* open/load/attach test_pkt_md_access */
-+	skel_pkt = test_pkt_md_access__open_and_load();
-+	if (CHECK(!skel_pkt, "setup", "classifier/test_pkt_md_access open failed\n"))
-+		goto cleanup;
-+
-+	err = test_pkt_md_access__attach(skel_pkt);
-+	if (CHECK(err, "setup", "classifier/test_pkt_md_access attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	prog = skel_pkt->progs.test_pkt_md_access;
-+	pkt_fd = bpf_program__fd(prog);
-+
-+	/* open extension */
-+	skel_ext = test_trace_ext__open();
-+	if (CHECK(!skel_ext, "setup", "freplace/test_pkt_md_access open failed\n"))
-+		goto cleanup;
-+
-+	/* set extension's attach target - test_pkt_md_access  */
-+	prog = skel_ext->progs.test_pkt_md_access_new;
-+	bpf_program__set_attach_target(prog, pkt_fd, "test_pkt_md_access");
-+
-+	/* load/attach extension */
-+	err = test_trace_ext__load(skel_ext);
-+	if (CHECK(err, "setup", "freplace/test_pkt_md_access load failed\n")) {
-+		libbpf_strerror(err, buf, sizeof(buf));
-+		fprintf(stderr, "%s\n", buf);
-+		goto cleanup;
-+	}
-+
-+	err = test_trace_ext__attach(skel_ext);
-+	if (CHECK(err, "setup", "freplace/test_pkt_md_access attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	prog = skel_ext->progs.test_pkt_md_access_new;
-+	ext_fd = bpf_program__fd(prog);
-+
-+	/* open tracing  */
-+	skel_trace = test_trace_ext_tracing__open();
-+	if (CHECK(!skel_trace, "setup", "tracing/test_pkt_md_access_new open failed\n"))
-+		goto cleanup;
-+
-+	/* set tracing's attach target - fentry */
-+	prog = skel_trace->progs.fentry;
-+	bpf_program__set_attach_target(prog, ext_fd, "test_pkt_md_access_new");
-+
-+	/* set tracing's attach target - fexit */
-+	prog = skel_trace->progs.fexit;
-+	bpf_program__set_attach_target(prog, ext_fd, "test_pkt_md_access_new");
-+
-+	/* load/attach tracing */
-+	err = test_trace_ext_tracing__load(skel_trace);
-+	if (CHECK(err, "setup", "tracing/test_pkt_md_access_new load failed\n")) {
-+		libbpf_strerror(err, buf, sizeof(buf));
-+		fprintf(stderr, "%s\n", buf);
-+		goto cleanup;
-+	}
-+
-+	err = test_trace_ext_tracing__attach(skel_trace);
-+	if (CHECK(err, "setup", "tracing/test_pkt_md_access_new attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	/* trigger the test */
-+	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v4, sizeof(pkt_v4),
-+				NULL, NULL, &retval, &duration);
-+	CHECK(err || retval, "",
-+	      "err %d errno %d retval %d duration %d\n",
-+	      err, errno, retval, duration);
-+
-+	bss_ext = skel_ext->bss;
-+	bss_trace = skel_trace->bss;
-+
-+	len = bss_ext->ext_called;
-+
-+	CHECK(bss_ext->ext_called == 0,
-+		"check", "failed to trigger freplace/test_pkt_md_access\n");
-+	CHECK(bss_trace->fentry_called != len,
-+		"check", "failed to trigger fentry/test_pkt_md_access_new\n");
-+	CHECK(bss_trace->fexit_called != len,
-+		"check", "failed to trigger fexit/test_pkt_md_access_new\n");
-+
-+cleanup:
-+	test_trace_ext_tracing__destroy(skel_trace);
-+	test_trace_ext__destroy(skel_ext);
-+	test_pkt_md_access__destroy(skel_pkt);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_trace_ext.c b/tools/testing/selftests/bpf/progs/test_trace_ext.c
-new file mode 100644
-index 000000000000..d19a634d0e78
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_trace_ext.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+#include <linux/bpf.h>
-+#include <stdbool.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+__u64 ext_called = 0;
-+
-+SEC("freplace/test_pkt_md_access")
-+int test_pkt_md_access_new(struct __sk_buff *skb)
-+{
-+	ext_called = skb->len;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c b/tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c
-new file mode 100644
-index 000000000000..52f3baf98f20
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_trace_ext_tracing.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+__u64 fentry_called = 0;
-+
-+SEC("fentry/test_pkt_md_access_new")
-+int BPF_PROG(fentry, struct sk_buff *skb)
-+{
-+	fentry_called = skb->len;
-+	return 0;
-+}
-+
-+__u64 fexit_called = 0;
-+
-+SEC("fexit/test_pkt_md_access_new")
-+int BPF_PROG(fexit, struct sk_buff *skb)
-+{
-+	fexit_called = skb->len;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-
+Thanks,
+Song
