@@ -2,211 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA3226988C
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 00:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC072698AC
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 00:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINWGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 18:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
+        id S1725994AbgINWNn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 18:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgINWGc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:06:32 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6935DC06174A;
-        Mon, 14 Sep 2020 15:06:31 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id h126so995411ybg.4;
-        Mon, 14 Sep 2020 15:06:31 -0700 (PDT)
+        with ESMTP id S1725926AbgINWNn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:13:43 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1DCC06174A;
+        Mon, 14 Sep 2020 15:13:42 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id s19so999300ybc.5;
+        Mon, 14 Sep 2020 15:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qjXTDrZsJtVC0UTN/zfoow5ilYHg2sYH2n/teLc5H/4=;
-        b=Qw6cBHvSogrZmbGiHDwR7HFjNftujO7Sd6TjpwZvPkcwwL6NUS7qjbunscoh9ES0lR
-         xFVtL6bkHXKZ3i5EW0egCPiVlm74VnAUVTSZRJvNCm6j+nXJr14xH4JViYXRA3BkBtbd
-         ip4fS5NwcORHLqI7pdnPcA6Ji8czYXjdAOLu1JP55sZQoKATNjDbqoZNPx5IkATUvtIL
-         pHtV4uKmhr8Qx3g4bhmAzcyNLm0LEErHfqRuTuvk/eFWCa2bemYuBIO2xXD1BKitnSUd
-         wtzslH7FXex4cGT/G00Fmpwg5tk4DO7tsF/FXhZXIc9+7a1z5knakeqRsPmZEqcd+uD+
-         Gzwg==
+        bh=RglK90z0a3hBYnR6IDE3hTgXU5PR2qc3m3JzZSIHXEE=;
+        b=WF+Tg8zxtyrao/CwpX5gyb6UeGKrgNQGSWbA+RWUHIQued+PwD1BcQIUUfteaGfVBi
+         O2WlvV4PVa5HOp01iHKbSva9Yv2/s0qOF48xyUdjw+hxbJV9v7bkET/VqQkJxJ3ViQ/I
+         Ob4obTCB5uX2btl6KaC2bjv98UHkxSwq9h7wvaBsVPyHZIgRy2RxbGhp9hXPR83j37ip
+         cU9JB7UEtC/5q0ofqPXM519g9ghBDw7GTzmJm/dfNatdmaspPlZvdUCpmlsI+bMfCYtg
+         /rvhHYYTrMLYiVBcZdwRGr70JIF3SioNQeVXLHj2mahuPl3wiIXIsUWS1mwaXDtJ9mJh
+         3R6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qjXTDrZsJtVC0UTN/zfoow5ilYHg2sYH2n/teLc5H/4=;
-        b=bjlo4x7d/e32GQjuD2rEsCrAsuyvSVL7ezr2jM5zUoZqT7dsg414SNx7vIdjzGJtm0
-         gDFQPZ141oBF4QiHEVC/7YgLT6i0hUhmqrkccPvykcHpz7nUSNLwNtDnFOXE0wMB50E3
-         uck+eCH4z5dLIGhWBxu46uZ5bkD1gNKbfyTA+xr/AhpSbS/qgfW7pta9HLqXZHRb53fB
-         cHRwvNaUgRZljP/nyxOayhgcehgkptHYYEvaAk5fFKY76tc01YtI7aXT0VQTqGNUAEFC
-         s18p3MjGwgVYeZRQ8zfdezs339TVEywFnTIP9y/iiHTNnUEu3VtLwUkVPgeGp+2F28yV
-         TrTQ==
-X-Gm-Message-State: AOAM530H7cizaqfBsGaZ7aZO6sxPNsUI4I2drnl2XTlbsMA4RFsGgZd+
-        34KitNCNF+/xuXJqHgr5bjmyA+gltL1lG/CMk6g=
-X-Google-Smtp-Source: ABdhPJwysH7nAwjlgvWCOzljKDnsSGQmPChYgS8uR6UmMoJQit46Ww8wpXwxUk329AzLTfIrCjdyEtbZeUrVchUqb2I=
-X-Received: by 2002:a25:33c4:: with SMTP id z187mr10197978ybz.27.1600121190211;
- Mon, 14 Sep 2020 15:06:30 -0700 (PDT)
+        bh=RglK90z0a3hBYnR6IDE3hTgXU5PR2qc3m3JzZSIHXEE=;
+        b=YvoMMu8jrJygBz66CJCwrGC7lVftiLqpKRgrPKqx1kCkC+NFdxXG6N/3tFj80I0hiO
+         AWr5E6SDJGcMTO9yME+ddxkmtYF09L2ftYslRpagJcPI76uLZVXde8zNImDsBqdEB2bd
+         kpQrH1RF8qZwtKlTKLMs+RaijsnxZWiuM4l9pBpwiQT+xuxb4a5+tDpFwmaRduRuu3MY
+         xSLpaNFSWMr/xA4QGIGyXtG14xFIkzj8BzxzXtSyIM8tN1oq363DSVWHZ/M7D00W5cEE
+         MdvdwXBX4f33FMd9cCj4y0EOkkd3m5OEHcDWHJBkBYeRL+0/yMBqwErsHDPvv8XsHh5F
+         IugQ==
+X-Gm-Message-State: AOAM533kqP7MZ1z7KE3assJhsaGXOAwPCGpISZuHPI/P5hHU8xBCqGOc
+        bwamO0dGfFCueJYRZAOsIaBmZq4BkeSAJx31rfQ=
+X-Google-Smtp-Source: ABdhPJz+Rr4zt5euw9s6DupxpOtAgiiDAXem4HuNapVvUp7m3R0+L27kNPJyawdySJn5s+jhU5PA5bDXGiQcYYyBWjo=
+X-Received: by 2002:a25:e655:: with SMTP id d82mr24894623ybh.347.1600121621869;
+ Mon, 14 Sep 2020 15:13:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903223332.881541-1-haoluo@google.com> <20200903223332.881541-4-haoluo@google.com>
- <CAEf4BzZPMwe=kz_K8P-6aeLiJo4rC69bMvju4=JEEv0CDEE9_w@mail.gmail.com> <CA+khW7gWaMfok5wxyB0_EiVBnULR08vi6mtVZMwat2bhJY+k8Q@mail.gmail.com>
-In-Reply-To: <CA+khW7gWaMfok5wxyB0_EiVBnULR08vi6mtVZMwat2bhJY+k8Q@mail.gmail.com>
+References: <20200911143022.414783-1-nicolas.rybowski@tessares.net> <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Sep 2020 15:06:18 -0700
-Message-ID: <CAEf4BzbcQv2w-zZTUrwEuCckx_uUime023fb=qGyL3t2x35QRQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/6] bpf/selftests: ksyms_btf to test typed ksyms
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+Date:   Mon, 14 Sep 2020 15:13:31 -0700
+Message-ID: <CAEf4Bza3yEmxEOXoS-sFBCBXju4O_z4XhC2Um+FM-3F793kz-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: expose is_mptcp flag to bpf_tcp_sock
+To:     Song Liu <song@kernel.org>
+Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 9:58 PM Hao Luo <haoluo@google.com> wrote:
+On Mon, Sep 14, 2020 at 11:21 AM Song Liu <song@kernel.org> wrote:
 >
-> Thanks for taking a look, Andrii.
->
-> On Fri, Sep 4, 2020 at 12:49 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Fri, Sep 11, 2020 at 8:07 AM Nicolas Rybowski
+> <nicolas.rybowski@tessares.net> wrote:
 > >
-> > On Thu, Sep 3, 2020 at 3:35 PM Hao Luo <haoluo@google.com> wrote:
-> > >
-> > > Selftests for typed ksyms. Tests two types of ksyms: one is a struct,
-> > > the other is a plain int. This tests two paths in the kernel. Struct
-> > > ksyms will be converted into PTR_TO_BTF_ID by the verifier while int
-> > > typed ksyms will be converted into PTR_TO_MEM.
-> > >
-> > > Signed-off-by: Hao Luo <haoluo@google.com>
-> > > ---
-> > >  .../testing/selftests/bpf/prog_tests/ksyms.c  | 31 +++------
-> > >  .../selftests/bpf/prog_tests/ksyms_btf.c      | 63 +++++++++++++++++++
-> > >  .../selftests/bpf/progs/test_ksyms_btf.c      | 23 +++++++
-> > >  tools/testing/selftests/bpf/trace_helpers.c   | 26 ++++++++
-> > >  tools/testing/selftests/bpf/trace_helpers.h   |  4 ++
-> > >  5 files changed, 123 insertions(+), 24 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> > >
+> > is_mptcp is a field from struct tcp_sock used to indicate that the
+> > current tcp_sock is part of the MPTCP protocol.
+> >
+> > In this protocol, a first socket (mptcp_sock) is created with
+> > sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
+> > isn't directly on the wire. This is the role of the subflow (kernel)
+> > sockets which are classical tcp_sock with sk_protocol set to
+> > IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
+> > sockets is the is_mptcp field from tcp_sock.
+> >
+> > Such an exposure in BPF is thus required to be able to differentiate
+> > plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
+> > programs.
+> >
+> > The choice has been made to silently pass the case when CONFIG_MPTCP is
+> > unset by defaulting is_mptcp to 0 in order to make BPF independent of
+> > the MPTCP configuration. Another solution is to make the verifier fail
+> > in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
+> > '#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
+> > will not run if MPTCP is not set.
+> >
+> > An example use-case is provided in
+> > https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
+> >
+> > Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> > Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> > Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+> > Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+> > ---
+> >  include/uapi/linux/bpf.h       | 1 +
+> >  net/core/filter.c              | 9 ++++++++-
+> >  tools/include/uapi/linux/bpf.h | 1 +
+> >  3 files changed, 10 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 7dd314176df7..7d179eada1c3 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
+> >         __u32 delivered;        /* Total data packets delivered incl. rexmits */
+> >         __u32 delivered_ce;     /* Like the above but only ECE marked packets */
+> >         __u32 icsk_retransmits; /* Number of unrecovered [RTO] timeouts */
+> > +       __u32 is_mptcp;         /* Is MPTCP subflow? */
+>
+> Shall we have an __u32 flags, and make is_mptcp a bit of it?
 >
 
-[...]
+Bitfields are slow and more annoying to rewrite in verifier, so having
+an __u32 field is actually good.
 
-> > > +
-> > > +extern const struct rq runqueues __ksym; /* struct type global var. */
-> > > +extern const int bpf_prog_active __ksym; /* int type global var. */
-> >
-> > When we add non-per-CPU kernel variables, I wonder if the fact that we
-> > have both per-CPU and global kernel variables under the same __ksym
-> > section would cause any problems and confusion? It's not clear to me
-> > if we need to have a special __percpu_ksym section or not?..
-> >
->
-> Yeah. Totally agree. I thought about this. I think a separate
-> __percpu_ksym attribute is *probably* more clear. Not sure though. How
-> about we introduce a "__percpu_ksym" and make it an alias to "__ksym"
-> for now? If needed, we make an actual section for it in future.
-
-Let's keep it in __ksym as is. Verifier will have enough insight to
-produce a meaningful error message, it won't be easy to misuse this
-feature.
-
->
-> > > +
-> > > +SEC("raw_tp/sys_enter")
-> > > +int handler(const void *ctx)
-> > > +{
-> > > +       out__runqueues = (__u64)&runqueues;
-> > > +       out__bpf_prog_active = (__u64)&bpf_prog_active;
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +char _license[] SEC("license") = "GPL";
-> > > diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> > > index 4d0e913bbb22..ade555fe8294 100644
-> > > --- a/tools/testing/selftests/bpf/trace_helpers.c
-> > > +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> > > @@ -90,6 +90,32 @@ long ksym_get_addr(const char *name)
-> > >         return 0;
-> > >  }
-> > >
-> > > +/* open kallsyms and read symbol addresses on the fly. Without caching all symbols,
-> > > + * this is faster than load + find. */
-> > > +int kallsyms_find(const char *sym, unsigned long long *addr)
-> > > +{
-> > > +       char type, name[500];
-> > > +       unsigned long long value;
-> > > +       int err = 0;
-> > > +       FILE *f;
-> > > +
-> > > +       f = fopen("/proc/kallsyms", "r");
-> > > +       if (!f)
-> > > +               return -ENOENT;
-> > > +
-> > > +       while (fscanf(f, "%llx %c %499s%*[^\n]\n", &value, &type, name) > 0) {
-> > > +               if (strcmp(name, sym) == 0) {
-> > > +                       *addr = value;
-> > > +                       goto out;
-> > > +               }
-> > > +       }
-> > > +       err = -EINVAL;
-> >
-> > These error codes seem backward to me. If you fail to open
-> > /proc/kallsyms, that's an unexpected and invalid situation, so EINVAL
-> > makes a bit more sense there. But -ENOENT is clearly for cases where
-> > you didn't find what you were looking for, which is exactly this case.
-> >
-> >
->
-> I thought about it. I used -ENOENT for fopen failure because I found
-> -ENOENT is for the case when a file/directory is not found, which is
-> more reasonable in describing fopen error. But your proposal also
-> makes  sense and that is what I originally had. It doesn't sound like
-> a big deal, I can switch the order them in v3.
-
-For me, ENOENT is about the logical entity the function is working
-with. For fopen() that would be file, so if it's not found -- ENOENT.
-But here, for kallsyms_find it's a ksym. If /proc/kallsyms isn't there
-or can't be open -- that's unexpected (EINVAL). But if /proc/kallsyms
-was open but didn't contain the entity we are looking for (requested
-ksym) -- that's ENOENT.
-
->
-> > > +
-> > > +out:
-> > > +       fclose(f);
-> > > +       return err;
-> > > +}
-> > > +
-> > >  void read_trace_pipe(void)
-> > >  {
-> > >         int trace_fd;
-> > > diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
-> > > index 25ef597dd03f..f62fdef9e589 100644
-> > > --- a/tools/testing/selftests/bpf/trace_helpers.h
-> > > +++ b/tools/testing/selftests/bpf/trace_helpers.h
-> > > @@ -12,6 +12,10 @@ struct ksym {
-> > >  int load_kallsyms(void);
-> > >  struct ksym *ksym_search(long key);
-> > >  long ksym_get_addr(const char *name);
-> > > +
-> > > +/* open kallsyms and find addresses on the fly, faster than load + search. */
-> > > +int kallsyms_find(const char *sym, unsigned long long *addr);
-> > > +
-> > >  void read_trace_pipe(void);
-> > >
-> > >  #endif
-> > > --
-> > > 2.28.0.526.ge36021eeef-goog
-> > >
+> Thanks,
+> Song
+> [...]
