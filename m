@@ -2,124 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480DC2694B8
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF212694C3
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbgINSW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 14:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgINSWU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:22:20 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8EFC06174A;
-        Mon, 14 Sep 2020 11:22:11 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id y15so1021277wmi.0;
-        Mon, 14 Sep 2020 11:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QwmdpKrctXZY8SsbeQhTPBt7ND8p7TZUdIMqRgAp49A=;
-        b=Q7ZqaKpnbyGyPvPJJ/i7BesuVwYV5eRqXM4dXhN/OCq1S9GrPiW1PQoD3eoi7TSQbf
-         vb7Hv5UXRk/XE1i9Stcc75xYDV/GhLH6RC/gu6k3+cpFyfaZ65ZlbqFe4XCYrdJzI2se
-         kNqM8UYDrm1kbvCsICZt7ryIp2NeZ6T8xIldIo5IXYFJLTtW2/IBHrNaLvW7mzo5DKxb
-         DvoIohJ33HFLUoysYMdgVeszRwIpv+guhWLLyZRoYZQI4JiuAf4RN6R5L304OW+vEUbb
-         dj84KuKIgnTvuB9JLmhDdFk6z3tgmb05exFWsrzzlDZvqgmLYunn1E+k2S9mFZQJPN7l
-         UxyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QwmdpKrctXZY8SsbeQhTPBt7ND8p7TZUdIMqRgAp49A=;
-        b=f/cI3b9/Ga0ly7KAwQkmgo1yb+qJTjvb/anWLtAzMHrMpbIhqjLEUPVisTdKHZ/U4P
-         kxKrnkCNWQkM7b++1jPRbmWv+DKp8v/CxqJB6cmHrh8GgzxaSfAortybJN+TztOY+cpq
-         nmGQWhzuNccFAKe/yAjnV6ozU777lMsaxqUAzlJFIMRHt35ABo/HDz/FSG9C4XeNWDmo
-         tp6mW2H+qckof9djDUHXrFJLcbj5u18Ew6DJXkTF3a+r/c3DJ/pjsTwzm/5iCYgzKTNV
-         kDTrkmNg2F4sxOb+ZeKYWAHpW7UbJZnrsR8rTunh+ZJLM0K1UWftJznNHIC+Sd5WlAJY
-         +toA==
-X-Gm-Message-State: AOAM530ckEeTrkpKlK5WnfxYhWOrQ2w3Qe5VsCez/EoYQmmwmpQmm0qn
-        v4Sg96GzGzgs2lx0dgQiez74PyCEIA6ECIx7I5c=
-X-Google-Smtp-Source: ABdhPJy3GJYqVWPPZg2D3pql45sSI2rbpWDrGStOP2zO/ZvDpfyuyRJQmu9ZM+Gu5J/7hnKw6pmXWzsSTd/912vBINI=
-X-Received: by 2002:a1c:6254:: with SMTP id w81mr643669wmb.94.1600107729958;
- Mon, 14 Sep 2020 11:22:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
- <20200914122042.GA24441@willie-the-truck> <20200914123504.GA124316@apalos.home>
- <20200914132350.GA126552@apalos.home> <20200914140114.GG24441@willie-the-truck>
- <20200914181234.0f1df8ba@carbon> <20200914170205.GA20549@apalos.home>
- <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
- <20200914175516.GA21832@apalos.home> <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
-In-Reply-To: <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
-From:   Luke Nelson <luke.r.nels@gmail.com>
-Date:   Mon, 14 Sep 2020 11:21:58 -0700
-Message-ID: <CAB-e3NSPcYB6r=ZjFtXQ=s=LU-a9D9OfXJPtGGbY3dupB1Z1Qg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-To:     Xi Wang <xi.wang@gmail.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Will Deacon <will@kernel.org>, bpf <bpf@vger.kernel.org>,
-        ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S1725964AbgINSZU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 14:25:20 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22510 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725944AbgINSZT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Sep 2020 14:25:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600107918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eu76mxcdPgWTFbGMoALVoUP1PuSwsvQfq2LhcgVkz24=;
+        b=MvV/1HvmHJG9IstKJ5nSu8P+zwrsno3FxtvLH1ZIfk24Jeh5fwC9Wfzt6ImJxNLGeiN04G
+        5aBza4pf47O4HuLpRCRIaV4BIbCbuxCyK3TO6JsqHkHk2Iz9wbfvG3xCWjg0qRC0rxwmAu
+        GsZXjuALDncfeX7SZMpyVL6lWexDRIo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-K6EYyWUiOgOihwS9tZ2vUQ-1; Mon, 14 Sep 2020 14:25:16 -0400
+X-MC-Unique: K6EYyWUiOgOihwS9tZ2vUQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EE3F873115;
+        Mon, 14 Sep 2020 18:25:15 +0000 (UTC)
+Received: from krava (unknown [10.40.192.180])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 14AB37B7AC;
+        Mon, 14 Sep 2020 18:25:13 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 20:25:13 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Veronika Kabatova <vkabatov@redhat.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: Build failures: unresolved symbol vfs_getattr
+Message-ID: <20200914182513.GK1714160@krava>
+References: <1723352278.11013122.1600093319730.JavaMail.zimbra@redhat.com>
+ <748495289.11017858.1600094916732.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <748495289.11017858.1600094916732.JavaMail.zimbra@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:08 AM Xi Wang <xi.wang@gmail.com> wrote:
-> I don't think there's some consistent semantics of "offsets" across
-> the JITs of different architectures (maybe it's good to clean that
-> up).  RV64 and RV32 JITs are doing something similar to arm64 with
-> respect to offsets.  CCing Bj=C3=B6rn and Luke.
+On Mon, Sep 14, 2020 at 10:48:36AM -0400, Veronika Kabatova wrote:
+> 
+> Hello,
+> 
+> we tested the bpf-next tree with CKI and ran across build failures. The
+> important part of the build log is:
+> 
+> 00:18:05   GEN     .version
+> 00:18:05   CHK     include/generated/compile.h
+> 00:18:05   LD      vmlinux.o
+> 00:18:27   MODPOST vmlinux.symvers
+> 00:18:27   MODINFO modules.builtin.modinfo
+> 00:18:27   GEN     modules.builtin
+> 00:18:27   LD      .tmp_vmlinux.btf
+> 00:18:42   BTF     .btf.vmlinux.bin.o
+> 00:19:13   LD      .tmp_vmlinux.kallsyms1
+> 00:19:19   KSYM    .tmp_vmlinux.kallsyms1.o
+> 00:19:22   LD      .tmp_vmlinux.kallsyms2
+> 00:19:25   KSYM    .tmp_vmlinux.kallsyms2.o
+> 00:19:28   LD      vmlinux
+> 00:19:40   BTFIDS  vmlinux
+> 00:19:40 FAILED unresolved symbol vfs_getattr
+> 00:19:40 make[2]: *** [Makefile:1167: vmlinux] Error 255
+> 00:19:40 make[1]: *** [scripts/Makefile.package:109: targz-pkg] Error 2
+> 00:19:40 make: *** [Makefile:1528: targz-pkg] Error 2
 
-As I understand it, there are two strategies JITs use to keep track of
-the ctx->offset table.
+hi,
+it looks like broken BTF data to me, I checked that build
+and found we have multiple records for functions, like
+for filp_close:
 
-Some JITs (RV32, RV64, arm32, arm64 currently, x86-32) track the end
-of each instruction (e.g., ctx->offset[i] marks the beginning of
-instruction i + 1).
-This requires care to handle jumps to the first instruction to avoid
-using ctx->offset[-1]. The RV32 and RV64 JITs have special handling
-for this case,
-while the arm32, arm64, and x86-32 JITs appear not to. The arm32 and
-x32 probably need to be fixed for the same reason arm64 does.
+	[23381] FUNC_PROTO '(anon)' ret_type_id=19 vlen=2
+		'(anon)' type_id=464
+		'id' type_id=960
+	[23382] FUNC 'filp_close' type_id=23381 linkage=static
 
-The other strategy is for ctx->offset[i] to track the beginning of
-instruction i. The x86-64 JIT currently works this way.
-This can be easier to use (no need to special case -1) but looks to be
-trickier to construct. This patch changes the arm64 JIT to work this
-way.
 
-I don't think either strategy is inherently better, both can be
-"correct" as long as the JIT uses ctx->offset in the right way.
-This might be a good opportunity to change the JITs to be consistent
-about this (especially if the arm32, arm64, and x32 JITs all need to
-be fixed anyways).
-Having all JITs agree on the meaning of ctx->offset could help future
-readers debug / understand the code, and could help to someday verify
-the
-ctx->offset construction.
+	[33073] FUNC_PROTO '(anon)' ret_type_id=19 vlen=2
+		'filp' type_id=464
+		'id' type_id=960
+	[33074] FUNC 'filp_close' type_id=33073 linkage=static
 
-Any thoughts?
 
-- Luke
+or vfs_getattr:
+
+	[33513] FUNC_PROTO '(anon)' ret_type_id=19 vlen=4
+		'path' type_id=741
+		'stat' type_id=1095
+		'request_mask' type_id=29
+		'query_flags' type_id=8
+
+	[33514] FUNC 'vfs_getattr' type_id=33513 linkage=static
+
+	[1094] FUNC_PROTO '(anon)' ret_type_id=19 vlen=4
+		'(anon)' type_id=741
+		'(anon)' type_id=1095
+		'(anon)' type_id=29
+		'(anon)' type_id=8
+
+	[35099] FUNC 'vfs_getattr' type_id=1094 linkage=static
+
+
+and because we go through all BTF data until we resolve all we have,
+the doubled funcs will screw our internal counter and we skip a function
+
+the change below will workaround that, but I think we should fail in
+this case.. if I'm not missing something 2 FUNC records for one function
+in BTF data
+
+$ pahole --version
+v1.17
+
+HEAD is 2bab48c5b Merge branch 'improve-bpf-tcp-cc-init'
+
+thoughts? thanks
+jirka
+
+
+---
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index dfa540d8a02d..a33e56553e52 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -525,7 +525,7 @@ static int symbols_resolve(struct object *obj)
+ 		}
+ 
+ 		id = btf_id__find(root, str);
+-		if (id) {
++		if (id && !id->id) {
+ 			id->id = type_id;
+ 			(*nr)--;
+ 		}
+
