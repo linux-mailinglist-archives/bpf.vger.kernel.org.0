@@ -2,165 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE33269468
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F8C26947D
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgINSIB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 14:08:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgINSHp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:07:45 -0400
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E328421BE5;
-        Mon, 14 Sep 2020 18:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600106864;
-        bh=urbtEzAStq9D8KVHTpwpJn7jcktQ6xC9fDu3gqRUPFY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NFTeoWN5BtSyuRAkk3F3SSt0TKQNWr5/wwsVvf2VWeFhvOic4nJw99gnG4AI5nCk2
-         fVtUprdLbmrmRpszi0/2pIvVrivYCeEIcFu0qw2qKEygXwV4EA0RwiQ3dZcDLjLg8U
-         G3PXt85ubBilRmGyyCaN3nv244fWnikl+9wGDjd8=
-Received: by mail-lf1-f49.google.com with SMTP id m5so251456lfp.7;
-        Mon, 14 Sep 2020 11:07:43 -0700 (PDT)
-X-Gm-Message-State: AOAM531tdWmu5PJcAvQbHvJv6mL/64onvHLXXB0nPJjh6ibB2y3g5lN6
-        FolqOERlnf3gXu9t6qglIgnshGToxpcLuoKCRHQ=
-X-Google-Smtp-Source: ABdhPJyREUEE8MAAwOs63WnZ92YdJHUoIdZ/ETZfDrACdaP4fhOS0Obz6X1gohOICs2Ujw3g1l+QQn5wORhY2QkJ/24=
-X-Received: by 2002:a19:8907:: with SMTP id l7mr4802438lfd.105.1600106862141;
- Mon, 14 Sep 2020 11:07:42 -0700 (PDT)
+        id S1726171AbgINSJK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 14:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbgINSIu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:08:50 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD939C06174A;
+        Mon, 14 Sep 2020 11:08:49 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id o5so1011539qke.12;
+        Mon, 14 Sep 2020 11:08:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=24YFM+Nh7pEwkm7cAsSqCM3onePtrQOnKk+utLA7aiY=;
+        b=EJk+odAGXK43RKGanFbisPiaXuq0ehzeSoY8YXMqQa7nw+Vrq3q3BhC08XmjawK3n2
+         1fxNcbU7QPtiuIkz3i8Z/GM0CqZOcKHZO436S6nJq6maBwVecKzAXr1TnJslzPISotH2
+         0OPxJMsfteTOJ2EHC2N3DLPaN6E2bYkUv5bXv+rHjrUoBXTHZOid9PYOPWFZ2NLENyqB
+         3U+2iz1go2bgWiWgDFz2nHG5QDzV0LYa+pDXtbGsB5h2W/DgLaGkhdspgawBuX8L+c3v
+         j8O461fd9dUqoEF+i/dwXrwDC5I3rM1hBSqqC4F6XmYUTXE8F87D98brktjjGKerEXHV
+         ol8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=24YFM+Nh7pEwkm7cAsSqCM3onePtrQOnKk+utLA7aiY=;
+        b=NFVtwVLShgibBE05Eo4kt86rD7R2lZq+/T38sFwTLo20feHKNh9HKoi/Q5fyQtQ0VQ
+         F9Xneo6qGXuExw/1Lblrhym3J37iqJsdJPXHG/Dzny1HHfasJkyjFeBwM3jZqqlwWdwA
+         iQiWdlWjHIgyiLruu7+mZ94qFfcroPN1Pwd8H97FH2pZvKMgtQ1wx79/7meTgsk/YvC2
+         iw/muy5XtKhF9D6Vgh0w8GKO5F5poVWUGxPhAMiTnNI8In/wE11eWF9u/UA4U3YlmcrA
+         urZAPF921uhi/PADvJGnNdHFeyD0lgsEuiKrItN6gdUQs9/+StBC7RqBAQT7XfPYWLLC
+         afSA==
+X-Gm-Message-State: AOAM531LNJ196yCMomfmveW511LZI3ZeEMWFNVODPmyytf5uVYycprUN
+        +MOYJRZ3dztEpYK2tAVWy4rUt4pLENzyZ5UQCEY=
+X-Google-Smtp-Source: ABdhPJwQKQrqj42CE0Aue6skP3OMvk4CVTz037dcgNqEkD9xxp0xkmj+BjFIIszWz5eSJkYVqYQWfe/aztQNHPDNnV4=
+X-Received: by 2002:a05:620a:2291:: with SMTP id o17mr13963182qkh.476.1600106928920;
+ Mon, 14 Sep 2020 11:08:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net> <20200911143022.414783-4-nicolas.rybowski@tessares.net>
-In-Reply-To: <20200911143022.414783-4-nicolas.rybowski@tessares.net>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Sep 2020 11:07:30 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5Gbx2pWgM1XcSYqVsN6L=q+0u3QFNxG7A+Qez=Tziu2A@mail.gmail.com>
-Message-ID: <CAPhsuW5Gbx2pWgM1XcSYqVsN6L=q+0u3QFNxG7A+Qez=Tziu2A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/5] bpf: selftests: add MPTCP test base
-To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
+ <20200914122042.GA24441@willie-the-truck> <20200914123504.GA124316@apalos.home>
+ <20200914132350.GA126552@apalos.home> <20200914140114.GG24441@willie-the-truck>
+ <20200914181234.0f1df8ba@carbon> <20200914170205.GA20549@apalos.home>
+ <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com> <20200914175516.GA21832@apalos.home>
+In-Reply-To: <20200914175516.GA21832@apalos.home>
+From:   Xi Wang <xi.wang@gmail.com>
+Date:   Mon, 14 Sep 2020 11:08:13 -0700
+Message-ID: <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 8:02 AM Nicolas Rybowski
-<nicolas.rybowski@tessares.net> wrote:
->
-> This patch adds a base for MPTCP specific tests.
->
-> It is currently limited to the is_mptcp field in case of plain TCP
-> connection because for the moment there is no easy way to get the subflow
-> sk from a msk in userspace. This implies that we cannot lookup the
-> sk_storage attached to the subflow sk in the sockops program.
->
-> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+On Mon, Sep 14, 2020 at 10:55 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+> We've briefly discussed this approach with Yauheni while coming up with t=
+he
+> posted patch.
+> I think that contructing the array correctly in the first place is better=
+.
+> Right now it might only be used in bpf2a64_offset() and bpf_prog_fill_jit=
+ed_linfo()
+> but if we fixup the values on the fly in there, everyone that intends to =
+use the
+> offset for any reason will have to account for the missing instruction.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+I don't understand what you mean by "correctly."  What's your correctness s=
+pec?
 
-With some nitpicks below.
-
-> ---
->
-> Notes:
->     v1 -> v2:
->     - new patch: mandatory selftests (Alexei)
->
-[...]
->                      int timeout_ms);
-> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> new file mode 100644
-> index 000000000000..0e65d64868e9
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> @@ -0,0 +1,119 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include "cgroup_helpers.h"
-> +#include "network_helpers.h"
-> +
-> +struct mptcp_storage {
-> +       __u32 invoked;
-> +       __u32 is_mptcp;
-> +};
-> +
-> +static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 is_mptcp)
-> +{
-> +       int err = 0, cfd = client_fd;
-> +       struct mptcp_storage val;
-> +
-> +       /* Currently there is no easy way to get back the subflow sk from the MPTCP
-> +        * sk, thus we cannot access here the sk_storage associated to the subflow
-> +        * sk. Also, there is no sk_storage associated with the MPTCP sk since it
-> +        * does not trigger sockops events.
-> +        * We silently pass this situation at the moment.
-> +        */
-> +       if (is_mptcp == 1)
-> +               return 0;
-> +
-> +       if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &cfd, &val) < 0)) {
-> +               perror("Failed to read socket storage");
-
-Maybe simplify this with CHECK(), which contains a customized error message?
-Same for some other calls.
-
-> +               return -1;
-> +       }
-> +
-> +       if (val.invoked != 1) {
-> +               log_err("%s: unexpected invoked count %d != %d",
-> +                       msg, val.invoked, 1);
-> +               err++;
-> +       }
-> +
-> +       if (val.is_mptcp != is_mptcp) {
-> +               log_err("%s: unexpected bpf_tcp_sock.is_mptcp %d != %d",
-> +                       msg, val.is_mptcp, is_mptcp);
-> +               err++;
-> +       }
-> +
-> +       return err;
-> +}
-> +
-> +static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
-[...]
-
-> +
-> +       client_fd = is_mptcp ? connect_to_mptcp_fd(server_fd, 0) :
-> +                              connect_to_fd(server_fd, 0);
-> +       if (client_fd < 0) {
-> +               err = -1;
-> +               goto close_client_fd;
-
-This should be "goto close_bpf_object;", and we don't really need the label
-close_client_fd.
-
-> +       }
-> +
-> +       err += is_mptcp ? verify_sk(map_fd, client_fd, "MPTCP subflow socket", 1) :
-
-It doesn't really change the logic, but I guess we only need "err = xxx"?
-
-> +                         verify_sk(map_fd, client_fd, "plain TCP socket", 0);
-> +
-> +close_client_fd:
-> +       close(client_fd);
-> +
-> +close_bpf_object:
-> +       bpf_object__close(obj);
-> +       return err;
-> +}
-> +
+I don't think there's some consistent semantics of "offsets" across
+the JITs of different architectures (maybe it's good to clean that
+up).  RV64 and RV32 JITs are doing something similar to arm64 with
+respect to offsets.  CCing Bj=C3=B6rn and Luke.
