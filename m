@@ -2,82 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2DD269745
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 23:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC4E269777
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 23:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbgINVBI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 17:01:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58528 "EHLO mail.kernel.org"
+        id S1725920AbgINVNf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 17:13:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgINVBB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:01:01 -0400
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+        id S1725926AbgINVNe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:13:34 -0400
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14C2821D24;
-        Mon, 14 Sep 2020 21:01:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EC1E21741;
+        Mon, 14 Sep 2020 21:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600117260;
-        bh=F3PEmIDj5PsX21DEDZlDPQZKaY42uEMzhiOeDRcD5kE=;
+        s=default; t=1600118013;
+        bh=u21+m9Dze8RLlKmw5vrLFG6Vqi6QZThgiavyuHPqS8E=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qHDu01Ep74IqEUFVflDvaWVFS/AXlHDFkVM8UfKuN216aGOUOgOEoEodgL5PToGjK
-         KxtFM9RApBwVur20DYVSW9F78Un/LpzZgmpzIzJlCdaEQe5cZPlj95WFSqFHamg95j
-         7YD/zLIqTW1QyxL51ntIE1vmMu7NH8iYuVRzhPnc=
-Received: by mail-lj1-f171.google.com with SMTP id v23so922422ljd.1;
-        Mon, 14 Sep 2020 14:00:59 -0700 (PDT)
-X-Gm-Message-State: AOAM5314my43e3uhPcx+XCYUeStieHi47CUsTbb7V2GnxOH7FJo/pUwh
-        exFZp1uz2nXPrfp1R1+ipNbI3eZmqEWpMhzLSiI=
-X-Google-Smtp-Source: ABdhPJx7qdiVmj1sX187oBLQwliwXcyi7XyVZXjqUwGWJBMJBcFKfvZdMyg112+oyHMwCpu3E4TZfx7dpSSnbVt5VAM=
-X-Received: by 2002:a2e:9c15:: with SMTP id s21mr5790370lji.27.1600117258411;
- Mon, 14 Sep 2020 14:00:58 -0700 (PDT)
+        b=qv4UWt6uMDTWletjKbm4McLB7jWX4k//W5/xP1nSFK/iHS9xIK/ZBcMZmg5saUuGe
+         5d9UfBOhJbEovgsTMzXy6yEm+BbD42jfwKWHxYHdaM9y9cTILSTqjzRTmy0z3hnjvv
+         uzqsRA1qubrBpCoP7DpF10XYOdCZOUUs6Hj30BUo=
+Received: by mail-lf1-f45.google.com with SMTP id x77so842755lfa.0;
+        Mon, 14 Sep 2020 14:13:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532LyUsyJkRGzETGgwkfZ6KIB+Tz/PolB96iWb0hOgYeKrSF6F74
+        w/kl/kfHmLThcZ/BTc3shnLm9kmkvLaJdUij4+U=
+X-Google-Smtp-Source: ABdhPJy44xmpggoSF9S+cT8PJibMzSTYvWxYYwfYr5zfF7XkAbFRu11eAKiH/rAcnIbqbn4f/u+/w/ssLFgcBev85Ck=
+X-Received: by 2002:a19:7902:: with SMTP id u2mr5282683lfc.515.1600118011735;
+ Mon, 14 Sep 2020 14:13:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net> <20200911143022.414783-3-nicolas.rybowski@tessares.net>
-In-Reply-To: <20200911143022.414783-3-nicolas.rybowski@tessares.net>
+References: <1600095036-23868-1-git-send-email-magnus.karlsson@gmail.com>
+In-Reply-To: <1600095036-23868-1-git-send-email-magnus.karlsson@gmail.com>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Sep 2020 14:00:47 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7Qk8bea0efQspCOBbBaahgYt5eebvwvnGrA3xz9tw1Tg@mail.gmail.com>
-Message-ID: <CAPhsuW7Qk8bea0efQspCOBbBaahgYt5eebvwvnGrA3xz9tw1Tg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/5] bpf: add 'bpf_mptcp_sock' structure and helper
-To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 14 Sep 2020 14:13:20 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4ktphxDkbZbvuQZUd09vBdNJbn2EfB5mDQ9-6FoXoFKQ@mail.gmail.com>
+Message-ID: <CAPhsuW4ktphxDkbZbvuQZUd09vBdNJbn2EfB5mDQ9-6FoXoFKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: fix refcount warning in xp_dma_map
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        mptcp@lists.01.org
+        Networking <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 8:15 AM Nicolas Rybowski
-<nicolas.rybowski@tessares.net> wrote:
+On Mon, Sep 14, 2020 at 7:52 AM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
 >
-> In order to precisely identify the parent MPTCP connection of a subflow,
-> it is required to access the mptcp_sock's token which uniquely identify a
-> MPTCP connection.
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
 >
-> This patch adds a new structure 'bpf_mptcp_sock' exposing the 'token' field
-> of the 'mptcp_sock' extracted from a subflow's 'tcp_sock'. It also adds the
-> declaration of a new BPF helper of the same name to expose the newly
-> defined structure in the userspace BPF API.
+> Fix a potential refcount warning that a zero value is increased to one
+> in xp_dma_map, by initializing the refcount to one to start with,
+> instead of zero plus a refcount_inc().
 >
-> This is the foundation to expose more MPTCP-specific fields through BPF.
->
-> Currently, it is limited to the field 'token' of the msk but it is
-> easily extensible.
->
-> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-> Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+> Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
 Acked-by: Song Liu <songliubraving@fb.com>
