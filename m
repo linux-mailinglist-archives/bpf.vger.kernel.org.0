@@ -2,142 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419382698B7
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 00:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60A22698C1
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 00:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726009AbgINWUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 18:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+        id S1726066AbgINW0r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 18:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgINWUD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:20:03 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F619C06174A;
-        Mon, 14 Sep 2020 15:20:01 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id x8so1024301ybm.3;
-        Mon, 14 Sep 2020 15:20:01 -0700 (PDT)
+        with ESMTP id S1726034AbgINW0r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:26:47 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C2AC06174A
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 15:26:45 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id v60so998312ybi.10
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 15:26:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yGFARoPVASh2zARPUnvTQIJesXpA+uisLN9Xh6rSokg=;
-        b=VsW83caD1ntRnz/zIusk+CFOTSEG2NH4CdQwk/SbqsXNJUa7aK5+91rNQ3RdETRbsC
-         a/KcOxpKky1O1O6ScHe3GzNaOKQzDH0z+f0tdaywuWxd1ikYOVAUad5e6t2X5mTlH8JV
-         9063dfE7JDDIJ9hiAvC3xp2FYe0w7BALlONXGGJIuduYh2QYcKRK4k1WyweQTiRiaC8k
-         TqMms2zoZsp7BP+Q5u6++zasPLvw2u28/l1SHrKOzVltmsFQT2z+Eh6rnIdDLAxqHN4/
-         wvCDdtmiaDp1IoV9h+zZrA+/oZpg6PblUTSD4Yzz8nBNBkySY2WRodn4IU6fBTt1/EeF
-         JnCQ==
+        bh=sgXlMkvGS2uu79Bu/cAoPvNPYBIlXDtQ9rTO0QOZuWE=;
+        b=HncWkbLFBxMXpgkNfWg1FMbgkU0jR+rK4wKFxSbWAJzcgYurJLEuVdne8hS69l3xf+
+         EOvrtxYLoIyDZKn2oASL6XJCRY8oLyxiiQxCFYJlKjSVJ9JFMEJMBJ7N+z8swVccufpc
+         0Pz8ryC/oKgHE5gD/QuwNAet3IEu7nA/Qnpue9eYDY8BjK+7FSowSjHU16xqtbFZmfPh
+         JNOvrJOS3y8XAzAuo4OMNUizU+tP/at3oublgokt+hMuVjPxHqZBJafMrnYWGu+aAoig
+         mZ3ArTUMjG36DR4tE4VLUJ8eVrWnlwDssiXeZqbjcGxdtxIAFUd4c99WYWfFhVmpmO5I
+         WQ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yGFARoPVASh2zARPUnvTQIJesXpA+uisLN9Xh6rSokg=;
-        b=YgYZRmVAcZpb8f3Yda0FxsjGVd18/iXxkUt1Mk6YBZeYCyazVl7lQN6YBEORcvGxbC
-         hr5tz7bbDk4Dr3UZy2Ah0RzBZ20Z+trsrNp0pL8xPglsJJ+d5CGQ9ZC5nF5/GundZ1Of
-         +1YTa/YlE0bvGtpBGYIypYky2LhDs/Pc2IG5bwlSrmZOdYhxKvBC3qKTsJf/C/Wzc1Uy
-         CNFyZi0yG3lCr49xtEOoV/wEedfoEuQo3XfjB6Ln+X6Z0e+I+GHuipUZURpl6Tmu8LVJ
-         YHgrCeNJeM66Qc2/7ilC2sQrSbnxNiOtrp9SFL1khM3q1Vk9EQ/K5w5ttG/MYLDcfsKI
-         gS9Q==
-X-Gm-Message-State: AOAM532gJCK7IE2a6GevsEYamtKnPAuugBk1KhMe0Zyi5/r+f7MiE83x
-        +xLDeVkyCA9JlgcqY+HgcjUnMlDa1qNpojLWkMM=
-X-Google-Smtp-Source: ABdhPJw7xF2+nYspneRT7HPRWpV5MjpJ6UJEPslkZIs0jKN7RN4N95zDIkGXZXCiOzazYlKzI4ILwvPJPXdxzbgAmEE=
-X-Received: by 2002:a25:e655:: with SMTP id d82mr24930234ybh.347.1600122000365;
- Mon, 14 Sep 2020 15:20:00 -0700 (PDT)
+        bh=sgXlMkvGS2uu79Bu/cAoPvNPYBIlXDtQ9rTO0QOZuWE=;
+        b=B8OLfmf4EHYanZ/1HuaDAUMv5cAQaf1ZV2ua01qmcLTEMncDJLDzowC8Cd8Q00PkQt
+         npo5hgxZLEXJ84ziyrCNzM44nSwIOUqq71nJ65/khmulrq6QgqP0cUPRg2Z5vO2d+UoP
+         kri3rLjWa72TgLYzE0LBKLW4q4qrz3Ebh2LuhfXrwam20wCD0ZC1VWbwEUEyPCezcqhq
+         JMmXj9/Adnz/IdxDUBta+bpMfBgW9NYdAmSTLzcOSodQYRK0UPh8MmV9ajP+p6xrwBdw
+         PT0nPpYg38FDfLDaQsXnYDxit7NilWr8Jt9jWUxRTDw35eSesghX6oeUaRrQBJPcyeMB
+         66ew==
+X-Gm-Message-State: AOAM533j1Hotb4nK3Be8B7pbiEU9w5Nv7ojKt2/hXt/tbch/jvT/evXx
+        XM2B6PUhOAQCVDYt3kdbCTokJCYPILONSx3m53w=
+X-Google-Smtp-Source: ABdhPJydbkNsmuFYe8ktlWv2Sa/y7CaOD5/Y2RIdSvp0TsqkKStiMgzpsf7TVA+fTOi4sChgXNvF8S9o253BqRq5JQ4=
+X-Received: by 2002:a25:e655:: with SMTP id d82mr24967175ybh.347.1600122404246;
+ Mon, 14 Sep 2020 15:26:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200914183110.999906-1-yhs@fb.com>
-In-Reply-To: <20200914183110.999906-1-yhs@fb.com>
+References: <1723352278.11013122.1600093319730.JavaMail.zimbra@redhat.com>
+ <748495289.11017858.1600094916732.JavaMail.zimbra@redhat.com> <20200914182513.GK1714160@krava>
+In-Reply-To: <20200914182513.GK1714160@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Sep 2020 15:19:49 -0700
-Message-ID: <CAEf4BzY-ewpt7c602omSqPYvPKArmOBgj-WBAGiMiQ10p+T9eQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpftool: fix build failure
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+Date:   Mon, 14 Sep 2020 15:26:33 -0700
+Message-ID: <CAEf4Bzb7B+_s0Y2oN5TZARTmJby3npTVKDuDKDKfgmbBkAdpPQ@mail.gmail.com>
+Subject: Re: Build failures: unresolved symbol vfs_getattr
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Veronika Kabatova <vkabatov@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:31 AM Yonghong Song <yhs@fb.com> wrote:
+On Mon, Sep 14, 2020 at 11:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> When building bpf selftests like
->   make -C tools/testing/selftests/bpf -j20
-> I hit the following errors:
->   ...
->   GEN      /net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-gen.8
->   <stdin>:75: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
->   <stdin>:71: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
->   <stdin>:85: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
->   <stdin>:57: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
->   <stdin>:66: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
->   <stdin>:109: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
->   <stdin>:175: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
->   <stdin>:273: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
->   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-perf.8] Error 12
->   make[1]: *** Waiting for unfinished jobs....
->   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-iter.8] Error 12
->   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-struct_ops.8] Error 12
->   ...
+> On Mon, Sep 14, 2020 at 10:48:36AM -0400, Veronika Kabatova wrote:
+> >
+> > Hello,
+> >
+> > we tested the bpf-next tree with CKI and ran across build failures. The
+> > important part of the build log is:
+> >
+> > 00:18:05   GEN     .version
+> > 00:18:05   CHK     include/generated/compile.h
+> > 00:18:05   LD      vmlinux.o
+> > 00:18:27   MODPOST vmlinux.symvers
+> > 00:18:27   MODINFO modules.builtin.modinfo
+> > 00:18:27   GEN     modules.builtin
+> > 00:18:27   LD      .tmp_vmlinux.btf
+> > 00:18:42   BTF     .btf.vmlinux.bin.o
+> > 00:19:13   LD      .tmp_vmlinux.kallsyms1
+> > 00:19:19   KSYM    .tmp_vmlinux.kallsyms1.o
+> > 00:19:22   LD      .tmp_vmlinux.kallsyms2
+> > 00:19:25   KSYM    .tmp_vmlinux.kallsyms2.o
+> > 00:19:28   LD      vmlinux
+> > 00:19:40   BTFIDS  vmlinux
+> > 00:19:40 FAILED unresolved symbol vfs_getattr
+> > 00:19:40 make[2]: *** [Makefile:1167: vmlinux] Error 255
+> > 00:19:40 make[1]: *** [scripts/Makefile.package:109: targz-pkg] Error 2
+> > 00:19:40 make: *** [Makefile:1528: targz-pkg] Error 2
 >
-> I am using:
->   -bash-4.4$ rst2man --version
->   rst2man (Docutils 0.11 [repository], Python 2.7.5, on linux2)
->   -bash-4.4$
+> hi,
+> it looks like broken BTF data to me, I checked that build
+> and found we have multiple records for functions, like
+> for filp_close:
 >
-> The Makefile generated final .rst file (e.g., bpftool-cgroup.rst) looks like
->   ...
->       ID       AttachType      AttachFlags     Name
->   \n SEE ALSO\n========\n\t**bpf**\ (2),\n\t**bpf-helpers**\
->   (7),\n\t**bpftool**\ (8),\n\t**bpftool-btf**\
->   (8),\n\t**bpftool-feature**\ (8),\n\t**bpftool-gen**\
->   (8),\n\t**bpftool-iter**\ (8),\n\t**bpftool-link**\
->   (8),\n\t**bpftool-map**\ (8),\n\t**bpftool-net**\
->   (8),\n\t**bpftool-perf**\ (8),\n\t**bpftool-prog**\
->   (8),\n\t**bpftool-struct_ops**\ (8)\n
+>         [23381] FUNC_PROTO '(anon)' ret_type_id=19 vlen=2
+>                 '(anon)' type_id=464
+>                 'id' type_id=960
+>         [23382] FUNC 'filp_close' type_id=23381 linkage=static
 >
-> The rst2man generated .8 file looks like
-> Literal block ends without a blank line; unexpected unindent.
->  .sp
->  n SEEALSOn========nt**bpf**(2),nt**bpf\-helpers**(7),nt**bpftool**(8),nt**bpftool\-btf**(8),nt**
->  bpftool\-feature**(8),nt**bpftool\-gen**(8),nt**bpftool\-iter**(8),nt**bpftool\-link**(8),nt**
->  bpftool\-map**(8),nt**bpftool\-net**(8),nt**bpftool\-perf**(8),nt**bpftool\-prog**(8),nt**
->  bpftool\-struct_ops**(8)n
 >
-> Looks like that particular version of rst2man prefers to have actual new line
-> instead of \n.
+>         [33073] FUNC_PROTO '(anon)' ret_type_id=19 vlen=2
+>                 'filp' type_id=464
+>                 'id' type_id=960
+>         [33074] FUNC 'filp_close' type_id=33073 linkage=static
 >
-> Since `echo -e` may not be available in some environment, let us use `printf`.
-> Format string "%b" is used for `printf` to ensure all escape characters are
-> interpretted properly.
 >
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Fixes: 18841da98100 ("tools: bpftool: Automate generation for "SEE ALSO" sections in man pages")
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> or vfs_getattr:
+>
+>         [33513] FUNC_PROTO '(anon)' ret_type_id=19 vlen=4
+>                 'path' type_id=741
+>                 'stat' type_id=1095
+>                 'request_mask' type_id=29
+>                 'query_flags' type_id=8
+>
+>         [33514] FUNC 'vfs_getattr' type_id=33513 linkage=static
+>
+>         [1094] FUNC_PROTO '(anon)' ret_type_id=19 vlen=4
+>                 '(anon)' type_id=741
+>                 '(anon)' type_id=1095
+>                 '(anon)' type_id=29
+>                 '(anon)' type_id=8
+>
+>         [35099] FUNC 'vfs_getattr' type_id=1094 linkage=static
+>
+>
+> and because we go through all BTF data until we resolve all we have,
+> the doubled funcs will screw our internal counter and we skip a function
+>
+> the change below will workaround that, but I think we should fail in
+> this case.. if I'm not missing something 2 FUNC records for one function
+> in BTF data
+>
+> $ pahole --version
+> v1.17
+>
+> HEAD is 2bab48c5b Merge branch 'improve-bpf-tcp-cc-init'
+>
+> thoughts? thanks
+
+Can't repro this locally. It must be some bad compiler +  DWARF +
+pahole interaction. Can you try building pahole from latest sources
+and try again? Also, what compiler did you use? What Kconfig?
+
+> jirka
+>
+>
 > ---
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/bpf/bpftool/Documentation/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index dfa540d8a02d..a33e56553e52 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+> @@ -525,7 +525,7 @@ static int symbols_resolve(struct object *obj)
+>                 }
 >
-> diff --git a/tools/bpf/bpftool/Documentation/Makefile b/tools/bpf/bpftool/Documentation/Makefile
-> index 4c9dd1e45244..f33cb02de95c 100644
-> --- a/tools/bpf/bpftool/Documentation/Makefile
-> +++ b/tools/bpf/bpftool/Documentation/Makefile
-> @@ -44,7 +44,7 @@ $(OUTPUT)%.8: %.rst
->  ifndef RST2MAN_DEP
->         $(error "rst2man not found, but required to generate man pages")
->  endif
-> -       $(QUIET_GEN)( cat $< ; echo -n $(call see_also,$<) ) | rst2man $(RST2MAN_OPTS) > $@
-> +       $(QUIET_GEN)( cat $< ; printf "%b" $(call see_also,$<) ) | rst2man $(RST2MAN_OPTS) > $@
->
->  clean: helpers-clean
->         $(call QUIET_CLEAN, Documentation)
-> --
-> 2.24.1
+>                 id = btf_id__find(root, str);
+> -               if (id) {
+> +               if (id && !id->id) {
+>                         id->id = type_id;
+>                         (*nr)--;
+>                 }
 >
