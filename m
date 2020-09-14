@@ -2,234 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1905D268696
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 09:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D976B268705
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 10:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726099AbgINHzZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 03:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33208 "EHLO
+        id S1726229AbgINIRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 04:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgINHzU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:55:20 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBF9C06174A
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 00:55:20 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id u18so1378458iln.13
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 00:55:20 -0700 (PDT)
+        with ESMTP id S1726243AbgINIQw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:16:52 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3320FC06174A
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 01:16:37 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t10so17667452wrv.1
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 01:16:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gH9g6lbCJBR1+C4YOewnymvFMebl2xfKbPgyTtX6Bw4=;
-        b=F9FocHYgH/xsTCO41YKgEjaXQo/t6FEtNj3l3QZM7fCUFYssT+pncVmSJh6hmAKcLk
-         Yl2KdOVnzhx82OLtO5wVYEkLGbGTlro+lK9Eht02VdW8SoTOpq9inII3ho6qW08+wpQN
-         StsYBQV8zRrucdXEyC0WncZLWWN/+t8SM29xv7Qfp8HbFpyNgUmnH12+TWXLvJL4VYvb
-         EkFVCA4j2YI4ZmfWRxWmd6mDySN3w1TTbXCdK/8cxnnt+DLebpBTcBbbIVVlk6ET7EAL
-         DXze9jJUpQ14uf3j0Hotu6mtRklSFQ0IZ4EaURzPFSF8Je5V5bzi/XmQTno8OfEEzoB8
-         kCGw==
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BptE3On/LJmJ4sL9/9Gwb4y6QCQ62szdfp22yq3uqAA=;
+        b=fSwjBxxMQb+FPE7hR2DXOkxfG2GO2gkoM/xvE4e8VyMviLoGi+PwZdhJHCH1q/4L+I
+         9tQxS6XepRATsPDkpP+fSWekB9O5/hjP0mvkpfVL5sdaj12ihcVuoc5UuV0VyeQWNvHJ
+         kThyMDVH7ZYc/83syTg2XH4dHSivMS/HTYG4oQQyDeHxt8/HIQPpZgUT/g0X7LhlkCr8
+         tkjHqmcvJ99ab1y2eA53nAfPYjnJe7SojGV2TpgQWU0xMEF4LRwbce8Q/ucwpUZezTZF
+         us24d7Gn5XobWjbcCDZCX5Ow9pXmwEdonfu732wHZ+uPFVcE/4ENahsK3fi17O20xHJ4
+         aPgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gH9g6lbCJBR1+C4YOewnymvFMebl2xfKbPgyTtX6Bw4=;
-        b=A1EcF/+gGHOrGWA6my8aFzy90KjmjTEbVRH9R/cyJKUfqojxi73caV0uSdO3fUZzi8
-         0ZR+b2hexZizn7AK4OTkTCPM2XvlabxNWKN5KnEJM0ZSfVf8botgEWmTFVfvdOmURThc
-         mQN1DL1IbvSwPv9mlZEgAaTX/ypS1jT1cqPUBfUP5hNbMSTYqmRHaZ/BIemdMou/Tvlh
-         roczRXE7Y4iaFWDhdBn+iB5rikAC16BDrZBc17U86c+FAD7FbV+RWogj0LVTrE1WkOk/
-         E6QqPj8iU1yES7u+PLCVjRtr5GMjAn8Nq4M4iOlPUDCcZABVZgjN2udfES3Q8Ce6kWx0
-         +8ig==
-X-Gm-Message-State: AOAM532OKv/0FNZBC9iscKmXsr8Z3FffZtS/V77vNqcrJDbhPfRvdFKv
-        HlCfB095Hv1mg9iNPf0/mtB0YIYWUQImYyEd9AeABQ==
-X-Google-Smtp-Source: ABdhPJxgeyEvOOZuC9bSZAo22ZPpH63uh2nGWKgMDMqR2Ju6k//Ue/bOkBZV+Tz3OLMEmeEzjM0IzjZmxYURjFBQ72o=
-X-Received: by 2002:a92:290d:: with SMTP id l13mr11524990ilg.114.1600070119532;
- Mon, 14 Sep 2020 00:55:19 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BptE3On/LJmJ4sL9/9Gwb4y6QCQ62szdfp22yq3uqAA=;
+        b=uNuckwBK0kzZymVgOo5mfv+B/rEALv4LckmszSTeWfamEt3bYKCcIjGOvb2CGIqu5n
+         kmxX8bQSsLqokQasYrMT+KI/Y8e0ksUpfFwX6oVSI19/DkEEdyBZW0AazJLkqcd8s2Rn
+         tVl+mmaI90dpPrf/7xUFvkK8BevR9xoWLVEFKUWZSfFFImHqCITDHKbgqo7pmZQF/bhN
+         5M/lUStAnmgS4v9UbxECXpn/G6Sb5rRsygjv7jwimcMStScTb844BMTUGZy0R6PZezsE
+         AjpwSS7VMv4suFgFJF/ng+jTsJH+H8uADfRJ/Ur3Kxz7NDFHk//04V9Ht/Z67k7ubsBn
+         upHQ==
+X-Gm-Message-State: AOAM533NURibsVf34rMgA82t/enGW9FUUhxeYTd6OIcm4tCmZ+urLKGM
+        FUjbQA2T1RU5MqZS/kMKrrRJ9dF+uKIooaA0
+X-Google-Smtp-Source: ABdhPJyf25RMQLS3r9mkoqt7KU6Xoa6kWey+o2NH6A6zUynRNbiQuiXsDqAzqAmwyKjYMkwFkLft1g==
+X-Received: by 2002:adf:ec47:: with SMTP id w7mr15580790wrn.175.1600071395346;
+        Mon, 14 Sep 2020 01:16:35 -0700 (PDT)
+Received: from [192.168.1.12] ([194.35.119.129])
+        by smtp.gmail.com with ESMTPSA id l8sm19445125wrx.22.2020.09.14.01.16.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 01:16:34 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpftool: fix build failure
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+References: <20200914061206.2625395-1-yhs@fb.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <b942625c-7140-0a57-337e-3a95020cfa99@isovalent.com>
+Date:   Mon, 14 Sep 2020 09:16:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com>
- <CAEf4BzZvXvb7CsnJZkoNUzb0-o=w-i9-CHecq0O+QcCKpeuUKQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZvXvb7CsnJZkoNUzb0-o=w-i9-CHecq0O+QcCKpeuUKQ@mail.gmail.com>
-From:   Luka Oreskovic <luka.oreskovic@sartura.hr>
-Date:   Mon, 14 Sep 2020 09:55:08 +0200
-Message-ID: <CA+XBgLWNavRQJy7uRG35RXprHjQ1uaURyB8tj7tE=Mv=EWKO+g@mail.gmail.com>
-Subject: Re: Problems with pointer offsets on ARM32
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200914061206.2625395-1-yhs@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 8:14 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Sep 11, 2020 at 9:45 AM Luka Oreskovic
-> <luka.oreskovic@sartura.hr> wrote:
-> >
-> > Greetings everyone,
-> >
-> > I have been testing various BPF programs on the ARM32 architecture and
-> > have encountered a strange error.
-> >
-> > When trying to run a simple program that prints out the arguments of
-> > the open syscall,
-> > I found some strange behaviour with the pointer offsets when accessing
-> > the arguments:
-> > The output of llvm-objdump differed from the verifier error dump log.
-> > Notice the differences in lines 0 and 1. Why is the bytecode being
-> > altered at runtime?
-> >
-> > I attached the program, the llvm-objdump result and the verifier dump below.
-> >
-> > Best wishes,
-> > Luka Oreskovic
-> >
-> > BPF program
-> > --------------------------------------------
-> > #include "vmlinux.h"
-> > #include <bpf/bpf_helpers.h>
-> >
-> > SEC("tracepoint/syscalls/sys_enter_open")
-> > int tracepoint__syscalls__sys_enter_open(struct trace_event_raw_sys_enter* ctx)
-> > {
-> >         const char *arg1 = (const char *)ctx->args[0];
-> >         int arg2 = (int)ctx->args[1];
-> >
-> >         bpf_printk("Open arg 1: %s\n", arg1);
-> >         bpf_printk("Open arg 2: %d\n", arg2);
-> >
-> >         return 0;
-> > }
-> >
-> > char LICENSE[] SEC("license") = "GPL";
-> >
-> >
-> > llvm-objdump of program
-> > --------------------------------------------
-> > Disassembly of section tracepoint/syscalls/sys_enter_open:
-> >
-> > 0000000000000000 tracepoint__syscalls__sys_enter_open:
-> > ;       int arg2 = (int)ctx->args[1];
-> >        0:       79 16 18 00 00 00 00 00 r6 = *(u64 *)(r1 + 24)
-> > ;       const char *arg1 = (const char *)ctx->args[0];
-> >        1:       79 13 10 00 00 00 00 00 r3 = *(u64 *)(r1 + 16)
-> >        2:       18 01 00 00 20 31 3a 20 00 00 00 00 25 73 0a 00 r1 =
-> > 2941353058775328 ll
-> > ;       bpf_printk("Open arg 1: %s\n", arg1);
-> >        4:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) = r1
-> >        5:       18 07 00 00 4f 70 65 6e 00 00 00 00 20 61 72 67 r7 =
-> > 7454127125170581583 ll
-> >        7:       7b 7a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r7
-> >        8:       bf a1 00 00 00 00 00 00 r1 = r10
-> >        9:       07 01 00 00 f0 ff ff ff r1 += -16
-> >       10:       b7 02 00 00 10 00 00 00 r2 = 16
-> >       11:       85 00 00 00 06 00 00 00 call 6
-> >       12:       18 01 00 00 20 32 3a 20 00 00 00 00 25 64 0a 00 r1 =
-> > 2924860384358944 ll
-> > ;       bpf_printk("Open arg 2: %d\n", arg2);
-> >       14:       7b 1a f8 ff 00 00 00 00 *(u64 *)(r10 - 8) = r1
-> >       15:       7b 7a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r7
-> >       16:       bf a1 00 00 00 00 00 00 r1 = r10
-> >       17:       07 01 00 00 f0 ff ff ff r1 += -16
-> >       18:       b7 02 00 00 10 00 00 00 r2 = 16
-> >       19:       bf 63 00 00 00 00 00 00 r3 = r6
-> >       20:       85 00 00 00 06 00 00 00 call 6
-> > ;       return 0;
-> >       21:       b7 00 00 00 00 00 00 00 r0 = 0
-> >       22:       95 00 00 00 00 00 00 00 exit
-> >
-> >
-> > verifier output when running program
-> > --------------------------------------------
-> > libbpf: -- BEGIN DUMP LOG ---
-> > libbpf:
-> > Unrecognized arg#0 type PTR
-> > ; int arg2 = (int)ctx->args[1];
-> > 0: (79) r6 = *(u64 *)(r1 +16)
-> > ; const char *arg1 = (const char *)ctx->args[0];
-> > 1: (79) r3 = *(u64 *)(r1 +12)
-> > invalid bpf_context access off=12 size=8
-> > processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> > peak_states 0 mark_read 0
-> >
-> > libbpf: -- END LOG --
->
->
-> One suspect would be libbpf's CO-RE relocations. Can you send full
-> debug libbpf logs, it will have a full log of what libbpf adjusted.
-> Please also include the definition of struct trace_event_raw_sys_enter
-> from your vmlinux.h, as well as commit that your kernel was built from
-> (to check the original definition).
+On 14/09/2020 07:12, Yonghong Song wrote:
+> When building bpf selftests like
+>   make -C tools/testing/selftests/bpf -j20
+> I hit the following errors:
+>   ...
+>   GEN      /net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-gen.8
+>   <stdin>:75: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+>   <stdin>:71: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+>   <stdin>:85: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+>   <stdin>:57: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+>   <stdin>:66: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+>   <stdin>:109: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+>   <stdin>:175: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+>   <stdin>:273: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+>   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-perf.8] Error 12
+>   make[1]: *** Waiting for unfinished jobs....
+>   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-iter.8] Error 12
+>   make[1]: *** [/net-next/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpftool-struct_ops.8] Error 12
+>   ...
+> 
+> I am using:
+>   -bash-4.4$ rst2man --version
+>   rst2man (Docutils 0.11 [repository], Python 2.7.5, on linux2)
+>   -bash-4.4$
+> 
+> Looks like that particular version of rst2man prefers to have a blank line
+> after literal blocks. This patch added block lines in related .rst files
+> and compilation can then pass.
+> 
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Fixes: 18841da98100 ("tools: bpftool: Automate generation for "SEE ALSO" sections in man pages")
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 
 
-Here is the data you requested. I can see the reallocations done by BPF CO-RE,
-but I don't understand why they would have to be done in the first place
-since I am using the vmlinux.h that has been generated using the
-devices vmlinux.
-Even if it made sense to change the pointer offsets, they shouldn't
-break the program.
+Hi Yonghong, thanks for the fix! I didn't see those warnings on my
+setup. For the record my rst2man version is:
 
+	rst2man (Docutils 0.16 [release], Python 3.8.2, on linux)
 
-Kernel commit
---------------------------------------------
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/?h=v5.9-rc3
+Your patch looks good, but instead of having blank lines at the end of
+most files, could you please check if the following works?
 
+------
 
-Struct definition from vmlinux.h
---------------------------------------------
-struct trace_event_raw_sys_enter {
-        struct trace_entry ent;
-        long int id;
-        long unsigned int args[6];
-        char __data[0];
-};
+diff --git a/tools/bpf/bpftool/Documentation/Makefile
+b/tools/bpf/bpftool/Documentation/Makefile
+index 4c9dd1e45244..01b30ed86eac 100644
+--- a/tools/bpf/bpftool/Documentation/Makefile
++++ b/tools/bpf/bpftool/Documentation/Makefile
+@@ -32,7 +32,7 @@ RST2MAN_OPTS += --verbose
 
-
-Libbpf debug output
---------------------------------------------
-ibbpf: loading object 'hello_bpf' from buffer
-libbpf: elf: section(3) tracepoint/syscalls/sys_enter_open, size 184,
-link 0, flags 6, type=1
-libbpf: elf: found program 'tracepoint/syscalls/sys_enter_open'
-libbpf: elf: section(4) .rodata.str1.1, size 32, link 0, flags 32, type=1
-libbpf: elf: skipping unrecognized data section(4) .rodata.str1.1
-libbpf: elf: section(5) license, size 4, link 0, flags 3, type=1
-libbpf: license of hello_bpf is GPL
-libbpf: elf: section(12) .BTF, size 986, link 0, flags 0, type=1
-libbpf: elf: section(14) .BTF.ext, size 252, link 0, flags 0, type=1
-libbpf: elf: section(21) .symtab, size 936, link 1, flags 0, type=2
-libbpf: looking for externs among 39 symbols...
-libbpf: collected 0 externs total
-libbpf: loading kernel BTF '/sys/kernel/btf/vmlinux': 0
-libbpf: sec 'tracepoint/syscalls/sys_enter_open': found 2 CO-RE relocations
-libbpf: prog 'tracepoint/syscalls/sys_enter_open': relo #0: kind
-<byte_off> (0), spec is [2] struct trace_event_raw_sys_ent)
-libbpf: CO-RE relocating [2] struct trace_event_raw_sys_enter: found
-target candidate [4639] struct trace_event_raw_sys_entr
-libbpf: prog 'tracepoint/syscalls/sys_enter_open': relo #0: matching
-candidate #0 [4639] struct trace_event_raw_sys_enter.a)
-libbpf: prog 'tracepoint/syscalls/sys_enter_open': relo #0: patched
-insn #0 (LDX/ST/STX) off 24 -> 16
-libbpf: prog 'tracepoint/syscalls/sys_enter_open': relo #1: kind
-<byte_off> (0), spec is [2] struct trace_event_raw_sys_ent)
-libbpf: prog 'tracepoint/syscalls/sys_enter_open': relo #1: matching
-candidate #0 [4639] struct trace_event_raw_sys_enter.a)
-libbpf: prog 'tracepoint/syscalls/sys_enter_open': relo #1: patched
-insn #1 (LDX/ST/STX) off 16 -> 12
-libbpf: load bpf program failed: Permission denied
-libbpf: -- BEGIN DUMP LOG ---
-libbpf:
-Unrecognized arg#0 type PTR
-; int arg2 = (int)ctx->args[1];
-0: (79) r6 = *(u64 *)(r1 +16)
-; const char *arg1 = (const char *)ctx->args[0];
-1: (79) r3 = *(u64 *)(r1 +12)
-invalid bpf_context access off=12 size=8
-processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
-
-libbpf: -- END LOG --
-libbpf: failed to load program 'tracepoint/syscalls/sys_enter_open'
-libbpf: failed to load object 'hello_bpf'
-libbpf: failed to load BPF skeleton 'hello_bpf': -4007
-failed to load BPF object -4007
+ list_pages = $(sort $(basename $(filter-out $(1),$(MAN8_RST))))
+ see_also = $(subst " ",, \
+-       "\n" \
++       "\n\n" \
+        "SEE ALSO\n" \
+        "========\n" \
+        "\t**bpf**\ (2),\n" \
