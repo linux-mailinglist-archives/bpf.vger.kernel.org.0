@@ -2,200 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A76F269958
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 00:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2633526997E
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 01:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgINW7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 18:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
+        id S1725997AbgINXKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 19:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgINW7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:59:38 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F595C06174A
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 15:59:38 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id x8so1088741ybm.3
-        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 15:59:38 -0700 (PDT)
+        with ESMTP id S1725953AbgINXKX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 19:10:23 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04691C06174A;
+        Mon, 14 Sep 2020 16:10:22 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id b142so1075327ybg.9;
+        Mon, 14 Sep 2020 16:10:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuudMKVDakRKPWGRMEqPXYX3Oi2/4uB01iuRRhheNiQ=;
-        b=gzGN6eB5JZG+rmUvvSUhVo3MZek8Yf9ZcfFknaHCF4kELQbIQBZiJDwN9VZtGljbPh
-         rue7CuUdX20JE9NyQe6xljk1rtlDp8nTeKPLfD3xBCzwloF76XjdFmf+3CxIJ0901f3+
-         iS3oxTux7QGvz94oyL3wS8PWk9mfDCgewGWVcWq/3bi+Cp5yYqh5mB7Mjs/R/9Tzef4r
-         KiOtor4x+Z9KYoNlmBVJ2vw2kOdKGpabQKY4bUZbJjC8tLpMmJA5nh1tQ8rxXDUNirbM
-         4tsghTtiO3KRIpjVy8+he5N5OMZzu5tLVBN96fNV61taINv8xdi4YrJOXtW2nDg3T6L8
-         1o6g==
+         :cc:content-transfer-encoding;
+        bh=PbWNT4gxMjEMOnL7Nnds+HzJhYLvf7p+m43a5dhww1Y=;
+        b=HrMMScLTJKRC7yddrcO92v/93Fmbb5mvQrUpiLc6/Ll4c4WlYB8OSYE7OV9a0VnNKE
+         AWyb0Cebn6qKf8MPN9iIrVXmZ34mEHMF1REZz3MGJoDfPobpmr/T8UsSmtAFNNxzJWjj
+         67WW/JznnflQc1vqPG4rubIg61JBD/54RLSl3KnCXPxid3bhkMcnf9LmXkGz2Dfoju6V
+         OMVt6Ou4QheDxHReNRl1YcSOIyvI4DnlcjMicHBChNmofLDBs6IBk+AASJTdL2NYVaUi
+         BkyMKDMtMaFKwLm4o6E5Kn8Usicy1e4paWP88T/V/dkdZiyUtuSp/3D8nGNDvH1ep5No
+         Ej4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuudMKVDakRKPWGRMEqPXYX3Oi2/4uB01iuRRhheNiQ=;
-        b=eBCePkkgPLtzyH2fHU7gVoGMi59THQDPDOSPm/v5wUp4l7tTFt7OZK6G02buaPgdqG
-         v4nx0uZaB3fqw8yMF8C7e32Tjz1abD2auM3ldzWQUIv7QlwB5qEXOAd6AzAcxpCnlFts
-         27gpuWarTHErQyElw3z7R/8T9H1PjZIslqyieiAXyB8bQA0BMVmQ/RPK+2VIWk4bujNh
-         Wu52K/vxw2cF8mNMHwoJStKv+GEXsK+oAaVolQ90Ub0K3Ui7Htt8SRvL+oBk2M+5m7Ms
-         UGIw7nDWZZFC8gS6jD8qfKRXvDlgdkH07qI4AQ9isYdWYyTHvJofhJH8+yetSuORTp8b
-         d0vw==
-X-Gm-Message-State: AOAM530uEl1KpiqJzGQ2Fypo76ZMhMLv2q7Sie8YNgl3DZAx5lS4WxhU
-        w3ODqthFHPyCmz2kWcspT1gjt0b1pqu7e/I3Kpk=
-X-Google-Smtp-Source: ABdhPJzFSem8QQscV0xCwIuejEHVg2OWYQZHtBPmzSgoUkGDx2LfHZXqvsA3dV3hRQ4kO3UJzJ8+N3h3GKVFZTLNInA=
-X-Received: by 2002:a25:e655:: with SMTP id d82mr25137535ybh.347.1600124377524;
- Mon, 14 Sep 2020 15:59:37 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PbWNT4gxMjEMOnL7Nnds+HzJhYLvf7p+m43a5dhww1Y=;
+        b=TA9+wixOknJEDNVGWOJ/ua967cMvHe16VOVHi2xFC169kpvGDtZ2JDSsd4U/UUl9yP
+         td8ij+zoxSDpnCKVtMwhg2Ci3gQaRtQbOJS9xkaLyx5SaF9q4TSqpQlDqaddYARRZSmN
+         9KH3R7o4w11pL4qbNr8EzSBsKjmuE0IxcfJiNqTB1/J5PuudW8Nm+cXa5igSV6LSH5Qe
+         lioPn7teeQm7O0+sXCpV6kAc1OQugg/ou8gIZ7gBlyrLx6I+aw1pp72J9bRF84jFRXYT
+         rpP0IaGzHpth0dlqlaJiiCNkQQ611epZNL4wJgdEETGSS/lxlRxaiXaEtCtl9RXEc2x4
+         /8Pg==
+X-Gm-Message-State: AOAM533aFK1Z5zpxppC03cmVSRuXua7VwaW3qpQyOGxUPAftAIMAdMvN
+        XbqXAIceK6py0poMTajRl1BJwloQ1qV05uH1Jns=
+X-Google-Smtp-Source: ABdhPJyFtE9o9uKYMkUf4bRxwmxmPWnmeI6kWDxCBRl5V+oRmebZ7hcqU5OtNugbCHtET41Mox4fX8T8U+AOWYMa7LQ=
+X-Received: by 2002:a25:aa8f:: with SMTP id t15mr24200250ybi.459.1600125022125;
+ Mon, 14 Sep 2020 16:10:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <6CAD359B-F446-4C5D-9C71-3902762ED8D6@fb.com> <47929B19-E739-4E74-BBB7-B2C0DCC7A7F8@fb.com>
- <0fb36afb-6056-5e44-77d8-1ad57d82db1c@iogearbox.net> <BE639CE6-8566-4184-B386-7AEED22939FB@fb.com>
- <fae5ddc7-b7b5-e757-fdbb-2946d56caca3@iogearbox.net> <107FC288-D07C-4881-82BD-8FD29CE42290@fb.com>
- <DEBBD27D-188D-4EFD-8C04-838F54689587@fb.com> <9E8ACC53-12CD-42B5-8419-2ABDCE5967DA@fb.com>
-In-Reply-To: <9E8ACC53-12CD-42B5-8419-2ABDCE5967DA@fb.com>
+References: <159981835466.134722.8652987144251743467.stgit@toke.dk>
+ <159981835908.134722.4550898174324943652.stgit@toke.dk> <CAEf4BzZMj0sPisgUZ+3qKvqaAxfzzRNHZTpoR-zuDXvKcY3URQ@mail.gmail.com>
+ <87imcgz6gk.fsf@toke.dk>
+In-Reply-To: <87imcgz6gk.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Sep 2020 15:59:26 -0700
-Message-ID: <CAEf4BzbDMRzHGyxqXoA+bt_QJvybrjLG1EW9xdYLbDTQ5jLbMA@mail.gmail.com>
-Subject: Re: Behavior of pinned perf event array
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Date:   Mon, 14 Sep 2020 16:10:11 -0700
+Message-ID: <CAEf4Bzb9Xw65jL1UxVjOz5HdwgMckEkFHWrYdEPbnj01a7X1hQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND bpf-next v3 4/9] bpf: support attaching freplace
+ programs to multiple attach points
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 1:36 PM Song Liu <songliubraving@fb.com> wrote:
+On Mon, Sep 14, 2020 at 9:08 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
->
-> > On Sep 8, 2020, at 5:32 PM, Song Liu <songliubraving@fb.com> wrote:
+> > On Fri, Sep 11, 2020 at 3:01 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >>
+> >> This enables support for attaching freplace programs to multiple attac=
+h
+> >> points. It does this by amending UAPI for bpf_raw_tracepoint_open with=
+ a
+> >> target prog fd and btf ID pair that can be used to supply the new
+> >> attachment point. The target must be compatible with the target that w=
+as
+> >> supplied at program load time.
+> >>
+> >> The implementation reuses the checks that were factored out of
+> >> check_attach_btf_id() to ensure compatibility between the BTF types of=
+ the
+> >> old and new attachment. If these match, a new bpf_tracing_link will be
+> >> created for the new attach target, allowing multiple attachments to
+> >> co-exist simultaneously.
+> >>
+> >> The code could theoretically support multiple-attach of other types of
+> >> tracing programs as well, but since I don't have a use case for any of
+> >> those, the bpf_tracing_prog_attach() function will reject new targets =
+for
+> >> anything other than PROG_TYPE_EXT programs.
+> >>
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> ---
 > >
-> >
-> >
-> >> On Sep 8, 2020, at 10:22 AM, Song Liu <songliubraving@fb.com> wrote:
-> >>
-> >>
-> >>
-> >>> On Sep 3, 2020, at 2:22 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>>
-> >>> On 9/3/20 1:05 AM, Song Liu wrote:
-> >>>>> On Sep 2, 2020, at 3:28 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>>>>
-> >>>>> Hi Song,
-> >>>>>
-> >>>>> Sorry indeed missed it.
-> >>>>>
-> >>>>> On 9/2/20 11:33 PM, Song Liu wrote:
-> >>>>>>> On Aug 24, 2020, at 4:57 PM, Song Liu <songliubraving@fb.com> wrote:
-> >>>>>>>
-> >>>>>>> We are looking at sharing perf events amount multiple processes via
-> >>>>>>> pinned perf event array. However, we found this doesn't really work
-> >>>>>>> as the perf event is removed from the map when the struct file is
-> >>>>>>> released from user space (in perf_event_fd_array_release). This
-> >>>>>>> means, the pinned perf event array can be shared among multiple
-> >>>>>>> process. But each perf event still has single owner. Once the owner
-> >>>>>>> process closes the fd (or terminates), the perf event is removed
-> >>>>>>> from the array. I went thought the history of the code and found
-> >>>>>>> this behavior is actually expected (commit 3b1efb196eee).
-> >>>>>
-> >>>>> Right, that auto-cleanup is expected.
-> >>>>>
-> >>>>>>> In our use case, however, we want to share the perf event among
-> >>>>>>> different processes. I think we have a few options to achieve this:
-> >>>>>>>
-> >>>>>>> 1. Introduce a new flag for the perf event map, like BPF_F_KEEP_PE_OPEN.
-> >>>>>>> Once this flag is set, we should not remove the fd on struct file
-> >>>>>>> release. Instead, we remove fd in map_release_uref.
-> >>>>>>>
-> >>>>>>> 2. Allow a different process to hold reference to the perf_event
-> >>>>>>> via pinned perf event array. I guess we can achieve this by
-> >>>>>>> enabling for BPF_MAP_UPDATE_ELEM perf event array.
-> >>>>>>>
-> >>>>>>> 3. Other ideas?
-> >>>>>>>
-> >>>>>>> Could you please let us know your thoughts on this?
-> >>>>>
-> >>>>> One option that would work for sure is to transfer the fd to the other
-> >>>>> processes via fd passing e.g. through pipe or unix domain socket.
-> >>>> I haven't tried to transfer the fd, but it might be tricky. We need to
-> >>>> plan for more than 2 processes sharing the events, and these processes
-> >>>> will start and terminate in any order.
-> >>>>> I guess my question would be that it would be hard to debug if we keep
-> >>>>> dangling perf event entries in there yb accident that noone is cleaning
-> >>>>> up. Some sort of flag is probably okay, but it needs proper introspection
-> >>>>> facilities from bpftool side so that it could be detected that it's just
-> >>>>> dangling around waiting for cleanup.
-> >>>> With my latest design, we don't need to pin the perf_event map (neither
-> >>>> the prog accessing the map. I guess this can make the clean up problem
-> >>>> better? So we will add a new flag for map_create. With the flag, we
-> >>>
-> >>> I mean pinning the map itself or the prog making use of accessing the map
-> >>> is not the issue. Afaik, it's more the perf RB that is consuming memory and
-> >>> can be dangling, so the presence of the /entry/ in the map itself which
-> >>> would then not be cleaned up by accident, I think this was the motivation
-> >>> back then at least.
-
-Daniel, are you aware of any use cases that do rely on such a behavior
-of PERV_EVENT_ARRAY?
-
-For me this auto-removal of elements on closing *one of a few*
-PERF_EVENT_ARRAY FDs (original one, but still just one of a few active
-ones) was extremely surprising. It doesn't follow what we do for any
-other BPF map, as far as I can tell. E.g., think about
-BPF_MAP_TYPE_PROG_ARRAY. If we pin it in BPF FS and close FD, it won't
-auto-remove all the tail call programs, right? There is exactly the
-same concern with not auto-releasing bpf_progs, just like with
-perf_event. But it's not accidental, if you are pinning a BPF map, you
-know what you are doing (at least we have to assume so :).
-
-So instead of adding an extra option, shouldn't we just fix this
-behavior instead and make it the same across all BPF maps that hold
-kernel resources?
-
-> >>>
-> >>>> will not close the perf_event during process termination, and we block
-> >>>> pinning for this map, and any program accessing this map. Does this
-> >>>> sounds like a good plan?
-> >>>
-> >>> Could you elaborate why blocking pinning of map/prog is useful in this context?
-> >>
-> >> I was thinking, we are more likely to forget cleaning up pinned map. If the
-> >> map is not pinned, it will be at least cleaned up when all processes accessing
-> >> it terminate. On the other hand, pinned map would stay until someone removes
-> >> it from bpffs. So the idea is to avoid the pinning scenario.
-> >>
-> >> But I agree this won't solve all the problems. Say process A added a few
-> >> perf events (A_events) to the map. And process B added some other events
-> >> (B_events)to the same map. Blocking pinning makes sure we clean up everything
-> >> when both A and B terminates. But if A terminates soon, while B runs for a
-> >> long time, A_events will stay open unnecessarily.
-> >>
-> >> Alternatively, we can implement map_fd_sys_lookup_elem for perf event map,
-> >> which returns an fd to the perf event. With this solution, if process A added
-> >> some events to the map, and process B want to use them after process A
-> >> terminates. We need to explicitly do the lookup in process B and holds the fd
-> >> to the perf event. Maybe this is a better solution?
-> >
-> > Actually, this doesn't work. :( With map_fd_sys_lookup_elem(), we can get a fd
-> > on the perf_event, but we still remove the event from the map in
-> > perf_event_fd_array_release(). Let me see what the best next step...
+> > It feels like using a semi-constructed bpf_tracing_link inside
+> > prog->aux->tgt_link is just an unnecessary complication, after reading
+> > this and previous patches. Seems more straightforward and simpler to
+> > store tgt_attach_type/tgt_prog_type (permanently) and
+> > tgt_prog/tgt_trampoline (until first attachment) in prog->aux and then
+> > properly create bpf_link on attach.
 >
-> CC Andrii and bpf@
+> I updated v4 with your comments, but kept the link in prog->aux; the
+> reason being that having a container for the two pointers makes it
+> possible to atomically swap it out with xchg() as you suggested
+> previously. Could you please take a look at v4? If you still think it's
+> better to just keep two separate pointers (and add a lock) in prog->aux,
+> I can change it to that. But I'd rather avoid the lock if possible...
 
-thanks, Song!
+I took a very quick look at this specific bit, planning to do another
+pass tomorrow.
+
+What's the problem with adding a mutex to bpf_prog_aux? In your case,
+now you introduced (unlikely, but still) extra state transition for
+tgt_link from non-NULL to NULL and then back to non-NULL? And why?
+Just to use atomic xchg, while using atomic operation is not an
+absolute necessity because it's not a performance-critical path at
+all. We are not optimizing for millions of freplace attachments a
+second, right? On the other hand, having a mutex there won't require
+restoration logic, it will be dead simple, obvious and
+straightforward. So yeah, I still think mutex is better there.
+
+BTW, check Stanislav's latest patch set. He's adding used_maps_mutex
+to bpf_prog_aux with no problems at all. It seems to me that we might
+want to generalize that used_maps_mutex to be just bpf_prog_aux's
+mutex ('prog_aux_mutex' or whatever we'd call it) and use it for such
+kinds of low-frequency bpf_prog metadata manipulations/checks.
+
+Thoughts?
+
 
 >
-> Andrii and I had some discussion on this.
+> -Toke
 >
-> Currently, I am working on something with a new flag BPF_F_SHARE_PE. I attached
-> the diff below.
->
-> On the other hand, we found current behavior of perf_event_array puzzling,
-> especially pinned perf_event_array (as pinning doesn't really pin the content).
-> Therefore, we may consider changing the behavior without a flag?
->
-> Thanks,
-> Song
->
->
-> ========================================================================
->
-
-[...]
