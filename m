@@ -2,61 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B44AF269531
-	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 20:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1807269596
+	for <lists+bpf@lfdr.de>; Mon, 14 Sep 2020 21:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgINSw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 14:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        id S1726007AbgINTYO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 15:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgINSw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:52:56 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0CDC06174A;
-        Mon, 14 Sep 2020 11:52:55 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id k25so860186qtu.4;
-        Mon, 14 Sep 2020 11:52:55 -0700 (PDT)
+        with ESMTP id S1725994AbgINTYN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Sep 2020 15:24:13 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD831C06178A
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 12:24:12 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id d4so1093888wmd.5
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 12:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cRuE7ghYmX/MnQQcJBt4NDc6WttGR8e1vIUwI+1gPGA=;
-        b=UkRrlE0m1+WF9msVPr5gid8roJaZt1r/OaDQRSyARhhE2uG/LpFzV4A8O2BgFe9IPV
-         s/YYuXXzYjOA3bwgt09LzqgiryW058mZ9M6MLiucyIRnfOm88EEn+a8byN4gdrQGKsmY
-         Be3s2tamJOxHcVFHpaamPWM5+tfrwYeKrz/lkszY7r+8ifHgRJ6WT6RRXfQuPLz5Hheo
-         tRj5diMAy/AmHvYFGYQQ5CNF+T7P86ExaIUB/fG0TiYfTXjbWqU9Km8WIZUn+x1pOpr4
-         s6MDO2GzC631it4Y5UlFJziZ67zBVHiqY8hcvQj6GREu6JNTf5npc33KFXPB1XL9XjZz
-         4Vig==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GGDNGPz53jgjUxkKKetTXhXWNvLgdULWZECcE+Svp2E=;
+        b=NufJBOf/E8NSsdIG8e8b5H0IeV+0Slk/9hNZeoq5bbabzJZedrlt3VEn7pryX3kMkq
+         +CH15314AzGYpQ6LrnFATXjZn5Pm6aVxlW7PkWhz4ImJs2nMciZs1JvFIyaQD29ggZJd
+         I1RJ1DN+nAGX09eAWy0dLmqgoD60IGFQounoNTK0xpMvyv5iIz6MJuykjkPIhdWd0DcZ
+         aw28WXewFpIMSzpAzy19jH1FgcSfiPvObOlqxIwaPBiF18gBIGwn+dOHURzao4zB7tkC
+         I6NPDhfdUfoTDmBa7yNqzajtnMFw8yB50Nx6PkUrm3YqYnsD5WRFEEyYw6gBOGnLKscn
+         haMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cRuE7ghYmX/MnQQcJBt4NDc6WttGR8e1vIUwI+1gPGA=;
-        b=TRHWDDcKX17GIBWIC2DpPM95S5tLCtTJtiy0WbzDAsGSSkI3FhrNqzJ2m26YIcWLoC
-         IVJCHdv+hn+aGShafRNCUn+iB9nZubhWH2ID3lmuf8hTfIwomn5/Ma0+aXTTWQ+MrVzS
-         YSPuZIukp0xRAWI5ZKYsI3u91uN9/ToUxlPJiQwdAvy/ESgobgfYpN6AGChHw8G6//lL
-         VMMR7oYMPpj4bxn89dty705atTrlcnDuCIbJrpgRvrddkZF4bRghALJGrIbrTmHWG74c
-         ldJu8nYQA5KG3lN2aW6ZjBf+I1E32GINz4lhm8A0Tk9pV28HxpIAXququJxSUAaKFWeD
-         Cq8g==
-X-Gm-Message-State: AOAM532E0mvgWI0fHQzn9smLcVa2CHyvLGUlaxKYamCbG/memdLI5Sap
-        ZVmvT54H4KEsvXcYOGnOTJGskuO6lEVJqq+j3UU=
-X-Google-Smtp-Source: ABdhPJxhDixSFUwxkAnEUQeXy07ajAOQms0ZLcAVN9gFyyOzsMsuLpLHTuY8o7iLRBRsA5g/KT7lYKHt6LTXZh1bHxo=
-X-Received: by 2002:ac8:660a:: with SMTP id c10mr2319819qtp.300.1600109572562;
- Mon, 14 Sep 2020 11:52:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
- <20200914122042.GA24441@willie-the-truck> <20200914123504.GA124316@apalos.home>
- <20200914132350.GA126552@apalos.home> <20200914140114.GG24441@willie-the-truck>
- <20200914181234.0f1df8ba@carbon> <20200914170205.GA20549@apalos.home>
- <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
- <20200914175516.GA21832@apalos.home> <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
- <20200914182756.GA22294@apalos.home>
-In-Reply-To: <20200914182756.GA22294@apalos.home>
-From:   Xi Wang <xi.wang@gmail.com>
-Date:   Mon, 14 Sep 2020 11:52:16 -0700
-Message-ID: <CAKU6vyYhG20qaA1iKwD=-pZHWjZYEZvX6Qmjs=aA-uJ-uwCw7w@mail.gmail.com>
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GGDNGPz53jgjUxkKKetTXhXWNvLgdULWZECcE+Svp2E=;
+        b=fg5+cHq34HDdBFRA0RVV+hpitj3HVUCaUL+ya74dxr2HHYROjFscI84BuDibEv/Dpi
+         dc/L1oRW9/UdH+Q/F8zuKak8NYLJeFfERiANT+Q25MZGRvBVwP4H3mhACEZaNKVL3z9S
+         fQUdcizEUtkw8OzTm79j+AnISwTF5MaXchn4O43PUNrxpvvIszWk0qkvTm3coMOQZzdF
+         CNlp0eknbKDNSwxNv4CHuYvDukCrRqZTQ7DNUPxicKEcceRVfJfo4pnU0AnPRNEDysXT
+         y+3IMK4xkRC2xaz+Q+0jJ+7d1Io9Qj6ts67J5NfXoidQcGOGf9JgdXMbPFCv95klPCdy
+         HFpQ==
+X-Gm-Message-State: AOAM533IxCr7cd8dCAyebgZ+CM6ptw+JSPhDNbnvYgHvK/s0d6Gt7nXY
+        4/i4Vzdm+LRcViBIuu+OqGcIRQ==
+X-Google-Smtp-Source: ABdhPJwoKyKG7QEPLSdyBzQxXAayezkFW+nM2ot6KrfPzWSu+EEBDrVGIsCiLs7Rg1qzM5hkOewswA==
+X-Received: by 2002:a1c:c90d:: with SMTP id f13mr881140wmb.25.1600111450968;
+        Mon, 14 Sep 2020 12:24:10 -0700 (PDT)
+Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
+        by smtp.gmail.com with ESMTPSA id t15sm20771064wmj.15.2020.09.14.12.24.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 12:24:10 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 22:24:07 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Xi Wang <xi.wang@gmail.com>
 Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
         Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
         ardb@kernel.org, naresh.kamboju@linaro.org,
@@ -77,32 +70,65 @@ Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
         netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Anders Roxell <anders.roxell@linaro.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
         Luke Nelson <luke.r.nels@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200914192407.GB22481@apalos.home>
+References: <20200914123504.GA124316@apalos.home>
+ <20200914132350.GA126552@apalos.home>
+ <20200914140114.GG24441@willie-the-truck>
+ <20200914181234.0f1df8ba@carbon>
+ <20200914170205.GA20549@apalos.home>
+ <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
+ <20200914175516.GA21832@apalos.home>
+ <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
+ <20200914182756.GA22294@apalos.home>
+ <CAKU6vyYhG20qaA1iKwD=-pZHWjZYEZvX6Qmjs=aA-uJ-uwCw7w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKU6vyYhG20qaA1iKwD=-pZHWjZYEZvX6Qmjs=aA-uJ-uwCw7w@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:28 AM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
-> Even if that's true, is any reason at all why we should skip the first element
-> of the array, that's now needed since 7c2e988f400 to jump back to the first
-> instruction?
-> Introducing 2 extra if conditions and hotfix the array on the fly (and for
-> every future invocation of that), seems better to you?
+On Mon, Sep 14, 2020 at 11:52:16AM -0700, Xi Wang wrote:
+> On Mon, Sep 14, 2020 at 11:28 AM Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> > Even if that's true, is any reason at all why we should skip the first element
+> > of the array, that's now needed since 7c2e988f400 to jump back to the first
+> > instruction?
+> > Introducing 2 extra if conditions and hotfix the array on the fly (and for
+> > every future invocation of that), seems better to you?
+> 
+> My point was that there's no inherently correct/wrong way to construct
+> offsets.  As Luke explained in his email, 1) there are two different
+> strategies used by the JITs and 2) there are likely similar bugs
+> beyond arm64.
+> 
+> Each strategy has pros and cons, and I'm fine with either.  I like the
+> strategy used in your patch because it's more intuitive (offset[i] is
+> the start of the emitted instructions for BPF instruction i, rather
+> than the end), though the changes to the construction process are
+> trickier.
+> 
 
-My point was that there's no inherently correct/wrong way to construct
-offsets.  As Luke explained in his email, 1) there are two different
-strategies used by the JITs and 2) there are likely similar bugs
-beyond arm64.
+Well the arm64 was literally a 'save the idx before building the instruction',
+and add another element on the array.  So it's not that trickier, especially
+if we document it properly.
 
-Each strategy has pros and cons, and I'm fine with either.  I like the
-strategy used in your patch because it's more intuitive (offset[i] is
-the start of the emitted instructions for BPF instruction i, rather
-than the end), though the changes to the construction process are
-trickier.
+I haven't checked the rest of the architectures tbh (apart from x86). 
+I assumed the tracking used in arm64 at that point, was a result of how 
+eBPF worked before bounded loops were introduced. Maybe I was wrong.
+It felt a bit more natural to track the beginning of the emitted 
+instructions rather than the end.
 
-If we decide to patch the arm64 JIT the way you proposed, we should
-consider whether to change other JITs consistently.
+> If we decide to patch the arm64 JIT the way you proposed, we should
+> consider whether to change other JITs consistently.
+
+I think this is a good idea. Following the code is not exactly a stroll in the
+park, so we can at least make it consistent across architectures.
+
+Thanks
+/Ilias
