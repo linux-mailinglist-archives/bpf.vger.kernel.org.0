@@ -2,95 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E886269A6E
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 02:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5565269AAC
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 02:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgIOAbQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Sep 2020 20:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgIOAbP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Sep 2020 20:31:15 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E12C06174A;
-        Mon, 14 Sep 2020 17:31:15 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id x8so1242581ybm.3;
-        Mon, 14 Sep 2020 17:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vSuua+KQFUkRQnZw9f4qmHsHpgSqDmm375Cjk5dD/tg=;
-        b=k7yQ3U9wo0YcKmPIKDR0DAx7ocNOQ1GeqbYmghwmK5tzpUxVbhfflxwyBz0nsIeV5N
-         oPuwA89IGJ+u+zfSEdnRFo6+SmmK5DysQImD5Cz1uY8pZEgLY8f+7j9GVRkvs+0xAby7
-         qY+p45ZRO3O9UXLe+kYFsyxaoMss5LX5lLB4atZvFeJCMU3OE57SM7OLhj64O+3b0P/2
-         xU2sVJlwkNJeYEVIsPegcSY/pPcNznUk4krtB8q9NnMU8GvbVfiBYSTzM4Tzjcje8fsi
-         QDG/vT0KPcK8ThUVZvgFHhDZF+BHxIwzXvvXCPEjJGeSoZWtsxbNYg6T3Cimfn5eXzJ2
-         cykw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vSuua+KQFUkRQnZw9f4qmHsHpgSqDmm375Cjk5dD/tg=;
-        b=bV0WVZR6hhxFhDKTR9/3eqH3aH2L6gNIe04CHQu5wj/1kC5jeqQZKeQE5B6elxejH1
-         OkN3Eko9wvM4q0VEITL3QrXp3A26VjbMCJbyhsg26YVq8PC9onhb2aahJqDAXhEdZGg0
-         5nXu0lGG/aV1yL0KaZFe0+u66Y6bexvkzUtlLI++HpzMH8ZslexVDvPi4hYq6861ybxV
-         zfnNjLV/HS0OMhZLNi6PM8vzfwpT43m5O9MSTXjV7/5+imUO0B5RhaS/2vUkktlLzdLi
-         /fd3NV5RqfDsOoN/7oKJgvFHRmtve1M7tYLdkNloIQeZNbw+K4DPdGtMOYd7a0Gq4OOZ
-         mLAA==
-X-Gm-Message-State: AOAM530kYSp227g15Mm7kBkdPTCINBuGh8Vga2I7z/wYYZjnZM3kkPVn
-        Xb9kjnUp8C5ry94ZpB3RcC3Yh73Atk8PcGsfhN4=
-X-Google-Smtp-Source: ABdhPJzbJN4nH3rol5IoQwJtIva1nHqf2KozRRo7uMW+7Wmk728PEtcMDEBOkffueJVJ1tvsSgnx4cPaRSmYbZcTHM0=
-X-Received: by 2002:a25:da90:: with SMTP id n138mr4805165ybf.260.1600129874642;
- Mon, 14 Sep 2020 17:31:14 -0700 (PDT)
+        id S1726079AbgIOAul (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Sep 2020 20:50:41 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38932 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726073AbgIOAuj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Sep 2020 20:50:39 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F0jgrB001947
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 17:50:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=ZjBm9IiGUNB9N/sWWyOh5V0UmNeIgaRarYo06RJj2SE=;
+ b=WBbvn4aWh60pMtILLItvoiuL+OMTsAXp4QjDzW5RnTrHzDmEuwNKvNSRroLscWpRTUSI
+ l9+9890BnLb722BeKtr1Y0HuTs7a0dvfSVH8a/TQ4WjN2OtRXp/a8MW3kuTAb9dmEUdx
+ dtf3IpWninHT7OcM14Q3+acAE0mMGNWnDYU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33hdttsd4t-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 14 Sep 2020 17:50:39 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 14 Sep 2020 17:50:38 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 8D3B52EC6ED4; Mon, 14 Sep 2020 17:50:36 -0700 (PDT)
+From:   Andrii Nakryiko <andriin@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH bpf] docs/bpf: remove source code links
+Date:   Mon, 14 Sep 2020 17:50:31 -0700
+Message-ID: <20200915005031.2748397-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200914183615.2038347-1-sdf@google.com> <20200914183615.2038347-6-sdf@google.com>
-In-Reply-To: <20200914183615.2038347-6-sdf@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Sep 2020 17:31:03 -0700
-Message-ID: <CAEf4BzaP6JvbsiTg6sAfGijk0sXkNAdjv0LUmSvQfXoCUKYTTQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 5/5] selftests/bpf: Test load and dump
- metadata with btftool and skel
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        YiFei Zhu <zhuyifei1999@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-14_09:2020-09-14,2020-09-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 suspectscore=8 bulkscore=0 priorityscore=1501
+ malwarescore=0 clxscore=1015 mlxlogscore=999 impostorscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009150002
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:37 AM Stanislav Fomichev <sdf@google.com> wrote:
->
-> From: YiFei Zhu <zhuyifei@google.com>
->
-> This is a simple test to check that loading and dumping metadata
-> in btftool works, whether or not metadata contents are used by the
-> program.
->
-> A C test is also added to make sure the skeleton code can read the
-> metadata values.
->
-> Cc: YiFei Zhu <zhuyifei1999@gmail.com>
-> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
+Make path to bench_ringbufs.c just a text, not a special link.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 97abb2b39682 ("docs/bpf: Add BPF ring buffer design notes")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ Documentation/bpf/ringbuf.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  tools/testing/selftests/bpf/Makefile          |   3 +-
->  .../selftests/bpf/prog_tests/metadata.c       | 141 ++++++++++++++++++
->  .../selftests/bpf/progs/metadata_unused.c     |  15 ++
->  .../selftests/bpf/progs/metadata_used.c       |  15 ++
->  .../selftests/bpf/test_bpftool_metadata.sh    |  82 ++++++++++
->  5 files changed, 255 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/metadata.c
->  create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
->  create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
->  create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
->
+diff --git a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rs=
+t
+index 4d4f3bcb1477..6a615cd62bda 100644
+--- a/Documentation/bpf/ringbuf.rst
++++ b/Documentation/bpf/ringbuf.rst
+@@ -197,7 +197,7 @@ a self-pacing notifications of new data being availab=
+ility.
+ being available after commit only if consumer has already caught up righ=
+t up to
+ the record being committed. If not, consumer still has to catch up and t=
+hus
+ will see new data anyways without needing an extra poll notification.
+-Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbufs.c_) sh=
+ow that
++Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbufs.c) sho=
+w that
+ this allows to achieve a very high throughput without having to resort t=
+o
+ tricks like "notify only every Nth sample", which are necessary with per=
+f
+ buffer. For extreme cases, when BPF program wants more manual control of
+--=20
+2.24.1
 
-[...]
