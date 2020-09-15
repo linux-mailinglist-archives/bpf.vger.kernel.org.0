@@ -2,195 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD4026B073
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 00:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6E226B02D
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 00:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgIOWLk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 18:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
+        id S1728105AbgIOWEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 18:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgIOQsc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 12:48:32 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA53C061352
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 09:36:12 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id y13so4808926iow.4
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 09:36:12 -0700 (PDT)
+        with ESMTP id S1728118AbgIOWD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 18:03:28 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC17C06178A
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 15:03:17 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w12so6046066qki.6
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 15:03:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hTYtDNRWZ3IQd17IVwiFvjdPJC2m5bl5cpimFc01bsE=;
-        b=dd8bL7ebVaZyzMDfsYKo20tvtiuZtcDmrHxwpMH6xunQdc01MjGuk18V+0XPn8WHrl
-         Fis6Uo8ZkZSeYMw/H78zlSzVvrGy4lwsCvjqkxiT5CkoD8OYqyA+IbeH5o+YrirpA6r0
-         K8iLbnom0h1MLtbmdJo3GIQKZLGp8PT7JlepSGsUyzIZ6zgUM0WQ7PA3XVS8h2Jhq2pJ
-         kzHaBtpJJTkGGvgCKfbE1evnoBXp1Dad1Boq4Vl9c9ekuQvXK4qX4JS1c1w7QWEIZ0q7
-         lhbLIxyyUMt0OvM1lYg8LZlT0B+Pe0m3kwJXdmKVS7TF7Hciljn7WW/NJvTrGqu6jynF
-         Td1Q==
+        bh=lImUIif1n8cBB0bKcX9LH+MkHbSgbzjwXMS0j6OhnaE=;
+        b=IFrtkdnH6jjt1bb2TOXNW8Q0T3RI6vk9C9kqInbxvF2qhQESPdggFaza8Nykc2PDLN
+         x5Nz7+Aw3222BMiUTy3t6b8uhpUf+y0HrdpGAe8NojsRGFGeTakA1Xu2E8f4DGSJxfuJ
+         y89rn20nSjWH8gVy1xGtoCDVtMOEdsv6Tnq8oOVlDq1Jy5/ZDsYRTHOdOmeqX1KrhNzd
+         UmUc8Axcv0ldSx58qKRp3CL2cNghLX5/AB0v6zvF2aXumCokSB6P7R3mYGrEw73xRuXz
+         NLAvB4jZh+/721TP5tDagpfWi+EqGAoXVOZXntcNgMSO3ZInii4XrxuyKtLr57r61sVt
+         l1kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hTYtDNRWZ3IQd17IVwiFvjdPJC2m5bl5cpimFc01bsE=;
-        b=UdHS4i4icLxfT6Bvf/umQaIs6j0XXcXISNy4Rc4DeMHVm43Jh8EMgEI/0ruvbxxZS/
-         rIb7UmQBclL97QsE1As1PAbjBzurxFp+YPfeDyohA0ZFcfxQMwiTJxI2ThqoPEMerO6F
-         0CE5CPfv0EifuTDaRLAPxbhkI0p2hRHfLvMID7n78GNPplIieit+ZVqbwCs8Ag2RqEAb
-         NIjXs6GqUD6B9bO2/Dwq1AV1IC82o7AtMjHmHyRBXu7i3uFVxd4sA22RB8DvR9Ca1NJm
-         165kKFAuWaWlXWK8wTBTXU+APlbojFvUWHl2lHEZWovLKMpttm2Omkrkt2FaGRo5mgl/
-         RI6w==
-X-Gm-Message-State: AOAM531ZbhwqMr3aBWhQXVzsK5Cfp6EPPKB7r0MrrIKqXEXq3UP+Kcxu
-        omjYAFZTkXg23NkjMAWkhjAhk/gYarnQjyL7SIdQJ9s1MV7DoQPs
-X-Google-Smtp-Source: ABdhPJxfSpUADTY11rW/0vm2ayF8vH2q7+GTpuu5qgBeHOpVJABcAhpG1Zc/csWA4GJs7zkMIHdIbQ5efNp5B3lCemM=
-X-Received: by 2002:a05:6638:1643:: with SMTP id a3mr18483174jat.4.1600187770959;
- Tue, 15 Sep 2020 09:36:10 -0700 (PDT)
+        bh=lImUIif1n8cBB0bKcX9LH+MkHbSgbzjwXMS0j6OhnaE=;
+        b=eCOwGnBzzeUkBRjpAKeJmQRJEZQNvev+DV+mT5z4QsB+ukCM0WlSg+fWsxKWG7rb1Z
+         0rwbCblM+VDP/qOx5gfAnyU3N0ufF2hWf+6yqPUsIB9OhTzWbbAO/z0EvQMQw5wUuTqY
+         MV//iJk+zLb/E4c8MAl/hL8w5XRDgdw2MPYa5yTKW5V1RYJqcYLVNKwgODvzE5AhL3eA
+         0kZ5ZZqciCg50jk1UDpMTvcJeUIOTkGftbdin+lgtAE85SyPYgcjo9fhicUJdf82z9ry
+         I0OAB4SxJI2CwOJP99w/VCGCJ8MkIEiHqJmi7uiu5fK06PRhw+sPhyTP4NZb+u/sX4Cj
+         wxQg==
+X-Gm-Message-State: AOAM533/ZS1wTq0qHLi1+dpRZtvhKMTG5tfhMHSoEDkAyyQeypgmoe2C
+        cCZ/U/LgWf+Gqk7iIAdzr3lh6Pt6RlyLfNRn8SfLZA==
+X-Google-Smtp-Source: ABdhPJxVnBBDB4MLjqFZ0gEG1oDU1Hdb4YInmJJoSXBz+1UjcNfRKHK7sQ5xVjQPOfA7quLfVZUeqg3k2/du3pWj/Ko=
+X-Received: by 2002:a37:6248:: with SMTP id w69mr18906009qkb.448.1600207396118;
+ Tue, 15 Sep 2020 15:03:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
- <20200911143022.414783-4-nicolas.rybowski@tessares.net> <CAPhsuW5Gbx2pWgM1XcSYqVsN6L=q+0u3QFNxG7A+Qez=Tziu2A@mail.gmail.com>
-In-Reply-To: <CAPhsuW5Gbx2pWgM1XcSYqVsN6L=q+0u3QFNxG7A+Qez=Tziu2A@mail.gmail.com>
-From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Date:   Tue, 15 Sep 2020 18:35:59 +0200
-Message-ID: <CACXrtpRzZuCyZnduYcV+1d2Z3qTK2b7Mcj2gQvcRbnv7+k0VRw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/5] bpf: selftests: add MPTCP test base
-To:     Song Liu <song@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20200914183615.2038347-1-sdf@google.com> <20200914183615.2038347-4-sdf@google.com>
+ <CAEf4BzbW46kyE3pVm1fGXkXV+ZW9ScoYAGdMuTkgCNHP-dpiuQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbW46kyE3pVm1fGXkXV+ZW9ScoYAGdMuTkgCNHP-dpiuQ@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 15 Sep 2020 15:03:05 -0700
+Message-ID: <CAKH8qBvY-0Qb+x3czVgwFyBWuDS8eLfQVaLmD8V7W7pWhv5DQg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/5] libbpf: Add BPF_PROG_BIND_MAP syscall and
+ use it on .rodata section
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        YiFei Zhu <zhuyifei1999@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Song,
-
-Thanks for the feedback !
-
-On Mon, Sep 14, 2020 at 8:07 PM Song Liu <song@kernel.org> wrote:
+On Mon, Sep 14, 2020 at 4:28 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Sep 11, 2020 at 8:02 AM Nicolas Rybowski
-> <nicolas.rybowski@tessares.net> wrote:
+> On Mon, Sep 14, 2020 at 11:37 AM Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > This patch adds a base for MPTCP specific tests.
-> >
-> > It is currently limited to the is_mptcp field in case of plain TCP
-> > connection because for the moment there is no easy way to get the subflow
-> > sk from a msk in userspace. This implies that we cannot lookup the
-> > sk_storage attached to the subflow sk in the sockops program.
-> >
-> > Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> > Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
->
-> With some nitpicks below.
->
-> > ---
-> >
-> > Notes:
-> >     v1 -> v2:
-> >     - new patch: mandatory selftests (Alexei)
-> >
-> [...]
-> >                      int timeout_ms);
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> > new file mode 100644
-> > index 000000000000..0e65d64868e9
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> > @@ -0,0 +1,119 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <test_progs.h>
-> > +#include "cgroup_helpers.h"
-> > +#include "network_helpers.h"
-> > +
-> > +struct mptcp_storage {
-> > +       __u32 invoked;
-> > +       __u32 is_mptcp;
-> > +};
-> > +
-> > +static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 is_mptcp)
-> > +{
-> > +       int err = 0, cfd = client_fd;
-> > +       struct mptcp_storage val;
-> > +
-> > +       /* Currently there is no easy way to get back the subflow sk from the MPTCP
-> > +        * sk, thus we cannot access here the sk_storage associated to the subflow
-> > +        * sk. Also, there is no sk_storage associated with the MPTCP sk since it
-> > +        * does not trigger sockops events.
-> > +        * We silently pass this situation at the moment.
-> > +        */
-> > +       if (is_mptcp == 1)
+> > +       if (!kernel_supports(FEAT_GLOBAL_DATA))
 > > +               return 0;
-> > +
-> > +       if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &cfd, &val) < 0)) {
-> > +               perror("Failed to read socket storage");
 >
-> Maybe simplify this with CHECK(), which contains a customized error message?
-> Same for some other calls.
+> TBH, I don't think this check is needed, and it's actually coupling
+> two independent features together. probe_prog_bind_map() probes
+> PROG_BIND_MAP, it has nothing to do with global data itself. It's all
+> cached now, so there is no problem with that, it just feels unclean.
+> If someone is using .rodata and the kernel doesn't support global
+> data, we'll fail way sooner. On the other hand, if there will be
+> another use case where PROG_BIND_MAP is needed for something else, why
+> would we care about global data support? I know that in the real world
+> it will be hard to find a kernel with PROG_BIND_MAP and no global data
+> support, due to the latter being so much older, but still, unnecessary
+> coupling.
 >
-
-The whole logic here is strongly inspired from prog_tests/tcp_rtt.c
-where CHECK_FAIL is used.
-Also the CHECK macro will print a PASS message on successful map
-lookup, which is not expected at this point of the tests.
-I think it would be more interesting to leave it as it is to keep a
-cohesion between TCP and MPTCP selftests. What do you think?
-
-If there are no objections, I will send a v3 with the other requested
-changes and a rebase on the latest bpf-next.
-
-> > +               return -1;
-> > +       }
-> > +
-> > +       if (val.invoked != 1) {
-> > +               log_err("%s: unexpected invoked count %d != %d",
-> > +                       msg, val.invoked, 1);
-> > +               err++;
-> > +       }
-> > +
-> > +       if (val.is_mptcp != is_mptcp) {
-> > +               log_err("%s: unexpected bpf_tcp_sock.is_mptcp %d != %d",
-> > +                       msg, val.is_mptcp, is_mptcp);
-> > +               err++;
-> > +       }
-> > +
-> > +       return err;
-> > +}
-> > +
-> > +static int run_test(int cgroup_fd, int server_fd, bool is_mptcp)
-> [...]
->
-> > +
-> > +       client_fd = is_mptcp ? connect_to_mptcp_fd(server_fd, 0) :
-> > +                              connect_to_fd(server_fd, 0);
-> > +       if (client_fd < 0) {
-> > +               err = -1;
-> > +               goto close_client_fd;
->
-> This should be "goto close_bpf_object;", and we don't really need the label
-> close_client_fd.
->
-> > +       }
-> > +
-> > +       err += is_mptcp ? verify_sk(map_fd, client_fd, "MPTCP subflow socket", 1) :
->
-> It doesn't really change the logic, but I guess we only need "err = xxx"?
->
-> > +                         verify_sk(map_fd, client_fd, "plain TCP socket", 0);
-> > +
-> > +close_client_fd:
-> > +       close(client_fd);
-> > +
-> > +close_bpf_object:
-> > +       bpf_object__close(obj);
-> > +       return err;
-> > +}
-> > +
+> Would be nice to follow up and remove this, thanks.
+Agreed, will respin, thanks!
