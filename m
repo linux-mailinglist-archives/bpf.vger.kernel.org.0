@@ -2,84 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496EC26AB7B
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 20:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0399326ABEE
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 20:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgIOSHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 14:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728000AbgIOSCg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:02:36 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1F6C06178A;
-        Tue, 15 Sep 2020 11:02:20 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y4so3621883ljk.8;
-        Tue, 15 Sep 2020 11:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LzBv6m1vPIL7/RF8uYFkuOR2dwzIsUMdUh6iBcqPluI=;
-        b=ejQlfQPcLifvN49urcdE4CMTzVJFXphkZdhL3jg/MjKwpaHywIma22I996/7Lj6Dz0
-         Z3MoR6ewUMCQzyxMRNqKBWA0CaXl9Kg5bSXAqpF+qymVNeHuxCynyHLZSGt894vCOaLr
-         +nbvUvDOHlICO8iEvKfzFa1VvrPrsrZqQ0xu57qzCej4TXrmKtgTNK3CBdehnz1Yad8m
-         E2a8JTpizIf0gfK0AN6ntAXuth03Dmk/Sf4kMcRv+a0/P8rSz9yZtMDakDfI4581CONP
-         nhGtVUEFqqNBkjmkWNglbF1fByuEFKdfNeFvebemixKUMSu/QX6rexv18UlUL/bEbF7Y
-         TdLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LzBv6m1vPIL7/RF8uYFkuOR2dwzIsUMdUh6iBcqPluI=;
-        b=pyELWw2xpAu5pZ9kWE2WS/yPZaApcNGHIZn+mjzUXu1h3A6me2pQFV+27e8Z4Wf8X7
-         /sNlgDNxCVClnjrGxOV4A9Ayk6rnXM044fGobzAEyeekVQkVrVLNu6dAGrzRHpyfM4Vc
-         5DlDeT6LZjISmsKtFnyNWkbta1d0vSmG/J/XccCv4nV4hgA4etbm9rlXTbaDPOh8YVPD
-         e80BjAYEDB+YsXelDPIgNLD6X5HHQ1F+pfT9DO4a0q3Gn5x1fyIzPh60X+vy2W8gjSxI
-         CPwxFDHtk5Ap86/EpQ2Urpf+XL10+xSN6FPVmfADdeIEPPwyxzLh6LgJLxwDzenS0F5o
-         KUfw==
-X-Gm-Message-State: AOAM532as0NP/b9AuKftHFggvqlR733Q7K1xUSC4vY5Vg/nLd79llRwk
-        t/TLExsgbWtNVi4KxDXsF7JrOAgQkkRw9QHntjw4wvqq
-X-Google-Smtp-Source: ABdhPJxNNC7peE5ca7c1t+3nBX3Ern1zKf1FTCJMjcvEzV0VZjC4bLYL77PxoVyFBD/A3Atnn6Dr8avv3W9r9It0Tjo=
-X-Received: by 2002:a2e:8593:: with SMTP id b19mr6927289lji.290.1600192939198;
- Tue, 15 Sep 2020 11:02:19 -0700 (PDT)
+        id S1727987AbgIOSaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 14:30:21 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48696 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728069AbgIOSaQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Sep 2020 14:30:16 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08FIJn5O016936
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 11:30:11 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=NsQ7h/XnKhl3Izio8nb4VLBC0WdywdRtn0ET+jvqZ5M=;
+ b=bOl3pDj9Pph4Tjkrc3zTn92/5DVHdcE6Q6i8HkXBdnBP63FcJBmT2aWFDvChglh8/YoJ
+ nwuVmav7GAV+KMyjqhUwM782VQkPd3bhxDyphMNfcS2aJEmu07qUqmIIUOVfGQLKB1fx
+ baqE9e+RR8YBwHL9iSsmmInpiFB8DmNtcYc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 33gsty1tny-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 11:30:11 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 11:30:07 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 293072946053; Tue, 15 Sep 2020 11:29:59 -0700 (PDT)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: [PATCH bpf] bpf: bpf_skc_to_* casting helpers require a NULL check on sk
+Date:   Tue, 15 Sep 2020 11:29:59 -0700
+Message-ID: <20200915182959.241101-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200902200815.3924-1-maciej.fijalkowski@intel.com>
- <20200902200815.3924-8-maciej.fijalkowski@intel.com> <20200903195114.ccfzmgcl4ngz2mqv@ast-mbp.dhcp.thefacebook.com>
- <20200911185927.GA2543@ranger.igk.intel.com> <20200915043924.uicfgbhuszccycbq@ast-mbp.dhcp.thefacebook.com>
- <20200915174551.GA3728@ranger.igk.intel.com>
-In-Reply-To: <20200915174551.GA3728@ranger.igk.intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 15 Sep 2020 11:02:07 -0700
-Message-ID: <CAADnVQLz1UhmNQKX=+x3E=to8ZUrF_xZq_4b3R=Pr1O7ZtshCQ@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 7/7] selftests: bpf: add dummy prog for
- bpf2bpf with tailcall
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-15_12:2020-09-15,2020-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
+ malwarescore=0 lowpriorityscore=0 suspectscore=13 mlxscore=0
+ mlxlogscore=862 bulkscore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009150147
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:52 AM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
-> > > +   /* this means we are at the end of the call chain; if throughout this
-> >
-> > In my mind 'end of the call chain' means 'leaf function',
-> > so the comment reads a bit misleading to me.
-> > Here we're at the end of subprog.
-> > It's not necessarily the leaf function.
->
-> Hmm you're right i'll try to rephrase that.
->
-> What about just:
-> "if tail call got detected across bpf2bpf calls then mark each of the
-> currently present subprog frames as tail call reachable subprogs"
+The bpf_skc_to_* type casting helpers are available to
+BPF_PROG_TYPE_TRACING.  The traced PTR_TO_BTF_ID may be NULL.
+For example, the skb->sk may be NULL.  Thus, these casting helpers
+need to check "!sk" also and this patch fixes them.
 
-sounds good to me.
+Fixes: 0d4fad3e57df ("bpf: Add bpf_skc_to_udp6_sock() helper")
+Fixes: 478cfbdf5f13 ("bpf: Add bpf_skc_to_{tcp, tcp_timewait, tcp_request=
+}_sock() helpers")
+Fixes: af7ec1383361 ("bpf: Add bpf_skc_to_tcp6_sock() helper")
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ net/core/filter.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2d62c25e0395..23e8ded0ec97 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -9522,7 +9522,7 @@ BPF_CALL_1(bpf_skc_to_tcp6_sock, struct sock *, sk)
+ 	 * trigger an explicit type generation here.
+ 	 */
+ 	BTF_TYPE_EMIT(struct tcp6_sock);
+-	if (sk_fullsock(sk) && sk->sk_protocol =3D=3D IPPROTO_TCP &&
++	if (sk && sk_fullsock(sk) && sk->sk_protocol =3D=3D IPPROTO_TCP &&
+ 	    sk->sk_family =3D=3D AF_INET6)
+ 		return (unsigned long)sk;
+=20
+@@ -9540,7 +9540,7 @@ const struct bpf_func_proto bpf_skc_to_tcp6_sock_pr=
+oto =3D {
+=20
+ BPF_CALL_1(bpf_skc_to_tcp_sock, struct sock *, sk)
+ {
+-	if (sk_fullsock(sk) && sk->sk_protocol =3D=3D IPPROTO_TCP)
++	if (sk && sk_fullsock(sk) && sk->sk_protocol =3D=3D IPPROTO_TCP)
+ 		return (unsigned long)sk;
+=20
+ 	return (unsigned long)NULL;
+@@ -9558,12 +9558,12 @@ const struct bpf_func_proto bpf_skc_to_tcp_sock_p=
+roto =3D {
+ BPF_CALL_1(bpf_skc_to_tcp_timewait_sock, struct sock *, sk)
+ {
+ #ifdef CONFIG_INET
+-	if (sk->sk_prot =3D=3D &tcp_prot && sk->sk_state =3D=3D TCP_TIME_WAIT)
++	if (sk && sk->sk_prot =3D=3D &tcp_prot && sk->sk_state =3D=3D TCP_TIME_=
+WAIT)
+ 		return (unsigned long)sk;
+ #endif
+=20
+ #if IS_BUILTIN(CONFIG_IPV6)
+-	if (sk->sk_prot =3D=3D &tcpv6_prot && sk->sk_state =3D=3D TCP_TIME_WAIT=
+)
++	if (sk && sk->sk_prot =3D=3D &tcpv6_prot && sk->sk_state =3D=3D TCP_TIM=
+E_WAIT)
+ 		return (unsigned long)sk;
+ #endif
+=20
+@@ -9582,12 +9582,12 @@ const struct bpf_func_proto bpf_skc_to_tcp_timewa=
+it_sock_proto =3D {
+ BPF_CALL_1(bpf_skc_to_tcp_request_sock, struct sock *, sk)
+ {
+ #ifdef CONFIG_INET
+-	if (sk->sk_prot =3D=3D &tcp_prot  && sk->sk_state =3D=3D TCP_NEW_SYN_RE=
+CV)
++	if (sk && sk->sk_prot =3D=3D &tcp_prot && sk->sk_state =3D=3D TCP_NEW_S=
+YN_RECV)
+ 		return (unsigned long)sk;
+ #endif
+=20
+ #if IS_BUILTIN(CONFIG_IPV6)
+-	if (sk->sk_prot =3D=3D &tcpv6_prot && sk->sk_state =3D=3D TCP_NEW_SYN_R=
+ECV)
++	if (sk && sk->sk_prot =3D=3D &tcpv6_prot && sk->sk_state =3D=3D TCP_NEW=
+_SYN_RECV)
+ 		return (unsigned long)sk;
+ #endif
+=20
+@@ -9609,7 +9609,7 @@ BPF_CALL_1(bpf_skc_to_udp6_sock, struct sock *, sk)
+ 	 * trigger an explicit type generation here.
+ 	 */
+ 	BTF_TYPE_EMIT(struct udp6_sock);
+-	if (sk_fullsock(sk) && sk->sk_protocol =3D=3D IPPROTO_UDP &&
++	if (sk && sk_fullsock(sk) && sk->sk_protocol =3D=3D IPPROTO_UDP &&
+ 	    sk->sk_type =3D=3D SOCK_DGRAM && sk->sk_family =3D=3D AF_INET6)
+ 		return (unsigned long)sk;
+=20
+--=20
+2.24.1
+
