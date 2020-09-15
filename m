@@ -2,126 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465E626A176
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 11:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA95226A187
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 11:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbgIOJDz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 05:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIOJDy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:03:54 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094FDC06174A
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 02:03:54 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id y6so3040632oie.5
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 02:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mm/1UKbWk+GC/dY9nlJifC6FZELzw5z1lKhzNUFazcM=;
-        b=n6kuWT8C1/HMtu7Q1QuBoo5+mPVNL4puJTfD60HhqIIQKq5En4p/fWRY7+hBL4ltaQ
-         engFmEv8UMbGiW4bfZ6PedO+0RMtm5cK3qZRJueLOXsDxRqtQNmrmUou1Lvzuiiw06pg
-         p45wUI/0xjTzZdSwGcy0NJz6c12MI5NJ+nu0Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mm/1UKbWk+GC/dY9nlJifC6FZELzw5z1lKhzNUFazcM=;
-        b=rwdwoVgITtFv4rQDlO+FTn5KG1lOMtf5XakteYAwW+56TqmFvFu0l5Jw8qbhbr7H+N
-         uSE/M+YBwIIsIRK4n53jvoyNHx1qlUXjSnDGGJogmkYpnZfOREc/ZU2IU0uByY7xDjzi
-         Dfns2kzv5jXVEyJlnYLdzxPaWpatzER6kzPoMzSNRtao/V1beC5JGJv+hwMlTTb4UKnA
-         3pSutts27RZbsZeFvt9paCdY6I8gm7vPwzjZLoNlsPZkAe1FKscJAtmz2p2JEZ8bR2z3
-         zlY1tGXzdbVb4AZjzR4CoSi3LHS4tCRYRdygnqJkBWtdlfTYFj1asLVs7WIZeG1nMt+P
-         KyRA==
-X-Gm-Message-State: AOAM530B5g/hPXPY+SSmSe2QpgfX82GVraKeig6cczNiRIkd+PHYMS+3
-        Tc0wTdrAcdoAicEKHCM6tUD3jQLTFK8lEyKU4+gBew==
-X-Google-Smtp-Source: ABdhPJzkhQtauJa2JpTzh0DAUN3R/bkuJea0/KqcGaQqZGebfz44V1XGv+jqBqMc/CO6K8MeXuG2Na3Hr2OYYoN30gU=
-X-Received: by 2002:aca:3087:: with SMTP id w129mr2475218oiw.102.1600160632809;
- Tue, 15 Sep 2020 02:03:52 -0700 (PDT)
+        id S1726371AbgIOJGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 05:06:35 -0400
+Received: from mga03.intel.com ([134.134.136.65]:35019 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726269AbgIOJGe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:06:34 -0400
+IronPort-SDR: RZD/fFWTjvWyaYIJCtNMDzEdl4brC47SlQmB8DC403Dr6vIA5u/jFu0AFJj/JoHYnbKKWwa4bw
+ iw1Jurkpfvfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="159272034"
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="159272034"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 02:06:31 -0700
+IronPort-SDR: JN6muYTQqB3wm3kCXqk1xsORqKL94poqyPOQLwwV9SSOFBG1M/RLedvNq9ruyR1KSefDfAWvPJ
+ brvH/uTc728w==
+X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
+   d="scan'208";a="482690707"
+Received: from emoriart-mobl.ger.corp.intel.com (HELO localhost) ([10.252.7.208])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 02:06:16 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Joe Perches <joe@perches.com>, LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        oss-drivers@netronome.com, nouveau@lists.freedesktop.org,
+        alsa-devel <alsa-devel@alsa-project.org>,
+        dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+        linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-rtc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        dccp@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, coreteam@netfilter.org,
+        intel-wired-lan@lists.osuosl.org, linux-serial@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Kees Cook <kees.cook@canonical.com>,
+        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, linux-sctp@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-nvme@lists.infradead.org,
+        storagedev@microchip.com, ceph-devel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org,
+        netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [Intel-gfx] [trivial PATCH] treewide: Convert switch/case fallthrough; to break;
+In-Reply-To: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
+Date:   Tue, 15 Sep 2020 12:06:21 +0300
+Message-ID: <87d02nxvci.fsf@intel.com>
 MIME-Version: 1.0
-References: <20200912045917.2992578-1-kafai@fb.com> <20200912045930.2993219-1-kafai@fb.com>
- <CACAyw9-rirpChioEaSKiYC5+fLGzL38OawcBvE8Mv+16vNApZA@mail.gmail.com> <20200914194304.4ccb6n5sdcfkzxcp@kafai-mbp>
-In-Reply-To: <20200914194304.4ccb6n5sdcfkzxcp@kafai-mbp>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 15 Sep 2020 10:03:41 +0100
-Message-ID: <CACAyw98xzFf-j8dy45U+90Y5FiPEvb9w7GS5UrQCnxWaZGAZUw@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 2/2] bpf: Enable bpf_skc_to_* sock casting
- helper to networking prog type
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 14 Sep 2020 at 20:43, Martin KaFai Lau <kafai@fb.com> wrote:
-[...]
->
-> For other ARG_PTR_TO_SOCK_COMMON helpers, they are not available to
-> the tracing prog type.  Hence, they are fine to accept PTR_TO_BTF_ID
-> as ARG_PTR_TO_SOCK_COMMON since the only way for non tracing prog to
-> get a PTR_TO_BTF_ID is from casting helpers bpf_skc_to_* and
-> the NULL check on return value must be done first.  If these
-> ARG_PTR_TO_* helpers were ever made available to tracing prog,
-> it might be better off to have another func_proto taking
-> ARG_PTR_TO_BTF_ID instead.
+On Wed, 09 Sep 2020, Joe Perches <joe@perches.com> wrote:
+> diff --git a/drivers/gpu/drm/i915/display/intel_sprite.c b/drivers/gpu/drm/i915/display/intel_sprite.c
+> index 5ac0dbf0e03d..35ac539cc2b1 100644
+> --- a/drivers/gpu/drm/i915/display/intel_sprite.c
+> +++ b/drivers/gpu/drm/i915/display/intel_sprite.c
+> @@ -2861,7 +2861,7 @@ static bool gen12_plane_format_mod_supported(struct drm_plane *_plane,
+>  	case I915_FORMAT_MOD_Y_TILED_GEN12_MC_CCS:
+>  		if (!gen12_plane_supports_mc_ccs(dev_priv, plane->id))
+>  			return false;
+> -		fallthrough;
+> +		break;
+>  	case DRM_FORMAT_MOD_LINEAR:
+>  	case I915_FORMAT_MOD_X_TILED:
+>  	case I915_FORMAT_MOD_Y_TILED:
 
-I think such special cases increase the maintenance burden going
-forward, I'd prefer it if we had one set of rules that applies to all
-program types.
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 
-> For the verifier, I think the PTR_TO_BTF_ID should only be accepted
-> as ARG_TO_* for non tracing program. That means the bpf_skc_to_*
-> proto has to be duplicated to take ARG_PTR_TO_SOCK_COMMON.  I think
-> that may be cleaner going forward.  Then the verifier does not need
-> to worry about how to deal with what btf_id can be taken as fullsock
-> ARG_PTR_TO_SOCKET.  The helper taking ARG_PTR_TO_BTF_ID will decide
-> where it could be called from and see how it wants to treat
-> "struct sock *sk".
+for merging via whichever tree seems best.
 
-So basically, we allow function prototypes to be specialised according
-to context type?
+BR,
+Jani.
 
-> For example, the sk_storage_get_btf_proto
-> is taking &btf_sock_ids[BTF_SOCK_TYPE_SOCK] and is only used from
-> the LSM context that is holding a fullsock.
-
-That is a tempting simplification, but it makes future extensions of
-LSM context harder. Also, how could we enforce that we only have
-fullsocks in LSM? By looking at the list of helpers? I worry that this
-is very brittle.
-
->
-> The same goes for the sock_map iter, how about the map_update
-> and map_lookup use a ARG_PTR_TO_BTF_ID and PTR_TO_BTF_ID instead?
-> For other prog types, they can keep using ARG_PTR_TO_SOCKET and
-> PTR_TO_SOCKET.
-
-Yeah, I've thought about that approach as well. The upside is that
-it's a much more limited change, and therefore I know that it is
-fairly safe to do. It relies on maps being able to override the
-"common" map_lookup_elem function proto, which is something we already
-do for sockmap and which could use some cleaning up. So if
-PTR_TO_BTF_ID aliasing with ARG_PTR_TO_SOCK_COMMON doesn't work out
-I'll propose this.
-
-The downside of specialised function protos is that we'll have to do
-it for every helper, context type, etc. To me it sounds like we want
-to use BTF to define context objects going forward as much as
-possible, so having a general solution to unify socket helpers across
-old-style and BTF contexts seems really useful to me. If we introduce
-ARG_PTR_TO_SOCK_COMMON_OR_NULL we can do this in a gradual way, by
-changing helpers that we want to be cross-compatible to take the new
-arg type and adding a few NULL and fullsock checks here and there.
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Jani Nikula, Intel Open Source Graphics Center
