@@ -2,384 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270BF26B581
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 01:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226E026B736
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbgIOXqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 19:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIOXp6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:45:58 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D6BC061788
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 16:45:55 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id r4so2760286pgl.20
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 16:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=45yFd9r6NBhawqTHKehHRnMtzm7SAMP/iKQPE3OyBgE=;
-        b=MzAlXHUX3sWVdA+h1U79rLXno79Zxu5SjNJb2ez9q/Zyy6Nu/H64aFxlUZEjHlYeL0
-         Y9HewrStuddADVC62VF0bCDgJX282jozcZENxNRTg3kMu4gP9kaOTjr9r6hwTt95V0sQ
-         zmZmkPmRaGL9HabJwzW+fbBYJ88fbKvWgmnGiMgx1hFIgpgjs5tgbsk41CD/YWYABpXe
-         GFX+pRk/hc9cJJuXCorX+EF0uBfLgHpJc9p8e5lkkBkQFg/ojBOKmmdzo8Ajk24kZaXH
-         Q7nEpdFG3DwxclTktwn7tsWHfSXzVpu9plMuDD4IyOMANprxMOGWNPQRGHfi87CHe4qb
-         d9UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=45yFd9r6NBhawqTHKehHRnMtzm7SAMP/iKQPE3OyBgE=;
-        b=PYECxkcYowoK8d+CRsYYyg2pyX7b0WP7uG/Ymrjr6u81IMeHCu/e7g5gTWeiCWhP9k
-         qsjvdqrAhQUgka8hqNG4/u4tM0OJf+RG4onM3RlMV/joxY5pd3lgM/1vs45+KnPhEWCD
-         xJrxNKliBkWWoeE1LO65nJ5L0o3Su9UST+IisfdfN0lIV3O+Jg59un22VFjQeiKgU4Un
-         lqXzrQjNOir81seL0JXXbvq0n8H3fSaSQneq8og45UzyxFTvuVGu3qgo6TXtGbTlZueQ
-         rhvHfDbaC0bAGaxydl1N3XgvX5EPJ39IBotBpWTTuHT5euEY90FcxfJMy94rvE83NZVf
-         Ra8w==
-X-Gm-Message-State: AOAM530AY+tbgrW3VBfS8bgWBbtpR958Y8V9jBjBorhcImz4IRloA67O
-        kOFfeAPSbHaAQVQ/7HpHghP2cnk=
-X-Google-Smtp-Source: ABdhPJwlpC4TK0ZBM9SEUOjzkwXQmy5D4b9JJAs2rZ6Phwm4+LJj9iAQBCH4AYMJuPJAnxqy3OcwYI8=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a17:90a:4803:: with SMTP id
- a3mr1518319pjh.192.1600213554814; Tue, 15 Sep 2020 16:45:54 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 16:45:43 -0700
-In-Reply-To: <20200915234543.3220146-1-sdf@google.com>
-Message-Id: <20200915234543.3220146-6-sdf@google.com>
-Mime-Version: 1.0
-References: <20200915234543.3220146-1-sdf@google.com>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH bpf-next v6 5/5] selftests/bpf: Test load and dump metadata
- with btftool and skel
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        id S1727240AbgIPATW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 20:19:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726871AbgIOOV6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:21:58 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B13D22261;
+        Tue, 15 Sep 2020 14:17:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600179435;
+        bh=mAvLUOAjRYcfpkRMghrqjRsVA8/IFtwH77ihCDlpknE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yOS1a7++OZZQQUW0Fnjm1zPPlLI5nMWD6R95VrcCLC1WROQDskm08QuULeX30eAG7
+         SRPGEvQMfgqv7WvKMoQmyaHGuxVuVLLLk0UjL5O8hYq9shuBeK0416fOYlD+16AHoD
+         y3QESZPG2XM/s/Keg3TfX+oCWfbO7iOxygZ5EnAc=
+Date:   Tue, 15 Sep 2020 15:17:08 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200915141707.GB26439@willie-the-truck>
+References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
+ <20200915131102.GA26439@willie-the-truck>
+ <20200915135344.GA113966@apalos.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915135344.GA113966@apalos.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu <zhuyifei@google.com>
+On Tue, Sep 15, 2020 at 04:53:44PM +0300, Ilias Apalodimas wrote:
+> On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
+> > Hi Ilias,
+> > 
+> > On Mon, Sep 14, 2020 at 07:03:55PM +0300, Ilias Apalodimas wrote:
+> > > Running the eBPF test_verifier leads to random errors looking like this:
+> > > 
+> > > [ 6525.735488] Unexpected kernel BRK exception at EL1
+> > > [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
+> > 
+> > Does this happen because we poison the BPF memory with BRK instructions?
+> > Maybe we should look at using a special immediate so we can detect this,
+> > rather than end up in the ptrace handler.
+> 
+> As discussed offline this is what aarch64_insn_gen_branch_imm() will return for
+> offsets > 128M and yes replacing the handler with a more suitable message would 
+> be good.
 
-This is a simple test to check that loading and dumping metadata
-in btftool works, whether or not metadata contents are used by the
-program.
+Can you give the diff below a shot, please? Hopefully printing a more useful
+message will mean these things get triaged/debugged better in future.
 
-A C test is also added to make sure the skeleton code can read the
-metadata values.
+Will
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Cc: YiFei Zhu <zhuyifei1999@gmail.com>
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/Makefile          |   3 +-
- .../selftests/bpf/prog_tests/metadata.c       | 141 ++++++++++++++++++
- .../selftests/bpf/progs/metadata_unused.c     |  15 ++
- .../selftests/bpf/progs/metadata_used.c       |  15 ++
- .../selftests/bpf/test_bpftool_metadata.sh    |  82 ++++++++++
- 5 files changed, 255 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/metadata.c
- create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
- create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
- create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
+--->8
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 05798c2b5c67..2a63791177c4 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -68,7 +68,8 @@ TEST_PROGS := test_kmod.sh \
- 	test_tc_edt.sh \
- 	test_xdping.sh \
- 	test_bpftool_build.sh \
--	test_bpftool.sh
-+	test_bpftool.sh \
-+	test_bpftool_metadata.sh \
+diff --git a/arch/arm64/include/asm/extable.h b/arch/arm64/include/asm/extable.h
+index 840a35ed92ec..b15eb4a3e6b2 100644
+--- a/arch/arm64/include/asm/extable.h
++++ b/arch/arm64/include/asm/extable.h
+@@ -22,6 +22,15 @@ struct exception_table_entry
  
- TEST_PROGS_EXTENDED := with_addr.sh \
- 	with_tunnels.sh \
-diff --git a/tools/testing/selftests/bpf/prog_tests/metadata.c b/tools/testing/selftests/bpf/prog_tests/metadata.c
-new file mode 100644
-index 000000000000..2c53eade88e3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/metadata.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <cgroup_helpers.h>
-+#include <network_helpers.h>
-+
-+#include "metadata_unused.skel.h"
-+#include "metadata_used.skel.h"
-+
-+static int duration;
-+
-+static int prog_holds_map(int prog_fd, int map_fd)
+ #define ARCH_HAS_RELATIVE_EXTABLE
+ 
++static inline bool in_bpf_jit(struct pt_regs *regs)
 +{
-+	struct bpf_prog_info prog_info = {};
-+	struct bpf_prog_info map_info = {};
-+	__u32 prog_info_len;
-+	__u32 map_info_len;
-+	__u32 *map_ids;
-+	int nr_maps;
-+	int ret;
-+	int i;
++	if (!IS_ENABLED(CONFIG_BPF_JIT))
++		return false;
 +
-+	map_info_len = sizeof(map_info);
-+	ret = bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len);
-+	if (ret)
-+		return -errno;
-+
-+	prog_info_len = sizeof(prog_info);
-+	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
-+	if (ret)
-+		return -errno;
-+
-+	map_ids = calloc(prog_info.nr_map_ids, sizeof(__u32));
-+	if (!map_ids)
-+		return -ENOMEM;
-+
-+	nr_maps = prog_info.nr_map_ids;
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	prog_info.nr_map_ids = nr_maps;
-+	prog_info.map_ids = ptr_to_u64(map_ids);
-+	prog_info_len = sizeof(prog_info);
-+
-+	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
-+	if (ret) {
-+		ret = -errno;
-+		goto free_map_ids;
-+	}
-+
-+	ret = -ENOENT;
-+	for (i = 0; i < prog_info.nr_map_ids; i++) {
-+		if (map_ids[i] == map_info.id) {
-+			ret = 0;
-+			break;
-+		}
-+	}
-+
-+free_map_ids:
-+	free(map_ids);
-+	return ret;
++	return regs->pc >= BPF_JIT_REGION_START &&
++	       regs->pc < BPF_JIT_REGION_END;
 +}
 +
-+static void test_metadata_unused(void)
+ #ifdef CONFIG_BPF_JIT
+ int arm64_bpf_fixup_exception(const struct exception_table_entry *ex,
+ 			      struct pt_regs *regs);
+diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
+index 7310a4f7f993..fa76151de6ff 100644
+--- a/arch/arm64/kernel/debug-monitors.c
++++ b/arch/arm64/kernel/debug-monitors.c
+@@ -384,7 +384,7 @@ void __init debug_traps_init(void)
+ 	hook_debug_fault_code(DBG_ESR_EVT_HWSS, single_step_handler, SIGTRAP,
+ 			      TRAP_TRACE, "single-step handler");
+ 	hook_debug_fault_code(DBG_ESR_EVT_BRK, brk_handler, SIGTRAP,
+-			      TRAP_BRKPT, "ptrace BRK handler");
++			      TRAP_BRKPT, "BRK handler");
+ }
+ 
+ /* Re-enable single step for syscall restarting. */
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 13ebd5ca2070..9f7fde99eda2 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -34,6 +34,7 @@
+ #include <asm/daifflags.h>
+ #include <asm/debug-monitors.h>
+ #include <asm/esr.h>
++#include <asm/extable.h>
+ #include <asm/insn.h>
+ #include <asm/kprobes.h>
+ #include <asm/traps.h>
+@@ -994,6 +995,21 @@ static struct break_hook bug_break_hook = {
+ 	.imm = BUG_BRK_IMM,
+ };
+ 
++static int reserved_fault_handler(struct pt_regs *regs, unsigned int esr)
 +{
-+	struct metadata_unused *obj;
-+	int err;
++	pr_err("%s generated an invalid instruction at %pS!\n",
++		in_bpf_jit(regs) ? "BPF JIT" : "Kernel runtime patching",
++		instruction_pointer(regs));
 +
-+	obj = metadata_unused__open_and_load();
-+	if (CHECK(!obj, "skel-load", "errno %d", errno))
-+		return;
-+
-+	err = prog_holds_map(bpf_program__fd(obj->progs.prog),
-+			     bpf_map__fd(obj->maps.rodata));
-+	if (CHECK(err, "prog-holds-rodata", "errno: %d", err))
-+		return;
-+
-+	/* Assert that we can access the metadata in skel and the values are
-+	 * what we expect.
-+	 */
-+	if (CHECK(strncmp(obj->rodata->bpf_metadata_a, "foo",
-+			  sizeof(obj->rodata->bpf_metadata_a)),
-+		  "bpf_metadata_a", "expected \"foo\", value differ"))
-+		goto close_bpf_object;
-+	if (CHECK(obj->rodata->bpf_metadata_b != 1, "bpf_metadata_b",
-+		  "expected 1, got %d", obj->rodata->bpf_metadata_b))
-+		goto close_bpf_object;
-+
-+	/* Assert that binding metadata map to prog again succeeds. */
-+	err = bpf_prog_bind_map(bpf_program__fd(obj->progs.prog),
-+				bpf_map__fd(obj->maps.rodata), NULL);
-+	CHECK(err, "rebind_map", "errno %d, expected 0", errno);
-+
-+close_bpf_object:
-+	metadata_unused__destroy(obj);
++	/* We cannot handle this */
++	return DBG_HOOK_ERROR;
 +}
 +
-+static void test_metadata_used(void)
-+{
-+	struct metadata_used *obj;
-+	int err;
++static struct break_hook fault_break_hook = {
++	.fn = reserved_fault_handler,
++	.imm = FAULT_BRK_IMM,
++};
 +
-+	obj = metadata_used__open_and_load();
-+	if (CHECK(!obj, "skel-load", "errno %d", errno))
-+		return;
-+
-+	err = prog_holds_map(bpf_program__fd(obj->progs.prog),
-+			     bpf_map__fd(obj->maps.rodata));
-+	if (CHECK(err, "prog-holds-rodata", "errno: %d", err))
-+		return;
-+
-+	/* Assert that we can access the metadata in skel and the values are
-+	 * what we expect.
-+	 */
-+	if (CHECK(strncmp(obj->rodata->bpf_metadata_a, "bar",
-+			  sizeof(obj->rodata->bpf_metadata_a)),
-+		  "metadata_a", "expected \"bar\", value differ"))
-+		goto close_bpf_object;
-+	if (CHECK(obj->rodata->bpf_metadata_b != 2, "metadata_b",
-+		  "expected 2, got %d", obj->rodata->bpf_metadata_b))
-+		goto close_bpf_object;
-+
-+	/* Assert that binding metadata map to prog again succeeds. */
-+	err = bpf_prog_bind_map(bpf_program__fd(obj->progs.prog),
-+				bpf_map__fd(obj->maps.rodata), NULL);
-+	CHECK(err, "rebind_map", "errno %d, expected 0", errno);
-+
-+close_bpf_object:
-+	metadata_used__destroy(obj);
-+}
-+
-+void test_metadata(void)
-+{
-+	if (test__start_subtest("unused"))
-+		test_metadata_unused();
-+
-+	if (test__start_subtest("used"))
-+		test_metadata_used();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/metadata_unused.c b/tools/testing/selftests/bpf/progs/metadata_unused.c
-new file mode 100644
-index 000000000000..672a0d19f8d0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/metadata_unused.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+volatile const char bpf_metadata_a[] SEC(".rodata") = "foo";
-+volatile const int bpf_metadata_b SEC(".rodata") = 1;
-+
-+SEC("cgroup_skb/egress")
-+int prog(struct xdp_md *ctx)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/metadata_used.c b/tools/testing/selftests/bpf/progs/metadata_used.c
-new file mode 100644
-index 000000000000..b7198e65383d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/metadata_used.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+volatile const char bpf_metadata_a[] SEC(".rodata") = "bar";
-+volatile const int bpf_metadata_b SEC(".rodata") = 2;
-+
-+SEC("cgroup_skb/egress")
-+int prog(struct xdp_md *ctx)
-+{
-+	return bpf_metadata_b ? 1 : 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_bpftool_metadata.sh b/tools/testing/selftests/bpf/test_bpftool_metadata.sh
-new file mode 100755
-index 000000000000..1bf81b49457a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_bpftool_metadata.sh
-@@ -0,0 +1,82 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
-+TESTNAME=bpftool_metadata
-+BPF_FS=$(awk '$3 == "bpf" {print $2; exit}' /proc/mounts)
-+BPF_DIR=$BPF_FS/test_$TESTNAME
-+
-+_cleanup()
-+{
-+	set +e
-+	rm -rf $BPF_DIR 2> /dev/null
-+}
-+
-+cleanup_skip()
-+{
-+	echo "selftests: $TESTNAME [SKIP]"
-+	_cleanup
-+
-+	exit $ksft_skip
-+}
-+
-+cleanup()
-+{
-+	if [ "$?" = 0 ]; then
-+		echo "selftests: $TESTNAME [PASS]"
-+	else
-+		echo "selftests: $TESTNAME [FAILED]"
-+	fi
-+	_cleanup
-+}
-+
-+if [ $(id -u) -ne 0 ]; then
-+	echo "selftests: $TESTNAME [SKIP] Need root privileges"
-+	exit $ksft_skip
-+fi
-+
-+if [ -z "$BPF_FS" ]; then
-+	echo "selftests: $TESTNAME [SKIP] Could not run test without bpffs mounted"
-+	exit $ksft_skip
-+fi
-+
-+if ! bpftool version > /dev/null 2>&1; then
-+	echo "selftests: $TESTNAME [SKIP] Could not run test without bpftool"
-+	exit $ksft_skip
-+fi
-+
-+set -e
-+
-+trap cleanup_skip EXIT
-+
-+mkdir $BPF_DIR
-+
-+trap cleanup EXIT
-+
-+bpftool prog load metadata_unused.o $BPF_DIR/unused
-+
-+METADATA_PLAIN="$(bpftool prog)"
-+echo "$METADATA_PLAIN" | grep 'a = "foo"' > /dev/null
-+echo "$METADATA_PLAIN" | grep 'b = 1' > /dev/null
-+
-+bpftool prog --json | grep '"metadata":{"a":"foo","b":1}' > /dev/null
-+
-+bpftool map | grep 'metadata.rodata' > /dev/null
-+
-+rm $BPF_DIR/unused
-+
-+bpftool prog load metadata_used.o $BPF_DIR/used
-+
-+METADATA_PLAIN="$(bpftool prog)"
-+echo "$METADATA_PLAIN" | grep 'a = "bar"' > /dev/null
-+echo "$METADATA_PLAIN" | grep 'b = 2' > /dev/null
-+
-+bpftool prog --json | grep '"metadata":{"a":"bar","b":2}' > /dev/null
-+
-+bpftool map | grep 'metadata.rodata' > /dev/null
-+
-+rm $BPF_DIR/used
-+
-+exit 0
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+ #ifdef CONFIG_KASAN_SW_TAGS
+ 
+ #define KASAN_ESR_RECOVER	0x20
+@@ -1059,6 +1075,7 @@ int __init early_brk64(unsigned long addr, unsigned int esr,
+ void __init trap_init(void)
+ {
+ 	register_kernel_break_hook(&bug_break_hook);
++	register_kernel_break_hook(&fault_break_hook);
+ #ifdef CONFIG_KASAN_SW_TAGS
+ 	register_kernel_break_hook(&kasan_break_hook);
+ #endif
+diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+index eee1732ab6cd..aa0060178343 100644
+--- a/arch/arm64/mm/extable.c
++++ b/arch/arm64/mm/extable.c
+@@ -14,9 +14,7 @@ int fixup_exception(struct pt_regs *regs)
+ 	if (!fixup)
+ 		return 0;
+ 
+-	if (IS_ENABLED(CONFIG_BPF_JIT) &&
+-	    regs->pc >= BPF_JIT_REGION_START &&
+-	    regs->pc < BPF_JIT_REGION_END)
++	if (in_bpf_jit(regs))
+ 		return arm64_bpf_fixup_exception(fixup, regs);
+ 
+ 	regs->pc = (unsigned long)&fixup->fixup + fixup->fixup;
