@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782B626B8C7
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C59E26B8B6
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbgIPAt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 20:49:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53460 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726412AbgIOLlg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Sep 2020 07:41:36 -0400
+        id S1727089AbgIPAtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 20:49:08 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50192 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726413AbgIOLlh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Sep 2020 07:41:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600170068;
+        s=mimecast20190719; t=1600170069;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=w9fKJXKN7VEhK7rTxzSRwDVyT2JXTZwoaKL+6VZUoBs=;
-        b=ezngq0M4NEYBloXnPWHLQDK7SBuSo0x0m1GxKU3xU2bxOqS0aO284MIrh3+UBdXEw1gADq
-        aYlwq1STFvDaK1dlKPP7Zv5hKSWevyUGSPgb/JeIU0ZfU3RzLvqVdVjwyYH7y4+mN1aSLC
-        TRpo7DhfwIspl4VvOaKRq7lZpJ1dHRY=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232--cKWUAPSOxiWUHO-pgH2XQ-1; Tue, 15 Sep 2020 07:41:07 -0400
-X-MC-Unique: -cKWUAPSOxiWUHO-pgH2XQ-1
-Received: by mail-ed1-f70.google.com with SMTP id r8so1120702edy.17
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 04:41:06 -0700 (PDT)
+        bh=9f/6eHNeg0s6Jj9GHDvmuH44xs14vn5rt2HXh2zzaBw=;
+        b=Ann15HemyMVY+SocGqlfTlBicAURGZa+BK5rbVp1hg7HLqQWOL6CA/BjrQgLpxJak+noaB
+        O82uLCi82+jxUq9ta2kSdHVskP+Xdf1C8p2yW1173cXYvyRaOuOT9Bo3hE0dHUmiKgduFg
+        j+qO9awzoy7wL6+Uq4HY5+YycpybNYs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-3V8z0iVTMAijmHzBOZrMUg-1; Tue, 15 Sep 2020 07:41:07 -0400
+X-MC-Unique: 3V8z0iVTMAijmHzBOZrMUg-1
+Received: by mail-ej1-f69.google.com with SMTP id e13so1176808ejk.1
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 04:41:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=w9fKJXKN7VEhK7rTxzSRwDVyT2JXTZwoaKL+6VZUoBs=;
-        b=DT7ApG7fVKWK71CePODrsi+mJuhA5JxTSK0eJ4TOSZbrnkXu+yjXl7oaWBnzpnwG4G
-         r/CdgYMRrnjEc4O6qal8knqTicOOFXPghBNe+N0w6GVv6LN/rv58h25C+g5NUsCAItC7
-         571XnZuNDJzcuD1mI/hSmCzs3BLWSvnwqQGqhQhziVlzxMhUBxlwHfntntBv13mSYhv8
-         hqyhRp5IdWG/FxcuwlDYeB8GC4C7tiM4a1R67JFr0uMDFs39Wvb0SeSDUgw4KLhVBzM6
-         KtZpSi61ndkmG0tiuaBfXfOZJ0CS6I33aRiGXMsYzVztjRWQ5ZGehKbPmoLrmafsS2Pf
-         ukMw==
-X-Gm-Message-State: AOAM530B7gxrB1od/4BanStL7Plv7KdjF2vY0bhOcU6dNruQNvmj7doc
-        2B/HymaCZXEk/yczp438bWHjr8I3OxMAkS/N8hs2yy9a8Oj+gnqTjsV5Rkqv53V/KKFo3Hu6Tnt
-        CcnnbOzmJBGt2
-X-Received: by 2002:a17:906:3759:: with SMTP id e25mr19398377ejc.281.1600170065258;
+        bh=9f/6eHNeg0s6Jj9GHDvmuH44xs14vn5rt2HXh2zzaBw=;
+        b=NyUatThSJm4/pAdBp6+vBdE96UEHVPRen6Iv3lmBK6hGOEc43GTbgTk1SFvxBYX1UT
+         fYac/4tONjasjqreoHNF1MtxMNhMEHbjA8JgBu6KT9FljzPDAp0U//XhCu2yStI/gcn4
+         9W1KwPd7S7ik8DwaY775A5dGmb9evN+MTdL54JTerQZc0su16bTS8wROJc6L0+213V/o
+         HGyIrJbPacCkVxxfv19T1Qaos9jCMPsa12Rb5OlsXObtlBfmafbinZTapfOLM23MI7mX
+         X5CfJuXIhMP5YoSHa0EcMX7jgcwagThBUdylcx4L6ZeduL/aKlKvYvUJs+pgkw1LRm/0
+         p9ag==
+X-Gm-Message-State: AOAM530+m4T4NL2lzkvonJ9fqCk0FDNr6pFw55DXAxNhMY94r7NJP190
+        sPrdfLIxZ+Sdw90BJ4/pbWYAl4l1DX6WN+wXduWcCyU15PdLGFtznZc7AaVlz5S++0c44mpQ/H5
+        TU4ilV8yoh5LM
+X-Received: by 2002:a05:6402:1818:: with SMTP id g24mr21490388edy.332.1600170066024;
+        Tue, 15 Sep 2020 04:41:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLf225edBty+O7aa8SiXMzOyvo/W/zux7fXC+lFDqqW/qjopGbr/zoKWlpy6Y2vJrpUWid+g==
+X-Received: by 2002:a05:6402:1818:: with SMTP id g24mr21490369edy.332.1600170065615;
         Tue, 15 Sep 2020 04:41:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyX7RfRm6iniM5SmaodndIFtQgzIT5Ww5VKOvVQJmL14fylehW5jLhmGjq0VOp4n5vy3qNh3w==
-X-Received: by 2002:a17:906:3759:: with SMTP id e25mr19398348ejc.281.1600170064896;
-        Tue, 15 Sep 2020 04:41:04 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y9sm9937836ejw.96.2020.09.15.04.41.03
+        by smtp.gmail.com with ESMTPSA id o3sm11488272edt.79.2020.09.15.04.41.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 04:41:03 -0700 (PDT)
+        Tue, 15 Sep 2020 04:41:05 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 996C01829CB; Tue, 15 Sep 2020 13:41:03 +0200 (CEST)
-Subject: [PATCH bpf-next v5 6/8] libbpf: add support for freplace attachment
- in bpf_link_create
+        id B2F2E1829CC; Tue, 15 Sep 2020 13:41:04 +0200 (CEST)
+Subject: [PATCH bpf-next v5 7/8] selftests: add test for multiple attachments
+ of freplace program
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,8 +65,8 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Eelco Chaudron <echaudro@redhat.com>,
         KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Date:   Tue, 15 Sep 2020 13:41:03 +0200
-Message-ID: <160017006352.98230.621859348254499900.stgit@toke.dk>
+Date:   Tue, 15 Sep 2020 13:41:04 +0200
+Message-ID: <160017006463.98230.8855335735634444835.stgit@toke.dk>
 In-Reply-To: <160017005691.98230.13648200635390228683.stgit@toke.dk>
 References: <160017005691.98230.13648200635390228683.stgit@toke.dk>
 User-Agent: StGit/0.23
@@ -80,134 +80,300 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-This adds support for supplying a target btf ID for the bpf_link_create()
-operation, and adds a new bpf_program__attach_freplace() high-level API for
-attaching freplace functions with a target.
+This adds a selftest for attaching an freplace program to multiple targets
+simultaneously.
 
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/lib/bpf/bpf.c      |    1 +
- tools/lib/bpf/bpf.h      |    3 ++-
- tools/lib/bpf/libbpf.c   |   24 ++++++++++++++++++------
- tools/lib/bpf/libbpf.h   |    3 +++
- tools/lib/bpf/libbpf.map |    1 +
- 5 files changed, 25 insertions(+), 7 deletions(-)
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |  171 ++++++++++++++++----
+ .../selftests/bpf/progs/freplace_get_constant.c    |   15 ++
+ 2 files changed, 154 insertions(+), 32 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_get_constant.c
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 82b983ff6569..e928456c0dd6 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -599,6 +599,7 @@ int bpf_link_create(int prog_fd, int target_fd,
- 	attr.link_create.iter_info =
- 		ptr_to_u64(OPTS_GET(opts, iter_info, (void *)0));
- 	attr.link_create.iter_info_len = OPTS_GET(opts, iter_info_len, 0);
-+	attr.link_create.target_btf_id = OPTS_GET(opts, target_btf_id, 0);
- 
- 	return sys_bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
- }
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 015d13f25fcc..f8dbf666b62b 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -174,8 +174,9 @@ struct bpf_link_create_opts {
- 	__u32 flags;
- 	union bpf_iter_link_info *iter_info;
- 	__u32 iter_info_len;
-+	__u32 target_btf_id;
- };
--#define bpf_link_create_opts__last_field iter_info_len
-+#define bpf_link_create_opts__last_field target_btf_id
- 
- LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
- 			       enum bpf_attach_type attach_type,
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 550950eb1860..165131c73f40 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9322,12 +9322,14 @@ static struct bpf_link *attach_iter(const struct bpf_sec_def *sec,
- 
- static struct bpf_link *
- bpf_program__attach_fd(struct bpf_program *prog, int target_fd,
--		       const char *target_name)
-+		       int target_btf_id, const char *target_name)
- {
- 	enum bpf_attach_type attach_type;
- 	char errmsg[STRERR_BUFSIZE];
- 	struct bpf_link *link;
- 	int prog_fd, link_fd;
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
-+			    .target_btf_id = target_btf_id);
- 
- 	prog_fd = bpf_program__fd(prog);
- 	if (prog_fd < 0) {
-@@ -9340,8 +9342,12 @@ bpf_program__attach_fd(struct bpf_program *prog, int target_fd,
- 		return ERR_PTR(-ENOMEM);
- 	link->detach = &bpf_link__detach_fd;
- 
--	attach_type = bpf_program__get_expected_attach_type(prog);
--	link_fd = bpf_link_create(prog_fd, target_fd, attach_type, NULL);
-+	if (bpf_program__get_type(prog) == BPF_PROG_TYPE_EXT)
-+		attach_type = BPF_TRACE_FREPLACE;
-+	else
-+		attach_type = bpf_program__get_expected_attach_type(prog);
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+index eda682727787..3621d66e47dd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+@@ -2,36 +2,79 @@
+ /* Copyright (c) 2019 Facebook */
+ #include <test_progs.h>
+ #include <network_helpers.h>
++#include <bpf/btf.h>
 +
-+	link_fd = bpf_link_create(prog_fd, target_fd, attach_type, &opts);
- 	if (link_fd < 0) {
- 		link_fd = -errno;
- 		free(link);
-@@ -9357,19 +9363,25 @@ bpf_program__attach_fd(struct bpf_program *prog, int target_fd,
- struct bpf_link *
- bpf_program__attach_cgroup(struct bpf_program *prog, int cgroup_fd)
++typedef int (*test_cb)(struct bpf_object *obj);
++
++static int check_data_map(struct bpf_object *obj, int prog_cnt, bool reset)
++{
++	struct bpf_map *data_map = NULL, *map;
++	__u64 *result = NULL;
++	const int zero = 0;
++	__u32 duration = 0;
++	int ret = -1, i;
++
++	result = malloc((prog_cnt + 32 /* spare */) * sizeof(__u64));
++	if (CHECK(!result, "alloc_memory", "failed to alloc memory"))
++		return -ENOMEM;
++
++	bpf_object__for_each_map(map, obj)
++		if (bpf_map__is_internal(map)) {
++			data_map = map;
++			break;
++		}
++	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
++		goto out;
++
++	ret = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, result);
++	if (CHECK(ret, "get_result",
++		  "failed to get output data: %d\n", ret))
++		goto out;
++
++	for (i = 0; i < prog_cnt; i++) {
++		if (CHECK(result[i] != 1, "result",
++			  "fexit_bpf2bpf result[%d] failed err %llu\n",
++			  i, result[i]))
++			goto out;
++		result[i] = 0;
++	}
++	if (reset) {
++		ret = bpf_map_update_elem(bpf_map__fd(data_map), &zero, result, 0);
++		if (CHECK(ret, "reset_result", "failed to reset result\n"))
++			goto out;
++	}
++
++	ret = 0;
++out:
++	free(result);
++	return ret;
++}
+ 
+ static void test_fexit_bpf2bpf_common(const char *obj_file,
+ 				      const char *target_obj_file,
+ 				      int prog_cnt,
+ 				      const char **prog_name,
+-				      bool run_prog)
++				      bool run_prog,
++				      test_cb cb)
  {
--	return bpf_program__attach_fd(prog, cgroup_fd, "cgroup");
-+	return bpf_program__attach_fd(prog, cgroup_fd, 0, "cgroup");
+-	struct bpf_object *obj = NULL, *pkt_obj;
+-	int err, pkt_fd, i;
+-	struct bpf_link **link = NULL;
++	struct bpf_object *obj = NULL, *tgt_obj;
+ 	struct bpf_program **prog = NULL;
++	struct bpf_link **link = NULL;
+ 	__u32 duration = 0, retval;
+-	struct bpf_map *data_map;
+-	const int zero = 0;
+-	__u64 *result = NULL;
++	int err, tgt_fd, i;
+ 
+ 	err = bpf_prog_load(target_obj_file, BPF_PROG_TYPE_UNSPEC,
+-			    &pkt_obj, &pkt_fd);
++			    &tgt_obj, &tgt_fd);
+ 	if (CHECK(err, "tgt_prog_load", "file %s err %d errno %d\n",
+ 		  target_obj_file, err, errno))
+ 		return;
+ 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+-			    .attach_prog_fd = pkt_fd,
++			    .attach_prog_fd = tgt_fd,
+ 			   );
+ 
+ 	link = calloc(sizeof(struct bpf_link *), prog_cnt);
+ 	prog = calloc(sizeof(struct bpf_program *), prog_cnt);
+-	result = malloc((prog_cnt + 32 /* spare */) * sizeof(__u64));
+-	if (CHECK(!link || !prog || !result, "alloc_memory",
+-		  "failed to alloc memory"))
++	if (CHECK(!link || !prog, "alloc_memory", "failed to alloc memory"))
+ 		goto close_prog;
+ 
+ 	obj = bpf_object__open_file(obj_file, &opts);
+@@ -53,39 +96,33 @@ static void test_fexit_bpf2bpf_common(const char *obj_file,
+ 			goto close_prog;
+ 	}
+ 
+-	if (!run_prog)
+-		goto close_prog;
++	if (cb) {
++		err = cb(obj);
++		if (err)
++			goto close_prog;
++	}
+ 
+-	data_map = bpf_object__find_map_by_name(obj, "fexit_bp.bss");
+-	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
++	if (!run_prog)
+ 		goto close_prog;
+ 
+-	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
++	err = bpf_prog_test_run(tgt_fd, 1, &pkt_v6, sizeof(pkt_v6),
+ 				NULL, NULL, &retval, &duration);
+ 	CHECK(err || retval, "ipv6",
+ 	      "err %d errno %d retval %d duration %d\n",
+ 	      err, errno, retval, duration);
+ 
+-	err = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, result);
+-	if (CHECK(err, "get_result",
+-		  "failed to get output data: %d\n", err))
++	if (check_data_map(obj, prog_cnt, false))
+ 		goto close_prog;
+ 
+-	for (i = 0; i < prog_cnt; i++)
+-		if (CHECK(result[i] != 1, "result", "fexit_bpf2bpf failed err %llu\n",
+-			  result[i]))
+-			goto close_prog;
+-
+ close_prog:
+ 	for (i = 0; i < prog_cnt; i++)
+ 		if (!IS_ERR_OR_NULL(link[i]))
+ 			bpf_link__destroy(link[i]);
+ 	if (!IS_ERR_OR_NULL(obj))
+ 		bpf_object__close(obj);
+-	bpf_object__close(pkt_obj);
++	bpf_object__close(tgt_obj);
+ 	free(link);
+ 	free(prog);
+-	free(result);
  }
  
- struct bpf_link *
- bpf_program__attach_netns(struct bpf_program *prog, int netns_fd)
- {
--	return bpf_program__attach_fd(prog, netns_fd, "netns");
-+	return bpf_program__attach_fd(prog, netns_fd, 0, "netns");
+ static void test_target_no_callees(void)
+@@ -96,7 +133,7 @@ static void test_target_no_callees(void)
+ 	test_fexit_bpf2bpf_common("./fexit_bpf2bpf_simple.o",
+ 				  "./test_pkt_md_access.o",
+ 				  ARRAY_SIZE(prog_name),
+-				  prog_name, true);
++				  prog_name, true, NULL);
  }
  
- struct bpf_link *bpf_program__attach_xdp(struct bpf_program *prog, int ifindex)
- {
- 	/* target_fd/target_ifindex use the same field in LINK_CREATE */
--	return bpf_program__attach_fd(prog, ifindex, "xdp");
-+	return bpf_program__attach_fd(prog, ifindex, 0, "xdp");
+ static void test_target_yes_callees(void)
+@@ -110,7 +147,7 @@ static void test_target_yes_callees(void)
+ 	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.o",
+ 				  "./test_pkt_access.o",
+ 				  ARRAY_SIZE(prog_name),
+-				  prog_name, true);
++				  prog_name, true, NULL);
+ }
+ 
+ static void test_func_replace(void)
+@@ -128,7 +165,7 @@ static void test_func_replace(void)
+ 	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.o",
+ 				  "./test_pkt_access.o",
+ 				  ARRAY_SIZE(prog_name),
+-				  prog_name, true);
++				  prog_name, true, NULL);
+ }
+ 
+ static void test_func_replace_verify(void)
+@@ -139,7 +176,75 @@ static void test_func_replace_verify(void)
+ 	test_fexit_bpf2bpf_common("./freplace_connect4.o",
+ 				  "./connect4_prog.o",
+ 				  ARRAY_SIZE(prog_name),
+-				  prog_name, false);
++				  prog_name, false, NULL);
 +}
 +
-+struct bpf_link *bpf_program__attach_freplace(struct bpf_program *prog,
-+					      int target_fd, int target_btf_id)
++static int test_second_attach(struct bpf_object *obj)
 +{
-+	return bpf_program__attach_fd(prog, target_fd, target_btf_id, "freplace");
++	const char *prog_name = "freplace/get_constant";
++	const char *tgt_name = prog_name + 9; /* cut off freplace/ */
++	const char *tgt_obj_file = "./test_pkt_access.o";
++	int err = 0, tgt_fd, tgt_btf_id, link_fd = -1;
++	struct bpf_program *prog = NULL;
++	struct bpf_object *tgt_obj;
++	__u32 duration = 0, retval;
++	struct btf *btf;
++
++	prog = bpf_object__find_program_by_title(obj, prog_name);
++	if (CHECK(!prog, "find_prog", "prog %s not found\n", prog_name))
++		return -ENOENT;
++
++	err = bpf_prog_load(tgt_obj_file, BPF_PROG_TYPE_UNSPEC,
++			    &tgt_obj, &tgt_fd);
++	if (CHECK(err, "second_prog_load", "file %s err %d errno %d\n",
++		  tgt_obj_file, err, errno))
++		return err;
++
++	btf = bpf_object__btf(tgt_obj);
++	tgt_btf_id = btf__find_by_name_kind(btf, tgt_name, BTF_KIND_FUNC);
++	if (CHECK(tgt_btf_id < 0, "find_btf", "no BTF ID found for func %s\n", prog_name)) {
++		err = -ENOENT;
++		goto out;
++	}
++
++	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
++			    .target_btf_id = tgt_btf_id,
++			   );
++	link_fd = bpf_link_create(bpf_program__fd(prog), tgt_fd,
++				  BPF_TRACE_FREPLACE, &opts);
++	if (CHECK(link_fd < 0, "second_link", "err %d errno %d",
++		  link_fd, errno)) {
++		err = link_fd;
++		goto out;
++	}
++
++	err = bpf_prog_test_run(tgt_fd, 1, &pkt_v6, sizeof(pkt_v6),
++				NULL, NULL, &retval, &duration);
++	if (CHECK(err || retval, "ipv6",
++		  "err %d errno %d retval %d duration %d\n",
++		  err, errno, retval, duration))
++		goto out;
++
++	err = check_data_map(obj, 1, true);
++	if (err)
++		goto out;
++
++out:
++	if (link_fd >= 0)
++		close(link_fd);
++	bpf_object__close(tgt_obj);
++	return err;
++}
++
++static void test_func_replace_multi(void)
++{
++	const char *prog_name[] = {
++		"freplace/get_constant",
++	};
++	test_fexit_bpf2bpf_common("./freplace_get_constant.o",
++				  "./test_pkt_access.o",
++				  ARRAY_SIZE(prog_name),
++				  prog_name, true, test_second_attach);
  }
  
- struct bpf_link *
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index a750f67a23f6..ce5add9b9203 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -261,6 +261,9 @@ LIBBPF_API struct bpf_link *
- bpf_program__attach_netns(struct bpf_program *prog, int netns_fd);
- LIBBPF_API struct bpf_link *
- bpf_program__attach_xdp(struct bpf_program *prog, int ifindex);
-+LIBBPF_API struct bpf_link *
-+bpf_program__attach_freplace(struct bpf_program *prog,
-+			     int target_fd, int target_btf_id);
+ static void test_func_sockmap_update(void)
+@@ -150,7 +255,7 @@ static void test_func_sockmap_update(void)
+ 	test_fexit_bpf2bpf_common("./freplace_cls_redirect.o",
+ 				  "./test_cls_redirect.o",
+ 				  ARRAY_SIZE(prog_name),
+-				  prog_name, false);
++				  prog_name, false, NULL);
+ }
  
- struct bpf_map;
- 
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 92ceb48a5ca2..3cc2c42f435d 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -302,6 +302,7 @@ LIBBPF_0.1.0 {
- 
- LIBBPF_0.2.0 {
- 	global:
-+		bpf_program__attach_freplace;
- 		bpf_program__section_name;
- 		perf_buffer__buffer_cnt;
- 		perf_buffer__buffer_fd;
+ static void test_obj_load_failure_common(const char *obj_file,
+@@ -222,4 +327,6 @@ void test_fexit_bpf2bpf(void)
+ 		test_func_replace_return_code();
+ 	if (test__start_subtest("func_map_prog_compatibility"))
+ 		test_func_map_prog_compatibility();
++	if (test__start_subtest("func_replace_multi"))
++		test_func_replace_multi();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/freplace_get_constant.c b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
+new file mode 100644
+index 000000000000..8f0ecf94e533
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++
++volatile __u64 test_get_constant = 0;
++SEC("freplace/get_constant")
++int new_get_constant(long val)
++{
++	if (val != 123)
++		return 0;
++	test_get_constant = 1;
++	return test_get_constant; /* original get_constant() returns val - 122 */
++}
++char _license[] SEC("license") = "GPL";
 
