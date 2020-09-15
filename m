@@ -2,173 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF5A26B1D9
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 00:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AD126B39A
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 01:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727748AbgIOWff (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 18:35:35 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33324 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727581AbgIOWfU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Sep 2020 18:35:20 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FMZE1J013694
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 15:35:16 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=m425gCFPb89xt08xff+KNc+hc7+O91YowoSqlz1Kjhw=;
- b=dLHrhjmoIoqd/s5sKJTKtRC9bqUZgyyS5aLShpQ6mP/X4HBAQgxFmaAsn2qDdhEF1rjb
- FeTACiB9Z3LdMfLlZrllus6QzWXXsgrEYTvUsN0P0IhN+YPdlr++L2/tYcnVEgtoRq+0
- SQFXFdaPzz9zeiG9YzOMYTCea6i9stoI2Y0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33k5q607qk-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 15:35:16 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Sep 2020 15:35:11 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id D0A633700963; Tue, 15 Sep 2020 15:35:07 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        id S1727505AbgIOXGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 19:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgIOOsG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:48:06 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6997CC061225
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 06:54:39 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so5228552eja.2
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 06:54:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8j+lblg1sV2zcZbQlE+z8kJXho9SmxIjdqx8+vh4bbk=;
+        b=zs+wxazNDlzCncy6nDFpBVAZ1RQDAAaDIp4sgRNsL1wLq+A775Sonp1E73R0J25AVP
+         wy+SnCoRFJgQhHKHZxHVMgMyOAfT7swYrS/2Rkpjo9PLimRa4BF4VyHBmitwaNFAfcbz
+         PkB8vA6NoDvNsOx1u/zLDI1sXyOsnQ5gSnY6qSzqhMoaisXFVrFuMrFvjpWZULthxOZL
+         yBYcG7YdLvAu7bvVsIqNSivaWKPF3tEQyn6nXD0JOghQw6y+WAMp7D/93G/lWsu9zjwy
+         c9O1KIyEwffdY/suauSk9oektYPK33FRkuqorQX/7ozLl40NPRjHfLGr3LLDJQMrwpek
+         Fhyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8j+lblg1sV2zcZbQlE+z8kJXho9SmxIjdqx8+vh4bbk=;
+        b=aiNt0+UVYo9R0yEdnWxAt55blQVNvexR5RzGKA8dqjO/BlXhp/QdLv/36fUbJfrQEu
+         p8ODAPiQntVsQ//6LkWhkPTKfas4b0suCtj4Kp6FmUerQ4r/BHO/2y8yNVfTjpPfGebk
+         DDPmQoAnRNy/BnOb8yvxsAav513cCmGvNJcf/uMLvsFdrepIlrMfs7o4FdjlsQ+RN1Lm
+         uEugiwzWy8F4GTJezXNWnVJvOfCF+HkzYslafbFFULVJ2ecCXsJ7VUcjrnrdAfHTHbjR
+         D+oQqEwloiJZp+URkbn8Utso1eZe/QpJx4COcq4WR8dQ6KhbzpuiEiw6UccS0jsiMRuj
+         +1nA==
+X-Gm-Message-State: AOAM532sSlNge9Oj5y1bdX62BwnMMz4vW1yRoj4U71kHXKHSkJFqc92m
+        Jt9OInLW+uLxJga8wf+BPwuagw==
+X-Google-Smtp-Source: ABdhPJzqkOj32ZaO+3P5Qf1khy2XosqxXmtjomHSAQuuF7ae+SHvA1glksbWQzSbDtjFWs0zPPHdnw==
+X-Received: by 2002:a17:907:417c:: with SMTP id oe20mr19627489ejb.322.1600178078059;
+        Tue, 15 Sep 2020 06:54:38 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id ef3sm7912845ejb.114.2020.09.15.06.54.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 06:54:37 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 15:54:19 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v2] bpf: using rcu_read_lock for bpf_sk_storage_map iterator
-Date:   Tue, 15 Sep 2020 15:35:07 -0700
-Message-ID: <20200915223507.3792641-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200915135419.GB1748187@myrica>
+References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
+ <20200915131102.GA26439@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_14:2020-09-15,2020-09-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- bulkscore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=742 suspectscore=8 malwarescore=0 impostorscore=0 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009150177
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915131102.GA26439@willie-the-truck>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If a bucket contains a lot of sockets, during bpf_iter traversing
-a bucket, concurrent userspace bpf_map_update_elem() and
-bpf program bpf_sk_storage_{get,delete}() may experience
-some undesirable delays as they will compete with bpf_iter
-for bucket lock.
+On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
+> >  		ret = build_insn(insn, ctx, extra_pass);
+> >  		if (ret > 0) {
+> >  			i++;
+> >  			if (ctx->image == NULL)
+> > -				ctx->offset[i] = ctx->idx;
+> > +				ctx->offset[i] = ctx->offset[i - 1];
+> 
+> Does it matter that we set the offset for both halves of a 16-byte BPF
+> instruction? I think that's a change in behaviour here.
 
-Note that the number of buckets for bpf_sk_storage_map
-is roughly the same as the number of cpus. So if there
-are lots of sockets in the system, each bucket could
-contain lots of sockets.
+After testing this patch a bit, I think setting only the first slot should
+be sufficient, and we can drop these two lines. It does make a minor
+difference, because although the BPF verifier normally rejects a program
+that jumps into the middle of a 16-byte instruction, it can validate it in
+some cases: 
 
-Different actual use cases may experience different delays.
-Here, using selftest bpf_iter subtest bpf_sk_storage_map,
-I hacked the kernel with ktime_get_mono_fast_ns()
-to collect the time when a bucket was locked
-during bpf_iter prog traversing that bucket. This way,
-the maximum incurred delay was measured w.r.t. the
-number of elements in a bucket.
-    # elems in each bucket          delay(ns)
-      64                            17000
-      256                           72512
-      2048                          875246
+        BPF_LD_IMM64(BPF_REG_0, 2)		// 16-byte immediate load
+        BPF_JMP_IMM(BPF_JLE, BPF_REG_0, 1, -2)	// If r0 <= 1, branch to
+        BPF_EXIT_INSN()				//  the middle of the insn
 
-The potential delays will be further increased if
-we have even more elemnts in a bucket. Using rcu_read_lock()
-is a reasonable compromise here. It may lose some precision, e.g.,
-access stale sockets, but it will not hurt performance of
-bpf program or user space application which also tries
-to get/delete or update map elements.
+The verifier detects that the condition is always false and doesn't follow
+the branch, hands the program to the JIT. So if we don't set the second
+slot, then we generate an invalid branch offset. But that doesn't really
+matter as the branch is never taken.
 
-Cc: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- net/core/bpf_sk_storage.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
-
-Changelog:
- v1 -> v2:
-   - added some performance number. (Song)
-   - tried to silence some sparse complains. but still has some left like
-       context imbalance in "..." - different lock contexts for basic blo=
-ck
-     which the code is too hard for sparse to analyze. (Jakub)
-
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index 4a86ea34f29e..4fc6b03d3639 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -678,6 +678,7 @@ struct bpf_iter_seq_sk_storage_map_info {
- static struct bpf_local_storage_elem *
- bpf_sk_storage_map_seq_find_next(struct bpf_iter_seq_sk_storage_map_info=
- *info,
- 				 struct bpf_local_storage_elem *prev_selem)
-+	__acquires(RCU) __releases(RCU)
- {
- 	struct bpf_local_storage *sk_storage;
- 	struct bpf_local_storage_elem *selem;
-@@ -701,7 +702,7 @@ bpf_sk_storage_map_seq_find_next(struct bpf_iter_seq_=
-sk_storage_map_info *info,
- 		if (!selem) {
- 			/* not found, unlock and go to the next bucket */
- 			b =3D &smap->buckets[bucket_id++];
--			raw_spin_unlock_bh(&b->lock);
-+			rcu_read_unlock();
- 			skip_elems =3D 0;
- 			break;
- 		}
-@@ -715,7 +716,7 @@ bpf_sk_storage_map_seq_find_next(struct bpf_iter_seq_=
-sk_storage_map_info *info,
-=20
- 	for (i =3D bucket_id; i < (1U << smap->bucket_log); i++) {
- 		b =3D &smap->buckets[i];
--		raw_spin_lock_bh(&b->lock);
-+		rcu_read_lock();
- 		count =3D 0;
- 		hlist_for_each_entry(selem, &b->list, map_node) {
- 			sk_storage =3D rcu_dereference_raw(selem->local_storage);
-@@ -726,7 +727,7 @@ bpf_sk_storage_map_seq_find_next(struct bpf_iter_seq_=
-sk_storage_map_info *info,
- 			}
- 			count++;
- 		}
--		raw_spin_unlock_bh(&b->lock);
-+		rcu_read_unlock();
- 		skip_elems =3D 0;
- 	}
-=20
-@@ -801,18 +802,12 @@ static int bpf_sk_storage_map_seq_show(struct seq_f=
-ile *seq, void *v)
- }
-=20
- static void bpf_sk_storage_map_seq_stop(struct seq_file *seq, void *v)
-+	__releases(RCU)
- {
--	struct bpf_iter_seq_sk_storage_map_info *info =3D seq->private;
--	struct bpf_local_storage_map *smap;
--	struct bpf_local_storage_map_bucket *b;
--
--	if (!v) {
-+	if (!v)
- 		(void)__bpf_sk_storage_map_seq_show(seq, v);
--	} else {
--		smap =3D (struct bpf_local_storage_map *)info->map;
--		b =3D &smap->buckets[info->bucket_id];
--		raw_spin_unlock_bh(&b->lock);
--	}
-+	else
-+		rcu_read_unlock();
- }
-=20
- static int bpf_iter_init_sk_storage_map(void *priv_data,
---=20
-2.24.1
-
+Thanks,
+Jean
