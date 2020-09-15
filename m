@@ -2,67 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5684D26B275
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 00:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C1526B212
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 00:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727325AbgIOWqu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 18:46:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727493AbgIOPpa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:45:30 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 144F72074B;
-        Tue, 15 Sep 2020 15:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600184009;
-        bh=2iRcJU8Ti0lcAhNxfiVEN4cswY2yaG6DJiD4aEN8qs8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eOFqPPCZHUX6vbwqI6qX/xtTObi7g8YLeDSTfUVbhqZWGBJ6rRmo0aotdv/VDqlDV
-         A/ai9GUIEGMte35YGxf1x3H9fD2/dbFwNZJICQhH7wp1KfG1UlbUL6g5PEH1DqNf+N
-         7x9A73jQBRz5MAIDJzKSsca2ZZpwEdYXLHWEObUI=
-Date:   Tue, 15 Sep 2020 08:33:27 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next] bpf: using rcu_read_lock for
- bpf_sk_storage_map iterator
-Message-ID: <20200915083327.7e98cf2d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200914184630.1048718-1-yhs@fb.com>
-References: <20200914184630.1048718-1-yhs@fb.com>
+        id S1727642AbgIOWk4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 18:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727434AbgIOP5x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:57:53 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FA7C06178B;
+        Tue, 15 Sep 2020 08:48:32 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b19so3234945lji.11;
+        Tue, 15 Sep 2020 08:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CaOGhpbsvAKZ1xKkD6mDooerCGhLM4qieRX/kAjlRF0=;
+        b=h1miVdBNCAKPdvV2ZSqK0snhgJr6Tn3fIlpOovCOXfF7pQ1I55L/K9R8OxYe+Nz34n
+         CnhFm6L7KahjSDaCrEYYec0uULxzLKCwMBy3DVzGPByUDglSqX/1B+hvtGvqjd5plVgP
+         qEa4cl29Zm7HAZSKgEtnEo4uq3a/sNZZmKn6ZLY6DIg/MKUpwtUrxaFf2RTLBv6d9Z2s
+         VpBLtlswNxh0X5vK83p1bHSu78TsW4KZxX9s1Iyn+/JUwcA5SF2it/yTcsPWm2WG9W3A
+         BWvZUjKBDaOAvqdgJIpotUV4m4wUhDCxnHs3sDfoNghsybxwnJL8/q6YkjJE1G9e2cYM
+         fLUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CaOGhpbsvAKZ1xKkD6mDooerCGhLM4qieRX/kAjlRF0=;
+        b=bq7/SdibQGr65u2XTYOmeTrdt90ehmJswfiojy9WPdQJ2hyPb/qM9tqJF/W/s2XRZH
+         k08krrA2DBGXm/c1s56VEVVW6jzhV2RgDCOgTrUoQb3yBxls00hmyhnvNx5+BQalrKJ/
+         r9uCBR7O3aBRaWdi4se/k04kvAUL7UcZALhNT5+MowKUpgD8IHiLxlgCSM/BXb9Tmzb3
+         X91zYTCCbL3cA8wWQ9q01yZhD9vQ5Gv26CTINusn3vfIH/4lC6DAwUeYa9DCY13ziRoT
+         yZT/cMUvDNrPtiqiG2sIQblT9rfB+buWTlo108WeWg7s5shggu1Cw6GMTM2+G0gY/wbF
+         vdlg==
+X-Gm-Message-State: AOAM531aC4ZO2i3+9ZO3ejzbBPFXsimiDtl4r722EVZs9T0pS7fdD1Os
+        y0SPaRm/Xy4kOr8qOPMA7gSXKkUdWL/DP407QEo=
+X-Google-Smtp-Source: ABdhPJzYZIs3iwl7dynyIfnvaKxqVJAmszYOcCrYqvAMffkF3MwmjowLn/dWFzc+UmdDfUGuwqoRUUNht3PbiMWgAUg=
+X-Received: by 2002:a2e:8593:: with SMTP id b19mr6762656lji.290.1600184911181;
+ Tue, 15 Sep 2020 08:48:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200902200815.3924-1-maciej.fijalkowski@intel.com>
+ <20200902200815.3924-8-maciej.fijalkowski@intel.com> <20200903195114.ccfzmgcl4ngz2mqv@ast-mbp.dhcp.thefacebook.com>
+ <20200911185927.GA2543@ranger.igk.intel.com> <20200915043924.uicfgbhuszccycbq@ast-mbp.dhcp.thefacebook.com>
+ <5bf5a63c-7607-a24d-7e14-e41caa84bfc3@iogearbox.net>
+In-Reply-To: <5bf5a63c-7607-a24d-7e14-e41caa84bfc3@iogearbox.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 15 Sep 2020 08:48:19 -0700
+Message-ID: <CAADnVQJoCXa90Pvkm5xyNAR3cHGx+0YO58hHOnq+LsiQuJMBiQ@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 7/7] selftests: bpf: add dummy prog for
+ bpf2bpf with tailcall
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 14 Sep 2020 11:46:30 -0700 Yonghong Song wrote:
-> Currently, we use bucket_lock when traversing bpf_sk_storage_map
-> elements. Since bpf_iter programs cannot use bpf_sk_storage_get()
-> and bpf_sk_storage_delete() helpers which may also grab bucket lock,
-> we do not have a deadlock issue which exists for hashmap when
-> using bucket_lock ([1]).
-> 
-> If a bucket contains a lot of sockets, during bpf_iter traversing
-> a bucket, concurrent bpf_sk_storage_{get,delete}() may experience
-> some undesirable delays. Using rcu_read_lock() is a reasonable
-> compromise here. Although it may lose some precision, e.g.,
-> access stale sockets, but it will not hurt performance of other
-> bpf programs.
-> 
-> [1] https://lore.kernel.org/bpf/20200902235341.2001534-1-yhs@fb.com
-> 
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+On Tue, Sep 15, 2020 at 8:03 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 9/15/20 6:39 AM, Alexei Starovoitov wrote:
+> > On Fri, Sep 11, 2020 at 08:59:27PM +0200, Maciej Fijalkowski wrote:
+> >> On Thu, Sep 03, 2020 at 12:51:14PM -0700, Alexei Starovoitov wrote:
+> >>> On Wed, Sep 02, 2020 at 10:08:15PM +0200, Maciej Fijalkowski wrote:
+> [...]
+> >>> Could you add few more tests to exercise the new feature more thoroughly?
+> >>> Something like tailcall3.c that checks 32 limit, but doing tail_call from subprog.
+> >>> And another test that consume non-trival amount of stack in each function.
+> >>> Adding 'volatile char arr[128] = {};' would do the trick.
+> >>
+> >> Yet another prolonged silence from my side, but not without a reason -
+> >> this request opened up a Pandora's box.
+> >
+> > Great catch and thanks to our development practices! As a community we should
+> > remember this lesson and request selftests more often than not.
+>
+> +1, speaking of pandora ... ;-) I recently noticed that we also have the legacy
+> ld_abs/ld_ind instructions. Right now check_ld_abs() gates them by bailing out
+> if env->subprog_cnt > 1, but that doesn't solve everything given the prog itself
+> may not have bpf2bpf calls, but it could get tail-called out of a subprog. We
+> need to reject such cases (& add selftests for it), otherwise this would be a
+> verifier bypass given they may implicitly exit the program (and then mismatch
+> the return type that the verifier was expecting).
 
-Sparse is not happy about it. Could you add some annotations, perhaps?
-
-include/linux/rcupdate.h:686:9: warning: context imbalance in 'bpf_sk_storage_map_seq_find_next' - unexpected unlock
-include/linux/rcupdate.h:686:9: warning: context imbalance in 'bpf_sk_storage_map_seq_stop' - unexpected unlock
+Good point. I think it's easier to allow ld_abs though.
+The comment in check_ld_abs() is obsolete after gen_ld_abs() was added.
+The verifier needs to check that subprog that is doing ld_abs or tail_call
+has 'int' return type and check_reference_leak() doesn't error before
+ld_abs and before bpf_tail_call.
+In that sense doing bpf_tail_call from subprog has the same issues as ld_abs
+(reference leaks and int return requirement)
