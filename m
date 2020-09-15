@@ -2,245 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FEF26A4E7
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 14:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1FA26A5FF
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 15:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgIOMSY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 08:18:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22064 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726435AbgIOMRw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:17:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600172268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9oOgxpngHTB1FtU/CXAt4u7kW8ArCGsX+y8YuT6JY4w=;
-        b=JWwd+9aA4eEXLkNgyTbMBiCEamLXp7Jglo+NyMrMBPKZbJ6QCugQMEoKw4nmzzkt3pafei
-        7+qDCONT1BabLxhKokRp8zBRlgCS4jxFMHp998KIU99s2mFCz7u3XfiXb4kwHiVINHg59o
-        lX0mT4kRTvS83sBWkaeUDd1QM3uqnBU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-mt6TTkJOMoCZCpYsv2KNAQ-1; Tue, 15 Sep 2020 08:17:47 -0400
-X-MC-Unique: mt6TTkJOMoCZCpYsv2KNAQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726136AbgIONLq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 09:11:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726498AbgIONLO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:11:14 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D64BB1882FA0;
-        Tue, 15 Sep 2020 12:17:45 +0000 (UTC)
-Received: from krava (unknown [10.40.192.180])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 086195DDB8;
-        Tue, 15 Sep 2020 12:17:43 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 14:17:43 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Veronika Kabatova <vkabatov@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        by mail.kernel.org (Postfix) with ESMTPSA id EC0A520872;
+        Tue, 15 Sep 2020 13:11:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600175470;
+        bh=u/HTMK9SYBgCqASpK328ZsVw4zxDrK6hSpUMfxoRGKw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zV2bRb447YudntQTxCq5cx2hsf+YfN2kbD2p5EqaMRL+St1Y33ZWmsv2Ze0mdR7Sf
+         Se+09pdD9vpCL9V9m6Xn0izS8bxbmU8jedSPALDVzeQZQqREX3WSQ/AbA/pxSHDgRG
+         QQbW/1YpEn7age6n20mMP155ep19TpDqgMmAPNtM=
+Date:   Tue, 15 Sep 2020 14:11:03 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        bpf <bpf@vger.kernel.org>, "Frank Ch. Eigler" <fche@redhat.com>
-Subject: Re: Build failures: unresolved symbol vfs_getattr
-Message-ID: <20200915121743.GA2199675@krava>
-References: <1723352278.11013122.1600093319730.JavaMail.zimbra@redhat.com>
- <748495289.11017858.1600094916732.JavaMail.zimbra@redhat.com>
- <20200914182513.GK1714160@krava>
- <CAEf4Bzb7B+_s0Y2oN5TZARTmJby3npTVKDuDKDKfgmbBkAdpPQ@mail.gmail.com>
- <20200915073030.GE1714160@krava>
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200915131102.GA26439@willie-the-truck>
+References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915073030.GE1714160@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 09:30:33AM +0200, Jiri Olsa wrote:
-> On Mon, Sep 14, 2020 at 03:26:33PM -0700, Andrii Nakryiko wrote:
-> > On Mon, Sep 14, 2020 at 11:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Mon, Sep 14, 2020 at 10:48:36AM -0400, Veronika Kabatova wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > we tested the bpf-next tree with CKI and ran across build failures. The
-> > > > important part of the build log is:
-> > > >
-> > > > 00:18:05   GEN     .version
-> > > > 00:18:05   CHK     include/generated/compile.h
-> > > > 00:18:05   LD      vmlinux.o
-> > > > 00:18:27   MODPOST vmlinux.symvers
-> > > > 00:18:27   MODINFO modules.builtin.modinfo
-> > > > 00:18:27   GEN     modules.builtin
-> > > > 00:18:27   LD      .tmp_vmlinux.btf
-> > > > 00:18:42   BTF     .btf.vmlinux.bin.o
-> > > > 00:19:13   LD      .tmp_vmlinux.kallsyms1
-> > > > 00:19:19   KSYM    .tmp_vmlinux.kallsyms1.o
-> > > > 00:19:22   LD      .tmp_vmlinux.kallsyms2
-> > > > 00:19:25   KSYM    .tmp_vmlinux.kallsyms2.o
-> > > > 00:19:28   LD      vmlinux
-> > > > 00:19:40   BTFIDS  vmlinux
-> > > > 00:19:40 FAILED unresolved symbol vfs_getattr
-> > > > 00:19:40 make[2]: *** [Makefile:1167: vmlinux] Error 255
-> > > > 00:19:40 make[1]: *** [scripts/Makefile.package:109: targz-pkg] Error 2
-> > > > 00:19:40 make: *** [Makefile:1528: targz-pkg] Error 2
-> > >
-> > > hi,
-> > > it looks like broken BTF data to me, I checked that build
-> > > and found we have multiple records for functions, like
-> > > for filp_close:
-> > >
-> > >         [23381] FUNC_PROTO '(anon)' ret_type_id=19 vlen=2
-> > >                 '(anon)' type_id=464
-> > >                 'id' type_id=960
-> > >         [23382] FUNC 'filp_close' type_id=23381 linkage=static
-> > >
-> > >
-> > >         [33073] FUNC_PROTO '(anon)' ret_type_id=19 vlen=2
-> > >                 'filp' type_id=464
-> > >                 'id' type_id=960
-> > >         [33074] FUNC 'filp_close' type_id=33073 linkage=static
-> > >
-> > >
-> > > or vfs_getattr:
-> > >
-> > >         [33513] FUNC_PROTO '(anon)' ret_type_id=19 vlen=4
-> > >                 'path' type_id=741
-> > >                 'stat' type_id=1095
-> > >                 'request_mask' type_id=29
-> > >                 'query_flags' type_id=8
-> > >
-> > >         [33514] FUNC 'vfs_getattr' type_id=33513 linkage=static
-> > >
-> > >         [1094] FUNC_PROTO '(anon)' ret_type_id=19 vlen=4
-> > >                 '(anon)' type_id=741
-> > >                 '(anon)' type_id=1095
-> > >                 '(anon)' type_id=29
-> > >                 '(anon)' type_id=8
-> > >
-> > >         [35099] FUNC 'vfs_getattr' type_id=1094 linkage=static
-> > >
-> > >
-> > > and because we go through all BTF data until we resolve all we have,
-> > > the doubled funcs will screw our internal counter and we skip a function
-> > >
-> > > the change below will workaround that, but I think we should fail in
-> > > this case.. if I'm not missing something 2 FUNC records for one function
-> > > in BTF data
-> > >
-> > > $ pahole --version
-> > > v1.17
-> > >
-> > > HEAD is 2bab48c5b Merge branch 'improve-bpf-tcp-cc-init'
-> > >
-> > > thoughts? thanks
-> > 
-> > Can't repro this locally. It must be some bad compiler +  DWARF +
-> > pahole interaction. Can you try building pahole from latest sources
-> > and try again? Also, what compiler did you use? What Kconfig?
+Hi Ilias,
+
+On Mon, Sep 14, 2020 at 07:03:55PM +0300, Ilias Apalodimas wrote:
+> Running the eBPF test_verifier leads to random errors looking like this:
 > 
-> sorry I cut the original message, there's following container that
-> reproduces the issue:
-> 
-> 	The failure is easily reproduced with our container image that already
-> 	has all the needed dependencies installed:
-> 	registry.gitlab.com/cki-project/containers/builder-rawhide:latest
-> 
-> 	Steps to reproduce after starting the image:
-> 
-> 	git clone https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git --depth 1
-> 	curl https://gitlab.com/-/snippets/2014934/raw -o bpf-next/.config
-> 	cd bpf-next/
-> 	make -j 10 INSTALL_MOD_STRIP=1 targz-pkg
-> 
-> 
-> [root@30a9be783e4e /]# gcc --version
-> gcc (GCC) 10.2.1 20200826 (Red Hat 10.2.1-3)
-> 
-> I built the latest pahole in that container and still see the issue,
-> I also tried with v1.16 version and it's still there
-> 
-> I don't see the issue when I build kernel with another .config
-> so I'll try to check on that now
+> [ 6525.735488] Unexpected kernel BRK exception at EL1
+> [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
 
-readelf --debug has 2 records for vfs_getattr
-fs/stat.c and include/linux/fs.h
+Does this happen because we poison the BPF memory with BRK instructions?
+Maybe we should look at using a special immediate so we can detect this,
+rather than end up in the ptrace handler.
 
-fs/stat.c:
-	 <1><11f9847>: Abbrev Number: 119 (DW_TAG_subprogram)
-	    <11f9848>   DW_AT_external    : 1
-	    <11f9848>   DW_AT_name        : (indirect string, offset: 0x9eaeb): vfs_getattr
-	    <11f984c>   DW_AT_decl_file   : 1
-	    <11f984d>   DW_AT_decl_line   : 116
-	    <11f984e>   DW_AT_decl_column : 5
-	    <11f984f>   DW_AT_prototyped  : 1
-	    <11f984f>   DW_AT_type        : <0x11ebe32>
-	    <11f9853>   DW_AT_inline      : 1   (inlined)
-	    <11f9854>   DW_AT_sibling     : <0x11f9895>
-	 <2><11f9858>: Abbrev Number: 35 (DW_TAG_formal_parameter)
-	    <11f9859>   DW_AT_name        : (indirect string, offset: 0x70041): path
-	    <11f985d>   DW_AT_decl_file   : 1
-	    <11f985e>   DW_AT_decl_line   : 116
-	    <11f985f>   DW_AT_decl_column : 36
-	    <11f9860>   DW_AT_type        : <0x11f17ed>
-	 <2><11f9864>: Abbrev Number: 35 (DW_TAG_formal_parameter)
-	    <11f9865>   DW_AT_name        : (indirect string, offset: 0x5fa1): stat
-	    <11f9869>   DW_AT_decl_file   : 1
-	    <11f986a>   DW_AT_decl_line   : 116
-	    <11f986b>   DW_AT_decl_column : 56
-	    <11f986c>   DW_AT_type        : <0x11f41e0>
-	 <2><11f9870>: Abbrev Number: 35 (DW_TAG_formal_parameter)
-	    <11f9871>   DW_AT_name        : (indirect string, offset: 0x8e714): request_mask
-	    <11f9875>   DW_AT_decl_file   : 1
-	    <11f9876>   DW_AT_decl_line   : 117
-	    <11f9877>   DW_AT_decl_column : 7
-	    <11f9878>   DW_AT_type        : <0x11ebe93>
-	 <2><11f987c>: Abbrev Number: 35 (DW_TAG_formal_parameter)
-	    <11f987d>   DW_AT_name        : (indirect string, offset: 0xd789): query_flags
-	    <11f9881>   DW_AT_decl_file   : 1
-	    <11f9882>   DW_AT_decl_line   : 117
-	    <11f9883>   DW_AT_decl_column : 34
-	    <11f9884>   DW_AT_type        : <0x11ebde1>
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index f8912e45be7a..0974effff58c 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -143,9 +143,13 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
+>  	}
+>  }
+>  
+> -static inline int bpf2a64_offset(int bpf_to, int bpf_from,
+> +static inline int bpf2a64_offset(int bpf_insn, int off,
+>  				 const struct jit_ctx *ctx)
+>  {
+> +	/* arm64 offset is relative to the branch instruction */
+> +	int bpf_from = bpf_insn + 1;
+> +	/* BPF JMP offset is relative to the next instruction */
+> +	int bpf_to = bpf_insn + off + 1;
+>  	int to = ctx->offset[bpf_to];
+>  	/* -1 to account for the Branch instruction */
+>  	int from = ctx->offset[bpf_from] - 1;
 
-include/linux/fs.h:
-	 <1><140d794>: Abbrev Number: 43 (DW_TAG_subprogram)
-	    <140d795>   DW_AT_external    : 1
-	    <140d795>   DW_AT_name        : (indirect string, offset: 0x9eaeb): vfs_getattr
-	    <140d799>   DW_AT_decl_file   : 7
-	    <140d79a>   DW_AT_decl_line   : 3148
-	    <140d79c>   DW_AT_decl_column : 12
-	    <140d79d>   DW_AT_prototyped  : 1
-	    <140d79d>   DW_AT_type        : <0x140611a>
-	    <140d7a1>   DW_AT_sibling     : <0x140d7ba>
-	 <2><140d7a5>: Abbrev Number: 3 (DW_TAG_formal_parameter)
-	    <140d7a6>   DW_AT_type        : <0x14087aa>
-	 <2><140d7aa>: Abbrev Number: 3 (DW_TAG_formal_parameter)
-	    <140d7ab>   DW_AT_type        : <0x140cfb6>
-	 <2><140d7af>: Abbrev Number: 3 (DW_TAG_formal_parameter)
-	    <140d7b0>   DW_AT_type        : <0x1406176>
-	 <2><140d7b4>: Abbrev Number: 3 (DW_TAG_formal_parameter)
-	    <140d7b5>   DW_AT_type        : <0x14060c9>
-	 <2><140d7b9>: Abbrev Number: 0
+I think this is a bit confusing with all the variables. How about just
+doing:
 
-the latter is just declaration.. but it's missing the
-    <365d69d>   DW_AT_declaration : 1
+	/* BPF JMP offset is relative to the next BPF instruction */
+	bpf_insn++;
 
-so it goes through pahole's function processing:
+	/*
+	 * Whereas arm64 branch instructions encode the offset from the
+	 * branch itself, so we must subtract 1 from the instruction offset.
+	 */
+	return ctx->offset[bpf_insn + off] - ctx->offset[bpf_insn] - 1;
 
-	cu__encode_btf:
-	...
-        cu__for_each_function(cu, core_id, fn) {
-                int btf_fnproto_id, btf_fn_id;
+> @@ -642,7 +646,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>  
+>  	/* JUMP off */
+>  	case BPF_JMP | BPF_JA:
+> -		jmp_offset = bpf2a64_offset(i + off, i, ctx);
+> +		jmp_offset = bpf2a64_offset(i, off, ctx);
+>  		check_imm26(jmp_offset);
+>  		emit(A64_B(jmp_offset), ctx);
+>  		break;
+> @@ -669,7 +673,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>  	case BPF_JMP32 | BPF_JSLE | BPF_X:
+>  		emit(A64_CMP(is64, dst, src), ctx);
+>  emit_cond_jmp:
+> -		jmp_offset = bpf2a64_offset(i + off, i, ctx);
+> +		jmp_offset = bpf2a64_offset(i, off, ctx);
+>  		check_imm19(jmp_offset);
+>  		switch (BPF_OP(code)) {
+>  		case BPF_JEQ:
+> @@ -912,18 +916,26 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+>  		const struct bpf_insn *insn = &prog->insnsi[i];
+>  		int ret;
+>  
+> +		/*
+> +		 * offset[0] offset of the end of prologue, start of the
+> +		 * first insn.
+> +		 * offset[x] - offset of the end of x insn.
 
-                if (fn->declaration || !fn->external)
-                        continue;
-	...
+So does offset[1] point at the last arm64 instruction for the first BPF
+instruction, or does it point to the first arm64 instruction for the second
+BPF instruction?
 
+> +		 */
+> +		if (ctx->image == NULL)
+> +			ctx->offset[i] = ctx->idx;
+> +
+>  		ret = build_insn(insn, ctx, extra_pass);
+>  		if (ret > 0) {
+>  			i++;
+>  			if (ctx->image == NULL)
+> -				ctx->offset[i] = ctx->idx;
+> +				ctx->offset[i] = ctx->offset[i - 1];
 
-CC-ing Frank.. any idea why is the DW_AT_declaration : 1 missing?
+Does it matter that we set the offset for both halves of a 16-byte BPF
+instruction? I think that's a change in behaviour here.
 
-thanks,
-jirka
+>  			continue;
+>  		}
+> -		if (ctx->image == NULL)
+> -			ctx->offset[i] = ctx->idx;
+>  		if (ret)
+>  			return ret;
+>  	}
+> +	if (ctx->image == NULL)
+> +		ctx->offset[i] = ctx->idx;
 
+I think it would be cleared to set ctx->offset[0] before the for loop (with
+a comment about what it is) and then change the for loop to iterate from 1
+all the way to prog->len.
+
+Will
