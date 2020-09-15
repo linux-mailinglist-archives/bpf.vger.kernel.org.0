@@ -2,101 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BCE26A140
-	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465E626A176
+	for <lists+bpf@lfdr.de>; Tue, 15 Sep 2020 11:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbgIOIry (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 04:47:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59402 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726130AbgIOIrs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Sep 2020 04:47:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600159667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gHqMMhcef71Vz4nIIhCc753F8Sj6cnpzNuOswe+NHDE=;
-        b=ijHgiMEaxio/304CLIQhvh2Jf5vOeQS4Ld6QHsH+1Uq4JGaH+AHrlQrUo+KXwKV4RxYJgg
-        fhPBThaKH/4cFMWYU0xbYmVAY3cJdCYT3IrrUcmh8iCImvlebpogkACqQljK8CbdugqWH5
-        5sRZAiSjHukeA7Nb13dBuwjlCOE5CE4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-bXR2-nRbOGeFjejPhJE9TQ-1; Tue, 15 Sep 2020 04:47:39 -0400
-X-MC-Unique: bXR2-nRbOGeFjejPhJE9TQ-1
-Received: by mail-wm1-f70.google.com with SMTP id y18so916910wma.4
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 01:47:38 -0700 (PDT)
+        id S1726243AbgIOJDz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 05:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIOJDy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 05:03:54 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094FDC06174A
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 02:03:54 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id y6so3040632oie.5
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 02:03:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mm/1UKbWk+GC/dY9nlJifC6FZELzw5z1lKhzNUFazcM=;
+        b=n6kuWT8C1/HMtu7Q1QuBoo5+mPVNL4puJTfD60HhqIIQKq5En4p/fWRY7+hBL4ltaQ
+         engFmEv8UMbGiW4bfZ6PedO+0RMtm5cK3qZRJueLOXsDxRqtQNmrmUou1Lvzuiiw06pg
+         p45wUI/0xjTzZdSwGcy0NJz6c12MI5NJ+nu0Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=gHqMMhcef71Vz4nIIhCc753F8Sj6cnpzNuOswe+NHDE=;
-        b=Yb9duxS0aeiWWZQD+wArQDpwOklcWFPK9DWA4DnBR92SCQGmCoWDLtoLZI/1i331iR
-         ESGPw5GBY0qVyxewaHkJc/Xxy8uClzHVGabTQUrFTulbVz/7Uk8g4GlP0blqdk+V1dmt
-         +flFG+/tcIhUvrMUrhasXeaA7oGK8rf6gtdiyfyJ3mb+n3ogafkbgpYzTtOqTyj7f4et
-         uJfvTcHq8pVLBKJZDlo5oo0dxfD+Pwc4QTQoyi+rJfbhgFjemLx2CNCTIpmtWYohmq6E
-         vrd2hZ2zV0zlIu22IqLT9/3HHGdVodT7SIOJdTfhOBx8Z7vU/sfpoK+om4zZ0So0De5J
-         Ndww==
-X-Gm-Message-State: AOAM5313pcLrgwAEl8w/uHzkabSpGZBmA03HHYSFWCKy89KgpEPOLS77
-        1UL6TW0en/eCoHwOPE9NEb0ydtDKLvrcF4LGKMJ7T3Vcuvcx1Qq+qpe+ktnoKPbpN3AUCnRZxHO
-        AxG8JdrQDD1x3
-X-Received: by 2002:adf:e407:: with SMTP id g7mr20040882wrm.349.1600159657884;
-        Tue, 15 Sep 2020 01:47:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbWanePA3VlARamVJW+Nyg1rmLNkw3TQwnaiY4YIqTex+hDI5pSlEWKYWWhGWrf9aw3oq7Gg==
-X-Received: by 2002:adf:e407:: with SMTP id g7mr20040856wrm.349.1600159657574;
-        Tue, 15 Sep 2020 01:47:37 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id u66sm23666792wmg.44.2020.09.15.01.47.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 01:47:36 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 68E401829CB; Tue, 15 Sep 2020 10:47:36 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: don't check against device MTU in
- __bpf_skb_max_len
-In-Reply-To: <CANP3RGftg2-_tBc=hGGzxjGZUq9b1amb=TiKRVHSBEyXq-A5QA@mail.gmail.com>
-References: <159921182827.1260200.9699352760916903781.stgit@firesoul>
- <20200904163947.20839d7e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200907160757.1f249256@carbon>
- <CANP3RGfjUOoVH152VHLXL3y7mBsF+sUCqEZgGAMdeb9_r_Z-Bw@mail.gmail.com>
- <20200914160538.2bd51893@carbon>
- <CANP3RGftg2-_tBc=hGGzxjGZUq9b1amb=TiKRVHSBEyXq-A5QA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 15 Sep 2020 10:47:36 +0200
-Message-ID: <87ft7jzas7.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mm/1UKbWk+GC/dY9nlJifC6FZELzw5z1lKhzNUFazcM=;
+        b=rwdwoVgITtFv4rQDlO+FTn5KG1lOMtf5XakteYAwW+56TqmFvFu0l5Jw8qbhbr7H+N
+         uSE/M+YBwIIsIRK4n53jvoyNHx1qlUXjSnDGGJogmkYpnZfOREc/ZU2IU0uByY7xDjzi
+         Dfns2kzv5jXVEyJlnYLdzxPaWpatzER6kzPoMzSNRtao/V1beC5JGJv+hwMlTTb4UKnA
+         3pSutts27RZbsZeFvt9paCdY6I8gm7vPwzjZLoNlsPZkAe1FKscJAtmz2p2JEZ8bR2z3
+         zlY1tGXzdbVb4AZjzR4CoSi3LHS4tCRYRdygnqJkBWtdlfTYFj1asLVs7WIZeG1nMt+P
+         KyRA==
+X-Gm-Message-State: AOAM530B5g/hPXPY+SSmSe2QpgfX82GVraKeig6cczNiRIkd+PHYMS+3
+        Tc0wTdrAcdoAicEKHCM6tUD3jQLTFK8lEyKU4+gBew==
+X-Google-Smtp-Source: ABdhPJzkhQtauJa2JpTzh0DAUN3R/bkuJea0/KqcGaQqZGebfz44V1XGv+jqBqMc/CO6K8MeXuG2Na3Hr2OYYoN30gU=
+X-Received: by 2002:aca:3087:: with SMTP id w129mr2475218oiw.102.1600160632809;
+ Tue, 15 Sep 2020 02:03:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200912045917.2992578-1-kafai@fb.com> <20200912045930.2993219-1-kafai@fb.com>
+ <CACAyw9-rirpChioEaSKiYC5+fLGzL38OawcBvE8Mv+16vNApZA@mail.gmail.com> <20200914194304.4ccb6n5sdcfkzxcp@kafai-mbp>
+In-Reply-To: <20200914194304.4ccb6n5sdcfkzxcp@kafai-mbp>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 15 Sep 2020 10:03:41 +0100
+Message-ID: <CACAyw98xzFf-j8dy45U+90Y5FiPEvb9w7GS5UrQCnxWaZGAZUw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 2/2] bpf: Enable bpf_skc_to_* sock casting
+ helper to networking prog type
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[ just jumping in to answer this bit: ]
-
-> Would you happen to know what ebpf startup overhead is?
-> How big a problem is having two (or more) back to back tc programs
-> instead of one?
-
-With a jit'ed BPF program and the in-kernel dispatcher code (which
-avoids indirect calls), it's quite close to a native function call.
-
-> We're running into both verifier performance scaling problems and code
-> ownership issues with large programs...
+On Mon, 14 Sep 2020 at 20:43, Martin KaFai Lau <kafai@fb.com> wrote:
+[...]
 >
-> [btw. I understand for XDP we could only use 1 program anyway...]
+> For other ARG_PTR_TO_SOCK_COMMON helpers, they are not available to
+> the tracing prog type.  Hence, they are fine to accept PTR_TO_BTF_ID
+> as ARG_PTR_TO_SOCK_COMMON since the only way for non tracing prog to
+> get a PTR_TO_BTF_ID is from casting helpers bpf_skc_to_* and
+> the NULL check on return value must be done first.  If these
+> ARG_PTR_TO_* helpers were ever made available to tracing prog,
+> it might be better off to have another func_proto taking
+> ARG_PTR_TO_BTF_ID instead.
 
-Working on that! See my talk at LPC:
-https://linuxplumbersconf.org/event/7/contributions/671/
+I think such special cases increase the maintenance burden going
+forward, I'd prefer it if we had one set of rules that applies to all
+program types.
 
-Will post a follow-up to the list once the freplace multi-attach series
-lands.
+> For the verifier, I think the PTR_TO_BTF_ID should only be accepted
+> as ARG_TO_* for non tracing program. That means the bpf_skc_to_*
+> proto has to be duplicated to take ARG_PTR_TO_SOCK_COMMON.  I think
+> that may be cleaner going forward.  Then the verifier does not need
+> to worry about how to deal with what btf_id can be taken as fullsock
+> ARG_PTR_TO_SOCKET.  The helper taking ARG_PTR_TO_BTF_ID will decide
+> where it could be called from and see how it wants to treat
+> "struct sock *sk".
 
--Toke
+So basically, we allow function prototypes to be specialised according
+to context type?
 
+> For example, the sk_storage_get_btf_proto
+> is taking &btf_sock_ids[BTF_SOCK_TYPE_SOCK] and is only used from
+> the LSM context that is holding a fullsock.
+
+That is a tempting simplification, but it makes future extensions of
+LSM context harder. Also, how could we enforce that we only have
+fullsocks in LSM? By looking at the list of helpers? I worry that this
+is very brittle.
+
+>
+> The same goes for the sock_map iter, how about the map_update
+> and map_lookup use a ARG_PTR_TO_BTF_ID and PTR_TO_BTF_ID instead?
+> For other prog types, they can keep using ARG_PTR_TO_SOCKET and
+> PTR_TO_SOCKET.
+
+Yeah, I've thought about that approach as well. The upside is that
+it's a much more limited change, and therefore I know that it is
+fairly safe to do. It relies on maps being able to override the
+"common" map_lookup_elem function proto, which is something we already
+do for sockmap and which could use some cleaning up. So if
+PTR_TO_BTF_ID aliasing with ARG_PTR_TO_SOCK_COMMON doesn't work out
+I'll propose this.
+
+The downside of specialised function protos is that we'll have to do
+it for every helper, context type, etc. To me it sounds like we want
+to use BTF to define context objects going forward as much as
+possible, so having a general solution to unify socket helpers across
+old-style and BTF contexts seems really useful to me. If we introduce
+ARG_PTR_TO_SOCK_COMMON_OR_NULL we can do this in a gradual way, by
+changing helpers that we want to be cross-compatible to take the new
+arg type and adding a few NULL and fullsock checks here and there.
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
