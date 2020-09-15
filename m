@@ -2,134 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F8226B02A
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 00:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CC626B315
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 01:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728065AbgIOWDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 18:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728055AbgIOWDe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 18:03:34 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CABC06178C
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 15:03:33 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id db4so2547613qvb.4
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 15:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JOLtYWV5k43t7zSbOIgN7n22Qeg30cuT8X6VukPd788=;
-        b=bTy/eiUmBRcA2datxSAmLf8APHcXrKNfoi7DcoTegfryY5ZEBzTSirUErrimu584Xu
-         AsJiAXThsmidhIga+KvkysynDV//n6c8F76aN2aWK5X74oq8Tdqda2TlWY90JgCDlBps
-         yFKqjqfrdq1nDgRkno7HvOeSEIs1GvhGnslTR/fuitSEJ6k1N/MDIv2R2ADIYcQf2MdX
-         r7O1U9WYHSm49mk/0uubwoTZPPrfrQb/FkPjU03FiYcSAB106SC03LnKbimvvbWzYAJ2
-         thtEsoE74MaII0EE1Yl4Bw2PrQJpNR7CD0baI4AqKIz1cqz9H7p/K3hVwCtMMoU20/Yd
-         yu4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JOLtYWV5k43t7zSbOIgN7n22Qeg30cuT8X6VukPd788=;
-        b=CDS+LP2folQqE57UVcE7c6Xqe5aSttW2pqTfM0VdoqXrLefHXJgmq8awgkOlK7uEGB
-         LU+Xfvz2lnzYb2IlcFo6nZoDMIagTSenhgJeejQhcB8LsXblrgefCpn9qnq2FV4OoTF1
-         2SP+ytuzztXxhNldDDwat40r/rC7Ko+m/+n4OY5qwPG8VPr8DJGirAh4z6LHlVzA5YDO
-         bY8CxMoyIl94Fm4cXEBHAg3EjSTkH78wOZNVZyZL0e60pnGnN32PdWrUk9Be6zjX4Hmf
-         j0DwQeUsx80YlaPlAmOyg74qNjE1C30byGeMas7MO0jpVNWp/qHvXo65aokbyQmiphEY
-         c/Yw==
-X-Gm-Message-State: AOAM530TKWDLNKcLdEZ3Uc/mVBAhOCJkg1N9R3N5KyNSKhE2ICK1QrNm
-        66GWQMmoHs/qAMKVTFCo9bNwwhSopkf35N4vIX1rvA==
-X-Google-Smtp-Source: ABdhPJwal7ruFnyisaxC3ZAEvhE3qWh1qncCnYQR8nf232vyk+NFYH/WW1mOYb3sZlPKJFIGdOLDTLlDCcNUgmuNHJ0=
-X-Received: by 2002:a05:6214:b2a:: with SMTP id w10mr3940821qvj.33.1600207411895;
- Tue, 15 Sep 2020 15:03:31 -0700 (PDT)
+        id S1727025AbgIOW75 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 18:59:57 -0400
+Received: from www62.your-server.de ([213.133.104.62]:40766 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727322AbgIOPEj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 11:04:39 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kICUf-0006cS-DR; Tue, 15 Sep 2020 17:03:41 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kICUf-0001Me-5p; Tue, 15 Sep 2020 17:03:41 +0200
+Subject: Re: [PATCH v7 bpf-next 7/7] selftests: bpf: add dummy prog for
+ bpf2bpf with tailcall
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com
+References: <20200902200815.3924-1-maciej.fijalkowski@intel.com>
+ <20200902200815.3924-8-maciej.fijalkowski@intel.com>
+ <20200903195114.ccfzmgcl4ngz2mqv@ast-mbp.dhcp.thefacebook.com>
+ <20200911185927.GA2543@ranger.igk.intel.com>
+ <20200915043924.uicfgbhuszccycbq@ast-mbp.dhcp.thefacebook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5bf5a63c-7607-a24d-7e14-e41caa84bfc3@iogearbox.net>
+Date:   Tue, 15 Sep 2020 17:03:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200914183615.2038347-1-sdf@google.com> <20200914183615.2038347-5-sdf@google.com>
- <CAEf4BzZUS1Ht9mu3R+RY=CYbkdLt7k-xG5r35hUkeSDr_sjnFQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZUS1Ht9mu3R+RY=CYbkdLt7k-xG5r35hUkeSDr_sjnFQ@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 15 Sep 2020 15:03:21 -0700
-Message-ID: <CAKH8qBuCGiRCj=ju5XZpuHvVBqLme6pgfpH0JV+2jgr30j0idA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/5] bpftool: support dumping metadata
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        YiFei Zhu <zhuyifei1999@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200915043924.uicfgbhuszccycbq@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25930/Tue Sep 15 15:55:28 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 4:39 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Sep 14, 2020 at 11:37 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > +               if (map_info.type != BPF_MAP_TYPE_ARRAY)
-> > +                       continue;
-> > +               if (map_info.key_size != sizeof(int))
-> > +                       continue;
-> > +               if (map_info.max_entries != 1)
-> > +                       continue;
-> > +               if (!map_info.btf_value_type_id)
-> > +                       continue;
-> > +               if (!strstr(map_info.name, ".rodata"))
-> > +                       continue;
-> > +
-> > +               *map_id = map_ids[i];
->
-> return value_size here to avoid extra syscall below; or rather just
-> accept bpf_map_info pointer and read everything into it?
-Good idea, will just return bpf_map_info.
+On 9/15/20 6:39 AM, Alexei Starovoitov wrote:
+> On Fri, Sep 11, 2020 at 08:59:27PM +0200, Maciej Fijalkowski wrote:
+>> On Thu, Sep 03, 2020 at 12:51:14PM -0700, Alexei Starovoitov wrote:
+>>> On Wed, Sep 02, 2020 at 10:08:15PM +0200, Maciej Fijalkowski wrote:
+[...]
+>>> Could you add few more tests to exercise the new feature more thoroughly?
+>>> Something like tailcall3.c that checks 32 limit, but doing tail_call from subprog.
+>>> And another test that consume non-trival amount of stack in each function.
+>>> Adding 'volatile char arr[128] = {};' would do the trick.
+>>
+>> Yet another prolonged silence from my side, but not without a reason -
+>> this request opened up a Pandora's box.
+> 
+> Great catch and thanks to our development practices! As a community we should
+> remember this lesson and request selftests more often than not.
 
-> > +       value = malloc(map_info->value_size);
-> > +       if (!value)
-> > +               goto out_close;
-> > +
-> > +       if (bpf_map_lookup_elem(map_fd, &key, value))
-> > +               goto out_free;
-> > +
-> > +       close(map_fd);
-> > +       return value;
-> > +
-> > +out_free:
-> > +       free(value);
-> > +out_close:
-> > +       close(map_fd);
-> > +       return NULL;
-> > +}
-> > +
-> > +static bool has_metadata_prefix(const char *s)
-> > +{
-> > +       return strstr(s, BPF_METADATA_PREFIX) == s;
->
-> this is a substring check, not a prefix check, use strncmp instead
-Right, but I then compare the result to the original value (== s).
-So if the substring starts with 0th index, we are good.
++1, speaking of pandora ... ;-) I recently noticed that we also have the legacy
+ld_abs/ld_ind instructions. Right now check_ld_abs() gates them by bailing out
+if env->subprog_cnt > 1, but that doesn't solve everything given the prog itself
+may not have bpf2bpf calls, but it could get tail-called out of a subprog. We
+need to reject such cases (& add selftests for it), otherwise this would be a
+verifier bypass given they may implicitly exit the program (and then mismatch
+the return type that the verifier was expecting).
 
-"strncmp(s, BPF_METADATA_PREFIX, BPF_METADATA_PREFIX_LEN) == 0;" felt
-a bit clunky, but I can use it anyway if it helps the readability.
-
-> > +}
-> > +
-> > +static void show_prog_metadata(int fd, __u32 num_maps)
-> > +{
-> > +       const struct btf_type *t_datasec, *t_var;
-> > +       struct bpf_map_info map_info = {};
->
-> it should be memset
-Sounds good.
-
->
-> > +       } else {
-> > +               json_writer_t *btf_wtr = jsonw_new(stdout);
-> > +               struct btf_dumper d = {
-> > +                       .btf = btf,
-> > +                       .jw = btf_wtr,
-> > +                       .is_plain_text = true,
-> > +               };
->
-> empty line here?
-Sure.
+Best,
+Daniel
