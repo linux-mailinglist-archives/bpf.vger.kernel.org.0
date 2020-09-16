@@ -2,175 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226E026B736
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAAE26B6E4
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727240AbgIPATW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 20:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726871AbgIOOV6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:21:58 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B13D22261;
-        Tue, 15 Sep 2020 14:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179435;
-        bh=mAvLUOAjRYcfpkRMghrqjRsVA8/IFtwH77ihCDlpknE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yOS1a7++OZZQQUW0Fnjm1zPPlLI5nMWD6R95VrcCLC1WROQDskm08QuULeX30eAG7
-         SRPGEvQMfgqv7WvKMoQmyaHGuxVuVLLLk0UjL5O8hYq9shuBeK0416fOYlD+16AHoD
-         y3QESZPG2XM/s/Keg3TfX+oCWfbO7iOxygZ5EnAc=
-Date:   Tue, 15 Sep 2020 15:17:08 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jiri Olsa <jolsa@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200915141707.GB26439@willie-the-truck>
-References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
- <20200915131102.GA26439@willie-the-truck>
- <20200915135344.GA113966@apalos.home>
+        id S1727023AbgIPANd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 20:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727474AbgIPANO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 20:13:14 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E330EC06174A
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 17:13:12 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id m17so6278733ioo.1
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 17:13:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=K16SS9rcPXwS/KBnQsaiiaLjK9KWOSN5Uw5UgElGEE4=;
+        b=RM4StYvI2cYuO7L8XUXzRU2wmAiwjmtIjwTmr4k19e++1WqPgmUjascPUP0w4VqkrH
+         tViLRoFMbM6+6SjFyPBJN5ij2KEkqAozyPfPN3Jw4GDzCv/8UvK7gSdDYjA2MdrZmzBX
+         OCV34G5VlHwCVy039uJ9r9l84x6tIXTZGNF7zUAHQeBzlWUeL6wxOq0GnKqblY3pHhsW
+         pdwvatPLB1QmHqvXmCdvc3ihgomB8cLhlvPzr+HtMGQqRxgVBBIShClFlSnVWsAg1Qsn
+         vcgyKbKpienH/klJNOy/KzryUVTkynSi8pTvQS0mhy3I3QlkyhzFDRYvhozjWuhzqtA1
+         u5eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=K16SS9rcPXwS/KBnQsaiiaLjK9KWOSN5Uw5UgElGEE4=;
+        b=b0D3WyFaNlLWOPNPOvi1x1INKFidZ4ef70X2HNvre6D3c60baQKFdkjl1Fmq4UdCM/
+         e5EN7ck97kzxj6fkviq9vtJOy8MfzWv698sYImoY2fHL087eFb8zXr7ElT0qf9bgPRzM
+         P2nGL+mFlgD6J7UBdjlUavxTXb91cGYB924bmV99HjjMMsUhaetEPGXnWXFK5hrK4aUV
+         qWYEGQOpSJzp8KSRQcFGpDg3cl5Ddz/5aOpY70h/1X7Z7Jf2v6rgWlghB3JpymPvEDv3
+         8l9rYz6mmmRwXqWueYzD+fhRGhHK+GJifejAPTK3BQkhfvqina8mK7YYUE15JCFlu1mk
+         r63A==
+X-Gm-Message-State: AOAM532okeBvpWfi3S4GNcbcMxXUFUlIzg+rTCpeXiUW1eZ9ljG2N/nA
+        b10zVfA2EfZCJ6pY6t8lnTvgsJpxaehWvjHISbWdyA==
+X-Google-Smtp-Source: ABdhPJxcld7S0TfU57/c6MV0BtBBz450m+30655BTDKoD3NWCBexpyEM41tdzU3AAqi6oxmUEvqY1BD/vBbXmZmmVm8=
+X-Received: by 2002:a05:6638:144:: with SMTP id y4mr19842940jao.61.1600215192042;
+ Tue, 15 Sep 2020 17:13:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915135344.GA113966@apalos.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <159921182827.1260200.9699352760916903781.stgit@firesoul>
+ <20200904163947.20839d7e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200907160757.1f249256@carbon> <CANP3RGfjUOoVH152VHLXL3y7mBsF+sUCqEZgGAMdeb9_r_Z-Bw@mail.gmail.com>
+ <20200914160538.2bd51893@carbon> <CANP3RGftg2-_tBc=hGGzxjGZUq9b1amb=TiKRVHSBEyXq-A5QA@mail.gmail.com>
+ <87ft7jzas7.fsf@toke.dk>
+In-Reply-To: <87ft7jzas7.fsf@toke.dk>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Tue, 15 Sep 2020 17:12:59 -0700
+Message-ID: <CANP3RGf581mZKE2Eky-bY6swU6TAFv1vzxxZ24SQ+yB9TGAD8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: don't check against device MTU in __bpf_skb_max_len
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 04:53:44PM +0300, Ilias Apalodimas wrote:
-> On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
-> > Hi Ilias,
-> > 
-> > On Mon, Sep 14, 2020 at 07:03:55PM +0300, Ilias Apalodimas wrote:
-> > > Running the eBPF test_verifier leads to random errors looking like this:
-> > > 
-> > > [ 6525.735488] Unexpected kernel BRK exception at EL1
-> > > [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
-> > 
-> > Does this happen because we poison the BPF memory with BRK instructions?
-> > Maybe we should look at using a special immediate so we can detect this,
-> > rather than end up in the ptrace handler.
-> 
-> As discussed offline this is what aarch64_insn_gen_branch_imm() will return for
-> offsets > 128M and yes replacing the handler with a more suitable message would 
-> be good.
+On Tue, Sep 15, 2020 at 1:47 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> [ just jumping in to answer this bit: ]
+>
+> > Would you happen to know what ebpf startup overhead is?
+> > How big a problem is having two (or more) back to back tc programs
+> > instead of one?
+>
+> With a jit'ed BPF program and the in-kernel dispatcher code (which
+> avoids indirect calls), it's quite close to a native function call.
 
-Can you give the diff below a shot, please? Hopefully printing a more useful
-message will mean these things get triaged/debugged better in future.
+Hmm, I know we have (had? they're upstream now I think) some CFI vs
+BPF interaction issues.
+We needed to mark the BPF call into JIT'ed code as CFI exempt.
 
-Will
+CFI is Code Flow Integrity and is some compiler magic, to quote wikipedia:
+Google has shipped Android with the Linux kernel compiled by Clang
+with link-time optimization (LTO) and CFI since 2018.[12]
+I don't know much more about it.
 
---->8
+But we do BPF_JIT_ALWAYS_ON on 64-bit kernels, so it sounds like we
+might be good.
 
-diff --git a/arch/arm64/include/asm/extable.h b/arch/arm64/include/asm/extable.h
-index 840a35ed92ec..b15eb4a3e6b2 100644
---- a/arch/arm64/include/asm/extable.h
-+++ b/arch/arm64/include/asm/extable.h
-@@ -22,6 +22,15 @@ struct exception_table_entry
- 
- #define ARCH_HAS_RELATIVE_EXTABLE
- 
-+static inline bool in_bpf_jit(struct pt_regs *regs)
-+{
-+	if (!IS_ENABLED(CONFIG_BPF_JIT))
-+		return false;
-+
-+	return regs->pc >= BPF_JIT_REGION_START &&
-+	       regs->pc < BPF_JIT_REGION_END;
-+}
-+
- #ifdef CONFIG_BPF_JIT
- int arm64_bpf_fixup_exception(const struct exception_table_entry *ex,
- 			      struct pt_regs *regs);
-diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
-index 7310a4f7f993..fa76151de6ff 100644
---- a/arch/arm64/kernel/debug-monitors.c
-+++ b/arch/arm64/kernel/debug-monitors.c
-@@ -384,7 +384,7 @@ void __init debug_traps_init(void)
- 	hook_debug_fault_code(DBG_ESR_EVT_HWSS, single_step_handler, SIGTRAP,
- 			      TRAP_TRACE, "single-step handler");
- 	hook_debug_fault_code(DBG_ESR_EVT_BRK, brk_handler, SIGTRAP,
--			      TRAP_BRKPT, "ptrace BRK handler");
-+			      TRAP_BRKPT, "BRK handler");
- }
- 
- /* Re-enable single step for syscall restarting. */
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index 13ebd5ca2070..9f7fde99eda2 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -34,6 +34,7 @@
- #include <asm/daifflags.h>
- #include <asm/debug-monitors.h>
- #include <asm/esr.h>
-+#include <asm/extable.h>
- #include <asm/insn.h>
- #include <asm/kprobes.h>
- #include <asm/traps.h>
-@@ -994,6 +995,21 @@ static struct break_hook bug_break_hook = {
- 	.imm = BUG_BRK_IMM,
- };
- 
-+static int reserved_fault_handler(struct pt_regs *regs, unsigned int esr)
-+{
-+	pr_err("%s generated an invalid instruction at %pS!\n",
-+		in_bpf_jit(regs) ? "BPF JIT" : "Kernel runtime patching",
-+		instruction_pointer(regs));
-+
-+	/* We cannot handle this */
-+	return DBG_HOOK_ERROR;
-+}
-+
-+static struct break_hook fault_break_hook = {
-+	.fn = reserved_fault_handler,
-+	.imm = FAULT_BRK_IMM,
-+};
-+
- #ifdef CONFIG_KASAN_SW_TAGS
- 
- #define KASAN_ESR_RECOVER	0x20
-@@ -1059,6 +1075,7 @@ int __init early_brk64(unsigned long addr, unsigned int esr,
- void __init trap_init(void)
- {
- 	register_kernel_break_hook(&bug_break_hook);
-+	register_kernel_break_hook(&fault_break_hook);
- #ifdef CONFIG_KASAN_SW_TAGS
- 	register_kernel_break_hook(&kasan_break_hook);
- #endif
-diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
-index eee1732ab6cd..aa0060178343 100644
---- a/arch/arm64/mm/extable.c
-+++ b/arch/arm64/mm/extable.c
-@@ -14,9 +14,7 @@ int fixup_exception(struct pt_regs *regs)
- 	if (!fixup)
- 		return 0;
- 
--	if (IS_ENABLED(CONFIG_BPF_JIT) &&
--	    regs->pc >= BPF_JIT_REGION_START &&
--	    regs->pc < BPF_JIT_REGION_END)
-+	if (in_bpf_jit(regs))
- 		return arm64_bpf_fixup_exception(fixup, regs);
- 
- 	regs->pc = (unsigned long)&fixup->fixup + fixup->fixup;
+> > We're running into both verifier performance scaling problems and code
+> > ownership issues with large programs...
+> >
+> > [btw. I understand for XDP we could only use 1 program anyway...]
+>
+> Working on that! See my talk at LPC:
+> https://linuxplumbersconf.org/event/7/contributions/671/
+
+Yes, I'm aware and excited about it!
+
+Unfortunately, Android S will only support 4.19, 5.4 and 5.10 for
+newly launched devices (and 4.9/4.14 for upgrades).
+(5.10 here means 'whatever is the next 5.x LTS', but that's most likely 5.1=
+0)
+I don't (yet) even have real phone hardware running 5.4, and 5.10
+within the next year is even more of a stretch.
+
+> Will post a follow-up to the list once the freplace multi-attach series
+> lands.
