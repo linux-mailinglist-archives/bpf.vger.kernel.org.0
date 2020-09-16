@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A13226CC00
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 22:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F25726CC7A
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 22:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgIPUh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 16:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
+        id S1726766AbgIPUpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 16:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728301AbgIPUh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Sep 2020 16:37:56 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D0EC06174A;
-        Wed, 16 Sep 2020 13:37:55 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id x10so6328668ybj.13;
-        Wed, 16 Sep 2020 13:37:55 -0700 (PDT)
+        with ESMTP id S1726423AbgIPUpH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 16:45:07 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E01C06174A;
+        Wed, 16 Sep 2020 13:45:06 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id g96so1521059ybi.12;
+        Wed, 16 Sep 2020 13:45:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=KF1Vj/GrUHdC3Iej6R3OIIzN4HD/yQo2mo/psmlHkQs=;
-        b=lPBC0D/6M+E7UW1gXJNwCWVc0TOQrFgUrI01rXU0JwXh4DsbMs8ZFXye5PN3CtGkzq
-         HoEat7T7934QMRVxZ2imxROpLu60PSYo3L4j/Mxh3YRa+BP52w7iZD3r+sSlv+ZNkcye
-         c/zDPlHrdpe9NiAqUzVU4A4d4p5eL0DNKzpRRWq+xDkQ4EvkT2okzfWRT3pFRGXhqufX
-         ku8q7OeSC+EcfTJ6XlE/4MeDBX/IWjz46V6BxaeKHojMXJpyNhPluFLeOmrbxa8JFEte
-         m89sd5fvy0nszt52VuMQPYatkHJgU8inyeDED//8WhB1SqWiQhTmtvOwqrUQ07AQ5pXQ
-         ikKg==
+        bh=a9McxN0SPcs/brf1883/a8qVYY3w5PNE9zRZ22kWcRk=;
+        b=hBFNHl8VKHdu0bMQEIo7Huplgr8OaeHxOaNxi/9ASLqR8KxJY2Ao1BNb1V+M+c9lTg
+         r9DBXjfMiTPgGu0H9PqiPKuSfwEagyVbq1T4d1A0gwI7A/pWVf8wuVZBZtybynO/g15W
+         0ASVoIPojLnbus2iG9NilaF8AO1Ecxzz8SmM+YUFNlgwppNffjkkGoVicv86jWEfk8Dn
+         qPGLvRXEs+dH+vboMLcNN690CROOSXE/6o1z6vbKJewwtNLPzZrL1v7GvsQHzefyK9Kw
+         q1A/OKnQdVf3kyq5hKSRa3RdRvdHs9c3OOpCujmaUr21BlbJ3jfVhWmCE4MZCRLkOvPL
+         c1Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KF1Vj/GrUHdC3Iej6R3OIIzN4HD/yQo2mo/psmlHkQs=;
-        b=XG1L1+wkuER4AqMrijeLiItMTKpO5FExAXX37+dyhsomB508fNCaS2R2tKzKSWZNg/
-         OCODGHA7ey4BsiESnrUCaPySpMzb9pX/QGoBwt8ScjZnvSgscJRPO6KedvFMsszHw9J4
-         0cLSpemJVZH9aY0PGDcH6bnGgckcMcKgvVn5ZgtHHUl+iC9DPMnoDWvmJeK/Remy3BtM
-         MFshJd3g2gx0ANha6/ez5hPokF97JjkZdF0orTUr4gz4CF//t7eFi/3HqjIxLbAGBE2U
-         RwnLGs8BKNTwDJ50Gnk9QNdApPuDt9IexwyU7TSz/8fzUkecNn+K33IdmO8UeF3n40xj
-         zIXg==
-X-Gm-Message-State: AOAM533shJ8mbg9hVAhjWp2i6DRmoci5wA2CzofFwBej/HaEMZxnDSVz
-        BIPjSHpbflCCql0THXsY5Q2YWHZE0V2LQurdbSk=
-X-Google-Smtp-Source: ABdhPJzoS4rJ5sZ5XZPnY306pGr4ee8GMKI2s1Sz4Ja6yEt531ttO2inkQp81qjE+RkRLcBdnozx+qxNnTXuCp6CqUs=
-X-Received: by 2002:a25:8541:: with SMTP id f1mr6403037ybn.230.1600288675003;
- Wed, 16 Sep 2020 13:37:55 -0700 (PDT)
+        bh=a9McxN0SPcs/brf1883/a8qVYY3w5PNE9zRZ22kWcRk=;
+        b=kbQEsGcrwSCEjyIHz/v4Bg0xOjhT2mUOsPlwHx+1kuwCzPIGRh+TdabHDrq+wMYSlg
+         xRiW6RGROkpvvH82BJ2zjDeFWBWK0Kw0srQrYkQZdvTosGSIEh9r3HvQWsVy6qHlOc9u
+         EM0AkZZtiRqOS4oN+7aVZsnNFB5lH/sLFnU/91Mpa80Ys/vfOApN+PbRfHy7f0yGOr9I
+         XA4n6YBh6e+OVx88nxO/USNNoLu6Up6r2PsEaK1irdE5hgz1YI5IYPjFhgVZvlilIM/Q
+         ucwpMwGn8D9L69N8rDjMJfqtzevpvy+ndCkGLQFxiscpNVU2B69lP2SJYj82WCyMloCK
+         Lo0w==
+X-Gm-Message-State: AOAM530lk8thYWC0UrYetj6elhvkR65p5NUdlhnpKCQ3/2Pd4euc/yk1
+        PyeyHUH6S0oAg2P4sNmSSGa2VH5d2PA8/Uktz20=
+X-Google-Smtp-Source: ABdhPJxFmQi3hG59ryei3OUQBmRUhVx/C5Pyc3w8gF8Juen+cyyKHcwqrv4XeTjDfnxDiVK+BiYVjGF+Dp8QJ6TRoTc=
+X-Received: by 2002:a25:33c4:: with SMTP id z187mr22702413ybz.27.1600289106079;
+ Wed, 16 Sep 2020 13:45:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <160017005691.98230.13648200635390228683.stgit@toke.dk> <160017006352.98230.621859348254499900.stgit@toke.dk>
-In-Reply-To: <160017006352.98230.621859348254499900.stgit@toke.dk>
+References: <160017005691.98230.13648200635390228683.stgit@toke.dk> <160017006573.98230.17217160170336621916.stgit@toke.dk>
+In-Reply-To: <160017006573.98230.17217160170336621916.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Sep 2020 13:37:44 -0700
-Message-ID: <CAEf4BzZx33sqDd2WU2j+Ht_njn2qfcV1C0ginPBde+wj8rROeQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/8] libbpf: add support for freplace
- attachment in bpf_link_create
+Date:   Wed, 16 Sep 2020 13:44:55 -0700
+Message-ID: <CAEf4BzZg7rSaRJ5GkcEoOvV2TKTA5etsr0xn_dYMtQL7Ly-w_w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 8/8] selftests/bpf: Adding test for arg
+ dereference in extension trace
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,165 +72,84 @@ X-Mailing-List: bpf@vger.kernel.org
 On Tue, Sep 15, 2020 at 5:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
 at.com> wrote:
 >
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> From: Jiri Olsa <jolsa@kernel.org>
 >
-> This adds support for supplying a target btf ID for the bpf_link_create()
-> operation, and adds a new bpf_program__attach_freplace() high-level API f=
-or
-> attaching freplace functions with a target.
+> Adding test that setup following program:
 >
+>   SEC("classifier/test_pkt_md_access")
+>   int test_pkt_md_access(struct __sk_buff *skb)
+>
+> with its extension:
+>
+>   SEC("freplace/test_pkt_md_access")
+>   int test_pkt_md_access_new(struct __sk_buff *skb)
+>
+> and tracing that extension with:
+>
+>   SEC("fentry/test_pkt_md_access_new")
+>   int BPF_PROG(fentry, struct sk_buff *skb)
+>
+> The test verifies that the tracing program can
+> dereference skb argument properly.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
->  tools/lib/bpf/bpf.c      |    1 +
->  tools/lib/bpf/bpf.h      |    3 ++-
->  tools/lib/bpf/libbpf.c   |   24 ++++++++++++++++++------
->  tools/lib/bpf/libbpf.h   |    3 +++
->  tools/lib/bpf/libbpf.map |    1 +
->  5 files changed, 25 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 82b983ff6569..e928456c0dd6 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -599,6 +599,7 @@ int bpf_link_create(int prog_fd, int target_fd,
->         attr.link_create.iter_info =3D
->                 ptr_to_u64(OPTS_GET(opts, iter_info, (void *)0));
->         attr.link_create.iter_info_len =3D OPTS_GET(opts, iter_info_len, =
-0);
-> +       attr.link_create.target_btf_id =3D OPTS_GET(opts, target_btf_id, =
-0);
->
->         return sys_bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
->  }
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 015d13f25fcc..f8dbf666b62b 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -174,8 +174,9 @@ struct bpf_link_create_opts {
->         __u32 flags;
->         union bpf_iter_link_info *iter_info;
->         __u32 iter_info_len;
-> +       __u32 target_btf_id;
->  };
-> -#define bpf_link_create_opts__last_field iter_info_len
-> +#define bpf_link_create_opts__last_field target_btf_id
->
->  LIBBPF_API int bpf_link_create(int prog_fd, int target_fd,
->                                enum bpf_attach_type attach_type,
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 550950eb1860..165131c73f40 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -9322,12 +9322,14 @@ static struct bpf_link *attach_iter(const struct =
-bpf_sec_def *sec,
->
->  static struct bpf_link *
->  bpf_program__attach_fd(struct bpf_program *prog, int target_fd,
-> -                      const char *target_name)
-> +                      int target_btf_id, const char *target_name)
->  {
->         enum bpf_attach_type attach_type;
->         char errmsg[STRERR_BUFSIZE];
->         struct bpf_link *link;
->         int prog_fd, link_fd;
-> +       DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
-> +                           .target_btf_id =3D target_btf_id);
->
->         prog_fd =3D bpf_program__fd(prog);
->         if (prog_fd < 0) {
-> @@ -9340,8 +9342,12 @@ bpf_program__attach_fd(struct bpf_program *prog, i=
-nt target_fd,
->                 return ERR_PTR(-ENOMEM);
->         link->detach =3D &bpf_link__detach_fd;
->
-> -       attach_type =3D bpf_program__get_expected_attach_type(prog);
-> -       link_fd =3D bpf_link_create(prog_fd, target_fd, attach_type, NULL=
-);
-> +       if (bpf_program__get_type(prog) =3D=3D BPF_PROG_TYPE_EXT)
-> +               attach_type =3D BPF_TRACE_FREPLACE;
 
-doing this unconditionally will break an old-style freplace without
-target_fd/btf_id on older kernels. Safe and simple way would be to
-continue using raw_tracepoint_open when there is no target_fd/btf_id,
-and use LINK_CREATE for newer stuff. Alternatively, you'd need to do
-feature detection, but it's still would be nice to handle old-style
-attach through raw_tracepoint_open for bpf_program__attach_freplace.
+Looks good, with a minor CHECK() complaint below.
 
-so I suggest leaving bpf_program__attach_fd() as is and to create a
-custom bpf_program__attach_freplace() implementation.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> +       else
-> +               attach_type =3D bpf_program__get_expected_attach_type(pro=
-g);
+>  tools/testing/selftests/bpf/prog_tests/trace_ext.c |  113 ++++++++++++++=
+++++++
+>  tools/testing/selftests/bpf/progs/test_trace_ext.c |   18 +++
+>  .../selftests/bpf/progs/test_trace_ext_tracing.c   |   25 ++++
+>  3 files changed, 156 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_ext.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_trace_ext.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_trace_ext_trac=
+ing.c
+>
+
+[...]
+
+> +       err =3D test_trace_ext_tracing__attach(skel_trace);
+> +       if (CHECK(err, "setup", "tracing/test_pkt_md_access_new attach fa=
+iled: %d\n", err))
+> +               goto cleanup;
 > +
-> +       link_fd =3D bpf_link_create(prog_fd, target_fd, attach_type, &opt=
-s);
->         if (link_fd < 0) {
->                 link_fd =3D -errno;
->                 free(link);
-> @@ -9357,19 +9363,25 @@ bpf_program__attach_fd(struct bpf_program *prog, =
-int target_fd,
->  struct bpf_link *
->  bpf_program__attach_cgroup(struct bpf_program *prog, int cgroup_fd)
->  {
-> -       return bpf_program__attach_fd(prog, cgroup_fd, "cgroup");
-> +       return bpf_program__attach_fd(prog, cgroup_fd, 0, "cgroup");
->  }
->
->  struct bpf_link *
->  bpf_program__attach_netns(struct bpf_program *prog, int netns_fd)
->  {
-> -       return bpf_program__attach_fd(prog, netns_fd, "netns");
-> +       return bpf_program__attach_fd(prog, netns_fd, 0, "netns");
->  }
->
->  struct bpf_link *bpf_program__attach_xdp(struct bpf_program *prog, int i=
-findex)
->  {
->         /* target_fd/target_ifindex use the same field in LINK_CREATE */
-> -       return bpf_program__attach_fd(prog, ifindex, "xdp");
-> +       return bpf_program__attach_fd(prog, ifindex, 0, "xdp");
+> +       /* trigger the test */
+> +       err =3D bpf_prog_test_run(pkt_fd, 1, &pkt_v4, sizeof(pkt_v4),
+> +                               NULL, NULL, &retval, &duration);
+> +       CHECK(err || retval, "",
+
+please don't use empty string here
+
+> +             "err %d errno %d retval %d duration %d\n",
+> +             err, errno, retval, duration);
+
+who and why cares about duration here?..
+
+> +
+> +       bss_ext =3D skel_ext->bss;
+> +       bss_trace =3D skel_trace->bss;
+> +
+> +       len =3D bss_ext->ext_called;
+> +
+> +       CHECK(bss_ext->ext_called =3D=3D 0,
+> +               "check", "failed to trigger freplace/test_pkt_md_access\n=
+");
+> +       CHECK(bss_trace->fentry_called !=3D len,
+> +               "check", "failed to trigger fentry/test_pkt_md_access_new=
+\n");
+> +       CHECK(bss_trace->fexit_called !=3D len,
+> +               "check", "failed to trigger fexit/test_pkt_md_access_new\=
+n");
+> +
+> +cleanup:
+> +       test_trace_ext_tracing__destroy(skel_trace);
+> +       test_trace_ext__destroy(skel_ext);
+> +       test_pkt_md_access__destroy(skel_pkt);
 > +}
-> +
-> +struct bpf_link *bpf_program__attach_freplace(struct bpf_program *prog,
-> +                                             int target_fd, int target_b=
-tf_id)
-> +{
-> +       return bpf_program__attach_fd(prog, target_fd, target_btf_id, "fr=
-eplace");
->  }
->
->  struct bpf_link *
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index a750f67a23f6..ce5add9b9203 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -261,6 +261,9 @@ LIBBPF_API struct bpf_link *
->  bpf_program__attach_netns(struct bpf_program *prog, int netns_fd);
->  LIBBPF_API struct bpf_link *
->  bpf_program__attach_xdp(struct bpf_program *prog, int ifindex);
-> +LIBBPF_API struct bpf_link *
-> +bpf_program__attach_freplace(struct bpf_program *prog,
-> +                            int target_fd, int target_btf_id);
 
-maybe a const char * function name instead of target_btf_id would be a
-nicer API? Users won't have to deal with fetching target prog's BTF,
-searching it, etc. That's all pretty straightforward for libbpf to do,
-leaving users with more natural and simpler API.
-
->
->  struct bpf_map;
->
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 92ceb48a5ca2..3cc2c42f435d 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -302,6 +302,7 @@ LIBBPF_0.1.0 {
->
->  LIBBPF_0.2.0 {
->         global:
-> +               bpf_program__attach_freplace;
->                 bpf_program__section_name;
->                 perf_buffer__buffer_cnt;
->                 perf_buffer__buffer_fd;
->
+[...]
