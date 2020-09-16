@@ -2,93 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7607A26CBC0
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 22:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B62E26CBF1
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 22:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgIPUdw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 16:33:52 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51366 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726917AbgIPRMz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 16 Sep 2020 13:12:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600276345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vEOYWIWUZZbjOvWaaaZu93r2/i0CVOT9x7lwnsy/CMY=;
-        b=YV7iGDY0Fb9YPpT+1IGPqcWcqz1eUJK2XOJFVehc98nG+DabWnhk8+Ncpitb9ADaGDGnmE
-        LEwGF/TEr1mOtAinWkpuaoSOJcfooIkdFtMAjDtwphlfRE3wqUIFDgbVg8kN16flAfIo+m
-        hdUQbTLQuE+LNHrtCw/OdkkkEw5tUgs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-rId4z_HRNOupn5g7JK_1kQ-1; Wed, 16 Sep 2020 09:45:35 -0400
-X-MC-Unique: rId4z_HRNOupn5g7JK_1kQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13722AD682;
-        Wed, 16 Sep 2020 13:45:32 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-114-67.ams2.redhat.com [10.36.114.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54A1A78811;
-        Wed, 16 Sep 2020 13:45:26 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jiri Olsa <jolsa@kernel.org>,
+        id S1727125AbgIPUhL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 16:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbgIPRKP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:10:15 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62574C061223;
+        Wed, 16 Sep 2020 10:08:25 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id g96so1070143ybi.12;
+        Wed, 16 Sep 2020 10:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7ptBkp4xdHHe4seAGHtrtcjPEqw5vfXo8/OjJOz+4vo=;
+        b=tyUNudrabayD3JwPEmQY4XYb0Z9um6wyD1MuAVIUGdE2zXPnviLL06emxcGClGBFsC
+         O/TaIxxK1iR/HUrbYWAxV1qIZsydniT4HHKNs8cGb2DIRgngIolIhLzN92SpM6JLhpfs
+         7v8jHz8Rh+N60BTTLdUj5s+tMkeiA8gujqUEv9Khx+yc4+ES8z33Z84M2khAEENA6ox+
+         Uz3GBBYSlUKMgS6peddac3bMQcAoT9pbafdY6WfHTOZruGOobTj/2s5aCiz/Iitl7T7c
+         1O7oGjG2yWDi/iaRrVvJ+08xrQ30ZAMuJZVUdSoXZUHc6RKX+E4pREep6h65hBJk2G1x
+         PG9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7ptBkp4xdHHe4seAGHtrtcjPEqw5vfXo8/OjJOz+4vo=;
+        b=l39KEyTW8su38UbkZYY2BLO8KqHGYvP/nf1mb+X0n8mjod4orKU2GSSrI8tAaHQJrR
+         t3zn1YGUv47fQsy/YLMjmwOa7ykQwYGiNIgp4ZQL1ZcZKGc7k6AmFANNG9ctOWno9QPy
+         X4+vFkspd9pLxKs64ug9BlGk/aO8sZseL7qv2yB3CF3hEUiVL/KF70lHFWTxDNYLHY9f
+         q9T4+D6PDH9zbxrw+icCXVv/BYrBXNj0xfOeSKtmPXsX7+tHOsqqhOAYtHpHP+Vvfp5S
+         YOUoDoGuR7o2D+3zJOcKtBLLZMcH/bXEV0lLS3PXSVwF/IaoKAO2HvLXoKc1hUiOTUoB
+         0cIQ==
+X-Gm-Message-State: AOAM531lfidvezxhSBWTMpPXDukSubeHYrOnG1TOIk8mvR4ap5/M6mB1
+        9Ez/VBu2eXziwe3XBJ2xL2ViwEougmysU1T1w9Y=
+X-Google-Smtp-Source: ABdhPJxmcqGA5X1/GtJsWgz5/0S5cv1fNPTsbWnNm703TSNTsYGTekLKYo4nvUaIK9ZB3yTlZeGClthDD0+1eMf1DN4=
+X-Received: by 2002:a25:33c4:: with SMTP id z187mr21570384ybz.27.1600276104518;
+ Wed, 16 Sep 2020 10:08:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <160017005691.98230.13648200635390228683.stgit@toke.dk> <160017005805.98230.16775816864129373411.stgit@toke.dk>
+In-Reply-To: <160017005805.98230.16775816864129373411.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 16 Sep 2020 10:08:13 -0700
+Message-ID: <CAEf4BzaE7PzKw8nEesraKZRmK9oDSV-Ei=8v1fRH3Mf22zHgsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/8] bpf: change logging calls from verbose()
+ to bpf_log() and use log pointer
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
         KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
-References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
-        <20200915131102.GA26439@willie-the-truck>
-        <20200915135344.GA113966@apalos.home>
-        <20200915141707.GB26439@willie-the-truck>
-        <20200915192311.GA124360@apalos.home> <xunyo8m5hp4m.fsf@redhat.com>
-        <20200916131702.GB5316@myrica>
-Date:   Wed, 16 Sep 2020 16:45:24 +0300
-In-Reply-To: <20200916131702.GB5316@myrica> (Jean-Philippe Brucker's message
-        of "Wed, 16 Sep 2020 15:17:02 +0200")
-Message-ID: <xunyk0wthm2z.fsf@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Jean-Philippe!
+On Tue, Sep 15, 2020 at 5:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> In preparation for moving code around, change a bunch of references to
+> env->log (and the verbose() logging helper) to use bpf_log() and a direct
+> pointer to struct bpf_verifier_log. While we're touching the function
+> signature, mark the 'prog' argument to bpf_check_type_match() as const.
+>
+> Also enhance the bpf_verifier_log_needed() check to handle NULL pointers
+> for the log struct so we can re-use the code with logging disabled.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
 
->>>>> On Wed, 16 Sep 2020 15:17:02 +0200, Jean-Philippe Brucker  wrote:
+Ok, let's get this out of the way :)
 
- > On Wed, Sep 16, 2020 at 03:39:37PM +0300, Yauheni Kaliuta wrote:
- >> If you start to amend extables, could you consider a change like
- >> 
- >> 05a68e892e89 ("s390/kernel: expand exception table logic to allow
- >> new handling options")
- >> 
- >> and implementation of BPF_PROBE_MEM then?
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
- > Commit 800834285361 ("bpf, arm64: Add BPF exception tables") should have
- > taken care of that, no?
+>  include/linux/bpf.h          |    2 +-
+>  include/linux/bpf_verifier.h |    5 +++-
+>  kernel/bpf/btf.c             |    6 +++--
+>  kernel/bpf/verifier.c        |   48 +++++++++++++++++++++---------------=
+------
+>  4 files changed, 31 insertions(+), 30 deletions(-)
+>
 
-Ah, missed that. Thanks!
-
--- 
-WBR,
-Yauheni Kaliuta
-
+[...]
