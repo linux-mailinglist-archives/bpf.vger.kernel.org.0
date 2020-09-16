@@ -2,70 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A3126CE96
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 00:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A4A26CF25
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 00:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbgIPWVJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 18:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
+        id S1726280AbgIPWyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 18:54:11 -0400
+Received: from mga17.intel.com ([192.55.52.151]:44500 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726187AbgIPWVH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:21:07 -0400
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DA3E2080C
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 22:21:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600294867;
-        bh=M150LKiDiDW3DRD1azePQoVjIa7znfbdXjhsLdO+NxM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F0ERzzkX3p0M5fu8LyN9p6Tph/TGg6h0HCOv67NYtqVs1/Lztrtp8+KvHxhFnEWLJ
-         ZI9fKusOzF3Bj9w0SthAe7ZvMbUyls+1/1U18D8nWHf6tpgTrbfMYq1zzzSwWTNTZa
-         pCse+VmW7aa+Q0bsOERfnRDmLOSqLoUWiUcaU00M=
-Received: by mail-lf1-f52.google.com with SMTP id w11so8683343lfn.2
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 15:21:07 -0700 (PDT)
-X-Gm-Message-State: AOAM532/B+d+tSCh8HRoixFE3BAF8dX2VsECebb2uLM7ZHRpCffLpf2F
-        0p8dDr3fHi0/P+3HK8u1w90oS2CsTMBFjF5RLwo=
-X-Google-Smtp-Source: ABdhPJz15MhXDkeC7rcPQCNaAnyWFYM2QesQGWcPrdCWOFdxgfpVaigmpeYTRcedbraZTqEuN9EPDPbuB3mAAKLfO20=
-X-Received: by 2002:a19:8907:: with SMTP id l7mr8172376lfd.105.1600294865403;
- Wed, 16 Sep 2020 15:21:05 -0700 (PDT)
+        id S1726189AbgIPWyI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 18:54:08 -0400
+IronPort-SDR: xvwCmg1K3y503tSASZ3cNDYb7SDp2IhfzTLuAr3oa6W53R9u3NPR/WF7tNm1Lwk4AJXJjTBmOe
+ z9RBAXxPDrTg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9746"; a="139578081"
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
+   d="scan'208";a="139578081"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Sep 2020 14:16:53 -0700
+IronPort-SDR: +wxjJWehNfvaV0n0uLxWum+YAHl//O+zVydigS2KsAhVT2j5rTK+74XcFvTtfhfWt7jfNaMlPM
+ lpcW4Z7B1hOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,434,1592895600"; 
+   d="scan'208";a="346369946"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga007.jf.intel.com with ESMTP; 16 Sep 2020 14:16:51 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v8 bpf-next 6/7] bpf: allow for tailcalls in BPF subprograms for x64 JIT
+Date:   Wed, 16 Sep 2020 23:10:09 +0200
+Message-Id: <20200916211010.3685-7-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200916211010.3685-1-maciej.fijalkowski@intel.com>
+References: <20200916211010.3685-1-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
-References: <20200915113928.3768496-1-iii@linux.ibm.com> <CAEf4BzaE_gAF7fHyD2HTQRgH0KLgD39yxh7WsJ8SxMrtXj6GKQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaE_gAF7fHyD2HTQRgH0KLgD39yxh7WsJ8SxMrtXj6GKQ@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 16 Sep 2020 15:20:54 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4+N0DunytSmbXGcfp=91pod6r_Rm-+i5NC2m6QwPfSGA@mail.gmail.com>
-Message-ID: <CAPhsuW4+N0DunytSmbXGcfp=91pod6r_Rm-+i5NC2m6QwPfSGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix endianness issue in test_sockopt_sk
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 6:20 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Sep 15, 2020 at 4:39 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
-> >
-> > getsetsockopt() calls getsockopt() with optlen == 1, but then checks
-> > the resulting int. It is ok on little endian, but not on big endian.
-> >
-> > Fix by checking char instead.
-> >
-> > Fixes: 8a027dc0 ("selftests/bpf: add sockopt test that exercises sk helpers")
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> >
-> > v1->v2: Also pass a single byte to log_err.
-> >
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+Relax verifier's restriction that was meant to forbid tailcall usage
+when subprog count was higher than 1.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Also, do not max out the stack depth of program that utilizes tailcalls.
+
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 644ee9286ecf..05034cff89ca 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4384,10 +4384,12 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+ 	case BPF_FUNC_tail_call:
+ 		if (map->map_type != BPF_MAP_TYPE_PROG_ARRAY)
+ 			goto error;
++#if !defined(CONFIG_X86_64) || !defined(CONFIG_BPF_JIT_ALWAYS_ON)
+ 		if (env->subprog_cnt > 1) {
+ 			verbose(env, "tail_calls are not allowed in programs with bpf-to-bpf calls\n");
+ 			return -EINVAL;
+ 		}
++#endif
+ 		break;
+ 	case BPF_FUNC_perf_event_read:
+ 	case BPF_FUNC_perf_event_output:
+@@ -10633,7 +10635,9 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+ 			 * the program array.
+ 			 */
+ 			prog->cb_access = 1;
++#if !defined(CONFIG_X86_64) || !defined(CONFIG_BPF_JIT_ALWAYS_ON)
+ 			env->prog->aux->stack_depth = MAX_BPF_STACK;
++#endif
+ 			env->prog->aux->max_pkt_offset = MAX_PACKET_OFF;
+ 
+ 			/* mark bpf_tail_call as different opcode to avoid
+-- 
+2.20.1
+
