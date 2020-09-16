@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BD726CE01
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 23:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F97A26CE71
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 00:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgIPVIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 17:08:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35160 "EHLO
+        id S1726508AbgIPWOI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 18:14:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37755 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726338AbgIPVID (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 16 Sep 2020 17:08:03 -0400
+        by vger.kernel.org with ESMTP id S1726269AbgIPWOI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Sep 2020 18:14:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600290473;
+        s=mimecast20190719; t=1600294447;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/54H5boGPOw6PIuMrJAthQBR69fhyyzb/6j3eNXf2IE=;
-        b=FoA6kLZOdNjTLmTSSevka76r83XUDHR+jLFl82/p7YTKMUKT6U6whtA6fj0lJL8GDcYBB3
-        QuPt/Yjly9Lqjfs16NYoOmSW0FcTL/zWz8BxDmz8YSwb11rSNGPqBitk8Xd1CmK1rXuBuM
-        u6FXoGmIJW1oCtXzMEuVzx9izH7YFSY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-a_pgeCAtOfShxASuW4_37A-1; Wed, 16 Sep 2020 17:07:51 -0400
-X-MC-Unique: a_pgeCAtOfShxASuW4_37A-1
-Received: by mail-wr1-f70.google.com with SMTP id l9so3009940wrq.20
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 14:07:51 -0700 (PDT)
+        bh=FUQQkJBSEXhHHJy6s1SaaoSkEHkFlPj5l/FPaNy4sK8=;
+        b=YHKAEtZbQMKsc/K3KFSJtrL2/EvRDWjGknT59UB5iLGzgKg74RejGkh5NGm+4/wfK0Nq21
+        kGA9cQOzur5MuS9TZ1ieo53Afy7sQEyjKiKvsNrdJg+C3H8dKwmWnXoEyJ1agaIKs/9wjc
+        HzMMqA6GUKsl8D3qbRUM6ZWc6Lb9g3A=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-zeSxiB-8Pziy--IIQIv40w-1; Wed, 16 Sep 2020 17:13:20 -0400
+X-MC-Unique: zeSxiB-8Pziy--IIQIv40w-1
+Received: by mail-wr1-f71.google.com with SMTP id a10so3000434wrw.22
+        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 14:13:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=/54H5boGPOw6PIuMrJAthQBR69fhyyzb/6j3eNXf2IE=;
-        b=EV+yY5yYKQvAQtP0ABIN0FHKvOpIOuOvLv41fdt8epjwBuzkmevuLAIy8D5aEBHf+5
-         Y6B0mwZhc4EGuyxTgfVOaOhPja7hU5vkx6SfD7Tdnqb3ScN1Bt6H2hZeLvCiHCNbCdA7
-         SN81PmtARJFQCxbPtqcwgzimn44xuBBLP37RQWPCIoMUcxDxIb1xNbP2234g9EVmvQK6
-         4qgD0xSeJ94C+QLh+oKrj4CeJJ4Yw0R6x5qSgtmGh2lHFxXnTTQ14VXUohsl2ejquwG1
-         fVPFEQN0f4UoCEqqEKTIKnLqahkmSMSbWH9hPZHugDxvMAnxon3byYqoW7vSqRsKJ8hx
-         gmJA==
-X-Gm-Message-State: AOAM533aIN6WU0h3Y31urMaQLWCHUz+aX+Y4S8KRh2PWjPYv3loxzJ8l
-        nq1QZCP4pLxEnA1oxKjGde5Gh0IPFnYEUHzLJBJZ4U8NvjlXSijXoXn3gKSrLNns/q2h6Z2R5Uo
-        JllvG1IwzY1Ny
-X-Received: by 2002:a5d:6291:: with SMTP id k17mr28325415wru.130.1600290470607;
-        Wed, 16 Sep 2020 14:07:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRIpLByKR9vlbbyb4rveY1q0jSfOuRdwKkvCTSqfg5buShe2kGa0NkbbkTrTS5aEe33zZZeg==
-X-Received: by 2002:a5d:6291:: with SMTP id k17mr28325397wru.130.1600290470314;
-        Wed, 16 Sep 2020 14:07:50 -0700 (PDT)
+         :message-id:mime-version;
+        bh=FUQQkJBSEXhHHJy6s1SaaoSkEHkFlPj5l/FPaNy4sK8=;
+        b=Tt7LvKeuHAWlesG9PJPP+WiNvomZEgeAoPiXN/xePd952fUMM+UaqQoeZHMgvo0RTu
+         5q0n6BUAX4HYPHGND3r2Dg2cVnojqMW7eMhEEa85aZK03ypbF0E1SF5P2X6oH2KkqcKb
+         P8QO0H0hEWQyLTuCIRJjos7JujBY+zdS4D+uwKsrjsa8skUDT6K2oTgnOXUcquMZjPPc
+         BedYSOviTX/46DXIxPj21/6O7o9HgiSxkms/syT6U1l4M7+RcSxOZJkQLaPxJkrhWglr
+         NvTlRQgvCjxLxZLlEy8UV8IZA+Boa1QGkhGpoN18AEW1rnj6fHzQYnnFe4QUW80aIevz
+         nC9Q==
+X-Gm-Message-State: AOAM531cWzUn+uepwlWOoQOTEjBHP0R7hJJnx1dgQWiAKiaVO4Oa1grK
+        +codO/8TGfEL+bPQJj+pKMl/zERiyejdOi0xtdrruHZWPEuQ2+HKftqJJTA0oTPS/0W5F5OAZFR
+        wfF1TELhHo3xx
+X-Received: by 2002:adf:f846:: with SMTP id d6mr30881670wrq.56.1600290799275;
+        Wed, 16 Sep 2020 14:13:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzqlJX/o81Ta6Y8ACfKNLXSwBXTK76xwK8801ODbiXzpda7zvpFBoI4iETyzq0ydgXmUx2P7Q==
+X-Received: by 2002:adf:f846:: with SMTP id d6mr30881656wrq.56.1600290799050;
+        Wed, 16 Sep 2020 14:13:19 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id w81sm7606143wmg.47.2020.09.16.14.07.49
+        by smtp.gmail.com with ESMTPSA id q186sm7459889wma.45.2020.09.16.14.13.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 14:07:49 -0700 (PDT)
+        Wed, 16 Sep 2020 14:13:18 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2DDAE183A90; Wed, 16 Sep 2020 23:07:49 +0200 (CEST)
+        id 2EAFE183A90; Wed, 16 Sep 2020 23:13:18 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -64,64 +63,51 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Eelco Chaudron <echaudro@redhat.com>,
         KP Singh <kpsingh@chromium.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 2/8] bpf: verifier: refactor
- check_attach_btf_id()
-In-Reply-To: <CAEf4BzbAsnzAUPksUs+bcNuuUPkumc15RLESu3jOGf87mzabBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/8] bpf: support attaching freplace
+ programs to multiple attach points
+In-Reply-To: <CAEf4BzYP6MpVEqJ1TVW6rcfqJjkBi9x9U9F8MZPQdGMmoaUX_A@mail.gmail.com>
 References: <160017005691.98230.13648200635390228683.stgit@toke.dk>
- <160017005916.98230.1736872862729846213.stgit@toke.dk>
- <CAEf4BzbAsnzAUPksUs+bcNuuUPkumc15RLESu3jOGf87mzabBA@mail.gmail.com>
+ <160017006133.98230.8867570651560085505.stgit@toke.dk>
+ <CAEf4BzYP6MpVEqJ1TVW6rcfqJjkBi9x9U9F8MZPQdGMmoaUX_A@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 16 Sep 2020 23:07:49 +0200
-Message-ID: <87tuvxph0a.fsf@toke.dk>
+Date:   Wed, 16 Sep 2020 23:13:18 +0200
+Message-ID: <87r1r1pgr5.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Sender: bpf-owner@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Tue, Sep 15, 2020 at 5:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
+[ will fix all your comments above ]
+
+>> @@ -3924,10 +3983,16 @@ static int tracing_bpf_link_attach(const union bpf_attr *attr, struct bpf_prog *
+>>             prog->expected_attach_type == BPF_TRACE_ITER)
+>>                 return bpf_iter_link_attach(attr, prog);
 >>
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>
->> The check_attach_btf_id() function really does three things:
->>
->> 1. It performs a bunch of checks on the program to ensure that the
->>    attachment is valid.
->>
->> 2. It stores a bunch of state about the attachment being requested in
->>    the verifier environment and struct bpf_prog objects.
->>
->> 3. It allocates a trampoline for the attachment.
->>
->> This patch splits out (1.) and (3.) into separate functions in preparati=
-on
->> for reusing them when the actual attachment is happening (in the
->> raw_tracepoint_open syscall operation), which will allow tracing programs
->> to have multiple (compatible) attachments.
->>
->> No functional change is intended with this patch.
->>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
+>> +       if (attr->link_create.attach_type == BPF_TRACE_FREPLACE &&
+>> +           !prog->expected_attach_type)
+>> +               return bpf_tracing_prog_attach(prog,
+>> +                                              attr->link_create.target_fd,
+>> +                                              attr->link_create.target_btf_id);
 >
-> I almost acked this, but found a problem at the very last moment. See
-> below, along with few more comments while I have enough context in my
-> head.
+> Hm.. so you added a "fake" BPF_TRACE_FREPLACE attach_type, which is
+> not really set with BPF_PROG_TYPE_EXT and is only specified for the
+> LINK_CREATE command. Are you just trying to satisfy the link_create
+> flow of going from attach_type to program type? If that's the only
+> reason, I think we can adjust link_create code to handle this more
+> flexibly.
+>
+> I need to think a bit more whether we want BPF_TRACE_FREPLACE at all,
+> but if we do, whether we should make it an expected_attach_type for
+> BPF_PROG_TYPE_EXT then...
 
-Right, will fix, thanks!
+Yeah, wasn't too sure about this. But attach_type seemed to be the only
+way to disambiguate between the different link types in the LINK_CREATE
+command, so went with that. Didn't think too much about it, TBH :)
 
-> BTW, for whatever reason your patches arrived with a 12 hour delay
-> yesterday (cover letter received at 5am, while patches arrived at
-> 6pm), don't know if its vger or gmail...
-
-Ugh, sorry about that. I think it's an interaction between vger and the
-Red Hat corporate mail proxy - it's really a mess. I'll try switching my
-patch submissions to use a different SMTP server...
+I guess an alternative could be to just enforce attach_type==0 and look
+at prog->type? Or if you have any other ideas, I'm all ears!
 
 -Toke
 
