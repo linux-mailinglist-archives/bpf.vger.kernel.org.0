@@ -2,81 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F11326B943
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 03:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF37B26B948
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 03:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgIPBQf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 21:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        id S1726217AbgIPBSi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 21:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIPBQe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 21:16:34 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33888C06174A;
-        Tue, 15 Sep 2020 18:16:34 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id k25so4439407ljg.9;
-        Tue, 15 Sep 2020 18:16:34 -0700 (PDT)
+        with ESMTP id S1726061AbgIPBSh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:18:37 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9384AC06174A
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 18:18:37 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id s19so4131245ybc.5
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 18:18:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pVZCHPuKhoctM+wIqtZFC5/NsUM8NDsj+HSHpKsqPJ4=;
-        b=dMbdC5jz+oen4UslnCqWLzyzUj+yux1azrfF52ZAs2RdkGaJDlJk7FzLutQfcbN/kG
-         rN6OPW1eqZ6giHnMKzpMUBD3gF4NmRE5DerFmAEYBYRWhZ6mHFu45xc1z5018R6Vb4Iv
-         Mj00bfM9jkrbQOm6iESgJ+dhsSjvWqow7UgmEpKA4zz6XrHMRP/8WR3htRsEYB3cTANE
-         hCXGECZoYHkhRxylJnC/to64glC5iEx9OvK1rpc0FgQmjJjVIAh+tPE24bqMSAnz1hdm
-         SGr363oqaYe/GgZJ1Wr8yfYqvHdxwNabTF/3AFxBr5U83JvlRgwvjZUGl4upyGDzkzzA
-         hlvQ==
+        bh=+QtRPZ4m0Wtszom2bjhalVDPkSCI0C/qplzC2HIEUfY=;
+        b=uTLogG6QA5wC4HOKZHvQDF5MqWuFJheLWsFmfMKEJS1s0sM4rTaHaOl2x4+shpSWbq
+         rQVmiheEzivUrRukjiWZ9S/LJaUB89agyObDHCEeDlM5lnr4PZ7MlHCXDxsrfO+Oa9p4
+         Wc6yv70YC+Ufg44DnOCp979QE1cuCdlItAAEkKX7YVTWeYubcBCQZYcb+LVJ1hV+yiUv
+         sHgoghRDvKuRiXgctddxM/r354uvluCSmPSBH0+loDpys5/h4cprK1dNcmbRLuinor2z
+         o1WwuNHa5ZkcJRwW6sBJbGA59jFPuOYcl/DIGsr+nKVX3+gtjL12iRSZeMPmLGRaT7hu
+         8Ouw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pVZCHPuKhoctM+wIqtZFC5/NsUM8NDsj+HSHpKsqPJ4=;
-        b=falhXeXRj1IWU1TWH/DfkG0qZIVEE2eJqPpaot26DJY6Bj2yQ+LeDuBf6bxQnoEEpC
-         iSZ3duusSe6DYRg0APfEEUvECRAZ8+tLYhUywhbiKF9NaRq6KdHnhmxHfSQmrBPn4dta
-         rGUkLORpgv7dlhIV40ZFK9OK1hQpJ0OLQuWc8dIhAPAibIVK3kT4NHWf9F/MdBVm9tT3
-         1BNq/fimaYa1RjZigODH1H0zMxfq31QtZPhtih+x4OwJnF0l7YjRXXKmBJ90OzpFfCEy
-         mwS/Vas/6hmuhpeEk8143JnSk+vsFKoFZocpO9nmpoM8bUAsssyVnv7FOGVj8nVHpPyH
-         H08A==
-X-Gm-Message-State: AOAM533OMWs+UOkwBfOtM809sWWXAAA3sgMNmpTCA34MW+D0LXyR7u+6
-        4thF16VtXFn1NuZdUdvXlZOwjxJU3DuNSdEJXxQ=
-X-Google-Smtp-Source: ABdhPJwhh4BSSi+d3MMa1AHgbxqxA7GvwGxCmOlhuNDdAprEWHU9zDnpTCgakTRA4PPVlvHzqMO5P4qNFJQ2CIA2Rks=
-X-Received: by 2002:a2e:4554:: with SMTP id s81mr8300339lja.121.1600218992285;
- Tue, 15 Sep 2020 18:16:32 -0700 (PDT)
+        bh=+QtRPZ4m0Wtszom2bjhalVDPkSCI0C/qplzC2HIEUfY=;
+        b=DLc1aho5HRVMAyuE82S7x8+NKM1IQCyVKMGXgTwcZGdo/9vlDjPTkfBlmv0pwSReAY
+         t4d0h2k8F7N1LjoLwpgBsrIwDjG1qmcIf7VRq6XXoIO0W5bJIpaTMdbZZlu4Z+j/Pr/l
+         RFyJqu+VYTaqEhaASM0qE8izmueagYPIa6fSbv6tfc4RnWPYp2w5s3NQdvKDZYz5M2uC
+         ybMEEWq6Nqv4eWIK2DqDeJ+f3u+wQ9KIt2E+LzCHMTKgo9xWMS+NrRf3liXtUjfF+r3/
+         B2SFNsVfPOUdpy0SNnfG+87mKABSaTcwTQLOz9aHbLnVgztSiWN64DU9CKQGZMwcueEI
+         Jeew==
+X-Gm-Message-State: AOAM531lnDByfx/Tb5tHB1Bp9OggWbtaWbOE2xljdlUWxMXYrUT2b5Zc
+        f+ywTbDLzBYSS4wTQSbHQJN9nPqKHO9KVLR18X8=
+X-Google-Smtp-Source: ABdhPJy8/KM7myA5mLT6AmA+SYbZPpX9iBHQsUlCtcUnmYcKPJb8WPj9JxNi6R3mtFPuc7bMuB2An2TQFkjEpov5dYs=
+X-Received: by 2002:a25:9d06:: with SMTP id i6mr30406676ybp.510.1600219116915;
+ Tue, 15 Sep 2020 18:18:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915182959.241101-1-kafai@fb.com> <CAPhsuW7b6oMHgOn0Oyq1Fk-xOws=8tK0Bfmbh-UvZUYUFE-zCQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW7b6oMHgOn0Oyq1Fk-xOws=8tK0Bfmbh-UvZUYUFE-zCQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 15 Sep 2020 18:16:20 -0700
-Message-ID: <CAADnVQJjS_Uez_C_EZMyT_Wrk1kL_BSBX7oJ_tH5q-aTuu_uQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: bpf_skc_to_* casting helpers require a NULL
- check on sk
-To:     Song Liu <song@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20200915113815.3768217-1-iii@linux.ibm.com>
+In-Reply-To: <20200915113815.3768217-1-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Sep 2020 18:18:26 -0700
+Message-ID: <CAEf4BzbJ++yj_-p0Yw+1ki4ZJBGFZXEq_bWi3Cf_H-5bkpnfNg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix endianness issue in sk_assign
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 2:45 PM Song Liu <song@kernel.org> wrote:
+On Tue, Sep 15, 2020 at 4:38 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Tue, Sep 15, 2020 at 11:32 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > The bpf_skc_to_* type casting helpers are available to
-> > BPF_PROG_TYPE_TRACING.  The traced PTR_TO_BTF_ID may be NULL.
-> > For example, the skb->sk may be NULL.  Thus, these casting helpers
-> > need to check "!sk" also and this patch fixes them.
-> >
-> > Fixes: 0d4fad3e57df ("bpf: Add bpf_skc_to_udp6_sock() helper")
-> > Fixes: 478cfbdf5f13 ("bpf: Add bpf_skc_to_{tcp, tcp_timewait, tcp_request}_sock() helpers")
-> > Fixes: af7ec1383361 ("bpf: Add bpf_skc_to_tcp6_sock() helper")
-> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> server_map's value size is 8, but the test tries to put an int there.
+> This sort of works on x86 (unless followed by non-0), but hard fails on
+> s390.
 >
-> Acked-by: Song Liu <songliubraving@fb.com>
+> Fix by using __s64 instead of int.
+>
+> Fixes: 2d7824ffd25c ("selftests: bpf: Add test for sk_assign")
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>
+> v1->v2: Use __s64.
 
-Applied. Thanks
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>
+> tools/testing/selftests/bpf/prog_tests/sk_assign.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> index a49a26f95a8b..3a469099f30d 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> @@ -265,7 +265,7 @@ void test_sk_assign(void)
+>                 TEST("ipv6 udp port redir", AF_INET6, SOCK_DGRAM, false),
+>                 TEST("ipv6 udp addr redir", AF_INET6, SOCK_DGRAM, true),
+>         };
+> -       int server = -1;
+> +       __s64 server = -1;
+>         int server_map;
+>         int self_net;
+>         int i;
+> --
+> 2.25.4
+>
