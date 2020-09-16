@@ -2,115 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED4126B851
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C036726B875
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgIPAki (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 20:40:38 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2640 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726514AbgIONEL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Sep 2020 09:04:11 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08FBZEsb024566;
-        Tue, 15 Sep 2020 07:55:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=8jc0SXJ1+FJzBin3JWyKBP7mYbU4+vs/pld2JWJcTfM=;
- b=eQnfgOGh4PGhjCkZlzwwcuZz1O7Hg7fGRDGS1rAH0kBADxVR5sEODGIvMafwa7eLY8rv
- hN23x2QLJoHqdLnuphSBT9L5yGvWnO2Y3Q3euOiPbncuogjLMqC/PaVfdv46p3GoHgAn
- VfFgLoYgn0xqT4u5U4x+gKsN4gIhz/6zFPSYT4MRDXud17QOt74RaWCX0BvkRNtq/jaL
- hePyPTj67pQ8de5kg/JeP41y40SPooL7GGlNGbD7x8y3hQKwxY60yQmF6d7oWSY88EAE
- VPh8GiaAuXCjswFm0j7xGzIKx4ubcYcocEdv0H7HuM3G0EJky6cMi3vHuJBeqSri3NHI sg== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33jt2awxcc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 07:55:30 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08FBq8e8027276;
-        Tue, 15 Sep 2020 11:55:28 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 33gny8bhys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 11:55:28 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08FBtPh224314312
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Sep 2020 11:55:25 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C2D2BA404D;
-        Tue, 15 Sep 2020 11:55:25 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5C290A4040;
-        Tue, 15 Sep 2020 11:55:25 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.7.183])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Sep 2020 11:55:25 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, Song Liu <song@kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH RESEND bpf-next] samples/bpf: Fix test_map_in_map on s390
-Date:   Tue, 15 Sep 2020 13:55:19 +0200
-Message-Id: <20200915115519.3769807-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726333AbgIPAoP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 20:44:15 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43760 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726851AbgIPAoL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Sep 2020 20:44:11 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G0YRDw031742
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 17:44:11 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=YaJehtjt1XtzP2p0Y/w9m8My84sde/Cy8rxIRmWKGGM=;
+ b=i9jfIw8e7L67ffFq/z6vxpgcd2ognf3PUNo/wzAYQDHQU3X008znrlqtQFZmFiI16LAV
+ rAkuzyNKgcIVmdB8sWmIFL7hmT0UuOxduRE9w+BC0a+EUzeC3sXlFE6c6L3P929Ynbh0
+ v9sFXw8zVR2ZoLz0v/7eDugIx/ynuY9Eq2Y= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33k5nf8sjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 17:44:10 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 15 Sep 2020 17:44:10 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id BD6B33705B60; Tue, 15 Sep 2020 17:44:01 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf] bpf: fix a rcu warning for bpffs map pretty-print
+Date:   Tue, 15 Sep 2020 17:44:01 -0700
+Message-ID: <20200916004401.146277-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_08:2020-09-15,2020-09-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0 priorityscore=1501
- phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009150100
+ definitions=2020-09-15_14:2020-09-15,2020-09-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ phishscore=0 spamscore=0 impostorscore=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=8 mlxlogscore=845 malwarescore=0
+ bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009160001
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-s390 uses socketcall multiplexer instead of individual socket syscalls.
-Therefore, "kprobe/" SYSCALL(sys_connect) does not trigger and
-test_map_in_map fails. Fix by using "kprobe/__sys_connect" instead.
+Running selftest
+  ./btf_btf -p
+the kernel had the following warning:
+  [   51.528185] WARNING: CPU: 3 PID: 1756 at kernel/bpf/hashtab.c:717 ht=
+ab_map_get_next_key+0x2eb/0x300
+  [   51.529217] Modules linked in:
+  [   51.529583] CPU: 3 PID: 1756 Comm: test_btf Not tainted 5.9.0-rc1+ #=
+878
+  [   51.530346] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
+IOS 1.9.3-1.el7.centos 04/01/2014
+  [   51.531410] RIP: 0010:htab_map_get_next_key+0x2eb/0x300
+  ...
+  [   51.542826] Call Trace:
+  [   51.543119]  map_seq_next+0x53/0x80
+  [   51.543528]  seq_read+0x263/0x400
+  [   51.543932]  vfs_read+0xad/0x1c0
+  [   51.544311]  ksys_read+0x5f/0xe0
+  [   51.544689]  do_syscall_64+0x33/0x40
+  [   51.545116]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+The related source code in kernel/bpf/hashtab.c:
+  709 static int htab_map_get_next_key(struct bpf_map *map, void *key, vo=
+id *next_key)
+  710 {
+  711         struct bpf_htab *htab =3D container_of(map, struct bpf_htab=
+, map);
+  712         struct hlist_nulls_head *head;
+  713         struct htab_elem *l, *next_l;
+  714         u32 hash, key_size;
+  715         int i =3D 0;
+  716
+  717         WARN_ON_ONCE(!rcu_read_lock_held());
+
+In kernel/bpf/inode.c, bpffs map pretty print calls map->ops->map_get_nex=
+t_key()
+without holding a rcu_read_lock(), hence causing the above warning.
+To fix the issue, just surrounding map->ops->map_get_next_key() with rcu =
+read lock.
+
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Fixes: a26ca7c982cb ("bpf: btf: Add pretty print support to the basic arr=
+aymap")
+Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
+ kernel/bpf/inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Previous discussion:
-https://lore.kernel.org/bpf/20200728120059.132256-3-iii@linux.ibm.com
-
-samples/bpf/test_map_in_map_kern.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/samples/bpf/test_map_in_map_kern.c b/samples/bpf/test_map_in_map_kern.c
-index 8def45c5b697..b0200c8eac09 100644
---- a/samples/bpf/test_map_in_map_kern.c
-+++ b/samples/bpf/test_map_in_map_kern.c
-@@ -103,10 +103,9 @@ static __always_inline int do_inline_hash_lookup(void *inner_map, u32 port)
- 	return result ? *result : -ENOENT;
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index fb878ba3f22f..18f4969552ac 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -226,10 +226,12 @@ static void *map_seq_next(struct seq_file *m, void =
+*v, loff_t *pos)
+ 	else
+ 		prev_key =3D key;
+=20
++	rcu_read_lock();
+ 	if (map->ops->map_get_next_key(map, prev_key, key)) {
+ 		map_iter(m)->done =3D true;
+-		return NULL;
++		key =3D NULL;
+ 	}
++	rcu_read_unlock();
+ 	return key;
  }
- 
--SEC("kprobe/" SYSCALL(sys_connect))
-+SEC("kprobe/__sys_connect")
- int trace_sys_connect(struct pt_regs *ctx)
- {
--	struct pt_regs *real_regs = (struct pt_regs *)PT_REGS_PARM1_CORE(ctx);
- 	struct sockaddr_in6 *in6;
- 	u16 test_case, port, dst6[8];
- 	int addrlen, ret, inline_ret, ret_key = 0;
-@@ -114,8 +113,8 @@ int trace_sys_connect(struct pt_regs *ctx)
- 	void *outer_map, *inner_map;
- 	bool inline_hash = false;
- 
--	in6 = (struct sockaddr_in6 *)PT_REGS_PARM2_CORE(real_regs);
--	addrlen = (int)PT_REGS_PARM3_CORE(real_regs);
-+	in6 = (struct sockaddr_in6 *)PT_REGS_PARM2_CORE(ctx);
-+	addrlen = (int)PT_REGS_PARM3_CORE(ctx);
- 
- 	if (addrlen != sizeof(*in6))
- 		return 0;
--- 
-2.25.4
+=20
+--=20
+2.24.1
 
