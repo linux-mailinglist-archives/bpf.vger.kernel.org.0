@@ -2,136 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79C226C8B6
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 20:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D8026C875
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 20:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727659AbgIPS4d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 14:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        id S1728092AbgIPSqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 14:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727665AbgIPRyS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:54:18 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194B3C061797
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 10:53:39 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z9so3953224wmk.1
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 10:53:39 -0700 (PDT)
+        with ESMTP id S1727939AbgIPSWV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 14:22:21 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB552C061756;
+        Wed, 16 Sep 2020 11:22:20 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id c17so6126060ybe.0;
+        Wed, 16 Sep 2020 11:22:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ReOPTCTBI89zUNcN9aZJisi4S7TTo39X4bWkAmOczYk=;
-        b=RV9EKpiLbn6C4KxJBNU70Il3xaMZsz9KZuaVMIEk2/B7VfJnVT8E0W4DfVdrlRRrFw
-         VkCq+XCWora9JdxGatwTczm8b84VHYfuMl4TrUS8fed/QqH6Irj5Dcx0cJuMJmviD6Aq
-         pctKhA2nzsMRcorQ0iWf8FIEhYF8x8c3SYkY4=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0yvq7JNthKxbYOHDHOWG0xNarv1GFWHVlIaBEc+BtOM=;
+        b=D/GXJTn1HM6gps0EGKWe8RnWjzIxNdP6IfbTrWQVSrXz+dt/4b7Txhvu3n3T+gagDU
+         6OF8h+QVOGMJrW9ggZjebNDBC1uWrtLPFJ4uSfXQTpW8CVlaHdwHHnxpKepBQ4j3tQvh
+         v0iPS8yxr5XZhi1gXyLS7XJVMXDUAkll9nqTtgn4jM90Hxnvf4Ql710DBmBwXGli0YCO
+         g6DuEFrL0Xr7X7bhWOnGdSAruGCDJ8fcsHVj0T5+vhxMtdNNnHHntLF/LfuhEtblfCyl
+         Ag9/W9gQLqHyNL8TwxCEuCxm3oHB9tGHa7PuxfOEhy+1beoHD00xzF2n3ztciQRb3Hxe
+         8dmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ReOPTCTBI89zUNcN9aZJisi4S7TTo39X4bWkAmOczYk=;
-        b=McWSwnTmmQ2WdrB554Ur5gB16qdECIQs77xECFux9SkEqzp7ifkXcHtyj5/mkOqmii
-         HhbzOTznYJv7NiBIXPIOLqWaGUv1V4tlTJlKiFvprLVeSmiDnSJ9AMZRS+tNgzuzpeyw
-         u3XMhC8uEc4xGAvxo8phtzktw19Fon8+qngtqh7NZzVbnsqPISdvpEiPwgsQeHzhknfK
-         CzuqgDBSAs7jS2lJ98LkjeUIH1xa9sMpO0HwxkAKhvBqApKM738DYXrmzDJeubThhqE3
-         ZCVALvAbLgOPsUY/zdfQ+rhNC6nW+iQp1ys0aLjcAWb9P84s9ASiw/xMZHF7Z6194CBc
-         uIUQ==
-X-Gm-Message-State: AOAM5324NRlM2eDpchb1y4k49v8hlVigywCCREoq9ro7Uk/9IqPT/7qU
-        7st2vmVBOVgUt5BYXh8JuiWljw==
-X-Google-Smtp-Source: ABdhPJyzAW6tORL1vwSLNEiMgKt6TQSwaprk34c5lMFIl+9CgUzqi42MgqHQXhEWVLiLmgWvTFTltg==
-X-Received: by 2002:a1c:e389:: with SMTP id a131mr6110454wmh.181.1600278817740;
-        Wed, 16 Sep 2020 10:53:37 -0700 (PDT)
-Received: from antares.lan (5.c.5.5.a.2.f.6.a.a.d.6.3.1.9.1.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:1913:6daa:6f2a:55c5])
-        by smtp.gmail.com with ESMTPSA id v17sm34177508wrr.60.2020.09.16.10.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Sep 2020 10:53:36 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     ast@kernel.org, yhs@fb.com, daniel@iogearbox.net, kafai@fb.com,
-        andriin@fb.com
-Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next v4 05/11] bpf: make BTF pointer type checking generic
-Date:   Wed, 16 Sep 2020 18:52:49 +0100
-Message-Id: <20200916175255.192040-6-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200916175255.192040-1-lmb@cloudflare.com>
-References: <20200916175255.192040-1-lmb@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0yvq7JNthKxbYOHDHOWG0xNarv1GFWHVlIaBEc+BtOM=;
+        b=aaLIyd9UyZPB7JeP26Lni9MQ+7ZNfNDBZ9oC9PObGjWdRsZkEAB9Zd8DPrrFzu6a28
+         3rfJcKDWDwLEeCKJGGcNvtVkzglg1gkKSx3CCPHXdhzfIwOXC/IJgkYdOhwfobX6VEPi
+         VI+gdeHR1P3ABOJO0hYpRHyWP9XT85cF3zm1EUCKm/5lN13cr+jPwMep5yIrbf4HfiAg
+         8BM0LpRzoXDjmoImAiQwb4cDouzC+ntyedj+pk3G79j4cpPwXdMnE5ckO90+JaYd9TO1
+         /fLKTQ4oYMxs4TU3FMIFOfVkzyyRxEE1sByBmyFmFfBXFBqOUYJGS6rHpDsBdG0BIjpO
+         uRRQ==
+X-Gm-Message-State: AOAM533zgxyxbWn1hxHxcaaWtFLaKUcDsmjBVnz+wKolA/PGUk9NWdr2
+        aehgdHO4ktuIhOjqwFVexwRxjGq9buSmz4rptSY=
+X-Google-Smtp-Source: ABdhPJysUJyNB7gcgsAktzk2oaIoLFmQ/kJOZs9XR0p+ZpiN/WMfaYvyZKJYCtMsSuiZ8Z3SfVGRdtB/e+wh2Ugd6Po=
+X-Received: by 2002:a25:9d06:: with SMTP id i6mr35125340ybp.510.1600280539251;
+ Wed, 16 Sep 2020 11:22:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <160017005691.98230.13648200635390228683.stgit@toke.dk> <160017006024.98230.18011033601869719353.stgit@toke.dk>
+In-Reply-To: <160017006024.98230.18011033601869719353.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 16 Sep 2020 11:22:08 -0700
+Message-ID: <CAEf4BzZuvzb8Oqp=bLHo9H9fawPxh0a2+qhAhB+8KEO36YkX1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/8] bpf: move prog->aux->linked_prog and
+ trampoline into bpf_link on attach
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Perform BTF type checks if the register we're working on contains a BTF
-pointer, rather than if the argument is for a BTF pointer. This is easier
-to understand, and allows removing the code from the arg_type checking
-section of the function.
+On Tue, Sep 15, 2020 at 5:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> In preparation for allowing multiple attachments of freplace programs, mo=
+ve
+> the references to the target program and trampoline into the
+> bpf_tracing_link structure when that is created. To do this atomically,
+> introduce a new mutex in prog->aux to protect writing to the two pointers
+> to target prog and trampoline, and rename the members to make it clear th=
+at
+> they are related.
+>
+> With this change, it is no longer possible to attach the same tracing
+> program multiple times (detaching in-between), since the reference from t=
+he
+> tracing program to the target disappears on the first attach. However,
+> since the next patch will let the caller supply an attach target, that wi=
+ll
+> also make it possible to attach to the same place multiple times.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
- kernel/bpf/verifier.c | 38 ++++++++++++++++++++------------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
+Seems much more straightforward to me with mutex. And I don't have to
+worry about various transient NULL states.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 9f95d6d55c5f..99c0d7adcb1e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4001,27 +4001,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 				goto err_type;
- 		}
- 	} else if (arg_type == ARG_PTR_TO_BTF_ID) {
--		const u32 *btf_id = fn->arg_btf_id[arg];
--
- 		expected_type = PTR_TO_BTF_ID;
- 		if (type != expected_type)
- 			goto err_type;
--
--		if (!btf_id) {
--			verbose(env, "verifier internal error: missing BTF ID\n");
--			return -EFAULT;
--		}
--
--		if (!btf_struct_ids_match(&env->log, reg->off, reg->btf_id, *btf_id)) {
--			verbose(env, "R%d is of type %s but %s is expected\n",
--				regno, kernel_type_name(reg->btf_id), kernel_type_name(*btf_id));
--			return -EACCES;
--		}
--		if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
--			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
--				regno);
--			return -EACCES;
--		}
- 	} else if (arg_type == ARG_PTR_TO_SPIN_LOCK) {
- 		if (meta->func_id == BPF_FUNC_spin_lock) {
- 			if (process_spin_lock(env, regno, true))
-@@ -4076,6 +4058,26 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		return -EFAULT;
- 	}
- 
-+	if (type == PTR_TO_BTF_ID) {
-+		const u32 *btf_id = fn->arg_btf_id[arg];
-+
-+		if (!btf_id) {
-+			verbose(env, "verifier internal error: missing BTF ID\n");
-+			return -EFAULT;
-+		}
-+
-+		if (!btf_struct_ids_match(&env->log, reg->off, reg->btf_id, *btf_id)) {
-+			verbose(env, "R%d is of type %s but %s is expected\n",
-+				regno, kernel_type_name(reg->btf_id), kernel_type_name(*btf_id));
-+			return -EACCES;
-+		}
-+		if (!tnum_is_const(reg->var_off) || reg->var_off.value) {
-+			verbose(env, "R%d is a pointer to in-kernel struct with non-zero offset\n",
-+				regno);
-+			return -EACCES;
-+		}
-+	}
-+
- 	if (arg_type == ARG_CONST_MAP_PTR) {
- 		/* bpf_map_xxx(map_ptr) call: remember that map_ptr */
- 		meta->map_ptr = reg->map_ptr;
--- 
-2.25.1
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
+>  include/linux/bpf.h     |   15 +++++++++------
+>  kernel/bpf/btf.c        |    6 +++---
+>  kernel/bpf/core.c       |    9 ++++++---
+>  kernel/bpf/syscall.c    |   46 ++++++++++++++++++++++++++++++++++++++++-=
+-----
+>  kernel/bpf/trampoline.c |   12 ++++--------
+>  kernel/bpf/verifier.c   |    9 +++++----
+>  6 files changed, 67 insertions(+), 30 deletions(-)
+>
+
+[...]
+
+> @@ -2583,19 +2598,38 @@ static int bpf_tracing_prog_attach(struct bpf_pro=
+g *prog)
+>                       &bpf_tracing_link_lops, prog);
+>         link->attach_type =3D prog->expected_attach_type;
+>
+> +       mutex_lock(&prog->aux->tgt_mutex);
+> +
+> +       if (!prog->aux->tgt_trampoline) {
+> +               err =3D -ENOENT;
+> +               goto out_unlock;
+> +       }
+> +       tr =3D prog->aux->tgt_trampoline;
+> +       tgt_prog =3D prog->aux->tgt_prog;
+> +
+>         err =3D bpf_link_prime(&link->link, &link_primer);
+>         if (err) {
+> -               kfree(link);
+> -               goto out_put_prog;
+> +               goto out_unlock;
+>         }
+
+nit: unnecessary {} now
+
+>
+> -       err =3D bpf_trampoline_link_prog(prog);
+> +       err =3D bpf_trampoline_link_prog(prog, tr);
+>         if (err) {
+>                 bpf_link_cleanup(&link_primer);
+> -               goto out_put_prog;
+> +               link =3D NULL;
+> +               goto out_unlock;
+>         }
+
+[...]
