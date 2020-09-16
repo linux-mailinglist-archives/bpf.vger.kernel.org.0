@@ -2,139 +2,265 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE15E26CB6A
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 22:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F3126CABD
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 22:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727003AbgIPRZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 13:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        id S1728159AbgIPUNA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 16:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgIPRZT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Sep 2020 13:25:19 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AF6C061A31
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 10:25:14 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o5so7679690wrn.13
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 10:25:14 -0700 (PDT)
+        with ESMTP id S1727131AbgIPRcd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 13:32:33 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5099CC06174A;
+        Wed, 16 Sep 2020 10:32:21 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id h206so5954628ybc.11;
+        Wed, 16 Sep 2020 10:32:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FLIuBcEfXFqBGnCMg96s4H8fMHjOET/yZlTCC4s2SjY=;
-        b=iSKsbfCaH85JTyF93w9TDVj+qgI43v1QxUEyWe0EQUbDc2aQHYBMp7y1gRr8uJgVuM
-         1cVf+stUl9US5B0yTdv8lUKTKT+fgWT5ER7KxMErMG5bzGAZRoKGiAAiQD7o1yhB+czu
-         N8jMTmR0u6nEsuq1VQl1fAx9EM4X/d/DETGps=
+         :cc:content-transfer-encoding;
+        bh=w6OURtY58cG1HlzhA4lLp8sQ26KStQ/w85cU6aGuGCM=;
+        b=N7+a5KUNLmopQPrT8KzEAS+6vOLgZ39vd4xgbzQR0GUVjNJctYDcaIB5F2NxAdegmZ
+         xCC0aBbcR0oqLfnElCXNAfBI0LoEYlef1Bgk7Yrl1XUS9ECiya51FriNaMy0poxloBrb
+         5vplGwUs4OBVqL9xgoBgkcpkeiY0DLGliVcBdpLQpFX6md6pkwuY9JVWPUoopsOnGynG
+         IcaYmEtPHDRBoXOaXbib47GHXE6lrN4G18EBduVC1yok8D7btHLZDot3bz04NTXkg5QF
+         CuVe/UTW21ZJpHc3A9DD9MgUvayxo4OGjhWZALkLkVt2Xd1mQefJsYAowo1+Kv8K73Pe
+         s1xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FLIuBcEfXFqBGnCMg96s4H8fMHjOET/yZlTCC4s2SjY=;
-        b=i783LB5AwIB9KKWIz3b8eFwl0jJsINhA/vQbopARfWwgsfu6s4pqk9m5mkQilj4Ag4
-         MaqZ31+OYp7UoB0KIaEheaK/dWcqWA8OZP6h7N2WGWakKzWMsxuf2VQxwHhy4GX79mPh
-         AdOf0e9SRUe9mBelEjLCIFanRLfl/zpkUN/st5TPctF6Rxl3JjjyoHuVnF4kvutSGZXl
-         ybmdQhCCO0gn2qLSRa1qsYxkRQqpIhisGL4QgVCaWPoDRfIjNv4iga3WV8OrVC7dL9YC
-         76IsOGBaJqiFPpIZgHe1yyQdDhuLGKRN4WXLarhiKSMx/zrRyAxix3vOiKNmxyYOGSy0
-         xU6w==
-X-Gm-Message-State: AOAM533iAXoI/SqjFxUQEFEmqyhjiG5Csr1H66PTOJMx0QkPAbdHU1em
-        KTW/dhc/vz+7WNRdLEn9a+hgyIPQYhlLZXZoMxcqfQ==
-X-Google-Smtp-Source: ABdhPJzFG0CKotHKNUMxQnzas0sxg7FAmpAAmBAxshrbYB7YiD0VwMPfDZp16xsSPod2p+vLLrtXqNwlDt36g8M7VhU=
-X-Received: by 2002:adf:e711:: with SMTP id c17mr28472007wrm.359.1600277113217;
- Wed, 16 Sep 2020 10:25:13 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=w6OURtY58cG1HlzhA4lLp8sQ26KStQ/w85cU6aGuGCM=;
+        b=SS+J2Za1S4oDWiyArkz2VCedQlfr+avIITboLi5dpwZcGjEUuYADZtd61rXzGuRlVr
+         1nZaMLl4XCt2NEhFpACtuaAHZLslf+/1ONLBSne6KoEgAQ454/tGHyaGAV8jjiw0TXW9
+         pUJT2Y5U5XuV+Tm9nMz1PaBNz8ZuYndVVLlf3CNhNPTPFQtTPIvuNoj4ip/pwUhTOLKh
+         LmdQuFDbbvZakoahb8D7odOAY52zJO2iBNF9dtrXkfPqMDSmv67ih6+oFqYWrtBE3Sub
+         kImuYI+zqAcVL3u+b+kv3yWtzcggQKrHh7l3wDJgtyqmVYJw5OpTXvI6GIhNl8qGOaGo
+         kAWw==
+X-Gm-Message-State: AOAM53014UuXVj9ypBUYY+33m7C1y58ZkLzBLWOylGa5cn94BiWATScl
+        2M5n3iuONx4rPdf5XM6gw4Xv9t6Sfn9HzOAQSps=
+X-Google-Smtp-Source: ABdhPJw7GiGwZVIyLh9jkU22hNadf/VAocTHtA9PmMeKJNBZWJW9A5CDsr2GagzzeOk/x1+EewmarMkOHA0mvpY8ITQ=
+X-Received: by 2002:a25:6644:: with SMTP id z4mr6039473ybm.347.1600277540438;
+ Wed, 16 Sep 2020 10:32:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916112416.2321204-1-jolsa@kernel.org>
-In-Reply-To: <20200916112416.2321204-1-jolsa@kernel.org>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 16 Sep 2020 19:25:02 +0200
-Message-ID: <CACYkzJ7Y8WhVE9-6jSCC1svVLeuFFzXQ0Q-A9sjHomGQGgtZCw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix stat probe in d_path test
-To:     Jiri Olsa <jolsa@kernel.org>
+References: <160017005691.98230.13648200635390228683.stgit@toke.dk> <160017005916.98230.1736872862729846213.stgit@toke.dk>
+In-Reply-To: <160017005916.98230.1736872862729846213.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 16 Sep 2020 10:32:09 -0700
+Message-ID: <CAEf4BzbAsnzAUPksUs+bcNuuUPkumc15RLESu3jOGf87mzabBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/8] bpf: verifier: refactor check_attach_btf_id()
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 1:24 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Sep 15, 2020 at 5:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> Some kernels builds might inline vfs_getattr call within fstat
-> syscall code path, so fentry/vfs_getattr trampoline is not called.
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Alexei suggested [1] we should use security_inode_getattr instead,
-> because it's less likely to get inlined.
+> The check_attach_btf_id() function really does three things:
 >
-> Adding security_inode_getattr to the d_path allowed list and
-> switching the stat trampoline to security_inode_getattr.
+> 1. It performs a bunch of checks on the program to ensure that the
+>    attachment is valid.
 >
-> Adding flags that indicate trampolines were called and failing
-> the test if any of them got missed, so it's easier to identify
-> the issue next time.
+> 2. It stores a bunch of state about the attachment being requested in
+>    the verifier environment and struct bpf_prog objects.
 >
-> [1] https://lore.kernel.org/bpf/CAADnVQJ0FchoPqNWm+dEppyij-MOvvEG_trEfyrHdabtcEuZGg@mail.gmail.com/
-> Fixes: e4d1af4b16f8 ("selftests/bpf: Add test for d_path helper")
-> Signed-off-by: Jiri Olsa <jolsa@redhat.com>
-
-Acked-by: KP Singh <kpsingh@google.com>
-
+> 3. It allocates a trampoline for the attachment.
+>
+> This patch splits out (1.) and (3.) into separate functions in preparatio=
+n
+> for reusing them when the actual attachment is happening (in the
+> raw_tracepoint_open syscall operation), which will allow tracing programs
+> to have multiple (compatible) attachments.
+>
+> No functional change is intended with this patch.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
->  kernel/trace/bpf_trace.c                        | 1 +
->  tools/testing/selftests/bpf/prog_tests/d_path.c | 6 ++++++
->  tools/testing/selftests/bpf/progs/test_d_path.c | 9 ++++++++-
->  3 files changed, 15 insertions(+), 1 deletion(-)
+
+I almost acked this, but found a problem at the very last moment. See
+below, along with few more comments while I have enough context in my
+head.
+
+BTW, for whatever reason your patches arrived with a 12 hour delay
+yesterday (cover letter received at 5am, while patches arrived at
+6pm), don't know if its vger or gmail...
+
+>  include/linux/bpf.h          |    7 +
+>  include/linux/bpf_verifier.h |    9 ++
+>  kernel/bpf/trampoline.c      |   20 ++++
+>  kernel/bpf/verifier.c        |  197 ++++++++++++++++++++++++------------=
+------
+>  4 files changed, 149 insertions(+), 84 deletions(-)
 >
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index b2a5380eb187..1001c053ebb3 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1122,6 +1122,7 @@ BTF_ID(func, vfs_truncate)
->  BTF_ID(func, vfs_fallocate)
->  BTF_ID(func, dentry_open)
->  BTF_ID(func, vfs_getattr)
-> +BTF_ID(func, security_inode_getattr)
->  BTF_ID(func, filp_close)
->  BTF_SET_END(btf_allowlist_d_path)
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 5ad4a935a24e..dcf0c70348a4 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -616,6 +616,8 @@ static __always_inline unsigned int bpf_dispatcher_no=
+p_func(
+>  struct bpf_trampoline *bpf_trampoline_lookup(u64 key);
+>  int bpf_trampoline_link_prog(struct bpf_prog *prog);
+>  int bpf_trampoline_unlink_prog(struct bpf_prog *prog);
+> +struct bpf_trampoline *bpf_trampoline_get(u64 key, void *addr,
+> +                                         struct btf_func_model *fmodel);
+>  void bpf_trampoline_put(struct bpf_trampoline *tr);
+>  #define BPF_DISPATCHER_INIT(_name) {                           \
+>         .mutex =3D __MUTEX_INITIALIZER(_name.mutex),              \
+> @@ -672,6 +674,11 @@ static inline int bpf_trampoline_unlink_prog(struct =
+bpf_prog *prog)
+>  {
+>         return -ENOTSUPP;
+>  }
+> +static inline struct bpf_trampoline *bpf_trampoline_get(u64 key, void *a=
+ddr,
+> +                                                       struct btf_func_m=
+odel *fmodel)
+> +{
+> +       return ERR_PTR(-EOPNOTSUPP);
+> +}
+>  static inline void bpf_trampoline_put(struct bpf_trampoline *tr) {}
+>  #define DEFINE_BPF_DISPATCHER(name)
+>  #define DECLARE_BPF_DISPATCHER(name)
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 20009e766805..db3db0b69aad 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -447,4 +447,13 @@ bpf_prog_offload_remove_insns(struct bpf_verifier_en=
+v *env, u32 off, u32 cnt);
+>  int check_ctx_reg(struct bpf_verifier_env *env,
+>                   const struct bpf_reg_state *reg, int regno);
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> index fc12e0d445ff..f507f1a6fa3a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-> @@ -120,6 +120,12 @@ void test_d_path(void)
->         if (err < 0)
->                 goto cleanup;
->
-> +       if (CHECK(!bss->called_stat || !bss->called_close,
-> +                 "check",
-> +                 "failed to call trampolines called_stat %d, bss->called_close %d\n",
-> +                  bss->called_stat, bss->called_close))
+> +int bpf_check_attach_target(struct bpf_verifier_log *log,
+> +                           const struct bpf_prog *prog,
+> +                           const struct bpf_prog *tgt_prog,
+> +                           u32 btf_id,
+> +                           struct btf_func_model *fmodel,
+> +                           long *tgt_addr,
+> +                           const char **tgt_name,
+> +                           const struct btf_type **tgt_type);
 
-optional:
+So this is obviously an abomination of a function signature,
+especially for a one exported to other files.
 
-maybe it's better to add two separate checks with specific error messages?
+One candidate to remove would be tgt_type, which is supposed to be a
+derivative of target BTF (vmlinux or tgt_prog->btf) + btf_id,
+**except** (and that's how I found the bug below), in case of
+fentry/fexit programs attaching to "conservative" BPF functions, in
+which case what's stored in aux->attach_func_proto is different from
+what is passed into btf_distill_func_proto. So that's a bug already
+(you'll return NULL in some cases for tgt_type, while it has to always
+be non-NULL).
 
-"stat", "trampoline for security_inode_getattr was not called\n"
-"close", "trampoline for filp_close was not called\n"
+But related to that is fmodel. It seems like bpf_check_attach_target()
+has no interest in fmodel itself and is just passing it from
+btf_distill_func_proto(). So I was about to suggest dropping fmodel
+and calling btf_distill_func_proto() outside of
+bpf_check_attach_target(), but given the conservative + fentry/fexit
+quirk, it's probably going to be more confusing.
 
-I think this would make the output more readable.
+So with all this, I suggest dropping the tgt_type output param
+altogether and let callers do a `btf__type_by_id(tgt_prog ?
+tgt_prog->aux->btf : btf_vmlinux, btf_id);`. That will both fix the
+bug and will make this function's signature just a tad bit less
+horrible.
 
-- KP
-
-> +               goto cleanup;
 > +
->         for (int i = 0; i < MAX_FILES; i++) {
->                 CHECK(strncmp(src.paths[i], bss->paths_stat[i], MAX_PATH_LEN),
->                       "check",
+>  #endif /* _LINUX_BPF_VERIFIER_H */
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 7dd523a7e32d..7845913e7e41 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -336,6 +336,26 @@ int bpf_trampoline_unlink_prog(struct bpf_prog *prog=
+)
+>         return err;
+>  }
+>
+> +struct bpf_trampoline *bpf_trampoline_get(u64 key, void *addr,
+> +                                         struct btf_func_model *fmodel)
+> +{
+> +       struct bpf_trampoline *tr;
+> +
+> +       tr =3D bpf_trampoline_lookup(key);
+> +       if (!tr)
+> +               return ERR_PTR(-ENOMEM);
+
+So seems like the only way this function can fail is when
+bpf_trampoline_lookup() returns NULL (and we assume -ENOMEM then), so
+I guess we could have just returned NULL the same to keep
+bpf_trampoline_lookup() and bpf_trampoline_get() similar. But it's
+minor, if you prefer to encode error code anyways.
+
+> +
+> +       mutex_lock(&tr->mutex);
+> +       if (tr->func.addr)
+> +               goto out;
+> +
+> +       memcpy(&tr->func.model, fmodel, sizeof(*fmodel));
+> +       tr->func.addr =3D addr;
+> +out:
+> +       mutex_unlock(&tr->mutex);
+> +       return tr;
+> +}
+> +
+>  void bpf_trampoline_put(struct bpf_trampoline *tr)
+>  {
+>         if (!tr)
 
 [...]
 
->         if (pid != my_pid)
->                 return 0;
->
-> --
-> 2.26.2
->
+> @@ -11235,24 +11202,14 @@ static int check_attach_btf_id(struct bpf_verif=
+ier_env *env)
+>                 t =3D btf_type_by_id(btf, t->type);
+>                 if (!btf_type_is_func_proto(t))
+>                         return -EINVAL;
+> -               tr =3D bpf_trampoline_lookup(key);
+> -               if (!tr)
+> -                       return -ENOMEM;
+> -               /* t is either vmlinux type or another program's type */
+> -               prog->aux->attach_func_proto =3D t;
+> -               mutex_lock(&tr->mutex);
+> -               if (tr->func.addr) {
+> -                       prog->aux->trampoline =3D tr;
+> -                       goto out;
+> -               }
+> -               if (tgt_prog && conservative) {
+> -                       prog->aux->attach_func_proto =3D NULL;
+> +
+> +               if (tgt_prog && conservative)
+>                         t =3D NULL;
+
+this is where the bug happens, we can't return this NULL to caller as tgt_p=
+rog
+
+> -               }
+> -               ret =3D btf_distill_func_proto(log, btf, t,
+> -                                            tname, &tr->func.model);
+> +
+> +               ret =3D btf_distill_func_proto(log, btf, t, tname, fmodel=
+);
+>                 if (ret < 0)
+> -                       goto out;
+> +                       return ret;
+> +
+>                 if (tgt_prog) {
+>                         if (subprog =3D=3D 0)
+>                                 addr =3D (long) tgt_prog->bpf_func;
+
+[...]
