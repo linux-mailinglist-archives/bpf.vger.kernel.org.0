@@ -2,133 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1964526B926
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 02:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA2C26B92A
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 03:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgIPA6Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Sep 2020 20:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        id S1726095AbgIPBAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Sep 2020 21:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIPA6P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Sep 2020 20:58:15 -0400
+        with ESMTP id S1726093AbgIPBAP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Sep 2020 21:00:15 -0400
 Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D56C06174A;
-        Tue, 15 Sep 2020 17:58:13 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id x20so375026ybs.8;
-        Tue, 15 Sep 2020 17:58:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63747C06174A
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 18:00:15 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id 8so459326ybu.4
+        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 18:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yxMQEsMs2FwKSc+3vZ6gbovHW+L4nnRr+b5HtgVMNvY=;
-        b=vN++gOoSpmPn56yM08AI9ZSNbAkCJTdYjznxDDC9AoGzNL7tyfvEkJN2SdcGUMZavB
-         xCMCs4YOb0SeqGOm9O6VJp2B3iEw4XEdH5l3aoy+EodzJi7YyXUab7oCVbfECXQ8Vj32
-         HbabnyGmoYHxFjFTDBmPoNWaCfh96+b7BI+y4vzBOWfTxbwt4Pe5auTl9g8OWhiZxuuy
-         fLZRAlcMwsDE5UT/ShImEUNsPBIKNQq1e/2OnnAGTM/bvJiCxzb6xN6DrAUjh75QKi1L
-         whuHDf1We4LPmtSWGwvZ2jbt1g7/c1127JRpBtq43huIF1mDOZQIc5/L8Yu12gsdN1Ve
-         tNVA==
+        bh=Kdm5rBU4W0YYh8sXQnghJcbVvUUgHxZWmiFjDzL2Sck=;
+        b=EwYuTXIEBua6E3qaClmP7939+lJR2I9UjCaS0NZvwHURxmRfBO0yY7RWGEp+FGU/Ay
+         alWOHFoQ4YyHvAe4dfB01HOGD0hHK7vZErcZ6Gv6Kb95fYdaIFGSfWO4GD8dwG6axtnM
+         N02wirjipKc7uDau2vjLJUphO9zU2I/GJmksA33PEGOP17K/wTgSweJjxkK0v+Idc6+f
+         eKEFzHYCaXXoYxtC0fL2x2pF2/fERx6z1RwxXeTdZqcWNUq01jNB56R4JJtDA2Q5XRTj
+         zkPe+6UpaXh0FLv97EvLvpedrydTCx0P0JAar5HS7RVH2DIVwqPOwppFl8mDCfNhCNQg
+         kI4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yxMQEsMs2FwKSc+3vZ6gbovHW+L4nnRr+b5HtgVMNvY=;
-        b=OIwRjgTHNn4FBoBGEI95A8S1OHtm0hsTMV6+Vy3itwscbdHJV8KHe+Qz/GZaTuUI5R
-         ILEBjGce5ur6XPBI3b9jlGj9PmEbDNfvgzNt0I/vcxeca66HdpoPqSyT/G85VPfWL+OC
-         7rshOoM0l/BxJhKJRrRDjg96bk5KuPbyGEa0/hcDxEYax7vbcrRTymHa8KgMP4CECEhp
-         QKwTkzHO5ypOfGYtHSnxU0mjm5gdK3IXbpAZe3zhzakgso9qCzZNPRGl6g9Eaq+et7E5
-         ly4AjZmemVwRDMMTIhix3cgVt9QCoKEyu9JgLzFVFLbFvM3UnqXVQPU2n4KJ5C9KqEAi
-         SgHw==
-X-Gm-Message-State: AOAM531/AboTayi3CksrrDxfRobkOYOPbQcAqLayjpjMHA9US4uOT7+Q
-        4FqDoR4sY2EmsQD9jnITlBoP0NyNWB3+5dgMYDw=
-X-Google-Smtp-Source: ABdhPJxHugYy1Qoh7yRajhFjOvoqe0jydpB4rLs9SBNI2FeJAVeHpbKKcjLDG542Ps7R9nVAGkr3D6Puc8kTo9zo4fI=
-X-Received: by 2002:a25:c049:: with SMTP id c70mr31929496ybf.403.1600217888395;
- Tue, 15 Sep 2020 17:58:08 -0700 (PDT)
+        bh=Kdm5rBU4W0YYh8sXQnghJcbVvUUgHxZWmiFjDzL2Sck=;
+        b=b/H/93AK27VsQzBapoZykfdk6EeqoUy+OafpcWJwYFnV96a1260UXgZa/VvKFkd31s
+         X0dfmNQGOy57Ug6W30UHpwyMhMhOyo8J+wBa8n6/efIEoqtgb98ERjHRJjkoOWKRE3IA
+         AZprusitEhS/8Y27RSYBJ85BtgncjcDvQWcVDMJ7XoMvtFQC7LnVgACACVPZQYuLtNGG
+         VvvvHo5D1+bR7NssrmxYoHHOxs4w6HZcZCnEjG34nbwE9yMUIzzn+u7z44ZxO1+j+/eX
+         T7mPioIh/aaBgvoKmVi0buphQukd2CgUesGR2AefQdn8AfU2zfRP/a9AqSWrSRQDBfdt
+         Qzwg==
+X-Gm-Message-State: AOAM531SZrRXqwvxDLzlo0kRaT9B4oTzM+67uCtNkVW0eCL0xVazvKyb
+        MSjfpylmzTcDlMc9R4ZNNKD4Tmgd3uoIppmZj8v9DA4850wTRQ==
+X-Google-Smtp-Source: ABdhPJz81dgPIXUXiVjiCqDOvJu8HwAD7VHKN7p8GFTi3fdaRoT/msLij30tjm/YQnjxiwiZnV0Naf/ICzRSZT3htfk=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr1167435ybn.230.1600218014704;
+ Tue, 15 Sep 2020 18:00:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916004401.146277-1-yhs@fb.com>
-In-Reply-To: <20200916004401.146277-1-yhs@fb.com>
+References: <20200915115519.3769807-1-iii@linux.ibm.com>
+In-Reply-To: <20200915115519.3769807-1-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 15 Sep 2020 17:57:57 -0700
-Message-ID: <CAEf4BzauFqMvUPTSN058L9ptzi8oMu31MRoVrgKfB8XPn6c2dg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix a rcu warning for bpffs map pretty-print
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 15 Sep 2020 18:00:03 -0700
+Message-ID: <CAEf4BzZzqs6Z8E0imPOUdr2sSeAz_JvsEKgoy=7FsJnnK0Edhw@mail.gmail.com>
+Subject: Re: [PATCH RESEND bpf-next] samples/bpf: Fix test_map_in_map on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 5:44 PM Yonghong Song <yhs@fb.com> wrote:
+On Tue, Sep 15, 2020 at 5:42 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> Running selftest
->   ./btf_btf -p
-> the kernel had the following warning:
->   [   51.528185] WARNING: CPU: 3 PID: 1756 at kernel/bpf/hashtab.c:717 htab_map_get_next_key+0x2eb/0x300
->   [   51.529217] Modules linked in:
->   [   51.529583] CPU: 3 PID: 1756 Comm: test_btf Not tainted 5.9.0-rc1+ #878
->   [   51.530346] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.9.3-1.el7.centos 04/01/2014
->   [   51.531410] RIP: 0010:htab_map_get_next_key+0x2eb/0x300
->   ...
->   [   51.542826] Call Trace:
->   [   51.543119]  map_seq_next+0x53/0x80
->   [   51.543528]  seq_read+0x263/0x400
->   [   51.543932]  vfs_read+0xad/0x1c0
->   [   51.544311]  ksys_read+0x5f/0xe0
->   [   51.544689]  do_syscall_64+0x33/0x40
->   [   51.545116]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> s390 uses socketcall multiplexer instead of individual socket syscalls.
+> Therefore, "kprobe/" SYSCALL(sys_connect) does not trigger and
+> test_map_in_map fails. Fix by using "kprobe/__sys_connect" instead.
 >
-> The related source code in kernel/bpf/hashtab.c:
->   709 static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
->   710 {
->   711         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
->   712         struct hlist_nulls_head *head;
->   713         struct htab_elem *l, *next_l;
->   714         u32 hash, key_size;
->   715         int i = 0;
->   716
->   717         WARN_ON_ONCE(!rcu_read_lock_held());
->
-> In kernel/bpf/inode.c, bpffs map pretty print calls map->ops->map_get_next_key()
-> without holding a rcu_read_lock(), hence causing the above warning.
-> To fix the issue, just surrounding map->ops->map_get_next_key() with rcu read lock.
->
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Fixes: a26ca7c982cb ("bpf: btf: Add pretty print support to the basic arraymap")
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
+>
 
 LGTM.
 
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->  kernel/bpf/inode.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Previous discussion:
+> https://lore.kernel.org/bpf/20200728120059.132256-3-iii@linux.ibm.com
 >
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index fb878ba3f22f..18f4969552ac 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -226,10 +226,12 @@ static void *map_seq_next(struct seq_file *m, void *v, loff_t *pos)
->         else
->                 prev_key = key;
+> samples/bpf/test_map_in_map_kern.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 >
-> +       rcu_read_lock();
->         if (map->ops->map_get_next_key(map, prev_key, key)) {
->                 map_iter(m)->done = true;
-> -               return NULL;
-> +               key = NULL;
->         }
-> +       rcu_read_unlock();
->         return key;
->  }
->
-> --
-> 2.24.1
->
+
+[...]
