@@ -2,199 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10F926BC71
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 08:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618E926BE58
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 09:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgIPGRC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 02:17:02 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16644 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726068AbgIPGRC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 16 Sep 2020 02:17:02 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08G6Ftlu005580
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 23:17:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=JY0NNgdDRlKwmkar2R9QZMbHFK6LkFXvQiizy9IRnpE=;
- b=Ff7lvtg5CgqWjAnIO6Gl5Ro2h0Th182W4NROdnBnZ9tWreVBeziMACZnSilDN34GkONR
- bDBLiAgtefmKcFmOKKah4FBy/4+s1NwRivRZhOOEueBXj0XEvsilBaPRexUZwktPG4Lb
- /NB19H/rBDKdIjomSroWmOkSbYReQl67czI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33k5pehw17-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 15 Sep 2020 23:17:01 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Sep 2020 23:16:54 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id AD48A3704CB8; Tue, 15 Sep 2020 23:16:49 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v3] bpf: using rcu_read_lock for bpf_sk_storage_map iterator
-Date:   Tue, 15 Sep 2020 23:16:49 -0700
-Message-ID: <20200916061649.1437414-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726381AbgIPHma (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 03:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgIPHm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 03:42:28 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DC7C06174A;
+        Wed, 16 Sep 2020 00:42:28 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id q4so1130173pjh.5;
+        Wed, 16 Sep 2020 00:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IjUD0F6XmJJIFT5UAlzkPPx1enPEzZw4LiZfY+PSTUk=;
+        b=bLL86q+ZcOR1A4VJ1duYRTdx6XqB66Wn3Xygvjuss1rMYTIezkiOVlB04WJS4wprxK
+         czipKQk+YDFnf+SKMSJ/ccEzZ/ZIAfFVPgpLWG1EHWU9Xh1+ViF2F9t8kdYCCNPJqAQ8
+         9e+2m/8YKK2E/VNqjidKWHZkxc/KRxvw57jSTQHnyCzoWit53U3pznQLmAqBOoAA8UUw
+         44idV0N1OS814TFucxiZUh5wBsveHanKCQD0o3eb/A6CWCUWHItAVK70tImgIeRoZJIS
+         vnSISoKxNfD5AMkS1YgCiUd9tCQitEjB1Cc2T0sLC8brqfDTU4JqXgMUzOF5KtAhAiJq
+         Vc9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IjUD0F6XmJJIFT5UAlzkPPx1enPEzZw4LiZfY+PSTUk=;
+        b=PBKZOZhzpBGh25Fyv6ffYDkhp4mCqGiVMGzM2NVanB7l/flRpmoW00sZMcY/KfjgpP
+         hMMAMmxymzBogeeWbVV2DKqKyprT4y6Ag+Q53okKLlRls8QKW0uUHXD6ngppc30kk9HY
+         o4HV86WMlOBJmYqq2bqu2gfPRVc0xAMHdD/2pZn3AgyuLlFyQ8VjDvVasj1kpKn5PmBb
+         MD+vdRaNvmpmKvZuck943WrJbfvymOQNfkoP99eGLDzI57aZ0PkqIFQ2APVpNVAR0hVR
+         wM0csq1RL/ZGcHP0D7ItDOQVVERf8Afuji6cykWAaNM2k/Q4MvysTcmTyY8hma1b8y42
+         NT5A==
+X-Gm-Message-State: AOAM531zRg+MvW/PQqvC45Bzf9rASVyZKQCFAYF5V/7IqJc0yQSAf5jG
+        pKm/lBkVLHYknvtrFDM+SiE=
+X-Google-Smtp-Source: ABdhPJza/sEXEDVNzVMlUYOQCWVI82fWeZ5KduXPTQK59ttTaEQQZILDfaf521IzMVIQ75m1GsSstA==
+X-Received: by 2002:a17:90a:d90c:: with SMTP id c12mr2817089pjv.94.1600242147868;
+        Wed, 16 Sep 2020 00:42:27 -0700 (PDT)
+Received: from localhost.localdomain ([2001:470:e92d:10:3481:f05e:64c3:d2bd])
+        by smtp.gmail.com with ESMTPSA id z127sm7393152pfb.34.2020.09.16.00.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 00:42:27 -0700 (PDT)
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Rosen Penev <rosenp@gmail.com>
+Subject: [PATCH v1] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+Date:   Wed, 16 Sep 2020 00:42:14 -0700
+Message-Id: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-16_02:2020-09-15,2020-09-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=846 suspectscore=9 impostorscore=0
- malwarescore=0 mlxscore=0 bulkscore=0 spamscore=0 phishscore=0
- priorityscore=1501 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009160046
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If a bucket contains a lot of sockets, during bpf_iter traversing
-a bucket, concurrent userspace bpf_map_update_elem() and
-bpf program bpf_sk_storage_{get,delete}() may experience
-some undesirable delays as they will compete with bpf_iter
-for bucket lock.
+A few archs like powerpc have different errno.h values for macros
+EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+errno.h, this can result in multiple definitions of EDEADLOCK in the
+include chain. Definitions to the same value (e.g. seen with mips) do
+not raise warnings, but on powerpc there are redefinitions changing the
+value, which raise warnings and errors (if using "-Werror").
 
-Note that the number of buckets for bpf_sk_storage_map
-is roughly the same as the number of cpus. So if there
-are lots of sockets in the system, each bucket could
-contain lots of sockets.
+Guard against these redefinitions to avoid build errors like the following,
+first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
+musl 1.1.24:
 
-Different actual use cases may experience different delays.
-Here, using selftest bpf_iter subtest bpf_sk_storage_map,
-I hacked the kernel with ktime_get_mono_fast_ns()
-to collect the time when a bucket was locked
-during bpf_iter prog traversing that bucket. This way,
-the maximum incurred delay was measured w.r.t. the
-number of elements in a bucket.
-    # elems in each bucket          delay(ns)
-      64                            17000
-      256                           72512
-      2048                          875246
+  In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
+                   from ../../include/linux/err.h:8,
+                   from libbpf.c:29:
+  ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
+   #define EDEADLOCK EDEADLK
 
-The potential delays will be further increased if
-we have even more elemnts in a bucket. Using rcu_read_lock()
-is a reasonable compromise here. It may lose some precision, e.g.,
-access stale sockets, but it will not hurt performance of
-bpf program or user space application which also tries
-to get/delete or update map elements.
+  In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
+                   from libbpf.c:26:
+  toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
+   #define EDEADLOCK       58
 
-Cc: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
+  cc1: all warnings being treated as errors
+  make[5]: *** [target-powerpc_8540_musl/bpftools-5.8.9/tools/build/Makefile.build:97: /home/kodidev/openwrt-project/build_dir/target-powerpc_8540_musl/bpftools-minimal/bpftools-5.8.9//libbpf/staticobjs/libbpf.o] Error 1
+
+Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's
+                      supported by perf")
+Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
+
+Reported-by: Rosen Penev <rosenp@gmail.com>
+Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 ---
- net/core/bpf_sk_storage.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+ arch/powerpc/include/uapi/asm/errno.h       | 1 +
+ tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-Changelog:
-  v2 -> v3:
-     - fix a bug hlist_for_each_entry() =3D> hlist_for_each_entry_rcu(). =
-(Martin)
-     - use rcu_dereference() instead of rcu_dereference_raw() for lockdep=
- checking. (Martin)
-  v1 -> v2:
-    - added some performance number. (Song)
-    - tried to silence some sparse complains. but still has some left lik=
-e
-        context imbalance in "..." - different lock contexts for basic bl=
-ock
-      which the code is too hard for sparse to analyze. (Jakub)
-
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index 4a86ea34f29e..d43c3d6d0693 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -678,6 +678,7 @@ struct bpf_iter_seq_sk_storage_map_info {
- static struct bpf_local_storage_elem *
- bpf_sk_storage_map_seq_find_next(struct bpf_iter_seq_sk_storage_map_info=
- *info,
- 				 struct bpf_local_storage_elem *prev_selem)
-+	__acquires(RCU) __releases(RCU)
- {
- 	struct bpf_local_storage *sk_storage;
- 	struct bpf_local_storage_elem *selem;
-@@ -701,11 +702,11 @@ bpf_sk_storage_map_seq_find_next(struct bpf_iter_se=
-q_sk_storage_map_info *info,
- 		if (!selem) {
- 			/* not found, unlock and go to the next bucket */
- 			b =3D &smap->buckets[bucket_id++];
--			raw_spin_unlock_bh(&b->lock);
-+			rcu_read_unlock();
- 			skip_elems =3D 0;
- 			break;
- 		}
--		sk_storage =3D rcu_dereference_raw(selem->local_storage);
-+		sk_storage =3D rcu_dereference(selem->local_storage);
- 		if (sk_storage) {
- 			info->skip_elems =3D skip_elems + count;
- 			return selem;
-@@ -715,10 +716,10 @@ bpf_sk_storage_map_seq_find_next(struct bpf_iter_se=
-q_sk_storage_map_info *info,
-=20
- 	for (i =3D bucket_id; i < (1U << smap->bucket_log); i++) {
- 		b =3D &smap->buckets[i];
--		raw_spin_lock_bh(&b->lock);
-+		rcu_read_lock();
- 		count =3D 0;
--		hlist_for_each_entry(selem, &b->list, map_node) {
--			sk_storage =3D rcu_dereference_raw(selem->local_storage);
-+		hlist_for_each_entry_rcu(selem, &b->list, map_node) {
-+			sk_storage =3D rcu_dereference(selem->local_storage);
- 			if (sk_storage && count >=3D skip_elems) {
- 				info->bucket_id =3D i;
- 				info->skip_elems =3D count;
-@@ -726,7 +727,7 @@ bpf_sk_storage_map_seq_find_next(struct bpf_iter_seq_=
-sk_storage_map_info *info,
- 			}
- 			count++;
- 		}
--		raw_spin_unlock_bh(&b->lock);
-+		rcu_read_unlock();
- 		skip_elems =3D 0;
- 	}
-=20
-@@ -785,7 +786,7 @@ static int __bpf_sk_storage_map_seq_show(struct seq_f=
-ile *seq,
- 		ctx.meta =3D &meta;
- 		ctx.map =3D info->map;
- 		if (selem) {
--			sk_storage =3D rcu_dereference_raw(selem->local_storage);
-+			sk_storage =3D rcu_dereference(selem->local_storage);
- 			ctx.sk =3D sk_storage->owner;
- 			ctx.value =3D SDATA(selem)->data;
- 		}
-@@ -801,18 +802,12 @@ static int bpf_sk_storage_map_seq_show(struct seq_f=
-ile *seq, void *v)
- }
-=20
- static void bpf_sk_storage_map_seq_stop(struct seq_file *seq, void *v)
-+	__releases(RCU)
- {
--	struct bpf_iter_seq_sk_storage_map_info *info =3D seq->private;
--	struct bpf_local_storage_map *smap;
--	struct bpf_local_storage_map_bucket *b;
--
--	if (!v) {
-+	if (!v)
- 		(void)__bpf_sk_storage_map_seq_show(seq, v);
--	} else {
--		smap =3D (struct bpf_local_storage_map *)info->map;
--		b =3D &smap->buckets[info->bucket_id];
--		raw_spin_unlock_bh(&b->lock);
--	}
-+	else
-+		rcu_read_unlock();
- }
-=20
- static int bpf_iter_init_sk_storage_map(void *priv_data,
---=20
-2.24.1
+diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
+index cc79856896a1..4ba87de32be0 100644
+--- a/arch/powerpc/include/uapi/asm/errno.h
++++ b/arch/powerpc/include/uapi/asm/errno.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_POWERPC_ERRNO_H
+ #define _ASM_POWERPC_ERRNO_H
+ 
++#undef	EDEADLOCK
+ #include <asm-generic/errno.h>
+ 
+ #undef	EDEADLOCK
+diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
+index cc79856896a1..4ba87de32be0 100644
+--- a/tools/arch/powerpc/include/uapi/asm/errno.h
++++ b/tools/arch/powerpc/include/uapi/asm/errno.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_POWERPC_ERRNO_H
+ #define _ASM_POWERPC_ERRNO_H
+ 
++#undef	EDEADLOCK
+ #include <asm-generic/errno.h>
+ 
+ #undef	EDEADLOCK
+-- 
+2.25.1
 
