@@ -2,146 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D8026C875
-	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 20:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE1F26CA31
+	for <lists+bpf@lfdr.de>; Wed, 16 Sep 2020 21:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgIPSqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 14:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727939AbgIPSWV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Sep 2020 14:22:21 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB552C061756;
-        Wed, 16 Sep 2020 11:22:20 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id c17so6126060ybe.0;
-        Wed, 16 Sep 2020 11:22:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0yvq7JNthKxbYOHDHOWG0xNarv1GFWHVlIaBEc+BtOM=;
-        b=D/GXJTn1HM6gps0EGKWe8RnWjzIxNdP6IfbTrWQVSrXz+dt/4b7Txhvu3n3T+gagDU
-         6OF8h+QVOGMJrW9ggZjebNDBC1uWrtLPFJ4uSfXQTpW8CVlaHdwHHnxpKepBQ4j3tQvh
-         v0iPS8yxr5XZhi1gXyLS7XJVMXDUAkll9nqTtgn4jM90Hxnvf4Ql710DBmBwXGli0YCO
-         g6DuEFrL0Xr7X7bhWOnGdSAruGCDJ8fcsHVj0T5+vhxMtdNNnHHntLF/LfuhEtblfCyl
-         Ag9/W9gQLqHyNL8TwxCEuCxm3oHB9tGHa7PuxfOEhy+1beoHD00xzF2n3ztciQRb3Hxe
-         8dmQ==
+        id S1728124AbgIPTuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 15:50:18 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35041 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727633AbgIPTro (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 15:47:44 -0400
+Received: from mail-oo1-f69.google.com ([209.85.161.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <seth.forshee@canonical.com>)
+        id 1kIdOy-0002qJ-BL
+        for bpf@vger.kernel.org; Wed, 16 Sep 2020 19:47:36 +0000
+Received: by mail-oo1-f69.google.com with SMTP id p15so3466652oop.22
+        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 12:47:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0yvq7JNthKxbYOHDHOWG0xNarv1GFWHVlIaBEc+BtOM=;
-        b=aaLIyd9UyZPB7JeP26Lni9MQ+7ZNfNDBZ9oC9PObGjWdRsZkEAB9Zd8DPrrFzu6a28
-         3rfJcKDWDwLEeCKJGGcNvtVkzglg1gkKSx3CCPHXdhzfIwOXC/IJgkYdOhwfobX6VEPi
-         VI+gdeHR1P3ABOJO0hYpRHyWP9XT85cF3zm1EUCKm/5lN13cr+jPwMep5yIrbf4HfiAg
-         8BM0LpRzoXDjmoImAiQwb4cDouzC+ntyedj+pk3G79j4cpPwXdMnE5ckO90+JaYd9TO1
-         /fLKTQ4oYMxs4TU3FMIFOfVkzyyRxEE1sByBmyFmFfBXFBqOUYJGS6rHpDsBdG0BIjpO
-         uRRQ==
-X-Gm-Message-State: AOAM533zgxyxbWn1hxHxcaaWtFLaKUcDsmjBVnz+wKolA/PGUk9NWdr2
-        aehgdHO4ktuIhOjqwFVexwRxjGq9buSmz4rptSY=
-X-Google-Smtp-Source: ABdhPJysUJyNB7gcgsAktzk2oaIoLFmQ/kJOZs9XR0p+ZpiN/WMfaYvyZKJYCtMsSuiZ8Z3SfVGRdtB/e+wh2Ugd6Po=
-X-Received: by 2002:a25:9d06:: with SMTP id i6mr35125340ybp.510.1600280539251;
- Wed, 16 Sep 2020 11:22:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <160017005691.98230.13648200635390228683.stgit@toke.dk> <160017006024.98230.18011033601869719353.stgit@toke.dk>
-In-Reply-To: <160017006024.98230.18011033601869719353.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Sep 2020 11:22:08 -0700
-Message-ID: <CAEf4BzZuvzb8Oqp=bLHo9H9fawPxh0a2+qhAhB+8KEO36YkX1g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/8] bpf: move prog->aux->linked_prog and
- trampoline into bpf_link on attach
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=9DTlUMQXUmYJrnQP6eQ/0rjf2Cvpn5CNN8DUo3rzLVw=;
+        b=ZFEIXiq5IlbmOgLTpd7YnEn+Yhrpy+hTbTYBl7gj0FRpBqA3vNwk8GZu5X2BTJ4GGx
+         sG/LwgxoH7AQeDfHtMF8FS2AmCzt47wXanfQ6W3dHGu1HKZHV+YrQtmJa32XsvKDOsZz
+         RqHHj4zhLzXw94xoCuPHJKVRye/VH8hUY/b/fOVZ8QjlhpaCNlIRTk+k3oueMnecUiFQ
+         fTtFhjp8ETRaojnKqrvie5DbpZLXDP+d1MklIpNPQXaG8StR0gS/W4FWTDb0G5GBHoJt
+         vOPjpZliT2nnAiCzEO+C8cz5blXa4T0RxABf2VF6gVN6HUtTy1nbhQPa0NboEyLSevX3
+         HGVA==
+X-Gm-Message-State: AOAM533Z9Wr4LxbWZgH8ZnttKnDPcr3LJchF4swfH7FdX7TB/n+qUJWX
+        fJFm88EcGmikbI5rki7DTwp+L7atQ/72NdI0CFl/5DV6c+fu5Pk7Bq2BwuEcVVROfhx1ipNtuEC
+        63RbbpodSGSVWpygm33BcfLmyj/wstQ==
+X-Received: by 2002:a05:6808:8c1:: with SMTP id k1mr4373481oij.92.1600285655137;
+        Wed, 16 Sep 2020 12:47:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKw+wXmBG1oNv0ozyloHVqvmTAv80Lf/litTjvvMwgITJt/qOwX4GwXGPYo9+4OovuahX0Gw==
+X-Received: by 2002:a05:6808:8c1:: with SMTP id k1mr4373469oij.92.1600285654807;
+        Wed, 16 Sep 2020 12:47:34 -0700 (PDT)
+Received: from localhost ([2605:a601:ac0f:820:2228:e36:da90:6c9])
+        by smtp.gmail.com with ESMTPSA id x21sm8777870oie.49.2020.09.16.12.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 12:47:34 -0700 (PDT)
+Date:   Wed, 16 Sep 2020 14:47:33 -0500
+From:   Seth Forshee <seth.forshee@canonical.com>
+To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: resolve_btfids breaks kernel cross-compilation
+Message-ID: <20200916194733.GA4820@ubuntu-x1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 5:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> In preparation for allowing multiple attachments of freplace programs, mo=
-ve
-> the references to the target program and trampoline into the
-> bpf_tracing_link structure when that is created. To do this atomically,
-> introduce a new mutex in prog->aux to protect writing to the two pointers
-> to target prog and trampoline, and rename the members to make it clear th=
-at
-> they are related.
->
-> With this change, it is no longer possible to attach the same tracing
-> program multiple times (detaching in-between), since the reference from t=
-he
-> tracing program to the target disappears on the first attach. However,
-> since the next patch will let the caller supply an attach target, that wi=
-ll
-> also make it possible to attach to the same place multiple times.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
+The requirement to build resolve_btfids whenever CONFIG_DEBUG_INFO_BTF
+is enabled breaks some cross builds. For example, when building a 64-bit
+powerpc kernel on amd64 I get:
 
-Seems much more straightforward to me with mutex. And I don't have to
-worry about various transient NULL states.
+ Auto-detecting system features:
+ ...                        libelf: [ [32mon[m  ]
+ ...                          zlib: [ [32mon[m  ]
+ ...                           bpf: [ [31mOFF[m ]
+ 
+ BPF API too old
+ make[6]: *** [Makefile:295: bpfdep] Error 1
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+The contents of tools/bpf/resolve_btfids/feature/test-bpf.make.output:
 
->  include/linux/bpf.h     |   15 +++++++++------
->  kernel/bpf/btf.c        |    6 +++---
->  kernel/bpf/core.c       |    9 ++++++---
->  kernel/bpf/syscall.c    |   46 ++++++++++++++++++++++++++++++++++++++++-=
------
->  kernel/bpf/trampoline.c |   12 ++++--------
->  kernel/bpf/verifier.c   |    9 +++++----
->  6 files changed, 67 insertions(+), 30 deletions(-)
->
+ In file included from /home/sforshee/src/u-k/unstable/tools/arch/powerpc/include/uapi/asm/bitsperlong.h:11,
+                  from /usr/include/asm-generic/int-ll64.h:12,
+                  from /usr/include/asm-generic/types.h:7,
+                  from /usr/include/x86_64-linux-gnu/asm/types.h:1,
+                  from /home/sforshee/src/u-k/unstable/tools/include/linux/types.h:10,
+                  from /home/sforshee/src/u-k/unstable/tools/include/uapi/linux/bpf.h:11,
+                  from test-bpf.c:3:
+ /home/sforshee/src/u-k/unstable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
+    14 | #error Inconsistent word size. Check asm/bitsperlong.h
+       |  ^~~~~
 
-[...]
+This is because tools/arch/powerpc/include/uapi/asm/bitsperlong.h sets
+__BITS_PER_LONG based on the predefinied compiler macro __powerpc64__,
+which is not defined by the host compiler. What can we do to get cross
+builds working again?
 
-> @@ -2583,19 +2598,38 @@ static int bpf_tracing_prog_attach(struct bpf_pro=
-g *prog)
->                       &bpf_tracing_link_lops, prog);
->         link->attach_type =3D prog->expected_attach_type;
->
-> +       mutex_lock(&prog->aux->tgt_mutex);
-> +
-> +       if (!prog->aux->tgt_trampoline) {
-> +               err =3D -ENOENT;
-> +               goto out_unlock;
-> +       }
-> +       tr =3D prog->aux->tgt_trampoline;
-> +       tgt_prog =3D prog->aux->tgt_prog;
-> +
->         err =3D bpf_link_prime(&link->link, &link_primer);
->         if (err) {
-> -               kfree(link);
-> -               goto out_put_prog;
-> +               goto out_unlock;
->         }
-
-nit: unnecessary {} now
-
->
-> -       err =3D bpf_trampoline_link_prog(prog);
-> +       err =3D bpf_trampoline_link_prog(prog, tr);
->         if (err) {
->                 bpf_link_cleanup(&link_primer);
-> -               goto out_put_prog;
-> +               link =3D NULL;
-> +               goto out_unlock;
->         }
-
-[...]
+Thanks,
+Seth
