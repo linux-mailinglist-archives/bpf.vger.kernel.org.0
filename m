@@ -2,144 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E37626DAD3
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 13:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3357C26DAED
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 13:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgIQLzb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 07:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
+        id S1726869AbgIQL7r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 07:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgIQLz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 07:55:29 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A70BC06174A;
-        Thu, 17 Sep 2020 04:55:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bsb4W64ffz9ryj;
-        Thu, 17 Sep 2020 21:55:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600343708;
-        bh=fCZj5obSeQ0Pnfx7QT/+Bd2NhEwGjy1covQLImy2inM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=M0AuMmfNOc4Sj4HwQTeyWwU8R87iUeiYI16Mt2mqmT1v8mMuSYPJr+VnwbXwsaDO1
-         RwoexPoAbMlS0r69j+UXjfqdfJ30qJfra9JHVQtj88QRmvrgc4tzccFkmRTdaorgHh
-         lpAH1djxWDTphKNnCsGaRoM1ELZupeBx1lxfW326H2vh6Ll3CTkgIrjLfwAjveD6mK
-         TIXNVlfS5igZS4eReH+W2lv4lSoR0T6GzD13rnc1pwcO229aw6kR40rDULn5LQ6/A9
-         dcQAU1yC1wv1MnRGU0q4T/MB/xLh2HnsiB5V6rs+O3oDKwsQ+WqRkzqDP8836U/o9x
-         NDSS+lmizEQuQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Tony Ambardar <tony.ambardar@gmail.com>
-Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Rosen Penev <rosenp@gmail.com>,
-        linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-In-Reply-To: <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
-References: <20200916074214.995128-1-Tony.Ambardar@gmail.com> <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
-Date:   Thu, 17 Sep 2020 21:55:04 +1000
-Message-ID: <87363gpqhz.fsf@mpe.ellerman.id.au>
+        with ESMTP id S1726799AbgIQL7m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 07:59:42 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2801C06174A;
+        Thu, 17 Sep 2020 04:59:12 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id e4so995562pln.10;
+        Thu, 17 Sep 2020 04:59:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q1DbrMjO4BZTE2w6KtdCZfCvUgYWfaaS/EcGaSNvftk=;
+        b=AG3mqd+PZ3EUP9hCgxSrUGiqdasTPXZq+38FoV3DB6xUgG4DkY517BUrCIFaJ4CeIZ
+         Sd9vc8Jf3YzE2ojKC2hFFHHpX462QsZZp4TcsQHVOzmk4Vdd0o4tMBEelSBC+WhamuCe
+         bpg2a4/2lXxtePK52Tu2f7aDv7unHjGv7y/WrB/PeHiLEC0y0EhCIwnuJcBfPJ/Fr0RU
+         fZ4ENayEZ9XR0pw6NiB1wI0wPM4Ke1A6hBw5P2Bns2LjS63sURDUaoaRfDNWXmTq96hg
+         7pPy35QmhiYrHxuegU4tGnwDiyhCd2V4VGjcA1ldnS38VguNTjlbE2h1XbHZsHURqy7/
+         I5hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q1DbrMjO4BZTE2w6KtdCZfCvUgYWfaaS/EcGaSNvftk=;
+        b=QMZlj31DtfGHH2VDSdsfXZc6Vti93x0FMJOi0iQhAk9Hc/FI6EWnGJsMd27h8dRQHe
+         e34WNKV8DC6RTIlKtHLiT0uHodhQGa8DIPNLmTXaugIraeLuFbX8I9aFO9D+4TD9/8Bj
+         /30gthF1c6qZOgGLp8jCGQjQz0s/EaNshKD3qxtENVxbk9riB+z0cE4LHo0JBgQkpBLX
+         0VrezcqCJJiu/IZ3m7MkZ1ohHPoEEu9+BE0bd9Yvf4KMw7GbLw7HckL7qb+ObSBkp2mI
+         1nCNV5+Jt6fxoKvTcHZSF2Hd9yg8RwIuL/d4LQHdIHZSnUVCcUrmGiw8HBvVeuiu+8It
+         2rRQ==
+X-Gm-Message-State: AOAM533vZbyaMe0BF+7Djsixz5OgHfyFMlofivCHSWz3bPv7SK7Qxybu
+        r8uClowUGA1QjP7bBUk/XNc=
+X-Google-Smtp-Source: ABdhPJxYoAErNWLu/+EOG22+4+znyLSZAfuYFGEVx8OEJZc2MTtiYOHWwnRhm0kjBZzrsecFnfD2/A==
+X-Received: by 2002:a17:90b:4b0b:: with SMTP id lx11mr8156340pjb.104.1600343952529;
+        Thu, 17 Sep 2020 04:59:12 -0700 (PDT)
+Received: from localhost.localdomain ([2001:470:e92d:10:6ca9:b613:f248:49fa])
+        by smtp.gmail.com with ESMTPSA id w19sm21156376pfq.60.2020.09.17.04.59.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 04:59:12 -0700 (PDT)
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf v1] tools/bpftool: support passing BPFTOOL_VERSION to make
+Date:   Thu, 17 Sep 2020 04:58:33 -0700
+Message-Id: <20200917115833.1235518-1-Tony.Ambardar@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[ Cc += linux-arch & Arnd ]
+This change facilitates out-of-tree builds, packaging, and versioning for
+test and debug purposes. Defining BPFTOOL_VERSION allows self-contained
+builds within the tools tree, since it avoids use of the 'kernelversion'
+target in the top-level makefile, which would otherwise pull in several
+other includes from outside the tools tree.
 
-Hi Tony,
+Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+---
+ tools/bpf/bpftool/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This looks OK to me, but I'm always a bit nervous about changes in uapi.
-I've Cc'ed linux-arch and Arnd who look after the asm-generic headers,
-which this is slightly related to, just in case.
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 8462690a039b..4828913703b6 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -25,7 +25,7 @@ endif
+ 
+ LIBBPF = $(LIBBPF_PATH)libbpf.a
+ 
+-BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
++BPFTOOL_VERSION ?= $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
+ 
+ $(LIBBPF): FORCE
+ 	$(if $(LIBBPF_OUTPUT),@mkdir -p $(LIBBPF_OUTPUT))
+-- 
+2.25.1
 
-One minor comment below.
-
-Tony Ambardar <tony.ambardar@gmail.com> writes:
-> A few archs like powerpc have different errno.h values for macros
-> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
-> errno.h, this can result in multiple definitions of EDEADLOCK in the
-> include chain. Definitions to the same value (e.g. seen with mips) do
-> not raise warnings, but on powerpc there are redefinitions changing the
-> value, which raise warnings and errors (if using "-Werror").
->
-> Guard against these redefinitions to avoid build errors like the following,
-> first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
-> musl 1.1.24:
->
->   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
->                    from ../../include/linux/err.h:8,
->                    from libbpf.c:29:
->   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
->    #define EDEADLOCK EDEADLK
->
->   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
->                    from libbpf.c:26:
->   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
->    #define EDEADLOCK       58
->
->   cc1: all warnings being treated as errors
->
-> Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's supported by perf")
-> Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
-
-I suspect that's not the right commit to tag. It just moved errno.h from
-arch/powerpc/include/asm to arch/powerpc/include/uapi/asm. It's content
-was almost identical, and entirely identical as far as EDEADLOCK was
-concerned.
-
-Prior to that the file lived in asm-powerpc/errno.h, eg:
-
-$ git cat-file -p b8b572e1015f^:include/asm-powerpc/errno.h
-
-Before that it was include/asm-ppc64/errno.h, content still the same.
-
-To go back further we'd have to look at the historical git trees, which
-is probably overkill. I'm pretty sure it's always had this problem.
-
-So we should probably drop the Fixes tags and just Cc: stable, that
-means please backport it as far back as possible.
-
-cheers
-
-
-> Reported-by: Rosen Penev <rosenp@gmail.com>
-> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
-> ---
-> v1 -> v2:
->  * clean up commit description formatting
-> ---
->  arch/powerpc/include/uapi/asm/errno.h       | 1 +
->  tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
-> index cc79856896a1..4ba87de32be0 100644
-> --- a/arch/powerpc/include/uapi/asm/errno.h
-> +++ b/arch/powerpc/include/uapi/asm/errno.h
-> @@ -2,6 +2,7 @@
->  #ifndef _ASM_POWERPC_ERRNO_H
->  #define _ASM_POWERPC_ERRNO_H
->  
-> +#undef	EDEADLOCK
->  #include <asm-generic/errno.h>
->  
->  #undef	EDEADLOCK
-> diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
-> index cc79856896a1..4ba87de32be0 100644
-> --- a/tools/arch/powerpc/include/uapi/asm/errno.h
-> +++ b/tools/arch/powerpc/include/uapi/asm/errno.h
-> @@ -2,6 +2,7 @@
->  #ifndef _ASM_POWERPC_ERRNO_H
->  #define _ASM_POWERPC_ERRNO_H
->  
-> +#undef	EDEADLOCK
->  #include <asm-generic/errno.h>
->  
->  #undef	EDEADLOCK
-> -- 
-> 2.25.1
