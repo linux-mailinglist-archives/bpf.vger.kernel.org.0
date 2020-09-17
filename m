@@ -2,199 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7516C26E44F
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 20:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8042C26E536
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 21:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgIQSo0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 14:44:26 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:58477 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726422AbgIQSoP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Sep 2020 14:44:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600368245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pCECRd4lgnaJhz1iERz1/t0h7+gp4yFPcWLx1Dp1rE0=;
-        b=JY6+1AFSna3lVztPBCtzowtI6R8pIoVyE/pdURcfv0rMopH4KJVSvQgyKFWY7mefnrpvJ3
-        hpygwQrR6cNrdkSoajIoBZXUNLMnhTc2WCqnjeaPWLdkjpGaegk7cD4zIAecnXoLaIjrF3
-        +gpjaahrs6wW+av1bRty70GHuzO1GvM=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-hdQ3vTORNtS_GhTqENIeRw-1; Thu, 17 Sep 2020 14:44:03 -0400
-X-MC-Unique: hdQ3vTORNtS_GhTqENIeRw-1
-Received: by mail-wm1-f70.google.com with SMTP id m125so1068764wmm.7
-        for <bpf@vger.kernel.org>; Thu, 17 Sep 2020 11:44:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=pCECRd4lgnaJhz1iERz1/t0h7+gp4yFPcWLx1Dp1rE0=;
-        b=BCEMnIB1kjxVSvh7gklUYNLoR1pbBRtBq3oNKdv4hvOtnwgBaXyhls/nEs0h45smBl
-         Ykxi2qYlZxWJO01iRX/BrMiN1ujifbh+AGV52MsjbEcXysyJcQa2Qw7zGnKVBfhhppnI
-         1fIg3WVSDrdQjEHOND4yvkuLYowOSna2x/UGwmN8dOLtqKroBJ5kDEDqrurpIL1UKxJ/
-         wCkSQlBR/UrQSU4FedzLsQz/IIXOy68YiIPOrHFz4BXIvA8aRcJroGckQWTfEoDcIt3F
-         qcB5lDmwVfh7h82wyi2J3Pe3RlK9WYZC/rWCobWC1Cm6rKFbAdq6559lW2GcapPkEt1e
-         FeFw==
-X-Gm-Message-State: AOAM531kX7stsY/mBdGTs+H3XiAYlXiodTjoN9r5p4jc8diy0iYmUIm7
-        Ez3HykZn1fSQo6BMI+lh4Y6FDYRP9fXv77k5ak+q4hMgv9ImCst1O9on4Y+pHgMdyzXB84c2nh5
-        jflBcoKhNj76Q
-X-Received: by 2002:a5d:4d01:: with SMTP id z1mr33434316wrt.366.1600368242406;
-        Thu, 17 Sep 2020 11:44:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy63uex8dYi+B/9T30ZpHD19gXQ7fN3b8VdW5GsKYcE8aIMdpvCtcYybdCwme+76rvAR3zHgQ==
-X-Received: by 2002:a5d:4d01:: with SMTP id z1mr33434290wrt.366.1600368242149;
-        Thu, 17 Sep 2020 11:44:02 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id b18sm694611wrn.21.2020.09.17.11.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 11:44:01 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E72D4183A90; Thu, 17 Sep 2020 20:44:00 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1726216AbgIQTNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 15:13:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726408AbgIQTMZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 15:12:25 -0400
+Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2C9820672;
+        Thu, 17 Sep 2020 19:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600369895;
+        bh=ajBZWptjR+4/DgvjPNb+OHJkTGyVuVOG0g+Y9AOLi4s=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=J3ikwQQviPGUGhvMSmUxT+I/vZ6dfN5u1UGs4mXkdxms8Sea6tDyTL+diYfE/eSW3
+         5EHHqI6cb5jTx4hSMJJPYq1l+GMmILq1XDs9pivEkoaV+w5lyOX+MTMEQqjbNELusH
+         0bqq4SsTglEFNDhv9nKUKeMOcme49GdAzZbiyjjI=
+Message-ID: <56ccfc21195b19d5b25559aca4cef5c450d0c402.camel@kernel.org>
+Subject: Re: BPF redirect API design issue for BPF-prog MTU feedback?
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 5/8] bpf: Fix context type resolving for
- extension programs
-In-Reply-To: <CAEf4BzZkaViCyJnnJtSVjN2q7aD1SgEOqKKmy5m+1icWd3B72Q@mail.gmail.com>
-References: <160017005691.98230.13648200635390228683.stgit@toke.dk>
- <160017006242.98230.15812695975228745782.stgit@toke.dk>
- <CAEf4Bzafmu5w6wjWT_d0B-JaUnm3KOf0Dgp+552iZii2+=3DWg@mail.gmail.com>
- <CAEf4BzbqW12q_nXvat6=iTvKpy1P+e-r0N+9eY3vgDAZ8rcfLQ@mail.gmail.com>
- <87tuvwmirx.fsf@toke.dk>
- <CAEf4BzZkaViCyJnnJtSVjN2q7aD1SgEOqKKmy5m+1icWd3B72Q@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 17 Sep 2020 20:44:00 +0200
-Message-ID: <87o8m4fdlb.fsf@toke.dk>
+        Jakub Kicinski <kuba@kernel.org>,
+        Shaun Crampton <shaun@tigera.io>,
+        David Miller <davem@davemloft.net>,
+        Marek Majkowski <marek@cloudflare.com>
+Date:   Thu, 17 Sep 2020 12:11:33 -0700
+In-Reply-To: <CANP3RGcxM-Cno=Qw5Lut9DgmV=1suXqetnybA9RgxmW3KmwivQ@mail.gmail.com>
+References: <20200917143846.37ce43a0@carbon>
+         <CANP3RGcxM-Cno=Qw5Lut9DgmV=1suXqetnybA9RgxmW3KmwivQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Thu, 2020-09-17 at 05:54 -0700, Maciej Żenczykowski wrote:
+> On Thu, Sep 17, 2020 at 5:39 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+> > 
+> > As you likely know[1] I'm looking into moving the MTU check (for
+> > TC-BPF)
+> > in __bpf_skb_max_len() when e.g. called by bpf_skb_adjust_room(),
+> > because when redirecting packets to another netdev it is not
+> > correct to
+> > limit the MTU based on the incoming netdev.
+> > 
+> > I was looking at doing the MTU check in bpf_redirect() helper,
+> > because
+> > at this point we know the redirect to netdev, and returning an
+> > indication/error that MTU was exceed, would allow the BPF-prog
+> > logic to
+> > react, e.g. sending ICMP (instead of packet getting silently
+> > dropped).
+> > BUT this is not possible because bpf_redirect(index, flags) helper
+> > don't provide the packet context-object (so I cannot lookup the
+> > packet
+> > length).
+> > 
+> > Seeking input:
+> > 
+> > Should/can we change the bpf_redirect API or create a new helper
+> > with
+> > packet-context?
+> > 
+> >  Note: We have the same need for the packet context for XDP when
+> >  redirecting the new multi-buffer packets, as not all destination
+> > netdev
+> >  will support these new multi-buffer packets.
+> > 
+> > I can of-cause do the MTU checks on kernel-side in skb_do_redirect,
+> > but
+> > then how do people debug this? as packet will basically be silently
+> > dropped.
+> > 
+> > 
+> > 
+> > (Looking at how does BPF-prog logic handle MTU today)
+> > 
+> > How do bpf_skb_adjust_room() report that the MTU was exceeded?
+> > Unfortunately it uses a common return code -ENOTSUPP which used for
+> > multiple cases (include MTU exceeded). Thus, the BPF-prog logic
+> > cannot
+> > use this reliably to know if this is a MTU exceeded event. (Looked
+> > BPF-prog code and they all simply exit with TC_ACT_SHOT for all
+> > error
+> > codes, cloudflare have the most advanced handling with
+> > metrics->errors_total_encap_adjust_failed++).
+> > 
+> > 
+> > [1] 
+> > https://lore.kernel.org/bpf/159921182827.1260200.9699352760916903781.stgit@firesoul/
+> > --
+> > Best regards,
+> >   Jesper Dangaard Brouer
+> >   MSc.CS, Principal Kernel Engineer at Red Hat
+> >   LinkedIn: http://www.linkedin.com/in/brouer
+> > 
+> 
+> (a) the current state of the world seems very hard to use correctly,
+> so adding new apis,
+> or even changing existing ones seems ok to me.
+> especially if this just means changing what error code they return
+> 
+> (b) another complexity with bpf_redirect() is you can call it, it can
+> succeed,
+> but then you can not return TC_ACT_REDIRECT from the bpf program,
+> which effectively makes the earlier *successful* bpf_redirect() call
+> an utter no-op.
+> 
+> (bpf_redirect() just determines what a future return TC_ACT_REDIRECT
+> will do)
+> 
+> so if you bpf_redirect to interface with larger mtu, then increase
+> packet size,
 
-> On Thu, Sep 17, 2020 at 10:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Wed, Sep 16, 2020 at 12:59 PM Andrii Nakryiko
->> > <andrii.nakryiko@gmail.com> wrote:
->> >>
->> >> On Tue, Sep 15, 2020 at 5:50 PM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
-e@redhat.com> wrote:
->> >> >
->> >> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> >
->> >> > Eelco reported we can't properly access arguments if the tracing
->> >> > program is attached to extension program.
->> >> >
->> >> > Having following program:
->> >> >
->> >> >   SEC("classifier/test_pkt_md_access")
->> >> >   int test_pkt_md_access(struct __sk_buff *skb)
->> >> >
->> >> > with its extension:
->> >> >
->> >> >   SEC("freplace/test_pkt_md_access")
->> >> >   int test_pkt_md_access_new(struct __sk_buff *skb)
->> >> >
->> >> > and tracing that extension with:
->> >> >
->> >> >   SEC("fentry/test_pkt_md_access_new")
->> >> >   int BPF_PROG(fentry, struct sk_buff *skb)
->> >> >
->> >> > It's not possible to access skb argument in the fentry program,
->> >> > with following error from verifier:
->> >> >
->> >> >   ; int BPF_PROG(fentry, struct sk_buff *skb)
->> >> >   0: (79) r1 =3D *(u64 *)(r1 +0)
->> >> >   invalid bpf_context access off=3D0 size=3D8
->> >> >
->> >> > The problem is that btf_ctx_access gets the context type for the
->> >> > traced program, which is in this case the extension.
->> >> >
->> >> > But when we trace extension program, we want to get the context
->> >> > type of the program that the extension is attached to, so we can
->> >> > access the argument properly in the trace program.
->> >> >
->> >> > This version of the patch is tweaked slightly from Jiri's original =
-one,
->> >> > since the refactoring in the previous patches means we have to get =
-the
->> >> > target prog type from the new variable in prog->aux instead of dire=
-ctly
->> >> > from the target prog.
->> >> >
->> >> > Reported-by: Eelco Chaudron <echaudro@redhat.com>
->> >> > Suggested-by: Jiri Olsa <jolsa@kernel.org>
->> >> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >> > ---
->> >> >  kernel/bpf/btf.c |    9 ++++++++-
->> >> >  1 file changed, 8 insertions(+), 1 deletion(-)
->> >> >
->> >> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> >> > index 9228af9917a8..55f7b2ba1cbd 100644
->> >> > --- a/kernel/bpf/btf.c
->> >> > +++ b/kernel/bpf/btf.c
->> >> > @@ -3860,7 +3860,14 @@ bool btf_ctx_access(int off, int size, enum =
-bpf_access_type type,
->> >> >
->> >> >         info->reg_type =3D PTR_TO_BTF_ID;
->> >> >         if (tgt_prog) {
->> >> > -               ret =3D btf_translate_to_vmlinux(log, btf, t, tgt_p=
-rog->type, arg);
->> >> > +               enum bpf_prog_type tgt_type;
->> >> > +
->> >> > +               if (tgt_prog->type =3D=3D BPF_PROG_TYPE_EXT)
->> >> > +                       tgt_type =3D tgt_prog->aux->tgt_prog_type;
->> >>
->> >> what if tgt_prog->aux->tgt_prog_type is also BPF_PROG_TYPE_EXT? Should
->> >> this be a loop?
->> >
->> > ok, never mind this specifically. there is an explicit check
->> >
->> > if (tgt_prog->type =3D=3D prog->type) {
->> >     verbose(env, "Cannot recursively attach\n");
->> >     return -EINVAL;
->> > }
->> >
->> > that will prevent this.
->> >
->> > But, I think we still will be able to construct a long chain of
->> > fmod_ret -> freplace -> fmod_ret -> freplace -> and so on ad
->> > infinitum. Can you please construct such a selftest? And then we
->> > should probably fix those checks to also disallow FMOD_RET, in
->> > addition to BPF_TRACE_FENTRY/FEXIT (and someone more familiar with LSM
->> > prog type should check if that can cause any problems).
->>
->> Huh, I thought fmod_ret was supposed to be for kernel functions only?
->
-> Yeah, I realized that afterwards, but didn't want to ramble on forever :)
->
->> However, I can't really point to anywhere in the code that ensures this,
->> other than check_attach_modify_return(), but I think that will allow a
->> bpf function as long as its name starts with "security_" ?
->
-> I think error_injection_list check will disallow anything that's not a
-> specially marked kernel function. So we are probably safe as is, even
-> though a bit implicitly.
+why would you redirect then touch the packet afterwards ? 
+if you have a bad program, then it is a user issue.
 
-Got a selftest working now, and no, it seems not. At least attachment
-will succeed if the freplace program has a security_ prefix in its
-function name. So will add a new patch to fix that, and the selftest :)
+> then return TC_ACT_OK, then you potentially end up with excessively
+> large
+> packet egressing through original interface (with small mtu).
+> 
+> My vote would be to return a new distinct error from bpf_redirect()
+> based on then current
+> packet size and interface being redirected to, save this interface
+> mtu
+> somewhere,
+> then in operations that increase packet size check against this saved
+> mtu,
+> for correctness you still have to check mtu after the bpf program is
+> done,
+> but this is then just to deal with braindead bpf code (that calls
+> bpf_redirect and returns TC_ACT_OK, or calls bpf_redirect() multiple
+> times, or something...).
+> 
 
--Toke
+
+Another solution is to have an exception function defined in the
+BPF_prog, this function by itself is another program that can be
+executed to notify the prog about any exception/err that happened after
+the main BPF_program exited and let the XDP program react by its own
+logic.
+
+example:
+
+BPF_prog:
+    int XDP_main_prog(xdp_buff) {
+        xdp_adjust_head/tail(xdp_buff);
+        return xdp_redirect(ifindex, flags);
+    }
+
+    int XDP_exception(xdp_buff, excption_code) {
+        if (excetption_code == XDP_REDIRECRT_MTU_EXCEEDED) {
+                ICMP_response(xdp_buff);
+                return XDP_TX;
+        }
+        return XDP_DROP;
+    }
+
+
+netdev_driver_xdp_handle():
+   act = bpf_prog_run_xdp(prog, xdp); // Run XDP_main_prog
+   if (act == XDP_REDIRECT)
+       err = xdp_do_redirect(netdev, xdp, prog);
+       if (err) { 
+          // Run XDP_exception() function in the user prog
+          // finds the exception handler of active program
+          act = bpf_prog_run_xdp_exciption(prog, xdp, err);
+          // then handle exception action in the driver
+(XDP_TX/DROP/FORWARD).. 
+       }
+
+of-course a user program will be notified only on the first err .. 
+if it fails on the 2nd time .. just drop..
+
+-Saeed.
 
