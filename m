@@ -2,110 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B6A26E969
-	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 01:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B2626E975
+	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 01:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgIQXVt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 19:21:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56280 "EHLO mail.kernel.org"
+        id S1725900AbgIQX1f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 19:27:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725886AbgIQXVt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 19:21:49 -0400
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+        id S1725886AbgIQX1f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 19:27:35 -0400
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7604B20870;
-        Thu, 17 Sep 2020 23:21:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56CF32137B;
+        Thu, 17 Sep 2020 23:27:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600384908;
-        bh=ZcCU89wBoLhrvM3l5xbyYx1b+RaLLH7G0whMHPwn0nI=;
+        s=default; t=1600385254;
+        bh=TAt15TsSrMGN6mCCoJC+SrYRfG+RQ4dUa+I1Lf1b9dY=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kTikafltNLjyW4lLbfA7xIjMFBhM3/Ms33Q/AO1NMBZ0FCf6EDWMpgInoqJWPF8Mr
-         jPQgqRnePZRkRUUGuMIY73cWYwGgRzjA8LrgvAKVSpKaOpvUH47qdocDmL7hBtmVRF
-         j6vFKnUYjN+jJbHlDtZidThU/xNG6ZfQfLI3Z7iw=
-Received: by mail-lf1-f48.google.com with SMTP id u8so4059563lff.1;
-        Thu, 17 Sep 2020 16:21:48 -0700 (PDT)
-X-Gm-Message-State: AOAM5320LrD+4LcdOCxW0oIvrxEO/U00pIfoxTUxRMmLdJ4mRStYKbcr
-        CIRK5za2nWWOoKZguK2ug1h3HtuRs7PHX+3sMyg=
-X-Google-Smtp-Source: ABdhPJzbPaNTGkLOcGBXm9hWyjTAm71EO0Y2Na5ZEEHhD1PkHfSt4yVGB6PJFxnTedUW1WoqWj056ykLsczqz8eJGRE=
-X-Received: by 2002:a19:cc09:: with SMTP id c9mr9113446lfg.482.1600384906796;
- Thu, 17 Sep 2020 16:21:46 -0700 (PDT)
+        b=kiadUYoTzFcKjOH9WVAVKJOgGvvR4fUbaUftEQdhTr85mQID74MED8w5xqJLNCrs8
+         +7haqPt5FSuaJJtGA+7grtwAQDhJMdqp+P3BH+F8zbrr/ZJSXmjiWFaM4pvLHeWOtI
+         Z1ElPN0ReQivDHXOImM+/36Z11eC04FC95v1kxlQ=
+Received: by mail-lf1-f50.google.com with SMTP id y17so4053757lfa.8;
+        Thu, 17 Sep 2020 16:27:34 -0700 (PDT)
+X-Gm-Message-State: AOAM533P3HBYe6F8rgizP/shCxFxElsk80aOz3/r+0CBWWr6jnV4FuDl
+        rxplxAO/W8OJe5rG1isbmS7/jmJRSFs7Xq6vZBk=
+X-Google-Smtp-Source: ABdhPJy2LNAUGROp9wcndbIKAKcdFbFpd00XB7SAzGI+Ld3qp7bAnOgBuKJx7+yndvub7hHyU2cmfRmdbsQa+g8CqYA=
+X-Received: by 2002:a19:8907:: with SMTP id l7mr9741246lfd.105.1600385252612;
+ Thu, 17 Sep 2020 16:27:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200917135700.649909-1-luka.oreskovic@sartura.hr>
-In-Reply-To: <20200917135700.649909-1-luka.oreskovic@sartura.hr>
+References: <20200917115833.1235518-1-Tony.Ambardar@gmail.com> <33dd4a10-9b2a-7315-7709-cd8e7c1cd030@isovalent.com>
+In-Reply-To: <33dd4a10-9b2a-7315-7709-cd8e7c1cd030@isovalent.com>
 From:   Song Liu <song@kernel.org>
-Date:   Thu, 17 Sep 2020 16:21:35 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4WXqiK-AFP6nU1L03yXGLLuz845mFP8W_rhbyaw=Ck=w@mail.gmail.com>
-Message-ID: <CAPhsuW4WXqiK-AFP6nU1L03yXGLLuz845mFP8W_rhbyaw=Ck=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: add support for other map types to bpf_map_lookup_and_delete_elem
-To:     Luka Oreskovic <luka.oreskovic@sartura.hr>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 17 Sep 2020 16:27:21 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW62F8CkQbrZpg-YEA+qyZ7=ra+aRwMaxEyU6zKBqZRCnQ@mail.gmail.com>
+Message-ID: <CAPhsuW62F8CkQbrZpg-YEA+qyZ7=ra+aRwMaxEyU6zKBqZRCnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v1] tools/bpftool: support passing BPFTOOL_VERSION to make
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Tony Ambardar <tony.ambardar@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 7:16 AM Luka Oreskovic
-<luka.oreskovic@sartura.hr> wrote:
+On Thu, Sep 17, 2020 at 7:58 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-[...]
-
-> +++ b/kernel/bpf/syscall.c
-> @@ -1475,6 +1475,9 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
->         if (CHECK_ATTR(BPF_MAP_LOOKUP_AND_DELETE_ELEM))
->                 return -EINVAL;
+> On 17/09/2020 12:58, Tony Ambardar wrote:
+> > This change facilitates out-of-tree builds, packaging, and versioning for
+> > test and debug purposes. Defining BPFTOOL_VERSION allows self-contained
+> > builds within the tools tree, since it avoids use of the 'kernelversion'
+> > target in the top-level makefile, which would otherwise pull in several
+> > other includes from outside the tools tree.
+> >
+> > Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 >
-> +       if (attr->flags & ~BPF_F_LOCK)
-> +               return -EINVAL;
-> +
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
 
-Please explain (in comments for commit log) the use of BPF_F_LOCK in
-the commit log,
-as it is new for BPF_MAP_LOOKUP_AND_DELETE_ELEM.
-
->         f = fdget(ufd);
->         map = __bpf_map_get(f);
->         if (IS_ERR(map))
-> @@ -1485,13 +1488,19 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
->                 goto err_put;
->         }
->
-> +       if ((attr->flags & BPF_F_LOCK) &&
-> +           !map_value_has_spin_lock(map)) {
-> +               err = -EINVAL;
-> +               goto err_put;
-> +       }
-> +
->         key = __bpf_copy_key(ukey, map->key_size);
->         if (IS_ERR(key)) {
->                 err = PTR_ERR(key);
->                 goto err_put;
->         }
->
-> -       value_size = map->value_size;
-> +       value_size = bpf_map_value_size(map);
->
->         err = -ENOMEM;
->         value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> @@ -1502,7 +1511,24 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
->             map->map_type == BPF_MAP_TYPE_STACK) {
->                 err = map->ops->map_pop_elem(map, value);
->         } else {
-> -               err = -ENOTSUPP;
-> +               err = bpf_map_copy_value(map, key, value, attr->flags);
-> +               if (err)
-> +                       goto free_value;
-
-IIUC, we cannot guarantee the value returned is the same as the value we
-deleted. If this is true, I guess this may confuse the user with some
-concurrency
-bug.
-
-Thanks,
-Song
-
-[...]
+Acked-by: Song Liu <songliubraving@fb.com>
