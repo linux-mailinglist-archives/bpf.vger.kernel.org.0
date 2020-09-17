@@ -2,149 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5D026D826
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 11:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4883C26D84C
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 12:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgIQJy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 05:54:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59583 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726340AbgIQJy1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Sep 2020 05:54:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600336464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PfgTD4QYp7HdelC/Cdt/0p7DJlm562Qxcolq6GnkE9E=;
-        b=IknfHHJniumpYiT/JzVvMXvYOFDSXryZZecG2Z2KWKUV763Y0AD9V40w3siaMVf8XaD/vP
-        s7MdOUdIjiAo4CxW9HglXwWbrUnz7t23Y4c64TF0/QcAL3CxmKM8pZBCU0u4iWBmHcFK56
-        3KS/ggwqJMcYHLI5v4pFbfDP/X/WiZw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-vgJu2ttfNdah2wYv3YNUsQ-1; Thu, 17 Sep 2020 05:54:20 -0400
-X-MC-Unique: vgJu2ttfNdah2wYv3YNUsQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDA5681F03B;
-        Thu, 17 Sep 2020 09:54:18 +0000 (UTC)
-Received: from krava (ovpn-114-176.ams2.redhat.com [10.36.114.176])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 273927BE44;
-        Thu, 17 Sep 2020 09:54:16 +0000 (UTC)
-Date:   Thu, 17 Sep 2020 11:54:15 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Seth Forshee <seth.forshee@canonical.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: resolve_btfids breaks kernel cross-compilation
-Message-ID: <20200917095415.GG2411168@krava>
-References: <20200916194733.GA4820@ubuntu-x1>
- <20200917080452.GB2411168@krava>
- <20200917083809.GE2411168@krava>
- <20200917091406.GF2411168@krava>
+        id S1726333AbgIQKDE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 06:03:04 -0400
+Received: from 96-66-183-205-static.hfc.comcastbusiness.net ([96.66.183.205]:64262
+        "EHLO ZBA-WWW-04.ZBA.LOCAL" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726200AbgIQKCy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Sep 2020 06:02:54 -0400
+X-Greylist: delayed 342 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 06:02:38 EDT
+Received: from User ([156.96.56.37]) by ZBA-WWW-04.ZBA.LOCAL with Microsoft SMTPSVC(10.0.17763.1);
+         Thu, 17 Sep 2020 02:15:14 -0700
+Reply-To: <henrybanko1970@yahoo.co.jp>
+From:   "HSBC London Office" <fwalhsb@financier.com>
+Subject: In Respect To Your Fund (BANK ALERT)  
+Date:   Thu, 17 Sep 2020 00:15:06 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200917091406.GF2411168@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <ZBA-WWW-04upeyyfIIh00001337@ZBA-WWW-04.ZBA.LOCAL>
+X-OriginalArrivalTime: 17 Sep 2020 09:15:25.0322 (UTC) FILETIME=[13DC96A0:01D68CD3]
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 11:14:08AM +0200, Jiri Olsa wrote:
-> On Thu, Sep 17, 2020 at 10:38:12AM +0200, Jiri Olsa wrote:
-> > On Thu, Sep 17, 2020 at 10:04:55AM +0200, Jiri Olsa wrote:
-> > > On Wed, Sep 16, 2020 at 02:47:33PM -0500, Seth Forshee wrote:
-> > > > The requirement to build resolve_btfids whenever CONFIG_DEBUG_INFO_BTF
-> > > > is enabled breaks some cross builds. For example, when building a 64-bit
-> > > > powerpc kernel on amd64 I get:
-> > > > 
-> > > >  Auto-detecting system features:
-> > > >  ...                        libelf: [ [32mon[m  ]
-> > > >  ...                          zlib: [ [32mon[m  ]
-> > > >  ...                           bpf: [ [31mOFF[m ]
-> > > >  
-> > > >  BPF API too old
-> > > >  make[6]: *** [Makefile:295: bpfdep] Error 1
-> > > > 
-> > > > The contents of tools/bpf/resolve_btfids/feature/test-bpf.make.output:
-> > > > 
-> > > >  In file included from /home/sforshee/src/u-k/unstable/tools/arch/powerpc/include/uapi/asm/bitsperlong.h:11,
-> > > >                   from /usr/include/asm-generic/int-ll64.h:12,
-> > > >                   from /usr/include/asm-generic/types.h:7,
-> > > >                   from /usr/include/x86_64-linux-gnu/asm/types.h:1,
-> > > >                   from /home/sforshee/src/u-k/unstable/tools/include/linux/types.h:10,
-> > > >                   from /home/sforshee/src/u-k/unstable/tools/include/uapi/linux/bpf.h:11,
-> > > >                   from test-bpf.c:3:
-> > > >  /home/sforshee/src/u-k/unstable/tools/include/asm-generic/bitsperlong.h:14:2: error: #error Inconsistent word size. Check asm/bitsperlong.h
-> > > >     14 | #error Inconsistent word size. Check asm/bitsperlong.h
-> > > >        |  ^~~~~
-> > > > 
-> > > > This is because tools/arch/powerpc/include/uapi/asm/bitsperlong.h sets
-> > > > __BITS_PER_LONG based on the predefinied compiler macro __powerpc64__,
-> > > > which is not defined by the host compiler. What can we do to get cross
-> > > > builds working again?
-> > > 
-> > > could you please share the command line and setup?
-> > 
-> > I just reproduced.. checking on fix
-> 
-> I still need to check on few things, but patch below should help
-> 
-> we might have a problem for cross builds with different endianity
-> than the host because libbpf does not support reading BTF data
-> with different endianity, and we get:
-> 
->   BTFIDS  vmlinux
-> libbpf: non-native ELF endianness is not supported
-> 
-> jirka
-> 
-> 
-> ---
-> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> index a88cd4426398..d3c818b8d8d3 100644
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  include ../../scripts/Makefile.include
-> +include ../../scripts/Makefile.arch
->  
->  ifeq ($(srctree),)
->  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
-> @@ -29,6 +30,7 @@ endif
->  AR       = $(HOSTAR)
->  CC       = $(HOSTCC)
->  LD       = $(HOSTLD)
-> +ARCH     = $(HOSTARCH)
->  
->  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
->  
+HSBC BANK PLC LONDON.(REGISTERED NO.1026167). 
+ADDRESS: 8 CANADA SQUARE, CANARY WHARF, LONDON E14 5HQ, UK.
 
-and I realized we can have CONFIG_DEBUG_INFO_BTF without
-CONFIG_BPF, so we need also fix below for such cases
+Attn: Beneficiary,
 
-jirka
+We write to inform you that Series of meetings have been held with the Secretary General of United Nations,U.S Department of State and Africa Union Organization this ended last week.
 
+During the meeting we discovered that you have not receive your funds due to past corrupt Government Officials who almost held the funds to themselves for their selfish reason and some individuals who have taken advantage of your fund all in an attempt to defraud you, which has led to unnecessary delay in releasing the funds to you.
 
----
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index e6e2d9e5ff48..8a990933a690 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -343,7 +343,10 @@ vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
- # fill in BTF IDs
- if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
- info BTFIDS vmlinux
--${RESOLVE_BTFIDS} vmlinux
-+if [ -z "${CONFIG_BPF}" ]; then
-+  no_fail=--no-fail
-+fi
-+${RESOLVE_BTFIDS} $no_fail vmlinux
- fi
- 
- if [ -n "${CONFIG_BUILDTIME_TABLE_SORT}" ]; then
+The United Nations/ U.S. Department of State and Africa Union Organization have successfully passed a payment mandate to our bank, to clear all over due Contract funds, Lottery winnings and Inheritance funds owed to you and other individuals/organizations who have been found not to have receive their long overdue payment.
 
+A woman by name (MRS: CINDY MAY A CITIZEN OF USA) came to our office with an application stating that you gave her the power of attorney to be the beneficiary of your Outstanding funds. She made us to believe that you are dead and that she is your next of kin. We decided to send you email through this address hoping to find out if you are dead or alive and also to find out if you at any time gave her the power of attorney to represent you but we decided to contact you before we can take any action because of the sensitivity nature of the transaction and the amount of money that is involved:
+
+For immediate release of your $21.5M to you legally as the legal recipient if you did not authorize Cindy May, you are required to send YOUR FULL NAME, CURRENT ADDRESS AND DIRECT CELL PHONE NUMBER if any for onward proceeding on how you are going to receive the said funds legally without any problem either now or in future. Treat as urgent.
+
+Yours Sincerely,
+
+Mr. Noel Quinn
+HSBC Chief Executive Officer .
