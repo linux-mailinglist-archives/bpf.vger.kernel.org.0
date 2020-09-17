@@ -2,139 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA6426DDAD
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 16:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1311026DEE1
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 16:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727161AbgIQOM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 10:12:27 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:53259 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727338AbgIQOLY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:11:24 -0400
-X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:11:22 EDT
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MzQbw-1kezk02V1c-00vT3E; Thu, 17 Sep 2020 16:01:44 +0200
-Received: by mail-qk1-f172.google.com with SMTP id w12so2272381qki.6;
-        Thu, 17 Sep 2020 07:01:44 -0700 (PDT)
-X-Gm-Message-State: AOAM5304ot5kHZJGBuPfXXyEVYJz8pFJs/lOsn8EqzaW5hHUtHPcAlhv
-        G51303jxTG3cAMoantkRutHn42/6JqqP4xjlvjk=
-X-Google-Smtp-Source: ABdhPJypvKt5K6vsRgjllHkNp0imyN+bOqaU9zpMG48JdwZ9KbFYFADzd403hy36sDpE2nZf6WeaV+/92apRwmmxTPo=
-X-Received: by 2002:a37:a495:: with SMTP id n143mr28117696qke.394.1600351303235;
- Thu, 17 Sep 2020 07:01:43 -0700 (PDT)
+        id S1727770AbgIQO6K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 10:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727612AbgIQO4f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:56:35 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA161C061353
+        for <bpf@vger.kernel.org>; Thu, 17 Sep 2020 07:56:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x14so2396929wrl.12
+        for <bpf@vger.kernel.org>; Thu, 17 Sep 2020 07:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5WWJnUiVV8xQIounCSA9TC9B/8xEj+eiqEw7XoNCU+4=;
+        b=JYxo13TO/XEZs3VNeokubUvB9P8CBHzwgRQav+MKHLIsAJI1W7NQ2HSnDdwh5WHGX3
+         vEUbpZsItKIhYbRIcKQJiteSUwzN67aPuxo6ZtPleTRiw9YGAYQFsx3jZD5eXbMzGL5q
+         HuGXvhiMalSFHgQzD7pLhDQhCD2UDdgnAtFMhQ5sHjejA5E5EvX3ApVH1eoGV4BtwMu1
+         4OXUbbXaJ+4PFWJwZXlXUikGyIkBRuHBcBlbyzOrEVp6aSVJ6JAfNdszc8hrJhQJ1XiN
+         jAkT3wjlSoV+rulwXEhF34a0kTEoqng+1x+urJk+qNj7VHJtKTAa9sleZtMqPJ7/6yyI
+         8O3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5WWJnUiVV8xQIounCSA9TC9B/8xEj+eiqEw7XoNCU+4=;
+        b=Y4rPim0MC/W7bfS4cBIhQ0Od63J/t64CgrvXSiJ3XywdRDyR6ZFBK8NQUGT+tEGY2A
+         y08Y8t4xmT3d05prLuDUccMSY82Gh7E1hZdjO+hRwzXBLHQisUESyaXAgf7LO14g3D8L
+         DOC9mL1ND+9oCEFpopOCGb3kmp85fKXIdV8I23gdtZTLe/FrKWiDe9/eY2yMDXDmKcd0
+         uNAbQFT46Nb+f3OqIDCCwjbLxd7H7KZ0yDKkrp54y4UStz1yRY160N8cGC+Q3uVz7OgG
+         luLOEVILVKvxWWUKaXA478DhbVOCQpySd9TBU36GhIuBH74jf8GuO4QauTXXw2sP0e5i
+         fDSQ==
+X-Gm-Message-State: AOAM530Dt3tHEeCM+Kp5qGI0vXzVaMxmrDOoEuV0NaxkDrjAo9V7V1ZJ
+        W9xtp8Av9c0Q/7yeD2Lw9flFeYEQ8Qj7fcqn
+X-Google-Smtp-Source: ABdhPJxgA3yFQqYbYn5qv/ZjHU66UDfDKgdlyjRQC9IL33sK78Q+HhAZlVM1jcgG288HKnjqL04ESA==
+X-Received: by 2002:adf:c64e:: with SMTP id u14mr31692294wrg.373.1600354584615;
+        Thu, 17 Sep 2020 07:56:24 -0700 (PDT)
+Received: from [192.168.1.12] ([194.35.117.91])
+        by smtp.gmail.com with UTF8SMTPSA id s17sm41233012wrr.40.2020.09.17.07.56.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2020 07:56:24 -0700 (PDT)
+Subject: Re: [PATCH bpf v1] tools/bpftool: support passing BPFTOOL_VERSION to
+ make
+To:     Tony Ambardar <tony.ambardar@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20200917115833.1235518-1-Tony.Ambardar@gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <33dd4a10-9b2a-7315-7709-cd8e7c1cd030@isovalent.com>
+Date:   Thu, 17 Sep 2020 15:56:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:82.0) Gecko/20100101
+ Thunderbird/82.0a1
 MIME-Version: 1.0
-References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
- <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <87363gpqhz.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87363gpqhz.fsf@mpe.ellerman.id.au>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 17 Sep 2020 16:01:27 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A@mail.gmail.com>
-Message-ID: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A@mail.gmail.com>
-Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Tony Ambardar <tony.ambardar@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Rosen Penev <rosenp@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:BiDI7RSugMs1bexsxNS7YdcLk/DPBsz4XJ9rjWVFJysPhzJ6DqT
- 2XQbp5EiiavA/xv3Yb1leIcOlkzG1yJV/ShPE6IGfIIqfGHbgZ8UDvALmjcNVvJvBza0wtC
- YNGjeYLC+LX8QDbxbTuk3g6R1N55bR8nMJZp997Qjl7gckYG0HrUKYD8Mau5dvuL6z4zm7e
- 8fzVYGR6nqAnUv4z4Ac+Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OiyOedjSjEE=:kPQxdXO/jYk+i7pGOq+NOs
- 8iBpb46yH7KUPvnmxE48dZZ6h9ntMxYgASzNzDIS78c95nZkGrhBcfqrZFKAlnanMeB/6T5sb
- 1K838KThHOXS9Tkz7NGxHANEUrHUnuXuQxVG8oYWY3Q6RRhr6bO2vHaAUvKaTtc7vLZsJ/gcG
- DH7Hg0rSy4YUZx+u3esU/BuNzP8w3MTRIVcX84c4Oz1awHe5kheWcw+ZEwXjoj7Bl/whbMnTr
- tHynzRcu3zUs5qSEbhwHSsRR6xEuQ+pR2vVKr2gTaUuX1qhZiEp51YmM9QonAb6F9kRdivWae
- rv4TFkHhICzJzafoRfdcomlctOy010EsRtECtBMCyLEILkPwtTAz9LrTeXj5KKLwSQSNlWVvE
- 4qMHT0rEwYJovG1Cbs934v+BlZIiH/z19D5FnZl1Njspon87n+oIjlBOJKuoMJgJoiiN1zi6+
- s9SWURInct36SwarZ9xOylGKZxprzwO2/DTxUOk0vswFJwpOze6qknmwAu6CGXh0m0uYV5SOl
- lejU7G778zSvllGPGASW/6L8UUyV31kZncqlYGzV60YKMQhumjz0lEfV88L/jybqfQll+TfKa
- zbkwgOMDN+OiT011b+VI9Z9Hku8J3TVS792YmWkG/fB2daVHx8G9X0eFegK+ESmiIsMTyZwsT
- I/oHZjKsEvAuo2w/fYQQbaWQFTsqYWshuF9QOcikoIhtfz6d2K7/NlrwmO6mV6VHX92rPEu8W
- +4sWHHAZp24Cof3U8w2G0y98vNhOF5kymYr3ko4M0PLr6H9rAEiLpCkXMarurBiAuxkiOhqeC
- KD6k1NBw9RvYkEbfUofAVgwsXdg5CSyA3mw7kANq0lRqrjEvz1DPZXwLEY5Ygl9lX8mCQ02
+In-Reply-To: <20200917115833.1235518-1-Tony.Ambardar@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 1:55 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> [ Cc += linux-arch & Arnd ]
->
-> Hi Tony,
->
-> This looks OK to me, but I'm always a bit nervous about changes in uapi.
-> I've Cc'ed linux-arch and Arnd who look after the asm-generic headers,
-> which this is slightly related to, just in case.
->
-> One minor comment below.
->
-> Tony Ambardar <tony.ambardar@gmail.com> writes:
-> > A few archs like powerpc have different errno.h values for macros
-> > EDEADLOCK and EDEADLK. In code including both libc and linux versions of
-> > errno.h, this can result in multiple definitions of EDEADLOCK in the
-> > include chain. Definitions to the same value (e.g. seen with mips) do
-> > not raise warnings, but on powerpc there are redefinitions changing the
-> > value, which raise warnings and errors (if using "-Werror").
-> >
-> > Guard against these redefinitions to avoid build errors like the following,
-> > first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
-> > musl 1.1.24:
-> >
-> >   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
-> >                    from ../../include/linux/err.h:8,
-> >                    from libbpf.c:29:
-> >   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
-> >    #define EDEADLOCK EDEADLK
-> >
-> >   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
-> >                    from libbpf.c:26:
-> >   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
-> >    #define EDEADLOCK       58
-> >
-> >   cc1: all warnings being treated as errors
-> >
-> > Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's supported by perf")
-> > Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
->
-> I suspect that's not the right commit to tag. It just moved errno.h from
-> arch/powerpc/include/asm to arch/powerpc/include/uapi/asm. It's content
-> was almost identical, and entirely identical as far as EDEADLOCK was
-> concerned.
->
-> Prior to that the file lived in asm-powerpc/errno.h, eg:
->
-> $ git cat-file -p b8b572e1015f^:include/asm-powerpc/errno.h
->
-> Before that it was include/asm-ppc64/errno.h, content still the same.
->
-> To go back further we'd have to look at the historical git trees, which
-> is probably overkill. I'm pretty sure it's always had this problem.
->
-> So we should probably drop the Fixes tags and just Cc: stable, that
-> means please backport it as far back as possible.
+On 17/09/2020 12:58, Tony Ambardar wrote:
+> This change facilitates out-of-tree builds, packaging, and versioning for
+> test and debug purposes. Defining BPFTOOL_VERSION allows self-contained
+> builds within the tools tree, since it avoids use of the 'kernelversion'
+> target in the top-level makefile, which would otherwise pull in several
+> other includes from outside the tools tree.
+> 
+> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 
-I can see that the two numbers (35 and 58) were consistent across
-multiple architectures (i386, m68k, ppc32) up to linux-2.0.1, while
-other architectures had two unique numbers (alpha, mips, sparc)
-at the time, and sparc had BSD and Solaris compatible numbers
-in addition.
-
-In linux-2.0.2, alpha and i386 got changed to use 35 for both,
-but the other architectures remained unchanged. All later
-architectures followed x86 in using the same number for both.
-
-I foudn a message about tcl breaking at compile time when
-it changed:
-http://lkml.iu.edu/hypermail/linux/kernel/9607.3/0500.html
-
-The errno man page says they are supposed to be synonyms,
-and glibc defines it that way, while musl uses the numbers
-from the kernel.
-
-        Arnd
+Acked-by: Quentin Monnet <quentin@isovalent.com>
