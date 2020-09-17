@@ -2,177 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F9526CED9
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 00:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937EE26CFDE
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 02:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgIPWiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Sep 2020 18:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S1726065AbgIQASB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Sep 2020 20:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbgIPWiF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Sep 2020 18:38:05 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66103C06174A
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 15:38:05 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id 10so96540ple.19
-        for <bpf@vger.kernel.org>; Wed, 16 Sep 2020 15:38:05 -0700 (PDT)
+        with ESMTP id S1726009AbgIQASA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Sep 2020 20:18:00 -0400
+X-Greylist: delayed 579 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 20:18:00 EDT
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8836EC061788;
+        Wed, 16 Sep 2020 17:08:19 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t14so278752pgl.10;
+        Wed, 16 Sep 2020 17:08:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=JLM5w5hYSsW0qJqRG7+lzcIWvPmux4DmpSItCWGXz70=;
-        b=qI7T8dLXOKCOwJwgmjJBLFmkdLXsmVm1HiZ4fVRUOpEXr0ATFrW8sLP7IzvHUwqYE7
-         gGLlgVir1Uc1MgDjaOasWtFa2kmKAHBGqZnmoJv6X3fQ11a3Xwy+yRmN5iHFeMD2Aucj
-         OGJELx22XZMvLGUcV2sNmxHjTg4XBTKlNt1b7eJe0IZcDC8P5y4swGI3ConDDuLpVPfQ
-         o8MrBLm6h/yLrd2Ochr8/Mz12/2ODJS5zKqE0rP7qbcTlJWo+Fe3R6oraCtOgb6RCyWB
-         ZFA8dvivblHeDnUbBayFEd8p+GtzA2ErupKN4HAOX5PJWTdY17gvRLWQ9/45k39D8tOh
-         tI2g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Na9A930XnJjifMT8ZHNAvuKYoJPnmdw7X5EjcY4GoqM=;
+        b=RmJlwLrTYhvd51TSGpjqRixx9s+/rFs3rOKnJtMPoG5DNNUh6Z++hIYiRWVMqrHsU0
+         ZlYBR/I4v8f6JQsGCMyLg/tZ98oiVf3aMVGYNIO/XqlrVmbUvPGyeO5YHCnpY7BDZkiJ
+         SBhG7dB+7Ogp5Bf7JyvOK6gRPB78H28J35zqfJYVHsbT4NrJ9Jq4syr+Pw28i2bonZkj
+         nDEKRKolvVvPOjTkZFstsLB4uNumBC+Hjy0jRnnZPMDDxWrSBFtH02UvlNeb2sgNo42Y
+         my+AKtRpfgMx52z5VfePbVNCQga2wAy2jq/TLJarcmwTh66Mx4EvF5I7f67yG2QKnqHa
+         JIHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=JLM5w5hYSsW0qJqRG7+lzcIWvPmux4DmpSItCWGXz70=;
-        b=EifqHBdGSUjJ88RbLCJZsO8c1sRbQCcJMKFr64qrZr4TIX8m9EP1tXjN2VrJRMxxet
-         LCZwb7vD+d3l8pAZbxMcIe17yOIjwvv4mNYFzyCUsrWI4m5vyjeARjZEBooNy6qlDBgX
-         qzxwvwr6A/y79dK58+TECvEPOrldR34bo3s1ZGFTz9cRYU+QHIoNPe/xZihFMy7Hqvn2
-         t0UkXyQPIVHoVEADOb6Vt5JWVeSJVPioLjRLXawkHWwiBTBFl0wyN0VNY0ijbsjm+N6i
-         wkFtdKWa9xWRO8KLyjUWnRpaJ2NIcDr6owHqvEqMhlcQbT028b+iACQqRICBxU9K7RtB
-         8sJg==
-X-Gm-Message-State: AOAM531oLWRTPrrvqZQDgwHfn6z5plIgu5eWLeiV2eXcQI4fZFKVqwym
-        THwetzLyFYBlpV+pFwf8NENVQJR9fZM=
-X-Google-Smtp-Source: ABdhPJw9SXIdnPt57d5YkKmEbaKIe1Qn3RB78m3mRl3ctmi/pAjjrb1/IoPFyMRXiaObUEN/l95F+JsfCaA=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
- (user=haoluo job=sendgmr) by 2002:a17:902:8c81:b029:d1:f369:1fe4 with SMTP id
- t1-20020a1709028c81b02900d1f3691fe4mr3355071plo.76.1600295884687; Wed, 16 Sep
- 2020 15:38:04 -0700 (PDT)
-Date:   Wed, 16 Sep 2020 15:35:12 -0700
-In-Reply-To: <20200916223512.2885524-1-haoluo@google.com>
-Message-Id: <20200916223512.2885524-7-haoluo@google.com>
-Mime-Version: 1.0
-References: <20200916223512.2885524-1-haoluo@google.com>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH bpf-next v3 6/6] bpf/selftests: Test for bpf_per_cpu_ptr() and bpf_this_cpu_ptr()
-From:   Hao Luo <haoluo@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Na9A930XnJjifMT8ZHNAvuKYoJPnmdw7X5EjcY4GoqM=;
+        b=Xohd0ZHQ/LcK+HmYCP3RiiTsPCJo9dOIs14+/RGPSEbroFlPUzstlBET3+oocT8yk9
+         HIqZX1oKbM4HGc0dPcn5lQBV+9ciqm3RYwEuieM64bEk8Lfz/qbf9pcsa+BeDOuDZU/U
+         1A2luA+lB/kTum60vc2FAIsDNwhkXpp6xu8fB6zlVx/OZqJlODtzG3O0TtX5FWWw7tJW
+         REyEUug1D2OyN7sESmm68095kTlUcjVGxpBUyh8ilNFL//h6KN2lvk6Dbs3Co6Jfco6I
+         rFnEPF/qRv93Ywqm15Xby1TrcNgZ2DUdAp99Cz6c0dU4nxmI/xbFi+Y5xv35YvAvXzzx
+         Irpg==
+X-Gm-Message-State: AOAM533hpYtzkZTx6FXUpbzs9RDEFcZe9IuhkWlBJcbHcFGpTYzee80T
+        wXv+8uLgqC02+1C0aRXXiO4=
+X-Google-Smtp-Source: ABdhPJz1qpB9CoFcw5mzJ0L2g1fQqPftTDPav38YlicRSdcMy4AS+soddUEEi9bBAkBrY8QxF8Cq8w==
+X-Received: by 2002:a65:6888:: with SMTP id e8mr3241834pgt.375.1600301298990;
+        Wed, 16 Sep 2020 17:08:18 -0700 (PDT)
+Received: from localhost.localdomain ([2001:470:e92d:10:68d8:fab6:907:5cf6])
+        by smtp.gmail.com with ESMTPSA id a13sm14300343pfl.184.2020.09.16.17.08.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Sep 2020 17:08:18 -0700 (PDT)
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Rosen Penev <rosenp@gmail.com>
+Subject: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+Date:   Wed, 16 Sep 2020 17:07:57 -0700
+Message-Id: <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
+References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test bpf_per_cpu_ptr() and bpf_this_cpu_ptr(). Test two paths in the
-kernel. If the base pointer points to a struct, the returned reg is
-of type PTR_TO_BTF_ID. Direct pointer dereference can be applied on
-the returned variable. If the base pointer isn't a struct, the
-returned reg is of type PTR_TO_MEM, which also supports direct pointer
-dereference.
+A few archs like powerpc have different errno.h values for macros
+EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+errno.h, this can result in multiple definitions of EDEADLOCK in the
+include chain. Definitions to the same value (e.g. seen with mips) do
+not raise warnings, but on powerpc there are redefinitions changing the
+value, which raise warnings and errors (if using "-Werror").
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Hao Luo <haoluo@google.com>
+Guard against these redefinitions to avoid build errors like the following,
+first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
+musl 1.1.24:
+
+  In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
+                   from ../../include/linux/err.h:8,
+                   from libbpf.c:29:
+  ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
+   #define EDEADLOCK EDEADLK
+
+  In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
+                   from libbpf.c:26:
+  toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
+   #define EDEADLOCK       58
+
+  cc1: all warnings being treated as errors
+
+Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's supported by perf")
+Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
+Reported-by: Rosen Penev <rosenp@gmail.com>
+Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 ---
- .../selftests/bpf/prog_tests/ksyms_btf.c      | 18 +++++++++++
- .../selftests/bpf/progs/test_ksyms_btf.c      | 32 +++++++++++++++++++
- 2 files changed, 50 insertions(+)
+v1 -> v2:
+ * clean up commit description formatting
+---
+ arch/powerpc/include/uapi/asm/errno.h       | 1 +
+ tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-index c6ef06c0629a..28e26bd3e0ca 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-@@ -11,6 +11,8 @@ static int duration;
- void test_ksyms_btf(void)
- {
- 	__u64 runqueues_addr, bpf_prog_active_addr;
-+	__u32 this_rq_cpu;
-+	int this_bpf_prog_active;
- 	struct test_ksyms_btf *skel = NULL;
- 	struct test_ksyms_btf__data *data;
- 	struct btf *btf;
-@@ -64,6 +66,22 @@ void test_ksyms_btf(void)
- 	      (unsigned long long)data->out__bpf_prog_active_addr,
- 	      (unsigned long long)bpf_prog_active_addr);
+diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
+index cc79856896a1..4ba87de32be0 100644
+--- a/arch/powerpc/include/uapi/asm/errno.h
++++ b/arch/powerpc/include/uapi/asm/errno.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_POWERPC_ERRNO_H
+ #define _ASM_POWERPC_ERRNO_H
  
-+	CHECK(data->out__rq_cpu == -1, "rq_cpu",
-+	      "got %u, exp != -1\n", data->out__rq_cpu);
-+	CHECK(data->out__bpf_prog_active < 0, "bpf_prog_active",
-+	      "got %d, exp >= 0\n", data->out__bpf_prog_active);
-+	CHECK(data->out__cpu_0_rq_cpu != 0, "cpu_rq(0)->cpu",
-+	      "got %u, exp 0\n", data->out__cpu_0_rq_cpu);
-+
-+	this_rq_cpu = data->out__this_rq_cpu;
-+	CHECK(this_rq_cpu != data->out__rq_cpu, "this_rq_cpu",
-+	      "got %u, exp %u\n", this_rq_cpu, data->out__rq_cpu);
-+
-+	this_bpf_prog_active = data->out__this_bpf_prog_active;
-+	CHECK(this_bpf_prog_active != data->out__bpf_prog_active, "this_bpf_prog_active",
-+	      "got %d, exp %d\n", this_bpf_prog_active,
-+	      data->out__bpf_prog_active);
-+
- cleanup:
- 	btf__free(btf);
- 	test_ksyms_btf__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-index 7dde2082131d..bb8ea9270f29 100644
---- a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-@@ -8,15 +8,47 @@
- __u64 out__runqueues_addr = -1;
- __u64 out__bpf_prog_active_addr = -1;
++#undef	EDEADLOCK
+ #include <asm-generic/errno.h>
  
-+__u32 out__rq_cpu = -1; /* percpu struct fields */
-+int out__bpf_prog_active = -1; /* percpu int */
-+
-+__u32 out__this_rq_cpu = -1;
-+int out__this_bpf_prog_active = -1;
-+
-+__u32 out__cpu_0_rq_cpu = -1; /* cpu_rq(0)->cpu */
-+
- extern const struct rq runqueues __ksym; /* struct type global var. */
- extern const int bpf_prog_active __ksym; /* int type global var. */
+ #undef	EDEADLOCK
+diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
+index cc79856896a1..4ba87de32be0 100644
+--- a/tools/arch/powerpc/include/uapi/asm/errno.h
++++ b/tools/arch/powerpc/include/uapi/asm/errno.h
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_POWERPC_ERRNO_H
+ #define _ASM_POWERPC_ERRNO_H
  
- SEC("raw_tp/sys_enter")
- int handler(const void *ctx)
- {
-+	struct rq *rq;
-+	int *active;
-+	__u32 cpu;
-+
- 	out__runqueues_addr = (__u64)&runqueues;
- 	out__bpf_prog_active_addr = (__u64)&bpf_prog_active;
++#undef	EDEADLOCK
+ #include <asm-generic/errno.h>
  
-+	cpu = bpf_get_smp_processor_id();
-+
-+	/* test bpf_per_cpu_ptr() */
-+	rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, cpu);
-+	if (rq)
-+		out__rq_cpu = rq->cpu;
-+	active = (int *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
-+	if (active)
-+		out__bpf_prog_active = *active;
-+
-+	rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, 0);
-+	if (rq) /* should always be valid, but we can't spare the check. */
-+		out__cpu_0_rq_cpu = rq->cpu;
-+
-+	/* test bpf_this_cpu_ptr */
-+	rq = (struct rq *)bpf_this_cpu_ptr(&runqueues);
-+	out__this_rq_cpu = rq->cpu;
-+	active = (int *)bpf_this_cpu_ptr(&bpf_prog_active);
-+	out__this_bpf_prog_active = *active;
-+
- 	return 0;
- }
- 
+ #undef	EDEADLOCK
 -- 
-2.28.0.618.gf4bc123cb7-goog
+2.25.1
 
