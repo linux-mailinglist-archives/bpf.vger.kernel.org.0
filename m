@@ -2,140 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2AE26DDAE
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 16:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA6426DDAD
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 16:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727403AbgIQOMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 10:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727211AbgIQN55 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 09:57:57 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14603C061D7C
-        for <bpf@vger.kernel.org>; Thu, 17 Sep 2020 06:57:26 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id gr14so3484115ejb.1
-        for <bpf@vger.kernel.org>; Thu, 17 Sep 2020 06:57:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pSSlZZ+MnV5QXAvkjR9T5/pkqeT/NfDS35+qV4B6bxY=;
-        b=xq8SGYChd6ZN8Aq44erpoXz0/3kRxhpdkMZSIkX3gWUwUeuwEV9mufoEAg6FsmsgYq
-         b/BoNG4lqJacAV7dqrjqKRFdm0JYRvcIDm0kaOvcRLiSYaZwwZhzZARUmeFM5Ncj0PIe
-         FEZ+YyG+TZoI6qNYpC0RQTtWrWdXXaAkdumSMZL/thLRh47cV2UidgWozWiKGLDYtTRJ
-         cwmRw+cvdyCwgqjKFcDZYbIrOgLXedc7Fwr0zy0CMPh4SmevtCdXJCwVHqmtovVkdBPK
-         peVF8qy+yesHFf/OEdM5HjdRcRRh0RmBbXL0j1518Lz9iaqacBixwtENnOt9zmtaMsd5
-         z8Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pSSlZZ+MnV5QXAvkjR9T5/pkqeT/NfDS35+qV4B6bxY=;
-        b=pPN5kiWIXone2Wq98h9t1ShAC746o31GFSXbxIJTFOUi2g+V4mv3iZqgbB5W/Otbi8
-         noY4d7DPCEDNa2/L74h/OsxdUK4Ig+i69/LNRIZ8abRC90WxGpfXA/bGvkFj8Rv5Skfb
-         EEo0gy65c2okVhGJKJswhkG6GNaCXz0cLEp6SB3AZ3F55f3LVS8nIhdUibexLpdVkyoi
-         WKPnyo3ZQXcwl5PppA8ScpnMq02ZWi14e68kRkfW/aMjmiV/GuEqxNARpffPoxqbqc/T
-         VgGmTbjE6wiUAk7ymhZnSUuOWVngH93miscJq74Ccw/3m5wtYn3E5mapB1MdfXyaV1dG
-         8EQQ==
-X-Gm-Message-State: AOAM531Zy2A8yQPokLZpcoyHcks5U/985l9OP2ps0xSznuHx3HaqiM3c
-        JjO9xZ3w3TAEFzRYQhQffGeSLQ==
-X-Google-Smtp-Source: ABdhPJxRW0504JkwLHfAfome1NFDuXgAji9E1LroxFxjxRe9AN6YEk0vQMwnh2Wr1HJviGb5N+T+Bw==
-X-Received: by 2002:a17:906:1b04:: with SMTP id o4mr32078527ejg.332.1600351042447;
-        Thu, 17 Sep 2020 06:57:22 -0700 (PDT)
-Received: from localhost.localdomain ([89.18.44.40])
-        by smtp.gmail.com with ESMTPSA id k25sm3492ejk.3.2020.09.17.06.57.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 06:57:21 -0700 (PDT)
-From:   Luka Oreskovic <luka.oreskovic@sartura.hr>
-To:     ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: [PATCH bpf-next] bpf: add support for other map types to bpf_map_lookup_and_delete_elem
-Date:   Thu, 17 Sep 2020 15:57:00 +0200
-Message-Id: <20200917135700.649909-1-luka.oreskovic@sartura.hr>
-X-Mailer: git-send-email 2.26.2
+        id S1727161AbgIQOM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 10:12:27 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:53259 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727338AbgIQOLY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:11:24 -0400
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:11:22 EDT
+Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MzQbw-1kezk02V1c-00vT3E; Thu, 17 Sep 2020 16:01:44 +0200
+Received: by mail-qk1-f172.google.com with SMTP id w12so2272381qki.6;
+        Thu, 17 Sep 2020 07:01:44 -0700 (PDT)
+X-Gm-Message-State: AOAM5304ot5kHZJGBuPfXXyEVYJz8pFJs/lOsn8EqzaW5hHUtHPcAlhv
+        G51303jxTG3cAMoantkRutHn42/6JqqP4xjlvjk=
+X-Google-Smtp-Source: ABdhPJypvKt5K6vsRgjllHkNp0imyN+bOqaU9zpMG48JdwZ9KbFYFADzd403hy36sDpE2nZf6WeaV+/92apRwmmxTPo=
+X-Received: by 2002:a37:a495:: with SMTP id n143mr28117696qke.394.1600351303235;
+ Thu, 17 Sep 2020 07:01:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
+ <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <87363gpqhz.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87363gpqhz.fsf@mpe.ellerman.id.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 17 Sep 2020 16:01:27 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A@mail.gmail.com>
+Message-ID: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A@mail.gmail.com>
+Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Tony Ambardar <tony.ambardar@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Rosen Penev <rosenp@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:BiDI7RSugMs1bexsxNS7YdcLk/DPBsz4XJ9rjWVFJysPhzJ6DqT
+ 2XQbp5EiiavA/xv3Yb1leIcOlkzG1yJV/ShPE6IGfIIqfGHbgZ8UDvALmjcNVvJvBza0wtC
+ YNGjeYLC+LX8QDbxbTuk3g6R1N55bR8nMJZp997Qjl7gckYG0HrUKYD8Mau5dvuL6z4zm7e
+ 8fzVYGR6nqAnUv4z4Ac+Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:OiyOedjSjEE=:kPQxdXO/jYk+i7pGOq+NOs
+ 8iBpb46yH7KUPvnmxE48dZZ6h9ntMxYgASzNzDIS78c95nZkGrhBcfqrZFKAlnanMeB/6T5sb
+ 1K838KThHOXS9Tkz7NGxHANEUrHUnuXuQxVG8oYWY3Q6RRhr6bO2vHaAUvKaTtc7vLZsJ/gcG
+ DH7Hg0rSy4YUZx+u3esU/BuNzP8w3MTRIVcX84c4Oz1awHe5kheWcw+ZEwXjoj7Bl/whbMnTr
+ tHynzRcu3zUs5qSEbhwHSsRR6xEuQ+pR2vVKr2gTaUuX1qhZiEp51YmM9QonAb6F9kRdivWae
+ rv4TFkHhICzJzafoRfdcomlctOy010EsRtECtBMCyLEILkPwtTAz9LrTeXj5KKLwSQSNlWVvE
+ 4qMHT0rEwYJovG1Cbs934v+BlZIiH/z19D5FnZl1Njspon87n+oIjlBOJKuoMJgJoiiN1zi6+
+ s9SWURInct36SwarZ9xOylGKZxprzwO2/DTxUOk0vswFJwpOze6qknmwAu6CGXh0m0uYV5SOl
+ lejU7G778zSvllGPGASW/6L8UUyV31kZncqlYGzV60YKMQhumjz0lEfV88L/jybqfQll+TfKa
+ zbkwgOMDN+OiT011b+VI9Z9Hku8J3TVS792YmWkG/fB2daVHx8G9X0eFegK+ESmiIsMTyZwsT
+ I/oHZjKsEvAuo2w/fYQQbaWQFTsqYWshuF9QOcikoIhtfz6d2K7/NlrwmO6mV6VHX92rPEu8W
+ +4sWHHAZp24Cof3U8w2G0y98vNhOF5kymYr3ko4M0PLr6H9rAEiLpCkXMarurBiAuxkiOhqeC
+ KD6k1NBw9RvYkEbfUofAVgwsXdg5CSyA3mw7kANq0lRqrjEvz1DPZXwLEY5Ygl9lX8mCQ02
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since this function already exists, it made sense to implement it for
-map types other than stack and queue. This patch adds the necessary parts
-from bpf_map_lookup_elem and bpf_map_delete_elem so it works as expected
-for all map types.
+On Thu, Sep 17, 2020 at 1:55 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> [ Cc += linux-arch & Arnd ]
+>
+> Hi Tony,
+>
+> This looks OK to me, but I'm always a bit nervous about changes in uapi.
+> I've Cc'ed linux-arch and Arnd who look after the asm-generic headers,
+> which this is slightly related to, just in case.
+>
+> One minor comment below.
+>
+> Tony Ambardar <tony.ambardar@gmail.com> writes:
+> > A few archs like powerpc have different errno.h values for macros
+> > EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+> > errno.h, this can result in multiple definitions of EDEADLOCK in the
+> > include chain. Definitions to the same value (e.g. seen with mips) do
+> > not raise warnings, but on powerpc there are redefinitions changing the
+> > value, which raise warnings and errors (if using "-Werror").
+> >
+> > Guard against these redefinitions to avoid build errors like the following,
+> > first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
+> > musl 1.1.24:
+> >
+> >   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
+> >                    from ../../include/linux/err.h:8,
+> >                    from libbpf.c:29:
+> >   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
+> >    #define EDEADLOCK EDEADLK
+> >
+> >   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
+> >                    from libbpf.c:26:
+> >   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
+> >    #define EDEADLOCK       58
+> >
+> >   cc1: all warnings being treated as errors
+> >
+> > Fixes: 95f28190aa01 ("tools include arch: Grab a copy of errno.h for arch's supported by perf")
+> > Fixes: c3617f72036c ("UAPI: (Scripted) Disintegrate arch/powerpc/include/asm")
+>
+> I suspect that's not the right commit to tag. It just moved errno.h from
+> arch/powerpc/include/asm to arch/powerpc/include/uapi/asm. It's content
+> was almost identical, and entirely identical as far as EDEADLOCK was
+> concerned.
+>
+> Prior to that the file lived in asm-powerpc/errno.h, eg:
+>
+> $ git cat-file -p b8b572e1015f^:include/asm-powerpc/errno.h
+>
+> Before that it was include/asm-ppc64/errno.h, content still the same.
+>
+> To go back further we'd have to look at the historical git trees, which
+> is probably overkill. I'm pretty sure it's always had this problem.
+>
+> So we should probably drop the Fixes tags and just Cc: stable, that
+> means please backport it as far back as possible.
 
-Signed-off-by: Luka Oreskovic <luka.oreskovic@sartura.hr>
-CC: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-CC: Luka Perkov <luka.perkov@sartura.hr>
----
- kernel/bpf/syscall.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+I can see that the two numbers (35 and 58) were consistent across
+multiple architectures (i386, m68k, ppc32) up to linux-2.0.1, while
+other architectures had two unique numbers (alpha, mips, sparc)
+at the time, and sparc had BSD and Solaris compatible numbers
+in addition.
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 2ce32cad5c8e..955de6ca8c45 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1475,6 +1475,9 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
- 	if (CHECK_ATTR(BPF_MAP_LOOKUP_AND_DELETE_ELEM))
- 		return -EINVAL;
- 
-+	if (attr->flags & ~BPF_F_LOCK)
-+		return -EINVAL;
-+
- 	f = fdget(ufd);
- 	map = __bpf_map_get(f);
- 	if (IS_ERR(map))
-@@ -1485,13 +1488,19 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
- 		goto err_put;
- 	}
- 
-+	if ((attr->flags & BPF_F_LOCK) &&
-+	    !map_value_has_spin_lock(map)) {
-+		err = -EINVAL;
-+		goto err_put;
-+	}
-+
- 	key = __bpf_copy_key(ukey, map->key_size);
- 	if (IS_ERR(key)) {
- 		err = PTR_ERR(key);
- 		goto err_put;
- 	}
- 
--	value_size = map->value_size;
-+	value_size = bpf_map_value_size(map);
- 
- 	err = -ENOMEM;
- 	value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
-@@ -1502,7 +1511,24 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
- 	    map->map_type == BPF_MAP_TYPE_STACK) {
- 		err = map->ops->map_pop_elem(map, value);
- 	} else {
--		err = -ENOTSUPP;
-+		err = bpf_map_copy_value(map, key, value, attr->flags);
-+		if (err)
-+			goto free_value;
-+
-+		if (bpf_map_is_dev_bound(map)) {
-+			err = bpf_map_offload_delete_elem(map, key);
-+		} else if (IS_FD_PROG_ARRAY(map) ||
-+			   map->map_type == BPF_MAP_TYPE_STRUCT_OPS) {
-+			/* These maps require sleepable context */
-+			err = map->ops->map_delete_elem(map, key);
-+		} else {
-+			bpf_disable_instrumentation();
-+			rcu_read_lock();
-+			err = map->ops->map_delete_elem(map, key);
-+			rcu_read_unlock();
-+			bpf_enable_instrumentation();
-+			maybe_wait_bpf_programs(map);
-+		}
- 	}
- 
- 	if (err)
--- 
-2.26.2
+In linux-2.0.2, alpha and i386 got changed to use 35 for both,
+but the other architectures remained unchanged. All later
+architectures followed x86 in using the same number for both.
 
+I foudn a message about tcl breaking at compile time when
+it changed:
+http://lkml.iu.edu/hypermail/linux/kernel/9607.3/0500.html
+
+The errno man page says they are supposed to be synonyms,
+and glibc defines it that way, while musl uses the numbers
+from the kernel.
+
+        Arnd
