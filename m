@@ -2,92 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EE226E92A
-	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 00:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B6A26E969
+	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 01:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgIQWxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 18:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgIQWxM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 18:53:12 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC018C06174A;
-        Thu, 17 Sep 2020 15:53:11 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b12so3966797lfp.9;
-        Thu, 17 Sep 2020 15:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+0ztf0Ov6IFROo5SQSlxfiHvrLi43YV3Jj9ywittcuw=;
-        b=DqqO4ydFdUd5KcolOqWhLDVBYAXZNZcIolWsLkF89truRbd32POTf+w5GsYgUrfQOC
-         DUOe/WQEP309Odlq5ROmVI8ufVw4I0yYNM8YStffh54BHPsjDiBkosmnYFhJlW7JlAy2
-         oDhmheu/Nt28xF61db3qB2eDrtyGDREYDRXrdehMmjObgAnp3hKcCgZocuViJEID/5WZ
-         m1JQiB7W7JQq1P/0eOpo14V5JSYXBuKga2eOYzVfvlMpuCBrUqExNWyn6WseQSyyenwm
-         BN0DyKoQYzIYfqp+axTNdz4lIwaoW07McR19nzpZwdu6lqp22fgrcHP0kOcU+4kc4065
-         /3ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+0ztf0Ov6IFROo5SQSlxfiHvrLi43YV3Jj9ywittcuw=;
-        b=Ho/IK5SNS1W+5wd5ycOIP7af8x53gRF39kESqdl2oWwVdVI9w10Wiz2HxCmz0cZnlI
-         WPlzRjn+0RwNGAxuV2WplVQfJHZ6kGfGWUyxgq1qR3uubp+pXv5BWZBKv3TRr5eJbbMz
-         BGhstUY54xgpahueXJt2KVZTjiOB+hovGcZrd3gHeHu5Pg4t4TVmp+iV2JopN2+5wFLb
-         g1KZr2aik7tWbes2CGsiBhOVJt5MQYWHqW6xR45xW3RhD25rwDGSytQiTqhM6+hNRrue
-         RhFjbNefQ6JLovv0tjJ6agGtNpLcPmH3IL4m5gMqeN8p84hHfgDa6yZHrpAUmnpazQ/t
-         1ByQ==
-X-Gm-Message-State: AOAM532thqewyXg8xGoGxE5WBW4z6cDjKRlbFiYjWQ000PJLvfxD8W5m
-        F/B0yX5yMPlj0iJZX4aJYaAQID7FfXG/KtHvHBs=
-X-Google-Smtp-Source: ABdhPJwxYa1g+cqb9t4c5TMrbROhV4P0AUp8h+eLwYLkpoB9vn6mbkmI1cDq9GIWpfDmgqRFrXPcF6k01YPKPScYkF0=
-X-Received: by 2002:a19:8606:: with SMTP id i6mr9371692lfd.263.1600383190001;
- Thu, 17 Sep 2020 15:53:10 -0700 (PDT)
+        id S1725987AbgIQXVt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 19:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725886AbgIQXVt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 19:21:49 -0400
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7604B20870;
+        Thu, 17 Sep 2020 23:21:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600384908;
+        bh=ZcCU89wBoLhrvM3l5xbyYx1b+RaLLH7G0whMHPwn0nI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kTikafltNLjyW4lLbfA7xIjMFBhM3/Ms33Q/AO1NMBZ0FCf6EDWMpgInoqJWPF8Mr
+         jPQgqRnePZRkRUUGuMIY73cWYwGgRzjA8LrgvAKVSpKaOpvUH47qdocDmL7hBtmVRF
+         j6vFKnUYjN+jJbHlDtZidThU/xNG6ZfQfLI3Z7iw=
+Received: by mail-lf1-f48.google.com with SMTP id u8so4059563lff.1;
+        Thu, 17 Sep 2020 16:21:48 -0700 (PDT)
+X-Gm-Message-State: AOAM5320LrD+4LcdOCxW0oIvrxEO/U00pIfoxTUxRMmLdJ4mRStYKbcr
+        CIRK5za2nWWOoKZguK2ug1h3HtuRs7PHX+3sMyg=
+X-Google-Smtp-Source: ABdhPJzbPaNTGkLOcGBXm9hWyjTAm71EO0Y2Na5ZEEHhD1PkHfSt4yVGB6PJFxnTedUW1WoqWj056ykLsczqz8eJGRE=
+X-Received: by 2002:a19:cc09:: with SMTP id c9mr9113446lfg.482.1600384906796;
+ Thu, 17 Sep 2020 16:21:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916211010.3685-1-maciej.fijalkowski@intel.com>
- <20200916211010.3685-7-maciej.fijalkowski@intel.com> <CAEf4Bza908+c__590SK+_39fUuk51+O2oQnLzGNZ8jyjib5yzw@mail.gmail.com>
- <20200917224436.GA11842@ranger.igk.intel.com>
-In-Reply-To: <20200917224436.GA11842@ranger.igk.intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 17 Sep 2020 15:52:58 -0700
-Message-ID: <CAADnVQLaOqsWq8oX__Q2K7akTpQ8uTV+5ge9Fqx2bq5yupfS6A@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 6/7] bpf: allow for tailcalls in BPF
- subprograms for x64 JIT
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20200917135700.649909-1-luka.oreskovic@sartura.hr>
+In-Reply-To: <20200917135700.649909-1-luka.oreskovic@sartura.hr>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 17 Sep 2020 16:21:35 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4WXqiK-AFP6nU1L03yXGLLuz845mFP8W_rhbyaw=Ck=w@mail.gmail.com>
+Message-ID: <CAPhsuW4WXqiK-AFP6nU1L03yXGLLuz845mFP8W_rhbyaw=Ck=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: add support for other map types to bpf_map_lookup_and_delete_elem
+To:     Luka Oreskovic <luka.oreskovic@sartura.hr>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 3:51 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
+On Thu, Sep 17, 2020 at 7:16 AM Luka Oreskovic
+<luka.oreskovic@sartura.hr> wrote:
 >
-> On Thu, Sep 17, 2020 at 02:03:32PM -0700, Andrii Nakryiko wrote:
-> > On Wed, Sep 16, 2020 at 3:54 PM Maciej Fijalkowski
-> > <maciej.fijalkowski@intel.com> wrote:
-> > >
-> > > Relax verifier's restriction that was meant to forbid tailcall usage
-> > > when subprog count was higher than 1.
-> > >
-> > > Also, do not max out the stack depth of program that utilizes tailcalls.
-> > >
-> > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > ---
-> >
-> > Maciej,
-> >
-> > Only patches 6 and 7 arrived (a while ago) and seems like the other
-> > patches are lost and not going to come. Do you mind resending entire
-> > patch set?
->
-> Sure. Vger lately has been giving me a hard time, thought that maybe rest
-> of set would eventually arrive, similarly to what Toke experienced I
-> guess.
+[...]
 
-I've got the patches. No need to resend.
+> +++ b/kernel/bpf/syscall.c
+> @@ -1475,6 +1475,9 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+>         if (CHECK_ATTR(BPF_MAP_LOOKUP_AND_DELETE_ELEM))
+>                 return -EINVAL;
+>
+> +       if (attr->flags & ~BPF_F_LOCK)
+> +               return -EINVAL;
+> +
+
+Please explain (in comments for commit log) the use of BPF_F_LOCK in
+the commit log,
+as it is new for BPF_MAP_LOOKUP_AND_DELETE_ELEM.
+
+>         f = fdget(ufd);
+>         map = __bpf_map_get(f);
+>         if (IS_ERR(map))
+> @@ -1485,13 +1488,19 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+>                 goto err_put;
+>         }
+>
+> +       if ((attr->flags & BPF_F_LOCK) &&
+> +           !map_value_has_spin_lock(map)) {
+> +               err = -EINVAL;
+> +               goto err_put;
+> +       }
+> +
+>         key = __bpf_copy_key(ukey, map->key_size);
+>         if (IS_ERR(key)) {
+>                 err = PTR_ERR(key);
+>                 goto err_put;
+>         }
+>
+> -       value_size = map->value_size;
+> +       value_size = bpf_map_value_size(map);
+>
+>         err = -ENOMEM;
+>         value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
+> @@ -1502,7 +1511,24 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+>             map->map_type == BPF_MAP_TYPE_STACK) {
+>                 err = map->ops->map_pop_elem(map, value);
+>         } else {
+> -               err = -ENOTSUPP;
+> +               err = bpf_map_copy_value(map, key, value, attr->flags);
+> +               if (err)
+> +                       goto free_value;
+
+IIUC, we cannot guarantee the value returned is the same as the value we
+deleted. If this is true, I guess this may confuse the user with some
+concurrency
+bug.
+
+Thanks,
+Song
+
+[...]
