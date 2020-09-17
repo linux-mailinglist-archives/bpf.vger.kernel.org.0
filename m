@@ -2,92 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A1E26E71F
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 23:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C147526E72F
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 23:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgIQVHw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 17:07:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726739AbgIQVHt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 17:07:49 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E429E235F7;
-        Thu, 17 Sep 2020 21:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600376869;
-        bh=fbo5hHOzAyJO2AHNabv76vHNoNm0Fsocg9ueEelOuuM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ke+AYRFUnFQtFJj49ROFc57x36pfAHvz6oj17TVvhABREtisen69OCqHvYXH4ej1Q
-         dXDesA7UW4MJFtEbUnA+F1xkSVgtIrAVUQSO8j0eo5b6UCTSTn4ehtkEGox3s8D0W8
-         8qqTuIGJrfNA+0aeIY/v/cCEEyjqSUo4rSR62R/s=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        sfr@canb.auug.org.au, "Paul E. McKenney" <paulmck@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S1726022AbgIQVOw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 17:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgIQVOw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 17:14:52 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21B3C061351;
+        Thu, 17 Sep 2020 14:14:51 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id x69so3764224lff.3;
+        Thu, 17 Sep 2020 14:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3h/n7ORzeoLPoMQCIVHFT+TEfTwQU8jH7kBTXjNHH3M=;
+        b=FcL9uQTwv2RTB9lHYBT1tWqe8K2qrJJme5EGfUJJqXyT3aUdRBCXJ4Q1u6pghRicjO
+         4p1MeK3pvIYXZEB4GOHQBfEjiOOSUFcuEPNL4ErWMDSxUNceUC5JZOGN+R3mcpEQjO3T
+         NpSeldLORAd49fOOkGPvga9nPLiXHA3qlhzZkREg/cNrlqewjEeFwkEbmLhNLIa4+P3f
+         lN7I5ei/KWeGQMWj4NjLIaFRBu58lybrtFHT4d9pxUbXqiXk7Ay8ZJxqdpoCAfCHk5k7
+         6AIvT9Drktd1ciXyU3wPiY/oe39vow08wWnqqQmblVZi1MtzdixV/XVMM11kPYZnUysJ
+         vOHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3h/n7ORzeoLPoMQCIVHFT+TEfTwQU8jH7kBTXjNHH3M=;
+        b=aYnVoG64OiUDOz2phITynbE1Gx4PsjY3a0d5kEkyHHIu7Z4IopmBA/Qmfl2Zc7EPxS
+         VyllB80MaC4JY6ws9VYz88lNFPTSV52OJ7YxLx0DKMJ9Gm6cJ5vi6sWWMlk+U3ychFE0
+         4ZJRxXHzxQYZz8loJJGrhXGY9pWDSwg/G4GTWiHg+xzbtIyN3YEF9MEuHIXCUDkxjLoq
+         0pCe8CW0TfYY4loSqGBB9Cj5qAyRhx3bOVCygZibfefdR0QvkuKvB46CP6ymebAhJy99
+         Ei6dnDrHMSy+lr7oYSQYWBPgkHCzGLxDm2silBIBicObxJwxa8KD9D4Vzz3BhjqIKhSM
+         WzRQ==
+X-Gm-Message-State: AOAM533iVoWagiracEwpdmeYTVX9C37cL8idrdXo1pSx6TX7ufWP2SLF
+        0gQsar5aHlZJxRr5hRpRjPL03gGC22obKY/SoVY=
+X-Google-Smtp-Source: ABdhPJxFrGY3UhKsrnnXJdQlpaybZpAGaRdUutZ8eQPROX8V7TjbcKok7QpjWfBV6AaNC38dULAGycs9QxJPGTFeNmQ=
+X-Received: by 2002:a19:9141:: with SMTP id y1mr9073088lfj.554.1600377290046;
+ Thu, 17 Sep 2020 14:14:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200916112416.2321204-1-jolsa@kernel.org> <20200917014531.lmpkorybofrggte4@ast-mbp.dhcp.thefacebook.com>
+ <20200917082516.GD2411168@krava>
+In-Reply-To: <20200917082516.GD2411168@krava>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 17 Sep 2020 14:14:38 -0700
+Message-ID: <CAADnVQ+o-0hoiJ5SBDXOuJ2MKJkTmsOxh60z61+_ZZ+8_=DhrA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix stat probe in d_path test
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf@vger.kernel.org,
-        "# 5 . 7 . x" <stable@vger.kernel.org>
-Subject: [PATCH tip/core/rcu 8/8] rcu-tasks: Enclose task-list scan in rcu_read_lock()
-Date:   Thu, 17 Sep 2020 14:07:44 -0700
-Message-Id: <20200917210744.2995-8-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200917210652.GA31242@paulmck-ThinkPad-P72>
-References: <20200917210652.GA31242@paulmck-ThinkPad-P72>
+        Andrii Nakryiko <andriin@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Thu, Sep 17, 2020 at 1:25 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> > Ideally resolve_btfids would parse dwarf info and check
+> > whether any of the funcs in allowlist were inlined.
+> > That would be more reliable, but not pretty to drag libdw
+> > dependency into resolve_btfids.
+>
+> hm, we could add some check to perf|bpftrace that would
+> show you all the places where function is called from and
+> if it was inlined or is a regular call.. so user is aware
+> what probe calls to expect
 
-The rcu_tasks_trace_postgp() function uses for_each_process_thread()
-to scan the task list without the benefit of RCU read-side protection,
-which can result in use-after-free errors on task_struct structures.
-This error was missed because the TRACE01 rcutorture scenario enables
-lockdep, but also builds with CONFIG_PREEMPT_NONE=y.  In this situation,
-preemption is disabled everywhere, so lockdep thinks everywhere can
-be a legitimate RCU reader.  This commit therefore adds the needed
-rcu_read_lock() and rcu_read_unlock().
-
-Note that this bug can occur only after an RCU Tasks Trace CPU stall
-warning, which by default only happens after a grace period has extended
-for ten minutes (yes, not a typo, minutes).
-
-Fixes: 4593e772b502 ("rcu-tasks: Add stall warnings for RCU Tasks Trace")
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: <bpf@vger.kernel.org>
-Cc: <stable@vger.kernel.org> # 5.7.x
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tasks.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index fcd9c25..d5d9f2d 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -1088,9 +1088,11 @@ static void rcu_tasks_trace_postgp(struct rcu_tasks *rtp)
- 		if (ret)
- 			break;  // Count reached zero.
- 		// Stall warning time, so make a list of the offenders.
-+		rcu_read_lock();
- 		for_each_process_thread(g, t)
- 			if (READ_ONCE(t->trc_reader_special.b.need_qs))
- 				trc_add_holdout(t, &holdouts);
-+		rcu_read_unlock();
- 		firstreport = true;
- 		list_for_each_entry_safe(t, g, &holdouts, trc_holdout_list) {
- 			if (READ_ONCE(t->trc_reader_special.b.need_qs))
--- 
-2.9.5
-
+The check like this belongs in some library,
+but making libbpf depend on dwarf is not great.
+I think we're at the point where we need to break libbpf
+into many libraries. This one could be called libbpftrace.
+It would potentially include symbolizer and other dwarf
+related operations.
+Such inlining check would be good to do not only for d_path
+allowlist, but for any kprobe/fentry function.
