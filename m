@@ -2,72 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42EA26E5CC
-	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 21:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F4C26E5A0
+	for <lists+bpf@lfdr.de>; Thu, 17 Sep 2020 21:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgIQT4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 15:56:32 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:47891 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727689AbgIQOpd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 10:45:33 -0400
-X-Greylist: delayed 527 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 10:44:08 EDT
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Bsfc51bKlz1qrfr;
-        Thu, 17 Sep 2020 16:34:13 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Bsfc50dRNz1qxpD;
-        Thu, 17 Sep 2020 16:34:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id 5BBP84tpYrRa; Thu, 17 Sep 2020 16:34:12 +0200 (CEST)
-X-Auth-Info: 9jeFQNW3jEEEH5nEGLwfVfPMZp09Oa4fJ4yvtcjDHLxUxZpFdLTFXHuxHVOi8s+j
-Received: from igel.home (ppp-46-244-188-79.dynamic.mnet-online.de [46.244.188.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 17 Sep 2020 16:34:11 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 0E03B2C2894; Thu, 17 Sep 2020 16:34:11 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rosen Penev <rosenp@gmail.com>, bpf <bpf@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH v2] powerpc: fix EDEADLOCK redefinition error in
- uapi/asm/errno.h
-References: <20200916074214.995128-1-Tony.Ambardar@gmail.com>
-        <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
-        <87363gpqhz.fsf@mpe.ellerman.id.au>
-        <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A__37056.5000850306$1600351707$gmane$org@mail.gmail.com>
-X-Yow:  Yow!  Am I cleansed yet?!
-Date:   Thu, 17 Sep 2020 16:34:11 +0200
-In-Reply-To: <CAK8P3a3FVoDzNb1TOA6cRQDdEc+st7KkBL70t0FeStEziQG4+A__37056.5000850306$1600351707$gmane$org@mail.gmail.com>
-        (Arnd Bergmann's message of "Thu, 17 Sep 2020 16:01:27 +0200")
-Message-ID: <87h7rw321o.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1727792AbgIQO6W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 10:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727674AbgIQO6M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 10:58:12 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975A2C06178B;
+        Thu, 17 Sep 2020 07:58:09 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id a22so2274423ljp.13;
+        Thu, 17 Sep 2020 07:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ewdb/5Luu0M1Zlvd5mbxKVbE7mouw/5QSqBvh/Tsm34=;
+        b=stLXKjGAsmeHxLLHNtha9cMqFeZVf4hQkQzUwa8WbmDPPvPuWlFY0mn3aNGLg28Yyz
+         JCxQ32eETI53110Z0gkaQPJ2sXGxcAlD08ywBOuh4+nMSpe6oJSirP/ydLw3h0ID8sWH
+         QlnXXvqTSreZ62s4CrcAx4iT3BHiROSAyD6n+3I2YOybQ+uP9td1SGFezcRaSjb1eSxz
+         2LyTWtlQCHj12S7ENTKAooKtXHRwEkaLnhVRJa4Ja1ZLbJylmOQp+/Kly9wwYhq6WJ40
+         Aeym7wVJTfujkGTXsWAHTT8mCIxQi36mXcz52cs7ewwZgLLcQZqqYoN5HlosnaJjNKAU
+         0FRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ewdb/5Luu0M1Zlvd5mbxKVbE7mouw/5QSqBvh/Tsm34=;
+        b=E+5eNNwauiQj8JW+55U3xp4CPkxa/8X6RLtE4isohT0sqB3oKDse3DUkm2envrxbCS
+         sUqCQHCGF1tNdqb+R934Pol5C6fXfbsahdaHL66fwXoeN5bArdBkjg3xevzTqL835zPm
+         JRIWTBi6jIG47hVF7jpZAx7rfkHxHXUWYg9K3F0kMl5GPafmhiBAM+zpWeDjkgOSHGdP
+         2KcRbFBuTGIK6kBcRhmw0vQJlQCnYzWSSP9AxRLk0O5SCI9Ie2eEAQyNm6qKmzuS4J1f
+         1ICsSaxO5KowRzupq37g8xeg7/5Xj1HjTTiMQlgk1UYrmevdfL2mgD+RIxkkRMvaShli
+         4TSA==
+X-Gm-Message-State: AOAM530Hbn1ARUK/zHe7tOiNHHU/P2EGn13cQd88RSSEs3YHBAaxt2sK
+        YT/3S8OmE6b1d8W6v8LiIZBfJnhEZR23Ul0G7hQ=
+X-Google-Smtp-Source: ABdhPJwN5AmQBJJ2AO+EFJ66Tw4J2dPtIALeak4KqJXY5jpmOy7HWt6GfFR1+fP1XxI0NpLo5TsZeSAuHlEAZUXa0+E=
+X-Received: by 2002:a2e:808f:: with SMTP id i15mr9643911ljg.51.1600354687981;
+ Thu, 17 Sep 2020 07:58:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <cover.1600328701.git.mchehab+huawei@kernel.org> <442b27cc035ab7f9e5e000f2ac44ce88ea8b16a6.1600328701.git.mchehab+huawei@kernel.org>
+In-Reply-To: <442b27cc035ab7f9e5e000f2ac44ce88ea8b16a6.1600328701.git.mchehab+huawei@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 17 Sep 2020 07:57:56 -0700
+Message-ID: <CAADnVQJr+FAnRCtKxpi97qw1aGZe6D9g-VHjjWLfyQbeEZFYAQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] docs: bpf: ringbuf.rst: fix a broken cross-reference
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sep 17 2020, Arnd Bergmann wrote:
+On Thu, Sep 17, 2020 at 1:04 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Sphinx warns about a broken cross-reference:
+>
+>         Documentation/bpf/ringbuf.rst:194: WARNING: Unknown target name: "bench_ringbufs.c".
+>
+> It seems that the original idea were to add a reference for this file:
+>
+>         tools/testing/selftests/bpf/benchs/bench_ringbufs.c
+>
+> However, this won't work as such file is not part of the
+> documentation output dir. It could be possible to use
+> an extension like interSphinx in order to make external
+> references to be pointed to some website (like kernel.org),
+> where the file is stored, but currently we don't use it.
+>
+> It would also be possible to include this file as a
+> literal include, placing it inside Documentation/bpf.
+>
+> For now, let's take the simplest approach: just drop
+> the "_" markup at the end of the reference. This
+> should solve the warning, and it sounds quite obvious
+> that the file to see is at the Kernel tree.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/bpf/ringbuf.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/bpf/ringbuf.rst b/Documentation/bpf/ringbuf.rst
+> index 4d4f3bcb1477..6a615cd62bda 100644
+> --- a/Documentation/bpf/ringbuf.rst
+> +++ b/Documentation/bpf/ringbuf.rst
+> @@ -197,7 +197,7 @@ a self-pacing notifications of new data being availability.
+>  being available after commit only if consumer has already caught up right up to
+>  the record being committed. If not, consumer still has to catch up and thus
+>  will see new data anyways without needing an extra poll notification.
+> -Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbufs.c_) show that
+> +Benchmarks (see tools/testing/selftests/bpf/benchs/bench_ringbufs.c) show that
 
-> The errno man page says they are supposed to be synonyms,
-> and glibc defines it that way, while musl uses the numbers
-> from the kernel.
-
-glibc also uses whatever the kernel defines.
-
-Andreas.
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+This fix already landed in bpf and net trees.
+Did you miss it?
