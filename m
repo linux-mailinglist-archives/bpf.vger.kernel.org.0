@@ -2,159 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5428F26FB63
-	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 13:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F48D26FC33
+	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 14:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726115AbgIRLXv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 18 Sep 2020 07:23:51 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24418 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726064AbgIRLXv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Sep 2020 07:23:51 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-CM1PxpJcOxmNqaadFh7ddg-1; Fri, 18 Sep 2020 07:23:43 -0400
-X-MC-Unique: CM1PxpJcOxmNqaadFh7ddg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A446510BBEE1;
-        Fri, 18 Sep 2020 11:23:41 +0000 (UTC)
-Received: from krava.redhat.com (ovpn-114-24.ams2.redhat.com [10.36.114.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1837D78818;
-        Fri, 18 Sep 2020 11:23:38 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
+        id S1726539AbgIRMMe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Sep 2020 08:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgIRMMd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Sep 2020 08:12:33 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAA9C061788
+        for <bpf@vger.kernel.org>; Fri, 18 Sep 2020 05:12:33 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id e22so5854781edq.6
+        for <bpf@vger.kernel.org>; Fri, 18 Sep 2020 05:12:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbLoMvbCVZR7v2qr1uLu68maulfUQM+3TJzgKeP8L7U=;
+        b=ARLlP/MI0ddfuPiVcUweomzB1eTSRRV+yworw6SVPrtnqjFn6hOLe3fLWaLcaMkXwe
+         enMhMKYrQQr5fEc0mb+IwCxK8QepcWsINr9KN8R1XNYOm841LzFb6GDySIeZRQNz6X11
+         ObJbBnLjmkABvmgRrdLKXSodve6GlaxbVn61a4QhINKVKHCS+R+Hn5LvEzy4TafoK5OI
+         oYS8Ph48ZVpAd9DdKOLU8Sa/5e5Vt3cjTmZ73j2pWpe3ZHg/XqQtvPyMYnYjz6lMdLNC
+         RtM+C+cDCJWWuHRb+e/4a35WlkbWRvJEPLEJsUs1+yXnZl4v2PRwEbvoG1jw9Aj07QaQ
+         tAfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CbLoMvbCVZR7v2qr1uLu68maulfUQM+3TJzgKeP8L7U=;
+        b=ZzmQw/2bZqTJrvfARs6e9tWEO+Lyf8i+Va+4BK7TeKAa/as+OWdM9Fv43I3BQlOXEs
+         zM6OUnVroCoonreTLGUT6j6wnbM8k7ETTBe0ToiT8LFVguFu0/KS4bOBTgnis30aTo44
+         smnTkQk4T9MK+gYsx8RQpy3nrO88HehPURVlKDY2laBR1QgOUXdjtI3ZBDQq2k98Ju4S
+         XiBYR3vSK5bXSqr6TS36IF9ITzbu1zm/OCz56vDOum0EhwTGrvTLMoM464Tn/pek5lyt
+         O4ClYgquO0HJqVfD/15+LmR42yotkjm9tpyLzzKIZWvCkZZ4/I/IDljz03wj1qcaXb7R
+         nsbw==
+X-Gm-Message-State: AOAM531dnPY/wsud3mYCo9PAonM+/l9oesNaPuc7u5TA9MeMKo7Yy0ds
+        OyjBCCn+HV9veo9hvuMATxK/3Q==
+X-Google-Smtp-Source: ABdhPJzDfSsq2yp8nRiSvTZJdAK37gQFaNJFTMbYKv3ygzB+9nz9o2282pJYtE+ZnNoHhQFk/SUYtg==
+X-Received: by 2002:a50:f687:: with SMTP id d7mr39717142edn.353.1600431152011;
+        Fri, 18 Sep 2020 05:12:32 -0700 (PDT)
+Received: from localhost.localdomain ([87.66.33.240])
+        by smtp.gmail.com with ESMTPSA id h64sm2084555edd.50.2020.09.18.05.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Sep 2020 05:12:31 -0700 (PDT)
+From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [PATCHv2 bpf-next] selftests/bpf: Fix stat probe in d_path test
-Date:   Fri, 18 Sep 2020 13:23:38 +0200
-Message-Id: <20200918112338.2618444-1-jolsa@kernel.org>
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 1/5] bpf: expose is_mptcp flag to bpf_tcp_sock
+Date:   Fri, 18 Sep 2020 14:10:40 +0200
+Message-Id: <20200918121046.190240-1-nicolas.rybowski@tessares.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some kernels builds might inline vfs_getattr call within fstat
-syscall code path, so fentry/vfs_getattr trampoline is not called.
+is_mptcp is a field from struct tcp_sock used to indicate that the
+current tcp_sock is part of the MPTCP protocol.
 
-Alexei suggested [1] we should use security_inode_getattr instead,
-because it's less likely to get inlined. Using this idea also for
-vfs_truncate (replaced with security_path_truncate) and vfs_fallocate
-(replaced with security_file_permission).
+In this protocol, a first socket (mptcp_sock) is created with
+sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
+isn't directly on the wire. This is the role of the subflow (kernel)
+sockets which are classical tcp_sock with sk_protocol set to
+IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
+sockets is the is_mptcp field from tcp_sock.
 
-Keeping dentry_open and filp_close, because they are in their own
-files, so unlikely to be inlined, but in case they are, adding
-security_file_open.
+Such an exposure in BPF is thus required to be able to differentiate
+plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
+programs.
 
-Switching the d_path test stat trampoline to security_inode_getattr.
+The choice has been made to silently pass the case when CONFIG_MPTCP is
+unset by defaulting is_mptcp to 0 in order to make BPF independent of
+the MPTCP configuration. Another solution is to make the verifier fail
+in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
+'#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
+will not run if MPTCP is not set.
 
-Adding flags that indicate trampolines were called and failing
-the test if any of them got missed, so it's easier to identify
-the issue next time.
+An example use-case is provided in
+https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
 
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-[1] https://lore.kernel.org/bpf/CAADnVQJ0FchoPqNWm+dEppyij-MOvvEG_trEfyrHdabtcEuZGg@mail.gmail.com/
-Fixes: e4d1af4b16f8 ("selftests/bpf: Add test for d_path helper")
-Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
 ---
-v2 changes:
-  - replaced vfs_* function with security_* in d_path allow list
-    vfs_truncate  -> security_path_truncate
-    vfs_fallocate -> security_file_permission
-    vfs_getattr   -> security_inode_getattr
-  - added security_file_open to d_path allow list
-  - split verbose output for trampoline flags
+ include/uapi/linux/bpf.h       | 1 +
+ net/core/filter.c              | 9 ++++++++-
+ tools/include/uapi/linux/bpf.h | 1 +
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
- kernel/trace/bpf_trace.c                        |  7 ++++---
- tools/testing/selftests/bpf/prog_tests/d_path.c | 10 ++++++++++
- tools/testing/selftests/bpf/progs/test_d_path.c |  9 ++++++++-
- 3 files changed, 22 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index b2a5380eb187..e24323d72cac 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1118,10 +1118,11 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
- }
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index a22812561064..351b3d0a6ca8 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4067,6 +4067,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
  
- BTF_SET_START(btf_allowlist_d_path)
--BTF_ID(func, vfs_truncate)
--BTF_ID(func, vfs_fallocate)
-+BTF_ID(func, security_path_truncate)
-+BTF_ID(func, security_file_permission)
-+BTF_ID(func, security_inode_getattr)
-+BTF_ID(func, security_file_open)
- BTF_ID(func, dentry_open)
--BTF_ID(func, vfs_getattr)
- BTF_ID(func, filp_close)
- BTF_SET_END(btf_allowlist_d_path)
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-index fc12e0d445ff..0a577a248d34 100644
---- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-+++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-@@ -120,6 +120,16 @@ void test_d_path(void)
- 	if (err < 0)
- 		goto cleanup;
- 
-+	if (CHECK(!bss->called_stat,
-+		  "stat",
-+		  "trampoline for security_inode_getattr was not called\n"))
-+		goto cleanup;
-+
-+	if (CHECK(!bss->called_close,
-+		  "close",
-+		  "trampoline for filp_close was not called\n"))
-+		goto cleanup;
-+
- 	for (int i = 0; i < MAX_FILES; i++) {
- 		CHECK(strncmp(src.paths[i], bss->paths_stat[i], MAX_PATH_LEN),
- 		      "check",
-diff --git a/tools/testing/selftests/bpf/progs/test_d_path.c b/tools/testing/selftests/bpf/progs/test_d_path.c
-index 61f007855649..84e1f883f97b 100644
---- a/tools/testing/selftests/bpf/progs/test_d_path.c
-+++ b/tools/testing/selftests/bpf/progs/test_d_path.c
-@@ -15,7 +15,10 @@ char paths_close[MAX_FILES][MAX_PATH_LEN] = {};
- int rets_stat[MAX_FILES] = {};
- int rets_close[MAX_FILES] = {};
- 
--SEC("fentry/vfs_getattr")
-+int called_stat = 0;
-+int called_close = 0;
-+
-+SEC("fentry/security_inode_getattr")
- int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
- 	     __u32 request_mask, unsigned int query_flags)
+ struct bpf_sock_tuple {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index d266c6941967..dab48528dceb 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5837,7 +5837,7 @@ bool bpf_tcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 				  struct bpf_insn_access_aux *info)
  {
-@@ -23,6 +26,8 @@ int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
- 	__u32 cnt = cnt_stat;
- 	int ret;
+ 	if (off < 0 || off >= offsetofend(struct bpf_tcp_sock,
+-					  icsk_retransmits))
++					  is_mptcp))
+ 		return false;
  
-+	called_stat = 1;
-+
- 	if (pid != my_pid)
- 		return 0;
+ 	if (off % size != 0)
+@@ -5971,6 +5971,13 @@ u32 bpf_tcp_sock_convert_ctx_access(enum bpf_access_type type,
+ 	case offsetof(struct bpf_tcp_sock, icsk_retransmits):
+ 		BPF_INET_SOCK_GET_COMMON(icsk_retransmits);
+ 		break;
++	case offsetof(struct bpf_tcp_sock, is_mptcp):
++#ifdef CONFIG_MPTCP
++		BPF_TCP_SOCK_GET_COMMON(is_mptcp);
++#else
++		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
++#endif
++		break;
+ 	}
  
-@@ -42,6 +47,8 @@ int BPF_PROG(prog_close, struct file *file, void *id)
- 	__u32 cnt = cnt_close;
- 	int ret;
+ 	return insn - insn_buf;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index a22812561064..351b3d0a6ca8 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4067,6 +4067,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
  
-+	called_close = 1;
-+
- 	if (pid != my_pid)
- 		return 0;
- 
+ struct bpf_sock_tuple {
 -- 
-2.26.2
+2.28.0
 
