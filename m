@@ -2,132 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8B826F006
-	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 04:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E665C26F4AE
+	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 05:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbgIRCj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 22:39:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728679AbgIRCLt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:11:49 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0C98235F8;
-        Fri, 18 Sep 2020 02:11:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600395108;
-        bh=1+bDAC057cRqevoqUn1yDT8QoWbfQBjWAA7gtYY30kk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QabVe6uJTFui/dWjwMZ0EjBy2YktXTylP7Tgd8Xy/7gKeGTuEEBUa4yUflYO/0I+Q
-         xRmmhJcEe9juaq7dHOhwr+K2fQkgpSi+ENagfUmEYWKwZMGw/2xjATX5Po+6qLiizO
-         XhcKQxmTw6r9f6JcYCV9D7OqFEKTk+OfFl0zABno=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        kp singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 183/206] perf metricgroup: Free metric_events on error
-Date:   Thu, 17 Sep 2020 22:07:39 -0400
-Message-Id: <20200918020802.2065198-183-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
-References: <20200918020802.2065198-1-sashal@kernel.org>
+        id S1726218AbgIRD0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 23:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgIRD0s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 23:26:48 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D96C06174A;
+        Thu, 17 Sep 2020 20:26:48 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s205so3830488lja.7;
+        Thu, 17 Sep 2020 20:26:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ul5zV1bRKVhaboMGt4RIwflaVUDt2n5N8zmSNNGL//Q=;
+        b=Xbh29cptn7V8etz1DmYG2B8mEtgeeJJK3HUvkLKDpWtHIm+G3EduvKJEkxeS8+dE2D
+         gessXLggtGUpsHT2mU/74TsWh+eeytAeXExsLkL0uWwVxfu2DC+YRNRsYXMucQs+OVzY
+         ZXjvJep2NoLlhcdQ9nazv9qgm1bf3uJjAASL7T55VEm8WHny7U8snKPZgGN/3s2BNBaG
+         Rz4bd+R/CAH9Z1XrWzEgqgbZjWO0WXuY07i805EdiLpJ2FZQ9j+zIdbUbiVq6Nk0sP1c
+         eAuYu/liVug0/oB+deF8qNq6najOIjfIWmmYVReUe4yeawxFR0062R/xZwP7cfFPZZtP
+         IBHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ul5zV1bRKVhaboMGt4RIwflaVUDt2n5N8zmSNNGL//Q=;
+        b=hCqI6VYPgpaO4YzLhehL4E5aiHCtFt7tPB5S4efi6muauyUc7SBnQXwXXi5fXbImeQ
+         B1FW405bJG+e57M4swDqtkZ8yjn+t1TgRFWV1VraHN176OqtFKl7fuVDaQUekCXSCRBf
+         0O1BC82ZBiHPUxTKwPjPGTxMUTSu62F6yMCvRcNvCCv0ytuAVDdD7+zo2zXypo18SFf6
+         1QSCDVh0VXEbTtjdBWzka2oWik90SPSTJe48sTR3GcDASprPtBpPY9j+6js0lILJFWCX
+         BxewAEg01n7XSp+RG2/r9Oy6SUIFAttK6HOWvw1Mwb93KZPNOOPf8DcN4y6FmPP5sDtM
+         OfNw==
+X-Gm-Message-State: AOAM532tbAfxcyYAJIfR9YquxHng/vVL5LjqN+62Xo0dIRPRElqoIXSW
+        8tcUmOL7pSuNb5EqNi4tD9H/d5gl+VIEkP+cJPI=
+X-Google-Smtp-Source: ABdhPJz5pboofniwqNeviqdOXxDp3qsHvEIs0H2zqpQwjZ+LfvN8HQhlNmKbZXFd17UKmc2Rct/csfXJbDccr6g62A0=
+X-Received: by 2002:a2e:808f:: with SMTP id i15mr10349752ljg.51.1600399606517;
+ Thu, 17 Sep 2020 20:26:46 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200916211010.3685-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20200916211010.3685-1-maciej.fijalkowski@intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 17 Sep 2020 20:26:34 -0700
+Message-ID: <CAADnVQLEYHZLeu-d4nV5Px6t+tVtYEgg8AfPE5-GwAS1uizc0w@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 0/7] bpf: tailcalls in BPF subprograms
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+On Wed, Sep 16, 2020 at 2:16 PM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> Changelog:
+>
+> v7->v8:
+> - teach bpf_patch_insn_data to adjust insn_idx of tailcall insn
+> - address case of clearing tail call counter when bpf2bpf with tailcalls
+>   are mixed
+> - drop unnecessary checks against cbpf in JIT
+> - introduce more tailcall_bpf2bpf[X] selftests that are making sure the
+>   combination of tailcalls with bpf2bpf calls works correctly
+> - add test cases to test_verifier to make sure logic from
+>   check_max_stack_depth that limits caller's stack depth down to 256 is
+>   correct
+> - move the main patch to appear after the one that limits the caller's
+>   stack depth so that 'has_tail_call' can be used by 'tail_call_reachable'
+>   logic
 
-[ Upstream commit a159e2fe89b4d1f9fb54b0ae418b961e239bf617 ]
+Thanks a lot for your hard work on this set. 5 month effort!
+I think it's a huge milestone that will enable cilium, cloudflare, katran to
+use bpf functions. Removing always_inline will improve performance.
+Switching to global functions with function-by-function verification
+will drastically improve program load times.
+libbpf has full support for subprogram composition and call relocations.
+Until now these verifier and libbpf features were impossible to use in XDP
+programs, since most of them use tail_calls.
+It's great to see all these building blocks finally coming together.
 
-Avoid a simple memory leak.
+I've applied the set with few changes.
+In patch 4 I've removed ifdefs and redundant ().
+In patch 5 removed redundant !tail_call_reachable check.
+In patch 6 replaced CONFIG_JIT_ALWAYS_ON dependency with
+jit_requested && IS_ENABLED(CONFIG_X86_64).
+It's more user friendly.
+I also added patch 7 that checks that ld_abs and tail_call are only
+allowed in subprograms that return 'int'.
+I felt that the fix is simple enough, so I just pushed it, since
+without it the set is not safe. Please review it here:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=09b28d76eac48e922dc293da1aa2b2b85c32aeee
+I'll address any issues in the followups.
+Because of the above changes I tweaked patch 8 to increase test coverage
+with ld_abs and combination of global/static subprogs.
+Also did s/__attribute__((noinline))/__noinline/.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kajol Jain <kjain@linux.ibm.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Kim Phillips <kim.phillips@amd.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: kp singh <kpsingh@chromium.org>
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200508053629.210324-10-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/metricgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+John and Daniel,
+I wasn't able to test it on cilium programs.
+When you have a chance please give it a thorough run.
+tail_call poke logic is delicate.
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 8b3dafe3fac3a..6dcc6e1182a54 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -171,6 +171,7 @@ static int metricgroup__setup_events(struct list_head *groups,
- 		if (!evsel) {
- 			pr_debug("Cannot resolve %s: %s\n",
- 					eg->metric_name, eg->metric_expr);
-+			free(metric_events);
- 			continue;
- 		}
- 		for (i = 0; i < eg->idnum; i++)
-@@ -178,11 +179,13 @@ static int metricgroup__setup_events(struct list_head *groups,
- 		me = metricgroup__lookup(metric_events_list, evsel, true);
- 		if (!me) {
- 			ret = -ENOMEM;
-+			free(metric_events);
- 			break;
- 		}
- 		expr = malloc(sizeof(struct metric_expr));
- 		if (!expr) {
- 			ret = -ENOMEM;
-+			free(metric_events);
- 			break;
- 		}
- 		expr->metric_expr = eg->metric_expr;
--- 
-2.25.1
+Lorenz,
+if you can test it on cloudflare progs would be awesome.
 
+Thanks a lot everyone!
