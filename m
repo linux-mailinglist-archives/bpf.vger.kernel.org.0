@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544E626F1EE
-	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 04:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8B826F006
+	for <lists+bpf@lfdr.de>; Fri, 18 Sep 2020 04:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbgIRCyw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Sep 2020 22:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57464 "EHLO mail.kernel.org"
+        id S1727530AbgIRCj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Sep 2020 22:39:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727902AbgIRCHS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:18 -0400
+        id S1728679AbgIRCLt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:11:49 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A20DF23888;
-        Fri, 18 Sep 2020 02:07:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0C98235F8;
+        Fri, 18 Sep 2020 02:11:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394837;
-        bh=uPu3azdMyxArLR0MygGlpcIAE+zcq00+IfHIF4qjxpk=;
+        s=default; t=1600395108;
+        bh=1+bDAC057cRqevoqUn1yDT8QoWbfQBjWAA7gtYY30kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AJR+uXWi6EOF6ctkHz/+jDw5GIzLmwVXqpsqFD25uLy66ib3cFclk3K4Rm7Vr29S8
-         wxJLXg2xhUJiFeD4FVCWczHHbncpfbLkcq7HgflZEazg1NT2ohw7MWYtn7tf7o0pbf
-         Svr6O5yM9ZgRcGUCAXJo5ngGQNRkKp/4/H76lM14=
+        b=QabVe6uJTFui/dWjwMZ0EjBy2YktXTylP7Tgd8Xy/7gKeGTuEEBUa4yUflYO/0I+Q
+         xRmmhJcEe9juaq7dHOhwr+K2fQkgpSi+ENagfUmEYWKwZMGw/2xjATX5Po+6qLiizO
+         XhcKQxmTw6r9f6JcYCV9D7OqFEKTk+OfFl0zABno=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ian Rogers <irogers@google.com>,
@@ -50,12 +50,12 @@ Cc:     Ian Rogers <irogers@google.com>,
         kp singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 296/330] perf metricgroup: Free metric_events on error
-Date:   Thu, 17 Sep 2020 22:00:36 -0400
-Message-Id: <20200918020110.2063155-296-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 183/206] perf metricgroup: Free metric_events on error
+Date:   Thu, 17 Sep 2020 22:07:39 -0400
+Message-Id: <20200918020802.2065198-183-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
-References: <20200918020110.2063155-1-sashal@kernel.org>
+In-Reply-To: <20200918020802.2065198-1-sashal@kernel.org>
+References: <20200918020802.2065198-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -103,10 +103,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+)
 
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 940a6e7a68549..7753c3091478a 100644
+index 8b3dafe3fac3a..6dcc6e1182a54 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -174,6 +174,7 @@ static int metricgroup__setup_events(struct list_head *groups,
+@@ -171,6 +171,7 @@ static int metricgroup__setup_events(struct list_head *groups,
  		if (!evsel) {
  			pr_debug("Cannot resolve %s: %s\n",
  					eg->metric_name, eg->metric_expr);
@@ -114,7 +114,7 @@ index 940a6e7a68549..7753c3091478a 100644
  			continue;
  		}
  		for (i = 0; i < eg->idnum; i++)
-@@ -181,11 +182,13 @@ static int metricgroup__setup_events(struct list_head *groups,
+@@ -178,11 +179,13 @@ static int metricgroup__setup_events(struct list_head *groups,
  		me = metricgroup__lookup(metric_events_list, evsel, true);
  		if (!me) {
  			ret = -ENOMEM;
