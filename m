@@ -2,97 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09866270AD7
-	for <lists+bpf@lfdr.de>; Sat, 19 Sep 2020 07:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1263270B89
+	for <lists+bpf@lfdr.de>; Sat, 19 Sep 2020 09:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgISF1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Sep 2020 01:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgISF1a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Sep 2020 01:27:30 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEDFC0613CF
-        for <bpf@vger.kernel.org>; Fri, 18 Sep 2020 22:27:30 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y6so4071876plt.9
-        for <bpf@vger.kernel.org>; Fri, 18 Sep 2020 22:27:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KMSzGfjGixHCKv2aYBC0APFqGV0E9fiwwPB5IqJ32Q4=;
-        b=PtdpD6dXrKk3CXd3giAhaYLL1FTY31noSFL7KYqO7izJK+t+FjmHlW02sGTXtsLogm
-         QQr3bMrOz7nA3Fi9hpHgY9ArYA0VOdQL8ztx2SQMXdKMohXjaC/gydHhkmWHIICbtBCG
-         LvCsMcdFsLX3ZwEIJL+JDvsfWxUzt+enC/tspFwc/Qjeh5mp6TwmXy60W3umVvMWS5zr
-         zH6Do9h0bO84P+vSwGN8tCQTEvl6FvuRqyrg5FqexNJuIxAjTcnLr657gFNdLmPvqkt/
-         PWG/TJtivvjgRCFYgh6ip4TaeiHre6alAdvCbzjBJpaONUIK/asS24RDqDMySsIuYe5c
-         DaTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KMSzGfjGixHCKv2aYBC0APFqGV0E9fiwwPB5IqJ32Q4=;
-        b=tm4lyO5ubexmf5sCcE1bo70/FbEub6p89UN8+L62oHoqiz1AILsI7oYQv57QNAJJrF
-         oTTEJjzBrIyQKQmYOPSGlFtaFraK9Cjq1FbYlWShMqERSc2uS5nOOEBagV+r0PKdfYTj
-         U9ugS+Pt9iUem3qwGnsraHyuPwX6wnm6uSue/lcFoz0D399kkVAvBx9fo15PZhMa+HtH
-         nXxQpZRhEiQAUgTzN9qcdUTOQS8ccxTlbB8tSIkXjZ7w/RnrxAF9brA+xaNOV7rw6Z8w
-         6PvdA4dBBHZsqHcmCWzuBN9xoNUglqoEeCNIAnhQybpYsK4lbRIS35MIjlvXCzFGmEm/
-         hSGw==
-X-Gm-Message-State: AOAM533x31SjlVCiqTz8Rz4kq5iPPef69dlF3HQwsi2tz96tUALH+5Ns
-        DCicjc3XDpplfn3TLT5jWddeG7ONCKmSYdqn6car2g==
-X-Google-Smtp-Source: ABdhPJyF1TJLjCU3zrC+qxcmSiS5HC4qECD/KEf7+HRA6aBzkt0LjqanwCxz+DfrCEjuA94/VLDpDyHYefUZNiuJrGI=
-X-Received: by 2002:a17:90a:b78b:: with SMTP id m11mr16049904pjr.13.1600493250327;
- Fri, 18 Sep 2020 22:27:30 -0700 (PDT)
+        id S1726368AbgISHpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Sep 2020 03:45:16 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13723 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726041AbgISHpO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Sep 2020 03:45:14 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id DCEF03F5BB19D8BCD646;
+        Sat, 19 Sep 2020 15:45:11 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Sat, 19 Sep 2020
+ 15:45:05 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <grygorii.strashko@ti.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <hawk@kernel.org>, <john.fastabend@gmail.com>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <kpsingh@chromium.org>, <linux-omap@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH net-next] net: ethernet: ti: cpsw: use true,false for bool variables
+Date:   Sat, 19 Sep 2020 15:46:17 +0800
+Message-ID: <20200919074617.3460645-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20200917074453.20621-1-songmuchun@bytedance.com> <CAPhsuW7W0Cm_eyEY8pDGwMqo8pM3OWAUYUu8PyUqcUxPGLX3DA@mail.gmail.com>
-In-Reply-To: <CAPhsuW7W0Cm_eyEY8pDGwMqo8pM3OWAUYUu8PyUqcUxPGLX3DA@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 19 Sep 2020 13:26:53 +0800
-Message-ID: <CAMZfGtWVgZ9CojskbN5bnex-z4=NLux0BrODVk6eG+=kfYjfBw@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH] bpf: Fix potential call
- bpf_link_free() in atomic context
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 6:37 AM Song Liu <song@kernel.org> wrote:
->
-> On Thu, Sep 17, 2020 at 12:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > The in_atomic macro cannot always detect atomic context. In particular,
-> > it cannot know about held spinlocks in non-preemptible kernels. Although,
-> > there is no user call bpf_link_put() with holding spinlock now. Be the
-> > safe side, we can avoid this in the feature.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
->
-> This is a little weird, but I guess that is OK, as bpf_link_put() is
-> not in the critical
+This addresses the following coccinelle warning:
 
-Yeah, bpf_link_put() is OK now because there is no user call it
-with a holding spinlock.
+drivers/net/ethernet/ti/cpsw.c:1599:2-17: WARNING: Assignment of 0/1 to
+bool variable
+drivers/net/ethernet/ti/cpsw.c:1300:2-17: WARNING: Assignment of 0/1 to
+bool variable
 
-> path. Is the plan to eliminate in_atomic() (as much as possible)?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/net/ethernet/ti/cpsw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Most other users of in_atomic() just for WARN_ON. It seems
-there is no problem :).
+diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
+index 9b425f184f3c..9fd1f77190ad 100644
+--- a/drivers/net/ethernet/ti/cpsw.c
++++ b/drivers/net/ethernet/ti/cpsw.c
+@@ -1291,7 +1291,7 @@ static int cpsw_probe_dt(struct cpsw_platform_data *data,
+ 	data->mac_control = prop;
+ 
+ 	if (of_property_read_bool(node, "dual_emac"))
+-		data->dual_emac = 1;
++		data->dual_emac = true;
+ 
+ 	/*
+ 	 * Populate all the child nodes here...
+@@ -1590,7 +1590,7 @@ static int cpsw_probe(struct platform_device *pdev)
+ 
+ 	soc = soc_device_match(cpsw_soc_devices);
+ 	if (soc)
+-		cpsw->quirk_irq = 1;
++		cpsw->quirk_irq = true;
+ 
+ 	data = &cpsw->data;
+ 	cpsw->slaves = devm_kcalloc(dev,
+-- 
+2.25.4
 
-
-
-
-
---
-Yours,
-Muchun
