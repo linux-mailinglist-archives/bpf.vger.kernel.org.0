@@ -2,211 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB9B270DBC
-	for <lists+bpf@lfdr.de>; Sat, 19 Sep 2020 13:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371FB2710A6
+	for <lists+bpf@lfdr.de>; Sat, 19 Sep 2020 23:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbgISLuF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Sep 2020 07:50:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37070 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726457AbgISLuC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 19 Sep 2020 07:50:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600516198;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=utfMK0fpz+Di6YKgONWOEtGJeoQeNvRbM0wd8gaCZ8U=;
-        b=hPgDz2pyoVrfz2ows2uk9+c7x0NIrespsxXz5YR46cGecbzU0ZmSYPWxW942VVNoD7/OGB
-        b6B7f7OyFyxOdV3Q2A0AJ2IqcTUfdhQT0AZuFI1FYfX0x8IK3evnutBfxEbaWnCnNjrhFv
-        ddXuAXZ+IVFDbTL6CMo4YbEplYQwpHM=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477--SC_94gMNJaeVCA9-wz5vQ-1; Sat, 19 Sep 2020 07:49:57 -0400
-X-MC-Unique: -SC_94gMNJaeVCA9-wz5vQ-1
-Received: by mail-ej1-f72.google.com with SMTP id b17so3141439ejb.20
-        for <bpf@vger.kernel.org>; Sat, 19 Sep 2020 04:49:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=utfMK0fpz+Di6YKgONWOEtGJeoQeNvRbM0wd8gaCZ8U=;
-        b=p5avUyZdXTeF+bqiAKsyHP0oI62X1Y3rND3SG9O4BTSO3NwwY4j9eTwqfuS5nDsupn
-         EGQxwTd61rwhrYA5spAdeQvaPuqUpvzEa03XcHu5ljOdPNlIkhMhttwqG9Dl2Ua8YGij
-         PLzPN7mPHD4Q6mAUdujUhbnCoE8YqtkIuxX41yRK6He54Fe9qj8nb4IHIyagFtM8H5UI
-         s/xOm41Y1/hZmtoSLcxsUAkynFpO0gsGvWTVWYd6e2Z+5p6dYCW9on2S3rimFIeSwz4T
-         vwzntr5Cddnh1nLUAMbQzog3sJ2JmLw6LDyD765tEljJoy1CEoIG005J1FF9Svy7FPzZ
-         l2PA==
-X-Gm-Message-State: AOAM530tsjHpPsJjAZpMKSiTZ9wM3RLkvQPJ70fdpOuoZYHWjdnnG0Pv
-        hVR01sdQjbAGbEJ/spUQIh5ejJoqdj+Uiyiwgb3e4P4qAoNnn3BbGa+YW6zRFhuWeOUX7CNRyS6
-        WtjoQAsJdVhyP
-X-Received: by 2002:a17:906:7248:: with SMTP id n8mr40167575ejk.160.1600516195311;
-        Sat, 19 Sep 2020 04:49:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwET4wLasS4GyN4HhrrhJC65BBFerQhuAVWgNzLqhJ7YH2ZyMXgBmViYW56KvvkEBeUQAEFFQ==
-X-Received: by 2002:a17:906:7248:: with SMTP id n8mr40167551ejk.160.1600516194925;
-        Sat, 19 Sep 2020 04:49:54 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id z23sm4271334eja.29.2020.09.19.04.49.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 04:49:54 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0E336183A98; Sat, 19 Sep 2020 13:49:54 +0200 (CEST)
-Subject: [PATCH bpf-next v7 10/10] selftests: Add selftest for disallowing
- modify_return attachment to freplace
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Sat, 19 Sep 2020 13:49:54 +0200
-Message-ID: <160051619397.58048.16822043567956571063.stgit@toke.dk>
-In-Reply-To: <160051618267.58048.2336966160671014012.stgit@toke.dk>
-References: <160051618267.58048.2336966160671014012.stgit@toke.dk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S1726746AbgISVZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Sep 2020 17:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbgISVZL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Sep 2020 17:25:11 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFDBC0613CE;
+        Sat, 19 Sep 2020 14:25:11 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3387111E3E4CE;
+        Sat, 19 Sep 2020 14:08:23 -0700 (PDT)
+Date:   Sat, 19 Sep 2020 14:25:09 -0700 (PDT)
+Message-Id: <20200919.142509.2118538691151426760.davem@davemloft.net>
+To:     yanaijie@huawei.com
+Cc:     grygorii.strashko@ti.com, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        kpsingh@chromium.org, linux-omap@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, hulkci@huawei.com
+Subject: Re: [PATCH net-next] net: ethernet: ti: cpsw: use true,false for
+ bool variables
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200919074617.3460645-1-yanaijie@huawei.com>
+References: <20200919074617.3460645-1-yanaijie@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sat, 19 Sep 2020 14:08:23 -0700 (PDT)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Jason Yan <yanaijie@huawei.com>
+Date: Sat, 19 Sep 2020 15:46:17 +0800
 
-This adds a selftest that ensures that modify_return tracing programs
-cannot be attached to freplace programs. The security_ prefix is added to
-the freplace program because that would otherwise let it pass the check for
-modify_return.
+> This addresses the following coccinelle warning:
+> 
+> drivers/net/ethernet/ti/cpsw.c:1599:2-17: WARNING: Assignment of 0/1 to
+> bool variable
+> drivers/net/ethernet/ti/cpsw.c:1300:2-17: WARNING: Assignment of 0/1 to
+> bool variable
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |   68 ++++++++++++++++++++
- .../selftests/bpf/progs/fmod_ret_freplace.c        |   14 ++++
- .../selftests/bpf/progs/freplace_get_constant.c    |    2 -
- 3 files changed, 83 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/fmod_ret_freplace.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index 27677e015730..6339d125ef9a 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -233,6 +233,72 @@ static void test_func_replace_multi(void)
- 				  prog_name, true, test_second_attach);
- }
- 
-+static void test_fmod_ret_freplace(void)
-+{
-+	const char *tgt_name = "./test_pkt_access.o";
-+	const char *freplace_name = "./freplace_get_constant.o";
-+	const char *fmod_ret_name = "./fmod_ret_freplace.o";
-+	struct bpf_link *freplace_link = NULL, *fmod_link = NULL;
-+	struct bpf_object *freplace_obj = NULL, *pkt_obj, *fmod_obj = NULL;
-+	struct bpf_program *prog;
-+	__u32 duration = 0;
-+	int err, pkt_fd;
-+
-+	err = bpf_prog_load(tgt_name, BPF_PROG_TYPE_UNSPEC,
-+			    &pkt_obj, &pkt_fd);
-+	/* the target prog should load fine */
-+	if (CHECK(err, "tgt_prog_load", "file %s err %d errno %d\n",
-+		  tgt_name, err, errno))
-+		return;
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-+			    .attach_prog_fd = pkt_fd,
-+			   );
-+
-+	freplace_obj = bpf_object__open_file(freplace_name, &opts);
-+	if (CHECK(IS_ERR_OR_NULL(freplace_obj), "freplace_obj_open",
-+		  "failed to open %s: %ld\n", freplace_name,
-+		  PTR_ERR(freplace_obj)))
-+		goto out;
-+
-+	err = bpf_object__load(freplace_obj);
-+	if (CHECK(err, "freplace_obj_load", "err %d\n", err))
-+		goto out;
-+
-+	prog = bpf_program__next(NULL, freplace_obj);
-+	freplace_link = bpf_program__attach_trace(prog);
-+	if (CHECK(IS_ERR(freplace_link), "freplace_attach_trace", "failed to link\n"))
-+		goto out;
-+
-+	opts.attach_prog_fd = bpf_program__fd(prog);
-+	fmod_obj = bpf_object__open_file(fmod_ret_name, &opts);
-+	if (CHECK(IS_ERR_OR_NULL(fmod_obj), "fmod_obj_open",
-+		  "failed to open %s: %ld\n", fmod_ret_name,
-+		  PTR_ERR(fmod_obj)))
-+		goto out;
-+
-+	err = bpf_object__load(fmod_obj);
-+	if (CHECK(err, "fmod_obj_load", "err %d\n", err))
-+		goto out;
-+
-+	prog = bpf_program__next(NULL, fmod_obj);
-+	fmod_link = bpf_program__attach_trace(prog);
-+	if (CHECK(!IS_ERR(fmod_link), "fmod_attach_trace",
-+		  "linking fmod_ret to freplace should fail\n"))
-+		goto out;
-+
-+out:
-+	if (!IS_ERR_OR_NULL(freplace_link))
-+		bpf_link__destroy(freplace_link);
-+	if (!IS_ERR_OR_NULL(fmod_link))
-+		bpf_link__destroy(fmod_link);
-+	if (!IS_ERR_OR_NULL(freplace_obj))
-+		bpf_object__close(freplace_obj);
-+	if (!IS_ERR_OR_NULL(fmod_obj))
-+		bpf_object__close(fmod_obj);
-+	bpf_object__close(pkt_obj);
-+}
-+
-+
- static void test_func_sockmap_update(void)
- {
- 	const char *prog_name[] = {
-@@ -315,4 +381,6 @@ void test_fexit_bpf2bpf(void)
- 		test_func_map_prog_compatibility();
- 	if (test__start_subtest("func_replace_multi"))
- 		test_func_replace_multi();
-+	if (test__start_subtest("fmod_ret_freplace"))
-+		test_fmod_ret_freplace();
- }
-diff --git a/tools/testing/selftests/bpf/progs/fmod_ret_freplace.c b/tools/testing/selftests/bpf/progs/fmod_ret_freplace.c
-new file mode 100644
-index 000000000000..c8943ccee6c0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fmod_ret_freplace.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+volatile __u64 test_fmod_ret = 0;
-+SEC("fmod_ret/security_new_get_constant")
-+int BPF_PROG(fmod_ret_test, long val, int ret)
-+{
-+	test_fmod_ret = 1;
-+	return 120;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/freplace_get_constant.c b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-index 8f0ecf94e533..705e4b64dfc2 100644
---- a/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-+++ b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-@@ -5,7 +5,7 @@
- 
- volatile __u64 test_get_constant = 0;
- SEC("freplace/get_constant")
--int new_get_constant(long val)
-+int security_new_get_constant(long val)
- {
- 	if (val != 123)
- 		return 0;
-
+Applied.
