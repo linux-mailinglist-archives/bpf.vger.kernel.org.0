@@ -2,109 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA88627127B
-	for <lists+bpf@lfdr.de>; Sun, 20 Sep 2020 07:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0875B271352
+	for <lists+bpf@lfdr.de>; Sun, 20 Sep 2020 12:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgITFCP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Sep 2020 01:02:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgITFCP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Sep 2020 01:02:15 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F1DC061755;
-        Sat, 19 Sep 2020 22:02:15 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id u9so5182889plk.4;
-        Sat, 19 Sep 2020 22:02:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zf+F5l4BOBKHcTchW4Xrun/P792neDZIw8SXQYChyx8=;
-        b=pwu62dsujY21zRrqVdCN4xjg1zMPVfJ6bpTeI2jGKrUyaJP9XUf/V73AqJmZHpxXn8
-         mbVW/xNIY4LRtJ9sizRS9aQhvukpMAIz4DGeK1aRK2mWyyxaPDGUMalxL351AIQTzOD7
-         Nwz+gUgt7h1JJgxOymrrzJLypTz13T0bBJ47O3F/FNNoYweray4pnTqbMy8J2xlbzl0S
-         +bDbh1YNIMdGv4dcffnhn/KDboLQ0pk7F0E7eJ8T8eAtRWlKbkC9cT5wb/WfBFC3lbR4
-         WRpR/PQiDU5XjrCBed1T4iRYBeFBAuvYjOy+jAxxHqOgZ2BJ1bL6jO8zXj4eXyyVnbcW
-         0ijw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zf+F5l4BOBKHcTchW4Xrun/P792neDZIw8SXQYChyx8=;
-        b=HB0IYxxNObpOx96mR/IU9KuvWmLPWJY+w6oEG7eTKMwDCT5ahKHYdMc5b+UqiPNnzJ
-         uLr1mgLyD5E/SIWSb/geYtWwVpJVt8b02J7Co8pCWsog214Dob2Fchuf/OCnn7AowWdt
-         uTc9IIwYEHb9Tm/bQWYbwBsJYX8BAp7GMfD9x4WFV3oARcYCUxC1EA3eR9k5OyXR/5mr
-         LreD2tDHhiGE924zNGXh3pA1rCKx00uNhkLXZBcBwNA+WvO9e/h5I+g8C5IoiM7frnP7
-         ihq2H3zMfBSNqTuStQfKGSWIEbG2n79OUNQXZAwavdzPAIDLQOkJM5fnM0tA3Kb3tdDs
-         TW3g==
-X-Gm-Message-State: AOAM530hXzYuCUe8yqWtjPvPtd9/yLslYZF6lrPILdPLgN2Kxs8UsOuX
-        jt16DXIEUEEfZBbIhG7ugoU=
-X-Google-Smtp-Source: ABdhPJyKvHtlZDtNBQWDrwzNX2viJkG/PDEGBhae2HyhmHWRadjwR2S9VQW+lzDLIQmvA2yAVwdPRw==
-X-Received: by 2002:a17:90a:fb52:: with SMTP id iq18mr19562285pjb.207.1600578134799;
-        Sat, 19 Sep 2020 22:02:14 -0700 (PDT)
-Received: from localhost.localdomain ([2001:470:e92d:10:d88d:3b4f:9cac:cf18])
-        by smtp.gmail.com with ESMTPSA id w19sm8432556pfq.60.2020.09.19.22.02.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Sep 2020 22:02:14 -0700 (PDT)
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH bpf v1 3/3] libbpf: fix native endian assumption when parsing BTF
-Date:   Sat, 19 Sep 2020 22:01:35 -0700
-Message-Id: <90f81508ecc57bc0da318e0fe0f45cfe49b17ea7.1600417359.git.Tony.Ambardar@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1600417359.git.Tony.Ambardar@gmail.com>
-References: <cover.1600417359.git.Tony.Ambardar@gmail.com>
+        id S1726293AbgITK1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Sep 2020 06:27:47 -0400
+Received: from mx.der-flo.net ([193.160.39.236]:44384 "EHLO mx.der-flo.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726247AbgITK1r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Sep 2020 06:27:47 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Sep 2020 06:27:47 EDT
+Received: by mx.der-flo.net (Postfix, from userid 110)
+        id C338C43FED; Sun, 20 Sep 2020 12:20:35 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+Received: from linux.home (unknown [IPv6:2a02:1203:ecb0:3930:146b:10e2:afb5:be30])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.der-flo.net (Postfix) with ESMTPSA id 2B85843EE3;
+        Sun, 20 Sep 2020 12:20:19 +0200 (CEST)
+From:   Florian Lehner <dev@der-flo.net>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net,
+        Florian Lehner <dev@der-flo.net>
+Subject: [PATCH bpf-next] bpf: lift hashtab key_size limit
+Date:   Sun, 20 Sep 2020 12:19:35 +0200
+Message-Id: <20200920101935.57378-1-dev@der-flo.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Code in btf__parse_raw() fails to detect raw BTF of non-native endianness
-and assumes it must be ELF data, which then fails to parse as ELF and
-yields a misleading error message:
+Currently key_size of hashtab is limited to MAX_BPF_STACK.
 
-  root:/# bpftool btf dump file /sys/kernel/btf/vmlinux
-  libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux
-
-For example, this could occur after cross-compiling a BTF-enabled kernel
-for a target with non-native endianness, which is currently unsupported.
-
-Check for correct endianness and emit a clearer error message:
-
-  root:/# bpftool btf dump file /sys/kernel/btf/vmlinux
-  libbpf: non-native BTF endianness is not supported
-
-Fixes: 94a1fedd63ed ("libbpf: Add btf__parse_raw() and generic btf__parse() APIs")
-
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+As the key of hashtab can also be a value from a per cpu map it can be
+larger than MAX_BPF_STACK.
 ---
- tools/lib/bpf/btf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/bpf/hashtab.c                    | 16 +++++-----------
+ tools/testing/selftests/bpf/test_maps.c |  2 +-
+ 2 files changed, 6 insertions(+), 12 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 7dfca7016aaa..6bdbc389b493 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -659,6 +659,12 @@ struct btf *btf__parse_raw(const char *path)
- 		err = -EIO;
- 		goto err_out;
- 	}
-+	if (magic == __bswap_16(BTF_MAGIC)) {
-+		/* non-native endian raw BTF */
-+		pr_warn("non-native BTF endianness is not supported\n");
-+		err = -LIBBPF_ERRNO__ENDIAN;
-+		goto err_out;
-+	}
- 	if (magic != BTF_MAGIC) {
- 		/* definitely not a raw BTF */
- 		err = -EPROTO;
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index fe0e06284..fcac16cd4 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+ 	    attr->value_size == 0)
+ 		return -EINVAL;
+ 
+-	if (attr->key_size > MAX_BPF_STACK)
+-		/* eBPF programs initialize keys on stack, so they cannot be
+-		 * larger than max stack size
+-		 */
+-		return -E2BIG;
+-
+-	if (attr->value_size >= KMALLOC_MAX_SIZE -
+-	    MAX_BPF_STACK - sizeof(struct htab_elem))
+-		/* if value_size is bigger, the user space won't be able to
+-		 * access the elements via bpf syscall. This check also makes
+-		 * sure that the elem_size doesn't overflow and it's
++	if ((attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
++	    sizeof(struct htab_elem))
++		/* if key_size + value_size is bigger, the user space won't be
++		 * able to access the elements via bpf syscall. This check
++		 * also makes sure that the elem_size doesn't overflow and it's
+ 		 * kmalloc-able later in htab_map_update_elem()
+ 		 */
+ 		return -E2BIG;
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 754cf6117..9b2a096f0 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1225,7 +1225,7 @@ static void test_map_large(void)
+ {
+ 	struct bigkey {
+ 		int a;
+-		char b[116];
++		char b[4096];
+ 		long long c;
+ 	} key;
+ 	int fd, i, value;
 -- 
-2.25.1
+2.26.2
 
