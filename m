@@ -2,157 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD062735B2
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 00:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F060E2735E0
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 00:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgIUWXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 18:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        id S1727062AbgIUWjj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 18:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgIUWXj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:23:39 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC40C061755;
-        Mon, 21 Sep 2020 15:23:39 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id gf14so482330pjb.5;
-        Mon, 21 Sep 2020 15:23:39 -0700 (PDT)
+        with ESMTP id S1726644AbgIUWji (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:39:38 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747A8C061755;
+        Mon, 21 Sep 2020 15:39:38 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id k2so11427375ybp.7;
+        Mon, 21 Sep 2020 15:39:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1j5BtrbIEhk+Z7E8WkLPxtpf9YSppEhFPYc8Rq00vxc=;
-        b=datv3RSUPRNmt0lRa/AxFZEU7grLhUY5MpA1Qdz2KNgq6CxAwhQIWgUzhUJb7lOwk0
-         A/zJqdXP0BCJALAcC2FDiWU7vJORvT4pSs6iSwq7Z2TkdczrGEuJm0fj77wePDMxsDMe
-         ykV3/w48auEQFYREWmSJ88HlfSfyOLg04j4THDt/KvCtnQe+d+E0TUme8zJ1L/OkVpPf
-         EbfJBc8+9t/omQHKLXWVlg5FcjWDFi72bb9q7QYjMpv5bXO7X5db9+Tar3u0jfKJ9D6t
-         TBswgJIv499jipAD3K1v8pVShc8col7OIz6jmT8gNRcpOYWutrQKi765h83uJMP8TOJl
-         rSfQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MTgpZaEUVu6kw4q7DIocpZoFpDJ7k2hZvDPOxQF+RYE=;
+        b=OQai4T3aq5xMgt4Okwu55BQKVFWJSSRJX71HyJAnxCiEhHvVTVhjc85pD3l+MNSWG/
+         9WefO3e786Sqb6BPeS+DjagLwS2T7Odl0nLfo6wqjsmd92qCWuZEo0g41FeshBsWitkk
+         jQFd/fyoKs0Wss/Fmv7wrA6dCswmBN2bZd5qomCbBYN3U/82tmM1bpYOZS/j0TQDVQ3j
+         YjOZ64aWu44m0J1zfu0tE3U3r5rYFTgif+7CmuRUzejmY3YAevuMLjkajVrbljpuPWog
+         kFHM7c1iLQ557HgCYT4zFSTLgK/eeww9XYhZtgqO8Za76t8smMp02IP4eihrrWbYqz3+
+         90BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1j5BtrbIEhk+Z7E8WkLPxtpf9YSppEhFPYc8Rq00vxc=;
-        b=ZzCUk+QVncGVp+JpXEOxvw3Ibcylob1OeHQHurhHQKipvvw637F2gKak/gurMEtgGi
-         eK6UCq5yarqvOYi7ifv58O8c1DcJ5kkWJpnpcr+1nIDHd+YaC6mY2K0gYbeox+24aBIY
-         Hty/zOXqLpqK32ulMeYswCIu3nJcctM2DQ+vED/M7mAUb/f9WSWckS4EXC5RURcVp9fy
-         twT8SxY9CGDrdAdf+9AlDLxL4t5DqkN2aqeNp0dRQV6PUq7tttqFrbc8fX6VoSqJaiRl
-         162NrosAx6AE0PpzD735L6g1QgAdNgx47M50KidCfdfPWEp2fUnjAF/5abVu2us4aEqn
-         dXSQ==
-X-Gm-Message-State: AOAM5333TGMSygX+ujjPTVD3pHGXyyxVS5T4RRianLRMBge3o32XZlAZ
-        L0lrv4RAKz9JPSp5zo7ZYrBZs00b8ac=
-X-Google-Smtp-Source: ABdhPJyOZXMvqHoLU9lqrIvXhytlm9DbiQr+dwgUnhihvchhhLMMOyMHVxlM1qH0ecfOatgpjsxaPQ==
-X-Received: by 2002:a17:90b:164e:: with SMTP id il14mr1181230pjb.5.1600727018797;
-        Mon, 21 Sep 2020 15:23:38 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:b927])
-        by smtp.gmail.com with ESMTPSA id c4sm399006pjq.7.2020.09.21.15.23.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 15:23:38 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 15:23:35 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next v4 11/11] bpf: use a table to drive helper arg
- type checks
-Message-ID: <20200921222335.lew7wmyrtuej5mrh@ast-mbp.dhcp.thefacebook.com>
-References: <20200921121227.255763-1-lmb@cloudflare.com>
- <20200921121227.255763-12-lmb@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MTgpZaEUVu6kw4q7DIocpZoFpDJ7k2hZvDPOxQF+RYE=;
+        b=ItzbYHWI0EBmVvuCkfZMIYp9fOaJ6SGwA/AfxZFrDSYiSGnqc3vTGT7ovmK+dRu4BS
+         nF7lV1lpZWY0XTLwDXmjuugkxtMisadk+PeFhWPLK2nkXOgYL/wIUZza733/wjp8YZUl
+         xWhRkseTnyUU8rKDXn5BOe5RNCPaJBDSFW6T3cPQCxb0+0RKZE68pxAOt2ItujINMhMR
+         miziDE8o4/yrlYAuxOYtLXECVSsdptJE1oZxl/6dXuaLB/eY2gWFvM9ICHfcKMjfBR2N
+         Hd64jqY1crQLeYaKpfTo3cU4RL1ytrLf3ygXumBEs0d/37XmsFUjFL5h0OCFuxlFUali
+         TKug==
+X-Gm-Message-State: AOAM5300XerHAprkN9gLIuKYFlh508LcjRgrA1Mr6YfRe4lyOKIzLHjr
+        4HkhGIVjkJ4Uo/JNeoGbESM5qNZ2Qjr9MJih1xE=
+X-Google-Smtp-Source: ABdhPJxB5o8KlxMuPMl/axpG5ZW52JZukZAYMK/AT8rssYF45l4E1hsJ4zJOHZT25pRPx0fjoXNqMlcIa+Fctw8w8GU=
+X-Received: by 2002:a25:4446:: with SMTP id r67mr2919486yba.459.1600727977616;
+ Mon, 21 Sep 2020 15:39:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200921121227.255763-12-lmb@cloudflare.com>
+References: <160051618267.58048.2336966160671014012.stgit@toke.dk> <160051618391.58048.12525358750568883938.stgit@toke.dk>
+In-Reply-To: <160051618391.58048.12525358750568883938.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 21 Sep 2020 15:39:26 -0700
+Message-ID: <CAEf4Bzbb5gt7KgmfXM6FiC750GjxL23XO4GPnVHFgCGaMTuDCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 01/10] bpf: disallow attaching modify_return
+ tracing functions to other BPF programs
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 01:12:27PM +0100, Lorenz Bauer wrote:
-> +struct bpf_reg_types {
-> +	const enum bpf_reg_type types[10];
-> +};
+On Sat, Sep 19, 2020 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> From the checks and commit messages for modify_return, it seems it was
+> never the intention that it should be possible to attach a tracing progra=
+m
+> with expected_attach_type =3D=3D BPF_MODIFY_RETURN to another BPF program=
+.
+> However, check_attach_modify_return() will only look at the function name=
+,
+> so if the target function starts with "security_", the attach will be
+> allowed even for bpf2bpf attachment.
+>
+> Fix this oversight by also blocking the modification if a target program =
+is
+> supplied.
+>
+> Fixes: 18644cec714a ("bpf: Fix use-after-free in fmod_ret check")
+> Fixes: 6ba43b761c41 ("bpf: Attachment verification for BPF_MODIFY_RETURN"=
+)
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  kernel/bpf/verifier.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 4161b6c406bc..cb1b0f9fd770 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11442,7 +11442,7 @@ static int check_attach_btf_id(struct bpf_verifie=
+r_env *env)
+>                                         prog->aux->attach_func_name);
+>                 } else if (prog->expected_attach_type =3D=3D BPF_MODIFY_R=
+ETURN) {
+>                         ret =3D check_attach_modify_return(prog, addr);
+> -                       if (ret)
+> +                       if (ret || tgt_prog)
 
-any idea on how to make it more robust?
+can you please do it as a separate check with a more appropriate and
+meaningful message?
 
-> +
-> +static const struct bpf_reg_types *compatible_reg_types[] = {
-> +	[ARG_PTR_TO_MAP_KEY]		= &map_key_value_types,
-> +	[ARG_PTR_TO_MAP_VALUE]		= &map_key_value_types,
-> +	[ARG_PTR_TO_UNINIT_MAP_VALUE]	= &map_key_value_types,
-> +	[ARG_PTR_TO_MAP_VALUE_OR_NULL]	= &map_key_value_types,
-> +	[ARG_CONST_SIZE]		= &scalar_types,
-> +	[ARG_CONST_SIZE_OR_ZERO]	= &scalar_types,
-> +	[ARG_CONST_ALLOC_SIZE_OR_ZERO]	= &scalar_types,
-> +	[ARG_CONST_MAP_PTR]		= &const_map_ptr_types,
-> +	[ARG_PTR_TO_CTX]		= &context_types,
-> +	[ARG_PTR_TO_CTX_OR_NULL]	= &context_types,
-> +	[ARG_PTR_TO_SOCK_COMMON]	= &sock_types,
-> +	[ARG_PTR_TO_SOCKET]		= &fullsock_types,
-> +	[ARG_PTR_TO_SOCKET_OR_NULL]	= &fullsock_types,
-> +	[ARG_PTR_TO_BTF_ID]		= &btf_ptr_types,
-> +	[ARG_PTR_TO_SPIN_LOCK]		= &spin_lock_types,
-> +	[ARG_PTR_TO_MEM]		= &mem_types,
-> +	[ARG_PTR_TO_MEM_OR_NULL]	= &mem_types,
-> +	[ARG_PTR_TO_UNINIT_MEM]		= &mem_types,
-> +	[ARG_PTR_TO_ALLOC_MEM]		= &alloc_mem_types,
-> +	[ARG_PTR_TO_ALLOC_MEM_OR_NULL]	= &alloc_mem_types,
-> +	[ARG_PTR_TO_INT]		= &int_ptr_types,
-> +	[ARG_PTR_TO_LONG]		= &int_ptr_types,
-> +	[__BPF_ARG_TYPE_MAX]		= NULL,
-
-I don't understand what this extra value is for.
-I tried:
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index fc5c901c7542..87b0d5dcc1ff 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -292,7 +292,6 @@ enum bpf_arg_type {
-        ARG_PTR_TO_ALLOC_MEM,   /* pointer to dynamically allocated memory */
-        ARG_PTR_TO_ALLOC_MEM_OR_NULL,   /* pointer to dynamically allocated memory or NULL */
-        ARG_CONST_ALLOC_SIZE_OR_ZERO,   /* number of allocated bytes requested */
--       __BPF_ARG_TYPE_MAX,
- };
-
- /* type of values returned from helper functions */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 15ab889b0a3f..83faa67858b6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4025,7 +4025,6 @@ static const struct bpf_reg_types *compatible_reg_types[] = {
-        [ARG_PTR_TO_ALLOC_MEM_OR_NULL]  = &alloc_mem_types,
-        [ARG_PTR_TO_INT]                = &int_ptr_types,
-        [ARG_PTR_TO_LONG]               = &int_ptr_types,
--       [__BPF_ARG_TYPE_MAX]            = NULL,
- };
-
-and everything is fine as I think it should be.
-
-> +	compatible = compatible_reg_types[arg_type];
-> +	if (!compatible) {
-> +		verbose(env, "verifier internal error: unsupported arg type %d\n", arg_type);
->  		return -EFAULT;
->  	}
-
-This check will trigger the same way when somebody adds new ARG_* and doesn't add to the table.
-
->  
-> +	err = check_reg_type(env, regno, compatible);
-> +	if (err)
-> +		return err;
-> +
->  	if (type == PTR_TO_BTF_ID) {
->  		const u32 *btf_id = fn->arg_btf_id[arg];
->  
-> @@ -4174,10 +4213,6 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->  	}
->  
->  	return err;
-> -err_type:
-> -	verbose(env, "R%d type=%s expected=%s\n", regno,
-> -		reg_type_str[type], reg_type_str[expected_type]);
-> -	return -EACCES;
-
-I'm not a fan of table driven checks. I think one explicit switch statement
-would have been easier to read, but I guess we can convert back to it later if
-table becomes too limiting. The improvement in the verifier output is important
-and justifies this approach.
-
-Applied to bpf-next. Thanks!
+>                                 verbose(env, "%s() is not modifiable\n",
+>                                         prog->aux->attach_func_name);
+>                 }
+>
