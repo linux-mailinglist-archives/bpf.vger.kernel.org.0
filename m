@@ -2,112 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E336272FEE
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E792730C2
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729777AbgIURBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 13:01:04 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56709 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729278AbgIUQje (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 21 Sep 2020 12:39:34 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8E7DD580469;
-        Mon, 21 Sep 2020 12:39:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 21 Sep 2020 12:39:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=FAKxtc4axvdMTVdc4bHyXqp9LAt
-        vMDocxRFYXXZfBzg=; b=JdtF40ifOvS2VufC+D4Y/DgzsfP5T/+lwIbYsgExRNF
-        uFZygQ712+2ZJOKGfZY9sOf7vGXOEiaMNuVScexUD0xE40TMAXMbhyrI15xSaIU9
-        3uaYTOXwJTdUlG2E14/ixYUwdx/6hIpxvB3NkysGMM0sBFeJgmTMjh+BAi1v8Sqf
-        24+7SHEJGaDQjntE1s5t3FJCUX3ZWgkcAUu8pqh6RlAxYFJEUR0aS7k+PLmQlcms
-        KIKA/wEgA1hvgj1zJ+vPOHs9fEB/LWzmFtYOMjvdmSskCLdtARn/rqGTNF/eOj/t
-        8Z8hF6RoXKEeQgmOB4ZX3H+fMzdALRBkInUTkGSJgOg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FAKxtc
-        4axvdMTVdc4bHyXqp9LAtvMDocxRFYXXZfBzg=; b=tbW6ec3zQjwQulgCq04Nbf
-        ODrBjrjXS5VYBZKvtCZBwUYNWCnyz7wHa6Qf+X/SaEIKXF1it/gQp3XVEHjbO8DB
-        CJFLnJVxcy9qbpKTgVHnpJKuLi+0ll8AZZ4N4PsVUxo6Tf7Mqo83D/+3ZU09pgFz
-        vV+xNPW5g4qpOos3aZ3aAGX6RPxDN1aB3fO3LhZ1AFxOs82rBlSthYrd/heyhpTc
-        5ho4ZS9v9HyMyu/OlAjyLcqhbKpeBvNMEEUB9zAev7flgyZmtIP11g1uExippFxa
-        2br3iqth9LbwWMelJpi0m1sbT4gZy9wa750I/HArpGlLFxf93RHmCnRi450tFqmw
-        ==
-X-ME-Sender: <xms:ONdoX_JsuNaWZ-HcFgI6irtOtMH7gFRBCeU6hq0DEwJg_tGEx67FZQ>
-    <xme:ONdoXzLrdbEG1m-JBpplH72_4KvcjbZmbAyQCtOqU2sY-O7PIGOuHXhBeeaRptV0R
-    -YTyU2ll9iSxagRiI8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgddutdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
-    gfethfenucfkphepudekgedrudeijedrvddtrdduvdejnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
-    rg
-X-ME-Proxy: <xmx:ONdoX3to_KWRqqEpc-ZzpoHbdspcoQabxqO7Wt1QzCcfoDDztDDB_A>
-    <xmx:ONdoX4ZqnrIAlm4MlRZoMU60ouhY41zDStNVOcJOR3mRb4ZZTGLG_g>
-    <xmx:ONdoX2aD8wSBec4xA9KKgITKAMpVWUwr5uV7NRVnKowq7BI08_4dHQ>
-    <xmx:OddoX2KlqNhBuhFhdi3uBfLjQ_jvhsND10mqcK-u2yDzqTkWpJAPshiGxwuWEei_>
-Received: from cisco (184-167-020-127.res.spectrum.com [184.167.20.127])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 594E43280067;
-        Mon, 21 Sep 2020 12:39:18 -0400 (EDT)
-Date:   Mon, 21 Sep 2020 10:39:16 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>, bpf@vger.kernel.org,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH seccomp 0/2] seccomp: Add bitmap cache of
- arg-independent filter results that allow syscalls
-Message-ID: <20200921163916.GE3794348@cisco>
-References: <cover.1600661418.git.yifeifz2@illinois.edu>
- <20200921135115.GC3794348@cisco>
- <CABqSeASEw=Qr2CroKEpTyWMRXQkamKVUzXiEe2UsoQTCcv_99A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABqSeASEw=Qr2CroKEpTyWMRXQkamKVUzXiEe2UsoQTCcv_99A@mail.gmail.com>
+        id S1727522AbgIURQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 13:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbgIURQU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:16:20 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5BFC061755
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 10:16:20 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id f18so9837454pfa.10
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 10:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Q1UPOcEgn83MFtoVKisPvJ1akrMb+pPB1vXUk5YbCyQ=;
+        b=YxNYaSf6q50WlZCqkEDD/WThjuy6xCKlE/3CAo4sWH6cUOJklz08IDs2O31z/ridsf
+         +s6zJYDxdmIxh+q4nhkFdY57xWCaV7rIpVHKlmSRwJGN0WJGOprKZPZU1z/WnCVRHuCL
+         P9QA/khyL/5ZcE8ZrFxWlbAXOHn/ASxMQK5eDdR70t7M4YY0MzB7aX/GAy8pskxtWqaV
+         7OrABiERnL15c4TWtL2ogVGgdqWHBLBkIgXbanQC4j/2hcHR4L6AWH9o0/qaVvbU3e6v
+         Q4nZugCTtdOWiNunYkaDA3PuwXCwwaHQ2DXoW8IBvSZikw1UAXfF6PiJZBRMn9HVV/Ai
+         0FRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Q1UPOcEgn83MFtoVKisPvJ1akrMb+pPB1vXUk5YbCyQ=;
+        b=tjUPP8S2SU8/IKh2+hGhJIKR7xmrrf+iyjgICfgUS48Qvj86xLcZbxN7UrTtkbkK+F
+         7gtPwipdURMRCZBu4ImyUDTSA1vkYJlJmkaI8UgVtcRfnqHIMYbKB/zkMCQ+Qf22E708
+         U4PdOK+ocef6f0XWLjWiV71mfDH+jZTO8pz7Bld1+bA9XgJrjIHhqLgD2LD2EQRW2HKe
+         4xOycwk+sgA3MW8EkLgniqF/vswh0+zR8Dkbl5n3w3mEKOkUvEVm6rs0WKGCuWCnrSPc
+         YkwMQjEJhADQyqbrqTJ27PoMOhyGc9cTcefSIpqqv91v9Ml/C24+GrkMrJDtk7+O1fBi
+         pTtQ==
+X-Gm-Message-State: AOAM533CAVC+37/iyyd4F01T+Md95HguDyhSNzTZhLeTLZHTMiWZVCvQ
+        JN0UX6ND3eKWJT0xI9SObNs=
+X-Google-Smtp-Source: ABdhPJwxuXGfJWBdStULprTRaygEI3+YCo0Hee3LnCuuZadQ9SByn2r//aqe8s4Te5sRlKDgxcxU9g==
+X-Received: by 2002:a63:1f4b:: with SMTP id q11mr490558pgm.444.1600708579614;
+        Mon, 21 Sep 2020 10:16:19 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id i187sm12097653pgd.82.2020.09.21.10.16.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 10:16:19 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 10:16:12 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Xin Hao <xhao@linux.alibaba.com>, ast@kernel.org
+Cc:     daniel@iogearbox.net, kafai@fb.com, andriin@fb.com,
+        xhao@linux.alibaba.com, bpf@vger.kernel.org
+Message-ID: <5f68dfdc66b63_1737020879@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200920144547.56771-3-xhao@linux.alibaba.com>
+References: <20200920144547.56771-1-xhao@linux.alibaba.com>
+ <20200920144547.56771-3-xhao@linux.alibaba.com>
+Subject: RE: [bpf-next 2/3] sample/bpf: Add log2 histogram function support
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:27:56AM -0500, YiFei Zhu wrote:
-> On Mon, Sep 21, 2020 at 8:51 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > One problem with a kernel config setting is that it's for all tasks.
-> > While docker and systemd may make decsisions based on syscall number,
-> > other applications may have more nuanced filters, and this cache would
-> > yield incorrect results.
-> >
-> > You could work around this by making this a filter flag instead;
-> > filter authors would generally know whether their filter results can
-> > be cached and probably be motivated to opt in if their users are
-> > complaining about slow syscall execution.
-> >
-> > Tycho
+Xin Hao wrote:
+> The relative functions is copy from bcc tools
+> source code: libbpf-tools/trace_helpers.c.
+> URL: https://github.com/iovisor/bcc.git
 > 
-> Yielding incorrect results should not be possible. The purpose of the
-> "emulator" (for the lack of a better term) is to determine whether the
-> filter reads any syscall arguments. A read from a syscall argument
-> must go through the BPF_LD | BPF_ABS instruction, where the 32 bit
-> multiuse field "k" is an offset to struct seccomp_data.
+> Log2 histogram can display the change of the collected
+> data more conveniently.
+> 
+> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+> ---
+>  samples/bpf/common.h | 67 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 samples/bpf/common.h
+> 
+> diff --git a/samples/bpf/common.h b/samples/bpf/common.h
+> new file mode 100644
+> index 000000000000..ec60fb665544
+> --- /dev/null
+> +++ b/samples/bpf/common.h
+> @@ -0,0 +1,67 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + */
+> +
 
-I see, I missed this somehow. So is there a reason to hide this behind
-a config option? Isn't it just always better?
+nit, for this patch and the last one we don't need the text. Just the SPDX
+identifier should be enough. Its at least in line with everything we have
+elsewhere.
 
-Tycho
+Also if there is a copyright on that original file we should pull it over
+as far as I understand it. I don't see anything there though so maybe
+not.
+
+> +#define min(x, y) ({				 \
+> +	typeof(x) _min1 = (x);			 \
+> +	typeof(y) _min2 = (y);			 \
+> +	(void) (&_min1 == &_min2);		 \
+> +	_min1 < _min2 ? _min1 : _min2; })
+
+What was wrong with 'min(a,b) ((a) < (b) ? (a) : (b))' looks like
+below its just used for comparing two unsigned ints?
+
+Thanks.
+
+> +
+> +static void print_stars(unsigned int val, unsigned int val_max, int width)
+> +{
+> +	int num_stars, num_spaces, i;
+> +	bool need_plus;
+> +
+> +	num_stars = min(val, val_max) * width / val_max;
+> +	num_spaces = width - num_stars;
+> +	need_plus = val > val_max;
+> +
+> +	for (i = 0; i < num_stars; i++)
+> +		printf("*");
+> +	for (i = 0; i < num_spaces; i++)
+> +		printf(" ");
+> +	if (need_plus)
+> +		printf("+");
+> +}
+> +
+> +static void print_log2_hist(unsigned int *vals, int vals_size, char *val_type)
+> +{
+> +	int stars_max = 40, idx_max = -1;
+> +	unsigned int val, val_max = 0;
+> +	unsigned long long low, high;
+> +	int stars, width, i;
+> +
+> +	for (i = 0; i < vals_size; i++) {
+> +		val = vals[i];
+> +		if (val > 0)
+> +			idx_max = i;
+> +		if (val > val_max)
+> +			val_max = val;
+> +	}
+> +
+> +	if (idx_max < 0)
+> +		return;
+> +
+> +	printf("%*s%-*s : count    distribution\n", idx_max <= 32 ? 5 : 15, "",
+> +		idx_max <= 32 ? 19 : 29, val_type);
+> +	if (idx_max <= 32)
+> +		stars = stars_max;
+> +	else
+> +		stars = stars_max / 2;
+> +
+> +	for (i = 0; i <= idx_max; i++) {
+> +		low = (1ULL << (i + 1)) >> 1;
+> +		high = (1ULL << (i + 1)) - 1;
+> +		if (low == high)
+> +			low -= 1;
+> +		val = vals[i];
+> +		width = idx_max <= 32 ? 10 : 20;
+> +		printf("%*lld -> %-*lld : %-8d |", width, low, width, high, val);
+> +		print_stars(val, val_max, stars);
+> +		printf("|\n");
+> +	}
+> +}
+> -- 
+> 2.28.0
+> 
+
+
