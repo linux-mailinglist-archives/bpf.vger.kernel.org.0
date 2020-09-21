@@ -2,230 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C9E27321C
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C21127329D
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 21:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728013AbgIUSmr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 14:42:47 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37454 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727470AbgIUSmr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 21 Sep 2020 14:42:47 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08LIW7a8121671;
-        Mon, 21 Sep 2020 14:42:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=pU6EPWqplPdw2lxTDBjuW+y+uMwiOW3eQOHpaqDYWgw=;
- b=FOJu2FreY66i36ZiJwVYmqc4cPIh3rDWUJQwLgfCIC0muQDsVWgO2HHnPg4pYvKhLxmF
- tPaMyNQRSbpRXe+sn8c5JGimHUYL1CPykRUKxXnnJu2qtXl+B/XoAiy5xENPPTJmMYlu
- A/wbu38HgqOM2JGmSsWO5eWxaafNGR6zseFWjOw6+rphKVtzU3A3wdJieghYY6owdNMd
- Q2RUlSTuSRvntXI9UvipkiyqQTRTc17EP51LWMdO+PbH9Lo3OjRsYiquhxs0Szp0IPho
- 0gk8o/BSEU+qNHmhYiyERR4rHC2P64HdAVhof0m82eSlrB1ZdsqZFAEPn+LFcaNx6Xhl 9g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33pyj9kyu3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 14:42:32 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08LIX713128056;
-        Mon, 21 Sep 2020 14:42:32 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33pyj9kytg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 14:42:32 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08LIaeYG012922;
-        Mon, 21 Sep 2020 18:42:30 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 33n9m8aaxg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Sep 2020 18:42:30 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08LIgR9Z18940190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Sep 2020 18:42:27 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D47CAE053;
-        Mon, 21 Sep 2020 18:42:27 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19240AE04D;
-        Mon, 21 Sep 2020 18:42:27 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.145.44.24])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 21 Sep 2020 18:42:27 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] selftests/bpf: Skip some verifier tests on BTFless kernels
-Date:   Mon, 21 Sep 2020 20:42:19 +0200
-Message-Id: <20200921184219.4168733-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.25.4
+        id S1728082AbgIUTQg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 15:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727529AbgIUTQd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 15:16:33 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705FFC0613CF
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 12:16:33 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id g16so4698433uan.5
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 12:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZCDaY+bkm/0dH12hWKBLXs8sFNuKqvKh9NzTaSkJTSw=;
+        b=tewFT15AsEzpuKyvlpTu5R3peD/3EkklLECjakR0tkxwO97yjiKdU4IH4tHN3hhyD3
+         8El1/BBXDcgFynjD5Kh8iAEB+581gGhRIWK6+0fU9rr/PSBeEehjECcdkFZ+PIDmLLYl
+         rEsk22wPgoyg7d/rLBTu5OZbJ+83zzMdRdOkhV5mdx6yiZ6RDpgvtKkDbn27HzYH4KX6
+         WHeM7BWTRstoznGogcI9Q3044Bc3qApw7s01eS9aSlWrxMQbYQvx7kZA3i3rBQVc7Gzd
+         Mb9X9iaZrpufnlQbS5KEFq1UjzhfD9zw9kXXRe9/6Pl6JUGHl0QpX6fnPrFE3jRHwtNl
+         0cUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZCDaY+bkm/0dH12hWKBLXs8sFNuKqvKh9NzTaSkJTSw=;
+        b=U9ElzXSGdu3tAhEOxSMD18FQXpVLXhO5ySgy3kKgPTQv5AJpUOhpB4OtpacHuZkbG4
+         NClcGlNYXBaWKbNROXUIjMe9aDAjgL4z70Q9JGgEIezKUr3vEMJ+/0zFLwg47iJgdNf9
+         FBBt97G6UvBLbEOfPvMirIx/l6gRUlZyNey1WOlUf2Cmu7ZtyEtMsbblLG/e7KzPRp3s
+         hS1bl8QNt1LsWL24bp4AvcFAm4FtkRiSjPVOag37jtP/FBbe7vrihqEmYSZb2y8MD4Ih
+         8JS4pLUw8MVQUZwH2gD1ZlYZWaWJTEPgsu6LpCIF6j+AbS8XnJVPTGzdBT7Aet7Z1x9M
+         J7sA==
+X-Gm-Message-State: AOAM533FX2wXbbBM+5Jn9juqvagH/MGV3tgd8sXs9APeCJmMVM7aod7O
+        NvvCdEfT4V8WyryvY5iXDYkw8mRN95w3MoQf+UbOqg==
+X-Google-Smtp-Source: ABdhPJwRXYKVMGaY5ggPVk6CztjQIvkE7mOrDoQPqHVdweEFScrXaPDOm3pNYCPRx6yJ5PkBeUlVbM6Ka8GeQRpYGt0=
+X-Received: by 2002:ab0:1e84:: with SMTP id o4mr1209850uak.74.1600715792227;
+ Mon, 21 Sep 2020 12:16:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-21_06:2020-09-21,2020-09-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=2
- mlxscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009210128
+References: <cover.1600661418.git.yifeifz2@illinois.edu>
+In-Reply-To: <cover.1600661418.git.yifeifz2@illinois.edu>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 21 Sep 2020 21:16:06 +0200
+Message-ID: <CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 0/2] seccomp: Add bitmap cache of
+ arg-independent filter results that allow syscalls
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Mark seven tests as requiring vmlinux btf. Check whether vmlinux btf is
-available, and if not, skip them.
+On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> This series adds a bitmap to cache seccomp filter results if the
+> result permits a syscall and is indepenent of syscall arguments.
+> This visibly decreases seccomp overhead for most common seccomp
+> filters with very little memory footprint.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 24 +++++++++++++++++++
- tools/testing/selftests/bpf/verifier/d_path.c |  2 ++
- .../testing/selftests/bpf/verifier/map_ptr.c  |  4 ++++
- .../selftests/bpf/verifier/map_ptr_mixing.c   |  1 +
- 4 files changed, 31 insertions(+)
+It would be really nice if, based on this, we could have a new entry
+in procfs that has one line per entry in each syscall table. Maybe
+something that looks vaguely like:
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 9be395d9dc64..dc696aa2b9e9 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -30,8 +30,10 @@
- #include <linux/bpf.h>
- #include <linux/if_ether.h>
- #include <linux/btf.h>
-+#include <linux/err.h>
- 
- #include <bpf/bpf.h>
-+#include <bpf/btf.h>
- #include <bpf/libbpf.h>
- 
- #ifdef HAVE_GENHDR
-@@ -115,6 +117,7 @@ struct bpf_test {
- 	};
- 	enum bpf_attach_type expected_attach_type;
- 	const char *kfunc;
-+	bool need_vmlinux_btf;
- };
- 
- /* Note we want this to be 64 bit aligned so that the end of our array is
-@@ -926,6 +929,19 @@ static bool cmp_str_seq(const char *log, const char *exp)
- 	return true;
- }
- 
-+static bool vmlinux_btf_available;
-+
-+static void probe_vmlinux_btf(void)
-+{
-+	struct btf *btf_vmlinux;
-+
-+	btf_vmlinux = libbpf_find_kernel_btf();
-+	if (IS_ERR(btf_vmlinux))
-+		return;
-+	btf__free(btf_vmlinux);
-+	vmlinux_btf_available = true;
-+}
-+
- static void do_test_single(struct bpf_test *test, bool unpriv,
- 			   int *passes, int *errors)
- {
-@@ -940,6 +956,12 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 	__u32 pflags;
- 	int i, err;
- 
-+	if (test->need_vmlinux_btf && !vmlinux_btf_available) {
-+		printf("SKIP (no vmlinux BTF)\n");
-+		skips++;
-+		goto done;
-+	}
-+
- 	for (i = 0; i < MAX_NR_MAPS; i++)
- 		map_fds[i] = -1;
- 
-@@ -1097,6 +1119,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 	close(fd_prog);
- 	for (i = 0; i < MAX_NR_MAPS; i++)
- 		close(map_fds[i]);
-+done:
- 	sched_yield();
- 	return;
- fail_log:
-@@ -1230,5 +1253,6 @@ int main(int argc, char **argv)
- 	}
- 
- 	bpf_semi_rand_init();
-+	probe_vmlinux_btf();
- 	return do_test(unpriv, from, to);
- }
-diff --git a/tools/testing/selftests/bpf/verifier/d_path.c b/tools/testing/selftests/bpf/verifier/d_path.c
-index b988396379a7..08613013f828 100644
---- a/tools/testing/selftests/bpf/verifier/d_path.c
-+++ b/tools/testing/selftests/bpf/verifier/d_path.c
-@@ -15,6 +15,7 @@
- 	.prog_type = BPF_PROG_TYPE_TRACING,
- 	.expected_attach_type = BPF_TRACE_FENTRY,
- 	.kfunc = "dentry_open",
-+	.need_vmlinux_btf = true,
- },
- {
- 	"d_path reject",
-@@ -34,4 +35,5 @@
- 	.prog_type = BPF_PROG_TYPE_TRACING,
- 	.expected_attach_type = BPF_TRACE_FENTRY,
- 	.kfunc = "d_path",
-+	.need_vmlinux_btf = true,
- },
-diff --git a/tools/testing/selftests/bpf/verifier/map_ptr.c b/tools/testing/selftests/bpf/verifier/map_ptr.c
-index 637f9293bda8..c6e075dadac6 100644
---- a/tools/testing/selftests/bpf/verifier/map_ptr.c
-+++ b/tools/testing/selftests/bpf/verifier/map_ptr.c
-@@ -12,6 +12,7 @@
- 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
- 	.result = REJECT,
- 	.errstr = "R1 is bpf_array invalid negative access: off=-8",
-+	.need_vmlinux_btf = true,
- },
- {
- 	"bpf_map_ptr: write rejected",
-@@ -29,6 +30,7 @@
- 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
- 	.result = REJECT,
- 	.errstr = "only read from bpf_array is supported",
-+	.need_vmlinux_btf = true,
- },
- {
- 	"bpf_map_ptr: read non-existent field rejected",
-@@ -44,6 +46,7 @@
- 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
- 	.result = REJECT,
- 	.errstr = "cannot access ptr member ops with moff 0 in struct bpf_map with off 1 size 4",
-+	.need_vmlinux_btf = true,
- },
- {
- 	"bpf_map_ptr: read ops field accepted",
-@@ -59,6 +62,7 @@
- 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
- 	.result = ACCEPT,
- 	.retval = 1,
-+	.need_vmlinux_btf = true,
- },
- {
- 	"bpf_map_ptr: r = 0, map_ptr = map_ptr + r",
-diff --git a/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c b/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c
-index 1f2b8c4cb26d..75afb8fc3aad 100644
---- a/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c
-+++ b/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c
-@@ -57,6 +57,7 @@
- 	.fixup_map_array_48b = { 13 },
- 	.result = REJECT,
- 	.errstr = "only read from bpf_array is supported",
-+	.need_vmlinux_btf = true,
- },
- {
- 	"cond: two branches returning different map pointers for lookup (tail, tail)",
--- 
-2.25.4
+X86_64 0 (read): ALLOW
+X86_64 1 (write): ALLOW
+X86_64 2 (open): ERRNO -1
+X86_64 3 (close): ALLOW
+X86_64 4 (stat): <argument-dependent>
+[...]
+I386 0 (restart_syscall): ALLOW
+I386 1 (exit): ALLOW
+I386 2 (fork): KILL
+[...]
 
+This would be useful both for inspectability (at the moment it's
+pretty hard to figure out what seccomp rules really apply to a given
+task) and for testing (so that we could easily write unit tests to
+verify that the bitmap calculation works as expected).
+
+But if you don't want to implement that right now, we can do that at a
+later point - while it would be nice for making it easier to write
+tests for this functionality, I don't see it as a blocker.
+
+
+> The overhead of running Seccomp filters has been part of some past
+> discussions [1][2][3]. Oftentimes, the filters have a large number
+> of instructions that check syscall numbers one by one and jump based
+> on that. Some users chain BPF filters which further enlarge the
+> overhead. A recent work [6] comprehensively measures the Seccomp
+> overhead and shows that the overhead is non-negligible and has a
+> non-trivial impact on application performance.
+>
+> We propose SECCOMP_CACHE, a cache-based solution to minimize the
+> Seccomp overhead. The basic idea is to cache the result of each
+> syscall check to save the subsequent overhead of executing the
+> filters. This is feasible, because the check in Seccomp is stateless.
+> The checking results of the same syscall ID and argument remains
+> the same.
+>
+> We observed some common filters, such as docker's [4] or
+> systemd's [5], will make most decisions based only on the syscall
+> numbers, and as past discussions considered, a bitmap where each bit
+> represents a syscall makes most sense for these filters.
+[...]
+> Statically analyzing BPF bytecode to see if each syscall is going to
+> always land in allow or reject is more of a rabbit hole, especially
+> there is no current in-kernel infrastructure to enumerate all the
+> possible architecture numbers for a given machine.
+
+You could add that though. Or if you think that that's too much work,
+you could just do it for x86 and arm64 and then use a Kconfig
+dependency to limit this to those architectures for now.
+
+> So rather than
+> doing that, we propose to cache the results after the BPF filters are
+> run.
+
+Please don't add extra complexity just to work around a limitation in
+existing code if you could instead remove that limitation in existing
+code. Otherwise, code will become unnecessarily hard to understand and
+inefficient.
+
+You could let struct seccomp_filter contain three bitmasks - one for
+the "native" architecture and up to two for "compat" architectures
+(gated on some Kconfig flag).
+
+alpha has 1 architecture numbers, arc has 1 (per build config), arm
+has 1, arm64 has 2, c6x has 1 (per build config), csky has 1, h8300
+has 1, hexagon has 1, ia64 has 1, m68k has 1, microblaze has 1, mips
+has 3 (per build config), nds32 has 1 (per build config), nios2 has 1,
+openrisc has 1, parisc has 2, powerpc has 2 (per build config), riscv
+has 1 (per build config), s390 has 2, sh has 1 (per build config),
+sparc has 2, x86 has 2, xtensa has 1.
+
+> And since there are filters like docker's who will check
+> arguments of some syscalls, but not all or none of the syscalls, when
+> a filter is loaded we analyze it to find whether each syscall is
+> cacheable (does not access syscall argument or instruction pointer) by
+> following its control flow graph, and store the result for each filter
+> in a bitmap. Changes to architecture number or the filter are expected
+> to be rare and simply cause the cache to be cleared. This solution
+> shall be fully transparent to userspace.
+
+Caching whether a given syscall number has fixed per-architecture
+results across all architectures is a pretty gross hack, please don't.
+
+
+
+> Ongoing work is to further support arguments with fast hash table
+> lookups. We are investigating the performance of doing so [6], and how
+> to best integrate with the existing seccomp infrastructure.
