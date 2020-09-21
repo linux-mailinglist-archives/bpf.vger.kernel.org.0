@@ -2,84 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2D1272F62
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 18:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E336272FEE
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbgIUQ4w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 12:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729681AbgIUQ4v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 12:56:51 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C96C061755
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 09:56:50 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 7so9541098pgm.11
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 09:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=2cWQzq1LTiKKRHEcQWGBOZoP8zSGp+9C9CbVvr/YoL4=;
-        b=eoO4Y2n9J4T5+eImRCa+Ywqg6HUeBGeo1rEttDRW1JDjVr0elp0WN0qbKhP6gchAMb
-         vwto2tKEPwMPceYIxGXpdYPOdpNlwVSKU5lGly7V89TBN2BhAZGRrM0ee6GIAwUJ9ycK
-         f1m4GvBeWNz0uT2IscnVEkIyJfCKoo15LhRXBFeA7nl50wtFY1iTfMusp7pXrw9NqdI2
-         dHKOhVEvl6ejJSYLMjxMCgOyY4mA5KOmysQ2MWPdy//GTIuh5CK265+OX1BAcUQ6cJG3
-         5UmMKdbRiOGELVM7cW/fArkY2BpPRleSIOw7hd/NDMdleAD/VhsHvjPL/E+SS5/py87v
-         DaiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=2cWQzq1LTiKKRHEcQWGBOZoP8zSGp+9C9CbVvr/YoL4=;
-        b=MOWf/rPwhUhwi1CapQp1180I9HP8ziQGS/xqAKRAYUpchvF/WYQ+HgsotFQm0lpVD3
-         cD4aMKpfSTXcQikkCJnlgJlN2xqIVk9McqZNqgsZKaZ1R9YhI/EiEivDIrno++4YEtBt
-         PdPR6dnrkLpmDRtX87r5L4F7GwlHI+H6jlPekLH1MGb2Ks3/3NfI7SH+834Xob0KziSN
-         WGi3MzuZO4JRggkLcVWazAxnoHuHgrHn5T0MbcSfqnEknEuJ6UCo6/dRqIidnYKbz9HI
-         ogyjh35i7kiL8g98NlpOha2Sxaf9861WAjwknGNXOG7yzeGb0eo0onLffEBTxkesoKvy
-         kgIQ==
-X-Gm-Message-State: AOAM530oDeD2zP/ml7gam9oIU9XVh3M1w9SK+ftTLsQ07Y6Jkq8g0FWK
-        rWejlBbwy8/Gw6P69jX2/Ic=
-X-Google-Smtp-Source: ABdhPJwskQu3Miq7l0co2weuIj/YlhnYnEvK8DTqD5u67V9IxPoE+/gTi4013wv6I36PLK1JmKW5tw==
-X-Received: by 2002:a17:902:8341:b029:d2:29fc:c400 with SMTP id z1-20020a1709028341b02900d229fcc400mr864112pln.5.1600707410284;
-        Mon, 21 Sep 2020 09:56:50 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id y3sm13430126pfb.18.2020.09.21.09.56.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 09:56:49 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 09:56:43 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Xin Hao <xhao@linux.alibaba.com>, ast@kernel.org
-Cc:     daniel@iogearbox.net, kafai@fb.com, andriin@fb.com,
-        xhao@linux.alibaba.com, bpf@vger.kernel.org
-Message-ID: <5f68db4bfe4a_17370208fc@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200920144547.56771-2-xhao@linux.alibaba.com>
-References: <20200920144547.56771-1-xhao@linux.alibaba.com>
- <20200920144547.56771-2-xhao@linux.alibaba.com>
-Subject: RE: [bpf-next 1/3] sample/bpf: Avoid repetitive definition of log2
- func
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1729777AbgIURBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 13:01:04 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56709 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729278AbgIUQje (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 21 Sep 2020 12:39:34 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8E7DD580469;
+        Mon, 21 Sep 2020 12:39:21 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 21 Sep 2020 12:39:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=FAKxtc4axvdMTVdc4bHyXqp9LAt
+        vMDocxRFYXXZfBzg=; b=JdtF40ifOvS2VufC+D4Y/DgzsfP5T/+lwIbYsgExRNF
+        uFZygQ712+2ZJOKGfZY9sOf7vGXOEiaMNuVScexUD0xE40TMAXMbhyrI15xSaIU9
+        3uaYTOXwJTdUlG2E14/ixYUwdx/6hIpxvB3NkysGMM0sBFeJgmTMjh+BAi1v8Sqf
+        24+7SHEJGaDQjntE1s5t3FJCUX3ZWgkcAUu8pqh6RlAxYFJEUR0aS7k+PLmQlcms
+        KIKA/wEgA1hvgj1zJ+vPOHs9fEB/LWzmFtYOMjvdmSskCLdtARn/rqGTNF/eOj/t
+        8Z8hF6RoXKEeQgmOB4ZX3H+fMzdALRBkInUTkGSJgOg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FAKxtc
+        4axvdMTVdc4bHyXqp9LAtvMDocxRFYXXZfBzg=; b=tbW6ec3zQjwQulgCq04Nbf
+        ODrBjrjXS5VYBZKvtCZBwUYNWCnyz7wHa6Qf+X/SaEIKXF1it/gQp3XVEHjbO8DB
+        CJFLnJVxcy9qbpKTgVHnpJKuLi+0ll8AZZ4N4PsVUxo6Tf7Mqo83D/+3ZU09pgFz
+        vV+xNPW5g4qpOos3aZ3aAGX6RPxDN1aB3fO3LhZ1AFxOs82rBlSthYrd/heyhpTc
+        5ho4ZS9v9HyMyu/OlAjyLcqhbKpeBvNMEEUB9zAev7flgyZmtIP11g1uExippFxa
+        2br3iqth9LbwWMelJpi0m1sbT4gZy9wa750I/HArpGlLFxf93RHmCnRi450tFqmw
+        ==
+X-ME-Sender: <xms:ONdoX_JsuNaWZ-HcFgI6irtOtMH7gFRBCeU6hq0DEwJg_tGEx67FZQ>
+    <xme:ONdoXzLrdbEG1m-JBpplH72_4KvcjbZmbAyQCtOqU2sY-O7PIGOuHXhBeeaRptV0R
+    -YTyU2ll9iSxagRiI8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgddutdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
+    gfethfenucfkphepudekgedrudeijedrvddtrdduvdejnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiii
+    rg
+X-ME-Proxy: <xmx:ONdoX3to_KWRqqEpc-ZzpoHbdspcoQabxqO7Wt1QzCcfoDDztDDB_A>
+    <xmx:ONdoX4ZqnrIAlm4MlRZoMU60ouhY41zDStNVOcJOR3mRb4ZZTGLG_g>
+    <xmx:ONdoX2aD8wSBec4xA9KKgITKAMpVWUwr5uV7NRVnKowq7BI08_4dHQ>
+    <xmx:OddoX2KlqNhBuhFhdi3uBfLjQ_jvhsND10mqcK-u2yDzqTkWpJAPshiGxwuWEei_>
+Received: from cisco (184-167-020-127.res.spectrum.com [184.167.20.127])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 594E43280067;
+        Mon, 21 Sep 2020 12:39:18 -0400 (EDT)
+Date:   Mon, 21 Sep 2020 10:39:16 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>, bpf@vger.kernel.org,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH seccomp 0/2] seccomp: Add bitmap cache of
+ arg-independent filter results that allow syscalls
+Message-ID: <20200921163916.GE3794348@cisco>
+References: <cover.1600661418.git.yifeifz2@illinois.edu>
+ <20200921135115.GC3794348@cisco>
+ <CABqSeASEw=Qr2CroKEpTyWMRXQkamKVUzXiEe2UsoQTCcv_99A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABqSeASEw=Qr2CroKEpTyWMRXQkamKVUzXiEe2UsoQTCcv_99A@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Xin Hao wrote:
-> log2 func is defined and used in following three files:
->     samples/bpf/lathist_kern.c
->     samples/bpf/lwt_len_hist_kern.c
->     samples/bpf/tracex2_kern.c
+On Mon, Sep 21, 2020 at 10:27:56AM -0500, YiFei Zhu wrote:
+> On Mon, Sep 21, 2020 at 8:51 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+> > One problem with a kernel config setting is that it's for all tasks.
+> > While docker and systemd may make decsisions based on syscall number,
+> > other applications may have more nuanced filters, and this cache would
+> > yield incorrect results.
+> >
+> > You could work around this by making this a filter flag instead;
+> > filter authors would generally know whether their filter results can
+> > be cached and probably be motivated to opt in if their users are
+> > complaining about slow syscall execution.
+> >
+> > Tycho
 > 
-> There's no need to repeat define them many times, so i added
-> a "common.h" file which maintains common codes, you just need
-> to include it in your file and future we can put more common codes
-> into this file.
-> 
-> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
-> ---
+> Yielding incorrect results should not be possible. The purpose of the
+> "emulator" (for the lack of a better term) is to determine whether the
+> filter reads any syscall arguments. A read from a syscall argument
+> must go through the BPF_LD | BPF_ABS instruction, where the 32 bit
+> multiuse field "k" is an offset to struct seccomp_data.
 
-LGTM
+I see, I missed this somehow. So is there a reason to hide this behind
+a config option? Isn't it just always better?
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Tycho
