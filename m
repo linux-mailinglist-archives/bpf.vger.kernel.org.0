@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6326272133
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 12:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E5127213C
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 12:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgIUKdZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 06:33:25 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:56352 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgIUKdS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 06:33:18 -0400
-Received: by mail-il1-f207.google.com with SMTP id d16so10535694ila.23
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 03:33:18 -0700 (PDT)
+        id S1726478AbgIUKeY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 06:34:24 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:43014 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726636AbgIUKeR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 06:34:17 -0400
+Received: by mail-il1-f206.google.com with SMTP id t11so10628765ilj.10
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 03:34:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ANn/W8cefD65L0WEk2xKoOR7AQ8X98axJRQVhD3ngEg=;
-        b=cW3NLNrgC3dlbIBx75A1gSfttfvP7n+vE0Nm2GBHZDR1eJIGP7Ny7kahNnOaZhJYPD
-         TOKfGZT1+etFcxte+71P7z5uzu7f1VNgX6Z8B2XiHSQtB0r1yd+weyhZllboLJotuw0R
-         Vo2YCOm6A4P2WHFAXbBC9ouVdErljKA976weOXjii/Naqc5CHqC0/epr6l+QrEv3roMg
-         ugqQfDo9h/kgyC7Ymiz/PEB43j4ZgPbSHSPxuscKr4VAIh/H4IiB0gSfOSjhcCSF3wqM
-         U9YzqDCH2r/U4ghRVMFUuGUhhI+EpNXFnzVaKc4icDRNldgFJF340mjbqbpSVkA45dPJ
-         nihQ==
-X-Gm-Message-State: AOAM5307JEUV78nd5KDP3QVFnVyiXMBRTfbNArPaf/Te3YcsupQ2I/zK
-        AGF6XqjQnRZK3pTP8NYXqhnC3a1dG0CplJmrU64osgXe14CU
-X-Google-Smtp-Source: ABdhPJyGl3Fu6WMhEKCiTG9/3nbg9Nx4V6AKJVZWxuSQImBhnaho95oaG5nHYhN9fIxuw3FdWogs2afMdLO/9FYPTUsr//BxExrT
+        bh=ujdV3lelgEnkMcIAD2F2K3sV2UTSXwNq4UDGGg9DBXI=;
+        b=Xu9V2B2bZBC+YoPpe0Lyj0M5fJoR8xehgSQhOtzW8MDeRM7l+Dd2od0mhgwhOFYZCm
+         +wXmdhQKVdys2gwOXR1c4fRJcmgch4T9EaIqN3dFuKM0gciWXPr2355kkswEbs1ow9g7
+         Z/YOwj8NZNtZFE2dnXKGiSONS4qCubSCBPBYUIVYJlx/wZZYl7sWuXAOD1VDdFUCuciN
+         rAM2ymgDQo9kEGWI6WNDsW4pxlavyXoVf+vkV73tjI/bA4s+Cku6Gpw46mfCNVUfCNTr
+         1LMj003yBdkr6bPaulOpDXWgTD/ZrY+GpZvbHpNyqQM6rqhRgpfRXC3sbw/q2DvO0C92
+         OChw==
+X-Gm-Message-State: AOAM5328QCMudIYW7DwMrfe2yuq2EFKjo63pl6RHCzVdWvztLCxuUOSt
+        3Bhj+7QlPOeEs0PDCzCeFHOqtsYD+xk8vXMwBZ4Fgg8fwwJU
+X-Google-Smtp-Source: ABdhPJwlT3RkwZe2iYfwPboSxC5hK7hDqspKmfWWEfHDh3ywv+gnA3mMM4x1Cfx+KHfOBgI4+ZbFeX0JejME5PLcp0RqPKjpo6yV
 MIME-Version: 1.0
-X-Received: by 2002:a02:ca0e:: with SMTP id i14mr40438267jak.65.1600684397714;
- Mon, 21 Sep 2020 03:33:17 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 03:33:17 -0700
+X-Received: by 2002:a05:6e02:d07:: with SMTP id g7mr32966340ilj.63.1600684456151;
+ Mon, 21 Sep 2020 03:34:16 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 03:34:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ec63c105afd060f5@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_trace_run1
-From:   syzbot <syzbot+35b2a9c256b8956a2b11@syzkaller.appspotmail.com>
+Message-ID: <000000000000680f2905afd0649c@google.com>
+Subject: BUG: unable to handle kernel paging request in bpf_trace_run2
+From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
 To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
         daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
         john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
@@ -50,79 +50,70 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    325d0eab Merge branch 'akpm' (patches from Andrew)
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=128d4dd9900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b12e84189082991c
-dashboard link: https://syzkaller.appspot.com/bug?extid=35b2a9c256b8956a2b11
+HEAD commit:    70b97111 bpf: Use hlist_add_head_rcu when linking to local..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1375823d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7e0ca96a9b6ee858
+dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+35b2a9c256b8956a2b11@syzkaller.appspotmail.com
+Reported-by: syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com
 
-BUG: unable to handle page fault for address: fffff520001f4806
+BUG: unable to handle page fault for address: ffffc90001bca030
 #PF: supervisor read access in kernel mode
 #PF: error_code(0x0000) - not-present page
-PGD 21ffee067 P4D 21ffee067 PUD aa164067 PMD aa166067 PTE 0
+PGD aa000067 P4D aa000067 PUD aa169067 PMD a930f067 PTE 0
 Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6912 Comm: syz-executor.5 Not tainted 5.9.0-rc5-syzkaller #0
+CPU: 0 PID: 3912 Comm: systemd-udevd Not tainted 5.9.0-rc1-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run1+0x113/0x3c0 kernel/trace/bpf_trace.c:1923
-Code: c7 c7 00 20 91 88 e8 ec 15 d2 ff 0f 1f 44 00 00 e8 82 07 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900056d7588 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000fa4000 RCX: dffffc0000000000
-RDX: 1ffff920001f4806 RSI: ffffffff817f383e RDI: ffffc90000fa4030
-RBP: 1ffff92000adaeb2 R08: 0000000000000000 R09: ffffffff8d0b79e7
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:613 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1974
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 ca 02 f7 ff e8 55 fb 86 06 31 ff 89 c3 89 c6 e8 1a ff
+RSP: 0018:ffffc90005257e90 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffc90001bca000 RCX: ffffffff817f7778
+RDX: 0000000000000000 RSI: ffffc90001bca038 RDI: ffffc90005257eb8
+RBP: 1ffff92000a4afd3 R08: 0000000000000000 R09: ffffffff8ce329e7
 R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000000 R14: ffff888083309e40 R15: ffffc900056d79c0
-FS:  0000000001995940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+R13: ffffc90005257f58 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f32dd08f8c0(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff520001f4806 CR3: 0000000057ab8000 CR4: 00000000001506e0
+CR2: ffffc90001bca030 CR3: 00000000a2fb8000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __bpf_trace_ext4_mballoc_alloc+0x8b/0xc0 fs/ext4/super.c:6207
- trace_ext4_mballoc_alloc include/trace/events/ext4.h:1002 [inline]
- ext4_mb_collect_stats fs/ext4/mballoc.c:3541 [inline]
- ext4_mb_release_context fs/ext4/mballoc.c:4788 [inline]
- ext4_mb_new_blocks+0x2ad6/0x4720 fs/ext4/mballoc.c:4963
- ext4_ext_map_blocks+0x2320/0x61b0 fs/ext4/extents.c:4238
- ext4_map_blocks+0x7b8/0x1650 fs/ext4/inode.c:625
- ext4_getblk+0xad/0x530 fs/ext4/inode.c:832
- ext4_bread+0x7c/0x380 fs/ext4/inode.c:882
- ext4_append+0x15d/0x370 fs/ext4/namei.c:67
- ext4_init_new_dir fs/ext4/namei.c:2765 [inline]
- ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2810
- vfs_mkdir+0x507/0x770 fs/namei.c:3649
- do_mkdirat+0x262/0x2d0 fs/namei.c:3672
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ trace_sys_enter include/trace/events/syscalls.h:18 [inline]
+ syscall_trace_enter kernel/entry/common.c:64 [inline]
+ syscall_enter_from_user_mode+0x22c/0x290 kernel/entry/common.c:82
+ do_syscall_64+0xf/0x70 arch/x86/entry/common.c:41
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45ca17
-Code: 1f 40 00 b8 5a 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 2d c0 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 0d c0 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffee03b9878 EFLAGS: 00000206 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 0000000000059c04 RCX: 000000000045ca17
-RDX: 00007ffee03b98c5 RSI: 00000000000001ff RDI: 00007ffee03b98c0
-RBP: 0000000000000369 R08: 0000000000000000 R09: 0000000000000005
-R10: 0000000000000064 R11: 0000000000000206 R12: 0000000000000003
-R13: 00007ffee03b98b0 R14: 0000000000059aaa R15: 00007ffee03b98c0
+RIP: 0033:0x7f32dbf022e2
+Code: 48 8b 05 b9 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 77 33 48 63 fe b8 05 00 00 00 48 89 d6 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 8b 15 81 db 2b 00 f7
+RSP: 002b:00007fff10a5d048 EFLAGS: 00000246 ORIG_RAX: 0000000000000005
+RAX: ffffffffffffffda RBX: 0000000000000010 RCX: 00007f32dbf022e2
+RDX: 00007fff10a5d050 RSI: 00007fff10a5d050 RDI: 0000000000000010
+RBP: 00007f32dd08f710 R08: 00005630652cd480 R09: 0000000000001010
+R10: 00007f32dc1c0b58 R11: 0000000000000246 R12: 0000000000000000
+R13: 00005630652c69c0 R14: 00000000000000fe R15: 00005630652c69c0
 Modules linked in:
-CR2: fffff520001f4806
----[ end trace a7884d78e3b5aba2 ]---
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run1+0x113/0x3c0 kernel/trace/bpf_trace.c:1923
-Code: c7 c7 00 20 91 88 e8 ec 15 d2 ff 0f 1f 44 00 00 e8 82 07 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900056d7588 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000fa4000 RCX: dffffc0000000000
-RDX: 1ffff920001f4806 RSI: ffffffff817f383e RDI: ffffc90000fa4030
-RBP: 1ffff92000adaeb2 R08: 0000000000000000 R09: ffffffff8d0b79e7
+CR2: ffffc90001bca030
+---[ end trace 105c336028757ea7 ]---
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:613 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1974
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 ca 02 f7 ff e8 55 fb 86 06 31 ff 89 c3 89 c6 e8 1a ff
+RSP: 0018:ffffc90005257e90 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffc90001bca000 RCX: ffffffff817f7778
+RDX: 0000000000000000 RSI: ffffc90001bca038 RDI: ffffc90005257eb8
+RBP: 1ffff92000a4afd3 R08: 0000000000000000 R09: ffffffff8ce329e7
 R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000000 R14: ffff888083309e40 R15: ffffc900056d79c0
-FS:  0000000001995940(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+R13: ffffc90005257f58 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f32dd08f8c0(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff520001f4806 CR3: 0000000057ab8000 CR4: 00000000001506e0
+CR2: ffffc90001bca030 CR3: 00000000a2fb8000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
