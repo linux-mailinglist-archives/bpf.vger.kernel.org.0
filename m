@@ -2,173 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E792730C2
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320AB2730DF
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727522AbgIURQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 13:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
+        id S1728023AbgIUR3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 13:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726818AbgIURQU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:16:20 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5BFC061755
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 10:16:20 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id f18so9837454pfa.10
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 10:16:20 -0700 (PDT)
+        with ESMTP id S1727459AbgIUR3m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:29:42 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B97EC061755;
+        Mon, 21 Sep 2020 10:29:42 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id v60so10833403ybi.10;
+        Mon, 21 Sep 2020 10:29:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Q1UPOcEgn83MFtoVKisPvJ1akrMb+pPB1vXUk5YbCyQ=;
-        b=YxNYaSf6q50WlZCqkEDD/WThjuy6xCKlE/3CAo4sWH6cUOJklz08IDs2O31z/ridsf
-         +s6zJYDxdmIxh+q4nhkFdY57xWCaV7rIpVHKlmSRwJGN0WJGOprKZPZU1z/WnCVRHuCL
-         P9QA/khyL/5ZcE8ZrFxWlbAXOHn/ASxMQK5eDdR70t7M4YY0MzB7aX/GAy8pskxtWqaV
-         7OrABiERnL15c4TWtL2ogVGgdqWHBLBkIgXbanQC4j/2hcHR4L6AWH9o0/qaVvbU3e6v
-         Q4nZugCTtdOWiNunYkaDA3PuwXCwwaHQ2DXoW8IBvSZikw1UAXfF6PiJZBRMn9HVV/Ai
-         0FRg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I2F1h/EWboNIp8fpoSSezX7MP2/UtK1ptSrD/DJjbvU=;
+        b=Mf4MPPUOUNvYq8l/gH/Te+S53Ojx820Ckjo3OMdSQG1WMwEyr2eBYHCgcktxpNsZ/z
+         UzVwLNzA9RNjuxHecSZTZLd7VqGyFG6DygSg2+6QZ3yzFHc7/GhDofN54wU4jNdMYpdb
+         Q/WUNOCTvAGZ9idlaRTL6Uw+eLQ0rS4efQyIY6TDbtzCk7o19NnyG1Mr70uSi+zs0h/o
+         g8obpsnpwloAu8orhfp93qlqXfPSUNqLXHq3MZPJZr/pXqB3v1d9CfIzO8kmVrzjLFu/
+         JnziWCt4yqBioR9L6EZ41hFtuUy3nwPJ1yVGq+4Nm9/TUSFfKA1wX50uSAvOzWfrBvk7
+         ALtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Q1UPOcEgn83MFtoVKisPvJ1akrMb+pPB1vXUk5YbCyQ=;
-        b=tjUPP8S2SU8/IKh2+hGhJIKR7xmrrf+iyjgICfgUS48Qvj86xLcZbxN7UrTtkbkK+F
-         7gtPwipdURMRCZBu4ImyUDTSA1vkYJlJmkaI8UgVtcRfnqHIMYbKB/zkMCQ+Qf22E708
-         U4PdOK+ocef6f0XWLjWiV71mfDH+jZTO8pz7Bld1+bA9XgJrjIHhqLgD2LD2EQRW2HKe
-         4xOycwk+sgA3MW8EkLgniqF/vswh0+zR8Dkbl5n3w3mEKOkUvEVm6rs0WKGCuWCnrSPc
-         YkwMQjEJhADQyqbrqTJ27PoMOhyGc9cTcefSIpqqv91v9Ml/C24+GrkMrJDtk7+O1fBi
-         pTtQ==
-X-Gm-Message-State: AOAM533CAVC+37/iyyd4F01T+Md95HguDyhSNzTZhLeTLZHTMiWZVCvQ
-        JN0UX6ND3eKWJT0xI9SObNs=
-X-Google-Smtp-Source: ABdhPJwxuXGfJWBdStULprTRaygEI3+YCo0Hee3LnCuuZadQ9SByn2r//aqe8s4Te5sRlKDgxcxU9g==
-X-Received: by 2002:a63:1f4b:: with SMTP id q11mr490558pgm.444.1600708579614;
-        Mon, 21 Sep 2020 10:16:19 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id i187sm12097653pgd.82.2020.09.21.10.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 10:16:19 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 10:16:12 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Xin Hao <xhao@linux.alibaba.com>, ast@kernel.org
-Cc:     daniel@iogearbox.net, kafai@fb.com, andriin@fb.com,
-        xhao@linux.alibaba.com, bpf@vger.kernel.org
-Message-ID: <5f68dfdc66b63_1737020879@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200920144547.56771-3-xhao@linux.alibaba.com>
-References: <20200920144547.56771-1-xhao@linux.alibaba.com>
- <20200920144547.56771-3-xhao@linux.alibaba.com>
-Subject: RE: [bpf-next 2/3] sample/bpf: Add log2 histogram function support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I2F1h/EWboNIp8fpoSSezX7MP2/UtK1ptSrD/DJjbvU=;
+        b=iJGIlqn/GFu3RRDy59/gk14CqB7J08sYuK/jmA9dKWCBjDCGpKoCxY4+cCst7a30C9
+         vzJwagufUV8rCwyBcEt0ogG/5NSCVbYH76Sm/E8YpK21nqZejH+5HMY6Hh6x0g+biEew
+         BSqDDyuK223lJQAZ5ykDxJ3DZqDzwn1wjQzpJkI68hj7RYph2e2IVvaEL0V7S4G19Oz5
+         5tAdwpc+/Qz7Hoah7GhaWO7OQUJMS13aTLToDnUujj9U4fLGHbkCkONDCnQed3gA5WFx
+         XnMHTGvYJD168TxnSXeGduOCEdB3K1JpVTtjEIF4mEe1DqIzRYLCfL6LoJe4aoiXeWyY
+         hbRg==
+X-Gm-Message-State: AOAM530BojKAB49a5CZWqGDn09L+90PZDlyMnOQfk6dOsrHUtzobctuo
+        jVAxDumJUklHwP75IqxYeEWsHneyl68NOVIP6no=
+X-Google-Smtp-Source: ABdhPJwxCOkI7ZoiMGiiUJBkbWO/mO5coExoe/Gg36tUGW2E2LMl8gOWe2LjJwZFGgTyHnUfEKWChHwUXnDywc2pGME=
+X-Received: by 2002:a25:33c4:: with SMTP id z187mr1238355ybz.27.1600709381303;
+ Mon, 21 Sep 2020 10:29:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200917074453.20621-1-songmuchun@bytedance.com>
+In-Reply-To: <20200917074453.20621-1-songmuchun@bytedance.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 21 Sep 2020 10:29:30 -0700
+Message-ID: <CAEf4Bzad2LDGH_qnE+Qumy=B0N9WXGrwaK5pAdhNm53Q-XzawA@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpf: Fix potential call bpf_link_free() in atomic context
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Xin Hao wrote:
-> The relative functions is copy from bcc tools
-> source code: libbpf-tools/trace_helpers.c.
-> URL: https://github.com/iovisor/bcc.git
-> 
-> Log2 histogram can display the change of the collected
-> data more conveniently.
-> 
-> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+On Thu, Sep 17, 2020 at 12:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> The in_atomic macro cannot always detect atomic context. In particular,
+> it cannot know about held spinlocks in non-preemptible kernels. Although,
+> there is no user call bpf_link_put() with holding spinlock now. Be the
+> safe side, we can avoid this in the feature.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > ---
->  samples/bpf/common.h | 67 ++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 samples/bpf/common.h
-> 
-> diff --git a/samples/bpf/common.h b/samples/bpf/common.h
-> new file mode 100644
-> index 000000000000..ec60fb665544
-> --- /dev/null
-> +++ b/samples/bpf/common.h
-> @@ -0,0 +1,67 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of version 2 of the GNU General Public
-> + * License as published by the Free Software Foundation.
-> + */
-> +
 
-nit, for this patch and the last one we don't need the text. Just the SPDX
-identifier should be enough. Its at least in line with everything we have
-elsewhere.
+This change seems unnecessary (or at least premature), as if we ever
+get a use case that does bpf_link_put() from under held spinlock, we
+should see a warning about that (and in that case I bet code can be
+rewritten to not hold spinlock during bpf_link_put()). But on the
+other hand it makes bpf_link_put() to follow the pattern of
+bpf_map_put(), which always defers the work, so I'm ok with this. As
+Song mentioned, this is not called from a performance-critical hot
+path, so doesn't matter all that much.
 
-Also if there is a copyright on that original file we should pull it over
-as far as I understand it. I don't see anything there though so maybe
-not.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> +#define min(x, y) ({				 \
-> +	typeof(x) _min1 = (x);			 \
-> +	typeof(y) _min2 = (y);			 \
-> +	(void) (&_min1 == &_min2);		 \
-> +	_min1 < _min2 ? _min1 : _min2; })
-
-What was wrong with 'min(a,b) ((a) < (b) ? (a) : (b))' looks like
-below its just used for comparing two unsigned ints?
-
-Thanks.
-
-> +
-> +static void print_stars(unsigned int val, unsigned int val_max, int width)
-> +{
-> +	int num_stars, num_spaces, i;
-> +	bool need_plus;
-> +
-> +	num_stars = min(val, val_max) * width / val_max;
-> +	num_spaces = width - num_stars;
-> +	need_plus = val > val_max;
-> +
-> +	for (i = 0; i < num_stars; i++)
-> +		printf("*");
-> +	for (i = 0; i < num_spaces; i++)
-> +		printf(" ");
-> +	if (need_plus)
-> +		printf("+");
-> +}
-> +
-> +static void print_log2_hist(unsigned int *vals, int vals_size, char *val_type)
-> +{
-> +	int stars_max = 40, idx_max = -1;
-> +	unsigned int val, val_max = 0;
-> +	unsigned long long low, high;
-> +	int stars, width, i;
-> +
-> +	for (i = 0; i < vals_size; i++) {
-> +		val = vals[i];
-> +		if (val > 0)
-> +			idx_max = i;
-> +		if (val > val_max)
-> +			val_max = val;
-> +	}
-> +
-> +	if (idx_max < 0)
-> +		return;
-> +
-> +	printf("%*s%-*s : count    distribution\n", idx_max <= 32 ? 5 : 15, "",
-> +		idx_max <= 32 ? 19 : 29, val_type);
-> +	if (idx_max <= 32)
-> +		stars = stars_max;
-> +	else
-> +		stars = stars_max / 2;
-> +
-> +	for (i = 0; i <= idx_max; i++) {
-> +		low = (1ULL << (i + 1)) >> 1;
-> +		high = (1ULL << (i + 1)) - 1;
-> +		if (low == high)
-> +			low -= 1;
-> +		val = vals[i];
-> +		width = idx_max <= 32 ? 10 : 20;
-> +		printf("%*lld -> %-*lld : %-8d |", width, low, width, high, val);
-> +		print_stars(val, val_max, stars);
-> +		printf("|\n");
-> +	}
-> +}
-> -- 
-> 2.28.0
-> 
-
-
+>  kernel/bpf/syscall.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 178c147350f5..6347be0a5c82 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2345,12 +2345,8 @@ void bpf_link_put(struct bpf_link *link)
+>         if (!atomic64_dec_and_test(&link->refcnt))
+>                 return;
+>
+> -       if (in_atomic()) {
+> -               INIT_WORK(&link->work, bpf_link_put_deferred);
+> -               schedule_work(&link->work);
+> -       } else {
+> -               bpf_link_free(link);
+> -       }
+> +       INIT_WORK(&link->work, bpf_link_put_deferred);
+> +       schedule_work(&link->work);
+>  }
+>
+>  static int bpf_link_release(struct inode *inode, struct file *filp)
+> --
+> 2.20.1
+>
