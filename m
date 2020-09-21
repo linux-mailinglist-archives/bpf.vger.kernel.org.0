@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE5C273637
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 01:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849FA27368F
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 01:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgIUXJO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 19:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
+        id S1728726AbgIUXTA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 19:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgIUXJO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:09:14 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C20C061755;
-        Mon, 21 Sep 2020 16:09:14 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id c17so11518007ybe.0;
-        Mon, 21 Sep 2020 16:09:14 -0700 (PDT)
+        with ESMTP id S1728712AbgIUXTA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:19:00 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BB1C061755;
+        Mon, 21 Sep 2020 16:19:00 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id 133so4220573ybg.11;
+        Mon, 21 Sep 2020 16:19:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=meOCUgi/FKcBeyF/4oJEMnUyFhAWk8VY347IbxiigwU=;
-        b=cdJKUjm1sImnmu7CYgfsp5IU8EFhOfjvU7q0Yj9XKLD9mFE9oYenBNMxSwVOCYN1KD
-         /IBF4UenSdRd9OYwig/kMyX2iICOmyisflhPTcjUpwIqqTTGzjFa1xKVcjObb114fCER
-         hBR7PUdFbimahKxPbbfQKPfsVYTSV5E4wmUrLRjN3/pN1uAP87ZMiKaa1zDgAZotkhie
-         DL42Us4+M5TTtTr0dZVZMZn7jO8fWra/v0JGUMNwDaoKZ7CQK/NxtG2GeAdeoNCC3ZAU
-         6L5vpAuxYxNGtsMHve5ze+pNznicfbUmv6vZ5t6Z9sr+644NG9RKy/qCyRqkDxphxJJm
-         opeA==
+        bh=QJUxRgiR0v3ZMO04GOVBgOH6wTgbfBMvgq8YZpvWH64=;
+        b=FK/rNCgVt6x2whYc6aywikM7fpAEMerQq/hXVRPs5R88QCIF987Rmwa8hCt1y54Pzn
+         RHw+s8YYoWaYZAZZCp4dQd6G4MbHknWI98rHm3WZNQY76SxcJNdIFwWTVwgEojyyG3E8
+         /483geOvhwh6h9nUrhwYaWcdR2X+1AdDpZbLb/ZJhHXfOjeAb4zMk142rsmmwyRXVTl8
+         hIl2WQfo0jeh/wLVg5J7Ozy2djXU0ZQojYlPOxAGc5Q5YT/3HzM20YNz676hyV86JbMw
+         BdlFLwu9IxFpPSnsFRoQ5R3pQ2MmIR+NARBdO97N4Unp6MOAz8GPEQT60sPBFKIcQULQ
+         0gGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=meOCUgi/FKcBeyF/4oJEMnUyFhAWk8VY347IbxiigwU=;
-        b=HdvNNvksigc/rClIC/+F61iKPbGtslV/GcX6PEjTBKIKAYkUV7lyh6g6JoQJbefyWx
-         d3t6yROV7Q+uDilknh91OOiuSH8MW/IaPcPOwir8EZlIBiQ3gewi00sxy1Tnl3VcgBCN
-         uXknrxdOItDQDgdF7a/Rf1n/oT/dN8ZwIfBAP9gvEDeBWQQKTOfcxJtEUnT5zNkx5eBY
-         00MYL57sVz3QIHMdYIoAMkODmiPZuwrMAdtfel+bC0tgC4hkMlm0hk6yCr/dQz7w5gCH
-         wFMTT05Ic5Y/n8JoAVaop0OZ4+bj6MjnxAUZ6r3gJZL+G/YzsE63SmAJhrL3hqbS9K60
-         EGaw==
-X-Gm-Message-State: AOAM530BXjK3GeSOzGy8iMGfvYRxZfjWAnXp0CfkOMS2h6RciObReosC
-        Si1h2p2Z8IacJ6qQWGkPrrex13yWC/DPxdOv4YwBzTRTaKw4+w==
-X-Google-Smtp-Source: ABdhPJzKWOQRcV0d4FZd9nMFl66MMP0wua629Acd7MfP9on4nCvTbE6M+2M9Vh7PCCLcoLHLor8mUmcEdkJPsHIP9wo=
-X-Received: by 2002:a25:730a:: with SMTP id o10mr3128754ybc.403.1600729753556;
- Mon, 21 Sep 2020 16:09:13 -0700 (PDT)
+        bh=QJUxRgiR0v3ZMO04GOVBgOH6wTgbfBMvgq8YZpvWH64=;
+        b=NZeHzHIZxxpoJpB2mjaLHOw562SA2Ab3+mO7x33vlq3shUbDHIEkrQ/0M6ciVMAHuL
+         FbiTZDLZQGojlQW953n8NfkHzWc+kgyHd3cGQDr1U+gyT09DojfLDvTLeqFxIgxQHLyR
+         P545ifziXfkBaTE3Z0I6MvtN2G/dWzwf66w0xIZzq2CBs7nILWNxq9nS8BeXVhHxNgpr
+         rPLxmVdPqfYU7pOV3qs4gxrgeJ/ZlEaML4JnBJqOc0Z40qlBjoQu46AGSkxVjSK4nq2c
+         /Q5MvWlvN5pUYTQ8B3XI30Ytnxs1YHLUeYjnvRoR5JlkdoRCMMoBYdLJ6ZjLd08SlGFZ
+         cTkw==
+X-Gm-Message-State: AOAM533mSmSZYmi0T1DvJxXHnuiz0RL+enHHhqVli5d6VCicnhthp+Mu
+        WwT9E+wHnYOMoQYWMMKsBR6DmZ1kOfwrtW8nPGY0HKpM9fQ=
+X-Google-Smtp-Source: ABdhPJzJMzzJoeTi+OX1WRbyTwgD3wtfCul605973K6jY+Ivf82BosNT7rtCe0u2aqHKWwfVELqt3S8iCTg8bJgIddA=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr2872140ybn.230.1600730339641;
+ Mon, 21 Sep 2020 16:18:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <160051618267.58048.2336966160671014012.stgit@toke.dk> <160051618958.58048.6126760401623211021.stgit@toke.dk>
-In-Reply-To: <160051618958.58048.6126760401623211021.stgit@toke.dk>
+References: <160051618267.58048.2336966160671014012.stgit@toke.dk> <160051619067.58048.3593613677214772554.stgit@toke.dk>
+In-Reply-To: <160051619067.58048.3593613677214772554.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 16:09:02 -0700
-Message-ID: <CAEf4Bza4BXqSQMRdBm2fOFo=kV8EBR6sJraQJCxc6+x-sBwUUA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 06/10] bpf: Fix context type resolving for
- extension programs
+Date:   Mon, 21 Sep 2020 16:18:48 -0700
+Message-ID: <CAEf4BzZHAgEn3dodbqZVp==7d_KsC4nuS-AwgFvAjDFiF4L4BA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 07/10] libbpf: add support for freplace
+ attachment in bpf_link_create
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,57 +68,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+On Sat, Sep 19, 2020 at 4:51 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
 at.com> wrote:
 >
 > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Eelco reported we can't properly access arguments if the tracing
-> program is attached to extension program.
+> This adds support for supplying a target btf ID for the bpf_link_create()
+> operation, and adds a new bpf_program__attach_freplace() high-level API f=
+or
+> attaching freplace functions with a target.
 >
-> Having following program:
->
->   SEC("classifier/test_pkt_md_access")
->   int test_pkt_md_access(struct __sk_buff *skb)
->
-> with its extension:
->
->   SEC("freplace/test_pkt_md_access")
->   int test_pkt_md_access_new(struct __sk_buff *skb)
->
-> and tracing that extension with:
->
->   SEC("fentry/test_pkt_md_access_new")
->   int BPF_PROG(fentry, struct sk_buff *skb)
->
-> It's not possible to access skb argument in the fentry program,
-> with following error from verifier:
->
->   ; int BPF_PROG(fentry, struct sk_buff *skb)
->   0: (79) r1 =3D *(u64 *)(r1 +0)
->   invalid bpf_context access off=3D0 size=3D8
->
-> The problem is that btf_ctx_access gets the context type for the
-> traced program, which is in this case the extension.
->
-> But when we trace extension program, we want to get the context
-> type of the program that the extension is attached to, so we can
-> access the argument properly in the trace program.
->
-> This version of the patch is tweaked slightly from Jiri's original one,
-> since the refactoring in the previous patches means we have to get the
-> target prog type from the new variable in prog->aux instead of directly
-> from the target prog.
->
-> Reported-by: Eelco Chaudron <echaudro@redhat.com>
-> Suggested-by: Jiri Olsa <jolsa@kernel.org>
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
+>  tools/lib/bpf/bpf.c      |   18 +++++++++++++++---
+>  tools/lib/bpf/bpf.h      |    3 ++-
+>  tools/lib/bpf/libbpf.c   |   36 +++++++++++++++++++++++++++++++-----
+>  tools/lib/bpf/libbpf.h   |    3 +++
+>  tools/lib/bpf/libbpf.map |    1 +
+>  5 files changed, 52 insertions(+), 9 deletions(-)
+>
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Looks good, but let's add meaningful error messages, especially that
+it's so trivial to do and obvious what exactly is wrong.
 
->  kernel/bpf/btf.c |    9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
+> +struct bpf_link *bpf_program__attach_freplace(struct bpf_program *prog,
+> +                                             int target_fd,
+> +                                             const char *attach_func_nam=
+e)
+> +{
+> +       int btf_id;
+> +
+> +       if (!!target_fd !=3D !!attach_func_name || prog->type !=3D BPF_PR=
+OG_TYPE_EXT)
+> +               return ERR_PTR(-EINVAL);
+
+Can you please split those two and have separate error messages for
+both, following libbpf's format, e.g.,:
+
+prog '%s': should be freplace program type
+
+and
+
+prog '%s': either both or none of target FD and target function name
+should be provided
+
+> +
+> +       if (target_fd) {
+> +
+
+nit: why empty line?
+
+> +               btf_id =3D libbpf_find_prog_btf_id(attach_func_name, targ=
+et_fd);
+> +               if (btf_id < 0)
+> +                       return ERR_PTR(btf_id);
+> +
+> +               return bpf_program__attach_fd(prog, target_fd, btf_id, "f=
+replace");
+> +       } else {
+> +               /* no target, so use raw_tracepoint_open for compatibilit=
+y
+> +                * with old kernels
+> +                */
+> +               return bpf_program__attach_trace(prog);
+> +       }
+>  }
 >
 
 [...]
