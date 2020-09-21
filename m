@@ -2,197 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3AD273180
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE22B273186
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbgIUSJD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 14:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        id S1727388AbgIUSJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 14:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgIUSJD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:09:03 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F4DC061755;
-        Mon, 21 Sep 2020 11:09:03 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id x20so10948136ybs.8;
-        Mon, 21 Sep 2020 11:09:03 -0700 (PDT)
+        with ESMTP id S1727360AbgIUSJW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:09:22 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2CAC0613CF
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:09:22 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id n13so13674996edo.10
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QfbGCX6rqAMLLO8aYfzPvTkabfO3m4G1Ikaa+c1SMFA=;
-        b=I63BIIi2ifvm4BeL/sZ8GMRz2Mp1eeAloeKVVTDIlh1Q+9PU7cHSZK+vBbsGPhxW9I
-         y4/LIeiZQX59dqUIp/49lv6cimW1Trchwa3Fbm555mpL4NeXi2uOlDvil8hhbWq4igf0
-         f8c4rL/VCX9AkJ0GaqPDYksTuVmA8Tt6x3hTLPyuFhwJ5m3glhEPd/aRl2DB/W4d5siL
-         LAV52saBl52USloVnPWqKg0YUvYsiGW1tmurjYqtBZwDTfazr+oXkZdDOK7ssl/JdPOH
-         XYD7GKiUgkuXtqG9kY11dC8eHoljKep5hebFYpd1OqIe4+w9ego42GSzaFiwcdfPrydT
-         bOaQ==
+        bh=U2gRVRvTDWwfATk5t7wFIm55wjeGEEthD9jAmx8WrwQ=;
+        b=V2T3MJ1WcOFZii4NxoAWnxNlQBSG9qyAOklIbpUH+vhVdFe3M9VI02LT3Cvam9WpPI
+         UuT21fUhJvYgQPyLacXu9q5TrAknbhiJ6cmqm0QDdwSNyU1saUwJf45JRhkBwG6/kknw
+         eFi97FQTDbWXRtlGpvqo5R1PcAdBSFObnBCFBfxZchUMz3Wm/rAlQcQXukGXh02ZkdQR
+         Tjx5XwLp5sFAEwJjpAbIssiDdnrUMhvgsKzYKfXV07QmVxc7nUNWEwzX7Ut+2Tb6m3Dh
+         ejZs+LcYMZLrVAyupT44BI22vllUq2EpmffRZO2ZrPRMzVLGpLLNMwqw+dqFNdTwe2fx
+         oS2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QfbGCX6rqAMLLO8aYfzPvTkabfO3m4G1Ikaa+c1SMFA=;
-        b=HuiyKg8BTGHy/I0g4HPclZs1RgIDFzXmcuJ8dhxNKUyqgiCYJ8lFtBY2HDAyL5rLkA
-         XQ8CDoS9Ufjbs4aX8kKz8xb8J6chdNnCJfzsvCNxjvgrgCi+CeECOhQeS+AhXxgrDYzP
-         T+Y5bSN/92UEXU3PGX0drlKCJBHHNnyA8L4hAzvegU6c0pNt5eDbdDbOsgb9gIEedVEh
-         krALhLRVOshgP80jk7/eNUQV7yIPhGHT30dOmjub+J6CNXZFAC3lsEmWPFWndr36uZ7C
-         P7JeX2OmMHGfd034BhMXS6UpOIZ2OXNgtoDG+EIPQsNRlA7j37RuvPt+QOcVGpn1/+ej
-         ucgg==
-X-Gm-Message-State: AOAM530BkQL1R9j2+2rDdxmvX1y3Ms+GR/PjHXLx9xJxuXnVhsLj2JPb
-        TfgTq3AYufDY04d9U6BIZ8NhhgHjG0XsAiSLofqpD6G9N9Q=
-X-Google-Smtp-Source: ABdhPJy5hPMYFdwvUUs9y7HP9iFro0OtSXFlPovkff0E8NtjsKQAA1topvkUtqkO9JS6VvFYUEWJUpTz+o+7NOCG4Hc=
-X-Received: by 2002:a25:4446:: with SMTP id r67mr1484677yba.459.1600711742376;
- Mon, 21 Sep 2020 11:09:02 -0700 (PDT)
+        bh=U2gRVRvTDWwfATk5t7wFIm55wjeGEEthD9jAmx8WrwQ=;
+        b=NlcVlO0REyDWqErvvilYVeqoV3z+1ZM8yY0G/b3TYXndYo9oFq0wGfq8KWNjIeUm86
+         7/6ScV4n3Qzfkn1XSl9dKeN+3R55HCd8hWF9azx/rfj0uk2DsU5+acNavppQRq/R9ZyH
+         mNcvYM4Ly8316IsuXIsVZqx+K/xWm3CZMXtwx5zA1mhJL/UrVc9qwLGtQ6GB4iJEdBBR
+         Zq8oKdA8LHLwgxjxdHG3a/ESrwzx1DNUpr0qB8jFQ+DyZJtycl/EiiDUsm1BXhz/xo6v
+         UopNXtZ6lnMgA7yYgPXhacsUQEAogq/0c155g9HPbNOtIoIOW0fgaVARtcFlEvCFBSXX
+         m0+w==
+X-Gm-Message-State: AOAM530Eg1QHa6oPp/aa4GBkr229bjbj7jE+wKuBC+d3vr0DhuBj7XF/
+        QzZ96DuS0ByMWIPleXchZqpfV0LpJ5LnIw1Kx4forYRo7JRZTw==
+X-Google-Smtp-Source: ABdhPJxzS1PvJpZ0m2Z/pTgp6nyi4eUGvBkhh/prcxCQ3x14BnnFzuu2H8xHujssxKMeV+RGxPHlRe66XeYpkaMAD90=
+X-Received: by 2002:a05:6402:cba:: with SMTP id cn26mr173873edb.230.1600711760904;
+ Mon, 21 Sep 2020 11:09:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916223512.2885524-1-haoluo@google.com> <20200916223512.2885524-5-haoluo@google.com>
-In-Reply-To: <20200916223512.2885524-5-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 11:08:51 -0700
-Message-ID: <CAEf4BzbJFE+Yxsy+VEwr-2_JcACh+jbn4WyiS+ECnVVNjC=bnA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/6] bpf: Introduce bpf_per_cpu_ptr()
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
+References: <cover.1600661418.git.yifeifz2@illinois.edu> <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
+In-Reply-To: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 21 Sep 2020 20:08:54 +0200
+Message-ID: <CAG48ez3k0_7Vev_O=uV_WVuUGK6BPA0RyrYXMYSDV4DTMMe26g@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 2/2] seccomp/cache: Cache filter results that
+ allow syscalls
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 3:39 PM Hao Luo <haoluo@google.com> wrote:
->
-> Add bpf_per_cpu_ptr() to help bpf programs access percpu vars.
-> bpf_per_cpu_ptr() has the same semantic as per_cpu_ptr() in the kernel
-> except that it may return NULL. This happens when the cpu parameter is
-> out of range. So the caller must check the returned value.
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->  include/linux/bpf.h            |  4 +++
->  include/linux/btf.h            | 11 ++++++
->  include/uapi/linux/bpf.h       | 18 ++++++++++
->  kernel/bpf/btf.c               | 10 ------
->  kernel/bpf/helpers.c           | 18 ++++++++++
->  kernel/bpf/verifier.c          | 64 ++++++++++++++++++++++++++++++++--
->  kernel/trace/bpf_trace.c       |  2 ++
->  tools/include/uapi/linux/bpf.h | 18 ++++++++++
->  8 files changed, 132 insertions(+), 13 deletions(-)
->
-
-I already acked this, but see my concern about O(N) look up for
-.data..percpu. Feel free to follow up on this with a separate patch.
-Thanks!
-
+On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
 [...]
+> We do this by creating a per-task bitmap of permitted syscalls.
+> If seccomp filter is invoked we check if it is cached and if so
+> directly return allow. Else we call into the cBPF filter, and if
+> the result is an allow then we cache the results.
 
-> @@ -4003,6 +4008,15 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->                         if (type != expected_type)
->                                 goto err_type;
->                 }
-> +       } else if (arg_type == ARG_PTR_TO_PERCPU_BTF_ID) {
-> +               expected_type = PTR_TO_PERCPU_BTF_ID;
-> +               if (type != expected_type)
-> +                       goto err_type;
-> +               if (!reg->btf_id) {
-> +                       verbose(env, "Helper has invalid btf_id in R%d\n", regno);
-> +                       return -EACCES;
-> +               }
-> +               meta->ret_btf_id = reg->btf_id;
+What? Why? We already have code to statically evaluate the filter for
+all syscall numbers. We should be using the results of that instead of
+re-running the filter and separately caching the results.
 
-FYI, this will conflict with Lorenz's refactoring, so you might need
-to rebase and solve the conflicts if his patch set lands first.
+> The cache is per-task
 
->         } else if (arg_type == ARG_PTR_TO_BTF_ID) {
->                 bool ids_match = false;
->
-> @@ -5002,6 +5016,30 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
->                 regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
->                 regs[BPF_REG_0].id = ++env->id_gen;
->                 regs[BPF_REG_0].mem_size = meta.mem_size;
-> +       } else if (fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL) {
-> +               const struct btf_type *t;
-> +
-> +               mark_reg_known_zero(env, regs, BPF_REG_0);
-> +               t = btf_type_skip_modifiers(btf_vmlinux, meta.ret_btf_id, NULL);
-> +               if (!btf_type_is_struct(t)) {
-> +                       u32 tsize;
-> +                       const struct btf_type *ret;
-> +                       const char *tname;
-> +
-> +                       /* resolve the type size of ksym. */
-> +                       ret = btf_resolve_size(btf_vmlinux, t, &tsize);
-> +                       if (IS_ERR(ret)) {
-> +                               tname = btf_name_by_offset(btf_vmlinux, t->name_off);
-> +                               verbose(env, "unable to resolve the size of type '%s': %ld\n",
-> +                                       tname, PTR_ERR(ret));
-> +                               return -EINVAL;
-> +                       }
-> +                       regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
-> +                       regs[BPF_REG_0].mem_size = tsize;
-> +               } else {
-> +                       regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
-> +                       regs[BPF_REG_0].btf_id = meta.ret_btf_id;
-> +               }
->         } else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
->                 int ret_btf_id;
->
-> @@ -7413,6 +7451,7 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
->                         dst_reg->mem_size = aux->btf_var.mem_size;
->                         break;
->                 case PTR_TO_BTF_ID:
-> +               case PTR_TO_PERCPU_BTF_ID:
->                         dst_reg->btf_id = aux->btf_var.btf_id;
->                         break;
->                 default:
-> @@ -9313,10 +9352,14 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
->                                struct bpf_insn *insn,
->                                struct bpf_insn_aux_data *aux)
->  {
-> -       u32 type, id = insn->imm;
-> +       u32 datasec_id, type, id = insn->imm;
-> +       const struct btf_var_secinfo *vsi;
-> +       const struct btf_type *datasec;
->         const struct btf_type *t;
->         const char *sym_name;
-> +       bool percpu = false;
->         u64 addr;
-> +       int i;
->
->         if (!btf_vmlinux) {
->                 verbose(env, "kernel is missing BTF, make sure CONFIG_DEBUG_INFO_BTF=y is specified in Kconfig.\n");
-> @@ -9348,12 +9391,27 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
->                 return -ENOENT;
->         }
->
-> +       datasec_id = btf_find_by_name_kind(btf_vmlinux, ".data..percpu",
-> +                                          BTF_KIND_DATASEC);
+Please don't. The static results are per-filter, so the bitmask(s)
+should also be per-filter and immutable.
 
-this is a relatively expensive O(N) operation, it probably makes sense
-to cache it (there are about 80'000 types now in BTF for my typical
-kernel config, so iterating that much for every single ldimm64 for
-ksym is kind of expensive.
+> minimize thread-synchronization issues in
+> the hot path of cache lookup
 
-> +       if (datasec_id > 0) {
-> +               datasec = btf_type_by_id(btf_vmlinux, datasec_id);
-> +               for_each_vsi(i, datasec, vsi) {
-> +                       if (vsi->type == id) {
-> +                               percpu = true;
-> +                               break;
-> +                       }
-> +               }
-> +       }
-> +
+There should be no need for synchronization because those bitmasks
+should be immutable.
 
-[...]
+> and to avoid different architecture
+> numbers sharing the same cache.
+
+There should be separate caches for separate architectures, and we
+should precompute the results for all architectures. (We only have
+around 2 different architectures max, so it's completely reasonable to
+precompute and store all that.)
+
+> To account for one thread changing the filter for another thread of
+> the same process, the per-task struct also contains a pointer to
+> the filter the cache is built on. When the cache lookup uses a
+> different filter then the last lookup, the per-task cache bitmap is
+> cleared.
+
+Unnecessary complexity, we don't need that if we make the bitmasks immutable.
