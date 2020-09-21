@@ -2,218 +2,361 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E97273118
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774E227311B
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgIURq4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 13:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
+        id S1727534AbgIURre (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 13:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgIURqz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:46:55 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF21C061755;
-        Mon, 21 Sep 2020 10:46:55 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id a2so10911519ybj.2;
-        Mon, 21 Sep 2020 10:46:55 -0700 (PDT)
+        with ESMTP id S1726436AbgIURre (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 13:47:34 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD27C061755
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 10:47:33 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id lo4so18939873ejb.8
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 10:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HfNt5vWZDR1lPA9FbgPQ9vu/5UtFcllE18mjzZBY4VY=;
-        b=XamGuM61FfYdCU5XYshINnAeV85OwYt7gJkZjZ9Wu0CJpNLUzEFsiPibEKZJYgmi9f
-         a2UijcEpAAdeJkJnVXzEt4euFQ7tYbZ4TfBjBhmWr8+cOoyNNAo/CYzyE2eTfOXgXIoG
-         opa32nuPaepbwiHeRXqc42xj0x6xMNj3FRjcKtqiDWq4sPQHdGEkqXq0XjbWjNyRcdkS
-         OKBWm/mPNU1zkihytYgZXlNmQo34fCJpYUIRFUJ2MVv+rkc0GjBXvmfvDKUf3wmIw3HX
-         7f8eUD4ZtxO9JyY66jv/bP71L8Pts977mL9eW6w/qQxlQtgI5LT+knmcC+/23zL7UcOo
-         dOeA==
+        bh=xVoTB5ka9ij/JNpMUQJi3uemYQWRbk5sRyxB8af0Yk4=;
+        b=iqJprXevp6YDSedAolM02uxv2cp/VvZkDrKCCaO+89H5aB2fW4FG0aF+s3sWCB3S16
+         LrGTxEKt5vKKXLbFEmE8dYK0Ety4W7YGQlALf6fXgM7HaJQXNIXZL29uGpoqtKz+2naV
+         MmSszpAeuePE2GFK55RuS22V2W88ZD458SxQlfYzxK7EJwN8ZVtHZ4CowY54hnAe5QJC
+         xJEHk+lHx884k8Ri8/X2BtjIb0eoqy29IjFDXGTYAa/7HuPWpBgyIFIVB8nosZIcFvKB
+         nkqQkVBTSGebVutfgBiREpafaBBHUM991eqqzZuZwheCK+pE4a+tcor/dw+HgnDQx2Vi
+         gwNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HfNt5vWZDR1lPA9FbgPQ9vu/5UtFcllE18mjzZBY4VY=;
-        b=SFuDl8taPD4QcNWRzI5uBGvIlenQka0lBfD+Rj82Chz1cYmwcfSVzpDKL64ufh6+cx
-         ECh/Tt8XooPaUzjNm4quKtivW5DWhyFtZ7YzPLeYhIqVslQjK246KHJrar49RkPspUzT
-         nK4Tu5ua+WBUkrPprEz+tD4jfWllvxlYygduVFoVMxsahhmruZBTUoTBqLsxP2sb+6fW
-         yg1ujlAQmD3uObi7T8PFWp+wKaIdPucaQkY/TOnuOUTqSXUu8mKe2i9+yU0PK//doN5v
-         KITgEgnm04t7WTvRA1tNyeo0CEkuPIAf/Pg9/xq8Mcv8KjTSzQlJMxZ/H05HCnWfbI1X
-         pO1g==
-X-Gm-Message-State: AOAM531ckby8QihVlYu5Cga2Guvz51JyoY4cJ3qkoEZc/ENyLAQ7JYhz
-        oHN2nN+QCsMXF1iYCJr1UeuaXVsk5t23baiKgLw=
-X-Google-Smtp-Source: ABdhPJwFof1Jm1VlOQYcd/UAhg0TU3xozlDHOgPmLh5i5rouLBioL6SolvBnnApuIqZuL5UeNHmhMU35oODmhcIoyjI=
-X-Received: by 2002:a25:730a:: with SMTP id o10mr1354044ybc.403.1600710413382;
- Mon, 21 Sep 2020 10:46:53 -0700 (PDT)
+        bh=xVoTB5ka9ij/JNpMUQJi3uemYQWRbk5sRyxB8af0Yk4=;
+        b=IkIXKHVCq28g8lLhNiayQ5tPhLPuq3fpz/QICRHbKQa/4cpZs0ZKJd3n5wZyt17nXU
+         WCNrhqDwE5kqCa85NBtx6Oi3SQT61k7NaYKQeYCweaFErOeWr3aSDgEahJwSCmWwtSJL
+         sU/fCa43lv9lVs6mKimtidpNjghqlgGUOUSLefsYoYgjtdqp5yRHeklCRnLhI0wLka/W
+         Oa/bK7Awen/RBv/+6uuxDKJjvrAww0e9sEQjo8UzRrnJgLUmZnqOkYgB/rh1I/EkWV/p
+         seO7H+koHYXZuQcq40/UnZ1pZbVqg2sWdi8EWkei6fgVTf3vKn+/VS2asjMieENlkfC5
+         9Jjg==
+X-Gm-Message-State: AOAM532H/0/6qt16qoGje/fDFYjwyvJWj4oi1Qh14T0VheyVOo3mmc+z
+        2FXOlKGRCWwxIaGXaKYNPRtBsh0bKNKgQVQ9BNaK6A==
+X-Google-Smtp-Source: ABdhPJzUx+dGF1qmUJjldN5R/Kp/CHg8b3GsPokZFi763Z3EI3PzJUFPr6qBkBdrErj+QF7fFBLW4ARTCHeUiHBtnXc=
+X-Received: by 2002:a17:906:9389:: with SMTP id l9mr581002ejx.537.1600710452090;
+ Mon, 21 Sep 2020 10:47:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200916223512.2885524-1-haoluo@google.com> <20200916223512.2885524-2-haoluo@google.com>
-In-Reply-To: <20200916223512.2885524-2-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 10:46:42 -0700
-Message-ID: <CAEf4BzayCya8R1PBisbDpZZmnKuiQkNgXQk1ZSpjDBHP2BSRiw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] bpf: Introduce pseudo_btf_id
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
+References: <cover.1600661418.git.yifeifz2@illinois.edu> <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
+In-Reply-To: <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 21 Sep 2020 19:47:05 +0200
+Message-ID: <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 3:39 PM Hao Luo <haoluo@google.com> wrote:
+On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
+> access any syscall arguments or instruction pointer. To facilitate
+> this we need a static analyser to know whether a filter will
+> access. This is implemented here with a pseudo-emulator, and
+> stored in a per-filter bitmap. Each seccomp cBPF instruction,
+> aside from ALU (which should rarely be used in seccomp), gets a
+> naive best-effort emulation for each syscall number.
 >
-> Pseudo_btf_id is a type of ld_imm insn that associates a btf_id to a
-> ksym so that further dereferences on the ksym can use the BTF info
-> to validate accesses. Internally, when seeing a pseudo_btf_id ld insn,
-> the verifier reads the btf_id stored in the insn[0]'s imm field and
-> marks the dst_reg as PTR_TO_BTF_ID. The btf_id points to a VAR_KIND,
-> which is encoded in btf_vminux by pahole. If the VAR is not of a struct
-> type, the dst reg will be marked as PTR_TO_MEM instead of PTR_TO_BTF_ID
-> and the mem_size is resolved to the size of the VAR's type.
+> The emulator works by following all possible (without SAT solving)
+> paths the filter can take. Every cBPF register / memory position
+> records whether that is a constant, and of so, the value of the
+> constant. Loading from struct seccomp_data is considered constant
+> if it is a syscall number, else it is an unknown. For each
+> conditional jump, if the both arguments can be resolved to a
+> constant, the jump is followed after computing the result of the
+> condition; else both directions are followed, by pushing one of
+> the next states to a linked list of next states to process. We
+> keep a finite number of pending states to process.
+
+Is this actually necessary, or can we just bail out on any branch that
+we can't statically resolve?
+
+struct seccomp_data only contains the syscall number (constant for a
+given filter evaluation), the architecture number (also constant), the
+instruction pointer (basically never used in seccomp filters), and the
+syscall arguments. Any normal seccomp filter first branches on the
+architecture, then branches on the syscall number, and then branches
+on arguments if necessary.
+
+This optimization could only be improved by the "follow both branches"
+logic if a seccomp program branches on either the instruction pointer
+or an argument *before* looking at the syscall number, and later comes
+to the same conclusion on *both* sides of the check. It would have to
+be something like:
+
+if (instruction_pointer == 0xasdf1234) {
+  if (nr == mmap) return ACCEPT;
+  [...]
+  return KILL;
+} else {
+  if (nr == mmap) return ACCEPT;
+  [...]
+  return KILL;
+}
+
+I've never seen anyone do something like this. And the proposed patch
+would still bail out on such a filter because of the load from the
+instruction_pointer field; I don't think it would even be possible to
+reach a branch with an unknown condition with this patch. So I think
+we should probably get rid of this extra logic for keeping track of
+multiple execution states for now. That would make the code a lot
+simpler.
+
+
+Also: If it turns out that the time spent in seccomp_cache_prepare()
+is measurable for large filters, a possible improvement would be to
+keep track of the last syscall number for which the result would be
+the same as for the current one, such that instead of evaluating the
+filter for one instruction at a time, it would effectively be
+evaluated for a range at a time. That should be pretty straightforward
+to implement, I think.
+
+> The emulation is halted if it reaches a return, or if it reaches a
+> read from struct seccomp_data that reads an offset that is neither
+> syscall number or architecture number. In the latter case, we mark
+> the syscall number as not okay for seccomp to cache. If a filter
+> depends on more filters, then if its dependee cannot process the
+> syscall then the depender is also marked not to process the syscall.
 >
-> From the VAR btf_id, the verifier can also read the address of the
-> ksym's corresponding kernel var from kallsyms and use that to fill
-> dst_reg.
+> We also do a single pass on the entire filter instructions before
+> performing emulation. If none of the filter instructions load from
+> the troublesome offsets, then the filter is considered "trivial",
+> and all syscalls are marked okay for seccomp to cache.
 >
-> Therefore, the proper functionality of pseudo_btf_id depends on (1)
-> kallsyms and (2) the encoding of kernel global VARs in pahole, which
-> should be available since pahole v1.18.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 > ---
-
-Looks good, few minor nits if you are going to post another version
-anyways. Assuming BPF offload change I mentioned is ok:
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  include/linux/bpf_verifier.h   |   7 ++
->  include/linux/btf.h            |  15 ++++
->  include/uapi/linux/bpf.h       |  36 +++++++---
->  kernel/bpf/btf.c               |  15 ----
->  kernel/bpf/verifier.c          | 125 +++++++++++++++++++++++++++++----
->  tools/include/uapi/linux/bpf.h |  36 +++++++---
->  6 files changed, 188 insertions(+), 46 deletions(-)
+>  arch/x86/Kconfig |  27 ++++
+>  kernel/seccomp.c | 323 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 349 insertions(+), 1 deletion(-)
 >
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 53c7bd568c5d..6a9dd0279ea4 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -308,6 +308,13 @@ struct bpf_insn_aux_data {
->                         u32 map_index;          /* index into used_maps[] */
->                         u32 map_off;            /* offset from value base address */
->                 };
-> +               struct {
-> +                       u32 reg_type;           /* type of pseudo_btf_id */
-
-nit: there is an explicit enum for this: enum bpf_reg_type, which
-matches struct bpf_reg_state's type field as well.
-
-> +                       union {
-> +                               u32 btf_id;     /* btf_id for struct typed var */
-> +                               u32 mem_size;   /* mem_size for non-struct typed var */
-> +                       };
-> +               } btf_var;
->         };
->         u64 map_key_state; /* constant (32 bit) key tracking for maps */
->         int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
-
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
 [...]
+> +choice
+> +       prompt "Seccomp filter cache"
+> +       default SECCOMP_CACHE_NONE
 
+I think this should be on by default.
 
-> +/* replace pseudo btf_id with kernel symbol address */
-> +static int check_pseudo_btf_id(struct bpf_verifier_env *env,
-> +                              struct bpf_insn *insn,
-> +                              struct bpf_insn_aux_data *aux)
+> +       depends on SECCOMP
+> +       depends on SECCOMP_FILTER
+
+SECCOMP_FILTER already depends on SECCOMP, so the "depends on SECCOMP"
+line is unnecessary.
+
+> +       help
+> +         Seccomp filters can potentially incur large overhead for each
+> +         system call. This can alleviate some of the overhead.
+> +
+> +         If in doubt, select 'none'.
+
+This should not be in arch/x86. Other architectures, such as arm64,
+should also be able to use this without extra work.
+
+> +config SECCOMP_CACHE_NONE
+> +       bool "None"
+> +       help
+> +         No caching is done. Seccomp filters will be called each time
+> +         a system call occurs in a seccomp-guarded task.
+> +
+> +config SECCOMP_CACHE_NR_ONLY
+> +       bool "Syscall number only"
+> +       help
+> +         This is enables a bitmap to cache the results of seccomp
+> +         filters, if the filter allows the syscall and is independent
+> +         of the syscall arguments.
+
+Maybe reword this as something like: "For each syscall number, if the
+seccomp filter has a fixed result, store that result in a bitmap to
+speed up system calls."
+
+> This requires around 60 bytes per
+> +         filter and 70 bytes per task.
+> +
+> +endchoice
+> +
+>  source "kernel/Kconfig.hz"
+>
+>  config KEXEC
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 3ee59ce0a323..d8c30901face 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -143,6 +143,27 @@ struct notification {
+>         struct list_head notifications;
+>  };
+>
+> +#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
+> +/**
+> + * struct seccomp_cache_filter_data - container for cache's per-filter data
+> + *
+> + * @syscall_ok: A bitmap where each bit represent whether seccomp is allowed to
+
+nit: represents
+
+> + *             cache the results of this syscall.
+> + */
+> +struct seccomp_cache_filter_data {
+> +       DECLARE_BITMAP(syscall_ok, NR_syscalls);
+> +};
+> +
+> +#define SECCOMP_EMU_MAX_PENDING_STATES 64
+> +#else
+> +struct seccomp_cache_filter_data { };
+> +
+> +static inline int seccomp_cache_prepare(struct seccomp_filter *sfilter)
 > +{
-> +       u32 type, id = insn->imm;
-> +       const struct btf_type *t;
-> +       const char *sym_name;
-> +       u64 addr;
+> +       return 0;
+> +}
+> +#endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
+[...]
+> +/**
+> + * seccomp_emu_step - step one instruction in the emulator
+> + * @env: The emulator environment
+> + * @state: The emulator state
+> + *
+> + * Returns 1 to halt emulation, 0 to continue, or -errno if error occurred.
+> + */
+> +static int seccomp_emu_step(struct seccomp_emu_env *env,
+> +                           struct seccomp_emu_state *state)
+> +{
+> +       struct sock_filter *ftest = &env->filter[state->pc++];
+> +       struct seccomp_emu_state *new_state;
+> +       u16 code = ftest->code;
+> +       u32 k = ftest->k;
+> +       u32 operand;
+> +       bool compare;
+> +       int reg_idx;
 > +
-> +       if (!btf_vmlinux) {
-> +               verbose(env, "kernel is missing BTF, make sure CONFIG_DEBUG_INFO_BTF=y is specified in Kconfig.\n");
-> +               return -EINVAL;
-> +       }
+> +       switch (BPF_CLASS(code)) {
+> +       case BPF_LD:
+> +       case BPF_LDX:
+> +               reg_idx = BPF_CLASS(code) == BPF_LDX;
 > +
-> +       t = btf_type_by_id(btf_vmlinux, id);
-> +       if (!t) {
-> +               verbose(env, "ldimm64 insn specifies invalid btf_id %d.\n", id);
-> +               return -ENOENT;
-> +       }
-> +
-> +       if (insn[1].imm != 0) {
-> +               verbose(env, "reserved field (insn[1].imm) is used in pseudo_btf_id ldimm64 insn.\n");
-> +               return -EINVAL;
-> +       }
+> +               switch (BPF_MODE(code)) {
+> +               case BPF_IMM:
+> +                       state->reg_known[reg_idx] = true;
+> +                       state->reg_const[reg_idx] = k;
+> +                       break;
+> +               case BPF_ABS:
+> +                       if (k == offsetof(struct seccomp_data, nr)) {
+> +                               state->reg_known[reg_idx] = true;
+> +                               state->reg_const[reg_idx] = env->nr;
+> +                       } else {
+> +                               state->reg_known[reg_idx] = false;
 
-nit: I'd do this check first, before you look up type and check all
-other type-related conditions
+This is completely broken. This emulation logic *needs* to run with
+the proper architecture identifier. (And for platforms like x86-64
+that have compatibility support for a second ABI, the emulation should
+probably also be done for that ABI, and there should be separate
+bitmasks for that ABI.)
+
+With the current logic, you will (almost) never actually have
+permitted syscalls in the bitmask, because filters fundamentally have
+to return different results for different ABIs - the syscall numbers
+mean completely different things under different ABIs.
+
+> +                               if (k != offsetof(struct seccomp_data, arch)) {
+> +                                       env->syscall_ok = false;
+> +                                       return 1;
+> +                               }
+> +                       }
+
+This would read nicer as:
+
+if (k == offsetof(struct seccomp_data, nr)) {
+
+} else if (k == offsetof(struct seccomp_data, arch)) {
+
+} else {
+  env->syscall_ok = false;
+  return 1;
+}
 
 > +
-> +       if (!btf_type_is_var(t)) {
-> +               verbose(env, "pseudo btf_id %d in ldimm64 isn't KIND_VAR.\n",
-> +                       id);
-> +               return -EINVAL;
-> +       }
+> +                       break;
+> +               case BPF_MEM:
+> +                       state->reg_known[reg_idx] = state->reg_known[2 + k];
+> +                       state->reg_const[reg_idx] = state->reg_const[2 + k];
+> +                       break;
+> +               default:
+> +                       state->reg_known[reg_idx] = false;
+> +               }
 > +
-> +       sym_name = btf_name_by_offset(btf_vmlinux, t->name_off);
-> +       addr = kallsyms_lookup_name(sym_name);
-> +       if (!addr) {
-> +               verbose(env, "ldimm64 failed to find the address for kernel symbol '%s'.\n",
-> +                       sym_name);
-> +               return -ENOENT;
-> +       }
+> +               return 0;
+> +       case BPF_ST:
+> +       case BPF_STX:
+> +               reg_idx = BPF_CLASS(code) == BPF_STX;
 > +
-> +       insn[0].imm = (u32)addr;
-> +       insn[1].imm = addr >> 32;
+> +               state->reg_known[2 + k] = state->reg_known[reg_idx];
+> +               state->reg_const[2 + k] = state->reg_const[reg_idx];
+
+I think we should probably just bail out if we see anything that's
+BPF_ST/BPF_STX. I've never seen seccomp filters that actually use that
+part of cBPF.
+
+But in case we do need this, maybe instead of using "2 +" for all
+these things, the cBPF memory slots should be in a separate array.
+
+> +               return 0;
+> +       case BPF_ALU:
+> +               state->reg_known[0] = false;
+> +               return 0;
+> +       case BPF_JMP:
+> +               if (BPF_OP(code) == BPF_JA) {
+> +                       state->pc += k;
+> +                       return 0;
+> +               }
 > +
+> +               if (ftest->jt == ftest->jf) {
+> +                       state->pc += ftest->jt;
+> +                       return 0;
+> +               }
+
+Why is this check here? Is anyone actually creating filters with such
+obviously nonsensical branches? I know that there are highly ludicrous
+filters out there, but I don't think I've ever seen this specific kind
+of useless code.
+
+> +               if (!state->reg_known[0])
+> +                       goto both_cases;
+[...]
+> +both_cases:
+> +               if (env->next_state_len >= SECCOMP_EMU_MAX_PENDING_STATES)
+> +                       return -E2BIG;
+
+Even if we cap the maximum number of pending states, this could still
+run for an almost unbounded amount of time, I think. Which is bad. If
+this code was actually necessary, we'd probably want to track
+separately the total number of branches we've seen and so on.
+
+But as I said, I think this code should just be removed instead.
 
 [...]
-
-> @@ -9442,6 +9533,14 @@ static int replace_map_fd_with_map_ptr(struct bpf_verifier_env *env)
->                                 /* valid generic load 64-bit imm */
->                                 goto next_insn;
->
-> +                       if (insn[0].src_reg == BPF_PSEUDO_BTF_ID) {
-> +                               aux = &env->insn_aux_data[i];
-> +                               err = check_pseudo_btf_id(env, insn, aux);
-> +                               if (err)
-> +                                       return err;
-> +                               goto next_insn;
-> +                       }
-> +
->                         /* In final convert_pseudo_ld_imm64() step, this is
->                          * converted into regular 64-bit imm load insn.
->                          */
-> @@ -11392,10 +11491,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
->         if (is_priv)
->                 env->test_state_freq = attr->prog_flags & BPF_F_TEST_STATE_FREQ;
->
-> -       ret = replace_map_fd_with_map_ptr(env);
-> -       if (ret < 0)
-> -               goto skip_full_check;
-
-I'm not familiar with BPF offload stuff, so just flagging a change
-here: previously offloaded BPF programs, when passed to offload's
-verifier prep routine would already have ldimm64 processes, now they
-won't. This might not be an issue and not an expectation we want, but
-it would be nice if someone who knows something about offload stuff
-confirms that this is ok.
-
-> -
->         if (bpf_prog_is_dev_bound(env->prog->aux)) {
->                 ret = bpf_prog_offload_verifier_prep(env->prog);
->                 if (ret)
-
+> +       }
+> +}
 [...]
