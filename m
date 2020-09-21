@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC163271A6A
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 07:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0C5271A6B
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 07:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgIUFfk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 01:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
+        id S1726196AbgIUFfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 01:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbgIUFfj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 01:35:39 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B064FC061755
-        for <bpf@vger.kernel.org>; Sun, 20 Sep 2020 22:35:39 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id z25so14097748iol.10
-        for <bpf@vger.kernel.org>; Sun, 20 Sep 2020 22:35:39 -0700 (PDT)
+        with ESMTP id S1726104AbgIUFfl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 01:35:41 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F9CC061755
+        for <bpf@vger.kernel.org>; Sun, 20 Sep 2020 22:35:40 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id j2so14119406ioj.7
+        for <bpf@vger.kernel.org>; Sun, 20 Sep 2020 22:35:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LkkNGOg6Wfx51qxpVQ0Q7bNOsLXnpcDTYAMaP869ejY=;
-        b=b1vMaTMjETLIMlAcq8T0D5XHuAkym0hOm1M2MQ9ItbLsjPj+qeDQf/u3ZcDmxDuDm7
-         n03sYOZL9KYiGj9uvRrZgX7dkw58a1KD23xmYyRJYnyqnse7+g3f9/0Af25+NJOGwC8H
-         t86dDfrsh3RQIQ7y4YZE4AaBP1E59noeHjGNLOmuCMNX4MCyL30/6asc6rK/GtnMb99k
-         FWQ7V0JSEm0f8gUXHnoInkBBRtiwS5MC1+IJF+qB2ckDtD4HhLfI9+BiPUBEbRLRMy/2
-         nOE9VcG/RSE2YIwRPZBw4u1dbew6ULy9JJNtZJ08JTEb1Is2kERWHJF5uWfH6Cc2lGcT
-         r5zA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/Wc8Z1KYCcAuZ91aOoXOoYnVpxCJ/RupYtBU5oGvkt0=;
+        b=K+7oInokwUiTRmodtvifYob4PI1eDLNpaNf1SBaHOBQvZFhBP77/sH4pcJrR0QUMgX
+         zFhCbuTs+HqV1HSy+8D0d7ahU/CpS+KJ6U2RYNCAPjsHMOEqHD4z5faRzA3SSUtYlxpg
+         xXa0Ebx/yWa0zGyTIgxnNo9s0myql/YXjrHzg+E7f1OdDPlVJpx3BXhYmFt4rSLhZ4AE
+         LaGx3oyS+1VzatAddSHUPlcYVE5bKFLPVzHvqCOWY7FYkg9x/Hgj0ZkhsyFDP2NfS2un
+         0avgdij9easJZhw+p69mgaZBLTGeIlSfQsGY7K/WPBtRs1TkWyYWuJIv5kX3V0knT432
+         03ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LkkNGOg6Wfx51qxpVQ0Q7bNOsLXnpcDTYAMaP869ejY=;
-        b=d5Cj3fv0UClgeHKtVwSFlaTi+hJ3mq8sgRFhjoNzhJ0ZS7qCy70GBl9SvFRD3zhxSV
-         p/JdAWDPwwNnRuagaWnWFOOEE4d4pw2WKPydfo0OCVDfpX8+f7kD63uztLmFwE9BlEl5
-         D/YqPf3B4nzR9lKdoa0UDruGH+sfb5GC7bi3CjJLwNhzrMxQeu7hO1fA4948AiqZa7Bo
-         DBzFme9OOeeeUepzu0aAL2nrjzKZJW18eEf7zLhzMnrZnwR5leaIireZPmpep6W2jEzS
-         GvdDZEBQSKyoOd8syYSRXseDVYSywgy3E7nZL0uepPt/yxnS5Rds9xrW87VNw4erDGBz
-         WKyQ==
-X-Gm-Message-State: AOAM530e3kq/3pLxJ6V3CeXVLxrMtgQ5XHyikri9BgYf3cmwOxWlPyf9
-        mYR+cSDOQTostR6gbNzL2G8=
-X-Google-Smtp-Source: ABdhPJz+uSWfbpjoJhc4UfQrMMIG0oh9ZBikomG3W2B6uyOBCZ3p/Y920DR1cYH57ZlLDD2s6FuqJA==
-X-Received: by 2002:a6b:610d:: with SMTP id v13mr34989417iob.189.1600666538970;
-        Sun, 20 Sep 2020 22:35:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/Wc8Z1KYCcAuZ91aOoXOoYnVpxCJ/RupYtBU5oGvkt0=;
+        b=RcgBjsru5HAH14kJLbycb7Y+++DFbMaLSPWidh3FBF1UeOrB4CrDJORXVo+AFeZZSd
+         4iZyUltwryywpSqFJMTaIe7ibQpNIVH2fEZNvC0eHORpOFWzPssrfAsHq+35i6LMv9yu
+         Ji3eEfQEEe0HMOR86cEFuip6csJS29hITo4JpV0t3CkIVhiAOdy7u8bGHpAoXny5Cjal
+         ZMd6hIlWJfQmig/7eqNgBU6tV3HbSAhrGCSJfMYvHhqHs4CzrvJpgD7d9by+wKuacSPG
+         5D0i26I0wrzWqL4o+PDINUWxeJFZgsd1OdDgvpPoY/fzNRmCmVWHuOxtTqcl4mNnnup/
+         xcbA==
+X-Gm-Message-State: AOAM532k7jJLhlPcYdl/s0+6RzfmTVgN3i82NQ6LcTy5agjE9pA8r04l
+        1J2iJEGCEkgLd7OL9g7vXcg=
+X-Google-Smtp-Source: ABdhPJyV9OAZ1dzVGuSHDHgrGTi35gxD+a+xYM+loRklI1PdJfSBZ8KjaTaePlVaSIMiURuZP5fcNA==
+X-Received: by 2002:a5d:8846:: with SMTP id t6mr37147824ios.123.1600666539946;
+        Sun, 20 Sep 2020 22:35:39 -0700 (PDT)
 Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
-        by smtp.gmail.com with ESMTPSA id i9sm6644962ilj.71.2020.09.20.22.35.37
+        by smtp.gmail.com with ESMTPSA id i9sm6644962ilj.71.2020.09.20.22.35.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Sep 2020 22:35:38 -0700 (PDT)
+        Sun, 20 Sep 2020 22:35:39 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     containers@lists.linux-foundation.org
 Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
@@ -60,10 +60,12 @@ Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
         Tianyin Xu <tyxu@illinois.edu>,
         Tobin Feldman-Fitzthum <tobin@ibm.com>,
         Valentin Rothberg <vrothber@redhat.com>
-Subject: [RFC PATCH seccomp 0/2] seccomp: Add bitmap cache of arg-independent filter results that allow syscalls
-Date:   Mon, 21 Sep 2020 00:35:16 -0500
-Message-Id: <cover.1600661418.git.yifeifz2@illinois.edu>
+Subject: [RFC PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if filter is arg-dependent
+Date:   Mon, 21 Sep 2020 00:35:17 -0500
+Message-Id: <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1600661418.git.yifeifz2@illinois.edu>
+References: <cover.1600661418.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -72,139 +74,443 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <yifeifz2@illinois.edu>
 
-This series adds a bitmap to cache seccomp filter results if the
-result permits a syscall and is indepenent of syscall arguments.
-This visibly decreases seccomp overhead for most common seccomp
-filters with very little memory footprint.
+SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
+access any syscall arguments or instruction pointer. To facilitate
+this we need a static analyser to know whether a filter will
+access. This is implemented here with a pseudo-emulator, and
+stored in a per-filter bitmap. Each seccomp cBPF instruction,
+aside from ALU (which should rarely be used in seccomp), gets a
+naive best-effort emulation for each syscall number.
 
-The overhead of running Seccomp filters has been part of some past
-discussions [1][2][3]. Oftentimes, the filters have a large number
-of instructions that check syscall numbers one by one and jump based
-on that. Some users chain BPF filters which further enlarge the
-overhead. A recent work [6] comprehensively measures the Seccomp
-overhead and shows that the overhead is non-negligible and has a
-non-trivial impact on application performance.
+The emulator works by following all possible (without SAT solving)
+paths the filter can take. Every cBPF register / memory position
+records whether that is a constant, and of so, the value of the
+constant. Loading from struct seccomp_data is considered constant
+if it is a syscall number, else it is an unknown. For each
+conditional jump, if the both arguments can be resolved to a
+constant, the jump is followed after computing the result of the
+condition; else both directions are followed, by pushing one of
+the next states to a linked list of next states to process. We
+keep a finite number of pending states to process.
 
-We propose SECCOMP_CACHE, a cache-based solution to minimize the
-Seccomp overhead. The basic idea is to cache the result of each
-syscall check to save the subsequent overhead of executing the
-filters. This is feasible, because the check in Seccomp is stateless.
-The checking results of the same syscall ID and argument remains
-the same.
+The emulation is halted if it reaches a return, or if it reaches a
+read from struct seccomp_data that reads an offset that is neither
+syscall number or architecture number. In the latter case, we mark
+the syscall number as not okay for seccomp to cache. If a filter
+depends on more filters, then if its dependee cannot process the
+syscall then the depender is also marked not to process the syscall.
 
-We observed some common filters, such as docker's [4] or
-systemd's [5], will make most decisions based only on the syscall
-numbers, and as past discussions considered, a bitmap where each bit
-represents a syscall makes most sense for these filters.
+We also do a single pass on the entire filter instructions before
+performing emulation. If none of the filter instructions load from
+the troublesome offsets, then the filter is considered "trivial",
+and all syscalls are marked okay for seccomp to cache.
 
-In the past Kees proposed [2] to have an "add this syscall to the
-reject bitmask". It is indeed much easier to securely make a reject
-accelerator to pre-filter syscalls before passing to the BPF
-filters, considering it could only strengthen the security provided
-by the filter. However, ultimately, filter rejections are an
-exceptional / rare case. Here, instead of accelerating what is
-rejected, we accelerate what is allowed. In order not to compromise
-the security rules the BPF filters defined, any accept-side
-accelerator must complement the BPF filters rather than replacing them.
+Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+---
+ arch/x86/Kconfig |  27 ++++
+ kernel/seccomp.c | 323 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 349 insertions(+), 1 deletion(-)
 
-Statically analyzing BPF bytecode to see if each syscall is going to
-always land in allow or reject is more of a rabbit hole, especially
-there is no current in-kernel infrastructure to enumerate all the
-possible architecture numbers for a given machine. So rather than
-doing that, we propose to cache the results after the BPF filters are
-run. And since there are filters like docker's who will check
-arguments of some syscalls, but not all or none of the syscalls, when
-a filter is loaded we analyze it to find whether each syscall is
-cacheable (does not access syscall argument or instruction pointer) by
-following its control flow graph, and store the result for each filter
-in a bitmap. Changes to architecture number or the filter are expected
-to be rare and simply cause the cache to be cleared. This solution
-shall be fully transparent to userspace.
-
-Ongoing work is to further support arguments with fast hash table
-lookups. We are investigating the performance of doing so [6], and how
-to best integrate with the existing seccomp infrastructure.
-
-We have done some benchmarks with patch applied against bpf-next
-commit 2e80be60c465 ("libbpf: Fix compilation warnings for 64-bit printf args").
-
-Me, in qemu-kvm x86_64 VM, on Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz,
-average results:
-
-Without cache, seccomp_benchmark:
-  Current BPF sysctl settings:
-  net.core.bpf_jit_enable = 1
-  net.core.bpf_jit_harden = 0
-  Calibrating sample size for 15 seconds worth of syscalls ...
-  Benchmarking 23486415 syscalls...
-  16.079642020 - 1.013345439 = 15066296581 (15.1s)
-  getpid native: 641 ns
-  32.080237410 - 16.080763500 = 15999473910 (16.0s)
-  getpid RET_ALLOW 1 filter: 681 ns
-  48.609461618 - 32.081296173 = 16528165445 (16.5s)
-  getpid RET_ALLOW 2 filters: 703 ns
-  Estimated total seccomp overhead for 1 filter: 40 ns
-  Estimated total seccomp overhead for 2 filters: 62 ns
-  Estimated seccomp per-filter overhead: 22 ns
-  Estimated seccomp entry overhead: 18 ns
-
-With cache:
-  Current BPF sysctl settings:
-  net.core.bpf_jit_enable = 1
-  net.core.bpf_jit_harden = 0
-  Calibrating sample size for 15 seconds worth of syscalls ...
-  Benchmarking 23486415 syscalls...
-  16.059512499 - 1.014108434 = 15045404065 (15.0s)
-  getpid native: 640 ns
-  31.651075934 - 16.060637323 = 15590438611 (15.6s)
-  getpid RET_ALLOW 1 filter: 663 ns
-  47.367316169 - 31.652302661 = 15715013508 (15.7s)
-  getpid RET_ALLOW 2 filters: 669 ns
-  Estimated total seccomp overhead for 1 filter: 23 ns
-  Estimated total seccomp overhead for 2 filters: 29 ns
-  Estimated seccomp per-filter overhead: 6 ns
-  Estimated seccomp entry overhead: 17 ns
-
-Depending on the run estimated seccomp overhead for 2 filters can be
-less than seccomp overhead for 1 filter, resulting in underflow to
-estimated seccomp per-filter overhead:
-  Estimated total seccomp overhead for 1 filter: 27 ns
-  Estimated total seccomp overhead for 2 filters: 21 ns
-  Estimated seccomp per-filter overhead: 18446744073709551610 ns
-  Estimated seccomp entry overhead: 33 ns
-
-Jack Chen has also run some benchmarks on a bare metal
-Intel(R) Xeon(R) CPU E3-1240 v3 @ 3.40GHz, with side channel
-mitigations off (spec_store_bypass_disable=off spectre_v2=off mds=off
-pti=off l1tf=off), with BPF JIT on and docker default profile,
-and reported:
-
-  unixbench syscall mix (https://github.com/kdlucas/byte-unixbench)
-  unconfined:      33295685
-  docker default:         20661056  60%
-  docker default + cache: 25719937  30%
-
-Patch 1 introduces the static analyzer to check for a given filter,
-whether the CFG loads the syscall arguments for each syscall number.
-
-Patch 2 implements the bitmap cache.
-
-[1] https://lore.kernel.org/linux-security-module/c22a6c3cefc2412cad00ae14c1371711@huawei.com/T/
-[2] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/T/
-[3] https://github.com/seccomp/libseccomp/issues/116
-[4] https://github.com/moby/moby/blob/ae0ef82b90356ac613f329a8ef5ee42ca923417d/profiles/seccomp/default.json
-[5] https://github.com/systemd/systemd/blob/6743a1caf4037f03dc51a1277855018e4ab61957/src/shared/seccomp-util.c#L270
-[6] Draco: Architectural and Operating System Support for System Call Security
-    https://tianyin.github.io/pub/draco.pdf, MICRO-53, Oct. 2020
-
-YiFei Zhu (2):
-  seccomp/cache: Add "emulator" to check if filter is arg-dependent
-  seccomp/cache: Cache filter results that allow syscalls
-
- arch/x86/Kconfig        |  27 +++
- include/linux/seccomp.h |  22 +++
- kernel/seccomp.c        | 400 +++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 446 insertions(+), 3 deletions(-)
-
---
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7101ac64bb20..9e6891812053 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1984,6 +1984,33 @@ config SECCOMP
+ 
+ 	  If unsure, say Y. Only embedded should say N here.
+ 
++choice
++	prompt "Seccomp filter cache"
++	default SECCOMP_CACHE_NONE
++	depends on SECCOMP
++	depends on SECCOMP_FILTER
++	help
++	  Seccomp filters can potentially incur large overhead for each
++	  system call. This can alleviate some of the overhead.
++
++	  If in doubt, select 'none'.
++
++config SECCOMP_CACHE_NONE
++	bool "None"
++	help
++	  No caching is done. Seccomp filters will be called each time
++	  a system call occurs in a seccomp-guarded task.
++
++config SECCOMP_CACHE_NR_ONLY
++	bool "Syscall number only"
++	help
++	  This is enables a bitmap to cache the results of seccomp
++	  filters, if the filter allows the syscall and is independent
++	  of the syscall arguments. This requires around 60 bytes per
++	  filter and 70 bytes per task.
++
++endchoice
++
+ source "kernel/Kconfig.hz"
+ 
+ config KEXEC
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 3ee59ce0a323..d8c30901face 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -143,6 +143,27 @@ struct notification {
+ 	struct list_head notifications;
+ };
+ 
++#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
++/**
++ * struct seccomp_cache_filter_data - container for cache's per-filter data
++ *
++ * @syscall_ok: A bitmap where each bit represent whether seccomp is allowed to
++ *	        cache the results of this syscall.
++ */
++struct seccomp_cache_filter_data {
++	DECLARE_BITMAP(syscall_ok, NR_syscalls);
++};
++
++#define SECCOMP_EMU_MAX_PENDING_STATES 64
++#else
++struct seccomp_cache_filter_data { };
++
++static inline int seccomp_cache_prepare(struct seccomp_filter *sfilter)
++{
++	return 0;
++}
++#endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
++
+ /**
+  * struct seccomp_filter - container for seccomp BPF programs
+  *
+@@ -185,6 +206,7 @@ struct seccomp_filter {
+ 	struct notification *notif;
+ 	struct mutex notify_lock;
+ 	wait_queue_head_t wqh;
++	struct seccomp_cache_filter_data cache;
+ };
+ 
+ /* Limit any path through the tree to 256KB worth of instructions. */
+@@ -530,6 +552,297 @@ static inline void seccomp_sync_threads(unsigned long flags)
+ 	}
+ }
+ 
++#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
++/**
++ * struct seccomp_emu_env - container for seccomp emulator environment
++ *
++ * @filter: The cBPF filter instructions.
++ * @next_state: The next pending state to start emulating from.
++ * @next_state_len: Length of the next state linked list. This is used to
++ *		    enforce naximum number of pending states.
++ * @nr: The syscall number we are emulating.
++ * @syscall_ok: Emulation result, whether it is okay for seccomp to cache the
++ *		syscall.
++ */
++struct seccomp_emu_env {
++	struct sock_filter *filter;
++	struct seccomp_emu_state *next_state;
++	int next_state_len;
++	int nr;
++	bool syscall_ok;
++};
++
++/**
++ * struct seccomp_emu_state - container for seccomp emulator state
++ *
++ * @next: The next pending state. This structure is a linked list.
++ * @pc: The current program counter.
++ * @reg_known: Whether each cBPF register / memory location is a constant.
++ * @reg_const: When a cBPF register / memory location is a constant, the value
++ *	       of that constant.
++ */
++struct seccomp_emu_state {
++	struct seccomp_emu_state *next;
++	int pc;
++	bool reg_known[2 + BPF_MEMWORDS];
++	u32 reg_const[2 + BPF_MEMWORDS];
++};
++
++/**
++ * seccomp_emu_step - step one instruction in the emulator
++ * @env: The emulator environment
++ * @state: The emulator state
++ *
++ * Returns 1 to halt emulation, 0 to continue, or -errno if error occurred.
++ */
++static int seccomp_emu_step(struct seccomp_emu_env *env,
++			    struct seccomp_emu_state *state)
++{
++	struct sock_filter *ftest = &env->filter[state->pc++];
++	struct seccomp_emu_state *new_state;
++	u16 code = ftest->code;
++	u32 k = ftest->k;
++	u32 operand;
++	bool compare;
++	int reg_idx;
++
++	switch (BPF_CLASS(code)) {
++	case BPF_LD:
++	case BPF_LDX:
++		reg_idx = BPF_CLASS(code) == BPF_LDX;
++
++		switch (BPF_MODE(code)) {
++		case BPF_IMM:
++			state->reg_known[reg_idx] = true;
++			state->reg_const[reg_idx] = k;
++			break;
++		case BPF_ABS:
++			if (k == offsetof(struct seccomp_data, nr)) {
++				state->reg_known[reg_idx] = true;
++				state->reg_const[reg_idx] = env->nr;
++			} else {
++				state->reg_known[reg_idx] = false;
++
++				if (k != offsetof(struct seccomp_data, arch)) {
++					env->syscall_ok = false;
++					return 1;
++				}
++			}
++
++			break;
++		case BPF_MEM:
++			state->reg_known[reg_idx] = state->reg_known[2 + k];
++			state->reg_const[reg_idx] = state->reg_const[2 + k];
++			break;
++		default:
++			state->reg_known[reg_idx] = false;
++		}
++
++		return 0;
++	case BPF_ST:
++	case BPF_STX:
++		reg_idx = BPF_CLASS(code) == BPF_STX;
++
++		state->reg_known[2 + k] = state->reg_known[reg_idx];
++		state->reg_const[2 + k] = state->reg_const[reg_idx];
++
++		return 0;
++	case BPF_ALU:
++		state->reg_known[0] = false;
++		return 0;
++	case BPF_JMP:
++		if (BPF_OP(code) == BPF_JA) {
++			state->pc += k;
++			return 0;
++		}
++
++		if (ftest->jt == ftest->jf) {
++			state->pc += ftest->jt;
++			return 0;
++		}
++
++		if (!state->reg_known[0])
++			goto both_cases;
++
++		switch (BPF_SRC(code)) {
++		case BPF_K:
++			operand = k;
++			break;
++		case BPF_X:
++			if (!state->reg_known[1])
++				goto both_cases;
++			operand = state->reg_const[1];
++			break;
++		default:
++			WARN_ON(true);
++			return -EINVAL;
++		}
++
++		switch (BPF_OP(code)) {
++		case BPF_JEQ:
++			compare = state->reg_const[0] == operand;
++			break;
++		case BPF_JGT:
++			compare = state->reg_const[0] > operand;
++			break;
++		case BPF_JGE:
++			compare = state->reg_const[0] >= operand;
++			break;
++		case BPF_JSET:
++			compare = state->reg_const[0] & operand;
++			break;
++		default:
++			WARN_ON(true);
++			return -EINVAL;
++		}
++
++		state->pc += compare ? ftest->jt : ftest->jf;
++
++		return 0;
++
++both_cases:
++		if (env->next_state_len >= SECCOMP_EMU_MAX_PENDING_STATES)
++			return -E2BIG;
++
++		new_state = kmalloc(sizeof(*new_state), GFP_KERNEL);
++		if (!new_state)
++			return -ENOMEM;
++
++		*new_state = *state;
++		new_state->next = env->next_state;
++		new_state->pc += ftest->jt;
++		env->next_state = new_state;
++		env->next_state_len++;
++
++		state->pc += ftest->jf;
++
++		return 0;
++	case BPF_RET:
++		return 1;
++	case BPF_MISC:
++		switch (BPF_MISCOP(code)) {
++		case BPF_TAX:
++			state->reg_known[1] = state->reg_known[0];
++			state->reg_const[1] = state->reg_const[0];
++			break;
++		case BPF_TXA:
++			state->reg_known[0] = state->reg_known[1];
++			state->reg_const[0] = state->reg_const[1];
++			break;
++		default:
++			WARN_ON(true);
++			return -EINVAL;
++		}
++
++		return 0;
++	default:
++		BUILD_BUG();
++		unreachable();
++	}
++}
++
++/**
++ * seccomp_cache_filter_trivial - check if the program does not load arguments.
++ * @fprog: The cBPF program code
++ *
++ * Returns true if the filter is trivial.
++ */
++static bool seccomp_cache_filter_trivial(struct sock_fprog_kern *fprog)
++{
++	int pc;
++
++	for (pc = 0; pc < fprog->len; pc++) {
++		struct sock_filter *ftest = &fprog->filter[pc];
++		u16 code = ftest->code;
++		u32 k = ftest->k;
++
++		if (BPF_CLASS(code) == BPF_LD && BPF_MODE(code) == BPF_ABS) {
++			if (k != offsetof(struct seccomp_data, nr) &&
++			    k != offsetof(struct seccomp_data, arch))
++				return false;
++		}
++	}
++
++	return true;
++}
++
++/**
++ * seccomp_cache_prepare - emulate the filter to find cachable syscalls
++ * @sfilter: The seccomp filter
++ *
++ * Returns 0 if successful or -errno if error occurred.
++ */
++static int seccomp_cache_prepare(struct seccomp_filter *sfilter)
++{
++	struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
++	struct seccomp_filter *prev = sfilter->prev;
++	struct sock_filter *filter = fprog->filter;
++	struct seccomp_emu_state *state;
++	int nr, res = 0;
++
++	if (seccomp_cache_filter_trivial(fprog)) {
++		if (prev)
++			bitmap_copy(sfilter->cache.syscall_ok,
++				    prev->cache.syscall_ok, NR_syscalls);
++		else
++			bitmap_fill(sfilter->cache.syscall_ok, NR_syscalls);
++
++		return 0;
++	}
++
++	for (nr = 0; nr < NR_syscalls; nr++) {
++		struct seccomp_emu_env env = {0};
++
++		env.syscall_ok = !prev || test_bit(nr, prev->cache.syscall_ok);
++		if (!env.syscall_ok)
++			continue;
++
++		env.filter = filter;
++		env.nr = nr;
++
++		env.next_state = kzalloc(sizeof(*env.next_state), GFP_KERNEL);
++		env.next_state_len = 1;
++		if (!env.next_state)
++			return -ENOMEM;
++
++		while (env.next_state) {
++			state = env.next_state;
++			env.next_state = state->next;
++			env.next_state_len--;
++
++			while (true) {
++				res = seccomp_emu_step(&env, state);
++
++				if (res)
++					break;
++			}
++
++			kfree(state);
++
++			if (res < 0)
++				goto free_states;
++		}
++
++free_states:
++		while (env.next_state) {
++			state = env.next_state;
++			env.next_state = state->next;
++
++			kfree(state);
++		}
++
++		if (res < 0)
++			goto out;
++
++		if (env.syscall_ok)
++			set_bit(nr, sfilter->cache.syscall_ok);
++	}
++
++out:
++	return res;
++}
++#endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
++
+ /**
+  * seccomp_prepare_filter: Prepares a seccomp filter for use.
+  * @fprog: BPF program to install
+@@ -540,7 +853,8 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ {
+ 	struct seccomp_filter *sfilter;
+ 	int ret;
+-	const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
++	const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
++			       IS_ENABLED(CONFIG_SECCOMP_CACHE_NR_ONLY);
+ 
+ 	if (fprog->len == 0 || fprog->len > BPF_MAXINSNS)
+ 		return ERR_PTR(-EINVAL);
+@@ -571,6 +885,13 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ 		return ERR_PTR(ret);
+ 	}
+ 
++	ret = seccomp_cache_prepare(sfilter);
++	if (ret < 0) {
++		bpf_prog_destroy(sfilter->prog);
++		kfree(sfilter);
++		return ERR_PTR(ret);
++	}
++
+ 	refcount_set(&sfilter->refs, 1);
+ 	refcount_set(&sfilter->users, 1);
+ 	init_waitqueue_head(&sfilter->wqh);
+-- 
 2.28.0
+
