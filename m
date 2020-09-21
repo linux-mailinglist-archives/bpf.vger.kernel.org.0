@@ -2,96 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7F9273150
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 19:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BDE27316D
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgIUR5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 13:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
+        id S1726696AbgIUSES (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 14:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgIUR5M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 13:57:12 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BCEC061755;
-        Mon, 21 Sep 2020 10:57:12 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id k18so2157733ybh.1;
-        Mon, 21 Sep 2020 10:57:12 -0700 (PDT)
+        with ESMTP id S1726436AbgIUSER (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:04:17 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9EAC061755;
+        Mon, 21 Sep 2020 11:04:17 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gf14so173810pjb.5;
+        Mon, 21 Sep 2020 11:04:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sfv2GkP+8uG546pQRvIkIIzlFhcpsb5WNAyb9sZP3VM=;
-        b=TfKGQgC76iG5Fwj3HGDdztONc6XcwsCPCJIqzNCmwwrgeqnRr4MMq2tOk+TjEgLP6z
-         HuBRL0uucAX+ELBQJCZ+wh4SXLTiEgHPxEdlu3o92QHW36o+E3gqsvWxMXsePu59FAuG
-         11ahLkFDhWtU6PQL+6mu0isOO1yT5YBLVQJsJqEM3HEmPS4Uyhpv+LKsvbXRZFHDfKgv
-         4e3FCUd7Zm2J0rHGveRP5MxQ1iiny8tEfkS0CRLAdCQN/vO0kghVY14rbjIqHN1CpAxM
-         Z6/BwST7aZk5gAIjt6vi9h/i7ZnOlNbOG0OH//KFI4wJQ170nogmmWA4hNX7PSaQVwHr
-         uvgA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=V9rNnPQoAMI4NEIiklaqCcoHp0WL+M41f5UIEeXZuPk=;
+        b=nInBMP6Or4FOjSpV7OD0u32IG1Ipkfqr+mtKv9Ji1pH58MBn2Szngx6Ra0y1E30cWq
+         +XZAUwvtJo00pWANLfdzwT3OoUNOqTAb9Sovx50B2Opu9G8d38MbZ6KGeFdxaVDlOFOe
+         M9gAulDA7hL7TvS6F7+VH5vZfttz0pibyXMcDXfMJBR7waI60P8H9V8I5LuzOx7sfzoE
+         pksvRZWuS3aqIdtwRc+5O/oJDDWkNceHRPYpLfxzDMP80k4YHG5wGgRE52H39CizA2DQ
+         hPay26eL0mv082kT246Ze8xSqaqa7VjOidskPPVZbRZQTQNzwQ0TZle6wqzSvj25Ytny
+         cOSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sfv2GkP+8uG546pQRvIkIIzlFhcpsb5WNAyb9sZP3VM=;
-        b=aPOS58EmRGzijxvygrv9bQ2IKw6JwbI0zrmK0mspAQY9ixfWfv1SFve1P1Nyfc7exr
-         fJsCk0qhfSDVohog+qqhSX9oCnJeb3E+GO8n1zXqxZ4j0q623QhpuZu2iYw70w3PJkSX
-         a4WS9fbf+1iY6/VboblBnJYyRXFATDo4+gwgxRhYqDLKqylb+ejFg57slmrJXmwQCUvK
-         qQqtJqecIgT37xHYMXONyfAi71pDb8kdbvCDCT7GaHnhEuDPrDlcoUCdltIq7UfDoQwh
-         d62m4E94GQWXKxMAc/DgOMw88SxtFtrZxTguvnDDUgN3iMAjiRSIImk1DsjVmO7HBMe6
-         1Wxg==
-X-Gm-Message-State: AOAM532VvF2xvKk6JFBcYgPgUcAydW/qLIfXHe5iaraOVjSgtEvYeniC
-        ZEJ5IIhID0S/yKlwSrJflHZzO9FvXap7jSHmImw=
-X-Google-Smtp-Source: ABdhPJxS8Q5mIofEfi8HpR2Q+otGNIK3oXK54P/XbCPZoNXSGRzYAgIg5Wb/gxzVpr1D+UCWqCCWEOeF3SveoltgHMU=
-X-Received: by 2002:a25:9d06:: with SMTP id i6mr1482122ybp.510.1600711031713;
- Mon, 21 Sep 2020 10:57:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200916223512.2885524-1-haoluo@google.com> <20200916223512.2885524-4-haoluo@google.com>
-In-Reply-To: <20200916223512.2885524-4-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 10:57:00 -0700
-Message-ID: <CAEf4Bzbxd1Bp8py=gd9mXpcN9HB7a8qR5PtYVLbN_3e7qOP8pA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] selftests/bpf: ksyms_btf to test typed ksyms
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=V9rNnPQoAMI4NEIiklaqCcoHp0WL+M41f5UIEeXZuPk=;
+        b=JN7WM9krAgHRUHEHOhxlurIT460Mr03SEJHDgXG+X/wx4HfUcveohOxVPjUMqFIALA
+         CZSL8YK1p96oCtr8xeD0k+iXewp9vLBAWagUkiZSPzGbbKWJU+uoVFz+wMlieQe4j/da
+         8H+KvSdlU5jRYwTbO/q8l0ZzxfsMSABuv2CEMGDcezHnpZiWSiEJMitP143rhJkdHGPb
+         KywK7FPeyl5lWnSz61xqbZDDF9TmV7Y5GAxk5lj4aJvNLG/j36Bw/WrfEIswMFrW/CUf
+         b1UgklbJJq376ZGt+K7d/n1J4i4hcHrho+G4YMLrxISExOYyWpaQ8OQHYOkRJxZtqwm2
+         rv1g==
+X-Gm-Message-State: AOAM5336o1JOmbvM15Rcu+kCJz2dYW3T/GehMOThb1bRCP21Boqeonq1
+        /GkxN+hHutetHIgs3FXswIA=
+X-Google-Smtp-Source: ABdhPJywv9uoqNpx3Zgj+Bhj8oA3JuOmUEW3VhKcMkplWJIm1B6l9nYvDNMFS7TyZMuFV6Qn9d772Q==
+X-Received: by 2002:a17:90a:9f8e:: with SMTP id o14mr464512pjp.103.1600711457216;
+        Mon, 21 Sep 2020 11:04:17 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id i187sm12160547pgd.82.2020.09.21.11.04.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 11:04:16 -0700 (PDT)
+Date:   Mon, 21 Sep 2020 11:04:09 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     =?UTF-8?B?TWFjaWVqIMW7ZW5jenlrb3dza2k=?= <maze@google.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Shaun Crampton <shaun@tigera.io>,
+        David Miller <davem@davemloft.net>,
+        Marek Majkowski <marek@cloudflare.com>
+Message-ID: <5f68eb19cc0a2_17370208c9@john-XPS-13-9370.notmuch>
+In-Reply-To: <340f209d-58d4-52a6-0804-7102d80c1468@iogearbox.net>
+References: <20200917143846.37ce43a0@carbon>
+ <CANP3RGcxM-Cno=Qw5Lut9DgmV=1suXqetnybA9RgxmW3KmwivQ@mail.gmail.com>
+ <56ccfc21195b19d5b25559aca4cef5c450d0c402.camel@kernel.org>
+ <20200918120016.7007f437@carbon>
+ <CANP3RGfUj-KKHHQtbggiZ4V-Xrr_sk+TWyN5FgYUGZS6rOX1yw@mail.gmail.com>
+ <CACAyw9-v_o+gPUpC-R9SXsfzMywrdGsWV13Nk=tx2aS-fEBFYg@mail.gmail.com>
+ <20200921144953.6456d47d@carbon>
+ <340f209d-58d4-52a6-0804-7102d80c1468@iogearbox.net>
+Subject: Re: BPF redirect API design issue for BPF-prog MTU feedback?
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 3:39 PM Hao Luo <haoluo@google.com> wrote:
->
-> Selftests for typed ksyms. Tests two types of ksyms: one is a struct,
-> the other is a plain int. This tests two paths in the kernel. Struct
-> ksyms will be converted into PTR_TO_BTF_ID by the verifier while int
-> typed ksyms will be converted into PTR_TO_MEM.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
+Daniel Borkmann wrote:
+> On 9/21/20 2:49 PM, Jesper Dangaard Brouer wrote:
+> > On Mon, 21 Sep 2020 11:37:18 +0100
+> > Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >> On Sat, 19 Sep 2020 at 00:06, Maciej =C5=BBenczykowski <maze@google.=
+com> wrote:
+> >>>   =
 
-LGTM.
+> >>>> This is a good point.  As bpf_skb_adjust_room() can just be run af=
+ter
+> >>>> bpf_redirect() call, then a MTU check in bpf_redirect() actually
+> >>>> doesn't make much sense.  As clever/bad BPF program can then avoid=
+ the
+> >>>> MTU check anyhow.  This basically means that we have to do the MTU=
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> >>>> check (again) on kernel side anyhow to catch such clever/bad BPF
+> >>>> programs.  (And I don't like wasting cycles on doing the same chec=
+k two
+> >>>> times).
+> >>>
+> >>> If you get rid of the check in bpf_redirect() you might as well get=
 
->  .../testing/selftests/bpf/prog_tests/ksyms.c  | 38 ++++------
->  .../selftests/bpf/prog_tests/ksyms_btf.c      | 70 +++++++++++++++++++
->  .../selftests/bpf/progs/test_ksyms_btf.c      | 23 ++++++
->  tools/testing/selftests/bpf/trace_helpers.c   | 27 +++++++
->  tools/testing/selftests/bpf/trace_helpers.h   |  4 ++
->  5 files changed, 137 insertions(+), 25 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf.c
->
+> >>> rid of *all* the checks for excessive mtu in all the helpers that
+> >>> adjust packet size one way or another way.  They *all* then become
+> >>> useless overhead.
+> >>>
+> >>> I don't like that.  There may be something the bpf program could do=
+ to
+> >>> react to the error condition (for example in my case, not modify
+> >>> things and just let the core stack deal with things - which will
+> >>> probably just generate packet too big icmp error).
+> >>>
+> >>> btw. right now our forwarding programs first adjust the packet size=
 
-[...]
+> >>> then call bpf_redirect() and almost immediately return what it
+> >>> returned.
+> >>>
+> >>> but this could I think easily be changed to reverse the ordering, s=
+o
+> >>> we wouldn't increase packet size before the core stack was informed=
+ we
+> >>> would be forwarding via a different interface.
+> >>
+> >> We do the same, except that we also use XDP_TX when appropriate. Thi=
+s
+> >> complicates the matter, because there is no helper call we could
+> >> return an error from.
+> > =
+
+> > Do notice that my MTU work is focused on TC-BPF.  For XDP-redirect th=
+e
+> > MTU check is done in xdp_ok_fwd_dev() via __xdp_enqueue(), which also=
+
+> > happens too late to give BPF-prog knowledge/feedback.  For XDP_TX I
+> > audited the drivers when I implemented xdp_buff.frame_sz, and they
+> > handled (or I added) handling against max HW MTU. E.g. mlx5 [1].
+> > =
+
+> > [1] https://elixir.bootlin.com/linux/v5.9-rc6/source/drivers/net/ethe=
+rnet/mellanox/mlx5/core/en/xdp.c#L267
+> > =
+
+> >> My preference would be to have three helpers: get MTU for a device,
+> >> redirect ctx to a device (with MTU check), resize ctx (without MTU
+> >> check) but that doesn't work with XDP_TX. Your idea of doing checks
+> >> in redirect and adjust_room is pragmatic and seems easier to
+> >> implement.
+> >   =
+
+> > I do like this plan/proposal (with 3 helpers), but it is not possible=
+
+> > with current API.  The main problem is the current bpf_redirect API
+> > doesn't provide the ctx, so we cannot do the check in the BPF-helper.=
+
+> > =
+
+> > Are you saying we should create a new bpf_redirect API (that incl pac=
+ket ctx)?
+> =
+
+> Sorry for jumping in late here... one thing that is not clear to me is =
+that if
+> we are fully sure that skb is dropped by stack anyway due to invalid MT=
+U (redirect
+> to ingress does this via dev_forward_skb(), it's not fully clear to me =
+whether it's
+> also the case for the dev_queue_xmiy()), then why not dropping all the =
+MTU checks
+> aside from SKB_MAX_ALLOC sanity check for BPF helpers and have somethin=
+g like a
+> device object (similar to e.g. TCP sockets) exposed to BPF prog where w=
+e can retrieve
+> the object and read dev->mtu from the prog, so the BPF program could th=
+en do the
+> "exception" handling internally w/o extra prog needed (we also already =
+expose whether
+> skb is GSO or not).
+> =
+
+> Thanks,
+> Daniel
+
+My $.02 is MTU should only apply to transmitted packets so redirect to
+ingress should be OK. Then on transmit shouldn't the user know the MTU
+on their devices?
+
+I'm for dropping all the MTU checks and if a driver tosses a packet then
+the user should be more careful. Having a bpf helper to check MTU of a
+dev seems useful although the workaround would be a map the user could
+put the max MTU in. Of course that would be a bit fragile if the BPF prog=
+ram
+and person managing MTU are not in-sync.
+
+Thanks.=
