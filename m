@@ -2,71 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036D9273615
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 00:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED11273618
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 00:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgIUW5y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 18:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
+        id S1728748AbgIUW61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 18:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728662AbgIUW5y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 18:57:54 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE9AC061755;
-        Mon, 21 Sep 2020 15:57:54 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id n14so10610892pff.6;
-        Mon, 21 Sep 2020 15:57:54 -0700 (PDT)
+        with ESMTP id S1728653AbgIUW6Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 18:58:25 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9F1C061755
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 15:58:25 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id n22so14432979edt.4
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 15:58:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mcI5ReI6UwbL3Y9VJsKxXjGv/OVvfXvskB57PaK2fIg=;
-        b=W4l5lutecwZ6k8fboRiFxU1Hxvcgtrnw4cWWOU59OcbmJ7FVpQASAgTiMg+NRQBf4/
-         tbazCRYfVl6lEvWObHic3/v4bewoM3wo+QpDDwiCrFzI+K3hTSklL74Tza9nCmiz8ycw
-         TRFTMwG8wrTzbGND2vTuSPj8hFZnyp2y/w2tnvfMbnbWpm8KdkdCWDp1ws+KJQaDvDyM
-         4LTgwDzrwy+DX5SAFuLftsDAQxlkV5e0XM99+Z/qbnmwt7W77anx7EPdzBTWYLqUsy/Q
-         SQatbhz1BXbbf7xsBwgcG0nimBTsIEdOJfkFrOu8c0gvQN5LY1XtgD43Xz+qF9sPe7HP
-         Zmsg==
+        bh=F406dxOGL4KIyo3r913T2qYQFJYxNBYaxUNYOkHvtJo=;
+        b=LOgAOhIuOtK3NEGs5lfUfr3Z1we8cm+fSTqcM/nC5XdWVc8G8zUtABSkKkmAQ52+H1
+         1c+W8yeUe6zOPyRAQkzv3YmZ68wzpCBSZbYpsAWqo96ic0X65rNdGYH8LmIb255U+BxI
+         AcFVi2WBYPbN5eWFHSV+GoQejC0hhUjgTozpchXclGf2pMYARIw5Nn8kswl3yTi8QH3C
+         /ZfNRcxgNstUkYZjsvuhuq1/CuGAyIibmjz/JC+desNVgZG3j59Jh+dsDzUufv5E4g2T
+         7ubxNAIyknRIdYm8G4IcLOiL79DsMCINz7MAtuidpGEXowsl8CAhQTvDIVfsZbFNiQOz
+         m26A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mcI5ReI6UwbL3Y9VJsKxXjGv/OVvfXvskB57PaK2fIg=;
-        b=AafV75x61GI706GhGi9uTxO5Gc7xAkXTPxOTHDa3hQn1OHcjLw6MWFekg7z53NcX+j
-         9Ct2o9QLV4JthGU5F4hTVw4cT28YX44ezVGWAHOgqheq3FMHrrZejtEh4/Y0PNex+w5k
-         Faz9lYido9mfYuYjBEk8GJCo2ghGNICgp6MVPdxxuj2axyngWDoxUDi3WxWgPi8IywBT
-         sdrKS6YhOmaThaETyGgC49mXUNZiOSg/pRvgJMFSqDMTlrqrGza5bKsjTdh5HGjCkHvH
-         hgVJ6EWdyW+V8t8ZS8usrin0jpLvjzTtdDd9eWUSJ0ttEAoCsugHw7O1RdUA5B2R5vNY
-         rClA==
-X-Gm-Message-State: AOAM5322MSc3iVwtYHll4YY20+S76iEwBgLncfCyL60Yt/MdAOw+c7Ql
-        E9Gz7J/PiH+3iFFP/EBUW+PFlLigHaLFT3bl8C8=
-X-Google-Smtp-Source: ABdhPJxmNmNeUhF6KGE9L0xFvJuiYivilDKG16tiyTwkR0KEi87a+EGJhK6cBjkll4oKTyv/9auskXQqWXDxyuQxzvM=
-X-Received: by 2002:a63:5043:: with SMTP id q3mr1315846pgl.293.1600729074167;
- Mon, 21 Sep 2020 15:57:54 -0700 (PDT)
+        bh=F406dxOGL4KIyo3r913T2qYQFJYxNBYaxUNYOkHvtJo=;
+        b=XEQ+8VMjE21q/fd672XJNq5Q3EwLX3ObBx2pvimt5oYrbupjzCzzhzGRc54BEUSCZK
+         BxK5rHMbEbMkWKPE5e5bVL5Tu1ojKetu69Hbtss6ypaMDZhPrFZHTXuGoKGXLp6EkIeW
+         STQsFKTy7RQYjav929nnRZmSuVJFRt7tmp3O4xuquZ57t8ARFdBXLQEeG7DF5hbq1K8S
+         zhl73wbSLgBQ4y+wwx60m5S8do3RIwo9SK6GKZZM4PVZLSOC6DFaKAQt6t4GJfJmZnBt
+         SsFUtVTfwP45ig3VI86B0uRfbhbICOnRvR6Tsp4CqOtCf0+p0Q62vjLqIjhAf43VSZQC
+         mlQg==
+X-Gm-Message-State: AOAM532sHJS155oC7loCvVoBIgbiNOrjiNmOWJSUjrsyX4n1sZObNMiw
+        s3OpdvSUlgakx+JN1opHNIMvsRuOuCDo8MbfFW2G3w==
+X-Google-Smtp-Source: ABdhPJzKQ8pt68rKwhcn6462p221HnYSc7PT1gfTLQQr7Dyyt5sp+3GSHllwhbLNcRdd6ZR5P19GP5X7qwPc+u0bf/A=
+X-Received: by 2002:a05:6402:cba:: with SMTP id cn26mr1188410edb.230.1600729104142;
+ Mon, 21 Sep 2020 15:58:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1600661418.git.yifeifz2@illinois.edu> <20200921135115.GC3794348@cisco>
- <CABqSeASEw=Qr2CroKEpTyWMRXQkamKVUzXiEe2UsoQTCcv_99A@mail.gmail.com> <20200921163916.GE3794348@cisco>
-In-Reply-To: <20200921163916.GE3794348@cisco>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Mon, 21 Sep 2020 17:57:43 -0500
-Message-ID: <CABqSeAT1p10ZCDcFtdFvd80cqcgw6HOHKf6602jJ14n5fDe4HQ@mail.gmail.com>
-Subject: Re: [RFC PATCH seccomp 0/2] seccomp: Add bitmap cache of
- arg-independent filter results that allow syscalls
-To:     Tycho Andersen <tycho@tycho.pizza>
+References: <cover.1600661418.git.yifeifz2@illinois.edu> <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
+ <CAG48ez3k0_7Vev_O=uV_WVuUGK6BPA0RyrYXMYSDV4DTMMe26g@mail.gmail.com> <CABqSeAROcwq0ZGzWaxyPm+LDHu6T_8CD7_1c-hdhaMikr_ECCA@mail.gmail.com>
+In-Reply-To: <CABqSeAROcwq0ZGzWaxyPm+LDHu6T_8CD7_1c-hdhaMikr_ECCA@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 22 Sep 2020 00:57:58 +0200
+Message-ID: <CAG48ez2HytqFaJ6V9iA6YZrbZU3kG4bB7nETMfHPt0-wd5D1jg@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 2/2] seccomp/cache: Cache filter results that
+ allow syscalls
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
 Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
         Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
         Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
         Hubertus Franke <frankeh@us.ibm.com>,
         Jack Chen <jianyan2@illinois.edu>,
         Josep Torrellas <torrella@illinois.edu>,
-        bpf <bpf@vger.kernel.org>, Tianyin Xu <tyxu@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
         Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Jann Horn <jannh@google.com>,
+        Will Drewry <wad@chromium.org>,
         Aleksa Sarai <cyphar@cyphar.com>,
         kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -74,14 +74,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:39 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> I see, I missed this somehow. So is there a reason to hide this behind
-> a config option? Isn't it just always better?
+On Tue, Sep 22, 2020 at 12:51 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> On Mon, Sep 21, 2020 at 1:09 PM Jann Horn <jannh@google.com> wrote:
+> >
+> > On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > [...]
+> > > We do this by creating a per-task bitmap of permitted syscalls.
+> > > If seccomp filter is invoked we check if it is cached and if so
+> > > directly return allow. Else we call into the cBPF filter, and if
+> > > the result is an allow then we cache the results.
+> >
+> > What? Why? We already have code to statically evaluate the filter for
+> > all syscall numbers. We should be using the results of that instead of
+> > re-running the filter and separately caching the results.
+> >
+> > > The cache is per-task
+> >
+> > Please don't. The static results are per-filter, so the bitmask(s)
+> > should also be per-filter and immutable.
 >
-> Tycho
+> I do agree that an immutable bitmask is faster and easier to reason
+> about its correctness. However, I did not find the "code to statically
+> evaluate the filter for all syscall numbers" while reading seccomp.c.
+> Would you give me a pointer to that and I will see how to best make
+> use of it?
 
-You have a good point, though, I think keeping a config would allow
-people to "test the differences" in the unlikely case that some issue
-occurs. Jann pointed that it should be on by default so I'll do that.
-
-YiFei Zhu
+I'm talking about the code you're adding in the other patch ("[RFC
+PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if filter is
+arg-dependent"). Sorry, that was a bit unclear.
