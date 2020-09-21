@@ -2,111 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE22B273186
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9E127318E
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727388AbgIUSJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 14:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
+        id S1727468AbgIUSLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 14:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727360AbgIUSJW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:09:22 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2CAC0613CF
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:09:22 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id n13so13674996edo.10
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:09:22 -0700 (PDT)
+        with ESMTP id S1727298AbgIUSLN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:11:13 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBA4C061755;
+        Mon, 21 Sep 2020 11:11:13 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id k2so10928770ybp.7;
+        Mon, 21 Sep 2020 11:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=U2gRVRvTDWwfATk5t7wFIm55wjeGEEthD9jAmx8WrwQ=;
-        b=V2T3MJ1WcOFZii4NxoAWnxNlQBSG9qyAOklIbpUH+vhVdFe3M9VI02LT3Cvam9WpPI
-         UuT21fUhJvYgQPyLacXu9q5TrAknbhiJ6cmqm0QDdwSNyU1saUwJf45JRhkBwG6/kknw
-         eFi97FQTDbWXRtlGpvqo5R1PcAdBSFObnBCFBfxZchUMz3Wm/rAlQcQXukGXh02ZkdQR
-         Tjx5XwLp5sFAEwJjpAbIssiDdnrUMhvgsKzYKfXV07QmVxc7nUNWEwzX7Ut+2Tb6m3Dh
-         ejZs+LcYMZLrVAyupT44BI22vllUq2EpmffRZO2ZrPRMzVLGpLLNMwqw+dqFNdTwe2fx
-         oS2Q==
+        bh=Iran+WgVhdlsQfKFCm73PoLF/rw6U4lizgfQFR7EXB4=;
+        b=af9bYBOCOjJaU7YetVNIRMx6qpb5uzI7ETLMsTS/DSVoj/OZLFxUjR2VEAZxjU4BKV
+         XHUxACrJhn82vQLADlEttESx0Dp8VllIZBYE5FZNMKH8Sn3S03krwMicrTS6SwUpz7vB
+         HTngdBLXmwjKUP+tjx3tNMW/GxSpCGuTuH7OB+097xdryRnd84QyU7ylqEEHlJc1UUEN
+         ybv0SvxLvwbIkQRAhdwTH8C1wX2XAABxum9dmUrwXx/uwNAM7wSp/vFwVTuqrxHvz8vv
+         l2nBSAC6fFTCRYjdObjo+31xhxGABeoq96d77AYDiarbr2H/qJ0Bfsxt3EIKP3ALpbe0
+         Qlbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=U2gRVRvTDWwfATk5t7wFIm55wjeGEEthD9jAmx8WrwQ=;
-        b=NlcVlO0REyDWqErvvilYVeqoV3z+1ZM8yY0G/b3TYXndYo9oFq0wGfq8KWNjIeUm86
-         7/6ScV4n3Qzfkn1XSl9dKeN+3R55HCd8hWF9azx/rfj0uk2DsU5+acNavppQRq/R9ZyH
-         mNcvYM4Ly8316IsuXIsVZqx+K/xWm3CZMXtwx5zA1mhJL/UrVc9qwLGtQ6GB4iJEdBBR
-         Zq8oKdA8LHLwgxjxdHG3a/ESrwzx1DNUpr0qB8jFQ+DyZJtycl/EiiDUsm1BXhz/xo6v
-         UopNXtZ6lnMgA7yYgPXhacsUQEAogq/0c155g9HPbNOtIoIOW0fgaVARtcFlEvCFBSXX
-         m0+w==
-X-Gm-Message-State: AOAM530Eg1QHa6oPp/aa4GBkr229bjbj7jE+wKuBC+d3vr0DhuBj7XF/
-        QzZ96DuS0ByMWIPleXchZqpfV0LpJ5LnIw1Kx4forYRo7JRZTw==
-X-Google-Smtp-Source: ABdhPJxzS1PvJpZ0m2Z/pTgp6nyi4eUGvBkhh/prcxCQ3x14BnnFzuu2H8xHujssxKMeV+RGxPHlRe66XeYpkaMAD90=
-X-Received: by 2002:a05:6402:cba:: with SMTP id cn26mr173873edb.230.1600711760904;
- Mon, 21 Sep 2020 11:09:20 -0700 (PDT)
+        bh=Iran+WgVhdlsQfKFCm73PoLF/rw6U4lizgfQFR7EXB4=;
+        b=C9bmekN3nA20gbnh4qXwMhhezIg6ifqxRcwOZvWGrXEudhHgSrL7pwfpnmN3dsx6GJ
+         sFDWdIqcSRoiIEBa2ewJB82ZowUDyZM5LVrEu9I/jO5dlFeUeOTpweYou0dBaqMu5uYQ
+         b09u4Y0PucE4t1dQBx4r36PEXGukm9DA530+Br+5sDVRd+LIX4QRT0PUJEPc2yvq4cTf
+         +KGdYKlDFksrwDGyn7a1gOR4tdRoieW+WpLJdegh9IIAqNlN7Ee7drMPKUcGmUzOTD6k
+         r+vLyDvaBKzHgVaFBdMOieRsbRezHRmTzs0vaEguZ0I9KpTw7bMrLcmxjmXoztbLQq0T
+         h0jA==
+X-Gm-Message-State: AOAM5330SsAxuCydToqEEAI6lOWmXEn2J9hMBhwO/1aX+reApwGq3S7L
+        AcXt58SzrTaLEHUKc3lSz3pYoY1+pIAT6duZS+Q=
+X-Google-Smtp-Source: ABdhPJzEDzrM11Lh9nsc9d5TYxFBP9IUPG/UohJ6zC0Y4JYQvMlgHbN1hOieK4c1VokR6Exk/64uTdf1dMpFhtW/JjA=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr1427472ybn.230.1600711872522;
+ Mon, 21 Sep 2020 11:11:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1600661418.git.yifeifz2@illinois.edu> <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
-In-Reply-To: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 21 Sep 2020 20:08:54 +0200
-Message-ID: <CAG48ez3k0_7Vev_O=uV_WVuUGK6BPA0RyrYXMYSDV4DTMMe26g@mail.gmail.com>
-Subject: Re: [RFC PATCH seccomp 2/2] seccomp/cache: Cache filter results that
- allow syscalls
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        kernel list <linux-kernel@vger.kernel.org>
+References: <20200916223512.2885524-5-haoluo@google.com> <202009170943.rYEs5XMN%lkp@intel.com>
+ <CA+khW7iDK+g_W30doEtjse1BSHmB62GcrtmkH3pMk7shymw=XA@mail.gmail.com>
+In-Reply-To: <CA+khW7iDK+g_W30doEtjse1BSHmB62GcrtmkH3pMk7shymw=XA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 21 Sep 2020 11:11:01 -0700
+Message-ID: <CAEf4BzbBQ6E_ARewNvrevFBsxoey=oK6irAObfHTzYD_UQnWSA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/6] bpf: Introduce bpf_per_cpu_ptr()
+To:     Hao Luo <haoluo@google.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, kbuild-all@lists.01.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-[...]
-> We do this by creating a per-task bitmap of permitted syscalls.
-> If seccomp filter is invoked we check if it is cached and if so
-> directly return allow. Else we call into the cBPF filter, and if
-> the result is an allow then we cache the results.
+On Thu, Sep 17, 2020 at 12:14 PM Hao Luo <haoluo@google.com> wrote:
+>
+> I need to cast the pointer to "const void __percpu *" before passing
+> into per_cpu_ptr. I will update and resend.
 
-What? Why? We already have code to statically evaluate the filter for
-all syscall numbers. We should be using the results of that instead of
-re-running the filter and separately caching the results.
+You can try just declaring it as __percpu in BPF_CALL_2 macro. That
+might work, or not, depending on how exactly BPF_CALL macros are
+implemented (I haven't checked).
 
-> The cache is per-task
-
-Please don't. The static results are per-filter, so the bitmask(s)
-should also be per-filter and immutable.
-
-> minimize thread-synchronization issues in
-> the hot path of cache lookup
-
-There should be no need for synchronization because those bitmasks
-should be immutable.
-
-> and to avoid different architecture
-> numbers sharing the same cache.
-
-There should be separate caches for separate architectures, and we
-should precompute the results for all architectures. (We only have
-around 2 different architectures max, so it's completely reasonable to
-precompute and store all that.)
-
-> To account for one thread changing the filter for another thread of
-> the same process, the per-task struct also contains a pointer to
-> the filter the cache is built on. When the cache lookup uses a
-> different filter then the last lookup, the per-task cache bitmap is
-> cleared.
-
-Unnecessary complexity, we don't need that if we make the bitmasks immutable.
+>
+> On Wed, Sep 16, 2020 at 6:14 PM kernel test robot <lkp@intel.com> wrote:
+> >
+> > Hi Hao,
+> >
+> > Thank you for the patch! Perhaps something to improve:
+> >
+> > [auto build test WARNING on bpf-next/master]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Hao-Luo/bpf-BTF-support-for-ksyms/20200917-064052
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> > config: powerpc-randconfig-s032-20200916 (attached as .config)
+> > compiler: powerpc64-linux-gcc (GCC) 9.3.0
+> > reproduce:
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # apt-get install sparse
+> >         # sparse version: v0.6.2-201-g24bdaac6-dirty
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=powerpc
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> >
+> > sparse warnings: (new ones prefixed by >>)
+> >
+> > >> kernel/bpf/helpers.c:631:31: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got void const * @@
+> > >> kernel/bpf/helpers.c:631:31: sparse:     expected void const [noderef] __percpu *__vpp_verify
+> > >> kernel/bpf/helpers.c:631:31: sparse:     got void const *
+> >
+> > # https://github.com/0day-ci/linux/commit/3f6ea3c1c73efe466a96ff7499219fe3b03b8f48
+> > git remote add linux-review https://github.com/0day-ci/linux
+> > git fetch --no-tags linux-review Hao-Luo/bpf-BTF-support-for-ksyms/20200917-064052
+> > git checkout 3f6ea3c1c73efe466a96ff7499219fe3b03b8f48
+> > vim +631 kernel/bpf/helpers.c
+> >
+> >    625
+> >    626  BPF_CALL_2(bpf_per_cpu_ptr, const void *, ptr, u32, cpu)
+> >    627  {
+> >    628          if (cpu >= nr_cpu_ids)
+> >    629                  return (unsigned long)NULL;
+> >    630
+> >  > 631          return (unsigned long)per_cpu_ptr(ptr, cpu);
+> >    632  }
+> >    633
+> >    634  const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
+> >    635          .func           = bpf_per_cpu_ptr,
+> >    636          .gpl_only       = false,
+> >    637          .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL,
+> >    638          .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
+> >    639          .arg2_type      = ARG_ANYTHING,
+> >    640  };
+> >    641
+> >  > 642  const struct bpf_func_proto bpf_get_current_task_proto __weak;
+> >    643  const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+> >    644  const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+> >    645  const struct bpf_func_proto bpf_probe_read_kernel_proto __weak;
+> >    646  const struct bpf_func_proto bpf_probe_read_kernel_str_proto __weak;
+> >    647
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
