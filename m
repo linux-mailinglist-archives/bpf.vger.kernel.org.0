@@ -2,137 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C6B2722AC
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 13:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 099E6272364
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 14:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgIULgt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 07:36:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45126 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726460AbgIULgt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:36:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600688207;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gv9Fy+RbnmwfMLme8gdEClJLpssZdj3OhXBnDTz3OTA=;
-        b=mLlvyqS1BiqU/o7NuvXRKRHsOo9lchqjppDk38OO43W1KxzKSEb47qXBt8k243SgdqID49
-        KDNluBwTXxKX1L3dLcRJNj/TkgIoy4Z233u+MeSgAz35Lss7mWjyKxzgri2kvySqQd+14H
-        wiExpQN1VnsKXAbBRmCeylFmKQZEV24=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B70F9ACB7;
-        Mon, 21 Sep 2020 11:37:23 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 13:36:46 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-Message-ID: <20200921113646.GJ12990@dhcp22.suse.cz>
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz>
- <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz>
- <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
+        id S1726367AbgIUMNQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 08:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgIUMNQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 08:13:16 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C2DC061755
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 05:13:16 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y15so12400942wmi.0
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 05:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=53WhTmXREjGqlEXM0BLaZc51eAV3CGtA+VHhtiGHfTs=;
+        b=BeY1St9bX8a68dzI8DyEQHNenRoMPJRXDOBWiB1pYCbDQ41MSwnWdfjYvCeWKe6o2a
+         1zmH7Vxes1S506P3pUsHTKChEY7VsxdzNDM1b2D3iphKlpDTIDpC5oA4yd0xt/4xXE09
+         6ohwFM2P2D9tfJRHqN89mdB8I/aKfeLHZerOs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=53WhTmXREjGqlEXM0BLaZc51eAV3CGtA+VHhtiGHfTs=;
+        b=AK0hWLaQrgXQeuFz9LBfg38Ki7BLgF6ldA2rRUaakRX/MAFvZ3/pa0xFhMJDZjsxRS
+         3qLS6fuuTFRIBMr3aMjxBouW3rZH0BsV5Eaq+2p45NGrnqZTnTkpsgR2q3hlTKnEKbWr
+         HVUIo3Xrga97B6nZY9RsNCUkEcuwOiCePNvYFVT1YuY9QhTu+l+nwxytMGWpkTeR6jCn
+         sh0lruyDhDgclZ0L5x3GwQ/IGySCgZQI/SIHKiA3aKqIb0UMDoV6eEx5k6uGGDmr5x4h
+         Im6/1JnpQGCj/7b502sitwML0pAC7tx9THDaBvuRszv4GjSTL1eAlcU9aTRecMTC47g3
+         Q50w==
+X-Gm-Message-State: AOAM530GFsUq0pxMWhs77zEupNzsNFDVB+hf2SraobRbSVY9rFvDIvMz
+        gwnb2bxJZSC5LFH8MVGlfX4XvQ==
+X-Google-Smtp-Source: ABdhPJyVYez7NJ5qwpelifySbPRVulkQktg9kr5/8tS8hp90rV6JWtUi0IxOtxfZz6FKb4SfzzVtJA==
+X-Received: by 2002:a05:600c:283:: with SMTP id 3mr30671872wmk.110.1600690394707;
+        Mon, 21 Sep 2020 05:13:14 -0700 (PDT)
+Received: from antares.lan (5.4.6.2.d.5.3.3.f.8.1.6.b.2.d.8.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:8d2b:618f:335d:2645])
+        by smtp.gmail.com with ESMTPSA id t15sm18466557wmj.15.2020.09.21.05.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Sep 2020 05:13:13 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH RESEND bpf-next v4 00/11] Make check_func_arg type checks table driven
+Date:   Mon, 21 Sep 2020 13:12:16 +0100
+Message-Id: <20200921121227.255763-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon 21-09-20 19:23:01, Yafang Shao wrote:
-> On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 21-09-20 18:55:40, Yafang Shao wrote:
-> > > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
-> > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > > > >
-> > > > > In the cgroup v1, we have 'force_mepty' interface. This is very
-> > > > > useful for userspace to actively release memory. But the cgroup
-> > > > > v2 does not.
-> > > > >
-> > > > > This patch reuse cgroup v1's function, but have a new name for
-> > > > > the interface. Because I think 'drop_cache' may be is easier to
-> > > > > understand :)
-> > > >
-> > > > This should really explain a usecase. Global drop_caches is a terrible
-> > > > interface and it has caused many problems in the past. People have
-> > > > learned to use it as a remedy to any problem they might see and cause
-> > > > other problems without realizing that. This is the reason why we even
-> > > > log each attempt to drop caches.
-> > > >
-> > > > I would rather not repeat the same mistake on the memcg level unless
-> > > > there is a very strong reason for it.
-> > > >
-> > >
-> > > I think we'd better add these comments above the function
-> > > mem_cgroup_force_empty() to explain why we don't want to expose this
-> > > interface in cgroup2, otherwise people will continue to send this
-> > > proposal without any strong reason.
-> >
-> > I do not mind people sending this proposal.  "V1 used to have an
-> > interface, we need it in v2 as well" is not really viable without
-> > providing more reasoning on the specific usecase.
-> >
-> > _Any_ patch should have a proper justification. This is nothing really
-> > new to the process and I am wondering why this is coming as a surprise.
-> >
-> 
-> Container users always want to drop cache in a specific container,
-> because they used to use drop_caches to fix memory pressure issues.
+I'm not sure why, but I missed sending the patchset to netdev@ last
+week. I guess that is why it's slipped through the cracks.
 
-This is exactly the kind of problems we have seen in the past. There
-should be zero reason to addre potential reclaim problems by dropping
-page cache on the floor. There is a huge cargo cult about this
-procedure and I have seen numerous reports when people complained about
-performance afterwards just to learn that the dropped page cache was one
-of the resons for that.
+Changes in v4:
+- Output the desired type on BTF ID mismatch (Martin)
 
-> Although drop_caches can cause some unexpected issues, it could also
-> fix some issues.
+Changes in v3:
+- Fix BTF_ID_LIST_SINGLE if BTF is disabled (Martin)
+- Drop incorrect arg_btf_id in bpf_sk_storage.c (Martin)
+- Check for arg_btf_id in check_func_proto (Martin)
+- Drop incorrect PTR_TO_BTF_ID from fullsock_types (Martin)
+- Introduce btf_seq_file_ids in bpf_trace.c to reduce duplication
 
-"Some issues" is way too general. We really want to learn about those
-issues and address them properly.
+Changes in v2:
+- Make the series stand alone (Martin)
+- Drop incorrect BTF_SET_START fix (Andrii)
+- Only support a single BTF ID per argument (Martin)
+- Introduce BTF_ID_LIST_SINGLE macro (Andrii)
+- Skip check_ctx_reg iff register is NULL
+- Change output of check_reg_type slightly, to avoid touching tests
 
-> So container users want to use it in containers as
-> well.
-> If this feature is not implemented in cgroup, they will ask you why
-> but there is no explanation in the kernel.
+Original cover letter:
 
-There is no usecase that would really require it so far.
+Currently, check_func_arg has this pretty gnarly if statement that
+compares the valid arg_type with the actualy reg_type. Sprinkled
+in-between are checks for register_is_null, to short circuit these
+tests if we're dealing with a nullable arg_type. There is also some
+code for later bounds / access checking hidden away in there.
 
-> Regarding the memory.high, it is not perfect as well, because you have
-> to set it to 0 to drop_caches, and the processes in the containers
-> have to reclaim pages as well because they reach the memory.high, but
-> memory.force_empty won't make other processes to reclaim.
+This series of patches refactors the function into something like this:
 
-Since 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering
-memory.high") the limit is set after the reclaim so the race window when
-somebody would be pushed to high limit reclaim is reduced. But I do
-agree this is just a workaround.
+   if (reg_is_null && arg_type_is_nullable)
+     skip type checking
 
-> That doesn't mean I agree to add this interface, while I really mean
-> that if we discard one feature we'd better explain why.
+   do type checking, including BTF validation
 
-We need to understand why somebody wants an interface because once it is
-added it will have to be maintained for ever.
+   do bounds / access checking
+
+The type checking is now table driven, which makes it easy to extend
+the acceptable types. Maybe more importantly, using a table makes it
+easy to provide more helpful verifier output (see the last patch).
+
+Lorenz Bauer (11):
+  btf: make btf_set_contains take a const pointer
+  bpf: check scalar or invalid register in check_helper_mem_access
+  btf: Add BTF_ID_LIST_SINGLE macro
+  bpf: allow specifying a BTF ID per argument in function protos
+  bpf: make BTF pointer type checking generic
+  bpf: make reference tracking generic
+  bpf: make context access check generic
+  bpf: set meta->raw_mode for pointers close to use
+  bpf: check ARG_PTR_TO_SPINLOCK register type in check_func_arg
+  bpf: hoist type checking for nullable arg types
+  bpf: use a table to drive helper arg type checks
+
+ include/linux/bpf.h            |  21 +-
+ include/linux/btf_ids.h        |   8 +
+ kernel/bpf/bpf_inode_storage.c |   8 +-
+ kernel/bpf/btf.c               |  15 +-
+ kernel/bpf/stackmap.c          |   5 +-
+ kernel/bpf/verifier.c          | 338 ++++++++++++++++++---------------
+ kernel/trace/bpf_trace.c       |  15 +-
+ net/core/bpf_sk_storage.c      |   8 +-
+ net/core/filter.c              |  31 +--
+ net/ipv4/bpf_tcp_ca.c          |  19 +-
+ tools/include/linux/btf_ids.h  |   8 +
+ 11 files changed, 239 insertions(+), 237 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.25.1
+
