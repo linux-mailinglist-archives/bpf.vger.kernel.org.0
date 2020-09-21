@@ -2,198 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BDE27316D
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3AD273180
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgIUSES (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 14:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        id S1727323AbgIUSJD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 14:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgIUSER (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:04:17 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9EAC061755;
-        Mon, 21 Sep 2020 11:04:17 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gf14so173810pjb.5;
-        Mon, 21 Sep 2020 11:04:17 -0700 (PDT)
+        with ESMTP id S1726436AbgIUSJD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:09:03 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F4DC061755;
+        Mon, 21 Sep 2020 11:09:03 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x20so10948136ybs.8;
+        Mon, 21 Sep 2020 11:09:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=V9rNnPQoAMI4NEIiklaqCcoHp0WL+M41f5UIEeXZuPk=;
-        b=nInBMP6Or4FOjSpV7OD0u32IG1Ipkfqr+mtKv9Ji1pH58MBn2Szngx6Ra0y1E30cWq
-         +XZAUwvtJo00pWANLfdzwT3OoUNOqTAb9Sovx50B2Opu9G8d38MbZ6KGeFdxaVDlOFOe
-         M9gAulDA7hL7TvS6F7+VH5vZfttz0pibyXMcDXfMJBR7waI60P8H9V8I5LuzOx7sfzoE
-         pksvRZWuS3aqIdtwRc+5O/oJDDWkNceHRPYpLfxzDMP80k4YHG5wGgRE52H39CizA2DQ
-         hPay26eL0mv082kT246Ze8xSqaqa7VjOidskPPVZbRZQTQNzwQ0TZle6wqzSvj25Ytny
-         cOSw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QfbGCX6rqAMLLO8aYfzPvTkabfO3m4G1Ikaa+c1SMFA=;
+        b=I63BIIi2ifvm4BeL/sZ8GMRz2Mp1eeAloeKVVTDIlh1Q+9PU7cHSZK+vBbsGPhxW9I
+         y4/LIeiZQX59dqUIp/49lv6cimW1Trchwa3Fbm555mpL4NeXi2uOlDvil8hhbWq4igf0
+         f8c4rL/VCX9AkJ0GaqPDYksTuVmA8Tt6x3hTLPyuFhwJ5m3glhEPd/aRl2DB/W4d5siL
+         LAV52saBl52USloVnPWqKg0YUvYsiGW1tmurjYqtBZwDTfazr+oXkZdDOK7ssl/JdPOH
+         XYD7GKiUgkuXtqG9kY11dC8eHoljKep5hebFYpd1OqIe4+w9ego42GSzaFiwcdfPrydT
+         bOaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=V9rNnPQoAMI4NEIiklaqCcoHp0WL+M41f5UIEeXZuPk=;
-        b=JN7WM9krAgHRUHEHOhxlurIT460Mr03SEJHDgXG+X/wx4HfUcveohOxVPjUMqFIALA
-         CZSL8YK1p96oCtr8xeD0k+iXewp9vLBAWagUkiZSPzGbbKWJU+uoVFz+wMlieQe4j/da
-         8H+KvSdlU5jRYwTbO/q8l0ZzxfsMSABuv2CEMGDcezHnpZiWSiEJMitP143rhJkdHGPb
-         KywK7FPeyl5lWnSz61xqbZDDF9TmV7Y5GAxk5lj4aJvNLG/j36Bw/WrfEIswMFrW/CUf
-         b1UgklbJJq376ZGt+K7d/n1J4i4hcHrho+G4YMLrxISExOYyWpaQ8OQHYOkRJxZtqwm2
-         rv1g==
-X-Gm-Message-State: AOAM5336o1JOmbvM15Rcu+kCJz2dYW3T/GehMOThb1bRCP21Boqeonq1
-        /GkxN+hHutetHIgs3FXswIA=
-X-Google-Smtp-Source: ABdhPJywv9uoqNpx3Zgj+Bhj8oA3JuOmUEW3VhKcMkplWJIm1B6l9nYvDNMFS7TyZMuFV6Qn9d772Q==
-X-Received: by 2002:a17:90a:9f8e:: with SMTP id o14mr464512pjp.103.1600711457216;
-        Mon, 21 Sep 2020 11:04:17 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id i187sm12160547pgd.82.2020.09.21.11.04.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 11:04:16 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 11:04:09 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     =?UTF-8?B?TWFjaWVqIMW7ZW5jenlrb3dza2k=?= <maze@google.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QfbGCX6rqAMLLO8aYfzPvTkabfO3m4G1Ikaa+c1SMFA=;
+        b=HuiyKg8BTGHy/I0g4HPclZs1RgIDFzXmcuJ8dhxNKUyqgiCYJ8lFtBY2HDAyL5rLkA
+         XQ8CDoS9Ufjbs4aX8kKz8xb8J6chdNnCJfzsvCNxjvgrgCi+CeECOhQeS+AhXxgrDYzP
+         T+Y5bSN/92UEXU3PGX0drlKCJBHHNnyA8L4hAzvegU6c0pNt5eDbdDbOsgb9gIEedVEh
+         krALhLRVOshgP80jk7/eNUQV7yIPhGHT30dOmjub+J6CNXZFAC3lsEmWPFWndr36uZ7C
+         P7JeX2OmMHGfd034BhMXS6UpOIZ2OXNgtoDG+EIPQsNRlA7j37RuvPt+QOcVGpn1/+ej
+         ucgg==
+X-Gm-Message-State: AOAM530BkQL1R9j2+2rDdxmvX1y3Ms+GR/PjHXLx9xJxuXnVhsLj2JPb
+        TfgTq3AYufDY04d9U6BIZ8NhhgHjG0XsAiSLofqpD6G9N9Q=
+X-Google-Smtp-Source: ABdhPJy5hPMYFdwvUUs9y7HP9iFro0OtSXFlPovkff0E8NtjsKQAA1topvkUtqkO9JS6VvFYUEWJUpTz+o+7NOCG4Hc=
+X-Received: by 2002:a25:4446:: with SMTP id r67mr1484677yba.459.1600711742376;
+ Mon, 21 Sep 2020 11:09:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200916223512.2885524-1-haoluo@google.com> <20200916223512.2885524-5-haoluo@google.com>
+In-Reply-To: <20200916223512.2885524-5-haoluo@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 21 Sep 2020 11:08:51 -0700
+Message-ID: <CAEf4BzbJFE+Yxsy+VEwr-2_JcACh+jbn4WyiS+ECnVVNjC=bnA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/6] bpf: Introduce bpf_per_cpu_ptr()
+To:     Hao Luo <haoluo@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shaun Crampton <shaun@tigera.io>,
-        David Miller <davem@davemloft.net>,
-        Marek Majkowski <marek@cloudflare.com>
-Message-ID: <5f68eb19cc0a2_17370208c9@john-XPS-13-9370.notmuch>
-In-Reply-To: <340f209d-58d4-52a6-0804-7102d80c1468@iogearbox.net>
-References: <20200917143846.37ce43a0@carbon>
- <CANP3RGcxM-Cno=Qw5Lut9DgmV=1suXqetnybA9RgxmW3KmwivQ@mail.gmail.com>
- <56ccfc21195b19d5b25559aca4cef5c450d0c402.camel@kernel.org>
- <20200918120016.7007f437@carbon>
- <CANP3RGfUj-KKHHQtbggiZ4V-Xrr_sk+TWyN5FgYUGZS6rOX1yw@mail.gmail.com>
- <CACAyw9-v_o+gPUpC-R9SXsfzMywrdGsWV13Nk=tx2aS-fEBFYg@mail.gmail.com>
- <20200921144953.6456d47d@carbon>
- <340f209d-58d4-52a6-0804-7102d80c1468@iogearbox.net>
-Subject: Re: BPF redirect API design issue for BPF-prog MTU feedback?
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann wrote:
-> On 9/21/20 2:49 PM, Jesper Dangaard Brouer wrote:
-> > On Mon, 21 Sep 2020 11:37:18 +0100
-> > Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >> On Sat, 19 Sep 2020 at 00:06, Maciej =C5=BBenczykowski <maze@google.=
-com> wrote:
-> >>>   =
+On Wed, Sep 16, 2020 at 3:39 PM Hao Luo <haoluo@google.com> wrote:
+>
+> Add bpf_per_cpu_ptr() to help bpf programs access percpu vars.
+> bpf_per_cpu_ptr() has the same semantic as per_cpu_ptr() in the kernel
+> except that it may return NULL. This happens when the cpu parameter is
+> out of range. So the caller must check the returned value.
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
+>  include/linux/bpf.h            |  4 +++
+>  include/linux/btf.h            | 11 ++++++
+>  include/uapi/linux/bpf.h       | 18 ++++++++++
+>  kernel/bpf/btf.c               | 10 ------
+>  kernel/bpf/helpers.c           | 18 ++++++++++
+>  kernel/bpf/verifier.c          | 64 ++++++++++++++++++++++++++++++++--
+>  kernel/trace/bpf_trace.c       |  2 ++
+>  tools/include/uapi/linux/bpf.h | 18 ++++++++++
+>  8 files changed, 132 insertions(+), 13 deletions(-)
+>
 
-> >>>> This is a good point.  As bpf_skb_adjust_room() can just be run af=
-ter
-> >>>> bpf_redirect() call, then a MTU check in bpf_redirect() actually
-> >>>> doesn't make much sense.  As clever/bad BPF program can then avoid=
- the
-> >>>> MTU check anyhow.  This basically means that we have to do the MTU=
+I already acked this, but see my concern about O(N) look up for
+.data..percpu. Feel free to follow up on this with a separate patch.
+Thanks!
 
-> >>>> check (again) on kernel side anyhow to catch such clever/bad BPF
-> >>>> programs.  (And I don't like wasting cycles on doing the same chec=
-k two
-> >>>> times).
-> >>>
-> >>> If you get rid of the check in bpf_redirect() you might as well get=
+[...]
 
-> >>> rid of *all* the checks for excessive mtu in all the helpers that
-> >>> adjust packet size one way or another way.  They *all* then become
-> >>> useless overhead.
-> >>>
-> >>> I don't like that.  There may be something the bpf program could do=
- to
-> >>> react to the error condition (for example in my case, not modify
-> >>> things and just let the core stack deal with things - which will
-> >>> probably just generate packet too big icmp error).
-> >>>
-> >>> btw. right now our forwarding programs first adjust the packet size=
+> @@ -4003,6 +4008,15 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                         if (type != expected_type)
+>                                 goto err_type;
+>                 }
+> +       } else if (arg_type == ARG_PTR_TO_PERCPU_BTF_ID) {
+> +               expected_type = PTR_TO_PERCPU_BTF_ID;
+> +               if (type != expected_type)
+> +                       goto err_type;
+> +               if (!reg->btf_id) {
+> +                       verbose(env, "Helper has invalid btf_id in R%d\n", regno);
+> +                       return -EACCES;
+> +               }
+> +               meta->ret_btf_id = reg->btf_id;
 
-> >>> then call bpf_redirect() and almost immediately return what it
-> >>> returned.
-> >>>
-> >>> but this could I think easily be changed to reverse the ordering, s=
-o
-> >>> we wouldn't increase packet size before the core stack was informed=
- we
-> >>> would be forwarding via a different interface.
-> >>
-> >> We do the same, except that we also use XDP_TX when appropriate. Thi=
-s
-> >> complicates the matter, because there is no helper call we could
-> >> return an error from.
-> > =
+FYI, this will conflict with Lorenz's refactoring, so you might need
+to rebase and solve the conflicts if his patch set lands first.
 
-> > Do notice that my MTU work is focused on TC-BPF.  For XDP-redirect th=
-e
-> > MTU check is done in xdp_ok_fwd_dev() via __xdp_enqueue(), which also=
+>         } else if (arg_type == ARG_PTR_TO_BTF_ID) {
+>                 bool ids_match = false;
+>
+> @@ -5002,6 +5016,30 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+>                 regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
+>                 regs[BPF_REG_0].id = ++env->id_gen;
+>                 regs[BPF_REG_0].mem_size = meta.mem_size;
+> +       } else if (fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL) {
+> +               const struct btf_type *t;
+> +
+> +               mark_reg_known_zero(env, regs, BPF_REG_0);
+> +               t = btf_type_skip_modifiers(btf_vmlinux, meta.ret_btf_id, NULL);
+> +               if (!btf_type_is_struct(t)) {
+> +                       u32 tsize;
+> +                       const struct btf_type *ret;
+> +                       const char *tname;
+> +
+> +                       /* resolve the type size of ksym. */
+> +                       ret = btf_resolve_size(btf_vmlinux, t, &tsize);
+> +                       if (IS_ERR(ret)) {
+> +                               tname = btf_name_by_offset(btf_vmlinux, t->name_off);
+> +                               verbose(env, "unable to resolve the size of type '%s': %ld\n",
+> +                                       tname, PTR_ERR(ret));
+> +                               return -EINVAL;
+> +                       }
+> +                       regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
+> +                       regs[BPF_REG_0].mem_size = tsize;
+> +               } else {
+> +                       regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
+> +                       regs[BPF_REG_0].btf_id = meta.ret_btf_id;
+> +               }
+>         } else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
+>                 int ret_btf_id;
+>
+> @@ -7413,6 +7451,7 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
+>                         dst_reg->mem_size = aux->btf_var.mem_size;
+>                         break;
+>                 case PTR_TO_BTF_ID:
+> +               case PTR_TO_PERCPU_BTF_ID:
+>                         dst_reg->btf_id = aux->btf_var.btf_id;
+>                         break;
+>                 default:
+> @@ -9313,10 +9352,14 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+>                                struct bpf_insn *insn,
+>                                struct bpf_insn_aux_data *aux)
+>  {
+> -       u32 type, id = insn->imm;
+> +       u32 datasec_id, type, id = insn->imm;
+> +       const struct btf_var_secinfo *vsi;
+> +       const struct btf_type *datasec;
+>         const struct btf_type *t;
+>         const char *sym_name;
+> +       bool percpu = false;
+>         u64 addr;
+> +       int i;
+>
+>         if (!btf_vmlinux) {
+>                 verbose(env, "kernel is missing BTF, make sure CONFIG_DEBUG_INFO_BTF=y is specified in Kconfig.\n");
+> @@ -9348,12 +9391,27 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+>                 return -ENOENT;
+>         }
+>
+> +       datasec_id = btf_find_by_name_kind(btf_vmlinux, ".data..percpu",
+> +                                          BTF_KIND_DATASEC);
 
-> > happens too late to give BPF-prog knowledge/feedback.  For XDP_TX I
-> > audited the drivers when I implemented xdp_buff.frame_sz, and they
-> > handled (or I added) handling against max HW MTU. E.g. mlx5 [1].
-> > =
+this is a relatively expensive O(N) operation, it probably makes sense
+to cache it (there are about 80'000 types now in BTF for my typical
+kernel config, so iterating that much for every single ldimm64 for
+ksym is kind of expensive.
 
-> > [1] https://elixir.bootlin.com/linux/v5.9-rc6/source/drivers/net/ethe=
-rnet/mellanox/mlx5/core/en/xdp.c#L267
-> > =
+> +       if (datasec_id > 0) {
+> +               datasec = btf_type_by_id(btf_vmlinux, datasec_id);
+> +               for_each_vsi(i, datasec, vsi) {
+> +                       if (vsi->type == id) {
+> +                               percpu = true;
+> +                               break;
+> +                       }
+> +               }
+> +       }
+> +
 
-> >> My preference would be to have three helpers: get MTU for a device,
-> >> redirect ctx to a device (with MTU check), resize ctx (without MTU
-> >> check) but that doesn't work with XDP_TX. Your idea of doing checks
-> >> in redirect and adjust_room is pragmatic and seems easier to
-> >> implement.
-> >   =
-
-> > I do like this plan/proposal (with 3 helpers), but it is not possible=
-
-> > with current API.  The main problem is the current bpf_redirect API
-> > doesn't provide the ctx, so we cannot do the check in the BPF-helper.=
-
-> > =
-
-> > Are you saying we should create a new bpf_redirect API (that incl pac=
-ket ctx)?
-> =
-
-> Sorry for jumping in late here... one thing that is not clear to me is =
-that if
-> we are fully sure that skb is dropped by stack anyway due to invalid MT=
-U (redirect
-> to ingress does this via dev_forward_skb(), it's not fully clear to me =
-whether it's
-> also the case for the dev_queue_xmiy()), then why not dropping all the =
-MTU checks
-> aside from SKB_MAX_ALLOC sanity check for BPF helpers and have somethin=
-g like a
-> device object (similar to e.g. TCP sockets) exposed to BPF prog where w=
-e can retrieve
-> the object and read dev->mtu from the prog, so the BPF program could th=
-en do the
-> "exception" handling internally w/o extra prog needed (we also already =
-expose whether
-> skb is GSO or not).
-> =
-
-> Thanks,
-> Daniel
-
-My $.02 is MTU should only apply to transmitted packets so redirect to
-ingress should be OK. Then on transmit shouldn't the user know the MTU
-on their devices?
-
-I'm for dropping all the MTU checks and if a driver tosses a packet then
-the user should be more careful. Having a bpf helper to check MTU of a
-dev seems useful although the workaround would be a map the user could
-put the max MTU in. Of course that would be a bit fragile if the BPF prog=
-ram
-and person managing MTU are not in-sync.
-
-Thanks.=
+[...]
