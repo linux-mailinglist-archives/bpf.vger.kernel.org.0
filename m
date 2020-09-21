@@ -2,117 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9352731FC
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FB227320E
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727474AbgIUSbg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 14:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
+        id S1727412AbgIUSim (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 14:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgIUSbg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:31:36 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AE9C061755;
-        Mon, 21 Sep 2020 11:31:36 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id j76so5089570ybg.3;
-        Mon, 21 Sep 2020 11:31:36 -0700 (PDT)
+        with ESMTP id S1727346AbgIUSim (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 14:38:42 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3D7C0613CF
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:38:41 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so13822350edq.6
+        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:38:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0h9V+COgaTKtGEw7E+vRM3Fe7BKvj7om5nGhejL8wwY=;
-        b=ACKnACqiCilNnTbCy5YM6MKP1WvNSGtRwYAR7C9lgA+2XewGMfHjYUev2yk/SzxsM/
-         r7HPOxX1RlcYfZW4l7Q5ZYvHkn/iMJkONIZJ4JMtsEhDBHFAFFrkWouM6mYb2+j0KdAV
-         VXf5I4wIlfGAcys4onGqn52mNhV87Q8aiHfiTRDAvrn5ufHL0V7zjAxG5aJ/XpULjc5Z
-         E6GtZGyNrvq1ftPpFhgt4C53kIsE/bZeTp+XkFhluFtz1MVoe4Vn/owuLbErZVkBgvWx
-         N7zHzuzt27NWNcDP61SwyPfWnSzk3V4pHvjalWphlmhV9d6Y0cjucpzqgKfL8uJNlUji
-         qsrg==
+        bh=C7G6A5IlEG2WC0nmoX7XdAtZ+v2I/zqqDO0euVW1SNE=;
+        b=GKj3LJZbIecljJchWIPsVbgqFMg87glRuzFxDZUSnJCVadINrRQoPekzrtKM6pXFG4
+         jWmJoGWdPsML6lH9FjKOKPIrPw63/cKOhXUp5e0TPpKeUNin829jFNlYXC5LjVUi7psX
+         Q8fipqI46lZkA3SDqje4ta/W4Eh+vI3SKfAi5yGK5526zHVe4lUCgrqmAQiiqMQXKcXP
+         2qWHELpxN3jG2I/YmRVE/92CZfYkjr2vDdMUrejhZq+rTTRxVVnar1vEZXkj/I4Nld8N
+         b5fF2BDFiRGJmzlxKgzu9iX8XLxJoLdMWZl0/TkOILYMjMeMo1Mmy0vuKiMc4RKUduOk
+         a9ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0h9V+COgaTKtGEw7E+vRM3Fe7BKvj7om5nGhejL8wwY=;
-        b=Z15MC/5PM6stua6QkwyzUHFDq0j+Fcr36HvVXTpcKq2ZtEiQCTGeZ4mLkEY/YSrPy6
-         vbWGJ0HC8janOG5ax7y4l2XkZbmnDfdrFg+uxbLCLA0G42znfcXD6iFlIN250dHofZPT
-         1nlaJ6nEHmgyxlbi+ijZLCMtMFCcaZ6yjiiZaeiy8Ax+IEoKlzLhX2o6ZE/9dCv1x+WS
-         hjPc0S/OcSe3/R9UqsoyZDOTRS1SCeAIdXq1w8GaL0BEuypJ/RfzXeeGagM5obriCjry
-         fAjloCDj+tbK4aUMOmNQkwKdizi4dHsVuMCMt2HrIrD4u40Nkdu10GdcZprEbB4Xok+q
-         0gGA==
-X-Gm-Message-State: AOAM530F/Jner5xsaufAeImpk36ZVE1wfvYmexe9zmFKGpy1lnBrKwNp
-        wXLVG4sZSLyPObQ1h5cWDxmyzwNrJod84+namcU=
-X-Google-Smtp-Source: ABdhPJwDqc7VnZG9Kgo70CXuHeN8V19hv6xXELhkOkXnwWTrcNbWz9twwO14BQp2b+RAE9HUxmAaPosHWHXbwAwhhXQ=
-X-Received: by 2002:a25:4446:: with SMTP id r67mr1606876yba.459.1600713095548;
- Mon, 21 Sep 2020 11:31:35 -0700 (PDT)
+        bh=C7G6A5IlEG2WC0nmoX7XdAtZ+v2I/zqqDO0euVW1SNE=;
+        b=W+MPph4MKULn3k+/i2UiYFOS764CHIjBlaK8IulCAmLS4IUv+JQ34Wl6+yQJqCCq90
+         /aGlItZWoeSp04jO3sBlSedMnkX+3ZBi9tDuyhfVgN9hIbV1Ll/Z35QJ2BWBIj7Z/O60
+         mLnCTR+/qL8xRqO3KSb6K0ZUOY3TTuuc18IMWglwPXdnQMt14jlUcLvAGIi/kQVsTJRM
+         VFNc9rRZA9IaJw9tpCb6vprEBdkGu4BbD1jalA+5na3qskKPbIl3O+U1VhVue6/BjmHb
+         UC5kYqr1Rs7T2W6DzwPaDVwaOvsvhqXwBdjBmOPfIEfDdodY5dQboLQBULm4aDiheSgK
+         THKg==
+X-Gm-Message-State: AOAM530L+IRxjMaisVNnNwCmjBkUX2ldonyDLakE/0pDcOvQyPYXcjOM
+        PTQfm/6hJ80+4qgWV82FMbv2eLi5oElt3sR6lcpJiQ==
+X-Google-Smtp-Source: ABdhPJw1S/OudX6ksjY6lypppCEWZ0hIJHznPBazJowA/vFH3Ctsk57UwDR5UNDwwwTnZIA6s/67nZwO+5kWeI/4UA0=
+X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr281928edb.386.1600713520102;
+ Mon, 21 Sep 2020 11:38:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200917074453.20621-1-songmuchun@bytedance.com> <CAEf4Bzad2LDGH_qnE+Qumy=B0N9WXGrwaK5pAdhNm53Q-XzawA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzad2LDGH_qnE+Qumy=B0N9WXGrwaK5pAdhNm53Q-XzawA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 11:31:24 -0700
-Message-ID: <CAEf4BzbbU-EmBQn_eTwNR-L1+XgwEgn9e5t8Z5ssVBmoLu-Uow@mail.gmail.com>
-Subject: Re: [RFC PATCH] bpf: Fix potential call bpf_link_free() in atomic context
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <cover.1600661418.git.yifeifz2@illinois.edu> <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
+ <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
+In-Reply-To: <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 21 Sep 2020 20:38:11 +0200
+Message-ID: <CAG48ez0gBRvTEXX_L3881jQM8Aw6SURbMPafW18GihWe4ZmtmQ@mail.gmail.com>
+Subject: Re: [RFC PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 10:29 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Sep 17, 2020 at 12:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
+On Mon, Sep 21, 2020 at 7:47 PM Jann Horn <jannh@google.com> wrote:
+> On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
+> > access any syscall arguments or instruction pointer. To facilitate
+> > this we need a static analyser to know whether a filter will
+> > access. This is implemented here with a pseudo-emulator, and
+> > stored in a per-filter bitmap. Each seccomp cBPF instruction,
+> > aside from ALU (which should rarely be used in seccomp), gets a
+> > naive best-effort emulation for each syscall number.
 > >
-> > The in_atomic macro cannot always detect atomic context. In particular,
-> > it cannot know about held spinlocks in non-preemptible kernels. Although,
-> > there is no user call bpf_link_put() with holding spinlock now. Be the
-> > safe side, we can avoid this in the feature.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
+> > The emulator works by following all possible (without SAT solving)
+> > paths the filter can take. Every cBPF register / memory position
+> > records whether that is a constant, and of so, the value of the
+> > constant. Loading from struct seccomp_data is considered constant
+> > if it is a syscall number, else it is an unknown. For each
+> > conditional jump, if the both arguments can be resolved to a
+> > constant, the jump is followed after computing the result of the
+> > condition; else both directions are followed, by pushing one of
+> > the next states to a linked list of next states to process. We
+> > keep a finite number of pending states to process.
 >
-> This change seems unnecessary (or at least premature), as if we ever
-> get a use case that does bpf_link_put() from under held spinlock, we
-> should see a warning about that (and in that case I bet code can be
-> rewritten to not hold spinlock during bpf_link_put()). But on the
-> other hand it makes bpf_link_put() to follow the pattern of
-> bpf_map_put(), which always defers the work, so I'm ok with this. As
-> Song mentioned, this is not called from a performance-critical hot
-> path, so doesn't matter all that much.
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
+> Is this actually necessary, or can we just bail out on any branch that
+> we can't statically resolve?
 
-btw, you probably need to resubmit this patch as a non-RFC one for it
-to be applied?..
+Aaaah, now I get what's going on. You statically compute a bitmask
+that says whether a given syscall number always has a fixed result
+*per architecture number*, and then use that later to decide whether
+results can be cached for the combination of a specific seccomp filter
+and a specific architecture number. Which mostly works, except that it
+means you end up with weird per-thread caches and you get interference
+between ABIs (so if a process e.g. filters the argument numbers for
+syscall 123 in ABI 1, the results for syscall 123 in ABI 2 also can't
+be cached).
 
-> >  kernel/bpf/syscall.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 178c147350f5..6347be0a5c82 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -2345,12 +2345,8 @@ void bpf_link_put(struct bpf_link *link)
-> >         if (!atomic64_dec_and_test(&link->refcnt))
-> >                 return;
-> >
-> > -       if (in_atomic()) {
-> > -               INIT_WORK(&link->work, bpf_link_put_deferred);
-> > -               schedule_work(&link->work);
-> > -       } else {
-> > -               bpf_link_free(link);
-> > -       }
-> > +       INIT_WORK(&link->work, bpf_link_put_deferred);
-> > +       schedule_work(&link->work);
-> >  }
-> >
-> >  static int bpf_link_release(struct inode *inode, struct file *filp)
-> > --
-> > 2.20.1
-> >
+Anyway, even though this works, I think it's the wrong way to go about it.
