@@ -2,110 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FB227320E
-	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C9E27321C
+	for <lists+bpf@lfdr.de>; Mon, 21 Sep 2020 20:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727412AbgIUSim (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 14:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727346AbgIUSim (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 14:38:42 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3D7C0613CF
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:38:41 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id e22so13822350edq.6
-        for <bpf@vger.kernel.org>; Mon, 21 Sep 2020 11:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C7G6A5IlEG2WC0nmoX7XdAtZ+v2I/zqqDO0euVW1SNE=;
-        b=GKj3LJZbIecljJchWIPsVbgqFMg87glRuzFxDZUSnJCVadINrRQoPekzrtKM6pXFG4
-         jWmJoGWdPsML6lH9FjKOKPIrPw63/cKOhXUp5e0TPpKeUNin829jFNlYXC5LjVUi7psX
-         Q8fipqI46lZkA3SDqje4ta/W4Eh+vI3SKfAi5yGK5526zHVe4lUCgrqmAQiiqMQXKcXP
-         2qWHELpxN3jG2I/YmRVE/92CZfYkjr2vDdMUrejhZq+rTTRxVVnar1vEZXkj/I4Nld8N
-         b5fF2BDFiRGJmzlxKgzu9iX8XLxJoLdMWZl0/TkOILYMjMeMo1Mmy0vuKiMc4RKUduOk
-         a9ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C7G6A5IlEG2WC0nmoX7XdAtZ+v2I/zqqDO0euVW1SNE=;
-        b=W+MPph4MKULn3k+/i2UiYFOS764CHIjBlaK8IulCAmLS4IUv+JQ34Wl6+yQJqCCq90
-         /aGlItZWoeSp04jO3sBlSedMnkX+3ZBi9tDuyhfVgN9hIbV1Ll/Z35QJ2BWBIj7Z/O60
-         mLnCTR+/qL8xRqO3KSb6K0ZUOY3TTuuc18IMWglwPXdnQMt14jlUcLvAGIi/kQVsTJRM
-         VFNc9rRZA9IaJw9tpCb6vprEBdkGu4BbD1jalA+5na3qskKPbIl3O+U1VhVue6/BjmHb
-         UC5kYqr1Rs7T2W6DzwPaDVwaOvsvhqXwBdjBmOPfIEfDdodY5dQboLQBULm4aDiheSgK
-         THKg==
-X-Gm-Message-State: AOAM530L+IRxjMaisVNnNwCmjBkUX2ldonyDLakE/0pDcOvQyPYXcjOM
-        PTQfm/6hJ80+4qgWV82FMbv2eLi5oElt3sR6lcpJiQ==
-X-Google-Smtp-Source: ABdhPJw1S/OudX6ksjY6lypppCEWZ0hIJHznPBazJowA/vFH3Ctsk57UwDR5UNDwwwTnZIA6s/67nZwO+5kWeI/4UA0=
-X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr281928edb.386.1600713520102;
- Mon, 21 Sep 2020 11:38:40 -0700 (PDT)
+        id S1728013AbgIUSmr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 14:42:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:37454 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727470AbgIUSmr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 21 Sep 2020 14:42:47 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08LIW7a8121671;
+        Mon, 21 Sep 2020 14:42:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=pU6EPWqplPdw2lxTDBjuW+y+uMwiOW3eQOHpaqDYWgw=;
+ b=FOJu2FreY66i36ZiJwVYmqc4cPIh3rDWUJQwLgfCIC0muQDsVWgO2HHnPg4pYvKhLxmF
+ tPaMyNQRSbpRXe+sn8c5JGimHUYL1CPykRUKxXnnJu2qtXl+B/XoAiy5xENPPTJmMYlu
+ A/wbu38HgqOM2JGmSsWO5eWxaafNGR6zseFWjOw6+rphKVtzU3A3wdJieghYY6owdNMd
+ Q2RUlSTuSRvntXI9UvipkiyqQTRTc17EP51LWMdO+PbH9Lo3OjRsYiquhxs0Szp0IPho
+ 0gk8o/BSEU+qNHmhYiyERR4rHC2P64HdAVhof0m82eSlrB1ZdsqZFAEPn+LFcaNx6Xhl 9g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33pyj9kyu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 14:42:32 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08LIX713128056;
+        Mon, 21 Sep 2020 14:42:32 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33pyj9kytg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 14:42:32 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08LIaeYG012922;
+        Mon, 21 Sep 2020 18:42:30 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 33n9m8aaxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Sep 2020 18:42:30 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08LIgR9Z18940190
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Sep 2020 18:42:27 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D47CAE053;
+        Mon, 21 Sep 2020 18:42:27 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 19240AE04D;
+        Mon, 21 Sep 2020 18:42:27 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.145.44.24])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Sep 2020 18:42:27 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] selftests/bpf: Skip some verifier tests on BTFless kernels
+Date:   Mon, 21 Sep 2020 20:42:19 +0200
+Message-Id: <20200921184219.4168733-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <cover.1600661418.git.yifeifz2@illinois.edu> <6af89348c08a4820039e614a090d35aa1583acff.1600661419.git.yifeifz2@illinois.edu>
- <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
-In-Reply-To: <CAG48ez0OqZavgm0BkGjCAJUr5UfRgbeCbmLOZFJ=Rj46COcN3Q@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 21 Sep 2020 20:38:11 +0200
-Message-ID: <CAG48ez0gBRvTEXX_L3881jQM8Aw6SURbMPafW18GihWe4ZmtmQ@mail.gmail.com>
-Subject: Re: [RFC PATCH seccomp 1/2] seccomp/cache: Add "emulator" to check if
- filter is arg-dependent
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-21_06:2020-09-21,2020-09-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=2
+ mlxscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 spamscore=0 impostorscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009210128
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:47 PM Jann Horn <jannh@google.com> wrote:
-> On Mon, Sep 21, 2020 at 7:35 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> > SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
-> > access any syscall arguments or instruction pointer. To facilitate
-> > this we need a static analyser to know whether a filter will
-> > access. This is implemented here with a pseudo-emulator, and
-> > stored in a per-filter bitmap. Each seccomp cBPF instruction,
-> > aside from ALU (which should rarely be used in seccomp), gets a
-> > naive best-effort emulation for each syscall number.
-> >
-> > The emulator works by following all possible (without SAT solving)
-> > paths the filter can take. Every cBPF register / memory position
-> > records whether that is a constant, and of so, the value of the
-> > constant. Loading from struct seccomp_data is considered constant
-> > if it is a syscall number, else it is an unknown. For each
-> > conditional jump, if the both arguments can be resolved to a
-> > constant, the jump is followed after computing the result of the
-> > condition; else both directions are followed, by pushing one of
-> > the next states to a linked list of next states to process. We
-> > keep a finite number of pending states to process.
->
-> Is this actually necessary, or can we just bail out on any branch that
-> we can't statically resolve?
+Mark seven tests as requiring vmlinux btf. Check whether vmlinux btf is
+available, and if not, skip them.
 
-Aaaah, now I get what's going on. You statically compute a bitmask
-that says whether a given syscall number always has a fixed result
-*per architecture number*, and then use that later to decide whether
-results can be cached for the combination of a specific seccomp filter
-and a specific architecture number. Which mostly works, except that it
-means you end up with weird per-thread caches and you get interference
-between ABIs (so if a process e.g. filters the argument numbers for
-syscall 123 in ABI 1, the results for syscall 123 in ABI 2 also can't
-be cached).
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/test_verifier.c   | 24 +++++++++++++++++++
+ tools/testing/selftests/bpf/verifier/d_path.c |  2 ++
+ .../testing/selftests/bpf/verifier/map_ptr.c  |  4 ++++
+ .../selftests/bpf/verifier/map_ptr_mixing.c   |  1 +
+ 4 files changed, 31 insertions(+)
 
-Anyway, even though this works, I think it's the wrong way to go about it.
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 9be395d9dc64..dc696aa2b9e9 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -30,8 +30,10 @@
+ #include <linux/bpf.h>
+ #include <linux/if_ether.h>
+ #include <linux/btf.h>
++#include <linux/err.h>
+ 
+ #include <bpf/bpf.h>
++#include <bpf/btf.h>
+ #include <bpf/libbpf.h>
+ 
+ #ifdef HAVE_GENHDR
+@@ -115,6 +117,7 @@ struct bpf_test {
+ 	};
+ 	enum bpf_attach_type expected_attach_type;
+ 	const char *kfunc;
++	bool need_vmlinux_btf;
+ };
+ 
+ /* Note we want this to be 64 bit aligned so that the end of our array is
+@@ -926,6 +929,19 @@ static bool cmp_str_seq(const char *log, const char *exp)
+ 	return true;
+ }
+ 
++static bool vmlinux_btf_available;
++
++static void probe_vmlinux_btf(void)
++{
++	struct btf *btf_vmlinux;
++
++	btf_vmlinux = libbpf_find_kernel_btf();
++	if (IS_ERR(btf_vmlinux))
++		return;
++	btf__free(btf_vmlinux);
++	vmlinux_btf_available = true;
++}
++
+ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 			   int *passes, int *errors)
+ {
+@@ -940,6 +956,12 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 	__u32 pflags;
+ 	int i, err;
+ 
++	if (test->need_vmlinux_btf && !vmlinux_btf_available) {
++		printf("SKIP (no vmlinux BTF)\n");
++		skips++;
++		goto done;
++	}
++
+ 	for (i = 0; i < MAX_NR_MAPS; i++)
+ 		map_fds[i] = -1;
+ 
+@@ -1097,6 +1119,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 	close(fd_prog);
+ 	for (i = 0; i < MAX_NR_MAPS; i++)
+ 		close(map_fds[i]);
++done:
+ 	sched_yield();
+ 	return;
+ fail_log:
+@@ -1230,5 +1253,6 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	bpf_semi_rand_init();
++	probe_vmlinux_btf();
+ 	return do_test(unpriv, from, to);
+ }
+diff --git a/tools/testing/selftests/bpf/verifier/d_path.c b/tools/testing/selftests/bpf/verifier/d_path.c
+index b988396379a7..08613013f828 100644
+--- a/tools/testing/selftests/bpf/verifier/d_path.c
++++ b/tools/testing/selftests/bpf/verifier/d_path.c
+@@ -15,6 +15,7 @@
+ 	.prog_type = BPF_PROG_TYPE_TRACING,
+ 	.expected_attach_type = BPF_TRACE_FENTRY,
+ 	.kfunc = "dentry_open",
++	.need_vmlinux_btf = true,
+ },
+ {
+ 	"d_path reject",
+@@ -34,4 +35,5 @@
+ 	.prog_type = BPF_PROG_TYPE_TRACING,
+ 	.expected_attach_type = BPF_TRACE_FENTRY,
+ 	.kfunc = "d_path",
++	.need_vmlinux_btf = true,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/map_ptr.c b/tools/testing/selftests/bpf/verifier/map_ptr.c
+index 637f9293bda8..c6e075dadac6 100644
+--- a/tools/testing/selftests/bpf/verifier/map_ptr.c
++++ b/tools/testing/selftests/bpf/verifier/map_ptr.c
+@@ -12,6 +12,7 @@
+ 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
+ 	.result = REJECT,
+ 	.errstr = "R1 is bpf_array invalid negative access: off=-8",
++	.need_vmlinux_btf = true,
+ },
+ {
+ 	"bpf_map_ptr: write rejected",
+@@ -29,6 +30,7 @@
+ 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
+ 	.result = REJECT,
+ 	.errstr = "only read from bpf_array is supported",
++	.need_vmlinux_btf = true,
+ },
+ {
+ 	"bpf_map_ptr: read non-existent field rejected",
+@@ -44,6 +46,7 @@
+ 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
+ 	.result = REJECT,
+ 	.errstr = "cannot access ptr member ops with moff 0 in struct bpf_map with off 1 size 4",
++	.need_vmlinux_btf = true,
+ },
+ {
+ 	"bpf_map_ptr: read ops field accepted",
+@@ -59,6 +62,7 @@
+ 	.errstr_unpriv = "bpf_array access is allowed only to CAP_PERFMON and CAP_SYS_ADMIN",
+ 	.result = ACCEPT,
+ 	.retval = 1,
++	.need_vmlinux_btf = true,
+ },
+ {
+ 	"bpf_map_ptr: r = 0, map_ptr = map_ptr + r",
+diff --git a/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c b/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c
+index 1f2b8c4cb26d..75afb8fc3aad 100644
+--- a/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c
++++ b/tools/testing/selftests/bpf/verifier/map_ptr_mixing.c
+@@ -57,6 +57,7 @@
+ 	.fixup_map_array_48b = { 13 },
+ 	.result = REJECT,
+ 	.errstr = "only read from bpf_array is supported",
++	.need_vmlinux_btf = true,
+ },
+ {
+ 	"cond: two branches returning different map pointers for lookup (tail, tail)",
+-- 
+2.25.4
+
