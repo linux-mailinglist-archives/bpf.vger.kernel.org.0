@@ -2,158 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF9627369A
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 01:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1F72736AE
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 01:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728756AbgIUX0Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Sep 2020 19:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39676 "EHLO
+        id S1728812AbgIUXc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Sep 2020 19:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728704AbgIUX0Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Sep 2020 19:26:16 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B1FC061755;
-        Mon, 21 Sep 2020 16:26:16 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id x10so11482790ybj.13;
-        Mon, 21 Sep 2020 16:26:15 -0700 (PDT)
+        with ESMTP id S1726457AbgIUXc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Sep 2020 19:32:26 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CEBC061755;
+        Mon, 21 Sep 2020 16:32:26 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id u21so12544706ljl.6;
+        Mon, 21 Sep 2020 16:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OF+8FVJOcX0nhPnapCQtkAgPuZTioEJ95Qg1Q6KEc7E=;
-        b=cSREQmRfwhhvazC8M5eotFneglUwjLrY3gVkrI1yFVUk5AtNryw1J8cERbBdQDW3R5
-         q+rBR7QIspGxDv4D9i10KJRA1pQCHjgyIm6h1G4iYnB9m3pF+E3TpQTS0qZulRRCKgIW
-         C175p8zG62fniqa5/XawuYvZZ61indVqbCcBdlvX80ov4SviGOHExD8eUG5L43UxCMNK
-         7KboLIufZdWAJm8N96D3DMH7mM+/o1km1mOO3YYkKboa9KXhjzN1CdrAqK3rIzfQORv8
-         3Qn4EH5hFjcTaUxonlJtSr7I1UAyCBbklbwfhnAl43hEOmGohU3V1Kh2qTMFYW8J48Sd
-         aPWw==
+         :cc;
+        bh=xtUNWeu8dteoz4XBiz8jWFo83W9FMdhO8jzRvy8mI2g=;
+        b=tVmYKd1MoZhxR4nmxzA00OP0ROKz9PbbbqJZj9GjVP4nnnYY9nq6OVAFaO43UW1OPJ
+         Gq6unKBl+grVakbNpYPIgbWkJJfyx4H43dV+dt6Trjapbewn0TVstDeaSvhB3w2qhxZo
+         qPD+9Ft1jGwsj+a6un6XjLEDh6uy/0r9AnmLhomlpAiz0t+xH/pVe/Y5r1xWROFMBM9U
+         g8qpVa4KmgrvV7k0FN0CnNVJLsRTaJTbBr6B7IF7JzSKFCxw3S5ADjhmU1RI79Qy4o9P
+         4qvEsO/K1XkCCozBzquh+6yxFDpoc0OYbuo9t/Rp5d9MkmxEmguJnViNmjUWD+VpflND
+         makA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OF+8FVJOcX0nhPnapCQtkAgPuZTioEJ95Qg1Q6KEc7E=;
-        b=QRErZ6GmHCwnyJSDYA8l1iSEhMwnlSKfShQFQZoKe16dKWHAm+mrbHbU48pzEXh1i7
-         vM9HpJ0r5ZP9tBUkmrAKz2rdKf2FBAFNYexaO5hQYd8IP1J6uZfJUU3aM06Kc6CZJAwa
-         AvMyViLrGEoA3VqMFWdwhPiRWESLQ03qd4vqWmSvaeuDuTCGydA+rdAX2w2Ncx6Qxczo
-         ZHQlQAezrl9ev2Yp/q/o1f/uVe6eyVsvWIDiwj47V2T2/+zAuh4uYKouv+vdA/O4BS44
-         yTiSHBlhEIGuvIEv6JpQ0niOb4IHwz4MKtBaJiGuKtrM8fFSU5UNMsipNtQqOcARP7AH
-         +sJw==
-X-Gm-Message-State: AOAM530aJR8C/auXRtmSSh6iTSJPQBnOAqRj8rhI9+FM3uy/jj/rJpaA
-        1q3ouASJPw185mS94x1gmqxvQ7+lKP8xA6fHrvo=
-X-Google-Smtp-Source: ABdhPJxxd2c9q1eSl3BT+/O/uIVL+l6Hpby6TFYbtDke4mRAD5ArAp6RyXM46sWJH5idfY8AQm70k4hr5P0RGO1Ch5M=
-X-Received: by 2002:a25:8541:: with SMTP id f1mr2899621ybn.230.1600730775327;
- Mon, 21 Sep 2020 16:26:15 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=xtUNWeu8dteoz4XBiz8jWFo83W9FMdhO8jzRvy8mI2g=;
+        b=RMBy8tgk+vHYb86Rawhsj/Nde9qCGCArdZXhyZzcYaSIjKAEKVZTW7mApzHWOZOQMQ
+         8vXPx3oQhF9iPnlyy53ko25i60+DUe5nCsuR4kkazcDflZFk59pKrhnXblYwBAyi6UJi
+         3g/DknW4Tk4peePFbNm2bmNkx33LVQZKUbmb2sBVUw6uXH8hiyQKYlLfAD6GbMeZDtuI
+         LSI+4i3Jb1sw13eRYb9x8RfDmuUidip81T140oEbs2Rx2SPaKTXq+JI4n4K7TKGODyNl
+         Wf5qfiyGjdHxr7GqLwgZ4N/mXowgrbjKgGFDTnGkwbsUYpGlyasNmyNCMU2/+/uZgf97
+         bRmQ==
+X-Gm-Message-State: AOAM530vMSm3a42vlorPlMBgpjeAWFAeG5x82Myj6s/7j1xbBZNUx1pu
+        bnnwVbiJp0RIQkLUgz52ynJ3idxsxm4/fyFjX2sVRPm/ozw=
+X-Google-Smtp-Source: ABdhPJw0WDb6gaU2PczRTf9JfNCIy2P9m+eA/6kh/ZSqleHcps22l98Mt4NsOaO25Qmk/JPBUw1mOAUbXCNoOeyUMYc=
+X-Received: by 2002:a2e:d01:: with SMTP id 1mr632015ljn.121.1600731144694;
+ Mon, 21 Sep 2020 16:32:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <160051618267.58048.2336966160671014012.stgit@toke.dk>
-In-Reply-To: <160051618267.58048.2336966160671014012.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Sep 2020 16:26:04 -0700
-Message-ID: <CAEf4BzZbUrTKS9utppKCiBqkeybBEQQgwjqJhSz8FJyiK32VHA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 00/10] bpf: Support multi-attach for freplace programs
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+References: <20200918112338.2618444-1-jolsa@kernel.org>
+In-Reply-To: <20200918112338.2618444-1-jolsa@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 21 Sep 2020 16:32:13 -0700
+Message-ID: <CAADnVQ+OmqycbKTewWPA9D5upP9Ri-yvS1=GKRN1nQs6AL_YVw@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next] selftests/bpf: Fix stat probe in d_path test
+To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Fri, Sep 18, 2020 at 4:23 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> This series adds support attaching freplace BPF programs to multiple targ=
-ets.
-> This is needed to support incremental attachment of multiple XDP programs=
- using
-> the libxdp dispatcher model.
+> Some kernels builds might inline vfs_getattr call within fstat
+> syscall code path, so fentry/vfs_getattr trampoline is not called.
 >
-> The first patch fixes an issue that came up in review: The verifier will
-> currently allow MODIFY_RETURN tracing functions to attach to other BPF pr=
-ograms,
-> even though it is pretty clear from the commit messages introducing the
-> functionality that this was not the intention. This patch is included in =
-the
-> serise because the subsequent refactoring patches touch the same code.
+> Alexei suggested [1] we should use security_inode_getattr instead,
+> because it's less likely to get inlined. Using this idea also for
+> vfs_truncate (replaced with security_path_truncate) and vfs_fallocate
+> (replaced with security_file_permission).
 >
-> The next three patches are refactoring patches: Patch 2 is a trivial chan=
-ge to
-> the logging in the verifier, split out to make the subsequent refactor ea=
-sier to
-> read. Patch 3 refactors check_attach_btf_id() so that the checks on progr=
-am and
-> target compatibility can be reused when attaching to a secondary location=
-.
+> Keeping dentry_open and filp_close, because they are in their own
+> files, so unlikely to be inlined, but in case they are, adding
+> security_file_open.
 >
-> Patch 4 moves prog_aux->linked_prog and the trampoline to be embedded in
-> bpf_tracing_link on attach, and freed by the link release logic, and intr=
-oduces
-> a mutex to protect the writing of the pointers in prog->aux.
+> Switching the d_path test stat trampoline to security_inode_getattr.
 >
-> Based on these refactorings, it becomes pretty straight-forward to suppor=
-t
-> multiple-attach for freplace programs (patch 5). This is simply a matter =
-of
-> creating a second bpf_tracing_link if a target is supplied. However, for =
-API
-> consistency with other types of link attach, this option is added to the
-> BPF_LINK_CREATE API instead of extending bpf_raw_tracepoint_open().
+> Adding flags that indicate trampolines were called and failing
+> the test if any of them got missed, so it's easier to identify
+> the issue next time.
 >
-> Patch 6 is a port of Jiri Olsa's patch to support fentry/fexit on freplac=
-e
-> programs. His approach of getting the target type from the target program
-> reference no longer works after we've gotten rid of linked_prog (because =
-the
-> bpf_tracing_link reference disappears on attach). Instead, we used the sa=
-ved
-> reference to the target prog type that is also used to verify compatibili=
-ty on
-> secondary freplace attachment.
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> [1] https://lore.kernel.org/bpf/CAADnVQJ0FchoPqNWm+dEppyij-MOvvEG_trEfyrHdabtcEuZGg@mail.gmail.com/
+> Fixes: e4d1af4b16f8 ("selftests/bpf: Add test for d_path helper")
+> Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+> ---
+> v2 changes:
+>   - replaced vfs_* function with security_* in d_path allow list
+>     vfs_truncate  -> security_path_truncate
+>     vfs_fallocate -> security_file_permission
+>     vfs_getattr   -> security_inode_getattr
+>   - added security_file_open to d_path allow list
+>   - split verbose output for trampoline flags
 >
-> Patches 7 is the accompanying libbpf update, and patches 8-10 are selftes=
-ts:
-> patch 8 tests for the multi-freplace functionality itself, patch 9 is Jir=
-i's
-> previous selftest for the fentry-to-freplace fix, and patch 10 is a test =
-for
-> the change introduced in patch 1, blocking MODIFY_RETURN functions from
-> attaching to other BPF programs.
+>  kernel/trace/bpf_trace.c                        |  7 ++++---
+>  tools/testing/selftests/bpf/prog_tests/d_path.c | 10 ++++++++++
+>  tools/testing/selftests/bpf/progs/test_d_path.c |  9 ++++++++-
+>  3 files changed, 22 insertions(+), 4 deletions(-)
 >
-> With this series, libxdp and xdp-tools can successfully attach multiple p=
-rograms
-> one at a time. To play with this, use the 'freplace-multi-attach' branch =
-of
-> xdp-tools:
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index b2a5380eb187..e24323d72cac 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1118,10 +1118,11 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
+>  }
 >
-> $ git clone --recurse-submodules --branch freplace-multi-attach https://g=
-ithub.com/xdp-project/xdp-tools
-> $ cd xdp-tools/xdp-loader
-> $ make
-> $ sudo ./xdp-loader load veth0 ../lib/testing/xdp_drop.o
-> $ sudo ./xdp-loader load veth0 ../lib/testing/xdp_pass.o
-> $ sudo ./xdp-loader status
->
-> The series is also available here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/log/?h=3Db=
-pf-freplace-multi-attach-alt-07
->
-> Changelog:
->
-> v7:
->   - Add back missing ptype =3D=3D prog->type check in link_create()
->   - Use tracing_bpf_link_attach() instead of separate freplace_bpf_link_a=
-ttach()
->   - Don't break attachment of bpf_iters in libbpf
+>  BTF_SET_START(btf_allowlist_d_path)
+> -BTF_ID(func, vfs_truncate)
+> -BTF_ID(func, vfs_fallocate)
+> +BTF_ID(func, security_path_truncate)
+> +BTF_ID(func, security_file_permission)
+> +BTF_ID(func, security_inode_getattr)
+> +BTF_ID(func, security_file_open)
+>  BTF_ID(func, dentry_open)
+> -BTF_ID(func, vfs_getattr)
+>  BTF_ID(func, filp_close)
+>  BTF_SET_END(btf_allowlist_d_path)
 
-What was specifically the issue and the fix for bpf_iters?
-
-
-[...]
+bpf CI system flagged the build error:
+FAILED unresolved symbol security_path_truncate
+because CONFIG_SECURITY_PATH wasn't set.
+Which points to the issue with this patch that the above
+security_* funcs have to be guarded with appropriate #ifdef.
+I don't have a use case for tracing vfs_truncate, but
+security_path_unlink I would want to do in the future.
+Unfortunately it's under the same SECURITY_PATH ifdef.
+So my earlier desire to make it fool proof is not feasible at this point.
+Adding 'was_probed_func_inlined' check to libbpftrace.a would
+solve it eventually.
+For now I think we have to live with this function probing fragility.
+So I've modified the patch to add these few security_* funcs
+and kept vfs_* equivalents.
+Also reworded commit log and applied to bpf-next. Thanks
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=a8a717963fe5ecfd274eb93dd1285ee9428ffca7
