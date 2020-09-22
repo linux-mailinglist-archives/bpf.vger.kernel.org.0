@@ -2,118 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F21B2748D9
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 21:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B2227499F
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 21:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgIVTLT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 15:11:19 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:38637 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbgIVTLT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:11:19 -0400
-Received: by mail-io1-f69.google.com with SMTP id e21so13539768iod.5
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 12:11:18 -0700 (PDT)
+        id S1726641AbgIVT5e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 15:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbgIVT5e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:57:34 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C534C0613D1
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 12:57:33 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id w3so15202039ljo.5
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 12:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z6CQ4PR7LXXUvvSI+PnJV2oiFyZAUecU41+cGfwOujU=;
+        b=c9Y5X31ITFROkCz58BWDmVOTUSXQxwKVO0+YO5gM7Dueho0fqdMOddqGunqR3K1DSz
+         koftFlaQy5AWDynEFTUKrj/IhzVPvGkhTp5Nxa+Zlib8R9NmI9XnuBG9iHCHh7KcMQ/B
+         R2VvMWJxVq3CuEFElE+lE4DkpmSBO4nOKPEAgpV6PF+cdQ0sJlc2ScNbTbgx8wIlp+Dj
+         kZAs1jbuzLo5f/4MpCexanAo64EI9+2+h41TrGEHG8twyTTttEPJrctB/YnAZ2+HkB5k
+         uWovA5v2eCiXYkMwI/ZVzbxoqj8LOi8G4gzoBn6tiRDAJ7YqjH0xAUIYJg7tM5JKyukd
+         +iUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=lAjFh73hmiU/WBQf5ax9GK7qWeGlhNJIYvF2cOOSRUQ=;
-        b=E6Do93/TFjhorf42os5zp3JyrTQq3lpsUHdwVbsn8S63Z9VUAAeoO5jp44R4VaB+Vs
-         x/4oLt8qtEXknHoKyaA/dADC15J0NhWMABk1qOV35FEyD9poqL0D2hFlbHM/8Byt64Nw
-         OgK3ZJ/7h6vznPUsZoYfpW2Lu2ZOEiE75H0U8AcmClsoaidrc+VoSEQpd1kEsHImc4HT
-         03G3OTznsKr/KmOfOEz5sZpI07Ds/1NlHE9AvF1+FGDioIE80L7nikHv192J302BU77Q
-         C+6JJMh6x9sPm/c7QVk8juj8uAUAwZH78zlC+E1Vn9KKaSd7xY3iGgYway+8DWetfzSF
-         bSng==
-X-Gm-Message-State: AOAM532TXMftvdT/2PLsNXPQZi2T4aiIu17Olf1ycqxEtM8K/kGoazXy
-        qRAnJp3VqSrOENjdxRDcht6IRKnLE22sEry5UG06rTmeJrgh
-X-Google-Smtp-Source: ABdhPJy8yniI8MFudEaNa9KgbVwMWsCfxkZEpKwbgKb//f1MXSr5YF5rRi9LeZkJA0mjo9KaWhZAE7dguw2wjioqrH7T9AZEbBtW
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z6CQ4PR7LXXUvvSI+PnJV2oiFyZAUecU41+cGfwOujU=;
+        b=mwUgu0+aHmuNm+zPzD9TShjhfy9NXVe26RBDlsjwLBdYbKApf9CjMsUDV4bKI9kJ2i
+         8/EsCkB7C8MhZKDss22unSYFsCsTspxqTfz6mFZUcpMqrNrUn9iVHSdeaOtZRB14UV0y
+         4pcn8dyeFAQI7fucXlAxXF1pwI7MVwWyEhCXEdyyTJphJHGr6vR/ogevuF4f1YGmK8K5
+         YKSmYTXdq9ntxvQa5DbfIcFw8E6y01bQYyZbGqmlemBzeMFGkkHUyMPwjrqAPbyig8n9
+         sJ88qo1QWO+2Fh+MM5r/wdJU6Ahj5TW14+pMk8iHsAifa6i/Cz5To5qu1LOVLY7X9k4N
+         vvGg==
+X-Gm-Message-State: AOAM531KkD1vD9OrcuoWDPlfrDRKuWK6yS/gohKzUE0Sn/H9B1+KwDgu
+        06vwD/EpYyhgDgadOHYg5DnPq4rtw6EGBOXMcUoxkA==
+X-Google-Smtp-Source: ABdhPJzYews2Ih4OsV/9BJPJX66ITSb1cl147pd8KN4Cqs6H0ueYwNCOPq7ksxkbE9zvtTGB9qj/7KwbIsYjwO4rXFQ=
+X-Received: by 2002:a2e:7c09:: with SMTP id x9mr1916202ljc.192.1600804651550;
+ Tue, 22 Sep 2020 12:57:31 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2003:: with SMTP id y3mr4532911iod.203.1600801877916;
- Tue, 22 Sep 2020 12:11:17 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 12:11:17 -0700
-In-Reply-To: <000000000000680f2905afd0649c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004a0dd105afebbb10@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_trace_run2
-From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+ <20200922095136.GA9682@chrisdown.name> <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
+ <20200922104252.GB9682@chrisdown.name> <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
+In-Reply-To: <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 22 Sep 2020 12:57:19 -0700
+Message-ID: <CALvZod64Qwzjv3N2PO-EUtMkA4bs_PM=Tq4=cmuM0VO9P3BAjw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
+ interface for cgroup v2
+To:     Chunxin Zang <zangchunxin@bytedance.com>
+Cc:     Chris Down <chris@chrisdown.name>, Michal Hocko <mhocko@suse.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Tue, Sep 22, 2020 at 5:37 AM Chunxin Zang <zangchunxin@bytedance.com> wr=
+ote:
+>
+> On Tue, Sep 22, 2020 at 6:42 PM Chris Down <chris@chrisdown.name> wrote:
+> >
+> > Chunxin Zang writes:
+> > >On Tue, Sep 22, 2020 at 5:51 PM Chris Down <chris@chrisdown.name> wrot=
+e:
+> > >>
+> > >> Chunxin Zang writes:
+> > >> >My usecase is that there are two types of services in one server. T=
+hey
+> > >> >have difference
+> > >> >priorities. Type_A has the highest priority, we need to ensure it's
+> > >> >schedule latency=E3=80=81I/O
+> > >> >latency=E3=80=81memory enough. Type_B has the lowest priority, we e=
+xpect it
+> > >> >will not affect
+> > >> >Type_A when executed.
+> > >> >So Type_A could use memory without any limit. Type_B could use memo=
+ry
+> > >> >only when the
+> > >> >memory is absolutely sufficient. But we cannot estimate how much
+> > >> >memory Type_B should
+> > >> >use. Because everything is dynamic. So we can't set Type_B's memory=
+.high.
+> > >> >
+> > >> >So we want to release the memory of Type_B when global memory is
+> > >> >insufficient in order
+> > >> >to ensure the quality of service of Type_A . In the past, we used t=
+he
+> > >> >'force_empty' interface
+> > >> >of cgroup v1.
+> > >>
+> > >> This sounds like a perfect use case for memory.low on Type_A, and it=
+'s pretty
+> > >> much exactly what we invented it for. What's the problem with that?
+> > >
+> > >But we cannot estimate how much memory Type_A uses at least.
+> >
+> > memory.low allows ballparking, you don't have to know exactly how much =
+it uses.
+> > Any amount of protection biases reclaim away from that cgroup.
+> >
+> > >For example:
+> > >total memory: 100G
+> > >At the beginning, Type_A was in an idle state, and it only used 10G of=
+ memory.
+> > >The load is very low. We want to run Type_B to avoid wasting machine r=
+esources.
+> > >When Type_B runs for a while, it used 80G of memory.
+> > >At this time Type_A is busy, it needs more memory.
+> >
+> > Ok, so set memory.low for Type_A close to your maximum expected value.
+>
+> Please forgive me for not being able to understand why setting
+> memory.low for Type_A can solve the problem.
+> In my scene, Type_A is the most important, so I will set 100G to memory.l=
+ow.
+> But 'memory.low' only takes effect passively when the kernel is
+> reclaiming memory. It means that reclaim Type_B's memory only when
+> Type_A  in alloc memory slow path. This will affect Type_A's
+> performance.
+> We want to reclaim Type_B's memory in advance when A is expected to be bu=
+sy.
+>
 
-HEAD commit:    12450081 libbpf: Fix native endian assumption when parsing..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=17fedf8b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5ac0d21536db480b
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1365d2c3900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d5f08d900000
+How will you know when to reclaim from B? Are you polling /proc/meminfo?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com
+From what I understand, you want to proactively reclaim from B, so
+that A does not go into global reclaim and in the worst case kill B,
+right?
 
-BUG: unable to handle page fault for address: ffffc90000ed0030
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD aa000067 P4D aa000067 PUD aa169067 PMD a9031067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6868 Comm: syz-executor454 Not tainted 5.9.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
-RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
-RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
-RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- trace_sys_enter include/trace/events/syscalls.h:18 [inline]
- syscall_trace_enter kernel/entry/common.c:64 [inline]
- syscall_enter_from_user_mode+0x22c/0x290 kernel/entry/common.c:82
- do_syscall_64+0xf/0x70 arch/x86/entry/common.c:41
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4441da
-Code: 25 18 00 00 00 00 74 01 f0 48 0f b1 3d cf f9 28 00 48 39 c2 75 da f3 c3 0f 1f 84 00 00 00 00 00 48 63 ff b8 e4 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 c7 c2 d0 ff ff ff f7
-RSP: 002b:00007ffc59deef98 EFLAGS: 00000246 ORIG_RAX: 00000000000000e4
-RAX: ffffffffffffffda RBX: 0000000000001ae1 RCX: 00000000004441da
-RDX: 0000000000000000 RSI: 00007ffc59deefa0 RDI: 0000000000000001
-RBP: 000000000000ee75 R08: 0000000000001ad4 R09: 0000000001079880
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004022f0
-R13: 0000000000402380 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: ffffc90000ed0030
----[ end trace 7a32b71ba0e36806 ]---
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
-RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
-RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
-RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
-RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+BTW you can use memory.high to reclaim from B by setting it lower than
+memory.current of B and reset it to 'max' once the reclaim is done.
+Since 'B' is not high priority (I am assuming not a latency sensitive
+workload), B hitting temporary memory.high should not be an issue.
+Also I am assuming you don't much care about the amount of memory to
+be reclaimed from B, so I think memory.high can fulfil your use-case.
+However if in future you decide to proactively reclaim from all the
+jobs based on their priority i.e. more aggressive reclaim from B and a
+little bit reclaim from A then memory.high is not a good interface.
 
+Shakeel
