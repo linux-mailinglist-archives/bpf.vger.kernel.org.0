@@ -2,130 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FF6273EEF
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 11:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E477B273F04
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 11:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIVJw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 05:52:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49270 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726461AbgIVJw1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 22 Sep 2020 05:52:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600768346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nx9mv10dV8y4dzoFloRA6309JVx8lLnXd7Rnl/kRaH8=;
-        b=ZUBQQTJVF+jPdTF1QbaTlaRcZ7+WaIUlk6ObfA8qs+yuqmUIPcQ5b78VH/1R8GDcTrYzrD
-        mTxxy9ft0AlohYfbEaCupWRtvQdnYojg721J/C9xhprowBPhOIzkYLIVCRsRSs5CeDnfct
-        u6lBxN7EmpdhCMByiuvuNsqaM5oq1Ps=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-yqnp4XCXMCGk5WSAj0hrEQ-1; Tue, 22 Sep 2020 05:52:24 -0400
-X-MC-Unique: yqnp4XCXMCGk5WSAj0hrEQ-1
-Received: by mail-pg1-f200.google.com with SMTP id r4so10086986pgl.20
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 02:52:24 -0700 (PDT)
+        id S1726424AbgIVJ5H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 05:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgIVJ5G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 05:57:06 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9A9C061755
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 02:57:06 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 185so20376321oie.11
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 02:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=stm1xuTsqpLJMTv8SV3qYFXEHsBh8qCH06mfO4/ZLJM=;
+        b=X3zLDnpTHxVNpnSeioEQ5e0Orn5gI12nN4tFUjfecIgB43UkZldAz6W+Kxsm18FaeP
+         xjDoFe3L7c6VWnvwBBcFGm+2EuKeiwAtrabjeGxv0irBwcEBoeApegLilDY79Z3aKtJU
+         HJi9A5lKCrSrRaWJq3LcCV+O92fyedNWtCRPo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Nx9mv10dV8y4dzoFloRA6309JVx8lLnXd7Rnl/kRaH8=;
-        b=lWW83P2+pivNepCRVvvZZ8p+XMXD0Uxyafloey91CMKJgQm1d5uxIZP01QkzZmtD13
-         R9Po8fK9NefTOPvEmKHLxVBPLE6zICkWXoiA6sJ59VHRqMPp/l9FoH3go0YJaXEVtnm2
-         l4c/QXjcqrBTSIagMvalGwp80YEAQKDFxiWCjw71sRVyJHn62uHwzgDKQS0Ie/Kx6dFQ
-         pTzM4OJCGpHC0dL8GyBHsDS0ZAMa9sPkYqKXL/fPGg9AA4n4i5bc1lh2bDxhdGRf/VH+
-         LWrSCpx9eQRahHrQ+wNix5+xaYZ9fujAF1lN0lJ2uveA+hP3qYa6bLlu+z0vT7m78jRK
-         D3pA==
-X-Gm-Message-State: AOAM533mBKF32/SbfSsHu7/60YrKfK/TRDCqYUzMjAO1AeKCSVriYB8X
-        vfELels7zPak6aWAOM6uq6eQnpZI8SzByuQOG2mwQ46htG2X4uMCZCmlRjQMBU9kp7laj2VaepT
-        4sDnyr44H8YlO
-X-Received: by 2002:a17:90b:357:: with SMTP id fh23mr2968129pjb.221.1600768343816;
-        Tue, 22 Sep 2020 02:52:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBm9x92QvsEvbQnDTGXDaepFv4G+EzNXVg9nsB0Uk3HD4gjqovWBAWyq8+HkgHhLhnoZWkVg==
-X-Received: by 2002:a17:90b:357:: with SMTP id fh23mr2968116pjb.221.1600768343597;
-        Tue, 22 Sep 2020 02:52:23 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id r15sm13900813pgg.17.2020.09.22.02.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 02:52:22 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id F18DC183A99; Tue, 22 Sep 2020 11:52:16 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v7 01/10] bpf: disallow attaching modify_return
- tracing functions to other BPF programs
-In-Reply-To: <CAEf4Bzbb5gt7KgmfXM6FiC750GjxL23XO4GPnVHFgCGaMTuDCg@mail.gmail.com>
-References: <160051618267.58048.2336966160671014012.stgit@toke.dk>
- <160051618391.58048.12525358750568883938.stgit@toke.dk>
- <CAEf4Bzbb5gt7KgmfXM6FiC750GjxL23XO4GPnVHFgCGaMTuDCg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 22 Sep 2020 11:52:16 +0200
-Message-ID: <87r1qup29b.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=stm1xuTsqpLJMTv8SV3qYFXEHsBh8qCH06mfO4/ZLJM=;
+        b=K8niNfvT9n5Jf+e2eQ8OynMQM/sht8T3SqLv5xVhL7tfZlBAGWLTLSU69XSu9n3Hdj
+         veM+WVpjyIfX+iiDF6fBPEiENkmlkMxMArymuxQBGgJdUOTz91ZFAB8ZjXkOx1wlz3Dz
+         GdsVbvygS2tIlbCkC3lPyHTzExbco1w1fEIu/LXUn7LtjfWiwuJUVqyF1mq5BAy4BRC4
+         CDVDKprVvwZa19XSpxcqYRgSHTWsENn29tUEQqULnwr2MT2MT7wK6b9448kGnb1sKWx1
+         wnJTiD8bN8xIJ+AiyrcWf931BKjpKSpQ4/Cw1j+6uonuSmYxVFQfW+AYOGXJXNKQFOpd
+         Mmww==
+X-Gm-Message-State: AOAM531hxC3MMFDv6scWriKygqqUP4qzqSQxAQ1Hk6CORzOmzRBiJitC
+        MoihojBpxvTca7e3WOniz1zcnrgNo7QHMkw/PkEBQQ==
+X-Google-Smtp-Source: ABdhPJwRZ32H4B9USBBtsRdRpm5blzRVJ7B2k1rWTi/flHu1SbFFYQabeAY1VTSYqts8hVeWZDSqnDoT4bY6LPq5Bic=
+X-Received: by 2002:aca:3087:: with SMTP id w129mr2020496oiw.102.1600768626105;
+ Tue, 22 Sep 2020 02:57:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20200922070409.1914988-1-kafai@fb.com> <20200922070415.1916194-1-kafai@fb.com>
+In-Reply-To: <20200922070415.1916194-1-kafai@fb.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 22 Sep 2020 10:56:55 +0100
+Message-ID: <CACAyw9_wEMFuymvUC0fsZVJCH0vsvbD9p=CWTZC1jV2gUiu3KA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 01/11] bpf: Move the PTR_TO_BTF_ID check to check_reg_type()
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Sat, Sep 19, 2020 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>
->> From the checks and commit messages for modify_return, it seems it was
->> never the intention that it should be possible to attach a tracing progr=
-am
->> with expected_attach_type =3D=3D BPF_MODIFY_RETURN to another BPF progra=
-m.
->> However, check_attach_modify_return() will only look at the function nam=
-e,
->> so if the target function starts with "security_", the attach will be
->> allowed even for bpf2bpf attachment.
->>
->> Fix this oversight by also blocking the modification if a target program=
- is
->> supplied.
->>
->> Fixes: 18644cec714a ("bpf: Fix use-after-free in fmod_ret check")
->> Fixes: 6ba43b761c41 ("bpf: Attachment verification for BPF_MODIFY_RETURN=
-")
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  kernel/bpf/verifier.c |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 4161b6c406bc..cb1b0f9fd770 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -11442,7 +11442,7 @@ static int check_attach_btf_id(struct bpf_verifi=
-er_env *env)
->>                                         prog->aux->attach_func_name);
->>                 } else if (prog->expected_attach_type =3D=3D BPF_MODIFY_=
-RETURN) {
->>                         ret =3D check_attach_modify_return(prog, addr);
->> -                       if (ret)
->> +                       if (ret || tgt_prog)
+On Tue, 22 Sep 2020 at 08:04, Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> can you please do it as a separate check with a more appropriate and
-> meaningful message?
+> check_reg_type() checks whether a reg can be used as an arg of a
+> func_proto.  For PTR_TO_BTF_ID, the check is actually not
+> completely done until the reg->btf_id is pointing to a
+> kernel struct that is acceptable by the func_proto.
+>
+> Thus, this patch moves the btf_id check into check_reg_type().
+> The compatible_reg_types[] usage is localized in check_reg_type() now.
+>
+> The "if (!btf_id) verbose(...); " is also removed since it won't happen.
+>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>  kernel/bpf/verifier.c | 65 +++++++++++++++++++++++--------------------
+>  1 file changed, 35 insertions(+), 30 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 15ab889b0a3f..3ce61c412ea0 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4028,20 +4028,29 @@ static const struct bpf_reg_types *compatible_reg_types[] = {
+>         [__BPF_ARG_TYPE_MAX]            = NULL,
+>  };
+>
+> -static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> -                         const struct bpf_reg_types *compatible)
+> +static int check_reg_type(struct bpf_verifier_env *env, u32 arg,
+> +                         enum bpf_arg_type arg_type,
+> +                         const struct bpf_func_proto *fn)
 
-Heh, okay, maybe I was being a bit too lazy here ;)
+How about (env, regno, arg_type, expected_btf_id) instead? Otherwise
+implementing sockmap update from iter with your current approach is
+difficult for me. See resolve_map_arg_type, which now needs to resolve
+expected_bpf_id.
 
--Toke
+See below for what I mean:
 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 2468533bc4a1..3a238a295c37 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3931,7 +3931,8 @@ static int int_ptr_type_to_size(enum bpf_arg_type type)
+
+ static int resolve_map_arg_type(struct bpf_verifier_env *env,
+                  const struct bpf_call_arg_meta *meta,
+-                 enum bpf_arg_type *arg_type)
++                 enum bpf_arg_type *arg_type,
++                 u32 **expected_btf_id)
+ {
+     if (!meta->map_ptr) {
+         /* kernel subsystem misconfigured verifier */
+@@ -3943,7 +3944,8 @@ static int resolve_map_arg_type(struct
+bpf_verifier_env *env,
+     case BPF_MAP_TYPE_SOCKMAP:
+     case BPF_MAP_TYPE_SOCKHASH:
+         if (*arg_type == ARG_PTR_TO_MAP_VALUE) {
+-            *arg_type = ARG_PTR_TO_SOCKET;
++            *arg_type = ARG_PTR_TO_BTF_ID_SOCK_COMMON;
++            *expected_btf_id = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON];
+         } else {
+             verbose(env, "invalid arg_type for sockmap/sockhash\n");
+             return -EINVAL;
+@@ -4044,11 +4046,9 @@ static const struct bpf_reg_types
+*compatible_reg_types[] = {
+     [__BPF_ARG_TYPE_MAX]        = NULL,
+ };
+
+-static int check_reg_type(struct bpf_verifier_env *env, u32 arg,
+-              enum bpf_arg_type arg_type,
+-              const struct bpf_func_proto *fn)
++static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
++              enum bpf_arg_type arg_type, u32 *expected_btf_id)
+ {
+-    u32 regno = BPF_REG_1 + arg;
+     struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+     enum bpf_reg_type expected, type = reg->type;
+     const struct bpf_reg_types *compatible;
+@@ -4077,8 +4077,6 @@ static int check_reg_type(struct
+bpf_verifier_env *env, u32 arg,
+
+ found:
+     if (type == PTR_TO_BTF_ID) {
+-        u32 *expected_btf_id = fn->arg_btf_id[arg];
+-
+         if (!btf_struct_ids_match(&env->log, reg->off, reg->btf_id,
+                       *expected_btf_id)) {
+             verbose(env, "R%d is of type %s but %s is expected\n",
+@@ -4105,6 +4103,7 @@ static int check_func_arg(struct
+bpf_verifier_env *env, u32 arg,
+     struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+     enum bpf_arg_type arg_type = fn->arg_type[arg];
+     enum bpf_reg_type type = reg->type;
++    u32 *expected_btf_id = fn->arg_btf_id[arg];
+     int err = 0;
+
+     if (arg_type == ARG_DONTCARE)
+@@ -4132,7 +4131,7 @@ static int check_func_arg(struct
+bpf_verifier_env *env, u32 arg,
+     if (arg_type == ARG_PTR_TO_MAP_VALUE ||
+         arg_type == ARG_PTR_TO_UNINIT_MAP_VALUE ||
+         arg_type == ARG_PTR_TO_MAP_VALUE_OR_NULL) {
+-        err = resolve_map_arg_type(env, meta, &arg_type);
++        err = resolve_map_arg_type(env, meta, &arg_type, &expected_btf_id);
+         if (err)
+             return err;
+     }
+@@ -4143,7 +4142,7 @@ static int check_func_arg(struct
+bpf_verifier_env *env, u32 arg,
+          */
+         goto skip_type_check;
+
+-    err = check_reg_type(env, arg, arg_type, fn);
++    err = check_reg_type(env, regno, arg_type, expected_btf_id);
+     if (err)
+         return err;
+
+-- 
+2.25.1
+
+
+
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
