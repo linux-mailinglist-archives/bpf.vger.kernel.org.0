@@ -2,83 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E127E273F1D
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 12:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67438273F55
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 12:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgIVKB4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 06:01:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37456 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgIVKBz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 06:01:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600768914;
+        id S1726549AbgIVKOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 06:14:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28080 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726483AbgIVKOU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Sep 2020 06:14:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600769659;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QLO3suN0B5LIt4PxRcxRdNDdQcD9omAqbXVobcJQit0=;
-        b=bvB8VbMcv76lg7v+mTn3uy5QgST4NRQnUu47qUNl8D+fm1OVsZ7ir5iOajEgMTc5mRolsx
-        +JdjG1UKUAcMkTR1JPArn3y+yQ4W+XuUYFTGDk2Xl/4Whb68KND0i+avmivAL2Jgd2GPke
-        OFEuWW6aD69MpOK/i3dMkpRkCKNKoZU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B9B66B1AD;
-        Tue, 22 Sep 2020 10:02:30 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 12:01:52 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        bh=RVoV+Gzw2IKyfoXH9wl+/oRsyv0cBYhdyCroTITZT4M=;
+        b=WqNjOHawREhLQxdNSB9EwSvUg2O7eLO2eE+hiILDSTXUDYkw4yGImqp92TvDHZnBQwwPWj
+        tF8MLIcXLP9fk03+pXWRo9fqjj21V0PbVDqurJhjltxP5B+qoBNA7YJ/rX4DKcT6ICoZm1
+        fT0hXJ0wAGe+7BDhxEKjjkiX+L6l74g=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-SsoJaTgZNd2nPa3WnrDB5g-1; Tue, 22 Sep 2020 06:14:17 -0400
+X-MC-Unique: SsoJaTgZNd2nPa3WnrDB5g-1
+Received: by mail-pj1-f69.google.com with SMTP id mv5so1690791pjb.5
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 03:14:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=RVoV+Gzw2IKyfoXH9wl+/oRsyv0cBYhdyCroTITZT4M=;
+        b=EtBpBLT9I9aoAg35PNzREaiWUgFKFoEMGC+yq4+JlK3hmmLTGCUeOOzlfdyk6O7h8D
+         sVr934vHC/DOUjjzv5qmiqZgjIaKNOivWgyv+z6WaMX6LkSgt76GR358kgoDLmE7RH0Z
+         BB2KBf27MFSpyn3TqtjXo4MLvkd/SxpbotLR14hVozqkgs+KObenb9ly/4dnGj8x4Ion
+         T4TZLua/qX8q1lfXkgjp3HFLxerdacecBnXg4eRnXyTAVKaqH4dBHJUSfgsLUJRKRQVS
+         I24S8dpg0XWC1r7MW4uioK4Z3ZATEDd/QLqab3gAfuzeBec2Yu1e/RffWYPMBCichLtt
+         vzSg==
+X-Gm-Message-State: AOAM532h0PgKh2d3uDmfkQ73Zn+Np/SMz3U3VawADgNPUMmRIG/B3hip
+        mofkVhWr59e36uAR25cfoVvCbB2p3r1OAiMSGdy5GqddXjVm0Nw/gPNk2ukjZzzWh0kudRacF1g
+        vwSCjDHxNXZ/V
+X-Received: by 2002:a63:c910:: with SMTP id o16mr2876223pgg.102.1600769656437;
+        Tue, 22 Sep 2020 03:14:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTWr8X1BmwvbjVD+bLgt/048uuelmVQft2sUeoAX852/eyOLwo6Sz5IUiwybGm0mXNwsj1Sg==
+X-Received: by 2002:a63:c910:: with SMTP id o16mr2876196pgg.102.1600769656149;
+        Tue, 22 Sep 2020 03:14:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id v204sm14823736pfc.10.2020.09.22.03.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 03:14:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id EA444183A99; Tue, 22 Sep 2020 12:14:10 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-Message-ID: <20200922100152.GW12990@dhcp22.suse.cz>
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz>
- <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz>
- <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
- <20200921113646.GJ12990@dhcp22.suse.cz>
- <CALOAHbCker64WEW9w4oq8=avA6oKf3-Jrn-vOOgkpqkV3g+CYA@mail.gmail.com>
- <20200922072733.GT12990@dhcp22.suse.cz>
- <CALOAHbCvRA61NbamdKSxLoy4eNqR6G_1OA=zEjb7Mu0Yh9O0sg@mail.gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v7 03/10] bpf: verifier: refactor
+ check_attach_btf_id()
+In-Reply-To: <CAEf4BzY4UR+KjZ3bY6ykyW5CPNwAzwgKVhYHGdgDuMT2nntmTg@mail.gmail.com>
+References: <160051618267.58048.2336966160671014012.stgit@toke.dk>
+ <160051618622.58048.13304507277053169557.stgit@toke.dk>
+ <CAEf4BzY4UR+KjZ3bY6ykyW5CPNwAzwgKVhYHGdgDuMT2nntmTg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 22 Sep 2020 12:14:10 +0200
+Message-ID: <87o8lyp18t.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbCvRA61NbamdKSxLoy4eNqR6G_1OA=zEjb7Mu0Yh9O0sg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue 22-09-20 16:06:31, Yafang Shao wrote:
-> On Tue, Sep 22, 2020 at 3:27 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > What is the latency triggered by the memory reclaim? It should be mostly
-> > a clean page cache right as drop_caches only drops clean pages. Or is
-> > this more about [id]cache? Do you have any profiles where is the time
-> > spent?
-> >
-> 
-> Yes, we have analyzed the issues in the direct reclaim, but that is
-> not the point.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Are those fixed?
+> On Sat, Sep 19, 2020 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>
+>> The check_attach_btf_id() function really does three things:
+>>
+>> 1. It performs a bunch of checks on the program to ensure that the
+>>    attachment is valid.
+>>
+>> 2. It stores a bunch of state about the attachment being requested in
+>>    the verifier environment and struct bpf_prog objects.
+>>
+>> 3. It allocates a trampoline for the attachment.
+>>
+>> This patch splits out (1.) and (3.) into separate functions in preparati=
+on
+>> for reusing them when the actual attachment is happening (in the
+>> raw_tracepoint_open syscall operation), which will allow tracing programs
+>> to have multiple (compatible) attachments.
+>>
+>> No functional change is intended with this patch.
+>>
+>> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>
+> Ok, so bad news: you broke another selftest (test_overhead). Please,
+> do run test_progs and make sure everything succeeds, every time before
+> you post a new version.
 
-> The point is that each case may take us several days to analyze, while
-> the user can't wait, so they will use drop_caches to workaround it
-> until we find the solution.
+Ah, right, I'll take a look. I have had some trouble with running all
+the tests because my VM runs out of memory, so I was picking and
+choosing. Guess I'll go and actually fix this and run the full test
+suite...
 
-As I've said there are several options to achieve an immediate action.
-Careful resource domains configuration will certainly help with that.
--- 
-Michal Hocko
-SUSE Labs
+> Good news, though, is that this refactoring actually fixed a pretty
+> nasty bug in check_attach_btf_id logic: whenever bpf_trampoline
+> already existed (e.g., due to successful fentry to function X), all
+> subsequent fentry/fexit/fmod_ret and all their sleepable variants
+> would skip a bunch of check. So please attach the following Fixes
+> tags:
+>
+> Fixes: 6ba43b761c41 ("bpf: Attachment verification for BPF_MODIFY_RETURN")
+> Fixes: 1e6c62a88215 ("bpf: Introduce sleepable BPF programs")
+
+Ah, yes, well spotted! Will add the Fixes tags :)
+
+> As for selftests, feel free to just drop the fmod_ret program, it was
+> never supposed to be possible, I just never realized that.
+
+Well, doesn't hurt to have it, does it? If you don't mind I think I'll
+just keep it...
+
+-Toke
+
