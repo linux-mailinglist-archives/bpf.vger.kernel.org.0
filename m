@@ -2,129 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9733527408C
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 13:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C220E274228
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 14:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgIVLQR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 07:16:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54854 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726506AbgIVLQQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:16:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600773374;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dtujSmMB6nTw7h5UTnW9OabKvVTDf3TP6d+sgwQFf7Q=;
-        b=AJf2cQ5VML3nlrNpnu5yS8O6rNbrUP/Ex/24G1d9+63NKnwz7MO4Fh6XzcCpyJlkNVqRcm
-        nQH2jiiSE38+He3RthMWhLPbzTTDVvTcSjjsA6sreSlQCdjo0ExJ76OI599MGCPEe6qd9Z
-        Xi8zR3adEJ+YCCgAA6NcOjmHI/s/KQk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-438-xPkpQbtoP1uEw8xqPTbhZA-1; Tue, 22 Sep 2020 07:16:13 -0400
-X-MC-Unique: xPkpQbtoP1uEw8xqPTbhZA-1
-Received: by mail-wm1-f72.google.com with SMTP id a7so784118wmc.2
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 04:16:12 -0700 (PDT)
+        id S1726637AbgIVMhp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 08:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbgIVMhp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 08:37:45 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF26AC0613D2
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 05:37:44 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a15so14000348ljk.2
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 05:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gA220xpuIaxUuyuMwr6nlukSuBX7MpFrxgJa3f1luDw=;
+        b=GReCqit5HTO/ziRjftty0K8XZi2ySCuJzKJveaG0MdXTTpgULihVLwMvfADeawU2QZ
+         IbAydMl3Tn/9XZF79/7c4WOv1D9hB06rNVFZ/DiHhbarrKyedLyRCcCrKNAAgAgynsvl
+         PuiO+M0DWum3yqYFnTFuppHoZ6RUqQ5x1aZtz6a6hAJDQtyZm8Nk5IuIu/m6lV5zU0Qa
+         YPhNCDslcn72ErQ130linofe9GJPNOAEaCIrlopykwgfmAJg0zLWoF20Oug79KD1o/ie
+         h0iyMZUYd3e33ZiaWMrDN63XT+TuA6+CR0zCHGKr/FQJkVpg0EeSRf5Qih1CxKrTnkq8
+         Ut5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=dtujSmMB6nTw7h5UTnW9OabKvVTDf3TP6d+sgwQFf7Q=;
-        b=NMEhXgUVqgkENrVNYYFxVpbcbyr2LUJOMr+lgJp8mTFygb+4qjVpnuUoGbGc9klygA
-         xyk6FnKJN1icd0kLKrmhKzmIYZE3Q/JHxEIt5EIn/5n6CYy4vnieIdhPQm9Xq2OuZNPw
-         h2mRvjqNUW5+Yjc00Ey/avGNb1keELYQz2qfB373ZHIxlfIMS0N4/X40Zwi3lctgzVMY
-         34iRfC/CdZX8eJyKdWsOAZwKQXVhy7YpU/+oK9/qijkT+GWNUrjcYVxmBSuu0ZMfh/ls
-         Eoiks0meX9xpxJMbU+IN93PVHvM/TJXjLMcSEYhe5+EkR9QUyWkIHmQ5Lm3zXwc9d5A8
-         Z0QA==
-X-Gm-Message-State: AOAM5315W9bUNuwd8dapHB5k6RP/LyJPlIOd/mYpVPfneY+oxL+uwp5j
-        HlRD1JwSzyytQVV2p+jk+rw89fuRuGpixmSB0ejX8+UZ61nHtGH3DojaI02cHzkP8WEi+iF8TmM
-        l47I+YtF8qmoJ
-X-Received: by 2002:a05:6000:118a:: with SMTP id g10mr4910906wrx.67.1600773371606;
-        Tue, 22 Sep 2020 04:16:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDLh49J2igFsBPt8GTl/dJj7UTzsBsHQ8nK/1AvF2774elWuJah9Mr401GPU/xFxj8r77Cug==
-X-Received: by 2002:a05:6000:118a:: with SMTP id g10mr4910864wrx.67.1600773371307;
-        Tue, 22 Sep 2020 04:16:11 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id d5sm27935960wrb.28.2020.09.22.04.16.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 04:16:10 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 36273183A99; Tue, 22 Sep 2020 13:16:10 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v7 03/10] bpf: verifier: refactor
- check_attach_btf_id()
-In-Reply-To: <CAEf4BzY4UR+KjZ3bY6ykyW5CPNwAzwgKVhYHGdgDuMT2nntmTg@mail.gmail.com>
-References: <160051618267.58048.2336966160671014012.stgit@toke.dk>
- <160051618622.58048.13304507277053169557.stgit@toke.dk>
- <CAEf4BzY4UR+KjZ3bY6ykyW5CPNwAzwgKVhYHGdgDuMT2nntmTg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 22 Sep 2020 13:16:10 +0200
-Message-ID: <87a6xioydh.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gA220xpuIaxUuyuMwr6nlukSuBX7MpFrxgJa3f1luDw=;
+        b=seg4xtMa3NO9iq2hrHofvna5ACeaGhshXNfTRwZriBhP+xBoN+pMR2178uXwKdMTFi
+         wmxqBmS21eutqash2F8SWBwx+j/HUkxYvdAQReGF+Tnipq64TnhkPmyqk/gw3tyt9M4I
+         y79DrZyYUGBUm3Xdmk6niOsrszDvGK+YhO0lq6XtUyclxRk7qnVPKk+9aL2J7DSXA+Dy
+         oVMR12CMYQSNqMp2USCl50B4yGEGx9ZdeokfQt5PD0agw1FF5Pyq8C+lFa+MQm/O9jV2
+         xyMI/MKE7U5grJlEbwWva1Dh3ZL9W8dcf2x3+PaQaK5g3g3AAUnHAoP6dispYYohqCXX
+         vDJQ==
+X-Gm-Message-State: AOAM531W9Yv5YgyJgFEqBbUAeaSHuAvu4QXKK31I80JZGEdcnG33+7F/
+        wAvCoh81mIicgu6UFTxc2CZT5Sz9iKnzvZtMmUaBXA==
+X-Google-Smtp-Source: ABdhPJy2uCCGncfmVCuod/IiCiTTfxrKsDOlJTrFdVxVRrWlq7JKLI4j/OgY4j/S5nJzpdTEsCyW0xWnIGQadAicUpY=
+X-Received: by 2002:a2e:9089:: with SMTP id l9mr1605962ljg.408.1600778262989;
+ Tue, 22 Sep 2020 05:37:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+ <20200922095136.GA9682@chrisdown.name> <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
+ <20200922104252.GB9682@chrisdown.name>
+In-Reply-To: <20200922104252.GB9682@chrisdown.name>
+From:   Chunxin Zang <zangchunxin@bytedance.com>
+Date:   Tue, 22 Sep 2020 20:37:32 +0800
+Message-ID: <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
+ interface for cgroup v2
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Michal Hocko <mhocko@suse.com>, Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Sat, Sep 19, 2020 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>
->> The check_attach_btf_id() function really does three things:
->>
->> 1. It performs a bunch of checks on the program to ensure that the
->>    attachment is valid.
->>
->> 2. It stores a bunch of state about the attachment being requested in
->>    the verifier environment and struct bpf_prog objects.
->>
->> 3. It allocates a trampoline for the attachment.
->>
->> This patch splits out (1.) and (3.) into separate functions in preparati=
-on
->> for reusing them when the actual attachment is happening (in the
->> raw_tracepoint_open syscall operation), which will allow tracing programs
->> to have multiple (compatible) attachments.
->>
->> No functional change is intended with this patch.
->>
->> Acked-by: Andrii Nakryiko <andriin@fb.com>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
+On Tue, Sep 22, 2020 at 6:42 PM Chris Down <chris@chrisdown.name> wrote:
 >
-> Ok, so bad news: you broke another selftest (test_overhead). Please,
-> do run test_progs and make sure everything succeeds, every time before
-> you post a new version.
+> Chunxin Zang writes:
+> >On Tue, Sep 22, 2020 at 5:51 PM Chris Down <chris@chrisdown.name> wrote:
+> >>
+> >> Chunxin Zang writes:
+> >> >My usecase is that there are two types of services in one server. The=
+y
+> >> >have difference
+> >> >priorities. Type_A has the highest priority, we need to ensure it's
+> >> >schedule latency=E3=80=81I/O
+> >> >latency=E3=80=81memory enough. Type_B has the lowest priority, we exp=
+ect it
+> >> >will not affect
+> >> >Type_A when executed.
+> >> >So Type_A could use memory without any limit. Type_B could use memory
+> >> >only when the
+> >> >memory is absolutely sufficient. But we cannot estimate how much
+> >> >memory Type_B should
+> >> >use. Because everything is dynamic. So we can't set Type_B's memory.h=
+igh.
+> >> >
+> >> >So we want to release the memory of Type_B when global memory is
+> >> >insufficient in order
+> >> >to ensure the quality of service of Type_A . In the past, we used the
+> >> >'force_empty' interface
+> >> >of cgroup v1.
+> >>
+> >> This sounds like a perfect use case for memory.low on Type_A, and it's=
+ pretty
+> >> much exactly what we invented it for. What's the problem with that?
+> >
+> >But we cannot estimate how much memory Type_A uses at least.
+>
+> memory.low allows ballparking, you don't have to know exactly how much it=
+ uses.
+> Any amount of protection biases reclaim away from that cgroup.
+>
+> >For example:
+> >total memory: 100G
+> >At the beginning, Type_A was in an idle state, and it only used 10G of m=
+emory.
+> >The load is very low. We want to run Type_B to avoid wasting machine res=
+ources.
+> >When Type_B runs for a while, it used 80G of memory.
+> >At this time Type_A is busy, it needs more memory.
+>
+> Ok, so set memory.low for Type_A close to your maximum expected value.
 
-Right, so I looked into this, and it seems the only reason it was
-succeeding before were those skipped checks you pointed out that are now
-fixed. I.e., __set_task_comm() is not actually supposed to be
-fmod_ret'able according to check_attach_modify_return(). So I'm not sure
-what the right way to fix this is?
+Please forgive me for not being able to understand why setting
+memory.low for Type_A can solve the problem.
+In my scene, Type_A is the most important, so I will set 100G to memory.low=
+.
+But 'memory.low' only takes effect passively when the kernel is
+reclaiming memory. It means that reclaim Type_B's memory only when
+Type_A  in alloc memory slow path. This will affect Type_A's
+performance.
+We want to reclaim Type_B's memory in advance when A is expected to be busy=
+.
 
-The fmod_ret bit was added to test_overhead by:
-
-4eaf0b5c5e04 ("selftest/bpf: Fmod_ret prog and implement test_overhead as p=
-art of bench")
-
-so the obvious thing is to just do a (partial) revert of that? WDYT?
-
--Toke
-
+Best wishes
+Chunxin
