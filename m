@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C1E27484A
+	by mail.lfdr.de (Postfix) with ESMTP id C1FF727484B
 	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 20:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgIVSjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 14:39:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41804 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726767AbgIVSiz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 14:38:55 -0400
+        id S1726767AbgIVSjB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 14:39:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726652AbgIVSi7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Sep 2020 14:38:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600799933;
+        s=mimecast20190719; t=1600799937;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+g4gavvzkE9a6aqv0X291vvrq93unWSXrCpz4oNLKB8=;
-        b=gu/tlX7bkIRT6gGbSiRG0bG0oMkR1dnlVOOmuelpBOPbSrP8SFhWo9/gh40PquOKk1Rskc
-        xjqZ45RugiD65Ra00x9Mxx54OV+FxpUTjMH2A2cYYEYOCQ773fRldu4NCTyYuTIcl8PxaC
-        ZpxB0v7BqyU6kn7xBIDDyaPtnGHq9Ys=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-Q7omd0MuMayzl5EM60DcRA-1; Tue, 22 Sep 2020 14:38:51 -0400
-X-MC-Unique: Q7omd0MuMayzl5EM60DcRA-1
-Received: by mail-pg1-f197.google.com with SMTP id r24so11205583pgu.23
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 11:38:51 -0700 (PDT)
+        bh=Xcr0+UvsflTVbUW44smNMOidT11rijOfD1nExHbIGaQ=;
+        b=eT5FQhb15OiNKlQfF0Jm2XG5sFnH7Wq0o6wupWM71ZamOHctqSP5CY9CFMGvj47g+87V9/
+        VLzfhpSyVa1NSEPxfcMcJBK0heyhf2M7lMglTpFcD7CgF4cXXj5IzO/L5jPxz/wjDbzXsi
+        fpeohFpTRISfOhZc9vd7HWO+A7VKTJU=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-4sY_HY6uN3u7Fu59hdkB4g-1; Tue, 22 Sep 2020 14:38:53 -0400
+X-MC-Unique: 4sY_HY6uN3u7Fu59hdkB4g-1
+Received: by mail-pg1-f200.google.com with SMTP id r24so11205648pgu.23
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 11:38:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=+g4gavvzkE9a6aqv0X291vvrq93unWSXrCpz4oNLKB8=;
-        b=arl3ewk2kcuAgTOgDHuvPwmetD8A7gr9Rz8XLnU/pd/XIsQ0OKOXiniNDC3DoqNGNa
-         xXQadLf2eBJMaHxdnBTKcfMfyFx4YxHiz42KX4gVKnDRTSvhJNW+Yvd4kzKv2lHDx6cH
-         xqh+NTwUuGfh18qI5m4hFgmsBmkSlNeJvKZqicM31Ebga+mL9//Y1sfdEnP5dSNkBhbl
-         WtmELX43DhPbcGQa6k7uDmdcITR0KKx5MLkhrDRc9t2+8eeNzRVnWUMBVX4t3y80mSmI
-         R09kG16THc+v9PjIHlrl61H0rl3GscaX8jFIQL8tzHHAXJUnyNlLoGMdoApmAlColY3N
-         y8Yg==
-X-Gm-Message-State: AOAM531FKtJKDHuMDd/zBgtpFBQU2UVi7r0MioOpEAlHitZDz3iOublZ
-        5uT9rFsdTIf33xf0p2huUDRdLX9XQMhsDBPr15M9gnYypkFhwgBvLSuhYDtAXoZOYvx6SfeNI47
-        sv3Lzl6dWxcPd
-X-Received: by 2002:a17:902:ba98:b029:d1:e598:3ff2 with SMTP id k24-20020a170902ba98b02900d1e5983ff2mr5988974pls.44.1600799930186;
-        Tue, 22 Sep 2020 11:38:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwdThfifYLr3oWGFHCDqhkUa1fSe1NepN/sVZsxuzUZZdZ3WdvXlwH2dTyETfgMI15fpwWDfw==
-X-Received: by 2002:a17:902:ba98:b029:d1:e598:3ff2 with SMTP id k24-20020a170902ba98b02900d1e5983ff2mr5988938pls.44.1600799929828;
-        Tue, 22 Sep 2020 11:38:49 -0700 (PDT)
+        bh=Xcr0+UvsflTVbUW44smNMOidT11rijOfD1nExHbIGaQ=;
+        b=HHw4EClgYHpfrUycWryqcqR6DthPKikZm4ebygsWCEn10dQQedQPurMqRO7lTqLtzo
+         /QZnodqJWBaC0I17xO97GeidwP57+GDR6Ff722fY1AbJY6/H5yT3RVpP7AcwxKRBJXSJ
+         tkkeK8J2LLYkMhF8l7oG3/14n7QIpUCu8WMXU+6tcI0QFCqrML9VobhDztj7bXQEmZKT
+         r5JYeNiZaJbsDgQQCMcgcURjQKVD+FtjVMx0LiLRKKrs1O32CWsKac4uU1qEARhD5Ib6
+         6seiyjtDq6wiZV7nBz1kAnvrIa8qNRAgY4NOKf4cKcIUxNeI5m/uNl/p0ucn1DeffQOT
+         5DBQ==
+X-Gm-Message-State: AOAM533SmTf/nC+8j2/2hQ4pUlztShe1W6WZztl9muS034bJ8v52ZtWe
+        Xh2yVSvpTCn9lGef2yB9rZ5nzp3twTyxfpLFrdXR5u6qQyljFdnf0tshYLMrA6BSzr3R9cZZTXp
+        kFMLbCjayE58d
+X-Received: by 2002:a62:3786:0:b029:150:e5d9:1e51 with SMTP id e128-20020a6237860000b0290150e5d91e51mr4512844pfa.77.1600799931869;
+        Tue, 22 Sep 2020 11:38:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcvPpYbzvWNUj71bSnIwAL0HS+H2efVEsiAVAWRh9V+qSOPdqVq1cSpTqTokqpY79Lh+l3mg==
+X-Received: by 2002:a62:3786:0:b029:150:e5d9:1e51 with SMTP id e128-20020a6237860000b0290150e5d91e51mr4512815pfa.77.1600799931469;
+        Tue, 22 Sep 2020 11:38:51 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y195sm15987276pfc.137.2020.09.22.11.38.48
+        by smtp.gmail.com with ESMTPSA id l79sm16385916pfd.210.2020.09.22.11.38.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 11:38:49 -0700 (PDT)
+        Tue, 22 Sep 2020 11:38:50 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 91F46183A92; Tue, 22 Sep 2020 20:38:44 +0200 (CEST)
-Subject: [PATCH bpf-next v8 10/11] selftests: Add selftest for disallowing
- modify_return attachment to freplace
+        id A9834183A90; Tue, 22 Sep 2020 20:38:45 +0200 (CEST)
+Subject: [PATCH bpf-next v8 11/11] selftests: Remove fmod_ret from benchmarks
+ and test_overhead
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,8 +65,8 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Eelco Chaudron <echaudro@redhat.com>,
         KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Date:   Tue, 22 Sep 2020 20:38:44 +0200
-Message-ID: <160079992454.8301.10960942800501262586.stgit@toke.dk>
+Date:   Tue, 22 Sep 2020 20:38:45 +0200
+Message-ID: <160079992560.8301.11225602391403157558.stgit@toke.dk>
 In-Reply-To: <160079991372.8301.10648588027560707258.stgit@toke.dk>
 References: <160079991372.8301.10648588027560707258.stgit@toke.dk>
 User-Agent: StGit/0.23
@@ -79,123 +79,196 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-This adds a selftest that ensures that modify_return tracing programs
-cannot be attached to freplace programs. The security_ prefix is added to
-the freplace program because that would otherwise let it pass the check for
-modify_return.
+The benchmark code and the test_overhead prog_test included fmod_ret
+programs that attached to various functions in the kernel. However, these
+functions were never listed as allowed for return modification, so this
+only worked because of the verifier skipping tests when a trampoline
+already existed for the attach point. Now that the verifier checks have
+been fixed, remove fmod_ret from the affected tests so they all work again.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Fixes: 4eaf0b5c5e04 ("selftest/bpf: Fmod_ret prog and implement test_overhead as part of bench")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |   56 ++++++++++++++++++++
- .../selftests/bpf/progs/fmod_ret_freplace.c        |   14 +++++
- .../selftests/bpf/progs/freplace_get_constant.c    |    2 -
- 3 files changed, 71 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/fmod_ret_freplace.c
+ tools/testing/selftests/bpf/bench.c                |    5 -----
+ tools/testing/selftests/bpf/benchs/bench_rename.c  |   17 -----------------
+ tools/testing/selftests/bpf/benchs/bench_trigger.c |   17 -----------------
+ .../selftests/bpf/prog_tests/test_overhead.c       |   14 +-------------
+ tools/testing/selftests/bpf/progs/test_overhead.c  |    6 ------
+ tools/testing/selftests/bpf/progs/trigger_bench.c  |    7 -------
+ 6 files changed, 1 insertion(+), 65 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index 2b94e827b2c5..5c0448910426 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -232,6 +232,60 @@ static void test_func_replace_multi(void)
- 				  prog_name, true, test_second_attach);
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+index 1a427685a8a8..d1a4a55335f8 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -311,14 +311,12 @@ extern const struct bench bench_rename_kretprobe;
+ extern const struct bench bench_rename_rawtp;
+ extern const struct bench bench_rename_fentry;
+ extern const struct bench bench_rename_fexit;
+-extern const struct bench bench_rename_fmodret;
+ extern const struct bench bench_trig_base;
+ extern const struct bench bench_trig_tp;
+ extern const struct bench bench_trig_rawtp;
+ extern const struct bench bench_trig_kprobe;
+ extern const struct bench bench_trig_fentry;
+ extern const struct bench bench_trig_fentry_sleep;
+-extern const struct bench bench_trig_fmodret;
+ extern const struct bench bench_rb_libbpf;
+ extern const struct bench bench_rb_custom;
+ extern const struct bench bench_pb_libbpf;
+@@ -333,14 +331,12 @@ static const struct bench *benchs[] = {
+ 	&bench_rename_rawtp,
+ 	&bench_rename_fentry,
+ 	&bench_rename_fexit,
+-	&bench_rename_fmodret,
+ 	&bench_trig_base,
+ 	&bench_trig_tp,
+ 	&bench_trig_rawtp,
+ 	&bench_trig_kprobe,
+ 	&bench_trig_fentry,
+ 	&bench_trig_fentry_sleep,
+-	&bench_trig_fmodret,
+ 	&bench_rb_libbpf,
+ 	&bench_rb_custom,
+ 	&bench_pb_libbpf,
+@@ -464,4 +460,3 @@ int main(int argc, char **argv)
+ 
+ 	return 0;
+ }
+-
+diff --git a/tools/testing/selftests/bpf/benchs/bench_rename.c b/tools/testing/selftests/bpf/benchs/bench_rename.c
+index e74cff40f4fe..a967674098ad 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_rename.c
++++ b/tools/testing/selftests/bpf/benchs/bench_rename.c
+@@ -106,12 +106,6 @@ static void setup_fexit()
+ 	attach_bpf(ctx.skel->progs.prog5);
  }
  
-+static void test_fmod_ret_freplace(void)
-+{
-+	struct bpf_object *freplace_obj = NULL, *pkt_obj, *fmod_obj = NULL;
-+	const char *freplace_name = "./freplace_get_constant.o";
-+	const char *fmod_ret_name = "./fmod_ret_freplace.o";
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	const char *tgt_name = "./test_pkt_access.o";
-+	struct bpf_link *freplace_link = NULL;
-+	struct bpf_program *prog;
-+	__u32 duration = 0;
-+	int err, pkt_fd;
-+
-+	err = bpf_prog_load(tgt_name, BPF_PROG_TYPE_UNSPEC,
-+			    &pkt_obj, &pkt_fd);
-+	/* the target prog should load fine */
-+	if (CHECK(err, "tgt_prog_load", "file %s err %d errno %d\n",
-+		  tgt_name, err, errno))
-+		return;
-+	opts.attach_prog_fd = pkt_fd;
-+
-+	freplace_obj = bpf_object__open_file(freplace_name, &opts);
-+	if (CHECK(IS_ERR_OR_NULL(freplace_obj), "freplace_obj_open",
-+		  "failed to open %s: %ld\n", freplace_name,
-+		  PTR_ERR(freplace_obj)))
-+		goto out;
-+
-+	err = bpf_object__load(freplace_obj);
-+	if (CHECK(err, "freplace_obj_load", "err %d\n", err))
-+		goto out;
-+
-+	prog = bpf_program__next(NULL, freplace_obj);
-+	freplace_link = bpf_program__attach_trace(prog);
-+	if (CHECK(IS_ERR(freplace_link), "freplace_attach_trace", "failed to link\n"))
-+		goto out;
-+
-+	opts.attach_prog_fd = bpf_program__fd(prog);
-+	fmod_obj = bpf_object__open_file(fmod_ret_name, &opts);
-+	if (CHECK(IS_ERR_OR_NULL(fmod_obj), "fmod_obj_open",
-+		  "failed to open %s: %ld\n", fmod_ret_name,
-+		  PTR_ERR(fmod_obj)))
-+		goto out;
-+
-+	err = bpf_object__load(fmod_obj);
-+	if (CHECK(!err, "fmod_obj_load", "loading fmod_ret should fail\n"))
-+		goto out;
-+
-+out:
-+	bpf_link__destroy(freplace_link);
-+	bpf_object__close(freplace_obj);
-+	bpf_object__close(fmod_obj);
-+	bpf_object__close(pkt_obj);
-+}
-+
-+
- static void test_func_sockmap_update(void)
+-static void setup_fmodret()
+-{
+-	setup_ctx();
+-	attach_bpf(ctx.skel->progs.prog6);
+-}
+-
+ static void *consumer(void *input)
  {
- 	const char *prog_name[] = {
-@@ -314,4 +368,6 @@ void test_fexit_bpf2bpf(void)
- 		test_func_map_prog_compatibility();
- 	if (test__start_subtest("func_replace_multi"))
- 		test_func_replace_multi();
-+	if (test__start_subtest("fmod_ret_freplace"))
-+		test_fmod_ret_freplace();
+ 	return NULL;
+@@ -182,14 +176,3 @@ const struct bench bench_rename_fexit = {
+ 	.report_progress = hits_drops_report_progress,
+ 	.report_final = hits_drops_report_final,
+ };
+-
+-const struct bench bench_rename_fmodret = {
+-	.name = "rename-fmodret",
+-	.validate = validate,
+-	.setup = setup_fmodret,
+-	.producer_thread = producer,
+-	.consumer_thread = consumer,
+-	.measure = measure,
+-	.report_progress = hits_drops_report_progress,
+-	.report_final = hits_drops_report_final,
+-};
+diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+index 2a0b6c9885a4..93ab7b280b25 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
++++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
+@@ -96,12 +96,6 @@ static void trigger_fentry_sleep_setup()
+ 	attach_bpf(ctx.skel->progs.bench_trigger_fentry_sleep);
  }
-diff --git a/tools/testing/selftests/bpf/progs/fmod_ret_freplace.c b/tools/testing/selftests/bpf/progs/fmod_ret_freplace.c
-new file mode 100644
-index 000000000000..c8943ccee6c0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fmod_ret_freplace.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+volatile __u64 test_fmod_ret = 0;
-+SEC("fmod_ret/security_new_get_constant")
-+int BPF_PROG(fmod_ret_test, long val, int ret)
-+{
-+	test_fmod_ret = 1;
-+	return 120;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/freplace_get_constant.c b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-index 8f0ecf94e533..705e4b64dfc2 100644
---- a/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-+++ b/tools/testing/selftests/bpf/progs/freplace_get_constant.c
-@@ -5,7 +5,7 @@
  
- volatile __u64 test_get_constant = 0;
- SEC("freplace/get_constant")
--int new_get_constant(long val)
-+int security_new_get_constant(long val)
+-static void trigger_fmodret_setup()
+-{
+-	setup_ctx();
+-	attach_bpf(ctx.skel->progs.bench_trigger_fmodret);
+-}
+-
+ static void *trigger_consumer(void *input)
  {
- 	if (val != 123)
- 		return 0;
+ 	return NULL;
+@@ -171,14 +165,3 @@ const struct bench bench_trig_fentry_sleep = {
+ 	.report_progress = hits_drops_report_progress,
+ 	.report_final = hits_drops_report_final,
+ };
+-
+-const struct bench bench_trig_fmodret = {
+-	.name = "trig-fmodret",
+-	.validate = trigger_validate,
+-	.setup = trigger_fmodret_setup,
+-	.producer_thread = trigger_producer,
+-	.consumer_thread = trigger_consumer,
+-	.measure = trigger_measure,
+-	.report_progress = hits_drops_report_progress,
+-	.report_final = hits_drops_report_final,
+-};
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+index 2702df2b2343..9966685866fd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+@@ -61,10 +61,9 @@ void test_test_overhead(void)
+ 	const char *raw_tp_name = "raw_tp/task_rename";
+ 	const char *fentry_name = "fentry/__set_task_comm";
+ 	const char *fexit_name = "fexit/__set_task_comm";
+-	const char *fmodret_name = "fmod_ret/__set_task_comm";
+ 	const char *kprobe_func = "__set_task_comm";
+ 	struct bpf_program *kprobe_prog, *kretprobe_prog, *raw_tp_prog;
+-	struct bpf_program *fentry_prog, *fexit_prog, *fmodret_prog;
++	struct bpf_program *fentry_prog, *fexit_prog;
+ 	struct bpf_object *obj;
+ 	struct bpf_link *link;
+ 	int err, duration = 0;
+@@ -97,11 +96,6 @@ void test_test_overhead(void)
+ 	if (CHECK(!fexit_prog, "find_probe",
+ 		  "prog '%s' not found\n", fexit_name))
+ 		goto cleanup;
+-	fmodret_prog = bpf_object__find_program_by_title(obj, fmodret_name);
+-	if (CHECK(!fmodret_prog, "find_probe",
+-		  "prog '%s' not found\n", fmodret_name))
+-		goto cleanup;
+-
+ 	err = bpf_object__load(obj);
+ 	if (CHECK(err, "obj_load", "err %d\n", err))
+ 		goto cleanup;
+@@ -148,12 +142,6 @@ void test_test_overhead(void)
+ 	test_run("fexit");
+ 	bpf_link__destroy(link);
+ 
+-	/* attach fmod_ret */
+-	link = bpf_program__attach_trace(fmodret_prog);
+-	if (CHECK(IS_ERR(link), "attach fmod_ret", "err %ld\n", PTR_ERR(link)))
+-		goto cleanup;
+-	test_run("fmod_ret");
+-	bpf_link__destroy(link);
+ cleanup:
+ 	prctl(PR_SET_NAME, comm, 0L, 0L, 0L);
+ 	bpf_object__close(obj);
+diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/testing/selftests/bpf/progs/test_overhead.c
+index 42403d088abc..abb7344b531f 100644
+--- a/tools/testing/selftests/bpf/progs/test_overhead.c
++++ b/tools/testing/selftests/bpf/progs/test_overhead.c
+@@ -39,10 +39,4 @@ int BPF_PROG(prog5, struct task_struct *tsk, const char *buf, bool exec)
+ 	return 0;
+ }
+ 
+-SEC("fmod_ret/__set_task_comm")
+-int BPF_PROG(prog6, struct task_struct *tsk, const char *buf, bool exec)
+-{
+-	return !tsk;
+-}
+-
+ char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
+index 9a4d09590b3d..1af23ac0c37c 100644
+--- a/tools/testing/selftests/bpf/progs/trigger_bench.c
++++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
+@@ -45,10 +45,3 @@ int bench_trigger_fentry_sleep(void *ctx)
+ 	__sync_add_and_fetch(&hits, 1);
+ 	return 0;
+ }
+-
+-SEC("fmod_ret/__x64_sys_getpgid")
+-int bench_trigger_fmodret(void *ctx)
+-{
+-	__sync_add_and_fetch(&hits, 1);
+-	return -22;
+-}
 
