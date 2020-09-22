@@ -2,176 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C960273D20
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 10:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936DC273E50
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 11:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgIVIUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 04:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbgIVIUi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 04:20:38 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD009C0613CF
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 01:20:38 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id u25so14869287otq.6
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 01:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+rsWj68RA4wQ7u5KrSVR8S7HYRcYE1Yovc/+7u5unFY=;
-        b=xEvlnbAaIWitP9Zj+ZLirpTk1NGfBUMlipCMEH23/frR+vIOSpX3RWP/7l4VaGhNeG
-         ZmNvhdthdbsugD5k9fzcf5/k6nSDoNpQlcE8imOqE0ZHM9UQJOiELeu8bsCCL3dK8lnf
-         D9BnqukI8uQXu27TzB59H1GbbDnioCXZDOZFA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+rsWj68RA4wQ7u5KrSVR8S7HYRcYE1Yovc/+7u5unFY=;
-        b=ZTfRrxfnD6gNAXVDBXQNmBrZpKhrgtoN+7wDVBrSxMIsPLwBRd3FLkufY55BkPYOFn
-         xLMm15yCV/PI4DKNHrleJ6Byq67rZWZCgWwMx2cJHs+2SWMnvo+pF5eiFUik2LPAWc6m
-         kV+6M6AMjVUprNB4Oij7fPNQ4svRVTXuzuQdn6GhzsxdXeZnu8J0jxrdwXqeksTgXto3
-         fLk+mQ+IcyjwjgtN1IY1bxoO8XSu/RXIuDTp4vPEzALcWxqM/nk8Mic4j4B0Fe6rEdau
-         g4wSxunFw+T7q8Cw0UkCmEDucifCNxscXertnLbv5sW2TYV2NZkjk+NfF5I1e6B6ZCPY
-         jFRQ==
-X-Gm-Message-State: AOAM532xrYSIw2teiK17cK1Q6J4Os4wguAjfZtRZJcRSDmzCtBYQ1RMP
-        SIWHpDQue/tEZ3er0pSeXOrQsBhA/o6vm1d2t6YH2A==
-X-Google-Smtp-Source: ABdhPJx+Ibj27xrQ/pVHYEsXp9Gg2b/icbP9ZB1eWaqKaKdTa5A0x0G8urpZu3Nm0R6F6HrFtU6HwqjO5D6gBjeuN98=
-X-Received: by 2002:a05:6830:1653:: with SMTP id h19mr1916290otr.147.1600762838090;
- Tue, 22 Sep 2020 01:20:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921121227.255763-1-lmb@cloudflare.com> <20200921121227.255763-12-lmb@cloudflare.com>
- <20200921222335.lew7wmyrtuej5mrh@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200921222335.lew7wmyrtuej5mrh@ast-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 22 Sep 2020 09:20:27 +0100
-Message-ID: <CACAyw98XfkMy4TDFnHBCFzXxauLrZ56w+84-R_NQO1SLMgPJYA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 11/11] bpf: use a table to drive helper arg
- type checks
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726558AbgIVJQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 05:16:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28511 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726343AbgIVJQE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Sep 2020 05:16:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600766163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RXaWK2ZBUKJSUlDfpRjcrlD7c53gbMCjN/Sb5CkQ9rY=;
+        b=XjlcDn5Cc8rkWIMlxuJK9VuSmKxVPuJrskTrjhmTauldnNaf6FQg6fSb6mMhHnVHkxFQGd
+        9giKFhgmLaR0JPVJFff+IjHF5ug2NnHlpekGCIUB7d2wAQSAjoIMpOXE4OjYd+/vxDiMkM
+        uIt74jBBeA5soIO8JnpUoSZN5IFKxfI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-kYiF2OFyOVGVu7t60ytGig-1; Tue, 22 Sep 2020 05:15:56 -0400
+X-MC-Unique: kYiF2OFyOVGVu7t60ytGig-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDFDFADC00;
+        Tue, 22 Sep 2020 09:15:54 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C57395577D;
+        Tue, 22 Sep 2020 09:15:44 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 11:15:43 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Marek Zavodsky <marek.zavodsky@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shaun Crampton <shaun@tigera.io>,
+        David Miller <davem@davemloft.net>,
+        Marek Majkowski <marek@cloudflare.com>, brouer@redhat.com
+Subject: Re: BPF redirect API design issue for BPF-prog MTU feedback?
+Message-ID: <20200922111543.7cefb3b1@carbon>
+In-Reply-To: <CA+FuTSdx_a+DGG5dSFRB3wkowwNb1ZXHFed=qA3sj5y6U3VtiA@mail.gmail.com>
+References: <20200917143846.37ce43a0@carbon>
+        <CANP3RGcxM-Cno=Qw5Lut9DgmV=1suXqetnybA9RgxmW3KmwivQ@mail.gmail.com>
+        <56ccfc21195b19d5b25559aca4cef5c450d0c402.camel@kernel.org>
+        <20200918120016.7007f437@carbon>
+        <CANP3RGfUj-KKHHQtbggiZ4V-Xrr_sk+TWyN5FgYUGZS6rOX1yw@mail.gmail.com>
+        <CACAyw9-v_o+gPUpC-R9SXsfzMywrdGsWV13Nk=tx2aS-fEBFYg@mail.gmail.com>
+        <20200921144953.6456d47d@carbon>
+        <340f209d-58d4-52a6-0804-7102d80c1468@iogearbox.net>
+        <CAG0p+LmqDXCJVygVtqvmsd2v4A=HRZdsGU3mSY0G=tGr2DoUvQ@mail.gmail.com>
+        <CA+FuTSdx_a+DGG5dSFRB3wkowwNb1ZXHFed=qA3sj5y6U3VtiA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 21 Sep 2020 at 23:23, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Sep 21, 2020 at 01:12:27PM +0100, Lorenz Bauer wrote:
-> > +struct bpf_reg_types {
-> > +     const enum bpf_reg_type types[10];
-> > +};
->
-> any idea on how to make it more robust?
+On Mon, 21 Sep 2020 23:17:16 +0200
+Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 
-I kind of copied this from the bpf_iter context. I prototyped using an
-enum bpf_reg_type * and then terminating the array with NOT_INIT.
-Writing this out is more involved, and might need some macro magic to
-make it palatable. The current approach is a lot simpler, and I
-figured that the compiler will error out if we ever exceed the 10
-items.
-
->
-> > +
-> > +static const struct bpf_reg_types *compatible_reg_types[] = {
-> > +     [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
-> > +     [ARG_PTR_TO_MAP_VALUE]          = &map_key_value_types,
-> > +     [ARG_PTR_TO_UNINIT_MAP_VALUE]   = &map_key_value_types,
-> > +     [ARG_PTR_TO_MAP_VALUE_OR_NULL]  = &map_key_value_types,
-> > +     [ARG_CONST_SIZE]                = &scalar_types,
-> > +     [ARG_CONST_SIZE_OR_ZERO]        = &scalar_types,
-> > +     [ARG_CONST_ALLOC_SIZE_OR_ZERO]  = &scalar_types,
-> > +     [ARG_CONST_MAP_PTR]             = &const_map_ptr_types,
-> > +     [ARG_PTR_TO_CTX]                = &context_types,
-> > +     [ARG_PTR_TO_CTX_OR_NULL]        = &context_types,
-> > +     [ARG_PTR_TO_SOCK_COMMON]        = &sock_types,
-> > +     [ARG_PTR_TO_SOCKET]             = &fullsock_types,
-> > +     [ARG_PTR_TO_SOCKET_OR_NULL]     = &fullsock_types,
-> > +     [ARG_PTR_TO_BTF_ID]             = &btf_ptr_types,
-> > +     [ARG_PTR_TO_SPIN_LOCK]          = &spin_lock_types,
-> > +     [ARG_PTR_TO_MEM]                = &mem_types,
-> > +     [ARG_PTR_TO_MEM_OR_NULL]        = &mem_types,
-> > +     [ARG_PTR_TO_UNINIT_MEM]         = &mem_types,
-> > +     [ARG_PTR_TO_ALLOC_MEM]          = &alloc_mem_types,
-> > +     [ARG_PTR_TO_ALLOC_MEM_OR_NULL]  = &alloc_mem_types,
-> > +     [ARG_PTR_TO_INT]                = &int_ptr_types,
-> > +     [ARG_PTR_TO_LONG]               = &int_ptr_types,
-> > +     [__BPF_ARG_TYPE_MAX]            = NULL,
->
-> I don't understand what this extra value is for.
-> I tried:
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index fc5c901c7542..87b0d5dcc1ff 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -292,7 +292,6 @@ enum bpf_arg_type {
->         ARG_PTR_TO_ALLOC_MEM,   /* pointer to dynamically allocated memory */
->         ARG_PTR_TO_ALLOC_MEM_OR_NULL,   /* pointer to dynamically allocated memory or NULL */
->         ARG_CONST_ALLOC_SIZE_OR_ZERO,   /* number of allocated bytes requested */
-> -       __BPF_ARG_TYPE_MAX,
->  };
->
->  /* type of values returned from helper functions */
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 15ab889b0a3f..83faa67858b6 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4025,7 +4025,6 @@ static const struct bpf_reg_types *compatible_reg_types[] = {
->         [ARG_PTR_TO_ALLOC_MEM_OR_NULL]  = &alloc_mem_types,
->         [ARG_PTR_TO_INT]                = &int_ptr_types,
->         [ARG_PTR_TO_LONG]               = &int_ptr_types,
-> -       [__BPF_ARG_TYPE_MAX]            = NULL,
->  };
->
-> and everything is fine as I think it should be.
->
-> > +     compatible = compatible_reg_types[arg_type];
-> > +     if (!compatible) {
-> > +             verbose(env, "verifier internal error: unsupported arg type %d\n", arg_type);
-> >               return -EFAULT;
-> >       }
->
-> This check will trigger the same way when somebody adds new ARG_* and doesn't add to the table.
-
-I think in that case that value of compatible will be undefined, since
-it points past the end of compatible_reg_types. Hence the
-__BPF_ARG_TYPE_MAX to ensure that the array has a NULL slot for new
-arg types.
-
->
+> On Mon, Sep 21, 2020 at 6:22 PM Marek Zavodsky <marek.zavodsky@gmail.com> wrote:
 > >
-> > +     err = check_reg_type(env, regno, compatible);
-> > +     if (err)
-> > +             return err;
-> > +
-> >       if (type == PTR_TO_BTF_ID) {
-> >               const u32 *btf_id = fn->arg_btf_id[arg];
+> > Hi guys,
 > >
-> > @@ -4174,10 +4213,6 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> >       }
+> > My kernel knowledge is small, but I experienced this (similar) issue
+> > with packet encapsulation (not a redirect), therefore modifying the
+> > redirect branch would not help in my case.
 > >
-> >       return err;
-> > -err_type:
-> > -     verbose(env, "R%d type=%s expected=%s\n", regno,
-> > -             reg_type_str[type], reg_type_str[expected_type]);
-> > -     return -EACCES;
->
-> I'm not a fan of table driven checks. I think one explicit switch statement
-> would have been easier to read, but I guess we can convert back to it later if
-> table becomes too limiting. The improvement in the verifier output is important
-> and justifies this approach.
->
-> Applied to bpf-next. Thanks!
+> > I'm working on a TC program to do GUE encap/decap (IP + UDP + GUE,
+> > outer header has extra 52B).
+> > There are no issues with small packets. But when I use curl to
+> > download big file HTTP server chunks data randomly. Some packets have
+> > MTU size, others are even bigger. Big packets are not an issue,
+> > however MTU sized packets fail on bpf_skb_adjust_room with -524
+> > (ENOTSUPP).  
+> 
+> This is a related, but different, unresolved issue at the boundary of
+> GSO packets. Packets that are not GSO, but would exceed MTU once
+> encapsulated, will cause adjust room to fail:
+> 
+>             (!shrink && (skb->len + len_diff_abs > len_max &&
+>                          !skb_is_gso(skb))))
+>                 return -ENOTSUPP;
+> 
+> As admin, this can be addressed by setting a lower route MTU on routes
+> that may be encapsulated. But that is not very obvious or transparent.
 
-Thank you!
+Your issue is very much related, and even-though it is not related to
+redirect, I also want to address and allow your use-case (in the
+patchset that I'm collecting input for now).
 
---
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+I do think this patch[1][2] will actually solve your problem.  Could
+you please try to apply and test this to make sure?  (as we have
+discussed on this list, that patch is not a 100% solution, and I will
+work on a better solution).
 
-www.cloudflare.com
+[1] https://lore.kernel.org/bpf/159921182827.1260200.9699352760916903781.stgit@firesoul
+[2] http://patchwork.ozlabs.org/project/netdev/patch/159921182827.1260200.9699352760916903781.stgit@firesoul/
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
