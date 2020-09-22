@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41899273C15
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 09:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F00273C2B
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 09:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgIVHgX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 03:36:23 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22428 "EHLO
+        id S1729762AbgIVHke (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 03:40:34 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16966 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729634AbgIVHgX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 22 Sep 2020 03:36:23 -0400
+        by vger.kernel.org with ESMTP id S1729755AbgIVHke (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Sep 2020 03:40:34 -0400
 Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08M70Sl5027831
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 00:04:49 -0700
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08M70RDZ027817
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 00:05:01 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=Dd/2Hfiqw8Es3nvsXohjRD7d2Fck8HutBWsOamimOIw=;
- b=BCDXfcermkEukLKW/56Oaplv28efYdJc6sQzfmGRgvjzmzCIEUiSosDloeFg04t2TmAC
- /e5iXfK7KzY+IUQsSpAq8aZLgpu948DZnMfokQWtsj8hEFr8lMrQwVFOU/bq1NaCQHtF
- n4/6E4OMYZGZOXPg0sVXixfzMoSF+VU2CuM= 
+ bh=8PjCHnYFiQjJNH+sNUSTVkLi5+NuALn5mgExeiFipc4=;
+ b=iHpN0Snd/hlFDz9OFsmUUvFrSU7eX5HUHV15kXnQ1V2xhUo3xiyJzMneqlQXqznkpfyH
+ U0hAy3WpzqCnDbptbb8mdDQ5g+UlWwzPtrwnLkmZiH5ZxejryEyA+k1awOj5BCkJhEjl
+ QM2SV6Jcv1d0rRE8Lped+i33Xj3GJxRnuic= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33p1ft9d72-2
+        by mx0a-00082601.pphosted.com with ESMTP id 33p1ft9d7w-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 00:04:49 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 00:05:01 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 22 Sep 2020 00:04:49 -0700
+ 15.1.1979.3; Tue, 22 Sep 2020 00:05:00 -0700
 Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 1AC2A294641C; Tue, 22 Sep 2020 00:04:47 -0700 (PDT)
+        id 940CF294641C; Tue, 22 Sep 2020 00:04:59 -0700 (PDT)
 From:   Martin KaFai Lau <kafai@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
         Lorenz Bauer <lmb@cloudflare.com>, <netdev@vger.kernel.org>
-Subject: [PATCH v3 bpf-next 06/11] bpf: Change bpf_sk_assign to accept ARG_PTR_TO_BTF_ID_SOCK_COMMON
-Date:   Tue, 22 Sep 2020 00:04:47 -0700
-Message-ID: <20200922070447.1920932-1-kafai@fb.com>
+Subject: [PATCH v3 bpf-next 08/11] bpf: selftest: Move sock_fields test into test_progs
+Date:   Tue, 22 Sep 2020 00:04:59 -0700
+Message-ID: <20200922070459.1922443-1-kafai@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200922070409.1914988-1-kafai@fb.com>
 References: <20200922070409.1914988-1-kafai@fb.com>
@@ -49,7 +49,7 @@ Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-22_05:2020-09-21,2020-09-22 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- malwarescore=0 phishscore=0 mlxlogscore=881 priorityscore=1501
+ malwarescore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
  clxscore=1015 spamscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0
  suspectscore=13 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2009220056
@@ -58,48 +58,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch changes the bpf_sk_assign() to take
-ARG_PTR_TO_BTF_ID_SOCK_COMMON such that they will work with the pointer
-returned by the bpf_skc_to_*() helpers also.
+This is a mechanical change to
+1. move test_sock_fields.c to prog_tests/sock_fields.c
+2. rename progs/test_sock_fields_kern.c to progs/test_sock_fields.c
 
-The bpf_sk_lookup_assign() is taking ARG_PTR_TO_SOCKET_"OR_NULL".  Meanin=
-g
-it specifically takes a scalar NULL.  ARG_PTR_TO_BTF_ID_SOCK_COMMON
-does not allow a scalar NULL, so another ARG type is required
-for this purpose and another folllow-up patch can be used if
-there is such need.
+Minimal change is made to the code itself.  Next patch will make
+changes to use new ways of writing test, e.g. use skel and global
+variables.
 
 Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 ---
- net/core/filter.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/Makefile                        | 2 +-
+ .../bpf/{test_sock_fields.c =3D> prog_tests/sock_fields.c}    | 6 ++----
+ .../progs/{test_sock_fields_kern.c =3D> test_sock_fields.c}   | 0
+ 3 files changed, 3 insertions(+), 5 deletions(-)
+ rename tools/testing/selftests/bpf/{test_sock_fields.c =3D> prog_tests/s=
+ock_fields.c} (99%)
+ rename tools/testing/selftests/bpf/progs/{test_sock_fields_kern.c =3D> t=
+est_sock_fields.c} (100%)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 6ab12d8cdd85..063aba8a81e6 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -6221,7 +6221,7 @@ static const struct bpf_func_proto bpf_tcp_gen_sync=
-ookie_proto =3D {
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+index 59a5fa5fe837..bdbeafec371b 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -35,7 +35,7 @@ TEST_GEN_PROGS =3D test_verifier test_tag test_maps tes=
+t_lru_map test_lpm_map test
+ 	test_verifier_log test_dev_cgroup test_tcpbpf_user \
+ 	test_sock test_sockmap get_cgroup_id_user test_socket_cookie \
+ 	test_cgroup_storage \
+-	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl \
++	test_netcnt test_tcpnotify_user test_sysctl \
+ 	test_progs-no_alu32 \
+ 	test_current_pid_tgid_new_ns
 =20
- BPF_CALL_3(bpf_sk_assign, struct sk_buff *, skb, struct sock *, sk, u64,=
- flags)
+diff --git a/tools/testing/selftests/bpf/test_sock_fields.c b/tools/testi=
+ng/selftests/bpf/prog_tests/sock_fields.c
+similarity index 99%
+rename from tools/testing/selftests/bpf/test_sock_fields.c
+rename to tools/testing/selftests/bpf/prog_tests/sock_fields.c
+index 6c9f269c396d..1138223780fc 100644
+--- a/tools/testing/selftests/bpf/test_sock_fields.c
++++ b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+@@ -409,10 +409,10 @@ static void test(void)
+ 	check_result();
+ }
+=20
+-int main(int argc, char **argv)
++void test_sock_fields(void)
  {
--	if (flags !=3D 0)
-+	if (!sk || flags !=3D 0)
- 		return -EINVAL;
- 	if (!skb_at_tc_ingress(skb))
- 		return -EOPNOTSUPP;
-@@ -6245,7 +6245,8 @@ static const struct bpf_func_proto bpf_sk_assign_pr=
-oto =3D {
- 	.gpl_only	=3D false,
- 	.ret_type	=3D RET_INTEGER,
- 	.arg1_type      =3D ARG_PTR_TO_CTX,
--	.arg2_type      =3D ARG_PTR_TO_SOCK_COMMON,
-+	.arg2_type      =3D ARG_PTR_TO_BTF_ID_SOCK_COMMON,
-+	.arg2_btf_id	=3D &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
- 	.arg3_type	=3D ARG_ANYTHING,
- };
+ 	struct bpf_prog_load_attr attr =3D {
+-		.file =3D "test_sock_fields_kern.o",
++		.file =3D "test_sock_fields.o",
+ 		.prog_type =3D BPF_PROG_TYPE_CGROUP_SKB,
+ 		.prog_flags =3D BPF_F_TEST_RND_HI32,
+ 	};
+@@ -477,6 +477,4 @@ int main(int argc, char **argv)
+ 	cleanup_cgroup_environment();
 =20
+ 	printf("PASS\n");
+-
+-	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_sock_fields_kern.c b/=
+tools/testing/selftests/bpf/progs/test_sock_fields.c
+similarity index 100%
+rename from tools/testing/selftests/bpf/progs/test_sock_fields_kern.c
+rename to tools/testing/selftests/bpf/progs/test_sock_fields.c
 --=20
 2.24.1
 
