@@ -2,173 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E6B2739A3
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 06:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F687273B47
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 08:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgIVEV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 00:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
+        id S1728278AbgIVG4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 02:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgIVEV2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 00:21:28 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD2DC061755;
-        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id y2so5319600ila.0;
-        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
+        with ESMTP id S1727710AbgIVG4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 02:56:18 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9834C061755;
+        Mon, 21 Sep 2020 23:56:17 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id z13so18434364iom.8;
+        Mon, 21 Sep 2020 23:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
-        b=eF/EbBSe9yFBqTjdwzbFsunrkCPqbYXgfxHDSEkrckP5A1JHkh3XKpgKh1/IGo/vpm
-         PxlwoZMqDyyio84Vt96+iIDsRTiLJBgiQsTvGsDCpKt/pgm36IvvjTbwaqIKrGYde6Hi
-         0BHrqmtRg+GVQzDb9NRZEk/zfFZn8kaIVBnLwClJLRYsQc+uNdTo9V0vEmmil93p8bpC
-         gB9+qh4AB+tp0jmSgoo6Fcn9UmBpXDRPaykudNaQMqKbTqnFcAEL0jv3aGMx7vnanVue
-         GIlYCRrZPBKR9PHUH6u1kyqfeUZu/yQM1gKgTq9owy3HhmFOH2sUvEg8zRosVx5M7MpM
-         vbyg==
+         :cc:content-transfer-encoding;
+        bh=4EbyiXki977MF5ROkFyExmjP+SM+e03uI5E9aUrMUf8=;
+        b=SRl6HcHt+8Uzri216O4e5r8e0o+mHfjC+qQv7rdeTG6tkOk7pY2ofO9hvqG0eVyIvI
+         kEqrKOOgnPUvzoKkmV0yQgcTQRXE4nwugiU0kNew4PjUNhM5Vlz388ZMjtRh1HoX2Gqv
+         qSfhHMRf1vWKfBdRsusWDrKiNX5mLAfCUDqBSqqRhS7U2yCJydStMvBHApsIZIJVN8VF
+         E7f3S8pxgVoV4HckeanqyZfI4WQpvNqyuM571EFCiL+vDImTLsrqXP5yjP/Dq1UKgAwx
+         kbP0vj5ecHdpqpfzbK4s+42DKiCCCAy+tmEUy/JW7E1FBp4IB+cCYYGy3h6S1EZpogAW
+         Uc9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
-        b=ELqTN1ptjUZ0xy1YDpLE9z7r94uOTlGql3AEKLgPWcJXgJxfN5qBJI5wwUnzNN5+CK
-         F6F8WcjvtJ6qqGaxdqwMvfQIal0zB5TqIoeFxdP03h1px1mgZtrFM9DST+aHm2ggBqRf
-         IOGR9K1f/anaiHIZ+IMzg+DpSb5LpJ9o0sEZNvW+Fb+Ezv6dbZkmiV2vPBiKpJp14yNE
-         1VhxKOtYIG0ZQUGkHnTUlo30LabxAB2vKp0ISXefpHWkuhTF7kvDp3GqCXWqa7tjNP7Q
-         waA1ZvlQCjDtbUmX2HMx/dvOUiFkJIYshrms/VzlxyKF+AcmkNzQ1EWTCwWch4nMQHdj
-         NYXw==
-X-Gm-Message-State: AOAM532YZq5wlZa8xJvtykpux3TuSunX5IuatjMb46MZB0W4/dgqYZHe
-        peysrAANkkMyU6wUEk5fRXpopzv6nvwEgV1qlzc=
-X-Google-Smtp-Source: ABdhPJzDl8MdjPVNRJmS4FRLkv0hUY6IYs3el3g0ioVtIQKA0mfz3YZi4KUDwxEL6Q++VW2yZEYb9pNfWRlG4ObXVfo=
-X-Received: by 2002:a92:c7b0:: with SMTP id f16mr2847131ilk.137.1600748488148;
- Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4EbyiXki977MF5ROkFyExmjP+SM+e03uI5E9aUrMUf8=;
+        b=THCIaWCBj9XGjgceGojbpv24HYLCf9wa5pECFqnnPylXSwKGI5/yn9JFS+s+iuZKnH
+         GKQCKFydBcyFoMODpcRUys53SEARDOZjsQFMHC6flr4q/kI8f3WkSBCiJzH/rrtLxPxK
+         zDhYXwPKminf/VQGazfkILG6H0YaLCWVViGQ2RyWBXlwW9M8sVMdB5GSWQCW7tJ+oqLS
+         G++cHc63m2BeGMsdveU+Y+T3wtvAdHunLBPvr8KYEZb9hOqXD4F/0wdiGPqNqQV3eMKj
+         NQYAvRxUCjy0/8oIKhGNOMatQx7zYrJuT6R/JmzR/gFd/riccXvgfaZYcA56bGDLnoJD
+         Dk5A==
+X-Gm-Message-State: AOAM530s5hj5fzwSbNr5KQAlH3UkiQH+bZ7UHklb+h1Zm3u1Bz7ibVPo
+        O/COIyQrI86hsRTp0jmyb83nNvbZbKywOyPHrrk=
+X-Google-Smtp-Source: ABdhPJxvo8OeLajAmZnqjD/Ad7r9KwCJO7F/Kcyzl1yLfhxRLVEJgU4VlpXL48Y5R9GfG4dX04kLWsFFZhi2diF+D6c=
+X-Received: by 2002:a6b:3e06:: with SMTP id l6mr2371335ioa.160.1600757776664;
+ Mon, 21 Sep 2020 23:56:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz> <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
- <20200921113646.GJ12990@dhcp22.suse.cz>
-In-Reply-To: <20200921113646.GJ12990@dhcp22.suse.cz>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 22 Sep 2020 12:20:52 +0800
-Message-ID: <CALOAHbCker64WEW9w4oq8=avA6oKf3-Jrn-vOOgkpqkV3g+CYA@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+References: <20200917143846.37ce43a0@carbon> <CANP3RGcxM-Cno=Qw5Lut9DgmV=1suXqetnybA9RgxmW3KmwivQ@mail.gmail.com>
+ <56ccfc21195b19d5b25559aca4cef5c450d0c402.camel@kernel.org>
+ <20200918120016.7007f437@carbon> <CANP3RGfUj-KKHHQtbggiZ4V-Xrr_sk+TWyN5FgYUGZS6rOX1yw@mail.gmail.com>
+ <CACAyw9-v_o+gPUpC-R9SXsfzMywrdGsWV13Nk=tx2aS-fEBFYg@mail.gmail.com>
+ <20200921144953.6456d47d@carbon> <340f209d-58d4-52a6-0804-7102d80c1468@iogearbox.net>
+ <20200921182638.5d8343fd@carbon>
+In-Reply-To: <20200921182638.5d8343fd@carbon>
+From:   Eyal Birger <eyal.birger@gmail.com>
+Date:   Tue, 22 Sep 2020 09:56:05 +0300
+Message-ID: <CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com>
+Subject: Re: BPF redirect API design issue for BPF-prog MTU feedback?
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shaun Crampton <shaun@tigera.io>,
+        David Miller <davem@davemloft.net>,
+        Marek Majkowski <marek@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:36 PM Michal Hocko <mhocko@suse.com> wrote:
+On Mon, Sep 21, 2020 at 7:30 PM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> On Mon 21-09-20 19:23:01, Yafang Shao wrote:
-> > On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
+> On Mon, 21 Sep 2020 17:08:17 +0200
+> Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> > On 9/21/20 2:49 PM, Jesper Dangaard Brouer wrote:
+> > > On Mon, 21 Sep 2020 11:37:18 +0100
+> > > Lorenz Bauer <lmb@cloudflare.com> wrote:
+> > >> On Sat, 19 Sep 2020 at 00:06, Maciej =C5=BBenczykowski <maze@google.=
+com> wrote:
+> > >>>
+> > >>>> This is a good point.  As bpf_skb_adjust_room() can just be run af=
+ter
+> > >>>> bpf_redirect() call, then a MTU check in bpf_redirect() actually
+> > >>>> doesn't make much sense.  As clever/bad BPF program can then avoid=
+ the
+> > >>>> MTU check anyhow.  This basically means that we have to do the MTU
+> > >>>> check (again) on kernel side anyhow to catch such clever/bad BPF
+> > >>>> programs.  (And I don't like wasting cycles on doing the same chec=
+k two
+> > >>>> times).
+> > >>>
+> > >>> If you get rid of the check in bpf_redirect() you might as well get
+> > >>> rid of *all* the checks for excessive mtu in all the helpers that
+> > >>> adjust packet size one way or another way.  They *all* then become
+> > >>> useless overhead.
+> > >>>
+> > >>> I don't like that.  There may be something the bpf program could do=
+ to
+> > >>> react to the error condition (for example in my case, not modify
+> > >>> things and just let the core stack deal with things - which will
+> > >>> probably just generate packet too big icmp error).
+> > >>>
+> > >>> btw. right now our forwarding programs first adjust the packet size
+> > >>> then call bpf_redirect() and almost immediately return what it
+> > >>> returned.
+> > >>>
+> > >>> but this could I think easily be changed to reverse the ordering, s=
+o
+> > >>> we wouldn't increase packet size before the core stack was informed=
+ we
+> > >>> would be forwarding via a different interface.
+> > >>
+> > >> We do the same, except that we also use XDP_TX when appropriate. Thi=
+s
+> > >> complicates the matter, because there is no helper call we could
+> > >> return an error from.
 > > >
-> > > On Mon 21-09-20 18:55:40, Yafang Shao wrote:
-> > > > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
-> > > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > > > > >
-> > > > > > In the cgroup v1, we have 'force_mepty' interface. This is very
-> > > > > > useful for userspace to actively release memory. But the cgroup
-> > > > > > v2 does not.
-> > > > > >
-> > > > > > This patch reuse cgroup v1's function, but have a new name for
-> > > > > > the interface. Because I think 'drop_cache' may be is easier to
-> > > > > > understand :)
-> > > > >
-> > > > > This should really explain a usecase. Global drop_caches is a terrible
-> > > > > interface and it has caused many problems in the past. People have
-> > > > > learned to use it as a remedy to any problem they might see and cause
-> > > > > other problems without realizing that. This is the reason why we even
-> > > > > log each attempt to drop caches.
-> > > > >
-> > > > > I would rather not repeat the same mistake on the memcg level unless
-> > > > > there is a very strong reason for it.
-> > > > >
-> > > >
-> > > > I think we'd better add these comments above the function
-> > > > mem_cgroup_force_empty() to explain why we don't want to expose this
-> > > > interface in cgroup2, otherwise people will continue to send this
-> > > > proposal without any strong reason.
+> > > Do notice that my MTU work is focused on TC-BPF.  For XDP-redirect th=
+e
+> > > MTU check is done in xdp_ok_fwd_dev() via __xdp_enqueue(), which also
+> > > happens too late to give BPF-prog knowledge/feedback.  For XDP_TX I
+> > > audited the drivers when I implemented xdp_buff.frame_sz, and they
+> > > handled (or I added) handling against max HW MTU. E.g. mlx5 [1].
 > > >
-> > > I do not mind people sending this proposal.  "V1 used to have an
-> > > interface, we need it in v2 as well" is not really viable without
-> > > providing more reasoning on the specific usecase.
+> > > [1] https://elixir.bootlin.com/linux/v5.9-rc6/source/drivers/net/ethe=
+rnet/mellanox/mlx5/core/en/xdp.c#L267
 > > >
-> > > _Any_ patch should have a proper justification. This is nothing really
-> > > new to the process and I am wondering why this is coming as a surprise.
+> > >> My preference would be to have three helpers: get MTU for a device,
+> > >> redirect ctx to a device (with MTU check), resize ctx (without MTU
+> > >> check) but that doesn't work with XDP_TX. Your idea of doing checks
+> > >> in redirect and adjust_room is pragmatic and seems easier to
+> > >> implement.
 > > >
+> > > I do like this plan/proposal (with 3 helpers), but it is not possible
+> > > with current API.  The main problem is the current bpf_redirect API
+> > > doesn't provide the ctx, so we cannot do the check in the BPF-helper.
+> > >
+> > > Are you saying we should create a new bpf_redirect API (that incl pac=
+ket ctx)?
 > >
-> > Container users always want to drop cache in a specific container,
-> > because they used to use drop_caches to fix memory pressure issues.
+> > Sorry for jumping in late here... one thing that is not clear to me
+> > is that if we are fully sure that skb is dropped by stack anyway due
+> > to invalid MTU (redirect to ingress does this via dev_forward_skb(),
 >
-> This is exactly the kind of problems we have seen in the past. There
-> should be zero reason to addre potential reclaim problems by dropping
-> page cache on the floor. There is a huge cargo cult about this
-> procedure and I have seen numerous reports when people complained about
-> performance afterwards just to learn that the dropped page cache was one
-> of the resons for that.
->
-> > Although drop_caches can cause some unexpected issues, it could also
-> > fix some issues.
->
-> "Some issues" is way too general. We really want to learn about those
-> issues and address them properly.
+> Yes, TC-redirecting to *INGRESS* have a slightly relaxed MTU check via
+> is_skb_forwardable() called via ____dev_forward_skb().  This MTU check
+> seems redundant as netstack will do MTU checks anyhow.
 >
 
-One use case in our production environment is that some of our tasks
-become very latency sensitive from 7am to 10am, so before these tasks
-become active we will use drop_caches to drop page caches generated by
-other tasks at night to avoid these tasks triggering direct reclaim.
-The best way to do it is to fix the latency in direct reclaim, but it
-will take great effort. while drop_caches give us an easier way to
-achieve the same goal.
-IOW, drop_caches give the users an option to achieve their goal before
-they find a better solution.
+I found the MTU check on redirect-to-ingress to be very unexpected.
 
-> > So container users want to use it in containers as
-> > well.
-> > If this feature is not implemented in cgroup, they will ask you why
-> > but there is no explanation in the kernel.
->
-> There is no usecase that would really require it so far.
->
-> > Regarding the memory.high, it is not perfect as well, because you have
-> > to set it to 0 to drop_caches, and the processes in the containers
-> > have to reclaim pages as well because they reach the memory.high, but
-> > memory.force_empty won't make other processes to reclaim.
->
-> Since 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering
-> memory.high") the limit is set after the reclaim so the race window when
-> somebody would be pushed to high limit reclaim is reduced. But I do
-> agree this is just a workaround.
->
-> > That doesn't mean I agree to add this interface, while I really mean
-> > that if we discard one feature we'd better explain why.
->
-> We need to understand why somebody wants an interface because once it is
-> added it will have to be maintained for ever.
-> --
-> Michal Hocko
-> SUSE Labs
+We hit this when implementing NAT64 as a tc egress program which translates
+the packet and redirects it to ingress from the same device.
 
+It is beneficial to have the MTU of the device set to a limit fitting the
+IPv4 MTU, so that the IP stack would fragment as needed on the IPv4->IPv6
+path. But when translating the packet to IPv6, it can no longer be ingresse=
+d
+from the same device because of the MTU check. Packets are silently dropped
+without any hint.
 
+So would definitely be nice if this check is removed, or a flag to avoid
+it is supported in bpf_redirect().
 
--- 
-Thanks
-Yafang
+Eyal.
