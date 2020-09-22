@@ -2,128 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879DF274A26
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 22:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16880274D42
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 01:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgIVUdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 16:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
+        id S1726629AbgIVXWA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 19:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgIVUdW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 16:33:22 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AF6C061755;
-        Tue, 22 Sep 2020 13:27:29 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id 133so6503199ybg.11;
-        Tue, 22 Sep 2020 13:27:29 -0700 (PDT)
+        with ESMTP id S1726851AbgIVXVx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 19:21:53 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9405C0613D3
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 16:21:53 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 140so16615361ybf.2
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 16:21:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XYP3v/svhy0yYgmeKvK7dxWjOaVHz8DlAqzQlTiKAbw=;
-        b=ZHuovsbBBDK0iAZwGOh6s+6X7A66lMgiyr+Yey/7+QV5e+MDUYfzkDYAvpAJy/eISH
-         OrOdByNBr8X86AVMUqu3h2CnLCN0sKUnjqfMoG3T3hE7EbsUGTEh+EzS6ws341lvCeaf
-         6uGIP+vtOgquv0BBK7eN2cK79yq2NfaHe2zJKc1P7Sz4G/mB3Ule3kGxt8P/3Wd49LPO
-         sO5DiW+ddR35epWA3VyBR2NXZZzElOoXo2j122kccHTfUhOm5vauQQKE5agDI9ykr+pQ
-         dRR8sleqpoDelALPnbnvLxvK0Bv4CmrVCj0xz6/dcW4zDjZMy1NHDOeUBI3JXRt9xosr
-         ziWA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=tGcXn3sDm57uE3gVQiqH/xFvLNTI0/uhdj25yBP9OJM=;
+        b=cAARJB9tQz4JFwu+kbKkxA+YQXekK4ONh76aUVGk60ANDFmn3LzczEkxUmIX4dGUqE
+         5+GexyhewVbiCnAS31iStuersWlZoY0hTROpLlnUSlfVGrQHCJ2YtjP4qsvuUxs3VDh7
+         0LVX4wegpTtuYdKicQnFOMYiwk5PNRomalJTdjJ5fYR0jNP2Vw9EjgKuYUk0iI+OGons
+         5gnMGnR6RFuE7FhM0OmkQ375mP8hPvNt8oJ+AXJdM0lKaRwJ7H7wmg4i61m2rzjx4Aw1
+         yT7rcgrxPn1Wd2aPKjHIaDsFP4mx6wTg/AFk910wUEuvevcrWly6ccaxezXXXi5tE90G
+         ZlUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XYP3v/svhy0yYgmeKvK7dxWjOaVHz8DlAqzQlTiKAbw=;
-        b=ExzZlohlRuDcuAvuAkKebULDh3XZOjq4LXJBa04XDClIY8Ysy/Em40K43wH8FWRbP/
-         pljCwzgyk6hxhk7+PX8hw46BOlXcrGuQzRRSI8Hh6vlz9YdzcTZDlhBXR+PdyrUsrNVq
-         ZFj8NOm6Pksdk6I6JE5aHgdu87IA5iP1c4sbYM+8gJoOukvAqi/qOR2M4JKxtAmL70Xc
-         o08zt4xplHXUKdcKJcV8l0fU1+0tmjiDKDvLKRpHARSYyF3nZhM5fwiuHcwqCnTkj/qD
-         ULiskOrDhNTQRRqXpKPxe6MBe6fr4zx/BdWfDLPNWxN/Q8h0RJTgY321fJ4xzQvhxk1h
-         WRJQ==
-X-Gm-Message-State: AOAM530nbAk+hUVW+XdVU9bz7lSb1YIzEx5VziXi6tlmZcJCxKByCMRR
-        j+bAFw+WqL9Suf/p6H6LU4wEpX8GsfS5iIT6Dh8=
-X-Google-Smtp-Source: ABdhPJwqzlbFILVg5ZiOaRgJotMz0P9WC7C9BRzTWRwXrG6nSQVJTs5pPMv8tt8mzhSEQWne4I1ai3RaRRVezmNMvgU=
-X-Received: by 2002:a25:4446:: with SMTP id r67mr9219107yba.459.1600806448675;
- Tue, 22 Sep 2020 13:27:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200918122654.2625699-1-jolsa@kernel.org> <CAEf4BzZc6DE85wUTGwE=2FKPuwuuH4480Fh+v63q8J=PRxjgEw@mail.gmail.com>
- <20200922184755.GD2718767@krava>
-In-Reply-To: <20200922184755.GD2718767@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 22 Sep 2020 13:27:17 -0700
-Message-ID: <CAEf4BzZJaVkck7y_YH5Cd2rhx6M8T0trKmGz1dRnGCz2+Uh=bQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Use --no-fail option if CONFIG_BPF is
- not enabled
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Seth Forshee <seth.forshee@canonical.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=tGcXn3sDm57uE3gVQiqH/xFvLNTI0/uhdj25yBP9OJM=;
+        b=USszS+W8Qo2hNKfJlH2kJ9KyA0qzPR6L7g1iCzcxNcevzeCfFFpXH7o+cdl6eYJ9u1
+         pQpd9OJlCJ0DcCmeA8QskXvnRQ/zeiiZOPElCqhiuVR4OQEjvdoePMGzpKRPzdQAlE8w
+         9bPazdStvuL1pN4TvjGaIFTs2ge12PMdxg/QaQMxlgEwanlxL2oz7bKEMSjy2KLpgRzx
+         1SEnO6ggiF2A93DqIFgV/4xzG9XiY0zBykg0jdGwB5nzs9kDBjxQzO70oGsX8tPRDYFG
+         3STmn9XQTy12QKarIF89zlbF9Zm+/DWVCfCzYgwlqpUwLDvWQxo5KkKoPrrvUUMTXxrq
+         b8kw==
+X-Gm-Message-State: AOAM532iPYwu8TW1aeJUQIDkqvZuQawjtfuh5JHof57j0shcDhcXrbQc
+        8KfWpIjvbkgNd/wpyUHluzRsQ6hZ
+X-Google-Smtp-Source: ABdhPJxUgxwW4VA+vB29eR+veCkKgDowzHp+nyf81WrQ9ev1/t+X3X9+s1UrsuH08x6IBr4JM162UcMNug==
+Sender: "morbo via sendgmr" <morbo@fawn.svl.corp.google.com>
+X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:7220:84ff:fe0f:9f6a])
+ (user=morbo job=sendgmr) by 2002:a25:3453:: with SMTP id b80mr10708338yba.237.1600816912562;
+ Tue, 22 Sep 2020 16:21:52 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 16:21:40 -0700
+Message-Id: <20200922232140.1994390-1-morbo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH] kbuild: explicitly specify the build id style
+From:   Bill Wendling <morbo@google.com>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Will Deacon <will@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Bill Wendling <morbo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 11:48 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, Sep 21, 2020 at 02:55:27PM -0700, Andrii Nakryiko wrote:
-> > On Fri, Sep 18, 2020 at 5:30 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Currently all the resolve_btfids 'users' are under CONFIG_BPF
-> > > code, so if we have CONFIG_BPF disabled, resolve_btfids will
-> > > fail, because there's no data to resolve.
-> > >
-> > > In case CONFIG_BPF is disabled, using resolve_btfids --no-fail
-> > > option, that makes resolve_btfids leave quietly if there's no
-> > > data to resolve.
-> > >
-> > > Fixes: c9a0f3b85e09 ("bpf: Resolve BTF IDs in vmlinux image")
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> >
-> > If no CONFIG_BTF is specified, there is no need to even run
-> > resolve_btfids. So why not do just that -- run resolve_btfids only
-> > if both CONFIG_BPF and CONFIG_DEBUG_INFO_BTF are specified?
->
-> we can have CONFIG_DEBUG_INFO_BTF without CONFIG_BPF being enabled,
-> so we could in theory have in future some BTF ID user outside bpf code,
-> but I guess we can enable that, when it actually happens
->
+ld's --build-id defaults to "sha1" style, while lld defaults to "fast".
+The build IDs are very different between the two, which may confuse
+programs that reference them.
 
-Right. Let's cross that bridge when we get there.
+Signed-off-by: Bill Wendling <morbo@google.com>
+---
+ Makefile                             | 4 ++--
+ arch/arm/vdso/Makefile               | 2 +-
+ arch/arm64/kernel/vdso/Makefile      | 2 +-
+ arch/arm64/kernel/vdso32/Makefile    | 2 +-
+ arch/mips/vdso/Makefile              | 2 +-
+ arch/riscv/kernel/vdso/Makefile      | 2 +-
+ arch/s390/kernel/vdso64/Makefile     | 2 +-
+ arch/sparc/vdso/Makefile             | 2 +-
+ arch/x86/entry/vdso/Makefile         | 2 +-
+ tools/testing/selftests/bpf/Makefile | 2 +-
+ 10 files changed, 11 insertions(+), 11 deletions(-)
 
-> jirka
->
-> >
-> >
-> > >  scripts/link-vmlinux.sh | 9 +++++++--
-> > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> > > index e6e2d9e5ff48..3173b8cf08cb 100755
-> > > --- a/scripts/link-vmlinux.sh
-> > > +++ b/scripts/link-vmlinux.sh
-> > > @@ -342,8 +342,13 @@ vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
-> > >
-> > >  # fill in BTF IDs
-> > >  if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
-> > > -info BTFIDS vmlinux
-> > > -${RESOLVE_BTFIDS} vmlinux
-> > > +       info BTFIDS vmlinux
-> > > +       # Let's be more permissive if CONFIG_BPF is disabled
-> > > +       # and do not fail if there's no data to resolve.
-> > > +       if [ -z "${CONFIG_BPF}" ]; then
-> > > +         no_fail=--no-fail
-> > > +       fi
-> > > +       ${RESOLVE_BTFIDS} $no_fail vmlinux
-> > >  fi
-> > >
-> > >  if [ -n "${CONFIG_BUILDTIME_TABLE_SORT}" ]; then
-> > > --
-> > > 2.26.2
-> > >
-> >
->
+diff --git a/Makefile b/Makefile
+index 2b66d3398878..7e6f41c9803a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -973,8 +973,8 @@ KBUILD_CPPFLAGS += $(KCPPFLAGS)
+ KBUILD_AFLAGS   += $(KAFLAGS)
+ KBUILD_CFLAGS   += $(KCFLAGS)
+ 
+-KBUILD_LDFLAGS_MODULE += --build-id
+-LDFLAGS_vmlinux += --build-id
++KBUILD_LDFLAGS_MODULE += --build-id=sha1
++LDFLAGS_vmlinux += --build-id=sha1
+ 
+ ifeq ($(CONFIG_STRIP_ASM_SYMS),y)
+ LDFLAGS_vmlinux	+= $(call ld-option, -X,)
+diff --git a/arch/arm/vdso/Makefile b/arch/arm/vdso/Makefile
+index a54f70731d9f..150ce6e6a5d3 100644
+--- a/arch/arm/vdso/Makefile
++++ b/arch/arm/vdso/Makefile
+@@ -19,7 +19,7 @@ ccflags-y += -DDISABLE_BRANCH_PROFILING -DBUILD_VDSO32
+ ldflags-$(CONFIG_CPU_ENDIAN_BE8) := --be8
+ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
+ 	    -z max-page-size=4096 -nostdlib -shared $(ldflags-y) \
+-	    --hash-style=sysv --build-id \
++	    --hash-style=sysv --build-id=sha1 \
+ 	    -T
+ 
+ obj-$(CONFIG_VDSO) += vdso.o
+diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+index 45d5cfe46429..871915097f9d 100644
+--- a/arch/arm64/kernel/vdso/Makefile
++++ b/arch/arm64/kernel/vdso/Makefile
+@@ -24,7 +24,7 @@ btildflags-$(CONFIG_ARM64_BTI_KERNEL) += -z force-bti
+ # routines, as x86 does (see 6f121e548f83 ("x86, vdso: Reimplement vdso.so
+ # preparation in build-time C")).
+ ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 --hash-style=sysv	\
+-	     -Bsymbolic $(call ld-option, --no-eh-frame-hdr) --build-id -n	\
++	     -Bsymbolic $(call ld-option, --no-eh-frame-hdr) --build-id=sha1 -n	\
+ 	     $(btildflags-y) -T
+ 
+ ccflags-y := -fno-common -fno-builtin -fno-stack-protector -ffixed-x18
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index d6adb4677c25..4fa4b3fe8efb 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -128,7 +128,7 @@ VDSO_LDFLAGS += -Wl,-Bsymbolic -Wl,--no-undefined -Wl,-soname=linux-vdso.so.1
+ VDSO_LDFLAGS += -Wl,-z,max-page-size=4096 -Wl,-z,common-page-size=4096
+ VDSO_LDFLAGS += -nostdlib -shared -mfloat-abi=soft
+ VDSO_LDFLAGS += -Wl,--hash-style=sysv
+-VDSO_LDFLAGS += -Wl,--build-id
++VDSO_LDFLAGS += -Wl,--build-id=sha1
+ VDSO_LDFLAGS += $(call cc32-ldoption,-fuse-ld=bfd)
+ 
+ 
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index 57fe83235281..5810cc12bc1d 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -61,7 +61,7 @@ endif
+ # VDSO linker flags.
+ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
+ 	$(filter -E%,$(KBUILD_CFLAGS)) -nostdlib -shared \
+-	-G 0 --eh-frame-hdr --hash-style=sysv --build-id -T
++	-G 0 --eh-frame-hdr --hash-style=sysv --build-id=sha1 -T
+ 
+ CFLAGS_REMOVE_vdso.o = -pg
+ 
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 478e7338ddc1..7d6a94d45ec9 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -49,7 +49,7 @@ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
+ # refer to these symbols in the kernel code rather than hand-coded addresses.
+ 
+ SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
+-	-Wl,--build-id -Wl,--hash-style=both
++	-Wl,--build-id=sha1 -Wl,--hash-style=both
+ $(obj)/vdso-dummy.o: $(src)/vdso.lds $(obj)/rt_sigreturn.o FORCE
+ 	$(call if_changed,vdsold)
+ 
+diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
+index 4a66a1cb919b..edc473b32e42 100644
+--- a/arch/s390/kernel/vdso64/Makefile
++++ b/arch/s390/kernel/vdso64/Makefile
+@@ -19,7 +19,7 @@ KBUILD_AFLAGS_64 += -m64 -s
+ KBUILD_CFLAGS_64 := $(filter-out -m64,$(KBUILD_CFLAGS))
+ KBUILD_CFLAGS_64 += -m64 -fPIC -shared -fno-common -fno-builtin
+ ldflags-y := -fPIC -shared -nostdlib -soname=linux-vdso64.so.1 \
+-	     --hash-style=both --build-id -T
++	     --hash-style=both --build-id=sha1 -T
+ 
+ $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_64)
+ $(targets:%=$(obj)/%.dbg): KBUILD_AFLAGS = $(KBUILD_AFLAGS_64)
+diff --git a/arch/sparc/vdso/Makefile b/arch/sparc/vdso/Makefile
+index f44355e46f31..469dd23887ab 100644
+--- a/arch/sparc/vdso/Makefile
++++ b/arch/sparc/vdso/Makefile
+@@ -115,7 +115,7 @@ quiet_cmd_vdso = VDSO    $@
+ 		       -T $(filter %.lds,$^) $(filter %.o,$^) && \
+ 		sh $(srctree)/$(src)/checkundef.sh '$(OBJDUMP)' '$@'
+ 
+-VDSO_LDFLAGS = -shared --hash-style=both --build-id -Bsymbolic
++VDSO_LDFLAGS = -shared --hash-style=both --build-id=sha1 -Bsymbolic
+ GCOV_PROFILE := n
+ 
+ #
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 215376d975a2..ebba25ed9a38 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -176,7 +176,7 @@ quiet_cmd_vdso = VDSO    $@
+ 		       -T $(filter %.lds,$^) $(filter %.o,$^) && \
+ 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
+ 
+-VDSO_LDFLAGS = -shared --hash-style=both --build-id \
++VDSO_LDFLAGS = -shared --hash-style=both --build-id=sha1 \
+ 	$(call ld-option, --eh-frame-hdr) -Bsymbolic
+ GCOV_PROFILE := n
+ 
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index fc946b7ac288..daf186f88a63 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -133,7 +133,7 @@ $(OUTPUT)/%:%.c
+ 
+ $(OUTPUT)/urandom_read: urandom_read.c
+ 	$(call msg,BINARY,,$@)
+-	$(Q)$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) -Wl,--build-id
++	$(Q)$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) -Wl,--build-id=sha1
+ 
+ $(OUTPUT)/test_stub.o: test_stub.c $(BPFOBJ)
+ 	$(call msg,CC,,$@)
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
