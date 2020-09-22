@@ -2,128 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3992C273EC8
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 11:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C010273ED5
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 11:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIVJqx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 05:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgIVJqx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:46:53 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721DBC0613CF
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 02:46:53 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id t3so3973802ook.8
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 02:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J0fKPHQOq7nlQegaEc46x32IDCd4+rwSk8MOWrazdeE=;
-        b=x1r8u5eMFLgm6eFdMyMif1ABwP1dPScFWX9SMPncFWRdWBtmilPSeN2dMDhNFyfyff
-         k2rM1Pe+1UgcSM5CZHGMb90pAPP0BzS7WSYKLC///3x7b7an6v0cyx9BvmsIuEfo4Hdn
-         rGY39nH4bqs2krkhJsBUYd09kNYGG/u4Onfbg=
+        id S1726606AbgIVJtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 05:49:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53312 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726503AbgIVJtG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Sep 2020 05:49:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600768144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C7pld8CF2XoWB/dz/mweeUUMdCoVXOEtidPbZSC2mYk=;
+        b=MwJeBWCUInIi/tJyhYCUsIk0WiK8Qip47q2iBDF61QUK8THhjigJKkedI7znhMbZ5Po3SB
+        vq4g54Npp1RKYnin/XOYnLrS8iWS5+Cno2Kh3krP/amb4qpvnnJmKAjgvieP0ytMWcTsEe
+        SegB0O74tznUlzUvFB0Xt+DSWZjIqSE=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-3xX37gGVPY-14zhW02ogQg-1; Tue, 22 Sep 2020 05:49:01 -0400
+X-MC-Unique: 3xX37gGVPY-14zhW02ogQg-1
+Received: by mail-pf1-f200.google.com with SMTP id c18so10774826pfi.21
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 02:49:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J0fKPHQOq7nlQegaEc46x32IDCd4+rwSk8MOWrazdeE=;
-        b=qfBDlhc7N0+SWJMflU0dq+EfdbQLyDhd0oU6WnkHClwGs35fp9U+NFyMKr5rm5gaKi
-         jYnqfD5Q8mshMPfkG7YzQ72+/FtqW3XY0stf5SsTVWdP3FoREvi67jenlRAPlPWgEXAm
-         U1Ym9zDU16tE99l1Dv152hSPUIWjUmJnuhmBeelImOybP8cq4gs4RyXrJr+dp6/ViG4w
-         GCdi8duH0A2XPd8KHffcPujr/dPDZOBWMCcknvcMGo+qVhCmWhxWAutxYelaHtsrTrjn
-         8n3YrBq07ehK3w2j+60GD5PV6l3G2hzTVV9whS1N8l8GkHYGuRHLlJz8aNIxvdc2h4FL
-         KBgg==
-X-Gm-Message-State: AOAM531fbBGcadaI2X6CUHM2bbKxxO29oPNdAWJacswPyS0oG5GaZ7Fi
-        2MHQAPlJMCWIV94eaqSER2SNT14r2hDUsBwEYJlI2w==
-X-Google-Smtp-Source: ABdhPJyhzL3/w1TXiNT0Yr3c6AdYTZrhjvBtCXXisVcgysAOgbvs1wFQL7gibDq9NC0VzEJe7xxUaOxQa/sHacjS43c=
-X-Received: by 2002:a4a:3516:: with SMTP id l22mr2387279ooa.6.1600768012836;
- Tue, 22 Sep 2020 02:46:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200922070409.1914988-1-kafai@fb.com> <20200922070422.1917351-1-kafai@fb.com>
-In-Reply-To: <20200922070422.1917351-1-kafai@fb.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 22 Sep 2020 10:46:41 +0100
-Message-ID: <CACAyw9-LoKFuYxaMODtacJM-rOR0P5Y=j_yEm9bsFZe_j_9rYQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 02/11] bpf: Enable bpf_skc_to_* sock casting
- helper to networking prog type
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=C7pld8CF2XoWB/dz/mweeUUMdCoVXOEtidPbZSC2mYk=;
+        b=WlsDVUgHGA/SzeptLIIcdCA+Pi8qNaFGQP8SE44x7ezqpaTpO1csw22bL7qm25c8GG
+         7j2MXOIXluJ4gP2esAdVJCno1zbzCtR+BoaK14V5XyyFYPazSxVPamknYDTlSniEwvVQ
+         TXWePciwCsH3bJZvhyq3HEzsXi/5U0K6oL81JiMpyDAiw366vCQUC/hDTSH6weG2E4Uw
+         8XWHkJqAmFJLhvYAogBOkovQLhnCapFwf9926so/TIvcE6M/xbXg3RmhcqTDmWnHA8ZS
+         5exuyZXsahEPwpojQ4heT++r24c8ZWVcyugXey/QQ2x/suBxIMYnPuj9YcQmRS/iBMzB
+         qbAw==
+X-Gm-Message-State: AOAM530GnyqB+9gAWBYHJKYGbHL+rCYd942tQsVIXpNzsjhcv6hZAofm
+        ocMmJ9L70Ul0iNdSoX6vbxdBVOOIIXADgfPRrZRL8OGlv5+wk3YcwTe7SJ78dH6nJUGz9kt5hZ/
+        Or+yo507w94T5
+X-Received: by 2002:a65:5cc5:: with SMTP id b5mr2848418pgt.417.1600768140424;
+        Tue, 22 Sep 2020 02:49:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRkjLs32HCIaPCnYQAVYeZEICRf64Td+jyJVxWQIFB2+3NglYYYXu9OGcfcQ9khQaoP2qtfg==
+X-Received: by 2002:a65:5cc5:: with SMTP id b5mr2848403pgt.417.1600768140106;
+        Tue, 22 Sep 2020 02:49:00 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id c7sm15056412pfj.100.2020.09.22.02.48.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 02:48:59 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 89A12183A99; Tue, 22 Sep 2020 11:48:54 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v7 00/10] bpf: Support multi-attach for
+ freplace programs
+In-Reply-To: <CAEf4BzZbUrTKS9utppKCiBqkeybBEQQgwjqJhSz8FJyiK32VHA@mail.gmail.com>
+References: <160051618267.58048.2336966160671014012.stgit@toke.dk>
+ <CAEf4BzZbUrTKS9utppKCiBqkeybBEQQgwjqJhSz8FJyiK32VHA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 22 Sep 2020 11:48:54 +0200
+Message-ID: <87tuvqp2ex.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 22 Sep 2020 at 08:04, Martin KaFai Lau <kafai@fb.com> wrote:
->
-> There is a constant need to add more fields into the bpf_tcp_sock
-> for the bpf programs running at tc, sock_ops...etc.
->
-> A current workaround could be to use bpf_probe_read_kernel().  However,
-> other than making another helper call for reading each field and missing
-> CO-RE, it is also not as intuitive to use as directly reading
-> "tp->lsndtime" for example.  While already having perfmon cap to do
-> bpf_probe_read_kernel(), it will be much easier if the bpf prog can
-> directly read from the tcp_sock.
->
-> This patch tries to do that by using the existing casting-helpers
-> bpf_skc_to_*() whose func_proto returns a btf_id.  For example, the
-> func_proto of bpf_skc_to_tcp_sock returns the btf_id of the
-> kernel "struct tcp_sock".
->
-> These helpers are also added to is_ptr_cast_function().
-> It ensures the returning reg (BPF_REF_0) will also carries the ref_obj_id.
-> That will keep the ref-tracking works properly.
->
-> The bpf_skc_to_* helpers are made available to most of the bpf prog
-> types in filter.c. They are limited by perfmon cap.
->
-> This patch adds a ARG_PTR_TO_BTF_ID_SOCK_COMMON.  The helper accepting
-> this arg can accept a btf-id-ptr (PTR_TO_BTF_ID + &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON])
-> or a legacy-ctx-convert-skc-ptr (PTR_TO_SOCK_COMMON).  The bpf_skc_to_*()
-> helpers are changed to take ARG_PTR_TO_BTF_ID_SOCK_COMMON such that
-> they will accept pointer obtained from skb->sk.
->
-> PTR_TO_*_OR_NULL is not accepted as an ARG_PTR_TO_BTF_ID_SOCK_COMMON
-> at verification time.  All PTR_TO_*_OR_NULL reg has to do a NULL check
-> first before passing into the helper or else the bpf prog will be
-> rejected by the verifier.
->
-> [ ARG_PTR_TO_SOCK_COMMON_OR_NULL was attempted earlier.  The _OR_NULL was
->   needed because the PTR_TO_BTF_ID could be NULL but note that a could be NULL
->   PTR_TO_BTF_ID is not a scalar NULL to the verifier.  "_OR_NULL" implicitly
->   gives an expectation that the helper can take a scalar NULL which does
->   not make sense in most (except one) helpers.  Passing scalar NULL
->   should be rejected at the verification time.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-What is the benefit of requiring a !sk check from the user if all of
-the helpers know how to deal with a NULL pointer?
-
+> On Sat, Sep 19, 2020 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> This series adds support attaching freplace BPF programs to multiple tar=
+gets.
+>> This is needed to support incremental attachment of multiple XDP program=
+s using
+>> the libxdp dispatcher model.
+>>
+>> The first patch fixes an issue that came up in review: The verifier will
+>> currently allow MODIFY_RETURN tracing functions to attach to other BPF p=
+rograms,
+>> even though it is pretty clear from the commit messages introducing the
+>> functionality that this was not the intention. This patch is included in=
+ the
+>> serise because the subsequent refactoring patches touch the same code.
+>>
+>> The next three patches are refactoring patches: Patch 2 is a trivial cha=
+nge to
+>> the logging in the verifier, split out to make the subsequent refactor e=
+asier to
+>> read. Patch 3 refactors check_attach_btf_id() so that the checks on prog=
+ram and
+>> target compatibility can be reused when attaching to a secondary locatio=
+n.
+>>
+>> Patch 4 moves prog_aux->linked_prog and the trampoline to be embedded in
+>> bpf_tracing_link on attach, and freed by the link release logic, and int=
+roduces
+>> a mutex to protect the writing of the pointers in prog->aux.
+>>
+>> Based on these refactorings, it becomes pretty straight-forward to suppo=
+rt
+>> multiple-attach for freplace programs (patch 5). This is simply a matter=
+ of
+>> creating a second bpf_tracing_link if a target is supplied. However, for=
+ API
+>> consistency with other types of link attach, this option is added to the
+>> BPF_LINK_CREATE API instead of extending bpf_raw_tracepoint_open().
+>>
+>> Patch 6 is a port of Jiri Olsa's patch to support fentry/fexit on frepla=
+ce
+>> programs. His approach of getting the target type from the target program
+>> reference no longer works after we've gotten rid of linked_prog (because=
+ the
+>> bpf_tracing_link reference disappears on attach). Instead, we used the s=
+aved
+>> reference to the target prog type that is also used to verify compatibil=
+ity on
+>> secondary freplace attachment.
+>>
+>> Patches 7 is the accompanying libbpf update, and patches 8-10 are selfte=
+sts:
+>> patch 8 tests for the multi-freplace functionality itself, patch 9 is Ji=
+ri's
+>> previous selftest for the fentry-to-freplace fix, and patch 10 is a test=
+ for
+>> the change introduced in patch 1, blocking MODIFY_RETURN functions from
+>> attaching to other BPF programs.
+>>
+>> With this series, libxdp and xdp-tools can successfully attach multiple =
+programs
+>> one at a time. To play with this, use the 'freplace-multi-attach' branch=
+ of
+>> xdp-tools:
+>>
+>> $ git clone --recurse-submodules --branch freplace-multi-attach https://=
+github.com/xdp-project/xdp-tools
+>> $ cd xdp-tools/xdp-loader
+>> $ make
+>> $ sudo ./xdp-loader load veth0 ../lib/testing/xdp_drop.o
+>> $ sudo ./xdp-loader load veth0 ../lib/testing/xdp_pass.o
+>> $ sudo ./xdp-loader status
+>>
+>> The series is also available here:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/log/?h=3D=
+bpf-freplace-multi-attach-alt-07
+>>
+>> Changelog:
+>>
+>> v7:
+>>   - Add back missing ptype =3D=3D prog->type check in link_create()
+>>   - Use tracing_bpf_link_attach() instead of separate freplace_bpf_link_=
+attach()
+>>   - Don't break attachment of bpf_iters in libbpf
 >
->   Thus, this patch uses ARG_PTR_TO_BTF_ID_SOCK_COMMON to specify that the
->   helper can take both the btf-id ptr or the legacy PTR_TO_SOCK_COMMON but
->   not scalar NULL.  It requires the func_proto to explicitly specify the
->   arg_btf_id such that there is a very clear expectation that the helper
->   can handle a NULL PTR_TO_BTF_ID. ]
+> What was specifically the issue and the fix for bpf_iters?
 
-I think ARG_PTR_TO_BTF_ID_SOCK_COMMON is actually a misnomer, since
-nothing enforces that arg_btf_id is actually an ID for sock common.
-This is where ARG_PTR_TO_SOCK_COMMON_OR_NULL is much easier to
-understand, even though it's more permissive than it has to be. It
-communicates very clearly what values the argument can take.
+It was in libbpf - after making the attr passed to the kernel a union, I
+was still unconditionally writing to the target_btf_id field, clobbering
+the iter pointer. Which is also why it still happened even with a kernel
+that didn't have the patch applied: I forgot to recompile the selftest :)
 
-If you're set on ARG_PTR_TO_BTF_ID_SOCK_COMMON I'd suggest forcing the
-btf_id in struct bpf_reg_types. This avoids the weird case where the
-btf_id doesn't actually point at sock_common, and it also makes my
-life easier for sockmap update from iter, as mentioned in the other
-email.
+-Toke
 
---
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
