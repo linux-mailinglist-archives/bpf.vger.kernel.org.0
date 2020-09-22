@@ -2,112 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99732273999
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 06:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E6B2739A3
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 06:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgIVEIf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 00:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        id S1728043AbgIVEV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 00:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgIVEIe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 00:08:34 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE15AC061755;
-        Mon, 21 Sep 2020 21:08:34 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so11227844pfn.8;
-        Mon, 21 Sep 2020 21:08:34 -0700 (PDT)
+        with ESMTP id S1726790AbgIVEV2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 00:21:28 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD2DC061755;
+        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id y2so5319600ila.0;
+        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K7AvY+HswYdAj30nYTTlfp9CaSnrfzdG1e4K3HI6LCM=;
-        b=PkIsI9xJMJcxdysWWjncEFsvoO1IIyfYlPSOEji0QM/h3CBPA5UkEav6bbyfzk7XxU
-         RCDW4IvBhCjAUqQN03V9Row1ZEoRf/jTURtSLvFtT3ShctBeuio7L3rc5LOKOdvD6XQf
-         Uw1CPL+HHKVbvDvEGt0LEpQsGpvEm1EqEWrb/fYG1Rvv2hfZ7XhWtY8w0+HLTVxja+JJ
-         K0fG+Gbydzde3h4jzi2e0OUT93PKSgzWXyFYi3+FtG+/Qnz4GaUqKyM9pirYWrVCk0MH
-         PTzvJFrZJ87YJvBBnn1HOCP0nuuYscc7WJShJm9Jvub4aGE2bWzv7ETOncDtFHdBnfAI
-         I97w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
+        b=eF/EbBSe9yFBqTjdwzbFsunrkCPqbYXgfxHDSEkrckP5A1JHkh3XKpgKh1/IGo/vpm
+         PxlwoZMqDyyio84Vt96+iIDsRTiLJBgiQsTvGsDCpKt/pgm36IvvjTbwaqIKrGYde6Hi
+         0BHrqmtRg+GVQzDb9NRZEk/zfFZn8kaIVBnLwClJLRYsQc+uNdTo9V0vEmmil93p8bpC
+         gB9+qh4AB+tp0jmSgoo6Fcn9UmBpXDRPaykudNaQMqKbTqnFcAEL0jv3aGMx7vnanVue
+         GIlYCRrZPBKR9PHUH6u1kyqfeUZu/yQM1gKgTq9owy3HhmFOH2sUvEg8zRosVx5M7MpM
+         vbyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K7AvY+HswYdAj30nYTTlfp9CaSnrfzdG1e4K3HI6LCM=;
-        b=X0Fwc7T5sSyv20RIAu9K7TSF5j2VNyKa/6zK9GMroCf+Wc2PIPf34PYxsbvSlw1/c+
-         1kADZqFvHBKDk22K++MSFMPlQVgrZDkf+S76iHKhdY4KMIEt2e7+J+iyH+vcb+IWCoqQ
-         ThyM0/uIOPjgwcFY+/W9wDd8kIIIMUpLHY6krFrt9zDjZ+nKmKB3zcUotBRZfPf/S6M3
-         1TafwJOgX5hnie+0MIfdwHXILFI56bbTeXrWNStNUdQJ4N5MgD5JXHeg7gUujmLLP8Jy
-         AkJRstVQh1ncNfJn3R6tJtn1CoGsku6iZVZgYHeXA6IddAAyrfsjlCsl7zc0A30SplPD
-         dh9Q==
-X-Gm-Message-State: AOAM533kkcKWOFQpQ16qgutziUtKW27qPm8gd8UPXMM+EWuHzVub4Nxd
-        CGTFyUdScP6uIOgcJqeF+k0=
-X-Google-Smtp-Source: ABdhPJy1c32jkIMnLPCblvNT8MEab0kq0m5AfcoijkPG0AEIY0PIHR7yHkTrbtcnsJrXNky9WhG3MQ==
-X-Received: by 2002:a63:1449:: with SMTP id 9mr2124720pgu.260.1600747714040;
-        Mon, 21 Sep 2020 21:08:34 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:b927])
-        by smtp.gmail.com with ESMTPSA id s16sm12572924pgl.78.2020.09.21.21.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 21:08:33 -0700 (PDT)
-Date:   Mon, 21 Sep 2020 21:08:30 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, mptcp@lists.01.org
-Subject: Re: [PATCH bpf-next v3 3/5] bpf: add 'bpf_mptcp_sock' structure and
- helper
-Message-ID: <20200922040830.3iis6xiavhvpfq3v@ast-mbp.dhcp.thefacebook.com>
-References: <20200918121046.190240-1-nicolas.rybowski@tessares.net>
- <20200918121046.190240-3-nicolas.rybowski@tessares.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
+        b=ELqTN1ptjUZ0xy1YDpLE9z7r94uOTlGql3AEKLgPWcJXgJxfN5qBJI5wwUnzNN5+CK
+         F6F8WcjvtJ6qqGaxdqwMvfQIal0zB5TqIoeFxdP03h1px1mgZtrFM9DST+aHm2ggBqRf
+         IOGR9K1f/anaiHIZ+IMzg+DpSb5LpJ9o0sEZNvW+Fb+Ezv6dbZkmiV2vPBiKpJp14yNE
+         1VhxKOtYIG0ZQUGkHnTUlo30LabxAB2vKp0ISXefpHWkuhTF7kvDp3GqCXWqa7tjNP7Q
+         waA1ZvlQCjDtbUmX2HMx/dvOUiFkJIYshrms/VzlxyKF+AcmkNzQ1EWTCwWch4nMQHdj
+         NYXw==
+X-Gm-Message-State: AOAM532YZq5wlZa8xJvtykpux3TuSunX5IuatjMb46MZB0W4/dgqYZHe
+        peysrAANkkMyU6wUEk5fRXpopzv6nvwEgV1qlzc=
+X-Google-Smtp-Source: ABdhPJzDl8MdjPVNRJmS4FRLkv0hUY6IYs3el3g0ioVtIQKA0mfz3YZi4KUDwxEL6Q++VW2yZEYb9pNfWRlG4ObXVfo=
+X-Received: by 2002:a92:c7b0:: with SMTP id f16mr2847131ilk.137.1600748488148;
+ Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918121046.190240-3-nicolas.rybowski@tessares.net>
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz> <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
+ <20200921113646.GJ12990@dhcp22.suse.cz>
+In-Reply-To: <20200921113646.GJ12990@dhcp22.suse.cz>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 22 Sep 2020 12:20:52 +0800
+Message-ID: <CALOAHbCker64WEW9w4oq8=avA6oKf3-Jrn-vOOgkpqkV3g+CYA@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 02:10:42PM +0200, Nicolas Rybowski wrote:
-> +
-> +BPF_CALL_1(bpf_mptcp_sock, struct sock *, sk)
-> +{
-> +	if (sk_fullsock(sk) && sk->sk_protocol == IPPROTO_TCP && sk_is_mptcp(sk)) {
-> +		struct mptcp_subflow_context *mptcp_sfc = mptcp_subflow_ctx(sk);
+On Mon, Sep 21, 2020 at 7:36 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 21-09-20 19:23:01, Yafang Shao wrote:
+> > On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 21-09-20 18:55:40, Yafang Shao wrote:
+> > > > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
+> > > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
+> > > > > >
+> > > > > > In the cgroup v1, we have 'force_mepty' interface. This is very
+> > > > > > useful for userspace to actively release memory. But the cgroup
+> > > > > > v2 does not.
+> > > > > >
+> > > > > > This patch reuse cgroup v1's function, but have a new name for
+> > > > > > the interface. Because I think 'drop_cache' may be is easier to
+> > > > > > understand :)
+> > > > >
+> > > > > This should really explain a usecase. Global drop_caches is a terrible
+> > > > > interface and it has caused many problems in the past. People have
+> > > > > learned to use it as a remedy to any problem they might see and cause
+> > > > > other problems without realizing that. This is the reason why we even
+> > > > > log each attempt to drop caches.
+> > > > >
+> > > > > I would rather not repeat the same mistake on the memcg level unless
+> > > > > there is a very strong reason for it.
+> > > > >
+> > > >
+> > > > I think we'd better add these comments above the function
+> > > > mem_cgroup_force_empty() to explain why we don't want to expose this
+> > > > interface in cgroup2, otherwise people will continue to send this
+> > > > proposal without any strong reason.
+> > >
+> > > I do not mind people sending this proposal.  "V1 used to have an
+> > > interface, we need it in v2 as well" is not really viable without
+> > > providing more reasoning on the specific usecase.
+> > >
+> > > _Any_ patch should have a proper justification. This is nothing really
+> > > new to the process and I am wondering why this is coming as a surprise.
+> > >
+> >
+> > Container users always want to drop cache in a specific container,
+> > because they used to use drop_caches to fix memory pressure issues.
+>
+> This is exactly the kind of problems we have seen in the past. There
+> should be zero reason to addre potential reclaim problems by dropping
+> page cache on the floor. There is a huge cargo cult about this
+> procedure and I have seen numerous reports when people complained about
+> performance afterwards just to learn that the dropped page cache was one
+> of the resons for that.
+>
+> > Although drop_caches can cause some unexpected issues, it could also
+> > fix some issues.
+>
+> "Some issues" is way too general. We really want to learn about those
+> issues and address them properly.
+>
 
-Could you add !sk check here as well?
-See commit 8c33dadc3e0e ("bpf: Bpf_skc_to_* casting helpers require a NULL check on sk")
-It's not strictly necessary yet, but see below.
+One use case in our production environment is that some of our tasks
+become very latency sensitive from 7am to 10am, so before these tasks
+become active we will use drop_caches to drop page caches generated by
+other tasks at night to avoid these tasks triggering direct reclaim.
+The best way to do it is to fix the latency in direct reclaim, but it
+will take great effort. while drop_caches give us an easier way to
+achieve the same goal.
+IOW, drop_caches give the users an option to achieve their goal before
+they find a better solution.
 
-Also this new helper is not exercised from C test. Only from asm.
-Could you update patch 4 with such additional logic?
+> > So container users want to use it in containers as
+> > well.
+> > If this feature is not implemented in cgroup, they will ask you why
+> > but there is no explanation in the kernel.
+>
+> There is no usecase that would really require it so far.
+>
+> > Regarding the memory.high, it is not perfect as well, because you have
+> > to set it to 0 to drop_caches, and the processes in the containers
+> > have to reclaim pages as well because they reach the memory.high, but
+> > memory.force_empty won't make other processes to reclaim.
+>
+> Since 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering
+> memory.high") the limit is set after the reclaim so the race window when
+> somebody would be pushed to high limit reclaim is reduced. But I do
+> agree this is just a workaround.
+>
+> > That doesn't mean I agree to add this interface, while I really mean
+> > that if we discard one feature we'd better explain why.
+>
+> We need to understand why somebody wants an interface because once it is
+> added it will have to be maintained for ever.
+> --
+> Michal Hocko
+> SUSE Labs
 
-> +
-> +		return (unsigned long)mptcp_sfc->conn;
 
-I think we shouldn't extend the verifier with PTR_TO_MPTCP_SOCK and similar concept anymore.
-This approach doesn't scale and we have better way to handle such field access with BTF.
 
-> +	}
-> +	return (unsigned long)NULL;
-> +}
-> +
-> +const struct bpf_func_proto bpf_mptcp_sock_proto = {
-> +	.func           = bpf_mptcp_sock,
-> +	.gpl_only       = false,
-> +	.ret_type       = RET_PTR_TO_MPTCP_SOCK_OR_NULL,
-
-In this particular case you can do:
-+	.ret_type       = RET_PTR_TO_BTF_ID_OR_NULL,
-
-Then bpf_mptcp_sock_convert_ctx_access() will no longer be necessary
-and bpf prog will be able to access all mptcp_sock fields right away.
-Will that work for your use case?
+-- 
+Thanks
+Yafang
