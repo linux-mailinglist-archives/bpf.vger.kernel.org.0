@@ -2,184 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F112748BA
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 21:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F21B2748D9
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 21:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgIVTEH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 15:04:07 -0400
-Received: from mx.der-flo.net ([193.160.39.236]:46168 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726563AbgIVTEH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:04:07 -0400
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id 6A3F744019; Tue, 22 Sep 2020 21:04:04 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from linux.home (unknown [IPv6:2a02:1203:ecb0:3930:146b:10e2:afb5:be30])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 9C79844011;
-        Tue, 22 Sep 2020 21:03:08 +0200 (CEST)
-From:   Florian Lehner <dev@der-flo.net>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        Florian Lehner <dev@der-flo.net>
-Subject: [PATCH bpf-next v2] bpf: Lift hashtab key_size limit
-Date:   Tue, 22 Sep 2020 21:02:34 +0200
-Message-Id: <20200922190234.224161-1-dev@der-flo.net>
-X-Mailer: git-send-email 2.26.2
+        id S1726756AbgIVTLT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 15:11:19 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:38637 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726751AbgIVTLT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 15:11:19 -0400
+Received: by mail-io1-f69.google.com with SMTP id e21so13539768iod.5
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 12:11:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=lAjFh73hmiU/WBQf5ax9GK7qWeGlhNJIYvF2cOOSRUQ=;
+        b=E6Do93/TFjhorf42os5zp3JyrTQq3lpsUHdwVbsn8S63Z9VUAAeoO5jp44R4VaB+Vs
+         x/4oLt8qtEXknHoKyaA/dADC15J0NhWMABk1qOV35FEyD9poqL0D2hFlbHM/8Byt64Nw
+         OgK3ZJ/7h6vznPUsZoYfpW2Lu2ZOEiE75H0U8AcmClsoaidrc+VoSEQpd1kEsHImc4HT
+         03G3OTznsKr/KmOfOEz5sZpI07Ds/1NlHE9AvF1+FGDioIE80L7nikHv192J302BU77Q
+         C+6JJMh6x9sPm/c7QVk8juj8uAUAwZH78zlC+E1Vn9KKaSd7xY3iGgYway+8DWetfzSF
+         bSng==
+X-Gm-Message-State: AOAM532TXMftvdT/2PLsNXPQZi2T4aiIu17Olf1ycqxEtM8K/kGoazXy
+        qRAnJp3VqSrOENjdxRDcht6IRKnLE22sEry5UG06rTmeJrgh
+X-Google-Smtp-Source: ABdhPJy8yniI8MFudEaNa9KgbVwMWsCfxkZEpKwbgKb//f1MXSr5YF5rRi9LeZkJA0mjo9KaWhZAE7dguw2wjioqrH7T9AZEbBtW
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:2003:: with SMTP id y3mr4532911iod.203.1600801877916;
+ Tue, 22 Sep 2020 12:11:17 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 12:11:17 -0700
+In-Reply-To: <000000000000680f2905afd0649c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004a0dd105afebbb10@google.com>
+Subject: Re: BUG: unable to handle kernel paging request in bpf_trace_run2
+From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently key_size of hashtab is limited to MAX_BPF_STACK.
-As the key of hashtab can also be a value from a per cpu map it can be
-larger than MAX_BPF_STACK.
+syzbot has found a reproducer for the following issue on:
 
-Changelog:
+HEAD commit:    12450081 libbpf: Fix native endian assumption when parsing..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=17fedf8b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ac0d21536db480b
+dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1365d2c3900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d5f08d900000
 
-v2:
- -  Add a test for bpf side
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com
 
-Signed-off-by: Florian Lehner <dev@der-flo.net>
----
- kernel/bpf/hashtab.c                          | 16 +++----
- .../selftests/bpf/prog_tests/hash_large_key.c | 28 ++++++++++++
- .../selftests/bpf/progs/test_hash_large_key.c | 45 +++++++++++++++++++
- tools/testing/selftests/bpf/test_maps.c       |  2 +-
- 4 files changed, 79 insertions(+), 12 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index fe0e06284..fcac16cd4 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
- 	    attr->value_size == 0)
- 		return -EINVAL;
- 
--	if (attr->key_size > MAX_BPF_STACK)
--		/* eBPF programs initialize keys on stack, so they cannot be
--		 * larger than max stack size
--		 */
--		return -E2BIG;
--
--	if (attr->value_size >= KMALLOC_MAX_SIZE -
--	    MAX_BPF_STACK - sizeof(struct htab_elem))
--		/* if value_size is bigger, the user space won't be able to
--		 * access the elements via bpf syscall. This check also makes
--		 * sure that the elem_size doesn't overflow and it's
-+	if ((attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
-+	    sizeof(struct htab_elem))
-+		/* if key_size + value_size is bigger, the user space won't be
-+		 * able to access the elements via bpf syscall. This check
-+		 * also makes sure that the elem_size doesn't overflow and it's
- 		 * kmalloc-able later in htab_map_update_elem()
- 		 */
- 		return -E2BIG;
-diff --git a/tools/testing/selftests/bpf/prog_tests/hash_large_key.c b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-new file mode 100644
-index 000000000..962f56060
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Florian Lehner
-+
-+#include <test_progs.h>
-+
-+void test_hash_large_key(void)
-+{
-+	const char *file = "./test_hash_large_key.o";
-+	int prog_fd, map_fd[2];
-+	struct bpf_object *obj = NULL;
-+	int err = 0;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
-+	if (CHECK_FAIL(err)) {
-+		printf("test_hash_large_key: bpf_prog_load errno %d", errno);
-+		goto close_prog;
-+	}
-+
-+	map_fd[0] = bpf_find_map(__func__, obj, "hash_map");
-+	if (CHECK_FAIL(map_fd[0] < 0))
-+		goto close_prog;
-+	map_fd[1] = bpf_find_map(__func__, obj, "key_map");
-+	if (CHECK_FAIL(map_fd[1] < 0))
-+		goto close_prog;
-+
-+close_prog:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_hash_large_key.c b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
-new file mode 100644
-index 000000000..622ee73a4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Florian Lehner
-+
-+#include <linux/bpf.h>
-+#include <linux/version.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct bigelement {
-+	int a;
-+	char b[4096];
-+	long long c;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1);
-+	__type(key, struct bigelement);
-+	__type(value, __u32);
-+} hash_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct bigelement);
-+} key_map SEC(".maps");
-+
-+SEC("hash_large_key_demo")
-+int bpf_hash_large_key_test(struct __sk_buf *skb)
-+{
-+	int zero = 0, err = 1, value = 42;
-+	struct bigelement *key;
-+
-+	key = bpf_map_lookup_elem(&key_map, &zero);
-+	if (!key)
-+		goto err;
-+
-+	if (bpf_map_update_elem(&hash_map, key, &value, BPF_ANY))
-+		goto err;
-+	err = 0;
-+err:
-+	return err;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 754cf6117..9b2a096f0 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1225,7 +1225,7 @@ static void test_map_large(void)
- {
- 	struct bigkey {
- 		int a;
--		char b[116];
-+		char b[4096];
- 		long long c;
- 	} key;
- 	int fd, i, value;
--- 
-2.26.2
+BUG: unable to handle page fault for address: ffffc90000ed0030
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD aa000067 P4D aa000067 PUD aa169067 PMD a9031067 PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 6868 Comm: syz-executor454 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
+RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
+RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
+RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
+RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ trace_sys_enter include/trace/events/syscalls.h:18 [inline]
+ syscall_trace_enter kernel/entry/common.c:64 [inline]
+ syscall_enter_from_user_mode+0x22c/0x290 kernel/entry/common.c:82
+ do_syscall_64+0xf/0x70 arch/x86/entry/common.c:41
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4441da
+Code: 25 18 00 00 00 00 74 01 f0 48 0f b1 3d cf f9 28 00 48 39 c2 75 da f3 c3 0f 1f 84 00 00 00 00 00 48 63 ff b8 e4 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 06 f3 c3 0f 1f 40 00 48 c7 c2 d0 ff ff ff f7
+RSP: 002b:00007ffc59deef98 EFLAGS: 00000246 ORIG_RAX: 00000000000000e4
+RAX: ffffffffffffffda RBX: 0000000000001ae1 RCX: 00000000004441da
+RDX: 0000000000000000 RSI: 00007ffc59deefa0 RDI: 0000000000000001
+RBP: 000000000000ee75 R08: 0000000000001ad4 R09: 0000000001079880
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004022f0
+R13: 0000000000402380 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: ffffc90000ed0030
+---[ end trace 7a32b71ba0e36806 ]---
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:586 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:1887 [inline]
+RIP: 0010:bpf_trace_run2+0x12e/0x3d0 kernel/trace/bpf_trace.c:1924
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 8e 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 fa 03 f7 ff e8 45 c8 a4 06 31 ff 89 c3 89 c6 e8 4a 00
+RSP: 0018:ffffc900018e7e90 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: ffffc90000ed0000 RCX: ffffffff817f2b88
+RDX: 0000000000000000 RSI: ffffc90000ed0038 RDI: ffffc900018e7eb8
+RBP: 1ffff9200031cfd3 R08: 0000000000000000 R09: ffffffff8d0b69e7
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: ffffc900018e7f58 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000001079880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000ed0030 CR3: 000000009f63f000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
