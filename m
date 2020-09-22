@@ -2,162 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B2227499F
-	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 21:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532CB2749D0
+	for <lists+bpf@lfdr.de>; Tue, 22 Sep 2020 22:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgIVT5e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 15:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S1726589AbgIVUHw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Sep 2020 16:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726685AbgIVT5e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 15:57:34 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C534C0613D1
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 12:57:33 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id w3so15202039ljo.5
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 12:57:33 -0700 (PDT)
+        with ESMTP id S1726550AbgIVUHw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Sep 2020 16:07:52 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32071C061755;
+        Tue, 22 Sep 2020 13:07:52 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x22so8660699pfo.12;
+        Tue, 22 Sep 2020 13:07:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z6CQ4PR7LXXUvvSI+PnJV2oiFyZAUecU41+cGfwOujU=;
-        b=c9Y5X31ITFROkCz58BWDmVOTUSXQxwKVO0+YO5gM7Dueho0fqdMOddqGunqR3K1DSz
-         koftFlaQy5AWDynEFTUKrj/IhzVPvGkhTp5Nxa+Zlib8R9NmI9XnuBG9iHCHh7KcMQ/B
-         R2VvMWJxVq3CuEFElE+lE4DkpmSBO4nOKPEAgpV6PF+cdQ0sJlc2ScNbTbgx8wIlp+Dj
-         kZAs1jbuzLo5f/4MpCexanAo64EI9+2+h41TrGEHG8twyTTttEPJrctB/YnAZ2+HkB5k
-         uWovA5v2eCiXYkMwI/ZVzbxoqj8LOi8G4gzoBn6tiRDAJ7YqjH0xAUIYJg7tM5JKyukd
-         +iUg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gNKuVKWMdO78FqNK+uL+D8cH0jwgXUDn/bVLIwLhaMo=;
+        b=uPFhjRwY5v/vx/0VmZ0+Crrif7OSxcc35CmWJhsitmcl86/RIWYfCZp02IbxulYUEZ
+         R0+S5KjNoMk6wVfdG/7zWJY4KjhzX1DnKmjbz2Pgz/8t2w3MyFCd6wTvtcz39YT1QeRx
+         tMR4oQw7Evv34XJ5AxYsm9U7sIvrBWWUYJ2eE9ZLJnf7ebTR88DEOE05p4IOHFU1ynmN
+         yVPIf45XIfBnmSfKqGZSKZ4HZ2Ee8yIFqo6ERUCmPa4pp6kiq/03i9FIp7jWtPBAdK/m
+         W7uaAXDLRTeRGql+OiaFrsG/MFzGhgxoFWNM4Cy1v9JIwuLAGjLrFGvjcc16C9rwxaWC
+         x/mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z6CQ4PR7LXXUvvSI+PnJV2oiFyZAUecU41+cGfwOujU=;
-        b=mwUgu0+aHmuNm+zPzD9TShjhfy9NXVe26RBDlsjwLBdYbKApf9CjMsUDV4bKI9kJ2i
-         8/EsCkB7C8MhZKDss22unSYFsCsTspxqTfz6mFZUcpMqrNrUn9iVHSdeaOtZRB14UV0y
-         4pcn8dyeFAQI7fucXlAxXF1pwI7MVwWyEhCXEdyyTJphJHGr6vR/ogevuF4f1YGmK8K5
-         YKSmYTXdq9ntxvQa5DbfIcFw8E6y01bQYyZbGqmlemBzeMFGkkHUyMPwjrqAPbyig8n9
-         sJ88qo1QWO+2Fh+MM5r/wdJU6Ahj5TW14+pMk8iHsAifa6i/Cz5To5qu1LOVLY7X9k4N
-         vvGg==
-X-Gm-Message-State: AOAM531KkD1vD9OrcuoWDPlfrDRKuWK6yS/gohKzUE0Sn/H9B1+KwDgu
-        06vwD/EpYyhgDgadOHYg5DnPq4rtw6EGBOXMcUoxkA==
-X-Google-Smtp-Source: ABdhPJzYews2Ih4OsV/9BJPJX66ITSb1cl147pd8KN4Cqs6H0ueYwNCOPq7ksxkbE9zvtTGB9qj/7KwbIsYjwO4rXFQ=
-X-Received: by 2002:a2e:7c09:: with SMTP id x9mr1916202ljc.192.1600804651550;
- Tue, 22 Sep 2020 12:57:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gNKuVKWMdO78FqNK+uL+D8cH0jwgXUDn/bVLIwLhaMo=;
+        b=XXsm+rTYXF7Nx8aZA0ZPfL82S6yYN2OoqOOua7tjd79/uHBK66alrpqvKnb576y1XA
+         zLGU6v/WOuCGFHO+8Gwd6hUs4REZV+GygTpZHxPEgR76JYrgznUtnFRjAoKt7Xy/y6Sj
+         hd/V9Ui52hkGurOHibEmXDjjyEkyxUTeeRobyVSTWuQ0i+BUlqSmvUhotd63sQT5CZP6
+         bFZLS9dzJDd/9iN1B2va3UBU4Gq/ntLy02fFClzqWPshOfmgwp7zeUmdOptDiKCd4jtq
+         WGhE0qzkB6C4Oed/KyGYxGNznYTDxGa0Mv2wvJFdmUENHljz1FbKIoJFQs4d6yRYOiCA
+         2+ww==
+X-Gm-Message-State: AOAM531zltZHgiyw69JYaX2ndeOVAm00Kqkc2H6TyqKUN+s1uH+MAGrf
+        Ka+wBWke0MXhwkg0cHVQHzg=
+X-Google-Smtp-Source: ABdhPJzDUxMqLE5rCbXU7Rhex0yFWsHHDU4r9sgsCa4wZXufZzxOfGGmEp4DGvm2oXroXCMa+66/zw==
+X-Received: by 2002:a63:d512:: with SMTP id c18mr4588501pgg.387.1600805271577;
+        Tue, 22 Sep 2020 13:07:51 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f812])
+        by smtp.gmail.com with ESMTPSA id g32sm15202913pgl.89.2020.09.22.13.07.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 13:07:50 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 13:07:48 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v4 11/11] bpf: use a table to drive helper arg
+ type checks
+Message-ID: <20200922200748.gv6x6yhkyxnbqxx4@ast-mbp.dhcp.thefacebook.com>
+References: <20200921121227.255763-1-lmb@cloudflare.com>
+ <20200921121227.255763-12-lmb@cloudflare.com>
+ <20200921222335.lew7wmyrtuej5mrh@ast-mbp.dhcp.thefacebook.com>
+ <CACAyw98XfkMy4TDFnHBCFzXxauLrZ56w+84-R_NQO1SLMgPJYA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
- <20200922095136.GA9682@chrisdown.name> <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
- <20200922104252.GB9682@chrisdown.name> <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
-In-Reply-To: <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Sep 2020 12:57:19 -0700
-Message-ID: <CALvZod64Qwzjv3N2PO-EUtMkA4bs_PM=Tq4=cmuM0VO9P3BAjw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
- interface for cgroup v2
-To:     Chunxin Zang <zangchunxin@bytedance.com>
-Cc:     Chris Down <chris@chrisdown.name>, Michal Hocko <mhocko@suse.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACAyw98XfkMy4TDFnHBCFzXxauLrZ56w+84-R_NQO1SLMgPJYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 5:37 AM Chunxin Zang <zangchunxin@bytedance.com> wr=
-ote:
->
-> On Tue, Sep 22, 2020 at 6:42 PM Chris Down <chris@chrisdown.name> wrote:
+On Tue, Sep 22, 2020 at 09:20:27AM +0100, Lorenz Bauer wrote:
+> On Mon, 21 Sep 2020 at 23:23, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Chunxin Zang writes:
-> > >On Tue, Sep 22, 2020 at 5:51 PM Chris Down <chris@chrisdown.name> wrot=
-e:
-> > >>
-> > >> Chunxin Zang writes:
-> > >> >My usecase is that there are two types of services in one server. T=
-hey
-> > >> >have difference
-> > >> >priorities. Type_A has the highest priority, we need to ensure it's
-> > >> >schedule latency=E3=80=81I/O
-> > >> >latency=E3=80=81memory enough. Type_B has the lowest priority, we e=
-xpect it
-> > >> >will not affect
-> > >> >Type_A when executed.
-> > >> >So Type_A could use memory without any limit. Type_B could use memo=
-ry
-> > >> >only when the
-> > >> >memory is absolutely sufficient. But we cannot estimate how much
-> > >> >memory Type_B should
-> > >> >use. Because everything is dynamic. So we can't set Type_B's memory=
-.high.
-> > >> >
-> > >> >So we want to release the memory of Type_B when global memory is
-> > >> >insufficient in order
-> > >> >to ensure the quality of service of Type_A . In the past, we used t=
-he
-> > >> >'force_empty' interface
-> > >> >of cgroup v1.
-> > >>
-> > >> This sounds like a perfect use case for memory.low on Type_A, and it=
-'s pretty
-> > >> much exactly what we invented it for. What's the problem with that?
-> > >
-> > >But we cannot estimate how much memory Type_A uses at least.
+> > On Mon, Sep 21, 2020 at 01:12:27PM +0100, Lorenz Bauer wrote:
+> > > +struct bpf_reg_types {
+> > > +     const enum bpf_reg_type types[10];
+> > > +};
 > >
-> > memory.low allows ballparking, you don't have to know exactly how much =
-it uses.
-> > Any amount of protection biases reclaim away from that cgroup.
+> > any idea on how to make it more robust?
+> 
+> I kind of copied this from the bpf_iter context. I prototyped using an
+> enum bpf_reg_type * and then terminating the array with NOT_INIT.
+> Writing this out is more involved, and might need some macro magic to
+> make it palatable. The current approach is a lot simpler, and I
+> figured that the compiler will error out if we ever exceed the 10
+> items.
+
+The compiler will be silent if number of types is exactly 10,
+but at run-time the loop will access out of bounds.
+
 > >
-> > >For example:
-> > >total memory: 100G
-> > >At the beginning, Type_A was in an idle state, and it only used 10G of=
- memory.
-> > >The load is very low. We want to run Type_B to avoid wasting machine r=
-esources.
-> > >When Type_B runs for a while, it used 80G of memory.
-> > >At this time Type_A is busy, it needs more memory.
+> > > +
+> > > +static const struct bpf_reg_types *compatible_reg_types[] = {
+> > > +     [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
+> > > +     [ARG_PTR_TO_MAP_VALUE]          = &map_key_value_types,
+> > > +     [ARG_PTR_TO_UNINIT_MAP_VALUE]   = &map_key_value_types,
+> > > +     [ARG_PTR_TO_MAP_VALUE_OR_NULL]  = &map_key_value_types,
+> > > +     [ARG_CONST_SIZE]                = &scalar_types,
+> > > +     [ARG_CONST_SIZE_OR_ZERO]        = &scalar_types,
+> > > +     [ARG_CONST_ALLOC_SIZE_OR_ZERO]  = &scalar_types,
+> > > +     [ARG_CONST_MAP_PTR]             = &const_map_ptr_types,
+> > > +     [ARG_PTR_TO_CTX]                = &context_types,
+> > > +     [ARG_PTR_TO_CTX_OR_NULL]        = &context_types,
+> > > +     [ARG_PTR_TO_SOCK_COMMON]        = &sock_types,
+> > > +     [ARG_PTR_TO_SOCKET]             = &fullsock_types,
+> > > +     [ARG_PTR_TO_SOCKET_OR_NULL]     = &fullsock_types,
+> > > +     [ARG_PTR_TO_BTF_ID]             = &btf_ptr_types,
+> > > +     [ARG_PTR_TO_SPIN_LOCK]          = &spin_lock_types,
+> > > +     [ARG_PTR_TO_MEM]                = &mem_types,
+> > > +     [ARG_PTR_TO_MEM_OR_NULL]        = &mem_types,
+> > > +     [ARG_PTR_TO_UNINIT_MEM]         = &mem_types,
+> > > +     [ARG_PTR_TO_ALLOC_MEM]          = &alloc_mem_types,
+> > > +     [ARG_PTR_TO_ALLOC_MEM_OR_NULL]  = &alloc_mem_types,
+> > > +     [ARG_PTR_TO_INT]                = &int_ptr_types,
+> > > +     [ARG_PTR_TO_LONG]               = &int_ptr_types,
+> > > +     [__BPF_ARG_TYPE_MAX]            = NULL,
 > >
-> > Ok, so set memory.low for Type_A close to your maximum expected value.
->
-> Please forgive me for not being able to understand why setting
-> memory.low for Type_A can solve the problem.
-> In my scene, Type_A is the most important, so I will set 100G to memory.l=
-ow.
-> But 'memory.low' only takes effect passively when the kernel is
-> reclaiming memory. It means that reclaim Type_B's memory only when
-> Type_A  in alloc memory slow path. This will affect Type_A's
-> performance.
-> We want to reclaim Type_B's memory in advance when A is expected to be bu=
-sy.
->
+> > I don't understand what this extra value is for.
+> > I tried:
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index fc5c901c7542..87b0d5dcc1ff 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -292,7 +292,6 @@ enum bpf_arg_type {
+> >         ARG_PTR_TO_ALLOC_MEM,   /* pointer to dynamically allocated memory */
+> >         ARG_PTR_TO_ALLOC_MEM_OR_NULL,   /* pointer to dynamically allocated memory or NULL */
+> >         ARG_CONST_ALLOC_SIZE_OR_ZERO,   /* number of allocated bytes requested */
+> > -       __BPF_ARG_TYPE_MAX,
+> >  };
+> >
+> >  /* type of values returned from helper functions */
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 15ab889b0a3f..83faa67858b6 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4025,7 +4025,6 @@ static const struct bpf_reg_types *compatible_reg_types[] = {
+> >         [ARG_PTR_TO_ALLOC_MEM_OR_NULL]  = &alloc_mem_types,
+> >         [ARG_PTR_TO_INT]                = &int_ptr_types,
+> >         [ARG_PTR_TO_LONG]               = &int_ptr_types,
+> > -       [__BPF_ARG_TYPE_MAX]            = NULL,
+> >  };
+> >
+> > and everything is fine as I think it should be.
+> >
+> > > +     compatible = compatible_reg_types[arg_type];
+> > > +     if (!compatible) {
+> > > +             verbose(env, "verifier internal error: unsupported arg type %d\n", arg_type);
+> > >               return -EFAULT;
+> > >       }
+> >
+> > This check will trigger the same way when somebody adds new ARG_* and doesn't add to the table.
+> 
+> I think in that case that value of compatible will be undefined, since
+> it points past the end of compatible_reg_types. Hence the
+> __BPF_ARG_TYPE_MAX to ensure that the array has a NULL slot for new
+> arg types.
 
-How will you know when to reclaim from B? Are you polling /proc/meminfo?
-
-From what I understand, you want to proactively reclaim from B, so
-that A does not go into global reclaim and in the worst case kill B,
-right?
-
-BTW you can use memory.high to reclaim from B by setting it lower than
-memory.current of B and reset it to 'max' once the reclaim is done.
-Since 'B' is not high priority (I am assuming not a latency sensitive
-workload), B hitting temporary memory.high should not be an issue.
-Also I am assuming you don't much care about the amount of memory to
-be reclaimed from B, so I think memory.high can fulfil your use-case.
-However if in future you decide to proactively reclaim from all the
-jobs based on their priority i.e. more aggressive reclaim from B and a
-little bit reclaim from A then memory.high is not a good interface.
-
-Shakeel
+I still don't see a point.
+If anyone adds one more ARG_ to the end (or anywhere else)
+the compatible_reg_types array will be zero inited in that place by the compiler.
+Just like it does already for ARG_ANYTHING and ARG_DONTCARE.
+Am I still missing something?
+If not please follow up with removal of __BPF_ARG_TYPE_MAX.
