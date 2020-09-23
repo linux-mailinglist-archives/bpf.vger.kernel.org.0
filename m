@@ -2,106 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3355275013
-	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 06:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A01727504F
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 07:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgIWEtU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 00:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
+        id S1726904AbgIWFc4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 01:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726198AbgIWEtU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Sep 2020 00:49:20 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFCDC061755;
-        Tue, 22 Sep 2020 21:49:19 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id g96so17770815otb.12;
-        Tue, 22 Sep 2020 21:49:19 -0700 (PDT)
+        with ESMTP id S1726883AbgIWFc4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 01:32:56 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B544C061755
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 22:32:56 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id u25so17870145otq.6
+        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 22:32:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=ZIAcLimMkOKDbV/rs6yq2lc1nezxyw1NdVdfblTYl4o=;
-        b=f/ksssDOxmd5elpm02DzDy+hAH8KodWTkuDDVBfU7UQJT/zYln5EA9k3aqywYNOOGW
-         0zbvfQOiF2fCLehUrokYfP/7WHwHBoqoAmiwgWQsRFuciR5ATPUJdXQr5/2Vr117qhVr
-         JJ7pUDO7edIwIt92BMCXODMuqoeAzWYwDTk2UeGGVlUKWJ1HlXpM7xQmGZX/dNUC4drN
-         xqvZBEvysR2OcS+2EKxVP0sB2+GaH5b2gZMBCtizipuG5QR8tMn61/YfvvUCyW5MjcOf
-         XYZ9mGKuXg0Q7WY9rFVlGtKk/YbKsNivNZQHHM8+vfEZL2zh03b/Ps5gpeE+dVFhgHoT
-         byPA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=z7tJIdLl+ZwLgRYJG8yyy4oM8lPOSuBtWo8H0z2kGD0=;
+        b=QEmI1kWuw7ombCyBkxi0mCVfVApGu5HUBaJiXcArZ/YbBjHMJGTE3gFnO2eG0RbE1R
+         E6HZGzjWhEfAtJBmGAu66gX9V62EcDkgN4WUaDWm3Mb45q8e1LRZMMNLqb8qOnkUWZOe
+         pM29nA4RhzNYfR/nkpR83j44gnQM8l/BEPv4oEgx/UiKziPgb4rWrNd3d8wAgrfASPlO
+         R1uURMLm7SN6NUz+bjcsnU/q2SD5LS3wvIZcGiBruPy6mwW/Z+91cNASL4DVuC5koYHN
+         fv3oMPGNNlmERuTVAfVG0XtyfiPAlEpiG3H+nHhkU5z7Ae3VKb8boAl96Js3qS3wnaFE
+         HCXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=ZIAcLimMkOKDbV/rs6yq2lc1nezxyw1NdVdfblTYl4o=;
-        b=AFvqTu1ULReC5lh8QULT3FZUhUtsBANVV138m4TZneXSyTlt2ZoZToKtlqCgbtvZco
-         TItirxyuGengldpRtFK6It0/clGTizvq3mBuHasDF0e284Vh8NuyR8RcLW56tyK+5AuL
-         TZB8AsXFZBLArwDWVfSSTDy2L5JI2qHyRdoa4PwUhp3bwQVIyjV1fQGwWqWgDUrML8OF
-         1KBANqWgpYMbHjRAbkpDFJmzZ76O5X7Q8LENyjIA+NpUHLtOijkxVkEpymh3ig7/rnCl
-         +VVg3YTXg0npmJLfMVO9BscjQEYGBAjkYmDlMg+4t/qLlsSHMkih4f8LJ1Af4Rc+wgFZ
-         DHBg==
-X-Gm-Message-State: AOAM531ggT7BktI6nzq0sMSstDmb9B3xpa6lV/fhmyGRo02POqvjvTrI
-        SQsFrwhjZsJq1d0Q9kWt3Og=
-X-Google-Smtp-Source: ABdhPJwgnWbKdIPTKLCGeyplTJYBbgR892qSFr1r5KtcLy49q/KIjquJxeZKNq9I44LTTlQmadDwXA==
-X-Received: by 2002:a9d:ae8:: with SMTP id 95mr5260541otq.260.1600836558712;
-        Tue, 22 Sep 2020 21:49:18 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id v25sm7443849ota.39.2020.09.22.21.49.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 21:49:18 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 21:49:10 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     kernel-team@fb.com, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        Song Liu <songliubraving@fb.com>
-Message-ID: <5f6ad3c63a2de_36578208a2@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200923012841.2701378-4-songliubraving@fb.com>
-References: <20200923012841.2701378-1-songliubraving@fb.com>
- <20200923012841.2701378-4-songliubraving@fb.com>
-Subject: RE: [PATCH bpf-next 3/3] selftests/bpf: add raw_tp_test_run
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=z7tJIdLl+ZwLgRYJG8yyy4oM8lPOSuBtWo8H0z2kGD0=;
+        b=cSKJsaQ4FaSnd2iyVuiRdUCalJHHDKZHHztUemW+DGP6kleYd+Srp/OhEsT23iujQ4
+         S7OqK0ESdokN/7N0octSvGLhBvKJBjNlEGLlei7WyuxPbKKzWJV24WdbQrEtJjulDxLy
+         Z2iboRpiKsFQtbYVRjvPqzjt1nab4VWx/QN8+o47gO925WffTC7Iuj7uWUQBE/KSppoN
+         GUd11RHla86V1tX+38LijHYOzW9bsveIUQ1PrLzUTeTFZQA1pXlZjnPEKdQduaSpaaC1
+         NtzfWX7IsDJ4p2iWTQ276xBMo2FsBdkMXM3dzlw4suceeY0wU5lGUY/d4yyn5D1cfXse
+         RS5g==
+X-Gm-Message-State: AOAM5312rgJXdxHm5RS0BMYSlysjyBp2lhlrrVJsq8kg0XxldR//MMDc
+        sUIiWn95Q+p3U3V0TZimlWMWINa6GwpJm1eEtUE=
+X-Google-Smtp-Source: ABdhPJw+90f8zJj7bjTBNaxVNYDpM7XSH+3HUB4ZKxP6uX9tRuW91eMrYQfoqK+TOEVcYVJWEsCkp1JM5Vm9rgnAI44=
+X-Received: by 2002:a05:6830:14d9:: with SMTP id t25mr5361113otq.188.1600839175535;
+ Tue, 22 Sep 2020 22:32:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200920144547.56771-1-xhao@linux.alibaba.com>
+ <20200920144547.56771-3-xhao@linux.alibaba.com> <5f68dfdc66b63_1737020879@john-XPS-13-9370.notmuch>
+ <CAEf4BzaMCUfVWcp0ScSre47TDMtqQd=yoUfb+w0QXWf=_952dQ@mail.gmail.com> <275b1dbc-938e-626f-fc6c-5bbb6f76c270@linux.alibaba.com>
+In-Reply-To: <275b1dbc-938e-626f-fc6c-5bbb6f76c270@linux.alibaba.com>
+From:   Wenbo Zhang <ethercflow@gmail.com>
+Date:   Wed, 23 Sep 2020 13:32:46 +0800
+Message-ID: <CABtjQmbYoig=7PRT21O=GdKMLRg=MeVrzX2dzndv7C47LVNx2Q@mail.gmail.com>
+Subject: Re: [bpf-next 2/3] sample/bpf: Add log2 histogram function support
+To:     xhao@linux.alibaba.com
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Song Liu wrote:
-> This test runs test_run for raw_tracepoint program. The test covers ctx
-> input, retval output, and proper handling of cpu_plus field.
-> 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
+>>
+>> Also if there is a copyright on that original file we should pull it ove=
+r
+>> as far as I understand it. I don't see anything there though so maybe
+>> not.
+> There no copyright, it follow dual-licensed as (LGPL-2.1 OR BSD-2-Clause)
+>
+> Original code is dual-licensed as (LGPL-2.1 OR BSD-2-Clause), probably
+> leaving a comment with original location and mentioning the original
+> license would be ok?
+> Ok, thanks
+>
+> I've also CC'ed original author (Wenbo Zhang), just for visibility.
+> Thanks
 
-[...]
+Or you can add Copyright (c) 2020 Wenbo Zhang for fewer chars , either
+way, thanks. :)
 
-> +
-> +	test_attr.ctx_size_in = sizeof(args);
-> +	err = bpf_prog_test_run_xattr(&test_attr);
-> +	CHECK(err < 0, "test_run", "err %d\n", errno);
-> +	CHECK(test_attr.retval != expected_retval, "check_retval",
-> +	      "expect 0x%x, got 0x%x\n", expected_retval, test_attr.retval);
-> +
-> +	for (i = 0; i < nr_online; i++)
-> +		if (online[i]) {
-> +			DECLARE_LIBBPF_OPTS(bpf_prog_test_run_opts, opts,
-> +				.cpu_plus = i + 1,
-> +			);
-> +			err = bpf_prog_test_run_xattr_opts(&test_attr, &opts);
-> +			CHECK(err < 0, "test_run_with_opts", "err %d\n", errno);
-> +			CHECK(skel->data->on_cpu != i, "check_on_cpu",
-> +			      "got wrong value\n");
 
-Should we also check retval here just to be thorough?
-
-Thanks,
-John
-
-> +		}
-> +cleanup:
-> +	close(comm_fd);
-> +	test_raw_tp_test_run__destroy(skel);
-> +	free(online);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_raw_tp_test_run.c b/tools/testing/selftests/bpf/progs/test_raw_tp_test_run.c
+On Tue, Sep 22, 2020 at 10:06 AM Xin Hao <xhao@linux.alibaba.com> wrote:
+>
+>
+> =E5=9C=A8 2020/9/22 =E4=B8=8A=E5=8D=885:40, Andrii Nakryiko =E5=86=99=E9=
+=81=93:
+> > On Mon, Sep 21, 2020 at 10:18 AM John Fastabend
+> > <john.fastabend@gmail.com> wrote:
+> >> Xin Hao wrote:
+> >>> The relative functions is copy from bcc tools
+> > you probably meant relevant, not relative?
+> Yes
+> >
+> >>> source code: libbpf-tools/trace_helpers.c.
+> >>> URL: https://github.com/iovisor/bcc.git
+> >>>
+> >>> Log2 histogram can display the change of the collected
+> >>> data more conveniently.
+> >>>
+> >>> Signed-off-by: Xin Hao <xhao@linux.alibaba.com>
+> >>> ---
+> >>>   samples/bpf/common.h | 67 +++++++++++++++++++++++++++++++++++++++++=
++++
+> >>>   1 file changed, 67 insertions(+)
+> >>>   create mode 100644 samples/bpf/common.h
+> >>>
+> >>> diff --git a/samples/bpf/common.h b/samples/bpf/common.h
+> >>> new file mode 100644
+> >>> index 000000000000..ec60fb665544
+> >>> --- /dev/null
+> >>> +++ b/samples/bpf/common.h
+> >>> @@ -0,0 +1,67 @@
+> >>> +/* SPDX-License-Identifier: GPL-2.0
+> >>> + *
+> >>> + * This program is free software; you can redistribute it and/or
+> >>> + * modify it under the terms of version 2 of the GNU General Public
+> >>> + * License as published by the Free Software Foundation.
+> >>> + */
+> >>> +
+> >> nit, for this patch and the last one we don't need the text. Just the =
+SPDX
+> >> identifier should be enough. Its at least in line with everything we h=
+ave
+> >> elsewhere.
+> Thanks, i will change it.
+> >>
+> >> Also if there is a copyright on that original file we should pull it o=
+ver
+> >> as far as I understand it. I don't see anything there though so maybe
+> >> not.
+> > There no copyright, it follow dual-licensed as (LGPL-2.1 OR BSD-2-Claus=
+e)
+> >
+> > Original code is dual-licensed as (LGPL-2.1 OR BSD-2-Clause), probably
+> > leaving a comment with original location and mentioning the original
+> > license would be ok?
+> Ok, thanks
+> >
+> > I've also CC'ed original author (Wenbo Zhang), just for visibility.
+> Thanks
+> >
+> >>> +#define min(x, y) ({                          \
+> >>> +     typeof(x) _min1 =3D (x);                   \
+> >>> +     typeof(y) _min2 =3D (y);                   \
+> >>> +     (void) (&_min1 =3D=3D &_min2);               \
+> >>> +     _min1 < _min2 ? _min1 : _min2; })
+> >> What was wrong with 'min(a,b) ((a) < (b) ? (a) : (b))' looks like
+> >> below its just used for comparing two unsigned ints?
+> >>
+> >> Thanks.
+>   I do not chang any codes, That's what the original code looks like
+>
+> >>
+> >>> +
+> > [...]
+>
+> --
+> Best Regards!
+> Xin Hao
+>
