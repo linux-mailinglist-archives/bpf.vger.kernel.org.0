@@ -2,87 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCAA276081
-	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 20:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFED276023
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 20:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIWSwA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 14:52:00 -0400
-Received: from [104.211.154.226] ([104.211.154.226]:20758 "EHLO
-        mail.shirgaon.club" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgIWSwA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Sep 2020 14:52:00 -0400
-X-Greylist: delayed 79296 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Sep 2020 14:51:59 EDT
-Received: from User (185.191.231.247) by mail.shirgaon.club (172.17.1.7) with
- Microsoft SMTP Server id 14.3.487.0; Tue, 22 Sep 2020 20:49:43 +0000
-Reply-To: <samthong5555@yahoo.com>
-From:   SAM THONG <samthong5555@gmail.com>
-Subject: Business Acquisition 1
-Date:   Tue, 22 Sep 2020 13:49:41 -0700
+        id S1726498AbgIWSlx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 14:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgIWSlx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 14:41:53 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9E3C0613CE;
+        Wed, 23 Sep 2020 11:41:52 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a22so466675ljp.13;
+        Wed, 23 Sep 2020 11:41:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2k9CV25RrDU0wvIk6G57sGfuXbwloarmNuW7bg4GqKQ=;
+        b=AEj3XFTGvz6XnHZKhyYx0BadXLJ4vh0EvmJJE06/Ecd66MYkHugjIcFdgG1LBy/bDV
+         Q7eMYtmXq6Ile48fVyvoFwitMiOTT0W2tZU0Wxnq+IrSP/LZjUjDClLafXDRJZ1jNaQ+
+         01RnPUUUBw0ravqb19jjk9cbFDWvoQ3BdYRswL4sRnRe1HBgKVqFFx3COIKJTcmnJga8
+         TiukHJPgjEmQXzueDiLmRmCyxkiPou5YyFhYuwZ1PJ6x+nHxjCQ38WKMzXv+BwO1H6P2
+         S0Tm/4R4oRP4HM/GpAvqU5P5WcZmBgKEaeSGjwpX/yX9f0AUL7W8lZ7YEeGMPvJGueEl
+         0zqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2k9CV25RrDU0wvIk6G57sGfuXbwloarmNuW7bg4GqKQ=;
+        b=CrHNco7guSTgEXcRKWA1mSePgQeVmdHSp5iifheZ7o6tft2pnXYyZbiWU60HpohdIa
+         qh7Ojyx4e8rncAqtammXBCdOnfV9dQiqlgElyWI0yfQiL1ze4WS96tRfUFigZFS04Gf0
+         ssFy9aol0TK6PrV/hegnOBwJ2pzWwoUo6F0mf5V09ebChpkxhrGi/SDUAjQhEda7iHjY
+         DNk4b0Oo9MMhqbmllStqCBEMnZGREDoqxm+FVQ3IpvREqtI/OJH5Sv/mKzW/WRdxz4Xs
+         +MGwLf88G/3LXVDgWFOsyAyNqArjpKfLjnh7btxc0sfmxcr0Xa8NEozXL7khZ+UKKFPT
+         ADJg==
+X-Gm-Message-State: AOAM532Pnrj2CgNt1TvXdwLGwlgai3SBGaTzyhrAcy3Khdiceop2oSD+
+        5T+j2K7FRKxMleudBNPsUkLAfVzFPUdUQZD9v9g=
+X-Google-Smtp-Source: ABdhPJwDjxajelXuIroV0hGU/94fezNzAj9XrOoWiRhdrGKWN0zrJrx9q9zd8qWFtuAZCK3hduW7WLe4xOTHNDUZLxE=
+X-Received: by 2002:a2e:9dcb:: with SMTP id x11mr401460ljj.450.1600886511328;
+ Wed, 23 Sep 2020 11:41:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <848d3956-6beb-4b32-bc42-f5840fb30ca2@ASIAEXCH.asia.com>
-To:     Undisclosed recipients:;
+References: <20200916211010.3685-1-maciej.fijalkowski@intel.com>
+ <CAADnVQLEYHZLeu-d4nV5Px6t+tVtYEgg8AfPE5-GwAS1uizc0w@mail.gmail.com> <CACAyw994v0BFpnGnboVVRCZt62+xjnWqdNDbSqqJHOD6C-cO0g@mail.gmail.com>
+In-Reply-To: <CACAyw994v0BFpnGnboVVRCZt62+xjnWqdNDbSqqJHOD6C-cO0g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 23 Sep 2020 11:41:40 -0700
+Message-ID: <CAADnVQKXvx7QQXdGHVHtB8HgjR1GLwS0q_5_F7fe+y8brtPVZQ@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 0/7] bpf: tailcalls in BPF subprograms
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 9:11 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Fri, 18 Sep 2020 at 04:26, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> [...]
+> >
+> > Lorenz,
+> > if you can test it on cloudflare progs would be awesome.
+>
+> Our programs all bpf_tail_call from the topmost function, so no calls
+> from subprogs. I stripped out our FORCE_INLINE flag, recompiled and
+> ran our testsuite. cls_redirect.c (also in the kernel selftests) has a
+> test failure that I currently can't explain, but I don't have the time
+> to look at it in detail right now.
 
+selftests's test_cls_redirect.c does not have any tail calls,
+so it's not an interesting target.
+But your internal code relying on tail_call and until today
+you could not use subprograms at all.
+It doesn't matter that you do tail_call out of topmost function.
+The verifier would disallow subprogs, so you were missing
+on lots of new functionality.
+What I'm suggesting to try is to keep your code as-is
+(with tail_call in topmost) and simply remove always_inline.
+Let the compiler decide on better code layout.
+That will improve performance and most likely improve verification time too.
+If you convert some of the subprograms into global functions then
+you will be able to use function-by-function verification which will
+drastically improve verification time.
 
-Dear sir
-
-Our underwriter company is seeking the attention of genuine and reliable persons, companies
-
-who are indeed in need of funds as investment capital or business expansion in form of a
-
-direct loan to partner with us and benefit in our new Loan and Project funding programs.
-
-
-
-We offer flexible loans and funding for various projects at very affordable low interest
-
-rate of 3% annually for a period of 1-15 years on Non collateral loan/funding . We offer
-
-loan/funding from a minimum of Euro ? / USD$ 1 Million to Euro ? / USD$ 1 Billion. Max,
-
-depending on the nature of business/project.
-
-We are currently funding for:-
-
-
-
-* Starting up a Franchise
-
-* Business Acquisition
-
-* Business Expansion
-
-* Commercial Real Estate purchase
-
-* Consultancy and Contract Execution, Marine , ETC.
-
-
-
-Kindly get in touch for further details and procedure. samthong5555@yahoo.com 
-
-
-
-Respectfully,
-
-
-SAM THONG
-
-
-
-
-
-
-
-	
-
-
-
+Same thing for cilium. Their progs use tail_calls and because of that
+couldn't use subprogs at all.
+I think John was saying that prog load time is important for cilium.
+The answer is to use global functions.
+Now with tail_calls being compatible with subprogs all that is available.
