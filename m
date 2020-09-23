@@ -2,386 +2,261 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9ADE27617E
-	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 21:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53727276183
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 21:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbgIWT6n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 15:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S1726621AbgIWT7m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 15:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgIWT6n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Sep 2020 15:58:43 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDCCC0613CE;
-        Wed, 23 Sep 2020 12:58:43 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id u4so287339plr.4;
-        Wed, 23 Sep 2020 12:58:43 -0700 (PDT)
+        with ESMTP id S1726199AbgIWT7m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 15:59:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC62EC0613CE
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 12:59:41 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k15so1299217wrn.10
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 12:59:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gIv9K3zYM8Tl8uNUmL8RKWXC4Hqxd8R4na+bBDxQGIY=;
-        b=S+pPE6+xM+obYJhLeDf+bH44gdRgmhahOXbVP8AJeiWczb4PNGB6xWRQZuKUCrY2EM
-         ARu7NaWJHr0IvTJKTlWmPGElWHHYUognUsES9WSAsj/K/NYG98Z4Ytw8mQ1fvPkHy2wm
-         z9BkMq6u6qWlYYVEA6b7AIXF/QgoFSJl/GhttgrqbTmPzZRF63sTSxwx+6+dcaAFEfyX
-         ZvmVtLaXesR27yPIRJxnIQdvfQkXlKcACbTz0CRkfstsGvnLbEnGzvIGWHskVbpszuJg
-         /F4YP/ynSaODSQu8XBV1d9V5dJ3Vfk+Z9AfaxMsP38NGYfLIXj3Bb6OZKu+9wWTvTLoD
-         vFPw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=omNgAU/l78x9UsZx+b4xR6QdpKVoCnKdDvnTd0n4YQI=;
+        b=rmzhewfMlVnWB+gyRCJ7IvGeu4ajHptWF+tiTKIDq5wYZuqAGKwdDXotYPvQQN4Aui
+         U12mzQ3WR7RmIev6GC3ZLZGp3V9wTyvv5vzbi+wSUdjYCVnFDRcv2ebHjJKUei0bOpzg
+         YZy3Ne0R84gwDUuXCiZnxGzwi+0EiQbPZCRUVuUw2yDkHAWSRgYNmD1cUP1FRZ/KZk91
+         7aa2XkvoKtXa9Z0Rc9OuhJ7lHEgcDlTxUZhyhDCQC+PXSxdTWib87r4C3CsDd67nOVCO
+         /REhNAY+rwEQMCqaFP+qaU5iJ/diloEtW6dMmbblj1siI0dDcJY0g/yh6c8rnnqzWrxX
+         BPLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gIv9K3zYM8Tl8uNUmL8RKWXC4Hqxd8R4na+bBDxQGIY=;
-        b=Fw8ka5MxT2Try47bvQIE/FT4j5G7s83gh+TscrYVG1gnWT3cQWTTtFfuEETHW7ky3h
-         d0l/KD4HYb4eUyWxi8MWn+CC0OVK56tUnRc2KVouF/nL1uOVjaM2rNTXfXPRHiDSTULQ
-         1RSHHS+Er0jNJBM8d8m5VGYIYxQufH+4UQcw6vYV5bgakQjcmpg2WaJ0YtHL8zOdSkZN
-         xCsuZM4Iv3EP6TWJL3l91Dy0ebztCpik2szd/HN6nJC6arVebIiDErVWAqcpp+fgEKvh
-         05H18EtWhB6+mQsPCDLfTBakOA9hhHFnIMq91azZoqsRlEfgfCyONZYiVshac3KnZ4Xc
-         OIbw==
-X-Gm-Message-State: AOAM531h17OMEaExB6CPWwRXdZ3Lp8xdA9qzH23UwNQOG4LYCLaS+dz/
-        lj4LEWDPR5aTgNPn0DnDDI1XUUJK0d4=
-X-Google-Smtp-Source: ABdhPJxXGnioPKvSxLkxDgzUNOL1pKLnbt5jMKoAt2B6Fuqx7133a/qFv3c/KHVoITCzSnCtqcbhPQ==
-X-Received: by 2002:a17:90b:1212:: with SMTP id gl18mr881981pjb.138.1600891122581;
-        Wed, 23 Sep 2020 12:58:42 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id l78sm504672pfd.26.2020.09.23.12.58.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 12:58:41 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: pull-request: bpf-next 2020-09-23
-Date:   Wed, 23 Sep 2020 12:58:39 -0700
-Message-Id: <20200923195839.59606-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=omNgAU/l78x9UsZx+b4xR6QdpKVoCnKdDvnTd0n4YQI=;
+        b=Y/+sg7qT0jnsbyTeE3cVViS954XuR4j/rHitKhhV/P4dTyrEP6wQ604iXYtU5G5wm9
+         P/xQEyYJqYhMnPUUKHtQYDfz5H5dzYcEf7/qo75qSexl+ThE2W5O0+7k4fOdc5a043tC
+         RcavAEWg9K9GREsA826eXxuH62kv7uYUkkGkZD3wPiEfQGttrBB3HWOR5wZS3I0VR2dV
+         jVsrpqVB0EpVbhQTtuulMgu0G2yF/VJZaNc+9RiONapUihjLrKd56kVl9YO0JBGLrCuW
+         A1B4WQAhcgaYIACbI++Cc/H0OPJ2caeesJIObUpsZcB91zdueQE6JVxDRBNuiM7PBZdA
+         KTkg==
+X-Gm-Message-State: AOAM533PiyweeiL6k3Zpv2LEQvSz3ofK5H3OJvwizyLG+Yy+oN5M468+
+        4TI0uWMFo3L7U/uF2N89IHgo5LB5DMLkGcSfImj+5A==
+X-Google-Smtp-Source: ABdhPJxM0PgqFXZb8FmQir+7H/etiCWV9Sr4XWWqYNkEyoX5SokG5ZAHSUpGnT1mnxpwTJkKDVFkEPh/Q2995ETBVl4=
+X-Received: by 2002:adf:f88b:: with SMTP id u11mr1285857wrp.376.1600891180248;
+ Wed, 23 Sep 2020 12:59:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200917190026.GB1426933@kernel.org> <20200917201807.4090224-1-irogers@google.com>
+ <20200917203953.GA1525630@kernel.org> <CAM9d7ciWo301cdQT7=MNB3XDrggjiR=4N4f-6CGaJfAiJO54Lw@mail.gmail.com>
+In-Reply-To: <CAM9d7ciWo301cdQT7=MNB3XDrggjiR=4N4f-6CGaJfAiJO54Lw@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 23 Sep 2020 12:59:28 -0700
+Message-ID: <CAP-5=fVJMeMhjwbO=ms7k0GsM6L1-uTdHqXUOJSvS4cr8M-Org@mail.gmail.com>
+Subject: Re: [PATCH v4] perf metricgroup: Fix uncore metric expressions
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Stephane Eranian <eranian@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Thu, Sep 17, 2020 at 6:47 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> Hi Arnaldo,
+>
+> On Fri, Sep 18, 2020 at 5:39 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Thu, Sep 17, 2020 at 01:18:07PM -0700, Ian Rogers escreveu:
+> > > A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
+> > > and uncore_imc/case_count_write/. These events open 6 events per socket
+> > > with pmu names of uncore_imc_[0-5]. The current metric setup code in
+> > > find_evsel_group assumes one ID will map to 1 event to be recorded in
+> > > metric_events. For events with multiple matches, the first event is
+> > > recorded in metric_events (avoiding matching >1 event with the same
+> > > name) and the evlist_used updated so that duplicate events aren't
+> > > removed when the evlist has unused events removed.
+> >
+> > Namhyung, please check if you still Acks this as you provided it for v3.
+>
+> Sure,
+>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-The following pull-request contains BPF updates for your *net-next* tree.
+Thanks Namhyung and Arnaldo, could we merge this?
 
-We've added 95 non-merge commits during the last 22 day(s) which contain
-a total of 124 files changed, 4211 insertions(+), 2040 deletions(-).
+Ian
 
-The main changes are:
-
-1) Full multi function support in libbpf, from Andrii.
-
-2) Refactoring of function argument checks, from Lorenz.
-
-3) Make bpf_tail_call compatible with functions (subprograms), from Maciej.
-
-4) Program metadata support, from YiFei.
-
-5) bpf iterator optimizations, from Yonghong.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrii Nakryiko, Björn Töpel, Jesper Dangaard Brouer, Jiri Olsa, John 
-Fastabend, Josef Bacik, Kevin Yang, Martin KaFai Lau, Seth Forshee, Song 
-Liu, Tirthendu Sarkar, Tobias Klauser, Yonghong Song, Yuchung Cheng
-
-----------------------------------------------------------------
-
-The following changes since commit 0697fecf7ecd8abf70d0f46e6a352818e984cc9f:
-
-  Merge branch 'dpaa2-eth-add-a-dpaa2_eth_-prefix-to-all-functions' (2020-09-01 13:23:58 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to dc3652d3f0d5479768ec8eb7f7aabbba6ed75d95:
-
-  tools resolve_btfids: Always force HOSTARCH (2020-09-23 12:43:04 -0700)
-
-----------------------------------------------------------------
-Alexei Starovoitov (5):
-      Merge branch 'libbpf-support-bpf-to-bpf-calls'
-      Merge branch 'improve-bpf-tcp-cc-init'
-      Merge branch 'bpf_metadata'
-      bpf: Add abnormal return checks.
-      Merge branch 'refactor-check_func_arg'
-
-Andrii Nakryiko (18):
-      libbpf: Ensure ELF symbols table is found before further ELF processing
-      libbpf: Parse multi-function sections into multiple BPF programs
-      libbpf: Support CO-RE relocations for multi-prog sections
-      libbpf: Make RELO_CALL work for multi-prog sections and sub-program calls
-      libbpf: Implement generalized .BTF.ext func/line info adjustment
-      libbpf: Add multi-prog section support for struct_ops
-      selftests/bpf: Add selftest for multi-prog sections and bpf-to-bpf calls
-      tools/bpftool: Replace bpf_program__title() with bpf_program__section_name()
-      selftests/bpf: Don't use deprecated libbpf APIs
-      libbpf: Deprecate notion of BPF program "title" in favor of "section name"
-      selftests/bpf: Turn fexit_bpf2bpf into test with subtests
-      selftests/bpf: Add subprogs to pyperf, strobemeta, and l4lb_noinline tests
-      selftests/bpf: Modernize xdp_noinline test w/ skeleton and __noinline
-      selftests/bpf: Add __noinline variant of cls_redirect selftest
-      libbpf: Fix another __u64 cast in printf
-      libbpf: Fix potential multiplication overflow
-      perf: Stop using deprecated bpf_program__title()
-      selftests/bpf: Merge most of test_btf into test_progs
-
-Chen Zhou (1):
-      bpf: Remove duplicate headers
-
-Daniel T. Lee (2):
-      samples, bpf: Replace bpf_program__title() with bpf_program__section_name()
-      samples, bpf: Add xsk_fwd test file to .gitignore
-
-Gustavo A. R. Silva (1):
-      xsk: Fix null check on error return path
-
-Hao Luo (1):
-      selftests/bpf: Fix check in global_data_init.
-
-Ilya Leoshkevich (5):
-      selftests/bpf: Fix test_ksyms on non-SMP kernels
-      s390/bpf: Fix multiple tail calls
-      selftests/bpf: Fix endianness issue in sk_assign
-      selftests/bpf: Fix endianness issue in test_sockopt_sk
-      samples/bpf: Fix test_map_in_map on s390
-
-Jiri Olsa (3):
-      selftests/bpf: Fix stat probe in d_path test
-      bpf: Check CONFIG_BPF option for resolve_btfids
-      tools resolve_btfids: Always force HOSTARCH
-
-Lorenz Bauer (16):
-      net: sockmap: Remove unnecessary sk_fullsock checks
-      net: Allow iterating sockmap and sockhash
-      selftests: bpf: Test iterating a sockmap
-      bpf: Plug hole in struct bpf_sk_lookup_kern
-      btf: Make btf_set_contains take a const pointer
-      bpf: Check scalar or invalid register in check_helper_mem_access
-      btf: Add BTF_ID_LIST_SINGLE macro
-      bpf: Allow specifying a BTF ID per argument in function protos
-      bpf: Make BTF pointer type checking generic
-      bpf: Make reference tracking generic
-      bpf: Make context access check generic
-      bpf: Set meta->raw_mode for pointers close to use
-      bpf: Check ARG_PTR_TO_SPINLOCK register type in check_func_arg
-      bpf: Hoist type checking for nullable arg types
-      bpf: Use a table to drive helper arg type checks
-      bpf: Explicitly size compatible_reg_types
-
-Maciej Fijalkowski (7):
-      bpf, x64: use %rcx instead of %rax for tail call retpolines
-      bpf: propagate poke descriptors to subprograms
-      bpf: rename poke descriptor's 'ip' member to 'tailcall_target'
-      bpf: Limit caller's stack depth 256 for subprogs with tailcalls
-      bpf, x64: rework pro/epilogue and tailcall handling in JIT
-      bpf: allow for tailcalls in BPF subprograms for x64 JIT
-      selftests/bpf: Add tailcall_bpf2bpf tests
-
-Magnus Karlsson (7):
-      xsk: Fix possible segfault in xsk umem diagnostics
-      xsk: Fix possible segfault at xskmap entry insertion
-      xsk: Fix use-after-free in failed shared_umem bind
-      samples/bpf: Fix one packet sending in xdpsock
-      samples/bpf: Fix possible deadlock in xdpsock
-      samples/bpf: Add quiet option to xdpsock
-      xsk: Fix refcount warning in xp_dma_map
-
-Martin KaFai Lau (1):
-      bpf: Use hlist_add_head_rcu when linking to local_storage
-
-Muchun Song (1):
-      bpf: Fix potential call bpf_link_free() in atomic context
-
-Neal Cardwell (5):
-      tcp: Only init congestion control if not initialized already
-      tcp: Simplify EBPF TCP_CONGESTION to always init CC
-      tcp: simplify tcp_set_congestion_control(): Always reinitialize
-      tcp: simplify _bpf_setsockopt(): Remove flags argument
-      tcp: Simplify tcp_set_congestion_control() load=false case
-
-Quentin Monnet (11):
-      tools: bpftool: Fix formatting in bpftool-link documentation
-      bpf: Fix formatting in documentation for BPF helpers
-      tools, bpf: Synchronise BPF UAPI header with tools
-      tools: bpftool: Log info-level messages when building bpftool man pages
-      selftests, bpftool: Add bpftool (and eBPF helpers) documentation build
-      tools: bpftool: Print optional built-in features along with version
-      tools: bpftool: Include common options from separate file
-      tools: bpftool: Clean up function to dump map entry
-      tools: bpftool: Keep errors for map-of-map dumps if distinct from ENOENT
-      tools: bpftool: Add "inner_map" to "bpftool map create" outer maps
-      tools: bpftool: Automate generation for "SEE ALSO" sections in man pages
-
-Song Liu (1):
-      bpf: Fix comment for helper bpf_current_task_under_cgroup()
-
-YiFei Zhu (5):
-      bpf: Mutex protect used_maps array and count
-      bpf: Add BPF_PROG_BIND_MAP syscall
-      libbpf: Add BPF_PROG_BIND_MAP syscall and use it on .rodata section
-      bpftool: Support dumping metadata
-      selftests/bpf: Test load and dump metadata with btftool and skel
-
-Yonghong Song (9):
-      bpf: Avoid iterating duplicated files for task_file iterator
-      selftests/bpf: Test task_file iterator without visiting pthreads
-      bpf: Permit map_ptr arithmetic with opcode add and offset 0
-      selftests/bpf: Add test for map_ptr arithmetic
-      selftests/bpf: Fix test_sysctl_loop{1, 2} failure due to clang change
-      selftests/bpf: Define string const as global for test_sysctl_prog.c
-      bpftool: Fix build failure
-      libbpf: Fix a compilation error with xsk.c for ubuntu 16.04
-      bpf: Using rcu_read_lock for bpf_sk_storage_map iterator
-
- Makefile                                           |    4 +-
- arch/s390/net/bpf_jit_comp.c                       |   61 +-
- arch/x86/include/asm/nospec-branch.h               |   16 +-
- arch/x86/net/bpf_jit_comp.c                        |  265 +++-
- drivers/net/ethernet/netronome/nfp/bpf/offload.c   |   18 +-
- include/linux/bpf.h                                |   30 +-
- include/linux/bpf_verifier.h                       |    3 +
- include/linux/btf_ids.h                            |    8 +
- include/linux/filter.h                             |    4 +-
- include/net/inet_connection_sock.h                 |    3 +-
- include/net/tcp.h                                  |    2 +-
- include/uapi/linux/bpf.h                           |   98 +-
- kernel/bpf/arraymap.c                              |   55 +-
- kernel/bpf/bpf_inode_storage.c                     |    8 +-
- kernel/bpf/bpf_local_storage.c                     |    2 +-
- kernel/bpf/btf.c                                   |   15 +-
- kernel/bpf/core.c                                  |   18 +-
- kernel/bpf/stackmap.c                              |    5 +-
- kernel/bpf/syscall.c                               |   87 +-
- kernel/bpf/task_iter.c                             |   15 +-
- kernel/bpf/verifier.c                              |  540 +++++---
- kernel/trace/bpf_trace.c                           |   23 +-
- net/core/bpf_sk_storage.c                          |   40 +-
- net/core/dev.c                                     |   11 +-
- net/core/filter.c                                  |   49 +-
- net/core/sock_map.c                                |  284 +++-
- net/ipv4/bpf_tcp_ca.c                              |   19 +-
- net/ipv4/tcp.c                                     |    3 +-
- net/ipv4/tcp_cong.c                                |   27 +-
- net/ipv4/tcp_input.c                               |    4 +-
- net/xdp/xsk.c                                      |    7 +-
- net/xdp/xsk.h                                      |    1 -
- net/xdp/xsk_buff_pool.c                            |    6 +-
- net/xdp/xsk_diag.c                                 |   14 +-
- net/xdp/xskmap.c                                   |    5 -
- samples/bpf/.gitignore                             |    1 +
- samples/bpf/sockex3_user.c                         |    6 +-
- samples/bpf/spintest_user.c                        |    6 +-
- samples/bpf/test_map_in_map_kern.c                 |    7 +-
- samples/bpf/tracex5_user.c                         |    6 +-
- samples/bpf/xdp_redirect_cpu_user.c                |    2 +-
- samples/bpf/xdpsock_user.c                         |   28 +-
- scripts/link-vmlinux.sh                            |    6 +-
- tools/bpf/bpftool/Documentation/Makefile           |   15 +-
- tools/bpf/bpftool/Documentation/bpftool-btf.rst    |   37 +-
- tools/bpf/bpftool/Documentation/bpftool-cgroup.rst |   33 +-
- .../bpf/bpftool/Documentation/bpftool-feature.rst  |   33 +-
- tools/bpf/bpftool/Documentation/bpftool-gen.rst    |   37 +-
- tools/bpf/bpftool/Documentation/bpftool-iter.rst   |   27 +-
- tools/bpf/bpftool/Documentation/bpftool-link.rst   |   36 +-
- tools/bpf/bpftool/Documentation/bpftool-map.rst    |   46 +-
- tools/bpf/bpftool/Documentation/bpftool-net.rst    |   34 +-
- tools/bpf/bpftool/Documentation/bpftool-perf.rst   |   34 +-
- tools/bpf/bpftool/Documentation/bpftool-prog.rst   |   34 +-
- .../bpftool/Documentation/bpftool-struct_ops.rst   |   35 +-
- tools/bpf/bpftool/Documentation/bpftool.rst        |   34 +-
- tools/bpf/bpftool/Documentation/common_options.rst |   22 +
- tools/bpf/bpftool/bash-completion/bpftool          |   22 +-
- tools/bpf/bpftool/json_writer.c                    |    6 +
- tools/bpf/bpftool/json_writer.h                    |    3 +
- tools/bpf/bpftool/main.c                           |   33 +-
- tools/bpf/bpftool/map.c                            |  149 ++-
- tools/bpf/bpftool/prog.c                           |  203 ++-
- tools/bpf/resolve_btfids/Makefile                  |    2 +
- tools/include/linux/btf_ids.h                      |    8 +
- tools/include/uapi/linux/bpf.h                     |   98 +-
- tools/lib/bpf/bpf.c                                |   16 +
- tools/lib/bpf/bpf.h                                |    8 +
- tools/lib/bpf/btf.h                                |   18 +-
- tools/lib/bpf/libbpf.c                             | 1356 +++++++++++++-------
- tools/lib/bpf/libbpf.h                             |    5 +-
- tools/lib/bpf/libbpf.map                           |    2 +
- tools/lib/bpf/libbpf_common.h                      |    2 +
- tools/lib/bpf/xsk.c                                |    1 +
- tools/perf/util/bpf-loader.c                       |   12 +-
- tools/testing/selftests/bpf/.gitignore             |    1 -
- tools/testing/selftests/bpf/Makefile               |   10 +-
- tools/testing/selftests/bpf/flow_dissector_load.h  |    8 +-
- tools/testing/selftests/bpf/prog_tests/bpf_iter.c  |   21 +
- .../selftests/bpf/prog_tests/bpf_verif_scale.c     |    4 +
- .../selftests/bpf/{test_btf.c => prog_tests/btf.c} |  410 ++----
- .../selftests/bpf/prog_tests/cls_redirect.c        |   72 +-
- tools/testing/selftests/bpf/prog_tests/d_path.c    |   10 +
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |   21 +-
- .../selftests/bpf/prog_tests/global_data_init.c    |    3 +-
- tools/testing/selftests/bpf/prog_tests/ksyms.c     |    6 +-
- tools/testing/selftests/bpf/prog_tests/l4lb_all.c  |    9 +-
- tools/testing/selftests/bpf/prog_tests/metadata.c  |  141 ++
- .../selftests/bpf/prog_tests/reference_tracking.c  |    2 +-
- tools/testing/selftests/bpf/prog_tests/sk_assign.c |    2 +-
- .../selftests/bpf/prog_tests/sockmap_basic.c       |   89 ++
- .../testing/selftests/bpf/prog_tests/sockopt_sk.c  |    4 +-
- tools/testing/selftests/bpf/prog_tests/subprogs.c  |   31 +
- tools/testing/selftests/bpf/prog_tests/tailcalls.c |  332 +++++
- .../selftests/bpf/prog_tests/xdp_noinline.c        |   49 +-
- tools/testing/selftests/bpf/progs/bpf_iter.h       |    9 +
- .../testing/selftests/bpf/progs/bpf_iter_sockmap.c |   43 +
- .../testing/selftests/bpf/progs/bpf_iter_sockmap.h |    3 +
- .../selftests/bpf/progs/bpf_iter_task_file.c       |   10 +-
- tools/testing/selftests/bpf/progs/map_ptr_kern.c   |   10 +-
- .../testing/selftests/bpf/progs/metadata_unused.c  |   15 +
- tools/testing/selftests/bpf/progs/metadata_used.c  |   15 +
- tools/testing/selftests/bpf/progs/pyperf.h         |   11 +-
- .../testing/selftests/bpf/progs/pyperf_subprogs.c  |    5 +
- tools/testing/selftests/bpf/progs/strobemeta.h     |   30 +-
- .../selftests/bpf/progs/strobemeta_subprogs.c      |   10 +
- .../selftests/bpf/progs/tailcall_bpf2bpf1.c        |   38 +
- .../selftests/bpf/progs/tailcall_bpf2bpf2.c        |   41 +
- .../selftests/bpf/progs/tailcall_bpf2bpf3.c        |   61 +
- .../selftests/bpf/progs/tailcall_bpf2bpf4.c        |   61 +
- .../selftests/bpf/progs/test_cls_redirect.c        |  105 +-
- .../bpf/progs/test_cls_redirect_subprogs.c         |    2 +
- tools/testing/selftests/bpf/progs/test_d_path.c    |    9 +-
- .../selftests/bpf/progs/test_l4lb_noinline.c       |   41 +-
- tools/testing/selftests/bpf/progs/test_subprogs.c  |  103 ++
- .../selftests/bpf/progs/test_sysctl_loop1.c        |    4 +-
- .../selftests/bpf/progs/test_sysctl_loop2.c        |    4 +-
- .../testing/selftests/bpf/progs/test_sysctl_prog.c |    4 +-
- .../selftests/bpf/progs/test_xdp_noinline.c        |   36 +-
- tools/testing/selftests/bpf/test_bpftool_build.sh  |   21 +
- .../testing/selftests/bpf/test_bpftool_metadata.sh |   82 ++
- tools/testing/selftests/bpf/test_socket_cookie.c   |    2 +-
- tools/testing/selftests/bpf/verifier/calls.c       |    6 +-
- tools/testing/selftests/bpf/verifier/map_ptr.c     |   32 +
- 124 files changed, 4211 insertions(+), 2040 deletions(-)
- create mode 100644 tools/bpf/bpftool/Documentation/common_options.rst
- rename tools/testing/selftests/bpf/{test_btf.c => prog_tests/btf.c} (96%)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/metadata.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/subprogs.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
- create mode 100644 tools/testing/selftests/bpf/progs/metadata_unused.c
- create mode 100644 tools/testing/selftests/bpf/progs/metadata_used.c
- create mode 100644 tools/testing/selftests/bpf/progs/pyperf_subprogs.c
- create mode 100644 tools/testing/selftests/bpf/progs/strobemeta_subprogs.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf1.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf2.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf3.c
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf4.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_subprogs.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_subprogs.c
- create mode 100755 tools/testing/selftests/bpf/test_bpftool_metadata.sh
+> Thanks
+> Namhyung
+>
+> >
+> > > Before this change:
+> > > $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+> > >
+> > >  Performance counter stats for 'system wide':
+> > >
+> > >              41.14 MiB  uncore_imc/cas_count_read/
+> > >      1,002,614,251 ns   duration_time
+> > >
+> > >        1.002614251 seconds time elapsed
+> > >
+> > > After this change:
+> > > $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+> > >
+> > >  Performance counter stats for 'system wide':
+> > >
+> > >             157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
+> > >             126.97 MiB  uncore_imc/cas_count_write/
+> > >      1,003,019,728 ns   duration_time
+> > >
+> > > Erroneous duplication introduced in:
+> > > commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
+> > >
+> > > Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
+> > > Reported-by: Jin Yao <yao.jin@linux.intel.com>
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > ---
+> > >  tools/perf/util/metricgroup.c | 75 ++++++++++++++++++++++++++---------
+> > >  1 file changed, 56 insertions(+), 19 deletions(-)
+> > >
+> > > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > > index ab5030fcfed4..d948a7f910cf 100644
+> > > --- a/tools/perf/util/metricgroup.c
+> > > +++ b/tools/perf/util/metricgroup.c
+> > > @@ -150,6 +150,18 @@ static void expr_ids__exit(struct expr_ids *ids)
+> > >               free(ids->id[i].id);
+> > >  }
+> > >
+> > > +static bool contains_event(struct evsel **metric_events, int num_events,
+> > > +                     const char *event_name)
+> > > +{
+> > > +     int i;
+> > > +
+> > > +     for (i = 0; i < num_events; i++) {
+> > > +             if (!strcmp(metric_events[i]->name, event_name))
+> > > +                     return true;
+> > > +     }
+> > > +     return false;
+> > > +}
+> > > +
+> > >  /**
+> > >   * Find a group of events in perf_evlist that correpond to those from a parsed
+> > >   * metric expression. Note, as find_evsel_group is called in the same order as
+> > > @@ -180,7 +192,11 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > >       int i = 0, matched_events = 0, events_to_match;
+> > >       const int idnum = (int)hashmap__size(&pctx->ids);
+> > >
+> > > -     /* duration_time is grouped separately. */
+> > > +     /*
+> > > +      * duration_time is always grouped separately, when events are grouped
+> > > +      * (ie has_constraint is false) then ignore it in the matching loop and
+> > > +      * add it to metric_events at the end.
+> > > +      */
+> > >       if (!has_constraint &&
+> > >           hashmap__find(&pctx->ids, "duration_time", (void **)&val_ptr))
+> > >               events_to_match = idnum - 1;
+> > > @@ -207,23 +223,20 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > >                               sizeof(struct evsel *) * idnum);
+> > >                       current_leader = ev->leader;
+> > >               }
+> > > -             if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+> > > -                     if (has_constraint) {
+> > > -                             /*
+> > > -                              * Events aren't grouped, ensure the same event
+> > > -                              * isn't matched from two groups.
+> > > -                              */
+> > > -                             for (i = 0; i < matched_events; i++) {
+> > > -                                     if (!strcmp(ev->name,
+> > > -                                                 metric_events[i]->name)) {
+> > > -                                             break;
+> > > -                                     }
+> > > -                             }
+> > > -                             if (i != matched_events)
+> > > -                                     continue;
+> > > -                     }
+> > > +             /*
+> > > +              * Check for duplicate events with the same name. For example,
+> > > +              * uncore_imc/cas_count_read/ will turn into 6 events per socket
+> > > +              * on skylakex. Only the first such event is placed in
+> > > +              * metric_events. If events aren't grouped then this also
+> > > +              * ensures that the same event in different sibling groups
+> > > +              * aren't both added to metric_events.
+> > > +              */
+> > > +             if (contains_event(metric_events, matched_events, ev->name))
+> > > +                     continue;
+> > > +             /* Does this event belong to the parse context? */
+> > > +             if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr))
+> > >                       metric_events[matched_events++] = ev;
+> > > -             }
+> > > +
+> > >               if (matched_events == events_to_match)
+> > >                       break;
+> > >       }
+> > > @@ -239,7 +252,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > >       }
+> > >
+> > >       if (matched_events != idnum) {
+> > > -             /* Not whole match */
+> > > +             /* Not a whole match */
+> > >               return NULL;
+> > >       }
+> > >
+> > > @@ -247,8 +260,32 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> > >
+> > >       for (i = 0; i < idnum; i++) {
+> > >               ev = metric_events[i];
+> > > -             ev->metric_leader = ev;
+> > > +             /* Don't free the used events. */
+> > >               set_bit(ev->idx, evlist_used);
+> > > +             /*
+> > > +              * The metric leader points to the identically named event in
+> > > +              * metric_events.
+> > > +              */
+> > > +             ev->metric_leader = ev;
+> > > +             /*
+> > > +              * Mark two events with identical names in the same group (or
+> > > +              * globally) as being in use as uncore events may be duplicated
+> > > +              * for each pmu. Set the metric leader of such events to be the
+> > > +              * event that appears in metric_events.
+> > > +              */
+> > > +             evlist__for_each_entry_continue(perf_evlist, ev) {
+> > > +                     /*
+> > > +                      * If events are grouped then the search can terminate
+> > > +                      * when then group is left.
+> > > +                      */
+> > > +                     if (!has_constraint &&
+> > > +                         ev->leader != metric_events[i]->leader)
+> > > +                             break;
+> > > +                     if (!strcmp(metric_events[i]->name, ev->name)) {
+> > > +                             set_bit(ev->idx, evlist_used);
+> > > +                             ev->metric_leader = metric_events[i];
+> > > +                     }
+> > > +             }
+> > >       }
+> > >
+> > >       return metric_events[0];
+> > > --
+> > > 2.28.0.618.gf4bc123cb7-goog
+> > >
+> >
+> > --
+> >
+> > - Arnaldo
