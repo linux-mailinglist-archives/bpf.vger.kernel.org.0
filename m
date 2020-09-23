@@ -2,181 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC7F274F16
-	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 04:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90104274FCA
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 06:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgIWClN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Sep 2020 22:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
+        id S1726853AbgIWEX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 00:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgIWClN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Sep 2020 22:41:13 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD6CC0613D0
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 19:41:12 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id u4so15873435ljd.10
-        for <bpf@vger.kernel.org>; Tue, 22 Sep 2020 19:41:12 -0700 (PDT)
+        with ESMTP id S1726448AbgIWEX6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 00:23:58 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A30C061755;
+        Tue, 22 Sep 2020 21:23:58 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m12so17802534otr.0;
+        Tue, 22 Sep 2020 21:23:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jc8uPyWeA8lh2ZEVJXFhzEZM6SYIOAImDuM4KwfSrTg=;
-        b=D48LKiLW724RXEbvVDcCcvfb/bjfn6Fz7yz848goAqBzaGa96OEdXkzKjJWrEmtr2B
-         u1Ww6BlgX5m69XKUjtHN8FSlwIlBBUpYuv+Iprcmx2j45NU7WOcpX7v16h5UuMpNF38e
-         rsVxKDi8d64KgOP8GtIFzSYqLc0BiBaOMx2UDviVVwCnG96aL140S/UQe+emedYdhZEg
-         hLu/zoRv1FrpWJxCY41I5V0IOBitx8WcSRot3JvqOKnLgKIvj1M9XJRrffwtrDXr8TdH
-         22yXODro1beLbWdfHb8BQK9j1iuDsUBHVXXEoj11HOHfDNHMT70/R3FvWVOmVx7rcYUS
-         MoMw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=k8skaUrOGLefAsWbRS/AU6hTtSMdnqInD2WqFhiO0aA=;
+        b=H3BOGnvW7b1BjpKnsdp3Zwr4qK1DPbSBtume1ErE9fy3WSsRywfvLJ8rAm+LOKHYZU
+         8SMWDH8jAlA7gel+8ntDl80KOykLHtVj0NTP0ekefWZwLWHvz4YfJB+9PqQp1Iq90kn1
+         1tpMZoYRSYQrSXxz9wZMnHYrhf5I8kCN0fzJ6Ayqde2mtdaSVyBkFRpaq/kBKP0pdCDm
+         WsB+/tESDsJf7fEg7OiQiKkJjT/Q5QM2xTDbyGNHCQp55nA4Msd3+7D2SCcmkVDXp+pO
+         Fgkiw6vwkjl1ZinxdFHX606Qrc7+CEUnoiytsXxOwem4S8JquVzmMZFH44awNtpcXjHC
+         RiIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jc8uPyWeA8lh2ZEVJXFhzEZM6SYIOAImDuM4KwfSrTg=;
-        b=UqbOqeHP0pX1HLs643zHmrqrDDQ6/N7AwNLkx1VWLs8jf066F80MySnuCKAhOW98xJ
-         Y9HC2DDmqqzGw0dc7wapPipbuWb7lczx/+t2JG7P+v2eakXwHRJgZNZKW/MftYGKIzRs
-         rrl8fRg8Xy1X5jZzB9g9tqKC+5Uiefohs7HJHBC3NPJvSUvdISfsdiHOFoarb0RP8V6o
-         oLfd5RbjQaogVsUWQ+tI46iWjOjpmYo0w5IMxYyOcjf9hLtrks3MBlgaCbeaL4Y+ptff
-         G9sS8g2lHFLEjTExOPt1+siQeAelxB82pB3dxtK8H2Mk4p4a9vHsJ5GDJi88U5nwk7MI
-         2cNg==
-X-Gm-Message-State: AOAM532bFGPQ5pmXZ/ZX6xYLQSUnq22eLwed1gkkQYjAxFOXZc+TAtCX
-        yqOpqkVs/1ygG3nmNWuebqXBktMTceG6jcgP6//Naw==
-X-Google-Smtp-Source: ABdhPJwQf9C/dYCgdMs0kvxVPlQBoNh6rC23MBqQ+8aghqCHQkwJBsaQqfGzXUr350qTd1zXmvtw67PsWspk7HwJrUc=
-X-Received: by 2002:a2e:889a:: with SMTP id k26mr2388797lji.214.1600828870825;
- Tue, 22 Sep 2020 19:41:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
- <20200922095136.GA9682@chrisdown.name> <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
- <20200922104252.GB9682@chrisdown.name> <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
- <CALvZod64Qwzjv3N2PO-EUtMkA4bs_PM=Tq4=cmuM0VO9P3BAjw@mail.gmail.com>
-In-Reply-To: <CALvZod64Qwzjv3N2PO-EUtMkA4bs_PM=Tq4=cmuM0VO9P3BAjw@mail.gmail.com>
-From:   Chunxin Zang <zangchunxin@bytedance.com>
-Date:   Wed, 23 Sep 2020 10:40:59 +0800
-Message-ID: <CAKRVAeOKWfdeupv9CAj09xxP5RjKq5ji7n+xVnxo+Q4wR0KzTg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
- interface for cgroup v2
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Chris Down <chris@chrisdown.name>, Michal Hocko <mhocko@suse.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=k8skaUrOGLefAsWbRS/AU6hTtSMdnqInD2WqFhiO0aA=;
+        b=EM7bZLsogryRAY+dfdge6sQRo6HTrhB96EBouJZ7Cb5emHOKhyZqVPi8A0mwDRYf6z
+         acnmQVyamPncL/CHqnItX0kn5GjPjHpRGhJQ2G9e6lddn3an8Kpt0rESPDtxgmdoNgH+
+         niHvEwYvsiK0DlknaezGtbkZbuf8qzbX5Gdq25bvPkur/MQYgsA9gUFS/Ah6JPPfQmtD
+         FBKWNeQc+Kh8CQ/YApHjPHW7JcgB4SVyTmRy+dI2BZ83S4HARP45jperzIIHssyivtWR
+         +lPKPvpgw9C/qiuwmVD9h/0FqqCS0CFn+ZgM55lkF/lynBFDzMrPe0twlkowggmzhnYy
+         zl8g==
+X-Gm-Message-State: AOAM53041pC35vWDOmA7ofMhfkREH/ggEvssQWl1iRLcqNnTVnPiYC2r
+        KkUAx45d6PN6tD2amU3eF/U=
+X-Google-Smtp-Source: ABdhPJwnZ44NtOWZH2PN4yJzaqn2jU4JVfDS0gLQ/3syLrKkm9nS76qT/IKX3zSUb5EnpaWzd4ynIw==
+X-Received: by 2002:a05:6830:1ac8:: with SMTP id r8mr4707982otc.70.1600835038248;
+        Tue, 22 Sep 2020 21:23:58 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id u15sm7447036otg.78.2020.09.22.21.23.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 21:23:57 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 21:23:48 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     kernel-team@fb.com, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        Song Liu <songliubraving@fb.com>
+Message-ID: <5f6acdd4ef8a2_3657820819@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200923012841.2701378-2-songliubraving@fb.com>
+References: <20200923012841.2701378-1-songliubraving@fb.com>
+ <20200923012841.2701378-2-songliubraving@fb.com>
+Subject: RE: [PATCH bpf-next 1/3] bpf: enable BPF_PROG_TEST_RUN for
+ raw_tracepoint
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 3:57 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Tue, Sep 22, 2020 at 5:37 AM Chunxin Zang <zangchunxin@bytedance.com> =
-wrote:
-> >
-> > On Tue, Sep 22, 2020 at 6:42 PM Chris Down <chris@chrisdown.name> wrote=
-:
-> > >
-> > > Chunxin Zang writes:
-> > > >On Tue, Sep 22, 2020 at 5:51 PM Chris Down <chris@chrisdown.name> wr=
-ote:
-> > > >>
-> > > >> Chunxin Zang writes:
-> > > >> >My usecase is that there are two types of services in one server.=
- They
-> > > >> >have difference
-> > > >> >priorities. Type_A has the highest priority, we need to ensure it=
-'s
-> > > >> >schedule latency=E3=80=81I/O
-> > > >> >latency=E3=80=81memory enough. Type_B has the lowest priority, we=
- expect it
-> > > >> >will not affect
-> > > >> >Type_A when executed.
-> > > >> >So Type_A could use memory without any limit. Type_B could use me=
-mory
-> > > >> >only when the
-> > > >> >memory is absolutely sufficient. But we cannot estimate how much
-> > > >> >memory Type_B should
-> > > >> >use. Because everything is dynamic. So we can't set Type_B's memo=
-ry.high.
-> > > >> >
-> > > >> >So we want to release the memory of Type_B when global memory is
-> > > >> >insufficient in order
-> > > >> >to ensure the quality of service of Type_A . In the past, we used=
- the
-> > > >> >'force_empty' interface
-> > > >> >of cgroup v1.
-> > > >>
-> > > >> This sounds like a perfect use case for memory.low on Type_A, and =
-it's pretty
-> > > >> much exactly what we invented it for. What's the problem with that=
-?
-> > > >
-> > > >But we cannot estimate how much memory Type_A uses at least.
-> > >
-> > > memory.low allows ballparking, you don't have to know exactly how muc=
-h it uses.
-> > > Any amount of protection biases reclaim away from that cgroup.
-> > >
-> > > >For example:
-> > > >total memory: 100G
-> > > >At the beginning, Type_A was in an idle state, and it only used 10G =
-of memory.
-> > > >The load is very low. We want to run Type_B to avoid wasting machine=
- resources.
-> > > >When Type_B runs for a while, it used 80G of memory.
-> > > >At this time Type_A is busy, it needs more memory.
-> > >
-> > > Ok, so set memory.low for Type_A close to your maximum expected value=
-.
-> >
-> > Please forgive me for not being able to understand why setting
-> > memory.low for Type_A can solve the problem.
-> > In my scene, Type_A is the most important, so I will set 100G to memory=
-.low.
-> > But 'memory.low' only takes effect passively when the kernel is
-> > reclaiming memory. It means that reclaim Type_B's memory only when
-> > Type_A  in alloc memory slow path. This will affect Type_A's
-> > performance.
-> > We want to reclaim Type_B's memory in advance when A is expected to be =
-busy.
-> >
->
-> How will you know when to reclaim from B? Are you polling /proc/meminfo?
->
+Song Liu wrote:
+> Add .test_run for raw_tracepoint. Also, introduce a new feature that runs
+> the target program on a specific CPU. This is achieved by a new flag in
+> bpf_attr.test, cpu_plus. For compatibility, cpu_plus == 0 means run the
+> program on current cpu, cpu_plus > 0 means run the program on cpu with id
+> (cpu_plus - 1). This feature is needed for BPF programs that handle
+> perf_event and other percpu resources, as the program can access these
+> resource locally.
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
 
-Monitor global memory usage through the daemon. If the memory is used
-80% or 90%, it will reclaim B's memory.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-> From what I understand, you want to proactively reclaim from B, so
-> that A does not go into global reclaim and in the worst case kill B,
-> right?
+[...]
 
-Yes, it is.
+> +
+> +int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
+> +			     const union bpf_attr *kattr,
+> +			     union bpf_attr __user *uattr)
+> +{
+> +	void __user *ctx_in = u64_to_user_ptr(kattr->test.ctx_in);
+> +	__u32 ctx_size_in = kattr->test.ctx_size_in;
+> +	struct bpf_raw_tp_test_run_info info;
+> +	int cpu, err = 0;
+> +
+> +	/* doesn't support data_in/out, ctx_out, duration, or repeat */
+> +	if (kattr->test.data_in || kattr->test.data_out ||
+> +	    kattr->test.ctx_out || kattr->test.duration ||
+> +	    kattr->test.repeat)
+> +		return -EINVAL;
+> +
+> +	if (ctx_size_in < prog->aux->max_ctx_offset)
+> +		return -EINVAL;
+> +
+> +	if (ctx_size_in) {
+> +		info.ctx = kzalloc(ctx_size_in, GFP_USER);
+> +		if (!info.ctx)
+> +			return -ENOMEM;
+> +		if (copy_from_user(info.ctx, ctx_in, ctx_size_in)) {
+> +			err = -EFAULT;
+> +			goto out;
+> +		}
+> +	} else {
+> +		info.ctx = NULL;
+> +	}
+> +
+> +	info.prog = prog;
+> +	cpu = kattr->test.cpu_plus - 1;
+> +
+> +	if (!kattr->test.cpu_plus || cpu == smp_processor_id()) {
+> +		__bpf_prog_test_run_raw_tp(&info);
+> +	} else {
+> +		/* smp_call_function_single() also checks cpu_online()
+> +		 * after csd_lock(). However, since cpu_plus is from user
+> +		 * space, let's do an extra quick check to filter out
+> +		 * invalid value before smp_call_function_single().
+> +		 */
+> +		if (!cpu_online(cpu)) {
+> +			err = -ENXIO;
+> +			goto out;
+> +		}
+> +
+> +		err = smp_call_function_single(cpu, __bpf_prog_test_run_raw_tp,
+> +					       &info, 1);
+> +		if (err)
+> +			goto out;
+> +	}
+> +
+> +	if (copy_to_user(&uattr->test.retval, &info.retval, sizeof(u32))) {
+> +		err = -EFAULT;
+> +		goto out;
+> +	}
 
->
-> BTW you can use memory.high to reclaim from B by setting it lower than
-> memory.current of B and reset it to 'max' once the reclaim is done.
-> Since 'B' is not high priority (I am assuming not a latency sensitive
-> workload), B hitting temporary memory.high should not be an issue.
-> Also I am assuming you don't much care about the amount of memory to
-> be reclaimed from B, so I think memory.high can fulfil your use-case.
-> However if in future you decide to proactively reclaim from all the
-> jobs based on their priority i.e. more aggressive reclaim from B and a
-> little bit reclaim from A then memory.high is not a good interface.
->
-> Shakeel
+This goto is not needed. I don't mind it though.
 
-Thanks for these suggestions, I will give it a try.
-
-Best wishes
-Chunxin
+> +
+> +out:
+> +	kfree(info.ctx);
+> +	return err;
+> +}
+> +
