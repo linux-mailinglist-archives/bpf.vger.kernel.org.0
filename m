@@ -2,190 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E42276332
-	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 23:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D036B27634B
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 23:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgIWVeG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 17:34:06 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51374 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726691AbgIWVeF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 23 Sep 2020 17:34:05 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08NLOvEn017743
-        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 14:34:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=c3k2PRa14yC1OOd+4W3VM+FzSbUrBfjmOe5TgW7cpo0=;
- b=WaQUDAGa6GlFbWLHBs82w1Zb1u3ywr8JIZ/9i+5QCkd3dlVKuqSFW+kaqPzNawm4hfwn
- K0xhTzqQDZtVr+sEM45d0ognkidpNr70Lvf2XTgxyXDXgS+6n5H3U3fSLOTDVMMjSGcT
- yuQUtUlrsfwkY+Bw9E5PYNW4wLwhVTSiwew= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 33qsp4x5yf-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 14:34:03 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Sep 2020 14:34:01 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 9547862E5235; Wed, 23 Sep 2020 14:33:58 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v3 bpf-next 3/3] selftests/bpf: add raw_tp_test_run
-Date:   Wed, 23 Sep 2020 14:33:37 -0700
-Message-ID: <20200923213337.3432472-4-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200923213337.3432472-1-songliubraving@fb.com>
-References: <20200923213337.3432472-1-songliubraving@fb.com>
+        id S1726466AbgIWVsh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 17:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgIWVsh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 17:48:37 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A80FC0613CE;
+        Wed, 23 Sep 2020 14:48:37 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id k18so844028ybh.1;
+        Wed, 23 Sep 2020 14:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oYpy6Y3dvNQYeEnKjK36BAueAYXhkMsnjV7+h87a38c=;
+        b=NcTdZzUb/8/H1vCSXMwZnJmR76EXcKd65XpHHSQNino6w46oGVuPAyTJztdYC9wiCX
+         rKUVDMcxMwjXscgr0Lclb+cJRBflymezFKXaSiEFrp9dy+ZCVv629NPSjEpA5RaN8Aok
+         HHgJZQjUzaYCu4LqY60DGcRe6prOVXcN6oQ0zFKIgcKgoz9n0iu/Xe/o9mT/aDJkOJJk
+         B9NPTAbwDUFNYuh9ETFYRlNIIZ0YR5+Ia0QTfW+ZYFDzTfkOwN0qJ2gGxkZHUBxOCjSx
+         c6mBTy/MTGJYsH04BaKsV5hyfc3/MIN7taf4MixV+8sFgtsH86LNUaDpUKccRL1IG9Tz
+         Mdtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oYpy6Y3dvNQYeEnKjK36BAueAYXhkMsnjV7+h87a38c=;
+        b=MqS+A5jfjead+iOHrHUTfarqk5Find4plhgfNWWDtSVWCWD4eElAm98Mjc5Ll6fgdC
+         b7jMgA1quDcrTRT9WaPy+kvLHbEevbFaHgNYRf6QeN6d2BisoKYYsrktVjMRZb1mIkdx
+         P/+yzXVbiz2B8NJ7AqESmotw5KprP3cgqgvXsJCJn+7U2OVeQKTRDXSv7Y8lg+eYrFA4
+         Lea37whQpDLCHlRORjYjMhxCBjFQLrEoi3xB6MUdDYCOr3oBo3C0bg4JbYJBEVL5QoSG
+         15mazECH/EQzCH82ErgSMEexyMemX5A7y5SqJE6kGza9Lcna87jm+D+toF2L6WiKaRVq
+         gVVA==
+X-Gm-Message-State: AOAM532QDmkafs5hXa45F3XoHHz78nIN5RqAMrgRf4ZqUKprVnoDenYt
+        gB5BHQeDxHOuQJBTApf4wk7XJNglOKWv4nvGCvo=
+X-Google-Smtp-Source: ABdhPJyNKrYaGysoCv+tgn7JSDpz0aoRSmkAtPOpg1jK2VSTWQsaoFiFyT2ZOd02Mxe7nMOVgNxM5RT96s3u4UEumzY=
+X-Received: by 2002:a25:730a:: with SMTP id o10mr3062527ybc.403.1600897715673;
+ Wed, 23 Sep 2020 14:48:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-23_16:2020-09-23,2020-09-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=2
- spamscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- clxscore=1015 mlxscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009230162
-X-FB-Internal: deliver
+References: <CAADnVQ+DQ9oLXXMfmH1_p7UjoG=p9x7y0GDr7sWhU=GD8pj_BA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+DQ9oLXXMfmH1_p7UjoG=p9x7y0GDr7sWhU=GD8pj_BA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 23 Sep 2020 14:48:24 -0700
+Message-ID: <CAEf4BzbqXHQmwJstrxU3ji5Vrb0XVwp17b7bGjRAy=jCOtaUfQ@mail.gmail.com>
+Subject: Re: Keep bpf-next always open
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test runs test_run for raw_tracepoint program. The test covers ctx
-input, retval output, and proper handling of cpu_plus field.
+On Wed, Sep 23, 2020 at 2:20 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> BPF developers,
+>
+> The merge window is 1.5 weeks away or 2.5 weeks if rc8 happens. In the past we
+> observed a rush of patches to get in before bpf-next closes for the duration of
+> the merge window. Then there is a flood of patches right after bpf-next
+> reopens. Both periods create unnecessary tension for developers and maintainers.
+> In order to mitigate these issues we're planning to keep bpf-next open
+> during upcoming merge window and if this experiment works out we will keep
+> doing it in the future. The problem that bpf-next cannot be fully open, since
+> during the merge window lots of trees get pulled by Linus with inevitable bugs
+> and conflicts. The merge window is the time to fix bugs that got exposed
+> because of merges and because more people test torvalds/linux.git than
+> bpf/bpf-next.git.
+>
+> Hence starting roughly one week before the merge window few risky patches will
+> be applied to the 'next' branch in the bpf-next tree instead of
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/prog_tests/raw_tp_test_run.c          | 75 +++++++++++++++++++
- .../bpf/progs/test_raw_tp_test_run.c          | 25 +++++++
- 2 files changed, 100 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/raw_tp_test_ru=
-n.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_raw_tp_test_ru=
-n.c
+Riskiness would be up to maintainers to determine or should we mark
+patches with a different tag (bpf-next-next?) explicitly?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/raw_tp_test_run.c b/t=
-ools/testing/selftests/bpf/prog_tests/raw_tp_test_run.c
-new file mode 100644
-index 0000000000000..492cd8a8c0e00
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/raw_tp_test_run.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2019 Facebook */
-+#include <test_progs.h>
-+#include "bpf/libbpf_internal.h"
-+#include "test_raw_tp_test_run.skel.h"
-+
-+static int duration;
-+
-+void test_raw_tp_test_run(void)
-+{
-+	struct bpf_prog_test_run_attr test_attr =3D {};
-+	__u64 args[2] =3D {0x1234ULL, 0x5678ULL};
-+	int comm_fd =3D -1, err, nr_online, i;
-+	int expected_retval =3D 0x1234 + 0x5678;
-+	struct test_raw_tp_test_run *skel;
-+	char buf[] =3D "new_name";
-+	bool *online =3D NULL;
-+
-+	err =3D parse_cpu_mask_file("/sys/devices/system/cpu/online", &online,
-+				  &nr_online);
-+	if (CHECK(err, "parse_cpu_mask_file", "err %d\n", err))
-+		return;
-+
-+	skel =3D test_raw_tp_test_run__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n")) {
-+		free(online);
-+		return;
-+	}
-+	err =3D test_raw_tp_test_run__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	comm_fd =3D open("/proc/self/comm", O_WRONLY|O_TRUNC);
-+	if (CHECK(comm_fd < 0, "open /proc/self/comm", "err %d\n", errno))
-+		goto cleanup;
-+
-+	err =3D write(comm_fd, buf, sizeof(buf));
-+	CHECK(err < 0, "task rename", "err %d", errno);
-+
-+	CHECK(skel->bss->count =3D=3D 0, "check_count", "didn't increase\n");
-+	CHECK(skel->data->on_cpu !=3D 0xffffffff, "check_on_cpu", "got wrong va=
-lue\n");
-+
-+	test_attr.prog_fd =3D bpf_program__fd(skel->progs.rename);
-+	test_attr.ctx_in =3D args;
-+	test_attr.ctx_size_in =3D sizeof(__u64);
-+
-+	err =3D bpf_prog_test_run_xattr(&test_attr);
-+	CHECK(err =3D=3D 0, "test_run", "should fail for too small ctx\n");
-+
-+	test_attr.ctx_size_in =3D sizeof(args);
-+	err =3D bpf_prog_test_run_xattr(&test_attr);
-+	CHECK(err < 0, "test_run", "err %d\n", errno);
-+	CHECK(test_attr.retval !=3D expected_retval, "check_retval",
-+	      "expect 0x%x, got 0x%x\n", expected_retval, test_attr.retval);
-+
-+	for (i =3D 0; i < nr_online; i++)
-+		if (online[i]) {
-+			DECLARE_LIBBPF_OPTS(bpf_prog_test_run_opts, opts,
-+				.cpu_plus =3D i + 1,
-+			);
-+
-+			test_attr.retval =3D 0;
-+			err =3D bpf_prog_test_run_xattr_opts(&test_attr, &opts);
-+			CHECK(err < 0, "test_run_with_opts", "err %d\n", errno);
-+			CHECK(skel->data->on_cpu !=3D i, "check_on_cpu",
-+			      "got wrong value\n");
-+			CHECK(test_attr.retval !=3D expected_retval,
-+			      "check_retval", "expect 0x%x, got 0x%x\n",
-+			      expected_retval, test_attr.retval);
-+		}
-+cleanup:
-+	close(comm_fd);
-+	test_raw_tp_test_run__destroy(skel);
-+	free(online);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_raw_tp_test_run.c b/t=
-ools/testing/selftests/bpf/progs/test_raw_tp_test_run.c
-new file mode 100644
-index 0000000000000..6b356e003d16c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_raw_tp_test_run.c
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+__u32 count =3D 0;
-+__u32 on_cpu =3D 0xffffffff;
-+
-+SEC("raw_tp/task_rename")
-+int BPF_PROG(rename, struct task_struct *task, char *comm)
-+{
-+
-+	count++;
-+	if ((__u64) task =3D=3D 0x1234ULL && (__u64) comm =3D=3D 0x5678ULL) {
-+		on_cpu =3D bpf_get_smp_processor_id();
-+		return (int)task + (int)comm;
-+	}
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.24.1
+> bpf-next/master. Then during the two weeks of the merge window the patches will
+> be reviewed as normal and will be applied to the 'next' branch as well. After
+> Linus cuts -rc1 and net-next reopens, we will fast forward bpf-next tree to
+> net-next tree and will try to merge the 'next' branch that accumulated the
+> patches over these three weeks. After fast-forward the bpf-next tree might look
+> very different vs its state before the merge window and there is a chance that
+> some of the patches in the 'next' branch will not apply. We will try to resolve
+> the conflicts as much as we can and apply them all. Essentially bpf-next/next
+> is a strong promise that the patches will land into bpf-next. This scheme will
+> allow developers to work on new features and post them for review and landing
+> regardless of the merge window or not. Having said that the bug fixing is
+> always a priority.
+>
+> We've considered creating a bpf-next-next.git tree for this purpose, but decided
+> that bpf-next/next branch will be easier for everyone.
+>
+> Thoughts and comments?
 
+I like more continuous mode, thanks! bpf-next/next branch still means
+that libbpf on Github is effectively frozen for the duration of the
+merge window (merging an extra branch automatically is too much pain,
+we have enough fun with bpf and bpf-next trees), but let's see how it
+goes.
