@@ -2,140 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7F8275234
-	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 09:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC75275487
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 11:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgIWHRk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 03:17:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55846 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726550AbgIWHRk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 23 Sep 2020 03:17:40 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08N7Ge6V004049;
-        Wed, 23 Sep 2020 00:17:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=to : cc : from : subject
- : message-id : date : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=QnpxgczPJD5vMdG63ERHT7c4SnDkQT96X3Miiad6mwk=;
- b=TgDoHlTwX8D4m4E1u4rstw2/Qh5Dp7kXG6Veh3qSi2+Chonjp0WTpqRvYAspQF4niSRN
- UCsX283khR72S9U91loYd2K3RsMLzDfAbP+aNsLzCFCJSoM2DfHDKrPR5MIVKqxk71gq
- jWf6RI5gtswIJlqgAxILAOW6n+cRoCyQC0w= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33qsp6j260-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 23 Sep 2020 00:17:26 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Sep 2020 00:17:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kNxuJzx6NNd2rnCHLGDp7GADVUk0I+BlvR2zNUPdQwKk1k7Qfm/CBcGEZQjSLiHRfu4sZDwZOJboW4nscvrGUNYKn5xk863Icmbd9IrkVVOzWI2+VveJ1UnCPFBX1KFlN7MwzmjEyGUHOVcjycazkUUMXlZuODrWWG15pyrbCHeGJYrqjX6a2IhY9g27LJZq8au4SgsuvrSprQi3WFCKA8u+YPd1ydGxKWq8uLSo066HYW6S0L4gGbfKb+Y56IVgIaFqjU8fiX/IFh6X+RP61dxXqmk1K4yD5RU7hvZP1L43Haj7qMFticXgrnfTisaLMWvecQU9hmSHRuZTiRv1DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QnpxgczPJD5vMdG63ERHT7c4SnDkQT96X3Miiad6mwk=;
- b=iFIz3Lt/EKdfizZQhRhEZDMEAENF3L3s/h6dHjG9njTCEbpBBrDZsurTNHrO9E+oAtLLBlwMxQKyPqbcHYekpDv9LJ0eBVYmYi9pSoWSVL1tQB3hi3bAjx3+cRoopF/pw5WF4T3JnmPBia2pj8R50bIfTvrTfFtU0o1jBJR4qwYzOWlLKTrFVxHJQO40uBxw2p0Ijua7Bj6nfTvy9lyB1OPsxTKTKB9t5jnzAHE19L3fRUkg8P2Z4iN6FsbywjoI8nWcWRcfHPf4L3sH5D3ErNGNt7pXnY9Y2HLALSpIWiKdNJqKN4DmM24/gInSQJSbeiPh5jA9cdaPHiNF0nxCvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QnpxgczPJD5vMdG63ERHT7c4SnDkQT96X3Miiad6mwk=;
- b=G4OYbesRKnPSfYcuaGrK6pYpzeQbEXNYTJGbdjRy0R1j9TE/DqlYL3iLOIecKNFDuXmWpIgVWytrmUe32Mq52LrwvvYNTvTV5YEvkLnB99aNU/ihY4lq5zPIrCyR7PCsmq1Bma89AMhPzMso+ppJ0U+yBweahaCevLm3GgY3VKk=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3208.namprd15.prod.outlook.com (2603:10b6:a03:10c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Wed, 23 Sep
- 2020 07:17:24 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3412.020; Wed, 23 Sep 2020
- 07:17:24 +0000
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrii Nakryiko <andriin@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Subject: Help testing llvm patch to generate verifier friendly code
-Message-ID: <80d19887-5b77-a442-5207-a2685cdd1f83@fb.com>
-Date:   Wed, 23 Sep 2020 00:17:21 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:ba4d]
-X-ClientProxiedBy: MWHPR10CA0012.namprd10.prod.outlook.com (2603:10b6:301::22)
- To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+        id S1726514AbgIWJ1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 05:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726342AbgIWJ1j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 05:27:39 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84AFC0613CE
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 02:27:39 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id v20so24344908oiv.3
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 02:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cNeNmXFy6q6oPNP8cxafn8PrMKPD1PaSqbQeE0c9boM=;
+        b=FamzhStYU5yMdZY74sOLEqUGJ3pWRJEtY1dCgJdSleprc8N7gMDLoeP9jZd7IOwvrK
+         mHVNkASdKcuTLDaF363Ct+uMECY5kWPwL3UJns2M9DcVMDug4lQeptpuhgP7u29SzK/K
+         qHeKp90u2xIrLcKTP22dQdd18v29zvb+nUSH4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cNeNmXFy6q6oPNP8cxafn8PrMKPD1PaSqbQeE0c9boM=;
+        b=i8BfeO5L5Pg0Z6ZG98chodjZr3MngrPlxYbYZ1K/BMFrtThN2c/9g0qv8ljY09zrrD
+         PSbIFXfxjPewo8Th7IoqO7ZiI9mXhNiLZulnOivySVSBjYF82ShgakSTCTvxIi68Eq9D
+         nH0aHTBarstb1+Id/ast2cKeJkWH4qy+6sCjyLQFfPzxR1NlByYW4bZcaea2l7Xi+zuO
+         zaoAbbHNEenqCDF1blJbr32jK/HakE32r7yhrq9HYQZHxhn7Z0U1+vnVORlGkfoxYo8E
+         aO/i9z1wx0dj09lGGKs/J3T+GFdviVl4LBcgvqvle4EO4VPLXgjMm+wjmXwsU6iisWSy
+         SkFg==
+X-Gm-Message-State: AOAM532oHRR1/IfV17d57gNMtMGG4mX09WaUHlv7Nh0huRzAUnAMHg/p
+        L5T8d9gXdrH+NpHgC70Ptk12ZO8CDd45uKJ/1IeFsw==
+X-Google-Smtp-Source: ABdhPJxEcmbBuOZcdvGF5xvH51RhudPLfRfLNuwZ2Ad2OdY40SaAY+J6aOkEvhL67rfzW+xpXzgEDfFDmDqGW56qxq4=
+X-Received: by 2002:aca:3087:: with SMTP id w129mr4923074oiw.102.1600853259008;
+ Wed, 23 Sep 2020 02:27:39 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::12c1] (2620:10d:c090:400::5:ba4d) by MWHPR10CA0012.namprd10.prod.outlook.com (2603:10b6:301::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Wed, 23 Sep 2020 07:17:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9e4c266d-490c-4740-bb18-08d85f90b800
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3208:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB32088A17660535ADB136505AD3380@BYAPR15MB3208.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2OkyzBBtD0p+CUKQ1KmniOCiLdgo6PcyMVu4qI2K6Y7b/RIYgojp6tt/x2L9nx/dx3dGhrHQph0SZpz/jnrJy2TrLi2+z/mdbEIvyUl5+LaSrIhLMHHIZi9LMWQVsXNhlqATByXPieytuXBHufApRLVAdN+bRnShBhNEGy+Jj8JWcHSWwlr9qaS5Z0kBVhXjSFDxjHhlWxXFjQhdq0jjT+mZRKMhwSgVk08ReuyYkyUBgYV1OcWUVVV63oXtv9JA+0Jh9joIL9J6RM6/FDEgSMCPQu87nybU8HAfWBt7grJhpX2PlFuCprVFgIOywZiWwYwafNC7MDJ7N1ie289i4Pyym7oZZhvQda+ndwm1ipryMjltlDkZPEF0CA6Y862mbCeTKa4p06UBBq2JuxeFMLQyYvCp7fUYPVSG/Xquuuhwka7PLTFYmKHkSDJzmW3KELfCc941bhpHOD4D8l+gzQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(346002)(376002)(39860400002)(2616005)(186003)(16526019)(6916009)(83380400001)(8936002)(8676002)(5660300002)(54906003)(6486002)(52116002)(86362001)(31686004)(31696002)(36756003)(4326008)(2906002)(66556008)(66476007)(66946007)(478600001)(316002)(966005)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: McYy6G+yjfee4/ago0RPZlJ+EmzkUQMfh3tMKLO15MIy9ccyizYjsxEe72RuoQKETb+/XKAw0KmLzOsFJBaEZXcVeFQNrsrkL2bGTiPUCT26PxAMzOT0Pa0JsIhua2+lI7/VkJneTMUr0u2Dx2OY6x6Uo9rxpEMVPn+72+21TYhuJryTR5e1PencKkyz1eIZ1U7h9HZRRNYb5BcZzPNkJWuHVPOJtBG67VsaBKzSqE9S6XofDuKojJNb5mCJA29cLzlP6TpB92xTmYwjgKD0869fLjU+1MA2pZkkcK1CbYSDUyXBOBFX4i59kbxyJqtinLWdYMaEm6h90MaXITDPIbAJHc/stKNu8K1+cCPt0SmwypEtJpbdq0bON151+w3M97vLl+g//aAE+E36LgfacOLMUnT0qzW5hcUfOdA+a6GvzfIroh+NWAz9sDjfzTDseI6T/Vp8EBXYK9t0bRrp775ENYBP/ekLG2p1i5fCgGPOWe7650JTWdFThih+Ao1hjwqqhkGgLnXiL1k6qxK9LBFMiIt/uYkcYSzyHeLFArhpKzf0yb/p6E4qlkrsZzlrpYlQ/0C9dwJvrF570Pj7eUqbVckEYjYW+/re9jcyyr0T/Iawc15TCvmHOWbsNOQEiqrcCwVnR5jtSTvkoIp1K8oSnFUSJt2in+B3b/+5EBs=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e4c266d-490c-4740-bb18-08d85f90b800
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2020 07:17:24.2178
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G+uGclfaUIWPtxL7NIMVhqN8DE+esgqkt8YLS35KtgM3PEh3bDxsujmQBRaazz/h
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3208
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-23_03:2020-09-23,2020-09-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- bulkscore=0 spamscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
- mlxlogscore=597 suspectscore=0 lowpriorityscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009230057
-X-FB-Internal: deliver
+References: <20200922070409.1914988-1-kafai@fb.com> <20200922070422.1917351-1-kafai@fb.com>
+ <CACAyw9-LoKFuYxaMODtacJM-rOR0P5Y=j_yEm9bsFZe_j_9rYQ@mail.gmail.com> <20200922182622.zcrqwpzkouvlndbw@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200922182622.zcrqwpzkouvlndbw@kafai-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 23 Sep 2020 10:27:27 +0100
+Message-ID: <CACAyw99xbeVyzUT+fhHtRQEGoef-9vvTfiOEFaJWX6aoVL+Z9A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 02/11] bpf: Enable bpf_skc_to_* sock casting
+ helper to networking prog type
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Tue, 22 Sep 2020 at 19:26, Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Sep 22, 2020 at 10:46:41AM +0100, Lorenz Bauer wrote:
+> > On Tue, 22 Sep 2020 at 08:04, Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > There is a constant need to add more fields into the bpf_tcp_sock
+> > > for the bpf programs running at tc, sock_ops...etc.
+> > >
+> > > A current workaround could be to use bpf_probe_read_kernel().  However,
+> > > other than making another helper call for reading each field and missing
+> > > CO-RE, it is also not as intuitive to use as directly reading
+> > > "tp->lsndtime" for example.  While already having perfmon cap to do
+> > > bpf_probe_read_kernel(), it will be much easier if the bpf prog can
+> > > directly read from the tcp_sock.
+> > >
+> > > This patch tries to do that by using the existing casting-helpers
+> > > bpf_skc_to_*() whose func_proto returns a btf_id.  For example, the
+> > > func_proto of bpf_skc_to_tcp_sock returns the btf_id of the
+> > > kernel "struct tcp_sock".
+> > >
+> > > These helpers are also added to is_ptr_cast_function().
+> > > It ensures the returning reg (BPF_REF_0) will also carries the ref_obj_id.
+> > > That will keep the ref-tracking works properly.
+> > >
+> > > The bpf_skc_to_* helpers are made available to most of the bpf prog
+> > > types in filter.c. They are limited by perfmon cap.
+> > >
+> > > This patch adds a ARG_PTR_TO_BTF_ID_SOCK_COMMON.  The helper accepting
+> > > this arg can accept a btf-id-ptr (PTR_TO_BTF_ID + &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON])
+> > > or a legacy-ctx-convert-skc-ptr (PTR_TO_SOCK_COMMON).  The bpf_skc_to_*()
+> > > helpers are changed to take ARG_PTR_TO_BTF_ID_SOCK_COMMON such that
+> > > they will accept pointer obtained from skb->sk.
+> > >
+> > > PTR_TO_*_OR_NULL is not accepted as an ARG_PTR_TO_BTF_ID_SOCK_COMMON
+> > > at verification time.  All PTR_TO_*_OR_NULL reg has to do a NULL check
+> > > first before passing into the helper or else the bpf prog will be
+> > > rejected by the verifier.
+> > >
+> > > [ ARG_PTR_TO_SOCK_COMMON_OR_NULL was attempted earlier.  The _OR_NULL was
+> > >   needed because the PTR_TO_BTF_ID could be NULL but note that a could be NULL
+> > >   PTR_TO_BTF_ID is not a scalar NULL to the verifier.  "_OR_NULL" implicitly
+> > >   gives an expectation that the helper can take a scalar NULL which does
+> > >   not make sense in most (except one) helpers.  Passing scalar NULL
+> > >   should be rejected at the verification time.
+> >
+> > What is the benefit of requiring a !sk check from the user if all of
+> > the helpers know how to deal with a NULL pointer?
+> I don't see a reason why the verifier should not reject an incorrect
+> program at load time if it can.
+>
+> >
+> > >
+> > >   Thus, this patch uses ARG_PTR_TO_BTF_ID_SOCK_COMMON to specify that the
+> > >   helper can take both the btf-id ptr or the legacy PTR_TO_SOCK_COMMON but
+> > >   not scalar NULL.  It requires the func_proto to explicitly specify the
+> > >   arg_btf_id such that there is a very clear expectation that the helper
+> > >   can handle a NULL PTR_TO_BTF_ID. ]
+> >
+> > I think ARG_PTR_TO_BTF_ID_SOCK_COMMON is actually a misnomer, since
+> > nothing enforces that arg_btf_id is actually an ID for sock common.
+> > This is where ARG_PTR_TO_SOCK_COMMON_OR_NULL is much easier to
+> > understand, even though it's more permissive than it has to be. It
+> > communicates very clearly what values the argument can take.
+> _OR_NULL is incorrect which implies a scalar NULL as mentioned in
+> this commit message.  From verifier pov, _OR_NULL can take
+> a scalar NULL.
 
-I have spent some time to add additional logic in llvm BPF backend
-in order to generate verifier friendly code.
+Yes, I know. I'm saying that the distinction between scalar NULL and
+runtime NULL only makes sense after you understand how BTF pointers
+are implemented. It only clicked for me after I read the support code
+in the JIT that Yonghong pointed out. Should everybody that writes a
+helper need to read the JIT? In my opinion we shouldn't. I guess I
+don't even care about the verifier rejecting scalar NULL or not, I'd
+just like the types to have a name that conveys their NULLness.
 
-The first patch is:
-   https://reviews.llvm.org/D87153
-which moves CORE relocation builtin handling from in late IR
-optimization (after inlining and major optimizations)
-to in early IR optimization (before inlining and any optimizations).
-The reason is to prevent harmful CSEs.
+>
+> >
+> > If you're set on ARG_PTR_TO_BTF_ID_SOCK_COMMON I'd suggest forcing the
+> > btf_id in struct bpf_reg_types. This avoids the weird case where the
+> > btf_id doesn't actually point at sock_common, and it also makes my
+> I have considered the bpf_reg_types option.  I prefer all
+> arg info (arg_type and arg_btf_id) stay in the same one
+> place (i.e. func_proto) as much as possible for now
+> instead of introducing another place to specify/override it
+> which then depends on a particular arg_type that some arg_type may be
+> in func_proto while some may be in other places.
 
-But this change may change how compiler do optimizations.
-The patch can pass bpf selftests in latest bpf-next.
-Andrii helped it can also pass bcc/libbpf-tools.
+In my opinion that ship sailed when we started aliasing arg_type to
+multiple reg_type, but OK.
 
-If your code uses COREs, esp. having a lot of subroutines
-and/or loops, it would be good to give a try with new patch
-to see whether there are any issues or not. In my case,
-for one of our internal applications with lots of subroutines
-and loops, inlining all subroutines and unrolling all loops
-will cause register spills which cannot be handled by
-the verifier, while existing llvm won't have issue.
+>
+> The arg_btf_id can be checked in check_btf_id_ok() if it would be a
+> big concern that it might slip through the review but I think the
+> chance is pretty low.
 
-FYI, I have two more patches (still need tuning) in pipeline:
-   https://reviews.llvm.org/D85570 to serialize code across control flows
-   https://reviews.llvm.org/D87428 to avoid repeated condition evaluation
+Why increase the burden on human reviewers? Why add code to check an
+invariant that we could get rid of in the first place?
 
-Thanks,
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-Yonghong
+www.cloudflare.com
