@@ -2,104 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AC1275DB5
-	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 18:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC69275DF9
+	for <lists+bpf@lfdr.de>; Wed, 23 Sep 2020 18:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgIWQnt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 12:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgIWQnt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Sep 2020 12:43:49 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E37C0613D1
-        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 09:43:49 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x14so503356oic.9
-        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 09:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kQxvaYNxyzuBe/2zrjgv7SCCpseqSt392kijnThrMG4=;
-        b=BukdKgyckTaLJeKaLMkfTNxO+n6aKCPT/+EcFqVYWIYDNQ7cxeyWyeJOmXJ1qjWJbn
-         vvoGIfqh/tCxwbcL51xliB7SZFgJYztXtRk4ONdjIbvUSDPjU6j6DPA+9JcZvZZ+Nd5+
-         ffN0LfJmetXKZdR9MkvA+Gy7szk720bAhK+ZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kQxvaYNxyzuBe/2zrjgv7SCCpseqSt392kijnThrMG4=;
-        b=cF2CwmO+XxhfYXwt7maPCgYiX+cCIueLhH1dmOoPb9t/KxjAddgh8xhWzpB+PRhGuY
-         uLKAKFWYX7cnwomnQy1sYlLKk9x0DyM+dvQfi2RP8l4L9s9Xi3rgdgVa3GEkOYLSj0Xz
-         ZOHuQyoQanxLQtKA3U9dFZmy10VwJ5bBTv8OxIzht3BN5V+WS4DRR5QUjyglpWFRdnGn
-         p4Va/Z/uy2U99XM32ZnuA/pjlBmiXzewdy9xZSVm64mMOByNup/hVkYjS61TexjDaGQL
-         MhQ9IEWdIkCIEUDxW87wtgemkhM7vDl7xFnUat52yK3SKxy5Io/a5dL8u7CqgHNGt6Yc
-         PMFQ==
-X-Gm-Message-State: AOAM530BypqL+RnObRt0xMId2RI4YT9CPYrEuU7jqnfdnIFl6GqyTScF
-        uSv/rmSDvSrBBSi6PpJml7y6Lmb8To5DVQpqaKW/nw==
-X-Google-Smtp-Source: ABdhPJxdpk2KpdkM4paPqdaSvoAA1gvtlKUOqKTQHivN4CmeCo2EmHl1d3xJkiCr86N0UeGKBhhmNlLPf56YXnFS3+0=
-X-Received: by 2002:aca:f0a:: with SMTP id 10mr233833oip.13.1600879428464;
- Wed, 23 Sep 2020 09:43:48 -0700 (PDT)
+        id S1726596AbgIWQyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 12:54:37 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56224 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726603AbgIWQyh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 23 Sep 2020 12:54:37 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08NGpqQk015318
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 09:54:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=iUoxc+Lkrx/0SMdxBBkXPBqenVOqkw5WV4jWJvmH1gc=;
+ b=LflGoW2hW+KuvSIWsxSOJZv/qTv4G4XvSJ+eXuWf+25wZTtNZHOze48bT2Pek9ZECKMr
+ q69XzOoIBp9EzVQKad8H7MtlWzCqZUMoXF1CRyc9MjTM9DIUk0fqrEOx+qVE1LveJjr7
+ UA0rZkfv85085d1uCTIp3wcxDWMVBpTIxnk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 33qsp7vnng-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 09:54:36 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 23 Sep 2020 09:54:14 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 557B562E4F75; Wed, 23 Sep 2020 09:54:13 -0700 (PDT)
+From:   Song Liu <songliubraving@fb.com>
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v2 bpf-next 0/3] enable BPF_PROG_TEST_RUN for raw_tp
+Date:   Wed, 23 Sep 2020 09:53:58 -0700
+Message-ID: <20200923165401.2284447-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200916211010.3685-1-maciej.fijalkowski@intel.com>
- <CAADnVQLEYHZLeu-d4nV5Px6t+tVtYEgg8AfPE5-GwAS1uizc0w@mail.gmail.com>
- <CACAyw994v0BFpnGnboVVRCZt62+xjnWqdNDbSqqJHOD6C-cO0g@mail.gmail.com> <CAEf4Bzakz65x0-MGa0ZBF8F=PvT23Sm0rtNDDCo3jo4VMOXgeg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzakz65x0-MGa0ZBF8F=PvT23Sm0rtNDDCo3jo4VMOXgeg@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 23 Sep 2020 17:43:37 +0100
-Message-ID: <CACAyw9_WkndmJiwBZTn+P8fQa6OFfxmxH7uCxi0RTNOonbCzww@mail.gmail.com>
-Subject: Re: [PATCH v8 bpf-next 0/7] bpf: tailcalls in BPF subprograms
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-23_13:2020-09-23,2020-09-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ mlxlogscore=805 spamscore=0 adultscore=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009230130
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 23 Sep 2020 at 17:24, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Sep 23, 2020 at 9:12 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Fri, 18 Sep 2020 at 04:26, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > [...]
-> > >
-> > > Lorenz,
-> > > if you can test it on cloudflare progs would be awesome.
-> >
-> > Our programs all bpf_tail_call from the topmost function, so no calls
-> > from subprogs. I stripped out our FORCE_INLINE flag, recompiled and
-> > ran our testsuite. cls_redirect.c (also in the kernel selftests) has a
-> > test failure that I currently can't explain, but I don't have the time
-> > to look at it in detail right now.
-> >
->
-> I've already converted test_cls_redirect.c in selftest to have
-> __noinline variant. And it works fine. There are only 4 helper
-> functions that can't be converted to a sub-program (pkt_parse_ipv4,
-> pkt_parse_ipv6, and three buffer manipulation helpers) because they
-> are accepting a pointer to a stack from a calling function, which
-> won't work with subprograms. But all the other functions were
-> trivially converted to __noinline and keep working.
+This set enables BPF_PROG_TEST_RUN for raw_tracepoint type programs. This
+set also enables running the raw_tp program on a specific CPU. This featu=
+re
+can be used by user space to trigger programs that access percpu resource=
+s,
+e.g. perf_event, percpu variables.
 
-Yeah, that is very possible. Keep in mind though that our internal
-version has since become more complex, and also has a more
-comprehensive test suite. I wasn't sounding the alarms, it's just an
-FYI that I appreciate the work that went into this and have taken a
-look, but that I need to do some more digging :)
+Changes v1 =3D> v2:
+1. More checks for retval in the selftest. (John)
+2. Remove unnecessary goto in bpf_prog_test_run_raw_tp. (John)
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+Song Liu (3):
+  bpf: enable BPF_PROG_TEST_RUN for raw_tracepoint
+  libbpf: introduce bpf_prog_test_run_xattr_opts
+  selftests/bpf: add raw_tp_test_run
 
-www.cloudflare.com
+ include/linux/bpf.h                           |  3 +
+ include/uapi/linux/bpf.h                      |  5 ++
+ kernel/bpf/syscall.c                          |  2 +-
+ kernel/trace/bpf_trace.c                      |  1 +
+ net/bpf/test_run.c                            | 88 +++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  5 ++
+ tools/lib/bpf/bpf.c                           | 13 ++-
+ tools/lib/bpf/bpf.h                           | 11 +++
+ tools/lib/bpf/libbpf.map                      |  1 +
+ .../bpf/prog_tests/raw_tp_test_run.c          | 73 +++++++++++++++
+ .../bpf/progs/test_raw_tp_test_run.c          | 26 ++++++
+ 11 files changed, 226 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/raw_tp_test_ru=
+n.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_raw_tp_test_ru=
+n.c
+
+--
+2.24.1
