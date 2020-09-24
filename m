@@ -2,232 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5262276690
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 04:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99626276697
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 04:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgIXCmC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 22:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+        id S1726321AbgIXCq3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 22:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgIXCmC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:42:02 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA67C0613D1
-        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 19:42:02 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id z13so1717356iom.8
-        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 19:42:02 -0700 (PDT)
+        with ESMTP id S1726281AbgIXCq2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 22:46:28 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70265C0613CE;
+        Wed, 23 Sep 2020 19:46:28 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u8so2180808lff.1;
+        Wed, 23 Sep 2020 19:46:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Eg84LwRtp3d1sbQSPErNoEZ19NchOftM6zwgElSj2CY=;
-        b=BjXOR3NsaC3c1u6IOc1vApsSF1stkvNQIyH5Z3b3jZjP2xu4rFa91WG2TnNQ/mglNn
-         EvHce5vUQWYSt11LH561kStXfKpkM9WP9OzaVRNTORBDB5m5aeZTcXrP+k4qScf52m4V
-         h1OB5k+HY7C/RUNwwjoB5B91/qVNa5JUcvXYIMrezQWM5Br+VI+yy5kP9sMfEA7T6r5Y
-         Az7ScfGWXYotK7OiQw5syl/Kb4ob6zk6l8KQWBvX+zzgNbl9j0wvVEZYjlbP4rq5WOev
-         XFWhhD9//FUK1244m1TMVcyyQT2RWAKIWHxEUZ8uhsqFieYYn9Zmj+3plp6nH/riBX5S
-         C2rw==
+         :cc;
+        bh=9+eNHoJ3hPvMPQqYtY4sJ1VsIJccrVuHfsFJyXxlV7E=;
+        b=pR6nXCY3wR0y8cB6ivNkWm2/LCSJzNGakD3yYn1i0VkIWdJgdfEdgOenMhMAkxahv4
+         a1zIhV5TOezq+fIfL9QlYGHv/EBJyE64jif9ComBhj3FyzO48xLSTKzc+r5sMxgTYLfg
+         kQq4ycdxSQ9Hnw2aOEnSlPUeULpR6O/a7eM5yWvxo8xHY8/Ova9R43llg55n576uV5zM
+         L37V28MDD7vEa5nEVhgJuUWnMGQaV4phq2Bd4NtiKem5rxUTQKKJLtSi97fgVwcMdG1u
+         sb+Q68E4+83OsxcxUqHv57Cvw+q19yusxn7Nzwr0AVvUrHT0+XuKuv4a69Sn/g0oOnnh
+         M12g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Eg84LwRtp3d1sbQSPErNoEZ19NchOftM6zwgElSj2CY=;
-        b=TFGYt93BQxIoWB21KuNtxqbyC+8BpkOwRRrhAGDtoCVJ4IGu60+gVflEqd2PJBzpIP
-         0UZ1ipvi7zMb6zwhcUjcYoWe2cOFrgzZME8LoVA0a6Vxsj0H28vNdBEDqty9V9O/LUq9
-         aMX+lSz2A7kl/Jnf9oZniSSmxdjkWmAoSRInBoC1/WFwHG13kZuL9GwCdQaMNzW3+mf2
-         eUCk0QCzPogVfLlNjGYvM1A24pGATzr2RJVK7441l2IsgrcAfjFFhoVIKLphobSKSnWm
-         ACW+nxKkYoE36McmaD700sAhLlREuzQTtdrBpFP5AcZNXsK4B6z7YRQQxq5zOaMNSSAM
-         BTwA==
-X-Gm-Message-State: AOAM5314cQJ/npmXR9EllvObGmifeEPlsccaTSGx22nZrWbG2tXoadk1
-        fweXTrh87WD5MwsPt9cqX06COlPeO0IGRE4WnhmDXw==
-X-Google-Smtp-Source: ABdhPJwRbMvtoAsBULzmZC7W1QHwQ7akF61ejeD8Uo6BCz3vsaJMZRFQ7oSX5Tc2oyzzmb+ewxm3T56JJYdtZM/umwg=
-X-Received: by 2002:a02:b70c:: with SMTP id g12mr1905063jam.62.1600915321181;
- Wed, 23 Sep 2020 19:42:01 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=9+eNHoJ3hPvMPQqYtY4sJ1VsIJccrVuHfsFJyXxlV7E=;
+        b=dtaWHya9Skw0PJZHTFNb1Blscug2nEg21qJcA1Zmk0otmruqdvQBScsRrKrUhhrXT0
+         lRo0C/F4YLNbsvQd1KVgUKL06G/IS9zgq5yzqndBiCTbFLR600LbFFB5tc8fnRmdI1Rw
+         t0eleYUIzF9VrZkjYPpU7+7bKbqXkQP+rKvHdLvhPV+A+cAQSnVym4AcdxonCHmgT0bB
+         3sbVe1AYvltIydPV3MaLstRsJ7JtJHDGaKcD6Jg1GiLCBIV9ESUfitv69Hr1zi0MmwaO
+         jse3uoz/WfMQDjkBg31TvWwF/4GDa7bKSKhkkwlo+HXCn0AZ6smB83mZVPhCR1sxZKuR
+         ZdbQ==
+X-Gm-Message-State: AOAM533GbPt7N505XQOz4mSPpvyoMsxfbARDQaBJPFoi1eE2X+Y+yudB
+        UdJahF4uShu7H6OsU6pNIdH2mriakXGydV9ATrA=
+X-Google-Smtp-Source: ABdhPJwi19bzgz5V7MW7dnYyJjavTgZavChOt28VLPqtL3VrYGIVzKq5M/3CrgBSLd/1UoX52D73GzO9TQYkpo5RaMQ=
+X-Received: by 2002:a19:8089:: with SMTP id b131mr786352lfd.390.1600915586739;
+ Wed, 23 Sep 2020 19:46:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200924022557.16561-1-bimmy.pujari@intel.com>
-In-Reply-To: <20200924022557.16561-1-bimmy.pujari@intel.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Wed, 23 Sep 2020 19:41:48 -0700
-Message-ID: <CANP3RGc7HjqydxF5vBQtzqUe72Ag1KvxVF5kHft0ceZRnjAbQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add bpf_ktime_get_real_ns
-To:     bimmy.pujari@intel.com
-Cc:     bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
-        mchehab@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+References: <20200922162542.GA18664@paulmck-ThinkPad-P72>
+In-Reply-To: <20200922162542.GA18664@paulmck-ThinkPad-P72>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 23 Sep 2020 19:46:15 -0700
+Message-ID: <CAADnVQJfmFjVRqJopeqy_7bHVdQ9x+i9d94Sv7Dshnh40FisTA@mail.gmail.com>
+Subject: Re: [GIT PULL rcu-tasks-trace] 50x speedup for synchronize_rcu_tasks_trace()
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>, rcu@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, ashkan.nikravesh@intel.com
+        Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 7:26 PM <bimmy.pujari@intel.com> wrote:
+On Tue, Sep 22, 2020 at 9:25 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> From: Bimmy Pujari <bimmy.pujari@intel.com>
+> Hello, Alexei,
 >
-> The existing bpf helper functions to get timestamp return the time
-> elapsed since system boot. This timestamp is not particularly useful
-> where epoch timestamp is required or more than one server is involved
-> and time sync is required. Instead, you want to use CLOCK_REALTIME,
-> which provides epoch timestamp.
-> Hence add bfp_ktime_get_real_ns() based around CLOCK_REALTIME.
+> This pull request contains eight commits that speed up RCU Tasks Trace
+> grace periods by a factor of 50, fix a few race conditions exposed
+> by this speedup, and clean up a couple of minor issues.  These have
+> been exposed to 0day and -next testing, and have passed well over 1,000
+> hours of rcutorture testing, some of which has contained ad-hoc changes
+> to further increase race probabilities.  So they should be solid!
+> (Famous last words...)
 >
-> Signed-off-by: Ashkan Nikravesh <ashkan.nikravesh@intel.com>
-> Signed-off-by: Bimmy Pujari <bimmy.pujari@intel.com>
-> ---
->  drivers/media/rc/bpf-lirc.c    |  2 ++
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       |  8 ++++++++
->  kernel/bpf/core.c              |  1 +
->  kernel/bpf/helpers.c           | 13 +++++++++++++
->  kernel/trace/bpf_trace.c       |  2 ++
->  tools/include/uapi/linux/bpf.h |  8 ++++++++
->  7 files changed, 35 insertions(+)
->
-> diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
-> index 5bb144435c16..649015fef3c1 100644
-> --- a/drivers/media/rc/bpf-lirc.c
-> +++ b/drivers/media/rc/bpf-lirc.c
-> @@ -105,6 +105,8 @@ lirc_mode2_func_proto(enum bpf_func_id func_id, const=
- struct bpf_prog *prog)
->                 return &bpf_ktime_get_ns_proto;
->         case BPF_FUNC_ktime_get_boot_ns:
->                 return &bpf_ktime_get_boot_ns_proto;
-> +       case BPF_FUNC_ktime_get_real_ns:
-> +               return &bpf_ktime_get_real_ns_proto;
->         case BPF_FUNC_tail_call:
->                 return &bpf_tail_call_proto;
->         case BPF_FUNC_get_prandom_u32:
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index fc5c901c7542..18c4fdce65c8 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1757,6 +1757,7 @@ extern const struct bpf_func_proto bpf_get_numa_nod=
-e_id_proto;
->  extern const struct bpf_func_proto bpf_tail_call_proto;
->  extern const struct bpf_func_proto bpf_ktime_get_ns_proto;
->  extern const struct bpf_func_proto bpf_ktime_get_boot_ns_proto;
-> +extern const struct bpf_func_proto bpf_ktime_get_real_ns_proto;
->  extern const struct bpf_func_proto bpf_get_current_pid_tgid_proto;
->  extern const struct bpf_func_proto bpf_get_current_uid_gid_proto;
->  extern const struct bpf_func_proto bpf_get_current_comm_proto;
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index a22812561064..198e69a6508d 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3586,6 +3586,13 @@ union bpf_attr {
->   *             the data in *dst*. This is a wrapper of **copy_from_user*=
-*\ ().
->   *     Return
->   *             0 on success, or a negative error in case of failure.
-> + *
-> + * u64 bpf_ktime_get_real_ns(void)
-> + *     Description
-> + *             Return the real time in nanoseconds.
-> + *             See: **clock_gettime**\ (**CLOCK_REALTIME**)
-> + *     Return
-> + *             Current *ktime*.
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3737,6 +3744,7 @@ union bpf_attr {
->         FN(inode_storage_delete),       \
->         FN(d_path),                     \
->         FN(copy_from_user),             \
-> +       FN(ktime_get_real_ns),          \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which he=
-lper
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index c4811b139caa..0dbbda9b743b 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2208,6 +2208,7 @@ const struct bpf_func_proto bpf_get_smp_processor_i=
-d_proto __weak;
->  const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
->  const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
->  const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
-> +const struct bpf_func_proto bpf_ktime_get_real_ns_proto __weak;
->
->  const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
->  const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 5cc7425ee476..300db9269996 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -166,6 +166,17 @@ const struct bpf_func_proto bpf_ktime_get_boot_ns_pr=
-oto =3D {
->         .gpl_only       =3D false,
->         .ret_type       =3D RET_INTEGER,
->  };
-> +BPF_CALL_0(bpf_ktime_get_real_ns)
-> +{
-> +       /* NMI safe access to clock realtime */
-> +       return ktime_get_real_fast_ns();
-> +}
-> +
-> +const struct bpf_func_proto bpf_ktime_get_real_ns_proto =3D {
-> +       .func           =3D bpf_ktime_get_real_ns,
-> +       .gpl_only       =3D false,
-> +       .ret_type       =3D RET_INTEGER,
-> +};
->
->  BPF_CALL_0(bpf_get_current_pid_tgid)
->  {
-> @@ -657,6 +668,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
->                 return &bpf_ktime_get_ns_proto;
->         case BPF_FUNC_ktime_get_boot_ns:
->                 return &bpf_ktime_get_boot_ns_proto;
-> +       case BPF_FUNC_ktime_get_real_ns:
-> +               return &bpf_ktime_get_real_ns_proto;
->         case BPF_FUNC_ringbuf_output:
->                 return &bpf_ringbuf_output_proto;
->         case BPF_FUNC_ringbuf_reserve:
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 36508f46a8db..8ea2a0e50041 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1167,6 +1167,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, co=
-nst struct bpf_prog *prog)
->                 return &bpf_ktime_get_ns_proto;
->         case BPF_FUNC_ktime_get_boot_ns:
->                 return &bpf_ktime_get_boot_ns_proto;
-> +       case BPF_FUNC_ktime_get_real_ns:
-> +               return &bpf_ktime_get_real_ns_proto;
->         case BPF_FUNC_tail_call:
->                 return &bpf_tail_call_proto;
->         case BPF_FUNC_get_current_pid_tgid:
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index a22812561064..198e69a6508d 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -3586,6 +3586,13 @@ union bpf_attr {
->   *             the data in *dst*. This is a wrapper of **copy_from_user*=
-*\ ().
->   *     Return
->   *             0 on success, or a negative error in case of failure.
-> + *
-> + * u64 bpf_ktime_get_real_ns(void)
-> + *     Description
-> + *             Return the real time in nanoseconds.
-> + *             See: **clock_gettime**\ (**CLOCK_REALTIME**)
-> + *     Return
-> + *             Current *ktime*.
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3737,6 +3744,7 @@ union bpf_attr {
->         FN(inode_storage_delete),       \
->         FN(d_path),                     \
->         FN(copy_from_user),             \
-> +       FN(ktime_get_real_ns),          \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which he=
-lper
-> --
-> 2.17.1
+> I would normally have sent this series up through -tip, but as we
+> discussed, going up through the BFP and networking trees provides the
+> needed exposure to real-world testing of these changes.  Please note
+> that the first patch is already in mainline, but given identical SHA-1
+> commit IDs, git should have no problem figuring this out.  I will also
+> be retaining these commits in -rcu in order to continue exposing them
+> to rcutorture testing, but again the identical SHA-1 commit IDs will
+> make everything work out.
 
-Reviewed-by: Maciej =C5=BBenczykowski <maze@google.com>
+Pulled into bpf-next. Thanks a lot.
+
+Also confirming 50x speedup.
+Really nice to see that selftests/bpf are now fast again.
+
+Not only all bpf developers will be running these patches now,
+but the bpf CI system will be exercising them as well.
