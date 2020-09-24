@@ -2,110 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E76277B0E
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 23:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7514A277B1E
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 23:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgIXVa5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 17:30:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54101 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726448AbgIXVa5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Sep 2020 17:30:57 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600983056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/CNkCm/J3e9sBEmwQB+KysOFEHFB+QG8VNmP7PW7xY=;
-        b=Kl7wN8/6t7pg54yu5/lQh81+2nC2GshPo9Sjl3EarMJKE/JTGcDs8E4d3quwTduVkBcpCz
-        pFfrzkgP+TEjZcJCIxeUNqD2dCkDXqPIAXzw2KDAfvBTP0Q8CWnlFim4MMKZlw1SdGUblG
-        CtyYmzo1AW0smm9RFUsUHtBQs2sBtzY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369-pnmy8_QJMKCUUBudcqah_w-1; Thu, 24 Sep 2020 17:30:54 -0400
-X-MC-Unique: pnmy8_QJMKCUUBudcqah_w-1
-Received: by mail-wr1-f69.google.com with SMTP id g6so218805wrv.3
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 14:30:54 -0700 (PDT)
+        id S1726606AbgIXVfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 17:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbgIXVfV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 17:35:21 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57E1C0613D4
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 14:35:21 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x123so797683pfc.7
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 14:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3CW8CM9pV/u4FfPt/5+0+4IcrrDDgdR3Q+VzmdoOROI=;
+        b=CRtDJNrzy8wbkCV74afPa/S3o604Di/g6RRZLW1jbvaELJCnfqJ5X54uFz+2y4YVd+
+         JMjENCSOJ8WiO+/T8ChnYyaZuJsyEhQOs0Plk7trxC06nHNaxqpOcT8y+sEuG5d/YU/D
+         b9pHibkXtd7atL74qEQo+eWeQ6auJ2I9asgk8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=a/CNkCm/J3e9sBEmwQB+KysOFEHFB+QG8VNmP7PW7xY=;
-        b=lMZnCeFVQDhXHmiwMuNuuoVMAXk5fHD3jRfG57qe9/p0sIiHIUid2qnwa5CsaVj5N1
-         C9rVcj6EbzrbtaHyb5af0X1GE6BCNXjPLUFsR722P0Xo4xq14c8ysjI+nx7aYh5YelFL
-         TAO5ZVKDa684Tc+eYvcGzAKihF+y883vfuTmfhnb8ONk3O0zE9f/BTu1ajtzjoBAjcRi
-         1RF31eSa4bBGDwD7FsmlF9W5SrUbdjhrCcr3OUo0Nl0q4leGJ1DvlxP9Me0UUYGVj2oc
-         F5yRDXZKaH8lwK2kbOvSGCJgiQttqIgKzrP4AkEg43klqKmIK1xUTGrAR/LSZqO2Iv2v
-         eLgg==
-X-Gm-Message-State: AOAM531vkqZF2C31qbZKH7FiuUBdesqTYSQU2C3Sa7N3l3OI41/Cn9Ou
-        WMLJqzOspF4RrqKtEg29g4fQ9zNKc6bTHrPrLwsFMp7Bp8ctvGFrDVUXTBESKIbgKs0OAYYs0QU
-        0XGjirkrgQDin
-X-Received: by 2002:a7b:c215:: with SMTP id x21mr598603wmi.138.1600983053154;
-        Thu, 24 Sep 2020 14:30:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykfxFFNdkSeVaHz4ok4MKyOnP4ilcXybnSRv4A07qyRtSxjz2uWyTS3KKQ6mvIMpaotl5DRA==
-X-Received: by 2002:a7b:c215:: with SMTP id x21mr598565wmi.138.1600983052605;
-        Thu, 24 Sep 2020 14:30:52 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id b187sm578621wmb.8.2020.09.24.14.30.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3CW8CM9pV/u4FfPt/5+0+4IcrrDDgdR3Q+VzmdoOROI=;
+        b=HjsWwtTaw0lnCeoP2RfGwfqo5UUD3nRbCozyW94kXTI4je4oulLwGJ4i5OkvOS/M0J
+         G6reuFk0dE2zoiasig+PvJMV5xMLmll8lsqWFYv20sOj8Bmo9rqq6Y9gmHGgIGoe9clR
+         6013LlHJxuDUmQhDutrHwQNTzvx29vzJf2LqNmyOSeXx/6AG9bwrjFlfLO2/laHIzNLG
+         Pp/ERRL96Ni/5UPQNgyBQJxbCtNjEkqzCkj5zRCZLEwYALoiL+fg7Xc5qQI3qFiE1MID
+         R6+vz4lFk5Z3GB5sUVhni+x0JmhU2WGtqzSfZopSUo/zdWOK+fl6nfodMOCx1lBliImp
+         5e3g==
+X-Gm-Message-State: AOAM531En3oeLn9veh88AXtfawnJKFkfav6VKxKRI/f8lmu90UtNCJIH
+        og1BdC5KULsvvBL7mKkGVnAFfA==
+X-Google-Smtp-Source: ABdhPJxPeQACYa4PqAeVCmVjvEbFidWdEHIEqDxU1SIdF2rEbkc88hcnIkpEODEOh3ASDI7d2YovtA==
+X-Received: by 2002:a62:e107:0:b029:13c:1611:658b with SMTP id q7-20020a62e1070000b029013c1611658bmr954182pfh.8.1600983320933;
+        Thu, 24 Sep 2020 14:35:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 64sm378291pfz.204.2020.09.24.14.35.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 14:30:51 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1B0B7183A90; Thu, 24 Sep 2020 23:30:51 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v8 04/11] bpf: move prog->aux->linked_prog and
- trampoline into bpf_link on attach
-In-Reply-To: <CAADnVQJmYosGXCnAY4UmhLE+xdQHb1DVOSC5yaZJh7OHzJcUvw@mail.gmail.com>
-References: <160079991372.8301.10648588027560707258.stgit@toke.dk>
- <160079991808.8301.6462172487971110332.stgit@toke.dk>
- <20200924001439.qitbu5tmzz55ck4z@ast-mbp.dhcp.thefacebook.com>
- <874knn1bw4.fsf@toke.dk>
- <CAADnVQJmYosGXCnAY4UmhLE+xdQHb1DVOSC5yaZJh7OHzJcUvw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 24 Sep 2020 23:30:51 +0200
-Message-ID: <87wo0ic16c.fsf@toke.dk>
+        Thu, 24 Sep 2020 14:35:19 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 14:35:18 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Tom Hromatka <tom.hromatka@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action
+ results
+Message-ID: <202009241434.CF8C1BA1D@keescook>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-5-keescook@chromium.org>
+ <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
+ <202009240038.864365E@keescook>
+ <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
+ <202009241251.F719CC4@keescook>
+ <CAHC9VhQudGg55atznkuWWW5h0d+vZZhO2NF4yNAqreg4NDsHKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhQudGg55atznkuWWW5h0d+vZZhO2NF4yNAqreg4NDsHKg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Sep 24, 2020 at 04:46:05PM -0400, Paul Moore wrote:
+> On Thu, Sep 24, 2020 at 3:52 PM Kees Cook <keescook@chromium.org> wrote:
+> > On Thu, Sep 24, 2020 at 11:28:55AM -0400, Paul Moore wrote:
+> > > On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
+> > > > On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
+> > > > > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> > > > > > This emulates absolutely the most basic seccomp filters to figure out
+> > > > > > if they will always give the same results for a given arch/nr combo.
+> > > > > >
+> > > > > > Nearly all seccomp filters are built from the following ops:
+> > > > > >
+> > > > > > BPF_LD  | BPF_W    | BPF_ABS
+> > > > > > BPF_JMP | BPF_JEQ  | BPF_K
+> > > > > > BPF_JMP | BPF_JGE  | BPF_K
+> > > > > > BPF_JMP | BPF_JGT  | BPF_K
+> > > > > > BPF_JMP | BPF_JSET | BPF_K
+> > > > > > BPF_JMP | BPF_JA
+> > > > > > BPF_RET | BPF_K
+> > > > > >
+> > > > > > These are now emulated to check for accesses beyond seccomp_data::arch
+> > > > > > or unknown instructions.
+> > > > > >
+> > > > > > Not yet implemented are:
+> > > > > >
+> > > > > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
+> > > > >
+> > > > > BPF_AND is normally only used on syscall arguments, not on the syscall
+> > > > > number or the architecture, right? And when a syscall argument is
+> > > > > loaded, we abort execution anyway. So I think there is no need to
+> > > > > implement those?
+> > > >
+> > > > Is that right? I can't actually tell what libseccomp is doing with
+> > > > ALU|AND. It looks like it's using it for building jump lists?
+> > >
+> > > There is an ALU|AND op in the jump resolution code, but that is really
+> > > just if libseccomp needs to fixup the accumulator because a code block
+> > > is expecting a masked value (right now that would only be a syscall
+> > > argument, not the syscall number itself).
+> > >
+> > > > Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
+> > >
+> > > Presently the only place where libseccomp uses ALU|AND is when the
+> > > masked equality comparison is used for comparing syscall arguments
+> > > (SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
+> > > information about how often that is used by libseccomp callers, but if
+> > > I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
+> > > of code hits; take that for whatever it is worth.  Tom may have some
+> > > more/better information.
+> > >
+> > > Of course no promises on future use :)  As one quick example, I keep
+> > > thinking about adding the instruction pointer to the list of things
+> > > that can be compared as part of a libseccomp rule, and if we do that I
+> > > would expect that we would want to also allow a masked comparison (and
+> > > utilize another ALU|AND bpf op there).  However, I'm not sure how
+> > > useful that would be in practice.
+> >
+> > Okay, cool. Thanks for checking on that. It sounds like the arg-less
+> > bitmap optimization can continue to ignore ALU|AND for now. :)
+> 
+> What's really the worst that could happen anyways? (/me ducks)  The
+> worst case is the filter falls back to the current performance levels
+> right?
 
->> > I think I will just start marking patches as changes-requested when I see that
->> > they break tests without replying and without reviewing.
->> > Please respect reviewer's time.
->>
->> That is completely fine if the tests are working in the first place. And
->> even when they're not (like in this case), pointing it out is fine, and
->> I'll obviously go investigate. But please at least reply to the email,
->> not all of us watch patchwork regularly.
->
-> Please see Documentation/bpf/bpf_devel_QA.rst.
-> patchwork status is the way we communicate the intent.
-> If the patch is not in the queue it won't be acted upon.
+Worse case for adding complexity to verifier is the bitmaps can be
+tricked into a bad state, but I've tried to design this so that it can
+only fail toward just running the filter. :)
 
-I do realise that you guys use patchwork as the status tracker, but from
-a submitter PoV, in practice a change there is coupled with an email
-either requesting something change, or notifying of merge. Which is
-fine, and I'm not asking you to do anything differently. I'm just
-suggesting that if you start silently marking patches as 'changes
-requested' without emailing the submitter explaining why, that will just
-going to end up creating confusion, and you'll get questions and/or
-identical resubmissions. So it won't actually solve anything...
-
-(And to be clear, I'm not saying this because I plan to deliberately
-submit patches with broken selftests in the future!)
-
--Toke
-
+-- 
+Kees Cook
