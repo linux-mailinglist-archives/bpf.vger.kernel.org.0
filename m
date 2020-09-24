@@ -2,142 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27A22779B7
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 21:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2402779C9
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 21:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgIXTwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 15:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
+        id S1726303AbgIXT46 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 15:56:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIXTwL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:52:11 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30651C0613CE
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 12:52:11 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k13so470753pfg.1
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 12:52:11 -0700 (PDT)
+        with ESMTP id S1726242AbgIXT45 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 15:56:57 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB177C0613CE;
+        Thu, 24 Sep 2020 12:56:57 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id k18so339530ybh.1;
+        Thu, 24 Sep 2020 12:56:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k70Xue22GFlB0rY9wGgnFf8SK2vwmBPDgshtczHYd+4=;
-        b=U97pSE2E3cWH2OMa2/1j1GXuJM9azr9TZPGI6w4DyW57tj+j9Ltmd/pid9zUZwnBNi
-         v1Nj4NptXZH5IE/5pxa9rv2NDAvYXrXKU7qOVssXD0Xio+R+4dq8ZzTUZn5qwdmrkUA9
-         t4M6wZmpJXLoyG+/Q2rEe/S1dt04TRaQ99LTA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yW4Sb5ujcpxoqND7/j5cwQs+yhdW2ARh8qlUcLJlqkc=;
+        b=f5eyfX3FMMsbhC/mccyNJ6RUd+VnE5EYvluo+PJG0Qk/pysC9yk0ocPIUH3CpwvRr7
+         iQyNqq3TsRCnFGgQP7UIspWO5c/EJp+vZ4J1A+Nh7NtDclaXAX+clO97/9mlrTd2RAar
+         L7td7HM5I6BSSdQD8ppJSu6A0jeFtNeGpUUyksMFk9tcMjum+AOMvDXmVp6SkPmwvdaR
+         3DhKw1Mt+zjVI8oZ8TwBcN033gr/YcPs9mqANzEJPQOIdiTRNTDhXLVlDQ4hTp2SYemy
+         Tb7kGaKJ2NXRn630ZDiE4yBgUT7xAZNOdiag2Mc2oiDTKvzxKJTdWmy82iaPnWB18Rv0
+         oTwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k70Xue22GFlB0rY9wGgnFf8SK2vwmBPDgshtczHYd+4=;
-        b=Eeg0+KYaMs3sjehC2BhxvZ3378T0qvAV9BGyrqgvsafQ0/c0RwMjOPi5/zX8bb21lc
-         Ir3K+ZdTNnnVXsANuYVsBeCIcjay+tO9R6hYCcl5T+9oroD3Oq+OLil3BwIQ+yVDC048
-         RYkbDsyshfCCQoOmKiJqMSmfYCMHiHdmcMrUH3NB7ZRp4zAKY8L7Bo25LPALcXkD42s6
-         UA46GGh6rvoBnZBDO38wVdVi9H/JUtlhamOYsJtwX7BcnkiHg1ZEWwjadk/DoI6wL7wR
-         6tv/h8eUkgt1EWGj5HxZAbycvGH5wUBCKhmHtpCeyea0oQtWMrGLcEnBd5xacjSJyWGr
-         l1Cg==
-X-Gm-Message-State: AOAM532D25rTnObMa24Oxqkw8QZyWPNQOgel0rhQvXgvfSXqzUnE6NBE
-        712qCRR3mdfoWPKRYES+l57Jd+78jhmO6mpG
-X-Google-Smtp-Source: ABdhPJzpsUJFf8IHAHpxoWh4JONrQ/df6mHI3aKnLsuTt2XZEKCv+YjNg5jbY6Sd/88urNoAFy6ZIg==
-X-Received: by 2002:a63:42:: with SMTP id 63mr553646pga.419.1600977130625;
-        Thu, 24 Sep 2020 12:52:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g9sm295305pfo.144.2020.09.24.12.52.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 12:52:09 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 12:52:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Tom Hromatka <tom.hromatka@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action
- results
-Message-ID: <202009241251.F719CC4@keescook>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-5-keescook@chromium.org>
- <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
- <202009240038.864365E@keescook>
- <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yW4Sb5ujcpxoqND7/j5cwQs+yhdW2ARh8qlUcLJlqkc=;
+        b=k4zXNUhp2HqrwHy1FlaG6DWUoO7aPjvTHkb7uTOAIZFP9bdYFdTqLAkeee+YsZkbVB
+         cyT/NZgnq24FVP7vnzYc1cPvs+Fvv770m2s3l8cznbIxZ/lpXDQUbacKMddrcxgn4g6W
+         ZCjTxwRrZMqNM10GUV4p2ZHGn1EkmnGJxIzWO6O9wvIbsPuzCo5Q7Sq4iSlT9IjiTZNN
+         T/UZ/R5ge96oI1t//ohtDrQ0+YNfZI5A05FhlU4U2/YI26rOf1xQmolMzyLnmHtrUpKR
+         I04h7yCXtzfzfxm8zn5luqkGz5nJt5Z1H/Rx//ay1Jpq4ydPKKDSsDrowpm6rFpdJ8em
+         Pc4Q==
+X-Gm-Message-State: AOAM532V15My66RtxCMs8MvVxCHBBsRTVy4gTFaP3pKyb+kATtT+j0V7
+        EJnfuLFg5odYInQCKmWDEK8tf8WCcnGmPW4zors=
+X-Google-Smtp-Source: ABdhPJwF33l8gEfQrwu+2VrRSFF5NDfPej5qi6OfOnjNpLgPHgEeWcFnfiyKc68IWvSR/LQena9QfJTR0hgGk6oLbmY=
+X-Received: by 2002:a25:730a:: with SMTP id o10mr573686ybc.403.1600977416822;
+ Thu, 24 Sep 2020 12:56:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
+References: <20200924011951.408313-1-songliubraving@fb.com> <20200924011951.408313-2-songliubraving@fb.com>
+In-Reply-To: <20200924011951.408313-2-songliubraving@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 24 Sep 2020 12:56:46 -0700
+Message-ID: <CAEf4Bzasv2wJZ32G0K9aohZN=s7nys5LMcM4MywyMxBW7baOsQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/3] bpf: enable BPF_PROG_TEST_RUN for raw_tracepoint
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:28:55AM -0400, Paul Moore wrote:
-> On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
-> > On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
-> > > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> > > > This emulates absolutely the most basic seccomp filters to figure out
-> > > > if they will always give the same results for a given arch/nr combo.
-> > > >
-> > > > Nearly all seccomp filters are built from the following ops:
-> > > >
-> > > > BPF_LD  | BPF_W    | BPF_ABS
-> > > > BPF_JMP | BPF_JEQ  | BPF_K
-> > > > BPF_JMP | BPF_JGE  | BPF_K
-> > > > BPF_JMP | BPF_JGT  | BPF_K
-> > > > BPF_JMP | BPF_JSET | BPF_K
-> > > > BPF_JMP | BPF_JA
-> > > > BPF_RET | BPF_K
-> > > >
-> > > > These are now emulated to check for accesses beyond seccomp_data::arch
-> > > > or unknown instructions.
-> > > >
-> > > > Not yet implemented are:
-> > > >
-> > > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
-> > >
-> > > BPF_AND is normally only used on syscall arguments, not on the syscall
-> > > number or the architecture, right? And when a syscall argument is
-> > > loaded, we abort execution anyway. So I think there is no need to
-> > > implement those?
-> >
-> > Is that right? I can't actually tell what libseccomp is doing with
-> > ALU|AND. It looks like it's using it for building jump lists?
-> 
-> There is an ALU|AND op in the jump resolution code, but that is really
-> just if libseccomp needs to fixup the accumulator because a code block
-> is expecting a masked value (right now that would only be a syscall
-> argument, not the syscall number itself).
-> 
-> > Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
-> 
-> Presently the only place where libseccomp uses ALU|AND is when the
-> masked equality comparison is used for comparing syscall arguments
-> (SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
-> information about how often that is used by libseccomp callers, but if
-> I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
-> of code hits; take that for whatever it is worth.  Tom may have some
-> more/better information.
-> 
-> Of course no promises on future use :)  As one quick example, I keep
-> thinking about adding the instruction pointer to the list of things
-> that can be compared as part of a libseccomp rule, and if we do that I
-> would expect that we would want to also allow a masked comparison (and
-> utilize another ALU|AND bpf op there).  However, I'm not sure how
-> useful that would be in practice.
+On Wed, Sep 23, 2020 at 6:46 PM Song Liu <songliubraving@fb.com> wrote:
+>
+> Add .test_run for raw_tracepoint. Also, introduce a new feature that runs
+> the target program on a specific CPU. This is achieved by a new flag in
+> bpf_attr.test, BPF_F_TEST_RUN_ON_CPU. When this flag is set, the program
+> is triggered on cpu with id bpf_attr.test.cpu. This feature is needed for
+> BPF programs that handle perf_event and other percpu resources, as the
+> program can access these resource locally.
+>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  include/linux/bpf.h            |  3 ++
+>  include/uapi/linux/bpf.h       |  7 +++
+>  kernel/bpf/syscall.c           |  2 +-
+>  kernel/trace/bpf_trace.c       |  1 +
+>  net/bpf/test_run.c             | 89 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  7 +++
+>  6 files changed, 108 insertions(+), 1 deletion(-)
+>
 
-Okay, cool. Thanks for checking on that. It sounds like the arg-less
-bitmap optimization can continue to ignore ALU|AND for now. :)
+[...]
 
--- 
-Kees Cook
+> +int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
+> +                            const union bpf_attr *kattr,
+> +                            union bpf_attr __user *uattr)
+> +{
+> +       void __user *ctx_in = u64_to_user_ptr(kattr->test.ctx_in);
+> +       __u32 ctx_size_in = kattr->test.ctx_size_in;
+> +       struct bpf_raw_tp_test_run_info info;
+> +       int cpu, err = 0;
+> +
+> +       /* doesn't support data_in/out, ctx_out, duration, or repeat */
+> +       if (kattr->test.data_in || kattr->test.data_out ||
+> +           kattr->test.ctx_out || kattr->test.duration ||
+> +           kattr->test.repeat)
+
+duration and repeat sound generally useful (benchmarking raw_tp
+programs), so it's a pity you haven't implemented them. But it can be
+added later, so not a deal breaker.
+
+> +               return -EINVAL;
+> +
+> +       if (ctx_size_in < prog->aux->max_ctx_offset)
+> +               return -EINVAL;
+> +
+> +       if (ctx_size_in) {
+> +               info.ctx = kzalloc(ctx_size_in, GFP_USER);
+> +               if (!info.ctx)
+> +                       return -ENOMEM;
+> +               if (copy_from_user(info.ctx, ctx_in, ctx_size_in)) {
+> +                       err = -EFAULT;
+> +                       goto out;
+> +               }
+> +       } else {
+> +               info.ctx = NULL;
+> +       }
+> +
+> +       info.prog = prog;
+> +       cpu = kattr->test.cpu;
+> +
+> +       if ((kattr->test.flags & BPF_F_TEST_RUN_ON_CPU) == 0 ||
+> +           cpu == smp_processor_id()) {
+
+should we enforce that cpu == 0 if BPF_F_TEST_RUN_ON_CPU is not set?
+
+
+> +               __bpf_prog_test_run_raw_tp(&info);
+> +       } else {
+> +               /* smp_call_function_single() also checks cpu_online()
+> +                * after csd_lock(). However, since cpu_plus is from user
+
+cpu_plus leftover in a comment
+
+> +                * space, let's do an extra quick check to filter out
+> +                * invalid value before smp_call_function_single().
+> +                */
+> +               if (!cpu_online(cpu)) {
+
+briefly looking at cpu_online() code, it seems like it's not checking
+that cpu is < NR_CPUS. Should we add a selftest that validates that
+passing unreasonable cpu index doesn't generate warning or invalid
+memory access?
+
+> +                       err = -ENXIO;
+> +                       goto out;
+> +               }
+> +
+> +               err = smp_call_function_single(cpu, __bpf_prog_test_run_raw_tp,
+> +                                              &info, 1);
+> +               if (err)
+> +                       goto out;
+> +       }
+> +
+
+[...]
