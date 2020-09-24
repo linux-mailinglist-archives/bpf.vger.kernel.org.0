@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5236727717E
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 14:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB95B27717F
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 14:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgIXMo4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 08:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
+        id S1727823AbgIXMoz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 08:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgIXMom (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:44:42 -0400
+        with ESMTP id S1727744AbgIXMon (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:44:43 -0400
 Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B845FC0613CE;
-        Thu, 24 Sep 2020 05:44:41 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id y9so3000468ilq.2;
-        Thu, 24 Sep 2020 05:44:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCA8C0613CE;
+        Thu, 24 Sep 2020 05:44:42 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t13so2941941ile.9;
+        Thu, 24 Sep 2020 05:44:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vVtc8/AttZR1MSjVTJ8WZqoJcQR03mZ2toS3D2ZBVEk=;
-        b=huGLx8jnPeXPwAmSiZJC/PDdBoEYKEeFSpdPi29lSu27OsG7ZKHDRyVsYp7rRF9FVT
-         mNNTEmLzj3ot4DDDPvJUH4ICNxWABUeWuMWg0/kIDcpB4JPAGwH+UOLhSPFWf4aj5QqZ
-         L3F5hxQV7hH1Uzc6ReFzah8wsfghgFOIsf/DhsJ7tTKJAnZFkbNCHy2H0Qro/9Th9f0W
-         9H3lmToDju6YUFNgEpZPReEeFNzwGXDIKnFlyzN9DaacEmn+5yQN9cClMA0erv2enzbw
-         v/KPObn4kFRjEBtgpPHAAnRxOh0tgyT7ouMFH9Cjv+K1KtavqbOPsQ8yQN1SxDCIdagi
-         bIJw==
+        bh=2RSGrlZ39dx9fbbfSmGna9gzY/hFO6HuX2v4KEa1nHI=;
+        b=GBAZLxP5WwwFM0fNq+ZFT7MskxpVSWDuvAdFCKxl2KNETC/6bz15xg2RyM/MW8CoqZ
+         15HkblnhkvdKPZF61y+38XFnBAX+CWPra91dh5EBYViEPR984nFFjmozJoAyJMiy8Lpu
+         Hd8ElDE74f44qtwsD3/JbBIZJCHcAFw+cT7s8oNrOMGm/K4JKg5L37liATPhjZryyOnE
+         7lyuUe6G/A+VXryIo5SLSPirTkhgipGnI6v+ivy0TeLG9ZKwx3B+C/lCfmns/rHCR35d
+         W1+xffOFjTxlt1m0ix/aV2jrI0V4U9W6ytSLEelhkHl+4rFMpaj3JCc4uJLfJzLd8mht
+         wQJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vVtc8/AttZR1MSjVTJ8WZqoJcQR03mZ2toS3D2ZBVEk=;
-        b=eytcsUN1enp4ZdOF/t6UZ5Ur5ePjX8JAA2NDumNr1QL7DKi7sh8HFhQYlOkrJqOGR7
-         PZc43Yxi9DxxEIS8FbXQ+Dhf7Y9rytFaz5RaSUkyBQclCsk5d4DLRDHk9XcRPXPXWh+v
-         7pU7nHd75fAQxw2iMuBeasP7GLi4+fbuXg1AIM1P7ncVDITbZFPJ1uXkCp63rPddSWmo
-         bODDnMM5T8XlBDESMDzpLA0YOwoRjOZjQFKFPTWauJBnBg/fDgGJf+zlu9T6ZZry3Ain
-         rSknFvycSxMTdDoVHOCidEaT5vlyA7zx2t6Wcr0R9UpzutL12/iSwk82Sqien6wL5Nag
-         5Ndw==
-X-Gm-Message-State: AOAM530K9jFRnC/Q/XFqEStIoC3s/Riv2LhS3cneDiSWx/JAU3SL+0vV
-        DaQroARZVt4yfXjTKD8rIdc=
-X-Google-Smtp-Source: ABdhPJxk4rxIcx4yaqiheHLP6mT9NyhqvmeaoBIf5C5aaIbvfOsvvq7HzsGxLeybpP+X5DC6f6jwOQ==
-X-Received: by 2002:a92:5f06:: with SMTP id t6mr4049813ilb.168.1600951480857;
-        Thu, 24 Sep 2020 05:44:40 -0700 (PDT)
+        bh=2RSGrlZ39dx9fbbfSmGna9gzY/hFO6HuX2v4KEa1nHI=;
+        b=UEH9WTj3qaB4NWYDVRxY0AFQnzkWlTc9z+uxr5w2UvP7gMOE4qZoqm/pNwl6PLjTiE
+         4LTkFojkj3Vzal09tozW7BQHI5Pc4RLFElm15Vj5vCx5O9lqSfVjUZFQxn+iaLZoheHW
+         3EkdwwqSQywNrGgMfl27qaD8gNV6j3+zs7EQW53aUw/fKUkuLYePE5E8GJwFsOIVGg0K
+         3pR/ny5+bl9eDflFi8CqYJdyFGVOJU3i2esjKm9hpPJCF585UoGONgJFtw0c8z19aP/H
+         atEqD9s4GdrtY2VqW1sdfFT/8noH+WqIy+dhJoaMlN9iLQabJcdCRC/hOwFYWlxyjd+O
+         L4PQ==
+X-Gm-Message-State: AOAM530GP4A8fyB2v67x7K9QdgpVxD8NZaS8R2PFVuLRFsB7ueD4py5A
+        mPUwe+X/gqhFTEhJXlUCfy0=
+X-Google-Smtp-Source: ABdhPJwsnlCtRTwgvCl65RaMxVuVHWLSPLl4gO6FenYoEeCBzwaDOguanaq3vIJFFNko593mZkhNAw==
+X-Received: by 2002:a92:3554:: with SMTP id c81mr3964705ila.265.1600951482078;
+        Thu, 24 Sep 2020 05:44:42 -0700 (PDT)
 Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
-        by smtp.gmail.com with ESMTPSA id p5sm1575175ilg.32.2020.09.24.05.44.39
+        by smtp.gmail.com with ESMTPSA id p5sm1575175ilg.32.2020.09.24.05.44.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:44:40 -0700 (PDT)
+        Thu, 24 Sep 2020 05:44:41 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     containers@lists.linux-foundation.org
 Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
@@ -65,9 +65,9 @@ Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
         Tycho Andersen <tycho@tycho.pizza>,
         Valentin Rothberg <vrothber@redhat.com>,
         Will Drewry <wad@chromium.org>
-Subject: [PATCH v2 seccomp 1/6] seccomp: Move config option SECCOMP to arch/Kconfig
-Date:   Thu, 24 Sep 2020 07:44:16 -0500
-Message-Id: <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+Subject: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+Date:   Thu, 24 Sep 2020 07:44:17 -0500
+Message-Id: <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1600951211.git.yifeifz2@illinois.edu>
 References: <cover.1600951211.git.yifeifz2@illinois.edu>
@@ -79,472 +79,535 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <yifeifz2@illinois.edu>
 
-In order to make adding configurable features into seccomp
-easier, it's better to have the options at one single location,
-considering easpecially that the bulk of seccomp code is
-arch-independent. An quick look also show that many SECCOMP
-descriptions are outdated; they talk about /proc rather than
-prctl.
+Seccomp cache emulator needs to know all the architecture numbers
+that syscall_get_arch() could return for the kernel build in order
+to generate a cache for all of them.
 
-As a result of moving the config option and keeping it default
-on, architectures arm, arm64, csky, riscv, sh, and xtensa
-did not have SECCOMP on by default prior to this and SECCOMP will
-be default in this change.
+The array is declared in header as static __maybe_unused const
+to maximize compiler optimiation opportunities such as loop
+unrolling.
 
-Architectures microblaze, mips, powerpc, s390, sh, and sparc
-have an outdated depend on PROC_FS and this dependency is removed
-in this change.
-
-Suggested-by: Jann Horn <jannh@google.com>
-Link: https://lore.kernel.org/lkml/CAG48ez1YWz9cnp08UZgeieYRhHdqh-ch7aNwc4JRBnGyrmgfMg@mail.gmail.com/
 Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 ---
- arch/Kconfig            | 21 +++++++++++++++++++++
- arch/arm/Kconfig        | 15 +--------------
- arch/arm64/Kconfig      | 13 -------------
- arch/csky/Kconfig       | 13 -------------
- arch/microblaze/Kconfig | 18 +-----------------
- arch/mips/Kconfig       | 17 -----------------
- arch/parisc/Kconfig     | 16 ----------------
- arch/powerpc/Kconfig    | 17 -----------------
- arch/riscv/Kconfig      | 13 -------------
- arch/s390/Kconfig       | 17 -----------------
- arch/sh/Kconfig         | 16 ----------------
- arch/sparc/Kconfig      | 18 +-----------------
- arch/um/Kconfig         | 16 ----------------
- arch/x86/Kconfig        | 16 ----------------
- arch/xtensa/Kconfig     | 14 --------------
- 15 files changed, 24 insertions(+), 216 deletions(-)
+ arch/alpha/include/asm/syscall.h      |  4 ++++
+ arch/arc/include/asm/syscall.h        | 24 +++++++++++++++++++-----
+ arch/arm/include/asm/syscall.h        |  4 ++++
+ arch/arm64/include/asm/syscall.h      |  4 ++++
+ arch/c6x/include/asm/syscall.h        | 13 +++++++++++--
+ arch/csky/include/asm/syscall.h       |  4 ++++
+ arch/h8300/include/asm/syscall.h      |  4 ++++
+ arch/hexagon/include/asm/syscall.h    |  4 ++++
+ arch/ia64/include/asm/syscall.h       |  4 ++++
+ arch/m68k/include/asm/syscall.h       |  4 ++++
+ arch/microblaze/include/asm/syscall.h |  4 ++++
+ arch/mips/include/asm/syscall.h       | 16 ++++++++++++++++
+ arch/nds32/include/asm/syscall.h      | 13 +++++++++++--
+ arch/nios2/include/asm/syscall.h      |  4 ++++
+ arch/openrisc/include/asm/syscall.h   |  4 ++++
+ arch/parisc/include/asm/syscall.h     |  7 +++++++
+ arch/powerpc/include/asm/syscall.h    | 14 ++++++++++++++
+ arch/riscv/include/asm/syscall.h      | 14 ++++++++++----
+ arch/s390/include/asm/syscall.h       |  7 +++++++
+ arch/sh/include/asm/syscall_32.h      | 17 +++++++++++------
+ arch/sparc/include/asm/syscall.h      |  9 +++++++++
+ arch/x86/include/asm/syscall.h        | 11 +++++++++++
+ arch/x86/um/asm/syscall.h             | 14 ++++++++++----
+ arch/xtensa/include/asm/syscall.h     |  4 ++++
+ 24 files changed, 184 insertions(+), 23 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index af14a567b493..6dfc5673215d 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -444,8 +444,12 @@ config ARCH_WANT_OLD_COMPAT_IPC
- 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION
- 	bool
+diff --git a/arch/alpha/include/asm/syscall.h b/arch/alpha/include/asm/syscall.h
+index 11c688c1d7ec..625ac9b23f37 100644
+--- a/arch/alpha/include/asm/syscall.h
++++ b/arch/alpha/include/asm/syscall.h
+@@ -4,6 +4,10 @@
  
-+config HAVE_ARCH_SECCOMP
-+	bool
+ #include <uapi/linux/audit.h>
+ 
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_ALPHA
++};
 +
- config HAVE_ARCH_SECCOMP_FILTER
- 	bool
-+	select HAVE_ARCH_SECCOMP
- 	help
- 	  An arch should select this symbol if it provides all of these things:
- 	  - syscall_get_arch()
-@@ -458,6 +462,23 @@ config HAVE_ARCH_SECCOMP_FILTER
- 	    results in the system call being skipped immediately.
- 	  - seccomp syscall wired up
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_ALPHA;
+diff --git a/arch/arc/include/asm/syscall.h b/arch/arc/include/asm/syscall.h
+index 94529e89dff0..899c13cbf5cc 100644
+--- a/arch/arc/include/asm/syscall.h
++++ b/arch/arc/include/asm/syscall.h
+@@ -65,14 +65,28 @@ syscall_get_arguments(struct task_struct *task, struct pt_regs *regs,
+ 	}
+ }
  
-+config SECCOMP
-+	def_bool y
-+	depends on HAVE_ARCH_SECCOMP
-+	prompt "Enable seccomp to safely compute untrusted bytecode"
-+	help
-+	  This kernel feature is useful for number crunching applications
-+	  that may need to compute untrusted bytecode during their
-+	  execution. By using pipes or other transports made available to
-+	  the process as file descriptors supporting the read/write
-+	  syscalls, it's possible to isolate those applications in
-+	  their own address space using seccomp. Once seccomp is
-+	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
-+	  and the task is only allowed to execute a few safe syscalls
-+	  defined by each seccomp mode.
++#ifdef CONFIG_ISA_ARCOMPACT
++# ifdef CONFIG_CPU_BIG_ENDIAN
++#  define SYSCALL_ARCH AUDIT_ARCH_ARCOMPACTBE
++# else
++#  define SYSCALL_ARCH AUDIT_ARCH_ARCOMPACT
++# endif /* CONFIG_CPU_BIG_ENDIAN */
++#else
++# ifdef CONFIG_CPU_BIG_ENDIAN
++#  define SYSCALL_ARCH AUDIT_ARCH_ARCV2BE
++# else
++#  define SYSCALL_ARCH AUDIT_ARCH_ARCV2
++# endif /* CONFIG_CPU_BIG_ENDIAN */
++#endif /* CONFIG_ISA_ARCOMPACT */
 +
-+	  If unsure, say Y. Only embedded should say N here.
++static __maybe_unused const int syscall_arches[] = {
++	SYSCALL_ARCH
++};
 +
- config SECCOMP_FILTER
- 	def_bool y
- 	depends on HAVE_ARCH_SECCOMP_FILTER && SECCOMP && NET
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index e00d94b16658..e26c19a16284 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -67,6 +67,7 @@ config ARM
- 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL && !CPU_ENDIAN_BE32 && MMU
- 	select HAVE_ARCH_KGDB if !CPU_ENDIAN_BE32 && MMU
- 	select HAVE_ARCH_MMAP_RND_BITS if MMU
-+	select HAVE_ARCH_SECCOMP
- 	select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
- 	select HAVE_ARCH_TRACEHOOK
-@@ -1617,20 +1618,6 @@ config UACCESS_WITH_MEMCPY
- 	  However, if the CPU data cache is using a write-allocate mode,
- 	  this option is unlikely to provide any performance gain.
+ static inline int
+ syscall_get_arch(struct task_struct *task)
+ {
+-	return IS_ENABLED(CONFIG_ISA_ARCOMPACT)
+-		? (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
+-			? AUDIT_ARCH_ARCOMPACTBE : AUDIT_ARCH_ARCOMPACT)
+-		: (IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
+-			? AUDIT_ARCH_ARCV2BE : AUDIT_ARCH_ARCV2);
++	return SYSCALL_ARCH;
+ }
  
--config SECCOMP
--	bool
--	prompt "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
- config PARAVIRT
- 	bool "Enable paravirtualization code"
- 	help
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 6d232837cbee..98c4e34cbec1 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1033,19 +1033,6 @@ config ARCH_ENABLE_SPLIT_PMD_PTLOCK
- config CC_HAVE_SHADOW_CALL_STACK
- 	def_bool $(cc-option, -fsanitize=shadow-call-stack -ffixed-x18)
+ #endif
+diff --git a/arch/arm/include/asm/syscall.h b/arch/arm/include/asm/syscall.h
+index fd02761ba06c..33ade26e3956 100644
+--- a/arch/arm/include/asm/syscall.h
++++ b/arch/arm/include/asm/syscall.h
+@@ -73,6 +73,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	memcpy(&regs->ARM_r0 + 1, args, 5 * sizeof(args[0]));
+ }
  
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
- config PARAVIRT
- 	bool "Enable paravirtualization code"
- 	help
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 3d5afb5f5685..7f424c85772c 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -309,16 +309,3 @@ endmenu
- source "arch/csky/Kconfig.platforms"
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_ARM
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	/* ARM tasks don't change audit architectures on the fly. */
+diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
+index cfc0672013f6..77f3d300e7a0 100644
+--- a/arch/arm64/include/asm/syscall.h
++++ b/arch/arm64/include/asm/syscall.h
+@@ -82,6 +82,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	memcpy(&regs->regs[1], args, 5 * sizeof(args[0]));
+ }
  
- source "kernel/Kconfig.hz"
--
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index d262ac0c8714..37bd6a5f38fb 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -26,6 +26,7 @@ config MICROBLAZE
- 	select GENERIC_SCHED_CLOCK
- 	select HAVE_ARCH_HASH
- 	select HAVE_ARCH_KGDB
-+	select HAVE_ARCH_SECCOMP
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
-@@ -120,23 +121,6 @@ config CMDLINE_FORCE
- 	  Set this to have arguments from the default kernel command string
- 	  override those passed by the boot loader.
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_ARM, AUDIT_ARCH_AARCH64
++};
++
+ /*
+  * We don't care about endianness (__AUDIT_ARCH_LE bit) here because
+  * AArch64 has the same system calls both on little- and big- endian.
+diff --git a/arch/c6x/include/asm/syscall.h b/arch/c6x/include/asm/syscall.h
+index 38f3e2284ecd..0d78c67ee1fc 100644
+--- a/arch/c6x/include/asm/syscall.h
++++ b/arch/c6x/include/asm/syscall.h
+@@ -66,10 +66,19 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	regs->a9 = *args;
+ }
  
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	depends on PROC_FS
--	default y
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via /proc/<pid>/seccomp, it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
--	  If unsure, say Y. Only embedded should say N here.
--
- endmenu
++#ifdef CONFIG_CPU_BIG_ENDIAN
++#define SYSCALL_ARCH AUDIT_ARCH_C6XBE
++#else
++#define SYSCALL_ARCH AUDIT_ARCH_C6X
++#endif
++
++static __maybe_unused const int syscall_arches[] = {
++	SYSCALL_ARCH
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+-	return IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
+-		? AUDIT_ARCH_C6XBE : AUDIT_ARCH_C6X;
++	return SYSCALL_ARCH;
+ }
  
- menu "Kernel features"
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index c95fa3a2484c..5f88a8fc11fc 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3004,23 +3004,6 @@ config PHYSICAL_START
- 	  specified in the "crashkernel=YM@XM" command line boot parameter
- 	  passed to the panic-ed kernel).
+ #endif /* __ASM_C6X_SYSCALLS_H */
+diff --git a/arch/csky/include/asm/syscall.h b/arch/csky/include/asm/syscall.h
+index f624fa3bbc22..86242d2850d7 100644
+--- a/arch/csky/include/asm/syscall.h
++++ b/arch/csky/include/asm/syscall.h
+@@ -68,6 +68,10 @@ syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
+ 	memcpy(&regs->a1, args, 5 * sizeof(regs->a1));
+ }
  
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	depends on PROC_FS
--	default y
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via /proc/<pid>/seccomp, it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
--	  If unsure, say Y. Only embedded should say N here.
--
- config MIPS_O32_FP64_SUPPORT
- 	bool "Support for O32 binaries using 64-bit FP" if !CPU_MIPSR6
- 	depends on 32BIT || MIPS32_O32
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 3b0f53dd70bc..cd4afe1e7a6c 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -378,19 +378,3 @@ endmenu
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_CSKY
++};
++
+ static inline int
+ syscall_get_arch(struct task_struct *task)
+ {
+diff --git a/arch/h8300/include/asm/syscall.h b/arch/h8300/include/asm/syscall.h
+index 01666b8bb263..775f6ac8fde3 100644
+--- a/arch/h8300/include/asm/syscall.h
++++ b/arch/h8300/include/asm/syscall.h
+@@ -28,6 +28,10 @@ syscall_get_arguments(struct task_struct *task, struct pt_regs *regs,
+ 	*args   = regs->er6;
+ }
  
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_H8300
++};
++
+ static inline int
+ syscall_get_arch(struct task_struct *task)
+ {
+diff --git a/arch/hexagon/include/asm/syscall.h b/arch/hexagon/include/asm/syscall.h
+index f6e454f18038..6ee21a76f6a3 100644
+--- a/arch/hexagon/include/asm/syscall.h
++++ b/arch/hexagon/include/asm/syscall.h
+@@ -45,6 +45,10 @@ static inline long syscall_get_return_value(struct task_struct *task,
+ 	return regs->r00;
+ }
  
- source "drivers/parisc/Kconfig"
--
--config SECCOMP
--	def_bool y
--	prompt "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
--	  If unsure, say Y. Only embedded should say N here.
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 1f48bbfb3ce9..136fe860caef 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -934,23 +934,6 @@ config ARCH_WANTS_FREEZER_CONTROL
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_HEXAGON
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_HEXAGON;
+diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
+index 6c6f16e409a8..19456125c89a 100644
+--- a/arch/ia64/include/asm/syscall.h
++++ b/arch/ia64/include/asm/syscall.h
+@@ -71,6 +71,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	ia64_syscall_get_set_arguments(task, regs, args, 1);
+ }
  
- source "kernel/power/Kconfig"
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_IA64
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_IA64;
+diff --git a/arch/m68k/include/asm/syscall.h b/arch/m68k/include/asm/syscall.h
+index 465ac039be09..031b051f9026 100644
+--- a/arch/m68k/include/asm/syscall.h
++++ b/arch/m68k/include/asm/syscall.h
+@@ -4,6 +4,10 @@
  
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	depends on PROC_FS
--	default y
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via /proc/<pid>/seccomp, it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
--	  If unsure, say Y. Only embedded should say N here.
--
- config PPC_MEM_KEYS
- 	prompt "PowerPC Memory Protection Keys"
- 	def_bool y
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index df18372861d8..c456b558fab9 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -333,19 +333,6 @@ menu "Kernel features"
+ #include <uapi/linux/audit.h>
  
- source "kernel/Kconfig.hz"
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_M68K
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_M68K;
+diff --git a/arch/microblaze/include/asm/syscall.h b/arch/microblaze/include/asm/syscall.h
+index 3a6924f3cbde..28cde14056d1 100644
+--- a/arch/microblaze/include/asm/syscall.h
++++ b/arch/microblaze/include/asm/syscall.h
+@@ -105,6 +105,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ asmlinkage unsigned long do_syscall_trace_enter(struct pt_regs *regs);
+ asmlinkage void do_syscall_trace_leave(struct pt_regs *regs);
  
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
- config RISCV_SBI_V01
- 	bool "SBI v0.1 support"
- 	default y
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 3d86e12e8e3c..7f7b40ec699e 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -791,23 +791,6 @@ config CRASH_DUMP
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_MICROBLAZE
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_MICROBLAZE;
+diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
+index 25fa651c937d..29e4c1c47c54 100644
+--- a/arch/mips/include/asm/syscall.h
++++ b/arch/mips/include/asm/syscall.h
+@@ -140,6 +140,22 @@ extern const unsigned long sys_call_table[];
+ extern const unsigned long sys32_call_table[];
+ extern const unsigned long sysn32_call_table[];
  
- endmenu
++static __maybe_unused const int syscall_arches[] = {
++#ifdef __LITTLE_ENDIAN
++	AUDIT_ARCH_MIPSEL,
++# ifdef CONFIG_64BIT
++	AUDIT_ARCH_MIPSEL64,
++	AUDIT_ARCH_MIPSEL64N32,
++# endif /* CONFIG_64BIT */
++#else
++	AUDIT_ARCH_MIPS,
++# ifdef CONFIG_64BIT
++	AUDIT_ARCH_MIPS64,
++	AUDIT_ARCH_MIPS64N32,
++# endif /* CONFIG_64BIT */
++#endif /* __LITTLE_ENDIAN */
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	int arch = AUDIT_ARCH_MIPS;
+diff --git a/arch/nds32/include/asm/syscall.h b/arch/nds32/include/asm/syscall.h
+index 7b5180d78e20..2dd5e33bcfcb 100644
+--- a/arch/nds32/include/asm/syscall.h
++++ b/arch/nds32/include/asm/syscall.h
+@@ -154,11 +154,20 @@ syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
+ 	memcpy(&regs->uregs[0] + 1, args, 5 * sizeof(args[0]));
+ }
  
--config SECCOMP
--	def_bool y
--	prompt "Enable seccomp to safely compute untrusted bytecode"
--	depends on PROC_FS
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via /proc/<pid>/seccomp, it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
--	  If unsure, say Y.
--
- config CCW
- 	def_bool y
++#ifdef CONFIG_CPU_BIG_ENDIAN
++#define SYSCALL_ARCH AUDIT_ARCH_NDS32BE
++#else
++#define SYSCALL_ARCH AUDIT_ARCH_NDS32
++#endif
++
++static __maybe_unused const int syscall_arches[] = {
++	SYSCALL_ARCH
++};
++
+ static inline int
+ syscall_get_arch(struct task_struct *task)
+ {
+-	return IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
+-		? AUDIT_ARCH_NDS32BE : AUDIT_ARCH_NDS32;
++	return SYSCALL_ARCH;
+ }
  
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index d20927128fce..18278152c91c 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -600,22 +600,6 @@ config PHYSICAL_START
- 	  where the fail safe kernel needs to run at a different address
- 	  than the panic-ed kernel.
+ #endif /* _ASM_NDS32_SYSCALL_H */
+diff --git a/arch/nios2/include/asm/syscall.h b/arch/nios2/include/asm/syscall.h
+index 526449edd768..8fa2716cac5a 100644
+--- a/arch/nios2/include/asm/syscall.h
++++ b/arch/nios2/include/asm/syscall.h
+@@ -69,6 +69,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	regs->r9 = *args;
+ }
  
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	depends on PROC_FS
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl, it cannot be disabled and the task is only
--	  allowed to execute a few safe syscalls defined by each seccomp
--	  mode.
--
--	  If unsure, say N.
--
- config SMP
- 	bool "Symmetric multi-processing support"
- 	depends on SYS_SUPPORTS_SMP
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index efeff2c896a5..d62ce83cf009 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -23,6 +23,7 @@ config SPARC
- 	select HAVE_OPROFILE
- 	select HAVE_ARCH_KGDB if !SMP || SPARC64
- 	select HAVE_ARCH_TRACEHOOK
-+	select HAVE_ARCH_SECCOMP if SPARC64
- 	select HAVE_EXIT_THREAD
- 	select HAVE_PCI
- 	select SYSCTL_EXCEPTION_TRACE
-@@ -226,23 +227,6 @@ config EARLYFB
- 	help
- 	  Say Y here to enable a faster early framebuffer boot console.
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_NIOS2
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_NIOS2;
+diff --git a/arch/openrisc/include/asm/syscall.h b/arch/openrisc/include/asm/syscall.h
+index e6383be2a195..4eb28ad08042 100644
+--- a/arch/openrisc/include/asm/syscall.h
++++ b/arch/openrisc/include/asm/syscall.h
+@@ -64,6 +64,10 @@ syscall_set_arguments(struct task_struct *task, struct pt_regs *regs,
+ 	memcpy(&regs->gpr[3], args, 6 * sizeof(args[0]));
+ }
  
--config SECCOMP
--	bool "Enable seccomp to safely compute untrusted bytecode"
--	depends on SPARC64 && PROC_FS
--	default y
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via /proc/<pid>/seccomp, it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
--	  If unsure, say Y. Only embedded should say N here.
--
- config HOTPLUG_CPU
- 	bool "Support for hot-pluggable CPUs"
- 	depends on SPARC64 && SMP
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index eb51fec75948..d49f471b02e3 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -173,22 +173,6 @@ config PGTABLE_LEVELS
- 	default 3 if 3_LEVEL_PGTABLES
- 	default 2
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_OPENRISC
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_OPENRISC;
+diff --git a/arch/parisc/include/asm/syscall.h b/arch/parisc/include/asm/syscall.h
+index 00b127a5e09b..2915f140c9fd 100644
+--- a/arch/parisc/include/asm/syscall.h
++++ b/arch/parisc/include/asm/syscall.h
+@@ -55,6 +55,13 @@ static inline void syscall_rollback(struct task_struct *task,
+ 	/* do nothing */
+ }
  
--config SECCOMP
--	def_bool y
--	prompt "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
--	  If unsure, say Y.
--
- config UML_TIME_TRAVEL_SUPPORT
- 	bool
- 	prompt "Support time-travel mode (e.g. for test execution)"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7101ac64bb20..1ab22869a765 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1968,22 +1968,6 @@ config EFI_MIXED
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_PARISC,
++#ifdef CONFIG_64BIT
++	AUDIT_ARCH_PARISC64,
++#endif
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	int arch = AUDIT_ARCH_PARISC;
+diff --git a/arch/powerpc/include/asm/syscall.h b/arch/powerpc/include/asm/syscall.h
+index fd1b518eed17..781deb211e3d 100644
+--- a/arch/powerpc/include/asm/syscall.h
++++ b/arch/powerpc/include/asm/syscall.h
+@@ -104,6 +104,20 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	regs->orig_gpr3 = args[0];
+ }
  
- 	   If unsure, say N.
++static __maybe_unused const int syscall_arches[] = {
++#ifdef __LITTLE_ENDIAN__
++	AUDIT_ARCH_PPC | __AUDIT_ARCH_LE,
++# ifdef CONFIG_PPC64
++	AUDIT_ARCH_PPC64LE,
++# endif /* CONFIG_PPC64 */
++#else
++	AUDIT_ARCH_PPC,
++# ifdef CONFIG_PPC64
++	AUDIT_ARCH_PPC64,
++# endif /* CONFIG_PPC64 */
++#endif /* __LITTLE_ENDIAN__ */
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	int arch;
+diff --git a/arch/riscv/include/asm/syscall.h b/arch/riscv/include/asm/syscall.h
+index 49350c8bd7b0..4b36d358243e 100644
+--- a/arch/riscv/include/asm/syscall.h
++++ b/arch/riscv/include/asm/syscall.h
+@@ -73,13 +73,19 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	memcpy(&regs->a1, args, 5 * sizeof(regs->a1));
+ }
  
--config SECCOMP
--	def_bool y
--	prompt "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
+-static inline int syscall_get_arch(struct task_struct *task)
+-{
+ #ifdef CONFIG_64BIT
+-	return AUDIT_ARCH_RISCV64;
++#define SYSCALL_ARCH AUDIT_ARCH_RISCV64
+ #else
+-	return AUDIT_ARCH_RISCV32;
++#define SYSCALL_ARCH AUDIT_ARCH_RISCV32
+ #endif
++
++static __maybe_unused const int syscall_arches[] = {
++	SYSCALL_ARCH
++};
++
++static inline int syscall_get_arch(struct task_struct *task)
++{
++	return SYSCALL_ARCH;
+ }
+ 
+ #endif	/* _ASM_RISCV_SYSCALL_H */
+diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
+index d9d5de0f67ff..4cb9da36610a 100644
+--- a/arch/s390/include/asm/syscall.h
++++ b/arch/s390/include/asm/syscall.h
+@@ -89,6 +89,13 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	regs->orig_gpr2 = args[0];
+ }
+ 
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_S390X,
++#ifdef CONFIG_COMPAT
++	AUDIT_ARCH_S390,
++#endif
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ #ifdef CONFIG_COMPAT
+diff --git a/arch/sh/include/asm/syscall_32.h b/arch/sh/include/asm/syscall_32.h
+index cb51a7528384..4780f2339c72 100644
+--- a/arch/sh/include/asm/syscall_32.h
++++ b/arch/sh/include/asm/syscall_32.h
+@@ -69,13 +69,18 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	regs->regs[4] = args[0];
+ }
+ 
+-static inline int syscall_get_arch(struct task_struct *task)
+-{
+-	int arch = AUDIT_ARCH_SH;
 -
--	  If unsure, say Y. Only embedded should say N here.
--
- source "kernel/Kconfig.hz"
+ #ifdef CONFIG_CPU_LITTLE_ENDIAN
+-	arch |= __AUDIT_ARCH_LE;
++#define SYSCALL_ARCH AUDIT_ARCH_SHEL
++#else
++#define SYSCALL_ARCH AUDIT_ARCH_SH
+ #endif
+-	return arch;
++
++static __maybe_unused const int syscall_arches[] = {
++	SYSCALL_ARCH
++};
++
++static inline int syscall_get_arch(struct task_struct *task)
++{
++	return SYSCALL_ARCH;
+ }
+ #endif /* __ASM_SH_SYSCALL_32_H */
+diff --git a/arch/sparc/include/asm/syscall.h b/arch/sparc/include/asm/syscall.h
+index 62a5a78804c4..a458992cdcfe 100644
+--- a/arch/sparc/include/asm/syscall.h
++++ b/arch/sparc/include/asm/syscall.h
+@@ -127,6 +127,15 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 		regs->u_regs[UREG_I0 + i] = args[i];
+ }
  
- config KEXEC
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index e997e0119c02..d8a29dc5a284 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -217,20 +217,6 @@ config HOTPLUG_CPU
++static __maybe_unused const int syscall_arches[] = {
++#ifdef CONFIG_SPARC64
++	AUDIT_ARCH_SPARC64,
++#endif
++#if !defined(CONFIG_SPARC64) || defined(CONFIG_COMPAT)
++	AUDIT_ARCH_SPARC,
++#endif
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ #if defined(CONFIG_SPARC64) && defined(CONFIG_COMPAT)
+diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
+index 7cbf733d11af..e13bb2a65b6f 100644
+--- a/arch/x86/include/asm/syscall.h
++++ b/arch/x86/include/asm/syscall.h
+@@ -97,6 +97,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	memcpy(&regs->bx + i, args, n * sizeof(args[0]));
+ }
  
- 	  Say N if you want to disable CPU hotplug.
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_I386
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_I386;
+@@ -152,6 +156,13 @@ static inline void syscall_set_arguments(struct task_struct *task,
+ 	}
+ }
  
--config SECCOMP
--	bool
--	prompt "Enable seccomp to safely compute untrusted bytecode"
--	help
--	  This kernel feature is useful for number crunching applications
--	  that may need to compute untrusted bytecode during their
--	  execution. By using pipes or other transports made available to
--	  the process as file descriptors supporting the read/write
--	  syscalls, it's possible to isolate those applications in
--	  their own address space using seccomp. Once seccomp is
--	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
--	  and the task is only allowed to execute a few safe syscalls
--	  defined by each seccomp mode.
--
- config FAST_SYSCALL_XTENSA
- 	bool "Enable fast atomic syscalls"
- 	default n
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_X86_64,
++#ifdef CONFIG_IA32_EMULATION
++	AUDIT_ARCH_I386,
++#endif
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	/* x32 tasks should be considered AUDIT_ARCH_X86_64. */
+diff --git a/arch/x86/um/asm/syscall.h b/arch/x86/um/asm/syscall.h
+index 56a2f0913e3c..590a31e22b99 100644
+--- a/arch/x86/um/asm/syscall.h
++++ b/arch/x86/um/asm/syscall.h
+@@ -9,13 +9,19 @@ typedef asmlinkage long (*sys_call_ptr_t)(unsigned long, unsigned long,
+ 					  unsigned long, unsigned long,
+ 					  unsigned long, unsigned long);
+ 
+-static inline int syscall_get_arch(struct task_struct *task)
+-{
+ #ifdef CONFIG_X86_32
+-	return AUDIT_ARCH_I386;
++#define SYSCALL_ARCH AUDIT_ARCH_I386
+ #else
+-	return AUDIT_ARCH_X86_64;
++#define SYSCALL_ARCH AUDIT_ARCH_X86_64
+ #endif
++
++static __maybe_unused const int syscall_arches[] = {
++	SYSCALL_ARCH
++};
++
++static inline int syscall_get_arch(struct task_struct *task)
++{
++	return SYSCALL_ARCH;
+ }
+ 
+ #endif /* __UM_ASM_SYSCALL_H */
+diff --git a/arch/xtensa/include/asm/syscall.h b/arch/xtensa/include/asm/syscall.h
+index f9a671cbf933..3d334fb0d329 100644
+--- a/arch/xtensa/include/asm/syscall.h
++++ b/arch/xtensa/include/asm/syscall.h
+@@ -14,6 +14,10 @@
+ #include <asm/ptrace.h>
+ #include <uapi/linux/audit.h>
+ 
++static __maybe_unused const int syscall_arches[] = {
++	AUDIT_ARCH_XTENSA
++};
++
+ static inline int syscall_get_arch(struct task_struct *task)
+ {
+ 	return AUDIT_ARCH_XTENSA;
 -- 
 2.28.0
 
