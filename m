@@ -2,95 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF922777F9
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 19:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25354277866
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 20:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbgIXRml (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 13:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgIXRml (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:42:41 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E575C0613CE;
-        Thu, 24 Sep 2020 10:42:41 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id b142so39643ybg.9;
-        Thu, 24 Sep 2020 10:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RYnRJZLmHY5BkI28RkDFaACHcPCPE4zBTInCCbWdZOI=;
-        b=iYfVBby4US7BbmDvzdsRy3A30i8CbX4dCDv26Qxu6yZClnmXOC7C5xaVY86iuO/Qjt
-         Jzwzx5G0cm0hwvmmeWIMz+9M8qvhKMooHnta1fyCwneD1yrmhvb00dywlStXVEgbqVyK
-         ISnK8c7Ys3nfgDqp3wVJmEvLf6VD5pMMAR0vQZZv3U9p/Nr61z4dkCwH7w92ua34QZfI
-         eHqfoMt9Sj/13YcN06BxCjDASz5Jib40A3q+7Rf1nogt5jwQZafha+sgSEdrs9Tm+1TS
-         prxzskZsTYeSq1dRH6lrE6EAuDJjbnhP+X559CcZZLS2QRVychLFYvhiZmIMAHI5dmZI
-         3vZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RYnRJZLmHY5BkI28RkDFaACHcPCPE4zBTInCCbWdZOI=;
-        b=dldCFZcRNw46IpDhgVraYMFgxfO0tbzwxN/uxy9N3DrIkhv+EBHOfTe5v6CVf2d5LA
-         QAMg1OphoHCJ1HmZlY+8N1XctaEoG2DNT3Id0w1UTC67STSokjjDnL0mFwHgbx03rArL
-         GX92VecjoPSifm/JZFeHpratAqtG5npfRkX9yJl2O6usgEhO5jsFkFgk83JUmS+D7gMa
-         izIcPcpciU2N/Yav8yau50Q1SX8LW8T3CvKdAMsEcmkurNvx8BWTMa8082gYa1tvC1tr
-         q7N6fbdSKnqBEvLl9spTh9C8haGVxPcs2RdPhvy0MjIk10lAVolRB18SOyXEGIU1lKsU
-         Nixw==
-X-Gm-Message-State: AOAM532iZlhHLHmd7Cenm5e/cw/4tfFCtiVB3P50IrMGF76YWkNhomOx
-        k2/zJfQ2eTVgWBb2tQ7FLzBmESaDhP9BuTFxRcvynVVni8Q=
-X-Google-Smtp-Source: ABdhPJwTzccitMB0XpTfYZxA2KL0qjMuE79D2SeAN+jKBVS3lxI4vndC501/VF34ZlHdN7jLHm0TX0k6BNatwX+8h+A=
-X-Received: by 2002:a25:4446:: with SMTP id r67mr916659yba.459.1600969360304;
- Thu, 24 Sep 2020 10:42:40 -0700 (PDT)
+        id S1728731AbgIXSVi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 14:21:38 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39312 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727753AbgIXSVi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:21:38 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kLVs8-0003zn-0k; Thu, 24 Sep 2020 20:21:36 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/6] Various BPF helper improvements
+Date:   Thu, 24 Sep 2020 20:21:21 +0200
+Message-Id: <cover.1600967205.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20200924171705.3803628-1-andriin@fb.com> <CAADnVQLtxtMOsuBvt0U_UTLVuX-X__AWuih8t-CuGu67GbZJ_w@mail.gmail.com>
-In-Reply-To: <CAADnVQLtxtMOsuBvt0U_UTLVuX-X__AWuih8t-CuGu67GbZJ_w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 24 Sep 2020 10:42:29 -0700
-Message-ID: <CAEf4Bza1qPfKjmbhLwZzBtGvg19Q3vps3-F6-nfvQb9vLhg-hA@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: fix XDP program load regression for old kernels
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Nikita Shirokov <tehnerd@tehnerd.com>,
-        Udip Pant <udippant@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25937/Thu Sep 24 15:53:11 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:34 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Sep 24, 2020 at 10:18 AM Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > Fix regression in libbpf, introduced by XDP link change, which causes XDP
-> > programs to fail to be loaded into kernel due to specified BPF_XDP
-> > expected_attach_type. While kernel doesn't enforce expected_attach_type for
-> > BPF_PROG_TYPE_XDP, some old kernels already support XDP program, but they
-> > don't yet recognize expected_attach_type field in bpf_attr, so setting it to
-> > non-zero value causes program load to fail.
-> >
-> > Luckily, libbpf already has a mechanism to deal with such cases, so just make
-> > expected_attach_type optional for XDP programs.
-> >
-> > Reported-by: Nikita Shirokov <tehnerd@tehnerd.com>
-> > Reported-by: Udip Pant <udippant@fb.com>
-> > Fixes: dc8698cac7aa ("libbpf: Add support for BPF XDP link")
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Applied. Thanks
+This series adds two BPF helpers, that is, one for retrieving the classid
+of an skb and another one to redirect via the neigh subsystem, and improves
+also the cookie helpers by removing the atomic counter. I've also added
+the bpf_tail_call_static() helper to the libbpf API that we've been using
+in Cilium for a while now, and last but not least the series adds a few
+selftests. For details, please check individual patches, thanks!
 
-Thanks!
+Daniel Borkmann (6):
+  bpf: add classid helper only based on skb->sk
+  bpf, net: rework cookie generator as per-cpu one
+  bpf: add redirect_neigh helper as redirect drop-in
+  bpf, libbpf: add bpf_tail_call_static helper for bpf programs
+  bpf, selftests: use bpf_tail_call_static where appropriate
+  bpf, selftests: add redirect_neigh selftest
 
->
-> Looks like libbpf CI needs to add a few old kernels.
+ include/linux/cookie.h                        |  41 +++
+ include/linux/skbuff.h                        |   5 +
+ include/uapi/linux/bpf.h                      |  24 ++
+ net/core/filter.c                             | 277 +++++++++++++++++-
+ net/core/net_namespace.c                      |   5 +-
+ net/core/sock_diag.c                          |   7 +-
+ tools/include/uapi/linux/bpf.h                |  24 ++
+ tools/lib/bpf/bpf_helpers.h                   |  32 ++
+ tools/testing/selftests/bpf/progs/bpf_flow.c  |  12 +-
+ tools/testing/selftests/bpf/progs/tailcall1.c |  28 +-
+ tools/testing/selftests/bpf/progs/tailcall2.c |  14 +-
+ tools/testing/selftests/bpf/progs/tailcall3.c |   4 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf1.c   |   4 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf2.c   |   6 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf3.c   |   6 +-
+ .../selftests/bpf/progs/tailcall_bpf2bpf4.c   |   6 +-
+ .../selftests/bpf/progs/test_tc_neigh.c       | 144 +++++++++
+ tools/testing/selftests/bpf/test_tc_neigh.sh  | 168 +++++++++++
+ 18 files changed, 749 insertions(+), 58 deletions(-)
+ create mode 100644 include/linux/cookie.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tc_neigh.c
+ create mode 100755 tools/testing/selftests/bpf/test_tc_neigh.sh
 
-Yeah. We have 4.9 which is very old and only a few selftests can even
-succeed there. Then we jump to 5.5, which is too recent to detect this
-issue. This issue happened on 4.15, would that be a good version to
-stick to? Any opinions?
+-- 
+2.21.0
+
