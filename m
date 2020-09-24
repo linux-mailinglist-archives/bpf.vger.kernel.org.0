@@ -2,85 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 817FC276C40
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 10:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A095276CF9
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 11:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgIXIng (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 04:43:36 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55414 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgIXIng (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:43:36 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kLMqk-0005cZ-JH; Thu, 24 Sep 2020 10:43:34 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kLMqk-000OLh-E2; Thu, 24 Sep 2020 10:43:34 +0200
-Subject: Re: Behavior of pinned perf event array
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <6CAD359B-F446-4C5D-9C71-3902762ED8D6@fb.com>
- <47929B19-E739-4E74-BBB7-B2C0DCC7A7F8@fb.com>
- <0fb36afb-6056-5e44-77d8-1ad57d82db1c@iogearbox.net>
- <BE639CE6-8566-4184-B386-7AEED22939FB@fb.com>
- <fae5ddc7-b7b5-e757-fdbb-2946d56caca3@iogearbox.net>
- <107FC288-D07C-4881-82BD-8FD29CE42290@fb.com>
- <DEBBD27D-188D-4EFD-8C04-838F54689587@fb.com>
- <9E8ACC53-12CD-42B5-8419-2ABDCE5967DA@fb.com>
- <CAEf4BzbDMRzHGyxqXoA+bt_QJvybrjLG1EW9xdYLbDTQ5jLbMA@mail.gmail.com>
- <8AF90C54-22F4-46D3-8D79-A6B002BF3F45@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <374342b3-9504-7ec3-ff73-54cf621c244a@iogearbox.net>
-Date:   Thu, 24 Sep 2020 10:43:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727290AbgIXJYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 05:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgIXJYe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:24:34 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEEDC0613CE
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 02:24:34 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id m5so3104823lfp.7
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 02:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=im1OfLn7Sfa8GgxD2YYn3rLPbkWjcQSTQ+yM7JfpOZI=;
+        b=Wdd5ClNXe2xZ1ulHov8AB7dY2dTEyc6Kuds6kZouUPJSecPKOZxOmXIgrhGADWqV/H
+         IydYvHYdl4/EutI/XztZpbt2hhqXkgOgHT68F209hfYcK481X++dcTyMARj37n9uhsFg
+         ORaTgBxMSXnKlcgYx20a/ZP3NTh3yFQUNMK4M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=im1OfLn7Sfa8GgxD2YYn3rLPbkWjcQSTQ+yM7JfpOZI=;
+        b=rRRyetp8WBrXSsceDfwDw6eGYIC5MAYjk8iWeXvq4xuBkl9JvFEPYAo9rKDXpS1FLj
+         RjWtYRDLS2Zo5jHKB+h9MOGQEDIa1r+e/TJh3JtYIAFz4EqI8NEJk+in98bNwZ/EyYvS
+         7D/D6KiEr3B1nHodu460LHlgpYp4Flx6wq57xWBnpT8pnLpCTFDX8Gn0SvDSM3r0PzFE
+         ePZNHFU8qJd7iW9xJrGSIq3fcnw1S71rUmND/+tBUiOC7aSaf4+r5prsEDKX4838ncOB
+         nSZXPddkH7Z+FblHmRc5mLmhcEu6ALNQGWJ5EzwBTQe5ItdSopeud5Y7bV6GOKS+cTpy
+         lvew==
+X-Gm-Message-State: AOAM5311+0Zv4QTSPNZJ0aKSKXM1fvQFQneUjGGuDT0FD2Pe8acppSd8
+        TteRzLn7yHfUCgtNo2dwvacyUDWtT7rESg==
+X-Google-Smtp-Source: ABdhPJx+Dw2cslwtk5PAx0VDo04ejis/yaqKMTfRaPdysNB/poKxbo9ZKUW6wV9SpUOpVxkrguYP2A==
+X-Received: by 2002:a19:2390:: with SMTP id j138mr1370899lfj.469.1600939472480;
+        Thu, 24 Sep 2020 02:24:32 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id h11sm1545582lfd.21.2020.09.24.02.24.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 02:24:31 -0700 (PDT)
+References: <20200909232443.3099637-1-iii@linux.ibm.com> <20200909232443.3099637-3-iii@linux.ibm.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Fix endianness issues in sk_lookup/ctx_narrow_access
+In-reply-to: <20200909232443.3099637-3-iii@linux.ibm.com>
+Date:   Thu, 24 Sep 2020 11:24:31 +0200
+Message-ID: <87h7rnttm8.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <8AF90C54-22F4-46D3-8D79-A6B002BF3F45@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25936/Wed Sep 23 15:55:51 2020)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/23/20 6:21 PM, Song Liu wrote:
->> On Sep 14, 2020, at 3:59 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->> On Fri, Sep 11, 2020 at 1:36 PM Song Liu <songliubraving@fb.com> wrote:
-[...]
->> Daniel, are you aware of any use cases that do rely on such a behavior
->> of PERV_EVENT_ARRAY?
->>
->> For me this auto-removal of elements on closing *one of a few*
->> PERF_EVENT_ARRAY FDs (original one, but still just one of a few active
->> ones) was extremely surprising. It doesn't follow what we do for any
->> other BPF map, as far as I can tell. E.g., think about
->> BPF_MAP_TYPE_PROG_ARRAY. If we pin it in BPF FS and close FD, it won't
->> auto-remove all the tail call programs, right? There is exactly the
->> same concern with not auto-releasing bpf_progs, just like with
->> perf_event. But it's not accidental, if you are pinning a BPF map, you
->> know what you are doing (at least we have to assume so :).
->>
->> So instead of adding an extra option, shouldn't we just fix this
->> behavior instead and make it the same across all BPF maps that hold
->> kernel resources?
-> 
-> Could you please share your thoughts on this? I personally don't have
-> strong preference one way (add a flag) or the other (change the default
-> behavior). But I think we need to agree on the direction to go.
+On Thu, Sep 10, 2020 at 01:24 AM CEST, Ilya Leoshkevich wrote:
+> This test makes a lot of narrow load checks while assuming little
+> endian architecture, and therefore fails on s390.
+>
+> Fix by introducing LSB and LSW macros and using them to perform narrow
+> loads.
+>
+> Fixes: 0ab5539f8584 ("selftests/bpf: Tests for BPF_SK_LOOKUP attach point")
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
 
-My preference would be to have an opt-in flag, we do rely on the auto-removal
-of the perf event map entry on client close in Cilium at least, e.g. a monitor
-application can insert itself into the map to start receiving events from
-the BPF datapath, and upon exit (no matter whether graceful or not) we don't
-consume any more cycles in the data path than necessary for events, and
-from the __bpf_perf_event_output() we bail out right after checking the
-READ_ONCE(array->ptrs[index]) instead of pushing data that later on no-one
-picks up.
+Keeping some lines > 80 chars would make it a bit more readable IMO, but
+otherwise LGTM. Thank you for fixing it.
+
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+
+[...]
