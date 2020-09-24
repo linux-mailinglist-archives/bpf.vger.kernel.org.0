@@ -2,98 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B77D276650
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 04:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAA2276654
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 04:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgIXCTN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 22:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
+        id S1726344AbgIXCVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 22:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgIXCTN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:19:13 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7D6C0613CE;
-        Wed, 23 Sep 2020 19:19:13 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id e23so1729524otk.7;
-        Wed, 23 Sep 2020 19:19:13 -0700 (PDT)
+        with ESMTP id S1726281AbgIXCVv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 22:21:51 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD20C0613CE
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 19:21:51 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id u4so1323716ljd.10
+        for <bpf@vger.kernel.org>; Wed, 23 Sep 2020 19:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wDEJhsl4Doe66f24GWnBXVwBWwh1i3I3Xt29k/zmNPc=;
-        b=QziewrNMiwkoK2xtNAy2cdnKBqTjiKavvaW5XgS6o8LzTpLn4TJArJ/95ktolDW+WH
-         U+fgDmQbqks2sGei9Udu32e/JMSG5/VyiKNPzOYVd8wSYQm1b8l8JeNLhlslQ5dcm4O0
-         G/QEe7ByNNQkQE6Nr7FOgHRnW1E+vP1oxyXiOkFe+TyphvA8xDUg+2KZqTxZwGaJsQ/s
-         Y42RfjsQpACciM51xadKG/lCuxqKCjNWRobZsfhf3CC5tCJD31hF5863Dl6btGs626u8
-         qI703LohDFO1qqbkiJwk8VGtA4USaFziUV1enqRmdSF3QjTTlobh7UzpN2qchYkg/6av
-         YIWA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2dYGDT/hLEmyYcsDvNE8TWjcD7Gh+AEYN2sgARYeMUI=;
+        b=eVXtRIApWRCdVZXgYLGH2lgnXpLF6g0mHVITCEPqAgUIMfvcflbwfoxN3JUt7pyflG
+         XGqoEE9TilY/ti6uxyL2iszcSmlo/bICKT8NLaKw823B3gLKlQgHxy8UMzdPkCLZXviB
+         2U35Riiv6QslNIiIB9pZrE6Rxzb+cwXB0+rIn3uOlnUX72BQr+xoDxE7WXWLc7G7VEep
+         bEo7+mG5QOAH1pKxumIx+rXK23HX7SWAv9jN5FaLc+/65V7SAjtW+EY/D+eaVoqygy8h
+         cVRTk00EeylCeRa9mOTgZncqjc7rmIArs4PzhdMOXA0BXCp1IXEH6rhTP0ObpWKYlm9R
+         drsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wDEJhsl4Doe66f24GWnBXVwBWwh1i3I3Xt29k/zmNPc=;
-        b=fff+CI92/0otJPwF8m6ylYWNcHBRV5WJ0+4Qx4sj7Jew624MAqWOMcyhBDADGZLRIA
-         Nk6G30Wr44tiroWwCAXyMKcPKEvs9aSmddUV1V6Ii5lHp0K9nmXj+B+Xtafov9/1CaKu
-         sfrDhZZCRWkLY9S1cCVDTasqW2ZnydahP4KAHcBj3VmBBb/RBEEz5dBRORElVwPeOF21
-         kdnqdhpO6MHU829Kt7C+mPk6JgcGQngqBauJ/vLhPuFnxINSTX1J/4RdKqhyeGsQNX4J
-         G3cvTj4byTj66gJuXsus+aMHHP+ihH4UC7/rapZs3pcdi+n5s5wWHuQ/56zr//bwIyRL
-         627w==
-X-Gm-Message-State: AOAM530JaG3ZiSSNSzvh9AzqLaCYzfnDOEmuefJk6Pgqn6dDYlDMpEKY
-        uVez7OjhTzVJYFtHD8h63p0=
-X-Google-Smtp-Source: ABdhPJwd0A0Jq8w7Rg+2kKFAH5FRPRgE74e1V40h4IWsgALMcu7vXYQFmpj1fMQbwLuBjaOTM2KPNw==
-X-Received: by 2002:a9d:621a:: with SMTP id g26mr1748958otj.209.1600913952684;
-        Wed, 23 Sep 2020 19:19:12 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:b155:90bc:6427:b416])
-        by smtp.googlemail.com with ESMTPSA id z20sm464787oor.3.2020.09.23.19.19.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2020 19:19:11 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add bpf_ktime_get_real_ns
-To:     =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>,
-        bimmy.pujari@intel.com
-Cc:     bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
-        mchehab@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, ashkan.nikravesh@intel.com
-References: <20200924000326.8913-1-bimmy.pujari@intel.com>
- <CANP3RGf-rDPkf2=YoLEn=jcHyFEDcrNrQO27RdZRCoa_xi8-4Q@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <00f4c72b-37ee-1fbc-21f6-612bbe037036@gmail.com>
-Date:   Wed, 23 Sep 2020 20:19:10 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2dYGDT/hLEmyYcsDvNE8TWjcD7Gh+AEYN2sgARYeMUI=;
+        b=eIjGesAhBe+FCTrGnniLo/9njtxIT91T6EapAL9sa9c2J6WzOSQjJJcmJiP1X3mNBv
+         UoihheL8oqJw7c4fa45cQEYTR/vXRxiXlAB55wCH+IlO+pOrIe1ITGu+e9fUDAqZ0aZ8
+         NH0aZKkWakD7ornAGVQPuuT1Llf2LBE9kJo8era6UEm87NZJk+6jYe996QprtdzlnAJ1
+         rc95CWq9sJxQ5CVUiFoAVdQVsklqYof2F0aJoj3pqfuC1FJlxCPLruprExCRl2xlyFbU
+         0Q/ct1NzyDDnbX00qasAjz+XUE7UcbD6cEyG4H81hccmsF58glri9ddwfRi29z1tfhb4
+         fC+Q==
+X-Gm-Message-State: AOAM5308GQMbFLFH+OhjLDRB6mTaotpwZMSt2QVy5Ox3S/K2EFAl9fXX
+        uyYwFFptwulbuOftnzVtn52m4lFBpVADVcSdQTc=
+X-Google-Smtp-Source: ABdhPJxumtdRlD+lkPUGkQzRgk9puL8NLcVU0h+aoQlMq4XMb7OM1NcBIzJTjrvLcoYdHTBt8g70MWzZHNjBG+SwDDw=
+X-Received: by 2002:a2e:8593:: with SMTP id b19mr769935lji.290.1600914109254;
+ Wed, 23 Sep 2020 19:21:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CANP3RGf-rDPkf2=YoLEn=jcHyFEDcrNrQO27RdZRCoa_xi8-4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAADnVQ+phbXaN-X5WDBWX7i5NZhs_acRhXBxea1ZFQrwK29bcQ@mail.gmail.com>
+ <CAEf4Bzakdg_u0yB23RCLCXespyjU4jrt6rFTjQhngwVVVtQ=xw@mail.gmail.com>
+In-Reply-To: <CAEf4Bzakdg_u0yB23RCLCXespyjU4jrt6rFTjQhngwVVVtQ=xw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 23 Sep 2020 19:21:38 -0700
+Message-ID: <CAADnVQKcGZdqdnjm5hp94AU2y1Q2nBsFRGxRvhXi0xAioA_8Dw@mail.gmail.com>
+Subject: Re: flow_dissector test is flaky
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/23/20 7:19 PM, Maciej Żenczykowski wrote:
->> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
->> index 5cc7425ee476..776ff58f969d 100644
->> --- a/kernel/bpf/helpers.c
->> +++ b/kernel/bpf/helpers.c
->> @@ -155,6 +155,17 @@ const struct bpf_func_proto bpf_ktime_get_ns_proto = {
->>         .ret_type       = RET_INTEGER,
->>  };
->>
->> +BPF_CALL_0(bpf_ktime_get_real_ns)
->> +{
->> +       /* NMI safe access to clock realtime */
->> +       return ktime_get_real_fast_ns();
->> +}
->> +
->> +const struct bpf_func_proto bpf_ktime_get_real_ns_proto = {
->> +       .func           = bpf_ktime_get_real_ns,
->> +       .gpl_only       = true,
-> 
-> imho should be false, this is normally accessible to userspace code
-> via syscall, no reason why it should be gpl only for bpf
-> 
+On Wed, Sep 23, 2020 at 7:05 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Sep 23, 2020 at 6:49 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > Hi Stanislav,
+> >
+> > looks like flow_dissector selftest got quite unstable recently.
+> > test_link_update_invalid_opts:FAIL:340
+> > bpf_link_create(prog1): Argument list too long
+> > #33/25 flow dissector link update invalid opts:FAIL
+> > test_link_update_invalid_prog:FAIL:400
+> > bpf_link_create(prog1): Argument list too long
+> > #33/26 flow dissector link update invalid prog:FAIL
+> > #33/27 flow dissector link update netns gone:OK
+> >
+>
+> I've seen similar flakiness for cgroup_link selftest that used to be
+> rock solid. And it just clicked when I saw this, that this patch might
+> be a culprit:
+>
+> https://patchwork.ozlabs.org/project/netdev/patch/20200917074453.20621-1-songmuchun@bytedance.com/
+>
+> It makes bpf_link detachment delayed, so now anything that relies on
+> the fact that bpf_link gets auto-detached immediately after the last
+> link FD was closed is flaky. But that is a pretty reasonable and
+> convenient assumption. So can we please revert that patch? It's a
+> really nice guarantee to have, while the benefits of the fix in that
+> patch is a bit ephemeral.
 
-agreed, no reason for the bpf hook to be gpl_only.
-
-Glad to see the v2 of this patch; I wondered what happened to this helper.
+Indeed. Reverted.
+The usage of in_atomic() is fine there.
