@@ -2,80 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A095276CF9
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 11:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B04276D5E
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 11:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbgIXJYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 05:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726710AbgIXJYe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:24:34 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEEDC0613CE
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 02:24:34 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id m5so3104823lfp.7
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 02:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=im1OfLn7Sfa8GgxD2YYn3rLPbkWjcQSTQ+yM7JfpOZI=;
-        b=Wdd5ClNXe2xZ1ulHov8AB7dY2dTEyc6Kuds6kZouUPJSecPKOZxOmXIgrhGADWqV/H
-         IydYvHYdl4/EutI/XztZpbt2hhqXkgOgHT68F209hfYcK481X++dcTyMARj37n9uhsFg
-         ORaTgBxMSXnKlcgYx20a/ZP3NTh3yFQUNMK4M=
+        id S1727402AbgIXJ1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 05:27:23 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:52261 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727484AbgIXJ01 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:26:27 -0400
+Received: by mail-il1-f208.google.com with SMTP id m1so2054663iln.19
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 02:26:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=im1OfLn7Sfa8GgxD2YYn3rLPbkWjcQSTQ+yM7JfpOZI=;
-        b=rRRyetp8WBrXSsceDfwDw6eGYIC5MAYjk8iWeXvq4xuBkl9JvFEPYAo9rKDXpS1FLj
-         RjWtYRDLS2Zo5jHKB+h9MOGQEDIa1r+e/TJh3JtYIAFz4EqI8NEJk+in98bNwZ/EyYvS
-         7D/D6KiEr3B1nHodu460LHlgpYp4Flx6wq57xWBnpT8pnLpCTFDX8Gn0SvDSM3r0PzFE
-         ePZNHFU8qJd7iW9xJrGSIq3fcnw1S71rUmND/+tBUiOC7aSaf4+r5prsEDKX4838ncOB
-         nSZXPddkH7Z+FblHmRc5mLmhcEu6ALNQGWJ5EzwBTQe5ItdSopeud5Y7bV6GOKS+cTpy
-         lvew==
-X-Gm-Message-State: AOAM5311+0Zv4QTSPNZJ0aKSKXM1fvQFQneUjGGuDT0FD2Pe8acppSd8
-        TteRzLn7yHfUCgtNo2dwvacyUDWtT7rESg==
-X-Google-Smtp-Source: ABdhPJx+Dw2cslwtk5PAx0VDo04ejis/yaqKMTfRaPdysNB/poKxbo9ZKUW6wV9SpUOpVxkrguYP2A==
-X-Received: by 2002:a19:2390:: with SMTP id j138mr1370899lfj.469.1600939472480;
-        Thu, 24 Sep 2020 02:24:32 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id h11sm1545582lfd.21.2020.09.24.02.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 02:24:31 -0700 (PDT)
-References: <20200909232443.3099637-1-iii@linux.ibm.com> <20200909232443.3099637-3-iii@linux.ibm.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Fix endianness issues in sk_lookup/ctx_narrow_access
-In-reply-to: <20200909232443.3099637-3-iii@linux.ibm.com>
-Date:   Thu, 24 Sep 2020 11:24:31 +0200
-Message-ID: <87h7rnttm8.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=1vZBoUfllgQW1HoxmcWnFRiHdvFknjpt5KNWNGuStuA=;
+        b=BUhMoPdv3KXtAQaXGbcD4l9XFnT1G7QN2X0EHUjLj+eierLGUrczjfPwd8zs8bxv/G
+         +CYHun4oKNLQJcmuyT0jBubvVEFawx/wJ4t9CwzYs+Vv2l+dfVg8UgCO1Tkg18ZAi1oI
+         dzmxuVF4FrXvzurG012JO3hincTNPfTrh7M74zGk9XVzGCSBnuosDEov1L62WWYJUstp
+         kXxgB3ZvE1HIMOJIqVelbMElS8JjPkdzDh41vsuBQoj+Exsx//oHB/P7cE7CiRKAzxIz
+         7mHT0QOvJ9wlr055/PuwXAxoPR5m1tcyx4T+gqS1Idpc1K2toXYAkj0r+6vN2Ht9RBxq
+         BooQ==
+X-Gm-Message-State: AOAM530GF/9Zf7WPqYVaD3hCIODweEwEnyKgCkYe4ixio2fBG4lx/Yhi
+        Z1vqfYgMo74w02m7QqisiQrijhP8UjP+6T1owhPGkAvnkO72
+X-Google-Smtp-Source: ABdhPJwOx8rANuVrAsei7C1g+CVbAzLOuF18+sdMCU8TSORbUwU6ZvDr5+K0pkfk5oYluj6k2Rofx9x79zsvdMNZFPGsktwVak2E
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a02:c789:: with SMTP id n9mr2750231jao.36.1600939586191;
+ Thu, 24 Sep 2020 02:26:26 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 02:26:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000578a4f05b00bcb4b@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run5
+From:   syzbot <syzbot+856297c51366950e115e@syzkaller.appspotmail.com>
+To:     a@unstable.cc, andriin@fb.com, ast@kernel.org,
+        b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, mareklindner@neomailbox.ch,
+        mingo@redhat.com, netdev@vger.kernel.org, rostedt@goodmis.org,
+        shli@fb.com, shli@kernel.org, songliubraving@fb.com,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 01:24 AM CEST, Ilya Leoshkevich wrote:
-> This test makes a lot of narrow load checks while assuming little
-> endian architecture, and therefore fails on s390.
->
-> Fix by introducing LSB and LSW macros and using them to perform narrow
-> loads.
->
-> Fixes: 0ab5539f8584 ("selftests/bpf: Tests for BPF_SK_LOOKUP attach point")
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
+Hello,
 
-Keeping some lines > 80 chars would make it a bit more readable IMO, but
-otherwise LGTM. Thank you for fixing it.
+syzbot found the following issue on:
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+HEAD commit:    b10b8ad8 Add linux-next specific files for 20200921
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1371eb1d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3cf0782933432b43
+dashboard link: https://syzkaller.appspot.com/bug?extid=856297c51366950e115e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1510d3d9900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1328ecbb900000
 
-[...]
+The issue was bisected to:
+
+commit 1e6d690b9334b7e1b31d25fd8d93e980e449a5f9
+Author: Song Liu <songliubraving@fb.com>
+Date:   Thu Nov 17 23:24:39 2016 +0000
+
+    md/r5cache: caching phase of r5cache
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=109283d9900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=129283d9900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=149283d9900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+856297c51366950e115e@syzkaller.appspotmail.com
+Fixes: 1e6d690b9334 ("md/r5cache: caching phase of r5cache")
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run5+0x401/0x410 kernel/trace/bpf_trace.c:1977
+Read of size 8 at addr ffffc90000e80030 by task rs:main Q:Reg/6567
+
+CPU: 1 PID: 6567 Comm: rs:main Q:Reg Not tainted 5.9.0-rc5-next-20200921-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ __bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+ bpf_trace_run5+0x401/0x410 kernel/trace/bpf_trace.c:1977
+ __bpf_trace_ext4_journal_start+0x142/0x180 include/trace/events/ext4.h:1788
+ __traceiter_ext4_journal_start+0x83/0xd0 include/trace/events/ext4.h:1788
+ trace_ext4_journal_start include/trace/events/ext4.h:1788 [inline]
+ __ext4_journal_start_sb+0x228/0x440 fs/ext4/ext4_jbd2.c:96
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_dirty_inode+0xbc/0x130 fs/ext4/inode.c:5850
+ __mark_inode_dirty+0x888/0x1190 fs/fs-writeback.c:2260
+ generic_update_time+0x21c/0x370 fs/inode.c:1764
+ update_time fs/inode.c:1777 [inline]
+ file_update_time+0x434/0x520 fs/inode.c:1992
+ file_modified fs/inode.c:2015 [inline]
+ file_modified+0x7d/0xa0 fs/inode.c:2000
+ ext4_write_checks fs/ext4/file.c:248 [inline]
+ ext4_buffered_write_iter+0xf9/0x4a0 fs/ext4/file.c:264
+ ext4_file_write_iter+0x1f3/0x13e0 fs/ext4/file.c:660
+ call_write_iter include/linux/fs.h:1895 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:517
+ vfs_write+0x57d/0x700 fs/read_write.c:595
+ ksys_write+0x12d/0x250 fs/read_write.c:648
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7fed08e3a1cd
+Code: c2 20 00 00 75 10 b8 01 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ae fc ff ff 48 89 04 24 b8 01 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 f7 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fed063f5590 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fecfc0238a0 RCX: 00007fed08e3a1cd
+RDX: 0000000000000dd6 RSI: 00007fecfc0238a0 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 00007fecfc023620
+R13: 00007fed063f55b0 R14: 0000560a2b025360 R15: 0000000000000dd6
+
+
+Memory state around the buggy address:
+ ffffc90000e7ff00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e7ff80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90000e80000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                                     ^
+ ffffc90000e80080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e80100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
