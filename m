@@ -2,97 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326E7276BB2
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 10:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F46C276C22
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 10:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgIXIWm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 04:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
+        id S1727271AbgIXIiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 04:38:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbgIXIWm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:22:42 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716EAC0613CE;
-        Thu, 24 Sep 2020 01:22:42 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so1466390pgl.2;
-        Thu, 24 Sep 2020 01:22:42 -0700 (PDT)
+        with ESMTP id S1727193AbgIXIiV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:38:21 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0214BC0613CE
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 01:38:20 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id a3so2872824oib.4
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 01:38:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VffSKFOKcNEqzHH96dUPgeCMOjgSgi5QH+6TbDKTeEM=;
-        b=HipLz25IFRXLxQfyxq4wFJF7SpeY50MTG/68Rn/bZPdFoaCB5RgVZiDO4bHvmNvvZ4
-         p6sy/hJUOSKo+2YZx+a56N8Jo1WSofPDYjUzrdr0Y9+lMc/FYU6gFdDq++W+y6HTyIKr
-         6mX4yJsgG5TwesHDZi2GvGeqpZfz7eeXMfifbLMX3X53uJX3I7PNLjiYgbYEiM3GObBZ
-         dHckkMr2aM7gdOwFHBRH+P5Nt7EophqGBog+xZTERCxnN0mRajqsDE4Hzhxfbw75pTON
-         f/koI/Lz+OIUxDB7Lc9S4XTXrzH4IG0HToeF13Cq1r6oyNExplV1dMJJ5LN2muREHtWZ
-         2Wgw==
+        bh=9thzJJdAavMiSJ5/pm++HTJc7iZZ4XwwFqkjRurdaX0=;
+        b=ObK+C/1VLxF5+ZOH4ij2qlxMckD+ILzK3ivawIhKno/4n+4YMAWTBcvr+JwUhNqF1i
+         pge9LK+LKtNA/81M9Dfz1vVmi4PYLiJXFIRDMUF4KSa3YC21ZwcYpZXllu4rpXq2u9qe
+         76cc/K5Ii/SqsUXyc1Uf1MSB1HhaJYewTfbNQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VffSKFOKcNEqzHH96dUPgeCMOjgSgi5QH+6TbDKTeEM=;
-        b=Yg2vYYvEwN/EIhJ5sH4rui34bi3aIeATPtEdfZh24Wt3rZaMSXOqeu/B0Y62rDj2eh
-         6Mfu/GFMfnd3g/gpQWIRBUNdh0AlYi/+49y9VbQOwACR2iN3dAxmE4IXjp9s9ITumtzR
-         aE5oda5KVgd5BVgu+1T3qXcqJcoYkn9+lWMyGeT4m7ztTJnOvTKrzCbOf+K/1RMo57ig
-         ONd+XW3LtIREU7Uh0RNIIX6TgMsUx2+IVK+Vjpns0szpuXBCy26ayD1gzirmjvznHN6p
-         9uJrtMvxz+wVIOnCX7d5mNNAHUipjGkrw+A9XxRhMmX+owXemXaalC1ywsOG4TFktgm/
-         hCOw==
-X-Gm-Message-State: AOAM5317x7b/oo/Evc5PlxSyPYxys2kj4EAQyjdPyZtdUumzU1B2h23y
-        SKdiBTM24ZhVVZEyaKirxMsBLTd+liliSJS25rk=
-X-Google-Smtp-Source: ABdhPJyN6S3PvfBf/m7CmcAzF+8SBUXc1APBXPdomlmhd7pAkzxdoiweeazvaxZ3itj9ZG2VZdsL6HkmkZuhi7/iYzU=
-X-Received: by 2002:aa7:8d4c:0:b029:150:f692:4129 with SMTP id
- s12-20020aa78d4c0000b0290150f6924129mr3496844pfe.11.1600935761975; Thu, 24
- Sep 2020 01:22:41 -0700 (PDT)
+        bh=9thzJJdAavMiSJ5/pm++HTJc7iZZ4XwwFqkjRurdaX0=;
+        b=e/fd7iTTrZmCbjVcqZROjVIPwRr4nCj16HUGFyiV85461Ovsj8rlZYn/A3H1TPFz96
+         kuPUJdMZe/gnuxQZXRVgUh2kuaRImDRmwy/9HbmYJCWvUbU09ml0sJ2hun1OKsJkglG1
+         97LN6+MrovxEBdn65g2xEzyJOKf4aLKUYdaBSPIR/KvwNw4BKiMkJAddG1x6GpQVhS6X
+         l1HK/0T5Gn4mjPaVu84k/bbv3kzvHCYS370m1W6eVox/7VSWECuPE0TNGivsMIpuV4is
+         vlWzkiFV5zc62zbREdo0KRPAgGMeGvyGj1yuBLbPAyH6+9VE4FtUmk66sg9DF+3ofn5u
+         eeCw==
+X-Gm-Message-State: AOAM5301WEL5aVd6jJMYEaUnwo2zxf18qtd2wqCInHwbgKIMBqAgHdnI
+        5/JG5rbjm0V554jDU7lS9/fHs5sORCSG3LPZ+yKlgg==
+X-Google-Smtp-Source: ABdhPJyDcjUHgSiiaAo0w6VDHJdzNUSXC/Tnd1htTghJxRehV8W0PgZd6nGKbw0K162bn6zaxJo3xqFbAYyWNE3Jb+g=
+X-Received: by 2002:aca:3087:: with SMTP id w129mr1798398oiw.102.1600936700249;
+ Thu, 24 Sep 2020 01:38:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-4-keescook@chromium.org> <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
- <202009240018.A4D8274F@keescook> <CABqSeARV4prXOWf9qOBnm5Mm_aAdjwquqFFLQSuL0EegqeWEkA@mail.gmail.com>
- <202009240112.C48EF38EC2@keescook>
-In-Reply-To: <202009240112.C48EF38EC2@keescook>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Thu, 24 Sep 2020 03:22:31 -0500
-Message-ID: <CABqSeAR+DO3=Gt1KAAYKTJd7k07sH+aQCkofXxm7nX2TXh=w6A@mail.gmail.com>
-Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jann Horn <jannh@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        kernel list <linux-kernel@vger.kernel.org>
+References: <20200922070409.1914988-1-kafai@fb.com> <20200922070422.1917351-1-kafai@fb.com>
+ <CACAyw9-LoKFuYxaMODtacJM-rOR0P5Y=j_yEm9bsFZe_j_9rYQ@mail.gmail.com>
+ <20200922182622.zcrqwpzkouvlndbw@kafai-mbp.dhcp.thefacebook.com>
+ <CACAyw99xbeVyzUT+fhHtRQEGoef-9vvTfiOEFaJWX6aoVL+Z9A@mail.gmail.com> <20200923170552.65i7bnht3qkkikp5@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200923170552.65i7bnht3qkkikp5@kafai-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 24 Sep 2020 09:38:09 +0100
+Message-ID: <CACAyw98yYLD-oLQpj05Yrmphf285DUD4aXJMTK1GS8_eMy7jow@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 02/11] bpf: Enable bpf_skc_to_* sock casting
+ helper to networking prog type
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 3:15 AM Kees Cook <keescook@chromium.org> wrote:
-> I was trying to be helpful: you hadn't seen the RFC, and it was missing
-> the emulator piece, which I wanted to be small, so I put got it out the
-> door today. I didn't want you to think you needed to port the larger
-> emulator over, for example.
+On Wed, 23 Sep 2020 at 18:06, Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Wed, Sep 23, 2020 at 10:27:27AM +0100, Lorenz Bauer wrote:
+> > On Tue, 22 Sep 2020 at 19:26, Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Tue, Sep 22, 2020 at 10:46:41AM +0100, Lorenz Bauer wrote:
+> > > > On Tue, 22 Sep 2020 at 08:04, Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > >
+> > > > > There is a constant need to add more fields into the bpf_tcp_sock
+> > > > > for the bpf programs running at tc, sock_ops...etc.
+> > > > >
+> > > > > A current workaround could be to use bpf_probe_read_kernel().  However,
+> > > > > other than making another helper call for reading each field and missing
+> > > > > CO-RE, it is also not as intuitive to use as directly reading
+> > > > > "tp->lsndtime" for example.  While already having perfmon cap to do
+> > > > > bpf_probe_read_kernel(), it will be much easier if the bpf prog can
+> > > > > directly read from the tcp_sock.
+> > > > >
+> > > > > This patch tries to do that by using the existing casting-helpers
+> > > > > bpf_skc_to_*() whose func_proto returns a btf_id.  For example, the
+> > > > > func_proto of bpf_skc_to_tcp_sock returns the btf_id of the
+> > > > > kernel "struct tcp_sock".
+> > > > >
+> > > > > These helpers are also added to is_ptr_cast_function().
+> > > > > It ensures the returning reg (BPF_REF_0) will also carries the ref_obj_id.
+> > > > > That will keep the ref-tracking works properly.
+> > > > >
+> > > > > The bpf_skc_to_* helpers are made available to most of the bpf prog
+> > > > > types in filter.c. They are limited by perfmon cap.
+> > > > >
+> > > > > This patch adds a ARG_PTR_TO_BTF_ID_SOCK_COMMON.  The helper accepting
+> > > > > this arg can accept a btf-id-ptr (PTR_TO_BTF_ID + &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON])
+> > > > > or a legacy-ctx-convert-skc-ptr (PTR_TO_SOCK_COMMON).  The bpf_skc_to_*()
+> > > > > helpers are changed to take ARG_PTR_TO_BTF_ID_SOCK_COMMON such that
+> > > > > they will accept pointer obtained from skb->sk.
+> > > > >
+> > > > > PTR_TO_*_OR_NULL is not accepted as an ARG_PTR_TO_BTF_ID_SOCK_COMMON
+> > > > > at verification time.  All PTR_TO_*_OR_NULL reg has to do a NULL check
+> > > > > first before passing into the helper or else the bpf prog will be
+> > > > > rejected by the verifier.
+> > > > >
+> > > > > [ ARG_PTR_TO_SOCK_COMMON_OR_NULL was attempted earlier.  The _OR_NULL was
+> > > > >   needed because the PTR_TO_BTF_ID could be NULL but note that a could be NULL
+> > > > >   PTR_TO_BTF_ID is not a scalar NULL to the verifier.  "_OR_NULL" implicitly
+> > > > >   gives an expectation that the helper can take a scalar NULL which does
+> > > > >   not make sense in most (except one) helpers.  Passing scalar NULL
+> > > > >   should be rejected at the verification time.
+> > > >
+> > > > What is the benefit of requiring a !sk check from the user if all of
+> > > > the helpers know how to deal with a NULL pointer?
+> > > I don't see a reason why the verifier should not reject an incorrect
+> > > program at load time if it can.
+> > >
+> > > >
+> > > > >
+> > > > >   Thus, this patch uses ARG_PTR_TO_BTF_ID_SOCK_COMMON to specify that the
+> > > > >   helper can take both the btf-id ptr or the legacy PTR_TO_SOCK_COMMON but
+> > > > >   not scalar NULL.  It requires the func_proto to explicitly specify the
+> > > > >   arg_btf_id such that there is a very clear expectation that the helper
+> > > > >   can handle a NULL PTR_TO_BTF_ID. ]
+> > > >
+> > > > I think ARG_PTR_TO_BTF_ID_SOCK_COMMON is actually a misnomer, since
+> > > > nothing enforces that arg_btf_id is actually an ID for sock common.
+> > > > This is where ARG_PTR_TO_SOCK_COMMON_OR_NULL is much easier to
+> > > > understand, even though it's more permissive than it has to be. It
+> > > > communicates very clearly what values the argument can take.
+> > > _OR_NULL is incorrect which implies a scalar NULL as mentioned in
+> > > this commit message.  From verifier pov, _OR_NULL can take
+> > > a scalar NULL.
+> >
+> > Yes, I know. I'm saying that the distinction between scalar NULL and
+> > runtime NULL only makes sense after you understand how BTF pointers
+> > are implemented. It only clicked for me after I read the support code
+> > in the JIT that Yonghong pointed out. Should everybody that writes a
+> > helper need to read the JIT? In my opinion we shouldn't. I guess I
+> > don't even care about the verifier rejecting scalar NULL or not, I'd
+> > just like the types to have a name that conveys their NULLness.
+> It is not only about verifier and/or JIT, not sure why it is related to
+> JIT also.
+>
+> For some helpers, explicitly passing NULL may make sense.
+> e.g. bpf_sk_assign(ctx, NULL, 0) makes sense.
+>
+> For most helpers, the bpf prog is wrong for sure, for example
+> in sockmap, what does bpf_map_update_elem(sock_map, key, NULL, 0)
+> mean?  I would expect a delete from the sock_map if the verifier
+> accepted it.
+>
+> >
+> > >
+> > > >
+> > > > If you're set on ARG_PTR_TO_BTF_ID_SOCK_COMMON I'd suggest forcing the
+> > > > btf_id in struct bpf_reg_types. This avoids the weird case where the
+> > > > btf_id doesn't actually point at sock_common, and it also makes my
+> > > I have considered the bpf_reg_types option.  I prefer all
+> > > arg info (arg_type and arg_btf_id) stay in the same one
+> > > place (i.e. func_proto) as much as possible for now
+> > > instead of introducing another place to specify/override it
+> > > which then depends on a particular arg_type that some arg_type may be
+> > > in func_proto while some may be in other places.
+> >
+> > In my opinion that ship sailed when we started aliasing arg_type to
+> > multiple reg_type, but OK.
+> >
+> > >
+> > > The arg_btf_id can be checked in check_btf_id_ok() if it would be a
+> > > big concern that it might slip through the review but I think the
+> > > chance is pretty low.
+> >
+> > Why increase the burden on human reviewers? Why add code to check an
+> > invariant that we could get rid of in the first place?
+> Lets take the scalar NULL example that requires to read multiple
+> pieces of codes in different places (verifier, JIT...etc.).
+> As you also mentioned, yes, it may be easy for a few people.
+> However, for most others, having some obvious things in the same place is
+> easier to review.
+>
+> I think we have to agree we disagree on this one implementation details
+> which I think it has been over-thought (and time also).
+>
+> If you insist that should go into bpf_reg_types (i.e. compatible->btf_id),
+> I can do that in v4 and then add another check in another place to
+> ensure "!compatible->btf_id" as in v2.
 
-There's no architecture-dependent code in the emulator. It just has to
-iterate through all the arch numbers. So I don't know what you are
-referring to by "port ... over".
-The logic is simple. If the emulator determines the filter must be an
-allow for a given arch / syscall pair, then it is "cached by bitmap".
+No, I don't insist. I was hoping I could convince you, but alas :)
 
-> I'm open to ideas, but I want to have a non-optional performance
-> improvement as the first step. :)
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-How about "performance improvement by default"? It's not like most end
-users / distros would turn off something that's enabled by default
-when they upgrade to a new kernel.
-
-YiFei Zhu
+www.cloudflare.com
