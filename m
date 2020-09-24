@@ -2,103 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21350277311
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 15:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CA5277318
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 15:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgIXNtC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 24 Sep 2020 09:49:02 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:54917 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728104AbgIXNtC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Sep 2020 09:49:02 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-275-AmPfbs06OlSmLB8NwMzbeQ-1; Thu, 24 Sep 2020 14:47:55 +0100
-X-MC-Unique: AmPfbs06OlSmLB8NwMzbeQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 14:47:54 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 24 Sep 2020 14:47:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'YiFei Zhu' <zhuyifei1999@gmail.com>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>
-CC:     YiFei Zhu <yifeifz2@illinois.edu>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        "Andrea Arcangeli" <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: RE: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
-Thread-Topic: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
-Thread-Index: AQHWknD17ZW/yCPmvkCTJZb3HlQhMal3ymow
-Date:   Thu, 24 Sep 2020 13:47:54 +0000
-Message-ID: <7042ba3307b34ce3b95e5fede823514e@AcuMS.aculab.com>
-References: <cover.1600951211.git.yifeifz2@illinois.edu>
- <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
-In-Reply-To: <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728097AbgIXNu0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 09:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728032AbgIXNu0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:50:26 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E56CC0613CE;
+        Thu, 24 Sep 2020 06:50:26 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id 26so3718691ois.5;
+        Thu, 24 Sep 2020 06:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
+        bh=wL0LIGpBgsROOKg0cQ18bWeg7cLHfTfL2bP6kCHNnGk=;
+        b=jPfURQzn1/RwPgOLLUMsEbewe78lussA/XIB/WjGJqwgPTKy65BHc7Hjm6CqQP2NDp
+         Bi/ZQiwCLq5SKnMB7UaJEPHn/yyd7tlrP923UOqzaDAjsA0/XQvXqQrDfoR6o6nn/wOp
+         32HKty/cRkYkOSqRGMqF/tTtFauAEI6Yzxc1n7iLrfEOAzeF2EPQyFRrMnIdf8Orr98p
+         8KQm7JkI5ywS69gKBmMAfuhMoLdEwVixmX/ZpZM9/Bu1qUbd6OMS2AvtJo7Gn6X8pdz0
+         5C/PGHPpkGO67Lz3TOJcRh9nWqrXShOdmhM5S5L8TKLGR8kpcxE5TNA+t1bLAOr5Fhmq
+         B6+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=wL0LIGpBgsROOKg0cQ18bWeg7cLHfTfL2bP6kCHNnGk=;
+        b=KDThqy5rhObPgNZKcwgcouXA+oZFM2kCbzfv+/azliVOeQaK6zUxzwMfzhtcFpcF2A
+         7I+l8+SqPNwNN4uZ+D6Hol4kPX5HJe1E9c4MXXra50Mr8URoEUSCWBOgQ3wtwL0Rlqq6
+         9g7Xfo772T9hy51QINyzeuttHm6prSghXj8lcw63DLGvzhC+MaoYBEXN78PO/GM7nW/Z
+         83/JFIXwCayBUEqMGWwdw78mLAH1Tzbq0QeAZLKekJb0GqdVy9piNwBf2uITpPR7P6v9
+         WaN1JvemECl6q6fK2BD9w0usFOlWAl7Edf0H9GHcIzXKh894wmdU7c+SDAnwIenWgTKE
+         R3/Q==
+X-Gm-Message-State: AOAM5323VdXG6vWMWbh8V14ImlE9SZs1E9xu40JiI43Fl7NlCTMTsURc
+        mY0x3z8CB1dl38oOZAIs/FEQnIMZh924R01f+H4=
+X-Google-Smtp-Source: ABdhPJxWSx3js4JIJytEMhCdDZZXBKrFuQsJLM+aEKuvpYqfcZ4NT/WistOQLrEJryBzw+V83sj1e5z5ORCTAyBidB0=
+X-Received: by 2002:aca:d409:: with SMTP id l9mr2379815oig.70.1600955425693;
+ Thu, 24 Sep 2020 06:50:25 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 24 Sep 2020 15:50:14 +0200
+Message-ID: <CA+icZUX+AX4GAG0z2PAnvJSEmKozYLa7oHjxGkjv2_9Rcs0J7A@mail.gmail.com>
+Subject: [PATCH] kbuild: explicitly specify the build id style
+To:     Bill Wendling <morbo@google.com>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Will Deacon <will@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu 
-> Sent: 24 September 2020 13:44
-> 
-> Seccomp cache emulator needs to know all the architecture numbers
-> that syscall_get_arch() could return for the kernel build in order
-> to generate a cache for all of them.
-> 
-> The array is declared in header as static __maybe_unused const
-> to maximize compiler optimiation opportunities such as loop
-> unrolling.
+[ Please CC me I am not subscribed to all MLs ]
+[ CC Sami ]
 
-I doubt the compiler will do what you want.
-Looking at it, in most cases there are one or two entries.
-I think only MIPS has three.
+Hi Bill,
 
-So a static inline function that contains a list of
-conditionals will generate better code that any kind of
-array lookup.
-For x86-64 you end up with something like:
+I have tested your patch on top of Sami's latest clang-cfi Git branch.
 
-#ifdef CONFIG_IA32_EMULATION
-	if (sd->arch == AUDIT_ARCH_I386) return xxx;
-#endif
-	return yyy;
+Feel free to add...
 
-Probably saves you having multiple arrays that need to be
-kept carefully in step.
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM toolchain
+version 11.0.0-rc3 on x86-64
 
-	David
+Thanks for the patch.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Regards,
+- Sedat -
