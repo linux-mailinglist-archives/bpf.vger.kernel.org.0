@@ -2,167 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52BB277A2B
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 22:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA1D277A98
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 22:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgIXU1d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 16:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
+        id S1726210AbgIXUlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 16:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIXU1d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:27:33 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C739C0613CE;
-        Thu, 24 Sep 2020 13:27:33 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id 133so357350ybg.11;
-        Thu, 24 Sep 2020 13:27:33 -0700 (PDT)
+        with ESMTP id S1726037AbgIXUlF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 16:41:05 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6689C0613CE;
+        Thu, 24 Sep 2020 13:41:04 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id 133so382348ybg.11;
+        Thu, 24 Sep 2020 13:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sVpaIrHnlGnETUATILxTCCZgsMdSdAWqsYduFS9Muoo=;
-        b=cVkXGmp4no6HwJYCYhY/Zyu8ov4nTeEGl5H+gHBREhIL6QDll3gGB/yO1Hg6e7ksLu
-         XiAEIdKIhS6NVBV2tshXR2wv+3mavCOD+oNbWTdNKtrBHjcEp7J700mBpXwpi/6nrfRa
-         rJaq5J2zdWrm2O60x2j9tC0jGVxFhp7sDNIJsxzPyFuN+KLQHCdJcY4M6CmlkjX2hu3f
-         rJlMtjbEktkMN37OUWH7Oin++QEOoaWynlvgYILuZStqGltj/TrmrD4XsEz/PdOpCG4e
-         hWTQSTB9toRj9x/fTL5a+03Iqoo/pCXpq1Mxa1eAYnRQ2n02yGXwHKM//iKUaz30Levt
-         68jg==
+         :cc:content-transfer-encoding;
+        bh=LuBsiJGWhXaa9Z1xegLqAKn7DmusjrmOo8BYb2r+KsQ=;
+        b=JkXFn/ehP3D4eF5eH9ZNxvLZUrCTdM2JYXnwdIfYVfurU5+eiXFMhZdmG3hj/Fedri
+         pxASktyl/kA4eFwhYYdlF1CW5UM7Tq2wY9yMWs0+YYYF/ZdDGGYmnAUjFi5vv2H3PxL8
+         tRnf/C7kpN3UkBfic2hqvFfUW2dAEUOd/Nf1UsaSMakYRF0pnLnZfFePDY3/RpDcXgu1
+         EO/g4ne/xTaH+FW+NmZvYGALskNkFeEinShaoVxlLglZy/4JcNoL3cIScuxJXLTFaX0q
+         3lsBacaOXFp5LnoZXw0w8jNcNItlsVggvBkHUtiElrqSOlIn/uSSyouBlr4G5BQdmnFn
+         dm6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sVpaIrHnlGnETUATILxTCCZgsMdSdAWqsYduFS9Muoo=;
-        b=hWabpFzbiGtbChoICutsHzeJVLP1rCcn+5aOkQBl/lsvNmrtHDC6ke3zghUZ864XmH
-         FOHz5pvXV0cTGnRbaah3nUo879Ss2NrE+PBg4e4n73OwA2jJMhUwkP+7YjLg/5rdD1nx
-         W9xM8Z+ofYyjo5oxXhfuvBLO6K9VbTRQOuP+S0fiRgMlCMYn8eNolqr112yMXP0y6LsZ
-         aW8pNaNtUcTZMxWLDOPyHIdMoknYUfhv0AUamcXCe2V4QD1lXnegFN79yDfD5a9ojPPC
-         dryc2dyZuzLZsgsQa92JbfoNAmILiObTgPARQ8+9eKlS/0L6EKkJKCk+IzZm6AQ4/dc2
-         tKPQ==
-X-Gm-Message-State: AOAM532/yJb1IQBS2mLVwbzGG48/A5/N3nQl0fbJaYwYAKQl8YA2q1ZM
-        Le2Mj+/ARCf7JkSGgj2PVhgrvM5FwrOTRIeo/Kk=
-X-Google-Smtp-Source: ABdhPJxcQjaGZ917mia033FxGjaWM6WigbkGpl9gVx8LQFkPVt3gtaRye04VnaDz6yea2//no0qpI60hW/ycX+977ec=
-X-Received: by 2002:a25:2596:: with SMTP id l144mr754767ybl.510.1600979252721;
- Thu, 24 Sep 2020 13:27:32 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LuBsiJGWhXaa9Z1xegLqAKn7DmusjrmOo8BYb2r+KsQ=;
+        b=bvi1vtkKcGlJupiXTaYrbL5UFBX9p6FZXMC1HjgeCWve7aaMNVtlYWenxdKFhTae+h
+         b8HBMOdsIgyj3CFiWtypXMHW7vwrqczg10d/T4wgOHyRm1ysaXokLgpCdTOLRtxFnaN/
+         9vQCXRmuYdRWCkM4zRs/gwvGB+8tOwzAzF25FzRZgrsseCoK2p90Xziy5sDpPuuYluu/
+         qG7xgXnXaQf9lxc/jeXEjal833BBYDztxwKcm+s28ujkJ2yJjJ1CoxGFx1AHnqDqQV9e
+         cwoE5GX7j0mn+1vE962xx73sUdG5f+kKlVgvlbnStBF2Y6wweoUUmjqnfoAcq1i3QloE
+         Ohww==
+X-Gm-Message-State: AOAM531DmBRhMi0y7quG39iKKhMP4S2EBJ0AZpYrEQXNgM+wVXCnqAzS
+        99U4lBTAf0OjF4LrSKEcIPpChVay9HFG6pnwvJ4=
+X-Google-Smtp-Source: ABdhPJyDBUyTK99K4bkK5qk54JrmnuC6QX4fyZba8yrwdVZxKhRe9eWbLSn8nqnBUjAIGa8bbgEPuA2daDqln8tAzYY=
+X-Received: by 2002:a25:2687:: with SMTP id m129mr804101ybm.425.1600980064144;
+ Thu, 24 Sep 2020 13:41:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200923155436.2117661-1-andriin@fb.com> <20200923155436.2117661-6-andriin@fb.com>
- <5f6cc1a188bdf_4939c208e1@john-XPS-13-9370.notmuch>
-In-Reply-To: <5f6cc1a188bdf_4939c208e1@john-XPS-13-9370.notmuch>
+References: <160079991372.8301.10648588027560707258.stgit@toke.dk>
+ <160079991808.8301.6462172487971110332.stgit@toke.dk> <20200924001439.qitbu5tmzz55ck4z@ast-mbp.dhcp.thefacebook.com>
+ <874knn1bw4.fsf@toke.dk>
+In-Reply-To: <874knn1bw4.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 24 Sep 2020 13:27:22 -0700
-Message-ID: <CAEf4Bzaiz9SCH1JFBK8zou=GHwZwEiDfUxKhtWzUv2t=4jYfkQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/9] libbpf: allow modification of BTF and add
- btf__add_str API
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Thu, 24 Sep 2020 13:40:53 -0700
+Message-ID: <CAEf4BzaBvvZdgekg13T3e4uj5Q9Rf1RTFP__ZPsU-NMp2fVXxw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 04/11] bpf: move prog->aux->linked_prog and
+ trampoline into bpf_link on attach
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 8:56 AM John Fastabend <john.fastabend@gmail.com> wrote:
+On Thu, Sep 24, 2020 at 7:36 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> Andrii Nakryiko wrote:
-> > Allow internal BTF representation to switch from default read-only mode, in
-> > which raw BTF data is a single non-modifiable block of memory with BTF header,
-> > types, and strings layed out sequentially and contiguously in memory, into
-> > a writable representation with types and strings data split out into separate
-> > memory regions, that can be dynamically expanded.
-> >
-> > Such writable internal representation is transparent to users of libbpf APIs,
-> > but allows to append new types and strings at the end of BTF, which is
-> > a typical use case when generating BTF programmatically. All the basic
-> > guarantees of BTF types and strings layout is preserved, i.e., user can get
-> > `struct btf_type *` pointer and read it directly. Such btf_type pointers might
-> > be invalidated if BTF is modified, so some care is required in such mixed
-> > read/write scenarios.
-> >
-> > Switch from read-only to writable configuration happens automatically the
-> > first time when user attempts to modify BTF by either adding a new type or new
-> > string. It is still possible to get raw BTF data, which is a single piece of
-> > memory that can be persisted in ELF section or into a file as raw BTF. Such
-> > raw data memory is also still owned by BTF and will be freed either when BTF
-> > object is freed or if another modification to BTF happens, as any modification
-> > invalidates BTF raw representation.
-> >
-> > This patch adds the first BTF writing API: btf__add_str(), which allows to
-> > add arbitrary strings to BTF string section. All the added strings are
-> > automatically deduplicated. This is achieved by maintaining an additional
-> > string lookup index for all unique strings. Such index is built when BTF is
-> > switched to modifiable mode. If at that time BTF strings section contained
-> > duplicate strings, they are not de-duplicated. This is done specifically to
-> > not modify the existing content of BTF (types, their string offsets, etc),
-> > which can cause confusion and is especially important property if there is
-> > struct btf_ext associated with struct btf. By following this "imperfect
-> > deduplication" process, btf_ext is kept consitent and correct. If
-> > deduplication of strings is necessary, it can be forced by doing BTF
-> > deduplication, at which point all the strings will be eagerly deduplicated and
-> > all string offsets both in struct btf and struct btf_ext will be updated.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 >
-> [...]
+> > On Tue, Sep 22, 2020 at 08:38:38PM +0200, Toke H=C3=83=C6=92=C3=82=C2=
+=B8iland-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
+> >> @@ -746,7 +748,9 @@ struct bpf_prog_aux {
+> >>      u32 max_rdonly_access;
+> >>      u32 max_rdwr_access;
+> >>      const struct bpf_ctx_arg_aux *ctx_arg_info;
+> >> -    struct bpf_prog *linked_prog;
+> >
+> > This change breaks bpf_preload and selftests test_bpffs.
+> > There is really no excuse not to run the selftests.
 >
-> > +/* Ensure BTF is ready to be modified (by splitting into a three memory
-> > + * regions for header, types, and strings). Also invalidate cached
-> > + * raw_data, if any.
-> > + */
-> > +static int btf_ensure_modifiable(struct btf *btf)
-> > +{
-> > +     void *hdr, *types, *strs, *strs_end, *s;
-> > +     struct hashmap *hash = NULL;
-> > +     long off;
-> > +     int err;
-> > +
-> > +     if (btf_is_modifiable(btf)) {
-> > +             /* any BTF modification invalidates raw_data */
-> > +             if (btf->raw_data) {
+> I did run the tests, and saw no more breakages after applying my patches
+> than before. Which didn't catch this, because this is the current state
+> of bpf-next selftests:
 >
-> I missed why this case is needed? Just being cautious? It looks like
-> we get btf->hdr != btf->raw_data (aka btf_is_modifiable) below, but
-> by the tiime we do this set it looks like we will always null btf->raw_data
-> as well. Again doesn't appear harmful just seeing if I missed a path.
+> # ./test_progs  | grep FAIL
+> test_lookup_update:FAIL:map1_leak inner_map1 leaked!
+> #10/1 lookup_update:FAIL
+> #10 btf_map_in_map:FAIL
 
-It's because of btf__get_raw_data() (it's currently used by pahole for
-BTF dedup). raw_data is cached in struct btf and is owned by it, so
-when we attempt modification, we have to invalidate a single-blob
-representation, as it is immediately invalid. This is mostly to
-preserve existing semantics, but also not to keep allocating new
-memory if caller created BTF and then accesses raw_data few times.
+this failure suggests you are not running the latest kernel, btw
+
+
+> configure_stack:FAIL:BPF load failed; run with -vv for more info
+> #72 sk_assign:FAIL
+> test_test_bpffs:FAIL:bpffs test  failed 255
+> #96 test_bpffs:FAIL
+> Summary: 113/844 PASSED, 14 SKIPPED, 4 FAILED
+>
+> The test_bpffs failure happens because the umh is missing from the
+> .config; and when I tried to fix this I ended up with:
+
+yeah, seems like selftests/bpf/config needs to be updated to mention
+UMH-related config values:
+
+CONFIG_BPF_PRELOAD=3Dy
+CONFIG_BPF_PRELOAD_UMD=3Dm|y
+
+with that test_bpffs shouldn't fail on master
 
 >
-> > +                     free(btf->raw_data);
-> > +                     btf->raw_data = NULL;
-> > +             }
-> > +             return 0;
-> > +     }
-> > +
-> > +     /* split raw data into three memory regions */
-> > +     hdr = malloc(btf->hdr->hdr_len);
-> > +     types = malloc(btf->hdr->type_len);
-> > +     strs = malloc(btf->hdr->str_len);
-> > +     if (!hdr || !types || !strs)
-> > +             goto err_out;
-> > +
-> > +     memcpy(hdr, btf->hdr, btf->hdr->hdr_len);
-> > +     memcpy(types, btf->types_data, btf->hdr->type_len);
-> > +     memcpy(strs, btf->strs_data, btf->hdr->str_len);
-> > +
-> > +     /* build lookup index for all strings */
-> > +     hash = hashmap__new(strs_hash_fn, strs_hash_equal_fn, btf);
-> > +     if (IS_ERR(hash)) {
-> > +             err = PTR_ERR(hash);
-> > +             hash = NULL;
-> > +             goto err_out;
-> > +     }
-> > +
+> [..]
+>   CC [M]  kernel/bpf/preload/bpf_preload_kern.o
 >
-> [...]
+> Auto-detecting system features:
+> ...                        libelf: [ OFF ]
+> ...                          zlib: [ OFF ]
+> ...                           bpf: [ OFF ]
 >
-> Thanks,
-> John
+> No libelf found
+
+might be worthwhile to look into why detection fails, might be
+something with Makefiles or your environment
+
+>
+> ...which I just put down to random breakage, turned off the umh and
+> continued on my way (ignoring the failed test). Until you wrote this I
+> did not suspect this would be something I needed to pay attention to.
+> Now that you did mention it, I'll obviously go investigate some more, my
+> point is just that in this instance it's not accurate to assume I just
+> didn't run the tests... :)
+
+Don't just assume some tests are always broken. Either ask or
+investigate on your own. Such cases do happen from time to time while
+we wait for a fix in bpf to get merged into bpf-next or vice versa,
+but it's rare. We now have two different CI systems running selftests
+all the time, in addition to running them locally as well, so any
+permanent test failure is very apparent and annoying, so we fix them
+quickly. So, when in doubt - ask or fix.
+
+>
+> > I think I will just start marking patches as changes-requested when I s=
+ee that
+> > they break tests without replying and without reviewing.
+> > Please respect reviewer's time.
+>
+> That is completely fine if the tests are working in the first place. And
+
+They are and hopefully moving forward that would be your assumption.
+
+> even when they're not (like in this case), pointing it out is fine, and
+> I'll obviously go investigate. But please at least reply to the email,
+> not all of us watch patchwork regularly.
+>
+> (I'll fix all your other comments and respin; thanks!)
+>
+> -Toke
+>
