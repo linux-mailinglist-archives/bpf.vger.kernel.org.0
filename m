@@ -2,92 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB53276B2B
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 09:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638EA276B36
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 09:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgIXHtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 03:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
+        id S1727216AbgIXHvd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 03:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgIXHtk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:49:40 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69A3C0613CE
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 00:49:39 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id q8so2815254lfb.6
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 00:49:39 -0700 (PDT)
+        with ESMTP id S1727103AbgIXHvc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:51:32 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC90C0613CE;
+        Thu, 24 Sep 2020 00:51:32 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so1363642pfg.13;
+        Thu, 24 Sep 2020 00:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=6Kc0laKYt4RRRQxmQCwLwMgBiR0SOayw6ZIZ3NjLZfs=;
-        b=UH8joUyX5r6s10La3uodfQpG/HN4nMDpaYuqSyzmd20YBL2flGB5czAXVoHMV7H94k
-         DcGYBcxZDCw9eqqigNdCyXwsCKVQ162b1JzPH0o/HumvqTMl5jRE2jl8kKB5/8TSIjnb
-         TfreBnpFOhc/Jp5lqTCBe1DXhMVcn3UPOvBgM=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=48nix4rTdQigZRa9Vc7CjTQh3htJMAItDGYGEpyaX94=;
+        b=LQ9fBJUkchQKhpDJK824w+FTNJrBTTwrBKUZD8qpIHSBjtOPhtIzo6VKaoMMHhNFAL
+         lxtHy84Dpu58G96obf8L3Wlh+T+71fNnC8Od/NwficCfZb1+GYjfYw2XDgXjFX8eIQHp
+         1YiOujXN/CFMVfOoMiIOvcWc3SFrb+s0TAX5ihF2qGNHuxCsqew19roD2DweOQBLVDtI
+         oJxL6FeRwxwgkHl++r4TBYC/gJdE2FOJxlzGFfJv3DJMQs64aAAa26HAOILgU8tv6S8C
+         AIq1mphBEYwZbyzic6qye7YROHHz+2iilIUxfJlFdtlG08D5cGckAo8BUW4KMR9JhLdM
+         rLCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=6Kc0laKYt4RRRQxmQCwLwMgBiR0SOayw6ZIZ3NjLZfs=;
-        b=hIuK3aJI19AXkvwARWDhhOv4IG6iPnRG6yYwCh4loa8Jih/NDY50AAy0bMcmzyHBHz
-         /+tHaTHvZ2PtIS1ceZUfPQjWMZkxTbad1+YRta3yxMkIzBma/ma+PcM0NL/gCe5aDcFr
-         IeE0PSB3kjUpRmfGIcvGeuRvDo1c+kycuSG898valh9vfVrzRnMjX99E/pKghb6dY1Wi
-         VRTxwQh6dOAPGwPhpPOdlLm8J/M9ikUtykLNTfKihhtt9L67o/RmoYzt7iMubU4DUV/2
-         WiZdm7D3HpII3GiHsqWDuQA2yCr/mUg+Mi0UEAeB02HETM5EF7hOe8pNl5gHz122UI5n
-         SQRg==
-X-Gm-Message-State: AOAM532pPULyGChTefe85TYFYfWJ9cbbjBefWEKMcjXXSE8KEUmyMOFy
-        13KLyXWM1H+jVhKaDShd0lO5bSC7IIogdQ==
-X-Google-Smtp-Source: ABdhPJybaEbfYjPwFgudvXUCVYdA0IZCkC9QiZGHAYJ8s+XWfgYvaSX5Tsn9AACgqF51egvOizLcrw==
-X-Received: by 2002:ac2:46d5:: with SMTP id p21mr1283637lfo.558.1600933778181;
-        Thu, 24 Sep 2020 00:49:38 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id 5sm1325726lfr.289.2020.09.24.00.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:49:37 -0700 (PDT)
-References: <20200909232443.3099637-1-iii@linux.ibm.com> <20200909232443.3099637-3-iii@linux.ibm.com> <CAEf4BzYGbzwwDLAUdBB+fj1XYRFddOgUUYFAmUmq=jYpPAsaog@mail.gmail.com> <cf1a51289051cbe3d70e9a755c64f4da8ccf15a5.camel@linux.ibm.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Fix endianness issues in sk_lookup/ctx_narrow_access
-In-reply-to: <cf1a51289051cbe3d70e9a755c64f4da8ccf15a5.camel@linux.ibm.com>
-Date:   Thu, 24 Sep 2020 09:49:36 +0200
-Message-ID: <87imc3ty0f.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=48nix4rTdQigZRa9Vc7CjTQh3htJMAItDGYGEpyaX94=;
+        b=hFXDFZ/+Jj1c88DddS5itIKuRhjVE5Kx6nqmmwMNBLJQWflZEO69ev619gdsXNGNuD
+         v94vxwlbEER56K1l+zrJlqynG8KD1X9OHM0LTerXoBdWb/NlJf1f8gbkTWkrtqb5rqnh
+         pvdsOUqn+8kLzIbYKmMhUuKwcVxv+2gkEPw7d4Iz++GqC1t1SWf0gidrqLQp+v9yHnyZ
+         vRZLS04//OXCfYdS618UhLPXAHmLXAWGDms6jSs4dwHDHROzNEPcFsXxgtR4A38K3Wty
+         BkG3k6wInL1EBwgPWXq4yXJ3kGDIRhHBU68OT0KD+LEr+LPWFOLJlmrb7+d5+nJ5UHRV
+         phYw==
+X-Gm-Message-State: AOAM530lqevAecA1YrYEn6m7yLbquVz9D8jamKPR/BWYZSkAQP9dV32A
+        pL+ed0m/oqQTMPc+NIopUekidsrFAynsgV1TGnGYB0sSBm3tVg==
+X-Google-Smtp-Source: ABdhPJx65pp+0WKMk7ffwPmRtbbQTqLX1EOoTsZNPeH430NNbFVserZlspAwXhx3O3RcBnCwjUoE6+jE3pvHXX1gUQg=
+X-Received: by 2002:a63:511d:: with SMTP id f29mr3010937pgb.11.1600933891983;
+ Thu, 24 Sep 2020 00:51:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org> <DM6PR11MB271492D0565E91475D949F5DEF390@DM6PR11MB2714.namprd11.prod.outlook.com>
+ <CABqSeAS=b6NQ=mqrD=hV60md3isYSDyAnE9QE_AT4=oYYFkAfQ@mail.gmail.com> <202009240037.21A9E3CE@keescook>
+In-Reply-To: <202009240037.21A9E3CE@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 24 Sep 2020 02:51:20 -0500
+Message-ID: <CABqSeATpdn48Jbc1zLugbJBhRJNKr0P+BVx0SyODrEQgrX9HMw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-api@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:12 PM CEST, Ilya Leoshkevich wrote:
-> On Thu, 2020-09-10 at 09:55 -0700, Andrii Nakryiko wrote:
->> On Wed, Sep 9, 2020 at 6:59 PM Ilya Leoshkevich <iii@linux.ibm.com>
->> wrote:
->> > This test makes a lot of narrow load checks while assuming little
->> > endian architecture, and therefore fails on s390.
->> > 
->> > Fix by introducing LSB and LSW macros and using them to perform
->> > narrow
->> > loads.
->> > 
->> > Fixes: 0ab5539f8584 ("selftests/bpf: Tests for BPF_SK_LOOKUP attach
->> > point")
->> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->> > ---
->> 
->> Jakub,
->> 
->> Can you please help review this to make sure no error accidentally
->> slipped in?
+On Thu, Sep 24, 2020 at 2:38 AM Kees Cook <keescook@chromium.org> wrote:
+> > Would you mind educating me how this patch plan one handling MIPS? For
+> > one kernel they seem to have up to three arch numbers per build,
+> > AUDIT_ARCH_MIPS{,64,64N32}. Though ARCH_TRACE_IGNORE_COMPAT_SYSCALLS
+> > does not seem to be defined for MIPS so I'm assuming the syscall
+> > numbers are the same, but I think it is possible some client uses that
+> > arch number to pose different constraints for different processes, so
+> > it would better not accelerate them rather than break them.
 >
-> Gentle ping.
+> I'll take a look, but I'm hoping it won't be too hard to fit into what
+> I've got designed so for to deal with x86_x32. (Will MIPS want this
+> optimization at all?)
 
-Sorry for being unresponsive. I've been off for a couple of weeks.
-
-I'm on it.
-
-[...]
+I just took a slightly closer look at MIPS and it seems that they have
+sparse syscall numbers (defines HAVE_SPARSE_SYSCALL_NR). I don't know
+how the different "regions of syscall numbers" are affected by arch
+numbers, however...
