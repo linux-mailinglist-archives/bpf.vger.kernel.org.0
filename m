@@ -2,142 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5882B27751B
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 17:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A6727754F
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 17:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbgIXPVf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 11:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        id S1728368AbgIXP3I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 11:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgIXPVf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:21:35 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC31C0613CE;
-        Thu, 24 Sep 2020 08:21:35 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id s66so3535734otb.2;
-        Thu, 24 Sep 2020 08:21:35 -0700 (PDT)
+        with ESMTP id S1728357AbgIXP3I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:29:08 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8205C0613D3
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 08:29:07 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id j2so3772951eds.9
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 08:29:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=tdlSq516nJsQ9Fn8kvplDAgcaQA+pzkFi+5Vr1OObFA=;
-        b=q/MPHz6FbEdR5/gLUGvS37zh/WTjQEeB7t3iuPCpZFHhU7iKqytlsxyf7FIvj/V75x
-         SvF+YkHLApCfRS1uqzDc6J0JEio7dIixQhVkETRBF7BzlhqqQmjtfR4RttO/DpsQVEQy
-         Y2m4vqzGA7FAVqBi4VFC/aAMOjbTYwvfozn28W/rQeMrPFvDsV+4LFX3sAtco3BA+pl3
-         6Wm8twwUDftNnKe6De1HyQ3Bvk+qz0lkNd+wA1hJyyKKYlIuPtbvJGIz1HpsxkChAiRh
-         cvApC88Ce+LfzfF+q9p+kg/ijOiHxcbRVlHrfZt9TxaT8fjwawm+f/ktaDsPtK3aXfRl
-         hfaA==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DWwrSFR+XsVbo72EXCPGN7Yvsrb6I0oZs+oVxjkh+2I=;
+        b=hN3JCT4/0mr9lHn1el6A+W9IHJhVcZfLNiBn+2+2ptYhZ2E3ln93PIdOTyrZm4MsWg
+         0pPA5aEFZnOI3KgY8otAO4fYpSdYshKnZ4CmKXSbw5JqMttXF9UPXapl5M86DohboovX
+         I3ro4WAml5gPUcfGG3zbCTYxhnoAJoBotyNRCrSyqpZDz/gaQeuJnjABGulXeW+vgul2
+         WfLGjGxh/urIx8OZzhTSMu8/a21/AzyXO11afB8SfNqZpdfRIv+08n215LLwBniNZZEh
+         jK3alXiJ//9LzmOTJndQYIOo7J2mNf+tk68S7tAY55J1Ph4eY4IoKrvEDEnzodg3nw3v
+         1Idg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=tdlSq516nJsQ9Fn8kvplDAgcaQA+pzkFi+5Vr1OObFA=;
-        b=MMXdzdzaD7MqQU3j9dBK+Dxe0uy54zYkvJGx6Uw/piLgalRocoJWMgKMxOcfY1jv6m
-         VrlbCzAToQBJ2Md8xfVfNzgqnrkWZM0718KYWyGQPal78nqoJxiIiXsiO1+Ap2nNSF+g
-         6VOliemztxa8XapbbXvhoMDPxtF8CGR0UJRTcMHD/I+IlP3W6iUL85lwFLVI+U5oIVxK
-         lvra2hqUjiaDVFsL+KKsDtCTjJeCYhQHxPdTWGDeWe2JblXST6tm7q3lR39es3F/0Cj6
-         OCxw6izAEb4mJF5789oOr/u1YEkxVC6K4YPb2joXzsghR/ETsUnehvtK49YmvZh6Zp8k
-         SbuQ==
-X-Gm-Message-State: AOAM533EMT11Imk/1s0qhTSmocQqDhVzWBhlxeWvcBWPuiRIahdmniro
-        ocGkQ4Vpr3umNJilFqSNYvxNrew2xFwK6Q==
-X-Google-Smtp-Source: ABdhPJyF2jqChaAhEtb3l/uAscptqpekYP6oAOrzaMSDlEtf/xy2X1vV2JBL+t+yCuLBX6yezzkzZA==
-X-Received: by 2002:a05:6830:2104:: with SMTP id i4mr127671otc.266.1600960894602;
-        Thu, 24 Sep 2020 08:21:34 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id j10sm748943oif.36.2020.09.24.08.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:21:33 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 08:21:27 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Message-ID: <5f6cb9778cbd7_4939c208b8@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200923155436.2117661-3-andriin@fb.com>
-References: <20200923155436.2117661-1-andriin@fb.com>
- <20200923155436.2117661-3-andriin@fb.com>
-Subject: RE: [PATCH bpf-next 2/9] libbpf: remove assumption of single
- contiguous memory for BTF data
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DWwrSFR+XsVbo72EXCPGN7Yvsrb6I0oZs+oVxjkh+2I=;
+        b=OGAOVLlENNvnnVbrQ6C3vNJ3thwAeGN/ksrEMF+sK41Mh25VYSh+vOd9XWRzSfvHkk
+         NtvKl8J4c3X0GEIjf0Btc4Vlfkd0jUHpBpLwqv+ez0B/Jzj4B47qUtGmZhG76LJ0D4ZL
+         5tkMHAjkA+gkt23gn/Mc/T9PiiAxxgtaHYfOJ3KBQOmWYOUHfj1otAnY01QupQ7wxQLi
+         j/lWPP1xPRs5C48BvGXE0RPIOuoQxRjWBKifl+kHGqglhtw/FnQili6TC7YpZbxqiL6l
+         1hKfjgWo3P0IX4E3oIcrRVX/5GS/FgSu1OJ+t0V3vh6rH2WQb6xRSPfMne9U7ShK2Zgk
+         m85Q==
+X-Gm-Message-State: AOAM5328hOsNRK2LQBaUCTVGMR5MXFu7jpxKYDjzz2QPePDa6NpRg4oU
+        mzslwV2FJt7ZsPtPIx+aZ6RcW0V8KE9NMjl9LZ3J
+X-Google-Smtp-Source: ABdhPJxwnRvlu4GIjD+pyeEz7LhCUZQ/skYgUffP4gTtRClyXesIuk5Q/rFSvs+tgZ6Sn7QvuUd3X5CwxfSMAX6NAl0=
+X-Received: by 2002:aa7:ce97:: with SMTP id y23mr494977edv.128.1600961346147;
+ Thu, 24 Sep 2020 08:29:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-5-keescook@chromium.org> <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
+ <202009240038.864365E@keescook>
+In-Reply-To: <202009240038.864365E@keescook>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 24 Sep 2020 11:28:55 -0400
+Message-ID: <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
+Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action results
+To:     Kees Cook <keescook@chromium.org>,
+        Tom Hromatka <tom.hromatka@oracle.com>
+Cc:     Jann Horn <jannh@google.com>, YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> Refactor internals of struct btf to remove assumptions that BTF header, type
-> data, and string data are layed out contiguously in a memory in a single
-> memory allocation. Now we have three separate pointers pointing to the start
-> of each respective are: header, types, strings. In the next patches, these
-> pointers will be re-assigned to point to independently allocated memory areas,
-> if BTF needs to be modified.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
+On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
+> On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
+> > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> > > This emulates absolutely the most basic seccomp filters to figure out
+> > > if they will always give the same results for a given arch/nr combo.
+> > >
+> > > Nearly all seccomp filters are built from the following ops:
+> > >
+> > > BPF_LD  | BPF_W    | BPF_ABS
+> > > BPF_JMP | BPF_JEQ  | BPF_K
+> > > BPF_JMP | BPF_JGE  | BPF_K
+> > > BPF_JMP | BPF_JGT  | BPF_K
+> > > BPF_JMP | BPF_JSET | BPF_K
+> > > BPF_JMP | BPF_JA
+> > > BPF_RET | BPF_K
+> > >
+> > > These are now emulated to check for accesses beyond seccomp_data::arch
+> > > or unknown instructions.
+> > >
+> > > Not yet implemented are:
+> > >
+> > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
+> >
+> > BPF_AND is normally only used on syscall arguments, not on the syscall
+> > number or the architecture, right? And when a syscall argument is
+> > loaded, we abort execution anyway. So I think there is no need to
+> > implement those?
+>
+> Is that right? I can't actually tell what libseccomp is doing with
+> ALU|AND. It looks like it's using it for building jump lists?
 
-[...]
+There is an ALU|AND op in the jump resolution code, but that is really
+just if libseccomp needs to fixup the accumulator because a code block
+is expecting a masked value (right now that would only be a syscall
+argument, not the syscall number itself).
 
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -27,18 +27,37 @@
->  static struct btf_type btf_void;
->  
->  struct btf {
-> -	union {
-> -		struct btf_header *hdr;
-> -		void *data;
-> -	};
-> +	void *raw_data;
-> +	__u32 raw_size;
-> +
-> +	/*
-> +	 * When BTF is loaded from ELF or raw memory it is stored
-> +	 * in contiguous memory block, pointed to by raw_data pointer, and
-> +	 * hdr, types_data, and strs_data point inside that memory region to
-> +	 * respective parts of BTF representation:
+> Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
 
-I find the above comment a bit confusing. The picture though is great. How
-about something like,
+Presently the only place where libseccomp uses ALU|AND is when the
+masked equality comparison is used for comparing syscall arguments
+(SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
+information about how often that is used by libseccomp callers, but if
+I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
+of code hits; take that for whatever it is worth.  Tom may have some
+more/better information.
 
-  When BTF is loaded from an ELF or raw memory it is stored
-  in a continguous memory block. The hdr, type_data, and strs_data
-  point inside that memory region to their respective parts of BTF
-  representation
+Of course no promises on future use :)  As one quick example, I keep
+thinking about adding the instruction pointer to the list of things
+that can be compared as part of a libseccomp rule, and if we do that I
+would expect that we would want to also allow a masked comparison (and
+utilize another ALU|AND bpf op there).  However, I'm not sure how
+useful that would be in practice.
 
-> +	 *
-> +	 * +--------------------------------+
-> +	 * |  Header  |  Types  |  Strings  |
-> +	 * +--------------------------------+
-> +	 * ^          ^         ^
-> +	 * |          |         |
-> +	 * hdr        |         |
-> +	 * types_data-+         |
-> +	 * strs_data------------+
-> +	 */
-> +	struct btf_header *hdr;
-> +	void *types_data;
-> +	void *strs_data;
-> +
-> +	/* type ID to `struct btf_type *` lookup index */
->  	__u32 *type_offs;
->  	__u32 type_offs_cap;
-> -	const char *strings;
-> -	void *nohdr_data;
-> -	void *types_data;
->  	__u32 nr_types;
-> -	__u32 data_size;
-> +
-> +	/* BTF object FD, if loaded into kernel */
->  	int fd;
-> +
-> +	/* Pointer size (in bytes) for a target architecture of this BTF */
->  	int ptr_sz;
->  };
->  
-
-Thanks,
-John
+-- 
+paul moore
+www.paul-moore.com
