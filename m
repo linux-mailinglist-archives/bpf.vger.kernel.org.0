@@ -2,109 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496112778C3
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 20:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6752778D2
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 20:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgIXS5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 14:57:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45769 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727992AbgIXS5N (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Sep 2020 14:57:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600973832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Axiq0yReIhbW6/4dmIx+opfMoBleK5yZs2UhwoE+Kvs=;
-        b=WQVX3iBTEE/USJn8DQ3nzvKKCUqfHt/pi2+NR/laK0DKifMdQcLnUfg/Z5H88GRuzfBoT8
-        iwLDnebdVOzknriDdju+tlED36wbcHwZzh//WjtUPhdwzik82E5Xo3o5SxOirCAX0HQCrI
-        VNn9LL3qIUSF5K0NdX5ZrsFeRGxNiqY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414-WVV_JMg6OJmaRNofl0ABnw-1; Thu, 24 Sep 2020 14:57:07 -0400
-X-MC-Unique: WVV_JMg6OJmaRNofl0ABnw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8268E1868410;
-        Thu, 24 Sep 2020 18:57:05 +0000 (UTC)
-Received: from mail (ovpn-118-223.rdu2.redhat.com [10.10.118.223])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BDB1A73693;
-        Thu, 24 Sep 2020 18:57:02 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 14:57:02 -0400
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>, Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf@vger.kernel.org,
-        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
-Message-ID: <20200924185702.GA9225@redhat.com>
-References: <20200923232923.3142503-1-keescook@chromium.org>
+        id S1726831AbgIXS6y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 14:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726681AbgIXS6y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:58:54 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38DBC0613CE;
+        Thu, 24 Sep 2020 11:58:53 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id s13so106849wmh.4;
+        Thu, 24 Sep 2020 11:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=whVWU1G0Rf6aOrTmjuAQq7Qed/+App25DvdLdv5TIOw=;
+        b=J5VvsV6T+xNuTTn6TFx5ulvFBfEGLwV/KpEmgJ8YRi1ld3sMbflUlCvxVE6+TiTGVL
+         N4iM3HIQcRLhPz/4teEybKkwcbZaxVUdWz5UwwxO5Jv1UZ5tEmcdXXa6KXOEE39qzeYZ
+         ikvxYdetFLNAapEc1HBknUF4lduRE9PFILnHqr6IrwwgXalcjkGkcs/wA/uO9UdO1ltg
+         3VPmanQtPT3yPN5i4pRcIYnUsVeq4Hsd3YP9vanuL8yfcQAlcCkF2NpN4PnNl+NRBPl0
+         3OxUzi4K7uWJktsNCk4hDokD4AvnZY8bU3frkCUsPqTono8PsXwh5En8tbDzXoOTNhDl
+         NQuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=whVWU1G0Rf6aOrTmjuAQq7Qed/+App25DvdLdv5TIOw=;
+        b=mNQf1zyubDW5V0wcX8dBL/hsaDO/fr58GFimoiUYwUT1aXD/tc1Hf3OPjVDZV37b3b
+         53sRUMDCHp777TBwbCYhf7EPfjXBUCjhkcYf9NbJz7AwohW73rZUYw5fTKrM+FShdT++
+         fbCpJ9alZbTwwA6ddWA11DVDQgDDqs3KQXhiyI4SkLaJj9sum728vrm5bph42hdjhOOq
+         CBRg2UZ0gMvgo5S+u8dd+DaT5gyEVwlKi40ijM5I15oe34L37RD6I0tfw0LZCM3ekrIA
+         bZs5gYAhrbggNcrX7Uig/K4RHyxogPxm0UrCPS/tUSTzuCnslgxeUactoIHNv15qpI/d
+         y17Q==
+X-Gm-Message-State: AOAM530N5e2iUnTjxbiDclL+pgHLjKMbXh3OX7seq16eyQufPDXVbKiq
+        qQliuQmvulnOPaIbjJN6K/dYoa6gUk4=
+X-Google-Smtp-Source: ABdhPJy5pDn2aAO5m6cClMO/dZT0eGyg4CWDTAlV7V3sEahSsNSFr2c24eAdg5CQ1/zNYuDpeyIYKA==
+X-Received: by 2002:a7b:c095:: with SMTP id r21mr82558wmh.133.1600973932150;
+        Thu, 24 Sep 2020 11:58:52 -0700 (PDT)
+Received: from [192.168.8.147] ([37.171.124.168])
+        by smtp.gmail.com with ESMTPSA id n4sm61340wrp.61.2020.09.24.11.58.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 11:58:51 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 2/6] bpf, net: rework cookie generator as per-cpu
+ one
+To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
+Cc:     john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <cover.1600967205.git.daniel@iogearbox.net>
+ <d4150caecdbef4205178753772e3bc301e908355.1600967205.git.daniel@iogearbox.net>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <e854149f-f3a6-a736-9d33-08b2f60eb3a2@gmail.com>
+Date:   Thu, 24 Sep 2020 20:58:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923232923.3142503-1-keescook@chromium.org>
-User-Agent: Mutt/1.14.7 (2020-08-29)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <d4150caecdbef4205178753772e3bc301e908355.1600967205.git.daniel@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
 
-I'm posting this only for the record, feel free to ignore.
 
-On Wed, Sep 23, 2020 at 04:29:17PM -0700, Kees Cook wrote:
-> rfc: https://lore.kernel.org/lkml/20200616074934.1600036-1-keescook@chromium.org/
-> alternative: https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
-> v1:
-> - rebase to for-next/seccomp
-> - finish X86_X32 support for both pinning and bitmaps
+On 9/24/20 8:21 PM, Daniel Borkmann wrote:
+> With its use in BPF the cookie generator can be called very frequently
+> in particular when used out of cgroup v2 hooks (e.g. connect / sendmsg)
+> and attached to the root cgroup, for example, when used in v1/v2 mixed
+> environments. In particular when there's a high churn on sockets in the
+> system there can be many parallel requests to the bpf_get_socket_cookie()
+> and bpf_get_netns_cookie() helpers which then cause contention on the
+> shared atomic counter. As similarly done in f991bd2e1421 ("fs: introduce
+> a per-cpu last_ino allocator"), add a small helper library that both can
+> then use for the 64 bit counters.
+> 
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  include/linux/cookie.h   | 41 ++++++++++++++++++++++++++++++++++++++++
+>  net/core/net_namespace.c |  5 +++--
+>  net/core/sock_diag.c     |  7 ++++---
+>  3 files changed, 48 insertions(+), 5 deletions(-)
+>  create mode 100644 include/linux/cookie.h
+> 
+> diff --git a/include/linux/cookie.h b/include/linux/cookie.h
+> new file mode 100644
+> index 000000000000..2488203dc004
+> --- /dev/null
+> +++ b/include/linux/cookie.h
+> @@ -0,0 +1,41 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __LINUX_COOKIE_H
+> +#define __LINUX_COOKIE_H
+> +
+> +#include <linux/atomic.h>
+> +#include <linux/percpu.h>
+> +
+> +struct gen_cookie {
+> +	u64 __percpu	*local_last;
+> +	atomic64_t	 shared_last ____cacheline_aligned_in_smp;
+> +};
+> +
+> +#define COOKIE_LOCAL_BATCH	4096
+> +
+> +#define DEFINE_COOKIE(name)					\
+> +	static DEFINE_PER_CPU(u64, __##name);			\
+> +	static struct gen_cookie name = {			\
+> +		.local_last	= &__##name,			\
+> +		.shared_last	= ATOMIC64_INIT(0),		\
+> +	}
+> +
+> +static inline u64 gen_cookie_next(struct gen_cookie *gc)
+> +{
+> +	u64 *local_last = &get_cpu_var(*gc->local_last);
+> +	u64 val = *local_last;
+> +
+> +	if (__is_defined(CONFIG_SMP) &&
+> +	    unlikely((val & (COOKIE_LOCAL_BATCH - 1)) == 0)) {
+> +		s64 next = atomic64_add_return(COOKIE_LOCAL_BATCH,
+> +					       &gc->shared_last);
+> +		val = next - COOKIE_LOCAL_BATCH;
+> +	}
+> +	val++;
+> +	if (unlikely(!val))
+> +		val++;
+> +	*local_last = val;
+> +	put_cpu_var(local_last);
+> +	return val;
 
-It's pretty clear the O(1) seccomp filter bitmap was first was
-proposed by your RFC in June (albeit it was located in the wrong place
-and is still in the wrong place in v1).
 
-> - replace TLB magic with Jann's emulator
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    
-That's a pretty fundamental change in v1 compared to your the
-non-competing TLB magic technique you used in the RFC last June.
+This is not interrupt safe.
 
-The bitmap isn't the clever part of the patch, the bitmap can be
-reviewed in seconds, the difficult part to implement and to review is
-how you fill the bitmap and in that respect there's absolutely nothing
-in common in between the "rfc:" and the "alternative" link.
+I think sock_gen_cookie() can be called from interrupt context.
 
-In June your bitmap-filling engine was this:
-
-https://lore.kernel.org/lkml/20200616074934.1600036-5-keescook@chromium.org/
-
-Then on Sep 21 YiFei Zhu posted his new innovative BPF emulation
-innovation that obsoleted your TLB magic of June:
-
-https://lists.linuxfoundation.org/pipermail/containers/2020-September/042153.html
-
-And on Sep 23 instead of collaborating and helping YiFei Zhu to
-improve his BPF emulator, you posted the same technique that looks
-remarkably similar without giving YiFei Zhu any attribution and you
-instead attribute the whole idea to Jann Horn:
-
-https://lkml.kernel.org/r/20200923232923.3142503-5-keescook@chromium.org
-
-Thanks,
-Andrea
+get_next_ino() is only called from process context, that is what I used get_cpu_var()
+and put_cpu_var()
 
