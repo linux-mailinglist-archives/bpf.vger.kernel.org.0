@@ -2,212 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3725B277C1C
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 01:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A083277C3B
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 01:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgIXXDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 19:03:07 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30210 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726448AbgIXXDH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Sep 2020 19:03:07 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08ON2rd2026803
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 16:03:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=BNmy/GHPThnlKx1netK5oCSDUBSMKw/V+zBkR+CLIbk=;
- b=m0oKr2ddmUhLimjCJVhX1HgBFgTJ0dtS0lUQsX3HOAHJ+cfO5hHSxtg09mCBNlSwQgNs
- l8RkopVaPkGduh0BCJ8VfASPsarp7w9tASdpgn6VKsH2KWeXtPp8woJAXz0z/TJZ/lGG
- Nns/hMkwf7CIy6bgCXvADmucW9ghgEdhkww= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 33qsp7mnqc-15
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 16:03:06 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 24 Sep 2020 16:02:29 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id C53ED62E542E; Thu, 24 Sep 2020 16:02:27 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v5 bpf-next 3/3] selftests/bpf: add raw_tp_test_run
-Date:   Thu, 24 Sep 2020 16:02:09 -0700
-Message-ID: <20200924230209.2561658-4-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200924230209.2561658-1-songliubraving@fb.com>
-References: <20200924230209.2561658-1-songliubraving@fb.com>
+        id S1726694AbgIXXOE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 19:14:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726205AbgIXXOD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Sep 2020 19:14:03 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600989242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kNz47kMuHB/f0bjf1dI2WxhSa4rym2TxHMpu7tr6TsE=;
+        b=Z0DnrRdbyzuxnGR/uNH44lSWwlkvinticK5xWNhi/9735sGfX9FvV84UR3ZR5iBUOMa06k
+        rhsYFZS2rw6f0RhTv/ymOCzns+qby0UY9IgZkUbWL2otfKby4ZYuqBQaWuntGmshuaXJcf
+        aahhT/84F5WNaELdOs53Ta2aCYbDaq8=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-TmE0fgBpMu2inbeRqxXg6A-1; Thu, 24 Sep 2020 19:14:00 -0400
+X-MC-Unique: TmE0fgBpMu2inbeRqxXg6A-1
+Received: by mail-pf1-f197.google.com with SMTP id f76so445237pfa.5
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 16:14:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=kNz47kMuHB/f0bjf1dI2WxhSa4rym2TxHMpu7tr6TsE=;
+        b=eJHQvSvG3A/Y3LREZMqgmSaw6YSaUvMozKmmhqYvtF62uum3fHtAJn7KUhrIt16j71
+         LHN1rt8ai8NOBpvbPUFhC+PJk2POJBek3uHp3SfR9k32qm/W3F+nka0HvfpqzUzy8PJA
+         FCvXlFrHbGNgoRU+IQnfOBBnpWBKrU9dcp+mzAjgA5QQ4kmpNbqEBB0wY4GBaO1+SATl
+         tNoLMSPJzFiWkxDU9CsVpYvpJyk5LiT3B/nNDci72Vee2HR0SadBRtiVIjru8aAJ+BS5
+         /TH+8RtS3vyNGM0lipN7tPnTpnrUxhMqfT9xhI3nq9QYJqAdhguWjJkGGTzmP2S6SySy
+         qqpQ==
+X-Gm-Message-State: AOAM532bumjjdqi4LsAqfHBbvjF9VKBwiVMtmIpwqZ1+PWAqYPNLUfAA
+        M6dCzc4sJwqOBo2ZdCFPH0v8vJAzND3YwbYB/IXAAnwaE91jub9H9a5gTuJyC0CMRod5xH8PZGv
+        VFZG2fFkFc33c
+X-Received: by 2002:aa7:9518:0:b029:142:2501:35e3 with SMTP id b24-20020aa795180000b0290142250135e3mr1268762pfp.67.1600989239484;
+        Thu, 24 Sep 2020 16:13:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwME2/K/IbUTfmnrx9/16A3flZygkg6nD1UFOjlNqLTKnT2jwbq9mPHga9jDWqvftMUzrfhSA==
+X-Received: by 2002:aa7:9518:0:b029:142:2501:35e3 with SMTP id b24-20020aa795180000b0290142250135e3mr1268733pfp.67.1600989239212;
+        Thu, 24 Sep 2020 16:13:59 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id x20sm492190pfr.190.2020.09.24.16.13.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 16:13:58 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 842F4183A90; Fri, 25 Sep 2020 01:13:53 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v8 04/11] bpf: move prog->aux->linked_prog and
+ trampoline into bpf_link on attach
+In-Reply-To: <CAEf4Bza38tR1GvyLzzzzv6zT8B-_gM_jhTqK_c7+e1ciU3ZA1w@mail.gmail.com>
+References: <160079991372.8301.10648588027560707258.stgit@toke.dk>
+ <160079991808.8301.6462172487971110332.stgit@toke.dk>
+ <20200924001439.qitbu5tmzz55ck4z@ast-mbp.dhcp.thefacebook.com>
+ <874knn1bw4.fsf@toke.dk>
+ <CAEf4BzaBvvZdgekg13T3e4uj5Q9Rf1RTFP__ZPsU-NMp2fVXxw@mail.gmail.com>
+ <87zh5ec1gs.fsf@toke.dk>
+ <CAEf4BzZxfzQabDCdmby1XMQV7qQ_C=rATWOb=cN-Q1rfxR+nVA@mail.gmail.com>
+ <87r1qqbywe.fsf@toke.dk>
+ <CAEf4Bza38tR1GvyLzzzzv6zT8B-_gM_jhTqK_c7+e1ciU3ZA1w@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 25 Sep 2020 01:13:53 +0200
+Message-ID: <87mu1ebwem.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-24_18:2020-09-24,2020-09-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 adultscore=0 clxscore=1015 priorityscore=1501 spamscore=0
- mlxlogscore=999 lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240167
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test runs test_run for raw_tracepoint program. The test covers ctx
-input, retval output, and running on correct cpu.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/prog_tests/raw_tp_test_run.c          | 98 +++++++++++++++++++
- .../bpf/progs/test_raw_tp_test_run.c          | 24 +++++
- 2 files changed, 122 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/raw_tp_test_ru=
-n.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_raw_tp_test_ru=
-n.c
+>> [root@(none) bpf]# ./test_progs -t map_in_map
+>> test_lookup_update:PASS:skel_open 0 nsec
+>> test_lookup_update:PASS:skel_attach 0 nsec
+>> test_lookup_update:PASS:inner1 0 nsec
+>> test_lookup_update:PASS:inner2 0 nsec
+>> test_lookup_update:PASS:inner1 0 nsec
+>> test_lookup_update:PASS:inner2 0 nsec
+>> test_lookup_update:PASS:map1_id 0 nsec
+>> test_lookup_update:PASS:map2_id 0 nsec
+>> kern_sync_rcu:PASS:inner_map_create 0 nsec
+>> kern_sync_rcu:PASS:outer_map_create 0 nsec
+>> kern_sync_rcu:PASS:outer_map_update 0 nsec
+>> test_lookup_update:PASS:sync_rcu 0 nsec
+>> kern_sync_rcu:PASS:inner_map_create 0 nsec
+>> kern_sync_rcu:PASS:outer_map_create 0 nsec
+>> kern_sync_rcu:PASS:outer_map_update 0 nsec
+>> test_lookup_update:PASS:sync_rcu 0 nsec
+>
+> try adding sleep(few seconds, enough for RCU grace period to pass)
+> here and see if that helps
+>
+> if not, please printk() around to see why the inner_map1 wasn't freed
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/raw_tp_test_run.c b/t=
-ools/testing/selftests/bpf/prog_tests/raw_tp_test_run.c
-new file mode 100644
-index 0000000000000..5b07259781610
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/raw_tp_test_run.c
-@@ -0,0 +1,98 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2019 Facebook */
-+#include <test_progs.h>
-+#include <linux/bpf.h>
-+#include "bpf/libbpf_internal.h"
-+#include "test_raw_tp_test_run.skel.h"
-+
-+static int duration;
-+
-+void test_raw_tp_test_run(void)
-+{
-+	struct bpf_prog_test_run_attr test_attr =3D {};
-+	int comm_fd =3D -1, err, nr_online, i, prog_fd;
-+	__u64 args[2] =3D {0x1234ULL, 0x5678ULL};
-+	int expected_retval =3D 0x1234 + 0x5678;
-+	struct test_raw_tp_test_run *skel;
-+	char buf[] =3D "new_name";
-+	bool *online =3D NULL;
-+
-+	err =3D parse_cpu_mask_file("/sys/devices/system/cpu/online", &online,
-+				  &nr_online);
-+	if (CHECK(err, "parse_cpu_mask_file", "err %d\n", err))
-+		return;
-+
-+	skel =3D test_raw_tp_test_run__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		goto cleanup;
-+
-+	err =3D test_raw_tp_test_run__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	comm_fd =3D open("/proc/self/comm", O_WRONLY|O_TRUNC);
-+	if (CHECK(comm_fd < 0, "open /proc/self/comm", "err %d\n", errno))
-+		goto cleanup;
-+
-+	err =3D write(comm_fd, buf, sizeof(buf));
-+	CHECK(err < 0, "task rename", "err %d", errno);
-+
-+	CHECK(skel->bss->count =3D=3D 0, "check_count", "didn't increase\n");
-+	CHECK(skel->data->on_cpu !=3D 0xffffffff, "check_on_cpu", "got wrong va=
-lue\n");
-+
-+	prog_fd =3D bpf_program__fd(skel->progs.rename);
-+	test_attr.prog_fd =3D prog_fd;
-+	test_attr.ctx_in =3D args;
-+	test_attr.ctx_size_in =3D sizeof(__u64);
-+
-+	err =3D bpf_prog_test_run_xattr(&test_attr);
-+	CHECK(err =3D=3D 0, "test_run", "should fail for too small ctx\n");
-+
-+	test_attr.ctx_size_in =3D sizeof(args);
-+	err =3D bpf_prog_test_run_xattr(&test_attr);
-+	CHECK(err < 0, "test_run", "err %d\n", errno);
-+	CHECK(test_attr.retval !=3D expected_retval, "check_retval",
-+	      "expect 0x%x, got 0x%x\n", expected_retval, test_attr.retval);
-+
-+	for (i =3D 0; i < nr_online; i++) {
-+		if (online[i]) {
-+			DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+				.ctx_in =3D args,
-+				.ctx_size_in =3D sizeof(args),
-+				.flags =3D BPF_F_TEST_RUN_ON_CPU,
-+				.retval =3D 0,
-+				.cpu =3D i,
-+			);
-+
-+			err =3D bpf_prog_test_run_opts(prog_fd, &opts);
-+			CHECK(err < 0, "test_run_opts", "err %d\n", errno);
-+			CHECK(skel->data->on_cpu !=3D i, "check_on_cpu",
-+			      "expect %d got %d\n", i, skel->data->on_cpu);
-+			CHECK(opts.retval !=3D expected_retval,
-+			      "check_retval", "expect 0x%x, got 0x%x\n",
-+			      expected_retval, opts.retval);
-+
-+			if (i =3D=3D 0) {
-+				/* invalid cpu ID should fail with ENXIO */
-+				opts.cpu =3D 0xffffffff;
-+				err =3D bpf_prog_test_run_opts(prog_fd, &opts);
-+				CHECK(err !=3D -1 || errno !=3D ENXIO,
-+				      "test_run_opts_fail",
-+				      "should failed with ENXIO\n");
-+			} else {
-+				/* non-zero cpu w/o BPF_F_TEST_RUN_ON_CPU
-+				 * should fail with EINVAL
-+				 */
-+				opts.flags =3D 0;
-+				err =3D bpf_prog_test_run_opts(prog_fd, &opts);
-+				CHECK(err !=3D -1 || errno !=3D EINVAL,
-+				      "test_run_opts_fail",
-+				      "should failed with EINVAL\n");
-+			}
-+		}
-+	}
-+cleanup:
-+	close(comm_fd);
-+	test_raw_tp_test_run__destroy(skel);
-+	free(online);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_raw_tp_test_run.c b/t=
-ools/testing/selftests/bpf/progs/test_raw_tp_test_run.c
-new file mode 100644
-index 0000000000000..1521853597d70
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_raw_tp_test_run.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+__u32 count =3D 0;
-+__u32 on_cpu =3D 0xffffffff;
-+
-+SEC("raw_tp/task_rename")
-+int BPF_PROG(rename, struct task_struct *task, char *comm)
-+{
-+
-+	count++;
-+	if ((__u64) task =3D=3D 0x1234ULL && (__u64) comm =3D=3D 0x5678ULL) {
-+		on_cpu =3D bpf_get_smp_processor_id();
-+		return (int)task + (int)comm;
-+	}
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.24.1
+Aha, found it! It happened because my kernel was built with
+PREEMPT_VOLUNTARY. Changing that to PREEMPT fixed the test, and got me
+to:
+
+Summary: 116/853 PASSED, 14 SKIPPED, 0 FAILED
+
+So yay! Thanks for your help with debugging :)
+
+-Toke
 
