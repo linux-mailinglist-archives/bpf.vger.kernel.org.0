@@ -2,144 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6752778D2
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 20:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D162778FD
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 21:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgIXS6y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 14:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S1726899AbgIXTOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 15:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgIXS6y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:58:54 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38DBC0613CE;
-        Thu, 24 Sep 2020 11:58:53 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id s13so106849wmh.4;
-        Thu, 24 Sep 2020 11:58:53 -0700 (PDT)
+        with ESMTP id S1726681AbgIXTOW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 15:14:22 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C4CC0613CE
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 12:14:22 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mn7so249792pjb.5
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 12:14:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=whVWU1G0Rf6aOrTmjuAQq7Qed/+App25DvdLdv5TIOw=;
-        b=J5VvsV6T+xNuTTn6TFx5ulvFBfEGLwV/KpEmgJ8YRi1ld3sMbflUlCvxVE6+TiTGVL
-         N4iM3HIQcRLhPz/4teEybKkwcbZaxVUdWz5UwwxO5Jv1UZ5tEmcdXXa6KXOEE39qzeYZ
-         ikvxYdetFLNAapEc1HBknUF4lduRE9PFILnHqr6IrwwgXalcjkGkcs/wA/uO9UdO1ltg
-         3VPmanQtPT3yPN5i4pRcIYnUsVeq4Hsd3YP9vanuL8yfcQAlcCkF2NpN4PnNl+NRBPl0
-         3OxUzi4K7uWJktsNCk4hDokD4AvnZY8bU3frkCUsPqTono8PsXwh5En8tbDzXoOTNhDl
-         NQuw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nYNQfolVzk1vZsWuLLwjSWbS4j2EWyO6uHCWvWRZVeg=;
+        b=hUuL9B2LljZoDiYX/vccdvchsfVW3zD0frsCzdluTXClpc8C2HXET+CAJvamf8MLKq
+         QFr9vs2aHQNF5XdI/+Bv2dvZtzG8BKQrL9vMYaLUbZqz/gjss7JyVTBH0Mqt5be7chwc
+         g3EHPYVjMh1V4WMwfy14LT7tos0fxp4yVfkVQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=whVWU1G0Rf6aOrTmjuAQq7Qed/+App25DvdLdv5TIOw=;
-        b=mNQf1zyubDW5V0wcX8dBL/hsaDO/fr58GFimoiUYwUT1aXD/tc1Hf3OPjVDZV37b3b
-         53sRUMDCHp777TBwbCYhf7EPfjXBUCjhkcYf9NbJz7AwohW73rZUYw5fTKrM+FShdT++
-         fbCpJ9alZbTwwA6ddWA11DVDQgDDqs3KQXhiyI4SkLaJj9sum728vrm5bph42hdjhOOq
-         CBRg2UZ0gMvgo5S+u8dd+DaT5gyEVwlKi40ijM5I15oe34L37RD6I0tfw0LZCM3ekrIA
-         bZs5gYAhrbggNcrX7Uig/K4RHyxogPxm0UrCPS/tUSTzuCnslgxeUactoIHNv15qpI/d
-         y17Q==
-X-Gm-Message-State: AOAM530N5e2iUnTjxbiDclL+pgHLjKMbXh3OX7seq16eyQufPDXVbKiq
-        qQliuQmvulnOPaIbjJN6K/dYoa6gUk4=
-X-Google-Smtp-Source: ABdhPJy5pDn2aAO5m6cClMO/dZT0eGyg4CWDTAlV7V3sEahSsNSFr2c24eAdg5CQ1/zNYuDpeyIYKA==
-X-Received: by 2002:a7b:c095:: with SMTP id r21mr82558wmh.133.1600973932150;
-        Thu, 24 Sep 2020 11:58:52 -0700 (PDT)
-Received: from [192.168.8.147] ([37.171.124.168])
-        by smtp.gmail.com with ESMTPSA id n4sm61340wrp.61.2020.09.24.11.58.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 11:58:51 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 2/6] bpf, net: rework cookie generator as per-cpu
- one
-To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
-Cc:     john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <cover.1600967205.git.daniel@iogearbox.net>
- <d4150caecdbef4205178753772e3bc301e908355.1600967205.git.daniel@iogearbox.net>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <e854149f-f3a6-a736-9d33-08b2f60eb3a2@gmail.com>
-Date:   Thu, 24 Sep 2020 20:58:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nYNQfolVzk1vZsWuLLwjSWbS4j2EWyO6uHCWvWRZVeg=;
+        b=pUd9tIVBpM/WEKHJTHw8uultDsiRjUjOOvbi7KwYuD2ZwZVGLYPhHkAyDLM4y2GzPW
+         iu6+jc/NrWgNg5gytNE4eHhKctYB7oFEkxXZyYQtNs5WDfqchZuKQIZkYtUj8osC01L4
+         F9gtOTzWLKdaJ0HjP0foc41oP/J4tPR9jkdNAHsnjkiBxQYUgPgC4Lm2Mkidk4Ud4jP0
+         kZz9kAtQSkgLgPKMYcLJ8UAb8EJKvDvdXn07tSk4DqVSEAg92WqYpibTonTdD1N13Vpz
+         IvErqQ+g/ZjpN9GXMpGwWpkARr7OkI9cy4EPz5fRaPXMXfVt6u56DjRX4VB3b7NxQ7H2
+         w0TA==
+X-Gm-Message-State: AOAM530p/Dz39ePJaFdTE1poqonJcpE0i6pJyI8KwNlCPYK8S11KZARo
+        hAxtwXTiTrDBdZtXRIMjxWUNLQ==
+X-Google-Smtp-Source: ABdhPJzCOkXIw+4aHc3ITiPqTIKrHpD3nBHPrufYSJk0Eo6cGU3fq7XJIKl/Iks+YT9V1uuYNnr2ag==
+X-Received: by 2002:a17:90a:178e:: with SMTP id q14mr415155pja.154.1600974861729;
+        Thu, 24 Sep 2020 12:14:21 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m25sm249209pfa.32.2020.09.24.12.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 12:14:20 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     containers@lists.linux-foundation.org,
+        YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v2 seccomp 1/6] seccomp: Move config option SECCOMP to arch/Kconfig
+Date:   Thu, 24 Sep 2020 12:11:28 -0700
+Message-Id: <160097467791.3774715.6342246806292251250.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+References: <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-In-Reply-To: <d4150caecdbef4205178753772e3bc301e908355.1600967205.git.daniel@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 9/24/20 8:21 PM, Daniel Borkmann wrote:
-> With its use in BPF the cookie generator can be called very frequently
-> in particular when used out of cgroup v2 hooks (e.g. connect / sendmsg)
-> and attached to the root cgroup, for example, when used in v1/v2 mixed
-> environments. In particular when there's a high churn on sockets in the
-> system there can be many parallel requests to the bpf_get_socket_cookie()
-> and bpf_get_netns_cookie() helpers which then cause contention on the
-> shared atomic counter. As similarly done in f991bd2e1421 ("fs: introduce
-> a per-cpu last_ino allocator"), add a small helper library that both can
-> then use for the 64 bit counters.
+On Thu, 24 Sep 2020 07:44:15 -0500, YiFei Zhu wrote:
+> In order to make adding configurable features into seccomp
+> easier, it's better to have the options at one single location,
+> considering easpecially that the bulk of seccomp code is
+> arch-independent. An quick look also show that many SECCOMP
+> descriptions are outdated; they talk about /proc rather than
+> prctl.
 > 
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->  include/linux/cookie.h   | 41 ++++++++++++++++++++++++++++++++++++++++
->  net/core/net_namespace.c |  5 +++--
->  net/core/sock_diag.c     |  7 ++++---
->  3 files changed, 48 insertions(+), 5 deletions(-)
->  create mode 100644 include/linux/cookie.h
+> As a result of moving the config option and keeping it default
+> on, architectures arm, arm64, csky, riscv, sh, and xtensa
+> did not have SECCOMP on by default prior to this and SECCOMP will
+> be default in this change.
 > 
-> diff --git a/include/linux/cookie.h b/include/linux/cookie.h
-> new file mode 100644
-> index 000000000000..2488203dc004
-> --- /dev/null
-> +++ b/include/linux/cookie.h
-> @@ -0,0 +1,41 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __LINUX_COOKIE_H
-> +#define __LINUX_COOKIE_H
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/percpu.h>
-> +
-> +struct gen_cookie {
-> +	u64 __percpu	*local_last;
-> +	atomic64_t	 shared_last ____cacheline_aligned_in_smp;
-> +};
-> +
-> +#define COOKIE_LOCAL_BATCH	4096
-> +
-> +#define DEFINE_COOKIE(name)					\
-> +	static DEFINE_PER_CPU(u64, __##name);			\
-> +	static struct gen_cookie name = {			\
-> +		.local_last	= &__##name,			\
-> +		.shared_last	= ATOMIC64_INIT(0),		\
-> +	}
-> +
-> +static inline u64 gen_cookie_next(struct gen_cookie *gc)
-> +{
-> +	u64 *local_last = &get_cpu_var(*gc->local_last);
-> +	u64 val = *local_last;
-> +
-> +	if (__is_defined(CONFIG_SMP) &&
-> +	    unlikely((val & (COOKIE_LOCAL_BATCH - 1)) == 0)) {
-> +		s64 next = atomic64_add_return(COOKIE_LOCAL_BATCH,
-> +					       &gc->shared_last);
-> +		val = next - COOKIE_LOCAL_BATCH;
-> +	}
-> +	val++;
-> +	if (unlikely(!val))
-> +		val++;
-> +	*local_last = val;
-> +	put_cpu_var(local_last);
-> +	return val;
+> Architectures microblaze, mips, powerpc, s390, sh, and sparc
+> have an outdated depend on PROC_FS and this dependency is removed
+> in this change.
+> 
+> Suggested-by: Jann Horn <jannh@google.com>
+> Link: https://lore.kernel.org/lkml/CAG48ez1YWz9cnp08UZgeieYRhHdqh-ch7aNwc4JRBnGyrmgfMg@mail.gmail.com/
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> [...]
 
+Yes; I've been meaning to do this for a while now. Thank you! I tweaked
+the help text a bit.
 
-This is not interrupt safe.
+Applied, thanks!
 
-I think sock_gen_cookie() can be called from interrupt context.
+[1/1] seccomp: Move config option SECCOMP to arch/Kconfig
+      https://git.kernel.org/kees/c/c3c9c2df3636
 
-get_next_ino() is only called from process context, that is what I used get_cpu_var()
-and put_cpu_var()
+-- 
+Kees Cook
 
