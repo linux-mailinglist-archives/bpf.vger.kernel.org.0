@@ -2,135 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776982779F1
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 22:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492652779E6
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 22:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgIXUIe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 16:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
+        id S1726183AbgIXUHK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 16:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIXUId (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:08:33 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A06C0613D4
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 13:00:37 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so352724pgm.11
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 13:00:37 -0700 (PDT)
+        with ESMTP id S1725208AbgIXUHH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 16:07:07 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6696C0613DB;
+        Thu, 24 Sep 2020 13:07:06 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id 133so319411ybg.11;
+        Thu, 24 Sep 2020 13:07:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+MD2QubiwKdZDJzjnc2wAOK3dZyKxhcYOawuWHop+Wo=;
-        b=avbGCQqM983qSOxtkvStgCWx9sRpEeKEGDHd9YWkndoou2/aH5siCielYiOMrMzduL
-         Fe2noZykDUuGZ4LQR9NHfzh+YZq63h5jKJDfKza+jfdwvAziUO2yCVU35rzmrXXSDvW8
-         Up/SO6HKiwkFMBN2H+97Gna9dqtcH5g3Y0HbI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hxxs+CqXcjzm9/10GBg9XlC9NqGhBburIqZkxr+CoV8=;
+        b=jkfFyBy5F7W6SajVgcBWXvhYr0siwPrZDyQTul52gwHaJSpDujlWFcyfnTRcxfK7Zl
+         k/ZoFiZn2T77LnBPFYuRlRMSitk7QjurNG5AbvXdd1gt0j6ZJn+PaLUMLcurYeNAo5ZT
+         i8P1udJVPuWUFchTpoYIr8Lj8wtrZBreTJqDCKGl1FzkYHbQ1z3Ni+gWJWovM36i5Slr
+         DoXlZGPsXywGDB/Mum59MY5ilKuyFpw8gLLS4+eZ+9dpOjAxx/EUyRWCF+VAkEQ5CrUY
+         myKYwOVlJexRtJrgZ7+oPTU8rciCSVO4axVcR3Qn+hoXDMctjUeG4kuSm9ubBnvmOrYx
+         gNng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+MD2QubiwKdZDJzjnc2wAOK3dZyKxhcYOawuWHop+Wo=;
-        b=a+00wRIKIA0zor61BOXS9/JTWfesoSLiRAVLIATMjQ351WXEfO4Gm4hjPXDrEg0eSn
-         tbYLqDQgXTAZhM57YyjLcKeXItbbcyq622SeUKJDu1sxVDavdSHyPozUFBm72fgN94ni
-         uHJr10SVdYVvzCMw8w3104iovQpnbynj/PprUs4s3VzHSJhMIz5/ij+MCk2iCI0r1XRi
-         AZMGRenIpsZLX5oZ3YUFrDbYu8lOGnktyjD/OPi1DLx3SEOUSSR+LJyq9hG/yWfsdZOz
-         fYL1kWnyXDnZ5PoytyeGKAzK5nQleZq2R6lomEpEuvThq5RDHKFe8I42/E7KUoy4N7R0
-         Mf1w==
-X-Gm-Message-State: AOAM531jt2Ms45HmBNk7afZFuuI/X0Z5+leXo1cPS6W0Lg4zklqtbAjg
-        zJk0cgBkl3E2o9TvqV60bKE+3Q==
-X-Google-Smtp-Source: ABdhPJw+cepPZiirv+WRgNOWJCnEG6K3L6esLxka7Bt1UZlgbovFX+43wYSgm0HkhFGg9/Z7NbQHsw==
-X-Received: by 2002:a63:1464:: with SMTP id 36mr606764pgu.160.1600977636906;
-        Thu, 24 Sep 2020 13:00:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c9sm295293pfn.78.2020.09.24.13.00.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 13:00:35 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 13:00:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>, Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf@vger.kernel.org,
-        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
-Message-ID: <202009241253.7D238A4@keescook>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200924185702.GA9225@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hxxs+CqXcjzm9/10GBg9XlC9NqGhBburIqZkxr+CoV8=;
+        b=M+Hd9T75STE0ikO0E1g5hjFZw264bps0dazpk2zAzyQeVs+r8iEwtWX4Ed42t3dkFB
+         H8t+PR6Ht/tyI8ynqHZluZdWUx2XcnzcGl4Eh49iGPZY9lLzWaOmlQEtmUnakqZ+WtIY
+         rImL0vqF+BwMfl+bsC5bcaMpGPeABuhivKDOSFPw6zZzeRFcydLaxliLVB/v8IggYqj2
+         IpIbH8NPSlA+aut7D5+gd7BniepM5GUvI2UmKdmQJ7ALu4P7kjPS01lUanijOB2itAfN
+         KoHYkVtZIuxBzdJtVwP1ja5jGAh0PmGJXUU1wIKGXyjDrr2nxFnchx+rFzA8moYLCemF
+         URlw==
+X-Gm-Message-State: AOAM533EPQwxI/k2RWfO/SE9Xv7fNgmGOBqGQM5hH1eZo7cHheqsXN1i
+        yyC9Ev0CCDdVeH+rKFJCuHi3ZKI/lfUKpd4HoapUld99+sJHnQ==
+X-Google-Smtp-Source: ABdhPJx/XbdBBOZH2228ESnVTc9FrG455E/cvUwJSbWLsxMkwlh+/YWOCAId8ErvGtmCiTlnRPfrVdBrKwaXRAlzvtA=
+X-Received: by 2002:a25:cbc4:: with SMTP id b187mr704368ybg.260.1600978026182;
+ Thu, 24 Sep 2020 13:07:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924185702.GA9225@redhat.com>
+References: <20200924011951.408313-1-songliubraving@fb.com> <20200924011951.408313-3-songliubraving@fb.com>
+In-Reply-To: <20200924011951.408313-3-songliubraving@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 24 Sep 2020 13:06:55 -0700
+Message-ID: <CAEf4BzZqQ3EA8Po7Jjash3hAjT_e-u2QmfjsQqoC+obZXLakrw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/3] libbpf: support test run of raw
+ tracepoint programs
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:57:02PM -0400, Andrea Arcangeli wrote:
-> Hello,
-> 
-> I'm posting this only for the record, feel free to ignore.
-> 
-> On Wed, Sep 23, 2020 at 04:29:17PM -0700, Kees Cook wrote:
-> > rfc: https://lore.kernel.org/lkml/20200616074934.1600036-1-keescook@chromium.org/
-> > alternative: https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
-> > v1:
-> > - rebase to for-next/seccomp
-> > - finish X86_X32 support for both pinning and bitmaps
-> 
-> It's pretty clear the O(1) seccomp filter bitmap was first was
-> proposed by your RFC in June (albeit it was located in the wrong place
-> and is still in the wrong place in v1).
-> 
-> > - replace TLB magic with Jann's emulator
->     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->     
-> That's a pretty fundamental change in v1 compared to your the
-> non-competing TLB magic technique you used in the RFC last June.
-> 
-> The bitmap isn't the clever part of the patch, the bitmap can be
-> reviewed in seconds, the difficult part to implement and to review is
-> how you fill the bitmap and in that respect there's absolutely nothing
-> in common in between the "rfc:" and the "alternative" link.
-> 
-> In June your bitmap-filling engine was this:
-> 
-> https://lore.kernel.org/lkml/20200616074934.1600036-5-keescook@chromium.org/
-> 
-> Then on Sep 21 YiFei Zhu posted his new innovative BPF emulation
-> innovation that obsoleted your TLB magic of June:
-> 
-> https://lists.linuxfoundation.org/pipermail/containers/2020-September/042153.html
-> 
-> And on Sep 23 instead of collaborating and helping YiFei Zhu to
-> improve his BPF emulator, you posted the same technique that looks
-> remarkably similar without giving YiFei Zhu any attribution and you
-> instead attribute the whole idea to Jann Horn:
-> 
-> https://lkml.kernel.org/r/20200923232923.3142503-5-keescook@chromium.org
+On Wed, Sep 23, 2020 at 6:45 PM Song Liu <songliubraving@fb.com> wrote:
+>
+> Add bpf_prog_test_run_opts() with support of new fields in bpf_attr.test,
+> namely, flags and cpu. Also extend _opts operations to support outputs via
+> opts.
+>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  tools/lib/bpf/bpf.c             | 31 +++++++++++++++++++++++++++++++
+>  tools/lib/bpf/bpf.h             | 26 ++++++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.map        |  1 +
+>  tools/lib/bpf/libbpf_internal.h |  5 +++++
+>  4 files changed, 63 insertions(+)
+>
 
-?? Because it IS literally Jann's code:
-https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
-As the first reply to 20200616074934.1600036-5-keescook@chromium.org. In
-June. Which I agreed was the way to go. In June.
+[...]
 
-And When YiFei Zhu sent their series, I saw they were headed in
-a direction that looked functionally similar, but significantly
-over-engineered, and done without building on the June RFC and its
-discussion. So I raised the priority of putting Jann's code in to the
-RFC, so I could send out an update demonstrating both how small I would
-like the emulator to be, and how to handle things like x32.
+>  static int bpf_obj_get_next_id(__u32 start_id, __u32 *next_id, int cmd)
+>  {
+>         union bpf_attr attr;
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index 8c1ac4b42f908..4f13ec4323aff 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -251,6 +251,32 @@ struct bpf_prog_bind_opts {
+>
+>  LIBBPF_API int bpf_prog_bind_map(int prog_fd, int map_fd,
+>                                  const struct bpf_prog_bind_opts *opts);
+> +
+> +struct bpf_test_run_opts {
+> +       size_t sz; /* size of this struct for forward/backward compatibility */
+> +       int repeat;
+> +       const void *data_in;
+> +       __u32 data_size_in;
+> +       void *data_out;      /* optional */
+> +       __u32 data_size_out; /* in: max length of data_out
+> +                             * out: length of data_out
+> +                             */
+> +       __u32 retval;        /* out: return code of the BPF program */
+> +       __u32 duration;      /* out: average per repetition in ns */
+> +       const void *ctx_in; /* optional */
+> +       __u32 ctx_size_in;
+> +       void *ctx_out;      /* optional */
+> +       __u32 ctx_size_out; /* in: max length of ctx_out
+> +                            * out: length of cxt_out
+> +                            */
+> +       __u32 flags;
+> +       __u32 cpu;
+> +};
 
-How, exactly, am I not collaborating? I was literally trying to
-thread-merge and avoid (more) extra work on YiFei Zhu's end.
+lots of holes in there, let's reorder (it doesn't have to match the
+order in bpf_attr):
 
--- 
-Kees Cook
+      size_t sz; /* size of this struct for forward/backward compatibility */
+
+      const void *data_in;
+      void *data_out;
+      __u32 data_size_in;
+      __u32 data_size_out;
+
+      const void *ctx_in;
+      void *ctx_out;
+      __u32 ctx_size_in;
+      __u32 ctx_size_out;
+
+      __u32 retval;
+      int repeat;
+      __u32 duration;
+      __u32 flags;
+      __u32 cpu;
+
+?
+
+> +#define bpf_test_run_opts__last_field cpu
+> +
+> +LIBBPF_API int bpf_prog_test_run_opts(int prog_fd,
+> +                                     struct bpf_test_run_opts *opts);
+> +
+>  #ifdef __cplusplus
+>  } /* extern "C" */
+>  #endif
+
+[...]
