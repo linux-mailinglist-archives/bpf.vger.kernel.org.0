@@ -2,143 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60114277612
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 17:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EABD27761F
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 18:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgIXP7s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 11:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
+        id S1728461AbgIXQCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 12:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgIXP7s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:59:48 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A505C0613CE;
-        Thu, 24 Sep 2020 08:59:48 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id t76so4153991oif.7;
-        Thu, 24 Sep 2020 08:59:48 -0700 (PDT)
+        with ESMTP id S1728381AbgIXQCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:02:23 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E77C0613CE;
+        Thu, 24 Sep 2020 09:02:23 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id f1so1877198plo.13;
+        Thu, 24 Sep 2020 09:02:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=qYYqLO5rrBj3F3Lv6FQhtSM3fobUZEnBhC277ef4YHM=;
-        b=t/PJ4N38sRhSTRDCCaRn2eSpVrvp0fTsAwGzojlNMPMma7XF/vIlwrW/mQET4aeHuV
-         t9L4WYS0nPnb7VSK1Onnb8XSKtLSJM4Ee2S10XW5fOjB2HwA3TU39oxohLV9WNUUq2Dp
-         pt4jL7Z+uZJ49r1v7x2rvSkn/oBRQYEVwK1vcqKl683t4YZ9+KECLnvFE9K+dLQD3J5K
-         EzgTAe9P5wZIEEv7VR1MIYhjC3vsyntt4bfAs46DaCaYwWWDkSHC9g+/FSPL7tWwrFOn
-         vfas7Ja4S/JKxCO9jfAMViBQeJW9A+V7nsUeBFhlBsJPu2Br+6/NbQilWYjZFbYFOuoh
-         kDXA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NRCLmg4VDNmw7XaOEseuJn4hXfsbbPGMKJw0MmQ0DNw=;
+        b=pb0eJj9rc50bEDW7RBoGUAvuENUYLTp6H/MsgH6/3hVf+AvE3Iqpy6vw6fTVnTtUc0
+         XaprcJ4xCk0WB8pggZarMBsPFF7/4tHj4rRihbeagR33gvtgOohtANOS3YoGU5ymVdnp
+         f0aZz6Vq6a1X98YS68yqX3h4R67eRfLA1M83OXQhCSDEej6qDOfQc8iK3hnrWOfmM0ze
+         aVvSo4vuvZA3cePODNWKCA3lq4fAnJlyXV8QR6lRnhrbP/E8kfLctMlF0+i3Ag7CqtIX
+         nu0J3RkD81Q3EDukQrd958DdXBfz/WuJK+qZU8q5yNnpsLTGY4t5YlONIVKSfepnOJl6
+         38tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=qYYqLO5rrBj3F3Lv6FQhtSM3fobUZEnBhC277ef4YHM=;
-        b=GPh3iviQ064uUpg2Hd1+h076i5pa6bxCRi41gDcWX0VpPU4tOIPczbRBYiwjVOmjdd
-         nLfw1sDVBxvcLPbEnn1Bt7WDddodlBKXeWZ25aXS9cPJxoGvR+S8+QFUwmuM78iDHNKL
-         bx6fTsHb2Un8dVg3zRiT/B5eFhvhtWT/hQcQevzTXEKjNgNTx0BJmCpNtBXV7BNk24lD
-         UhGmfI6TYJ+XN5rMuEJD7YdfFCekYEu6itDww7ybHhebAQ57q6LAFqyTJHaKuXwaiEbW
-         G5JAdkXCdV2HAfjJ4H+VC28vHTenmFe/Hdhj47gxAbwPhOYCvHRh9Xu6Co5G/l3Ie8jO
-         vPmw==
-X-Gm-Message-State: AOAM532oMGEZ7t45H+3mQ0ENKM9Aqlz5r/D7mX0KC2z/SDjRyKrwa8fQ
-        Yik1Nb5AJxuH9sfVh/gDRFU=
-X-Google-Smtp-Source: ABdhPJx/u7tHF+kfbGG7uOOUSXFS59f4Bkime7I6rhLUjG5ZeLluBDECDmPThKFGYnC5I/wn7bRnPg==
-X-Received: by 2002:aca:dcd7:: with SMTP id t206mr55498oig.134.1600963187574;
-        Thu, 24 Sep 2020 08:59:47 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id h14sm888819otr.21.2020.09.24.08.59.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:59:46 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 08:59:40 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Message-ID: <5f6cc26c7f500_4939c20811@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200923155436.2117661-8-andriin@fb.com>
-References: <20200923155436.2117661-1-andriin@fb.com>
- <20200923155436.2117661-8-andriin@fb.com>
-Subject: RE: [PATCH bpf-next 7/9] libbpf: add BTF writing APIs
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NRCLmg4VDNmw7XaOEseuJn4hXfsbbPGMKJw0MmQ0DNw=;
+        b=ivWu94WtphA8FAf4CgC9nGKo1FkMM9Dr7gFXiBvz+uavw+C8ojFHPwNyWhL+9309uR
+         C4ABjdd1hIsS4mNaRfc8YhAg1DhIC2jA11331U3tSe2pP15+BUUWzXgqRIcTD+vo2RrE
+         mfE0s62O9rYutIYTL4Nm8Zbv9iLuEYNspYVbz358PeZULN9OrEOi+Umwr8FTF8/kSg9l
+         kF7BW/VgHZgkUrDVNjcEjCukaF34bjHPBBNvtRxVU2ECCKBtQR/EPZhRB4R0nQfRUjr1
+         0amXdw/J1O03NyWHXQUEA+45zJH94TBjNOzWPxU7gM7gU4ASE+8TE02KgLwYm7LE9hYa
+         pNEw==
+X-Gm-Message-State: AOAM532G+g47xBCTp709LZh2xsCmgP/P9jkGNOugjZloUNLagvMqiOqR
+        t37S+McCuIQv8ze+nhFDKhOMB+LC+t5Y+8+YIFI=
+X-Google-Smtp-Source: ABdhPJwMK2AyELo9LPxKKCnULIfqM45VOQhCysUmD7RLdDao+ghn99Hqy1JLu5VcPdW9QRvffafqvTw1JXKBcnbf0KE=
+X-Received: by 2002:a17:90b:4b82:: with SMTP id lr2mr52199pjb.184.1600963341422;
+ Thu, 24 Sep 2020 09:02:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1600951211.git.yifeifz2@illinois.edu> <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
+ <7042ba3307b34ce3b95e5fede823514e@AcuMS.aculab.com> <CABqSeASWf_CArdOzASLeRBPZQ-S_vtinhZLteYng4iAof4py+w@mail.gmail.com>
+ <665ea57e360a421c958fffa08da77920@AcuMS.aculab.com> <CABqSeARmtCk+vUbUfQ39z+mCXiHm2Gd=OopLHXvPTnvwcHfwOw@mail.gmail.com>
+In-Reply-To: <CABqSeARmtCk+vUbUfQ39z+mCXiHm2Gd=OopLHXvPTnvwcHfwOw@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 24 Sep 2020 11:02:10 -0500
+Message-ID: <CABqSeAQ2mek4ZJ0SFZDy6obJ_JveoWX9GDi-_Q_e8o8ZPpF-XQ@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> Add APIs for appending new BTF types at the end of BTF object.
-> 
-> Each BTF kind has either one API of the form btf__append_<kind>(). For types
-> that have variable amount of additional items (struct/union, enum, func_proto,
-> datasec), additional API is provided to emit each such item. E.g., for
-> emitting a struct, one would use the following sequence of API calls:
-> 
-> btf__append_struct(...);
-> btf__append_field(...);
-> ...
-> btf__append_field(...);
-> 
-> Each btf__append_field() will ensure that the last BTF type is of STRUCT or
-> UNION kind and will automatically increment that type's vlen field.
-> 
-> All the strings are provided as C strings (const char *), not a string offset.
-> This significantly improves usability of BTF writer APIs. All such strings
-> will be automatically appended to string section or existing string will be
-> re-used, if such string was already added previously.
-> 
-> Each API attempts to do all the reasonable validations, like enforcing
-> non-empty names for entities with required names, proper value bounds, various
-> bit offset restrictions, etc.
-> 
-> Type ID validation is minimal because it's possible to emit a type that refers
-> to type that will be emitted later, so libbpf has no way to enforce such
-> cases. User must be careful to properly emit all the necessary types and
-> specify type IDs that will be valid in the finally generated BTF.
-> 
-> Each of btf__append_<kind>() APIs return new type ID on success or negative
-> value on error. APIs like btf__append_field() that emit additional items
-> return zero on success and negative value on error.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
+On Thu, Sep 24, 2020 at 9:37 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > Try with a slghtly older gcc.
+> > I think that entire optimisation (discarding const arrays)
+> > is very recent.
+>
+> Will try, will take a while to get an old GCC to run, however :/
 
+Possibly one of the oldest I can easily get to work is GCC 6.5.0, and
+unrolling seems is still the case:
+
+0000000000001560 <__seccomp_filter>:
 [...]
+    15d4:       41 8b 74 24 04          mov    0x4(%r12),%esi
+    15d9:       bf 08 01 00 00          mov    $0x108,%edi
+    15de:       81 fe 3e 00 00 c0       cmp    $0xc000003e,%esi
+    15e4:       75 30                   jne    1616 <__seccomp_filter+0xb6>
+[...]
+    1616:       81 fe 03 00 00 40       cmp    $0x40000003,%esi
+    161c:       bf 40 01 00 00          mov    $0x140,%edi
+    1621:       74 c3                   je     15e6 <__seccomp_filter+0x86>
+    1623:       0f 0b                   ud2
 
-> +	/* deconstruct BTF, if necessary, and invalidate raw_data */
-> +	if (btf_ensure_modifiable(btf))
-> +		return -ENOMEM;
-> +
-> +	sz = sizeof(struct btf_type) + sizeof(int);
-> +	t = btf_add_type_mem(btf, sz);
-> +	if (!t)
-> +		return -ENOMEM;
-> +
-> +	/* if something goes wrong later, we might end up with extra an string,
+Am I overlooking something or should I go further back in the compiler version?
 
-nit typo, 'with an extra string'
-
-> +	 * but that shouldn't be a problem, because BTF can't be constructed
-> +	 * completely anyway and will most probably be just discarded
-> +	 */
-> +	name_off = btf__add_str(btf, name);
-> +	if (name_off < 0)
-> +		return name_off;
-> +
-> +	t->name_off = name_off;
-> +	t->info = btf_type_info(BTF_KIND_INT, 0, 0);
-> +	t->size = byte_sz;
-> +	/* set INT info, we don't allow setting legacy bit offset/size */
-> +	*(__u32 *)(t + 1) = (encoding << 24) | (byte_sz * 8);
-> +
-> +	err = btf_add_type_idx_entry(btf, btf->hdr->type_len);
-> +	if (err)
-> +		return err;
-> +
-> +	btf->hdr->type_len += sz;
-> +	btf->hdr->str_off += sz;
-> +	btf->nr_types++;
-> +	return btf->nr_types;
-> +}
-> +
+YiFei Zhu
