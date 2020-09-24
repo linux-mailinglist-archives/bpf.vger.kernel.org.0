@@ -2,128 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C3A2772C6
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 15:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21350277311
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 15:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgIXNk6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 09:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728116AbgIXNk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:40:58 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AF3C0613D3
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 06:40:58 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 77so4009062lfj.0
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 06:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cDrHVTOD+iSWXelVapd6LAkJ7VfbRManFz9vUWJEqwc=;
-        b=KCxqPAVEUh0NN2sRqfB2Er3kRv3k3VxWZOlCy1TnuFltpouAeT9UrqF3gbDCWNhLso
-         Q4gthE2otk3e6NybEISvLpG5ofuUJ4TsMDfT/fjZlK00Lj8I+w0dolYj3GdjwFPq6Ih8
-         CvX8q1UtLGea0tijaEcOFvSd32Yq46wp4o0mI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cDrHVTOD+iSWXelVapd6LAkJ7VfbRManFz9vUWJEqwc=;
-        b=n9tFJlCUAeEOp3P44jk1iwB+DIj7bi52HLQFnFCD/Bhp7Lpm5ir+mcaVpc/27J/v95
-         L+2Sjokzk8so+qtV+bZ8zgS5Y0JVZgTILmCeCwRlS/frD7xcLuLvj0KEFfwczlc9JmTf
-         SDjPNjgYE6wEp5fACJ3KgE4nKVbNaw3YahwqPMoMMDmuWfWj8Lq7K6s2fK7tedzUa0+w
-         zPJcYlXnuKLDd+D3Iv4gOm5zcvvrFScRIFuvLNlG/v/zVbSHmF584Y/tbqexvOi+RtTC
-         JSkgItC15YOr76FsWLB/GcYvYMOTxBW79lemnqj2e0rQlBUreeFUw1BrIKRyQvrNo5YH
-         edWw==
-X-Gm-Message-State: AOAM533vTwPQJvs0T1Z9gmc0fo5YOzKFT2VqBB3QPUtz17u2RFHXvDu1
-        ohIacRtp7rYKIw44v7lthxZ3Hw==
-X-Google-Smtp-Source: ABdhPJyhP2oOUzht7mmnYmL06kxXBu44hSqGNAaV4Vj6cp2z2M4mFMwQjvAP9vCt1lBA3/mkfw8qIQ==
-X-Received: by 2002:a19:6b17:: with SMTP id d23mr362374lfa.190.1600954856089;
-        Thu, 24 Sep 2020 06:40:56 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id s20sm2085680lfs.135.2020.09.24.06.40.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 06:40:55 -0700 (PDT)
-Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
-To:     Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>
-Cc:     Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
+        id S1728105AbgIXNtC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 24 Sep 2020 09:49:02 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:54917 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728104AbgIXNtC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Sep 2020 09:49:02 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-275-AmPfbs06OlSmLB8NwMzbeQ-1; Thu, 24 Sep 2020 14:47:55 +0100
+X-MC-Unique: AmPfbs06OlSmLB8NwMzbeQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 14:47:54 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 24 Sep 2020 14:47:54 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'YiFei Zhu' <zhuyifei1999@gmail.com>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>
+CC:     YiFei Zhu <yifeifz2@illinois.edu>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        "Andrea Arcangeli" <aarcange@redhat.com>,
         Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
         Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
         Hubertus Franke <frankeh@us.ibm.com>,
         Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
         Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf@vger.kernel.org,
-        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200923232923.3142503-1-keescook@chromium.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
-Date:   Thu, 24 Sep 2020 15:40:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: RE: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+Thread-Topic: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+Thread-Index: AQHWknD17ZW/yCPmvkCTJZb3HlQhMal3ymow
+Date:   Thu, 24 Sep 2020 13:47:54 +0000
+Message-ID: <7042ba3307b34ce3b95e5fede823514e@AcuMS.aculab.com>
+References: <cover.1600951211.git.yifeifz2@illinois.edu>
+ <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
+In-Reply-To: <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20200923232923.3142503-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 24/09/2020 01.29, Kees Cook wrote:
-> rfc: https://lore.kernel.org/lkml/20200616074934.1600036-1-keescook@chromium.org/
-> alternative: https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
-> v1:
-> - rebase to for-next/seccomp
-> - finish X86_X32 support for both pinning and bitmaps
-> - replace TLB magic with Jann's emulator
-> - add JSET insn
+From: YiFei Zhu 
+> Sent: 24 September 2020 13:44
 > 
-> TODO:
-> - add ALU|AND insn
-> - significantly more testing
+> Seccomp cache emulator needs to know all the architecture numbers
+> that syscall_get_arch() could return for the kernel build in order
+> to generate a cache for all of them.
 > 
-> Hi,
-> 
-> This is a refresh of my earlier constant action bitmap series. It looks
-> like the RFC was missed on the container list, so I've CCed it now. :)
-> I'd like to work from this series, as it handles the multi-architecture
-> stuff.
+> The array is declared in header as static __maybe_unused const
+> to maximize compiler optimiation opportunities such as loop
+> unrolling.
 
-So, I agree with Jann's point that the only thing that matters is that
-always-allowed syscalls are indeed allowed fast.
+I doubt the compiler will do what you want.
+Looking at it, in most cases there are one or two entries.
+I think only MIPS has three.
 
-But one thing I'm wondering about and I haven't seen addressed anywhere:
-Why build the bitmap on the kernel side (with all the complexity of
-having to emulate the filter for all syscalls)? Why can't userspace just
-hand the kernel "here's a new filter: the syscalls in this bitmap are
-always allowed noquestionsasked, for the rest, run this bpf". Sure, that
-might require a new syscall or extending seccomp(2) somewhat, but isn't
-that a _lot_ simpler? It would probably also mean that the bpf we do get
-handed is a lot smaller. Userspace might need to pass a couple of
-bitmaps, one for each relevant arch, but you get the overall idea.
+So a static inline function that contains a list of
+conditionals will generate better code that any kind of
+array lookup.
+For x86-64 you end up with something like:
 
-I'm also a bit worried about the performance of doing that emulation;
-that's constant extra overhead for, say, launching a docker container.
+#ifdef CONFIG_IA32_EMULATION
+	if (sd->arch == AUDIT_ARCH_I386) return xxx;
+#endif
+	return yyy;
 
-Regardless of how the kernel's bitmap gets created, something like
+Probably saves you having multiple arrays that need to be
+kept carefully in step.
 
-+	if (nr < NR_syscalls) {
-+		if (test_bit(nr, bitmaps->allow)) {
-+			*filter_ret = SECCOMP_RET_ALLOW;
-+			return true;
-+		}
+	David
 
-probably wants some nospec protection somewhere to avoid the irony of
-seccomp() being used actively by bad guys.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Rasmus
