@@ -2,165 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA1D277A98
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 22:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DCF277AAB
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 22:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgIXUlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 16:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
+        id S1726376AbgIXUqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 16:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgIXUlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:41:05 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6689C0613CE;
-        Thu, 24 Sep 2020 13:41:04 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id 133so382348ybg.11;
-        Thu, 24 Sep 2020 13:41:04 -0700 (PDT)
+        with ESMTP id S1725208AbgIXUqS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 16:46:18 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA453C0613CE
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 13:46:17 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id e22so285784edq.6
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 13:46:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LuBsiJGWhXaa9Z1xegLqAKn7DmusjrmOo8BYb2r+KsQ=;
-        b=JkXFn/ehP3D4eF5eH9ZNxvLZUrCTdM2JYXnwdIfYVfurU5+eiXFMhZdmG3hj/Fedri
-         pxASktyl/kA4eFwhYYdlF1CW5UM7Tq2wY9yMWs0+YYYF/ZdDGGYmnAUjFi5vv2H3PxL8
-         tRnf/C7kpN3UkBfic2hqvFfUW2dAEUOd/Nf1UsaSMakYRF0pnLnZfFePDY3/RpDcXgu1
-         EO/g4ne/xTaH+FW+NmZvYGALskNkFeEinShaoVxlLglZy/4JcNoL3cIScuxJXLTFaX0q
-         3lsBacaOXFp5LnoZXw0w8jNcNItlsVggvBkHUtiElrqSOlIn/uSSyouBlr4G5BQdmnFn
-         dm6w==
+         :cc;
+        bh=hNWgf5JR/cvx4+k2/k8//+NsLRafA9SikURsJTJxHl8=;
+        b=N/W4hr3EM1UoBKdrsToiPIHVsXsZea5kjUdS8aVBO0VqX+vlNG+bO2voUqHrH92lkx
+         v+cCb7BIpfE7J0COXu9ZveiX7hBiBESo1VPhidpBI1JkRyqPepo3jqNxoErSa7ggD7Bj
+         MLUMxpjuK+mfC0nMTCX4DLvJzLTliYNOhloeeWBzNrArRN2m8nCyPvgHXMO/qRm9xIP9
+         yDphfjjdEEvwDc1H58P3k8bEMGyF3FdmngMgF+y095/bdm8FGMsTS2nWw1Bvs8iIGz40
+         6fSaqQQ8BTbKoWXpnnOg8j1RUBcZ/ah40mqYQZ90MYPclO65VlQGxG253bBnA8WCIAyt
+         MFzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LuBsiJGWhXaa9Z1xegLqAKn7DmusjrmOo8BYb2r+KsQ=;
-        b=bvi1vtkKcGlJupiXTaYrbL5UFBX9p6FZXMC1HjgeCWve7aaMNVtlYWenxdKFhTae+h
-         b8HBMOdsIgyj3CFiWtypXMHW7vwrqczg10d/T4wgOHyRm1ysaXokLgpCdTOLRtxFnaN/
-         9vQCXRmuYdRWCkM4zRs/gwvGB+8tOwzAzF25FzRZgrsseCoK2p90Xziy5sDpPuuYluu/
-         qG7xgXnXaQf9lxc/jeXEjal833BBYDztxwKcm+s28ujkJ2yJjJ1CoxGFx1AHnqDqQV9e
-         cwoE5GX7j0mn+1vE962xx73sUdG5f+kKlVgvlbnStBF2Y6wweoUUmjqnfoAcq1i3QloE
-         Ohww==
-X-Gm-Message-State: AOAM531DmBRhMi0y7quG39iKKhMP4S2EBJ0AZpYrEQXNgM+wVXCnqAzS
-        99U4lBTAf0OjF4LrSKEcIPpChVay9HFG6pnwvJ4=
-X-Google-Smtp-Source: ABdhPJyDBUyTK99K4bkK5qk54JrmnuC6QX4fyZba8yrwdVZxKhRe9eWbLSn8nqnBUjAIGa8bbgEPuA2daDqln8tAzYY=
-X-Received: by 2002:a25:2687:: with SMTP id m129mr804101ybm.425.1600980064144;
- Thu, 24 Sep 2020 13:41:04 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=hNWgf5JR/cvx4+k2/k8//+NsLRafA9SikURsJTJxHl8=;
+        b=f8WUmITEdSZ/gt97WLAYDO9P1nKUThuXh2O2McbnVTutOqQaLg4LIrUqrD/f3DyajU
+         T7RV1EtzzYp+hk/mNIQxjhn8vl73l8/MGZsCab1gCNKW0hLDk8vMSFiqDnAWu8r/9XCM
+         Wf5OCPeomGpv7KY7auSqiwJ5eHlug3CS8liG5tpZcsH2NMGj/7Rsay9b2TZEN7o96cjX
+         n0TR7I9ZoRHE07pXP0bKyyhmGjBSw+RIahko764IvmOCBQaArN9yQgyCNmXREnHPAmPS
+         8ghN7qPLk0QJvbiPg+xVERuaRYKLlIaKUIHo6efCoPD/ez77id8OiGJ3F/p7o/iSCsE8
+         E3oA==
+X-Gm-Message-State: AOAM532QZXssm593Vkjj2CpJoankT41WhnSc+p3RA4ZI9EIY1HWRC9qR
+        RoltSAsGUjejMlUWETID2N0hL0blAzdp+rolTxtMfdI4SA==
+X-Google-Smtp-Source: ABdhPJys8MteKkL5WUs90rL77+/4O8I7EJZDSmxK4s4ECn/X6tsLMwrENyCDpmW58kDnYfzhj5A5Va1MBnTmQWGW++s=
+X-Received: by 2002:aa7:cd06:: with SMTP id b6mr625058edw.196.1600980376408;
+ Thu, 24 Sep 2020 13:46:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <160079991372.8301.10648588027560707258.stgit@toke.dk>
- <160079991808.8301.6462172487971110332.stgit@toke.dk> <20200924001439.qitbu5tmzz55ck4z@ast-mbp.dhcp.thefacebook.com>
- <874knn1bw4.fsf@toke.dk>
-In-Reply-To: <874knn1bw4.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 24 Sep 2020 13:40:53 -0700
-Message-ID: <CAEf4BzaBvvZdgekg13T3e4uj5Q9Rf1RTFP__ZPsU-NMp2fVXxw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 04/11] bpf: move prog->aux->linked_prog and
- trampoline into bpf_link on attach
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-5-keescook@chromium.org> <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
+ <202009240038.864365E@keescook> <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
+ <202009241251.F719CC4@keescook>
+In-Reply-To: <202009241251.F719CC4@keescook>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 24 Sep 2020 16:46:05 -0400
+Message-ID: <CAHC9VhQudGg55atznkuWWW5h0d+vZZhO2NF4yNAqreg4NDsHKg@mail.gmail.com>
+Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action results
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Tom Hromatka <tom.hromatka@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 7:36 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> > On Tue, Sep 22, 2020 at 08:38:38PM +0200, Toke H=C3=83=C6=92=C3=82=C2=
-=B8iland-J=C3=83=C6=92=C3=82=C2=B8rgensen wrote:
-> >> @@ -746,7 +748,9 @@ struct bpf_prog_aux {
-> >>      u32 max_rdonly_access;
-> >>      u32 max_rdwr_access;
-> >>      const struct bpf_ctx_arg_aux *ctx_arg_info;
-> >> -    struct bpf_prog *linked_prog;
+On Thu, Sep 24, 2020 at 3:52 PM Kees Cook <keescook@chromium.org> wrote:
+> On Thu, Sep 24, 2020 at 11:28:55AM -0400, Paul Moore wrote:
+> > On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
+> > > On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
+> > > > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> > > > > This emulates absolutely the most basic seccomp filters to figure out
+> > > > > if they will always give the same results for a given arch/nr combo.
+> > > > >
+> > > > > Nearly all seccomp filters are built from the following ops:
+> > > > >
+> > > > > BPF_LD  | BPF_W    | BPF_ABS
+> > > > > BPF_JMP | BPF_JEQ  | BPF_K
+> > > > > BPF_JMP | BPF_JGE  | BPF_K
+> > > > > BPF_JMP | BPF_JGT  | BPF_K
+> > > > > BPF_JMP | BPF_JSET | BPF_K
+> > > > > BPF_JMP | BPF_JA
+> > > > > BPF_RET | BPF_K
+> > > > >
+> > > > > These are now emulated to check for accesses beyond seccomp_data::arch
+> > > > > or unknown instructions.
+> > > > >
+> > > > > Not yet implemented are:
+> > > > >
+> > > > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
+> > > >
+> > > > BPF_AND is normally only used on syscall arguments, not on the syscall
+> > > > number or the architecture, right? And when a syscall argument is
+> > > > loaded, we abort execution anyway. So I think there is no need to
+> > > > implement those?
+> > >
+> > > Is that right? I can't actually tell what libseccomp is doing with
+> > > ALU|AND. It looks like it's using it for building jump lists?
 > >
-> > This change breaks bpf_preload and selftests test_bpffs.
-> > There is really no excuse not to run the selftests.
+> > There is an ALU|AND op in the jump resolution code, but that is really
+> > just if libseccomp needs to fixup the accumulator because a code block
+> > is expecting a masked value (right now that would only be a syscall
+> > argument, not the syscall number itself).
+> >
+> > > Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
+> >
+> > Presently the only place where libseccomp uses ALU|AND is when the
+> > masked equality comparison is used for comparing syscall arguments
+> > (SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
+> > information about how often that is used by libseccomp callers, but if
+> > I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
+> > of code hits; take that for whatever it is worth.  Tom may have some
+> > more/better information.
+> >
+> > Of course no promises on future use :)  As one quick example, I keep
+> > thinking about adding the instruction pointer to the list of things
+> > that can be compared as part of a libseccomp rule, and if we do that I
+> > would expect that we would want to also allow a masked comparison (and
+> > utilize another ALU|AND bpf op there).  However, I'm not sure how
+> > useful that would be in practice.
 >
-> I did run the tests, and saw no more breakages after applying my patches
-> than before. Which didn't catch this, because this is the current state
-> of bpf-next selftests:
->
-> # ./test_progs  | grep FAIL
-> test_lookup_update:FAIL:map1_leak inner_map1 leaked!
-> #10/1 lookup_update:FAIL
-> #10 btf_map_in_map:FAIL
+> Okay, cool. Thanks for checking on that. It sounds like the arg-less
+> bitmap optimization can continue to ignore ALU|AND for now. :)
 
-this failure suggests you are not running the latest kernel, btw
+What's really the worst that could happen anyways? (/me ducks)  The
+worst case is the filter falls back to the current performance levels
+right?
 
-
-> configure_stack:FAIL:BPF load failed; run with -vv for more info
-> #72 sk_assign:FAIL
-> test_test_bpffs:FAIL:bpffs test  failed 255
-> #96 test_bpffs:FAIL
-> Summary: 113/844 PASSED, 14 SKIPPED, 4 FAILED
->
-> The test_bpffs failure happens because the umh is missing from the
-> .config; and when I tried to fix this I ended up with:
-
-yeah, seems like selftests/bpf/config needs to be updated to mention
-UMH-related config values:
-
-CONFIG_BPF_PRELOAD=3Dy
-CONFIG_BPF_PRELOAD_UMD=3Dm|y
-
-with that test_bpffs shouldn't fail on master
-
->
-> [..]
->   CC [M]  kernel/bpf/preload/bpf_preload_kern.o
->
-> Auto-detecting system features:
-> ...                        libelf: [ OFF ]
-> ...                          zlib: [ OFF ]
-> ...                           bpf: [ OFF ]
->
-> No libelf found
-
-might be worthwhile to look into why detection fails, might be
-something with Makefiles or your environment
-
->
-> ...which I just put down to random breakage, turned off the umh and
-> continued on my way (ignoring the failed test). Until you wrote this I
-> did not suspect this would be something I needed to pay attention to.
-> Now that you did mention it, I'll obviously go investigate some more, my
-> point is just that in this instance it's not accurate to assume I just
-> didn't run the tests... :)
-
-Don't just assume some tests are always broken. Either ask or
-investigate on your own. Such cases do happen from time to time while
-we wait for a fix in bpf to get merged into bpf-next or vice versa,
-but it's rare. We now have two different CI systems running selftests
-all the time, in addition to running them locally as well, so any
-permanent test failure is very apparent and annoying, so we fix them
-quickly. So, when in doubt - ask or fix.
-
->
-> > I think I will just start marking patches as changes-requested when I s=
-ee that
-> > they break tests without replying and without reviewing.
-> > Please respect reviewer's time.
->
-> That is completely fine if the tests are working in the first place. And
-
-They are and hopefully moving forward that would be your assumption.
-
-> even when they're not (like in this case), pointing it out is fine, and
-> I'll obviously go investigate. But please at least reply to the email,
-> not all of us watch patchwork regularly.
->
-> (I'll fix all your other comments and respin; thanks!)
->
-> -Toke
->
+-- 
+paul moore
+www.paul-moore.com
