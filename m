@@ -2,106 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3475A2765A6
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 03:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA352765BA
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 03:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgIXBIP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Sep 2020 21:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
+        id S1726620AbgIXBLY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Sep 2020 21:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIXBIP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Sep 2020 21:08:15 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D49C0613CE;
-        Wed, 23 Sep 2020 18:08:15 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id fa1so729770pjb.0;
-        Wed, 23 Sep 2020 18:08:15 -0700 (PDT)
+        with ESMTP id S1726599AbgIXBLY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Sep 2020 21:11:24 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8473EC0613CE;
+        Wed, 23 Sep 2020 18:11:24 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id 67so1116734ybt.6;
+        Wed, 23 Sep 2020 18:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=cE6kbxJapA/xGImeNyQlibbgWd632XZxtzMW9GQXlIY=;
-        b=fF3VAb/JT3ALUUyrP4bI8MzaZqb2Z+buUJlU3mib/rjfyL/CVIBTnISELyGhAGpKea
-         eO+ChL5TVX0SFSXjxJqObNVrGe7JT/03hwl/Ussp8QetynpmAKEOXmi9YmsFaJd0DNBi
-         KfGQU/UwFwRNsKQiMcRNK1unOY+AX7qYZ7mV5Wfi01UKfZ/AGB3Q2xPqwEHPpcako0Id
-         toG3tvjIeA4QBXUXew7mXka7JEclvuso5uFGfu6KN3hzCqAY+ayJjbOqLz691I78ZlNu
-         ce2EciBoEg5D8BVl4FmH0O98mjF1JAIfDBQXplzVCpHM21/Jl+GvnYLwuCCaim5m55qa
-         hoZQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ieOIn/PtT6wPpspeOUfOVJEF8SdgPueCo5bXoXjMlKA=;
+        b=N/8nVC6q5znO9d09i7BV9qin54ZEtry0CMXUx4OVxiuD4vQv3inyqEBT8E0LJ+SqXt
+         sYVqZwYS31qDThxhB3EjA05+bg8d9fLi398xBJN+wREwyNiYBZkZAhi/LngGwUIS6igI
+         Aq3ExXbw7hSVg2ILIIFc6+N+hygTy22YJ3FurqqugSO44A2nIxr/r6Fw+8fLsRj2Yl/n
+         Gp0Hl4z0anqX3UEA2PyhNPDFDNEqYLeagGqlowKmj3myPsi4WSjLFh48K8IBKXgBWVRE
+         Bqxar9pEBIJiFPsVEWlP/wZd7w9Wb28Ye/XU7Sc/jrKrm9StSJvDxNJd+XRXAX7gcVWs
+         S9Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cE6kbxJapA/xGImeNyQlibbgWd632XZxtzMW9GQXlIY=;
-        b=KmVHX24KYR5Xldpc5VpmPXWTndUqm02cnr6YKYdwS2u7oq0oSecXnXDkvSTLQ9T5G/
-         /vlWLrlf7XXstJXop6ykB8ngoQBTt3YKXCU0xbdWB6w1GAj1JOT2bexxTNg89YRchqTO
-         LD0kZpcOra+VizGUsZ7kC8t8m73b7DvnhE1OT67gw0ABxT3GIKQ48F4bAiq67pcY0kAz
-         qtTtXN+syEfzTtllX1cR4BTdckODC1sQBDHr/lyTcb0PdJwJryXPCTM53WfK7oHMjFyv
-         mxD73MsmmPoWIp58NPGWBJsEz4qmngEb1sirdf6dpKkszAQ1HtOaA6SKNUxqPuK6ihju
-         j6hg==
-X-Gm-Message-State: AOAM531WD7R+cwa9zlr5cPycpc3FfGjFFGONtpS9OtXxXDYCLVxNmSuW
-        F4R+sH8sBAabJm7UYynfpfo=
-X-Google-Smtp-Source: ABdhPJwO1Pus5wN8eQEOnA18KWebwbb24lAjZoDStYhbInX7vXclLtaM/0rVhUq4ek3l/tbx/BPQlw==
-X-Received: by 2002:a17:90b:617:: with SMTP id gb23mr1718238pjb.36.1600909694639;
-        Wed, 23 Sep 2020 18:08:14 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1807])
-        by smtp.gmail.com with ESMTPSA id s24sm532315pjp.53.2020.09.23.18.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 18:08:13 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 18:08:11 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v8 11/11] selftests: Remove fmod_ret from
- benchmarks and test_overhead
-Message-ID: <20200924010811.kwrkzdzh6za3w3fz@ast-mbp.dhcp.thefacebook.com>
-References: <160079991372.8301.10648588027560707258.stgit@toke.dk>
- <160079992560.8301.11225602391403157558.stgit@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ieOIn/PtT6wPpspeOUfOVJEF8SdgPueCo5bXoXjMlKA=;
+        b=sqY5r/ZhekkrGWQTMc0u1xFHFT893mQlt7sdfU9LL77I1DfMSVXPOxqm6FEdFc5n3D
+         GmfoaNeHiqnCT+0pOnWFDTEXE8XuhHjWg7qfoBHLeZgA4i2goeRxuDTVtPeNYF0lO3OJ
+         lETkecEjY48ktCJF3IAtjcvu0omUSIKOV7yddBZ3kZ4emGl7ybz2aYWUMkIPg64CIEJW
+         w53ctK5vqZgG3+NNmVk8okAk1jLpVhbhWP5Bh6V02MsO3FKZ4LkmfeK/CUuXSvwp/rmD
+         RsGV/uItaELTZZseczD+uFAZVlubiK7gY66b4kElUh3m1zW7jf3On/vr21fBV1+XEbfI
+         XH4w==
+X-Gm-Message-State: AOAM53017MzyNuCRLhHsBe4P9Zuvvwd4uX3lc5no/VdbHAyi7sIjujnk
+        KQLagBoMeggEUepXdfkkiZkxPTiVrNXPbOE/1vBqtTm7/8Q=
+X-Google-Smtp-Source: ABdhPJz/msuj+F8hVdNrO6lfBI0L3bU0zD0vz7P6KKwnuhfFmzxPLQn6myilb4YLUmc0tJ6Wu+Wqk/zsVB26MHvhsoU=
+X-Received: by 2002:a25:6644:: with SMTP id z4mr3977800ybm.347.1600909883666;
+ Wed, 23 Sep 2020 18:11:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <160079992560.8301.11225602391403157558.stgit@toke.dk>
+References: <20200923165401.2284447-1-songliubraving@fb.com>
+ <20200923165401.2284447-3-songliubraving@fb.com> <CAEf4BzZ-qPNjDEvviJKHfLD7t7YJ97PdGixGQ_f70AJEg5oVEg@mail.gmail.com>
+ <540DD049-B544-4967-8300-E743940FD6FC@fb.com>
+In-Reply-To: <540DD049-B544-4967-8300-E743940FD6FC@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 23 Sep 2020 18:11:12 -0700
+Message-ID: <CAEf4BzYDsBMmBBtgauqdR9HYDeRG-GbMMTG6FUDbpWgOuU_Ljg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/3] libbpf: introduce bpf_prog_test_run_xattr_opts
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 08:38:45PM +0200, Toke Høiland-Jørgensen wrote:
-> -const struct bench bench_trig_fmodret = {
-> -	.name = "trig-fmodret",
-> -	.validate = trigger_validate,
-> -	.setup = trigger_fmodret_setup,
-> -	.producer_thread = trigger_producer,
-> -	.consumer_thread = trigger_consumer,
-> -	.measure = trigger_measure,
-> -	.report_progress = hits_drops_report_progress,
-> -	.report_final = hits_drops_report_final,
-> -};
-> diff --git a/tools/testing/selftests/bpf/progs/trigger_bench.c b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> index 9a4d09590b3d..1af23ac0c37c 100644
-> --- a/tools/testing/selftests/bpf/progs/trigger_bench.c
-> +++ b/tools/testing/selftests/bpf/progs/trigger_bench.c
-> @@ -45,10 +45,3 @@ int bench_trigger_fentry_sleep(void *ctx)
->  	__sync_add_and_fetch(&hits, 1);
->  	return 0;
->  }
-> -
-> -SEC("fmod_ret/__x64_sys_getpgid")
-> -int bench_trigger_fmodret(void *ctx)
-> -{
-> -	__sync_add_and_fetch(&hits, 1);
-> -	return -22;
-> -}
+On Wed, Sep 23, 2020 at 4:54 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Sep 23, 2020, at 12:31 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Sep 23, 2020 at 9:55 AM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >> This API supports new field cpu_plus in bpf_attr.test.
+> >>
+> >> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> >> Signed-off-by: Song Liu <songliubraving@fb.com>
+> >> ---
+> >> tools/lib/bpf/bpf.c      | 13 ++++++++++++-
+> >> tools/lib/bpf/bpf.h      | 11 +++++++++++
+> >> tools/lib/bpf/libbpf.map |  1 +
+> >> 3 files changed, 24 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> >> index 2baa1308737c8..3228dd60fa32f 100644
+> >> --- a/tools/lib/bpf/bpf.c
+> >> +++ b/tools/lib/bpf/bpf.c
+> >> @@ -684,7 +684,8 @@ int bpf_prog_test_run(int prog_fd, int repeat, void *data, __u32 size,
+> >>        return ret;
+> >> }
+> >>
+> >> -int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr)
+> >> +int bpf_prog_test_run_xattr_opts(struct bpf_prog_test_run_attr *test_attr,
+> >> +                                const struct bpf_prog_test_run_opts *opts)
+> >
+> > opts are replacement for test_attr, not an addition to it. We chose to
+> > use _xattr suffix for low-level APIs previously, but it's already
+> > "taken". So I'd suggest to go with just  bpf_prog_test_run_ops and
+> > have prog_fd as a first argument and then put all the rest of
+> > test_run_attr into opts.
+>
+> One question on this: from the code, most (if not all) of these xxx_opts
+> are used as input only. For example:
+>
+> LIBBPF_API int bpf_prog_bind_map(int prog_fd, int map_fd,
+>                                  const struct bpf_prog_bind_opts *opts);
+>
+> However, bpf_prog_test_run_attr contains both input and output. Do you
+> have any concern we use bpf_prog_test_run_opts for both input and output?
+>
 
-why are you removing this? There is no problem here.
-All syscalls are error-injectable.
-I'm surprised Andrii acked this :(
+I think it should be ok. opts are about passing optional things in a
+way that would be backward/forward compatible. Whether it's input
+only, output only, or input/output is secondary. We haven't had a need
+for output params yet, so this will be the first, but I think it fits
+here just fine. Just document it in the struct definition clearly and
+that's it. As for the mechanics, we might want to do OPTS_SET() macro,
+that will set some fields only if the user provided enough memory to
+fir that output parameter. That should work here pretty cleanly,
+right?
+
+> Thanks,
+> Song
+>
+>
+> > BTW, it's also probably overdue to have a higher-level
+> > bpf_program__test_run(), which can re-use the same
+> > bpf_prog_test_run_opts options struct. It would be more convenient to
+> > use it with libbpf bpf_object/bpf_program APIs.
+> >
+> >> {
+> >>        union bpf_attr attr;
+> >>        int ret;
+> >> @@ -693,6 +694,11 @@ int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr)
+> >>                return -EINVAL;
+> >>
+> >>        memset(&attr, 0, sizeof(attr));
+> >> +       if (opts) {
+> >
+> > you don't need to check opts for being not NULL, OPTS_VALID handle that already.
+> >
+> >> +               if (!OPTS_VALID(opts, bpf_prog_test_run_opts))
+> >> +                       return -EINVAL;
+> >> +               attr.test.cpu_plus = opts->cpu_plus;
+> >
+> > And here you should use OPTS_GET(), please see other examples in
+> > libbpf for proper usage.
+> >
+> >
+> >> +       }
+> >>        attr.test.prog_fd = test_attr->prog_fd;
+> >>        attr.test.data_in = ptr_to_u64(test_attr->data_in);
+> >>        attr.test.data_out = ptr_to_u64(test_attr->data_out);
+> >> @@ -712,6 +718,11 @@ int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr)
+> >>        return ret;
+> >> }
+> >>
+> >
+> > [...]
+>
