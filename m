@@ -2,97 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5104C277672
-	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 18:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93AD427778D
+	for <lists+bpf@lfdr.de>; Thu, 24 Sep 2020 19:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgIXQSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 12:18:04 -0400
-Received: from condef-01.nifty.com ([202.248.20.66]:36812 "EHLO
-        condef-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgIXQSE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:18:04 -0400
-X-Greylist: delayed 546 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 12:18:02 EDT
-Received: from conssluserg-06.nifty.com ([10.126.8.85])by condef-01.nifty.com with ESMTP id 08OG4TTa003638;
-        Fri, 25 Sep 2020 01:04:29 +0900
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 08OG3ueY021485;
-        Fri, 25 Sep 2020 01:03:57 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 08OG3ueY021485
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600963437;
-        bh=9ee9VwwvdZUxUdcXkkdp1U0lx4DpuWOQMZvDwgytdP8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hzTI5ClFT4hOzIoN61jwlSFslzZdSjOWWXR+OdW95+DN+iQjYnA0h0WUtB5ir816s
-         +DZ87UAF+nIACgqkwIw4F9pB0RMs1ARNQnZ4wFcSQGRMvfJthFhuGd/ENCPHOENHuh
-         octp/bzp1hYU7SieXdp8Wf8kOOIRC3q0kMMR+lkPNoxHYcUfwQ7enFrI2lNYZ4K/LV
-         gY9Q0QWN0Mw/Cl3KeRn0ZGc48MJPMumbOKVzGFiExWK6dhJe1YOlO3W3WCSsJW8CB2
-         QDxuQfR6FNom+nQiZKHYiceUnq0wFU2t6828TZmfd13Es7qIWNtebAxMt9+XnooEz8
-         GPoSxtqBHqrCQ==
-X-Nifty-SrcIP: [209.85.216.45]
-Received: by mail-pj1-f45.google.com with SMTP id mn7so1832280pjb.5;
-        Thu, 24 Sep 2020 09:03:57 -0700 (PDT)
-X-Gm-Message-State: AOAM532E/6rxKQqZv80fgjVzSR4P5DMuOr0TA7oxzNF+nlRbOyFTFdyI
-        JCQ8C1v7IQXa1ZjQpVToN0UStQjxlhdRB/QDge4=
-X-Google-Smtp-Source: ABdhPJyETrEzNzrVd1OXy91uCC2rbMXAsfzVerHQYhaGFjYLlItBVGJOuJ4Yzsw08mGvCA0s2iw7gEeNxhCwz3+/C+c=
-X-Received: by 2002:a17:90b:208:: with SMTP id fy8mr27540pjb.153.1600963436461;
- Thu, 24 Sep 2020 09:03:56 -0700 (PDT)
+        id S1728501AbgIXRRM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 13:17:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29016 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726915AbgIXRRM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Sep 2020 13:17:12 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08OHB1vi020635
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 10:17:11 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=3XZQVNprvX2hF0kPb0NKXH2kLMm90+GQ1ikQK+K5Pq0=;
+ b=EGUj2hy4n8oagkWycYRD2rTVKNonNatgRejoUSB8qRA19pOWaHNzONtkcvLbKeE4eb3h
+ yz8xNfxaEvOAdvoCJtUUn0P/1AzY7DB+Qlzb7gRMGkUr6eIDmcnB1XK5HBOOLuTuLfjr
+ zymOo1JRbozeRTv302J9UbV1G18szqfE0rQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33qsp7axes-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 10:17:11 -0700
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 24 Sep 2020 10:17:10 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 247992EC74F2; Thu, 24 Sep 2020 10:17:06 -0700 (PDT)
+From:   Andrii Nakryiko <andriin@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Nikita Shirokov <tehnerd@tehnerd.com>,
+        Udip Pant <udippant@fb.com>
+Subject: [PATCH bpf] libbpf: fix XDP program load regression for old kernels
+Date:   Thu, 24 Sep 2020 10:17:05 -0700
+Message-ID: <20200924171705.3803628-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200922232140.1994390-1-morbo@google.com>
-In-Reply-To: <20200922232140.1994390-1-morbo@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 25 Sep 2020 01:03:19 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATjf+bVqkkoZgwu9sr-A+VXxEnW_R8nEwmH=aDEU6NAQw@mail.gmail.com>
-Message-ID: <CAK7LNATjf+bVqkkoZgwu9sr-A+VXxEnW_R8nEwmH=aDEU6NAQw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: explicitly specify the build id style
-To:     Bill Wendling <morbo@google.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Will Deacon <will@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mips@vger.kernel.org,
-        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_10:2020-09-24,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ mlxlogscore=999 impostorscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ clxscore=1015 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009240127
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 8:21 AM Bill Wendling <morbo@google.com> wrote:
->
-> ld's --build-id defaults to "sha1" style, while lld defaults to "fast".
-> The build IDs are very different between the two, which may confuse
-> programs that reference them.
->
-> Signed-off-by: Bill Wendling <morbo@google.com>
-> ---
->  Makefile                             | 4 ++--
->  arch/arm/vdso/Makefile               | 2 +-
->  arch/arm64/kernel/vdso/Makefile      | 2 +-
->  arch/arm64/kernel/vdso32/Makefile    | 2 +-
->  arch/mips/vdso/Makefile              | 2 +-
->  arch/riscv/kernel/vdso/Makefile      | 2 +-
->  arch/s390/kernel/vdso64/Makefile     | 2 +-
->  arch/sparc/vdso/Makefile             | 2 +-
->  arch/x86/entry/vdso/Makefile         | 2 +-
->  tools/testing/selftests/bpf/Makefile | 2 +-
->  10 files changed, 11 insertions(+), 11 deletions(-)
+Fix regression in libbpf, introduced by XDP link change, which causes XDP
+programs to fail to be loaded into kernel due to specified BPF_XDP
+expected_attach_type. While kernel doesn't enforce expected_attach_type f=
+or
+BPF_PROG_TYPE_XDP, some old kernels already support XDP program, but they
+don't yet recognize expected_attach_type field in bpf_attr, so setting it=
+ to
+non-zero value causes program load to fail.
 
+Luckily, libbpf already has a mechanism to deal with such cases, so just =
+make
+expected_attach_type optional for XDP programs.
 
-Applied to linux-kbuild.
-Thanks.
+Reported-by: Nikita Shirokov <tehnerd@tehnerd.com>
+Reported-by: Udip Pant <udippant@fb.com>
+Fixes: dc8698cac7aa ("libbpf: Add support for BPF XDP link")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Best Regards
-Masahiro Yamada
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7253b833576c..e493d6048143 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -6925,7 +6925,7 @@ static const struct bpf_sec_def section_defs[] =3D =
+{
+ 						BPF_XDP_DEVMAP),
+ 	BPF_EAPROG_SEC("xdp_cpumap/",		BPF_PROG_TYPE_XDP,
+ 						BPF_XDP_CPUMAP),
+-	BPF_EAPROG_SEC("xdp",			BPF_PROG_TYPE_XDP,
++	BPF_APROG_SEC("xdp",			BPF_PROG_TYPE_XDP,
+ 						BPF_XDP),
+ 	BPF_PROG_SEC("perf_event",		BPF_PROG_TYPE_PERF_EVENT),
+ 	BPF_PROG_SEC("lwt_in",			BPF_PROG_TYPE_LWT_IN),
+--=20
+2.24.1
+
