@@ -2,136 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EAED27811F
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 09:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAC02781F4
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 09:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727397AbgIYHHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Sep 2020 03:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
+        id S1727248AbgIYHti (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 03:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIYHHM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:07:12 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A2BC0613CE;
-        Fri, 25 Sep 2020 00:07:11 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id u3so1292163pjr.3;
-        Fri, 25 Sep 2020 00:07:11 -0700 (PDT)
+        with ESMTP id S1727044AbgIYHti (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:49:38 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09315C0613CE;
+        Fri, 25 Sep 2020 00:49:38 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so2493515wrt.3;
+        Fri, 25 Sep 2020 00:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oXHAzrDSGjCjB2rkCK3StmtVizqd8imW6WJ6CCyJZeQ=;
-        b=gt9l35Cg3svYq9N0uBGPNxc+e9Lj33iOExb3HpMPwqd2IPv6C27pIvDXvzxWOzcHBW
-         Yh6glD+IXSLk5VfF1jBzqvUUkan5XiVd6XlMp+D3SVOURcaVZ3nn2+1MK3naJ7SRwHJT
-         VQ+9/V2/FG6I3s/4f6i3P5/lZ05PsRTL9Avex18L+gg4JE3fmaJDBPu0MGlCNYxRDVEt
-         QIEcXSjUOn52P6voDi2cMT4cgBLkxfo/Jh1fns0C9xKWvlYlMBlOg6y/rZGEd5SbFpAI
-         KDzO3BcKFpdoY8pgwzuEdmuNrO5qQPcTyFezyookmPHET2xLWBBgUm/ISJ2ttmeyDB9c
-         FnPQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qcup0n0Kbbar3GfFMOaxKCrWneqO730ge7ejBLQFsSw=;
+        b=JynSupAsPIxyM0tHSq+I6BS9ERtnR1QGjR+6bKFi+uZNkl80guzf8BhYZMLEfqo/tE
+         NzU3ngLifZ0aj7Y6je/bqPJWN0vvB/C7MNioXEONFGgpSUCEkZ9iej7QMQwjmTyaJA3H
+         /7FhMcSOPhwbQBvr12PEGjkDLl6wv8K/O0oGKQEIX1GvqZtTd2ETXfQgCssS2RyzyAnM
+         wPWCveLU+0pAp+y5jHCsS4pxH5kgXjse4jkEYHzBfIvFPxB4byE2uGG+iEo8Ytv13MsF
+         JbMqqh26OslGAW1u0YnETFAPCMUQdGcHnJv+xeer/W4jJ+77HQO3Vel38+soXX1hiSAg
+         X3ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oXHAzrDSGjCjB2rkCK3StmtVizqd8imW6WJ6CCyJZeQ=;
-        b=QU7sH8hi7L1z3Bkf/69V5ROTu+zPZXbnU09D8aLB/zDE+5ZmuwDKftmjRdf+KL3m4X
-         jrElQQKMy5LAapRGaqArc+AnPVGsSuPvYXj9DGXd3cXjrs5QvE2Mm1X8n+4R6xuwAIej
-         Zvbk1vX4rm3xK7zl6RbBl0NbnFpcnKgdtsj1X3Vnc+C5drcGdIlbokONDv6DrP07xToA
-         rhm5AN8X67aJ8DphpkeIxnUuVuhpjwEfE/aJXLVquslg/Fgzwe8pCYkl1KVGkpGryzGb
-         CuGOIiaCs4w2QprKsm+CksksxJRp4felDkBMH1O07uUk8oCF+evSHyp3EWjV8D6zdKEm
-         5gPA==
-X-Gm-Message-State: AOAM530cWSKJNp0oAFaLJNlwlfHgHltKrFXZQOHGe6xnVaIfKAwiYnyn
-        XEODrSt7XRSWD/YkWHWkZHdI4pkt/fwTLkT3v68=
-X-Google-Smtp-Source: ABdhPJzlGUGW2iKkTkrAVqTUKcvO9npurfnjC2yNvq753E1M0AVW5b7tjO01qNJKAYI3kQSCeflzbuJKPBvB5TUeDog=
-X-Received: by 2002:a17:90a:6e45:: with SMTP id s5mr1374059pjm.12.1601017631436;
- Fri, 25 Sep 2020 00:07:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qcup0n0Kbbar3GfFMOaxKCrWneqO730ge7ejBLQFsSw=;
+        b=NmKlTryWotGEvc0hhq/Q//EB2+TbOAGqBaqskE+dyRXzYQO9k8wIduuqKJrTqhj8ZS
+         xWQGK+TslO0Las7VPvgldRXVBnnKPI27x2cf6CoeQvFhFN82yJK7KEPh0l5s9xVSgEiQ
+         MOibznS0r7CD6rvVoAyFOXX/hWhW9tA8lQk6Md7pPLCg4AkkfP8n1LI0+JMmMAqlaI7X
+         HveTa2XHubqya9h5KwzmC3scyF0EoQNTY45a/4BG2CPL9gj3JO/Tb1x5m9G4zefudnuc
+         cd1j1Xj1T5fZ8Xkk+00v8qO24jBGSc+sM/L+cJ7Ky7Nw1fpVTRq3yMeswpsxoqHvx6YJ
+         2XKw==
+X-Gm-Message-State: AOAM5308dBdgGWMQbuAs+SRCtN+zm79ae3iZy86Zu1cvcwEKgN95NIfz
+        JnrK5LSb9zVz0Gi+HrJUO7vdkA3ej9A=
+X-Google-Smtp-Source: ABdhPJxwFm66hjCZtWCDMIe431jHpYL45Ee/LOTh9Y1AeX1i7uxIiN3Cedz65FyKh11i0dAGLOyDgw==
+X-Received: by 2002:adf:a418:: with SMTP id d24mr3062067wra.80.1601020176552;
+        Fri, 25 Sep 2020 00:49:36 -0700 (PDT)
+Received: from [192.168.8.147] ([37.173.202.225])
+        by smtp.gmail.com with ESMTPSA id c14sm1858788wrm.64.2020.09.25.00.49.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 00:49:35 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 2/6] bpf, net: rework cookie generator as per-cpu
+ one
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <eric.dumazet@gmail.com>, ast@kernel.org
+Cc:     john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <cover.1600967205.git.daniel@iogearbox.net>
+ <d4150caecdbef4205178753772e3bc301e908355.1600967205.git.daniel@iogearbox.net>
+ <e854149f-f3a6-a736-9d33-08b2f60eb3a2@gmail.com>
+ <dc5dd027-256d-598a-2f89-a45bb30208f8@iogearbox.net>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <b1d5d93a-3846-ae35-7ea6-4bc31e98ef30@gmail.com>
+Date:   Fri, 25 Sep 2020 09:49:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk> <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
- <27b4ef86-fee5-fc35-993b-3352ce504c73@rasmusvillemoes.dk>
-In-Reply-To: <27b4ef86-fee5-fc35-993b-3352ce504c73@rasmusvillemoes.dk>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Fri, 25 Sep 2020 02:07:00 -0500
-Message-ID: <CABqSeATHtvA7qm7j_kxBsbxRCd5B=MHtxGdsYsXEJ-TRRYKTgA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <dc5dd027-256d-598a-2f89-a45bb30208f8@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:56 AM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
-> Yes, the man page would read something like
->
->        SECCOMP_SET_MODE_FILTER_BITMAP
->               The system calls allowed are defined by a pointer to a
-> Berkeley Packet Filter (BPF) passed  via  args.
->               This argument is a pointer to a struct sock_fprog_bitmap;
->
-> with that struct containing whatever information/extra pointers needed
-> for passing the bitmap(s) in addition to the bpf prog.
->
-> And SECCOMP_SET_MODE_FILTER would internally just be updated to work
-> as-if all-zero allow-bitmaps were passed along. The internal kernel
-> bitmap would just be the and of the bitmaps in the filter stack.
->
-> Sure, it's UAPI, so would certainly need more careful thought on details
-> of just how the arg struct looks like etc. etc., but I was wondering why
-> it hadn't been discussed at all.
 
-If SECCOMP_SET_MODE_FILTER is attached before / after
-SECCOMP_SET_MODE_FILTER_BITMAP, does it mean all bitmap gets void?
 
-Would it make sense to have SECCOMP_SET_MODE_FILTER run through the
-emulator to see if we can construct a bitmap anyways for "legacy
-no-bitmap" support?
+On 9/25/20 12:03 AM, Daniel Borkmann wrote:
+> On 9/24/20 8:58 PM, Eric Dumazet wrote:
+>> On 9/24/20 8:21 PM, Daniel Borkmann wrote:
+> [...]
+>>> diff --git a/include/linux/cookie.h b/include/linux/cookie.h
+>>> new file mode 100644
+>>> index 000000000000..2488203dc004
+>>> --- /dev/null
+>>> +++ b/include/linux/cookie.h
+>>> @@ -0,0 +1,41 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +#ifndef __LINUX_COOKIE_H
+>>> +#define __LINUX_COOKIE_H
+>>> +
+>>> +#include <linux/atomic.h>
+>>> +#include <linux/percpu.h>
+>>> +
+>>> +struct gen_cookie {
+>>> +    u64 __percpu    *local_last;
+>>> +    atomic64_t     shared_last ____cacheline_aligned_in_smp;
+>>> +};
+>>> +
+>>> +#define COOKIE_LOCAL_BATCH    4096
+>>> +
+>>> +#define DEFINE_COOKIE(name)                    \
+>>> +    static DEFINE_PER_CPU(u64, __##name);            \
+>>> +    static struct gen_cookie name = {            \
+>>> +        .local_last    = &__##name,            \
+>>> +        .shared_last    = ATOMIC64_INIT(0),        \
+>>> +    }
+>>> +
+>>> +static inline u64 gen_cookie_next(struct gen_cookie *gc)
+>>> +{
+>>> +    u64 *local_last = &get_cpu_var(*gc->local_last);
+>>> +    u64 val = *local_last;
+>>> +
+>>> +    if (__is_defined(CONFIG_SMP) &&
+>>> +        unlikely((val & (COOKIE_LOCAL_BATCH - 1)) == 0)) {
+>>> +        s64 next = atomic64_add_return(COOKIE_LOCAL_BATCH,
+>>> +                           &gc->shared_last);
+>>> +        val = next - COOKIE_LOCAL_BATCH;
+>>> +    }
+>>> +    val++;
+>>> +    if (unlikely(!val))
+>>> +        val++;
+>>> +    *local_last = val;
+>>> +    put_cpu_var(local_last);
+>>> +    return val;
+>>
+>> This is not interrupt safe.
+>>
+>> I think sock_gen_cookie() can be called from interrupt context.
+>>
+>> get_next_ino() is only called from process context, that is what I used get_cpu_var()
+>> and put_cpu_var()
+> 
+> Hmm, agree, good point. Need to experiment a bit more .. initial thinking
+> potentially something like the below could do where we fall back to atomic
+> counter iff we encounter nesting (which should be an extremely rare case
+> normally).
+> 
+> BPF progs where this can be called from are non-preemptible, so we could
+> actually move the temp preempt_disable/enable() from get/put_cpu_var() into
+> a wrapper func for slow path non-BPF users as well.
+> 
+> static inline u64 gen_cookie_next(struct gen_cookie *gc)
+> {
+>         u64 val;
+> 
 
-Another thing to consider is that in both patch series we only
-construct one final bitmap that, if the bit is set, seccomp will not
-call into the BPF filter. If the bit is not set, then all filters are
-called in sequence, even if some of them "must allow the syscall".
-With SECCOMP_SET_MODE_FILTER_BITMAP, the filter BPF code will no
-longer have the "if it's this syscall" for any syscalls that are given
-in the bitmaps, and calling into these filters will be a false
-negative. So we would need extra logic to make "does this filter have
-a bitmap? if so check bitmap first". Probably won't be too
-complicated, but idk if it is actually worth the complexity. wdyt?
+I presume you would use a single structure to hold level_nesting and local_last
+in the same cache line.
 
-> Regardless, I'd like to see some numbers, certainly for the "how much
-> faster does a getpid() or read() or any of the other syscalls that
-> nobody disallows" get, but also "what's the cost of doing that emulation
-> at seccomp(2) time".
+struct pcpu_gen_cookie {
+    int level_nesting;
+    u64 local_last;
+} __aligned(16);
 
-The former has been given in my RFC patch [1]. In an extreme case of
-no side channel mitigations, in the same amount of time, unixbench
-syscall mixed runs 33295685 syscalls without seccomp, 20661056
-syscalls with docker profile, 25719937 syscalls with bitmapped docker
-profile. Though, I think Jack was running on Ubuntu and it did not
-have a libseccomp shipped with the distro that's new enough to do the
-binary decision tree generation [2].
+    
 
-I'll try to profile the latter later on my qemu-kvm, with a recent
-libsecomp with binary tree and docker's profile, probably both direct
-filter attaches and filter attaches with fork(). I'm guessing if I
-have fork() the cost of fork() will overshadow seccomp() though.
+>         if (likely(this_cpu_inc_return(*gc->level_nesting) == 1)) {
+>                 u64 *local_last = this_cpu_ptr(gc->local_last);
+> 
+>                 val = *local_last;
+>                 if (__is_defined(CONFIG_SMP) &&
+>                     unlikely((val & (COOKIE_LOCAL_BATCH - 1)) == 0)) {
+>                         s64 next = atomic64_add_return(COOKIE_LOCAL_BATCH,
+>                                                        &gc->shared_last);
+>                         val = next - COOKIE_LOCAL_BATCH;
+>                 }
+>                 val++;
 
-[1] https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
-[2] https://github.com/seccomp/libseccomp/pull/152
 
-YiFei Zhu
+
+>                 if (unlikely(!val))
+>                         val++;
+
+Note that we really expect this wrapping will never happen, with 64bit value.
+(We had to take care of the wrapping in get_next_ino() as it was dealing with 32bit values)
+
+>                 *local_last = val;
+>         } else {
+>                 val = atomic64_add_return(COOKIE_LOCAL_BATCH,
+>                                           &gc->shared_last);
+
+Or val = atomic64_dec_return(&reverse_counter)
+
+With reverse_counter initial value set to ATOMIC64_INIT(0) ? 
+
+This will start sending 'big cookies like 0xFFFFFFFFxxxxxxxx' to make sure applications
+are not breaking with them, after few months of uptime.
+
+This would also not consume COOKIE_LOCAL_BATCH units per value,
+but this seems minor based on the available space.
+
+
+>         }
+>         this_cpu_dec(*gc->level_nesting);
+>         return val;
+> }
+> 
+> Thanks,
+> Daniel
