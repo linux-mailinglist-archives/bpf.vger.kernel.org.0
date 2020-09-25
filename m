@@ -2,211 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857C0279368
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 23:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C002793C6
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 23:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgIYVZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Sep 2020 17:25:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38719 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729695AbgIYVZT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 25 Sep 2020 17:25:19 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601069117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LboutsSsYu7Eo5wvNL+GmdoAigg8sB4y8G5kV88Hp4I=;
-        b=L2q5NCRA4xWqzt531xAbF5UtcgINlW5Y7lGlniSa9Jcb3TJZXp2dYAXZCzspD7Rg6NBWOY
-        4bSFzvoFcB0PMO7YA/ySSEsIz/Meb60zWhU8nMvU0xEXUlFMXqLCirffP1uc87bSQhSYdN
-        oXkU4jnLOY5xuL+kkKVYA18Hpb5KVTM=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453--SU58d0TPMu5UvqW4HfaLg-1; Fri, 25 Sep 2020 17:25:15 -0400
-X-MC-Unique: -SU58d0TPMu5UvqW4HfaLg-1
-Received: by mail-wm1-f72.google.com with SMTP id t8so149328wmj.6
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 14:25:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=LboutsSsYu7Eo5wvNL+GmdoAigg8sB4y8G5kV88Hp4I=;
-        b=mu4kIT2RxlqTxnS7HayIxDk4KpqccMS4IUZiRmqb664NzumwZDfT5dvVoH4SgFT+GM
-         kSCe/0ft9DAW/0UecXPbTW/NGVt+ZW7UafvgFhB62MWYjE1swsMwOuO9rmnXoVcCetCJ
-         RhlML/LgoA6aolwJucjvJFVf0McRY2256bg8yM6IjwXViUT7NVKbXhKz/oQThyO2AFYn
-         HVC3OSHMxJxP05ncb2d/OZ3sBPrmxGAZub2oNpx86fiC638NoV/vyKekpkeM/sgkOSEn
-         kQlYpdCM/MgNcsOAwjpYxJtJhEQLGxjx5LnuDtdA607K5QQwhAN/+hureER4gOPvzIBj
-         rYww==
-X-Gm-Message-State: AOAM532vzGXpHUlm1uSbFFJHGHdqgBU9N1zx4XBpH+YaZyZ1Q2F9puHN
-        xtVIw7QJByj6sizycUoRUbKossLH388/xSAzXE37nbM4ReMiBgZ/EmUKm5aiuXpuiLyxj6obBB2
-        ScSb2eKFbj2F2
-X-Received: by 2002:adf:f88b:: with SMTP id u11mr6220602wrp.376.1601069114083;
-        Fri, 25 Sep 2020 14:25:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwM7auFpJN1hDjNhgDSRmkB1BvaaAYGtLjJ0OB+E4nxxESEVaWliI0GHJN5XhJ2sQl3odCMYw==
-X-Received: by 2002:adf:f88b:: with SMTP id u11mr6220587wrp.376.1601069113707;
-        Fri, 25 Sep 2020 14:25:13 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i83sm320627wma.22.2020.09.25.14.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 14:25:11 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 230CE183C5B; Fri, 25 Sep 2020 23:25:11 +0200 (CEST)
-Subject: [PATCH bpf-next v9 11/11] selftests: Remove fmod_ret from
- test_overhead
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1726409AbgIYVyY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 17:54:24 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23948 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726348AbgIYVyX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 25 Sep 2020 17:54:23 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08PLZLbo001618;
+        Fri, 25 Sep 2020 14:54:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=8dri0/oVpx9WUY+zq0NUlvgY4GmtGOsXCTD9jbFRUU0=;
+ b=N+i6cIUdkkQza/1sTYZGIOOnCk9cC4XreX7+s5QXelRv/faVjLYm5rnyLRQ85PdCFR2y
+ zFzxZEqBMrsdwx/3DDHMnmIKXVil2jGYpGS1Wd0cjdOLhkRN1Etns9Asgt6ATyQsbIdr
+ xorJPKVNomagneRbZ3LfaE0PwLAfvTTmydc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33s8su4jmd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 25 Sep 2020 14:54:08 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 25 Sep 2020 14:54:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kZLY6MS/6NVCBAJlUWuoSq5cTK0e2GQzhu+pCFT/W0bqWw1O4hZpADemUimIwPkHbfp/F3radlgkSViF6zwgVd3gg7cHh4l1PLzfgnftC7D6FBqccPxDxf7SJrmYT1YnPQuvewuj+ZPXkcKE4sOsXtbOvSJkUpqUL40E5wTG1PI/YrWP8OIqJrRNi/He/Dtwc4V6rsWR7xIoa9HNO6mOf4nAUjPGQc0K7rXJXZWCKu+d5+mjOnemuhrm2PWOi5N8DrvgoSR1tydguDdZZY1cYzItsawjBiJcwbJn+QDkpyCmVoV+JuhACPogcuHSZX34ZM1WIiR7AC+wJKD/G5HJyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8dri0/oVpx9WUY+zq0NUlvgY4GmtGOsXCTD9jbFRUU0=;
+ b=KgnmaLpwHqUhkso6jkjCdWdguH3Emahq0O1fz7M+Zhodz4tJuiP+NYbcCAWNgZAmahDfvUq4JxJeI+873xfyMoL7H3Z7drx2Y3Tq2oi+x/HBst/gpB15740gi5Q+/dcE1/YT0Z5UVocc9KxhHqFQHJujq6Q0Ei3TjwFV6MmEvOx9GIswav4m4ouT50NaS5+IeN+8TLM+8i/xmvQybJ8fd3XY80+eBP7K361dl/rlQoJF9Srrt6IQGF094g9Y184TthIauaDccHEVKPEfYuJVnYk63yWUEI6YxSiV1EujLBN4VUU2lGV7eNrfk9n/bxNf+xF/g6tG0N71kyKlQo9ZXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8dri0/oVpx9WUY+zq0NUlvgY4GmtGOsXCTD9jbFRUU0=;
+ b=W8vPz0RDkN5vWbK0FZbD4mrMptUwSvnFb8x35K9vDumV1jobMBT9wr9viEeNTagbZdj00CD/zGUP59UOVhK4D32yBRLhsu47Md5vTl8ESPYJ0ja41WTkuyy7B6F0owzZWn+KpKUYIK1RNogdNQ2jw7PHl7WlgpbXmR8A9de7mZ8=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Fri, 25 Sep
+ 2020 21:54:06 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3391.027; Fri, 25 Sep 2020
+ 21:54:06 +0000
+Date:   Fri, 25 Sep 2020 14:53:59 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Fri, 25 Sep 2020 23:25:11 +0200
-Message-ID: <160106911110.27725.7635772141267776622.stgit@toke.dk>
-In-Reply-To: <160106909952.27725.8383447127582216829.stgit@toke.dk>
-References: <160106909952.27725.8383447127582216829.stgit@toke.dk>
-User-Agent: StGit/0.23
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <kernel-team@cloudflare.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] bpf: sockmap: enable map_update_elem from
+ bpf_iter
+Message-ID: <20200925215359.l5lbicqdyx44spoc@kafai-mbp>
+References: <20200925095630.49207-1-lmb@cloudflare.com>
+ <20200925095630.49207-2-lmb@cloudflare.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925095630.49207-2-lmb@cloudflare.com>
+X-ClientProxiedBy: CO2PR18CA0060.namprd18.prod.outlook.com
+ (2603:10b6:104:2::28) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:4e29) by CO2PR18CA0060.namprd18.prod.outlook.com (2603:10b6:104:2::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Fri, 25 Sep 2020 21:54:04 +0000
+X-Originating-IP: [2620:10d:c090:400::5:4e29]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ae6acc7b-fa66-4ed4-cf3f-08d8619d85d2
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3571:
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3571E77D2D2731DFD2CF77CAD5360@BY5PR15MB3571.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZL4Lv2m9ERGOgr/WQm1AedflRUjf37f9TEi8Ecnv0db4ORxiFhK71ZSUBn6YSIbpEKNKXPKX1ZhmTtW2Lv1lq05+tz5nQaKN5G7boeEY0ChWo6qPSDYNcRihiGKZls0o70atMyJVgUTzEsG5UuxTXFiVAPi1/sV6xmfPIvqkVZfpPl4XNcNZOzDb8uqHeHNELalI490ov1tJv60NCrfWoKXppn75ddTEhRFD4boJ39slPUZx8HUEnW16UcejX633Kjlx2o+CfFgWhTsFo7x3YbVBgsW11WRPJkqHOI5usmZQAgbeEIyUSevfrmQc7LBDS0UT5hTAfRjhTndq/EvciRgQwbpss8oE9vnzkyU6CaOo58rN9jcLbj5xXYu4MclX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(39860400002)(136003)(396003)(5660300002)(6666004)(4744005)(54906003)(8936002)(316002)(4326008)(55016002)(8676002)(33716001)(478600001)(9686003)(66946007)(66476007)(6916009)(52116002)(1076003)(7416002)(66556008)(16526019)(86362001)(2906002)(6496006)(186003)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: AohtMgheXRIjGVjanRsCzrq4Hf7+4sx/oKsFIU8ACjDWVGhDa6FUMpcJfRUyvSfjubWzUDW7I1IEs0InApSdJ3iGg0n2G7rt6yzMmlTbmkPu2th4hd+Hc3A6Afg0D4feiL4VnEV28EyATHB2PueC5KvBGXrN4UDC3//P6ANqzMnSaNIzHW2VZTgyoEmCk/Zm6ZfoXAdFDAVczINZacgK+cl0J63N/2nVGlFYCtsSu3yuseHGXHvltjE9fEaCMKDdFfHbEKycsou7AItkmS696lowczwj/U5lCM0hrQK4cd7agZuhb6DUbud27Hg4ORpfAv/Onc3GM55WRiPVltuscd1xvEH9L5PN19TxHEm47UTACBqtBj98v6WM65QsANP/cNWxU2yAToRcPmz5zffgMZXeB/pGWYHs2shXBpAyZt4/lLK9J4qPbxsvTJm0JAyeBTiNQSf7H2uzdDWAOnepTR74YyjZT1xM7VZBQcK5Xdxh6S30Th59qQ+kpv/06spJzZ8477lHtuz2SLaRtHAgVrRBI5d6tuFhDayHplZkAlYsVzbpRNv5C7SAkL5MrZAvAs1o31Gy7vaL40F/yv93R/PMiL9WCFQf+GRevByKMPl97NzvY9R0jcWR6OlGIyI1wZu1HsfruguheCwrejkGSaQjctenlfWKWE0aoM+Z1VQ=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae6acc7b-fa66-4ed4-cf3f-08d8619d85d2
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 21:54:06.0167
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sN/yRaNA1OWN8NrgPbamuv23a3peXeUxVUlliPDctN/AHciEl3YdZ7IlzZLtEetj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3571
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-25_19:2020-09-24,2020-09-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 spamscore=0
+ mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 suspectscore=1
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250158
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Fri, Sep 25, 2020 at 10:56:27AM +0100, Lorenz Bauer wrote:
+[ ... ]
 
-The test_overhead prog_test included an fmod_ret program that attached to
-__set_task_comm() in the kernel. However, this function was never listed as
-allowed for return modification, so this only worked because of the
-verifier skipping tests when a trampoline already existed for the attach
-point. Now that the verifier checks have been fixed, remove fmod_ret from
-the test so it works again.
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index e1f05e3fa1d0..497e7df466d4 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -610,6 +610,9 @@ static int sock_map_update_elem(struct bpf_map *map, void *key,
+>  	struct sock *sk = (struct sock *)value;
+>  	int ret;
+>  
+> +	if (unlikely(!sk))
+sk_fullsock(sk) test is also needed.
 
-Fixes: 4eaf0b5c5e04 ("selftest/bpf: Fmod_ret prog and implement test_overhead as part of bench")
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/testing/selftests/bpf/bench.c                |    3 ---
- tools/testing/selftests/bpf/benchs/bench_rename.c  |   17 -----------------
- .../selftests/bpf/prog_tests/test_overhead.c       |   14 +-------------
- tools/testing/selftests/bpf/progs/test_overhead.c  |    6 ------
- 4 files changed, 1 insertion(+), 39 deletions(-)
+> +		return -EINVAL;
 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index 1a427685a8a8..332ed2f7b402 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -311,7 +311,6 @@ extern const struct bench bench_rename_kretprobe;
- extern const struct bench bench_rename_rawtp;
- extern const struct bench bench_rename_fentry;
- extern const struct bench bench_rename_fexit;
--extern const struct bench bench_rename_fmodret;
- extern const struct bench bench_trig_base;
- extern const struct bench bench_trig_tp;
- extern const struct bench bench_trig_rawtp;
-@@ -333,7 +332,6 @@ static const struct bench *benchs[] = {
- 	&bench_rename_rawtp,
- 	&bench_rename_fentry,
- 	&bench_rename_fexit,
--	&bench_rename_fmodret,
- 	&bench_trig_base,
- 	&bench_trig_tp,
- 	&bench_trig_rawtp,
-@@ -464,4 +462,3 @@ int main(int argc, char **argv)
- 
- 	return 0;
- }
--
-diff --git a/tools/testing/selftests/bpf/benchs/bench_rename.c b/tools/testing/selftests/bpf/benchs/bench_rename.c
-index e74cff40f4fe..a967674098ad 100644
---- a/tools/testing/selftests/bpf/benchs/bench_rename.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_rename.c
-@@ -106,12 +106,6 @@ static void setup_fexit()
- 	attach_bpf(ctx.skel->progs.prog5);
- }
- 
--static void setup_fmodret()
--{
--	setup_ctx();
--	attach_bpf(ctx.skel->progs.prog6);
--}
--
- static void *consumer(void *input)
- {
- 	return NULL;
-@@ -182,14 +176,3 @@ const struct bench bench_rename_fexit = {
- 	.report_progress = hits_drops_report_progress,
- 	.report_final = hits_drops_report_final,
- };
--
--const struct bench bench_rename_fmodret = {
--	.name = "rename-fmodret",
--	.validate = validate,
--	.setup = setup_fmodret,
--	.producer_thread = producer,
--	.consumer_thread = consumer,
--	.measure = measure,
--	.report_progress = hits_drops_report_progress,
--	.report_final = hits_drops_report_final,
--};
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-index 2702df2b2343..9966685866fd 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-@@ -61,10 +61,9 @@ void test_test_overhead(void)
- 	const char *raw_tp_name = "raw_tp/task_rename";
- 	const char *fentry_name = "fentry/__set_task_comm";
- 	const char *fexit_name = "fexit/__set_task_comm";
--	const char *fmodret_name = "fmod_ret/__set_task_comm";
- 	const char *kprobe_func = "__set_task_comm";
- 	struct bpf_program *kprobe_prog, *kretprobe_prog, *raw_tp_prog;
--	struct bpf_program *fentry_prog, *fexit_prog, *fmodret_prog;
-+	struct bpf_program *fentry_prog, *fexit_prog;
- 	struct bpf_object *obj;
- 	struct bpf_link *link;
- 	int err, duration = 0;
-@@ -97,11 +96,6 @@ void test_test_overhead(void)
- 	if (CHECK(!fexit_prog, "find_probe",
- 		  "prog '%s' not found\n", fexit_name))
- 		goto cleanup;
--	fmodret_prog = bpf_object__find_program_by_title(obj, fmodret_name);
--	if (CHECK(!fmodret_prog, "find_probe",
--		  "prog '%s' not found\n", fmodret_name))
--		goto cleanup;
--
- 	err = bpf_object__load(obj);
- 	if (CHECK(err, "obj_load", "err %d\n", err))
- 		goto cleanup;
-@@ -148,12 +142,6 @@ void test_test_overhead(void)
- 	test_run("fexit");
- 	bpf_link__destroy(link);
- 
--	/* attach fmod_ret */
--	link = bpf_program__attach_trace(fmodret_prog);
--	if (CHECK(IS_ERR(link), "attach fmod_ret", "err %ld\n", PTR_ERR(link)))
--		goto cleanup;
--	test_run("fmod_ret");
--	bpf_link__destroy(link);
- cleanup:
- 	prctl(PR_SET_NAME, comm, 0L, 0L, 0L);
- 	bpf_object__close(obj);
-diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/testing/selftests/bpf/progs/test_overhead.c
-index 42403d088abc..abb7344b531f 100644
---- a/tools/testing/selftests/bpf/progs/test_overhead.c
-+++ b/tools/testing/selftests/bpf/progs/test_overhead.c
-@@ -39,10 +39,4 @@ int BPF_PROG(prog5, struct task_struct *tsk, const char *buf, bool exec)
- 	return 0;
- }
- 
--SEC("fmod_ret/__set_task_comm")
--int BPF_PROG(prog6, struct task_struct *tsk, const char *buf, bool exec)
--{
--	return !tsk;
--}
--
- char _license[] SEC("license") = "GPL";
-
+> +
+>  	if (!sock_map_sk_is_suitable(sk))
+sk->sk_type is used in sock_map_sk_is_suitable().
+sk_type is not in sock_common.
