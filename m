@@ -2,150 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0678A278FA5
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 19:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E224278FBC
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 19:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729593AbgIYRbm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Sep 2020 13:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
+        id S1728423AbgIYRg4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 13:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbgIYRbl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:31:41 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F3CC0613CE;
-        Fri, 25 Sep 2020 10:31:41 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id 133so2518581ybg.11;
-        Fri, 25 Sep 2020 10:31:41 -0700 (PDT)
+        with ESMTP id S1727812AbgIYRgz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:36:55 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE199C0613CE;
+        Fri, 25 Sep 2020 10:36:55 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id v60so2530884ybi.10;
+        Fri, 25 Sep 2020 10:36:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9BF9IaCRzF+a8Ky7jiNjge8FSBEnSh9KnlDUKfIQqSM=;
-        b=iKHrW42qfZv+heuF6VckGgwUT79hud37OUjqRyckYWvlR7YN8tMNTdXqHXEwpSDGkK
-         stfc7IyIaSz5qASiE43edbqYitT7CZQoW6aNRUDY0F/aYyxtFrIA63GFu6Bxxq6UnEej
-         cIz1uvn93NpVIYNh0BlUPRPNOCyqtDbLIircDyWLnjELzqUCrZ2zxik6GqC5pV0YFN9X
-         WNvD5f/zjpE6fKqrSmiTMSGCaamWvxvboCj8g+60pxNxORyTlMGDYSxqSkahaPuHxXHZ
-         S8YEn8JvoWfldjqzdXA4XIAatKD6AVMhE+7W3c21UnPSmf0KElbhP6TR6DOHSYigwp9I
-         YxTg==
+        bh=zZpRGIpf6h/aLDjQFUhOtDraQ6nKlUQ/ODEe9CGcDmc=;
+        b=cujWZWU8IghE94FXDBFzzIKGrFjKmylSufF0j/hVSTuXBKM86g01jOvAobW92zW7cM
+         +zsy0hqbeAeRHpAjnBmIv8s6U3mrgj261Nxw4R7o51yhomJUvu+3stONpXN0Ptkf6R5P
+         ezagbL39cN6s6hEb/7m2ooP5E4F84YwQDn8fEjuKJ6JE6lhj/aNVXfRStdQB40Woo4e9
+         AaP8lxoCuqP+RK2JboOcWyHdTRe8a/cxAXTClTu8K6yH9TuJjeUfieBYG0CzCnEaYHXs
+         iism18H0r9+sKkywsK3ach/nD4Rb8oLivU+lNN6Znuau3BTOfNoGDseRsdueozz4SxSo
+         t8cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9BF9IaCRzF+a8Ky7jiNjge8FSBEnSh9KnlDUKfIQqSM=;
-        b=apceDQKJBC+Nth7dd+yY31yxtRpmPeY6TlpmyAkLCaKoOHBZ08c45t5VVHnMUXOnB0
-         KvHK82S4jhihTPiZiMctdy5Gl48VUz3uZfdXDWB/PoDgjBZx+GzyeFSNXCmP7UReOtwN
-         PO7KVGgosG8YLX6Yup+o11KkvKej2GaJN88HBgCsdAQhX3xIR7bOYIqg3GqB3FSuY38J
-         jwb+tGIn2p3T6bAgVuigIb6GqJWJ3STd7MTPtDXBKhe4J0oTfQ87m9MiCn5haMPEJnAo
-         TZr5VRARrCBkuDCrZdYLAT5uE1xJ+jx8/BBiI/1hxtfNg9l91J1M/zHBHChY/p7m8kMv
-         m4vw==
-X-Gm-Message-State: AOAM530jy6ACsJx3Qu2SNU7hzO7KEGDAtefp8RQahudq9M5KTzoecEyy
-        2ZpYD4gx+utsgWXV0ydvFgKoQ0iMwnD66wULZCU=
-X-Google-Smtp-Source: ABdhPJyMzzctyJUWCnEBtYTcFKpjdomjIcmLrmlHoOScGdO2QdFWItCSXSeeOjPbLN5k07BsIUq9f9ukykM+v8laxoo=
-X-Received: by 2002:a25:2687:: with SMTP id m129mr332170ybm.425.1601055100643;
- Fri, 25 Sep 2020 10:31:40 -0700 (PDT)
+        bh=zZpRGIpf6h/aLDjQFUhOtDraQ6nKlUQ/ODEe9CGcDmc=;
+        b=W2td9uoBKUAmSGayzPij5VM2L0zYtGcdwsptwN3EJ1POy9t6Jh5yHNxPrJbUOmw/rG
+         DrcJWB8RZ9Rv1KeORsuUHV3wGCZKm3XzE1IXuNz+RQqboNPud1bKrAgDxHsQ8SVW+FCK
+         DAH+QKJ9aJn73/nWMXlGpFd1ZXS+fFdgARMb2E4AO69iOqTZ2qaPzoR7gGiEsKt9zs9g
+         BxfWRVSYReHTdazFqN39c0Eg2FGgD5pv1WtxAKBdtjGln+LjiJFHdzvExKxkFnKjOzVS
+         i/vEYKZ3vuZnJ+890xB7kOcyWgKMyBdmXuYUtJQa+BBQcn1pzqwdb1R4MlGxOG/1RT9/
+         RiLg==
+X-Gm-Message-State: AOAM533lKAsHoUVIMi2Nt/2NzwNptH+eUU7TfLEy21ezraUQ0FGbJtxI
+        DcAlbuOz8yxcGly1Rx9UW1uQUQ2E+R0nUbPG4msc7Tws39cB1DAP
+X-Google-Smtp-Source: ABdhPJxcScgubceKQGCd2YGjstpAhFXV+DIbP3KAs6SqVOIEK/EzRliRGa84SmGu6OoNz8sDo/BnrefAqFjsn/fTojU=
+X-Received: by 2002:a25:6644:: with SMTP id z4mr379569ybm.347.1601055414943;
+ Fri, 25 Sep 2020 10:36:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200924230209.2561658-1-songliubraving@fb.com> <20200924230209.2561658-4-songliubraving@fb.com>
-In-Reply-To: <20200924230209.2561658-4-songliubraving@fb.com>
+References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
+ <1600883188-4831-5-git-send-email-alan.maguire@oracle.com> <20200925005051.nqf6ru46psex7oh4@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200925005051.nqf6ru46psex7oh4@ast-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 25 Sep 2020 10:31:29 -0700
-Message-ID: <CAEf4BzaD9=+paLnFnnCzyyFsrknyBZPfAZiF=9t6s56RL6Dhsg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 3/3] selftests/bpf: add raw_tp_test_run
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
+Date:   Fri, 25 Sep 2020 10:36:44 -0700
+Message-ID: <CAEf4BzZxWC2cO9dmZczWWCQgGH6TLLjmDSiO_LrMzSu7Es5ZSw@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 4/6] selftests/bpf: add bpf_snprintf_btf
+ helper tests
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        andriy.shevchenko@linux.intel.com, Petr Mladek <pmladek@suse.com>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Andrey Ignatov <rdna@fb.com>, scott.branden@broadcom.com,
+        Quentin Monnet <quentin@isovalent.com>,
+        Carlos Neira <cneirabustos@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 4:03 PM Song Liu <songliubraving@fb.com> wrote:
+On Thu, Sep 24, 2020 at 5:51 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> This test runs test_run for raw_tracepoint program. The test covers ctx
-> input, retval output, and running on correct cpu.
+> On Wed, Sep 23, 2020 at 06:46:26PM +0100, Alan Maguire wrote:
+> > +static int __strncmp(const void *m1, const void *m2, size_t len)
+> > +{
+> > +     const unsigned char *s1 = m1;
+> > +     const unsigned char *s2 = m2;
+> > +     int i, delta = 0;
+> > +
+> > +#pragma clang loop unroll(full)
 >
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
-
-Few suggestions below, but overall looks good to me:
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  .../bpf/prog_tests/raw_tp_test_run.c          | 98 +++++++++++++++++++
->  .../bpf/progs/test_raw_tp_test_run.c          | 24 +++++
->  2 files changed, 122 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/raw_tp_test_run.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_raw_tp_test_run.c
+> Shouldn't be needed?
+> The verifier supports bounded loops.
 >
+> > +     for (i = 0; i < len; i++) {
+> > +             delta = s1[i] - s2[i];
+> > +             if (delta || s1[i] == 0 || s2[i] == 0)
+> > +                     break;
+> > +     }
+> > +     return delta;
+> > +}
+> > +
+> > +/* Use __builtin_btf_type_id to test snprintf_btf by type id instead of name */
+> > +#if __has_builtin(__builtin_btf_type_id)
+> > +#define TEST_BTF_BY_ID(_str, _typestr, _ptr, _hflags)                        \
+> > +     do {                                                            \
+> > +             int _expected_ret = ret;                                \
+> > +             _ptr.type = 0;                                          \
+> > +             _ptr.type_id = __builtin_btf_type_id(_typestr, 0);      \
+>
+> The test is passing for me, but I don't understand why :)
+> __builtin_btf_type_id(, 0); means btf_id of the bpf program.
+> While bpf_snprintf_btf() is treating it as btf_id of vmlinux_btf.
+> So it really should have been __builtin_btf_type_id(,1);
 
-[...]
+Better still to use bpf_core_type_id_kernel() macro from bpf_core_read.h.
 
-> +
-> +       err = bpf_prog_test_run_xattr(&test_attr);
-> +       CHECK(err == 0, "test_run", "should fail for too small ctx\n");
-> +
-> +       test_attr.ctx_size_in = sizeof(args);
-> +       err = bpf_prog_test_run_xattr(&test_attr);
-> +       CHECK(err < 0, "test_run", "err %d\n", errno);
-> +       CHECK(test_attr.retval != expected_retval, "check_retval",
-> +             "expect 0x%x, got 0x%x\n", expected_retval, test_attr.retval);
-> +
-> +       for (i = 0; i < nr_online; i++) {
-> +               if (online[i]) {
-
-if (!online[i])
-    continue;
-
-That will reduce nestedness by one level
-
-> +                       DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> +                               .ctx_in = args,
-> +                               .ctx_size_in = sizeof(args),
-> +                               .flags = BPF_F_TEST_RUN_ON_CPU,
-> +                               .retval = 0,
-> +                               .cpu = i,
-> +                       );
-
-this declares variable, so should be at the top of the lexical scope
-
-
-> +
-> +                       err = bpf_prog_test_run_opts(prog_fd, &opts);
-> +                       CHECK(err < 0, "test_run_opts", "err %d\n", errno);
-> +                       CHECK(skel->data->on_cpu != i, "check_on_cpu",
-> +                             "expect %d got %d\n", i, skel->data->on_cpu);
-> +                       CHECK(opts.retval != expected_retval,
-> +                             "check_retval", "expect 0x%x, got 0x%x\n",
-> +                             expected_retval, opts.retval);
-> +
-> +                       if (i == 0) {
-
-I agree that this looks a bit obscure. You can still re-use
-DECLARE_LIBBPF_OPTS, just move it outside the loop. And then you can
-just modify it in place to adjust to a particular case. And in log
-output, we'll see 30+ similar success messages for the else branch,
-which is indeed unnecessary.
-
-> +                               /* invalid cpu ID should fail with ENXIO */
-> +                               opts.cpu = 0xffffffff;
-> +                               err = bpf_prog_test_run_opts(prog_fd, &opts);
-> +                               CHECK(err != -1 || errno != ENXIO,
-> +                                     "test_run_opts_fail",
-> +                                     "should failed with ENXIO\n");
-> +                       } else {
-> +                               /* non-zero cpu w/o BPF_F_TEST_RUN_ON_CPU
-> +                                * should fail with EINVAL
-> +                                */
-> +                               opts.flags = 0;
-> +                               err = bpf_prog_test_run_opts(prog_fd, &opts);
-> +                               CHECK(err != -1 || errno != EINVAL,
-> +                                     "test_run_opts_fail",
-> +                                     "should failed with EINVAL\n");
-> +                       }
-> +               }
-> +       }
-
-[...]
+>
+> The following diff works:
+> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> index b4f96f1f6830..bffa786e3b03 100644
+> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> @@ -45,7 +45,7 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
+>         do {                                                            \
+>                 int _expected_ret = ret;                                \
+>                 _ptr.type = 0;                                          \
+> -               _ptr.type_id = __builtin_btf_type_id(_typestr, 0);      \
+> +               _ptr.type_id = __builtin_btf_type_id(_typestr, 1);      \
+>                 ret = bpf_snprintf_btf(_str, STRSIZE, &_ptr,            \
+>                                        sizeof(_ptr), _hflags);          \
+>                 if (ret != _expected_ret) {                             \
+> @@ -88,7 +88,7 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
+>                         ret = -EBADMSG;                                 \
+>                         break;                                          \
+>                 }                                                       \
+> -               TEST_BTF_BY_ID(_str, #_type, _ptr, _hflags);            \
+> +               TEST_BTF_BY_ID(_str, _ptr, _ptr, _hflags);              \
+>
+> But still makes me suspicious of the test. I haven't debugged further.
