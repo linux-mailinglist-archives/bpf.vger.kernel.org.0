@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ED2277D9D
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 03:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56272277DB0
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 03:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIYB1w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 21:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46362 "EHLO
+        id S1726738AbgIYBgH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 21:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgIYB1v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 21:27:51 -0400
+        with ESMTP id S1726704AbgIYBgH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 21:36:07 -0400
 Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BD0C0613CE;
-        Thu, 24 Sep 2020 18:27:51 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id f18so1553571pfa.10;
-        Thu, 24 Sep 2020 18:27:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8AEC0613CE;
+        Thu, 24 Sep 2020 18:36:07 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id o20so1576598pfp.11;
+        Thu, 24 Sep 2020 18:36:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WX2GerDQN/1DZwYhOgS9HfUlktjE9DG6T36wNYd6ERA=;
-        b=PKiLyTOIgHLW+moRjohVGN3nBXtAMxY2kYeSeyQ+lEwxjVykj1TU2m/L4+JKoM4xJP
-         ZD5NQacU8BFBKmyzQZHKsWN/98bPRw49TlHi9pKqHibcCLtAf1QS0VXLijE1Cs6czB3N
-         3FV6Ph1hXkRMiZsuVZd/MWznqd7sOgwK+P+/mwrQIl6x2+Wewik48GDaSWMpCnMaLw/l
-         2HUPAkCy6bvpxVpZvsvkJtXo8s30ovp8FcyPPFv7BMfv142P8Wh5DhEXpOdYiaEwF8JR
-         k5lYb97ny5XkQfNh77xbpa2eGyzBKLqYNA2qMwCsBFfi1R8pmaM0ASTB0cNqrvjoK7Fk
-         rr2g==
+        bh=fgmv1ZdL7UUXwEEal/l25It5GrSTWQVpHodie+cr1w0=;
+        b=JRYOS6/EWijo06SB1EWdfUNPiLTpKE4BWfZ0U4z5NiWUiGwaLLEqBs82QOWSq7GHC/
+         Lg0nuso6br2icKGo48MjaGPbXt5XfW+FuOep9LZ2ZL0UgBjAiyXvLvw+nU+81bi+nlID
+         UiABi7ZcXRSWMSOkl541UuJvrGPaFFf8TcNRndTcWBo71DcNu87UqP4PY0icMqLb/S4N
+         vtzUMuvt3t3P8x6O73AmiMAueQDgU0z+uV7hj+1vegevWLFaqER5uz+8cjRUOqXWyv27
+         14y6BlTCkF2D9NOMS0AdWMvO3p//u2+Qf4Tcni0GdmPnH7KSeAVIUvMMT2acozLbmbiR
+         lUAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WX2GerDQN/1DZwYhOgS9HfUlktjE9DG6T36wNYd6ERA=;
-        b=t67l/UWl/2zTJ1OOA0rPX6ySHullJfYZ6Zu66PmITeIz/f/oB/BjKknf1pYQAUODlS
-         Xqli4K5cl0KUTHm104urWB0ItzPVUyRub1M3+A8jJWPsiMo2uxkFgtOxg9Dt5gC62ja+
-         NNNYFHFJZi/dGvVhYqPV4KOKQtPwpnB4CaOax2RWPN3vQrez0JJ8zOH0KUBy9/SWa1jS
-         OeTwN7jdDsw3akYL+4jpfmwkEBGbXsY1Q0vw4KQGyCSQagCt6D739yyAW5nF9YtijBnK
-         r1V0VN0M0O+AhYN7bQnioZYQssVOROd2+Xio7H9j8hfeLfVmSNns1EYXUoquuqhEZToP
-         k3Rg==
-X-Gm-Message-State: AOAM532IKmP/EFD44U2whG5uiRFY4KN3Dc7dzkykZNxdi4TZlDcEg8Mv
-        WYOSD7aP32WSs+xsgc6vo/v1FPcMZiFOojElE78=
-X-Google-Smtp-Source: ABdhPJySE+Qder4PaqnMJALNyB2UUS+F0xdqjGoIiv8n/RD6wdcY8DBlVZoIdbJGt48BGDMCA2TPysEzgBxUQCqP50s=
-X-Received: by 2002:aa7:8d4c:0:b029:150:f692:4129 with SMTP id
- s12-20020aa78d4c0000b0290150f6924129mr1854155pfe.11.1600997271069; Thu, 24
- Sep 2020 18:27:51 -0700 (PDT)
+        bh=fgmv1ZdL7UUXwEEal/l25It5GrSTWQVpHodie+cr1w0=;
+        b=nyxdUYn3y4jQ7cPWFnZyBNZDiCoMnd1zC/f7moFGHX9UIWCnKsEKrmvB87oGXK3Xpv
+         5EE4y3MtnPLXqIUISHEtr2DbhROtOHA59Ud8XXhFZ0SQrseXHhf8mxd8KmePSfcBasqP
+         D7Amor6XLsEFNzdh6TAD3h4H1QMHQuJVuNPuaWTgq8ysupib82oHu70xCaTbigj9/FVN
+         5T44Pvb4cT5rNZyRosYhdld8F4qjstYAP/A3OzLAboOOJvZKEKy7PKed18SByY7z8IZx
+         sPvicbIiM2dNZFC0nMZQGIc+z/IqnSoPYxo9547B+BjnoOkRva9vA5Vooe1bdkfpS8G3
+         y0UA==
+X-Gm-Message-State: AOAM532RaQ0J5v+lVgvnnYnUNRfgfxAUKhxPq+UdTIlea8Ue4X/IWzVr
+        zFUSxM6WgH8MRSgjNZMp0nIqCVReBna1K0Pq6+Q=
+X-Google-Smtp-Source: ABdhPJxyv0KcwQtrdMtQkTLyrl57OgqJRSWjXZ4r4Z8vu+1JbH/U88tfk1cIxqTiWE1k97krRxR311A3MkeH2l3hX0c=
+X-Received: by 2002:a17:902:7445:b029:d1:dea3:a3ca with SMTP id
+ e5-20020a1709027445b02900d1dea3a3camr1876986plt.19.1600997766672; Thu, 24 Sep
+ 2020 18:36:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
- <202009241658.A062D6AE@keescook>
-In-Reply-To: <202009241658.A062D6AE@keescook>
+References: <cover.1600951211.git.yifeifz2@illinois.edu> <eedf3323eed8615a4be150b39a717de1a68f0c12.1600951211.git.yifeifz2@illinois.edu>
+ <202009241646.5739BE3@keescook>
+In-Reply-To: <202009241646.5739BE3@keescook>
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Thu, 24 Sep 2020 20:27:40 -0500
-Message-ID: <CABqSeAQ=joheH+0LUZ201U-XwFFsHN3Ouo5FGoscUwn+itkL2w@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+Date:   Thu, 24 Sep 2020 20:35:55 -0500
+Message-ID: <CABqSeAR8j=ALk5=Y=D4ivVU8m3DC8XgZp74FyAaeErS_TL4FRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 5/6] selftests/seccomp: Compare bitmap vs
+ filter overhead
 To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        bpf <bpf@vger.kernel.org>,
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
         kernel list <linux-kernel@vger.kernel.org>,
         Aleksa Sarai <cyphar@cyphar.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
@@ -76,76 +76,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[resending this too]
+On Thu, Sep 24, 2020 at 6:47 PM Kees Cook <keescook@chromium.org> wrote:
+> BTW, did this benchmark tool's results match your expectations from what
+> you saw with your RFC? (I assume it helped since you've included in
+> here.)
 
-On Thu, Sep 24, 2020 at 6:01 PM Kees Cook <keescook@chromium.org> wrote:
-> Disregarding the "how" of this, yeah, we'll certainly need something to
-> tell seccomp about the arrangement of syscall tables and how to find
-> them.
->
-> However, I'd still prefer to do this on a per-arch basis, and include
-> more detail, as I've got in my v1.
->
-> Something missing from both styles, though, is a consolidation of
-> values, where the AUDIT_ARCH* isn't reused in both the seccomp info and
-> the syscall_get_arch() return. The problems here were two-fold:
->
-> 1) putting this in syscall.h meant you do not have full NR_syscall*
->    visibility on some architectures (e.g. arm64 plays weird games with
->    header include order).
+Yes, I updated the commit message with the benchmarks of this patch
+series. Though, given that I'm running in a qemu-kvm on my laptop that
+has a lot of stuffs running on it (and with the cursed ThinkPad T480
+CPU throttling), I had to throw much more syscalls at it to pass the
+"approximately equals" expectation... though no idea about what's
+going on with 732 vs 737.
 
-I don't get this one -- I'm not playing with NR_syscall here.
+Or if you mean if I expected these results, yes.
 
-> 2) seccomp needs to handle "multiplexed" tables like x86_x32 (distros
->    haven't removed CONFIG_X86_X32 widely yet, so it is a reality that
->    it must be dealt with), which means seccomp's idea of the arch
->    "number" can't be the same as the AUDIT_ARCH.
-
-Why so? Does anyone actually use x32 in a container? The memory cost
-and analysis cost is on everyone. The worst case scenario if we don't
-support it is that the syscall is not accelerated.
-
-> So, likely a combo of approaches is needed: an array (or more likely,
-> enum), declared in the per-arch seccomp.h file. And I don't see a way
-> to solve #1 cleanly.
->
-> Regardless, it needs to be split per architecture so that regressions
-> can be bisected/reverted/isolated cleanly. And if we can't actually test
-> it at runtime (or find someone who can) it's not a good idea to make the
-> change. :)
-
-You have a good point regarding tests. Don't see how it affects
-regressions though. Only one file here is ever included per-build.
-
-> > [...]
-> > diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
-> > index 7cbf733d11af..e13bb2a65b6f 100644
-> > --- a/arch/x86/include/asm/syscall.h
-> > +++ b/arch/x86/include/asm/syscall.h
-> > @@ -97,6 +97,10 @@ static inline void syscall_set_arguments(struct task_struct *task,
-> >       memcpy(&regs->bx + i, args, n * sizeof(args[0]));
-> >  }
-> >
-> > +static __maybe_unused const int syscall_arches[] = {
-> > +     AUDIT_ARCH_I386
-> > +};
-> > +
-> >  static inline int syscall_get_arch(struct task_struct *task)
-> >  {
-> >       return AUDIT_ARCH_I386;
-> > @@ -152,6 +156,13 @@ static inline void syscall_set_arguments(struct task_struct *task,
-> >       }
-> >  }
-> >
-> > +static __maybe_unused const int syscall_arches[] = {
-> > +     AUDIT_ARCH_X86_64,
-> > +#ifdef CONFIG_IA32_EMULATION
-> > +     AUDIT_ARCH_I386,
-> > +#endif
-> > +};
->
-> I'm leaving this section quoted because I'll refer to it in a later
-> patch review...
->
-> --
-> Kees Cook
+YiFei Zhu
