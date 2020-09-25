@@ -2,105 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CD527953F
-	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 01:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D45B279543
+	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 01:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgIYX4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Sep 2020 19:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
+        id S1729623AbgIYX5B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 19:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgIYX4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:56:24 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B997CC0613CE;
-        Fri, 25 Sep 2020 16:56:23 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id k25so3790442ljg.9;
-        Fri, 25 Sep 2020 16:56:23 -0700 (PDT)
+        with ESMTP id S1726119AbgIYX5B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:57:01 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF790C0613CE
+        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 16:57:00 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id c8so4236877edv.5
+        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 16:57:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Uqu6+9M4Zs0hycbaOsCnW7fLudpuf/w+ief3nLrjVs=;
-        b=PQhG7ZdfxPF+I5oqb+SNngGw8juJR1rj8Bq3SRmAGPqDAW08bWua4lTntsy9JfD+7Y
-         /EFmlV9FJmvZBfd5o79DC2Zw1R8Rkwfc3Km7lCXHurrStMk1AIHa5hR9ueGCeAXgrLAL
-         W8IhSt5iifUsuH2rjrJujIp363vYWf57KMlNLqghioWiKT+hRQTxzWitMXvaGUtmsJvA
-         9V9E+DGOo0EuUyNX2ZEM20xTsI/Pdr00qxm5ikiEGQ3c3S91L5qFY6vOlBfViMz2BXJ7
-         1bNaLfLoA6lIzLmL1cz0pL6InLH7OLbf5rrhNVTqP+IpbiIdttWXoqL6ThoBUj+AgS8w
-         cZOw==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=fmWSkGqGH8iPJNhPCVGrf62MqajYo96ZYWtYF0O/4Js=;
+        b=bNXPZIY1oR91NQ4ZlLDvaoVpzpkidh3D8IsJP0XMEqGtr5jGDwl0qFxdItvejMxmKy
+         c6Fr8WEVvBn1p9UjM89pWuDTvBympGKe6MZHzoaGPdwnTK6+0JD+F2MnYNwwoNnN523T
+         h17R03My4UXeDq6k492dggTcFXx0j3TJMCz0Ubt0uKQQp+AhnC9a3J4fPx8RQE0kU7rf
+         mzFpKMxVWxKesNRHmuqxGnvMUDU0FvOXa/kVwY+xZsHj8l70cuScY5+ZhuehC0d47mK+
+         WNARUf1dakLrIyrpPmJYZpmUvJEduDt/T2KJkzWBMJnx94tnHdtk+wXdqOokF+Rcl+VN
+         KVxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Uqu6+9M4Zs0hycbaOsCnW7fLudpuf/w+ief3nLrjVs=;
-        b=Khw9vVHwVLWhqmG1vDf0uaP+2aOdkxWd/TP3S5ansnLArRb1FYdIL2fnxjQz3/yM1z
-         OsYtXDySpfQAa9qw5HIRAlobwXi4NKnyGs1/+1eEbQsiopn/Mhrn0QIERV7Z3DywP0yZ
-         RE2iW7sT42c+aJxOVk3jgIQJxTBGKOX1mUeXGsZadik5SNP0KHeEntao5MZZxb3MUarI
-         IVwLpu0UkjMcIZWgG7NS5F8zNbTSkx35QyzWT5LLa3iX8XYa3r8kZnxpOInuICATYpWp
-         JhsUNQsPcEaWS7l2WKzpAV2a/MukZEnk27ucwgmmhEKpum5G2IGd32VKU0OTyjwCWwaG
-         caqw==
-X-Gm-Message-State: AOAM532Aj8s3OnognDTcdozwK2dXd5Ssyw3FOT2YVikxZlXvZn5z2ZgR
-        fIqV3b6cgx7xflpE5vpIpPm60nsJsQSIuR58P/0=
-X-Google-Smtp-Source: ABdhPJypVDbi6lIR6Xt9BqTiGlwM8eTglGgJq/GXwjxVJm7at6LLudI45ep09eV76RccS74SmQglTOLGj2zDR69mlrY=
-X-Received: by 2002:a2e:9b15:: with SMTP id u21mr2197977lji.283.1601078182178;
- Fri, 25 Sep 2020 16:56:22 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=fmWSkGqGH8iPJNhPCVGrf62MqajYo96ZYWtYF0O/4Js=;
+        b=CDqMl+MFBrPRxMjaSCHC+zkI/lnA74CrcZEu2CnG0rRf05UYjLPhJtqacbewFoglSO
+         +2yaeH4yyKX79rPxhB1zg16ud7yuAefOaSd3L74HMBAPsSIAaM8opDftV0NvyKqhby8n
+         QMd6KGCBalCE3fjkCeiGCJrP38J+eGxMIxaimPKxnLe1qQixSI6rdIoasTXGTFUd3f9b
+         sA22ue5qveD2Rj4SDw9CVCHNFEn6woOlWaQOzRTr6PkhLUKMY0NZTRz41z6njNpJcN4d
+         0rnjB8HRbNcC1Vex4VYrI5v8eO5KBh/6mHufyuDsB6IctMXgZ/4GHcTuWfSGBsvoj4Ai
+         ZgGA==
+X-Gm-Message-State: AOAM530wYK96MZTi3q042PuvnbPaKfShMnnfp3LY3NeYVz1Lgc+EOQV4
+        mDefDvGrBFwVBlYKwfPvG3yBceC6KERhzqjoWxYzGLgDKCiY9g==
+X-Google-Smtp-Source: ABdhPJzaA8ga4CATYhHXJj/mi4GD6Eltuje+JPWfHpy+w+cViuiKbSxvMCq1mnEwFTyJN2HvsUsQ+RxuJcgsjumuiUg=
+X-Received: by 2002:a05:6402:1148:: with SMTP id g8mr4117237edw.271.1601078218966;
+ Fri, 25 Sep 2020 16:56:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <160097310597.12106.6191783180902126213.stgit@john-Precision-5820-Tower>
-In-Reply-To: <160097310597.12106.6191783180902126213.stgit@john-Precision-5820-Tower>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 25 Sep 2020 16:56:10 -0700
-Message-ID: <CAADnVQ+5CbptcUpjJN8bP64zrwu1j3doz+iyDEoH6mApELLNWQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH 1/2] bpf, verifier: Remove redundant
- var_off.value ops in scalar known reg cases
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Sat, 26 Sep 2020 02:56:48 +0300
+Message-ID: <CAMy7=ZVMPuXp6sOTPPtDYZbhan2PZDBUtsTTZ78PikxKMoBm9g@mail.gmail.com>
+Subject: Help using libbpf with kernel 4.14
+To:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:45 AM John Fastabend
-<john.fastabend@gmail.com> wrote:
->
-> In BPF_AND and BPF_OR alu cases we have this pattern when the src and dst
-> tnum is a constant.
->
->  1 dst_reg->var_off = tnum_[op](dst_reg->var_off, src_reg.var_off)
->  2 scalar32_min_max_[op]
->  3       if (known) return
->  4 scalar_min_max_[op]
->  5       if (known)
->  6          __mark_reg_known(dst_reg,
->                    dst_reg->var_off.value [op] src_reg.var_off.value)
->
-> The result is in 1 we calculate the var_off value and store it in the
-> dst_reg. Then in 6 we duplicate this logic doing the op again on the
-> value.
->
-> The duplication comes from the the tnum_[op] handlers because they have
-> already done the value calcuation. For example this is tnum_and().
->
->  struct tnum tnum_and(struct tnum a, struct tnum b)
->  {
->         u64 alpha, beta, v;
->
->         alpha = a.value | a.mask;
->         beta = b.value | b.mask;
->         v = a.value & b.value;
->         return TNUM(v, alpha & beta & ~v);
->  }
->
-> So lets remove the redundant op calculation. Its confusing for readers
-> and unnecessary. Its also not harmful because those ops have the
-> property, r1 & r1 = r1 and r1 | r1 = r1.
->
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Hello,
 
-Applied. Thanks for the follow up.
-In the future please always cc bpf@vger for two reasons:
-- to get proper 'Link:' integrated in git commit
-- to get them into a new instance of
-https://patchwork.kernel.org/project/bpf/list
-  which we will start using soon to send automatic 'applied' emails.
+I'm developing a tool which is now based on BCC, and would like to
+make the move to libbpf.
+I need the tool to support a minimal kernel version 4.14, which
+doesn't have CO-RE.
+
+I have read bcc-to-libbpf-howto-guide, and looked at the libbpf-tools of bcc,
+but both only deal with newer kernels, and I failed to change them to
+run with a 4.14 kernel.
+
+Although some of the bpf samples in the kernel source don't use CO-RE,
+they all use bpf_load.h,
+and have dependencies on the tools dir, which I would like to avoid.
+
+I would appreciate it if someone can help with a simple working
+example of using libbpf on 4.14 kernel, without having any
+dependencies. Specifically, I'm looking for an example makefile, and
+to know how to load my bpf code with libbpf.
+
+Thanks,
+Yaniv
