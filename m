@@ -2,110 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6BB277CD3
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 02:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F0B277CF1
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 02:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbgIYAZM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 20:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
+        id S1726718AbgIYAd3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Sep 2020 20:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726448AbgIYAZM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:25:12 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45FCC0613CE
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 17:25:11 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id ay8so703931edb.8
-        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 17:25:11 -0700 (PDT)
+        with ESMTP id S1726631AbgIYAd3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:33:29 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6042C0613CE;
+        Thu, 24 Sep 2020 17:33:28 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g29so1027240pgl.2;
+        Thu, 24 Sep 2020 17:33:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mb/Gyht1d42k5WLRRBLSKrU8LIj1ziyutaDcZAUiiDE=;
-        b=f9l5Zd3/T/siD3esxvK9V7YnPdrOPwx1tq742hlnDqkxlWrK/d7wadfgenOzWaholI
-         EGlI6+dTP7IK4eZMyXFvN1jy4A1imuSMp+jrckKEPcgsAaYu5gsSQMyHqqwQWJF0sDU1
-         5xzCMwIddufxjAl9RoRLXKtXbm0VEXIvz+CyefndRGPpKrVrNRrKyvmhCstvSG054h75
-         /w7FRLohxgg+mkAxbgF06fH0/b5lpv0lS7KnVnWwZp6JamH8ekmXkyRaA0ONHW7gNWSj
-         /xKm2wzh4qshXB/KxxZX2DfEOV9720E9nsisCdV28VmRKFCNLHI2UDRDSoq28tGoscpp
-         75SA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=heSZ+vYMpgFHhWomcOAQ0pB3xOxWwgLlUEvkB5nligg=;
+        b=qolVVq1IXAH2KQsr1j+mJ189ZPsIRozzGguGVAMYYXukIe7sljhxPZT+XB3Z4bB0mh
+         1nMqK1+EN03THQFbpx6SY1wavqCTlq3Jd8q9ehUKXQfwrKIGfJNmPo/M7XpfoUAhe5mS
+         skl1yghN9442sSafo5zZml7QG5D6QMWG4kYn5xW8TTRFrvuQjp0TRXLR2I1UNoIJpVE2
+         pUCUl71FFEaJLNeCWT7X/o3URttG5Sc9kK7uclod8TPYVNywP4UpAXyKy3QaAwy9g9NY
+         LwaMVHdhWQwBdhkLSUTWoThubO+wLdUH0wZ+4YgfvsmRQeu74S2CyaKZYO/4cCt/nwoD
+         FF8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mb/Gyht1d42k5WLRRBLSKrU8LIj1ziyutaDcZAUiiDE=;
-        b=mUQDV1842At9qy9+iE9k3vctqOhR0e0rtH0bFUqwJzuohDgoQW0Cv1C6nc3JMMcRvU
-         BXI7/m3I92ychVI32LTQOcjQoBEGge/HTZntgGsgeV5Z6DmXvo++rED7gsjmdl2zOFl0
-         6wMj1bajb/xbwtYnMiWtqlOiXEOi+BBL9yxorTqVZzh2O0WANv0N1CoIZY4TR61bJQt5
-         nejoogVb55IOj9KZxt2tcByJ66rykba7y5rYs7nbyi5P69NLjWAHDKAqss9WHs76pdpa
-         T0cj6ifM2HEPlgtuDUot5g9Qk1Do1ylZ12uvmXKpfZWQ3gSpSgoPwuYYyyfmTHhq9lJt
-         Djag==
-X-Gm-Message-State: AOAM533VextRaUOCw7cywNoSR4npUlmBtGZBITjwZfDFs3FwjnqPIcPn
-        s/LhW9wR3MhDwnnFbVpBLENOYAKkGNBTKSkGUlncXw==
-X-Google-Smtp-Source: ABdhPJyXMnD+DwkHGMzEgLFLrUX3vRxmEK0cIvo8M77oLrJDknVzbQ95k1e4VVTE9KNNBZHJjBqthcj+pzQZ1DxtQHI=
-X-Received: by 2002:a50:ccd2:: with SMTP id b18mr1328552edj.51.1600993510229;
- Thu, 24 Sep 2020 17:25:10 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=heSZ+vYMpgFHhWomcOAQ0pB3xOxWwgLlUEvkB5nligg=;
+        b=UiXn4GtBcrC1SWJmj5aGGrXGfpDKs7/vDwYELr59/4vjwuYFBbudwkQqE22UAwR0vr
+         13zYeC1HbcQRVjr+FJFC0B2+lJK4uSrPlChgIOdswov2pmaGs8RoWnRtwGRoDfWVp6ul
+         09RjRJELF0N/CJbGL98KS+8M1DeVpInZ/zYwWqGwShg3TT8qyrFrOpBQjgp9qkw7X8Sy
+         J5tI+pH2cahxsJdFHM6v6eMY/hAEnQNXZYoyCyg48xloaFeElDpezeHAq1+S0fM0WZIX
+         FXTR6Z2YyWkmcFfovrzxSpz0ixHkqBAIdrcv1cmAOlci7naPoqvmEub7ts+yyjBMQG0u
+         g4eQ==
+X-Gm-Message-State: AOAM530nhcGjOm/glfGznAi4j2NG02syU9jAtnVMWD6lwu2DrYjb4uom
+        p4mIYe42dguNWTRy9aO0VQk=
+X-Google-Smtp-Source: ABdhPJzAV7rIzcHLywe8VSGKzhq95U0ycxS2I81hHRVEYrbo3sKMnkRgNi8ea0dj1c2XdBuo85vX0w==
+X-Received: by 2002:aa7:9986:0:b029:142:2501:39db with SMTP id k6-20020aa799860000b0290142250139dbmr1599765pfh.42.1600994008051;
+        Thu, 24 Sep 2020 17:33:28 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:49ed])
+        by smtp.gmail.com with ESMTPSA id z7sm594743pfj.75.2020.09.24.17.33.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 17:33:27 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:33:23 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com,
+        linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
+        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
+        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
+        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
+        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        acme@kernel.org
+Subject: Re: [PATCH v6 bpf-next 2/6] bpf: move to generic BTF show support,
+ apply it to seq files/strings
+Message-ID: <20200925003323.u2s2vyyqq2uhtij7@ast-mbp.dhcp.thefacebook.com>
+References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
+ <1600883188-4831-3-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
-References: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
- <202009241658.A062D6AE@keescook> <CAG48ez2R1fF2kAUc7vOOFgaE482jA94Lx+0oWiy6M5JeM2HtvA@mail.gmail.com>
- <20200925001803.GV3421308@ZenIV.linux.org.uk>
-In-Reply-To: <20200925001803.GV3421308@ZenIV.linux.org.uk>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 25 Sep 2020 02:24:43 +0200
-Message-ID: <CAG48ez1VxTewE5AjStBjy_-YA9yV4P4svtm2ZzwG2dWugMU21A@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600883188-4831-3-git-send-email-alan.maguire@oracle.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 2:18 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> On Fri, Sep 25, 2020 at 02:15:50AM +0200, Jann Horn wrote:
-> > On Fri, Sep 25, 2020 at 2:01 AM Kees Cook <keescook@chromium.org> wrote:
-> > > 2) seccomp needs to handle "multiplexed" tables like x86_x32 (distros
-> > >    haven't removed CONFIG_X86_X32 widely yet, so it is a reality that
-> > >    it must be dealt with), which means seccomp's idea of the arch
-> > >    "number" can't be the same as the AUDIT_ARCH.
-> >
-> > Sure, distros ship it; but basically nobody uses it, it doesn't have
-> > to be fast. As long as we don't *break* it, everything's fine. And if
-> > we ignore the existence of X32 in the fastpath, that'll just mean that
-> > syscalls with the X32 marker bit always hit the seccomp slowpath
-> > (because it'll look like the syscall number is out-of-bounds ) - no
-> > problem.
->
-> You do realize that X32 is amd64 counterpart of mips n32, right?  And that's
-> not "basically nobody uses it"...
+On Wed, Sep 23, 2020 at 06:46:24PM +0100, Alan Maguire wrote:
+>  
+> +/* Chunk size we use in safe copy of data to be shown. */
+> +#define BTF_SHOW_OBJ_SAFE_SIZE		256
 
-What makes X32 weird for seccomp is that it has the syscall tables for
-X86-64 and X32 mushed together, using the single architecture
-identifier AUDIT_ARCH_X86_64. I believe that's what Kees referred to
-by "multiplexed tables".
+sizeof(struct btf_show) == 472
+It's allocated on stack and called from bpf prog.
+It's a leaf function, but it still worries me a bit.
+I've trimmed it down to 32 and everything seems to be printing fine.
+There will be more calls to copy_from_kernel_nofault(), but so what?
+Is there a downside to make it that small?
 
-As far as I can tell, MIPS is more well-behaved there and uses the
-separate architecture identifiers
-AUDIT_ARCH_MIPS|__AUDIT_ARCH_64BIT
-and
-AUDIT_ARCH_MIPS|__AUDIT_ARCH_64BIT|__AUDIT_ARCH_CONVENTION_MIPS64_N32.
+Similarly state.name is 128 bytes. May be use 80 there?
+I think that should be plenty still.
 
-(But no, I did not actually realize that that's what N32 is. Thanks
-for the explanation, I was wondering why MIPS was the only
-architecture with three architecture identifiers...)
+> + * Another problem is we want to ensure the data for display is safe to
+> + * access.  To support this, the "struct obj" is used to track the data
+
+'struct obj' doesn't exist. It's an anon field 'struct {} obj;' inside btf_show
+that you're referring to, right?
+Would be good to fix this comment.
+
+> +struct btf_show {
+> +	u64 flags;
+> +	void *target;	/* target of show operation (seq file, buffer) */
+> +	void (*showfn)(struct btf_show *show, const char *fmt, ...);
+
+buildbot complained that this field needs to be annotated.
+
+> +#define btf_show(show, ...)						      \
+> +	do {								      \
+> +		if (!show->state.depth_check)				      \
+> +			show->showfn(show, __VA_ARGS__);		      \
+> +	} while (0)
+
+Does it have to be a macro? What are you gaining from macro
+instead of vararg function?
+
+> +static inline const char *__btf_show_indent(struct btf_show *show)
+
+please remove all 'inline' from .c file.
+There is no need to give such hints to the compiler.
+
+> +#define btf_show_indent(show)						       \
+> +	((show->flags & BTF_SHOW_COMPACT) ? "" : __btf_show_indent(show))
+> +
+> +#define btf_show_newline(show)						       \
+> +	((show->flags & BTF_SHOW_COMPACT) ? "" : "\n")
+> +
+> +#define btf_show_delim(show)						       \
+> +	(show->state.depth == 0 ? "" :					       \
+> +	 ((show->flags & BTF_SHOW_COMPACT) && show->state.type &&	       \
+> +	  BTF_INFO_KIND(show->state.type->info) == BTF_KIND_UNION) ? "|" : ",")
+> +
+> +#define btf_show_type_value(show, fmt, value)				       \
+> +	do {								       \
+> +		if ((value) != 0 || (show->flags & BTF_SHOW_ZERO) ||	       \
+> +		    show->state.depth == 0) {				       \
+> +			btf_show(show, "%s%s" fmt "%s%s",		       \
+> +				 btf_show_indent(show),			       \
+> +				 btf_show_name(show),			       \
+> +				 value, btf_show_delim(show),		       \
+> +				 btf_show_newline(show));		       \
+> +			if (show->state.depth > show->state.depth_to_show)     \
+> +				show->state.depth_to_show = show->state.depth; \
+> +		}							       \
+> +	} while (0)
+> +
+> +#define btf_show_type_values(show, fmt, ...)				       \
+> +	do {								       \
+> +		btf_show(show, "%s%s" fmt "%s%s", btf_show_indent(show),       \
+> +			 btf_show_name(show),				       \
+> +			 __VA_ARGS__, btf_show_delim(show),		       \
+> +			 btf_show_newline(show));			       \
+> +		if (show->state.depth > show->state.depth_to_show)	       \
+> +			show->state.depth_to_show = show->state.depth;	       \
+> +	} while (0)
+> +
+> +/* How much is left to copy to safe buffer after @data? */
+> +#define btf_show_obj_size_left(show, data)				       \
+> +	(show->obj.head + show->obj.size - data)
+> +
+> +/* Is object pointed to by @data of @size already copied to our safe buffer? */
+> +#define btf_show_obj_is_safe(show, data, size)				       \
+> +	(data >= show->obj.data &&					       \
+> +	 (data + size) < (show->obj.data + BTF_SHOW_OBJ_SAFE_SIZE))
+> +
+> +/*
+> + * If object pointed to by @data of @size falls within our safe buffer, return
+> + * the equivalent pointer to the same safe data.  Assumes
+> + * copy_from_kernel_nofault() has already happened and our safe buffer is
+> + * populated.
+> + */
+> +#define __btf_show_obj_safe(show, data, size)				       \
+> +	(btf_show_obj_is_safe(show, data, size) ?			       \
+> +	 show->obj.safe + (data - show->obj.data) : NULL)
+
+Similarly I don't understand the benefit of macros.
+They all could have been normal functions.
+
+> +static inline void *btf_show_obj_safe(struct btf_show *show,
+> +				      const struct btf_type *t,
+> +				      void *data)
+
+drop 'inline' pls.
+
+> +{
+> +	int size_left, size;
+> +	void *safe = NULL;
+> +
+> +	if (show->flags & BTF_SHOW_UNSAFE)
+> +		return data;
+> +
+> +	(void) btf_resolve_size(show->btf, t, &size);
+
+Is this ok to ignore the error?
