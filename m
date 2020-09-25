@@ -2,126 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC2D27920F
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 22:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAC227923E
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 22:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgIYUdP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1728764AbgIYUdP (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 25 Sep 2020 16:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727355AbgIYU2n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:28:43 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74901C0613B6
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 12:51:25 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o20so4202771pfp.11
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 12:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=aYpiTmID4xsc+ZXtbTi7xqB4g/9TSoL/gRDfcYQ3WKY=;
-        b=TlNuh8jKztqtHSgOPSYIlkOX1FTDl+cnTYUAwpxIptGVTCsGY4WRbLjD2aDt03E2Wn
-         nHvfTgO7vJqjtFAK1e26mA66Ozrw1EGrYkDalDgsBN48SudGkQINpwB/Lt8hFyCgCYqq
-         Vb9AHgPIttAdVZTC8H1da8kayPqB2UnS1M7k+nbWdQcJ7pzUlQ7vBeP5Qh63nYns4Mad
-         4x1WvEMAkUyiyh6C9/2KAahWn3gjb2qRtMoqeg1qE6nv++BYJ4lHiq8FM/cX9yc/29+C
-         vOp6cvtfp74HcMOfX2HHqeVem6JqdQ75pShl05yR3iblYG0Y/fmM/ga0WRqblniaLdGo
-         UWWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=aYpiTmID4xsc+ZXtbTi7xqB4g/9TSoL/gRDfcYQ3WKY=;
-        b=svM/POB09xZuhCTNfQqaNL3NzIM0yUyHWskz3+LB7MgobLN4qVIiwVOqMC5utgkSWQ
-         ub29H6jMzzufuUmHu1SdLNk2nhDrn9sKb1FHrYXzc2UqO6Ya8YicyLQZickG4tlKOZ8f
-         1E8DTr09y6ij1Ti26VVpMezqLMgWIUVpZKoDY7UfLMyqsRCoUHl9NfZFfGMu00HMXCps
-         T0wqX5yhbyUa+UHjbhBWa3q1mYdCh63eUtn+BuaIaXYlrYHgiR3SJCMcelniYIyxCh1Y
-         yb9AkQG1SN3Y0mekZNffMKEjE6wfz7hJGmuO8gCZy2kiR1on3InwetL2IXgMEsqMgtKA
-         9Adg==
-X-Gm-Message-State: AOAM531yklzEOKdgCAhPtTRZnWRlyt+2EnBrjH1zsJZ3J+4gtA5wZ3ge
-        2S7Hj2iP/8hyXQCRujBMcU24Mg==
-X-Google-Smtp-Source: ABdhPJykXwy5rOFCXbWLe1OsALxqFcpr3ferzywXG9nW2p19GlogMjQ7EdTLxEQAGEIYAT2NGp+mkQ==
-X-Received: by 2002:a63:3ec9:: with SMTP id l192mr478784pga.316.1601063484980;
-        Fri, 25 Sep 2020 12:51:24 -0700 (PDT)
-Received: from localhost.localdomain ([2601:646:c200:1ef2:54:c5e4:89e0:b741])
-        by smtp.gmail.com with ESMTPSA id k2sm3291458pfi.169.2020.09.25.12.51.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 12:51:23 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if filter is arg-dependent
-Date:   Fri, 25 Sep 2020 12:51:20 -0700
-Message-Id: <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
-References: <202009251223.8E46C831E2@keescook>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-In-Reply-To: <202009251223.8E46C831E2@keescook>
-To:     Kees Cook <keescook@chromium.org>
-X-Mailer: iPhone Mail (18A373)
+        with ESMTP id S1727183AbgIYUXf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:23:35 -0400
+Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD49C0613BD;
+        Fri, 25 Sep 2020 12:57:30 -0700 (PDT)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kLtlc-000278-AU; Fri, 25 Sep 2020 21:52:28 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kLtlc-000NwZ-4t; Fri, 25 Sep 2020 21:52:28 +0200
+Subject: Re: [PATCH bpf-next 4/6] bpf, libbpf: add bpf_tail_call_static helper
+ for bpf programs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <cover.1600967205.git.daniel@iogearbox.net>
+ <ae48d5b3c4b6b7ee1285c3167c3aa38ae3fdc093.1600967205.git.daniel@iogearbox.net>
+ <CAEf4BzZ4kFGeUgpJV9MgE1iJ6Db=E-TXoF73z3Rae5zgp5LLZA@mail.gmail.com>
+ <5f3850b2-7346-02d7-50f5-f63355115f35@iogearbox.net>
+ <ec815b89-09aa-9e33-29b4-19e369ccfa21@iogearbox.net>
+ <52cd972d-c183-5d14-b790-4d3a66b8fda2@iogearbox.net>
+ <CAEf4BzZmpLOCSp4wvXWHzmfZHq5R4S32M0_V5OvGA+QQGGG43w@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <bdddb94c-555c-3833-f82e-a53f83b1a77e@iogearbox.net>
+Date:   Fri, 25 Sep 2020 21:52:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAEf4BzZmpLOCSp4wvXWHzmfZHq5R4S32M0_V5OvGA+QQGGG43w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25938/Fri Sep 25 15:54:20 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 9/25/20 6:50 PM, Andrii Nakryiko wrote:
+> On Fri, Sep 25, 2020 at 8:52 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 9/25/20 5:42 PM, Daniel Borkmann wrote:
+>>> On 9/25/20 12:17 AM, Daniel Borkmann wrote:
+>>>> On 9/24/20 10:53 PM, Andrii Nakryiko wrote:
+>>>>> On Thu, Sep 24, 2020 at 11:22 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>>>
+>>>>>> Port of tail_call_static() helper function from Cilium's BPF code base [0]
+>>>>>> to libbpf, so others can easily consume it as well. We've been using this
+>>>>>> in production code for some time now. The main idea is that we guarantee
+>>>>>> that the kernel's BPF infrastructure and JIT (here: x86_64) can patch the
+>>>>>> JITed BPF insns with direct jumps instead of having to fall back to using
+>>>>>> expensive retpolines. By using inline asm, we guarantee that the compiler
+>>>>>> won't merge the call from different paths with potentially different
+>>>>>> content of r2/r3.
+>>>>>>
+>>>>>> We're also using __throw_build_bug() macro in different places as a neat
+>>>>>> trick to trigger compilation errors when compiler does not remove code at
+>>>>>> compilation time. This works for the BPF backend as it does not implement
+>>>>>> the __builtin_trap().
+>>>>>>
+>>>>>>     [0] https://github.com/cilium/cilium/commit/f5537c26020d5297b70936c6b7d03a1e412a1035
+>>>>>>
+>>>>>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>>>>>> ---
+>>>>>>    tools/lib/bpf/bpf_helpers.h | 32 ++++++++++++++++++++++++++++++++
+>>>>>>    1 file changed, 32 insertions(+)
+>>>>>>
+>>>>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+>>>>>> index 1106777df00b..18b75a4c82e6 100644
+>>>>>> --- a/tools/lib/bpf/bpf_helpers.h
+>>>>>> +++ b/tools/lib/bpf/bpf_helpers.h
+>>>>>> @@ -53,6 +53,38 @@
+>>>>>>           })
+>>>>>>    #endif
+>>>>>>
+>>>>>> +/*
+>>>>>> + * Misc useful helper macros
+>>>>>> + */
+>>>>>> +#ifndef __throw_build_bug
+>>>>>> +# define __throw_build_bug()   __builtin_trap()
+>>>>>> +#endif
+>>>>>
+>>>>> this will become part of libbpf stable API, do we want/need to expose
+>>>>> it? If we want to expose it, then we should probably provide a better
+>>>>> description.
+>>>>>
+>>>>> But also curious, how is it better than _Static_assert() (see
+>>>>> test_cls_redirect.c), which also allows to provide a better error
+>>>>> message?
+>>>>
+>>>> Need to get back to you whether that has same semantics. We use the __throw_build_bug()
+>>>> also in __bpf_memzero() and friends [0] as a way to trigger a hard build bug if we hit
+>>>> a default switch-case [0], so we detect unsupported sizes which are not covered by the
+>>>> implementation yet. If _Static_assert (0, "foo") does the trick, we could also use that;
+>>>> will check with our code base.
+>>>
+>>> So _Static_assert() won't work here, for example consider:
+>>>
+>>>     # cat f1.c
+>>>     int main(void)
+>>>     {
+>>>       if (0)
+>>>           _Static_assert(0, "foo");
+>>>       return 0;
+>>>     }
+>>>     # clang -target bpf -Wall -O2 -c f1.c -o f1.o
+>>>     f1.c:4:3: error: expected expression
+>>>                   _Static_assert(0, "foo");
+>>>                   ^
+>>>     1 error generated.
+>>
+>> .. aaand it looks like I need some more coffee. ;-) But result is the same after all:
+>>
+>>     # clang -target bpf -Wall -O2 -c f1.c -o f1.o
+>>     f1.c:4:3: error: static_assert failed "foo"
+>>                   _Static_assert(0, "foo");
+>>                   ^              ~
+>>     1 error generated.
+>>
+>>     # cat f1.c
+>>     int main(void)
+>>     {
+>>          if (0) {
+>>                  _Static_assert(0, "foo");
+>>          }
+>>          return 0;
+>>     }
+> 
+> You need still more :-P. For you use case it will look like this:
+> 
+> $ cat test-bla.c
+> int bar(int x) {
+>         _Static_assert(!__builtin_constant_p(x), "not a constant!");
+>         return x;
+> }
+> 
+> int foo() {
+>          bar(123);
+>          return 0;
+> }
+> $ clang -target bpf -O2 -c test-bla.c -o test-bla.o
+> $ echo $?
+> 0
 
+Right, but that won't work for example for the use case to detect switch cases which fall
+into default case as mentioned with the mem* optimizations earlier in this thread.
 
-> On Sep 25, 2020, at 12:42 PM, Kees Cook <keescook@chromium.org> wrote:
->=20
-> =EF=BB=BFOn Fri, Sep 25, 2020 at 11:45:05AM -0500, YiFei Zhu wrote:
->> On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote=
-:
->>>> Why do the prepare here instead of during attach? (And note that it
->>>> should not be written to fail.)
->>>=20
->>> Right.
->>=20
->> During attach a spinlock (current->sighand->siglock) is held. Do we
->> really want to put the emulator in the "atomic section"?
->=20
-> It's a good point, but I had some other ideas around it that lead to me
-> a different conclusion. Here's what I've got in my head:
->=20
-> I don't view filter attach (nor the siglock) as fastpath: the lock is
-> rarely contested and the "long time" will only be during filter attach.
->=20
-> When performing filter emulation, all the syscalls that are already
-> marked as "must run filter" on the previous filter can be skipped for
-> the new filter, since it cannot change the outcome, which makes the
-> emulation step faster.
->=20
-> The previous filter's bitmap isn't "stable" until siglock is held.
->=20
-> If we do the emulation step before siglock, we have to always do full
-> evaluation of all syscalls, and then merge the bitmap during attach.
-> That means all filters ever attached will take maximal time to perform
-> emulation.
->=20
-> I prefer the idea of the emulation step taking advantage of the bitmap
-> optimization, since the kernel spends less time doing work over the life
-> of the process tree. It's certainly marginal, but it also lets all the
-> bitmap manipulation stay in one place (as opposed to being split between
-> "prepare" and "attach").
->=20
-> What do you think?
->=20
->=20
+> But in general to ensure unreachable code it's probably useful anyway
+> to have this. How about calling it __bpf_build_error() or maybe even
+> __bpf_unreachable()?
 
-I=E2=80=99m wondering if we should be much much lazier. We could potentially=
- wait until someone actually tries to do a given syscall before we try to ev=
-aluate whether the result is fixed.=
+I think the __bpf_unreachable() sounds best to me, will use that.
+
+>>> In order for it to work as required form the use-case, the _Static_assert() must not trigger
+>>> here given the path is unreachable and will be optimized away. I'll add a comment to the
+>>> __throw_build_bug() helper. Given libbpf we should probably also prefix with bpf_. If you see
+>>> a better name that would fit, pls let me know.
+>>>
+>>>>     [0] https://github.com/cilium/cilium/blob/master/bpf/include/bpf/builtins.h
+>>> Thanks,
+>>> Daniel
+>>
+
