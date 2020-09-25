@@ -2,140 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72F82782C2
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 10:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CB22783EC
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 11:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727135AbgIYIaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Sep 2020 04:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgIYIaf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:30:35 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA8AC0613D3
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 01:30:35 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id g96so1532918otb.12
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 01:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mWmwa9JC5bZp7G/kgbECrSTfUQDJvz8S5GELdlzNqG8=;
-        b=SJTY7cKFjFnDstEGRA7+1nutbYzdN/53kOGHbt071fqg1h+zBsA82DVT/z8GcqzEqi
-         ZcQBRb9IYMgTvuO6oIZkHJYd0SpNpNCfsp3R8JZmZ6mhSuKKE8zpcDE7JjyFE3EvlK27
-         RMtLnjnGb/lIAILaz2w/VPROgPHqg4RZjKOs0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mWmwa9JC5bZp7G/kgbECrSTfUQDJvz8S5GELdlzNqG8=;
-        b=FbD0Jf8ToOlR1IoMCyOzn/K/O3ygWJEQ+Wd/S/xyUnv+aiEcerwPIs9nkf/+OURUgt
-         aTVN2l5/PYDr8rSlsQa4PwhRFhjzjGDuOj0+tinB9wz73sdcDXBw2YXFn1MUrUyiR4ac
-         KHL0b8BzAWi+n9SU+nNe7+FEP8Lfy/WZhdnXL0oa+gw/mfJQhv+TgXFFsaNpJgdAQ41K
-         UgVK34KTRqP4dM/h9NoqMnYdvf2ApJObAh9pQBgyo9ZzlcUAf+v771XMqQUhvsF/Vy7H
-         dqCojY/iPlXkNKDe2WEaSLzwg02Lwlaw1Vf71cXwXVWx/djUa3B7Kqe/S1qzrfO8VE5O
-         +QZw==
-X-Gm-Message-State: AOAM533uBsyb7Oh3u9zFQR3GPj+4jGmEZwVIyU571xv4lHI3EfhlWH8x
-        4SnKbFSNhA1Dw/AGvx9eZ3C+0F3biWSPERE+gPWrrQ==
-X-Google-Smtp-Source: ABdhPJzWLv5w/+dellM+oA+SDTjFHm9ZmoIHrJ2ZWkj52Azr8kuBpholAt9KovcrBTTVeNHAq2N88FPPQBqPw9tW1m4=
-X-Received: by 2002:a05:6830:12c7:: with SMTP id a7mr2238981otq.334.1601022634761;
- Fri, 25 Sep 2020 01:30:34 -0700 (PDT)
+        id S1727426AbgIYJ0c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 05:26:32 -0400
+Received: from www62.your-server.de ([213.133.104.62]:42176 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgIYJ0c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:26:32 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kLjzp-0002nV-Mh; Fri, 25 Sep 2020 11:26:29 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kLjzp-0003NT-E8; Fri, 25 Sep 2020 11:26:29 +0200
+Subject: Re: [PATCH bpf-next 2/6] bpf, net: rework cookie generator as per-cpu
+ one
+To:     Eric Dumazet <eric.dumazet@gmail.com>, ast@kernel.org
+Cc:     john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <cover.1600967205.git.daniel@iogearbox.net>
+ <d4150caecdbef4205178753772e3bc301e908355.1600967205.git.daniel@iogearbox.net>
+ <e854149f-f3a6-a736-9d33-08b2f60eb3a2@gmail.com>
+ <dc5dd027-256d-598a-2f89-a45bb30208f8@iogearbox.net>
+ <b1d5d93a-3846-ae35-7ea6-4bc31e98ef30@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <af3e9029-ea96-41f2-5104-e600fd66c395@iogearbox.net>
+Date:   Fri, 25 Sep 2020 11:26:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20200925000337.3853598-1-kafai@fb.com> <20200925000421.3857616-1-kafai@fb.com>
-In-Reply-To: <20200925000421.3857616-1-kafai@fb.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 25 Sep 2020 09:30:23 +0100
-Message-ID: <CACAyw99gZoQFErqL73sD9rvY4OPK6fDyE7ED5U0wHE7TGe-8Ug@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 07/13] bpf: selftest: Add ref_tracking
- verifier test for bpf_skc casting
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b1d5d93a-3846-ae35-7ea6-4bc31e98ef30@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25937/Thu Sep 24 15:53:11 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 01:04, Martin KaFai Lau <kafai@fb.com> wrote:
->
-> The patch tests for:
-> 1. bpf_sk_release() can be called on a tcp_sock btf_id ptr.
->
-> 2. Ensure the tcp_sock btf_id pointer cannot be used
->    after bpf_sk_release().
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+On 9/25/20 9:49 AM, Eric Dumazet wrote:
+> On 9/25/20 12:03 AM, Daniel Borkmann wrote:
+>> On 9/24/20 8:58 PM, Eric Dumazet wrote:
+>>> On 9/24/20 8:21 PM, Daniel Borkmann wrote:
+>> [...]
+>>>> diff --git a/include/linux/cookie.h b/include/linux/cookie.h
+>>>> new file mode 100644
+>>>> index 000000000000..2488203dc004
+>>>> --- /dev/null
+>>>> +++ b/include/linux/cookie.h
+>>>> @@ -0,0 +1,41 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +#ifndef __LINUX_COOKIE_H
+>>>> +#define __LINUX_COOKIE_H
+>>>> +
+>>>> +#include <linux/atomic.h>
+>>>> +#include <linux/percpu.h>
+>>>> +
+>>>> +struct gen_cookie {
+>>>> +    u64 __percpu    *local_last;
+>>>> +    atomic64_t     shared_last ____cacheline_aligned_in_smp;
+>>>> +};
+>>>> +
+>>>> +#define COOKIE_LOCAL_BATCH    4096
+>>>> +
+>>>> +#define DEFINE_COOKIE(name)                    \
+>>>> +    static DEFINE_PER_CPU(u64, __##name);            \
+>>>> +    static struct gen_cookie name = {            \
+>>>> +        .local_last    = &__##name,            \
+>>>> +        .shared_last    = ATOMIC64_INIT(0),        \
+>>>> +    }
+>>>> +
+>>>> +static inline u64 gen_cookie_next(struct gen_cookie *gc)
+>>>> +{
+>>>> +    u64 *local_last = &get_cpu_var(*gc->local_last);
+>>>> +    u64 val = *local_last;
+>>>> +
+>>>> +    if (__is_defined(CONFIG_SMP) &&
+>>>> +        unlikely((val & (COOKIE_LOCAL_BATCH - 1)) == 0)) {
+>>>> +        s64 next = atomic64_add_return(COOKIE_LOCAL_BATCH,
+>>>> +                           &gc->shared_last);
+>>>> +        val = next - COOKIE_LOCAL_BATCH;
+>>>> +    }
+>>>> +    val++;
+>>>> +    if (unlikely(!val))
+>>>> +        val++;
+>>>> +    *local_last = val;
+>>>> +    put_cpu_var(local_last);
+>>>> +    return val;
+>>>
+>>> This is not interrupt safe.
+>>>
+>>> I think sock_gen_cookie() can be called from interrupt context.
+>>>
+>>> get_next_ino() is only called from process context, that is what I used get_cpu_var()
+>>> and put_cpu_var()
+>>
+>> Hmm, agree, good point. Need to experiment a bit more .. initial thinking
+>> potentially something like the below could do where we fall back to atomic
+>> counter iff we encounter nesting (which should be an extremely rare case
+>> normally).
+>>
+>> BPF progs where this can be called from are non-preemptible, so we could
+>> actually move the temp preempt_disable/enable() from get/put_cpu_var() into
+>> a wrapper func for slow path non-BPF users as well.
+>>
+>> static inline u64 gen_cookie_next(struct gen_cookie *gc)
+>> {
+>>          u64 val;
+> 
+> I presume you would use a single structure to hold level_nesting and local_last
+> in the same cache line.
+> 
+> struct pcpu_gen_cookie {
+>      int level_nesting;
+>      u64 local_last;
+> } __aligned(16);
 
-Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+Yes.
 
-> ---
->  .../selftests/bpf/verifier/ref_tracking.c     | 47 +++++++++++++++++++
->  1 file changed, 47 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/verifier/ref_tracking.c b/tools/testing/selftests/bpf/verifier/ref_tracking.c
-> index 056e0273bf12..006b5bd99c08 100644
-> --- a/tools/testing/selftests/bpf/verifier/ref_tracking.c
-> +++ b/tools/testing/selftests/bpf/verifier/ref_tracking.c
-> @@ -854,3 +854,50 @@
->         .errstr = "Unreleased reference",
->         .result = REJECT,
->  },
-> +{
-> +       "reference tracking: bpf_sk_release(btf_tcp_sock)",
-> +       .insns = {
-> +       BPF_SK_LOOKUP(sk_lookup_tcp),
-> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-> +       BPF_EXIT_INSN(),
-> +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-> +       BPF_EMIT_CALL(BPF_FUNC_skc_to_tcp_sock),
-> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 3),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
-> +       BPF_EMIT_CALL(BPF_FUNC_sk_release),
-> +       BPF_EXIT_INSN(),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-> +       BPF_EMIT_CALL(BPF_FUNC_sk_release),
-> +       BPF_EXIT_INSN(),
-> +       },
-> +       .prog_type = BPF_PROG_TYPE_SCHED_CLS,
-> +       .result = ACCEPT,
-> +       .result_unpriv = REJECT,
-> +       .errstr_unpriv = "unknown func",
-> +},
-> +{
-> +       "reference tracking: use ptr from bpf_skc_to_tcp_sock() after release",
-> +       .insns = {
-> +       BPF_SK_LOOKUP(sk_lookup_tcp),
-> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-> +       BPF_EXIT_INSN(),
-> +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-> +       BPF_EMIT_CALL(BPF_FUNC_skc_to_tcp_sock),
-> +       BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 3),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
-> +       BPF_EMIT_CALL(BPF_FUNC_sk_release),
-> +       BPF_EXIT_INSN(),
-> +       BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
-> +       BPF_EMIT_CALL(BPF_FUNC_sk_release),
-> +       BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_7, 0),
-> +       BPF_EXIT_INSN(),
-> +       },
-> +       .prog_type = BPF_PROG_TYPE_SCHED_CLS,
-> +       .result = REJECT,
-> +       .errstr = "invalid mem access",
-> +       .result_unpriv = REJECT,
-> +       .errstr_unpriv = "unknown func",
-> +},
-> --
-> 2.24.1
->
+>>          if (likely(this_cpu_inc_return(*gc->level_nesting) == 1)) {
+>>                  u64 *local_last = this_cpu_ptr(gc->local_last);
+>>
+>>                  val = *local_last;
+>>                  if (__is_defined(CONFIG_SMP) &&
+>>                      unlikely((val & (COOKIE_LOCAL_BATCH - 1)) == 0)) {
+>>                          s64 next = atomic64_add_return(COOKIE_LOCAL_BATCH,
+>>                                                         &gc->shared_last);
+>>                          val = next - COOKIE_LOCAL_BATCH;
+>>                  }
+>>                  val++;
+> 
+>>                  if (unlikely(!val))
+>>                          val++;
+> 
+> Note that we really expect this wrapping will never happen, with 64bit value.
+> (We had to take care of the wrapping in get_next_ino() as it was dealing with 32bit values)
 
+Agree, all local counters will start off at 0, but we inc right after the batch and
+thus never run into it anyway and neither via overflow. Will remove.
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>>                  *local_last = val;
+>>          } else {
+>>                  val = atomic64_add_return(COOKIE_LOCAL_BATCH,
+>>                                            &gc->shared_last);
+> 
+> Or val = atomic64_dec_return(&reverse_counter)
+> 
+> With reverse_counter initial value set to ATOMIC64_INIT(0) ?
+> 
+> This will start sending 'big cookies like 0xFFFFFFFFxxxxxxxx' to make sure applications
+> are not breaking with them, after few months of uptime.
+> 
+> This would also not consume COOKIE_LOCAL_BATCH units per value,
+> but this seems minor based on the available space.
 
-www.cloudflare.com
+Excellent idea, I like it given it doesn't waste COOKIE_LOCAL_BATCH space. Thanks for
+the feedback!
+
+>>          }
+>>          this_cpu_dec(*gc->level_nesting);
+>>          return val;
+>> }
+>>
+>> Thanks,
+>> Daniel
+
