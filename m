@@ -2,86 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC765277EBD
-	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 05:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1285E278010
+	for <lists+bpf@lfdr.de>; Fri, 25 Sep 2020 07:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgIYDzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Sep 2020 23:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S1727132AbgIYF4u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 01:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbgIYDzo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:55:44 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76D1C0613CE;
-        Thu, 24 Sep 2020 20:55:44 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id fa1so1181571pjb.0;
-        Thu, 24 Sep 2020 20:55:44 -0700 (PDT)
+        with ESMTP id S1726925AbgIYF4u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:56:50 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D06C0613CE
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 22:56:49 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id p9so1976314ejf.6
+        for <bpf@vger.kernel.org>; Thu, 24 Sep 2020 22:56:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UbFfxDhyHW98ecFS7ZgdggwhXbqrMDrJVZ5yrZgpOsU=;
-        b=Kq2/UmUpRtM0exsecIyh/b6wjvbZ0vdR5gPZak1XWVTGNDj09LyfqZ0FmbklwmHjYn
-         eVJtaCOkcVysYqce976CUXMusudAwXvom7Q5obBxseE1BnedSakPDZLlvjcRRt3PnCLZ
-         SyB7amsB1Cse1vXtcwBl7MKyPSd94uY/UBql8BSwYDqpv1N6cHfEDU/nZLwKKWFDsPmZ
-         PoHgKlzFg2F6nMhSwrcUmcFiRuE3JhZWRk3QUIYBVxUdAjgMScnWb8SEmKnpwrR7PIB5
-         yZY7NUQJpTvilkOik2CjLC7qdnEZSW/ws3p7FpxacrH7h0UtNuvGn2KHWHPM6bhdTspf
-         qtpw==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PHvJCnf/e3w+kWddJhhNAUVQMYCOoytl80Q0gn/kXVM=;
+        b=ShdjI09HEYlSizD4uVM0B2rxoJnN8U2bQb09Wy+Bt5b05y7VaybgV6048Ct9oMNFC0
+         5ZuNRFl1xvZT54kcWZm6nV7++CSa/aNWkwsaYltPyAOfaCPz1p9rS80d1afmgWjIiLfk
+         QByKHsiiFOXOgqaUReS6BxYLxrysJg3zJgNro=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UbFfxDhyHW98ecFS7ZgdggwhXbqrMDrJVZ5yrZgpOsU=;
-        b=mUbc7l6UUt58gDJqftYrpdumSEA1F1QCD381sXHSYUlmLM5cOgeeJdUtgZVI4Xtpmz
-         SorB9hZl6T+hhzkr4d+Rv3hUsUoTIOOpj2MmK552gF2P4ej5bu32yiuZ7vh6/rLOrINh
-         uBeOOJcp170kuIQTKmmOoFO+g1Cfg4jUQdvAzNCe4soL6LBM45qQK5Rj1NxdDb3m7t8Q
-         +evZSM+XYWKSUp/TWw8j7lQakLnTio11Ow6LMBUiwJUPoaB2dqorx2aM/VkqXGptzRri
-         mYLCAyOz9Hvtb7QKzITRqExgNTK3DR+46DYeJWZZEQAAOgUBrU10u5cLdycQ8mzoziY1
-         fb5g==
-X-Gm-Message-State: AOAM531dKgLYTQLrOMDRbzWY64t3IVuQG4KiAe8cszYpTaHRmxbye5f4
-        x2nrEhLGFiamHsf9hIcUTyM=
-X-Google-Smtp-Source: ABdhPJx4BEKtPMkvvggfCwcRi7G012CbUW5PAfHlKcN80VNN8ix0H1v3Z3OYIi/t0LFgoF08COP9pA==
-X-Received: by 2002:a17:90b:317:: with SMTP id ay23mr820390pjb.68.1601006144147;
-        Thu, 24 Sep 2020 20:55:44 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:396c])
-        by smtp.gmail.com with ESMTPSA id gn24sm619524pjb.8.2020.09.24.20.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 20:55:43 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 20:55:41 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com, Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH bpf-next 7/9] libbpf: add BTF writing APIs
-Message-ID: <20200925035541.2hjmie5po4lypbgk@ast-mbp.dhcp.thefacebook.com>
-References: <20200923155436.2117661-1-andriin@fb.com>
- <20200923155436.2117661-8-andriin@fb.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PHvJCnf/e3w+kWddJhhNAUVQMYCOoytl80Q0gn/kXVM=;
+        b=F/NpRd6uwGEJtAbD6dA+DZcenefnyiNsWySjyeMs0P/c4NdNctgsBOMMzEXgGPB0Q8
+         OHQDrB2DqCXxGMsb8DlZVg8P033a1W7jwtWljM0V2NORqL5hct/peEhS3czH6tgIHayu
+         54HTbvfOfslUOBN3M8sUe7SkEpGPBiMzD0BmJswgeAIvY89imNM5y+SN8Az5olaz0JHX
+         UUEgK7LgnkLzA73UJeY44Th/C+/r1HCtVvQ+SKTPp9kex7Mck6hMujCFdhwo/oB+iHs0
+         0N6mqEG9u+H2lpgv/l4Znbb1MoJFNLQ7Br9gTJUOrDTbJ0IwGLciaycxW/uVd75TuEQY
+         l5Nw==
+X-Gm-Message-State: AOAM530IoNd5I9J51WpQ8d7/rSgsJ/Yf9MpU/W24R/VAABV6Q7MI90pA
+        MxJP+Mw49MSD3YKOjLGCUFE7og==
+X-Google-Smtp-Source: ABdhPJzIM58jxMOmE2zPrllWl3bqZQksl9iktnNDkyFfkSPoqVYRt7Y7NFlYBnC9G6KhTmZPTNAT/w==
+X-Received: by 2002:a17:906:841a:: with SMTP id n26mr1099782ejx.213.1601013408160;
+        Thu, 24 Sep 2020 22:56:48 -0700 (PDT)
+Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
+        by smtp.gmail.com with ESMTPSA id s30sm1055003edc.8.2020.09.24.22.56.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 22:56:47 -0700 (PDT)
+Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
+To:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        kernel list <linux-kernel@vger.kernel.org>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
+ <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <27b4ef86-fee5-fc35-993b-3352ce504c73@rasmusvillemoes.dk>
+Date:   Fri, 25 Sep 2020 07:56:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923155436.2117661-8-andriin@fb.com>
+In-Reply-To: <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 08:54:34AM -0700, Andrii Nakryiko wrote:
-> Add APIs for appending new BTF types at the end of BTF object.
+On 24/09/2020 15.58, YiFei Zhu wrote:
+> On Thu, Sep 24, 2020 at 8:46 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>> But one thing I'm wondering about and I haven't seen addressed anywhere:
+>> Why build the bitmap on the kernel side (with all the complexity of
+>> having to emulate the filter for all syscalls)? Why can't userspace just
+>> hand the kernel "here's a new filter: the syscalls in this bitmap are
+>> always allowed noquestionsasked, for the rest, run this bpf". Sure, that
+>> might require a new syscall or extending seccomp(2) somewhat, but isn't
+>> that a _lot_ simpler? It would probably also mean that the bpf we do get
+>> handed is a lot smaller. Userspace might need to pass a couple of
+>> bitmaps, one for each relevant arch, but you get the overall idea.
 > 
-> Each BTF kind has either one API of the form btf__append_<kind>(). For types
-> that have variable amount of additional items (struct/union, enum, func_proto,
-> datasec), additional API is provided to emit each such item. E.g., for
-> emitting a struct, one would use the following sequence of API calls:
+> Perhaps. The thing is, the current API expects any filter attaches to
+> be "additive". If a new filter gets attached that says "disallow read"
+> then no matter whatever has been attached already, "read" shall not be
+> allowed at the next syscall, bypassing all previous allowlist bitmaps
+> (so you need to emulate the bpf anyways here?). We should also not
+> have a API that could let anyone escape the secomp jail. Say "prctl"
+> is permitted but "read" is not permitted, one must not be allowed to
+> attach a bitmap so that "read" now appears in the allowlist. The only
+> way this could potentially work is to attach a BPF filter and a bitmap
+> at the same time in the same syscall, which might mean API redesign?
+
+Yes, the man page would read something like
+
+       SECCOMP_SET_MODE_FILTER_BITMAP
+              The system calls allowed are defined by a pointer to a
+Berkeley Packet Filter (BPF) passed  via  args.
+              This argument is a pointer to a struct sock_fprog_bitmap;
+
+with that struct containing whatever information/extra pointers needed
+for passing the bitmap(s) in addition to the bpf prog.
+
+And SECCOMP_SET_MODE_FILTER would internally just be updated to work
+as-if all-zero allow-bitmaps were passed along. The internal kernel
+bitmap would just be the and of the bitmaps in the filter stack.
+
+Sure, it's UAPI, so would certainly need more careful thought on details
+of just how the arg struct looks like etc. etc., but I was wondering why
+it hadn't been discussed at all.
+
+>> I'm also a bit worried about the performance of doing that emulation;
+>> that's constant extra overhead for, say, launching a docker container.
 > 
-> btf__append_struct(...);
-> btf__append_field(...);
-> ...
-> btf__append_field(...);
+> IMO, launching a docker container is so expensive this should be negligible.
 
-I've just started looking through the diffs. The first thing that struck me
-is the name :) Why 'append' instead of 'add' ? The latter is shorter.
+Regardless, I'd like to see some numbers, certainly for the "how much
+faster does a getpid() or read() or any of the other syscalls that
+nobody disallows" get, but also "what's the cost of doing that emulation
+at seccomp(2) time".
 
-Also how would you add anon struct that is within another struct ?
-The anon one would have to be added first and then added as a field?
-Feels a bit odd that struct/union building doesn't have 'finish' method,
-but I guess it can work.
+Rasmus
