@@ -2,385 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8F62795E9
-	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 03:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1BC2795F3
+	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 03:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729623AbgIZBPY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Sep 2020 21:15:24 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19322 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729969AbgIZBPY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 25 Sep 2020 21:15:24 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08Q1FI6h017598
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 18:15:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=WpeBaO2TQjXVrOY09tns9QISpIUGmmqBMKrZpDEj08U=;
- b=Qa5SjJq+7y7fIHgZmCOLQneKlqY3Ekks2V+jVR089fZKaA0fNODykA47Foos/bttfiI9
- aOFxVkwmK/L0ZDcRQq6ZJNMeMQE0S1XdHCVbG9AQg+X+LW8GB9G1s6eHfvsITu0hRC08
- yhou2INrddG93aQ/SIoz/Ct56qmf8s/Nu/M= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 33s5ygdrcy-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 18:15:21 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 25 Sep 2020 18:14:44 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 506212EC75B0; Fri, 25 Sep 2020 18:14:43 -0700 (PDT)
-From:   Andrii Nakryiko <andriin@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH v2 bpf-next 9/9] selftests/bpf: test BTF writing APIs
-Date:   Fri, 25 Sep 2020 18:13:57 -0700
-Message-ID: <20200926011357.2366158-10-andriin@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200926011357.2366158-1-andriin@fb.com>
-References: <20200926011357.2366158-1-andriin@fb.com>
+        id S1729613AbgIZBXn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 21:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729057AbgIZBXn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Sep 2020 21:23:43 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D40C0613CE;
+        Fri, 25 Sep 2020 18:23:42 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t7so355940pjd.3;
+        Fri, 25 Sep 2020 18:23:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gjsiX96TOZRrX+VWB5R73a/e4ejGDQtJ92tP2rTnjOs=;
+        b=Imh+a54pvSI9sfrjTL6vFP9BP8aCNTez3j81G7yDGDS59MGe4mxIsT5JeEXn51ynmf
+         wGIDMu7h37nNhagccGZt84pZgsS7AIKEs40qYkX+MHQvkVfOZnoakZdz9M8u4vdlGb5P
+         8yQBq6S01sczjE5nT0niD5iVgLXYHTUBp939DUYIPIZ879aB1GcXRZUeBdlAUbyC7Cwv
+         Ruy2U3hxVwfr9jds0Vmo66h6zEqsxKqrQaYwuXyW6bIR73SwpKlLTyTsnpk6LVgFZAn+
+         Idqwu5WQx3/qfn2BlC4gVXLpxxMbuXM3P/UHb4FqM95OyYoD0Mhuvp9ibx5dstPe7H1G
+         +hUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gjsiX96TOZRrX+VWB5R73a/e4ejGDQtJ92tP2rTnjOs=;
+        b=K0yYy9z5ixroqP9VKrjyubskWP17lt/iDJ58S7j3oclpeBVU/rMr2iP5p2qNFcYgxB
+         e+vvURV2S55QdmLld5vsHq1ft2tuS/vw1Nkoe7VSSbZz0EP5r1ar1H99g5/xbjyPV75m
+         3WHIVrSkFrY1w2USVydmTbwGH5Rs5itpKvkw4gx7OcUzcYxnOM5gxuXBiv+kgyUsXHLK
+         QRPtthwJAnRWhhoS7LjHsxSR3rvRHxpL6/qc3Zjf5+YHnEpY7pPVxCSvHZT6KHUTO+1I
+         /J907avbe7XEQ98NgD64wxKYnkYhwG4e6+ROhBORhVqO6cnmt2EmpZQ/piSfDkYs00v/
+         ajzA==
+X-Gm-Message-State: AOAM533IvuITJ8YWwmzgZzirtVeXkIDi7QNf7DkyVEB0tEEXF2lHgtOU
+        KQKvQ++FzKu269bliHhSr/KKNUYLd+csyOiHoeM=
+X-Google-Smtp-Source: ABdhPJzOKTBS/qfK2ZK7IckkNEZ2COxbBRpCd5qZvLpE47fez0OjnTD6tKlcc+G9j0e6gphevIVvtwX2kJMYareLyfQ=
+X-Received: by 2002:a17:902:778e:b029:d2:8046:efe2 with SMTP id
+ o14-20020a170902778eb02900d28046efe2mr172074pll.44.1601083422286; Fri, 25 Sep
+ 2020 18:23:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-25_19:2020-09-24,2020-09-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=25
- spamscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009260006
-X-FB-Internal: deliver
+References: <202009251223.8E46C831E2@keescook> <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
+ <202009251332.24CE0C58@keescook> <CALCETrU_UpcLhXSG84SA6QkAYe8xXn4AXPKeud-=Adp57u54Mg@mail.gmail.com>
+In-Reply-To: <CALCETrU_UpcLhXSG84SA6QkAYe8xXn4AXPKeud-=Adp57u54Mg@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Fri, 25 Sep 2020 20:23:30 -0500
+Message-ID: <CABqSeASR0bQ7Y302SkZ639NM=roSVRmd3ROGm0YDEFCTxxd63w@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests for BTF writer APIs.
+On Fri, Sep 25, 2020 at 4:07 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> We'd need at least three states per syscall: unknown, always-allow,
+> and need-to-run-filter.
+>
+> The downsides are less determinism and a bit of an uglier
+> implementation.  The upside is that we don't need to loop over all
+> syscalls at load -- instead the time that each operation takes is
+> independent of the total number of syscalls on the system.  And we can
+> entirely avoid, say, evaluating the x32 case until the task tries an
+> x32 syscall.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/btf.c                           |   8 +-
- .../selftests/bpf/prog_tests/btf_write.c      | 278 ++++++++++++++++++
- 2 files changed, 282 insertions(+), 4 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_write.c
+I was really afraid of multiple tasks writing to the bitmaps at once,
+hence I used bitmap-per-task. Now I think about it, if this stays
+lockless, the worst thing that can happen is that a write undo a bit
+set by another task. In this case, if the "known" bit is cleared then
+the worst would be the emulation is run many times. But if the "always
+allow" is cleared but not "known" bit then we have an issue: the
+syscall will always be executed in BPF.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 2d0b1e12f50e..c25f49fad5a6 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -31,10 +31,10 @@ struct btf {
- 	__u32 raw_size;
-=20
- 	/*
--	 * When BTF is loaded from ELF or raw memory it is stored
--	 * in contiguous memory block, pointed to by raw_data pointer, and
--	 * hdr, types_data, and strs_data point inside that memory region to
--	 * respective parts of BTF representation:
-+	 * When BTF is loaded from an ELF or raw memory it is stored
-+	 * in a contiguous memory block. The hdr, type_data, and, strs_data
-+	 * point inside that memory region to their respective parts of BTF
-+	 * representation:
- 	 *
- 	 * +--------------------------------+
- 	 * |  Header  |  Types  |  Strings  |
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_write.c b/tools/t=
-esting/selftests/bpf/prog_tests/btf_write.c
-new file mode 100644
-index 000000000000..88dce2cfa79b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_write.c
-@@ -0,0 +1,278 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+#define ASSERT_EQ(actual, expected, name) ({				\
-+	typeof(actual) ___act =3D (actual);				\
-+	typeof(expected) ___exp =3D (expected);				\
-+	bool ___ok =3D ___act =3D=3D ___exp;					\
-+	CHECK(!___ok, (name),						\
-+	      "unexpected %s: actual %lld !=3D expected %lld\n",		\
-+	      (name), (long long)(___act), (long long)(___exp));	\
-+	___ok;								\
-+})
-+
-+#define ASSERT_STREQ(actual, expected, name) ({				\
-+	const char *___act =3D actual;					\
-+	const char *___exp =3D expected;					\
-+	bool ___ok =3D strcmp(___act, ___exp) =3D=3D 0;			\
-+	CHECK(!___ok, (name),						\
-+	      "unexpected %s: actual '%s' !=3D expected '%s'\n",		\
-+	      (name), ___act, ___exp);					\
-+	___ok;								\
-+})
-+
-+#define ASSERT_OK(res, name) ({						\
-+	long long ___res =3D (res);					\
-+	bool ___ok =3D ___res =3D=3D 0;					\
-+	CHECK(!___ok, (name), "unexpected error: %lld\n", ___res);	\
-+	___ok;								\
-+})
-+
-+#define ASSERT_ERR(res, name) ({					\
-+	long long ___res =3D (res);					\
-+	bool ___ok =3D ___res < 0;					\
-+	CHECK(!___ok, (name), "unexpected success: %lld\n", ___res);	\
-+	___ok;								\
-+})
-+
-+static int duration =3D 0;
-+
-+void test_btf_write() {
-+	const struct btf_var_secinfo *vi;
-+	const struct btf_type *t;
-+	const struct btf_member *m;
-+	const struct btf_enum *v;
-+	const struct btf_param *p;
-+	struct btf *btf;
-+	int id, err, str_off;
-+
-+	btf =3D btf__new_empty();
-+	if (CHECK(IS_ERR(btf), "new_empty", "failed: %ld\n", PTR_ERR(btf)))
-+		return;
-+
-+	str_off =3D btf__find_str(btf, "int");
-+	ASSERT_EQ(str_off, -ENOENT, "int_str_missing_off");
-+
-+	str_off =3D btf__add_str(btf, "int");
-+	ASSERT_EQ(str_off, 1, "int_str_off");
-+
-+	str_off =3D btf__find_str(btf, "int");
-+	ASSERT_EQ(str_off, 1, "int_str_found_off");
-+
-+	/* BTF_KIND_INT */
-+	id =3D btf__add_int(btf, "int", 4,  BTF_INT_SIGNED);
-+	ASSERT_EQ(id, 1, "int_id");
-+
-+	t =3D btf__type_by_id(btf, 1);
-+	/* should re-use previously added "int" string */
-+	ASSERT_EQ(t->name_off, str_off, "int_name_off");
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "int", "int_name");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_INT, "int_kind");
-+	ASSERT_EQ(t->size, 4, "int_sz");
-+	ASSERT_EQ(btf_int_encoding(t), BTF_INT_SIGNED, "int_enc");
-+	ASSERT_EQ(btf_int_bits(t), 32, "int_bits");
-+
-+	/* invalid int size */
-+	id =3D btf__add_int(btf, "bad sz int", 7, 0);
-+	ASSERT_ERR(id, "int_bad_sz");
-+	/* invalid encoding */
-+	id =3D btf__add_int(btf, "bad enc int", 4, 123);
-+	ASSERT_ERR(id, "int_bad_enc");
-+	/* NULL name */
-+	id =3D btf__add_int(btf, NULL, 4, 0);
-+	ASSERT_ERR(id, "int_bad_null_name");
-+	/* empty name */
-+	id =3D btf__add_int(btf, "", 4, 0);
-+	ASSERT_ERR(id, "int_bad_empty_name");
-+
-+	/* PTR/CONST/VOLATILE/RESTRICT */
-+	id =3D btf__add_ptr(btf, 1);
-+	ASSERT_EQ(id, 2, "ptr_id");
-+	t =3D btf__type_by_id(btf, 2);
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_PTR, "ptr_kind");
-+	ASSERT_EQ(t->type, 1, "ptr_type");
-+
-+	id =3D btf__add_const(btf, 5); /* points forward to restrict */
-+	ASSERT_EQ(id, 3, "const_id");
-+	t =3D btf__type_by_id(btf, 3);
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_CONST, "const_kind");
-+	ASSERT_EQ(t->type, 5, "const_type");
-+
-+	id =3D btf__add_volatile(btf, 3);
-+	ASSERT_EQ(id, 4, "volatile_id");
-+	t =3D btf__type_by_id(btf, 4);
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_VOLATILE, "volatile_kind");
-+	ASSERT_EQ(t->type, 3, "volatile_type");
-+
-+	id =3D btf__add_restrict(btf, 4);
-+	ASSERT_EQ(id, 5, "restrict_id");
-+	t =3D btf__type_by_id(btf, 5);
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_RESTRICT, "restrict_kind");
-+	ASSERT_EQ(t->type, 4, "restrict_type");
-+
-+	/* ARRAY */
-+	id =3D btf__add_array(btf, 1, 2, 10); /* int *[10] */
-+	ASSERT_EQ(id, 6, "array_id");
-+	t =3D btf__type_by_id(btf, 6);
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_ARRAY, "array_kind");
-+	ASSERT_EQ(btf_array(t)->index_type, 1, "array_index_type");
-+	ASSERT_EQ(btf_array(t)->type, 2, "array_elem_type");
-+	ASSERT_EQ(btf_array(t)->nelems, 10, "array_nelems");
-+
-+	/* STRUCT */
-+	err =3D btf__add_field(btf, "field", 1, 0, 0);
-+	ASSERT_ERR(err, "no_struct_field");
-+	id =3D btf__add_struct(btf, "s1", 8);
-+	ASSERT_EQ(id, 7, "struct_id");
-+	err =3D btf__add_field(btf, "f1", 1, 0, 0);
-+	ASSERT_OK(err, "f1_res");
-+	err =3D btf__add_field(btf, "f2", 1, 32, 16);
-+	ASSERT_OK(err, "f2_res");
-+
-+	t =3D btf__type_by_id(btf, 7);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "s1", "struct_name")=
-;
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_STRUCT, "struct_kind");
-+	ASSERT_EQ(btf_vlen(t), 2, "struct_vlen");
-+	ASSERT_EQ(btf_kflag(t), true, "struct_kflag");
-+	ASSERT_EQ(t->size, 8, "struct_sz");
-+	m =3D btf_members(t) + 0;
-+	ASSERT_STREQ(btf__str_by_offset(btf, m->name_off), "f1", "f1_name");
-+	ASSERT_EQ(m->type, 1, "f1_type");
-+	ASSERT_EQ(btf_member_bit_offset(t, 0), 0, "f1_bit_off");
-+	ASSERT_EQ(btf_member_bitfield_size(t, 0), 0, "f1_bit_sz");
-+	m =3D btf_members(t) + 1;
-+	ASSERT_STREQ(btf__str_by_offset(btf, m->name_off), "f2", "f2_name");
-+	ASSERT_EQ(m->type, 1, "f2_type");
-+	ASSERT_EQ(btf_member_bit_offset(t, 1), 32, "f2_bit_off");
-+	ASSERT_EQ(btf_member_bitfield_size(t, 1), 16, "f2_bit_sz");
-+
-+	/* UNION */
-+	id =3D btf__add_union(btf, "u1", 8);
-+	ASSERT_EQ(id, 8, "union_id");
-+
-+	/* invalid, non-zero offset */
-+	err =3D btf__add_field(btf, "field", 1, 1, 0);
-+	ASSERT_ERR(err, "no_struct_field");
-+
-+	err =3D btf__add_field(btf, "f1", 1, 0, 16);
-+	ASSERT_OK(err, "f1_res");
-+
-+	t =3D btf__type_by_id(btf, 8);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "u1", "union_name");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_UNION, "union_kind");
-+	ASSERT_EQ(btf_vlen(t), 1, "union_vlen");
-+	ASSERT_EQ(btf_kflag(t), true, "union_kflag");
-+	ASSERT_EQ(t->size, 8, "union_sz");
-+	m =3D btf_members(t) + 0;
-+	ASSERT_STREQ(btf__str_by_offset(btf, m->name_off), "f1", "f1_name");
-+	ASSERT_EQ(m->type, 1, "f1_type");
-+	ASSERT_EQ(btf_member_bit_offset(t, 0), 0, "f1_bit_off");
-+	ASSERT_EQ(btf_member_bitfield_size(t, 0), 16, "f1_bit_sz");
-+
-+	/* ENUM */
-+	id =3D btf__add_enum(btf, "e1", 4);
-+	ASSERT_EQ(id, 9, "enum_id");
-+	err =3D btf__add_enum_value(btf, "v1", 1);
-+	ASSERT_OK(err, "v1_res");
-+	err =3D btf__add_enum_value(btf, "v2", 2);
-+	ASSERT_OK(err, "v2_res");
-+
-+	t =3D btf__type_by_id(btf, 9);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "e1", "enum_name");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_ENUM, "enum_kind");
-+	ASSERT_EQ(btf_vlen(t), 2, "enum_vlen");
-+	ASSERT_EQ(t->size, 4, "enum_sz");
-+	v =3D btf_enum(t) + 0;
-+	ASSERT_STREQ(btf__str_by_offset(btf, v->name_off), "v1", "v1_name");
-+	ASSERT_EQ(v->val, 1, "v1_val");
-+	v =3D btf_enum(t) + 1;
-+	ASSERT_STREQ(btf__str_by_offset(btf, v->name_off), "v2", "v2_name");
-+	ASSERT_EQ(v->val, 2, "v2_val");
-+
-+	/* FWDs */
-+	id =3D btf__add_fwd(btf, "struct_fwd", BTF_FWD_STRUCT);
-+	ASSERT_EQ(id, 10, "struct_fwd_id");
-+	t =3D btf__type_by_id(btf, 10);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "struct_fwd", "fwd_n=
-ame");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_FWD, "fwd_kind");
-+	ASSERT_EQ(btf_kflag(t), 0, "fwd_kflag");
-+
-+	id =3D btf__add_fwd(btf, "union_fwd", BTF_FWD_UNION);
-+	ASSERT_EQ(id, 11, "union_fwd_id");
-+	t =3D btf__type_by_id(btf, 11);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "union_fwd", "fwd_na=
-me");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_FWD, "fwd_kind");
-+	ASSERT_EQ(btf_kflag(t), 1, "fwd_kflag");
-+
-+	id =3D btf__add_fwd(btf, "enum_fwd", BTF_FWD_ENUM);
-+	ASSERT_EQ(id, 12, "enum_fwd_id");
-+	t =3D btf__type_by_id(btf, 12);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "enum_fwd", "fwd_nam=
-e");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_ENUM, "enum_fwd_kind");
-+	ASSERT_EQ(btf_vlen(t), 0, "enum_fwd_kind");
-+	ASSERT_EQ(t->size, 4, "enum_fwd_sz");
-+
-+	/* TYPEDEF */
-+	id =3D btf__add_typedef(btf, "typedef1", 1);
-+	ASSERT_EQ(id, 13, "typedef_fwd_id");
-+	t =3D btf__type_by_id(btf, 13);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "typedef1", "typedef=
-_name");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_TYPEDEF, "typedef_kind");
-+	ASSERT_EQ(t->type, 1, "typedef_type");
-+
-+	/* FUNC & FUNC_PROTO */
-+	id =3D btf__add_func(btf, "func1", BTF_FUNC_GLOBAL, 15);
-+	ASSERT_EQ(id, 14, "func_id");
-+	t =3D btf__type_by_id(btf, 14);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "func1", "func_name"=
-);
-+	ASSERT_EQ(t->type, 15, "func_type");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_FUNC, "func_kind");
-+	ASSERT_EQ(btf_vlen(t), BTF_FUNC_GLOBAL, "func_vlen");
-+
-+	id =3D btf__add_func_proto(btf, 1);
-+	ASSERT_EQ(id, 15, "func_proto_id");
-+	err =3D btf__add_func_param(btf, "p1", 1);
-+	ASSERT_OK(err, "p1_res");
-+	err =3D btf__add_func_param(btf, "p2", 2);
-+	ASSERT_OK(err, "p2_res");
-+
-+	t =3D btf__type_by_id(btf, 15);
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_FUNC_PROTO, "func_proto_kind");
-+	ASSERT_EQ(btf_vlen(t), 2, "func_proto_vlen");
-+	ASSERT_EQ(t->type, 1, "func_proto_ret_type");
-+	p =3D btf_params(t) + 0;
-+	ASSERT_STREQ(btf__str_by_offset(btf, p->name_off), "p1", "p1_name");
-+	ASSERT_EQ(p->type, 1, "p1_type");
-+	p =3D btf_params(t) + 1;
-+	ASSERT_STREQ(btf__str_by_offset(btf, p->name_off), "p2", "p2_name");
-+	ASSERT_EQ(p->type, 2, "p2_type");
-+
-+	/* VAR */
-+	id =3D btf__add_var(btf, "var1", BTF_VAR_GLOBAL_ALLOCATED, 1);
-+	ASSERT_EQ(id, 16, "var_id");
-+	t =3D btf__type_by_id(btf, 16);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "var1", "var_name");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_VAR, "var_kind");
-+	ASSERT_EQ(t->type, 1, "var_type");
-+	ASSERT_EQ(btf_var(t)->linkage, BTF_VAR_GLOBAL_ALLOCATED, "var_type");
-+
-+	/* DATASECT */
-+	id =3D btf__add_datasec(btf, "datasec1", 12);
-+	ASSERT_EQ(id, 17, "datasec_id");
-+	err =3D btf__add_datasec_var_info(btf, 1, 4, 8);
-+	ASSERT_OK(err, "v1_res");
-+
-+	t =3D btf__type_by_id(btf, 17);
-+	ASSERT_STREQ(btf__str_by_offset(btf, t->name_off), "datasec1", "datasec=
-_name");
-+	ASSERT_EQ(t->size, 12, "datasec_sz");
-+	ASSERT_EQ(btf_kind(t), BTF_KIND_DATASEC, "datasec_kind");
-+	ASSERT_EQ(btf_vlen(t), 1, "datasec_vlen");
-+	vi =3D btf_var_secinfos(t) + 0;
-+	ASSERT_EQ(vi->type, 1, "v1_type");
-+	ASSERT_EQ(vi->offset, 4, "v1_off");
-+	ASSERT_EQ(vi->size, 8, "v1_sz");
-+
-+	btf__free(btf);
-+}
---=20
-2.24.1
+Is it worth holding a spinlock here?
 
+Though I'll try to get the benchmark numbers for the emulator later tonight.
+
+YiFei Zhu
