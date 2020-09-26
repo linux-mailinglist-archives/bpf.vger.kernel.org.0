@@ -2,110 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 105032796F3
-	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 06:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5B12796F6
+	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 06:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730013AbgIZEfE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Sep 2020 00:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S1730013AbgIZEgQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Sep 2020 00:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728302AbgIZEfD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Sep 2020 00:35:03 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF41C0613D3
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 21:35:03 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d13so4156708pgl.6
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 21:35:03 -0700 (PDT)
+        with ESMTP id S1730006AbgIZEgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Sep 2020 00:36:16 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A33CC0613CE;
+        Fri, 25 Sep 2020 21:36:16 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m13so4297084otl.9;
+        Fri, 25 Sep 2020 21:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=mRcwOzZAXRqD5t0WunR2xZRGQlJgJ5v6Cl490f6L2w4=;
-        b=TWHocp6Xnlj+Fal/pEAcaz9wDHWf5v8XigHCHnEgYkDAlglQrvdlT3J1d4RmRbUM5G
-         oWQjXg12yMjV+3i57IYSebyR+e7kdcE8TnPGHZXUJLngz9RYIkHXBP8k0L5y0iuLMbmS
-         G8h+pUUY+GNQEWLdLBFvHdE3ncAEFTwNfZnkc=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=cltFfaRb1BosoRg8mDWI26ET3SE7mMaxq/k+EP/er4Y=;
+        b=AGF/mNg3pQ9eoy6BIATRqgn7AYGFwl+f4lfDwooCYoj9VJ4JOVjWZTbSWPDIpDkwgD
+         EpJ+tcPyokmh70cjT3BMLBEDK2oXjiweqbyOctFxb6yVn9Y4JaVjXEdLPL8s70SMVQ3F
+         P6cwFduhn8QA7hEW1s1jPEPhhiys6JPCRQYUTJfnm7mRlA+g23iWu3D2SIds8I/NIMjr
+         GPOJwTsTw9Fa4wycU3v7f75OPCpbj41NJVV/VNS4TaLSs4iNzX+GRuKTTqNGXnLswCBC
+         T6PiRcSAppO3ZnoTy/eRIZn3FDYF+z8oGnm4sMuPfbsxyg5LlkDf+z+qx934XYJcbK3s
+         1hOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mRcwOzZAXRqD5t0WunR2xZRGQlJgJ5v6Cl490f6L2w4=;
-        b=ffOn/yCnwnyW9hiE+okPuW3q8q1GBb+BhKkAg9ZTGsunTz0o0V5YtY7KRGcs8cf0AL
-         3EAkGU0/fiTBon2tMY7yeEebd9SNzQBTXJYMWoc0jHyN6GEJM5hm57qCaxXEFVXVbtKe
-         LxzT422A4GJoAhnE1rHRj5hP8ZE5JWSEnabbH+QHUNGZvjHcXOqprAfzmL1Lcc29F3MJ
-         3AQi2/fw9Kf7vVZ7ZvUY4yjuAFhh4SzsdcUSPgYs4d39DBmVRAMhU8GOS5EXF/jHnKs2
-         M6L4LDNO5YOqS5gMw6ksOT3UqueYlsRvC9yexbeCLCMZrTZHlFwSHrtGeNoTvKUbNXG9
-         U2vA==
-X-Gm-Message-State: AOAM5301YawktWnH0/E5pIxE/+1o+m4EL9uZZd88/hR561vh++Y+7T61
-        BnNUBWtij9xHbl2suSqfD8kZNQ==
-X-Google-Smtp-Source: ABdhPJwZ8nK5Yal21qEXtJstQ1g6ry9hFYoph8xJ4equzc56hECGkz66N29kZWed4jPsUpReqJJ0YA==
-X-Received: by 2002:a65:615a:: with SMTP id o26mr1648183pgv.54.1601094903117;
-        Fri, 25 Sep 2020 21:35:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id y202sm4057138pfc.179.2020.09.25.21.35.02
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=cltFfaRb1BosoRg8mDWI26ET3SE7mMaxq/k+EP/er4Y=;
+        b=YmSbw8NteSB3uiM3LHBSu1KzcejQFZ9nkaHmGZA32cjgTiKVLSII712i9WvxUXoulF
+         UVdBhzxMwIgBZFXfIEQC83h1w0apisCAkgoG7+aqKoDM/tYQm8R+vvwysd592nziaVSq
+         xzF8gpGd5+cPkrTBkfeJu0NrwHN23DuBvq0Y8QEjZ4DdtRu9jw0lx20oq4FOe0dyH19m
+         ilYIYoTJxf48J6ZxudYw3mWtpGMY33hi6X8nNqTOXlPJ4NZ+0dhYszeJZXCKW15CLvoa
+         ELltXAhoF+b/VFeTaHyk2cTSPBlPBcDl9zwmYw8fNpWj4IkE5k2Gb8JJnkviCqNi828t
+         7FAA==
+X-Gm-Message-State: AOAM532xgFC+GYHgsIpKu8fCvUS+5MafOj7pZFeYYVJwsqlE4IFQ/Q9x
+        4bi6x402jG7bi8eC9qu1FYNRcZExRNE6Ow==
+X-Google-Smtp-Source: ABdhPJyFqAHsORdJj0JhOaad7HIUoCcFcIVC/JzfoxdC1mzFF5sGDA6us9ZZin0TaCK6x41N/jdW6Q==
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr2526373otb.250.1601094975891;
+        Fri, 25 Sep 2020 21:36:15 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id l4sm1103137oie.25.2020.09.25.21.36.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 21:35:02 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 21:35:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
- filter is arg-dependent
-Message-ID: <202009252134.871EFAB61@keescook>
-References: <CABqSeASR0bQ7Y302SkZ639NM=roSVRmd3ROGm0YDEFCTxxd63w@mail.gmail.com>
- <05109FF5-65C9-491E-9D9D-2FECE4F8B2B0@amacapital.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <05109FF5-65C9-491E-9D9D-2FECE4F8B2B0@amacapital.net>
+        Fri, 25 Sep 2020 21:36:15 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 21:36:06 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Message-ID: <5f6ec536c3f22_af05120838@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAADnVQ+5CbptcUpjJN8bP64zrwu1j3doz+iyDEoH6mApELLNWQ@mail.gmail.com>
+References: <160097310597.12106.6191783180902126213.stgit@john-Precision-5820-Tower>
+ <CAADnVQ+5CbptcUpjJN8bP64zrwu1j3doz+iyDEoH6mApELLNWQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH 1/2] bpf, verifier: Remove redundant
+ var_off.value ops in scalar known reg cases
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 07:47:47PM -0700, Andy Lutomirski wrote:
+Alexei Starovoitov wrote:
+> On Thu, Sep 24, 2020 at 11:45 AM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> >
+> > In BPF_AND and BPF_OR alu cases we have this pattern when the src and dst
+> > tnum is a constant.
+> >
+> >  1 dst_reg->var_off = tnum_[op](dst_reg->var_off, src_reg.var_off)
+> >  2 scalar32_min_max_[op]
+> >  3       if (known) return
+> >  4 scalar_min_max_[op]
+> >  5       if (known)
+> >  6          __mark_reg_known(dst_reg,
+> >                    dst_reg->var_off.value [op] src_reg.var_off.value)
+> >
+> > The result is in 1 we calculate the var_off value and store it in the
+> > dst_reg. Then in 6 we duplicate this logic doing the op again on the
+> > value.
+> >
+> > The duplication comes from the the tnum_[op] handlers because they have
+> > already done the value calcuation. For example this is tnum_and().
+> >
+> >  struct tnum tnum_and(struct tnum a, struct tnum b)
+> >  {
+> >         u64 alpha, beta, v;
+> >
+> >         alpha = a.value | a.mask;
+> >         beta = b.value | b.mask;
+> >         v = a.value & b.value;
+> >         return TNUM(v, alpha & beta & ~v);
+> >  }
+> >
+> > So lets remove the redundant op calculation. Its confusing for readers
+> > and unnecessary. Its also not harmful because those ops have the
+> > property, r1 & r1 = r1 and r1 | r1 = r1.
+> >
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 > 
-> > On Sep 25, 2020, at 6:23 PM, YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> > 
-> > ﻿On Fri, Sep 25, 2020 at 4:07 PM Andy Lutomirski <luto@amacapital.net> wrote:
-> >> We'd need at least three states per syscall: unknown, always-allow,
-> >> and need-to-run-filter.
-> >> 
-> >> The downsides are less determinism and a bit of an uglier
-> >> implementation.  The upside is that we don't need to loop over all
-> >> syscalls at load -- instead the time that each operation takes is
-> >> independent of the total number of syscalls on the system.  And we can
-> >> entirely avoid, say, evaluating the x32 case until the task tries an
-> >> x32 syscall.
-> > 
-> > I was really afraid of multiple tasks writing to the bitmaps at once,
-> > hence I used bitmap-per-task. Now I think about it, if this stays
-> > lockless, the worst thing that can happen is that a write undo a bit
-> > set by another task. In this case, if the "known" bit is cleared then
-> > the worst would be the emulation is run many times. But if the "always
-> > allow" is cleared but not "known" bit then we have an issue: the
-> > syscall will always be executed in BPF.
-> > 
-> 
-> If you interleave the bits, then you can read and write them atomically — both bits for any given syscall will be in the same word.
+> Applied. Thanks for the follow up.
+> In the future please always cc bpf@vger for two reasons:
+> - to get proper 'Link:' integrated in git commit
+> - to get them into a new instance of
+> https://patchwork.kernel.org/project/bpf/list
 
-I think we can just hold the spinlock. :)
++1
 
--- 
-Kees Cook
+>   which we will start using soon to send automatic 'applied' emails.
+
+
+Apologies, I updated some scripts and unfortunately typo dropped a '-'
+and cut off bpf@vger from the CC list. Also I just used it to land
+two more patches without bpf@vger happy to resend with CC included
+if folks want. Sorry for the extra work/noise.
+
+Thanks.
