@@ -2,102 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3DE27982B
-	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 11:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EDD279BCC
+	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 20:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgIZJ01 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Sep 2020 05:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
+        id S1729291AbgIZSMD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Sep 2020 14:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZJ00 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Sep 2020 05:26:26 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD84AC0613CE;
-        Sat, 26 Sep 2020 02:26:26 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id kk9so736083pjb.2;
-        Sat, 26 Sep 2020 02:26:26 -0700 (PDT)
+        with ESMTP id S1726183AbgIZSMC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Sep 2020 14:12:02 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC5CC0613CE;
+        Sat, 26 Sep 2020 11:12:02 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 197so4971108pge.8;
+        Sat, 26 Sep 2020 11:12:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=EoXTg89vWulktaKV9WUf5FA5R7Hxe2mYsOu9pJnZ92Y=;
-        b=mona7MExxElD46h3dsWgHtnjpOtE/bWLDT+DMc/vOavno0lgMekwKiWOeLyDjkk7n4
-         NBltTXvnSMpxxsCx+htM46j9mjmPE72bLki+STrpFhHj3kRubiD6nOYLn2dIbnnt89xM
-         lOI11IGJWFQXf4iTqtGE88RMgdd8NWUA9M8jhxHSVJNScMGlQr8L/Vt/3ZWxbcLnbSgc
-         iY9XVhvymouOgc8ASbANycfRAgv+7vzKACd2jOvcNHyciB/eTIpzLmZ6dxBHCzN5swg1
-         E1s+UE2wsJpcZK03PKZPNVZzFKkvEO7xnOpWFmQ4wpXjY5284tUR3JrjOD0qRN+nPzRK
-         uRGw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KowdFI99SvwAHlmnquISweYZPA2kNBZ4Vy+1Sm1Ru5Y=;
+        b=syrFF3GZ4vwOCTVvGBzGuHJ4tcSsvCEY7VnZU5FZQtDjapU5yYWoTukg/YbFCvyOJg
+         1R7CkOr3meO9mL0s1bMniClEFzIlmODRBjafTC6oXho0L9KbcuKtKcSgsuuIbEOvHeXl
+         O5h/Xqfj+cLXNLXaF79JK62/N9SjeS8W5mQw2r0Tuu+rfkfifKplqReHttHgGNDSlsic
+         HAOssh01hbBRJI4TX+cbsO+bYKpU9wQblx3JlaoIkkKSgaDYgfIbe5UQJOxNuBcdTYAn
+         dtMhzMWv6i+0HWW2pwD3bGOM/+eqS8iF1KLeTKLkYLQyqsK3w9bCIDV4aeG+10gzxV84
+         s38g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=EoXTg89vWulktaKV9WUf5FA5R7Hxe2mYsOu9pJnZ92Y=;
-        b=GIBwYa8MmIx+eItH43wLufZ4cZGbHQr4PmybsZj/3aBUwHVj2fazPltxMQ+q/iZko4
-         xiThf29PWuCoGP/xRVik4ST+/wiiiRXlHXbuT867rNjqPR7NHQpDRNQ1qrR99CjaoXxn
-         CwDnbJY0bBGiMfSS+UgapsK5AsEtDsPeINBj/OczR4WKzxeXxBdXiih8LV3g3+Ph25rw
-         o0Q7Sg+HBCtKFkTxZ/QATBT6IZGPmXT0Ky5m47OE9Eqw7Bb1PUV3+WyD63NrDSM+1KFw
-         6z6BfMOFIUDEFbGbit2SD1kHjhhn5I50Nna1UP+6+B+2atPlP4Mkbfv+fWsOubkq48m/
-         /VyQ==
-X-Gm-Message-State: AOAM533sHc0Idaph0IHMDqPEzd4V365EvtLDQFcdhZ3YHtmY40zLah+F
-        /KpztrXda16JbO4nbSHiR2A=
-X-Google-Smtp-Source: ABdhPJxVin+kg3Bl9BPzaY3B3kIFsVlKig91jO1lzlI/FEDRWrVbeqb0xbThgeg0z4WdwHNpWoU3CA==
-X-Received: by 2002:a17:90a:a78d:: with SMTP id f13mr1465833pjq.69.1601112386296;
-        Sat, 26 Sep 2020 02:26:26 -0700 (PDT)
-Received: from localhost.localdomain (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id l14sm1314765pjy.1.2020.09.26.02.26.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 26 Sep 2020 02:26:25 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH bpf-next] xsk: fix possible crash in socket_release when out-of-memory
-Date:   Sat, 26 Sep 2020 11:26:13 +0200
-Message-Id: <1601112373-10595-1-git-send-email-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KowdFI99SvwAHlmnquISweYZPA2kNBZ4Vy+1Sm1Ru5Y=;
+        b=YdQ04BB5yVRZdG1kp3wGYCzghHQMDWVlYrbEqZlez53cr6FNFKaIxB9qLDMy6Uv4kN
+         zzHRqLikdx4DQ9Dci5pTvkONzehUMTdp9sjT663Ubp9Fu5DVcp3PaZty/f6nmJtQ25ma
+         /cBU7YgM92/Lma4xmcwjhYjZHFZW4ym5n11bWSYCN4rqvxdK0ixdW0vdpCC9ESFzZTpS
+         TxhiX6mHHoFoPGt5h6vjBMMvISb7K9WegR5dyywKRiO152vffDXNUeex5nuuV8UTo3QW
+         gMHrnuLQYgrcXM5zn6XA6bOyo9ucFYsg6shVr5zPBsFKIZFy6w8BUPHbqPWtgPUNoT4u
+         o8FQ==
+X-Gm-Message-State: AOAM531fBz6oGJd84Fb2s92XxaartqmYQ+1Cc3np8duGytA83IUOekV6
+        5WOYv4mm7sgdJtPgDCTkln2NWYZfPrXhh/TBazA=
+X-Google-Smtp-Source: ABdhPJwoJr06rCvVUGsbVXGhb2eVCyD32tCStdaxN1THyxWAQGjxGs5gnWApkmotT1o0fcXz0+iU3rf5dfrHjHc2aOU=
+X-Received: by 2002:a63:906:: with SMTP id 6mr3490414pgj.66.1601143922050;
+ Sat, 26 Sep 2020 11:12:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk> <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
+ <27b4ef86-fee5-fc35-993b-3352ce504c73@rasmusvillemoes.dk> <CABqSeATHtvA7qm7j_kxBsbxRCd5B=MHtxGdsYsXEJ-TRRYKTgA@mail.gmail.com>
+In-Reply-To: <CABqSeATHtvA7qm7j_kxBsbxRCd5B=MHtxGdsYsXEJ-TRRYKTgA@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Sat, 26 Sep 2020 13:11:50 -0500
+Message-ID: <CABqSeASMObs7HtwfM=ua9Tbx1mfHZaxCMWD6AP6-6hR4-Xcn=Q@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Fri, Sep 25, 2020 at 2:07 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> I'll try to profile the latter later on my qemu-kvm, with a recent
+> libsecomp with binary tree and docker's profile, probably both direct
+> filter attaches and filter attaches with fork(). I'm guessing if I
+> have fork() the cost of fork() will overshadow seccomp() though.
 
-Fix possible crash in socket_release when an out-of-memory error has
-occurred in the bind call. If a socket using the XDP_SHARED_UMEM flag
-encountered an error in xp_create_and_assign_umem, the bind code
-jumped to the exit routine but erroneously forgot to set the err value
-before jumping. This meant that the exit routine thought the setup
-went well and set the state of the socket to XSK_BOUND. The xsk socket
-release code will then, at application exit, think that this is a
-properly setup socket, when it is not, leading to a crash when all
-fields in the socket have in fact not been initialized properly. Fix
-this by setting the err variable in xsk_bind so that the socket is not
-set to XSK_BOUND which leads to the clean-up in xsk_release not being
-triggered.
+I'm surprised. That is not the case as far as I can tell.
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Reported-by: syzbot+ddc7b4944bc61da19b81@syzkaller.appspotmail.com
-Fixes: 1c1efc2af158 ("xsk: Create and free buffer pool independently from umem")
----
-I have not been able to reproduce this issue using the syzkaller
-config and reproducer, so I cannot guarantee it fixes it. But this bug
-is real and it is triggered by an out-of-memory in
-xp_create_and_assign_umem, just like syzcaller injects, and would lead
-to the same crash in dev_hold in xsk_release.
----
- net/xdp/xsk.c | 1 +
- 1 file changed, 1 insertion(+)
+I wrote a benchmark [1] that would fork() and in the child attach a
+seccomp filter, look at the CLOCK_MONOTONIC difference, then add it to
+a struct timespec shared with the parent. It checks the difference
+with the timespec before prctl and before fork. CLOCK_MONOTONIC
+instead of CLOCK_PROCESS_CPUTIME_ID because of fork.
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 3895697..ba4dfb1 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -703,6 +703,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
- 			xs->pool = xp_create_and_assign_umem(xs,
- 							     umem_xs->umem);
- 			if (!xs->pool) {
-+				err = -ENOMEM;
- 				sockfd_put(sock);
- 				goto out_unlock;
- 			}
--- 
-2.7.4
+I ran `./seccomp_emu_bench 100000` in my qemu-kvm and here are the results:
+without emulator:
+Benchmarking 100000 syscalls...
+19799663603 (19.8s)
+seecomp attach without fork: 197996 ns
+33911173847 (33.9s)
+seecomp attach with fork: 339111 ns
 
+with emulator:
+Benchmarking 100000 syscalls...
+54428289147 (54.4s)
+seecomp attach without fork: 544282 ns
+69494235408 (69.5s)
+seecomp attach with fork: 694942 ns
+
+fork seems to take around 150us, seccomp attach takes around 200us,
+and the filter emulation overhead is around 350us. I had no idea that
+fork was this fast. If I wrote my benchmark badly please criticise.
+
+Given that we are doubling the time to fork() + seccomp attach filter,
+I think yeah running the emulator on the first instance of a syscall,
+holding a lock, is a much better idea. If I naively divide 350us by
+the number of syscall + arch pairs emulated the overhead is less than
+1 us and that should be okay since it only happens for the first
+invocation of the particular syscall.
+
+[1] https://gist.github.com/zhuyifei1999/d7bee62bea14187e150fef59db8e30b1
+
+YiFei Zhu
