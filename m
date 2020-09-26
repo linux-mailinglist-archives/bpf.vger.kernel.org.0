@@ -2,175 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E5B27959D
-	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 02:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181E52795D7
+	for <lists+bpf@lfdr.de>; Sat, 26 Sep 2020 03:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbgIZAed (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Sep 2020 20:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729186AbgIZAed (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:34:33 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CB1C0613CE
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 17:34:33 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x123so4828505pfc.7
-        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 17:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=LQhUSgVwoAzLw92Ygh+sbDkDg9VzTVlbdTb6qu/28UI=;
-        b=0UCfcG1B3lmiWLRmVTEkHEUvtYL/+yhH6MaR4BWOvVAYPKMPznhtEUKI/JMwclvII0
-         9ugielLLHq/9jC2MBpemsPqqbJ04Wlymmt1JLIvfwrsKOq0QR3OAKlahWJSDERU7+31q
-         JuZ9/lnzx2HUSbV0cfM6jynGVVFsUOKZd+x0a9PyXqhvpJQHpAvqteHU50MiHkuhTuTW
-         YpimImgQ1rDbVJ8Q1YqS2+R/5tuTyvJC4lKAIbQY5qB+v2UsPjZ/S1g/VyaRpd/gWf2o
-         TwKgb9LFhMCnYONj4IYLFVgofXdBJggPp5ck/xABw8LJD/FLU11+fRzv1l0E3btCfsd4
-         Q72w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=LQhUSgVwoAzLw92Ygh+sbDkDg9VzTVlbdTb6qu/28UI=;
-        b=YQuGSI2fwBz7hHxmch8CRKyWRETk9VPVLscJbtv/PrA+v3UEX7+JSjdX/r5drC98fu
-         vqsE6p3SiHqDsidxFnq0g5PsJNEQayYy1dBQks4gAQX4WhpusjLk4Lj8yYpNuh6XWGBN
-         gY/Su2fIoBbikzwyplVp3vq985VguM7QIi2Bqdibjy624wLWYTqevI94WJjjwI6lZjRH
-         OwZOJMNuMgTBcEO1aG/58FmSYwqpdAfO4NazqxToNPu4aRfIYDBv8SjGYdWH2XqoNU//
-         HgGoV1YviyAwJa7vZUwOTbXJ04VO0vCBPCExUYw1YpmZfuI4j+Qsdz2J6H15BgxbFHkv
-         WuOw==
-X-Gm-Message-State: AOAM533k2qHH85Na2UO5B33U+uw48nEldjWlThGjsIvLB8lJnWCz/Fwt
-        ERgiEsF/0QCu+jlOHZ1jrrPyZQ==
-X-Google-Smtp-Source: ABdhPJz4QibazbedTmXsQcRaU2pyUx8+oz1N5Q2XhtYTgoF1usymw1iGqYSgVjNPq/RGgqqdBMYJXQ==
-X-Received: by 2002:a63:4a43:: with SMTP id j3mr1190597pgl.42.1601080473158;
-        Fri, 25 Sep 2020 17:34:33 -0700 (PDT)
-Received: from localhost.localdomain ([2601:646:c200:1ef2:480b:55cd:6a45:1705])
-        by smtp.gmail.com with ESMTPSA id a71sm3563540pfa.26.2020.09.25.17.34.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 17:34:32 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
+        id S1729885AbgIZBOf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Sep 2020 21:14:35 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55746 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729876AbgIZBOe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 25 Sep 2020 21:14:34 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08Q16Rt0008821
+        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 18:14:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=5nkWAVkFufaH2PSMQ+FABwS1UCoQwNF3XepkyUdFiQ4=;
+ b=Q0XX7pCuWTZmXbj8QELeER+k7KoK6sR+aZ3QCq3HJmdFsKnGjXZwvR+Ow/cXcC0VGxQP
+ LoCm3Y/iaY0A6JPql2GFz79xpueyzdC94C98NGaXMOnrLEv6AgUiJ48/AQzBv9vhZ/tE
+ MUySXZW4VYlVKeMfdX+xvahxfe2omY/7pzU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 33qsp5aq5w-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 25 Sep 2020 18:14:33 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 25 Sep 2020 18:14:31 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 844142EC75B0; Fri, 25 Sep 2020 18:14:23 -0700 (PDT)
+From:   Andrii Nakryiko <andriin@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH v2 bpf-next 0/9] libbpf: BTF writer APIs
+Date:   Fri, 25 Sep 2020 18:13:48 -0700
+Message-ID: <20200926011357.2366158-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if filter is arg-dependent
-Date:   Fri, 25 Sep 2020 17:34:29 -0700
-Message-Id: <677FA6F9-D577-4594-9FDC-D70B0D6900C6@amacapital.net>
-References: <202009251648.4AA27D5B@keescook>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-In-Reply-To: <202009251648.4AA27D5B@keescook>
-To:     Kees Cook <keescook@chromium.org>
-X-Mailer: iPhone Mail (18A373)
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-25_19:2020-09-24,2020-09-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
+ spamscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ clxscore=1015 mlxscore=0 mlxlogscore=506 bulkscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009260005
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch set introduces a new set of BTF APIs to libbpf that allow to
+conveniently produce BTF types and strings. Internals of struct btf were
+changed such that it can transparently and automatically switch to writab=
+le
+mode, which allows appending BTF types and strings. This will allow for l=
+ibbpf
+itself to do more intrusive modifications of program's BTF (by rewriting =
+it,
+at least as of right now), which is necessary for the upcoming libbpf sta=
+tic
+linking. But they are complete and generic, so can be adopted by anyone w=
+ho
+has a need to produce BTF type information.
 
+One such example outside of libbpf is pahole, which was actually converte=
+d to
+these APIs (locally, pending landing of these changes in libbpf) complete=
+ly
+and shows reduction in amount of custom pahole code necessary and brings =
+nice
+savings in memory usage (about 370MB reduction at peak for my kernel
+configuration) and even BTF deduplication times (one second reduction,
+23.7s -> 22.7s). Memory savings are due to avoiding pahole's own copy of
+"uncompressed" raw BTF data. Time reduction comes from faster string
+search and deduplication by relying on hashmap instead of BST used by pah=
+ole's
+own code. Consequently, these APIs are already tested on real-world
+complicated kernel BTF, but there is also pretty extensive selftest doing
+extra validations.
 
-> On Sep 25, 2020, at 4:49 PM, Kees Cook <keescook@chromium.org> wrote:
->=20
-> =EF=BB=BFOn Fri, Sep 25, 2020 at 02:07:46PM -0700, Andy Lutomirski wrote:
->>> On Fri, Sep 25, 2020 at 1:37 PM Kees Cook <keescook@chromium.org> wrote:=
+Selftests in patch #9 add a set of generic ASSERT_{EQ,STREQ,ERR,OK} macro=
+s
+that are useful for writing shorter and less repretitive selftests. I dec=
+ided
+to keep them local to that selftest for now, but if they prove to be usef=
+ul in
+more contexts we should move them to test_progs.h. And few more (e.g.,
+inequality tests) macros are probably necessary to have a more complete s=
+et.
 
->>>=20
->>> On Fri, Sep 25, 2020 at 12:51:20PM -0700, Andy Lutomirski wrote:
->>>>=20
->>>>=20
->>>>> On Sep 25, 2020, at 12:42 PM, Kees Cook <keescook@chromium.org> wrote:=
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
 
->>>>>=20
->>>>> =EF=BB=BFOn Fri, Sep 25, 2020 at 11:45:05AM -0500, YiFei Zhu wrote:
->>>>>> On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> w=
-rote:
->>>>>>>> Why do the prepare here instead of during attach? (And note that it=
+v1->v2:
+  - fixed comments (John);
+  - renamed btf__append_xxx() into btf__add_xxx() (Alexei);
+  - added btf__find_str() in addition to btf__add_str();
+  - btf__new_empty() now sets kernel FD to -1 initially.
 
->>>>>>>> should not be written to fail.)
->>>>>>>=20
->>>>>>> Right.
->>>>>>=20
->>>>>> During attach a spinlock (current->sighand->siglock) is held. Do we
->>>>>> really want to put the emulator in the "atomic section"?
->>>>>=20
->>>>> It's a good point, but I had some other ideas around it that lead to m=
-e
->>>>> a different conclusion. Here's what I've got in my head:
->>>>>=20
->>>>> I don't view filter attach (nor the siglock) as fastpath: the lock is
->>>>> rarely contested and the "long time" will only be during filter attach=
-.
->>>>>=20
->>>>> When performing filter emulation, all the syscalls that are already
->>>>> marked as "must run filter" on the previous filter can be skipped for
->>>>> the new filter, since it cannot change the outcome, which makes the
->>>>> emulation step faster.
->>>>>=20
->>>>> The previous filter's bitmap isn't "stable" until siglock is held.
->>>>>=20
->>>>> If we do the emulation step before siglock, we have to always do full
->>>>> evaluation of all syscalls, and then merge the bitmap during attach.
->>>>> That means all filters ever attached will take maximal time to perform=
+Andrii Nakryiko (9):
+  libbpf: refactor internals of BTF type index
+  libbpf: remove assumption of single contiguous memory for BTF data
+  libbpf: generalize common logic for managing dynamically-sized arrays
+  libbpf: extract generic string hashing function for reuse
+  libbpf: allow modification of BTF and add btf__add_str API
+  libbpf: add btf__new_empty() to create an empty BTF object
+  libbpf: add BTF writing APIs
+  libbpf: add btf__str_by_offset() as a more generic variant of
+    name_by_offset
+  selftests/bpf: test BTF writing APIs
 
->>>>> emulation.
->>>>>=20
->>>>> I prefer the idea of the emulation step taking advantage of the bitmap=
+ tools/lib/bpf/bpf.c                           |    2 +-
+ tools/lib/bpf/bpf.h                           |    2 +-
+ tools/lib/bpf/btf.c                           | 1343 +++++++++++++++--
+ tools/lib/bpf/btf.h                           |   44 +
+ tools/lib/bpf/btf_dump.c                      |    9 +-
+ tools/lib/bpf/hashmap.h                       |   12 +
+ tools/lib/bpf/libbpf.map                      |   23 +
+ tools/lib/bpf/libbpf_internal.h               |    3 +
+ .../selftests/bpf/prog_tests/btf_write.c      |  278 ++++
+ 9 files changed, 1596 insertions(+), 120 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_write.c
 
->>>>> optimization, since the kernel spends less time doing work over the li=
-fe
->>>>> of the process tree. It's certainly marginal, but it also lets all the=
+--=20
+2.24.1
 
->>>>> bitmap manipulation stay in one place (as opposed to being split betwe=
-en
->>>>> "prepare" and "attach").
->>>>>=20
->>>>> What do you think?
->>>>>=20
->>>>>=20
->>>>=20
->>>> I=E2=80=99m wondering if we should be much much lazier. We could potent=
-ially wait until someone actually tries to do a given syscall before we try t=
-o evaluate whether the result is fixed.
->>>=20
->>> That seems like we'd need to track yet another bitmap of "did we emulate=
-
->>> this yet?" And it means the filter isn't really "done" until you run
->>> another syscall? eeh, I'm not a fan: it scratches at my desire for
->>> determinism. ;) Or maybe my implementation imagination is missing
->>> something?
->>>=20
->>=20
->> We'd need at least three states per syscall: unknown, always-allow,
->> and need-to-run-filter.
->>=20
->> The downsides are less determinism and a bit of an uglier
->> implementation.  The upside is that we don't need to loop over all
->> syscalls at load -- instead the time that each operation takes is
->> independent of the total number of syscalls on the system.  And we can
->> entirely avoid, say, evaluating the x32 case until the task tries an
->> x32 syscall.
->>=20
->> I think it's at least worth considering.
->=20
-> Yeah, worth considering. I do still think the time spent in emulation is
-> SO small that it doesn't matter running all of the syscalls at attach
-> time. The filters are tiny and fail quickly if anything "interesting"
-> start to happen. ;)
->=20
-
-There=E2=80=99s a middle ground, too: do it lazily per arch.  So we would al=
-locate and populate the compat bitmap the first time a compat syscall is att=
-empted and do the same for x32. This may help avoid the annoying extra memor=
-y usage and 3x startup overhead while retaining full functionality.=
