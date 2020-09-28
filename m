@@ -2,148 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E4D27B623
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 22:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CFE27B62C
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 22:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgI1UTG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 16:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
+        id S1726803AbgI1UYx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 16:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726732AbgI1UTG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:19:06 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BC9C0613CE;
-        Mon, 28 Sep 2020 13:19:04 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id x8so1848027ybe.12;
-        Mon, 28 Sep 2020 13:19:04 -0700 (PDT)
+        with ESMTP id S1726692AbgI1UYx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 16:24:53 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E3DC061755
+        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 13:24:53 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id x8so1859703ybe.12
+        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 13:24:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XRvxn3Edd7TEvLawcsqTJPfhbhDEJqLPmAdFEeeYtyA=;
-        b=hii3QcKM9PhwrnO6Eiu1ZSCczteIhmFz56LLPijToPbFC7i3jfidofT3wx5HcvGGyV
-         PurbCPO9GMEoEuSPwdP1EI2DTVsdPkyTBabEc1YMRYmhxp5nEq/gmc4cJ2hiaATH+0hl
-         mhVMJCjxGr7PvdGMMJg8a4bpZdnUqCVQQSLZAEgX8uz/VzJUzdqOCh05lTS9NgeAc5I+
-         iQTjjqafatNtLCuaR6BZsk8lfcfTrqJgf6bjnv9HyfHB1V6abMDvblf4LKcHGp8430hn
-         xJiyUBZGGOssLkOfxqGoXkxOAep7HrDj6eH3x2izjPlNgrISV3UujJHYmglPws09klB0
-         mGcg==
+         :cc:content-transfer-encoding;
+        bh=kNCJdRlsZTB9tdGdDTIO0xQAlj35ZQEa7su33fLJIo4=;
+        b=NA+0B/UQfTOzC2E37pnpGAju4lty84ipK2s9xaCcgzE4a8dbA42E+CMHqJCScgEJJQ
+         esFmhR6qw6uD54dtrBJz36PkjKq8nt4oYtZymmdTNUjoajOnMKPKahlBBPNskSPBfWtZ
+         wMbObZadKoQQhnVUt494kdMt17kNVIbJUhvrhuCPNmtGKbkIDRctZiQK9YTaUVStpmzr
+         nrHDGevne45RP7BslDfh7GeDO+D7laz8IM4EttSD/uyYaFh3hj/QctQb9f21fWn5x5Wu
+         nuX3QOBuWnCS3FGMxNWKgyk47jXv8Gv62Vl19qc4G5aolXBzN+dgO2XX9hP9iw7xrUIv
+         WtlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XRvxn3Edd7TEvLawcsqTJPfhbhDEJqLPmAdFEeeYtyA=;
-        b=AbLugCeiPhQ2WnwbY+mfUoU28MFE3lsSS70qIeUfOc4hFnAV4Al99Y5uhkEB9MGa+n
-         0outt1C6+RTas5MbrJMQHaYVHWMOcN8qu5YpphCf2B+xdsCvUKa1ruwRWzSdLzewNMVd
-         HAe8UKsIi/fRJEtBqAFepQvz7UQygaWaq+0ZSSlTaPzn7sAJNuRzn1V2047nFTekO7CH
-         N5/KWQxX8kUrxjR0lxX8idndCwq97BKJln8Lq0ZmBh/Jabc4D/sYFaZEZFqvFnVO9F40
-         oGil1dJ1DTtFmiFg3nc8iR+cXaS8pksuh4XuW/86sztzEyVA3iafn9oD+ltPncTXfk7h
-         ZX2g==
-X-Gm-Message-State: AOAM532ZAZiJ+81MuMZ/be6yfkeaoN2rIh+JF0uNs+/dqkig2zziPwRX
-        7ISGcnOYM5nhmJdn9pKo7djb+r156f4EkXDMIrA=
-X-Google-Smtp-Source: ABdhPJxl9jKgXWsMYDnmy/zj0/oFsNH3q4iqbmSX/FFs+XcGHep/03cZ4LDYUwFQJsfhl3+WGYRO5Mn8U3xD9e+Iyqw=
-X-Received: by 2002:a25:2687:: with SMTP id m129mr1691502ybm.425.1601324343700;
- Mon, 28 Sep 2020 13:19:03 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kNCJdRlsZTB9tdGdDTIO0xQAlj35ZQEa7su33fLJIo4=;
+        b=CruGOHoIMpLDVs90ffwDJrdsFD2qmISJIhTrh0NgXGPQMcy6pCkHTLPdfC8CY3map+
+         FQfOnmWKJSS+AajTZda/IIcExzzxLfrlawPV52moTpOw+vw72bXzRPLy17voLKLxX2Uq
+         H6CnsXAOx48bcB6Vz/uViIIQW5XX1WWTiM83ruAJdafPXp3kvii96sXBAvpCGhFKSUtx
+         4v87ZrzDFGWQk5c8oT/IIOH/bx9AZsiefs2ADIfKJqfKBGMoMRXiX8e56YzfxKEKRKgG
+         vh0CgGY5UGxSb9ZfCVXxliEX7MwJ4fiEg2lq14XWTctSyFrCkkJGkij7PBbPeMzwDi4j
+         naJQ==
+X-Gm-Message-State: AOAM533FQfknEY7F/dAuo5OBNUrfHl99ZaJwnTx2fD9DottRpay1AEX3
+        CykyBdRagifUn+rBbBWQ3Dz7olhduW/ENPORia1Cf6sJ3cW+Fg==
+X-Google-Smtp-Source: ABdhPJyIWV7afPQ6YPq+iZEhxZmEiLyYYS3TeAVJ/FpgJnAbvaVbcGQj82BI6DRkwNx1ZHOFN+BSXuWff2HAI2xUXxM=
+X-Received: by 2002:a25:2687:: with SMTP id m129mr1720084ybm.425.1601324692177;
+ Mon, 28 Sep 2020 13:24:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
- <9e99c5301fbbb4f5f601b69816ee1dc9ab0df948.camel@linux.ibm.com>
- <CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com>
- <8cf42e2752e442bb54e988261d8bf3cd22ad00f2.camel@linux.ibm.com>
- <20200909142750.GC3788224@kernel.org> <CAPGftE8jNys9aVfUZW2iE5vB=QWKEmmwwWuWq9ek0ZXp-Aobkg@mail.gmail.com>
- <CAEf4BzYDm3QOOgND9p+LR21bn98QMjE+VYspQSvi4ebG9EdW0g@mail.gmail.com>
-In-Reply-To: <CAEf4BzYDm3QOOgND9p+LR21bn98QMjE+VYspQSvi4ebG9EdW0g@mail.gmail.com>
+References: <CAMy7=ZVMPuXp6sOTPPtDYZbhan2PZDBUtsTTZ78PikxKMoBm9g@mail.gmail.com>
+ <CAEf4Bza00DMqu09vPL+1-_1361cw5HoDyE3pY6hSDkD0M-PGjA@mail.gmail.com> <CAMy7=ZVCUJKFA5AbaE3DeyCNsWXffWwcYtA6d5t9R5kgnzPi2A@mail.gmail.com>
+In-Reply-To: <CAMy7=ZVCUJKFA5AbaE3DeyCNsWXffWwcYtA6d5t9R5kgnzPi2A@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 28 Sep 2020 13:18:52 -0700
-Message-ID: <CAEf4Bzb7LZX8Y=qKpO5j3eUYU=tJzvNRYd1CdXXxq8Y-V4=+Vw@mail.gmail.com>
-Subject: Re: Problem with endianess of pahole BTF output for vmlinux
-To:     Tony Ambardar <tony.ambardar@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
-        David Marcinkovic <david.marcinkovic@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Borna Cafuk <borna.cafuk@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Date:   Mon, 28 Sep 2020 13:24:41 -0700
+Message-ID: <CAEf4BzaTXz6s2xfV0swvcpKFz=U+K1DzD0+DEHSZ+e4Yf0xxPA@mail.gmail.com>
+Subject: Re: Help using libbpf with kernel 4.14
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 11:19 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Sep 28, 2020 at 1:08 PM Yaniv Agman <yanivagman@gmail.com> wrote:
 >
-> On Sat, Sep 19, 2020 at 12:58 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=91=
+=D7=B3, 28 =D7=91=D7=A1=D7=A4=D7=98=D7=B3 2020 =D7=91-8:50 =D7=9E=D7=90=D7=
+=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
+> <=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
 > >
-> > On Wed, 9 Sep 2020 at 07:27, Arnaldo Carvalho de Melo
-> > <arnaldo.melo@gmail.com> wrote:
+> > On Fri, Sep 25, 2020 at 4:58 PM Yaniv Agman <yanivagman@gmail.com> wrot=
+e:
 > > >
-> > > Em Wed, Sep 09, 2020 at 11:02:24AM +0200, Ilya Leoshkevich escreveu:
-> > > > On Tue, 2020-09-08 at 13:18 -0700, Andrii Nakryiko wrote:
-> > > > > On Mon, Sep 7, 2020 at 9:02 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
-> > > > > > On Sat, 2020-09-05 at 21:16 -0700, Tony Ambardar wrote:
+> > > Hello,
 > > >
-> > [...]
-> > > > > > > Is this expected? Is DEBUG_INFO_BTF supported in general when
-> > > > > > > cross-compiling? How does one generate BTF encoded for the
-> > > > > > > target endianness with pahole?
-> > >
-> > > The BTF loader has support for endianness, its just the encoder that
-> > > doesn't :-\
-> > >
-> > > I.e. pahole can grok a big endian BTF payload on a little endian machine
-> > > and vice-versa, just can't cross-build BTF payloads ATM.
-> > >
-> > > > > Yes, it's expected, unfortunately. Right now cross-compiling to a
-> > > > > different endianness isn't supported. You can cross-compile only if
-> > > > > target endianness matches host endianness.
-> > >
-> > > I agree that having this in libbpf is better, it should be done as part
-> > > of producing the result of the deduplication phase.
-> > >
-> > Thanks for confirming this wasn't a case of operator error. My platforms for
-> > learning/experimenting with BPF have been small embedded ones, including
-> > cross-compiling to different archs, word-size and endianness, which have
-> > "helped" me run into multiple problems till now. This one is the first I
-> > couldn't work around however...
+> > > I'm developing a tool which is now based on BCC, and would like to
+> > > make the move to libbpf.
+> > > I need the tool to support a minimal kernel version 4.14, which
+> > > doesn't have CO-RE.
 > >
-> > [...]
-> > > > > I'm working on extending BTF APIs in libbpf at the moment. Switching
-> > > > > endianness would be rather easy once all that is done. With these new
-> > > > > APIs it will be possible to switch pahole to use libbpf APIs to
-> > > > > produce BTF output and support arbitrary endianness as well. Right
-> > > > > now, I'd rather avoid implementing this in pahole, libbpf is a much
-> > > > > better place for this (and will require ongoing updates if/when we
-> > > > > introduce new types and fields to BTF).
-> > >
-> > > Right, we could do it right after btf_dedup() and before
-> > > btf_elf__write(), doing the same process as in btf_loader.c, i.e.
-> > > checking if the ELF target arch is different in endianness and doing the
-> > > reverse of the loader.
-> > >
-> > > > > Hope this plan works for you guys.
-> > > >
-> > > > That sounds really good to me, thanks!
-> > >
-> > Andrii and Arnaldo, I really appreciate your working on a proper endianness fix.
-> > If you have a WIP or staging branch and could use some help please let me know.
+> > You don't need kernel itself to support CO-RE, you just need that
+> > kernel to have BTF in it. If the kernel is too old to have
+> > CONFIG_DEBUG_INFO_BTF config, you can still add BTF by running `pahole
+> > -J <path-to-vmlinux-image>`, if that's at all an option for your
+> > setup.
 > >
 >
-> I have a bunch of code changes locally. I'll clean that up, partition
-> libbpf and pahole patches, and post them for review this week. To
-> address endianness support, those are the prerequisites. Once those
-> changes land, I'll be able to solve endianness issues you are having.
-> So just a bit longer till all that is done, sorry for the wait!
+> Thanks, I didn't know that
 >
+> > >
+> > > I have read bcc-to-libbpf-howto-guide, and looked at the libbpf-tools=
+ of bcc,
+> > > but both only deal with newer kernels, and I failed to change them to
+> > > run with a 4.14 kernel.
+> > >
+> > > Although some of the bpf samples in the kernel source don't use CO-RE=
+,
+> > > they all use bpf_load.h,
+> > > and have dependencies on the tools dir, which I would like to avoid.
+> >
+> > Depending on what exactly you are trying to achieve with your BPF
+> > application, you might not need BPF CO-RE, and using libbpf without
+> > CO-RE would be enough for your needs. This would be the case if you
+> > don't need to access any of the kernel data structures (e.g., all sort
+> > of networking BPF apps: TC programs, cgroup sock progs, XDP). But if
+> > you need to do anything tracing related (e.g., looking at kernel's
+> > task_struct or any other internal structure), then you have no choice
+> > and you either have to do on-the-target-host runtime compilation (BCC
+> > way) or relocations (libbpf + BPF CO-RE). This is because of changing
+> > memory layout of kernel structures.
+> >
+> > So, unless you can compile one specific version of your BPF code for a
+> > one specific version of the kernel, you need either BCC or BPF CO-RE.
+> >
+>
+> I'm working on a tracing application
+> (https://github.com/aquasecurity/tracee) which now uses bcc. We now
+> require a minimal kernel version 4.14, and bcc, but eventually we
+> would like to support CO-RE. I thought that we could do the move in
+> two steps. First moving to libbpf and keeping the 4.14 minimal
+> requirement, then adding CO-RE support in the future.
+> In order to do that, I thought of changing bcc requirement to clang
+> requirement, and compile the program once during installation on the
+> target host. This way we get the added value of fast start time
+> without the need to compile every time the program starts (like bcc
+> does), plus having an easier move to CO-RE in the future.
 
-Question to folks that are working with 32-bit and/or big-endian
-architectures. Do you guys have an VM image that you'd be able to
-share with me, such that I can use it with qemu to test patches like
-this. My normal setup is all 64-bit/little-endian, so testing changes
-like this (and a few more I'm planning to do to address mixed 32-bit
-on the host vs 64-bit in BPF cases) is a bit problematic. And it's
-hard to get superpumped about spending lots of time setting up a new
-Linux image (never goes easy or fast for me).
+Right, pre-compiling on the target machine with host kernel headers
+should work. So just don't use any of CO-RE features (no CO-RE
+relocations, no vmlinux.h), and it should just work.
 
-So, if you do have something like this, please share. Thank you!
+>
+> A problem that I encountered with kernel 4.14 and libbpf was that when
+> using bpf_prog_load (If I remember correctly), it returned an error of
+> invalid argument (-22). Doing a small investigation I saw that it
+> happened when trying to create bpf maps with names. Indeed I saw that
+> libbpf API changed between kernel 4.14 and 4.15 and the function
+> bpf_create_map_node now takes map name as an argument. Is there a way
+> to workaround this with kernel 4.14 and still use map names in
+> userspace to refer to bpf maps with libbpf?
 
-> > Best regards,
-> > Tony
+So we do run a few simple tests loading BPF programs (using libbpf) on
+4.9 kernel, so map name should definitely not be a problem at all
+(libbpf is smart about detecting what's not supported in kernel and
+omitting non-essential things). It might be because of bpf_prog_load
+itself, which was long deprecated and you shouldn't use it for
+real-world applications. Please either use BPF skeleton or bpf_object
+APIs. It should just work, but if it doesn't please report back.
+
+>
+> > >
+> > > I would appreciate it if someone can help with a simple working
+> > > example of using libbpf on 4.14 kernel, without having any
+> > > dependencies. Specifically, I'm looking for an example makefile, and
+> > > to know how to load my bpf code with libbpf.
+> >
+> > libbpf-tools's Makefile would still work. Just drop dependency on
+> > vmlinux.h and include system headers directly, if necessary (and if
+> > you considered implications of kernel memory layout changes).
+> >
+>
+> Thanks, I'll try that
+>
+> > >
+> > > Thanks,
+> > > Yaniv
