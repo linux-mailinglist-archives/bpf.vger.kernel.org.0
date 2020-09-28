@@ -2,65 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E7F27AC5B
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 13:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D90E27ACAC
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 13:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgI1LAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 07:00:13 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:63954 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgI1LAN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:00:13 -0400
-X-Greylist: delayed 7105 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 07:00:08 EDT
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 08S91MsO013707
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Mon, 28 Sep 2020 02:01:22 -0700 (PDT)
-Received: from pek-lpg-core2.corp.ad.wrs.com (128.224.153.41) by
- ALA-HCB.corp.ad.wrs.com (147.11.189.41) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 28 Sep 2020 02:01:15 -0700
-From:   <zhe.he@windriver.com>
-To:     <gustavo@embeddedor.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, <zhe.he@windriver.com>
-Subject: [PATCH] powerpc: net: bpf_jit_comp: Fix misuse of fallthrough
-Date:   Mon, 28 Sep 2020 17:00:23 +0800
-Message-ID: <20200928090023.38117-1-zhe.he@windriver.com>
+        id S1726547AbgI1LZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 07:25:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726461AbgI1LZj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:25:39 -0400
+Received: from lore-desk.redhat.com (unknown [151.66.98.27])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6F2021D46;
+        Mon, 28 Sep 2020 11:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601292339;
+        bh=coB7kugviXWgFNAtg+pjbvIM06kqe3qbDxbESPKvT0g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=L7Zlfy5GaJ6WYjHrPMv1nXuJjLbfpspr3WrzHhqEr84tMcKMizUSPkqx9U5VN9F2P
+         sYFmTnTl+61bw2IUOXByXyMkvoWy0pHF4+nOLU50LvG5vYdbVm/1RDFwfjDGFiyHmX
+         5eTTRlEDqtPJqxF9xH5t4WAf755p+jEBWKh6exRo=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        brouer@redhat.com, lorenzo.bianconi@redhat.com
+Subject: [PATCH bpf-next] bpf: cpumap: remove rcpu pointer from cpu_map_build_skb signature
+Date:   Mon, 28 Sep 2020 13:24:57 +0200
+Message-Id: <33cb9b7dc447de3ea6fd6ce713ac41bca8794423.1601292015.git.lorenzo@kernel.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: He Zhe <zhe.he@windriver.com>
+Get rid of bpf_cpu_map_entry pointer in cpu_map_build_skb routine
+signature since it is no longer needed
 
-The user defined label following "fallthrough" is not considered by GCC
-and causes build failure.
-
-kernel-source/include/linux/compiler_attributes.h:208:41: error: attribute
-'fallthrough' not preceding a case label or default label [-Werror]
- 208   define fallthrough _attribute((fallthrough_))
-                          ^~~~~~~~~~~~~
-
-Signed-off-by: He Zhe <zhe.he@windriver.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- arch/powerpc/net/bpf_jit_comp.c | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/bpf/cpumap.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index 78d61f97371e..e809cb5a1631 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -475,7 +475,6 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
- 		case BPF_JMP | BPF_JSET | BPF_K:
- 		case BPF_JMP | BPF_JSET | BPF_X:
- 			true_cond = COND_NE;
--			fallthrough;
- 		cond_branch:
- 			/* same targets, can avoid doing the test :) */
- 			if (filter[i].jt == filter[i].jf) {
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 7e1a8ad0c32a..c61a23b564aa 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -155,8 +155,7 @@ static void cpu_map_kthread_stop(struct work_struct *work)
+ 	kthread_stop(rcpu->kthread);
+ }
+ 
+-static struct sk_buff *cpu_map_build_skb(struct bpf_cpu_map_entry *rcpu,
+-					 struct xdp_frame *xdpf,
++static struct sk_buff *cpu_map_build_skb(struct xdp_frame *xdpf,
+ 					 struct sk_buff *skb)
+ {
+ 	unsigned int hard_start_headroom;
+@@ -365,7 +364,7 @@ static int cpu_map_kthread_run(void *data)
+ 			struct sk_buff *skb = skbs[i];
+ 			int ret;
+ 
+-			skb = cpu_map_build_skb(rcpu, xdpf, skb);
++			skb = cpu_map_build_skb(xdpf, skb);
+ 			if (!skb) {
+ 				xdp_return_frame(xdpf);
+ 				continue;
 -- 
 2.26.2
 
