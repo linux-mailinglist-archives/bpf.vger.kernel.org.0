@@ -2,42 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DF127B4EE
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 21:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9227B27B534
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 21:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgI1TCw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 15:02:52 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43584 "EHLO
+        id S1726513AbgI1TZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 15:25:13 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46420 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1TCw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:02:52 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+        with ESMTP id S1726228AbgI1TZN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:25:13 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kMyQD-0006bv-Fd; Mon, 28 Sep 2020 21:02:49 +0200
+        id 1kMylm-0000bz-3J; Mon, 28 Sep 2020 21:25:06 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kMyQD-0003MY-8X; Mon, 28 Sep 2020 21:02:49 +0200
-Subject: Re: [PATCH bpf-next v2 4/6] bpf, libbpf: add bpf_tail_call_static
- helper for bpf programs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
-References: <cover.1601303057.git.daniel@iogearbox.net>
- <9c4b6a19ced3e2ee6c6d28f5f3883cc7b2b02400.1601303057.git.daniel@iogearbox.net>
- <CAEf4BzYxSkjJzPVzOkOQkOVPUKri9aa69QGFrUdGjAf7f9Uf=w@mail.gmail.com>
+        id 1kMyll-000Ji3-Qu; Mon, 28 Sep 2020 21:25:05 +0200
+Subject: Re: [PATCH bpf-next] xsk: fix possible crash in socket_release when
+ out-of-memory
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        netdev@vger.kernel.org, jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org
+References: <1601112373-10595-1-git-send-email-magnus.karlsson@gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <55eb1fc6-f02b-ae59-768c-c17295639601@iogearbox.net>
-Date:   Mon, 28 Sep 2020 21:02:48 +0200
+Message-ID: <c43d8022-362c-3d6f-89dc-a1ef183f77fb@iogearbox.net>
+Date:   Mon, 28 Sep 2020 21:25:05 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYxSkjJzPVzOkOQkOVPUKri9aa69QGFrUdGjAf7f9Uf=w@mail.gmail.com>
+In-Reply-To: <1601112373-10595-1-git-send-email-magnus.karlsson@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -47,46 +44,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/28/20 7:39 PM, Andrii Nakryiko wrote:
-> On Mon, Sep 28, 2020 at 7:39 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> Port of tail_call_static() helper function from Cilium's BPF code base [0]
->> to libbpf, so others can easily consume it as well. We've been using this
->> in production code for some time now. The main idea is that we guarantee
->> that the kernel's BPF infrastructure and JIT (here: x86_64) can patch the
->> JITed BPF insns with direct jumps instead of having to fall back to using
->> expensive retpolines. By using inline asm, we guarantee that the compiler
->> won't merge the call from different paths with potentially different
->> content of r2/r3.
->>
->> We're also using Cilium's __throw_build_bug() macro (here as: __bpf_unreachable())
->> in different places as a neat trick to trigger compilation errors when
->> compiler does not remove code at compilation time. This works for the BPF
->> back end as it does not implement the __builtin_trap().
->>
->>    [0] https://github.com/cilium/cilium/commit/f5537c26020d5297b70936c6b7d03a1e412a1035
->>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> Cc: Andrii Nakryiko <andriin@fb.com>
->> ---
+On 9/26/20 11:26 AM, Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
 > 
-> few optional nits below, but looks good to me:
+> Fix possible crash in socket_release when an out-of-memory error has
+> occurred in the bind call. If a socket using the XDP_SHARED_UMEM flag
+> encountered an error in xp_create_and_assign_umem, the bind code
+> jumped to the exit routine but erroneously forgot to set the err value
+> before jumping. This meant that the exit routine thought the setup
+> went well and set the state of the socket to XSK_BOUND. The xsk socket
+> release code will then, at application exit, think that this is a
+> properly setup socket, when it is not, leading to a crash when all
+> fields in the socket have in fact not been initialized properly. Fix
+> this by setting the err variable in xsk_bind so that the socket is not
+> set to XSK_BOUND which leads to the clean-up in xsk_release not being
+> triggered.
 > 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-[...]
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Reported-by: syzbot+ddc7b4944bc61da19b81@syzkaller.appspotmail.com
+> Fixes: 1c1efc2af158 ("xsk: Create and free buffer pool independently from umem")
 
-Thanks!
+Looks good either way, applied, thanks!
 
->> +/*
->> + * Helper function to perform a tail call with a constant/immediate map slot.
->> + */
->> +static __always_inline void
->> +bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
-> 
-> nit: const void *ctx would work here, right? would avoid users having
-> to do unnecessary casts in some cases
+> I have not been able to reproduce this issue using the syzkaller
+> config and reproducer, so I cannot guarantee it fixes it. But this bug
+> is real and it is triggered by an out-of-memory in
+> xp_create_and_assign_umem, just like syzcaller injects, and would lead
+> to the same crash in dev_hold in xsk_release.
 
-The bpf_tail_call() UAPI signature only has 'void *ctx' as well, so shouldn't
-cause any issues as drop-in replacement wrt casts, but also ctx here is not always
-a read-only [context] object either so it may potentially be a bit misleading to
-users to convert it to const.
+You can just asked syzbot (which I just did on the original report) via:
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+
+Thanks,
+Daniel
