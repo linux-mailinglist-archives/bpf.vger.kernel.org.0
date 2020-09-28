@@ -2,138 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A326627B36E
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 19:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D281427B3A7
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 19:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgI1RkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 13:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
+        id S1726601AbgI1Rvb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 13:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbgI1RkI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:40:08 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530E2C061755;
-        Mon, 28 Sep 2020 10:40:07 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id f70so1510613ybg.13;
-        Mon, 28 Sep 2020 10:40:07 -0700 (PDT)
+        with ESMTP id S1726578AbgI1Rvb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:51:31 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21F4C061755;
+        Mon, 28 Sep 2020 10:51:30 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id f70so1535487ybg.13;
+        Mon, 28 Sep 2020 10:51:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bRUB/bwFEosynQ9K/iHMMiBU5kn7FkW/CO7KofKLlos=;
-        b=VBtgkvhfPZXlkH9wbKCdmPcpJ8oNrc5LzViJQ3qoePtupLyCjiZ4OOjm10NdGvllI9
-         j2iBN+oj8Z/ZBlPqmXgIJJCDiaUT9B3Rq/5dVhNefZZmk9udP0EPSvkwXBYf9yVDe8hM
-         WF2tjNj/IGXXK2Wl3k0fy4e+5IXuiwTToHpK+72A0nqHiwxGEEkCOl9gffBP9/g78ufT
-         TRYsVSlpHKLP5eJej2BQTyWRx4yqPJJ0ika6b5J28Nhl8Mjc24rasbTdt5SxJBE1onWx
-         0M7wZj1OsV4DKm3CdoxBzGfsjVUxzf/jTm/yP476X30evHtWD9vIDWZOPQbmktlM4GNM
-         V+8Q==
+        bh=qTP8d6dwLkAh+M4ApAYeMXWqLPV1jTHesAupoc2kHSY=;
+        b=E4fi1zAHUeotTp0Z1r5nI7mQsi3gxEL5SyafmaJ1/GlQ6KNNGQCfsT+51gs6ePjSkc
+         LlE2AkVyA10UVrMw4hQj4Ax1kjhWapYFsqdBGXKOOuQgI7k+jnByZ6iF+jUMiG0VS/yz
+         PpPEWhEruvtoyS6SDZndOGZC++A/KfE7OVVisrDH5iJ2iOveP80Ayf2Wn3PYVtU5W3sh
+         Ug+Ejwii/v+3kCRCpcqf+eKyC45hZiq0Paaeu6HAgz9RNaaQcF4ldOUpZ3Gg7TRUrp6+
+         Q9dWuccPrdz7PnVyCWkzwU06s8flWWPDI/cZ69cqaKbsnLeHtTjWvt4/FVb7uAKR50Lb
+         KJZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bRUB/bwFEosynQ9K/iHMMiBU5kn7FkW/CO7KofKLlos=;
-        b=kLp/LHT1P6KQpgF4Khhv2h+2GSuWHDhuUavO7h+bP/of7gAWH/Q8h2Q9//2xrxX2hy
-         sXr0pN28AWI/tMhnsX3kXONu+msVF3Z75WglHCxQiwUUrJ5wwSS4B4e29Aq5MAfKjr9G
-         oVkAUINrStPDbLHJbYPuUSC7S7Gl1aEQDeVLpHGklrXRQ6Ur/wIkAe40e+eQAUq49iiw
-         eqpAGuPE5o0gMynGktR+ItMnt+hX9cIxeAI0sE/WeptiIRqB0OmgC3UUECKFaTlizKHC
-         NW70stvl7KMnIXAQm5t4tCwYyrMVuFkK8HKovzH5iRtgo8KT6G9T6SUlO6vQc9Mk5UpE
-         ZajA==
-X-Gm-Message-State: AOAM532U2Iw1mtkqwUKtTIRh2MQaGzbS55twd5vgV8k9y3VTrbX/Dj50
-        HSjR/HgN/Z7La6duxHQIa5HPcmI5jaU+U7lw+ck=
-X-Google-Smtp-Source: ABdhPJxQM1/V6NaKJCNgmuY84m1KTfRM5PpfbnvpUgsehTkepFHNfpLccl/qEDLPf6yIZNb4pxzYyclAl79UAG7EdRM=
-X-Received: by 2002:a25:8541:: with SMTP id f1mr905314ybn.230.1601314806520;
- Mon, 28 Sep 2020 10:40:06 -0700 (PDT)
+        bh=qTP8d6dwLkAh+M4ApAYeMXWqLPV1jTHesAupoc2kHSY=;
+        b=miQEotDMH5cP3oyAC4NU+AsD4D4EUnAj5u6IdiRJoSC0MMCv88O+WmG4oiZasttge6
+         Fm3QbUT62noY2KmYs1M152NJ1zKu0llNDLi9fiOKYAkX19T4Nnw9VXfAeeHQQhtZZM2V
+         dTWQ3CjXym8mi4ss80aJ09IcMFqoKuF44tGDrqOTTVREqee2iMXneCASxfVfr+F8srOP
+         B28IHm34aP0CFMCVKP6cbAnt4G9swGgFtmFykep89RqTA7bvOb5p1rRKPJfDHReUq0d1
+         VzM+/NlJjjKeKYPLXQhubYT2kLBeFQiCsQ+NaCjgc2E1mE/GenV/uACmA5ExohY8aF/N
+         YBog==
+X-Gm-Message-State: AOAM533d1WEE6SUinGy2HU1XRJuU5wDaW6gNVcTou1/cs/5VVnzwi2V+
+        /WXunzASWI1mwIMeSQnGisXCwy9c9W8hgyAyIl0=
+X-Google-Smtp-Source: ABdhPJzb4iP1Y4Z4wPLox10qrUF6c/jCk5f9w7mRUTEZzUpGrHN35vSBQ4T21G8uAgOHZ7AZHiNAaeVff+gm2HvX/7w=
+X-Received: by 2002:a25:2687:: with SMTP id m129mr906465ybm.425.1601315490150;
+ Mon, 28 Sep 2020 10:51:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1601303057.git.daniel@iogearbox.net> <9c4b6a19ced3e2ee6c6d28f5f3883cc7b2b02400.1601303057.git.daniel@iogearbox.net>
-In-Reply-To: <9c4b6a19ced3e2ee6c6d28f5f3883cc7b2b02400.1601303057.git.daniel@iogearbox.net>
+References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
+ <1600883188-4831-7-git-send-email-alan.maguire@oracle.com>
+ <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com> <alpine.LRH.2.21.2009281500220.13299@localhost>
+In-Reply-To: <alpine.LRH.2.21.2009281500220.13299@localhost>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 28 Sep 2020 10:39:55 -0700
-Message-ID: <CAEf4BzYxSkjJzPVzOkOQkOVPUKri9aa69QGFrUdGjAf7f9Uf=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/6] bpf, libbpf: add bpf_tail_call_static
- helper for bpf programs
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 28 Sep 2020 10:51:19 -0700
+Message-ID: <CAEf4Bzb2JE_V7cQ=LGto6jHbiKUAg+A5MuqQ0LGb9L8qTUk6yg@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 6/6] selftests/bpf: add test for
+ bpf_seq_printf_btf helper
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        andriy.shevchenko@linux.intel.com, Petr Mladek <pmladek@suse.com>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         john fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
+        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Andrey Ignatov <rdna@fb.com>, scott.branden@broadcom.com,
+        Quentin Monnet <quentin@isovalent.com>,
+        Carlos Neira <cneirabustos@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 7:39 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Mon, Sep 28, 2020 at 7:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> Port of tail_call_static() helper function from Cilium's BPF code base [0]
-> to libbpf, so others can easily consume it as well. We've been using this
-> in production code for some time now. The main idea is that we guarantee
-> that the kernel's BPF infrastructure and JIT (here: x86_64) can patch the
-> JITed BPF insns with direct jumps instead of having to fall back to using
-> expensive retpolines. By using inline asm, we guarantee that the compiler
-> won't merge the call from different paths with potentially different
-> content of r2/r3.
 >
-> We're also using Cilium's __throw_build_bug() macro (here as: __bpf_unreachable())
-> in different places as a neat trick to trigger compilation errors when
-> compiler does not remove code at compilation time. This works for the BPF
-> back end as it does not implement the __builtin_trap().
 >
->   [0] https://github.com/cilium/cilium/commit/f5537c26020d5297b70936c6b7d03a1e412a1035
+> On Thu, 24 Sep 2020, Alexei Starovoitov wrote:
 >
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> ---
+> > to whatever number, but printing single task_struct needs ~800 lines and
+> > ~18kbytes. Humans can scroll through that much spam, but can we make it less
+> > verbose by default somehow?
+> > May be not in this patch set, but in the follow up?
+> >
+>
+> One approach that might work would be to devote 4 bits or so of
+> flag space to a "maximum depth" specifier; i.e. at depth 1,
+> only base types are displayed, no aggregate types like arrays,
+> structs and unions.  We've already got depth processing in the
+> code to figure out if possibly zeroed nested data needs to be
+> displayed, so it should hopefully be a simple follow-up.
+>
+> One way to express it would be to use "..." to denote field(s)
+> were omitted. We could even use the number of "."s to denote
+> cases where multiple fields were omitted, giving a visual sense
+> of how much data was omitted.  So for example with
+> BTF_F_MAX_DEPTH(1), task_struct looks like this:
+>
+> (struct task_struct){
+>  .state = ()1,
+>  .stack = ( *)0x00000000029d1e6f,
+>  ...
+>  .flags = (unsigned int)4194560,
+>  ...
+>  .cpu = (unsigned int)36,
+>  .wakee_flips = (unsigned int)11,
+>  .wakee_flip_decay_ts = (long unsigned int)4294914874,
+>  .last_wakee = (struct task_struct *)0x000000006c7dfe6d,
+>  .recent_used_cpu = (int)19,
+>  .wake_cpu = (int)36,
+>  .prio = (int)120,
+>  .static_prio = (int)120,
+>  .normal_prio = (int)120,
+>  .sched_class = (struct sched_class *)0x00000000ad1561e6,
+>  ...
+>  .exec_start = (u64)674402577156,
+>  .sum_exec_runtime = (u64)5009664110,
+>  .vruntime = (u64)167038057,
+>  .prev_sum_exec_runtime = (u64)5009578167,
+>  .nr_migrations = (u64)54,
+>  .depth = (int)1,
+>  .parent = (struct sched_entity *)0x00000000cba60e7d,
+>  .cfs_rq = (struct cfs_rq *)0x0000000014f353ed,
+>  ...
+>
+> ...etc. What do you think?
 
-few optional nits below, but looks good to me:
+It's not clear to me what exactly is omitted with ... ? Would it make
+sense to still at least list a field name and "abbreviated" value.
+E.g., for arrays:
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+.array_field = (int[16]){ ... },
 
->  tools/lib/bpf/bpf_helpers.h | 46 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
+Similarly for struct:
+
+.struct_field = (struct my_struct){ ... },
+
+? With just '...' I get a very strong and unsettling feeling of
+missing out on the important stuff :)
+
+>
+> > > +SEC("iter/task")
+> > > +int dump_task_fs_struct(struct bpf_iter__task *ctx)
+> > > +{
+> > > +   static const char fs_type[] = "struct fs_struct";
+> > > +   struct seq_file *seq = ctx->meta->seq;
+> > > +   struct task_struct *task = ctx->task;
+> > > +   struct fs_struct *fs = (void *)0;
+> > > +   static struct btf_ptr ptr = { };
+> > > +   long ret;
+> > > +
+> > > +   if (task)
+> > > +           fs = task->fs;
+> > > +
+> > > +   ptr.type = fs_type;
+> > > +   ptr.ptr = fs;
+> >
+> > imo the following is better:
+> >        ptr.type_id = __builtin_btf_type_id(*fs, 1);
+> >        ptr.ptr = fs;
+> >
+>
+> I'm still seeing lookup failures using __builtin_btf_type_id(,1) -
+> whereas both __builtin_btf_type_id(,0) and Andrii's
+> suggestion of bpf_core_type_id_kernel() work. Not sure what's
+> going on - pahole is v1.17, clang is
+
+bpf_core_type_id_kernel() is
+
+__builtin_btf_type_id(*(typeof(type) *)0, BPF_TYPE_ID_TARGET)
+
+BPF_TYPE_ID_TARGET is exactly 1. So I bet it's because of the type
+capturing through typeof() and pointer casting/dereferencing, which
+preserves type information properly. Regardless, just use the helper,
+IMO.
+
+
+>
+> clang version 12.0.0 (/mnt/src/llvm-project/clang
+> 7ab7b979d29e1e43701cf690f5cf1903740f50e3)
 >
 
 [...]
-
-> +/*
-> + * Helper function to perform a tail call with a constant/immediate map slot.
-> + */
-> +static __always_inline void
-> +bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
-
-nit: const void *ctx would work here, right? would avoid users having
-to do unnecessary casts in some cases
-
-> +{
-> +       if (!__builtin_constant_p(slot))
-> +               __bpf_unreachable();
-> +
-> +       /*
-> +        * Provide a hard guarantee that LLVM won't optimize setting r2 (map
-> +        * pointer) and r3 (constant map index) from _different paths_ ending
-> +        * up at the _same_ call insn as otherwise we won't be able to use the
-> +        * jmpq/nopl retpoline-free patching by the x86-64 JIT in the kernel
-> +        * given they mismatch. See also d2e4c1e6c294 ("bpf: Constant map key
-> +        * tracking for prog array pokes") for details on verifier tracking.
-> +        *
-> +        * Note on clobber list: we need to stay in-line with BPF calling
-> +        * convention, so even if we don't end up using r0, r4, r5, we need
-> +        * to mark them as clobber so that LLVM doesn't end up using them
-> +        * before / after the call.
-> +        */
-> +       asm volatile("r1 = %[ctx]\n\t"
-> +                    "r2 = %[map]\n\t"
-> +                    "r3 = %[slot]\n\t"
-> +                    "call 12\n\t"
-
-nit: it's weird to have tabs at the end of each string literal,
-especially that r1 doesn't start with a tab...
-
-> +                    :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
-> +                    : "r0", "r1", "r2", "r3", "r4", "r5");
-> +}
-> +
->  /*
->   * Helper structure used by eBPF C program
->   * to describe BPF map attributes to libbpf loader
-> --
-> 2.21.0
->
