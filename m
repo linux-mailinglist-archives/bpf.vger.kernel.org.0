@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD3827B6FE
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 23:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F3427B707
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 23:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgI1V1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 17:27:39 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34674 "EHLO
+        id S1726930AbgI1VdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 17:33:05 -0400
+Received: from www62.your-server.de ([213.133.104.62]:35526 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgI1V1i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 17:27:38 -0400
+        with ESMTP id S1726924AbgI1VdF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 17:33:05 -0400
 Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kN0gK-00021M-Hv; Mon, 28 Sep 2020 23:27:36 +0200
+        id 1kN0lb-0002Ff-Bi; Mon, 28 Sep 2020 23:33:03 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kN0gK-000283-Bo; Mon, 28 Sep 2020 23:27:36 +0200
-Subject: Re: [PATCH v6 bpf-next 0/3] enable BPF_PROG_TEST_RUN for raw_tp
-To:     Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     kernel-team@fb.com, ast@kernel.org, john.fastabend@gmail.com,
-        kpsingh@chromium.org
-References: <20200925205432.1777-1-songliubraving@fb.com>
+        id 1kN0la-000Rm8-ID; Mon, 28 Sep 2020 23:33:03 +0200
+Subject: Re: [PATCH bpf-next] bpf: cpumap: remove rcpu pointer from
+ cpu_map_build_skb signature
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, brouer@redhat.com,
+        lorenzo.bianconi@redhat.com
+References: <33cb9b7dc447de3ea6fd6ce713ac41bca8794423.1601292015.git.lorenzo@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <86d5e191-dd0f-d025-a68a-15b4472f0063@iogearbox.net>
-Date:   Mon, 28 Sep 2020 23:27:35 +0200
+Message-ID: <f74f7b21-bba2-a26d-b66d-9cb5f26b5e04@iogearbox.net>
+Date:   Mon, 28 Sep 2020 23:32:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200925205432.1777-1-songliubraving@fb.com>
+In-Reply-To: <33cb9b7dc447de3ea6fd6ce713ac41bca8794423.1601292015.git.lorenzo@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,10 +43,10 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/25/20 10:54 PM, Song Liu wrote:
-> This set enables BPF_PROG_TEST_RUN for raw_tracepoint type programs. This
-> set also enables running the raw_tp program on a specific CPU. This feature
-> can be used by user space to trigger programs that access percpu resources,
-> e.g. perf_event, percpu variables.
+On 9/28/20 1:24 PM, Lorenzo Bianconi wrote:
+> Get rid of bpf_cpu_map_entry pointer in cpu_map_build_skb routine
+> signature since it is no longer needed
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
 Applied, thanks!
