@@ -2,83 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C0827AA34
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 11:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0258027AA3F
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 11:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgI1JGO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 05:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S1726465AbgI1JIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 05:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgI1JGO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:06:14 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4B8C0613CE
-        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 02:06:14 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id u25so200872otq.6
-        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 02:06:14 -0700 (PDT)
+        with ESMTP id S1726461AbgI1JIj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 05:08:39 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90229C0613CE
+        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 02:08:39 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d4so258915wmd.5
+        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 02:08:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aLMEwo1GTL8rxXudG0GEtZJfPOiss5JdOgm8YTgj2ew=;
-        b=CuyOduRhEkNZODuCVzegsNXw2bIgsJ/2DykzPHgIqv0B1FArA+4Lxc3NeipV062q/H
-         GIoxRScktP5IDFGaNlu/6riiJ2zJ4MlUQqqTYVUx8OhazSEjtFnbLowDUf54dXhw8C7/
-         6R+tL7c1tsD/hykM3Bo5VCGy61woKjidXTSMo=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EKVPdZy/sjSkGpbl4mmaWgA3/1wInIBCoopNG3gWUyk=;
+        b=aaYblTnwpHARbTMEbMzlRDkO9zJTdrVxObJrgHKZ30e5zZvd3lQvTR4jA7xKSiPsXP
+         xsbrQvut1WGgZdQD0E0eT54hhJw+DovP57rQhomTRfZo/saaXekvVKEj2QwWMv9TnghG
+         Ffx086TfGM958gRhPOaPxzkhWeBBRuFG27i5Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aLMEwo1GTL8rxXudG0GEtZJfPOiss5JdOgm8YTgj2ew=;
-        b=iZc+O2Ucw8BlSAL7RgEDF87n2tin8zFNq8FhliI0inCGSeull+sGfwAkWhNCAFsBMr
-         +8ibz1+3STNSP7ewP4qEnJ8/g1TiCfAcLf+Rk8f7J0y/AWNAaI2oRF4WFx6ZL0m1fjFD
-         f3hrM3ga32pvOlEcdn495Kwno0XEQwsgd1zFRyhsi3ejNWRS+ExxxcO69//sL2IKrogL
-         LZUQo323FkaReVw8nUPhw86rDY2II5vviCmwWK3x+03yQcNbSMBNVcuZcIcUwJ3RA1yc
-         uvETQvgrpkz610pRWwLkNwF69PzygiCtWDKmal3Iub6omozlLduXAKpsn2fyP2DlvpoN
-         qNPw==
-X-Gm-Message-State: AOAM532yLfrWqQv/uDyueaO3G/ohQMF6M1q8CDW7zmD7sCvBU2BpEYCL
-        UJs3woGdZyJPOtVzFLYIZ/9AJy0dW7OWWy2aa/yEBg==
-X-Google-Smtp-Source: ABdhPJxs/FZB02Ft8ZmDTuS0bYLgBEPkG0xHeAkww2lbFRxtnPCC8MW6Nr++yZFeBJr/uUIJk4Ekbp6bKiCXxI/Gyrs=
-X-Received: by 2002:a05:6830:12c7:: with SMTP id a7mr308019otq.334.1601283973942;
- Mon, 28 Sep 2020 02:06:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200925095630.49207-1-lmb@cloudflare.com> <20200925095630.49207-2-lmb@cloudflare.com>
- <20200925215359.l5lbicqdyx44spoc@kafai-mbp>
-In-Reply-To: <20200925215359.l5lbicqdyx44spoc@kafai-mbp>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EKVPdZy/sjSkGpbl4mmaWgA3/1wInIBCoopNG3gWUyk=;
+        b=RpgAw19gQmiMgvxNG6al3N9u4JNGWLtdCxiosHspWc6n7dX9Z0UEO3+kmA/InvIPRC
+         7MXMNF4//wsSja7BLUJl17ZRMJN8xwbvLUqPdUfRMWx4TtuxM2e/Ditoxu1WosaRr/5i
+         HhVyC7U1uV2NhbZoBu29vfYZkD9sJ+73pTU6Tr7SFHg2q3++N6BMq28GKKV3Ic0ax9sx
+         Pi7JeRO1rg8WfAnQ8rr7CuyKbgRJz+lLyGjOqjgZqrtVV130r9AKOdIjm1akL2QEivVV
+         7QkNERR1xwfgXQ6Te2e7WHbBkeTPiRt3u8qX4WqDawrPLioM2T7sivh4rOyfTjLTr+FH
+         NFLQ==
+X-Gm-Message-State: AOAM5322ib/M57FosU6sP7Ync+LB0ZpecjaA4Vg29hsFd8rUUYsUeZHj
+        LcQxQN5Ewe/6F/wA52dUPHgDog==
+X-Google-Smtp-Source: ABdhPJy5h6LN59OS60mMZGMU5YEr1O4Ubdjy8bMmkjK3hyk0W591Z7KG/vI4n8oqrT0qmLVi7ahWtw==
+X-Received: by 2002:a1c:4885:: with SMTP id v127mr583443wma.129.1601284118067;
+        Mon, 28 Sep 2020 02:08:38 -0700 (PDT)
+Received: from antares.lan (1.f.1.6.a.e.6.5.a.0.3.2.4.7.4.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:474:230a:56ea:61f1])
+        by smtp.gmail.com with ESMTPSA id u13sm479631wrm.77.2020.09.28.02.08.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 02:08:37 -0700 (PDT)
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 28 Sep 2020 10:06:02 +0100
-Message-ID: <CACAyw9-iXY5GqpLOOHkkDMvhPnES_1HMR8PMz0K2PR8wfbHqew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: sockmap: enable map_update_elem from bpf_iter
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     kafai@fb.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/4] Sockmap copying
+Date:   Mon, 28 Sep 2020 10:08:01 +0100
+Message-Id: <20200928090805.23343-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 22:54, Martin KaFai Lau <kafai@fb.com> wrote:
->
-> > +     if (unlikely(!sk))
-> sk_fullsock(sk) test is also needed.
->
-> > +             return -EINVAL;
->
-> > +
-> >       if (!sock_map_sk_is_suitable(sk))
-> sk->sk_type is used in sock_map_sk_is_suitable().
-> sk_type is not in sock_common.
+Changes in v2:
+- Check sk_fullsock in map_update_elem (Martin)
 
-Oh my, thanks!
+Enable calling map_update_elem on sockmaps from bpf_iter context. This
+in turn allows us to copy a sockmap by iterating its elements.
+
+The change itself is tiny, all thanks to the ground work from Martin,
+whose series [1] this patch is based on. I updated the tests to do some
+copying, and also included two cleanups.
+
+I'm sending this out now rather than when Martin's series has landed
+because I hope this can get in before the merge window (potentially)
+closes this weekend.
+
+1: https://lore.kernel.org/bpf/20200925000337.3853598-1-kafai@fb.com/
+
+Lorenz Bauer (4):
+  bpf: sockmap: enable map_update_elem from bpf_iter
+  selftests: bpf: Add helper to compare socket cookies
+  selftests: bpf: remove shared header from sockmap iter test
+  selftest: bpf: Test copying a sockmap and sockhash
+
+ kernel/bpf/verifier.c                         |   2 +-
+ net/core/sock_map.c                           |   3 +
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 100 +++++++++++-------
+ .../selftests/bpf/progs/bpf_iter_sockmap.c    |  32 ++++--
+ .../selftests/bpf/progs/bpf_iter_sockmap.h    |   3 -
+ 5 files changed, 90 insertions(+), 50 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_sockmap.h
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.25.1
 
-www.cloudflare.com
