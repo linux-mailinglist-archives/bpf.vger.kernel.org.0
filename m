@@ -2,105 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7121227A924
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 09:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E409C27A96E
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 10:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgI1H4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 03:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgI1H4t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:56:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B717C0613CE;
-        Mon, 28 Sep 2020 00:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DPKsOe4ba3eqRNFOJkwafyOb5NNcsVGyhf7wFCh0JJw=; b=crzRZ5WE98TMTp3swk6K9/gew2
-        eWzYPuFqMWumU2/LErko7uRcEiknFwK7OYsi/Gt/XY7BdqDoC4AFLoFtR+zV5EukB9GMm0Z8HmTLd
-        jDWdTSKcNee3YEyx2Ojiu3xEUCmSiTpCxmG9hbXydK94ZsXL/OK+grfCw1mTpttMxSg1DfaT4xKy/
-        qIXuO6Cl445qklZk1tO6FLfkb0IKz5oGeI/KMOmQSh+EKLKsTeH4++YfYiYO2soPWeWt4w3MZjjex
-        ZMg5Y4I8p24h/fu+ZTCVfdeFTIFL+BySja4xStflWqWAzrC3X3v0C04LeV5TPK6CFJU7WblHKK9Ky
-        QfJOXdeg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kMo18-00042K-K7; Mon, 28 Sep 2020 07:56:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 64C04303F45;
-        Mon, 28 Sep 2020 09:56:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 206F720BCC934; Mon, 28 Sep 2020 09:56:12 +0200 (CEST)
-Date:   Mon, 28 Sep 2020 09:56:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        David Ahern <dsahern@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>, hawk@kernel.org,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        netdev <netdev@vger.kernel.org>, petrm@mellanox.com,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: WARNING in print_bfs_bug
-Message-ID: <20200928075612.GB2594@hirez.programming.kicks-ass.net>
-References: <000000000000d73b12059608812b@google.com>
- <000000000000568a9105963ad7ac@google.com>
- <CACT4Y+YBi=5Q0tpND7FKU1j1YNy1Pe+Xkgc+c_Xtf_L_pyAcqg@mail.gmail.com>
+        id S1726540AbgI1IWD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 04:22:03 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52436 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgI1IWD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:22:03 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kMoPu-0004wy-Mm; Mon, 28 Sep 2020 10:21:50 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kMoPu-000VQk-HS; Mon, 28 Sep 2020 10:21:50 +0200
+To:     bpf@vger.kernel.org, xdp-newbies@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@fb.com, tgraf@suug.ch,
+        davem@davemloft.net
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Subject: Call for Proposals: eBPF Summit 2020
+Message-ID: <e3c3aa3d-fd07-4963-2767-793dddd42376@iogearbox.net>
+Date:   Mon, 28 Sep 2020 10:21:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+YBi=5Q0tpND7FKU1j1YNy1Pe+Xkgc+c_Xtf_L_pyAcqg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25940/Sun Sep 27 15:51:36 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 10:57:24AM +0200, Dmitry Vyukov wrote:
-> On Thu, Oct 31, 2019 at 9:39 PM syzbot
-> <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com> wrote:
-> >
-> > syzbot has found a reproducer for the following crash on:
-> >
-> > HEAD commit:    49afce6d Add linux-next specific files for 20191031
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=11eea36ce00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f119b33031056
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=62ebe501c1ce9a91f68c
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c162f4e00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131b5eb8e00000
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
-> 
-> This is another LOCKDEP-related top crasher. syzkaller finds just this
-> one (see below).
-> I think we need to disable LOCKDEP temporary until this and other
-> LOCKDEP issues are resolved. I've filed
-> https://github.com/google/syzkaller/issues/2140 to track
-> disabling/enabling.
+We're excited to announce that the call for proposals is now open for the inaugural
+eBPF Summit, a virtual event, targeted at DevOps, platform architects and developers.
 
-There is a potential patch for it:
+The goal is to have a gathering of users or potential users of eBPF(/XDP) as well as
+developers in order to exchange ideas, use cases and to learn about projects utilizing
+eBPF as a core technology.
 
-  https://lkml.kernel.org/r/20200917080210.108095-1-boqun.feng@gmail.com
+The summit will be held on October 28-29th, 2020, is open to everyone and free of
+charge.
 
-Let me try and digest it.
+Please submit your proposals or register for participation on the official summit
+website at:
+
+    https://ebpf.io/ebpf-summit-2020-cfp
+
+Potential topics of interest include:
+
+  - Using eBPF to troubleshoot application and system performance
+  - Applying eBPF to implement zero trust, runtime security, network policy
+  - Tackling infrastructure scalability challenges with eBPF
+  - Applying eBPF to networking and load-balancing
+  - Application profiling and tracing with eBPF
+  - System and application monitoring with eBPF
+  - Unlocking new levels of observability with eBPF
+  - Advancements in the eBPF core infrastructure and libraries
+  - eBPF community related topics
+
+Proposals must be submitted by October 14, and submitters will be notified of
+acceptance by October 16.
