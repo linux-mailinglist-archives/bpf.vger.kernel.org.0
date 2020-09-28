@@ -2,373 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D24627B021
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 16:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8818C27B0CE
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 17:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgI1OjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 10:39:19 -0400
-Received: from www62.your-server.de ([213.133.104.62]:59248 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726594AbgI1OjI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:39:08 -0400
-Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kMuIy-0002e5-8c; Mon, 28 Sep 2020 16:39:04 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2 6/6] bpf, selftests: add redirect_neigh selftest
-Date:   Mon, 28 Sep 2020 16:38:57 +0200
-Message-Id: <ec55cfe8d484fd37b42b8cd8684f3214643ae4fe.1601303057.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1601303057.git.daniel@iogearbox.net>
-References: <cover.1601303057.git.daniel@iogearbox.net>
+        id S1726281AbgI1PUO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 11:20:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44047 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726465AbgI1PUO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Sep 2020 11:20:14 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601306412;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=T+TlEWvOzz1bp6rbFPHc5srBgrQFT4vMRBhBUH6sIXg=;
+        b=RYouz3b4za5P3z6GxnJNO39g1hg6l5du/NEKw/jsFhTJdeumQt2kGQ6DPNX2HwMGEpSsAD
+        tw/iQ2f4n4wYvbUD7/rH0jHFsA3TjqMs7Hg3qELwJv+720gyPjeY+7wnWalA2kOMWkoEiy
+        A2Tz6iqJPfOFsjPXbcnmbnJfNKY0qqM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-Z2SeLzhjMcCqt0sfT7UoWQ-1; Mon, 28 Sep 2020 11:20:07 -0400
+X-MC-Unique: Z2SeLzhjMcCqt0sfT7UoWQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D3A410BBEC5;
+        Mon, 28 Sep 2020 15:20:06 +0000 (UTC)
+Received: from [10.36.112.171] (ovpn-112-171.ams2.redhat.com [10.36.112.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D81845D9CC;
+        Mon, 28 Sep 2020 15:19:58 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     andriin@fb.com, "Alexei Starovoitov" <ast@kernel.org>,
+        "Toke =?utf-8?b?SMO4aWxhbmQtSsO4cmdlbnNlbg==?=" <toke@redhat.com>,
+        "Jesper Dangaard Brouer" <brouer@redhat.com>
+Cc:     Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri <jolsa@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@redhat.com>
+Subject: XDP/eBPF/jit problem, system crash, with some ctx access changes
+Date:   Mon, 28 Sep 2020 17:19:57 +0200
+Message-ID: <153DBF54-2F39-48B0-872A-4C21A4544BB7@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25940/Sun Sep 27 15:51:36 2020)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a small test that excercises the new redirect_neigh() helper for the
-IPv4 and IPv6 case.
+Hi all,
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- .../selftests/bpf/progs/test_tc_neigh.c       | 144 +++++++++++++++
- tools/testing/selftests/bpf/test_tc_neigh.sh  | 168 ++++++++++++++++++
- 2 files changed, 312 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_neigh.c
- create mode 100755 tools/testing/selftests/bpf/test_tc_neigh.sh
+I'm working on a PoC for some XDP multi-buffer access, but I'm running 
+into some jit/eBPF problem.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_neigh.c b/tools/testing/selftests/bpf/progs/test_tc_neigh.c
-new file mode 100644
-index 000000000000..889a72c3024f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_neigh.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdint.h>
-+#include <stdbool.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/stddef.h>
-+#include <linux/pkt_cls.h>
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+#ifndef barrier_data
-+# define barrier_data(ptr)	asm volatile("": :"r"(ptr) :"memory")
-+#endif
-+
-+#ifndef ctx_ptr
-+# define ctx_ptr(field)		(void *)(long)(field)
-+#endif
-+
-+#define dst_to_src_tmp		0xeeddddeeU
-+#define src_to_dst_tmp		0xeeffffeeU
-+
-+#define ip4_src			0xac100164 /* 172.16.1.100 */
-+#define ip4_dst			0xac100264 /* 172.16.2.100 */
-+
-+#define ip6_src			{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
-+				  0x00, 0x01, 0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe }
-+#define ip6_dst			{ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
-+				  0x00, 0x02, 0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe }
-+
-+#ifndef v6_equal
-+# define v6_equal(a, b)		(a.s6_addr32[0] == b.s6_addr32[0] && \
-+				 a.s6_addr32[1] == b.s6_addr32[1] && \
-+				 a.s6_addr32[2] == b.s6_addr32[2] && \
-+				 a.s6_addr32[3] == b.s6_addr32[3])
-+#endif
-+
-+static __always_inline bool is_remote_ep_v4(struct __sk_buff *skb,
-+					    __be32 addr)
-+{
-+	void *data_end = ctx_ptr(skb->data_end);
-+	void *data = ctx_ptr(skb->data);
-+	struct iphdr *ip4h;
-+
-+	if (data + sizeof(struct ethhdr) > data_end)
-+		return false;
-+
-+	ip4h = (struct iphdr *)(data + sizeof(struct ethhdr));
-+	if ((void *)(ip4h + 1) > data_end)
-+		return false;
-+
-+	return ip4h->daddr == addr;
-+}
-+
-+static __always_inline bool is_remote_ep_v6(struct __sk_buff *skb,
-+					    struct in6_addr addr)
-+{
-+	void *data_end = ctx_ptr(skb->data_end);
-+	void *data = ctx_ptr(skb->data);
-+	struct ipv6hdr *ip6h;
-+
-+	if (data + sizeof(struct ethhdr) > data_end)
-+		return false;
-+
-+	ip6h = (struct ipv6hdr *)(data + sizeof(struct ethhdr));
-+	if ((void *)(ip6h + 1) > data_end)
-+		return false;
-+
-+	return v6_equal(ip6h->daddr, addr);
-+}
-+
-+SEC("chk_neigh") int tc_chk(struct __sk_buff *skb)
-+{
-+	void *data_end = ctx_ptr(skb->data_end);
-+	void *data = ctx_ptr(skb->data);
-+	__u32 *raw = data;
-+
-+	if (data + sizeof(struct ethhdr) > data_end)
-+		return TC_ACT_SHOT;
-+
-+	return !raw[0] && !raw[1] && !raw[2] ? TC_ACT_SHOT : TC_ACT_OK;
-+}
-+
-+SEC("dst_ingress") int tc_dst(struct __sk_buff *skb)
-+{
-+	int idx = dst_to_src_tmp;
-+	__u8 zero[ETH_ALEN * 2];
-+	bool redirect = false;
-+
-+	switch (skb->protocol) {
-+	case __bpf_constant_htons(ETH_P_IP):
-+		redirect = is_remote_ep_v4(skb, __bpf_constant_htonl(ip4_src));
-+		break;
-+	case __bpf_constant_htons(ETH_P_IPV6):
-+		redirect = is_remote_ep_v6(skb, (struct in6_addr)ip6_src);
-+		break;
-+	}
-+
-+	if (!redirect)
-+		return TC_ACT_OK;
-+
-+	barrier_data(&idx);
-+	idx = bpf_ntohl(idx);
-+
-+	__builtin_memset(&zero, 0, sizeof(zero));
-+	if (bpf_skb_store_bytes(skb, 0, &zero, sizeof(zero), 0) < 0)
-+		return TC_ACT_SHOT;
-+
-+	return bpf_redirect_neigh(idx, 0);
-+}
-+
-+SEC("src_ingress") int tc_src(struct __sk_buff *skb)
-+{
-+	int idx = src_to_dst_tmp;
-+	__u8 zero[ETH_ALEN * 2];
-+	bool redirect = false;
-+
-+	switch (skb->protocol) {
-+	case __bpf_constant_htons(ETH_P_IP):
-+		redirect = is_remote_ep_v4(skb, __bpf_constant_htonl(ip4_dst));
-+		break;
-+	case __bpf_constant_htons(ETH_P_IPV6):
-+		redirect = is_remote_ep_v6(skb, (struct in6_addr)ip6_dst);
-+		break;
-+	}
-+
-+	if (!redirect)
-+		return TC_ACT_OK;
-+
-+	barrier_data(&idx);
-+	idx = bpf_ntohl(idx);
-+
-+	__builtin_memset(&zero, 0, sizeof(zero));
-+	if (bpf_skb_store_bytes(skb, 0, &zero, sizeof(zero), 0) < 0)
-+		return TC_ACT_SHOT;
-+
-+	return bpf_redirect_neigh(idx, 0);
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tc_neigh.sh b/tools/testing/selftests/bpf/test_tc_neigh.sh
-new file mode 100755
-index 000000000000..31d8c3df8b24
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_tc_neigh.sh
-@@ -0,0 +1,168 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# This test sets up 3 netns (src <-> fwd <-> dst). There is no direct veth link
-+# between src and dst. The netns fwd has veth links to each src and dst. The
-+# client is in src and server in dst. The test installs a TC BPF program to each
-+# host facing veth in fwd which calls into bpf_redirect_peer() to perform the
-+# neigh addr population and redirect; it also installs a dropper prog on the
-+# egress side to drop skbs if neigh addrs were not populated.
-+
-+if [[ $EUID -ne 0 ]]; then
-+	echo "This script must be run as root"
-+	echo "FAIL"
-+	exit 1
-+fi
-+
-+# check that nc, dd, ping, ping6 and timeout are present
-+command -v nc >/dev/null 2>&1 || \
-+	{ echo >&2 "nc is not available"; exit 1; }
-+command -v dd >/dev/null 2>&1 || \
-+	{ echo >&2 "dd is not available"; exit 1; }
-+command -v timeout >/dev/null 2>&1 || \
-+	{ echo >&2 "timeout is not available"; exit 1; }
-+command -v ping >/dev/null 2>&1 || \
-+	{ echo >&2 "ping is not available"; exit 1; }
-+command -v ping6 >/dev/null 2>&1 || \
-+	{ echo >&2 "ping6 is not available"; exit 1; }
-+
-+readonly GREEN='\033[0;92m'
-+readonly RED='\033[0;31m'
-+readonly NC='\033[0m' # No Color
-+
-+readonly PING_ARG="-c 3 -w 10 -q"
-+
-+readonly TIMEOUT=10
-+
-+readonly NS_SRC="ns-src-$(mktemp -u XXXXXX)"
-+readonly NS_FWD="ns-fwd-$(mktemp -u XXXXXX)"
-+readonly NS_DST="ns-dst-$(mktemp -u XXXXXX)"
-+
-+readonly IP4_SRC="172.16.1.100"
-+readonly IP4_DST="172.16.2.100"
-+
-+readonly IP6_SRC="::1:dead:beef:cafe"
-+readonly IP6_DST="::2:dead:beef:cafe"
-+
-+readonly IP4_SLL="169.254.0.1"
-+readonly IP4_DLL="169.254.0.2"
-+readonly IP4_NET="169.254.0.0"
-+
-+cleanup()
-+{
-+	ip netns del ${NS_SRC}
-+	ip netns del ${NS_FWD}
-+	ip netns del ${NS_DST}
-+}
-+
-+trap cleanup EXIT
-+
-+set -e
-+
-+ip netns add "${NS_SRC}"
-+ip netns add "${NS_FWD}"
-+ip netns add "${NS_DST}"
-+
-+ip link add veth_src type veth peer name veth_src_fwd
-+ip link add veth_dst type veth peer name veth_dst_fwd
-+
-+ip link set veth_src netns ${NS_SRC}
-+ip link set veth_src_fwd netns ${NS_FWD}
-+
-+ip link set veth_dst netns ${NS_DST}
-+ip link set veth_dst_fwd netns ${NS_FWD}
-+
-+ip -netns ${NS_SRC} addr add ${IP4_SRC}/32 dev veth_src
-+ip -netns ${NS_DST} addr add ${IP4_DST}/32 dev veth_dst
-+
-+# The fwd netns automatically get a v6 LL address / routes, but also needs v4
-+# one in order to start ARP probing. IP4_NET route is added to the endpoints
-+# so that the ARP processing will reply.
-+
-+ip -netns ${NS_FWD} addr add ${IP4_SLL}/32 dev veth_src_fwd
-+ip -netns ${NS_FWD} addr add ${IP4_DLL}/32 dev veth_dst_fwd
-+
-+ip -netns ${NS_SRC} addr add ${IP6_SRC}/128 dev veth_src nodad
-+ip -netns ${NS_DST} addr add ${IP6_DST}/128 dev veth_dst nodad
-+
-+ip -netns ${NS_SRC} link set dev veth_src up
-+ip -netns ${NS_FWD} link set dev veth_src_fwd up
-+
-+ip -netns ${NS_DST} link set dev veth_dst up
-+ip -netns ${NS_FWD} link set dev veth_dst_fwd up
-+
-+ip -netns ${NS_SRC} route add ${IP4_DST}/32 dev veth_src scope global
-+ip -netns ${NS_SRC} route add ${IP4_NET}/16 dev veth_src scope global
-+ip -netns ${NS_FWD} route add ${IP4_SRC}/32 dev veth_src_fwd scope global
-+
-+ip -netns ${NS_SRC} route add ${IP6_DST}/128 dev veth_src scope global
-+ip -netns ${NS_FWD} route add ${IP6_SRC}/128 dev veth_src_fwd scope global
-+
-+ip -netns ${NS_DST} route add ${IP4_SRC}/32 dev veth_dst scope global
-+ip -netns ${NS_DST} route add ${IP4_NET}/16 dev veth_dst scope global
-+ip -netns ${NS_FWD} route add ${IP4_DST}/32 dev veth_dst_fwd scope global
-+
-+ip -netns ${NS_DST} route add ${IP6_SRC}/128 dev veth_dst scope global
-+ip -netns ${NS_FWD} route add ${IP6_DST}/128 dev veth_dst_fwd scope global
-+
-+fmac_src=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_src_fwd/address)
-+fmac_dst=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_dst_fwd/address)
-+
-+ip -netns ${NS_SRC} neigh add ${IP4_DST} dev veth_src lladdr $fmac_src
-+ip -netns ${NS_DST} neigh add ${IP4_SRC} dev veth_dst lladdr $fmac_dst
-+
-+ip -netns ${NS_SRC} neigh add ${IP6_DST} dev veth_src lladdr $fmac_src
-+ip -netns ${NS_DST} neigh add ${IP6_SRC} dev veth_dst lladdr $fmac_dst
-+
-+veth_dst=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_dst_fwd/ifindex | awk '{printf "%08x\n", $1}')
-+veth_src=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_src_fwd/ifindex | awk '{printf "%08x\n", $1}')
-+
-+xxd -p < test_tc_neigh.o   | sed "s/eeddddee/$veth_src/g" | xxd -r -p > test_tc_neigh.x.o
-+xxd -p < test_tc_neigh.x.o | sed "s/eeffffee/$veth_dst/g" | xxd -r -p > test_tc_neigh.y.o
-+
-+ip netns exec ${NS_FWD} tc qdisc add dev veth_src_fwd clsact
-+ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj test_tc_neigh.y.o sec src_ingress
-+ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj test_tc_neigh.y.o sec chk_neigh
-+
-+ip netns exec ${NS_FWD} tc qdisc add dev veth_dst_fwd clsact
-+ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj test_tc_neigh.y.o sec dst_ingress
-+ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj test_tc_neigh.y.o sec chk_neigh
-+
-+rm -f test_tc_neigh.x.o test_tc_neigh.y.o
-+
-+ip netns exec ${NS_DST} bash -c "nc -4 -l -p 9004 &"
-+ip netns exec ${NS_DST} bash -c "nc -6 -l -p 9006 &"
-+
-+set +e
-+
-+TEST="TCPv4 connectivity test"
-+ip netns exec ${NS_SRC} bash -c "timeout ${TIMEOUT} dd if=/dev/zero bs=1000 count=100 > /dev/tcp/${IP4_DST}/9004"
-+if [ $? -ne 0 ]; then
-+	echo -e "${TEST}: ${RED}FAIL${NC}"
-+	exit 1
-+fi
-+echo -e "${TEST}: ${GREEN}PASS${NC}"
-+
-+TEST="TCPv6 connectivity test"
-+ip netns exec ${NS_SRC} bash -c "timeout ${TIMEOUT} dd if=/dev/zero bs=1000 count=100 > /dev/tcp/${IP6_DST}/9006"
-+if [ $? -ne 0 ]; then
-+	echo -e "${TEST}: ${RED}FAIL${NC}"
-+	exit 1
-+fi
-+echo -e "${TEST}: ${GREEN}PASS${NC}"
-+
-+TEST="ICMPv4 connectivity test"
-+ip netns exec ${NS_SRC} ping  $PING_ARG ${IP4_DST}
-+if [ $? -ne 0 ]; then
-+	echo -e "${TEST}: ${RED}FAIL${NC}"
-+	exit 1
-+fi
-+echo -e "${TEST}: ${GREEN}PASS${NC}"
-+
-+TEST="ICMPv6 connectivity test"
-+ip netns exec ${NS_SRC} ping6 $PING_ARG ${IP6_DST}
-+if [ $? -ne 0 ]; then
-+	echo -e "${TEST}: ${RED}FAIL${NC}"
-+	exit 1
-+fi
-+echo -e "${TEST}: ${GREEN}PASS${NC}"
--- 
-2.21.0
+Here is a piece of code I added in bpf_convert_ctx_access(), on 
+net-next:
+
+   @@ -8496,9 +8531,17 @@ static u32 xdp_convert_ctx_access(enum b
+
+       switch (si->off) {
+       case offsetof(struct xdp_md, data):
+   -		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff, data),
+   +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff,
+   +						       mb_data),
+   +				      si->dst_reg, si->src_reg,
+   +				      offsetof(struct xdp_buff, mb_data));
+   +		/* if (dst_reg != NULL) goto A */
+   +		*insn++ = BPF_JMP_IMM(BPF_JNE, si->dst_reg, 0, 1);
+   +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff,
+   +						       data),
+                         si->dst_reg, si->src_reg,
+                         offsetof(struct xdp_buff, data));
+   +		/* A: */
+           break;
+
+However, when executing the xdp_noinline self-test I get a segfault (and 
+yes, I'm 100% sure mb_data is always NULL):
+
+$ sudo ./test_progs --name xdp_noinline
+Killed
+
+[   19.333353] BUG: kernel NULL pointer dereference, address: 
+0000000000000000
+[   19.333376] #PF: supervisor read access in kernel mode
+[   19.333383] #PF: error_code(0x0000) - not-present page
+[   19.333391] PGD 7b756067 P4D 7b756067 PUD 7850b067 PMD 0
+[   19.333401] Oops: 0000 [#1] SMP NOPTI
+[   19.333408] CPU: 1 PID: 1579 Comm: test_progs Not tainted 5.9.0-rc6+ 
+#70
+[   19.333416] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+BIOS 1.13.0-2.fc32 04/01/2014
+[   19.333428] RIP: 0010:bpf_prog_2a72cd80d0b49e12_F+0x59a/0x6d8
+[   19.333436] Code: ff ff 48 8b 78 08 48 83 c7 01 48 89 78 08 48 8b 78 
+00 4c 01 ef 48 89 78 00 48 8b 7d 90 48 8b 77 08 48 8b 7f 38 48 85 ff 75 
+04 <48> 8b 7f 00 48 89 fa 48 83 c2 04 48 39 f2 0f 87 28 fb ff ff 8b 73
+[   19.333457] RSP: 0018:ffffb7330099fc70 EFLAGS: 00010246
+[   19.333465] RAX: ffffd732ffc8adf0 RBX: ffff9575b73d6958 RCX: 
+0000000000000020
+[   19.333474] RDX: ffff9575b6c4d000 RSI: ffff9575b6c4d136 RDI: 
+0000000000000000
+[   19.333483] RBP: ffffb7330099fd08 R08: ffff9575b6c4d0ec R09: 
+0000000000000000
+[   19.333491] R10: 40bf273800000000 R11: 0000000000000003 R12: 
+0000000000000000
+[   19.333500] R13: 000000000000007b R14: 4343917700000001 R15: 
+ffffb7330098dff8
+[   19.333510] FS:  00007f7274403740(0000) GS:ffff9575bdc80000(0000) 
+knlGS:0000000000000000
+[   19.333520] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   19.333527] CR2: 0000000000000000 CR3: 0000000076d22006 CR4: 
+0000000000370ee0
+[   19.333538] Call Trace:
+[   19.333547]  bpf_prog_32ab9add9cf981b8_F+0x9e/0x7d8
+[   19.333562]  bpf_test_run+0xc4/0x270
+[   19.333585]  ? __bpf_arch_text_poke+0xaf/0x170
+[   19.333593]  bpf_prog_test_run_xdp+0x11a/0x250
+[   19.333607]  __do_sys_bpf+0x8fe/0x1e60
+[   19.333628]  do_syscall_64+0x33/0x40
+[   19.333647]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   19.333661] RIP: 0033:0x7f727450437d
+[   19.333667] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 
+48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 
+05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d eb 6a 0c 00 f7 d8 64 89 01 48
+[   19.333688] RSP: 002b:00007ffd8b7a8888 EFLAGS: 00000206 ORIG_RAX: 
+0000000000000141
+[   19.333698] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 
+00007f727450437d
+[   19.333707] RDX: 0000000000000078 RSI: 00007ffd8b7a88e0 RDI: 
+000000000000000a
+[   19.333716] RBP: 00007ffd8b7a88a0 R08: 00007ffd8b7a89e8 R09: 
+00007ffd8b7a88e0
+[   19.333725] R10: 00007ffd8b7a8a40 R11: 0000000000000206 R12: 
+00007f72744036b8
+[   19.333734] R13: 00007ffd8b7a8980 R14: 00007ffd8b7a89c0 R15: 
+00007ffd8b7a89e0
+[   19.333743] Modules linked in: fuse nft_fib_inet nft_fib_ipv4 
+nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 
+nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 
+nf_defrag_ipv4 ip6_tables nft_compat ip_set rfkill nf_tables nfnetlink 
+intel_rapl_msr intel_rapl_common cirrus kvm_intel kvm drm_kms_helper 
+joydev virtio_net irqbypass net_failover failover virtio_balloon 
+i2c_piix4 drm ip_tables xfs libcrc32c crct10dif_pclmul crc32_pclmul 
+crc32c_intel ghash_clmulni_intel serio_raw ata_generic qemu_fw_cfg 
+pata_acpi
+[   19.333811] CR2: 0000000000000000
+
+Quickly looking at the xlated and jit code the transformation looks 
+fine.
+
+
+As an experiment, I just tried to load the register twice, and this has 
+the same kind of weird effect on the xdp_noinline selftest:
+
+   @@ -8496,9 +8531,21 @@ static u32 xdp_convert_ctx_access(enum b
+
+       switch (si->off) {
+       case offsetof(struct xdp_md, data):-		*insn++ = 
+BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff, data),
+                         si->dst_reg, si->src_reg,
+                         offsetof(struct xdp_buff, data));
+   +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff,
+   +						       data),
+   +				      si->dst_reg, si->src_reg,
+   +				      offsetof(struct xdp_buff, data));
+           break;
+
+segfault:
+
+[ 3038.299210] general protection fault, probably for non-canonical 
+address 0x298691604040000: 0000 [#5] SMP NOPTI
+[ 3038.301016] CPU: 0 PID: 8629 Comm: test_progs Tainted: G      D       
+     5.9.0-rc6+ #71
+[ 3038.301795] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+BIOS 1.13.0-2.fc32 04/01/2014
+[ 3038.302334] RIP: 0010:bpf_prog_162f3a446f46ea21_F+0x5bf/0xbe4
+[ 3038.302876] Code: 08 48 8b 7f 00 48 8b 7f 00 48 89 fa 48 83 c2 04 48 
+39 f2 0f 87 2b fb ff ff 8b 73 00 49 c7 c2 59 8f 60 ad 49 c1 e2 20 4c 09 
+d6 <89> 77 00 e9 12 fb ff ff cc cc cc cc cc cc cc cc cc cc cc cc cc cc
+[ 3038.303951] RSP: 0018:ffff98bfc0ab3c70 EFLAGS: 00010282
+[ 3038.304496] RAX: ffffb8bfbfc14460 RBX: ffff8cf8f8c1b158 RCX: 
+0000000000000020
+[ 3038.305015] RDX: 0298691604040004 RSI: ad608f5900001234 RDI: 
+0298691604040000
+[ 3038.305542] RBP: ffff98bfc0ab3d08 R08: ffff8cf8b4de90ec R09: 
+0000000000000000
+[ 3038.306037] R10: ad608f5900000000 R11: 0000000000000003 R12: 
+ffff8cf8b5168000
+[ 3038.306526] R13: 000000000000007b R14: d88f9de400000001 R15: 
+ffff98bfc0ac3758
+[ 3038.307018] FS:  00007fa431a63740(0000) GS:ffff8cf8fdc00000(0000) 
+knlGS:0000000000000000
+[ 3038.307527] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 3038.308012] CR2: 000055f843d74790 CR3: 0000000078a6c003 CR4: 
+0000000000370ef0
+[ 3038.308512] Call Trace:
+[ 3038.308986]  bpf_prog_fe85f1fb8b720358_F+0x99/0x7f0
+[ 3038.309460]  bpf_test_run.cold+0x35/0x9d
+[ 3038.309939]  ? __bpf_arch_text_poke+0xaf/0x170
+[ 3038.310420]  bpf_prog_test_run_xdp+0x11a/0x250
+[ 3038.310878]  __do_sys_bpf+0x8fe/0x1e60
+[ 3038.311323]  do_syscall_64+0x33/0x40
+[ 3038.311758]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 3038.312189] RIP: 0033:0x7fa431b6437d
+[ 3038.312622] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 
+48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 
+05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d eb 6a 0c 00 f7 d8 64 89 01 48
+[ 3038.313471] RSP: 002b:00007ffc8b6cea28 EFLAGS: 00000206 ORIG_RAX: 
+0000000000000141
+[ 3038.313907] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 
+00007fa431b6437d
+[ 3038.314361] RDX: 0000000000000078 RSI: 00007ffc8b6cea80 RDI: 
+000000000000000a
+[ 3038.314775] RBP: 00007ffc8b6cea40 R08: 00007ffc8b6ceb88 R09: 
+00007ffc8b6cea80
+[ 3038.315182] R10: 00007ffc8b6cebe0 R11: 0000000000000206 R12: 
+00007fa431a636b8
+[ 3038.315589] R13: 00007ffc8b6ceb20 R14: 00007ffc8b6ceb60 R15: 
+0000000000000000
+[ 3038.315970] Modules linked in: fuse nft_fib_inet nft_fib_ipv4 
+nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 
+nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 
+nf_defrag_ipv4 ip6_tables nft_compat ip_set rfkill nf_tables nfnetlink 
+intel_rapl_msr intel_rapl_common kvm_intel kvm virtio_net net_failover 
+joydev irqbypass virtio_balloon cirrus failover drm_kms_helper i2c_piix4 
+drm ip_tables xfs libcrc32c crct10dif_pclmul crc32_pclmul crc32c_intel 
+serio_raw ghash_clmulni_intel ata_generic qemu_fw_cfg pata_acpi
+[ 3038.317936] ---[ end trace bcf61aee1cf2ba1f ]---
+
+
+If I look at the translated code, it looks fine, I see a couple of 
+references that look like:
+
+; void *data = (void *)(long)ctx->data;
+    3: (79) r1 = *(u64 *)(r4 +0)
+    4: (79) r1 = *(u64 *)(r4 +0)
+
+When I look at the jited code I see the same:
+
+; void *data = (void *)(long)ctx->data;
+   25:   mov    0x0(%rcx),%rdi
+   29:   mov    0x0(%rcx),%rdi
+
+
+If I try to find the “bpf_prog_fe85f1fb8b720358” in the “bpftool 
+prog dump jited id 88” output I can not find it :( Any idea where I 
+should look for it?
+
+
+Anyone any idea before I start digging into the world of jit?
+
+
+Thanks,
+
+Eelco
 
