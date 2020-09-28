@@ -2,70 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E409C27A96E
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 10:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD1D27A9F0
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 10:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgI1IWD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 04:22:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52436 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgI1IWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:22:03 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kMoPu-0004wy-Mm; Mon, 28 Sep 2020 10:21:50 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kMoPu-000VQk-HS; Mon, 28 Sep 2020 10:21:50 +0200
-To:     bpf@vger.kernel.org, xdp-newbies@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@fb.com, tgraf@suug.ch,
-        davem@davemloft.net
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Subject: Call for Proposals: eBPF Summit 2020
-Message-ID: <e3c3aa3d-fd07-4963-2767-793dddd42376@iogearbox.net>
-Date:   Mon, 28 Sep 2020 10:21:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726504AbgI1ItT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 04:49:19 -0400
+Received: from mga05.intel.com ([192.55.52.43]:28714 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726328AbgI1ItT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:49:19 -0400
+IronPort-SDR: g9Fe5TOEEK1kfomXuoZEhWy0LaHeqIvN6xz9R6TSYNZJBMYwmjUNnykOhAb/XogBcg+ICR2VRx
+ P7NelkPhGkeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="246701799"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="246701799"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 01:49:18 -0700
+IronPort-SDR: 136wNds2FhQL8pe7eFDP1W6hbW6pV7CrSzYmyU1+cacj7v/Hvezv+f13zptZ3g7YRXl2wnD+QN
+ J+gkkPk8DtcQ==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="456743211"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 01:49:17 -0700
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     bpf@vger.kernel.org
+Cc:     magnus.karlsson@intel.com, Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH bpf] xsk: fix a documentation mistake in xsk_queue.h
+Date:   Mon, 28 Sep 2020 08:23:44 +0000
+Message-Id: <20200928082344.17110-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25940/Sun Sep 27 15:51:36 2020)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We're excited to announce that the call for proposals is now open for the inaugural
-eBPF Summit, a virtual event, targeted at DevOps, platform architects and developers.
+After 'peeking' the ring, the consumer, not the producer, reads the data.
+Fix this mistake in the comments.
 
-The goal is to have a gathering of users or potential users of eBPF(/XDP) as well as
-developers in order to exchange ideas, use cases and to learn about projects utilizing
-eBPF as a core technology.
+Fixes: 15d8c9162ced ("xsk: Add function naming comments and reorder functions")
+Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+---
+ net/xdp/xsk_queue.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The summit will be held on October 28-29th, 2020, is open to everyone and free of
-charge.
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index bf42cfd74b89..a0bb2f722b3f 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -96,7 +96,7 @@ struct xsk_queue {
+  * seen and read by the consumer.
+  *
+  * The consumer peeks into the ring to see if the producer has written
+- * any new entries. If so, the producer can then read these entries
++ * any new entries. If so, the consumer can then read these entries
+  * and when it is done reading them release them back to the producer
+  * so that the producer can use these slots to fill in new entries.
+  *
+-- 
+2.17.1
 
-Please submit your proposals or register for participation on the official summit
-website at:
-
-    https://ebpf.io/ebpf-summit-2020-cfp
-
-Potential topics of interest include:
-
-  - Using eBPF to troubleshoot application and system performance
-  - Applying eBPF to implement zero trust, runtime security, network policy
-  - Tackling infrastructure scalability challenges with eBPF
-  - Applying eBPF to networking and load-balancing
-  - Application profiling and tracing with eBPF
-  - System and application monitoring with eBPF
-  - Unlocking new levels of observability with eBPF
-  - Advancements in the eBPF core infrastructure and libraries
-  - eBPF community related topics
-
-Proposals must be submitted by October 14, and submitters will be notified of
-acceptance by October 16.
