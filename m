@@ -2,74 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF2427B358
-	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 19:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A326627B36E
+	for <lists+bpf@lfdr.de>; Mon, 28 Sep 2020 19:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgI1Rfa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 13:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        id S1726589AbgI1RkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 13:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgI1Rfa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:35:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2F3C0613CE;
-        Mon, 28 Sep 2020 10:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=q3VaPCdAslCCR/jQf884F8evN4sPOMU3hyuwN0qXmZs=; b=tHy0kY+BbMefAS9lAdwGUon8gS
-        iIsSZiaAECDsBhcXUY9zMAiri42fgTkxr7zxW2FRImGN6MHm+1fkPKH+jljNrPQZh2DYMFI5synUO
-        qLp1dODoYc8CEoz3Oe68GwvXexASAgHAXVM07CG7N6HhTvutRf9cehKcnbCFuUMJ0hurIHGi5/wVF
-        /urhXuRGqxnH6PLRgVLjtQ0vAG1zqrvbcmaMA7P9SoKkEEgUSl/3xODlhx+e1aT56lp209/6qFVCn
-        8owCWu+twhkX5e0KCYaKv5DSccX6ct5rP7QO6jukAPDhG8p/ORtYJemv9Dzyz7UWBj5ftz7RB2urs
-        HBnUw67Q==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kMx3d-00007B-2S; Mon, 28 Sep 2020 17:35:25 +0000
-Subject: Re: linux-next: Tree for Sep 28 (kernel/bpf/verifier.c)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-References: <20200928215551.2b882630@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1762ab05-e8ba-8380-5c68-31642bb96ab4@infradead.org>
-Date:   Mon, 28 Sep 2020 10:35:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        with ESMTP id S1726613AbgI1RkI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:40:08 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530E2C061755;
+        Mon, 28 Sep 2020 10:40:07 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id f70so1510613ybg.13;
+        Mon, 28 Sep 2020 10:40:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bRUB/bwFEosynQ9K/iHMMiBU5kn7FkW/CO7KofKLlos=;
+        b=VBtgkvhfPZXlkH9wbKCdmPcpJ8oNrc5LzViJQ3qoePtupLyCjiZ4OOjm10NdGvllI9
+         j2iBN+oj8Z/ZBlPqmXgIJJCDiaUT9B3Rq/5dVhNefZZmk9udP0EPSvkwXBYf9yVDe8hM
+         WF2tjNj/IGXXK2Wl3k0fy4e+5IXuiwTToHpK+72A0nqHiwxGEEkCOl9gffBP9/g78ufT
+         TRYsVSlpHKLP5eJej2BQTyWRx4yqPJJ0ika6b5J28Nhl8Mjc24rasbTdt5SxJBE1onWx
+         0M7wZj1OsV4DKm3CdoxBzGfsjVUxzf/jTm/yP476X30evHtWD9vIDWZOPQbmktlM4GNM
+         V+8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bRUB/bwFEosynQ9K/iHMMiBU5kn7FkW/CO7KofKLlos=;
+        b=kLp/LHT1P6KQpgF4Khhv2h+2GSuWHDhuUavO7h+bP/of7gAWH/Q8h2Q9//2xrxX2hy
+         sXr0pN28AWI/tMhnsX3kXONu+msVF3Z75WglHCxQiwUUrJ5wwSS4B4e29Aq5MAfKjr9G
+         oVkAUINrStPDbLHJbYPuUSC7S7Gl1aEQDeVLpHGklrXRQ6Ur/wIkAe40e+eQAUq49iiw
+         eqpAGuPE5o0gMynGktR+ItMnt+hX9cIxeAI0sE/WeptiIRqB0OmgC3UUECKFaTlizKHC
+         NW70stvl7KMnIXAQm5t4tCwYyrMVuFkK8HKovzH5iRtgo8KT6G9T6SUlO6vQc9Mk5UpE
+         ZajA==
+X-Gm-Message-State: AOAM532U2Iw1mtkqwUKtTIRh2MQaGzbS55twd5vgV8k9y3VTrbX/Dj50
+        HSjR/HgN/Z7La6duxHQIa5HPcmI5jaU+U7lw+ck=
+X-Google-Smtp-Source: ABdhPJxQM1/V6NaKJCNgmuY84m1KTfRM5PpfbnvpUgsehTkepFHNfpLccl/qEDLPf6yIZNb4pxzYyclAl79UAG7EdRM=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr905314ybn.230.1601314806520;
+ Mon, 28 Sep 2020 10:40:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200928215551.2b882630@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1601303057.git.daniel@iogearbox.net> <9c4b6a19ced3e2ee6c6d28f5f3883cc7b2b02400.1601303057.git.daniel@iogearbox.net>
+In-Reply-To: <9c4b6a19ced3e2ee6c6d28f5f3883cc7b2b02400.1601303057.git.daniel@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 28 Sep 2020 10:39:55 -0700
+Message-ID: <CAEf4BzYxSkjJzPVzOkOQkOVPUKri9aa69QGFrUdGjAf7f9Uf=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/6] bpf, libbpf: add bpf_tail_call_static
+ helper for bpf programs
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/28/20 4:55 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20200925:
-> 
+On Mon, Sep 28, 2020 at 7:39 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Port of tail_call_static() helper function from Cilium's BPF code base [0]
+> to libbpf, so others can easily consume it as well. We've been using this
+> in production code for some time now. The main idea is that we guarantee
+> that the kernel's BPF infrastructure and JIT (here: x86_64) can patch the
+> JITed BPF insns with direct jumps instead of having to fall back to using
+> expensive retpolines. By using inline asm, we guarantee that the compiler
+> won't merge the call from different paths with potentially different
+> content of r2/r3.
+>
+> We're also using Cilium's __throw_build_bug() macro (here as: __bpf_unreachable())
+> in different places as a neat trick to trigger compilation errors when
+> compiler does not remove code at compilation time. This works for the BPF
+> back end as it does not implement the __builtin_trap().
+>
+>   [0] https://github.com/cilium/cilium/commit/f5537c26020d5297b70936c6b7d03a1e412a1035
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Andrii Nakryiko <andriin@fb.com>
+> ---
 
+few optional nits below, but looks good to me:
 
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-when CONFIG_NET is not set/enabled:
+>  tools/lib/bpf/bpf_helpers.h | 46 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>
 
-../kernel/bpf/verifier.c:3990:13: error: ‘btf_sock_ids’ undeclared here (not in a function); did you mean ‘bpf_sock_ops’?
-  .btf_id = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
-             ^~~~~~~~~~~~
-             bpf_sock_ops
-  CC      kernel/time/tick-oneshot.o
-../kernel/bpf/verifier.c:3990:26: error: ‘BTF_SOCK_TYPE_SOCK_COMMON’ undeclared here (not in a function); did you mean ‘PTR_TO_SOCK_COMMON’?
-  .btf_id = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
-                          ^~~~~~~~~~~~~~~~~~~~~~~~~
-                          PTR_TO_SOCK_COMMON
+[...]
 
+> +/*
+> + * Helper function to perform a tail call with a constant/immediate map slot.
+> + */
+> +static __always_inline void
+> +bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+nit: const void *ctx would work here, right? would avoid users having
+to do unnecessary casts in some cases
+
+> +{
+> +       if (!__builtin_constant_p(slot))
+> +               __bpf_unreachable();
+> +
+> +       /*
+> +        * Provide a hard guarantee that LLVM won't optimize setting r2 (map
+> +        * pointer) and r3 (constant map index) from _different paths_ ending
+> +        * up at the _same_ call insn as otherwise we won't be able to use the
+> +        * jmpq/nopl retpoline-free patching by the x86-64 JIT in the kernel
+> +        * given they mismatch. See also d2e4c1e6c294 ("bpf: Constant map key
+> +        * tracking for prog array pokes") for details on verifier tracking.
+> +        *
+> +        * Note on clobber list: we need to stay in-line with BPF calling
+> +        * convention, so even if we don't end up using r0, r4, r5, we need
+> +        * to mark them as clobber so that LLVM doesn't end up using them
+> +        * before / after the call.
+> +        */
+> +       asm volatile("r1 = %[ctx]\n\t"
+> +                    "r2 = %[map]\n\t"
+> +                    "r3 = %[slot]\n\t"
+> +                    "call 12\n\t"
+
+nit: it's weird to have tabs at the end of each string literal,
+especially that r1 doesn't start with a tab...
+
+> +                    :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
+> +                    : "r0", "r1", "r2", "r3", "r4", "r5");
+> +}
+> +
+>  /*
+>   * Helper structure used by eBPF C program
+>   * to describe BPF map attributes to libbpf loader
+> --
+> 2.21.0
+>
