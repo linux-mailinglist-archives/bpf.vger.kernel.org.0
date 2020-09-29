@@ -2,133 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B926D27D45A
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 19:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DC627D48E
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 19:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbgI2RYG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 13:24:06 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15584 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727650AbgI2RYG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Sep 2020 13:24:06 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08THK1PK018911;
-        Tue, 29 Sep 2020 10:23:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=nDCWED7cTWXio+7n4CbBlSFCTLArN57bTmDje6cvFBQ=;
- b=g+vKrLTPIJ3E9//KCN2jLbFnmvA4KqGiaML8OKY2txkYJ47VfOPgy/mqtDUjkKPd/+NQ
- oTaZLL9iKgeGqpcFv3q4vnHd6yphj7jv9R+JN1HCS5pPj/LV0uM8aFj8KUEkFykO5Eg0
- IOaUL38FuKAknR4EAsa0nvgopVWtp8KZGIw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 33t14yephn-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Sep 2020 10:23:51 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 29 Sep 2020 10:23:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gsrS7EKF2INrkUka2s6ewF8y3PbYUlLF2CvEZ3prG4gjr3rNst2QTzrfP9T5YAA7jgE41h9CltIqDxp2bys9otrbB2KP0iwrDGDSeTQkHUj7Cmk7sM5++bV3a1JLa4k9Tw2rfR/uvmC4C0JSY8aLRZBS1Fuz9QEnGA/y8z/qe5yylyvgIFBCekqY2z6GI8jWAHkpjNR+SceQwz8ZiAZtOcbTT05b5yYFa0kFOKDdtIV2/D1t0RFGyHLNW2nJRKzzVHLh9gJQHzjXVGhMO3KLRp2VevmrXdNY/bxDMfdJA0zLNKqGCwt37I369nybVjTCOJNeOLQSd9FL1zCF69wv/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nDCWED7cTWXio+7n4CbBlSFCTLArN57bTmDje6cvFBQ=;
- b=flUGeHMsJChkYLvBM3urMqvScDp/Vt02+FN3TPBreut8V1Wcvac6Tyr8v7MIrW0+z2wUNfcqXRh76hvX0/xzA8OJ2tFWoo+2ranjKE6sbpJedmzxW+5MVBbvVRWPc0ue8m+cUWOOWo2CK2/x1U+eMPmKYOXbG6MOqCKYIBlQHPd1OKN+toiUm4gSOvRcpyaOU/DBy+85Dkee9ziR4qmMBR+DldOA+prms/p3qdPPzY4IEzp7FQtV+h/Aih17IZ38FIRfz8kXWDu2PlwiVBVICJ9kI17vIN6YUGw4eHfXhF99DS+XD1RpJj6LIZviRi4HlblOp47NEbeQzbY6LBIn4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nDCWED7cTWXio+7n4CbBlSFCTLArN57bTmDje6cvFBQ=;
- b=ixglXIT13mYg3QNWOs5b30YLSPvIraf6e1kiyeqhDySHm/Y5N18Za/e6rBXy05ji+Tp+9KEMvB5pLHZ0fzaynIImk47r/39anFU4WlFXj9nEI9e9oFFNEjwOW7e3VpeN+vieHbdFOk9No7+MjBP7LEqfncurX2P6OV6FCq05GKg=
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2725.namprd15.prod.outlook.com (2603:10b6:a03:158::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Tue, 29 Sep
- 2020 17:23:48 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3412.029; Tue, 29 Sep 2020
- 17:23:47 +0000
-Date:   Tue, 29 Sep 2020 10:23:40 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 4/4] selftest: bpf: Test copying a sockmap
- and sockhash
-Message-ID: <20200929172340.hogj6zficvhkpibx@kafai-mbp.dhcp.thefacebook.com>
-References: <20200928090805.23343-1-lmb@cloudflare.com>
- <20200928090805.23343-5-lmb@cloudflare.com>
- <20200929060619.psnobg3cz3zbfx6u@kafai-mbp>
- <CACAyw9-hSfaxfHHMaVMVqBU7MHLoqgPyo55UwQ3w7NKREHcCxw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACAyw9-hSfaxfHHMaVMVqBU7MHLoqgPyo55UwQ3w7NKREHcCxw@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:f2d3]
-X-ClientProxiedBy: MWHPR10CA0020.namprd10.prod.outlook.com (2603:10b6:301::30)
- To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+        id S1729350AbgI2ReQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 13:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729320AbgI2ReP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Sep 2020 13:34:15 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCDDC0613D0
+        for <bpf@vger.kernel.org>; Tue, 29 Sep 2020 10:34:15 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s205so4702433lja.7
+        for <bpf@vger.kernel.org>; Tue, 29 Sep 2020 10:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9gQw31JbN9r1vFvakmg6vqsptjB02uipjQeewjuzCYo=;
+        b=Dj4LZUTZaMoxXiQYp1yCnL13i1u4TjHn4IcRQKlOfLg1BjfZI+RWtxkuo9VQTvLP5P
+         OIs526Qbw18cMojzwKe6n0wAG3nd5eNY1oSuQGok5iuaF9ZPLy1nw5SIFDd9uTZts3TK
+         Qg+Hh/Srm1LUp2HVK4uPp//n03Wp84CTWhOZcCUfDGydGTyW5/mKIo4uflV2jcH/Xnfg
+         Kt4eA0BWDQKXQGemSiLDVndm2inZUjBR2jBugboAvCCg0CQX4KHa0lb6Xgo0XXWhqraV
+         wJdikWnmrC+ekXxxDDkrh9UJhHviERFB8HsNkCR2bY28vv3fBr/FPLKQ3guAXPpa1pUu
+         Fx6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9gQw31JbN9r1vFvakmg6vqsptjB02uipjQeewjuzCYo=;
+        b=EESra5bkpqwQ+SOZAC5fatLO4ABR5GhvQoUDcJ5IxFBet1ToO5q0LWxNPczt/gfVT3
+         sXembXkMhDjfb01rGu2+F8EnRohZdJYhazyfrj9iSkn1BDyxz580VpPrv5tkjpA/Ch+z
+         +GBlkrkBGWuaWpMe/byMirXnXK6oryF+Bb27dipXD9e/IXZCDka3Nbb7cueE45ohB0Sr
+         e0LRiUrxy80yrHKct9l8IfPpMH9igSkYsPTZTSvdixJ98syNkn34YKh3yFpaGEyYpWHs
+         G8dzNXbiECC+JzaIEcIRBPoxxYYcpvP9m6eXSw9jsNYEArk50toD7DjKIX5zUWEWa5jb
+         VRjQ==
+X-Gm-Message-State: AOAM530f/iv8cJG2zBP6sYn12ejW/YgDM4pH4sqAOYo0GY0xWniR46jD
+        8rgomijqInDMLAZrGtJE9cBnDYJzGnqUbHrhGHbEIw==
+X-Google-Smtp-Source: ABdhPJw9ESoIBe1vVan7K9MFOZ52+odIiwjunnVR36ZIu8Jo3g92sv2VIrYAmYWZNAVbxkIoNCqRD/CEqacb0UFAclk=
+X-Received: by 2002:a2e:89c8:: with SMTP id c8mr1442472ljk.163.1601400853321;
+ Tue, 29 Sep 2020 10:34:13 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:f2d3) by MWHPR10CA0020.namprd10.prod.outlook.com (2603:10b6:301::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Tue, 29 Sep 2020 17:23:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 16af6e4b-bf25-4724-7cdd-08d8649c6cb2
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2725:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB27255B1B9F5DFA9B01F08A22D5320@BYAPR15MB2725.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hq+gyuyMlphFJFAj/35IsFtF+IU0fL6ivst+Fc0054Fzwu6YyDrUJdPB72FpH1+1jV1tTxO1b41UvhJNqLhAxiumK9dszHl3GkogPa4Xh+b0bRKTnsNRKu8AgYUTOTkZhauhQWg7nirNNXeB+X9opYg1onArbtbAybJ67LVBliUHnb5NUdNNlUTgs2+3lJ5HceWAhaGUXsVVNcn/oD/FpsVcIt5iH+Ysr8wZfD1v6enl6zsi97Pf3zv1M4TlvG+I1L5jzNh/0ceuBO6ja8mARBOJ7p+7/HSpernQVAXOWqcUnKKA67M+6Ng11P1mbXbnqx7G4A+zM9Glk586q14UzddTQX+/ERh76ATE4SYFshTfv7AfMLRosruf9rgeUYF9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(366004)(136003)(376002)(83380400001)(478600001)(4326008)(8676002)(186003)(52116002)(7696005)(2906002)(54906003)(316002)(16526019)(66476007)(6506007)(66556008)(8936002)(55016002)(6916009)(5660300002)(9686003)(1076003)(86362001)(66946007)(4744005)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: J9rmFVVnbQ/37zqLcCK0sVgBAfWUGEImh03NqZScluAq5m8S6xWSb0KQyftlCmemwWJJ7cjqu9v7ugJNBvsACh8/aQCy47xB5KN8YJpY92/rJYxYjFdyda7N1AU+gVVUCQQFCsb1hZCjbIBMmmZiLE1LVQHJ/zibxsSQ5W4ReT1q/1mZPj85UL07H4mxD1Mh4rX8b07sXp7sTz0s1z/yQ1uTDa271auY0OC42v/FLnb/AGu92vVqoNUgzJs7TVkQJes8pvBh3wcJDANmZ5LVhJTpYkFq+H2fj/u866NC9g5VIQNK7/6udIAUiR3tpP0bwmZtIib9ic8LgtyTPfEzaqbWclH5kcPMtYFev9A2WZY0VaHbF9fxIEN0N7Oi5ajcqyMuu6kVVcMz7E9mBdSWawCvjs7svx7lvgfwyUsybuRee/MsnGi+g6wPpJT+v/tFM8w7t/5U3XE0ptZtrOyAwT0X7jQt8Q+rZl+HIvxus1QnqGngE6HSBVHJRHEL3fDq+rysVMtCq7u9VvGOT0sKKxKYG0TXF6U/AV/1nt+jn+vmKrelbyGvCUI69HGPoNliDWlFZkshvTwQYyhMaW3AyG58nqacZMpmIaxTYbL7YpzGd4xsqU0Mc8nq9vY78cgJXgvxwMyCWU68ti7UFNr35RvdRu4LgQptVUgleCZhOaM=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16af6e4b-bf25-4724-7cdd-08d8649c6cb2
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 17:23:47.8245
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0OA87K0JFaIt6ZZg9bCCCiLe9hlX8Ura6HNHTh37F+FcE3D9ZEtoL1HgXb61/gsk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2725
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_11:2020-09-29,2020-09-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- lowpriorityscore=0 mlxlogscore=969 priorityscore=1501 phishscore=0
- spamscore=0 adultscore=0 bulkscore=0 mlxscore=0 clxscore=1015
- impostorscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009290147
-X-FB-Internal: deliver
+References: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
+ <9e99c5301fbbb4f5f601b69816ee1dc9ab0df948.camel@linux.ibm.com>
+ <CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com>
+ <8cf42e2752e442bb54e988261d8bf3cd22ad00f2.camel@linux.ibm.com>
+ <20200909142750.GC3788224@kernel.org> <CAPGftE8jNys9aVfUZW2iE5vB=QWKEmmwwWuWq9ek0ZXp-Aobkg@mail.gmail.com>
+ <CAEf4BzYDm3QOOgND9p+LR21bn98QMjE+VYspQSvi4ebG9EdW0g@mail.gmail.com>
+ <CAEf4Bzb7LZX8Y=qKpO5j3eUYU=tJzvNRYd1CdXXxq8Y-V4=+Vw@mail.gmail.com>
+ <CAPGftE9iVH=eG_FRxSFJC0B3FX8LVdKStfvLbs0gRt8kvMoqJw@mail.gmail.com>
+ <CAEf4Bza2D2MQ_F7+vNg7x05JachvJ5bLM3Uyjv+oEx=xna_u4g@mail.gmail.com> <CAPGftE_aD6raGXnjhAM6CCMjB2_9C77Z=Xg-=wMwaduTHCp3Pw@mail.gmail.com>
+In-Reply-To: <CAPGftE_aD6raGXnjhAM6CCMjB2_9C77Z=Xg-=wMwaduTHCp3Pw@mail.gmail.com>
+From:   Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Date:   Tue, 29 Sep 2020 19:36:27 +0200
+Message-ID: <CAOjtDRUvh8vC5Q=9QN4UDCvKSRQTmx4zPhcZ4AB0n3ZXBqg_DQ@mail.gmail.com>
+Subject: Re: Problem with endianess of pahole BTF output for vmlinux
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Tony Ambardar <tony.ambardar@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
+        David Marcinkovic <david.marcinkovic@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Borna Cafuk <borna.cafuk@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 10:21:05AM +0100, Lorenz Bauer wrote:
-> On Tue, 29 Sep 2020 at 07:06, Martin KaFai Lau <kafai@fb.com> wrote:
-> 
-> ...
-> 
-> > > +     /* We need a temporary buffer on the stack, since the verifier doesn't
-> > > +      * let us use the pointer from the context as an argument to the helper.
-> > Is it something that can be improved later?
-> >
-> > others LGTM.
-> 
-> Yeah, I think so. We'd need to do something similar to your
-> sock_common work for PTR_TO_RDONLY_BUF_OR_NULL. The fact that the
-> pointer is read only makes it a bit more difficult I think. After
-I thought the key arg should be used as read-only in the map's helper.
-or there is map type's helper that modifies the key?
+Hello Andrii and Tony,
 
-> that, a user could just plug the key into map_update_elem directly.
-> Alternatively, allow specialising map_ops per context.
+as Luka mentioned we do not yet have a final version of the testing
+environment that we are working on for ARM32.
+
+However, I previously created an ARM32 little endian QEMU virt image
+that runs Debian, to test issues that we encountered with BPF CO-RE
+programs on ARM32.
+I only managed to get BPF CO-RE programs working with the default
+Debian kernel image, which is version 4.19. I built a custom 5.7
+kernel but it has some issues (none of the BPF programs work), which i
+haven't managed to fix yet.
+I'm not sure if the issue is due to the 5.7 kernel image, or due to
+the QEMU image. Because of that I'm not sure if it will work with
+other kernel versions, but if you are interested in trying to use it,
+it is available at the following Google Drive link:
+https://drive.google.com/drive/folders/1hs80tYhQG76As7_vkj1y7EF-sFXWxep1?usp=sharing
+
+To run the command i use "qemu-system-arm -M virt -m 1024 -kernel
+vmlinuz-4.19.0-10-armmp-lpae -initrd initrd.img-4.19.0-10-armmp-lpae
+-append 'root=/dev/vda2' -drive
+if=none,file=qemu-backup.qcow2,format=qcow2,id=hd -device
+virtio-blk-device,drive=hd -netdev user,id=mynet -device
+virtio-net-device,netdev=mynet -nographic".
+
+The logins are root:test and user:user.
+The link has the disk image in qemu-backup.qcow, the 4.19 kernel and
+initrd and a run.sh which has the above mentioned command to run the
+image.
+
+Regards,
+Juraj
+
+
+On Tue, Sep 29, 2020 at 8:48 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+>
+> On Mon, 28 Sep 2020 at 21:15, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Sep 28, 2020 at 8:41 PM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+> > >
+> [...]
+> > > I can provide 32-bit and 64-bit big-endian system images for running
+> > > on QEMU's malta target. These are built using OpenWRT's build system
+> > > and include a recent stable bpftool (v5.8.x) and v5.4.x kernel. Is
+> > > that sufficient? It would work if manually creating raw or elf-based
+> > > BTF files on a build host, then copying into the QEMU target to test
+> > > parsing with bpftool (linked with the standard libbpf).
+> >
+> > That would be great! I intend to run them under qemu-system-arm and
+> > supply latest kernel through -kernel option, so kernel itself is not
+> > that critical. Same for bpftool, pahole, etc, I'll just supply them
+> > from my host environment. So please let me know how I can get ahold of
+> > those. Sample qemu invocation command line would be highly appreciated
+> > as well. Thank you!
+> >
+> Sounds good. However, malta is actually a MIPS platform. I've been using it
+> a long time because it makes things particularly easy to switch configuration
+> between different word-sizes and endianness.
+>
+> I had some malta mips images ready to go, but if you need ARM I'll need
+> to look into building images for big-endian ARM. Big-endian isn't so common
+> in the wild, and I'll need to see if OpenWRT supports these, and how to
+> configure with QEMU's 'armvirt' target if possible...
+>
+> > >
+> > > For changes to the Linux build system itself (e.g. pahole endian
+> > > options and target endian awareness), you would need to set up a
+> >
+> > I think that shouldn't be a problem and should be handled
+> > transparently, even in a cross-compilation case, but let's see.
+> >
+> > > standard OpenWRT build environment. I can help with that, or simply
+> > > integrate your patches myself for testing. As you say, nothing to be
+> > > super pumped about...
+> > >
+> > > Let me know what's easiest and how best to get images to you.
+> >
+> > Any way you like and can. Dropbox, Google drive, what have you.
+> >
+> Meantime, I can package up what I have and send you the details. That
+> would include images for mips32/64 big-endian and arm32/64 little-endian,
+> plus usage examples. Is that still helpful for you?
+>
+> Thanks,
+> Tony
