@@ -2,98 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B133827C00B
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 10:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E105727C0EF
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 11:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725786AbgI2IvU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 04:51:20 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55300 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbgI2IvT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Sep 2020 04:51:19 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kNBLf-00061o-Oa; Tue, 29 Sep 2020 10:50:59 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kNBLf-0004qV-AC; Tue, 29 Sep 2020 10:50:59 +0200
-Subject: Re: [PATCH v7 bpf-next 4/8] selftests/bpf: add bpf_snprintf_btf
- helper tests
-To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
-        andriin@fb.com, yhs@fb.com
-Cc:     linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, acme@kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <1601292670-1616-1-git-send-email-alan.maguire@oracle.com>
- <1601292670-1616-5-git-send-email-alan.maguire@oracle.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <30b2a441-9772-1662-ca03-13bfa0b37d46@iogearbox.net>
-Date:   Tue, 29 Sep 2020 10:50:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727937AbgI2JVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 05:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727933AbgI2JVS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Sep 2020 05:21:18 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA81C0613D1
+        for <bpf@vger.kernel.org>; Tue, 29 Sep 2020 02:21:17 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id 26so4682769ois.5
+        for <bpf@vger.kernel.org>; Tue, 29 Sep 2020 02:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=id5psVTZSDMhOlckpGo8CUqtpbTSRfiT9gOWo0ny4ek=;
+        b=UYXIyfDhH977ntPsM+7Oah43rWc7WFUVqZoHhuofAV+q6RF3NFEbVZay5xczF/VUZ5
+         sMVityv4M8OSy84DcK6AbcfQzSERk7VYSvBFBkAEpQCTjlxP8Z1YCzEfNfeCReBCVG6j
+         GjIvRVGx0Glf5sBtrAQS+xN6ZzUjHEsUC/Ndw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=id5psVTZSDMhOlckpGo8CUqtpbTSRfiT9gOWo0ny4ek=;
+        b=F2wRNHaqCdvB7yYEeyEKPLtsbnktozJvvygGh/CCBChtGsgdxuU+LLKLZM8SoM+LSL
+         6MfLEoN0qh9qznKaOP79gy/fDVZ7XArCRGo57QZJqrpHfJdeS3FZ0tvbXn3hZln48Q8o
+         J2fBSqo7om9SwRyAQmkLyj7J9aTtwFHiW9yO4dpnN2yePkEuznSJiZmJnXK3MeC34jFa
+         GZcgKoR2BJKhvttjlhefshFdwZ62tXaVDM7Fon0lxC67KVCUS29f1urr5xbgaEZXCjH0
+         F3fQ2vwaXF0ArtSGab8sRq6lXrvNc8kzKNDZHQbUc8tBkPSAvsFjw26+OfbZX78zNEiF
+         DFJg==
+X-Gm-Message-State: AOAM530QIawnt4FiTYRVR4YBg5q7QXRxQZZ60H1dotRlwfpWNf04TxH4
+        KJd+fa4YeA5E7b++9NIEfhD9l7jKmdHPnqRxVtL1XQ==
+X-Google-Smtp-Source: ABdhPJzEPpDikSbmSQ6GKnI9QYsxaxQGiIypykQkLCXeMXS1K9gv5joboZIw8ZWs7WWlpLRulBhfYziPmh4ivGPftuE=
+X-Received: by 2002:aca:f0a:: with SMTP id 10mr1965385oip.13.1601371276527;
+ Tue, 29 Sep 2020 02:21:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1601292670-1616-5-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25941/Mon Sep 28 15:55:11 2020)
+References: <20200928090805.23343-1-lmb@cloudflare.com> <20200928090805.23343-5-lmb@cloudflare.com>
+ <20200929060619.psnobg3cz3zbfx6u@kafai-mbp>
+In-Reply-To: <20200929060619.psnobg3cz3zbfx6u@kafai-mbp>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 29 Sep 2020 10:21:05 +0100
+Message-ID: <CACAyw9-hSfaxfHHMaVMVqBU7MHLoqgPyo55UwQ3w7NKREHcCxw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] selftest: bpf: Test copying a sockmap and sockhash
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-kselftest@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/28/20 1:31 PM, Alan Maguire wrote:
-> Tests verifying snprintf()ing of various data structures,
-> flags combinations using a tp_btf program. Tests are skipped
-> if __builtin_btf_type_id is not available to retrieve BTF
-> type ids.
-> 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-[...]
-> +void test_snprintf_btf(void)
-> +{
-> +	struct netif_receive_skb *skel;
-> +	struct netif_receive_skb__bss *bss;
-> +	int err, duration = 0;
-> +
-> +	skel = netif_receive_skb__open();
-> +	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-> +		return;
-> +
-> +	err = netif_receive_skb__load(skel);
-> +	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-> +		goto cleanup;
-> +
-> +	bss = skel->bss;
-> +
-> +	err = netif_receive_skb__attach(skel);
-> +	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> +		goto cleanup;
-> +
-> +	/* generate receive event */
-> +	system("ping -c 1 127.0.0.1 > /dev/null");
+On Tue, 29 Sep 2020 at 07:06, Martin KaFai Lau <kafai@fb.com> wrote:
 
-This generates the following new warning when compiling BPF selftests:
+...
 
-   [...]
-   EXT-OBJ  [test_progs] cgroup_helpers.o
-   EXT-OBJ  [test_progs] trace_helpers.o
-   EXT-OBJ  [test_progs] network_helpers.o
-   EXT-OBJ  [test_progs] testing_helpers.o
-   TEST-OBJ [test_progs] snprintf_btf.test.o
-/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c: In function ‘test_snprintf_btf’:
-/root/bpf-next/tools/testing/selftests/bpf/prog_tests/snprintf_btf.c:30:2: warning: ignoring return value of ‘system’, declared with attribute warn_unused_result [-Wunused-result]
-   system("ping -c 1 127.0.0.1 > /dev/null");
-   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   [...]
+> > +     /* We need a temporary buffer on the stack, since the verifier doesn't
+> > +      * let us use the pointer from the context as an argument to the helper.
+> Is it something that can be improved later?
+>
+> others LGTM.
 
-Please fix, thx!
+Yeah, I think so. We'd need to do something similar to your
+sock_common work for PTR_TO_RDONLY_BUF_OR_NULL. The fact that the
+pointer is read only makes it a bit more difficult I think. After
+that, a user could just plug the key into map_update_elem directly.
+Alternatively, allow specialising map_ops per context.
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
