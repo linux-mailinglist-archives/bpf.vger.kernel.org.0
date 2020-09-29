@@ -2,33 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEBF27D5C8
+	by mail.lfdr.de (Postfix) with ESMTP id A81DE27D5C9
 	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 20:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgI2SaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1727876AbgI2SaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 29 Sep 2020 14:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:37254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727876AbgI2SaD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S1727740AbgI2SaD (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 29 Sep 2020 14:30:03 -0400
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601404202;
-        bh=245sG4Bi6z7cOnMI+y2FxsxhqlcUK5iOoMYvr9XRAx4=;
+        bh=zH9MrFY2h7oPmhsbKlTafGpw28e1E3Fet4pfAw4q8b8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=f8ZzXCwLXUTXH1sl1I+6AtBNY+iGtOR33U11ozJ62tLJh9WXrBP1QMqsahtnO4dQN
-         dJA0BVaJRmtoF549qFFEpDfQq064V/BUQEXuRtJ0oEjzTWayovmgAn55zuf6m2Wag/
-         YmNDu1afsYaCiNMiWxke7D5hLmHGCtboentKX4xw=
+        b=XQuy60XHuZ8zDtv2TDKYE6mIfFv9LjBAvxFSWHCN0aa3bjix925lJ2tQiqqiO0pwI
+         lf82zRFeCJVkJ51ciXvwNofvbAEzFa9GqOSFnfCr8yUZ50fncxp8ov3gd4KonUeo0D
+         UmlRK9BNkBWRz5+Ff6ElnaYqbf3IdBJuXdAquX3E=
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf_iter: don't fail test due to missing
- __builtin_btf_type_id
+Subject: Re: [PATCH bpf] xsk: fix a documentation mistake in xsk_queue.h
 From:   patchwork-bot+bpf@kernel.org
-Message-Id: <160140420265.22687.13555607329686499231.git-patchwork-notify@kernel.org>
+Message-Id: <160140420260.22687.15249708539681867546.git-patchwork-notify@kernel.org>
 Date:   Tue, 29 Sep 2020 18:30:02 +0000
-References: <20200929123004.46694-1-toke@redhat.com>
-In-Reply-To: <20200929123004.46694-1-toke@redhat.com>
-To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
+References: <20200928082344.17110-1-ciara.loftus@intel.com>
+In-Reply-To: <20200928082344.17110-1-ciara.loftus@intel.com>
+To:     Ciara Loftus <ciara.loftus@intel.com>
 Cc:     bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -38,21 +37,19 @@ Hello:
 
 This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Tue, 29 Sep 2020 14:30:04 +0200 you wrote:
-> The new test for task iteration in bpf_iter checks (in do_btf_read()) if it
-> should be skipped due to missing __builtin_btf_type_id. However, this
-> 'skip' verdict is not propagated to the caller, so the parent test will
-> still fail. Fix this by also skipping the rest of the parent test if the
-> skip condition was reached.
+On Mon, 28 Sep 2020 08:23:44 +0000 you wrote:
+> After 'peeking' the ring, the consumer, not the producer, reads the data.
+> Fix this mistake in the comments.
 > 
-> Fixes: b72091bd4ee4 ("selftests/bpf: Add test for bpf_seq_printf_btf helper")
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> 
-> [...]
+> Fixes: 15d8c9162ced ("xsk: Add function naming comments and reorder functions")
+> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+> ---
+>  net/xdp/xsk_queue.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [bpf-next] selftests/bpf_iter: don't fail test due to missing __builtin_btf_type_id
-    https://git.kernel.org/bpf/bpf-next/c/d2197c7ff171
+  - xsk: fix a documentation mistake in xsk_queue.h
+    https://git.kernel.org/bpf/bpf-next/c/f1fc8ece6c07
 
 You are awesome, thank you!
 --
