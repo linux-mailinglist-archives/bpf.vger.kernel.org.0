@@ -2,135 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A9927CAD6
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 14:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A267527CB58
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 14:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732383AbgI2MWf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 08:22:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729797AbgI2LfL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Sep 2020 07:35:11 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A683323C40;
-        Tue, 29 Sep 2020 11:28:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601378904;
-        bh=1+bDAC057cRqevoqUn1yDT8QoWbfQBjWAA7gtYY30kk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eRSGQ1QpMAxoGQ1LejssabvHFZ4GLivTXSNNyV9lfeFY0kJp65KT8mcmgipUTPQTz
-         4o8prcnEwSMZ4uNI/Q2UJkdSm8mMmLaPeIGMptjo/y+wyKFLXF5111nctCE9+q+y00
-         mrMe8ltTjssKdikq8YD26Ke0CEYsPQra7/ygtU3Q=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Rogers <irogers@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Vince Weaver <vincent.weaver@maine.edu>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        kp singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 182/245] perf metricgroup: Free metric_events on error
-Date:   Tue, 29 Sep 2020 13:00:33 +0200
-Message-Id: <20200929105955.829907379@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200929105946.978650816@linuxfoundation.org>
-References: <20200929105946.978650816@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1732738AbgI2M0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 08:26:40 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60670 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729632AbgI2Ldb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Sep 2020 07:33:31 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TBPP35191277;
+        Tue, 29 Sep 2020 11:33:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=Q9XFzQq1ftNd/6nhZwM6OK6igXtWaspUnrZOg4CnAdc=;
+ b=WwiMDiujMHZi+Q02nHSZamBamqnCFy26N0CgCXrHQ9265qMvZW/t7VWkbiNnSCK4RPmN
+ xw0cF0PftzA/L0X3RXtZdOBqF5pT7cm8LZUDFpb/g62Vdt+7Cl0TqhDqQsebMclFN9I6
+ jG81QNhrwDsenDafdVF29LA2OTTlG08Xv1komJoRmsTnZuEgR+2wsmyCBd1e27JXD1nF
+ HVo8jxhepx2MFVWpX2F/ZFUEKi5UyRP3GeIkiVh2fv8nPLQnh9DLMR31xd9yrnyr9vU7
+ NNicpawhp23xJCxLAPjBqa+/dM9VkpuusB1bpWsZoX/W3jFUrlisBmZtLce28SEQixZ3 Yg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 33sx9n23jx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 29 Sep 2020 11:33:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08TBTiHT052060;
+        Tue, 29 Sep 2020 11:33:12 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 33tfjwj5ee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Sep 2020 11:33:12 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08TBXBwP028097;
+        Tue, 29 Sep 2020 11:33:11 GMT
+Received: from localhost.uk.oracle.com (/10.175.172.184) by default (Oracle
+ Beehive Gateway v4.0) with ESMTP ; Tue, 29 Sep 2020 04:32:42 -0700
 MIME-Version: 1.0
+Message-ID: <1601379151-21449-1-git-send-email-alan.maguire@oracle.com>
+Date:   Tue, 29 Sep 2020 04:32:29 -0700 (PDT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] selftests/bpf: BTF-based kernel data display
+ fixes
+X-Mailer: git-send-email 1.8.3.1
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
+ spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009290102
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+Resolve issues in bpf selftests introduced with BTF-based kernel data
+display selftests; these are
 
-[ Upstream commit a159e2fe89b4d1f9fb54b0ae418b961e239bf617 ]
+- a warning introduced in snprintf_btf.c; and
+- compilation failures with old kernels vmlinux.h
 
-Avoid a simple memory leak.
+Alan Maguire (2):
+  selftests/bpf: fix unused-result warning in snprintf_btf.c
+  selftests/bpf: ensure snprintf_btf/bpf_iter tests compatibility with
+    old vmlinux.h
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kajol Jain <kjain@linux.ibm.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Kim Phillips <kim.phillips@amd.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Vince Weaver <vincent.weaver@maine.edu>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: kp singh <kpsingh@chromium.org>
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200508053629.210324-10-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/metricgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../selftests/bpf/prog_tests/snprintf_btf.c        |  2 +-
+ tools/testing/selftests/bpf/progs/bpf_iter.h       | 23 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/btf_ptr.h        | 27 ++++++++++++++++++++++
+ .../selftests/bpf/progs/netif_receive_skb.c        |  2 +-
+ 4 files changed, 52 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_ptr.h
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 8b3dafe3fac3a..6dcc6e1182a54 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -171,6 +171,7 @@ static int metricgroup__setup_events(struct list_head *groups,
- 		if (!evsel) {
- 			pr_debug("Cannot resolve %s: %s\n",
- 					eg->metric_name, eg->metric_expr);
-+			free(metric_events);
- 			continue;
- 		}
- 		for (i = 0; i < eg->idnum; i++)
-@@ -178,11 +179,13 @@ static int metricgroup__setup_events(struct list_head *groups,
- 		me = metricgroup__lookup(metric_events_list, evsel, true);
- 		if (!me) {
- 			ret = -ENOMEM;
-+			free(metric_events);
- 			break;
- 		}
- 		expr = malloc(sizeof(struct metric_expr));
- 		if (!expr) {
- 			ret = -ENOMEM;
-+			free(metric_events);
- 			break;
- 		}
- 		expr->metric_expr = eg->metric_expr;
 -- 
-2.25.1
-
-
+1.8.3.1
 
