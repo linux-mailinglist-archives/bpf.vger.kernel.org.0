@@ -2,217 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BF727BBD1
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 06:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D107927BBD5
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 06:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725536AbgI2END (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 00:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
+        id S1725468AbgI2EPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 00:15:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbgI2END (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Sep 2020 00:13:03 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875B1C061755;
-        Mon, 28 Sep 2020 21:13:03 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id j19so809236pjl.4;
-        Mon, 28 Sep 2020 21:13:03 -0700 (PDT)
+        with ESMTP id S1725379AbgI2EPT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Sep 2020 00:15:19 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049EBC061755;
+        Mon, 28 Sep 2020 21:15:18 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id a2so2624480ybj.2;
+        Mon, 28 Sep 2020 21:15:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kzHV7kRs624uoUHo9YKEdvr1ljcLOGG/mpwSJhaxV2Y=;
-        b=gktB7qtclfq93ixS190QNbfre1O3ogaFaw2zpFHbgDi9Oh/QWyncivzjfQ3fx8NaeB
-         Nh+CvCn3dj94XGm5UQCeXt5qVbvXpwbzJjqWVDfNXOl/GunDCOSSPem33YjVOTDcS1kz
-         yfscqK/SoK/VysYdCYVXuFA69VQwb+AF1Tu9enV2a1wGM0j91boGMv7jCfqs9/qsNhH1
-         r7+Cayi9sA1a1hzmEVf/tAq3ds6oO+h6SpF5qKr4ec1Z+cPUyEgHYGxSfbp6lcwx1hfI
-         gVpxvE62PgGe4vjXEwDpA/HzN3EQWGEeJQcN12v8D6UKksmlLn/BRIyhva5Ah6tXtKfS
-         2OeA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NCU0i7xGYeEOdR/ZfoUPuO4j7qe+nAQSgX4ECewg6gs=;
+        b=RF56+TEdl3VhsKkf0aAHTbdmk0whqYboVYpwAbFa8NBeEW6JMY2wJW1ybOC638YKoW
+         ZWbQ8wZbVnd1Wtj4yzTYVLf1CmPSQ8FCeinnapte2EstmqCXqKz9xbTWMZLbinawA1hf
+         AIwizresxuVCyR6MbIsJq1XLrgqD1em78odQ4MZMVxuuMWLwF4cgfP43Xc4+WYp6bQwH
+         LtJPurA166FEe+v354/cKYzP6EMxMh27VuWBetNIWY9iqn0W0H+F4/ne6wGvCOwuamTu
+         Atdi+AUKiVzzLXeWRXYnktHqZRYCBZWyUkLJu+VlZJc3e8rhignlZvgISUm20m8wveQZ
+         WxpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kzHV7kRs624uoUHo9YKEdvr1ljcLOGG/mpwSJhaxV2Y=;
-        b=ClGdLMG5y7j/yCYcsinUZRzaGYs1MiofrF2nRTIm4dChttazldBX+GKXoNhHwRipUj
-         I7+JuoYd6YZmVR8GfFjNK1iVxWa7X06iL+3VmQR2zomFECopGyYdcpHnnrcc6t95L07t
-         RA9wz7DzpAKczgIQItoT3ddp8iNna+z4/nB+s3xijgicOfsC9TFCG1OR1vBb6u3qnSup
-         rPqsRLkT92p+mZ2opT5ixOJa2bmwJGtOQzA7pAdHhDICENYW+J2U6fK5XbkDoHgBdacR
-         Z4Z5LO1cY9JgFd15z/rXIpC1kMgfWBrTz8ZiNwlQ81KfZYs0OQGhhTr3qYctC7oD324w
-         zzWw==
-X-Gm-Message-State: AOAM530rDQkFKAZ9J7DM9x9m7mWc2pLtCdv71yCE+Y+STqYaJqZIzwRM
-        r+Y2ysjgLa/QvuFiRy5vAZQ=
-X-Google-Smtp-Source: ABdhPJxtiU2Pqwx2Hbj7UITZPDgH040o5avTpp21JULJ6lIMFltyLHG9hCIdkyeXZu32dM8Ujh4Idw==
-X-Received: by 2002:a17:90a:c20f:: with SMTP id e15mr2048547pjt.163.1601352782880;
-        Mon, 28 Sep 2020 21:13:02 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local (c-24-23-181-79.hsd1.ca.comcast.net. [24.23.181.79])
-        by smtp.googlemail.com with ESMTPSA id l13sm3102368pgq.33.2020.09.28.21.13.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 21:13:02 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: add redirect_neigh helper as
- redirect drop-in
-To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
-Cc:     john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, David Ahern <dsahern@kernel.org>
-References: <cover.1601303057.git.daniel@iogearbox.net>
- <f4dec1d6d0fd9d79cf23bc4b54092f089e59f6b7.1601303057.git.daniel@iogearbox.net>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <e7eb6be7-2c03-0377-0712-90a3bb289594@gmail.com>
-Date:   Mon, 28 Sep 2020 21:13:01 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NCU0i7xGYeEOdR/ZfoUPuO4j7qe+nAQSgX4ECewg6gs=;
+        b=Zb4/StGxPW+2FXb+PyWtGDh3mwOqxoaKng5dgXjKgmVbJzW7c5X3QWhKA2Mmm5xr47
+         dXSt9rdzooO81j0lyudQStP7FGi5l7PODRfXKbjqKxVSepQYqEDBzjwwlw5EPop0bTeE
+         yQzJ05S4DN2dbnvJ+spBOxJCsVU5qLgFqoX3blZDFY+M9HFB3vQHSgsGTWrQhAY8OQ9c
+         sK+pU7lqX2z9/eXLZCnaMyrQn4QonKMJYM5dzTbAlv5SMTQ8Jef+yI8RpVPsQHTK0p6s
+         KA2pkKJX5ctmimcMZYIvSnCDnFKR63JZNgKuoxow4xtUuM/PdWi2dFHfvY3IukFNRM+r
+         znuA==
+X-Gm-Message-State: AOAM532iVIXf3bnIKMxe1pSQk7aM8nuTw8oS8QuAeAwidvYYOkPr2imo
+        evl0BgGsnK7z3WGw/v5qGMvJvo+jBuKj2iYkFT0=
+X-Google-Smtp-Source: ABdhPJxA49lX4po2veHsCuljLaJ6h2dsP76B7/VjiBTetvSo3smPTSEuXeJegyQjrBa6YKGf+f29k5PZd8B0/XPNzsI=
+X-Received: by 2002:a25:2d41:: with SMTP id s1mr3599161ybe.459.1601352918079;
+ Mon, 28 Sep 2020 21:15:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f4dec1d6d0fd9d79cf23bc4b54092f089e59f6b7.1601303057.git.daniel@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAPGftE8ipAacAnm9xMHFabXCL-XrCXGmOsX-Nsjvz9wnh3Zx-w@mail.gmail.com>
+ <9e99c5301fbbb4f5f601b69816ee1dc9ab0df948.camel@linux.ibm.com>
+ <CAEf4Bza9tZ-Jj0dj9Ne0fmxa95t=9XxxJR+Ce=6hDmw_d8uVFA@mail.gmail.com>
+ <8cf42e2752e442bb54e988261d8bf3cd22ad00f2.camel@linux.ibm.com>
+ <20200909142750.GC3788224@kernel.org> <CAPGftE8jNys9aVfUZW2iE5vB=QWKEmmwwWuWq9ek0ZXp-Aobkg@mail.gmail.com>
+ <CAEf4BzYDm3QOOgND9p+LR21bn98QMjE+VYspQSvi4ebG9EdW0g@mail.gmail.com>
+ <CAEf4Bzb7LZX8Y=qKpO5j3eUYU=tJzvNRYd1CdXXxq8Y-V4=+Vw@mail.gmail.com> <CAPGftE9iVH=eG_FRxSFJC0B3FX8LVdKStfvLbs0gRt8kvMoqJw@mail.gmail.com>
+In-Reply-To: <CAPGftE9iVH=eG_FRxSFJC0B3FX8LVdKStfvLbs0gRt8kvMoqJw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 28 Sep 2020 21:15:07 -0700
+Message-ID: <CAEf4Bza2D2MQ_F7+vNg7x05JachvJ5bLM3Uyjv+oEx=xna_u4g@mail.gmail.com>
+Subject: Re: Problem with endianess of pahole BTF output for vmlinux
+To:     Tony Ambardar <tony.ambardar@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
+        David Marcinkovic <david.marcinkovic@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Borna Cafuk <borna.cafuk@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/28/20 7:38 AM, Daniel Borkmann wrote:
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index a0776e48dcc9..64c6e5ec97d7 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> +static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev)
-> +{
-> +	const struct ipv6hdr *ip6h = ipv6_hdr(skb);
-> +	struct net *net = dev_net(dev);
-> +	int err, ret = NET_XMIT_DROP;
-> +	struct flowi6 fl6 = {
-> +		.flowi6_flags	= FLOWI_FLAG_ANYSRC,
-> +		.flowi6_mark	= skb->mark,
-> +		.flowlabel	= ip6_flowinfo(ip6h),
-> +		.flowi6_proto	= ip6h->nexthdr,
-> +		.flowi6_oif	= dev->ifindex,
-> +		.daddr		= ip6h->daddr,
-> +		.saddr		= ip6h->saddr,
-> +	};
-> +	struct dst_entry *dst;
-> +
-> +	skb->dev = dev;
+On Mon, Sep 28, 2020 at 8:41 PM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+>
+> Hello Andrii!
+>
+> On Mon, 28 Sep 2020 at 13:19, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Sep 21, 2020 at 11:19 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > I have a bunch of code changes locally. I'll clean that up, partition
+> > > libbpf and pahole patches, and post them for review this week. To
+> > > address endianness support, those are the prerequisites. Once those
+> > > changes land, I'll be able to solve endianness issues you are having.
+> > > So just a bit longer till all that is done, sorry for the wait!
+> > >
+> >
+> > Question to folks that are working with 32-bit and/or big-endian
+> > architectures. Do you guys have an VM image that you'd be able to
+> > share with me, such that I can use it with qemu to test patches like
+> > this. My normal setup is all 64-bit/little-endian, so testing changes
+> > like this (and a few more I'm planning to do to address mixed 32-bit
+> > on the host vs 64-bit in BPF cases) is a bit problematic. And it's
+> > hard to get superpumped about spending lots of time setting up a new
+> > Linux image (never goes easy or fast for me).
+> >
+> > So, if you do have something like this, please share. Thank you!
+> >
+>
+> I can provide 32-bit and 64-bit big-endian system images for running
+> on QEMU's malta target. These are built using OpenWRT's build system
+> and include a recent stable bpftool (v5.8.x) and v5.4.x kernel. Is
+> that sufficient? It would work if manually creating raw or elf-based
+> BTF files on a build host, then copying into the QEMU target to test
+> parsing with bpftool (linked with the standard libbpf).
 
-this is not needed here. You set dev in bpf_out_neigh_v6 to the dst dev.
-Everything else is an error path where the skb is dropped.
+That would be great! I intend to run them under qemu-system-arm and
+supply latest kernel through -kernel option, so kernel itself is not
+that critical. Same for bpftool, pahole, etc, I'll just supply them
+from my host environment. So please let me know how I can get ahold of
+those. Sample qemu invocation command line would be highly appreciated
+as well. Thank you!
 
+>
+> For changes to the Linux build system itself (e.g. pahole endian
+> options and target endian awareness), you would need to set up a
 
-> +	skb->tstamp = 0;
-> +
-> +	dst = ipv6_stub->ipv6_dst_lookup_flow(net, NULL, &fl6, NULL);
-> +	if (IS_ERR(dst))
-> +		goto out_drop;
-> +
-> +	skb_dst_set(skb, dst);
-> +
-> +	err = bpf_out_neigh_v6(net, skb);
-> +	if (unlikely(net_xmit_eval(err)))
-> +		dev->stats.tx_errors++;
-> +	else
-> +		ret = NET_XMIT_SUCCESS;
-> +	goto out_xmit;
-> +out_drop:
-> +	dev->stats.tx_errors++;
-> +	kfree_skb(skb);
-> +out_xmit:
-> +	return ret;
-> +}
-> +#else
-> +static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev)
-> +{
-> +	kfree_skb(skb);
-> +	return NET_XMIT_DROP;
-> +}
-> +#endif /* CONFIG_IPV6 */
-> +
-> +#if IS_ENABLED(CONFIG_INET)
-> +static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb)
-> +{
-> +	struct dst_entry *dst = skb_dst(skb);
-> +	struct rtable *rt = container_of(dst, struct rtable, dst);
-> +	struct net_device *dev = dst->dev;
-> +	u32 hh_len = LL_RESERVED_SPACE(dev);
-> +	struct neighbour *neigh;
-> +	bool is_v6gw = false;
-> +
-> +	if (dev_xmit_recursion())
-> +		goto out_rec;
-> +	if (unlikely(skb_headroom(skb) < hh_len && dev->header_ops)) {
+I think that shouldn't be a problem and should be handled
+transparently, even in a cross-compilation case, but let's see.
 
-Why is this check needed for v4 but not v6?
+> standard OpenWRT build environment. I can help with that, or simply
+> integrate your patches myself for testing. As you say, nothing to be
+> super pumped about...
+>
+> Let me know what's easiest and how best to get images to you.
 
-> +		struct sk_buff *skb2;
-> +
-> +		skb2 = skb_realloc_headroom(skb, hh_len);
-> +		if (!skb2) {
-> +			kfree_skb(skb);
-> +			return -ENOMEM;
-> +		}
-> +		if (skb->sk)
-> +			skb_set_owner_w(skb2, skb->sk);
-> +		consume_skb(skb);
-> +		skb = skb2;
-> +	}
-> +	rcu_read_lock_bh();
-> +	neigh = ip_neigh_for_gw(rt, skb, &is_v6gw);
-> +	if (likely(!IS_ERR(neigh))) {
-> +		int ret;
-> +
-> +		sock_confirm_neigh(skb, neigh);
-> +		dev_xmit_recursion_inc();
-> +		ret = neigh_output(neigh, skb, is_v6gw);
-> +		dev_xmit_recursion_dec();
-> +		rcu_read_unlock_bh();
-> +		return ret;
-> +	}
-> +	rcu_read_unlock_bh();
-> +out_drop:
-> +	kfree_skb(skb);
-> +	return -EINVAL;
-> +out_rec:
-> +	net_crit_ratelimited("bpf: recursion limit reached on datapath, buggy bpf program?\n");
-> +	goto out_drop;
-> +}
-> +
-> +static int __bpf_redirect_neigh_v4(struct sk_buff *skb, struct net_device *dev)
-> +{
-> +	const struct iphdr *ip4h = ip_hdr(skb);
-> +	struct net *net = dev_net(dev);
-> +	int err, ret = NET_XMIT_DROP;
-> +	struct flowi4 fl4 = {
-> +		.flowi4_flags	= FLOWI_FLAG_ANYSRC,
-> +		.flowi4_mark	= skb->mark,
-> +		.flowi4_tos	= RT_TOS(ip4h->tos),
+Any way you like and can. Dropbox, Google drive, what have you.
 
-set flowi4_proto here.
-
-> +		.flowi4_oif	= dev->ifindex,
-> +		.daddr		= ip4h->daddr,
-> +		.saddr		= ip4h->saddr,
-> +	};
-> +	struct rtable *rt;
-> +
-> +	skb->dev = dev;
-> +	skb->tstamp = 0;
-> +
-> +	rt = ip_route_output_flow(net, &fl4, NULL);
-> +	if (IS_ERR(rt))
-> +		goto out_drop;
-> +	if (rt->rt_type != RTN_UNICAST && rt->rt_type != RTN_LOCAL) {
-> +		ip_rt_put(rt);
-> +		goto out_drop;
-> +	}
-> +
-> +	skb_dst_set(skb, &rt->dst);
-> +
-> +	err = bpf_out_neigh_v4(net, skb);
-> +	if (unlikely(net_xmit_eval(err)))
-> +		dev->stats.tx_errors++;
-> +	else
-> +		ret = NET_XMIT_SUCCESS;
-> +	goto out_xmit;
-> +out_drop:
-> +	dev->stats.tx_errors++;
-> +	kfree_skb(skb);
-> +out_xmit:
-> +	return ret;
-> +}
+>
+> Many thanks,
+> Tony
