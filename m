@@ -2,97 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E17727BACB
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 04:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B16A27BB70
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 05:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgI2C0r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 22:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S1726421AbgI2DUO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 23:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbgI2C0q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 22:26:46 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E72C061755;
-        Mon, 28 Sep 2020 19:26:44 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a22so2679806ljp.13;
-        Mon, 28 Sep 2020 19:26:44 -0700 (PDT)
+        with ESMTP id S1726396AbgI2DUN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 23:20:13 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C63C061755;
+        Mon, 28 Sep 2020 20:20:13 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id q123so3178699pfb.0;
+        Mon, 28 Sep 2020 20:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=80vsUD7XRT+rdywfaQIBARge/5coTPkk91LpfH8qlnU=;
-        b=NWqDoo1ixRdUdGqFzGNat03uVOapJkwM80kz2KdFQewWTNN+EXgicYDUDeWq8gi/xY
-         KJUrpBmpKc/583tnI8abSR1AaY1O1AM0AZ+zD9wylRWei6XYJ4dmlhx+SDvFYBVgSg2U
-         w1XUcCgpfZINc+BqO93/t1U0v6e9tGaQSqGQvtMtamYtXiTtXpCDyHyP7hI0DVdZJaTu
-         C0v/mtUjcY1o44rto8narIGTseboxK7GNiWrXp+jDaU4qsQH3ylqGlQABH3pC6cwcpKV
-         IGpKUzeI6axSDpuAnuIsPxvqExcBVkPYRHXpdxRshqC+9UhmAJahxn4clfxhuLru83C0
-         V19A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WtWwqXcT737XkNAJYLifSS4DuG/5VpYPU04Ao8s5w7E=;
+        b=NcfQvZK/j7VM4N/i6Aw82YgiQ8k8gnx2zZFZlY8MTq3Gqp+dDAqg5sEDUXTm3EdmHJ
+         BsAOrOaOHFvUAGMsUzNfwTAeKWUA147DeDsIHNTimbYVa8ieYddUlL9giX54p8qNBmbs
+         nc7MKJnjqLdk4FrL4G2rb5ykx8zxDpASKrkezFYOtAX69Q4ZcRsRlgUhZ9mB2wc5Njbr
+         sOnQqcpwYJRDF3pCA9OG1+NUZW3C36yNvZvYK9VKVMmRE99ouQ7lzRycKCi10k4KR2YN
+         nSveHiFgTa9g2UmyY7v7oaDF9xk3ZFTLy07Gix115BWiqNWa9Z1SxIYk3o0TU/W1IkFt
+         onOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=80vsUD7XRT+rdywfaQIBARge/5coTPkk91LpfH8qlnU=;
-        b=XFPdEfK4qVtKkufbVyUmaI4ZBoLJRLi7IVpEXVS2hWgkk289JSZAtCE8dzB3Yv0MeO
-         XKMqFuTcpgglcAN2VhnfytpIytBwVcHNttVmGJuvrvOOM7fs0tg+WJmGYHoEE6D6uijm
-         Sa7Xtn0FsFAbQYZdxN4RODSkI1F64Pk+883WMRiamEMtM+kunjIlwlAp/Voy6KXtGLht
-         mEy5+oEjVhsTC4ZIUTmr17HtXW1VqCYI/oa2z1nKCBK2+ZSkqPOG721jo3DigPIBoDgc
-         jBsXf8SIASfo/dFUwz1bcrkG2YsmO80OSimZnEHC5DQgthWNDAZ2sVLk4FzmF1PpxPVv
-         HomA==
-X-Gm-Message-State: AOAM530mVGzs1wNkFrKH82rw0pmtB7LpxJhMW9MLhVTeYF0+NBZN3DEC
-        OsiLaxvMHrs32LG2teld6foNMnASmd28tlSbVFQrYdFV
-X-Google-Smtp-Source: ABdhPJzLItEZ0cDm14shGuXkyP3EuYeWHvQE1H+6fgx4o6u/yoa6bDjFzlUj2m9vAYsGq7GtRg/u9Dio4h8NSBYTKww=
-X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr468724ljr.2.1601346400853;
- Mon, 28 Sep 2020 19:26:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200929020533.711288-1-andriin@fb.com>
-In-Reply-To: <20200929020533.711288-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 28 Sep 2020 19:26:29 -0700
-Message-ID: <CAADnVQ+Z5BhbNm9qiWNn7hxo=mgUHt5xOaMG-z15cPJmVZssVw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/3] libbpf: BTF writer APIs
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WtWwqXcT737XkNAJYLifSS4DuG/5VpYPU04Ao8s5w7E=;
+        b=EHmfq0jAjAnUDdnPVITFKnjJiVTVIg804E7bLVjV6yhDABlPEWbs8LE5UkwnsUPWK/
+         8WZvaZU68K/cJDA8jR2CzzbH8hEu4DBJQ8jF2KlM2JUtdj3H4fBiTFCLZIV8v2GUSBHf
+         24R36Unpeh2DVyWOMe8ilAJyrAE0bteh1+Q5zPA+PdOKdcRlClUFodpuOJ7xB+GQHVc2
+         eVKIZD1aenP7F1SsvuJihwNJJx8rOsbyN1r4BkT2XVopBkvTmVNOA8HWET0F1GRhDf9F
+         sJYYimkx+ka3qriWR9astromfl3Ewzd/XgchNtGqA3Fwb0g6G6kZ6qkrV2me2iIWF6Ig
+         OgaQ==
+X-Gm-Message-State: AOAM5300bsPaA9MmLco7j2bkrweBkOlzMx2EDPRbIPqF0vaizlTVpdux
+        YpyrCA/GLH5ZhbWcdo7A5Ihf+JYfK9S1zrJr
+X-Google-Smtp-Source: ABdhPJwcJpH2etDJh3eagS4stkeorytvsmW8AU46r8VtIg9WeKdy9oxnZYlbM7ZzG3ipSY/N3kLbrA==
+X-Received: by 2002:a17:902:c404:b029:d2:564a:e41d with SMTP id k4-20020a170902c404b02900d2564ae41dmr2381493plk.23.1601349613020;
+        Mon, 28 Sep 2020 20:20:13 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id r16sm2685292pjo.19.2020.09.28.20.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 20:20:12 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCH bpf-next] libbpf: export bpf_object__reuse_map() to libbpf api
+Date:   Tue, 29 Sep 2020 11:18:45 +0800
+Message-Id: <20200929031845.751054-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 7:06 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> This patch set introduces a new set of BTF APIs to libbpf that allow to
-> conveniently produce BTF types and strings. These APIs will allow libbpf to do
-> more intrusive modifications of program's BTF (by rewriting it, at least as of
-> right now), which is necessary for the upcoming libbpf static linking. But
-> they are complete and generic, so can be adopted by anyone who has a need to
-> produce BTF type information.
->
-> One such example outside of libbpf is pahole, which was actually converted to
-> these APIs (locally, pending landing of these changes in libbpf) completely
-> and shows reduction in amount of custom pahole code necessary and brings nice
-> savings in memory usage (about 370MB reduction at peak for my kernel
-> configuration) and even BTF deduplication times (one second reduction,
-> 23.7s -> 22.7s). Memory savings are due to avoiding pahole's own copy of
-> "uncompressed" raw BTF data. Time reduction comes from faster string
-> search and deduplication by relying on hashmap instead of BST used by pahole's
-> own code. Consequently, these APIs are already tested on real-world
-> complicated kernel BTF, but there is also pretty extensive selftest doing
-> extra validations.
->
-> Selftests in patch #3 add a set of generic ASSERT_{EQ,STREQ,ERR,OK} macros
-> that are useful for writing shorter and less repretitive selftests. I decided
-> to keep them local to that selftest for now, but if they prove to be useful in
-> more contexts we should move them to test_progs.h. And few more (e.g.,
-> inequality tests) macros are probably necessary to have a more complete set.
->
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> v2->v3:
->   - resending original patches #7-9 as patches #1-3 due to merge conflict;
+Besides bpf_map__reuse_fd(), which could let us reuse existing map fd.
+bpf_object__reuse_map() could let us reuse existing pinned maps, which
+is helpful.
 
-Applied. Thanks
+This functions could also be used when we add iproute2 libbpf support,
+so we don't need to re-use or re-implement new functions like
+bpf_obj_get()/bpf_map_selfcheck_pinned() in iproute2.
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 3 +--
+ tools/lib/bpf/libbpf.h | 1 +
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 32dc444224d8..e835d7a3437f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4033,8 +4033,7 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
+ 		map_info.map_flags == map->def.map_flags);
+ }
+ 
+-static int
+-bpf_object__reuse_map(struct bpf_map *map)
++int bpf_object__reuse_map(struct bpf_map *map)
+ {
+ 	char *cp, errmsg[STRERR_BUFSIZE];
+ 	int err, pin_fd;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index a750f67a23f6..4b9e615eb393 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -431,6 +431,7 @@ bpf_map__prev(const struct bpf_map *map, const struct bpf_object *obj);
+ /* get/set map FD */
+ LIBBPF_API int bpf_map__fd(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__reuse_fd(struct bpf_map *map, int fd);
++LIBBPF_API int bpf_object__reuse_map(struct bpf_map *map);
+ /* get map definition */
+ LIBBPF_API const struct bpf_map_def *bpf_map__def(const struct bpf_map *map);
+ /* get map name */
+-- 
+2.25.4
+
