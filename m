@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D998A27BA42
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 03:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E9227BA16
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 03:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727276AbgI2Bae (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 21:30:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39400 "EHLO mail.kernel.org"
+        id S1727301AbgI2Bfi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 21:35:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727186AbgI2Bad (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:30:33 -0400
+        id S1727519AbgI2BbI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Sep 2020 21:31:08 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89CFB2080A;
-        Tue, 29 Sep 2020 01:30:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 90D622080A;
+        Tue, 29 Sep 2020 01:31:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601343033;
-        bh=Zq4MAkUNRAapzUbfhLqsFNJRbXU42khRWjBp5Tp/WM0=;
+        s=default; t=1601343068;
+        bh=oKlU8FM28e6ANTU8QXRTYh2YZok5VQeYlfNAw6/iHw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I6+a91YMk25s3z8ZTCbrKDW5Z1AxqfafPuluHc2myDLaj7oDWI+0tZqFJA9xtJW3F
-         S1ksUAbhhBa7busPHZlnFLFD9Or4NogpdhOUaaqP4OJFblAMngWrjToi0B4LFjRL8j
-         NKbfxJvb76KMfdt4u4cjSJL8qkByWbDwdvCLQb/w=
+        b=rwqDYGXYaz6lFOnrwDQf8zKGv3XiP3ss3qXiQWlEXklIBL8WrG4TysqovkOXyvYyR
+         Mjw83+d279/UKSOnGIUtpOhmIf0idANfr+GEwJGR2aJJAO0P3uE0p7eYbSD5trbZZO
+         NzQxEGiB9Xk7TOWJulmm3vy8m9eyXkUtMO9hhhxE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
@@ -31,12 +31,12 @@ Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Andrii Nakryiko <andriin@fb.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 04/29] libbpf: Remove arch-specific include path in Makefile
-Date:   Mon, 28 Sep 2020 21:30:01 -0400
-Message-Id: <20200929013027.2406344-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 02/18] libbpf: Remove arch-specific include path in Makefile
+Date:   Mon, 28 Sep 2020 21:30:48 -0400
+Message-Id: <20200929013105.2406634-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200929013027.2406344-1-sashal@kernel.org>
-References: <20200929013027.2406344-1-sashal@kernel.org>
+In-Reply-To: <20200929013105.2406634-1-sashal@kernel.org>
+References: <20200929013105.2406634-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -89,12 +89,12 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index bf8ed134cb8a3..b78484e7a6089 100644
+index d045707e7c9a4..283caeaaffc30 100644
 --- a/tools/lib/bpf/Makefile
 +++ b/tools/lib/bpf/Makefile
 @@ -59,7 +59,7 @@ FEATURE_USER = .libbpf
- FEATURE_TESTS = libelf libelf-mmap zlib bpf reallocarray
- FEATURE_DISPLAY = libelf zlib bpf
+ FEATURE_TESTS = libelf libelf-mmap bpf reallocarray cxx
+ FEATURE_DISPLAY = libelf bpf
  
 -INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/arch/$(ARCH)/include/uapi -I$(srctree)/tools/include/uapi
 +INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
