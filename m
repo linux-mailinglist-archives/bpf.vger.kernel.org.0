@@ -2,58 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81DE27D5C9
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 20:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A329727D60C
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 20:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgI2SaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 14:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727740AbgI2SaD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Sep 2020 14:30:03 -0400
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601404202;
-        bh=zH9MrFY2h7oPmhsbKlTafGpw28e1E3Fet4pfAw4q8b8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XQuy60XHuZ8zDtv2TDKYE6mIfFv9LjBAvxFSWHCN0aa3bjix925lJ2tQiqqiO0pwI
-         lf82zRFeCJVkJ51ciXvwNofvbAEzFa9GqOSFnfCr8yUZ50fncxp8ov3gd4KonUeo0D
-         UmlRK9BNkBWRz5+Ff6ElnaYqbf3IdBJuXdAquX3E=
+        id S1728210AbgI2SqV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 14:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728166AbgI2SqU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Sep 2020 14:46:20 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E78C061755;
+        Tue, 29 Sep 2020 11:46:19 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id w3so4880526ljo.5;
+        Tue, 29 Sep 2020 11:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KRnynSBFXDyhlJB/lFn7BMINa1P/TMLHPg/QRGnV4cw=;
+        b=gzQIkhazQHh8DwuLf0yqzzfAx0jQiwj6R1to2FRrmN8QzEAKi4Cucd9CNBX0HaqHSY
+         8KM8INtefnbqWcs6Y9m5fIuo9EWxYfa9maHX7XJqXlZjKxK2zvpXQN1vMLtc3YJLsleK
+         p2Q6y+9/HV4E+I3sXt/1D2ciIKHDNX2ey9Ma1FkRYpeWeDGA3NbgHUpWxvA9plyjW3k3
+         sUhN+vPydqwdbA+2YKIUd+Yn5vGYiRyKmIl484VcObvBwdlkfD64X7r1W7+pL45G79YY
+         GqjGCrN5FYdmrA/yh8/ibdSmr67Epzx0d5ZGp1h9gL8iXjpr2JGQ9CGfK/7kX9N8h9lG
+         +bmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KRnynSBFXDyhlJB/lFn7BMINa1P/TMLHPg/QRGnV4cw=;
+        b=KV9qSxW2DlDdyyU8wVrCAskhEiQOHNl9SKmByLsB11em9VONAMD0MoO9vyrZjGJIfE
+         pF1mXLPS5fROaHOC6wgJqBYZeuHtP50YvW39oxVAlgRr34wcRLH4MKknMcOdEntYkEKR
+         7yrPXr/CX8uOJDqkbyWKZ+TiBfbecaa3ViOYDge9bNSUllPxhEcACNBeAv8wZ0+r3ACe
+         YtPKe6xSdQpM3vMCc9hnPFq/d2Z7pic54OkHniX6/B/94AkZkPOt3rObT7EGhXpwCh+/
+         kLS0ENeeDGKYOlaohOqIF24EAjSs4C2TzxSXCltkFIEquNDd5SlGNrukGz9Z8aVu/W7u
+         IBMw==
+X-Gm-Message-State: AOAM533kfdD6+8a1KTuufUyfqk9ICCBxY9CW0ulXC1TuaaC/XXJ1l7FN
+        2pyk3sPSw2dji8jznFLQhvHs0tyTYfzdRbEGLDI=
+X-Google-Smtp-Source: ABdhPJx411aY0PIcYG7sdD1kilZGsC3pOpUoCh3yg01wbbKyUH4jBMDZk8OzwkEagnQHCRfgfACZKPcN/EVlipA4z+o=
+X-Received: by 2002:a2e:9b15:: with SMTP id u21mr1705127lji.283.1601405178185;
+ Tue, 29 Sep 2020 11:46:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] xsk: fix a documentation mistake in xsk_queue.h
-From:   patchwork-bot+bpf@kernel.org
-Message-Id: <160140420260.22687.15249708539681867546.git-patchwork-notify@kernel.org>
-Date:   Tue, 29 Sep 2020 18:30:02 +0000
-References: <20200928082344.17110-1-ciara.loftus@intel.com>
-In-Reply-To: <20200928082344.17110-1-ciara.loftus@intel.com>
-To:     Ciara Loftus <ciara.loftus@intel.com>
-Cc:     bpf@vger.kernel.org
+References: <20200929123026.46751-1-toke@redhat.com>
+In-Reply-To: <20200929123026.46751-1-toke@redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 29 Sep 2020 11:46:05 -0700
+Message-ID: <CAADnVQJt=Sj86-r9y_KvzCuLQU_r=kw4b+=fFx5-EYSA6SAeKQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests: Make sure all 'skel' variables are
+ declared static
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Sep 29, 2020 at 5:32 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> If programs in prog_tests using skeletons declare the 'skel' variable as
+> global but not static, that will lead to linker errors on the final link =
+of
+> the prog_tests binary due to duplicate symbols. Fix a few instances of th=
+is.
+>
+> Fixes: b18c1f0aa477 ("bpf: selftest: Adapt sock_fields test to use skel a=
+nd global variables")
+> Fixes: 9a856cae2217 ("bpf: selftest: Add test_btf_skc_cls_ingress")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Mon, 28 Sep 2020 08:23:44 +0000 you wrote:
-> After 'peeking' the ring, the consumer, not the producer, reads the data.
-> Fix this mistake in the comments.
-> 
-> Fixes: 15d8c9162ced ("xsk: Add function naming comments and reorder functions")
-> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> ---
->  net/xdp/xsk_queue.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Here is the summary with links:
-  - xsk: fix a documentation mistake in xsk_queue.h
-    https://git.kernel.org/bpf/bpf-next/c/f1fc8ece6c07
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks for the fix. Applied.
+I wonder why we don't see it with different gcc and clang versions.
+What linker do you use?
+And what kind of error do you see?
