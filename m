@@ -2,182 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906F327BA8B
-	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 03:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8084927BAA0
+	for <lists+bpf@lfdr.de>; Tue, 29 Sep 2020 04:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbgI2Byz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Sep 2020 21:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgI2Byz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Sep 2020 21:54:55 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5674CC061755;
-        Mon, 28 Sep 2020 18:54:55 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id jw11so1806404pjb.0;
-        Mon, 28 Sep 2020 18:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2SzB7isKAREqUjXH+YUlW/DpD7dRh0cjXqpB4hYOMVM=;
-        b=uJtjQGkwh05rX2CZ4v+Qn3bQAHgTuyU3oV3YAdRR/T8rsoyy9vp/a4bTakkZXv5SnR
-         c1EBCWjtRgJhSOanZueb+HOttgxiw4RMgWuFcw274b9ZmnsTGggpNfkITxraUKIlB5eu
-         qZ2U1PBEppaf58W354aroZvTjSBwC5uVn3wDwaovp/Jr0YwkjuDvhmi2U0eBLCHTNpzK
-         9+VFms2abgNGDGaFSXk9CSIa5vngmnlkCFBKBvg+0SOOpV+Gz24Y8qQ3RehnRLWQwiXx
-         bulFArQl2BcKMQimOHwhVoLMNG3UAmPP5HM5hnRA5mRVLykHo8PTi7PqvI10XLkVakr9
-         WJxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2SzB7isKAREqUjXH+YUlW/DpD7dRh0cjXqpB4hYOMVM=;
-        b=M1DuJgEEgiAYDebQnLnvKDH/qBgkAilJiU4QhmLkMb1UjfrjicSRU79Rs+AIMfgRFG
-         h7Bs4fOgXneBVBvsv1Ynd/v9Pi+Y3duYEJUTfSPQdLvDbvmckTw4sjReWHb4AN8ooPK0
-         SLMDSNNHQilWDLwicGQ+lsPacdKF5QN/LOYrf3WHCkPSWOZiLR3FRH65BF9IC6+SzaLv
-         vTkRt1VIlySlXTrfm8xNTwPaYRdZ71QHV/Eyc8EgAn/hdQ6j/31ZBzip/mEmlT1jJ0s0
-         OFoI45I0lV7cHUAwayYmK3/Ox9ZDYIPG8S/mmViNqL/GZfyj1Ggu7EOrIAKzQYlzrlM+
-         Gq+w==
-X-Gm-Message-State: AOAM532UJsmD2eB8jkJMsphax8CcsOiFbhTPkndD7Y9WAMr+0pyQYE56
-        jnWfGupMGYol5fvtXnp5bew=
-X-Google-Smtp-Source: ABdhPJwCmZSmOLbppa1vFzQqfZJlJ7yfoINWoTLVTS9qpnpFboFlltQXt94V0opqudRriRPRFSg+Ew==
-X-Received: by 2002:a17:90b:4b8e:: with SMTP id lr14mr1817137pjb.100.1601344494769;
-        Mon, 28 Sep 2020 18:54:54 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8e77])
-        by smtp.gmail.com with ESMTPSA id z7sm2674142pgc.35.2020.09.28.18.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 18:54:53 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 18:54:50 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        andriy.shevchenko@linux.intel.com, Petr Mladek <pmladek@suse.com>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Andrey Ignatov <rdna@fb.com>, scott.branden@broadcom.com,
-        Quentin Monnet <quentin@isovalent.com>,
-        Carlos Neira <cneirabustos@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 6/6] selftests/bpf: add test for
- bpf_seq_printf_btf helper
-Message-ID: <20200929015450.das2bxw4f3q7oyup@ast-mbp.dhcp.thefacebook.com>
-References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
- <1600883188-4831-7-git-send-email-alan.maguire@oracle.com>
- <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com>
- <alpine.LRH.2.21.2009281500220.13299@localhost>
- <CAEf4Bzb2JE_V7cQ=LGto6jHbiKUAg+A5MuqQ0LGb9L8qTUk6yg@mail.gmail.com>
+        id S1727342AbgI2CFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Sep 2020 22:05:47 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34324 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727325AbgI2CFr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Sep 2020 22:05:47 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08T25jT2024140
+        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 19:05:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=KNxveQPaHGG1pCEoyZRCMLeEvUZuqztPobe7iMtIl6Q=;
+ b=rX0tl8naBpm7/bpWhrKQI6x1JLcr9ZmG4mGro6dEYA+j1K/3yCpnlU+cXTwjZuXXb2sG
+ aL4sSNNESBK7XQlLYnAD/18JD1ex0jz4Pufhh26Kb+thy5kSKY0YUJF9yG4buEbLkkVo
+ XhhRxCcti/WyOJzbjoxzg0vUAUxjUd3DjoY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33t3cpajy7-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 28 Sep 2020 19:05:45 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 28 Sep 2020 19:05:37 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 8F6B72EC773C; Mon, 28 Sep 2020 19:05:36 -0700 (PDT)
+From:   Andrii Nakryiko <andriin@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH v3 bpf-next 0/3] libbpf: BTF writer APIs
+Date:   Mon, 28 Sep 2020 19:05:29 -0700
+Message-ID: <20200929020533.711288-1-andriin@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb2JE_V7cQ=LGto6jHbiKUAg+A5MuqQ0LGb9L8qTUk6yg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_01:2020-09-28,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ malwarescore=0 clxscore=1015 impostorscore=0 mlxlogscore=343
+ suspectscore=8 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ adultscore=0 mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009290019
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 10:51:19AM -0700, Andrii Nakryiko wrote:
-> On Mon, Sep 28, 2020 at 7:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> >
-> >
-> > On Thu, 24 Sep 2020, Alexei Starovoitov wrote:
-> >
-> > > to whatever number, but printing single task_struct needs ~800 lines and
-> > > ~18kbytes. Humans can scroll through that much spam, but can we make it less
-> > > verbose by default somehow?
-> > > May be not in this patch set, but in the follow up?
-> > >
-> >
-> > One approach that might work would be to devote 4 bits or so of
-> > flag space to a "maximum depth" specifier; i.e. at depth 1,
-> > only base types are displayed, no aggregate types like arrays,
-> > structs and unions.  We've already got depth processing in the
-> > code to figure out if possibly zeroed nested data needs to be
-> > displayed, so it should hopefully be a simple follow-up.
+This patch set introduces a new set of BTF APIs to libbpf that allow to
+conveniently produce BTF types and strings. These APIs will allow libbpf =
+to do
+more intrusive modifications of program's BTF (by rewriting it, at least =
+as of
+right now), which is necessary for the upcoming libbpf static linking. Bu=
+t
+they are complete and generic, so can be adopted by anyone who has a need=
+ to
+produce BTF type information.
 
-That sounds great to me.
+One such example outside of libbpf is pahole, which was actually converte=
+d to
+these APIs (locally, pending landing of these changes in libbpf) complete=
+ly
+and shows reduction in amount of custom pahole code necessary and brings =
+nice
+savings in memory usage (about 370MB reduction at peak for my kernel
+configuration) and even BTF deduplication times (one second reduction,
+23.7s -> 22.7s). Memory savings are due to avoiding pahole's own copy of
+"uncompressed" raw BTF data. Time reduction comes from faster string
+search and deduplication by relying on hashmap instead of BST used by pah=
+ole's
+own code. Consequently, these APIs are already tested on real-world
+complicated kernel BTF, but there is also pretty extensive selftest doing
+extra validations.
 
-Would it be possible to specify the depth from the other side as well?
-Like a lot of 'leaf' fields are struct list_head, struct lockdep_map,
-atomic_t, struct callback_head, etc.
-When printing a big struct I'm interested in the data that the
-struct provides, but many small inner structs are not that useful.
-So the data is at the top level and in few layers down,
-but depth is different at different fields.
-If I could tell printf to avoid printing the last depth I think
-it will make the output more concise.
-Whereas if I say print depth=2 from the top it will still print
-'struct list_head' that happened to be at the top level.
+Selftests in patch #3 add a set of generic ASSERT_{EQ,STREQ,ERR,OK} macro=
+s
+that are useful for writing shorter and less repretitive selftests. I dec=
+ided
+to keep them local to that selftest for now, but if they prove to be usef=
+ul in
+more contexts we should move them to test_progs.h. And few more (e.g.,
+inequality tests) macros are probably necessary to have a more complete s=
+et.
 
-> >
-> > One way to express it would be to use "..." to denote field(s)
-> > were omitted. We could even use the number of "."s to denote
-> > cases where multiple fields were omitted, giving a visual sense
-> > of how much data was omitted.  So for example with
-> > BTF_F_MAX_DEPTH(1), task_struct looks like this:
-> >
-> > (struct task_struct){
-> >  .state = ()1,
-> >  .stack = ( *)0x00000000029d1e6f,
-> >  ...
-> >  .flags = (unsigned int)4194560,
-> >  ...
-> >  .cpu = (unsigned int)36,
-> >  .wakee_flips = (unsigned int)11,
-> >  .wakee_flip_decay_ts = (long unsigned int)4294914874,
-> >  .last_wakee = (struct task_struct *)0x000000006c7dfe6d,
-> >  .recent_used_cpu = (int)19,
-> >  .wake_cpu = (int)36,
-> >  .prio = (int)120,
-> >  .static_prio = (int)120,
-> >  .normal_prio = (int)120,
-> >  .sched_class = (struct sched_class *)0x00000000ad1561e6,
-> >  ...
-> >  .exec_start = (u64)674402577156,
-> >  .sum_exec_runtime = (u64)5009664110,
-> >  .vruntime = (u64)167038057,
-> >  .prev_sum_exec_runtime = (u64)5009578167,
-> >  .nr_migrations = (u64)54,
-> >  .depth = (int)1,
-> >  .parent = (struct sched_entity *)0x00000000cba60e7d,
-> >  .cfs_rq = (struct cfs_rq *)0x0000000014f353ed,
-> >  ...
-> >
-> > ...etc. What do you think?
-> 
-> It's not clear to me what exactly is omitted with ... ? Would it make
-> sense to still at least list a field name and "abbreviated" value.
-> E.g., for arrays:
-> 
-> .array_field = (int[16]){ ... },
-> 
-> Similarly for struct:
-> 
-> .struct_field = (struct my_struct){ ... },
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-+1
-Something like this would be great.
+v2->v3:
+  - resending original patches #7-9 as patches #1-3 due to merge conflict=
+;
 
-Another idea...
-If there is only one field in the struct can we omit it?
-Like instead of:
-   .refs = (atomic_t){
-    .counter = (int)2,
-   },
-print
-   .refs = (atomic_t){ 2 },
+v1->v2:
+  - fixed comments (John);
+  - renamed btf__append_xxx() into btf__add_xxx() (Alexei);
+  - added btf__find_str() in addition to btf__add_str();
+  - btf__new_empty() now sets kernel FD to -1 initially.
 
-From C point of view it is still a valid initializer and
-it's not ambiguous which field being inited, since there is only
-one field.
+Andrii Nakryiko (3):
+  libbpf: add BTF writing APIs
+  libbpf: add btf__str_by_offset() as a more generic variant of
+    name_by_offset
+  selftests/bpf: test BTF writing APIs
+
+ tools/lib/bpf/btf.c                           | 796 +++++++++++++++++-
+ tools/lib/bpf/btf.h                           |  39 +
+ tools/lib/bpf/libbpf.map                      |  20 +
+ .../selftests/bpf/prog_tests/btf_write.c      | 278 ++++++
+ 4 files changed, 1128 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_write.c
+
+--=20
+2.24.1
+
