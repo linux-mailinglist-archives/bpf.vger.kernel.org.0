@@ -2,211 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274B727EC23
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 17:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3F427EBC6
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 17:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbgI3PMx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 11:12:53 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:56947 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725385AbgI3PLm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 30 Sep 2020 11:11:42 -0400
-X-Greylist: delayed 463 seconds by postgrey-1.27 at vger.kernel.org; Wed, 30 Sep 2020 11:11:41 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 7A529ED7;
-        Wed, 30 Sep 2020 11:03:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 30 Sep 2020 11:03:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=O
-        2EF17WZ/x8X1RI5MVWmt+xk1RyPo0vTQ3NX9Sb+vZs=; b=am7DDlxzNqJJ/HMKX
-        6EImaKQCRBO+YQBosmTU/MBeym+pIXYs5pFWxWkM6VxrpHVLUKc32Ws2e8CSNR2b
-        rTvg8Hpqhnq7udku+D88pmcWVSPfQJcR5U2+fP9FTHH+EyMuOL4/5ylW5B2QSOoY
-        Z95ONSBf3M9Wx9mqv75OapljZryJqNYkz5oLa69Bx2lwz2AHYq8ypXUw3Jeu5o8s
-        uxuSP/Tz8QNumVG9xX5CxDumLaSFhoMIJLiNUwhn7/reSN2MD64cy5YJMV/hUJ7B
-        YKVN3P3Y+yiQEqKdo/93n3rjYTV1vweTVjusGX7N45XPM3oO1u6saGatdMFUymwC
-        LBipg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=O2EF17WZ/x8X1RI5MVWmt+xk1RyPo0vTQ3NX9Sb+v
-        Zs=; b=JFD7JWMS9HiqvLK4HnO73eiL0Th4Re6mGAXJ6LjJr8uoj9ZxRXmZTRiOu
-        Y+VlCn0rWJBYfMy2DXiltOm+bybcRBDI+926ctq4SoWdS+iEzjY2viEh4nBtKb4G
-        tLIUHWZDV3S3bkDGig/tjzifoVc+9eLUqCWBG/llXO1ikFSBphNLWVRhXvjUk/dc
-        UHqqykliIh5m2m9I0iooKqJbNOX50U18Q+/xhYCufJXKgbTX6tF7axKqFv4b6LNb
-        h+cMqqKmDRe102FSfxndG0HOXx4P/4NIxb5PSCWpviILJlDm8mGXdAbeQwG9/d0r
-        MJCtFobuMEMT/7Q91qWjGg9plWbCA==
-X-ME-Sender: <xms:SJ50X9WMVf6wrFQnac_h2hPhuA3CPkdOz7fcapezvARx8gaFW-6AoQ>
-    <xme:SJ50X9lwRvlf5WiuP-8ry6Z6SqY2oBJg-CQQwvNIFKCChHoBRJ2Y7C7XSGmHYjuI8
-    fvgT99VQtdcALDZqF4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfedvgdektdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpefhuedvvdelieevgeegjeeukeeuleejtdejfeetfeeujeefvdeltdethffh
-    ueekffenucfkphepuddvkedruddtjedrvdeguddrudekgeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihii
-    iigr
-X-ME-Proxy: <xmx:SJ50X5ZazZm7gmw0_d6hj_We0RbvDkbp-VGtgt5kfYoLSVDqgMZgWA>
-    <xmx:SJ50XwXC_daxyOb9ci8kzAyalUy4RR8AsRAwodN_8dkJC-hcq4dGAg>
-    <xmx:SJ50X3neO_WdEqGaDpwC7TFSObpShpW7mAkhw16qj5K5zOzyDpkzHQ>
-    <xmx:Sp50X89No2tDqetjd-skXbluhpOVZx6eOVB7yGxWe-fvmXQsUVyDouO9QCLIiUuX>
-Received: from cisco (unknown [128.107.241.184])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 09B593064685;
-        Wed, 30 Sep 2020 11:03:32 -0400 (EDT)
-Date:   Wed, 30 Sep 2020 09:03:30 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, wad@chromium.org,
-        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-Message-ID: <20200930150330.GC284424@cisco>
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+        id S1728425AbgI3PFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 11:05:04 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28390 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725872AbgI3PFE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Sep 2020 11:05:04 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UF0ljC011845;
+        Wed, 30 Sep 2020 08:04:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=qxGVpZlDLek7hS2aVralSIb6h0GnmOmK7vzP26UVprs=;
+ b=bT/oW9F8lFti0HGRZWGmjt9s0N24ut4l4IGr6cOoQyXGcfTgaH/jy0xO3qIQlT2yP4+K
+ 26Dr11J3WkrMjnHoK4okBALXZ4xgcDtwrMvkYcHw3E69fsVcfW41XajzSM+4bpTIXWkA
+ Y4CGLfehxJs1bPgmE1UOh4qJO4P/bSyR6/A= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33v3vty69d-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 30 Sep 2020 08:04:49 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 30 Sep 2020 08:04:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hd59wcsJf99k7kMoWZFMXEmzfS7IKN819+iGOGIiTYbPHLU9kRwMNKvtPHnaJTSlgkmZ27Rg+Us7GJm7c+h183SxhDaLkNjtRO97++UnhCHEsIPdLzxn2u7TCf41WEdcDy64Td5aKcEd4/8RgweF7ftLhkLnKhn1QWZNQxvaZsR03mNPVuh5cEhPuzd/pAM0Hm5od477IPV1EKaQ5YbjibFoc/FkPJq11c8l4uJfqyU2Pxl+wcC27JA8VD1XW+UkNjii/Ggqi0qgPiYNml2PaQ4tfjh3BGimL7QqoCLQNvePxfkroFSwbkfl7uU+ViOEMa63SmufnrRlS9l24DqRGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qxGVpZlDLek7hS2aVralSIb6h0GnmOmK7vzP26UVprs=;
+ b=Fwu2Xrz6HeAzALbp9V0Ao/iRDngGg1xnBvzEyZNnkTA8O9AGhWDHaw+njWoqb2AoKRuw7d7OUBrW9jUTpzZNpfFS8LSj6bJwjqAVqPblW5MBlByuylFQmj7oxtiKnhN134i+H/fS1ufYRILh0m9K1++UAA3jkg4fDbAMjqrrmetH85qegtM82R5yK18uu8Oz2M8kXnG/AuFMj+A2etxV7g3g7gb45kbNdLcxkc5W6tnSp8r+xFrRZEl96hCrjbvrtzRSBNSdD52cNXBWyv+7gIyKYp1uhupozF5EPt29QCt6qKGdqyb9lMDYL0wVISfXxzCl/7QLAbIbcL6CQs7kWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qxGVpZlDLek7hS2aVralSIb6h0GnmOmK7vzP26UVprs=;
+ b=HpSgqIitXQuKj5i6kpeV1IQjkpkPqI6S8IPGZYLVj6/j8FYGBT+jFh5pVQZ3J7Kx8cMc4UrzbsVwg/r14j4sSTUdEIa6uLf0g0IGWbTrkdUzpHnKHBMaNv+5nFV42iWfmXVtDEUlR+3BvIr88hQd+QAjFB9aYQ0Cpg786V70Lcs=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2199.namprd15.prod.outlook.com (2603:10b6:a02:83::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 30 Sep
+ 2020 15:04:14 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d%7]) with mapi id 15.20.3412.029; Wed, 30 Sep 2020
+ 15:04:13 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+CC:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: introduce BPF_F_PRESERVE_ELEMS for
+ perf event array
+Thread-Topic: [PATCH v2 bpf-next 1/2] bpf: introduce BPF_F_PRESERVE_ELEMS for
+ perf event array
+Thread-Index: AQHWlquL7ewQxdWJ/kG0GdaDFHfHTamBRHKAgAAEHQA=
+Date:   Wed, 30 Sep 2020 15:04:13 +0000
+Message-ID: <08306754-3A1F-412C-98EB-448A1348A6DA@fb.com>
+References: <20200929215659.3938706-1-songliubraving@fb.com>
+ <20200929215659.3938706-2-songliubraving@fb.com>
+ <c7b572d4-df22-db9d-6c01-d2b577c47116@iogearbox.net>
+In-Reply-To: <c7b572d4-df22-db9d-6c01-d2b577c47116@iogearbox.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.1)
+authentication-results: iogearbox.net; dkim=none (message not signed)
+ header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:cb37]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e2d5b6f9-80aa-493b-505e-08d86552181e
+x-ms-traffictypediagnostic: BYAPR15MB2199:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2199A510CBEA11628604BBE0B3330@BYAPR15MB2199.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fRijFee/0JVyfu38gI1MucNRtH9lElOCBXluVhOBbY0YzW2B2t6Obl69MJ71r0n8bUkskxNFTshKKTmHdWm1xN6hUH5lgftwT6XAz/dCCerq9j3sr8WFW8RoltqwhQ9R62j4a8LEkPQG9xHrvRc4+GNE6NVIeCrT5/EQf/eAV/s5KcXHG/AQlllBNoaVfl3wRDLhRvLZC/gDXC8zlNFeweh5oyjoeO2/MLFU4q4C8zHTnx0lYNkpbTMWKO9P9p/eRCJ5Oa1Nk84fTvGPrQcRrTXEi/Is1e6bEYUC/e1vcZnITtBbx1ag/FVwSblTk5rabPXTugKbK7Zvx4GZfyYNZw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(136003)(366004)(39860400002)(8676002)(316002)(54906003)(86362001)(76116006)(91956017)(478600001)(66946007)(33656002)(4744005)(71200400001)(66476007)(66556008)(66446008)(64756008)(36756003)(186003)(6916009)(6506007)(5660300002)(53546011)(2906002)(4326008)(6512007)(2616005)(6486002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: D97cGzfRQCH+ahhSo7omh9ITwlafs1z7C3sh2XfFrggxHPNBT7DKIu82aGzB10KWzwrwZzsT/eO1uOg4bTVWBcZ9mirX19mK+HkP1rSGsL4mhVRLpNQR1NphEnVaKptRdVeQ/F6yireLCWh1VvppmiD2/061xW7OZ6PsYFCA/EJATuduv8i2PBlGnH/3LGfeRgXfWQ+VBYsP+drGVdUVqNppGSn5Sl+Mo/zMiG9K6/yEifYsjpro7UU0wtTxX4tuKerZsrNaheiGf21pn2ihGmvLR2fzJUwykYJYvq42VNKSvd/y0Cb2dGPJzKGYVdAF00HLXGXLP7j3PohEi9Rx1XrAaaD9uuLNfP0MO5cO3GsGzTiQDbWHydyzw3w+gerjVoc7dFucZsoIleP2Y66oSgcqheIKO/xpaLTeos1XkY4Dbf/us6ezaYdfkmWD+Fn5WZV9SQsFju/GleyM2XgW56SoXbmcqTqrzxPgpGS7+UnAqeSN0SWb/hLjJYxp9EJ+jnpESS3N6LbSBsw4RuF37/TbeqQG53hrKb37B/vXXOu+1knmej5J7QFCYdO9f5XL0MjI/Tql4XIeVkbr6rOp+lTvaWH+i1gTISWMkIVplvitMPmM26kMWgPRKjBHXGdlREs+o1qS0ndb5/+UgJg8ADSBouJaYFdkcs18NAb7jd2WL3PM58cD320mpuZFjrvB
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <03692F6773F30848B207CBC2BB85AF7C@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2d5b6f9-80aa-493b-505e-08d86552181e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 15:04:13.3591
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Lf4prmkYevylnG4gReGyy6e2lxoSwbG4lOC4EzTse2vztV6NZ86Zl30rDoe4Lncbb4fgPDL7W16AYr+HTzJStA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2199
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_08:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0
+ impostorscore=0 adultscore=0 priorityscore=1501 spamscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300121
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
->        2. In order that the supervisor process can obtain  notifications
->           using  the  listening  file  descriptor, (a duplicate of) that
->           file descriptor must be passed from the target process to  the
->           supervisor process.  One way in which this could be done is by
->           passing the file descriptor over a UNIX domain socket  connec‐
->           tion between the two processes (using the SCM_RIGHTS ancillary
->           message type described in unix(7)).   Another  possibility  is
->           that  the  supervisor  might  inherit  the file descriptor via
->           fork(2).
 
-It is technically possible to inherit the fd via fork, but is it
-really that useful? The child process wouldn't be able to actually do
-the syscall in question, since it would have the same filter.
 
->           The  information  in  the notification can be used to discover
->           the values of pointer arguments for the target process's  sys‐
->           tem call.  (This is something that can't be done from within a
->           seccomp filter.)  To do this (and  assuming  it  has  suitable
+> On Sep 30, 2020, at 7:49 AM, Daniel Borkmann <daniel@iogearbox.net> wrote=
+:
+>=20
+> On 9/29/20 11:56 PM, Song Liu wrote:
+> [...]
+>>  +static void bpf_fd_array_map_clear(struct bpf_map *map);
+>> +
+>> +static void perf_event_fd_array_map_free(struct bpf_map *map)
+>> +{
+>> +	if (map->map_flags & BPF_F_PRESERVE_ELEMS)
+>> +		bpf_fd_array_map_clear(map);
+>> +	fd_array_map_free(map);
+>> +}
+>=20
+> Not quite sure why you place that here and added the fwd declaration? If =
+you
+> place perf_event_fd_array_map_free() near perf_event_array_map_ops, then =
+you
+> also don't need the additional bpf_fd_array_map_clear declaration.
 
-s/To do this/One way to accomplish this/ perhaps, since there are
-others.
+Yeah.. I misread the line number...
 
->           permissions),   the   supervisor   opens   the   corresponding
->           /proc/[pid]/mem file, seeks to the memory location that corre‐
->           sponds to one of the pointer arguments whose value is supplied
->           in the notification event, and reads bytes from that location.
->           (The supervisor must be careful to avoid a race condition that
->           can occur when doing this; see the  description  of  the  SEC‐
->           COMP_IOCTL_NOTIF_ID_VALID ioctl(2) operation below.)  In addi‐
->           tion, the supervisor can access other system information  that
->           is  visible  in  user space but which is not accessible from a
->           seccomp filter.
-> 
->           ┌─────────────────────────────────────────────────────┐
->           │FIXME                                                │
->           ├─────────────────────────────────────────────────────┤
->           │Suppose we are reading a pathname from /proc/PID/mem │
->           │for  a system call such as mkdir(). The pathname can │
->           │be an arbitrary length. How do we know how much (how │
->           │many pages) to read from /proc/PID/mem?              │
->           └─────────────────────────────────────────────────────┘
+Fixing it in v3.
 
-PATH_MAX, I suppose.
+Thanks,
+Song
 
->        ┌─────────────────────────────────────────────────────┐
->        │FIXME                                                │
->        ├─────────────────────────────────────────────────────┤
->        │From my experiments,  it  appears  that  if  a  SEC‐ │
->        │COMP_IOCTL_NOTIF_RECV   is  done  after  the  target │
->        │process terminates, then the ioctl()  simply  blocks │
->        │(rather than returning an error to indicate that the │
->        │target process no longer exists).                    │
 
-Yeah, I think Christian wanted to fix this at some point, but it's a
-bit sticky to do. Note that if you e.g. rely on fork() above, the
-filter is shared with your current process, and this notification
-would never be possible. Perhaps another reason to omit that from the
-man page.
-
->        SECCOMP_IOCTL_NOTIF_ID_VALID
->               This operation can be used to check that a notification ID
->               returned by an earlier SECCOMP_IOCTL_NOTIF_RECV  operation
->               is  still  valid  (i.e.,  that  the  target  process still
->               exists).
-> 
->               The third ioctl(2) argument is a  pointer  to  the  cookie
->               (id) returned by the SECCOMP_IOCTL_NOTIF_RECV operation.
-> 
->               This  operation is necessary to avoid race conditions that
->               can  occur   when   the   pid   returned   by   the   SEC‐
->               COMP_IOCTL_NOTIF_RECV   operation   terminates,  and  that
->               process ID is reused by another process.   An  example  of
->               this kind of race is the following
-> 
->               1. A  notification  is  generated  on  the  listening file
->                  descriptor.  The returned  seccomp_notif  contains  the
->                  PID of the target process.
-> 
->               2. The target process terminates.
-> 
->               3. Another process is created on the system that by chance
->                  reuses the PID that was freed when the  target  process
->                  terminates.
-> 
->               4. The  supervisor  open(2)s  the /proc/[pid]/mem file for
->                  the PID obtained in step 1, with the intention of (say)
->                  inspecting the memory locations that contains the argu‐
->                  ments of the system call that triggered  the  notifica‐
->                  tion in step 1.
-> 
->               In the above scenario, the risk is that the supervisor may
->               try to access the memory of a process other than the  tar‐
->               get.   This  race  can be avoided by following the call to
->               open with a SECCOMP_IOCTL_NOTIF_ID_VALID operation to ver‐
->               ify  that  the  process that generated the notification is
->               still alive.  (Note that  if  the  target  process  subse‐
->               quently  terminates, its PID won't be reused because there
->               remains an open reference to the /proc[pid]/mem  file;  in
->               this  case, a subsequent read(2) from the file will return
->               0, indicating end of file.)
-> 
->               On success (i.e., the notification  ID  is  still  valid),
->               this  operation  returns 0 On failure (i.e., the notifica‐
-                                          ^ need a period?
-
->        ┌─────────────────────────────────────────────────────┐
->        │FIXME                                                │
->        ├─────────────────────────────────────────────────────┤
->        │Interestingly, after the event  had  been  received, │
->        │the  file descriptor indicates as writable (verified │
->        │from the source code and by experiment). How is this │
->        │useful?                                              │
-
-You're saying it should just do EPOLLOUT and not EPOLLWRNORM? Seems
-reasonable.
-
-> 
-> EXAMPLES
->        The (somewhat contrived) program shown below demonstrates the use
-
-May also be worth mentioning the example in
-samples/seccomp/user-trap.c as well.
-
-Tycho
