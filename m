@@ -2,150 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850EF27F5E3
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 01:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5037C27F5FE
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 01:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732145AbgI3XVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 19:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731559AbgI3XVX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:21:23 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B5BC0613D1
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:21:23 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so2310859pgl.2
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x63BBbB7KwIQqJxUqTsIaDJvuWLQtOEVBES32Yy+YAo=;
-        b=TZcivgXw3I1epH9uT9vdPCWx/4ExuFu3+g4x3a/AhrJ47vzwURw8KdgwcFvZLA4x6R
-         N43c1jc09gyZaUIARtJRdVpNBz8HLiKvE3J/YzFFtLaGuQ5vdTXiZAYuWGd1EBHOC14M
-         xS08nPZAgFW9Y6dbf3e9FfTYtNlPH/Srf7U4I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x63BBbB7KwIQqJxUqTsIaDJvuWLQtOEVBES32Yy+YAo=;
-        b=F22WYdPks9zUPyln3uOfGXRCWx8gjBXbljhYOnaxmWOFgjfkFr8KTEe2768Ozvc2Um
-         vK9Ezfr8E9dVf3/OVsmHLVdIwsh+GQywb34siUHpW2FQj8O5aWjnqJVWlAsayfLdBf4G
-         +ZmRWEjxS18PLuSwwuYP6f7lQMpQHJ6jUXXNjYByApjrnT1mOUejpwnD54pPklS4V4VP
-         dv1KMiGsr33STAYSJ6uagNvCJwbvk/ewBbqGUonr2Fa/cQV/yYpLacFmNCkoy7RS+ZZq
-         u9gLKohGtjZcjRSMvPXYmMLCRsMdubayVbkATof7wlIGJjcqvwrGn0sWnLZXmjdUY7st
-         u7sw==
-X-Gm-Message-State: AOAM531PeYuG/5M2l7GbpG0yXrNQuAnV4bJ1a2avOPX/FZ4cJnLw62xx
-        LCRVtJVMvvD4zdx52FbFDzWJeg==
-X-Google-Smtp-Source: ABdhPJxuU0x2CWFLEU2A+WDs32aP0TdSrFtCY2CLnbAl54vDjrmQMaeG/VBOLgLEbehuqlqMS0xYoQ==
-X-Received: by 2002:a17:902:7002:b029:d2:950a:d82a with SMTP id y2-20020a1709027002b02900d2950ad82amr4444416plk.72.1601508082978;
-        Wed, 30 Sep 2020 16:21:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 206sm3071721pgh.26.2020.09.30.16.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 16:21:22 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 16:21:21 -0700
-From:   Kees Cook <keescook@chromium.org>
+        id S1730192AbgI3X1W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 19:27:22 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:60299 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729617AbgI3XZ3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Sep 2020 19:25:29 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 7DAB696C;
+        Wed, 30 Sep 2020 19:24:59 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 30 Sep 2020 19:25:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=U
+        Uv/ycHKk0VmQ9jog/Fu42gbcuiVRCdjLJbHAyQkcMA=; b=ivLuxv4Q55f1KpcuS
+        +cwKbc+rREjpPqhNs+z6z6vjquCNIcj/E8v8Busu2VtTJ16rgl8jXLEQjMa40b1D
+        ReI1SEVJg30OsggeJY9AInJEz/bd9bbSxaQL8V53iPVzbmGxfhHD4MFwlVStlBwX
+        aqRjDgpgWhsmi6JhdsEugslTbAqczxPq5QFgGIMssgwiFRxmgLKxaHJkOqd33zb+
+        MuLo/0gCKdB1eeNJEp1lVmD+y7WeJqOoItZ5ISqVZOD0fTGSEijlsx7T3sNwFh83
+        WW3/9jZdXT1zRIKZKd3Sk1e9PtvZJzDJjWvFXIMzjAN9WPjctu81EuHOPrC5sD1E
+        x0vuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=UUv/ycHKk0VmQ9jog/Fu42gbcuiVRCdjLJbHAyQkc
+        MA=; b=NiIOs+5J+ArBtzNXG9vmBi8u7JjTh87LIZHMCkPCZH2PN4i+5633Sijoe
+        ouCmaU+C+bvwasFuxNWPFL/DlP77sTXfxsoK/g6MYoImqKTejhm4xwtx2ecJqSJh
+        /Kx4k2Mcpn9Z2DX63sPvi270Mnu6uRs7l3eoAbVYL8VAhJGK9kq3fswLVBPOxisp
+        Fw8s46jiYOVH8cy0i5Ov/yR7Ljysxlup7/9XHm5HZF8PLwyMPrqZOaDFyZ5kYp9i
+        8rNnWKVPpINdn/CzafZq0hA4cAHRvJuhacxWIfGhv2QDoGvdLz9m39k+2YlpcD9D
+        8anKe2R87M80SjVwpdVQinitLhbIA==
+X-ME-Sender: <xms:yhN1X9H9snWiSjRa58ptv2FGpb0ejiIwBgz0Vxgf8oUxCBJTFTGSTw>
+    <xme:yhN1XyX04W_qDhH9mL9Eyd4Nv8JDhhy3Nwt2FaPz3AlwpsKaBLdIXHCc6r5UofNA8
+    MdXk4zdRwpO886sjl0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeefgddvvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpefhuedvvdelieevgeegjeeukeeuleejtdejfeetfeeujeefvdeltdethffh
+    ueekffenucfkphepjeefrddvudejrddutddriedtnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:yhN1X_KJCsR49coiERRTusNVu4W6LEty5EA-9M2lS4RyJADZ5xQxmA>
+    <xmx:yhN1XzGUZzwU4FtsJ9oTnlhQyjxNwOvP4Ao75Mv1L6MQTWidE9f2Mw>
+    <xmx:yhN1XzXjrR73t55KZ2EZyMOBk2zVvk1dFlU4TuiKiVpURYMIQ09lbA>
+    <xmx:yxN1X0t5pelLdbmhvSRf_uhEPTbbqZwnT9SjA1c3AMwZl1T6qsRQScXk04aFhoda>
+Received: from cisco (c-73-217-10-60.hsd1.co.comcast.net [73.217.10.60])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1A15E3064610;
+        Wed, 30 Sep 2020 19:24:57 -0400 (EDT)
+Date:   Wed, 30 Sep 2020 17:24:56 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
 To:     Jann Horn <jannh@google.com>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
         Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Linux Containers <containers@lists.linux-foundation.org>,
         Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202009301612.E9DD7361@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
- <202009301554.590642EBE@keescook>
- <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
+        Robert Sesek <rsesek@google.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+Message-ID: <20200930232456.GB1260245@cisco>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco>
+ <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco>
+ <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 01:08:04AM +0200, Jann Horn wrote:
-> [adding x86 folks to enhance bikeshedding]
-> 
-> On Thu, Oct 1, 2020 at 12:59 AM Kees Cook <keescook@chromium.org> wrote:
-> > On Wed, Sep 30, 2020 at 10:19:16AM -0500, YiFei Zhu wrote:
-> > > From: YiFei Zhu <yifeifz2@illinois.edu>
+On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
+> On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+> > On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
+> > > On 9/30/20 5:03 PM, Tycho Andersen wrote:
+> > > > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
+> > > >>        ┌─────────────────────────────────────────────────────┐
+> > > >>        │FIXME                                                │
+> > > >>        ├─────────────────────────────────────────────────────┤
+> > > >>        │From my experiments,  it  appears  that  if  a  SEC‐ │
+> > > >>        │COMP_IOCTL_NOTIF_RECV   is  done  after  the  target │
+> > > >>        │process terminates, then the ioctl()  simply  blocks │
+> > > >>        │(rather than returning an error to indicate that the │
+> > > >>        │target process no longer exists).                    │
+> > > >
+> > > > Yeah, I think Christian wanted to fix this at some point,
 > > >
-> > > Currently the kernel does not provide an infrastructure to translate
-> > > architecture numbers to a human-readable name. Translating syscall
-> > > numbers to syscall names is possible through FTRACE_SYSCALL
-> > > infrastructure but it does not provide support for compat syscalls.
+> > > Do you have a pointer that discussion? I could not find it with a
+> > > quick search.
 > > >
-> > > This will create a file for each PID as /proc/pid/seccomp_cache.
-> > > The file will be empty when no seccomp filters are loaded, or be
-> > > in the format of:
-> > > <arch name> <decimal syscall number> <ALLOW | FILTER>
-> > > where ALLOW means the cache is guaranteed to allow the syscall,
-> > > and filter means the cache will pass the syscall to the BPF filter.
+> > > > but it's a
+> > > > bit sticky to do.
 > > >
-> > > For the docker default profile on x86_64 it looks like:
-> > > x86_64 0 ALLOW
-> > > x86_64 1 ALLOW
-> > > x86_64 2 ALLOW
-> > > x86_64 3 ALLOW
-> > > [...]
-> > > x86_64 132 ALLOW
-> > > x86_64 133 ALLOW
-> > > x86_64 134 FILTER
-> > > x86_64 135 FILTER
-> > > x86_64 136 FILTER
-> > > x86_64 137 ALLOW
-> > > x86_64 138 ALLOW
-> > > x86_64 139 FILTER
-> > > x86_64 140 ALLOW
-> > > x86_64 141 ALLOW
-> [...]
-> > > diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-> > > index 7b3a58271656..33ccc074be7a 100644
-> > > --- a/arch/x86/include/asm/seccomp.h
-> > > +++ b/arch/x86/include/asm/seccomp.h
-> > > @@ -19,13 +19,16 @@
-> > >  #ifdef CONFIG_X86_64
-> > >  # define SECCOMP_ARCH_DEFAULT                        AUDIT_ARCH_X86_64
-> > >  # define SECCOMP_ARCH_DEFAULT_NR             NR_syscalls
-> > > +# define SECCOMP_ARCH_DEFAULT_NAME           "x86_64"
-> > >  # ifdef CONFIG_COMPAT
-> > >  #  define SECCOMP_ARCH_COMPAT                        AUDIT_ARCH_I386
-> > >  #  define SECCOMP_ARCH_COMPAT_NR             IA32_NR_syscalls
-> > > +#  define SECCOMP_ARCH_COMPAT_NAME           "x86_32"
+> > > Can you say a few words about the nature of the problem?
 > >
-> > I think this should be "ia32"? Is there a good definitive guide on this
-> > naming convention?
+> > I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("seccomp:
+> > notify about unused filter"). So maybe there's a bug here?
 > 
-> "man 2 syscall" calls them "x86-64" and "i386". The syscall table
-> files use ABI names "i386" and "64". The syscall stub prefixes use
-> "x64" and "ia32".
-> 
-> I don't think we have a good consistent naming strategy here. :P
+> That thing only notifies on ->poll, it doesn't unblock ioctls; and
+> Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So that
+> commit doesn't have any effect on this kind of usage.
 
-Agreed. And with "i386" being so hopelessly inaccurate, I prefer
-"ia32" ... *shrug*
+Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
+we don't have a count of all of them, unfortunately.
 
-I would hope we don't have to be super-pedantic and call them "x86-64" and "IA-32". :P
+We could maybe look inside the wait_list, but that will probably make
+people angry :)
 
--- 
-Kees Cook
+Tycho
