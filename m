@@ -2,106 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3DA27F5CC
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 01:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE3927F5C0
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 01:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731220AbgI3XMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 19:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
+        id S1732096AbgI3XM2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 19:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731269AbgI3XMB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:12:01 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEB4C0613D1
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:12:00 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id j2so3649852eds.9
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:12:00 -0700 (PDT)
+        with ESMTP id S1732093AbgI3XM1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:12:27 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE960C061755
+        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:12:26 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id h23so738191pjv.5
+        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:12:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5xNLcu2ZBibcOX9eRdIGOJeEwkJ0lfgOo9QwHDvHXzQ=;
-        b=Qj7K/vkx1A15tnnaZGTfZl+ftwHdXkr1sOL1XvvbJjxZt6685kUiCjB86O17zRpzT+
-         fjB3agEdH+lpJttlavg86WCDK/CZ/w8oa+3tm66zd471+mfvUnVBT4hdtV9fr6yowepg
-         +X46wdd3diEHymNJT8fTyl2VcCe6QysxchzK/I0DHPed+T2YFKyVudi6rWQpwhEcD3et
-         sd6uMoaB9fxNujxXaN2i+lH8Mzxt31C5S20E50O40rHcNBtvsXjvgoQYX09+AQJ5Z0i6
-         m98jq1Z/UM0SauyOxFb+wrxUMwuh71pRjyiDIAwjbJtiW/Y3Mc80NcR6gKB3CqeK9jM1
-         /Btg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GcGfH7kHx9j3QvyhQc4NcbAnPXZ+xitJlnC9m04nhjQ=;
+        b=gm5u2PcQKPEnnJP1IJQaMsMKmuVSqh4mDV+SE3B7HkfYd1s4DfKRJ5JPUSmnYUHwJ8
+         a+XP4WcTYmVhx04y548/+0CYzCszHMJsUlfqTuWHhOFXsePMVlmUXi21FLje4PBXRm98
+         Jo1/sYLM65/hhSixFbPryuAHtryh7BTjsn8Us=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5xNLcu2ZBibcOX9eRdIGOJeEwkJ0lfgOo9QwHDvHXzQ=;
-        b=jPGa+spOdyXSn0Xvnz03K/I54UNra5XGKX5cLT2bysM6J5C9mo+IWGtrkvQ4oJuu7+
-         w4wA1Ww6zUyzgcTXazPn+/FDHFMwOnlwFVDRzxvBFQKrkybjmSRCGTLPc8WmnhBe1nAN
-         qwPDlrP5wTFnn5WXtbDyOlF68Yg2HDxXHcRI8WtsMSiHxXMjXIEh+aiQITrAJA/VIYdA
-         +bMGVIBUZaOS6hSKtH7sehVmZM2IKqgRZyfbS6v2FH+8EP55ib9+83Q2eQTmgEEFeAUt
-         1CgMMEiBHUNbsU3VzWnA7jgj58DBjexnbUaT5PYgosG24dAcUoxdiynTgkShWDncp2Dd
-         ZEkA==
-X-Gm-Message-State: AOAM531cibNMl3O3+vJ4Z7pQFtnB5SvQnkHXyQ0LOf1Cy9441RVY5D//
-        rC0s1z7o9feFgXSHN0p0d3Y69jwPLes5X8vAIqpR4w==
-X-Google-Smtp-Source: ABdhPJwrGlHwTQPZ++L0mLOF85y9/7LbEqNJ1w3mzMjO76tBkyLKmj9U5lGPSOwZW9qqkPLK2MLrOgZEPPp5jfWkAiQ=
-X-Received: by 2002:a50:e807:: with SMTP id e7mr5401960edn.84.1601507519254;
- Wed, 30 Sep 2020 16:11:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco>
-In-Reply-To: <20200930230327.GA1260245@cisco>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 01:11:33 +0200
-Message-ID: <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GcGfH7kHx9j3QvyhQc4NcbAnPXZ+xitJlnC9m04nhjQ=;
+        b=PB1dfP5pGf5FPWjeNBxtLfaCwIULkBTAOzb9X8yW9HL7yw9R03mHQO/lak/Su7XOOo
+         dNGYeY+lUkCc8vDt9YVHJLnUOWbWHsNMxDwhuur8pQFLuh9Tf1pmDPIR3f05klIm2uXa
+         S1hysSIa8AKppClVeSC9ZjJlQx6xx2OX6BAB1MifaDK4dHn3RbmR/Rdmq+QT54dOYQd3
+         G64RiHGVak5k1bFrIo+dkGTWm7rW8eftI3BA0D9eEjDJPRbu1xqsmBIimVdRRZvWsVFe
+         7vZEuMPnNhG0Aryuy7/FyvAR2tDt7TT6h5y2+38hHxt6tY9Ci3Ki0AbuLJTOROv+iKli
+         CLhw==
+X-Gm-Message-State: AOAM533U0Q4xGC8g70/+kZCVflFaSbbMjj8EE2o9Halzvpr+cEBiLcx6
+        chY5TYDzG3mDpSUoRQG0IiP4Tw==
+X-Google-Smtp-Source: ABdhPJzERV8mYc2Hm3YRyOthOTUpcKBJEFFaKP6HXJWxaQaOtJgHHdz5S1SjWX7xipFAAf48W71nEw==
+X-Received: by 2002:a17:90a:cf13:: with SMTP id h19mr941884pju.88.1601507546488;
+        Wed, 30 Sep 2020 16:12:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q15sm1321933pjp.26.2020.09.30.16.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 16:12:25 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 16:12:24 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
         Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
         Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202009301559.49BEDB79D@keescook>
+References: <cover.1601478774.git.yifeifz2@illinois.edu>
+ <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
+ <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0whaSTobwnoJHW+Eyqg5a8H4JCO-KHrgsuNiEg0qbD3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gVGh1LCBPY3QgMSwgMjAyMCBhdCAxOjAzIEFNIFR5Y2hvIEFuZGVyc2VuIDx0eWNob0B0eWNo
-by5waXp6YT4gd3JvdGU6DQo+IE9uIFdlZCwgU2VwIDMwLCAyMDIwIGF0IDEwOjM0OjUxUE0gKzAy
-MDAsIE1pY2hhZWwgS2VycmlzayAobWFuLXBhZ2VzKSB3cm90ZToNCj4gPiBPbiA5LzMwLzIwIDU6
-MDMgUE0sIFR5Y2hvIEFuZGVyc2VuIHdyb3RlOg0KPiA+ID4gT24gV2VkLCBTZXAgMzAsIDIwMjAg
-YXQgMDE6MDc6MzhQTSArMDIwMCwgTWljaGFlbCBLZXJyaXNrIChtYW4tcGFnZXMpIHdyb3RlOg0K
-PiA+ID4+ICAgICAgICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
-lIDilIDilJANCj4gPiA+PiAgICAgICAg4pSCRklYTUUgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICDilIINCj4gPiA+PiAgICAgICAg4pSc4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
-4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSkDQo+ID4gPj4gICAgICAgIOKUgkZy
-b20gbXkgZXhwZXJpbWVudHMsICBpdCAgYXBwZWFycyAgdGhhdCAgaWYgIGEgIFNFQ+KAkCDilIIN
-Cj4gPiA+PiAgICAgICAg4pSCQ09NUF9JT0NUTF9OT1RJRl9SRUNWICAgaXMgIGRvbmUgIGFmdGVy
-ICB0aGUgIHRhcmdldCDilIINCj4gPiA+PiAgICAgICAg4pSCcHJvY2VzcyB0ZXJtaW5hdGVzLCB0
-aGVuIHRoZSBpb2N0bCgpICBzaW1wbHkgIGJsb2NrcyDilIINCj4gPiA+PiAgICAgICAg4pSCKHJh
-dGhlciB0aGFuIHJldHVybmluZyBhbiBlcnJvciB0byBpbmRpY2F0ZSB0aGF0IHRoZSDilIINCj4g
-PiA+PiAgICAgICAg4pSCdGFyZ2V0IHByb2Nlc3Mgbm8gbG9uZ2VyIGV4aXN0cykuICAgICAgICAg
-ICAgICAgICAgICDilIINCj4gPiA+DQo+ID4gPiBZZWFoLCBJIHRoaW5rIENocmlzdGlhbiB3YW50
-ZWQgdG8gZml4IHRoaXMgYXQgc29tZSBwb2ludCwNCj4gPg0KPiA+IERvIHlvdSBoYXZlIGEgcG9p
-bnRlciB0aGF0IGRpc2N1c3Npb24/IEkgY291bGQgbm90IGZpbmQgaXQgd2l0aCBhDQo+ID4gcXVp
-Y2sgc2VhcmNoLg0KPiA+DQo+ID4gPiBidXQgaXQncyBhDQo+ID4gPiBiaXQgc3RpY2t5IHRvIGRv
-Lg0KPiA+DQo+ID4gQ2FuIHlvdSBzYXkgYSBmZXcgd29yZHMgYWJvdXQgdGhlIG5hdHVyZSBvZiB0
-aGUgcHJvYmxlbT8NCj4NCj4gSSByZW1lbWJlcmVkIHdyb25nLCBpdCdzIGFjdHVhbGx5IGluIHRo
-ZSB0cmVlOiA5OWNkYjhiOWE1NzMgKCJzZWNjb21wOg0KPiBub3RpZnkgYWJvdXQgdW51c2VkIGZp
-bHRlciIpLiBTbyBtYXliZSB0aGVyZSdzIGEgYnVnIGhlcmU/DQoNClRoYXQgdGhpbmcgb25seSBu
-b3RpZmllcyBvbiAtPnBvbGwsIGl0IGRvZXNuJ3QgdW5ibG9jayBpb2N0bHM7IGFuZA0KTWljaGFl
-bCdzIHNhbXBsZSBjb2RlIHVzZXMgU0VDQ09NUF9JT0NUTF9OT1RJRl9SRUNWIHRvIHdhaXQuIFNv
-IHRoYXQNCmNvbW1pdCBkb2Vzbid0IGhhdmUgYW55IGVmZmVjdCBvbiB0aGlzIGtpbmQgb2YgdXNh
-Z2UuDQo=
+On Thu, Oct 01, 2020 at 12:00:46AM +0200, Jann Horn wrote:
+> On Wed, Sep 30, 2020 at 5:20 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> [...]
+> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> [...]
+> > +int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
+> > +                          struct pid *pid, struct task_struct *task)
+> > +{
+> > +       struct seccomp_filter *f;
+> > +
+> > +       /*
+> > +        * We don't want some sandboxed process know what their seccomp
+> > +        * filters consist of.
+> > +        */
+> > +       if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
+> > +               return -EACCES;
+> > +
+> > +       f = READ_ONCE(task->seccomp.filter);
+> > +       if (!f)
+> > +               return 0;
+> 
+> Hmm, this won't work, because the task could be exiting, and seccomp
+> filters are detached in release_task() (using
+> seccomp_filter_release()). And at the moment, seccomp_filter_release()
+> just locklessly NULLs out the tsk->seccomp.filter pointer and drops
+> the reference.
+
+Oh nice catch. Yeah, this would only happen if it was the only filter
+remaining on a process with no children, etc.
+
+> 
+> The locking here is kind of gross, but basically I think you can
+> change this code to use lock_task_sighand() / unlock_task_sighand()
+> (see the other examples in fs/proc/base.c), and bail out if
+> lock_task_sighand() returns NULL. And in seccomp_filter_release(), add
+> something like this:
+> 
+> /* We are effectively holding the siglock by not having any sighand. */
+> WARN_ON(tsk->sighand != NULL);
+
+Yeah, good idea.
+
+-- 
+Kees Cook
