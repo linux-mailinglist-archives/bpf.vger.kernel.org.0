@@ -2,120 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1022927F25B
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 21:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD2727F280
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 21:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729978AbgI3TL0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 15:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
+        id S1730196AbgI3TUK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 15:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727438AbgI3TLZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 15:11:25 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D724CC061755;
-        Wed, 30 Sep 2020 12:11:25 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id v14so315381pjd.4;
-        Wed, 30 Sep 2020 12:11:25 -0700 (PDT)
+        with ESMTP id S1728031AbgI3TUK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 15:20:10 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5F8C061755;
+        Wed, 30 Sep 2020 12:20:08 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id c3so1607473plz.5;
+        Wed, 30 Sep 2020 12:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=8YWBk6SzR671V+UOUVyMBr51LcYWzl9S2GvBCwgZRzo=;
-        b=R3HimT/BWzn1DS3rbLQ0IPq5xf7WE2eR+vNBXscgRYgWrkUbKaevkQK9ttFhReNSzi
-         JmMQPv9bGH/WIROqxo0hUa9mZCvV4QAq+XNMVygVjh3kLBBI5V+Ywme4aUaXo0vzRLS3
-         dvWssxgjCo23p0IZUQPZ41mty1VC7s3x8fGvprufaEv74LbjSUFkb1KeFV2pzMEiQ0Ay
-         0UTWUeXKD5vBp0f2Se6jvF0F7ViwTA8cNE/a+Bq4IoUfZZtC6brm5SQa5dqO4+VCKz5K
-         ZvMr64nbngQ+BlPm5685+vBtBw/9VVL1pnDSw5/rpHmKFDfFczl6wYd5uDHwDADHn1SD
-         rSdA==
+        bh=K1KuplXIPM3f9eN8VJrCNwz9WtrGgwBZMt/BFvxKJSI=;
+        b=VSs8h9gaBPckrXXgdNNqmG7PTreUHnaHzva+d906fhZMJmmelpw1T+gK3fS69brudR
+         /pqUHjCI9clx4e8JNwavN29vP18DUF1Bts+StHuthJKkWGkou6DnZbeP/J2L56vAPQOR
+         0JjWEhJ4ZPBEgtpL86oZhMYYQU46t5XmpsRJiu8vIOwx77D+GDY6ueU7O0+uyLEZ0I8y
+         U7SePj7Z/CN4c3c7kvRRff+ZLk4mQTRE/W9eDJJXQAztUqDAy4KDVlcZFEW/rqjncEA/
+         gu8Fg5GMx7uTfIzrjFkLxcRgBtNGr/uVFm8jwYhRyNmTxyLdGB46Zlf+Hu9a/S38ftNY
+         czCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8YWBk6SzR671V+UOUVyMBr51LcYWzl9S2GvBCwgZRzo=;
-        b=UXxlo4EX/rJy7WSvaJyzL1JnBHqLAnchpowDiwIb7Nbp5aVPoO2yKV5LO/68eZCKa0
-         oOULY8rGqKwIMHJhp2bUc6+PKOc4WlVYqy/fSwjA1ZlYpFmNg9xwZLjDiY7RNCUMusrJ
-         2IroTrBkpi0tZgXdyjkRr26jimQw+WPHLin5DFMnJrtPvtxmjdEVyzU1TRYS+1E3WVv7
-         u951icrV0hXdZrlMFKcxKlJvRTh0jemYfuplgeWqADoMZg5zX5AYo2xryNuFzuOh5BPh
-         h3gQhlV0R58SP4kHxmp30e/oFcDFI1aJxlx5gmyGcGBbm0REIg+MiExFLYfpVapgQXI4
-         HWnA==
-X-Gm-Message-State: AOAM5337fPbLUO1DTD5vfg9ALA7DHilr9itCOVezHCAtZJuxdJNO4CMI
-        bbuKeSnXKI1kUk3BZp88NsDbJ20BmDM=
-X-Google-Smtp-Source: ABdhPJzHwfHovKijUvEPEzWUBXXwuRS5qQjSznFHzZnEnhRUUBOF/bsoazxPPluy35q/9ZKPEPeUOQ==
-X-Received: by 2002:a17:90b:1211:: with SMTP id gl17mr3975858pjb.87.1601493085089;
-        Wed, 30 Sep 2020 12:11:25 -0700 (PDT)
+        bh=K1KuplXIPM3f9eN8VJrCNwz9WtrGgwBZMt/BFvxKJSI=;
+        b=kOSorQ0LcT6ZMVkxsnez9zr0yNdrJIxPZrMVPaopi1pkItMNN/EqJ7UtEzVTzESlmo
+         pvB9XRlclklIxQDqyxyHiLYe17OxYvgQ/qJGRyzRvcoDLTw6kFEXzsI5ZDoBa2IDgL/O
+         yO1ugjmJZzIQMGC648pOf8CeTAFvJZWxpy9kDqqbFGUHC/qS3ZPSEGuiG5XPBXwsFkG2
+         EOunVgV/yEYwSt8DffaruxYg1Hjavyb0rED7n1V2duOueyClx8qxizTjdnwT7AOoyGm5
+         lVyCewkcSrUSYXitC6Y0iLI8NVLhcD3Axm2tQqOQA11E/WD1ge/65UseFJTo1bkMDSxg
+         aJCw==
+X-Gm-Message-State: AOAM532p4wCuo1B2Z9//hXg7WsMMzIcqm/31rAyVsc0EpFXLlg5ZBAGA
+        FgGThxTSWNiCdSFSMG6d+7lohznbI+Q=
+X-Google-Smtp-Source: ABdhPJwiEBwM5Q/F5KMpdrHnkSeUHCs5kfOIqxTVOrjghKQza8xn7uwJVTzCeIpkpQY+8fuqa0+mmw==
+X-Received: by 2002:a17:90b:3004:: with SMTP id hg4mr3771883pjb.7.1601493607620;
+        Wed, 30 Sep 2020 12:20:07 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:2a2])
-        by smtp.gmail.com with ESMTPSA id gx5sm3057180pjb.57.2020.09.30.12.11.22
+        by smtp.gmail.com with ESMTPSA id bj2sm3119356pjb.20.2020.09.30.12.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 12:11:24 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 12:11:21 -0700
+        Wed, 30 Sep 2020 12:20:06 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 12:20:04 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
-        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        brouer@redhat.com, echaudro@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org
-Subject: Re: [PATCH v3 net-next 06/12] bpf: helpers: add multibuffer support
-Message-ID: <20200930191121.jm62rlopekegbjx5@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1601478613.git.lorenzo@kernel.org>
- <5e248485713d2470d97f36ad67c9b3ceedfc2b3f.1601478613.git.lorenzo@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 6/6] bpf, selftests: add redirect_neigh
+ selftest
+Message-ID: <20200930192004.acumndm6xfxwplzl@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1601477936.git.daniel@iogearbox.net>
+ <0fc7d9c5f9a6cc1c65b0d3be83b44b1ec9889f43.1601477936.git.daniel@iogearbox.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e248485713d2470d97f36ad67c9b3ceedfc2b3f.1601478613.git.lorenzo@kernel.org>
+In-Reply-To: <0fc7d9c5f9a6cc1c65b0d3be83b44b1ec9889f43.1601477936.git.daniel@iogearbox.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 05:41:57PM +0200, Lorenzo Bianconi wrote:
-> From: Sameeh Jubran <sameehj@amazon.com>
-> 
-> The implementation is based on this [0] draft by Jesper D. Brouer.
-> 
-> Provided two new helpers:
-> 
-> * bpf_xdp_get_frag_count()
-> * bpf_xdp_get_frags_total_size()
-> 
-> [0] xdp mb design - https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
-> Signed-off-by: Sameeh Jubran <sameehj@amazon.com>
-> Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  include/uapi/linux/bpf.h       | 14 ++++++++++++
->  net/core/filter.c              | 42 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 14 ++++++++++++
->  3 files changed, 70 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index a22812561064..6f97dce8cccf 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3586,6 +3586,18 @@ union bpf_attr {
->   * 		the data in *dst*. This is a wrapper of **copy_from_user**\ ().
->   * 	Return
->   * 		0 on success, or a negative error in case of failure.
-> + *
-> + * int bpf_xdp_get_frag_count(struct xdp_buff *xdp_md)
-> + *	Description
-> + *		Get the number of fragments for a given xdp multi-buffer.
-> + *	Return
-> + *		The number of fragments
-> + *
-> + * int bpf_xdp_get_frags_total_size(struct xdp_buff *xdp_md)
-> + *	Description
-> + *		Get the total size of fragments for a given xdp multi-buffer.
-> + *	Return
-> + *		The total size of fragments for a given xdp multi-buffer.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -3737,6 +3749,8 @@ union bpf_attr {
->  	FN(inode_storage_delete),	\
->  	FN(d_path),			\
->  	FN(copy_from_user),		\
-> +	FN(xdp_get_frag_count),		\
-> +	FN(xdp_get_frags_total_size),	\
->  	/* */
+On Wed, Sep 30, 2020 at 05:18:20PM +0200, Daniel Borkmann wrote:
+> +
+> +#ifndef barrier_data
+> +# define barrier_data(ptr)	asm volatile("": :"r"(ptr) :"memory")
+> +#endif
+> +
+> +#ifndef ctx_ptr
+> +# define ctx_ptr(field)		(void *)(long)(field)
+> +#endif
 
-Please route the set via bpf-next otherwise merge conflicts will be severe.
+> +static __always_inline bool is_remote_ep_v4(struct __sk_buff *skb,
+> +					    __be32 addr)
+> +{
+> +	void *data_end = ctx_ptr(skb->data_end);
+> +	void *data = ctx_ptr(skb->data);
+
+please consider adding:
+        __bpf_md_ptr(void *, data);
+        __bpf_md_ptr(void *, data_end);
+to struct __sk_buff in a followup to avoid this casting headache.
+
+> +SEC("dst_ingress") int tc_dst(struct __sk_buff *skb)
+> +{
+> +	int idx = dst_to_src_tmp;
+> +	__u8 zero[ETH_ALEN * 2];
+> +	bool redirect = false;
+> +
+> +	switch (skb->protocol) {
+> +	case __bpf_constant_htons(ETH_P_IP):
+> +		redirect = is_remote_ep_v4(skb, __bpf_constant_htonl(ip4_src));
+> +		break;
+> +	case __bpf_constant_htons(ETH_P_IPV6):
+> +		redirect = is_remote_ep_v6(skb, (struct in6_addr)ip6_src);
+> +		break;
+> +	}
+> +
+> +	if (!redirect)
+> +		return TC_ACT_OK;
+> +
+> +	barrier_data(&idx);
+> +	idx = bpf_ntohl(idx);
+
+I don't follow. Why force that constant into a register and force
+actual swap instruction?
+
+> +
+> +	__builtin_memset(&zero, 0, sizeof(zero));
+> +	if (bpf_skb_store_bytes(skb, 0, &zero, sizeof(zero), 0) < 0)
+> +		return TC_ACT_SHOT;
+> +
+> +	return bpf_redirect_neigh(idx, 0);
+> +}
+
+> +xxd -p < test_tc_neigh.o   | sed "s/eeddddee/$veth_src/g" | xxd -r -p > test_tc_neigh.x.o
+> +xxd -p < test_tc_neigh.x.o | sed "s/eeffffee/$veth_dst/g" | xxd -r -p > test_tc_neigh.y.o
+
+So the inline asm is because of the above?
+So after compiling you're hacking elf binary for this pattern ?
+Ouch. Please use global data or something. This is fragile.
+This type of hacks should be discouraged and having selftests do them
+goes as counter example.
