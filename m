@@ -2,136 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD1027F5B1
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 01:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0D927F5B3
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 01:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732044AbgI3XIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 19:08:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57102 "EHLO
+        id S1732012AbgI3XJc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 19:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732012AbgI3XIc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 19:08:32 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65C8C0613D0
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:08:31 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id qp15so4319783ejb.3
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:08:31 -0700 (PDT)
+        with ESMTP id S1731987AbgI3XJN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 19:09:13 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AE4C061755
+        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:09:13 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id k18so2572861ybh.1
+        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 16:09:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oSjyCndmSDw71eE/BIT10kmAi2CWzQm4Fdkl0rDwsVs=;
-        b=HIKXee3AjLR1yKNiCxpi/lY3cYYCKNhBnzExJFzXfKnsypgwzwfgjzM0tb17O4Vgyp
-         lhgXkKM9j2PeIgZpOnVu++oMi7gJvxIjizwMo703OTz8iXPRoqS8aax65sRSbVXVQhaN
-         tvjeuhg5mYZ8mUI0vBLvW61A38C6uccE8YKBXI8V0m4NvbBCXtfIlsDBT4jZHcnedOEg
-         PO51mrwjnCCJ8TSH0ZBojL0RZxbyHtHcw2Xb7KRra7wZgBheblTerBSatg5051UvvYcT
-         ITGkQ01vRidlmaOwJA9wdrUJhVLTQwm8L4zEsmgVhT/kFZfXhq9Mntu4wkm3OmlCTSg/
-         IPLQ==
+        bh=mep4spQ9FIkTa10pAtvQf/myeFBKJ+f0HlpL7O14te8=;
+        b=CGRVfmT73XupOrbhGbfJQjwVDZgOAxZPGoEsnwXt0LShs/+nZZajJtlRiQTLE4E53B
+         hGnAKjrAMyaCUHdK3GVopBCkFLMD/6i7LBS0cstBnpD8JsXoB0NUjsrWDbzXh9IDQirR
+         DfONg9Aw/Yfjm4eRQXnOWMgctfnegPHezPQGVWcpm2LPdfmPD4flp6JAwTOmE9Itkcdx
+         6NAh/uJ7kthc2KVBEyGuuQ58Ot+LsolhLUMtlCg/O8X4WjkPYfMI0URA8lPh3G/E6sBH
+         I21c4IAZlkooFfgpMKp+L6kftGTMca4E1EKR/h5h1wQVMbMYuxGYZQqABbtitfAfHg24
+         kCmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oSjyCndmSDw71eE/BIT10kmAi2CWzQm4Fdkl0rDwsVs=;
-        b=qnpj7SGYRYM9hHIYKcB2QEEFZy4Qc/1B5olzX4Tspw9fAiYZ3+4lLhTQn6DqFiadmf
-         X4GAZDcYDCW/DoPLdkG1Rt6Blypflm/rpCJ5/xVQ+XBR5FZmJ8dT9dreAFRyiD1SbgYc
-         6qdFu8/xyxfS7qVqInjGQoYbPJcP4eFxgp8+VHeJb0lZLy8fzH+ynbAoKg/Ydt4Y1sQT
-         Tv/9vWUjufNj4G1ckn1KNOUf7UGDxiFhgTlWUSCU2j1bSEFnuV9dqvpRehNysuWUPRM3
-         nfqOfipsKNiD+yqtEN6eSVR9wDiF1b9Y8yAQ5E43QHKI8FP8xHZDC/hQXnEGRc18xpCm
-         Jr/Q==
-X-Gm-Message-State: AOAM5300jEzElO63/LWFPAmwtNlRvoPcWSYmCISuZY/vfnKLaGbAcgim
-        9WyxVDofcsHgwFYrjJlXj82uB8W3V0/aNLGR0UT9ew==
-X-Google-Smtp-Source: ABdhPJyC+4DouNB+AJFTmGjbAtJDvRkfFxZToj/svy2V/efpofZpBJvCX/A3ee/XkublfA579qMlv91dBfLYJ/TEfyE=
-X-Received: by 2002:a17:906:33c8:: with SMTP id w8mr574212eja.233.1601507310348;
- Wed, 30 Sep 2020 16:08:30 -0700 (PDT)
+        bh=mep4spQ9FIkTa10pAtvQf/myeFBKJ+f0HlpL7O14te8=;
+        b=tjbcBcfIoCjePIRRU1ltmUeMreq9cjytomCHbTzneRTYVDCpUUpjbgzXMg06bJV/FE
+         UNdHfSIacH6PAzCrj0sWQtMr8H41opZmUZRl5KS4+QstwP5Fv+19nY83dleRM8rzTtyj
+         xR9tGGvoAUp+loCT6KiOWiCqElzW+41OqIAJG0v4WxguOy+cHJFW5Gdn7gRtkhLb5MeL
+         2l1l2uQ2AjVRTCK5OfOMKmI2lMDqa2UtIQurPsqV1Qeyh6VfTdSTLPRVN9wV8iBQ6c80
+         zjJxX9EQQGUNfzyvnssGL8RfXDT1nudvSco70+HE+oZPS6QDb9ial3FhGWYROhjpK2Et
+         hN1A==
+X-Gm-Message-State: AOAM530BafeEv7z9Xk7j/pXRiOfAea0qG6RSLxJj9UV1kcjsYOjNUXKG
+        w/aQJ18+xpTwjncs9BiL45NH8XEWMajUeb+vjfF119oMM5TzSw==
+X-Google-Smtp-Source: ABdhPJz0TcI4NuoU/MoYebgHVVHNZO09TNGSJbw4/JZ+9a9rGsniyM9eShB9nuNzEBdSD0sm0wav3iH2w9ByXqyStxg=
+X-Received: by 2002:a25:2596:: with SMTP id l144mr6522642ybl.510.1601507353041;
+ Wed, 30 Sep 2020 16:09:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1601478774.git.yifeifz2@illinois.edu> <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
- <202009301554.590642EBE@keescook>
-In-Reply-To: <202009301554.590642EBE@keescook>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 01:08:04 +0200
-Message-ID: <CAG48ez077wMkh-sJebjxd3nAmBsNRCF2U8Vmmy-Fc7dr8KRyqw@mail.gmail.com>
-Subject: Re: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>
+References: <CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com>
+ <CAEf4BzZvXvb7CsnJZkoNUzb0-o=w-i9-CHecq0O+QcCKpeuUKQ@mail.gmail.com>
+ <CA+XBgLWNavRQJy7uRG35RXprHjQ1uaURyB8tj7tE=Mv=EWKO+g@mail.gmail.com>
+ <CAEf4Bzb4JrfmENs197d30xU2fnWwu9_1rq-=n9szaWmmxaSckg@mail.gmail.com> <CA+XBgLWa7nWnQNTUdqgBK2E34PH8mUc_wUWR=_iM2Yjr=gxrVw@mail.gmail.com>
+In-Reply-To: <CA+XBgLWa7nWnQNTUdqgBK2E34PH8mUc_wUWR=_iM2Yjr=gxrVw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 30 Sep 2020 16:09:02 -0700
+Message-ID: <CAEf4BzY1N_yZscKTT81fnexwPgD7XbD0UCyEsa1CUp_giyJwfA@mail.gmail.com>
+Subject: Re: Problems with pointer offsets on ARM32
+To:     Luka Oreskovic <luka.oreskovic@sartura.hr>
+Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[adding x86 folks to enhance bikeshedding]
-
-On Thu, Oct 1, 2020 at 12:59 AM Kees Cook <keescook@chromium.org> wrote:
-> On Wed, Sep 30, 2020 at 10:19:16AM -0500, YiFei Zhu wrote:
-> > From: YiFei Zhu <yifeifz2@illinois.edu>
-> >
-> > Currently the kernel does not provide an infrastructure to translate
-> > architecture numbers to a human-readable name. Translating syscall
-> > numbers to syscall names is possible through FTRACE_SYSCALL
-> > infrastructure but it does not provide support for compat syscalls.
-> >
-> > This will create a file for each PID as /proc/pid/seccomp_cache.
-> > The file will be empty when no seccomp filters are loaded, or be
-> > in the format of:
-> > <arch name> <decimal syscall number> <ALLOW | FILTER>
-> > where ALLOW means the cache is guaranteed to allow the syscall,
-> > and filter means the cache will pass the syscall to the BPF filter.
-> >
-> > For the docker default profile on x86_64 it looks like:
-> > x86_64 0 ALLOW
-> > x86_64 1 ALLOW
-> > x86_64 2 ALLOW
-> > x86_64 3 ALLOW
-> > [...]
-> > x86_64 132 ALLOW
-> > x86_64 133 ALLOW
-> > x86_64 134 FILTER
-> > x86_64 135 FILTER
-> > x86_64 136 FILTER
-> > x86_64 137 ALLOW
-> > x86_64 138 ALLOW
-> > x86_64 139 FILTER
-> > x86_64 140 ALLOW
-> > x86_64 141 ALLOW
-[...]
-> > diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-> > index 7b3a58271656..33ccc074be7a 100644
-> > --- a/arch/x86/include/asm/seccomp.h
-> > +++ b/arch/x86/include/asm/seccomp.h
-> > @@ -19,13 +19,16 @@
-> >  #ifdef CONFIG_X86_64
-> >  # define SECCOMP_ARCH_DEFAULT                        AUDIT_ARCH_X86_64
-> >  # define SECCOMP_ARCH_DEFAULT_NR             NR_syscalls
-> > +# define SECCOMP_ARCH_DEFAULT_NAME           "x86_64"
-> >  # ifdef CONFIG_COMPAT
-> >  #  define SECCOMP_ARCH_COMPAT                        AUDIT_ARCH_I386
-> >  #  define SECCOMP_ARCH_COMPAT_NR             IA32_NR_syscalls
-> > +#  define SECCOMP_ARCH_COMPAT_NAME           "x86_32"
+On Tue, Sep 15, 2020 at 12:26 AM Luka Oreskovic
+<luka.oreskovic@sartura.hr> wrote:
 >
-> I think this should be "ia32"? Is there a good definitive guide on this
-> naming convention?
+> On Mon, Sep 14, 2020 at 7:49 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Sep 14, 2020 at 12:55 AM Luka Oreskovic
+> > <luka.oreskovic@sartura.hr> wrote:
+> > >
+> > > On Fri, Sep 11, 2020 at 8:14 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Fri, Sep 11, 2020 at 9:45 AM Luka Oreskovic
+> > > > <luka.oreskovic@sartura.hr> wrote:
+> > > > >
+> > > > > Greetings everyone,
+> > > > >
+> > > > > I have been testing various BPF programs on the ARM32 architecture and
+> > > > > have encountered a strange error.
+> > > > >
+> > > > > When trying to run a simple program that prints out the arguments of
+> > > > > the open syscall,
+> > > > > I found some strange behaviour with the pointer offsets when accessing
+> > > > > the arguments:
+> > > > > The output of llvm-objdump differed from the verifier error dump log.
+> > > > > Notice the differences in lines 0 and 1. Why is the bytecode being
+> > > > > altered at runtime?
+> > > > >
+> > > > > I attached the program, the llvm-objdump result and the verifier dump below.
+> > > > >
+> > > > > Best wishes,
+> > > > > Luka Oreskovic
+> > > > >
+> > > > > BPF program
+> > > > > --------------------------------------------
+> > > > > #include "vmlinux.h"
+> > > > > #include <bpf/bpf_helpers.h>
+> > > > >
+> > > > > SEC("tracepoint/syscalls/sys_enter_open")
+> > > > > int tracepoint__syscalls__sys_enter_open(struct trace_event_raw_sys_enter* ctx)
+> > > > > {
+> > > > >         const char *arg1 = (const char *)ctx->args[0];
+> > > > >         int arg2 = (int)ctx->args[1];
 
-"man 2 syscall" calls them "x86-64" and "i386". The syscall table
-files use ABI names "i386" and "64". The syscall stub prefixes use
-"x64" and "ia32".
+Luka, can you apply the changes below to bpf_core_read.h header and
+read these args using BPF_CORE_READ() macro:
 
-I don't think we have a good consistent naming strategy here. :P
+const char *arg1 = (const char *)BPF_CORE_READ(ctx, args[0]);
+int arg2 = BPF_CORE_READ(ctx, args[1]);
+
+I'm curious if that will work (unfortunately I don't have a complete
+enough setup to test this).
+
+The patch is as follows (with broken tab<->space conversion, so please
+make changes by hand):
+
+diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+index bbcefb3ff5a5..fee6328d36c0 100644
+--- a/tools/lib/bpf/bpf_core_read.h
++++ b/tools/lib/bpf/bpf_core_read.h
+@@ -261,14 +261,16 @@ enum bpf_enum_value_kind {
+ #define ___type(...) typeof(___arrow(__VA_ARGS__))
+
+ #define ___read(read_fn, dst, src_type, src, accessor)                     \
+-       read_fn((void *)(dst), sizeof(*(dst)), &((src_type)(src))->accessor)
++       read_fn((void *)(dst),                                              \
++               bpf_core_field_size(((src_type)(src))->accessor),           \
++               &((src_type)(src))->accessor)
+
+ /* "recursively" read a sequence of inner pointers using local __t var */
+ #define ___rd_first(src, a) ___read(bpf_core_read, &__t, ___type(src), src, a);
+ #define ___rd_last(...)
+             \
+        ___read(bpf_core_read, &__t,                                        \
+                ___type(___nolast(__VA_ARGS__)), __t, ___last(__VA_ARGS__));
+-#define ___rd_p1(...) const void *__t; ___rd_first(__VA_ARGS__)
++#define ___rd_p1(...) const void *__t = (void *)0; ___rd_first(__VA_ARGS__)
+ #define ___rd_p2(...) ___rd_p1(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
+ #define ___rd_p3(...) ___rd_p2(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
+ #define ___rd_p4(...) ___rd_p3(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
+
+
+
+BTW, this approach should work for reading pointers as well, it would
+be nice if you can test that as well. E.g., something like the
+following:
+
+struct task_struct *t = (void *)bpf_get_current_task();
+int ppid = BPF_CORE_READ(t, group_leader, tgid);
+
+If you try it without the patch above, it should either read garbage
+or zero, but not a valid parent PID (please verify that as well).
+
+I really appreciate your help with testing, thanks!
+
+
+> > > > >
+> > > > >         bpf_printk("Open arg 1: %s\n", arg1);
+> > > > >         bpf_printk("Open arg 2: %d\n", arg2);
+> > > > >
+> > > > >         return 0;
+> > > > > }
+> > > > >
+> > > > > char LICENSE[] SEC("license") = "GPL";
+> > > > >
+> > > > >
+
+[...]
+
+>
+> Best wishes,
+> Luka Oreskovic
