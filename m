@@ -2,214 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BF927E018
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 07:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7750127E19C
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 08:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727663AbgI3FR5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 01:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgI3FRy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 01:17:54 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80376C061755;
-        Tue, 29 Sep 2020 22:17:54 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y6so301861plt.9;
-        Tue, 29 Sep 2020 22:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3kFQkly1sTsAvr9NqpCdE/6D85qWzElfytCruQQ6xp0=;
-        b=baEIgc1tAUz1CwCztA6ANx5C1M1eacWueIwa4tbHblGGxkmzCqNHjvhO+P/HWeEtiV
-         VLIXdvqHNVLsk3fOqxcPATIMh9b7Rr+ctg3rk00Fo9WKt8g/s73sPS5xujg6Cy3573iC
-         4hGaJGvw0cVOb9ZTnjXCiV4xIemufkqGd4nJ54J9Pal1W2uhpZWDeW3wx0ul077oR+qw
-         gKqOSgTybJLRHockdq/oPVoXNwy/BXfAAWih2bB7Hdjvvrc+VGvzNZZEO5K+yILLYy6P
-         0h529DY47EjOiKdvaoS7nXipkDAcxsIVZKNrNyYBb01R7pur9ytj1zZJBGzvsg5hn7EA
-         J85Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3kFQkly1sTsAvr9NqpCdE/6D85qWzElfytCruQQ6xp0=;
-        b=QRR73ddHQDM0kF2p8Jtkl5ApzSTR/rOg1BDLvzgL0LMTrfTbcWHQtxSZv9URHxn2lX
-         8Xx7hIewGd6vme+a+bO1yJ7m8Ezfec+9Q4r/DgLRNtWZW5TDNE21M8Wm5voiiUajEHXs
-         6pjjL6rXeaud2n5E2xv1JFNFGmJuZ2nhDZxSZ4O8rWM9gcoS9aQoZser312io8iHb7Hn
-         xEfRrFMM4us4iGx8cf5uwn39Om/smaQqF7NOJqp21fHaDDGlza18jpfOV0H5h3Tm/YCj
-         42pT4AjqzliV6dH5+6fk2A3YgQyyiRkM41EPYT+2I6UD5MfiK1Pr68LfViI65Pqz1cHV
-         9weQ==
-X-Gm-Message-State: AOAM531oC+G7RndCWwu6yQ+Cm1PupLM2fhZFwZ53iLIWRJxN1TfLeeOh
-        gHP7gJQSQL5rCw6tTpT2vgk=
-X-Google-Smtp-Source: ABdhPJwSER/8mTDxyPrH6z2kjHv64sIYRdLt4cRdx81XrZFtXXE3LVUl+Eyuk4hLLb+2aEhI8YLkBQ==
-X-Received: by 2002:a17:902:c3d2:b029:d2:93f9:1d8a with SMTP id j18-20020a170902c3d2b02900d293f91d8amr1105887plj.66.1601443073874;
-        Tue, 29 Sep 2020 22:17:53 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.218.220])
-        by smtp.gmail.com with ESMTPSA id gm17sm633432pjb.46.2020.09.29.22.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 22:17:53 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        kpsingh@chromium.org
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [Linux-kernel-mentees][PATCH 2/2] net: reorder members of receive_queue in virtio_net for optimization
-Date:   Wed, 30 Sep 2020 10:47:22 +0530
-Message-Id: <20200930051722.389587-3-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200930051722.389587-1-anant.thazhemadam@gmail.com>
-References: <20200930051722.389587-1-anant.thazhemadam@gmail.com>
+        id S1728161AbgI3GqI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 02:46:08 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28594 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725320AbgI3GqG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Sep 2020 02:46:06 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08U6jkJQ030978;
+        Tue, 29 Sep 2020 23:45:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=1IM9XQ9GTouz1fNRDwjOnlFpUZXLScwrQruexYeMAY4=;
+ b=mx/z47ElKWA1nZH3J5T38XHUEYT2FCPwRO5815eIF7241KkfV4y7l4JG0cTxIfraRRnC
+ 0j7QgC1iWusM2QkecpIqxCm1hOQcueJtxrTJf3XdM1jGnfT9DHkgS/Zn2js6kUzbIpFz
+ uD79zD5kT/nsvr+wtXqhGtQP0GsA4aI3rfo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33t35n9htp-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 29 Sep 2020 23:45:49 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 29 Sep 2020 23:45:44 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mzqHSsyI9aQ4t/ZErxx3nUuiCx/E7oST7qqVUg1kSi0HYwTK9Na4hhrgDcOKg8qDsWbWYu32ABKyuvkvuWIJG4B2/Am4iPemlwJU7L0N5dgBSb6RZENvegMr6de3cOJujZ8tIR1eEzQR9ttsgt8IHcFV5vv4/FN4qLqw2t4EIvELAerRxOzTSAqYl9iNgWivs6wLfiFpkCKOd3qXEpLvO/sRP2WuZd525tMuvku0UnJTelLGV3LhP222ebQfF+YOsmT0UxJPETeA/o499iX+kufv9vY6A+afyxcFHrYdvl3aiQ8gzJg6Kn8Emq8NkwQ6ymffJ5U/mP5MoWmWErl67w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1IM9XQ9GTouz1fNRDwjOnlFpUZXLScwrQruexYeMAY4=;
+ b=EVb7n5HdYOK3nUl/DzwtjiVX48QlwHIrTed+jUXVUSWEQxLa6EC+7KTwsddT8gRGLWInWjQHhZiDxKxSVTb2ToShXWlY0/AxjMoUXmcfVjyuBlxKzJNNcUsVbxEEAQStJswNknMLGi4n79g2cXfOTNPoUMvhXcE3BA6HYk8rVpAsqK+mpa+kMSOYI3qSedRfiEfvivTaVwAKFi8w/7ZYetqvn1p1kvvGrd91KWaFZerrepzlvXpjGY8m7d9xoFDfRTTbZ93d7F5EUmcejGUfqq/WSNessHRxDRw+OzRkHOOMLCj0vlmJ6dG7rlBRPwsm5b51gPF57yG38zSZ3/Q+sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1IM9XQ9GTouz1fNRDwjOnlFpUZXLScwrQruexYeMAY4=;
+ b=MptR6Aax5LQUxhs2ZFf8wr60isRRe+tqeiqMgAxwvGYknomRX2rBSVUe66JOxoJnJzlfrp0mDcblD4G6gSGgW1ESvQdBrpsJ3vtTWiXUuwlQLc3zLvtY5UwPVF2KkhTTd+FMVQA2x+NmS4DP9pV6dmqMwcHRR3KKuWF91aTJsS8=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2952.namprd15.prod.outlook.com (2603:10b6:a03:f9::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Wed, 30 Sep
+ 2020 06:45:41 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d%7]) with mapi id 15.20.3412.029; Wed, 30 Sep 2020
+ 06:45:41 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH v2 bpf-next] bpf: fix raw_tp test run in preempt kernel
+Thread-Topic: [PATCH v2 bpf-next] bpf: fix raw_tp test run in preempt kernel
+Thread-Index: AQHWlr98m0MK4EXH4EugATXlfwV0VKmAhMUAgAA4WYA=
+Date:   Wed, 30 Sep 2020 06:45:40 +0000
+Message-ID: <5684F41E-8748-4CBE-B37F-0E4AADC0A799@fb.com>
+References: <20200930002011.521337-1-songliubraving@fb.com>
+ <CAADnVQ+jaUfJkD0POaRyrmrLueVP9x-rN8bcN5eEz4XPBk96bw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+jaUfJkD0POaRyrmrLueVP9x-rN8bcN5eEz4XPBk96bw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.1)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:cb37]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 92ef6db9-ce51-4ecf-548a-08d8650c72ac
+x-ms-traffictypediagnostic: BYAPR15MB2952:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB29529C7938964043E4D6FA6BB3330@BYAPR15MB2952.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VrDTgOIz0kTiRB8FM9aN7y2bRseos+B7Jei61DXgGts4nlz7pIZuQzgMEdgH0WdquTc39nOWqxxgk7wav8Nq0hFpUp7017klT3URBBc7V5z2iIYqMnf+rBJswlB4rOnLIMG2C4ebx1b0LlZiFSmZ8y8z+QHTdRR3Sa2TnnNrtV2rpDUURe7FyXLbEp5kIdu6728s1+03itETOmlkwddCG+mRvugMYlAfBfkk4in/k9gbI7gzFT2AuYif9bHmZutOoe3o/FyWC6Utt1yOzkbylCJb0c1e5Vj1YJIxi+6+vIjQpehZRZzNKkoWFFgRtCuZZt+sS0gqZ8nhL5xus+iEqJiGKDkWDkCwn2mjQcYcLpVkUuhFPDupyUSgrcs6IEIDWXE8rqtJocEqR/PoLeCjhUEn5T8o6+IylBFAbgc8TacCfy/jst8rRlfGXpoxG81N0eqauB3qmR3ZVHr0GEzPkw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(396003)(136003)(366004)(316002)(54906003)(6486002)(4326008)(66946007)(5660300002)(2616005)(478600001)(71200400001)(91956017)(66446008)(64756008)(66556008)(66476007)(76116006)(53546011)(6512007)(186003)(6506007)(8676002)(2906002)(966005)(36756003)(8936002)(6916009)(86362001)(83380400001)(33656002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: VwuLk6h3AC95DSgnldARAuQyUC18A3qSbJ7bqZsRSxTiH5Hh9hhF6iGtzXOHhTx1MDiHRYtjQ905qXB9nC7eCrM8dBz6ZMljcslxR/a4/6P+wVeOL6TcbDFTfFWpaiXw2V+kilQTWvt8oeGXI1iR8roEo0Uq81DJ+KL0N5iAnWxAC2gOaQ3nSZoTT9KdKot0S6hsgdNDlmU2w4SEkRGefSEAKVGBzw/tOlwqPKnR4hFlcC1EYrFeJHk8+TE/05XraIY4dA3Nc+/Lzl5sA92rhk9f37YuEIToEED86uLHjfELuh+qh8PLowX35ldxfq6BIzsqHmb2XW1oGj+2Q7VsD91gtWZwkxfXjqDz90f7PvWp/UTBC0woilvCChm2BMx4szJZ8gACNBgDLGlv65sGoUNPxm2o1IG9dI4laZ/bPZYlHIRQ9ONwSW2XCtQ7awX4hN2Fc+caB/au5Ru29qtfG7bcAPbnvcar6H4cAOByly9y2jJvrHyAFvRAgGTH9ZnzoX931Qk8IKLxmMcEm+D624mORG463NL2OGVygEsmfSlNuEc31Z8xBN3HHo8D4hePHEYS152LvaYVyHmZFaEoaMnBmAunZ6uFxo4qtqVqKxM/26utC24Rbf8YGfGkzx4ssmA8VoHZHOdbCq6ImVGy0qaDpFe81UeZBK272W3GkhYMfa5OQlyzBmXWpF3SS/HK
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0D33667557473E48BA5D4EB58116C6E4@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92ef6db9-ce51-4ecf-548a-08d8650c72ac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 06:45:40.9135
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uNE2kBNGXIkKDd2jdnBeNFDCGe42ym+RquI0GSugtcYxKIISvLav4h7bf0lGlYsRgU5Qq9hCbbPMDTfrUQP2sw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2952
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_03:2020-09-29,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ mlxscore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 bulkscore=0 priorityscore=1501
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300053
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Analysis of the structure receive_queue using pahole gives the
-following stats.
-	/* size: 1280, cachelines: 20, members: 11 */
-        /* sum members: 1220, holes: 1, sum holes: 60 */
-        /* paddings: 2, sum paddings: 44 */
-        /* forced alignments: 2, forced holes: 1, sum forced holes: 60 */
 
-Reordering the order in which the members of receive_queue are declared
-helps in packing byte holes in the middle of receive_queue, and also
-allows more members to be fully stored in a cacheline (of size 64bytes)
-without overstepping over cachelines unnecessarily.
 
-Analysis using pahole post-reordering of members gives us the following
-stats.
-	/* size: 1280, cachelines: 20, members: 11 */
-        /* padding: 60 */
-        /* paddings: 2, sum paddings: 44 */
-        /* forced alignments: 2 */
+> On Sep 29, 2020, at 8:23 PM, Alexei Starovoitov <alexei.starovoitov@gmail=
+.com> wrote:
+>=20
+> On Tue, Sep 29, 2020 at 5:20 PM Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>> In preempt kernel, BPF_PROG_TEST_RUN on raw_tp triggers:
+>>=20
+>> [   35.874974] BUG: using smp_processor_id() in preemptible [00000000]
+>> code: new_name/87
+>> [   35.893983] caller is bpf_prog_test_run_raw_tp+0xd4/0x1b0
+>> [   35.900124] CPU: 1 PID: 87 Comm: new_name Not tainted 5.9.0-rc6-g615b=
+d02bf #1
+>> [   35.907358] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+>> BIOS 1.10.2-1ubuntu1 04/01/2014
+>> [   35.916941] Call Trace:
+>> [   35.919660]  dump_stack+0x77/0x9b
+>> [   35.923273]  check_preemption_disabled+0xb4/0xc0
+>> [   35.928376]  bpf_prog_test_run_raw_tp+0xd4/0x1b0
+>> [   35.933872]  ? selinux_bpf+0xd/0x70
+>> [   35.937532]  __do_sys_bpf+0x6bb/0x21e0
+>> [   35.941570]  ? find_held_lock+0x2d/0x90
+>> [   35.945687]  ? vfs_write+0x150/0x220
+>> [   35.949586]  do_syscall_64+0x2d/0x40
+>> [   35.953443]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>=20
+>> Fix this by calling migrate_disable() before smp_processor_id().
+>>=20
+>> Fixes: 1b4d60ec162f ("bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint")
+>> Reported-by: Alexei Starovoitov <ast@kernel.org>
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>>=20
+>> ---
+>> Changes v1 =3D> v2:
+>> 1. Keep rcu_read_lock/unlock() in original places. (Alexei)
+>> 2. Use get_cpu() instead of smp_processor_id(). (Alexei)
+>=20
+> Applying: bpf: fix raw_tp test run in preempt kernel
+> Using index info to reconstruct a base tree...
+> error: patch failed: net/bpf/test_run.c:293
+> error: net/bpf/test_run.c: patch does not apply
+> error: Did you hand edit your patch?
 
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
----
-The complete analysis done by pahole can be found below.
+This is so weird. I cannot apply it myself. :(
 
-Before the change:
-	struct receive_queue {
-		struct virtqueue *         vq;                   /*     0     8 */
-		struct napi_struct napi __attribute__((__aligned__(8))); /*     8   392 */
+[localhost] g co -b bpf-next-temp
+Switched to a new branch 'bpf-next-temp'
 
-		/* XXX last struct has 4 bytes of padding */
+[localhost] g format-patch -b HEAD~1 --subject-prefix "PATCH v3 bpf-next"
+0001-bpf-fix-raw_tp-test-run-in-preempt-kernel.patch
 
-		/* --- cacheline 6 boundary (384 bytes) was 16 bytes ago --- */
-		struct bpf_prog *          xdp_prog;             /*   400     8 */
-		struct virtnet_rq_stats stats;                   /*   408    64 */
-		/* --- cacheline 7 boundary (448 bytes) was 24 bytes ago --- */
-		struct page *              pages;                /*   472     8 */
-		struct ewma_pkt_len mrg_avg_pkt_len;             /*   480     8 */
-		struct page_frag   alloc_frag;                   /*   488    16 */
-		struct scatterlist sg[19];                       /*   504   608 */
-		/* --- cacheline 17 boundary (1088 bytes) was 24 bytes ago --- */
-		unsigned int               min_buf_len;          /*  1112     4 */
-		char                       name[40];             /*  1116    40 */
+[localhost] g reset --hard HEAD~1
+HEAD is now at b0efc216f5779 libbpf: Compile in PIC mode only for shared li=
+brary case
 
-		/* XXX 60 bytes hole, try to pack */
+[localhost] g am 0001-bpf-fix-raw_tp-test-run-in-preempt-kernel.patch
+Applying: bpf: fix raw_tp test run in preempt kernel
+error: patch failed: net/bpf/test_run.c:293
+error: net/bpf/test_run.c: patch does not apply
+Patch failed at 0001 bpf: fix raw_tp test run in preempt kernel
+hint: Use 'git am --show-current-patch' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
-		/* --- cacheline 19 boundary (1216 bytes) --- */
-		struct xdp_rxq_info xdp_rxq __attribute__((__aligned__(64))); /*  1216    64 */
+Any hint on how to fix this? Alternatively, could you please pull the=20
+change from=20
 
-		/* XXX last struct has 40 bytes of padding */
+   https://git.kernel.org/pub/scm/linux/kernel/git/song/linux.git  raw_tp_p=
+reempt_fix
 
-		/* size: 1280, cachelines: 20, members: 11 */
-		/* sum members: 1220, holes: 1, sum holes: 60 */
-		/* paddings: 2, sum paddings: 44 */
-		/* forced alignments: 2, forced holes: 1, sum forced holes: 60 */
-	} __attribute__((__aligned__(64)));
-
-After the change:
-	struct receive_queue {
-		struct virtqueue *         vq;                   /*     0     8 */
-		struct napi_struct napi __attribute__((__aligned__(8))); /*     8   392 */
-
-		/* XXX last struct has 4 bytes of padding */
-
-		/* --- cacheline 6 boundary (384 bytes) was 16 bytes ago --- */
-		char                       name[40];             /*   400    40 */
-		struct bpf_prog *          xdp_prog;             /*   440     8 */
-		/* --- cacheline 7 boundary (448 bytes) --- */
-		struct virtnet_rq_stats stats;                   /*   448    64 */
-		/* --- cacheline 8 boundary (512 bytes) --- */
-		struct scatterlist sg[19];                       /*   512   608 */
-		/* --- cacheline 17 boundary (1088 bytes) was 32 bytes ago --- */
-		struct page_frag   alloc_frag;                   /*  1120    16 */
-		struct page *              pages;                /*  1136     8 */
-		struct ewma_pkt_len mrg_avg_pkt_len;             /*  1144     8 */
-		/* --- cacheline 18 boundary (1152 bytes) --- */
-		struct xdp_rxq_info xdp_rxq __attribute__((__aligned__(64))); /*  1152    64 */
-
-		/* XXX last struct has 40 bytes of padding */
-
-		/* --- cacheline 19 boundary (1216 bytes) --- */
-		unsigned int               min_buf_len;          /*  1216     4 */
-
-		/* size: 1280, cachelines: 20, members: 11 */
-		/* padding: 60 */
-		/* paddings: 2, sum paddings: 44 */
-		/* forced alignments: 2 */
-	} __attribute__((__aligned__(64)));
-
-It can be observed that the holes have been eliminated. 
-Also, more members of virtnet_info are accomodated within a cacheline (instead of 
-unnecessarily crossing over the cacheline boundary).
-There is a padding of 60 performed at the end since the min_buf_len is only of 
-size 4, and xdp_rxq is of size 64. If declared anywhere else other than at the 
-end, a 60 bytes hole would open up again.
-
- drivers/net/virtio_net.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index f7bd85001cf0..b52db0b4879a 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -137,29 +137,29 @@ struct receive_queue {
- 
- 	struct napi_struct napi;
- 
-+	/* Name of this receive queue: input.$index */
-+	char name[40];
-+
- 	struct bpf_prog __rcu *xdp_prog;
- 
- 	struct virtnet_rq_stats stats;
- 
-+	/* RX: fragments + linear part + virtio header */
-+	struct scatterlist sg[MAX_SKB_FRAGS + 2];
-+
-+	/* Page frag for packet buffer allocation. */
-+	struct page_frag alloc_frag;
-+
- 	/* Chain pages by the private ptr. */
- 	struct page *pages;
- 
- 	/* Average packet length for mergeable receive buffers. */
- 	struct ewma_pkt_len mrg_avg_pkt_len;
- 
--	/* Page frag for packet buffer allocation. */
--	struct page_frag alloc_frag;
--
--	/* RX: fragments + linear part + virtio header */
--	struct scatterlist sg[MAX_SKB_FRAGS + 2];
-+	struct xdp_rxq_info xdp_rxq;
- 
- 	/* Min single buffer size for mergeable buffers case. */
- 	unsigned int min_buf_len;
--
--	/* Name of this receive queue: input.$index */
--	char name[40];
--
--	struct xdp_rxq_info xdp_rxq;
- };
- 
- /* Control VQ buffers: protected by the rtnl lock */
--- 
-2.25.1
-
+Thanks,
+Song=
