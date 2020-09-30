@@ -2,132 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C5827DE8A
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 04:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EA227DEC0
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 05:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729600AbgI3CeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 22:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
+        id S1726807AbgI3DSN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 23:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729470AbgI3CeR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Sep 2020 22:34:17 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D2CC061755;
-        Tue, 29 Sep 2020 19:34:17 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id j19so6713pjl.4;
-        Tue, 29 Sep 2020 19:34:17 -0700 (PDT)
+        with ESMTP id S1726327AbgI3DSN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Sep 2020 23:18:13 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08701C061755;
+        Tue, 29 Sep 2020 20:18:13 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z19so179793pfn.8;
+        Tue, 29 Sep 2020 20:18:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=JM+btoJd7ENQh4x4CzX1uA1slT1szaC5YkRVd2dg3Es=;
-        b=SO4Khj6/BDZIh/7LEoVTd6EkhaMtqvLON0xorSdzNY9nq7XzUQJRBa9Jm9OgfJMPS0
-         zeVVnwqQK/0vh0KCt/vlPyAKM+lfE3rJyrKCB3961Zoddxq4/QeATinU0GYtHMoRbWFg
-         CCsC9PH1FryMFBpWAwUfSrmuZz/4AA8WeMW3FEE++mjoANxedr4KyBWc9Bu/sY1NeVhW
-         owPqJnVo1ZIuFpfiqC2iLzErcu2tZpl9kjy6cgdxYEt3wd3qN8ecmu+YnePDibNFnOFX
-         eaPXUvCOZyeZGTg5gDEusLaFn9Q2gVi3tqCuc71FdafOjZWQzsOjOFoMdzZ3DC7GWKGS
-         9aDQ==
+        bh=3O6tylxVVqIM6ry5U4hu4RAHJk9JYfiTYQ+xk4dycX8=;
+        b=otjCrOL8/SpywpOuRhM3PIj4bZSJJxcRO+gmBTVxcuFnfW5JxKLYGF53kx+fpl6uVw
+         Fi0DARE9WYc4yoFsA9ea3PDgUscR6UA+zsKxVM+EvHXrg8ZefPKbSHYBE+CFGxnDYCXo
+         OccsCHWEGU4R1cZMIr4mdKrDVhj6JiG1QVM0mm0dltGpDTWgoXAKpdsuRhnjwD41msg4
+         b2yz6q+0ZP49S5F3S2uNnMU09ArKechV6XsFsfndlQfpC9kUV9+fqgDd55YGeMNKwEhY
+         A7ruLcG9UelbkgcNDkrWQvvuPBfYIk5Jp+vWm/OfmXNzqmweTw34pnsDYvIiQjQFj50b
+         aQeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JM+btoJd7ENQh4x4CzX1uA1slT1szaC5YkRVd2dg3Es=;
-        b=JqpMiv5YvtSYRS/EXEjO+pMiNj/1oPQR8BGCFXG6O3JUk4whXMoWIJBFK6CdBcNfqg
-         NyThbPdpVTWn+cxSCeZUmbZcN/pKHPaY+vFe6oy9Vo5ilYL4LcmBur+V2uxe1f/z41fo
-         DRk3p0K8qygD6+n93zLA1sVpGzT/JnboS0QF8fCZVsMXZ43hheXjd4WwQZ9rUBOVWlv5
-         H/OQr8A3vevsT5pDj8Ediy/PLAVuGkzsQy73aPI6bDtzwaKmtomgLyqHHxGWqtjgO7N6
-         TbZIBFeTavbj8Z+6MVWEzShrNwAeEVfcRv1bAasjspyES7wFqd1UOQPUanKHAZKZV5fA
-         7Scw==
-X-Gm-Message-State: AOAM533PT70I6Xerld9zdppAfxQjnAR1DuYT8zm+aIz9sPiJhVTm4lP7
-        W2TVrxzuKfqt2DoHHtQ2LBQ=
-X-Google-Smtp-Source: ABdhPJzpJ5Q2HjoE/Kc+RcEhJK3mNCefvCyz06Qjau3VuFYQl3Pt6cikw7axJ2TrWM++WNQRyRnr0w==
-X-Received: by 2002:a17:90b:3852:: with SMTP id nl18mr519796pjb.78.1601433257140;
-        Tue, 29 Sep 2020 19:34:17 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w206sm112290pfc.1.2020.09.29.19.34.13
+        bh=3O6tylxVVqIM6ry5U4hu4RAHJk9JYfiTYQ+xk4dycX8=;
+        b=ESQiJR2B0HM7bC1aK1pecGuVqp3xrcyTlABkhRgpBLZTebtPujxYYM9yFJ65EENIhm
+         9N5RS5cr8L9hro/fIaCtNy7pF9s0s7DoN9wA07njxA1mFPj5beMVtqEPgAmuTxR3Sj6B
+         D8v+Y15AF1lqtU1SyyXgDSlddqS/DqLx65WtVTacvnMqOtWLwBYF7wuKI0DSTPDnKhI1
+         K7EGdv6hIB6SHn8vqEL3FsVZLi6fDCh7gRVBiFnotNqb//tc4eayv/FeBmB6XcD8ON7A
+         MrxjhFqBeVeESwd1uxX+JQSTyrLVzI0mUhM/T9sZr0/p1LJ6Nj8kUJ+cFHrsZdfA3BrB
+         xRNg==
+X-Gm-Message-State: AOAM533fkF/xk0FjSBLYSW2fYfY3616XvdVwy6Gzk62M6CNvjSenxlZa
+        PWIpd+7eJdwjhmhrLiZteS7SJ8LVPbk=
+X-Google-Smtp-Source: ABdhPJwq3eOJJDOgGbBCODQOi9+1p7GEZn7QuwgUUojYJLlrE3lzQh+q0SiJpLpTrRt+h7laSNg0ZQ==
+X-Received: by 2002:a62:52d3:0:b029:142:2501:35ee with SMTP id g202-20020a6252d30000b0290142250135eemr731124pfb.78.1601435892415;
+        Tue, 29 Sep 2020 20:18:12 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:2bde])
+        by smtp.gmail.com with ESMTPSA id j10sm168182pfc.168.2020.09.29.20.18.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2020 19:34:16 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 10:34:05 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
+        Tue, 29 Sep 2020 20:18:11 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 20:18:09 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: export bpf_object__reuse_map() to
- libbpf api
-Message-ID: <20200930023405.GH2531@dhcp-12-153.nay.redhat.com>
-References: <20200929031845.751054-1-liuhangbin@gmail.com>
- <CAEf4BzYKtPgSxKqduax1mW1WfVXKuCEpbGKRFvXv7yNUmUm_=A@mail.gmail.com>
- <20200929094232.GG2531@dhcp-12-153.nay.redhat.com>
- <CAEf4BzZy9=x0neCOdat-CWO4nM3QYgWOKaZpN31Ce5Uz9m_qfg@mail.gmail.com>
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 0/4] libbpf: add raw BTF type dumping
+Message-ID: <20200930031809.lto7v7e7vtyivjon@ast-mbp.dhcp.thefacebook.com>
+References: <20200929232843.1249318-1-andriin@fb.com>
+ <20200930000329.bfcrg6qqvmbmlawk@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYByimHd+FogxVHdq2-L_GLjdGEa_ku7p_c1V-hpyJrWA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZy9=x0neCOdat-CWO4nM3QYgWOKaZpN31Ce5Uz9m_qfg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYByimHd+FogxVHdq2-L_GLjdGEa_ku7p_c1V-hpyJrWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 04:03:45PM -0700, Andrii Nakryiko wrote:
-> > bpf_map__set_pin_path()
-> > bpf_create_map_in_map()    <- create inner or outer map
-> > bpf_map__reuse_fd(map, inner/outer_fd)
-> > bpf_object__load(obj)
-> >   - bpf_object__load_xattr()
-> >     - bpf_object__create_maps()
-> >       - if (map->fd >= 0)
-> >           continue      <- this will skip pinning map
+On Tue, Sep 29, 2020 at 05:44:48PM -0700, Andrii Nakryiko wrote:
+> On Tue, Sep 29, 2020 at 5:03 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Sep 29, 2020 at 04:28:39PM -0700, Andrii Nakryiko wrote:
+> > > Add btf_dump__dump_type_raw() API that emits human-readable low-level BTF type
+> > > information, same as bpftool output. bpftool is not switched to this API
+> > > because bpftool still needs to perform all the same BTF type processing logic
+> > > to do JSON output, so benefits are pretty much zero.
+> >
+> > If the only existing user cannot actually use such api it speaks heavily
+> > against adding such api to libbpf. Comparing strings in tests is nice, but
+> > could be done with C output just as well.
 > 
-> so maybe that's the part that needs to be fixed?..
+> It certainly can, it just won't save much code, because bpftool would
+> still need to have a big switch over BTF type kinds to do JSON output.
 
-Hmm...maybe, let me see
-
-> 
-> I'm still not sure. And to be honest your examples are still a bit too
-> succinct for me to follow where the problem is exactly. Can you please
-> elaborate a bit more?
-
-Let's take iproute2 legacy map for example, if it's a map-in-map type with
-pin path defined. In user space we could do like:
-
-if (bpf_obj_get(pathname) < 0) {
-	bpf_create_map_in_map();
-	bpf_map__reuse_fd(map, map_fd);
-}
-bpf_map__set_pin_path(map, pathname);
-bpf_object__load(obj)
-
-So in libbpf we need
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 32dc444224d8..5412aa7169db 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4215,7 +4215,7 @@ bpf_object__create_maps(struct bpf_object *obj)
-                if (map->fd >= 0) {
-                        pr_debug("map '%s': skipping creation (preset fd=%d)\n",
-                                 map->name, map->fd);
--                       continue;
-+                       goto check_pin_path;
-                }
-
-                err = bpf_object__create_map(obj, map);
-@@ -4258,6 +4258,7 @@ bpf_object__create_maps(struct bpf_object *obj)
-                        map->init_slots_sz = 0;
-                }
-
-+check_pin_path:
-                if (map->pin_path && !map->pinned) {
-                        err = bpf_map__pin(map, NULL);
-                        if (err) {
-
-
-Do you think if this change be better?
-
-Thanks
-Hangbin
+So you're saying that most of the dump_btf_type() in bpftool/btf.c will stay as-is.
+Only 'if (json_output)' will become unconditional? Hmm.
+I know you don't want json in libbpf, but I think it's the point of
+making a call on such things. Either libbpf gets to dump both
+json and text dump_btf_type()-like output or it stays with C only.
+Doing C and this text and not doing json is inconsistent.
+Either libbpf can print btf in many different ways or it stays with C.
+2nd format is not special in any way.
+I don't think that text and json formats bring much value comparing to C,
+so I would be fine with C only. But if we allow 2nd format we should
+do json at the same time too to save bpftool the hassle.
+And in the future we should allow 4th and 5th formats.
