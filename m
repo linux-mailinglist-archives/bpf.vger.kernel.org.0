@@ -2,105 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B215427EE66
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 18:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA27127EF3F
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 18:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbgI3QIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 12:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgI3QIg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:08:36 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4B5C061755;
-        Wed, 30 Sep 2020 09:08:36 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id o20so1469134pfp.11;
-        Wed, 30 Sep 2020 09:08:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QtHsofp1RzK4fxNDQzPo/cXWDhewYXr80wZbuBCbL+o=;
-        b=NqoSF+2fZ3MbVpfBguluEV37uFXNF/WvMbA7E+tO6UqV1EeccUV9/z8dy3N23ljPD+
-         eZ7Q8fTp0a2KRpQSHG6uUYImkJpPk++KitIM+RxV/DCYgi0YYMVWfFOlUYpI5YTubFxR
-         UeEGmrmfDx7+MhB71QGlX/pwSolRMEXHEluAmBolmhhAe1OSJrt8rRI8+1/8Mg2BbZFR
-         JTC7uEADHql+lxoDDWb0cDc/pFVqaXQqf530P7H3bOEkW7aX8aBBxroV+nCSatgOFrW3
-         AGmuz6W2tVEVOadRP9UtNmHCLzElZFYMxgCYKdMEDZ+P/E3NrHUlSJCQ24GFX9hwTUdG
-         VYXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QtHsofp1RzK4fxNDQzPo/cXWDhewYXr80wZbuBCbL+o=;
-        b=YiuzWgPw2hq55THe2UwD6ajX9Rwcn1a1nBBcU47YB+5J7zRKe5JHBylaL7Rh6yHpwz
-         0rXekhA/yWHx8pgZRL0J7nFKZxPtsSfa0M2lCEwBkPOkn/+xZfQUwUl1WyfWCl0R3y/R
-         yszDMzy24j+8LXa/iT4pW79JOvwMHvBnk6fuHLiKWbfZZyzZ+0VpsFpUmiDFCQv1q552
-         UbZ5bI4Pw2NwGPZHvCqEIekEA1mPWL4T725Yqkf0QQB4wIChZJ7hhb04zgBUIGM9cS4m
-         Fu9k0Z75JrdHsM4VWLsPn4Z89MkxDIofYyfLad4kskQl/PCVrgqpKYcNOMiQUK69Uj2e
-         UkVQ==
-X-Gm-Message-State: AOAM532KFRuFEyAIaIgfJhKy5BjrsFArmc3yrDtlgIZHbd6/t+b5UbIk
-        vM1uJSDBvKQWbLt7WS1n/IE=
-X-Google-Smtp-Source: ABdhPJwY4XbbU77KwolWSNxXTdsyl7chKxN8K/LGNXMC4P/67A2FYMFCi/s0iMVEjktTcohGrOJ4jQ==
-X-Received: by 2002:a62:e40a:0:b029:138:8fd6:7fd5 with SMTP id r10-20020a62e40a0000b02901388fd67fd5mr3142099pfh.1.1601482115936;
-        Wed, 30 Sep 2020 09:08:35 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([72.164.175.30])
-        by smtp.googlemail.com with ESMTPSA id g9sm3206478pfo.144.2020.09.30.09.08.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Sep 2020 09:08:35 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v4 3/6] bpf: add redirect_neigh helper as
- redirect drop-in
-To:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org
-Cc:     john.fastabend@gmail.com, kafai@fb.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, David Ahern <dsahern@kernel.org>
-References: <cover.1601477936.git.daniel@iogearbox.net>
- <f207de81629e1724899b73b8112e0013be782d35.1601477936.git.daniel@iogearbox.net>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <34c873d1-5014-9fd4-8372-4980f6787904@gmail.com>
-Date:   Wed, 30 Sep 2020 09:08:34 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1730946AbgI3Qbd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 12:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725355AbgI3Qbd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:31:33 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A01622072E;
+        Wed, 30 Sep 2020 16:31:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601483493;
+        bh=17Hn8hunUNPsI/Ri//wOwZHoYL5wJOoQnIZ5rll1kes=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TKuDWCATDWTXUyc7HZrTUesf4kCW/GGl0lCPMPLvRimAHv2RlTP40FIkxTtZeP95d
+         FU13AAss/8Zd7BZXb8dCJxA/518G1oxu4i8oPz1QE2RgikFop5qDW37ZIxPzbDrsJF
+         c32gBNQHo431laHIaH0yaRcaDmYUDev4mKBMPr7w=
+Date:   Wed, 30 Sep 2020 09:31:30 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        sameehj@amazon.com, john.fastabend@gmail.com, daniel@iogearbox.net,
+        ast@kernel.org, shayagr@amazon.com, brouer@redhat.com,
+        echaudro@redhat.com, lorenzo.bianconi@redhat.com,
+        dsahern@kernel.org
+Subject: Re: [PATCH v3 net-next 00/12] mvneta: introduce XDP multi-buffer
+ support
+Message-ID: <20200930093130.3c589423@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <cover.1601478613.git.lorenzo@kernel.org>
+References: <cover.1601478613.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <f207de81629e1724899b73b8112e0013be782d35.1601477936.git.daniel@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/30/20 8:18 AM, Daniel Borkmann wrote:
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 6116a7f54c8f..1f17c6752deb 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3652,6 +3652,19 @@ union bpf_attr {
->   * 		associated socket instead of the current process.
->   * 	Return
->   * 		The id is returned or 0 in case the id could not be retrieved.
-> + *
-> + * long bpf_redirect_neigh(u32 ifindex, u64 flags)
-> + * 	Description
-> + * 		Redirect the packet to another net device of index *ifindex*
-> + * 		and fill in L2 addresses from neighboring subsystem. This helper
+On Wed, 30 Sep 2020 17:41:51 +0200 Lorenzo Bianconi wrote:
+> This series introduce XDP multi-buffer support. The mvneta driver is
+> the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+> please focus on how these new types of xdp_{buff,frame} packets
+> traverse the different layers and the layout design. It is on purpose
+> that BPF-helpers are kept simple, as we don't want to expose the
+> internal layout to allow later changes.
 
-It is worth mentioning in the documentation that this helper does a FIB
-lookup based on the skb's networking header to get the address of the
-next hop and then relies on the neighbor lookup for the L2 address of
-the nexthop.
-
-> + * 		is somewhat similar to **bpf_redirect**\ (), except that it
-> + * 		fills in e.g. MAC addresses based on the L3 information from
-> + * 		the packet. This helper is supported for IPv4 and IPv6 protocols.
-> + * 		The *flags* argument is reserved and must be 0. The helper is
-> + * 		currently only supported for tc BPF program types.
-> + * 	Return
-> + * 		The helper returns **TC_ACT_REDIRECT** on success or
-> + * 		**TC_ACT_SHOT** on error.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-
-Code change looks fine to me:
-
-Reviewed-by: David Ahern <dsahern@gmail.com>
+This does not apply cleanly to net-next =F0=9F=A4=94
