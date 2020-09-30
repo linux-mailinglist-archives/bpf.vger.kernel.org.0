@@ -2,159 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03E027F511
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 00:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F64327F51A
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 00:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731154AbgI3WZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 18:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730201AbgI3WZA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:25:00 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C778C061755
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 15:25:00 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id a3so4330702ejy.11
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 15:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KwjzYmhHb/l5tPkyGm+gWxyB3dKnDLT96damvVDsJ2o=;
-        b=TaMaeVg9pan0BW7Akk6/bQquEKr7WnaOhi8gWvSoFshHON6Z74AABiNZztSTaCTogI
-         qcX7baxYxrulvGyDRZTM4bOhqpi0Sqza7QEDiz2rMZJ1EO73ptKJa4+1P98+vP6Ew7xK
-         LEzbLI+LRCtpYBYt9ofUPwxVymoVTFDdpGnSucOjI7Zacw1Gco3t6vRlLt9OuQja6AMJ
-         OjLIUusdonw9sNDn7NsiKujPO7Y/Fh6L89W3AWXDeWbLe7fsimcVZuFyFq3IziQnjhG2
-         +lGUtU2S6fhEnlpGkuF+RMWZl0Jg3W5ZGxhNGSCKsM26TJaMdAznAWum0J+/CdK6Dcc0
-         Q/Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KwjzYmhHb/l5tPkyGm+gWxyB3dKnDLT96damvVDsJ2o=;
-        b=Zo+rSwNECTHpXVZk/5hW1UXUSJLLvRELEtqw7H1NunZSDyruXEP0jdU80Xbp/thFi8
-         De5LlJoQz5W6JWUhr8rbAi/bUf/ss0+5evB2s6t/ZhcMWIJwNLrMtMglwQReoH4iY76c
-         6u2E3vvo8RZ3vNjHOv5SAnSVluSert+P+mMJ/LFJl2ukgKfZGLUohGlhYRmVehpeQZTp
-         n1SswgKzv8CJlTs7O5SCMo2eBcnOKvInRMs8MkwthkWYDb2fOtprNla1mtf7BdqrT6Di
-         Omtog6+vAsW/b6wGn3VvAk4FiWz3eLw804AEDklpuJYrAnhmNS09emRS7AB+ADInJZhK
-         pmCw==
-X-Gm-Message-State: AOAM533HF27BBbJD7FAHipUk+2XzQPE2yuONdiP5rnBKBZM7rgKd8G7o
-        AuIjvcP61Qs96HXl19AuY0CKT+3MS+mO2bLHL+MySw==
-X-Google-Smtp-Source: ABdhPJwf2Ih9sOkNH0XKF+uPNFVAplx37AhDqvFCkipTk5tzsR8+wlzRLDPvzToK+HK8NAJ25kPUij91WMm94qh9eCg=
-X-Received: by 2002:a17:906:9389:: with SMTP id l9mr5200759ejx.537.1601504698740;
- Wed, 30 Sep 2020 15:24:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1601478774.git.yifeifz2@illinois.edu> <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
-In-Reply-To: <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 00:24:32 +0200
-Message-ID: <CAG48ez0Njm0oS+9k-cgUqzyUWXV=cHPope2Xe9vVNPUVZ1PB4w@mail.gmail.com>
-Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
- filter is constant allow
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730949AbgI3W2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 18:28:38 -0400
+Received: from mga03.intel.com ([134.134.136.65]:40330 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730499AbgI3W2h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 18:28:37 -0400
+IronPort-SDR: 7NeHopKkEp5hQ+vhllQbH6RgZ/dZEspXnf9KPTkt9c4obibgM5Y4q9GLQ33AP32xImtUUEjhgB
+ BF+0d38LPVQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9760"; a="162616455"
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="162616455"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2020 15:28:33 -0700
+IronPort-SDR: 8+K8LH92PdQEaTc38Hijo2GusyCw8SfgFNt2BsDUbn1G12jdLymjvHuSJMLAjuTVuBRBnjcTiV
+ diTnzWBPolvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,322,1596524400"; 
+   d="scan'208";a="351685057"
+Received: from bpujari-bxdsw.sc.intel.com ([10.232.14.242])
+  by orsmga007.jf.intel.com with ESMTP; 30 Sep 2020 15:28:26 -0700
+From:   bimmy.pujari@intel.com
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, mchehab@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, maze@google.com,
+        bimmy.pujari@intel.com, ashkan.nikravesh@intel.com,
+        Daniel.A.Alvarez@intel.com
+Subject: [PATCH bpf-next v6 1/2] bpf: Add bpf_ktime_get_real_ns
+Date:   Wed, 30 Sep 2020 15:28:48 -0700
+Message-Id: <20200930222848.14254-1-bimmy.pujari@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 5:20 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
-> access any syscall arguments or instruction pointer. To facilitate
-> this we need a static analyser to know whether a filter will
-> return allow regardless of syscall arguments for a given
-> architecture number / syscall number pair. This is implemented
-> here with a pseudo-emulator, and stored in a per-filter bitmap.
->
-> Each common BPF instruction are emulated. Any weirdness or loading
-> from a syscall argument will cause the emulator to bail.
->
-> The emulation is also halted if it reaches a return. In that case,
-> if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
->
-> Emulator structure and comments are from Kees [1] and Jann [2].
->
-> Emulation is done at attach time. If a filter depends on more
-> filters, and if the dependee does not guarantee to allow the
-> syscall, then we skip the emulation of this syscall.
->
-> [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
-> [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
-[...]
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 1ab22869a765..ff5289228ea5 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -150,6 +150,7 @@ config X86
->         select HAVE_ARCH_COMPAT_MMAP_BASES      if MMU && COMPAT
->         select HAVE_ARCH_PREL32_RELOCATIONS
->         select HAVE_ARCH_SECCOMP_FILTER
-> +       select HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
->         select HAVE_ARCH_THREAD_STRUCT_WHITELIST
->         select HAVE_ARCH_STACKLEAK
->         select HAVE_ARCH_TRACEHOOK
+From: Bimmy Pujari <bimmy.pujari@intel.com>
 
-If you did the architecture enablement for X86 later in the series,
-you could move this part over into that patch, that'd be cleaner.
+The existing bpf helper functions to get timestamp return the time
+elapsed since system boot. This timestamp is not particularly useful
+where epoch timestamp is required or more than one server is involved
+and time sync is required. Instead, you want to use CLOCK_REALTIME,
+which provides epoch timestamp. Hence adding a new helper
+bfp_ktime_get_real_ns() based around CLOCK_REALTIME.
 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index ae6b40cc39f4..f09c9e74ae05 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -143,6 +143,37 @@ struct notification {
->         struct list_head notifications;
->  };
->
-> +#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
-> +/**
-> + * struct seccomp_cache_filter_data - container for cache's per-filter data
-> + *
-> + * Tis struct is ordered to minimize padding holes.
+Signed-off-by: Ashkan Nikravesh <ashkan.nikravesh@intel.com>
+Signed-off-by: Bimmy Pujari <bimmy.pujari@intel.com>
+---
+ drivers/media/rc/bpf-lirc.c    |  2 ++
+ include/linux/bpf.h            |  1 +
+ include/uapi/linux/bpf.h       | 11 +++++++++++
+ kernel/bpf/core.c              |  1 +
+ kernel/bpf/helpers.c           | 14 ++++++++++++++
+ kernel/trace/bpf_trace.c       |  2 ++
+ tools/include/uapi/linux/bpf.h | 11 +++++++++++
+ 7 files changed, 42 insertions(+)
 
-I think this comment can probably go away, there isn't really much
-trickery around padding holes in the struct as it is now.
+diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+index 3fe3edd80876..82b184e02248 100644
+--- a/drivers/media/rc/bpf-lirc.c
++++ b/drivers/media/rc/bpf-lirc.c
+@@ -105,6 +105,8 @@ lirc_mode2_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_ktime_get_ns_proto;
+ 	case BPF_FUNC_ktime_get_boot_ns:
+ 		return &bpf_ktime_get_boot_ns_proto;
++	case BPF_FUNC_ktime_get_real_ns:
++		return &bpf_ktime_get_real_ns_proto
+ 	case BPF_FUNC_tail_call:
+ 		return &bpf_tail_call_proto;
+ 	case BPF_FUNC_get_prandom_u32:
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 50e5c4b52bd1..01866d714438 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1791,6 +1791,7 @@ extern const struct bpf_func_proto bpf_get_numa_node_id_proto;
+ extern const struct bpf_func_proto bpf_tail_call_proto;
+ extern const struct bpf_func_proto bpf_ktime_get_ns_proto;
+ extern const struct bpf_func_proto bpf_ktime_get_boot_ns_proto;
++extern const struct bpf_func_proto bpf_ktime_get_real_ns_proto;
+ extern const struct bpf_func_proto bpf_get_current_pid_tgid_proto;
+ extern const struct bpf_func_proto bpf_get_current_uid_gid_proto;
+ extern const struct bpf_func_proto bpf_get_current_comm_proto;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 1f17c6752deb..f944d9a14137 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3665,6 +3665,16 @@ union bpf_attr {
+  * 	Return
+  * 		The helper returns **TC_ACT_REDIRECT** on success or
+  * 		**TC_ACT_SHOT** on error.
++ *
++ * u64 bpf_ktime_get_real_ns(void)
++ *	Description
++ *		Return the real time since epoch in nanoseconds.
++ *		See: **clock_gettime**\ (**CLOCK_REALTIME**)
++ *
++ *		As REALCLOCK can jump around, this helper should not be used to
++ *		measure passage of time.
++ *	Return
++ *		Current *ktime*.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3820,6 +3830,7 @@ union bpf_attr {
+ 	FN(seq_printf_btf),		\
+ 	FN(skb_cgroup_classid),		\
+ 	FN(redirect_neigh),		\
++	FN(ktime_get_real_ns),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index cda674f1392f..7fb353ccb8ae 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2211,6 +2211,7 @@ const struct bpf_func_proto bpf_get_smp_processor_id_proto __weak;
+ const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
++const struct bpf_func_proto bpf_ktime_get_real_ns_proto __weak;
+ 
+ const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
+ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index e825441781ab..0fefcd076d7b 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -167,6 +167,18 @@ const struct bpf_func_proto bpf_ktime_get_boot_ns_proto = {
+ 	.ret_type	= RET_INTEGER,
+ };
+ 
++BPF_CALL_0(bpf_ktime_get_real_ns)
++{
++	/* NMI safe access to clock realtime */
++	return ktime_get_real_fast_ns();
++}
++
++const struct bpf_func_proto bpf_ktime_get_real_ns_proto = {
++	.func		= bpf_ktime_get_real_ns,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++};
++
+ BPF_CALL_0(bpf_get_current_pid_tgid)
+ {
+ 	struct task_struct *task = current;
+@@ -657,6 +669,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_ktime_get_ns_proto;
+ 	case BPF_FUNC_ktime_get_boot_ns:
+ 		return &bpf_ktime_get_boot_ns_proto;
++	case BPF_FUNC_ktime_get_real_ns:
++		return &bpf_ktime_get_real_ns_proto;
+ 	case BPF_FUNC_ringbuf_output:
+ 		return &bpf_ringbuf_output_proto;
+ 	case BPF_FUNC_ringbuf_reserve:
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index e118a83439c3..1ee1c29cb711 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1259,6 +1259,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_ktime_get_ns_proto;
+ 	case BPF_FUNC_ktime_get_boot_ns:
+ 		return &bpf_ktime_get_boot_ns_proto;
++	case BPF_FUNC_ktime_get_real_ns:
++		return &bpf_ktime_get_real_ns_proto;
+ 	case BPF_FUNC_tail_call:
+ 		return &bpf_tail_call_proto;
+ 	case BPF_FUNC_get_current_pid_tgid:
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 1f17c6752deb..f944d9a14137 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3665,6 +3665,16 @@ union bpf_attr {
+  * 	Return
+  * 		The helper returns **TC_ACT_REDIRECT** on success or
+  * 		**TC_ACT_SHOT** on error.
++ *
++ * u64 bpf_ktime_get_real_ns(void)
++ *	Description
++ *		Return the real time since epoch in nanoseconds.
++ *		See: **clock_gettime**\ (**CLOCK_REALTIME**)
++ *
++ *		As REALCLOCK can jump around, this helper should not be used to
++ *		measure passage of time.
++ *	Return
++ *		Current *ktime*.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3820,6 +3830,7 @@ union bpf_attr {
+ 	FN(seq_printf_btf),		\
+ 	FN(skb_cgroup_classid),		\
+ 	FN(redirect_neigh),		\
++	FN(ktime_get_real_ns),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+-- 
+2.17.1
 
-> + * @syscall_allow_default: A bitmap where each bit represents whether the
-> + *                        filter willalways allow the syscall, for the
-
-nit: s/willalways/will always/
-
-[...]
-> +static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
-> +                                        void *bitmap, const void *bitmap_prev,
-> +                                        size_t bitmap_size, int arch)
-> +{
-> +       struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
-> +       struct seccomp_data sd;
-> +       int nr;
-> +
-> +       for (nr = 0; nr < bitmap_size; nr++) {
-> +               if (bitmap_prev && !test_bit(nr, bitmap_prev))
-> +                       continue;
-> +
-> +               sd.nr = nr;
-> +               sd.arch = arch;
-> +
-> +               if (seccomp_emu_is_const_allow(fprog, &sd))
-> +                       set_bit(nr, bitmap);
-
-set_bit() is atomic, but since we only do this at filter setup, before
-the filter becomes globally visible, we don't need atomicity here. So
-this should probably use __set_bit() instead.
