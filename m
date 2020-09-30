@@ -2,505 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BE427F551
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 00:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A321727F564
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 00:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731733AbgI3Wko (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 18:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731673AbgI3Wko (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 18:40:44 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72654C061755
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 15:40:44 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id u24so2212999pgi.1
-        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 15:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LsxsZrDzkouRJ2pUxeyyFLAZmCu65IyaU6WvZaLdE/U=;
-        b=RsmQBKhr4pZRmeGux2XNBLISS7y3MbYKhnML9q9HFynIk3GLZW20hbw6ENV+hC3XbU
-         eKRdRkE4PAqXC4ZwcN2gXw3ySAeS7eXEjYsqROW7d6mU0q+VFFw/t1tceXltJEb6hsJa
-         MA3FStHAILuzrGBQTeg4kotVht+DbVoeZFH5E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LsxsZrDzkouRJ2pUxeyyFLAZmCu65IyaU6WvZaLdE/U=;
-        b=aGrZEUh/oCyD0wXmjN5y3dRy5Gjjl8TZNdW498wd6ZkNx/FpKWxAEN4JKuS/FG7Le1
-         M90DIT7cDYuN8JzX1v5zb9YMRXj58T1FNSGhSvksO/K3sxozRoraKdYW1SjAN65+ptYX
-         bBYlJoe678TkrJKzeLwxyAsAckMnm4NqAPx9wkMS2KXF/VbzDCRgV37zbVLqh7M23Eub
-         XKQ6+NoIQnU4uxtorC6DlS7e70m9MT/CMG2kOZnbTou3M5IZgMCGStV8Jh/ke3sYdAqn
-         ne5qbJ7nETExbKGl0pTY6dphIfQ/z9o11LkX1k9lXZtSFS53O61rkGbj+ct8UCxPLjl9
-         BEOw==
-X-Gm-Message-State: AOAM5326cK/FFNd+i/3bujRApP1ldojCyOnwZEDBI7JOcyL9UJQWtkaS
-        gORlaQuWz6HlDGds122lF0N/gA==
-X-Google-Smtp-Source: ABdhPJxPoJ8vHaET6JZ/zqCUiaiX9D18jy6GhQHyPyWyhHFbKJVnl4O9cxcYbYh0VGISWrRwymAKcQ==
-X-Received: by 2002:a17:902:6bc1:b029:d0:cbe1:e73d with SMTP id m1-20020a1709026bc1b02900d0cbe1e73dmr4569073plt.24.1601505643841;
-        Wed, 30 Sep 2020 15:40:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d77sm3775731pfd.121.2020.09.30.15.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 15:40:42 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 15:40:41 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>, Jann Horn <jannh@google.com>
-Cc:     containers@lists.linux-foundation.org,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
- filter is constant allow
-Message-ID: <202009301432.C862BBC4B@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+        id S1731797AbgI3WrI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 18:47:08 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14018 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730981AbgI3WrI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Sep 2020 18:47:08 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08UMkEcF023696;
+        Wed, 30 Sep 2020 15:46:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=hMbQsGQZse1+Eha7nhu2VCS9upNF2rqBEBInXXJuTDY=;
+ b=DKWMLoS68Cgx6DrkVY+tNMZcIBjfacKyd+75j8+BpTYGFj9RC+phbOWCt4fWR1EH2Jwj
+ F5aE/wDUw91aNVne6mBOaeuaTcTc/vTcUxuofAhx95gxk7sXNqefFnRwntIJ3unTcyKd
+ HELuU0lvcYoctsUJIq0z9w9OPm3L0BfWrO0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33vtgc397n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 30 Sep 2020 15:46:52 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 30 Sep 2020 15:46:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GdONSCjPovZ0HwG+7PFUuKvwHTrHDmtoyXp9VxKV18UX9Q+3iRcmEKKBQC0hkzIq5E45klnxX/LrxWZHv10J/JVztr9AU31K1LecJzp0wPUu5vnSrLOxS+k5asy8/QRjK30WZDtBgHCcv1rV2MjlNSzXy78fI6++/m7Lyxlh13oU6rCiYbHAiDMoKOdYMpRHf4WNGMzubiuN97YOl2n8TtmL5lgP75uEi3zaUz2+FeQOBYqGUJ7KveQ9x2abI9k2dhGNvWIsCnETIYyLs4NGvx/e7YcGT/svUYMLlzjUh0GKAf76dkMP3Ax5X0zJlraQ2PSjZ6b+YyilS3gekBcmvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hMbQsGQZse1+Eha7nhu2VCS9upNF2rqBEBInXXJuTDY=;
+ b=D+LCOTwZO/sB+uSTXw7oP9w8XQDBIY5QvvT9ftB5qj6i92U/7MPDsbr4tiHYBoJyNVExezbw/NxCuN4FBO8f+pSqJ0vJpFDInOlV5EmpK0hFspZL5fkno9H/1n7ndHNlibhkqrKNVpR5TasO5tQDtIKCzTOQ9GekUoVNBOMNpc60kfOF3/FfKnj9B/1kyfis8Aj33imAsstdVeC6V9DusVa8sOkNubOfqICvEQTPexyLRUz/L9Ggvj3yl1Hv0mF+8DtYBP7kimFuKxNfkMIuOWTF7K+NAILH7/3DxBZOOWugVwgTSLeYGgDkUhySbhr2pwR7XyH1TwFmhPgQXvU0Sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hMbQsGQZse1+Eha7nhu2VCS9upNF2rqBEBInXXJuTDY=;
+ b=AYH4ue+jr0QJVG27WAV3ZkJ2OjUESQE4+jWiO/jSW76fz6RD7OEPq1whgUHdyoIsJJNkHq6o+IpQk33MqCh8vXBTaXOFNzaQA+y6Mk447RH/UFl1MKv+JYUTPrikdgkYQlApRm1dgRuMJkbx9uO82PZGsEkTTPk+djJYwM3/yRs=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3464.namprd15.prod.outlook.com (2603:10b6:a03:10a::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 30 Sep
+ 2020 22:46:48 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1400:be2f:8b3d:8f4d%7]) with mapi id 15.20.3412.029; Wed, 30 Sep 2020
+ 22:46:48 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     Kernel Team <Kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: add tests for
+ BPF_F_PRESERVE_ELEMS
+Thread-Topic: [PATCH v4 bpf-next 2/2] selftests/bpf: add tests for
+ BPF_F_PRESERVE_ELEMS
+Thread-Index: AQHWl3CxqHh2EarO3kmZo8RJrS2H/KmByEQA
+Date:   Wed, 30 Sep 2020 22:46:47 +0000
+Message-ID: <6EE9333C-93C8-47EC-AF4B-F4924177CF99@fb.com>
+References: <20200930212824.1418683-1-songliubraving@fb.com>
+ <20200930212824.1418683-3-songliubraving@fb.com>
+In-Reply-To: <20200930212824.1418683-3-songliubraving@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.1)
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:cb37]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e1fae1f4-3cfc-40b6-a039-08d86592b70e
+x-ms-traffictypediagnostic: BYAPR15MB3464:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB3464BB8965FC1E4EBFFB1BB7B3330@BYAPR15MB3464.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ux3gN/TP++JL87UXm2BlGnDiiwtBqYxrhL7FfO+CL8nyUwx7n5V9QzCy8xoN9LbyHHMB/HO7WLu3sgHZFK7AJ7lTUhk10w1ch8xuEqfGx3umG8cWDntPRAZ6as+toHg/Y+GSr/trMQbuLcxCjCtZ/B1XrsHKKUXY+8CB5fzcS7Uh7wISvnn47mgMl+RgjW+9yFo7akCXsUqsHWp5r2Y/N2k4wgXX2YejTQF8yLHAA+/qWlFlCS9NcWkecfNjSrJJFlZf9rLgk4BuoCiOCQN5wgYE27m1GU1jgE+ahp5I3XZojpxlqqEB2aqlPp8DuHhwSx1R4p/dwFgt29PAp90ajA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(376002)(39860400002)(366004)(4326008)(6506007)(53546011)(66476007)(6486002)(186003)(8936002)(6512007)(36756003)(8676002)(86362001)(76116006)(66946007)(66556008)(64756008)(66446008)(91956017)(478600001)(71200400001)(5660300002)(33656002)(2616005)(54906003)(110136005)(316002)(2906002)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: bAaEZW00gTKMjTrXfIuI27Xy/zICvwC7T7YXXU0QU+lORx9JKyk5gUYdjUCytf3Jv3OWBXMtyp+tHSyZZH6t44cGBq+sYLWArboRsgX6buvnByb86iMIlRBsRVLLeOr3Q5eEIiBGt5PDHrZTBkPZKFtKmuAd3xiYogKLP/jKKeq92DNSzw16E68dF0AhLXdg///x3KSJ/N/zC0din9NMpmNxRRjSkPE9MT+VRuP0ISZBZ2YXjCQJ6aw7ir4ZY3FB7PjTRZRvKCQ+LeXz2egzm0emaX7ILYONsUD2wwb6WyS50QcdFb1TbkgkhHkk8qn8XlxASj1YTOvZdlPawhJNPpq1vmxLFUViWWVhcjmEFK8lqnAr4MyCTfA1yPEMhhv63caDUXMTw9Z6Jggd5gkNQffakciIVXakSDtVa6HqHe8flw3JsFxQNyrCMDeXJwpZV96t0RFTn3P6YGX8payd2vnDn0/mWul6ontnWLpQE6jMc9gF4d2WBYrAqqgMCaU3KOJNmov6D97zRdjmOXtZDpeZftiJW3+DjERZTC3uf1KISQOPGatkn3S5DNv15IM55hrY1x51eolBX62TF0bcJkbOlDqZ0dJ4vcrl/h5ugzG92dgGlZdryFRpbpIACfpXS9a42PXxU56o4kZ7bneEBjpnu+QphJn38oSoRe/RHAjYEhg7uYCs9TbIMq/Zf65D
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <167CC3D36204C840B83478C8BE0029BF@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1fae1f4-3cfc-40b6-a039-08d86592b70e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2020 22:46:47.7948
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: INh9dtmTc1DpmWhRB9GM1quJxD3zFYHivk7Z8EhA+znJ8pHCv4V3UVlhM8HOWWcp1G061kaTfzZaP1xXO6YRvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3464
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-30_13:2020-09-30,2020-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999 mlxscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300183
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:19:13AM -0500, YiFei Zhu wrote:
-> From: YiFei Zhu <yifeifz2@illinois.edu>
-> 
-> SECCOMP_CACHE_NR_ONLY will only operate on syscalls that do not
-> access any syscall arguments or instruction pointer. To facilitate
-> this we need a static analyser to know whether a filter will
-> return allow regardless of syscall arguments for a given
-> architecture number / syscall number pair. This is implemented
-> here with a pseudo-emulator, and stored in a per-filter bitmap.
-> 
-> Each common BPF instruction are emulated. Any weirdness or loading
-> from a syscall argument will cause the emulator to bail.
-> 
-> The emulation is also halted if it reaches a return. In that case,
-> if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
-> 
-> Emulator structure and comments are from Kees [1] and Jann [2].
-> 
-> Emulation is done at attach time. If a filter depends on more
-> filters, and if the dependee does not guarantee to allow the
-> syscall, then we skip the emulation of this syscall.
-> 
-> [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
-> [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
-> 
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 
-See comments on patch 3 for reorganizing this a bit for the next
-version.
 
-For the infrastructure patch, I'd like to see much of the cover letter
-in the commit log (otherwise those details are harder for people to
-find). That will describe the _why_ for preparing this change, etc.
-
-For the emulator patch, I'd like to see the discussion about how the
-subset of BFP instructions was selected, what libraries  Jann and I
-examined, etc.
-
-(For all of these commit logs, I try to pretend that whoever is reading
-it has not followed any lkml thread of discussion, etc.)
-
+> On Sep 30, 2020, at 2:28 PM, Song Liu <songliubraving@fb.com> wrote:
+>=20
+> Add tests for perf event array with and without BPF_F_PRESERVE_ELEMS.
+>=20
+> Add a perf event to array via fd mfd. Without BPF_F_PRESERVE_ELEMS, the
+> perf event is removed when mfd is closed. With BPF_F_PRESERVE_ELEMS, the
+> perf event is removed when the map is freed.
+>=20
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 > ---
->  arch/Kconfig     |  34 ++++++++++
->  arch/x86/Kconfig |   1 +
->  kernel/seccomp.c | 167 ++++++++++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 201 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 21a3675a7a3a..ca867b2a5d71 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -471,6 +471,14 @@ config HAVE_ARCH_SECCOMP_FILTER
->  	    results in the system call being skipped immediately.
->  	  - seccomp syscall wired up
->  
-> +config HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
-> +	bool
-> +	help
-> +	  An arch should select this symbol if it provides all of these things:
-> +	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
-> +	  - SECCOMP_ARCH_DEFAULT
-> +	  - SECCOMP_ARCH_DEFAULT_NR
+> .../bpf/prog_tests/pe_preserve_elems.c        | 66 +++++++++++++++++++
+> .../bpf/progs/test_pe_preserve_elems.c        | 44 +++++++++++++
+> 2 files changed, 110 insertions(+)
+> create mode 100644 tools/testing/selftests/bpf/prog_tests/pe_preserve_ele=
+ms.c
+> create mode 100644 tools/testing/selftests/bpf/progs/test_pe_preserve_ele=
+ms.c
+>=20
+> diff --git a/tools/testing/selftests/bpf/prog_tests/pe_preserve_elems.c b=
+/tools/testing/selftests/bpf/prog_tests/pe_preserve_elems.c
+> new file mode 100644
+> index 0000000000000..673d38395253b
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/pe_preserve_elems.c
+> @@ -0,0 +1,66 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2019 Facebook */
+> +#include <test_progs.h>
+> +#include <linux/bpf.h>
+> +#include "test_pe_preserve_elems.skel.h"
 > +
-
-There's no need for this config and the per-arch Kconfig clutter:
-SECCOMP_ARCH_NATIVE will be a sufficient gate.
-
->  config SECCOMP
->  	prompt "Enable seccomp to safely execute untrusted bytecode"
->  	def_bool y
-> @@ -498,6 +506,32 @@ config SECCOMP_FILTER
->  
->  	  See Documentation/userspace-api/seccomp_filter.rst for details.
->  
-> +choice
-> +	prompt "Seccomp filter cache"
-> +	default SECCOMP_CACHE_NONE
-> +	depends on SECCOMP_FILTER
-> +	depends on HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
-> +	help
-> +	  Seccomp filters can potentially incur large overhead for each
-> +	  system call. This can alleviate some of the overhead.
+> +static int duration;
 > +
-> +	  If in doubt, select 'syscall numbers only'.
-> +
-> +config SECCOMP_CACHE_NONE
-> +	bool "None"
-> +	help
-> +	  No caching is done. Seccomp filters will be called each time
-> +	  a system call occurs in a seccomp-guarded task.
-> +
-> +config SECCOMP_CACHE_NR_ONLY
-> +	bool "Syscall number only"
-> +	depends on HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
-> +	help
-> +	  For each syscall number, if the seccomp filter has a fixed
-> +	  result, store that result in a bitmap to speed up system calls.
-> +
-> +endchoice
-
-I don't want this config: there is only 1 caching mechanism happening
-in this series and I do not want to have it buildable as "off": it
-should be available for all supported architectures. When further caching
-methods happen, the config can be introduced then (though I'll likely
-argue it should then be a boot param to allow distro kernels to make it
-selectable).
-
-> +
->  config HAVE_ARCH_STACKLEAK
->  	bool
->  	help
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 1ab22869a765..ff5289228ea5 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -150,6 +150,7 @@ config X86
->  	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
->  	select HAVE_ARCH_PREL32_RELOCATIONS
->  	select HAVE_ARCH_SECCOMP_FILTER
-> +	select HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
->  	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
->  	select HAVE_ARCH_STACKLEAK
->  	select HAVE_ARCH_TRACEHOOK
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index ae6b40cc39f4..f09c9e74ae05 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -143,6 +143,37 @@ struct notification {
->  	struct list_head notifications;
->  };
->  
-> +#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
-> +/**
-> + * struct seccomp_cache_filter_data - container for cache's per-filter data
-
-naming nits: "data" doesn't tell me anything. "seccomp_action_cache"
-might be better. Or since it's an internal struct, maybe just
-"action_cache". And let's not use the word "container" for the kerndoc. ;)
-How about "per-filter cache of seccomp actions per arch/syscall pair"
-
-> + *
-> + * Tis struct is ordered to minimize padding holes.
-
-typo: This
-
-> + *
-> + * @syscall_allow_default: A bitmap where each bit represents whether the
-> + *			   filter willalways allow the syscall, for the
-
-typo: missing space
-
-> + *			   default architecture.
-
-default -> native
-
-> + * @syscall_allow_compat: A bitmap where each bit represents whether the
-> + *		          filter will always allow the syscall, for the
-> + *			  compat architecture.
-> + */
-> +struct seccomp_cache_filter_data {
-> +#ifdef SECCOMP_ARCH_DEFAULT
-> +	DECLARE_BITMAP(syscall_allow_default, SECCOMP_ARCH_DEFAULT_NR);
-
-naming nit: "syscall" is redundant here, IMO. "allow_native" should be
-fine.
-
-> +#endif
-> +#ifdef SECCOMP_ARCH_COMPAT
-> +	DECLARE_BITMAP(syscall_allow_compat, SECCOMP_ARCH_COMPAT_NR);
-> +#endif
-> +};
-> +
-> +#define SECCOMP_EMU_MAX_PENDING_STATES 64
-> +#else
-> +struct seccomp_cache_filter_data { };
-> +
-> +static inline void seccomp_cache_prepare(struct seccomp_filter *sfilter)
+> +static void test_one_map(struct bpf_map *map, struct bpf_program *prog,
+> +			 bool has_share_pe)
 > +{
-> +}
-> +#endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
+> +	int err, key =3D 0, pfd =3D -1, mfd =3D bpf_map__fd(map);
+> +	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts);
+> +	struct perf_event_attr attr =3D {
+> +		.size =3D sizeof(struct perf_event_attr),
+> +		.type =3D PERF_TYPE_SOFTWARE,
+> +		.config =3D PERF_COUNT_SW_CPU_CLOCK,
+> +	};
 > +
->  /**
->   * struct seccomp_filter - container for seccomp BPF programs
->   *
-> @@ -159,6 +190,7 @@ struct notification {
->   *	   this filter after reaching 0. The @users count is always smaller
->   *	   or equal to @refs. Hence, reaching 0 for @users does not mean
->   *	   the filter can be freed.
-> + * @cache: container for cache-related data.
-
-more descriptive: "cache of arch/syscall mappings to actions"
-
->   * @log: true if all actions except for SECCOMP_RET_ALLOW should be logged
->   * @prev: points to a previously installed, or inherited, filter
->   * @prog: the BPF program to evaluate
-> @@ -180,6 +212,7 @@ struct seccomp_filter {
->  	refcount_t refs;
->  	refcount_t users;
->  	bool log;
-> +	struct seccomp_cache_filter_data cache;
->  	struct seccomp_filter *prev;
->  	struct bpf_prog *prog;
->  	struct notification *notif;
-> @@ -544,7 +577,8 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
->  {
->  	struct seccomp_filter *sfilter;
->  	int ret;
-> -	const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
-> +	const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
-> +			       IS_ENABLED(CONFIG_SECCOMP_CACHE_NR_ONLY);
->  
->  	if (fprog->len == 0 || fprog->len > BPF_MAXINSNS)
->  		return ERR_PTR(-EINVAL);
-> @@ -610,6 +644,136 @@ seccomp_prepare_user_filter(const char __user *user_filter)
->  	return filter;
->  }
->  
-> +#ifdef CONFIG_SECCOMP_CACHE_NR_ONLY
-> +/**
-> + * seccomp_emu_is_const_allow - check if filter is constant allow with given data
-> + * @fprog: The BPF programs
-> + * @sd: The seccomp data to check against, only syscall number are arch
-> + *      number are considered constant.
-> + */
-> +static bool seccomp_emu_is_const_allow(struct sock_fprog_kern *fprog,
-> +				       struct seccomp_data *sd)
-
-naming: I would drop "emu" from here. The caller doesn't care how it is
-determined. ;)
-
-> +{
-> +	unsigned int insns;
-> +	unsigned int reg_value = 0;
-> +	unsigned int pc;
-> +	bool op_res;
+> +	pfd =3D syscall(__NR_perf_event_open, &attr, 0 /* pid */,
+> +		      -1 /* cpu 0 */, -1 /* group id */, 0 /* flags */);
+> +	if (CHECK(pfd < 0, "perf_event_open", "failed\n"))
+> +		return;
 > +
-> +	if (WARN_ON_ONCE(!fprog))
-> +		return false;
+> +	err =3D bpf_map_update_elem(mfd, &key, &pfd, BPF_ANY);
+> +	close(pfd);
+> +	if (CHECK(err < 0, "bpf_map_update_elem", "failed\n"))
+> +		return;
 > +
-> +	insns = bpf_classic_proglen(fprog);
-> +	for (pc = 0; pc < insns; pc++) {
-> +		struct sock_filter *insn = &fprog->filter[pc];
-> +		u16 code = insn->code;
-> +		u32 k = insn->k;
+> +	err =3D bpf_prog_test_run_opts(bpf_program__fd(prog), &opts);
+> +	if (CHECK(err < 0, "bpf_prog_test_run_opts", "failed\n"))
+> +		return;
+> +	if (CHECK(opts.retval !=3D 0, "bpf_perf_event_read_value",
+> +		  "failed with %d\n", opts.retval))
+> +		return;
 > +
-> +		switch (code) {
-> +		case BPF_LD | BPF_W | BPF_ABS:
-> +			switch (k) {
-> +			case offsetof(struct seccomp_data, nr):
-> +				reg_value = sd->nr;
-> +				break;
-> +			case offsetof(struct seccomp_data, arch):
-> +				reg_value = sd->arch;
-> +				break;
-> +			default:
-> +				/* can't optimize (non-constant value load) */
-> +				return false;
-> +			}
-> +			break;
-> +		case BPF_RET | BPF_K:
-> +			/* reached return with constant values only, check allow */
-> +			return k == SECCOMP_RET_ALLOW;
-> +		case BPF_JMP | BPF_JA:
-> +			pc += insn->k;
-> +			break;
-> +		case BPF_JMP | BPF_JEQ | BPF_K:
-> +		case BPF_JMP | BPF_JGE | BPF_K:
-> +		case BPF_JMP | BPF_JGT | BPF_K:
-> +		case BPF_JMP | BPF_JSET | BPF_K:
-> +			switch (BPF_OP(code)) {
-> +			case BPF_JEQ:
-> +				op_res = reg_value == k;
-> +				break;
-> +			case BPF_JGE:
-> +				op_res = reg_value >= k;
-> +				break;
-> +			case BPF_JGT:
-> +				op_res = reg_value > k;
-> +				break;
-> +			case BPF_JSET:
-> +				op_res = !!(reg_value & k);
-> +				break;
-> +			default:
-> +				/* can't optimize (unknown jump) */
-> +				return false;
-> +			}
+> +	/* closing mfd, prog still holds a reference on map */
+> +	close(mfd);
 > +
-> +			pc += op_res ? insn->jt : insn->jf;
-> +			break;
-> +		case BPF_ALU | BPF_AND | BPF_K:
-> +			reg_value &= k;
-> +			break;
-> +		default:
-> +			/* can't optimize (unknown insn) */
-> +			return false;
-> +		}
-> +	}
+> +	err =3D bpf_prog_test_run_opts(bpf_program__fd(prog), &opts);
+> +	if (CHECK(err < 0, "bpf_prog_test_run_opts", "failed\n"))
+> +		return;
 > +
-> +	/* ran off the end of the filter?! */
-> +	WARN_ON(1);
-> +	return false;
-> +}
-
-For the emulator patch, you'll want to include these tags in the commit
-log:
-
-Suggested-by: Jann Horn <jannh@google.com>
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-
-> +
-> +static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
-> +					 void *bitmap, const void *bitmap_prev,
-> +					 size_t bitmap_size, int arch)
-> +{
-> +	struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
-> +	struct seccomp_data sd;
-> +	int nr;
-> +
-> +	for (nr = 0; nr < bitmap_size; nr++) {
-> +		if (bitmap_prev && !test_bit(nr, bitmap_prev))
-> +			continue;
-> +
-> +		sd.nr = nr;
-> +		sd.arch = arch;
-> +
-> +		if (seccomp_emu_is_const_allow(fprog, &sd))
-> +			set_bit(nr, bitmap);
-
-The guiding principle with seccomp's designs is to always make things
-_more_ restrictive, never less. While we can never escape the
-consequences of having seccomp_is_const_allow() report the wrong
-answer, we can at least follow the basic principles, hopefully
-minimizing the impact.
-
-When the bitmap starts with "always allowed" and we only flip it towards
-"run full filters", we're only ever making things more restrictive. If
-we instead go from "run full filters" towards "always allowed", we run
-the risk of making things less restrictive. For example: a process that
-maliciously adds a filter that the emulator mistakenly evaluates to
-"always allow" doesn't suddenly cause all the prior filters to stop running.
-(i.e. this isolates the flaw outcome, and doesn't depend on the early
-"do not emulate if we already know we have to run filters" case before
-the emulation call: there is no code path that allows the cache to
-weaken: it can only maintain it being wrong).
-
-Without any seccomp filter installed, all syscalls are "always allowed"
-(from the perspective of the seccomp boundary), so the default of the
-cache needs to be "always allowed".
-
-
-	if (bitmap_prev) {
-		/* The new filter must be as restrictive as the last. */
-		bitmap_copy(bitmap, bitmap_prev, bitmap_size);
-	} else {
-		/* Before any filters, all syscalls are always allowed. */
-		bitmap_fill(bitmap, bitmap_size);
-	}
-
-	for (nr = 0; nr < bitmap_size; nr++) {
-		/* No bitmap change: not a cacheable action. */
-		if (!test_bit(nr, bitmap_prev) ||
-			continue;
-
-		/* No bitmap change: continue to always allow. */
-		if (seccomp_is_const_allow(fprog, &sd))
-			continue;
-
-		/* Not a cacheable action: always run filters. */
-		clear_bit(nr, bitmap);
-
+> +	if (has_share_pe) {
+> +		CHECK(opts.retval !=3D 0, "bpf_perf_event_read_value",
+> +		      "failed with %d\n", opts.retval);
+> +	} else {
+> +		CHECK(opts.retval !=3D -ENOENT, "bpf_perf_event_read_value",
+> +		      "should have failed with %d, but got %d\n", -ENOENT,
+> +		      opts.retval);
 > +	}
 > +}
 > +
-> +/**
-> + * seccomp_cache_prepare - emulate the filter to find cachable syscalls
-> + * @sfilter: The seccomp filter
-> + *
-> + * Returns 0 if successful or -errno if error occurred.
-> + */
-> +static void seccomp_cache_prepare(struct seccomp_filter *sfilter)
+> +void test_pe_preserve_elems(void)
 > +{
-> +	struct seccomp_cache_filter_data *cache = &sfilter->cache;
-> +	const struct seccomp_cache_filter_data *cache_prev =
-> +		sfilter->prev ? &sfilter->prev->cache : NULL;
+> +	struct test_pe_preserve_elems *skel;
 > +
-> +#ifdef SECCOMP_ARCH_DEFAULT
-> +	seccomp_cache_prepare_bitmap(sfilter, cache->syscall_allow_default,
-> +				     cache_prev ? cache_prev->syscall_allow_default : NULL,
-> +				     SECCOMP_ARCH_DEFAULT_NR,
-> +				     SECCOMP_ARCH_DEFAULT);
-> +#endif /* SECCOMP_ARCH_DEFAULT */
+> +	skel =3D test_pe_preserve_elems__open_and_load();
+> +	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+> +		return;
 > +
-> +#ifdef SECCOMP_ARCH_COMPAT
-> +	seccomp_cache_prepare_bitmap(sfilter, cache->syscall_allow_compat,
-> +				     cache_prev ? cache_prev->syscall_allow_compat : NULL,
-> +				     SECCOMP_ARCH_COMPAT_NR,
-> +				     SECCOMP_ARCH_COMPAT);
-> +#endif /* SECCOMP_ARCH_COMPAT */
+> +	test_one_map(skel->maps.array_1, skel->progs.read_array_1, false);
+> +	test_one_map(skel->maps.array_2, skel->progs.read_array_2, true);
+> +
+> +	test_pe_preserve_elems__destroy(skel);
 > +}
-> +#endif /* CONFIG_SECCOMP_CACHE_NR_ONLY */
+> diff --git a/tools/testing/selftests/bpf/progs/test_pe_preserve_elems.c b=
+/tools/testing/selftests/bpf/progs/test_pe_preserve_elems.c
+> new file mode 100644
+> index 0000000000000..dc77e406de41f
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_pe_preserve_elems.c
+> @@ -0,0 +1,44 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2020 Facebook
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
 > +
->  /**
->   * seccomp_attach_filter: validate and attach filter
->   * @flags:  flags to change filter behavior
-> @@ -659,6 +823,7 @@ static long seccomp_attach_filter(unsigned int flags,
->  	 * task reference.
->  	 */
->  	filter->prev = current->seccomp.filter;
-> +	seccomp_cache_prepare(filter);
->  	current->seccomp.filter = filter;
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+> +	__uint(max_entries, 1);
+> +	__uint(key_size, sizeof(int));
+> +	__uint(value_size, sizeof(int));
+> +} array_1 SEC(".maps");
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+> +	__uint(max_entries, 1);
+> +	__uint(key_size, sizeof(int));
+> +	__uint(value_size, sizeof(int));
+> +	__uint(map_flags, BPF_F_PRESERVE_ELEMS);
+> +} array_2 SEC(".maps");
+> +
+> +SEC("raw_tp/sched_switch")
+> +int BPF_PROG(read_array_1)
+> +{
+> +	struct bpf_perf_event_value val;
+> +	long ret;
+> +
+> +	ret =3D bpf_perf_event_read_value(&array_1, 0, &val, sizeof(val));
+> +	bpf_printk("read_array_1 returns %ld", ret);
 
-Jann, do we need a WRITE_ONCE() or something when writing
-current->seccomp.filter here? I think the rmb() in __seccomp_filter() will
-cover the cache bitmap writes having finished before the filter pointer
-is followed in the TSYNC case.
+Oops, I didn't do amend... Please ignore this version..
 
->  	atomic_inc(&current->seccomp.filter_count);
->  
-> -- 
-> 2.28.0
-> 
+I am so sorry for the problem...
 
-Otherwise, yes, I'm looking forward to having this for everyone to use!
-:)
+Song
 
--- 
-Kees Cook
+> +	return ret;
+> +}
+> +
+> +SEC("raw_tp/task_rename")
+> +int BPF_PROG(read_array_2)
+> +{
+> +	struct bpf_perf_event_value val;
+> +	long ret;
+> +
+> +	ret =3D bpf_perf_event_read_value(&array_2, 0, &val, sizeof(val));
+> +	bpf_printk("read_array_2 returns %ld", ret);
+> +	return ret;
+> +}
+> +
+> +char LICENSE[] SEC("license") =3D "GPL";
+> --=20
+> 2.24.1
+>=20
+
