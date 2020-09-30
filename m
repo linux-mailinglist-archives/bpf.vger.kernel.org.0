@@ -2,125 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72C427F290
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 21:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF20827F2B1
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 21:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729905AbgI3T0v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 15:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50890 "EHLO
+        id S1729724AbgI3Toc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 15:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbgI3T0v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 15:26:51 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E59C061755;
-        Wed, 30 Sep 2020 12:26:51 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id p21so45822pju.0;
-        Wed, 30 Sep 2020 12:26:51 -0700 (PDT)
+        with ESMTP id S1725799AbgI3Toc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 15:44:32 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8348DC061755;
+        Wed, 30 Sep 2020 12:44:32 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id x20so2166992ybs.8;
+        Wed, 30 Sep 2020 12:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FvgCO40CVKe5gFglLc4kgPCPyIA7toxlMSbqo9V3nFw=;
-        b=YgCHtskmuGEloUlw0SHLFmhoOs5pP0pMK3Xrq1RZE+Tm0reuWwkSxIBDqhxQ+xHVV/
-         rt2SNedlNgzgsFkLTa9cqikbePpJlVywVTPpHlM0IjlCWqWwSESyY5vY3WN7PPs+yQKF
-         VkSOClw28bq0YQvigDNt7J4khX/VqM4kqBCKzxFtzZWYkb1AHJFY0WA7m/vJc+2Uko6h
-         dmaomuUcXw+DBTzfpyOy7DuEVxH2914zkMBG1x+FZesA7dzEJ2ABIoOnK/3ePM/9ucpQ
-         RFFEdXxHViegl2UD2hLWYqmjym4q3N94wukhfH14GaE3TXhvf0sACDuu4pAVmeZR6PVR
-         zKZA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cZhnF2vFP1tGcMNCykFeilnWoMw6zpP+9XGqk01gtQI=;
+        b=t+8axvRIfAHrp3d1z4wASj1cSL+8OqtjDH5CGD6fDR1BZDrXzTbRrlanG3130cS8+B
+         xyz35JhztPc7vYEYxEqYcwQD7oXVjNaJKqu2X5oaPAPWDJQYAdtsi2RLZ8JnkmbL409W
+         S4lZWNhrYH+PPYKuKv/joVMCN28kr45cjIOZcRN0UlF9n6xb00AVl75TYrXG4kf6aapJ
+         8vbN6ccHQoTOyNCR7wXuAN8R5eRBfN/E8Cw3xc/D04iClKgKuCFFgzOp0UgyOZWBGwoa
+         juHtS74+h3dK2I4c5ClKLgB9Ug2W3po11ymPykfVD6GbePTVMluoCDgKqMaVUC2c7lBm
+         IdUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FvgCO40CVKe5gFglLc4kgPCPyIA7toxlMSbqo9V3nFw=;
-        b=qslWAbJvYoUI0mfDPE5mHExLvwhu4g7pJxWEHovn9Q6fMNsqQDqMZzRn8BLx1bSOZt
-         DUSra5HmOjdEhs1xKjdCiITixxXh33N3g3I0an+vE+2tQkWsYtPupuXtykNLiYxWWwwq
-         wrnuNsYAISq0P52GDiBVwIcRaL4V35E1teiIqfnScS/7rrHsQsg5Jl0OhIxauzo+EY/v
-         6vRe5MxukULihXNS+83GM696WEFY4f5SaJ2veDJu7yKqZcXF61+2B3Cxk0m4X9t008pc
-         BU9orXTkktaqETWHXEsEr0mjhvGCaGql3kj0ttNtIhOcEP/G54luegWz58YKJqNqjGg8
-         uhzg==
-X-Gm-Message-State: AOAM531I8UP1PH1Yqjyl/Tfi3XcbJ7AIlJd4axVpSfhRMFso8DMl053/
-        du3Hq1QfqmqvMQyXObUD8FU=
-X-Google-Smtp-Source: ABdhPJzcHNYWcrD0DF3lRquNxeb9fl+ZeYD9CacSH7El998/y6zmRzxV9g3QuIkw8+aSbKpvaLcy/Q==
-X-Received: by 2002:a17:90b:515:: with SMTP id r21mr3814953pjz.115.1601494010493;
-        Wed, 30 Sep 2020 12:26:50 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:2a2])
-        by smtp.gmail.com with ESMTPSA id q18sm3457908pfg.158.2020.09.30.12.26.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 12:26:49 -0700 (PDT)
-Date:   Wed, 30 Sep 2020 12:26:47 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        kpsingh@chromium.org
-Subject: Re: [PATCH v3 bpf-next 2/2] selftests/bpf: add tests for
- BPF_F_PRESERVE_ELEMS
-Message-ID: <20200930192647.mgunvnxzb5mmxae7@ast-mbp.dhcp.thefacebook.com>
-References: <20200930152058.167985-1-songliubraving@fb.com>
- <20200930152058.167985-3-songliubraving@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cZhnF2vFP1tGcMNCykFeilnWoMw6zpP+9XGqk01gtQI=;
+        b=SINZCNKT/oLbaAmYR8TDD9DQGogXeCdiCT0/G2VZycKu8QEQiB2k56cqKDYlxm4ET0
+         BnaczfYzOSsdA069Z2HqEgPpNLt12vGpJ8+AjOkefSs9Y/ALnZgpF/rCQUru9rQrLkke
+         QkyOxUAqpirV+7iVCLisXHIzPAOi2+sCF1Z8k9ky+bCLjuXWzIwlTJD1w4XrR9D/zMSK
+         wAMCGr9a5O8LuVHj5FOteztPkxO5dkybZgEGuofi0WgtBg6vIwvN4YuGYh+KxGsGmBgg
+         OrABrUJfQV2Mg3OhObJRbTuk/EumH6rgceKe01U8SHnORi+/nMnNvR9asHTuxolZviER
+         CZ0g==
+X-Gm-Message-State: AOAM532CTMwdoNVQW2XPc5bCkeUbJHZQx+7YrBFtHSsKQpIelbuyFnHj
+        WwvXrhdkh+1vFmNBuxRr6r+SO0QTcj7XDi1bwfM=
+X-Google-Smtp-Source: ABdhPJyghC+QWhdVxiW6pjxLGQi/ToE13kghqGGUVr3VtUFHrmkobMijSAwZtYyv1iZah1+q+LxR0T6bN+qpqQItcXU=
+X-Received: by 2002:a25:2596:: with SMTP id l144mr5490405ybl.510.1601495071755;
+ Wed, 30 Sep 2020 12:44:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930152058.167985-3-songliubraving@fb.com>
+References: <20200930164109.2922412-1-yhs@fb.com> <CAEf4BzZKqrKPifnJmX8fabmXCVRK45ERiEy5aHGFJ9dg0c2oAA@mail.gmail.com>
+ <db1cec73-a16a-5407-1bc5-cd7afd557771@fb.com>
+In-Reply-To: <db1cec73-a16a-5407-1bc5-cd7afd557771@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 30 Sep 2020 12:44:20 -0700
+Message-ID: <CAEf4BzbRcix1Jfw4WVXVi1E0zf9usv-94gYMgweogGnm+dWB5g@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix "unresolved symbol" build error with resolve_btfids
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Michal Kubecek <mkubecek@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:20:58AM -0700, Song Liu wrote:
-> diff --git a/tools/testing/selftests/bpf/progs/test_pe_preserve_elems.c b/tools/testing/selftests/bpf/progs/test_pe_preserve_elems.c
-> new file mode 100644
-> index 0000000000000..dc77e406de41f
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_pe_preserve_elems.c
-> @@ -0,0 +1,44 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2020 Facebook
-> +#include "vmlinux.h"
+On Wed, Sep 30, 2020 at 12:25 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 9/30/20 11:40 AM, Andrii Nakryiko wrote:
+> > On Wed, Sep 30, 2020 at 9:41 AM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >> Michal reported a build failure likes below:
+> >>     BTFIDS  vmlinux
+> >>     FAILED unresolved symbol tcp_timewait_sock
+> >>     make[1]: *** [/.../linux-5.9-rc7/Makefile:1176: vmlinux] Error 255
+> >>
+> >> This error can be triggered when config has CONFIG_NET enabled
+> >> but CONFIG_INET disabled. In this case, there is no user of
+> >> structs inet_timewait_sock and tcp_timewait_sock and hence vmlinux BTF
+> >> types are not generated for these two structures.
+> >>
+> >> To fix the problem, omit the above two types for BTF_SOCK_TYPE_xxx
+> >> macro if CONFIG_INET is not defined.
+> >>
+> >> Fixes: fce557bcef11 ("bpf: Make btf_sock_ids global")
+> >> Reported-by: Michal Kubecek <mkubecek@suse.cz>
+> >> Signed-off-by: Yonghong Song <yhs@fb.com>
+> >> ---
+> >>   include/linux/btf_ids.h | 20 ++++++++++++++++----
+> >>   1 file changed, 16 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> >> index 4867d549e3c1..d9a1e18d0921 100644
+> >> --- a/include/linux/btf_ids.h
+> >> +++ b/include/linux/btf_ids.h
+> >> @@ -102,24 +102,36 @@ asm(                                                      \
+> >>    * skc_to_*_sock() helpers. All these sockets should have
+> >>    * sock_common as the first argument in its memory layout.
+> >>    */
+> >> -#define BTF_SOCK_TYPE_xxx \
+> >> +
+> >> +#define __BTF_SOCK_TYPE_xxx \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_INET, inet_sock)                    \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_INET_CONN, inet_connection_sock)    \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_INET_REQ, inet_request_sock)        \
+> >> -       BTF_SOCK_TYPE(BTF_SOCK_TYPE_INET_TW, inet_timewait_sock)        \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_REQ, request_sock)                  \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_SOCK, sock)                         \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_SOCK_COMMON, sock_common)           \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP, tcp_sock)                      \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP_REQ, tcp_request_sock)          \
+> >> -       BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP_TW, tcp_timewait_sock)          \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP6, tcp6_sock)                    \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP, udp_sock)                      \
+> >>          BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP6, udp6_sock)
+> >>
+> >> +#define __BTF_SOCK_TW_TYPE_xxx \
+> >> +       BTF_SOCK_TYPE(BTF_SOCK_TYPE_INET_TW, inet_timewait_sock)        \
+> >> +       BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP_TW, tcp_timewait_sock)
+> >> +
+> >> +#ifdef CONFIG_INET
+> >> +#define BTF_SOCK_TYPE_xxx                                              \
+> >> +       __BTF_SOCK_TYPE_xxx                                             \
+> >> +       __BTF_SOCK_TW_TYPE_xxx
+> >> +#else
+> >> +#define BTF_SOCK_TYPE_xxx      __BTF_SOCK_TYPE_xxx
+> >> +#endif
+> >> +
+> >>   enum {
+> >>   #define BTF_SOCK_TYPE(name, str) name,
+> >> -BTF_SOCK_TYPE_xxx
+> >> +__BTF_SOCK_TYPE_xxx
+> >> +__BTF_SOCK_TW_TYPE_xxx
+> >
+> > Why BTF_SOCK_TYPE_xxx doesn't still work here after the above changes?
+>
+> The macro, e.g., BTF_SOCK_TYPE_TCP_TW, still needed to be defined as
+> it is used to get the location for btf_id.
 
-Does it actually need vmlinux.h ?
-Just checking to make sure it compiles on older kernels.
+Ah, right, so you want those here unconditionally, even if CONFIG_INET
+is not defined. Missed that. Might be worth leaving a short comment.
 
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__uint(key_size, sizeof(int));
-> +	__uint(value_size, sizeof(int));
-> +} array_1 SEC(".maps");
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__uint(key_size, sizeof(int));
-> +	__uint(value_size, sizeof(int));
-> +	__uint(map_flags, BPF_F_PRESERVE_ELEMS);
-> +} array_2 SEC(".maps");
-> +
-> +SEC("raw_tp/sched_switch")
-> +int BPF_PROG(read_array_1)
-> +{
-> +	struct bpf_perf_event_value val;
-> +	long ret;
-> +
-> +	ret = bpf_perf_event_read_value(&array_1, 0, &val, sizeof(val));
-> +	bpf_printk("read_array_1 returns %ld", ret);
-> +	return ret;
-> +}
-> +
-> +SEC("raw_tp/task_rename")
-> +int BPF_PROG(read_array_2)
-> +{
-> +	struct bpf_perf_event_value val;
-> +	long ret;
-> +
-> +	ret = bpf_perf_event_read_value(&array_2, 0, &val, sizeof(val));
-> +	bpf_printk("read_array_2 returns %ld", ret);
+Otherwise LGTM.
 
-Please remove printk from the tests. It only spams the trace_pipe.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-> +	return ret;
-
-The return code is already checked as far as I can see.
-That's enough to pass/fail the test, right?
+>
+> const struct bpf_func_proto bpf_skc_to_tcp_timewait_sock_proto = {
+>          .func                   = bpf_skc_to_tcp_timewait_sock,
+>          .gpl_only               = false,
+>          .ret_type               = RET_PTR_TO_BTF_ID_OR_NULL,
+>          .arg1_type              = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+>          .ret_btf_id             = &btf_sock_ids[BTF_SOCK_TYPE_TCP_TW],
+> };
+>
+> If CONFIG_INET is not defined, bpf_sock_ids[BTF_SOCK_TYPE_TCP_TW]
+> will be 0.
+>
+> >
+> >>   #undef BTF_SOCK_TYPE
+> >>   MAX_BTF_SOCK_TYPE,
+> >>   };
+> >> --
+> >> 2.24.1
+> >>
