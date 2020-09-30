@@ -2,131 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A0A27DE36
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 04:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C5827DE8A
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 04:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729395AbgI3CFt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 22:05:49 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56182 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729322AbgI3CFt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Sep 2020 22:05:49 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08U25Xwo017994;
-        Tue, 29 Sep 2020 19:05:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=4Dh81dKIOhPmt5KxnSk+lckfBdDiuXgF+9OkpgFaBZg=;
- b=S9u/j5yG20oZh2CWdtDzhQEBRQ9EkgIvJ0f8djGn7TN/Ocm3Lp3YS1U8y8mrgb2FarLd
- HMT8NkzMC2hhqImtQlM2mYT78tPzXg0JgVw/sbbZXBlDnFVs5m7zv58P/soYzuCI9BUq
- GV+z6WMb5HpTDsGFmRHaAPMUijFR6do6ifc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 33tshr5hgf-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Sep 2020 19:05:34 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 29 Sep 2020 19:05:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HIlaWdms80pxEoC7cRJ8xo+tZK3dMDn60EUmzKmJm6hiK+j5s3L7CTSf7KwvHx/LT5FyfDnKEV6XvfbzO//RdWiXjH4ogYlXWeyKeGNPvThg0K8Lpa+Ya7oFblw1P0jxEqqZVQQCLS0WmTYT/jMMsCw9uDZ2cz/finLvQ5fFekcoLqBSJWeASClxXi6w+3E+1tewkBWQD78tuwmZznxdkBXTfQnru8F95zyCJT6hdwO83KseGI8v9TxCVX6AD0owHIs/lZUn8ckzqSbgv3wyewqk0d+VibNO/YAaV+gC/WoVfBmk7p2heUr+nLLNHG/M0nXjRsfWSVczifsxdJFCuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Dh81dKIOhPmt5KxnSk+lckfBdDiuXgF+9OkpgFaBZg=;
- b=DjFGVmtTQzjfsS4rXFBiohk4MVFs2VjIb40/Zkl4wq7cdA4IYfWz0u6DXrMe9l6A4dLqJCSMStaakZPl4ugJeorlleg66inNoxFJKm6NRQzzsxta13EH3j6J79rkIYKURz5iafCj1FqwMqhRif0cQC3r9EbD7QVf1pDsLgzHxXUpiPMCCc6j8p4jCwBQMU/OO3XB9mz8Y/wF3lT8oGVayr3rSfypaNzCgLls03Y7U2PHT0YI3tK6MfA+LE7in45fq+S0IohCZfl2QQlkSYSY8Tr39Cf1dJjqKsIug+CW6G+lS247WoLmAVYs4DbmPK0lPb+bsFZyBBZ3SceYAfq8dA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Dh81dKIOhPmt5KxnSk+lckfBdDiuXgF+9OkpgFaBZg=;
- b=T1tWAFtpSXrsWUgF6B6+y4a0NwRhydaG97f31J5CAxunrAyA7EgbO7xM6G5KN7tocqsreTO8IPUG3oHcztuIivbAP2j5/CPrEQviAlXmy1be6XefP9zHm74hZtu/Vis2mGy8fqsZHYwL2WR6Q26EIZTpv1mwFihSuzzV88+8EOs=
-Authentication-Results: iogearbox.net; dkim=none (message not signed)
- header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3461.namprd15.prod.outlook.com (2603:10b6:a03:109::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 30 Sep
- 2020 02:05:30 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3412.029; Wed, 30 Sep 2020
- 02:05:30 +0000
-Date:   Tue, 29 Sep 2020 19:05:24 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-CC:     <ast@kernel.org>, <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/6] bpf, net: rework cookie generator as
- per-cpu one
-Message-ID: <20200930020511.7isjpqenev6p2lha@kafai-mbp.dhcp.thefacebook.com>
-References: <cover.1601414174.git.daniel@iogearbox.net>
- <c7bb9920eee2f05df92bfd7c462b9059fb7ff26c.1601414174.git.daniel@iogearbox.net>
+        id S1729600AbgI3CeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 22:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729470AbgI3CeR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Sep 2020 22:34:17 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D2CC061755;
+        Tue, 29 Sep 2020 19:34:17 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id j19so6713pjl.4;
+        Tue, 29 Sep 2020 19:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JM+btoJd7ENQh4x4CzX1uA1slT1szaC5YkRVd2dg3Es=;
+        b=SO4Khj6/BDZIh/7LEoVTd6EkhaMtqvLON0xorSdzNY9nq7XzUQJRBa9Jm9OgfJMPS0
+         zeVVnwqQK/0vh0KCt/vlPyAKM+lfE3rJyrKCB3961Zoddxq4/QeATinU0GYtHMoRbWFg
+         CCsC9PH1FryMFBpWAwUfSrmuZz/4AA8WeMW3FEE++mjoANxedr4KyBWc9Bu/sY1NeVhW
+         owPqJnVo1ZIuFpfiqC2iLzErcu2tZpl9kjy6cgdxYEt3wd3qN8ecmu+YnePDibNFnOFX
+         eaPXUvCOZyeZGTg5gDEusLaFn9Q2gVi3tqCuc71FdafOjZWQzsOjOFoMdzZ3DC7GWKGS
+         9aDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JM+btoJd7ENQh4x4CzX1uA1slT1szaC5YkRVd2dg3Es=;
+        b=JqpMiv5YvtSYRS/EXEjO+pMiNj/1oPQR8BGCFXG6O3JUk4whXMoWIJBFK6CdBcNfqg
+         NyThbPdpVTWn+cxSCeZUmbZcN/pKHPaY+vFe6oy9Vo5ilYL4LcmBur+V2uxe1f/z41fo
+         DRk3p0K8qygD6+n93zLA1sVpGzT/JnboS0QF8fCZVsMXZ43hheXjd4WwQZ9rUBOVWlv5
+         H/OQr8A3vevsT5pDj8Ediy/PLAVuGkzsQy73aPI6bDtzwaKmtomgLyqHHxGWqtjgO7N6
+         TbZIBFeTavbj8Z+6MVWEzShrNwAeEVfcRv1bAasjspyES7wFqd1UOQPUanKHAZKZV5fA
+         7Scw==
+X-Gm-Message-State: AOAM533PT70I6Xerld9zdppAfxQjnAR1DuYT8zm+aIz9sPiJhVTm4lP7
+        W2TVrxzuKfqt2DoHHtQ2LBQ=
+X-Google-Smtp-Source: ABdhPJzpJ5Q2HjoE/Kc+RcEhJK3mNCefvCyz06Qjau3VuFYQl3Pt6cikw7axJ2TrWM++WNQRyRnr0w==
+X-Received: by 2002:a17:90b:3852:: with SMTP id nl18mr519796pjb.78.1601433257140;
+        Tue, 29 Sep 2020 19:34:17 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w206sm112290pfc.1.2020.09.29.19.34.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Sep 2020 19:34:16 -0700 (PDT)
+Date:   Wed, 30 Sep 2020 10:34:05 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next] libbpf: export bpf_object__reuse_map() to
+ libbpf api
+Message-ID: <20200930023405.GH2531@dhcp-12-153.nay.redhat.com>
+References: <20200929031845.751054-1-liuhangbin@gmail.com>
+ <CAEf4BzYKtPgSxKqduax1mW1WfVXKuCEpbGKRFvXv7yNUmUm_=A@mail.gmail.com>
+ <20200929094232.GG2531@dhcp-12-153.nay.redhat.com>
+ <CAEf4BzZy9=x0neCOdat-CWO4nM3QYgWOKaZpN31Ce5Uz9m_qfg@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c7bb9920eee2f05df92bfd7c462b9059fb7ff26c.1601414174.git.daniel@iogearbox.net>
-X-Originating-IP: [2620:10d:c090:400::5:f2d3]
-X-ClientProxiedBy: CO1PR15CA0052.namprd15.prod.outlook.com
- (2603:10b6:101:1f::20) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:f2d3) by CO1PR15CA0052.namprd15.prod.outlook.com (2603:10b6:101:1f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Wed, 30 Sep 2020 02:05:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b718ed4f-2437-4370-8c16-08d864e54ec9
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3461:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB34619A1FF5A52751B208B639D5330@BYAPR15MB3461.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZMxX70pH0Ju5dOfIqocn2ZRILqTOeYY99WzINFPBRSDsf/I/vUJtODuPtn9/rqeNCLOBKp7YgpgGObIXIRC5iODud0BVeIKMq95xq851vr4KbX1Yw6hhh75GchhJqMb4XNBUvrI2QtFVdJU2VOqkIdC3XoKvgk4zw1t3IaAtxTEIh9vcHibI3xqO2C2PvXTSwcnT10az1pnAnfVwaTKi5CIjjNnnYfjQACxXlibBfq+XaaIWFnWDHsZuRT9ueMJYyYPI4zLX+dPOYXx3tXkTeAzitxWsMVGZF7hmmZWgPS1X0GRg3w1ynVj+F4Yi0X8nta+Gnb84Bt0OGSDoa3m+eg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(39860400002)(346002)(366004)(5660300002)(6666004)(8936002)(9686003)(6506007)(2906002)(55016002)(16526019)(52116002)(7696005)(186003)(86362001)(478600001)(1076003)(6916009)(66476007)(66556008)(83380400001)(8676002)(4326008)(66946007)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: wWuGVEPYFlEA2iF4Gk5ZQUK9OYbE5wQW1CtTnYiiqAFf30WusxaryalGiYkC5MqoH/DnHCkNJGIELIFe1yUHNmYcdxWcIvpERLrFyLFbOmY5kuflSIgByvK2zK3UAT6usoLdSXWvnwID8ZizLSjSuBMJuDjrOdAbA1oG9BJZyjaYQsUPLwPstQK/DkyNcrpTIw5XoNkQ7NIv8+B9MZjS90TqZ0rmn/CfQO6eaOKAhvN9A7uqIb9ZwbQAljMw3m5mpcbxkTMO8gLGCmP0QiEuxIr3X5TCA0lPUglkVfUtZg3mcu7bZR9l9LDNs/z7/Z5XFqg2M9Bj406T9X07iJn2+9eC6B1R11A74Ukw2mgcRJxeR1xc8XqCKt1FJxbbrtWvLbIKSm/SKmN6mvMKhcxdd1U7ZJ3+mPjwuPUDNw6XMI6OieroDe/iWu2UgZqdxZZLAh3PYmtzXQpbrQVJXh8S89tzR5Rx3wwLuW1aX6oxa9mEQizrOWvDADnM9tg3cP9Yi4bLtGrya4e0xQCe2uu/313uRi1bJWbLJJknaXL92wgECmfwaa2vPAqHTBU5OUuc60QEK4vExBuxrn5fLb/LjghmfshS6H+osS1LWx/NggEcbw0TK8a4zav4wIID7eQqIeQChDspa18pe4NGNgHpD0lWeOd4y9qxyq2VCUaKCTE=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b718ed4f-2437-4370-8c16-08d864e54ec9
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 02:05:30.8143
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lyv2bJGAqpHJ8TeDv5r2pGs6kwiCPrt0Drh1YkZjoQ2n+7IpUau3WZs4eGYTlQey
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-29_14:2020-09-29,2020-09-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
- adultscore=0 malwarescore=0 spamscore=0 impostorscore=0 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300011
-X-FB-Internal: deliver
+In-Reply-To: <CAEf4BzZy9=x0neCOdat-CWO4nM3QYgWOKaZpN31Ce5Uz9m_qfg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:23:02PM +0200, Daniel Borkmann wrote:
-> With its use in BPF, the cookie generator can be called very frequently
-> in particular when used out of cgroup v2 hooks (e.g. connect / sendmsg)
-> and attached to the root cgroup, for example, when used in v1/v2 mixed
-> environments. In particular, when there's a high churn on sockets in the
-> system there can be many parallel requests to the bpf_get_socket_cookie()
-> and bpf_get_netns_cookie() helpers which then cause contention on the
-> atomic counter.
+On Tue, Sep 29, 2020 at 04:03:45PM -0700, Andrii Nakryiko wrote:
+> > bpf_map__set_pin_path()
+> > bpf_create_map_in_map()    <- create inner or outer map
+> > bpf_map__reuse_fd(map, inner/outer_fd)
+> > bpf_object__load(obj)
+> >   - bpf_object__load_xattr()
+> >     - bpf_object__create_maps()
+> >       - if (map->fd >= 0)
+> >           continue      <- this will skip pinning map
 > 
-> As similarly done in f991bd2e1421 ("fs: introduce a per-cpu last_ino
-> allocator"), add a small helper library that both can use for the 64 bit
-> counters. Given this can be called from different contexts, we also need
-> to deal with potential nested calls even though in practice they are
-> considered extremely rare. One idea as suggested by Eric Dumazet was
-> to use a reverse counter for this situation since we don't expect 64 bit
-> overflows anyways; that way, we can avoid bigger gaps in the 64 bit
-> counter space compared to just batch-wise increase. Even on machines
-> with small number of cores (e.g. 4) the cookie generation shrinks from
-> min/max/med/avg (ns) of 22/50/40/38.9 down to 10/35/14/17.3 when run
-> in parallel from multiple CPUs.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+> so maybe that's the part that needs to be fixed?..
+
+Hmm...maybe, let me see
+
+> 
+> I'm still not sure. And to be honest your examples are still a bit too
+> succinct for me to follow where the problem is exactly. Can you please
+> elaborate a bit more?
+
+Let's take iproute2 legacy map for example, if it's a map-in-map type with
+pin path defined. In user space we could do like:
+
+if (bpf_obj_get(pathname) < 0) {
+	bpf_create_map_in_map();
+	bpf_map__reuse_fd(map, map_fd);
+}
+bpf_map__set_pin_path(map, pathname);
+bpf_object__load(obj)
+
+So in libbpf we need
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 32dc444224d8..5412aa7169db 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4215,7 +4215,7 @@ bpf_object__create_maps(struct bpf_object *obj)
+                if (map->fd >= 0) {
+                        pr_debug("map '%s': skipping creation (preset fd=%d)\n",
+                                 map->name, map->fd);
+-                       continue;
++                       goto check_pin_path;
+                }
+
+                err = bpf_object__create_map(obj, map);
+@@ -4258,6 +4258,7 @@ bpf_object__create_maps(struct bpf_object *obj)
+                        map->init_slots_sz = 0;
+                }
+
++check_pin_path:
+                if (map->pin_path && !map->pinned) {
+                        err = bpf_map__pin(map, NULL);
+                        if (err) {
+
+
+Do you think if this change be better?
+
+Thanks
+Hangbin
