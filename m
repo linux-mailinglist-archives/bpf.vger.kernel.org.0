@@ -2,131 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8598B27F14F
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 20:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B411B27F15F
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 20:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725799AbgI3Sah (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 14:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        id S1725771AbgI3Sec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 14:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgI3Sah (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 14:30:37 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35160C061755;
-        Wed, 30 Sep 2020 11:30:37 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id b142so2006793ybg.9;
-        Wed, 30 Sep 2020 11:30:37 -0700 (PDT)
+        with ESMTP id S1725355AbgI3Seb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 14:34:31 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C915C061755
+        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 11:34:31 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id k18so2037393ybh.1
+        for <bpf@vger.kernel.org>; Wed, 30 Sep 2020 11:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2OiY48v5fupX3OLmM/AQ2RxdhAtrUz7JvwXHvaAkGCE=;
-        b=dHPwsxT2vG8Jr1e93nNF1wFKJkBQ5rGgaqzWhn2YHJCNKCbz7VbnkcKFqX20jk/mCT
-         hg5t0EpyfIo6pfvLwDYpZsTF/UzWhCRSPhFW87Khixo+5PCGIffW6jCUi3ZuxXQacljV
-         7A/EunvnOXAWTxCkR6AF2B3aETa2ff6KBt12dUj0PENpI1EFAhifj+XAPFBJZWeaASkK
-         PhcKjacGXvsoMRne3PKLmc5nREROg08BXj9lvq+3EQ3mXREQnm/yRyTjHntA922jJiqQ
-         muW0ZdWmppPhw/efQB/9ZkKBWjlaqOHHt4neOKina01U5dwysZgerVobp8gHEOsgFFIQ
-         YcCQ==
+         :cc:content-transfer-encoding;
+        bh=Pf9xXAIrRO5cVcksMMdEfgc1USQVFFM5TEuzISyiKWU=;
+        b=nrUw3ho67Y86+s6oIRWDb1zecCdJsGtGp2P8H5GHPH/mqHjBPvD8DVsYLbgajBgYb8
+         bDeKn3iJrGFK0JNteHiTj0/kBoroN5RbiMfGMb9zCJO13aZdcl+6o12qk3lFdXSlc2EG
+         T4incwHBtl50BpK576QjNA0lZmLzxbPCtH6dtu7vGTWmdqBcNwwKRBLofFiyLyCc9Q5k
+         ztQkmGPRtAaufY8mZzcpLe8EtynPmpyqyaGDLieKPj4T+X8catud1FLKajmKScdk50TS
+         MEo0hK4BKMOBkN1z5qPQEpTMUxwsctOo3eOuSUpAX4Elr4c4yxsOVYlGa5v5NYg6yDx+
+         wfGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2OiY48v5fupX3OLmM/AQ2RxdhAtrUz7JvwXHvaAkGCE=;
-        b=DE419lR60SHpI+bnZlpl+PGPZvQgvg1X5cCJc8fXusRd68m1Tbd0LcY7A9qG5DLYYL
-         bipQxfSymRA4B1YuNB7LVQ/RY4tqbyMPC9aq7YZc8FU5kNxRHDF5QhXQaXwVwttVjOph
-         jikhxhvJl2C7RLwpNBkSIXpXqqCVDxSgkFZ9Fm8PX8KpScKrPv/GtqH/mAFO0p1jLlim
-         tH3mkme3jwv0X9NhSphKI9OOXaK7Vq0Yet+4BqeHrZ3C+J3WrnQRA3+QP0s3JnZYYzr8
-         W59lBBb36wWjW4yQBUp8Ug62pGii1t3HFshQY5jse8hjySmHDycKKzYiekaJftNaZvxE
-         47FA==
-X-Gm-Message-State: AOAM533Z5myyemfcfJNOXnoNltLHskr3dAe5/rPgt51hQ74qUWHZ7cUy
-        Nty6tNxihZYunQ7U72W18+Y2ZN7O3JUjY9tA5X7edNbITJc=
-X-Google-Smtp-Source: ABdhPJwvWrr1EpSTIlgxCIwZTY5EuqRhQ0MNvn7CHiSqQ1hsrr4ux8KuzlxGNQFPyP8noyzC5BZFiYNSze8nruswALA=
-X-Received: by 2002:a25:2d41:: with SMTP id s1mr5018629ybe.459.1601490636277;
- Wed, 30 Sep 2020 11:30:36 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Pf9xXAIrRO5cVcksMMdEfgc1USQVFFM5TEuzISyiKWU=;
+        b=VmfZr6xCe483viz36s0vUpGNmGtLc8LK+LtktazuCL/Bcae4nWy+rs8eMjRe0PztVW
+         DC4gyDQJJzzS4fAJDPaq9+zEbIkT4JlEGi515RXhp1Z8PAxlmlAtmJCuQG74FEiSxjl6
+         35GaGH2wLim+ND2PcaIlow0wVF9Wpp0QNmu/rWldiC3ZWCQu++pObmwCA1XU3dwXHPuZ
+         J1LjkJiC3S9JnyrfXDvz/i4kVdIfuVnpmZiE35MhIeFKsxgkc8Ut/od2d12iGyu80seI
+         v7jDINii48RaXqLQfYgpy+g/2yidGbOAv2UCSZNpauQaInsIhwqez47plNuKrnF+qorw
+         Arjg==
+X-Gm-Message-State: AOAM532yJ9TZJTnsDaCty7/2fqIEi5lns8048blKPqkEfuPALTQzBDk+
+        GMPjzDDc9nAzWxr5z8LErl1jYVpquGxVDjycJNDNzTYSwG/P/g==
+X-Google-Smtp-Source: ABdhPJzY8z/dNxLuBSQHju8ZuZZxI5Y/vqHGvjBNSAaHa5BwKOajRozz8pPFALGe3TnOdAdQbYFgPWaN+ONWfdTYr18=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr4785593ybn.230.1601490870673;
+ Wed, 30 Sep 2020 11:34:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200929031845.751054-1-liuhangbin@gmail.com> <CAEf4BzYKtPgSxKqduax1mW1WfVXKuCEpbGKRFvXv7yNUmUm_=A@mail.gmail.com>
- <20200929094232.GG2531@dhcp-12-153.nay.redhat.com> <CAEf4BzZy9=x0neCOdat-CWO4nM3QYgWOKaZpN31Ce5Uz9m_qfg@mail.gmail.com>
- <20200930023405.GH2531@dhcp-12-153.nay.redhat.com>
-In-Reply-To: <20200930023405.GH2531@dhcp-12-153.nay.redhat.com>
+References: <CAMy7=ZVMPuXp6sOTPPtDYZbhan2PZDBUtsTTZ78PikxKMoBm9g@mail.gmail.com>
+ <CAEf4Bza00DMqu09vPL+1-_1361cw5HoDyE3pY6hSDkD0M-PGjA@mail.gmail.com>
+ <CAMy7=ZVCUJKFA5AbaE3DeyCNsWXffWwcYtA6d5t9R5kgnzPi2A@mail.gmail.com>
+ <CAEf4BzaTXz6s2xfV0swvcpKFz=U+K1DzD0+DEHSZ+e4Yf0xxPA@mail.gmail.com>
+ <CAMy7=ZUgWyZNVs6haL4MF2hZ24MuvfE_mEOXopgVZFGF_D8miA@mail.gmail.com>
+ <CAEf4BzZ=w++q3VVG8Mox4KsRHfY4P4J7G0Pnse2erWS6=OX3UQ@mail.gmail.com> <CAMy7=ZXdR5MgHLiqvgVyavVCLX3Erm=DURdEWZTYPMyJGC9Frw@mail.gmail.com>
+In-Reply-To: <CAMy7=ZXdR5MgHLiqvgVyavVCLX3Erm=DURdEWZTYPMyJGC9Frw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 30 Sep 2020 11:30:25 -0700
-Message-ID: <CAEf4BzYVVUq=eNwb4Z1JkVmRc4i+nxC4zWxbv2qGQAs-2cxkhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: export bpf_object__reuse_map() to libbpf api
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Date:   Wed, 30 Sep 2020 11:34:19 -0700
+Message-ID: <CAEf4Bza47eedA_PFyOs94ZJczqFxLgPGDBgq4HES=EMMcUF44g@mail.gmail.com>
+Subject: Re: Help using libbpf with kernel 4.14
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 7:34 PM Hangbin Liu <liuhangbin@gmail.com> wrote:
+On Tue, Sep 29, 2020 at 1:25 AM Yaniv Agman <yanivagman@gmail.com> wrote:
 >
-> On Tue, Sep 29, 2020 at 04:03:45PM -0700, Andrii Nakryiko wrote:
-> > > bpf_map__set_pin_path()
-> > > bpf_create_map_in_map()    <- create inner or outer map
-> > > bpf_map__reuse_fd(map, inner/outer_fd)
-> > > bpf_object__load(obj)
-> > >   - bpf_object__load_xattr()
-> > >     - bpf_object__create_maps()
-> > >       - if (map->fd >= 0)
-> > >           continue      <- this will skip pinning map
+> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=92=
+=D7=B3, 29 =D7=91=D7=A1=D7=A4=D7=98=D7=B3 2020 =D7=91-4:29 =D7=9E=D7=90=D7=
+=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
+> <=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
 > >
-> > so maybe that's the part that needs to be fixed?..
->
-> Hmm...maybe, let me see
->
+> > On Mon, Sep 28, 2020 at 5:01 PM Yaniv Agman <yanivagman@gmail.com> wrot=
+e:
+> > >
+> > > Hi Andrii,
+> > >
+> > > I used BPF skeleton as you suggested, which did work with kernel 4.19
+> > > but not with 4.14.
+> > > I used the exact same program,  same environment, only changed the
+> > > kernel version.
+> > > The error message I get on 4.14:
+> > >
+> > > libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+> > > libbpf: failed to determine kprobe perf type: No such file or directo=
+ry
 > >
-> > I'm still not sure. And to be honest your examples are still a bit too
-> > succinct for me to follow where the problem is exactly. Can you please
-> > elaborate a bit more?
->
-> Let's take iproute2 legacy map for example, if it's a map-in-map type with
-> pin path defined. In user space we could do like:
->
-> if (bpf_obj_get(pathname) < 0) {
->         bpf_create_map_in_map();
->         bpf_map__reuse_fd(map, map_fd);
-> }
-> bpf_map__set_pin_path(map, pathname);
-> bpf_object__load(obj)
->
-> So in libbpf we need
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 32dc444224d8..5412aa7169db 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4215,7 +4215,7 @@ bpf_object__create_maps(struct bpf_object *obj)
->                 if (map->fd >= 0) {
->                         pr_debug("map '%s': skipping creation (preset fd=%d)\n",
->                                  map->name, map->fd);
-> -                       continue;
-> +                       goto check_pin_path;
->                 }
->
->                 err = bpf_object__create_map(obj, map);
-> @@ -4258,6 +4258,7 @@ bpf_object__create_maps(struct bpf_object *obj)
->                         map->init_slots_sz = 0;
->                 }
->
-> +check_pin_path:
->                 if (map->pin_path && !map->pinned) {
->                         err = bpf_map__pin(map, NULL);
->                         if (err) {
->
->
-> Do you think if this change be better?
+> > This means that your kernel doesn't support attaching to
+> > kprobe/tracepoint through perf_event subsystem. That's currently the
+> > only way that libbpf supports for kprobe/tracapoint programs. It was
+> > added in 4.17 kernel, which explains what is happening in your case.
+> > It is still possible to attach to kprobe using legacy ways, but libbpf
+> > doesn't provide that out of the box. We had a discussion a while ago
+> > (about 1 year ago) about adding that to libbpf, but at that time we
+> > didn't have a good testing infrastructure to validate such legacy
+> > interfaces, plus it's a bit on the unsafe side as far as APIs go
+> > (there is no auto-detachment and cleanup with how old kernels allow to
+> > do kprobe/tracepoint). But we might reconsider, given it's not a first
+> > time I see people get confused and blocked by this.
+> >
+> > Anyways, here's how you can do it without waiting for libbpf to do
+> > this out of the box:
+> >
+> >
 
-Yes, of course. Just don't do it through use of goto. Guard map
-creation with that if instead.
+[...]
+
+> >
+> >
+> > Then you'd use it in your application as:
+> >
+> > ...
+> >
+> >   skel->links.handler =3D attach_kprobe_legacy(
+> >       skel->progs.handler, "do_sys_open", false /* is_kretprobe */);
+> >   if (!skel->links.handler) {
+> >     fprintf(stderr, "Failed to attach kprobe using legacy debugfs API!\=
+n");
+> >     err =3D 1;
+> >     goto out;
+> >   }
+> >
+> >   ... kprobe is attached here ...
+> >
+> > out:
+> >   /* first clean up step */
+> >   bpf_link__destroy(skel->links.handler);
+> >   /* this is second necessary clean up step */
+> >   remove_kprobe_event("do_sys_open", false /* is_kretprobe */);
+> >
+> >
+> > Let me know if that worked.
+> >
+>
+> Thanks Andrii,
+>
+> I made a small change for the code to compile:
+> skel->links.handler to skel->links.kprobe__do_sys_open and same for skel-=
+>progs
+>
+> After compiling the code, I'm now getting the following error:
+> failed to create perf event for kprobe ID 1930: -2
+> Failed to attach kprobe using legacy debugfs API!
+> failed to remove kprobe '-:kprobes/do_sys_open': -2
+
+I've successfully used that code on the kernel as old as 4.9, so this
+must be something about your kernel configuration. E.g., check that
+CONFIG_KPROBE_EVENTS is enabled.
 
 >
-> Thanks
-> Hangbin
+> As our application is written in go,
+> I hoped libbpf would support kernel 3.14 out of the box, so we can
+> just call libbpf functions using cgo wrappers.
+> I can do further checks if you'd like, but I think we will also
+> consider updating the minimal kernel version requirement to 4.18
+
+It's up to you. Of course using a more recent kernel would be much
+better, if you can get away with it.
+
+>
+> > > libbpf: prog 'kprobe__do_sys_open': failed to create kprobe
+> > > 'do_sys_open' perf event: No such file or directory
+> > > libbpf: failed to auto-attach program 'kprobe__do_sys_open': -2
+> > > failed to attach BPF programs: No such file or directory
+> > >
+> >
+> > [...]
