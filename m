@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DE227EC88
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 17:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4C427EC8F
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 17:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730519AbgI3PUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Sep 2020 11:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
+        id S1729434AbgI3PUo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Sep 2020 11:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729395AbgI3PUg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Sep 2020 11:20:36 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BF3C061755;
-        Wed, 30 Sep 2020 08:20:36 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id z13so2191886iom.8;
-        Wed, 30 Sep 2020 08:20:36 -0700 (PDT)
+        with ESMTP id S1729432AbgI3PUj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Sep 2020 11:20:39 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A852C061755;
+        Wed, 30 Sep 2020 08:20:39 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id j2so2201287ioj.7;
+        Wed, 30 Sep 2020 08:20:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CqHR3iMjvi/+BrsGXxXP4f66oyzEMJKnPL1FtLSH8L8=;
-        b=d713WqGDCNpGjBvAOshn0SivS92z6rxcw8GKKckeY3VNOinC44xgP3uWRFu/+Xz+sy
-         YvKgTk9LhXN6gbsUAnDE/rUFNfwsfMu4cmCa6xEjDI1k/cLU1/VnkcNP6gIDik19Z92y
-         snHokw11f7ndkL8ALgMO+eqmOs9+9bk1FW5Nw6UZOdke5K6KNy99IQn1kiztsKvkRQAC
-         U+/KHgr7bEt6ibWOe/jxKZY7DHpguxEHGngrFAvo1CGhHHtzCJp7QAVreX4oDspyABaD
-         HAPm58H9wdqXC6JaeMNL1vYW6yILYMOF2Cq3d+fR1V0g0YzXoIwjMYMtk/UpYtYAH+Hc
-         WjgQ==
+        bh=jREIpX4zm+bXQV4GY7erFrXt82ePUSIl6wMoQiJQey4=;
+        b=h9ZjX4eGPqcJOpfWYc3rRkbc0/uIBIA0z208Muoytgd2Zkc4s/wN8o1um7Vh0YsWAR
+         +2Y/YgZE292Y9q3TXdoGRaaHanr4WAnFP5uFMmQ+45q1ordQI0w/+irOShjPxp/4/V7/
+         +XoFy0al9TGWw+kzoT352r4cmnvjksJMI83BvANTNQR0N8NkSTa41JWyylb5b7CtkpkA
+         pJmWTT1mSTk5V/y7CyHIrkwOEXOqmuAVJphlBeMaBGYW5N09gtmFrw/ZI6MkLy8Dnvai
+         YvrUK8uvDZiPouOAaZaO1FLE2/42ujQDkI4hfPyKpRRDUyD7Kz2MB2pvSHPudFbVWiHE
+         ps6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CqHR3iMjvi/+BrsGXxXP4f66oyzEMJKnPL1FtLSH8L8=;
-        b=Ahiz61DjDHM0XwqrEErye4COYzUjhVaDT9lqs87xyHiNzdg843XPwTllljkF+ll+tg
-         NRTBeClQC+wdkKxzI7Efq+pNICS4wvF+HNd8+V2GvkJuK3BsJMeFAhXt4iazYvjdVn7Y
-         xJLmGaz8q332G0YMqExcdc383//PatmsWY+pJQvUPEI1tl+tDDAhVKeZGypLyo4nAErK
-         bcYpvZ9OGLH4m6I3yBv6GMXf+GlcvZlY3TKZjWOiJ580ksEs1LWOccO3X3k0n9YJ3RVq
-         a5zwAErkLKhAOy70xFSnn3nt2NxndCuPd0Wh9UEwHOcoTCNUaWf0db2CT4pUh9mGKmP6
-         S+Lg==
-X-Gm-Message-State: AOAM532aMJzmOOQw1pDW+ekcXBTnN0vdu2csbexPnK5Gdse0wVTG4PJL
-        QeLxwJ9sIszHFprgOSt4BOg=
-X-Google-Smtp-Source: ABdhPJzZB8L46jzftLd5djIuk3m9qq3lXlQEDaXsco/Ve7fJaCZ1l/d+c4jPWYiXOfyIhv74FtKxlg==
-X-Received: by 2002:a02:b149:: with SMTP id s9mr2430538jah.80.1601479235320;
-        Wed, 30 Sep 2020 08:20:35 -0700 (PDT)
+        bh=jREIpX4zm+bXQV4GY7erFrXt82ePUSIl6wMoQiJQey4=;
+        b=tkae90etAn/gB/TnpvVaGPIwMAwaZ4ynFYFnop3rpYp1RQotmJ3svwNni/x1pgdziO
+         DfjmPUr259IBNVIBBXq6rIyJEoNJv47QGNFst0P9TSPPuhO3pBalclUZmo0xvOwR4mIx
+         C6yHi7kTMGfpagORFwLs9AY3ICp2z4k9hNqAb3poai5mVEuRQ+708RYWn3ZuHFwAjQhb
+         9w9xhlcIgKldl/ZF/aA+v7CWl6Bg07fPYYng2XPBiEtgiMyEgX+wJDS+JrG5BPA5v/y0
+         +Io/B2ieakrKWfpZlMIfZDPVPxYF3+kCOOHeGxbSoCAij2IqWlOoB6P/ORzjbCl//LIP
+         +IQQ==
+X-Gm-Message-State: AOAM530HwKY8VkW/BtZ5dL2cWazCzIEIVyRlpViXxXoklRi7KLdqAMoE
+        xUgquBpxZfwUd5VBDPq+3Iw=
+X-Google-Smtp-Source: ABdhPJwUId5jwICkoihvxugKENCdWV2ugU3LmdKq2serskfp9gUu2bmLJhqPV/YGR57wE3HQ4IzBBw==
+X-Received: by 2002:a5d:80d6:: with SMTP id h22mr2066435ior.154.1601479238534;
+        Wed, 30 Sep 2020 08:20:38 -0700 (PDT)
 Received: from localhost.localdomain (ip-99-203-15-156.pools.cgn.spcsdns.net. [99.203.15.156])
-        by smtp.gmail.com with ESMTPSA id t10sm770788iog.49.2020.09.30.08.20.32
+        by smtp.gmail.com with ESMTPSA id t10sm770788iog.49.2020.09.30.08.20.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2020 08:20:34 -0700 (PDT)
+        Wed, 30 Sep 2020 08:20:37 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     containers@lists.linux-foundation.org
 Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
@@ -66,274 +66,202 @@ Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
         Tycho Andersen <tycho@tycho.pizza>,
         Valentin Rothberg <vrothber@redhat.com>,
         Will Drewry <wad@chromium.org>
-Subject: [PATCH v3 seccomp 4/5] selftests/seccomp: Compare bitmap vs filter overhead
-Date:   Wed, 30 Sep 2020 10:19:15 -0500
-Message-Id: <b6e7dc0d668fec654475382beabaf5f5cf56df3b.1601478774.git.yifeifz2@illinois.edu>
+Subject: [PATCH v3 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+Date:   Wed, 30 Sep 2020 10:19:16 -0500
+Message-Id: <d3d1c05ea0be2b192f480ec52ad64bffbb22dc9d.1601478774.git.yifeifz2@illinois.edu>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1601478774.git.yifeifz2@illinois.edu>
 References: <cover.1601478774.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: YiFei Zhu <yifeifz2@illinois.edu>
 
-As part of the seccomp benchmarking, include the expectations with
-regard to the timing behavior of the constant action bitmaps, and report
-inconsistencies better.
+Currently the kernel does not provide an infrastructure to translate
+architecture numbers to a human-readable name. Translating syscall
+numbers to syscall names is possible through FTRACE_SYSCALL
+infrastructure but it does not provide support for compat syscalls.
 
-Example output with constant action bitmaps on x86:
+This will create a file for each PID as /proc/pid/seccomp_cache.
+The file will be empty when no seccomp filters are loaded, or be
+in the format of:
+<arch name> <decimal syscall number> <ALLOW | FILTER>
+where ALLOW means the cache is guaranteed to allow the syscall,
+and filter means the cache will pass the syscall to the BPF filter.
 
-$ sudo ./seccomp_benchmark 100000000
-Current BPF sysctl settings:
-net.core.bpf_jit_enable = 1
-net.core.bpf_jit_harden = 0
-Benchmarking 200000000 syscalls...
-129.359381409 - 0.008724424 = 129350656985 (129.4s)
-getpid native: 646 ns
-264.385890006 - 129.360453229 = 135025436777 (135.0s)
-getpid RET_ALLOW 1 filter (bitmap): 675 ns
-399.400511893 - 264.387045901 = 135013465992 (135.0s)
-getpid RET_ALLOW 2 filters (bitmap): 675 ns
-545.872866260 - 399.401718327 = 146471147933 (146.5s)
-getpid RET_ALLOW 3 filters (full): 732 ns
-696.337101319 - 545.874097681 = 150463003638 (150.5s)
-getpid RET_ALLOW 4 filters (full): 752 ns
-Estimated total seccomp overhead for 1 bitmapped filter: 29 ns
-Estimated total seccomp overhead for 2 bitmapped filters: 29 ns
-Estimated total seccomp overhead for 3 full filters: 86 ns
-Estimated total seccomp overhead for 4 full filters: 106 ns
-Estimated seccomp entry overhead: 29 ns
-Estimated seccomp per-filter overhead (last 2 diff): 20 ns
-Estimated seccomp per-filter overhead (filters / 4): 19 ns
-Expectations:
-	native ≤ 1 bitmap (646 ≤ 675): ✔️
-	native ≤ 1 filter (646 ≤ 732): ✔️
-	per-filter (last 2 diff) ≈ per-filter (filters / 4) (20 ≈ 19): ✔️
-	1 bitmapped ≈ 2 bitmapped (29 ≈ 29): ✔️
-	entry ≈ 1 bitmapped (29 ≈ 29): ✔️
-	entry ≈ 2 bitmapped (29 ≈ 29): ✔️
-	native + entry + (per filter * 4) ≈ 4 filters total (755 ≈ 752): ✔️
+For the docker default profile on x86_64 it looks like:
+x86_64 0 ALLOW
+x86_64 1 ALLOW
+x86_64 2 ALLOW
+x86_64 3 ALLOW
+[...]
+x86_64 132 ALLOW
+x86_64 133 ALLOW
+x86_64 134 FILTER
+x86_64 135 FILTER
+x86_64 136 FILTER
+x86_64 137 ALLOW
+x86_64 138 ALLOW
+x86_64 139 FILTER
+x86_64 140 ALLOW
+x86_64 141 ALLOW
+[...]
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
-[YiFei: Changed commit message to show stats for this patch series]
+This file is guarded by CONFIG_DEBUG_SECCOMP_CACHE with a default
+of N because I think certain users of seccomp might not want the
+application to know which syscalls are definitely usable. For
+the same reason, it is also guarded by CAP_SYS_ADMIN.
+
+Suggested-by: Jann Horn <jannh@google.com>
+Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
 Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 ---
- .../selftests/seccomp/seccomp_benchmark.c     | 151 +++++++++++++++---
- tools/testing/selftests/seccomp/settings      |   2 +-
- 2 files changed, 130 insertions(+), 23 deletions(-)
+ arch/Kconfig                   | 15 +++++++++++
+ arch/x86/include/asm/seccomp.h |  3 +++
+ fs/proc/base.c                 |  3 +++
+ include/linux/seccomp.h        |  5 ++++
+ kernel/seccomp.c               | 46 ++++++++++++++++++++++++++++++++++
+ 5 files changed, 72 insertions(+)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_benchmark.c b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-index 91f5a89cadac..fcc806585266 100644
---- a/tools/testing/selftests/seccomp/seccomp_benchmark.c
-+++ b/tools/testing/selftests/seccomp/seccomp_benchmark.c
-@@ -4,12 +4,16 @@
-  */
- #define _GNU_SOURCE
- #include <assert.h>
-+#include <limits.h>
-+#include <stdbool.h>
-+#include <stddef.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <time.h>
- #include <unistd.h>
- #include <linux/filter.h>
- #include <linux/seccomp.h>
-+#include <sys/param.h>
- #include <sys/prctl.h>
- #include <sys/syscall.h>
- #include <sys/types.h>
-@@ -70,18 +74,74 @@ unsigned long long calibrate(void)
- 	return samples * seconds;
+diff --git a/arch/Kconfig b/arch/Kconfig
+index ca867b2a5d71..b840cadcc882 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -478,6 +478,7 @@ config HAVE_ARCH_SECCOMP_CACHE_NR_ONLY
+ 	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
+ 	  - SECCOMP_ARCH_DEFAULT
+ 	  - SECCOMP_ARCH_DEFAULT_NR
++	  - SECCOMP_ARCH_DEFAULT_NAME
+ 
+ config SECCOMP
+ 	prompt "Enable seccomp to safely execute untrusted bytecode"
+@@ -532,6 +533,20 @@ config SECCOMP_CACHE_NR_ONLY
+ 
+ endchoice
+ 
++config DEBUG_SECCOMP_CACHE
++	bool "Show seccomp filter cache status in /proc/pid/seccomp_cache"
++	depends on SECCOMP_CACHE_NR_ONLY
++	depends on PROC_FS
++	help
++	  This is enables /proc/pid/seccomp_cache interface to monitor
++	  seccomp cache data. The file format is subject to change. Reading
++	  the file requires CAP_SYS_ADMIN.
++
++	  This option is for debugging only. Enabling present the risk that
++	  an adversary may be able to infer the seccomp filter logic.
++
++	  If unsure, say N.
++
+ config HAVE_ARCH_STACKLEAK
+ 	bool
+ 	help
+diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
+index 7b3a58271656..33ccc074be7a 100644
+--- a/arch/x86/include/asm/seccomp.h
++++ b/arch/x86/include/asm/seccomp.h
+@@ -19,13 +19,16 @@
+ #ifdef CONFIG_X86_64
+ # define SECCOMP_ARCH_DEFAULT			AUDIT_ARCH_X86_64
+ # define SECCOMP_ARCH_DEFAULT_NR		NR_syscalls
++# define SECCOMP_ARCH_DEFAULT_NAME		"x86_64"
+ # ifdef CONFIG_COMPAT
+ #  define SECCOMP_ARCH_COMPAT			AUDIT_ARCH_I386
+ #  define SECCOMP_ARCH_COMPAT_NR		IA32_NR_syscalls
++#  define SECCOMP_ARCH_COMPAT_NAME		"x86_32"
+ # endif
+ #else /* !CONFIG_X86_64 */
+ # define SECCOMP_ARCH_DEFAULT		AUDIT_ARCH_I386
+ # define SECCOMP_ARCH_DEFAULT_NR	NR_syscalls
++# define SECCOMP_ARCH_COMPAT_NAME		"x86_32"
+ #endif
+ 
+ #include <asm-generic/seccomp.h>
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 617db4e0faa0..c60c5fce70fa 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3258,6 +3258,9 @@ static const struct pid_entry tgid_base_stuff[] = {
+ #ifdef CONFIG_PROC_PID_ARCH_STATUS
+ 	ONE("arch_status", S_IRUGO, proc_pid_arch_status),
+ #endif
++#ifdef CONFIG_DEBUG_SECCOMP_CACHE
++	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
++#endif
+ };
+ 
+ static int proc_tgid_base_readdir(struct file *file, struct dir_context *ctx)
+diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
+index 02aef2844c38..c35430f5f553 100644
+--- a/include/linux/seccomp.h
++++ b/include/linux/seccomp.h
+@@ -121,4 +121,9 @@ static inline long seccomp_get_metadata(struct task_struct *task,
+ 	return -EINVAL;
  }
+ #endif /* CONFIG_SECCOMP_FILTER && CONFIG_CHECKPOINT_RESTORE */
++
++#ifdef CONFIG_DEBUG_SECCOMP_CACHE
++int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
++			   struct pid *pid, struct task_struct *task);
++#endif
+ #endif /* _LINUX_SECCOMP_H */
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index bed3b2a7f6c8..c5ca5e30281b 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -2297,3 +2297,49 @@ static int __init seccomp_sysctl_init(void)
+ device_initcall(seccomp_sysctl_init)
  
-+bool approx(int i_one, int i_two)
+ #endif /* CONFIG_SYSCTL */
++
++#ifdef CONFIG_DEBUG_SECCOMP_CACHE
++/* Currently CONFIG_DEBUG_SECCOMP_CACHE implies CONFIG_SECCOMP_CACHE_NR_ONLY */
++static void proc_pid_seccomp_cache_arch(struct seq_file *m, const char *name,
++					const void *bitmap, size_t bitmap_size)
 +{
-+	double one = i_one, one_bump = one * 0.01;
-+	double two = i_two, two_bump = two * 0.01;
++	int nr;
 +
-+	one_bump = one + MAX(one_bump, 2.0);
-+	two_bump = two + MAX(two_bump, 2.0);
++	for (nr = 0; nr < bitmap_size; nr++) {
++		bool cached = test_bit(nr, bitmap);
++		char *status = cached ? "ALLOW" : "FILTER";
 +
-+	/* Equal to, or within 1% or 2 digits */
-+	if (one == two ||
-+	    (one > two && one <= two_bump) ||
-+	    (two > one && two <= one_bump))
-+		return true;
-+	return false;
++		seq_printf(m, "%s %d %s\n", name, nr, status);
++	}
 +}
 +
-+bool le(int i_one, int i_two)
++int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
++			   struct pid *pid, struct task_struct *task)
 +{
-+	if (i_one <= i_two)
-+		return true;
-+	return false;
++	struct seccomp_filter *f;
++
++	/*
++	 * We don't want some sandboxed process know what their seccomp
++	 * filters consist of.
++	 */
++	if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
++		return -EACCES;
++
++	f = READ_ONCE(task->seccomp.filter);
++	if (!f)
++		return 0;
++
++#ifdef SECCOMP_ARCH_DEFAULT
++	proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_DEFAULT_NAME,
++				    f->cache.syscall_allow_default,
++				    SECCOMP_ARCH_DEFAULT_NR);
++#endif /* SECCOMP_ARCH_DEFAULT */
++
++#ifdef SECCOMP_ARCH_COMPAT
++	proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_COMPAT_NAME,
++				    f->cache.syscall_allow_compat,
++				    SECCOMP_ARCH_COMPAT_NR);
++#endif /* SECCOMP_ARCH_COMPAT */
++	return 0;
 +}
-+
-+long compare(const char *name_one, const char *name_eval, const char *name_two,
-+	     unsigned long long one, bool (*eval)(int, int), unsigned long long two)
-+{
-+	bool good;
-+
-+	printf("\t%s %s %s (%lld %s %lld): ", name_one, name_eval, name_two,
-+	       (long long)one, name_eval, (long long)two);
-+	if (one > INT_MAX) {
-+		printf("Miscalculation! Measurement went negative: %lld\n", (long long)one);
-+		return 1;
-+	}
-+	if (two > INT_MAX) {
-+		printf("Miscalculation! Measurement went negative: %lld\n", (long long)two);
-+		return 1;
-+	}
-+
-+	good = eval(one, two);
-+	printf("%s\n", good ? "✔️" : "❌");
-+
-+	return good ? 0 : 1;
-+}
-+
- int main(int argc, char *argv[])
- {
-+	struct sock_filter bitmap_filter[] = {
-+		BPF_STMT(BPF_LD|BPF_W|BPF_ABS, offsetof(struct seccomp_data, nr)),
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-+	};
-+	struct sock_fprog bitmap_prog = {
-+		.len = (unsigned short)ARRAY_SIZE(bitmap_filter),
-+		.filter = bitmap_filter,
-+	};
- 	struct sock_filter filter[] = {
-+		BPF_STMT(BPF_LD|BPF_W|BPF_ABS, offsetof(struct seccomp_data, args[0])),
- 		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
- 	};
- 	struct sock_fprog prog = {
- 		.len = (unsigned short)ARRAY_SIZE(filter),
- 		.filter = filter,
- 	};
--	long ret;
--	unsigned long long samples;
--	unsigned long long native, filter1, filter2;
-+
-+	long ret, bits;
-+	unsigned long long samples, calc;
-+	unsigned long long native, filter1, filter2, bitmap1, bitmap2;
-+	unsigned long long entry, per_filter1, per_filter2;
- 
- 	printf("Current BPF sysctl settings:\n");
- 	system("sysctl net.core.bpf_jit_enable");
-@@ -101,35 +161,82 @@ int main(int argc, char *argv[])
- 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
- 	assert(ret == 0);
- 
--	/* One filter */
--	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog);
-+	/* One filter resulting in a bitmap */
-+	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &bitmap_prog);
- 	assert(ret == 0);
- 
--	filter1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
--	printf("getpid RET_ALLOW 1 filter: %llu ns\n", filter1);
-+	bitmap1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
-+	printf("getpid RET_ALLOW 1 filter (bitmap): %llu ns\n", bitmap1);
-+
-+	/* Second filter resulting in a bitmap */
-+	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &bitmap_prog);
-+	assert(ret == 0);
- 
--	if (filter1 == native)
--		printf("No overhead measured!? Try running again with more samples.\n");
-+	bitmap2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
-+	printf("getpid RET_ALLOW 2 filters (bitmap): %llu ns\n", bitmap2);
- 
--	/* Two filters */
-+	/* Third filter, can no longer be converted to bitmap */
- 	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &prog);
- 	assert(ret == 0);
- 
--	filter2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
--	printf("getpid RET_ALLOW 2 filters: %llu ns\n", filter2);
--
--	/* Calculations */
--	printf("Estimated total seccomp overhead for 1 filter: %llu ns\n",
--		filter1 - native);
-+	filter1 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
-+	printf("getpid RET_ALLOW 3 filters (full): %llu ns\n", filter1);
- 
--	printf("Estimated total seccomp overhead for 2 filters: %llu ns\n",
--		filter2 - native);
-+	/* Fourth filter, can not be converted to bitmap because of filter 3 */
-+	ret = prctl(PR_SET_SECCOMP, SECCOMP_MODE_FILTER, &bitmap_prog);
-+	assert(ret == 0);
- 
--	printf("Estimated seccomp per-filter overhead: %llu ns\n",
--		filter2 - filter1);
-+	filter2 = timing(CLOCK_PROCESS_CPUTIME_ID, samples) / samples;
-+	printf("getpid RET_ALLOW 4 filters (full): %llu ns\n", filter2);
-+
-+	/* Estimations */
-+#define ESTIMATE(fmt, var, what)	do {			\
-+		var = (what);					\
-+		printf("Estimated " fmt ": %llu ns\n", var);	\
-+		if (var > INT_MAX)				\
-+			goto more_samples;			\
-+	} while (0)
-+
-+	ESTIMATE("total seccomp overhead for 1 bitmapped filter", calc,
-+		 bitmap1 - native);
-+	ESTIMATE("total seccomp overhead for 2 bitmapped filters", calc,
-+		 bitmap2 - native);
-+	ESTIMATE("total seccomp overhead for 3 full filters", calc,
-+		 filter1 - native);
-+	ESTIMATE("total seccomp overhead for 4 full filters", calc,
-+		 filter2 - native);
-+	ESTIMATE("seccomp entry overhead", entry,
-+		 bitmap1 - native - (bitmap2 - bitmap1));
-+	ESTIMATE("seccomp per-filter overhead (last 2 diff)", per_filter1,
-+		 filter2 - filter1);
-+	ESTIMATE("seccomp per-filter overhead (filters / 4)", per_filter2,
-+		 (filter2 - native - entry) / 4);
-+
-+	printf("Expectations:\n");
-+	ret |= compare("native", "≤", "1 bitmap", native, le, bitmap1);
-+	bits = compare("native", "≤", "1 filter", native, le, filter1);
-+	if (bits)
-+		goto more_samples;
-+
-+	ret |= compare("per-filter (last 2 diff)", "≈", "per-filter (filters / 4)",
-+			per_filter1, approx, per_filter2);
-+
-+	bits = compare("1 bitmapped", "≈", "2 bitmapped",
-+			bitmap1 - native, approx, bitmap2 - native);
-+	if (bits) {
-+		printf("Skipping constant action bitmap expectations: they appear unsupported.\n");
-+		goto out;
-+	}
- 
--	printf("Estimated seccomp entry overhead: %llu ns\n",
--		filter1 - native - (filter2 - filter1));
-+	ret |= compare("entry", "≈", "1 bitmapped", entry, approx, bitmap1 - native);
-+	ret |= compare("entry", "≈", "2 bitmapped", entry, approx, bitmap2 - native);
-+	ret |= compare("native + entry + (per filter * 4)", "≈", "4 filters total",
-+			entry + (per_filter1 * 4) + native, approx, filter2);
-+	if (ret == 0)
-+		goto out;
- 
-+more_samples:
-+	printf("Saw unexpected benchmark result. Try running again with more samples?\n");
-+out:
- 	return 0;
- }
-diff --git a/tools/testing/selftests/seccomp/settings b/tools/testing/selftests/seccomp/settings
-index ba4d85f74cd6..6091b45d226b 100644
---- a/tools/testing/selftests/seccomp/settings
-+++ b/tools/testing/selftests/seccomp/settings
-@@ -1 +1 @@
--timeout=90
-+timeout=120
++#endif /* CONFIG_DEBUG_SECCOMP_CACHE */
 -- 
 2.28.0
 
