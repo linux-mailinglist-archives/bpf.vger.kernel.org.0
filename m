@@ -2,121 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DF127DDB7
-	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 03:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A0A27DE36
+	for <lists+bpf@lfdr.de>; Wed, 30 Sep 2020 04:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgI3BYf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Sep 2020 21:24:35 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52170 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728149AbgI3BYf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Sep 2020 21:24:35 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08U1OIuo001534;
-        Tue, 29 Sep 2020 18:24:20 -0700
+        id S1729395AbgI3CFt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Sep 2020 22:05:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56182 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729322AbgI3CFt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 29 Sep 2020 22:05:49 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08U25Xwo017994;
+        Tue, 29 Sep 2020 19:05:34 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=W38YY2tbpZpbwA2nrMq5emzSn3m9ZM9HoByh0Oy2Apc=;
- b=elG0t9JeKg9tl/kEXJmC+XCuVN67Bth3nmHrDQmiYu0SzBAp4rLCzfLFr/UHgXwQ+btB
- heRi0DlzFE5vcIqF7lq3PXHiye/+tmVNbMK5L+0SU9q/UI++r/3uz8enVvJ5sIDiKZU5
- 3L3ymQOZtPcL48Pv5B5ElXziRytV2mLfVjc= 
+ mime-version; s=facebook; bh=4Dh81dKIOhPmt5KxnSk+lckfBdDiuXgF+9OkpgFaBZg=;
+ b=S9u/j5yG20oZh2CWdtDzhQEBRQ9EkgIvJ0f8djGn7TN/Ocm3Lp3YS1U8y8mrgb2FarLd
+ HMT8NkzMC2hhqImtQlM2mYT78tPzXg0JgVw/sbbZXBlDnFVs5m7zv58P/soYzuCI9BUq
+ GV+z6WMb5HpTDsGFmRHaAPMUijFR6do6ifc= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33t3fhgfu0-2
+        by m0001303.ppops.net with ESMTP id 33tshr5hgf-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 29 Sep 2020 18:24:20 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+        Tue, 29 Sep 2020 19:05:34 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 29 Sep 2020 18:24:14 -0700
+ 15.1.1979.3; Tue, 29 Sep 2020 19:05:31 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=it/cZrHMUwjfdb+sNDbZhktfiWikHuRdMoAX4ScCEa/YtC5JRUJkSiEXaMCE3hFgMKCcAqJ0D2UgZ7osoqd67ivERjPNKF598Er6TjPGUZF7/Koq8fdl2IHFOvOQgQh8d0FdGObsVCWmalKqTJjB1W3BWMeuab1O3w75IDFYtC+uiMUs72tbuy4x28fJCmliLG7phst9mRZS6uzxvOELKBbZL+SOU6/Qnvco2ZyoSofgMfb11XtH2fSTcH1Gixc+lXfZ6yadbEEuRbpzcfx4pIbz2+OHQ4vrf3nvEaS59rWo/FEPI+MW9f+FDnwsRY1P5ndVQU/mYSiDxO9R9vlLmQ==
+ b=HIlaWdms80pxEoC7cRJ8xo+tZK3dMDn60EUmzKmJm6hiK+j5s3L7CTSf7KwvHx/LT5FyfDnKEV6XvfbzO//RdWiXjH4ogYlXWeyKeGNPvThg0K8Lpa+Ya7oFblw1P0jxEqqZVQQCLS0WmTYT/jMMsCw9uDZ2cz/finLvQ5fFekcoLqBSJWeASClxXi6w+3E+1tewkBWQD78tuwmZznxdkBXTfQnru8F95zyCJT6hdwO83KseGI8v9TxCVX6AD0owHIs/lZUn8ckzqSbgv3wyewqk0d+VibNO/YAaV+gC/WoVfBmk7p2heUr+nLLNHG/M0nXjRsfWSVczifsxdJFCuA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W38YY2tbpZpbwA2nrMq5emzSn3m9ZM9HoByh0Oy2Apc=;
- b=D0zW0xk1MiKXo1wrv/t98Rk3JpVxjDyaXEPW6DDyYKDpDtCW91O5Pdmi8z5zZGH5G1Q5H6yFj3Ifnx1z09ZovaI902jr/mi5QLo7gApsm7rw2N4q/D36Sl0IpcHOdVGTA1w6sWn/iZVKpcQK4cMCx+AnDT5Fnyx79DsSC0MqulD7dzKQUUNIzHjkIWk6gzu6YEooPJtdlgtyM6shbEXfhaGm8hDU/ubAG4t1OFUjXLjnDoki7Dc/9cLEchsKduci3zbMewKk/H39iF8dUeDraV4IPhWsys7fkZYBjFVs7AQlNS8zk7AQP3E63xf54u3bYwUZ9PLwNW9adnVLt9gjDA==
+ bh=4Dh81dKIOhPmt5KxnSk+lckfBdDiuXgF+9OkpgFaBZg=;
+ b=DjFGVmtTQzjfsS4rXFBiohk4MVFs2VjIb40/Zkl4wq7cdA4IYfWz0u6DXrMe9l6A4dLqJCSMStaakZPl4ugJeorlleg66inNoxFJKm6NRQzzsxta13EH3j6J79rkIYKURz5iafCj1FqwMqhRif0cQC3r9EbD7QVf1pDsLgzHxXUpiPMCCc6j8p4jCwBQMU/OO3XB9mz8Y/wF3lT8oGVayr3rSfypaNzCgLls03Y7U2PHT0YI3tK6MfA+LE7in45fq+S0IohCZfl2QQlkSYSY8Tr39Cf1dJjqKsIug+CW6G+lS247WoLmAVYs4DbmPK0lPb+bsFZyBBZ3SceYAfq8dA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W38YY2tbpZpbwA2nrMq5emzSn3m9ZM9HoByh0Oy2Apc=;
- b=bYXh9wyYuMUS+tt3wxsJawohM+XixbwxExELLjw4nr4CoQpCvBceeYTlugHETVQ+VFkSRozXX0Qclu+aWeeXjOb9dXboSt5o3BslcQBHJDG2HYtWM38pJE5Ua7aeeXFv5H2Bxc4RQ7kaRCFzeJzmhvbUszhCVmHLroVQEQzu+vM=
+ bh=4Dh81dKIOhPmt5KxnSk+lckfBdDiuXgF+9OkpgFaBZg=;
+ b=T1tWAFtpSXrsWUgF6B6+y4a0NwRhydaG97f31J5CAxunrAyA7EgbO7xM6G5KN7tocqsreTO8IPUG3oHcztuIivbAP2j5/CPrEQviAlXmy1be6XefP9zHm74hZtu/Vis2mGy8fqsZHYwL2WR6Q26EIZTpv1mwFihSuzzV88+8EOs=
 Authentication-Results: iogearbox.net; dkim=none (message not signed)
  header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
 Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB4085.namprd15.prod.outlook.com (2603:10b6:a02:bf::20) with
+ by BYAPR15MB3461.namprd15.prod.outlook.com (2603:10b6:a03:109::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.26; Wed, 30 Sep
- 2020 01:24:13 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.32; Wed, 30 Sep
+ 2020 02:05:30 +0000
 Received: from BY5PR15MB3571.namprd15.prod.outlook.com
  ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
  ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3412.029; Wed, 30 Sep 2020
- 01:24:13 +0000
-Date:   Tue, 29 Sep 2020 18:24:07 -0700
+ 02:05:30 +0000
+Date:   Tue, 29 Sep 2020 19:05:24 -0700
 From:   Martin KaFai Lau <kafai@fb.com>
 To:     Daniel Borkmann <daniel@iogearbox.net>
 CC:     <ast@kernel.org>, <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v3 1/6] bpf: add classid helper only based on
- skb->sk
-Message-ID: <20200930012407.cokrgx7lyxriwn7n@kafai-mbp.dhcp.thefacebook.com>
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/6] bpf, net: rework cookie generator as
+ per-cpu one
+Message-ID: <20200930020511.7isjpqenev6p2lha@kafai-mbp.dhcp.thefacebook.com>
 References: <cover.1601414174.git.daniel@iogearbox.net>
- <8fcdb28a1c5ee50dcac70414a7095cefe2305a7c.1601414174.git.daniel@iogearbox.net>
+ <c7bb9920eee2f05df92bfd7c462b9059fb7ff26c.1601414174.git.daniel@iogearbox.net>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8fcdb28a1c5ee50dcac70414a7095cefe2305a7c.1601414174.git.daniel@iogearbox.net>
+In-Reply-To: <c7bb9920eee2f05df92bfd7c462b9059fb7ff26c.1601414174.git.daniel@iogearbox.net>
 X-Originating-IP: [2620:10d:c090:400::5:f2d3]
-X-ClientProxiedBy: CO2PR06CA0073.namprd06.prod.outlook.com
- (2603:10b6:104:3::31) To BY5PR15MB3571.namprd15.prod.outlook.com
+X-ClientProxiedBy: CO1PR15CA0052.namprd15.prod.outlook.com
+ (2603:10b6:101:1f::20) To BY5PR15MB3571.namprd15.prod.outlook.com
  (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:f2d3) by CO2PR06CA0073.namprd06.prod.outlook.com (2603:10b6:104:3::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14 via Frontend Transport; Wed, 30 Sep 2020 01:24:13 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:f2d3) by CO1PR15CA0052.namprd15.prod.outlook.com (2603:10b6:101:1f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.34 via Frontend Transport; Wed, 30 Sep 2020 02:05:29 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5059e04b-52f6-4d1c-3aec-08d864df8a5e
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4085:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB4085AA34930878E88DC05434D5330@BYAPR15MB4085.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: b718ed4f-2437-4370-8c16-08d864e54ec9
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3461:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB34619A1FF5A52751B208B639D5330@BYAPR15MB3461.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: luWKjNyojU8L3A5IoMKhy0zDrXG48ehUyEwj/TORp1UR4eSNpB0VDGnnLOTUlqm8lQtyNZx7wjRgeDNwOSVm2IJ/JttDzHC5N33irDHx7nHFxBddlSIpbdyziHDaqKdECukxYyyZtJJeq1U/7GnaU8f6stocmoHB/tzhxFvubXLTNsNcFibM/2olbeJVozVxMyWgVtosia8MeVkzpDedvIgl09WtfR4AFP8BAV90OZ1AaxcqHOiFbbL7WVNEC9+SmHz5qpo8H3HeGmT10vooX9BKI/5CIagEeeXezhIpv2qgl4hO/LmYNgOSGf3C7AviPoYkfN0JO5KMLohcbZkyTA48tOE1cWW+RtPmffKVa4a6ph01LEef3dXEPXc/DvMa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(136003)(396003)(39860400002)(5660300002)(4744005)(6666004)(1076003)(8676002)(9686003)(4326008)(6916009)(8936002)(55016002)(6506007)(16526019)(316002)(2906002)(186003)(478600001)(66476007)(86362001)(66556008)(52116002)(7696005)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: LB8WCU2zcr/hP3RsNySOY7K0Do8U9WtVFhVoFFQLPlCh0d6foJ2ZhnDukUMogF2BeD40PtWrUE3eqpnELGGtTD0N6it7gv0PpE+sQdkHxUkhQcacqLTjqYtPx3j1saYTRZBXLIvvJcvikp03O/QEnu08ay6j4kLWRbe9kXfdBP1X31fik6by56Q+QLD8tE14TkMUpsJ9CAyQVCrHa9ozdp4LJO7EZRUwUKHYnsSNYxHZXIU8hbHOLibL6LHv5oaqXJx5HpHQsGrUWmOvxHqulhresEEoDB5Adt17MYxCDNmPHaWJLs/wiEefSfal75N+ZMsllILa4PdRDjonPtt/35eaCikrtbuoORs9ARy/gclEuzsxS2xf6jlS/Ht/2DJC7Y6+k1SIerSyHEoglaTTU53L//yTlzNgBxAtBIdIZ+KjxEqZ18d+ZzFky6KwWq5UqRGTZiXECroj6EEDYfvKt/W80QNqqTypWSLUDN7pn984lqCC+7hUkRwPWCQ1vp1pO+9hB4vg2uX2smHoUJFRN1X5s7v7bSRRY6Fr5iJymlG+DYAFhAqqxoyvHLRRns9yTjikqMfbWQ4C2KqQ7lTZVH63zS8jzrzHrBZXwb7a/J/Q/bC8Z91OhV/zKpK+57DtzTuKU3fc2OXq6mX/XTx/2+qcx8DX5gDJcwB2ZgutMXc=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5059e04b-52f6-4d1c-3aec-08d864df8a5e
+X-Microsoft-Antispam-Message-Info: ZMxX70pH0Ju5dOfIqocn2ZRILqTOeYY99WzINFPBRSDsf/I/vUJtODuPtn9/rqeNCLOBKp7YgpgGObIXIRC5iODud0BVeIKMq95xq851vr4KbX1Yw6hhh75GchhJqMb4XNBUvrI2QtFVdJU2VOqkIdC3XoKvgk4zw1t3IaAtxTEIh9vcHibI3xqO2C2PvXTSwcnT10az1pnAnfVwaTKi5CIjjNnnYfjQACxXlibBfq+XaaIWFnWDHsZuRT9ueMJYyYPI4zLX+dPOYXx3tXkTeAzitxWsMVGZF7hmmZWgPS1X0GRg3w1ynVj+F4Yi0X8nta+Gnb84Bt0OGSDoa3m+eg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(39860400002)(346002)(366004)(5660300002)(6666004)(8936002)(9686003)(6506007)(2906002)(55016002)(16526019)(52116002)(7696005)(186003)(86362001)(478600001)(1076003)(6916009)(66476007)(66556008)(83380400001)(8676002)(4326008)(66946007)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: wWuGVEPYFlEA2iF4Gk5ZQUK9OYbE5wQW1CtTnYiiqAFf30WusxaryalGiYkC5MqoH/DnHCkNJGIELIFe1yUHNmYcdxWcIvpERLrFyLFbOmY5kuflSIgByvK2zK3UAT6usoLdSXWvnwID8ZizLSjSuBMJuDjrOdAbA1oG9BJZyjaYQsUPLwPstQK/DkyNcrpTIw5XoNkQ7NIv8+B9MZjS90TqZ0rmn/CfQO6eaOKAhvN9A7uqIb9ZwbQAljMw3m5mpcbxkTMO8gLGCmP0QiEuxIr3X5TCA0lPUglkVfUtZg3mcu7bZR9l9LDNs/z7/Z5XFqg2M9Bj406T9X07iJn2+9eC6B1R11A74Ukw2mgcRJxeR1xc8XqCKt1FJxbbrtWvLbIKSm/SKmN6mvMKhcxdd1U7ZJ3+mPjwuPUDNw6XMI6OieroDe/iWu2UgZqdxZZLAh3PYmtzXQpbrQVJXh8S89tzR5Rx3wwLuW1aX6oxa9mEQizrOWvDADnM9tg3cP9Yi4bLtGrya4e0xQCe2uu/313uRi1bJWbLJJknaXL92wgECmfwaa2vPAqHTBU5OUuc60QEK4vExBuxrn5fLb/LjghmfshS6H+osS1LWx/NggEcbw0TK8a4zav4wIID7eQqIeQChDspa18pe4NGNgHpD0lWeOd4y9qxyq2VCUaKCTE=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b718ed4f-2437-4370-8c16-08d864e54ec9
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 01:24:13.7469
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2020 02:05:30.8143
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k6g4pDyXM/THcTwdpcAil6fpYGHqn3dOQJKJUbcqbRW4NX40fP1Tq00d2nfzVcXe
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4085
+X-MS-Exchange-CrossTenant-UserPrincipalName: lyv2bJGAqpHJ8TeDv5r2pGs6kwiCPrt0Drh1YkZjoQ2n+7IpUau3WZs4eGYTlQey
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-29_14:2020-09-29,2020-09-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=867
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009300005
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
+ adultscore=0 malwarescore=0 spamscore=0 impostorscore=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009300011
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:23:01PM +0200, Daniel Borkmann wrote:
-> Similarly to 5a52ae4e32a6 ("bpf: Allow to retrieve cgroup v1 classid
-> from v2 hooks"), add a helper to retrieve cgroup v1 classid solely
-> based on the skb->sk, so it can be used as key as part of BPF map
-> lookups out of tc from host ns, in particular given the skb->sk is
-> retained these days when crossing net ns thanks to 9c4c325252c5
-> ("skbuff: preserve sock reference when scrubbing the skb."). This
-> is similar to bpf_skb_cgroup_id() which implements the same for v2.
-> Kubernetes ecosystem is still operating on v1 however, hence net_cls
-> needs to be used there until this can be dropped in with the v2
-> helper of bpf_skb_cgroup_id().
+On Tue, Sep 29, 2020 at 11:23:02PM +0200, Daniel Borkmann wrote:
+> With its use in BPF, the cookie generator can be called very frequently
+> in particular when used out of cgroup v2 hooks (e.g. connect / sendmsg)
+> and attached to the root cgroup, for example, when used in v1/v2 mixed
+> environments. In particular, when there's a high churn on sockets in the
+> system there can be many parallel requests to the bpf_get_socket_cookie()
+> and bpf_get_netns_cookie() helpers which then cause contention on the
+> atomic counter.
+> 
+> As similarly done in f991bd2e1421 ("fs: introduce a per-cpu last_ino
+> allocator"), add a small helper library that both can use for the 64 bit
+> counters. Given this can be called from different contexts, we also need
+> to deal with potential nested calls even though in practice they are
+> considered extremely rare. One idea as suggested by Eric Dumazet was
+> to use a reverse counter for this situation since we don't expect 64 bit
+> overflows anyways; that way, we can avoid bigger gaps in the 64 bit
+> counter space compared to just batch-wise increase. Even on machines
+> with small number of cores (e.g. 4) the cookie generation shrinks from
+> min/max/med/avg (ns) of 22/50/40/38.9 down to 10/35/14/17.3 when run
+> in parallel from multiple CPUs.
 Acked-by: Martin KaFai Lau <kafai@fb.com>
