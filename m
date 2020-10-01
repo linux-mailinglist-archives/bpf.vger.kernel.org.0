@@ -2,215 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15587280914
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 23:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAC728093F
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 23:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733025AbgJAVFo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 17:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
+        id S1727891AbgJAVHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 17:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgJAVFQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 17:05:16 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3959DC0613D0
-        for <bpf@vger.kernel.org>; Thu,  1 Oct 2020 14:05:15 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 144so937578pfb.4
-        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 14:05:15 -0700 (PDT)
+        with ESMTP id S1727244AbgJAVGt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:06:49 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20490C0613E2
+        for <bpf@vger.kernel.org>; Thu,  1 Oct 2020 14:06:49 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id i26so10101716ejb.12
+        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 14:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sM/IKUxG7XXA4g0Q8PYm8FVn3Q1jvofvHy96zqP1SLI=;
-        b=P/3XD2CcnLPmFvxK4ImVaO3KbIoepUZ+wnlZ+BJrjfWejmWXo3+ahVkBVF20sY057F
-         Fd1Kw/TeSXQS1959lE8zRVGSGWl3cP2+jx0rn8Llzgc8rkxibWB/lNL4iSya5ndBfmVF
-         zeb4jKfYxb7rziVYZ0e2NmWo678nIlOdBX9pE=
+        d=sargun.me; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GJfQdlSGvnYX8WTWiSSvgRRMTzNs36g2ODPiTwjRAs8=;
+        b=tkrBQe3EU3XlxTk9RswYWhAU4d1iEgcKP+mNKsyk7QnifbEkLUVCT/Bz9HiE4WZDH9
+         kPwoGKUUr+ktBtCxlwk704U4nOoVOcFG4gZqxD8/WNDpZpcxtCXcBKHmqjgCOI2sZjKz
+         RIHBYbLW3UYEy3kwlVU6CHuZOl2ouk0fj2blw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sM/IKUxG7XXA4g0Q8PYm8FVn3Q1jvofvHy96zqP1SLI=;
-        b=YBBnokpx/8qjp9G6QdUyhn/eAC/aM87qSKUEwwX2O6Q5HvOtOygqlWUdLlQInP+xWa
-         NRgFF1go+TQDQRFbWl9MpkGs3us0njYWo3vk5k1vem0JXV48sM/nkBR2oQcvzSsIFYYF
-         3D2kdO7lXmHQc3lSf2CHFU/B5c3PUTd3fK4yURpPdzGBBAMp1XEn6wdbKSRJEQNe+aWP
-         JWgCMaSCWYPl3gLXZjIRcj8XfGw2GHlTywuCysddAr+5XodxCJHJ9PNkf7pFIn79JxdF
-         PBGS2REDsppusWPj4AGNTO7slcmD+DBdB80yDLePNZWGpsg3hZBJf4ulaC9H6FiCHvGi
-         Y8rw==
-X-Gm-Message-State: AOAM531lFv1C69cRx8xaJY6cxh/GEpR5vNDsWDzSnMOhwevPdfpwZJgF
-        KQ4LMIxeF0ArEdlK2/VhcLDEKg==
-X-Google-Smtp-Source: ABdhPJwZmuICO3eBgdFhAAtcI8VblpCzInUbkz0BCWOnju3Q9j3Bj5uX/6qFoIfg5eFpaOsfoEkjUQ==
-X-Received: by 2002:aa7:9ac7:0:b029:152:ebb:cb42 with SMTP id x7-20020aa79ac70000b02901520ebbcb42mr4323742pfp.30.1601586314632;
-        Thu, 01 Oct 2020 14:05:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h31sm6125512pgh.71.2020.10.01.14.05.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 14:05:13 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 14:05:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Jann Horn <jannh@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
- filter is constant allow
-Message-ID: <202010011314.503D67209@keescook>
-References: <cover.1601478774.git.yifeifz2@illinois.edu>
- <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
- <202009301432.C862BBC4B@keescook>
- <CABqSeATqYuEAb=i1nxufbVQUWRw6FDbb9x0DYJz87U0RbQj14A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GJfQdlSGvnYX8WTWiSSvgRRMTzNs36g2ODPiTwjRAs8=;
+        b=oRBT6N4IkTI1bg7EsacDzVOQ2DsH9BIcZmM2w/Mc7858Ikiaq3oCZPBBxlOeXi3UAX
+         uJ50xTCJL5sNusjXnneXqkN/rFGGWeEG8QH6cB3R4dC3zL0r1kBHz1J06c4WqQOlY/Yz
+         ryOjpqEbk1gVGfMhMSWgirpSBi7bbf2LT9WNWQwrrmUc2YKaVkMaxJs/p8UMAd0MlkgS
+         1l63RVQFEgJd81VsE1CcFJrFnoLvx/KTvGctqgZ+bq8iXGARYqD9652Tog/UUnf571QH
+         LBNP/MzH71PoUWqllPYrEGa3ng6iMHxUp5MwG+lB7y3U6txu1OrWjxbKj+BMDxNdrlbz
+         kL4Q==
+X-Gm-Message-State: AOAM531PXopBxNTL+HRz1/bxULIn88pSM6bBDu1dkG28NMzjkU32+CpL
+        lZ63UUKqBpzhHYwXTzF0eFawzBtcE1hcgvpnLcSVhA==
+X-Google-Smtp-Source: ABdhPJwvS6nNR0DvYHDBM04oUTIB+MUropRM/aV9HBVmK+CT5YH4iBVjeeDR8WdQ3dsdp+vdjAc8sF9ARo7WZujAD1Q=
+X-Received: by 2002:a17:906:3e0c:: with SMTP id k12mr10020262eji.189.1601586407475;
+ Thu, 01 Oct 2020 14:06:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABqSeATqYuEAb=i1nxufbVQUWRw6FDbb9x0DYJz87U0RbQj14A@mail.gmail.com>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+In-Reply-To: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+From:   Sargun Dhillon <sargun@sargun.me>
+Date:   Thu, 1 Oct 2020 14:06:10 -0700
+Message-ID: <CAMp4zn9XA-z_6UKvWkFh_U2wPRjZF3=QvrXX7EikO5AEovCWBA@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 06:52:50AM -0500, YiFei Zhu wrote:
-> On Wed, Sep 30, 2020 at 5:40 PM Kees Cook <keescook@chromium.org> wrote:
-> > The guiding principle with seccomp's designs is to always make things
-> > _more_ restrictive, never less. While we can never escape the
-> > consequences of having seccomp_is_const_allow() report the wrong
-> > answer, we can at least follow the basic principles, hopefully
-> > minimizing the impact.
-> >
-> > When the bitmap starts with "always allowed" and we only flip it towards
-> > "run full filters", we're only ever making things more restrictive. If
-> > we instead go from "run full filters" towards "always allowed", we run
-> > the risk of making things less restrictive. For example: a process that
-> > maliciously adds a filter that the emulator mistakenly evaluates to
-> > "always allow" doesn't suddenly cause all the prior filters to stop running.
-> > (i.e. this isolates the flaw outcome, and doesn't depend on the early
-> > "do not emulate if we already know we have to run filters" case before
-> > the emulation call: there is no code path that allows the cache to
-> > weaken: it can only maintain it being wrong).
-> >
-> > Without any seccomp filter installed, all syscalls are "always allowed"
-> > (from the perspective of the seccomp boundary), so the default of the
-> > cache needs to be "always allowed".
-> 
-> I cannot follow this. If a 'process that maliciously adds a filter
-> that the emulator mistakenly evaluates to "always allow" doesn't
-> suddenly cause all the prior filters to stop running', hence, you
-> want, by default, the cache to be as transparent as possible. You
-> would lift the restriction if and only if you are absolutely sure it
-> does not cause an impact.
+On Wed, Sep 30, 2020 at 4:07 AM Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+>
+> Hi Tycho, Sargun (and all),
+>
+> I knew it would be a big ask, but below is kind of the manual page
+> I was hoping you might write [1] for the seccomp user-space notification
+> mechanism. Since you didn't (and because 5.9 adds various new pieces
+> such as SECCOMP_ADDFD_FLAG_SETFD and SECCOMP_IOCTL_NOTIF_ADDFD
+> that also will need documenting [2]), I did :-). But of course I may
+> have made mistakes...
+>
+> I've shown the rendered version of the page below, and would love
+> to receive review comments from you and others, and acks, etc.
+>
+> There are a few FIXMEs sprinkled into the page, including one
+> that relates to what appears to me to be a misdesign (possibly
+> fixable) in the operation of the SECCOMP_IOCTL_NOTIF_RECV
+> operation. I would be especially interested in feedback on that
+> FIXME, and also of course the other FIXMEs.
+>
+> The page includes an extensive (albeit slightly contrived)
+> example program, and I would be happy also to receive comments
+> on that program.
+>
+> The page source currently sits in a branch (along with the text
+> that you sent me for the seccomp(2) page) at
+> https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/log/?h=seccomp_user_notif
+>
+> Thanks,
+>
+> Michael
+>
+> [1] https://lore.kernel.org/linux-man/2cea5fec-e73e-5749-18af-15c35a4bd23c@gmail.com/#t
+> [2] Sargun, can you prepare something on SECCOMP_ADDFD_FLAG_SETFD
+>     and SECCOMP_IOCTL_NOTIF_ADDFD to be added to this page?
+>
+> ====
+>
+> --
+> Michael Kerrisk
+> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> Linux/UNIX System Programming Training: http://man7.org/training/
 
-Yes, right now, the v3 code pattern is entirely safe.
+Should we consider the SECCOMP_GET_NOTIF_SIZES dance to be "deprecated" at
+this point, given that the extensible ioctl mechanism works? If we add
+new fields to the
+seccomp datastructures, we would move them from fixed-size ioctls, to
+variable sized
+ioctls that encode the datastructure size / length?
 
-> 
-> In this patch, if there are prior filters, it goes through this logic:
-> 
->         if (bitmap_prev && !test_bit(nr, bitmap_prev))
->             continue;
-> 
-> Hence, if the malicious filter were to happen, and prior filters were
-> supposed to run, then seccomp_is_const_allow is simply not invoked --
-> what it returns cannot be used maliciously by an adversary.
-
-Right, but we depend on that test always doing the correct thing (and
-continuing to do so into the future). I'm looking at this from the
-perspective of future changes, maintenance, etc. I want the actions to
-match the design principles as closely as possible so that future
-evolutions of the code have lower risk to bugs causing security
-failures. Right now, the code is simple. I want to design this so that
-when it is complex, it will still fail toward safety in the face of
-bugs.
-
-> >         if (bitmap_prev) {
-> >                 /* The new filter must be as restrictive as the last. */
-> >                 bitmap_copy(bitmap, bitmap_prev, bitmap_size);
-> >         } else {
-> >                 /* Before any filters, all syscalls are always allowed. */
-> >                 bitmap_fill(bitmap, bitmap_size);
-> >         }
-> >
-> >         for (nr = 0; nr < bitmap_size; nr++) {
-> >                 /* No bitmap change: not a cacheable action. */
-> >                 if (!test_bit(nr, bitmap_prev) ||
-> >                         continue;
-> >
-> >                 /* No bitmap change: continue to always allow. */
-> >                 if (seccomp_is_const_allow(fprog, &sd))
-> >                         continue;
-> >
-> >                 /* Not a cacheable action: always run filters. */
-> >                 clear_bit(nr, bitmap);
-> 
-> I'm not strongly against this logic. I just feel unconvinced that this
-> is any different with a slightly increased complexity.
-
-I'd prefer this way because for the loop, the tests, and the results only
-make the bitmap more restrictive. The worst thing a bug in here can do is
-leave the bitmap unchanged (which is certainly bad), but it can't _undo_
-an earlier restriction.
-
-The proposed loop's leading test_bit() becomes only an optimization,
-rather than being required for policy enforcement.
-
-In other words, I prefer:
-
-	inherit all prior prior bitmap restrictions
-	for all syscalls
-		if this filter not restricted
-			continue
-		set bitmap restricted
-
-	within this loop (where the bulk of future logic may get added),
-	the worse-case future bug-induced failure mode for the syscall
-	bitmap is "skip *this* filter".
-
-
-Instead of:
-
-	set bitmap all restricted
-	for all syscalls
-		if previous bitmap not restricted and
-		   filter not restricted
-			set bitmap unrestricted
-
-	within this loop the worst-case future bug-induced failure mode
-	for the syscall bitmap is "skip *all* filters".
-
-
-
-
-Or, to reword again, this:
-
-	retain restrictions from previous caching decisions
-	for all syscalls
-		[evaluate this filter, maybe continue]
-		set restricted
-
-instead of:
-
-	set new cache to all restricted
-	for all syscalls
-		[evaluate prior cache and this filter, maybe continue]
-		set unrestricted
-
-I expect the future code changes for caching to be in the "evaluate"
-step, so I'd like the code designed to make things MORE restrictive not
-less from the start, and remove any prior cache state tests from the
-loop.
-
-At the end of the day I believe changing the design like this now lays
-the groundwork to the caching mechanism being more robust against having
-future bugs introduce security flaws.
-
--- 
-Kees Cook
+-- This is mostly a question for Kees and Tycho.
