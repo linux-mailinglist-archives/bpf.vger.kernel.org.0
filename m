@@ -2,202 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0DD28066F
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 20:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70156280675
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 20:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732319AbgJASVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 14:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730008AbgJASVS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:21:18 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57672C0613D0
-        for <bpf@vger.kernel.org>; Thu,  1 Oct 2020 11:21:18 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id x8so4700302ybe.12
-        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 11:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HfF5ODh4VOzsSiRoUMFn5r1WdtUcvxzNEHZ1e6TS4Hw=;
-        b=NMoxN036043nfjJIszJWGq77X5o8hjaq4Qzd2vy00TEwVILDKs/BQ3GW+6gqO0gy7f
-         zLRgopFAZWOhrOrvP8gU+dLn6g4bzWQCpHUWtDqBU9arj1wVAiVfzrnIg2O9Whyqzc2Y
-         kIN19vmA9LAU98Ij4JbL26E0T/EzJXrK0pJvhIE5IdjYrUCtkQFrxZVkTdq0Wh5oVYGN
-         F/EYAc4Qq3Y4L/h6O48em8zwEQeCsVQxW3vJiy/zKX0bD+X38DppMxCtdL+nLj65jVNk
-         cX1ZUraBgpJlAqRhBLBDtt/fWS+ECjY9JpMeFQ2nZB0bKfnZuJ5fk1q3X/tqhsUr+A+6
-         hcnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HfF5ODh4VOzsSiRoUMFn5r1WdtUcvxzNEHZ1e6TS4Hw=;
-        b=qjiphHfT66pjVPloe0kPPCrbrqSyVFI8xAf8e7/BbKb3s0taQ2RWfdHA+q9ykS7Eab
-         DRfYYThUyPgS7eiiLybkrSRnOtObu1laIPGmAQtw2oHsSumX222ufoRc5MKO5Qu6Qrz0
-         aai5RvGU/5gjYW7hXYiIZsv1BKBoUK2MtbuNl/LCmKvI3AXNr5Zfg0+i8vF6MnZcdgwI
-         jywk+eOpt1n8AkWmEqkmyMla29Bs4z76/lJbrW0TSGIuD4S5oZ9qbsLItXnNAiwR+cx5
-         +dEQiZuq+947d0jqFxtVxUxPpGou9oNw/3OhLkiuBVHzWdoSppTS4I4ZZgh+U9sXAQur
-         OLjg==
-X-Gm-Message-State: AOAM532olhMTMEeyL2f9kfA4X4xwAXkubXtu0CYwtPLagocww6A8UzWz
-        Gchf5KIx423KB6F/61VjKP/sj+0lFGVKzxh4KPeC7tScnCg=
-X-Google-Smtp-Source: ABdhPJwdSzATXRpbmm2Dp6xLw9IgXQthXO2G/L0TUYrrV7BIwhXsdiDmmrYTeGxluu6perCBML4/nK5wpRtpPsJiing=
-X-Received: by 2002:a25:2596:: with SMTP id l144mr12009508ybl.510.1601576477473;
- Thu, 01 Oct 2020 11:21:17 -0700 (PDT)
+        id S1730017AbgJASYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 14:24:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58272 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729927AbgJASYT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 14:24:19 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 046AC20754;
+        Thu,  1 Oct 2020 18:24:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601576658;
+        bh=ZlenZF5zb+iv0OeilUNNdeMsevfR2LkzR3jIcKnQnlY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UblmvK4OuUFT3w0XaK6uUERjA6VP++eqDTGxDwYanclmZqbOPHRQxoT2+1PZes/JJ
+         5QXoKMbQHWPrtb9Z3maxPDT+Ha1Y2hRKOH8LZ8QrdgWBfg9pj/+f4KvSWS9S8a4Dvq
+         8RbxJNJZ2Ze8zvJv2Xq272VrM6osQQQ8uF4gx9X0=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C47AE403AC; Thu,  1 Oct 2020 15:24:15 -0300 (-03)
+Date:   Thu, 1 Oct 2020 15:24:15 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, dwarves@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH v1] btf_encoder: Handle DW_TAG_variable that has
+ DW_AT_specification
+Message-ID: <20201001182415.GA101623@kernel.org>
+References: <20200825004523.1353133-1-haoluo@google.com>
+ <20200826131143.GF1059382@kernel.org>
+ <CA+khW7jf7Z=sMC1u5eyn6XOZDTFJaNjV-D0ogvQSyUGSKjC3LQ@mail.gmail.com>
+ <DEC4CC81-88CE-4476-A631-2BBB6E922F5C@gmail.com>
+ <CA+khW7imZ+1to15Y+6Suw5_RRQfOQ32X_mkcFACDedjHrNYFaQ@mail.gmail.com>
+ <CAADnVQKkqtSLLiXsQk6EnMz61J3Em53HB9zPZtPeqE4jvzGt3g@mail.gmail.com>
 MIME-Version: 1.0
-References: <CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com>
- <CAEf4BzZvXvb7CsnJZkoNUzb0-o=w-i9-CHecq0O+QcCKpeuUKQ@mail.gmail.com>
- <CA+XBgLWNavRQJy7uRG35RXprHjQ1uaURyB8tj7tE=Mv=EWKO+g@mail.gmail.com>
- <CAEf4Bzb4JrfmENs197d30xU2fnWwu9_1rq-=n9szaWmmxaSckg@mail.gmail.com>
- <CA+XBgLWa7nWnQNTUdqgBK2E34PH8mUc_wUWR=_iM2Yjr=gxrVw@mail.gmail.com>
- <CAEf4BzY1N_yZscKTT81fnexwPgD7XbD0UCyEsa1CUp_giyJwfA@mail.gmail.com> <CA+XBgLWid4c3TZgcAREnJ_M9Wuw9wHs6H2T6RYjPwwExRZPC+Q@mail.gmail.com>
-In-Reply-To: <CA+XBgLWid4c3TZgcAREnJ_M9Wuw9wHs6H2T6RYjPwwExRZPC+Q@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 1 Oct 2020 11:21:06 -0700
-Message-ID: <CAEf4BzaXMWupwzcvS1AaPEpoQ0Lz4MJA23YeRcsBWD8717Sr+Q@mail.gmail.com>
-Subject: Re: Problems with pointer offsets on ARM32
-To:     Luka Oreskovic <luka.oreskovic@sartura.hr>
-Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKkqtSLLiXsQk6EnMz61J3Em53HB9zPZtPeqE4jvzGt3g@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 6:40 AM Luka Oreskovic <luka.oreskovic@sartura.hr> wrote:
->
-> On Thu, Oct 1, 2020 at 1:09 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+Em Thu, Oct 01, 2020 at 08:47:51AM -0700, Alexei Starovoitov escreveu:
+> Arnaldo,
+> 
+> ping.
+> Is anything blocking this fix from merging?
+> The kernel patches are stalled waiting on the pahole.
+
+Applied locally, testing now, will push to the main branch ASAP.
+
+- Arnaldo
+ 
+> Thanks
+> On Tue, Sep 29, 2020 at 11:52 PM Hao Luo <haoluo@google.com> wrote:
 > >
-> > On Tue, Sep 15, 2020 at 12:26 AM Luka Oreskovic
-> > <luka.oreskovic@sartura.hr> wrote:
+> > Arnaldo,
+> >
+> > Is this patch ready to be merged into Pahole's master branch? Alexei
+> > is testing the kernel patches that need this patch. Please let me know
+> > if there is anything I can do to help merging.
+> >
+> > Thank you,
+> > Hao
+> >
+> > On Wed, Aug 26, 2020 at 6:56 PM Arnaldo Carvalho de Melo
+> > <arnaldo.melo@gmail.com> wrote:
 > > >
-> > > On Mon, Sep 14, 2020 at 7:49 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > >
+> > > On August 26, 2020 3:35:17 PM GMT-03:00, Hao Luo <haoluo@google.com> wrote:
+> > > >Arnaldo,
 > > > >
-> > > > On Mon, Sep 14, 2020 at 12:55 AM Luka Oreskovic
-> > > > <luka.oreskovic@sartura.hr> wrote:
-> > > > >
-> > > > > On Fri, Sep 11, 2020 at 8:14 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Sep 11, 2020 at 9:45 AM Luka Oreskovic
-> > > > > > <luka.oreskovic@sartura.hr> wrote:
-> > > > > > >
-> > > > > > > Greetings everyone,
-> > > > > > >
-> > > > > > > I have been testing various BPF programs on the ARM32 architecture and
-> > > > > > > have encountered a strange error.
-> > > > > > >
-> > > > > > > When trying to run a simple program that prints out the arguments of
-> > > > > > > the open syscall,
-> > > > > > > I found some strange behaviour with the pointer offsets when accessing
-> > > > > > > the arguments:
-> > > > > > > The output of llvm-objdump differed from the verifier error dump log.
-> > > > > > > Notice the differences in lines 0 and 1. Why is the bytecode being
-> > > > > > > altered at runtime?
-> > > > > > >
-> > > > > > > I attached the program, the llvm-objdump result and the verifier dump below.
-> > > > > > >
-> > > > > > > Best wishes,
-> > > > > > > Luka Oreskovic
-> > > > > > >
-> > > > > > > BPF program
-> > > > > > > --------------------------------------------
-> > > > > > > #include "vmlinux.h"
-> > > > > > > #include <bpf/bpf_helpers.h>
-> > > > > > >
-> > > > > > > SEC("tracepoint/syscalls/sys_enter_open")
-> > > > > > > int tracepoint__syscalls__sys_enter_open(struct trace_event_raw_sys_enter* ctx)
-> > > > > > > {
-> > > > > > >         const char *arg1 = (const char *)ctx->args[0];
-> > > > > > >         int arg2 = (int)ctx->args[1];
-> >
-> > Luka, can you apply the changes below to bpf_core_read.h header and
-> > read these args using BPF_CORE_READ() macro:
-> >
-> > const char *arg1 = (const char *)BPF_CORE_READ(ctx, args[0]);
-> > int arg2 = BPF_CORE_READ(ctx, args[1]);
-> >
-> > I'm curious if that will work (unfortunately I don't have a complete
-> > enough setup to test this).
-> >
-> > The patch is as follows (with broken tab<->space conversion, so please
-> > make changes by hand):
-> >
-> > diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-> > index bbcefb3ff5a5..fee6328d36c0 100644
-> > --- a/tools/lib/bpf/bpf_core_read.h
-> > +++ b/tools/lib/bpf/bpf_core_read.h
-> > @@ -261,14 +261,16 @@ enum bpf_enum_value_kind {
-> >  #define ___type(...) typeof(___arrow(__VA_ARGS__))
-> >
-> >  #define ___read(read_fn, dst, src_type, src, accessor)                     \
-> > -       read_fn((void *)(dst), sizeof(*(dst)), &((src_type)(src))->accessor)
-> > +       read_fn((void *)(dst),                                              \
-> > +               bpf_core_field_size(((src_type)(src))->accessor),           \
-> > +               &((src_type)(src))->accessor)
-> >
-> >  /* "recursively" read a sequence of inner pointers using local __t var */
-> >  #define ___rd_first(src, a) ___read(bpf_core_read, &__t, ___type(src), src, a);
-> >  #define ___rd_last(...)
-> >              \
-> >         ___read(bpf_core_read, &__t,                                        \
-> >                 ___type(___nolast(__VA_ARGS__)), __t, ___last(__VA_ARGS__));
-> > -#define ___rd_p1(...) const void *__t; ___rd_first(__VA_ARGS__)
-> > +#define ___rd_p1(...) const void *__t = (void *)0; ___rd_first(__VA_ARGS__)
-> >  #define ___rd_p2(...) ___rd_p1(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
-> >  #define ___rd_p3(...) ___rd_p2(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
-> >  #define ___rd_p4(...) ___rd_p3(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
-> >
-> >
-> >
-> > BTW, this approach should work for reading pointers as well, it would
-> > be nice if you can test that as well. E.g., something like the
-> > following:
-> >
-> > struct task_struct *t = (void *)bpf_get_current_task();
-> > int ppid = BPF_CORE_READ(t, group_leader, tgid);
-> >
-> > If you try it without the patch above, it should either read garbage
-> > or zero, but not a valid parent PID (please verify that as well).
-> >
-> > I really appreciate your help with testing, thanks!
-> >
-> >
-> > > > > > >
-> > > > > > >         bpf_printk("Open arg 1: %s\n", arg1);
-> > > > > > >         bpf_printk("Open arg 2: %d\n", arg2);
-> > > > > > >
-> > > > > > >         return 0;
-> > > > > > > }
-> > > > > > >
-> > > > > > > char LICENSE[] SEC("license") = "GPL";
-> > > > > > >
-> > > > > > >
-> >
-> > [...]
-> >
+> > > >On Wed, Aug 26, 2020 at 6:12 AM Arnaldo Carvalho de Melo
+> > > ><acme@kernel.org> wrote:
+> > > >>
+> > > >> Em Mon, Aug 24, 2020 at 05:45:23PM -0700, Hao Luo escreveu:
+> > > >> > It is found on gcc 8.2 that global percpu variables generate the
+> > > >> > following dwarf entry in the cu where the variable is defined[1].
+> > > >> >
+> > > >> > Take the global variable "bpf_prog_active" defined in
+> > > >> > kernel/bpf/syscall.c as an example. The debug info for syscall.c
+> > > >> > has two dwarf entries for "bpf_prog_active".
+> > > >> >
+> > > >[...]
+> > > >>
+> > > >> Interesting, here I get, with binutils' readelf:
+> > > >>
+> > > >> [root@quaco perf]# readelf -wi
+> > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep bpf_prog_active
+> > > >>     <f6a1>   DW_AT_name        : (indirect string, offset: 0xb70d):
+> > > >bpf_prog_active
+> > > >> [root@quaco perf]#
+> > > >>
+> > > >> Just one, as:
+> > > >>
+> > > >> [root@quaco perf]# readelf -wi
+> > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep bpf_prog_active -B1 -A8
+> > > >>  <1><f6a0>: Abbrev Number: 103 (DW_TAG_variable)
+> > > >>     <f6a1>   DW_AT_name        : (indirect string, offset: 0xb70d):
+> > > >bpf_prog_active
+> > > >>     <f6a5>   DW_AT_decl_file   : 11
+> > > >>     <f6a6>   DW_AT_decl_line   : 1008
+> > > >>     <f6a8>   DW_AT_decl_column : 1
+> > > >>     <f6a9>   DW_AT_type        : <0xcf>
+> > > >>     <f6ad>   DW_AT_external    : 1
+> > > >>     <f6ad>   DW_AT_declaration : 1
+> > > >>  <1><f6ad>: Abbrev Number: 103 (DW_TAG_variable)
+> > > >>     <f6ae>   DW_AT_name        : (indirect string, offset: 0x3a5d):
+> > > >bpf_stats_enabled_mutex
+> > > >> [root@quaco perf]#
+> > > >>
+> > > >> I get what you have when I use elfutils' readelf:
+> > > >>
+> > > >> [root@quaco perf]# eu-readelf -winfo
+> > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep bpf_prog_active
+> > > >>              name                 (strp) "bpf_prog_active"
+> > > >>               [ 0] addr .data..percpu+0 <bpf_prog_active>
+> > > >> [root@quaco perf]#
+> > > >>
+> > > >> [root@quaco perf]# eu-readelf -winfo
+> > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep -B1 -A8
+> > > >\"bpf_prog_active\"
+> > > >>  [  f6a0]    variable             abbrev: 103
+> > > >>              name                 (strp) "bpf_prog_active"
+> > > >>              decl_file            (data1) bpf.h (11)
+> > > >>              decl_line            (data2) 1008
+> > > >>              decl_column          (data1) 1
+> > > >>              type                 (ref4) [    cf]
+> > > >>              external             (flag_present) yes
+> > > >>              declaration          (flag_present) yes
+> > > >>  [  f6ad]    variable             abbrev: 103
+> > > >>              name                 (strp) "bpf_stats_enabled_mutex"
+> > > >> [root@quaco perf]#
+> > > >>
+> > > >> And:
+> > > >>
+> > > >> [root@quaco perf]# eu-readelf -winfo
+> > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep -B5 \<bpf_prog_active\>
+> > > >>  [ 1bdf5]    variable             abbrev: 212
+> > > >>              specification        (ref4) [  f6a0]
+> > > >>              decl_file            (data1) syscall.c (1)
+> > > >>              decl_line            (data1) 43
+> > > >>              location             (exprloc)
+> > > >>               [ 0] addr .data..percpu+0 <bpf_prog_active>
+> > > >> [root@quaco perf]#
+> > > >>
+> > > >
+> > > >In binutils readelf, there is a extra entry
 > > >
-> > > Best wishes,
-> > > Luka Oreskovic
->
-> Greetings,
->
-> I have tested your patch using the BPF_CORE_READ() macro and
-> everything works great!
+> > > Not here, tomorrow I'll triple check.
+> > >
+> > > >
+> > > > <1><1b24c>: Abbrev Number: 195 (DW_TAG_variable)
+> > > >    <1b24e>   DW_AT_specification: <0xf335>
+> > > >    <1b252>   DW_AT_decl_file   : 1
+> > > >    <1b253>   DW_AT_decl_line   : 43
+> > > >    <1b254>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0
+> > > > (DW_OP_addr: 0)
+> > > >
+> > > >which points to
+> > > >
+> > > > <1><f335>: Abbrev Number: 95 (DW_TAG_variable)
+> > > >    <f336>   DW_AT_name        : (indirect string, offset: 0xb37a):
+> > > >bpf_prog_active
+> > > >
+> > > >It just doesn't have the string 'bpf_prog_active', annotating entry.
+> > > >So eu-readelf and binutils readelf have the same results.
+> > > >
+> > > >> > Note that second DW_TAG_variable entry contains specification that
+> > > >> > points to the first entry.
+> > > >>
+> > > >> So you are not considering the first when encoding since it is just a
+> > > >> DW_AT_declaration, considers the second, as it should be, and then
+> > > >needs
+> > > >> to go see its DW_AT_specification, right?
+> > > >>
+> > > >> Sounds correct, applying, will test further and then push out,
+> > > >>
+> > > >
+> > > >Yes, exactly. The var tags to be considered are those that either have
+> > > >DW_AT_specification or not have DW_AT_declaration. This makes sure
+> > > >btf_encoder works correctly on both old and new gcc.
+> > > >
+> > > >> Thanks,
+> > > >>
+> > > >> - Arnaldo
+> > > >
+> > > >Suggested by Yonghong, I tested this change on a larger set of
+> > > >compilers this time and works correctly. See below.
+> > > >
+> > > >Could you also add 'Reported-by: Yonghong Song <yhs@fb.com>'? I should
+> > > >have done that when sending out this patch. The credit goes to
+> > > >Yonghong.
+> > >
+> > > Sure, and I'll add your results with different computers, for the record.
+> > >
+> > > Thanks,
+> > >
+> > > - Arnaldo
+> > > >
+> > > >Thank you,
+> > > >Hao
+> > > >
+> > > >  clang 10:
+> > > >  [67] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > >  [20168] VAR 'bpf_prog_active' type_id=67, linkage=global-alloc
+> > > >
+> > > >  clang 9:
+> > > >  [64] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > >  [19789] VAR 'bpf_prog_active' type_id=64, linkage=global-alloc
+> > > >
+> > > >  gcc 10.2
+> > > >  [18] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > >  [20319] VAR 'bpf_prog_active' type_id=18, linkage=global-alloc
+> > > >
+> > > >  gcc 9.3:
+> > > >  [21] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > >  [21085] VAR 'bpf_prog_active' type_id=21, linkage=global-alloc
+> > > >
+> > > >  gcc 8
+> > > >  [21] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > >  [21084] VAR 'bpf_prog_active' type_id=21, linkage=global-alloc
+> > > >
+> > > >  gcc 6.2
+> > > >  [22] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > >  [21083] VAR 'bpf_prog_active' type_id=22, linkage=global-alloc
+> > > >
+> > > >  gcc 4.9
+> > > >  [17] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > >  [20410] VAR 'bpf_prog_active' type_id=17, linkage=global-alloc
+> > >
+> > > --
+> > > Sent from my Android device with K-9 Mail. Please excuse my brevity.
 
-Ok, glad it worked. It needs to be a bit more work to be applicable in
-wide range of situation, but you can use it as a work around for now,
-at least.
+-- 
 
->
-> As for the pointer read, it prints valid PIDs both with the patch and
-> without it.
-
-That surprised me initially, but then I realized that 32-bit kernel
-will just chop off high 32 bits of BPF's 64-bit register when the
-helper is getting passed a pointer, so even if those high 32-bits have
-garbage (as should be the case here), it still works magically.
-
->
-> Thank you very much for your help.
+- Arnaldo
