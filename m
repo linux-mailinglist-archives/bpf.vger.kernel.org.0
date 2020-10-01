@@ -2,118 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC8528021E
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 17:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ABF2802CD
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 17:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732463AbgJAPFl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 11:05:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732361AbgJAPFl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:05:41 -0400
-Received: from localhost (unknown [176.207.245.61])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 18024207DE;
-        Thu,  1 Oct 2020 15:05:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601564740;
-        bh=JLDT1OxqCDa0s5KtzfAv0cTuykvPiJBccjb2ADRYB44=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A+UKtbwYO6fQ7+Nh7MdPXJN8bENSC+BfMHieiCAp5FjuCXAINlcokUP7OfXbbpWeu
-         F97N8fIOSXmUix7rKltMbEnNrXWDO+hrUBXRaYNx3CF0ziyUKMzjxmLxL2SIHfFoXk
-         aQ1XR7MwHXXLiW+2KUEGdX0ujpgYC1S1EyrO3VMU=
-Date:   Thu, 1 Oct 2020 17:05:35 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
-        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        brouer@redhat.com, echaudro@redhat.com,
-        lorenzo.bianconi@redhat.com, dsahern@kernel.org
-Subject: Re: [PATCH v3 net-next 06/12] bpf: helpers: add multibuffer support
-Message-ID: <20201001150535.GE13449@lore-desk>
-References: <cover.1601478613.git.lorenzo@kernel.org>
- <5e248485713d2470d97f36ad67c9b3ceedfc2b3f.1601478613.git.lorenzo@kernel.org>
- <20200930191121.jm62rlopekegbjx5@ast-mbp.dhcp.thefacebook.com>
+        id S1730534AbgJAPeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 11:34:08 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:39376 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732104AbgJAPeG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:34:06 -0400
+Received: by mail-il1-f208.google.com with SMTP id r10so4803261ilq.6
+        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 08:34:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=p3I8AGMy+YrC12QmQ5gsY3D38zGF8Pag/wYZhM1xiNM=;
+        b=QPgbciSl80xFC9KmZSaCsS1gnjhb//hhEpqV2zW0plBhR3zTmNpizxyydhO0n3Vc30
+         7JEa2C6f+u5Ooelqa2P45eQV7+CBovpyIsRmd5QIPO4tVhJwSZPHHXTOPDO+VqXJaaFa
+         9yEt2fTP2RL25QHx1DbNB3ok/8AYVtvkcGhR0peDxOpbQ4FahSjAZjM5nLSCRJPDTasy
+         OyP7PesVGaEnRrLnIRFuV0798gHYjqW97bUPPkPvy8JDYMJUHYXGfLvCl1xXrtoBQimT
+         xn3BNyUmCcuL0NKutmCkb0vJ7Tx5KshMKWqYGnPUsOkJ0LM6oj1Xmyk/0s9EXQUKY+0r
+         cOcA==
+X-Gm-Message-State: AOAM531bVM1ocYfDg+KvAMKvJuZcXdVRfB9gxelHZhC+cvTlx3xU7aX6
+        YCmqyVsqRDzt9pXoxb9eYGhy9LqUsemGDDK63PvMKuVyKeD5
+X-Google-Smtp-Source: ABdhPJzWXX40gZdF7EK/pSohyG4bjSkTey+WsRbE2NFpHS3R9P98PRdoZno5HwO3cr2VYcwXmBfh1igws3xj4NbPQiMxM+0aJ+6L
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xA/XKXTdy9G3iaIz"
-Content-Disposition: inline
-In-Reply-To: <20200930191121.jm62rlopekegbjx5@ast-mbp.dhcp.thefacebook.com>
+X-Received: by 2002:a05:6e02:e01:: with SMTP id a1mr2940074ilk.162.1601566445088;
+ Thu, 01 Oct 2020 08:34:05 -0700 (PDT)
+Date:   Thu, 01 Oct 2020 08:34:05 -0700
+In-Reply-To: <0000000000009383f505adc8c5a0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000b380805b09dbf40@google.com>
+Subject: Re: general protection fault in nexthop_is_blackhole
+From:   syzbot <syzbot+b2c08a2f5cfef635cc3a@syzkaller.appspotmail.com>
+To:     a@unstable.cc, anant.thazhemadam@gmail.com, andriin@fb.com,
+        anmol.karan123@gmail.com, ast@kernel.org,
+        b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@gmail.com,
+        hariprasad.kelam@gmail.com, herbert@gondor.apana.org.au,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
+        netdev@vger.kernel.org, nikolay@cumulusnetworks.com,
+        songliubraving@fb.com, steffen.klassert@secunet.com,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
---xA/XKXTdy9G3iaIz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit eeaac3634ee0e3f35548be35275efeca888e9b23
+Author: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Date:   Sat Aug 22 12:06:36 2020 +0000
 
-> On Wed, Sep 30, 2020 at 05:41:57PM +0200, Lorenzo Bianconi wrote:
+    net: nexthop: don't allow empty NHA_GROUP
 
-Hi Alexei,
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116177a7900000
+start commit:   c3d8f220 Merge tag 'kbuild-fixes-v5.9' of git://git.kernel..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
+dashboard link: https://syzkaller.appspot.com/bug?extid=b2c08a2f5cfef635cc3a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d75e39900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12aea519900000
 
-> > From: Sameeh Jubran <sameehj@amazon.com>
-> >=20
-> > The implementation is based on this [0] draft by Jesper D. Brouer.
-> >=20
-> > Provided two new helpers:
-> >=20
-> > * bpf_xdp_get_frag_count()
-> > * bpf_xdp_get_frags_total_size()
-> >=20
-> > + * int bpf_xdp_get_frag_count(struct xdp_buff *xdp_md)
-> > + *	Description
-> > + *		Get the number of fragments for a given xdp multi-buffer.
-> > + *	Return
-> > + *		The number of fragments
-> > + *
-> > + * int bpf_xdp_get_frags_total_size(struct xdp_buff *xdp_md)
-> > + *	Description
-> > + *		Get the total size of fragments for a given xdp multi-buffer.
-> > + *	Return
-> > + *		The total size of fragments for a given xdp multi-buffer.
-> >   */
-> >  #define __BPF_FUNC_MAPPER(FN)		\
-> >  	FN(unspec),			\
-> > @@ -3737,6 +3749,8 @@ union bpf_attr {
-> >  	FN(inode_storage_delete),	\
-> >  	FN(d_path),			\
-> >  	FN(copy_from_user),		\
-> > +	FN(xdp_get_frag_count),		\
-> > +	FN(xdp_get_frags_total_size),	\
-> >  	/* */
->=20
-> Please route the set via bpf-next otherwise merge conflicts will be sever=
-e.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-ack, fine
+#syz fix: net: nexthop: don't allow empty NHA_GROUP
 
-in bpf-next the following two commits (available in net-next) are currently=
- missing:
-- 632bb64f126a: net: mvneta: try to use in-irq pp cache in mvneta_txq_bufs_=
-free
-- 879456bedbe5: net: mvneta: avoid possible cache misses in mvneta_rx_swbm
-
-is it ok to rebase bpf-next ontop of net-next in order to post all the seri=
-es
-in bpf-next? Or do you prefer to post mvneta patches in net-next and bpf
-related changes in bpf-next when it will rebased ontop of net-next?
-
-Regards,
-Lorenzo
-
---xA/XKXTdy9G3iaIz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX3XwPAAKCRA6cBh0uS2t
-rFxNAP4ytRu+hBRyuLdequMfjaMXvREmUZ53BX7opXqakMR+GAEA3q1YM5dm+uj/
-a+HZNa5l4SKJi0033m9l7LtxmRh3ygo=
-=uA1M
------END PGP SIGNATURE-----
-
---xA/XKXTdy9G3iaIz--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
