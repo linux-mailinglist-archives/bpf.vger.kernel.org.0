@@ -2,76 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9ABF2802CD
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 17:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D54280306
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 17:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730534AbgJAPeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 11:34:08 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:39376 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732104AbgJAPeG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:34:06 -0400
-Received: by mail-il1-f208.google.com with SMTP id r10so4803261ilq.6
-        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 08:34:05 -0700 (PDT)
+        id S1732414AbgJAPkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 11:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731885AbgJAPkv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:40:51 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2381C0613D0;
+        Thu,  1 Oct 2020 08:40:50 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id r24so5058538ljm.3;
+        Thu, 01 Oct 2020 08:40:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kuMjPWKiD2oqELTx7IGcIvbf+zcqAAlUMunKUA7pXBM=;
+        b=OgXqqs/if/KAcvhxEHGSGv/dlra1C3gr45obQlUiBKp1PDs8l0B1Q1lpgVusdfW643
+         AIkM6fDuqWwsLbMouYv+WgH75nJxxb183cuQE49mgKPG6YBkM8uelUYBp/jvP9NdCNF4
+         dOTJT25WtWcQeIs+oxvsYwZlQG09byGbip5OO54YfYapyeH6cYh6g24Ab8bTaWQJyMRV
+         i6GrDLyzLKS3kGbgqvNWbmuVkOl5afe/NSzWdcLIlo4Y8Hj4WnCVhAnmRNLN+2SnAvYk
+         J4OLYojD5tEDmBd1RgiPuLlcrARkv+cLSlGJssglkCEpc8n+BfW2Caz2laWPdW0LRvIP
+         Z5og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=p3I8AGMy+YrC12QmQ5gsY3D38zGF8Pag/wYZhM1xiNM=;
-        b=QPgbciSl80xFC9KmZSaCsS1gnjhb//hhEpqV2zW0plBhR3zTmNpizxyydhO0n3Vc30
-         7JEa2C6f+u5Ooelqa2P45eQV7+CBovpyIsRmd5QIPO4tVhJwSZPHHXTOPDO+VqXJaaFa
-         9yEt2fTP2RL25QHx1DbNB3ok/8AYVtvkcGhR0peDxOpbQ4FahSjAZjM5nLSCRJPDTasy
-         OyP7PesVGaEnRrLnIRFuV0798gHYjqW97bUPPkPvy8JDYMJUHYXGfLvCl1xXrtoBQimT
-         xn3BNyUmCcuL0NKutmCkb0vJ7Tx5KshMKWqYGnPUsOkJ0LM6oj1Xmyk/0s9EXQUKY+0r
-         cOcA==
-X-Gm-Message-State: AOAM531bVM1ocYfDg+KvAMKvJuZcXdVRfB9gxelHZhC+cvTlx3xU7aX6
-        YCmqyVsqRDzt9pXoxb9eYGhy9LqUsemGDDK63PvMKuVyKeD5
-X-Google-Smtp-Source: ABdhPJzWXX40gZdF7EK/pSohyG4bjSkTey+WsRbE2NFpHS3R9P98PRdoZno5HwO3cr2VYcwXmBfh1igws3xj4NbPQiMxM+0aJ+6L
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kuMjPWKiD2oqELTx7IGcIvbf+zcqAAlUMunKUA7pXBM=;
+        b=luLdTH3Kue4Zc9fZmzd01lAUC888ISI+CBhgm4pLzCHBgE6dW6Rt+dMMxm+z1kxqzj
+         ft+d2KvzTL9rBmsXMd85fxTSp8y0P11f6/iY1lwaq3/aEBM+d+3dsla4yoCth8v7q1Ji
+         l1E+prHRC0Ee63h1pKZHnGswjDEiukZSMbE75G2Td4gaOX8QHUmqi3xfkTb4G9999jjj
+         S47NZgplbhLIjfTeP7DTTLTZUBcfsdiKbKsWtlYCg9ypaFrgCIxQiLnVPBVnWfpo9cDs
+         3O5ctrslMC0dfI+BQzIbXMZLyk4eqes4v6zCeh6mLv6M0iBy3lOy1wqrhhxJFJKyluXu
+         CCfQ==
+X-Gm-Message-State: AOAM532ZBt3JhbsjaEEkQ28VX81CmASUkvYTHlaerhKtMcntl516iuVF
+        v6TV2qeYgM2iwe+S6QoaXWp83mB6V2oAISAfpy0=
+X-Google-Smtp-Source: ABdhPJxez8ZO6JFpsIPGzov/HGpjjWEmromf4jskS1png2k/hO796iLcslAfOAAVwjcaxhobFC2WuAC4anO4T5abL0E=
+X-Received: by 2002:a2e:808f:: with SMTP id i15mr2333354ljg.51.1601566848933;
+ Thu, 01 Oct 2020 08:40:48 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:e01:: with SMTP id a1mr2940074ilk.162.1601566445088;
- Thu, 01 Oct 2020 08:34:05 -0700 (PDT)
-Date:   Thu, 01 Oct 2020 08:34:05 -0700
-In-Reply-To: <0000000000009383f505adc8c5a0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000b380805b09dbf40@google.com>
-Subject: Re: general protection fault in nexthop_is_blackhole
-From:   syzbot <syzbot+b2c08a2f5cfef635cc3a@syzkaller.appspotmail.com>
-To:     a@unstable.cc, anant.thazhemadam@gmail.com, andriin@fb.com,
-        anmol.karan123@gmail.com, ast@kernel.org,
-        b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@gmail.com,
-        hariprasad.kelam@gmail.com, herbert@gondor.apana.org.au,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, nikolay@cumulusnetworks.com,
-        songliubraving@fb.com, steffen.klassert@secunet.com,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+References: <cover.1601478613.git.lorenzo@kernel.org> <5e248485713d2470d97f36ad67c9b3ceedfc2b3f.1601478613.git.lorenzo@kernel.org>
+ <20200930191121.jm62rlopekegbjx5@ast-mbp.dhcp.thefacebook.com> <20201001150535.GE13449@lore-desk>
+In-Reply-To: <20201001150535.GE13449@lore-desk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 1 Oct 2020 08:40:36 -0700
+Message-ID: <CAADnVQ+syU=oF1C3eDp-ggP-D1PyH1JvJdNFjxm4ABZ0JGyYNQ@mail.gmail.com>
+Subject: Re: [PATCH v3 net-next 06/12] bpf: helpers: add multibuffer support
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, sameehj@amazon.com,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, shayagr@amazon.com,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Thu, Oct 1, 2020 at 8:05 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> > On Wed, Sep 30, 2020 at 05:41:57PM +0200, Lorenzo Bianconi wrote:
+>
+> Hi Alexei,
+>
+> > > From: Sameeh Jubran <sameehj@amazon.com>
+> > >
+> > > The implementation is based on this [0] draft by Jesper D. Brouer.
+> > >
+> > > Provided two new helpers:
+> > >
+> > > * bpf_xdp_get_frag_count()
+> > > * bpf_xdp_get_frags_total_size()
+> > >
+> > > + * int bpf_xdp_get_frag_count(struct xdp_buff *xdp_md)
+> > > + * Description
+> > > + *         Get the number of fragments for a given xdp multi-buffer.
+> > > + * Return
+> > > + *         The number of fragments
+> > > + *
+> > > + * int bpf_xdp_get_frags_total_size(struct xdp_buff *xdp_md)
+> > > + * Description
+> > > + *         Get the total size of fragments for a given xdp multi-buffer.
+> > > + * Return
+> > > + *         The total size of fragments for a given xdp multi-buffer.
+> > >   */
+> > >  #define __BPF_FUNC_MAPPER(FN)              \
+> > >     FN(unspec),                     \
+> > > @@ -3737,6 +3749,8 @@ union bpf_attr {
+> > >     FN(inode_storage_delete),       \
+> > >     FN(d_path),                     \
+> > >     FN(copy_from_user),             \
+> > > +   FN(xdp_get_frag_count),         \
+> > > +   FN(xdp_get_frags_total_size),   \
+> > >     /* */
+> >
+> > Please route the set via bpf-next otherwise merge conflicts will be severe.
+>
+> ack, fine
+>
+> in bpf-next the following two commits (available in net-next) are currently missing:
+> - 632bb64f126a: net: mvneta: try to use in-irq pp cache in mvneta_txq_bufs_free
+> - 879456bedbe5: net: mvneta: avoid possible cache misses in mvneta_rx_swbm
+>
+> is it ok to rebase bpf-next ontop of net-next in order to post all the series
+> in bpf-next? Or do you prefer to post mvneta patches in net-next and bpf
+> related changes in bpf-next when it will rebased ontop of net-next?
 
-commit eeaac3634ee0e3f35548be35275efeca888e9b23
-Author: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Date:   Sat Aug 22 12:06:36 2020 +0000
-
-    net: nexthop: don't allow empty NHA_GROUP
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=116177a7900000
-start commit:   c3d8f220 Merge tag 'kbuild-fixes-v5.9' of git://git.kernel..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bb68b9e8a8cc842f
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2c08a2f5cfef635cc3a
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d75e39900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12aea519900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: net: nexthop: don't allow empty NHA_GROUP
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+bpf-next will receive these patches later today,
+so I prefer the whole thing on top of bpf-next at that time.
