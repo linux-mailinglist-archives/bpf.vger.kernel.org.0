@@ -2,264 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B003A280669
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 20:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0DD28066F
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 20:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730017AbgJASTq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 14:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36982 "EHLO
+        id S1732319AbgJASVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 14:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729412AbgJASTU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 14:19:20 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49719C0613E3
-        for <bpf@vger.kernel.org>; Thu,  1 Oct 2020 11:19:18 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id lo4so9458911ejb.8
-        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 11:19:18 -0700 (PDT)
+        with ESMTP id S1730008AbgJASVS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 14:21:18 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57672C0613D0
+        for <bpf@vger.kernel.org>; Thu,  1 Oct 2020 11:21:18 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id x8so4700302ybe.12
+        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 11:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QA7LeF2qBheMMLcfazviLbAdkWU8DJ0SHO9LgKI517k=;
-        b=a6/AKuLO+I4CN+TMUjHSBr60dhhYt2MStlCukeOxb7tSCFx191nyiwvXlYbx/oULgM
-         Qjm1B7m2UGwjacKKYaNXPULYCd6pYcf0W5/JGNdhPPJ4TPh4u53cacymVqRATF9XFnZ5
-         m1yQeHk9D8JcvcmVO3bWytivPIFmqqdzrEA56gm1NzYGoMTiqgvTvWdb7YBVb9KnjGFu
-         9EjOj0GQDKmMfH5lOLFXtHC/Og/rDVZBo5vzx/AJpOsuCoPlNn/wZe40Zt77WTJbLLVx
-         epUS8duTssquZj+AZsJ24noqMXJe4fheY6/TEFjBy8a4/CaW7hfoJNvNDOxJyXGHARek
-         TGxw==
+         :cc;
+        bh=HfF5ODh4VOzsSiRoUMFn5r1WdtUcvxzNEHZ1e6TS4Hw=;
+        b=NMoxN036043nfjJIszJWGq77X5o8hjaq4Qzd2vy00TEwVILDKs/BQ3GW+6gqO0gy7f
+         zLRgopFAZWOhrOrvP8gU+dLn6g4bzWQCpHUWtDqBU9arj1wVAiVfzrnIg2O9Whyqzc2Y
+         kIN19vmA9LAU98Ij4JbL26E0T/EzJXrK0pJvhIE5IdjYrUCtkQFrxZVkTdq0Wh5oVYGN
+         F/EYAc4Qq3Y4L/h6O48em8zwEQeCsVQxW3vJiy/zKX0bD+X38DppMxCtdL+nLj65jVNk
+         cX1ZUraBgpJlAqRhBLBDtt/fWS+ECjY9JpMeFQ2nZB0bKfnZuJ5fk1q3X/tqhsUr+A+6
+         hcnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QA7LeF2qBheMMLcfazviLbAdkWU8DJ0SHO9LgKI517k=;
-        b=NjlfutorFk9CE8eIsh2rq93mw1E4yHYkiF8o79Y5UYp+kIj1XtGGOBb2PIm/WULPL+
-         ln2J6EMagFD/P3YKGTxfIA8XD4skpLYuZcdkeZIcfefY9M6MW0QDye/i7X9ASf94/wgO
-         N6B88anZ0/ERjHGdeJO/PJhgDBhSLSrs5C0V16eBnkTueTeqm87GTNuDP1SMoKF/EyOw
-         n9qM/HMini/2IfkmFO9ludMFjIM8D2ih2Ur9orr9M36w2pin1ApEJhqAu6xXar5l7+Jv
-         3MpB/GmVrc7dG3J5jmb6EGDehRCaAslxJC963YghiE5OB4m2SWBQ3Ymv34JINH36W4lU
-         68lA==
-X-Gm-Message-State: AOAM531M7nGHplm7ZJQxT/MXR9EvzjQv8rBMhrIuAs6M0Bq0rOt5QUoi
-        KC+ffmkFjCOlF7v8OW3SOTQRkvDhaEAcJz25Itw8og==
-X-Google-Smtp-Source: ABdhPJxsiRsxYcHsuimS2roWYvKY4tDFvDoqHRG6FGHNTwGrOtVjCR7kuJzEufOvz3pAyBvOKtunPrSfTb5XNoYe65E=
-X-Received: by 2002:a17:906:1f94:: with SMTP id t20mr9609666ejr.493.1601576356489;
- Thu, 01 Oct 2020 11:19:16 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=HfF5ODh4VOzsSiRoUMFn5r1WdtUcvxzNEHZ1e6TS4Hw=;
+        b=qjiphHfT66pjVPloe0kPPCrbrqSyVFI8xAf8e7/BbKb3s0taQ2RWfdHA+q9ykS7Eab
+         DRfYYThUyPgS7eiiLybkrSRnOtObu1laIPGmAQtw2oHsSumX222ufoRc5MKO5Qu6Qrz0
+         aai5RvGU/5gjYW7hXYiIZsv1BKBoUK2MtbuNl/LCmKvI3AXNr5Zfg0+i8vF6MnZcdgwI
+         jywk+eOpt1n8AkWmEqkmyMla29Bs4z76/lJbrW0TSGIuD4S5oZ9qbsLItXnNAiwR+cx5
+         +dEQiZuq+947d0jqFxtVxUxPpGou9oNw/3OhLkiuBVHzWdoSppTS4I4ZZgh+U9sXAQur
+         OLjg==
+X-Gm-Message-State: AOAM532olhMTMEeyL2f9kfA4X4xwAXkubXtu0CYwtPLagocww6A8UzWz
+        Gchf5KIx423KB6F/61VjKP/sj+0lFGVKzxh4KPeC7tScnCg=
+X-Google-Smtp-Source: ABdhPJwdSzATXRpbmm2Dp6xLw9IgXQthXO2G/L0TUYrrV7BIwhXsdiDmmrYTeGxluu6perCBML4/nK5wpRtpPsJiing=
+X-Received: by 2002:a25:2596:: with SMTP id l144mr12009508ybl.510.1601576477473;
+ Thu, 01 Oct 2020 11:21:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <CAG48ez3aqLs_-xgU0bThOLqRiiDWGObxcg-X9iFe6D5RDnLVJg@mail.gmail.com>
- <20201001125043.dj6taeieatpw3a4w@gmail.com> <CAG48ez2U1K2XYZu6goRYwmQ-RSu7LkKSOhPt8_wPVEUQfm7Eeg@mail.gmail.com>
- <20201001165850.GC1260245@cisco>
-In-Reply-To: <20201001165850.GC1260245@cisco>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 1 Oct 2020 20:18:49 +0200
-Message-ID: <CAG48ez1W+Ym5=-PdUhyei_UCJov0agEF4YVyARL=pooWYmdEAg@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Christian Brauner <christian.brauner@canonical.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Will Drewry <wad@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>,
-        Christian Brauner <christian@brauner.io>
+References: <CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com>
+ <CAEf4BzZvXvb7CsnJZkoNUzb0-o=w-i9-CHecq0O+QcCKpeuUKQ@mail.gmail.com>
+ <CA+XBgLWNavRQJy7uRG35RXprHjQ1uaURyB8tj7tE=Mv=EWKO+g@mail.gmail.com>
+ <CAEf4Bzb4JrfmENs197d30xU2fnWwu9_1rq-=n9szaWmmxaSckg@mail.gmail.com>
+ <CA+XBgLWa7nWnQNTUdqgBK2E34PH8mUc_wUWR=_iM2Yjr=gxrVw@mail.gmail.com>
+ <CAEf4BzY1N_yZscKTT81fnexwPgD7XbD0UCyEsa1CUp_giyJwfA@mail.gmail.com> <CA+XBgLWid4c3TZgcAREnJ_M9Wuw9wHs6H2T6RYjPwwExRZPC+Q@mail.gmail.com>
+In-Reply-To: <CA+XBgLWid4c3TZgcAREnJ_M9Wuw9wHs6H2T6RYjPwwExRZPC+Q@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 1 Oct 2020 11:21:06 -0700
+Message-ID: <CAEf4BzaXMWupwzcvS1AaPEpoQ0Lz4MJA23YeRcsBWD8717Sr+Q@mail.gmail.com>
+Subject: Re: Problems with pointer offsets on ARM32
+To:     Luka Oreskovic <luka.oreskovic@sartura.hr>
+Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 6:58 PM Tycho Andersen <tycho@tycho.pizza> wrote:
-> On Thu, Oct 01, 2020 at 05:47:54PM +0200, Jann Horn via Containers wrote:
-> > On Thu, Oct 1, 2020 at 2:54 PM Christian Brauner
-> > <christian.brauner@canonical.com> wrote:
-> > > On Wed, Sep 30, 2020 at 05:53:46PM +0200, Jann Horn via Containers wr=
-ote:
-> > > > On Wed, Sep 30, 2020 at 1:07 PM Michael Kerrisk (man-pages)
-> > > > <mtk.manpages@gmail.com> wrote:
-> > > > > NOTES
-> > > > >        The file descriptor returned when seccomp(2) is employed w=
-ith the
-> > > > >        SECCOMP_FILTER_FLAG_NEW_LISTENER  flag  can  be  monitored=
-  using
-> > > > >        poll(2), epoll(7), and select(2).  When a notification  is=
-  pend=E2=80=90
-> > > > >        ing,  these interfaces indicate that the file descriptor i=
-s read=E2=80=90
-> > > > >        able.
-> > > >
-> > > > We should probably also point out somewhere that, as
-> > > > include/uapi/linux/seccomp.h says:
-> > > >
-> > > >  * Similar precautions should be applied when stacking SECCOMP_RET_=
-USER_NOTIF
-> > > >  * or SECCOMP_RET_TRACE. For SECCOMP_RET_USER_NOTIF filters acting =
-on the
-> > > >  * same syscall, the most recently added filter takes precedence. T=
-his means
-> > > >  * that the new SECCOMP_RET_USER_NOTIF filter can override any
-> > > >  * SECCOMP_IOCTL_NOTIF_SEND from earlier filters, essentially allow=
-ing all
-> > > >  * such filtered syscalls to be executed by sending the response
-> > > >  * SECCOMP_USER_NOTIF_FLAG_CONTINUE. Note that SECCOMP_RET_TRACE ca=
-n equally
-> > > >  * be overriden by SECCOMP_USER_NOTIF_FLAG_CONTINUE.
-> > > >
-> > > > In other words, from a security perspective, you must assume that t=
-he
-> > > > target process can bypass any SECCOMP_RET_USER_NOTIF (or
-> > > > SECCOMP_RET_TRACE) filters unless it is completely prohibited from
-> > > > calling seccomp(). This should also be noted over in the main
-> > > > seccomp(2) manpage, especially the SECCOMP_RET_TRACE part.
-> > >
-> > > So I was actually wondering about this when I skimmed this and a whil=
-e
-> > > ago but forgot about this again... Afaict, you can only ever load a
-> > > single filter with SECCOMP_FILTER_FLAG_NEW_LISTENER set. If there
-> > > already is a filter with the SECCOMP_FILTER_FLAG_NEW_LISTENER propert=
-y
-> > > in the tasks filter hierarchy then the kernel will refuse to load a n=
-ew
-> > > one?
-> > >
-> > > static struct file *init_listener(struct seccomp_filter *filter)
-> > > {
-> > >         struct file *ret =3D ERR_PTR(-EBUSY);
-> > >         struct seccomp_filter *cur;
-> > >
-> > >         for (cur =3D current->seccomp.filter; cur; cur =3D cur->prev)=
- {
-> > >                 if (cur->notif)
-> > >                         goto out;
-> > >         }
-> > >
-> > > shouldn't that be sufficient to guarantee that USER_NOTIF filters can=
-'t
-> > > override each other for the same task simply because there can only e=
-ver
-> > > be a single one?
+On Thu, Oct 1, 2020 at 6:40 AM Luka Oreskovic <luka.oreskovic@sartura.hr> wrote:
+>
+> On Thu, Oct 1, 2020 at 1:09 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > Good point. Exceeeept that that check seems ineffective because this
-> > happens before we take the locks that guard against TSYNC, and also
-> > before we decide to which existing filter we want to chain the new
-> > filter. So if two threads race with TSYNC, I think they'll be able to
-> > chain two filters with listeners together.
+> > On Tue, Sep 15, 2020 at 12:26 AM Luka Oreskovic
+> > <luka.oreskovic@sartura.hr> wrote:
+> > >
+> > > On Mon, Sep 14, 2020 at 7:49 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Mon, Sep 14, 2020 at 12:55 AM Luka Oreskovic
+> > > > <luka.oreskovic@sartura.hr> wrote:
+> > > > >
+> > > > > On Fri, Sep 11, 2020 at 8:14 PM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Fri, Sep 11, 2020 at 9:45 AM Luka Oreskovic
+> > > > > > <luka.oreskovic@sartura.hr> wrote:
+> > > > > > >
+> > > > > > > Greetings everyone,
+> > > > > > >
+> > > > > > > I have been testing various BPF programs on the ARM32 architecture and
+> > > > > > > have encountered a strange error.
+> > > > > > >
+> > > > > > > When trying to run a simple program that prints out the arguments of
+> > > > > > > the open syscall,
+> > > > > > > I found some strange behaviour with the pointer offsets when accessing
+> > > > > > > the arguments:
+> > > > > > > The output of llvm-objdump differed from the verifier error dump log.
+> > > > > > > Notice the differences in lines 0 and 1. Why is the bytecode being
+> > > > > > > altered at runtime?
+> > > > > > >
+> > > > > > > I attached the program, the llvm-objdump result and the verifier dump below.
+> > > > > > >
+> > > > > > > Best wishes,
+> > > > > > > Luka Oreskovic
+> > > > > > >
+> > > > > > > BPF program
+> > > > > > > --------------------------------------------
+> > > > > > > #include "vmlinux.h"
+> > > > > > > #include <bpf/bpf_helpers.h>
+> > > > > > >
+> > > > > > > SEC("tracepoint/syscalls/sys_enter_open")
+> > > > > > > int tracepoint__syscalls__sys_enter_open(struct trace_event_raw_sys_enter* ctx)
+> > > > > > > {
+> > > > > > >         const char *arg1 = (const char *)ctx->args[0];
+> > > > > > >         int arg2 = (int)ctx->args[1];
+> >
+> > Luka, can you apply the changes below to bpf_core_read.h header and
+> > read these args using BPF_CORE_READ() macro:
+> >
+> > const char *arg1 = (const char *)BPF_CORE_READ(ctx, args[0]);
+> > int arg2 = BPF_CORE_READ(ctx, args[1]);
+> >
+> > I'm curious if that will work (unfortunately I don't have a complete
+> > enough setup to test this).
+> >
+> > The patch is as follows (with broken tab<->space conversion, so please
+> > make changes by hand):
+> >
+> > diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+> > index bbcefb3ff5a5..fee6328d36c0 100644
+> > --- a/tools/lib/bpf/bpf_core_read.h
+> > +++ b/tools/lib/bpf/bpf_core_read.h
+> > @@ -261,14 +261,16 @@ enum bpf_enum_value_kind {
+> >  #define ___type(...) typeof(___arrow(__VA_ARGS__))
+> >
+> >  #define ___read(read_fn, dst, src_type, src, accessor)                     \
+> > -       read_fn((void *)(dst), sizeof(*(dst)), &((src_type)(src))->accessor)
+> > +       read_fn((void *)(dst),                                              \
+> > +               bpf_core_field_size(((src_type)(src))->accessor),           \
+> > +               &((src_type)(src))->accessor)
+> >
+> >  /* "recursively" read a sequence of inner pointers using local __t var */
+> >  #define ___rd_first(src, a) ___read(bpf_core_read, &__t, ___type(src), src, a);
+> >  #define ___rd_last(...)
+> >              \
+> >         ___read(bpf_core_read, &__t,                                        \
+> >                 ___type(___nolast(__VA_ARGS__)), __t, ___last(__VA_ARGS__));
+> > -#define ___rd_p1(...) const void *__t; ___rd_first(__VA_ARGS__)
+> > +#define ___rd_p1(...) const void *__t = (void *)0; ___rd_first(__VA_ARGS__)
+> >  #define ___rd_p2(...) ___rd_p1(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
+> >  #define ___rd_p3(...) ___rd_p2(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
+> >  #define ___rd_p4(...) ___rd_p3(___nolast(__VA_ARGS__)) ___rd_last(__VA_ARGS__)
+> >
+> >
+> >
+> > BTW, this approach should work for reading pointers as well, it would
+> > be nice if you can test that as well. E.g., something like the
+> > following:
+> >
+> > struct task_struct *t = (void *)bpf_get_current_task();
+> > int ppid = BPF_CORE_READ(t, group_leader, tgid);
+> >
+> > If you try it without the patch above, it should either read garbage
+> > or zero, but not a valid parent PID (please verify that as well).
+> >
+> > I really appreciate your help with testing, thanks!
+> >
+> >
+> > > > > > >
+> > > > > > >         bpf_printk("Open arg 1: %s\n", arg1);
+> > > > > > >         bpf_printk("Open arg 2: %d\n", arg2);
+> > > > > > >
+> > > > > > >         return 0;
+> > > > > > > }
+> > > > > > >
+> > > > > > > char LICENSE[] SEC("license") = "GPL";
+> > > > > > >
+> > > > > > >
+> >
+> > [...]
+> >
+> > >
+> > > Best wishes,
+> > > Luka Oreskovic
 >
-> Yep, seems the check needs to also be in seccomp_can_sync_threads() to
-> be totally effective,
+> Greetings,
 >
-> > I don't know whether we want to eternalize this "only one listener
-> > across all the filters" restriction in the manpage though, or whether
-> > the man page should just say that the kernel currently doesn't support
-> > it but that security-wise you should assume that it might at some
-> > point.
+> I have tested your patch using the BPF_CORE_READ() macro and
+> everything works great!
+
+Ok, glad it worked. It needs to be a bit more work to be applicable in
+wide range of situation, but you can use it as a work around for now,
+at least.
+
 >
-> This requirement originally came from Andy, arguing that the semantics
-> of this were/are confusing, which still makes sense to me. Perhaps we
-> should do something like the below?
-[...]
-> +static bool has_listener_parent(struct seccomp_filter *child)
-> +{
-> +       struct seccomp_filter *cur;
-> +
-> +       for (cur =3D current->seccomp.filter; cur; cur =3D cur->prev) {
-> +               if (cur->notif)
-> +                       return true;
-> +       }
-> +
-> +       return false;
-> +}
-[...]
-> @@ -407,6 +419,11 @@ static inline pid_t seccomp_can_sync_threads(void)
-[...]
-> +               /* don't allow TSYNC to install multiple listeners */
-> +               if (flags & SECCOMP_FILTER_FLAG_NEW_LISTENER &&
-> +                   !has_listener_parent(thread->seccomp.filter))
-> +                       continue;
-[...]
-> @@ -1462,12 +1479,9 @@ static const struct file_operations seccomp_notify=
-_ops =3D {
->  static struct file *init_listener(struct seccomp_filter *filter)
-[...]
-> -       for (cur =3D current->seccomp.filter; cur; cur =3D cur->prev) {
-> -               if (cur->notif)
-> -                       goto out;
-> -       }
-> +       if (has_listener_parent(current->seccomp.filter))
-> +               goto out;
+> As for the pointer read, it prints valid PIDs both with the patch and
+> without it.
 
-I dislike this because it combines a non-locked check and a locked
-check. And I don't think this will work in the case where TSYNC and
-non-TSYNC race - if the non-TSYNC call nests around the TSYNC filter
-installation, the thread that called seccomp in non-TSYNC mode will
-still end up with two notifying filters. How about the following?
+That surprised me initially, but then I realized that 32-bit kernel
+will just chop off high 32 bits of BPF's 64-bit register when the
+helper is getting passed a pointer, so even if those high 32-bits have
+garbage (as should be the case here), it still works magically.
 
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 676d4af62103..c49ad8ba0bc1 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -1475,11 +1475,6 @@ static struct file *init_listener(struct
-seccomp_filter *filter)
-        struct file *ret =3D ERR_PTR(-EBUSY);
-        struct seccomp_filter *cur;
-
--       for (cur =3D current->seccomp.filter; cur; cur =3D cur->prev) {
--               if (cur->notif)
--                       goto out;
--       }
--
-        ret =3D ERR_PTR(-ENOMEM);
-        filter->notif =3D kzalloc(sizeof(*(filter->notif)), GFP_KERNEL);
-        if (!filter->notif)
-@@ -1504,6 +1499,31 @@ static struct file *init_listener(struct
-seccomp_filter *filter)
-        return ret;
- }
-
-+/*
-+ * Does @new_child have a listener while an ancestor also has a listener?
-+ * If so, we'll want to reject this filter.
-+ * This only has to be tested for the current process, even in the TSYNC c=
-ase,
-+ * because TSYNC installs @child with the same parent on all threads.
-+ * Note that @new_child is not hooked up to its parent at this point yet, =
-so
-+ * we use current->seccomp.filter.
-+ */
-+static bool has_duplicate_listener(struct seccomp_filter *new_child)
-+{
-+       struct seccomp_filter *cur;
-+
-+       /* must be protected against concurrent TSYNC */
-+       lockdep_assert_held(&current->sighand->siglock);
-+
-+       if (!new_child->notif)
-+               return false;
-+       for (cur =3D current->seccomp.filter; cur; cur =3D cur->prev) {
-+               if (cur->notif)
-+                       return true;
-+       }
-+
-+       return false;
-+}
-+
- /**
-  * seccomp_set_mode_filter: internal function for setting seccomp filter
-  * @flags:  flags to change filter behavior
-@@ -1575,6 +1595,9 @@ static long seccomp_set_mode_filter(unsigned int flag=
-s,
-        if (!seccomp_may_assign_mode(seccomp_mode))
-                goto out;
-
-+       if (has_duplicate_listener(prepared))
-+               goto out;
-+
-        ret =3D seccomp_attach_filter(flags, prepared);
-        if (ret)
-                goto out;
+>
+> Thank you very much for your help.
