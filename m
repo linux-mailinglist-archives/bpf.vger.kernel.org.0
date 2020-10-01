@@ -2,187 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F122804B8
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 19:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0832804E2
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 19:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732407AbgJARLi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 13:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732213AbgJARLh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:11:37 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC4AC0613D0;
-        Thu,  1 Oct 2020 10:11:37 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id u4so5288619ljd.10;
-        Thu, 01 Oct 2020 10:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OQfLRcAOWIw59NGfi9I7ckeREQIiyms4IQUXnhx6Cus=;
-        b=rlOFvsv5FwPcqIxobQWQ1xGP+0tJz/39SJOrkdvVSsV2wDiuwU5KtbGGXd8gIbfp7G
-         Fz6lUfVfTVmWLBGLtXoNYw5eQVGBSPylBSM3LLMgoQm4rNGuGouXPYPxnh5b13Tm6Xi/
-         9jPJPlx3TXKfi033zJMImDtn2B5KDHOfFKLm8ZfRLsh+Y0sx58PzJsqcJJEKBqrvyZL9
-         Jr47hoX3ChaN1NL8tf5GQ3cxM6fo30suy5NHN4V+pORPKwttTDAZCMYDKrnEEXCAZcNd
-         UveDzaVg6YnTHEkgTsI9lAszviyJ9DZloRmnuFfD3pgbdjAZWcP20KqEgSuwfQYx84YY
-         1N2Q==
+        id S1733011AbgJARMQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 13:12:16 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53001 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732871AbgJARMN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 13:12:13 -0400
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@canonical.com>)
+        id 1kO27m-00081s-FG
+        for bpf@vger.kernel.org; Thu, 01 Oct 2020 17:12:10 +0000
+Received: by mail-ed1-f71.google.com with SMTP id j1so2460960edv.7
+        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 10:12:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OQfLRcAOWIw59NGfi9I7ckeREQIiyms4IQUXnhx6Cus=;
-        b=DEQUbGVKQeVaeRSUrEcGh6QNbfNb0vvgf1VrenOMNb2cvlchPFXne3X8ZZRgz25MfK
-         9rcEXbUi2+3wvvXeOKzgpfFqjIwiljbl4NjbJy3/BDoEXlTWo8EtiscfTgew8hVAfvbo
-         B73cXXyC5ZP7+2PavLnPjmebJ52hOj1F/eMHh/+LBiquIA93e+/n8i1k6W6tuZmEUutQ
-         396CB3ZCwddo1Mx1Ydkw34WJxBaJYaDP9eE++O11kS5bebdx/R9aWfUmvimtYdpdlk1L
-         boul2CWqAqoByr4lTMATJZOTgquPbzOseNdLUxmJ8ZRamV8pirLrLYC5lvf9pWOehKv+
-         R7xA==
-X-Gm-Message-State: AOAM531biNBTMijuF9DOIiSr7byuXBq+trL9Ce7FZhhwBjVbLFDlwZhs
-        7E02hF43mVKkQvuSpRCxdI92idifpt/PLBzMGKA=
-X-Google-Smtp-Source: ABdhPJxbusDTVfGWazhL3Hy3TeKApmIaH1qJcr83UTbUoH5BawhRrulOUmnUjCsEXKnbJ0c6OAv7vgNv5W0mkEGmYro=
-X-Received: by 2002:a2e:7014:: with SMTP id l20mr2810578ljc.91.1601572295556;
- Thu, 01 Oct 2020 10:11:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200928090805.23343-1-lmb@cloudflare.com> <20200928090805.23343-3-lmb@cloudflare.com>
- <20200929055851.n7fa3os7iu7grni3@kafai-mbp> <CAADnVQLwpWMea1rbFAwvR_k+GzOphaOW-kUGORf90PJ-Ezxm4w@mail.gmail.com>
- <CACAyw98WzZGcFnnr7ELvbCziz2axJA_7x2mcoQTf2DYWDYJ=KA@mail.gmail.com>
- <20201001072348.hxhpuoqmeln6twxw@ast-mbp.dhcp.thefacebook.com> <CAEf4Bzbjzj3wwxX84bLi-PLy=9+Bpe1bTDt=t0qR5t=xEkNjwQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbjzj3wwxX84bLi-PLy=9+Bpe1bTDt=t0qR5t=xEkNjwQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 1 Oct 2020 10:11:23 -0700
-Message-ID: <CAADnVQJQeiyrN2JzOwV+zHDU5xg4TtpT0w9MgG6nujCK5z+GNQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/4] selftests: bpf: Add helper to compare
- socket cookies
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, Martin KaFai Lau <kafai@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=R1wJmFfDlNS2ZK16MyLmhBE/huODDJnjpuBQkOKkIq0=;
+        b=udare7ZHHUs3nABk2Dm/3G+AowelF2AdYawcmicKNT2UT4BCIdtYJJC3Fdq/qGSzuP
+         2uNrRUdK/T1jOZKv0PkffEZIXx55tujU35/vEPgyDHsTeyeCqaiilOqdDuryL0HIeqaq
+         yyGnQ40yL7jleaU9pGDaKq6eRXAeK8r7vZ/4ujEaj7w/LQ+X+oXxAowcJlKkdz3IBURl
+         lWlQ9FJT1vdAxOORNiqZ4oN5HvqK41Q2YEMTXG3ZI8sYbHqFTSXIHGTDtdv+c/JE0O3A
+         sdvB6JgqBbswnkuOdn8/R5kkk9V4xZaeh/UU7yyGh5Ko8QK5LDGCI8VpGzPGIYesmw9f
+         1G2A==
+X-Gm-Message-State: AOAM531n2kSqkWnarrFgogeJzPR/bkBFNliw7UkH8eemORLVv29glyIa
+        G8WFmnXExY1WzabaTH4H5Hf7XBNGza1zN2zlptTOfAdShWHiue5L2Qdu0YVevshofGxZgjC2+WN
+        xVdRDth9ZcHDuVEKsD8czlGk5frUCGQ==
+X-Received: by 2002:a17:906:b74a:: with SMTP id fx10mr8883934ejb.232.1601572329842;
+        Thu, 01 Oct 2020 10:12:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4vHLdiKnihkbjdlGKbr1buFcgisWIoA1Dsbv/iU/iTwRqIjmoZt3gmk1xWndAA0SxTZa58g==
+X-Received: by 2002:a17:906:b74a:: with SMTP id fx10mr8883899ejb.232.1601572329483;
+        Thu, 01 Oct 2020 10:12:09 -0700 (PDT)
+Received: from gmail.com ([176.32.19.8])
+        by smtp.gmail.com with ESMTPSA id d24sm4644094edp.17.2020.10.01.10.12.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 10:12:08 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 19:12:06 +0200
+From:   Christian Brauner <christian.brauner@canonical.com>
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Jann Horn <jannh@google.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Will Drewry <wad@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Andy Lutomirski <luto@amacapital.net>,
+        Christian Brauner <christian@brauner.io>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+Message-ID: <20201001171206.jvkdx4htqux5agdv@gmail.com>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <CAG48ez3aqLs_-xgU0bThOLqRiiDWGObxcg-X9iFe6D5RDnLVJg@mail.gmail.com>
+ <20201001125043.dj6taeieatpw3a4w@gmail.com>
+ <CAG48ez2U1K2XYZu6goRYwmQ-RSu7LkKSOhPt8_wPVEUQfm7Eeg@mail.gmail.com>
+ <20201001165850.GC1260245@cisco>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201001165850.GC1260245@cisco>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 10:09 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Oct 1, 2020 at 12:25 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Sep 30, 2020 at 10:28:33AM +0100, Lorenz Bauer wrote:
-> > > On Tue, 29 Sep 2020 at 16:48, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
+On Thu, Oct 01, 2020 at 10:58:50AM -0600, Tycho Andersen wrote:
+> On Thu, Oct 01, 2020 at 05:47:54PM +0200, Jann Horn via Containers wrote:
+> > On Thu, Oct 1, 2020 at 2:54 PM Christian Brauner
+> > <christian.brauner@canonical.com> wrote:
+> > > On Wed, Sep 30, 2020 at 05:53:46PM +0200, Jann Horn via Containers wrote:
+> > > > On Wed, Sep 30, 2020 at 1:07 PM Michael Kerrisk (man-pages)
+> > > > <mtk.manpages@gmail.com> wrote:
+> > > > > NOTES
+> > > > >        The file descriptor returned when seccomp(2) is employed with the
+> > > > >        SECCOMP_FILTER_FLAG_NEW_LISTENER  flag  can  be  monitored  using
+> > > > >        poll(2), epoll(7), and select(2).  When a notification  is  pend‐
+> > > > >        ing,  these interfaces indicate that the file descriptor is read‐
+> > > > >        able.
+> > > >
+> > > > We should probably also point out somewhere that, as
+> > > > include/uapi/linux/seccomp.h says:
+> > > >
+> > > >  * Similar precautions should be applied when stacking SECCOMP_RET_USER_NOTIF
+> > > >  * or SECCOMP_RET_TRACE. For SECCOMP_RET_USER_NOTIF filters acting on the
+> > > >  * same syscall, the most recently added filter takes precedence. This means
+> > > >  * that the new SECCOMP_RET_USER_NOTIF filter can override any
+> > > >  * SECCOMP_IOCTL_NOTIF_SEND from earlier filters, essentially allowing all
+> > > >  * such filtered syscalls to be executed by sending the response
+> > > >  * SECCOMP_USER_NOTIF_FLAG_CONTINUE. Note that SECCOMP_RET_TRACE can equally
+> > > >  * be overriden by SECCOMP_USER_NOTIF_FLAG_CONTINUE.
+> > > >
+> > > > In other words, from a security perspective, you must assume that the
+> > > > target process can bypass any SECCOMP_RET_USER_NOTIF (or
+> > > > SECCOMP_RET_TRACE) filters unless it is completely prohibited from
+> > > > calling seccomp(). This should also be noted over in the main
+> > > > seccomp(2) manpage, especially the SECCOMP_RET_TRACE part.
 > > >
-> > > ...
+> > > So I was actually wondering about this when I skimmed this and a while
+> > > ago but forgot about this again... Afaict, you can only ever load a
+> > > single filter with SECCOMP_FILTER_FLAG_NEW_LISTENER set. If there
+> > > already is a filter with the SECCOMP_FILTER_FLAG_NEW_LISTENER property
+> > > in the tasks filter hierarchy then the kernel will refuse to load a new
+> > > one?
 > > >
-> > > > There was a warning. I noticed it while applying and fixed it up.
-> > > > Lorenz, please upgrade your compiler. This is not the first time su=
-ch
-> > > > warning has been missed.
-> > >
-> > > I tried reproducing this on latest bpf-next (b0efc216f577997) with gc=
-c
-> > > 9.3.0 by removing the initialization of duration:
-> > >
-> > > make: Entering directory '/home/lorenz/dev/bpf-next/tools/testing/sel=
-ftests/bpf'
-> > >   TEST-OBJ [test_progs] sockmap_basic.test.o
-> > >   TEST-HDR [test_progs] tests.h
-> > >   EXT-OBJ  [test_progs] test_progs.o
-> > >   EXT-OBJ  [test_progs] cgroup_helpers.o
-> > >   EXT-OBJ  [test_progs] trace_helpers.o
-> > >   EXT-OBJ  [test_progs] network_helpers.o
-> > >   EXT-OBJ  [test_progs] testing_helpers.o
-> > >   BINARY   test_progs
-> > > make: Leaving directory '/home/lorenz/dev/bpf-next/tools/testing/self=
-tests/bpf'
-> > >
-> > > So, gcc doesn't issue a warning. Jakub did the following little exper=
-iment:
-> > >
-> > > jkbs@toad ~/tmp $ cat warning.c
-> > > #include <stdio.h>
-> > >
-> > > int main(void)
+> > > static struct file *init_listener(struct seccomp_filter *filter)
 > > > {
-> > >         int duration;
+> > >         struct file *ret = ERR_PTR(-EBUSY);
+> > >         struct seccomp_filter *cur;
 > > >
-> > >         fprintf(stdout, "%d", duration);
+> > >         for (cur = current->seccomp.filter; cur; cur = cur->prev) {
+> > >                 if (cur->notif)
+> > >                         goto out;
+> > >         }
 > > >
-> > >         return 0;
-> > > }
-> > > jkbs@toad ~/tmp $ gcc -Wall -o /dev/null warning.c
-> > > warning.c: In function =E2=80=98main=E2=80=99:
-> > > warning.c:7:2: warning: =E2=80=98duration=E2=80=99 is used uninitiali=
-zed in this
-> > > function [-Wuninitialized]
-> > >     7 |  fprintf(stdout, "%d", duration);
-> > >       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >
-> > >
-> > > The simple case seems to work. However, adding the macro breaks thing=
-s:
-> > >
-> > > jkbs@toad ~/tmp $ cat warning.c
-> > > #include <stdio.h>
-> > >
-> > > #define _CHECK(duration) \
-> > >         ({                                                      \
-> > >                 fprintf(stdout, "%d", duration);                \
-> > >         })
-> > > #define CHECK() _CHECK(duration)
-> > >
-> > > int main(void)
-> > > {
-> > >         int duration;
-> > >
-> > >         CHECK();
-> > >
-> > >         return 0;
-> > > }
-> > > jkbs@toad ~/tmp $ gcc -Wall -o /dev/null warning.c
-> > > jkbs@toad ~/tmp $
-> >
-> > That's very interesting. Thanks for the pointers.
-> > I'm using gcc version 9.1.1 20190605 (Red Hat 9.1.1-2)
-> > and I saw this warning while compiling selftests,
-> > but I don't see it with above warning.c example.
-> > clang warns correctly in both cases.
->
-> I think this might be the same problem I fixed for libbpf with [0].
-> Turns out, GCC explicitly calls out (somewhere in their docs) that
-> uninitialized variable warnings work only when compiled in optimized
-> mode, because some internal data structures used to detect this are
-> only maintained in optimized mode build.
->
-> Laurenz, can you try compiling your example with -O2?
+> > > shouldn't that be sufficient to guarantee that USER_NOTIF filters can't
+> > > override each other for the same task simply because there can only ever
+> > > be a single one?
+> > 
+> > Good point. Exceeeept that that check seems ineffective because this
+> > happens before we take the locks that guard against TSYNC, and also
+> > before we decide to which existing filter we want to chain the new
+> > filter. So if two threads race with TSYNC, I think they'll be able to
+> > chain two filters with listeners together.
+> 
+> Yep, seems the check needs to also be in seccomp_can_sync_threads() to
+> be totally effective,
+> 
+> > I don't know whether we want to eternalize this "only one listener
+> > across all the filters" restriction in the manpage though, or whether
+> > the man page should just say that the kernel currently doesn't support
+> > it but that security-wise you should assume that it might at some
+> > point.
+> 
+> This requirement originally came from Andy, arguing that the semantics
+> of this were/are confusing, which still makes sense to me. Perhaps we
+> should do something like the below?
 
-All of my experiments I did with -O2.
+I think we should either keep up this restriction and then cement it in
+the manpage or add a flag to indicate that the notifier is
+non-overridable.
+I don't care about the default too much, i.e. whether it's overridable
+by default and exclusive if opting in or the other way around doesn't
+matter too much. But from a supervisor's perspective it'd be quite nice
+to be able to be sure that a notifier can't be overriden by another
+notifier.
 
->   [0] https://patchwork.ozlabs.org/project/netdev/patch/20200929220604.83=
-3631-2-andriin@fb.com/
->
-> >
-> > > Maybe this is https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D18501 ? =
-The
-> > > problem is still there on gcc 10. Compiling test_progs with clang doe=
-s
-> > > issue a warning FWIW, but it seems like other things break when doing
-> > > that.
-> >
-> > That gcc bug has been opened since transition to ssa. That was a huge
-> > transition for gcc. But I think the bug number is not correct. It point=
-s to a
-> > different issue. I've checked -fdump-tree-uninit-all dump with and with=
-out
-> > macro. They're identical. The tree-ssa-uninit pass suppose to warn, but=
- it
-> > doesn't. I wish I had more time to dig into it. A bit of debugging in
-> > gcc/tree-ssa-uninit.c can probably uncover the root cause.
+I think having a flag would provide the greatest flexibility but I agree
+that the semantics of multiple listeners are kinda odd.
+
+Below looks sane to me though again, I'm not sitting in fron of source
+code.
+
+Christian
+
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 3ee59ce0a323..7b107207c2b0 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -376,6 +376,18 @@ static int is_ancestor(struct seccomp_filter *parent,
+>  	return 0;
+>  }
+>  
+> +static bool has_listener_parent(struct seccomp_filter *child)
+> +{
+> +	struct seccomp_filter *cur;
+> +
+> +	for (cur = current->seccomp.filter; cur; cur = cur->prev) {
+> +		if (cur->notif)
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  /**
+>   * seccomp_can_sync_threads: checks if all threads can be synchronized
+>   *
+> @@ -385,7 +397,7 @@ static int is_ancestor(struct seccomp_filter *parent,
+>   * either not in the correct seccomp mode or did not have an ancestral
+>   * seccomp filter.
+>   */
+> -static inline pid_t seccomp_can_sync_threads(void)
+> +static inline pid_t seccomp_can_sync_threads(unsigned int flags)
+>  {
+>  	struct task_struct *thread, *caller;
+>  
+> @@ -407,6 +419,11 @@ static inline pid_t seccomp_can_sync_threads(void)
+>  				 caller->seccomp.filter)))
+>  			continue;
+>  
+> +		/* don't allow TSYNC to install multiple listeners */
+> +		if (flags & SECCOMP_FILTER_FLAG_NEW_LISTENER &&
+> +		    !has_listener_parent(thread->seccomp.filter))
+> +			continue;
+> +
+>  		/* Return the first thread that cannot be synchronized. */
+>  		failed = task_pid_vnr(thread);
+>  		/* If the pid cannot be resolved, then return -ESRCH */
+> @@ -637,7 +654,7 @@ static long seccomp_attach_filter(unsigned int flags,
+>  	if (flags & SECCOMP_FILTER_FLAG_TSYNC) {
+>  		int ret;
+>  
+> -		ret = seccomp_can_sync_threads();
+> +		ret = seccomp_can_sync_threads(flags);
+>  		if (ret) {
+>  			if (flags & SECCOMP_FILTER_FLAG_TSYNC_ESRCH)
+>  				return -ESRCH;
+> @@ -1462,12 +1479,9 @@ static const struct file_operations seccomp_notify_ops = {
+>  static struct file *init_listener(struct seccomp_filter *filter)
+>  {
+>  	struct file *ret = ERR_PTR(-EBUSY);
+> -	struct seccomp_filter *cur;
+>  
+> -	for (cur = current->seccomp.filter; cur; cur = cur->prev) {
+> -		if (cur->notif)
+> -			goto out;
+> -	}
+> +	if (has_listener_parent(current->seccomp.filter))
+> +		goto out;
+>  
+>  	ret = ERR_PTR(-ENOMEM);
+>  	filter->notif = kzalloc(sizeof(*(filter->notif)), GFP_KERNEL);
