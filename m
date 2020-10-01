@@ -2,147 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C230280B4A
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 01:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFAB280B72
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 01:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgJAXVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 19:21:50 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:57551 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727713AbgJAXT7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Oct 2020 19:19:59 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id EC59BC3C;
-        Thu,  1 Oct 2020 19:19:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 01 Oct 2020 19:19:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Tlpv2xmpynLkoXih5aMS72+SXJr
-        nQuj1c9PDv1ck7SY=; b=kAnlT5uGdLP7ZHMd/rvKFoooU2LN0P/lAm1T9lGIii9
-        PlCZZtGPEs9KopNalPJ1js1pctZjbJG4+5VJZLd8xgcuUGD0lB/o+gjOI3PoE73A
-        nSqQ8Q2QI14dzUcuv4Hwp/f4mNOKSvcc9D+iZEFSmXXjz2Ju79+QQTCRoVI59MEK
-        7AyZnYv/jn1FG+eg/72B5jYTQXhk6l1OG6/5PFZQ3LB1lWqU/ngZesv0afOq9ZAF
-        CsTk9T9YJGSpNOkdPBuDpt28Y325ugCfTNwVuV9dqB78wiXr2JqhYumstJ+GmL6c
-        qvl6DNKFjMKNoYCK6El7NsIsEq+/eBUSSNnHpQTCIYA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Tlpv2x
-        mpynLkoXih5aMS72+SXJrnQuj1c9PDv1ck7SY=; b=YrtEbGU8zOV9obkWiyW83q
-        2/eRqrLFuyhY7NReqTCUbwQ7+FodkpbVtxmew6Som6zYQUaIomR8EYreLV8eapAm
-        6eqGej3Y2c/lQ3mp+GOtMZaYOZh1dKAE9GAY91Mcpu/ZE3Gbn/trgk/Eg2ckRKQ3
-        u9WKLIwQqFn7UaWcFpr8q1hvzwhv3AdLOOGOJkWexZtKEP/WjJJV658CIVbvgMqr
-        YHVIMeNYI7n+WwIQSuwqsSnZutV3t1bKVzE2kH9biteKEDTnOQMzCTYYlON9leAk
-        kN4jD+zpv0yD+uFQanaCNkUrUsXTe9pf4CMFQrYR4OzXt//2ig8vm0kiE+XhTutQ
-        ==
-X-ME-Sender: <xms:_GN2Xzs6msGZQcTc-fvlIrR2UVr99TDXZStlH0IZnic86NoRJ9NPyA>
-    <xme:_GN2X0fpVR9i1T8XP7djV_kaeiQZhH1h01l6t-qwoijMuqjFD1aCLiPiwHtgtc9jX
-    kcZaodCQWqkpJQDJRc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrfeehgddujecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghhohcu
-    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
-    htvghrnhepffekueefveeufefhhfelieffheeludeitdelkefhieejleeiffejvdelieeg
-    udeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpmhgrnhejrdhorhhgnecukfhppe
-    duvdekrddutdejrddvgedurdduieejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:_WN2X2x1_h2CgyVYMYJ__5ZQsJVg8mJwYeL-PB1IWWsQgXXX-SgZJw>
-    <xmx:_WN2XyNzSo_4tRUgtRsA5dgdIXms__i3HRiu9OJJXqkRXyJHA5g2zQ>
-    <xmx:_WN2Xz88rKAopdVohxCpJmT0eZAeVp1v0A4t1z4FgpG57OH2ZuwSRg>
-    <xmx:_mN2X3VXO3K-T_QMDwDJynXQdD85L8b36S_Vdf3u9tGGk1FuRsduqJHSVVlBJ2Rp>
-Received: from cisco (unknown [128.107.241.167])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A1E8A3280066;
-        Thu,  1 Oct 2020 19:19:22 -0400 (EDT)
-Date:   Thu, 1 Oct 2020 17:19:15 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-Message-ID: <20201001231915.GA16219@cisco>
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <CAMp4zn9XA-z_6UKvWkFh_U2wPRjZF3=QvrXX7EikO5AEovCWBA@mail.gmail.com>
-MIME-Version: 1.0
+        id S1732836AbgJAXxN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 19:53:13 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22084 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727017AbgJAXxN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Oct 2020 19:53:13 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 091NpsFr016464;
+        Thu, 1 Oct 2020 16:52:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=CR1fqMrCSX4AzNOpfdak4n2AggaTPypdGDrA4BjqDRM=;
+ b=LY15fnVVNerXh0Pa06zrMQ5O8FVYxLpoxMYuounI5hoBikZl0B1FcmMzDqd4RWfLX5xb
+ OGJGgLInLNEVrBDIMG1HrkHJQG6l+8OmigROviE3+43Vh0YsHVZHXsWUgD+rQJ2dmDO4
+ 0HFk+9hscUrganm9cTFYu1asAFBxSuivrJ4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33vwu3gbew-13
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 01 Oct 2020 16:52:57 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 1 Oct 2020 16:22:43 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SLC0GJcuAYc4uOk6fEtOWaAtPOXsHzT3fpQ1D7UUZj8lDB4/LUaupW3pP7CoPXxWVPKMQO+bEEiM0lE8/tSlLAGuQ4Bv2lBApVYbAsDkrSvaSwhep4aCSi3nM8DeIFEzPtXyteG51hPe2cSloTI6LJqJeqZroOrnUD9vWdpMuDbft4AvCxMwArLpvfUQ29HN1l77i5LG5w6ySfKPSjx7pmCJuhjsLU5v10eO4jpFrNDmuGzS4hMQERnoNTrtMZePhy7HBek4fQKR2qHS/pvfjidDEigW8AjUl0Q1l3aTLIk0TCIaVUSkfsiUncf1vVi1/aXM0iWbH2EdWNevmPlKcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CR1fqMrCSX4AzNOpfdak4n2AggaTPypdGDrA4BjqDRM=;
+ b=Ju77W5Kp5nneznI40R3d0pJyYXZrCcR8q5ERuETd7TLZq2ooybaVxKNci3I18N6SUGsZOmIt1mpmgF7aW1Ku3a9gF0gv/77LVQCAQPsKJqSgmgop9OyChl2xRSeJ3b2H4uolg6Fp4bolI8RYA9ujNGPSuWiYuCINDaWjs46gCMSQHvvyr54BLEcE2nuJyAzjqvlDUG/HicFzx+UoSSCV0O3eOK0Xr9jop3REqnhO5BytBV265B+x/CXdspBBCb+mZLMNJc2Y067lmCq6vhkiBB4B3MzxCEK9YB4YvUe9xCbG7weQvmMeEBF3O+2zZ0BZkCLWyeLYbT0ULOKE2lWY+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CR1fqMrCSX4AzNOpfdak4n2AggaTPypdGDrA4BjqDRM=;
+ b=eKM21GN6BjNR68H7s1UWD7p6PswHwN6Q5vqXORW8hgg1H6n17Im4jRjvbimFmSKIgAsZN8hS5KyKck9QV2H4KG6IfQPAQWAcCNFtJO290LM5QXXdE70YiBBH8nFMl9sT7rFMnbaBzEKAPyMhfKAyeKaUhPFP9nT1rPXBaskaCDs=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3094.namprd15.prod.outlook.com (2603:10b6:a03:ff::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.28; Thu, 1 Oct
+ 2020 23:22:43 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3412.029; Thu, 1 Oct 2020
+ 23:22:43 +0000
+Date:   Thu, 1 Oct 2020 16:22:36 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <davem@davemloft.net>, <ast@kernel.org>, <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next] selftests/bpf: initialize duration in
+ xdp_noinline.c
+Message-ID: <20201001232236.5plmque7q23uv3as@kafai-mbp.dhcp.thefacebook.com>
+References: <20201001225440.1373233-1-sdf@google.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMp4zn9XA-z_6UKvWkFh_U2wPRjZF3=QvrXX7EikO5AEovCWBA@mail.gmail.com>
+In-Reply-To: <20201001225440.1373233-1-sdf@google.com>
+X-Originating-IP: [2620:10d:c090:400::5:f2d3]
+X-ClientProxiedBy: MWHPR18CA0042.namprd18.prod.outlook.com
+ (2603:10b6:320:31::28) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:f2d3) by MWHPR18CA0042.namprd18.prod.outlook.com (2603:10b6:320:31::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Thu, 1 Oct 2020 23:22:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4947c728-fa8c-4631-34e0-08d86660e58b
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3094:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB30943410944AAEBB22B78DA7D5300@BYAPR15MB3094.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:541;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mRQhYRiHxzKxmHAYnIx4n9LHEp1g84v7ThJ/xfyrKeYhgZ5S2I+VKm6FTOBkRUbzaTjSvHglmJHsco0Ee2iHDUpeOlLcQVlfta2kpWEl0G9bJCqgcSd3sRj7A/UhHRQi5f80TDy+XrewOcflPlqK+CNGWfeMnfx0KPFfMPaaUzVVEyGcEsU2fBTa4YBiBS0OpOK4vjgYKV/6f75XoJOnaG205WaKoRbzEN4E4+VpEaGJKvPGgi6eoqKxWhx1Hl0u1Zp0932NL4ARB/F5QzLp+2Mi8SDt2roNuDEAhwcZLfZ5bSwXjYA1c5jhSlb7aZsy/osYAYnCsyoL7FQvQ6SRVaYtQv+Nuljmdp3Nbm/0hnoGJVl73ajbt2PYhmWGHoKj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(376002)(39860400002)(366004)(16526019)(52116002)(2906002)(83380400001)(6506007)(8936002)(66556008)(1076003)(186003)(86362001)(4326008)(66946007)(316002)(55016002)(6916009)(8676002)(5660300002)(478600001)(66476007)(9686003)(7696005)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: dhm4IEv03rHQdLF1fUBXJHpCqOlYZ0PvyiLmH/5x7IjUSBtL0ehszvy1gL20VlZ7PNl5M4Qbv6RN4jW72uQVNoKSz8R9QryY2fT6oHhURrOnoE2jRYCAtXinHO4oMHv4NM/bc5vaFScSbxbI5nvBBbjtQa4QEJEj/pxn+JEmfkoTFKQRuZNAIrrIsPGxtfj50t6Zldote2wCQOTVDKGpeme4dYC7o3Rin57Tg0cKorn4m8SJ70weaxKW/maNmXnlJnVCzcnk6NBZ/oNQ1zTNksyeWUkZsqYERUw5kBmT/Rb/riboRHYjoQGeeZJ/grr90NOxYHZ4bfh5T5jYgr5P4Pb5+iBASV5z8bt6WjgoQkuE2x8IwM8L3lMjEsFNyutZlqncOLGFdj4MwUbjfKkxw2+rpPi6F7gcBNXrely9c/Cio4j1j0UZOH3lUhm1LLMwV5to3edZUInq8jWV85Cj9Lyu7ZE+dvO04CGxmSoHjF/2MtF/FR5R36Entb9lYX1+BFO4ClHwA7ai3irrbcTt1w6HyqQuVnr2MmgFVhkmk+ql+sT4pR1XSSPidYy5kk2OsGzwyRmXGFBAqN54Rs88LtfEHtcWWmhcRwdVWIjDcevqMXBpCM6zy/ej421xpQc8E39QsflhOiFfrksWxBjSQpM5mxz3DDl+wnE7a5H6lMTtF98arAdYiZ/HINaRwNob
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4947c728-fa8c-4631-34e0-08d86660e58b
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2020 23:22:42.9682
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mT1CGkW0iXGyshTXi5aDk/gT4B+C0Io8PkVopDK024l/iABGsKc38hj7zqICRWsT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3094
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-01_10:2020-10-01,2020-10-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ phishscore=0 mlxlogscore=626 spamscore=0 suspectscore=1 impostorscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010010193
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 02:06:10PM -0700, Sargun Dhillon wrote:
-> On Wed, Sep 30, 2020 at 4:07 AM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
-> >
-> > Hi Tycho, Sargun (and all),
-> >
-> > I knew it would be a big ask, but below is kind of the manual page
-> > I was hoping you might write [1] for the seccomp user-space notification
-> > mechanism. Since you didn't (and because 5.9 adds various new pieces
-> > such as SECCOMP_ADDFD_FLAG_SETFD and SECCOMP_IOCTL_NOTIF_ADDFD
-> > that also will need documenting [2]), I did :-). But of course I may
-> > have made mistakes...
-> >
-> > I've shown the rendered version of the page below, and would love
-> > to receive review comments from you and others, and acks, etc.
-> >
-> > There are a few FIXMEs sprinkled into the page, including one
-> > that relates to what appears to me to be a misdesign (possibly
-> > fixable) in the operation of the SECCOMP_IOCTL_NOTIF_RECV
-> > operation. I would be especially interested in feedback on that
-> > FIXME, and also of course the other FIXMEs.
-> >
-> > The page includes an extensive (albeit slightly contrived)
-> > example program, and I would be happy also to receive comments
-> > on that program.
-> >
-> > The page source currently sits in a branch (along with the text
-> > that you sent me for the seccomp(2) page) at
-> > https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/log/?h=seccomp_user_notif
-> >
-> > Thanks,
-> >
-> > Michael
-> >
-> > [1] https://lore.kernel.org/linux-man/2cea5fec-e73e-5749-18af-15c35a4bd23c@gmail.com/#t
-> > [2] Sargun, can you prepare something on SECCOMP_ADDFD_FLAG_SETFD
-> >     and SECCOMP_IOCTL_NOTIF_ADDFD to be added to this page?
-> >
-> > ====
-> >
-> > --
-> > Michael Kerrisk
-> > Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> > Linux/UNIX System Programming Training: http://man7.org/training/
+On Thu, Oct 01, 2020 at 03:54:40PM -0700, Stanislav Fomichev wrote:
+> Fixes clang error:
+> tools/testing/selftests/bpf/prog_tests/xdp_noinline.c:35:6: error: variable 'duration' is uninitialized when used here [-Werror,-Wuninitialized]
+>         if (CHECK(!skel, "skel_open_and_load", "failed\n"))
+>             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
-> Should we consider the SECCOMP_GET_NOTIF_SIZES dance to be "deprecated" at
-> this point, given that the extensible ioctl mechanism works? If we add
-> new fields to the
-> seccomp datastructures, we would move them from fixed-size ioctls, to
-> variable sized
-> ioctls that encode the datastructure size / length?
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/xdp_noinline.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> -- This is mostly a question for Kees and Tycho.
-
-It will tell you how big struct seccomp_data in the currently running
-kernel is, so it still seems useful/necessary to me, unless there's
-another way to figure that out.
-
-But I agree, I don't think the intent is to add anything else to
-struct seccomp_notif. (I don't know that it ever was.)
-
-Tycho
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c b/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c
+> index a1f06424cf83..0281095de266 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_noinline.c
+> @@ -25,7 +25,7 @@ void test_xdp_noinline(void)
+>  		__u8 flags;
+>  	} real_def = {.dst = MAGIC_VAL};
+>  	__u32 ch_key = 11, real_num = 3;
+> -	__u32 duration, retval, size;
+> +	__u32 duration = 0, retval, size;
+Acked-by: Martin KaFai Lau <kafai@fb.com>
