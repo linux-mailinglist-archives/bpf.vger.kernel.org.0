@@ -2,74 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9849280517
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 19:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8508C28065B
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 20:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732287AbgJAR0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 13:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        id S1729927AbgJASRU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 14:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732096AbgJAR0W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 13:26:22 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4CCC0613D0;
-        Thu,  1 Oct 2020 10:26:20 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id s205so5336355lja.7;
-        Thu, 01 Oct 2020 10:26:20 -0700 (PDT)
+        with ESMTP id S1729493AbgJASRT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 14:17:19 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E48C0613D0;
+        Thu,  1 Oct 2020 11:17:19 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id f70so4700537ybg.13;
+        Thu, 01 Oct 2020 11:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=i2eUGU+6UJ2iNJKOqgJiZZvCYDFJo4EPNmr8omyQDAM=;
-        b=suL0SQnHO5+XcwiJH/4SWM63Idj/mI1NdY8opxw07lARA3Qbl4iQBnMkj7466Hn6xE
-         zqwSNVgsDeCkqrZ6Xa+bGXyXdre6kw+1UArbMFRlfEaqwiJI0aSGHEPO9XDNp8A8utmb
-         xVA54FWEcI+3tJUw05dCapTJVcR1uLwgi6hhZy06NdL/E5ZYbBnU7SoUqJFG8eI6mLZ+
-         xkNCKKOowLL6+PTEOYwyE4TXk4Zs6nOlRHpTbrwGDGVHJFC9vUH+njUHBIABJ1p2xAi3
-         zZ6wWnU287BKzKGBajhY+IpxAnrfRga4gsfskTOpAq09BpPwHRHVuZMSemBKm1mNoXTW
-         h9qw==
+        bh=RAC5Se9PuPOggrcST5NI+UPYKW6AY39SOgPucfQ9Cis=;
+        b=W2Kw28BCkt8KhKuBpkExAaNDKuC2kojSMVHOn/t2Z2ZleF1ZAwaxsfiPkNHMvo+usK
+         YsLjdc0kVfqAhHAa0VapXpId+Gt2BTh3pUkAjGcd1so4mZPCl4VxKxFi24y1f2d/PqIn
+         eG1eBiBljfUHo7Gj/hG/+8ZxZmZ/YrlL6uJ2Sk795mgSHl4QZXgwxZrM9U5cwXhZsmkL
+         be+A9rodogga7l2dUJSVmo56W1kyWLDtw2W15g5+tQJ5sRf8HCUOkkXOXqzeCvXfh6lN
+         NZJhp/kbAZIvxetee2HAXbZTHd1105ytQA4tSDfi+RCUGrjNeAxs+3ibbC1nI9OY4T5d
+         oO4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=i2eUGU+6UJ2iNJKOqgJiZZvCYDFJo4EPNmr8omyQDAM=;
-        b=CrjAlJWZic5kq4ah+6W5XBJLZg0g8Pbv32JBD4Jl2eP3Gy1Q0vARvbL66I2mlzXvu4
-         cs3G/q8Jb5geLcrfBOVo7Jq0couC63fw4D8q9Ih+/f3pQSYV104aKnxM6FC4wdPiXTqk
-         sk59GzA0vY7jhOO35zrqUcsQVXqViOxVZxlL6hplAk57RXBWhIwXqzL36HrxWeCnDQFr
-         w/qKiF47+U5nqfrhpnAarOCm6HeD7pHxLFRYneRJ6dZJIEORCB7WxAG9pIXZCZQQqxmZ
-         W83C30wf1ZmTWwDo2fZ+128SqNNXyvrt3f8avIod2LHsT6hsuoHJko9+RuawzIJbEsOw
-         wCnA==
-X-Gm-Message-State: AOAM5312CzA8TaHSMC3juKhiA68d3O6b0s9OMUyj/AMyB7zLLVKBfIBm
-        ASoe5zqaxpHgi43gzNXXVKCtgjg7nrKTLi71C4nZyTkz
-X-Google-Smtp-Source: ABdhPJzOHdcyd5WenZTs16njk0NN+gwihYQYr9swObb9UqSRviEA7Hnufv3hNP54Vz8sqG/oX6J8Bcbb47ZHpkIb62w=
-X-Received: by 2002:a2e:9dcb:: with SMTP id x11mr2826408ljj.450.1601573179021;
- Thu, 01 Oct 2020 10:26:19 -0700 (PDT)
+        bh=RAC5Se9PuPOggrcST5NI+UPYKW6AY39SOgPucfQ9Cis=;
+        b=AKylTAwfMAeVRZTWb57kVn4SWhsG9BlV9EuMCfw9tufczPMBe5HRPSattmc42QImFR
+         NeIHSS2TuQtuVwv6I9BXpt0TXDSXLLwTaGoujTqfxrfjOTp3XgRgpBT5QtoEeKSW43Zx
+         PD/lDlBNKp9HW0ZMwSXxuOz8JyU6eM1+EGgVPYi7OSZ8nuGmaS/WtVcYfWbZDoPlRaM2
+         JTBIYtTGBd0KKHzxVY40wAfOz9aAgfpp9ANkF6NtM8WsWZy0YWpvsIgK1u0QS8LQakk6
+         VRClYuQt8qkLouzMPie6n4N3xDiW4Sx0cx4kkdxeXRM4pI9sWpBOv0dsfGt0fCrlFdsI
+         bJhQ==
+X-Gm-Message-State: AOAM5325QBkgehd9SZ1muzJRKUq2Qj52h0iRFGs6oS6RUV5URumLZkGG
+        ch18mZnt8M/i2/21itbZhX6r1czkOskzzxoSj18=
+X-Google-Smtp-Source: ABdhPJygbkl/A8PX82cYfHnjLVSkwHcdrZhuK5g09YeLVdGkcORS7ChJ4aZ9dCoFM6sbt/xirLejWvb5cThfuzgi3+Y=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr11163136ybn.230.1601576238244;
+ Thu, 01 Oct 2020 11:17:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <87sgayfgwz.fsf@nanos.tec.linutronix.de> <87mu16f4ze.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87mu16f4ze.fsf@nanos.tec.linutronix.de>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 1 Oct 2020 10:26:07 -0700
-Message-ID: <CAADnVQLejbNccFttVZY=dzQ7Qqyjjtg4-PuBt36Ms+_DQAQZwQ@mail.gmail.com>
-Subject: Re: mb2q experience and couple issues
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200929031845.751054-1-liuhangbin@gmail.com> <CAEf4BzYKtPgSxKqduax1mW1WfVXKuCEpbGKRFvXv7yNUmUm_=A@mail.gmail.com>
+ <20200929094232.GG2531@dhcp-12-153.nay.redhat.com> <CAEf4BzZy9=x0neCOdat-CWO4nM3QYgWOKaZpN31Ce5Uz9m_qfg@mail.gmail.com>
+ <20200930023405.GH2531@dhcp-12-153.nay.redhat.com> <CAEf4BzYVVUq=eNwb4Z1JkVmRc4i+nxC4zWxbv2qGQAs-2cxkhw@mail.gmail.com>
+ <CAPwn2JT6KGPxKD0fGZLfR8EsRHhYcfbvCATWO9WsiH_wqhheFg@mail.gmail.com>
+In-Reply-To: <CAPwn2JT6KGPxKD0fGZLfR8EsRHhYcfbvCATWO9WsiH_wqhheFg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 1 Oct 2020 11:17:07 -0700
+Message-ID: <CAEf4BzZ+ffmWfGfDSYTv6OGOy8KjC95=XnA18MSkUEPEA_7zgQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: export bpf_object__reuse_map() to libbpf api
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 1, 2020 at 6:30 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+On Thu, Oct 1, 2020 at 4:34 AM Hangbin Liu <liuhangbin@gmail.com> wrote:
 >
-> On Thu, Oct 01 2020 at 11:13, Thomas Gleixner wrote:
-> > Yes, it's ugly and I haven't figured out a proper way to deal with
-> > that. There are quite some mbox formats out there and they all are
-> > incompatible with each other and all of them have different horrors.
+> On Thu, 1 Oct 2020 at 02:30, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index 32dc444224d8..5412aa7169db 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -4215,7 +4215,7 @@ bpf_object__create_maps(struct bpf_object *obj)
+> > >                 if (map->fd >= 0) {
+> > >                         pr_debug("map '%s': skipping creation (preset fd=%d)\n",
+> > >                                  map->name, map->fd);
+> > > -                       continue;
+> > > +                       goto check_pin_path;
+> > >                 }
+> > >
+> > >                 err = bpf_object__create_map(obj, map);
+> > > @@ -4258,6 +4258,7 @@ bpf_object__create_maps(struct bpf_object *obj)
+> > >                         map->init_slots_sz = 0;
+> > >                 }
+> > >
+> > > +check_pin_path:
+> > >                 if (map->pin_path && !map->pinned) {
+> > >                         err = bpf_map__pin(map, NULL);
+> > >                         if (err) {
+> > >
+> > >
+> > > Do you think if this change be better?
 > >
-> > Let me think about it.
+> > Yes, of course. Just don't do it through use of goto. Guard map
+> > creation with that if instead.
 >
-> I've pushed out an update to
+> Hi Andrii,
 >
->      git://git.kernel.org/pub/scm/linux/kernel/git/tglx/quilttools.git
+> Looks I missed something, Would you like to explain why we should not use goto?
 
-Awesome. Pulled and tested. Everything looks great now.
-Thanks for the quick fixes!
+Because goto shouldn't be a default way of altering the control flow.
+
+> And for "guard map creation with the if", do you mean duplicate the
+> if (map->pin_path && !map->pinned) in if (map->fd >= 0)? like
+
+I mean something like:
+
+
+if (map->pin_path) { ... }
+
+if (map fd < 0) {
+  bpf_object__create_map(..);
+  if (bpf_map__is_internal(..)) { ... }
+  if (map->init_slot_sz) { ...}
+}
+
+if (map->pin_path && !map->pinned) { ...  }
+
+
+>
+> diff --git a/src/libbpf.c b/src/libbpf.c
+> index 3df1f4d..705abcb 100644
+> --- a/src/libbpf.c
+> +++ b/src/libbpf.c
+> @@ -4215,6 +4215,15 @@ bpf_object__create_maps(struct bpf_object *obj)
+>                 if (map->fd >= 0) {
+>                         pr_debug("map '%s': skipping creation (preset fd=%d)\n",
+>                                  map->name, map->fd);
+> +                       if (map->pin_path && !map->pinned) {
+> +                               err = bpf_map__pin(map, NULL);
+> +                               if (err) {
+> +                                       pr_warn("map '%s': failed to
+> auto-pin at '%s': %d\n",
+> +                                               map->name, map->pin_path, err);
+> +                                       zclose(map->fd);
+> +                                       goto err_out;
+> +                               }
+> +                       }
+>                         continue;
+>                 }
+>
+> (Sorry if the code format got corrupted as I replied in web gmail....)
+>
+> Thanks
+> Hangbin
