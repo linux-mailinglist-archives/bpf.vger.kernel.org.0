@@ -2,165 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2487928020E
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 17:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC81280216
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 17:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732207AbgJAPDJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 11:03:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41104 "EHLO mail.kernel.org"
+        id S1732581AbgJAPDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 11:03:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732096AbgJAPDJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 11:03:09 -0400
+        id S1732579AbgJAPDn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 11:03:43 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D31D420780;
-        Thu,  1 Oct 2020 15:03:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9906120780;
+        Thu,  1 Oct 2020 15:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601564588;
-        bh=tndLqBxrIDxlHmkQX8x4jK0/dSkmgzoyYAdf86KUqHQ=;
+        s=default; t=1601564623;
+        bh=1EFFdD0DUAyisWOfdCKeb7Y1Afl+IRxVg8tOPYRG9Ts=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Piwp4g2pZ2HzhNYHwySvAuiDutspgnA5MK0d9n8XVmnSrW6oDvuE1Vf82T5z0ncKp
-         gyLPs8ZWvEM6Ou+YdIIvNr/PvU4opTqXrqNo1jUTKDgC2VL/YI6igleKTV5tpG1jqB
-         a5ghUEnNML3a5EfSBUdNAXoOHCDKLXFyscoD7b9g=
+        b=d+TiwDdX3+oKX02t2bkBHr3KeyS2FBU2RzW1Bmz6uam5uQG5oHLY1hNcY9H4K5Dyp
+         IAg9i3z3AD6lHn2e9sJ3VnI1ycOE+MJ7ozI49mY9PyAle/QXtADJV5whm0p3zaex40
+         aQ11YHRVShmspJu69XjrYosq0en4A/bqZ9YS/QOI=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D9124403AC; Thu,  1 Oct 2020 12:03:04 -0300 (-03)
-Date:   Thu, 1 Oct 2020 12:03:04 -0300
+        id C085B403AC; Thu,  1 Oct 2020 12:03:40 -0300 (-03)
+Date:   Thu, 1 Oct 2020 12:03:40 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: BTF without CONFIG_DEBUG_INFO_BTF=y
-Message-ID: <20201001150304.GA18693@kernel.org>
+Subject: Re: BTF without CONFIG_DEBUG_INFO_BTF=y
+Message-ID: <20201001150340.GB18693@kernel.org>
 References: <VI1PR83MB02542417DBEF45BBA9C90FF7FB300@VI1PR83MB0254.EURPRD83.prod.outlook.com>
  <87h7rejkwh.fsf@toke.dk>
  <20201001125029.GE3169811@kernel.org>
  <20201001132250.GF3169811@kernel.org>
  <87v9fuhxt9.fsf@toke.dk>
- <VI1PR83MB025405E9346E8EA4C0459428FB300@VI1PR83MB0254.EURPRD83.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <VI1PR83MB025405E9346E8EA4C0459428FB300@VI1PR83MB0254.EURPRD83.prod.outlook.com>
+In-Reply-To: <87v9fuhxt9.fsf@toke.dk>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Oct 01, 2020 at 01:45:25PM +0000, Kevin Sheldrake escreveu:
-> > Arnaldo Carvalho de Melo <acme@kernel.org> writes:
-> SNIP
-> > >     Reported-by: Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-> > >     Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-> > >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Em Thu, Oct 01, 2020 at 03:37:22PM +0200, Toke Høiland-Jørgensen escreveu:
+> Arnaldo Carvalho de Melo <acme@kernel.org> writes:
+> 
+> > Em Thu, Oct 01, 2020 at 09:50:29AM -0300, Arnaldo Carvalho de Melo escreveu:
+> >> Em Thu, Oct 01, 2020 at 12:33:18PM +0200, Toke Høiland-Jørgensen escreveu:
+> >> > Kevin Sheldrake <Kevin.Sheldrake@microsoft.com> writes:
+> >> > > I've seen mention a few times that BTF information can be made
+> >> > > available from a kernel that wasn't configured with
+> >> > > CONFIG_DEBUG_INFO_BTF. Please can someone tell me if this is true and,
+> >> > > if so, how I could go about accessing and using it in kernels 4.15 to
+> >> > > 5.8?
+> >
+> >> > > I have built the dwarves package from the github latest and run pahole
+> >> > > with '-J' against my kernel image to no avail - it actually seg
+> >> > > faults:
+> >
+> >> > > ~/dwarves/build $ sudo ./pahole /boot/vmlinuz-5.3.0-1022-azure
+> >> > > btf_elf__new: cannot get elf header.
+> >> > > ctf__new: cannot get elf header.
+> >> > > ~/dwarves/build $ sudo ./pahole -J /boot/vmlinuz-5.3.0-1022-azure
+> >> > > btf_elf__new: cannot get elf header.
+> >> > > ctf__new: cannot get elf header.
+> >> > > Segmentation fault
+> >> > > ~/dwarves/build $ sudo ./pahole --version
+> >> > > v1.17
+> >
+> >> > > Judging by the output, I'm guessing that my kernel image isn't the
+> >> > > right kind of file. Can someone point me in the right direction?
+> >
+> >> > vmlinuz is a compressed image. There's a script in the kernel source
+> >> > tree (scripts/extract-vmlinux), however the kernel image in /boot/
+> >> > probably also has debug information stripped from it, so that likely
+> >> > won't help you. You'll need to get hold of a kernel image with debug
+> >> > information still intact somehow...
+> >
+> >> > (Either way, pahole shouldn't be segfaulting, so hopefully someone can
+> >> > take a look at that).
+> >
+> >> Reproduced:
+> >
+> >> [acme@five pahole]$ cp /boot/vmlinuz-5.9.0-rc6+ .
+> >> [acme@five pahole]$ pahole -J vmlinuz-5.9.0-rc6+
+> >> btf_elf__new: cannot get elf header.
+> >> ctf__new: cannot get elf header.
+> >> tag__check_id_drift: subroutine_type id drift, core_id: 1145, btf_type_id: 1143, type_id_off: 0
+> >> pahole: type 'vmlinuz-5.9.0-rc6+' not found
+> >> libbpf: Unsupported BTF_KIND:0
+> >> btf_elf__encode: btf__new failed!
+> >> free(): double free detected in tcache 2
+> >> Aborted (core dumped)
+> >> [acme@five pahole]$
+> >  
+> >> Working on a fix. Thanks for the report!
+> >
+> > commit 4e55425d9eaac78689fbd296283e1557bb6ca725
+> > Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Date:   Thu Oct 1 10:10:50 2020 -0300
+> >
+> >     pahole: Only try using a single file name as a type name if not encoding BTF or CTF
+> >     
+> >     Otherwise we end up trying to encode without any debug info and this
+> >     causes a segfault:
+> >     
+> >     Before:
+> >     
+> >       $ pahole -J vmlinuz-5.9.0-rc6+
+> >       tag__check_id_drift: subroutine_type id drift, core_id: 1145, btf_type_id: 1143, type_id_off: 0
+> >       pahole: type 'vmlinuz-5.9.0-rc6+' not found
+> >       libbpf: Unsupported BTF_KIND:0
+> >       btf_elf__encode: btf__new failed!
+> >       free(): double free detected in tcache 2
+> >       Aborted (core dumped)
+> >       $
+> >     
+> >     The vmlinuz file doesn't contain any debugging info, fixing it we get:
+> >     
+> >       $ pahole -J vmlinuz-5.9.0-rc6+
+> >       pahole: vmlinuz-5.9.0-rc6+: No debugging information found
+> >       $
+> >     
+> >     If debugging info is available, it all works as before:
+> >     
+> >     Using /sys/kernel/btf/vmlinux
+> >     
+> >     $ ls -la /sys/kernel/btf/vmlinux
+> >     -r--r--r--. 1 root root 3393761 Oct  1 09:50 /sys/kernel/btf/vmlinux
+> >     
+> >       $ pahole -E fw_cache_entry
+> >       struct fw_cache_entry {
+> >             struct list_head {
+> >                     struct list_head * next;          /*     0     8 */
+> >                     struct list_head * prev;          /*     8     8 */
+> >             } list; /*     0    16 */
+> >             const char  *              name;          /*    16     8 */
+> >     
+> >             /* size: 24, cachelines: 1, members: 2 */
+> >             /* last cacheline: 24 bytes */
+> >       };
+> >       $
+> >     
+> >     Or explicitely asking for DWARF, where it will find the appropriate
+> >     vmlinux according to its buildid in /sys/kernel/notes:
+> >     
+> >       $ pahole -F dwarf pm_clock_entry
+> >       struct pm_clock_entry {
+> >             struct list_head           node;          /*     0    16 */
+> >             char *                     con_id;        /*    16     8 */
+> >             struct clk *               clk;           /*    24     8 */
+> >             enum pce_status            status;        /*    32     4 */
+> >     
+> >             /* size: 40, cachelines: 1, members: 4 */
+> >             /* padding: 4 */
+> >             /* last cacheline: 40 bytes */
+> >       };
+> >       $ pahole -F dwarf --expand_types pm_clock_entry
+> >       struct pm_clock_entry {
+> >             struct list_head {
+> >                     struct list_head * next;          /*     0     8 */
+> >                     struct list_head * prev;          /*     8     8 */
+> >             } node; /*     0    16 */
+> >             char *                     con_id;        /*    16     8 */
+> >             struct clk *               clk;           /*    24     8 */
+> >             enum pce_status            status;        /*    32     4 */
+> >     
+> >             /* size: 40, cachelines: 1, members: 4 */
+> >             /* padding: 4 */
+> >             /* last cacheline: 40 bytes */
+> >       };
+> >       $
+> >     
+> >     Reported-by: Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
+> >     Cc: Toke Høiland-Jørgensen <toke@redhat.com>
+> >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+> Yeah, that's much better!
+> 
+> Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
 
-> > Yeah, that's much better!
-
-> > Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-
-> Thank you to Arnaldo for identifying and fixing the seg fault.
- 
-> Am I right in thinking that pahole can't work on a standard
-> out-of-the-box distro such as Ubuntu 16.04 (v4.15) or 18.04 (v5.3/5.4)
-> as debugging information isn't available in the kernel, and equally
-> isn't available anywhere else, without recompiling it?
-
-You mean recompiling the kernel with debug info? 
-
-You just have to install de debuginfo packages, that in Ubuntu is
-different than in Fedora but in the end is just the same principle: you
-have matching separate debug info files for each kernel released by the
-distro, please take a look at:
-
-https://wiki.ubuntu.com/Debug%20Symbol%20Packages
-
-There is also a page for Systemtap where it states the steps
-specifically for the kernel debug symbol packages:
-
-https://wiki.ubuntu.com/Kernel/Systemtap
-
-This part:
-
-codename=$(lsb_release -c | awk  '{print $2}')
-sudo tee /etc/apt/sources.list.d/ddebs.list << EOF
-deb http://ddebs.ubuntu.com/ ${codename}      main restricted universe multiverse
-deb http://ddebs.ubuntu.com/ ${codename}-security main restricted universe multiverse
-deb http://ddebs.ubuntu.com/ ${codename}-updates  main restricted universe multiverse
-deb http://ddebs.ubuntu.com/ ${codename}-proposed main restricted universe multiverse
-EOF
-
-sudo apt-get update
-sudo apt-get install linux-image-$(uname -r)-dbgsym
-
-Also make sure you have the dwarves package installed, if you haven't
-built it from sources as Toke suggested, as below, but then,
-ubuntu:18.04 has a way too old version of pahole/dwarves, 1.10, so build
-it from sources to have the BTF support and many other goodies.
-
-I just checked and ubuntu:19.10 has dwarves 1.15, that is not enough,
-1.16 is what the kernel expects to generate BTF:
-
-[acme@five perf]$ grep "pahole version" scripts/*.sh
-scripts/link-vmlinux.sh:		echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
-[acme@five perf]$
-
-- Arnaldo
-
-[perfbuilder@five ~]$ podman run --rm -ti ubuntu:18.04
-root@f9beca14daaf:/# bash
-root@f9beca14daaf:/# apt-get update
-Get:1 http://archive.ubuntu.com/ubuntu bionic InRelease [242 kB]
-Get:2 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
-Get:3 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
-Get:4 http://security.ubuntu.com/ubuntu bionic-security/multiverse amd64 Packages [14.6 kB]
-Get:5 http://archive.ubuntu.com/ubuntu bionic-backports InRelease [74.6 kB]                     
-Get:6 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages [1337 kB]
-Get:7 http://archive.ubuntu.com/ubuntu bionic/multiverse amd64 Packages [186 kB]  
-Get:8 http://archive.ubuntu.com/ubuntu bionic/restricted amd64 Packages [13.5 kB]
-Get:9 http://archive.ubuntu.com/ubuntu bionic/universe amd64 Packages [11.3 MB]          
-Get:10 http://security.ubuntu.com/ubuntu bionic-security/restricted amd64 Packages [193 kB]
-Get:11 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages [1693 kB]     
-Get:12 http://archive.ubuntu.com/ubuntu bionic/main amd64 Packages [1344 kB]                 
-Get:13 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages [2110 kB]
-Get:14 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages [2099 kB]
-Get:15 http://archive.ubuntu.com/ubuntu bionic-updates/restricted amd64 Packages [220 kB]
-Get:16 http://archive.ubuntu.com/ubuntu bionic-updates/multiverse amd64 Packages [44.6 kB]
-Get:17 http://archive.ubuntu.com/ubuntu bionic-backports/universe amd64 Packages [11.4 kB]
-Get:18 http://archive.ubuntu.com/ubuntu bionic-backports/main amd64 Packages [11.3 kB]
-Fetched 21.1 MB in 6s (3778 kB/s)                             
-Reading package lists... Done
-root@f9beca14daaf:/# apt-get install dwarves
-Reading package lists... Done
-Building dependency tree       
-Reading state information... Done
-The following additional packages will be installed:
-  libdw1 libelf1
-The following NEW packages will be installed:
-  dwarves libdw1 libelf1
-0 upgraded, 3 newly installed, 0 to remove and 15 not upgraded.
-Need to get 393 kB of archives.
-After this operation, 2086 kB of additional disk space will be used.
-Do you want to continue? [Y/n] y
-Get:1 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libelf1 amd64 0.170-0.4ubuntu0.1 [44.8 kB]
-Get:2 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 libdw1 amd64 0.170-0.4ubuntu0.1 [203 kB]
-Get:3 http://archive.ubuntu.com/ubuntu bionic/universe amd64 dwarves amd64 1.10-2.1build1 [145 kB]
-Fetched 393 kB in 2s (233 kB/s)  
-debconf: delaying package configuration, since apt-utils is not installed
-Selecting previously unselected package libelf1:amd64.
-(Reading database ... 4046 files and directories currently installed.)
-Preparing to unpack .../libelf1_0.170-0.4ubuntu0.1_amd64.deb ...
-Unpacking libelf1:amd64 (0.170-0.4ubuntu0.1) ...
-Selecting previously unselected package libdw1:amd64.
-Preparing to unpack .../libdw1_0.170-0.4ubuntu0.1_amd64.deb ...
-Unpacking libdw1:amd64 (0.170-0.4ubuntu0.1) ...
-Selecting previously unselected package dwarves.
-Preparing to unpack .../dwarves_1.10-2.1build1_amd64.deb ...
-Unpacking dwarves (1.10-2.1build1) ...
-Setting up libelf1:amd64 (0.170-0.4ubuntu0.1) ...
-Setting up libdw1:amd64 (0.170-0.4ubuntu0.1) ...
-Setting up dwarves (1.10-2.1build1) ...
-Processing triggers for libc-bin (2.27-3ubuntu1.2) ...
-root@f9beca14daaf:/#
-
-- Arnaldo
+Thanks, adding your Acked-by and pushing it to the public repos at
+github and kernel.org
