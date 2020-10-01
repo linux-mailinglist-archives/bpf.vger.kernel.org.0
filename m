@@ -2,291 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8530C2808E3
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 22:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15587280914
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 23:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgJAU5Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 16:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
+        id S1733025AbgJAVFo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 17:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732864AbgJAU5U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 16:57:20 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A83C0613E2
-        for <bpf@vger.kernel.org>; Thu,  1 Oct 2020 13:57:20 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id qp15so9180706ejb.3
-        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 13:57:20 -0700 (PDT)
+        with ESMTP id S1726626AbgJAVFQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 17:05:16 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3959DC0613D0
+        for <bpf@vger.kernel.org>; Thu,  1 Oct 2020 14:05:15 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 144so937578pfb.4
+        for <bpf@vger.kernel.org>; Thu, 01 Oct 2020 14:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6mFddp8qBk6Dwzi45sa2KHPnDPIBia0gy5sbwiCZZ4U=;
-        b=V8gpdcJCL4n24CdIUlhIogI1Kr8L0/sHHo1SRLxtsQimGtRodzS5ANhq5V1w/h6TQH
-         1MqLPAHckyqP4X520v9hcxx4vu5D5julIwvlEq/7s7YnsssC0zEOtmWIjdt77pYC8NJ+
-         aKqFJ47Z9ZMEyquRdMjZm5N5JLRCyJUd19MFPThpUl8d6Gi9+4MUWaTcB/th1zhO9AWh
-         TAc2tHEI6Yt8AVI2A84UB7GRmQTrVegpYI30C9/rr+1G+I1KrEcTV2a8SsPJkew8YxzY
-         GkTGaMKsuKelI9/YBQYg8C+stVy4IsbPLzKldCt8/TtAkOb1VDD80Qm1SndfV/3L8IB0
-         NqPw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sM/IKUxG7XXA4g0Q8PYm8FVn3Q1jvofvHy96zqP1SLI=;
+        b=P/3XD2CcnLPmFvxK4ImVaO3KbIoepUZ+wnlZ+BJrjfWejmWXo3+ahVkBVF20sY057F
+         Fd1Kw/TeSXQS1959lE8zRVGSGWl3cP2+jx0rn8Llzgc8rkxibWB/lNL4iSya5ndBfmVF
+         zeb4jKfYxb7rziVYZ0e2NmWo678nIlOdBX9pE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6mFddp8qBk6Dwzi45sa2KHPnDPIBia0gy5sbwiCZZ4U=;
-        b=kLNVZ8TR5D1HTHBIO4ZOaDK9Ysm5ArlrI13Kp3HrXh5FSDeoVY7TphsEq+hHpHT0o2
-         y4sPFp1AF8Tk0oB+jteDJ1H80U4uFP/PrRc3KUpnk6dGdCcMzy8S9F61OY5Y+5VZe5CS
-         Rw+dgAwzisJKbrhWtFGBy21+a2QSYVeptJfYYIU5fBVJJtvhv3PIVgFYqInhQlUiIFd7
-         1Qh7hk+5D/ZbYgBq4nuU/Z6Ce7/LxuFvJwmXi/Ovdqs4XLNX6VcMzAMz6Jj91BjMZGeA
-         Xy2HcZdQ9kNOXswBvA/662Z6Wjbr7iSHyIv9Pd9sAULlV+Llk+CZqxKXRegb00TUETNM
-         gLGA==
-X-Gm-Message-State: AOAM531c9RaXpRCRdThEmTEY6VGzU2lGo71UFgwJJIbVYjO0FJ8LWIEA
-        K9eDKswA9RDxPxAbMkgqDvghil4OGuwR5zHIFLPsFQ==
-X-Google-Smtp-Source: ABdhPJyILKNDDwnF8/LRvPkwAgOxc6s2EDCd+Sw/kzTT82uGzpTazX0XnVNm/wY5/5KrPn93zIRyYAy7Tyn8LcEKRKU=
-X-Received: by 2002:a17:906:70d4:: with SMTP id g20mr10500338ejk.413.1601585838413;
- Thu, 01 Oct 2020 13:57:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sM/IKUxG7XXA4g0Q8PYm8FVn3Q1jvofvHy96zqP1SLI=;
+        b=YBBnokpx/8qjp9G6QdUyhn/eAC/aM87qSKUEwwX2O6Q5HvOtOygqlWUdLlQInP+xWa
+         NRgFF1go+TQDQRFbWl9MpkGs3us0njYWo3vk5k1vem0JXV48sM/nkBR2oQcvzSsIFYYF
+         3D2kdO7lXmHQc3lSf2CHFU/B5c3PUTd3fK4yURpPdzGBBAMp1XEn6wdbKSRJEQNe+aWP
+         JWgCMaSCWYPl3gLXZjIRcj8XfGw2GHlTywuCysddAr+5XodxCJHJ9PNkf7pFIn79JxdF
+         PBGS2REDsppusWPj4AGNTO7slcmD+DBdB80yDLePNZWGpsg3hZBJf4ulaC9H6FiCHvGi
+         Y8rw==
+X-Gm-Message-State: AOAM531lFv1C69cRx8xaJY6cxh/GEpR5vNDsWDzSnMOhwevPdfpwZJgF
+        KQ4LMIxeF0ArEdlK2/VhcLDEKg==
+X-Google-Smtp-Source: ABdhPJwZmuICO3eBgdFhAAtcI8VblpCzInUbkz0BCWOnju3Q9j3Bj5uX/6qFoIfg5eFpaOsfoEkjUQ==
+X-Received: by 2002:aa7:9ac7:0:b029:152:ebb:cb42 with SMTP id x7-20020aa79ac70000b02901520ebbcb42mr4323742pfp.30.1601586314632;
+        Thu, 01 Oct 2020 14:05:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h31sm6125512pgh.71.2020.10.01.14.05.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2020 14:05:13 -0700 (PDT)
+Date:   Thu, 1 Oct 2020 14:05:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+Message-ID: <202010011314.503D67209@keescook>
+References: <cover.1601478774.git.yifeifz2@illinois.edu>
+ <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+ <202009301432.C862BBC4B@keescook>
+ <CABqSeATqYuEAb=i1nxufbVQUWRw6FDbb9x0DYJz87U0RbQj14A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200825004523.1353133-1-haoluo@google.com> <20200826131143.GF1059382@kernel.org>
- <CA+khW7jf7Z=sMC1u5eyn6XOZDTFJaNjV-D0ogvQSyUGSKjC3LQ@mail.gmail.com>
- <DEC4CC81-88CE-4476-A631-2BBB6E922F5C@gmail.com> <CA+khW7imZ+1to15Y+6Suw5_RRQfOQ32X_mkcFACDedjHrNYFaQ@mail.gmail.com>
- <CAADnVQKkqtSLLiXsQk6EnMz61J3Em53HB9zPZtPeqE4jvzGt3g@mail.gmail.com>
- <20201001182415.GA101623@kernel.org> <CA+khW7iSd4EX0EdoQ0+FvnGg5CKai+TLsa4xbDUPA8tbiu3LZw@mail.gmail.com>
- <20201001202729.GA105734@kernel.org>
-In-Reply-To: <20201001202729.GA105734@kernel.org>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 1 Oct 2020 13:57:07 -0700
-Message-ID: <CA+khW7iVd3zUa0iwLuf=SwE3TtnNPB1ZGkUvWPfVt7JpJPcX5w@mail.gmail.com>
-Subject: Re: [PATCH v1] btf_encoder: Handle DW_TAG_variable that has DW_AT_specification
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, dwarves@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABqSeATqYuEAb=i1nxufbVQUWRw6FDbb9x0DYJz87U0RbQj14A@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Arnaldo, thanks for the update. In that case, I think on the kernel
-side I need to skip encoding percpu vars for this pahole release, and
-re-enable for the next pahole release. (assuming the flag for opt-out
-is in this release). Alexei, do you have any better idea?
+On Thu, Oct 01, 2020 at 06:52:50AM -0500, YiFei Zhu wrote:
+> On Wed, Sep 30, 2020 at 5:40 PM Kees Cook <keescook@chromium.org> wrote:
+> > The guiding principle with seccomp's designs is to always make things
+> > _more_ restrictive, never less. While we can never escape the
+> > consequences of having seccomp_is_const_allow() report the wrong
+> > answer, we can at least follow the basic principles, hopefully
+> > minimizing the impact.
+> >
+> > When the bitmap starts with "always allowed" and we only flip it towards
+> > "run full filters", we're only ever making things more restrictive. If
+> > we instead go from "run full filters" towards "always allowed", we run
+> > the risk of making things less restrictive. For example: a process that
+> > maliciously adds a filter that the emulator mistakenly evaluates to
+> > "always allow" doesn't suddenly cause all the prior filters to stop running.
+> > (i.e. this isolates the flaw outcome, and doesn't depend on the early
+> > "do not emulate if we already know we have to run filters" case before
+> > the emulation call: there is no code path that allows the cache to
+> > weaken: it can only maintain it being wrong).
+> >
+> > Without any seccomp filter installed, all syscalls are "always allowed"
+> > (from the perspective of the seccomp boundary), so the default of the
+> > cache needs to be "always allowed".
+> 
+> I cannot follow this. If a 'process that maliciously adds a filter
+> that the emulator mistakenly evaluates to "always allow" doesn't
+> suddenly cause all the prior filters to stop running', hence, you
+> want, by default, the cache to be as transparent as possible. You
+> would lift the restriction if and only if you are absolutely sure it
+> does not cause an impact.
 
-Hao
+Yes, right now, the v3 code pattern is entirely safe.
 
-On Thu, Oct 1, 2020 at 1:27 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> Em Thu, Oct 01, 2020 at 11:40:25AM -0700, Hao Luo escreveu:
-> > Thanks!
->
-> I must just apologise not having this in an officially released version
-> yet, getting constantly postponed due to bug reports about corner cases
-> and some features I got carried away working on, I'll fast pace a new
-> version to avoid getting in the way of the larger eBPF effort.
->
-> - Arnaldo
->
-> > On Thu, Oct 1, 2020 at 11:24 AM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > Em Thu, Oct 01, 2020 at 08:47:51AM -0700, Alexei Starovoitov escreveu:
-> > > > Arnaldo,
-> > > >
-> > > > ping.
-> > > > Is anything blocking this fix from merging?
-> > > > The kernel patches are stalled waiting on the pahole.
-> > >
-> > > Applied locally, testing now, will push to the main branch ASAP.
-> > >
-> > > - Arnaldo
-> > >
-> > > > Thanks
-> > > > On Tue, Sep 29, 2020 at 11:52 PM Hao Luo <haoluo@google.com> wrote:
-> > > > >
-> > > > > Arnaldo,
-> > > > >
-> > > > > Is this patch ready to be merged into Pahole's master branch? Alexei
-> > > > > is testing the kernel patches that need this patch. Please let me know
-> > > > > if there is anything I can do to help merging.
-> > > > >
-> > > > > Thank you,
-> > > > > Hao
-> > > > >
-> > > > > On Wed, Aug 26, 2020 at 6:56 PM Arnaldo Carvalho de Melo
-> > > > > <arnaldo.melo@gmail.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > On August 26, 2020 3:35:17 PM GMT-03:00, Hao Luo <haoluo@google.com> wrote:
-> > > > > > >Arnaldo,
-> > > > > > >
-> > > > > > >On Wed, Aug 26, 2020 at 6:12 AM Arnaldo Carvalho de Melo
-> > > > > > ><acme@kernel.org> wrote:
-> > > > > > >>
-> > > > > > >> Em Mon, Aug 24, 2020 at 05:45:23PM -0700, Hao Luo escreveu:
-> > > > > > >> > It is found on gcc 8.2 that global percpu variables generate the
-> > > > > > >> > following dwarf entry in the cu where the variable is defined[1].
-> > > > > > >> >
-> > > > > > >> > Take the global variable "bpf_prog_active" defined in
-> > > > > > >> > kernel/bpf/syscall.c as an example. The debug info for syscall.c
-> > > > > > >> > has two dwarf entries for "bpf_prog_active".
-> > > > > > >> >
-> > > > > > >[...]
-> > > > > > >>
-> > > > > > >> Interesting, here I get, with binutils' readelf:
-> > > > > > >>
-> > > > > > >> [root@quaco perf]# readelf -wi
-> > > > > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep bpf_prog_active
-> > > > > > >>     <f6a1>   DW_AT_name        : (indirect string, offset: 0xb70d):
-> > > > > > >bpf_prog_active
-> > > > > > >> [root@quaco perf]#
-> > > > > > >>
-> > > > > > >> Just one, as:
-> > > > > > >>
-> > > > > > >> [root@quaco perf]# readelf -wi
-> > > > > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep bpf_prog_active -B1 -A8
-> > > > > > >>  <1><f6a0>: Abbrev Number: 103 (DW_TAG_variable)
-> > > > > > >>     <f6a1>   DW_AT_name        : (indirect string, offset: 0xb70d):
-> > > > > > >bpf_prog_active
-> > > > > > >>     <f6a5>   DW_AT_decl_file   : 11
-> > > > > > >>     <f6a6>   DW_AT_decl_line   : 1008
-> > > > > > >>     <f6a8>   DW_AT_decl_column : 1
-> > > > > > >>     <f6a9>   DW_AT_type        : <0xcf>
-> > > > > > >>     <f6ad>   DW_AT_external    : 1
-> > > > > > >>     <f6ad>   DW_AT_declaration : 1
-> > > > > > >>  <1><f6ad>: Abbrev Number: 103 (DW_TAG_variable)
-> > > > > > >>     <f6ae>   DW_AT_name        : (indirect string, offset: 0x3a5d):
-> > > > > > >bpf_stats_enabled_mutex
-> > > > > > >> [root@quaco perf]#
-> > > > > > >>
-> > > > > > >> I get what you have when I use elfutils' readelf:
-> > > > > > >>
-> > > > > > >> [root@quaco perf]# eu-readelf -winfo
-> > > > > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep bpf_prog_active
-> > > > > > >>              name                 (strp) "bpf_prog_active"
-> > > > > > >>               [ 0] addr .data..percpu+0 <bpf_prog_active>
-> > > > > > >> [root@quaco perf]#
-> > > > > > >>
-> > > > > > >> [root@quaco perf]# eu-readelf -winfo
-> > > > > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep -B1 -A8
-> > > > > > >\"bpf_prog_active\"
-> > > > > > >>  [  f6a0]    variable             abbrev: 103
-> > > > > > >>              name                 (strp) "bpf_prog_active"
-> > > > > > >>              decl_file            (data1) bpf.h (11)
-> > > > > > >>              decl_line            (data2) 1008
-> > > > > > >>              decl_column          (data1) 1
-> > > > > > >>              type                 (ref4) [    cf]
-> > > > > > >>              external             (flag_present) yes
-> > > > > > >>              declaration          (flag_present) yes
-> > > > > > >>  [  f6ad]    variable             abbrev: 103
-> > > > > > >>              name                 (strp) "bpf_stats_enabled_mutex"
-> > > > > > >> [root@quaco perf]#
-> > > > > > >>
-> > > > > > >> And:
-> > > > > > >>
-> > > > > > >> [root@quaco perf]# eu-readelf -winfo
-> > > > > > >../build/v5.8-rc5+/kernel/bpf/syscall.o | grep -B5 \<bpf_prog_active\>
-> > > > > > >>  [ 1bdf5]    variable             abbrev: 212
-> > > > > > >>              specification        (ref4) [  f6a0]
-> > > > > > >>              decl_file            (data1) syscall.c (1)
-> > > > > > >>              decl_line            (data1) 43
-> > > > > > >>              location             (exprloc)
-> > > > > > >>               [ 0] addr .data..percpu+0 <bpf_prog_active>
-> > > > > > >> [root@quaco perf]#
-> > > > > > >>
-> > > > > > >
-> > > > > > >In binutils readelf, there is a extra entry
-> > > > > >
-> > > > > > Not here, tomorrow I'll triple check.
-> > > > > >
-> > > > > > >
-> > > > > > > <1><1b24c>: Abbrev Number: 195 (DW_TAG_variable)
-> > > > > > >    <1b24e>   DW_AT_specification: <0xf335>
-> > > > > > >    <1b252>   DW_AT_decl_file   : 1
-> > > > > > >    <1b253>   DW_AT_decl_line   : 43
-> > > > > > >    <1b254>   DW_AT_location    : 9 byte block: 3 0 0 0 0 0 0 0 0
-> > > > > > > (DW_OP_addr: 0)
-> > > > > > >
-> > > > > > >which points to
-> > > > > > >
-> > > > > > > <1><f335>: Abbrev Number: 95 (DW_TAG_variable)
-> > > > > > >    <f336>   DW_AT_name        : (indirect string, offset: 0xb37a):
-> > > > > > >bpf_prog_active
-> > > > > > >
-> > > > > > >It just doesn't have the string 'bpf_prog_active', annotating entry.
-> > > > > > >So eu-readelf and binutils readelf have the same results.
-> > > > > > >
-> > > > > > >> > Note that second DW_TAG_variable entry contains specification that
-> > > > > > >> > points to the first entry.
-> > > > > > >>
-> > > > > > >> So you are not considering the first when encoding since it is just a
-> > > > > > >> DW_AT_declaration, considers the second, as it should be, and then
-> > > > > > >needs
-> > > > > > >> to go see its DW_AT_specification, right?
-> > > > > > >>
-> > > > > > >> Sounds correct, applying, will test further and then push out,
-> > > > > > >>
-> > > > > > >
-> > > > > > >Yes, exactly. The var tags to be considered are those that either have
-> > > > > > >DW_AT_specification or not have DW_AT_declaration. This makes sure
-> > > > > > >btf_encoder works correctly on both old and new gcc.
-> > > > > > >
-> > > > > > >> Thanks,
-> > > > > > >>
-> > > > > > >> - Arnaldo
-> > > > > > >
-> > > > > > >Suggested by Yonghong, I tested this change on a larger set of
-> > > > > > >compilers this time and works correctly. See below.
-> > > > > > >
-> > > > > > >Could you also add 'Reported-by: Yonghong Song <yhs@fb.com>'? I should
-> > > > > > >have done that when sending out this patch. The credit goes to
-> > > > > > >Yonghong.
-> > > > > >
-> > > > > > Sure, and I'll add your results with different computers, for the record.
-> > > > > >
-> > > > > > Thanks,
-> > > > > >
-> > > > > > - Arnaldo
-> > > > > > >
-> > > > > > >Thank you,
-> > > > > > >Hao
-> > > > > > >
-> > > > > > >  clang 10:
-> > > > > > >  [67] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > > > >  [20168] VAR 'bpf_prog_active' type_id=67, linkage=global-alloc
-> > > > > > >
-> > > > > > >  clang 9:
-> > > > > > >  [64] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > > > >  [19789] VAR 'bpf_prog_active' type_id=64, linkage=global-alloc
-> > > > > > >
-> > > > > > >  gcc 10.2
-> > > > > > >  [18] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > > > >  [20319] VAR 'bpf_prog_active' type_id=18, linkage=global-alloc
-> > > > > > >
-> > > > > > >  gcc 9.3:
-> > > > > > >  [21] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > > > >  [21085] VAR 'bpf_prog_active' type_id=21, linkage=global-alloc
-> > > > > > >
-> > > > > > >  gcc 8
-> > > > > > >  [21] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > > > >  [21084] VAR 'bpf_prog_active' type_id=21, linkage=global-alloc
-> > > > > > >
-> > > > > > >  gcc 6.2
-> > > > > > >  [22] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > > > >  [21083] VAR 'bpf_prog_active' type_id=22, linkage=global-alloc
-> > > > > > >
-> > > > > > >  gcc 4.9
-> > > > > > >  [17] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > > > > >  [20410] VAR 'bpf_prog_active' type_id=17, linkage=global-alloc
-> > > > > >
-> > > > > > --
-> > > > > > Sent from my Android device with K-9 Mail. Please excuse my brevity.
-> > >
-> > > --
-> > >
-> > > - Arnaldo
->
-> --
->
-> - Arnaldo
+> 
+> In this patch, if there are prior filters, it goes through this logic:
+> 
+>         if (bitmap_prev && !test_bit(nr, bitmap_prev))
+>             continue;
+> 
+> Hence, if the malicious filter were to happen, and prior filters were
+> supposed to run, then seccomp_is_const_allow is simply not invoked --
+> what it returns cannot be used maliciously by an adversary.
+
+Right, but we depend on that test always doing the correct thing (and
+continuing to do so into the future). I'm looking at this from the
+perspective of future changes, maintenance, etc. I want the actions to
+match the design principles as closely as possible so that future
+evolutions of the code have lower risk to bugs causing security
+failures. Right now, the code is simple. I want to design this so that
+when it is complex, it will still fail toward safety in the face of
+bugs.
+
+> >         if (bitmap_prev) {
+> >                 /* The new filter must be as restrictive as the last. */
+> >                 bitmap_copy(bitmap, bitmap_prev, bitmap_size);
+> >         } else {
+> >                 /* Before any filters, all syscalls are always allowed. */
+> >                 bitmap_fill(bitmap, bitmap_size);
+> >         }
+> >
+> >         for (nr = 0; nr < bitmap_size; nr++) {
+> >                 /* No bitmap change: not a cacheable action. */
+> >                 if (!test_bit(nr, bitmap_prev) ||
+> >                         continue;
+> >
+> >                 /* No bitmap change: continue to always allow. */
+> >                 if (seccomp_is_const_allow(fprog, &sd))
+> >                         continue;
+> >
+> >                 /* Not a cacheable action: always run filters. */
+> >                 clear_bit(nr, bitmap);
+> 
+> I'm not strongly against this logic. I just feel unconvinced that this
+> is any different with a slightly increased complexity.
+
+I'd prefer this way because for the loop, the tests, and the results only
+make the bitmap more restrictive. The worst thing a bug in here can do is
+leave the bitmap unchanged (which is certainly bad), but it can't _undo_
+an earlier restriction.
+
+The proposed loop's leading test_bit() becomes only an optimization,
+rather than being required for policy enforcement.
+
+In other words, I prefer:
+
+	inherit all prior prior bitmap restrictions
+	for all syscalls
+		if this filter not restricted
+			continue
+		set bitmap restricted
+
+	within this loop (where the bulk of future logic may get added),
+	the worse-case future bug-induced failure mode for the syscall
+	bitmap is "skip *this* filter".
+
+
+Instead of:
+
+	set bitmap all restricted
+	for all syscalls
+		if previous bitmap not restricted and
+		   filter not restricted
+			set bitmap unrestricted
+
+	within this loop the worst-case future bug-induced failure mode
+	for the syscall bitmap is "skip *all* filters".
+
+
+
+
+Or, to reword again, this:
+
+	retain restrictions from previous caching decisions
+	for all syscalls
+		[evaluate this filter, maybe continue]
+		set restricted
+
+instead of:
+
+	set new cache to all restricted
+	for all syscalls
+		[evaluate prior cache and this filter, maybe continue]
+		set unrestricted
+
+I expect the future code changes for caching to be in the "evaluate"
+step, so I'd like the code designed to make things MORE restrictive not
+less from the start, and remove any prior cache state tests from the
+loop.
+
+At the end of the day I believe changing the design like this now lays
+the groundwork to the caching mechanism being more robust against having
+future bugs introduce security flaws.
+
+-- 
+Kees Cook
