@@ -2,196 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F7B27FA6C
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 09:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EBE27FA75
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 09:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730695AbgJAHns (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 03:43:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725883AbgJAHnr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Oct 2020 03:43:47 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601538225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SqwmxOuvg2mKV2zNhGfKfaji+GVSOGEvsmkHT66XkW0=;
-        b=HDZsb0IYDMvPi6bS2b/UtlZzGtI/Ill0JlCnGpCD7G5OHA6/UqvdSnDEJEtw/zeDSEnpPC
-        lnajztFNBGdTfZ4JB/iXCjwKSyztfFggpb6dUXGgWOxkqUkepOkayUHkeXPVlG7iwC7LAy
-        2ldNQLdZGSt28ptW9sDziz9/JKMlnlQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-YecVqbiIO-WRDHoAO_fbYw-1; Thu, 01 Oct 2020 03:43:42 -0400
-X-MC-Unique: YecVqbiIO-WRDHoAO_fbYw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBCF31074656;
-        Thu,  1 Oct 2020 07:43:39 +0000 (UTC)
-Received: from [10.36.113.22] (ovpn-113-22.ams2.redhat.com [10.36.113.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4410255776;
-        Thu,  1 Oct 2020 07:43:31 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Lorenzo Bianconi" <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
-        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
-        brouer@redhat.com, lorenzo.bianconi@redhat.com, dsahern@kernel.org
-Subject: Re: [PATCH v3 net-next 10/12] bpf: add xdp multi-buffer selftest
-Date:   Thu, 01 Oct 2020 09:43:29 +0200
-Message-ID: <E0F803BD-597D-42E8-8C17-197A99D8F4CB@redhat.com>
-In-Reply-To: <fb036cd7830a6db1ea9d68f8a987bb0004ccb8d6.1601478613.git.lorenzo@kernel.org>
-References: <cover.1601478613.git.lorenzo@kernel.org>
- <fb036cd7830a6db1ea9d68f8a987bb0004ccb8d6.1601478613.git.lorenzo@kernel.org>
+        id S1725918AbgJAHpY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 03:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgJAHpY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Oct 2020 03:45:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95986C0613D0;
+        Thu,  1 Oct 2020 00:45:23 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t10so4474283wrv.1;
+        Thu, 01 Oct 2020 00:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xF7e0E8Lw4CA2Uq+qVpBw+cIQFKMIBUjuND9PoUrs5Y=;
+        b=d/vQ+VVk+keNzkTfJSJxtcXpSwp2e7QCaBNQZVU4obREwDbvYR4ZOkBAIn6nZtjLrb
+         3dRvKN+GZdP1oQFFW/WEgNG9Ppq4gVVv6NzUKiTksJwcvN9PabgGRW31N0rtN+ZwizBZ
+         Ir7qV4dK/89jGgUAjfx/Dt5qCN9CBfJEHDXQ3wXfHiKFfYxmdygBYHRXbft2M6MJDZht
+         8MsO994BspQhR23fIhIiWfa0x2AEEtJL394LV/ThsCeCMiTFdFm/rX53wswTwkK2O5Xj
+         iJx9UD43hnd5M2L/jQHIj83U3txiSLHzEMovktlDwd72Doib8y20ewhC18AZ/A7VLimt
+         CJeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xF7e0E8Lw4CA2Uq+qVpBw+cIQFKMIBUjuND9PoUrs5Y=;
+        b=r+gr5Iucm6an8QaDd2OH/4KKZ2LlWzlQHNhDfETH5cijOajO6q/8MIGxQXDxwRGSm1
+         oaURRn74f3eiCTQ17zvjTf9HptVGXZIGxleD3mWghbHIGjjPA4hmZeVeZh6hcK3GGWAi
+         X2hCNwanJG+HDPu8t+KNGZn34O5p0RXIEqlD7YxeYz5wxpSlMoartzuUM6tnoxmC9mmt
+         7iShWOwlD1pTZNgTYGWFQzpvo7f61DxRnZxkHetcwSwILsoG38e4Jx9a5y+DbnZgr1HN
+         JsSzSse4RosZ+J6+Ueybge1BiswOWPKLqcxLcfDE23WaXwb9j+0tfrcP5vQr6OLfaolk
+         BbBQ==
+X-Gm-Message-State: AOAM531F2xAqba33+NEvTlXO06LeFhVo3Min8AVHOPVSH98neCb4hzXI
+        MypRk8vzYsuko9DxO55hh0w=
+X-Google-Smtp-Source: ABdhPJxwv6BtYFAqC+AMaDOZb3qgtjlHwEicyt0p82kSHbH75ncrgFUe0TsFiNV7de54QZazE4hATA==
+X-Received: by 2002:adf:dd44:: with SMTP id u4mr6973042wrm.22.1601538322276;
+        Thu, 01 Oct 2020 00:45:22 -0700 (PDT)
+Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
+        by smtp.gmail.com with ESMTPSA id u66sm7145534wmg.44.2020.10.01.00.45.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 01 Oct 2020 00:45:21 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>, wad@chromium.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Tycho Andersen <tycho@tycho.pizza>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco>
+ <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com>
+Date:   Thu, 1 Oct 2020 09:45:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200930230327.GA1260245@cisco>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 10/1/20 1:03 AM, Tycho Andersen wrote:
+> On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
+>> Hi Tycho,
+>>
+>> Thanks for taking time to look at the page!
+>>
+>> On 9/30/20 5:03 PM, Tycho Andersen wrote:
+>>> On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
 
+[...]
 
-On 30 Sep 2020, at 17:42, Lorenzo Bianconi wrote:
+>>>>        ┌─────────────────────────────────────────────────────┐
+>>>>        │FIXME                                                │
+>>>>        ├─────────────────────────────────────────────────────┤
+>>>>        │Interestingly, after the event  had  been  received, │
+>>>>        │the  file descriptor indicates as writable (verified │
+>>>>        │from the source code and by experiment). How is this │
+>>>>        │useful?                                              │
+>>>
+>>> You're saying it should just do EPOLLOUT and not EPOLLWRNORM? Seems
+>>> reasonable.
+>>
+>> No, I'm saying something more fundamental: why is the FD indicating as
+>> writable? Can you write something to it? If yes, what? If not, then
+>> why do these APIs want to say that the FD is writable?
+> 
+> You can't via read(2) or write(2), but conceptually NOTIFY_RECV and
+> NOTIFY_SEND are reading and writing events from the fd. I don't know
+> that much about the poll interface though -- is it possible to
+> indicate "here's a pseudo-read event"? It didn't look like it, so I
+> just (ab-)used POLLIN and POLLOUT, but probably that's wrong.
 
-> Introduce xdp multi-buffer selftest for the following ebpf helpers:
-> - bpf_xdp_get_frags_total_size
-> - bpf_xdp_get_frag_count
->
-> Co-developed-by: Eelco Chaudron <echaudro@redhat.com>
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  .../testing/selftests/bpf/prog_tests/xdp_mb.c | 77 
-> +++++++++++++++++++
->  .../selftests/bpf/progs/test_xdp_multi_buff.c | 24 ++++++
->  2 files changed, 101 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_mb.c
->  create mode 100644 
-> tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_mb.c 
-> b/tools/testing/selftests/bpf/prog_tests/xdp_mb.c
-> new file mode 100644
-> index 000000000000..8cfe7253bf2a
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_mb.c
-> @@ -0,0 +1,77 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <unistd.h>
-> +#include <linux/kernel.h>
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +
-> +#include "test_xdp_multi_buff.skel.h"
-> +
-> +static void test_xdp_mb_check_len(void)
-> +{
-> +	int test_sizes[] = { 128, 4096, 9000 };
-> +	struct test_xdp_multi_buff *pkt_skel;
-> +	char *pkt_in = NULL, *pkt_out = NULL;
-> +	__u32 duration = 0, retval, size;
-> +	int err, pkt_fd, i;
-> +
-> +	/* Load XDP program */
-> +	pkt_skel = test_xdp_multi_buff__open_and_load();
-> +	if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp_mb skeleton 
-> failed\n"))
-> +		goto out;
-> +
-> +	/* Allocate resources */
-> +	pkt_out = malloc(test_sizes[ARRAY_SIZE(test_sizes) - 1]);
-> +	pkt_in = malloc(test_sizes[ARRAY_SIZE(test_sizes) - 1]);
-> +	if (CHECK(!pkt_in || !pkt_out, "malloc",
-> +		  "Failed malloc, in = %p, out %p\n", pkt_in, pkt_out))
-> +		goto out;
-> +
-> +	pkt_fd = bpf_program__fd(pkt_skel->progs._xdp_check_mb_len);
-> +	if (pkt_fd < 0)
-> +		goto out;
-> +
-> +	/* Run test for specific set of packets */
-> +	for (i = 0; i < ARRAY_SIZE(test_sizes); i++) {
-> +		int frag_count;
-> +
-> +		/* Run test program */
-> +		err = bpf_prog_test_run(pkt_fd, 1, &pkt_in, test_sizes[i],
+I think the POLLIN thing is fine.
 
-Small bug, should be:
+So, I think maybe I now understand what you intended with setting
+POLLOUT: the notification has been received ("read") and now the
+FD can be used to NOTIFY_SEND ("write") a response. Right?
 
-         err = bpf_prog_test_run(pkt_fd, 1, pkt_in, test_sizes[i],
+If that's correct, I don't have a problem with it. I just wonder:
+is it useful? IOW: are there situations where the process doing the
+NOTIFY_SEND might want to test for POLLOUT because the it doesn't
+know whether a NOTIFY_RECV has occurred? 
 
-> +					pkt_out, &size, &retval, &duration);
-> +
-> +		if (CHECK(err || retval != XDP_PASS, // || size != test_sizes[i],
-> +			  "test_run", "err %d errno %d retval %d size %d[%d]\n",
-> +			  err, errno, retval, size, test_sizes[i]))
-> +			goto out;
-> +
-> +		/* Verify test results */
-> +		frag_count = DIV_ROUND_UP(
-> +			test_sizes[i] - pkt_skel->data->test_result_xdp_len,
-> +			getpagesize());
-> +
-> +		if (CHECK(pkt_skel->data->test_result_frag_count != frag_count,
-> +			  "result", "frag_count = %llu != %u\n",
-> +			  pkt_skel->data->test_result_frag_count, frag_count))
-> +			goto out;
-> +
-> +		if (CHECK(pkt_skel->data->test_result_frag_len != test_sizes[i] -
-> +			  pkt_skel->data->test_result_xdp_len,
-> +			  "result", "frag_len = %llu != %llu\n",
-> +			  pkt_skel->data->test_result_frag_len,
-> +			  test_sizes[i] - pkt_skel->data->test_result_xdp_len))
-> +			goto out;
-> +	}
-> +out:
-> +	if (pkt_out)
-> +		free(pkt_out);
-> +	if (pkt_in)
-> +		free(pkt_in);
-> +
-> +	test_xdp_multi_buff__destroy(pkt_skel);
-> +}
-> +
-> +void test_xdp_mb(void)
-> +{
-> +	if (test__start_subtest("xdp_mb_check_len_frags"))
-> +		test_xdp_mb_check_len();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c 
-> b/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
-> new file mode 100644
-> index 000000000000..1a46e0925282
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/if_ether.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <stdint.h>
-> +
-> +__u64 test_result_frag_len = UINT64_MAX;
-> +__u64 test_result_frag_count = UINT64_MAX;
-> +__u64 test_result_xdp_len = UINT64_MAX;
-> +
-> +SEC("xdp_check_mb_len")
-> +int _xdp_check_mb_len(struct xdp_md *xdp)
-> +{
-> +	void *data_end = (void *)(long)xdp->data_end;
-> +	void *data = (void *)(long)xdp->data;
-> +
-> +	test_result_xdp_len = (__u64)(data_end - data);
-> +	test_result_frag_len = bpf_xdp_get_frags_total_size(xdp);
-> +	test_result_frag_count = bpf_xdp_get_frag_count(xdp);
-> +	return XDP_PASS;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> -- 
-> 2.26.2
+Thanks,
 
+Michael
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
