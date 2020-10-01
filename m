@@ -2,113 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4BA27FC50
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 11:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1262127FCA0
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 11:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731673AbgJAJNC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 05:13:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34530 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731663AbgJAJNC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 05:13:02 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601543580;
+        id S1731067AbgJAJrX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 05:47:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53880 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731816AbgJAJrU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Oct 2020 05:47:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601545639;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tYBTMaQHVuVYsYUY0Zvr7F9tikwzDOAPYv+gCxumIkQ=;
-        b=O/0fuph25Ea2RKXzd2OjiZOVQ1tE80qGWulsJ4UkxzyqgqqaBH4WyWqTms364VyGowCon5
-        xLd+eICWgQSXDzM6fanCgUyfqR1bb/AMufqNYIdG8ecO3PB3JYYzav/8Gto0SN5Um9kBtH
-        U/Afkzj6lgha1T4KmdY/0xNYYTku3Q8HhbSiFndUErxCEwnSutznbFbO6V3hVpl2l/zJkx
-        4RkA3GMs/S3vmv/U/fc/TCKQk82tFPXBMpghPzhdo+KdDVsnLjeA0MEqJOCa0/zK5toWTU
-        vo9Ud+bdAehLcvOqZbK2lAS9wQ+jWWb5POVrQK8/6YoWF7mXcr0HZl+to3UecA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601543580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tYBTMaQHVuVYsYUY0Zvr7F9tikwzDOAPYv+gCxumIkQ=;
-        b=LFcyRUxzhcWIgf1CEvwD9FOglI/VZj8UR07zAQeKJRi7uUqtsTyZnTN6kez8t1Y/tX6hGr
-        VpnVTEebncTpbXCw==
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: mb2q experience and couple issues
-In-Reply-To: <CAADnVQLV86GcC5fE68Eiv0aM9g7o3a5ZDh0kmXv7Tba4x-jRbg@mail.gmail.com>
-References: <CAADnVQLV86GcC5fE68Eiv0aM9g7o3a5ZDh0kmXv7Tba4x-jRbg@mail.gmail.com>
-Date:   Thu, 01 Oct 2020 11:13:00 +0200
-Message-ID: <87sgayfgwz.fsf@nanos.tec.linutronix.de>
+        bh=lPzPuIGXO/Ao+4pICi+9MLX10N1dZAhUeotde1HKkqA=;
+        b=hBMTLxWbMggRXsPvrMpCl2rFC1F4trbBTvWvuu95kC1L3MrbJJGZ7hEXIyn0EuLpJXdbpr
+        ThlBoI/sAMazAirtM6HR8orCcvMMlhfVpBFe7zg1OAHa7I23c6M5hTyZtKlOOD4PnvcCwu
+        YwkTkTCDydmxPsQVz5T1eeO7oNto9wo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-OtYRo1vRM4WSsOijVyhGrQ-1; Thu, 01 Oct 2020 05:47:14 -0400
+X-MC-Unique: OtYRo1vRM4WSsOijVyhGrQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97D812FD0A;
+        Thu,  1 Oct 2020 09:47:12 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EDFA7848B;
+        Thu,  1 Oct 2020 09:47:02 +0000 (UTC)
+Date:   Thu, 1 Oct 2020 11:47:00 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, sameehj@amazon.com,
+        kuba@kernel.org, john.fastabend@gmail.com, daniel@iogearbox.net,
+        ast@kernel.org, shayagr@amazon.com, echaudro@redhat.com,
+        lorenzo.bianconi@redhat.com, dsahern@kernel.org, brouer@redhat.com
+Subject: Re: [PATCH v3 net-next 06/12] bpf: helpers: add multibuffer support
+Message-ID: <20201001114700.6384e6cc@carbon>
+In-Reply-To: <20200930191121.jm62rlopekegbjx5@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1601478613.git.lorenzo@kernel.org>
+        <5e248485713d2470d97f36ad67c9b3ceedfc2b3f.1601478613.git.lorenzo@kernel.org>
+        <20200930191121.jm62rlopekegbjx5@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei,
+On Wed, 30 Sep 2020 12:11:21 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-On Wed, Sep 30 2020 at 11:12, Alexei Starovoitov wrote:
-> For the last couple years we've been using mb2q tool to normalize patches
-> and it worked wonderfully.
+> On Wed, Sep 30, 2020 at 05:41:57PM +0200, Lorenzo Bianconi wrote:
+> > From: Sameeh Jubran <sameehj@amazon.com>
+> > 
+> > The implementation is based on this [0] draft by Jesper D. Brouer.
 
-Fun. I thought I'm the only user of it :)
+First of all I think you are giving me too much credit, and this is
+both not really relevant and also not specific enough.  The link[0]
+contains several proposals (actually from different people) and it is
+not clear which of these proposal you reference.
 
-> Recently we've hit few bugs:
-> curl -s https://patchwork.kernel.org/patch/11807443/mbox/ >
-> /tmp/mbox.i; ~/bin/mb2q --mboxout mbox.o /tmp/mbox.i
-> Drop Message w/o Message-ID: No subject
-> No patches found in mbox
->
-> I've tried to debug it, but couldn't figure out what's going on.
-> The subject and message-id fields are parsed correctly,
-> but later something happens.
-> Could you please take a look?
+I think this patch need to explain and argue why these BPF-helpers
+makes sense... this will become BPF UAPI.
 
-The problem is the mbox storage format. The mbox created by curl has a
-mail body which has a line starting with 'From' in the mail body:
+> > Provided two new helpers:
+> > 
+> > * bpf_xdp_get_frag_count()
+> > * bpf_xdp_get_frags_total_size()
 
-  From the VAR btf_id, the verifier can also read the address of the
-  ksym's corresponding kernel var from kallsyms and use that to fill
-  dst_reg.
+Why was the "frag" and "frags" name chosen?
 
-The mailbox parser trips over that From and takes it as start of the
-next message.
+ 
+> > [0] xdp mb design - https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+> > Signed-off-by: Sameeh Jubran <sameehj@amazon.com>
+> > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  include/uapi/linux/bpf.h       | 14 ++++++++++++
+> >  net/core/filter.c              | 42 ++++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 14 ++++++++++++
+> >  3 files changed, 70 insertions(+)
+> > 
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index a22812561064..6f97dce8cccf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3586,6 +3586,18 @@ union bpf_attr {
+> >   * 		the data in *dst*. This is a wrapper of **copy_from_user**\ ().
+> >   * 	Return
+> >   * 		0 on success, or a negative error in case of failure.
+> > + *
+> > + * int bpf_xdp_get_frag_count(struct xdp_buff *xdp_md)
+> > + *	Description
+> > + *		Get the number of fragments for a given xdp multi-buffer.
+> > + *	Return
+> > + *		The number of fragments
+> > + *
+> > + * int bpf_xdp_get_frags_total_size(struct xdp_buff *xdp_md)
+> > + *	Description
+> > + *		Get the total size of fragments for a given xdp multi-buffer.
+> > + *	Return
+> > + *		The total size of fragments for a given xdp multi-buffer.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)		\
+> >  	FN(unspec),			\
+> > @@ -3737,6 +3749,8 @@ union bpf_attr {
+> >  	FN(inode_storage_delete),	\
+> >  	FN(d_path),			\
+> >  	FN(copy_from_user),		\
+> > +	FN(xdp_get_frag_count),		\
+> > +	FN(xdp_get_frags_total_size),	\
+> >  	/* */  
+> 
+> Please route the set via bpf-next otherwise merge conflicts will be severe.
+> 
 
-     http://qmail.org/qmail-manual-html/man5/mbox.html
 
-Usually mailbox storage escapes a From at the start of a
-newline with '>':
 
-  >From the VAR btf_id, the verifier can also read the address of the
-  ksym's corresponding kernel var from kallsyms and use that to fill
-  dst_reg.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-Yes, it's ugly and I haven't figured out a proper way to deal with
-that. There are quite some mbox formats out there and they all are
-incompatible with each other and all of them have different horrors.
-
-Let me think about it.
-
-> Another issue we've hit was that some mailers split message-id
-> into few lines like this:
-> curl -s https://patchwork.kernel.org/patch/11809399/mbox/|grep -2 Message-Id:
-> Subject: [PATCH bpf-next v4 1/6] bpf: add classid helper only based on skb->sk
-> Date: Wed, 30 Sep 2020 17:18:15 +0200
-> Message-Id:
->  <ed633cf27a1c620e901c5aa99ebdefb028dce600.1601477936.git.daniel@iogearbox.net>
-> X-Mailer: git-send-email 2.21.0
->
-> That was an easy fix:
-> - mid = pmsg.msgid.lstrip('<').rstrip('>')
-> + mid = pmsg.msgid.lstrip('\n').lstrip(' ').lstrip('<').rstrip('>')
->
-> The tglx/quilttools.git doesn't have this fix, so I'm guessing you
-> haven't seen it yet.
-
-Indeed, but it just should be:
-
- + mid = pmsg.msgid.strip().lstrip('<').rstrip('>')
-
-Thanks,
-
-        tglx
