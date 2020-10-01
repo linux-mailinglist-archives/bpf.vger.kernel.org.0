@@ -2,161 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFE627FA30
-	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 09:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F7B27FA6C
+	for <lists+bpf@lfdr.de>; Thu,  1 Oct 2020 09:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731045AbgJAHXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Oct 2020 03:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgJAHXw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Oct 2020 03:23:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BCBC0613D0;
-        Thu,  1 Oct 2020 00:23:52 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k8so3682234pfk.2;
-        Thu, 01 Oct 2020 00:23:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LrYLWDQM8stmz0yFz3Wg0u7Rhgkk0IZGCSoh4qC8NGo=;
-        b=WEi+4jZWtcRSC7DoRUySz4lbViIHSOBrrCEPUcWUqRej/P4QjjjyRot4hI1BEllrkY
-         uP/JYMH6mDG9HccOuI1SWE5eQDBOw5SJkGLzfQoq94tFB2JBcbA5TedKCFTDrr97+++b
-         MAXob9d8uIvxaCwXgdu5LMXmQqxMDkcLksBLKJ9TxnF/62YPOfGNFQGiZhw0MIjJhlS3
-         Ll+IYCKndZwdLXZkDLdvPMknncD+URg7GGOj+XZCGZSsK684H0MP7bRovCGsxHDHFWYE
-         37Kdw8pGDepYQ1jsTjAoio2QxjM9/Banr+hIUpvWXWtVkO/S5ahWOtUPmESjgX5x5BXU
-         +p7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LrYLWDQM8stmz0yFz3Wg0u7Rhgkk0IZGCSoh4qC8NGo=;
-        b=qPa4pGrZQwkzQAgsEL5iu9gbi6zh3EVpdUcBQiSPKYZk9H6oR8bXoKevP6q+btX9qF
-         Bae+mNu0+KaWnRR4mXQfvfXmGaThYCVgTMmB018z+nrmYO269toyaOFcTmGQruyK5+jr
-         kxWzyhVndCY83EkNn1l0cieN2hVxzcgyuZBpJOHcaz2ny1mgZ6lDbCdq0FN/Hji0grE8
-         TZ2lPfir4fkSzuwCkaDWta9MYDrgVX+8sg53+Kn3eLsqywGlXKL0oY34gx+/ZUI+5w62
-         wz8WX+yRhHWMdJG69/TcRtgYMLBPaVTkyl5XdGSmG9oOJ4SPkY4ClZS8tLNbmD+RMrJm
-         h7YA==
-X-Gm-Message-State: AOAM531ywrCWokadB/hFyvxWWSrHSk6KvrHp1Np1r9TQ3pnHuDlndyPT
-        xssRxZhmhcz5f6I6IzbaFaA=
-X-Google-Smtp-Source: ABdhPJwMyLOXMi2i32b5+lOK7RIN4L5ZLWJ8vMk6L5e/S71dxOIZstKJCsskm0686d08wPnHTn9YBg==
-X-Received: by 2002:a65:5802:: with SMTP id g2mr4917679pgr.261.1601537031863;
-        Thu, 01 Oct 2020 00:23:51 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:76d9])
-        by smtp.gmail.com with ESMTPSA id c20sm5141227pfc.209.2020.10.01.00.23.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Oct 2020 00:23:50 -0700 (PDT)
-Date:   Thu, 1 Oct 2020 00:23:48 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 2/4] selftests: bpf: Add helper to compare
- socket cookies
-Message-ID: <20201001072348.hxhpuoqmeln6twxw@ast-mbp.dhcp.thefacebook.com>
-References: <20200928090805.23343-1-lmb@cloudflare.com>
- <20200928090805.23343-3-lmb@cloudflare.com>
- <20200929055851.n7fa3os7iu7grni3@kafai-mbp>
- <CAADnVQLwpWMea1rbFAwvR_k+GzOphaOW-kUGORf90PJ-Ezxm4w@mail.gmail.com>
- <CACAyw98WzZGcFnnr7ELvbCziz2axJA_7x2mcoQTf2DYWDYJ=KA@mail.gmail.com>
+        id S1730695AbgJAHns (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Oct 2020 03:43:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44040 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725883AbgJAHnr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Oct 2020 03:43:47 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601538225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SqwmxOuvg2mKV2zNhGfKfaji+GVSOGEvsmkHT66XkW0=;
+        b=HDZsb0IYDMvPi6bS2b/UtlZzGtI/Ill0JlCnGpCD7G5OHA6/UqvdSnDEJEtw/zeDSEnpPC
+        lnajztFNBGdTfZ4JB/iXCjwKSyztfFggpb6dUXGgWOxkqUkepOkayUHkeXPVlG7iwC7LAy
+        2ldNQLdZGSt28ptW9sDziz9/JKMlnlQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-YecVqbiIO-WRDHoAO_fbYw-1; Thu, 01 Oct 2020 03:43:42 -0400
+X-MC-Unique: YecVqbiIO-WRDHoAO_fbYw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBCF31074656;
+        Thu,  1 Oct 2020 07:43:39 +0000 (UTC)
+Received: from [10.36.113.22] (ovpn-113-22.ams2.redhat.com [10.36.113.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4410255776;
+        Thu,  1 Oct 2020 07:43:31 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Lorenzo Bianconi" <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        sameehj@amazon.com, kuba@kernel.org, john.fastabend@gmail.com,
+        daniel@iogearbox.net, ast@kernel.org, shayagr@amazon.com,
+        brouer@redhat.com, lorenzo.bianconi@redhat.com, dsahern@kernel.org
+Subject: Re: [PATCH v3 net-next 10/12] bpf: add xdp multi-buffer selftest
+Date:   Thu, 01 Oct 2020 09:43:29 +0200
+Message-ID: <E0F803BD-597D-42E8-8C17-197A99D8F4CB@redhat.com>
+In-Reply-To: <fb036cd7830a6db1ea9d68f8a987bb0004ccb8d6.1601478613.git.lorenzo@kernel.org>
+References: <cover.1601478613.git.lorenzo@kernel.org>
+ <fb036cd7830a6db1ea9d68f8a987bb0004ccb8d6.1601478613.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACAyw98WzZGcFnnr7ELvbCziz2axJA_7x2mcoQTf2DYWDYJ=KA@mail.gmail.com>
+Content-Type: text/plain; format=flowed
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 10:28:33AM +0100, Lorenz Bauer wrote:
-> On Tue, 29 Sep 2020 at 16:48, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> 
-> ...
-> 
-> > There was a warning. I noticed it while applying and fixed it up.
-> > Lorenz, please upgrade your compiler. This is not the first time such
-> > warning has been missed.
-> 
-> I tried reproducing this on latest bpf-next (b0efc216f577997) with gcc
-> 9.3.0 by removing the initialization of duration:
-> 
-> make: Entering directory '/home/lorenz/dev/bpf-next/tools/testing/selftests/bpf'
->   TEST-OBJ [test_progs] sockmap_basic.test.o
->   TEST-HDR [test_progs] tests.h
->   EXT-OBJ  [test_progs] test_progs.o
->   EXT-OBJ  [test_progs] cgroup_helpers.o
->   EXT-OBJ  [test_progs] trace_helpers.o
->   EXT-OBJ  [test_progs] network_helpers.o
->   EXT-OBJ  [test_progs] testing_helpers.o
->   BINARY   test_progs
-> make: Leaving directory '/home/lorenz/dev/bpf-next/tools/testing/selftests/bpf'
-> 
-> So, gcc doesn't issue a warning. Jakub did the following little experiment:
-> 
-> jkbs@toad ~/tmp $ cat warning.c
-> #include <stdio.h>
-> 
-> int main(void)
-> {
->         int duration;
-> 
->         fprintf(stdout, "%d", duration);
-> 
->         return 0;
-> }
-> jkbs@toad ~/tmp $ gcc -Wall -o /dev/null warning.c
-> warning.c: In function ‘main’:
-> warning.c:7:2: warning: ‘duration’ is used uninitialized in this
-> function [-Wuninitialized]
->     7 |  fprintf(stdout, "%d", duration);
->       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> 
-> The simple case seems to work. However, adding the macro breaks things:
-> 
-> jkbs@toad ~/tmp $ cat warning.c
-> #include <stdio.h>
-> 
-> #define _CHECK(duration) \
->         ({                                                      \
->                 fprintf(stdout, "%d", duration);                \
->         })
-> #define CHECK() _CHECK(duration)
-> 
-> int main(void)
-> {
->         int duration;
-> 
->         CHECK();
-> 
->         return 0;
-> }
-> jkbs@toad ~/tmp $ gcc -Wall -o /dev/null warning.c
-> jkbs@toad ~/tmp $
 
-That's very interesting. Thanks for the pointers.
-I'm using gcc version 9.1.1 20190605 (Red Hat 9.1.1-2)
-and I saw this warning while compiling selftests,
-but I don't see it with above warning.c example.
-clang warns correctly in both cases.
 
-> Maybe this is https://gcc.gnu.org/bugzilla/show_bug.cgi?id=18501 ? The
-> problem is still there on gcc 10. Compiling test_progs with clang does
-> issue a warning FWIW, but it seems like other things break when doing
-> that.
+On 30 Sep 2020, at 17:42, Lorenzo Bianconi wrote:
 
-That gcc bug has been opened since transition to ssa. That was a huge
-transition for gcc. But I think the bug number is not correct. It points to a
-different issue. I've checked -fdump-tree-uninit-all dump with and without
-macro. They're identical. The tree-ssa-uninit pass suppose to warn, but it
-doesn't. I wish I had more time to dig into it. A bit of debugging in
-gcc/tree-ssa-uninit.c can probably uncover the root cause.
+> Introduce xdp multi-buffer selftest for the following ebpf helpers:
+> - bpf_xdp_get_frags_total_size
+> - bpf_xdp_get_frag_count
+>
+> Co-developed-by: Eelco Chaudron <echaudro@redhat.com>
+> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  .../testing/selftests/bpf/prog_tests/xdp_mb.c | 77 
+> +++++++++++++++++++
+>  .../selftests/bpf/progs/test_xdp_multi_buff.c | 24 ++++++
+>  2 files changed, 101 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_mb.c
+>  create mode 100644 
+> tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_mb.c 
+> b/tools/testing/selftests/bpf/prog_tests/xdp_mb.c
+> new file mode 100644
+> index 000000000000..8cfe7253bf2a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_mb.c
+> @@ -0,0 +1,77 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <unistd.h>
+> +#include <linux/kernel.h>
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +
+> +#include "test_xdp_multi_buff.skel.h"
+> +
+> +static void test_xdp_mb_check_len(void)
+> +{
+> +	int test_sizes[] = { 128, 4096, 9000 };
+> +	struct test_xdp_multi_buff *pkt_skel;
+> +	char *pkt_in = NULL, *pkt_out = NULL;
+> +	__u32 duration = 0, retval, size;
+> +	int err, pkt_fd, i;
+> +
+> +	/* Load XDP program */
+> +	pkt_skel = test_xdp_multi_buff__open_and_load();
+> +	if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp_mb skeleton 
+> failed\n"))
+> +		goto out;
+> +
+> +	/* Allocate resources */
+> +	pkt_out = malloc(test_sizes[ARRAY_SIZE(test_sizes) - 1]);
+> +	pkt_in = malloc(test_sizes[ARRAY_SIZE(test_sizes) - 1]);
+> +	if (CHECK(!pkt_in || !pkt_out, "malloc",
+> +		  "Failed malloc, in = %p, out %p\n", pkt_in, pkt_out))
+> +		goto out;
+> +
+> +	pkt_fd = bpf_program__fd(pkt_skel->progs._xdp_check_mb_len);
+> +	if (pkt_fd < 0)
+> +		goto out;
+> +
+> +	/* Run test for specific set of packets */
+> +	for (i = 0; i < ARRAY_SIZE(test_sizes); i++) {
+> +		int frag_count;
+> +
+> +		/* Run test program */
+> +		err = bpf_prog_test_run(pkt_fd, 1, &pkt_in, test_sizes[i],
+
+Small bug, should be:
+
+         err = bpf_prog_test_run(pkt_fd, 1, pkt_in, test_sizes[i],
+
+> +					pkt_out, &size, &retval, &duration);
+> +
+> +		if (CHECK(err || retval != XDP_PASS, // || size != test_sizes[i],
+> +			  "test_run", "err %d errno %d retval %d size %d[%d]\n",
+> +			  err, errno, retval, size, test_sizes[i]))
+> +			goto out;
+> +
+> +		/* Verify test results */
+> +		frag_count = DIV_ROUND_UP(
+> +			test_sizes[i] - pkt_skel->data->test_result_xdp_len,
+> +			getpagesize());
+> +
+> +		if (CHECK(pkt_skel->data->test_result_frag_count != frag_count,
+> +			  "result", "frag_count = %llu != %u\n",
+> +			  pkt_skel->data->test_result_frag_count, frag_count))
+> +			goto out;
+> +
+> +		if (CHECK(pkt_skel->data->test_result_frag_len != test_sizes[i] -
+> +			  pkt_skel->data->test_result_xdp_len,
+> +			  "result", "frag_len = %llu != %llu\n",
+> +			  pkt_skel->data->test_result_frag_len,
+> +			  test_sizes[i] - pkt_skel->data->test_result_xdp_len))
+> +			goto out;
+> +	}
+> +out:
+> +	if (pkt_out)
+> +		free(pkt_out);
+> +	if (pkt_in)
+> +		free(pkt_in);
+> +
+> +	test_xdp_multi_buff__destroy(pkt_skel);
+> +}
+> +
+> +void test_xdp_mb(void)
+> +{
+> +	if (test__start_subtest("xdp_mb_check_len_frags"))
+> +		test_xdp_mb_check_len();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c 
+> b/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
+> new file mode 100644
+> index 000000000000..1a46e0925282
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/if_ether.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <stdint.h>
+> +
+> +__u64 test_result_frag_len = UINT64_MAX;
+> +__u64 test_result_frag_count = UINT64_MAX;
+> +__u64 test_result_xdp_len = UINT64_MAX;
+> +
+> +SEC("xdp_check_mb_len")
+> +int _xdp_check_mb_len(struct xdp_md *xdp)
+> +{
+> +	void *data_end = (void *)(long)xdp->data_end;
+> +	void *data = (void *)(long)xdp->data;
+> +
+> +	test_result_xdp_len = (__u64)(data_end - data);
+> +	test_result_frag_len = bpf_xdp_get_frags_total_size(xdp);
+> +	test_result_frag_count = bpf_xdp_get_frag_count(xdp);
+> +	return XDP_PASS;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> -- 
+> 2.26.2
+
