@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A061A281587
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 16:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA10281589
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 16:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387688AbgJBOnN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 10:43:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32850 "EHLO mail.kernel.org"
+        id S2388240AbgJBOnQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 10:43:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBOnL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:43:11 -0400
+        id S2388238AbgJBOnQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:43:16 -0400
 Received: from lore-desk.redhat.com (unknown [176.207.245.61])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E6A020708;
-        Fri,  2 Oct 2020 14:43:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A20620719;
+        Fri,  2 Oct 2020 14:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601649790;
-        bh=KqdOIEBWHwpdkF+8jfdovWiCtyDc6YI5ZYHE4ztCj5Y=;
+        s=default; t=1601649795;
+        bh=xk9bFAyppCfcxz8mjaSlx2KdcKBpE7HdmJ6obgHpAUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OIds9OuUrNBgUDU3FEVZXGANfCKgS+sV8u4HNGhg7wykOtvZXjS2LjV4SCKYI0W0H
-         hMj4nS08yznLWsajDy98UlJurHftfa32x8J+RjAuRohG0L9A11cn9JkPaXZZozz3Vj
-         CeeyQfGfg6C5fJz1KsT21oJvvc5x8LbnEgY6XXL4=
+        b=lvQCA4gS8s2oaHbxKETf8NhsPmapw6Z4otKapTi7CTRX7Fadf429N8dkj+QWUADDH
+         7ruVDrh8QlRHNVayvhc1sww3FNbiEHvyqF1gRXH/OVq3ZOEK7sxKVdO6dWLXYyGxvv
+         tAHgyhnKTEI0iueMbuQi6yw8hmXf1sF+Y21F97hk=
 From:   Lorenzo Bianconi <lorenzo@kernel.org>
 To:     bpf@vger.kernel.org, netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
         daniel@iogearbox.net, shayagr@amazon.com, sameehj@amazon.com,
         john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
         lorenzo.bianconi@redhat.com, echaudro@redhat.com
-Subject: [PATCH v4 bpf-next 11/13] bpf: add xdp multi-buffer selftest
-Date:   Fri,  2 Oct 2020 16:42:09 +0200
-Message-Id: <c7a48fba3a80ac9362c27272cd869cc251539290.1601648734.git.lorenzo@kernel.org>
+Subject: [PATCH v4 bpf-next 12/13] net: mvneta: enable jumbo frames for XDP
+Date:   Fri,  2 Oct 2020 16:42:10 +0200
+Message-Id: <48dbbc156eaaadfcc341f76991ff126cc5ed4b56.1601648734.git.lorenzo@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1601648734.git.lorenzo@kernel.org>
 References: <cover.1601648734.git.lorenzo@kernel.org>
@@ -41,135 +41,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce xdp multi-buffer selftest for the following ebpf helpers:
-- bpf_xdp_get_frags_total_size
-- bpf_xdp_get_frags_count
+Enable the capability to receive jumbo frames even if the interface is
+running in XDP mode
 
-Co-developed-by: Eelco Chaudron <echaudro@redhat.com>
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- .../testing/selftests/bpf/prog_tests/xdp_mb.c | 79 +++++++++++++++++++
- .../selftests/bpf/progs/test_xdp_multi_buff.c | 24 ++++++
- 2 files changed, 103 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_mb.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
+ drivers/net/ethernet/marvell/mvneta.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_mb.c b/tools/testing/selftests/bpf/prog_tests/xdp_mb.c
-new file mode 100644
-index 000000000000..4b1aca2d31e5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_mb.c
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <unistd.h>
-+#include <linux/kernel.h>
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+#include "test_xdp_multi_buff.skel.h"
-+
-+static void test_xdp_mb_check_len(void)
-+{
-+	int test_sizes[] = { 128, 4096, 9000 };
-+	struct test_xdp_multi_buff *pkt_skel;
-+	__u8 *pkt_in = NULL, *pkt_out = NULL;
-+	__u32 duration = 0, retval, size;
-+	int err, pkt_fd, i;
-+
-+	/* Load XDP program */
-+	pkt_skel = test_xdp_multi_buff__open_and_load();
-+	if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp_mb skeleton failed\n"))
-+		goto out;
-+
-+	/* Allocate resources */
-+	pkt_out = malloc(test_sizes[ARRAY_SIZE(test_sizes) - 1]);
-+	if (CHECK(!pkt_out, "malloc", "Failed pkt_out malloc\n"))
-+		goto out;
-+
-+	pkt_in = malloc(test_sizes[ARRAY_SIZE(test_sizes) - 1]);
-+	if (CHECK(!pkt_in, "malloc", "Failed pkt_in malloc\n"))
-+		goto out;
-+
-+	pkt_fd = bpf_program__fd(pkt_skel->progs._xdp_check_mb_len);
-+	if (pkt_fd < 0)
-+		goto out;
-+
-+	/* Run test for specific set of packets */
-+	for (i = 0; i < ARRAY_SIZE(test_sizes); i++) {
-+		int frags_count;
-+
-+		/* Run test program */
-+		err = bpf_prog_test_run(pkt_fd, 1, pkt_in, test_sizes[i],
-+					pkt_out, &size, &retval, &duration);
-+
-+		if (CHECK(err || retval != XDP_PASS || size != test_sizes[i],
-+			  "test_run", "err %d errno %d retval %d size %d[%d]\n",
-+			  err, errno, retval, size, test_sizes[i]))
-+			goto out;
-+
-+		/* Verify test results */
-+		frags_count = DIV_ROUND_UP(
-+			test_sizes[i] - pkt_skel->data->test_result_xdp_len,
-+			getpagesize());
-+
-+		if (CHECK(pkt_skel->data->test_result_frags_count != frags_count,
-+			  "result", "frags_count = %llu != %u\n",
-+			  pkt_skel->data->test_result_frags_count, frags_count))
-+			goto out;
-+
-+		if (CHECK(pkt_skel->data->test_result_frags_len != test_sizes[i] -
-+			  pkt_skel->data->test_result_xdp_len,
-+			  "result", "frags_len = %llu != %llu\n",
-+			  pkt_skel->data->test_result_frags_len,
-+			  test_sizes[i] - pkt_skel->data->test_result_xdp_len))
-+			goto out;
-+	}
-+out:
-+	if (pkt_out)
-+		free(pkt_out);
-+	if (pkt_in)
-+		free(pkt_in);
-+
-+	test_xdp_multi_buff__destroy(pkt_skel);
-+}
-+
-+void test_xdp_mb(void)
-+{
-+	if (test__start_subtest("xdp_mb_check_len_frags"))
-+		test_xdp_mb_check_len();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c b/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
-new file mode 100644
-index 000000000000..b7527829a3ed
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/if_ether.h>
-+#include <bpf/bpf_helpers.h>
-+#include <stdint.h>
-+
-+__u64 test_result_frags_count = UINT64_MAX;
-+__u64 test_result_frags_len = UINT64_MAX;
-+__u64 test_result_xdp_len = UINT64_MAX;
-+
-+SEC("xdp_check_mb_len")
-+int _xdp_check_mb_len(struct xdp_md *xdp)
-+{
-+	void *data_end = (void *)(long)xdp->data_end;
-+	void *data = (void *)(long)xdp->data;
-+
-+	test_result_xdp_len = (__u64)(data_end - data);
-+	test_result_frags_len = bpf_xdp_get_frags_total_size(xdp);
-+	test_result_frags_count = bpf_xdp_get_frags_count(xdp);
-+	return XDP_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index f709650974ea..e3352ed13ea8 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -3743,11 +3743,6 @@ static int mvneta_change_mtu(struct net_device *dev, int mtu)
+ 		mtu = ALIGN(MVNETA_RX_PKT_SIZE(mtu), 8);
+ 	}
+ 
+-	if (pp->xdp_prog && mtu > MVNETA_MAX_RX_BUF_SIZE) {
+-		netdev_info(dev, "Illegal MTU value %d for XDP mode\n", mtu);
+-		return -EINVAL;
+-	}
+-
+ 	dev->mtu = mtu;
+ 
+ 	if (!netif_running(dev)) {
+@@ -4445,11 +4440,6 @@ static int mvneta_xdp_setup(struct net_device *dev, struct bpf_prog *prog,
+ 	struct mvneta_port *pp = netdev_priv(dev);
+ 	struct bpf_prog *old_prog;
+ 
+-	if (prog && dev->mtu > MVNETA_MAX_RX_BUF_SIZE) {
+-		NL_SET_ERR_MSG_MOD(extack, "Jumbo frames not supported on XDP");
+-		return -EOPNOTSUPP;
+-	}
+-
+ 	if (pp->bm_priv) {
+ 		NL_SET_ERR_MSG_MOD(extack,
+ 				   "Hardware Buffer Management not supported on XDP");
 -- 
 2.26.2
 
