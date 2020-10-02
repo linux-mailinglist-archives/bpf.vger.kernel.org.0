@@ -2,171 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7FC2811E3
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 14:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8F2281424
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 15:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387531AbgJBMAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 08:00:10 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2940 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725964AbgJBMAJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 08:00:09 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 79E40690D0CDFE47C8A8;
-        Fri,  2 Oct 2020 13:00:06 +0100 (IST)
-Received: from [127.0.0.1] (10.47.8.137) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 2 Oct 2020
- 13:00:04 +0100
-Subject: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
- 23/23] perf metricgroup: remove duped metric group events)
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20200507140819.126960-1-irogers@google.com>
- <20200507140819.126960-24-irogers@google.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
-Date:   Fri, 2 Oct 2020 12:57:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <20200507140819.126960-24-irogers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.8.137]
-X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        id S2387836AbgJBNgj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 09:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726090AbgJBNgj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 09:36:39 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE5BC0613D0;
+        Fri,  2 Oct 2020 06:36:39 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id x16so801320pgj.3;
+        Fri, 02 Oct 2020 06:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=9abpwhVY5F1y6r9U1G6EegFsxLY2I9VNVQvWHKJ7Pls=;
+        b=Zhdkzt9oY6UHJwCSsbAVuPeNe0P9ao6ZY/ZUprw4RaJxMxQ1XqI1o4a6aIl3JOptii
+         jkQWJaQMt6DyNGOqpr3gebahqu7SDZjE38KSmSc+6vbVdH0miNxrVs30okS1TD/+WohO
+         5k0q5jtI5H7lu/8cvDbaML92qv1nQMQflP62XQlHWS3GxZCiE1YoQGj1775/fdYos/X+
+         RXWEC2R1NJsUSg7pDjlJy2L/Cv3da/WEg3yrHQu+ETyJ+Imtx1xX+j8QhSu1dJJZ357Q
+         1jd1ZThEWWpPIvv1dIwB0gcqzIysbMccYto4BM+WMmM95EoZsHdtiLIpQbyH6B4CBd5b
+         IceA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9abpwhVY5F1y6r9U1G6EegFsxLY2I9VNVQvWHKJ7Pls=;
+        b=qvT7wUZ+slct1Y2r5zUwRj2LK4LvR+H9/DRWt3Nr2zs6HDR9Mc/aiVR5MSdn2zpNIE
+         reImuO+bF5FimR0HysQR+YSQzUXb+QhGsGO4SU/55bVAUm8aRP/Oq6zl+yA4FgGtT8Ft
+         2piB0cmciJEZa31yhyLsZtacGHmgh1hCQVJNI9EDqdZnfrt2VwQ4L+SZL+W6z82W516z
+         w075YKWJbMEC2CmBrEDW3BhbImDHLHSRuHQ+UxbNwYd+Vh1C7LrVg9ojjL/oRN2NZHvU
+         G2qwpAYADwZdKmMie0ZGodAMLpkegeNo7HZGhVtC0TpoMkvmVhy8vRzsRkcBdbTcOrJc
+         E7Fw==
+X-Gm-Message-State: AOAM5334kRX2THQltlUhis8bNYCQBSqJ7bJZYt0+MQebJd4FAGGoGvE9
+        jYexghzyc/7T+ZEoVFpql6M=
+X-Google-Smtp-Source: ABdhPJx7HyTAx1Bl7iujSOGyJLOJRS6gYHY1GtqCMlnIdnX7uTEl9hs0a7xbaWXoMP5EXVtP80Ob0A==
+X-Received: by 2002:a63:e354:: with SMTP id o20mr2284002pgj.317.1601645799079;
+        Fri, 02 Oct 2020 06:36:39 -0700 (PDT)
+Received: from VM.ger.corp.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
+        by smtp.gmail.com with ESMTPSA id q65sm1666126pga.88.2020.10.02.06.36.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 02 Oct 2020 06:36:38 -0700 (PDT)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org, ciara.loftus@intel.com
+Subject: [PATCH bpf-next] libbpf: fix compatibility problem in xsk_socket__create
+Date:   Fri,  2 Oct 2020 15:36:27 +0200
+Message-Id: <1601645787-16944-1-git-send-email-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/05/2020 15:08, Ian Rogers wrote:
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Hi Ian,
+Fix a compatibility problem when the old XDP_SHARED_UMEM mode is used
+together with the xsk_socket__create() call. In the old XDP_SHARED_UMEM
+mode, only sharing of the same device and queue id was allowed, and in
+this mode, the fill ring and completion ring were shared between the
+AF_XDP sockets. Therfore, it was perfectly fine to call the
+xsk_socket__create() API for each socket and not use the new
+xsk_socket__create_shared() API. This behaviour was ruined by the
+commit introducing XDP_SHARED_UMEM support between different devices
+and/or queue ids. This patch restores the ability to use
+xsk_socket__create in these circumstances so that backward
+compatibility is not broken.
 
-I was wondering if you ever tested commit 2440689d62e9 ("perf 
-metricgroup: Remove duped metric group events") for when we have a 
-metric which aliases multiple instances of the same uncore PMU in the 
-system?
+We also make sure that a user that uses the
+xsk_socket__create_shared() api for the first socket in the old
+XDP_SHARED_UMEM mode above, gets and error message if the user tries
+to feed a fill ring or a completion ring that is not the same as the
+ones used for the umem registration. Previously, libbpf would just
+have silently ignored the supplied fill and completion rings and just
+taken them from the umem. Better to provide an error to the user.
 
-I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an 
-issue where find_evsel_group() fails for the uncore metrics under the 
-condition mentioned above.
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
+---
+ tools/lib/bpf/xsk.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-Unfortunately I don't have an x86 machine to which this test applies. 
-However, as an experiment, I added a test metric to my broadwell JSON:
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 30b4ca5..5b61932 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -705,7 +705,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+ 	struct xsk_ctx *ctx;
+ 	int err, ifindex;
+ 
+-	if (!umem || !xsk_ptr || !(rx || tx) || !fill || !comp)
++	if (!umem || !xsk_ptr || !(rx || tx))
+ 		return -EFAULT;
+ 
+ 	xsk = calloc(1, sizeof(*xsk));
+@@ -735,12 +735,24 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+ 
+ 	ctx = xsk_get_ctx(umem, ifindex, queue_id);
+ 	if (!ctx) {
++		if (!fill || !comp) {
++			err = -EFAULT;
++			goto out_socket;
++		}
++
+ 		ctx = xsk_create_ctx(xsk, umem, ifindex, ifname, queue_id,
+ 				     fill, comp);
+ 		if (!ctx) {
+ 			err = -ENOMEM;
+ 			goto out_socket;
+ 		}
++	} else if ((fill && ctx->fill != fill) || (comp && ctx->comp != comp)) {
++		/* If the xsk_socket__create_shared() api is used for the first socket
++		 * registration, then make sure the fill and completion rings supplied
++		 * are the same as the ones used to register the umem. If not, bail out.
++		 */
++		err = -EINVAL;
++		goto out_socket;
+ 	}
+ 	xsk->ctx = ctx;
+ 
+-- 
+2.7.4
 
-diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json 
-b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-index 8cdc7c13dc2a..fc6d9adf996a 100644
---- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-+++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-@@ -348,5 +348,11 @@
-         "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
-         "MetricGroup": "Power",
-         "MetricName": "C7_Pkg_Residency"
-+    },
-+    {
-+        "BriefDescription": "test metric",
-+        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE * 
-UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
-+        "MetricGroup": "Test",
-+        "MetricName": "test_metric_inc"
-     }
-]
-
-
-And get this:
-
-john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M 
-test_metric_inc sleep 1
-Using CPUID GenuineIntel-6-3D-4
-metric expr unc_cbo_xsnp_response.miss_xcore * 
-unc_cbo_xsnp_response.miss_eviction for test_metric_inc
-found event unc_cbo_xsnp_response.miss_eviction
-found event unc_cbo_xsnp_response.miss_xcore
-adding 
-{unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
-unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
-unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
-unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
-unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
-Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore * 
-unc_cbo_xsnp_response.miss_eviction
-task-clock: 688876 688876 688876
-context-switches: 2 688876 688876
-cpu-migrations: 0 688876 688876
-page-faults: 69 688876 688876
-cycles: 2101719 695690 695690
-instructions: 1180534 695690 695690
-branches: 249450 695690 695690
-branch-misses: 10815 695690 695690
-
-Performance counter stats for 'sleep 1':
-
-              0.69 msec task-clock                #    0.001 CPUs 
-utilized
-                 2      context-switches          #    0.003 M/sec 
-
-                 0      cpu-migrations            #    0.000 K/sec 
-
-                69      page-faults               #    0.100 M/sec 
-
-         2,101,719      cycles                    #    3.051 GHz 
-
-         1,180,534      instructions              #    0.56  insn per 
-cycle
-           249,450      branches                  #  362.112 M/sec 
-
-            10,815      branch-misses             #    4.34% of all 
-branches
-
-       1.001177693 seconds time elapsed
-
-       0.001149000 seconds user
-       0.000000000 seconds sys
-
-
-john@localhost:~/linux/tools/perf>
-
-
-Any idea what is going wrong here, before I have to dive in? The issue 
-seems to be this named commit.
-
-Thanks,
-John
-
-> A metric group contains multiple metrics. These metrics may use the same
-> events. If metrics use separate events then it leads to more
-> multiplexing and overall metric counts fail to sum to 100%.
-> Modify how metrics are associated with events so that if the events in
-> an earlier group satisfy the current metric, the same events are used.
-> A record of used events is kept and at the end of processing unnecessary
-> events are eliminated.
-> 
-> Before:
