@@ -2,117 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17A5281C58
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 21:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E6F281D13
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 22:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725536AbgJBTxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 15:53:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47456 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBTxc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 15:53:32 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kOR7Q-0005HG-Io; Fri, 02 Oct 2020 21:53:28 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kOR7Q-0007i3-A8; Fri, 02 Oct 2020 21:53:28 +0200
-Subject: Re: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer
- support
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        shayagr@amazon.com, sameehj@amazon.com, dsahern@kernel.org,
-        brouer@redhat.com, lorenzo.bianconi@redhat.com, echaudro@redhat.com
-References: <cover.1601648734.git.lorenzo@kernel.org>
- <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5c22ee38-e2c3-0724-5033-603d19c4169f@iogearbox.net>
-Date:   Fri, 2 Oct 2020 21:53:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1725446AbgJBUrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 16:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgJBUrG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 16:47:06 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA494C0613E3
+        for <bpf@vger.kernel.org>; Fri,  2 Oct 2020 13:47:05 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c18so3128694wrm.9
+        for <bpf@vger.kernel.org>; Fri, 02 Oct 2020 13:47:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uXKKFOeSYPG8al9cOaypQaHiMKPA9xxy17Dd4BLJwvc=;
+        b=A+1P4SoTB5U034QG0+WmgfcBxp3U+9PRSZ4IhqevphFs61HqRbCJpodggEf2oyNcwe
+         nKsqKkz45QhOTuJHkVnHwUfGyhEvIWJGe+3e5sm1JmMEq3413vQyblzchNBI6/IlNWYf
+         NHUXuTRp1W3982IMCnOwSPMzpKWPxIN49Bm2uoG2FHacvx7NnRYSJQrrrc9vtRvnI0ha
+         GyAtvSxeVmeQHlhSIMMdFoNBOYgz1S65Iq4nxYfoOeYdky7XN3teDdhWacbWFzf7sx94
+         w9OVi4MIOnIXEuefoxj4VIyvaLQ7VzWeI1Nojd7f6TvgoBnWkr6u099aHcuvKGurNLbj
+         28Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uXKKFOeSYPG8al9cOaypQaHiMKPA9xxy17Dd4BLJwvc=;
+        b=le5Vik2gcF35uH1WThyW7uBpRdZTAhbVuZNYhrh5WW+FZSDFEfYy2a6ipRkhhsUPrD
+         RlUONwVnjUIxR5JgijBwkA/Ze+QgQSzQt+I3KZb5n+A6KlC6wXlReiKf+dLz6KShK/iy
+         1G3g98pJNnvlUugdqeeXsi/D83BqZyu/PuPsRuY0W3zISYnK0L3Bu6sSfZsVWwEXw5eG
+         +QfwRzz7HvNi33/bUd3Ytr1EmlgVxQnb9Q0AUm1CKqB2QZWTyKOLWG1D1jJ3VgH2cFAj
+         t2boh172uYZSYMMRFQpFxOYlnKoqwhCDDJ99XPkp6VK7LGOZhhDBzvyQ+9E6PDUv+apg
+         Kfxw==
+X-Gm-Message-State: AOAM531AwKxCjjgn+x/x9lO801/jyJd1u/n++Vkqqgk0OxQeNvIsXYKe
+        noA4LOIviHWkUsMt3T2l34///WzyJ2DKZC/3iBc2aw==
+X-Google-Smtp-Source: ABdhPJwf2MahFXb5roCcSXJw39ZF+8aTZAyovTdB7iZgRUUyATSygYlDICmS5UdszlFwdG4hfktZg+aSXxL6iEJknu8=
+X-Received: by 2002:adf:f5c1:: with SMTP id k1mr5271207wrp.271.1601671623743;
+ Fri, 02 Oct 2020 13:47:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25945/Fri Oct  2 15:54:22 2020)
+References: <20200507140819.126960-1-irogers@google.com> <20200507140819.126960-24-irogers@google.com>
+ <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
+In-Reply-To: <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 2 Oct 2020 13:46:52 -0700
+Message-ID: <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
+Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
+ 23/23] perf metricgroup: remove duped metric group events)
+To:     John Garry <john.garry@huawei.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/2/20 5:25 PM, John Fastabend wrote:
-> Lorenzo Bianconi wrote:
->> This series introduce XDP multi-buffer support. The mvneta driver is
->> the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
->> please focus on how these new types of xdp_{buff,frame} packets
->> traverse the different layers and the layout design. It is on purpose
->> that BPF-helpers are kept simple, as we don't want to expose the
->> internal layout to allow later changes.
->>
->> For now, to keep the design simple and to maintain performance, the XDP
->> BPF-prog (still) only have access to the first-buffer. It is left for
->> later (another patchset) to add payload access across multiple buffers.
->> This patchset should still allow for these future extensions. The goal
->> is to lift the XDP MTU restriction that comes with XDP, but maintain
->> same performance as before.
->>
->> The main idea for the new multi-buffer layout is to reuse the same
->> layout used for non-linear SKB. This rely on the "skb_shared_info"
->> struct at the end of the first buffer to link together subsequent
->> buffers. Keeping the layout compatible with SKBs is also done to ease
->> and speedup creating an SKB from an xdp_{buff,frame}. Converting
->> xdp_frame to SKB and deliver it to the network stack is shown in cpumap
->> code (patch 13/13).
-> 
-> Using the end of the buffer for the skb_shared_info struct is going to
-> become driver API so unwinding it if it proves to be a performance issue
-> is going to be ugly. So same question as before, for the use case where
-> we receive packet and do XDP_TX with it how do we avoid cache miss
-> overhead? This is not just a hypothetical use case, the Facebook
-> load balancer is doing this as well as Cilium and allowing this with
-> multi-buffer packets >1500B would be useful.
-[...]
+On Fri, Oct 2, 2020 at 5:00 AM John Garry <john.garry@huawei.com> wrote:
+>
+> On 07/05/2020 15:08, Ian Rogers wrote:
+>
+> Hi Ian,
+>
+> I was wondering if you ever tested commit 2440689d62e9 ("perf
+> metricgroup: Remove duped metric group events") for when we have a
+> metric which aliases multiple instances of the same uncore PMU in the
+> system?
 
-Fully agree. My other question would be if someone else right now is in the process
-of implementing this scheme for a 40G+ NIC? My concern is the numbers below are rather
-on the lower end of the spectrum, so I would like to see a comparison of XDP as-is
-today vs XDP multi-buff on a higher end NIC so that we have a picture how well the
-current designed scheme works there and into which performance issue we'll run e.g.
-under typical XDP L4 load balancer scenario with XDP_TX. I think this would be crucial
-before the driver API becomes 'sort of' set in stone where others start to adapting
-it and changing design becomes painful. Do ena folks have an implementation ready as
-well? And what about virtio_net, for example, anyone committing there too? Typically
-for such features to land is to require at least 2 drivers implementing it.
+Sorry for this, I hadn't tested such a metric and wasn't aware of how
+the aliasing worked. I sent a fix for this issue here:
+https://lore.kernel.org/lkml/20200917201807.4090224-1-irogers@google.com/
+Could you see if this addresses the issue for you? I don't see the
+change in Arnaldo's trees yet.
 
->> Typical use cases for this series are:
->> - Jumbo-frames
->> - Packet header split (please see Google���s use-case @ NetDevConf 0x14, [0])
->> - TSO
->>
->> More info about the main idea behind this approach can be found here [1][2].
->>
->> We carried out some throughput tests in a standard linear frame scenario in order
->> to verify we did not introduced any performance regression adding xdp multi-buff
->> support to mvneta:
->>
->> offered load is ~ 1000Kpps, packet size is 64B, mvneta descriptor size is one PAGE
->>
->> commit: 879456bedbe5 ("net: mvneta: avoid possible cache misses in mvneta_rx_swbm")
->> - xdp-pass:      ~162Kpps
->> - xdp-drop:      ~701Kpps
->> - xdp-tx:        ~185Kpps
->> - xdp-redirect:  ~202Kpps
->>
->> mvneta xdp multi-buff:
->> - xdp-pass:      ~163Kpps
->> - xdp-drop:      ~739Kpps
->> - xdp-tx:        ~182Kpps
->> - xdp-redirect:  ~202Kpps
-[...]
+Thanks,
+Ian
+
+> I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an
+> issue where find_evsel_group() fails for the uncore metrics under the
+> condition mentioned above.
+>
+> Unfortunately I don't have an x86 machine to which this test applies.
+> However, as an experiment, I added a test metric to my broadwell JSON:
+>
+> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> index 8cdc7c13dc2a..fc6d9adf996a 100644
+> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+> @@ -348,5 +348,11 @@
+>          "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
+>          "MetricGroup": "Power",
+>          "MetricName": "C7_Pkg_Residency"
+> +    },
+> +    {
+> +        "BriefDescription": "test metric",
+> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE *
+> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
+> +        "MetricGroup": "Test",
+> +        "MetricName": "test_metric_inc"
+>      }
+> ]
+>
+>
+> And get this:
+>
+> john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M
+> test_metric_inc sleep 1
+> Using CPUID GenuineIntel-6-3D-4
+> metric expr unc_cbo_xsnp_response.miss_xcore *
+> unc_cbo_xsnp_response.miss_eviction for test_metric_inc
+> found event unc_cbo_xsnp_response.miss_eviction
+> found event unc_cbo_xsnp_response.miss_xcore
+> adding
+> {unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
+> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
+> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
+> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
+> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
+> Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore *
+> unc_cbo_xsnp_response.miss_eviction
+> task-clock: 688876 688876 688876
+> context-switches: 2 688876 688876
+> cpu-migrations: 0 688876 688876
+> page-faults: 69 688876 688876
+> cycles: 2101719 695690 695690
+> instructions: 1180534 695690 695690
+> branches: 249450 695690 695690
+> branch-misses: 10815 695690 695690
+>
+> Performance counter stats for 'sleep 1':
+>
+>               0.69 msec task-clock                #    0.001 CPUs
+> utilized
+>                  2      context-switches          #    0.003 M/sec
+>
+>                  0      cpu-migrations            #    0.000 K/sec
+>
+>                 69      page-faults               #    0.100 M/sec
+>
+>          2,101,719      cycles                    #    3.051 GHz
+>
+>          1,180,534      instructions              #    0.56  insn per
+> cycle
+>            249,450      branches                  #  362.112 M/sec
+>
+>             10,815      branch-misses             #    4.34% of all
+> branches
+>
+>        1.001177693 seconds time elapsed
+>
+>        0.001149000 seconds user
+>        0.000000000 seconds sys
+>
+>
+> john@localhost:~/linux/tools/perf>
+>
+>
+> Any idea what is going wrong here, before I have to dive in? The issue
+> seems to be this named commit.
+>
+> Thanks,
+> John
+>
+> > A metric group contains multiple metrics. These metrics may use the same
+> > events. If metrics use separate events then it leads to more
+> > multiplexing and overall metric counts fail to sum to 100%.
+> > Modify how metrics are associated with events so that if the events in
+> > an earlier group satisfy the current metric, the same events are used.
+> > A record of used events is kept and at the end of processing unnecessary
+> > events are eliminated.
+> >
+> > Before:
