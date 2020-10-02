@@ -2,128 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8F2281424
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 15:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183C6281498
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 16:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387836AbgJBNgj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 09:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBNgj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 09:36:39 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE5BC0613D0;
-        Fri,  2 Oct 2020 06:36:39 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id x16so801320pgj.3;
-        Fri, 02 Oct 2020 06:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=9abpwhVY5F1y6r9U1G6EegFsxLY2I9VNVQvWHKJ7Pls=;
-        b=Zhdkzt9oY6UHJwCSsbAVuPeNe0P9ao6ZY/ZUprw4RaJxMxQ1XqI1o4a6aIl3JOptii
-         jkQWJaQMt6DyNGOqpr3gebahqu7SDZjE38KSmSc+6vbVdH0miNxrVs30okS1TD/+WohO
-         5k0q5jtI5H7lu/8cvDbaML92qv1nQMQflP62XQlHWS3GxZCiE1YoQGj1775/fdYos/X+
-         RXWEC2R1NJsUSg7pDjlJy2L/Cv3da/WEg3yrHQu+ETyJ+Imtx1xX+j8QhSu1dJJZ357Q
-         1jd1ZThEWWpPIvv1dIwB0gcqzIysbMccYto4BM+WMmM95EoZsHdtiLIpQbyH6B4CBd5b
-         IceA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9abpwhVY5F1y6r9U1G6EegFsxLY2I9VNVQvWHKJ7Pls=;
-        b=qvT7wUZ+slct1Y2r5zUwRj2LK4LvR+H9/DRWt3Nr2zs6HDR9Mc/aiVR5MSdn2zpNIE
-         reImuO+bF5FimR0HysQR+YSQzUXb+QhGsGO4SU/55bVAUm8aRP/Oq6zl+yA4FgGtT8Ft
-         2piB0cmciJEZa31yhyLsZtacGHmgh1hCQVJNI9EDqdZnfrt2VwQ4L+SZL+W6z82W516z
-         w075YKWJbMEC2CmBrEDW3BhbImDHLHSRuHQ+UxbNwYd+Vh1C7LrVg9ojjL/oRN2NZHvU
-         G2qwpAYADwZdKmMie0ZGodAMLpkegeNo7HZGhVtC0TpoMkvmVhy8vRzsRkcBdbTcOrJc
-         E7Fw==
-X-Gm-Message-State: AOAM5334kRX2THQltlUhis8bNYCQBSqJ7bJZYt0+MQebJd4FAGGoGvE9
-        jYexghzyc/7T+ZEoVFpql6M=
-X-Google-Smtp-Source: ABdhPJx7HyTAx1Bl7iujSOGyJLOJRS6gYHY1GtqCMlnIdnX7uTEl9hs0a7xbaWXoMP5EXVtP80Ob0A==
-X-Received: by 2002:a63:e354:: with SMTP id o20mr2284002pgj.317.1601645799079;
-        Fri, 02 Oct 2020 06:36:39 -0700 (PDT)
-Received: from VM.ger.corp.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id q65sm1666126pga.88.2020.10.02.06.36.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 02 Oct 2020 06:36:38 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com
-Cc:     bpf@vger.kernel.org, ciara.loftus@intel.com
-Subject: [PATCH bpf-next] libbpf: fix compatibility problem in xsk_socket__create
-Date:   Fri,  2 Oct 2020 15:36:27 +0200
-Message-Id: <1601645787-16944-1-git-send-email-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726090AbgJBOCP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 10:02:15 -0400
+Received: from mga01.intel.com ([192.55.52.88]:44231 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388004AbgJBOCL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:02:11 -0400
+IronPort-SDR: AzUJji7MV9bmLl+DhfnJWeqFJbqhiFXgYsvqvji2ifw16JgEr+1gsVHoermfUjRzNDyWP4sBlj
+ Vxg/6YllGtKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="181119389"
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="181119389"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 07:01:57 -0700
+IronPort-SDR: OTuIomqKahVpiDoZaSe4NkrZndgyYAl865ruUDe1hq79n+zsHlJEuzMHD7KUN7Zf8lAVW2yhLn
+ byFy2D88ax/g==
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="508762506"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 07:01:56 -0700
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH bpf-next 1/3] samples: bpf: split xdpsock stats into new struct
+Date:   Fri,  2 Oct 2020 13:36:10 +0000
+Message-Id: <20201002133612.31536-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+New statistics will be added in future commits. In preparation for this,
+let's split out the existing statistics into their own struct.
 
-Fix a compatibility problem when the old XDP_SHARED_UMEM mode is used
-together with the xsk_socket__create() call. In the old XDP_SHARED_UMEM
-mode, only sharing of the same device and queue id was allowed, and in
-this mode, the fill ring and completion ring were shared between the
-AF_XDP sockets. Therfore, it was perfectly fine to call the
-xsk_socket__create() API for each socket and not use the new
-xsk_socket__create_shared() API. This behaviour was ruined by the
-commit introducing XDP_SHARED_UMEM support between different devices
-and/or queue ids. This patch restores the ability to use
-xsk_socket__create in these circumstances so that backward
-compatibility is not broken.
-
-We also make sure that a user that uses the
-xsk_socket__create_shared() api for the first socket in the old
-XDP_SHARED_UMEM mode above, gets and error message if the user tries
-to feed a fill ring or a completion ring that is not the same as the
-ones used for the umem registration. Previously, libbpf would just
-have silently ignored the supplied fill and completion rings and just
-taken them from the umem. Better to provide an error to the user.
-
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
+Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
 ---
- tools/lib/bpf/xsk.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ samples/bpf/xdpsock_user.c | 123 +++++++++++++++++++++----------------
+ 1 file changed, 69 insertions(+), 54 deletions(-)
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 30b4ca5..5b61932 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -705,7 +705,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
- 	struct xsk_ctx *ctx;
- 	int err, ifindex;
+diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+index b220173dbe1e..4c5022e6479e 100644
+--- a/samples/bpf/xdpsock_user.c
++++ b/samples/bpf/xdpsock_user.c
+@@ -91,18 +91,7 @@ static bool opt_need_wakeup = true;
+ static u32 opt_num_xsks = 1;
+ static u32 prog_id;
  
--	if (!umem || !xsk_ptr || !(rx || tx) || !fill || !comp)
-+	if (!umem || !xsk_ptr || !(rx || tx))
- 		return -EFAULT;
- 
- 	xsk = calloc(1, sizeof(*xsk));
-@@ -735,12 +735,24 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
- 
- 	ctx = xsk_get_ctx(umem, ifindex, queue_id);
- 	if (!ctx) {
-+		if (!fill || !comp) {
-+			err = -EFAULT;
-+			goto out_socket;
-+		}
+-struct xsk_umem_info {
+-	struct xsk_ring_prod fq;
+-	struct xsk_ring_cons cq;
+-	struct xsk_umem *umem;
+-	void *buffer;
+-};
+-
+-struct xsk_socket_info {
+-	struct xsk_ring_cons rx;
+-	struct xsk_ring_prod tx;
+-	struct xsk_umem_info *umem;
+-	struct xsk_socket *xsk;
++struct xsk_ring_stats {
+ 	unsigned long rx_npkts;
+ 	unsigned long tx_npkts;
+ 	unsigned long rx_dropped_npkts;
+@@ -119,6 +108,21 @@ struct xsk_socket_info {
+ 	unsigned long prev_rx_full_npkts;
+ 	unsigned long prev_rx_fill_empty_npkts;
+ 	unsigned long prev_tx_empty_npkts;
++};
 +
- 		ctx = xsk_create_ctx(xsk, umem, ifindex, ifname, queue_id,
- 				     fill, comp);
- 		if (!ctx) {
- 			err = -ENOMEM;
- 			goto out_socket;
- 		}
-+	} else if ((fill && ctx->fill != fill) || (comp && ctx->comp != comp)) {
-+		/* If the xsk_socket__create_shared() api is used for the first socket
-+		 * registration, then make sure the fill and completion rings supplied
-+		 * are the same as the ones used to register the umem. If not, bail out.
-+		 */
-+		err = -EINVAL;
-+		goto out_socket;
++struct xsk_umem_info {
++	struct xsk_ring_prod fq;
++	struct xsk_ring_cons cq;
++	struct xsk_umem *umem;
++	void *buffer;
++};
++
++struct xsk_socket_info {
++	struct xsk_ring_cons rx;
++	struct xsk_ring_prod tx;
++	struct xsk_umem_info *umem;
++	struct xsk_socket *xsk;
++	struct xsk_ring_stats ring_stats;
+ 	u32 outstanding_tx;
+ };
+ 
+@@ -173,12 +177,12 @@ static int xsk_get_xdp_stats(int fd, struct xsk_socket_info *xsk)
+ 		return err;
+ 
+ 	if (optlen == sizeof(struct xdp_statistics)) {
+-		xsk->rx_dropped_npkts = stats.rx_dropped;
+-		xsk->rx_invalid_npkts = stats.rx_invalid_descs;
+-		xsk->tx_invalid_npkts = stats.tx_invalid_descs;
+-		xsk->rx_full_npkts = stats.rx_ring_full;
+-		xsk->rx_fill_empty_npkts = stats.rx_fill_ring_empty_descs;
+-		xsk->tx_empty_npkts = stats.tx_ring_empty_descs;
++		xsk->ring_stats.rx_dropped_npkts = stats.rx_dropped;
++		xsk->ring_stats.rx_invalid_npkts = stats.rx_invalid_descs;
++		xsk->ring_stats.tx_invalid_npkts = stats.tx_invalid_descs;
++		xsk->ring_stats.rx_full_npkts = stats.rx_ring_full;
++		xsk->ring_stats.rx_fill_empty_npkts = stats.rx_fill_ring_empty_descs;
++		xsk->ring_stats.tx_empty_npkts = stats.tx_ring_empty_descs;
+ 		return 0;
  	}
- 	xsk->ctx = ctx;
+ 
+@@ -198,9 +202,9 @@ static void dump_stats(void)
+ 		double rx_pps, tx_pps, dropped_pps, rx_invalid_pps, full_pps, fill_empty_pps,
+ 			tx_invalid_pps, tx_empty_pps;
+ 
+-		rx_pps = (xsks[i]->rx_npkts - xsks[i]->prev_rx_npkts) *
++		rx_pps = (xsks[i]->ring_stats.rx_npkts - xsks[i]->ring_stats.prev_rx_npkts) *
+ 			 1000000000. / dt;
+-		tx_pps = (xsks[i]->tx_npkts - xsks[i]->prev_tx_npkts) *
++		tx_pps = (xsks[i]->ring_stats.tx_npkts - xsks[i]->ring_stats.prev_tx_npkts) *
+ 			 1000000000. / dt;
+ 
+ 		printf("\n sock%d@", i);
+@@ -209,47 +213,58 @@ static void dump_stats(void)
+ 
+ 		printf("%-15s %-11s %-11s %-11.2f\n", "", "pps", "pkts",
+ 		       dt / 1000000000.);
+-		printf(fmt, "rx", rx_pps, xsks[i]->rx_npkts);
+-		printf(fmt, "tx", tx_pps, xsks[i]->tx_npkts);
++		printf(fmt, "rx", rx_pps, xsks[i]->ring_stats.rx_npkts);
++		printf(fmt, "tx", tx_pps, xsks[i]->ring_stats.tx_npkts);
+ 
+-		xsks[i]->prev_rx_npkts = xsks[i]->rx_npkts;
+-		xsks[i]->prev_tx_npkts = xsks[i]->tx_npkts;
++		xsks[i]->ring_stats.prev_rx_npkts = xsks[i]->ring_stats.rx_npkts;
++		xsks[i]->ring_stats.prev_tx_npkts = xsks[i]->ring_stats.tx_npkts;
+ 
+ 		if (opt_extra_stats) {
+ 			if (!xsk_get_xdp_stats(xsk_socket__fd(xsks[i]->xsk), xsks[i])) {
+-				dropped_pps = (xsks[i]->rx_dropped_npkts -
+-						xsks[i]->prev_rx_dropped_npkts) * 1000000000. / dt;
+-				rx_invalid_pps = (xsks[i]->rx_invalid_npkts -
+-						xsks[i]->prev_rx_invalid_npkts) * 1000000000. / dt;
+-				tx_invalid_pps = (xsks[i]->tx_invalid_npkts -
+-						xsks[i]->prev_tx_invalid_npkts) * 1000000000. / dt;
+-				full_pps = (xsks[i]->rx_full_npkts -
+-						xsks[i]->prev_rx_full_npkts) * 1000000000. / dt;
+-				fill_empty_pps = (xsks[i]->rx_fill_empty_npkts -
+-						xsks[i]->prev_rx_fill_empty_npkts)
+-						* 1000000000. / dt;
+-				tx_empty_pps = (xsks[i]->tx_empty_npkts -
+-						xsks[i]->prev_tx_empty_npkts) * 1000000000. / dt;
++				dropped_pps = (xsks[i]->ring_stats.rx_dropped_npkts -
++						xsks[i]->ring_stats.prev_rx_dropped_npkts) *
++							1000000000. / dt;
++				rx_invalid_pps = (xsks[i]->ring_stats.rx_invalid_npkts -
++						xsks[i]->ring_stats.prev_rx_invalid_npkts) *
++							1000000000. / dt;
++				tx_invalid_pps = (xsks[i]->ring_stats.tx_invalid_npkts -
++						xsks[i]->ring_stats.prev_tx_invalid_npkts) *
++							1000000000. / dt;
++				full_pps = (xsks[i]->ring_stats.rx_full_npkts -
++						xsks[i]->ring_stats.prev_rx_full_npkts) *
++							1000000000. / dt;
++				fill_empty_pps = (xsks[i]->ring_stats.rx_fill_empty_npkts -
++						xsks[i]->ring_stats.prev_rx_fill_empty_npkts) *
++							1000000000. / dt;
++				tx_empty_pps = (xsks[i]->ring_stats.tx_empty_npkts -
++						xsks[i]->ring_stats.prev_tx_empty_npkts) *
++							1000000000. / dt;
+ 
+ 				printf(fmt, "rx dropped", dropped_pps,
+-				       xsks[i]->rx_dropped_npkts);
++				       xsks[i]->ring_stats.rx_dropped_npkts);
+ 				printf(fmt, "rx invalid", rx_invalid_pps,
+-				       xsks[i]->rx_invalid_npkts);
++				       xsks[i]->ring_stats.rx_invalid_npkts);
+ 				printf(fmt, "tx invalid", tx_invalid_pps,
+-				       xsks[i]->tx_invalid_npkts);
++				       xsks[i]->ring_stats.tx_invalid_npkts);
+ 				printf(fmt, "rx queue full", full_pps,
+-				       xsks[i]->rx_full_npkts);
++				       xsks[i]->ring_stats.rx_full_npkts);
+ 				printf(fmt, "fill ring empty", fill_empty_pps,
+-				       xsks[i]->rx_fill_empty_npkts);
++				       xsks[i]->ring_stats.rx_fill_empty_npkts);
+ 				printf(fmt, "tx ring empty", tx_empty_pps,
+-				       xsks[i]->tx_empty_npkts);
+-
+-				xsks[i]->prev_rx_dropped_npkts = xsks[i]->rx_dropped_npkts;
+-				xsks[i]->prev_rx_invalid_npkts = xsks[i]->rx_invalid_npkts;
+-				xsks[i]->prev_tx_invalid_npkts = xsks[i]->tx_invalid_npkts;
+-				xsks[i]->prev_rx_full_npkts = xsks[i]->rx_full_npkts;
+-				xsks[i]->prev_rx_fill_empty_npkts = xsks[i]->rx_fill_empty_npkts;
+-				xsks[i]->prev_tx_empty_npkts = xsks[i]->tx_empty_npkts;
++				       xsks[i]->ring_stats.tx_empty_npkts);
++
++				xsks[i]->ring_stats.prev_rx_dropped_npkts =
++					xsks[i]->ring_stats.rx_dropped_npkts;
++				xsks[i]->ring_stats.prev_rx_invalid_npkts =
++					xsks[i]->ring_stats.rx_invalid_npkts;
++				xsks[i]->ring_stats.prev_tx_invalid_npkts =
++					xsks[i]->ring_stats.tx_invalid_npkts;
++				xsks[i]->ring_stats.prev_rx_full_npkts =
++					xsks[i]->ring_stats.rx_full_npkts;
++				xsks[i]->ring_stats.prev_rx_fill_empty_npkts =
++					xsks[i]->ring_stats.rx_fill_empty_npkts;
++				xsks[i]->ring_stats.prev_tx_empty_npkts =
++					xsks[i]->ring_stats.tx_empty_npkts;
+ 			} else {
+ 				printf("%-15s\n", "Error retrieving extra stats");
+ 			}
+@@ -936,7 +951,7 @@ static inline void complete_tx_l2fwd(struct xsk_socket_info *xsk,
+ 		xsk_ring_prod__submit(&xsk->umem->fq, rcvd);
+ 		xsk_ring_cons__release(&xsk->umem->cq, rcvd);
+ 		xsk->outstanding_tx -= rcvd;
+-		xsk->tx_npkts += rcvd;
++		xsk->ring_stats.tx_npkts += rcvd;
+ 	}
+ }
+ 
+@@ -956,7 +971,7 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk,
+ 	if (rcvd > 0) {
+ 		xsk_ring_cons__release(&xsk->umem->cq, rcvd);
+ 		xsk->outstanding_tx -= rcvd;
+-		xsk->tx_npkts += rcvd;
++		xsk->ring_stats.tx_npkts += rcvd;
+ 	}
+ }
+ 
+@@ -996,7 +1011,7 @@ static void rx_drop(struct xsk_socket_info *xsk, struct pollfd *fds)
+ 
+ 	xsk_ring_prod__submit(&xsk->umem->fq, rcvd);
+ 	xsk_ring_cons__release(&xsk->rx, rcvd);
+-	xsk->rx_npkts += rcvd;
++	xsk->ring_stats.rx_npkts += rcvd;
+ }
+ 
+ static void rx_drop_all(void)
+@@ -1155,7 +1170,7 @@ static void l2fwd(struct xsk_socket_info *xsk, struct pollfd *fds)
+ 	xsk_ring_prod__submit(&xsk->tx, rcvd);
+ 	xsk_ring_cons__release(&xsk->rx, rcvd);
+ 
+-	xsk->rx_npkts += rcvd;
++	xsk->ring_stats.rx_npkts += rcvd;
+ 	xsk->outstanding_tx += rcvd;
+ }
  
 -- 
-2.7.4
+2.17.1
 
