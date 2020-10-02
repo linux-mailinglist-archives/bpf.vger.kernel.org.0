@@ -2,92 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DF7281E24
-	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 00:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F78E281E5E
+	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 00:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725786AbgJBWQs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 18:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJBWQs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 18:16:48 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A392FC0613D0;
-        Fri,  2 Oct 2020 15:16:47 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u4so2399487ljd.10;
-        Fri, 02 Oct 2020 15:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NqGPTwLDruLdjQOMyo3YXpB7b4xXruKaW+NIVVD0hZc=;
-        b=Biz8w7TYWU2BmCVHqFyceEdKLAmhopzgHH7dO9z7f8dCVsB/z+ULhrGkmGAf/w5OJa
-         mI6TXeIMsAA8fYqQaoin+VMmltrixfp9hL+GuLC4YIM24HxPRrIVgpbeWR/RvA46nmEg
-         NRhyu0BfTCxDBnRNf3k++60ergxyTG5IBc7YYtqF06iKJq4Fe8Xa1Cfr8fef1ppI0u9Q
-         euYPaarnohf327Ktwi2mfdnaqjoaOOQ2Rfxhz+Oszgs0cwc6WbyVk1dCHR9Rg/o7wXER
-         HpK3EmaADNHCMApjRZrPKEYHmOJpqNRNwCKTAAaXJTm7gJC/zGurtQAOdwbwa8VAcHHf
-         4MHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NqGPTwLDruLdjQOMyo3YXpB7b4xXruKaW+NIVVD0hZc=;
-        b=kbiO9sKsLs6gTT5sgomtiz1j96ZoZXgUEPDXdbbm6Z4uRLlo5yB/LAEXrLwsWZ6yf1
-         3aGn3pB1Umg46k10TYUyZSViSn7R/Rz2BYb0ZPLJb3Sizy93LTyK6cca49p0g3Qtua16
-         hPpCsXUOqyRWt1Mbtb25Qc2Pf7a3J9bYZAO+z+rt7zpNFeg151mbkZGU2Q1mPjoktJ9l
-         P8T/Jm3BOeYMUssgp0vKqg0PY8bCMJjAzqmM3zbh9E58ZogmvZ0H5KkDB1Meapk1J/QP
-         vmHQkaVYBmJPJvf7TIpLOXJ4sHzWemUSC1jzPXDkwYHrTQJ8w5FL+4ytagafbJe0ajYj
-         OSxw==
-X-Gm-Message-State: AOAM530K+XBgqMRgYps006edCTFmEOEQxAVnrVw7R5ti7ngWekwLFEpQ
-        GqL7si4ZBQe4uMuK4qD9HKvQ/zgFObqLL5YaIDY=
-X-Google-Smtp-Source: ABdhPJxadOUkwd6VjSFMQPfU8zpwIm2qXUgaLQD2hb1vfXJnv5p3GK6I35WQ0mzevNMmNMaABcLJ/2405m8fn+I7rwM=
-X-Received: by 2002:a2e:7014:: with SMTP id l20mr1355149ljc.91.1601677006107;
- Fri, 02 Oct 2020 15:16:46 -0700 (PDT)
+        id S1725379AbgJBWaE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 18:30:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54196 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgJBWaE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 18:30:04 -0400
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601677803;
+        bh=NhXDSu17HUgau68592gDgn3Pg4c6kyKbwvZiBeJTZLc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JKDJDcj3B0IBZK+hc1QvA/YdMDE8mU/JfrZbBzxm0nVxq9VXFf689kbffPhVVmdYa
+         5AQrih7EwDRCgvd61BhiC6PG62IqRKHA2HRpSRLtpoFnFuBBzZM/PPClF1Mh/xO8ub
+         +BRiELDNcX2sOgdGsQnzyIChI3+iFrFaBIBXnV/E=
 MIME-Version: 1.0
-References: <20200929235049.2533242-1-haoluo@google.com> <CAADnVQK8XbzDs9hWLYEqkJj+g=1HJ7nrar+0STY5CY8t5nrC=A@mail.gmail.com>
- <CA+khW7i4wpvOsJTH4AePVsm4cAOnFoxEwEqv27tEzJrwOWFqxw@mail.gmail.com>
-In-Reply-To: <CA+khW7i4wpvOsJTH4AePVsm4cAOnFoxEwEqv27tEzJrwOWFqxw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 2 Oct 2020 15:16:34 -0700
-Message-ID: <CAADnVQ+UdKjHWWojmUx5K+RjUZ=DCe6LAHwhBicv-1KkuJnPVg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/6] bpf: BTF support for ksyms
-To:     Hao Luo <haoluo@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [bpf-next PATCH v2 0/2] Add skb_adjust_room() for SK_SKB
+From:   patchwork-bot+bpf@kernel.org
+Message-Id: <160167780367.26044.61096032487233912.git-patchwork-notify@kernel.org>
+Date:   Fri, 02 Oct 2020 22:30:03 +0000
+References: <160160094764.7052.2711632803258461907.stgit@john-Precision-5820-Tower>
+In-Reply-To: <160160094764.7052.2711632803258461907.stgit@john-Precision-5820-Tower>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 29, 2020 at 11:48 PM Hao Luo <haoluo@google.com> wrote:
->
-> Ah, this is the bug in pahole described in
-> https://lkml.org/lkml/2020/8/20/1862. I proposed a fix [1] but it
-> hasn't reached pahole's master branch. Let me ask Arnaldo to see if he
-> is OK merging it.
->
-> [1] https://www.spinics.net/lists/dwarves/msg00451.html
->
-> On Tue, Sep 29, 2020 at 9:36 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Sep 29, 2020 at 4:50 PM Hao Luo <haoluo@google.com> wrote:
-> > >
-> > > v3 -> v4:
-> > >  - Rebasing
-> > >  - Cast bpf_[per|this]_cpu_ptr's parameter to void __percpu * before
-> > >    passing into per_cpu_ptr.
+Hello:
 
-I've rebased it myself and applied. Thanks Hao.
+This series was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Thu, 01 Oct 2020 18:09:34 -0700 you wrote:
+> This implements the helper skb_adjust_room() for BPF_SKS_SK_STREAM_VERDICT
+> programs so we can push/pop headers from the data on recieve. One use
+> case is to pop TLS headers off kTLS packets.
+> 
+> The first patch implements the helper and the second updates test_sockmap
+> to use it removing some case handling we had to do earlier to account for
+> the TLS headers in the kTLS tests.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf, sockmap: add skb_adjust_room to pop bytes off ingress payload
+    https://git.kernel.org/bpf/bpf-next/c/18ebe16d1049
+  - [bpf-next,v2,2/2] bpf, sockmap: update selftests to use skb_adjust_room
+    https://git.kernel.org/bpf/bpf-next/c/91274ca53518
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
