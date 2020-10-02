@@ -2,215 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9637E2817DC
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 18:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74219281A7B
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 20:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387777AbgJBQZ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 12:25:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51739 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726386AbgJBQZ5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 2 Oct 2020 12:25:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601655956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2thjc0jOZc2wNSYDU7OxC6DQ1HcNNnBeXmEt+DgH8zA=;
-        b=IcFHdNz7ixQ5JpN5se03/4C6UnQESpP5p/5vr56yQPxGAR7dbeP+ag2ln8dlKek/Zrt3Hd
-        67sEGHmxAlsI8/FcXb2ZNoANUvh14s8YSZvh1tPLxCi/qMDL3vvHUEh8kwYkK3jAYoKFZc
-        bgyiCIIUPAfnOSg2Jax4PiG2igdnxsU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-xnpPMwCTNMGQk-NeXyzRCA-1; Fri, 02 Oct 2020 12:25:53 -0400
-X-MC-Unique: xnpPMwCTNMGQk-NeXyzRCA-1
-Received: by mail-wm1-f71.google.com with SMTP id 23so591989wmk.8
-        for <bpf@vger.kernel.org>; Fri, 02 Oct 2020 09:25:53 -0700 (PDT)
+        id S2388394AbgJBSGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 14:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgJBSGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 14:06:22 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C7DC0613D0;
+        Fri,  2 Oct 2020 11:06:22 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id e5so2045045ils.10;
+        Fri, 02 Oct 2020 11:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=xQHdD9FYvaSVDKe3FGt16IcuIG+7ix3939R7cUq5vHw=;
+        b=uEtRAiinQabjTTjsVo4InS/Uby38Yc8HB2T+DH5ohJORdEX4PQKgyEYltUbsxCs8Eu
+         eR8WW2sEruObE8FyAHV97E2X03luqJIygIecBwV3ySZaGz+MkJOO6jYhMwjObrWX20ic
+         HES/25+/0A0KCf5kRfLxEhYY9r2UmB913GFS5WmNhaeuhmVZdJpS0l/fozfwW6nSzJKL
+         AIKez1ZJp/1cEtXljrnnIsX2Pm5t8wJ7iQny7ACxKW5vT/OkJ/YgGET6Tcd4Xb/KhdHg
+         TKjH2B2eRotK5G/bKxzM5TNLDg1GMzHYIb0fdSAjRnD5W5k3rQNLICuqbridtqbxH4N0
+         A5HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2thjc0jOZc2wNSYDU7OxC6DQ1HcNNnBeXmEt+DgH8zA=;
-        b=JQ8TqG2NQchCja5TfSW4Z+EIJeXTCyF+ciDG4SvUifiVhIuaTOp6fuaddj1zqTvSR6
-         zGp/HTOfri0h8UGRGfnf1nqUN16XZjgD8bvTxNT0D3vtkZAA8PiYbotGDGcrcH2tLtfn
-         VCtivHibecRLigkzBk70Tet+Vmqe238zseVydQxO1PBz5bLGatDCn3HeNImAti8SciJt
-         vNqvjG4mse3ApzWZzPcUD2saZeMUXGZLRvFH/d/qrJo20bYl7qkUQz8W/0EXxm4eYJKR
-         uX2Ald+2QQebaCUtjGGa/D3PRAznl0YrGNZgnoreaHUQMHE2h9OLBvSRtK714dAJm/Og
-         7Ruw==
-X-Gm-Message-State: AOAM530hrBKIDnlKEdiy6tsXRanQbaj4KSFCWSr7+xpXeysf7Ycztl8m
-        kRZlEIOWLOShxwoZGAjqHV1fOf6KAJHNpOOpQrcy1IkS+aBOBAD/FqfAVd6nE8rTJG4qbcJvEmS
-        OMvuYC1/fPI3g
-X-Received: by 2002:a05:600c:2246:: with SMTP id a6mr3928576wmm.38.1601655950835;
-        Fri, 02 Oct 2020 09:25:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw09mMdBzo0dLo73WitxHFIMrzDIqSoofuYfNWn7xPD31kI+g0go4yj9GtToowf56W+Q+nO+w==
-X-Received: by 2002:a05:600c:2246:: with SMTP id a6mr3928544wmm.38.1601655950490;
-        Fri, 02 Oct 2020 09:25:50 -0700 (PDT)
-Received: from localhost ([176.207.245.61])
-        by smtp.gmail.com with ESMTPSA id c25sm2292517wml.31.2020.10.02.09.25.49
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=xQHdD9FYvaSVDKe3FGt16IcuIG+7ix3939R7cUq5vHw=;
+        b=pRreAZDDLPGPr7+O73tp9iqW7ZMH8TZxRCaqMWnNnDSsXvYmppfIIdAqBhYhFtSGZN
+         sooT+y6baBoDzZQC022EyyAcmvrh+C70FvEArYTvtjjUlskt1acErGDY0WiLtdulFWz8
+         iNnftrNNNqDzx9BHmCpRbKgnsDGT8Vf9yeW0GKhvjx20spjMCiD8slKuw3/GeE6BbLBa
+         3dAmOMqlE/CY5OKZwKm7/9lhfxJxZIZgV4dLPVYIcsYEBX0YuG3LxyblyT8Qml559SVh
+         uyMu5SpGu7DLwesckvFVCKxX/6iZbsHFUwi8b7WAHU40GrfoXPrEu+3wwwKRMy6dIdrX
+         pD2A==
+X-Gm-Message-State: AOAM532H2yeYn+ALjrIjVQPjKRnuEf1OKRRujNge7yjzNkylmtFVTXgM
+        5Q/YeMZj2xQnBkGxL2MZFcA=
+X-Google-Smtp-Source: ABdhPJweUhBuEB99WaFi6EQ0t/qRJdVFTH23M2hMah+XMKg+rI8BBG8p64T2eIcyhOGT+jbSn9BJKQ==
+X-Received: by 2002:a92:ccc5:: with SMTP id u5mr2845241ilq.178.1601661981275;
+        Fri, 02 Oct 2020 11:06:21 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id f21sm1004316ioh.1.2020.10.02.11.06.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 09:25:49 -0700 (PDT)
-Date:   Fri, 2 Oct 2020 18:25:46 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
+        Fri, 02 Oct 2020 11:06:20 -0700 (PDT)
+Date:   Fri, 02 Oct 2020 11:06:12 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
         netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
         sameehj@amazon.com, dsahern@kernel.org, brouer@redhat.com,
         echaudro@redhat.com
-Subject: Re: [PATCH v4 bpf-next 06/13] bpf: introduce
- bpf_xdp_get_frags_{count, total_size} helpers
-Message-ID: <20201002162546.GB40027@lore-desk>
+Message-ID: <5f776c14d69b3_a6402087e@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201002160623.GA40027@lore-desk>
 References: <cover.1601648734.git.lorenzo@kernel.org>
- <deb81e4cf02db9a1da2b4088a49afd7acf8b82b6.1601648734.git.lorenzo@kernel.org>
- <5f7748fc80bd9_38b02081@john-XPS-13-9370.notmuch>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
-Content-Disposition: inline
-In-Reply-To: <5f7748fc80bd9_38b02081@john-XPS-13-9370.notmuch>
+ <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
+ <20201002160623.GA40027@lore-desk>
+Subject: Re: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer
+ support
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Lorenzo Bianconi wrote:
+> > Lorenzo Bianconi wrote:
+> > > This series introduce XDP multi-buffer support. The mvneta driver is
+> > > the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+> > > please focus on how these new types of xdp_{buff,frame} packets
+> > > traverse the different layers and the layout design. It is on purpose
+> > > that BPF-helpers are kept simple, as we don't want to expose the
+> > > internal layout to allow later changes.
+> > > 
+> > > For now, to keep the design simple and to maintain performance, the XDP
+> > > BPF-prog (still) only have access to the first-buffer. It is left for
+> > > later (another patchset) to add payload access across multiple buffers.
+> > > This patchset should still allow for these future extensions. The goal
+> > > is to lift the XDP MTU restriction that comes with XDP, but maintain
+> > > same performance as before.
+> > > 
+> > > The main idea for the new multi-buffer layout is to reuse the same
+> > > layout used for non-linear SKB. This rely on the "skb_shared_info"
+> > > struct at the end of the first buffer to link together subsequent
+> > > buffers. Keeping the layout compatible with SKBs is also done to ease
+> > > and speedup creating an SKB from an xdp_{buff,frame}. Converting
+> > > xdp_frame to SKB and deliver it to the network stack is shown in cpumap
+> > > code (patch 13/13).
+> > 
+> > Using the end of the buffer for the skb_shared_info struct is going to
+> > become driver API so unwinding it if it proves to be a performance issue
+> > is going to be ugly. So same question as before, for the use case where
+> > we receive packet and do XDP_TX with it how do we avoid cache miss
+> > overhead? This is not just a hypothetical use case, the Facebook
+> > load balancer is doing this as well as Cilium and allowing this with
+> > multi-buffer packets >1500B would be useful.
+> > 
+> > Can we write the skb_shared_info lazily? It should only be needed once
+> > we know the packet is going up the stack to some place that needs the
+> > info. Which we could learn from the return code of the XDP program.
+> 
+> Hi John,
 
---UHN/qo2QbUvPLonB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi, I'll try to join the two threads this one and the one on helpers here
+so we don't get too fragmented.
 
-> Lorenzo Bianconi wrote:
-> > From: Sameeh Jubran <sameehj@amazon.com>
-> >=20
-> > Introduce the two following bpf helpers in order to provide some
-> > metadata about a xdp multi-buff fame to bpf layer:
-> >=20
-> > - bpf_xdp_get_frags_count()
-> >   get the number of fragments for a given xdp multi-buffer.
->=20
-> Same comment as in the cover letter can you provide a use case
-> for how/where I would use xdp_get_frags_count()? Is it just for
-> debug? If its just debug do we really want a uapi helper for it.
+> 
+> I agree, I think for XDP_TX use-case it is not strictly necessary to fill the
+> skb_hared_info. The driver can just keep this info on the stack and use it
+> inserting the packet back to the DMA ring.
+> For mvneta I implemented it in this way to keep the code aligned with ndo_xdp_xmit
+> path since it is a low-end device. I guess we are not introducing any API constraint
+> for XDP_TX. A high-end device can implement multi-buff for XDP_TX in a different way
+> in order to avoid the cache miss.
 
-I have no a strong opinion on it, I guess we can just drop this helper,
-but I am not the original author of the patch :)
+Agree it would be an implementation detail for XDP_TX except the two helpers added
+in this series currently require it to be there.
 
->=20
-> >=20
-> > * bpf_xdp_get_frags_total_size()
-> >   get the total size of fragments for a given xdp multi-buffer.
->=20
-> This is awkward IMO. If total size is needed it should return total size
-> in all cases not just in the mb case otherwise programs will have two
-> paths the mb path and the non-mb path. And if you have mixed workload
-> the branch predictor will miss? Plus its extra instructions to load.
+> 
+> We need to fill the skb_shared info only when we want to pass the frame to the
+> network stack (build_skb() can directly reuse skb_shared_info->frags[]) or for
+> XDP_REDIRECT use-case.
 
-ack, I am fine to make the helper reporing to total size instead of paged o=
-nes
-(we can compute it if we really need it)
+It might be good to think about the XDP_REDIRECT case as well then. If the
+frags list fit in the metadata/xdp_frame would we expect better
+performance?
 
->=20
-> And if its useful for something beyond just debug and its going to be
-> read every packet or something I think we should put it in the metadata
-> so that its not hidden behind a helper which likely will show up as
-> overhead on a 40+gbps nic. The use case I have in mind is counting
-> bytes maybe sliced by IP or protocol. Here you will always read it
-> and I don't want code with a if/else stuck in the middle when if
-> we do it right we have a single read.
+Looking at skb_shared_info{} that is a rather large structure with many
+fields that look unnecessary for XDP_REDIRECT case and only needed when
+passing to the stack. Fundamentally, a frag just needs
 
-do you mean xdp_frame or data_meta area? As explained in the cover-letter we
-choose this approach to save space in xdp_frame.
+ struct bio_vec {
+     struct page *bv_page;     // 8B
+     unsigned int bv_len;      // 4B
+     unsigned int bv_offset;   // 4B
+ } // 16B
 
->=20
-> >=20
-> > Signed-off-by: Sameeh Jubran <sameehj@amazon.com>
-> > Co-developed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  include/uapi/linux/bpf.h       | 14 ++++++++++++
-> >  net/core/filter.c              | 42 ++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 14 ++++++++++++
-> >  3 files changed, 70 insertions(+)
-> >=20
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 4f556cfcbfbe..0715995eb18c 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3668,6 +3668,18 @@ union bpf_attr {
-> >   * 	Return
-> >   * 		The helper returns **TC_ACT_REDIRECT** on success or
-> >   * 		**TC_ACT_SHOT** on error.
-> > + *
-> > + * int bpf_xdp_get_frags_count(struct xdp_buff *xdp_md)
-> > + *	Description
-> > + *		Get the number of fragments for a given xdp multi-buffer.
-> > + *	Return
-> > + *		The number of fragments
-> > + *
-> > + * int bpf_xdp_get_frags_total_size(struct xdp_buff *xdp_md)
-> > + *	Description
-> > + *		Get the total size of fragments for a given xdp multi-buffer.
->=20
-> Why just fragments? Will I have to also add the initial frag0 to it
-> or not. I think the description is a bit ambiguous.
->=20
-> > + *	Return
-> > + *		The total size of fragments for a given xdp multi-buffer.
-> >   */
->=20
-> [...]
->=20
-> > +const struct bpf_func_proto bpf_xdp_get_frags_count_proto =3D {
-> > +	.func		=3D bpf_xdp_get_frags_count,
-> > +	.gpl_only	=3D false,
-> > +	.ret_type	=3D RET_INTEGER,
-> > +	.arg1_type	=3D ARG_PTR_TO_CTX,
-> > +};
-> > +
-> > +BPF_CALL_1(bpf_xdp_get_frags_total_size, struct  xdp_buff*, xdp)
-> > +{
-> > +	struct skb_shared_info *sinfo;
-> > +	int nfrags, i, size =3D 0;
-> > +
-> > +	if (likely(!xdp->mb))
-> > +		return 0;
-> > +
-> > +	sinfo =3D xdp_get_shared_info_from_buff(xdp);
-> > +	nfrags =3D min_t(u8, sinfo->nr_frags, MAX_SKB_FRAGS);
-> > +
-> > +	for (i =3D 0; i < nfrags; i++)
-> > +		size +=3D skb_frag_size(&sinfo->frags[i]);
->=20
-> Wont the hardware just know this? I think walking the frag list
-> just to get the total seems wrong. The hardware should have a
-> total_len field somewhere we can just read no? If mvneta doesn't
-> know the total length that seems like a driver limitation and we
-> shouldn't encode it in the helper.
+With header split + data we only need a single frag so we could use just
+16B. And worse case jumbo frame + header split seems 3 entries would be
+enough giving 48B (header plus 3 4k pages). Could we just stick this in
+the metadata and make it read only? Then programs that care can read it
+and get all the info they need without helpers. I would expect performance
+to be better in the XDP_TX and XDP_REDIRECT cases. And copying an extra
+worse case 48B in passing to the stack I guess is not measurable given
+all the work needed in that path.
 
-I have a couple of patches to improve this (not posted yet):
-- https://github.com/LorenzoBianconi/bpf-next/commit/ff9b3a74a105b64947931f=
-83fe86a4b8b1808103
-- https://github.com/LorenzoBianconi/bpf-next/commit/712e67333cbc5f6304122b=
-1009cdae1e18e6eb26
+> 
+> > 
+> > > 
+> > > A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structure
+> > > to notify the bpf/network layer if this is a xdp multi-buffer frame (mb = 1)
+> > > or not (mb = 0).
+> > > The mb bit will be set by a xdp multi-buffer capable driver only for
+> > > non-linear frames maintaining the capability to receive linear frames
+> > > without any extra cost since the skb_shared_info structure at the end
+> > > of the first buffer will be initialized only if mb is set.
+> > 
+> > Thanks above is clearer.
+> > 
+> > > 
+> > > In order to provide to userspace some metdata about the non-linear
+> > > xdp_{buff,frame}, we introduced 2 bpf helpers:
+> > > - bpf_xdp_get_frags_count:
+> > >   get the number of fragments for a given xdp multi-buffer.
+> > > - bpf_xdp_get_frags_total_size:
+> > >   get the total size of fragments for a given xdp multi-buffer.
+> > 
+> > Whats the use case for these? Do you have an example where knowing
+> > the frags count is going to be something a BPF program will use?
+> > Having total size seems interesting but perhaps we should push that
+> > into the metadata so its pulled into the cache if users are going to
+> > be reading it on every packet or something.
+> 
+> At the moment we do not have any use-case for these helpers (not considering
+> the sample in the series :)). We introduced them to provide some basic metadata
+> about the non-linear xdp_frame.
+> IIRC we decided to introduce some helpers instead of adding this info in xdp_frame
+> in order to save space on it (for xdp it is essential xdp_frame to fit in a single
+> cache-line).
 
-Regards,
-Lorenzo
+Sure, how about in the metadata then? (From other thread I was suggesting putting
+the total length in metadata) We could even allow programs to overwrite it if
+they wanted if its not used by the stack for anything other than packet length
+visibility. Of course users would then need to be a bit careful not to overwrite
+it and then read it again expecting the length to be correct. I think from a
+users perspective though that would be expected.
 
->=20
-> > +
-> > +	return size;
-> > +}
->=20
-
---UHN/qo2QbUvPLonB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX3dUhwAKCRA6cBh0uS2t
-rM4vAP4id18LdrEI6kWXVfPh3a6IvbnFgO+KlQbJdlFdBOpj9gEA3TZvCr8Xya1I
-Fdf3cdROwvLEBs5vkGX6ui7KT7vKwgs=
-=hgJ1
------END PGP SIGNATURE-----
-
---UHN/qo2QbUvPLonB--
-
+> 
+> Regards,
+> Lorenzo
+> 
