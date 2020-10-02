@@ -2,178 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567572811CA
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 13:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7FC2811E3
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 14:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387789AbgJBL4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 07:56:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:49200 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726090AbgJBL4i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:56:38 -0400
-IronPort-SDR: f4MhOr0IJj27enTpHxqZT0m66cy11mZP9+zmpC22jmROy7JXUuQanxIV7kgQQ1MFr7T488PfA9
- DlgTFw3JWGTw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="150605520"
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="150605520"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 04:56:34 -0700
-IronPort-SDR: KMIushWI+tKTPMsZSbXkeqOW/8LRd4C5WXZk+9caixuIBRvEkonRuxCUoPBpBcu529NqxBPgGC
- 6rN6LGmMIz2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="352354403"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga007.jf.intel.com with ESMTP; 02 Oct 2020 04:56:30 -0700
-Date:   Fri, 2 Oct 2020 13:49:36 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S2387531AbgJBMAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 08:00:10 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2940 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725964AbgJBMAJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 08:00:09 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 79E40690D0CDFE47C8A8;
+        Fri,  2 Oct 2020 13:00:06 +0100 (IST)
+Received: from [127.0.0.1] (10.47.8.137) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 2 Oct 2020
+ 13:00:04 +0100
+Subject: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
+ 23/23] perf metricgroup: remove duped metric group events)
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH libbpf] libbpf: check if pin_path was set even map fd
- exist
-Message-ID: <20201002114936.GA20275@ranger.igk.intel.com>
-References: <20201002075750.1978298-1-liuhangbin@gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+References: <20200507140819.126960-1-irogers@google.com>
+ <20200507140819.126960-24-irogers@google.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
+Date:   Fri, 2 Oct 2020 12:57:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002075750.1978298-1-liuhangbin@gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20200507140819.126960-24-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.8.137]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 03:57:50PM +0800, Hangbin Liu wrote:
-> Say a user reuse map fd after creating a map manually and set the
-> pin_path, then load the object via libbpf.
-> 
-> In libbpf bpf_object__create_maps(), bpf_object__reuse_map() will
-> return 0 if there is no pinned map in map->pin_path. Then after
-> checking if map fd exist, we should also check if pin_path was set
-> and do bpf_map__pin() instead of continue the loop.
-> 
-> Fix it by creating map if fd not exist and continue checking pin_path
-> after that.
-> 
-> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 75 +++++++++++++++++++++---------------------
->  1 file changed, 37 insertions(+), 38 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index e493d6048143..d4149585a76c 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -3861,50 +3861,49 @@ bpf_object__create_maps(struct bpf_object *obj)
->  			}
->  		}
->  
-> -		if (map->fd >= 0) {
-> -			pr_debug("map '%s': skipping creation (preset fd=%d)\n",
-> -				 map->name, map->fd);
-> -			continue;
-> -		}
-> -
-> -		err = bpf_object__create_map(obj, map);
-> -		if (err)
-> -			goto err_out;
-> -
-> -		pr_debug("map '%s': created successfully, fd=%d\n", map->name,
-> -			 map->fd);
-> -
-> -		if (bpf_map__is_internal(map)) {
-> -			err = bpf_object__populate_internal_map(obj, map);
-> -			if (err < 0) {
-> -				zclose(map->fd);
-> +		if (map->fd < 0) {
-> +			err = bpf_object__create_map(obj, map);
-> +			if (err)
->  				goto err_out;
-> -			}
-> -		}
-> -
-> -		if (map->init_slots_sz) {
-> -			for (j = 0; j < map->init_slots_sz; j++) {
-> -				const struct bpf_map *targ_map;
-> -				int fd;
->  
-> -				if (!map->init_slots[j])
-> -					continue;
-> +			pr_debug("map '%s': created successfully, fd=%d\n", map->name,
-> +				 map->fd);
->  
-> -				targ_map = map->init_slots[j];
-> -				fd = bpf_map__fd(targ_map);
-> -				err = bpf_map_update_elem(map->fd, &j, &fd, 0);
-> -				if (err) {
-> -					err = -errno;
-> -					pr_warn("map '%s': failed to initialize slot [%d] to map '%s' fd=%d: %d\n",
-> -						map->name, j, targ_map->name,
-> -						fd, err);
-> +			if (bpf_map__is_internal(map)) {
-> +				err = bpf_object__populate_internal_map(obj, map);
-> +				if (err < 0) {
-> +					zclose(map->fd);
->  					goto err_out;
->  				}
-> -				pr_debug("map '%s': slot [%d] set to map '%s' fd=%d\n",
-> -					 map->name, j, targ_map->name, fd);
->  			}
-> -			zfree(&map->init_slots);
-> -			map->init_slots_sz = 0;
-> +
-> +			if (map->init_slots_sz) {
+On 07/05/2020 15:08, Ian Rogers wrote:
 
-Couldn't we flatten the code by inverting the logic here and using goto?
+Hi Ian,
 
-	if (!map->init_slot_sz) {
-		pr_debug("map '%s': skipping creation (preset fd=%d)\n",
-			 map->name, map->fd);
-		goto map_pin;
-	}
+I was wondering if you ever tested commit 2440689d62e9 ("perf 
+metricgroup: Remove duped metric group events") for when we have a 
+metric which aliases multiple instances of the same uncore PMU in the 
+system?
 
-	(...)
-map_pin:
-	if (map->pin_path && !map->pinned) {
+I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an 
+issue where find_evsel_group() fails for the uncore metrics under the 
+condition mentioned above.
 
-If I'm reading this right.
+Unfortunately I don't have an x86 machine to which this test applies. 
+However, as an experiment, I added a test metric to my broadwell JSON:
 
-> +				for (j = 0; j < map->init_slots_sz; j++) {
-> +					const struct bpf_map *targ_map;
-> +					int fd;
-> +
-> +					if (!map->init_slots[j])
-> +						continue;
-> +
-> +					targ_map = map->init_slots[j];
-> +					fd = bpf_map__fd(targ_map);
-> +					err = bpf_map_update_elem(map->fd, &j, &fd, 0);
-> +					if (err) {
-> +						err = -errno;
-> +						pr_warn("map '%s': failed to initialize slot [%d] to map '%s' fd=%d: %d\n",
-> +							map->name, j, targ_map->name,
-> +							fd, err);
-> +						goto err_out;
-> +					}
-> +					pr_debug("map '%s': slot [%d] set to map '%s' fd=%d\n",
-> +						map->name, j, targ_map->name, fd);
-> +				}
-> +				zfree(&map->init_slots);
-> +				map->init_slots_sz = 0;
-> +			}
-> +		} else {
-> +			pr_debug("map '%s': skipping creation (preset fd=%d)\n",
-> +				 map->name, map->fd);
->  		}
->  
->  		if (map->pin_path && !map->pinned) {
-> -- 
-> 2.25.4
+diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json 
+b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+index 8cdc7c13dc2a..fc6d9adf996a 100644
+--- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+@@ -348,5 +348,11 @@
+         "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
+         "MetricGroup": "Power",
+         "MetricName": "C7_Pkg_Residency"
++    },
++    {
++        "BriefDescription": "test metric",
++        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE * 
+UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
++        "MetricGroup": "Test",
++        "MetricName": "test_metric_inc"
+     }
+]
+
+
+And get this:
+
+john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M 
+test_metric_inc sleep 1
+Using CPUID GenuineIntel-6-3D-4
+metric expr unc_cbo_xsnp_response.miss_xcore * 
+unc_cbo_xsnp_response.miss_eviction for test_metric_inc
+found event unc_cbo_xsnp_response.miss_eviction
+found event unc_cbo_xsnp_response.miss_xcore
+adding 
+{unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
+unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
+unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
+unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
+unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
+Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore * 
+unc_cbo_xsnp_response.miss_eviction
+task-clock: 688876 688876 688876
+context-switches: 2 688876 688876
+cpu-migrations: 0 688876 688876
+page-faults: 69 688876 688876
+cycles: 2101719 695690 695690
+instructions: 1180534 695690 695690
+branches: 249450 695690 695690
+branch-misses: 10815 695690 695690
+
+Performance counter stats for 'sleep 1':
+
+              0.69 msec task-clock                #    0.001 CPUs 
+utilized
+                 2      context-switches          #    0.003 M/sec 
+
+                 0      cpu-migrations            #    0.000 K/sec 
+
+                69      page-faults               #    0.100 M/sec 
+
+         2,101,719      cycles                    #    3.051 GHz 
+
+         1,180,534      instructions              #    0.56  insn per 
+cycle
+           249,450      branches                  #  362.112 M/sec 
+
+            10,815      branch-misses             #    4.34% of all 
+branches
+
+       1.001177693 seconds time elapsed
+
+       0.001149000 seconds user
+       0.000000000 seconds sys
+
+
+john@localhost:~/linux/tools/perf>
+
+
+Any idea what is going wrong here, before I have to dive in? The issue 
+seems to be this named commit.
+
+Thanks,
+John
+
+> A metric group contains multiple metrics. These metrics may use the same
+> events. If metrics use separate events then it leads to more
+> multiplexing and overall metric counts fail to sum to 100%.
+> Modify how metrics are associated with events so that if the events in
+> an earlier group satisfy the current metric, the same events are used.
+> A record of used events is kept and at the end of processing unnecessary
+> events are eliminated.
 > 
+> Before:
