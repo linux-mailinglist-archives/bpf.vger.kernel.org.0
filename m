@@ -2,260 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A2F281494
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 16:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81801281570
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 16:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733260AbgJBOCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 10:02:10 -0400
-Received: from mga01.intel.com ([192.55.52.88]:44226 "EHLO mga01.intel.com"
+        id S2387939AbgJBOmY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 10:42:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726017AbgJBOCK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 10:02:10 -0400
-IronPort-SDR: Wh1DK2+jDAT6bPrcPsxqQbxW2xBIBKnDN12IUnaiL1omwwd3DKrS9B+QQBX31IhIRTI2Bl7UY9
- rfo3222cGVDg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="181119403"
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="181119403"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 07:02:00 -0700
-IronPort-SDR: PpnjfiwxKg74JDMuUvcKfJpzg4pJtPgp5iD2/+SAqQlu3ieQItUspxeMIAm/UuVE1laSdSQSku
- ACqqWOledDfA==
-X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
-   d="scan'208";a="508762706"
-Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 07:01:59 -0700
-From:   Ciara Loftus <ciara.loftus@intel.com>
+        id S1726017AbgJBOmY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 10:42:24 -0400
+Received: from lore-desk.redhat.com (unknown [176.207.245.61])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45E01206FA;
+        Fri,  2 Oct 2020 14:42:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601649743;
+        bh=6aooMorPufXd+5j7fELEzmOtThmUf51bnUTcnnVnnBM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pLMteHAbEu4zFoyT8YQ2k4giDh8kQfsBaAwS7Y6mlTAEH5wiid/BE5+zLD0P/UkPt
+         cj4aXxYEEHngdemJUV+9qY3rDJFOlJMIGmmMoyUvu2EEnRXtX2xtZvzKt0sQHrrLTH
+         3mRLf4y1AiIju8hevheKxxVeEE1ScfYfvg7igqn0=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
 To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf-next 3/3] samples: bpf: driver interrupt statistics in xdpsock
-Date:   Fri,  2 Oct 2020 13:36:12 +0000
-Message-Id: <20201002133612.31536-3-ciara.loftus@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201002133612.31536-1-ciara.loftus@intel.com>
-References: <20201002133612.31536-1-ciara.loftus@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, sameehj@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        lorenzo.bianconi@redhat.com, echaudro@redhat.com
+Subject: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer support
+Date:   Fri,  2 Oct 2020 16:41:58 +0200
+Message-Id: <cover.1601648734.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add an option to count the number of interrupts generated per second and
-total number of interrupts during the lifetime of the application for a
-given interface. This information is extracted from /proc/interrupts. Since
-there is no naming convention across drivers, the user must provide the
-string which is specific to their interface in the /proc/interrupts file on
-the command line.
+This series introduce XDP multi-buffer support. The mvneta driver is
+the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+please focus on how these new types of xdp_{buff,frame} packets
+traverse the different layers and the layout design. It is on purpose
+that BPF-helpers are kept simple, as we don't want to expose the
+internal layout to allow later changes.
 
-Usage:
+For now, to keep the design simple and to maintain performance, the XDP
+BPF-prog (still) only have access to the first-buffer. It is left for
+later (another patchset) to add payload access across multiple buffers.
+This patchset should still allow for these future extensions. The goal
+is to lift the XDP MTU restriction that comes with XDP, but maintain
+same performance as before.
 
-./xdpsock ... -I <irq_str>
+The main idea for the new multi-buffer layout is to reuse the same
+layout used for non-linear SKB. This rely on the "skb_shared_info"
+struct at the end of the first buffer to link together subsequent
+buffers. Keeping the layout compatible with SKBs is also done to ease
+and speedup creating an SKB from an xdp_{buff,frame}. Converting
+xdp_frame to SKB and deliver it to the network stack is shown in cpumap
+code (patch 13/13).
 
-eg. for queue 0 of i40e device eth0:
+A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structure
+to notify the bpf/network layer if this is a xdp multi-buffer frame (mb = 1)
+or not (mb = 0).
+The mb bit will be set by a xdp multi-buffer capable driver only for
+non-linear frames maintaining the capability to receive linear frames
+without any extra cost since the skb_shared_info structure at the end
+of the first buffer will be initialized only if mb is set.
 
-./xdpsock ... -I i40e-eth0-TxRx-0
+In order to provide to userspace some metdata about the non-linear
+xdp_{buff,frame}, we introduced 2 bpf helpers:
+- bpf_xdp_get_frags_count:
+  get the number of fragments for a given xdp multi-buffer.
+- bpf_xdp_get_frags_total_size:
+  get the total size of fragments for a given xdp multi-buffer.
 
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
----
- samples/bpf/xdpsock_user.c | 120 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 119 insertions(+), 1 deletion(-)
+Typical use cases for this series are:
+- Jumbo-frames
+- Packet header split (please see Google’s use-case @ NetDevConf 0x14, [0])
+- TSO
 
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index ff119ede4ab1..1149e94ca32f 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -11,6 +11,7 @@
- #include <linux/if_xdp.h>
- #include <linux/if_ether.h>
- #include <linux/ip.h>
-+#include <linux/limits.h>
- #include <linux/udp.h>
- #include <arpa/inet.h>
- #include <locale.h>
-@@ -80,6 +81,9 @@ static u32 opt_pkt_fill_pattern = 0x12345678;
- static bool opt_extra_stats;
- static bool opt_quiet;
- static bool opt_app_stats;
-+static const char *opt_irq_str = "";
-+static u32 irq_no;
-+static int irqs_at_init = -1;
- static int opt_poll;
- static int opt_interval = 1;
- static u32 opt_xdp_bind_flags = XDP_USE_NEED_WAKEUP;
-@@ -111,6 +115,11 @@ struct xsk_ring_stats {
- 	unsigned long prev_tx_empty_npkts;
- };
- 
-+struct xsk_driver_stats {
-+	unsigned long intrs;
-+	unsigned long prev_intrs;
-+};
-+
- struct xsk_app_stats {
- 	unsigned long rx_empty_polls;
- 	unsigned long fill_fail_polls;
-@@ -138,6 +147,7 @@ struct xsk_socket_info {
- 	struct xsk_socket *xsk;
- 	struct xsk_ring_stats ring_stats;
- 	struct xsk_app_stats app_stats;
-+	struct xsk_driver_stats drv_stats;
- 	u32 outstanding_tx;
- };
- 
-@@ -243,6 +253,100 @@ static void dump_app_stats(long dt)
- 	}
- }
- 
-+static bool get_interrupt_number(void)
-+{
-+	FILE *f_int_proc;
-+	char line[4096];
-+	bool found = false;
-+
-+	f_int_proc = fopen("/proc/interrupts", "r");
-+	if (f_int_proc == NULL) {
-+		printf("Failed to open /proc/interrupts.\n");
-+		return found;
-+	}
-+
-+	while (!feof(f_int_proc) && !found) {
-+		/* Make sure to read a full line at a time */
-+		if (fgets(line, sizeof(line), f_int_proc) == NULL ||
-+				line[strlen(line) - 1] != '\n') {
-+			printf("Error reading from interrupts file\n");
-+			break;
-+		}
-+
-+		/* Extract interrupt number from line */
-+		if (strstr(line, opt_irq_str) != NULL) {
-+			irq_no = atoi(line);
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	fclose(f_int_proc);
-+
-+	return found;
-+}
-+
-+static int get_irqs(void)
-+{
-+	char count_path[PATH_MAX];
-+	int total_intrs = -1;
-+	FILE *f_count_proc;
-+	char line[4096];
-+
-+	snprintf(count_path, sizeof(count_path),
-+		"/sys/kernel/irq/%i/per_cpu_count", irq_no);
-+	f_count_proc = fopen(count_path, "r");
-+	if (f_count_proc == NULL) {
-+		printf("Failed to open %s\n", count_path);
-+		return total_intrs;
-+	}
-+
-+	if (fgets(line, sizeof(line), f_count_proc) == NULL ||
-+			line[strlen(line) - 1] != '\n') {
-+		printf("Error reading from %s\n", count_path);
-+	} else {
-+		static const char com[2] = ",";
-+		char *token;
-+
-+		total_intrs = 0;
-+		token = strtok(line, com);
-+		while (token != NULL) {
-+			/* sum up interrupts across all cores */
-+			total_intrs += atoi(token);
-+			token = strtok(NULL, com);
-+		}
-+	}
-+
-+	fclose(f_count_proc);
-+
-+	return total_intrs;
-+}
-+
-+static void dump_driver_stats(long dt)
-+{
-+	int i;
-+
-+	for (i = 0; i < num_socks && xsks[i]; i++) {
-+		char *fmt = "%-18s %'-14.0f %'-14lu\n";
-+		double intrs_ps;
-+		int n_ints = get_irqs();
-+
-+		if (n_ints < 0) {
-+			printf("error getting intr info for intr %i\n", irq_no);
-+			return;
-+		}
-+		xsks[i]->drv_stats.intrs = n_ints - irqs_at_init;
-+
-+		intrs_ps = (xsks[i]->drv_stats.intrs - xsks[i]->drv_stats.prev_intrs) *
-+			 1000000000. / dt;
-+
-+		printf("\n%-18s %-14s %-14s\n", "", "intrs/s", "count");
-+		printf(fmt, "irqs", intrs_ps, xsks[i]->drv_stats.intrs);
-+
-+		xsks[i]->drv_stats.prev_intrs = xsks[i]->drv_stats.intrs;
-+	}
-+}
-+
- static void dump_stats(void)
- {
- 	unsigned long now = get_nsecs();
-@@ -327,6 +431,8 @@ static void dump_stats(void)
- 
- 	if (opt_app_stats)
- 		dump_app_stats(dt);
-+	if (irq_no)
-+		dump_driver_stats(dt);
- }
- 
- static bool is_benchmark_done(void)
-@@ -804,6 +910,7 @@ static struct option long_options[] = {
- 	{"extra-stats", no_argument, 0, 'x'},
- 	{"quiet", no_argument, 0, 'Q'},
- 	{"app-stats", no_argument, 0, 'a'},
-+	{"irq-string", no_argument, 0, 'I'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -841,6 +948,7 @@ static void usage(const char *prog)
- 		"  -x, --extra-stats	Display extra statistics.\n"
- 		"  -Q, --quiet          Do not display any stats.\n"
- 		"  -a, --app-stats	Display application (syscall) statistics.\n"
-+		"  -I, --irq-string	Display driver interrupt statistics for interface associated with irq-string.\n"
- 		"\n";
- 	fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE,
- 		opt_batch_size, MIN_PKT_SIZE, MIN_PKT_SIZE,
-@@ -856,7 +964,7 @@ static void parse_command_line(int argc, char **argv)
- 	opterr = 0;
- 
- 	for (;;) {
--		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:xQa",
-+		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:xQaI:",
- 				long_options, &option_index);
- 		if (c == -1)
- 			break;
-@@ -945,6 +1053,16 @@ static void parse_command_line(int argc, char **argv)
- 			break;
- 		case 'a':
- 			opt_app_stats = 1;
-+			break;
-+		case 'I':
-+			opt_irq_str = optarg;
-+			if (get_interrupt_number())
-+				irqs_at_init = get_irqs();
-+			if (irqs_at_init < 0) {
-+				fprintf(stderr, "ERROR: Failed to get irqs for %s\n", opt_irq_str);
-+				usage(basename(argv[0]));
-+			}
-+
- 			break;
- 		default:
- 			usage(basename(argv[0]));
+More info about the main idea behind this approach can be found here [1][2].
+
+We carried out some throughput tests in a standard linear frame scenario in order
+to verify we did not introduced any performance regression adding xdp multi-buff
+support to mvneta:
+
+offered load is ~ 1000Kpps, packet size is 64B, mvneta descriptor size is one PAGE
+
+commit: 879456bedbe5 ("net: mvneta: avoid possible cache misses in mvneta_rx_swbm")
+- xdp-pass:      ~162Kpps
+- xdp-drop:      ~701Kpps
+- xdp-tx:        ~185Kpps
+- xdp-redirect:  ~202Kpps
+
+mvneta xdp multi-buff:
+- xdp-pass:      ~163Kpps
+- xdp-drop:      ~739Kpps
+- xdp-tx:        ~182Kpps
+- xdp-redirect:  ~202Kpps
+
+Changes since v3:
+- rebase ontop of bpf-next
+- add patch 10/13 to copy back paged data from a xdp multi-buff frame to
+  userspace buffer for xdp multi-buff selftests
+
+Changes since v2:
+- add throughput measurements
+- drop bpf_xdp_adjust_mb_header bpf helper
+- introduce selftest for xdp multibuffer
+- addressed comments on bpf_xdp_get_frags_count
+- introduce xdp multi-buff support to cpumaps
+
+Changes since v1:
+- Fix use-after-free in xdp_return_{buff/frame}
+- Introduce bpf helpers
+- Introduce xdp_mb sample program
+- access skb_shared_info->nr_frags only on the last fragment
+
+Changes since RFC:
+- squash multi-buffer bit initialization in a single patch
+- add mvneta non-linear XDP buff support for tx side
+
+[0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+[2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)
+
+Lorenzo Bianconi (11):
+  xdp: introduce mb in xdp_buff/xdp_frame
+  xdp: initialize xdp_buff mb bit to 0 in all XDP drivers
+  net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+  xdp: add multi-buff support to xdp_return_{buff/frame}
+  net: mvneta: add multi buffer support to XDP_TX
+  bpf: move user_size out of bpf_test_init
+  bpf: introduce multibuff support to bpf_prog_test_run_xdp()
+  bpf: test_run: add skb_shared_info pointer in bpf_test_finish
+    signature
+  bpf: add xdp multi-buffer selftest
+  net: mvneta: enable jumbo frames for XDP
+  bpf: cpumap: introduce xdp multi-buff support
+
+Sameeh Jubran (2):
+  bpf: introduce bpf_xdp_get_frags_{count, total_size} helpers
+  samples/bpf: add bpf program that uses xdp mb helpers
+
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  |   1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |   1 +
+ .../net/ethernet/cavium/thunder/nicvf_main.c  |   1 +
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |   1 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   1 +
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   1 +
+ drivers/net/ethernet/marvell/mvneta.c         | 131 +++++++------
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |   1 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |   1 +
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |   1 +
+ .../ethernet/netronome/nfp/nfp_net_common.c   |   1 +
+ drivers/net/ethernet/qlogic/qede/qede_fp.c    |   1 +
+ drivers/net/ethernet/sfc/rx.c                 |   1 +
+ drivers/net/ethernet/socionext/netsec.c       |   1 +
+ drivers/net/ethernet/ti/cpsw.c                |   1 +
+ drivers/net/ethernet/ti/cpsw_new.c            |   1 +
+ drivers/net/hyperv/netvsc_bpf.c               |   1 +
+ drivers/net/tun.c                             |   2 +
+ drivers/net/veth.c                            |   1 +
+ drivers/net/virtio_net.c                      |   2 +
+ drivers/net/xen-netfront.c                    |   1 +
+ include/net/xdp.h                             |  31 ++-
+ include/uapi/linux/bpf.h                      |  14 ++
+ kernel/bpf/cpumap.c                           |  45 +----
+ net/bpf/test_run.c                            | 118 ++++++++++--
+ net/core/dev.c                                |   1 +
+ net/core/filter.c                             |  42 ++++
+ net/core/xdp.c                                | 104 ++++++++++
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_mb_kern.c                     |  68 +++++++
+ samples/bpf/xdp_mb_user.c                     | 182 ++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  14 ++
+ .../testing/selftests/bpf/prog_tests/xdp_mb.c |  79 ++++++++
+ .../selftests/bpf/progs/test_xdp_multi_buff.c |  24 +++
+ 36 files changed, 757 insertions(+), 123 deletions(-)
+ create mode 100644 samples/bpf/xdp_mb_kern.c
+ create mode 100644 samples/bpf/xdp_mb_user.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_mb.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_multi_buff.c
+
 -- 
-2.17.1
+2.26.2
 
