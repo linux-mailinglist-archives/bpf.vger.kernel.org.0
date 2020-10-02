@@ -2,101 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491B2281125
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 13:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567572811CA
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 13:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387561AbgJBLYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 07:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgJBLYT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 07:24:19 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F706C0613D0
-        for <bpf@vger.kernel.org>; Fri,  2 Oct 2020 04:24:19 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id z1so249815ooj.3
-        for <bpf@vger.kernel.org>; Fri, 02 Oct 2020 04:24:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=dv3HKd8zy94ZpSaGbY+eVG6xyzqnD4KZkkkXQHzpkuQ=;
-        b=hcp4q/ACPbT7n4QD6ASnRJHMzy2Hvzac6M5qLqu0OZBeBI/cXXVcTIpQwVZped2uF6
-         llVKuFRyULDShMco3rKVPxKInuPZPJGjA5SRoc7d5bqv15SISEKdGWugkf8L1sKJtpg4
-         3Z4FKiUYy6GHuAHR5+bhTtY2ol0UCmqYMdI6M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=dv3HKd8zy94ZpSaGbY+eVG6xyzqnD4KZkkkXQHzpkuQ=;
-        b=U1c5aixfiViLPL7rykv/pX03J9K5w7L1xQxOtZg9ku7uQAsQkvG3PcEmkpXZQnSjJH
-         CeykTyU6WRNjSFljweyC2X/0zHot6r8doER8pawYttj/4JnbgyH/M+SEtzzPxCYna728
-         pur51qApG052w96ufeg3JkEI9M+mRzzt7oyt4fvnRj9oxEOqWALvMiWlevdx3mhsTLfv
-         oznETaphV6DnepcTvRERriBAwrgmCqH+KpepwEhTEy41sDC5s44zIn09iH+n3evOaotS
-         I9LqF9fUzyGCtEFrIjYppNWjOYgcGZuUJ0/VB/XNlMg/jcG/so77Ec0lSG6i3lSr3Zxv
-         d6nA==
-X-Gm-Message-State: AOAM5321Ic4a3+TLQEkTpDwJhMenY/KI00+Ir+Yg+7wpYGvpzUrIibW5
-        AVkF1NyeEnOL3RAN+st9YbG4Ui4y2myvRZvnsOjGCWKWfaH8eGyc
-X-Google-Smtp-Source: ABdhPJw1cMiBwNn6jh/GZTyRe4klu1d1HLg+p6tQr+eWO4omY9Epfio90mrSRScA/Di/qN5Jg0H/3hFd2th1gQmjdQM=
-X-Received: by 2002:a4a:81:: with SMTP id 123mr1499103ooh.80.1601637858512;
- Fri, 02 Oct 2020 04:24:18 -0700 (PDT)
+        id S2387789AbgJBL4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 07:56:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:49200 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgJBL4i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 07:56:38 -0400
+IronPort-SDR: f4MhOr0IJj27enTpHxqZT0m66cy11mZP9+zmpC22jmROy7JXUuQanxIV7kgQQ1MFr7T488PfA9
+ DlgTFw3JWGTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9761"; a="150605520"
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="150605520"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2020 04:56:34 -0700
+IronPort-SDR: KMIushWI+tKTPMsZSbXkeqOW/8LRd4C5WXZk+9caixuIBRvEkonRuxCUoPBpBcu529NqxBPgGC
+ 6rN6LGmMIz2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,327,1596524400"; 
+   d="scan'208";a="352354403"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga007.jf.intel.com with ESMTP; 02 Oct 2020 04:56:30 -0700
+Date:   Fri, 2 Oct 2020 13:49:36 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH libbpf] libbpf: check if pin_path was set even map fd
+ exist
+Message-ID: <20201002114936.GA20275@ranger.igk.intel.com>
+References: <20201002075750.1978298-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 2 Oct 2020 12:24:07 +0100
-Message-ID: <CACAyw9_R4_ib0KvcuQC4nSOy5+Hn8-Xq-G8geDdLsNztX=0Fsw@mail.gmail.com>
-Subject: BTF CO-RE bitfield relocation: why is the load size rounded?
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002075750.1978298-1-liuhangbin@gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
+On Fri, Oct 02, 2020 at 03:57:50PM +0800, Hangbin Liu wrote:
+> Say a user reuse map fd after creating a map manually and set the
+> pin_path, then load the object via libbpf.
+> 
+> In libbpf bpf_object__create_maps(), bpf_object__reuse_map() will
+> return 0 if there is no pinned map in map->pin_path. Then after
+> checking if map fd exist, we should also check if pin_path was set
+> and do bpf_map__pin() instead of continue the loop.
+> 
+> Fix it by creating map if fd not exist and continue checking pin_path
+> after that.
+> 
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 75 +++++++++++++++++++++---------------------
+>  1 file changed, 37 insertions(+), 38 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index e493d6048143..d4149585a76c 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -3861,50 +3861,49 @@ bpf_object__create_maps(struct bpf_object *obj)
+>  			}
+>  		}
+>  
+> -		if (map->fd >= 0) {
+> -			pr_debug("map '%s': skipping creation (preset fd=%d)\n",
+> -				 map->name, map->fd);
+> -			continue;
+> -		}
+> -
+> -		err = bpf_object__create_map(obj, map);
+> -		if (err)
+> -			goto err_out;
+> -
+> -		pr_debug("map '%s': created successfully, fd=%d\n", map->name,
+> -			 map->fd);
+> -
+> -		if (bpf_map__is_internal(map)) {
+> -			err = bpf_object__populate_internal_map(obj, map);
+> -			if (err < 0) {
+> -				zclose(map->fd);
+> +		if (map->fd < 0) {
+> +			err = bpf_object__create_map(obj, map);
+> +			if (err)
+>  				goto err_out;
+> -			}
+> -		}
+> -
+> -		if (map->init_slots_sz) {
+> -			for (j = 0; j < map->init_slots_sz; j++) {
+> -				const struct bpf_map *targ_map;
+> -				int fd;
+>  
+> -				if (!map->init_slots[j])
+> -					continue;
+> +			pr_debug("map '%s': created successfully, fd=%d\n", map->name,
+> +				 map->fd);
+>  
+> -				targ_map = map->init_slots[j];
+> -				fd = bpf_map__fd(targ_map);
+> -				err = bpf_map_update_elem(map->fd, &j, &fd, 0);
+> -				if (err) {
+> -					err = -errno;
+> -					pr_warn("map '%s': failed to initialize slot [%d] to map '%s' fd=%d: %d\n",
+> -						map->name, j, targ_map->name,
+> -						fd, err);
+> +			if (bpf_map__is_internal(map)) {
+> +				err = bpf_object__populate_internal_map(obj, map);
+> +				if (err < 0) {
+> +					zclose(map->fd);
+>  					goto err_out;
+>  				}
+> -				pr_debug("map '%s': slot [%d] set to map '%s' fd=%d\n",
+> -					 map->name, j, targ_map->name, fd);
+>  			}
+> -			zfree(&map->init_slots);
+> -			map->init_slots_sz = 0;
+> +
+> +			if (map->init_slots_sz) {
 
-I'm trying to understand the following code from
-bpf_core_calc_field_relo in libbpf.c:
+Couldn't we flatten the code by inverting the logic here and using goto?
 
-    if (bitfield) {
-        byte_sz = mt->size;
-        byte_off = bit_off / 8 / byte_sz * byte_sz;
-        /* figure out smallest int size necessary for bitfield load */
-        while (bit_off + bit_sz - byte_off * 8 > byte_sz * 8) {
-            if (byte_sz >= 8) {
-                ...
-                return -E2BIG;
-            }
-            byte_sz *= 2;
-            byte_off = bit_off / 8 / byte_sz * byte_sz;
-        }
-    }
+	if (!map->init_slot_sz) {
+		pr_debug("map '%s': skipping creation (preset fd=%d)\n",
+			 map->name, map->fd);
+		goto map_pin;
+	}
 
-It's used to calculate the load size (byte_sz) and load offset
-(byte_off) for a bitfield member of a struct. Can you explain to me
-why byte_off is rounded to byte_sz? Is it to preserve alignment?
+	(...)
+map_pin:
+	if (map->pin_path && !map->pinned) {
 
-It seems like the rounding can lead to reading past the end of a
-struct. An example:
+If I'm reading this right.
 
-    struct foo {
-        unsigned short boo:4;
-    } __attribute__((packed));
-
-    [2] STRUCT 'foo' size=1 vlen=1
-        'boo' type_id=3 bits_offset=0 bitfield_size=4
-    [3] INT 'unsigned short' size=2 bits_offset=0 nr_bits=16 encoding=(none)
-
-The result of the calculation for this is byte_sz = 2 and byte_off =
-0, but the structure is only 1 byte in length.
-
-Would it be possible to replace the calculation with the following?
-
-    byte_off = bit_off / 8
-    byte_sz = ((bit_off + bit_sz + 7) - byte_off*8) / 8
-
-Thanks
-Lorenz
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+> +				for (j = 0; j < map->init_slots_sz; j++) {
+> +					const struct bpf_map *targ_map;
+> +					int fd;
+> +
+> +					if (!map->init_slots[j])
+> +						continue;
+> +
+> +					targ_map = map->init_slots[j];
+> +					fd = bpf_map__fd(targ_map);
+> +					err = bpf_map_update_elem(map->fd, &j, &fd, 0);
+> +					if (err) {
+> +						err = -errno;
+> +						pr_warn("map '%s': failed to initialize slot [%d] to map '%s' fd=%d: %d\n",
+> +							map->name, j, targ_map->name,
+> +							fd, err);
+> +						goto err_out;
+> +					}
+> +					pr_debug("map '%s': slot [%d] set to map '%s' fd=%d\n",
+> +						map->name, j, targ_map->name, fd);
+> +				}
+> +				zfree(&map->init_slots);
+> +				map->init_slots_sz = 0;
+> +			}
+> +		} else {
+> +			pr_debug("map '%s': skipping creation (preset fd=%d)\n",
+> +				 map->name, map->fd);
+>  		}
+>  
+>  		if (map->pin_path && !map->pinned) {
+> -- 
+> 2.25.4
+> 
