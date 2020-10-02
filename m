@@ -2,179 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCE4280E59
-	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 09:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389D0281059
+	for <lists+bpf@lfdr.de>; Fri,  2 Oct 2020 12:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgJBH6I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 03:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
+        id S2387746AbgJBKIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 06:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgJBH6H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 03:58:07 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB84C0613D0;
-        Fri,  2 Oct 2020 00:58:06 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id s14so484578pju.1;
-        Fri, 02 Oct 2020 00:58:06 -0700 (PDT)
+        with ESMTP id S1725993AbgJBKIQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 06:08:16 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62008C0613E2
+        for <bpf@vger.kernel.org>; Fri,  2 Oct 2020 03:08:16 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id k13so210648oor.2
+        for <bpf@vger.kernel.org>; Fri, 02 Oct 2020 03:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eGi2apwq+yY2Wz5r2zA4Nn/vN1Dv+imyIRYnEmo7Xts=;
-        b=mDYEI6enbAQL8gPODEHHIBWXneMktQX7ABDBFCGDgeeP0mbJUGPRjv5WymQA7Iisvf
-         5Sd9Ir7Rba39ENzKX3Vyq6WumA4H5Zxocc2AgOuePAz1YiLPAvbSBWJ0BK9mnr0XZtNn
-         yrXeuT/prji1b51wegQdRKIcluqGZVtXE/3Ihtv+gAIkMXYJZBT6jdOQhO/kdudhNq9K
-         mcEq7SD0P7xpNAvdjsd95YQJzI3EE/J57lcRX9nUQsw5V8zd9ko552R7jJTuUKqbxV/O
-         lmfHw99OMj1XfirAwWRxxC60ybVIfZNbTDwNW0Mp5emMiTZJqpYjVwTisX517VjqY+BY
-         54IA==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OWYUsZ+0jSI+bzR+U/Opb/r+h29XMQ6OibUPAn5KgDU=;
+        b=o7V4Ert5THuV208ZrTVLXy9I6K5MtKtKfL97eluip4dXo5wrNSzqZOFdA61OxeBZdF
+         +0sDtnWTrKMU2EyF3sU05PklgBIgEr9VudLtUJ3VGUdiPp1p6SCDlWNKteN+kFZ+fPDX
+         WtxmCVPPFeGStQHm7e7rsN0pF8YjBqtA/PWcI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eGi2apwq+yY2Wz5r2zA4Nn/vN1Dv+imyIRYnEmo7Xts=;
-        b=KdsvOEO28Vvi4IEg8fvRj3a3It3ZYNfDFoma1UHx2d89Awl/eW9j7P7xRkgxs+TCxj
-         1L1cF6J2VPOc6beywqyE1fhllby9rkCXtyXfafOmkbtTd3MMZBVDBldfA0kyeTuS+729
-         utWEmd/ZJQRJQUr1pRfOMaAlNUvkyOiS2uTcsnqi7QZo3XVcLlWcxZUQU0yVKR/2X3qd
-         8wJjp+Sn60HoW6G/YDErRJO2Dvfk3WnoFI3MTCFGXErs8ljD4LTqYU5Qf1JYaXlz6jzj
-         +QrCuJaW9ukhjOpcBZA1Bqt6xJlFPnokoSpdhJlAz15ukKxyGs4+duVv/g1k/ZiqgR81
-         CVew==
-X-Gm-Message-State: AOAM532BXXeF2M5JZ9VtGXyhDsUCztOepvEf4A1QL4DLoNsTMITsmsyO
-        7rxKyJJGoD+/qaghFEd8gQ2qdFFxOJCZ2g==
-X-Google-Smtp-Source: ABdhPJwJKLzOMdxongEoUp/EZDvE1hcIErFPDLh63UvGDfsPMoq1EI5k0plm96j133Q7AgaYojl41A==
-X-Received: by 2002:a17:90a:49c8:: with SMTP id l8mr1446849pjm.24.1601625485746;
-        Fri, 02 Oct 2020 00:58:05 -0700 (PDT)
-Received: from localhost.localdomain.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id w5sm758558pjj.10.2020.10.02.00.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Oct 2020 00:58:05 -0700 (PDT)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH libbpf] libbpf: check if pin_path was set even map fd exist
-Date:   Fri,  2 Oct 2020 15:57:50 +0800
-Message-Id: <20201002075750.1978298-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.25.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OWYUsZ+0jSI+bzR+U/Opb/r+h29XMQ6OibUPAn5KgDU=;
+        b=iJg+1WUwC3cHwlwpNcsBcvXOfbHPUNpWxb/QoVm0n2FESpEkO4HRFplQ7fEwt00Byr
+         VWeHBTM22ItpsWnN0tI1vWDzP0qJUyQj2Xj3yNtl4thNB060ZcRfdcFQyNAYhwvl0gBO
+         B3Qnm4Ry/fTe5oh2Gs9Ny8+WGu/UMWrN7+2hdrjOmAY7C8/yBuYowFmNBgW/rs8776P5
+         +PSM0U+PN2uA+1keJqTiwKG11B1UOGmhlybgEJXHT//Eec1t7mkQjdPV9q8wIv3kE2Mv
+         +sSk/+0SiEDt4b+T57OdlZbE2VT5Te92G9npjdfrEnDp0tdaK1IV6WIjnzV0jID2My5V
+         T6kQ==
+X-Gm-Message-State: AOAM530Kq3Jc8yb2BGAlsRI06nfeSSUcVj9Jw3Q4odBYOx2M/9L9/hrX
+        nRFm9cLmFaISPZ6GWHhd/okBzkBT4zR06wcGXWSQeA==
+X-Google-Smtp-Source: ABdhPJzgSjaquUtXDnzTcQzO4uhxmbkV4B9/CSU56HbCERpxhB4ybkcXsdueLdZM5yjhwxK6nlWgW4Z+45On+tgp5ME=
+X-Received: by 2002:a4a:81:: with SMTP id 123mr1287156ooh.80.1601633295629;
+ Fri, 02 Oct 2020 03:08:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200928090805.23343-1-lmb@cloudflare.com> <20200928090805.23343-3-lmb@cloudflare.com>
+ <20200929055851.n7fa3os7iu7grni3@kafai-mbp> <CAADnVQLwpWMea1rbFAwvR_k+GzOphaOW-kUGORf90PJ-Ezxm4w@mail.gmail.com>
+ <CACAyw98WzZGcFnnr7ELvbCziz2axJA_7x2mcoQTf2DYWDYJ=KA@mail.gmail.com>
+ <20201001072348.hxhpuoqmeln6twxw@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4Bzbjzj3wwxX84bLi-PLy=9+Bpe1bTDt=t0qR5t=xEkNjwQ@mail.gmail.com> <CAADnVQJQeiyrN2JzOwV+zHDU5xg4TtpT0w9MgG6nujCK5z+GNQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJQeiyrN2JzOwV+zHDU5xg4TtpT0w9MgG6nujCK5z+GNQ@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 2 Oct 2020 11:08:04 +0100
+Message-ID: <CACAyw99ji02q3XngQS=KbRtebRipNU4P3kUbV1ULeVy64MA3mg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/4] selftests: bpf: Add helper to compare
+ socket cookies
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Say a user reuse map fd after creating a map manually and set the
-pin_path, then load the object via libbpf.
+On Thu, 1 Oct 2020 at 18:11, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> >
+> > I think this might be the same problem I fixed for libbpf with [0].
+> > Turns out, GCC explicitly calls out (somewhere in their docs) that
+> > uninitialized variable warnings work only when compiled in optimized
+> > mode, because some internal data structures used to detect this are
+> > only maintained in optimized mode build.
+> >
+> > Laurenz, can you try compiling your example with -O2?
+>
+> All of my experiments I did with -O2.
 
-In libbpf bpf_object__create_maps(), bpf_object__reuse_map() will
-return 0 if there is no pinned map in map->pin_path. Then after
-checking if map fd exist, we should also check if pin_path was set
-and do bpf_map__pin() instead of continue the loop.
+If anybody wants to play with this more: https://godbolt.org/z/77P6P9
 
-Fix it by creating map if fd not exist and continue checking pin_path
-after that.
+Seems like red hat GCC has some special sauce that fixes this behaviour?
 
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- tools/lib/bpf/libbpf.c | 75 +++++++++++++++++++++---------------------
- 1 file changed, 37 insertions(+), 38 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e493d6048143..d4149585a76c 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -3861,50 +3861,49 @@ bpf_object__create_maps(struct bpf_object *obj)
- 			}
- 		}
- 
--		if (map->fd >= 0) {
--			pr_debug("map '%s': skipping creation (preset fd=%d)\n",
--				 map->name, map->fd);
--			continue;
--		}
--
--		err = bpf_object__create_map(obj, map);
--		if (err)
--			goto err_out;
--
--		pr_debug("map '%s': created successfully, fd=%d\n", map->name,
--			 map->fd);
--
--		if (bpf_map__is_internal(map)) {
--			err = bpf_object__populate_internal_map(obj, map);
--			if (err < 0) {
--				zclose(map->fd);
-+		if (map->fd < 0) {
-+			err = bpf_object__create_map(obj, map);
-+			if (err)
- 				goto err_out;
--			}
--		}
--
--		if (map->init_slots_sz) {
--			for (j = 0; j < map->init_slots_sz; j++) {
--				const struct bpf_map *targ_map;
--				int fd;
- 
--				if (!map->init_slots[j])
--					continue;
-+			pr_debug("map '%s': created successfully, fd=%d\n", map->name,
-+				 map->fd);
- 
--				targ_map = map->init_slots[j];
--				fd = bpf_map__fd(targ_map);
--				err = bpf_map_update_elem(map->fd, &j, &fd, 0);
--				if (err) {
--					err = -errno;
--					pr_warn("map '%s': failed to initialize slot [%d] to map '%s' fd=%d: %d\n",
--						map->name, j, targ_map->name,
--						fd, err);
-+			if (bpf_map__is_internal(map)) {
-+				err = bpf_object__populate_internal_map(obj, map);
-+				if (err < 0) {
-+					zclose(map->fd);
- 					goto err_out;
- 				}
--				pr_debug("map '%s': slot [%d] set to map '%s' fd=%d\n",
--					 map->name, j, targ_map->name, fd);
- 			}
--			zfree(&map->init_slots);
--			map->init_slots_sz = 0;
-+
-+			if (map->init_slots_sz) {
-+				for (j = 0; j < map->init_slots_sz; j++) {
-+					const struct bpf_map *targ_map;
-+					int fd;
-+
-+					if (!map->init_slots[j])
-+						continue;
-+
-+					targ_map = map->init_slots[j];
-+					fd = bpf_map__fd(targ_map);
-+					err = bpf_map_update_elem(map->fd, &j, &fd, 0);
-+					if (err) {
-+						err = -errno;
-+						pr_warn("map '%s': failed to initialize slot [%d] to map '%s' fd=%d: %d\n",
-+							map->name, j, targ_map->name,
-+							fd, err);
-+						goto err_out;
-+					}
-+					pr_debug("map '%s': slot [%d] set to map '%s' fd=%d\n",
-+						map->name, j, targ_map->name, fd);
-+				}
-+				zfree(&map->init_slots);
-+				map->init_slots_sz = 0;
-+			}
-+		} else {
-+			pr_debug("map '%s': skipping creation (preset fd=%d)\n",
-+				 map->name, map->fd);
- 		}
- 
- 		if (map->pin_path && !map->pinned) {
 -- 
-2.25.4
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
