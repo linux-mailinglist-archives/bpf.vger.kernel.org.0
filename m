@@ -2,130 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7540282092
-	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 04:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B220282118
+	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 06:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725562AbgJCClz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 22:41:55 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1604 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbgJCClz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 2 Oct 2020 22:41:55 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0932dE7B027310;
-        Fri, 2 Oct 2020 19:41:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=nvyq2R1/7DweWL+kvcy0DqVtbOJXbzaI6sVlGk6TBNE=;
- b=hhdsHK1egZ5uDeBeJD2GZo9kZjJvvFzDz5yyEa6vNJsQdtyl+zZFbEUOKh7kzacArKK/
- DeYCoNT9G1645DLj7k4Fsv3U2sKR3H/E/0dqmrssphfJgrd4d1EoqDoLJUecYg26bDjr
- 8QffX9rj7/j+L9ix9Q+inwx5/HSeUeHgEGs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33x0n24qun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 02 Oct 2020 19:41:40 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 2 Oct 2020 19:41:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kyeEKbGSxqXN2BQMZXQaFIyOivmBYtN+pHzKOykxQ64r5Odtj0eboAUPhb5E+YxyePcTkARzhtW1kVVlsJnlZ0MGWu1e2O9E2SRYnp7Je7MxU+qxCZxzZ2ozsW66IIbVLEf7XgZfHTTEUKyODmOD5Mi3Pv4EoP+LfNt6wAOj4VouU/kYv177NX+um2hLi3k1pkvGC6zVaDCrbyEdpUr6kTw/2+W9QysR8lyj7EFNJCS30qk0ZAnoc/vT49N8ZyJTful50F6u7B4Q7oRDvmWj7GwJ88crbe25sqX+ZG5Dml5RtimHAD8FgwwQ0HMzh5hb78mUF0VgV1Rw4sgwPaSJ+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nvyq2R1/7DweWL+kvcy0DqVtbOJXbzaI6sVlGk6TBNE=;
- b=C0ekNl2C1GG7aHXLYFVrQ5HfAMWy+e6HhmgJkT4oWuhIooxOVM9EAcuqMjxsjQvVX3HV6nVyD1DkNCUumKDiWfpopIFpQEZOJF4U6EgY4cZUiRowhVXwAvnFjt2sxB0DRIB61P3QtqF1o4HtJ8r8E1GT5dktLzU9mPnRFUS70+WG2tzpKvP+lw0NFY/aElsW2CkaY+T5GkD6Ib+R52Jlog+skAwO+qlj8ky34COqtlPKD6RLk8mrCVj8veZ4t8PCxyW75x//sP4b+MNeswXYDCc14T99Dddq1s8x6Ndf+Zdn2w5O2aAqK60915838rzXaObmI7qSr/qc2QfZPK27SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nvyq2R1/7DweWL+kvcy0DqVtbOJXbzaI6sVlGk6TBNE=;
- b=JW39eemGP/ZWKjlpWGos+5C9wKOu5mIx76mS0hl9ErZWKyzpwCdLD6247j4+G1hhyqLVlGGaC7IBVsHrjqF5oMIPiJaHTpMXzu58bBUQPwcGi5vlJRWDvUEm0OG/NVBVfkCwA+1EB1mPHyzCqUg+WDdxHY0w4MTVurMdS6+WWCg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3094.namprd15.prod.outlook.com (2603:10b6:a03:ff::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.39; Sat, 3 Oct
- 2020 02:41:38 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3433.039; Sat, 3 Oct 2020
- 02:41:38 +0000
-Subject: Re: [PATCH][next] bpf: verifier: Use fallthrough pseudo-keyword
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        id S1725616AbgJCEW0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Oct 2020 00:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgJCEW0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Oct 2020 00:22:26 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F822C0613D0;
+        Fri,  2 Oct 2020 21:22:24 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id h9so2665696ybm.4;
+        Fri, 02 Oct 2020 21:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LC//9RNBwY2v7Qpy8XK3c8PrpheS5Pjkp4UMfthkQAg=;
+        b=OlkdmPsiZ8jMVyoGx08blnI1QoId0iJcb+bcGs0VfGvCTVCqc7vDKVj+CWN6G9aBqw
+         ebpBcIbg3E4ddDXHoA73TDl2IWQXGTVZhIcpkUxxAnP+qwLiSzmBxXmzNvJYffy/v0F+
+         pO3HeR4kz1xg3Ggbg3vO+uuFb02Nh0tNK1/kcNUWmf8PCHYDCn+QFYzD3Nk+J2uiw6pE
+         HmdY0nvqZt84KxmjCcykURddJ28QZRhIbhQmu1jO6s1iL7ej0QC0KEDHMXZYND5gSDMB
+         +JOXVm7gV43nOj0GXvMlzcqtt/ZxRmTli4RN2ohdoeJekUrw1doo5fh56k6F5eOdsbSH
+         DvgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LC//9RNBwY2v7Qpy8XK3c8PrpheS5Pjkp4UMfthkQAg=;
+        b=YWfAalkmJ88WrD9zihLwJjCBQND7j9RaEWAS8Q2Kcvllc6L6sxACfIMMYfZX4S9301
+         deK2TrLD5bgIOjCMunhSkhftggEGpdWLg0cZrUv3SRf9VfpIgg6P7r7142OSjHPcWPFx
+         MFsVmrsf1mSuTrETi9hP5Yrm/OWVovsizJGz5Fhtx6ZNIwJ1yPhUWHKZXkBu0nfWtM29
+         darpV2e2sy9S9TcQiG3FJMgIcSb1An8SDy0BlsBFBOFHcJFq9DeJ8Ypy5Cp7T/7Xd/rd
+         doLr08Mejy/3qwHYv2BVPemGN1Iv7N3BZE0fjbLR96VgKaHsglRIQVPqEKyBPswn3XfC
+         rK+Q==
+X-Gm-Message-State: AOAM531ykG08qs9B+oEmXZD8H6vulq0btCON29id4DAMs3Y8/TNa9vq2
+        ENjkiS2V3wF+aZhPYVy4voCds4Rwfc0v+5oK/lNf+uhFGQI=
+X-Google-Smtp-Source: ABdhPJwpfxsf3Fxo4iUXR5NAnsQUAszlei8I8g7H2T8GRyZ1nwfsXP/DK/vLrF4n3YWq/N/sSntmg/PCD48x0NYbjkY=
+X-Received: by 2002:a25:2596:: with SMTP id l144mr6639116ybl.510.1601698942665;
+ Fri, 02 Oct 2020 21:22:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201003021904.1468678-1-yhs@fb.com>
+In-Reply-To: <20201003021904.1468678-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 2 Oct 2020 21:22:11 -0700
+Message-ID: <CAEf4BzZSg9TWF=kGVmiZ7HUbpyXwYUEqrvFMeZgYo0h7EC8b3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] samples/bpf: change Makefile to cope with
+ latest llvm
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
-References: <20201002234217.GA12280@embeddedor>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <3673ee00-3bdb-fb02-f379-849d5881d3b4@fb.com>
-Date:   Fri, 2 Oct 2020 19:41:35 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
-In-Reply-To: <20201002234217.GA12280@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:7e45]
-X-ClientProxiedBy: MWHPR1201CA0003.namprd12.prod.outlook.com
- (2603:10b6:301:4a::13) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::1836] (2620:10d:c090:400::5:7e45) by MWHPR1201CA0003.namprd12.prod.outlook.com (2603:10b6:301:4a::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Sat, 3 Oct 2020 02:41:36 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 343b7627-5a97-4fd1-9466-08d86745d9b7
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3094:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3094DB85A4E750A00B9E58FCD30E0@BYAPR15MB3094.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:747;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qG8hG2UqOy0ZVTrsSwIrOSzEIBCHnMnh6Mu4lEVemgDI6KiwCxl7QUoY4Ehr5v5EUWWOQ77VYx0tb8psXG8Z83RNrqGcLkiMDSE5FoXo7OJREGoZTK3TI7LS09QlaFnIBCovGEC3g9dcq+jV7Ix8cIRR5N5gBhpWvmsHDkMtkqD+d8nXmNdNAXKIrjqfydKo2Jw/lmyTyTUE4yQ6igTS30/avshXcYcFRnGthgYUujg9DpwoisMEC2Sy8fJmrUq/xZVH0L4ydwEuFL4VJJF0PIcRIWKFChuOYsm9nZOb5A9G+TYhWc96vYxaK1BHZwaWZ067KDKEtCvsu8qnpA6BYPZ+UCEfuE1e257BjgQKLZ48+BC5U0kLeRqFAlTZPmCWI3pTOdFKbnc4Br7JKxPP5cOKMTWAPWa48zIdv22EUFkFgNqr+6rBKnEDYAMAjp5Yt6aFPONapGqsZuTKL4gmHw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(83080400001)(86362001)(6486002)(52116002)(31696002)(966005)(2906002)(478600001)(36756003)(2616005)(4744005)(8676002)(8936002)(110136005)(186003)(5660300002)(4326008)(31686004)(66556008)(66946007)(53546011)(66476007)(316002)(16526019)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: EemoctjEy1miUQnMmyrIGpXGL9EeLHGTzPiITL3CgIA9xXz7WwnY5wGUZs0SSvpboAbx73sDCrrHaQvg6SpGptZa7fyo1Cp4oorb+Tj+4HhVfCAwqn1dVXzBV4NIB9S2aDamKAZrT4kTf/7Nu/CTxR1qIJgiDdWlife5kzIZPyLTMQvg+9ASZm0KJ1LoNA+hkPcgGzRorMMoQX/XUtZv+J/xsOVJ78JgWDwuK61/CYmR9a17ddmtjVFOUJB8f/5mSxErWJTshp8hsVHZ8Qzy4qS8CnTHOnjls5KOlPHKSbD7YhN9VeUjJxaEfumjh/cALbNSZj4Yjjd2pCrMGqfsA+BtkF3clSJbD3UepnIyS1ZQdJfpi9qg9zwd6JFVYi+kG7do7Xtyvexp5PLfhsx0pVOWCFJTc3xhcJ5Pxow5tjwE9HqgP8rw9NkwNqcXlD/rUxNOZyleREKxtShYI16+psILGx/AnDqSPLdhx89s7yBagxLBicYp7zJ8S5HHEuZ0cbWXx2RbGR/ffYRxnc4x9nNCcfrW96rVrcD5tYpuyBxxha0/Wl4Hz+fO3gUgGklV2i2geUz1bG6RT/FbZ5ScE6fYX3LteHlXMumdbdf5Qa+2j3ZzuRCdaAeTTM0rrh4+bCBxbUNHCi80FdojS3ACkguZKxuBxA/cRxA9DBwAmdw=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 343b7627-5a97-4fd1-9466-08d86745d9b7
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2020 02:41:37.9294
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z4xeLt8Z/9voag4OVlnJ3L/jXjNMsYTmUK/GdoiEX7mwjpU1dHC7ntqC7uGzDVfW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3094
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-02_14:2020-10-02,2020-10-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxlogscore=590 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
- clxscore=1011 spamscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010030023
-X-FB-Internal: deliver
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Oct 2, 2020 at 7:19 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> With latest llvm trunk, bpf programs under samples/bpf
+> directory, if using CORE, may experience the following
+> errors:
+>
+> LLVM ERROR: Cannot select: intrinsic %llvm.preserve.struct.access.index
+> PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace.
+> Stack dump:
+> 0.      Program arguments: llc -march=bpf -filetype=obj -o samples/bpf/test_probe_write_user_kern.o
+> 1.      Running pass 'Function Pass Manager' on module '<stdin>'.
+> 2.      Running pass 'BPF DAG->DAG Pattern Instruction Selection' on function '@bpf_prog1'
+>  #0 0x000000000183c26c llvm::sys::PrintStackTrace(llvm::raw_ostream&, int)
+>     (/data/users/yhs/work/llvm-project/llvm/build.cur/install/bin/llc+0x183c26c)
+> ...
+>  #7 0x00000000017c375e (/data/users/yhs/work/llvm-project/llvm/build.cur/install/bin/llc+0x17c375e)
+>  #8 0x00000000016a75c5 llvm::SelectionDAGISel::CannotYetSelect(llvm::SDNode*)
+>     (/data/users/yhs/work/llvm-project/llvm/build.cur/install/bin/llc+0x16a75c5)
+>  #9 0x00000000016ab4f8 llvm::SelectionDAGISel::SelectCodeCommon(llvm::SDNode*, unsigned char const*,
+>     unsigned int) (/data/users/yhs/work/llvm-project/llvm/build.cur/install/bin/llc+0x16ab4f8)
+> ...
+> Aborted (core dumped) | llc -march=bpf -filetype=obj -o samples/bpf/test_probe_write_user_kern.o
+>
+> The reason is due to llvm change https://reviews.llvm.org/D87153
+> where the CORE relocation global generation is moved from the beginning
+> of target dependent optimization (llc) to the beginning
+> of target independent optimization (opt).
+>
+> Since samples/bpf programs did not use vmlinux.h and its clang compilation
+> uses native architecture, we need to adjust arch triple at opt level
+> to do CORE relocation global generation properly. Otherwise, the above
+> error will appear.
+>
+> This patch fixed the issue by introduce opt and llvm-dis to compilation chain,
+> which will do proper CORE relocation global generation as well as O2 level
+> optimization. Tested with llvm10, llvm11 and trunk/llvm12.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  samples/bpf/Makefile | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index 4f1ed0e3cf9f..79c5fdea63d2 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -211,6 +211,8 @@ TPROGLDLIBS_xsk_fwd         += -pthread
+>  #  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+>  LLC ?= llc
+>  CLANG ?= clang
+> +OPT ?= opt
+> +LLVM_DIS ?= llvm-dis
+>  LLVM_OBJCOPY ?= llvm-objcopy
+>  BTF_PAHOLE ?= pahole
+>
+> @@ -314,7 +316,9 @@ $(obj)/%.o: $(src)/%.c
+>                 -Wno-address-of-packed-member -Wno-tautological-compare \
+>                 -Wno-unknown-warning-option $(CLANG_ARCH_ARGS) \
+>                 -I$(srctree)/samples/bpf/ -include asm_goto_workaround.h \
+> -               -O2 -emit-llvm -c $< -o -| $(LLC) -march=bpf $(LLC_FLAGS) -filetype=obj -o $@
+> +               -O2 -emit-llvm -Xclang -disable-llvm-passes -c $< -o - | \
+> +               $(OPT) -O2 -mtriple=bpf-pc-linux | $(LLVM_DIS) | \
+> +               $(LLC) -march=bpf $(LLC_FLAGS) -filetype=obj -o $@
 
+I keep forgetting exact details of why we do this native clang + llc
+pipeline instead of just doing `clang -target bpf`? Is it still
+relevant and necessary, or we can just simplify it now?
 
-On 10/2/20 4:42 PM, Gustavo A. R. Silva wrote:
-> Replace /* fallthrough */ comments with the new pseudo-keyword macro
-> fallthrough[1].
-> 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Acked-by: Yonghong Song <yhs@fb.com>
+>  ifeq ($(DWARF2BTF),y)
+>         $(BTF_PAHOLE) -J $@
+>  endif
+> --
+> 2.24.1
+>
