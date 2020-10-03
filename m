@@ -2,99 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF7B281FD7
-	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 02:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D512828205C
+	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 04:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725379AbgJCAfv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Oct 2020 20:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        id S1725873AbgJCCGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Oct 2020 22:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgJCAfv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Oct 2020 20:35:51 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C55C0613D0;
-        Fri,  2 Oct 2020 17:35:51 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id a2so2416393ybj.2;
-        Fri, 02 Oct 2020 17:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AEtzmVCYtkICiHqIu4rwnoC+JzWDpAlEdiR3iqsZ+1o=;
-        b=Bbjifo9OhPjw8kPh+0ZLbbzSjq8nuni5mt1HzHFFfxVZQyyN0lF6lVgSmc3Zng6iEY
-         dB9keS1yu9JUsR3amReLs6qypRp9iQ+q6dm5SfAwcs/h5N2vpaUiZ6cvnxs8PnAv9sXP
-         taHN7CKDBkA7My9HsK7qVsMqzH68oF2PPnhirQrgCJBc0gmbQVMwQNm3PBSpWVuMM+sc
-         aShDDDJZDxrKNpgAOrQjD7RceBOYan7K0omPwjQ2Hgd7mG9tHcWUdVDOjbmKZ7NeiCGF
-         PXhLwaj6/metWbyPvrOCePa1AaAEXYmQvhnAKWAbhQu11QsZqf2O0v/sLBT1BlWmv9T0
-         BTFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AEtzmVCYtkICiHqIu4rwnoC+JzWDpAlEdiR3iqsZ+1o=;
-        b=L2oDJdqXJ30kTy3Fqm4Mnm31gBnpBQPtrHBQsRBuBl/3uqX1oXsw/mMQfQTwcWL37d
-         HjaD0ik+cKucTfGLIO2Uz9s5FVT08pGKs3krK9oHbBesjKcn060eSYRnGSC4GhZVKl62
-         SHdzNdAq7tnig0MMwBI/7kh0hR+DAOqs4C9VrBENvXxMzfmYia3x+G8DxzC5d1j2ZOZx
-         nUjKKZagUf9DxhXSgGTQkcpjNYgXZcL0qdLEFG5zg78DID57VYi+y7Bu4A/5pQUsKEiy
-         hpg+ynFRbYr2QlEuU6PiSIIZHrkkWPvVjptNFf0TDBototHw4jkpdRmyaG+SbCcBly/v
-         TS0g==
-X-Gm-Message-State: AOAM530m2C0YSBx4GHAVOt4iTB4k4WLy7fNaa9a/wERZy3lKq5CiYyvh
-        gfMui7CYn+1B4ya3slmCdWBOQfxSUwGBM8pwVPU=
-X-Google-Smtp-Source: ABdhPJxpTy8lFkCaPXl/s6woIa9ddQUnHQWrCIQ6a9YzAt5wkKmz0A5qGlG/x1bN8LmSct+OsEKXY7CCBgHKM76Ce5s=
-X-Received: by 2002:a25:2687:: with SMTP id m129mr6176801ybm.425.1601685350185;
- Fri, 02 Oct 2020 17:35:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201003002544.3601440-1-sdf@google.com>
-In-Reply-To: <20201003002544.3601440-1-sdf@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 2 Oct 2020 17:35:38 -0700
-Message-ID: <CAEf4BzavuVpHFJ4q0U6ot1Uf9Pg88ukDc_CNruzHbCNXU0mP0A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: deref map in BPF_PROG_BIND_MAP when it's
- already used
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S1725801AbgJCCGn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Oct 2020 22:06:43 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6B5C0613D0;
+        Fri,  2 Oct 2020 19:06:42 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 947C91260D092;
+        Fri,  2 Oct 2020 18:49:53 -0700 (PDT)
+Date:   Fri, 02 Oct 2020 19:06:38 -0700 (PDT)
+Message-Id: <20201002.190638.1090456279017490485.davem@davemloft.net>
+To:     anant.thazhemadam@gmail.com
+Cc:     mst@redhat.com, jasowang@redhat.com, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees][PATCH 0/2] reorder members of
+ structures in virtio_net for optimization
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200930051722.389587-1-anant.thazhemadam@gmail.com>
+References: <20200930051722.389587-1-anant.thazhemadam@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 02 Oct 2020 18:49:54 -0700 (PDT)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 5:26 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> We are missing a deref for the case when we are doing BPF_PROG_BIND_MAP
-> on a map that's being already held by the program.
-> There is 'if (ret) bpf_map_put(map)' below which doesn't trigger
-> because we don't consider this an error.
-> Let's add missing bpf_map_put() for this specific condition.
->
-> Fixes: ef15314aa5de ("bpf: Add BPF_PROG_BIND_MAP syscall")
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> ---
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Date: Wed, 30 Sep 2020 10:47:20 +0530
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+> The structures virtnet_info and receive_queue have byte holes in 
+> middle, and their members could do with some rearranging 
+> (order-of-declaration wise) in order to overcome this.
+> 
+> Rearranging the members helps in:
+>   * elimination the byte holes in the middle of the structures
+>   * reduce the size of the structure (virtnet_info)
+>   * have more members stored in one cache line (as opposed to 
+>     unnecessarily crossing the cacheline boundary and spanning
+>     different cachelines)
+> 
+> The analysis was performed using pahole.
+> 
+> These patches may be applied in any order.
 
->  kernel/bpf/syscall.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index f1528c2a6927..1110ecd7d1f3 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -4323,8 +4323,10 @@ static int bpf_prog_bind_map(union bpf_attr *attr)
->         used_maps_old = prog->aux->used_maps;
->
->         for (i = 0; i < prog->aux->used_map_cnt; i++)
-> -               if (used_maps_old[i] == map)
-> +               if (used_maps_old[i] == map) {
-> +                       bpf_map_put(map);
->                         goto out_unlock;
-> +               }
->
->         used_maps_new = kmalloc_array(prog->aux->used_map_cnt + 1,
->                                       sizeof(used_maps_new[0]),
-> --
-> 2.28.0.806.g8561365e88-goog
->
+What effects do these changes have on performance?
+
+The cache locality for various TX and RX paths could be effected.
+
+I'm not applying these patches without some data on the performance
+impact.
+
+Thank you.
+
