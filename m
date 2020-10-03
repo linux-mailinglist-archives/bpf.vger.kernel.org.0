@@ -2,146 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896FD2822BB
-	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 10:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0CF282453
+	for <lists+bpf@lfdr.de>; Sat,  3 Oct 2020 15:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgJCIzc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Oct 2020 04:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgJCIza (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Oct 2020 04:55:30 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004E1C0613D0;
-        Sat,  3 Oct 2020 01:55:29 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id x2so2427683pjk.0;
-        Sat, 03 Oct 2020 01:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nuGVlYXVa1ADtayePQ599HBG7S1v+QC4V52l2CtSHRg=;
-        b=JOzOz+1IBVA+4o8aa42xbdQQGYjAeZ64RH9FdmpHdTH1XvcxXJ5dYx8eZmYxZdpbIw
-         S8Fb2Qg/KNrAeSeSAbAFEH1jCewTP+JudjXpDmV8HZv/tCl1mLkQg+/khQxtcL0qo8hg
-         EjvB0jSKZbayFrmSqf9IZNIZcsjToo8MDPYahU91ovXJXKLddr/Gse8znhQaRBWx7bPN
-         NA78+EQhLG4P8I/huWAY1A+P3nK3SEV6Mw6DErKhwyTj9A3C5z+T56jC8DAeuOX5PncK
-         J18Cm3ijTnlv4+eihrHkYbFc7NtkCBP4ekJ7VKCFuOMbY+CMFFq2Xa5u5DTLeKu9oEF0
-         2oBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nuGVlYXVa1ADtayePQ599HBG7S1v+QC4V52l2CtSHRg=;
-        b=btPkymV8UUnQu2fU8qSHby1lfVtqiOMyQjU8F8j7AzRrKKuqnwP1Jh9Lg3WJkeMcXu
-         A9UoZLSQuT+1vUzAUBVAGz6XN6tnXNa9tZ4jbne070zOpTEzxwVaSm2Pp/3+nkjTN9CF
-         1cLvq1nBhRKcRpvI2ELpND4djQwBDyHHdogbUDPgKnkS2XcxdJtm5gftctyZKtNMCRU4
-         kYciv2ma7A9xvmPuGe0axO/kGJvI7klynl3cMI3NxaPZ/LQhji3D/Yz8dW2iMvSIRarX
-         yIyhnUsDlD/mW4/U4j9F4h5G/E0f2TDdmNJ1lFF7h29XyPQaJiWfI+s+rFtsSbmeBiqv
-         HMAQ==
-X-Gm-Message-State: AOAM532cnojJRxx74NdmYBRkHXU4zOPm2Uu1YMPrCKqmQnTmG1a3axnr
-        RwG3TA/DXk3GPv9JTNViMHVDL4j0081q/w==
-X-Google-Smtp-Source: ABdhPJyuKtdm+fyQDBh92MQpMN97ZInscOQN+Q12U44h7Gs+f0llwwDuwP8WdxXyOuNpkNXTGKyRog==
-X-Received: by 2002:a17:90a:71c3:: with SMTP id m3mr7043719pjs.68.1601715329314;
-        Sat, 03 Oct 2020 01:55:29 -0700 (PDT)
-Received: from localhost.localdomain.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id a15sm4566374pgi.69.2020.10.03.01.55.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Oct 2020 01:55:28 -0700 (PDT)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        netdev@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv2 bpf 3/3] selftest/bpf: test pinning map with reused map fd
-Date:   Sat,  3 Oct 2020 16:55:05 +0800
-Message-Id: <20201003085505.3388332-4-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201003085505.3388332-1-liuhangbin@gmail.com>
-References: <20201002075750.1978298-1-liuhangbin@gmail.com>
- <20201003085505.3388332-1-liuhangbin@gmail.com>
+        id S1725811AbgJCNiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Oct 2020 09:38:21 -0400
+Received: from sonic307-56.consmr.mail.ne1.yahoo.com ([66.163.190.31]:33841
+        "EHLO sonic307-56.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725781AbgJCNiV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 3 Oct 2020 09:38:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601732300; bh=LcsgbWrTWSmcOJf9EzyjatKhkQkt0sGuPVxdgUAFysc=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gJgE+GU+ynSa7xkUzbXzDHB/7tfVhqY3Tz3JcBmT8ryZFzGmZ7dVSCqFZva213EoaM++lou8z1xTTYU4ITM5Ww8BjDazDRE9dN95Pg/YOBqHo/0HI/G3ZBSoSFvfGTa/C7HroTQEqWHuekYZJT5whwBu9rLiweJnAduYOHqQ+kmqWkqymDodTuruRfLd9ElQSq0uVjpcFKqbP1pasy96BIEMXuIIclS14jGNbRGjIXdFrh0uD06i6m6ygfRB1QuZf6WytEhGVMxfjlu8CuUqKHQIUXa85O0jvaRflGu0X8SnWZBe8uRx8Yl4vk/SGmy0tcnrSgQkwAkM1y89UHKPtQ==
+X-YMail-OSG: RpHsq44VM1kPtBhHSbOOJ1ohSrUtr0..ImzJHtlcH9BPvLFl23CO1zPKjMm4.4X
+ aWndr2gfpGOYzs63.s56a2o0Eu1lDXHm5tGCyLK7e6XW_HOWykE18bnJuHm71Dui_fjZJ9KxV5ow
+ aKEMOuk2ha3jD9hCplUrjBFxP.cjwS.jyf828WB0WxWmAxl8s5dICEhkYh8js.RmW8SuT5W1YuFA
+ vLGuGf9fb0SO_dfMNkc.oJefss8M3tycnYgSmK6kph8gJy6pRFnRl3fIkQQQ2WQkdhGLlKkXoGdk
+ VlL.vEIM0Vzicguca_wL5t6uKTQnOQoBBUP9s7iKTzxZnAWI5fnc1.9Wpo1aqyDHxHopnQASx27P
+ LVRPNfJIZycyuWoi3ecXEDS4TrP9AENyJb8uw72.xDjliywXURMqQXvhYR4M_84o91.kZ3SOk8EF
+ kdGnjL0WFJxTvaQQRBkJhVVR_8Hw1kzN181FvIw1PTQtSuvCyTwAP0ZkUp.PD20Md.Mv.tIwRQ1H
+ K6Q17OXqT1sqAgMMjLmtVVtjMFjL0Ngy.NNRxfdpxJK50ZFddVAdb7jOQbP5su0Yc7QaowGacPR4
+ WgMYHnPTihXTubLV7xHIq2gvqzPM_FmK.jjAPOoSWwyg1o4qvnXvJThAgNWJmRzG2TqcsQ9KYbik
+ .j3H6wGXH_ZmsG9fbYPEJHkdZMiQDIALiXC5c.HEJbS5v.6xEEgCPh6z7qiK54hjsQF48dHpLInQ
+ vV9jZRR_EEq5V1IPuWkJmOTlrNKwfFPw8.hBe.a2wtOGLGG24J6okoJHwCXbKLB0lVAyMD.r6o7a
+ nfJjY3Ji.q7Djdy2gjKjOhUpfgBjkSp_Zv6Y49WVzgKOiUbVvzkgmTrBAxTQDTUWEBPgj1KLIKOd
+ exLYmNC5.D0HaBKC3zoTIcZCA9j7zmgIjDdDqbmpRrpNZ3lIk8kT1ERsSIxz8hR0XLXqGRYpO9cC
+ l.cVy07aAHuxYFxXoO1X_lGxnzhBf40UxrjKi3anDgXkP_mFYIt9Pv6G_rzIa2j1fNOwV85a39yo
+ vSD.mZGNgUAmUL67if4DAHY.Ky.yTEUGY88RrGx8.tQTs5wwzjHmFzi7CIfbGBsjzHTmMwFtEuQT
+ hFp8N9YdAENSDSKEHqBuqJRYgGBgkLS6Cs00_RMfXoDKw482nsbzyKL6dbTZ5R8UpFfGwt8vKAvN
+ w0_Nw7GDy_cdYHcX_wAmk17txXYgTrFZXg5BdEdSYZPsfAuQ13bEopBUFCO89vbI913ED8y4V2v4
+ CPHaskKXw6MvRYZa2KwSAtk_BbRwRT9OQzpnRPJRdTeBNiS2aotDO8AL33b2uP.LOO9L6lwslI.G
+ nUCeoNgIvc_4RrIE.szvCFWOADsbwCfow.bVQquEgC0PC18ALWfiPSkLWMkP6zBjpf0aZWRxTCNb
+ 2SEcK46yjkQBGon4oD1v3E1URYnWZHamcwHxGcUC78KlCptFkpQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Sat, 3 Oct 2020 13:38:20 +0000
+Date:   Sat, 3 Oct 2020 13:38:19 +0000 (UTC)
+From:   "Mrs. Aisha Gaddafi." <mj2643979@gmail.com>
+Reply-To: aisha208g@gmail.com
+Message-ID: <576347777.1533470.1601732299973@mail.yahoo.com>
+Subject: Assalamu alaikum,
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+References: <576347777.1533470.1601732299973.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16718 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This add a test to make sure that we can still pin maps with
-reused map fd.
-
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- .../selftests/bpf/prog_tests/pinning.c        | 46 ++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/testing/selftests/bpf/prog_tests/pinning.c
-index 041952524c55..299f99ef92b2 100644
---- a/tools/testing/selftests/bpf/prog_tests/pinning.c
-+++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
-@@ -37,7 +37,7 @@ void test_pinning(void)
- 	struct stat statbuf = {};
- 	struct bpf_object *obj;
- 	struct bpf_map *map;
--	int err;
-+	int err, map_fd;
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
- 		.pin_root_path = custpath,
- 	);
-@@ -213,6 +213,50 @@ void test_pinning(void)
- 	if (CHECK(err, "stat custpinpath", "err %d errno %d\n", err, errno))
- 		goto out;
- 
-+	/* remove the custom pin path to re-test it with reuse fd below */
-+	err = unlink(custpinpath);
-+	if (CHECK(err, "unlink custpinpath", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = rmdir(custpath);
-+	if (CHECK(err, "rmdir custpindir", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	bpf_object__close(obj);
-+
-+	/* test pinning at custom path with reuse fd */
-+	obj = bpf_object__open_file(file, NULL);
-+	if (CHECK_FAIL(libbpf_get_error(obj))) {
-+		obj = NULL;
-+		goto out;
-+	}
-+
-+	map_fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(__u32),
-+				sizeof(__u64), 1, 0);
-+	if (CHECK(map_fd < 0, "create pinmap manually", "fd %d\n", map_fd))
-+		goto out;
-+
-+	map = bpf_object__find_map_by_name(obj, "pinmap");
-+	if (CHECK(!map, "find map", "NULL map"))
-+		goto out;
-+
-+	err = bpf_map__reuse_fd(map, map_fd);
-+	if (CHECK(err, "reuse pinmap fd", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_map__set_pin_path(map, custpinpath);
-+	if (CHECK(err, "set pin path", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__load(obj);
-+	if (CHECK(err, "custom load", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	/* check that pinmap was pinned at the custom path */
-+	err = stat(custpinpath, &statbuf);
-+	if (CHECK(err, "stat custpinpath", "err %d errno %d\n", err, errno))
-+		goto out;
-+
- out:
- 	unlink(pinpath);
- 	unlink(nopinpath);
--- 
-2.25.4
-
+DQoNCkFzc2FsYW11IGFsYWlrdW0sDQoNCkkgaGF2ZSBhIGJ1c2luZXNzIFByb3Bvc2FsIGZvciB5
+b3UgYW5kIEkgbmVlZCBtdXR1YWwgcmVzcGVjdCwgdHJ1c3QsDQpob25lc3R5LCB0cmFuc3BhcmVu
+Y3ksIGFkZXF1YXRlIHN1cHBvcnQgYW5kIGFzc2lzdGFuY2UsIEhvcGUgdG8gaGVhcg0KZnJvbSB5
+b3UgZm9yIG1vcmUgZGV0YWlscy4NCg0KV2FybWVzdCByZWdhcmRzDQpNcnMgQWlzaGEgR2FkZGFm
+aQ0KDQrYp9mE2LPZhNin2YUg2LnZhNmK2YPZhdiMDQoNCtmE2K/ZiiDYp9mC2KrYsdin2K0g2LnZ
+hdmEINmE2YMg2YjYo9mG2Kcg2KjYrdin2KzYqSDYpdmE2Ykg2KfZhNin2K3Yqtix2KfZhSDYp9mE
+2YXYqtio2KfYr9mEINmI2KfZhNir2YLYqSDZiNin2YTYo9mF2KfZhtipDQrZiNin2YTYtNmB2KfZ
+gdmK2Kkg2YjYp9mE2K/YudmFINin2YTZg9in2YHZiiDZiNin2YTZhdiz2KfYudiv2Kkg2Iwg2YjZ
+htij2YXZhCDYo9mGINmG2LPZhdi5INmF2YbZgyDZhNmF2LLZitivINmF2YYNCtin2YTYqtmB2KfY
+tdmK2YQuDQoNCtij2K3YsSDYp9mE2KrYrdmK2KfYqg0K2KfZhNiz2YrYr9ipINi52KfYpti02Kkg
+2KfZhNmC2LDYp9mB2Yo=
