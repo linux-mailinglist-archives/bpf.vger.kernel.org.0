@@ -2,147 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A8828421A
-	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 23:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4AD284276
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 00:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgJEV2Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 17:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJEV2Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 17:28:24 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D77CC0613CE;
-        Mon,  5 Oct 2020 14:28:22 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id q5so14060435qkc.2;
-        Mon, 05 Oct 2020 14:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2HGNGlBJw7bi6Ui2XR2LPCsGN9UVzIY2LSrHY7U7TDc=;
-        b=uiSyf3v1GH479lnM34ILNDcDtWlIKGdvsV7swBh6+UQF61+Cvx9PQVbv10W03ex7bY
-         y7X1B+P5emDihY69OrH3aDW1iXOxTtJVf2+K9bs3V0M35ky0zbOrOW0b+XqMDG40nzsw
-         +I8MWuCRC2ZetVYR8CpY73BgkAiXmJtETzTPpBi7k0zRQr3xMvLPmZmLs8ZND7ZqPbtC
-         xu9fae+JABrxBua8kuuwQPKj62ir+/Oi60Cga72WxRGRQg3OgGqMAM5p/SMYVGqDpHZn
-         C4l2e1dhw7/8rz0Yfi+HW5ujFEW63fq7fXUKvJEaScGOkK5Y+rhnerUDdSYdFhuVjuok
-         V85w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2HGNGlBJw7bi6Ui2XR2LPCsGN9UVzIY2LSrHY7U7TDc=;
-        b=Tvwpj1XygJaa9Sr101hNykJsL9YclX4gifFyf4B1Xdzv8AmAE6BJrDLjiQcWhLfF92
-         aqTZ78J1YTOiLzJ0bPCoOjEnQ4Xqe2yoeZTPmz3NuMlY/v85cwe1FDnybUnqid7666qO
-         O4zRlndlf7Lc3Zd6OI+i+NJh9B8iwVR2Mkwxoq+Bj1U5wR2BE/oF2rYvghtJFJRf5J6L
-         FIhS8w4Db3DmQEpTRFw6U/dfxAgSPxXkic3Hud+38I+1oRNuCeyatOKfuViOof9DJfXr
-         nz8BYfRVKzkQpR2E1PaHepY6tdW0+62W56FduPIIrqkmUUEAJkSkobr93G/Q2y5OBzVj
-         IEXA==
-X-Gm-Message-State: AOAM532I/yxkXsPIGCxrVacxCMoKAavOcEcVvk6YbcDBnIO5rVPhg1+4
-        xRPhGy7smaxedla0mxLRNxfCAL6/fbbC/5BrPNk=
-X-Google-Smtp-Source: ABdhPJwIuuoHqD6t4QarPaFZTS/CD0ycIp8P/TuD3y7MYAzk0LRoSRlM8Tus3Ud5nFLelPIx7pNsJ8z+dgdXlZI5La8=
-X-Received: by 2002:a25:2687:: with SMTP id m129mr2574144ybm.425.1601933301808;
- Mon, 05 Oct 2020 14:28:21 -0700 (PDT)
+        id S1726904AbgJEWZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 18:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725861AbgJEWZw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 18:25:52 -0400
+Received: from localhost (unknown [176.207.245.61])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A569F2076E;
+        Mon,  5 Oct 2020 22:25:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601936751;
+        bh=xuF7KDkVMm7Tl30WZFYZAz39xWsAxyjtzrh1vSdyaQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ArooJQte9Q5g4SHodvVdpePkjXQ4e6ugVRYDy4jHVlpgxL4kGwxj84VKO2Sta1XQp
+         oXy1TbxHpxgGSjeNlRMungUbDaNf7m4ac8wBLMv6UqP30xqMtIWiuhMGTgAAFMMtVJ
+         ynqalo8M8MPrMeZfmdY2ou4OzLB7hV3KMAP299cg=
+Date:   Tue, 6 Oct 2020 00:24:54 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        shayagr@amazon.com, sameehj@amazon.com, dsahern@kernel.org,
+        echaudro@redhat.com
+Subject: Re: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer
+ support
+Message-ID: <20201005222454.GB3501@localhost.localdomain>
+References: <cover.1601648734.git.lorenzo@kernel.org>
+ <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
+ <20201002160623.GA40027@lore-desk>
+ <5f776c14d69b3_a6402087e@john-XPS-13-9370.notmuch>
+ <20201005115247.72429157@carbon>
+ <5f7b8e7a5ebfc_4f19a208ba@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-References: <20201002075750.1978298-1-liuhangbin@gmail.com>
- <20201003085505.3388332-1-liuhangbin@gmail.com> <20201003085505.3388332-4-liuhangbin@gmail.com>
-In-Reply-To: <20201003085505.3388332-4-liuhangbin@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 5 Oct 2020 14:28:10 -0700
-Message-ID: <CAEf4BzYh4kSOJmjVrmZ2VLiO9GsZPiSpFXkXevy74_ByS6S12A@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf 3/3] selftest/bpf: test pinning map with reused map fd
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bCsyhTFzCvuiizWE"
+Content-Disposition: inline
+In-Reply-To: <5f7b8e7a5ebfc_4f19a208ba@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 3, 2020 at 1:55 AM Hangbin Liu <liuhangbin@gmail.com> wrote:
->
-> This add a test to make sure that we can still pin maps with
-> reused map fd.
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/pinning.c        | 46 ++++++++++++++++++-
->  1 file changed, 45 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/testing/selftests/bpf/prog_tests/pinning.c
-> index 041952524c55..299f99ef92b2 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/pinning.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
-> @@ -37,7 +37,7 @@ void test_pinning(void)
->         struct stat statbuf = {};
->         struct bpf_object *obj;
->         struct bpf_map *map;
-> -       int err;
-> +       int err, map_fd;
->         DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
->                 .pin_root_path = custpath,
->         );
-> @@ -213,6 +213,50 @@ void test_pinning(void)
->         if (CHECK(err, "stat custpinpath", "err %d errno %d\n", err, errno))
->                 goto out;
->
-> +       /* remove the custom pin path to re-test it with reuse fd below */
-> +       err = unlink(custpinpath);
-> +       if (CHECK(err, "unlink custpinpath", "err %d errno %d\n", err, errno))
-> +               goto out;
-> +
-> +       err = rmdir(custpath);
-> +       if (CHECK(err, "rmdir custpindir", "err %d errno %d\n", err, errno))
-> +               goto out;
-> +
-> +       bpf_object__close(obj);
-> +
-> +       /* test pinning at custom path with reuse fd */
-> +       obj = bpf_object__open_file(file, NULL);
-> +       if (CHECK_FAIL(libbpf_get_error(obj))) {
 
-please use CHECK, might try new ASSERT_OK_PTR(obj, "obj_open") as well
+--bCsyhTFzCvuiizWE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +               obj = NULL;
-> +               goto out;
-> +       }
-> +
-> +       map_fd = bpf_create_map(BPF_MAP_TYPE_ARRAY, sizeof(__u32),
-> +                               sizeof(__u64), 1, 0);
-> +       if (CHECK(map_fd < 0, "create pinmap manually", "fd %d\n", map_fd))
-> +               goto out;
-> +
-> +       map = bpf_object__find_map_by_name(obj, "pinmap");
-> +       if (CHECK(!map, "find map", "NULL map"))
+[...]
 
-here and below you are not closing map_fd on error
+>=20
+> In general I see no reason to populate these fields before the XDP
+> program runs. Someone needs to convince me why having frags info before
+> program runs is useful. In general headers should be preserved and first
+> frag already included in the data pointers. If users start parsing further
+> they might need it, but this series doesn't provide a way to do that
+> so IMO without those helpers its a bit difficult to debate.
 
-> +               goto out;
-> +
-> +       err = bpf_map__reuse_fd(map, map_fd);
-> +       if (CHECK(err, "reuse pinmap fd", "err %d errno %d\n", err, errno))
-> +               goto out;
-> +
-> +       err = bpf_map__set_pin_path(map, custpinpath);
-> +       if (CHECK(err, "set pin path", "err %d errno %d\n", err, errno))
-> +               goto out;
-> +
-> +       err = bpf_object__load(obj);
-> +       if (CHECK(err, "custom load", "err %d errno %d\n", err, errno))
-> +               goto out;
-> +
-> +       /* check that pinmap was pinned at the custom path */
-> +       err = stat(custpinpath, &statbuf);
-> +       if (CHECK(err, "stat custpinpath", "err %d errno %d\n", err, errno))
-> +               goto out;
-> +
->  out:
->         unlink(pinpath);
->         unlink(nopinpath);
-> --
-> 2.25.4
->
+We need to populate the skb_shared_info before running the xdp program in o=
+rder to
+allow the ebpf sanbox to access this data. If we restrict the access to the=
+ first
+buffer only I guess we can avoid to do that but I think there is a value al=
+lowing
+the xdp program to access this data.
+A possible optimization can be access the shared_info only once before runn=
+ing
+the ebpf program constructing the shared_info using a struct allocated on t=
+he
+stack.
+Moreover we can define a "xdp_shared_info" struct to alias the skb_shared_i=
+nfo
+one in order to have most on frags elements in the first "shared_info" cach=
+e line.
+
+>=20
+> Specifically for XDP_TX case we can just flip the descriptors from RX
+> ring to TX ring and keep moving along. This is going to be ideal on
+> 40/100Gbps nics.
+>=20
+> I'm not arguing that its likely possible to put some prefetch logic
+> in there and keep the pipe full, but I would need to see that on
+> a 100gbps nic to be convinced the details here are going to work. Or
+> at minimum a 40gbps nic.
+>=20
+> >=20
+> >=20
+
+[...]
+
+> Not against it, but these things are a bit tricky. Couple things I still
+> want to see/understand
+>=20
+>  - Lets see a 40gbps use a prefetch and verify it works in practice
+>  - Explain why we can't just do this after XDP program runs
+
+how can we allow the ebpf program to access paged data if we do not do that?
+
+>  - How will we read data in the frag list if we need to parse headers
+>    inside the frags[].
+>=20
+> The above would be best to answer now rather than later IMO.
+>=20
+> Thanks,
+> John
+
+Regards,
+Lorenzo
+
+--bCsyhTFzCvuiizWE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX3udNAAKCRA6cBh0uS2t
+rNMlAP9TbHfDmUkp+EEiIpqyabNH/7HNTb+QO0gsYq8ksfHA/AD9G0TaWWeqS14C
+u5Hdk9qBy4YdXBx19SSTno2LxLgZvA8=
+=Nufs
+-----END PGP SIGNATURE-----
+
+--bCsyhTFzCvuiizWE--
