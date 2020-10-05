@@ -2,130 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4AD284276
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 00:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C0C28428B
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 00:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgJEWZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 18:25:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725861AbgJEWZw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:25:52 -0400
-Received: from localhost (unknown [176.207.245.61])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A569F2076E;
-        Mon,  5 Oct 2020 22:25:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601936751;
-        bh=xuF7KDkVMm7Tl30WZFYZAz39xWsAxyjtzrh1vSdyaQU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ArooJQte9Q5g4SHodvVdpePkjXQ4e6ugVRYDy4jHVlpgxL4kGwxj84VKO2Sta1XQp
-         oXy1TbxHpxgGSjeNlRMungUbDaNf7m4ac8wBLMv6UqP30xqMtIWiuhMGTgAAFMMtVJ
-         ynqalo8M8MPrMeZfmdY2ou4OzLB7hV3KMAP299cg=
-Date:   Tue, 6 Oct 2020 00:24:54 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        shayagr@amazon.com, sameehj@amazon.com, dsahern@kernel.org,
-        echaudro@redhat.com
-Subject: Re: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <20201005222454.GB3501@localhost.localdomain>
-References: <cover.1601648734.git.lorenzo@kernel.org>
- <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
- <20201002160623.GA40027@lore-desk>
- <5f776c14d69b3_a6402087e@john-XPS-13-9370.notmuch>
- <20201005115247.72429157@carbon>
- <5f7b8e7a5ebfc_4f19a208ba@john-XPS-13-9370.notmuch>
+        id S1726650AbgJEWdj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 18:33:39 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37680 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgJEWde (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 18:33:34 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kPZ2x-0003ZM-Pp; Tue, 06 Oct 2020 00:33:31 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kPZ2x-000FEc-K7; Tue, 06 Oct 2020 00:33:31 +0200
+Subject: Re: [PATCH v2] use valid btf in bpf_program__set_attach_target(prog,
+ 0, ...);
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Luigi Rizzo <lrizzo@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Eelco Chaudron <echaudro@redhat.com>,
+        Petar Penkov <ppenkov@google.com>
+References: <20201005163934.331875-1-lrizzo@google.com>
+ <CAEf4BzZq8t0XZy5Z6SBHAURJBxuDBPdU9amsJ0z0os7TE-cjoQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e7f55966-41ab-2953-d78d-630463b896c2@iogearbox.net>
+Date:   Tue, 6 Oct 2020 00:33:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bCsyhTFzCvuiizWE"
-Content-Disposition: inline
-In-Reply-To: <5f7b8e7a5ebfc_4f19a208ba@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzZq8t0XZy5Z6SBHAURJBxuDBPdU9amsJ0z0os7TE-cjoQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25948/Mon Oct  5 16:02:22 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 10/5/20 9:21 PM, Andrii Nakryiko wrote:
+> On Mon, Oct 5, 2020 at 9:40 AM Luigi Rizzo <lrizzo@google.com> wrote:
+>>
+>> bpf_program__set_attach_target() will always fail with fd=0 (attach to a
+>> kernel symbol) because obj->btf_vmlinux is NULL and there is no way to
+>> set it.
+>>
+>> Fix this by using libbpf_find_vmlinux_btf_id()
+>>
+>> (on a side note: it is unclear whether btf_vmlinux is meant to be
+>> just temporary storage for use in bpf_object__load_xattr(), or
+>> a property of bpf_object, in which case it could be initialuzed
+>> opportunistically, and properly released in bpf_object__close() ).
+> 
+> It's more of a former. vmlinux BTF shouldn't be needed past
+> bpf_object's load phase, so there is no need to keep a few megabytes
+> of memory laying around needlessly.
 
---bCsyhTFzCvuiizWE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Could you send a v3 with updated commit message wrt side note and prepend
+e.g. 'bpf, libbpf: ' into subject prefix?
 
-[...]
+Please also carry Andrii's ACK forward.
 
->=20
-> In general I see no reason to populate these fields before the XDP
-> program runs. Someone needs to convince me why having frags info before
-> program runs is useful. In general headers should be preserved and first
-> frag already included in the data pointers. If users start parsing further
-> they might need it, but this series doesn't provide a way to do that
-> so IMO without those helpers its a bit difficult to debate.
+>> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index a4f55f8a460d..33bf102259dd 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -10353,9 +10353,8 @@ int bpf_program__set_attach_target(struct bpf_program *prog,
+>>                  btf_id = libbpf_find_prog_btf_id(attach_func_name,
+>>                                                   attach_prog_fd);
+>>          else
+>> -               btf_id = __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
+>> -                                              attach_func_name,
+>> -                                              prog->expected_attach_type);
+>> +               btf_id = libbpf_find_vmlinux_btf_id(attach_func_name,
+>> +                                                   prog->expected_attach_type);
+> 
+> It's a bit inefficient, if you need to do this for a few programs, but
+> it's ok as a fix. We'll need to unify this internal vmlinux BTF
+> caching at some point.
+> 
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> 
+> 
+>>
+>>          if (btf_id < 0)
+>>                  return btf_id;
+>> --
+>> 2.28.0.806.g8561365e88-goog
+>>
 
-We need to populate the skb_shared_info before running the xdp program in o=
-rder to
-allow the ebpf sanbox to access this data. If we restrict the access to the=
- first
-buffer only I guess we can avoid to do that but I think there is a value al=
-lowing
-the xdp program to access this data.
-A possible optimization can be access the shared_info only once before runn=
-ing
-the ebpf program constructing the shared_info using a struct allocated on t=
-he
-stack.
-Moreover we can define a "xdp_shared_info" struct to alias the skb_shared_i=
-nfo
-one in order to have most on frags elements in the first "shared_info" cach=
-e line.
-
->=20
-> Specifically for XDP_TX case we can just flip the descriptors from RX
-> ring to TX ring and keep moving along. This is going to be ideal on
-> 40/100Gbps nics.
->=20
-> I'm not arguing that its likely possible to put some prefetch logic
-> in there and keep the pipe full, but I would need to see that on
-> a 100gbps nic to be convinced the details here are going to work. Or
-> at minimum a 40gbps nic.
->=20
-> >=20
-> >=20
-
-[...]
-
-> Not against it, but these things are a bit tricky. Couple things I still
-> want to see/understand
->=20
->  - Lets see a 40gbps use a prefetch and verify it works in practice
->  - Explain why we can't just do this after XDP program runs
-
-how can we allow the ebpf program to access paged data if we do not do that?
-
->  - How will we read data in the frag list if we need to parse headers
->    inside the frags[].
->=20
-> The above would be best to answer now rather than later IMO.
->=20
-> Thanks,
-> John
-
-Regards,
-Lorenzo
-
---bCsyhTFzCvuiizWE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX3udNAAKCRA6cBh0uS2t
-rNMlAP9TbHfDmUkp+EEiIpqyabNH/7HNTb+QO0gsYq8ksfHA/AD9G0TaWWeqS14C
-u5Hdk9qBy4YdXBx19SSTno2LxLgZvA8=
-=Nufs
------END PGP SIGNATURE-----
-
---bCsyhTFzCvuiizWE--
