@@ -2,210 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC692833A4
-	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 11:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290382833CF
+	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 12:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725963AbgJEJxG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 05:53:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38863 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725891AbgJEJxF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 5 Oct 2020 05:53:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601891583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V9Nec+YykbrmtrrSug4z328cCcm80LO+iMyeCo1L8VA=;
-        b=ZRvtUuS6yTlGgw0vKWlArt+31PY5pMA+Zbmd01bPb2IDMidq95rJeYYXhYNWU/d6/iecy4
-        00EkG0m4suieuKAWEOTtcEo98dOFD5SHNEyUlWpsC7PmSCzEjwSXdgWqbsWNw87KI5FHto
-        K57oRhB98xinPcFDeoEANTMcpavDlMI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-358-E00guPkiPwO8P1ETtkhh3Q-1; Mon, 05 Oct 2020 05:52:59 -0400
-X-MC-Unique: E00guPkiPwO8P1ETtkhh3Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80172100A246;
-        Mon,  5 Oct 2020 09:52:57 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F96278814;
-        Mon,  5 Oct 2020 09:52:48 +0000 (UTC)
-Date:   Mon, 5 Oct 2020 11:52:47 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        sameehj@amazon.com, dsahern@kernel.org, echaudro@redhat.com,
-        brouer@redhat.com
-Subject: Re: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <20201005115247.72429157@carbon>
-In-Reply-To: <5f776c14d69b3_a6402087e@john-XPS-13-9370.notmuch>
-References: <cover.1601648734.git.lorenzo@kernel.org>
-        <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
-        <20201002160623.GA40027@lore-desk>
-        <5f776c14d69b3_a6402087e@john-XPS-13-9370.notmuch>
+        id S1725917AbgJEKGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 06:06:43 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2955 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725843AbgJEKGn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 06:06:43 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 02787A4B9FC69663E295;
+        Mon,  5 Oct 2020 11:06:40 +0100 (IST)
+Received: from [127.0.0.1] (10.47.2.205) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 5 Oct 2020
+ 11:06:37 +0100
+Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
+ 23/23] perf metricgroup: remove duped metric group events)
+To:     Ian Rogers <irogers@google.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+References: <20200507140819.126960-1-irogers@google.com>
+ <20200507140819.126960-24-irogers@google.com>
+ <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
+ <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
+Date:   Mon, 5 Oct 2020 11:03:36 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Originating-IP: [10.47.2.205]
+X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 02 Oct 2020 11:06:12 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
-
-> Lorenzo Bianconi wrote:
-> > > Lorenzo Bianconi wrote:  
-> > > > This series introduce XDP multi-buffer support. The mvneta driver is
-> > > > the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
-> > > > please focus on how these new types of xdp_{buff,frame} packets
-> > > > traverse the different layers and the layout design. It is on purpose
-> > > > that BPF-helpers are kept simple, as we don't want to expose the
-> > > > internal layout to allow later changes.
-> > > > 
-> > > > For now, to keep the design simple and to maintain performance, the XDP
-> > > > BPF-prog (still) only have access to the first-buffer. It is left for
-> > > > later (another patchset) to add payload access across multiple buffers.
-> > > > This patchset should still allow for these future extensions. The goal
-> > > > is to lift the XDP MTU restriction that comes with XDP, but maintain
-> > > > same performance as before.
-> > > > 
-> > > > The main idea for the new multi-buffer layout is to reuse the same
-> > > > layout used for non-linear SKB. This rely on the "skb_shared_info"
-> > > > struct at the end of the first buffer to link together subsequent
-> > > > buffers. Keeping the layout compatible with SKBs is also done to ease
-> > > > and speedup creating an SKB from an xdp_{buff,frame}. Converting
-> > > > xdp_frame to SKB and deliver it to the network stack is shown in cpumap
-> > > > code (patch 13/13).  
-> > > 
-> > > Using the end of the buffer for the skb_shared_info struct is going to
-> > > become driver API so unwinding it if it proves to be a performance issue
-> > > is going to be ugly. So same question as before, for the use case where
-> > > we receive packet and do XDP_TX with it how do we avoid cache miss
-> > > overhead? This is not just a hypothetical use case, the Facebook
-> > > load balancer is doing this as well as Cilium and allowing this with
-> > > multi-buffer packets >1500B would be useful.
-> > > 
-> > > Can we write the skb_shared_info lazily? It should only be needed once
-> > > we know the packet is going up the stack to some place that needs the
-> > > info. Which we could learn from the return code of the XDP program.  
-> > 
-> > Hi John,  
+On 02/10/2020 21:46, Ian Rogers wrote:
+> On Fri, Oct 2, 2020 at 5:00 AM John Garry <john.garry@huawei.com> wrote:
+>>
+>> On 07/05/2020 15:08, Ian Rogers wrote:
+>>
+>> Hi Ian,
+>>
+>> I was wondering if you ever tested commit 2440689d62e9 ("perf
+>> metricgroup: Remove duped metric group events") for when we have a
+>> metric which aliases multiple instances of the same uncore PMU in the
+>> system?
 > 
-> Hi, I'll try to join the two threads this one and the one on helpers here
-> so we don't get too fragmented.
+> Sorry for this, I hadn't tested such a metric and wasn't aware of how
+> the aliasing worked. I sent a fix for this issue here:
+> https://lore.kernel.org/lkml/20200917201807.4090224-1-irogers@google.com/
+> Could you see if this addresses the issue for you? I don't see the
+> change in Arnaldo's trees yet.
+
+Unfortunately this does not seem to fix my issue.
+
+So for that patch, you say you fix metric expression for DRAM_BW_Use, 
+which is:
+
+{
+  "BriefDescription": "Average external Memory Bandwidth Use for reads 
+and writes [GB / sec]",
+  "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + 
+uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
+  "MetricGroup": "Memory_BW",
+"MetricName": "DRAM_BW_Use"
+},
+
+But this metric expression does not include any alias events; rather I 
+think it is just cas_count_write + cas_count_read event count for PMU 
+uncore_imc / duration_time.
+
+When I say alias, I mean - as an example, we have event:
+
+     {
+         "BriefDescription": "write requests to memory controller. 
+Derived from unc_m_cas_count.wr",
+         "Counter": "0,1,2,3",
+         "EventCode": "0x4",
+         "EventName": "LLC_MISSES.MEM_WRITE",
+         "PerPkg": "1",
+         "ScaleUnit": "64Bytes",
+         "UMask": "0xC",
+         "Unit": "iMC"
+     },
+
+And then reference LLC_MISSES.MEM_WRITE in a metric expression:
+
+"MetricExpr": "LLC_MISSES.MEM_WRITE / duration_time",
+
+This is what seems to be broken for when the alias matches > 1 PMU.
+
+Please check this.
+
+Thanks,
+John
+
 > 
-> > 
-> > I agree, I think for XDP_TX use-case it is not strictly necessary to fill the
-> > skb_hared_info. The driver can just keep this info on the stack and use it
-> > inserting the packet back to the DMA ring.
-> > For mvneta I implemented it in this way to keep the code aligned with ndo_xdp_xmit
-> > path since it is a low-end device. I guess we are not introducing any API constraint
-> > for XDP_TX. A high-end device can implement multi-buff for XDP_TX in a different way
-> > in order to avoid the cache miss.  
+> Thanks,
+> Ian
 > 
-> Agree it would be an implementation detail for XDP_TX except the two
-> helpers added in this series currently require it to be there.
-
-That is a good point.  If you look at the details, the helpers use
-xdp_buff->mb bit to guard against accessing the "shared_info"
-cacheline. Thus, for the normal single frame case XDP_TX should not see
-a slowdown.  Do we really need to optimize XDP_TX multi-frame case(?)
-
-
-> > 
-> > We need to fill the skb_shared info only when we want to pass the frame to the
-> > network stack (build_skb() can directly reuse skb_shared_info->frags[]) or for
-> > XDP_REDIRECT use-case.  
+>> I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an
+>> issue where find_evsel_group() fails for the uncore metrics under the
+>> condition mentioned above.
+>>
+>> Unfortunately I don't have an x86 machine to which this test applies.
+>> However, as an experiment, I added a test metric to my broadwell JSON:
+>>
+>> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+>> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+>> index 8cdc7c13dc2a..fc6d9adf996a 100644
+>> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+>> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
+>> @@ -348,5 +348,11 @@
+>>           "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
+>>           "MetricGroup": "Power",
+>>           "MetricName": "C7_Pkg_Residency"
+>> +    },
+>> +    {
+>> +        "BriefDescription": "test metric",
+>> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE *
+>> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
+>> +        "MetricGroup": "Test",
+>> +        "MetricName": "test_metric_inc"
+>>       }
+>> ]
+>>
+>>
+>> And get this:
+>>
+>> john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M
+>> test_metric_inc sleep 1
+>> Using CPUID GenuineIntel-6-3D-4
+>> metric expr unc_cbo_xsnp_response.miss_xcore *
+>> unc_cbo_xsnp_response.miss_eviction for test_metric_inc
+>> found event unc_cbo_xsnp_response.miss_eviction
+>> found event unc_cbo_xsnp_response.miss_xcore
+>> adding
+>> {unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
+>> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
+>> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
+>> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
+>> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
+>> Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore *
+>> unc_cbo_xsnp_response.miss_eviction
+>> task-clock: 688876 688876 688876
+>> context-switches: 2 688876 688876
+>> cpu-migrations: 0 688876 688876
+>> page-faults: 69 688876 688876
+>> cycles: 2101719 695690 695690
+>> instructions: 1180534 695690 695690
+>> branches: 249450 695690 695690
+>> branch-misses: 10815 695690 695690
+>>
+>> Performance counter stats for 'sleep 1':
+>>
+>>                0.69 msec task-clock                #    0.001 CPUs
+>> utilized
+>>                   2      context-switches          #    0.003 M/sec
+>>
+>>                   0      cpu-migrations            #    0.000 K/sec
+>>
+>>                  69      page-faults               #    0.100 M/sec
+>>
+>>           2,101,719      cycles                    #    3.051 GHz
+>>
+>>           1,180,534      instructions              #    0.56  insn per
+>> cycle
+>>             249,450      branches                  #  362.112 M/sec
+>>
+>>              10,815      branch-misses             #    4.34% of all
+>> branches
+>>
+>>         1.001177693 seconds time elapsed
+>>
+>>         0.001149000 seconds user
+>>         0.000000000 seconds sys
+>>
+>>
+>> john@localhost:~/linux/tools/perf>
+>>
+>>
+>> Any idea what is going wrong here, before I have to dive in? The issue
+>> seems to be this named commit.
+>>
+>> Thanks,
+>> John
+>>
+>>> A metric group contains multiple metrics. These metrics may use the same
+>>> events. If metrics use separate events then it leads to more
+>>> multiplexing and overall metric counts fail to sum to 100%.
+>>> Modify how metrics are associated with events so that if the events in
+>>> an earlier group satisfy the current metric, the same events are used.
+>>> A record of used events is kept and at the end of processing unnecessary
+>>> events are eliminated.
+>>>
+>>> Before:
+> .
 > 
-> It might be good to think about the XDP_REDIRECT case as well then. If the
-> frags list fit in the metadata/xdp_frame would we expect better
-> performance?
-
-I don't like to use space in xdp_frame for this. (1) We (Ahern and I)
-are planning to use the space in xdp_frame for RX-csum + RX-hash +vlan,
-which will be more common (e.g. all packets will have HW RX+csum).  (2)
-I consider XDP multi-buffer the exception case, that will not be used
-in most cases, so why reserve space for that in this cache-line.
-
-IMHO we CANNOT allow any slowdown for existing XDP use-cases, but IMHO
-XDP multi-buffer use-cases are allowed to run "slower".
-
-
-> Looking at skb_shared_info{} that is a rather large structure with many
-
-A cache-line detail about skb_shared_info: The first frags[0] member is
-in the first cache-line.  Meaning that it is still fast to have xdp
-frames with 1 extra buffer.
-
-> fields that look unnecessary for XDP_REDIRECT case and only needed when
-> passing to the stack. 
-
-Yes, I think we can use first cache-line of skb_shared_info more
-optimally (via defining a xdp_shared_info struct). But I still want us
-to use this specific cache-line.  Let me explain why below. (Avoiding
-cache-line misses is all about the details, so I hope you can follow).
-
-Hopefully most driver developers understand/knows this.  In the RX-loop
-the current RX-descriptor have a status that indicate there are more
-frame, usually expressed as non-EOP (End-Of-Packet).  Thus, a driver
-can start a prefetchw of this shared_info cache-line, prior to
-processing the RX-desc that describe the multi-buffer.
- (Remember this shared_info is constructed prior to calling XDP and any
-XDP_TX action, thus the XDP prog should not see a cache-line miss when
-using the BPF-helper to read shared_info area).
-
-
-> Fundamentally, a frag just needs
-> 
->  struct bio_vec {
->      struct page *bv_page;     // 8B
->      unsigned int bv_len;      // 4B
->      unsigned int bv_offset;   // 4B
->  } // 16B
-> 
-> With header split + data we only need a single frag so we could use just
-> 16B. And worse case jumbo frame + header split seems 3 entries would be
-> enough giving 48B (header plus 3 4k pages). 
-
-For jumbo-frame 9000 MTU 2 entries might be enough, as we also have
-room in the first buffer (((9000-(4096-256-320))/4096 = 1.33789).
-
-The problem is that we need to support TSO (TCP Segmentation Offload)
-use-case, which can have more frames. Thus, 3 entries will not be
-enough.
-
-> Could we just stick this in the metadata and make it read only? Then
-> programs that care can read it and get all the info they need without
-> helpers.
-
-I don't see how that is possible. (1) the metadata area is only 32
-bytes, (2) when freeing an xdp_frame the kernel need to know the layout
-as these points will be free'ed.
-
-> I would expect performance to be better in the XDP_TX and
-> XDP_REDIRECT cases. And copying an extra worse case 48B in passing to
-> the stack I guess is not measurable given all the work needed in that
-> path.
-
-I do agree, that when passing to netstack we can do a transformation
-from xdp_shared_info to skb_shared_info with a fairly small cost.  (The
-TSO case would require more copying).
-
-Notice that allocating an SKB, will always clear the first 32 bytes of
-skb_shared_info.  If the XDP driver-code path have done the prefetch
-as described above, then we should see a speedup for netstack delivery.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
 
