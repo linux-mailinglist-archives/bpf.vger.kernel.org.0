@@ -2,87 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E8928326C
-	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 10:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7662832BC
+	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 11:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725896AbgJEIrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 04:47:22 -0400
-Received: from mga12.intel.com ([192.55.52.136]:46728 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725880AbgJEIrW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 04:47:22 -0400
-IronPort-SDR: KNulN2BH7DJOdNAtAPUt84hiOwe3KVR0N1T1Z62GS+2uBUUkLLttnbvH/Mopn0iaLh1FK0t38k
- 1uyW6r9EQH2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9764"; a="142747450"
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="142747450"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 01:47:19 -0700
-IronPort-SDR: tNhnvKVyQsfqGlpCl1ryPs3O+BpRW2CuJcIYFI44oRZTVYB3NqPoIheh68nU7iGutpwC7RWdru
- 8GkhLN7lBZ9A==
-X-IronPort-AV: E=Sophos;i="5.77,338,1596524400"; 
-   d="scan'208";a="524545084"
-Received: from merezmax-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.32.228])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2020 01:47:14 -0700
-Subject: Re: please revert [PATCH bpf-next v5 03/15] xsk: create and free
- buffer pool independently from umem
-To:     Christoph Hellwig <hch@infradead.org>, davem@davemloft.net,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, maximmi@mellanox.com,
-        bpf@vger.kernel.org, jeffrey.t.kirsher@intel.com,
-        anthony.l.nguyen@intel.com, maciej.fijalkowski@intel.com,
-        maciejromanfijalkowski@gmail.com, cristian.dumitrescu@intel.com
-References: <1598603189-32145-1-git-send-email-magnus.karlsson@intel.com>
- <1598603189-32145-4-git-send-email-magnus.karlsson@intel.com>
- <20201005083535.GA512@infradead.org> <20201005084341.GA3224@infradead.org>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <88fbfe56-8847-25a5-9301-a573788ca91a@intel.com>
-Date:   Mon, 5 Oct 2020 10:47:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725893AbgJEJFn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 05:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgJEJFn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 05:05:43 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985DFC0613CE;
+        Mon,  5 Oct 2020 02:05:43 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id az3so1984548pjb.4;
+        Mon, 05 Oct 2020 02:05:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FeKTiv/QkrYt1MX3JAHgoWEVIukNsIw2zIykn9+ECKQ=;
+        b=M2ChYg6Meiwrpyu2dTgNJoHM9l3CUf2ucjO+p2S8YKhuJ96lr86rDNwXSUrYRJ0TOV
+         SF0s42qSKqexfUuPspJ88M0Rwsx038qzRuGI95fPMryyN6x61WpgIp1qrmQJtpgaFOip
+         wLg3JdCSv+7dsk9l8doeHza3nzu47Z8uFcOZEQLq6NeeWg1e9N/nxFk9o+89jZahFm8D
+         ZoNz0S6pbpp2YiippN6uLYZfh8VspyLjJdpGqpkYgeWs76KELWPuxiVMMOqw0tTBlFuY
+         OEbDkdwXHm7OqaEcCsuMar4hisnxbSDG4f57En4TS5FVduAdEVGZYPJgk5IPlQc8n6dZ
+         XKKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FeKTiv/QkrYt1MX3JAHgoWEVIukNsIw2zIykn9+ECKQ=;
+        b=EW+bkhLDGcd6DhLVeRz/5wUqWG36lMKHnZqLgUlqYnTlTQuWE+RyeTa/HghahG1fYt
+         IxDqYpX66Zv/mVA/Nh1ezA7/Jyw2Da9rt2Zw/Subjiu2gs0qvuebeoYDGoOFU4feBSh9
+         1i4m2xGUJdeXwTrvNpXcl9tttGvAF0y9W8gii9T0ETtAENhkzh3IAN0fxXhvOybLQCiw
+         xDRQ6vbEwle8msNeisfRGjeFUDhkibY8YcoaWWZaUG6XaHwv/nVZovmy3iApIO89ZrEC
+         ME+kHrOOabMMEa38xoK4t2Zqak/YqKND6OJNkXn0GwqRJoHM8xDRnGhDxr0zc/q1g6nt
+         Lk9g==
+X-Gm-Message-State: AOAM533mHq/0A0UJRnfEVo2NZBES2vQ5DcN4oehweOHO19S90fUlAS03
+        um0OxOhsXU6GDmSGtCwFDR31wmm46Dwbeg==
+X-Google-Smtp-Source: ABdhPJxMt22Kuv3Ibn/uW7/FbPvcIYTBWKZgue548vudqhRHF359e+3pYaDJoH+LY8ELGCA6wVx67g==
+X-Received: by 2002:a17:90a:ff92:: with SMTP id hf18mr9474390pjb.171.1601888742779;
+        Mon, 05 Oct 2020 02:05:42 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.43])
+        by smtp.gmail.com with ESMTPSA id u7sm2727014pfn.37.2020.10.05.02.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 02:05:42 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        hch@infradead.org
+Subject: [PATCH bpf-next] xsk: remove internal DMA headers
+Date:   Mon,  5 Oct 2020 11:05:25 +0200
+Message-Id: <20201005090525.116689-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20201005084341.GA3224@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-10-05 10:43, Christoph Hellwig wrote:
-> On Mon, Oct 05, 2020 at 09:35:35AM +0100, Christoph Hellwig wrote:
->> Hi Dave,
->>
->> please can you rever this?  This is the second xsk patch this year
->> that pokes into dma-mapping internals for absolutely not reason.
->>
->> And we discussed this in detail the last time around: drivers have
->> absolutely no business poking into dma-direct.h and dma-noncoherent.h.
->> In fact because people do this crap I have a patch to remove these
->> headers that I'm about to queue up, so if this doesn't get reverted
->> the linux-next build will break soon.
-> 
-> Looks like it doesn't actually use any functionality and just
-> pointlessly includes internal headers.  So just removing dma-direct.h,
-> dma-noncoherent.h and swiotlb.h should do the job as well.
-> 
-> But guys, don't do this.
-> 
+From: Björn Töpel <bjorn.topel@intel.com>
 
-Yeah, this commit just moves the work you helped out with [1], and by 
-accident/sloppiness the internal dma headers were included in the move.
+Christoph Hellwig correctly pointed out [1] that the AF_XDP core was
+pointlessly including internal headers. Let us remove those includes.
 
-Sorry about that, and we'll try not to repeat this. Apologies for the 
-extra work on your side.
+[1] https://lore.kernel.org/bpf/20201005084341.GA3224@infradead.org/
 
-I'll spin up a patch to fix this asap.
+Reported-by: Christoph Hellwig <hch@infradead.org>
+Fixes: 1c1efc2af158 ("xsk: Create and free buffer pool independently from umem")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+ net/xdp/xsk_buff_pool.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index e63fadd000db..64c9e55d4d4e 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -3,9 +3,6 @@
+ #include <net/xsk_buff_pool.h>
+ #include <net/xdp_sock.h>
+ #include <net/xdp_sock_drv.h>
+-#include <linux/dma-direct.h>
+-#include <linux/dma-noncoherent.h>
+-#include <linux/swiotlb.h>
+ 
+ #include "xsk_queue.h"
+ #include "xdp_umem.h"
 
-Thanks,
-Björn
+base-commit: 1028ae4069991e26d1522e957939fb61d2da1d12
+-- 
+2.25.1
 
-
-[1] https://lore.kernel.org/bpf/20200629130359.2690853-5-hch@lst.de/
