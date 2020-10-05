@@ -2,256 +2,244 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31301283C73
-	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 18:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E83283C96
+	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 18:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgJEQ2e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 12:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727284AbgJEQ2e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 12:28:34 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEF4C0613A9
-        for <bpf@vger.kernel.org>; Mon,  5 Oct 2020 09:28:33 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id n15so4550719wrq.2
-        for <bpf@vger.kernel.org>; Mon, 05 Oct 2020 09:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZGNtZtKC58WwebCl34IYEZEH2JsNx+Rejy2Yrrez4sg=;
-        b=OT76/h1DFe0VgoE5kperEelPd606TDS56ne5m5hd6qUklbj98ppbAtZ5MpcpatKlr+
-         sUEwFTs073U6hmthZc1sXT8W2oOw21T1xKbRUk6cfoKczUZ4y7C8DAGr9m5xcBQiHUXj
-         6ymMwlqyOGSR5F7jgHgssjZkDYezPmZWQ0UVbUt5uAtZbEuOfAnOtRQLDt0roFrwT1ff
-         ukhjYk+PqDQHduZory/ldVI5m+VRXjBg94f3QP79pmXg3FKiOCN7gKpBZPK9IqxImEyA
-         uAyTLq6k5o0NWgHmeOOgbkDjdwPDSDNGVHnubv5gfnix823Iw56ssx/aMZwKSKO+ZlOF
-         q/6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZGNtZtKC58WwebCl34IYEZEH2JsNx+Rejy2Yrrez4sg=;
-        b=gBvMcQQ/tTRbNv9aYrCgdTe6Y/UgSgrvLFekvUhG8a5NYgqCeqxgB8peDfmXES5gFg
-         rNA0WdB/Q7ZUEdlt0DOHxsXpgnxbRhWIh7dLCdQb/AMXXgSY74Q9Oybw1pf3rVALq5KW
-         tXXLr4NbBarSlv/We0n9PO6OLo0ahzXqi1u6//RkaF5KfzG0yoN9wpb/7XVEuKF/Bho6
-         VFieNr7HlpMLZfg2He3emWZlaof5sRVnroKKWqWLAAUlEE4mtE6cthz5hJ3ortPoquKZ
-         9+rqCCQ4WuuMsF6uP58LEmjZYCco3o66npbvBIhOdteMG8RVn6kh49d+nGMPL92e+cty
-         OQ5w==
-X-Gm-Message-State: AOAM530kWMsdIDBDtxgUfLK5zCnZnBRMSCzGsIcdfIRobiO3wZJMSjHX
-        p2pXgRRO5/9aPZxMQtAtWwlU/WLKEn6zhEXY0DIUqw==
-X-Google-Smtp-Source: ABdhPJyULSJW9LKoA08d3J784qG+0dIntnNLusxjsK3rHgzHa69PfvGCahhkWufZN8NvGkjHVTepQ/LY2gxz2Qz4FX0=
-X-Received: by 2002:a5d:5583:: with SMTP id i3mr179749wrv.119.1601915312163;
- Mon, 05 Oct 2020 09:28:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200507140819.126960-1-irogers@google.com> <20200507140819.126960-24-irogers@google.com>
- <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com> <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
- <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
-In-Reply-To: <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 5 Oct 2020 09:28:20 -0700
-Message-ID: <CAP-5=fXwQZVDxJM4LmEvsKW9h0HYP6t3F0EZfy0+hwAzDmBgGA@mail.gmail.com>
-Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
- 23/23] perf metricgroup: remove duped metric group events)
-To:     John Garry <john.garry@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1729009AbgJEQdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 12:33:23 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46318 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726747AbgJEQdW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 5 Oct 2020 12:33:22 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 095GUggj031099;
+        Mon, 5 Oct 2020 09:33:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=pteZhadzMjoc7cJVEoWVpicWdasEumXZ3AxRVZpJ0eI=;
+ b=FOmw0GE+I8w9qvA+9lw9sbwqzOkCZMCR53hR8Su66SvLK7YO5M2UlsakQ2R26uDRzPKs
+ J9URQdOKkj+xl2WzK213q15xVxYNHWh6g64ifkyDFcbq0OHfhSguZpGuata2LU6YsaJC
+ Nad0OUMUqhvIaaNVpmU8AVrKkFGS71acZBk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 33xmt00bh6-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 05 Oct 2020 09:33:08 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 5 Oct 2020 09:33:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N3vJvVgyzDPbflxQaHjgSpcOP176+/eTWKhZoohhB1FsncdX0MNZj0BIlLlImiUBxuILPjSxwhbNmdZxB1aq6d+BFZ3s2oMWENG+DEt7pPO/fUAK7yv3zssJIEoY3Ot/+f0wC1P/ryFnKb/CqNdX6+0JmKXvJKfmcyjWQETKsnpvwnywI6vCPScWAXzeGBEE7oVDOHZkDUqT00S7jeBz5SMinJN+w3N26wVTNeUkyQrBeZi8JUl/vGQPj5hKK9Elt1kLtUMHkXC1WLQPkKBzsXO6EKj10zSkpr8LxrMCzMwYmAPUvSaamuxcM5BU9PQtbgmtBr/xj+FP7D2ioaCDPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pteZhadzMjoc7cJVEoWVpicWdasEumXZ3AxRVZpJ0eI=;
+ b=hB1InkLElTTUfmomLHi6PIvl1CaWul1OqFTxi1ugKWn0keyFKtg6X30XGeMnObpSJ21B0nrwdrVs3ZDV0/jK64mgtDRroOWQ+q33wBtd2ykihIv+jyGxzH5Of83klTaoqSWWaYQ4z/wYsJ5fECUguyqxbb/vK+d3kVj4WluNllR9oAGVgp5xfzmZ/Zm1Jvt923KmAm9wGPKzZLfhGKXNQWlERc3dzKr3rBVgeF9WU2trVUhjbp/FJedNp0EMv3tcLaOl6tsujzMOQx/38NODRSWY94eAmYnq42kV617DSuZddLPk5FLgMuTnAvXp93dcgrmtEy5VDZ+BkCXkToRU+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pteZhadzMjoc7cJVEoWVpicWdasEumXZ3AxRVZpJ0eI=;
+ b=RUDQ3tHlqGjQdMd5jeIJ4w9weDNmcBjqZbMgennQGa/277NFGyPEYUSKDfWuXYl2X2tZheTtzo2s7cu4xJ+S5NSnbUT7gHTmXK2VbYecZb0v3onFUEfWNLAgQJywZd5IqGz5pqOLSvyDln9jrNONCYjl5ab0TY5/OieLMX0355U=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB4120.namprd15.prod.outlook.com (2603:10b6:a02:c4::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.38; Mon, 5 Oct
+ 2020 16:33:05 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::5448:b1c1:eb05:b08a]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::5448:b1c1:eb05:b08a%7]) with mapi id 15.20.3433.044; Mon, 5 Oct 2020
+ 16:33:05 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+CC:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+Subject: Re: [PATCH bpf-next] bpf: use raw_spin_trylock() for
+ pcpu_freelist_push/pop in NMI
+Thread-Topic: [PATCH bpf-next] bpf: use raw_spin_trylock() for
+ pcpu_freelist_push/pop in NMI
+Thread-Index: AQHWk5kqaReFwgHtnUywV9bl4aYfX6mE+uWAgAAQG4CABBGGgIAAJq0A
+Date:   Mon, 5 Oct 2020 16:33:05 +0000
+Message-ID: <FB6D914F-2D2D-4259-ADC1-8B1431FBAD6D@fb.com>
+References: <20200926000756.893078-1-songliubraving@fb.com>
+ <b2be5bfd-4df6-0047-a32a-cd2f93d44555@iogearbox.net>
+ <12AC728B-D33F-41FD-AB72-857744639119@fb.com>
+ <c5914df4-de3c-8c45-0ed6-10841e41a8e3@iogearbox.net>
+In-Reply-To: <c5914df4-de3c-8c45-0ed6-10841e41a8e3@iogearbox.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.1)
+authentication-results: iogearbox.net; dkim=none (message not signed)
+ header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:cb37]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 70b7a663-8833-4fbb-cbea-08d8694c5622
+x-ms-traffictypediagnostic: BYAPR15MB4120:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB412025845B9D734D3C65F2D6B30C0@BYAPR15MB4120.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tp7ZxMpFWVHyqu2KRM7/n+uOBUg9FAdcJRN0DvI/CwgutbYSRbPwZ6Xhjq+8rqitDl0cYy8Po5a4AMAUITzq/s4jHJFM2XEbws+iWvHbFkoY1pU5c06AZnjtpcpNqvJSqfRGJIRkg/YykL7mMlh1q8g1DqIYrE8UCWwv1qMkQ3014HHV6bAHj8kVOurHq7gxFgqx69yH8nVyhrkpc0NwwBxENuKnVy7nqLihmfhgl+3HwtzT812JanabSM1cyRUz4XN1dn04DtPEilsSLKs2wdNwK9ALDeZ24FsFvM0Um/HuUx/zsNxOlkAtRoRK6XXSybTo8NiwQO0omYrc5N7Cwg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(136003)(396003)(346002)(376002)(36756003)(54906003)(91956017)(6916009)(71200400001)(86362001)(6512007)(186003)(8676002)(53546011)(6506007)(33656002)(66556008)(316002)(2906002)(83380400001)(8936002)(4326008)(478600001)(5660300002)(2616005)(6486002)(66446008)(64756008)(66946007)(66476007)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ILPRiWtlCMCRCpLFeh317kMFEXnng+D3WoYxhEZ+DpvEXed1Vhp2JmGzlx+aR0e35dHdP3PKqriHIaGGwcXZGTlfKG2YD+eKXS10NeuQhU3PfzeJw4AGeh3fZSYQU3/p6ORIVbyVPesY9lH7IBAWp43ldDUV0KIDO6puzRzUazvvF4fKC9loukfa4WB6HKV/bDYqhrUY94WNlcaiatle++ATIUM7AomgG2Sq5ebLRtIyF9WZDEmdlYClptAcrImy68sFTE3uFyKgC93XcsOjlQjZYnBbGhP2fw9iRl7F/KCJ4WIR4uwh9uuc1z+hiRHL2xLnEh+WAvAp8VA4n0QcLPYfb/9LNJ3dzR0RRQPGpwGhclqjCAT6geAaxwNlHlGNdb9/kEKxn0gaMqoEdXaZ4FHj6zrmvMh1bdTVXLnvcx2THU0DcE4MNmXyo/qXA00YAGjHISJP7plNSbAYx1ePnIQqda5YndkB8NWEZBLb6dE+mlIKL5/pMqgEUenKZlmeSOLOcwLFAyG0g5VsJWFxuL4pFvckQk4UZi4QiGHegMTD2rOHxemq2Sk2Sksuh9p2/5MYP1UZ/v8NGVpZkETGkVIrARp2KqKTPH04Rch69nc9+tMJfGfpDyeT+bLF1R2aOZEmEnpfukWt2yefKT0+iBBvrV+Uly3qCW0wKJsyxnqeJHjfQbpkspLPt6jiWpIr
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8C4586C28F0EFA4EA240FE07F0AD9532@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70b7a663-8833-4fbb-cbea-08d8694c5622
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Oct 2020 16:33:05.5767
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b120d93rdvkAPMxthPN4LqDSlJgLJlYARm8JAmh10O8RF7Io4FkdZOUP2PMOOeSkGQUXMu3t+ybjay+BB01cuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4120
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-05_12:2020-10-05,2020-10-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ suspectscore=0 impostorscore=0 mlxscore=0 spamscore=0 adultscore=0
+ clxscore=1015 phishscore=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2010050121
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 3:06 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 02/10/2020 21:46, Ian Rogers wrote:
-> > On Fri, Oct 2, 2020 at 5:00 AM John Garry <john.garry@huawei.com> wrote:
-> >>
-> >> On 07/05/2020 15:08, Ian Rogers wrote:
-> >>
-> >> Hi Ian,
-> >>
-> >> I was wondering if you ever tested commit 2440689d62e9 ("perf
-> >> metricgroup: Remove duped metric group events") for when we have a
-> >> metric which aliases multiple instances of the same uncore PMU in the
-> >> system?
-> >
-> > Sorry for this, I hadn't tested such a metric and wasn't aware of how
-> > the aliasing worked. I sent a fix for this issue here:
-> > https://lore.kernel.org/lkml/20200917201807.4090224-1-irogers@google.com/
-> > Could you see if this addresses the issue for you? I don't see the
-> > change in Arnaldo's trees yet.
->
-> Unfortunately this does not seem to fix my issue.
->
-> So for that patch, you say you fix metric expression for DRAM_BW_Use,
-> which is:
->
-> {
->   "BriefDescription": "Average external Memory Bandwidth Use for reads
-> and writes [GB / sec]",
->   "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ +
-> uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
->   "MetricGroup": "Memory_BW",
-> "MetricName": "DRAM_BW_Use"
-> },
->
-> But this metric expression does not include any alias events; rather I
-> think it is just cas_count_write + cas_count_read event count for PMU
-> uncore_imc / duration_time.
->
-> When I say alias, I mean - as an example, we have event:
->
->      {
->          "BriefDescription": "write requests to memory controller.
-> Derived from unc_m_cas_count.wr",
->          "Counter": "0,1,2,3",
->          "EventCode": "0x4",
->          "EventName": "LLC_MISSES.MEM_WRITE",
->          "PerPkg": "1",
->          "ScaleUnit": "64Bytes",
->          "UMask": "0xC",
->          "Unit": "iMC"
->      },
->
-> And then reference LLC_MISSES.MEM_WRITE in a metric expression:
->
-> "MetricExpr": "LLC_MISSES.MEM_WRITE / duration_time",
->
-> This is what seems to be broken for when the alias matches > 1 PMU.
->
-> Please check this.
 
-Happy to check. Can you provide a reproduction? Looking on broadwell
-this metric doesn't exist.
 
-Thanks,
-Ian
+> On Oct 5, 2020, at 7:14 AM, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>=20
+> On 10/3/20 2:06 AM, Song Liu wrote:
+>>> On Oct 2, 2020, at 4:09 PM, Daniel Borkmann <daniel@iogearbox.net> wrot=
+e:
+>>> On 9/26/20 2:07 AM, Song Liu wrote:
+>>>> Recent improvements in LOCKDEP highlighted a potential A-A deadlock wi=
+th
+>>>> pcpu_freelist in NMI:
+>>>> ./tools/testing/selftests/bpf/test_progs -t stacktrace_build_id_nmi
+>>>> [   18.984807] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>> [   18.984807] WARNING: inconsistent lock state
+>>>> [   18.984808] 5.9.0-rc6-01771-g1466de1330e1 #2967 Not tainted
+>>>> [   18.984809] --------------------------------
+>>>> [   18.984809] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+>>>> [   18.984810] test_progs/1990 [HC2[2]:SC0[0]:HE0:SE1] takes:
+>>>> [   18.984810] ffffe8ffffc219c0 (&head->lock){....}-{2:2}, at:
+>>>> __pcpu_freelist_pop+0xe3/0x180
+>>>> [   18.984813] {INITIAL USE} state was registered at:
+>>>> [   18.984814]   lock_acquire+0x175/0x7c0
+>>>> [   18.984814]   _raw_spin_lock+0x2c/0x40
+>>>> [   18.984815]   __pcpu_freelist_pop+0xe3/0x180
+>>>> [   18.984815]   pcpu_freelist_pop+0x31/0x40
+>>>> [   18.984816]   htab_map_alloc+0xbbf/0xf40
+>>>> [   18.984816]   __do_sys_bpf+0x5aa/0x3ed0
+>>>> [   18.984817]   do_syscall_64+0x2d/0x40
+>>>> [   18.984818]   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>> [   18.984818] irq event stamp: 12
+>>>> [ ... ]
+>>>> [   18.984822] other info that might help us debug this:
+>>>> [   18.984823]  Possible unsafe locking scenario:
+>>>> [   18.984823]
+>>>> [   18.984824]        CPU0
+>>>> [   18.984824]        ----
+>>>> [   18.984824]   lock(&head->lock);
+>>>> [   18.984826]   <Interrupt>
+>>>> [   18.984826]     lock(&head->lock);
+>>>> [   18.984827]
+>>>> [   18.984828]  *** DEADLOCK ***
+>>>> [   18.984828]
+>>>> [   18.984829] 2 locks held by test_progs/1990:
+>>>> [ ... ]
+>>>> [   18.984838]  <NMI>
+>>>> [   18.984838]  dump_stack+0x9a/0xd0
+>>>> [   18.984839]  lock_acquire+0x5c9/0x7c0
+>>>> [   18.984839]  ? lock_release+0x6f0/0x6f0
+>>>> [   18.984840]  ? __pcpu_freelist_pop+0xe3/0x180
+>>>> [   18.984840]  _raw_spin_lock+0x2c/0x40
+>>>> [   18.984841]  ? __pcpu_freelist_pop+0xe3/0x180
+>>>> [   18.984841]  __pcpu_freelist_pop+0xe3/0x180
+>>>> [   18.984842]  pcpu_freelist_pop+0x17/0x40
+>>>> [   18.984842]  ? lock_release+0x6f0/0x6f0
+>>>> [   18.984843]  __bpf_get_stackid+0x534/0xaf0
+>>>> [   18.984843]  bpf_prog_1fd9e30e1438d3c5_oncpu+0x73/0x350
+>>>> [   18.984844]  bpf_overflow_handler+0x12f/0x3f0
+>>>> This is because pcpu_freelist_head.lock is accessed in both NMI and
+>>>> non-NMI context. Fix this issue by using raw_spin_trylock() in NMI.
+>>>> For systems with only one cpu, there is a trickier scenario with
+>>>> pcpu_freelist_push(): if the only pcpu_freelist_head.lock is already
+>>>> locked before NMI, raw_spin_trylock() will never succeed. Unlike,
+>>>> _pop(), where we can failover and return NULL, failing _push() will le=
+ak
+>>>> memory. Fix this issue with an extra list, pcpu_freelist.extralist. Th=
+e
+>>>> extralist is primarily used to take _push() when raw_spin_trylock()
+>>>> failed on all the per cpu lists. It should be empty most of the time.
+>>>> The following table summarizes the behavior of pcpu_freelist in NMI
+>>>> and non-NMI:
+>>>> non-NMI pop(): 	use _lock(); check per cpu lists first;
+>>>>                 if all per cpu lists are empty, check extralist;
+>>>>                 if extralist is empty, return NULL.
+>>>> non-NMI push(): use _lock(); only push to per cpu lists.
+>>>> NMI pop():    use _trylock(); check per cpu lists first;
+>>>>               if all per cpu lists are locked or empty, check extralis=
+t;
+>>>>               if extralist is locked or empty, return NULL.
+>>>> NMI push():   use _trylock(); check per cpu lists first;
+>>>>               if all per cpu lists are locked; try push to extralist;
+>>>>               if extralist is also locked, keep trying on per cpu list=
+s.
+>>>=20
+>>> Code looks reasonable to me, is there any practical benefit to keep the
+>>> extra list around for >1 CPU case (and not just compile it out)? For
+>>> example, we could choose a different back end *_freelist_push/pop()
+>>> implementation depending on CONFIG_SMP like ...
+>>>=20
+>>> ifeq ($(CONFIG_SMP),y)
+>>> obj-$(CONFIG_BPF_SYSCALL) +=3D percpu_freelist.o
+>>> else
+>>> obj-$(CONFIG_BPF_SYSCALL) +=3D onecpu_freelist.o
+>>> endif
+>>>=20
+>>> ... and keep the CONFIG_SMP simplified in that we'd only do the trylock
+>>> iteration over CPUs under NMI with pop aborting with NULL in worst case
+>>> and push keep looping, whereas for the single CPU case, all the logic
+>>> resides in onecpu_freelist.c and it has a simpler two list implementati=
+on?
+>> Technically, it is possible to have similar deadlock in SMP. For N cpus,
+>> there could be N NMI at the same time, and they may block N non-NMI raw
+>> spinlock, and then all these NMI push() would spin forever. Of course,
+>> this is almost impossible to trigger with a decent N.
+>> On the other hand, I feel current code doesn't add too much complexity
+>> to SMP case. Maintaining two copies may require more work down the road.
+>> If we found current version too complex for SMP, we can do the split in
+>> the future.
+>> Does this make sense?
+>=20
+> Hm, makes sense that technically this could happen also on SMP though unl=
+ikely;
+> in that case however we'd also need to correct the commit description a b=
+it since
+> it only mentions this on single CPU case (where it will realistically hap=
+pen, but
+> we should state your above explanation there too so we'll later have full=
+ context
+> in git history on why it was done this way also for SMP).
 
-> Thanks,
-> John
->
-> >
-> > Thanks,
-> > Ian
-> >
-> >> I have been rebasing some of my arm64 perf work to v5.9-rc7, and find an
-> >> issue where find_evsel_group() fails for the uncore metrics under the
-> >> condition mentioned above.
-> >>
-> >> Unfortunately I don't have an x86 machine to which this test applies.
-> >> However, as an experiment, I added a test metric to my broadwell JSON:
-> >>
-> >> diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> >> b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> >> index 8cdc7c13dc2a..fc6d9adf996a 100644
-> >> --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> >> +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> >> @@ -348,5 +348,11 @@
-> >>           "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
-> >>           "MetricGroup": "Power",
-> >>           "MetricName": "C7_Pkg_Residency"
-> >> +    },
-> >> +    {
-> >> +        "BriefDescription": "test metric",
-> >> +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE *
-> >> UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
-> >> +        "MetricGroup": "Test",
-> >> +        "MetricName": "test_metric_inc"
-> >>       }
-> >> ]
-> >>
-> >>
-> >> And get this:
-> >>
-> >> john@localhost:~/linux/tools/perf> sudo ./perf stat -v -M
-> >> test_metric_inc sleep 1
-> >> Using CPUID GenuineIntel-6-3D-4
-> >> metric expr unc_cbo_xsnp_response.miss_xcore *
-> >> unc_cbo_xsnp_response.miss_eviction for test_metric_inc
-> >> found event unc_cbo_xsnp_response.miss_eviction
-> >> found event unc_cbo_xsnp_response.miss_xcore
-> >> adding
-> >> {unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
-> >> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
-> >> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
-> >> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
-> >> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
-> >> Cannot resolve test_metric_inc: unc_cbo_xsnp_response.miss_xcore *
-> >> unc_cbo_xsnp_response.miss_eviction
-> >> task-clock: 688876 688876 688876
-> >> context-switches: 2 688876 688876
-> >> cpu-migrations: 0 688876 688876
-> >> page-faults: 69 688876 688876
-> >> cycles: 2101719 695690 695690
-> >> instructions: 1180534 695690 695690
-> >> branches: 249450 695690 695690
-> >> branch-misses: 10815 695690 695690
-> >>
-> >> Performance counter stats for 'sleep 1':
-> >>
-> >>                0.69 msec task-clock                #    0.001 CPUs
-> >> utilized
-> >>                   2      context-switches          #    0.003 M/sec
-> >>
-> >>                   0      cpu-migrations            #    0.000 K/sec
-> >>
-> >>                  69      page-faults               #    0.100 M/sec
-> >>
-> >>           2,101,719      cycles                    #    3.051 GHz
-> >>
-> >>           1,180,534      instructions              #    0.56  insn per
-> >> cycle
-> >>             249,450      branches                  #  362.112 M/sec
-> >>
-> >>              10,815      branch-misses             #    4.34% of all
-> >> branches
-> >>
-> >>         1.001177693 seconds time elapsed
-> >>
-> >>         0.001149000 seconds user
-> >>         0.000000000 seconds sys
-> >>
-> >>
-> >> john@localhost:~/linux/tools/perf>
-> >>
-> >>
-> >> Any idea what is going wrong here, before I have to dive in? The issue
-> >> seems to be this named commit.
-> >>
-> >> Thanks,
-> >> John
-> >>
-> >>> A metric group contains multiple metrics. These metrics may use the same
-> >>> events. If metrics use separate events then it leads to more
-> >>> multiplexing and overall metric counts fail to sum to 100%.
-> >>> Modify how metrics are associated with events so that if the events in
-> >>> an earlier group satisfy the current metric, the same events are used.
-> >>> A record of used events is kept and at the end of processing unnecessary
-> >>> events are eliminated.
-> >>>
-> >>> Before:
-> > .
-> >
->
+Thanks for the feedback. I will revise the commit log and send v2.=20
+
+Song
+
