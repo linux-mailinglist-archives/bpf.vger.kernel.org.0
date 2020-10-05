@@ -2,43 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9594283768
-	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 16:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639482837EB
+	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 16:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgJEOOo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 10:14:44 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52792 "EHLO
+        id S1725960AbgJEOhU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 10:37:20 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57326 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbgJEOOo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 10:14:44 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
+        with ESMTP id S1725936AbgJEOhT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 10:37:19 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kPRGC-0004Lq-TP; Mon, 05 Oct 2020 16:14:40 +0200
+        id 1kPRc2-0006Yg-51; Mon, 05 Oct 2020 16:37:14 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kPRGC-000QYo-Kf; Mon, 05 Oct 2020 16:14:40 +0200
-Subject: Re: [PATCH bpf-next] bpf: use raw_spin_trylock() for
- pcpu_freelist_push/pop in NMI
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>
-References: <20200926000756.893078-1-songliubraving@fb.com>
- <b2be5bfd-4df6-0047-a32a-cd2f93d44555@iogearbox.net>
- <12AC728B-D33F-41FD-AB72-857744639119@fb.com>
+        id 1kPRc1-000QdQ-TA; Mon, 05 Oct 2020 16:37:13 +0200
+Subject: Re: [PATCH bpf-next] libbpf: fix compatibility problem in
+ xsk_socket__create
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        netdev@vger.kernel.org, jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org, ciara.loftus@intel.com
+References: <1601645787-16944-1-git-send-email-magnus.karlsson@gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c5914df4-de3c-8c45-0ed6-10841e41a8e3@iogearbox.net>
-Date:   Mon, 5 Oct 2020 16:14:39 +0200
+Message-ID: <75f034e8-09c4-9f43-03ed-84f003a036d3@iogearbox.net>
+Date:   Mon, 5 Oct 2020 16:37:13 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <12AC728B-D33F-41FD-AB72-857744639119@fb.com>
+In-Reply-To: <1601645787-16944-1-git-send-email-magnus.karlsson@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,112 +44,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/3/20 2:06 AM, Song Liu wrote:
->> On Oct 2, 2020, at 4:09 PM, Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 9/26/20 2:07 AM, Song Liu wrote:
->>> Recent improvements in LOCKDEP highlighted a potential A-A deadlock with
->>> pcpu_freelist in NMI:
->>> ./tools/testing/selftests/bpf/test_progs -t stacktrace_build_id_nmi
->>> [   18.984807] ================================
->>> [   18.984807] WARNING: inconsistent lock state
->>> [   18.984808] 5.9.0-rc6-01771-g1466de1330e1 #2967 Not tainted
->>> [   18.984809] --------------------------------
->>> [   18.984809] inconsistent {INITIAL USE} -> {IN-NMI} usage.
->>> [   18.984810] test_progs/1990 [HC2[2]:SC0[0]:HE0:SE1] takes:
->>> [   18.984810] ffffe8ffffc219c0 (&head->lock){....}-{2:2}, at:
->>> __pcpu_freelist_pop+0xe3/0x180
->>> [   18.984813] {INITIAL USE} state was registered at:
->>> [   18.984814]   lock_acquire+0x175/0x7c0
->>> [   18.984814]   _raw_spin_lock+0x2c/0x40
->>> [   18.984815]   __pcpu_freelist_pop+0xe3/0x180
->>> [   18.984815]   pcpu_freelist_pop+0x31/0x40
->>> [   18.984816]   htab_map_alloc+0xbbf/0xf40
->>> [   18.984816]   __do_sys_bpf+0x5aa/0x3ed0
->>> [   18.984817]   do_syscall_64+0x2d/0x40
->>> [   18.984818]   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>> [   18.984818] irq event stamp: 12
->>> [ ... ]
->>> [   18.984822] other info that might help us debug this:
->>> [   18.984823]  Possible unsafe locking scenario:
->>> [   18.984823]
->>> [   18.984824]        CPU0
->>> [   18.984824]        ----
->>> [   18.984824]   lock(&head->lock);
->>> [   18.984826]   <Interrupt>
->>> [   18.984826]     lock(&head->lock);
->>> [   18.984827]
->>> [   18.984828]  *** DEADLOCK ***
->>> [   18.984828]
->>> [   18.984829] 2 locks held by test_progs/1990:
->>> [ ... ]
->>> [   18.984838]  <NMI>
->>> [   18.984838]  dump_stack+0x9a/0xd0
->>> [   18.984839]  lock_acquire+0x5c9/0x7c0
->>> [   18.984839]  ? lock_release+0x6f0/0x6f0
->>> [   18.984840]  ? __pcpu_freelist_pop+0xe3/0x180
->>> [   18.984840]  _raw_spin_lock+0x2c/0x40
->>> [   18.984841]  ? __pcpu_freelist_pop+0xe3/0x180
->>> [   18.984841]  __pcpu_freelist_pop+0xe3/0x180
->>> [   18.984842]  pcpu_freelist_pop+0x17/0x40
->>> [   18.984842]  ? lock_release+0x6f0/0x6f0
->>> [   18.984843]  __bpf_get_stackid+0x534/0xaf0
->>> [   18.984843]  bpf_prog_1fd9e30e1438d3c5_oncpu+0x73/0x350
->>> [   18.984844]  bpf_overflow_handler+0x12f/0x3f0
->>> This is because pcpu_freelist_head.lock is accessed in both NMI and
->>> non-NMI context. Fix this issue by using raw_spin_trylock() in NMI.
->>> For systems with only one cpu, there is a trickier scenario with
->>> pcpu_freelist_push(): if the only pcpu_freelist_head.lock is already
->>> locked before NMI, raw_spin_trylock() will never succeed. Unlike,
->>> _pop(), where we can failover and return NULL, failing _push() will leak
->>> memory. Fix this issue with an extra list, pcpu_freelist.extralist. The
->>> extralist is primarily used to take _push() when raw_spin_trylock()
->>> failed on all the per cpu lists. It should be empty most of the time.
->>> The following table summarizes the behavior of pcpu_freelist in NMI
->>> and non-NMI:
->>> non-NMI pop(): 	use _lock(); check per cpu lists first;
->>>                  if all per cpu lists are empty, check extralist;
->>>                  if extralist is empty, return NULL.
->>> non-NMI push(): use _lock(); only push to per cpu lists.
->>> NMI pop():    use _trylock(); check per cpu lists first;
->>>                if all per cpu lists are locked or empty, check extralist;
->>>                if extralist is locked or empty, return NULL.
->>> NMI push():   use _trylock(); check per cpu lists first;
->>>                if all per cpu lists are locked; try push to extralist;
->>>                if extralist is also locked, keep trying on per cpu lists.
->>
->> Code looks reasonable to me, is there any practical benefit to keep the
->> extra list around for >1 CPU case (and not just compile it out)? For
->> example, we could choose a different back end *_freelist_push/pop()
->> implementation depending on CONFIG_SMP like ...
->>
->> ifeq ($(CONFIG_SMP),y)
->> obj-$(CONFIG_BPF_SYSCALL) += percpu_freelist.o
->> else
->> obj-$(CONFIG_BPF_SYSCALL) += onecpu_freelist.o
->> endif
->>
->> ... and keep the CONFIG_SMP simplified in that we'd only do the trylock
->> iteration over CPUs under NMI with pop aborting with NULL in worst case
->> and push keep looping, whereas for the single CPU case, all the logic
->> resides in onecpu_freelist.c and it has a simpler two list implementation?
+On 10/2/20 3:36 PM, Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
 > 
-> Technically, it is possible to have similar deadlock in SMP. For N cpus,
-> there could be N NMI at the same time, and they may block N non-NMI raw
-> spinlock, and then all these NMI push() would spin forever. Of course,
-> this is almost impossible to trigger with a decent N.
+> Fix a compatibility problem when the old XDP_SHARED_UMEM mode is used
+> together with the xsk_socket__create() call. In the old XDP_SHARED_UMEM
+> mode, only sharing of the same device and queue id was allowed, and in
+> this mode, the fill ring and completion ring were shared between the
+> AF_XDP sockets. Therfore, it was perfectly fine to call the
+> xsk_socket__create() API for each socket and not use the new
+> xsk_socket__create_shared() API. This behaviour was ruined by the
+> commit introducing XDP_SHARED_UMEM support between different devices
+> and/or queue ids. This patch restores the ability to use
+> xsk_socket__create in these circumstances so that backward
+> compatibility is not broken.
 > 
-> On the other hand, I feel current code doesn't add too much complexity
-> to SMP case. Maintaining two copies may require more work down the road.
-> If we found current version too complex for SMP, we can do the split in
-> the future.
+> We also make sure that a user that uses the
+> xsk_socket__create_shared() api for the first socket in the old
+> XDP_SHARED_UMEM mode above, gets and error message if the user tries
+> to feed a fill ring or a completion ring that is not the same as the
+> ones used for the umem registration. Previously, libbpf would just
+> have silently ignored the supplied fill and completion rings and just
+> taken them from the umem. Better to provide an error to the user.
 > 
-> Does this make sense?
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
+> ---
+>   tools/lib/bpf/xsk.c | 14 +++++++++++++-
+>   1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index 30b4ca5..5b61932 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -705,7 +705,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+>   	struct xsk_ctx *ctx;
+>   	int err, ifindex;
+>   
+> -	if (!umem || !xsk_ptr || !(rx || tx) || !fill || !comp)
+> +	if (!umem || !xsk_ptr || !(rx || tx))
+>   		return -EFAULT;
+>   
+>   	xsk = calloc(1, sizeof(*xsk));
+> @@ -735,12 +735,24 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+>   
+>   	ctx = xsk_get_ctx(umem, ifindex, queue_id);
+>   	if (!ctx) {
+> +		if (!fill || !comp) {
+> +			err = -EFAULT;
+> +			goto out_socket;
+> +		}
+> +
+>   		ctx = xsk_create_ctx(xsk, umem, ifindex, ifname, queue_id,
+>   				     fill, comp);
+>   		if (!ctx) {
+>   			err = -ENOMEM;
+>   			goto out_socket;
+>   		}
+> +	} else if ((fill && ctx->fill != fill) || (comp && ctx->comp != comp)) {
+> +		/* If the xsk_socket__create_shared() api is used for the first socket
+> +		 * registration, then make sure the fill and completion rings supplied
+> +		 * are the same as the ones used to register the umem. If not, bail out.
+> +		 */
+> +		err = -EINVAL;
+> +		goto out_socket;
 
-Hm, makes sense that technically this could happen also on SMP though unlikely;
-in that case however we'd also need to correct the commit description a bit since
-it only mentions this on single CPU case (where it will realistically happen, but
-we should state your above explanation there too so we'll later have full context
-in git history on why it was done this way also for SMP).
+This looks buggy. You got a valid ctx in this path which was ctx->refcount++'ed. By just
+going to out_socket you'll leak this libbpf internal refcount.
 
-Thanks,
-Daniel
+>   	}
+>   	xsk->ctx = ctx;
+>   
+> 
+
