@@ -2,182 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A16E282E33
-	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 00:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C313C282F17
+	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 05:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgJDWwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Oct 2020 18:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
+        id S1725846AbgJEDsm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Oct 2020 23:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgJDWww (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Oct 2020 18:52:52 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F8EC0613CE
-        for <bpf@vger.kernel.org>; Sun,  4 Oct 2020 15:52:52 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id l17so7351791edq.12
-        for <bpf@vger.kernel.org>; Sun, 04 Oct 2020 15:52:52 -0700 (PDT)
+        with ESMTP id S1725845AbgJEDsm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Oct 2020 23:48:42 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F056EC0613CE;
+        Sun,  4 Oct 2020 20:48:41 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id z5so6554509ilq.5;
+        Sun, 04 Oct 2020 20:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KKtPWB3qCfBDrOOqt7qQDIxItKo9oFbV2GP8nvmxXHE=;
-        b=lLkhMyeaWoeRHo9ICMaA1XW+rcBs9pinrOsuydyl5Xwa/vqq3YTDTnLfLHYfSjKSFO
-         pZ8uIaeCybSgqs0peyszW0QdWgH3Sa/EdjFH4R+ExEKoqpm8ZUPzFJsXTQQ37N/DNY53
-         pGUPTy/BlKs97icERe2WUsR0L5/6baZOK9HBpsuj5VGoPa494YYvbd2wETOsEUU15vfL
-         l5Ov9m4x1h4+RiDPGugCUjWZucvGL2OBEp3yRNlQI3R5JXN4v9T8CCmR7LxBQ/XAuPBL
-         CuXkNz3T2HOnhmrcsnYeedhXiJi03eFOvdKRF4lVpM5fhGoK6IapFjSgtwV5oKUVZhXA
-         2GsA==
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=dBhgz32sZMbx5kb9JCuOzPqh+A3JaVp4ByVa9zVTLVE=;
+        b=aDUyffpkhi+f6OMwsWXBa+8miiLp17CTkihEpZxCX6ES5oriL4vATRtorKlEFv/F8L
+         4oCeHpl6gE7sNUNLBjJG4ZV7+6hjWxWqfIfkHqmGhtr6e8y6Mk2S09DuKz+00PPNbQ86
+         rHh3e1A9EsDYD585CqdU+/mQjw42/nYjNBvMf5igpW7p+kzQFEz+VAhMUmKt+jpCauTk
+         +TwT66QfhlMl3S9F/mwGJmnXmuGfvf2lJa9uATVulPONeOmUglqX/syy6mEdngLnmGyd
+         UMHxO8eaNXW5LLSkvOZ2Q1pqcJTuQ2Cq1A5Sss/ZztvSZxdp5+8nypxz70Z3I7CUoGAw
+         v7Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KKtPWB3qCfBDrOOqt7qQDIxItKo9oFbV2GP8nvmxXHE=;
-        b=NjoAf5ik5O6VJMS2bf/ruG7tt83xdFkMiHHNZuenZDbNz66CNH8ZsMTz2nKMWspDBs
-         inJw7HNp01dXGttdA2k8ZwRxdGwR4GE/4UoYVd4va0e2xiwugonicpUt2hwChs2WBNx8
-         M1ZBpv5Uf1CjoCFH8Fn4BS1L0XdMzj3e5AZ1RcMsGmZrqo1faVrQ2Via7Wx8R9lN7BJO
-         c3ytmvU894bZCaIdNKRwZOpYLZ3y27iy7i1Ssg/Y9TEwx5brj/C7s1dDf9IBQ7xQFOxy
-         yx6aHKsV0izq8YI/PP3nEN0JDHZiSVLEY93odjMNcg90Chi+EoAOiCfyG2X9rsiPXY8N
-         56uQ==
-X-Gm-Message-State: AOAM533DbbWOotQASWzg7sb9DmDaruXtl57zpMzNpKsoTAm3ZWW9SYfT
-        rA4llYanwb4lMrk3MQR0sKjWBxTqVbgE7EOzNxQ7r2NSnwE=
-X-Google-Smtp-Source: ABdhPJw73lEWATN4VzWV49m+63MSOpJIGHpPPJOjBabZrQ7G1ZVo6DiuMsOygTan4FZotUxEqS6VK9vBsO4mG1UQZnE=
-X-Received: by 2002:a05:6402:3c1:: with SMTP id t1mr13702093edw.231.1601851970917;
- Sun, 04 Oct 2020 15:52:50 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=dBhgz32sZMbx5kb9JCuOzPqh+A3JaVp4ByVa9zVTLVE=;
+        b=KQZOdOsXJ56bttDjiQuK60HRK1Y6C1mqzfxsId37CliT9zGKzkMPODP2vZ8NIpz8qg
+         1E71qogt/4rlJOISHxR7X9CR7lbFrcchXoppQ7wTg7VL7FF9TQNaGN8APVYqpbhwdO+b
+         dOtEi7jZUeOxhMrrr+ika75veRl1zPn6WnGWXTS/Tl2zQLyDtBS42TYS737f3IKzxooL
+         LSz4CJdii/qt5W1Bae12yaHXjnCxyd41cvDDqE2kjB4JD6WGMNHMjbqabefHuq1esDu8
+         Dpv7ZYQQWRJMw4Ae/dp2N5OunIqWNx79jCDoK3M86V//cLX3GR5Mfr9m26wpu85iHek3
+         IfEw==
+X-Gm-Message-State: AOAM532jTCuqezHUHFg/2BarJMJFnE2xeLdHB9qBa3BybXQVKD5N3XXl
+        +OaBt8AiSORTS4iTkLG6hFJk8M97zpNtIkUuyJU=
+X-Google-Smtp-Source: ABdhPJxB1Cy3OzJH699TGu4tVstMbpXMq5mOwJ5CiXtqXwRfalD0JAYcckBiuLUj6J7Fr0EidDJEYEx+3t4Dv2mygNw=
+X-Received: by 2002:a92:cb8c:: with SMTP id z12mr9209889ilo.123.1601869721004;
+ Sun, 04 Oct 2020 20:48:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAMy7=ZVMPuXp6sOTPPtDYZbhan2PZDBUtsTTZ78PikxKMoBm9g@mail.gmail.com>
- <CAEf4Bza00DMqu09vPL+1-_1361cw5HoDyE3pY6hSDkD0M-PGjA@mail.gmail.com>
- <CAMy7=ZVCUJKFA5AbaE3DeyCNsWXffWwcYtA6d5t9R5kgnzPi2A@mail.gmail.com>
- <CAEf4BzaTXz6s2xfV0swvcpKFz=U+K1DzD0+DEHSZ+e4Yf0xxPA@mail.gmail.com>
- <CAMy7=ZUgWyZNVs6haL4MF2hZ24MuvfE_mEOXopgVZFGF_D8miA@mail.gmail.com>
- <CAEf4BzZ=w++q3VVG8Mox4KsRHfY4P4J7G0Pnse2erWS6=OX3UQ@mail.gmail.com>
- <CAMy7=ZXdR5MgHLiqvgVyavVCLX3Erm=DURdEWZTYPMyJGC9Frw@mail.gmail.com> <CAEf4Bza47eedA_PFyOs94ZJczqFxLgPGDBgq4HES=EMMcUF44g@mail.gmail.com>
-In-Reply-To: <CAEf4Bza47eedA_PFyOs94ZJczqFxLgPGDBgq4HES=EMMcUF44g@mail.gmail.com>
-From:   Yaniv Agman <yanivagman@gmail.com>
-Date:   Mon, 5 Oct 2020 01:52:39 +0300
-Message-ID: <CAMy7=ZUoQ2JKjAxnqOX_PjaQQJBCMyYZKxqPM4uo-ZRsbCK6rQ@mail.gmail.com>
-Subject: Re: Help using libbpf with kernel 4.14
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+From:   Tony Ambardar <tony.ambardar@gmail.com>
+Date:   Sun, 4 Oct 2020 20:48:32 -0700
+Message-ID: <CAPGftE8-TxfyLKuLDowKKhOo5XtfD1YVO4Gv2+k1HqbL074G=A@mail.gmail.com>
+Subject: Re: [PATCH dwarves 00/11] Switch BTF loading and encoding to libbpf APIs
+To:     andriin@fb.com
+Cc:     bpf@vger.kernel.org, dwarves@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=93=D7=
-=B3, 30 =D7=91=D7=A1=D7=A4=D7=98=D7=B3 2020 =D7=91-21:34 =D7=9E=D7=90=D7=AA=
- =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
-<=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+On Tue, Sep 29, 2020 at 09:27:31PM -0700, Andrii Nakryiko wrote:
+> This patch set switches pahole to use libbpf-provided BTF loading and enc=
+oding
+> APIs. This reduces pahole's own BTF encoding code, speeds up the process,
+> reduces amount of RAM needed for DWARF-to-BTF conversion. Also, pahole fi=
+nally
+> gets support to generating BTF for cross-compiled ELF binaries with diffe=
+rent
+> endianness (patch #11).
 >
-> On Tue, Sep 29, 2020 at 1:25 AM Yaniv Agman <yanivagman@gmail.com> wrote:
-> >
-> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=92=
-=D7=B3, 29 =D7=91=D7=A1=D7=A4=D7=98=D7=B3 2020 =D7=91-4:29 =D7=9E=D7=90=D7=
-=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
-> > <=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > >
-> > > On Mon, Sep 28, 2020 at 5:01 PM Yaniv Agman <yanivagman@gmail.com> wr=
-ote:
-> > > >
-> > > > Hi Andrii,
-> > > >
-> > > > I used BPF skeleton as you suggested, which did work with kernel 4.=
-19
-> > > > but not with 4.14.
-> > > > I used the exact same program,  same environment, only changed the
-> > > > kernel version.
-> > > > The error message I get on 4.14:
-> > > >
-> > > > libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
-> > > > libbpf: failed to determine kprobe perf type: No such file or direc=
-tory
-> > >
-> > > This means that your kernel doesn't support attaching to
-> > > kprobe/tracepoint through perf_event subsystem. That's currently the
-> > > only way that libbpf supports for kprobe/tracapoint programs. It was
-> > > added in 4.17 kernel, which explains what is happening in your case.
-> > > It is still possible to attach to kprobe using legacy ways, but libbp=
-f
-> > > doesn't provide that out of the box. We had a discussion a while ago
-> > > (about 1 year ago) about adding that to libbpf, but at that time we
-> > > didn't have a good testing infrastructure to validate such legacy
-> > > interfaces, plus it's a bit on the unsafe side as far as APIs go
-> > > (there is no auto-detachment and cleanup with how old kernels allow t=
-o
-> > > do kprobe/tracepoint). But we might reconsider, given it's not a firs=
+Hello Andrii,
+
+After a small hiccup (see below) I managed to build a modified 'pahole' and=
+ test
+cross-compiling from x86_64 to mips 64/32-bit and big/little-endian
+targets. Using
+"bpftool btf dump file /sys/kernel/btf/vmlinux format c" succeeded on
+all targets,
+whereas prior to your changes running on big-endian targets would
+raise an error.
+(Note that the 'bpftool' used a 'libbpf' without any of your changes.)
+
+Thanks so much for tackling these BTF endianness problems; it's been a grea=
 t
-> > > time I see people get confused and blocked by this.
-> > >
-> > > Anyways, here's how you can do it without waiting for libbpf to do
-> > > this out of the box:
-> > >
-> > >
->
-> [...]
->
-> > >
-> > >
-> > > Then you'd use it in your application as:
-> > >
-> > > ...
-> > >
-> > >   skel->links.handler =3D attach_kprobe_legacy(
-> > >       skel->progs.handler, "do_sys_open", false /* is_kretprobe */);
-> > >   if (!skel->links.handler) {
-> > >     fprintf(stderr, "Failed to attach kprobe using legacy debugfs API=
-!\n");
-> > >     err =3D 1;
-> > >     goto out;
-> > >   }
-> > >
-> > >   ... kprobe is attached here ...
-> > >
-> > > out:
-> > >   /* first clean up step */
-> > >   bpf_link__destroy(skel->links.handler);
-> > >   /* this is second necessary clean up step */
-> > >   remove_kprobe_event("do_sys_open", false /* is_kretprobe */);
-> > >
-> > >
-> > > Let me know if that worked.
-> > >
-> >
-> > Thanks Andrii,
-> >
-> > I made a small change for the code to compile:
-> > skel->links.handler to skel->links.kprobe__do_sys_open and same for ske=
-l->progs
-> >
-> > After compiling the code, I'm now getting the following error:
-> > failed to create perf event for kprobe ID 1930: -2
-> > Failed to attach kprobe using legacy debugfs API!
-> > failed to remove kprobe '-:kprobes/do_sys_open': -2
->
-> I've successfully used that code on the kernel as old as 4.9, so this
-> must be something about your kernel configuration. E.g., check that
-> CONFIG_KPROBE_EVENTS is enabled.
+help for working with embedded systems.
 
-Just wanted to update that this code works!
-I didn't include <linux/unistd.h> and for some reason the compiler
-didn't complain...
-Thank you very much Andrii!
+> Additionally, patch #6 fixes previously missed problem with invalid array
+> index type generation.
+>
+> Patches #7-10 are speeding up DWARF-to-BTF convertion/dedup pretty
+> significantly, saving overall about 9 seconds out of current 27 or so.
+>
+> Patch #8 revamps how per-CPU BTF variables are emitted, eliminating repea=
+ted
+> and expensive looping over ELF symbols table.
+>
+> Patch #10 admittedly has some hacky parts to satisfy CTF use case, but it=
+s
+> speed ups are greatest. So I'll understand if it gets dropped, but it wou=
+ld be
+> a pity.
+>
+Possibly a case of operator error, but I had to skip this patch to
+cleanly build 'pahole',
+and didn't have much chance to look into the compile error:
 
+  [  1%] Building C object CMakeFiles/bpf.dir/lib/bpf/src/ringbuf.c.o
+  In file included from /home/kodidev/pahole/strings.h:9,
+                   from /usr/include/string.h:432,
+                   from /home/kodidev/pahole/lib/bpf/src/libbpf_common.h:12=
+,
+                   from /home/kodidev/pahole/lib/bpf/src/libbpf.h:20,
+                   from /home/kodidev/pahole/lib/bpf/src/ringbuf.c:20:
+  /home/kodidev/pahole/lib/bpf/src/btf.h:33:11: error: expected =E2=80=98;=
+=E2=80=99
+before =E2=80=98void=E2=80=99
+    33 | LIBBPF_API void btf__free(struct btf *btf);
+        |           ^~~~~
+        |           ;
+
+Kind regards,
+Tony
+
+> More details could be found in respective patches.
 >
-> >
-> > As our application is written in go,
-> > I hoped libbpf would support kernel 3.14 out of the box, so we can
-> > just call libbpf functions using cgo wrappers.
-> > I can do further checks if you'd like, but I think we will also
-> > consider updating the minimal kernel version requirement to 4.18
+> Andrii Nakryiko (11):
+>   libbpf: update to latest libbpf version
+>   btf_encoder: detect BTF encoding errors and exit
+>   dwarves: expose and maintain active debug info loader operations
+>   btf_loader: use libbpf to load BTF
+>   btf_encoder: use libbpf APIs to encode BTF type info
+>   btf_encoder: fix emitting __ARRAY_SIZE_TYPE__ as index range type
+>   btf_encoder: discard CUs after BTF encoding
+>   btf_encoder: revamp how per-CPU variables are encoded
+>   dwarf_loader: increase the size of lookup hash map
+>   strings: use BTF's string APIs for strings management
+>   btf_encoder: support cross-compiled ELF binaries with different
+>     endianness
 >
-> It's up to you. Of course using a more recent kernel would be much
-> better, if you can get away with it.
->
-> >
-> > > > libbpf: prog 'kprobe__do_sys_open': failed to create kprobe
-> > > > 'do_sys_open' perf event: No such file or directory
-> > > > libbpf: failed to auto-attach program 'kprobe__do_sys_open': -2
-> > > > failed to attach BPF programs: No such file or directory
-> > > >
-> > >
-> > > [...]
