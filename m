@@ -2,97 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAADB2842A3
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 00:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAF52842A6
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 00:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbgJEWpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 18:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgJEWpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:45:36 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E6AC0613CE
-        for <bpf@vger.kernel.org>; Mon,  5 Oct 2020 15:45:35 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id y77so3015738qkb.8
-        for <bpf@vger.kernel.org>; Mon, 05 Oct 2020 15:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=8BKhAkzDrkowGH3g/fxPwDUzO3fDD8T7y6zkrNKC+Ok=;
-        b=X4bv+/PEuZ6mqeDRerTKhN7QEWlck1XKrErbm8VAk3LB9+hvJSVr0XCCVD/xplk/qP
-         XKnFXGydFBrsQwpF1Bj0Qt47VnEms+QNvpmZQuR13tZdTrvkD0zM3MAr4mBjauacit0j
-         2sUkrgkq57Pc9ys5qpk0CHi7WbBFe2aEFKhifHXCNie09kizNzkPssE3CKH4HWYZGGkD
-         y5sO9G/c1B5ukJUqBRYNDVT9uC5VSnnzMTfK7GMeXLipgJxiTeM5eTrYyzNgsPWkWG8g
-         u1reTVYIOd2QLn3PHf/bFOcmaToFyMaueCWKz0h0YgUWZwFa+obiGixPz32SskxYy55D
-         wLLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=8BKhAkzDrkowGH3g/fxPwDUzO3fDD8T7y6zkrNKC+Ok=;
-        b=RrjMn87QbobeASWo7ZW4We2SF0/edGX1FYsC3WhKZ0P2Zk5ySxCNCUnXoLRwmWYDQ+
-         LjaKlGz3lwthSEIiL7LvQARTbwFZTmYR69RQWXh/fhOesj1pmf600B/oSL1iBXDMHCLk
-         H5QR0DuyL8tnTIDly95DJTdGEa4t6n8NzTCm1r7ZN9lbVHr4sCMDnGssumlBvfFJIr8g
-         zb2ERp/tDFQxOAB9SqeS3Bd326UxJvEPmlHCfstPiIDxyedwsrXFvRV8Tv86yPhQtC3R
-         tC2PcTGUo5j2sz62/uLAaAF5uGa9J1l7+8+GuLUdDywIFqUXSxeVV5FBmhiNRPrYahcU
-         2Zkg==
-X-Gm-Message-State: AOAM530TWj2E+nnLT17fEpUkUvNtsE6lXQ+OFXW9XaZR5ErZ1G+RVI71
-        VQD6AshdeSdY0k473OxaDrb/e1bOZl9XFWUfW0B9o0cGURaBHlf9ftRGe348HK0Mij/IhUdYPK5
-        MQ9QDZ1c0VWS2qtUxhQuhRETsLLOiGHYdTk97FhO5u2IR8uUMrcXq1lz+Aw==
-X-Google-Smtp-Source: ABdhPJw5TbsireMyRkoLBkqvTxu//Mh1ELm0jmOIo9VDP0zgEyRALhbtOJamHqL2QOHGepx9H+4+tAOz6sU=
-Sender: "lrizzo via sendgmr" <lrizzo@lrizzo2.svl.corp.google.com>
-X-Received: from lrizzo2.svl.corp.google.com ([2620:15c:2c4:201:7220:84ff:fe09:96d1])
- (user=lrizzo job=sendgmr) by 2002:ad4:58c7:: with SMTP id dh7mr2081173qvb.20.1601937934098;
- Mon, 05 Oct 2020 15:45:34 -0700 (PDT)
-Date:   Mon,  5 Oct 2020 15:45:28 -0700
-Message-Id: <20201005224528.389097-1-lrizzo@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-Subject: [PATCH v3] bpf, libbpf: use valid btf in bpf_program__set_attach_target
-From:   Luigi Rizzo <lrizzo@google.com>
-To:     bpf@vger.kernel.org, Eelco Chaudron <echaudro@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, rizzo.unipi@gmail.com,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     ppenkov@google.com, tommaso.burlon@gmail.com,
-        Luigi Rizzo <lrizzo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725846AbgJEWq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 18:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725931AbgJEWq2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 18:46:28 -0400
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601937988;
+        bh=fsh8Almz6lNAuid9N9lsdYn67WQOxOmLJJ3t0r4ibCA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=j4bS3EFxA0iPU+v1h52K2zjONGNHrowqWhfihNHiw5qZsAwNhnDvtjrAYdNI+SR78
+         kAJaaipWsn7qGFZ+WMXYMWn7x2TAf4SV9T+E02PUHkJ9hvjRqTYc9yzvuyEcV9f2hi
+         lCpJgmv1IYm6tr1+D6VUUUKxGxyvRq/M5mvNjO9Q=
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next] bpf: use raw_spin_trylock() for
+ pcpu_freelist_push/pop in NMI
+From:   patchwork-bot+bpf@kernel.org
+Message-Id: <160193798830.16948.17489142040627481950.git-patchwork-notify@kernel.org>
+Date:   Mon, 05 Oct 2020 22:46:28 +0000
+References: <20201005165838.3735218-1-songliubraving@fb.com>
+In-Reply-To: <20201005165838.3735218-1-songliubraving@fb.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_program__set_attach_target(prog, fd, ...) will always fail when
-fd = 0 (attach to a kernel symbol) because obj->btf_vmlinux is NULL
-and there is no way to set it (at the moment btf_vmlinux is meant
-to be temporary storage for use in bpf_object__load_xattr()).
+Hello:
 
-Fix this by using libbpf_find_vmlinux_btf_id().
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-At some point we may want to opportunistically cache btf_vmlinux
-so it can be reused with multiple programs.
+On Mon, 5 Oct 2020 09:58:38 -0700 you wrote:
+> Recent improvements in LOCKDEP highlighted a potential A-A deadlock with
+> pcpu_freelist in NMI:
+> 
+> ./tools/testing/selftests/bpf/test_progs -t stacktrace_build_id_nmi
+> 
+> [   18.984807] ================================
+> [   18.984807] WARNING: inconsistent lock state
+> [   18.984808] 5.9.0-rc6-01771-g1466de1330e1 #2967 Not tainted
+> [   18.984809] --------------------------------
+> [   18.984809] inconsistent {INITIAL USE} -> {IN-NMI} usage.
+> [   18.984810] test_progs/1990 [HC2[2]:SC0[0]:HE0:SE1] takes:
+> [   18.984810] ffffe8ffffc219c0 (&head->lock){....}-{2:2}, at:
+> __pcpu_freelist_pop+0xe3/0x180
+> [   18.984813] {INITIAL USE} state was registered at:
+> [   18.984814]   lock_acquire+0x175/0x7c0
+> [   18.984814]   _raw_spin_lock+0x2c/0x40
+> [   18.984815]   __pcpu_freelist_pop+0xe3/0x180
+> [   18.984815]   pcpu_freelist_pop+0x31/0x40
+> [   18.984816]   htab_map_alloc+0xbbf/0xf40
+> [   18.984816]   __do_sys_bpf+0x5aa/0x3ed0
+> [   18.984817]   do_syscall_64+0x2d/0x40
+> [   18.984818]   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   18.984818] irq event stamp: 12
+> [ ... ]
+> [   18.984822] other info that might help us debug this:
+> [   18.984823]  Possible unsafe locking scenario:
+> [   18.984823]
+> [   18.984824]        CPU0
+> [   18.984824]        ----
+> [   18.984824]   lock(&head->lock);
+> [   18.984826]   <Interrupt>
+> [   18.984826]     lock(&head->lock);
+> [   18.984827]
+> [   18.984828]  *** DEADLOCK ***
+> [   18.984828]
+> [   18.984829] 2 locks held by test_progs/1990:
+> [ ... ]
+> [   18.984838]  <NMI>
+> [   18.984838]  dump_stack+0x9a/0xd0
+> [   18.984839]  lock_acquire+0x5c9/0x7c0
+> [   18.984839]  ? lock_release+0x6f0/0x6f0
+> [   18.984840]  ? __pcpu_freelist_pop+0xe3/0x180
+> [   18.984840]  _raw_spin_lock+0x2c/0x40
+> [   18.984841]  ? __pcpu_freelist_pop+0xe3/0x180
+> [   18.984841]  __pcpu_freelist_pop+0xe3/0x180
+> [   18.984842]  pcpu_freelist_pop+0x17/0x40
+> [   18.984842]  ? lock_release+0x6f0/0x6f0
+> [   18.984843]  __bpf_get_stackid+0x534/0xaf0
+> [   18.984843]  bpf_prog_1fd9e30e1438d3c5_oncpu+0x73/0x350
+> [   18.984844]  bpf_overflow_handler+0x12f/0x3f0
+> 
+> [...]
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Luigi Rizzo <lrizzo@google.com>
----
- tools/lib/bpf/libbpf.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Here is the summary with links:
+  - [v2,bpf-next] bpf: use raw_spin_trylock() for pcpu_freelist_push/pop in NMI
+    https://git.kernel.org/bpf/bpf-next/c/39d8f0d1026a
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a4f55f8a460d..33bf102259dd 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10353,9 +10353,8 @@ int bpf_program__set_attach_target(struct bpf_program *prog,
- 		btf_id = libbpf_find_prog_btf_id(attach_func_name,
- 						 attach_prog_fd);
- 	else
--		btf_id = __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
--					       attach_func_name,
--					       prog->expected_attach_type);
-+		btf_id = libbpf_find_vmlinux_btf_id(attach_func_name,
-+						    prog->expected_attach_type);
- 
- 	if (btf_id < 0)
- 		return btf_id;
--- 
-2.28.0.806.g8561365e88-goog
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
