@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1575A28429D
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 00:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAADB2842A3
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 00:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgJEWmG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 18:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
+        id S1725939AbgJEWpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 18:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgJEWmG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 18:42:06 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A71C0613CE
-        for <bpf@vger.kernel.org>; Mon,  5 Oct 2020 15:42:05 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id t4so3673309qtd.23
-        for <bpf@vger.kernel.org>; Mon, 05 Oct 2020 15:42:05 -0700 (PDT)
+        with ESMTP id S1725846AbgJEWpg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 18:45:36 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E6AC0613CE
+        for <bpf@vger.kernel.org>; Mon,  5 Oct 2020 15:45:35 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id y77so3015738qkb.8
+        for <bpf@vger.kernel.org>; Mon, 05 Oct 2020 15:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=xipzbpHviIqYiBak+nQbcMG39Ykhca1EiWbnf/u43KQ=;
-        b=glmegDwyzcp+D/agTU6hHG0h9N7d9liL8aX33J5E1yLWQWJ06RaiV+dJnEg4xwjCVi
-         hhTNwHTFkwk6b6+o2mm6oBNRhNMYq34S7yPDSX34Lv8m81u3NVlU08nIDWoEg+CU/B3X
-         VdMbi746d/Vr/OXrBUG6BUtVeYo/g0fc41F9SrXvADhDFP8K8XskEMAPmmpALYbOnMJs
-         X0McL0d4fecHOtp0E/CjRdYGTAdgf4gRJwOkqKhP9vcUQDfAJ0rcT5SI++VrHLxiEF/q
-         KbVBoLPGxfjGpzAehfHFdqTHyiRxNQNkbfXBwz0Up0zB99N/ZmDu8IlYPNHxh0zHe4X7
-         2zrA==
+        bh=8BKhAkzDrkowGH3g/fxPwDUzO3fDD8T7y6zkrNKC+Ok=;
+        b=X4bv+/PEuZ6mqeDRerTKhN7QEWlck1XKrErbm8VAk3LB9+hvJSVr0XCCVD/xplk/qP
+         XKnFXGydFBrsQwpF1Bj0Qt47VnEms+QNvpmZQuR13tZdTrvkD0zM3MAr4mBjauacit0j
+         2sUkrgkq57Pc9ys5qpk0CHi7WbBFe2aEFKhifHXCNie09kizNzkPssE3CKH4HWYZGGkD
+         y5sO9G/c1B5ukJUqBRYNDVT9uC5VSnnzMTfK7GMeXLipgJxiTeM5eTrYyzNgsPWkWG8g
+         u1reTVYIOd2QLn3PHf/bFOcmaToFyMaueCWKz0h0YgUWZwFa+obiGixPz32SskxYy55D
+         wLLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
          :to:cc;
-        bh=xipzbpHviIqYiBak+nQbcMG39Ykhca1EiWbnf/u43KQ=;
-        b=WHZIlcTgLoCjwGu/zU6JvJQhuiINtBF9wypq/4cPeD/nq0i8lopxsDcrN8Ejg99dZH
-         HC6/8KqmBmWPsY9cp8K2Xfc0gM4zz0ZgswydG6ZJLPFX39gkdOmKfL21ZOepYGnMUAH/
-         uvD+Yb8KviMbyhKjrTjeDdnTfhyoXvhGcNDxGd2yI9RuxeHyvkSYlMk63t9cX/1lYpDe
-         E5IZEtecDJD0n/p/Y5vOi+h2r91sFk0qj5UCn+DTWqpCeWOFMBn8anfTNOjHIybBLcB+
-         RRg1dFhh2zOPKS9eTRsEuaMvAG/Cy59HtRRVqJbLtHZGhvV6gnXd7aNtmmAYaOHVqwT7
-         mEQw==
-X-Gm-Message-State: AOAM5311QTucHw0aQS73gnRfv4V+Q+nTPvFZkCMKcl9/r7psjlcnJGwp
-        mL9fwhAYxoIz1aOY61Yhz8OqfJI4yBaI5iiZjnGFWzZm7E5598gwH/IsmFGvvQLrTJNbdKcMdq/
-        XXi7G/UhzTUoXHOPNdg66jNHJRMwaOYHbe7GXtU18QR8B/IM7iJEUh5vU6A==
-X-Google-Smtp-Source: ABdhPJyVlzQgO3xJoCn9JotPIVM2yXpsGWjCgJjtBq5hX1vo/PKytLJFa61vGg1mtKpBQRRBoZ1YmfBSZ1I=
+        bh=8BKhAkzDrkowGH3g/fxPwDUzO3fDD8T7y6zkrNKC+Ok=;
+        b=RrjMn87QbobeASWo7ZW4We2SF0/edGX1FYsC3WhKZ0P2Zk5ySxCNCUnXoLRwmWYDQ+
+         LjaKlGz3lwthSEIiL7LvQARTbwFZTmYR69RQWXh/fhOesj1pmf600B/oSL1iBXDMHCLk
+         H5QR0DuyL8tnTIDly95DJTdGEa4t6n8NzTCm1r7ZN9lbVHr4sCMDnGssumlBvfFJIr8g
+         zb2ERp/tDFQxOAB9SqeS3Bd326UxJvEPmlHCfstPiIDxyedwsrXFvRV8Tv86yPhQtC3R
+         tC2PcTGUo5j2sz62/uLAaAF5uGa9J1l7+8+GuLUdDywIFqUXSxeVV5FBmhiNRPrYahcU
+         2Zkg==
+X-Gm-Message-State: AOAM530TWj2E+nnLT17fEpUkUvNtsE6lXQ+OFXW9XaZR5ErZ1G+RVI71
+        VQD6AshdeSdY0k473OxaDrb/e1bOZl9XFWUfW0B9o0cGURaBHlf9ftRGe348HK0Mij/IhUdYPK5
+        MQ9QDZ1c0VWS2qtUxhQuhRETsLLOiGHYdTk97FhO5u2IR8uUMrcXq1lz+Aw==
+X-Google-Smtp-Source: ABdhPJw5TbsireMyRkoLBkqvTxu//Mh1ELm0jmOIo9VDP0zgEyRALhbtOJamHqL2QOHGepx9H+4+tAOz6sU=
 Sender: "lrizzo via sendgmr" <lrizzo@lrizzo2.svl.corp.google.com>
 X-Received: from lrizzo2.svl.corp.google.com ([2620:15c:2c4:201:7220:84ff:fe09:96d1])
- (user=lrizzo job=sendgmr) by 2002:a0c:a899:: with SMTP id x25mr1930826qva.46.1601937724807;
- Mon, 05 Oct 2020 15:42:04 -0700 (PDT)
-Date:   Mon,  5 Oct 2020 15:42:01 -0700
-Message-Id: <20201005224201.387694-1-lrizzo@google.com>
+ (user=lrizzo job=sendgmr) by 2002:ad4:58c7:: with SMTP id dh7mr2081173qvb.20.1601937934098;
+ Mon, 05 Oct 2020 15:45:34 -0700 (PDT)
+Date:   Mon,  5 Oct 2020 15:45:28 -0700
+Message-Id: <20201005224528.389097-1-lrizzo@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.28.0.806.g8561365e88-goog
-Subject: [PATCH v2] use valid btf in bpf_program__set_attach_target(prog,  0, ...);
+Subject: [PATCH v3] bpf, libbpf: use valid btf in bpf_program__set_attach_target
 From:   Luigi Rizzo <lrizzo@google.com>
 To:     bpf@vger.kernel.org, Eelco Chaudron <echaudro@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>, rizzo.unipi@gmail.com,
@@ -61,17 +61,17 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_program__set_attach_target() will always fail with fd=0 (attach to a
-kernel symbol) because obj->btf_vmlinux is NULL and there is no way to
-set it.
+bpf_program__set_attach_target(prog, fd, ...) will always fail when
+fd = 0 (attach to a kernel symbol) because obj->btf_vmlinux is NULL
+and there is no way to set it (at the moment btf_vmlinux is meant
+to be temporary storage for use in bpf_object__load_xattr()).
 
-Fix this by using libbpf_find_vmlinux_btf_id()
+Fix this by using libbpf_find_vmlinux_btf_id().
 
-(on a side note: it is unclear whether btf_vmlinux is meant to be
-just temporary storage for use in bpf_object__load_xattr(), or
-a property of bpf_object, in which case it could be initialuzed
-opportunistically, and properly released in bpf_object__close() ).
+At some point we may want to opportunistically cache btf_vmlinux
+so it can be reused with multiple programs.
 
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Luigi Rizzo <lrizzo@google.com>
 ---
  tools/lib/bpf/libbpf.c | 5 ++---
