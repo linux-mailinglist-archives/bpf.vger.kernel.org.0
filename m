@@ -2,167 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CDD283DFA
-	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 20:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E618B283F80
+	for <lists+bpf@lfdr.de>; Mon,  5 Oct 2020 21:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgJESIY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Oct 2020 14:08:24 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2957 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725960AbgJESIY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Oct 2020 14:08:24 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id C9FE3F895F4435A2D160;
-        Mon,  5 Oct 2020 19:08:21 +0100 (IST)
-Received: from [127.0.0.1] (10.47.2.205) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 5 Oct 2020
- 19:08:19 +0100
-Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
- 23/23] perf metricgroup: remove duped metric group events)
-To:     Ian Rogers <irogers@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-References: <20200507140819.126960-1-irogers@google.com>
- <20200507140819.126960-24-irogers@google.com>
- <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com>
- <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
- <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com>
- <CAP-5=fXwQZVDxJM4LmEvsKW9h0HYP6t3F0EZfy0+hwAzDmBgGA@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <248e8d19-8727-b403-4196-59eac1b1f305@huawei.com>
-Date:   Mon, 5 Oct 2020 19:05:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1729319AbgJETVR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Oct 2020 15:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgJETVQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Oct 2020 15:21:16 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE76C0613CE
+        for <bpf@vger.kernel.org>; Mon,  5 Oct 2020 12:21:16 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id s7so7389266qkh.11
+        for <bpf@vger.kernel.org>; Mon, 05 Oct 2020 12:21:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=51bUXe4hXWLbOV3TYT9XpSYljKsinNrtDRnIo2tzTSg=;
+        b=Fu9lPnL2uux5XQFr9sNcZsY2PAVJhaBrcF5h7GI3BBbPNj7iq+lPjGn+ow95F+EQTC
+         HF21GCzBiiLQE+N/oH77RO5GqAKGxgBd8WoJl6LkYkZ4PlizJY1HOBtg8GtvJRQ+1qlg
+         rs+P6l84vAQGa7fxZnzsiR9PGASmtt8OCQwdbaaXmWLu62z64UdqFMyY7DyGAsloyqVq
+         sbGZpXKv6xIG8JfTZkYVZC7O1gcjaiFRXUcO5oEaUm1TJr+fIeYczE7AXTsYtlEKTWMe
+         uOzzluc6HhGygF3VVsjy/gHVac0plgGmfZMY20CyqawTSHJe0JMuVXTG8cUH+9Ghe34o
+         k6pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=51bUXe4hXWLbOV3TYT9XpSYljKsinNrtDRnIo2tzTSg=;
+        b=Zpnqo4QqvDrN8ZCageU1CYZvUXxE1cIQZb3X3TR63135DD1PQrFDBX0NdsvXjHKu+s
+         rspKFU2s1vVRAmxB3lINqqT8lBxRgvpyJqBk4DxRt0n0SZc3X6zZq4ErLD6HFXcUF27s
+         NSYWWCNgUPK18c+AFqHHxz3gF4+anOcOGSmtPI7F46ddWphtoNCZiU+S7dG/CzZMQRKp
+         sihRx2XyLnLT16E/2r1ZCd7+fs2r5FSH+HBcbZQPh7gYfxqTz/2lDdTeIZCYRwobngPg
+         XN1CJmmbdQb7dwW8h2mmk1LkU4rnvBalyEM9decFXBTi5mAtKFr167shr36B6YXuJzL5
+         07wA==
+X-Gm-Message-State: AOAM533UMrnJe4QJtcw3NJFi/1VQG9oECiUKtzT/tGtmIucCH87PN8M4
+        LgEYDs5631Gqlp6BNWOq7D0ecDUY2ignlBGiJ/g=
+X-Google-Smtp-Source: ABdhPJwvRoEc4X2gaYqyclsgKIwP7KedjOm9APDIfVYVwzfknZzbjhrHUF+eCpFPtiYbXqdg8WzjQcMYOhaxiKTcVdQ=
+X-Received: by 2002:a25:2596:: with SMTP id l144mr2040877ybl.510.1601925675938;
+ Mon, 05 Oct 2020 12:21:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fXwQZVDxJM4LmEvsKW9h0HYP6t3F0EZfy0+hwAzDmBgGA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.2.205]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20201005163934.331875-1-lrizzo@google.com>
+In-Reply-To: <20201005163934.331875-1-lrizzo@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 5 Oct 2020 12:21:05 -0700
+Message-ID: <CAEf4BzZq8t0XZy5Z6SBHAURJBxuDBPdU9amsJ0z0os7TE-cjoQ@mail.gmail.com>
+Subject: Re: [PATCH v2] use valid btf in bpf_program__set_attach_target(prog,
+ 0, ...);
+To:     Luigi Rizzo <lrizzo@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Eelco Chaudron <echaudro@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Petar Penkov <ppenkov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/10/2020 17:28, Ian Rogers wrote:
-> On Mon, Oct 5, 2020 at 3:06 AM John Garry <john.garry@huawei.com> wrote:
->>
->> On 02/10/2020 21:46, Ian Rogers wrote:
->>> On Fri, Oct 2, 2020 at 5:00 AM John Garry <john.garry@huawei.com> wrote:
->>>>
->>>> On 07/05/2020 15:08, Ian Rogers wrote:
->>>>
->>>> Hi Ian,
->>>>
->>>> I was wondering if you ever tested commit 2440689d62e9 ("perf
->>>> metricgroup: Remove duped metric group events") for when we have a
->>>> metric which aliases multiple instances of the same uncore PMU in the
->>>> system?
->>>
->>> Sorry for this, I hadn't tested such a metric and wasn't aware of how
->>> the aliasing worked. I sent a fix for this issue here:
->>> https://lore.kernel.org/lkml/20200917201807.4090224-1-irogers@google.com/
->>> Could you see if this addresses the issue for you? I don't see the
->>> change in Arnaldo's trees yet.
->>
->> Unfortunately this does not seem to fix my issue.
->>
->> So for that patch, you say you fix metric expression for DRAM_BW_Use,
->> which is:
->>
->> {
->>    "BriefDescription": "Average external Memory Bandwidth Use for reads
->> and writes [GB / sec]",
->>    "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ +
->> uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
->>    "MetricGroup": "Memory_BW",
->> "MetricName": "DRAM_BW_Use"
->> },
->>
->> But this metric expression does not include any alias events; rather I
->> think it is just cas_count_write + cas_count_read event count for PMU
->> uncore_imc / duration_time.
->>
->> When I say alias, I mean - as an example, we have event:
->>
->>       {
->>           "BriefDescription": "write requests to memory controller.
->> Derived from unc_m_cas_count.wr",
->>           "Counter": "0,1,2,3",
->>           "EventCode": "0x4",
->>           "EventName": "LLC_MISSES.MEM_WRITE",
->>           "PerPkg": "1",
->>           "ScaleUnit": "64Bytes",
->>           "UMask": "0xC",
->>           "Unit": "iMC"
->>       },
->>
->> And then reference LLC_MISSES.MEM_WRITE in a metric expression:
->>
->> "MetricExpr": "LLC_MISSES.MEM_WRITE / duration_time",
->>
->> This is what seems to be broken for when the alias matches > 1 PMU.
->>
->> Please check this.
-> 
-Hi Ian,
+On Mon, Oct 5, 2020 at 9:40 AM Luigi Rizzo <lrizzo@google.com> wrote:
+>
+> bpf_program__set_attach_target() will always fail with fd=0 (attach to a
+> kernel symbol) because obj->btf_vmlinux is NULL and there is no way to
+> set it.
+>
+> Fix this by using libbpf_find_vmlinux_btf_id()
+>
+> (on a side note: it is unclear whether btf_vmlinux is meant to be
+> just temporary storage for use in bpf_object__load_xattr(), or
+> a property of bpf_object, in which case it could be initialuzed
+> opportunistically, and properly released in bpf_object__close() ).
 
-> Happy to check. 
+It's more of a former. vmlinux BTF shouldn't be needed past
+bpf_object's load phase, so there is no need to keep a few megabytes
+of memory laying around needlessly.
 
-So I am, but the code is a little complicated :)
+>
+> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index a4f55f8a460d..33bf102259dd 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10353,9 +10353,8 @@ int bpf_program__set_attach_target(struct bpf_program *prog,
+>                 btf_id = libbpf_find_prog_btf_id(attach_func_name,
+>                                                  attach_prog_fd);
+>         else
+> -               btf_id = __find_vmlinux_btf_id(prog->obj->btf_vmlinux,
+> -                                              attach_func_name,
+> -                                              prog->expected_attach_type);
+> +               btf_id = libbpf_find_vmlinux_btf_id(attach_func_name,
+> +                                                   prog->expected_attach_type);
 
-> Can you provide a reproduction? Looking on broadwell
-> this metric doesn't exist.
+It's a bit inefficient, if you need to do this for a few programs, but
+it's ok as a fix. We'll need to unify this internal vmlinux BTF
+caching at some point.
 
-Right, I just added this test metric as my 2x x86 platform has no 
-examples which I can find:
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json 
-b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-index 8cdc7c13dc2a..fc6d9adf996a 100644
---- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-+++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-@@ -348,5 +348,11 @@
-         "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
-         "MetricGroup": "Power",
-         "MetricName": "C7_Pkg_Residency"
-+    },
-+    {
-+        "BriefDescription": "test metric",
-+        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE * 
-UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
-+        "MetricGroup": "Test",
-+        "MetricName": "test_metric_inc"
-     }
-]
 
-I'll try to find a better mainline example, though, but I'm not hopeful ...
-
-Thanks,
-John
-
+>
+>         if (btf_id < 0)
+>                 return btf_id;
+> --
+> 2.28.0.806.g8561365e88-goog
+>
