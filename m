@@ -2,182 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B22284E32
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 16:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19848284EF7
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 17:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgJFOm1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Oct 2020 10:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgJFOm1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Oct 2020 10:42:27 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA9EC061755
-        for <bpf@vger.kernel.org>; Tue,  6 Oct 2020 07:42:25 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id v12so3388886wmh.3
-        for <bpf@vger.kernel.org>; Tue, 06 Oct 2020 07:42:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lLSXyq8geVEgL572mhZwfSsIq9Gg65HnBLRnWd1Y+1U=;
-        b=uchN+P/SlvQqmnRGzQSmm/MAyAgLsmwhTdWtBE0OLzv6neOoBO+ynAVeeP5/DHJuz2
-         JI+9Z2NoyIFlo775GSxjSV+wruDtGe6JoQa6U2JOi4fthHhEYU67LgOzoF4Pht1apgcc
-         T7CkP5DIcDrbsJZZf2VTI8JI9bOSXtyeVoLhhdwVc5JEKuxaLadn5uCl2E9eGyCyAJ2B
-         el05CSy/j5ODYnClNnDh3Chwe6e2dMb1M5cNDrHoFfUNpA0jD8l0O9zn2/2Ti/1CDWIe
-         RAm0sTtPpO+zCHoF4DkTzlChduYYWcmAo184t+ofiisZ+VFQI6+ILPDGDAx087nD5Mbk
-         sPbQ==
+        id S1726123AbgJFP2z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Oct 2020 11:28:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43413 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726137AbgJFP2z (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Oct 2020 11:28:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601998133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/rdp1rxgsLSHWFsRmsO/gSgWUaSPdYRlDAynIxLveGo=;
+        b=fIz7A15KO0C070dG+sCsrIJMvGerQ4PXww4hPk7i3V2MnBnSOQFDtAbmoO+x9Y59kJCdla
+        /1LejrY0BvaOdpdnL7hOkyaOSZfbDkyd3qogVLjgXvg7zQuBe+iVuGJ6oHExKG9cfU3cqY
+        jf68xVWh2SFK0QIuH4gmXJCqv87qMGU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-_iE5ayxsNviTqmVbgcKlTA-1; Tue, 06 Oct 2020 11:28:50 -0400
+X-MC-Unique: _iE5ayxsNviTqmVbgcKlTA-1
+Received: by mail-wm1-f69.google.com with SMTP id u5so826162wme.3
+        for <bpf@vger.kernel.org>; Tue, 06 Oct 2020 08:28:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lLSXyq8geVEgL572mhZwfSsIq9Gg65HnBLRnWd1Y+1U=;
-        b=m6XszMHXa+397TUZHtDDLmZl10jz2VkWMj1B2Ltu+OOjhnwHL78C8UuiswqDOKDCkW
-         e5OCbFIMy8hW/PVKhRhtDS6w/xhbLDRMF74/u5PiA5M7sCBJHFnuwAPDD5QL+EXb83nb
-         UWNRBJgM5QgXKbBFPqh1UUm5JhDQi2rKfY1fNvuhDH+lqjgB8UlFnKLjnfSK7xiaLVEz
-         K60Nt60Pmn+DjwJshZvANIQjxvd7YcK9BR7gn1YNOChWHt6XZ4sSNsAxDcAxgE8/aSHM
-         w0VEu/mZxXeZBKjefnrwCfwr6Gog5PsleXx+SDXW52HRxPTv2n9SucbS6kiWu6qPnGcA
-         gMZg==
-X-Gm-Message-State: AOAM532N9QiC0CIBoVM3tFvL5v1tHW58jADAg+B41qtXQMOGrAtcPurE
-        ssZDLnkz5Y3/q/XGOq5/0zjLZzI8hF/jCQ6Q44Qc5g==
-X-Google-Smtp-Source: ABdhPJzO4zlEdacKCMEnK6+wlUNgq7IiDijRN/KMpfnHp5dKQDzZ9WVXCEpYJRDB0Op9mL7yirYABbhKaSWz8w+/Rsk=
-X-Received: by 2002:a1c:8056:: with SMTP id b83mr5171173wmd.124.1601995343633;
- Tue, 06 Oct 2020 07:42:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/rdp1rxgsLSHWFsRmsO/gSgWUaSPdYRlDAynIxLveGo=;
+        b=rxvismhNb9fJvk3iVQTVDVW6XWUPnZAu9QE9SLQaD1qc3EM6pPpa/XN2P+udeGwHZQ
+         3pB12++Fv5XIKRWFIBnSfB5BeE6b8Nsu6/qPohLh8GFpjZbjIUXrbxEAtPDGu2lqW+5G
+         r8fIWt9LREAY01Xvfawhthg7eAanvgjptPHvQQx+/0jYV7mDtH3gfOqctN8w2jChKGEL
+         EQLAaINGDpwxV/029i16ghT0UibKqeHVbswbL0/lrooTyh50cNl3ieEJpmqELclU8s3S
+         +hp78Nx8Ap552AXY3Jdzs8G/9xA7WEy5xtgPqz8kdTtl2XIiQGq2Dw7KfcAeH0WLGirz
+         gvPw==
+X-Gm-Message-State: AOAM532XexES0SXk/Cx13R/lbnJuK1kNoY7RPeE6zj3ynLQhh/bPCHCl
+        RYGcauHJrQiyafTcEsyFNNb/u6n8C/8WifWRk50Ii23GYMP8ptFWkV8XZVxS8kdwDIrXMCcm2pf
+        mYoTAKaXyV8fw
+X-Received: by 2002:adf:d841:: with SMTP id k1mr5563927wrl.227.1601998129363;
+        Tue, 06 Oct 2020 08:28:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxec4UfB0CGEg5/hujQVs3YwrNsB08CAyEAQK+3mUtbHLILGP9rB9x74qM/5zMopOjtzDtnew==
+X-Received: by 2002:adf:d841:: with SMTP id k1mr5563895wrl.227.1601998129069;
+        Tue, 06 Oct 2020 08:28:49 -0700 (PDT)
+Received: from localhost ([176.207.245.61])
+        by smtp.gmail.com with ESMTPSA id i11sm5012094wre.32.2020.10.06.08.28.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 08:28:48 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 17:28:45 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, dsahern@kernel.org,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Tirthendu Sarkar <tirtha@gmail.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer
+ support
+Message-ID: <20201006152845.GC43823@lore-desk>
+References: <cover.1601648734.git.lorenzo@kernel.org>
+ <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
+ <20201002160623.GA40027@lore-desk>
+ <5f776c14d69b3_a6402087e@john-XPS-13-9370.notmuch>
+ <20201005115247.72429157@carbon>
+ <5f7b8e7a5ebfc_4f19a208ba@john-XPS-13-9370.notmuch>
+ <20201005222454.GB3501@localhost.localdomain>
+ <5f7bf2b0bf899_4f19a2083f@john-XPS-13-9370.notmuch>
+ <20201006093011.36375745@carbon>
 MIME-Version: 1.0
-References: <20200507140819.126960-1-irogers@google.com> <20200507140819.126960-24-irogers@google.com>
- <e3c4f253-e1ed-32f6-c252-e8657968fc42@huawei.com> <CAP-5=fXkYQ0ktt5DZYW=PPzgRN4_DeM08_def4Qn-6BPRvKW-A@mail.gmail.com>
- <757974b3-62b0-2822-84fb-1e75907c6cc4@huawei.com> <CAP-5=fXwQZVDxJM4LmEvsKW9h0HYP6t3F0EZfy0+hwAzDmBgGA@mail.gmail.com>
- <248e8d19-8727-b403-4196-59eac1b1f305@huawei.com> <b621fdcb-9af5-bbc2-992a-ebfaa7888dc2@huawei.com>
-In-Reply-To: <b621fdcb-9af5-bbc2-992a-ebfaa7888dc2@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 6 Oct 2020 07:42:11 -0700
-Message-ID: <CAP-5=fUy6FOszNRwJF6ZNpqQSSyrnLPV6GbkEcZMqAhUp3X0ZA@mail.gmail.com>
-Subject: Re: Issue of metrics for multiple uncore PMUs (was Re: [RFC PATCH v2
- 23/23] perf metricgroup: remove duped metric group events)
-To:     John Garry <john.garry@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Clx92ZfkiYIKRjnr"
+Content-Disposition: inline
+In-Reply-To: <20201006093011.36375745@carbon>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 7:22 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 05/10/2020 19:05, John Garry wrote:
-> >> Can you provide a reproduction? Looking on broadwell
-> >> this metric doesn't exist.
-> >
-> > Right, I just added this test metric as my 2x x86 platform has no
-> > examples which I can find:
-> >
-> > diff --git a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> > b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> > index 8cdc7c13dc2a..fc6d9adf996a 100644
-> > --- a/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> > +++ b/tools/perf/pmu-events/arch/x86/broadwell/bdw-metrics.json
-> > @@ -348,5 +348,11 @@
-> >          "MetricExpr": "(cstate_pkg@c7\\-residency@ / msr@tsc@) * 100",
-> >          "MetricGroup": "Power",
-> >          "MetricName": "C7_Pkg_Residency"
-> > +    },
-> > +    {
-> > +        "BriefDescription": "test metric",
-> > +        "MetricExpr": "UNC_CBO_XSNP_RESPONSE.MISS_XCORE *
-> > UNC_CBO_XSNP_RESPONSE.MISS_EVICTION",
-> > +        "MetricGroup": "Test",
-> > +        "MetricName": "test_metric_inc"
-> >      }
-> > ]
-> >
->
-> It seems that the code in find_evsel_group() does not properly handle
-> the scenario of event alias matching different PMUs (as I already said).
->
-> So I got it working on top of "perf metricgroup: Fix uncore metric
-> expressions" with the following change:
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index d948a7f910cf..6293378c019c 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -213,7 +213,8 @@ static struct evsel *find_evsel_group(struct evlist
-> *perf_evlist,
->                 /* Ignore event if already used and merging is disabled. */
->                 if (metric_no_merge && test_bit(ev->idx, evlist_used))
->                         continue;
-> -               if (!has_constraint && ev->leader != current_leader) {
-> +               if (!has_constraint && (!current_leader ||
-> strcmp(current_leader->name, ev->leader->name))) {
->                         /*
->                          * Start of a new group, discard the whole match and
->                          * start again.
-> @@ -279,7 +280,8 @@ static struct evsel *find_evsel_group(struct evlist
-> *perf_evlist,
->                          * when then group is left.
->                          */
->                         if (!has_constraint &&
-> -                           ev->leader != metric_events[i]->leader)
-> +                           strcmp(ev->leader->name, metric_events[i]->leader->name))
->                                 break;
->                         if (!strcmp(metric_events[i]->name, ev->name)) {
->                                 set_bit(ev->idx, evlist_used);
->
-> which gives for my test metric:
->
-> ./perf stat -v -M test_metric_inc sleep 1
-> Using CPUID GenuineIntel-6-3D-4
-> metric expr unc_cbo_xsnp_response.miss_xcore /
-> unc_cbo_xsnp_response.miss_eviction for test_metric_inc
-> found event unc_cbo_xsnp_response.miss_eviction
-> found event unc_cbo_xsnp_response.miss_xcore
-> adding
-> {unc_cbo_xsnp_response.miss_eviction,unc_cbo_xsnp_response.miss_xcore}:W
-> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_1/umask=0x81,event=0x22/
-> unc_cbo_xsnp_response.miss_eviction -> uncore_cbox_0/umask=0x81,event=0x22/
-> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_1/umask=0x41,event=0x22/
-> unc_cbo_xsnp_response.miss_xcore -> uncore_cbox_0/umask=0x41,event=0x22/
-> Control descriptor is not initialized
-> unc_cbo_xsnp_response.miss_eviction: 595175 1001021311 1001021311
-> unc_cbo_xsnp_response.miss_eviction: 592516 1001020037 1001020037
-> unc_cbo_xsnp_response.miss_xcore: 39139 1001021311 1001021311
-> unc_cbo_xsnp_response.miss_xcore: 38718 1001020037 1001020037
->
-> Performance counter stats for 'system wide':
->
->          1,187,691      unc_cbo_xsnp_response.miss_eviction #     0.07
-> test_metric_inc
->             77,857      unc_cbo_xsnp_response.miss_xcore
->
->
->        1.001068918 seconds time elapsed
->
-> John
 
-Thanks John! I was able to repro the problem, let me investigate what
-is happening here as it seems there may be something wrong with the
-grouping logic.
+--Clx92ZfkiYIKRjnr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ian
+> On Mon, 05 Oct 2020 21:29:36 -0700
+> John Fastabend <john.fastabend@gmail.com> wrote:
+>=20
+> > Lorenzo Bianconi wrote:
+> > > [...]
+> > >  =20
+> > > >=20
+> > > > In general I see no reason to populate these fields before the XDP
+> > > > program runs. Someone needs to convince me why having frags info be=
+fore
+> > > > program runs is useful. In general headers should be preserved and =
+first
+> > > > frag already included in the data pointers. If users start parsing =
+further
+> > > > they might need it, but this series doesn't provide a way to do that
+> > > > so IMO without those helpers its a bit difficult to debate. =20
+> > >=20
+> > > We need to populate the skb_shared_info before running the xdp progra=
+m in order to
+> > > allow the ebpf sanbox to access this data. If we restrict the access =
+to the first
+> > > buffer only I guess we can avoid to do that but I think there is a va=
+lue allowing
+> > > the xdp program to access this data. =20
+> >=20
+> > I agree. We could also only populate the fields if the program accesses
+> > the fields.
+>=20
+> Notice, a driver will not initialize/use the shared_info area unless
+> there are more segments.  And (we have already established) the xdp->mb
+> bit is guarding BPF-prog from accessing shared_info area.=20
+>=20
+> > > A possible optimization can be access the shared_info only once befor=
+e running
+> > > the ebpf program constructing the shared_info using a struct allocate=
+d on the
+> > > stack. =20
+> >=20
+> > Seems interesting, might be a good idea.
+>=20
+> It *might* be a good idea ("alloc" shared_info on stack), but we should
+> benchmark this.  The prefetch trick might be fast enough.  But also
+> keep in mind the performance target, as with large size frames the
+> packet-per-sec we need to handle dramatically drop.
+
+right. I guess we need to define a workload we want to run for the
+xdp multi-buff use-case (e.g. if MTU is 9K we will have ~3 frames
+for each packets and # of pps will be much slower)
+
+>=20
+>=20
+
+[...]
+
+>=20
+> I do think it makes sense to drop the helpers for now, and focus on how
+> this new multi-buffer frame type is handled in the existing code, and do
+> some benchmarking on higher speed NIC, before the BPF-helper start to
+> lockdown/restrict what we can change/revert as they define UAPI.
+
+ack, I will drop them in v5.
+
+Regards,
+Lorenzo
+
+>=20
+> E.g. existing code that need to handle this is existing helper
+> bpf_xdp_adjust_tail, which is something I have broad up before and even
+> described in[1].  Lets make sure existing code works with proposed
+> design, before introducing new helpers (and this makes it easier to
+> revert).
+>=20
+> [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp=
+-multi-buffer01-design.org#xdp-tail-adjust
+> --=20
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>=20
+
+--Clx92ZfkiYIKRjnr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX3yNKwAKCRA6cBh0uS2t
+rI9PAP0bEg3Lo9OrmegA+nOSOUzqQgimJe9RR2yiiTIrQzRo4AD+LPudD17gposr
+ecBCDjvmi1ys7h5OSthvcLWdjStm7gc=
+=1ZE2
+-----END PGP SIGNATURE-----
+
+--Clx92ZfkiYIKRjnr--
+
