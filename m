@@ -2,202 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8971284FE8
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 18:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB14528515D
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 20:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgJFQdU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Oct 2020 12:33:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26233 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725769AbgJFQdS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Oct 2020 12:33:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602001996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bR5IjfX1cmeaRB5ggSzcftrnrbSjb90zh+7vGrlHwPQ=;
-        b=WcUOn9s+9tP35F/qX6eyKPVdlWdx61EWjexao6AjTD+cSsc9iGxv2+jO1g1Qp0ifcNtPxz
-        QC8fuRKWRabN7Yqezfz4OvkGQetWrwlcC+qpKpFBfFRfIcxjZDWO8mHkGTfuXS+5I8L2pJ
-        N1uC3eRCQ+VAn+wvZW5a9O0Q3wIq0Ks=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-nQ6Wr3pwO_OgaXjZSy2ArQ-1; Tue, 06 Oct 2020 12:33:12 -0400
-X-MC-Unique: nQ6Wr3pwO_OgaXjZSy2ArQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76307425D1;
-        Tue,  6 Oct 2020 16:33:10 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D9E7118E3C;
-        Tue,  6 Oct 2020 16:33:03 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 18:33:02 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V1 3/6] bpf: add BPF-helper for reading MTU
- from net_device via ifindex
-Message-ID: <20201006183302.337a9502@carbon>
-In-Reply-To: <160200018165.719143.3249298786187115149.stgit@firesoul>
-References: <160200013701.719143.12665708317930272219.stgit@firesoul>
-        <160200018165.719143.3249298786187115149.stgit@firesoul>
+        id S1726752AbgJFSIo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Oct 2020 14:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgJFSIn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Oct 2020 14:08:43 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9AAC061755;
+        Tue,  6 Oct 2020 11:08:43 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y20so1599452pll.12;
+        Tue, 06 Oct 2020 11:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UfWgDf/TSQvHhTZWk4ujqHBFOYkMgtpFB8dY13v6WJ0=;
+        b=gRZyubkE3xz+BJTJuI0WZdZLh32LUpx+i5MaEjMWWJQYCA4z7oIyJiYAjPuAG6o150
+         WveokJ3fK1caoL4x+xEp+Xlpfq9A9YAi+JuHFgg9YkD1xMYyEvolhjFPbLbxEA4vK0/y
+         920N2Ub0QbOnY1hRWg/E+Ksv6yQ0FfmPsxvbiW1dK2JoGMGKKF2yIiMsq5DLutYM/J1H
+         jrOmUozgF2mkYvJj2w53p+KptKNqmDE8ZcyZlFBlYxoN0vZZBhhIZ6grOOPC9k3tawrE
+         8w8bzPIGvqU2DMAJcz8F9+2NPRjOLwg1VWpNohgVjhAmJvt/WR2/usUGF1lknX4YfmSt
+         Ckvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UfWgDf/TSQvHhTZWk4ujqHBFOYkMgtpFB8dY13v6WJ0=;
+        b=WT2lob2dBwYBYUAqcL1kC9IoaQHQmM2o5vtqGKR8Yv7ljBGYC7iC9jMmnPXHPLsNVq
+         xJdlP/wFaQMHHxmpz/L3ZgXFg1LLx5aSRn9PI0CPHgQVOLS5XPorLks5djnD40hwOolI
+         h9hpjYKOsnvokNJO5Wdzj35gvoR21xtowZCD1iXXo7jt8uCftW7ir/48cbiTNJzq89nm
+         +j2VQWYL+n9frIKNjh0bmdexQDniVEidbXInVxB7HrllPhiYgNeo1waSiatbfs+gNnin
+         bVtXkTXrlpfFWYBe1KYnOdEXI1dcWJCmVK72L2gyZT1Nsdz+p1nYpwz1QZ0sLNJruS3y
+         mVMQ==
+X-Gm-Message-State: AOAM531alYMitNMBd+vwUgrIDBI0VjZHMXuvmDszjGF+5i0qEqWTVmQq
+        KJeZsh+x25m9SH8CFEs/mAfEZ7oodI4=
+X-Google-Smtp-Source: ABdhPJyEjWwt81Osm8f5gqzSwY8rdn0CTsXLz431DeoNaFFlvjsc2MSJfxFBVZiuuubKcv14WPLO6w==
+X-Received: by 2002:a17:90a:d311:: with SMTP id p17mr5327648pju.135.1602007723293;
+        Tue, 06 Oct 2020 11:08:43 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:7333])
+        by smtp.gmail.com with ESMTPSA id o20sm4011109pgh.63.2020.10.06.11.08.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 11:08:42 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 11:08:39 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com, Luka Perkov <luka.perkov@sartura.hr>,
+        Tony Ambardar <tony.ambardar@gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: support safe subset of load/store
+ instruction resizing with CO-RE
+Message-ID: <20201006180839.lvoigzpmr32rrroj@ast-mbp>
+References: <20201002010633.3706122-1-andriin@fb.com>
+ <20201002010633.3706122-2-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002010633.3706122-2-andriin@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 06 Oct 2020 18:03:01 +0200
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+On Thu, Oct 01, 2020 at 06:06:31PM -0700, Andrii Nakryiko wrote:
+> Add support for patching instructions of the following form:
+>   - rX = *(T *)(rY + <off>);
+>   - *(T *)(rX + <off>) = rY;
+>   - *(T *)(rX + <off>) = <imm>, where T is one of {u8, u16, u32, u64}.
 
-> FIXME: add description.
+llvm doesn't generate ST instruction. It never did.
+STX is generated, but can it actually be used with relocations?
+Looking at the test in patch 3... it's testing LDX only.
+ST/STX suppose to work by analogy, but would be good to have a test.
+At least of STX.
 
-Ups, I will obviously send a V2.
-
-I still want feedback on whether I should implement another BPF-helper
-as sketched below:
-
-> FIXME: IMHO we can create a better BPF-helper named bpf_mtu_check()
-> instead of bpf_mtu_lookup(), because a flag can be used for requesting
-> GRO segment size checking.  The ret value of bpf_mtu_check() says
-> if MTU was violoated, but also return MTU via pointer arg to allow
-> BPF-progs to do own logic.
-> 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  include/uapi/linux/bpf.h |   13 +++++++++++
->  net/core/filter.c        |   56 ++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 69 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 50ce65e37b16..29b335cb96ef 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3718,6 +3718,18 @@ union bpf_attr {
->   *		never return NULL.
->   *	Return
->   *		A pointer pointing to the kernel percpu variable on this cpu.
-> + *
-> + * int bpf_mtu_lookup(void *ctx, u32 ifindex, u64 flags)
-> + *	Description
-> + *		Lookup MTU of net device based on ifindex.  The Linux kernel
-> + *		route table can configure MTUs on a more specific per route
-> + *		level, which is not provided by this helper. For route level
-> + *		MTU checks use the **bpf_fib_lookup**\ () helper.
-> + *
-> + *		*ctx* is either **struct xdp_md** for XDP programs or
-> + *		**struct sk_buff** tc cls_act programs.
-> + *	Return
-> + *		On success, MTU size is returned. On error, a negative value.
->   */
->  #define __BPF_FUNC_MAPPER(FN)		\
->  	FN(unspec),			\
-> @@ -3875,6 +3887,7 @@ union bpf_attr {
->  	FN(redirect_neigh),		\
->  	FN(bpf_per_cpu_ptr),            \
->  	FN(bpf_this_cpu_ptr),		\
-> +	FN(mtu_lookup),			\
->  	/* */
->  
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index d84723f347c0..49ae3b80027b 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5512,6 +5512,58 @@ static const struct bpf_func_proto bpf_skb_fib_lookup_proto = {
->  	.arg4_type	= ARG_ANYTHING,
->  };
->  
-> +static int bpf_mtu_lookup(struct net *netns, u32 ifindex, u64 flags)
+> +static int insn_mem_sz_to_bytes(struct bpf_insn *insn)
 > +{
-> +	struct net_device *dev;
-> +
-> +	// XXX: Do we even need flags?
-> +	// Flag idea: get ctx dev->mtu for XDP_TX or redir out-same-dev
-> +	if (flags)
-> +		return -EINVAL;
-> +
-> +	dev = dev_get_by_index_rcu(netns, ifindex);
-> +	if (!dev)
-> +		return -ENODEV;
-> +
-> +	return dev->mtu;
+> +	switch (BPF_SIZE(insn->code)) {
+> +	case BPF_DW: return 8;
+> +	case BPF_W: return 4;
+> +	case BPF_H: return 2;
+> +	case BPF_B: return 1;
+> +	default: return -1;
+> +	}
 > +}
 > +
-> +BPF_CALL_3(bpf_skb_mtu_lookup, struct sk_buff *, skb,
-> +	   u32, ifindex, u64, flags)
+> +static int insn_bytes_to_mem_sz(__u32 sz)
 > +{
-> +	struct net *netns = dev_net(skb->dev);
-> +
-> +	return bpf_mtu_lookup(netns, ifindex, flags);
+> +	switch (sz) {
+> +	case 8: return BPF_DW;
+> +	case 4: return BPF_W;
+> +	case 2: return BPF_H;
+> +	case 1: return BPF_B;
+> +	default: return -1;
+> +	}
 > +}
-> +
-> +BPF_CALL_3(bpf_xdp_mtu_lookup, struct xdp_buff *, xdp,
-> +	   u32, ifindex, u64, flags)
-> +{
-> +	struct net *netns = dev_net(xdp->rxq->dev);
-> +	// XXX: Handle if this runs in devmap prog (then is rxq invalid?)
-> +
-> +	return bpf_mtu_lookup(netns, ifindex, flags);
-> +}
-> +
-> +static const struct bpf_func_proto bpf_skb_mtu_lookup_proto = {
-> +	.func		= bpf_skb_mtu_lookup,
-> +	.gpl_only	= true,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type      = ARG_PTR_TO_CTX,
-> +	.arg2_type      = ARG_ANYTHING,
-> +	.arg3_type      = ARG_ANYTHING,
-> +};
-> +
-> +static const struct bpf_func_proto bpf_xdp_mtu_lookup_proto = {
-> +	.func		= bpf_xdp_mtu_lookup,
-> +	.gpl_only	= true,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type      = ARG_PTR_TO_CTX,
-> +	.arg2_type      = ARG_ANYTHING,
-> +	.arg3_type      = ARG_ANYTHING,
-> +};
-> +
-> +
->  #if IS_ENABLED(CONFIG_IPV6_SEG6_BPF)
->  static int bpf_push_seg6_encap(struct sk_buff *skb, u32 type, void *hdr, u32 len)
->  {
-> @@ -7075,6 +7127,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  		return &bpf_get_socket_uid_proto;
->  	case BPF_FUNC_fib_lookup:
->  		return &bpf_skb_fib_lookup_proto;
-> +	case BPF_FUNC_mtu_lookup:
-> +		return &bpf_skb_mtu_lookup_proto;
->  	case BPF_FUNC_sk_fullsock:
->  		return &bpf_sk_fullsock_proto;
->  	case BPF_FUNC_sk_storage_get:
-> @@ -7144,6 +7198,8 @@ xdp_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  		return &bpf_xdp_adjust_tail_proto;
->  	case BPF_FUNC_fib_lookup:
->  		return &bpf_xdp_fib_lookup_proto;
-> +	case BPF_FUNC_mtu_lookup:
-> +		return &bpf_xdp_mtu_lookup_proto;
->  #ifdef CONFIG_INET
->  	case BPF_FUNC_sk_lookup_udp:
->  		return &bpf_xdp_sk_lookup_udp_proto;
-> 
-> 
 
+filter.h has these two helpers. They're named bytes_to_bpf_size() and bpf_size_to_bytes().
+I guess we cannot really share kernel and libbpf implementation, but
+could you please name them the same way so it's easier to follow
+for folks who read both kernel and libbpf code?
 
+> +		if (res->new_sz != res->orig_sz) {
+> +			mem_sz = insn_mem_sz_to_bytes(insn);
+> +			if (mem_sz != res->orig_sz) {
+> +				pr_warn("prog '%s': relo #%d: insn #%d (LDX/ST/STX) unexpected mem size: got %u, exp %u\n",
+> +					prog->name, relo_idx, insn_idx, mem_sz, res->orig_sz);
+> +				return -EINVAL;
+> +			}
+> +
+> +			mem_sz = insn_bytes_to_mem_sz(res->new_sz);
+> +			if (mem_sz < 0) {
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Please use new variable here appropriately named.
+Few lines above mem_sz is in bytes while here it's encoding opcode.
