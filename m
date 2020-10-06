@@ -2,158 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4A9284B0E
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 13:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6115284B9D
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 14:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgJFLpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Oct 2020 07:45:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43437 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725947AbgJFLpv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Oct 2020 07:45:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601984750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dm2UtfzYXYdSOQnTVEkNER947es3Z2MFYURE38j/5RI=;
-        b=NbhqL8EMACuJn90HP2KVp6OGLOVdLRcM/E9O+JwVFMSrsTPphIkdFElSUgyU7kKIGeVE95
-        UBX7M+7MtOOQ2EwBZPLEThQMr/l0tlsT5B1jqB/J9Ht4DLCbrsoZD75h5uk66erQltzKFk
-        pt3NwgFv6NVPfHwPqNir9NozfHB8fu0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-WVH2UPTRPj2t91wPEgNP5g-1; Tue, 06 Oct 2020 07:45:48 -0400
-X-MC-Unique: WVH2UPTRPj2t91wPEgNP5g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95FAF107AFD1;
-        Tue,  6 Oct 2020 11:45:46 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AD1FC702E7;
-        Tue,  6 Oct 2020 11:45:36 +0000 (UTC)
-Date:   Tue, 6 Oct 2020 13:45:35 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shaun Crampton <shaun@tigera.io>,
-        David Miller <davem@davemloft.net>,
-        Marek Majkowski <marek@cloudflare.com>, brouer@redhat.com
-Subject: Re: BPF redirect API design issue for BPF-prog MTU feedback?
-Message-ID: <20201006134535.08e1dbe5@carbon>
-In-Reply-To: <5f68eb19cc0a2_17370208c9@john-XPS-13-9370.notmuch>
-References: <20200917143846.37ce43a0@carbon>
-        <CANP3RGcxM-Cno=Qw5Lut9DgmV=1suXqetnybA9RgxmW3KmwivQ@mail.gmail.com>
-        <56ccfc21195b19d5b25559aca4cef5c450d0c402.camel@kernel.org>
-        <20200918120016.7007f437@carbon>
-        <CANP3RGfUj-KKHHQtbggiZ4V-Xrr_sk+TWyN5FgYUGZS6rOX1yw@mail.gmail.com>
-        <CACAyw9-v_o+gPUpC-R9SXsfzMywrdGsWV13Nk=tx2aS-fEBFYg@mail.gmail.com>
-        <20200921144953.6456d47d@carbon>
-        <340f209d-58d4-52a6-0804-7102d80c1468@iogearbox.net>
-        <5f68eb19cc0a2_17370208c9@john-XPS-13-9370.notmuch>
+        id S1726267AbgJFM2a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Oct 2020 08:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbgJFM2a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:28:30 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D5DC061755;
+        Tue,  6 Oct 2020 05:28:30 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id y20so1140294pll.12;
+        Tue, 06 Oct 2020 05:28:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=34g3MdNJVEk4Coh+a8Qqghb5lgYQKjZyNrJqboaybe0=;
+        b=n3gBGG5oo+3Yazlcbz9JapTBnucdsFoIi8Bu1shJ3izqdc74CCAmrl3Q6dlEXb988t
+         4fTjce8E/f4K/gwK/SWgWKlSEqphQAv34UHVrnnBY4k/1l/JGIMDxH/jGsdAYmobyW8I
+         NqVlQiS9gzsYwC5/3SE6i9xYwLdebx8z1SvLoaNLEqW3IoYUlBNfE4j9xlABvgxRC2Ac
+         TB1aPdfp918cizEmSNsbJ4vOrenJnC5vwdNDIahuLzwYu+uM49LKDtt/Fc61xQwF75w4
+         Jp7NwjyGENiuPAdif6xN4pblLVMF39wEjuTg2ELcuJY2TtD+rCPI1/VwSiaR54LiLeEl
+         3BVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=34g3MdNJVEk4Coh+a8Qqghb5lgYQKjZyNrJqboaybe0=;
+        b=BmvQeo4iYst3Bq3Nqd5/QXG2R42ocXALc6ssl4qrTYYs7zmi9YbOFzrT772PHPHG70
+         NQsig9DwmEBdbHJB+ooGVBfVLtbEA64Xl49Im8ThJVcZrsSfneguaSKYau9Bs51CHmfP
+         Va9iCW15K4ZUxrV/SjGbj0R9I4XzkDi51WsyMr0Fn6OObs3u5XJk72DvHwHG1G8gLj7o
+         0X4iWJcctShcMpb6shxrmhdNyUCm/qwYNhIkiAkgN/2S/11y0K2swRhFGgbmc/J0jfmM
+         EIlCBoCKczxyaxIiziKgq0PgERg0I4Wn2qaF9d6fxjiSFAeFWS9T9ZC8nwGxUUhWfK23
+         LTwg==
+X-Gm-Message-State: AOAM533O/eqE0zAkfWecnaMQ0sRjWjrr5bxko0C3aMeH8DIm/57iN9kb
+        5VJAg/SSpcr8yoFm1oPKy4mL5ABD3l07OR8rvzs=
+X-Google-Smtp-Source: ABdhPJwB4Cxh6Xm29QPguQme76vU2edavYDHuq6X+ZxPViM44IF+dUd9+3Dnh1l8VAq0zq3NsEbxACQ/9UzjmB8IOP0=
+X-Received: by 2002:a17:90a:d80e:: with SMTP id a14mr3984745pjv.168.1601987310087;
+ Tue, 06 Oct 2020 05:28:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <1601645787-16944-1-git-send-email-magnus.karlsson@gmail.com> <75f034e8-09c4-9f43-03ed-84f003a036d3@iogearbox.net>
+In-Reply-To: <75f034e8-09c4-9f43-03ed-84f003a036d3@iogearbox.net>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 6 Oct 2020 14:28:19 +0200
+Message-ID: <CAJ8uoz0oG=q5ERODhfcvBhZcswGpufp=zUvpG617SkxRP_AaLg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix compatibility problem in xsk_socket__create
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Ciara Loftus <ciara.loftus@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 21 Sep 2020 11:04:09 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
+On Mon, Oct 5, 2020 at 4:37 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 10/2/20 3:36 PM, Magnus Karlsson wrote:
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> >
+> > Fix a compatibility problem when the old XDP_SHARED_UMEM mode is used
+> > together with the xsk_socket__create() call. In the old XDP_SHARED_UMEM
+> > mode, only sharing of the same device and queue id was allowed, and in
+> > this mode, the fill ring and completion ring were shared between the
+> > AF_XDP sockets. Therfore, it was perfectly fine to call the
+> > xsk_socket__create() API for each socket and not use the new
+> > xsk_socket__create_shared() API. This behaviour was ruined by the
+> > commit introducing XDP_SHARED_UMEM support between different devices
+> > and/or queue ids. This patch restores the ability to use
+> > xsk_socket__create in these circumstances so that backward
+> > compatibility is not broken.
+> >
+> > We also make sure that a user that uses the
+> > xsk_socket__create_shared() api for the first socket in the old
+> > XDP_SHARED_UMEM mode above, gets and error message if the user tries
+> > to feed a fill ring or a completion ring that is not the same as the
+> > ones used for the umem registration. Previously, libbpf would just
+> > have silently ignored the supplied fill and completion rings and just
+> > taken them from the umem. Better to provide an error to the user.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
+> > ---
+> >   tools/lib/bpf/xsk.c | 14 +++++++++++++-
+> >   1 file changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> > index 30b4ca5..5b61932 100644
+> > --- a/tools/lib/bpf/xsk.c
+> > +++ b/tools/lib/bpf/xsk.c
+> > @@ -705,7 +705,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+> >       struct xsk_ctx *ctx;
+> >       int err, ifindex;
+> >
+> > -     if (!umem || !xsk_ptr || !(rx || tx) || !fill || !comp)
+> > +     if (!umem || !xsk_ptr || !(rx || tx))
+> >               return -EFAULT;
+> >
+> >       xsk = calloc(1, sizeof(*xsk));
+> > @@ -735,12 +735,24 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+> >
+> >       ctx = xsk_get_ctx(umem, ifindex, queue_id);
+> >       if (!ctx) {
+> > +             if (!fill || !comp) {
+> > +                     err = -EFAULT;
+> > +                     goto out_socket;
+> > +             }
+> > +
+> >               ctx = xsk_create_ctx(xsk, umem, ifindex, ifname, queue_id,
+> >                                    fill, comp);
+> >               if (!ctx) {
+> >                       err = -ENOMEM;
+> >                       goto out_socket;
+> >               }
+> > +     } else if ((fill && ctx->fill != fill) || (comp && ctx->comp != comp)) {
+> > +             /* If the xsk_socket__create_shared() api is used for the first socket
+> > +              * registration, then make sure the fill and completion rings supplied
+> > +              * are the same as the ones used to register the umem. If not, bail out.
+> > +              */
+> > +             err = -EINVAL;
+> > +             goto out_socket;
+>
+> This looks buggy. You got a valid ctx in this path which was ctx->refcount++'ed. By just
+> going to out_socket you'll leak this libbpf internal refcount.
 
-> Daniel Borkmann wrote:
-> > On 9/21/20 2:49 PM, Jesper Dangaard Brouer wrote: =20
-> > > On Mon, 21 Sep 2020 11:37:18 +0100
-> > > Lorenz Bauer <lmb@cloudflare.com> wrote: =20
-> > >> On Sat, 19 Sep 2020 at 00:06, Maciej =C5=BBenczykowski <maze@google.=
-com> wrote: =20
-> > >>>    =20
-> > >>>> This is a good point.  As bpf_skb_adjust_room() can just be run af=
-ter
-> > >>>> bpf_redirect() call, then a MTU check in bpf_redirect() actually
-> > >>>> doesn't make much sense.  As clever/bad BPF program can then avoid=
- the
-> > >>>> MTU check anyhow.  This basically means that we have to do the MTU
-> > >>>> check (again) on kernel side anyhow to catch such clever/bad BPF
-> > >>>> programs.  (And I don't like wasting cycles on doing the same chec=
-k two
-> > >>>> times). =20
-> > >>>
-> > >>> If you get rid of the check in bpf_redirect() you might as well get
-> > >>> rid of *all* the checks for excessive mtu in all the helpers that
-> > >>> adjust packet size one way or another way.  They *all* then become
-> > >>> useless overhead.
-> > >>>
-[...]
-> >=20
-> > Sorry for jumping in late here... one thing that is not clear to me is =
-that if
-> > we are fully sure that skb is dropped by stack anyway due to invalid MT=
-U (redirect
-> > to ingress does this via dev_forward_skb(), it's not fully clear to me =
-whether it's
-> > also the case for the dev_queue_xmiy()), then why not dropping all the =
-MTU checks
-> > aside from SKB_MAX_ALLOC sanity check for BPF helpers and have somethin=
-g like a
-> > device object (similar to e.g. TCP sockets) exposed to BPF prog where w=
-e can retrieve
-> > the object and read dev->mtu from the prog, so the BPF program could th=
-en do the
-> > "exception" handling internally w/o extra prog needed (we also already =
-expose whether
-> > skb is GSO or not).
-> >=20
-> > Thanks,
-> > Daniel =20
->=20
-> My $.02 is MTU should only apply to transmitted packets so redirect to
-> ingress should be OK. Then on transmit shouldn't the user know the MTU
-> on their devices?
+Yes, you are correct. Thanks for spotting. It jumps to the wrong
+label. It should be:
 
-I like the point that "MTU should only apply to transmitted packets".=20
-=20
-> I'm for dropping all the MTU checks and if a driver tosses a packet then
-> the user should be more careful. Having a bpf helper to check MTU of a
-> dev seems useful although the workaround would be a map the user could
-> put the max MTU in. Of course that would be a bit fragile if the BPF prog=
-ram
-> and person managing MTU are not in-sync.
+goto out_put_ctx;
 
-I'm coding this up. Dropping all the MTU checks in helpers, but adding
-helper to lookup/check the MTU.  I've also extended the bpf_fib_lookup
-to return MTU value (it already does MTU check), as it can be more
-specific.
+so that ctx refcount is decreased. Will submit a v2.
 
-The problematic code path seems to be when TC-ingress redirect packet
-to egress on another netdev, then the normal netstack MTU checks are
-skipped and driver level will not catch any MTU violation (only checked
-ixgbe code path).
-
-First I looked at adding MTU check in the egress code path of
-skb_do_redirect() prior to calling dev_queue_xmit(), but I found this
-to be the wrong approach.  This is because it is still possible to run
-another BPF egress program that will shrink/consume headers, which will
-make packet comply with netdev MTU. This use-case might already be in
-production use (allowed if ingress MTU is larger than egress MTU).
-
-Instead I'm currently coding up doing the MTU check after
-sch_handle_egress() step, for the cases that require this.
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> >       }
+> >       xsk->ctx = ctx;
+> >
+> >
+>
