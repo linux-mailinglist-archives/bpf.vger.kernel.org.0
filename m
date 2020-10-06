@@ -2,61 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0872851E4
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 20:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704D3285207
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 21:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgJFSuF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Oct 2020 14:50:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726791AbgJFSuF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Oct 2020 14:50:05 -0400
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602010204;
-        bh=cLIuGeEAzcI9WmAEPb26o7c5PzKQXL+9/K5uxlTrUC0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=yPjioAbQStx/Q43o/0V8l/cAQ2cRHWF6Kdj6vrEcvpTbmL+xTQXEjZRDi+kpwE426
-         WYvKzd65nmGwfWF5eIVB4wKyn5sYQhVAu9CumFjMzQEVVoqGBjRVnQ22jxwyTTfSzK
-         fPMaW2OLPAXYUGH213LNH5ZhlYO/s+L90UbjztYQ=
+        id S1726893AbgJFTFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Oct 2020 15:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbgJFTFf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Oct 2020 15:05:35 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4213C061755;
+        Tue,  6 Oct 2020 12:05:34 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id u8so16266563lff.1;
+        Tue, 06 Oct 2020 12:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dbgm9EPpdn69MOQOGW1NmOkPRWAvrhHZv3YgGUWUYO4=;
+        b=nCuVvffNUqX3JHoJTL9N3FEG+N30Jd67eXqBiN11gRdobkj619iU7qnZfhWN2CSEyh
+         IyJhCzb9gliT0Hm24v2E+9076qVfyt08uSMi6g502CXaooTTt/s/riIq+fnwdt+LvWw0
+         xg3lQ5LM38VN/83InIxsW33CTndDLDt+uLVSrAjiy/Hfbj5tuhMO1vb46/88sGJbPmoQ
+         oLcQokDa8/8s7nHNZYPUE2LqIkKukXI64kI/Bg3Yltk58eNsCaVVZTNWK8AliJwUJCjF
+         znWN2uG/Bfym9eoD6L5xgV4Nl6YUxKrN5p3FXF+KqjJ34pWwSGy2ypFvtUCAWjcmOC3O
+         x2RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dbgm9EPpdn69MOQOGW1NmOkPRWAvrhHZv3YgGUWUYO4=;
+        b=Uzxp3uARMDC6WwQV5yzziD44cjP0oQxNtUcj1kUG2Y0cjCKXpUrPDwViVnD1iAe4lZ
+         zeFtufERoLvtc0vXWGfqsh9p24f93moAEFqpCZ57D49cEBguJ0S47xnfElTdP+cIguR3
+         k+Bzj+aVXM6/kp+62PjQ24nXaP5Nnh70ot6COJbfj4exvcJWxF6YEIgXDyOObbGrswOO
+         Tpv4Xk7IEuPtH0+HO8xMxQ8Qa06yCmz60XxmGuZtc/MqTQMKUbeh+lxwqv7z8ijNEZTT
+         6Ikp1mDECjVCSoLDFPyYW0geUcI02wDrfBq5gGBjaq3YDiR/GC/58g5i7jjPnTauAA01
+         tkFA==
+X-Gm-Message-State: AOAM532jgeylR6abF9/s0LHMjW7elemkIo8gH115puiODQ46NysOzWoD
+        +rtAYa5lxWgere7ximHUHucPJJKbkt2cqNvun4U=
+X-Google-Smtp-Source: ABdhPJwjRtjH65ntww7uSgF852KSTpZTpwRT5o9+a5Afmw3wub9NAuaJ2GJkzguay1vK1/vQdch8KAwchaYlo+9Ohr4=
+X-Received: by 2002:a19:8457:: with SMTP id g84mr890012lfd.500.1602011132919;
+ Tue, 06 Oct 2020 12:05:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] bpf,
- libbpf: use valid btf in bpf_program__set_attach_target
-From:   patchwork-bot+bpf@kernel.org
-Message-Id: <160201020458.15578.2112471126147703627.git-patchwork-notify@kernel.org>
-Date:   Tue, 06 Oct 2020 18:50:04 +0000
-References: <20201005224528.389097-1-lrizzo@google.com>
-In-Reply-To: <20201005224528.389097-1-lrizzo@google.com>
-To:     Luigi Rizzo <lrizzo@google.com>
-Cc:     bpf@vger.kernel.org, echaudro@redhat.com, daniel@iogearbox.net,
-        rizzo.unipi@gmail.com, andriin@fb.com, ppenkov@google.com,
-        tommaso.burlon@gmail.com
+References: <20200929235049.2533242-1-haoluo@google.com> <20200929235049.2533242-2-haoluo@google.com>
+In-Reply-To: <20200929235049.2533242-2-haoluo@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 6 Oct 2020 12:05:21 -0700
+Message-ID: <CAADnVQKc4m6X62udhpPE3EBBvuOA2ngyWSOKQ7fc-rtqdeQj6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/6] bpf: Introduce pseudo_btf_id
+To:     Hao Luo <haoluo@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Sep 29, 2020 at 4:50 PM Hao Luo <haoluo@google.com> wrote:
+>
+> -       ret = replace_map_fd_with_map_ptr(env);
+> -       if (ret < 0)
+> -               goto skip_full_check;
+> -
+>         if (bpf_prog_is_dev_bound(env->prog->aux)) {
+>                 ret = bpf_prog_offload_verifier_prep(env->prog);
+>                 if (ret)
+> @@ -11662,6 +11757,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+>         if (ret)
+>                 goto skip_full_check;
+>
+> +       ret = resolve_pseudo_ldimm64(env);
+> +       if (ret < 0)
+> +               goto skip_full_check;
+> +
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+Hao,
 
-On Mon,  5 Oct 2020 15:45:28 -0700 you wrote:
-> bpf_program__set_attach_target(prog, fd, ...) will always fail when
-> fd = 0 (attach to a kernel symbol) because obj->btf_vmlinux is NULL
-> and there is no way to set it (at the moment btf_vmlinux is meant
-> to be temporary storage for use in bpf_object__load_xattr()).
-> 
-> Fix this by using libbpf_find_vmlinux_btf_id().
-> 
-> [...]
+this change broke several tests in test_verifier:
+#21/u empty prog FAIL
+Unexpected error message!
+    EXP: unknown opcode 00
+    RES: last insn is not an exit or jmp
 
-Here is the summary with links:
-  - [v3] bpf, libbpf: use valid btf in bpf_program__set_attach_target
-    https://git.kernel.org/bpf/bpf-next/c/8cee9107e72c
+#656/u test5 ld_imm64 FAIL
+Unexpected error message!
+    EXP: invalid bpf_ld_imm64 insn
+    RES: last insn is not an exit or jmp
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+#656/p test5 ld_imm64 FAIL
+Unexpected error message!
+    EXP: invalid bpf_ld_imm64 insn
+    RES: last insn is not an exit or jmp
 
-
+Please send a fix.
+Thanks
