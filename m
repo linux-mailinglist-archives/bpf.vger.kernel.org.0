@@ -2,145 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6115284B9D
-	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 14:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD82A284BBE
+	for <lists+bpf@lfdr.de>; Tue,  6 Oct 2020 14:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgJFM2a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Oct 2020 08:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbgJFM2a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Oct 2020 08:28:30 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D5DC061755;
-        Tue,  6 Oct 2020 05:28:30 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id y20so1140294pll.12;
-        Tue, 06 Oct 2020 05:28:30 -0700 (PDT)
+        id S1726442AbgJFMjy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Oct 2020 08:39:54 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:13857 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgJFMjx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Oct 2020 08:39:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=34g3MdNJVEk4Coh+a8Qqghb5lgYQKjZyNrJqboaybe0=;
-        b=n3gBGG5oo+3Yazlcbz9JapTBnucdsFoIi8Bu1shJ3izqdc74CCAmrl3Q6dlEXb988t
-         4fTjce8E/f4K/gwK/SWgWKlSEqphQAv34UHVrnnBY4k/1l/JGIMDxH/jGsdAYmobyW8I
-         NqVlQiS9gzsYwC5/3SE6i9xYwLdebx8z1SvLoaNLEqW3IoYUlBNfE4j9xlABvgxRC2Ac
-         TB1aPdfp918cizEmSNsbJ4vOrenJnC5vwdNDIahuLzwYu+uM49LKDtt/Fc61xQwF75w4
-         Jp7NwjyGENiuPAdif6xN4pblLVMF39wEjuTg2ELcuJY2TtD+rCPI1/VwSiaR54LiLeEl
-         3BVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=34g3MdNJVEk4Coh+a8Qqghb5lgYQKjZyNrJqboaybe0=;
-        b=BmvQeo4iYst3Bq3Nqd5/QXG2R42ocXALc6ssl4qrTYYs7zmi9YbOFzrT772PHPHG70
-         NQsig9DwmEBdbHJB+ooGVBfVLtbEA64Xl49Im8ThJVcZrsSfneguaSKYau9Bs51CHmfP
-         Va9iCW15K4ZUxrV/SjGbj0R9I4XzkDi51WsyMr0Fn6OObs3u5XJk72DvHwHG1G8gLj7o
-         0X4iWJcctShcMpb6shxrmhdNyUCm/qwYNhIkiAkgN/2S/11y0K2swRhFGgbmc/J0jfmM
-         EIlCBoCKczxyaxIiziKgq0PgERg0I4Wn2qaF9d6fxjiSFAeFWS9T9ZC8nwGxUUhWfK23
-         LTwg==
-X-Gm-Message-State: AOAM533O/eqE0zAkfWecnaMQ0sRjWjrr5bxko0C3aMeH8DIm/57iN9kb
-        5VJAg/SSpcr8yoFm1oPKy4mL5ABD3l07OR8rvzs=
-X-Google-Smtp-Source: ABdhPJwB4Cxh6Xm29QPguQme76vU2edavYDHuq6X+ZxPViM44IF+dUd9+3Dnh1l8VAq0zq3NsEbxACQ/9UzjmB8IOP0=
-X-Received: by 2002:a17:90a:d80e:: with SMTP id a14mr3984745pjv.168.1601987310087;
- Tue, 06 Oct 2020 05:28:30 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1601987993; x=1633523993;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=cWScEf2H0N07zMQ3DijjChI3ei1wf5ykE77iwjqAp9c=;
+  b=WxG4j5KuEaloLswczX2aXeQJ4rGJxrA/L0ExJg3Ik0zPvuuIe/7aZutE
+   XtYBfZQXKKtN0SQ1y2UaksGqoPyDCCjBL7oUOHga8wSeLeHJeEzCh0iVA
+   8qvEt5cqRe5I0l0DOaO9trl7fkinlk8Wjpt4O1Uty2ewJWuPZMlh6iaJW
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.77,343,1596499200"; 
+   d="scan'208";a="81962596"
+Subject: RE: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer support
+Thread-Topic: [PATCH v4 bpf-next 00/13] mvneta: introduce XDP multi-buffer support
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 06 Oct 2020 12:39:49 +0000
+Received: from EX13D28EUB002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-5bdc5131.us-west-2.amazon.com (Postfix) with ESMTPS id D8C0DA1823;
+        Tue,  6 Oct 2020 12:39:47 +0000 (UTC)
+Received: from EX13D11EUB003.ant.amazon.com (10.43.166.58) by
+ EX13D28EUB002.ant.amazon.com (10.43.166.97) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 6 Oct 2020 12:39:46 +0000
+Received: from EX13D11EUB003.ant.amazon.com ([10.43.166.58]) by
+ EX13D11EUB003.ant.amazon.com ([10.43.166.58]) with mapi id 15.00.1497.006;
+ Tue, 6 Oct 2020 12:39:46 +0000
+From:   "Jubran, Samih" <sameehj@amazon.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "Agroskin, Shay" <shayagr@amazon.com>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "lorenzo.bianconi@redhat.com" <lorenzo.bianconi@redhat.com>,
+        "echaudro@redhat.com" <echaudro@redhat.com>
+Thread-Index: AQHWmMpYHdcS8+W5uEiUVfwUzD8TrKmEbwiAgABKxoCABc+m8A==
+Date:   Tue, 6 Oct 2020 12:39:36 +0000
+Deferred-Delivery: Tue, 6 Oct 2020 12:39:29 +0000
+Message-ID: <ba4b2f1ef9ea434292e14f03da6bf908@EX13D11EUB003.ant.amazon.com>
+References: <cover.1601648734.git.lorenzo@kernel.org>
+ <5f77467dbc1_38b0208ef@john-XPS-13-9370.notmuch>
+ <5c22ee38-e2c3-0724-5033-603d19c4169f@iogearbox.net>
+In-Reply-To: <5c22ee38-e2c3-0724-5033-603d19c4169f@iogearbox.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.164.68]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1601645787-16944-1-git-send-email-magnus.karlsson@gmail.com> <75f034e8-09c4-9f43-03ed-84f003a036d3@iogearbox.net>
-In-Reply-To: <75f034e8-09c4-9f43-03ed-84f003a036d3@iogearbox.net>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Tue, 6 Oct 2020 14:28:19 +0200
-Message-ID: <CAJ8uoz0oG=q5ERODhfcvBhZcswGpufp=zUvpG617SkxRP_AaLg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix compatibility problem in xsk_socket__create
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Ciara Loftus <ciara.loftus@intel.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 5, 2020 at 4:37 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 10/2/20 3:36 PM, Magnus Karlsson wrote:
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Fix a compatibility problem when the old XDP_SHARED_UMEM mode is used
-> > together with the xsk_socket__create() call. In the old XDP_SHARED_UMEM
-> > mode, only sharing of the same device and queue id was allowed, and in
-> > this mode, the fill ring and completion ring were shared between the
-> > AF_XDP sockets. Therfore, it was perfectly fine to call the
-> > xsk_socket__create() API for each socket and not use the new
-> > xsk_socket__create_shared() API. This behaviour was ruined by the
-> > commit introducing XDP_SHARED_UMEM support between different devices
-> > and/or queue ids. This patch restores the ability to use
-> > xsk_socket__create in these circumstances so that backward
-> > compatibility is not broken.
-> >
-> > We also make sure that a user that uses the
-> > xsk_socket__create_shared() api for the first socket in the old
-> > XDP_SHARED_UMEM mode above, gets and error message if the user tries
-> > to feed a fill ring or a completion ring that is not the same as the
-> > ones used for the umem registration. Previously, libbpf would just
-> > have silently ignored the supplied fill and completion rings and just
-> > taken them from the umem. Better to provide an error to the user.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
-> > ---
-> >   tools/lib/bpf/xsk.c | 14 +++++++++++++-
-> >   1 file changed, 13 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> > index 30b4ca5..5b61932 100644
-> > --- a/tools/lib/bpf/xsk.c
-> > +++ b/tools/lib/bpf/xsk.c
-> > @@ -705,7 +705,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
-> >       struct xsk_ctx *ctx;
-> >       int err, ifindex;
-> >
-> > -     if (!umem || !xsk_ptr || !(rx || tx) || !fill || !comp)
-> > +     if (!umem || !xsk_ptr || !(rx || tx))
-> >               return -EFAULT;
-> >
-> >       xsk = calloc(1, sizeof(*xsk));
-> > @@ -735,12 +735,24 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
-> >
-> >       ctx = xsk_get_ctx(umem, ifindex, queue_id);
-> >       if (!ctx) {
-> > +             if (!fill || !comp) {
-> > +                     err = -EFAULT;
-> > +                     goto out_socket;
-> > +             }
-> > +
-> >               ctx = xsk_create_ctx(xsk, umem, ifindex, ifname, queue_id,
-> >                                    fill, comp);
-> >               if (!ctx) {
-> >                       err = -ENOMEM;
-> >                       goto out_socket;
-> >               }
-> > +     } else if ((fill && ctx->fill != fill) || (comp && ctx->comp != comp)) {
-> > +             /* If the xsk_socket__create_shared() api is used for the first socket
-> > +              * registration, then make sure the fill and completion rings supplied
-> > +              * are the same as the ones used to register the umem. If not, bail out.
-> > +              */
-> > +             err = -EINVAL;
-> > +             goto out_socket;
->
-> This looks buggy. You got a valid ctx in this path which was ctx->refcount++'ed. By just
-> going to out_socket you'll leak this libbpf internal refcount.
-
-Yes, you are correct. Thanks for spotting. It jumps to the wrong
-label. It should be:
-
-goto out_put_ctx;
-
-so that ctx refcount is decreased. Will submit a v2.
-
-> >       }
-> >       xsk->ctx = ctx;
-> >
-> >
->
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRGFuaWVsIEJvcmttYW5u
+IDxkYW5pZWxAaW9nZWFyYm94Lm5ldD4NCj4gU2VudDogRnJpZGF5LCBPY3RvYmVyIDIsIDIwMjAg
+MTA6NTMgUE0NCj4gVG86IEpvaG4gRmFzdGFiZW5kIDxqb2huLmZhc3RhYmVuZEBnbWFpbC5jb20+
+OyBMb3JlbnpvIEJpYW5jb25pDQo+IDxsb3JlbnpvQGtlcm5lbC5vcmc+OyBicGZAdmdlci5rZXJu
+ZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnDQo+IENjOiBkYXZlbUBkYXZlbWxvZnQubmV0
+OyBrdWJhQGtlcm5lbC5vcmc7IGFzdEBrZXJuZWwub3JnOyBBZ3Jvc2tpbiwNCj4gU2hheSA8c2hh
+eWFnckBhbWF6b24uY29tPjsgSnVicmFuLCBTYW1paCA8c2FtZWVoakBhbWF6b24uY29tPjsNCj4g
+ZHNhaGVybkBrZXJuZWwub3JnOyBicm91ZXJAcmVkaGF0LmNvbTsgbG9yZW56by5iaWFuY29uaUBy
+ZWRoYXQuY29tOw0KPiBlY2hhdWRyb0ByZWRoYXQuY29tDQo+IFN1YmplY3Q6IFJFOiBbRVhURVJO
+QUxdIFtQQVRDSCB2NCBicGYtbmV4dCAwMC8xM10gbXZuZXRhOiBpbnRyb2R1Y2UgWERQDQo+IG11
+bHRpLWJ1ZmZlciBzdXBwb3J0DQo+IA0KPiBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQg
+ZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5vdCBjbGljaw0KPiBsaW5rcyBv
+ciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgY2FuIGNvbmZpcm0gdGhlIHNlbmRlciBhbmQg
+a25vdyB0aGUNCj4gY29udGVudCBpcyBzYWZlLg0KPiANCj4gDQo+IA0KPiBPbiAxMC8yLzIwIDU6
+MjUgUE0sIEpvaG4gRmFzdGFiZW5kIHdyb3RlOg0KPiA+IExvcmVuem8gQmlhbmNvbmkgd3JvdGU6
+DQo+ID4+IFRoaXMgc2VyaWVzIGludHJvZHVjZSBYRFAgbXVsdGktYnVmZmVyIHN1cHBvcnQuIFRo
+ZSBtdm5ldGEgZHJpdmVyIGlzDQo+ID4+IHRoZSBmaXJzdCB0byBzdXBwb3J0IHRoZXNlIG5ldyAi
+bm9uLWxpbmVhciIgeGRwX3tidWZmLGZyYW1lfS4NCj4gPj4gUmV2aWV3ZXJzIHBsZWFzZSBmb2N1
+cyBvbiBob3cgdGhlc2UgbmV3IHR5cGVzIG9mIHhkcF97YnVmZixmcmFtZX0NCj4gPj4gcGFja2V0
+cyB0cmF2ZXJzZSB0aGUgZGlmZmVyZW50IGxheWVycyBhbmQgdGhlIGxheW91dCBkZXNpZ24uIEl0
+IGlzIG9uDQo+ID4+IHB1cnBvc2UgdGhhdCBCUEYtaGVscGVycyBhcmUga2VwdCBzaW1wbGUsIGFz
+IHdlIGRvbid0IHdhbnQgdG8gZXhwb3NlDQo+ID4+IHRoZSBpbnRlcm5hbCBsYXlvdXQgdG8gYWxs
+b3cgbGF0ZXIgY2hhbmdlcy4NCj4gPj4NCj4gPj4gRm9yIG5vdywgdG8ga2VlcCB0aGUgZGVzaWdu
+IHNpbXBsZSBhbmQgdG8gbWFpbnRhaW4gcGVyZm9ybWFuY2UsIHRoZQ0KPiA+PiBYRFAgQlBGLXBy
+b2cgKHN0aWxsKSBvbmx5IGhhdmUgYWNjZXNzIHRvIHRoZSBmaXJzdC1idWZmZXIuIEl0IGlzIGxl
+ZnQNCj4gPj4gZm9yIGxhdGVyIChhbm90aGVyIHBhdGNoc2V0KSB0byBhZGQgcGF5bG9hZCBhY2Nl
+c3MgYWNyb3NzIG11bHRpcGxlIGJ1ZmZlcnMuDQo+ID4+IFRoaXMgcGF0Y2hzZXQgc2hvdWxkIHN0
+aWxsIGFsbG93IGZvciB0aGVzZSBmdXR1cmUgZXh0ZW5zaW9ucy4gVGhlDQo+ID4+IGdvYWwgaXMg
+dG8gbGlmdCB0aGUgWERQIE1UVSByZXN0cmljdGlvbiB0aGF0IGNvbWVzIHdpdGggWERQLCBidXQN
+Cj4gPj4gbWFpbnRhaW4gc2FtZSBwZXJmb3JtYW5jZSBhcyBiZWZvcmUuDQo+ID4+DQo+ID4+IFRo
+ZSBtYWluIGlkZWEgZm9yIHRoZSBuZXcgbXVsdGktYnVmZmVyIGxheW91dCBpcyB0byByZXVzZSB0
+aGUgc2FtZQ0KPiA+PiBsYXlvdXQgdXNlZCBmb3Igbm9uLWxpbmVhciBTS0IuIFRoaXMgcmVseSBv
+biB0aGUgInNrYl9zaGFyZWRfaW5mbyINCj4gPj4gc3RydWN0IGF0IHRoZSBlbmQgb2YgdGhlIGZp
+cnN0IGJ1ZmZlciB0byBsaW5rIHRvZ2V0aGVyIHN1YnNlcXVlbnQNCj4gPj4gYnVmZmVycy4gS2Vl
+cGluZyB0aGUgbGF5b3V0IGNvbXBhdGlibGUgd2l0aCBTS0JzIGlzIGFsc28gZG9uZSB0byBlYXNl
+DQo+ID4+IGFuZCBzcGVlZHVwIGNyZWF0aW5nIGFuIFNLQiBmcm9tIGFuIHhkcF97YnVmZixmcmFt
+ZX0uIENvbnZlcnRpbmcNCj4gPj4geGRwX2ZyYW1lIHRvIFNLQiBhbmQgZGVsaXZlciBpdCB0byB0
+aGUgbmV0d29yayBzdGFjayBpcyBzaG93biBpbg0KPiA+PiBjcHVtYXAgY29kZSAocGF0Y2ggMTMv
+MTMpLg0KPiA+DQo+ID4gVXNpbmcgdGhlIGVuZCBvZiB0aGUgYnVmZmVyIGZvciB0aGUgc2tiX3No
+YXJlZF9pbmZvIHN0cnVjdCBpcyBnb2luZyB0bw0KPiA+IGJlY29tZSBkcml2ZXIgQVBJIHNvIHVu
+d2luZGluZyBpdCBpZiBpdCBwcm92ZXMgdG8gYmUgYSBwZXJmb3JtYW5jZQ0KPiA+IGlzc3VlIGlz
+IGdvaW5nIHRvIGJlIHVnbHkuIFNvIHNhbWUgcXVlc3Rpb24gYXMgYmVmb3JlLCBmb3IgdGhlIHVz
+ZQ0KPiA+IGNhc2Ugd2hlcmUgd2UgcmVjZWl2ZSBwYWNrZXQgYW5kIGRvIFhEUF9UWCB3aXRoIGl0
+IGhvdyBkbyB3ZSBhdm9pZA0KPiA+IGNhY2hlIG1pc3Mgb3ZlcmhlYWQ/IFRoaXMgaXMgbm90IGp1
+c3QgYSBoeXBvdGhldGljYWwgdXNlIGNhc2UsIHRoZQ0KPiA+IEZhY2Vib29rIGxvYWQgYmFsYW5j
+ZXIgaXMgZG9pbmcgdGhpcyBhcyB3ZWxsIGFzIENpbGl1bSBhbmQgYWxsb3dpbmcNCj4gPiB0aGlz
+IHdpdGggbXVsdGktYnVmZmVyIHBhY2tldHMgPjE1MDBCIHdvdWxkIGJlIHVzZWZ1bC4NCj4gWy4u
+Ll0NCj4gDQo+IEZ1bGx5IGFncmVlLiBNeSBvdGhlciBxdWVzdGlvbiB3b3VsZCBiZSBpZiBzb21l
+b25lIGVsc2UgcmlnaHQgbm93IGlzIGluIHRoZQ0KPiBwcm9jZXNzIG9mIGltcGxlbWVudGluZyB0
+aGlzIHNjaGVtZSBmb3IgYSA0MEcrIE5JQz8gTXkgY29uY2VybiBpcyB0aGUNCj4gbnVtYmVycyBi
+ZWxvdyBhcmUgcmF0aGVyIG9uIHRoZSBsb3dlciBlbmQgb2YgdGhlIHNwZWN0cnVtLCBzbyBJIHdv
+dWxkIGxpa2UNCj4gdG8gc2VlIGEgY29tcGFyaXNvbiBvZiBYRFAgYXMtaXMgdG9kYXkgdnMgWERQ
+IG11bHRpLWJ1ZmYgb24gYSBoaWdoZXIgZW5kIE5JQw0KPiBzbyB0aGF0IHdlIGhhdmUgYSBwaWN0
+dXJlIGhvdyB3ZWxsIHRoZSBjdXJyZW50IGRlc2lnbmVkIHNjaGVtZSB3b3JrcyB0aGVyZQ0KPiBh
+bmQgaW50byB3aGljaCBwZXJmb3JtYW5jZSBpc3N1ZSB3ZSdsbCBydW4gZS5nLg0KPiB1bmRlciB0
+eXBpY2FsIFhEUCBMNCBsb2FkIGJhbGFuY2VyIHNjZW5hcmlvIHdpdGggWERQX1RYLiBJIHRoaW5r
+IHRoaXMgd291bGQNCj4gYmUgY3J1Y2lhbCBiZWZvcmUgdGhlIGRyaXZlciBBUEkgYmVjb21lcyAn
+c29ydCBvZicgc2V0IGluIHN0b25lIHdoZXJlIG90aGVycw0KPiBzdGFydCB0byBhZGFwdGluZyBp
+dCBhbmQgY2hhbmdpbmcgZGVzaWduIGJlY29tZXMgcGFpbmZ1bC4gRG8gZW5hIGZvbGtzIGhhdmUN
+Cj4gYW4gaW1wbGVtZW50YXRpb24gcmVhZHkgYXMgd2VsbD8gQW5kIHdoYXQgYWJvdXQgdmlydGlv
+X25ldCwgZm9yIGV4YW1wbGUsDQo+IGFueW9uZSBjb21taXR0aW5nIHRoZXJlIHRvbz8gVHlwaWNh
+bGx5IGZvciBzdWNoIGZlYXR1cmVzIHRvIGxhbmQgaXMgdG8gcmVxdWlyZQ0KPiBhdCBsZWFzdCAy
+IGRyaXZlcnMgaW1wbGVtZW50aW5nIGl0Lg0KPg0KDQpXZSAoRU5BKSBleHBlY3QgdG8gaGF2ZSBY
+RFAgTUIgaW1wbGVtZW50YXRpb24gd2l0aCBwZXJmb3JtYW5jZSByZXN1bHRzIGluIGFyb3VuZCA0
+LTYgd2Vla3MuDQoNCj4gPj4gVHlwaWNhbCB1c2UgY2FzZXMgZm9yIHRoaXMgc2VyaWVzIGFyZToN
+Cj4gPj4gLSBKdW1iby1mcmFtZXMNCj4gPj4gLSBQYWNrZXQgaGVhZGVyIHNwbGl0IChwbGVhc2Ug
+c2VlIEdvb2dsZSAgIHMgdXNlLWNhc2UgQCBOZXREZXZDb25mDQo+ID4+IDB4MTQsIFswXSkNCj4g
+Pj4gLSBUU08NCj4gPj4NCj4gPj4gTW9yZSBpbmZvIGFib3V0IHRoZSBtYWluIGlkZWEgYmVoaW5k
+IHRoaXMgYXBwcm9hY2ggY2FuIGJlIGZvdW5kIGhlcmUNCj4gWzFdWzJdLg0KPiA+Pg0KPiA+PiBX
+ZSBjYXJyaWVkIG91dCBzb21lIHRocm91Z2hwdXQgdGVzdHMgaW4gYSBzdGFuZGFyZCBsaW5lYXIg
+ZnJhbWUNCj4gPj4gc2NlbmFyaW8gaW4gb3JkZXIgdG8gdmVyaWZ5IHdlIGRpZCBub3QgaW50cm9k
+dWNlZCBhbnkgcGVyZm9ybWFuY2UNCj4gPj4gcmVncmVzc2lvbiBhZGRpbmcgeGRwIG11bHRpLWJ1
+ZmYgc3VwcG9ydCB0byBtdm5ldGE6DQo+ID4+DQo+ID4+IG9mZmVyZWQgbG9hZCBpcyB+IDEwMDBL
+cHBzLCBwYWNrZXQgc2l6ZSBpcyA2NEIsIG12bmV0YSBkZXNjcmlwdG9yDQo+ID4+IHNpemUgaXMg
+b25lIFBBR0UNCj4gPj4NCj4gPj4gY29tbWl0OiA4Nzk0NTZiZWRiZTUgKCJuZXQ6IG12bmV0YTog
+YXZvaWQgcG9zc2libGUgY2FjaGUgbWlzc2VzIGluDQo+IG12bmV0YV9yeF9zd2JtIikNCj4gPj4g
+LSB4ZHAtcGFzczogICAgICB+MTYyS3Bwcw0KPiA+PiAtIHhkcC1kcm9wOiAgICAgIH43MDFLcHBz
+DQo+ID4+IC0geGRwLXR4OiAgICAgICAgfjE4NUtwcHMNCj4gPj4gLSB4ZHAtcmVkaXJlY3Q6ICB+
+MjAyS3Bwcw0KPiA+Pg0KPiA+PiBtdm5ldGEgeGRwIG11bHRpLWJ1ZmY6DQo+ID4+IC0geGRwLXBh
+c3M6ICAgICAgfjE2M0twcHMNCj4gPj4gLSB4ZHAtZHJvcDogICAgICB+NzM5S3Bwcw0KPiA+PiAt
+IHhkcC10eDogICAgICAgIH4xODJLcHBzDQo+ID4+IC0geGRwLXJlZGlyZWN0OiAgfjIwMktwcHMN
+Cj4gWy4uLl0NCg==
