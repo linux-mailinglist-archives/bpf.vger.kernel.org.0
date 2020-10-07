@@ -2,78 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B67286625
-	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 19:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308BC286656
+	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 19:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728239AbgJGRop (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Oct 2020 13:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
+        id S1728804AbgJGR4y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Oct 2020 13:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727253AbgJGRoo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Oct 2020 13:44:44 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8280FC061755
-        for <bpf@vger.kernel.org>; Wed,  7 Oct 2020 10:44:44 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k6so3287357ior.2
-        for <bpf@vger.kernel.org>; Wed, 07 Oct 2020 10:44:44 -0700 (PDT)
+        with ESMTP id S1728014AbgJGR4y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Oct 2020 13:56:54 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A73BC061755
+        for <bpf@vger.kernel.org>; Wed,  7 Oct 2020 10:56:53 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id 33so3073323edq.13
+        for <bpf@vger.kernel.org>; Wed, 07 Oct 2020 10:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pfDC6ggIxducMqfO00QLvs/+qts4BSr0MlBGQbUF5sI=;
-        b=vMFVbnksLSPZMnYebhjUT4pIxkgnHQScv8TXqKYiHD7Tey0mttN6Jm7YgvKE112q6c
-         V7Q3MnJr+DMM2vKK/VWBDd8U5bl2THi+iIx+Lc2Ih54oUyZo2j+ToXDbehTA3UYBGU2k
-         Y9zYLFsSc9cVNwkxQ5FXkYmtSG3AZbcEUf62DMtG/bwnvvC96Aep8hHpQbqXvWwsZUvx
-         ZqtD+LmKNwdVyfmSqD0QR3kFigx37oPHFwg12PIRzHUg85vCCVYgH9Cr5KhNoffqMJZg
-         +RWJo0prz/wxD9AWFoOAwaPA9QvehFDpaEgL01gmuQnQ/louWCmUMokQurAOuA6XCWU7
-         z6iA==
+        bh=Yq0DVe/5LgoLrafjHe5mSCSMY2VmvWajHz+tFb+u+28=;
+        b=oScKh8bZMM3GwPgMgh7e2mKJhr/RDvlD19fy2Gj2ia3yiv2+DyknsuBoaQ/yb+iQ/U
+         MNY1sN92FN5Ds8fDHALJCTF5iANzNB8YW3Uq/UAlumTnS3fGGPzpnCuorZPybU6+cU1j
+         D10/iiEXaclvPB7S+za1DzRBh2oHw+13TQwaifDTruG1DJwFzBcjfbywIP1LpuBGjToi
+         dVJ+fgXQJHjmKApvE0XsZAmkJh55qGjFazjTkW2apKR3p6fXg2Ozc0SFVNKGJyZNBAe8
+         E6orRzaeM1WYP+NDqUDJj8i/wY//NaFAtECitNQRlTrJCyFp/TUqjbCvJZmLAUYysFBr
+         FKlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pfDC6ggIxducMqfO00QLvs/+qts4BSr0MlBGQbUF5sI=;
-        b=dQNccJBujzLXHggbMP/aiivUXTu8Si1j7U2DSH9wf68XI56L/HscIz4wxR2dP21ZPT
-         vWWJzQJv3uU5A+ioD+95uXVejOMLMSa2Cpm1LYr36CavRaDbKgociOVfYwnk5wvQ0ILu
-         SgdjjVGDBLeFhfXc+J9tzj7ch7dVXFwxJzSsAUUn8J8lCF31kjXpKlZidgQPrO1iDyjv
-         w1zjSBAhVzUVJC6Cyp9iCf/oJPN1Y/PeYTuRU76acgBR28ygWnI/NmLHh+Nbso/XlqzO
-         bL9UFy8d/D0KpEdkFPRo9UFUek0q/DSWy07HbgirtL1JTwq9i0w7tQAmeLog/2nDZ1oe
-         RaLA==
-X-Gm-Message-State: AOAM530HXsvqvf9Av9I6TgJQ9gtv99aLlGjruNztEp/9y0JrRX6F9Yxe
-        ryfAckN++zKlfT0tYuIJ1LviyQlDwMcE2xJ8nCiHaHJhj5E=
-X-Google-Smtp-Source: ABdhPJw56KeOvZD9f3lZerZIs35wHKjo02gHP4gf/z4zmdfhC7ZiyVYKxDFnV+0Cn95g24vnsirmCVTGtaprjEOvTDo=
-X-Received: by 2002:a02:82c8:: with SMTP id u8mr3789531jag.61.1602092683565;
- Wed, 07 Oct 2020 10:44:43 -0700 (PDT)
+        bh=Yq0DVe/5LgoLrafjHe5mSCSMY2VmvWajHz+tFb+u+28=;
+        b=BMN6R1xj3lyxr0WwP9pcCcx/9MDtyAJoUuP3ngCLUi1tYaXzyHN0cv2EVdETHmoW4X
+         HmbXm5nh/RCz+Ikna2eHKNt5lgEiW8dS5S0tP2t2iItFChOfrXtyyxsaBmb/lnUOFeT2
+         98dHKWQIfs6sUhe7vhmTc6ShZlG6fN9PBMz3X63/hzMlWIl9tvmKosLSwO4Wci3RJdcc
+         NLJHNTDKIAJeI43sr/jcAfOy9DcpquTGvmH0DOLpNgnBknaZfx/SNxYq8jtSFP9gKLbS
+         tLaG9AS3+JhO5CZ5UlUYOu0OyXxhsN9pPvqzdlj9GLbbBHzSuh7fPGqkfbZs2JyvJwMt
+         BSGA==
+X-Gm-Message-State: AOAM531AwwqLMsTci1WF6Bd1LuKjpdyz0o3GxkzZv0GcbwfssxgfgW7v
+        MKrrrxfwCbF0Pt9Y3YjYotUjs2HHfY8g+Q64LYrnYg==
+X-Google-Smtp-Source: ABdhPJypFgCtTmiEsHsp4FHdHKWX2PNLBOZVBMZUj4SJiIzZ7yQhnSakPNBmUJIcdCZfG5T+UAo5oI9dspZwEexZcJ0=
+X-Received: by 2002:aa7:ca52:: with SMTP id j18mr4624038edt.147.1602093412081;
+ Wed, 07 Oct 2020 10:56:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <160200013701.719143.12665708317930272219.stgit@firesoul>
- <160200018165.719143.3249298786187115149.stgit@firesoul> <20201006183302.337a9502@carbon>
- <20201006181858.6003de94@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CANP3RGe3S4eF=xVkQ22o=sxtW991jmNfq-bVtbKQQaszsLNZSA@mail.gmail.com> <a8b0dd01-bd6a-2a28-154e-c30a79ce3c83@gmail.com>
-In-Reply-To: <a8b0dd01-bd6a-2a28-154e-c30a79ce3c83@gmail.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Wed, 7 Oct 2020 10:44:30 -0700
-Message-ID: <CANP3RGcyTV2iWpSWt=Ekf9naE3sF3sKSz7j2jDaMV1AKYMVaNg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next V1 3/6] bpf: add BPF-helper for reading MTU from
- net_device via ifindex
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Shaun Crampton <shaun@tigera.io>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Marek Majkowski <marek@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
+References: <20201002010633.3706122-1-andriin@fb.com>
+In-Reply-To: <20201002010633.3706122-1-andriin@fb.com>
+From:   Luka Perkov <luka.perkov@sartura.hr>
+Date:   Wed, 7 Oct 2020 19:56:41 +0200
+Message-ID: <CAKQ-crhUT07SXZ16NK4_2RtpNA+kvm7VtB5fdo4qSV4Qi4GJ_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] libbpf: auto-resize relocatable LOAD/STORE instructions
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        kernel-team@fb.com, Tony Ambardar <tony.ambardar@gmail.com>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Luka Oreskovic <luka.oreskovic@sartura.hr>,
+        Sven Fijan <sven.fijan@sartura.hr>,
+        David Marcinkovic <david.marcinkovic@sartura.hr>,
+        Jakov Petrina <jakov.petrina@sartura.hr>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > FYI: It would be nice to have a similar function to return a device's
-> > L2 header size (ie. 14 for ethernet) and/or hwtype.
->
-> Why does that need to be looked up via a helper? It's a static number
-> for a device and can plumbed to a program in a number of ways.
+Hello Andrii,
 
-Fair enough.
+On Fri, Oct 2, 2020 at 3:09 AM Andrii Nakryiko <andriin@fb.com> wrote:
+> Patch set implements logic in libbpf to auto-adjust memory size (1-, 2-, 4-,
+> 8-bytes) of load/store (LD/ST/STX) instructions which have BPF CO-RE field
+> offset relocation associated with it. In practice this means transparent
+> handling of 32-bit kernels, both pointer and unsigned integers. Signed
+> integers are not relocatable with zero-extending loads/stores, so libbpf
+> poisons them and generates a warning. If/when BPF gets support for sign-extending
+> loads/stores, it would be possible to automatically relocate them as well.
+>
+> All the details are contained in patch #1 comments and commit message.
+> Patch #2 is a simple change in libbpf to make advanced testing with custom BTF
+> easier. Patch #3 validates correct uses of auto-resizable loads, as well as
+> check that libbpf fails invalid uses.
+>
+> I'd really appreciate folks that use BPF on 32-bit architectures to test this
+> out with their BPF programs and report if there are any problems with the
+> approach.
+>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+
+First, thank you for the support and sending this series. It took us a
+bit longer to run the tests as our target hardware still did not fully
+get complete mainline support and we had to rebase our patches. These
+are not related to BPF.
+
+Related to this patch, we have tested various BPF programs with this
+patch, and can confirm that it fixed previous issues with pointer
+offsets that we had and reported at:
+
+https://lore.kernel.org/r/CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com/.
+
+Most of our programs now work and we are currently debugging other
+programs that still aren't working. We are still not sure if the
+remaining issues are related to this or not, but will let you know
+sometime this week after further and more detailed investigation.
+
+Thanks,
+Luka
