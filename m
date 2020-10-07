@@ -2,212 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD50286ADB
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 00:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B487286ADC
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 00:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgJGW0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Oct 2020 18:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
+        id S1728775AbgJGW1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Oct 2020 18:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728782AbgJGW0j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Oct 2020 18:26:39 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9131EC061755
-        for <bpf@vger.kernel.org>; Wed,  7 Oct 2020 15:26:39 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id x20so3010799ybs.8
-        for <bpf@vger.kernel.org>; Wed, 07 Oct 2020 15:26:39 -0700 (PDT)
+        with ESMTP id S1728275AbgJGW1h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Oct 2020 18:27:37 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BF4C061755;
+        Wed,  7 Oct 2020 15:27:37 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id p11so1761790pld.5;
+        Wed, 07 Oct 2020 15:27:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TJgBo1dtgogRyPiQsisxOf2PtjlHYcANXHFEdwGJYwE=;
-        b=b3ZHCucT2ER7EipCpOuS00H0YO9Lk9r2PbfcDd5w8UuslQNVKZu5k9oguBCzr9h+N8
-         ZJhEWXBy8m1PvW5fGStXXtPhBrp2uRSKyXh8HZHXVX9Zwvc6hsjSj/3DFpz0plq7xFPj
-         w2cihspBeJYHPsZ2QjHf8kxwLGT7nhhRe5JMXc/VMLjfLQy+b90HCs0Gge7l2MHzuzZq
-         4miRt7CguDeQmRXTvlqHe4aCxXsiyNMPm9u0n043jT00pq7C8WKy6B4UQzd6MaYhQ9Yl
-         bKjkj61InGkGiSwiAiIrKyTwFvWA6A6VBpdKqU6ltBftP0fUGigMqSrNLbD458T2mjsf
-         /TKA==
+        h=from:to:cc:subject:date:message-id;
+        bh=NnZ1n8E65Otvm1/bxPZ6xNlcltAne+x5NWUhCP57djM=;
+        b=lO3bFrY7g6GqVV8Vj0lq7yLgsIYpiYLLcApW3qUo0BXyrp/drxWYTWtUwqCopsZbff
+         JSp5M7Lmd8sNgTvq1pQc/zu2Pe03pLri7i3NL1eu4nP3L9/QACklaFMPU6EOkHhKhguZ
+         QhkXIjanKGg2EgE48w4Lxxz35XoepwXW+0Kracbd6oxYEORch7+zK1wppC5xHHZOLkKO
+         rNRJRpc743bbUM9TwBGGgDOjT4V5Czklknx62l3rH6wBbgXGNBNA21272bZQXIA49gz3
+         uDK8k8OsquY1nElJkqRxlNK57WwWyKPhaFz4FfSwoSDyp50DVs4KQ6QQEgHWtUlCbnvE
+         mnAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TJgBo1dtgogRyPiQsisxOf2PtjlHYcANXHFEdwGJYwE=;
-        b=coQedbvjPgGe/uGk0FjQkiRpVSxYhOtSKDYBaGpig+Uxn+FMGIl75xVKe6vBKB+Xip
-         GojLNN7eV7CWbffkZvgpvVV90hKs8Dm1yNKx6dV6Jn795JJ7yMp15QbvjgOi7g3pTQiN
-         SU4KBucSHyo7cYc0m/zfiZub6i6W9ZfSG5vIZIA/gW3IbFVFvMJ2PodGR2WtaOJusbuG
-         2tQ0UiBNSynENyu6/CVBaeh8JcZwfG6u5roc3WwWvgPInwu2ADwJg7s6KNaUKj0Mbyql
-         ydc0piYtiW7PJKkiLHjc1xUmF0PDJ4g8xJsAAHa0HEFUQvhSg29xIfypjIzHjFv87yhH
-         CMPg==
-X-Gm-Message-State: AOAM5321aQst9+bQSy/x3SerdWbIXsmOArFFAs0rQN63Ir94M6F45kge
-        PR97v4evanyKUxIbGI+ylPHPL6n/ulrwxcQFJRA=
-X-Google-Smtp-Source: ABdhPJxDcyV6F+QDzjwsuKm+Z+tR/lYAoEUvVbgqo/KZd8UPAcocAWidNdkKrQKaqwWuHrpvFNRTQpxUT/idRC9477Y=
-X-Received: by 2002:a25:730a:: with SMTP id o10mr7355772ybc.403.1602109598690;
- Wed, 07 Oct 2020 15:26:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+hQ2+gb_y7TViv13K_JpJTP=yHFqORmY+=6PrO4eAjgrBSitw@mail.gmail.com>
- <CAEf4BzbjUbYDrMc13-bYBBxicDmuokjLHyRaOVA-1JHD6vVbYg@mail.gmail.com>
- <CAMOZA0JFYEYmLqAQu=km624nZfY8epPEpmqqsdUigzp+jFsymQ@mail.gmail.com>
- <CAEf4BzYRiF00B+4=u8r-z+RN3bVWeV_h==4f_JJJZ133PhGAog@mail.gmail.com> <CAMOZA0J1u-DdNk4EDFxeemxNhS8teKYLmEEMPQUcfddaJFGwaw@mail.gmail.com>
-In-Reply-To: <CAMOZA0J1u-DdNk4EDFxeemxNhS8teKYLmEEMPQUcfddaJFGwaw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Oct 2020 15:26:27 -0700
-Message-ID: <CAEf4BzYnC+nBgeZ1uGb+upSwQiHpFK+hOM=fJ7WdUiZ4b1KdcA@mail.gmail.com>
-Subject: Re: libbpf/bpftool inconsistent handling og .data and .bss ?
-To:     Luigi Rizzo <lrizzo@google.com>
-Cc:     Luigi Rizzo <rizzo@iet.unipi.it>, bpf <bpf@vger.kernel.org>,
-        Petar Penkov <ppenkov@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=NnZ1n8E65Otvm1/bxPZ6xNlcltAne+x5NWUhCP57djM=;
+        b=oBz5o8d24QCSCpnNne0PurCFjPuT143Qo2haSKVnW1flhoqPmpWSjBJjrPvkU7CKgp
+         t4XiArc6Egj+2+GflEuur7X31OEVD0RB37EvMIVxaAioI1kixbxJM2fundw7prfvTuKR
+         zylqmHgS3Bp1nMEPcixsryHz4K6ZJ6hmxpVkKmVsKCnyGHgVKyKHExETmXZM1Oh+nSjf
+         kRPvpYFhcw1FMmsxHIEpSJmLC+5Od4mX3GOOetPoloEeHD1iH8LKQNC+PT/WZ3WRf3vK
+         f+RPm2hAJLikevmA9o+J/gReNgG84W+mv5DxaKlnJAkVys48XYRiiWK4QEHtJgSCTW+i
+         MLxA==
+X-Gm-Message-State: AOAM533jaMyUvbbDHohnCgef9EiPJneYbr7Knvh931p57FHEFfi9S55W
+        Oyuz3Yg7AcgfvwCJDuSOeRsD4OAb47aXaQ==
+X-Google-Smtp-Source: ABdhPJy7zpwvS9KzSa6rYQr5xI/dHZdWmtCIj3nLSqlVhlFZfIgEI1Q/ryTrnEwAlU0Mf9JcFPC8yg==
+X-Received: by 2002:a17:902:9884:b029:d2:4276:1b64 with SMTP id s4-20020a1709029884b02900d242761b64mr4927538plp.76.1602109656875;
+        Wed, 07 Oct 2020 15:27:36 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id d6sm296090pjr.51.2020.10.07.15.27.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Oct 2020 15:27:36 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf-next] selftests/bpf: Additional asm tests for the verifier regalloc tracking.
+Date:   Wed,  7 Oct 2020 15:27:34 -0700
+Message-Id: <20201007222734.93364-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 2:29 PM Luigi Rizzo <lrizzo@google.com> wrote:
->
-> On Wed, Oct 7, 2020 at 10:40 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Oct 7, 2020 at 1:31 PM Luigi Rizzo <lrizzo@google.com> wrote:
-> > >
-> > > TL;DR; there seems to be a compiler bug with clang-10 and -O2
-> > > when struct are in .data -- details below.
-> > >
-> > > On Wed, Oct 7, 2020 at 8:35 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Wed, Oct 7, 2020 at 9:03 AM Luigi Rizzo <rizzo@iet.unipi.it> wrote:
-> > > > >
-> > > > > I am experiencing some weirdness in global variables handling
-> > > > > in bpftool and libbpf, as described below.
-> > > ...
-> > > > > 2. .bss overrides from userspace are not seen in bpf at runtime
-> > > > >
-> > > > >     In foo_bpf.c I have "int x = 0;"
-> > > > >     In the userspace program, before foo_bpf__load(), I do
-> > > > >        obj->bss->x = 1
-> > > > >     but after attach, the bpf code does not see the change, ie
-> > > > >         "if (x == 0) { .. } else { .. }"
-> > > > >     always takes the first branch.
-> > > > >
-> > > > >     If I initialize "int x = 2" and then do
-> > > > >        obj->data->x = 1
-> > > > >     the update is seen correctly ie
-> > > > >           "if (x == 2) { .. } else { .. }"
-> > > > >      takes one or the other depending on whether userspace overrides
-> > > > >      the value before foo_bpf__load()
-> > > >
-> > > > This is quite surprising, given we have explicit selftests validating
-> > > > that all this works. And it seems to work. Please check
-> > > > prog_tests/skeleton.c and progs/test_skeleton.c. Can you try running
-> > > > it and confirm that it works in your setup?
-> > >
-> > > Ah, this was non intuitive but obvious in hindsight:
-> > >
-> > > .bss is zeroed by the kernel after load(), and since my program
-> > > changed the value before foo_bpf__load() , the memory was overwritten
-> > > with 0s. I could confirm this by printing the value after load.
-> > >
-> > > If I update obj->data-><something> after __load(),
-> > > or even after __attach() given that userspace mmaps .bss and .data,
-> > > everything works as expected both for scalars and structs.
-> >
-> > Check prog_tests/skeleton.c again, it sets .data, .bss, and .rodata
-> > before the load. And checks that those values are preserved after
-> > load. So .bss, if you initialize it manually, shouldn't zero-out what
-> > you set.
->
-> Don't know what to say: it is cleared on my laptop 5.7.17
->
-> I printed the values around assignments and calls
-> (also verified that obj->bss does not change):
-> Below, x is "uint32_t x = 0" in .bss
-> struct one { uint32_t a } s = { .a = 2} " in .data
-> Program output:
->
-> before load, obj->bss is 0x7fb0698b6000
-> initially x is 0 s.a is 2
-> // x = 1; s.a = 3
-> before load x is 1 s.a is 3
-> after load, obj->bss is 0x7fb0698b6000
-> after load x is 0 s.a is 3 // note x is cleared, s is left alone
-> // x = 2; s.a = 4;
-> after assign x is 2 s.a is 4 variables by 10 every 5ms
-> // attach, when the program runs (every 5ms) does
-> // if (s.a == 2 || s.a > 10) { x += 10; s.a += 10}
-> after attach x is 12 s.a is 12
-> at runtime count_off is 2382 x is 12
-> at runtime count_off is 2382 x is 12
-> ...
->
-> Could it be some security setting ?
->
-> >
-> > >
-> > > > >
-> > > > > 3. .data overrides do not seem to work for non-scalar types
-> > > > >     In foo_bpf.c I have
-> > > > >           struct one { int a; }; // type also visible to userspace
-> > > > >           struct one x { .a = 2 }; // avoid bugs #1 and #2
-> > > > >     If in userspace I do
-> > > > >           obj->data->x.a = 1
-> > > > >     the update is not seen in the kernel, ie
-> > > > >             "if (x.a == 2) { .. } else { .. }"
-> > > > >      always takes the first branch
-> > > > >
-> > > >
-> > > > Similarly, the same skeleton selftest tests this situation. So please
-> > > > check selftests first and report if selftests for some reason don't
-> > > > work in your case.
-> > >
-> > > Actually test_skeleton.c does _not_ test for struct in .data,
-> > > only in .rodata and .bss
-> >
-> > It doesn't matter which section it's in, I meant it's testing struct
-> > field accesses from at least one of global data sections.
->
-> Right but as the llvm-objdump shows, the compiler is treating
-> .bss and .data differently, at least for struct reads.
->
-> >
-> > >
-> > > There seems to be a compiler error, at least with clang-10 and -O2
-> > >
-> > > Note how the struct case the compiler uses '2' as immediate value
-> > > when reading, whereas in the scalar case it correctly dereferences
-> > > the pointer to the variable
-> >
-> > It would be useful to include your original source code, especially
-> > the variable declaration parts. I suspect that you declared your
-> > struct variable as a static variable? In that case Clang will assume
-> > nothing can change the value and can inline values like 2. So either
-> > make sure you have a global variable declaration or use `static
-> > volatile`. See how `const volatile` is used throughout all selftests
-> > when working with the .rodata section.
->
-> Perhaps the easiest is to see it on godbolt:
->
-> https://godbolt.org/z/Mnx38v
->
+From: Alexei Starovoitov <ast@kernel.org>
 
-Thanks for the example. I can also reproduce this locally. It does
-seem like a Clang/LLVM bug at this point. The generated code makes
-absolutely no sense to me:
+Add asm tests for register allocator tracking logic implemented in the patches:
+https://lore.kernel.org/bpf/20201006200955.12350-1-alexei.starovoitov@gmail.com/T/#t
 
-r1 = 100
-if r1 > 3 goto +5
-r1 = 3
-r1 += 111
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ .../testing/selftests/bpf/verifier/regalloc.c | 159 ++++++++++++++++++
+ 1 file changed, 159 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/verifier/regalloc.c
 
-Something fishy is going on there. I bet Yonghong will quickly figure
-out what's going on.
+diff --git a/tools/testing/selftests/bpf/verifier/regalloc.c b/tools/testing/selftests/bpf/verifier/regalloc.c
+new file mode 100644
+index 000000000000..e9b6c6fdecd2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/regalloc.c
+@@ -0,0 +1,159 @@
++{
++	"regalloc 1",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 8),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JSGT, BPF_REG_0, 20, 4),
++	BPF_JMP_IMM(BPF_JSLT, BPF_REG_2, 0, 3),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_0),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_2),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_7, 0),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 4 },
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
++},
++{
++	"regalloc 2",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 8),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JSGT, BPF_REG_0, 24, 4),
++	BPF_JMP_IMM(BPF_JSLT, BPF_REG_2, 0, 3),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_0),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_2),
++	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_7, 0),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 4 },
++	.result = REJECT,
++	.errstr = "invalid access to map value, value_size=48 off=48 size=1",
++	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
++},
++{
++	"regalloc 3",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 9),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JSGT, BPF_REG_0, 20, 5),
++	BPF_MOV64_IMM(BPF_REG_3, 0),
++	BPF_JMP_REG(BPF_JSGE, BPF_REG_3, BPF_REG_2, 3),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_0),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_2),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_7, 0),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 4 },
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
++},
++{
++	"regalloc 4",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 9),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JSGT, BPF_REG_0, 22, 5),
++	BPF_MOV64_IMM(BPF_REG_3, 0),
++	BPF_JMP_REG(BPF_JSGE, BPF_REG_3, BPF_REG_2, 3),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_0),
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_2),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_7, 0),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 4 },
++	.result = REJECT,
++	.errstr = "invalid access to map value, value_size=48 off=44 size=8",
++	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
++},
++{
++	"regalloc 5",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 11),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JSGT, BPF_REG_0, 20, 7),
++	/* r0 has upper bound that should propagate into r2 */
++	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -8), /* spill r2 */
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_MOV64_IMM(BPF_REG_2, 0), /* clear r0 and r2 */
++	BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_10, -8), /* fill r3 */
++	BPF_JMP_REG(BPF_JSGE, BPF_REG_0, BPF_REG_3, 2),
++	/* r3 has lower and upper bounds */
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_3),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_7, 0),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 4 },
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
++},
++{
++	"regalloc 6",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 11),
++	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
++	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JSGT, BPF_REG_0, 48, 7),
++	/* r0 has upper bound that should propagate into r2 */
++	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -8), /* spill r2 */
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_MOV64_IMM(BPF_REG_2, 0), /* clear r0 and r2 */
++	BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_10, -8), /* fill r3 */
++	BPF_JMP_REG(BPF_JSGE, BPF_REG_0, BPF_REG_3, 2),
++	/* r3 has lower and upper bounds */
++	BPF_ALU64_REG(BPF_ADD, BPF_REG_7, BPF_REG_3),
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_7, 0),
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 4 },
++	.result = REJECT,
++	.errstr = "invalid access to map value, value_size=48 off=48 size=8",
++	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
++},
+-- 
+2.23.0
 
-BTW, I tried `static volatile` for the variable, marking volatile
-field a, marking variable as __attribute__((weak)). Nothing really
-helps, generated code is still weird and inlines constants.
-
-> and how clang gets terribly confused when compiling read access
-> to the struct_in_data field
->
-> cheers
-> luigi
