@@ -2,135 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB902857E2
-	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 06:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA872285812
+	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 07:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgJGEoP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Oct 2020 00:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
+        id S1726152AbgJGFNk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Oct 2020 01:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgJGEoP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Oct 2020 00:44:15 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AF1C061755
-        for <bpf@vger.kernel.org>; Tue,  6 Oct 2020 21:44:15 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id n142so857558ybf.7
-        for <bpf@vger.kernel.org>; Tue, 06 Oct 2020 21:44:15 -0700 (PDT)
+        with ESMTP id S1726041AbgJGFNj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Oct 2020 01:13:39 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6967C061755;
+        Tue,  6 Oct 2020 22:13:39 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 7so624271pgm.11;
+        Tue, 06 Oct 2020 22:13:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b22qqHXR5Thl90sJSAq5b7kttFOBr1PY73BaB/Yz4s8=;
-        b=DflmCvf/TmbT4rVtUQBShs6bZ9ZGT1EKr/oKpIIBv5Pt/Um1TTa4p3AKD9Q8bprDe8
-         kj9/yHxydzi3XT22cDnW6F05nnfHieb17n4UNNp7NudSL8pHXsuRjq3BB7i+JrNgK1JD
-         cuO5iwhpLmBbcs7ogv0hHwEMeJTFG+X8Us0gSTFrLJ/IYbErJrU/zEQQ/ojcG0+DzjVA
-         ReLmR7fCwyKErADfMqxmy1IYYoxKM8PeZqE3ua/Ftk9imfbp9ZO2nAVy+5kdjXAGuCEJ
-         dP2p0lGnWUUHts7t9QMfa+2R4YqC7QSjc4MxjbqDsIJfCxCxflkzCko2ZgOTLvivPI5Z
-         d7yw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HcUrC2h912Ise4NnCqH2Ml1ksM1fqY/57tAY9LEMA9c=;
+        b=ZB4SE7EXlvfHWy3qozaXROQKgeDBeCMp10YiwJOlvrqSsf8vKFxZ4hVtG7OmI4Z0Rb
+         jVyMSbYEgdjErd6IL2HpId4FUXtQzlTglCWg2HoiWLrrqnLe+z49Mj/wvdkPHght5s+9
+         cFIL5iFak7h4kp2X2VqC3pUiXoXlxarezWtFjyS7yXHTqQSA1iezQqD3qee+wTVuPqpp
+         tuxKPqktml7n/xP/GNx0LA/7nU0XwHshPlPaboh062aMe1x5xPveSnhWHS2hlDwhvG86
+         FsHAdh0f477/AleFSFrvpJPfeSx0aH2blODuinHp3iwyFpZH1yW2niFkgtgOHxTfkUBe
+         jwqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b22qqHXR5Thl90sJSAq5b7kttFOBr1PY73BaB/Yz4s8=;
-        b=k4gkKgRorWKk1QuG1EYcD+svlgnnS9b0xABW4nDaVOjEM2LQCdXK+KulwHONSlDpBv
-         wt4KCHf405HIjaAQMPH3R8+HorQAQVLNm5XfEZYVn2yVf6Hd+wL6pv5SltQpgkf/TxY0
-         zH7+C8YmxJX9Gj33mJAaJq28ZlHTp0Im0xtQaN14KwQdOXI6eExVYQ0JV0Ka2Ty5MzDV
-         PlbYNNRcmVili/0DVKi3plD7aYM38Gk2H7dZMBvrwWItTBRbP8+HaoQw2teJFtB/JlvF
-         0mCYau42Ed7QwotLdUhcgazlaj7c4RSL5euSuRAYU81pIuUm/LRr6DUju2mjkvSgPdVQ
-         3Kbg==
-X-Gm-Message-State: AOAM531xljL08UBpHDJYMQzAh2MH49KUuJgxhPyKKakea1dP74UA6pmh
-        mCHrVc8RXdHxuq1L6mh8eYjILxF/qjVl9K7Cj9o=
-X-Google-Smtp-Source: ABdhPJz/VfrJ5t1UsBsGuvx3YJJw1QQmaf8nagKMMHrIHzHih1fojtJhdBq6VyaqzC4Ksv+JT8E46v8Wopw7Qwk71kI=
-X-Received: by 2002:a25:6644:: with SMTP id z4mr1955780ybm.347.1602045853065;
- Tue, 06 Oct 2020 21:44:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <CACYkzJ7AfZ4HMEzt7OV_T4N8RO4SJcFbyEVxCgVrkKS4uiOD=g@mail.gmail.com>
- <CAEf4BzbrF9C27gX5JaAq--Ex7+cJe0yz0QKVo9fov2voiiWwtA@mail.gmail.com> <71e1203f-5864-f86d-e587-67d92183b89b@fb.com>
-In-Reply-To: <71e1203f-5864-f86d-e587-67d92183b89b@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 6 Oct 2020 21:44:02 -0700
-Message-ID: <CAEf4BzZ5WOwAkfqXpJCujkrcN-8DL2UvtiNpSiELBT7z99h5cg@mail.gmail.com>
-Subject: Re: Failure in test_local_storage at bpf-next
-To:     Yonghong Song <yhs@fb.com>
-Cc:     KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HcUrC2h912Ise4NnCqH2Ml1ksM1fqY/57tAY9LEMA9c=;
+        b=DcjO3mhrxMn5Ty21dlmTGn0N4xGTfQThQbDlpvhmzTEABBc3SPcBqvYUBLEy8zcNBJ
+         Go/mANQDuMUIi9C149vYyEyaHQGzjtKYc9STj8vdfrwlFbT5/r7U4DpXMRiwi9alGME9
+         FZI87mcO83srN3RzJUnililN2u5elRwNAm+eV+sxR3DTSIV6ibnSYdhaSRdeOWLsxKoM
+         11WZ6RIhNmrUS126WaS9RlkCy45CWxIvC5/xpagwWDbB0ywtm+8FMQFQj+sfFLwx3F5J
+         xK93pQ5jdPLkRAQrR0ZotO/sSyLyGJ8If+U/VyGR4szR0XC7iBTqxafei0YOwQMUhd9s
+         N2Rg==
+X-Gm-Message-State: AOAM532/Aj757N9dGdiHMIEOK+ajBD056brZPcWuzyk1e+clvfP50qKt
+        +DePHH/t9vLTqT10mcFI0Fs=
+X-Google-Smtp-Source: ABdhPJzIxaIGz2QbQUkCOwturiObL6vXGcQqDA2u5A53i7+zYKxc4E+PrdieQNhwoWhXqU2kVIRA2g==
+X-Received: by 2002:a65:64c1:: with SMTP id t1mr1450985pgv.55.1602047619179;
+        Tue, 06 Oct 2020 22:13:39 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:9c77])
+        by smtp.gmail.com with ESMTPSA id c201sm1100685pfb.216.2020.10.06.22.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Oct 2020 22:13:38 -0700 (PDT)
+Date:   Tue, 6 Oct 2020 22:13:35 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        john fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Propagate scalar ranges through
+ register assignments.
+Message-ID: <20201007051335.z6lwkinpsyxmpfam@ast-mbp>
+References: <20201006200955.12350-1-alexei.starovoitov@gmail.com>
+ <20201006200955.12350-2-alexei.starovoitov@gmail.com>
+ <CAEf4BzbRLLJ=r3LJfQbkkXtXgNqQL3Sr01ibhOaxNN-QDqiXdw@mail.gmail.com>
+ <20201007021842.2lwngvsvj2hbuzh5@ast-mbp>
+ <CAEf4Bza=7GzvXJinkwO1XcASg7ahHranmNRmXEzU-KzOg9wVCw@mail.gmail.com>
+ <20201007041517.6wperlh6dqrk7xjc@ast-mbp>
+ <CAEf4BzY1kKrB-GRmMCvEVy64KhpT=jao7voQuvXkKw4woMe8cA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY1kKrB-GRmMCvEVy64KhpT=jao7voQuvXkKw4woMe8cA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 9:31 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 10/6/20 6:23 PM, Andrii Nakryiko wrote:
-> > On Tue, Oct 6, 2020 at 5:31 PM KP Singh <kpsingh@chromium.org> wrote:
-> >>
-> >> I noticed that test_local_storage is broken due to a BTF error at
-> >> bpf-next [67ed375530e2 ("samples: bpf: Driver interrupt statistics in
-> >> xdpsock")]
-> >>
-> >> ./test_progs -t test_local_storage
-> >> libbpf: prog 'socket_post_create': relo #0: parsing [28] struct socket + 0:0.1 2
-> >
-> > This line is truncated, btw, please make sure you post the entire
-> > output next time.
-> >
-> > But, this seems like a bug in Clang, it produced invalid access index
-> > string "0:0.1", there shouldn't be any other separator except ':' in
-> > those strings.
-> >
-> > Yonghong, can you please take a look? This seems to be a very recent
-> > regression, I had to update to
-> > 6c7d713cf5d9bb188f1e73452a256386f0288bf7 sha from not-too-outdated
-> > version to repro this.
->
-> Sorry. This indeed is a llvm regression. The guilty patch is
-> https://reviews.llvm.org/D88855 which adds NPM (new pass manager)
-> support for BPF. The patch just merged this morning, thanks for catching
-> the bug so fast. Since NPM is not used by default and the code
-> refactoring looks okay, so I did not run selftests. But, yah, it does
-> change some semantics of the code...
->
-> I just put a fix at https://reviews.llvm.org/D88942.
-> Hopefully to merge soon.
+On Tue, Oct 06, 2020 at 09:42:18PM -0700, Andrii Nakryiko wrote:
+> > I see it differently.
+> > I don't like moving if (reg->id) into find_equal_scalars(). Otherwise it would
+> > have to be named something like try_find_equal_scalars(). And even with such
+> > "try_" prefix it's still not clean. It's my general dislike of defensive
+> > programming. I prefer all functions to be imperative: "do" vs "try_do".
+> > There are exception from the rule, of course. Like kfree() that accepts NULL.
+> > That's fine.
+> > In this case I think if (type == SCALAR && id != 0) should be done by the caller.
+> 
+> There is no need to do (type == SCALAR) check, see pseudo-code above.
+> In all cases where find_equal_scalars() is called we know already that
+> register is SCALAR.
+> 
+> As for `if (reg->id)` being moved inside find_equal_scalars(). I
+> didn't mean it as a defensive measure. It just allows to keep
+> higher-level logic in check_cond_jmp_op() a bit more linear.
+> 
+> Also, regarding "try_find_equal_scalars". It's not try/attempt to do
+> this, it's do it, similarly to __update_reg_bounds() you explained
+> below. It's just known_reg->id == 0 is a guarantee that there are no
+> other equal registers, so we can skip the work. But of course one can
+> look at this differently. I just prefer less nested ifs, if it's
+> possible to avoid them.
+> 
+> But all this is not that important. I suggested, you declined, let's move on.
+> 
+> > Note that's different from __update_reg_bounds().
+> > There the bounds may or may not change, but the action is performed.
+> > What you're proposing it to make find_equal_scalars() accept any kind
+> > of register and do the action only if argument is actual scalar
+> > and its "id != 0". That's exactly the defensive programming
+> > that I feel make programmers sloppier.
+> 
+> :) I see a little bit of an irony between this anti-defensive
+> programming manifesto and "safety net in case id assignment goes
+> wrong" above.
+> 
+> > Note that's not the same as mark_reg_unknown() doing
+> > if (WARN_ON(regno >= MAX_BPF_REG)) check. I hope the difference is clear.
 
-No worries, thanks for a quick fix!
-
->
-> >
-> >> libbpf: prog 'socket_post_create': relo #0: failed to relocate: -22
-> >> libbpf: failed to perform CO-RE relocations: -22
-> >> libbpf: failed to load object 'local_storage'
-> >> libbpf: failed to load BPF skeleton 'local_storage': -22
-> >> test_test_local_storage:FAIL:skel_load lsm skeleton failed
-> >>
-> >> by changing it to use vmlinux.h with:
-> >>
-> >
-> > [...]
-> >
-> >>
-> >> clang --version
-> >> clang version 12.0.0 (https://github.com/llvm/llvm-project.git
-> >> 6c7d713cf5d9bb188f1e73452a256386f0288bf7)
-> >> Target: x86_64-unknown-linux-gnu
-> >> Thread model: posix
-> >>
-> >> pahole --version
-> >> v1.18
-> >>
-> >> This error goes away if I comment out the lsm/socket_post_create or
-> >> the lsm/socket_bind which makes me think that something in
-> >> bpf_core_apply_relo does not like two programs in the same object
-> >> having the same BTF type in its signature (but this just a guess, I
-> >> did not investigate more).  I was wondering if anyone has any ideas
-> >> what could be going on here.
-> >>
-> >> PS: While working on task local storage, I noted that some of the
-> >> checks in this test were buggy and will send a patch to fix them as
-> >> well.
-> >>
-> >> - KP
+Looks like the difference between defensive programming and safety net checks
+was not clear. The safety net in mark_reg_unknown() will be triggered when
+things really go wrong. I don't think I've ever seen in production code. I only
+saw it during the development when my code was badly broken. That check is to
+prevent security issues in case a bug sneaks in. The defensive programming lets
+a function accept incorrect arguments. That's normal behavior of such function.
+Because of such design choice the programers will routinely pass invalid args.
+That's kfree() checking for NULL and the only exception I can remember in the
+kernel code base. Arguably NULL is not an invalid value in this case. When
+people talk about defensive programming the NULL check is brought up as an
+example, but I think it's important to understand it at deeper level.
+Letting function accept any register only to
+> prefer less nested ifs, if it's possible to avoid them
+is the same thing. It's making code sloppier for esthetics of less nested if-s.
+There are plenty of projects and people that don't mind such coding style and
+find it easier to program. That's a disagreement in coding philosophy. It's ok
+to disagree, but it's important to understand those coding differences.
