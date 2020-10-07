@@ -2,132 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C1928676D
-	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 20:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DF5286910
+	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 22:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbgJGSfi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Oct 2020 14:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgJGSfh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Oct 2020 14:35:37 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6610C061755
-        for <bpf@vger.kernel.org>; Wed,  7 Oct 2020 11:35:37 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id h9so2570632ybm.4
-        for <bpf@vger.kernel.org>; Wed, 07 Oct 2020 11:35:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lqk1Qy7eFZghG9XyOgh3yW5pG7dq3iu69ZCVZV06LPI=;
-        b=ghar1w+iQtBLvGLQNDrnJ799gRgo+eEnixtCoNQoKIAy4qwBWbAnxw3LXTJyas3rO8
-         gF18nCSdbL7PQdljVy/PNqNtRmzTgnzwYSCCfG4JolwtoaqJPjZ/m7Cte99ajsZFjimD
-         SyZmnWYJosNcrkzuhQPUjBNG8uH11d+2VwHCv8OYmvc6LPooQRZyXZE7cGNUwAF/ImTP
-         0hyhH6ntvFaPVGcum2F3O3ExG7QPTkrdUbDh2EqMLGVcrh1vK2hLgl1v/LAdH656gY8B
-         QlMWd3mp1AkD3gPM2gwzBY7gZq4hFDFbHRPwsA8qWIoTW/Mp24189XB/npqs7NHL38II
-         EKjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lqk1Qy7eFZghG9XyOgh3yW5pG7dq3iu69ZCVZV06LPI=;
-        b=ntF/IZ54wG2+ueIPQA7ItadwQ6omMFwo5meyDSbGhPxq1NelXJ7jnFaxOdmiozVs/z
-         UqZfycBxxCAdpCpFc+F4sHSZYTLHHXv6kyFtL+hWSXhGxU6Xog2rzf/Osm3la+TzieGV
-         CQZBeMkm9KDMEMmBF/YI9H41MbLIfWFEEwZNsOUCLBRbNzS2a6Y1VTIB7T7Hq5xD1NR/
-         JgF2cT1I9k/MfGrzZcfm+puDT1WYuynED6Mrrp8ENBcEquy8cv/bPeKOG59WcjSTjLbd
-         zcPYmzDBWvIRrYhYOJpA2ig4pn8/iQ6Pvf8nv/KZqAET5tYmrXCuseOC16RTkwvRBBun
-         T+Jw==
-X-Gm-Message-State: AOAM530Ff8tld9Zig4AtBUW+FK5anRbSB2XX6MOIRReX9kmeXjVLY+Ml
-        W1JUkmRHh/b+LPtYLTZDjEk9tEZIIsjX4J7TPTo=
-X-Google-Smtp-Source: ABdhPJzYxcq1GdmQo7IQTty8CwZqdorNODapSgzuptLqM0BNrz5YcdwuoHDbkaTX7HuSqf2l/1dto8s0XrpO6rBdgw8=
-X-Received: by 2002:a25:cbc4:: with SMTP id b187mr6206979ybg.260.1602095736811;
- Wed, 07 Oct 2020 11:35:36 -0700 (PDT)
+        id S1728476AbgJGUaE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 7 Oct 2020 16:30:04 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63158 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728313AbgJGUaD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Oct 2020 16:30:03 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 097KTQcb007517
+        for <bpf@vger.kernel.org>; Wed, 7 Oct 2020 13:30:02 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 341408vj03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 07 Oct 2020 13:30:02 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 7 Oct 2020 13:30:01 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id CF9CB2EC7B90; Wed,  7 Oct 2020 13:29:47 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Tony Ambardar <tony.ambardar@gmail.com>
+Subject: [PATCH v2 bpf-next 0/4] libbpf: auto-resize relocatable LOAD/STORE instructions
+Date:   Wed, 7 Oct 2020 13:29:42 -0700
+Message-ID: <20201007202946.3684483-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <CA+hQ2+gb_y7TViv13K_JpJTP=yHFqORmY+=6PrO4eAjgrBSitw@mail.gmail.com>
-In-Reply-To: <CA+hQ2+gb_y7TViv13K_JpJTP=yHFqORmY+=6PrO4eAjgrBSitw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Oct 2020 11:35:25 -0700
-Message-ID: <CAEf4BzbjUbYDrMc13-bYBBxicDmuokjLHyRaOVA-1JHD6vVbYg@mail.gmail.com>
-Subject: Re: libbpf/bpftool inconsistent handling og .data and .bss ?
-To:     Luigi Rizzo <rizzo@iet.unipi.it>
-Cc:     bpf <bpf@vger.kernel.org>, Petar Penkov <ppenkov@google.com>,
-        Luigi Rizzo <lrizzo@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
+ mlxlogscore=589 impostorscore=0 lowpriorityscore=0 suspectscore=8
+ adultscore=0 spamscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2010070131
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 9:03 AM Luigi Rizzo <rizzo@iet.unipi.it> wrote:
->
-> I am experiencing some weirdness in global variables handling
-> in bpftool and libbpf, as described below.
->
-> This happens happen with code in foo_bpf.c compiled with
->    clang-10 -O2 -Wall -Werror -target bpf ...
-> and subsequently exported with
->    bpftool gen skeleton ...
-> (i have tried bpftool 5.8.7 and 5.9.0-rc6)
->
-> 1. uninitialized globals are not recognised
->    The following code in the bpf program
->
->      int x;
->      SEC("fentry/bar")
->      int BPF_PROG(bar) { return 0;}
->
->    compiles ok but bpftool then complains
->
->       libbpf: prog 'bar': invalid relo against 'x' in special section
-> 0xfff2; forgot to initialize global var?..
->
->    The error disappears if I initialize x=0 or x=1
->    (in the skeleton, x=0 ends up in .bss, x=1 ends up in .data)
+Patch set implements logic in libbpf to auto-adjust memory size (1-, 2-, 4-,
+8-bytes) of load/store (LD/ST/STX) instructions which have BPF CO-RE field
+offset relocation associated with it. In practice this means transparent
+handling of 32-bit kernels, both pointer and unsigned integers. Signed
+integers are not relocatable with zero-extending loads/stores, so libbpf
+poisons them and generates a warning. If/when BPF gets support for
+sign-extending loads/stores, it would be possible to automatically relocate
+them as well.
 
-Yonghong addressed this. Just zero-initialize them.
+All the details are contained in patch #2 comments and commit message.
+Patch #3 is a simple change in libbpf to make advanced testing with custom BTF
+easier. Patch #4 validates correct uses of auto-resizable loads, as well as
+check that libbpf fails invalid uses. Patch #1 skips CO-RE relocation for
+programs that had bpf_program__set_autoload(prog, false) set on them, reducing
+warnings and noise.
 
->
-> 2. .bss overrides from userspace are not seen in bpf at runtime
->
->     In foo_bpf.c I have "int x = 0;"
->     In the userspace program, before foo_bpf__load(), I do
->        obj->bss->x = 1
->     but after attach, the bpf code does not see the change, ie
->         "if (x == 0) { .. } else { .. }"
->     always takes the first branch.
->
->     If I initialize "int x = 2" and then do
->        obj->data->x = 1
->     the update is seen correctly ie
->           "if (x == 2) { .. } else { .. }"
->      takes one or the other depending on whether userspace overrides
->      the value before foo_bpf__load()
+v1->v2:
+  - more consistent names for instruction mem size convertion routines (Alexei);
+  - extended selftests to use relocatable STX instructions (Alexei);
+  - added a fix for skipping CO-RE relocation for non-loadable programs.
 
-This is quite surprising, given we have explicit selftests validating
-that all this works. And it seems to work. Please check
-prog_tests/skeleton.c and progs/test_skeleton.c. Can you try running
-it and confirm that it works in your setup?
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+Cc: Tony Ambardar <tony.ambardar@gmail.com>
 
+Andrii Nakryiko (4):
+  libbpf: skip CO-RE relocations for not loaded BPF programs
+  libbpf: support safe subset of load/store instruction resizing with
+    CO-RE
+  libbpf: allow specifying both ELF and raw BTF for CO-RE BTF override
+  selftests/bpf: validate libbpf's auto-sizing of LD/ST/STX instructions
 
->
-> 3. .data overrides do not seem to work for non-scalar types
->     In foo_bpf.c I have
->           struct one { int a; }; // type also visible to userspace
->           struct one x { .a = 2 }; // avoid bugs #1 and #2
->     If in userspace I do
->           obj->data->x.a = 1
->     the update is not seen in the kernel, ie
->             "if (x.a == 2) { .. } else { .. }"
->      always takes the first branch
->
+ tools/lib/bpf/libbpf.c                        | 151 +++++++++++-
+ .../selftests/bpf/prog_tests/core_autosize.c  | 225 ++++++++++++++++++
+ .../selftests/bpf/progs/test_core_autosize.c  | 172 +++++++++++++
+ 3 files changed, 539 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/core_autosize.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_autosize.c
 
-Similarly, the same skeleton selftest tests this situation. So please
-check selftests first and report if selftests for some reason don't
-work in your case.
+-- 
+2.24.1
 
-> Are these known issues ?
->
-> thanks
-> luigi
