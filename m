@@ -2,89 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F59286494
-	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 18:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F7F2864A3
+	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 18:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727278AbgJGQfn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Oct 2020 12:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
+        id S1727518AbgJGQi6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Oct 2020 12:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbgJGQfn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Oct 2020 12:35:43 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97FDC061755;
-        Wed,  7 Oct 2020 09:35:41 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a200so1612982pfa.10;
-        Wed, 07 Oct 2020 09:35:41 -0700 (PDT)
+        with ESMTP id S1726702AbgJGQi6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Oct 2020 12:38:58 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714F9C061755;
+        Wed,  7 Oct 2020 09:38:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id h2so1257608pll.11;
+        Wed, 07 Oct 2020 09:38:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JlHSp96jwdaBdct47RiHB7NkTtoShuj526Rv157w8ss=;
-        b=AEEkToo+xI/uX/gPobrYsYoRONOlzjQZcIE0nrz9YHQ1ZGPecQ7FBeUaODednrZ66r
-         Mwmk3eQv/BDSWaOhY6s1yF4QpPH/EfBe+3i3WdVI3OqTGPcUkPjjHiuP3hmWGCKQW57d
-         H+YhKHzFNJOqcwaOJhHB9bwXcf9Whdx3swygfwx/JVy4vz7h6Y/CQbQjCvCEfF8fHnOi
-         rCWIVKzrpeUB4we5mZuRXXB+jrg0u8BMlVA2xDQiVnsK3cRwTQJeCsinFEiGl3LUIUCe
-         dF1yttZsf1Uu52piAfRevAhJnqesFErk1QtHPt4gXU1+f3KnpiYrGIxHXc1F8ypYH4qV
-         mDyQ==
+        bh=eleMNIQb7gHtATh1xUcvTG7HUCdElenFbTTcPyhDSnc=;
+        b=tRTmiTM9jwWvOTzvDET4KhQtnAoz2ZUQqrBD5kuSR/B1ypVTwD/0yixJDGXLWwl4qo
+         CPED75gI9buKhnlEwn4nK0ZJTVeIgra8iUeuIId/cWA3kfKZPlqtxHWKd5UdIlczxY0l
+         IHKK9tUf7becvMeUDXnTMFzipMoVuArErHNuFRr1TcGc7+rSSOjG3vsIpGuCKIEnL55D
+         +T/nc9ugENV/4avggtpnWNKbmhAOD5ffcbx4Vm8hZPxp/KPr2Nk3Mh7BgcqqW+EVD3U3
+         wy79Nipf9NtEkwFW8AisuuUxd2uBx2EOHS+FQzIjK9PhPFOLNRwYSj8dAAI7jeAZ6zfp
+         SIQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=JlHSp96jwdaBdct47RiHB7NkTtoShuj526Rv157w8ss=;
-        b=PnRk0Fe9iQYgAMgUvfPhU5adFMnJBZBZxAQ+X1vMDeRBlch9gdYv89Z+fC2/wVHBn1
-         cJx26Ev0ExvHy5LcEBGLHnKMEhfpcjV8m4fRg1qBn5DWfAzT3ld5sEZbkN6SdoGUbR85
-         MK0YQV8H80GPUZDVEK5mOFlcJtXnKAVNkk0uWB8LK6o5jaCIFrtlYgGffyaOL+Ym9w6s
-         1cp8fdKAkkXDLyHNyM1dR8hQt5KFb8RHsijz52ni2+TwNOpC1Wd2ow9CjJZWlqQlUKza
-         f/9cWz5aUHrbX+kLdwxwuWzafkm6GxGftipOJMrlriGc6xbR97Y3ZRS5nCfMzH0+mnLV
-         YbYw==
-X-Gm-Message-State: AOAM532RDJafAQdwdNUklJ1FidS588XxeInNezTfBiZRz0qWTTumFJZh
-        8JMl9wFnivMC/cwc8MJGL/s=
-X-Google-Smtp-Source: ABdhPJy8G4BEoqwWZDL52de8879SFellCj8lLZ2IxrsIOhLmYg9xfEnMC/jjiL5K2jlzthqN59LuBw==
-X-Received: by 2002:a63:5a11:: with SMTP id o17mr3589843pgb.287.1602088541346;
-        Wed, 07 Oct 2020 09:35:41 -0700 (PDT)
+        bh=eleMNIQb7gHtATh1xUcvTG7HUCdElenFbTTcPyhDSnc=;
+        b=RzfPQUQLSZ804+VXPJWx2CtwbO420eGYHrvc65SfbKpcuhOxUJUJxoLaliGe44L4++
+         7H5/HIyBqYqyZKyiXIWmxdavB+ddLGYQpOjIJgrQ9Q2GSP2LXJdAHtm9FzEJ5MGgVuDt
+         pPuHstdrQWZUeQ/S1x0lJlWYRWDv8LOMqWOasoqE2PbVHc6uFRVCUyjB/JFWIuik0CVZ
+         TnIOYdQ2mRwJCD//ys288SnU0PtJrTacQIDu4hqpDOh3s6SIXctFbFRrtLRHYwwR9IQd
+         Y0snjFPxWhDHk6jdxfKP16Z6N79lvcfwjEmrGu6b10jjg51Y1PUJYT+PJ9H/TLDzfI5X
+         EtSg==
+X-Gm-Message-State: AOAM530uCouKhSWcbfKqckyOyc9q6XrFjyQ1GjmKrNC8B4UJy8abApEq
+        bJCHCvqkC2JBRDnZZTOEJgo=
+X-Google-Smtp-Source: ABdhPJz0GT8qO12nu0i8QQACgcARFrYLfleCdraKFW8xrzsUprTU5cx8o0DOy0ROBpeZpWg/j5/UoQ==
+X-Received: by 2002:a17:902:6ac7:b029:d3:9c6b:9311 with SMTP id i7-20020a1709026ac7b02900d39c6b9311mr3553394plt.0.1602088738055;
+        Wed, 07 Oct 2020 09:38:58 -0700 (PDT)
 Received: from Davids-MacBook-Pro.local ([72.164.175.30])
-        by smtp.googlemail.com with ESMTPSA id q15sm4013229pgr.27.2020.10.07.09.35.40
+        by smtp.googlemail.com with ESMTPSA id u18sm4142621pgk.18.2020.10.07.09.38.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Oct 2020 09:35:40 -0700 (PDT)
-Subject: Re: [PATCH bpf-next V1 3/6] bpf: add BPF-helper for reading MTU from
- net_device via ifindex
-To:     =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
+        Wed, 07 Oct 2020 09:38:57 -0700 (PDT)
+Subject: Re: [PATCH bpf-next V1 2/6] bpf: bpf_fib_lookup return MTU value as
+ output when looked up
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Maciej_=c5=bbenczykowski?= <maze@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
         Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Shaun Crampton <shaun@tigera.io>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Marek Majkowski <marek@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Ahern <dsahern@kernel.org>
 References: <160200013701.719143.12665708317930272219.stgit@firesoul>
- <160200018165.719143.3249298786187115149.stgit@firesoul>
- <20201006183302.337a9502@carbon>
- <20201006181858.6003de94@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CANP3RGe3S4eF=xVkQ22o=sxtW991jmNfq-bVtbKQQaszsLNZSA@mail.gmail.com>
+ <160200017655.719143.17344942455389603664.stgit@firesoul>
+ <CANP3RGfeh=a=h2C4voLtfWtvKG7ezaPb7y6r0W1eOjA2ZoNHaw@mail.gmail.com>
+ <20201007094228.5919998b@carbon>
 From:   David Ahern <dsahern@gmail.com>
-Message-ID: <a8b0dd01-bd6a-2a28-154e-c30a79ce3c83@gmail.com>
-Date:   Wed, 7 Oct 2020 09:35:39 -0700
+Message-ID: <23e087e7-066c-2228-8df7-3a6b81ad2ba0@gmail.com>
+Date:   Wed, 7 Oct 2020 09:38:56 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <CANP3RGe3S4eF=xVkQ22o=sxtW991jmNfq-bVtbKQQaszsLNZSA@mail.gmail.com>
+In-Reply-To: <20201007094228.5919998b@carbon>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/6/20 6:24 PM, Maciej Żenczykowski wrote:
+On 10/7/20 12:42 AM, Jesper Dangaard Brouer wrote:
 > 
-> FYI: It would be nice to have a similar function to return a device's
-> L2 header size (ie. 14 for ethernet) and/or hwtype.
+> The struct bpf_fib_lookup is exactly 1 cache-line (64 bytes) for
+> performance reasons.  I do believe that it can be extended, as Ahern
+> designed the BPF-helper API cleverly via a plen (detail below signature).
 
-Why does that need to be looked up via a helper? It's a static number
-for a device and can plumbed to a program in a number of ways.
+Yes, I kept it to 64B for performance reasons which is why most fields
+have 1 value on input and another on output.
+
+Technically it can be extended, but any cost in doing so should be
+abosrbed by the new feature(s). Meaning, users just doing a fib lookup
+based on current API should not take a hit with the extra size.
 
