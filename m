@@ -2,114 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58AE28563E
-	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 03:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF2F28563F
+	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 03:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbgJGBXz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Oct 2020 21:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
+        id S1726763AbgJGBYl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Oct 2020 21:24:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbgJGBXz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Oct 2020 21:23:55 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB42C061755
-        for <bpf@vger.kernel.org>; Tue,  6 Oct 2020 18:23:55 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id h6so576687ybi.11
-        for <bpf@vger.kernel.org>; Tue, 06 Oct 2020 18:23:55 -0700 (PDT)
+        with ESMTP id S1726476AbgJGBYk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Oct 2020 21:24:40 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1DAC0613D2
+        for <bpf@vger.kernel.org>; Tue,  6 Oct 2020 18:24:40 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id j13so827207ilc.4
+        for <bpf@vger.kernel.org>; Tue, 06 Oct 2020 18:24:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dv6nXxobwCCqg5Yo0dV5u0tu+8+rd/oKwCpH77FyR3U=;
-        b=BSxrZJvY38IwDpeuy0XXNWrjUIBvRBtXS4/sxQuUpFgbmJNfRaQfIkdQ6goa0lbLPO
-         K6w7hQO04Clq12xmCZ3MasO8J5QKypTwKpPjHWI3Lc3NdqvOHn+mNh33dx40G7R9rZjV
-         lm7NXNftIASQZzoFQqVO21ON7Q5VH7WtohB+xk27822t0AE87cyUK0FfMUjK/YNynzfO
-         L0zD60B0fBzZT2/j2uyLVazI5VpWSUebxsX11ubjo1x95PAWiHTh+j5BFMPSc06zdVdb
-         arnda04MhGUsAvEkDHXUo6hg4RLLqWlAY4O3WUICFohMcN+0tDdwdfwJEWd6Xjs0BBBL
-         P76w==
+        bh=E1dFloofMfn7FRqxtkiLA1WJPnSQWg17TfBVKxTqQ7Q=;
+        b=azl677csei2OlMaql1YvG4XfQSR77N2iyicOQalBnojFLrVKmTRhhFCbf+O+etiUwI
+         /XIECxhTtX69YfFZnWRi+HxfXitdEWlPCSJKZJpn3tClG1IYCyzKIp7jQBaOygkI9OEn
+         ouzdB/60zjS56FyQoebrSP8qqoYNBLj+eR4I+/0mbQMOoejp+KLOu2hwRuXhk9m5+Wn7
+         iOVDkddYSmKbgvnwL9HAP3/d2bpmV9DhMT7E5PMB5aZZSk1x7uwazUBkFLfa4WVtR0gI
+         7bwjQN+KIKul09VTV0UcPpFjFFzF8AtSvj/mTIes+RGqRjMglmU+cTbVxLK/4Y2xlZ2j
+         UkbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dv6nXxobwCCqg5Yo0dV5u0tu+8+rd/oKwCpH77FyR3U=;
-        b=SQkCcxvvMMfaVozyExF76IEukG8kproaFwnvSFxANpU/Hl6Qeez5akb9lDztX/aqpp
-         5fCkWdQpjaJWq33FpwI4ZioM+qznsHisW0UvZB3LaV21BAWFXrgUwHJi6qgfwJTv4/aN
-         Mnkvofet6z96zVFt+DCjn44ofwUMBzNw2J+PcPRDgC+9pHNP/IYNrTu7ghIRIMXzqsNE
-         kIoYFuVAx91nmV11a59UCtiw8TkIBc18u+mgtlWgluWFB9vhKziwlq/rLckOHJ6HScVp
-         sqMOtmOc/iqvSWyoK5pTK/WNnjppj7oPDNCS9l7KYHaehDJKlGTz7D+SdoMO7N/+cXVY
-         Y0kA==
-X-Gm-Message-State: AOAM531CnKW0/+1V4EURDgotNJhmIcv5OGh6aCdey03clmpq+MCUL5a2
-        VQF5fZPCuOnxV6+CiMY7jyuQmmtzwgsJfjuY8mE=
-X-Google-Smtp-Source: ABdhPJw/8ds1mmyxZvaiNLRYg0K+fNJxHIjBkZmbaG8gVEgUKG9gm3Wrd3y76hZOQArAE25+HlRFNRNEpYwhBGtb5Vc=
-X-Received: by 2002:a25:2f43:: with SMTP id v64mr1218907ybv.27.1602033834416;
- Tue, 06 Oct 2020 18:23:54 -0700 (PDT)
+        bh=E1dFloofMfn7FRqxtkiLA1WJPnSQWg17TfBVKxTqQ7Q=;
+        b=OL5eQ84VkmxaiT1jhIEYdXVL5EPMC6Gf8++bbhxPAdlmSQ6/wZ0KK0r4BwZUgqhc48
+         gJAJENJm8CJga43rsDuCr0W1MMOTaAot7K6AorIN/i+aPU8rYgdcjzyXn2mj5IlTW6wo
+         c9ZgMzAiuSgcgxu+KK8kTbYYijHQqQ6ZWhPktaF2NIPhfVg+OiWOPfqOppByOPhlQqD8
+         b8tIHDsSAJ85XvGok3BWD15alBukmW8Tq/1f+nXF+leW3fcZC2fX6lWwFe9h3tNQY4UV
+         litr1QmooylisFGPeQRYE/kNz0IbYCxzx3gLY5CF1e1NcKkBvwOyDbf/2i3pHOlhoN0G
+         iYAA==
+X-Gm-Message-State: AOAM532nJ2hirEBC9DdK13Bc7XQqN+z/JTPyyaeJarcSYOFeTpf7sH6A
+        fHzhmRvFBolNF+XePXU986M7c30l2H11+Joxi6oLRXoIP/NEsw==
+X-Google-Smtp-Source: ABdhPJzrDkLjNAhcNX1cvoHWN/nDJNz6SaUIp6T0XSS/DNMJuK3r9FApm2wNN58dxCkbu7ILNjZLWzpJhvNEBDm5QNw=
+X-Received: by 2002:a92:9408:: with SMTP id c8mr726209ili.61.1602033879796;
+ Tue, 06 Oct 2020 18:24:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACYkzJ7AfZ4HMEzt7OV_T4N8RO4SJcFbyEVxCgVrkKS4uiOD=g@mail.gmail.com>
-In-Reply-To: <CACYkzJ7AfZ4HMEzt7OV_T4N8RO4SJcFbyEVxCgVrkKS4uiOD=g@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 6 Oct 2020 18:23:43 -0700
-Message-ID: <CAEf4BzbrF9C27gX5JaAq--Ex7+cJe0yz0QKVo9fov2voiiWwtA@mail.gmail.com>
-Subject: Re: Failure in test_local_storage at bpf-next
-To:     KP Singh <kpsingh@chromium.org>, Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
+References: <160200013701.719143.12665708317930272219.stgit@firesoul>
+ <160200018165.719143.3249298786187115149.stgit@firesoul> <20201006183302.337a9502@carbon>
+ <20201006181858.6003de94@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201006181858.6003de94@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Tue, 6 Oct 2020 18:24:28 -0700
+Message-ID: <CANP3RGe3S4eF=xVkQ22o=sxtW991jmNfq-bVtbKQQaszsLNZSA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V1 3/6] bpf: add BPF-helper for reading MTU from
+ net_device via ifindex
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Shaun Crampton <shaun@tigera.io>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 5:31 PM KP Singh <kpsingh@chromium.org> wrote:
+On Tue, Oct 6, 2020 at 6:19 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> I noticed that test_local_storage is broken due to a BTF error at
-> bpf-next [67ed375530e2 ("samples: bpf: Driver interrupt statistics in
-> xdpsock")]
+> On Tue, 6 Oct 2020 18:33:02 +0200 Jesper Dangaard Brouer wrote:
+> > > +static const struct bpf_func_proto bpf_xdp_mtu_lookup_proto = {
+> > > +   .func           = bpf_xdp_mtu_lookup,
+> > > +   .gpl_only       = true,
+> > > +   .ret_type       = RET_INTEGER,
+> > > +   .arg1_type      = ARG_PTR_TO_CTX,
+> > > +   .arg2_type      = ARG_ANYTHING,
+> > > +   .arg3_type      = ARG_ANYTHING,
+> > > +};
+> > > +
+> > > +
 >
-> ./test_progs -t test_local_storage
-> libbpf: prog 'socket_post_create': relo #0: parsing [28] struct socket + 0:0.1 2
+> FWIW
+>
+> CHECK: Please don't use multiple blank lines
+> #112: FILE: net/core/filter.c:5566:
 
-This line is truncated, btw, please make sure you post the entire
-output next time.
+FYI: It would be nice to have a similar function to return a device's
+L2 header size (ie. 14 for ethernet) and/or hwtype.
 
-But, this seems like a bug in Clang, it produced invalid access index
-string "0:0.1", there shouldn't be any other separator except ':' in
-those strings.
+Also, should this be restricted to gpl only?
 
-Yonghong, can you please take a look? This seems to be a very recent
-regression, I had to update to
-6c7d713cf5d9bb188f1e73452a256386f0288bf7 sha from not-too-outdated
-version to repro this.
-
-> libbpf: prog 'socket_post_create': relo #0: failed to relocate: -22
-> libbpf: failed to perform CO-RE relocations: -22
-> libbpf: failed to load object 'local_storage'
-> libbpf: failed to load BPF skeleton 'local_storage': -22
-> test_test_local_storage:FAIL:skel_load lsm skeleton failed
->
-> by changing it to use vmlinux.h with:
->
-
-[...]
-
->
-> clang --version
-> clang version 12.0.0 (https://github.com/llvm/llvm-project.git
-> 6c7d713cf5d9bb188f1e73452a256386f0288bf7)
-> Target: x86_64-unknown-linux-gnu
-> Thread model: posix
->
-> pahole --version
-> v1.18
->
-> This error goes away if I comment out the lsm/socket_post_create or
-> the lsm/socket_bind which makes me think that something in
-> bpf_core_apply_relo does not like two programs in the same object
-> having the same BTF type in its signature (but this just a guess, I
-> did not investigate more).  I was wondering if anyone has any ideas
-> what could be going on here.
->
-> PS: While working on task local storage, I noted that some of the
-> checks in this test were buggy and will send a patch to fix them as
-> well.
->
-> - KP
+[I'm not actually sure, I'm actually fed up with non-gpl code atm, and
+wouldn't be against all bpf code needing to be gpl'ed...]
