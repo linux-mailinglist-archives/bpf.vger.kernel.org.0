@@ -2,140 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E5028556F
-	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 02:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C4B28557F
+	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 02:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgJGA11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Oct 2020 20:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S1726702AbgJGAoA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Oct 2020 20:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgJGA11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Oct 2020 20:27:27 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F58C061755
-        for <bpf@vger.kernel.org>; Tue,  6 Oct 2020 17:27:27 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f21so546958wml.3
-        for <bpf@vger.kernel.org>; Tue, 06 Oct 2020 17:27:27 -0700 (PDT)
+        with ESMTP id S1725972AbgJGAoA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Oct 2020 20:44:00 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B984C061755;
+        Tue,  6 Oct 2020 17:43:58 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id b142so529826ybg.9;
+        Tue, 06 Oct 2020 17:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=stw1ZFNUAmnjmaF+od5+r3TkD+FcXLwgbCpF9orza5M=;
-        b=C+GhloHmf/BUvKpDmTqKqxLFty3ukzn8iygfvb5QOAYUhYqqO9ZKP8MXlmaznOAIlL
-         PXmX3ScX7204U95DBDPsnBy+L1QSMExQDvhn4TBOfRR1SAugJ+hL0dTveW32x8DZ6Twz
-         XV5Uh/IAqC5JFethrs+Pl2cCb+e8NVcwWJN8I=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SyZblE9xC0nmAy+e+XaJzQ7/L8Iiy5qS/+bTpihGNwQ=;
+        b=DBXYBsdvnrW5yB3aSn0XQCNhysNNyPsbVxDZ43LGt5LPcW/Tw2hFOiW8Ztz1PcUGXP
+         MfaO6HHiPCVYJGw6kX+D1JEiFlo3/qOflosuXjCXPMNTb1IuRzUuhuGHwi0nAEp0gZz2
+         igdyNRkBy57Ly9PgdHgnukl2VaszP5Ic18Od1/VA78NBnQYE19g8poGE34kcFowHWaQz
+         cQ6r3gRMlc6D+zzHiLTDnfHd8Gp32bnLTRVAevDHn0X+GNy0sGl3rq7N/yJAodjRaqpC
+         J0q+Ng81LT9ZwaEzTVgVnsuCRJEEXnT9B3gzlDO1/EMrQuA8+zz3UBMPLFOISPAGdNPu
+         IE1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=stw1ZFNUAmnjmaF+od5+r3TkD+FcXLwgbCpF9orza5M=;
-        b=KBcer5N0wTRNQqKE8Zh3T2Dc+Mm6aCU1CpO4BDcVZN3liMC5VgqJmiBiPj7O3ZhiTo
-         cYecMaFylHAKDkIdJ+9ajmrnvCg9LJVCmysy/y2BLW6a/N8Vyf4TaEWkp8uaaggNhblz
-         ialpJn2FhMdWfNFDP+Su8KkkSaej5YsqH9B5wLpqJxnLR6JqVv02sBR7khSw3pKebtbF
-         nXRLjLLckBReQ2k4XKiZkKTRsh1qw3CqoAkxOhd6mN+w8Bhe3Dsm/8A0ewMN86bz2f6m
-         GRmJ0XuFE/m/6V1oTSbAxgsfTpuGqyXj6+7/CqLradcnzml201QToX0kX1jMxvH4tiOq
-         EvJw==
-X-Gm-Message-State: AOAM531pwsRFE3PYI8JzkHmD3PQnQCcBHYS8M+tGubfse2/upkrUFJeR
-        DHRnA69feG8hz8h9qV0YIW4ZhH7Y1S1yAUI53ft+JweMhnn1FA==
-X-Google-Smtp-Source: ABdhPJzSQ7O55PbHyL96fLLmETc012OWfrAW4TyptRWcblE5n075LOE4GWuq/c7t9xeX6Ys2SUohmbBRv/eGXi1rhzk=
-X-Received: by 2002:a1c:cc1a:: with SMTP id h26mr387798wmb.131.1602030445575;
- Tue, 06 Oct 2020 17:27:25 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SyZblE9xC0nmAy+e+XaJzQ7/L8Iiy5qS/+bTpihGNwQ=;
+        b=oKK/plrlLY8GpuknsivF9i/ozGpCTtknraXaMJzJHgpKGBizwbZRuGy7WRjB6qLYHz
+         KYJzQ34MLylENcEnSmRRmaohKZXOQ95ML/UARv7FoLxN6MjKQ+B2yP97OwV3fmk8QEgh
+         RjZCBIgvbsV3tHjRSN+fExWUumqKOaSI5gZiBkeBeDLYlQ7zYBqJXtgSBTVuT39Gk/m5
+         saUIz21qgqyROjTd4+vGsELwzXUs8ocFIp0PAni/ptt5QnZK8FiJGyzURaBL23CrdFtn
+         tPv3nMwg6MuzwcfCn4FfKpxEP88K3IwPB4npWmIxkoRK+1DgffsHp3C9I3pS03I24SUc
+         LEYg==
+X-Gm-Message-State: AOAM5331bRJBzN1xDeJa1orxdCzKIubNhmdY7lr1ysdbzSkFsyQOdBrT
+        RJ4XfDzfZOzcI3EYcCmQBo/0nv0QVFfp0DveRSMTze6HPoQ=
+X-Google-Smtp-Source: ABdhPJzmZfbphdxld/IHexJY4Qcs8fvhckSYSM+00uJdHyDFMj27XtkHQrOFcnDVCV/InaANujPRdvaBBvmkc7C+Rk8=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr1069611ybn.230.1602031437507;
+ Tue, 06 Oct 2020 17:43:57 -0700 (PDT)
 MIME-Version: 1.0
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 7 Oct 2020 02:27:15 +0200
-Message-ID: <CACYkzJ7AfZ4HMEzt7OV_T4N8RO4SJcFbyEVxCgVrkKS4uiOD=g@mail.gmail.com>
-Subject: Failure in test_local_storage at bpf-next
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
+References: <20201006231706.2744579-1-haoluo@google.com>
+In-Reply-To: <20201006231706.2744579-1-haoluo@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 6 Oct 2020 17:43:46 -0700
+Message-ID: <CAEf4BzY1ggHq6UGkHQ_S=0_US=bLPc9u+9pyeUP2hWb_3kWN+w@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix test_verifier after introducing resolve_pseudo_ldimm64
+To:     Hao Luo <haoluo@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I noticed that test_local_storage is broken due to a BTF error at
-bpf-next [67ed375530e2 ("samples: bpf: Driver interrupt statistics in
-xdpsock")]
+On Tue, Oct 6, 2020 at 4:45 PM Hao Luo <haoluo@google.com> wrote:
+>
+> Commit 4976b718c355 ("bpf: Introduce pseudo_btf_id") switched
+> the order of check_subprogs() and resolve_pseudo_ldimm() in
+> the verifier. Now an empty prog and the prog of a single
+> invalid ldimm expect to see the error "last insn is not an
+> exit or jmp" instead, because the check for subprogs comes
+> first. Fix the expection of the error message.
+>
+> Tested:
+>  # ./test_verifier
+>  Summary: 1130 PASSED, 538 SKIPPED, 0 FAILED
+>  and the full set of bpf selftests.
+>
+> Fixes: 4976b718c355 ("bpf: Introduce pseudo_btf_id")
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
+>  tools/testing/selftests/bpf/verifier/basic.c    | 2 +-
+>  tools/testing/selftests/bpf/verifier/ld_imm64.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/verifier/basic.c b/tools/testing/selftests/bpf/verifier/basic.c
+> index b8d18642653a..de84f0d57082 100644
+> --- a/tools/testing/selftests/bpf/verifier/basic.c
+> +++ b/tools/testing/selftests/bpf/verifier/basic.c
+> @@ -2,7 +2,7 @@
+>         "empty prog",
+>         .insns = {
+>         },
+> -       .errstr = "unknown opcode 00",
+> +       .errstr = "last insn is not an exit or jmp",
 
-./test_progs -t test_local_storage
-libbpf: prog 'socket_post_create': relo #0: parsing [28] struct socket + 0:0.1 2
-libbpf: prog 'socket_post_create': relo #0: failed to relocate: -22
-libbpf: failed to perform CO-RE relocations: -22
-libbpf: failed to load object 'local_storage'
-libbpf: failed to load BPF skeleton 'local_storage': -22
-test_test_local_storage:FAIL:skel_load lsm skeleton failed
+in this case the new message makes more sense, so this is a good change
 
-by changing it to use vmlinux.h with:
+>         .result = REJECT,
+>  },
+>  {
+> diff --git a/tools/testing/selftests/bpf/verifier/ld_imm64.c b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> index 3856dba733e9..f300ba62edd0 100644
+> --- a/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> +++ b/tools/testing/selftests/bpf/verifier/ld_imm64.c
+> @@ -55,7 +55,7 @@
+>         .insns = {
+>         BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, 0, 0, 0, 0),
+>         },
+> -       .errstr = "invalid bpf_ld_imm64 insn",
+> +       .errstr = "last insn is not an exit or jmp",
 
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/>
-index 0758ba229ae0..95fad5aca6af 100644
---- a/tools/testing/selftests/bpf/progs/local_storage.c
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -4,9 +4,8 @@
-  * Copyright 2020 Google LLC.
-  */
+but this completely defeats the purpose of the test; better add
+BPF_EXIT_INSN() after ldimm64 instruction to actually get to
+validation of ldimm64
 
-+#include "vmlinux.h"
- #include <errno.h>
--#include <linux/bpf.h>
--#include <stdbool.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-
-@@ -36,23 +35,6 @@ struct {
-        __type(value, struct dummy_storage);
- } sk_storage_map SEC(".maps");
-
--/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
-- */
--struct sock {} __attribute__((preserve_access_index));
--struct sockaddr {} __attribute__((preserve_access_index));
--struct socket {
--       struct sock *sk;
--} __attribute__((preserve_access_index));
--
--struct inode {} __attribute__((preserve_access_index));
--struct dentry {
--       struct inode *d_inode;
--} __attribute__((preserve_access_index));
--struct file {
--       struct inode *f_inode;
--} __attribute__((preserve_access_index));
--
--
- SEC("lsm/inode_unlink")
- int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
- {
-
-I get a very similar error:
-
-root@kpsingh:~# ./test_progs -t test_local_storage
-libbpf: prog 'socket_post_create': relo #0: parsing [83] struct socket + 0:4.1 2
-libbpf: prog 'socket_post_create': relo #0: failed to relocate: -22
-libbpf: failed to perform CO-RE relocations: -22
-libbpf: failed to load object 'local_storage'
-libbpf: failed to load BPF skeleton 'local_storage': -22
-test_test_local_storage:FAIL:skel_load lsm skeleton failed
-#106 test_local_storage:FAIL
-Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-
-clang --version
-clang version 12.0.0 (https://github.com/llvm/llvm-project.git
-6c7d713cf5d9bb188f1e73452a256386f0288bf7)
-Target: x86_64-unknown-linux-gnu
-Thread model: posix
-
-pahole --version
-v1.18
-
-This error goes away if I comment out the lsm/socket_post_create or
-the lsm/socket_bind which makes me think that something in
-bpf_core_apply_relo does not like two programs in the same object
-having the same BTF type in its signature (but this just a guess, I
-did not investigate more).  I was wondering if anyone has any ideas
-what could be going on here.
-
-PS: While working on task local storage, I noted that some of the
-checks in this test were buggy and will send a patch to fix them as
-well.
-
-- KP
+>         .result = REJECT,
+>  },
+>  {
+> --
+> 2.28.0.806.g8561365e88-goog
+>
