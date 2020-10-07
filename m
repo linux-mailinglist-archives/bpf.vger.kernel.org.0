@@ -2,487 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9E128691E
-	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 22:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853E1286920
+	for <lists+bpf@lfdr.de>; Wed,  7 Oct 2020 22:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgJGUbA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 7 Oct 2020 16:31:00 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36102 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727724AbgJGUa5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Oct 2020 16:30:57 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 097KSiOY017760
-        for <bpf@vger.kernel.org>; Wed, 7 Oct 2020 13:30:54 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 33xmypddqr-19
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 07 Oct 2020 13:30:54 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 7 Oct 2020 13:30:03 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id AF5212EC7B90; Wed,  7 Oct 2020 13:29:56 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: validate libbpf's auto-sizing of LD/ST/STX instructions
-Date:   Wed, 7 Oct 2020 13:29:46 -0700
-Message-ID: <20201007202946.3684483-5-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201007202946.3684483-1-andrii@kernel.org>
-References: <20201007202946.3684483-1-andrii@kernel.org>
+        id S1727827AbgJGUbe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Oct 2020 16:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727608AbgJGUbe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Oct 2020 16:31:34 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12725C061755
+        for <bpf@vger.kernel.org>; Wed,  7 Oct 2020 13:31:34 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id p13so3570103edi.7
+        for <bpf@vger.kernel.org>; Wed, 07 Oct 2020 13:31:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pa6A/Wb2jIahrX4zuacGIFWAHhbuMOoeMYYAfLXtYPU=;
+        b=s9oM8LjXeuKqRydoiVeAUptSLVc193s8B9onXm5Tii8S/b2cXABDasJT+KiPxTqa3Y
+         VcKFUCruhmdbCUtdjDJiNLAFFOEdFKtm16Hmo9I65HIM0yrs08OSXfCs0s8lzd40EqGl
+         AVsQ/7EJLQvhRbryNuSQYyX5ZpFZ0o+1GQxvSESbQRA//sGQTERGq/+fsxn4C9TkCoUH
+         CEQGkR3vHTA5Ufo+RiPSzBuwTl4CtLqywTE0ARfX73AeMvtrnnvl3TeUA0vNw3LrTAYA
+         ENHZkkzWQbl3v+6tT9niWnE55yAdLcW0JrEtsU/YFbd/JWtNOdd2Tlk8N+O3oj/VVlh/
+         tUhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pa6A/Wb2jIahrX4zuacGIFWAHhbuMOoeMYYAfLXtYPU=;
+        b=LuSdpos2tHsm40Wfl77Q23BPTCvSAMwYZbjDe9ogI9aQHMC2HFmkbxBt8NpTWrsCAa
+         rSODay4v4eknfwDsipc+RhNVq8mUBdLy3j2g1mV09hGPoTxG+woEhrAple3qYEY6KZU4
+         dcDouDLt/p3JsGT1GtAv00liKSghZK0Mz7FfAzYxvDZ8Td4JvAhFMn81HCzab0OCUTwg
+         krmV7L7tiyB2L6RFKkg7rTutnAv8cg0MrpOvvrtEcr2DkcfRlIk9AXJEl1NpNkMxqR6f
+         NRjGctOOKnuHIO6QqrmZCWc17azgQhEUFUVZDK8sDv3/p+gSZBKLQ1M5eWMS7E6hKAK7
+         2kPQ==
+X-Gm-Message-State: AOAM530DOjG3KQbY0VI2OkgJj5T3oZ3uFlThYqObviEjqJNrDnpDPyOE
+        5H+rKbcjXBGkLhuH6dNc4o/hPoItD93yBZtMyZiRMw==
+X-Google-Smtp-Source: ABdhPJy6zAMTu4NvcoEpMpbTsxtFL82UCOPRxi+hubwUawIvhbVzccUEDSfcZcPwmem/6Uj9sHVT0p1j0xnntTjN6fs=
+X-Received: by 2002:aa7:cfcb:: with SMTP id r11mr5381056edy.211.1602102692323;
+ Wed, 07 Oct 2020 13:31:32 -0700 (PDT)
 MIME-Version: 1.0
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-07_10:2020-10-07,2020-10-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- clxscore=1015 adultscore=0 bulkscore=0 mlxlogscore=741 spamscore=0
- mlxscore=0 phishscore=0 malwarescore=0 impostorscore=0 suspectscore=25
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2010070131
-X-FB-Internal: deliver
+References: <CA+hQ2+gb_y7TViv13K_JpJTP=yHFqORmY+=6PrO4eAjgrBSitw@mail.gmail.com>
+ <CAEf4BzbjUbYDrMc13-bYBBxicDmuokjLHyRaOVA-1JHD6vVbYg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbjUbYDrMc13-bYBBxicDmuokjLHyRaOVA-1JHD6vVbYg@mail.gmail.com>
+From:   Luigi Rizzo <lrizzo@google.com>
+Date:   Wed, 7 Oct 2020 22:31:21 +0200
+Message-ID: <CAMOZA0JFYEYmLqAQu=km624nZfY8epPEpmqqsdUigzp+jFsymQ@mail.gmail.com>
+Subject: Re: libbpf/bpftool inconsistent handling og .data and .bss ?
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Luigi Rizzo <rizzo@iet.unipi.it>, bpf <bpf@vger.kernel.org>,
+        Petar Penkov <ppenkov@google.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+TL;DR; there seems to be a compiler bug with clang-10 and -O2
+when struct are in .data -- details below.
 
-Add selftests validating libbpf's auto-resizing of load/store instructions
-when used with CO-RE relocations. An explicit and manual approach with using
-bpf_core_read() is also demonstrated and tested. Separate BPF program is
-supposed to fail due to using signed integers of sizes that differ from
-kernel's sizes.
+On Wed, Oct 7, 2020 at 8:35 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Oct 7, 2020 at 9:03 AM Luigi Rizzo <rizzo@iet.unipi.it> wrote:
+> >
+> > I am experiencing some weirdness in global variables handling
+> > in bpftool and libbpf, as described below.
+...
+> > 2. .bss overrides from userspace are not seen in bpf at runtime
+> >
+> >     In foo_bpf.c I have "int x = 0;"
+> >     In the userspace program, before foo_bpf__load(), I do
+> >        obj->bss->x = 1
+> >     but after attach, the bpf code does not see the change, ie
+> >         "if (x == 0) { .. } else { .. }"
+> >     always takes the first branch.
+> >
+> >     If I initialize "int x = 2" and then do
+> >        obj->data->x = 1
+> >     the update is seen correctly ie
+> >           "if (x == 2) { .. } else { .. }"
+> >      takes one or the other depending on whether userspace overrides
+> >      the value before foo_bpf__load()
+>
+> This is quite surprising, given we have explicit selftests validating
+> that all this works. And it seems to work. Please check
+> prog_tests/skeleton.c and progs/test_skeleton.c. Can you try running
+> it and confirm that it works in your setup?
 
-To reliably simulate 32-bit BTF (i.e., the one with sizeof(long) ==
-sizeof(void *) == 4), selftest generates its own custom BTF and passes it as
-a replacement for real kernel BTF. This allows to test 32/64-bitness mix on
-all architectures.
+Ah, this was non intuitive but obvious in hindsight:
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/core_autosize.c  | 225 ++++++++++++++++++
- .../selftests/bpf/progs/test_core_autosize.c  | 172 +++++++++++++
- 2 files changed, 397 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/core_autosize.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_autosize.c
+.bss is zeroed by the kernel after load(), and since my program
+changed the value before foo_bpf__load() , the memory was overwritten
+with 0s. I could confirm this by printing the value after load.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_autosize.c b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-new file mode 100644
-index 000000000000..981c251453d9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/core_autosize.c
-@@ -0,0 +1,225 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+/* real layout and sizes according to test's (32-bit) BTF
-+ * needs to be defined before skeleton is included */
-+struct test_struct___real {
-+	unsigned int ptr; /* can't use `void *`, it is always 8 byte in BPF target */
-+	unsigned int val2;
-+	unsigned long long val1;
-+	unsigned short val3;
-+	unsigned char val4;
-+	unsigned char _pad;
-+};
-+
-+#include "test_core_autosize.skel.h"
-+
-+static int duration = 0;
-+
-+static struct {
-+	unsigned long long ptr_samesized;
-+	unsigned long long val1_samesized;
-+	unsigned long long val2_samesized;
-+	unsigned long long val3_samesized;
-+	unsigned long long val4_samesized;
-+	struct test_struct___real output_samesized;
-+
-+	unsigned long long ptr_downsized;
-+	unsigned long long val1_downsized;
-+	unsigned long long val2_downsized;
-+	unsigned long long val3_downsized;
-+	unsigned long long val4_downsized;
-+	struct test_struct___real output_downsized;
-+
-+	unsigned long long ptr_probed;
-+	unsigned long long val1_probed;
-+	unsigned long long val2_probed;
-+	unsigned long long val3_probed;
-+	unsigned long long val4_probed;
-+
-+	unsigned long long ptr_signed;
-+	unsigned long long val1_signed;
-+	unsigned long long val2_signed;
-+	unsigned long long val3_signed;
-+	unsigned long long val4_signed;
-+	struct test_struct___real output_signed;
-+} out;
-+
-+void test_core_autosize(void)
-+{
-+	char btf_file[] = "/tmp/core_autosize.btf.XXXXXX";
-+	int err, fd = -1, zero = 0;
-+	int char_id, short_id, int_id, long_long_id, void_ptr_id, id;
-+	struct test_core_autosize* skel = NULL;
-+	struct bpf_object_load_attr load_attr = {};
-+	struct bpf_program *prog;
-+	struct bpf_map *bss_map;
-+	struct btf *btf = NULL;
-+	size_t written;
-+	const void *raw_data;
-+	__u32 raw_sz;
-+	FILE *f = NULL;
-+
-+	btf = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf, "empty_btf"))
-+		return;
-+	/* Emit the following struct with 32-bit pointer size:
-+	 *
-+	 * struct test_struct {
-+	 *     void *ptr;
-+	 *     unsigned long val2;
-+	 *     unsigned long long val1;
-+	 *     unsigned short val3;
-+	 *     unsigned char val4;
-+	 *     char: 8;
-+	 * };
-+	 *
-+	 * This struct is going to be used as the "kernel BTF" for this test.
-+	 * It's equivalent memory-layout-wise to test_struct__real above.
-+	 */
-+
-+	/* force 32-bit pointer size */
-+	btf__set_pointer_size(btf, 4);
-+
-+	char_id = btf__add_int(btf, "unsigned char", 1, 0);
-+	ASSERT_EQ(char_id, 1, "char_id");
-+	short_id = btf__add_int(btf, "unsigned short", 2, 0);
-+	ASSERT_EQ(short_id, 2, "short_id");
-+	/* "long unsigned int" of 4 byte size tells BTF that sizeof(void *) == 4 */
-+	int_id = btf__add_int(btf, "long unsigned int", 4, 0);
-+	ASSERT_EQ(int_id, 3, "int_id");
-+	long_long_id = btf__add_int(btf, "unsigned long long", 8, 0);
-+	ASSERT_EQ(long_long_id, 4, "long_long_id");
-+	void_ptr_id = btf__add_ptr(btf, 0);
-+	ASSERT_EQ(void_ptr_id, 5, "void_ptr_id");
-+
-+	id = btf__add_struct(btf, "test_struct", 20 /* bytes */);
-+	ASSERT_EQ(id, 6, "struct_id");
-+	err = btf__add_field(btf, "ptr", void_ptr_id, 0, 0);
-+	err = err ?: btf__add_field(btf, "val2", int_id, 32, 0);
-+	err = err ?: btf__add_field(btf, "val1", long_long_id, 64, 0);
-+	err = err ?: btf__add_field(btf, "val3", short_id, 128, 0);
-+	err = err ?: btf__add_field(btf, "val4", char_id, 144, 0);
-+	ASSERT_OK(err, "struct_fields");
-+
-+	fd = mkstemp(btf_file);
-+	if (CHECK(fd < 0, "btf_tmp", "failed to create file: %d\n", fd))
-+		goto cleanup;
-+	f = fdopen(fd, "w");
-+	if (!ASSERT_OK_PTR(f, "btf_fdopen"))
-+		goto cleanup;
-+
-+	raw_data = btf__get_raw_data(btf, &raw_sz);
-+	if (!ASSERT_OK_PTR(raw_data, "raw_data"))
-+		goto cleanup;
-+	written = fwrite(raw_data, 1, raw_sz, f);
-+	if (CHECK(written != raw_sz, "btf_write", "written: %zu, errno: %d\n", written, errno))
-+		goto cleanup;
-+	fflush(f);
-+	fclose(f);
-+	f = NULL;
-+	close(fd);
-+	fd = -1;
-+
-+	/* open and load BPF program with custom BTF as the kernel BTF */
-+	skel = test_core_autosize__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	/* disable handle_signed() for now */
-+	prog = bpf_object__find_program_by_name(skel->obj, "handle_signed");
-+	if (!ASSERT_OK_PTR(prog, "prog_find"))
-+		goto cleanup;
-+	bpf_program__set_autoload(prog, false);
-+
-+	load_attr.obj = skel->obj;
-+	load_attr.target_btf_path = btf_file;
-+	err = bpf_object__load_xattr(&load_attr);
-+	if (!ASSERT_OK(err, "prog_load"))
-+		goto cleanup;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, "handle_samesize");
-+	if (!ASSERT_OK_PTR(prog, "prog_find"))
-+		goto cleanup;
-+	skel->links.handle_samesize = bpf_program__attach(prog);
-+	if (!ASSERT_OK_PTR(skel->links.handle_samesize, "prog_attach"))
-+		goto cleanup;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, "handle_downsize");
-+	if (!ASSERT_OK_PTR(prog, "prog_find"))
-+		goto cleanup;
-+	skel->links.handle_downsize = bpf_program__attach(prog);
-+	if (!ASSERT_OK_PTR(skel->links.handle_downsize, "prog_attach"))
-+		goto cleanup;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, "handle_probed");
-+	if (!ASSERT_OK_PTR(prog, "prog_find"))
-+		goto cleanup;
-+	skel->links.handle_probed = bpf_program__attach(prog);
-+	if (!ASSERT_OK_PTR(skel->links.handle_probed, "prog_attach"))
-+		goto cleanup;
-+
-+	usleep(1);
-+
-+	bss_map = bpf_object__find_map_by_name(skel->obj, "test_cor.bss");
-+	if (!ASSERT_OK_PTR(bss_map, "bss_map_find"))
-+		goto cleanup;
-+
-+	err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &zero, (void *)&out);
-+	if (!ASSERT_OK(err, "bss_lookup"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(out.ptr_samesized, 0x01020304, "ptr_samesized");
-+	ASSERT_EQ(out.val1_samesized, 0x1020304050607080, "val1_samesized");
-+	ASSERT_EQ(out.val2_samesized, 0x0a0b0c0d, "val2_samesized");
-+	ASSERT_EQ(out.val3_samesized, 0xfeed, "val3_samesized");
-+	ASSERT_EQ(out.val4_samesized, 0xb9, "val4_samesized");
-+	ASSERT_EQ(out.output_samesized.ptr, 0x01020304, "ptr_samesized");
-+	ASSERT_EQ(out.output_samesized.val1, 0x1020304050607080, "val1_samesized");
-+	ASSERT_EQ(out.output_samesized.val2, 0x0a0b0c0d, "val2_samesized");
-+	ASSERT_EQ(out.output_samesized.val3, 0xfeed, "val3_samesized");
-+	ASSERT_EQ(out.output_samesized.val4, 0xb9, "val4_samesized");
-+
-+	ASSERT_EQ(out.ptr_downsized, 0x01020304, "ptr_downsized");
-+	ASSERT_EQ(out.val1_downsized, 0x1020304050607080, "val1_downsized");
-+	ASSERT_EQ(out.val2_downsized, 0x0a0b0c0d, "val2_downsized");
-+	ASSERT_EQ(out.val3_downsized, 0xfeed, "val3_downsized");
-+	ASSERT_EQ(out.val4_downsized, 0xb9, "val4_downsized");
-+	ASSERT_EQ(out.output_downsized.ptr, 0x01020304, "ptr_downsized");
-+	ASSERT_EQ(out.output_downsized.val1, 0x1020304050607080, "val1_downsized");
-+	ASSERT_EQ(out.output_downsized.val2, 0x0a0b0c0d, "val2_downsized");
-+	ASSERT_EQ(out.output_downsized.val3, 0xfeed, "val3_downsized");
-+	ASSERT_EQ(out.output_downsized.val4, 0xb9, "val4_downsized");
-+
-+	ASSERT_EQ(out.ptr_probed, 0x01020304, "ptr_probed");
-+	ASSERT_EQ(out.val1_probed, 0x1020304050607080, "val1_probed");
-+	ASSERT_EQ(out.val2_probed, 0x0a0b0c0d, "val2_probed");
-+	ASSERT_EQ(out.val3_probed, 0xfeed, "val3_probed");
-+	ASSERT_EQ(out.val4_probed, 0xb9, "val4_probed");
-+
-+	test_core_autosize__destroy(skel);
-+	skel = NULL;
-+
-+	/* now re-load with handle_signed() enabled, it should fail loading */
-+	skel = test_core_autosize__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	load_attr.obj = skel->obj;
-+	load_attr.target_btf_path = btf_file;
-+	err = bpf_object__load_xattr(&load_attr);
-+	if (!ASSERT_ERR(err, "bad_prog_load"))
-+		goto cleanup;
-+
-+cleanup:
-+	if (f)
-+		fclose(f);
-+	if (fd >= 0)
-+		close(fd);
-+	remove(btf_file);
-+	btf__free(btf);
-+	test_core_autosize__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_core_autosize.c b/tools/testing/selftests/bpf/progs/test_core_autosize.c
-new file mode 100644
-index 000000000000..e999f2e2ea22
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_core_autosize.c
-@@ -0,0 +1,172 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <linux/bpf.h>
-+#include <stdint.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/* fields of exactly the same size */
-+struct test_struct___samesize {
-+	void *ptr;
-+	unsigned long long val1;
-+	unsigned int val2;
-+	unsigned short val3;
-+	unsigned char val4;
-+} __attribute((preserve_access_index));
-+
-+/* unsigned fields that have to be downsized by libbpf */
-+struct test_struct___downsize {
-+	void *ptr;
-+	unsigned long val1;
-+	unsigned long val2;
-+	unsigned long val3;
-+	unsigned long val4;
-+	/* total sz: 40 */
-+} __attribute__((preserve_access_index));
-+
-+/* fields with signed integers of wrong size, should be rejected */
-+struct test_struct___signed {
-+	void *ptr;
-+	long val1;
-+	long val2;
-+	long val3;
-+	long val4;
-+} __attribute((preserve_access_index));
-+
-+/* real layout and sizes according to test's (32-bit) BTF */
-+struct test_struct___real {
-+	unsigned int ptr; /* can't use `void *`, it is always 8 byte in BPF target */
-+	unsigned int val2;
-+	unsigned long long val1;
-+	unsigned short val3;
-+	unsigned char val4;
-+	unsigned char _pad;
-+	/* total sz: 20 */
-+};
-+
-+struct test_struct___real input = {
-+	.ptr = 0x01020304,
-+	.val1 = 0x1020304050607080,
-+	.val2 = 0x0a0b0c0d,
-+	.val3 = 0xfeed,
-+	.val4 = 0xb9,
-+	._pad = 0xff, /* make sure no accidental zeros are present */
-+};
-+
-+unsigned long long ptr_samesized = 0;
-+unsigned long long val1_samesized = 0;
-+unsigned long long val2_samesized = 0;
-+unsigned long long val3_samesized = 0;
-+unsigned long long val4_samesized = 0;
-+struct test_struct___real output_samesized = {};
-+
-+unsigned long long ptr_downsized = 0;
-+unsigned long long val1_downsized = 0;
-+unsigned long long val2_downsized = 0;
-+unsigned long long val3_downsized = 0;
-+unsigned long long val4_downsized = 0;
-+struct test_struct___real output_downsized = {};
-+
-+unsigned long long ptr_probed = 0;
-+unsigned long long val1_probed = 0;
-+unsigned long long val2_probed = 0;
-+unsigned long long val3_probed = 0;
-+unsigned long long val4_probed = 0;
-+
-+unsigned long long ptr_signed = 0;
-+unsigned long long val1_signed = 0;
-+unsigned long long val2_signed = 0;
-+unsigned long long val3_signed = 0;
-+unsigned long long val4_signed = 0;
-+struct test_struct___real output_signed = {};
-+
-+SEC("raw_tp/sys_exit")
-+int handle_samesize(void *ctx)
-+{
-+	struct test_struct___samesize *in = (void *)&input;
-+	struct test_struct___samesize *out = (void *)&output_samesized;
-+
-+	ptr_samesized = (unsigned long long)in->ptr;
-+	val1_samesized = in->val1;
-+	val2_samesized = in->val2;
-+	val3_samesized = in->val3;
-+	val4_samesized = in->val4;
-+
-+	out->ptr = in->ptr;
-+	out->val1 = in->val1;
-+	out->val2 = in->val2;
-+	out->val3 = in->val3;
-+	out->val4 = in->val4;
-+
-+	return 0;
-+}
-+
-+SEC("raw_tp/sys_exit")
-+int handle_downsize(void *ctx)
-+{
-+	struct test_struct___downsize *in = (void *)&input;
-+	struct test_struct___downsize *out = (void *)&output_downsized;
-+
-+	ptr_downsized = (unsigned long long)in->ptr;
-+	val1_downsized = in->val1;
-+	val2_downsized = in->val2;
-+	val3_downsized = in->val3;
-+	val4_downsized = in->val4;
-+
-+	out->ptr = in->ptr;
-+	out->val1 = in->val1;
-+	out->val2 = in->val2;
-+	out->val3 = in->val3;
-+	out->val4 = in->val4;
-+
-+	return 0;
-+}
-+
-+SEC("raw_tp/sys_enter")
-+int handle_probed(void *ctx)
-+{
-+	struct test_struct___downsize *in = (void *)&input;
-+	__u64 tmp;
-+
-+	tmp = 0;
-+	bpf_core_read(&tmp, bpf_core_field_size(in->ptr), &in->ptr);
-+	ptr_probed = tmp;
-+
-+	tmp = 0;
-+	bpf_core_read(&tmp, bpf_core_field_size(in->val1), &in->val1);
-+	val1_probed = tmp;
-+
-+	tmp = 0;
-+	bpf_core_read(&tmp, bpf_core_field_size(in->val2), &in->val2);
-+	val2_probed = tmp;
-+
-+	tmp = 0;
-+	bpf_core_read(&tmp, bpf_core_field_size(in->val3), &in->val3);
-+	val3_probed = tmp;
-+
-+	tmp = 0;
-+	bpf_core_read(&tmp, bpf_core_field_size(in->val4), &in->val4);
-+	val4_probed = tmp;
-+
-+	return 0;
-+}
-+
-+SEC("raw_tp/sys_enter")
-+int handle_signed(void *ctx)
-+{
-+	struct test_struct___signed *in = (void *)&input;
-+	struct test_struct___signed *out = (void *)&output_signed;
-+
-+	val2_signed = in->val2;
-+	val3_signed = in->val3;
-+	val4_signed = in->val4;
-+
-+	out->val2= in->val2;
-+	out->val3= in->val3;
-+	out->val4= in->val4;
-+
-+	return 0;
-+}
--- 
-2.24.1
+If I update obj->data-><something> after __load(),
+or even after __attach() given that userspace mmaps .bss and .data,
+everything works as expected both for scalars and structs.
 
+> >
+> > 3. .data overrides do not seem to work for non-scalar types
+> >     In foo_bpf.c I have
+> >           struct one { int a; }; // type also visible to userspace
+> >           struct one x { .a = 2 }; // avoid bugs #1 and #2
+> >     If in userspace I do
+> >           obj->data->x.a = 1
+> >     the update is not seen in the kernel, ie
+> >             "if (x.a == 2) { .. } else { .. }"
+> >      always takes the first branch
+> >
+>
+> Similarly, the same skeleton selftest tests this situation. So please
+> check selftests first and report if selftests for some reason don't
+> work in your case.
+
+Actually test_skeleton.c does _not_ test for struct in .data,
+only in .rodata and .bss
+
+There seems to be a compiler error, at least with clang-10 and -O2
+
+Note how the struct case the compiler uses '2' as immediate value
+when reading, whereas in the scalar case it correctly dereferences
+the pointer to the variable
+
+
+Disassembly of section fexit/bar:
+
+0000000000000000 foo_struct:
+; int BPF_PROG(foo_struct) {
+       0:       b7 01 00 00 02 00 00 00 r1 = 2
+;   if (x.a == 2 || x.a > 10) { x.a += 10; }
+       1:       15 01 02 00 02 00 00 00 if r1 == 2 goto +2 <LBB1_2>
+       2:       b7 02 00 00 0b 00 00 00 r2 = 11
+       3:       2d 12 04 00 00 00 00 00 if r2 > r1 goto +4 <LBB1_3>
+
+0000000000000020 LBB1_2:
+       4:       07 01 00 00 0a 00 00 00 r1 += 10
+       5:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0 ll
+       7:       63 12 00 00 00 00 00 00 *(u32 *)(r2 + 0) = r1
+
+0000000000000040 LBB1_3:
+; int BPF_PROG(foo_struct) {
+       8:       b7 00 00 00 00 00 00 00 r0 = 0
+       9:       95 00 00 00 00 00 00 00 exit
+
+Disassembly of section fexit/baz:
+
+0000000000000000 foo_scalar:
+;   if (count_off == 2 || count_off > 10) { count_off += 10; }
+       0:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+       2:       61 12 00 00 00 00 00 00 r2 = *(u32 *)(r1 + 0)
+       3:       15 02 02 00 02 00 00 00 if r2 == 2 goto +2 <LBB2_2>
+       4:       b7 03 00 00 0b 00 00 00 r3 = 11
+       5:       2d 23 02 00 00 00 00 00 if r3 > r2 goto +2 <LBB2_3>
+
+0000000000000030 LBB2_2:
+       6:       07 02 00 00 0a 00 00 00 r2 += 10
+       7:       63 21 00 00 00 00 00 00 *(u32 *)(r1 + 0) = r2
+
+0000000000000040 LBB2_3:
+; int BPF_PROG(foo_scalar) {
+       8:       b7 00 00 00 00 00 00 00 r0 = 0
+       9:       95 00 00 00 00 00 00 00 exit
+
+------------
+
+If I put the struct in .bss then it gets translated correctly:
+
+Disassembly of section fexit/bar:
+
+0000000000000000 foo_struct:
+;   if (x.a == 2 || x.a > 10) { x.a += 10; }
+       0:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+       2:       61 12 00 00 00 00 00 00 r2 = *(u32 *)(r1 + 0)
+       3:       15 02 02 00 02 00 00 00 if r2 == 2 goto +2 <LBB1_2>
+       4:       b7 03 00 00 0b 00 00 00 r3 = 11
+       5:       2d 23 02 00 00 00 00 00 if r3 > r2 goto +2 <LBB1_3>
+
+0000000000000030 LBB1_2:
+       6:       07 02 00 00 0a 00 00 00 r2 += 10
+       7:       63 21 00 00 00 00 00 00 *(u32 *)(r1 + 0) = r2
+
+0000000000000040 LBB1_3:
+; int BPF_PROG(foo_struct) {
+       8:       b7 00 00 00 00 00 00 00 r0 = 0
+       9:       95 00 00 00 00 00 00 00 exit
