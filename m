@@ -2,792 +2,303 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19315287B5A
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 20:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A484287C19
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 21:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbgJHSG5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 14:06:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729318AbgJHSG4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 14:06:56 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C39620725;
-        Thu,  8 Oct 2020 18:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602180414;
-        bh=QEGfGxdKlVDACmAwD/Tcr7eTiDnlpZXvXWt3K3Ln8h8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N41snErwAyvdnc9mi493M4HuRJSYdkjNddcW/3WIlB5eihlKyLeuRhfoRIs7D30Zb
-         m1bg0Nqj7ougOQQu3CEvaMYywtnfEUdzwwNaK5JGLqUBr66Th/SnaAXKZ4xhz+Rq1I
-         B9ZHJ9GTwNjUE3xta2a6nF8rKSDwaL8vajQcU81g=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CBC82403AC; Thu,  8 Oct 2020 15:06:51 -0300 (-03)
-Date:   Thu, 8 Oct 2020 15:06:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves 04/11] btf_loader: use libbpf to load BTF
-Message-ID: <20201008180651.GD246083@kernel.org>
-References: <20200930042742.2525310-1-andriin@fb.com>
- <20200930042742.2525310-5-andriin@fb.com>
+        id S1726348AbgJHTLL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 15:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgJHTLK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Oct 2020 15:11:10 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767D5C0613D2
+        for <bpf@vger.kernel.org>; Thu,  8 Oct 2020 12:11:10 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id j22so2258334lfe.10
+        for <bpf@vger.kernel.org>; Thu, 08 Oct 2020 12:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jZeXzjOdaCkTwbvps0NY2Rc+Rgu80s3Mqaz2r6rAtyo=;
+        b=vOSc18OvhPf8PmPnv/oR8SMQqcn9rFjvo3e4b9S75dLmmJM4ru8wQ3AigjPtbLQinX
+         eNmVPNu5VkLgilw125WYs3t+Ntic4Av0zvHcNHK3VccVEAXccj9ir1rnkQ8LD9sAP2cL
+         nuprf4NMsbzQ9jYRRvq8B0QMfRTH9Os2OkRpJpgB4gjDCRjauWSdLrMW+LEBpFL73k7w
+         KbR/YfzJvF7Igdan6sL2D0+xsYekG86pmncHxIuvHW1+GXa+fLqcvVZV6psFMWrgx7Rw
+         c+qTUpaa3DsReRKrIvj/xC/oCGfx/sTOl5EYiIa0Z+LFo6d0ruZ6TorHAov2/bU60t8g
+         Wetg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jZeXzjOdaCkTwbvps0NY2Rc+Rgu80s3Mqaz2r6rAtyo=;
+        b=eFuBoUm80Z6TxJUH7nSq6gkLR2xd8WhQmEPTTCebnL+PvSTNMj6cdlNG+tNCheKmfO
+         6h52UCiaJljek593krwicC3LWkJtbo740uLcwkdeWQpnrEYG5G12Ewh+za/xtLwpDvE8
+         uEduJjJbbcm3CPNXNVZJrTILXCSotH4kUJVtw97E4JxLnUOhUC4quMOEYp+72ApjLEM3
+         Gp6DXb82al9uSmoTwFJkK0mz1RDpjlj59NBjj8UttQl2+oGemvrYcwF40AXnts71w8n0
+         zJb/eWyqAp108mgWyRO+e2jQ9T6x5SvvRR/RAB5M3FRkvaprrGKVXwvuQH2hEzWEbM0r
+         WN0A==
+X-Gm-Message-State: AOAM53314r0zf12S2a6MU1s2bCGTAA3NEq55d5rUs+ZLLaytrHhEY0QU
+        BRdrKvVoUpN6S8lDUkACfOfzLDlIXGyKTvaLlZtUKQ==
+X-Google-Smtp-Source: ABdhPJwpxyam+w0rhfzKcHaxjnNi9gqIO+T7iEEDq5MDErKiqB2qiPaPJFJuVkEQ/4jTSTaSfDkk/R1d2C/XJGjdZyE=
+X-Received: by 2002:a19:4bc9:: with SMTP id y192mr2983115lfa.447.1602184268622;
+ Thu, 08 Oct 2020 12:11:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200930042742.2525310-5-andriin@fb.com>
-X-Url:  http://acmel.wordpress.com
+References: <20201001042927.2147800-1-andrew@aj.id.au> <CA+XBgLXqbdj8whr289z0dHV4NLO_rq8rJKs14JNfbVO8oJUbWA@mail.gmail.com>
+In-Reply-To: <CA+XBgLXqbdj8whr289z0dHV4NLO_rq8rJKs14JNfbVO8oJUbWA@mail.gmail.com>
+From:   Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Date:   Thu, 8 Oct 2020 21:13:31 +0200
+Message-ID: <CAOjtDRWcdk+Ra56EWuu-0KvheNux0qPb2kbj9xPYF3+2E-ym5g@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: kprobes: Avoid fortify_panic() when copying
+ optprobe template
+To:     Luka Oreskovic <luka.oreskovic@sartura.hr>
+Cc:     Andrew Jeffery <andrew@aj.id.au>, bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        mhiramat@kernel.org, labbott@redhat.com, keescook@chromium.org,
+        mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Sep 29, 2020 at 09:27:35PM -0700, Andrii Nakryiko escreveu:
-> Switch BTF loading to completely use libbpf's own struct btf and related APIs.
-> BTF encoding is still happening with pahole's own code, so these two code
-> paths are not sharing anything now. String fetching is happening based on
-> whether btfe->strings were set to non-NULL pointer by btf_encoder.
- 
-This patch is not applying, since there was a fix in the btf_loader.c
-file where lexblocks (DWARF concept) wasn't being initialized and then
-some other tool was segfaulting when trying to traverse an uninitialized
-list.
+Hi,
 
-I tried applying this patch by hand, but it seems it needs some
-massaging before I can use plain vim on it:
+[Adding the bpf list on Cc]
 
-diff --git a/btf_loader.c b/btf_loader.c
-index 9db76957a7e5..c31ee61060f1 100644
---- a/btf_loader.c
-+++ b/btf_loader.c
-@@ -46,21 +46,17 @@ static void *tag__alloc(const size_t size)
- }
-=20
- static int btf_elf__load_ftype(struct btf_elf *btfe, struct ftype *proto=
-, uint32_t tag,
--                              uint32_t type, uint16_t vlen, struct btf_param *args, uint32_t=
- id)
-+                              const struct btf_type *tp, uint32_t id)
- {
--       int i;
-+       const struct btf_param *param =3D btf_params(tp);
-+       int i, vlen =3D btf_vlen(tp);
-=20
-        proto->tag.tag  =3D tag;
--       proto->tag.type =3D type;
-+       proto->tag.type =3D tp->type;
-        INIT_LIST_HEAD(&proto->parms);
-=20
--       for (i =3D 0; i < vlen; ++i) {
+On Thu, Oct 8, 2020 at 5:38 PM Luka Oreskovic <luka.oreskovic@sartura.hr> wrote:
+>
+> On Thu, Oct 1, 2020 at 6:30 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> >
+> > Setting both CONFIG_KPROBES=y and CONFIG_FORTIFY_SOURCE=y on ARM leads
+> > to a panic in memcpy() when injecting a kprobe despite the fixes found
+> > in commit e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with
+> > FORTIFY_SOURCE") and commit 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes:
+> > optimized kprobes illegal instruction").
+> >
+> > arch/arm/include/asm/kprobes.h effectively declares
+> > the target type of the optprobe_template_entry assembly label as a u32
+> > which leads memcpy()'s __builtin_object_size() call to determine that
+> > the pointed-to object is of size four. However, the symbol is used as a handle
+> > for the optimised probe assembly template that is at least 96 bytes in size.
+> > The symbol's use despite its type blows up the memcpy() in ARM's
+> > arch_prepare_optimized_kprobe() with a false-positive fortify_panic() when it
+> > should instead copy the optimised probe template into place:
+> >
+> > ```
+> > $ sudo perf probe -a aspeed_g6_pinctrl_probe
+> > [  158.457252] detected buffer overflow in memcpy
+> > [  158.458069] ------------[ cut here ]------------
+> > [  158.458283] kernel BUG at lib/string.c:1153!
+> > [  158.458436] Internal error: Oops - BUG: 0 [#1] SMP ARM
+> > [  158.458768] Modules linked in:
+> > [  158.459043] CPU: 1 PID: 99 Comm: perf Not tainted 5.9.0-rc7-00038-gc53ebf8167e9 #158
+> > [  158.459296] Hardware name: Generic DT based system
+> > [  158.459529] PC is at fortify_panic+0x18/0x20
+> > [  158.459658] LR is at __irq_work_queue_local+0x3c/0x74
+> > [  158.459831] pc : [<8047451c>]    lr : [<8020ecd4>]    psr: 60000013
+> > [  158.460032] sp : be2d1d50  ip : be2d1c58  fp : be2d1d5c
+> > [  158.460174] r10: 00000006  r9 : 00000000  r8 : 00000060
+> > [  158.460348] r7 : 8011e434  r6 : b9e0b800  r5 : 7f000000  r4 : b9fe4f0c
+> > [  158.460557] r3 : 80c04cc8  r2 : 00000000  r1 : be7c03cc  r0 : 00000022
+> > [  158.460801] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> > [  158.461037] Control: 10c5387d  Table: b9cd806a  DAC: 00000051
+> > [  158.461251] Process perf (pid: 99, stack limit = 0x81c71a69)
+> > [  158.461472] Stack: (0xbe2d1d50 to 0xbe2d2000)
+> > [  158.461757] 1d40:                                     be2d1d84 be2d1d60 8011e724 80474510
+> > [  158.462104] 1d60: b9e0b800 b9fe4f0c 00000000 b9fe4f14 80c8ec80 be235000 be2d1d9c be2d1d88
+> > [  158.462436] 1d80: 801cee44 8011e57c b9fe4f0c 00000000 be2d1dc4 be2d1da0 801d0ad0 801cedec
+> > [  158.462742] 1da0: 00000000 00000000 b9fe4f00 ffffffea 00000000 be235000 be2d1de4 be2d1dc8
+> > [  158.463087] 1dc0: 80204604 801d0738 00000000 00000000 b9fe4004 ffffffea be2d1e94 be2d1de8
+> > [  158.463428] 1de0: 80205434 80204570 00385c00 00000000 00000000 00000000 be2d1e14 be2d1e08
+> > [  158.463880] 1e00: 802ba014 b9fe4f00 b9e718c0 b9fe4f84 b9e71ec8 be2d1e24 00000000 00385c00
+> > [  158.464365] 1e20: 00000000 626f7270 00000065 802b905c be2d1e94 0000002e 00000000 802b9914
+> > [  158.464829] 1e40: be2d1e84 be2d1e50 802b9914 8028ff78 804629d0 b9e71ec0 0000002e b9e71ec0
+> > [  158.465141] 1e60: be2d1ea8 80c04cc8 00000cc0 b9e713c4 00000002 80205834 80205834 0000002e
+> > [  158.465488] 1e80: be235000 be235000 be2d1ea4 be2d1e98 80205854 80204e94 be2d1ecc be2d1ea8
+> > [  158.465806] 1ea0: 801ee4a0 80205840 00000002 80c04cc8 00000000 0000002e 0000002e 00000000
+> > [  158.466110] 1ec0: be2d1f0c be2d1ed0 801ee5c8 801ee428 00000000 be2d0000 006b1fd0 00000051
+> > [  158.466398] 1ee0: 00000000 b9eedf00 0000002e 80204410 006b1fd0 be2d1f60 00000000 00000004
+> > [  158.466763] 1f00: be2d1f24 be2d1f10 8020442c 801ee4c4 80205834 802c613c be2d1f5c be2d1f28
+> > [  158.467102] 1f20: 802c60ac 8020441c be2d1fac be2d1f38 8010c764 802e9888 be2d1f5c b9eedf00
+> > [  158.467447] 1f40: b9eedf00 006b1fd0 0000002e 00000000 be2d1f94 be2d1f60 802c634c 802c5fec
+> > [  158.467812] 1f60: 00000000 00000000 00000000 80c04cc8 006b1fd0 00000003 76f7a610 00000004
+> > [  158.468155] 1f80: 80100284 be2d0000 be2d1fa4 be2d1f98 802c63ec 802c62e8 00000000 be2d1fa8
+> > [  158.468508] 1fa0: 80100080 802c63e0 006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
+> > [  158.468858] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
+> > [  158.469202] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338 60000010 00000003 00000000 00000000
+> > [  158.469461] Backtrace:
+> > [  158.469683] [<80474504>] (fortify_panic) from [<8011e724>] (arch_prepare_optimized_kprobe+0x1b4/0x1f8)
+> > [  158.470021] [<8011e570>] (arch_prepare_optimized_kprobe) from [<801cee44>] (alloc_aggr_kprobe+0x64/0x70)
+> > [  158.470287]  r9:be235000 r8:80c8ec80 r7:b9fe4f14 r6:00000000 r5:b9fe4f0c r4:b9e0b800
+> > [  158.470478] [<801cede0>] (alloc_aggr_kprobe) from [<801d0ad0>] (register_kprobe+0x3a4/0x5a0)
+> > [  158.470685]  r5:00000000 r4:b9fe4f0c
+> > [  158.470790] [<801d072c>] (register_kprobe) from [<80204604>] (__register_trace_kprobe+0xa0/0xa4)
+> > [  158.471001]  r9:be235000 r8:00000000 r7:ffffffea r6:b9fe4f00 r5:00000000 r4:00000000
+> > [  158.471188] [<80204564>] (__register_trace_kprobe) from [<80205434>] (trace_kprobe_create+0x5ac/0x9ac)
+> > [  158.471408]  r7:ffffffea r6:b9fe4004 r5:00000000 r4:00000000
+> > [  158.471553] [<80204e88>] (trace_kprobe_create) from [<80205854>] (create_or_delete_trace_kprobe+0x20/0x3c)
+> > [  158.471766]  r10:be235000 r9:be235000 r8:0000002e r7:80205834 r6:80205834 r5:00000002
+> > [  158.471949]  r4:b9e713c4
+> > [  158.472027] [<80205834>] (create_or_delete_trace_kprobe) from [<801ee4a0>] (trace_run_command+0x84/0x9c)
+> > [  158.472255] [<801ee41c>] (trace_run_command) from [<801ee5c8>] (trace_parse_run_command+0x110/0x1f8)
+> > [  158.472471]  r6:00000000 r5:0000002e r4:0000002e
+> > [  158.472594] [<801ee4b8>] (trace_parse_run_command) from [<8020442c>] (probes_write+0x1c/0x28)
+> > [  158.472800]  r10:00000004 r9:00000000 r8:be2d1f60 r7:006b1fd0 r6:80204410 r5:0000002e
+> > [  158.472968]  r4:b9eedf00
+> > [  158.473046] [<80204410>] (probes_write) from [<802c60ac>] (vfs_write+0xcc/0x1e8)
+> > [  158.473226] [<802c5fe0>] (vfs_write) from [<802c634c>] (ksys_write+0x70/0xf8)
+> > [  158.473400]  r8:00000000 r7:0000002e r6:006b1fd0 r5:b9eedf00 r4:b9eedf00
+> > [  158.473567] [<802c62dc>] (ksys_write) from [<802c63ec>] (sys_write+0x18/0x1c)
+> > [  158.473745]  r9:be2d0000 r8:80100284 r7:00000004 r6:76f7a610 r5:00000003 r4:006b1fd0
+> > [  158.473932] [<802c63d4>] (sys_write) from [<80100080>] (ret_fast_syscall+0x0/0x54)
+> > [  158.474126] Exception stack(0xbe2d1fa8 to 0xbe2d1ff0)
+> > [  158.474305] 1fa0:                   006b1fd0 00000003 00000003 006b1fd0 0000002e 00000000
+> > [  158.474573] 1fc0: 006b1fd0 00000003 76f7a610 00000004 006b1fb0 0026d348 00000017 7ef2738c
+> > [  158.474811] 1fe0: 76f3431c 7ef272d8 0014ec50 76f34338
+> > [  158.475171] Code: e24cb004 e1a01000 e59f0004 ebf40dd3 (e7f001f2)
+> > [  158.475847] ---[ end trace 55a5b31c08a29f00 ]---
+> > [  158.476088] Kernel panic - not syncing: Fatal exception
+> > [  158.476375] CPU0: stopping
+> > [  158.476709] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G      D           5.9.0-rc7-00038-gc53ebf8167e9 #158
+> > [  158.477176] Hardware name: Generic DT based system
+> > [  158.477411] Backtrace:
+> > [  158.477604] [<8010dd28>] (dump_backtrace) from [<8010dfd4>] (show_stack+0x20/0x24)
+> > [  158.477990]  r7:00000000 r6:60000193 r5:00000000 r4:80c2f634
+> > [  158.478323] [<8010dfb4>] (show_stack) from [<8046390c>] (dump_stack+0xcc/0xe8)
+> > [  158.478686] [<80463840>] (dump_stack) from [<80110750>] (handle_IPI+0x334/0x3a0)
+> > [  158.479063]  r7:00000000 r6:00000004 r5:80b65cc8 r4:80c78278
+> > [  158.479352] [<8011041c>] (handle_IPI) from [<801013f8>] (gic_handle_irq+0x88/0x94)
+> > [  158.479757]  r10:10c5387d r9:80c01ed8 r8:00000000 r7:c0802000 r6:80c0537c r5:000003ff
+> > [  158.480146]  r4:c080200c r3:fffffff4
+> > [  158.480364] [<80101370>] (gic_handle_irq) from [<80100b6c>] (__irq_svc+0x6c/0x90)
+> > [  158.480748] Exception stack(0x80c01ed8 to 0x80c01f20)
+> > [  158.481031] 1ec0:                                                       000128bc 00000000
+> > [  158.481499] 1ee0: be7b8174 8011d3a0 80c00000 00000000 80c04cec 80c04d28 80c5d7c2 80a026d4
+> > [  158.482091] 1f00: 10c5387d 80c01f34 80c01f38 80c01f28 80109554 80109558 60000013 ffffffff
+> > [  158.482621]  r9:80c00000 r8:80c5d7c2 r7:80c01f0c r6:ffffffff r5:60000013 r4:80109558
+> > [  158.482983] [<80109518>] (arch_cpu_idle) from [<80818780>] (default_idle_call+0x38/0x120)
+> > [  158.483360] [<80818748>] (default_idle_call) from [<801585a8>] (do_idle+0xd4/0x158)
+> > [  158.483945]  r5:00000000 r4:80c00000
+> > [  158.484237] [<801584d4>] (do_idle) from [<801588f4>] (cpu_startup_entry+0x28/0x2c)
+> > [  158.484784]  r9:80c78000 r8:00000000 r7:80c78000 r6:80c78040 r5:80c04cc0 r4:000000d6
+> > [  158.485328] [<801588cc>] (cpu_startup_entry) from [<80810a78>] (rest_init+0x9c/0xbc)
+> > [  158.485930] [<808109dc>] (rest_init) from [<80b00ae4>] (arch_call_rest_init+0x18/0x1c)
+> > [  158.486503]  r5:80c04cc0 r4:00000001
+> > [  158.486857] [<80b00acc>] (arch_call_rest_init) from [<80b00fcc>] (start_kernel+0x46c/0x548)
+> > [  158.487589] [<80b00b60>] (start_kernel) from [<00000000>] (0x0)
+> > ```
+> >
+> > Fixes: e46daee53bb5 ("ARM: 8806/1: kprobes: Fix false positive with FORTIFY_SOURCE")
+> > Fixes: 0ac569bf6a79 ("ARM: 8834/1: Fix: kprobes: optimized kprobes illegal instruction")
+> > Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
+> > Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+> > Suggested-by: Kees Cook <keescook@chromium.org>
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > ---
+>
+> Tested-by: Luka Oreskovic <luka.oreskovic@sartura.hr>
+>
+> > v1 was sent some time back, in May:
+> >
+> > https://lore.kernel.org/linux-arm-kernel/20200517153959.293224-1-andrew@aj.id.au/
+> >
+> > I've taken the patch that Kees' suggested in the replies and tested it.
+> > ---
+> >  arch/arm/include/asm/kprobes.h    | 22 +++++++++++-----------
+> >  arch/arm/probes/kprobes/opt-arm.c | 18 +++++++++---------
+> >  2 files changed, 20 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/arch/arm/include/asm/kprobes.h b/arch/arm/include/asm/kprobes.h
+> > index 213607a1f45c..e26a278d301a 100644
+> > --- a/arch/arm/include/asm/kprobes.h
+> > +++ b/arch/arm/include/asm/kprobes.h
+> > @@ -44,20 +44,20 @@ int kprobe_exceptions_notify(struct notifier_block *self,
+> >                              unsigned long val, void *data);
+> >
+> >  /* optinsn template addresses */
+> > -extern __visible kprobe_opcode_t optprobe_template_entry;
+> > -extern __visible kprobe_opcode_t optprobe_template_val;
+> > -extern __visible kprobe_opcode_t optprobe_template_call;
+> > -extern __visible kprobe_opcode_t optprobe_template_end;
+> > -extern __visible kprobe_opcode_t optprobe_template_sub_sp;
+> > -extern __visible kprobe_opcode_t optprobe_template_add_sp;
+> > -extern __visible kprobe_opcode_t optprobe_template_restore_begin;
+> > -extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn;
+> > -extern __visible kprobe_opcode_t optprobe_template_restore_end;
+> > +extern __visible kprobe_opcode_t optprobe_template_entry[];
+> > +extern __visible kprobe_opcode_t optprobe_template_val[];
+> > +extern __visible kprobe_opcode_t optprobe_template_call[];
+> > +extern __visible kprobe_opcode_t optprobe_template_end[];
+> > +extern __visible kprobe_opcode_t optprobe_template_sub_sp[];
+> > +extern __visible kprobe_opcode_t optprobe_template_add_sp[];
+> > +extern __visible kprobe_opcode_t optprobe_template_restore_begin[];
+> > +extern __visible kprobe_opcode_t optprobe_template_restore_orig_insn[];
+> > +extern __visible kprobe_opcode_t optprobe_template_restore_end[];
+> >
+> >  #define MAX_OPTIMIZED_LENGTH   4
+> >  #define MAX_OPTINSN_SIZE                               \
+> > -       ((unsigned long)&optprobe_template_end -        \
+> > -        (unsigned long)&optprobe_template_entry)
+> > +       ((unsigned long)optprobe_template_end - \
+> > +        (unsigned long)optprobe_template_entry)
+> >  #define RELATIVEJUMP_SIZE      4
+> >
+> >  struct arch_optimized_insn {
+> > diff --git a/arch/arm/probes/kprobes/opt-arm.c b/arch/arm/probes/kprobes/opt-arm.c
+> > index 7a449df0b359..c78180172120 100644
+> > --- a/arch/arm/probes/kprobes/opt-arm.c
+> > +++ b/arch/arm/probes/kprobes/opt-arm.c
+> > @@ -85,21 +85,21 @@ asm (
+> >                         "optprobe_template_end:\n");
+> >
+> >  #define TMPL_VAL_IDX \
+> > -       ((unsigned long *)&optprobe_template_val - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_val - (unsigned long *)optprobe_template_entry)
+> >  #define TMPL_CALL_IDX \
+> > -       ((unsigned long *)&optprobe_template_call - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_call - (unsigned long *)optprobe_template_entry)
+> >  #define TMPL_END_IDX \
+> > -       ((unsigned long *)&optprobe_template_end - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_end - (unsigned long *)optprobe_template_entry)
+> >  #define TMPL_ADD_SP \
+> > -       ((unsigned long *)&optprobe_template_add_sp - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_add_sp - (unsigned long *)optprobe_template_entry)
+> >  #define TMPL_SUB_SP \
+> > -       ((unsigned long *)&optprobe_template_sub_sp - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_sub_sp - (unsigned long *)optprobe_template_entry)
+> >  #define TMPL_RESTORE_BEGIN \
+> > -       ((unsigned long *)&optprobe_template_restore_begin - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_restore_begin - (unsigned long *)optprobe_template_entry)
+> >  #define TMPL_RESTORE_ORIGN_INSN \
+> > -       ((unsigned long *)&optprobe_template_restore_orig_insn - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_restore_orig_insn - (unsigned long *)optprobe_template_entry)
+> >  #define TMPL_RESTORE_END \
+> > -       ((unsigned long *)&optprobe_template_restore_end - (unsigned long *)&optprobe_template_entry)
+> > +       ((unsigned long *)optprobe_template_restore_end - (unsigned long *)optprobe_template_entry)
+> >
+> >  /*
+> >   * ARM can always optimize an instruction when using ARM ISA, except
+> > @@ -234,7 +234,7 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op, struct kprobe *or
+> >         }
+> >
+> >         /* Copy arch-dep-instance from template. */
+> > -       memcpy(code, (unsigned long *)&optprobe_template_entry,
+> > +       memcpy(code, (unsigned long *)optprobe_template_entry,
+> >                         TMPL_END_IDX * sizeof(kprobe_opcode_t));
+> >
+> >         /* Adjust buffer according to instruction. */
+> > --
+> > 2.25.1
+> >
 
+This patch might be of interest to the bpf mailing list.
+Although it fixes a general issue with kprobes on ARM32, we originally
+encountered it while testing various BPF programs that attached to
+kprobe hooks, for example tcpconnect from BCC's libbpf-tools [0].
+It caused a kernel panic or oops on our systems, and most of the BPF
+kprobe programs that we tested were therefore unusable on ARM32
+systems.
+With the patch applied, the BPF programs are now working.
 
-Can you please check?
-
-The first three patches are already applied an in master, both at
-kernel.org and its mirror at github.com.
-
-- Arnaldo
-
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  btf_loader.c | 244 +++++++++++++++++++--------------------------------
->  libbtf.c     | 116 +++++-------------------
->  libbtf.h     |  11 +--
->  3 files changed, 113 insertions(+), 258 deletions(-)
-> 
-> diff --git a/btf_loader.c b/btf_loader.c
-> index 9db76957a7e5..c31ee61060f1 100644
-> --- a/btf_loader.c
-> +++ b/btf_loader.c
-> @@ -46,21 +46,17 @@ static void *tag__alloc(const size_t size)
->  }
->  
->  static int btf_elf__load_ftype(struct btf_elf *btfe, struct ftype *proto, uint32_t tag,
-> -			       uint32_t type, uint16_t vlen, struct btf_param *args, uint32_t id)
-> +			       const struct btf_type *tp, uint32_t id)
->  {
-> -	int i;
-> +	const struct btf_param *param = btf_params(tp);
-> +	int i, vlen = btf_vlen(tp);
->  
->  	proto->tag.tag	= tag;
-> -	proto->tag.type = type;
-> +	proto->tag.type = tp->type;
->  	INIT_LIST_HEAD(&proto->parms);
->  
-> -	for (i = 0; i < vlen; ++i) {
-> -		struct btf_param param = {
-> -		       .name_off = btf_elf__get32(btfe, &args[i].name_off),
-> -		       .type	 = btf_elf__get32(btfe, &args[i].type),
-> -		};
-> -
-> -		if (param.type == 0)
-> +	for (i = 0; i < vlen; ++i, param++) {
-> +		if (param->type == 0)
->  			proto->unspec_parms = 1;
->  		else {
->  			struct parameter *p = tag__alloc(sizeof(*p));
-> @@ -68,25 +64,22 @@ static int btf_elf__load_ftype(struct btf_elf *btfe, struct ftype *proto, uint32
->  			if (p == NULL)
->  				goto out_free_parameters;
->  			p->tag.tag  = DW_TAG_formal_parameter;
-> -			p->tag.type = param.type;
-> -			p->name	    = param.name_off;
-> +			p->tag.type = param->type;
-> +			p->name	    = param->name_off;
->  			ftype__add_parameter(proto, p);
->  		}
->  	}
->  
-> -	vlen *= sizeof(*args);
->  	cu__add_tag_with_id(btfe->priv, &proto->tag, id);
->  
-> -	return vlen;
-> +	return 0;
->  out_free_parameters:
->  	ftype__delete(proto, btfe->priv);
->  	return -ENOMEM;
->  }
->  
-> -static int create_new_function(struct btf_elf *btfe, struct btf_type *tp, uint64_t size, uint32_t id)
-> +static int create_new_function(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	strings_t name = btf_elf__get32(btfe, &tp->name_off);
-> -	unsigned int type_id = btf_elf__get32(btfe, &tp->type);
->  	struct function *func = tag__alloc(sizeof(*func));
->  
->  	if (func == NULL)
-> @@ -96,8 +89,8 @@ static int create_new_function(struct btf_elf *btfe, struct btf_type *tp, uint64
->  	// but the prototype, the return type is the one in type_id
->  	func->btf = 1;
->  	func->proto.tag.tag = DW_TAG_subprogram;
-> -	func->proto.tag.type = type_id;
-> -	func->name = name;
-> +	func->proto.tag.type = tp->type;
-> +	func->name = tp->name_off;
->  	cu__add_tag_with_id(btfe->priv, &func->proto.tag, id);
->  
->  	return 0;
-> @@ -165,26 +158,24 @@ static struct variable *variable__new(strings_t name, uint32_t linkage)
->  	return var;
->  }
->  
-> -static int create_new_base_type(struct btf_elf *btfe, void *ptr, struct btf_type *tp, uint32_t id)
-> +static int create_new_base_type(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	uint32_t *enc = ptr;
-> -	uint32_t eval = btf_elf__get32(btfe, enc);
-> -	uint32_t attrs = BTF_INT_ENCODING(eval);
-> -	strings_t name = btf_elf__get32(btfe, &tp->name_off);
-> -	struct base_type *base = base_type__new(name, attrs, 0,
-> -						BTF_INT_BITS(eval));
-> +	uint32_t attrs = btf_int_encoding(tp);
-> +	strings_t name = tp->name_off;
-> +	struct base_type *base = base_type__new(name, attrs, 0, btf_int_bits(tp));
-> +
->  	if (base == NULL)
->  		return -ENOMEM;
->  
->  	base->tag.tag = DW_TAG_base_type;
->  	cu__add_tag_with_id(btfe->priv, &base->tag, id);
->  
-> -	return sizeof(*enc);
-> +	return 0;
->  }
->  
-> -static int create_new_array(struct btf_elf *btfe, void *ptr, uint32_t id)
-> +static int create_new_array(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	struct btf_array *ap = ptr;
-> +	struct btf_array *ap = btf_array(tp);
->  	struct array_type *array = tag__alloc(sizeof(*array));
->  
->  	if (array == NULL)
-> @@ -200,81 +191,67 @@ static int create_new_array(struct btf_elf *btfe, void *ptr, uint32_t id)
->  		return -ENOMEM;
->  	}
->  
-> -	array->nr_entries[0] = btf_elf__get32(btfe, &ap->nelems);
-> +	array->nr_entries[0] = ap->nelems;
->  	array->tag.tag = DW_TAG_array_type;
-> -	array->tag.type = btf_elf__get32(btfe, &ap->type);
-> +	array->tag.type = ap->type;
->  
->  	cu__add_tag_with_id(btfe->priv, &array->tag, id);
->  
-> -	return sizeof(*ap);
-> +	return 0;
->  }
->  
-> -static int create_members(struct btf_elf *btfe, void *ptr, int vlen, struct type *class,
-> -			  bool kflag)
-> +static int create_members(struct btf_elf *btfe, const struct btf_type *tp,
-> +			  struct type *class)
->  {
-> -	struct btf_member *mp = ptr;
-> -	int i;
-> +	struct btf_member *mp = btf_members(tp);
-> +	int i, vlen = btf_vlen(tp);
->  
->  	for (i = 0; i < vlen; i++) {
->  		struct class_member *member = zalloc(sizeof(*member));
-> -		uint32_t offset;
->  
->  		if (member == NULL)
->  			return -ENOMEM;
->  
->  		member->tag.tag    = DW_TAG_member;
-> -		member->tag.type   = btf_elf__get32(btfe, &mp[i].type);
-> -		member->name	   = btf_elf__get32(btfe, &mp[i].name_off);
-> -		offset = btf_elf__get32(btfe, &mp[i].offset);
-> -		if (kflag) {
-> -			member->bit_offset = BTF_MEMBER_BIT_OFFSET(offset);
-> -			member->bitfield_size = BTF_MEMBER_BITFIELD_SIZE(offset);
-> -		} else {
-> -			member->bit_offset = offset;
-> -			member->bitfield_size = 0;
-> -		}
-> +		member->tag.type   = mp[i].type;
-> +		member->name	   = mp[i].name_off;
-> +		member->bit_offset = btf_member_bit_offset(tp, i);
-> +		member->bitfield_size = btf_member_bitfield_size(tp, i);
->  		member->byte_offset = member->bit_offset / 8;
->  		/* sizes and offsets will be corrected at class__fixup_btf_bitfields */
->  		type__add_member(class, member);
->  	}
->  
-> -	return sizeof(*mp);
-> +	return 0;
->  }
->  
-> -static int create_new_class(struct btf_elf *btfe, void *ptr, int vlen,
-> -			    struct btf_type *tp, uint64_t size, uint32_t id,
-> -			    bool kflag)
-> +static int create_new_class(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	strings_t name = btf_elf__get32(btfe, &tp->name_off);
-> -	struct class *class = class__new(name, size);
-> -	int member_size = create_members(btfe, ptr, vlen, &class->type, kflag);
-> +	struct class *class = class__new(tp->name_off, tp->size);
-> +	int member_size = create_members(btfe, tp, &class->type);
->  
->  	if (member_size < 0)
->  		goto out_free;
->  
->  	cu__add_tag_with_id(btfe->priv, &class->type.namespace.tag, id);
->  
-> -	return (vlen * member_size);
-> +	return 0;
->  out_free:
->  	class__delete(class, btfe->priv);
->  	return -ENOMEM;
->  }
->  
-> -static int create_new_union(struct btf_elf *btfe, void *ptr,
-> -			    int vlen, struct btf_type *tp,
-> -			    uint64_t size, uint32_t id,
-> -			    bool kflag)
-> +static int create_new_union(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	strings_t name = btf_elf__get32(btfe, &tp->name_off);
-> -	struct type *un = type__new(DW_TAG_union_type, name, size);
-> -	int member_size = create_members(btfe, ptr, vlen, un, kflag);
-> +	struct type *un = type__new(DW_TAG_union_type, tp->name_off, tp->size);
-> +	int member_size = create_members(btfe, tp, un);
->  
->  	if (member_size < 0)
->  		goto out_free;
->  
->  	cu__add_tag_with_id(btfe->priv, &un->namespace.tag, id);
->  
-> -	return (vlen * member_size);
-> +	return 0;
->  out_free:
->  	type__delete(un, btfe->priv);
->  	return -ENOMEM;
-> @@ -293,22 +270,20 @@ static struct enumerator *enumerator__new(strings_t name, uint32_t value)
->  	return en;
->  }
->  
-> -static int create_new_enumeration(struct btf_elf *btfe, void *ptr,
-> -				  int vlen, struct btf_type *tp,
-> -				  uint16_t size, uint32_t id)
-> +static int create_new_enumeration(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	struct btf_enum *ep = ptr;
-> -	uint16_t i;
-> +	struct btf_enum *ep = btf_enum(tp);
-> +	uint16_t i, vlen = btf_vlen(tp);
->  	struct type *enumeration = type__new(DW_TAG_enumeration_type,
-> -					     btf_elf__get32(btfe, &tp->name_off),
-> -					     size ? size * 8 : (sizeof(int) * 8));
-> +					     tp->name_off,
-> +					     tp->size ? tp->size * 8 : (sizeof(int) * 8));
->  
->  	if (enumeration == NULL)
->  		return -ENOMEM;
->  
->  	for (i = 0; i < vlen; i++) {
-> -		strings_t name = btf_elf__get32(btfe, &ep[i].name_off);
-> -		uint32_t value = btf_elf__get32(btfe, (uint32_t *)&ep[i].val);
-> +		strings_t name = ep[i].name_off;
-> +		uint32_t value = ep[i].val;
->  		struct enumerator *enumerator = enumerator__new(name, value);
->  
->  		if (enumerator == NULL)
-> @@ -319,32 +294,25 @@ static int create_new_enumeration(struct btf_elf *btfe, void *ptr,
->  
->  	cu__add_tag_with_id(btfe->priv, &enumeration->namespace.tag, id);
->  
-> -	return (vlen * sizeof(*ep));
-> +	return 0;
->  out_free:
->  	enumeration__delete(enumeration, btfe->priv);
->  	return -ENOMEM;
->  }
->  
-> -static int create_new_subroutine_type(struct btf_elf *btfe, void *ptr,
-> -				      int vlen, struct btf_type *tp,
-> -				      uint32_t id)
-> +static int create_new_subroutine_type(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	struct btf_param *args = ptr;
-> -	unsigned int type = btf_elf__get32(btfe, &tp->type);
->  	struct ftype *proto = tag__alloc(sizeof(*proto));
->  
->  	if (proto == NULL)
->  		return -ENOMEM;
->  
-> -	vlen = btf_elf__load_ftype(btfe, proto, DW_TAG_subroutine_type, type, vlen, args, id);
-> -	return vlen < 0 ? -ENOMEM : vlen;
-> +	return btf_elf__load_ftype(btfe, proto, DW_TAG_subroutine_type, tp, id);
->  }
->  
-> -static int create_new_forward_decl(struct btf_elf *btfe, struct btf_type *tp,
-> -				   uint64_t size, uint32_t id)
-> +static int create_new_forward_decl(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	strings_t name = btf_elf__get32(btfe, &tp->name_off);
-> -	struct class *fwd = class__new(name, size);
-> +	struct class *fwd = class__new(tp->name_off, 0);
->  
->  	if (fwd == NULL)
->  		return -ENOMEM;
-> @@ -353,41 +321,33 @@ static int create_new_forward_decl(struct btf_elf *btfe, struct btf_type *tp,
->  	return 0;
->  }
->  
-> -static int create_new_typedef(struct btf_elf *btfe, struct btf_type *tp, uint64_t size, uint32_t id)
-> +static int create_new_typedef(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	strings_t name = btf_elf__get32(btfe, &tp->name_off);
-> -	unsigned int type_id = btf_elf__get32(btfe, &tp->type);
-> -	struct type *type = type__new(DW_TAG_typedef, name, size);
-> +	struct type *type = type__new(DW_TAG_typedef, tp->name_off, 0);
->  
->  	if (type == NULL)
->  		return -ENOMEM;
->  
-> -	type->namespace.tag.type = type_id;
-> +	type->namespace.tag.type = tp->type;
->  	cu__add_tag_with_id(btfe->priv, &type->namespace.tag, id);
->  
->  	return 0;
->  }
->  
-> -static int create_new_variable(struct btf_elf *btfe, void *ptr, struct btf_type *tp,
-> -			       uint64_t size, uint32_t id)
-> +static int create_new_variable(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	strings_t name = btf_elf__get32(btfe, &tp->name_off);
-> -	unsigned int type_id = btf_elf__get32(btfe, &tp->type);
-> -	struct btf_var *bvar = ptr;
-> -	uint32_t linkage = btf_elf__get32(btfe, &bvar->linkage);
-> -	struct variable *var = variable__new(name, linkage);
-> +	struct btf_var *bvar = btf_var(tp);
-> +	struct variable *var = variable__new(tp->name_off, bvar->linkage);
->  
->  	if (var == NULL)
->  		return -ENOMEM;
->  
-> -	var->ip.tag.type = type_id;
-> +	var->ip.tag.type = tp->type;
->  	cu__add_tag_with_id(btfe->priv, &var->ip.tag, id);
-> -	return sizeof(*bvar);
-> +	return 0;
->  }
->  
-> -static int create_new_datasec(struct btf_elf *btfe, void *ptr, int vlen,
-> -			      struct btf_type *tp, uint64_t size, uint32_t id,
-> -			      bool kflag)
-> +static int create_new_datasec(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
->  	//strings_t name = btf_elf__get32(btfe, &tp->name_off);
->  
-> @@ -397,12 +357,11 @@ static int create_new_datasec(struct btf_elf *btfe, void *ptr, int vlen,
->  	 * FIXME: this will not be used to reconstruct some original C code,
->  	 * its about runtime placement of variables so just ignore this for now
->  	 */
-> -	return vlen * sizeof(struct btf_var_secinfo);
-> +	return 0;
->  }
->  
-> -static int create_new_tag(struct btf_elf *btfe, int type, struct btf_type *tp, uint32_t id)
-> +static int create_new_tag(struct btf_elf *btfe, int type, const struct btf_type *tp, uint32_t id)
->  {
-> -	unsigned int type_id = btf_elf__get32(btfe, &tp->type);
->  	struct tag *tag = zalloc(sizeof(*tag));
->  
->  	if (tag == NULL)
-> @@ -419,104 +378,77 @@ static int create_new_tag(struct btf_elf *btfe, int type, struct btf_type *tp, u
->  		return 0;
->  	}
->  
-> -	tag->type = type_id;
-> +	tag->type = tp->type;
->  	cu__add_tag_with_id(btfe->priv, tag, id);
->  
->  	return 0;
->  }
->  
-> -void *btf_elf__get_buffer(struct btf_elf *btfe)
-> -{
-> -	return btfe->data;
-> -}
-> -
-> -size_t btf_elf__get_size(struct btf_elf *btfe)
-> -{
-> -	return btfe->size;
-> -}
-> -
->  static int btf_elf__load_types(struct btf_elf *btfe)
->  {
-> -	void *btf_buffer = btf_elf__get_buffer(btfe);
-> -	struct btf_header *hp = btf_buffer;
-> -	void *btf_contents = btf_buffer + sizeof(*hp),
-> -	     *type_section = (btf_contents + btf_elf__get32(btfe, &hp->type_off)),
-> -	     *strings_section = (btf_contents + btf_elf__get32(btfe, &hp->str_off));
-> -	struct btf_type *type_ptr = type_section,
-> -			*end = strings_section;
-> -	uint32_t type_index = 0x0001;
-> -
-> -	while (type_ptr < end) {
-> -		uint32_t val  = btf_elf__get32(btfe, &type_ptr->info);
-> -		uint32_t type = BTF_INFO_KIND(val);
-> -		int	 vlen = BTF_INFO_VLEN(val);
-> -		void	 *ptr = type_ptr;
-> -		uint32_t size = btf_elf__get32(btfe, &type_ptr->size);
-> -		bool     kflag = BTF_INFO_KFLAG(val);
-> -
-> -		ptr += sizeof(struct btf_type);
-> +	uint32_t type_index;
-> +	int err;
-> +
-> +	for (type_index = 1; type_index <= btf__get_nr_types(btfe->btf); type_index++) {
-> +		const struct btf_type *type_ptr = btf__type_by_id(btfe->btf, type_index);
-> +		uint32_t type = btf_kind(type_ptr);
->  
->  		switch (type) {
->  		case BTF_KIND_INT:
-> -			vlen = create_new_base_type(btfe, ptr, type_ptr, type_index);
-> +			err = create_new_base_type(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_ARRAY:
-> -			vlen = create_new_array(btfe, ptr, type_index);
-> +			err = create_new_array(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_STRUCT:
-> -			vlen = create_new_class(btfe, ptr, vlen, type_ptr, size, type_index, kflag);
-> +			err = create_new_class(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_UNION:
-> -			vlen = create_new_union(btfe, ptr, vlen, type_ptr, size, type_index, kflag);
-> +			err = create_new_union(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_ENUM:
-> -			vlen = create_new_enumeration(btfe, ptr, vlen, type_ptr, size, type_index);
-> +			err = create_new_enumeration(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_FWD:
-> -			vlen = create_new_forward_decl(btfe, type_ptr, size, type_index);
-> +			err = create_new_forward_decl(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_TYPEDEF:
-> -			vlen = create_new_typedef(btfe, type_ptr, size, type_index);
-> +			err = create_new_typedef(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_VAR:
-> -			vlen = create_new_variable(btfe, ptr, type_ptr, size, type_index);
-> +			err = create_new_variable(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_DATASEC:
-> -			vlen = create_new_datasec(btfe, ptr, vlen, type_ptr, size, type_index, kflag);
-> +			err = create_new_datasec(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_VOLATILE:
->  		case BTF_KIND_PTR:
->  		case BTF_KIND_CONST:
->  		case BTF_KIND_RESTRICT:
-> -			vlen = create_new_tag(btfe, type, type_ptr, type_index);
-> +			err = create_new_tag(btfe, type, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_UNKN:
->  			cu__table_nullify_type_entry(btfe->priv, type_index);
-> -			fprintf(stderr, "BTF: idx: %d, off: %zd, Unknown kind %d\n",
-> -				type_index, ((void *)type_ptr) - type_section, type);
-> +			fprintf(stderr, "BTF: idx: %d, Unknown kind %d\n", type_index, type);
->  			fflush(stderr);
-> -			vlen = 0;
-> +			err = 0;
->  			break;
->  		case BTF_KIND_FUNC_PROTO:
-> -			vlen = create_new_subroutine_type(btfe, ptr, vlen, type_ptr, type_index);
-> +			err = create_new_subroutine_type(btfe, type_ptr, type_index);
->  			break;
->  		case BTF_KIND_FUNC:
->  			// BTF_KIND_FUNC corresponding to a defined subprogram.
-> -			vlen = create_new_function(btfe, type_ptr, size, type_index);
-> +			err = create_new_function(btfe, type_ptr, type_index);
->  			break;
->  		default:
-> -			fprintf(stderr, "BTF: idx: %d, off: %zd, Unknown kind %d\n",
-> -				type_index, ((void *)type_ptr) - type_section, type);
-> +			fprintf(stderr, "BTF: idx: %d, Unknown kind %d\n", type_index, type);
->  			fflush(stderr);
-> -			vlen = 0;
-> +			err = 0;
->  			break;
->  		}
->  
-> -		if (vlen < 0)
-> -			return vlen;
-> -
-> -		type_ptr = ptr + vlen;
-> -		type_index++;
-> +		if (err < 0)
-> +			return err;
->  	}
->  	return 0;
->  }
-> diff --git a/libbtf.c b/libbtf.c
-> index 7a01ded4e612..02a55dbd7e13 100644
-> --- a/libbtf.c
-> +++ b/libbtf.c
-> @@ -62,89 +62,29 @@ static int btf_var_secinfo_cmp(const void *a, const void *b)
->  	return av->offset - bv->offset;
->  }
->  
-> -uint32_t btf_elf__get32(struct btf_elf *btfe, uint32_t *p)
-> -{
-> -	uint32_t val = *p;
-> -
-> -	if (btfe->swapped)
-> -		val = ((val >> 24) |
-> -		       ((val >> 8) & 0x0000ff00) |
-> -		       ((val << 8) & 0x00ff0000) |
-> -		       (val << 24));
-> -	return val;
-> -}
-> -
-> -static int btf_raw__load(struct btf_elf *btfe)
-> +static int libbpf_log(enum libbpf_print_level level, const char *format, va_list args)
->  {
-> -        size_t read_cnt;
-> -        struct stat st;
-> -        void *data;
-> -        FILE *fp;
-> -
-> -        if (stat(btfe->filename, &st))
-> -                return -1;
-> -
-> -        data = malloc(st.st_size);
-> -        if (!data)
-> -                return -1;
-> -
-> -        fp = fopen(btfe->filename, "rb");
-> -        if (!fp)
-> -                goto cleanup;
-> -
-> -        read_cnt = fread(data, 1, st.st_size, fp);
-> -        fclose(fp);
-> -        if (read_cnt < st.st_size)
-> -                goto cleanup;
-> -
-> -	btfe->swapped	= 0;
-> -	btfe->data	= data;
-> -	btfe->size	= read_cnt;
-> -	return 0;
-> -cleanup:
-> -        free(data);
-> -        return -1;
-> +	return vfprintf(stderr, format, args);
->  }
->  
->  int btf_elf__load(struct btf_elf *btfe)
->  {
-> -	if (btfe->raw_btf)
-> -		return btf_raw__load(btfe);
-> -
-> -	int err = -ENOTSUP;
-> -	GElf_Shdr shdr;
-> -	Elf_Scn *sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr, ".BTF", NULL);
-> +	int err;
->  
-> -	if (sec == NULL)
-> -		return -ESRCH;
-> -
-> -	Elf_Data *data = elf_getdata(sec, NULL);
-> -	if (data == NULL) {
-> -		fprintf(stderr, "%s: cannot get data of BTF section.\n", __func__);
-> -		return -1;
-> -	}
-> -
-> -	struct btf_header *hp = data->d_buf;
-> -	size_t orig_size = data->d_size;
-> -
-> -	if (hp->version != BTF_VERSION)
-> -		goto out;
-> +	libbpf_set_print(libbpf_log);
->  
-> -	err = -EINVAL;
-> -	if (hp->magic == BTF_MAGIC)
-> -		btfe->swapped = 0;
-> +	/* free initial empty BTF */
-> +	btf__free(btfe->btf);
-> +	if (btfe->raw_btf)
-> +		btfe->btf = btf__parse_raw(btfe->filename);
->  	else
-> -		goto out;
-> +		btfe->btf = btf__parse_elf(btfe->filename, NULL);
->  
-> -	err = -ENOMEM;
-> -	btfe->data = malloc(orig_size);
-> -	if (btfe->data != NULL) {
-> -		memcpy(btfe->data, hp, orig_size);
-> -		btfe->size = orig_size;
-> -		err = 0;
-> -	}
-> -out:
-> -	return err;
-> +	err = libbpf_get_error(btfe->btf);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
->  }
->  
->  
-> @@ -251,26 +191,17 @@ void btf_elf__delete(struct btf_elf *btfe)
->  
->  	__gobuffer__delete(&btfe->types);
->  	__gobuffer__delete(&btfe->percpu_secinfo);
-> +	btf__free(btfe->btf);
->  	free(btfe->filename);
->  	free(btfe->data);
->  	free(btfe);
->  }
->  
-> -char *btf_elf__string(struct btf_elf *btfe, uint32_t ref)
-> +const char *btf_elf__string(struct btf_elf *btfe, uint32_t ref)
->  {
-> -	struct btf_header *hp = btfe->hdr;
-> -	uint32_t off = ref;
-> -	char *name;
-> -
-> -	if (off >= btf_elf__get32(btfe, &hp->str_len))
-> -		return "(ref out-of-bounds)";
-> -
-> -	if ((off + btf_elf__get32(btfe, &hp->str_off)) >= btfe->size)
-> -		return "(string table truncated)";
-> +	const char *s = btf__str_by_offset(btfe->btf, ref);
->  
-> -	name = ((char *)(hp + 1) + btf_elf__get32(btfe, &hp->str_off) + off);
-> -
-> -	return name[0] == '\0' ? NULL : name;
-> +	return s && s[0] == '\0' ? NULL : s;
->  }
->  
->  static void *btf_elf__nohdr_data(struct btf_elf *btfe)
-> @@ -310,8 +241,10 @@ static const char *btf_elf__name_in_gobuf(const struct btf_elf *btfe, uint32_t o
->  {
->  	if (!offset)
->  		return "(anon)";
-> -	else
-> +	else if (btfe->strings)
->  		return &btfe->strings->entries[offset];
-> +	else
-> +		return btf__str_by_offset(btfe->btf, offset);
->  }
->  
->  static const char * btf_elf__int_encoding_str(uint8_t encoding)
-> @@ -836,11 +769,6 @@ out:
->  	return err;
->  }
->  
-> -static int libbpf_log(enum libbpf_print_level level, const char *format, va_list args)
-> -{
-> -	return vfprintf(stderr, format, args);
-> -}
-> -
->  int btf_elf__encode(struct btf_elf *btfe, uint8_t flags)
->  {
->  	struct btf_header *hdr;
-> @@ -886,7 +814,7 @@ int btf_elf__encode(struct btf_elf *btfe, uint8_t flags)
->  		return -1;
->  	}
->  	if (btf__dedup(btf, NULL, NULL)) {
-> -		fprintf(stderr, "%s: btf__dedup failed!", __func__);
-> +		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
->  		return -1;
->  	}
->  
-> diff --git a/libbtf.h b/libbtf.h
-> index be06480bf854..5f29b427c4fd 100644
-> --- a/libbtf.h
-> +++ b/libbtf.h
-> @@ -11,6 +11,7 @@
->  
->  #include <stdbool.h>
->  #include <stdint.h>
-> +#include "lib/bpf/src/btf.h"
->  
->  struct btf_elf {
->  	union {
-> @@ -26,7 +27,6 @@ struct btf_elf {
->  	struct gobuffer   percpu_secinfo;
->  	char		  *filename;
->  	size_t		  size;
-> -	int		  swapped;
->  	int		  in_fd;
->  	uint8_t		  wordsize;
->  	bool		  is_big_endian;
-> @@ -34,6 +34,7 @@ struct btf_elf {
->  	uint32_t	  type_index;
->  	uint32_t	  percpu_shndx;
->  	uint64_t	  percpu_base_addr;
-> +	struct btf	  *btf;
->  };
->  
->  extern uint8_t btf_elf__verbose;
-> @@ -70,13 +71,7 @@ int32_t btf_elf__add_datasec_type(struct btf_elf *btfe, const char *section_name
->  void btf_elf__set_strings(struct btf_elf *btf, struct gobuffer *strings);
->  int  btf_elf__encode(struct btf_elf *btf, uint8_t flags);
->  
-> -char *btf_elf__string(struct btf_elf *btf, uint32_t ref);
-> +const char *btf_elf__string(struct btf_elf *btf, uint32_t ref);
->  int btf_elf__load(struct btf_elf *btf);
->  
-> -uint32_t btf_elf__get32(struct btf_elf *btf, uint32_t *p);
-> -
-> -void *btf_elf__get_buffer(struct btf_elf *btf);
-> -
-> -size_t btf_elf__get_size(struct btf_elf *btf);
-> -
->  #endif /* _LIBBTF_H */
-> -- 
-> 2.24.1
-> 
-
--- 
-
-- Arnaldo
+[0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
