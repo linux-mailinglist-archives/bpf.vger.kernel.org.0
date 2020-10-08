@@ -2,134 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9D8287863
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 17:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3B5287AE7
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 19:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731492AbgJHPxa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 11:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        id S1731974AbgJHRXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 13:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731484AbgJHPxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 11:53:25 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3EEC0613D2;
-        Thu,  8 Oct 2020 08:53:25 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o9so2948039plx.10;
-        Thu, 08 Oct 2020 08:53:25 -0700 (PDT)
+        with ESMTP id S1729476AbgJHRXC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:23:02 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3118C061755;
+        Thu,  8 Oct 2020 10:23:01 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o25so4897343pgm.0;
+        Thu, 08 Oct 2020 10:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wlK985XdNYgqlNz52vaAK41kNTmxDtYC00O6u3gRaPk=;
-        b=ssdZbQtSHvhYXfJa5UbGBxuMH73O5Um20SnlG6GzvEPTwqCUVTx7Xg8iTm34OjUyKK
-         C5OHJ6ihNhbgz14YxYqkmTLBi+oP2NDMUWPOTpJQxdpI6NRnmaKZ0j0zWvcfeElSupnp
-         L4WHtwHPIhw9Oh4//yNb8JsNi8MbgG7lrQFTio4t+BRbbE7ffgJOcF0TzrBODYArlhLw
-         r+w2YMMQvEu5c6qIC3TsUsdU1db5N1lLuOUKSZXPxIuaWxO9byp5OWNxyW01fD06K4qA
-         1HNlDeKpZ2Sl2IOTvooP4fmrqJHmG+hjL4QkSoESjQi5Bza1L19SQlra9TkRDcpIrfdL
-         LvDg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3V0mLS0s4CJgn1kQBjygX8jXur/PK/9Sdmb5D/NO1oU=;
+        b=JC8+1YPK8N6nuYWVLgduPvVvTE1LrLt0G7RdJZtZtLuM9HuV8QwXwwZ9E18f9Z9agP
+         IcQaJhcpE7uKzn2BBBVHzCSgE19QbQ07TFooWh5RqP3uW9v9p40dY4i8rrDaxmH7JU4p
+         v40Mw4e4pQt9+V+410WxEyNypNtN8sxJN/xR6nz8rI6MBq6JHwPFfr9Z02V80VPkjsbB
+         ixmRxgp31pUIBKZ5aogmc0UOQV2fgySM/hKT0UZN5uW8M0383tzQD+Srb0KBeXUGBSS9
+         V1xEdPhOp/HNuph4Va6ealWryHDsxXh97XhlBcaSMWBpic1PKxCLJpypRi/ueo+spYdr
+         /zXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wlK985XdNYgqlNz52vaAK41kNTmxDtYC00O6u3gRaPk=;
-        b=ie7oAlveK/syht1az90EWm9ZbW9XvaPw8vdKh5WKckfOxYz6VG9YUW1mKLMeokR5pl
-         pr3I4pS2L6Hk/7wSujN3xIuEBZyNjwdwPLS2xSBfT1V1tS4c/e8mHOI6z9n0YJw3xHKp
-         +qo+Oub/izVhZ/hUWibpp1cyqshMm6NI5JlGCPse/k7Oj/Zd56MDlT9dBlgceDGQrGv7
-         lqO8P8BXI+m5OurJo5/JLrmw8NCRqgEigxFhftgz7U3l41GdOGUyeb9Q5WruJhNDFvXl
-         gIx+TybiwlX2rlQp60XO9vgaAyQzS1jrFQ7QAZ7qyZ92DUUoAyMK31pXRrrqMgKOrvCz
-         xMNQ==
-X-Gm-Message-State: AOAM531x41Dy2CJIs4GVqXA8ZRiTJzKgjCoqt2aXUg8XZpyMOBT+dHP4
-        GPFDf5FZoZU0Qy3wWYS9dZk=
-X-Google-Smtp-Source: ABdhPJxgUm5FI1mVxibLOb4K0sZvTzNXchAvwwXN8cZkd2w/HkuUXpWUvMMb7yyEPQHiRLTFPgXIQA==
-X-Received: by 2002:a17:902:c697:b029:d3:df24:163e with SMTP id r23-20020a170902c697b02900d3df24163emr8159008plx.18.1602172405144;
-        Thu, 08 Oct 2020 08:53:25 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:8fd0])
-        by smtp.gmail.com with ESMTPSA id js21sm4104970pjb.14.2020.10.08.08.53.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 08:53:24 -0700 (PDT)
-Date:   Thu, 8 Oct 2020 08:53:22 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: Propagate scalar ranges through
- register assignments.
-Message-ID: <20201008155322.lggsfuuzeevtcqjy@ast-mbp>
-References: <20201006200955.12350-1-alexei.starovoitov@gmail.com>
- <20201006200955.12350-2-alexei.starovoitov@gmail.com>
- <5f7e52ce81308_1a83120890@john-XPS-13-9370.notmuch>
- <5f7e556c1e610_1a831208d2@john-XPS-13-9370.notmuch>
- <20201008014553.tbw7gioqnsg6zowb@ast-mbp>
- <5f7f2dd685aa6_2007208e9@john-XPS-13-9370.notmuch>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3V0mLS0s4CJgn1kQBjygX8jXur/PK/9Sdmb5D/NO1oU=;
+        b=WfhAwaIxT8OZMbi4SEAf/GVJOpxVKcotDPc0v49A2q/V2SJhE0MvTKPj6hlJ+vl2GT
+         yjavJpQ5tXUj53Qj5sMl/2WICKozYihO+3YTEsEaLbZsODORoGeI7pnhOfvMO9HY0M09
+         VpHJN3ejoOLEZ5XI2+Plle7vvZNuE7BL7JtU2RQacSgamDk2o/Oe1HxB6Zc2pdGrjCtj
+         X6un1i/2nuExce8hLdomsBAdmxgRNAadGFcZc1y6v2ndf59ZXA7t4Swl4Xw7AE9pI/TE
+         AfOmJ7XZ/lUbfttELxgso8GlekhDPzafhmBxT214DNgc6q8/SZGU+Q2GbhWkuh6jHm2O
+         CLDA==
+X-Gm-Message-State: AOAM5338Hk0A26IHZNL3tHJPH24GWfo7w21yDtNSH6eb5N2N8ujKV5cP
+        +QCt1y4xXXH4xDFAKAdHzD63lK7O1xU=
+X-Google-Smtp-Source: ABdhPJyxqP0R3hkoCHwwqlFgg3FNgBRx7TQaadovUF0A0CTVq+33dW3HxDDXCwcytZUHaEXCuIQ65w==
+X-Received: by 2002:a05:6a00:888:b029:13f:f7eb:578c with SMTP id q8-20020a056a000888b029013ff7eb578cmr8754273pfj.10.1602177781205;
+        Thu, 08 Oct 2020 10:23:01 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([72.164.175.30])
+        by smtp.googlemail.com with ESMTPSA id j8sm6230113pfj.68.2020.10.08.10.23.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 10:23:00 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpf_fib_lookup: return target ifindex even if
+ neighbour lookup fails
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        daniel@iogearbox.net, ast@fb.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20201008145314.116800-1-toke@redhat.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <da1b5e5f-edb3-4384-c748-8170f51f6f6d@gmail.com>
+Date:   Thu, 8 Oct 2020 10:22:59 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f7f2dd685aa6_2007208e9@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201008145314.116800-1-toke@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 08:18:46AM -0700, John Fastabend wrote:
-> > 
-> > I couldn't think of any other case where scalar's ID has to be cleared.
-> > Any kind of assignment and r0 return do it as well.
+On 10/8/20 7:53 AM, Toke Høiland-Jørgensen wrote:
+> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
+> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
+> that the BPF program will pass the packet up the stack in this case.
+> However, with the addition of bpf_redirect_neigh() that can be used instead
+> to perform the neighbour lookup.
 > 
-> How about a zero extending move?
+> However, for that we still need the target ifindex, and since
+> bpf_fib_lookup() already has that at the time it performs the neighbour
+> lookup, there is really no reason why it can't just return it in any case.
+> With this fix, a BPF program can do the following to perform a redirect
+> based on the routing table that will succeed even if there is no neighbour
+> entry:
 > 
->  r1 = r2 <- r1.id = r2.id
->  w1 = w1
+> 	ret = bpf_fib_lookup(skb, &fib_params, sizeof(fib_params), 0);
+> 	if (ret == BPF_FIB_LKUP_RET_SUCCESS) {
+> 		__builtin_memcpy(eth->h_dest, fib_params.dmac, ETH_ALEN);
+> 		__builtin_memcpy(eth->h_source, fib_params.smac, ETH_ALEN);
 > 
-> that will narrow the bounds on r1 but r2 should not be narrowed? So
-> we need to zero the r1.id I believe. But, I don't see where we
-> would set r1.id = 0 in this case.
-
-Excellent catch! Indeed. id should be cleared for 32-bit move.
-Will fix.
-
-> > 
-> > Any other case you can think of ?
+> 		return bpf_redirect(fib_params.ifindex, 0);
+> 	} else if (ret == BPF_FIB_LKUP_RET_NO_NEIGH) {
+> 		return bpf_redirect_neigh(fib_params.ifindex, 0);
+> 	}
 > 
-> Still churning on the above zero extending move. Also I thought
-> it was a bit odd that this wouldn't work,
-> 
->  r1 = r2
->  r0 = r1
->  if r0 < 2 goto ...
-> 
-> then r0.id != r2.id because a new id is generated on the second
-> mov there. I don't actually care that much because I can't recall
-> seeing this pattern.
 
-Right. Since it's easy to support this case I'll add it as well.
-Though I also never seen llvm generate the code like this and I don't
-think it will based on my understanding of regalloc.
+There are a lot of assumptions in this program flow and redundant work.
+fib_lookup is generic and allows the caller to control the input
+parameters. direct_neigh does a fib lookup based on network header data
+from the skb.
 
-> > I think some time in the past you've mentioned that you hit
-> > exactly this greedy register alloc issue in your cilium programs.
-> > Is it the case or am I misremembering?
-> 
-> Yes, I hit this a lot actually for whatever reason. Something
-> about the code I write maybe. It also tends to be inside a loop
-> so messing with volatiles doesn't help. End result is I get
-> a handful of small asm blocks to force compiler into generating
-> code the verifier doesn't trip up on. I was going to add I think
-> the cover letter understates how much this should help.
-
-Yeah. We also see such patterns only inside the loops with large
-loop bodies, and especially in unrolled loops.
-My understanding is that this is normal behavior of the greedy register
-allocator that introduces register copy for the split ranges.
-Yonghong sent me that link that explains algorithm in details:
-http://llvm.org/devmtg/2018-04/slides/Yatsina-LLVM%20Greedy%20Register%20Allocator.pdf
-The slide 137 and following slides explain exactly this scenario.
-
-In other words there is no way to tell llvm 'not to do this',
-so we have to improve the verifier smartness in such case.
-
-I'll add these details to commit log.
-
-> I still need to try some of Yonghong's latest patches maybe I'll
-> push this patch on my stack as well and see how much asm I can
-> delete.
-
-The 2 out of 3 patches already landed. Please pull the latest llvm master.
+I am fine with the patch, but users need to be aware of the subtle details.
