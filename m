@@ -2,100 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3B5287AE7
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 19:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A0A287B4D
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 19:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731974AbgJHRXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 13:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
+        id S1730102AbgJHR75 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 13:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729476AbgJHRXC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 13:23:02 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3118C061755;
-        Thu,  8 Oct 2020 10:23:01 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o25so4897343pgm.0;
-        Thu, 08 Oct 2020 10:23:01 -0700 (PDT)
+        with ESMTP id S1730070AbgJHR75 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Oct 2020 13:59:57 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1884C061755;
+        Thu,  8 Oct 2020 10:59:55 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id b138so2871987yba.5;
+        Thu, 08 Oct 2020 10:59:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3V0mLS0s4CJgn1kQBjygX8jXur/PK/9Sdmb5D/NO1oU=;
-        b=JC8+1YPK8N6nuYWVLgduPvVvTE1LrLt0G7RdJZtZtLuM9HuV8QwXwwZ9E18f9Z9agP
-         IcQaJhcpE7uKzn2BBBVHzCSgE19QbQ07TFooWh5RqP3uW9v9p40dY4i8rrDaxmH7JU4p
-         v40Mw4e4pQt9+V+410WxEyNypNtN8sxJN/xR6nz8rI6MBq6JHwPFfr9Z02V80VPkjsbB
-         ixmRxgp31pUIBKZ5aogmc0UOQV2fgySM/hKT0UZN5uW8M0383tzQD+Srb0KBeXUGBSS9
-         V1xEdPhOp/HNuph4Va6ealWryHDsxXh97XhlBcaSMWBpic1PKxCLJpypRi/ueo+spYdr
-         /zXA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6njneO7slKj5/+PMT+PB84NeoG+y8vzhAQwBKhkl3W8=;
+        b=PSkLaVGXzzVjeXXjx1PHLFwPcSe1HGGkAt55mSQ1O5sI7Jx4VY8/aZDMvkIXdBNrdX
+         sgdFPqxfisAD+ysTgJCfLCYBACHXxV4e5mb0uT3iWCwcx/k4yM2zGGA6l8recMfnRt5l
+         CP1UaO8vcE6mROqlcBXx/26EyV+RfHbuOae8IA2SrJwh+7Sk0GMTbZG+7d/0efEPiljc
+         4ZHb5CuvILlVvKru1zI06gG99vFxXFJ7WElKq6AQgCfcBN4R978Ps84RCiIVQ4cl4z5Z
+         N1wIWylUHvVu+zSATK+WPolNb4GT/K8tSl+z+u3/9rdDA/9VFqCDPfmF6pOfxeQzgoFW
+         3lUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3V0mLS0s4CJgn1kQBjygX8jXur/PK/9Sdmb5D/NO1oU=;
-        b=WfhAwaIxT8OZMbi4SEAf/GVJOpxVKcotDPc0v49A2q/V2SJhE0MvTKPj6hlJ+vl2GT
-         yjavJpQ5tXUj53Qj5sMl/2WICKozYihO+3YTEsEaLbZsODORoGeI7pnhOfvMO9HY0M09
-         VpHJN3ejoOLEZ5XI2+Plle7vvZNuE7BL7JtU2RQacSgamDk2o/Oe1HxB6Zc2pdGrjCtj
-         X6un1i/2nuExce8hLdomsBAdmxgRNAadGFcZc1y6v2ndf59ZXA7t4Swl4Xw7AE9pI/TE
-         AfOmJ7XZ/lUbfttELxgso8GlekhDPzafhmBxT214DNgc6q8/SZGU+Q2GbhWkuh6jHm2O
-         CLDA==
-X-Gm-Message-State: AOAM5338Hk0A26IHZNL3tHJPH24GWfo7w21yDtNSH6eb5N2N8ujKV5cP
-        +QCt1y4xXXH4xDFAKAdHzD63lK7O1xU=
-X-Google-Smtp-Source: ABdhPJyxqP0R3hkoCHwwqlFgg3FNgBRx7TQaadovUF0A0CTVq+33dW3HxDDXCwcytZUHaEXCuIQ65w==
-X-Received: by 2002:a05:6a00:888:b029:13f:f7eb:578c with SMTP id q8-20020a056a000888b029013ff7eb578cmr8754273pfj.10.1602177781205;
-        Thu, 08 Oct 2020 10:23:01 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([72.164.175.30])
-        by smtp.googlemail.com with ESMTPSA id j8sm6230113pfj.68.2020.10.08.10.23.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 10:23:00 -0700 (PDT)
-Subject: Re: [PATCH bpf-next] bpf_fib_lookup: return target ifindex even if
- neighbour lookup fails
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        daniel@iogearbox.net, ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20201008145314.116800-1-toke@redhat.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <da1b5e5f-edb3-4384-c748-8170f51f6f6d@gmail.com>
-Date:   Thu, 8 Oct 2020 10:22:59 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6njneO7slKj5/+PMT+PB84NeoG+y8vzhAQwBKhkl3W8=;
+        b=bDW1Z7hN8I8kdUgSy4V0n8qG3Axh1/kMfkp/4NE7BOknJ2sxcnoOV+qu7TtLe7Rqc5
+         k3C2ZQNx48hQO3grADx66NLkvu/OaPvNXG8Fle5zPpvqZk+mWYwHuajkQ/Nebac+XJSI
+         k7S16poNs/knrwn0LmFWizds93nLESWNSmwtsHpAVLQSN+Ekh8nA0ARGFoKe0FkZ2+h4
+         QOe6ZO/7MFQtj52SSzItChFGRjBoEM0J3pY+2o9fm2uDtt7h8o8mJHGJYFF58K2ipegk
+         quxB/YwTB+kvf383E+HIR3RBP2ijRHULPxCaHYLvDyJvesjCBMY9VG8p8AAfPTZ8AtP2
+         x+OQ==
+X-Gm-Message-State: AOAM531QeOuvXEN6A+HSYC3e5+E2hWGHM8PPqXDQrdzNcrA3UWdgoxbA
+        +zmpoxRTvDeoP+HKwqQnxf1QbXPMuORFDPMCAks=
+X-Google-Smtp-Source: ABdhPJzonQjnJ/NIGKZvf5cFO2VayxaAzMpGI3PmM0jpSBZce8cuuWa1Rc0qC/0LCqonl5k0Ac1eljj/M4Xe2oRYjhQ=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr2882035ybe.403.1602179995090;
+ Thu, 08 Oct 2020 10:59:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201008145314.116800-1-toke@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201002010633.3706122-1-andriin@fb.com> <CAKQ-crhUT07SXZ16NK4_2RtpNA+kvm7VtB5fdo4qSV4Qi4GJ_g@mail.gmail.com>
+ <CAEf4Bzb7kE5x=Ow=XHMb1wmt0Tjw-qqoL-yihAWx5s10Dk9chQ@mail.gmail.com> <CAKQ-crhMomcb9v3LAnqrBFLp1=m8bh4ZBnD7O_oH2XsU2faMAg@mail.gmail.com>
+In-Reply-To: <CAKQ-crhMomcb9v3LAnqrBFLp1=m8bh4ZBnD7O_oH2XsU2faMAg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 8 Oct 2020 10:59:44 -0700
+Message-ID: <CAEf4BzYByy8DZz+nB6RcAgRytXLRjWfM=_xBJRF2+jfxsFVdog@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] libbpf: auto-resize relocatable LOAD/STORE instructions
+To:     Luka Perkov <luka.perkov@sartura.hr>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Tony Ambardar <tony.ambardar@gmail.com>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Luka Oreskovic <luka.oreskovic@sartura.hr>,
+        Sven Fijan <sven.fijan@sartura.hr>,
+        David Marcinkovic <david.marcinkovic@sartura.hr>,
+        Jakov Petrina <jakov.petrina@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/8/20 7:53 AM, Toke Høiland-Jørgensen wrote:
-> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
-> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
-> that the BPF program will pass the packet up the stack in this case.
-> However, with the addition of bpf_redirect_neigh() that can be used instead
-> to perform the neighbour lookup.
-> 
-> However, for that we still need the target ifindex, and since
-> bpf_fib_lookup() already has that at the time it performs the neighbour
-> lookup, there is really no reason why it can't just return it in any case.
-> With this fix, a BPF program can do the following to perform a redirect
-> based on the routing table that will succeed even if there is no neighbour
-> entry:
-> 
-> 	ret = bpf_fib_lookup(skb, &fib_params, sizeof(fib_params), 0);
-> 	if (ret == BPF_FIB_LKUP_RET_SUCCESS) {
-> 		__builtin_memcpy(eth->h_dest, fib_params.dmac, ETH_ALEN);
-> 		__builtin_memcpy(eth->h_source, fib_params.smac, ETH_ALEN);
-> 
-> 		return bpf_redirect(fib_params.ifindex, 0);
-> 	} else if (ret == BPF_FIB_LKUP_RET_NO_NEIGH) {
-> 		return bpf_redirect_neigh(fib_params.ifindex, 0);
-> 	}
-> 
+On Thu, Oct 8, 2020 at 3:34 AM Luka Perkov <luka.perkov@sartura.hr> wrote:
+>
+> Hello Andrii,
+>
+> On Wed, Oct 7, 2020 at 8:01 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Oct 7, 2020 at 10:56 AM Luka Perkov <luka.perkov@sartura.hr> wrote:
+> > >
+> > > Hello Andrii,
+> > >
+> > > On Fri, Oct 2, 2020 at 3:09 AM Andrii Nakryiko <andriin@fb.com> wrote:
+> > > > Patch set implements logic in libbpf to auto-adjust memory size (1-, 2-, 4-,
+> > > > 8-bytes) of load/store (LD/ST/STX) instructions which have BPF CO-RE field
+> > > > offset relocation associated with it. In practice this means transparent
+> > > > handling of 32-bit kernels, both pointer and unsigned integers. Signed
+> > > > integers are not relocatable with zero-extending loads/stores, so libbpf
+> > > > poisons them and generates a warning. If/when BPF gets support for sign-extending
+> > > > loads/stores, it would be possible to automatically relocate them as well.
+> > > >
+> > > > All the details are contained in patch #1 comments and commit message.
+> > > > Patch #2 is a simple change in libbpf to make advanced testing with custom BTF
+> > > > easier. Patch #3 validates correct uses of auto-resizable loads, as well as
+> > > > check that libbpf fails invalid uses.
+> > > >
+> > > > I'd really appreciate folks that use BPF on 32-bit architectures to test this
+> > > > out with their BPF programs and report if there are any problems with the
+> > > > approach.
+> > > >
+> > > > Cc: Luka Perkov <luka.perkov@sartura.hr>
+> > >
+> > > First, thank you for the support and sending this series. It took us a
+> > > bit longer to run the tests as our target hardware still did not fully
+> > > get complete mainline support and we had to rebase our patches. These
+> > > are not related to BPF.
+> > >
+> > > Related to this patch, we have tested various BPF programs with this
+> > > patch, and can confirm that it fixed previous issues with pointer
+> > > offsets that we had and reported at:
+> > >
+> > > https://lore.kernel.org/r/CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com/.
+> > >
+> > > Most of our programs now work and we are currently debugging other
+> > > programs that still aren't working. We are still not sure if the
+> > > remaining issues are related to this or not, but will let you know
+> > > sometime this week after further and more detailed investigation.
+> > >
+> >
+> > Ok, great, thanks for the update.
+>
+> Just to update you that we have identified that the problem was a
+> known issue with JIT as we had enabled the BPF_JIT_ALWAYS_ON.
+>
+> That said, it would be great to see this series included in 5.10 :)
 
-There are a lot of assumptions in this program flow and redundant work.
-fib_lookup is generic and allows the caller to control the input
-parameters. direct_neigh does a fib lookup based on network header data
-from the skb.
+This is purely a libbpf feature, completely agnostic to kernel
+versions. So you'll get this with upcoming libbpf 0.2.0 release.
 
-I am fine with the patch, but users need to be aware of the subtle details.
+>
+> Thanks,
+> Luka
