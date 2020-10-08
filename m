@@ -2,151 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7F0287E03
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 23:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91240287E5C
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 23:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729317AbgJHVcD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 17:32:03 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46960 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729338AbgJHVbz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:31:55 -0400
-Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kQdVw-0007vO-UN; Thu, 08 Oct 2020 23:31:53 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next 6/6] bpf, selftests: add redirect_peer selftest
-Date:   Thu,  8 Oct 2020 23:31:48 +0200
-Message-Id: <20201008213148.26848-7-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201008213148.26848-1-daniel@iogearbox.net>
-References: <20201008213148.26848-1-daniel@iogearbox.net>
+        id S1726148AbgJHV64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 17:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgJHV64 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Oct 2020 17:58:56 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6C2C0613D2;
+        Thu,  8 Oct 2020 14:58:56 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u24so5487420pgi.1;
+        Thu, 08 Oct 2020 14:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gl2SbsWOgmABu56kgPo4pH/0zc3IDICZmxrIpNqXfsc=;
+        b=gEYivHnj94cFkJrK5Z52TFc1WGvwe36OtoYUoHIm2guq5S6oILnz/Ub+61t3z8LTsW
+         fceFU61yAqVDzdBrplnSXF4mqorxWMCfhnzUDwcndPExyjCWi1aLrGDiWNKbCcH0Mu2a
+         SPqy5f/UETZjg60IBwKHlzm1XTvk2ccWTSHWH98EDwxZaWZ52ret+YIOFxMOgdw9ONyD
+         v4kfhmsY99yBUTC1OwqUAkQfyQobA2tTmcqnKI1ghrn1RFHcbRaAuAtW7WItp5qoUKjb
+         6LJ5mdyacUmy6WiewIyeKGZ5WYFLErjFqi/rvtfKq6GDTPq7leAR/dnEkRd3sMf7uDbz
+         gB8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gl2SbsWOgmABu56kgPo4pH/0zc3IDICZmxrIpNqXfsc=;
+        b=ruElh4WnNyMmuIEFZKHn+zUoaPZuSKTs2WPTaSu1ty3ZzF5TufQTrOYnrJIQMGh+qm
+         b0KG45M4MbHhkv+7Ju0BQYG+YGQriCaF8x2y+CK419Xl1Ztvp+We5pSsQObl3SGW1L5e
+         rs4csyKJ8F/DSjVG0i8ayg2tzCs/vOIh+MDPgJNqUpZ5hGeVt0Vdi5BYJEjVwLd+6EgI
+         TxPBTJvIvRvGpKpbQXj/w67xqWrRk9O4LmY1hIzeAv4+UKWeCWS8NE3dfqf4O6WNWI2s
+         i+kyQKHKUwXCqp2UNH783MC8ee8yQI6Ub2/0RDdS0v1DpaukqJZR0KeblhoNwgxXm3yX
+         gFcw==
+X-Gm-Message-State: AOAM533VZ4sB2fOhETnJiXUXPVQi8FeCbKO6agqViXvSz79gbb+tOW3X
+        W5CTMbylpY8akaJRiQiaM2qT5X+opBg=
+X-Google-Smtp-Source: ABdhPJxbSNx2UX8Fcn3heSR64r2zW9rMHAnynICuRjkpPGBT4sKzxbKyhS21TC07xpx4pP7wHnZiEA==
+X-Received: by 2002:a62:30c2:0:b029:152:83fd:5615 with SMTP id w185-20020a6230c20000b029015283fd5615mr9469942pfw.22.1602194335553;
+        Thu, 08 Oct 2020 14:58:55 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([72.164.175.30])
+        by smtp.googlemail.com with ESMTPSA id n19sm8171408pfu.24.2020.10.08.14.58.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Oct 2020 14:58:54 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpf_fib_lookup: return target ifindex even if
+ neighbour lookup fails
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        daniel@iogearbox.net, ast@fb.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20201008145314.116800-1-toke@redhat.com>
+ <da1b5e5f-edb3-4384-c748-8170f51f6f6d@gmail.com> <87d01se8qc.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <1acb76c8-469b-9e45-90c7-e8c29c8ea6ff@gmail.com>
+Date:   Thu, 8 Oct 2020 14:58:54 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <87d01se8qc.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25951/Thu Oct  8 15:53:03 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend the test_tc_redirect test and add a small test that exercises the new
-redirect_peer() helper for the IPv4 and IPv6 case.
+On 10/8/20 1:57 PM, Toke Høiland-Jørgensen wrote:
+> David Ahern <dsahern@gmail.com> writes:
+> 
+>> On 10/8/20 7:53 AM, Toke Høiland-Jørgensen wrote:
+>>> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
+>>> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
+>>> that the BPF program will pass the packet up the stack in this case.
+>>> However, with the addition of bpf_redirect_neigh() that can be used instead
+>>> to perform the neighbour lookup.
+>>>
+>>> However, for that we still need the target ifindex, and since
+>>> bpf_fib_lookup() already has that at the time it performs the neighbour
+>>> lookup, there is really no reason why it can't just return it in any case.
+>>> With this fix, a BPF program can do the following to perform a redirect
+>>> based on the routing table that will succeed even if there is no neighbour
+>>> entry:
+>>>
+>>> 	ret = bpf_fib_lookup(skb, &fib_params, sizeof(fib_params), 0);
+>>> 	if (ret == BPF_FIB_LKUP_RET_SUCCESS) {
+>>> 		__builtin_memcpy(eth->h_dest, fib_params.dmac, ETH_ALEN);
+>>> 		__builtin_memcpy(eth->h_source, fib_params.smac, ETH_ALEN);
+>>>
+>>> 		return bpf_redirect(fib_params.ifindex, 0);
+>>> 	} else if (ret == BPF_FIB_LKUP_RET_NO_NEIGH) {
+>>> 		return bpf_redirect_neigh(fib_params.ifindex, 0);
+>>> 	}
+>>>
+>>
+>> There are a lot of assumptions in this program flow and redundant work.
+>> fib_lookup is generic and allows the caller to control the input
+>> parameters. direct_neigh does a fib lookup based on network header data
+>> from the skb.
+>>
+>> I am fine with the patch, but users need to be aware of the subtle details.
+> 
+> Yeah, I'm aware they are not equivalent; the code above was just meant
+> as a minimal example motivating the patch. If you think it's likely to
+> confuse people to have this example in the commit message, I can remove
+> it?
+> 
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- .../selftests/bpf/progs/test_tc_peer.c        | 45 +++++++++++++++++++
- .../testing/selftests/bpf/test_tc_redirect.sh | 25 +++++++----
- 2 files changed, 61 insertions(+), 9 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_peer.c
-
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_peer.c b/tools/testing/selftests/bpf/progs/test_tc_peer.c
-new file mode 100644
-index 000000000000..fc84a7685aa2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_peer.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdint.h>
-+#include <stdbool.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/stddef.h>
-+#include <linux/pkt_cls.h>
-+
-+#include <bpf/bpf_helpers.h>
-+
-+enum {
-+	dev_src,
-+	dev_dst,
-+};
-+
-+struct bpf_map_def SEC("maps") ifindex_map = {
-+	.type		= BPF_MAP_TYPE_ARRAY,
-+	.key_size	= sizeof(int),
-+	.value_size	= sizeof(int),
-+	.max_entries	= 2,
-+};
-+
-+static __always_inline int get_dev_ifindex(int which)
-+{
-+	int *ifindex = bpf_map_lookup_elem(&ifindex_map, &which);
-+
-+	return ifindex ? *ifindex : 0;
-+}
-+
-+SEC("chk_egress") int tc_chk(struct __sk_buff *skb)
-+{
-+	return TC_ACT_SHOT;
-+}
-+
-+SEC("dst_ingress") int tc_dst(struct __sk_buff *skb)
-+{
-+	return bpf_redirect_peer(get_dev_ifindex(dev_src), 0);
-+}
-+
-+SEC("src_ingress") int tc_src(struct __sk_buff *skb)
-+{
-+	return bpf_redirect_peer(get_dev_ifindex(dev_dst), 0);
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tc_redirect.sh b/tools/testing/selftests/bpf/test_tc_redirect.sh
-index 6ad441405132..6d7482562140 100755
---- a/tools/testing/selftests/bpf/test_tc_redirect.sh
-+++ b/tools/testing/selftests/bpf/test_tc_redirect.sh
-@@ -4,9 +4,10 @@
- # This test sets up 3 netns (src <-> fwd <-> dst). There is no direct veth link
- # between src and dst. The netns fwd has veth links to each src and dst. The
- # client is in src and server in dst. The test installs a TC BPF program to each
--# host facing veth in fwd which calls into bpf_redirect_peer() to perform the
--# neigh addr population and redirect; it also installs a dropper prog on the
--# egress side to drop skbs if neigh addrs were not populated.
-+# host facing veth in fwd which calls into i) bpf_redirect_neigh() to perform the
-+# neigh addr population and redirect or ii) bpf_redirect_peer() for namespace
-+# switch from ingress side; it also installs a checker prog on the egress side
-+# to drop unexpected traffic.
- 
- if [[ $EUID -ne 0 ]]; then
- 	echo "This script must be run as root"
-@@ -166,15 +167,17 @@ hex_mem_str()
- 	perl -e 'print join(" ", unpack("(H2)8", pack("L", @ARGV)))' $1
- }
- 
--netns_setup_neigh()
-+netns_setup_bpf()
- {
-+	local obj=$1
-+
- 	ip netns exec ${NS_FWD} tc qdisc add dev veth_src_fwd clsact
--	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj test_tc_neigh.o sec src_ingress
--	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj test_tc_neigh.o sec chk_egress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj $obj sec src_ingress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj $obj sec chk_egress
- 
- 	ip netns exec ${NS_FWD} tc qdisc add dev veth_dst_fwd clsact
--	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj test_tc_neigh.o sec dst_ingress
--	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj test_tc_neigh.o sec chk_egress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj $obj sec dst_ingress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj $obj sec chk_egress
- 
- 	veth_src=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_src_fwd/ifindex)
- 	veth_dst=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_dst_fwd/ifindex)
-@@ -193,5 +196,9 @@ trap netns_cleanup EXIT
- set -e
- 
- netns_setup
--netns_setup_neigh
-+netns_setup_bpf test_tc_neigh.o
-+netns_test_connectivity
-+netns_cleanup
-+netns_setup
-+netns_setup_bpf test_tc_peer.o
- netns_test_connectivity
--- 
-2.17.1
-
+I would remove it. Any samples or tests in the kernel repo doing those
+back-to-back should have a caveat.
