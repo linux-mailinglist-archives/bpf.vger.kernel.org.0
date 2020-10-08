@@ -2,124 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1D228729B
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 12:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5CF2872BE
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 12:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729220AbgJHKey (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 06:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgJHKex (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 06:34:53 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E511C0613D2
-        for <bpf@vger.kernel.org>; Thu,  8 Oct 2020 03:34:53 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id e22so7389593ejr.4
-        for <bpf@vger.kernel.org>; Thu, 08 Oct 2020 03:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xk1UawkGscrdgyTTdSmArkeO7Pere7VwZLuC1AwgAxQ=;
-        b=YOHSLaz4bydXyJ7BWWL1O6Xcre8rBne+Xu+denGCa6Ya2ZB/qnacxBnhkqaLdFe3+5
-         paGQZkYkjJcJmZH7LZmPdP8HUJCOi2/SXtgW4KtUfMkOH3HZQnALBmpt7/ljJ7MsBQ+8
-         pmFaNw529K8cLy3AG8UBqP9O48VYPmCWVNn0vApt16v+kHWgwmxbKLGe68/pBOtKXr0f
-         NTPpIQUcOMdM2oiEDXYBAJ+K7+RWW3wzISohZtWQ592FZzSoWlZHKBF6o5/rV5KiKq58
-         dMMnhNNZlMlNSvb98HK/0cFQtKI1sptpfkU4G/kYwZF2VWLsy8Pk6uD65fkGNmWpMJsd
-         Sw6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xk1UawkGscrdgyTTdSmArkeO7Pere7VwZLuC1AwgAxQ=;
-        b=tB9UHPzsALibPmQ1mF496XUhoTiSWkcmyP8EWLUPV8CgBJNtbWcsSGj9DmrlLx37+d
-         AW/FgO5iJiZY0/Tu2XbljUfXN7YuCkP8S5NeLC11Nezcwz0Bwe2LnjglBoDmoyWoNmIs
-         YJzAQ8rrwMZ4/ksDGemNNsAjY0T7XvYhxJ/tH4od40G7F0z4AGKmFyl5nSsnGGdeCPwA
-         6BHwB1Y5z+AEhbLbaoeurqsd09HmcZq1C87lAhSUP+tAuB1vsz0po0fx20UzRY5geh7f
-         XCbhPW5tAWD+VLbEzOk8ulWhD7sd302OsaZW7T7F8/+4DrrLR4oNfKcLcMphsRKAVYdF
-         fCmw==
-X-Gm-Message-State: AOAM531lZBLxWlN7GXmUJeSHgDA1qLS9BDt3GyI7o3pHpAb8woDm6xUj
-        /E/Mvv8XH68tWWoZHzVJkDtS5GRuAGNlrub3b+MxVA==
-X-Google-Smtp-Source: ABdhPJygODbT8Wy9l2d7FOrsdSQH7N26yw4nFAuGY6k5vZlb7tGt9KmD3PsZeNjmX4N5b1ARhbmKpBUCNV8Wc/wNJNg=
-X-Received: by 2002:a17:906:270f:: with SMTP id z15mr7908192ejc.6.1602153291904;
- Thu, 08 Oct 2020 03:34:51 -0700 (PDT)
+        id S1729586AbgJHKq3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 06:46:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58560 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729584AbgJHKqZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Oct 2020 06:46:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602153983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/1s2AOQ8c8V+Fh7lGuyVZZ09B+PUmg+jBpS2SsvH9XY=;
+        b=ENsk83Aiq30lkS4hTdzAUrLLMY5nqX9wgX7v0QKHrUT98UKzvtFVTGM5MuNeoYHYMsB9WP
+        XBNAqUvb5PFaxubMS00/vMBnjKtr2P/LZlwDRwvKvKg6XD4KyHTincmGwWtQjEHqKbl/Eb
+        oLM0lrUSz6UeC5oyQbwslBPShjxYJVE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-qWcHv-RvPXCue3sAczM7NQ-1; Thu, 08 Oct 2020 06:46:19 -0400
+X-MC-Unique: qWcHv-RvPXCue3sAczM7NQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 883851054F8A;
+        Thu,  8 Oct 2020 10:46:16 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 23FE15C1DC;
+        Thu,  8 Oct 2020 10:46:05 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 12:46:04 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Shay Agroskin <shayagr@amazon.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <sameehj@amazon.com>,
+        <john.fastabend@gmail.com>, <dsahern@kernel.org>,
+        <lorenzo.bianconi@redhat.com>, <echaudro@redhat.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH v4 bpf-next 09/13] bpf: introduce multibuff support to
+ bpf_prog_test_run_xdp()
+Message-ID: <20201008124604.05db39e8@carbon>
+In-Reply-To: <pj41zl362puop5.fsf@u68c7b5b1d2d758.ant.amazon.com>
+References: <cover.1601648734.git.lorenzo@kernel.org>
+        <d6ed575afaf89fc35e233af5ccd063da944b4a3a.1601648734.git.lorenzo@kernel.org>
+        <pj41zl362puop5.fsf@u68c7b5b1d2d758.ant.amazon.com>
 MIME-Version: 1.0
-References: <20201002010633.3706122-1-andriin@fb.com> <CAKQ-crhUT07SXZ16NK4_2RtpNA+kvm7VtB5fdo4qSV4Qi4GJ_g@mail.gmail.com>
- <CAEf4Bzb7kE5x=Ow=XHMb1wmt0Tjw-qqoL-yihAWx5s10Dk9chQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb7kE5x=Ow=XHMb1wmt0Tjw-qqoL-yihAWx5s10Dk9chQ@mail.gmail.com>
-From:   Luka Perkov <luka.perkov@sartura.hr>
-Date:   Thu, 8 Oct 2020 12:34:41 +0200
-Message-ID: <CAKQ-crhMomcb9v3LAnqrBFLp1=m8bh4ZBnD7O_oH2XsU2faMAg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] libbpf: auto-resize relocatable LOAD/STORE instructions
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Tony Ambardar <tony.ambardar@gmail.com>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Sven Fijan <sven.fijan@sartura.hr>,
-        David Marcinkovic <david.marcinkovic@sartura.hr>,
-        Jakov Petrina <jakov.petrina@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Andrii,
+On Thu, 8 Oct 2020 11:06:14 +0300
+Shay Agroskin <shayagr@amazon.com> wrote:
 
-On Wed, Oct 7, 2020 at 8:01 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Oct 7, 2020 at 10:56 AM Luka Perkov <luka.perkov@sartura.hr> wrote:
+> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> 
+> > Introduce the capability to allocate a xdp multi-buff in
+> > bpf_prog_test_run_xdp routine. This is a preliminary patch to 
+> > introduce
+> > the selftests for new xdp multi-buff ebpf helpers
 > >
-> > Hello Andrii,
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  net/bpf/test_run.c | 51  ++++++++++++++++++++++++++++++++++++++--------
+> >  1 file changed, 43 insertions(+), 8 deletions(-)
 > >
-> > On Fri, Oct 2, 2020 at 3:09 AM Andrii Nakryiko <andriin@fb.com> wrote:
-> > > Patch set implements logic in libbpf to auto-adjust memory size (1-, 2-, 4-,
-> > > 8-bytes) of load/store (LD/ST/STX) instructions which have BPF CO-RE field
-> > > offset relocation associated with it. In practice this means transparent
-> > > handling of 32-bit kernels, both pointer and unsigned integers. Signed
-> > > integers are not relocatable with zero-extending loads/stores, so libbpf
-> > > poisons them and generates a warning. If/when BPF gets support for sign-extending
-> > > loads/stores, it would be possible to automatically relocate them as well.
-> > >
-> > > All the details are contained in patch #1 comments and commit message.
-> > > Patch #2 is a simple change in libbpf to make advanced testing with custom BTF
-> > > easier. Patch #3 validates correct uses of auto-resizable loads, as well as
-> > > check that libbpf fails invalid uses.
-> > >
-> > > I'd really appreciate folks that use BPF on 32-bit architectures to test this
-> > > out with their BPF programs and report if there are any problems with the
-> > > approach.
-> > >
-> > > Cc: Luka Perkov <luka.perkov@sartura.hr>
-> >
-> > First, thank you for the support and sending this series. It took us a
-> > bit longer to run the tests as our target hardware still did not fully
-> > get complete mainline support and we had to rebase our patches. These
-> > are not related to BPF.
-> >
-> > Related to this patch, we have tested various BPF programs with this
-> > patch, and can confirm that it fixed previous issues with pointer
-> > offsets that we had and reported at:
-> >
-> > https://lore.kernel.org/r/CA+XBgLU=8PFkP8S32e4gpst0=R4MFv8rZA5KaO+cEPYSnTRYYw@mail.gmail.com/.
-> >
-> > Most of our programs now work and we are currently debugging other
-> > programs that still aren't working. We are still not sure if the
-> > remaining issues are related to this or not, but will let you know
-> > sometime this week after further and more detailed investigation.
-> >
->
-> Ok, great, thanks for the update.
+> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> > index bd291f5f539c..ec7286cd051b 100644
+> > --- a/net/bpf/test_run.c
+> > +++ b/net/bpf/test_run.c
+> > @@ -617,44 +617,79 @@ int bpf_prog_test_run_xdp(struct bpf_prog 
+> > *prog, const union bpf_attr *kattr,
+> >  {
+> >  	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct 
+> >  skb_shared_info));
+> >  	u32 headroom = XDP_PACKET_HEADROOM;
+> > -	u32 size = kattr->test.data_size_in;
+> >  	u32 repeat = kattr->test.repeat;
+> >  	struct netdev_rx_queue *rxqueue;
+> > +	struct skb_shared_info *sinfo;
+> >  	struct xdp_buff xdp = {};
+> > +	u32 max_data_sz, size;
+> >  	u32 retval, duration;
+> > -	u32 max_data_sz;
+> > +	int i, ret, data_len;
+> >  	void *data;
+> > -	int ret;
+> >  
+> >  	if (kattr->test.ctx_in || kattr->test.ctx_out)
+> >  		return -EINVAL;
+> >  
+> > -	/* XDP have extra tailroom as (most) drivers use full page 
+> > */
+> >  	max_data_sz = 4096 - headroom - tailroom;  
+> 
+> For the sake of consistency, can this 4096 be changed to PAGE_SIZE 
+> ?
 
-Just to update you that we have identified that the problem was a
-known issue with JIT as we had enabled the BPF_JIT_ALWAYS_ON.
+The size 4096 is explicitly use, because the selftest xdp_adjust_tail
+expect this, else it will fail on ARCHs with 64K PAGE_SIZE.  It also
+seems excessive to create 64K packets for testing XDP.
 
-That said, it would be great to see this series included in 5.10 :)
+See: tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
 
-Thanks,
-Luka
+> Same as in
+>      data_len = min_t(int, kattr->test.data_size_in - size, 
+>      PAGE_SIZE);
+> 
+> expression below
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
