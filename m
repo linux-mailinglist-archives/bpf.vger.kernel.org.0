@@ -2,58 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA21A287DA0
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 23:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22A9287DF8
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 23:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgJHVG7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 17:06:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725874AbgJHVG7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 17:06:59 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E94322227;
-        Thu,  8 Oct 2020 21:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602191218;
-        bh=vWfF+2lSRBOoSSnPsBbag2gtsRpUEqBbB7TRbuLJOfg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vfysR9F+EDyrvXDglyQCGX1GAlCC6aVku9dV21Xqb14wlxNYXA58R4QLnp/QvLb+/
-         aVtVhcqF4IpxKldIeq1sZxsn36352b6o2wTCNI/RRThK5VUhOmjZldBbllVo2OqKV3
-         SG4iP9YYh7T8q65UkB5W9sldDR53qn/Pv1OjHZ+Q=
-Date:   Thu, 8 Oct 2020 14:06:56 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, ast@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: pull-request: bpf 2020-10-08
-Message-ID: <20201008140656.4f89b27f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201008145154.18801-1-daniel@iogearbox.net>
-References: <20201008145154.18801-1-daniel@iogearbox.net>
+        id S1729239AbgJHVbw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 17:31:52 -0400
+Received: from www62.your-server.de ([213.133.104.62]:46922 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgJHVbw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Oct 2020 17:31:52 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kQdVu-0007uD-7K; Thu, 08 Oct 2020 23:31:50 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/6] Follow-up BPF helper improvements
+Date:   Thu,  8 Oct 2020 23:31:42 +0200
+Message-Id: <20201008213148.26848-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25951/Thu Oct  8 15:53:03 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu,  8 Oct 2020 16:51:54 +0200 Daniel Borkmann wrote:
-> Hi David,
-> 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 2 non-merge commits during the last 8 day(s) which contain
-> a total of 2 files changed, 10 insertions(+), 4 deletions(-).
-> 
-> The main changes are:
-> 
-> 1) Fix "unresolved symbol" build error under CONFIG_NET w/o CONFIG_INET due
->    to missing tcp_timewait_sock and inet_timewait_sock BTF, from Yonghong Song.
-> 
-> 2) Fix 32 bit sub-register bounds tracking for OR case, from Daniel Borkmann.
+This series addresses most of the feedback [0] that was to be followed
+up from the last series, that is, UAPI helper comment improvements and
+getting rid of the ifindex obj file hacks in the selftest by using a
+BPF map instead. The __sk_buff data/data_end pointer work, I'm planning
+to do in a later round as well as the mem*() BPF improvements we have
+in Cilium for libbpf. Next, the series adds two features, i) a helper
+called redirect_peer() to improve latency on netns switch, and ii) to
+allow map in map with dynamic inner array map sizes. Selftests for each
+are added as well. For details, please check individual patches, thanks!
 
-Looks like the pw bot does not reply to pull requests?
+  [0] https://lore.kernel.org/bpf/cover.1601477936.git.daniel@iogearbox.net/
 
-Pulled, and on it's way to Linus. Thanks!
+Daniel Borkmann (6):
+  bpf: improve bpf_redirect_neigh helper description
+  bpf: add redirect_peer helper
+  bpf: allow for map-in-map with dynamic inner array map entries
+  bpf, selftests: add test for different array inner map size
+  bpf, selftests: make redirect_neigh test more extensible
+  bpf, selftests: add redirect_peer selftest
+
+ drivers/net/veth.c                            |   9 +
+ include/linux/bpf.h                           |   1 +
+ include/linux/netdevice.h                     |   4 +
+ include/uapi/linux/bpf.h                      |  32 ++-
+ kernel/bpf/arraymap.c                         |  40 +++-
+ kernel/bpf/syscall.c                          |   3 +-
+ net/core/dev.c                                |  15 +-
+ net/core/filter.c                             |  54 ++++-
+ tools/include/uapi/linux/bpf.h                |  32 ++-
+ .../selftests/bpf/prog_tests/btf_map_in_map.c |  39 +++-
+ .../selftests/bpf/progs/test_btf_map_in_map.c |  43 ++++
+ .../selftests/bpf/progs/test_tc_neigh.c       |  40 ++--
+ .../selftests/bpf/progs/test_tc_peer.c        |  45 ++++
+ tools/testing/selftests/bpf/test_tc_neigh.sh  | 168 ---------------
+ .../testing/selftests/bpf/test_tc_redirect.sh | 204 ++++++++++++++++++
+ 15 files changed, 514 insertions(+), 215 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tc_peer.c
+ delete mode 100755 tools/testing/selftests/bpf/test_tc_neigh.sh
+ create mode 100755 tools/testing/selftests/bpf/test_tc_redirect.sh
+
+-- 
+2.17.1
+
