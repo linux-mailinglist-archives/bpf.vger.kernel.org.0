@@ -2,114 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6002287C82
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 21:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CCC287D8A
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 22:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgJHTcy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 15:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725616AbgJHTcy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 15:32:54 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D98C0613D2;
-        Thu,  8 Oct 2020 12:32:54 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id j76so5402372ybg.3;
-        Thu, 08 Oct 2020 12:32:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lJiVyF8lYseP3MyH+TqVr5lzl2Yk+yGjrNLl/qjax8s=;
-        b=Tulpt3da9pOfXt/5s3jw4gP1oOIW+5evQJZiLhuAoW7STSQZskoBTnCPgbPF2/qpkD
-         ND89oqm2j2Lehk5Lv/wPjKo9MUqDErcNKsUg6Fyw34LYMce/+BSYRS7eCHreaW1YU/c/
-         u32xJPbx0fKu3o5sy4YRKHfmREimVzI5CUK63nXm8qkj6OqG9hVps+ybfiuPrqxd8jNv
-         I/Ae7gFtS0y02K3DC0jAyApU3yXycbO2dKAOO/6Vr5uz11tgSNdISogYevo2i4gGGfsN
-         W/HJmjDaNmlDrq3Rl+gRtBKtKzP4GEduS9H8Fx2UbtpYYwjMwSOZ+H3wUWilS5kRDyYB
-         9+XQ==
+        id S1730774AbgJHU5y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 16:57:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728622AbgJHU5y (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Oct 2020 16:57:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602190673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=98YAahm8Cm7X3j4oM917dZyzd2CrTbVmRZhlcb9BHnI=;
+        b=gC5RThajBCGnRn3ZDgM7FUQ52zo4pd8eiMpznT80z64RVS9GyQW7LPPj6PgneYsuBcgvkF
+        cJA5UeABEywfM9McDow68wvAf44UKQd9f0YqtNEuTZru6p7l420lXrlDPFkfL/Fs9r5cYR
+        uk/GbSSAo3B8m3Xs46Vug39kMRa+tHQ=
+Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
+ [209.85.222.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-w4iH9p8zOum-P8qHoiaQrg-1; Thu, 08 Oct 2020 16:57:51 -0400
+X-MC-Unique: w4iH9p8zOum-P8qHoiaQrg-1
+Received: by mail-ua1-f71.google.com with SMTP id b1so1621113uad.11
+        for <bpf@vger.kernel.org>; Thu, 08 Oct 2020 13:57:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lJiVyF8lYseP3MyH+TqVr5lzl2Yk+yGjrNLl/qjax8s=;
-        b=SZGjfEuL3o9KxAkCGiRva5SndMkOsmS9WzKTM8RT80ThZ5ZmyXn3QZpJlIGPmcvJ2n
-         zJ4VJDL3UXBUk0SRlyheyqrr9OD6zw38/6iZqxzmCF/cw3LeBM7+PXVdPhqP190VZ4GD
-         K/Vx5OK9C4Ttvi+dV34kd4z+petREApqcHKQ+gJBvVa38FW+auc3fmiTz2dDvi3D101I
-         BsfBLIRPYVC/TNtqx4ZefhMd19Av2+alyzgmMTq6B44NgNVuZk9NzNl42DNXVzGD9O3n
-         /PyQGrGBcUhPt8iwVDVy/RxVEK8aXhOCLzm0uwVZ81fu2qucIsgraLZY0M1C2FWKmY18
-         DpiQ==
-X-Gm-Message-State: AOAM532Rkbudp/btO5QB+FObKFvuQer6EtybP9JQdH2eZRPlnGaPbBZp
-        v41RpZWtcTLds+DcmG1vQbMtAnBDTtkXk5SNpsg=
-X-Google-Smtp-Source: ABdhPJzveCuqIbrfOzihsGa+eJBpFpC/K/JgLKs4Wp8Fg2VosS6VgsHUq68kAgKxuLQ3YAm7J42UpHj8OFn++jmZRc8=
-X-Received: by 2002:a25:2a4b:: with SMTP id q72mr6980562ybq.27.1602185573415;
- Thu, 08 Oct 2020 12:32:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=98YAahm8Cm7X3j4oM917dZyzd2CrTbVmRZhlcb9BHnI=;
+        b=Swmx21ZeLNcj9le4ETGuSqKZJQQedS5UaJaD1W5JRashjgnc9sys2WsoNl586+NZu4
+         DgD/ZOiCqqObaFtKGudC0iYF1h/xS2UBDSCCKTIxmSxJDItnr3jaJHk4nojm2F9/j5Tu
+         BylCkNd49Bhl2BMo5m8dusEMneSAQPLzyn2D6u5bR6YpQaDWuieuM9H/55xdkO8HWTLb
+         CzEnN2eRGRnQGUl3FTkN75+X2faraKKCRwM7OAQT9MYsc7Wmn0uTcYGnLBWW0yIDC4gT
+         akfOYd+C87Gub/m4kBWenZWYgOo/EZj0qrlg2sNEMojs5ssDg/lbBMCn7atJyMPQvpPS
+         KP6g==
+X-Gm-Message-State: AOAM533pCX9tOOP4IiqmVN0TfMKQa9KHYJmS39iiKyRqA6MYKvmp+DnP
+        PJkZGBQHhuGxT4aPgGEGh4oTECmujI1FOKfLXo33KigtB4ZNeVVvQVRWoLT8m3XRSRP7E397yQy
+        jlB1GjBe9Vjs/
+X-Received: by 2002:a05:6102:30b2:: with SMTP id y18mr6043497vsd.51.1602190670901;
+        Thu, 08 Oct 2020 13:57:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwl62iRU2I+0hZas3qXVggXJusiCKXH/8uEZdY+4D+fE4swFs9yYsv66jRXkToI6I4mRolgvQ==
+X-Received: by 2002:a05:6102:30b2:: with SMTP id y18mr6043484vsd.51.1602190670583;
+        Thu, 08 Oct 2020 13:57:50 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id m125sm854438vkh.15.2020.10.08.13.57.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 13:57:49 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 46D201837DC; Thu,  8 Oct 2020 22:57:47 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     David Ahern <dsahern@gmail.com>, daniel@iogearbox.net, ast@fb.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf_fib_lookup: return target ifindex even if
+ neighbour lookup fails
+In-Reply-To: <da1b5e5f-edb3-4384-c748-8170f51f6f6d@gmail.com>
+References: <20201008145314.116800-1-toke@redhat.com>
+ <da1b5e5f-edb3-4384-c748-8170f51f6f6d@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 08 Oct 2020 22:57:47 +0200
+Message-ID: <87d01se8qc.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20200930042742.2525310-1-andriin@fb.com> <20200930042742.2525310-5-andriin@fb.com>
- <20201008180651.GD246083@kernel.org>
-In-Reply-To: <20201008180651.GD246083@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 8 Oct 2020 12:32:42 -0700
-Message-ID: <CAEf4BzbOUQv0JQqJ=BuTkKz5XFo=ZpiskaXEmeEfsgTD5_eBmw@mail.gmail.com>
-Subject: Re: [PATCH dwarves 04/11] btf_loader: use libbpf to load BTF
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 11:59 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Tue, Sep 29, 2020 at 09:27:35PM -0700, Andrii Nakryiko escreveu:
-> > Switch BTF loading to completely use libbpf's own struct btf and related APIs.
-> > BTF encoding is still happening with pahole's own code, so these two code
-> > paths are not sharing anything now. String fetching is happening based on
-> > whether btfe->strings were set to non-NULL pointer by btf_encoder.
->
-> This patch is not applying, since there was a fix in the btf_loader.c
-> file where lexblocks (DWARF concept) wasn't being initialized and then
-> some other tool was segfaulting when trying to traverse an uninitialized
-> list.
->
-> I tried applying this patch by hand, but it seems it needs some
-> massaging before I can use plain vim on it:
->
-> diff --git a/btf_loader.c b/btf_loader.c
-> index 9db76957a7e5..c31ee61060f1 100644
-> --- a/btf_loader.c
-> +++ b/btf_loader.c
-> @@ -46,21 +46,17 @@ static void *tag__alloc(const size_t size)
->  }
-> =20
->  static int btf_elf__load_ftype(struct btf_elf *btfe, struct ftype *proto=
-> , uint32_t tag,
-> -                              uint32_t type, uint16_t vlen, struct btf_param *args, uint32_t=
->  id)
-> +                              const struct btf_type *tp, uint32_t id)
->  {
-> -       int i;
-> +       const struct btf_param *param =3D btf_params(tp);
-> +       int i, vlen =3D btf_vlen(tp);
-> =20
->         proto->tag.tag  =3D tag;
-> -       proto->tag.type =3D type;
-> +       proto->tag.type =3D tp->type;
->         INIT_LIST_HEAD(&proto->parms);
-> =20
-> -       for (i =3D 0; i < vlen; ++i) {
->
->
-> Can you please check?
->
-> The first three patches are already applied an in master, both at
-> kernel.org and its mirror at github.com.
+David Ahern <dsahern@gmail.com> writes:
 
-Sure, no problem. I'll rebase the rest and post as v2.
-
+> On 10/8/20 7:53 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> The bpf_fib_lookup() helper performs a neighbour lookup for the destinat=
+ion
+>> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
+>> that the BPF program will pass the packet up the stack in this case.
+>> However, with the addition of bpf_redirect_neigh() that can be used inst=
+ead
+>> to perform the neighbour lookup.
+>>=20
+>> However, for that we still need the target ifindex, and since
+>> bpf_fib_lookup() already has that at the time it performs the neighbour
+>> lookup, there is really no reason why it can't just return it in any cas=
+e.
+>> With this fix, a BPF program can do the following to perform a redirect
+>> based on the routing table that will succeed even if there is no neighbo=
+ur
+>> entry:
+>>=20
+>> 	ret =3D bpf_fib_lookup(skb, &fib_params, sizeof(fib_params), 0);
+>> 	if (ret =3D=3D BPF_FIB_LKUP_RET_SUCCESS) {
+>> 		__builtin_memcpy(eth->h_dest, fib_params.dmac, ETH_ALEN);
+>> 		__builtin_memcpy(eth->h_source, fib_params.smac, ETH_ALEN);
+>>=20
+>> 		return bpf_redirect(fib_params.ifindex, 0);
+>> 	} else if (ret =3D=3D BPF_FIB_LKUP_RET_NO_NEIGH) {
+>> 		return bpf_redirect_neigh(fib_params.ifindex, 0);
+>> 	}
+>>=20
 >
-> - Arnaldo
+> There are a lot of assumptions in this program flow and redundant work.
+> fib_lookup is generic and allows the caller to control the input
+> parameters. direct_neigh does a fib lookup based on network header data
+> from the skb.
 >
+> I am fine with the patch, but users need to be aware of the subtle detail=
+s.
 
-[...]
+Yeah, I'm aware they are not equivalent; the code above was just meant
+as a minimal example motivating the patch. If you think it's likely to
+confuse people to have this example in the commit message, I can remove
+it?
+
+-Toke
+
