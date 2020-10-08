@@ -2,193 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F3328706E
-	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 10:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B551287072
+	for <lists+bpf@lfdr.de>; Thu,  8 Oct 2020 10:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgJHIGu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Oct 2020 04:06:50 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:35656 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728395AbgJHIGu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Oct 2020 04:06:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1602144409; x=1633680409;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=bg3O7qEGH1fNCK+zQ+U6E2nWrjAtawJmaEIw/54CrhU=;
-  b=fYQ5l0P700TOncHISyku0k7RlBKOfqFnqfhJ9Fz3nfKAdxFjyBg2fI45
-   fHuhN6+SMLdNDjtGxVlrir1VpbeIQ0PTZ3Ff9/MyDieg6jjLaG44URgac
-   BYMrWVMmq/vEdaSxcO/81Zz4dB/tl6DN14nCYFoiFcIiByhyPPmpI1dAS
-   4=;
-X-IronPort-AV: E=Sophos;i="5.77,350,1596499200"; 
-   d="scan'208";a="82535724"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 08 Oct 2020 08:06:43 +0000
-Received: from EX13D28EUC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id 3A62DA1F3D;
-        Thu,  8 Oct 2020 08:06:39 +0000 (UTC)
-Received: from u68c7b5b1d2d758.ant.amazon.com.amazon.com (10.43.162.231) by
- EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 8 Oct 2020 08:06:33 +0000
-References: <cover.1601648734.git.lorenzo@kernel.org>
- <d6ed575afaf89fc35e233af5ccd063da944b4a3a.1601648734.git.lorenzo@kernel.org>
-User-agent: mu4e 1.4.12; emacs 27.1
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <sameehj@amazon.com>,
-        <john.fastabend@gmail.com>, <dsahern@kernel.org>,
-        <brouer@redhat.com>, <lorenzo.bianconi@redhat.com>,
-        <echaudro@redhat.com>
-Subject: Re: [PATCH v4 bpf-next 09/13] bpf: introduce multibuff support to
- bpf_prog_test_run_xdp()
-In-Reply-To: <d6ed575afaf89fc35e233af5ccd063da944b4a3a.1601648734.git.lorenzo@kernel.org>
-Date:   Thu, 8 Oct 2020 11:06:14 +0300
-Message-ID: <pj41zl362puop5.fsf@u68c7b5b1d2d758.ant.amazon.com>
+        id S1728443AbgJHIHn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 04:07:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43350 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728330AbgJHIHl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Oct 2020 04:07:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602144459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LN2yGARkzqh6107vzgAEFEAJDYjudMQSVB45mtuXmuU=;
+        b=iNSdM8YLgWU3KvjTshnJ7oCpADPbhRYpGlHpHUaAtTiz67mboG49C8qgd6jZrsNXPxbdAT
+        G9STkulSkI50u2+nkuuduCEpItzQyxUFlw/9FEXiAvIEVHHzA+ItPLlL7sNWWI/4VuzV1W
+        V4J6HdB87mfU+WZF3liRc/jLXwLdspM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-wcdW0DAfP365DL7kxnJD8A-1; Thu, 08 Oct 2020 04:07:35 -0400
+X-MC-Unique: wcdW0DAfP365DL7kxnJD8A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C69DB425E0;
+        Thu,  8 Oct 2020 08:07:32 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9403B702E7;
+        Thu,  8 Oct 2020 08:07:25 +0000 (UTC)
+Date:   Thu, 8 Oct 2020 10:07:23 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Shaun Crampton <shaun@tigera.io>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eyal Birger <eyal.birger@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V2 5/6] bpf: Add MTU check for TC-BPF packets
+ after egress hook
+Message-ID: <20201008100723.33e14dca@carbon>
+In-Reply-To: <5f7e854b111fc_2acac2087e@john-XPS-13-9370.notmuch>
+References: <160208770557.798237.11181325462593441941.stgit@firesoul>
+        <160208778070.798237.16265441131909465819.stgit@firesoul>
+        <7aeb6082-48a3-9b71-2e2c-10adeb5ee79a@iogearbox.net>
+        <5f7e430ae158b_1a8312084d@john-XPS-13-9370.notmuch>
+        <CANP3RGdcqmcrxWDKPsZ8A0+qK1hzD0tZvRFsVMPvSCNDk+LrHA@mail.gmail.com>
+        <5f7e854b111fc_2acac2087e@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.43.162.231]
-X-ClientProxiedBy: EX13D01UWB002.ant.amazon.com (10.43.161.136) To
- EX13D28EUC001.ant.amazon.com (10.43.164.4)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, 07 Oct 2020 20:19:39 -0700
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> Maciej =C5=BBenczykowski wrote:
+> > On Wed, Oct 7, 2020 at 3:37 PM John Fastabend <john.fastabend@gmail.com=
+> wrote: =20
+> > >
+> > > Daniel Borkmann wrote: =20
+> > > > On 10/7/20 6:23 PM, Jesper Dangaard Brouer wrote:
+> > > > [...] =20
+> > > > >   net/core/dev.c |   24 ++++++++++++++++++++++--
+> > > > >   1 file changed, 22 insertions(+), 2 deletions(-) =20
+> > >
+> > > Couple high-level comments. Whats the problem with just letting the d=
+river
+> > > consume the packet? I would chalk it up to a buggy BPF program that is
+> > > sending these packets. The drivers really shouldn't panic or do anyth=
+ing
+> > > horrible under this case because even today I don't think we can be
+> > > 100% certain MTU on skb matches set MTU. Imagine the case where I cha=
+nge
+> > > the MTU from 9kB->1500B there will be some skbs in-flight with the la=
+rger
+> > > length and some with the shorter. If the drivers panic/fault or other=
+wise
+> > > does something else horrible thats not going to be friendly in genera=
+l case
+> > > regardless of what BPF does. And seeing this type of config is all do=
+ne
+> > > async its tricky (not practical) to flush any skbs in-flight.
+> > >
+> > > I've spent many hours debugging these types of feature flag, mtu
+> > > change bugs on the driver side I'm not sure it can be resolved by
+> > > the stack easily. Better to just build drivers that can handle it IMO.
+> > >
+> > > Do we know if sending >MTU size skbs to drivers causes problems in re=
+al
+> > > cases? I haven't tried on the NICs I have here, but I expect they sho=
+uld
+> > > be fine. Fine here being system keeps running as expected. Dropping t=
+he
+> > > skb either on TX or RX side is expected. Even with this change though
+> > > its possible for the skb to slip through if I configure MTU on a live
+> > > system. =20
+> >=20
+> > I wholeheartedly agree with the above.
+> >=20
+> > Ideally the only >mtu check should happen at driver admittance.
+> > But again ideally it should happen in some core stack location not in
+> > the driver itself. =20
+>=20
+> Ideally maybe, but IMO we should just let the skb go to the driver
+> and let the driver sort it out. Even if this means pushing the packet
+> onto the wire then the switch will drop it or the receiver, etc. A
+> BPF program can do lots of horrible things that should never be
+> on the wire otherwise. MTU is just one of them, but sending corrupted
+> payloads, adding bogus headers, checksums etc. so I don't think we can
+> reasonable protect against all of them.
 
-> Introduce the capability to allocate a xdp multi-buff in
-> bpf_prog_test_run_xdp routine. This is a preliminary patch to 
-> introduce
-> the selftests for new xdp multi-buff ebpf helpers
->
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  net/bpf/test_run.c | 51 
->  ++++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 43 insertions(+), 8 deletions(-)
->
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index bd291f5f539c..ec7286cd051b 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -617,44 +617,79 @@ int bpf_prog_test_run_xdp(struct bpf_prog 
-> *prog, const union bpf_attr *kattr,
->  {
->  	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct 
->  skb_shared_info));
->  	u32 headroom = XDP_PACKET_HEADROOM;
-> -	u32 size = kattr->test.data_size_in;
->  	u32 repeat = kattr->test.repeat;
->  	struct netdev_rx_queue *rxqueue;
-> +	struct skb_shared_info *sinfo;
->  	struct xdp_buff xdp = {};
-> +	u32 max_data_sz, size;
->  	u32 retval, duration;
-> -	u32 max_data_sz;
-> +	int i, ret, data_len;
->  	void *data;
-> -	int ret;
->  
->  	if (kattr->test.ctx_in || kattr->test.ctx_out)
->  		return -EINVAL;
->  
-> -	/* XDP have extra tailroom as (most) drivers use full page 
-> */
->  	max_data_sz = 4096 - headroom - tailroom;
+That is a good point.
 
-For the sake of consistency, can this 4096 be changed to PAGE_SIZE 
-?
-Same as in
-     data_len = min_t(int, kattr->test.data_size_in - size, 
-     PAGE_SIZE);
+> Of course if the driver is going to hang/panic then something needs
+> to be done. Perhaps a needs_mtu_check feature flag, although thats
+> not so nice either so perhaps drivers just need to handle it themselves.
+> Also even today the case could happen without BPF as best I can tell
+> so the drivers should be prepared for it.
 
-expression below
+Yes, borderline cases do exist already today (like your reconf with
+inflight packets), so I guess drivers should at-least not hang/panic
+and be robust enough that we can drop this check.
 
-> +	size = min_t(u32, kattr->test.data_size_in, max_data_sz);
-> +	data_len = size;
->  
-> -	data = bpf_test_init(kattr, kattr->test.data_size_in,
-> -			     max_data_sz, headroom, tailroom);
-> +	data = bpf_test_init(kattr, size, max_data_sz, headroom, 
-> tailroom);
->  	if (IS_ERR(data))
->  		return PTR_ERR(data);
->  
->  	xdp.data_hard_start = data;
->  	xdp.data = data + headroom;
->  	xdp.data_meta = xdp.data;
-> -	xdp.data_end = xdp.data + size;
-> +	xdp.data_end = xdp.data + data_len;
->  	xdp.frame_sz = headroom + max_data_sz + tailroom;
->  
-> +	sinfo = xdp_get_shared_info_from_buff(&xdp);
-> +	if (unlikely(kattr->test.data_size_in > size)) {
-> +		void __user *data_in = 
-> u64_to_user_ptr(kattr->test.data_in);
-> +
-> +		while (size < kattr->test.data_size_in) {
-> +			skb_frag_t *frag = 
-> &sinfo->frags[sinfo->nr_frags];
-> +			struct page *page;
-> +			int data_len;
-> +
-> +			page = alloc_page(GFP_KERNEL);
-> +			if (!page) {
-> +				ret = -ENOMEM;
-> +				goto out;
-> +			}
-> +
-> +			__skb_frag_set_page(frag, page);
-> +			data_len = min_t(int, 
-> kattr->test.data_size_in - size,
-> +					 PAGE_SIZE);
-> +			skb_frag_size_set(frag, data_len);
-> +			if (copy_from_user(page_address(page), 
-> data_in + size,
-> +					   data_len)) {
-> +				ret = -EFAULT;
-> +				goto out;
-> +			}
-> +			sinfo->nr_frags++;
-> +			size += data_len;
-> +		}
-> +		xdp.mb = 1;
-> +	}
-> +
->  	rxqueue = 
->  __netif_get_rx_queue(current->nsproxy->net_ns->loopback_dev, 
->  0);
->  	xdp.rxq = &rxqueue->xdp_rxq;
->  	bpf_prog_change_xdp(NULL, prog);
->  	ret = bpf_test_run(prog, &xdp, repeat, &retval, &duration, 
->  true);
->  	if (ret)
->  		goto out;
-> +
->  	if (xdp.data != data + headroom || xdp.data_end != 
->  xdp.data + size)
-> -		size = xdp.data_end - xdp.data;
-> +		size += xdp.data_end - xdp.data - data_len;
+I think you have convinced me that we can drop this check.  My only
+concern is how people can troubleshoot this, but its not different from
+current state.
 
-Can we please drop the variable shadowing of data_len ? This is 
-confusing since the initial value of data_len is correct in the 
-`size` calculation, while its value inside the while loop it not.
 
-This seem to be syntactically correct, but I think it's better 
-practice to avoid shadowing here.
+> > However, due to both gso and vlan offload, even this is not trivial to =
+do...
+> > The mtu is L3, but drivers/hardware/the wire usually care about L2...
 
-> +
->  	ret = bpf_test_finish(kattr, uattr, xdp.data, size, 
->  retval, duration);
->  out:
->  	bpf_prog_change_xdp(prog, NULL);
-> +	for (i = 0; i < sinfo->nr_frags; i++)
-> +		__free_page(skb_frag_page(&sinfo->frags[i]));
->  	kfree(data);
-> +
->  	return ret;
->  }
+If net_device->mtu is L3 (1500) and XDP (and TC, right?) operate at L2,
+that likely means that the "strict" bpf_mtu_check (in my BPF-helper) is
+wrong, as XDP (and TC) length at this point include the 14 bytes
+Ethernet header.  I will check and fix.
+
+Is this accounted for via net_device->hard_header_len ?
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
