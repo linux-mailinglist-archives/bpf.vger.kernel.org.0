@@ -2,173 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C78B28953C
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 21:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F5A289614
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 21:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387769AbgJITzi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 15:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390962AbgJITx6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 15:53:58 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DDBC0613D2
-        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 12:53:58 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id h9so8120147ybm.4
-        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 12:53:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9hrhhQq0TGvVEuCaQjlYPROV9f7jjnGTug3ix+D8ERM=;
-        b=dmujTgDSqPgDZR3Y8GBYQ2rsVMkEMmYj/vJbD2snPJVopEqXey/v2DY/b4ZjzLSgVk
-         /MkkhK+6o/3SHCwiPcn9N7ORNfl9DYLHoTPou6pGWBVLFGLJA8uzprSH0zZWq+nlLWZ0
-         gfi+Sq4eMpDcNi6QdR5SECUstXDCJEDtvT8Gwc6rCjfXIDcdk4xwdsBhtQYEKrHlc7mh
-         Ahq5LS2WleyWP5cyBvJY+vwKFUPFkxGIcOKb5wJHzigbrOooLTKPzhiKRIU4oKffR0lZ
-         /8H4l92xhg6EhEE0YxIXe3w1jK8sG209SFSE7vNUJ9W6CwDWGNloBrxS+TsLC5W7UEVm
-         fzVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9hrhhQq0TGvVEuCaQjlYPROV9f7jjnGTug3ix+D8ERM=;
-        b=mwm5l2naDEOT0kGm/Em9fF0gydpn0i4Ul1bV5vZFMa1RZtznJk2URvaagM/CTW5ccY
-         KN4Axrm3eWmJmf9BbucTRF+59RBfRVtBL4KjRIK/OOkULNxCP5nNMS9haVotIee3dRHP
-         re61NcErmLNGaZJcmokyJuCKX/om9ZT6Im48tDSZi3rR4Lbhjdxl4ACTaulSJE5OcgKU
-         L//e3xbGIRW9FKKPzyUmb7SaKt8YES02O8HiNr5we7WDUE1kzU3+odQ4EY9hm+7RLeDC
-         VXiJBrRRqVcWdCei6EtnMKE7IEd20JzxFNL/6Pu0gGjBpguI6XTdsiQDyr4ceT6Fshah
-         o6sQ==
-X-Gm-Message-State: AOAM532VlIztvmCWkJn+B5ZRwXf1p2BZZWNjVc/UgO4v0YS9Me8cTiC0
-        dXvzkC3LYgN26zjt3jaxMJOBvPiWme8TBG3Irro=
-X-Google-Smtp-Source: ABdhPJzTupNyCpotIbxl++ljdq4IKKt3HeiECiEDP0/79kDSsY0dvtczGHPOgZl6hpwv2aJHNzGf/O1cXATsb0f+lZ4=
-X-Received: by 2002:a25:8541:: with SMTP id f1mr17868249ybn.230.1602273237716;
- Fri, 09 Oct 2020 12:53:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
- <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net> <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
- <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net> <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
- <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net> <CAMy7=ZW6B+aHN-3dAf7-=kK8WpMZ0NmEmeVh67jVPrjsryx9sQ@mail.gmail.com>
- <CAEf4BzYJQ_RZgy8YCPxfF+QEkx9W+jeu-3O3CX+vEqTFtOT2Fw@mail.gmail.com> <CAMy7=ZWhAzJP5m3QW0gHe4rVFoETT=zhCcyVeKBuTcO=ttC=MA@mail.gmail.com>
-In-Reply-To: <CAMy7=ZWhAzJP5m3QW0gHe4rVFoETT=zhCcyVeKBuTcO=ttC=MA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 9 Oct 2020 12:53:46 -0700
-Message-ID: <CAEf4Bzbm7D+ygkoCCoTy8OR0krVWosS_o13Gv4Xd2jhOSC5a7Q@mail.gmail.com>
+        id S1728014AbgJIT7U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 15:59:20 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60314 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387722AbgJIT65 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 15:58:57 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kQyXW-0004ex-53; Fri, 09 Oct 2020 21:58:54 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kQyXV-000FwJ-VP; Fri, 09 Oct 2020 21:58:54 +0200
 Subject: Re: libbpf error: unknown register name 'r0' in asm
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Yaniv Agman <yanivagman@gmail.com>, Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
+ <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net>
+ <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
+ <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net>
+ <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
+ <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net>
+ <CAEf4Bza4KFJ_j7vmg-x_Zinp0PUM-zmWYHMq_y+2zWmX485sBQ@mail.gmail.com>
+ <ece9975d-717c-a868-be51-c97aeae8e011@iogearbox.net>
+ <CAEf4BzawvpsYybaOXf=GvJguiavC16BmdDeJfO4kEAR5naOKug@mail.gmail.com>
+ <231e3e6b-0118-f600-05c5-f4e2f2c76129@fb.com>
+ <CAMy7=ZWYn9MnmQJU7S_FUz5PArkGtVUcS1czn3oVCqa1aEniXw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <322077f3-efea-8bd0-0b67-b4636428fc5a@iogearbox.net>
+Date:   Fri, 9 Oct 2020 21:58:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAMy7=ZWYn9MnmQJU7S_FUz5PArkGtVUcS1czn3oVCqa1aEniXw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25952/Fri Oct  9 15:52:40 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 12:32 PM Yaniv Agman <yanivagman@gmail.com> wrote:
->
-> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=
-=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-21:39 =D7=9E=D7=90=D7=
-=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
-> <=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
-> >
-> > On Fri, Oct 9, 2020 at 11:33 AM Yaniv Agman <yanivagman@gmail.com> wrot=
-e:
-> > >
-> > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=
-=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-21:21 =D7=9E=D7=90=
-=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
-> > > <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > >
-> > > > On 10/9/20 8:09 PM, Yaniv Agman wrote:
-> > > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
-=D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-20:39 =D7=9E=D7=
-=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
-> > > > > <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > >>
-> > > > >> On 10/9/20 6:56 PM, Yaniv Agman wrote:
-> > > > >>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=
-=9D =D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-19:27 =D7=9E=
-=D7=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
-> > > > >>> <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > >>>>
-> > > > >>>> [ Cc +Yonghong ]
-> > > > >>>>
-> > > > >>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
-> > > > >>>>> Pulling the latest changes of libbpf and compiling my applica=
-tion with it,
-> > > > >>>>> I see the following error:
-> > > > >>>>>
-> > > > >>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: erro=
-r:
-> > > > >>>>> unknown register name 'r0' in asm
-> > > > >>>>>                         : "r0", "r1", "r2", "r3", "r4", "r5")=
-;
-> > > > >>>>>
-> > > > >>>>> The commit which introduced this change is:
-> > > > >>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
-> > > > >>>>>
-> > > > >>>>> I'm not sure if I'm doing something wrong (missing include?),=
- or this
-> > > > >>>>> is a genuine error
-> > > > >>>>
-> > > > >>>> Seems like your clang/llvm version might be too old.
-> > > > >>>
-> > > > >>> I'm using clang 10.0.1
-> > > > >>
-> > > > >> Ah, okay, I see. Would this diff do the trick for you?
-> > > > >
-> > > > > Yes! Now it compiles without any problems!
-> > > >
-> > > > Great, thx, I'll cook proper fix and check with clang6 as Yonghong =
-mentioned.
-> > > >
-> > >
-> > > Thanks!
-> > > Does this happen because I'm first compiling using "emit-llvm" and
-> > > then using llc?
-> >
-> > So this must be the reason, but I'll wait for Yonghong to confirm.
-> >
-> > > I wish I could use bpf target directly, but I'm then having problems
-> > > with includes of asm code (like pt_regs and other stuff)
-> >
-> > Are you developing for a 32-bit platform? Or what exactly is the
-> > problem? I've been trying to solve problems for 32-bit arches recently
-> > by making libbpf smarter, that relies on CO-RE though. Is CO-RE an
-> > option for you?
-> >
->
-> Examples for the errors I'm getting:
-> /lib/modules/4.14.199-1-MANJARO/build/arch/x86/include/asm/atomic.h:177:9=
-:
-> error: invalid output constraint '+q' in asm
->         return xadd(&v->counter, i);
->                ^
-> /lib/modules/4.14.199-1-MANJARO/build/arch/x86/include/asm/cmpxchg.h:234:=
-25:
-> note: expanded from macro 'xadd'
-> #define xadd(ptr, inc)          __xadd((ptr), (inc), LOCK_PREFIX)
-> ...
->
-> From What I understood, this is a known issue for tracing programs
-> (like the one I'm developing)
+On 10/9/20 9:33 PM, Yaniv Agman wrote:
+> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-22:08 מאת ‪Yonghong Song‬‏ <‪yhs@fb.com‬‏>:‬
+>> On 10/9/20 11:59 AM, Andrii Nakryiko wrote:
+>>> On Fri, Oct 9, 2020 at 11:41 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>> On 10/9/20 8:35 PM, Andrii Nakryiko wrote:
+>>>>> On Fri, Oct 9, 2020 at 11:21 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>>> On 10/9/20 8:09 PM, Yaniv Agman wrote:
+>>>>>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-20:39 מאת ‪Daniel Borkmann‬‏
+>>>>>>> <‪daniel@iogearbox.net‬‏>:‬
+>>>>>>>>
+>>>>>>>> On 10/9/20 6:56 PM, Yaniv Agman wrote:
+>>>>>>>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-19:27 מאת ‪Daniel Borkmann‬‏
+>>>>>>>>> <‪daniel@iogearbox.net‬‏>:‬
+>>>>>>>>>>
+>>>>>>>>>> [ Cc +Yonghong ]
+>>>>>>>>>>
+>>>>>>>>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
+>>>>>>>>>>> Pulling the latest changes of libbpf and compiling my application with it,
+>>>>>>>>>>> I see the following error:
+>>>>>>>>>>>
+>>>>>>>>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
+>>>>>>>>>>> unknown register name 'r0' in asm
+>>>>>>>>>>>                            : "r0", "r1", "r2", "r3", "r4", "r5");
+>>>>>>>>>>>
+>>>>>>>>>>> The commit which introduced this change is:
+>>>>>>>>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
+>>>>>>>>>>>
+>>>>>>>>>>> I'm not sure if I'm doing something wrong (missing include?), or this
+>>>>>>>>>>> is a genuine error
+>>>>>>>>>>
+>>>>>>>>>> Seems like your clang/llvm version might be too old.
+>>>>>>>>>
+>>>>>>>>> I'm using clang 10.0.1
+>>>>>>>>
+>>>>>>>> Ah, okay, I see. Would this diff do the trick for you?
+>>>>>>>
+>>>>>>> Yes! Now it compiles without any problems!
+>>>>>>
+>>>>>> Great, thx, I'll cook proper fix and check with clang6 as Yonghong mentioned.
+>>>>>
+>>>>> Am I the only one confused here?... Yonghong said it should be
+>>>>> supported as early as clang 6, Yaniv is using Clang 10 and is still
+>>>>> getting this error. Let's figure out what's the problem before adding
+>>>>> unnecessary checks.
+>>>>>
+>>>>> I think it's not the clang_major check that helped, rather __bpf__
+>>>>> check. So please hold off on the fix, let's get to the bottom of this
+>>>>> first.
+>>>>
+>>>> I don't see confusion here (maybe other than which minimal clang/llvm version
+>>>> libbpf should support). If we do `#if __clang_major__ >= 6 && defined(__bpf__)`
+>>>> for the final patch, then this means that user passed clang -target bpf and
+>>>> the min supported version for inline assembly was there, otherwise we fall back
+>>>> to bpf_tail_call. In Yaniv's case, he probably had native target with -emit-llvm
+>>>> and then used llc invocation.
+>>>
+>>> The "-emit-llvm" was the part that we were missing and had to figure
+>>> it out, before we could discuss the fix.
+>>
+>> Maybe Yaniv can confirm. I think the following properly happens.
+>>      - clang10 -O2 -g -S -emit-llvm t.c  // This is native compilation
+>> becasue some header files. Maybe some thing is guarded with x86 specific
+>> config's which is not available to -target bpf. This is mostly for
+>> tracing programs and Yanic mentions pt_regs which should be related
+>> to tracing.
+>>      - llc -march=bpf t.ll
+> 
+> Yes, like I said,  I do use --emit-llvm, and indeed have a tracing program
+> 
+>> So guarding the function with __bpf__ should be the one fixing this issue.
+>>
+>> guard with clang version >=6 should not hurt and may prevent
+>> compilation failures if people use < 6 llvm with clang -target bpf.
+>> I think most people should already use newer llvm, but who knows.
 
-We do have a bunch of selftests that use pt_regs and include, say,
-linux/ptrace.h header. I wonder why we are not seeing these problems.
-Selftests, btw, are also built with -emit-llvm and then piping output
-to llc.
+Yeah that was my thinking for those stuck for whatever reason on old LLVM.
 
-So.. there must be something else going on. It's hard to guess like
-this without seeing the code, but maybe -D__TARGET_ARCH_$(SRCARCH)
-during compilation could help, just as an idea.
+>>>>>>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+>>>>>>>> index 2bdb7d6dbad2..31e356831fcf 100644
+>>>>>>>> --- a/tools/lib/bpf/bpf_helpers.h
+>>>>>>>> +++ b/tools/lib/bpf/bpf_helpers.h
+>>>>>>>> @@ -72,6 +72,7 @@
+>>>>>>>>       /*
+>>>>>>>>        * Helper function to perform a tail call with a constant/immediate map slot.
+>>>>>>>>        */
+>>>>>>>> +#if __clang_major__ >= 10 && defined(__bpf__)
+>>>>>>>>       static __always_inline void
+>>>>>>>>       bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+>>>>>>>>       {
+>>>>>>>> @@ -98,6 +99,9 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+>>>>>>>>                          :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
+>>>>>>>>                          : "r0", "r1", "r2", "r3", "r4", "r5");
+>>>>>>>>       }
+>>>>>>>> +#else
+>>>>>>>> +# define bpf_tail_call_static  bpf_tail_call
+>>>
+>>> bpf_tail_call_static has very specific guarantees, so in cases where
+>>> we can't use inline assembly to satisfy those guarantees, I think we
+>>> should not just silently redefine bpf_tail_call_static as
+>>> bpf_tail_call, rather make compilation fail if someone is attempting
+>>> to use bpf_tail_call_static. _Static_assert could be used to provide a
+>>> better error message here, probably.
 
-> Unfortunately, CO-RE is not (yet) an option.
-> I'm currently making the move from bcc to libbpf, and our application
-> needs to support kernel 4.14, and work on all environments.
+Makes sense as well, I was mainly thinking if people include header files in
+their project which are shared between tracing & non-tracing, so they compile
+just fine, but I can see the point that wrt very specific guarantees, fully
+agree. In that sense we should just have it defined with the clang + __bpf__
+constraints mentioned earlier.
 
-Kernel version is not a big problem, it's vmlinux BTF availability
-that could be a problem. vmlinux BTF can be added into any version of
-kernel with pahole -J, post factum, but that assumes you have some
-control over how kernels are built and distributed, of course.
-
->
-> > [...]
+Thanks,
+Daniel
