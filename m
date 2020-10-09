@@ -2,63 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D366B2891E4
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 21:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DA5289232
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 21:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390738AbgJITmM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 15:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
+        id S2387744AbgJITt3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 15:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390731AbgJITmJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 15:42:09 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323ACC0613D2;
-        Fri,  9 Oct 2020 12:42:09 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id j13so6332553ilc.4;
-        Fri, 09 Oct 2020 12:42:09 -0700 (PDT)
+        with ESMTP id S1726357AbgJITt3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 15:49:29 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02797C0613D2;
+        Fri,  9 Oct 2020 12:49:29 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id q9so11315133iow.6;
+        Fri, 09 Oct 2020 12:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=+ZlpofFt4FGuf6pqKLM7pCFIvbamneYk0OHXC7HGUTE=;
-        b=lRybGZuL+BUkJwqk0OJM6993WXlkrgplAPpNV7u64JccXg3ukSBwwSdoChdVnoc4LO
-         R3hXVpeCYtq6phqMlkMsq1dung45duMkw1SJ6h3xYmHwj/aHE45x7hynvn20R3GKNIed
-         eu/CXHW+OA+Yfvwa0kPGqRhxpEOEQZr62698kio2Xcu8e9h2+ZrJQdCmjsoEd7Q/tCWx
-         USAnHX1C7WFEDEH1MCxzZqA9nmNc8PYc4ywLiGkRjmUM2XNAHP9m2j8BjgnS/PNTEG8a
-         PzNf4THH/rJdZk+Hy5uC1u5ATt+dkYC2lD8etGPmNY5Sju4xdX+tjVACkWf3MSWmX9mH
-         zXcQ==
+        bh=haLh6SHjWi8U3D1Pyc28km+ybtATBc38N6RMdxr91ug=;
+        b=PEF+vX1k0tDlZjhydR4BLCrw4StHPPoqREBrrHEFDLAd/9PQVfBn5u/oKlaUWhE/iA
+         it0uLF1ApFZicN2v/GAvWVtYaz8AO/fUMAmnnb6jEumB4DO8mYiWNdTudPuu0Zu2A/5t
+         Za913nvdenmvWFX6QdYHbTdfxO+/sCovhRuaJa+cPCojHIooQkcWaHdAwV+KfaQ3NCFo
+         XO2S2LiTTei7fChwSDCYknYiyvfGY+QDIIobA0FymxO2mU5ltGl9mYcOGn87hN/WZaXz
+         yjkh775KymMHIXTq0YlXdxePOB0lxw1UmR7wirZ4oIxlX8B9SY1fVV2ujUf37qYUn9gv
+         BMEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=+ZlpofFt4FGuf6pqKLM7pCFIvbamneYk0OHXC7HGUTE=;
-        b=ol89EEVQxjmSp+thWn9woXpDtHD6Tb1UZETfZEGAR7imCCzeR+nUf61IE7hMdJtxax
-         9VXT2dNXrVnLmh7hjyfVBW1QlLHDmonaAHsQSSqGHBmYNBGgKuo+9YUvTfeewFF6Q6iJ
-         YHiP6NbIe2awJrI3ooe+piMC2ixSnE/JOQe1fHeixuM4RN2GUz5iyfd0gNXMdK2wz6p0
-         akhNuL43tUITw7itL5NPja/Zxz4Du5Fzw4gzNOtaTs1cZQH10dT42xjGohLU7dPmtKE8
-         h5zZfUT4C0QQFH+GLsm8SCBUIod5uP4X6g2+BjEOY4zZEVXfL7WNx+j421+xP42GM6GR
-         C9Iw==
-X-Gm-Message-State: AOAM532kBS22+2YybxVCSM3YCFurJA99Ti7lVkwsU329lqG9Ex4ncpSB
-        Ua0gULNWVrxNN4p6BJMmuCI=
-X-Google-Smtp-Source: ABdhPJz2eAeaSB+vfHX0ltEh1u9oUwUnJkBW6xU5bWieFF25WV7ZGUWu+9u34coBYkaYvFZlpsQLVQ==
-X-Received: by 2002:a05:6e02:f44:: with SMTP id y4mr409753ilj.226.1602272528069;
-        Fri, 09 Oct 2020 12:42:08 -0700 (PDT)
+        bh=haLh6SHjWi8U3D1Pyc28km+ybtATBc38N6RMdxr91ug=;
+        b=iMAsNvzhEnBHeGP4l8nafcc6DuuB0Gw2iyCEJw8va8DwHXZuU/iBH18EsCuohgqaT8
+         BCSG8hEF85T/FA6MPD/QTQHoJxO9D1HJCODbimgTSDCvPX1PIqPQSxQLNeH/W18USaZZ
+         FjzlwuHedPqGj60Yd1niYvrHNw7IyX+TWML30X/vlc8Eb63fyuAmX/6ELOsFibPMKliM
+         D0qYw4toueIZp+Qc8ONUnV6N4O+UBHCnkvdAbXcTixEcltEoMqN2RTSY2KGIOnKAHb2T
+         gHoZuqm70iukkpgH8Ypcu6b/NYW746LwDykOLB08fD0h01RLUeEgLFhL+t+fEXtlN8Oj
+         WV3Q==
+X-Gm-Message-State: AOAM531qWkleORxLE9nxUSPNpHeY9TCAh+YfohjwQ560Xuypqcs1ztN+
+        b/EoU7DxDlY4qns/CR2TPWszwQAf/8fZWA==
+X-Google-Smtp-Source: ABdhPJxrlxwyQk+ImhV2V9VlfEC/lHmk0SPQqCiTd1d0Jx3jayHaMFAZZPM/TFoBp8bPKe1uQvq22A==
+X-Received: by 2002:a6b:c94f:: with SMTP id z76mr10042990iof.88.1602272968347;
+        Fri, 09 Oct 2020 12:49:28 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id f2sm4509979ilr.13.2020.10.09.12.42.05
+        by smtp.gmail.com with ESMTPSA id m13sm2035229ioo.9.2020.10.09.12.49.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 12:42:07 -0700 (PDT)
-Date:   Fri, 09 Oct 2020 12:42:00 -0700
+        Fri, 09 Oct 2020 12:49:27 -0700 (PDT)
+Date:   Fri, 09 Oct 2020 12:49:20 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         davem@davemloft.net
 Cc:     daniel@iogearbox.net, john.fastabend@gmail.com,
         netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Message-ID: <5f80bd081008f_ed742083e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201009011240.48506-2-alexei.starovoitov@gmail.com>
+Message-ID: <5f80bec0c60a0_ed7420896@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201009011240.48506-3-alexei.starovoitov@gmail.com>
 References: <20201009011240.48506-1-alexei.starovoitov@gmail.com>
- <20201009011240.48506-2-alexei.starovoitov@gmail.com>
-Subject: RE: [PATCH v2 bpf-next 1/4] bpf: Propagate scalar ranges through
- register assignments.
+ <20201009011240.48506-3-alexei.starovoitov@gmail.com>
+Subject: RE: [PATCH v2 bpf-next 2/4] bpf: Track spill/fill of bounded scalars.
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -68,59 +67,25 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+> From: Yonghong Song <yhs@fb.com>
 > 
-> The llvm register allocator may use two different registers representing the
-> same virtual register. In such case the following pattern can be observed:
-> 1047: (bf) r9 = r6
-> 1048: (a5) if r6 < 0x1000 goto pc+1
-> 1050: ...
-> 1051: (a5) if r9 < 0x2 goto pc+66
-> 1052: ...
-> 1053: (bf) r2 = r9 /* r2 needs to have upper and lower bounds */
+> Under register pressure the llvm may spill registers with bounds into the stack.
+> The verifier has to track them through spill/fill otherwise many kinds of bound
+> errors will be seen. The spill/fill of induction variables was already
+> happening. This patch extends this logic from tracking spill/fill of a constant
+> into any bounded register. There is no need to track spill/fill of unbounded,
+> since no new information will be retrieved from the stack during register fill.
 > 
-> This is normal behavior of greedy register allocator.
-> The slides 137+ explain why regalloc introduces such register copy:
-> http://llvm.org/devmtg/2018-04/slides/Yatsina-LLVM%20Greedy%20Register%20Allocator.pdf
-> There is no way to tell llvm 'not to do this'.
-> Hence the verifier has to recognize such patterns.
+> Though extra stack difference could cause state pruning to be less effective, no
+> adverse affects were seen from this patch on selftests and on cilium programs.
 > 
-> In order to track this information without backtracking allocate ID
-> for scalars in a similar way as it's done for find_good_pkt_pointers().
-> 
-> When the verifier encounters r9 = r6 assignment it will assign the same ID
-> to both registers. Later if either register range is narrowed via conditional
-> jump propagate the register state into the other register.
-> 
-> Clear register ID in adjust_reg_min_max_vals() for any alu instruction. The
-> register ID is ignored for scalars in regsafe() and doesn't affect state
-> pruning. mark_reg_unknown() clears the ID. It's used to process call, endian
-> and other instructions. Hence ID is explicitly cleared only in
-> adjust_reg_min_max_vals() and in 32-bit mov.
-> 
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  kernel/bpf/verifier.c                         | 50 +++++++++++++++++++
->  .../testing/selftests/bpf/prog_tests/align.c  | 16 +++---
->  .../bpf/verifier/direct_packet_access.c       |  2 +-
->  3 files changed, 59 insertions(+), 9 deletions(-)
-> 
+>  kernel/bpf/verifier.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
 
-I also walked through the stack read case and I don't see any issues
-there either. We will run check_mem_access on the ld with src_reg->type set
-to PTR_TO_STACK. So we run through check_stack_read() with a value_regno
-set to the dst_reg (>=0). The case I was thinking of was if we had a
-size != BPF_REG_SIZE. But, this case is handled by marking the dst reg
-unknown and never copying over the stack[spi]. If size == BPF_REG_SIZE
-its a full read and we also ensure all stype[] are STACK_SPILL. Then
-everything looks safe to do state->regs[value_reno] = *reg e.g. assign
-register state from stack complete with reg.id. 
-
-Looking the other way at stack writes. We only allow SCALAR type bounds to
-be saved on the stack if they are constant and size = BPF_REG_SIZE so no
-problems there.
-
-LGTM!
+LGTM and will be useful.
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
