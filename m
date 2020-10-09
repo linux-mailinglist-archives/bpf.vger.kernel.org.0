@@ -2,127 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03B7288FF0
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 19:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC55289021
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 19:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731840AbgJIRZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 13:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732528AbgJIRZP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:25:15 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6940DC0613D2
-        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 10:25:13 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g12so11082709wrp.10
-        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 10:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=218xaHs2rZNa9jTYJXmDVRRaape+5jpCuo1cSZDE68Y=;
-        b=creOSRKTUeYhh/6OYZA4joo2NuLZpIGt9Kw1OHbgUY8hTfB7xaWX0/NbfNllme2edb
-         dgib8pb5T89oPSoxmq9gfSlt0+qO3IE44aMVJy+zAByETZ3fwQ9450NdqyJ5xFO85rZc
-         gIrHGYk3HhI/emo4vCgsDyZi4yXDNglUqAmKNk5MSc3PO+YSsTfiCWDckdbwGUgpXpaT
-         kRsCyo/cWSpbCUtgrFJDj5IWoTjTpPx7kXn8M4kazm1lbgPWj0UNidKVnWwEATuk1x+7
-         kqKBRLlcnmIaUKKlfA9GtaA3AIRxvIHfJ/U8AbBe5EzlvroiSp3xB1UUS3Pblb5hnqB7
-         j4gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=218xaHs2rZNa9jTYJXmDVRRaape+5jpCuo1cSZDE68Y=;
-        b=b2LLeP0Fcm6Xm9OyvN+aeUnv9PJB91A3P46XfJ+SXYY+OS6SmPIZiiqd0N35oj4Cyh
-         RSZANa9Fr9sn73fmwFO2qONr7SQ0Gqk34qRlPEzuld1R8jNc7KDy270hoGom8AIWy7u2
-         6zyQ/xUShVT/5nRQr+Xkzl3HpcNBz1pZt8m5ycAdL9L1gpWfsyYEEFKKmCiKAvSxPEzn
-         N1/JziKntBmiHm3NuC9wzBejaShxeyhjNBYMbI/5vBEsJH3+MEiYxAsloQEIVyMcedDd
-         NHNGjjcbq75H3axs3yMD0+7Bpaef9Llzy2ljrlYfeLu2U1TLhPjopJm3r9W9UpvvdNhN
-         H4ag==
-X-Gm-Message-State: AOAM532DWEQ6kMIsoQ6YehXTC0da3MgUZ9NNHb47qskE0bNlqzJUSGqD
-        icdR+WvjXkUBd2ytS6q0wa3Xecyi66sgoMmfT9CuOA==
-X-Google-Smtp-Source: ABdhPJw8wFSMxS4yjlgkAhvA1enAoa/MDoiy6oG3g4JoOICMO5+l65LTJwkqsXFSbFkPwPeX5NdjEccKlSXmutiQx/U=
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr16465051wrw.18.1602264312119;
- Fri, 09 Oct 2020 10:25:12 -0700 (PDT)
+        id S1729223AbgJIRjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 13:39:19 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36024 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733177AbgJIRjH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 13:39:07 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kQwMD-0000gW-Gs; Fri, 09 Oct 2020 19:39:05 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kQwMD-000NOD-BX; Fri, 09 Oct 2020 19:39:05 +0200
+Subject: Re: libbpf error: unknown register name 'r0' in asm
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
+ <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net>
+ <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net>
+Date:   Fri, 9 Oct 2020 19:39:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <cover.1602263422.git.yifeifz2@illinois.edu> <122e3e70cf775e461ebdfadb5fbb4b6813cca3dd.1602263422.git.yifeifz2@illinois.edu>
-In-Reply-To: <122e3e70cf775e461ebdfadb5fbb4b6813cca3dd.1602263422.git.yifeifz2@illinois.edu>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Fri, 9 Oct 2020 10:25:00 -0700
-Message-ID: <CALCETrUD7z3-zL_rATzTyDUzgerOzXJHdn-hntNMG=vnX8ZF2w@mail.gmail.com>
-Subject: Re: [PATCH v4 seccomp 3/5] x86: Enable seccomp architecture tracking
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25952/Fri Oct  9 15:52:40 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 10:15 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
->
-> From: Kees Cook <keescook@chromium.org>
->
-> Provide seccomp internals with the details to calculate which syscall
-> table the running kernel is expecting to deal with. This allows for
-> efficient architecture pinning and paves the way for constant-action
-> bitmaps.
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Co-developed-by: YiFei Zhu <yifeifz2@illinois.edu>
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
-> ---
->  arch/x86/include/asm/seccomp.h | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-> index 2bd1338de236..03365af6165d 100644
-> --- a/arch/x86/include/asm/seccomp.h
-> +++ b/arch/x86/include/asm/seccomp.h
-> @@ -16,6 +16,18 @@
->  #define __NR_seccomp_sigreturn_32      __NR_ia32_sigreturn
->  #endif
->
-> +#ifdef CONFIG_X86_64
-> +# define SECCOMP_ARCH_NATIVE           AUDIT_ARCH_X86_64
-> +# define SECCOMP_ARCH_NATIVE_NR                NR_syscalls
-> +# ifdef CONFIG_COMPAT
-> +#  define SECCOMP_ARCH_COMPAT          AUDIT_ARCH_I386
-> +#  define SECCOMP_ARCH_COMPAT_NR       IA32_NR_syscalls
-> +# endif
-> +#else /* !CONFIG_X86_64 */
-> +# define SECCOMP_ARCH_NATIVE           AUDIT_ARCH_I386
-> +# define SECCOMP_ARCH_NATIVE_NR                NR_syscalls
-> +#endif
+On 10/9/20 6:56 PM, Yaniv Agman wrote:
+> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-19:27 מאת ‪Daniel Borkmann‬‏
+> <‪daniel@iogearbox.net‬‏>:‬
+>>
+>> [ Cc +Yonghong ]
+>>
+>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
+>>> Pulling the latest changes of libbpf and compiling my application with it,
+>>> I see the following error:
+>>>
+>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
+>>> unknown register name 'r0' in asm
+>>>                        : "r0", "r1", "r2", "r3", "r4", "r5");
+>>>
+>>> The commit which introduced this change is:
+>>> 80c7838600d39891f274e2f7508b95a75e4227c1
+>>>
+>>> I'm not sure if I'm doing something wrong (missing include?), or this
+>>> is a genuine error
+>>
+>> Seems like your clang/llvm version might be too old.
+> 
+> I'm using clang 10.0.1
 
-Is the idea that any syscall that's out of range for this (e.g. all of
-the x32 syscalls) is unoptimized?  I'm okay with this, but I think it
-could use a comment.
+Ah, okay, I see. Would this diff do the trick for you?
 
-> +
->  #include <asm-generic/seccomp.h>
->
->  #endif /* _ASM_X86_SECCOMP_H */
-> --
-> 2.28.0
->
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index 2bdb7d6dbad2..31e356831fcf 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -72,6 +72,7 @@
+  /*
+   * Helper function to perform a tail call with a constant/immediate map slot.
+   */
++#if __clang_major__ >= 10 && defined(__bpf__)
+  static __always_inline void
+  bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+  {
+@@ -98,6 +99,9 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+  		     :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
+  		     : "r0", "r1", "r2", "r3", "r4", "r5");
+  }
++#else
++# define bpf_tail_call_static	bpf_tail_call
++#endif /* __clang_major__ >= 10 && __bpf__ */
 
-
--- 
-Andy Lutomirski
-AMA Capital Management, LLC
+  /*
+   * Helper structure used by eBPF C program
