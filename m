@@ -2,93 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20825289C04
-	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 01:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7560A289C0D
+	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 01:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733054AbgJIXFk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 19:05:40 -0400
-Received: from www62.your-server.de ([213.133.104.62]:35446 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731374AbgJIXFk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:05:40 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kR1SA-0002nU-Vw; Sat, 10 Oct 2020 01:05:35 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kR1SA-0000ZS-R5; Sat, 10 Oct 2020 01:05:34 +0200
-Subject: Re: [PATCH bpf-next v2] bpf_fib_lookup: optionally skip neighbour
- lookup
-To:     David Ahern <dsahern@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>, ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20201009101356.129228-1-toke@redhat.com>
- <0a463800-a663-3fd3-2e1a-eac5526ed691@gmail.com> <87v9fjckcd.fsf@toke.dk>
- <4972626e-c86d-8715-0565-20bed680227c@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <50fc3fee-13b2-11d1-f5b1-e0d8669cd655@iogearbox.net>
-Date:   Sat, 10 Oct 2020 01:05:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726443AbgJIXOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 19:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbgJIXOv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 19:14:51 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F41C0613D2
+        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 16:14:51 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t18so5200996plo.1
+        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 16:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n8tMNPlt+WgOGWxVqUdEpRLjgaATmbfqGWdnlUKGm2w=;
+        b=iKYPQpxjWQDkWz+DPQGsFwsINVhn1zUNJnEVfUJUHTj6OrT2UeyVf1jFWu2VGG0Sd/
+         Q6eQgdzwWjj1nWOw0JUlCIXxYd/FtVriQRsOUwCsaFdBcNkPKi+2pbMPFtUj75Sr/tRe
+         8j88AH6f6bdBDPc15Bfpy6/ADirbyIrXuuiWY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n8tMNPlt+WgOGWxVqUdEpRLjgaATmbfqGWdnlUKGm2w=;
+        b=brPpDuMj+u0U7lNNzWGY1nsBbYeAB7Z0cTMWQRex6GCTn3oxIEbjgT7oPL8t0GSpuZ
+         qbgjn1aQKHps+YgL1fwj0cNqYWxrx5Lh+OLvldtbysVYQwnP7vNsccFo4FiaCQDu+Tat
+         AuIUCRPfMTPHJnpDujyajShTSqJQthZG8R5LL48mMqFwkO/EJQeaJDUP8N1T6BzQdB5x
+         iYBRTsRSTsM8ucWJaswuEG0WQ4ZdwKmqTYfzNGowchk2aqzKdLP7C5tTiqJvoykIikD1
+         7Sy5bqCeS4PzmBAOsZ8XxqaRo78oK5vNFnwQoMUYVHqTqAhCpfT8lygiw+N2nuTouLh9
+         CTMQ==
+X-Gm-Message-State: AOAM5307Cj5wOgzDqtJgiKYsQdUxr764SkVRYiFaafojj3iAegqVVCZx
+        lGjge2VAaU/TsE9ytbqPPVo57Q==
+X-Google-Smtp-Source: ABdhPJwNBafddDMTu9v6aB/SdriCWv98crtqxIV19v6tjDbA0QjDMDvn6HIEfpx597XYVrlGXc/Prw==
+X-Received: by 2002:a17:902:8bc4:b029:d2:8cec:1fae with SMTP id r4-20020a1709028bc4b02900d28cec1faemr14566468plo.23.1602285290468;
+        Fri, 09 Oct 2020 16:14:50 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g4sm12323939pgh.65.2020.10.09.16.14.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 16:14:49 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 16:14:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202010091613.B671C86@keescook>
+References: <cover.1602263422.git.yifeifz2@illinois.edu>
+ <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
 MIME-Version: 1.0
-In-Reply-To: <4972626e-c86d-8715-0565-20bed680227c@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25952/Fri Oct  9 15:52:40 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/9/20 11:28 PM, David Ahern wrote:
-> On 10/9/20 11:42 AM, Toke Høiland-Jørgensen wrote:
->> David Ahern <dsahern@gmail.com> writes:
->>> On 10/9/20 3:13 AM, Toke Høiland-Jørgensen wrote:
->>>> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
->>>> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
->>>> that the BPF program will pass the packet up the stack in this case.
->>>> However, with the addition of bpf_redirect_neigh() that can be used instead
->>>> to perform the neighbour lookup, at the cost of a bit of duplicated work.
->>>>
->>>> For that we still need the target ifindex, and since bpf_fib_lookup()
->>>> already has that at the time it performs the neighbour lookup, there is
->>>> really no reason why it can't just return it in any case. So let's just
->>>> always return the ifindex, and also add a flag that lets the caller turn
->>>> off the neighbour lookup entirely in bpf_fib_lookup().
->>>
->>> seems really odd to do the fib lookup only to skip the neighbor lookup
->>> and defer to a second helper to do a second fib lookup and send out.
->>>
->>> The better back-to-back calls is to return the ifindex and gateway on
->>> successful fib lookup regardless of valid neighbor. If the call to
->>> bpf_redirect_neigh is needed, it can have a flag to skip the fib lookup
->>> and just redirect to the given nexthop address + ifindex. ie.,
->>> bpf_redirect_neigh only does neighbor handling in this case.
->>
->> Hmm, yeah, I guess it would make sense to cache and reuse the lookup -
->> maybe stick it in bpf_redirect_info()? However, given the imminent
+On Fri, Oct 09, 2020 at 12:14:33PM -0500, YiFei Zhu wrote:
+> From: YiFei Zhu <yifeifz2@illinois.edu>
 > 
-> That is not needed.
+> Currently the kernel does not provide an infrastructure to translate
+> architecture numbers to a human-readable name. Translating syscall
+> numbers to syscall names is possible through FTRACE_SYSCALL
+> infrastructure but it does not provide support for compat syscalls.
 > 
->> opening of the merge window, I don't see this landing before then. So
->> I'm going to respin this patch with just the original change to always
->> return the ifindex, then we can revisit the flags/reuse of the fib
->> lookup later.
+> This will create a file for each PID as /proc/pid/seccomp_cache.
+> The file will be empty when no seccomp filters are loaded, or be
+> in the format of:
+> <arch name> <decimal syscall number> <ALLOW | FILTER>
+> where ALLOW means the cache is guaranteed to allow the syscall,
+> and filter means the cache will pass the syscall to the BPF filter.
 > 
-> What I am suggesting is a change in API to bpf_redirect_neigh which
-> should be done now, before the merge window, before it comes a locked
-> API. Right now, bpf_redirect_neigh does a lookup to get the nexthop. It
-> should take the gateway as an input argument. If set, then the lookup is
-> not done - only the neighbor redirect.
+> For the docker default profile on x86_64 it looks like:
+> x86_64 0 ALLOW
+> x86_64 1 ALLOW
+> x86_64 2 ALLOW
+> x86_64 3 ALLOW
+> [...]
+> x86_64 132 ALLOW
+> x86_64 133 ALLOW
+> x86_64 134 FILTER
+> x86_64 135 FILTER
+> x86_64 136 FILTER
+> x86_64 137 ALLOW
+> x86_64 138 ALLOW
+> x86_64 139 FILTER
+> x86_64 140 ALLOW
+> x86_64 141 ALLOW
+> [...]
+> 
+> This file is guarded by CONFIG_SECCOMP_CACHE_DEBUG with a default
+> of N because I think certain users of seccomp might not want the
+> application to know which syscalls are definitely usable. For
+> the same reason, it is also guarded by CAP_SYS_ADMIN.
+> 
+> Suggested-by: Jann Horn <jannh@google.com>
+> Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
+> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> ---
+>  arch/Kconfig                   | 24 ++++++++++++++
+>  arch/x86/Kconfig               |  1 +
+>  arch/x86/include/asm/seccomp.h |  3 ++
+>  fs/proc/base.c                 |  6 ++++
+>  include/linux/seccomp.h        |  5 +++
+>  kernel/seccomp.c               | 59 ++++++++++++++++++++++++++++++++++
+>  6 files changed, 98 insertions(+)
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 21a3675a7a3a..85239a974f04 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -471,6 +471,15 @@ config HAVE_ARCH_SECCOMP_FILTER
+>  	    results in the system call being skipped immediately.
+>  	  - seccomp syscall wired up
+>  
+> +config HAVE_ARCH_SECCOMP_CACHE
+> +	bool
+> +	help
+> +	  An arch should select this symbol if it provides all of these things:
+> +	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
+> +	  - SECCOMP_ARCH_NATIVE
+> +	  - SECCOMP_ARCH_NATIVE_NR
+> +	  - SECCOMP_ARCH_NATIVE_NAME
+> +
+> [...]
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 1ab22869a765..1a807f89ac77 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -150,6 +150,7 @@ config X86
+>  	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
+>  	select HAVE_ARCH_PREL32_RELOCATIONS
+>  	select HAVE_ARCH_SECCOMP_FILTER
+> +	select HAVE_ARCH_SECCOMP_CACHE
+>  	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
+>  	select HAVE_ARCH_STACKLEAK
+>  	select HAVE_ARCH_TRACEHOOK
 
-Sounds like a reasonable extension, agree. API freeze is not merge win, but
-final v5.10 tag in this case as it always has been. In case it's not in time,
-we can simply just move flags to arg3 and add a reserved param as arg2 which
-must be zero (and thus indicate to perform the lookup as-is). Later we could
-extend to pass params similar as in fib_lookup helper for the gw.
+HAVE_ARCH_SECCOMP_CACHE isn't used any more. I think this was left over
+from before.
+
+-- 
+Kees Cook
