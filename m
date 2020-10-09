@@ -2,125 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B82A28914B
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 20:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52D128914D
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 20:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728317AbgJISlU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 14:41:20 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47396 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727737AbgJISlU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:41:20 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kQxKP-0006ye-4I; Fri, 09 Oct 2020 20:41:17 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kQxKO-0004fF-VU; Fri, 09 Oct 2020 20:41:17 +0200
-Subject: Re: libbpf error: unknown register name 'r0' in asm
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yaniv Agman <yanivagman@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>
-References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
- <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net>
- <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
- <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net>
- <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
- <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net>
- <CAEf4Bza4KFJ_j7vmg-x_Zinp0PUM-zmWYHMq_y+2zWmX485sBQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ece9975d-717c-a868-be51-c97aeae8e011@iogearbox.net>
-Date:   Fri, 9 Oct 2020 20:41:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1731572AbgJISmU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 14:42:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41233 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727737AbgJISmT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 9 Oct 2020 14:42:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602268938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j/QOCkmnSN60NLNZzGXIUnDSHiaUJlDv+sgUSKbTTlc=;
+        b=Q4iUp5+n97rE4TxAerrX5PJ15aLgrVgSD0C81N0RcgB7fNNnk+KCP8cM4uynyKc9KrvP3Y
+        INWgHittMDTWlGQZAFBY09dv9kreId+UaYgJLmYyTya0bO+takqCVexyL4DTd8T/eI68Xe
+        S1AzXdxMUuwZ+vs0TJj+Pk0AY+E12bg=
+Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
+ [209.85.217.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-vSxXDJZ-NceK24DnsJTKNQ-1; Fri, 09 Oct 2020 14:42:15 -0400
+X-MC-Unique: vSxXDJZ-NceK24DnsJTKNQ-1
+Received: by mail-vs1-f70.google.com with SMTP id v203so1459740vsv.8
+        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 11:42:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=j/QOCkmnSN60NLNZzGXIUnDSHiaUJlDv+sgUSKbTTlc=;
+        b=Xn18Dylv9P3Hg0EdL0FX2KWOjWN/rniv8Y5Nlsf2xwL2kqAhiaTQ8gO2Esky3+DjDu
+         ErcEhZPuu7jydtqfCvMMrfAsVoaGvxfomo6MogP5nUiB5mnFqyw+hak4EG+5L6xILZP8
+         k2eBzIE8jdsL/Z/MT9zfsAtMi/WUb1D9kFYE6sFt1BtlJ1BxejXPC7dpm0G7QG1FZ7uB
+         5doPg9C5rwoRtVG8XtRNPc0uiLa7QgyEpM+jQ11jIqJiUJmFKhv3xihx0WFeZbcNwRLO
+         4xidKeB5gHY07DrckdrN9qf+ntJ3MgZCE79Rea79Wy6toOzBNZVIw5eHvDNkvBJqGuoh
+         0NhQ==
+X-Gm-Message-State: AOAM533GK+efdQluPnqlrE6wCkjabtZEEygN3LhLnrGK0E/TQLE6ZTaG
+        Uz0DavhUmbnc92G1KvGevcunhtESGau/hIuX95L+tlqp1jxFnqdChWrphgkNLNP5gZ8gTwjFy2b
+        Yzfzf9RAlcZVU
+X-Received: by 2002:a05:6102:9cd:: with SMTP id g13mr9279748vsi.44.1602268934925;
+        Fri, 09 Oct 2020 11:42:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwtDbskbMOrPHyCRlSH7KdeoQmVqkFNAKTzB/kCt5yfOLg+3nT+pjvny3KKWiLKl4R4yiSxqQ==
+X-Received: by 2002:a05:6102:9cd:: with SMTP id g13mr9279735vsi.44.1602268934599;
+        Fri, 09 Oct 2020 11:42:14 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a195sm1264285vka.42.2020.10.09.11.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 11:42:13 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id ADCF01837DC; Fri,  9 Oct 2020 20:42:10 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     David Ahern <dsahern@gmail.com>, daniel@iogearbox.net, ast@fb.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        David Ahern <dsahern@gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf_fib_lookup: optionally skip neighbour
+ lookup
+In-Reply-To: <0a463800-a663-3fd3-2e1a-eac5526ed691@gmail.com>
+References: <20201009101356.129228-1-toke@redhat.com>
+ <0a463800-a663-3fd3-2e1a-eac5526ed691@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 09 Oct 2020 20:42:10 +0200
+Message-ID: <87v9fjckcd.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bza4KFJ_j7vmg-x_Zinp0PUM-zmWYHMq_y+2zWmX485sBQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25952/Fri Oct  9 15:52:40 2020)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/9/20 8:35 PM, Andrii Nakryiko wrote:
-> On Fri, Oct 9, 2020 at 11:21 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 10/9/20 8:09 PM, Yaniv Agman wrote:
->>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-20:39 מאת ‪Daniel Borkmann‬‏
->>> <‪daniel@iogearbox.net‬‏>:‬
->>>>
->>>> On 10/9/20 6:56 PM, Yaniv Agman wrote:
->>>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-19:27 מאת ‪Daniel Borkmann‬‏
->>>>> <‪daniel@iogearbox.net‬‏>:‬
->>>>>>
->>>>>> [ Cc +Yonghong ]
->>>>>>
->>>>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
->>>>>>> Pulling the latest changes of libbpf and compiling my application with it,
->>>>>>> I see the following error:
->>>>>>>
->>>>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
->>>>>>> unknown register name 'r0' in asm
->>>>>>>                          : "r0", "r1", "r2", "r3", "r4", "r5");
->>>>>>>
->>>>>>> The commit which introduced this change is:
->>>>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
->>>>>>>
->>>>>>> I'm not sure if I'm doing something wrong (missing include?), or this
->>>>>>> is a genuine error
->>>>>>
->>>>>> Seems like your clang/llvm version might be too old.
->>>>>
->>>>> I'm using clang 10.0.1
->>>>
->>>> Ah, okay, I see. Would this diff do the trick for you?
->>>
->>> Yes! Now it compiles without any problems!
->>
->> Great, thx, I'll cook proper fix and check with clang6 as Yonghong mentioned.
-> 
-> Am I the only one confused here?... Yonghong said it should be
-> supported as early as clang 6, Yaniv is using Clang 10 and is still
-> getting this error. Let's figure out what's the problem before adding
-> unnecessary checks.
-> 
-> I think it's not the clang_major check that helped, rather __bpf__
-> check. So please hold off on the fix, let's get to the bottom of this
-> first.
+David Ahern <dsahern@gmail.com> writes:
 
-I don't see confusion here (maybe other than which minimal clang/llvm version
-libbpf should support). If we do `#if __clang_major__ >= 6 && defined(__bpf__)`
-for the final patch, then this means that user passed clang -target bpf and
-the min supported version for inline assembly was there, otherwise we fall back
-to bpf_tail_call. In Yaniv's case, he probably had native target with -emit-llvm
-and then used llc invocation.
+> On 10/9/20 3:13 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> The bpf_fib_lookup() helper performs a neighbour lookup for the destinat=
+ion
+>> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
+>> that the BPF program will pass the packet up the stack in this case.
+>> However, with the addition of bpf_redirect_neigh() that can be used inst=
+ead
+>> to perform the neighbour lookup, at the cost of a bit of duplicated work.
+>>=20
+>> For that we still need the target ifindex, and since bpf_fib_lookup()
+>> already has that at the time it performs the neighbour lookup, there is
+>> really no reason why it can't just return it in any case. So let's just
+>> always return the ifindex, and also add a flag that lets the caller turn
+>> off the neighbour lookup entirely in bpf_fib_lookup().
+>
+> seems really odd to do the fib lookup only to skip the neighbor lookup
+> and defer to a second helper to do a second fib lookup and send out.
+>
+> The better back-to-back calls is to return the ifindex and gateway on
+> successful fib lookup regardless of valid neighbor. If the call to
+> bpf_redirect_neigh is needed, it can have a flag to skip the fib lookup
+> and just redirect to the given nexthop address + ifindex. ie.,
+> bpf_redirect_neigh only does neighbor handling in this case.
 
->>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
->>>> index 2bdb7d6dbad2..31e356831fcf 100644
->>>> --- a/tools/lib/bpf/bpf_helpers.h
->>>> +++ b/tools/lib/bpf/bpf_helpers.h
->>>> @@ -72,6 +72,7 @@
->>>>     /*
->>>>      * Helper function to perform a tail call with a constant/immediate map slot.
->>>>      */
->>>> +#if __clang_major__ >= 10 && defined(__bpf__)
->>>>     static __always_inline void
->>>>     bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
->>>>     {
->>>> @@ -98,6 +99,9 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
->>>>                        :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
->>>>                        : "r0", "r1", "r2", "r3", "r4", "r5");
->>>>     }
->>>> +#else
->>>> +# define bpf_tail_call_static  bpf_tail_call
->>>> +#endif /* __clang_major__ >= 10 && __bpf__ */
->>>>
->>>>     /*
->>>>      * Helper structure used by eBPF C program
->>
+Hmm, yeah, I guess it would make sense to cache and reuse the lookup -
+maybe stick it in bpf_redirect_info()? However, given the imminent
+opening of the merge window, I don't see this landing before then. So
+I'm going to respin this patch with just the original change to always
+return the ifindex, then we can revisit the flags/reuse of the fib
+lookup later.
+
+-Toke
 
