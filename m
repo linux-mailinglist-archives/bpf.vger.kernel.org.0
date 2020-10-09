@@ -2,106 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A1E2891B1
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 21:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728A02891C0
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 21:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388640AbgJIT0X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 9 Oct 2020 15:26:23 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58402 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731624AbgJIT0W (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 9 Oct 2020 15:26:22 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 099JPRO8024216
-        for <bpf@vger.kernel.org>; Fri, 9 Oct 2020 12:26:20 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3429gwdf0e-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 12:26:20 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 9 Oct 2020 12:26:19 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 0783F2EC7D45; Fri,  9 Oct 2020 12:26:18 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <dwarves@vger.kernel.org>, <acme@kernel.org>
-CC:     <bpf@vger.kernel.org>, <kernel-team@fb.com>, <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH dwarves] btf_loader: handle union forward declaration properly
-Date:   Fri, 9 Oct 2020 12:26:07 -0700
-Message-ID: <20201009192607.699835-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S2390623AbgJITcc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 15:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388639AbgJITcb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 15:32:31 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDB4C0613D2
+        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 12:32:31 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id p15so14700624ejm.7
+        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 12:32:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z8tzmW3tEEl4LWjCU0NlhQ1/o6AqbQ7QB2eHzwb4ewI=;
+        b=mXoZsVlEbAwitEGSly25LeLBYDk3t1WiBY/jPNrK+Xxm9YfSL+an0CmjwxyOVjJ8HV
+         9bsV0gJ40GEa7HNQESSPXfo8lu/FTQeQF/rmHHdYQ4VhCQKmInSx653/dV+ypH5yjj/y
+         Ax2fhRv6tzBBYUxdF9Y+qkcHzr716B6OlOPPvIoBUrLrdqKKyWHDJYmJ792yVy0psK5v
+         ISvMiqkyVW4vc9+xNX1inTr7OtE4PJZZ672OOWtMUPrH6wwSbu+nSvKnN4uFBDlRzpWA
+         d7V/vAzLwj0LWa9yNRTeo64arKqW40fNf6zc6Q7C/VAkPHuBGNZhpOS0jB++fhMkSOQX
+         aiKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z8tzmW3tEEl4LWjCU0NlhQ1/o6AqbQ7QB2eHzwb4ewI=;
+        b=S/hulRLIbqZniO0uSACXRLOPpkBNgWt2xLHB9YvOhdxj/ZA/z+OS6qz5uL+Aq2snnb
+         oGaonaH1itDTriSqKoIk3QVl+8btv+6Ef/8XvDC36+THvFzKQieoNzyR16AEo0G2+s8e
+         4JVvAD5QzMSFjUT8B1mPikkOdQH0hlF0xpSoJ4eB4KKnAcXnWbIipy0aCP4sGHuUKW6K
+         hO7DHCi5tFjlCs0SRz5x73/uqyW3vJUm6BmfWHj1FllSukssme+JM3f9RABaWr/DqAvO
+         H65SggGdkjvgbXFMS4Jfw/Q0esMuVqamnTfCrUtUbC8ZbDs5r3t5p6ckP9GIq2kmInaA
+         kayg==
+X-Gm-Message-State: AOAM530DklXDkvFNWCkfeAqsHOyM+MCXLQIkuYVBXKg8JWvUlV24+azn
+        FRm6SV9NJeCPOAficRczrd58X2dl3tDLrV2yca8=
+X-Google-Smtp-Source: ABdhPJwG7kN0Sf4uWTSRNGomshyNmcRfxtBNBEHb1ZZ53DRiheqlw22ZoPeXfm5gQpRWhfzoq8fQxYl8lxmA1w2/ksI=
+X-Received: by 2002:a17:906:6d89:: with SMTP id h9mr15378987ejt.152.1602271947764;
+ Fri, 09 Oct 2020 12:32:27 -0700 (PDT)
 MIME-Version: 1.0
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_12:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- malwarescore=0 impostorscore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010090140
-X-FB-Internal: deliver
+References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
+ <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net> <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
+ <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net> <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
+ <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net> <CAMy7=ZW6B+aHN-3dAf7-=kK8WpMZ0NmEmeVh67jVPrjsryx9sQ@mail.gmail.com>
+ <CAEf4BzYJQ_RZgy8YCPxfF+QEkx9W+jeu-3O3CX+vEqTFtOT2Fw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYJQ_RZgy8YCPxfF+QEkx9W+jeu-3O3CX+vEqTFtOT2Fw@mail.gmail.com>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Fri, 9 Oct 2020 22:32:16 +0300
+Message-ID: <CAMy7=ZWhAzJP5m3QW0gHe4rVFoETT=zhCcyVeKBuTcO=ttC=MA@mail.gmail.com>
+Subject: Re: libbpf error: unknown register name 'r0' in asm
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Differentiate between struct and union forwards. For BTF_KIND_FWD this is
-determined by kflag. So teach btf_loader to use that bit to decide whether
-forward is for union or struct.
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=D7=
+=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-21:39 =D7=9E=D7=90=D7=AA =
+=E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
+<=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+>
+> On Fri, Oct 9, 2020 at 11:33 AM Yaniv Agman <yanivagman@gmail.com> wrote:
+> >
+> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=
+=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-21:21 =D7=9E=D7=90=D7=
+=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> > <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > >
+> > > On 10/9/20 8:09 PM, Yaniv Agman wrote:
+> > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
+=D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-20:39 =D7=9E=D7=
+=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> > > > <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > > >>
+> > > >> On 10/9/20 6:56 PM, Yaniv Agman wrote:
+> > > >>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
+=D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-19:27 =D7=9E=D7=
+=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> > > >>> <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > > >>>>
+> > > >>>> [ Cc +Yonghong ]
+> > > >>>>
+> > > >>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
+> > > >>>>> Pulling the latest changes of libbpf and compiling my applicati=
+on with it,
+> > > >>>>> I see the following error:
+> > > >>>>>
+> > > >>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
+> > > >>>>> unknown register name 'r0' in asm
+> > > >>>>>                         : "r0", "r1", "r2", "r3", "r4", "r5");
+> > > >>>>>
+> > > >>>>> The commit which introduced this change is:
+> > > >>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
+> > > >>>>>
+> > > >>>>> I'm not sure if I'm doing something wrong (missing include?), o=
+r this
+> > > >>>>> is a genuine error
+> > > >>>>
+> > > >>>> Seems like your clang/llvm version might be too old.
+> > > >>>
+> > > >>> I'm using clang 10.0.1
+> > > >>
+> > > >> Ah, okay, I see. Would this diff do the trick for you?
+> > > >
+> > > > Yes! Now it compiles without any problems!
+> > >
+> > > Great, thx, I'll cook proper fix and check with clang6 as Yonghong me=
+ntioned.
+> > >
+> >
+> > Thanks!
+> > Does this happen because I'm first compiling using "emit-llvm" and
+> > then using llc?
+>
+> So this must be the reason, but I'll wait for Yonghong to confirm.
+>
+> > I wish I could use bpf target directly, but I'm then having problems
+> > with includes of asm code (like pt_regs and other stuff)
+>
+> Are you developing for a 32-bit platform? Or what exactly is the
+> problem? I've been trying to solve problems for 32-bit arches recently
+> by making libbpf smarter, that relies on CO-RE though. Is CO-RE an
+> option for you?
+>
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
-N.B. This patch is based on top of tmp.libbtf_encoder branch.
+Examples for the errors I'm getting:
+/lib/modules/4.14.199-1-MANJARO/build/arch/x86/include/asm/atomic.h:177:9:
+error: invalid output constraint '+q' in asm
+        return xadd(&v->counter, i);
+               ^
+/lib/modules/4.14.199-1-MANJARO/build/arch/x86/include/asm/cmpxchg.h:234:25=
+:
+note: expanded from macro 'xadd'
+#define xadd(ptr, inc)          __xadd((ptr), (inc), LOCK_PREFIX)
+...
 
-Also seems like non-forward declared union has a slightly different
-representation from struct (class). Not sure why it is so, but this change
-doesn't seem to break anything.
----
+From What I understood, this is a known issue for tracing programs
+(like the one I'm developing)
+Unfortunately, CO-RE is not (yet) an option.
+I'm currently making the move from bcc to libbpf, and our application
+needs to support kernel 4.14, and work on all environments.
 
- btf_loader.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/btf_loader.c b/btf_loader.c
-index 9b5da3a4997a..0cb23967fec3 100644
---- a/btf_loader.c
-+++ b/btf_loader.c
-@@ -134,12 +134,13 @@ static struct type *type__new(uint16_t tag, strings_t name, size_t size)
- 	return type;
- }
- 
--static struct class *class__new(strings_t name, size_t size)
-+static struct class *class__new(strings_t name, size_t size, bool is_union)
- {
- 	struct class *class = tag__alloc(sizeof(*class));
-+	uint32_t tag = is_union ? DW_TAG_union_type : DW_TAG_structure_type;
- 
- 	if (class != NULL) {
--		type__init(&class->type, DW_TAG_structure_type, name, size);
-+		type__init(&class->type, tag, name, size);
- 		INIT_LIST_HEAD(&class->vtable);
- 	}
- 
-@@ -228,7 +229,7 @@ static int create_members(struct btf_elf *btfe, const struct btf_type *tp,
- 
- static int create_new_class(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
- {
--	struct class *class = class__new(tp->name_off, tp->size);
-+	struct class *class = class__new(tp->name_off, tp->size, false);
- 	int member_size = create_members(btfe, tp, &class->type);
- 
- 	if (member_size < 0)
-@@ -313,7 +314,7 @@ static int create_new_subroutine_type(struct btf_elf *btfe, const struct btf_typ
- 
- static int create_new_forward_decl(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
- {
--	struct class *fwd = class__new(tp->name_off, 0);
-+	struct class *fwd = class__new(tp->name_off, 0, btf_kind(tp));
- 
- 	if (fwd == NULL)
- 		return -ENOMEM;
--- 
-2.24.1
-
+> [...]
