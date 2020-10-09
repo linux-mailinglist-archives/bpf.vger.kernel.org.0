@@ -2,95 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B90C2899FA
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 22:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F32289A17
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 23:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733168AbgJIUtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 16:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbgJIUtY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 16:49:24 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D46C0613D2;
-        Fri,  9 Oct 2020 13:49:24 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k6so11565608ior.2;
-        Fri, 09 Oct 2020 13:49:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=l6E4B46e2XeP9h+qJ2Ghhmtiv8oTVWyHQipTgIS48gY=;
-        b=mTs3JpJYvoM31Wsn0xENzCmbYma6XACEtukcUiHp2VAdCVorpafI11+3nrJOK9/lRT
-         V34st9fKO3/pGPJEsvOwlnZ10ipwCKYC0I6lmfAkeJdcGf5reNLq4SHHQVzdZdcHyqZ7
-         Lw3n0mvhAX7S9XGA291PmHSF6HSlLS+H+BvNavlX/vPGyrPC8e6BMNPyjLaCgiPgFUBN
-         gg4MClPzy7mlvz7TeOoT1AinBuwYJ58eZCWwJ71d4Oa5HlUkMzBOUv9ijLu/+PVkxgxi
-         pHSb0tUgjwWsnnj+8cHWkMyivNQrOxvqF1NVL0USIJkkavlKLG0ncNwXsjsWOubp9K6Y
-         awIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=l6E4B46e2XeP9h+qJ2Ghhmtiv8oTVWyHQipTgIS48gY=;
-        b=MezBC6/9dieQ5245/ERgLvNiP5R1xrvfTdVxnMI+YGGNU7jgukXkhR2qLiIAKl9ndv
-         uQ5MIYHyUQdWBlahWyKsu8xSk5JctQKZ/UKubIilpWhc6hFeiW4XqISP14TiYjJCGcCs
-         kixrpATCA2+M4Dy2wRpDEHYEk5TuZeCvyHlmH0CsM1Wj52kTH73u8blrUdq84sA/vDXB
-         ADSHrWDpcrBKNCfBAdQRM+I9xnXfEgnBy4GW2SQqVQdXJSKVwxRgL59M9Sp3zDthCRm/
-         mKb7WNRLbK8adI7tubkTpFG80/bWJqyYMOpFbxyVqMEEb+lQuOx82Vy2VxEWs8b8V8Gb
-         cPkQ==
-X-Gm-Message-State: AOAM531RXcYc5DL6RGJf+sw4NGuB7l84P/FQsJUCP2hDQxZoci1U+sE3
-        iynBZcDBw5PQ1h9/xyrcq4s=
-X-Google-Smtp-Source: ABdhPJz0mDjWI9cLGZI1APL1SkK/C90ahx8YNdOQKSadUt03k1qQAZbFQ4v0iJX2QgAk2JhI5vXHPw==
-X-Received: by 2002:a5d:9e4e:: with SMTP id i14mr10583360ioi.22.1602276563613;
-        Fri, 09 Oct 2020 13:49:23 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id z20sm3941046ior.2.2020.10.09.13.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 13:49:22 -0700 (PDT)
-Date:   Fri, 09 Oct 2020 13:49:14 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        eyal.birger@gmail.com
-Message-ID: <5f80ccca63d9_ed74208f8@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201009093319.6140b322@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <160216609656.882446.16642490462568561112.stgit@firesoul>
- <20201009093319.6140b322@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Subject: Re: [PATCH bpf-next V3 0/6] bpf: New approach for BPF MTU handling
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S2391023AbgJIU7p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 16:59:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732748AbgJIU7p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 16:59:45 -0400
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD375222C8
+        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 20:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602277185;
+        bh=K2FMVcPnwpnFdFTH0nWKguSV5alJGPLhcP/xaLhn8SY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0WbDWoyJhSvlQ/9KmhcYAraUDQn9/GNW1Dgw0FK6r6Kx9ocUAq9ltOKxoWihM/jJM
+         9+PDgGyjK9I7t+Oag/P2EdOyb2jiNSR0r7uB4kouuLpmbA2wzxPexcXryPXXZBpSlp
+         STMGl7CsXcGiTdduLMw4vkXoQtfsyhpJ6E0mJsgQ=
+Received: by mail-wr1-f45.google.com with SMTP id h5so1576610wrv.7
+        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 13:59:44 -0700 (PDT)
+X-Gm-Message-State: AOAM533VeoKGCRJ78bkAYokeHx8MtHNm0G+R/bXbIbBw0KYfpaik7XsR
+        YSR5Ed5ZgLM6LiPkmEYcmFhlTsEmM03ig1bZMlZ3IQ==
+X-Google-Smtp-Source: ABdhPJxJKqPctdujsV6zYIcj1iFFsZubnKUTdB+gOUvULrurNfsxzHCDMX9gfPQHrqmvwfwZlZHma48kDaamaiRKqbs=
+X-Received: by 2002:a05:6000:1202:: with SMTP id e2mr16591334wrx.75.1602277183196;
+ Fri, 09 Oct 2020 13:59:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <122e3e70cf775e461ebdfadb5fbb4b6813cca3dd.1602263422.git.yifeifz2@illinois.edu>
+ <CALCETrUD7z3-zL_rATzTyDUzgerOzXJHdn-hntNMG=vnX8ZF2w@mail.gmail.com> <CABqSeAS0WdkLHGMg3TRKkzsUE=JJYwY4iuBgYpdp-kLd9ASOfg@mail.gmail.com>
+In-Reply-To: <CABqSeAS0WdkLHGMg3TRKkzsUE=JJYwY4iuBgYpdp-kLd9ASOfg@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 9 Oct 2020 13:59:31 -0700
+X-Gmail-Original-Message-ID: <CALCETrUcsQhYM3+y+geFNmVzscv30Rg=8P50zNtEpLBgEwf9Pg@mail.gmail.com>
+Message-ID: <CALCETrUcsQhYM3+y+geFNmVzscv30Rg=8P50zNtEpLBgEwf9Pg@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 3/5] x86: Enable seccomp architecture tracking
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Kicinski wrote:
-> On Thu, 08 Oct 2020 16:08:57 +0200 Jesper Dangaard Brouer wrote:
-> > V3: Drop enforcement of MTU in net-core, leave it to drivers
-> 
-> Sorry for being late to the discussion.
-> 
-> I absolutely disagree. We had cases in the past where HW would lock up
-> if it was sent a frame with bad geometry.
-> 
-> We will not be sprinkling validation checks across the drivers because
-> some reconfiguration path may occasionally yield a bad packet, or it's
-> hard to do something right with BPF.
+On Fri, Oct 9, 2020 at 11:32 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 12:25 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> > Is the idea that any syscall that's out of range for this (e.g. all of
+> > the x32 syscalls) is unoptimized?  I'm okay with this, but I think it
+> > could use a comment.
+>
+> Yes, any syscall number that is out of range is unoptimized. Where do
+> you think I should put a comment? seccomp_cache_check_allow_bitmap
+> above `if (unlikely(syscall_nr < 0 || syscall_nr >= bitmap_size))`,
+> with something like "any syscall number out of range is unoptimized"?
+>
 
-This is a driver bug then. As it stands today drivers may get hit with
-skb with MTU greater than set MTU as best I can tell. Generally I
-expect drivers use MTU to configure RX buffers not sure how it is going
-to be used on TX side? Any examples? I just poked around through the
-driver source to see and seems to confirm its primarily for RX side
-configuration with some drivers throwing the event down to the firmware
-for something that I can't see in the code?
+I was imagining a comment near the new macros explaining that this is
+the range of syscalls that seccomp will optimize, that behavior is
+still correct (albeit slower) for out of range syscalls, and that x32
+is intentionally not optimized.
 
-I'm not suggestiong sprinkling validation checks across the drivers.
-I'm suggesting if the drivers hang we fix them.
+This avoids people like future me reading this code, not remembering
+the context, and thinking it looks buggy.
