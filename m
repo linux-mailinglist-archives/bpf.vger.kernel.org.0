@@ -2,111 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DB3289A95
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 23:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D550289AA8
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 23:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389123AbgJIV2G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 17:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33924 "EHLO
+        id S2391639AbgJIVbl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 17:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731533AbgJIV2G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 17:28:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9564C0613D2;
-        Fri,  9 Oct 2020 14:28:04 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id g10so7915513pfc.8;
-        Fri, 09 Oct 2020 14:28:04 -0700 (PDT)
+        with ESMTP id S2391457AbgJIVas (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 17:30:48 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFF3C0613D5
+        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 14:30:46 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id h24so15125107ejg.9
+        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 14:30:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qCMDvYaVO+UI874DEzTLSTQzKjrNX1isX91jGPjkLXw=;
-        b=MHTNbk6OYX5ubM37jrZR+9r3SxTyLm8QIWfvYBQfHTKKZ8RzPTebANyO67tROuLd9K
-         OOnKE3MXeOMkr2adu5Zuv2HtaEFS5qSobqiaYQywIE13/tVTjY2QL3F1JL8gss8BOF1x
-         GVZE5jcWr9mnydFHL0CxzfdCY+eCKqwExU7zhAr7COSoW5dSlgw2OStceUmJmuYAhzHx
-         32Vt4l0H1PfC3EAidUxmwH2PgKaCsZr2WQOZpJ6QoE+Szmj6oUV0h0IYAG3423hNlwHS
-         Z99Uun6MlfNT/YK8lIXaXYkJvalq7CkIxGPtyMVJA2x8P1rmdBdwqnwbz8DEeWPs1ehH
-         cd5w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pbFcqf/DjvQ4JWXqdwx2qoDcjZm2i9Wcon6pZeNDz5o=;
+        b=ZG7/cR3DKUuQ/RPLGoR9GRiVD5sFiQY9qmvwtKGyjQ7dUx6cRoXQxPJrsofVX4GvT8
+         +bHrvlkc1QdE5fUuR+B4/jEqIhD96HiZRW7ovaFsuN3fEZ+QZA4WfW7Zoh4Ks3/JQ0EC
+         foiF78nQ6mvg4w1M98iFAIEqKbJDxwbcU0l389avKqsHHsxkP1F73Y3V7TTlMKHaLOCS
+         Dm4YqX7AZSogV5VQASZlZfU5CJKMZXVuwmHApTvWmqpz+YKzBi4/BWNPCESa5p7ZbAdQ
+         xYthw3ucPw0eXtEwmhEb7cEy71fk2ZQJ7DXR2iGsteCPu+HY7ggdx/mX75DxDqxJz9QQ
+         OIUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qCMDvYaVO+UI874DEzTLSTQzKjrNX1isX91jGPjkLXw=;
-        b=jp/pPBke54m7EaR9eaVVL42e5/AUhjprMqZ+iKLkaUCrtLViXfyZyghFgyXOFHG+jr
-         v9hZb8nb0lyHVyiSJ+BGJc84qlMm793r74ku4GRhvmjy3JHHbhMWKtKvAdz/ZLorJ8Ou
-         kW75FSFcSKQ+f8YIaAZxaU/duvho97r1Ns5oc4DEpn+ddfgfxDur6x1SKc0/iIYnaYtY
-         wxrYqlUKZ2HxdZAG4WRZcuOKW9LX13nKHkoexQ51pfbOacKvVsWK0zHrW1IeY3R8l5Xj
-         6ool6vaURpzSEj3MnrWUgtpQLQnK5GMFcrBGsZ8aNbsN4sUvInlGerF8Tcp3ewueUFMT
-         cFIg==
-X-Gm-Message-State: AOAM531PI3+ldA33ZPYCascRbMnj8uK6Lo1tq84dMktUpu0gRwhn6GwI
-        u8bmejJe+4e+EnvprV6F5SoNaDIg5u8=
-X-Google-Smtp-Source: ABdhPJydcd0yIocWwa3tT9ZU1BczSb5Lotv4cub7OipObXJS6eKupcKlhQDUE/lgZEOkXr5AGG/9Gw==
-X-Received: by 2002:a17:90a:6a4f:: with SMTP id d15mr6683002pjm.80.1602278884265;
-        Fri, 09 Oct 2020 14:28:04 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([72.164.175.30])
-        by smtp.googlemail.com with ESMTPSA id e4sm9265266pjt.31.2020.10.09.14.28.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Oct 2020 14:28:03 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v2] bpf_fib_lookup: optionally skip neighbour
- lookup
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        daniel@iogearbox.net, ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20201009101356.129228-1-toke@redhat.com>
- <0a463800-a663-3fd3-2e1a-eac5526ed691@gmail.com> <87v9fjckcd.fsf@toke.dk>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <4972626e-c86d-8715-0565-20bed680227c@gmail.com>
-Date:   Fri, 9 Oct 2020 14:28:02 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pbFcqf/DjvQ4JWXqdwx2qoDcjZm2i9Wcon6pZeNDz5o=;
+        b=RCYN8/IuE8nR0OHi6IBpADHS3a03Df0VpfOM7POZ1/nJwXXsWBeOBS5t4NfCCdM3gu
+         TYTDQigwpugU8y1+dVtxsQRESc7Nd5RmJ1fKmJGdFArXbLOsWjoV2RlLB2GwvD3HCbSM
+         J/aSAfSfpxF7DgL2bsNUa+hpolxFeE7If6UzM3Coib5vbZd7lUmjW5XpUfb/xP7t/gl0
+         HpvLE6ORiOhtEWKWmDxLSLdW7PevSZp5HKe7DdWXxhdDv+RYDMl+mG+VpC58hccVbzQ8
+         bQOJf6bTNd9ZAgXuAF7kj+C2XDHB1s0yvjWqadL/haeWoaggddhTgkqYmej448gDFaZl
+         uc7w==
+X-Gm-Message-State: AOAM533tyr+vdTEMHLm/CRPDIIGCXSM22Qk0PMsUL4qNVuP8eCkf0Vo4
+        J/E+kd+3fGyBLZ2JuUdFBAIDBJbwehS/6gH/ePO6xw==
+X-Google-Smtp-Source: ABdhPJyVuDxjo0a1CY6IfHFSG0IBKbx7nRGluOc+6dUadBRHkjJq4TYQS4jlWBBOaj1ul7WftAzGnhhHBZG2FVIDTO8=
+X-Received: by 2002:a17:906:86c3:: with SMTP id j3mr16811843ejy.493.1602279044763;
+ Fri, 09 Oct 2020 14:30:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87v9fjckcd.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <1a40458d081ce0d5423eb0282210055496e28774.1602263422.git.yifeifz2@illinois.edu>
+In-Reply-To: <1a40458d081ce0d5423eb0282210055496e28774.1602263422.git.yifeifz2@illinois.edu>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 9 Oct 2020 23:30:18 +0200
+Message-ID: <CAG48ez1eUfjNPVKeYbk28On9WOaDBysR-=7sYDM-Q=nCzwXcDA@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/9/20 11:42 AM, Toke Høiland-Jørgensen wrote:
-> David Ahern <dsahern@gmail.com> writes:
-> 
->> On 10/9/20 3:13 AM, Toke Høiland-Jørgensen wrote:
->>> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
->>> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
->>> that the BPF program will pass the packet up the stack in this case.
->>> However, with the addition of bpf_redirect_neigh() that can be used instead
->>> to perform the neighbour lookup, at the cost of a bit of duplicated work.
->>>
->>> For that we still need the target ifindex, and since bpf_fib_lookup()
->>> already has that at the time it performs the neighbour lookup, there is
->>> really no reason why it can't just return it in any case. So let's just
->>> always return the ifindex, and also add a flag that lets the caller turn
->>> off the neighbour lookup entirely in bpf_fib_lookup().
->>
->> seems really odd to do the fib lookup only to skip the neighbor lookup
->> and defer to a second helper to do a second fib lookup and send out.
->>
->> The better back-to-back calls is to return the ifindex and gateway on
->> successful fib lookup regardless of valid neighbor. If the call to
->> bpf_redirect_neigh is needed, it can have a flag to skip the fib lookup
->> and just redirect to the given nexthop address + ifindex. ie.,
->> bpf_redirect_neigh only does neighbor handling in this case.
-> 
-> Hmm, yeah, I guess it would make sense to cache and reuse the lookup -
-> maybe stick it in bpf_redirect_info()? However, given the imminent
+On Fri, Oct 9, 2020 at 7:15 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+>
+> From: YiFei Zhu <yifeifz2@illinois.edu>
+>
+> SECCOMP_CACHE will only operate on syscalls that do not access
+> any syscall arguments or instruction pointer. To facilitate
+> this we need a static analyser to know whether a filter will
+> return allow regardless of syscall arguments for a given
+> architecture number / syscall number pair. This is implemented
+> here with a pseudo-emulator, and stored in a per-filter bitmap.
+>
+> In order to build this bitmap at filter attach time, each filter is
+> emulated for every syscall (under each possible architecture), and
+> checked for any accesses of struct seccomp_data that are not the "arch"
+> nor "nr" (syscall) members. If only "arch" and "nr" are examined, and
+> the program returns allow, then we can be sure that the filter must
+> return allow independent from syscall arguments.
+>
+> Nearly all seccomp filters are built from these cBPF instructions:
+>
+> BPF_LD  | BPF_W    | BPF_ABS
+> BPF_JMP | BPF_JEQ  | BPF_K
+> BPF_JMP | BPF_JGE  | BPF_K
+> BPF_JMP | BPF_JGT  | BPF_K
+> BPF_JMP | BPF_JSET | BPF_K
+> BPF_JMP | BPF_JA
+> BPF_RET | BPF_K
+> BPF_ALU | BPF_AND  | BPF_K
+>
+> Each of these instructions are emulated. Any weirdness or loading
+> from a syscall argument will cause the emulator to bail.
+>
+> The emulation is also halted if it reaches a return. In that case,
+> if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
+>
+> Emulator structure and comments are from Kees [1] and Jann [2].
+>
+> Emulation is done at attach time. If a filter depends on more
+> filters, and if the dependee does not guarantee to allow the
+> syscall, then we skip the emulation of this syscall.
+>
+> [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
+> [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
+[...]
+> @@ -682,6 +693,150 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+>         return filter;
+>  }
+>
+> +#ifdef SECCOMP_ARCH_NATIVE
+> +/**
+> + * seccomp_is_const_allow - check if filter is constant allow with given data
+> + * @fprog: The BPF programs
+> + * @sd: The seccomp data to check against, only syscall number are arch
+> + *      number are considered constant.
 
-That is not needed.
+nit: s/syscall number are arch number/syscall number and arch number/
 
-> opening of the merge window, I don't see this landing before then. So
-> I'm going to respin this patch with just the original change to always
-> return the ifindex, then we can revisit the flags/reuse of the fib
-> lookup later.
-> 
+> + */
+> +static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+> +                                  struct seccomp_data *sd)
+> +{
+> +       unsigned int insns;
+> +       unsigned int reg_value = 0;
+> +       unsigned int pc;
+> +       bool op_res;
+> +
+> +       if (WARN_ON_ONCE(!fprog))
+> +               return false;
+> +
+> +       insns = bpf_classic_proglen(fprog);
 
-What I am suggesting is a change in API to bpf_redirect_neigh which
-should be done now, before the merge window, before it comes a locked
-API. Right now, bpf_redirect_neigh does a lookup to get the nexthop. It
-should take the gateway as an input argument. If set, then the lookup is
-not done - only the neighbor redirect.
+bpf_classic_proglen() is defined as:
+
+#define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+
+so this is wrong - what you want is the number of instructions in the
+program, what you actually have is the size of the program in bytes.
+Please instead check for `pc < fprog->len` in the loop condition.
+
+> +       for (pc = 0; pc < insns; pc++) {
+> +               struct sock_filter *insn = &fprog->filter[pc];
+> +               u16 code = insn->code;
+> +               u32 k = insn->k;
+[...]
+
+> +       }
+> +
+> +       /* ran off the end of the filter?! */
+> +       WARN_ON(1);
+> +       return false;
+> +}
