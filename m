@@ -2,138 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C6228819D
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 07:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8832881BB
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 07:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729225AbgJIFJW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 01:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        id S1729946AbgJIFfL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 01:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgJIFJW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 01:09:22 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80DDC0613D4
-        for <bpf@vger.kernel.org>; Thu,  8 Oct 2020 22:09:21 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id l4so7904488ota.7
-        for <bpf@vger.kernel.org>; Thu, 08 Oct 2020 22:09:21 -0700 (PDT)
+        with ESMTP id S1729347AbgJIFfL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 01:35:11 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2F4C0613D4
+        for <bpf@vger.kernel.org>; Thu,  8 Oct 2020 22:35:10 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id g10so5904324pfc.8
+        for <bpf@vger.kernel.org>; Thu, 08 Oct 2020 22:35:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tehnerd-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vjO1y5e0L8se8ZedRLXM2SIg3QSKBrPn3iirYWr5Tqc=;
-        b=XOcFA2lJvqhBOl941BM2a01Kmv2JK02t1eExX9D2eqVXySKvi4DRIDf2mLHkqZCV7Y
-         FZMBiyuDaP1ZCCH4de1P0PoSLgaSWAWaM2PaiMZGIpyAseWKjSwYscU0HKn3mY16L0rz
-         vfQUEyn3IzTKhAT8yKutdRxnuFbaRGE1f5YdK3NKIFr2O5gO6CJYPjHhw3mgbDLlyBBy
-         1/G5DfaA0u/pJD1QfVcTWaYxuDeUHtUlkAo5Mcvc5UuUQv34+V1GEoO/Agz0Ao4tUdt/
-         /pCMukRxoMG6/nWqp1mhac7uYLCG9hQwJXvhBwwQL0rStip0SZDrB4QmE9Rbg5H3sccQ
-         /Zkg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XIdDXZRhz37tftITDPN3YNgJVGlOJnM9JsgYjb/1FXE=;
+        b=WGuMCeg8HRFhfL9xv5josACQa4Ayr0gq4NmLmAmq05XCJpivwjrG2kMxdt4rKCIV8z
+         JbTyUrJHG83fomoTwM1xIDNPvfLoKJAZXqvvfrFaAurphSjLVSXbUayG31oSqGQXiQHL
+         ODmtE5v9kkvCYHCbVVTisV2Bm7MtgIB293WGg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vjO1y5e0L8se8ZedRLXM2SIg3QSKBrPn3iirYWr5Tqc=;
-        b=fXvZMAD+2Kpg8PINIUkkSIanCO5jdutNFXPegZ0TQhJbEwncUSw2bDVx6P0KzTPETq
-         uzmVQTsbNiCZkDk6xTYTD4jubVeU55oF8QxHLb0vFVwXuD33t1GFsSfAaHMpPY05AIUs
-         byAydGM/UDGTzZLCotLMLx74guTmrV53aW0q/sUhsf0olpu03T4fGPyDkS4xKBbL3YtB
-         5sSaQ+Y7GM5fr/q4GC7Qw0mzqG7+HSvx19I/HX7ZvTlkSoboOHyitpVblywGWYMRkXF9
-         Qcx3LwfFrz7LrMHjir1oNxjb3RuocNWSRXDRmurQ5l0aPa699wXdD5P3J9AoRZ4snw9m
-         9blA==
-X-Gm-Message-State: AOAM532qYeuS0VammiAlPpnRfFx/X2F5or8iu9nWOi+s8BojPrDOqfL8
-        StwOC/gFNhmpTGpuaryAemv/byJPyP1FVuCW
-X-Google-Smtp-Source: ABdhPJzOWsR9WHavzmMqSGDcUrLOTnsw/pOuiWMICX3jGQhK6acz4bWAKMV3EjWtmA5pJNTjVlz7mQ==
-X-Received: by 2002:a9d:a24:: with SMTP id 33mr6850682otg.305.1602220160802;
-        Thu, 08 Oct 2020 22:09:20 -0700 (PDT)
-Received: from nuke.localdomain (adsl-99-73-38-187.dsl.okcyok.sbcglobal.net. [99.73.38.187])
-        by smtp.gmail.com with ESMTPSA id p8sm6350783oip.29.2020.10.08.22.09.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XIdDXZRhz37tftITDPN3YNgJVGlOJnM9JsgYjb/1FXE=;
+        b=O8LJCToMpNald02kXwMvPZReHRp3ONU0n8OOV9msoXA2QaJYKUR6WhXQNIFrR4UKld
+         ZahIOc7/SOQn0QsRyVfwVOeDwJEnI7ArclfkzEJfXIT0UdhtzCafyUAfD5WLW/DgulKG
+         NJWhc2Xy/jcqSQEDA3qSz4Csa2OGSg5426XBCeiKONlZwt22BudPenXE/7PeNAH6H3tv
+         iJixPzK5br9D9MYMkoGEwtS5m9TzGtLz51s5EEvC4RTTJAd5pTuYbyQ5G2hjW0r3YaQA
+         ieEbWxfDPcyVmokA6A6CIfGKXbUpeCKjoxeXkntx+D7L5UBllunq8K/+kuxE7XZ8zi5i
+         0Xkg==
+X-Gm-Message-State: AOAM530Z0wZPXh1Pl9C3XLfFrRlwa2ELLF1h/H1Bl+x2kgU/LYzc4ekN
+        RdIrHhoRDx/LcIjQpyLQ+Fzj3w==
+X-Google-Smtp-Source: ABdhPJwWlTDSch7HFPQiAjEx67gWISRHKOLLPBnbQPmegZcyaqq6YCtFdArCda8ugJ5SqLfu/DVmtQ==
+X-Received: by 2002:a17:90a:4489:: with SMTP id t9mr453187pjg.89.1602221709401;
+        Thu, 08 Oct 2020 22:35:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id e1sm9701173pfd.198.2020.10.08.22.35.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 22:09:20 -0700 (PDT)
-From:   "Nikita V. Shirokov" <tehnerd@tehnerd.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        "Nikita V. Shirokov" <tehnerd@tehnerd.com>
-Subject: [PATCH bpf-next] bpf: add tcp_notsent_lowat bpf setsockopt
-Date:   Fri,  9 Oct 2020 05:08:39 +0000
-Message-Id: <20201009050839.222847-1-tehnerd@tehnerd.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 08 Oct 2020 22:35:08 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 22:35:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v3 seccomp 3/5] seccomp/cache: Lookup syscall allowlist
+ for fast path
+Message-ID: <202010082234.C044F0FA@keescook>
+References: <cover.1601478774.git.yifeifz2@illinois.edu>
+ <83c72471f9f79fa982508bd4db472686a67b8320.1601478774.git.yifeifz2@illinois.edu>
+ <202009301422.D9F6E6A@keescook>
+ <CABqSeASbRXLYgE=rbKO8g8Si9q7nKEGB2UZpi-BcYG5etWVcjA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABqSeASbRXLYgE=rbKO8g8Si9q7nKEGB2UZpi-BcYG5etWVcjA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding support for TCP_NOTSENT_LOWAT sockoption
-(https://lwn.net/Articles/560082/) in tcpbpf
+On Thu, Oct 08, 2020 at 07:17:39PM -0500, YiFei Zhu wrote:
+> On Wed, Sep 30, 2020 at 4:32 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Wed, Sep 30, 2020 at 10:19:14AM -0500, YiFei Zhu wrote:
+> > > From: YiFei Zhu <yifeifz2@illinois.edu>
+> > >
+> > > The fast (common) path for seccomp should be that the filter permits
+> > > the syscall to pass through, and failing seccomp is expected to be
+> > > an exceptional case; it is not expected for userspace to call a
+> > > denylisted syscall over and over.
+> > >
+> > > This first finds the current allow bitmask by iterating through
+> > > syscall_arches[] array and comparing it to the one in struct
+> > > seccomp_data; this loop is expected to be unrolled. It then
+> > > does a test_bit against the bitmask. If the bit is set, then
+> > > there is no need to run the full filter; it returns
+> > > SECCOMP_RET_ALLOW immediately.
+> > >
+> > > Co-developed-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> > > Signed-off-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> > > Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> >
+> > I'd like the content/ordering of this and the emulator patch to be reorganized a bit.
+> > I'd like to see the infrastructure of the cache added first (along with
+> > the "always allow" test logic in this patch), with the emulator missing:
+> > i.e. the patch is a logical no-op: no behavior changes because nothing
+> > ever changes the cache bits, but all the operational logic, structure
+> > changes, etc, is in place. Then the next patch would be replacing the
+> > no-op with the emulator.
+> >
+> > > ---
+> > >  kernel/seccomp.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 52 insertions(+)
+> > >
+> > > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > > index f09c9e74ae05..bed3b2a7f6c8 100644
+> > > --- a/kernel/seccomp.c
+> > > +++ b/kernel/seccomp.c
+> > > @@ -172,6 +172,12 @@ struct seccomp_cache_filter_data { };
+> > >  static inline void seccomp_cache_prepare(struct seccomp_filter *sfilter)
+> > >  {
+> > >  }
+> > > +
+> > > +static inline bool seccomp_cache_check(const struct seccomp_filter *sfilter,
+> >
+> > bikeshedding: "cache check" doesn't tell me anything about what it's
+> > actually checking for. How about calling this seccomp_is_constant_allow() or
+> > something that reflects both the "bool" return ("is") and what that bool
+> > means ("should always be allowed").
+> 
+> We have a naming conflict here. I'm about to rename
+> seccomp_emu_is_const_allow to seccomp_is_const_allow. Adding another
+> seccomp_is_constant_allow is confusing. Suggestions?
+> 
+> I think I would prefer to change seccomp_cache_check to
+> seccomp_cache_check_allow. While in this patch set seccomp_cache_check
+> does imply the filter is "constant" allow, argument-processing cache
+> may change this, and specifying an "allow" in the name specifies the
+> 'what that bool means ("should always be allowed")'.
 
-Signed-off-by: Nikita V. Shirokov <tehnerd@tehnerd.com>
----
- include/uapi/linux/bpf.h                          |  2 +-
- net/core/filter.c                                 |  4 ++++
- tools/testing/selftests/bpf/progs/connect4_prog.c | 15 +++++++++++++++
- 3 files changed, 20 insertions(+), 1 deletion(-)
+Yeah, that seems good.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index d83561e8cd2c..42d2df799397 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1698,7 +1698,7 @@ union bpf_attr {
-  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
-  * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
-  * 		  **TCP_KEEPIDLE**, **TCP_KEEPINTVL**, **TCP_KEEPCNT**,
-- * 		  **TCP_SYNCNT**, **TCP_USER_TIMEOUT**.
-+ *		  **TCP_SYNCNT**, **TCP_USER_TIMEOUT**, **TCP_NOTSENT_LOWAT**.
-  * 		* **IPPROTO_IP**, which supports *optname* **IP_TOS**.
-  * 		* **IPPROTO_IPV6**, which supports *optname* **IPV6_TCLASS**.
-  * 	Return
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 05df73780dd3..5da44b11e1ec 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4827,6 +4827,10 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
- 				else
- 					icsk->icsk_user_timeout = val;
- 				break;
-+			case TCP_NOTSENT_LOWAT:
-+				tp->notsent_lowat = val;
-+				sk->sk_write_space(sk);
-+				break;
- 			default:
- 				ret = -EINVAL;
- 			}
-diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
-index b1b2773c0b9d..b10e7fbace7b 100644
---- a/tools/testing/selftests/bpf/progs/connect4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
-@@ -128,6 +128,18 @@ static __inline int set_keepalive(struct bpf_sock_addr *ctx)
- 	return 0;
- }
- 
-+static __inline int set_notsent_lowat(struct bpf_sock_addr *ctx)
-+{
-+	int lowat = 65535;
-+
-+	if (ctx->type == SOCK_STREAM) {
-+		if (bpf_setsockopt(ctx, SOL_TCP, TCP_NOTSENT_LOWAT, &lowat, sizeof(lowat)))
-+			return 1;
-+	}
-+
-+	return 0;
-+}
-+
- SEC("cgroup/connect4")
- int connect_v4_prog(struct bpf_sock_addr *ctx)
- {
-@@ -148,6 +160,9 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
- 	if (set_keepalive(ctx))
- 		return 0;
- 
-+	if (set_notsent_lowat(ctx))
-+		return 0;
-+
- 	if (ctx->type != SOCK_STREAM && ctx->type != SOCK_DGRAM)
- 		return 0;
- 	else if (ctx->type == SOCK_STREAM)
 -- 
-2.25.1
-
+Kees Cook
