@@ -2,182 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8D928817C
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 06:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF39288180
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 06:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730218AbgJIEpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 00:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
+        id S1728293AbgJIEr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 00:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729225AbgJIEpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 00:45:36 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D19C0613D2;
-        Thu,  8 Oct 2020 21:45:36 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id b2so8063037ilr.1;
-        Thu, 08 Oct 2020 21:45:36 -0700 (PDT)
+        with ESMTP id S1726629AbgJIEr2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 00:47:28 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9834C0613D2;
+        Thu,  8 Oct 2020 21:47:28 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id h6so6196408pgk.4;
+        Thu, 08 Oct 2020 21:47:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=y0Gm00JncLWpHRIGNKTr/1wc9EHa/ABXzDq9+KJHsr8=;
-        b=MdSrj+nB4XfFW+yhZ7RX1aJv991/4ayNzJ6G/5pVOrxUhY+zmdDV3g9T2+yA/v9ADq
-         jNlzbl5dY7ocEVgTEzJq+cb+oj4vHH6Ollp0IXUbHlDI55B1R6iCFdrrsrCrOHEHWTPv
-         E2rd1BvGugRszUQNPaX0N+zR/yrHmUT0g0x36OE+Mw6kGr12ITvg3sAK/mNNvLaJo75s
-         xJ8xDpUK7zpO+0WyA+wyzkbTiCQyLOfUcazkHZmJYCucJHwl+eBed4wY/i2L48mo/stV
-         aT+MAEI6X5QBOuGPE1GeLp/U3U3PDb9X8E03xuquREHmpn4fe/W7Sfv4DjNXPWrJtOop
-         3j/A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ewguY3pcuJUASJZKtryI+WUb/DfgApGMQzDJ1fqU0+s=;
+        b=n8ueQNqTvGIUJVNHoxh4SFdLgsw++GL5jkvpig+fbUhC5PMJAd3TgvHkQBsWvunzCI
+         XQ9ny8J1lCPOVHZE7Usf28ExAzdi3OFL/TJAC2cgftvQmcpXMo7qaLPx/Nh5PuRiBxMg
+         mMga0NGw/RaUsQioWXkOGCMI0f1tyW2oVhEJePeCD+7MAPTzUUMnFmhZJZROVIFS/Wud
+         h86/8Q8F7Bfp8z5gxwYb4Yn8W7MzBs3T15PQEuXpq8+tGA5mKy0IR0PDk5ENL86Gd6nY
+         qri/KRW0OEBYnxdR2jMf70KgL5wy+D7/HKIs0NbfQDSkfJhSIR8eXpTl07XitTz707ed
+         DwAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=y0Gm00JncLWpHRIGNKTr/1wc9EHa/ABXzDq9+KJHsr8=;
-        b=qpG3Ih+nko8yvqjqFT5asAgfqA9uf8mTGrOi8/1gex9HXSb5zicj4mz66gomND8E/e
-         gXG4lqHfE+hCNIsX4ZipIq8l+acGobRFkIfa0NKrz5BgfXRc81x66pWayk/1AkwgqMxE
-         //DwdlPdoUJc373cPP2Alfo1qmyze9kXA4TQ+z6UTHWufRtbb5hfEyI3jQCeam+qO5iP
-         2JRbTLxaugPzfbPU9QvDnwzmIX4Hng6czldT/Wu2zkuruOPIUgEQdGW4fqw4xoCjKazL
-         oMTf6efMi9wrIe1CVJgeUojGsXBmqLgJSZeH1KwgQUzztBBPwq1v2o8/IoPlPeFNyQWx
-         kMJA==
-X-Gm-Message-State: AOAM5309ixs9eRl8WCgpyXxbaxTHbCSnSXFsQiNPbAb3FIG+TMEqWLqL
-        p1OM0M3nt6ewQAL16YHRzVmM5QlekK10BA==
-X-Google-Smtp-Source: ABdhPJxShpETNkieD2iC2XPRmah77Yl1wtiWqHnLQVFPAxmF84SOhawMU/kg6s+p7uQQ54VreL8Qew==
-X-Received: by 2002:a92:608:: with SMTP id x8mr9711927ilg.79.1602218735728;
-        Thu, 08 Oct 2020 21:45:35 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id z20sm3072059ior.2.2020.10.08.21.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Oct 2020 21:45:35 -0700 (PDT)
-Subject: [bpf-next PATCH 6/6] bpf,
- sockmap: Add memory accounting so skbs on ingress lists are visible
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     john.fastabend@gmail.com, alexei.starovoitov@gmail.com,
-        daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
-        lmb@cloudflare.com
-Date:   Thu, 08 Oct 2020 21:45:22 -0700
-Message-ID: <160221872234.12042.16278651489592613107.stgit@john-Precision-5820-Tower>
-In-Reply-To: <160221803938.12042.6218664623397526197.stgit@john-Precision-5820-Tower>
-References: <160221803938.12042.6218664623397526197.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ewguY3pcuJUASJZKtryI+WUb/DfgApGMQzDJ1fqU0+s=;
+        b=Yqsuye8fVFoNf8bvAOovjqOjsfLi8nf+rWy5ROmo1bw8ZCvD8mSdABJwWM1EOz0d93
+         RknVILOZFZUsP/Kp69y1dmm19a4jzHRt0+4zkEA1ulfNT/LeKgLlSBGO+lJhEeiQ5+pd
+         ogN6NMtp/KwpGRvu/3HpsG8ZDrjONgDCYsnMSKSJVzikkesTtaehBzljHc0VTamoUX3j
+         emJnK5Fb8bpgsMacLQbSDRPzBaSgCSiJ3Qt8uOYbLll7yVK4sqQXxFJNljtDbkVBBo2q
+         S0TUP3hKP5hp7Se0kCTFfXFEo6d8H+GUPXkUsBZUsvwRxb9aV5+4A+kyRdrRi8AjDe/K
+         IhHg==
+X-Gm-Message-State: AOAM533F74J37z/M/li32AdBUYgVuJQ7ScCt2kCY+XLq3i2wASUqAZRz
+        TaSf2cB7WWR9gC1Z2/Ur7Vydpi4J2GOWQG1AtSI=
+X-Google-Smtp-Source: ABdhPJwqvDp2jodGpXwCgBFAUggX4v5IU8dK3stZ6mSV5NnDUKTZ/xg2YWnS0x4Vgqv+kJ/xYRxiRWfDf+l1pqRItGI=
+X-Received: by 2002:a62:750a:0:b029:152:4d07:aec6 with SMTP id
+ q10-20020a62750a0000b02901524d07aec6mr10505669pfc.48.1602218848174; Thu, 08
+ Oct 2020 21:47:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+In-Reply-To: <b16456e8dbc378c41b73c00c56854a3c30580833.1601478774.git.yifeifz2@illinois.edu>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 8 Oct 2020 23:47:17 -0500
+Message-ID: <CABqSeAQELsMP4116LwOY+WMcs9Zjr9fYUZ-pK+yNTGYETLf46w@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+To:     Linux Containers <containers@lists.linux-foundation.org>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move skb->sk assignment out of sk_psock_bpf_run() and into individual
-callers. Then we can use proper skb_set_owner_r() call to assign a
-sk to a skb. This improves things by also charging the truesize against
-the sockets sk_rmem_alloc counter. With this done we get some accounting
-in place to ensure the memory associated with skbs on the workqueue are
-still being accounted for somewhere. Finally, by using skb_set_owner_r
-the destructor is setup so we can just let the normal skb_kfree logic
-recover the memory. Combined with previous patch dropping skb_orphan()
-we now can recover from memory pressure and maintain accounting.
+On Wed, Sep 30, 2020 at 10:20 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> @@ -544,7 +577,8 @@ static struct seccomp_filter *seccomp_prepare_filter(=
+struct sock_fprog *fprog)
+>  {
+>         struct seccomp_filter *sfilter;
+>         int ret;
+> -       const bool save_orig =3D IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
+> +       const bool save_orig =3D IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) ||
+> +                              IS_ENABLED(CONFIG_SECCOMP_CACHE_NR_ONLY);
+>
+>         if (fprog->len =3D=3D 0 || fprog->len > BPF_MAXINSNS)
+>                 return ERR_PTR(-EINVAL);
 
-Note, we will charge the skbs against their originating socket even
-if being redirected into another socket. Once the skb completes the
-redirect op the kfree_skb will give the memory back. This is important
-because if we charged the socket we are redirecting to (like it was
-done before this series) the sock_writeable() test could fail because
-of the skb trying to be sent is already charged against the socket.
+I'm trying to use __is_defined(SECCOMP_ARCH_NATIVE) here, and got this mess=
+age:
 
-Also TLS case is special. Here we wait until we have decided not to
-simply PASS the packet up the stack. In the case where we PASS the
-packet up the stack we already have an skb which is accounted for on
-the TLS socket context.
+kernel/seccomp.c: In function =E2=80=98seccomp_prepare_filter=E2=80=99:
+././include/linux/kconfig.h:44:44: error: pasting "__ARG_PLACEHOLDER_"
+and "(" does not give a valid preprocessing token
+   44 | #define ___is_defined(val)  ____is_defined(__ARG_PLACEHOLDER_##val)
+      |                                            ^~~~~~~~~~~~~~~~~~
+././include/linux/kconfig.h:43:27: note: in expansion of macro =E2=80=98___=
+is_defined=E2=80=99
+   43 | #define __is_defined(x)   ___is_defined(x)
+      |                           ^~~~~~~~~~~~~
+kernel/seccomp.c:629:11: note: in expansion of macro =E2=80=98__is_defined=
+=E2=80=99
+  629 |           __is_defined(SECCOMP_ARCH_NATIVE);
+      |           ^~~~~~~~~~~~
 
-For the parser case we continue to just set/clear skb->sk this is
-because the skb being used here may be combined with other skbs or
-turned into multiple skbs depending on the parser logic. For example
-the parser could request a payload length greater than skb->len so
-that the strparser needs to collect multiple skbs. At any rate
-the final result will be handled in the strparser recv callback.
+Looking at the implementation of __is_defined, it is:
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- net/core/skmsg.c |   31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
+#define __ARG_PLACEHOLDER_1 0,
+#define __take_second_arg(__ignored, val, ...) val
+#define __is_defined(x) ___is_defined(x)
+#define ___is_defined(val) ____is_defined(__ARG_PLACEHOLDER_##val)
+#define ____is_defined(arg1_or_junk) __take_second_arg(arg1_or_junk 1, 0)
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index ef68749c9104..cc33ee74d0f6 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -684,20 +684,8 @@ EXPORT_SYMBOL_GPL(sk_psock_msg_verdict);
- static int sk_psock_bpf_run(struct sk_psock *psock, struct bpf_prog *prog,
- 			    struct sk_buff *skb)
- {
--	int ret;
--
--	/* strparser clones the skb before handing it to a upper layer,
--	 * meaning we have the same data, but sk is NULL. We do want an
--	 * sk pointer though when we run the BPF program. So we set it
--	 * here and then NULL it to ensure we don't trigger a BUG_ON()
--	 * in skb/sk operations later if kfree_skb is called with a
--	 * valid skb->sk pointer and no destructor assigned.
--	 */
--	skb->sk = psock->sk;
- 	bpf_compute_data_end_sk_skb(skb);
--	ret = bpf_prog_run_pin_on_cpu(prog, skb);
--	skb->sk = NULL;
--	return ret;
-+	return bpf_prog_run_pin_on_cpu(prog, skb);
- }
- 
- static struct sk_psock *sk_psock_from_strp(struct strparser *strp)
-@@ -738,10 +726,11 @@ static void sk_psock_skb_redirect(struct sk_buff *skb)
- 	schedule_work(&psock_other->work);
- }
- 
--static void sk_psock_tls_verdict_apply(struct sk_buff *skb, int verdict)
-+static void sk_psock_tls_verdict_apply(struct sk_buff *skb, struct sock *sk, int verdict)
- {
- 	switch (verdict) {
- 	case __SK_REDIRECT:
-+		skb_set_owner_r(skb, sk);
- 		sk_psock_skb_redirect(skb);
- 		break;
- 	case __SK_PASS:
-@@ -759,11 +748,17 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
- 	rcu_read_lock();
- 	prog = READ_ONCE(psock->progs.skb_verdict);
- 	if (likely(prog)) {
-+		/* We skip full set_owner_r here because if we do a SK_PASS
-+		 * or SK_DROP we can skip skb memory accounting and use the
-+		 * TLS context.
-+		 */
-+		skb->sk = psock->sk;
- 		tcp_skb_bpf_redirect_clear(skb);
- 		ret = sk_psock_bpf_run(psock, prog, skb);
- 		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-+		skb->sk = NULL;
- 	}
--	sk_psock_tls_verdict_apply(skb, ret);
-+	sk_psock_tls_verdict_apply(skb, psock->sk, ret);
- 	rcu_read_unlock();
- 	return ret;
- }
-@@ -825,6 +820,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
- 		kfree_skb(skb);
- 		goto out;
- 	}
-+	skb_set_owner_r(skb, sk);
- 	prog = READ_ONCE(psock->progs.skb_verdict);
- 	if (likely(prog)) {
- 		tcp_skb_bpf_redirect_clear(skb);
-@@ -849,8 +845,11 @@ static int sk_psock_strp_parse(struct strparser *strp, struct sk_buff *skb)
- 
- 	rcu_read_lock();
- 	prog = READ_ONCE(psock->progs.skb_parser);
--	if (likely(prog))
-+	if (likely(prog)) {
-+		skb->sk = psock->sk;
- 		ret = sk_psock_bpf_run(psock, prog, skb);
-+		skb->sk = NULL;
-+	}
- 	rcu_read_unlock();
- 	return ret;
- }
+Hence, when FOO is defined to be 1, then the expansion would be
+__is_defined(FOO) -> ___is_defined(1) ->
+____is_defined(__ARG_PLACEHOLDER_1) -> __take_second_arg(0, 1, 0) ->
+1,
+and when FOO is not defined, the expansion would be __is_defined(FOO)
+-> ___is_defined(FOO) -> ____is_defined(__ARG_PLACEHOLDER_FOO) ->
+__take_second_arg(__ARG_PLACEHOLDER_FOO 1, 0) -> 0
 
+However, here SECCOMP_ARCH_NATIVE is an expression from an OR of some
+bits, and __is_defined(SECCOMP_ARCH_NATIVE) would not expand to
+__ARG_PLACEHOLDER_1 during any stage in the preprocessing.
+
+Is there any better way to do this? I'm thinking of just doing #if
+defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH_NATIVE)
+like in Kee's patch.
+
+YiFei Zhu
