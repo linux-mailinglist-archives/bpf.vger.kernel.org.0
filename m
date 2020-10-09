@@ -2,92 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2D028909E
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 20:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E642890AA
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 20:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388019AbgJISMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 14:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S2389991AbgJISRW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 14:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgJISMl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 14:12:41 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A96C0613D2
-        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 11:12:40 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id qp15so14389972ejb.3
-        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 11:12:40 -0700 (PDT)
+        with ESMTP id S1731198AbgJISRW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 14:17:22 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C817CC0613D2;
+        Fri,  9 Oct 2020 11:17:21 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id a2so7943339ybj.2;
+        Fri, 09 Oct 2020 11:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uZHD7iXVcSv9l7M1jI+lp36MwtZAYRq7WKIeklPCKDo=;
-        b=RI8Me4Vr1vppTmFAzdG0SAIvgF4SpxoUTDxRkpiWAtmMYU3ajQfL7smuSM/kJjxaoG
-         wA9fTHLq+kcLStp6caQ+9T3UkpX5ClHeo7v/LJehKmIRZpGZsioowNg1vIfJOOw7yZ6u
-         Qdm2EJ9y8fgbhDmyRoGiXl2t43E33K7wj0sFvRpwG9MXowe3bIeaxNBhlH9yPaxsJCbZ
-         6QqrVCW2zRDV0CaW2xlk1nonxkGU0HV5B+3/5tS0g3iYaM0laSZz0xkdKBibNyTobkpU
-         sXHSKzTVCXMcBqwO4EXu0TrG5Q4kLPx3eeV0jEgCca45NM4/CHdUd/b2rBpElbMwQERA
-         ykvg==
+         :cc;
+        bh=2A4GHZUQvsEFe8vZOiAopDAq7iEcT1h3rDJD6CjEonM=;
+        b=mHKcfraJKbOFTypRjQObWnL60qTX77sT6K03hjOSjXvikvL+0tF4TygJTSwupt9xNR
+         llow8z0lQft9M3+6xWlQe+FLrJVd+S8m57fTShIAvpbu5sja8Ui4sZFF8wpdgjaWL0Mt
+         lp7eevJgKlSwUw3S4ZZtFoTcNMFqA7qaTLEFJyz9RzIaIh2FaaR0oHOYy6tza9n9FknP
+         gR14YITlYvq/o+82gZKA6IrWdlxGkrvr9z+5fy4CVhlJbwbNBpphrma7kA2yV2c9jPnR
+         IozIOcPEblOx34u5/Zf/nxMgYFt1lOrI8SMOfgZ0iOjM4Le+ORAIv5Id+NSGqFlgbmPh
+         Pydw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=uZHD7iXVcSv9l7M1jI+lp36MwtZAYRq7WKIeklPCKDo=;
-        b=YPgPRKSghbYKtZnyLyHEfgFXOr8t7OjjnKmwYtbYPExwOl8E570pWHBPtdIbn6ZfJY
-         alXeEUAa++EVScuzaXw7KzTvWaJ7d8gk5iCCh/d//ArBLzMD2PdiEn84/9a1dsOUnAs8
-         aWUulEobtnihAyKbwQxREtGoXsGGt8uuS0d6s675TKjQwlD3HQjoU8gihJVd6oHJ1wE2
-         aGDPOm2BFX2CKD6Q4SGMTURqmSWgDZ9IcmaUVi938PLBqSAgbmIs4QnM20qJUjdbB7/e
-         6+xqs2Zz+siBlOlTniQi8n9mozOIhJJTkxH1m1Q8HeRzPkFPtdRKqiRtjym1vNvI6VK/
-         Qj/w==
-X-Gm-Message-State: AOAM530msdLNlk4dX/WJCg9vxpwoPVyIb0QTTpuBV7J5/5IRaPQUarsR
-        OCROkX2uKKkfLZ7FKt0pQs0GBwM2hn9PYpiNdU0=
-X-Google-Smtp-Source: ABdhPJzXlYXRjErcvTl1fLEwyChov/puIhQcEvGGlw0poI+jR8jC25J8OnN9ERlfwqIHPd4j4QEciBvTbXr92tYq6ns=
-X-Received: by 2002:a17:906:6d89:: with SMTP id h9mr15063972ejt.152.1602267159449;
- Fri, 09 Oct 2020 11:12:39 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=2A4GHZUQvsEFe8vZOiAopDAq7iEcT1h3rDJD6CjEonM=;
+        b=RfeebjwtCMMlN/mv4WBDeedvluSL898H7KBUeuhOOnyiK0ic4mxv0nVeok1hFYH0sD
+         b4Plp6YzA3Udqp21GkKribdrlGDxz03Ia1iVqWvETZqGUzghmqm3Sbs2eozto4HfOF4/
+         c2JSRrtjr4qsTErijeXNlalsLFq4LRmWRODXxsT9WNnKFCM30/JwGh9mhFbZLqRSnP+b
+         UBLA6WklEladHD6yY7HOal5yMrc7nck3kyLO+EP1ddLSa8fG0wYfTxTnZ/Skq4ZZgWfY
+         13TqTlJ2cPUtVipF8i1a85H1BmHs8BDgh0WuMjjBosoLgNDzBhz8YTWI8imY+j0bOpvn
+         ViqQ==
+X-Gm-Message-State: AOAM532/kcx7N9MiTQWyDiTMXVBoG59fXnFM7kKNYZ7k8MoY1GefQZSG
+        VG5twbyE0Uf3B4IrqUcL3gqAKx2GC6i9v9yRcn0=
+X-Google-Smtp-Source: ABdhPJwFVWrSiYClcqO0bEh/a5pa12z9aQC9nUVJWsP63dLTmkpQ+HLIsh71KW+xitqlV3hnMRYmz5uLKctpD5SqaPU=
+X-Received: by 2002:a25:cbc4:: with SMTP id b187mr20003460ybg.260.1602267440914;
+ Fri, 09 Oct 2020 11:17:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
- <CAEf4BzYTja99-1LHdMK69qY3XrqgtyKVheV3YH7e89JY0C4E1A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYTja99-1LHdMK69qY3XrqgtyKVheV3YH7e89JY0C4E1A@mail.gmail.com>
-From:   Yaniv Agman <yanivagman@gmail.com>
-Date:   Fri, 9 Oct 2020 21:12:28 +0300
-Message-ID: <CAMy7=ZURAvNoAtdUK5-zQVDMvbnwqnEJOTJ27WeZNMFYoLSnfg@mail.gmail.com>
-Subject: Re: libbpf error: unknown register name 'r0' in asm
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
+References: <20201009160353.1529-1-danieltimlee@gmail.com> <20201009160353.1529-2-danieltimlee@gmail.com>
+In-Reply-To: <20201009160353.1529-2-danieltimlee@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 9 Oct 2020 11:17:10 -0700
+Message-ID: <CAEf4BzYNF_BbwXM-HFFSk=ybJRdR=_P1OcVwxZ6dav6_b4BOWw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] samples: bpf: Refactor xdp_monitor with libbpf
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Xdp <xdp-newbies@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=D7=
-=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-21:03 =D7=9E=D7=90=D7=AA =
-=E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
-<=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+On Fri, Oct 9, 2020 at 9:04 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 >
-> On Fri, Oct 9, 2020 at 9:06 AM Yaniv Agman <yanivagman@gmail.com> wrote:
-> >
-> > Pulling the latest changes of libbpf and compiling my application with =
-it,
-> > I see the following error:
-> >
-> > ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
-> > unknown register name 'r0' in asm
-> >                      : "r0", "r1", "r2", "r3", "r4", "r5");
+> To avoid confusion caused by the increasing fragmentation of the BPF
+> Loader program, this commit would like to change to the libbpf loader
+> instead of using the bpf_load.
 >
-> are you including bpf_helpers.h from user-space code? You are using
-> recent enough Clang to not run into this problem for -target bpf, so
-> this seems like you are including bpf_helpers.h in the context where
-> it's not supposed to be included.
+> Thanks to libbpf's bpf_link interface, managing the tracepoint BPF
+> program is much easier. bpf_program__attach_tracepoint manages the
+> enable of tracepoint event and attach of BPF programs to it with a
+> single interface bpf_link, so there is no need to manage event_fd and
+> prog_fd separately.
+>
+> This commit refactors xdp_monitor with using this libbpf API, and the
+> bpf_load is removed and migrated to libbpf.
+>
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+>  samples/bpf/Makefile           |   2 +-
+>  samples/bpf/xdp_monitor_user.c | 144 ++++++++++++++++++++++++---------
+>  2 files changed, 108 insertions(+), 38 deletions(-)
 >
 
-This happens when I compile the kernel bpf code, not for user-space code
+[...]
+
+> +static int tp_cnt;
+> +static int map_cnt;
+>  static int verbose = 1;
+>  static bool debug = false;
+> +struct bpf_map *map_data[NUM_MAP] = { 0 };
+> +struct bpf_link *tp_links[NUM_TP] = { 0 };
+
+this syntax means "initialize *only the first element* to 0
+(explicitly) and the rest of elements to default (which is also 0)".
+So it's just misleading, use ` = {}`.
 
 >
-> >
-> > The commit which introduced this change is:
-> > 80c7838600d39891f274e2f7508b95a75e4227c1
-> >
-> > I'm not sure if I'm doing something wrong (missing include?), or this
-> > is a genuine error
-> >
-> > Yaniv
+>  static const struct option long_options[] = {
+>         {"help",        no_argument,            NULL, 'h' },
+> @@ -41,6 +65,15 @@ static const struct option long_options[] = {
+>         {0, 0, NULL,  0 }
+>  };
+>
+> +static void int_exit(int sig)
+> +{
+> +       /* Detach tracepoints */
+> +       while (tp_cnt)
+> +               bpf_link__destroy(tp_links[--tp_cnt]);
+> +
+
+see below about proper cleanup
+
+> +       exit(0);
+> +}
+> +
+>  /* C standard specifies two constants, EXIT_SUCCESS(0) and EXIT_FAILURE(1) */
+>  #define EXIT_FAIL_MEM  5
+>
+
+[...]
+
+>
+> -static void print_bpf_prog_info(void)
+> +static void print_bpf_prog_info(struct bpf_object *obj)
+>  {
+> -       int i;
+> +       struct bpf_program *prog;
+> +       struct bpf_map *map;
+> +       int i = 0;
+>
+>         /* Prog info */
+> -       printf("Loaded BPF prog have %d bpf program(s)\n", prog_cnt);
+> -       for (i = 0; i < prog_cnt; i++) {
+> -               printf(" - prog_fd[%d] = fd(%d)\n", i, prog_fd[i]);
+> +       printf("Loaded BPF prog have %d bpf program(s)\n", tp_cnt);
+> +       bpf_object__for_each_program(prog, obj) {
+> +               printf(" - prog_fd[%d] = fd(%d)\n", i++, bpf_program__fd(prog));
+>         }
+>
+> +       i = 0;
+>         /* Maps info */
+> -       printf("Loaded BPF prog have %d map(s)\n", map_data_count);
+> -       for (i = 0; i < map_data_count; i++) {
+> -               char *name = map_data[i].name;
+> -               int fd     = map_data[i].fd;
+> +       printf("Loaded BPF prog have %d map(s)\n", map_cnt);
+> +       bpf_object__for_each_map(map, obj) {
+> +               const char *name = bpf_map__name(map);
+> +               int fd           = bpf_map__fd(map);
+>
+> -               printf(" - map_data[%d] = fd(%d) name:%s\n", i, fd, name);
+> +               printf(" - map_data[%d] = fd(%d) name:%s\n", i++, fd, name);
+
+please move out increment into a separate statement, no need to
+confuse readers unnecessarily
+
+>         }
+>
+>         /* Event info */
+> -       printf("Searching for (max:%d) event file descriptor(s)\n", prog_cnt);
+> -       for (i = 0; i < prog_cnt; i++) {
+> -               if (event_fd[i] != -1)
+> -                       printf(" - event_fd[%d] = fd(%d)\n", i, event_fd[i]);
+> +       printf("Searching for (max:%d) event file descriptor(s)\n", tp_cnt);
+> +       for (i = 0; i < tp_cnt; i++) {
+> +               int fd = bpf_link__fd(tp_links[i]);
+> +
+> +               if (fd != -1)
+> +                       printf(" - event_fd[%d] = fd(%d)\n", i, fd);
+>         }
+>  }
+>
+>  int main(int argc, char **argv)
+>  {
+
+[...]
+
+> +       obj = bpf_object__open_file(filename, NULL);
+> +       if (libbpf_get_error(obj)) {
+> +               printf("ERROR: opening BPF object file failed\n");
+> +               obj = NULL;
+>                 return EXIT_FAILURE;
+>         }
+> -       if (!prog_fd[0]) {
+> -               printf("ERROR - load_bpf_file: %s\n", strerror(errno));
+> +
+> +       /* load BPF program */
+> +       if (bpf_object__load(obj)) {
+
+would be still good to call bpf_object__close(obj) here, this will
+avoid warnings about memory leaks, if you run this program under ASAN
+
+> +               printf("ERROR: loading BPF object file failed\n");
+>                 return EXIT_FAILURE;
+>         }
+>
+> +       for (type = 0; type < NUM_MAP; type++) {
+> +               map_data[type] =
+> +                       bpf_object__find_map_by_name(obj, map_type_strings[type]);
+> +
+> +               if (libbpf_get_error(map_data[type])) {
+> +                       printf("ERROR: finding a map in obj file failed\n");
+
+same about cleanup, goto into single cleanup place would be
+appropriate throughout this entire function, probably.
+
+> +                       return EXIT_FAILURE;
+> +               }
+> +               map_cnt++;
+> +       }
+> +
+
+[...]
