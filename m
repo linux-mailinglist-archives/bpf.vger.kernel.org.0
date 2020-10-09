@@ -2,172 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4663E28902A
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 19:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BD1289033
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 19:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387445AbgJIRmL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 13:42:11 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27804 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387436AbgJIRlu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 9 Oct 2020 13:41:50 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 099HSING017556;
-        Fri, 9 Oct 2020 10:41:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
- : from : message-id : date : in-reply-to : mime-version : content-type :
- content-transfer-encoding; s=facebook;
- bh=DT/ETP7+fupcPfrwSmuhhD+TfzGnBy2kOKJ8XLPLkuE=;
- b=LN8/4p8ytQOHbRmEDt2QgM/Rm2rxcYDo49jGxKOttp5tlvcO1cnXEpP4OtHVaR0oFXfK
- mfZSLsEaU5VMxANwPdLKkCjdN5gK768ocWfhg8aOrxCgiatrKr82MiKx8xtIWzZnEGAm
- CM5Tf6VoOQjuXee75X0WFcmzRBB1LGNKUvs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3429j5502k-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 09 Oct 2020 10:41:37 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 9 Oct 2020 10:41:32 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EylripFud12r2Cpsq8+A9VoGc1JKPccIHjLflU2evIHyMIXWTkcNxhBUEgawr7w8pbo00UgIpRwfIJnlaXNb2pxbvHo7rgBTXUPgXr8SGKbyOwQEGygIzNJPpzLM9A7ZlpXMSn1xxo/4g2iQIU2qPJppd/fVRzyi4b/UK0ApwxzdMh4tKZEYYk4gzBjtrGvwXshXRtbLRHDX8ovb9oT6VOb2vWKowzAqkjsP9T/yBbuf+nErr6XfiBBtOozb5dql+kxGUkxMKkzL8D+OnfkkbUYLpXBb75WypUg3BW8jjVUpXbU9QVIfuV1Pfsf5R7I/JuY2uvPv4b8ZdVM27fmz7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DT/ETP7+fupcPfrwSmuhhD+TfzGnBy2kOKJ8XLPLkuE=;
- b=RF/Tta2DQgZspyGERfZw5H9S11YoPQdxrk8c867x9XAm/JucubV0oKInOQ2Ol+gdfHH01h72i/AB2dbwzS5e2rlGamzqRVi27h+3PxOWKqwYimO7LqzaDvvhRgH+gZFs5fyAUu4kfjNeHX2ZPOxcZhs4m0XuwQG62U2CAyR3LxlHJlvmIZd73oNypbsAyiT5cD8wNasfLXiag++yQuDaH1BL1LL5oAtRO5mMyxr+qL7gNsZWpyeZp0jZ0rwNMKvGT6wtpS3P5632S2R/TZtMtT1CsOmb4QkCrt6Z6TdLnSc++YLoMl68YDB01101QswGzBHog9pX/WioSOscQP5G9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DT/ETP7+fupcPfrwSmuhhD+TfzGnBy2kOKJ8XLPLkuE=;
- b=OVxln9gWebq5dPXjXxwpicaOZBPe0/CK5llgkmiik3wO2xo9QhGPMPlMzHFkLVeoRQxFz777th0ElHHB0S6U3DlylIhhWh6J/ylBE72OrkNIPcHZkVf9wPlP4iibA2A1V8fOsdO6GjsBZ3eFIk57VtZevUBsF2VHucbb1Bouz+o=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3190.namprd15.prod.outlook.com (2603:10b6:a03:111::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Fri, 9 Oct
- 2020 17:41:31 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3455.024; Fri, 9 Oct 2020
- 17:41:31 +0000
-Subject: Re: libbpf error: unknown register name 'r0' in asm
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Yaniv Agman <yanivagman@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
- <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <e89e7eda-bcda-7cf4-43a2-f9c1c99431b2@fb.com>
-Date:   Fri, 9 Oct 2020 10:41:28 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
-In-Reply-To: <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net>
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:544b]
-X-ClientProxiedBy: MWHPR01CA0046.prod.exchangelabs.com (2603:10b6:300:101::32)
- To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+        id S2387789AbgJIRnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 13:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732067AbgJIRmm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 13:42:42 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88ECAC0613D2;
+        Fri,  9 Oct 2020 10:42:42 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x8so7816275ybe.12;
+        Fri, 09 Oct 2020 10:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mg15uOqyJ0kMhKxvi4HhKQkqdFC2+c6UNBksDiJE/bE=;
+        b=cp1ScTxcCj/airGHSApZxNnRoW9ofszCvh61kYL6QIds9LApGYRryPp++EYXoEffFn
+         KMZAUxWOxs+WLqczY7/fFFhNJObh7kWeRvblDxtNKaic6aEkNG3IyHfXHLATYCj1MgTo
+         dJ1GFFIhUMAeUyretHH4apYhTYV+uc5HDwVO0avbcgT5QrHiNrnsIndvnJl7gzdsB7Kd
+         Gs+Y5BQTfysia1K0HnCBun/Pg9a5OardyfK86yj827OrnAhtaJN6a/edjYlnBeStwv4p
+         1E55W3WFtUrH+B9kOK3Wq5ECLXGWOt7i3xVC05az9DWbDHoXi2krh5TPhNtk+KnLVBD8
+         pXsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mg15uOqyJ0kMhKxvi4HhKQkqdFC2+c6UNBksDiJE/bE=;
+        b=ExODT9nnrq7fQQ4OMwR9HyUqDonS8kBHzKwbmFhM6DXHflEy/9f/e+UVXz16iBozvF
+         X93PAjtbt3QKTs1QzsOCoPqTraiQIiDW9UEEOvQIfghaI2kYY7ipMKZ9iu0Q9JA6ysHG
+         1r/Yk1w+Az6FRgHS/I3xWDcHx1+gwnIGgg1M0aVudgg/8X5W5Yq8B9B4mrIy3S4krB68
+         4ysNq9JhSl0FOzuxYVBEVCKn5CkRekZHNHrvNn9rh/1NduQ8sfjUNrBile7xSAR7kvv9
+         totIi514sHm/v0ritUYS36bdgNrP4OsNaMKW8U3RS1iAeno2NdRV5uC3IpbeDA9GYLbf
+         /GSA==
+X-Gm-Message-State: AOAM533+p1apeYi5wXI+ggl62w04fvlTQR0u9UZA7EwiB1ZB0+99ixd5
+        5u+Cvkcrb9S4CFqrou+NhGs9tVfK+TlwiXGUlcQ=
+X-Google-Smtp-Source: ABdhPJxXLz/djtkc6zVNYwJ47mqzmkMdA5/ZzG07AqTf6ljDXmIkUkGm8tR5tY1Ypr7SU1SGGrw34STmxAksqq+LkRY=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr17248740ybn.230.1602265361717;
+ Fri, 09 Oct 2020 10:42:41 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::1844] (2620:10d:c090:400::5:544b) by MWHPR01CA0046.prod.exchangelabs.com (2603:10b6:300:101::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Fri, 9 Oct 2020 17:41:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 53bb51f5-4540-4fa2-ad15-08d86c7a8efd
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3190:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB319004D3BBCAF8572BC71EE4D3080@BYAPR15MB3190.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:428;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gsNl0COobZay9NrINLUiSP40atDcQjYoCLwxsurLNbqMrTvnfUedVBVnFLC1yWYbk4qUEtz+xFlU7MuMGwInemFHSMwPjAE+j05UvBHiPZja52Na5BuAOyT0K0/ST4yn//oCREPldzKqDdKba11BHx7AiCuP8cvlViL3aHJF+sIsSR/JymgcP06f5JFEa0TDuuAuOD1ESDBBws7BKJffI7t2CK+WCzrjN5AK3mPb5nfeqx/PRsg4aMFLGP5nJY1JMnTTEgzqakzfg2RQOUyH7mKV+adR+vp7e9r3/1r/0sqbp5N0gd7rqfhKXwkoMTIDKvhUomweKNKEYi4YUS/0h3jLIjetdaiUKyO9YmflZCdYA12V/GJ62qhKOtpemtk/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(376002)(346002)(366004)(52116002)(478600001)(316002)(36756003)(6486002)(8676002)(8936002)(110136005)(5660300002)(66476007)(66556008)(31686004)(2906002)(66946007)(86362001)(31696002)(2616005)(16526019)(186003)(6666004)(53546011)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 2P9Ctc00R9BpyUI6Y+RITAAF/JkigwSQMX5bjzCXZw05EoZesWoW6nRUwjhMWDVsCbmtueVLYNrkoUQeocrCjQZMkqxWsuNiYMasIdtA1uywYW6abS52BGxAmQGGQpZjR34xRRZsNaO9qETul+NjGfPsffhILAKvQe2/TOAyHtU37cx/VczREk6Z4xRBUyCSkMng15X+y/XfO76psflIPjf8fQNoCNrvPtpRg3AREMjzSyn2Hgctp6WouI0zNGG4NfveKp1J/coZin0JuJbTIkfT169C6CrTGa7MYgXG/NGTgB0OUWSTXfaNe0w2LKu8u7CygnonOL7KJ8r81rO49rEBaokuzshyaUliJKOHGO4eUtSDyPnPeEs4BldENLrw+SPOyT6fBPRCgOiaFeC1NrX0ntfO4u6Ifla81IRg0BEjyUx09bB8mxhHF2IKLdA+Je0ZKs2Fx6EVZOP5rPW7DbhL++6Vf0UwIUrFzXtw7BCdUym/qC4tn7XXqDgLxZmyaojfObWrUDKq8fiAUgFFZMDTJz8dz6c6rx5EB4btEEqchVa+oPFM4YxaOm5ZPQ2hBetkDe1nX2XDWF2ghIjWLFkFq0nhaApdYnTnYOFgcg0UPmzXpKMB7SyC14oryLxZbBoILQ0Pet55gsCGk2pdXERJ6oMQOd9HvHxW8/8JFdW30u03Jpc+6pAKF5/BgXlU
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53bb51f5-4540-4fa2-ad15-08d86c7a8efd
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 17:41:31.5593
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eo22mm2l2Bkj1AhTmHy2GXx9oVZTFKY0iWbGu2QLqIvycLdSb0sFln5/Qy8Lxl0E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3190
-X-OriginatorOrg: fb.com
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_09:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 impostorscore=0 phishscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010090128
-X-FB-Internal: deliver
+References: <cover.1602252399.git.daniel@iogearbox.net> <48cbc4e24968da275d13bd8797fe32986938f398.1602252399.git.daniel@iogearbox.net>
+In-Reply-To: <48cbc4e24968da275d13bd8797fe32986938f398.1602252399.git.daniel@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 9 Oct 2020 10:42:30 -0700
+Message-ID: <CAEf4BzYVgs0vicVJTeT5yVSrOg=ArJ=BkEoA8KrwdQ8AVQ23Sg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: allow for map-in-map with dynamic
+ inner array map entries
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Oct 9, 2020 at 7:13 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Recent work in f4d05259213f ("bpf: Add map_meta_equal map ops") and 134fede4eecf
+> ("bpf: Relax max_entries check for most of the inner map types") added support
+> for dynamic inner max elements for most map-in-map types. Exceptions were maps
+> like array or prog array where the map_gen_lookup() callback uses the maps'
+> max_entries field as a constant when emitting instructions.
+>
+> We recently implemented Maglev consistent hashing into Cilium's load balancer
+> which uses map-in-map with an outer map being hash and inner being array holding
+> the Maglev backend table for each service. This has been designed this way in
+> order to reduce overall memory consumption given the outer hash map allows to
+> avoid preallocating a large, flat memory area for all services. Also, the
+> number of service mappings is not always known a-priori.
+>
+> The use case for dynamic inner array map entries is to further reduce memory
+> overhead, for example, some services might just have a small number of back
+> ends while others could have a large number. Right now the Maglev backend table
+> for small and large number of backends would need to have the same inner array
+> map entries which adds a lot of unneeded overhead.
+>
+> Dynamic inner array map entries can be realized by avoiding the inlined code
+> generation for their lookup. The lookup will still be efficient since it will
+> be calling into array_map_lookup_elem() directly and thus avoiding retpoline.
+> The patch adds a BPF_F_NO_INLINE flag to map creation which internally swaps
+> out map ops with a variant that does not have map_gen_lookup() callback and
+> a relaxed map_meta_equal() that calls bpf_map_meta_equal() directly.
+>
+> Example code generation where inner map is dynamic sized array:
+>
+>   # bpftool p d x i 125
+>   int handle__sys_enter(void * ctx):
+>   ; int handle__sys_enter(void *ctx)
+>      0: (b4) w1 = 0
+>   ; int key = 0;
+>      1: (63) *(u32 *)(r10 -4) = r1
+>      2: (bf) r2 = r10
+>   ;
+>      3: (07) r2 += -4
+>   ; inner_map = bpf_map_lookup_elem(&outer_arr_dyn, &key);
+>      4: (18) r1 = map[id:468]
+>      6: (07) r1 += 272
+>      7: (61) r0 = *(u32 *)(r2 +0)
+>      8: (35) if r0 >= 0x3 goto pc+5
+>      9: (67) r0 <<= 3
+>     10: (0f) r0 += r1
+>     11: (79) r0 = *(u64 *)(r0 +0)
+>     12: (15) if r0 == 0x0 goto pc+1
+>     13: (05) goto pc+1
+>     14: (b7) r0 = 0
+>     15: (b4) w6 = -1
+>   ; if (!inner_map)
+>     16: (15) if r0 == 0x0 goto pc+6
+>     17: (bf) r2 = r10
+>   ;
+>     18: (07) r2 += -4
+>   ; val = bpf_map_lookup_elem(inner_map, &key);
+>     19: (bf) r1 = r0                               | No inlining but instead
+>     20: (85) call array_map_lookup_elem#149280     | call to array_map_lookup_elem()
+>   ; return val ? *val : -1;                        | for inner array lookup.
+>     21: (15) if r0 == 0x0 goto pc+1
+>   ; return val ? *val : -1;
+>     22: (61) r6 = *(u32 *)(r0 +0)
+>   ; }
+>     23: (bc) w0 = w6
+>     24: (95) exit
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/linux/bpf.h            |  1 +
+>  include/uapi/linux/bpf.h       |  5 +++++
+>  kernel/bpf/arraymap.c          | 40 ++++++++++++++++++++++++++++++++--
+>  kernel/bpf/syscall.c           |  3 ++-
+>  tools/include/uapi/linux/bpf.h |  5 +++++
+>  5 files changed, 51 insertions(+), 3 deletions(-)
+>
 
+[...]
 
-On 10/9/20 9:27 AM, Daniel Borkmann wrote:
-> [ Cc +Yonghong ]
-> 
-> On 10/9/20 6:05 PM, Yaniv Agman wrote:
->> Pulling the latest changes of libbpf and compiling my application with 
->> it,
->> I see the following error:
->>
->> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
->> unknown register name 'r0' in asm
->>                       : "r0", "r1", "r2", "r3", "r4", "r5");
->>
->> The commit which introduced this change is:
->> 80c7838600d39891f274e2f7508b95a75e4227c1
->>
->> I'm not sure if I'm doing something wrong (missing include?), or this
->> is a genuine error
-> 
-> Seems like your clang/llvm version might be too old.
-> 
-> Yonghong, do you happen to know from which version onwards there is 
-> proper support
-> for bpf inline asm? We could potentially wrap this around like this:
+>
+> +/* Variant which does not have map_gen_lookup() implementation, but
+> + * therefore can relax map_meta_equal() check to allow for dynamic
+> + * max_entries for inner maps.
+> + */
+> +const struct bpf_map_ops array_map_no_inline_ops = {
+> +       .map_meta_equal = bpf_map_meta_equal,
+> +       .map_alloc_check = array_map_alloc_check,
+> +       .map_alloc = array_map_alloc,
+> +       .map_free = array_map_free,
+> +       .map_get_next_key = array_map_get_next_key,
+> +       .map_lookup_elem = array_map_lookup_elem,
+> +       .map_update_elem = array_map_update_elem,
+> +       .map_delete_elem = array_map_delete_elem,
+> +       .map_direct_value_addr = array_map_direct_value_addr,
+> +       .map_direct_value_meta = array_map_direct_value_meta,
+> +       .map_mmap = array_map_mmap,
+> +       .map_seq_show_elem = array_map_seq_show_elem,
+> +       .map_check_btf = array_map_check_btf,
+> +       .map_lookup_batch = generic_map_lookup_batch,
+> +       .map_update_batch = generic_map_update_batch,
+> +       .map_btf_name = "bpf_array",
+> +       .map_btf_id = &array_map_btf_id,
+> +       .iter_seq_info = &iter_seq_info,
+> +};
+> +
+>  static int percpu_array_map_btf_id;
+>  const struct bpf_map_ops percpu_array_map_ops = {
+>         .map_meta_equal = bpf_map_meta_equal,
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 1110ecd7d1f3..519bf867f065 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -111,7 +111,8 @@ static struct bpf_map *find_and_alloc_map(union bpf_attr *attr)
+>         ops = bpf_map_types[type];
+>         if (!ops)
+>                 return ERR_PTR(-EINVAL);
+> -
+> +       if (ops->map_swap_ops)
+> +               ops = ops->map_swap_ops(attr);
 
-llvm6 starts to support inline asm.
+I'm afraid that this can cause quite a lot of confusion down the road.
 
-> 
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index 2bdb7d6dbad2..0d6abc91bfc6 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -72,6 +72,7 @@
->   /*
->    * Helper function to perform a tail call with a constant/immediate 
-> map slot.
->    */
-> +#if __clang_major__ >= 10
+Wouldn't designating -EOPNOTSUPP return code from map_gen_lookup() and
+not inlining in that case as if map_gen_lookup() wasn't even defined
+be a much smaller and more local (semantically) change that achieves
+exactly the same thing? Doesn't seem like switching from u32 to int
+for return value would be a big inconvenience for existing
+implementations of inlining callbacks, right?
 
-Just change to __clang_major__ >= 6 should be okay, you may want to
-double check though.
-
->   static __always_inline void
->   bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
->   {
-> @@ -98,6 +99,7 @@ bpf_tail_call_static(void *ctx, const void *map, const 
-> __u32 slot)
->                       :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
->                       : "r0", "r1", "r2", "r3", "r4", "r5");
->   }
-> +#endif /* __clang_major__ >= 10 */
-> 
->   /*
->    * Helper structure used by eBPF C program
-> 
-> 
-> 
->> Yaniv
->>
-> 
+>         if (ops->map_alloc_check) {
+>                 err = ops->map_alloc_check(attr);
+>                 if (err)
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index ea8dfbe62c7a..eb384264f906 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -435,6 +435,11 @@ enum {
+>
+>  /* Share perf_event among processes */
+>         BPF_F_PRESERVE_ELEMS    = (1U << 11),
+> +
+> +/* Do not inline (array) map lookups so the array map can be used for
+> + * map in map with dynamic max entries.
+> + */
+> +       BPF_F_NO_INLINE         = (1U << 12),
+>  };
+>
+>  /* Flags for BPF_PROG_QUERY. */
+> --
+> 2.21.0
+>
