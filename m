@@ -2,182 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1492328906B
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 19:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224DB28906D
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 19:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387607AbgJIR7W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 13:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        id S2387504AbgJIR7c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 13:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730110AbgJIR7U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 13:59:20 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543A5C0613D2;
-        Fri,  9 Oct 2020 10:59:20 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id y20so6790048iod.5;
-        Fri, 09 Oct 2020 10:59:20 -0700 (PDT)
+        with ESMTP id S1730110AbgJIR7c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 13:59:32 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60F8C0613D2;
+        Fri,  9 Oct 2020 10:59:31 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id c3so7907382ybl.0;
+        Fri, 09 Oct 2020 10:59:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=pi1UXh+jn1134QvUsVttHo/at8kQ91ooAT76FDYrGiY=;
-        b=uXG1+HhU7u0+sNwyrw2U9p/k8XuPORYeq04GHIAPNpcaZfHbk8sgdMitEd6qW3MSvr
-         fD9t2aIcmCWJ+fRgl393giE7qyE1bDylqwgq9KXP26He6gymtgUofrpSeogHGj2q5Bz+
-         JTTaH3naKQ7l8JqhPd4wPJs+gKjOndeQGQC5YwkmQMkaXnNhxeHrz5uIfseJ4TRvPAVQ
-         8YCDOiHlv2Xpb8IbdJPkkVviu/2cgtJ7ph915wMFpr+wUBbgMrUmDPmXrGTYPcEgLCQX
-         x7w83khPZX14GwHsDSN0kygx2bCr1REQd/JlqrnGJx/YqkFqwiqn1S0JX3XWHGEgES6o
-         DLtA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wNf+eHAfipT5/lMmEdzU4neAMEwONLyMRP/D8oZqeYc=;
+        b=ccI9U5HVeGRbaZSXduvN+ZDiOV6JW5vJ+mHKHxlkfkneoD3SaAF9BB8oaE/OjDfXBe
+         rubIM8XSX4ex8ekRkAvv0ksB9WZ6rPsOQZVopfLvOXXgYyksnOwmVbk65ngVIBf3MpxF
+         zTRlh8btTZMZx5RSaa55CNvYZbP2Zpk6Lxun1Yw50OsvFeDM39LGV0pQ8gwgeXum78wW
+         s+VWeCMpYKWHotMGdajtHUGzQgZYE3mdWRdkojeW8FfCAK7aOjF85XXvnTj+QxZwkWNC
+         et9j7RAS4AKt+wozDFpYmJpi0tLQjp/08dt+bYcq/8VfbuucpqFOwU+R6dtKlEJP+MZP
+         +6ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=pi1UXh+jn1134QvUsVttHo/at8kQ91ooAT76FDYrGiY=;
-        b=CRn7R6e8uHOoKoglFGUlx6JL4bbRCFqI7mDGZ3nM4P1jjwXi3rv0laTo8frP0vrJVS
-         JaOrGXJVVoT1d4SiFj+EWRoRTHH17lo7CcL64Thrq2cTn1sl7Q461A5QNYLyi7xgaQ48
-         Ws3bOKCczWQrJWwV5G3rX6dNqtiu2OykAh9/2lygE2cqNILUadLYOp5EMmPeTryWP1A3
-         wEvUnvK8dMJp/tIoxEBqis0+saDf2LXpaDqZiVCNnsiWSw7TLtD6OZBNA18r29jl7GwO
-         zn23BML5NRKCBQ+hwA9f36zBj7E+nPzYQ+Z3v4bb9T1xZd+9mmmmfWXF5IWMCZq5kSqp
-         D/ww==
-X-Gm-Message-State: AOAM5324XaiboL3OgQ4J0QZcPGa8it83FGThSc6Q1OgkX3/dqPh8PU31
-        aXB9bxRBNrGi8goNzZrUzKg=
-X-Google-Smtp-Source: ABdhPJxi+Qm9J3HKTrD6T9A8ljHPQEnNMSx3a65IhiX+3KL3Bd/r1Ln6Akjp2tPBwnZG0Dgl9ZdnAw==
-X-Received: by 2002:a05:6602:2dce:: with SMTP id l14mr3316230iow.198.1602266359682;
-        Fri, 09 Oct 2020 10:59:19 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id k7sm3348361iog.26.2020.10.09.10.59.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 10:59:19 -0700 (PDT)
-Subject: [bpf-next PATCH v2 6/6] bpf,
- sockmap: Add memory accounting so skbs on ingress lists are visible
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     john.fastabend@gmail.com, alexei.starovoitov@gmail.com,
-        daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
-        lmb@cloudflare.com
-Date:   Fri, 09 Oct 2020 10:59:07 -0700
-Message-ID: <160226634754.4390.3646137133633320563.stgit@john-Precision-5820-Tower>
-In-Reply-To: <160226618411.4390.8167055952618723738.stgit@john-Precision-5820-Tower>
-References: <160226618411.4390.8167055952618723738.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wNf+eHAfipT5/lMmEdzU4neAMEwONLyMRP/D8oZqeYc=;
+        b=gnzot6OK4nVG++OWzhAwCffTWEhRtfUotEarTsml2A3rGemwRxDUotbtqnlyZhp1ne
+         IAttqZqrG4HJK9JSm4XKZLHSLpA4VDDf0Jxm3V3zdTkgC52lvHxJHzqxnm5PpDxeyVUm
+         45jOV2NTH6vBGOcggzC4+Xvvckz6BkTbyXm/LGijBfP4/7GBFD4ibdu0TAJ+cb17IYJ7
+         MX2jPwL7ZDcAUPol40vytlN5Ae66zPYfsbYfO9FoukqiX6dQbzW8NxfJFV7KiGaC9BRr
+         pYowBUnn8ehWivCBbdFAftqlyKuXhkvxvKtenwWIIRuUi8ARV9VCkWHryaDbeWIR4Fc6
+         wP4Q==
+X-Gm-Message-State: AOAM530A4clv1vCWXq2JYUPsn6hpmTy5NDihoaoUnF1+8HorpuY9N3pJ
+        D7HUdiPlGFSFIwXzgIU2QFXxt08SszjnPPQgrH4=
+X-Google-Smtp-Source: ABdhPJx+CptLJ9+mNy/IFL3G9w38nWHK/rE8NXgCF7u1JDy0WcXvfJhkRN7UVnA27QBrGjahfUm8gWc89r+NvuycE3M=
+X-Received: by 2002:a25:2596:: with SMTP id l144mr18588863ybl.510.1602266371212;
+ Fri, 09 Oct 2020 10:59:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201008234000.740660-1-andrii@kernel.org> <20201009162243.GD322246@kernel.org>
+In-Reply-To: <20201009162243.GD322246@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 9 Oct 2020 10:59:20 -0700
+Message-ID: <CAEf4BzZa7WGDpBxHKNvO+SWv2=J2mGyQZuuMTkGWkRWxz+KLgg@mail.gmail.com>
+Subject: Re: [PATCH v2 dwarves 0/8] Switch BTF loading and encoding to libbpf APIs
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Hao Luo <haoluo@google.com>,
+        Oleg Rombakh <olegrom@google.com>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Tony Ambardar <tony.ambardar@gmail.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        David Marcinkovic <david.marcinkovic@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Borna Cafuk <borna.cafuk@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move skb->sk assignment out of sk_psock_bpf_run() and into individual
-callers. Then we can use proper skb_set_owner_r() call to assign a
-sk to a skb. This improves things by also charging the truesize against
-the sockets sk_rmem_alloc counter. With this done we get some accounting
-in place to ensure the memory associated with skbs on the workqueue are
-still being accounted for somewhere. Finally, by using skb_set_owner_r
-the destructor is setup so we can just let the normal skb_kfree logic
-recover the memory. Combined with previous patch dropping skb_orphan()
-we now can recover from memory pressure and maintain accounting.
+On Fri, Oct 9, 2020 at 9:22 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Thu, Oct 08, 2020 at 04:39:52PM -0700, Andrii Nakryiko escreveu:
+> > This patch set switches pahole to use libbpf-provided BTF loading and encoding
+> > APIs. This reduces pahole's own BTF encoding code, speeds up the process,
+> > reduces amount of RAM needed for DWARF-to-BTF conversion. Also, pahole finally
+> > gets support to generating BTF for cross-compiled ELF binaries with different
+> > endianness (patch #8).
+> >
+> > Additionally, patch #3 fixes previously missed problem with invalid array
+> > index type generation.
+> >
+> > Patches #4-7 are speeding up DWARF-to-BTF convertion/dedup pretty
+> > significantly, saving overall about 9 seconds out of current 27 or so.
+> >
+> > Patch #5 revamps how per-CPU BTF variables are emitted, eliminating repeated
+> > and expensive looping over ELF symbols table. The critical detail that took
+> > few hours of investigation is that when DW_AT_variable has
+> > DW_AT_specification, variable address (to correlate with symbol's address) has
+> > to be taken before specification is followed.
+> >
+> > More details could be found in respective patches.
+> >
+> > v1->v2:
+> >   - rebase on latest dwarves master and fix var->spec's address problem.
+>
+> Thanks, I applied all of them, tested and reproduced the performance
+> gains, great work!
 
-Note, we will charge the skbs against their originating socket even
-if being redirected into another socket. Once the skb completes the
-redirect op the kfree_skb will give the memory back. This is important
-because if we charged the socket we are redirecting to (like it was
-done before this series) the sock_writeable() test could fail because
-of the skb trying to be sent is already charged against the socket.
+Great, thanks a lot, Arnaldo!
 
-Also TLS case is special. Here we wait until we have decided not to
-simply PASS the packet up the stack. In the case where we PASS the
-packet up the stack we already have an skb which is accounted for on
-the TLS socket context.
+Next step is adding BTF to kernel modules, where module's BTF will be
+an "extension" of vmlinux's BTF, with only a minimal set of new types
+used/added in the module, that are not available in vmlinux. This
+should make per-module BTF really tiny.
 
-For the parser case we continue to just set/clear skb->sk this is
-because the skb being used here may be combined with other skbs or
-turned into multiple skbs depending on the parser logic. For example
-the parser could request a payload length greater than skb->len so
-that the strparser needs to collect multiple skbs. At any rate
-the final result will be handled in the strparser recv callback.
-
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- net/core/skmsg.c |   31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
-
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index b017c6104cdc..a7f1133fa11c 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -684,20 +684,8 @@ EXPORT_SYMBOL_GPL(sk_psock_msg_verdict);
- static int sk_psock_bpf_run(struct sk_psock *psock, struct bpf_prog *prog,
- 			    struct sk_buff *skb)
- {
--	int ret;
--
--	/* strparser clones the skb before handing it to a upper layer,
--	 * meaning we have the same data, but sk is NULL. We do want an
--	 * sk pointer though when we run the BPF program. So we set it
--	 * here and then NULL it to ensure we don't trigger a BUG_ON()
--	 * in skb/sk operations later if kfree_skb is called with a
--	 * valid skb->sk pointer and no destructor assigned.
--	 */
--	skb->sk = psock->sk;
- 	bpf_compute_data_end_sk_skb(skb);
--	ret = bpf_prog_run_pin_on_cpu(prog, skb);
--	skb->sk = NULL;
--	return ret;
-+	return bpf_prog_run_pin_on_cpu(prog, skb);
- }
- 
- static struct sk_psock *sk_psock_from_strp(struct strparser *strp)
-@@ -736,10 +724,11 @@ static void sk_psock_skb_redirect(struct sk_buff *skb)
- 	schedule_work(&psock_other->work);
- }
- 
--static void sk_psock_tls_verdict_apply(struct sk_buff *skb, int verdict)
-+static void sk_psock_tls_verdict_apply(struct sk_buff *skb, struct sock *sk, int verdict)
- {
- 	switch (verdict) {
- 	case __SK_REDIRECT:
-+		skb_set_owner_r(skb, sk);
- 		sk_psock_skb_redirect(skb);
- 		break;
- 	case __SK_PASS:
-@@ -757,11 +746,17 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
- 	rcu_read_lock();
- 	prog = READ_ONCE(psock->progs.skb_verdict);
- 	if (likely(prog)) {
-+		/* We skip full set_owner_r here because if we do a SK_PASS
-+		 * or SK_DROP we can skip skb memory accounting and use the
-+		 * TLS context.
-+		 */
-+		skb->sk = psock->sk;
- 		tcp_skb_bpf_redirect_clear(skb);
- 		ret = sk_psock_bpf_run(psock, prog, skb);
- 		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-+		skb->sk = NULL;
- 	}
--	sk_psock_tls_verdict_apply(skb, ret);
-+	sk_psock_tls_verdict_apply(skb, psock->sk, ret);
- 	rcu_read_unlock();
- 	return ret;
- }
-@@ -823,6 +818,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
- 		kfree_skb(skb);
- 		goto out;
- 	}
-+	skb_set_owner_r(skb, sk);
- 	prog = READ_ONCE(psock->progs.skb_verdict);
- 	if (likely(prog)) {
- 		tcp_skb_bpf_redirect_clear(skb);
-@@ -847,8 +843,11 @@ static int sk_psock_strp_parse(struct strparser *strp, struct sk_buff *skb)
- 
- 	rcu_read_lock();
- 	prog = READ_ONCE(psock->progs.skb_parser);
--	if (likely(prog))
-+	if (likely(prog)) {
-+		skb->sk = psock->sk;
- 		ret = sk_psock_bpf_run(psock, prog, skb);
-+		skb->sk = NULL;
-+	}
- 	rcu_read_unlock();
- 	return ret;
- }
-
+>
+> I'll do some more testing on encoding a vmlinux for some big endian arch
+> on my x86_64 workstation and then push things publicly.
+>
+> If Hao find any issues we can fix in a follow up patch.
+>
+> I also added the people involved in the discussion about cross builds
+> failing, please take a look, I'm pushing now to a tmp.libbtf_encoder so
+> that you can test it from there, ok?
+>
+> - Arnaldo
+>
+> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> >
+> > Andrii Nakryiko (8):
+> >   btf_loader: use libbpf to load BTF
+> >   btf_encoder: use libbpf APIs to encode BTF type info
+> >   btf_encoder: fix emitting __ARRAY_SIZE_TYPE__ as index range type
+> >   btf_encoder: discard CUs after BTF encoding
+> >   btf_encoder: revamp how per-CPU variables are encoded
+> >   dwarf_loader: increase the size of lookup hash map
+> >   strings: use BTF's string APIs for strings management
+> >   btf_encoder: support cross-compiled ELF binaries with different
+> >     endianness
+> >
+> >  btf_encoder.c  | 370 +++++++++++++++------------
+> >  btf_loader.c   | 244 +++++++-----------
+> >  ctf_encoder.c  |   2 +-
+> >  dwarf_loader.c |   2 +-
+> >  libbtf.c       | 661 +++++++++++++++++++++----------------------------
+> >  libbtf.h       |  41 ++-
+> >  libctf.c       |  14 +-
+> >  libctf.h       |   4 +-
+> >  pahole.c       |   2 +-
+> >  strings.c      |  91 +++----
+> >  strings.h      |  32 +--
+> >  11 files changed, 645 insertions(+), 818 deletions(-)
+> >
+> > --
+> > 2.24.1
+> >
+>
+> --
+>
+> - Arnaldo
