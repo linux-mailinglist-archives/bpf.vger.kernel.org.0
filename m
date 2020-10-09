@@ -2,116 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1656287F34
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 01:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F83287F6D
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 02:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731022AbgJHXk1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 8 Oct 2020 19:40:27 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37074 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731066AbgJHXk1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Oct 2020 19:40:27 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 098NeDhs007710
-        for <bpf@vger.kernel.org>; Thu, 8 Oct 2020 16:40:27 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3429h8gvt4-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 08 Oct 2020 16:40:26 -0700
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 8 Oct 2020 16:40:25 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id F3FE12EC7C76; Thu,  8 Oct 2020 16:40:20 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <dwarves@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, <kernel-team@fb.com>, <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH v2 dwarves 8/8] btf_encoder: support cross-compiled ELF binaries with different endianness
-Date:   Thu, 8 Oct 2020 16:40:00 -0700
-Message-ID: <20201008234000.740660-9-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201008234000.740660-1-andrii@kernel.org>
-References: <20201008234000.740660-1-andrii@kernel.org>
+        id S1726293AbgJIARv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Oct 2020 20:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725952AbgJIARv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Oct 2020 20:17:51 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FBBC0613D2;
+        Thu,  8 Oct 2020 17:17:51 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g29so5731179pgl.2;
+        Thu, 08 Oct 2020 17:17:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GfhHHR4pKbk7p2RCtudI48L9yccCmQn13QSmLqHOpqE=;
+        b=l+9ARLRb9oLSk2zBqP7Ye+thTIcpC9bxYPWNxSajiaetz6v3CgqO1xHoPTX03fErKa
+         QchKdmiUftQRFJ7jMHBLv4Nb8LACpVAlC32HvlYV26TEMUkuZgFDC8MiDZTOk5vU62g4
+         GuWs6HoiK5wGXRVFpMbqidU1nmW62b4arwFBI/lDjjRQTQF3vblCUv36QKmjciqYPyXS
+         gf0INfCeuAuKNFw4b0qBNdJGO6zsMZOI/RXdSOZObkutDnVNJ1jWEZZfS08DdtggAd+Z
+         v8nZiUExVcHkjkABs4GnC4XBLwf4rj40VYZMBEVU4j646xJoiaGib0LiCT0VO+LdU7eS
+         SGXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GfhHHR4pKbk7p2RCtudI48L9yccCmQn13QSmLqHOpqE=;
+        b=cpmj5mBK8MfzGjB2IEckIZYMuRmWP+Jk7G8WnMJGnUxtZZYGn+r5INmRnnJxjHVjW0
+         tLYOMO1xC9mhRE4qzIeBMVH+aBIun//xtX7ci6RsZJ5+jjw6PsMd8MtEZ3sBV0kj6zM+
+         WnsYAkYQKTjRxHw/OTMz7guvCYEW0YbmMEoVq/3dHocvMCiakxnghtErDNwxlAJYFkO3
+         z07gE0cDSDZV7oxvFM1EjIGDPwczC0gKvTtjiRZPrI3A2VK40gmNPDvq/8CKjO7ia10W
+         MlvTFp+C02jFvA3eeSguDRT7QgUgqXK4lYMYbBRSao/gOoOXrZkMkcgl1xtS31ShFpAN
+         1Lmw==
+X-Gm-Message-State: AOAM530UvbZejLuMwiS5hR+zYgSKq7CKlgTpCOoei9QG0kuOXg6zOBkI
+        8Y8dGrrQbIsZnKmdEt6qxxPvflO50AkOkwlkue4=
+X-Google-Smtp-Source: ABdhPJwcXfNIgKgm3YkQPIhlaT3JnMp3WueuSFA6XTYpyR/WEW0+W0BG2h4lGxp1o1UtTjbNnQYadnf5Ix3d1XgiBug=
+X-Received: by 2002:a63:1c19:: with SMTP id c25mr1245508pgc.66.1602202670500;
+ Thu, 08 Oct 2020 17:17:50 -0700 (PDT)
 MIME-Version: 1.0
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-08_15:2020-10-08,2020-10-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- clxscore=1034 impostorscore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 lowpriorityscore=0 malwarescore=0 suspectscore=13
- bulkscore=0 spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010080167
-X-FB-Internal: deliver
+References: <cover.1601478774.git.yifeifz2@illinois.edu> <83c72471f9f79fa982508bd4db472686a67b8320.1601478774.git.yifeifz2@illinois.edu>
+ <202009301422.D9F6E6A@keescook>
+In-Reply-To: <202009301422.D9F6E6A@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 8 Oct 2020 19:17:39 -0500
+Message-ID: <CABqSeASbRXLYgE=rbKO8g8Si9q7nKEGB2UZpi-BcYG5etWVcjA@mail.gmail.com>
+Subject: Re: [PATCH v3 seccomp 3/5] seccomp/cache: Lookup syscall allowlist
+ for fast path
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+On Wed, Sep 30, 2020 at 4:32 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Sep 30, 2020 at 10:19:14AM -0500, YiFei Zhu wrote:
+> > From: YiFei Zhu <yifeifz2@illinois.edu>
+> >
+> > The fast (common) path for seccomp should be that the filter permits
+> > the syscall to pass through, and failing seccomp is expected to be
+> > an exceptional case; it is not expected for userspace to call a
+> > denylisted syscall over and over.
+> >
+> > This first finds the current allow bitmask by iterating through
+> > syscall_arches[] array and comparing it to the one in struct
+> > seccomp_data; this loop is expected to be unrolled. It then
+> > does a test_bit against the bitmask. If the bit is set, then
+> > there is no need to run the full filter; it returns
+> > SECCOMP_RET_ALLOW immediately.
+> >
+> > Co-developed-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> > Signed-off-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+> > Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+>
+> I'd like the content/ordering of this and the emulator patch to be reorganized a bit.
+> I'd like to see the infrastructure of the cache added first (along with
+> the "always allow" test logic in this patch), with the emulator missing:
+> i.e. the patch is a logical no-op: no behavior changes because nothing
+> ever changes the cache bits, but all the operational logic, structure
+> changes, etc, is in place. Then the next patch would be replacing the
+> no-op with the emulator.
+>
+> > ---
+> >  kernel/seccomp.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 52 insertions(+)
+> >
+> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > index f09c9e74ae05..bed3b2a7f6c8 100644
+> > --- a/kernel/seccomp.c
+> > +++ b/kernel/seccomp.c
+> > @@ -172,6 +172,12 @@ struct seccomp_cache_filter_data { };
+> >  static inline void seccomp_cache_prepare(struct seccomp_filter *sfilter)
+> >  {
+> >  }
+> > +
+> > +static inline bool seccomp_cache_check(const struct seccomp_filter *sfilter,
+>
+> bikeshedding: "cache check" doesn't tell me anything about what it's
+> actually checking for. How about calling this seccomp_is_constant_allow() or
+> something that reflects both the "bool" return ("is") and what that bool
+> means ("should always be allowed").
 
-Ensure that output BTF endianness corresponds to target ELF's endianness. This
-makes it finally possible to use pahole to generate BTF for cross-compiled
-kernels with different endianness.
+We have a naming conflict here. I'm about to rename
+seccomp_emu_is_const_allow to seccomp_is_const_allow. Adding another
+seccomp_is_constant_allow is confusing. Suggestions?
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- libbtf.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+I think I would prefer to change seccomp_cache_check to
+seccomp_cache_check_allow. While in this patch set seccomp_cache_check
+does imply the filter is "constant" allow, argument-processing cache
+may change this, and specifying an "allow" in the name specifies the
+'what that bool means ("should always be allowed")'.
 
-diff --git a/libbtf.c b/libbtf.c
-index 27aa3e5a986e..babf4fe8cd9e 100644
---- a/libbtf.c
-+++ b/libbtf.c
-@@ -87,6 +87,8 @@ struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
- 		btfe->raw_btf  = true;
- 		btfe->wordsize = sizeof(long);
- 		btfe->is_big_endian = BYTE_ORDER == BIG_ENDIAN;
-+		btf__set_endianness(btfe->btf,
-+				    btfe->is_big_endian ? BTF_BIG_ENDIAN : BTF_LITTLE_ENDIAN);
- 		return btfe;
- 	}
- 
-@@ -118,8 +120,14 @@ struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
- 	}
- 
- 	switch (btfe->ehdr.e_ident[EI_DATA]) {
--	case ELFDATA2LSB: btfe->is_big_endian = false; break;
--	case ELFDATA2MSB: btfe->is_big_endian = true;  break;
-+	case ELFDATA2LSB:
-+		btfe->is_big_endian = false;
-+		btf__set_endianness(btfe->btf, BTF_LITTLE_ENDIAN);
-+		break;
-+	case ELFDATA2MSB:
-+		btfe->is_big_endian = true;
-+		btf__set_endianness(btfe->btf, BTF_BIG_ENDIAN);
-+		break;
- 	default:
- 		fprintf(stderr, "%s: unknown elf endianness.\n", __func__);
- 		goto errout;
-@@ -704,6 +712,18 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 		goto out;
- 	}
- 
-+	switch (ehdr_mem.e_ident[EI_DATA]) {
-+	case ELFDATA2LSB:
-+		btf__set_endianness(btf, BTF_LITTLE_ENDIAN);
-+		break;
-+	case ELFDATA2MSB:
-+		btf__set_endianness(btf, BTF_BIG_ENDIAN);
-+		break;
-+	default:
-+		fprintf(stderr, "%s: unknown elf endianness.\n", __func__);
-+		goto out;
-+	}
-+
- 	/*
- 	 * First we look if there was already a .BTF section to overwrite.
- 	 */
--- 
-2.24.1
-
+YiFei Zhu
