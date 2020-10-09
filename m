@@ -2,164 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7560A289C0D
-	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 01:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C4C289C14
+	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 01:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgJIXOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 19:14:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
+        id S1726418AbgJIXRc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 19:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgJIXOv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:14:51 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F41C0613D2
-        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 16:14:51 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t18so5200996plo.1
-        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 16:14:51 -0700 (PDT)
+        with ESMTP id S1726101AbgJIXRV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 19:17:21 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C27CC0613D2
+        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 16:17:21 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id l16so10738424ilt.13
+        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 16:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n8tMNPlt+WgOGWxVqUdEpRLjgaATmbfqGWdnlUKGm2w=;
-        b=iKYPQpxjWQDkWz+DPQGsFwsINVhn1zUNJnEVfUJUHTj6OrT2UeyVf1jFWu2VGG0Sd/
-         Q6eQgdzwWjj1nWOw0JUlCIXxYd/FtVriQRsOUwCsaFdBcNkPKi+2pbMPFtUj75Sr/tRe
-         8j88AH6f6bdBDPc15Bfpy6/ADirbyIrXuuiWY=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d5UVykl6vFQAJIzqjcartjMEXw8zG2By/7jb9cPexgg=;
+        b=remOb4y+o0PN7ggMXt7woYRAr61qHbqbbsQ1bNficVw/klvUkcFjctwiG7tnp8C6hX
+         Thl9KelMu3jZT2xA4UF7bRtzvi+0k/p3YKoTCCmV1c4SgTqKDUPrDfcpt2Qk3GE6WGbV
+         XZ3D4J7QpYVU8gOOo8+0Ri8pZAO5i9BlsgtM9jn8pm0rv8JPgVi4BLRV1m7grozB618p
+         sfiWEdloucHm3RS6bLiRxqI05iqzVVlmk/+dM4fYghiKnVdhbBn1lEMEiFll8rZyJ/up
+         5pgUZzqUAVEBmtaHDUOITAbIBBNXMmZQo1QaUd8wZrj94HlDEQH91mZR+6wZ+OdkC+yV
+         2TdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n8tMNPlt+WgOGWxVqUdEpRLjgaATmbfqGWdnlUKGm2w=;
-        b=brPpDuMj+u0U7lNNzWGY1nsBbYeAB7Z0cTMWQRex6GCTn3oxIEbjgT7oPL8t0GSpuZ
-         qbgjn1aQKHps+YgL1fwj0cNqYWxrx5Lh+OLvldtbysVYQwnP7vNsccFo4FiaCQDu+Tat
-         AuIUCRPfMTPHJnpDujyajShTSqJQthZG8R5LL48mMqFwkO/EJQeaJDUP8N1T6BzQdB5x
-         iYBRTsRSTsM8ucWJaswuEG0WQ4ZdwKmqTYfzNGowchk2aqzKdLP7C5tTiqJvoykIikD1
-         7Sy5bqCeS4PzmBAOsZ8XxqaRo78oK5vNFnwQoMUYVHqTqAhCpfT8lygiw+N2nuTouLh9
-         CTMQ==
-X-Gm-Message-State: AOAM5307Cj5wOgzDqtJgiKYsQdUxr764SkVRYiFaafojj3iAegqVVCZx
-        lGjge2VAaU/TsE9ytbqPPVo57Q==
-X-Google-Smtp-Source: ABdhPJwNBafddDMTu9v6aB/SdriCWv98crtqxIV19v6tjDbA0QjDMDvn6HIEfpx597XYVrlGXc/Prw==
-X-Received: by 2002:a17:902:8bc4:b029:d2:8cec:1fae with SMTP id r4-20020a1709028bc4b02900d28cec1faemr14566468plo.23.1602285290468;
-        Fri, 09 Oct 2020 16:14:50 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g4sm12323939pgh.65.2020.10.09.16.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Oct 2020 16:14:49 -0700 (PDT)
-Date:   Fri, 9 Oct 2020 16:14:48 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     containers@lists.linux-foundation.org,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202010091613.B671C86@keescook>
-References: <cover.1602263422.git.yifeifz2@illinois.edu>
- <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d5UVykl6vFQAJIzqjcartjMEXw8zG2By/7jb9cPexgg=;
+        b=OuI4hs5F7OJuYm49ohhFrdvAGY9kGo+DXUzYLEJEHJJOafrzZK5gkI685/hWwGVWLU
+         hhCSVs5nfLsYzitw/5upA3dWWVH6PP5LA65lTr/9UWAz6xu6ZuIenx2X3ZlZLCCRmJ+E
+         IcTfRJFYydFxZ3YQ2o/jxYQQW4SKDrYk+9X93M0XGnfvydodaqNxAAqLB023x6hwHU5E
+         bMFCDjVxVjtuWegs7B9ccW9sqzZLu4v1GFZnh8O+gliIlrlsiTYpNlGI+pKTLAU2rUt6
+         Joa07eQ6lsJk+N03aSfhAu4SBe21BoUfEYxo3W5hkuwkcYvqfzJs5gFCxxDhzb7KHYAn
+         zxBQ==
+X-Gm-Message-State: AOAM533HIXwhG+l56rrRYBQA95YATmaLD3iYt0khwpd0t8BXw+d8aiFz
+        dBrOq+Bz43uCLeXmGn+ie+EyTPMifU8sAnPwZfBUkw==
+X-Google-Smtp-Source: ABdhPJwEQOnYe91NS/qikpEonmFUHqFUZGHYVMVzeoNwhCjf907x66rRyimadlCQ8bnU0BSVFHmPhAnhQ/MwkaQNhcs=
+X-Received: by 2002:a92:6811:: with SMTP id d17mr11934488ilc.145.1602285440500;
+ Fri, 09 Oct 2020 16:17:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+References: <160216609656.882446.16642490462568561112.stgit@firesoul> <160216616276.882446.17894852306425732310.stgit@firesoul>
+In-Reply-To: <160216616276.882446.17894852306425732310.stgit@firesoul>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Fri, 9 Oct 2020 16:17:09 -0700
+Message-ID: <CANP3RGdr3YF5b0EM54D=SrE6zJ=1eJ37mmjn_hZKVaCexcLp5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V3 5/6] bpf: drop MTU check when doing TC-BPF
+ redirect to ingress
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Shaun Crampton <shaun@tigera.io>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eyal Birger <eyal.birger@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 12:14:33PM -0500, YiFei Zhu wrote:
-> From: YiFei Zhu <yifeifz2@illinois.edu>
-> 
-> Currently the kernel does not provide an infrastructure to translate
-> architecture numbers to a human-readable name. Translating syscall
-> numbers to syscall names is possible through FTRACE_SYSCALL
-> infrastructure but it does not provide support for compat syscalls.
-> 
-> This will create a file for each PID as /proc/pid/seccomp_cache.
-> The file will be empty when no seccomp filters are loaded, or be
-> in the format of:
-> <arch name> <decimal syscall number> <ALLOW | FILTER>
-> where ALLOW means the cache is guaranteed to allow the syscall,
-> and filter means the cache will pass the syscall to the BPF filter.
-> 
-> For the docker default profile on x86_64 it looks like:
-> x86_64 0 ALLOW
-> x86_64 1 ALLOW
-> x86_64 2 ALLOW
-> x86_64 3 ALLOW
-> [...]
-> x86_64 132 ALLOW
-> x86_64 133 ALLOW
-> x86_64 134 FILTER
-> x86_64 135 FILTER
-> x86_64 136 FILTER
-> x86_64 137 ALLOW
-> x86_64 138 ALLOW
-> x86_64 139 FILTER
-> x86_64 140 ALLOW
-> x86_64 141 ALLOW
-> [...]
-> 
-> This file is guarded by CONFIG_SECCOMP_CACHE_DEBUG with a default
-> of N because I think certain users of seccomp might not want the
-> application to know which syscalls are definitely usable. For
-> the same reason, it is also guarded by CAP_SYS_ADMIN.
-> 
-> Suggested-by: Jann Horn <jannh@google.com>
-> Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
-> Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+On Thu, Oct 8, 2020 at 7:09 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>
+> The use-case for dropping the MTU check when TC-BPF does redirect to
+> ingress, is described by Eyal Birger in email[0]. The summary is the
+> ability to increase packet size (e.g. with IPv6 headers for NAT64) and
+> ingress redirect packet and let normal netstack fragment packet as needed.
+>
+> [0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
+>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
->  arch/Kconfig                   | 24 ++++++++++++++
->  arch/x86/Kconfig               |  1 +
->  arch/x86/include/asm/seccomp.h |  3 ++
->  fs/proc/base.c                 |  6 ++++
->  include/linux/seccomp.h        |  5 +++
->  kernel/seccomp.c               | 59 ++++++++++++++++++++++++++++++++++
->  6 files changed, 98 insertions(+)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 21a3675a7a3a..85239a974f04 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -471,6 +471,15 @@ config HAVE_ARCH_SECCOMP_FILTER
->  	    results in the system call being skipped immediately.
->  	  - seccomp syscall wired up
->  
-> +config HAVE_ARCH_SECCOMP_CACHE
-> +	bool
-> +	help
-> +	  An arch should select this symbol if it provides all of these things:
-> +	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
-> +	  - SECCOMP_ARCH_NATIVE
-> +	  - SECCOMP_ARCH_NATIVE_NR
-> +	  - SECCOMP_ARCH_NATIVE_NAME
+>  include/linux/netdevice.h |    5 +++--
+>  net/core/dev.c            |    2 +-
+>  net/core/filter.c         |   12 ++++++++++--
+>  3 files changed, 14 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 28cfa53daf72..58fb7b4869ba 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -3866,10 +3866,11 @@ bool is_skb_forwardable(const struct net_device *dev,
+>                         const struct sk_buff *skb);
+>
+>  static __always_inline int ____dev_forward_skb(struct net_device *dev,
+> -                                              struct sk_buff *skb)
+> +                                              struct sk_buff *skb,
+> +                                              const bool mtu_check)
+
+check_mtu might be a better arg name then 'mtu_check'
+
+>  {
+>         if (skb_orphan_frags(skb, GFP_ATOMIC) ||
+> -           unlikely(!is_skb_forwardable(dev, skb))) {
+> +           (mtu_check && unlikely(!is_skb_forwardable(dev, skb)))) {
+>                 atomic_long_inc(&dev->rx_dropped);
+>                 kfree_skb(skb);
+>                 return NET_RX_DROP;
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index b433098896b2..96b455f15872 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -2209,7 +2209,7 @@ EXPORT_SYMBOL_GPL(is_skb_forwardable);
+>
+>  int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
+>  {
+> -       int ret = ____dev_forward_skb(dev, skb);
+> +       int ret = ____dev_forward_skb(dev, skb, true);
+>
+>         if (likely(!ret)) {
+>                 skb->protocol = eth_type_trans(skb, dev);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 5986156e700e..a8e24092e4f5 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2083,13 +2083,21 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+>
+>  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+>  {
+> -       return dev_forward_skb(dev, skb);
+> +       int ret = ____dev_forward_skb(dev, skb, false);
 > +
-> [...]
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 1ab22869a765..1a807f89ac77 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -150,6 +150,7 @@ config X86
->  	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
->  	select HAVE_ARCH_PREL32_RELOCATIONS
->  	select HAVE_ARCH_SECCOMP_FILTER
-> +	select HAVE_ARCH_SECCOMP_CACHE
->  	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
->  	select HAVE_ARCH_STACKLEAK
->  	select HAVE_ARCH_TRACEHOOK
+> +       if (likely(!ret)) {
+> +               skb->protocol = eth_type_trans(skb, dev);
+> +               skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
 
-HAVE_ARCH_SECCOMP_CACHE isn't used any more. I think this was left over
-from before.
+this blindly assumes eth header size in a function that does (by name)
+seem ethernet specific...
+could this use dev->hard_header_len?  or change func name to be
+__bpf_ethernet_rx_skb or something
 
--- 
-Kees Cook
+> +               ret = netif_rx(skb);
+> +       }
+> +
+> +       return ret;
+>  }
+>
+>  static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+>                                       struct sk_buff *skb)
+>  {
+> -       int ret = ____dev_forward_skb(dev, skb);
+> +       int ret = ____dev_forward_skb(dev, skb, false);
+>
+>         if (likely(!ret)) {
+>                 skb->dev = dev;
