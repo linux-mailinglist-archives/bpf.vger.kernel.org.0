@@ -2,151 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCA3289BDD
-	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 00:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7722C289BE9
+	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 00:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391994AbgJIWk1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 18:40:27 -0400
-Received: from www62.your-server.de ([213.133.104.62]:59508 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391978AbgJIWkS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 18:40:18 -0400
-Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kR13f-0001FI-RW; Sat, 10 Oct 2020 00:40:15 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, yhs@fb.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v4 6/6] bpf, selftests: add redirect_peer selftest
-Date:   Sat, 10 Oct 2020 00:40:07 +0200
-Message-Id: <20201009224007.30447-7-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20201009224007.30447-1-daniel@iogearbox.net>
-References: <20201009224007.30447-1-daniel@iogearbox.net>
+        id S2390015AbgJIWrJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 18:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390006AbgJIWrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 18:47:09 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789CCC0613D5
+        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 15:47:09 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id i2so8409935pgh.7
+        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 15:47:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tY2ViAT8BuOfi5xuMFyOWzlw2bSYg16jBN39DY5VAdQ=;
+        b=nFnOOMc8hwTlNtEo9+8Ej+MSHepQT8JXKR5+tljjPBINdllBge3d5tGOIDJSNx+Wkv
+         GapnYtqRtJDA/6J+Yg3OlY0A/eo58LHl9EgDXJRaKOt6UVva3ErneneIJdZ6wcZYGRRP
+         uQ9FxJut9HVsX/++OQYjAZO0lvCIBrRZ5MbVU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tY2ViAT8BuOfi5xuMFyOWzlw2bSYg16jBN39DY5VAdQ=;
+        b=XZ6WtUXWutpmKFj/fru4YzpzdUmIEHJQH1qEHcVKHvQabr68Rb85aNpLjyzgMX0if9
+         hpkCvq9J95wykJReOpiCQdvVOVncg9NhM1DzVjA9uzIqpF915IG6GKb50dc3owCQzjOF
+         m8IPYJkao8spkO8S32wuyfTMHfCNVcewscE9jBliPnYWfBmRkv1WSZNvqVQ+q1yFL4Z+
+         2mcKtONu8QmfNKHKPNYb9k6YjJ9CoHT10hX7BRlelwVmuVNOH4IjFwx1sqYQozwUP51Q
+         nrfgB+RgcRh5wv8Ye0cMm8J/QZ/bVg7BH7J+8wFBuaA9+sKKwuOr2xxc/nrxXjtybdCL
+         hDTQ==
+X-Gm-Message-State: AOAM533OnriOwZlBD5ZozCRA69dg6yxqCFZDeVA2dHWY7pRm47p/ISAQ
+        hORYCPien8dLdbcsOwGe+LAyVQ==
+X-Google-Smtp-Source: ABdhPJwAXDU4kg0UyHq4hK2boy1nf0c4Lda0H7tYA5hp6IkpV8e/cuSuVtsBtaeJHCGeHNagW8o3DA==
+X-Received: by 2002:a17:90a:c087:: with SMTP id o7mr6916984pjs.155.1602283628884;
+        Fri, 09 Oct 2020 15:47:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i24sm11570377pfd.15.2020.10.09.15.47.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Oct 2020 15:47:08 -0700 (PDT)
+Date:   Fri, 9 Oct 2020 15:47:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 2/5] seccomp/cache: Add "emulator" to check if
+ filter is constant allow
+Message-ID: <202010091545.962A2F5@keescook>
+References: <cover.1602263422.git.yifeifz2@illinois.edu>
+ <1a40458d081ce0d5423eb0282210055496e28774.1602263422.git.yifeifz2@illinois.edu>
+ <CAG48ez1eUfjNPVKeYbk28On9WOaDBysR-=7sYDM-Q=nCzwXcDA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25952/Fri Oct  9 15:52:40 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez1eUfjNPVKeYbk28On9WOaDBysR-=7sYDM-Q=nCzwXcDA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend the test_tc_redirect test and add a small test that exercises the new
-redirect_peer() helper for the IPv4 and IPv6 case.
+On Fri, Oct 09, 2020 at 11:30:18PM +0200, Jann Horn wrote:
+> On Fri, Oct 9, 2020 at 7:15 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> >
+> > From: YiFei Zhu <yifeifz2@illinois.edu>
+> >
+> > SECCOMP_CACHE will only operate on syscalls that do not access
+> > any syscall arguments or instruction pointer. To facilitate
+> > this we need a static analyser to know whether a filter will
+> > return allow regardless of syscall arguments for a given
+> > architecture number / syscall number pair. This is implemented
+> > here with a pseudo-emulator, and stored in a per-filter bitmap.
+> >
+> > In order to build this bitmap at filter attach time, each filter is
+> > emulated for every syscall (under each possible architecture), and
+> > checked for any accesses of struct seccomp_data that are not the "arch"
+> > nor "nr" (syscall) members. If only "arch" and "nr" are examined, and
+> > the program returns allow, then we can be sure that the filter must
+> > return allow independent from syscall arguments.
+> >
+> > Nearly all seccomp filters are built from these cBPF instructions:
+> >
+> > BPF_LD  | BPF_W    | BPF_ABS
+> > BPF_JMP | BPF_JEQ  | BPF_K
+> > BPF_JMP | BPF_JGE  | BPF_K
+> > BPF_JMP | BPF_JGT  | BPF_K
+> > BPF_JMP | BPF_JSET | BPF_K
+> > BPF_JMP | BPF_JA
+> > BPF_RET | BPF_K
+> > BPF_ALU | BPF_AND  | BPF_K
+> >
+> > Each of these instructions are emulated. Any weirdness or loading
+> > from a syscall argument will cause the emulator to bail.
+> >
+> > The emulation is also halted if it reaches a return. In that case,
+> > if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
+> >
+> > Emulator structure and comments are from Kees [1] and Jann [2].
+> >
+> > Emulation is done at attach time. If a filter depends on more
+> > filters, and if the dependee does not guarantee to allow the
+> > syscall, then we skip the emulation of this syscall.
+> >
+> > [1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
+> > [2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
+> [...]
+> > @@ -682,6 +693,150 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+> >         return filter;
+> >  }
+> >
+> > +#ifdef SECCOMP_ARCH_NATIVE
+> > +/**
+> > + * seccomp_is_const_allow - check if filter is constant allow with given data
+> > + * @fprog: The BPF programs
+> > + * @sd: The seccomp data to check against, only syscall number are arch
+> > + *      number are considered constant.
+> 
+> nit: s/syscall number are arch number/syscall number and arch number/
+> 
+> > + */
+> > +static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
+> > +                                  struct seccomp_data *sd)
+> > +{
+> > +       unsigned int insns;
+> > +       unsigned int reg_value = 0;
+> > +       unsigned int pc;
+> > +       bool op_res;
+> > +
+> > +       if (WARN_ON_ONCE(!fprog))
+> > +               return false;
+> > +
+> > +       insns = bpf_classic_proglen(fprog);
+> 
+> bpf_classic_proglen() is defined as:
+> 
+> #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+> 
+> so this is wrong - what you want is the number of instructions in the
+> program, what you actually have is the size of the program in bytes.
+> Please instead check for `pc < fprog->len` in the loop condition.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- .../selftests/bpf/progs/test_tc_peer.c        | 45 +++++++++++++++++++
- .../testing/selftests/bpf/test_tc_redirect.sh | 25 +++++++----
- 2 files changed, 61 insertions(+), 9 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_peer.c
+Oh yes, good catch. I had this wrong in my v1.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_peer.c b/tools/testing/selftests/bpf/progs/test_tc_peer.c
-new file mode 100644
-index 000000000000..fc84a7685aa2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_peer.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdint.h>
-+#include <stdbool.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/stddef.h>
-+#include <linux/pkt_cls.h>
-+
-+#include <bpf/bpf_helpers.h>
-+
-+enum {
-+	dev_src,
-+	dev_dst,
-+};
-+
-+struct bpf_map_def SEC("maps") ifindex_map = {
-+	.type		= BPF_MAP_TYPE_ARRAY,
-+	.key_size	= sizeof(int),
-+	.value_size	= sizeof(int),
-+	.max_entries	= 2,
-+};
-+
-+static __always_inline int get_dev_ifindex(int which)
-+{
-+	int *ifindex = bpf_map_lookup_elem(&ifindex_map, &which);
-+
-+	return ifindex ? *ifindex : 0;
-+}
-+
-+SEC("chk_egress") int tc_chk(struct __sk_buff *skb)
-+{
-+	return TC_ACT_SHOT;
-+}
-+
-+SEC("dst_ingress") int tc_dst(struct __sk_buff *skb)
-+{
-+	return bpf_redirect_peer(get_dev_ifindex(dev_src), 0);
-+}
-+
-+SEC("src_ingress") int tc_src(struct __sk_buff *skb)
-+{
-+	return bpf_redirect_peer(get_dev_ifindex(dev_dst), 0);
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tc_redirect.sh b/tools/testing/selftests/bpf/test_tc_redirect.sh
-index 6ad441405132..6d7482562140 100755
---- a/tools/testing/selftests/bpf/test_tc_redirect.sh
-+++ b/tools/testing/selftests/bpf/test_tc_redirect.sh
-@@ -4,9 +4,10 @@
- # This test sets up 3 netns (src <-> fwd <-> dst). There is no direct veth link
- # between src and dst. The netns fwd has veth links to each src and dst. The
- # client is in src and server in dst. The test installs a TC BPF program to each
--# host facing veth in fwd which calls into bpf_redirect_peer() to perform the
--# neigh addr population and redirect; it also installs a dropper prog on the
--# egress side to drop skbs if neigh addrs were not populated.
-+# host facing veth in fwd which calls into i) bpf_redirect_neigh() to perform the
-+# neigh addr population and redirect or ii) bpf_redirect_peer() for namespace
-+# switch from ingress side; it also installs a checker prog on the egress side
-+# to drop unexpected traffic.
- 
- if [[ $EUID -ne 0 ]]; then
- 	echo "This script must be run as root"
-@@ -166,15 +167,17 @@ hex_mem_str()
- 	perl -e 'print join(" ", unpack("(H2)8", pack("L", @ARGV)))' $1
- }
- 
--netns_setup_neigh()
-+netns_setup_bpf()
- {
-+	local obj=$1
-+
- 	ip netns exec ${NS_FWD} tc qdisc add dev veth_src_fwd clsact
--	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj test_tc_neigh.o sec src_ingress
--	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj test_tc_neigh.o sec chk_egress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj $obj sec src_ingress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj $obj sec chk_egress
- 
- 	ip netns exec ${NS_FWD} tc qdisc add dev veth_dst_fwd clsact
--	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj test_tc_neigh.o sec dst_ingress
--	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj test_tc_neigh.o sec chk_egress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj $obj sec dst_ingress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj $obj sec chk_egress
- 
- 	veth_src=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_src_fwd/ifindex)
- 	veth_dst=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_dst_fwd/ifindex)
-@@ -193,5 +196,9 @@ trap netns_cleanup EXIT
- set -e
- 
- netns_setup
--netns_setup_neigh
-+netns_setup_bpf test_tc_neigh.o
-+netns_test_connectivity
-+netns_cleanup
-+netns_setup
-+netns_setup_bpf test_tc_peer.o
- netns_test_connectivity
 -- 
-2.17.1
-
+Kees Cook
