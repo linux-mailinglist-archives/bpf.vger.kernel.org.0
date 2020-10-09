@@ -2,156 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A942882FA
-	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 08:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F045028830E
+	for <lists+bpf@lfdr.de>; Fri,  9 Oct 2020 08:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbgJIGtp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 02:49:45 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27448 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726347AbgJIGtp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 9 Oct 2020 02:49:45 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0996jIXS029530;
-        Thu, 8 Oct 2020 23:49:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=rA4bB/4a18bIneMsmT6b88p3sdG5nDnE+dA7HtHRymc=;
- b=hhS/U28/EqioFvoyVfvxAXCHGS6pR5uihRtV1AZR2Qzs1QlVlLts1OYaFC2oEl3e+RNa
- lmWtuxmBtaP/mgrzNDvDni+bqt6lw8FnJcIJTZuzk9Mh8/Za8eKxJVsl/YKHTdpm/+Dx
- g5CzMe/Wop8V43mAcEiXElPv6kaZXDvxPIU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3429ggt6ma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 08 Oct 2020 23:49:31 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 8 Oct 2020 23:49:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X7VwCLyoicg8HkisDhRKyk0Tw5v8aofgi9NwVGpjclFLJxhZOSQd2/amnYiBl8vrU5E7UA3eWi6H6X/wzApOQCgP8n7xsLVr7+hmrzmcVK0CNTe/8kx9GRG2k4fg5f7NCYRCwUlUNf1rmqTjm9zQL+k/3zmkyFvMVRXYaFfthG/uxW2+DvfRX/TpmyPCxj9V5EyzzwXd8wmlUJ1YA302G355F1+zVvh7SufUOwFzKDlP/JODqdvcfnleXSBnY1StN5Lzwa04+gJU7Y9mfL/ydWNdwM87KAQ7h+BXJe+hGXDPpRSumdCydFZ+q5fq5ZIrg87jeX4dBAZ76NlkzA2ZGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q3Kg8rB7K/JUdPB8ik8LgvcSx6kNR5oZkZ+ph1KEqKY=;
- b=lfvW2Q+qpnywEzlFlNYF1d4LX5QvNJ/YxapAU4qQeqiU6y7oop28+lgpg7eLrLmdU0ZzEfAfMF9SxhTZGBxv/wYx5Eo16/EG1kFjqkSY5YKkA3qh2yTG9F354lL4uUNEF+GIuJA+sf9q0lXG7id750jebo8b+h4GHwtiUvCB51Iq5+QUUocuEmD5gcQCFQN1h7oPeTDDNf8KP4tLZc7dnT9+SeMYkEmVuD/NbnxWZXcJ1Nws3OFcR6B1KUkQzUCwKjBmCjAJBke4nnwqVyGrZ7/TXC+etxSeAXewK+K/DrVRlVyYooT+POldSyqeogFIY5hnD7ID5RC92IQ3U66S3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q3Kg8rB7K/JUdPB8ik8LgvcSx6kNR5oZkZ+ph1KEqKY=;
- b=VTeoDCs6zxF7SYi+HjGNtpKt36zqClQ1IhO/+joG1ovMU87WBGcdJoHgzid1satB+yao5wgDqUrFIkO32DzlD5yG51IlA9ltdmYLBIElkksFHZjrI4/19eh7LdyhneQqEYjc6st1P+1NVNK73FWLhAv0rc1Fdi1Ng+XTIzmiRxE=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2245.namprd15.prod.outlook.com (2603:10b6:a02:89::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.24; Fri, 9 Oct
- 2020 06:49:30 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3455.024; Fri, 9 Oct 2020
- 06:49:29 +0000
-Subject: Re: [PATCH v2 bpf-next 3/4] selftests/bpf: Add profiler test
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>
-References: <20201009011240.48506-1-alexei.starovoitov@gmail.com>
- <20201009011240.48506-4-alexei.starovoitov@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <5c129fe9-85ad-b914-67d3-435ca7eb2d47@fb.com>
-Date:   Thu, 8 Oct 2020 23:49:27 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
-In-Reply-To: <20201009011240.48506-4-alexei.starovoitov@gmail.com>
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:68ff]
-X-ClientProxiedBy: MWHPR20CA0038.namprd20.prod.outlook.com
- (2603:10b6:300:ed::24) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::1844] (2620:10d:c090:400::5:68ff) by MWHPR20CA0038.namprd20.prod.outlook.com (2603:10b6:300:ed::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.35 via Frontend Transport; Fri, 9 Oct 2020 06:49:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ca6709dc-d1f9-41da-dc88-08d86c1f789b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2245:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB224521B58B301B30D7389302D3080@BYAPR15MB2245.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YFd6zVpDCCA9VDXqTs3EaWLRCXgPk7rgjVsGzn7/TJpP9YIGIOeLdI4TZ9hjfUZRYJZqaZNbaMJhUPjx7MaWdehY/E8oX6xJyEwSPRH4Xygj6TMKbKbT3/s9ir2xxJfX4h6FGqbBk5emGFhhYVnjsMMw1PeGzkp3ZFDm85fN5TWpuCkd4acPN9mTYP+SGzXqY/VZj2KAZdyGW6npu+Dad+cKv1ZqME1C4RPwZuWZdzMY3iAfK7HLE5pVMWWUiVYxSvrLii6rR+QPeSKB+NrByV0DeCNoJXB9Kufr8AoTKiFtKLolP6lCKacXDCXvcEJjvivZVnIHxTIiJJ5CRe9mr5/C+9G1eiZEULYgtMi4tQgMyLio9SAv1gQitlAiGZ3qahSf/+GmZJSYJCrIqvAGrO1jYTRzSume9p+oxKJtjrmKVukgz+1zMhqvE8e4G/ui5YVkQtZLaqQN9/krAPZkkw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(376002)(39860400002)(346002)(66556008)(83080400001)(36756003)(16526019)(2906002)(186003)(86362001)(316002)(52116002)(4326008)(8936002)(66946007)(478600001)(31696002)(2616005)(966005)(66476007)(53546011)(8676002)(31686004)(5660300002)(6486002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: i3NIDlPQjk6YhUyhwAQX8I/jAboQZKxtShrwqNiCZiY6FGpnrzHLoM6C/OBaq7y2cjT5i56TOV8nq6Z0cnSa7c/ImVuXug3fvVIvbq/QJ2xMszDSpWXRDykKJ9n2dWH+J+sQ+wnx1eXxiauhaiKxoYhEq5zDa2Xj+mzRtOcrERTrD/lOI2MfisV1gTXTZHqftZGzRM6dMnlrCDV0IJ7cQ4yU9AGokKydyhunpk7KF2yWN2Eg/FKZnS1AN0Fokkdb5/rfn6g8CNWdBprOU8EDruN/V9N+UMrXKKZDFiIHgSb+jD3Z/JV8DmionrcEaaaBomddINVZq2vJoRIFQWFLYJtq3fY6c/JSJ03E/NzzilnNBlBdx39Z3/ogI/RJHqVaKPDpCh6DCECReF3TvXhRA21xKDURL3CI3vbSc1A2STaMcAeB7M9ZtFoMMOc6Xlba1ViFaBdlcihyydZ9MryY5rBzhAUtpqlWWlum5ch2FJ+tQhy5V1QnzifsYyJgoNb3VDKD8r/WwHlqdHSEm/OsglyJl8bXxockPrzHHw3Cq1u/pixGir0w9hGv8AlfOzBZxIxO7Q40BneXiMuhUI5g1pEdkvQX8IakOysXg2OfUXcEbGV4cDy0qbNMpflV87QeBbfKB0IrT79QedkbsEN2KVDmlbm8SqJYA3LTmFEGOBPVGlUgBE6pQua5Ehu6tC3h
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca6709dc-d1f9-41da-dc88-08d86c1f789b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2020 06:49:29.8080
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DSg+r4kR9g0m08PiIvdk+IKuf8ml8l9UebccF7nDJPe+WmrtdeXhdh9lraCjXh2m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2245
-X-OriginatorOrg: fb.com
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        id S1730767AbgJIG4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 02:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730626AbgJIG4R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 02:56:17 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45340C0613D4
+        for <bpf@vger.kernel.org>; Thu,  8 Oct 2020 23:56:17 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id r10so3380799ilm.11
+        for <bpf@vger.kernel.org>; Thu, 08 Oct 2020 23:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tehnerd-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Z8pUYvln5zxuSrBTmW6kLW3slo+r2B+BX0KTL115qnI=;
+        b=b32SygPOdO5Hlfoe5KJbuY2JncDeUvEjhq7kZLyCAG/GWqAK2X/qsSpfkrzarmZsjW
+         CsWkaV/qk8NvHlEZ/GzVA7FIE3ySE+Tds3P54YZY8/uebvHHwJ9FVSROImvDRttE1Bel
+         mtfkazrspzoA5Zvky3TfSNhsfSdE6HDKF087srpXnTm7UUBph024r/Qjw601HyzKSAIl
+         b71sFy20DqpQBopyi2RiFQhUqUbiKjo784kKVDPu8h5K8y21JUQW9fC6GGm4sxZSUzQ0
+         OMYM+9+LohMezgSKkItQiiLWQEEjpJ9hAzqpnOg3EgEHHD/KSqn2Q4cluo05apZgn2RW
+         OsFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Z8pUYvln5zxuSrBTmW6kLW3slo+r2B+BX0KTL115qnI=;
+        b=o1YkcmTNZk+CnqgrUS+8EzlpS2XhgO+bVyVwQbzWsH9kdIqXoNTe7UXxivdU1hDXKR
+         sxkIbM8sQ4h7c8l8f31tEBkjeAqvrwUDLjF3sjB5ZMeQhw+thzGyXmNPXMrKp/cAtMjx
+         SbJ8KrvRd0VbZjBxTFA8UdNJNsKmrjvDbad9pqTxMYb5uVNIv26Mt1+2D8ZIKIcbGxJi
+         EKEE4+w/fOHV1xyafeF4DdME9MonqB6nJ/gsZzudSEBWzG/1VBh2CdDEP8KUGK2aPnEZ
+         RvryEhY0nHdAaS1/HVsmGVkaJz3Mxks/U2F+xqXzC75kl1jwkjMAdjTqH8KvCCBsUQ+R
+         pO0A==
+X-Gm-Message-State: AOAM533ANJf8UXtHr0zDymeu6IG65RoOVWAXip5ksmWyXUx7zI6oTdnM
+        GXOCERl2c/mqGjvrEkjJ+YyP8gbGaX3kOV80Fom+CA==
+X-Google-Smtp-Source: ABdhPJyfyN1alRwNkgA+RL7nMpl8bm0YxLbHm5LzC2VX1dF8yhUjDk+9TaHj3IyDsWPfctQiSW3/vZdVKkvCOsCGQg4=
+X-Received: by 2002:a92:2602:: with SMTP id n2mr9886773ile.82.1602226576366;
+ Thu, 08 Oct 2020 23:56:16 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-09_02:2020-10-09,2020-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=928
- priorityscore=1501 bulkscore=0 impostorscore=0 malwarescore=0 mlxscore=0
- adultscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010090047
-X-FB-Internal: deliver
+References: <20201009050839.222847-1-tehnerd@tehnerd.com> <f32bfccf-c659-e82e-08c2-f863eb267610@fb.com>
+In-Reply-To: <f32bfccf-c659-e82e-08c2-f863eb267610@fb.com>
+From:   Nikita Shirokov <tehnerd@tehnerd.com>
+Date:   Thu, 8 Oct 2020 23:56:05 -0700
+Message-ID: <CAJ+=2gi1FFe9jB8epAgm2Pqhc1PMSxmXbAR_d9Qvy3qyD4UwKg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: add tcp_notsent_lowat bpf setsockopt
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+=D1=87=D1=82, 8 =D0=BE=D0=BA=D1=82. 2020 =D0=B3. =D0=B2 23:27, Yonghong Son=
+g <yhs@fb.com>:
+>
+>
+>
+> On 10/8/20 10:08 PM, Nikita V. Shirokov wrote:
+> > Adding support for TCP_NOTSENT_LOWAT sockoption
+> > (https://lwn.net/Articles/560082/ ) in tcpbpf
+> >
+> > Signed-off-by: Nikita V. Shirokov <tehnerd@tehnerd.com>
+> > ---
+> >   include/uapi/linux/bpf.h                          |  2 +-
+> >   net/core/filter.c                                 |  4 ++++
+> >   tools/testing/selftests/bpf/progs/connect4_prog.c | 15 ++++++++++++++=
++
+> >   3 files changed, 20 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index d83561e8cd2c..42d2df799397 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1698,7 +1698,7 @@ union bpf_attr {
+> >    *            **TCP_CONGESTION**, **TCP_BPF_IW**,
+> >    *            **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
+> >    *            **TCP_KEEPIDLE**, **TCP_KEEPINTVL**, **TCP_KEEPCNT**,
+> > - *             **TCP_SYNCNT**, **TCP_USER_TIMEOUT**.
+> > + *             **TCP_SYNCNT**, **TCP_USER_TIMEOUT**, **TCP_NOTSENT_LOW=
+AT**.
+> >    *          * **IPPROTO_IP**, which supports *optname* **IP_TOS**.
+> >    *          * **IPPROTO_IPV6**, which supports *optname* **IPV6_TCLAS=
+S**.
+> >    *  Return
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 05df73780dd3..5da44b11e1ec 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -4827,6 +4827,10 @@ static int _bpf_setsockopt(struct sock *sk, int =
+level, int optname,
+> >                               else
+> >                                       icsk->icsk_user_timeout =3D val;
+> >                               break;
+> > +                     case TCP_NOTSENT_LOWAT:
+> > +                             tp->notsent_lowat =3D val;
+> > +                             sk->sk_write_space(sk);
+> > +                             break;
+>
+> This looks good to me. It is the same as in do_tcp_setsockopt().
+>
+> >                       default:
+> >                               ret =3D -EINVAL;
+> >                       }
+> > diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/=
+testing/selftests/bpf/progs/connect4_prog.c
+> > index b1b2773c0b9d..b10e7fbace7b 100644
+> > --- a/tools/testing/selftests/bpf/progs/connect4_prog.c
+> > +++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
+> > @@ -128,6 +128,18 @@ static __inline int set_keepalive(struct bpf_sock_=
+addr *ctx)
+> >       return 0;
+> >   }
+> >
+> > +static __inline int set_notsent_lowat(struct bpf_sock_addr *ctx)
+> > +{
+> > +     int lowat =3D 65535;
+> > +
+> > +     if (ctx->type =3D=3D SOCK_STREAM) {
+> > +             if (bpf_setsockopt(ctx, SOL_TCP, TCP_NOTSENT_LOWAT, &lowa=
+t, sizeof(lowat)))
+>
+> In my build system, I hit a compilation error.
+>
+> progs/connect4_prog.c:137:36: error: use of undeclared identifier
+> 'TCP_NOTSENT_LOWAT'
+>                  if (bpf_setsockopt(ctx, SOL_TCP, TCP_NOTSENT_LOWAT,
+> &lowat, sizeof(lowat)))
+>
+> TCP_NOTSENT_LOWAT is included in /usr/include/linux/tcp.h. But this file
+> includes netinet/tcp.h and it contains some same symbol definitions as
+> linux/tcp.h so I can include both.
+>
+> Adding the following can fix the issue
+>
+> #ifndef TCP_NOTSENT_LOWAT
+> #define TCP_NOTSENT_LOWAT       25
+> #endif
+>
+> Not sure where TCP_NOTSENT_LOWAT is defined in your system.
+
+Hey, thanks for checking. will send v2 in a few. as for my system it
+is defined here:
+
+/usr/include/netinet/tcp.h
+64:#define TCP_NOTSENT_LOWAT     25 /* Limit number of unsent bytes in
 
 
-On 10/8/20 6:12 PM, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> The main purpose of the profiler test to check different llvm generation
-> patterns to make sure the verifier can load these large programs.
-> 
-> Note that profiler.inc.h test doesn't follow strict kernel coding style.
-> The code was formatted in the kernel style, but variable declarations are
-> kept as-is to preserve original llvm IR pattern.
-> 
-> profiler1.c should pass with older and newer llvm
-> 
-> profiler[23].c may fail on older llvm that don't have:
-> https://reviews.llvm.org/D85570
+>
+> > +                     return 1;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >   SEC("cgroup/connect4")
+> >   int connect_v4_prog(struct bpf_sock_addr *ctx)
+> >   {
+> > @@ -148,6 +160,9 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
+> >       if (set_keepalive(ctx))
+> >               return 0;
+> >
+> > +     if (set_notsent_lowat(ctx))
+> > +             return 0;
+> > +
+> >       if (ctx->type !=3D SOCK_STREAM && ctx->type !=3D SOCK_DGRAM)
+> >               return 0;
+> >       else if (ctx->type =3D=3D SOCK_STREAM)
+> >
 
-Not sure but the below equivalent URL may be more intuitive:
-   https://reviews.llvm.org/D85570
-
-> because llvm may do speculative code motion optimization that
-> will generate code like this:
-> 
-> // r9 is a pointer to map_value
-> // r7 is a scalar
-> 17:       bf 96 00 00 00 00 00 00 r6 = r9
-> 18:       0f 76 00 00 00 00 00 00 r6 += r7
-> 19:       a5 07 01 00 01 01 00 00 if r7 < 257 goto +1
-> 20:       bf 96 00 00 00 00 00 00 r6 = r9
-> // r6 is used here
-> 
-> The verifier will reject such code with the error:
-> "math between map_value pointer and register with unbounded min value is not allowed"
-> At insn 18 the r7 is indeed unbounded. The later insn 19 checks the bounds and
-> the insn 20 undoes map_value addition. It is currently impossible for the
-> verifier to understand such speculative pointer arithmetic. Hence llvm D85570
-> addresses it on the compiler side.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-
-Acked-by: Yonghong Song <yhs@fb.com>
-
+--
+Nikita
