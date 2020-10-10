@@ -2,120 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF5428A225
-	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 00:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854B528A424
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 01:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbgJJWzI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53938 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731822AbgJJTh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:37:27 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08229223BF;
-        Sat, 10 Oct 2020 16:32:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602347534;
-        bh=Jd04fxPJuQJZKqz4bs0WWvyPt+mS9UdG/D05ZrDqSWA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WVlM3/bD81SYY9L3YcIlGO+M9fWud/EARbrbdzuz1DsgU/eA63iFZ3z9sTjxlyDDo
-         /B30bdPp2kbOYC37K7ZE9vW9T6McYv+ljJEFY8+cQSc2NfitzUmAUM1NcPXTZmRpY/
-         zO+z+yGe6sGqUBlYALARDVxkUNcid+lf8MLxTQ94=
-Date:   Sat, 10 Oct 2020 09:32:12 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        eyal.birger@gmail.com
-Subject: Re: [PATCH bpf-next V3 0/6] bpf: New approach for BPF MTU handling
-Message-ID: <20201010093212.374d1e68@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201010124402.606f2d37@carbon>
-References: <160216609656.882446.16642490462568561112.stgit@firesoul>
-        <20201009093319.6140b322@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <5f80ccca63d9_ed74208f8@john-XPS-13-9370.notmuch>
-        <20201009160010.4b299ac3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201010124402.606f2d37@carbon>
+        id S1730904AbgJJWzE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728686AbgJJSo6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Oct 2020 14:44:58 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10550C08EC3E;
+        Sat, 10 Oct 2020 11:17:44 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 144so9746441pfb.4;
+        Sat, 10 Oct 2020 11:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hZvt0PA/C7uHoXPjIYLi9RxOX2L92HAoDtLQvnBgMdY=;
+        b=jGwXx9vS2OAAXYAidZfLiQBk1syQfi/3j9RBagBNgBQEZQIlOpuCEhWcQuYHCU+mab
+         wKoy3lIZK7Ui+00eyLssbxME5ObnhU+XCQyRvFj4PrkqOwT6/LjGACZWGo17W+pmJqPs
+         uCxu1eAVHkWJMSPFKUSXKHCjEQtPCNcrTAurDuJNjTsu43g0d2N10TiZxIjrXcTwic38
+         PeObcZLIYrvuU4FpBaDuUV2bvEm+3ZtVbZqrsSC5/suWqRpKOXIUVTcsyxSFVo9JgmvI
+         8OqRT16wq+APdY7oW3+fl/jZXIAGYqf27+LR9c1vsnox9ZWuo81qmI3uw+YTLPaxH/Ly
+         CYSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hZvt0PA/C7uHoXPjIYLi9RxOX2L92HAoDtLQvnBgMdY=;
+        b=r9jQf79QMk4kDyC3VTCv6w7Wra7U1QsE3VQr8UUXaB4v/9YmG9mfL9rk7VX3MvZKL4
+         MayZsv3MVcqzRT7trpqnX2b+iEvUf8Mk4CtQDVCWKn6ubIbRdlChA37fJoAZTVlxPXDF
+         d+9hbEVnmL4Cy7o3Qb9bd1PokvKXeBMeIhO0+iScbso2JzMUGMd9b62bsl3A8e743cUh
+         grzcqLus9nCHk9D3vnbajzEet8ZCi2UGry73jNBcx+JRlH//Yp6asneuyrf4ctjnwceI
+         aRIg/XQBihtcXa0vCt4A6UBQvF2pkFY4708NdeKifw5eaLvhxiaR0WnWtZ+arKXq+vpe
+         R7Og==
+X-Gm-Message-State: AOAM532vX1Xzpn/NOBVB19prehFj7dxuRJcTh54KPtOQS8dab9wQ4EeU
+        cAHa0S9k3YtpJycX/BlbLg==
+X-Google-Smtp-Source: ABdhPJxOO/Zak/lpjhTjEgLni2qH4ITJWCGXcGUfWACCA46tHGAfPjByfSXmAFxlI0jJVc9o8I/9hQ==
+X-Received: by 2002:a17:90b:4acf:: with SMTP id mh15mr10921782pjb.204.1602353863311;
+        Sat, 10 Oct 2020 11:17:43 -0700 (PDT)
+Received: from localhost.localdomain ([182.209.58.45])
+        by smtp.gmail.com with ESMTPSA id q65sm14974615pfq.219.2020.10.10.11.17.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Oct 2020 11:17:42 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Xdp <xdp-newbies@vger.kernel.org>
+Subject: [PATCH bpf-next v2 0/3] samples: bpf: Refactor XDP programs with libbpf
+Date:   Sun, 11 Oct 2020 03:17:31 +0900
+Message-Id: <20201010181734.1109-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 10 Oct 2020 12:44:02 +0200 Jesper Dangaard Brouer wrote:
-> > > > We will not be sprinkling validation checks across the drivers because
-> > > > some reconfiguration path may occasionally yield a bad packet, or it's
-> > > > hard to do something right with BPF.      
-> > > 
-> > > This is a driver bug then. As it stands today drivers may get hit with
-> > > skb with MTU greater than set MTU as best I can tell.    
-> > 
-> > You're talking about taking it from "maybe this can happen, but will
-> > still be at most jumbo" to "it's going to be very easy to trigger and
-> > length may be > MAX_U16".  
-> 
-> It is interesting that a misbehaving BPF program can easily trigger this.
-> Next week, I will looking writing such a BPF-prog and then test it on
-> the hardware I have avail in my testlab.
+To avoid confusion caused by the increasing fragmentation of the BPF
+Loader program, this commit would like to convert the previous bpf_load
+loader with the libbpf loader.
 
-FWIW I took a quick swing at testing it with the HW I have and it did
-exactly what hardware should do. The TX unit entered an error state 
-and then the driver detected that and reset it a few seconds later.
+Thanks to libbpf's bpf_link interface, managing the tracepoint BPF
+program is much easier. bpf_program__attach_tracepoint manages the
+enable of tracepoint event and attach of BPF programs to it with a
+single interface bpf_link, so there is no need to manage event_fd and
+prog_fd separately.
 
-Hardware is almost always designed to behave like that. If some NIC
-actually cleanly drops over sized TX frames, I'd bet it's done in FW,
-or some other software piece.
+And due to addition of generic bpf_program__attach() to libbpf, it is
+now possible to attach BPF programs with __attach() instead of
+explicitly calling __attach_<type>().
 
-There was also a statement earlier in the thread that we can put a large
-frame on the wire and "let the switch drop it". I don't believe
-that's possible either (as I mentioned previously BPF could generate
-frames above jumbo size). My phy knowledge is very rudimentary and
-rusty but from what I heard Ethernet PHYs have a hard design limit on
-the length of a frame they can put of a wire (or pull from it), because
-of symbol encoding, electrical charges on the wire etc. reasons. There
-needs to be a bunch of idle symbols every now and then. And obviously
-if one actually manages to get a longer frame to the PHY it will fault,
-see above.
+This patchset refactors xdp_monitor with using this libbpf API, and the
+bpf_load is removed and migrated to libbpf. Also, attach_tracepoint()
+is replaced with the generic __attach() method in xdp_redirect_cpu.
+Moreover, maps in kern program have been converted to BTF-defined map.
 
-> > > Generally I expect drivers use MTU to configure RX buffers not sure
-> > > how it is going to be used on TX side? Any examples? I just poked
-> > > around through the driver source to see and seems to confirm its
-> > > primarily for RX side configuration with some drivers throwing the
-> > > event down to the firmware for something that I can't see in the code?    
-> > 
-> > Right, but that could just be because nobody expects to get over sized
-> > frames from the stack.
-> > 
-> > We actively encourage drivers to remove paranoid checks. It's really
-> > not going to be a great experience for driver authors where they need
-> > to consult a list of things they should and shouldn't check.
-> > 
-> > If we want to do this, the driver interface must most definitely say 
-> > MRU and not MTU.  
-> 
-> What is MRU?
+---
+Changes in v2:
+ - added cleanup logic for bpf_link and bpf_object in xdp_monitor
+ - program section match with bpf_program__is_<type> instead of strncmp
+ - revert BTF key/val type to default of BPF_MAP_TYPE_PERF_EVENT_ARRAY
+ - split increment into seperate satement
+ - refactor pointer array initialization
+ - error code cleanup
 
-Max Receive Unit, Jesse and others have been talking about how we 
-should separate the TX config from RX config for drivers. Right now
-drivers configure RX filters based on the max transmission unit, 
-which is weird, and nobody is sure whether that's actually desired.
+Daniel T. Lee (3):
+  samples: bpf: Refactor xdp_monitor with libbpf
+  samples: bpf: Replace attach_tracepoint() to attach() in
+    xdp_redirect_cpu
+  samples: bpf: refactor XDP kern program maps with BTF-defined map
 
-> > > I'm not suggestiong sprinkling validation checks across the drivers.
-> > > I'm suggesting if the drivers hang we fix them.    
-> > 
-> > We both know the level of testing drivers get, it's unlikely this will
-> > be validated. It's packet of death waiting to happen. 
-> > 
-> > And all this for what? Saving 2 cycles on a branch that will almost
-> > never be taken?  
-> 
-> I do think it is risky not to do this simple MTU check in net-core.  I
-> also believe the overhead is very very low.  Hint, I'm basically just
-> moving the MTU check from one place to another.  (And last patch in
-> patchset is an optimization that inlines and save cycles when doing
-> these kind of MTU checks).
+ samples/bpf/Makefile                |   4 +-
+ samples/bpf/xdp_monitor_kern.c      |  60 +++++------
+ samples/bpf/xdp_monitor_user.c      | 159 +++++++++++++++++++++-------
+ samples/bpf/xdp_redirect_cpu_user.c | 153 +++++++++++++-------------
+ samples/bpf/xdp_sample_pkts_kern.c  |  14 ++-
+ samples/bpf/xdp_sample_pkts_user.c  |   1 -
+ 6 files changed, 230 insertions(+), 161 deletions(-)
+
+-- 
+2.25.1
+
