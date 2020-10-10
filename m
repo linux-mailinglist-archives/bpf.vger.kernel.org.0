@@ -2,219 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963B428A40C
-	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 01:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD8F28A229
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 00:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388998AbgJJWzM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2388991AbgJJWzM (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Sat, 10 Oct 2020 18:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41980 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731156AbgJJTxc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:53:32 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADADEC0613E9;
-        Sat, 10 Oct 2020 03:44:35 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id r10so9445586pgb.10;
-        Sat, 10 Oct 2020 03:44:35 -0700 (PDT)
+        with ESMTP id S1731152AbgJJTxK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:53:10 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F32C0613AA
+        for <bpf@vger.kernel.org>; Sat, 10 Oct 2020 03:50:21 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id t20so5706944edr.11
+        for <bpf@vger.kernel.org>; Sat, 10 Oct 2020 03:50:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OW/gvTkGu86YgUxpgjSRkvij/4SXXCYc66hmNhRMo9c=;
-        b=M9pS6rTM1X7ZbozVAyUbVptpUuFZja+wxg1FAAFiNGIPOgYiJ2oAxXZnt2IkdFDNJ7
-         jroi/IdoVe/D7PnxhxDFfxYFZ4EEDqRd5/znbKJBziBGG7oIVHg61tPmASDKa9Bj76DO
-         c2V8q1edLGoe7D6q+XwMNtdb3RqBuIWaRpliAl9BVfbWs3cLF2GKx6CXXh2edoe9z7nq
-         p/DQY+YjI7MRRy/ZyyBbu2V84T15iGEx8fLTlQjiwqr5WJnuA1Rsls8GxfcCVxgEqwgC
-         xNcLpjUI38WKDxrUK5cCLsM4PSBz6Giq+2isLuP1X7gVc2GDi4xZxUJfYcgBDFKoexVr
-         4Ofg==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=HC/gkB6iSKF4+yEdzyyM5VASOzrvfoYkCSUnVQ8RBKU=;
+        b=tBVG9hXEgAoU/QAs22SWkvWV59bjbaejX8CxE5IoMlc0PzBxTyjbt8GJtOdpMuRIb8
+         LOc2emYuchLsr4mqQXDZjM3FCF5V9B6qk2Nq9HADbt1FjFlUsbMfK195krPEFUK9T+oK
+         0QXmjjpVW3z4BGQ6C57sFLgtbevM4DlCDqKZ5kj2ms1sU6ZpyFJwjUzMGqidil8y2Uy7
+         FndkOucPWI6zOv0m3BYrJ6YlZJBNGWvl9MvgTjHnFfsHeWEtdpC3EtghgkgGazTilCFa
+         LZQ+Wa5xey5aWvGvQkyG8YGlL4RCWWgc4+wnqmTJRpXUL3zYJgv+TB0WvuU3z/6Iw63g
+         m+zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OW/gvTkGu86YgUxpgjSRkvij/4SXXCYc66hmNhRMo9c=;
-        b=HUkChbTYxeETOvF/MYhoio/L2Ifo5LmDd4zfXu6qjZRqGmjsTpgf/D89l1Y50SPLAG
-         j3dfy8vlcd8S8OwPwoPk/bygnVbF0eiDgSH+fhdv5Wdo7tJ5HlfCtxGIQGRdIqHhpXMC
-         1ol/51VrOHM+VM6eLfFoH5vajXuTHk6gdFCCPRkeRD4+fXLvGw9zT70f6NhfJcgjr4+K
-         FiPcPID+deTLFVUGNFG6mzQy4Qo3b5bff/0yvCtZznMclt4UYmo/PWtBInNeyxdAm+gb
-         TOJcKx7iEKY0QQ+SFzPpP/0BLuhD1L6S6RdvOo2Iufx/U5e87eirwKmh8maLi8vyrGxt
-         dr9Q==
-X-Gm-Message-State: AOAM532p1lE76QmgkSGzSqJo4KfrRSXUcsphrR5q5aQuKjkaURKuR4RD
-        0zs6BH1kzKBO1ISiG166+g==
-X-Google-Smtp-Source: ABdhPJz5PouSMzjUmLdPt/A9VyQIZcy2uxlPkVOAqVFDrmdP0lfAaW2x/EjDVn1y72EApuQGCpYhyA==
-X-Received: by 2002:a17:90a:448a:: with SMTP id t10mr9889016pjg.19.1602326675251;
-        Sat, 10 Oct 2020 03:44:35 -0700 (PDT)
-Received: from localhost.localdomain ([182.209.58.45])
-        by smtp.gmail.com with ESMTPSA id n127sm13307286pfn.155.2020.10.10.03.44.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2020 03:44:34 -0700 (PDT)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Xdp <xdp-newbies@vger.kernel.org>
-Subject: [PATCH bpf-next v2 3/3] samples: bpf: refactor XDP kern program maps with BTF-defined map
-Date:   Sat, 10 Oct 2020 19:44:16 +0900
-Message-Id: <20201010104416.1421-4-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201010104416.1421-1-danieltimlee@gmail.com>
-References: <20201010104416.1421-1-danieltimlee@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=HC/gkB6iSKF4+yEdzyyM5VASOzrvfoYkCSUnVQ8RBKU=;
+        b=TfIxf5dcNkBnWLLwzHzdyjs0/ncyFApsrH0Z+eZdeOdofxY+LNxHFLrVmY/TSJnhx5
+         6Hg7b/cWJg2KgevWIhh5deS2usfo1DDOYf+bVS8KbUccbfu/YW10OhTf+qY7SvcqX5z9
+         w2Jnwy0PPYYOMIO5K6M11r1DtiGgAbnhNNkjraA4aLnHDhw0cosdeIe1PZGHPqDO8VpX
+         NT0nI0YlDL7MKhtg7+FYB0X/ceEaU2509fojGWWGMfCMj41S1pdqvT6kCLEga1S6NTj9
+         Ylv01TT5Ep2n0r8S2ujURpxJlBUzrt1sIQMqcuik0RskVQXcLkPHkRCmSHB2wpVTW7IN
+         FRnw==
+X-Gm-Message-State: AOAM530E0MSOdjbUAsJ9+EaxCF+lh5Uo6j/sDTviQK7ZIOsydh2qTnSy
+        /rM3j3I6WytSEzSLdFPpQYSEtPgP33CDUcjki08ihK7Aig==
+X-Google-Smtp-Source: ABdhPJwc2V+HdmPm1gDuFTqNbYxh4tz2DHtmCMj6YlZNMri92UFr8G/wq64F1bIA0yC7AjUbsEncpJxFPMbfbG8+sOo=
+X-Received: by 2002:a50:cbc7:: with SMTP id l7mr3904049edi.148.1602327019472;
+ Sat, 10 Oct 2020 03:50:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Sat, 10 Oct 2020 19:50:03 +0900
+Message-ID: <CAEKGpzh70f06iMQdR3B1LF3hMwHnB=x92fvfV8+smQObvKBF_w@mail.gmail.com>
+Subject: Where can I find the map's BTF type key/value specification?
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Most of the samples were converted to use the new BTF-defined MAP as
-they moved to libbpf, but some of the samples were missing.
+I'm looking for how BTF type definition '__type(key, int)' is being changed
+to '__uint(key_size, sizeof(int))'. (Not exactly "changed" but wonder how
+it can be considered the same)
 
-Instead of using the previous BPF MAP definition, this commit refactors
-xdp_monitor and xdp_sample_pkts_kern MAP definition with the new
-BTF-defined MAP format.
+    __uint(type, BPF_MAP_TYPE_ARRAY);
+    __type(key, int);          => __uint(key_size, sizeof(int))
+    __type(value, u32);    => __uint(value_size, sizeof(u32))
+    __uint(max_entries, 2);
 
-Also, this commit removes the max_entries attribute at PERF_EVENT_ARRAY
-map type. The libbpf's bpf_object__create_map() will automatically
-set max_entries to the maximum configured number of CPUs on the host.
+Whether the specific map type supports BTF or not can be inferred from
+the file in kernel/bpf/*map.c and by checking each MAP type's
+bpf_map_ops .map_check_btf pointer is initialized as map_check_no_btf.
 
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+But how can I figure out that specific types of map support BTF types for
+key/value? And how can I determine how this BTF key/value type is
+converted?
 
----
-Changes in v2:
- - revert BTF key/val type to default of BPF_MAP_TYPE_PERF_EVENT_ARRAY
+I am aware that BTF information is created in the form of a compact
+type by using pahole to deduplicate repeated types, strings information
+from DWARF information. However, looking at the *btf or pahole file
+in dwarves repository, it seemed that it was not responsible for the
+conversion of the BTF key/value.
 
- samples/bpf/xdp_monitor_kern.c     | 60 +++++++++++++++---------------
- samples/bpf/xdp_sample_pkts_kern.c | 14 +++----
- samples/bpf/xdp_sample_pkts_user.c |  1 -
- 3 files changed, 36 insertions(+), 39 deletions(-)
+The remaining guess is that LLVM's BPF target compiler is responsible
+for this, or it's probably somewhere in the kernel, but I'm not sure
+where it is.
 
-diff --git a/samples/bpf/xdp_monitor_kern.c b/samples/bpf/xdp_monitor_kern.c
-index 3d33cca2d48a..5c955b812c47 100644
---- a/samples/bpf/xdp_monitor_kern.c
-+++ b/samples/bpf/xdp_monitor_kern.c
-@@ -6,21 +6,21 @@
- #include <uapi/linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- 
--struct bpf_map_def SEC("maps") redirect_err_cnt = {
--	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(u64),
--	.max_entries = 2,
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__type(key, u32);
-+	__type(value, u64);
-+	__uint(max_entries, 2);
- 	/* TODO: have entries for all possible errno's */
--};
-+} redirect_err_cnt SEC(".maps");
- 
- #define XDP_UNKNOWN	XDP_REDIRECT + 1
--struct bpf_map_def SEC("maps") exception_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(u64),
--	.max_entries	= XDP_UNKNOWN + 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__type(key, u32);
-+	__type(value, u64);
-+	__uint(max_entries, XDP_UNKNOWN + 1);
-+} exception_cnt SEC(".maps");
- 
- /* Tracepoint format: /sys/kernel/debug/tracing/events/xdp/xdp_redirect/format
-  * Code in:                kernel/include/trace/events/xdp.h
-@@ -129,19 +129,19 @@ struct datarec {
- };
- #define MAX_CPUS 64
- 
--struct bpf_map_def SEC("maps") cpumap_enqueue_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= MAX_CPUS,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__type(key, u32);
-+	__type(value, struct datarec);
-+	__uint(max_entries, MAX_CPUS);
-+} cpumap_enqueue_cnt SEC(".maps");
- 
--struct bpf_map_def SEC("maps") cpumap_kthread_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__type(key, u32);
-+	__type(value, struct datarec);
-+	__uint(max_entries, 1);
-+} cpumap_kthread_cnt SEC(".maps");
- 
- /* Tracepoint: /sys/kernel/debug/tracing/events/xdp/xdp_cpumap_enqueue/format
-  * Code in:         kernel/include/trace/events/xdp.h
-@@ -210,12 +210,12 @@ int trace_xdp_cpumap_kthread(struct cpumap_kthread_ctx *ctx)
- 	return 0;
- }
- 
--struct bpf_map_def SEC("maps") devmap_xmit_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__type(key, u32);
-+	__type(value, struct datarec);
-+	__uint(max_entries, 1);
-+} devmap_xmit_cnt SEC(".maps");
- 
- /* Tracepoint: /sys/kernel/debug/tracing/events/xdp/xdp_devmap_xmit/format
-  * Code in:         kernel/include/trace/events/xdp.h
-diff --git a/samples/bpf/xdp_sample_pkts_kern.c b/samples/bpf/xdp_sample_pkts_kern.c
-index 33377289e2a8..9cf76b340dd7 100644
---- a/samples/bpf/xdp_sample_pkts_kern.c
-+++ b/samples/bpf/xdp_sample_pkts_kern.c
-@@ -5,14 +5,12 @@
- #include <bpf/bpf_helpers.h>
- 
- #define SAMPLE_SIZE 64ul
--#define MAX_CPUS 128
--
--struct bpf_map_def SEC("maps") my_map = {
--	.type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
--	.key_size = sizeof(int),
--	.value_size = sizeof(u32),
--	.max_entries = MAX_CPUS,
--};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(u32));
-+} my_map SEC(".maps");
- 
- SEC("xdp_sample")
- int xdp_sample_prog(struct xdp_md *ctx)
-diff --git a/samples/bpf/xdp_sample_pkts_user.c b/samples/bpf/xdp_sample_pkts_user.c
-index 991ef6f0880b..4b2a300c750c 100644
---- a/samples/bpf/xdp_sample_pkts_user.c
-+++ b/samples/bpf/xdp_sample_pkts_user.c
-@@ -18,7 +18,6 @@
- 
- #include "perf-sys.h"
- 
--#define MAX_CPUS 128
- static int if_idx;
- static char *if_name;
- static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
--- 
-2.25.1
-
+--
+Best,
+Daniel T. Lee
