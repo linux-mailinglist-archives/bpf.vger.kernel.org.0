@@ -2,447 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09167289C25
-	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 01:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55078289CA2
+	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 02:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727550AbgJIXfg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Oct 2020 19:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727232AbgJIX3t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Oct 2020 19:29:49 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1620C0613D5
-        for <bpf@vger.kernel.org>; Fri,  9 Oct 2020 16:29:58 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id u19so12037447ion.3
-        for <bpf@vger.kernel.org>; Fri, 09 Oct 2020 16:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X8GXAGVLmkdbvIpzG0DfyE1Tx1pJmKswm4SaQAsxBIg=;
-        b=s7kqvVGiwoavLasPftb9/T1tBL9EKx8IK2iGbjCRROz7b/2vmwMditJAdrOzNiSadO
-         otwakAxgJjb0MLKvjfJ1BS2xADV85n06AuqyE5P7jwDMLu/zk9O7v6Pvf/8OdK2OrADp
-         tLl0tIXDvv2rzMo0HnLOtSwvquxBPsUPzZzcqqdrby7V/gkJ5QGtIEHKruvUNh6fp9S0
-         0e0ZrusspXrLDS4ffB6/6Vq+c3I1884NmcwNKzctsWT6SJf00d4Gp3EwbWMOVvIGuvot
-         PBgzoj/znNCilw1+0WQyWt/KDCsFG4kzNXG6ILZOx7KIH0yIkd6Ud3rd+FofMhAt/ZIq
-         iHpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X8GXAGVLmkdbvIpzG0DfyE1Tx1pJmKswm4SaQAsxBIg=;
-        b=VgysQPOVy/Vo/IMgnbZMisU/XXg9rW19Fq1IUcBAbpT+wLsOXJNojEGbO0EKk6e3nG
-         FmE9hEDm7vGnTcz5dLYWUuW4hhaHF7GrySHcj0d6lG7c8k63ikraWzJqBoXFPTUHYWON
-         bIcBSlwueNcE03IpkRC5lkHDqg0nehCrKztXzdXLM072935U0L07OB7WXz3SjcA86LYy
-         NUorRHmzAElFzOhkHWwd6KREs0pIbHQEX/6y6bxJ2bJ9gTfe5n3TkHaaXf2JiMLmViZc
-         Xl8FVH7AQ0ZJuGjh4/vBshNMNYJD7BI8ma7LG5Nkt5zImiVaFFk5yjmA1Scbkl97xQwh
-         +bzg==
-X-Gm-Message-State: AOAM5330+5t01vx202tBeix2IG5pxvqkBTFDnGg4mk9HAlpB9nK3PLH4
-        IOnuUGCVIvmnZlZhwJ1WhNbVklyiX6GSFn5q96gzCg==
-X-Google-Smtp-Source: ABdhPJyuxikiGcB/VFyjn7avZTPwnIkIgDt2uV39np0XLijqIB35fkPg8nDWNjFXMoX94/jKNQcHjEG/5esEUZt/aOY=
-X-Received: by 2002:a02:a10f:: with SMTP id f15mr12170175jag.62.1602286197677;
- Fri, 09 Oct 2020 16:29:57 -0700 (PDT)
+        id S1728809AbgJJAP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Oct 2020 20:15:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44950 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728706AbgJJALX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Oct 2020 20:11:23 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kR2TS-0007rQ-JC; Sat, 10 Oct 2020 02:10:58 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kR2TS-000PQ3-D9; Sat, 10 Oct 2020 02:10:58 +0200
+Subject: Re: [PATCH bpf-next v4 3/6] bpf: allow for map-in-map with dynamic
+ inner array map entries
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20201009224007.30447-1-daniel@iogearbox.net>
+ <20201009224007.30447-4-daniel@iogearbox.net>
+ <CAEf4BzYHRi3zBWcVYo=1oB2mcWaW_7HmKsSw6X2PU1deyXXaDw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f89ec10b-c0b8-8449-f820-730026ca0f3a@iogearbox.net>
+Date:   Sat, 10 Oct 2020 02:10:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <160216609656.882446.16642490462568561112.stgit@firesoul> <160216615258.882446.12640007391672866038.stgit@firesoul>
-In-Reply-To: <160216615258.882446.12640007391672866038.stgit@firesoul>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Fri, 9 Oct 2020 16:29:46 -0700
-Message-ID: <CANP3RGdq-irQ7w8=1xWNPh0Fn+72d9wrKR24vQJTFMa8w4+b6w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next V3 3/6] bpf: add BPF-helper for MTU checking
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Linux NetDev <netdev@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Shaun Crampton <shaun@tigera.io>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Marek Majkowski <marek@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eyal Birger <eyal.birger@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzYHRi3zBWcVYo=1oB2mcWaW_7HmKsSw6X2PU1deyXXaDw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25952/Fri Oct  9 15:52:40 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 7:09 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->
-> This BPF-helper bpf_mtu_check() works for both XDP and TC-BPF programs.
+On 10/10/20 1:01 AM, Andrii Nakryiko wrote:
+> On Fri, Oct 9, 2020 at 3:40 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+[...]
+>>          *insn++ = BPF_ALU64_IMM(BPF_ADD, map_ptr, offsetof(struct bpf_array, value));
+>>          *insn++ = BPF_LDX_MEM(BPF_W, ret, index, 0);
+>>          if (!map->bypass_spec_v1) {
+>> @@ -496,8 +499,10 @@ static int array_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+>>   static bool array_map_meta_equal(const struct bpf_map *meta0,
+>>                                   const struct bpf_map *meta1)
+>>   {
+>> -       return meta0->max_entries == meta1->max_entries &&
+>> -               bpf_map_meta_equal(meta0, meta1);
+>> +       if (!bpf_map_meta_equal(meta0, meta1))
+>> +               return false;
+>> +       return meta0->map_flags & BPF_F_INNER_MAP ? true :
+>> +              meta0->max_entries == meta1->max_entries;
+> 
+> even if meta1 doesn't have BPF_F_INNER_MAP, it's ok, because all the
+> accesses for map returned from outer map lookup will not inline, is
+> that right? So this flag only matters for the inner map's prototype.
 
-bpf_check_mtu() seems a better name.
+Not right now, we would have to open code bpf_map_meta_equal() to cut out that
+bit from the meta0/1 flags comparison. I wouldn't change bpf_map_meta_equal()
+itself given that bit can be reused for different purpose for other map types.
 
->
-> The API is designed to help the BPF-programmer, that want to do packet
-> context size changes, which involves other helpers. These other helpers
-> usually does a delta size adjustment. This helper also support a delta
-> size (len_diff), which allow BPF-programmer to reuse arguments needed by
-> these other helpers, and perform the MTU check prior to doing any actual
-> size adjustment of the packet context.
->
-> V3: Take L2/ETH_HLEN header size into account and document it.
->
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  include/uapi/linux/bpf.h       |   63 +++++++++++++++++++++
->  net/core/filter.c              |  119 ++++++++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |   63 +++++++++++++++++++++
->  3 files changed, 245 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 4a46a1de6d16..1dcf5d8195f4 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3718,6 +3718,56 @@ union bpf_attr {
->   *             never return NULL.
->   *     Return
->   *             A pointer pointing to the kernel percpu variable on this cpu.
-> + *
-> + * int bpf_mtu_check(void *ctx, u32 ifindex, u32 *mtu_result, s32 len_diff, u64 flags)
-> + *     Description
-> + *             Check ctx packet size against MTU of net device (based on
-> + *             *ifindex*).  This helper will likely be used in combination with
-> + *             helpers that adjust/change the packet size.  The argument
-> + *             *len_diff* can be used for querying with a planned size
-> + *             change. This allows to check MTU prior to changing packet ctx.
-> + *
-> + *             The Linux kernel route table can configure MTUs on a more
-> + *             specific per route level, which is not provided by this helper.
-> + *             For route level MTU checks use the **bpf_fib_lookup**\ ()
-> + *             helper.
-> + *
-> + *             *ctx* is either **struct xdp_md** for XDP programs or
-> + *             **struct sk_buff** for tc cls_act programs.
-> + *
-> + *             The *flags* argument can be a combination of one or more of the
-> + *             following values:
-> + *
-> + *              **BPF_MTU_CHK_RELAX**
-> + *                     This flag relax or increase the MTU with room for one
-> + *                     VLAN header (4 bytes) and take into account net device
-> + *                     hard_header_len.  This relaxation is also used by the
-> + *                     kernels own forwarding MTU checks.
-> + *
-> + *             **BPF_MTU_CHK_GSO**
-> + *                     This flag will only works for *ctx* **struct sk_buff**.
-> + *                     If packet context contains extra packet segment buffers
-> + *                     (often knows as frags), then those are also checked
-> + *                     against the MTU size.
+> You also mentioned that not inlining array access should still be
+> fast. So I wonder, what if we just force non-inlined access for inner
+> maps of ARRAY type? Would it be too bad of a hit for existing
+> applications?
 
-naming is weird... what does GSO have to do with frags?
-Aren't these orthogonal things?
+Fast in the sense of that we can avoid a retpoline given the direct call
+to array_map_lookup_elem() as opposed to bpf_map_lookup_elem(). In the
+array_map_gen_lookup() we even have insn level optimizations such as
+replacing BPF_MUL with BPF_LSH with immediate elem size on power of 2
+#elems as well as avoiding spectre masking (which the call one has not),
+presumably for cases like XDP we might want the best implementation if
+usage allows it.
 
-> + *
-> + *             The *mtu_result* pointer contains the MTU value of the net
-> + *             device including the L2 header size (usually 14 bytes Ethernet
-> + *             header). The net device configured MTU is the L3 size, but as
-> + *             XDP and TX length operate at L2 this helper include L2 header
-> + *             size in reported MTU.
-> + *
-> + *     Return
-> + *             * 0 on success, and populate MTU value in *mtu_result* pointer.
-> + *
-> + *             * < 0 if any input argument is invalid (*mtu_result* not updated)
+> The benefit would be that everything would just work without a special
+> flag. If perf hit isn't prohibitive, it might be worthwhile to
+> simplify user experience?
 
-not -EINVAL?
-
-> + *
-> + *             MTU violations return positive values, but also populate MTU
-> + *             value in *mtu_result* pointer, as this can be needed for
-> + *             implemeting PMTU handing:
-implementing
-
-> + *
-> + *             * **BPF_MTU_CHK_RET_FRAG_NEEDED**
-> + *             * **BPF_MTU_CHK_RET_GSO_TOOBIG**
-> + *
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3875,6 +3925,7 @@ union bpf_attr {
->         FN(redirect_neigh),             \
->         FN(bpf_per_cpu_ptr),            \
->         FN(bpf_this_cpu_ptr),           \
-> +       FN(mtu_check),                  \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> @@ -4889,6 +4940,18 @@ struct bpf_fib_lookup {
->         __u8    dmac[6];     /* ETH_ALEN */
->  };
->
-> +/* bpf_mtu_check flags*/
-> +enum  bpf_mtu_check_flags {
-> +       BPF_MTU_CHK_RELAX = (1U << 0),
-> +       BPF_MTU_CHK_GSO   = (1U << 1),
-> +};
-> +
-> +enum bpf_mtu_check_ret {
-> +       BPF_MTU_CHK_RET_SUCCESS,      /* check and lookup successful */
-> +       BPF_MTU_CHK_RET_FRAG_NEEDED,  /* fragmentation required to fwd */
-> +       BPF_MTU_CHK_RET_GSO_TOOBIG,   /* GSO re-segmentation needed to fwd */
-> +};
-> +
->  enum bpf_task_fd_type {
->         BPF_FD_TYPE_RAW_TRACEPOINT,     /* tp name */
->         BPF_FD_TYPE_TRACEPOINT,         /* tp name */
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index da74d6ddc4d7..5986156e700e 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5513,6 +5513,121 @@ static const struct bpf_func_proto bpf_skb_fib_lookup_proto = {
->         .arg4_type      = ARG_ANYTHING,
->  };
->
-> +static int bpf_mtu_lookup(struct net *netns, u32 ifindex, u64 flags)
-
-bpf_lookup_mtu() ???
-
-> +{
-> +       struct net_device *dev;
-> +       int mtu;
-> +
-> +       dev = dev_get_by_index_rcu(netns, ifindex);
-
-my understanding is this is a bit of a perf hit, maybe ifindex 0 means
-use skb->dev ???
-or have bpf_lookup_mtu(skb) function as well?
-
-> +       if (!dev)
-> +               return -ENODEV;
-> +
-> +       /* XDP+TC len is L2: Add L2-header as dev MTU is L3 size */
-> +       mtu = dev->mtu + dev->hard_header_len;
-> +
-> +       /*  Same relax as xdp_ok_fwd_dev() and is_skb_forwardable() */
-> +       if (flags & BPF_MTU_CHK_RELAX)
-
-could this check device vlan tx offload state instead?
-
-> +               mtu += VLAN_HLEN;
-> +
-> +       return mtu;
-> +}
-> +
-> +static unsigned int __bpf_len_adjust_positive(unsigned int len, int len_diff)
-> +{
-> +       int len_new = len + len_diff; /* notice len_diff can be negative */
-> +
-> +       if (len_new > 0)
-> +               return len_new;
-> +
-> +       return 0;
-
-not return len ?
-
-oh I see the function doesn't do what the name implies...
-nor sure this func is helpful... why not simply int len_new = (int)len
-+ (int)len_diff; directly down below and check < 0 there?
->2GB skb->len is meaningless anyway
-
-> +}
-> +
-> +BPF_CALL_5(bpf_skb_mtu_check, struct sk_buff *, skb,
-> +          u32, ifindex, u32 *, mtu_result, s32, len_diff, u64, flags)
-> +{
-> +       struct net *netns = dev_net(skb->dev);
-> +       int ret = BPF_MTU_CHK_RET_SUCCESS;
-> +       unsigned int len = skb->len;
-> +       int mtu;
-> +
-> +       if (flags & ~(BPF_MTU_CHK_RELAX | BPF_MTU_CHK_GSO))
-> +               return -EINVAL;
-> +
-> +       mtu = bpf_mtu_lookup(netns, ifindex, flags);
-> +       if (unlikely(mtu < 0))
-> +               return mtu; /* errno */
-> +
-> +       len = __bpf_len_adjust_positive(len, len_diff);
-> +       if (len > mtu) {
-> +               ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
-
-Can't this fail if skb->len includes the entire packet, and yet gso is
-on, and packet is greater then mtu, yet gso size is smaller?
-
-Think 200 byte gso packet with 2 100 byte segs, and a 150 byte mtu.
-Does gso actually require frags?  [As you can tell I don't have a good
-handle on gso vs frags vs skb->len, maybe what I"m asking is bogus]
-
-
-> +               goto out;
-> +       }
-> +
-> +       if (flags & BPF_MTU_CHK_GSO &&
-> +           skb_is_gso(skb) &&
-> +           skb_gso_validate_network_len(skb, mtu)) {
-> +               ret = BPF_MTU_CHK_RET_GSO_TOOBIG;
-> +               goto out;
-> +       }
-> +
-> +out:
-> +       if (mtu_result)
-> +               *mtu_result = mtu;
-> +
-> +       return ret;
-> +}
-> +
-> +BPF_CALL_5(bpf_xdp_mtu_check, struct xdp_buff *, xdp,
-> +          u32, ifindex, u32 *, mtu_result, s32, len_diff, u64, flags)
-> +{
-> +       unsigned int len = xdp->data_end - xdp->data;
-> +       struct net_device *dev = xdp->rxq->dev;
-> +       struct net *netns = dev_net(dev);
-> +       int ret = BPF_MTU_CHK_RET_SUCCESS;
-> +       int mtu;
-> +
-> +       /* XDP variant doesn't support multi-buffer segment check (yet) */
-> +       if (flags & ~BPF_MTU_CHK_RELAX)
-> +               return -EINVAL;
-> +
-> +       mtu = bpf_mtu_lookup(netns, ifindex, flags);
-> +       if (unlikely(mtu < 0))
-> +               return mtu; /* errno */
-> +
-> +       len = __bpf_len_adjust_positive(len, len_diff);
-> +       if (len > mtu) {
-> +               ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
-> +               goto out;
-> +       }
-> +out:
-> +       if (mtu_result)
-> +               *mtu_result = mtu;
-> +
-> +       return ret;
-> +}
-> +
-> +static const struct bpf_func_proto bpf_skb_mtu_check_proto = {
-> +       .func           = bpf_skb_mtu_check,
-> +       .gpl_only       = true,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_PTR_TO_CTX,
-> +       .arg2_type      = ARG_ANYTHING,
-> +       .arg3_type      = ARG_PTR_TO_MEM,
-> +       .arg4_type      = ARG_ANYTHING,
-> +       .arg5_type      = ARG_ANYTHING,
-> +};
-> +
-> +static const struct bpf_func_proto bpf_xdp_mtu_check_proto = {
-> +       .func           = bpf_xdp_mtu_check,
-> +       .gpl_only       = true,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_PTR_TO_CTX,
-> +       .arg2_type      = ARG_ANYTHING,
-> +       .arg3_type      = ARG_PTR_TO_MEM,
-> +       .arg4_type      = ARG_ANYTHING,
-> +       .arg5_type      = ARG_ANYTHING,
-> +};
-> +
->  #if IS_ENABLED(CONFIG_IPV6_SEG6_BPF)
->  static int bpf_push_seg6_encap(struct sk_buff *skb, u32 type, void *hdr, u32 len)
->  {
-> @@ -7076,6 +7191,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_get_socket_uid_proto;
->         case BPF_FUNC_fib_lookup:
->                 return &bpf_skb_fib_lookup_proto;
-> +       case BPF_FUNC_mtu_check:
-> +               return &bpf_skb_mtu_check_proto;
->         case BPF_FUNC_sk_fullsock:
->                 return &bpf_sk_fullsock_proto;
->         case BPF_FUNC_sk_storage_get:
-> @@ -7145,6 +7262,8 @@ xdp_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_xdp_adjust_tail_proto;
->         case BPF_FUNC_fib_lookup:
->                 return &bpf_xdp_fib_lookup_proto;
-> +       case BPF_FUNC_mtu_check:
-> +               return &bpf_xdp_mtu_check_proto;
->  #ifdef CONFIG_INET
->         case BPF_FUNC_sk_lookup_udp:
->                 return &bpf_xdp_sk_lookup_udp_proto;
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 4a46a1de6d16..1dcf5d8195f4 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -3718,6 +3718,56 @@ union bpf_attr {
->   *             never return NULL.
->   *     Return
->   *             A pointer pointing to the kernel percpu variable on this cpu.
-> + *
-> + * int bpf_mtu_check(void *ctx, u32 ifindex, u32 *mtu_result, s32 len_diff, u64 flags)
-> + *     Description
-> + *             Check ctx packet size against MTU of net device (based on
-> + *             *ifindex*).  This helper will likely be used in combination with
-> + *             helpers that adjust/change the packet size.  The argument
-> + *             *len_diff* can be used for querying with a planned size
-> + *             change. This allows to check MTU prior to changing packet ctx.
-> + *
-> + *             The Linux kernel route table can configure MTUs on a more
-> + *             specific per route level, which is not provided by this helper.
-> + *             For route level MTU checks use the **bpf_fib_lookup**\ ()
-> + *             helper.
-> + *
-> + *             *ctx* is either **struct xdp_md** for XDP programs or
-> + *             **struct sk_buff** for tc cls_act programs.
-> + *
-> + *             The *flags* argument can be a combination of one or more of the
-> + *             following values:
-> + *
-> + *              **BPF_MTU_CHK_RELAX**
-> + *                     This flag relax or increase the MTU with room for one
-> + *                     VLAN header (4 bytes) and take into account net device
-> + *                     hard_header_len.  This relaxation is also used by the
-> + *                     kernels own forwarding MTU checks.
-> + *
-> + *             **BPF_MTU_CHK_GSO**
-> + *                     This flag will only works for *ctx* **struct sk_buff**.
-> + *                     If packet context contains extra packet segment buffers
-> + *                     (often knows as frags), then those are also checked
-> + *                     against the MTU size.
-> + *
-> + *             The *mtu_result* pointer contains the MTU value of the net
-> + *             device including the L2 header size (usually 14 bytes Ethernet
-> + *             header). The net device configured MTU is the L3 size, but as
-> + *             XDP and TX length operate at L2 this helper include L2 header
-> + *             size in reported MTU.
-> + *
-> + *     Return
-> + *             * 0 on success, and populate MTU value in *mtu_result* pointer.
-> + *
-> + *             * < 0 if any input argument is invalid (*mtu_result* not updated)
-> + *
-> + *             MTU violations return positive values, but also populate MTU
-> + *             value in *mtu_result* pointer, as this can be needed for
-> + *             implemeting PMTU handing:
-> + *
-> + *             * **BPF_MTU_CHK_RET_FRAG_NEEDED**
-> + *             * **BPF_MTU_CHK_RET_GSO_TOOBIG**
-> + *
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -3875,6 +3925,7 @@ union bpf_attr {
->         FN(redirect_neigh),             \
->         FN(bpf_per_cpu_ptr),            \
->         FN(bpf_this_cpu_ptr),           \
-> +       FN(mtu_check),                  \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> @@ -4889,6 +4940,18 @@ struct bpf_fib_lookup {
->         __u8    dmac[6];     /* ETH_ALEN */
->  };
->
-> +/* bpf_mtu_check flags*/
-> +enum  bpf_mtu_check_flags {
-> +       BPF_MTU_CHK_RELAX = (1U << 0),
-> +       BPF_MTU_CHK_GSO   = (1U << 1),
-> +};
-> +
-> +enum bpf_mtu_check_ret {
-> +       BPF_MTU_CHK_RET_SUCCESS,      /* check and lookup successful */
-> +       BPF_MTU_CHK_RET_FRAG_NEEDED,  /* fragmentation required to fwd */
-> +       BPF_MTU_CHK_RET_GSO_TOOBIG,   /* GSO re-segmentation needed to fwd */
-> +};
-> +
->  enum bpf_task_fd_type {
->         BPF_FD_TYPE_RAW_TRACEPOINT,     /* tp name */
->         BPF_FD_TYPE_TRACEPOINT,         /* tp name */
+Taking the above penalty aside for same sized-elems, simplest one would have
+been to just set inner_map_meta->ops to &array_map_no_inline_ops inside the
+bpf_map_meta_alloc().
