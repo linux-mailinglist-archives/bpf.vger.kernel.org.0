@@ -2,129 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C9028A010
-	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 12:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1055728A40D
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 01:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbgJJKpq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Oct 2020 06:45:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30431 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729445AbgJJK0b (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 10 Oct 2020 06:26:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602325559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kw+DnHBWKnE2kWYlwA6mpWIRZTgnYnvtPVC5fmZhrlg=;
-        b=UHjOKoMtcypPOLJj5+bBH8KxrpVf860HJXSmXkAHvtP9eTN6zd6P7zt5dbEl7vcp0q/kRx
-        ByngH+CU5WbF/A6N1iZP4Svm2eMKoP/MeX6zX1ngw7k/h875qCla87Iu/+1FIxVklHlSaH
-        5klyzYVzD69ZA4hZ+UvnE8jdE6eH0tw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-113-kH6tjGWMPyGf5iZIfdHzLg-1; Sat, 10 Oct 2020 06:25:56 -0400
-X-MC-Unique: kH6tjGWMPyGf5iZIfdHzLg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 746141005E5A;
-        Sat, 10 Oct 2020 10:25:54 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ED1D5D9FC;
-        Sat, 10 Oct 2020 10:25:46 +0000 (UTC)
-Date:   Sat, 10 Oct 2020 12:25:45 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        willemdebruijn.kernel@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V3 1/6] bpf: Remove MTU check in
- __bpf_skb_max_len
-Message-ID: <20201010122545.5ae12f9c@carbon>
-In-Reply-To: <20b1e1dc-7ce7-dc42-54cd-5c4040ccdb30@iogearbox.net>
-References: <160216609656.882446.16642490462568561112.stgit@firesoul>
-        <160216614239.882446.4447190431655011838.stgit@firesoul>
-        <20b1e1dc-7ce7-dc42-54cd-5c4040ccdb30@iogearbox.net>
+        id S2389019AbgJJWzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731526AbgJJTyP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Oct 2020 15:54:15 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1126C0613E1;
+        Sat, 10 Oct 2020 03:41:57 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id h24so16657620ejg.9;
+        Sat, 10 Oct 2020 03:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q0R9T/xjTYd8YM1YuxiZqhLetAqKvDe7d2GoM9PR4T0=;
+        b=QLOPe1HNq4PEN+NYyq7WP9uqLahgeN1ZUq4Dy1Z5YB2717pWaU116qSqtBP5gWtwuX
+         iXm2mmdyj7BtZ83XwyBCsct0JfWKT2HdKa/W7J62k+YxrfNi2csKsgO1uHZpetuE/ADt
+         trFRpuz+GhuY+/DBqFeVjrs2lLCbh4vC9zI14W2HmFlBD2dzLXZAYuO3xOc8TLZrEoh3
+         XLhI7T/3q3kTv4XcyxRw4xQ0XGJl3+eA05NFuu33bXbmfwJjiOTozgctGXzDUExd7mZh
+         DLHvXuEf6b50uTVioTINBLS9DR7eNU21Z1Tp9pFbvGs3K1jmBGLhzzRjEfYu1PjuXeJ4
+         dAJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q0R9T/xjTYd8YM1YuxiZqhLetAqKvDe7d2GoM9PR4T0=;
+        b=KZnD/0XfIhfUQ7f+vN60F4GQym4cOVo5y1HVFlUq5yPPsvItlfSQrfHQk6M1lyssLJ
+         oiIrGQBvu7ffWfQ7tcUTblzJl49parD8/TMySPvj/MDOqSz6Ci5tuLCO6lflGFKMkCa5
+         CmtV2e98kx7gnDLO4AAr4eJmOKaLiUU12opQ3nIWq9VeXGchqntrYVHztAwWcuCYNVN7
+         uNY66iqfbrhBzvJNzQXBsHlDsnJW0Ny0AVNAeTimjRqrx80iyA7GuUPqVwpAljwQsFwy
+         HwOVVlvmH4h3kdh1uiQRQpay2q18s1EIiy7MTP5mVwBbkTYrHyRRX/Hox7RbUGSANofY
+         TsbA==
+X-Gm-Message-State: AOAM532ES8O3Fpki6VHlp+ygkkib2iSQxfyGupcrE9DXwl6yiKC7epmv
+        w5FdZYC/ZdC+ZZhbG7CiC5rRd/Y2w4Br4y23IA==
+X-Google-Smtp-Source: ABdhPJxKQoe78oDHWUDRuuqNUY3mYbvskdCUa+EYsPSOxWECTTDGnY31Y9b1FI8blNFliUzOHoPf0wwesiMAmREOV28=
+X-Received: by 2002:a17:906:f89:: with SMTP id q9mr18365181ejj.337.1602326516525;
+ Sat, 10 Oct 2020 03:41:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201009160353.1529-1-danieltimlee@gmail.com> <CAEf4BzZJgsd3OkcgULc7_Hxhg_ZcSmp+XT0e--8EMkz9_+5Qxg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZJgsd3OkcgULc7_Hxhg_ZcSmp+XT0e--8EMkz9_+5Qxg@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Sat, 10 Oct 2020 19:41:40 +0900
+Message-ID: <CAEKGpzjakqueq9B8eziCB1iv24j3Qs+YDqZBtbO6GSqJoOUBEA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] samples: bpf: Refactor XDP programs with libbpf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Xdp <xdp-newbies@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 9 Oct 2020 18:12:20 +0200
-Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Sat, Oct 10, 2020 at 3:30 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 9:04 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > To avoid confusion caused by the increasing fragmentation of the BPF
+> > Loader program, this commit would like to convert the previous bpf_load
+> > loader with the libbpf loader.
+> >
+> > Thanks to libbpf's bpf_link interface, managing the tracepoint BPF
+> > program is much easier. bpf_program__attach_tracepoint manages the
+> > enable of tracepoint event and attach of BPF programs to it with a
+> > single interface bpf_link, so there is no need to manage event_fd and
+> > prog_fd separately.
+> >
+> > And due to addition of generic bpf_program__attach() to libbpf, it is
+> > now possible to attach BPF programs with __attach() instead of
+> > explicitly calling __attach_<type>().
+> >
+> > This patchset refactors xdp_monitor with using this libbpf API, and the
+> > bpf_load is removed and migrated to libbpf. Also, attach_tracepoint()
+> > is replaced with the generic __attach() method in xdp_redirect_cpu.
+> > Moreover, maps in kern program have been converted to BTF-defined map.
+> >
+> > Daniel T. Lee (3):
+> >   samples: bpf: Refactor xdp_monitor with libbpf
+> >   samples: bpf: Replace attach_tracepoint() to attach() in
+> >     xdp_redirect_cpu
+> >   samples: bpf: refactor XDP kern program maps with BTF-defined map
+> >
+> >  samples/bpf/Makefile                |   4 +-
+> >  samples/bpf/xdp_monitor_kern.c      |  60 ++++++------
+> >  samples/bpf/xdp_monitor_user.c      | 144 +++++++++++++++++++++-------
+> >  samples/bpf/xdp_redirect_cpu_user.c | 138 +++++++++++++-------------
+> >  samples/bpf/xdp_sample_pkts_kern.c  |  14 ++-
+> >  samples/bpf/xdp_sample_pkts_user.c  |   1 -
+> >  6 files changed, 211 insertions(+), 150 deletions(-)
+> >
+> > --
+> > 2.25.1
+> >
+>
+> Thanks for this clean up, Daniel! It's great! I left a few nits here
+> and there in the appropriate patches.
+>
+> There still seem to be a bunch of users of bpf_load.c, which would be
+> nice to get rid of completely. But before you go do that, consider
+> integrating BPF skeleton into samples/bpf Makefile. That way instead
+> of all those look ups of maps/programs by name, you'd be writing a
+> straightforward skel->maps.my_map and similar short and non-failing
+> code. This should make the overall time spent on conversion much
+> smaller (and more pleasant, IMO).
+>
+> You've dealt with a lot of samples/bpf reworking, so it should be too
+> hard for you to figure out the best way to do this, but check
+> selftests/bpf's Makefile, if you need some ideas. Or just ask for
+> help. Thanks!
 
-> On 10/8/20 4:09 PM, Jesper Dangaard Brouer wrote:
-> > Multiple BPF-helpers that can manipulate/increase the size of the SKB uses
-> > __bpf_skb_max_len() as the max-length. This function limit size against
-> > the current net_device MTU (skb->dev->mtu).
-> > 
-> > When a BPF-prog grow the packet size, then it should not be limited to the
-> > MTU. The MTU is a transmit limitation, and software receiving this packet
-> > should be allowed to increase the size. Further more, current MTU check in
-> > __bpf_skb_max_len uses the MTU from ingress/current net_device, which in
-> > case of redirects uses the wrong net_device.
-> > 
-> > Keep a sanity max limit of IP6_MAX_MTU (under CONFIG_IPV6) which is 64KiB
-> > plus 40 bytes IPv6 header size. If compiled without IPv6 use IP_MAX_MTU.
-> > 
-> > V3: replace __bpf_skb_max_len() with define and use IPv6 max MTU size.
-> > 
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >   net/core/filter.c |   16 ++++++++--------
-> >   1 file changed, 8 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 05df73780dd3..ddc1f9ba89d1 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -3474,11 +3474,11 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
-> >   	return 0;
-> >   }
-> >   
-> > -static u32 __bpf_skb_max_len(const struct sk_buff *skb)
-> > -{
-> > -	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
-> > -			  SKB_MAX_ALLOC;
-> > -}
-> > +#ifdef IP6_MAX_MTU /* Depend on CONFIG_IPV6 */
-> > +#define BPF_SKB_MAX_LEN IP6_MAX_MTU
-> > +#else
-> > +#define BPF_SKB_MAX_LEN IP_MAX_MTU
-> > +#endif  
-> 
-> Shouldn't that check on skb->protocol? The way I understand it is
-> that a number of devices including virtual ones use ETH_MAX_MTU as
-> their dev->max_mtu, so the mtu must be in the range of
-> dev->min_mtu(=ETH_MIN_MTU), dev->max_mtu(=ETH_MAX_MTU).
-> __dev_set_mtu() then sets the user value to dev->mtu in the core if
-> within this range. That means in your case skb->dev->hard_header_len
-> for example is left out, meaning if we go for some constant, that
-> would need to be higher.
+Thanks for the great feedback!
 
-Sorry, but I think you have missed the point.  This BPF_SKB_MAX_LEN is
-just a sanity max limit.  We are removing the limit for BPF-progs to
-change the size of the packet (regardless of MTU).
+Thank you for letting me know about the BPF features that I can apply.
+Currently, I'm not familiar with the BPF skeleton yet, but I'll take a good
+look at the BPF skeleton to apply it in a more advanced form.
 
-This will allow BPF-ingress to increase packet size (up-to this sanity
-limit) and then BPF-egress can decrease packet size again, before
-sending it to the actual dev.  It is up to the BPF-programmer that to
-use this for, but I think this adds good flexibility, instead of being
-limited to the *transmit* size (MTU) of the dev.  This is software why
-have this MTU limit.
+Thank you for your time and effort for the review.
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Best,
+Daniel T. Lee
