@@ -2,237 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B868F28A03F
-	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 13:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C9028A010
+	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 12:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730162AbgJJLhN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Oct 2020 07:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728942AbgJJKUC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:20:02 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06461C0613E7;
-        Sat, 10 Oct 2020 03:09:01 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id p13so11961871edi.7;
-        Sat, 10 Oct 2020 03:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2u/FYiRZYg0jlbMYQJDVSfy4QaCXsq7tXWs5W7D5VoA=;
-        b=M3Eumw0msG+svHWDgfMyn8t0lD/I/Ri7vS5SQmEPCz5fxCv2x1cHbxGWAc9APCShVr
-         JyEN8UQu+DNlcMMaod7sN/1EIcWopAGAcixecB+9MVohiuBfN0qRvh7ywQ8TJcPwaZzs
-         YGFtiR20V4L458PCs3BqVh0Zo5XXkZ8Q9J4pTSjxUZJTQQ9BMTRKHuDPsRrom5NwrwxX
-         4ozR8TT4A8rcrGRioP+N7rchFL8txMPqP6idg9xAZbm+EUe04ItfXtXnf4IPYdMsaXru
-         sSQRel37IqBfkJZJXjos6LZ9w222/F7KIcgJU8M7BvaM9mu8L4088Z5FRf41z3zIJEUF
-         tOqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2u/FYiRZYg0jlbMYQJDVSfy4QaCXsq7tXWs5W7D5VoA=;
-        b=qjyEjiC2wbBDky7eH6HPH0Vp5pO3nCiXivnzUmDOHvM+YTFlm+n2obZrJ5yNCc2upu
-         rAfUYam8/WlNe2DJc26uukTtIpjvpHmfU1ZTa3ScQzhmb8ia3X9Ow2DYG7jECCumLEVH
-         rmhQqbKEU+hKor+/o59x1l7o827gOboc2EqcMBNcd5aJG7Sr13o9YZgSN70rp+So0g3c
-         f+a8LsfhWMZa53RgzSTiZjh+Dq8PHnSjbhCx5Orm3az1OZg6ZnoHAiTF5N08CesQXKhc
-         hKVBfufHN9HbsaFCafm2+P5ZtRzt3Ppm/19+cjhKGwag6VLUQI4Bwiziwtnp5NNi+HtM
-         J6Ug==
-X-Gm-Message-State: AOAM530cgZMiZXL+ZEvpO875JRX+/dP+YBF6In6wXhj+hH2Yo+RdonEl
-        zPrCaolkKGwb1dYvY81seQSo6JByQ4IXNVme/qJg7j/0opAZ
-X-Google-Smtp-Source: ABdhPJz8Qo4DZGrU8DHUc5b10nkKSIGd/ZuyqcqtpD0fWUdZgcaWDGoDt1qfQHQqyELaXkvm72rmue4ixWoMXVXM6Q8=
-X-Received: by 2002:a50:cbc7:: with SMTP id l7mr3770872edi.148.1602324539440;
- Sat, 10 Oct 2020 03:08:59 -0700 (PDT)
+        id S1729487AbgJJKpq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Oct 2020 06:45:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30431 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729445AbgJJK0b (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 10 Oct 2020 06:26:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602325559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Kw+DnHBWKnE2kWYlwA6mpWIRZTgnYnvtPVC5fmZhrlg=;
+        b=UHjOKoMtcypPOLJj5+bBH8KxrpVf860HJXSmXkAHvtP9eTN6zd6P7zt5dbEl7vcp0q/kRx
+        ByngH+CU5WbF/A6N1iZP4Svm2eMKoP/MeX6zX1ngw7k/h875qCla87Iu/+1FIxVklHlSaH
+        5klyzYVzD69ZA4hZ+UvnE8jdE6eH0tw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-kH6tjGWMPyGf5iZIfdHzLg-1; Sat, 10 Oct 2020 06:25:56 -0400
+X-MC-Unique: kH6tjGWMPyGf5iZIfdHzLg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 746141005E5A;
+        Sat, 10 Oct 2020 10:25:54 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ED1D5D9FC;
+        Sat, 10 Oct 2020 10:25:46 +0000 (UTC)
+Date:   Sat, 10 Oct 2020 12:25:45 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        willemdebruijn.kernel@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V3 1/6] bpf: Remove MTU check in
+ __bpf_skb_max_len
+Message-ID: <20201010122545.5ae12f9c@carbon>
+In-Reply-To: <20b1e1dc-7ce7-dc42-54cd-5c4040ccdb30@iogearbox.net>
+References: <160216609656.882446.16642490462568561112.stgit@firesoul>
+        <160216614239.882446.4447190431655011838.stgit@firesoul>
+        <20b1e1dc-7ce7-dc42-54cd-5c4040ccdb30@iogearbox.net>
 MIME-Version: 1.0
-References: <20201009160353.1529-1-danieltimlee@gmail.com> <20201009160353.1529-2-danieltimlee@gmail.com>
- <CAEf4BzYNF_BbwXM-HFFSk=ybJRdR=_P1OcVwxZ6dav6_b4BOWw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYNF_BbwXM-HFFSk=ybJRdR=_P1OcVwxZ6dav6_b4BOWw@mail.gmail.com>
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Sat, 10 Oct 2020 19:08:45 +0900
-Message-ID: <CAEKGpzjcYCgOFCN2f4M-X-mnozTrcayp4jQVb6YB9cYE0M8F8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] samples: bpf: Refactor xdp_monitor with libbpf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Xdp <xdp-newbies@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 3:17 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Oct 9, 2020 at 9:04 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
-> >
-> > To avoid confusion caused by the increasing fragmentation of the BPF
-> > Loader program, this commit would like to change to the libbpf loader
-> > instead of using the bpf_load.
-> >
-> > Thanks to libbpf's bpf_link interface, managing the tracepoint BPF
-> > program is much easier. bpf_program__attach_tracepoint manages the
-> > enable of tracepoint event and attach of BPF programs to it with a
-> > single interface bpf_link, so there is no need to manage event_fd and
-> > prog_fd separately.
-> >
-> > This commit refactors xdp_monitor with using this libbpf API, and the
-> > bpf_load is removed and migrated to libbpf.
-> >
-> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+On Fri, 9 Oct 2020 18:12:20 +0200
+Daniel Borkmann <daniel@iogearbox.net> wrote:
+
+> On 10/8/20 4:09 PM, Jesper Dangaard Brouer wrote:
+> > Multiple BPF-helpers that can manipulate/increase the size of the SKB uses
+> > __bpf_skb_max_len() as the max-length. This function limit size against
+> > the current net_device MTU (skb->dev->mtu).
+> > 
+> > When a BPF-prog grow the packet size, then it should not be limited to the
+> > MTU. The MTU is a transmit limitation, and software receiving this packet
+> > should be allowed to increase the size. Further more, current MTU check in
+> > __bpf_skb_max_len uses the MTU from ingress/current net_device, which in
+> > case of redirects uses the wrong net_device.
+> > 
+> > Keep a sanity max limit of IP6_MAX_MTU (under CONFIG_IPV6) which is 64KiB
+> > plus 40 bytes IPv6 header size. If compiled without IPv6 use IP_MAX_MTU.
+> > 
+> > V3: replace __bpf_skb_max_len() with define and use IPv6 max MTU size.
+> > 
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > > ---
-> >  samples/bpf/Makefile           |   2 +-
-> >  samples/bpf/xdp_monitor_user.c | 144 ++++++++++++++++++++++++---------
-> >  2 files changed, 108 insertions(+), 38 deletions(-)
-> >
->
-> [...]
->
-> > +static int tp_cnt;
-> > +static int map_cnt;
-> >  static int verbose = 1;
-> >  static bool debug = false;
-> > +struct bpf_map *map_data[NUM_MAP] = { 0 };
-> > +struct bpf_link *tp_links[NUM_TP] = { 0 };
->
-> this syntax means "initialize *only the first element* to 0
-> (explicitly) and the rest of elements to default (which is also 0)".
-> So it's just misleading, use ` = {}`.
->
+> >   net/core/filter.c |   16 ++++++++--------
+> >   1 file changed, 8 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 05df73780dd3..ddc1f9ba89d1 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -3474,11 +3474,11 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+> >   	return 0;
+> >   }
+> >   
+> > -static u32 __bpf_skb_max_len(const struct sk_buff *skb)
+> > -{
+> > -	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
+> > -			  SKB_MAX_ALLOC;
+> > -}
+> > +#ifdef IP6_MAX_MTU /* Depend on CONFIG_IPV6 */
+> > +#define BPF_SKB_MAX_LEN IP6_MAX_MTU
+> > +#else
+> > +#define BPF_SKB_MAX_LEN IP_MAX_MTU
+> > +#endif  
+> 
+> Shouldn't that check on skb->protocol? The way I understand it is
+> that a number of devices including virtual ones use ETH_MAX_MTU as
+> their dev->max_mtu, so the mtu must be in the range of
+> dev->min_mtu(=ETH_MIN_MTU), dev->max_mtu(=ETH_MAX_MTU).
+> __dev_set_mtu() then sets the user value to dev->mtu in the core if
+> within this range. That means in your case skb->dev->hard_header_len
+> for example is left out, meaning if we go for some constant, that
+> would need to be higher.
 
-Thanks for the great review!
+Sorry, but I think you have missed the point.  This BPF_SKB_MAX_LEN is
+just a sanity max limit.  We are removing the limit for BPF-progs to
+change the size of the packet (regardless of MTU).
 
-Come to think of it, it could be confusing as you mentioned. I will
-remove the unnecessary initializer in the next patch and resend it.
+This will allow BPF-ingress to increase packet size (up-to this sanity
+limit) and then BPF-egress can decrease packet size again, before
+sending it to the actual dev.  It is up to the BPF-programmer that to
+use this for, but I think this adds good flexibility, instead of being
+limited to the *transmit* size (MTU) of the dev.  This is software why
+have this MTU limit.
 
-> >
-> >  static const struct option long_options[] = {
-> >         {"help",        no_argument,            NULL, 'h' },
-> > @@ -41,6 +65,15 @@ static const struct option long_options[] = {
-> >         {0, 0, NULL,  0 }
-> >  };
-> >
-> > +static void int_exit(int sig)
-> > +{
-> > +       /* Detach tracepoints */
-> > +       while (tp_cnt)
-> > +               bpf_link__destroy(tp_links[--tp_cnt]);
-> > +
->
-> see below about proper cleanup
->
-> > +       exit(0);
-> > +}
-> > +
-> >  /* C standard specifies two constants, EXIT_SUCCESS(0) and EXIT_FAILURE(1) */
-> >  #define EXIT_FAIL_MEM  5
-> >
->
-> [...]
->
-> >
-> > -static void print_bpf_prog_info(void)
-> > +static void print_bpf_prog_info(struct bpf_object *obj)
-> >  {
-> > -       int i;
-> > +       struct bpf_program *prog;
-> > +       struct bpf_map *map;
-> > +       int i = 0;
-> >
-> >         /* Prog info */
-> > -       printf("Loaded BPF prog have %d bpf program(s)\n", prog_cnt);
-> > -       for (i = 0; i < prog_cnt; i++) {
-> > -               printf(" - prog_fd[%d] = fd(%d)\n", i, prog_fd[i]);
-> > +       printf("Loaded BPF prog have %d bpf program(s)\n", tp_cnt);
-> > +       bpf_object__for_each_program(prog, obj) {
-> > +               printf(" - prog_fd[%d] = fd(%d)\n", i++, bpf_program__fd(prog));
-> >         }
-> >
-> > +       i = 0;
-> >         /* Maps info */
-> > -       printf("Loaded BPF prog have %d map(s)\n", map_data_count);
-> > -       for (i = 0; i < map_data_count; i++) {
-> > -               char *name = map_data[i].name;
-> > -               int fd     = map_data[i].fd;
-> > +       printf("Loaded BPF prog have %d map(s)\n", map_cnt);
-> > +       bpf_object__for_each_map(map, obj) {
-> > +               const char *name = bpf_map__name(map);
-> > +               int fd           = bpf_map__fd(map);
-> >
-> > -               printf(" - map_data[%d] = fd(%d) name:%s\n", i, fd, name);
-> > +               printf(" - map_data[%d] = fd(%d) name:%s\n", i++, fd, name);
->
-> please move out increment into a separate statement, no need to
-> confuse readers unnecessarily
->
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-I will fix it at the following patch.
-
-> >         }
-> >
-> >         /* Event info */
-> > -       printf("Searching for (max:%d) event file descriptor(s)\n", prog_cnt);
-> > -       for (i = 0; i < prog_cnt; i++) {
-> > -               if (event_fd[i] != -1)
-> > -                       printf(" - event_fd[%d] = fd(%d)\n", i, event_fd[i]);
-> > +       printf("Searching for (max:%d) event file descriptor(s)\n", tp_cnt);
-> > +       for (i = 0; i < tp_cnt; i++) {
-> > +               int fd = bpf_link__fd(tp_links[i]);
-> > +
-> > +               if (fd != -1)
-> > +                       printf(" - event_fd[%d] = fd(%d)\n", i, fd);
-> >         }
-> >  }
-> >
-> >  int main(int argc, char **argv)
-> >  {
->
-> [...]
->
-> > +       obj = bpf_object__open_file(filename, NULL);
-> > +       if (libbpf_get_error(obj)) {
-> > +               printf("ERROR: opening BPF object file failed\n");
-> > +               obj = NULL;
-> >                 return EXIT_FAILURE;
-> >         }
-> > -       if (!prog_fd[0]) {
-> > -               printf("ERROR - load_bpf_file: %s\n", strerror(errno));
-> > +
-> > +       /* load BPF program */
-> > +       if (bpf_object__load(obj)) {
->
-> would be still good to call bpf_object__close(obj) here, this will
-> avoid warnings about memory leaks, if you run this program under ASAN
->
-> > +               printf("ERROR: loading BPF object file failed\n");
-> >                 return EXIT_FAILURE;
-> >         }
-> >
-> > +       for (type = 0; type < NUM_MAP; type++) {
-> > +               map_data[type] =
-> > +                       bpf_object__find_map_by_name(obj, map_type_strings[type]);
-> > +
-> > +               if (libbpf_get_error(map_data[type])) {
-> > +                       printf("ERROR: finding a map in obj file failed\n");
->
-> same about cleanup, goto into single cleanup place would be
-> appropriate throughout this entire function, probably.
->
-
-Jump to single cleanup will be much more intuitive.
-I will update and send the next version of patch right away.
-
-Thank you for your time and effort for the review.
-
-Best,
-Daniel
-
-> > +                       return EXIT_FAILURE;
-> > +               }
-> > +               map_cnt++;
-> > +       }
-> > +
->
-> [...]
