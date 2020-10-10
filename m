@@ -2,76 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF38328A04A
-	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 13:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F32628A041
+	for <lists+bpf@lfdr.de>; Sat, 10 Oct 2020 13:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgJJL4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Oct 2020 07:56:02 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:52143 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727698AbgJJKTd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Oct 2020 06:19:33 -0400
-Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam02-ex.h3c.com with ESMTP id 09A8sUHB046293
-        for <bpf@vger.kernel.org>; Sat, 10 Oct 2020 16:54:30 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09A8s6nc045991
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 10 Oct 2020 16:54:06 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 10 Oct 2020 16:54:09 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <hawk@kernel.org>, <john.fastabend@gmail.com>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <kpsingh@chromium.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] bpf: Avoid allocing memory on memoryless numa node
-Date:   Sat, 10 Oct 2020 16:44:17 +0800
-Message-ID: <20201010084417.5400-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730132AbgJJLrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Oct 2020 07:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728919AbgJJKUC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Oct 2020 06:20:02 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8B1C0613E1;
+        Sat, 10 Oct 2020 02:56:05 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id e22so16612819ejr.4;
+        Sat, 10 Oct 2020 02:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VR/tQHvJwBGuUu8JsJE9tUxiX1G5oEfON4+74b7xloE=;
+        b=aKfWe9sQ2EhbomX3OoQsQ5kk5LwyBcn3Znd1S+SsiJ9XQD0JEojmwv1efkWq1RB5AB
+         gMsu5JI4EFqEOKht2wEqtLttpT13VVUpTVxtEGa1goF+GRBGyoJV3caU5hUnJc+N8FYt
+         4nqelkdQ/3Npr4BAirZZO8gJ4WdIGf+6Eh9nqj4nJk7KBPgMEVaWz0YdexP6FobC5Qqn
+         61UQTZlotYDo2EKneuMkLSSaaqqG60d3kvm+954yODnEwsWN4q7U4YgVQFWM+VJOsIAq
+         fYNWBQ8gcgS4Es/yiA1NvN87ZTeJaxfTkOmnxRo3zSxpV976K9cCdt1ReUidUVZ3/MuY
+         itnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VR/tQHvJwBGuUu8JsJE9tUxiX1G5oEfON4+74b7xloE=;
+        b=s1wQZT7tCErCTBWilbVAM/WSW/sChwyctvpf0AbYmFmyHKRJI5QvX5dw1XuskEUQMb
+         rWsTGPlI8+hFVkS3OQGSvzoFP0bWDsTIkDyA2EhO4PlGZHJBG6geXPE0tKlZvt910hc4
+         Onug4LPbNVMsll5+YBa4Kqz081aEgm+1wk3pRZuK22N9ofoWSjwQdohDo6qxZNzPF3SW
+         5cFzd2GPOsCqky3bi5lYRSzKSKKGS98rkqugO4mN4ji8sP2JNkVcpy7gIdSuTuqJ7aQP
+         AvXcpwl4ncWDCeiX5bzEZzDeerr8Ir3youhXyXOgq5y8ExMbtI77RHfzy2tfzL+EBo0L
+         YkWw==
+X-Gm-Message-State: AOAM530J8YQBjX3gQi5tizAv/TkhKifZO66xtdwFikzR7InzccZTlKUx
+        uNl0J3M8fUKqknjP2WKqn8GcO38kChHxj4VjlA==
+X-Google-Smtp-Source: ABdhPJwZykUG0Thgw1Kayj5L/BQM/DvuxDe82XXX7C6oeM+gqc8HOJie+y57a4eYTKEntKRM6UoqdmvFo2YOoCqYjj0=
+X-Received: by 2002:a17:906:590d:: with SMTP id h13mr18186970ejq.226.1602323764107;
+ Sat, 10 Oct 2020 02:56:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09A8s6nc045991
+References: <20201009160353.1529-1-danieltimlee@gmail.com> <20201009160353.1529-4-danieltimlee@gmail.com>
+ <CAEf4Bzai3y8yHcYAnSBhZ3Wa8nvDcsUw=1o5S-xn42DwPKUndQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzai3y8yHcYAnSBhZ3Wa8nvDcsUw=1o5S-xn42DwPKUndQ@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Sat, 10 Oct 2020 18:55:49 +0900
+Message-ID: <CAEKGpzgPepj2c=tvwgwH93OLDvq_GCDjGeoh_w3VCFwUuE=HPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] samples: bpf: refactor XDP kern program maps
+ with BTF-defined map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Xdp <xdp-newbies@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In architecture like powerpc, we can have cpus without any local memory
-attached to it. In such cases the node does not have real memory.
+On Sat, Oct 10, 2020 at 3:25 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 9:04 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > Most of the samples were converted to use the new BTF-defined MAP as
+> > they moved to libbpf, but some of the samples were missing.
+> >
+> > Instead of using the previous BPF MAP definition, this commit refactors
+> > xdp_monitor and xdp_sample_pkts_kern MAP definition with the new
+> > BTF-defined MAP format.
+> >
+> > Also, this commit removes the max_entries attribute at PERF_EVENT_ARRAY
+> > map type. The libbpf's bpf_object__create_map() will automatically
+> > set max_entries to the maximum configured number of CPUs on the host.
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > ---
+> >  samples/bpf/xdp_monitor_kern.c     | 60 +++++++++++++++---------------
+> >  samples/bpf/xdp_sample_pkts_kern.c | 14 +++----
+> >  samples/bpf/xdp_sample_pkts_user.c |  1 -
+> >  3 files changed, 36 insertions(+), 39 deletions(-)
+> >
+>
+> [...]
+>
+> > --- a/samples/bpf/xdp_sample_pkts_kern.c
+> > +++ b/samples/bpf/xdp_sample_pkts_kern.c
+> > @@ -5,14 +5,12 @@
+> >  #include <bpf/bpf_helpers.h>
+> >
+> >  #define SAMPLE_SIZE 64ul
+> > -#define MAX_CPUS 128
+> > -
+> > -struct bpf_map_def SEC("maps") my_map = {
+> > -       .type = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
+> > -       .key_size = sizeof(int),
+> > -       .value_size = sizeof(u32),
+> > -       .max_entries = MAX_CPUS,
+> > -};
+> > +
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+> > +       __type(key, int);
+> > +       __type(value, u32);
+>
+>
+> this actually will generate unnecessary libbpf warnings, because
+> PERF_EVENT_ARRAY doesn't support BTF types for key/value. So use
+> __uint(key_size, sizeof(int)) and __uint(value_size, sizeof(u32))
+> instead.
+>
 
-Use local_memory_node(), which is guaranteed to have memory.
-local_memory_node is a noop in other architectures that does not support
-memoryless nodes.
+Thanks for the great review!
+I'll fix it right away and send the next version of patch.
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- kernel/bpf/cpumap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 6386b7bb9..2c885c00a 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -423,7 +423,7 @@ __cpu_map_entry_alloc(struct bpf_cpumap_val *value, u32 cpu, int map_id)
- 	struct xdp_bulk_queue *bq;
- 
- 	/* Have map->numa_node, but choose node of redirect target CPU */
--	numa = cpu_to_node(cpu);
-+	numa = local_memory_node(cpu_to_node(cpu));
- 
- 	rcpu = kzalloc_node(sizeof(*rcpu), gfp, numa);
- 	if (!rcpu)
--- 
-2.17.1
-
+> > +} my_map SEC(".maps");
+> >
+> >  SEC("xdp_sample")
+> >  int xdp_sample_prog(struct xdp_md *ctx)
+> > diff --git a/samples/bpf/xdp_sample_pkts_user.c b/samples/bpf/xdp_sample_pkts_user.c
+> > index 991ef6f0880b..4b2a300c750c 100644
+> > --- a/samples/bpf/xdp_sample_pkts_user.c
+> > +++ b/samples/bpf/xdp_sample_pkts_user.c
+> > @@ -18,7 +18,6 @@
+> >
+> >  #include "perf-sys.h"
+> >
+> > -#define MAX_CPUS 128
+> >  static int if_idx;
+> >  static char *if_name;
+> >  static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
+> > --
+> > 2.25.1
+> >
