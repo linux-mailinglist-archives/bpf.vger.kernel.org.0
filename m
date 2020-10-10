@@ -2,88 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD8F28A229
-	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 00:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9010528A221
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 00:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388991AbgJJWzM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Oct 2020 18:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731152AbgJJTxK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Oct 2020 15:53:10 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F32C0613AA
-        for <bpf@vger.kernel.org>; Sat, 10 Oct 2020 03:50:21 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id t20so5706944edr.11
-        for <bpf@vger.kernel.org>; Sat, 10 Oct 2020 03:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=HC/gkB6iSKF4+yEdzyyM5VASOzrvfoYkCSUnVQ8RBKU=;
-        b=tBVG9hXEgAoU/QAs22SWkvWV59bjbaejX8CxE5IoMlc0PzBxTyjbt8GJtOdpMuRIb8
-         LOc2emYuchLsr4mqQXDZjM3FCF5V9B6qk2Nq9HADbt1FjFlUsbMfK195krPEFUK9T+oK
-         0QXmjjpVW3z4BGQ6C57sFLgtbevM4DlCDqKZ5kj2ms1sU6ZpyFJwjUzMGqidil8y2Uy7
-         FndkOucPWI6zOv0m3BYrJ6YlZJBNGWvl9MvgTjHnFfsHeWEtdpC3EtghgkgGazTilCFa
-         LZQ+Wa5xey5aWvGvQkyG8YGlL4RCWWgc4+wnqmTJRpXUL3zYJgv+TB0WvuU3z/6Iw63g
-         m+zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=HC/gkB6iSKF4+yEdzyyM5VASOzrvfoYkCSUnVQ8RBKU=;
-        b=TfIxf5dcNkBnWLLwzHzdyjs0/ncyFApsrH0Z+eZdeOdofxY+LNxHFLrVmY/TSJnhx5
-         6Hg7b/cWJg2KgevWIhh5deS2usfo1DDOYf+bVS8KbUccbfu/YW10OhTf+qY7SvcqX5z9
-         w2Jnwy0PPYYOMIO5K6M11r1DtiGgAbnhNNkjraA4aLnHDhw0cosdeIe1PZGHPqDO8VpX
-         NT0nI0YlDL7MKhtg7+FYB0X/ceEaU2509fojGWWGMfCMj41S1pdqvT6kCLEga1S6NTj9
-         Ylv01TT5Ep2n0r8S2ujURpxJlBUzrt1sIQMqcuik0RskVQXcLkPHkRCmSHB2wpVTW7IN
-         FRnw==
-X-Gm-Message-State: AOAM530E0MSOdjbUAsJ9+EaxCF+lh5Uo6j/sDTviQK7ZIOsydh2qTnSy
-        /rM3j3I6WytSEzSLdFPpQYSEtPgP33CDUcjki08ihK7Aig==
-X-Google-Smtp-Source: ABdhPJwc2V+HdmPm1gDuFTqNbYxh4tz2DHtmCMj6YlZNMri92UFr8G/wq64F1bIA0yC7AjUbsEncpJxFPMbfbG8+sOo=
-X-Received: by 2002:a50:cbc7:: with SMTP id l7mr3904049edi.148.1602327019472;
- Sat, 10 Oct 2020 03:50:19 -0700 (PDT)
+        id S1730950AbgJJWzE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Oct 2020 18:55:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25386 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731275AbgJJTFd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 10 Oct 2020 15:05:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602356702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BJR2aQjPR9hLNkF0eFDNd9lu/f6IXZPxNCZ5aSJuSME=;
+        b=c5/0YHA3XJ9ioaccuh96pU37rmqWgneAOZpTcH7YWoRY0l5a7sLs45XXoNdTib3dGsG3uq
+        WU/vj0HPKxkXIQ6C7FBD//kqMjkWxikSClHfU87BrOzCBxqJUG1kPUHeIpMceozUMuUP4n
+        E7ZVHQOoYjvqog68rXjYgkb2ouZfFuY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-jh3cyaJbOZKEwxle1RHQbQ-1; Sat, 10 Oct 2020 07:09:48 -0400
+X-MC-Unique: jh3cyaJbOZKEwxle1RHQbQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9AF4186DD26;
+        Sat, 10 Oct 2020 11:09:46 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 371485D9FC;
+        Sat, 10 Oct 2020 11:09:39 +0000 (UTC)
+Date:   Sat, 10 Oct 2020 13:09:38 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Shaun Crampton <shaun@tigera.io>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eyal Birger <eyal.birger@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V3 4/6] bpf: make it possible to identify BPF
+ redirected SKBs
+Message-ID: <20201010130938.138c80d9@carbon>
+In-Reply-To: <CANP3RGesHkCNTWsWDoU2uJsFjZ4dgnEpp+F-iEmhb9U0-rcT_w@mail.gmail.com>
+References: <160216609656.882446.16642490462568561112.stgit@firesoul>
+        <160216615767.882446.7384364280837100311.stgit@firesoul>
+        <40d7af61-6840-5473-79d7-ea935f6889f4@iogearbox.net>
+        <CANP3RGesHkCNTWsWDoU2uJsFjZ4dgnEpp+F-iEmhb9U0-rcT_w@mail.gmail.com>
 MIME-Version: 1.0
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Sat, 10 Oct 2020 19:50:03 +0900
-Message-ID: <CAEKGpzh70f06iMQdR3B1LF3hMwHnB=x92fvfV8+smQObvKBF_w@mail.gmail.com>
-Subject: Where can I find the map's BTF type key/value specification?
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        Martin Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm looking for how BTF type definition '__type(key, int)' is being changed
-to '__uint(key_size, sizeof(int))'. (Not exactly "changed" but wonder how
-it can be considered the same)
+On Fri, 9 Oct 2020 11:33:33 -0700
+Maciej =C5=BBenczykowski <maze@google.com> wrote:
 
-    __uint(type, BPF_MAP_TYPE_ARRAY);
-    __type(key, int);          => __uint(key_size, sizeof(int))
-    __type(value, u32);    => __uint(value_size, sizeof(u32))
-    __uint(max_entries, 2);
+> > > This change makes it possible to identify SKBs that have been redirec=
+ted
+> > > by TC-BPF (cls_act). This is needed for a number of cases.
+> > >
+> > > (1) For collaborating with driver ifb net_devices.
+> > > (2) For avoiding starting generic-XDP prog on TC ingress redirect.
+> > >
+> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com> =20
+> >
+> > Not sure if anyone actually cares about ifb devices, but my worry is th=
+at the
+> > generic XDP vs tc interaction has been as-is for quite some time so thi=
+s change
+> > in behavior could break in the wild. =20
 
-Whether the specific map type supports BTF or not can be inferred from
-the file in kernel/bpf/*map.c and by checking each MAP type's
-bpf_map_ops .map_check_btf pointer is initialized as map_check_no_btf.
+No, I believe this happened as recent at kernel v5.2, when Stephen
+Hemminger changed this in commit 458bf2f224f0 ("net: core: support XDP
+generic on stacked devices.").  And for the record I think that
+patch/change was a mistake, as people should not use generic-XDP for
+these kind of stacked devices (they should really use TC-BPF as that is
+the right tool for the job).
 
-But how can I figure out that specific types of map support BTF types for
-key/value? And how can I determine how this BTF key/value type is
-converted?
 
-I am aware that BTF information is created in the form of a compact
-type by using pahole to deduplicate repeated types, strings information
-from DWARF information. However, looking at the *btf or pahole file
-in dwarves repository, it seemed that it was not responsible for the
-conversion of the BTF key/value.
+> I'm not at all sure of the interactions/implications here.
+> But I do have a request to enable ifb on Android for ingress rate
+> limiting and separately we're trying to make XDP work...
+> So we might at some point end up with cellular interfaces with xdp
+> ebpf (redirect for forwarding/nat/tethering) + ifb + tc ebpf (for
+> device local stuff).
 
-The remaining guess is that LLVM's BPF target compiler is responsible
-for this, or it's probably somewhere in the kernel, but I'm not sure
-where it is.
+To me I was very surprised when I discovered tc-redirect didn't work
+with ifb driver.  And it sounds like you have an actual use-case for
+this on Android.
 
---
-Best,
-Daniel T. Lee
+> But this is still all very vague and 'ideas only' level.
+> (and in general I think I'd like to get rid of the redirect in tc
+> ebpf, and leave only xlat64 translation for to-the-device traffic in
+> there, so maybe there's no problem anyway??)
+
+I know it sounds strange coming from me "Mr.XDP", but I actaully think
+that in many cases you will be better off with using TC-BPF.
+Especially on Android, as it will be very hard to get native-XDP
+implemented in all these different drivers. (And you don't want to use
+generic-XDP, because there is a high chance it causes a reallocation of
+the SKB, which is a huge performance hit).
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
