@@ -2,105 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4751828AA0C
-	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 22:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986AD28AA13
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 22:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgJKUEI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Oct 2020 16:04:08 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48898 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726209AbgJKUEI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Oct 2020 16:04:08 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kRhZa-0001BJ-Gc; Sun, 11 Oct 2020 22:04:02 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kRhZa-000T5p-BD; Sun, 11 Oct 2020 22:04:02 +0200
-Subject: Re: [PATCH bpf-next v2] bpf_fib_lookup: optionally skip neighbour
- lookup
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        David Ahern <dsahern@gmail.com>, ast@fb.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20201009101356.129228-1-toke@redhat.com>
- <0a463800-a663-3fd3-2e1a-eac5526ed691@gmail.com> <87v9fjckcd.fsf@toke.dk>
- <4972626e-c86d-8715-0565-20bed680227c@gmail.com>
- <50fc3fee-13b2-11d1-f5b1-e0d8669cd655@iogearbox.net> <87v9fitcxp.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <393e17fc-d187-3a8d-2f0d-a627c7c63fca@iogearbox.net>
-Date:   Sun, 11 Oct 2020 22:04:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726457AbgJKUKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Oct 2020 16:10:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726209AbgJKUKD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Oct 2020 16:10:03 -0400
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1602447003;
+        bh=YJYRDT45YWas4khF7T032hna8YxBdJNeX2JDDJSRxJo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=yf8R1fUjZl5v744q4h0jgiYElJ+BNJJiKbol925Z4TTdOu3RCXCnwT+0OiVIZup7a
+         eZ8n5TbYlde+tGAsIQ3PKy0MsdlZ2cTa6kA9lIKXcVnZfL11w8CE4P3DI/od7jxukr
+         J3HA+VWGKmMKmVvSorgwllA1ECClGZHOdtiFadZA=
 MIME-Version: 1.0
-In-Reply-To: <87v9fitcxp.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25954/Sun Oct 11 15:58:33 2020)
+Subject: Re: [PATCH bpf-next] bpf: Migrate from patchwork.ozlabs.org to
+ patchwork.kernel.org.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160244700342.23467.7159015214036359010.git-patchwork-notify@kernel.org>
+Date:   Sun, 11 Oct 2020 20:10:03 +0000
+References: <20201011200149.66537-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20201011200149.66537-1-alexei.starovoitov@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net,
+        konstantin@linuxfoundation.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/10/20 3:42 PM, Toke Høiland-Jørgensen wrote:
-> Daniel Borkmann <daniel@iogearbox.net> writes:
->> On 10/9/20 11:28 PM, David Ahern wrote:
->>> On 10/9/20 11:42 AM, Toke Høiland-Jørgensen wrote:
->>>> David Ahern <dsahern@gmail.com> writes:
->>>>> On 10/9/20 3:13 AM, Toke Høiland-Jørgensen wrote:
->>>>>> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
->>>>>> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
->>>>>> that the BPF program will pass the packet up the stack in this case.
->>>>>> However, with the addition of bpf_redirect_neigh() that can be used instead
->>>>>> to perform the neighbour lookup, at the cost of a bit of duplicated work.
->>>>>>
->>>>>> For that we still need the target ifindex, and since bpf_fib_lookup()
->>>>>> already has that at the time it performs the neighbour lookup, there is
->>>>>> really no reason why it can't just return it in any case. So let's just
->>>>>> always return the ifindex, and also add a flag that lets the caller turn
->>>>>> off the neighbour lookup entirely in bpf_fib_lookup().
->>>>>
->>>>> seems really odd to do the fib lookup only to skip the neighbor lookup
->>>>> and defer to a second helper to do a second fib lookup and send out.
->>>>>
->>>>> The better back-to-back calls is to return the ifindex and gateway on
->>>>> successful fib lookup regardless of valid neighbor. If the call to
->>>>> bpf_redirect_neigh is needed, it can have a flag to skip the fib lookup
->>>>> and just redirect to the given nexthop address + ifindex. ie.,
->>>>> bpf_redirect_neigh only does neighbor handling in this case.
->>>>
->>>> Hmm, yeah, I guess it would make sense to cache and reuse the lookup -
->>>> maybe stick it in bpf_redirect_info()? However, given the imminent
->>>
->>> That is not needed.
->>>
->>>> opening of the merge window, I don't see this landing before then. So
->>>> I'm going to respin this patch with just the original change to always
->>>> return the ifindex, then we can revisit the flags/reuse of the fib
->>>> lookup later.
->>>
->>> What I am suggesting is a change in API to bpf_redirect_neigh which
->>> should be done now, before the merge window, before it comes a locked
->>> API. Right now, bpf_redirect_neigh does a lookup to get the nexthop. It
->>> should take the gateway as an input argument. If set, then the lookup is
->>> not done - only the neighbor redirect.
->>
->> Sounds like a reasonable extension, agree. API freeze is not merge win, but
->> final v5.10 tag in this case as it always has been. In case it's not in time,
->> we can simply just move flags to arg3 and add a reserved param as arg2 which
->> must be zero (and thus indicate to perform the lookup as-is). Later we could
->> extend to pass params similar as in fib_lookup helper for the gw.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Sun, 11 Oct 2020 13:01:49 -0700 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> Right, I can take a look at this next week. Feel free to merge (v3 of)
-> this patch now, that change will be needed in any case I think...
+> Move the bpf/bpf-next patch processing queue to patchwork.kernel.org.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+> 
+> [...]
 
-Ok, sounds reasonable, done. Lets fix the remaining one as David suggested until
-rc1, at latest rc2 time frame. I'll be mostly offline next week during the day,
-but happy to help till that deadline as well.
+Here is the summary with links:
+  - [bpf-next] bpf: Migrate from patchwork.ozlabs.org to patchwork.kernel.org.
+    https://git.kernel.org/bpf/bpf-next/c/ebb034b15bfa
 
-Thanks,
-Daniel
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
