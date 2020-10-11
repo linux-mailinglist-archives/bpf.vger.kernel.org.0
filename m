@@ -2,138 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FBA28A5BD
-	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 07:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4200628A69B
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 11:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgJKFKl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Oct 2020 01:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgJKFKl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Oct 2020 01:10:41 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33FAC0613CE;
-        Sat, 10 Oct 2020 22:10:40 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t7so11681757ilf.10;
-        Sat, 10 Oct 2020 22:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=6GQXG/Xg0mzB1f3ty4h1Dthp1etZqLKCAen1W821BOI=;
-        b=IihVsWv3SFcB4WAYD7rsLTsC2Q67Pw7xqKWWOH6rwgORU5EUafzqroC595jVi2oUSW
-         3ZF+4g8p70luAiKRLZOFhyviF/EY5pqGSFAXyjJQCTjWo3t0wcT/FyHkIZV4XPYX2syy
-         bYMKA548bLE7wMS4XQJSGk1dgvOQtDzDhZNnBVDmTK8jVZuZkrMHfu9aVrTbEdnZZT6F
-         XuNPByhJAmSzUG9ZeW6DGVgb3eOINhuHb15bhcE7pzSqd7O/nSQS+Re+pbefprfAkMy4
-         dW1VYae5EjFqSQm/TKePb2FWdBREAoxzQ9ydGWU9M0bAoCKQutmGxDdhkrxr9ytBYoj/
-         I6iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=6GQXG/Xg0mzB1f3ty4h1Dthp1etZqLKCAen1W821BOI=;
-        b=duZW0TQxAufHT1Me1qAnpKRPCA5L3dMHQGAM9VbJrFs9/tMRglQ4gmQxqlQHF8Ib7q
-         cM4aQ+BsweYiaN65Lau3e8Vimn+a2RkQp1F8m8PEJXr/wY0Iw1odhRtVegYPasK8zvPh
-         +R5NnAMkR+ryHEjtPQxnU1GmQv0DW1mjKjQZXsny0L5YgZ5o/unBX97CFEUXp6Yarrwh
-         jKz+W3xEPLWeysbnk+i6eJNAnvjnzMHerxfWy+K5Wnbnj2KPN71UdkfmULypzz4gu2VY
-         kD6jP6qw93ZDN5OGX7UrRZGIluQmQa4mG1AUbRCdoW3piWlJYJOeIvCDBQR4H1ns5sRO
-         Ke9g==
-X-Gm-Message-State: AOAM530Io5ZoKG7ADYt8l//gPKuDqPUtIKZnWRPuRP2k0TJ4XFtpyX+C
-        J8hcOY41NemfQ8veGJcAc6A=
-X-Google-Smtp-Source: ABdhPJw4tq8xRk+P0BoVto05tqpC/nC9+8jPSeu7N8l2HvGtnclbWasNBcd9Adek138VPUccm2OBYw==
-X-Received: by 2002:a92:ddcb:: with SMTP id d11mr16049768ilr.228.1602393040292;
-        Sat, 10 Oct 2020 22:10:40 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id t64sm7159708ild.10.2020.10.10.22.10.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Oct 2020 22:10:39 -0700 (PDT)
-Subject: [bpf-next PATCH 4/4] bpf,
- selftests: Add three new sockmap tests for verdict only programs
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     john.fastabend@gmail.com, alexei.starovoitov@gmail.com,
-        daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com,
-        lmb@cloudflare.com
-Date:   Sat, 10 Oct 2020 22:10:26 -0700
-Message-ID: <160239302638.8495.17125996694402793471.stgit@john-Precision-5820-Tower>
-In-Reply-To: <160239226775.8495.15389345509643354423.stgit@john-Precision-5820-Tower>
-References: <160239226775.8495.15389345509643354423.stgit@john-Precision-5820-Tower>
-User-Agent: StGit/0.17.1-dirty
+        id S1726544AbgJKJWa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Oct 2020 05:22:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47468 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725844AbgJKJWa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 11 Oct 2020 05:22:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602408147;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jKK5N6PrgxsOU8SQj7Scj0vZnD5482zpkcpJ2wJ4hZA=;
+        b=dD56dqR7RxGnNk8HUhCbdIucBdmYo0pJWVBntngbQLq8PkhDNJMIgdKNe1+UxLP2FFJsaf
+        dO2Cs+qjSq0vUIpKnBSJsoCzmhm3aL1W3iL4hot4w6NFtq0DDdg4ApoK6/h7HXFA6d/u8B
+        03w34Ka1cTnX4s4L85aVEEtwmoErf48=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-435-VlH4jTA0PIW89n__ZAlHEg-1; Sun, 11 Oct 2020 05:22:24 -0400
+X-MC-Unique: VlH4jTA0PIW89n__ZAlHEg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7593425D5;
+        Sun, 11 Oct 2020 09:22:22 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EE7510013C4;
+        Sun, 11 Oct 2020 09:22:14 +0000 (UTC)
+Date:   Sun, 11 Oct 2020 11:22:13 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     brouer@redhat.com, ast@kernel.org, john.fastabend@gmail.com,
+        yhs@fb.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Toke =?UTF-8?B?SMO4aWxhbmQt?= =?UTF-8?B?SsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v6 2/6] bpf: add redirect_peer helper
+Message-ID: <20201011112213.7e542de7@carbon>
+In-Reply-To: <20201010234006.7075-3-daniel@iogearbox.net>
+References: <20201010234006.7075-1-daniel@iogearbox.net>
+        <20201010234006.7075-3-daniel@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Here we add three new tests for sockmap to test having a verdict program
-without setting the parser program.
+On Sun, 11 Oct 2020 01:40:02 +0200
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-The first test covers the most simply case,
+> Add an efficient ingress to ingress netns switch that can be used out of tc BPF
+> programs in order to redirect traffic from host ns ingress into a container
+> veth device ingress without having to go via CPU backlog queue [0]. For local
+> containers this can also be utilized and path via CPU backlog queue only needs
+> to be taken once, not twice. On a high level this borrows from ipvlan which does
+> similar switch in __netif_receive_skb_core() and then iterates via another_round.
+> This helps to reduce latency for mentioned use cases.
+> 
+> Pod to remote pod with redirect(), TCP_RR [1]:
+> 
+>   # percpu_netperf 10.217.1.33
+>           RT_LATENCY:         122.450         (per CPU:         122.666         122.401         122.333         122.401 )
+>         MEAN_LATENCY:         121.210         (per CPU:         121.100         121.260         121.320         121.160 )
+>       STDDEV_LATENCY:         120.040         (per CPU:         119.420         119.910         125.460         115.370 )
+>          MIN_LATENCY:          46.500         (per CPU:          47.000          47.000          47.000          45.000 )
+>          P50_LATENCY:         118.500         (per CPU:         118.000         119.000         118.000         119.000 )
+>          P90_LATENCY:         127.500         (per CPU:         127.000         128.000         127.000         128.000 )
+>          P99_LATENCY:         130.750         (per CPU:         131.000         131.000         129.000         132.000 )
+> 
+>     TRANSACTION_RATE:       32666.400         (per CPU:        8152.200        8169.842        8174.439        8169.897 )
+> 
+> Pod to remote pod with redirect_peer(), TCP_RR:
+> 
+>   # percpu_netperf 10.217.1.33
+>           RT_LATENCY:          44.449         (per CPU:          43.767          43.127          45.279          45.622 )
+>         MEAN_LATENCY:          45.065         (per CPU:          44.030          45.530          45.190          45.510 )
+>       STDDEV_LATENCY:          84.823         (per CPU:          66.770          97.290          84.380          90.850 )
+>          MIN_LATENCY:          33.500         (per CPU:          33.000          33.000          34.000          34.000 )
+>          P50_LATENCY:          43.250         (per CPU:          43.000          43.000          43.000          44.000 )
+>          P90_LATENCY:          46.750         (per CPU:          46.000          47.000          47.000          47.000 )
+>          P99_LATENCY:          52.750         (per CPU:          51.000          54.000          53.000          53.000 )
+> 
+>     TRANSACTION_RATE:       90039.500         (per CPU:       22848.186       23187.089       22085.077       21919.130 )
 
-   sender         proxy_recv proxy_send      recv
-     |                |                       |
-     |              verdict -----+            |
-     |                |          |            |
-     +----------------+          +------------+
+This is awesome results and great work Daniel! :-)
 
-We load the verdict program on the proxy_recv socket without a
-parser program. It then does a redirect into the send path of the
-proxy_send socket using sendpage_locked().
+I wonder if we can also support this from XDP, which can also native
+redirect into veth.  Originally I though we could add the peer netdev
+in the devmap, but AFAIK Toke showed me that this was not possible.
 
-Next we test the drop case to ensure if we kfree_skb as a result of
-the verdict program everything behaves as expected.
 
-Next we test the same configuration above, but with ktls and a
-redirect into socket ingress queue. Shown here
+>   [0] https://linuxplumbersconf.org/event/7/contributions/674/attachments/568/1002/plumbers_2020_cilium_load_balancer.pdf
+>   [1] https://github.com/borkmann/netperf_scripts/blob/master/percpu_netperf
+> 
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  drivers/net/veth.c             |  9 ++++++
+>  include/linux/netdevice.h      |  4 +++
+>  include/uapi/linux/bpf.h       | 17 +++++++++++
+>  net/core/dev.c                 | 15 ++++++++--
+>  net/core/filter.c              | 54 +++++++++++++++++++++++++++++-----
+>  tools/include/uapi/linux/bpf.h | 17 +++++++++++
+>  6 files changed, 106 insertions(+), 10 deletions(-)
+> 
+[...]
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 9d55bf5d1a65..7dd015823593 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4930,7 +4930,7 @@ EXPORT_SYMBOL_GPL(br_fdb_test_addr_hook);
+>  
+>  static inline struct sk_buff *
+>  sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
+> -		   struct net_device *orig_dev)
+> +		   struct net_device *orig_dev, bool *another)
+>  {
+>  #ifdef CONFIG_NET_CLS_ACT
+>  	struct mini_Qdisc *miniq = rcu_dereference_bh(skb->dev->miniq_ingress);
+> @@ -4974,7 +4974,11 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
+>  		 * redirecting to another netdev
+>  		 */
+>  		__skb_push(skb, skb->mac_len);
+> -		skb_do_redirect(skb);
+> +		if (skb_do_redirect(skb) == -EAGAIN) {
+> +			__skb_pull(skb, skb->mac_len);
+> +			*another = true;
+> +			break;
+> +		}
+>  		return NULL;
+>  	case TC_ACT_CONSUMED:
+>  		return NULL;
+> @@ -5163,7 +5167,12 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+>  skip_taps:
+>  #ifdef CONFIG_NET_INGRESS
+>  	if (static_branch_unlikely(&ingress_needed_key)) {
+> -		skb = sch_handle_ingress(skb, &pt_prev, &ret, orig_dev);
+> +		bool another = false;
+> +
+> +		skb = sch_handle_ingress(skb, &pt_prev, &ret, orig_dev,
+> +					 &another);
+> +		if (another)
+> +			goto another_round;
+>  		if (!skb)
+>  			goto out;
+>  
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 5da44b11e1ec..fab951c6be57 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2380,8 +2380,9 @@ static int __bpf_redirect_neigh(struct sk_buff *skb, struct net_device *dev)
+>  
+>  /* Internal, non-exposed redirect flags. */
+>  enum {
+> -	BPF_F_NEIGH = (1ULL << 1),
+> -#define BPF_F_REDIRECT_INTERNAL	(BPF_F_NEIGH)
+> +	BPF_F_NEIGH	= (1ULL << 1),
+> +	BPF_F_PEER	= (1ULL << 2),
+> +#define BPF_F_REDIRECT_INTERNAL	(BPF_F_NEIGH | BPF_F_PEER)
+>  };
+>  
+>  BPF_CALL_3(bpf_clone_redirect, struct sk_buff *, skb, u32, ifindex, u64, flags)
+> @@ -2430,19 +2431,35 @@ EXPORT_PER_CPU_SYMBOL_GPL(bpf_redirect_info);
+>  int skb_do_redirect(struct sk_buff *skb)
+>  {
+>  	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
+> +	struct net *net = dev_net(skb->dev);
+>  	struct net_device *dev;
+>  	u32 flags = ri->flags;
+>  
+> -	dev = dev_get_by_index_rcu(dev_net(skb->dev), ri->tgt_index);
+> +	dev = dev_get_by_index_rcu(net, ri->tgt_index);
+>  	ri->tgt_index = 0;
+> -	if (unlikely(!dev)) {
+> -		kfree_skb(skb);
+> -		return -EINVAL;
+> +	ri->flags = 0;
+> +	if (unlikely(!dev))
+> +		goto out_drop;
+> +	if (flags & BPF_F_PEER) {
+> +		const struct net_device_ops *ops = dev->netdev_ops;
+> +
+> +		if (unlikely(!ops->ndo_get_peer_dev ||
+> +			     !skb_at_tc_ingress(skb)))
+> +			goto out_drop;
+> +		dev = ops->ndo_get_peer_dev(dev);
+> +		if (unlikely(!dev ||
+> +			     !is_skb_forwardable(dev, skb) ||
 
-   tls                                       tls
-   sender         proxy_recv proxy_send      recv
-     |                |                       |
-     |              verdict ------------------+
-     |                |      redirect_ingress
-     +----------------+
+Again a MTU "transmissing" check on ingress "receive" path, but we can
+take that discussion after this is merged, as this keeps the current
+behavior.
 
-Also to set up ping/pong test
+> +			     net_eq(net, dev_net(dev))))
+> +			goto out_drop;
+> +		skb->dev = dev;
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- tools/testing/selftests/bpf/test_sockmap.c |   19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+Don't we need to clean some more state when this packet gets redirected
+into another namespace?
 
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 419c0b010d14..0fa1e421c3d7 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -1472,12 +1472,29 @@ static void test_txmsg_skb(int cgrp, struct sockmap_options *opt)
- 	txmsg_ktls_skb_drop = 0;
- 	txmsg_ktls_skb_redir = 1;
- 	test_exec(cgrp, opt);
-+	txmsg_ktls_skb_redir = 0;
-+
-+	/* Tests that omit skb_parser */
-+	txmsg_omit_skb_parser = 1;
-+	ktls = 0;
-+	txmsg_ktls_skb = 0;
-+	test_exec(cgrp, opt);
-+
-+	txmsg_ktls_skb_drop = 1;
-+	test_exec(cgrp, opt);
-+	txmsg_ktls_skb_drop = 0;
-+
-+	txmsg_ktls_skb_redir = 1;
-+	test_exec(cgrp, opt);
-+
-+	ktls = 1;
-+	test_exec(cgrp, opt);
-+	txmsg_omit_skb_parser = 0;
- 
- 	opt->data_test = data;
- 	ktls = k;
- }
- 
--
- /* Test cork with hung data. This tests poor usage patterns where
-  * cork can leave data on the ring if user program is buggy and
-  * doesn't flush them somehow. They do take some time however
+Like skb_scrub_packet(), or is that not needed?  (p.s. I would like to
+avoid it, as it e.g. clears the skb->mark.)
+
+> +		return -EAGAIN;
+>  	}
+> -
+>  	return flags & BPF_F_NEIGH ?
+>  	       __bpf_redirect_neigh(skb, dev) :
+>  	       __bpf_redirect(skb, dev, flags);
+> +out_drop:
+> +	kfree_skb(skb);
+> +	return -EINVAL;
+>  }
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
