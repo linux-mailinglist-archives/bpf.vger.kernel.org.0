@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91ADF28A828
-	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 18:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBE428A82A
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 18:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729130AbgJKPs7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2387403AbgJKPs7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Sun, 11 Oct 2020 11:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgJKPsF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Oct 2020 11:48:05 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0599FC0613CE;
-        Sun, 11 Oct 2020 08:48:05 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id o9so9161064ilo.0;
-        Sun, 11 Oct 2020 08:48:04 -0700 (PDT)
+        with ESMTP id S1728504AbgJKPsG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Oct 2020 11:48:06 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55E5C0613CE;
+        Sun, 11 Oct 2020 08:48:06 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id l8so15127839ioh.11;
+        Sun, 11 Oct 2020 08:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JJXbtpBvdkCCp5A/ckgjV4XfHoc3oDiUPRre1ETEuq0=;
-        b=vQeTCR/FEokGwc7yJDwxzFwX1mCUpWIxAqsSYm5URyVMlV9DtNcR03zGsNI2oPi4lB
-         HSMu0VVvVGR3stO4GcaF5eHtb2k3a7rmUJTijm58otgq3uE7opG6Sssy+uLcGALbOVSe
-         bdjwAuT+/eIGbvM5T1saL2OI7bEHRXy65haV2RZCOO2Sh0oCpsO7JKTpPS4CfJBSZmcr
-         /nwx6myGyQ3O/qLu4tUThklXz9OGrWajNqqniz24StEhwi96JbWG8V8pEzr/W9vQi7Us
-         Rc0FHb20LJn6JLrz7hc+DoZ81mIa5aNyi/vXZVb096cCTtwNF7MmGRd1XyD3j177dyve
-         plbQ==
+        bh=NdICCiJraRHzlT+shrlQ2ox4NanUe1EsDd/0wzpfp6g=;
+        b=pCLoZRRhds9vi6SBVAP3pSOCxU0BqJ1L2+W/18oD+ZasMZicZ+4qjE4BKOOqu2l7qv
+         1om0VlaENYACA8E6sjmaWGTdogw/AxD0qjb8cuOMgjvy02cweR3skI5lxatDPUT8gx5R
+         dUtbdgvupX4kqXdXMeW6YPZC51jaB1YGDa+SypEA6xH2swR7doey1gtRLn633t4/XMxk
+         9Y5KYyj7RXHMXcqDtjLLHgQitpYxE46fzoaL3O54Mu485o78GpTA8KEXM/2bY/0OHwvZ
+         jclZD4LfGrdwrwk8bZgDoHGkoxM4yurYOj+txdoZtN9zDjz+pZFK4eisWjhM+zHvWCBo
+         qx8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JJXbtpBvdkCCp5A/ckgjV4XfHoc3oDiUPRre1ETEuq0=;
-        b=i559Aw3qG60zoE+3g8DUW3v/FFPViNE25l9OGGGOMaNVHM+od24b/ziT/Thgb4xHPf
-         FXngRxIqdKsZuLBfZCbsfZrArmNmZrpJfaI4it2CAQhKg1ySbkAoOTd4BP7h5PI1eHUY
-         vIZcjEE5itudvv2fIPkB7TP2XPL0hA7N9I9uMnLLlrrSef1yvjEvg7rWWLF9IslDLoET
-         bttA/IyQ1HVGYwigM+MV+369/poTpA9/Nz+qrm4w3xTdlc6LrkasYdYeCeKc0jEoBDhg
-         w9WxBdjgcrgUbyji3ot6xmI7+njsvHHKC3MEyRXU3xcm1mx8iQE0OptmqjMRc8MmjWGM
-         WzWg==
-X-Gm-Message-State: AOAM5306EM1Gk53kd2ecXyTZfkgQmy98vB4LnXiUDk0VVzqXNjOj3lMW
-        UljYnwbNIWP6BsEzWQ+f6ws=
-X-Google-Smtp-Source: ABdhPJz1eroFA985vUHFIDp1DHFJxtAl5saYvt2fXU/+A2P1U5lafH1RvMMk/WgTcVD9AgqoahJaIA==
-X-Received: by 2002:a92:b109:: with SMTP id t9mr15251649ilh.191.1602431284312;
-        Sun, 11 Oct 2020 08:48:04 -0700 (PDT)
+        bh=NdICCiJraRHzlT+shrlQ2ox4NanUe1EsDd/0wzpfp6g=;
+        b=Sxay5KM/281IWF8qcurCpFckTJX/8D68T/RjIbk//JlxI1K5jznB4qfqH1SWQ2MEIF
+         hXGtm1i1JN136gOCdVByTqnQpFVh4vlekO1yu+EwVkA2HyGhIYkWBIb87ycsIQKXfEXu
+         jdprT8STdhfynhM49JZwDe8LJA8EuuANVfk0huVXkE3gxrQx9UiSKHh4LWcNzbnF9Gem
+         osoIvQCRGj3JWgpyEHOinayouF4ZkM752g83k86Tlbs9OUr3Rda1gt32ydABb/oEFB+O
+         F2zogA7Yd7AXEhkYWJe8eJyXpuNIL3+u5fa+p17o1KEFJwJvr1XdFgHGLbPgxuiiRI3D
+         Eg9A==
+X-Gm-Message-State: AOAM531tTftiyiX3ylb25m1u0BEHduGHuOUcS93kr9nZrhboPRI5gVY9
+        HvQyNDtY3Jp64KSJPBkgcoghl1u5Ua1iAw==
+X-Google-Smtp-Source: ABdhPJy6s8MaNpY/lLNiMavLqpu7OwodBZRcMWXKVRBS4m5cl8sYiA3MPC+7hfyJognrI7oogQB4/g==
+X-Received: by 2002:a05:6638:10e9:: with SMTP id g9mr16394645jae.139.1602431285237;
+        Sun, 11 Oct 2020 08:48:05 -0700 (PDT)
 Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
-        by smtp.gmail.com with ESMTPSA id q16sm7502881ilj.71.2020.10.11.08.48.03
+        by smtp.gmail.com with ESMTPSA id q16sm7502881ilj.71.2020.10.11.08.48.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 08:48:03 -0700 (PDT)
+        Sun, 11 Oct 2020 08:48:04 -0700 (PDT)
 From:   YiFei Zhu <zhuyifei1999@gmail.com>
 To:     containers@lists.linux-foundation.org
 Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
@@ -66,9 +66,9 @@ Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
         Tycho Andersen <tycho@tycho.pizza>,
         Valentin Rothberg <vrothber@redhat.com>,
         Will Drewry <wad@chromium.org>
-Subject: [PATCH v5 seccomp 1/5] seccomp/cache: Lookup syscall allowlist bitmap for fast path
-Date:   Sun, 11 Oct 2020 10:47:42 -0500
-Message-Id: <10f91a367ec4fcdea7fc3f086de3f5f13a4a7436.1602431034.git.yifeifz2@illinois.edu>
+Subject: [PATCH v5 seccomp 2/5] seccomp/cache: Add "emulator" to check if filter is constant allow
+Date:   Sun, 11 Oct 2020 10:47:43 -0500
+Message-Id: <71c7be2db5ee08905f41c3be5c1ad6e2601ce88f.1602431034.git.yifeifz2@illinois.edu>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1602431034.git.yifeifz2@illinois.edu>
 References: <cover.1602431034.git.yifeifz2@illinois.edu>
@@ -80,158 +80,256 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: YiFei Zhu <yifeifz2@illinois.edu>
 
-The overhead of running Seccomp filters has been part of some past
-discussions [1][2][3]. Oftentimes, the filters have a large number
-of instructions that check syscall numbers one by one and jump based
-on that. Some users chain BPF filters which further enlarge the
-overhead. A recent work [6] comprehensively measures the Seccomp
-overhead and shows that the overhead is non-negligible and has a
-non-trivial impact on application performance.
+SECCOMP_CACHE will only operate on syscalls that do not access
+any syscall arguments or instruction pointer. To facilitate
+this we need a static analyser to know whether a filter will
+return allow regardless of syscall arguments for a given
+architecture number / syscall number pair. This is implemented
+here with a pseudo-emulator, and stored in a per-filter bitmap.
 
-We observed some common filters, such as docker's [4] or
-systemd's [5], will make most decisions based only on the syscall
-numbers, and as past discussions considered, a bitmap where each bit
-represents a syscall makes most sense for these filters.
+In order to build this bitmap at filter attach time, each filter is
+emulated for every syscall (under each possible architecture), and
+checked for any accesses of struct seccomp_data that are not the "arch"
+nor "nr" (syscall) members. If only "arch" and "nr" are examined, and
+the program returns allow, then we can be sure that the filter must
+return allow independent from syscall arguments.
 
-The fast (common) path for seccomp should be that the filter permits
-the syscall to pass through, and failing seccomp is expected to be
-an exceptional case; it is not expected for userspace to call a
-denylisted syscall over and over.
+Nearly all seccomp filters are built from these cBPF instructions:
 
-When it can be concluded that an allow must occur for the given
-architecture and syscall pair (this determination is introduced in
-the next commit), seccomp will immediately allow the syscall,
-bypassing further BPF execution.
+BPF_LD  | BPF_W    | BPF_ABS
+BPF_JMP | BPF_JEQ  | BPF_K
+BPF_JMP | BPF_JGE  | BPF_K
+BPF_JMP | BPF_JGT  | BPF_K
+BPF_JMP | BPF_JSET | BPF_K
+BPF_JMP | BPF_JA
+BPF_RET | BPF_K
+BPF_ALU | BPF_AND  | BPF_K
 
-Each architecture number has its own bitmap. The architecture
-number in seccomp_data is checked against the defined architecture
-number constant before proceeding to test the bit against the
-bitmap with the syscall number as the index of the bit in the
-bitmap, and if the bit is set, seccomp returns allow. The bitmaps
-are all clear in this patch and will be initialized in the next
-commit.
+Each of these instructions are emulated. Any weirdness or loading
+from a syscall argument will cause the emulator to bail.
 
-When only one architecture exists, the check against architecture
-number is skipped, suggested by Kees Cook [7].
+The emulation is also halted if it reaches a return. In that case,
+if it returns an SECCOMP_RET_ALLOW, the syscall is marked as good.
 
-[1] https://lore.kernel.org/linux-security-module/c22a6c3cefc2412cad00ae14c1371711@huawei.com/T/
-[2] https://lore.kernel.org/lkml/202005181120.971232B7B@keescook/T/
-[3] https://github.com/seccomp/libseccomp/issues/116
-[4] https://github.com/moby/moby/blob/ae0ef82b90356ac613f329a8ef5ee42ca923417d/profiles/seccomp/default.json
-[5] https://github.com/systemd/systemd/blob/6743a1caf4037f03dc51a1277855018e4ab61957/src/shared/seccomp-util.c#L270
-[6] Draco: Architectural and Operating System Support for System Call Security
-    https://tianyin.github.io/pub/draco.pdf, MICRO-53, Oct. 2020
-[7] https://lore.kernel.org/bpf/202010091614.8BB0EB64@keescook/
+Emulator structure and comments are from Kees [1] and Jann [2].
 
-Co-developed-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
-Signed-off-by: Dimitrios Skarlatos <dskarlat@cs.cmu.edu>
+Emulation is done at attach time. If a filter depends on more
+filters, and if the dependee does not guarantee to allow the
+syscall, then we skip the emulation of this syscall.
+
+[1] https://lore.kernel.org/lkml/20200923232923.3142503-5-keescook@chromium.org/
+[2] https://lore.kernel.org/lkml/CAG48ez1p=dR_2ikKq=xVxkoGg0fYpTBpkhJSv1w-6BG=76PAvw@mail.gmail.com/
+
+Suggested-by: Jann Horn <jannh@google.com>
+Co-developed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
 ---
- kernel/seccomp.c | 77 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+ kernel/seccomp.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 155 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index ae6b40cc39f4..d67a8b61f2bf 100644
+index d67a8b61f2bf..236e7b367d4e 100644
 --- a/kernel/seccomp.c
 +++ b/kernel/seccomp.c
-@@ -143,6 +143,34 @@ struct notification {
- 	struct list_head notifications;
- };
- 
-+#ifdef SECCOMP_ARCH_NATIVE
-+/**
-+ * struct action_cache - per-filter cache of seccomp actions per
-+ * arch/syscall pair
-+ *
-+ * @allow_native: A bitmap where each bit represents whether the
-+ *		  filter will always allow the syscall, for the
-+ *		  native architecture.
-+ * @allow_compat: A bitmap where each bit represents whether the
-+ *		  filter will always allow the syscall, for the
-+ *		  compat architecture.
-+ */
-+struct action_cache {
-+	DECLARE_BITMAP(allow_native, SECCOMP_ARCH_NATIVE_NR);
-+#ifdef SECCOMP_ARCH_COMPAT
-+	DECLARE_BITMAP(allow_compat, SECCOMP_ARCH_COMPAT_NR);
-+#endif
-+};
-+#else
-+struct action_cache { };
+@@ -169,6 +169,10 @@ static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilte
+ {
+ 	return false;
+ }
 +
-+static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
-+					     const struct seccomp_data *sd)
++static inline void seccomp_cache_prepare(struct seccomp_filter *sfilter)
 +{
-+	return false;
 +}
-+#endif /* SECCOMP_ARCH_NATIVE */
-+
+ #endif /* SECCOMP_ARCH_NATIVE */
+ 
  /**
-  * struct seccomp_filter - container for seccomp BPF programs
-  *
-@@ -298,6 +326,52 @@ static int seccomp_check_filter(struct sock_filter *filter, unsigned int flen)
- 	return 0;
+@@ -187,6 +191,7 @@ static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilte
+  *	   this filter after reaching 0. The @users count is always smaller
+  *	   or equal to @refs. Hence, reaching 0 for @users does not mean
+  *	   the filter can be freed.
++ * @cache: cache of arch/syscall mappings to actions
+  * @log: true if all actions except for SECCOMP_RET_ALLOW should be logged
+  * @prev: points to a previously installed, or inherited, filter
+  * @prog: the BPF program to evaluate
+@@ -208,6 +213,7 @@ struct seccomp_filter {
+ 	refcount_t refs;
+ 	refcount_t users;
+ 	bool log;
++	struct action_cache cache;
+ 	struct seccomp_filter *prev;
+ 	struct bpf_prog *prog;
+ 	struct notification *notif;
+@@ -621,7 +627,12 @@ static struct seccomp_filter *seccomp_prepare_filter(struct sock_fprog *fprog)
+ {
+ 	struct seccomp_filter *sfilter;
+ 	int ret;
+-	const bool save_orig = IS_ENABLED(CONFIG_CHECKPOINT_RESTORE);
++	const bool save_orig =
++#if defined(CONFIG_CHECKPOINT_RESTORE) || defined(SECCOMP_ARCH_NATIVE)
++		true;
++#else
++		false;
++#endif
+ 
+ 	if (fprog->len == 0 || fprog->len > BPF_MAXINSNS)
+ 		return ERR_PTR(-EINVAL);
+@@ -687,6 +698,148 @@ seccomp_prepare_user_filter(const char __user *user_filter)
+ 	return filter;
  }
  
 +#ifdef SECCOMP_ARCH_NATIVE
-+static inline bool seccomp_cache_check_allow_bitmap(const void *bitmap,
-+						    size_t bitmap_size,
-+						    int syscall_nr)
++/**
++ * seccomp_is_const_allow - check if filter is constant allow with given data
++ * @fprog: The BPF programs
++ * @sd: The seccomp data to check against, only syscall number and arch
++ *      number are considered constant.
++ */
++static bool seccomp_is_const_allow(struct sock_fprog_kern *fprog,
++				   struct seccomp_data *sd)
 +{
-+	if (unlikely(syscall_nr < 0 || syscall_nr >= bitmap_size))
-+		return false;
-+	syscall_nr = array_index_nospec(syscall_nr, bitmap_size);
++	unsigned int reg_value = 0;
++	unsigned int pc;
++	bool op_res;
 +
-+	return test_bit(syscall_nr, bitmap);
++	if (WARN_ON_ONCE(!fprog))
++		return false;
++
++	for (pc = 0; pc < fprog->len; pc++) {
++		struct sock_filter *insn = &fprog->filter[pc];
++		u16 code = insn->code;
++		u32 k = insn->k;
++
++		switch (code) {
++		case BPF_LD | BPF_W | BPF_ABS:
++			switch (k) {
++			case offsetof(struct seccomp_data, nr):
++				reg_value = sd->nr;
++				break;
++			case offsetof(struct seccomp_data, arch):
++				reg_value = sd->arch;
++				break;
++			default:
++				/* can't optimize (non-constant value load) */
++				return false;
++			}
++			break;
++		case BPF_RET | BPF_K:
++			/* reached return with constant values only, check allow */
++			return k == SECCOMP_RET_ALLOW;
++		case BPF_JMP | BPF_JA:
++			pc += insn->k;
++			break;
++		case BPF_JMP | BPF_JEQ | BPF_K:
++		case BPF_JMP | BPF_JGE | BPF_K:
++		case BPF_JMP | BPF_JGT | BPF_K:
++		case BPF_JMP | BPF_JSET | BPF_K:
++			switch (BPF_OP(code)) {
++			case BPF_JEQ:
++				op_res = reg_value == k;
++				break;
++			case BPF_JGE:
++				op_res = reg_value >= k;
++				break;
++			case BPF_JGT:
++				op_res = reg_value > k;
++				break;
++			case BPF_JSET:
++				op_res = !!(reg_value & k);
++				break;
++			default:
++				/* can't optimize (unknown jump) */
++				return false;
++			}
++
++			pc += op_res ? insn->jt : insn->jf;
++			break;
++		case BPF_ALU | BPF_AND | BPF_K:
++			reg_value &= k;
++			break;
++		default:
++			/* can't optimize (unknown insn) */
++			return false;
++		}
++	}
++
++	/* ran off the end of the filter?! */
++	WARN_ON(1);
++	return false;
++}
++
++static void seccomp_cache_prepare_bitmap(struct seccomp_filter *sfilter,
++					 void *bitmap, const void *bitmap_prev,
++					 size_t bitmap_size, int arch)
++{
++	struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
++	struct seccomp_data sd;
++	int nr;
++
++	if (bitmap_prev) {
++		/* The new filter must be as restrictive as the last. */
++		bitmap_copy(bitmap, bitmap_prev, bitmap_size);
++	} else {
++		/* Before any filters, all syscalls are always allowed. */
++		bitmap_fill(bitmap, bitmap_size);
++	}
++
++	for (nr = 0; nr < bitmap_size; nr++) {
++		/* No bitmap change: not a cacheable action. */
++		if (!test_bit(nr, bitmap))
++			continue;
++
++		sd.nr = nr;
++		sd.arch = arch;
++
++		/* No bitmap change: continue to always allow. */
++		if (seccomp_is_const_allow(fprog, &sd))
++			continue;
++
++		/*
++		 * Not a cacheable action: always run filters.
++		 * atomic clear_bit() not needed, filter not visible yet.
++		 */
++		__clear_bit(nr, bitmap);
++	}
 +}
 +
 +/**
-+ * seccomp_cache_check_allow - lookup seccomp cache
++ * seccomp_cache_prepare - emulate the filter to find cachable syscalls
 + * @sfilter: The seccomp filter
-+ * @sd: The seccomp data to lookup the cache with
 + *
-+ * Returns true if the seccomp_data is cached and allowed.
++ * Returns 0 if successful or -errno if error occurred.
 + */
-+static inline bool seccomp_cache_check_allow(const struct seccomp_filter *sfilter,
-+					     const struct seccomp_data *sd)
++static void seccomp_cache_prepare(struct seccomp_filter *sfilter)
 +{
-+	int syscall_nr = sd->nr;
-+	const struct action_cache *cache = &sfilter->cache;
++	struct action_cache *cache = &sfilter->cache;
++	const struct action_cache *cache_prev =
++		sfilter->prev ? &sfilter->prev->cache : NULL;
 +
-+#ifndef SECCOMP_ARCH_COMPAT
-+	/* A native-only architecture doesn't need to check sd->arch. */
-+	return seccomp_cache_check_allow_bitmap(cache->allow_native,
-+						SECCOMP_ARCH_NATIVE_NR,
-+						syscall_nr);
-+#else
-+	if (likely(sd->arch == SECCOMP_ARCH_NATIVE))
-+		return seccomp_cache_check_allow_bitmap(cache->allow_native,
-+							SECCOMP_ARCH_NATIVE_NR,
-+							syscall_nr);
-+	if (likely(sd->arch == SECCOMP_ARCH_COMPAT))
-+		return seccomp_cache_check_allow_bitmap(cache->allow_compat,
-+							SECCOMP_ARCH_COMPAT_NR,
-+							syscall_nr);
++	seccomp_cache_prepare_bitmap(sfilter, cache->allow_native,
++				     cache_prev ? cache_prev->allow_native : NULL,
++				     SECCOMP_ARCH_NATIVE_NR,
++				     SECCOMP_ARCH_NATIVE);
++
++#ifdef SECCOMP_ARCH_COMPAT
++	seccomp_cache_prepare_bitmap(sfilter, cache->allow_compat,
++				     cache_prev ? cache_prev->allow_compat : NULL,
++				     SECCOMP_ARCH_COMPAT_NR,
++				     SECCOMP_ARCH_COMPAT);
 +#endif /* SECCOMP_ARCH_COMPAT */
-+
-+	WARN_ON_ONCE(true);
-+	return false;
 +}
 +#endif /* SECCOMP_ARCH_NATIVE */
 +
  /**
-  * seccomp_run_filters - evaluates all seccomp filters against @sd
-  * @sd: optional seccomp data to be passed to filters
-@@ -320,6 +394,9 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
- 	if (WARN_ON(f == NULL))
- 		return SECCOMP_RET_KILL_PROCESS;
+  * seccomp_attach_filter: validate and attach filter
+  * @flags:  flags to change filter behavior
+@@ -736,6 +889,7 @@ static long seccomp_attach_filter(unsigned int flags,
+ 	 * task reference.
+ 	 */
+ 	filter->prev = current->seccomp.filter;
++	seccomp_cache_prepare(filter);
+ 	current->seccomp.filter = filter;
+ 	atomic_inc(&current->seccomp.filter_count);
  
-+	if (seccomp_cache_check_allow(f, sd))
-+		return SECCOMP_RET_ALLOW;
-+
- 	/*
- 	 * All filters in the list are evaluated and the lowest BPF return
- 	 * value always takes priority (ignoring the DATA).
 -- 
 2.28.0
 
