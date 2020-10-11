@@ -2,323 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D081328A833
-	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 18:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA77328A878
+	for <lists+bpf@lfdr.de>; Sun, 11 Oct 2020 19:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728446AbgJKPs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Oct 2020 11:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729143AbgJKPsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Oct 2020 11:48:09 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC7BC0613CE;
-        Sun, 11 Oct 2020 08:48:08 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q9so15153377iow.6;
-        Sun, 11 Oct 2020 08:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bh/bxp4LmmGqgKt2aJUxspVEN/p8NkyKCwPTxJ39i3g=;
-        b=nn6i2S86exOVIWwpvj7rLIawGNqAZX0I4JwIYwZak9/dhhrsY6xAwMFdDkchUB4bE7
-         Ywg3TeyWPargf8GlktVVwyPat1G+AY8cO3VlhHtiaLHGlZ9a992KBgV5Wsau8t4HODHO
-         3PX+c8OCjMMg14shIPGolf6EYtq5Xigy3PBK8DkVyNxjuan5wnqd4ucJWiN4i5i6BhZD
-         oU+4/RlHKPFHTPTnwgtvhGCLAVbLG4X6doOhCDfm2fW6CO+9i3Pnawp4JAjEI7xFr/Ol
-         PUiOZwDuQ1znUK/ct+63lngEzDpgCFeomnyhPD1a5a7/qY3cY1gaqQqSquM0AZo46/Sa
-         kGOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bh/bxp4LmmGqgKt2aJUxspVEN/p8NkyKCwPTxJ39i3g=;
-        b=TivnAb8PSxJqu4d/R1GSKhmsQKYEcmMSVHFoNZ2hxpOWqvaKamRfjs09ixCcwoEchv
-         rNdaUEaXQKifB4H2ZXwJOUEIE9eE7bXRTe8DBT0Oq2412MITob9ppHyfKEBo2c5bs/ff
-         lNk9beyMBwn2V+HBAnaYNvIy6dzffqecVxt1Oe5JUX+duuy+LyMJUjjx5DBeRRwV/Lq7
-         Z0KKz00dRjSISLCkLmFtiPTlYBIjpkiXvSpirqhcGUo8bI/nhfJZh4omItmi4dM9WwiZ
-         aaMP+fYTgv0TusITqYVqXNOnHqkQt+71VJJINRy3ydTN0Ul+/l4yDXGbiTkoo2cSrRN6
-         4/yg==
-X-Gm-Message-State: AOAM532+EcFp+QI4d3qquQBLCJbFLF/p7T9T0P1Mz7qpC9H7RROP1Rnq
-        ZXU5ei+O7f/XZe2c6G/F01U=
-X-Google-Smtp-Source: ABdhPJz57j/FGm60z5PstmX6+BrS09JBgBdJz3s3uARY/zSkjrW9ISSGYmGFrPk2trFEI/6YDnamyg==
-X-Received: by 2002:a05:6638:240f:: with SMTP id z15mr6120836jat.38.1602431288078;
-        Sun, 11 Oct 2020 08:48:08 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
-        by smtp.gmail.com with ESMTPSA id q16sm7502881ilj.71.2020.10.11.08.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Oct 2020 08:48:07 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     containers@lists.linux-foundation.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: [PATCH v5 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-Date:   Sun, 11 Oct 2020 10:47:46 -0500
-Message-Id: <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1602431034.git.yifeifz2@illinois.edu>
-References: <cover.1602431034.git.yifeifz2@illinois.edu>
+        id S1730262AbgJKRQ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Oct 2020 13:16:29 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47754 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728007AbgJKRQ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Oct 2020 13:16:28 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kRexG-0005Cf-9M; Sun, 11 Oct 2020 19:16:18 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kRexG-000VwX-1q; Sun, 11 Oct 2020 19:16:18 +0200
+Subject: Re: [PATCH bpf-next v6 2/6] bpf: add redirect_peer helper
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, yhs@fb.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+References: <20201010234006.7075-1-daniel@iogearbox.net>
+ <20201010234006.7075-3-daniel@iogearbox.net> <20201011112213.7e542de7@carbon>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <aadbb662-bb42-05be-0943-d59ba0d3f60c@iogearbox.net>
+Date:   Sun, 11 Oct 2020 19:16:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201011112213.7e542de7@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25954/Sun Oct 11 15:58:33 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu <yifeifz2@illinois.edu>
+On 10/11/20 11:22 AM, Jesper Dangaard Brouer wrote:
+> On Sun, 11 Oct 2020 01:40:02 +0200
+> Daniel Borkmann <daniel@iogearbox.net> wrote:
+> 
+>> Add an efficient ingress to ingress netns switch that can be used out of tc BPF
+>> programs in order to redirect traffic from host ns ingress into a container
+>> veth device ingress without having to go via CPU backlog queue [0]. For local
+>> containers this can also be utilized and path via CPU backlog queue only needs
+>> to be taken once, not twice. On a high level this borrows from ipvlan which does
+>> similar switch in __netif_receive_skb_core() and then iterates via another_round.
+>> This helps to reduce latency for mentioned use cases.
+>>
+>> Pod to remote pod with redirect(), TCP_RR [1]:
+>>
+>>    # percpu_netperf 10.217.1.33
+>>            RT_LATENCY:         122.450         (per CPU:         122.666         122.401         122.333         122.401 )
+>>          MEAN_LATENCY:         121.210         (per CPU:         121.100         121.260         121.320         121.160 )
+>>        STDDEV_LATENCY:         120.040         (per CPU:         119.420         119.910         125.460         115.370 )
+>>           MIN_LATENCY:          46.500         (per CPU:          47.000          47.000          47.000          45.000 )
+>>           P50_LATENCY:         118.500         (per CPU:         118.000         119.000         118.000         119.000 )
+>>           P90_LATENCY:         127.500         (per CPU:         127.000         128.000         127.000         128.000 )
+>>           P99_LATENCY:         130.750         (per CPU:         131.000         131.000         129.000         132.000 )
+>>
+>>      TRANSACTION_RATE:       32666.400         (per CPU:        8152.200        8169.842        8174.439        8169.897 )
+>>
+>> Pod to remote pod with redirect_peer(), TCP_RR:
+>>
+>>    # percpu_netperf 10.217.1.33
+>>            RT_LATENCY:          44.449         (per CPU:          43.767          43.127          45.279          45.622 )
+>>          MEAN_LATENCY:          45.065         (per CPU:          44.030          45.530          45.190          45.510 )
+>>        STDDEV_LATENCY:          84.823         (per CPU:          66.770          97.290          84.380          90.850 )
+>>           MIN_LATENCY:          33.500         (per CPU:          33.000          33.000          34.000          34.000 )
+>>           P50_LATENCY:          43.250         (per CPU:          43.000          43.000          43.000          44.000 )
+>>           P90_LATENCY:          46.750         (per CPU:          46.000          47.000          47.000          47.000 )
+>>           P99_LATENCY:          52.750         (per CPU:          51.000          54.000          53.000          53.000 )
+>>
+>>      TRANSACTION_RATE:       90039.500         (per CPU:       22848.186       23187.089       22085.077       21919.130 )
+> 
+> This is awesome results and great work Daniel! :-)
+> 
+> I wonder if we can also support this from XDP, which can also native
+> redirect into veth.  Originally I though we could add the peer netdev
+> in the devmap, but AFAIK Toke showed me that this was not possible.
 
-Currently the kernel does not provide an infrastructure to translate
-architecture numbers to a human-readable name. Translating syscall
-numbers to syscall names is possible through FTRACE_SYSCALL
-infrastructure but it does not provide support for compat syscalls.
+I think it should be possible with similar principle. What was the limitation
+that you ran into with devmap for XDP?
 
-This will create a file for each PID as /proc/pid/seccomp_cache.
-The file will be empty when no seccomp filters are loaded, or be
-in the format of:
-<arch name> <decimal syscall number> <ALLOW | FILTER>
-where ALLOW means the cache is guaranteed to allow the syscall,
-and filter means the cache will pass the syscall to the BPF filter.
+>>    [0] https://linuxplumbersconf.org/event/7/contributions/674/attachments/568/1002/plumbers_2020_cilium_load_balancer.pdf
+>>    [1] https://github.com/borkmann/netperf_scripts/blob/master/percpu_netperf
+>>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> ---
+>>   drivers/net/veth.c             |  9 ++++++
+>>   include/linux/netdevice.h      |  4 +++
+>>   include/uapi/linux/bpf.h       | 17 +++++++++++
+>>   net/core/dev.c                 | 15 ++++++++--
+>>   net/core/filter.c              | 54 +++++++++++++++++++++++++++++-----
+>>   tools/include/uapi/linux/bpf.h | 17 +++++++++++
+>>   6 files changed, 106 insertions(+), 10 deletions(-)
+>>
+> [...]
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index 9d55bf5d1a65..7dd015823593 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -4930,7 +4930,7 @@ EXPORT_SYMBOL_GPL(br_fdb_test_addr_hook);
+>>   
+>>   static inline struct sk_buff *
+>>   sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
+>> -		   struct net_device *orig_dev)
+>> +		   struct net_device *orig_dev, bool *another)
+>>   {
+>>   #ifdef CONFIG_NET_CLS_ACT
+>>   	struct mini_Qdisc *miniq = rcu_dereference_bh(skb->dev->miniq_ingress);
+>> @@ -4974,7 +4974,11 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
+>>   		 * redirecting to another netdev
+>>   		 */
+>>   		__skb_push(skb, skb->mac_len);
+>> -		skb_do_redirect(skb);
+>> +		if (skb_do_redirect(skb) == -EAGAIN) {
+>> +			__skb_pull(skb, skb->mac_len);
+>> +			*another = true;
+>> +			break;
+>> +		}
+>>   		return NULL;
+>>   	case TC_ACT_CONSUMED:
+>>   		return NULL;
+>> @@ -5163,7 +5167,12 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+>>   skip_taps:
+>>   #ifdef CONFIG_NET_INGRESS
+>>   	if (static_branch_unlikely(&ingress_needed_key)) {
+>> -		skb = sch_handle_ingress(skb, &pt_prev, &ret, orig_dev);
+>> +		bool another = false;
+>> +
+>> +		skb = sch_handle_ingress(skb, &pt_prev, &ret, orig_dev,
+>> +					 &another);
+>> +		if (another)
+>> +			goto another_round;
+>>   		if (!skb)
+>>   			goto out;
+>>   
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 5da44b11e1ec..fab951c6be57 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -2380,8 +2380,9 @@ static int __bpf_redirect_neigh(struct sk_buff *skb, struct net_device *dev)
+>>   
+>>   /* Internal, non-exposed redirect flags. */
+>>   enum {
+>> -	BPF_F_NEIGH = (1ULL << 1),
+>> -#define BPF_F_REDIRECT_INTERNAL	(BPF_F_NEIGH)
+>> +	BPF_F_NEIGH	= (1ULL << 1),
+>> +	BPF_F_PEER	= (1ULL << 2),
+>> +#define BPF_F_REDIRECT_INTERNAL	(BPF_F_NEIGH | BPF_F_PEER)
+>>   };
+>>   
+>>   BPF_CALL_3(bpf_clone_redirect, struct sk_buff *, skb, u32, ifindex, u64, flags)
+>> @@ -2430,19 +2431,35 @@ EXPORT_PER_CPU_SYMBOL_GPL(bpf_redirect_info);
+>>   int skb_do_redirect(struct sk_buff *skb)
+>>   {
+>>   	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
+>> +	struct net *net = dev_net(skb->dev);
+>>   	struct net_device *dev;
+>>   	u32 flags = ri->flags;
+>>   
+>> -	dev = dev_get_by_index_rcu(dev_net(skb->dev), ri->tgt_index);
+>> +	dev = dev_get_by_index_rcu(net, ri->tgt_index);
+>>   	ri->tgt_index = 0;
+>> -	if (unlikely(!dev)) {
+>> -		kfree_skb(skb);
+>> -		return -EINVAL;
+>> +	ri->flags = 0;
+>> +	if (unlikely(!dev))
+>> +		goto out_drop;
+>> +	if (flags & BPF_F_PEER) {
+>> +		const struct net_device_ops *ops = dev->netdev_ops;
+>> +
+>> +		if (unlikely(!ops->ndo_get_peer_dev ||
+>> +			     !skb_at_tc_ingress(skb)))
+>> +			goto out_drop;
+>> +		dev = ops->ndo_get_peer_dev(dev);
+>> +		if (unlikely(!dev ||
+>> +			     !is_skb_forwardable(dev, skb) ||
+> 
+> Again a MTU "transmissing" check on ingress "receive" path, but we can
+> take that discussion after this is merged, as this keeps the current
+> behavior.
 
-For the docker default profile on x86_64 it looks like:
-x86_64 0 ALLOW
-x86_64 1 ALLOW
-x86_64 2 ALLOW
-x86_64 3 ALLOW
-[...]
-x86_64 132 ALLOW
-x86_64 133 ALLOW
-x86_64 134 FILTER
-x86_64 135 FILTER
-x86_64 136 FILTER
-x86_64 137 ALLOW
-x86_64 138 ALLOW
-x86_64 139 FILTER
-x86_64 140 ALLOW
-x86_64 141 ALLOW
-[...]
+Yep, agree; also it checks whether dev is up which we need here too.
 
-This file is guarded by CONFIG_SECCOMP_CACHE_DEBUG with a default
-of N because I think certain users of seccomp might not want the
-application to know which syscalls are definitely usable. For
-the same reason, it is also guarded by CAP_SYS_ADMIN.
+>> +			     net_eq(net, dev_net(dev))))
+>> +			goto out_drop;
+>> +		skb->dev = dev;
+> 
+> Don't we need to clean some more state when this packet gets redirected
+> into another namespace?
+> 
+> Like skb_scrub_packet(), or is that not needed?  (p.s. I would like to
+> avoid it, as it e.g. clears the skb->mark.)
 
-Suggested-by: Jann Horn <jannh@google.com>
-Link: https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/
-Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
----
- arch/Kconfig                   | 24 ++++++++++++++
- arch/x86/Kconfig               |  1 +
- arch/x86/include/asm/seccomp.h |  3 ++
- fs/proc/base.c                 |  6 ++++
- include/linux/seccomp.h        |  7 ++++
- kernel/seccomp.c               | 59 ++++++++++++++++++++++++++++++++++
- 6 files changed, 100 insertions(+)
+Not needed, the traffic egress path from a netns is scrubbing already, and
+ingress traffic in hostns the BPF prog can do if needed given it has full
+control, this is similar to how ipvlan does it for traffic into container.
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 21a3675a7a3a..6157c3ce0662 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -471,6 +471,15 @@ config HAVE_ARCH_SECCOMP_FILTER
- 	    results in the system call being skipped immediately.
- 	  - seccomp syscall wired up
- 
-+config HAVE_ARCH_SECCOMP_CACHE
-+	bool
-+	help
-+	  An arch should select this symbol if it provides all of these things:
-+	  - all the requirements for HAVE_ARCH_SECCOMP_FILTER
-+	  - SECCOMP_ARCH_NATIVE
-+	  - SECCOMP_ARCH_NATIVE_NR
-+	  - SECCOMP_ARCH_NATIVE_NAME
-+
- config SECCOMP
- 	prompt "Enable seccomp to safely execute untrusted bytecode"
- 	def_bool y
-@@ -498,6 +507,21 @@ config SECCOMP_FILTER
- 
- 	  See Documentation/userspace-api/seccomp_filter.rst for details.
- 
-+config SECCOMP_CACHE_DEBUG
-+	bool "Show seccomp filter cache status in /proc/pid/seccomp_cache"
-+	depends on SECCOMP
-+	depends on SECCOMP_FILTER && HAVE_ARCH_SECCOMP_CACHE
-+	depends on PROC_FS
-+	help
-+	  This enables the /proc/pid/seccomp_cache interface to monitor
-+	  seccomp cache data. The file format is subject to change. Reading
-+	  the file requires CAP_SYS_ADMIN.
-+
-+	  This option is for debugging only. Enabling presents the risk that
-+	  an adversary may be able to infer the seccomp filter logic.
-+
-+	  If unsure, say N.
-+
- config HAVE_ARCH_STACKLEAK
- 	bool
- 	help
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1ab22869a765..1a807f89ac77 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -150,6 +150,7 @@ config X86
- 	select HAVE_ARCH_COMPAT_MMAP_BASES	if MMU && COMPAT
- 	select HAVE_ARCH_PREL32_RELOCATIONS
- 	select HAVE_ARCH_SECCOMP_FILTER
-+	select HAVE_ARCH_SECCOMP_CACHE
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
- 	select HAVE_ARCH_STACKLEAK
- 	select HAVE_ARCH_TRACEHOOK
-diff --git a/arch/x86/include/asm/seccomp.h b/arch/x86/include/asm/seccomp.h
-index b17d037c72ce..fef16e398161 100644
---- a/arch/x86/include/asm/seccomp.h
-+++ b/arch/x86/include/asm/seccomp.h
-@@ -19,9 +19,11 @@
- #ifdef CONFIG_X86_64
- # define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_X86_64
- # define SECCOMP_ARCH_NATIVE_NR		NR_syscalls
-+# define SECCOMP_ARCH_NATIVE_NAME	"x86_64"
- # ifdef CONFIG_COMPAT
- #  define SECCOMP_ARCH_COMPAT		AUDIT_ARCH_I386
- #  define SECCOMP_ARCH_COMPAT_NR	IA32_NR_syscalls
-+#  define SECCOMP_ARCH_COMPAT_NAME	"ia32"
- # endif
- /*
-  * x32 will have __X32_SYSCALL_BIT set in syscall number. We don't support
-@@ -31,6 +33,7 @@
- #else /* !CONFIG_X86_64 */
- # define SECCOMP_ARCH_NATIVE		AUDIT_ARCH_I386
- # define SECCOMP_ARCH_NATIVE_NR	        NR_syscalls
-+# define SECCOMP_ARCH_NATIVE_NAME	"ia32"
- #endif
- 
- #include <asm-generic/seccomp.h>
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 617db4e0faa0..a4990410ff05 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3258,6 +3258,9 @@ static const struct pid_entry tgid_base_stuff[] = {
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
- 	ONE("arch_status", S_IRUGO, proc_pid_arch_status),
- #endif
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
-+#endif
- };
- 
- static int proc_tgid_base_readdir(struct file *file, struct dir_context *ctx)
-@@ -3587,6 +3590,9 @@ static const struct pid_entry tid_base_stuff[] = {
- #ifdef CONFIG_PROC_PID_ARCH_STATUS
- 	ONE("arch_status", S_IRUGO, proc_pid_arch_status),
- #endif
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
-+#endif
- };
- 
- static int proc_tid_base_readdir(struct file *file, struct dir_context *ctx)
-diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-index 02aef2844c38..76963ec4641a 100644
---- a/include/linux/seccomp.h
-+++ b/include/linux/seccomp.h
-@@ -121,4 +121,11 @@ static inline long seccomp_get_metadata(struct task_struct *task,
- 	return -EINVAL;
- }
- #endif /* CONFIG_SECCOMP_FILTER && CONFIG_CHECKPOINT_RESTORE */
-+
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+struct seq_file;
-+
-+int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
-+			   struct pid *pid, struct task_struct *task);
-+#endif
- #endif /* _LINUX_SECCOMP_H */
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 236e7b367d4e..1df2fac281da 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -553,6 +553,9 @@ void seccomp_filter_release(struct task_struct *tsk)
- {
- 	struct seccomp_filter *orig = tsk->seccomp.filter;
- 
-+	/* We are effectively holding the siglock by not having any sighand. */
-+	WARN_ON(tsk->sighand != NULL);
-+
- 	/* Detach task from its filter tree. */
- 	tsk->seccomp.filter = NULL;
- 	__seccomp_filter_release(orig);
-@@ -2311,3 +2314,59 @@ static int __init seccomp_sysctl_init(void)
- device_initcall(seccomp_sysctl_init)
- 
- #endif /* CONFIG_SYSCTL */
-+
-+#ifdef CONFIG_SECCOMP_CACHE_DEBUG
-+/* Currently CONFIG_SECCOMP_CACHE_DEBUG implies SECCOMP_ARCH_NATIVE */
-+static void proc_pid_seccomp_cache_arch(struct seq_file *m, const char *name,
-+					const void *bitmap, size_t bitmap_size)
-+{
-+	int nr;
-+
-+	for (nr = 0; nr < bitmap_size; nr++) {
-+		bool cached = test_bit(nr, bitmap);
-+		char *status = cached ? "ALLOW" : "FILTER";
-+
-+		seq_printf(m, "%s %d %s\n", name, nr, status);
-+	}
-+}
-+
-+int proc_pid_seccomp_cache(struct seq_file *m, struct pid_namespace *ns,
-+			   struct pid *pid, struct task_struct *task)
-+{
-+	struct seccomp_filter *f;
-+	unsigned long flags;
-+
-+	/*
-+	 * We don't want some sandboxed process to know what their seccomp
-+	 * filters consist of.
-+	 */
-+	if (!file_ns_capable(m->file, &init_user_ns, CAP_SYS_ADMIN))
-+		return -EACCES;
-+
-+	if (!lock_task_sighand(task, &flags))
-+		return -ESRCH;
-+
-+	f = READ_ONCE(task->seccomp.filter);
-+	if (!f) {
-+		unlock_task_sighand(task, &flags);
-+		return 0;
-+	}
-+
-+	/* prevent filter from being freed while we are printing it */
-+	__get_seccomp_filter(f);
-+	unlock_task_sighand(task, &flags);
-+
-+	proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_NATIVE_NAME,
-+				    f->cache.allow_native,
-+				    SECCOMP_ARCH_NATIVE_NR);
-+
-+#ifdef SECCOMP_ARCH_COMPAT
-+	proc_pid_seccomp_cache_arch(m, SECCOMP_ARCH_COMPAT_NAME,
-+				    f->cache.allow_compat,
-+				    SECCOMP_ARCH_COMPAT_NR);
-+#endif /* SECCOMP_ARCH_COMPAT */
-+
-+	__put_seccomp_filter(f);
-+	return 0;
-+}
-+#endif /* CONFIG_SECCOMP_CACHE_DEBUG */
--- 
-2.28.0
+>> +		return -EAGAIN;
+>>   	}
+>> -
+>>   	return flags & BPF_F_NEIGH ?
+>>   	       __bpf_redirect_neigh(skb, dev) :
+>>   	       __bpf_redirect(skb, dev, flags);
+>> +out_drop:
+>> +	kfree_skb(skb);
+>> +	return -EINVAL;
+>>   }
+> 
+> 
+> 
 
