@@ -2,79 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CEF28BE95
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 19:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC9E28BED0
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 19:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390534AbgJLRCE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 13:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        id S2403963AbgJLRKj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 13:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390355AbgJLRCE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 13:02:04 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16C0C0613D0
-        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 10:02:03 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id c3so13944849ybl.0
-        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 10:02:03 -0700 (PDT)
+        with ESMTP id S2403948AbgJLRKj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:10:39 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F92C0613D0;
+        Mon, 12 Oct 2020 10:10:39 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x7so11425791wrl.3;
+        Mon, 12 Oct 2020 10:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TcvsnlnuuguVUDRzwLQn5+1SPwNNMDTQ/0rcYHqiRzs=;
-        b=rYaLbBXXXhCZWpYHdG1q8SS2xZ5o1xpNSiybAl4eUluhIoEWdGZg1IuEBBf8qe3cmG
-         znxc1BVYWn+1fu0eX7ojk+l0b+hI+yoiNSVYFskiMnosQI0Psu36kT1ZnzQUiXMmNSaC
-         mtdPUxz0V3kg1eOVkOQpgtfvJu5DCwS5/RIXSSpNX2hB4GsELkjHiYlHY8Y0DMNm52Al
-         K/LkHHO9+B+Se1X7k+gsbq/kYM1NMQRXuujIg7F7/fXO0ndYpTIgniRUdPo36JzOXvjK
-         aljmuzUeLnrlnh5Unu8vNDUlA8jFd8cdf80uM0jqMlpWYgJeA+32ViYuj91wi7ej7VfO
-         z6gg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JQhCSXsyusOxGtjUFqayOObcSsTDfbxU0tyZvY/Vj6A=;
+        b=s2r4/v0DYuqvGNTQcT9zgz4BWyfxkTPOGxK93WLomSMqB2kqeMffyXD89Fq3PXTYvC
+         6a3f07TVZ8Gw1A4aO8hF6jlv0SVJbrghYj/s57G0LdOI3LnabDur/q8QPDXgw63fk2ig
+         uLbcCU6I2nwfbsVw8dEyqYkdF4sQxLG56f/CZauWAQZE7HPiNaGzCzrpl3FASOQdozA0
+         Hj7mn7eaSq2QyW9WKVFVOHUuZMPSwieUUiJlKmn+QRJw89CsmgQOgD+GckIqtGmzCJjl
+         QBFwe37n7jt4+/IaC/kNVoAwZ7pR7i4Pef1JUMosNuxogbTDFzHWjIsq/0+3GfEaCIiC
+         yjKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TcvsnlnuuguVUDRzwLQn5+1SPwNNMDTQ/0rcYHqiRzs=;
-        b=Hmzt+2aW5B3U47SBdEqtm1Z4gTPGAWDpPt/WyxNFCX9BHsklO0xTBmqFi7wbLMY7Z1
-         hsNGu2bM4up3yDRJbs1LNvIa0137dlHr/T/m0t17uVoc/9WJXAvDRWcLjvHZPhkqzp/0
-         Y7TKE30aePmU60cQokLD1nM3hLqD1ZMcv+uGahWJNqBwo4GVU4fpEs5PN/TssZjfKwFI
-         wrCCjKL3uL3hpy9EnyUF0CaVqb2424AniWKfNF+oJvYOnBxxMBoaG33JQwQCb89nU0fE
-         AKXd0C8N7RMauqTxl7VOenPnfG2rbS/goGa1TCJ6IEJBxUld0hWv3r78fRUEiNwDimZ+
-         6HbQ==
-X-Gm-Message-State: AOAM533n+KMMYv6mSLsMDiw53qNsqMJTW40tAiTT6hs7E10Z+wZNW8li
-        jfb4uEVuJRO/OQV7TWW/gFcndAgWe1RLd2jRrdo9hsdBKig=
-X-Google-Smtp-Source: ABdhPJyZm9hIj3mLnsBzMXwUxCnvlY54zgsZsgseSl5XW03ApJ7oA5fJyMwxAP4l+Hn3inDGpWaQw+zPBentuPjQgQ4=
-X-Received: by 2002:a25:5f08:: with SMTP id t8mr10171651ybb.260.1602522122735;
- Mon, 12 Oct 2020 10:02:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JQhCSXsyusOxGtjUFqayOObcSsTDfbxU0tyZvY/Vj6A=;
+        b=Bx93oxsmS4eMBpvIZzem/NvZEl5zsFN7K8TbqUH8T+1Tc96OOWj7NeP8HZm4zKmHXA
+         vH1/X/Kltsbkepm+wsfHlKZg46RAAxE3MWQbcP5TKMvf1vT2lvs16VPQw83qPrd+dW3G
+         g+lC+idUK5HdkDiiKQPL8qXmTvsPKYydwFgeDFK/7l0owXUzZhbwFl4iKLemt4RtiSVT
+         kBi3m0Pt5rckkUCJ+jCaO+88s9M61/M8brDvdRFL+quGtQY+MHcqMUPitJGGiTeO4SjY
+         kWEiw5Ud92TaETL2+lLVIyTn4fcRmYxqJWV0b43V3XKDZ/pjP0RqipGtwNZDaOOawqtU
+         xApA==
+X-Gm-Message-State: AOAM531looCiXl03v7E1mlWWyb221QfBX/3YVKieJ4IW2gZWW7RBdn6N
+        oMqIFJAf8dBIJT9u+s4PNzRLqUK3clvRPvwv
+X-Google-Smtp-Source: ABdhPJwGyRczTJ1YaqqPoszu5AOFLeprcyPNpPbK+gSRzKVT2oSaTGHdlKyI1sHe4p1gqj2bfhHvng==
+X-Received: by 2002:adf:c64e:: with SMTP id u14mr30375186wrg.373.1602522637731;
+        Mon, 12 Oct 2020 10:10:37 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id l11sm27199166wrt.54.2020.10.12.10.10.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 10:10:37 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: sockmap: Don't call bpf_prog_put() on NULL pointer
+Date:   Mon, 12 Oct 2020 18:09:53 +0100
+Message-Id: <20201012170952.60750-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <CAMy7=ZWoL7w97aR5_02OEjKEkJT8R7OEzpL5Zp8Cycm=yZSLJQ@mail.gmail.com>
-In-Reply-To: <CAMy7=ZWoL7w97aR5_02OEjKEkJT8R7OEzpL5Zp8Cycm=yZSLJQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 12 Oct 2020 10:01:51 -0700
-Message-ID: <CAEf4BzYnELT0tE8Y4goPWxuBGN+G-37A8A1yjspFL=LK842geQ@mail.gmail.com>
-Subject: Re: libbpf: Loading kprobes fail on some distros
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 11, 2020 at 7:10 PM Yaniv Agman <yanivagman@gmail.com> wrote:
->
-> Trying to load kprobes on ubuntu 4.15.0, I get the following error:
-> libbpf: load bpf program failed: Invalid argument
->
-> The same kprobes load successfully using bcc
->
-> After some digging, I found that the issue was with the kernel version
-> given to the bpf syscall. While libbpf calculated the value 265984 for
-> the kern_version argument, bcc used 266002.
-> It turns out that some distros (e.g. ubuntu, debian) change the patch
-> number of the kernel version, as detailed in:
-> https://github.com/ajor/bpftrace/issues/8
->
-> I didn't find a proper API in libbpf to load kprobes in such cases -
-> is there any?
+If bpf_prog_inc_not_zero() fails for skb_parser, then bpf_prog_put() is
+called unconditionally on skb_verdict, even though it may be NULL. Fix
+and tidy up error path.
 
-Yes, you can override kernel version that libbpf determines from
-utsname with a special variable in your BPF code:
+Addresses-Coverity-ID: 1497799: Null pointer dereferences (FORWARD_NULL)
+Fixes: 743df8b7749f ("bpf, sockmap: Check skb_verdict and skb_parser programs explicitly")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ net/core/sock_map.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-int KERNEL_VERSION SEC("version") = 123;
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index df09c39a4dd2..a73ccce54423 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -238,17 +238,18 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ 	int ret;
+ 
+ 	skb_verdict = READ_ONCE(progs->skb_verdict);
+-	skb_parser = READ_ONCE(progs->skb_parser);
+ 	if (skb_verdict) {
+ 		skb_verdict = bpf_prog_inc_not_zero(skb_verdict);
+ 		if (IS_ERR(skb_verdict))
+ 			return PTR_ERR(skb_verdict);
+ 	}
++
++	skb_parser = READ_ONCE(progs->skb_parser);
+ 	if (skb_parser) {
+ 		skb_parser = bpf_prog_inc_not_zero(skb_parser);
+ 		if (IS_ERR(skb_parser)) {
+-			bpf_prog_put(skb_verdict);
+-			return PTR_ERR(skb_parser);
++			ret = PTR_ERR(skb_parser);
++			goto out_put_skb_verdict;
+ 		}
+ 	}
+ 
+@@ -257,7 +258,7 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ 		msg_parser = bpf_prog_inc_not_zero(msg_parser);
+ 		if (IS_ERR(msg_parser)) {
+ 			ret = PTR_ERR(msg_parser);
+-			goto out;
++			goto out_put_skb_parser;
+ 		}
+ 	}
+ 
+@@ -311,11 +312,12 @@ static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
+ out_progs:
+ 	if (msg_parser)
+ 		bpf_prog_put(msg_parser);
+-out:
+-	if (skb_verdict)
+-		bpf_prog_put(skb_verdict);
++out_put_skb_parser:
+ 	if (skb_parser)
+ 		bpf_prog_put(skb_parser);
++out_put_skb_verdict:
++	if (skb_verdict)
++		bpf_prog_put(skb_verdict);
+ 	return ret;
+ }
+ 
+-- 
+2.28.0
+
