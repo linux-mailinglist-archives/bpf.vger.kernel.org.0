@@ -2,105 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC08428B1B9
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 11:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C436228B386
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 13:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgJLJlt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 05:41:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35603 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727082AbgJLJls (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Oct 2020 05:41:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602495707;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXG7a4scq98B/dcQv1Tv8obxT4AXo5Cn9drh+K4TB8w=;
-        b=IJudUdIsmnv1Kfe0/eIFVaE9iuagfSI4RIGzu7Lo/gZbAv6Xs2gAyVjuOtl/hl2h8sP5G0
-        d+dCB1NkgnYjpQOfQX9RXgK1UlR8hEynKCAuRRlD1QfVSwRmt9ok6m3cFK0aAIO3cT8t2b
-        7EaX2v3esUKtWv/UOrcmyXoRfKzTm3E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110-HWxQc-35M7mW9lzoqNnSLA-1; Mon, 12 Oct 2020 05:41:45 -0400
-X-MC-Unique: HWxQc-35M7mW9lzoqNnSLA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BFD310054FF;
-        Mon, 12 Oct 2020 09:41:44 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BA71B76666;
-        Mon, 12 Oct 2020 09:41:32 +0000 (UTC)
-Date:   Mon, 12 Oct 2020 11:41:30 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        john.fastabend@gmail.com, yhs@fb.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        brouer@redhat.com, Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Subject: Re: [PATCH bpf-next v6 2/6] bpf: add redirect_peer helper
-Message-ID: <20201012114130.6f57247f@carbon>
-In-Reply-To: <1992820b-4916-ed42-e1e2-8e37ae67c92f@gmail.com>
-References: <20201010234006.7075-1-daniel@iogearbox.net>
-        <20201010234006.7075-3-daniel@iogearbox.net>
-        <20201011112213.7e542de7@carbon>
-        <aadbb662-bb42-05be-0943-d59ba0d3f60c@iogearbox.net>
-        <1992820b-4916-ed42-e1e2-8e37ae67c92f@gmail.com>
+        id S2387635AbgJLLNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 07:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387617AbgJLLNR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 07:13:17 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974E3C0613CE;
+        Mon, 12 Oct 2020 04:13:17 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id h2so8372742pll.11;
+        Mon, 12 Oct 2020 04:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rok51bY+NMXfkjLmUBndlaSQ/c2xOHkH9dRY9zUWboE=;
+        b=IjY66wsvGA+ET6maXXrbN1BNnZUz2ACAJoitP0jQqsn4/S6o+n8UiFgkCS0ok5XbAv
+         m4B8SIrOWY96kT8qBzu8KA21lVC16HY1+NPEWhD1OA2JEs84hle57VMGeonYKa5kNfYV
+         L8X5WhfWCjEjB4YA6mlM4lr/K0JM2TR5mfbMqcn/2QD9/FXUbsUZDB8PIwLagyIRSB2B
+         QJ7acbV+T40pVpgDANBL6kDCAelyaVYO3RVW8SEqPXDBR7r01md7Z/oqlw2sOGlaX9sm
+         ZSwAJsn6R/j8oXEd2fByK8Dj27SnxBOM9OQujfYXf6+EGgHTOWUjU5hPDQsuhE3zvE88
+         8Zbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rok51bY+NMXfkjLmUBndlaSQ/c2xOHkH9dRY9zUWboE=;
+        b=YCK5rzxwiq3YKMEiMg3s1zOHpDTMr3JpG7d5Cj6on99SyiVhLyXoAbrvlH7fDdq9rj
+         1qDiDlOCFyYWJdSAqFwszPrkhv1kKhA96ru+JYUjgIuyLTgw83x7E2q7/3b2VP6a5L36
+         7rOO197dDbVbFWy+T/qE00alwFLs8i2QA7M4wWUwghKIjyCgRbu7y32+34wvkuiJ8lfO
+         KOIFDk0M2bEGk/ip+GpJ5H/VBi5JxBXcYRLYhWug+KEQjFVp/rijAJRnx67LMddYk/yl
+         AWq1zuLKYM+aSGzm/AxY3Gb3UP0qP1cH+EvqnQfNkngDQqwoevggSBAl7gXG7IxgJvWP
+         Ki+g==
+X-Gm-Message-State: AOAM533wkEQbUhcaw4VAGm1dGGH3KLwPj9mDjFoQ+P30lSkYDqAGk+rt
+        ssOf8S4GAT4vDW+m5jiH7ji+ylfzVn3uDzXhLlo=
+X-Google-Smtp-Source: ABdhPJxlZdqKKf+fBXCOVJ7a5bT9ADdOXWCpRcWaKwnHDPaGo5VGtuQabCss1HawU9wK4tjmGul7f4VkFkOlRXNWkH0=
+X-Received: by 2002:a17:902:d211:b029:d3:c8b3:4aa4 with SMTP id
+ t17-20020a170902d211b02900d3c8b34aa4mr23828142ply.43.1602501196998; Mon, 12
+ Oct 2020 04:13:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <1602166338-21378-1-git-send-email-magnus.karlsson@gmail.com>
+ <43b0605d-f0c9-b81c-4d16-344a7832e083@iogearbox.net> <CAJ8uoz3nfDe0a9Vp0NmnHVv5qM+kvqR-f6Yd0keKSqctNzi6=g@mail.gmail.com>
+ <CAJ8uoz1Z4dpaoK5th092gid+xbcp1Rz1wkPXZuuceh5y0wvKYw@mail.gmail.com>
+In-Reply-To: <CAJ8uoz1Z4dpaoK5th092gid+xbcp1Rz1wkPXZuuceh5y0wvKYw@mail.gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 12 Oct 2020 13:13:06 +0200
+Message-ID: <CAJ8uoz0V+nLc7KVe9NjZJ6FpKxJUcubm7K699g1C70+tLuWJpQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: introduce padding between ring pointers
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 11 Oct 2020 20:50:12 -0600
-David Ahern <dsahern@gmail.com> wrote:
+On Mon, Oct 12, 2020 at 11:37 AM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
+>
+> On Mon, Oct 12, 2020 at 10:37 AM Magnus Karlsson
+> <magnus.karlsson@gmail.com> wrote:
+> >
+> > On Fri, Oct 9, 2020 at 5:03 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > >
+> > > On 10/8/20 4:12 PM, Magnus Karlsson wrote:
+> > > > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> > > >
+> > > > Introduce one cache line worth of padding between the producer and
+> > > > consumer pointers in all the lockless rings. This so that the HW
+> > > > adjacency prefetcher will not prefetch the consumer pointer when the
+> > > > producer pointer is used and vice versa. This improves throughput
+> > > > performance for the l2fwd sample app with 2% on my machine with HW
+> > > > prefetching turned on.
+> > > >
+> > > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > >
+> > > Applied, thanks!
+> > >
+> > > >   net/xdp/xsk_queue.h | 4 ++++
+> > > >   1 file changed, 4 insertions(+)
+> > > >
+> > > > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> > > > index dc1dd5e..3c235d2 100644
+> > > > --- a/net/xdp/xsk_queue.h
+> > > > +++ b/net/xdp/xsk_queue.h
+> > > > @@ -15,6 +15,10 @@
+> > > >
+> > > >   struct xdp_ring {
+> > > >       u32 producer ____cacheline_aligned_in_smp;
+> > > > +     /* Hinder the adjacent cache prefetcher to prefetch the consumer pointer if the producer
+> > > > +      * pointer is touched and vice versa.
+> > > > +      */
+> > > > +     u32 pad ____cacheline_aligned_in_smp;
+> > > >       u32 consumer ____cacheline_aligned_in_smp;
+> > > >       u32 flags;
+> > > >   };
+> > > >
+> > >
+> > > I was wondering whether we should even generalize this further for reuse
+> > > elsewhere e.g. ...
+> > >
+> > > diff --git a/include/linux/cache.h b/include/linux/cache.h
+> > > index 1aa8009f6d06..5521dab01649 100644
+> > > --- a/include/linux/cache.h
+> > > +++ b/include/linux/cache.h
+> > > @@ -85,4 +85,17 @@
+> > >   #define cache_line_size()      L1_CACHE_BYTES
+> > >   #endif
+> > >
+> > > +/*
+> > > + * Dummy element for use in structs in order to pad a cacheline
+> > > + * aligned element with an extra cacheline to hinder the adjacent
+> > > + * cache prefetcher to prefetch the subsequent struct element.
+> > > + */
+> > > +#ifndef ____cacheline_padding_in_smp
+> > > +# ifdef CONFIG_SMP
+> > > +#  define ____cacheline_padding_in_smp u8 :8 ____cacheline_aligned_in_smp
+> > > +# else
+> > > +#  define ____cacheline_padding_in_smp
+> > > +# endif /* CONFIG_SMP */
+> > > +#endif
+> > > +
+> > >   #endif /* __LINUX_CACHE_H */
+> > > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> > > index cdb9cf3cd136..1da36423e779 100644
+> > > --- a/net/xdp/xsk_queue.h
+> > > +++ b/net/xdp/xsk_queue.h
+> > > @@ -15,11 +15,9 @@
+> > >
+> > >   struct xdp_ring {
+> > >          u32 producer ____cacheline_aligned_in_smp;
+> > > -       /* Hinder the adjacent cache prefetcher to prefetch the consumer
+> > > -        * pointer if the producer pointer is touched and vice versa.
+> > > -        */
+> > > -       u32 pad ____cacheline_aligned_in_smp;
+> > > +       ____cacheline_padding_in_smp;
+> > >          u32 consumer ____cacheline_aligned_in_smp;
+> > > +       ____cacheline_padding_in_smp;
+> > >          u32 flags;
+> > >   };
+> >
+> > This should be beneficial in theory, though I could not measure any
+> > statistically significant improvement. Though, the flags variable is
+> > touched much less frequently than the producer and consumer pointers,
+> > so that might explain it. We also need to make the compiler allocate
+> > flags to a cache line 128 bytes (2 cache lines) from the consumer
+> > pointer like this:
+> >
+> > u32 consumer ____cacheline_aligned_in_smp;
+> > ____cacheline_padding_in_smp;
+> > u32 flags ____cacheline_aligned_in_smp;
+> >
+> > > ... was there any improvement to also pad after the consumer given the struct
+> > > xdp_ring is also embedded into other structs?
+> >
+> > Good idea. Yes, I do believe I see another ~0.4% increase and more
+> > stable high numbers when trying this out. The xdp_ring is followed by
+> > the ring descriptors themselves in both the rt/tx rings and the umem
+> > rings. And these rings are quite large, 2K in the sample app, so
+> > accessed less frequently (1/8th of the time with a batch size of 256
+> > and ring size 2K) which might explain the lower increase. In the end,
+> > I ended up with the following struct:
+> >
+> > u32 producer ____cacheline_aligned_in_smp;
+> > ____cacheline_padding_in_smp;
+> > u32 consumer ____cacheline_aligned_in_smp;
+> > ____cacheline_padding_in_smp;
+> > u32 flags ____cacheline_aligned_in_smp;
+> > ____cacheline_padding_in_smp;
+>
+> Actually, this might make more sense and save some memory:
+>
+> u32 producer ____cacheline_aligned_in_smp;
+> ____cacheline_padding_in_smp;
+> u32 consumer ____cacheline_aligned_in_smp;
+> u32 flags;
+> ____cacheline_padding_in_smp;
+>
+> So keep the flags colocated with the consumer on the same cache line.
+> The reason I put it there to start with was that it is usually set in
+> conjunction with the consumer pointer being updated. This might also
+> explain why I did not see any performance improvement by putting it on
+> its own 128-byte cache line. In summary, we make sure producer and
+> consumer are separated with 128 bytes as well as consumer and the
+> start of the descriptor ring.
 
-> On 10/11/20 10:16 AM, Daniel Borkmann wrote:
-> >>
-> >> This is awesome results and great work Daniel! :-) =20
->=20
-> +1
->=20
-> >>
-> >> I wonder if we can also support this from XDP, which can also native
-> >> redirect into veth.=C2=A0 Originally I though we could add the peer ne=
-tdev
-> >> in the devmap, but AFAIK Toke showed me that this was not possible. =20
-> >=20
-> > I think it should be possible with similar principle. What was the
-> > limitation that you ran into with devmap for XDP? =20
+Nope, that was a bad idea. After measuring, this one produces worse
+performance than the original suggestion with padding in between all
+members. Cannot explain why at the moment, but the numbers are
+convincing and above noise level for sure. So let us keep this one:
 
-If you add a device to devmap and afterwards move this device into a
-namespace, then the device is removed from the devmap.  This is because
-devmap detect/react on NETDEV_UNREGISTER and remove the net_device.
+u32 producer ____cacheline_aligned_in_smp;
+____cacheline_padding_in_smp;
+u32 consumer ____cacheline_aligned_in_smp;
+____cacheline_padding_in_smp;
+u32 flags ____cacheline_aligned_in_smp;
+____cacheline_padding_in_smp;
 
-
-> Should just need an API to set the namespace of the redirect device -
-> something that devmap can be extended to include now.
-
-Perhaps for other devices being moved into a namespace.
-
-Specifically for veth the XDP redirect (veth_ndo_xdp_xmit) already
-pickup the peer net_device, and *queue* the xdp_frame, thus it's not
-directly relevant for the XDP redirect (except we also have an
-intermediate queue which is likely bad for the TCP_RR test).
-
-I just tried to test native-XDP redirect into a veth with samples/bpf/
-xdp_redirect_map, which doesn't work.  Packets are actually getting
-silently dropped.  After digging into the kernel code, I realized this
-is because the *peer*-veth device didn't have a XDP-prog loaded.  The
-xdp_redirect_map loads a dummy-XDP prog on the veth-device (it can
-see), as a way to enable the ndo_xdp_xmit (which we have discussed
-before it a broken way to do this, but it have become a defacto way).
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> > Do you want to submit a patch, or shall I do it? I like your
+> > ____cacheline_padding_in_smp better than my explicit "padN" member.
+> >
+> > Thanks: Magnus
+> >
+> > > Thanks,
+> > > Daniel
