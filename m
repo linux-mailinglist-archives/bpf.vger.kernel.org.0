@@ -2,46 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0346A28C4BE
-	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 00:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F3E28C4DF
+	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 00:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388524AbgJLW2m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 18:28:42 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50556 "EHLO
+        id S1731260AbgJLWm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 18:42:28 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52666 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388361AbgJLW2l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 18:28:41 -0400
+        with ESMTP id S1731188AbgJLWm0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 18:42:26 -0400
 Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kS6J2-0005dl-Ec; Tue, 13 Oct 2020 00:28:36 +0200
+        id 1kS6WD-0006Z3-GX; Tue, 13 Oct 2020 00:42:13 +0200
 Received: from [2a02:1205:5048:a230:688e:a88c:2b15:ece2] (helo=pc-95.home)
         by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kS6J2-000S4U-6d; Tue, 13 Oct 2020 00:28:36 +0200
-Subject: Re: [PATCH bpf-next] xsk: introduce padding between ring pointers
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id 1kS6WD-0000aj-9M; Tue, 13 Oct 2020 00:42:13 +0200
+Subject: Re: merge window is open. bpf-next is still open.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <1602166338-21378-1-git-send-email-magnus.karlsson@gmail.com>
- <43b0605d-f0c9-b81c-4d16-344a7832e083@iogearbox.net>
- <CAJ8uoz3nfDe0a9Vp0NmnHVv5qM+kvqR-f6Yd0keKSqctNzi6=g@mail.gmail.com>
- <CAJ8uoz1Z4dpaoK5th092gid+xbcp1Rz1wkPXZuuceh5y0wvKYw@mail.gmail.com>
- <CAJ8uoz0V+nLc7KVe9NjZJ6FpKxJUcubm7K699g1C70+tLuWJpQ@mail.gmail.com>
+        Kernel Team <Kernel-team@fb.com>,
+        "David S. Miller" <davem@davemloft.net>
+References: <CAADnVQ+ycd8T4nBcnAwr5FHX75_JhWmqdHzXEXwx5udBv8uwiQ@mail.gmail.com>
+ <20201012110046.3b2c3c27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQKn=CxcOpjSWLsD+VC5rviC6sMfrhw5jrPCU60Bcx5Ssw@mail.gmail.com>
+ <20201013075016.61028eee@canb.auug.org.au>
+ <20201012210307.byn6jx7dxmsxq7dt@ast-mbp>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <169cf549-1adc-0b75-4fc1-52d2a110a6a7@iogearbox.net>
-Date:   Tue, 13 Oct 2020 00:28:35 +0200
+Message-ID: <fb8b825f-6a40-3f88-02bd-b9bb93e0f6e3@iogearbox.net>
+Date:   Tue, 13 Oct 2020 00:42:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAJ8uoz0V+nLc7KVe9NjZJ6FpKxJUcubm7K699g1C70+tLuWJpQ@mail.gmail.com>
+In-Reply-To: <20201012210307.byn6jx7dxmsxq7dt@ast-mbp>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,24 +49,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/12/20 1:13 PM, Magnus Karlsson wrote:
+On 10/12/20 11:03 PM, Alexei Starovoitov wrote:
+> On Tue, Oct 13, 2020 at 07:50:16AM +1100, Stephen Rothwell wrote:
 [...]
-> Nope, that was a bad idea. After measuring, this one produces worse
-> performance than the original suggestion with padding in between all
-> members. Cannot explain why at the moment, but the numbers are
-> convincing and above noise level for sure. So let us keep this one:
+>> How about this: you create a for-next branch in the bpf-next tree and I
+>> fetch that instead of your master branch.  What you do is always work
+>> in your master branch and whenever it is "ready", you just merge master
+>> into for-next and that is what linux-next works with (net-next still
+>> merges your master branch as now).  So the for-next branch consists
+>> only of consecutive merges of your master branch.
+>>
+>> During the merge window you do *not* merge master into for-next (and,
+>> in fact, everything in for-next should have been merged into the
+>> net-next tree anyway, right?) and then when -rc1 is released, you reset
+>> for-next to -rc1 and start merging master into it again.
+>>
+>> This way the commit SHA1s are stable and I don't have to remember to
+>> switch branches/trees every merge window (which I would forget
+>> sometimes for sure :-)).
 > 
-> u32 producer ____cacheline_aligned_in_smp;
-> ____cacheline_padding_in_smp;
-> u32 consumer ____cacheline_aligned_in_smp;
-> ____cacheline_padding_in_smp;
-> u32 flags ____cacheline_aligned_in_smp;
-> ____cacheline_padding_in_smp;
-> 
->>> Do you want to submit a patch, or shall I do it? I like your
->>> ____cacheline_padding_in_smp better than my explicit "padN" member.
+> That is a great idea! I think that should work well for everyone.
+> Let's do exactly that.
+> Just pushed bpf-next/for-next branch.
 
-Ok, feel free to go for it.
++1, I like it as it keeps things simple & straight forward for contributors
+and for linux-next as well.
 
 Thanks,
 Daniel
