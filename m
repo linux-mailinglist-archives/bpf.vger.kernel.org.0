@@ -2,216 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C436228B386
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 13:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E837C28B451
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 14:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387635AbgJLLNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 07:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
+        id S2388300AbgJLMEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 08:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387617AbgJLLNR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 07:13:17 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974E3C0613CE;
-        Mon, 12 Oct 2020 04:13:17 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id h2so8372742pll.11;
-        Mon, 12 Oct 2020 04:13:17 -0700 (PDT)
+        with ESMTP id S2388281AbgJLMEW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 08:04:22 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CA8C0613D1
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 05:04:22 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e18so18867951wrw.9
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 05:04:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rok51bY+NMXfkjLmUBndlaSQ/c2xOHkH9dRY9zUWboE=;
-        b=IjY66wsvGA+ET6maXXrbN1BNnZUz2ACAJoitP0jQqsn4/S6o+n8UiFgkCS0ok5XbAv
-         m4B8SIrOWY96kT8qBzu8KA21lVC16HY1+NPEWhD1OA2JEs84hle57VMGeonYKa5kNfYV
-         L8X5WhfWCjEjB4YA6mlM4lr/K0JM2TR5mfbMqcn/2QD9/FXUbsUZDB8PIwLagyIRSB2B
-         QJ7acbV+T40pVpgDANBL6kDCAelyaVYO3RVW8SEqPXDBR7r01md7Z/oqlw2sOGlaX9sm
-         ZSwAJsn6R/j8oXEd2fByK8Dj27SnxBOM9OQujfYXf6+EGgHTOWUjU5hPDQsuhE3zvE88
-         8Zbw==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=8vMF8lZRQsgeDB+OVpE15wXr25/uWkPUozR5wkyqRus=;
+        b=IpypOWt+e7NTYuvuZsUirxmMBp02bpHU7QR+sFmnBU3Fr/3pbR8GCt+RCLWA5BNjNZ
+         x/uGUozNT8ktjyxkpfCHleMuvoTKbiUQFtiG9mpIav+6yRNIIXqJS9ttrJJy0UgPbKWd
+         HLjokQy3AeS73Rfq6DIR1aS7R7d6aUcRjdiNg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rok51bY+NMXfkjLmUBndlaSQ/c2xOHkH9dRY9zUWboE=;
-        b=YCK5rzxwiq3YKMEiMg3s1zOHpDTMr3JpG7d5Cj6on99SyiVhLyXoAbrvlH7fDdq9rj
-         1qDiDlOCFyYWJdSAqFwszPrkhv1kKhA96ru+JYUjgIuyLTgw83x7E2q7/3b2VP6a5L36
-         7rOO197dDbVbFWy+T/qE00alwFLs8i2QA7M4wWUwghKIjyCgRbu7y32+34wvkuiJ8lfO
-         KOIFDk0M2bEGk/ip+GpJ5H/VBi5JxBXcYRLYhWug+KEQjFVp/rijAJRnx67LMddYk/yl
-         AWq1zuLKYM+aSGzm/AxY3Gb3UP0qP1cH+EvqnQfNkngDQqwoevggSBAl7gXG7IxgJvWP
-         Ki+g==
-X-Gm-Message-State: AOAM533wkEQbUhcaw4VAGm1dGGH3KLwPj9mDjFoQ+P30lSkYDqAGk+rt
-        ssOf8S4GAT4vDW+m5jiH7ji+ylfzVn3uDzXhLlo=
-X-Google-Smtp-Source: ABdhPJxlZdqKKf+fBXCOVJ7a5bT9ADdOXWCpRcWaKwnHDPaGo5VGtuQabCss1HawU9wK4tjmGul7f4VkFkOlRXNWkH0=
-X-Received: by 2002:a17:902:d211:b029:d3:c8b3:4aa4 with SMTP id
- t17-20020a170902d211b02900d3c8b34aa4mr23828142ply.43.1602501196998; Mon, 12
- Oct 2020 04:13:16 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
+        bh=8vMF8lZRQsgeDB+OVpE15wXr25/uWkPUozR5wkyqRus=;
+        b=D1h71YJJQly7rzZnBpkpF1FuXN7yFJAaDLUsXH+GLraRc4iZXhx5HT41uUR07iQUYn
+         HhqlYsXrr71UnrSdf8qRNGxcPumnBMp3HF9k6PUSQOnGvroFxkmH4/u0klYGPSuLyuX1
+         Bks9Ljp4rTb65cS9H04UlL9odum98CE/H/Cce2UuHxnBsHiq1YNs28dnlT0xAsYNd3G0
+         CkYBTv39cqgWOvnBvyzDJqa6654n+brJ/iTKqUH54Li5K6Uk68+bj9q9M3SaBoySOoZF
+         8AiHf1FIVoUXL9x123+skO5We1cnUFlgyjDbV0eyUjSpjv/4GrqcRVoPPC/7S1zNPPEC
+         SJxA==
+X-Gm-Message-State: AOAM532VPUl+XXjb2AKtnfRkvbZBHAJJRT4awdEmGgH78SRCP8bJdjKI
+        2NSz8QdAmpayGUugLXtPwegj2Q==
+X-Google-Smtp-Source: ABdhPJygN61G/pPtEL0XYbZfLV74sPBmvxLtRPL9SyStjuicJwun+0rTKfWdXamhoMZMkMTQQ49AqA==
+X-Received: by 2002:adf:e70a:: with SMTP id c10mr28946099wrm.425.1602504260962;
+        Mon, 12 Oct 2020 05:04:20 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id q2sm24366964wrw.40.2020.10.12.05.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 05:04:20 -0700 (PDT)
+References: <160226839426.5692.13107801574043388675.stgit@john-Precision-5820-Tower> <160226863689.5692.13861422742592309285.stgit@john-Precision-5820-Tower>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, lmb@cloudflare.com
+Subject: Re: [bpf-next PATCH v3 4/6] bpf, sockmap: remove dropped data on errors in redirect case
+In-reply-to: <160226863689.5692.13861422742592309285.stgit@john-Precision-5820-Tower>
+Date:   Mon, 12 Oct 2020 14:04:19 +0200
+Message-ID: <87ft6jr6po.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <1602166338-21378-1-git-send-email-magnus.karlsson@gmail.com>
- <43b0605d-f0c9-b81c-4d16-344a7832e083@iogearbox.net> <CAJ8uoz3nfDe0a9Vp0NmnHVv5qM+kvqR-f6Yd0keKSqctNzi6=g@mail.gmail.com>
- <CAJ8uoz1Z4dpaoK5th092gid+xbcp1Rz1wkPXZuuceh5y0wvKYw@mail.gmail.com>
-In-Reply-To: <CAJ8uoz1Z4dpaoK5th092gid+xbcp1Rz1wkPXZuuceh5y0wvKYw@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 12 Oct 2020 13:13:06 +0200
-Message-ID: <CAJ8uoz0V+nLc7KVe9NjZJ6FpKxJUcubm7K699g1C70+tLuWJpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: introduce padding between ring pointers
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 11:37 AM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
+On Fri, Oct 09, 2020 at 08:37 PM CEST, John Fastabend wrote:
+> In the sk_skb redirect case we didn't handle the case where we overrun
+> the sk_rmem_alloc entry on ingress redirect or sk_wmem_alloc on egress.
+> Because we didn't have anything implemented we simply dropped the skb.
+> This meant data could be dropped if socket memory accounting was in
+> place.
 >
-> On Mon, Oct 12, 2020 at 10:37 AM Magnus Karlsson
-> <magnus.karlsson@gmail.com> wrote:
-> >
-> > On Fri, Oct 9, 2020 at 5:03 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > >
-> > > On 10/8/20 4:12 PM, Magnus Karlsson wrote:
-> > > > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > >
-> > > > Introduce one cache line worth of padding between the producer and
-> > > > consumer pointers in all the lockless rings. This so that the HW
-> > > > adjacency prefetcher will not prefetch the consumer pointer when the
-> > > > producer pointer is used and vice versa. This improves throughput
-> > > > performance for the l2fwd sample app with 2% on my machine with HW
-> > > > prefetching turned on.
-> > > >
-> > > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > >
-> > > Applied, thanks!
-> > >
-> > > >   net/xdp/xsk_queue.h | 4 ++++
-> > > >   1 file changed, 4 insertions(+)
-> > > >
-> > > > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> > > > index dc1dd5e..3c235d2 100644
-> > > > --- a/net/xdp/xsk_queue.h
-> > > > +++ b/net/xdp/xsk_queue.h
-> > > > @@ -15,6 +15,10 @@
-> > > >
-> > > >   struct xdp_ring {
-> > > >       u32 producer ____cacheline_aligned_in_smp;
-> > > > +     /* Hinder the adjacent cache prefetcher to prefetch the consumer pointer if the producer
-> > > > +      * pointer is touched and vice versa.
-> > > > +      */
-> > > > +     u32 pad ____cacheline_aligned_in_smp;
-> > > >       u32 consumer ____cacheline_aligned_in_smp;
-> > > >       u32 flags;
-> > > >   };
-> > > >
-> > >
-> > > I was wondering whether we should even generalize this further for reuse
-> > > elsewhere e.g. ...
-> > >
-> > > diff --git a/include/linux/cache.h b/include/linux/cache.h
-> > > index 1aa8009f6d06..5521dab01649 100644
-> > > --- a/include/linux/cache.h
-> > > +++ b/include/linux/cache.h
-> > > @@ -85,4 +85,17 @@
-> > >   #define cache_line_size()      L1_CACHE_BYTES
-> > >   #endif
-> > >
-> > > +/*
-> > > + * Dummy element for use in structs in order to pad a cacheline
-> > > + * aligned element with an extra cacheline to hinder the adjacent
-> > > + * cache prefetcher to prefetch the subsequent struct element.
-> > > + */
-> > > +#ifndef ____cacheline_padding_in_smp
-> > > +# ifdef CONFIG_SMP
-> > > +#  define ____cacheline_padding_in_smp u8 :8 ____cacheline_aligned_in_smp
-> > > +# else
-> > > +#  define ____cacheline_padding_in_smp
-> > > +# endif /* CONFIG_SMP */
-> > > +#endif
-> > > +
-> > >   #endif /* __LINUX_CACHE_H */
-> > > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> > > index cdb9cf3cd136..1da36423e779 100644
-> > > --- a/net/xdp/xsk_queue.h
-> > > +++ b/net/xdp/xsk_queue.h
-> > > @@ -15,11 +15,9 @@
-> > >
-> > >   struct xdp_ring {
-> > >          u32 producer ____cacheline_aligned_in_smp;
-> > > -       /* Hinder the adjacent cache prefetcher to prefetch the consumer
-> > > -        * pointer if the producer pointer is touched and vice versa.
-> > > -        */
-> > > -       u32 pad ____cacheline_aligned_in_smp;
-> > > +       ____cacheline_padding_in_smp;
-> > >          u32 consumer ____cacheline_aligned_in_smp;
-> > > +       ____cacheline_padding_in_smp;
-> > >          u32 flags;
-> > >   };
-> >
-> > This should be beneficial in theory, though I could not measure any
-> > statistically significant improvement. Though, the flags variable is
-> > touched much less frequently than the producer and consumer pointers,
-> > so that might explain it. We also need to make the compiler allocate
-> > flags to a cache line 128 bytes (2 cache lines) from the consumer
-> > pointer like this:
-> >
-> > u32 consumer ____cacheline_aligned_in_smp;
-> > ____cacheline_padding_in_smp;
-> > u32 flags ____cacheline_aligned_in_smp;
-> >
-> > > ... was there any improvement to also pad after the consumer given the struct
-> > > xdp_ring is also embedded into other structs?
-> >
-> > Good idea. Yes, I do believe I see another ~0.4% increase and more
-> > stable high numbers when trying this out. The xdp_ring is followed by
-> > the ring descriptors themselves in both the rt/tx rings and the umem
-> > rings. And these rings are quite large, 2K in the sample app, so
-> > accessed less frequently (1/8th of the time with a batch size of 256
-> > and ring size 2K) which might explain the lower increase. In the end,
-> > I ended up with the following struct:
-> >
-> > u32 producer ____cacheline_aligned_in_smp;
-> > ____cacheline_padding_in_smp;
-> > u32 consumer ____cacheline_aligned_in_smp;
-> > ____cacheline_padding_in_smp;
-> > u32 flags ____cacheline_aligned_in_smp;
-> > ____cacheline_padding_in_smp;
+> This fixes the above dropped data case by moving the memory checks
+> later in the code where we actually do the send or recv. This pushes
+> those checks into the workqueue and allows us to return an EAGAIN error
+> which in turn allows us to try again later from the workqueue.
 >
-> Actually, this might make more sense and save some memory:
+> Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  net/core/skmsg.c |   28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
 >
-> u32 producer ____cacheline_aligned_in_smp;
-> ____cacheline_padding_in_smp;
-> u32 consumer ____cacheline_aligned_in_smp;
-> u32 flags;
-> ____cacheline_padding_in_smp;
->
-> So keep the flags colocated with the consumer on the same cache line.
-> The reason I put it there to start with was that it is usually set in
-> conjunction with the consumer pointer being updated. This might also
-> explain why I did not see any performance improvement by putting it on
-> its own 128-byte cache line. In summary, we make sure producer and
-> consumer are separated with 128 bytes as well as consumer and the
-> start of the descriptor ring.
 
-Nope, that was a bad idea. After measuring, this one produces worse
-performance than the original suggestion with padding in between all
-members. Cannot explain why at the moment, but the numbers are
-convincing and above noise level for sure. So let us keep this one:
+[...]
 
-u32 producer ____cacheline_aligned_in_smp;
-____cacheline_padding_in_smp;
-u32 consumer ____cacheline_aligned_in_smp;
-____cacheline_padding_in_smp;
-u32 flags ____cacheline_aligned_in_smp;
-____cacheline_padding_in_smp;
+> @@ -709,30 +711,28 @@ static void sk_psock_skb_redirect(struct sk_buff *s=
+kb)
+>  {
+>  	struct sk_psock *psock_other;
+>  	struct sock *sk_other;
+> -	bool ingress;
+>
+>  	sk_other =3D tcp_skb_bpf_redirect_fetch(skb);
+> +	/* This error is a buggy BPF program, it returned a redirect
+> +	 * return code, but then didn't set a redirect interface.
+> +	 */
+>  	if (unlikely(!sk_other)) {
+>  		kfree_skb(skb);
+>  		return;
+>  	}
+>  	psock_other =3D sk_psock(sk_other);
+> +	/* This error indicates the socket is being torn down or had another
+> +	 * error that caused the pipe to break. We can't send a packet on
+> +	 * a socket that is in this state so we drop the skb.
+> +	 */
+>  	if (!psock_other || sock_flag(sk_other, SOCK_DEAD) ||
+>  	    !sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED)) {
+>  		kfree_skb(skb);
+>  		return;
+>  	}
+>
+> -	ingress =3D tcp_skb_bpf_ingress(skb);
+> -	if ((!ingress && sock_writeable(sk_other)) ||
+> -	    (ingress &&
+> -	     atomic_read(&sk_other->sk_rmem_alloc) <=3D
+> -	     sk_other->sk_rcvbuf)) {
 
-> > Do you want to submit a patch, or shall I do it? I like your
-> > ____cacheline_padding_in_smp better than my explicit "padN" member.
-> >
-> > Thanks: Magnus
-> >
-> > > Thanks,
-> > > Daniel
+I'm wondering why the check for going over socket's rcvbuf was removed?
+
+I see that we now rely exclusively on
+sk_psock_skb_ingress=E2=86=92sk_rmem_schedule for sk_rmem_alloc checks, whi=
+ch I
+don't think applies the rcvbuf limit.
+
+> -		skb_queue_tail(&psock_other->ingress_skb, skb);
+> -		schedule_work(&psock_other->work);
+> -	} else {
+> -		kfree_skb(skb);
+> -	}
+> +	skb_queue_tail(&psock_other->ingress_skb, skb);
+> +	schedule_work(&psock_other->work);
+>  }
+>
+>  static void sk_psock_tls_verdict_apply(struct sk_buff *skb, int verdict)
