@@ -2,84 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF23128AB16
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 01:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7875B28AB47
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 02:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387801AbgJKXaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Oct 2020 19:30:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387799AbgJKXaa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Oct 2020 19:30:30 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A606B207D3;
-        Sun, 11 Oct 2020 23:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602459030;
-        bh=Ff5geeY/vb97bfI4zCs5RCpvI6lIo23pIvbrLYF4c4c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G9FsdsewQwMBFb7UQTbFtf+TDLhMBELsBHeNDlYUj+HcZ4CRs1+BtErsNHfBbfKBQ
-         dXV8dssCMhtFoWncbY9A2xbf48IL9TQI+uWFRbVWiLK6ffVky0UQPxru74q3urBYuV
-         np9ajpkHbkn90Bs8+CtHHKbVNscv7lnDZx3j1NJM=
-Date:   Sun, 11 Oct 2020 16:30:28 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        eyal.birger@gmail.com
-Subject: Re: [PATCH bpf-next V3 0/6] bpf: New approach for BPF MTU handling
-Message-ID: <20201011163028.5f436f39@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <5f824950d4b24_1867f20894@john-XPS-13-9370.notmuch>
-References: <160216609656.882446.16642490462568561112.stgit@firesoul>
-        <20201009093319.6140b322@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <5f80ccca63d9_ed74208f8@john-XPS-13-9370.notmuch>
-        <20201009160010.4b299ac3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201010124402.606f2d37@carbon>
-        <20201010093212.374d1e68@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <5f824950d4b24_1867f20894@john-XPS-13-9370.notmuch>
+        id S1727202AbgJLA7a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Oct 2020 20:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727132AbgJLA73 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Oct 2020 20:59:29 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66023C0613CE;
+        Sun, 11 Oct 2020 17:59:29 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 133so15245252ljj.0;
+        Sun, 11 Oct 2020 17:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jWvlIBzh+NxbUx8sE9GgdjQVlb7CmsH9J6UF2pj8tsA=;
+        b=LABqZHmq6JY2YZLhX5Ds7Y1BT6ng2OTIsyuBOKIik1+vpc+rLWhUb3UoPYfszspiwR
+         AOQgEf7V1DcX6zFqK8YgY34xm3v7MBwdrWQ6VshQZo0vcYe9QmgLVeLXFG8jiG7Ln+k0
+         J2UPfkRqfzkmShubcDGdUYWhhM8rFY6pwFV4aK7VUfgrkCc2HU07ro5UhP9m+hyln9QF
+         8hw3oFy2WAgVK7riMHt+YfvE1QWT0YGjuHLykONzRTPnsfmpw5aakuvfe/FrPe5Uj88u
+         XDMFfp9H3k50O7nTW1rlQz6YbhUimVcgoU5YeXFnixHTKxe/dLBzNoeYtbAGLJGxXLUG
+         zLZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=jWvlIBzh+NxbUx8sE9GgdjQVlb7CmsH9J6UF2pj8tsA=;
+        b=WIVrbgUj2F3woQkrRlLNnhb9NxQ/tHvDMwkpGa+X7h3MwuQzZzuBApKCkGey6IBjIp
+         /iaa2da0w00pLVgQtxkHl0m1aeOWUeL+HYmeQWu0wJgmGr7z4ZA/mvdyQzIWju7ArqY4
+         hqW+HVE3reItBa1zJ2x/jCh3+eJPhvSmMLIdjh7NbHRbI1Q7usCFJRCwtXMxYKhdG9y+
+         aRkxugKY9+nkGz/oy4aLcwu/qGseJrcxLDInThSFEd8743JqsIvQrn/S8y6+O99y8htH
+         0k5l0o0i675k0lDev0TlN4ImCD3GNlDSgII2RIeO0wIshuvDQAu5+VB82iV9MLT5IjVK
+         8fRw==
+X-Gm-Message-State: AOAM530Kj9LoDEBH1lJ8x5878sLTTZ++9othK3q4lOn6BTesLjjpR7Nr
+        jt3k2pBRb+7PMlPXlUFBE+qfefNKM4vMsU+3nMLomn/ZyQs=
+X-Google-Smtp-Source: ABdhPJwwXkOCmdtfQdDCkSYAEFUSxSjTaaKanT7huL1qg1DEApgdSI/1J/E+2v8mivEIW2D5XJ+RzPRzLJAh6/PY+ss=
+X-Received: by 2002:a2e:9015:: with SMTP id h21mr9871539ljg.450.1602464367764;
+ Sun, 11 Oct 2020 17:59:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 11 Oct 2020 17:59:16 -0700
+Message-ID: <CAADnVQ+ycd8T4nBcnAwr5FHX75_JhWmqdHzXEXwx5udBv8uwiQ@mail.gmail.com>
+Subject: merge window is open. bpf-next is still open.
+To:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 10 Oct 2020 16:52:48 -0700 John Fastabend wrote:
-> Jakub Kicinski wrote:
-> > FWIW I took a quick swing at testing it with the HW I have and it did
-> > exactly what hardware should do. The TX unit entered an error state 
-> > and then the driver detected that and reset it a few seconds later.  
-> 
-> Ths seems like the right thing to do in my opinion. If the
-> stack gives the NIC garbage entering error state and reset
-> sounds expected. Thanks for actually trying it by the way.
-> 
-> We might have come to different conclusions though from my side
-> the conclusion is, good nothing horrible happened no MTU check needed.
-> If the user spews garbage at the nic from the BPF program great it
-> gets dropped and causes the driver/nic to punish you a bit by staying
-> hung. Fix your BPF program.
+Hi BPF developers,
 
-Right probably difference of perspective. I understand that from
-Cilium's POV you can probably feel pretty confident about the BPF
-programs that are running. I bet Maciej is even more confident with
-Android!
+The merge window has just opened.
+Which would typically mean that bpf-next is closing,
+but things are going to be a little bit different this time.
+We're stopping to accept new features into bpf-next/master.
+The few pending patches might get applied and imminent pull-req into
+net-next will be sent.
+After that bpf-next/master will be frozen for the duration of the merge window,
+but bpf-next/next branch will be open for the new features.
 
-But in principle BPF was supposed to make the kernel end user
-programmable. We have to ensure it's safe.
+So please continue the BPF development and keep sending your patches.
+They will be reviewed as usual.
+After the merge window everything that is accumulated in bpf-next/next
+will be applied to bpf-next/master.
+Due to merge/rebase sha-s in bpf-next/next will likely be unstable.
 
-> > > > And all this for what? Saving 2 cycles on a branch that will almost
-> > > > never be taken?    
-> 
-> 2 cycles here and 2 cycles there .... plus complexity to think about
-> it. Eventually it all adds up. At the risk of entering bike shedding
-> territory maybe.
+Please focus on fixing bugs that may get exposed during the merge window.
+The bpf tree is always open for bug fixes.
 
-Not sure it's a bike shedding territory but I doubt you want to be
-making either the complexity or the performance argument to a fellow 
-TLS maintainer.. cough cough.. ;)
+Thanks!
