@@ -2,110 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B37F28C21D
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 22:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1689A28C348
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 22:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbgJLUPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 16:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
+        id S1729557AbgJLUuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 16:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726877AbgJLUPa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:15:30 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D01C0613D0;
-        Mon, 12 Oct 2020 13:15:29 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id h20so18087591lji.9;
-        Mon, 12 Oct 2020 13:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AaqfZGksXkb468Gud1+tLV9XuIYPHVuRqNQnRNQ+1J0=;
-        b=Bx12m4iA6fQ/goPMrhWvLBufJeqOp+LFvD7RkANGGP8w10/846PuAuCAWsXVMmNDLC
-         YoBon8nLG1QDcFXadP/O4plfrTPrnw3UrIzhcUDL0tCvOcH3EmrId1xJLRObfYkc2KUI
-         JuEdqCQEt0/fohmh7KfX+HBoyJvmvy6Ajs56PgnUMq1i9ntuYwiTBEZalMJ/75pzVTX/
-         dViOdDYVU88Grbn07Bo6Asr3pZXZapPj2aHPfJZP/M/8qB8u4sg0RETZduQo5q2jlXW5
-         3Pg3FcHsWMdcgmqukQFliEKo616oU9QvZ/CGzvkofO13xSCkV13mNq69rqBwQm2yynPW
-         3a1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AaqfZGksXkb468Gud1+tLV9XuIYPHVuRqNQnRNQ+1J0=;
-        b=mmYtU9vGwI+oStZRdjDYeBbTXKB56fIeVjXasCe6EwxFr+qUJXKbvqXHs59ByxoAMh
-         UA4iqhiO9WZ/hzNFMSnqVrzUVEqzKtoeJs0pBYLddxAOpDC5oRPs00DzcO5o9djaQq2c
-         vWl4Dv88UJfRoMzWgIYAJGo6TnwB83VjXt4EochN3z/1fzWO+Ns5yoei0UUEZJPMV2gi
-         CahoTym7cz/IZ+C2MsIF3apFGWLBsYPhLSBNnHNelOZn/S79N+Y/nSirl9cmBvwXnTuW
-         xUUUQc3btKhMcEkgBm7ohxh3+WMVmi8DGjO0dhbUpgPHfVeIya2Qcgjg5mP9D5ZIGNKu
-         TIjQ==
-X-Gm-Message-State: AOAM531vB7DFGZMx1SVuiOck13CZDgoNuTD4egv+jSouNFEQ8QDYydDE
-        51MEmAvql8kzAf51jnK8l3QEtcN4uxbN0CyzN1jaHLJgJPi/eg==
-X-Google-Smtp-Source: ABdhPJy6QhBZ3ble63R6ZSgUdWmc12/XXvM/YIS/V1g9gawx4lGIyjXcmisHO83owOnuqXj/3hq1vO1Spj83bD64+C8=
-X-Received: by 2002:a2e:b8cc:: with SMTP id s12mr4952914ljp.2.1602533727747;
- Mon, 12 Oct 2020 13:15:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAADnVQ+ycd8T4nBcnAwr5FHX75_JhWmqdHzXEXwx5udBv8uwiQ@mail.gmail.com>
- <20201012110046.3b2c3c27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201012110046.3b2c3c27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 12 Oct 2020 13:15:16 -0700
-Message-ID: <CAADnVQKn=CxcOpjSWLsD+VC5rviC6sMfrhw5jrPCU60Bcx5Ssw@mail.gmail.com>
-Subject: Re: merge window is open. bpf-next is still open.
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S1726510AbgJLUuW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:50:22 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86F1C0613D0;
+        Mon, 12 Oct 2020 13:50:21 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C99mT3wmGz9sSn;
+        Tue, 13 Oct 2020 07:50:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1602535818;
+        bh=YUhO3LaBBnxchR2B7Hh4aVMkJSvy8cXmxp+QLkuloM8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GbKdciGWDXoVsuUGJVKrod7kNRy5kw99IxLh/3mRLQKiQgcVL642MN87rxJD3FUJV
+         3lyoGipdeHtqx9uI1Kl09NOD1NlA7+1TaXJJuUZikmIM/dJlAKtxensySEd3w6SYzO
+         IdY8jT7cWB2uq/LwBJNGsfLf5SzLOJNeREebMqd53n8CyJUjEWBabNMvtjBRKfgIFl
+         7JJksu1rZviSlnDjmJcire6PMULoSJqlssr3w1xbw3bVu/17Ne7+QZRjpbX7Ji78We
+         1Uz5/xrP8bUe1lHXAdfIQaPK2XHE26MJ2DWa40CeOxk1aWgrPToQGDy0x1SDbmamRx
+         v/sVSYq5/D3+Q==
+Date:   Tue, 13 Oct 2020 07:50:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>,
         "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: merge window is open. bpf-next is still open.
+Message-ID: <20201013075016.61028eee@canb.auug.org.au>
+In-Reply-To: <CAADnVQKn=CxcOpjSWLsD+VC5rviC6sMfrhw5jrPCU60Bcx5Ssw@mail.gmail.com>
+References: <CAADnVQ+ycd8T4nBcnAwr5FHX75_JhWmqdHzXEXwx5udBv8uwiQ@mail.gmail.com>
+        <20201012110046.3b2c3c27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAADnVQKn=CxcOpjSWLsD+VC5rviC6sMfrhw5jrPCU60Bcx5Ssw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/WQYHjQDj8tSUW..gW_rk0cz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 11:00 AM Jakub Kicinski <kuba@kernel.org> wrote:
+--Sig_/WQYHjQDj8tSUW..gW_rk0cz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Alexei,
+
+On Mon, 12 Oct 2020 13:15:16 -0700 Alexei Starovoitov <alexei.starovoitov@g=
+mail.com> wrote:
 >
-> On Sun, 11 Oct 2020 17:59:16 -0700 Alexei Starovoitov wrote:
-> > Hi BPF developers,
-> >
-> > The merge window has just opened.
-> > Which would typically mean that bpf-next is closing,
-> > but things are going to be a little bit different this time.
-> > We're stopping to accept new features into bpf-next/master.
-> > The few pending patches might get applied and imminent pull-req into
-> > net-next will be sent.
-> > After that bpf-next/master will be frozen for the duration of the merge window,
-> > but bpf-next/next branch will be open for the new features.
-> >
-> > So please continue the BPF development and keep sending your patches.
-> > They will be reviewed as usual.
-> > After the merge window everything that is accumulated in bpf-next/next
-> > will be applied to bpf-next/master.
-> > Due to merge/rebase sha-s in bpf-next/next will likely be unstable.
-> >
-> > Please focus on fixing bugs that may get exposed during the merge window.
-> > The bpf tree is always open for bug fixes.
->
-> FWIW for CIs switching between bpf-next/next and bpf-next/master could
-> be somewhat fragile.
+> You mean keep pushing into bpf-next/master ?
+> The only reason is linux-next.
+> But coming to think about it again, let's fix linux-next process instead.
+>=20
+> Stephen,
+> could you switch linux-next to take from bpf.git during the merge window
+> and then go back to bpf-next.git after the merge window?
+> That will help everyone. CIs wouldn't need to flip flop.
+> People will keep basing their features on bpf-next/master all the time, e=
+tc.
+> The only inconvenience is for linux-next. I think that's a reasonable tra=
+de-off.
+> In other words bpf-next/master will always be open for new features.
+> After the merge window bpf-next/master will get rebased to rc1.
 
-CIs can adjust. That's not a big deal, but having two branches definitely
-adds a point of confusion to people.
-Song proposed earlier to use bpf-next/dev and push patches into /master and
-into /dev branches always, so folks/CI can always use bpf-next/dev.
-Unfortunately sha-s will be different, so it's not workable.
+I already fetch bpf.git#master all the time (that is supposed to be
+fixes for the current release and gets merged into the net tree, right?)
 
-> Since bpf-next/master is frozen during the merge
-> window, why not apply the patches there?
+How about this: you create a for-next branch in the bpf-next tree and I
+fetch that instead of your master branch.  What you do is always work
+in your master branch and whenever it is "ready", you just merge master
+into for-next and that is what linux-next works with (net-next still
+merges your master branch as now).  So the for-next branch consists
+only of consecutive merges of your master branch.
 
-You mean keep pushing into bpf-next/master ?
-The only reason is linux-next.
-But coming to think about it again, let's fix linux-next process instead.
+During the merge window you do *not* merge master into for-next (and,
+in fact, everything in for-next should have been merged into the
+net-next tree anyway, right?) and then when -rc1 is released, you reset
+for-next to -rc1 and start merging master into it again.
 
-Stephen,
-could you switch linux-next to take from bpf.git during the merge window
-and then go back to bpf-next.git after the merge window?
-That will help everyone. CIs wouldn't need to flip flop.
-People will keep basing their features on bpf-next/master all the time, etc.
-The only inconvenience is for linux-next. I think that's a reasonable trade-off.
-In other words bpf-next/master will always be open for new features.
-After the merge window bpf-next/master will get rebased to rc1.
+This way the commit SHA1s are stable and I don't have to remember to
+switch branches/trees every merge window (which I would forget
+sometimes for sure :-)).
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/WQYHjQDj8tSUW..gW_rk0cz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+EwYgACgkQAVBC80lX
+0Gy/Qgf/cvvvkk2O3hpxESyVTDJEn7+6KERQumpV5ZJoxjjvIiV13MM/wDAHjwcd
+jtkTi9EDRvTgz58NKWttLoWMKr+SjQS+Y3Jy4a1fOYuGxpD9UYGImyKIo3cVgIZ/
+qXHcKzUT78uifnJWXrZMSqALZWbJNu8MXfEWfEl+81B6ZuYg7hlfO46ZELStxY8H
+hqE7toqQlUy0sP3/x6EHm2sz+/mouy4PNt2ViCR/hloRnBVqWCW9N7PUna9KatLi
+JH4psdGDNYGHBUsXDcXiwkMLBbUvIfJjkDiKuxQVt8OUDKvXsbH+zWVwZK44BxOh
+eilB24Od+LdOcJPT+rZqS+QyGHeCxw==
+=xj0d
+-----END PGP SIGNATURE-----
+
+--Sig_/WQYHjQDj8tSUW..gW_rk0cz--
