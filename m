@@ -2,87 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5981128AB5D
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 03:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F8828AB66
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 03:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727260AbgJLBVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Oct 2020 21:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgJLBVV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Oct 2020 21:21:21 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FCAFC0613CE;
-        Sun, 11 Oct 2020 18:21:20 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id a7so15570612lfk.9;
-        Sun, 11 Oct 2020 18:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2TCBI/PBpDL1NHcOhIQ+uhvSm8Uq53rPu6VzsFICHZo=;
-        b=Uj+Fniap6lqy6beyyGRanUdT9p4CR923o/wKlh++OTF+hqYPBtfLpEEJP5vRvAQM6L
-         +aK3Qz83hOm6QPZ0VVdYpWFc9sFOIuSsd6cI0YJVOl1U1CdPxIsz9+2r4rKU404DZcFH
-         NaFA4FyiYCIIzzG/an8/TvglN66Q/pC+IUZUKfW8IP0sgQiDKnHNLMQs1fbOab/tavXq
-         rh2EazE9gIkp7OLyyPYDmpgEk5sqBIwfmmFGNGEUA6N+a7Y3JiL+N72NecHVMBWNfuPb
-         4XNvuFqcSUIS7zTzvKIwaalLunuQsRzqhV+ZWweNzLf1Hp4Pqni4A/EDE12KcjgNdNx1
-         7OCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2TCBI/PBpDL1NHcOhIQ+uhvSm8Uq53rPu6VzsFICHZo=;
-        b=oRsFLIIAjqcXQgzE693Wdtk7qPPmNcOn4luL3Q1zW1btl9c26KpP0FLqAbbOk1pUUj
-         tKxf73SYEXs1G3PZK3OrsaTjQ3TrX9yujTOh5oSSfg8rRwB2mdEzLSZVA9m9Yr4RaMfR
-         N6wQq9mo/0I1Mu+bcuIj72Uv7wXTyNERA45j8Rpo7HCLv3aoelAhoDVEA27qHv7CdyuV
-         1ECmBVibNXmLXbx7lrjp1GxAOP6oRVMqEirbhEO1mOeOzdlxJc0737u74swEbK4nakCt
-         OaNXtlwkzky6bn/qyAzvRx2rsFyxuHTQG2ECnydqyu784JL5kPeHru0Wk7vri2LfWmqR
-         41Bw==
-X-Gm-Message-State: AOAM530cJLlOSPBcKFXP3hbWTqiQvvjB6NEX/pLvLqNzgCFrEKSPg7xl
-        aX2rsysSHrtpjzAeKX/+xePCn/KXacO71k+c1ak=
-X-Google-Smtp-Source: ABdhPJxcXimExNSbt/riOewy0F5UEGHJXvbGST95O4fPZNKOp7oethJ0Y0C6M4iKwdRSKqBGRdFQ+b1U/PvdcQDA/U0=
-X-Received: by 2002:ac2:58d2:: with SMTP id u18mr5895982lfo.390.1602465678557;
- Sun, 11 Oct 2020 18:21:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201010084417.5400-1-tian.xianting@h3c.com>
-In-Reply-To: <20201010084417.5400-1-tian.xianting@h3c.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 11 Oct 2020 18:21:07 -0700
-Message-ID: <CAADnVQJUL7BynGMD_nGu8y=D1yv6TybOxeSh03TrkD7kS0aOrA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Avoid allocing memory on memoryless numa node
-To:     Xianting Tian <tian.xianting@h3c.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1725917AbgJLB0U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Oct 2020 21:26:20 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:31205 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726543AbgJLB0U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Oct 2020 21:26:20 -0400
+Received: from DAG2EX06-IDC.srv.huawei-3com.com ([10.8.0.69])
+        by h3cspam01-ex.h3c.com with ESMTPS id 09C1Q0W3023693
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 12 Oct 2020 09:26:00 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX06-IDC.srv.huawei-3com.com (10.8.0.69) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 12 Oct 2020 09:26:01 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Mon, 12 Oct 2020 09:26:01 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        "Jakub Kicinski" <kuba@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        "John Fastabend" <john.fastabend@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         KP Singh <kpsingh@chromium.org>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: RE: [PATCH] bpf: Avoid allocing memory on memoryless numa node
+Thread-Topic: [PATCH] bpf: Avoid allocing memory on memoryless numa node
+Thread-Index: AQHWnuLrmIxw4uY1XUG+lUKVObi7NKmSqAmAgACHNeA=
+Date:   Mon, 12 Oct 2020 01:26:01 +0000
+Message-ID: <21cff6313475470e9b316911c748f890@h3c.com>
+References: <20201010084417.5400-1-tian.xianting@h3c.com>
+ <CAADnVQJUL7BynGMD_nGu8y=D1yv6TybOxeSh03TrkD7kS0aOrA@mail.gmail.com>
+In-Reply-To: <CAADnVQJUL7BynGMD_nGu8y=D1yv6TybOxeSh03TrkD7kS0aOrA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 09C1Q0W3023693
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 1:55 AM Xianting Tian <tian.xianting@h3c.com> wrote:
->
-> In architecture like powerpc, we can have cpus without any local memory
-> attached to it. In such cases the node does not have real memory.
->
-> Use local_memory_node(), which is guaranteed to have memory.
-> local_memory_node is a noop in other architectures that does not support
-> memoryless nodes.
-...
->         /* Have map->numa_node, but choose node of redirect target CPU */
-> -       numa = cpu_to_node(cpu);
-> +       numa = local_memory_node(cpu_to_node(cpu));
-
-There are so many calls to cpu_to_node() throughout the kernel.
-Are you going to convert all of them one patch at a time to the above sequence?
-Why not do this CONFIG_HAVE_MEMORYLESS_NODES
-in cpu_to_node() instead?
-and save the churn.
+VGhhbmtzIEFsZXhlaSBmb3IgeW91ciBzdWdnZXN0aW9uLA0KSSB3aWxsIHRyeSB0byBkbyBpdC4N
+Cg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFsZXhlaSBTdGFyb3ZvaXRvdiBb
+bWFpbHRvOmFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb21dIA0KU2VudDogTW9uZGF5LCBPY3Rv
+YmVyIDEyLCAyMDIwIDk6MjEgQU0NClRvOiB0aWFueGlhbnRpbmcgKFJEKSA8dGlhbi54aWFudGlu
+Z0BoM2MuY29tPg0KQ2M6IEFsZXhlaSBTdGFyb3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+OyBEYW5p
+ZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PjsgRGF2aWQgUy4gTWlsbGVyIDxkYXZl
+bUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47IEplc3Bl
+ciBEYW5nYWFyZCBCcm91ZXIgPGhhd2tAa2VybmVsLm9yZz47IEpvaG4gRmFzdGFiZW5kIDxqb2hu
+LmZhc3RhYmVuZEBnbWFpbC5jb20+OyBNYXJ0aW4gS2FGYWkgTGF1IDxrYWZhaUBmYi5jb20+OyBT
+b25nIExpdSA8c29uZ2xpdWJyYXZpbmdAZmIuY29tPjsgWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNv
+bT47IEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlpbkBmYi5jb20+OyBLUCBTaW5naCA8a3BzaW5naEBj
+aHJvbWl1bS5vcmc+OyBOZXR3b3JrIERldmVsb3BtZW50IDxuZXRkZXZAdmdlci5rZXJuZWwub3Jn
+PjsgYnBmIDxicGZAdmdlci5rZXJuZWwub3JnPjsgTEtNTCA8bGludXgta2VybmVsQHZnZXIua2Vy
+bmVsLm9yZz4NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIGJwZjogQXZvaWQgYWxsb2NpbmcgbWVtb3J5
+IG9uIG1lbW9yeWxlc3MgbnVtYSBub2RlDQoNCk9uIFNhdCwgT2N0IDEwLCAyMDIwIGF0IDE6NTUg
+QU0gWGlhbnRpbmcgVGlhbiA8dGlhbi54aWFudGluZ0BoM2MuY29tPiB3cm90ZToNCj4NCj4gSW4g
+YXJjaGl0ZWN0dXJlIGxpa2UgcG93ZXJwYywgd2UgY2FuIGhhdmUgY3B1cyB3aXRob3V0IGFueSBs
+b2NhbCANCj4gbWVtb3J5IGF0dGFjaGVkIHRvIGl0LiBJbiBzdWNoIGNhc2VzIHRoZSBub2RlIGRv
+ZXMgbm90IGhhdmUgcmVhbCBtZW1vcnkuDQo+DQo+IFVzZSBsb2NhbF9tZW1vcnlfbm9kZSgpLCB3
+aGljaCBpcyBndWFyYW50ZWVkIHRvIGhhdmUgbWVtb3J5Lg0KPiBsb2NhbF9tZW1vcnlfbm9kZSBp
+cyBhIG5vb3AgaW4gb3RoZXIgYXJjaGl0ZWN0dXJlcyB0aGF0IGRvZXMgbm90IA0KPiBzdXBwb3J0
+IG1lbW9yeWxlc3Mgbm9kZXMuDQouLi4NCj4gICAgICAgICAvKiBIYXZlIG1hcC0+bnVtYV9ub2Rl
+LCBidXQgY2hvb3NlIG5vZGUgb2YgcmVkaXJlY3QgdGFyZ2V0IENQVSAqLw0KPiAtICAgICAgIG51
+bWEgPSBjcHVfdG9fbm9kZShjcHUpOw0KPiArICAgICAgIG51bWEgPSBsb2NhbF9tZW1vcnlfbm9k
+ZShjcHVfdG9fbm9kZShjcHUpKTsNCg0KVGhlcmUgYXJlIHNvIG1hbnkgY2FsbHMgdG8gY3B1X3Rv
+X25vZGUoKSB0aHJvdWdob3V0IHRoZSBrZXJuZWwuDQpBcmUgeW91IGdvaW5nIHRvIGNvbnZlcnQg
+YWxsIG9mIHRoZW0gb25lIHBhdGNoIGF0IGEgdGltZSB0byB0aGUgYWJvdmUgc2VxdWVuY2U/DQpX
+aHkgbm90IGRvIHRoaXMgQ09ORklHX0hBVkVfTUVNT1JZTEVTU19OT0RFUyBpbiBjcHVfdG9fbm9k
+ZSgpIGluc3RlYWQ/DQphbmQgc2F2ZSB0aGUgY2h1cm4uDQo=
