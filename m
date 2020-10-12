@@ -2,218 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122D928C201
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 22:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B37F28C21D
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 22:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgJLUDj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 16:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
+        id S1727188AbgJLUPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 16:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgJLUDj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 16:03:39 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DFDC0613D0
-        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 13:03:39 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id a4so4952162ybq.13
-        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 13:03:39 -0700 (PDT)
+        with ESMTP id S1726877AbgJLUPa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 16:15:30 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D01C0613D0;
+        Mon, 12 Oct 2020 13:15:29 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id h20so18087591lji.9;
+        Mon, 12 Oct 2020 13:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VjndCiWSKlYI0zqF6tf4aFLnqL6fn+yk6q8liLO/qTg=;
-        b=DpN2yfLl68VvaBARVzQ4VBJnlAPhlXITAiETFv1oJCp5HPtCppGkpTQesyrndQWjM8
-         ydvsf2CNMq4Eqry/D+P8MVXG2H1tC6mNTJOOMKbIC+DwixdS8kThoPyQpWscS4Tp3+iQ
-         3zhjLMHnmerIn5m/x20WZX/GC064JHRbzU8WHdMY/EJy785vRd6EeF9KlfP6ATC4cRMi
-         zuAI5jEg7UmPxToUw0iF75nwbAYUqSm7jVXI3n0xwQ7ashRWUizyW0jKXIpBXQoxUAxs
-         U97EmqcYf+hnuqbgDJQVWfp4XiSEbxPRKaoZACsBHKoVYJfEu8mCKFPBKmes9em4nzo8
-         8RCw==
+         :cc;
+        bh=AaqfZGksXkb468Gud1+tLV9XuIYPHVuRqNQnRNQ+1J0=;
+        b=Bx12m4iA6fQ/goPMrhWvLBufJeqOp+LFvD7RkANGGP8w10/846PuAuCAWsXVMmNDLC
+         YoBon8nLG1QDcFXadP/O4plfrTPrnw3UrIzhcUDL0tCvOcH3EmrId1xJLRObfYkc2KUI
+         JuEdqCQEt0/fohmh7KfX+HBoyJvmvy6Ajs56PgnUMq1i9ntuYwiTBEZalMJ/75pzVTX/
+         dViOdDYVU88Grbn07Bo6Asr3pZXZapPj2aHPfJZP/M/8qB8u4sg0RETZduQo5q2jlXW5
+         3Pg3FcHsWMdcgmqukQFliEKo616oU9QvZ/CGzvkofO13xSCkV13mNq69rqBwQm2yynPW
+         3a1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VjndCiWSKlYI0zqF6tf4aFLnqL6fn+yk6q8liLO/qTg=;
-        b=Rb04MwVYlUTbzJ8bD+eCtTDsop8d6T4l9Hg36k9WHNmOp0oHxsNMhM2B+Ywv/kWb4F
-         E03Tm0foosFdZ/kQofcUnKzByYrHFmK7K+za9ze5ZYKHpWlgGB9Vd6uL0WhPC5N3p3aB
-         g88ur2zgTIi1DzUs4JrHoNrJimAzdwWE98eBp4X0tGhCuaDHYqO90yn29JtRw3oodDV2
-         cYMH5nry+By5sq9rPYeVIGpX7k+52EprK2ABEZI6lI0j5FZZjQzuc86zbcWeOEqHKEw2
-         sFVckaoRj1DjQqt+0kKEj5t3+Hut3qGvsJyII2mBGFkn5fUlRkyXUkD0FIrlgQwtWONo
-         Elcg==
-X-Gm-Message-State: AOAM532gjKF8tIOChmwS7kLAVZ5dYmWdS4NoieQksnmvCY39NFp8fNQp
-        a5+L3unLLJnC0ZCysySAxBWFxJXIaFdE8cuKV4E=
-X-Google-Smtp-Source: ABdhPJwPsXzDYpLxMEVP04zHCnak+OzW3nWIeH8wDowdf7n+ABPrWHRSwd4dJX4QlEDUDgH2n3PV0LyUgkzmZ8pKjE4=
-X-Received: by 2002:a25:8541:: with SMTP id f1mr31020871ybn.230.1602533018633;
- Mon, 12 Oct 2020 13:03:38 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=AaqfZGksXkb468Gud1+tLV9XuIYPHVuRqNQnRNQ+1J0=;
+        b=mmYtU9vGwI+oStZRdjDYeBbTXKB56fIeVjXasCe6EwxFr+qUJXKbvqXHs59ByxoAMh
+         UA4iqhiO9WZ/hzNFMSnqVrzUVEqzKtoeJs0pBYLddxAOpDC5oRPs00DzcO5o9djaQq2c
+         vWl4Dv88UJfRoMzWgIYAJGo6TnwB83VjXt4EochN3z/1fzWO+Ns5yoei0UUEZJPMV2gi
+         CahoTym7cz/IZ+C2MsIF3apFGWLBsYPhLSBNnHNelOZn/S79N+Y/nSirl9cmBvwXnTuW
+         xUUUQc3btKhMcEkgBm7ohxh3+WMVmi8DGjO0dhbUpgPHfVeIya2Qcgjg5mP9D5ZIGNKu
+         TIjQ==
+X-Gm-Message-State: AOAM531vB7DFGZMx1SVuiOck13CZDgoNuTD4egv+jSouNFEQ8QDYydDE
+        51MEmAvql8kzAf51jnK8l3QEtcN4uxbN0CyzN1jaHLJgJPi/eg==
+X-Google-Smtp-Source: ABdhPJy6QhBZ3ble63R6ZSgUdWmc12/XXvM/YIS/V1g9gawx4lGIyjXcmisHO83owOnuqXj/3hq1vO1Spj83bD64+C8=
+X-Received: by 2002:a2e:b8cc:: with SMTP id s12mr4952914ljp.2.1602533727747;
+ Mon, 12 Oct 2020 13:15:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
- <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net> <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
- <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net> <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
- <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net> <CAMy7=ZW6B+aHN-3dAf7-=kK8WpMZ0NmEmeVh67jVPrjsryx9sQ@mail.gmail.com>
- <CAEf4BzYJQ_RZgy8YCPxfF+QEkx9W+jeu-3O3CX+vEqTFtOT2Fw@mail.gmail.com>
- <CAMy7=ZWhAzJP5m3QW0gHe4rVFoETT=zhCcyVeKBuTcO=ttC=MA@mail.gmail.com>
- <CAEf4Bzbm7D+ygkoCCoTy8OR0krVWosS_o13Gv4Xd2jhOSC5a7Q@mail.gmail.com> <CAMy7=ZWoaYkMCfAN4YLzO52Gms3haZn8=k9YBXPz9FxqHxuCFA@mail.gmail.com>
-In-Reply-To: <CAMy7=ZWoaYkMCfAN4YLzO52Gms3haZn8=k9YBXPz9FxqHxuCFA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 12 Oct 2020 13:03:27 -0700
-Message-ID: <CAEf4BzbTs1T8AW8xiYU1KxtwxWhh6ieD7OLBm3k489-HErXDZw@mail.gmail.com>
-Subject: Re: libbpf error: unknown register name 'r0' in asm
-To:     Yaniv Agman <yanivagman@gmail.com>
+References: <CAADnVQ+ycd8T4nBcnAwr5FHX75_JhWmqdHzXEXwx5udBv8uwiQ@mail.gmail.com>
+ <20201012110046.3b2c3c27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201012110046.3b2c3c27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 12 Oct 2020 13:15:16 -0700
+Message-ID: <CAADnVQKn=CxcOpjSWLsD+VC5rviC6sMfrhw5jrPCU60Bcx5Ssw@mail.gmail.com>
+Subject: Re: merge window is open. bpf-next is still open.
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>
+        Network Development <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 1:24 PM Yaniv Agman <yanivagman@gmail.com> wrote:
+On Mon, Oct 12, 2020 at 11:00 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=
-=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-22:53 =D7=9E=D7=90=D7=
-=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
-> <=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+> On Sun, 11 Oct 2020 17:59:16 -0700 Alexei Starovoitov wrote:
+> > Hi BPF developers,
 > >
-> > On Fri, Oct 9, 2020 at 12:32 PM Yaniv Agman <yanivagman@gmail.com> wrot=
-e:
-> > >
-> > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=
-=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-21:39 =D7=9E=D7=90=
-=D7=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
-> > > <=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > >
-> > > > On Fri, Oct 9, 2020 at 11:33 AM Yaniv Agman <yanivagman@gmail.com> =
-wrote:
-> > > > >
-> > > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
-=D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-21:21 =D7=9E=D7=
-=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
-> > > > > <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > > >
-> > > > > > On 10/9/20 8:09 PM, Yaniv Agman wrote:
-> > > > > > > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=
-=9D =D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-20:39 =D7=9E=
-=D7=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
-> > > > > > > <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > > > >>
-> > > > > > >> On 10/9/20 6:56 PM, Yaniv Agman wrote:
-> > > > > > >>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=
-=D7=9D =D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-19:27 =D7=
-=9E=D7=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
-> > > > > > >>> <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
-> > > > > > >>>>
-> > > > > > >>>> [ Cc +Yonghong ]
-> > > > > > >>>>
-> > > > > > >>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
-> > > > > > >>>>> Pulling the latest changes of libbpf and compiling my app=
-lication with it,
-> > > > > > >>>>> I see the following error:
-> > > > > > >>>>>
-> > > > > > >>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: =
-error:
-> > > > > > >>>>> unknown register name 'r0' in asm
-> > > > > > >>>>>                         : "r0", "r1", "r2", "r3", "r4", "=
-r5");
-> > > > > > >>>>>
-> > > > > > >>>>> The commit which introduced this change is:
-> > > > > > >>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
-> > > > > > >>>>>
-> > > > > > >>>>> I'm not sure if I'm doing something wrong (missing includ=
-e?), or this
-> > > > > > >>>>> is a genuine error
-> > > > > > >>>>
-> > > > > > >>>> Seems like your clang/llvm version might be too old.
-> > > > > > >>>
-> > > > > > >>> I'm using clang 10.0.1
-> > > > > > >>
-> > > > > > >> Ah, okay, I see. Would this diff do the trick for you?
-> > > > > > >
-> > > > > > > Yes! Now it compiles without any problems!
-> > > > > >
-> > > > > > Great, thx, I'll cook proper fix and check with clang6 as Yongh=
-ong mentioned.
-> > > > > >
-> > > > >
-> > > > > Thanks!
-> > > > > Does this happen because I'm first compiling using "emit-llvm" an=
-d
-> > > > > then using llc?
-> > > >
-> > > > So this must be the reason, but I'll wait for Yonghong to confirm.
-> > > >
-> > > > > I wish I could use bpf target directly, but I'm then having probl=
-ems
-> > > > > with includes of asm code (like pt_regs and other stuff)
-> > > >
-> > > > Are you developing for a 32-bit platform? Or what exactly is the
-> > > > problem? I've been trying to solve problems for 32-bit arches recen=
-tly
-> > > > by making libbpf smarter, that relies on CO-RE though. Is CO-RE an
-> > > > option for you?
-> > > >
-> > >
-> > > Examples for the errors I'm getting:
-> > > /lib/modules/4.14.199-1-MANJARO/build/arch/x86/include/asm/atomic.h:1=
-77:9:
-> > > error: invalid output constraint '+q' in asm
-> > >         return xadd(&v->counter, i);
-> > >                ^
-> > > /lib/modules/4.14.199-1-MANJARO/build/arch/x86/include/asm/cmpxchg.h:=
-234:25:
-> > > note: expanded from macro 'xadd'
-> > > #define xadd(ptr, inc)          __xadd((ptr), (inc), LOCK_PREFIX)
-> > > ...
-> > >
-> > > From What I understood, this is a known issue for tracing programs
-> > > (like the one I'm developing)
+> > The merge window has just opened.
+> > Which would typically mean that bpf-next is closing,
+> > but things are going to be a little bit different this time.
+> > We're stopping to accept new features into bpf-next/master.
+> > The few pending patches might get applied and imminent pull-req into
+> > net-next will be sent.
+> > After that bpf-next/master will be frozen for the duration of the merge window,
+> > but bpf-next/next branch will be open for the new features.
 > >
-> > We do have a bunch of selftests that use pt_regs and include, say,
-> > linux/ptrace.h header. I wonder why we are not seeing these problems.
-> > Selftests, btw, are also built with -emit-llvm and then piping output
-> > to llc.
+> > So please continue the BPF development and keep sending your patches.
+> > They will be reviewed as usual.
+> > After the merge window everything that is accumulated in bpf-next/next
+> > will be applied to bpf-next/master.
+> > Due to merge/rebase sha-s in bpf-next/next will likely be unstable.
 > >
-> > So.. there must be something else going on. It's hard to guess like
-> > this without seeing the code, but maybe -D__TARGET_ARCH_$(SRCARCH)
-> > during compilation could help, just as an idea.
-> >
+> > Please focus on fixing bugs that may get exposed during the merge window.
+> > The bpf tree is always open for bug fixes.
 >
-> Adding -D__TARGET_ARCH_$(SRCARCH) doesn't seem to help.
-> If you are interested in having a look at the code,
-> The code (event_monitor_ebpf.c) including the makefile is here:
-> https://github.com/yanivagman/tracee/tree/move_to_libbpf/tracee
+> FWIW for CIs switching between bpf-next/next and bpf-next/master could
+> be somewhat fragile.
 
-You are including a lot of kernel headers in that code. If any of them
-pulls in some x86-specific stuff, you would get this problem. Try to
-minimize the amount of includes you have there, maybe the issue will
-go away.
+CIs can adjust. That's not a big deal, but having two branches definitely
+adds a point of confusion to people.
+Song proposed earlier to use bpf-next/dev and push patches into /master and
+into /dev branches always, so folks/CI can always use bpf-next/dev.
+Unfortunately sha-s will be different, so it's not workable.
 
-If not, one other way would be to generate vmlinux.h for your specific
-kernel build. It will have memory layout of all the structs identical
-to what you get from kernel headers. Then you can replace all those
-includes with a single #include "vmlinux.h". You can disable CO-RE
-part with #define BPF_NO_PRESERVE_ACCESS_INDEX before vmlinux.h is
-included.
+> Since bpf-next/master is frozen during the merge
+> window, why not apply the patches there?
 
-But I'm a bit puzzled how your approach is going to work without CO-RE
-if you ever intend to run your program on more than one build of the
-kernel. Different kernel builds/versions might have different memory
-layouts of the structs you are relying on, so you'd need to compile
-them for each kernel build separately. So it's either CO-RE or
-on-the-host compilation (what BCC is doing). And if you are moving
-away from BCC, but not adopting CO-RE, I'm not sure how you are going
-to deal with that issue.
+You mean keep pushing into bpf-next/master ?
+The only reason is linux-next.
+But coming to think about it again, let's fix linux-next process instead.
 
-
->
-> This is still WIP (the move to libbpf), and libbpf should be added as
-> a submodule to the project root
->
-> > > Unfortunately, CO-RE is not (yet) an option.
-> > > I'm currently making the move from bcc to libbpf, and our application
-> > > needs to support kernel 4.14, and work on all environments.
-> >
-> > Kernel version is not a big problem, it's vmlinux BTF availability
-> > that could be a problem. vmlinux BTF can be added into any version of
-> > kernel with pahole -J, post factum, but that assumes you have some
-> > control over how kernels are built and distributed, of course.
-> >
-> > >
-> > > > [...]
+Stephen,
+could you switch linux-next to take from bpf.git during the merge window
+and then go back to bpf-next.git after the merge window?
+That will help everyone. CIs wouldn't need to flip flop.
+People will keep basing their features on bpf-next/master all the time, etc.
+The only inconvenience is for linux-next. I think that's a reasonable trade-off.
+In other words bpf-next/master will always be open for new features.
+After the merge window bpf-next/master will get rebased to rc1.
