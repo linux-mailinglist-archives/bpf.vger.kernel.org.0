@@ -2,179 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC2C28B062
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 10:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3C028B112
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 11:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgJLIiG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 04:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40804 "EHLO
+        id S1728834AbgJLJDZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 05:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726680AbgJLIiG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 04:38:06 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76246C0613CE;
-        Mon, 12 Oct 2020 01:38:06 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id e7so3845328pfn.12;
-        Mon, 12 Oct 2020 01:38:06 -0700 (PDT)
+        with ESMTP id S1726428AbgJLJDY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 05:03:24 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55351C0613D0
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 02:03:22 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 13so16515167wmf.0
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 02:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iMH7sgbBpO8JCmtjjKhnakg0TmKyze0aEEJgsqLeYIE=;
-        b=nlvs5EPs/dwH/lL3qgYtYD9AT3ZQcOEIwvdWUz0sYulkSTNyd1lbo6YyoYgxru2SNr
-         asvP7hcMl2ZKXowLwkBgDW0u9kJRwzNa9Uyyvyj3McfMrTG+QEbdDyABtk9V1qJLkDRk
-         cXRzeRHJRUpDaJq2E/fmPUxovhMIyGnIDLILWN3Own2gUMPmbxvBzb85HbMh7LSnzBJ2
-         TBscZYCbYiWopdnVfdlza1vwHsK6v/xING/Jk4z8saG6P5Za90tWdfS7LnODJm8CuUBg
-         oJS5A7aBHwysJ0t9iPQua/RI40Ir9geg2w0E4+NSOiTvtWr7rl2E6MHZl9dJ7rEoAERz
-         Bhqw==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=MpfpqjTR0AHrehJQA8eBI4YEh7awCKCyYyclE8s34PQ=;
+        b=E95yvcfWq2F0DCa5hFZ+RFunw0JOpWh4YyMsRbNHSK2k8wFdvnKuqcX/LmrAyUQqlL
+         zZkL7uuzD3T4GMMmHvRs2TuhbLPgcAGq6mzvPyClQeS5uJOqRT0OcoHSll+TYQgXwjWG
+         MBRXuvXLUTTnNbz0LuIhpFxSF25Kc2opSZ7gA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iMH7sgbBpO8JCmtjjKhnakg0TmKyze0aEEJgsqLeYIE=;
-        b=gqHcHeP2bXWMh1AWouP80Q3sQ2p246xvPfQVPhI/7MGzsjkFhWP2wmOAKZ9MZS/SZz
-         e+rS5cveqe3VCPfdMKse3Ip8fuS1i1p2uZl56+g/6bL9tQgSF4KG9K47InHcHEbrVSb/
-         dX9Ae+ch4FT5bZxzOFArnSigCchwuHPIetJGsbyFu+nO63+YEENiynXfsoU74/XHP/D/
-         pXhvND5p8LkrA+YYqJE1DOHiufELsADfAGZdxfjxyn5ZoEzsdqu6Ve2+RKC/1xDYqOpO
-         /3sWTHfjT0MnozfjlSNryNXhPTlkgahGyPqCfDYJ1SGuQBmyoUjRu5dTK64M4QsvkkjV
-         LjUQ==
-X-Gm-Message-State: AOAM531pRZ0AfMULqbldPK4t6NEZ44Gatp30v91wgJ5HSlr5Kcdtap0K
-        bZtJcponGffZhvK66zNvv+nXuKzAWPHPV63db2c=
-X-Google-Smtp-Source: ABdhPJwSK/PvprgoSckBeUzMPl6dCrsP0AChH6EjEKb+lWaHFUJedvrclSmbFGSZ0mIT8NY0jDrIFzZui0Z7515wxJs=
-X-Received: by 2002:a17:90a:ab81:: with SMTP id n1mr19881593pjq.117.1602491885983;
- Mon, 12 Oct 2020 01:38:05 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=MpfpqjTR0AHrehJQA8eBI4YEh7awCKCyYyclE8s34PQ=;
+        b=f10arwzJsIg/fAJsH8oO4iU5wdvNQ7TEG4mTSGG0NUenrT70v5D3Yd5I0XbeUtX4SW
+         I1x4JDGFnLpl8pQUXq4uz40mzNip1Bzo6RwzdHpCzy0ztDcYIdKIX7m2GSiI0s4yf/sc
+         PXZ3hxxK7z6irYJkjWODsIdRke/Ith/Q2rtaf6SxIpcqSGQuMyma4gjCW8DT3/dAP8aC
+         HJ6RZG+nIGzyDnmRxEHlQ1Y8a+2daxAFzGC5Ogt/KXFDO/C+zbRpxP9dspRs3GqTWC51
+         Kz7MnY8av61tMZd2dTwuS70Fc3ao6BB1A0ovFYGtVcOqHW0tcTmm+xKqJfd1IvdIB27Q
+         9xvw==
+X-Gm-Message-State: AOAM530kwqVORFOIWzonaUeWBwAQ8+l6jUPluBA1hDasr+5WIQm0I/sS
+        T4yVyU2JziyEkmnLhVqmtHaRGg==
+X-Google-Smtp-Source: ABdhPJwPZE74VN630yOHt1NLVK1vJFR41AOgfuUCSsVTAQbfvr9Mkb3oARQWLBqAxBBG5JhDHItJRA==
+X-Received: by 2002:a7b:c7c9:: with SMTP id z9mr10335720wmk.91.1602493400803;
+        Mon, 12 Oct 2020 02:03:20 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id z127sm22576344wmc.2.2020.10.12.02.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2020 02:03:20 -0700 (PDT)
+References: <160226839426.5692.13107801574043388675.stgit@john-Precision-5820-Tower> <160226859704.5692.12929678876744977669.stgit@john-Precision-5820-Tower>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, lmb@cloudflare.com
+Subject: Re: [bpf-next PATCH v3 2/6] bpf, sockmap: On receive programs try to fast track SK_PASS ingress
+In-reply-to: <160226859704.5692.12929678876744977669.stgit@john-Precision-5820-Tower>
+Date:   Mon, 12 Oct 2020 11:03:19 +0200
+Message-ID: <87h7qzrf3c.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <1602166338-21378-1-git-send-email-magnus.karlsson@gmail.com> <43b0605d-f0c9-b81c-4d16-344a7832e083@iogearbox.net>
-In-Reply-To: <43b0605d-f0c9-b81c-4d16-344a7832e083@iogearbox.net>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 12 Oct 2020 10:37:54 +0200
-Message-ID: <CAJ8uoz3nfDe0a9Vp0NmnHVv5qM+kvqR-f6Yd0keKSqctNzi6=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: introduce padding between ring pointers
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 9, 2020 at 5:03 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+Hey John,
+
+Exiting to see this work :-)
+
+On Fri, Oct 09, 2020 at 08:36 PM CEST, John Fastabend wrote:
+> When we receive an skb and the ingress skb verdict program returns
+> SK_PASS we currently set the ingress flag and put it on the workqueue
+> so it can be turned into a sk_msg and put on the sk_msg ingress queue.
+> Then finally telling userspace with data_ready hook.
 >
-> On 10/8/20 4:12 PM, Magnus Karlsson wrote:
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Introduce one cache line worth of padding between the producer and
-> > consumer pointers in all the lockless rings. This so that the HW
-> > adjacency prefetcher will not prefetch the consumer pointer when the
-> > producer pointer is used and vice versa. This improves throughput
-> > performance for the l2fwd sample app with 2% on my machine with HW
-> > prefetching turned on.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Here we observe that if the workqueue is empty then we can try to
+> convert into a sk_msg type and call data_ready directly without
+> bouncing through a workqueue. Its a common pattern to have a recv
+> verdict program for visibility that always returns SK_PASS. In this
+> case unless there is an ENOMEM error or we overrun the socket we
+> can avoid the workqueue completely only using it when we fall back
+> to error cases caused by memory pressure.
 >
-> Applied, thanks!
+> By doing this we eliminate another case where data may be dropped
+> if errors occur on memory limits in workqueue.
 >
-> >   net/xdp/xsk_queue.h | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> >
-> > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> > index dc1dd5e..3c235d2 100644
-> > --- a/net/xdp/xsk_queue.h
-> > +++ b/net/xdp/xsk_queue.h
-> > @@ -15,6 +15,10 @@
-> >
-> >   struct xdp_ring {
-> >       u32 producer ____cacheline_aligned_in_smp;
-> > +     /* Hinder the adjacent cache prefetcher to prefetch the consumer pointer if the producer
-> > +      * pointer is touched and vice versa.
-> > +      */
-> > +     u32 pad ____cacheline_aligned_in_smp;
-> >       u32 consumer ____cacheline_aligned_in_smp;
-> >       u32 flags;
-> >   };
-> >
+> Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  net/core/skmsg.c |   17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
 >
-> I was wondering whether we should even generalize this further for reuse
-> elsewhere e.g. ...
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index 040ae1d75b65..4b160d97b7f9 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -773,6 +773,7 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
+>  {
+>  	struct tcp_skb_cb *tcp;
+>  	struct sock *sk_other;
+> +	int err = -EIO;
 >
-> diff --git a/include/linux/cache.h b/include/linux/cache.h
-> index 1aa8009f6d06..5521dab01649 100644
-> --- a/include/linux/cache.h
-> +++ b/include/linux/cache.h
-> @@ -85,4 +85,17 @@
->   #define cache_line_size()      L1_CACHE_BYTES
->   #endif
+>  	switch (verdict) {
+>  	case __SK_PASS:
+> @@ -784,8 +785,20 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
 >
-> +/*
-> + * Dummy element for use in structs in order to pad a cacheline
-> + * aligned element with an extra cacheline to hinder the adjacent
-> + * cache prefetcher to prefetch the subsequent struct element.
-> + */
-> +#ifndef ____cacheline_padding_in_smp
-> +# ifdef CONFIG_SMP
-> +#  define ____cacheline_padding_in_smp u8 :8 ____cacheline_aligned_in_smp
-> +# else
-> +#  define ____cacheline_padding_in_smp
-> +# endif /* CONFIG_SMP */
-> +#endif
+>  		tcp = TCP_SKB_CB(skb);
+>  		tcp->bpf.flags |= BPF_F_INGRESS;
+> -		skb_queue_tail(&psock->ingress_skb, skb);
+> -		schedule_work(&psock->work);
 > +
->   #endif /* __LINUX_CACHE_H */
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index cdb9cf3cd136..1da36423e779 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -15,11 +15,9 @@
->
->   struct xdp_ring {
->          u32 producer ____cacheline_aligned_in_smp;
-> -       /* Hinder the adjacent cache prefetcher to prefetch the consumer
-> -        * pointer if the producer pointer is touched and vice versa.
-> -        */
-> -       u32 pad ____cacheline_aligned_in_smp;
-> +       ____cacheline_padding_in_smp;
->          u32 consumer ____cacheline_aligned_in_smp;
-> +       ____cacheline_padding_in_smp;
->          u32 flags;
->   };
+> +		/* If the queue is empty then we can submit directly
+> +		 * into the msg queue. If its not empty we have to
+> +		 * queue work otherwise we may get OOO data. Otherwise,
+> +		 * if sk_psock_skb_ingress errors will be handled by
+> +		 * retrying later from workqueue.
+> +		 */
+> +		if (skb_queue_empty(&psock->ingress_skb)) {
+> +			err = sk_psock_skb_ingress(psock, skb);
 
-This should be beneficial in theory, though I could not measure any
-statistically significant improvement. Though, the flags variable is
-touched much less frequently than the producer and consumer pointers,
-so that might explain it. We also need to make the compiler allocate
-flags to a cache line 128 bytes (2 cache lines) from the consumer
-pointer like this:
+When going through the workqueue (sk_psock_backlog), we will also check
+if socket didn't get detached from the process, that is if
+psock->sk->sk_socket != NULL, before queueing into msg queue.
 
-u32 consumer ____cacheline_aligned_in_smp;
-____cacheline_padding_in_smp;
-u32 flags ____cacheline_aligned_in_smp;
+Do we need a similar check here?
 
-> ... was there any improvement to also pad after the consumer given the struct
-> xdp_ring is also embedded into other structs?
-
-Good idea. Yes, I do believe I see another ~0.4% increase and more
-stable high numbers when trying this out. The xdp_ring is followed by
-the ring descriptors themselves in both the rt/tx rings and the umem
-rings. And these rings are quite large, 2K in the sample app, so
-accessed less frequently (1/8th of the time with a batch size of 256
-and ring size 2K) which might explain the lower increase. In the end,
-I ended up with the following struct:
-
-u32 producer ____cacheline_aligned_in_smp;
-____cacheline_padding_in_smp;
-u32 consumer ____cacheline_aligned_in_smp;
-____cacheline_padding_in_smp;
-u32 flags ____cacheline_aligned_in_smp;
-____cacheline_padding_in_smp;
-
-Do you want to submit a patch, or shall I do it? I like your
-____cacheline_padding_in_smp better than my explicit "padN" member.
-
-Thanks: Magnus
-
-> Thanks,
-> Daniel
+> +		}
+> +		if (err < 0) {
+> +			skb_queue_tail(&psock->ingress_skb, skb);
+> +			schedule_work(&psock->work);
+> +		}
+>  		break;
+>  	case __SK_REDIRECT:
+>  		sk_psock_skb_redirect(skb);
