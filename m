@@ -2,90 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3207228AC49
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 04:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991DB28AD4D
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 06:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgJLCuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Oct 2020 22:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgJLCuP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Oct 2020 22:50:15 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DA3C0613CE;
-        Sun, 11 Oct 2020 19:50:14 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y20so11956359iod.5;
-        Sun, 11 Oct 2020 19:50:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J7/yqht/DUuz9NMDM3wkUgmSzBZ+JRPjmZmOGIyieZs=;
-        b=erW6HAqQEB3HRkJZvQO+93KXiz9QBu2wNA9okKP+42PGlK6rXk4sYREYgBc/HPX41p
-         eopTfGDj946U6qdIiFqIz54NuU+CRJ1eCTHKHw0z0PaQPFtQeL/CfHGo8sTplM/+SD4g
-         xvp3E0JVO1iR7zTtCPi3MxMxkC5MjUyI4MQTz58M8gARozaEgNuExkRT49H1swkU5PgZ
-         9SGEU09GTGDsiPZ/DPyJgQGrX0bKxrs9j4ZrrcHFMp+ZmvpUfZt7EJS8WyaXquNvt1UO
-         TZQzPjJT9y9aSF4dj1DtA4M0lMX6zzmWaJkQg0HaJOMUQsOS+Xd05cLUOQAFTsJGPyJw
-         CEXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J7/yqht/DUuz9NMDM3wkUgmSzBZ+JRPjmZmOGIyieZs=;
-        b=Gh9gvWlhse5i/gxjSruoCnsA+f9pbksKiMQ53Ydr//m9VM14+mPTyripnrNF6HqZMp
-         ehvEhtpDwyiEnoD5Xi1n+fthYAd9ZHvwAfQ8lGlvV9v6uWuUepTxDewoBaQ9eCLsDNSP
-         uncktb+FiHuUSjDeIO0eFQbIqEjRNc3Mp91LNN5KTXRB1I79C2ATFD8pjZL2fCWbpzq/
-         j8Chnm3Cbj42tIzQWKf/mrCIdo49WALfm283Yb84lAd6B0n3xPyHB8RSh8cCHCMq0zfV
-         p60oAy14EYYDSROHt7FzJh6BPKeM4OdrHNWUWr6yXDo8thRU68OO8zjfibBjpMv5gxON
-         uykg==
-X-Gm-Message-State: AOAM532vOO+MqV3iVl4ndJublTNVWB/yq7Ws0Kyw3qhyjQ1fy42CZ96j
-        VvjGGQLx5Z3uvqf+9WKJwzlKtE7thfk=
-X-Google-Smtp-Source: ABdhPJwj/44UYAj4og3GzbRGf3IEYgTonNAG/7GKWo06UqzHKQR0eqL5EbsezyeWXEhm4dqtwRJZkw==
-X-Received: by 2002:a05:6602:2fc2:: with SMTP id v2mr6644310iow.19.1602471013944;
-        Sun, 11 Oct 2020 19:50:13 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:85e0:a5a2:ceeb:837])
-        by smtp.googlemail.com with ESMTPSA id e15sm8179686ili.75.2020.10.11.19.50.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Oct 2020 19:50:13 -0700 (PDT)
-Subject: Re: [PATCH bpf-next v6 2/6] bpf: add redirect_peer helper
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, yhs@fb.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <20201010234006.7075-1-daniel@iogearbox.net>
- <20201010234006.7075-3-daniel@iogearbox.net> <20201011112213.7e542de7@carbon>
- <aadbb662-bb42-05be-0943-d59ba0d3f60c@iogearbox.net>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <1992820b-4916-ed42-e1e2-8e37ae67c92f@gmail.com>
-Date:   Sun, 11 Oct 2020 20:50:12 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        id S1726205AbgJLEsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 00:48:07 -0400
+Received: from mga01.intel.com ([192.55.52.88]:22482 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725917AbgJLEsH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 00:48:07 -0400
+IronPort-SDR: D5zKImA/blPs9ugNxSdwTFqrAiCPQ7MfkSDjdD7L1ZPrs2PLYW8mlo8pL00EnU95KhYD7GvV7Z
+ Er8+B/ppaVCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9771"; a="183144505"
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
+   d="scan'208";a="183144505"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:58 -0700
+IronPort-SDR: OeJlrvjJIthwDW5ZiLkp+F246Fw9BWID0JMdXYyjjISLX5UipnPYleFarWgQdoLnt1ZOhIB0kv
+ QrFucSf/AAcw==
+X-IronPort-AV: E=Sophos;i="5.77,365,1596524400"; 
+   d="scan'208";a="529805779"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2020 21:47:57 -0700
+Date:   Sun, 11 Oct 2020 21:47:56 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freed.esktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@tron.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 10/58] drivers/rdma: Utilize new
+ kmap_thread()
+Message-ID: <20201012044756.GY2046448@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-11-ira.weiny@intel.com>
+ <20201009195033.3208459-1-ira.weiny@intel.com>
+ <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
 MIME-Version: 1.0
-In-Reply-To: <aadbb662-bb42-05be-0943-d59ba0d3f60c@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF849D92D8.F4735ECA-ON002585FD.003F5F27-002585FD.003FCBD6@notes.na.collabserv.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/11/20 10:16 AM, Daniel Borkmann wrote:
->>
->> This is awesome results and great work Daniel! :-)
-
-+1
-
->>
->> I wonder if we can also support this from XDP, which can also native
->> redirect into veth.  Originally I though we could add the peer netdev
->> in the devmap, but AFAIK Toke showed me that this was not possible.
+On Sat, Oct 10, 2020 at 11:36:49AM +0000, Bernard Metzler wrote:
+> -----ira.weiny@intel.com wrote: -----
 > 
-> I think it should be possible with similar principle. What was the
-> limitation
-> that you ran into with devmap for XDP?
 
-Should just need an API to set the namespace of the redirect device -
-something that devmap can be extended to include now.
+[snip]
 
+> >@@ -505,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+> >struct socket *s)
+> > 				page_array[seg] = p;
+> > 
+> > 				if (!c_tx->use_sendpage) {
+> >-					iov[seg].iov_base = kmap(p) + fp_off;
+> >+					iov[seg].iov_base = kmap_thread(p) + fp_off;
+> 
+> This misses a corresponding kunmap_thread() in siw_unmap_pages()
+> (pls change line 403 in siw_qp_tx.c as well)
+
+Thanks I missed that.
+
+Done.
+
+Ira
+
+> 
+> Thanks,
+> Bernard.
+> 
