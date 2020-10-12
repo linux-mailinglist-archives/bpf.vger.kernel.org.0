@@ -2,93 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AD628BE3E
-	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 18:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CEF28BE95
+	for <lists+bpf@lfdr.de>; Mon, 12 Oct 2020 19:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403857AbgJLQox (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 12:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59702 "EHLO
+        id S2390534AbgJLRCE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 13:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390257AbgJLQox (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 12:44:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BED7C0613D0;
-        Mon, 12 Oct 2020 09:44:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l9dol8BjF52rFe8mzz85c9RZmeAYDZ2M1zPXpY3Bxec=; b=cjGmRDHB+K+xo1zaI46uR/JWZM
-        mu6b6OfRoAYfgdNA5Kf5Iurex6D1FcBZ+mRQhj12vLi3isoy7f1JrMIQOIfa61TejqqWEwpL43yKb
-        2mAeiG7QIg8Vb+ajA0gepoKbc6o17WQEzV+UWJKTyQWQStoFHb/kNJEfYbWmPc27vxrcwV1GpTL/g
-        cqcPit9vRB3f1Zs6upmREd44qhzYUWIO5sf13vXmWctx364S7GYQlJM4ZaGSBTPIwUKM8imQUHEl+
-        YU7Gj26Vo02zH0C4u7a3/EscApIpoLOe+KQejmiwTcRHTR/bJWdX/slhogDIyA7BDVBafjowKFz4j
-        1dyYxPzg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kS0wA-0004gO-8Q; Mon, 12 Oct 2020 16:44:38 +0000
-Date:   Mon, 12 Oct 2020 17:44:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, linux-aio@kvack.org,
-        linux-efi@vger.kernel.org, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        target-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, samba-technical@lists.samba.org,
-        ceph-devel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        devel@driverdev.osuosl.org, linux-cifs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
-        x86@kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-afs@lists.infradead.org, cluster-devel@redhat.com,
-        linux-cachefs@redhat.com, intel-wired-lan@lists.osuosl.org,
-        xen-devel@lists.xenproject.org, linux-ext4@vger.kernel.org,
-        Fenghua Yu <fenghua.yu@intel.com>, ecryptfs@vger.kernel.org,
-        linux-um@lists.infradead.org, intel-gfx@lists.freedesktop.org,
-        linux-erofs@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        io-uring@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC PKS/PMEM 22/58] fs/f2fs: Utilize new kmap_thread()
-Message-ID: <20201012164438.GA20115@casper.infradead.org>
-References: <20201009195033.3208459-1-ira.weiny@intel.com>
- <20201009195033.3208459-23-ira.weiny@intel.com>
- <20201009213434.GA839@sol.localdomain>
- <20201010003954.GW20115@casper.infradead.org>
- <20201010013036.GD1122@sol.localdomain>
- <20201012065635.GB2046448@iweiny-DESK2.sc.intel.com>
- <20201012161946.GA858@sol.localdomain>
- <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
+        with ESMTP id S2390355AbgJLRCE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 13:02:04 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16C0C0613D0
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 10:02:03 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id c3so13944849ybl.0
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 10:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TcvsnlnuuguVUDRzwLQn5+1SPwNNMDTQ/0rcYHqiRzs=;
+        b=rYaLbBXXXhCZWpYHdG1q8SS2xZ5o1xpNSiybAl4eUluhIoEWdGZg1IuEBBf8qe3cmG
+         znxc1BVYWn+1fu0eX7ojk+l0b+hI+yoiNSVYFskiMnosQI0Psu36kT1ZnzQUiXMmNSaC
+         mtdPUxz0V3kg1eOVkOQpgtfvJu5DCwS5/RIXSSpNX2hB4GsELkjHiYlHY8Y0DMNm52Al
+         K/LkHHO9+B+Se1X7k+gsbq/kYM1NMQRXuujIg7F7/fXO0ndYpTIgniRUdPo36JzOXvjK
+         aljmuzUeLnrlnh5Unu8vNDUlA8jFd8cdf80uM0jqMlpWYgJeA+32ViYuj91wi7ej7VfO
+         z6gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TcvsnlnuuguVUDRzwLQn5+1SPwNNMDTQ/0rcYHqiRzs=;
+        b=Hmzt+2aW5B3U47SBdEqtm1Z4gTPGAWDpPt/WyxNFCX9BHsklO0xTBmqFi7wbLMY7Z1
+         hsNGu2bM4up3yDRJbs1LNvIa0137dlHr/T/m0t17uVoc/9WJXAvDRWcLjvHZPhkqzp/0
+         Y7TKE30aePmU60cQokLD1nM3hLqD1ZMcv+uGahWJNqBwo4GVU4fpEs5PN/TssZjfKwFI
+         wrCCjKL3uL3hpy9EnyUF0CaVqb2424AniWKfNF+oJvYOnBxxMBoaG33JQwQCb89nU0fE
+         AKXd0C8N7RMauqTxl7VOenPnfG2rbS/goGa1TCJ6IEJBxUld0hWv3r78fRUEiNwDimZ+
+         6HbQ==
+X-Gm-Message-State: AOAM533n+KMMYv6mSLsMDiw53qNsqMJTW40tAiTT6hs7E10Z+wZNW8li
+        jfb4uEVuJRO/OQV7TWW/gFcndAgWe1RLd2jRrdo9hsdBKig=
+X-Google-Smtp-Source: ABdhPJyZm9hIj3mLnsBzMXwUxCnvlY54zgsZsgseSl5XW03ApJ7oA5fJyMwxAP4l+Hn3inDGpWaQw+zPBentuPjQgQ4=
+X-Received: by 2002:a25:5f08:: with SMTP id t8mr10171651ybb.260.1602522122735;
+ Mon, 12 Oct 2020 10:02:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d621db9-23d4-e140-45eb-d7fca2093d2b@intel.com>
+References: <CAMy7=ZWoL7w97aR5_02OEjKEkJT8R7OEzpL5Zp8Cycm=yZSLJQ@mail.gmail.com>
+In-Reply-To: <CAMy7=ZWoL7w97aR5_02OEjKEkJT8R7OEzpL5Zp8Cycm=yZSLJQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 12 Oct 2020 10:01:51 -0700
+Message-ID: <CAEf4BzYnELT0tE8Y4goPWxuBGN+G-37A8A1yjspFL=LK842geQ@mail.gmail.com>
+Subject: Re: libbpf: Loading kprobes fail on some distros
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 09:28:29AM -0700, Dave Hansen wrote:
-> kmap_atomic() is always preferred over kmap()/kmap_thread().
-> kmap_atomic() is _much_ more lightweight since its TLB invalidation is
-> always CPU-local and never broadcast.
-> 
-> So, basically, unless you *must* sleep while the mapping is in place,
-> kmap_atomic() is preferred.
+On Sun, Oct 11, 2020 at 7:10 PM Yaniv Agman <yanivagman@gmail.com> wrote:
+>
+> Trying to load kprobes on ubuntu 4.15.0, I get the following error:
+> libbpf: load bpf program failed: Invalid argument
+>
+> The same kprobes load successfully using bcc
+>
+> After some digging, I found that the issue was with the kernel version
+> given to the bpf syscall. While libbpf calculated the value 265984 for
+> the kern_version argument, bcc used 266002.
+> It turns out that some distros (e.g. ubuntu, debian) change the patch
+> number of the kernel version, as detailed in:
+> https://github.com/ajor/bpftrace/issues/8
+>
+> I didn't find a proper API in libbpf to load kprobes in such cases -
+> is there any?
 
-But kmap_atomic() disables preemption, so the _ideal_ interface would map
-it only locally, then on preemption make it global.  I don't even know
-if that _can_ be done.  But this email makes it seem like kmap_atomic()
-has no downsides.
+Yes, you can override kernel version that libbpf determines from
+utsname with a special variable in your BPF code:
+
+int KERNEL_VERSION SEC("version") = 123;
