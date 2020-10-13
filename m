@@ -2,111 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7012828D4FE
-	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 21:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B7A28D50C
+	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 22:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727661AbgJMT4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Oct 2020 15:56:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58130 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726819AbgJMT4e (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 13 Oct 2020 15:56:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602618993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iwU7tK6msSXXjxmtdCmiDX1VSEEaziIZMs2Jkm9hIlI=;
-        b=Y9w4k85b5WKwhdc6Y7huZB53XuC69O5rhkZT/fpRPsFc6jZCkpj7ff3XlW8M+iSs9Huy6W
-        1pAqdpza4Kj5tIorXSgwzx/Xm8vBQRRW46GEyyViieEJxLh3DoZWIXjqTs8UnISeZbDmGd
-        7AQZNfRgyYUiPosLTPcb4UUUV/BRzaQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-Auzav5HPNgCSQebp_c0R_w-1; Tue, 13 Oct 2020 15:56:29 -0400
-X-MC-Unique: Auzav5HPNgCSQebp_c0R_w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF6B61015C85;
-        Tue, 13 Oct 2020 19:56:27 +0000 (UTC)
-Received: from krava (unknown [10.40.193.3])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 393F65D9CD;
-        Tue, 13 Oct 2020 19:56:24 +0000 (UTC)
-Date:   Tue, 13 Oct 2020 21:56:22 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 3/4] selftests/bpf: Add profiler test
-Message-ID: <20201013195622.GB1305928@krava>
-References: <20201009011240.48506-1-alexei.starovoitov@gmail.com>
- <20201009011240.48506-4-alexei.starovoitov@gmail.com>
+        id S1726822AbgJMUC2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Oct 2020 16:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726763AbgJMUC2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Oct 2020 16:02:28 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7997C061755;
+        Tue, 13 Oct 2020 13:02:27 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSQUX-00H96b-NT; Tue, 13 Oct 2020 20:01:49 +0000
+Date:   Tue, 13 Oct 2020 21:01:49 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Pitre <nico@fluxnic.net>, X86 ML <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        KVM list <kvm@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devel@driverdev.osuosl.org, linux-efi <linux-efi@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, linux-scsi <linux-scsi@vger.kernel.org>,
+        target-devel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org,
+        linux-ext4 <linux-ext4@vger.kernel.org>, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-afs@lists.infradead.org,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel <xen-devel@lists.xenproject.org>,
+        linux-cachefs@redhat.com, samba-technical@lists.samba.org,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 33/58] fs/cramfs: Utilize new kmap_thread()
+Message-ID: <20201013200149.GI3576660@ZenIV.linux.org.uk>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-34-ira.weiny@intel.com>
+ <CAPcyv4gL3jfw4d+SJGPqAD3Dp4F_K=X3domuN4ndAA1FQDGcPg@mail.gmail.com>
+ <20201013193643.GK20115@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201009011240.48506-4-alexei.starovoitov@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20201013193643.GK20115@casper.infradead.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 06:12:39PM -0700, Alexei Starovoitov wrote:
+On Tue, Oct 13, 2020 at 08:36:43PM +0100, Matthew Wilcox wrote:
 
-SNIP
+> static inline void copy_to_highpage(struct page *to, void *vfrom, unsigned int size)
+> {
+> 	char *vto = kmap_atomic(to);
+> 
+> 	memcpy(vto, vfrom, size);
+> 	kunmap_atomic(vto);
+> }
+> 
+> in linux/highmem.h ?
 
-> +
-> +#ifdef UNROLL
-> +#pragma unroll
-> +#endif
-> +	for (int i = 0; i < MAX_CGROUPS_PATH_DEPTH; i++) {
-> +		filepart_length =
-> +			bpf_probe_read_str(payload, MAX_PATH, BPF_CORE_READ(cgroup_node, name));
-> +		if (!cgroup_node)
-> +			return payload;
-> +		if (cgroup_node == cgroup_root_node)
-> +			*root_pos = payload - payload_start;
-> +		if (filepart_length <= MAX_PATH) {
-> +			barrier_var(filepart_length);
-> +			payload += filepart_length;
-> +		}
-> +		cgroup_node = BPF_CORE_READ(cgroup_node, parent);
-> +	}
-> +	return payload;
-> +}
-> +
-> +static ino_t get_inode_from_kernfs(struct kernfs_node* node)
-> +{
-> +	struct kernfs_node___52* node52 = (void*)node;
-> +
-> +	if (bpf_core_field_exists(node52->id.ino)) {
-> +		barrier_var(node52);
-> +		return BPF_CORE_READ(node52, id.ino);
-> +	} else {
-> +		barrier_var(node);
-> +		return (u64)BPF_CORE_READ(node, id);
-> +	}
-> +}
-> +
-> +int pids_cgrp_id = 1;
+You mean, like
+static void memcpy_from_page(char *to, struct page *page, size_t offset, size_t len)
+{
+        char *from = kmap_atomic(page);
+        memcpy(to, from + offset, len);
+        kunmap_atomic(from);
+}
 
+static void memcpy_to_page(struct page *page, size_t offset, const char *from, size_t len)
+{
+        char *to = kmap_atomic(page);
+        memcpy(to + offset, from, len);
+        kunmap_atomic(to);
+}
 
-hi,
-I'm getting compilation failure with this:
+static void memzero_page(struct page *page, size_t offset, size_t len)
+{
+        char *addr = kmap_atomic(page);
+        memset(addr + offset, 0, len);
+        kunmap_atomic(addr);
+}
 
-	  CLNG-LLC [test_maps] profiler2.o
-	In file included from progs/profiler2.c:6:
-	progs/profiler.inc.h:246:5: error: redefinition of 'pids_cgrp_id' as different kind of symbol
-	int pids_cgrp_id = 1;
-	    ^
-	/home/jolsa/linux-qemu/tools/testing/selftests/bpf/tools/include/vmlinux.h:14531:2: note: previous definition is here
-		pids_cgrp_id = 11,
-		^
-	1 error generated.
-	/opt/clang/bin/llc: error: /opt/clang/bin/llc: <stdin>:1:1: error: expected top-level entity
-	BPF obj compilation failed
-	^
-	make: *** [Makefile:396: /home/jolsa/linux-qemu/tools/testing/selftests/bpf/profiler2.o] Error 1
-
-jirka
-
+in lib/iov_iter.c?  FWIW, I don't like that "highpage" in the name and
+highmem.h as location - these make perfect sense regardless of highmem;
+they are normal memory operations with page + offset used instead of
+a pointer...
