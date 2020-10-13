@@ -2,151 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24EF28C58D
-	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 02:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C2228C5CA
+	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 02:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgJMAJz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 20:09:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39502 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726354AbgJMAJy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Oct 2020 20:09:54 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09D09pbB013029
-        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 17:09:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=drc3NrEZTeXfdqI/t93GA9d56sguxZ4nnVBTV4cErso=;
- b=kS2UbBuREOx60zgAeRrBrNqbhMgMKVL8XmexJMoZJyLHwniI0GWXg2zQa+CIndnjRzVe
- +n4kCXJp16nfr+Rp0YHB05sMmVfyjfGF6THMXqcuceHJzkb+Zlz8JdTah8UOBRgPGU1Q
- 5Wr9dYd+Urpka7iXBA0gVZ3CN1uxLTzuUQM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 3438f035yd-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 17:09:53 -0700
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 12 Oct 2020 17:09:22 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id DFDDB3705443; Mon, 12 Oct 2020 17:09:20 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH net] net: fix pos incrementment in ipv6_route_seq_next
-Date:   Mon, 12 Oct 2020 17:09:20 -0700
-Message-ID: <20201013000920.2120450-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1727028AbgJMAb1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Oct 2020 20:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgJMAb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Oct 2020 20:31:27 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E29C0613D0;
+        Mon, 12 Oct 2020 17:31:27 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id e7so6361088pfn.12;
+        Mon, 12 Oct 2020 17:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RXZNvLUHIPZhcUjRnKBWUfl+DzXXg5MXS7WMTuKeZqY=;
+        b=EgkGa/BElavLOO5do8aI/LDI65T4SLmDW8j8GtvnCsMqRBTuzcnVjgwuSdSDywqjvi
+         68gLb90unNImwgG+pg5B/c302jrN06h2wiOsbrS6lxh8EQjYlmK7IUQnSGU/kv2q8QG+
+         EWOBIoZOyIobyfZvWYXKxuZwSKTVUMEXBgX4ZSAm7NcGssu/qudmnUEzxRGMANa3Lou5
+         MjTF8Aw/QRattq1J+RTgiH8N7u0DTN9vVgQp0Ylvdjn8NkAptoEbXZ5eu6oXV79TtK/9
+         bHTxA8tUDVroDUdUEZK0RaWfRT1RH5IBbwfF+F6lF8u/pZVT/m/Yzov79xfTFFBkwVbg
+         PhPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RXZNvLUHIPZhcUjRnKBWUfl+DzXXg5MXS7WMTuKeZqY=;
+        b=h0fCnwrb3Y6jDD9yEabwzibnpPIuzU1L0jCRqE0jKv6y5GEkDz1bGAKLzpX9jBWz0l
+         C5HIHLT4wW99G27KFaDUr8qpOKqRbzzkRArn0n/tcLWVwZ26uTfbOeNndveUgIWglAJ4
+         /Nlfhib3lRkRE/G5kwwvLyllF1rZtqDBEyQNJY9ttUVSPEzGJyzfsvNnuOygf3DRWhoW
+         pfQUyyHwN3J9f0xMpUFGwDjESx8BC9gkGvpsCFGnsMtzdEOWOEMe4B1tpEcsa3F/fPuW
+         E+J3IBrqU8007SfySQpU8QMtvQucIu+d71AY/4NDKSA55JLGO7PhQwt90v27ZkqsF1Ag
+         aGzw==
+X-Gm-Message-State: AOAM5305oUzY+mcHMr64wylcS1psWmiaq4avncJJH+qwaxEkm/0QNWTg
+        H0lrBw7ampNDyG1WLbB7RNunKh/GEJRGG59mZJ4=
+X-Google-Smtp-Source: ABdhPJwg5QbybFtaIctqSCgVoJcBwsMrZ8yltrreNaMkzpkUU1M8W2QrCl9Pfc1cKWvkAdOBW1KhWVjQhmcp1iD+GHE=
+X-Received: by 2002:aa7:8d4c:0:b029:150:f692:4129 with SMTP id
+ s12-20020aa78d4c0000b0290150f6924129mr25657902pfe.11.1602549086984; Mon, 12
+ Oct 2020 17:31:26 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-12_18:2020-10-12,2020-10-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- priorityscore=1501 clxscore=1015 spamscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010130000
-X-FB-Internal: deliver
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook>
+In-Reply-To: <202010121556.1110776B83@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Mon, 12 Oct 2020 19:31:16 -0500
+Message-ID: <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 4fc427e05158 ("ipv6_route_seq_next should increase position index")
-tried to fix the issue where seq_file pos is not increased
-if a NULL element is returned with seq_ops->next(). See bug
-  https://bugzilla.kernel.org/show_bug.cgi?id=3D206283
-The commit effectively does:
-  - increase pos for all seq_ops->start()
-  - increase pos for all seq_ops->next()
+On Mon, Oct 12, 2020 at 5:57 PM Kees Cook <keescook@chromium.org> wrote:
+> I think it's fine to just have this "dangle" with a help text update of
+> "if seccomp action caching is supported by the architecture, provide the
+> /proc/$pid ..."
 
-For ipv6_route, increasing pos for all seq_ops->next() is correct.
-But increasing pos for seq_ops->start() is not correct
-since pos is used to determine how many items to skip during
-seq_ops->start():
-  iter->skip =3D *pos;
-seq_ops->start() just fetches the *current* pos item.
-The item can be skipped only after seq_ops->show() which essentially
-is the beginning of seq_ops->next().
+I think it would be weird if someone sees this help text and wonder...
+"hmm does my architecture support seccomp action caching" and without
+a clear pointer to how seccomp action cache works, goes and compiles
+the kernel with this config option on for the purpose of knowing if
+their arch supports it... Or, is it a common practice in the kernel to
+leave dangling configs?
 
-For example, I have 7 ipv6 route entries,
-  root@arch-fb-vm1:~/net-next dd if=3D/proc/net/ipv6_route bs=3D4096
-  00000000000000000000000000000000 40 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
-  fe800000000000000000000000000000 40 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-  00000000000000000000000000000001 80 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
-  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
-  ff000000000000000000000000000000 08 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 00000100 00000004 00000000 00000001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-  0+1 records in
-  0+1 records out
-  1050 bytes (1.0 kB, 1.0 KiB) copied, 0.00707908 s, 148 kB/s
-  root@arch-fb-vm1:~/net-next
-
-In the above, I specify buffer size 4096, so all records can be returned
-to user space with a single trip to the kernel.
-
-If I use buffer size 128, since each record size is 149, internally
-kernel seq_read() will read 149 into its internal buffer and return the data
-to user space in two read() syscalls. Then user read() syscall will trigger
-next seq_ops->start(). Since the current implementation increased pos even
-for seq_ops->start(), it will skip record #2, #4 and #6, assuming the first
-record is #1.
-
-  root@arch-fb-vm1:~/net-next dd if=3D/proc/net/ipv6_route bs=3D128
-  00000000000000000000000000000000 40 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
-  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
-0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-4+1 records in
-4+1 records out
-600 bytes copied, 0.00127758 s, 470 kB/s
-
-To fix the problem, do not increase pos for seq_ops->start() and the
-above `dd` command with `bs=3D128` will show correct result.
-
-Fixes: 4fc427e05158 ("ipv6_route_seq_next should increase position index")
-Cc: Vasily Averin <vvs@virtuozzo.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- net/ipv6/ip6_fib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index 141c0a4c569a..5aac5094bc41 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -2582,10 +2582,10 @@ static void *ipv6_route_seq_next(struct seq_file *s=
-eq, void *v, loff_t *pos)
- 	struct net *net =3D seq_file_net(seq);
- 	struct ipv6_route_iter *iter =3D seq->private;
-=20
--	++(*pos);
- 	if (!v)
- 		goto iter_table;
-=20
-+	++(*pos);
- 	n =3D rcu_dereference_bh(((struct fib6_info *)v)->fib6_next);
- 	if (n)
- 		return n;
---=20
-2.24.1
-
+YiFei Zhu
