@@ -2,92 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6234F28C6F6
-	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 03:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA9A28C823
+	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 07:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgJMB7h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Oct 2020 21:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        id S1729876AbgJMFNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Oct 2020 01:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbgJMB7h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Oct 2020 21:59:37 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E59FC0613D0;
-        Mon, 12 Oct 2020 18:59:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C9Jcj3CwXz9sTr;
-        Tue, 13 Oct 2020 12:59:01 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1602554343;
-        bh=pmgPJPvZsJLsw7I2sG6yosJYB3ZefjQHmA4yalF2CxY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lnXelRUORBwPKUVDaYJLNzHEVeSKeZ2CCPNZvhZuLPcqef0EmZFaWEKVzBhKNbeWR
-         GN7S+Fl0PdVbRdk/UA8x/E+5l/z69fpmjBdh/PZnNX2AOIXmiVkVA13WgQtl2kwM2f
-         gKPP8e+gYfyMp7G5iTxX9WG6XRKAexIJtqIzQI6K6Tnem7l2a9845Lu1tsGxS3MUZ4
-         TJoFx1Zld0cZknBNbHoNXvxIUrEsT5ym3plf273bn2wn3lwcaan71RBNP7HUTsnGa6
-         UuB2vCFXctLX0pizx9Ptl91Zdclije6jFsj9dL9mZ1MaufOkobcZ3YYQwp91RymANP
-         Mb3KDoF69jomA==
-Date:   Tue, 13 Oct 2020 12:58:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: merge window is open. bpf-next is still open.
-Message-ID: <20201013125859.1d694319@canb.auug.org.au>
-In-Reply-To: <20201012210307.byn6jx7dxmsxq7dt@ast-mbp>
-References: <CAADnVQ+ycd8T4nBcnAwr5FHX75_JhWmqdHzXEXwx5udBv8uwiQ@mail.gmail.com>
-        <20201012110046.3b2c3c27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAADnVQKn=CxcOpjSWLsD+VC5rviC6sMfrhw5jrPCU60Bcx5Ssw@mail.gmail.com>
-        <20201013075016.61028eee@canb.auug.org.au>
-        <20201012210307.byn6jx7dxmsxq7dt@ast-mbp>
+        with ESMTP id S1727502AbgJMFNS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Oct 2020 01:13:18 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3ABC0613D0
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 22:13:18 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id p13so19488712edi.7
+        for <bpf@vger.kernel.org>; Mon, 12 Oct 2020 22:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cMHtvZpCo0ogUR6/0zzxRX8v6JY0sit/IBYq8ZR4jrs=;
+        b=gCvDnplOpnWa6rSTrIF6GLhOMk2HMbpRLl5bywzs9mOThcjFMMMRIiIq7VkhATxMnS
+         snWavCO8nn7cWUAfvFgklhKJTdTVJEI1ymtZjZaUmQWHEHl7hDpAK4SSwIaelIusPNQX
+         tlVmkEYnfR7+7ZunKIEBbc41CqQORyTppLFK4T+IDD0zAs5QKTZDnlxX0Vw425vX1lQD
+         1wyABgWpoZ40MuXnvoCri9f6swEOuhzzaZlUtc91a/VXFXOiBSBnibrxYdw3pMgVWbjA
+         3nR6tREtHwJcHETQKDwG5z1fuViPeUpixg9ekaR+wO4BjtRDxNzr3NuSwWzaCbQS8eIo
+         Qb/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cMHtvZpCo0ogUR6/0zzxRX8v6JY0sit/IBYq8ZR4jrs=;
+        b=dMZT0KqmbTpvbOR1D7IWzwkTsYp5xgxci8V7W2Dx0pnGB5pasCKakNYbHqwn+OHYXZ
+         CAAmqdWCbiF+OoGFOBf+RTX8/WtpyK84NDx7mvOvZHBslpWdBWwXsyDEPFeGATKoDznz
+         UO7tUEycS7L7AvVwvIrCjEuCjxEvZ6oT901skQ8uU+ANYJzFcw5tbYV5RR3hVGLkd5JU
+         Mlcg7V3YYuc2NKr35raZRhIjvRIndsj/uDZ6LnkRBFTgjfYBYuBQi6sn/w8cmmyt41GJ
+         HBw4AaRIAyuMWcY8X2lSUA4yH/7LgdrGDgldAHIsjDi/bWfaLdDKDnxd1pgrJ3jZ8quj
+         bvIw==
+X-Gm-Message-State: AOAM531zcOEebMeDIzDJ1az/14RiLo183la56kLab5D7s+a2OOdgknMf
+        PzKacPezt9eAq+3TVnxI+Sm1uHZA75B1/K6R+A==
+X-Google-Smtp-Source: ABdhPJxwU8sHOQKAv1e6VJPYPTx8vjfLp9dvNqJgBvwleLeKjJtwPSkyJMrpOuvJGtgoo6inqgCx6GuJzRv4mthSqCo=
+X-Received: by 2002:a05:6402:21fd:: with SMTP id ce29mr17683133edb.383.1602565996989;
+ Mon, 12 Oct 2020 22:13:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qzu=3O5TsrkNFDVoYhuzU6W";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CAEKGpzh70f06iMQdR3B1LF3hMwHnB=x92fvfV8+smQObvKBF_w@mail.gmail.com>
+ <CAEf4BzYzhykW_VC8Q-Sa5x9u+MdEO0zfmrgbkShSQDH4F5AsMw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYzhykW_VC8Q-Sa5x9u+MdEO0zfmrgbkShSQDH4F5AsMw@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Tue, 13 Oct 2020 14:13:01 +0900
+Message-ID: <CAEKGpzg3WV2ffuapR+eif32XCnGb=KW9OQ7zYEZu8Z4RqqVEYQ@mail.gmail.com>
+Subject: Re: Where can I find the map's BTF type key/value specification?
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---Sig_/qzu=3O5TsrkNFDVoYhuzU6W
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Alexei,
-
-On Mon, 12 Oct 2020 14:03:07 -0700 Alexei Starovoitov <alexei.starovoitov@g=
-mail.com> wrote:
+On Sun, Oct 11, 2020 at 9:06 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> That is a great idea! I think that should work well for everyone.
-> Let's do exactly that.
-> Just pushed bpf-next/for-next branch.
+> On Sat, Oct 10, 2020 at 3:50 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > I'm looking for how BTF type definition '__type(key, int)' is being changed
+> > to '__uint(key_size, sizeof(int))'. (Not exactly "changed" but wonder how
+> > it can be considered the same)
+>
+> __type(key, int) captures both BTF ID of key and determines key_size
+> based on that type. You can specify both key and key_size, but that's
+> unnecessary (and resulting key size still has to match).
+>
+> >
+> >     __uint(type, BPF_MAP_TYPE_ARRAY);
+> >     __type(key, int);          => __uint(key_size, sizeof(int))
+> >     __type(value, u32);    => __uint(value_size, sizeof(u32))
+> >     __uint(max_entries, 2);
+> >
+> > Whether the specific map type supports BTF or not can be inferred from
+> > the file in kernel/bpf/*map.c and by checking each MAP type's
+> > bpf_map_ops .map_check_btf pointer is initialized as map_check_no_btf.
+> >
+> > But how can I figure out that specific types of map support BTF types for
+> > key/value? And how can I determine how this BTF key/value type is
+> > converted?
+>
+> I think you answered your own question, you just search whether each
+> map implements .map_check_btf that allows key/value BTF type ID. E.g.,
+> see array_map_check_btf, which allows key/value type ID. And compare
+> to how perf_event_array_map_ops use map_check_no_btf for its
+> .map_check_btf callback.
+>
+> So you can search for all struct bpf_map_ops declarations to see
+> operations for all map types, and then see what's there for
+> .map_check_btf. Ideally we should extend all maps to support BTF type
+> ID for key/value, but no one signed up to do that. If you are
+> interested, that should be a good way to contribute to kernel itself.
+>
+> >
+> > I am aware that BTF information is created in the form of a compact
+> > type by using pahole to deduplicate repeated types, strings information
+> > from DWARF information. However, looking at the *btf or pahole file
+> > in dwarves repository, it seemed that it was not responsible for the
+> > conversion of the BTF key/value.
+> >
+> > The remaining guess is that LLVM's BPF target compiler is responsible
+> > for this, or it's probably somewhere in the kernel, but I'm not sure
+> > where it is.
+>
+> BTF for the BPF program is emitted by Clang itself when you specify
+> `-target bpf -g`. pahole is used to convert kernel's (vmlinux) DWARF
+> into BTF and embed it into vmlinux image.
+>
+> As for key/value BTF type id for maps, that's libbpf parsing map
+> definition and recording type IDs. So there are a few things playing
+> together. See abd29c931459 ("libbpf: allow specifying map definitions
+> using BTF") that introduced this feature.
+>
+> >
+> > --
+> > Best,
+> > Daniel T. Lee
 
-=46rom now on I will only fetch the for-next branch.
 
-Thanks.
---=20
-Cheers,
-Stephen Rothwell
+Thank you for taking the time and effort for the answer.
+After following the implementation of key/value BTF type ID, A rough picture
+began to be drawn.
 
---Sig_/qzu=3O5TsrkNFDVoYhuzU6W
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+What I didn't know well was clearly understood thanks to your explanation.
 
------BEGIN PGP SIGNATURE-----
+I'll look forward to contributing to this in the foreseeable future.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+FCeMACgkQAVBC80lX
-0GyKPAf+LIh0n3MhDh9RH4TK7Ym0sim29+Ng6FmUh3z8PJGj7vwS/B9GBmIY8Si2
-gB1yGKMkBbwpVQyQnJ2rTrb9Xcu/aj7GTSE2RpK5n+dUIcJvTBUNS9a8Uyabix6k
-ESeiXEZfXhMXgLJEKCICaGt7OAvxaiPZqaGdMoU2Y/5pM4m1NA+PC1UoQfrtfSMF
-w1ZKcHV+lzv1bGqMKlRTmURQ8m9QB2G0zK/zh4nFxAiUil4pWFMjTg3rYdd9nS+F
-74mGhiKCTsjrp0pTKVOX6SNEATPZcASqo490AuqH1bhh2zRrPXXpNE4cLxwzt+zV
-/WhaIvk6Wym4mKPaKLTvfLU+gRu+aA==
-=d+mu
------END PGP SIGNATURE-----
-
---Sig_/qzu=3O5TsrkNFDVoYhuzU6W--
+-- 
+Best,
+Daniel T. Lee
