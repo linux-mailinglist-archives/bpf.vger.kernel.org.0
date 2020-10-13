@@ -2,143 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C5128D4D3
-	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 21:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7012828D4FE
+	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 21:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgJMTnH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Oct 2020 15:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbgJMTnG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Oct 2020 15:43:06 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166ACC0613D0
-        for <bpf@vger.kernel.org>; Tue, 13 Oct 2020 12:43:06 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x7so802998wrl.3
-        for <bpf@vger.kernel.org>; Tue, 13 Oct 2020 12:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=rJwsepZBWYhxq62vufFoGeztf8zxwm4eD+MUavFU97M=;
-        b=Nru/fu4SfHGesWuxDVA6eMnJ7v033oQeDepII6EpexnNRt9F9VrMDaRtX4mDU7n0KY
-         KbhmqjETqtLQ5puaczk0CbL2MrDx3kE0Q8OPFIrJJY8YUIPRgu3f7uCbcfpGGurd/ONY
-         Bn5mqOeJiNgXz2vsyfKwMcuSQFUuflYMNC6Fg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=rJwsepZBWYhxq62vufFoGeztf8zxwm4eD+MUavFU97M=;
-        b=igzLv9yA20b+pSpTbCyOy1+ZKpAvKLmqBxlWLa3JQyuVin1EZleSTdfUQl/2Kj7Tat
-         byq21yhl7PCnT0D4fZp3mhIzg7NAg0FUllYbB9O/9kPAcf0j1XoOx2mn3H4gmLRORpG1
-         Wx0Ipv5uAm9qM4sCaIa2ulBLXKupx+n0d6gvps5uCNMdNfQq4xOtBYGNHmIOT7bzyEj6
-         Fi03/wRIWEQzmoGUgqVYvoS56Xo0jGB0bTPLcCGCh3COjSR6zRmCel9ZfGosoJc2QEvQ
-         9NY36wIjV62hiG9Ivri8VxDY3wdiCOkfadaJ+P0NF4prcvJuTSqKlgjPVlNC/u8+udyW
-         uj5A==
-X-Gm-Message-State: AOAM531kyo15urAhxhHrPmscWj81nz9Q52JhpYTsZ/uwUQDiWLFXtF0F
-        Hfy4yXGgKYiZ6z5VP/0vsxfB7w==
-X-Google-Smtp-Source: ABdhPJwvCueY0bo+O4KnnmLkYJrNSs5kuzkZEbfb2z5DhZL0ryFuRAYGcc8Lv9Opebo9Fognr8j19A==
-X-Received: by 2002:adf:e38f:: with SMTP id e15mr1387531wrm.294.1602618184735;
-        Tue, 13 Oct 2020 12:43:04 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id v8sm909742wmb.20.2020.10.13.12.43.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 12:43:04 -0700 (PDT)
-References: <160226839426.5692.13107801574043388675.stgit@john-Precision-5820-Tower> <160226859704.5692.12929678876744977669.stgit@john-Precision-5820-Tower> <87h7qzrf3c.fsf@cloudflare.com> <5f8477448f66e_370c208e4@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, lmb@cloudflare.com
-Subject: Re: [bpf-next PATCH v3 2/6] bpf, sockmap: On receive programs try to fast track SK_PASS ingress
-In-reply-to: <5f8477448f66e_370c208e4@john-XPS-13-9370.notmuch>
-Date:   Tue, 13 Oct 2020 21:43:03 +0200
-Message-ID: <87blh5rjy0.fsf@cloudflare.com>
+        id S1727661AbgJMT4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Oct 2020 15:56:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58130 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726819AbgJMT4e (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 13 Oct 2020 15:56:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1602618993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iwU7tK6msSXXjxmtdCmiDX1VSEEaziIZMs2Jkm9hIlI=;
+        b=Y9w4k85b5WKwhdc6Y7huZB53XuC69O5rhkZT/fpRPsFc6jZCkpj7ff3XlW8M+iSs9Huy6W
+        1pAqdpza4Kj5tIorXSgwzx/Xm8vBQRRW46GEyyViieEJxLh3DoZWIXjqTs8UnISeZbDmGd
+        7AQZNfRgyYUiPosLTPcb4UUUV/BRzaQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-Auzav5HPNgCSQebp_c0R_w-1; Tue, 13 Oct 2020 15:56:29 -0400
+X-MC-Unique: Auzav5HPNgCSQebp_c0R_w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF6B61015C85;
+        Tue, 13 Oct 2020 19:56:27 +0000 (UTC)
+Received: from krava (unknown [10.40.193.3])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 393F65D9CD;
+        Tue, 13 Oct 2020 19:56:24 +0000 (UTC)
+Date:   Tue, 13 Oct 2020 21:56:22 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 3/4] selftests/bpf: Add profiler test
+Message-ID: <20201013195622.GB1305928@krava>
+References: <20201009011240.48506-1-alexei.starovoitov@gmail.com>
+ <20201009011240.48506-4-alexei.starovoitov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009011240.48506-4-alexei.starovoitov@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 05:33 PM CEST, John Fastabend wrote:
-> Jakub Sitnicki wrote:
+On Thu, Oct 08, 2020 at 06:12:39PM -0700, Alexei Starovoitov wrote:
 
-[...]
+SNIP
 
->> On Fri, Oct 09, 2020 at 08:36 PM CEST, John Fastabend wrote:
->> > When we receive an skb and the ingress skb verdict program returns
->> > SK_PASS we currently set the ingress flag and put it on the workqueue
->> > so it can be turned into a sk_msg and put on the sk_msg ingress queue.
->> > Then finally telling userspace with data_ready hook.
->> >
->> > Here we observe that if the workqueue is empty then we can try to
->> > convert into a sk_msg type and call data_ready directly without
->> > bouncing through a workqueue. Its a common pattern to have a recv
->> > verdict program for visibility that always returns SK_PASS. In this
->> > case unless there is an ENOMEM error or we overrun the socket we
->> > can avoid the workqueue completely only using it when we fall back
->> > to error cases caused by memory pressure.
->> >
->> > By doing this we eliminate another case where data may be dropped
->> > if errors occur on memory limits in workqueue.
->> >
->> > Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
->> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
->> > ---
->> >  net/core/skmsg.c |   17 +++++++++++++++--
->> >  1 file changed, 15 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
->> > index 040ae1d75b65..4b160d97b7f9 100644
->> > --- a/net/core/skmsg.c
->> > +++ b/net/core/skmsg.c
->> > @@ -773,6 +773,7 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
->> >  {
->> >  	struct tcp_skb_cb *tcp;
->> >  	struct sock *sk_other;
->> > +	int err = -EIO;
->> >
->> >  	switch (verdict) {
->> >  	case __SK_PASS:
->> > @@ -784,8 +785,20 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
->> >
->> >  		tcp = TCP_SKB_CB(skb);
->> >  		tcp->bpf.flags |= BPF_F_INGRESS;
->> > -		skb_queue_tail(&psock->ingress_skb, skb);
->> > -		schedule_work(&psock->work);
->> > +
->> > +		/* If the queue is empty then we can submit directly
->> > +		 * into the msg queue. If its not empty we have to
->> > +		 * queue work otherwise we may get OOO data. Otherwise,
->> > +		 * if sk_psock_skb_ingress errors will be handled by
->> > +		 * retrying later from workqueue.
->> > +		 */
->> > +		if (skb_queue_empty(&psock->ingress_skb)) {
->> > +			err = sk_psock_skb_ingress(psock, skb);
->>
->> When going through the workqueue (sk_psock_backlog), we will also check
->> if socket didn't get detached from the process, that is if
->> psock->sk->sk_socket != NULL, before queueing into msg queue.
->
-> The sk_socket check is only for the egress path,
->
->   sk_psock_handle_skb -> skb_send_sock_locked -> kernel_sendmsg_locked
+> +
+> +#ifdef UNROLL
+> +#pragma unroll
+> +#endif
+> +	for (int i = 0; i < MAX_CGROUPS_PATH_DEPTH; i++) {
+> +		filepart_length =
+> +			bpf_probe_read_str(payload, MAX_PATH, BPF_CORE_READ(cgroup_node, name));
+> +		if (!cgroup_node)
+> +			return payload;
+> +		if (cgroup_node == cgroup_root_node)
+> +			*root_pos = payload - payload_start;
+> +		if (filepart_length <= MAX_PATH) {
+> +			barrier_var(filepart_length);
+> +			payload += filepart_length;
+> +		}
+> +		cgroup_node = BPF_CORE_READ(cgroup_node, parent);
+> +	}
+> +	return payload;
+> +}
+> +
+> +static ino_t get_inode_from_kernfs(struct kernfs_node* node)
+> +{
+> +	struct kernfs_node___52* node52 = (void*)node;
+> +
+> +	if (bpf_core_field_exists(node52->id.ino)) {
+> +		barrier_var(node52);
+> +		return BPF_CORE_READ(node52, id.ino);
+> +	} else {
+> +		barrier_var(node);
+> +		return (u64)BPF_CORE_READ(node, id);
+> +	}
+> +}
+> +
+> +int pids_cgrp_id = 1;
 
-Oh, okay. I thought it was because we want to forwarding into the socket
-as soon as there is no process to read from the queue.
 
-> Then the do_tcp_sendpages() uses sk_socket and I don't see any checks for
-> sk_socket being set. Although I think its worth looking through to see
-> if the psock/sk state is always such that we have sk_socket there I
-> don't recall off-hand where that is null'd.
+hi,
+I'm getting compilation failure with this:
 
-It's in sock_orphan().
+	  CLNG-LLC [test_maps] profiler2.o
+	In file included from progs/profiler2.c:6:
+	progs/profiler.inc.h:246:5: error: redefinition of 'pids_cgrp_id' as different kind of symbol
+	int pids_cgrp_id = 1;
+	    ^
+	/home/jolsa/linux-qemu/tools/testing/selftests/bpf/tools/include/vmlinux.h:14531:2: note: previous definition is here
+		pids_cgrp_id = 11,
+		^
+	1 error generated.
+	/opt/clang/bin/llc: error: /opt/clang/bin/llc: <stdin>:1:1: error: expected top-level entity
+	BPF obj compilation failed
+	^
+	make: *** [Makefile:396: /home/jolsa/linux-qemu/tools/testing/selftests/bpf/profiler2.o] Error 1
 
-> But, to answer your question this is ingress only and here we don't
-> use sk_socket for anything so I don't see any reason the check is
-> needed. All that is done here is converting to skmsg and posting
-> onto ingress queue.
+jirka
 
-Queued skb won't be read out, but I don't see a problem with it.
-
-[...]
