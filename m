@@ -2,163 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2A228CB9D
-	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 12:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94C528CC72
+	for <lists+bpf@lfdr.de>; Tue, 13 Oct 2020 13:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731165AbgJMK1f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Oct 2020 06:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        id S1726758AbgJML0G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Oct 2020 07:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731147AbgJMK1e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Oct 2020 06:27:34 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14023C0613D5
-        for <bpf@vger.kernel.org>; Tue, 13 Oct 2020 03:27:34 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s9so11256047wro.8
-        for <bpf@vger.kernel.org>; Tue, 13 Oct 2020 03:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=cAni1ifXqzsheh6lxHnRYNhry2fldD6pWJ51clSn3eo=;
-        b=QV8rIxZVZ0HgEbxaKtarYS4BM6Y+nINmfn9RlW0186p5pnJmuAuSNH4IrOoXrU+P82
-         EaRzGF+z1HalpE069jmHSfPnIPxk4W7TYujkIbA3OG4byq2bayXtIdWlGcAO8Vw/rRz7
-         +9IZX4D+aNLnx57fgSoX1W4tZ9z5f4ET/mfS8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
-        bh=cAni1ifXqzsheh6lxHnRYNhry2fldD6pWJ51clSn3eo=;
-        b=fxWeUBOvsZUtTH8e0q3AXmz/smAWBSKg1GYt3jW/9ZFucSHymNuvolnegX7kiv7gIr
-         ByF6UQCivC3XMafkFgM2oeoHnLnutO+LD3uR59PbA2uC2tJgD7CUWAs6HTuiWpHtRxbz
-         GEjbO7paYtDzfeKfgf1yECtirdTxFBdzELfO11ZFg4QU+mSe8HI2iDM2bh2UjjiF+1Kw
-         UP8JUog2YUXcTKmaKlYMBxfpuEOjJJtZxDQUYfWJ55W3Td7Mj9xtiRW3/11NZPlNdn6d
-         DFTsQ5OgYvwDbZ8M5z7XBY5hXcyGqDKVcVJiBxkgMzattoZrwh9OGfiVBA0ZGpgi/X1l
-         x9/w==
-X-Gm-Message-State: AOAM531Il5AuYYsUlPW1CwhdVyVtYo2PZU21bMwWt9EIBGYPGxE1qAAh
-        g7y1UdHLliLVqZkAdxXJCWnACA==
-X-Google-Smtp-Source: ABdhPJwBiMMGUe3TA6Qt17hQOk4uJsDTP6tyiaMiA3MalHF6I0+La5Z+Me4iwheDHC9TAzTRTiOceA==
-X-Received: by 2002:adf:f246:: with SMTP id b6mr28797397wrp.111.1602584852653;
-        Tue, 13 Oct 2020 03:27:32 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id l11sm30119342wrt.54.2020.10.13.03.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 03:27:31 -0700 (PDT)
-References: <160226839426.5692.13107801574043388675.stgit@john-Precision-5820-Tower> <160226863689.5692.13861422742592309285.stgit@john-Precision-5820-Tower> <87ft6jr6po.fsf@cloudflare.com> <5f84903d914d1_370c208c3@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, lmb@cloudflare.com
-Subject: Re: [bpf-next PATCH v3 4/6] bpf, sockmap: remove dropped data on errors in redirect case
-In-reply-to: <5f84903d914d1_370c208c3@john-XPS-13-9370.notmuch>
-Date:   Tue, 13 Oct 2020 12:27:31 +0200
-Message-ID: <87d01mqv3g.fsf@cloudflare.com>
+        with ESMTP id S1726575AbgJML0F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Oct 2020 07:26:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDA2C0613D0;
+        Tue, 13 Oct 2020 04:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ap+vugPRXoOSJhloW5EJc9FGxy9ZwiLwbnG+7+pEMhA=; b=a/Sp1GZZiVtkIrsbDZFKKgQTkQ
+        FS+JHTt9pp+5vCrBdk0ac5b7U8ZgZGFScrKiULCJv4PZD4wWqOSzzq06ZoGh/8vFLI33VuvYYBdii
+        wZ4VlXJvl5fnmlD+q4pIJJmvrTs/0jX/FIDmEAYUX2+Mt6vIwB3sAbRYRgWIA8hB4i4EWyZuWPFOQ
+        rIaV+GwSaVBgBLKvO/SsFSj7I46VHFxg38PLmJQ+Oh1DkRIQcIx5NIWLGcWnDXshQ14JMdlpURiF2
+        LxyBxRGv+1Wkfh31jf6dzRr+U4xHgvz3PsshAxeZoaF0OQPY6Fl5VA2XZOxLonra6CTBCfgsfUBp/
+        6eTYHzgA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kSIR6-0001VK-7P; Tue, 13 Oct 2020 11:25:44 +0000
+Date:   Tue, 13 Oct 2020 12:25:44 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     ira.weiny@intel.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 24/58] fs/freevxfs: Utilize new kmap_thread()
+Message-ID: <20201013112544.GA5249@infradead.org>
+References: <20201009195033.3208459-1-ira.weiny@intel.com>
+ <20201009195033.3208459-25-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009195033.3208459-25-ira.weiny@intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 07:19 PM CEST, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> On Fri, Oct 09, 2020 at 08:37 PM CEST, John Fastabend wrote:
->> > In the sk_skb redirect case we didn't handle the case where we overrun
->> > the sk_rmem_alloc entry on ingress redirect or sk_wmem_alloc on egress.
->> > Because we didn't have anything implemented we simply dropped the skb.
->> > This meant data could be dropped if socket memory accounting was in
->> > place.
->> >
->> > This fixes the above dropped data case by moving the memory checks
->> > later in the code where we actually do the send or recv. This pushes
->> > those checks into the workqueue and allows us to return an EAGAIN error
->> > which in turn allows us to try again later from the workqueue.
->> >
->> > Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF pat=
-h")
->> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
->> > ---
->> >  net/core/skmsg.c |   28 ++++++++++++++--------------
->> >  1 file changed, 14 insertions(+), 14 deletions(-)
->> >
->>
->> [...]
->>
->> > @@ -709,30 +711,28 @@ static void sk_psock_skb_redirect(struct sk_buff=
- *skb)
->> >  {
->> >  	struct sk_psock *psock_other;
->> >  	struct sock *sk_other;
->> > -	bool ingress;
->> >
->> >  	sk_other =3D tcp_skb_bpf_redirect_fetch(skb);
->> > +	/* This error is a buggy BPF program, it returned a redirect
->> > +	 * return code, but then didn't set a redirect interface.
->> > +	 */
->> >  	if (unlikely(!sk_other)) {
->> >  		kfree_skb(skb);
->> >  		return;
->> >  	}
->> >  	psock_other =3D sk_psock(sk_other);
->> > +	/* This error indicates the socket is being torn down or had another
->> > +	 * error that caused the pipe to break. We can't send a packet on
->> > +	 * a socket that is in this state so we drop the skb.
->> > +	 */
->> >  	if (!psock_other || sock_flag(sk_other, SOCK_DEAD) ||
->> >  	    !sk_psock_test_state(psock_other, SK_PSOCK_TX_ENABLED)) {
->> >  		kfree_skb(skb);
->> >  		return;
->> >  	}
->> >
->> > -	ingress =3D tcp_skb_bpf_ingress(skb);
->> > -	if ((!ingress && sock_writeable(sk_other)) ||
->> > -	    (ingress &&
->> > -	     atomic_read(&sk_other->sk_rmem_alloc) <=3D
->> > -	     sk_other->sk_rcvbuf)) {
->>
->> I'm wondering why the check for going over socket's rcvbuf was removed?
->
-> Couple reasons, I never checked it from skmsg side so after this patch
-> accounting for both skmsg and sk_skb types are the same. I think this
-> should be the case going forward with anything we do around memory
-> accounting. The other, and more immediate, reason is we don't want the
-> error case here with the kfree_skb().
+> -	kaddr = kmap(pp);
+> +	kaddr = kmap_thread(pp);
+>  	memcpy(kaddr, vip->vii_immed.vi_immed + offset, PAGE_SIZE);
+> -	kunmap(pp);
+> +	kunmap_thread(pp);
 
-Right, we definitely don't want to drop the skb.
+You only Cced me on this particular patch, which means I have absolutely
+no idea what kmap_thread and kunmap_thread actually do, and thus can't
+provide an informed review.
 
-What crossed my mind is that sk_psock_handle_skb() could check for
-sk_rmem_alloc <=3D sk_rcvbuf and error out with -EAGAIN. Similarly to how
-we check for sock_writable() with this change.
-
-This would let the process owning the destination socket, we are
-redirecting to, to push back by tuning down SO_RCVBUF.
-
->
->>
->> I see that we now rely exclusively on
->> sk_psock_skb_ingress=E2=86=92sk_rmem_schedule for sk_rmem_alloc checks, =
-which I
->> don't think applies the rcvbuf limit.
->
-> Right. Also notice even though we checked it here we never charged the
-> skm_rmem_alloc for skmsg on the ingress queue. So we were effectively
-> getting that memory for free. Still doing some review and drafting a
-> patch to see if this works, but my proposal is:
->
->   For ingress sk_skb case we check sk_rmem_alloc before enqueuing
->   the new sk_msg into ingress queue and then also charge the memory
->   the same as skb_set_owner_r except do it with a new helper
->   skmsg_set_owner_r(skmsg, sk) and only do the atomic add against
->   sk_rmem_alloc and the sk_mem_charge() part.
->
->   Then for skmsg programs convert the sk_mem_charge() calls to
->   use the new skmsg_set_owner_r() to get the same memory accounting.
->   Finally, on copy to user buffer we unwind this. Then we will have
->   the memory in the queue accounted for against the socket.
->
-> I'll give it a try. Thanks for asking. wdyt? Any other ideas.
-
-SGTM, nothing to add except for honoring SO_RCVBUF I mentioned above.
-
-[...]
+That being said I think your life would be a lot easier if you add
+helpers for the above code sequence and its counterpart that copies
+to a potential hughmem page first, as that hides the implementation
+details from most users.
