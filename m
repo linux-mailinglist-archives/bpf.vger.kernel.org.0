@@ -2,178 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AD628E5AA
-	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 19:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E780028E5C6
+	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 19:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgJNRpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Oct 2020 13:45:14 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4136 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726111AbgJNRpO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Oct 2020 13:45:14 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EHZlpc010426;
-        Wed, 14 Oct 2020 10:44:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : in-reply-to : content-type :
- mime-version; s=facebook; bh=sJ7WUhoMXlFD3lGX6xcyfW0YLCm8PkcQBpuvGJnt+no=;
- b=OVwZdJwOijZzrYODT1SPCpXo4qIgEdhQs8nY0O33FCTqlrwm9BHqOk3WoYix7OQP9axc
- eNajgMXzCFq6fWEH3PG1519k0Z4ZxOTc9B3azbPm9IwAVqrA6bcmjMRKI02XUKvSpigF
- 0MTRZKMAIdac2UapGNlEZA2tGYLkcgbg88k= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3458wu0p95-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 14 Oct 2020 10:44:59 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 14 Oct 2020 10:44:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cFaFAzihUGxSzmMRhEs/P6svgraR6t6a1BvZxnNottOFar2erEfjF6WywN8JAMH08nqxgFf3sa/B+BMZyipsVqNqKUz/Kjlwmfw/OQrgO5mshACDgTBn67T/sx1uxNK81KWZdvPzu3k3I8oznNwB7dviQH/7sW+g8Q8ocCAa2W673XdfSNBpaFp1AKKpN46tx+2VLugPa9hyvgWTmP4Gp1T4W1IP7aCWu8IDtqa7VS5m72KCtR68LfNId8wv+ctWMFC3g87g51b84vBl+2DqERyMBNrK7BhSVUdV9s7zwQFs/8ZZw4BgeCOhHMmnn17ziaNWu5pmCOTRrfn8Mmldsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sJ7WUhoMXlFD3lGX6xcyfW0YLCm8PkcQBpuvGJnt+no=;
- b=fFkBbggxj5PU0AGHm2+OZlJqCm3LcvPc0oaArVOQTjmWsMOj/4Qlktj4zga3JYo6LlOFVkjnn3L6g4CSWsXPmMr2jtYfdrYglIZtQ9cMvCjRrnBGFLQZHSoplfdrFM/B02fk8fu07ZBL2D3oQu6t5VZzQIOZnMWaoMcUUjdKd4Yy6yJ/b6JUZbFj2E5pYFHVmDODhEvc52C17+ZUxKy8/ZEHJjUxfqO/+1OOK8HGszJkdsLezPpeLNbMmmyaZIFSGT4nsRzNhUIMx9LcsqeCdYdC0pJnp7CFLzhhrVvshoncw7YyvWkALPmGZboS95F8drMOVM3bXsuBd/PL3+0mJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sJ7WUhoMXlFD3lGX6xcyfW0YLCm8PkcQBpuvGJnt+no=;
- b=F0fnaL/MyxIvup/jJD7xzfwqnjnRrnY8XDa/mmhkZ9Qz2B4o01NnQ4VkAefwjbvM7aUiZvyO/A/riWfYKpI5rROHicLU/y5VIxYYYqS9fw8Oph0vskBEcKGDF24T/vXej5Xb4bVxuEO1+lIR/3C5i8HaAIf5P5hF2UayDM+Y2+0=
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2565.namprd15.prod.outlook.com (2603:10b6:a03:14f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 14 Oct
- 2020 17:29:17 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3477.020; Wed, 14 Oct 2020
- 17:29:17 +0000
-Date:   Wed, 14 Oct 2020 10:29:10 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Vasily Averin <vvs@virtuozzo.com>
-Subject: Re: [PATCH net v3] net: fix pos incrementment in ipv6_route_seq_next
-Message-ID: <20201014172910.dunuzshlpknbl2wt@kafai-mbp.dhcp.thefacebook.com>
-References: <20201014144612.2245396-1-yhs@fb.com>
-In-Reply-To: <20201014144612.2245396-1-yhs@fb.com>
-X-Originating-IP: [2620:10d:c090:400::5:e734]
-X-ClientProxiedBy: MW2PR16CA0023.namprd16.prod.outlook.com (2603:10b6:907::36)
- To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:e734) by MW2PR16CA0023.namprd16.prod.outlook.com (2603:10b6:907::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Wed, 14 Oct 2020 17:29:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 92436295-46a2-4362-5e37-08d87066acef
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2565:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2565DED6BC0F30ADB2BDF358D5050@BYAPR15MB2565.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YGUpz+VlJhvc+iGpNeMg2iO8fTDrYJwDwekmnMfT0R0ppBaIoB68PbrWXkWuNqp2u1pYS/j4Yv8mi99es9tDWIz4XYkfbMcKeLLA+v2l3B7+ZCKhe5f8h1ZpZugglpUOUeCjPR+IGzrxjiOtTO5pWqDRcRZB/xzAxM9T5K8oriqyGJS/BDCmbihi1bgLNHKMtwb006/3iqV/Hs3FSB7rAwVIpoQ6Rtq2l0JBOShG+CQsJ2zZIg436XW1D6XEhyyW0l7+OoAlPCtKP8gmheOVYd3BOPCp06d2WY2vUI+RMG0cSNCYWVmqHI6UR1ttgwkOfd6KZeUWYn0T0JMk2Ira1PCEAdQbBzeeEoI/g0l7epm5r5CV6U11U1zsZS42aBHe0oQK7xXzikXF2yGdXETrjg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(376002)(396003)(366004)(8936002)(86362001)(66476007)(66946007)(16526019)(66556008)(8676002)(966005)(6506007)(6636002)(186003)(2906002)(55016002)(5660300002)(1076003)(7696005)(478600001)(316002)(54906003)(52116002)(9686003)(6862004)(83380400001)(83080400001)(4326008)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Hfftb3LpmMB8XQgq/Ie2Qpi+y9drW1ZXGxwPeXhSAwSh2ry3l668PKrCuCoVxSLxYpX9F2gMDGzkPX65BpDjhqaMGidvma7WMykpH6S3l2EpZgWwhwu/gH4sXg3ORLwarlWzPV/LotT+YZbSsGoqRcQ7DqH4Y6nAtjj0+2GEguE+cONU+sRUi3ZtQ3xUrJG2k3StBofqJuEfTIEXf1h4OYIJFLv3m/FcIve3OifdTNlsn5WA/oJ/nDCbp2UUZ+41hblWr0drhOpcxGdIFX8IMsZ/7gAdEtNHpIEdCRwsNukVh41yIy8LoxhNudLfbIkiliBW26uVBEAy5eWzbs3zqjz2GS1k179ALclGYOvau+IjxsL6VlfwAzAV5pmdV9YWRVFkaFKRBr/j9aIVPKu3jK7X68vZiMEa3kD5vE7SZGyvdGn4iXA7V2mF8+WqmyTwp62RWwzVmeG/DtbyVrCywckdtK13sCf3jj5E5hHgKISAiXnspGc/8hoHL6hyj8hxbtpAr2MKLk0OVnXlgI/jDXxovhWIvJGzjOBqBEKdtnF2mmRk0GHcqXKyixUSdgMlUBOIMfOI9JdYgFLJzo6RgjW8YrTB1YR6owrPQm6Jek1FryB83s441pa2OyTC/yXCpCp0UtY5gP7HrPwiFUvrxr8qXv6XZcFqfMz4+s9IBgI=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92436295-46a2-4362-5e37-08d87066acef
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Oct 2020 17:29:16.8535
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fvZSm2hABgqBpbkss9q3W29t4X/GAbuscE036yoeeuPBJ2yNqmaLbT9flMpnaoyy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2565
-X-OriginatorOrg: fb.com
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_11:2020-10-14,2020-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- suspectscore=0 priorityscore=1501 lowpriorityscore=0 malwarescore=0
- clxscore=1011 impostorscore=0 adultscore=0 mlxlogscore=999 spamscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010140127
-X-FB-Internal: deliver
+        id S1727800AbgJNR4Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Oct 2020 13:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgJNR4P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Oct 2020 13:56:15 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE66C061755;
+        Wed, 14 Oct 2020 10:56:13 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id e7so236609pfn.12;
+        Wed, 14 Oct 2020 10:56:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=i5ZBQYPbVVeY387O8tMq4XxmBEBI4/xwYg8DRWWTk9M=;
+        b=hE2CXlpfqgFUIIIGVvAmwvm6RB0buuU/f61LiHEyYCgHrqhiTPKGWQuqaDavfjIR4l
+         6VSrjTF6JuTBfv7KsL3QArMbw0w4QqgBrQhZPkMBKbYrDX7EMgx617ngVXfoRboiDsBJ
+         AY9bBeEnzLiX9odbHDEFQV5d8bjDDIBORQZsm6+pfTceSo7orfwBA/pjQd32NBIMBofX
+         A4+JYLVopYo4RYEhRV/Bav8ScJIvAtZgCJx5lBXEBhQLTG70y6dTC0q/tRs8BZ2Q/FlE
+         AvP9XWAW1akUDQH8M7Rx2OLg7PHpnKhvAKkYeNl4LO88r8d9yoh+dXTdckzreBgQVlyq
+         aEow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=i5ZBQYPbVVeY387O8tMq4XxmBEBI4/xwYg8DRWWTk9M=;
+        b=ZgiGoYfDMFCV2dopSOqU0u+kfctqz62JxSBH0EzaqzYoYX/zl6WZihMa3hPgDEw/D3
+         2Mv7wZpPhTHfaP8yXsOvS4YjhK7Sn12K8aPfgB3avdVA98rXT+ng73lW16G+91Tr05W3
+         50Oa4S0TJXXL3iPUA/YRetXuZt7hqU1kwOeDjOLvm0hsGqLCm2Zfo5iuWM0hJ/Cf+4NO
+         KL7HsWLGIP/1+5Si6xqC7xd69w1UAdnbYS+8FE1QAeH0VrMcMy/HLYtS7z7TiIJtkpb8
+         u/4D8ONoijCDAMyQsY0sUeKgOMksWTkoXGEbk1WJ4BzIONmWB+Xs0WYwLtVyClq83Jv0
+         ciog==
+X-Gm-Message-State: AOAM532YKEjMzFdMneyu6EG1Nz+DbBcuBgErbvdnULAjVP6sRHYY9RO1
+        X5tYcdpxRVlt3vvXrbRLPgs=
+X-Google-Smtp-Source: ABdhPJwuh2oHUl5Ip6h+JdGOlho5vbP02R8mzTQT4Yu/5GTNZ8ACFgMXiqy3/vuc03wHjl80VsFUBQ==
+X-Received: by 2002:aa7:9255:0:b029:158:ca2e:3f33 with SMTP id 21-20020aa792550000b0290158ca2e3f33mr435839pfp.59.1602698170987;
+        Wed, 14 Oct 2020 10:56:10 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id q123sm260314pfq.56.2020.10.14.10.56.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Oct 2020 10:56:10 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf-next] bpf: Fix register equivalence tracking.
+Date:   Wed, 14 Oct 2020 10:56:08 -0700
+Message-Id: <20201014175608.1416-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 07:46:12AM -0700, Yonghong Song wrote:
-> Commit 4fc427e05158 ("ipv6_route_seq_next should increase position index")
-> tried to fix the issue where seq_file pos is not increased
-> if a NULL element is returned with seq_ops->next(). See bug
->   https://bugzilla.kernel.org/show_bug.cgi?id=206283
-> The commit effectively does:
->   - increase pos for all seq_ops->start()
->   - increase pos for all seq_ops->next()
-> 
-> For ipv6_route, increasing pos for all seq_ops->next() is correct.
-> But increasing pos for seq_ops->start() is not correct
-> since pos is used to determine how many items to skip during
-> seq_ops->start():
->   iter->skip = *pos;
-> seq_ops->start() just fetches the *current* pos item.
-> The item can be skipped only after seq_ops->show() which essentially
-> is the beginning of seq_ops->next().
-> 
-> For example, I have 7 ipv6 route entries,
->   root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=4096
->   00000000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
->   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
->   fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000004 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   0+1 records in
->   0+1 records out
->   1050 bytes (1.0 kB, 1.0 KiB) copied, 0.00707908 s, 148 kB/s
->   root@arch-fb-vm1:~/net-next
-> 
-> In the above, I specify buffer size 4096, so all records can be returned
-> to user space with a single trip to the kernel.
-> 
-> If I use buffer size 128, since each record size is 149, internally
-> kernel seq_read() will read 149 into its internal buffer and return the data
-> to user space in two read() syscalls. Then user read() syscall will trigger
-> next seq_ops->start(). Since the current implementation increased pos even
-> for seq_ops->start(), it will skip record #2, #4 and #6, assuming the first
-> record is #1.
-> 
->   root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=128
->   00000000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
->   fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
->   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
-> 4+1 records in
-> 4+1 records out
-> 600 bytes copied, 0.00127758 s, 470 kB/s
-> 
-> To fix the problem, create a fake pos pointer so seq_ops->start()
-> won't actually increase seq_file pos. With this fix, the
-> above `dd` command with `bs=128` will show correct result.
-> 
-> Fixes: 4fc427e05158 ("ipv6_route_seq_next should increase position index")
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Suggested-by: Vasily Averin <vvs@virtuozzo.com>
-> Reviewed-by: Vasily Averin <vvs@virtuozzo.com>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  net/ipv6/ip6_fib.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> Changelog:
->  v2 -> v3:
->   - initialize local variable "p" to avoid potential syzbot complaint. (Eric)
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+From: Alexei Starovoitov <ast@kernel.org>
+
+The 64-bit JEQ/JNE handling in reg_set_min_max() was clearing reg->id in either
+true or false branch. In the case 'if (reg->id)' check was done on the other
+branch the counter part register would have reg->id == 0 when called into
+find_equal_scalars(). In such case the helper would incorrectly identify other
+registers with id == 0 as equivalent and propagate the state incorrectly.
+Fix it by preserving ID across reg_set_min_max().
+In other words any kind of comparison operator on the scalar register
+should preserve its ID to recognize:
+r1 = r2
+if (r1 == 20) {
+  #1 here both r1 and r2 == 20
+} else if (r2 < 20) {
+  #2 here both r1 and r2 < 20
+}
+
+The patch is addressing #1 case. The #2 was working correctly already.
+
+Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register assignments.")
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ kernel/bpf/verifier.c                         | 38 ++++++++++++-------
+ .../testing/selftests/bpf/verifier/regalloc.c | 26 +++++++++++++
+ 2 files changed, 51 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c43a5e8f0818..39d7f44e7c92 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1010,14 +1010,9 @@ static const int caller_saved[CALLER_SAVED_REGS] = {
+ static void __mark_reg_not_init(const struct bpf_verifier_env *env,
+ 				struct bpf_reg_state *reg);
+ 
+-/* Mark the unknown part of a register (variable offset or scalar value) as
+- * known to have the value @imm.
+- */
+-static void __mark_reg_known(struct bpf_reg_state *reg, u64 imm)
++/* This helper doesn't clear reg->id */
++static void ___mark_reg_known(struct bpf_reg_state *reg, u64 imm)
+ {
+-	/* Clear id, off, and union(map_ptr, range) */
+-	memset(((u8 *)reg) + sizeof(reg->type), 0,
+-	       offsetof(struct bpf_reg_state, var_off) - sizeof(reg->type));
+ 	reg->var_off = tnum_const(imm);
+ 	reg->smin_value = (s64)imm;
+ 	reg->smax_value = (s64)imm;
+@@ -1030,6 +1025,17 @@ static void __mark_reg_known(struct bpf_reg_state *reg, u64 imm)
+ 	reg->u32_max_value = (u32)imm;
+ }
+ 
++/* Mark the unknown part of a register (variable offset or scalar value) as
++ * known to have the value @imm.
++ */
++static void __mark_reg_known(struct bpf_reg_state *reg, u64 imm)
++{
++	/* Clear id, off, and union(map_ptr, range) */
++	memset(((u8 *)reg) + sizeof(reg->type), 0,
++	       offsetof(struct bpf_reg_state, var_off) - sizeof(reg->type));
++	___mark_reg_known(reg, imm);
++}
++
+ static void __mark_reg32_known(struct bpf_reg_state *reg, u64 imm)
+ {
+ 	reg->var_off = tnum_const_subreg(reg->var_off, imm);
+@@ -7001,14 +7007,18 @@ static void reg_set_min_max(struct bpf_reg_state *true_reg,
+ 		struct bpf_reg_state *reg =
+ 			opcode == BPF_JEQ ? true_reg : false_reg;
+ 
+-		/* For BPF_JEQ, if this is false we know nothing Jon Snow, but
+-		 * if it is true we know the value for sure. Likewise for
+-		 * BPF_JNE.
++		/* JEQ/JNE comparison doesn't change the register equivalence.
++		 * r1 = r2;
++		 * if (r1 == 42) goto label;
++		 * ...
++		 * label: // here both r1 and r2 are known to be 42.
++		 *
++		 * Hence when marking register as known preserve it's ID.
+ 		 */
+ 		if (is_jmp32)
+ 			__mark_reg32_known(reg, val32);
+ 		else
+-			__mark_reg_known(reg, val);
++			___mark_reg_known(reg, val);
+ 		break;
+ 	}
+ 	case BPF_JSET:
+@@ -7551,7 +7561,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 				reg_combine_min_max(&other_branch_regs[insn->src_reg],
+ 						    &other_branch_regs[insn->dst_reg],
+ 						    src_reg, dst_reg, opcode);
+-			if (src_reg->id) {
++			if (src_reg->id &&
++			    !WARN_ON_ONCE(src_reg->id != other_branch_regs[insn->src_reg].id)) {
+ 				find_equal_scalars(this_branch, src_reg);
+ 				find_equal_scalars(other_branch, &other_branch_regs[insn->src_reg]);
+ 			}
+@@ -7563,7 +7574,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 					opcode, is_jmp32);
+ 	}
+ 
+-	if (dst_reg->type == SCALAR_VALUE && dst_reg->id) {
++	if (dst_reg->type == SCALAR_VALUE && dst_reg->id &&
++	    !WARN_ON_ONCE(dst_reg->id != other_branch_regs[insn->dst_reg].id)) {
+ 		find_equal_scalars(this_branch, dst_reg);
+ 		find_equal_scalars(other_branch, &other_branch_regs[insn->dst_reg]);
+ 	}
+diff --git a/tools/testing/selftests/bpf/verifier/regalloc.c b/tools/testing/selftests/bpf/verifier/regalloc.c
+index ac71b824f97a..4ad7e05de706 100644
+--- a/tools/testing/selftests/bpf/verifier/regalloc.c
++++ b/tools/testing/selftests/bpf/verifier/regalloc.c
+@@ -241,3 +241,29 @@
+ 	.result = ACCEPT,
+ 	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+ },
++{
++	"regalloc, spill, JEQ",
++	.insns = {
++	BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
++	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++	BPF_LD_MAP_FD(BPF_REG_1, 0),
++	BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8), /* spill r0 */
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 0),
++	/* The verifier will walk the rest twice with r0 == 0 and r0 == map_value */
++	BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32),
++	BPF_MOV64_REG(BPF_REG_2, BPF_REG_0),
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_2, 20, 0),
++	/* The verifier will walk the rest two more times with r0 == 20 and r0 == unknown */
++	BPF_LDX_MEM(BPF_DW, BPF_REG_3, BPF_REG_10, -8), /* fill r3 with map_value */
++	BPF_JMP_IMM(BPF_JEQ, BPF_REG_3, 0, 1), /* skip ldx if map_value == NULL */
++	/* Buggy verifier will think that r3 == 20 here */
++	BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_3, 0), /* read from map_value */
++	BPF_EXIT_INSN(),
++	},
++	.fixup_map_hash_48b = { 4 },
++	.result = ACCEPT,
++	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
++},
+-- 
+2.23.0
+
