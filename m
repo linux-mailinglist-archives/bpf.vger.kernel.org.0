@@ -2,100 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C5728E1B2
-	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 15:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7579328E274
+	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 16:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgJNNvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Oct 2020 09:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgJNNvT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Oct 2020 09:51:19 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCB7C061755
-        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 06:51:18 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id l15so1728061wmh.1
-        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 06:51:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=WjaovaCQ0eCt8Yl43E3wEUK378r499nXJLq1rTHlnNU=;
-        b=DYXBXD1D1629Vq6QcQ0plYMDrbU8+8AXifChm7Uq3HQGO0vgH5k7/GZ1jPbrjjCR0h
-         psZuVGf2q8LW2O6rrMTF9+TnUihyZeM/Bha7IRsq3r/KYuzO9A2qVy/Z6GCVCZaRUOYl
-         yNa2Dz8zmcMJbp8oZ06EANbLi16dA0o6u9/HknS91ySySFZDh97DCkwcb+AIkcZoNk9j
-         mo+/fiSX95coCLDFKQbn8ssLR7Qo2GCtXKS1Gm7np8MPW6bL817c6jBxxUBeUu2bZ8/t
-         HPhgKTPIOnZsWWz7DZMZZ0B9VbQoh7C8PZy+0p4BRdS3sNP+xKPQGRhBL0nXemCt2Hns
-         uoMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WjaovaCQ0eCt8Yl43E3wEUK378r499nXJLq1rTHlnNU=;
-        b=aHsJ+agZAsIU67hycKoPhajYDwuL3nelnmAgRd9sqCIBqk0e96yX4yPY5mO/nocupP
-         mAWrli0hlE8Fluu75/1Y8D3mrNKcQDeGvPZTHLfG1rXA5GoKRFHoHlJ6hUAl0bvzF6ZL
-         AizkQ/x3Dj5NTIcgOnLCI1fsxhInbIlknF7OvBdDwF0KGeQSCo9v4HSlNRXkpKHyDLQA
-         snU8s0nSEBSz9n1/k81nJjtHH71ktxFGpUstBjZleODUOmv/42vRzgLLuvzktJJB3Fuq
-         ExF3nNgFmRR+14GzjyMMQOcwHk0XA0ak/d1Pf5djRh7VjUyts+TYaE/+Yr+97YhDy73l
-         1I1g==
-X-Gm-Message-State: AOAM530MSDieFNKw4uqLPNVSwIg43U6cZEJeNkCYyuKEQdRjam2DvIQw
-        JqkSLVGMbz/THCPgGEA+OqKtlYFCf527
-X-Google-Smtp-Source: ABdhPJzsKZAq3cZJWkhFCXcF25V7z2nQSXh4IDEKM9Lhd0aBKoaqaqlJl3ezbjcWdZDyMjLYKkxZ3Q==
-X-Received: by 2002:a1c:3d86:: with SMTP id k128mr3609292wma.153.1602683476996;
-        Wed, 14 Oct 2020 06:51:16 -0700 (PDT)
-Received: from [192.168.254.199] (x4dbe9d8e.dyn.telefonica.de. [77.190.157.142])
-        by smtp.gmail.com with ESMTPSA id 1sm5450511wre.61.2020.10.14.06.51.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 06:51:16 -0700 (PDT)
-Subject: Re: BUG: kernel NULL pointer dereference in
- __cgroup_bpf_run_filter_skb
-From:   Thomas Reim <reimth@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-References: <CAOLRBTUSkRbku25rbw6Fyb019wFqFvEN=6xGM+RgFJFQ=NH4KQ@mail.gmail.com>
- <b62a18d0-1f78-3bf5-38b2-08d9a779e432@iogearbox.net>
- <92acbf2d-9d21-5074-cb07-0a3f206bd090@gmail.com>
-Message-ID: <f00e8a89-98ea-94c7-3956-3fc1f565d763@gmail.com>
-Date:   Wed, 14 Oct 2020 15:51:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729464AbgJNOqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Oct 2020 10:46:16 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51028 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729356AbgJNOqQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Oct 2020 10:46:16 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09EEdhkF022213
+        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 07:46:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=ATkRQGLm4zLVf7AvWVIMRIj4Ei6EozvH5D3eO5UBWOw=;
+ b=cz7PV9tv4smhs6RuR14yLG88r/ET6T1FbBeUIQrdBYKsq9zgOLREZ5/hZntJxE6MhS4x
+ zfOakWvUCtegwIG3om3mNUVS8plVrSZM5I4iPjLRzhKTSN8x1ie2CKVxR3Wqo9xB2qFr
+ X8JXPaAMMGnNniMTiocPkaPfX0uorRV/AzA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 345ff5nqgd-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 07:46:15 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 14 Oct 2020 07:46:13 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 13C663701B20; Wed, 14 Oct 2020 07:46:12 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH net v3] net: fix pos incrementment in ipv6_route_seq_next
+Date:   Wed, 14 Oct 2020 07:46:12 -0700
+Message-ID: <20201014144612.2245396-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <92acbf2d-9d21-5074-cb07-0a3f206bd090@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-14_08:2020-10-14,2020-10-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010140107
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->>
->> Fix is under discussion here:
->>
->> https://lore.kernel.org/netdev/20200616180352.18602-1-xiyou.wangcong@gmail.com/ 
->>
->>
->> Thanks,
->> Daniel
-> 
-> Dear Daniel,
-> 
-> thank you for the hint. I will try to follow-up the discussion. For your 
-> convenience I have added some of our many and various logs to this 
-> thread. Maybe it will be of some help for the team.
-> 
+Commit 4fc427e05158 ("ipv6_route_seq_next should increase position index")
+tried to fix the issue where seq_file pos is not increased
+if a NULL element is returned with seq_ops->next(). See bug
+  https://bugzilla.kernel.org/show_bug.cgi?id=3D206283
+The commit effectively does:
+  - increase pos for all seq_ops->start()
+  - increase pos for all seq_ops->next()
 
-There seems to be not much progress in above mentioned thread. Don't 
-know if there have been other discussions that have resulted in a patch.
+For ipv6_route, increasing pos for all seq_ops->next() is correct.
+But increasing pos for seq_ops->start() is not correct
+since pos is used to determine how many items to skip during
+seq_ops->start():
+  iter->skip =3D *pos;
+seq_ops->start() just fetches the *current* pos item.
+The item can be skipped only after seq_ops->show() which essentially
+is the beginning of seq_ops->next().
 
-But last week we successfully tested kernel 5.8.11 (5.8.11-1-MANJARO 
-x64) without experiencing a kernel panic/freeze.. In the userspace 
-systemd 246.6 was running. No idea which changes have solved our issue. 
-But here kernel is back stable again.
+For example, I have 7 ipv6 route entries,
+  root@arch-fb-vm1:~/net-next dd if=3D/proc/net/ipv6_route bs=3D4096
+  00000000000000000000000000000000 40 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
+  fe800000000000000000000000000000 40 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+  00000000000000000000000000000001 80 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
+  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+  ff000000000000000000000000000000 08 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 00000100 00000004 00000000 00000001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+  0+1 records in
+  0+1 records out
+  1050 bytes (1.0 kB, 1.0 KiB) copied, 0.00707908 s, 148 kB/s
+  root@arch-fb-vm1:~/net-next
 
-We will switch the workstations from intermediate kernel 4.9 LTS, which 
-was stable all the time, back to kernel 5.8.
+In the above, I specify buffer size 4096, so all records can be returned
+to user space with a single trip to the kernel.
 
-Thank you.
+If I use buffer size 128, since each record size is 149, internally
+kernel seq_read() will read 149 into its internal buffer and return the data
+to user space in two read() syscalls. Then user read() syscall will trigger
+next seq_ops->start(). Since the current implementation increased pos even
+for seq_ops->start(), it will skip record #2, #4 and #6, assuming the first
+record is #1.
 
+  root@arch-fb-vm1:~/net-next dd if=3D/proc/net/ipv6_route bs=3D128
+  00000000000000000000000000000000 40 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+  fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+  00000000000000000000000000000000 00 00000000000000000000000000000000 00 0=
+0000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+4+1 records in
+4+1 records out
+600 bytes copied, 0.00127758 s, 470 kB/s
 
+To fix the problem, create a fake pos pointer so seq_ops->start()
+won't actually increase seq_file pos. With this fix, the
+above `dd` command with `bs=3D128` will show correct result.
+
+Fixes: 4fc427e05158 ("ipv6_route_seq_next should increase position index")
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Suggested-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ net/ipv6/ip6_fib.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+Changelog:
+ v2 -> v3:
+  - initialize local variable "p" to avoid potential syzbot complaint. (Eri=
+c)
+ v1 -> v2:
+  - instead of push increment of *pos in ipv6_route_seq_next() for
+    seq_ops->next() only. Add a face pos pointer in seq_ops->start()
+    and use it when calling ipv6_route_seq_next().
+
+diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+index 141c0a4c569a..605cdd38a919 100644
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -2622,8 +2622,10 @@ static void *ipv6_route_seq_start(struct seq_file *s=
+eq, loff_t *pos)
+ 	iter->skip =3D *pos;
+=20
+ 	if (iter->tbl) {
++		loff_t p =3D 0;
++
+ 		ipv6_route_seq_setup_walk(iter, net);
+-		return ipv6_route_seq_next(seq, NULL, pos);
++		return ipv6_route_seq_next(seq, NULL, &p);
+ 	} else {
+ 		return NULL;
+ 	}
+--=20
+2.24.1
 
