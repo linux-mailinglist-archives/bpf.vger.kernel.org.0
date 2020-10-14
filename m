@@ -2,100 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8C728D954
-	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 06:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970F828DB19
+	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 10:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730017AbgJNEgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Oct 2020 00:36:54 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19812 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729995AbgJNEgy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Oct 2020 00:36:54 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09E4ZM1l011016
-        for <bpf@vger.kernel.org>; Tue, 13 Oct 2020 21:36:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=facebook;
- bh=sl7Keq768JmYFP2QGaRO4xIW+BR0M1wIdYM0fJxUwXE=;
- b=aFeEuhWhXweCDqnRWk9q5mMw5Vmj7Wl/9zKjNPKtt9umKDdv39fEYy/lbgZn/c7lwg6B
- HgI8eZsGZ7MbNSz77b/+gTlrR64rbsTiSsuRO4Gpz69W9NxJPMLIbI/FPcGHHkXejHZj
- iakMx35SwnAUPpUWBjDsFHZK7a/e/Kc6WxI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 345ff5k721-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 13 Oct 2020 21:36:53 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 13 Oct 2020 21:36:52 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 662C862E1AE9; Tue, 13 Oct 2020 21:36:41 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix compilation error in progs/profiler.inc.h
-Date:   Tue, 13 Oct 2020 21:36:38 -0700
-Message-ID: <20201014043638.3770558-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1729208AbgJNIT7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Oct 2020 04:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729021AbgJNITg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Oct 2020 04:19:36 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC607C041E72;
+        Tue, 13 Oct 2020 21:40:40 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l15so829001wmh.1;
+        Tue, 13 Oct 2020 21:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ePLsU1bdkJB4g+ijegYS+YZS8jNr19HgFUEeDCk3fzc=;
+        b=cmNE/jD7DOye2TOzxQuV4PDYobqxn1oClxVW2ooNBNH2m4IqaSydPrSSYaE08ZKg41
+         1rujSTUhVqvG9wyzOSipSeQ6fQhUHQQKqrDL2dcS+J7IJK/oAQoLJQd/DyoCjexRR49U
+         JeZRo9oOXjltwQyIKzcahz97cpAv76Mw8/oLI0U/ebF/xhz3gRfZ3bQ6dXG/pMRGIJhU
+         5PT3+NherQaYcx+xZRW197NNzDvaU1Fp8CbthviPh+GQxkRCxJVUZQJkq7i+21PMcOTP
+         1CreIEO8fb5v7sbUuxk8c5b4OnWyPzlKQeTAAr/Bso9hBBvGE1Hj5gKQH8BsACVBzFDe
+         sHbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ePLsU1bdkJB4g+ijegYS+YZS8jNr19HgFUEeDCk3fzc=;
+        b=rC/04KbiTaJ2y0em7zJE7UIZ9tdqC0eXfUeqvGFbsNG9Ox24lc2YqDnd9iYhbvZ/d0
+         R0YDAeuaH5iMyh/0+Lb9AUIrY0UqepqIJ/6D8yNMS9pBdS+5+US0oNetcV2qltmfeL/L
+         EhNbPcbB+jkxD2bd5zkLBWy1+VXZloqccRktwUa9Rwv+rl3lHvTiS/pK41bMHZ+UrdIM
+         wEnZ6W5AB2vtQbNhJpwdlFjGEYEi9g/4oETG0P9BHLgP0G8svRs7+qv+ubpkq9CpXoXY
+         M6vuwHQzp+luY4saQkFmfOhmf8w4CmQ2bFN2NlF0VVhNl8ylR0B6prN84Ii3ZhBbMhWh
+         Z/QQ==
+X-Gm-Message-State: AOAM5328CqCyTKD0qGTGA3ffQgpEh0WkWffKsT8Bj9Jk23Ey6F6o4DmK
+        IKI/zKSPGQ3LJPXNmyipaio=
+X-Google-Smtp-Source: ABdhPJy4ORXNMf8bxAsICCzIRlJSAI1SsU+l/svl536z0jTzmcGeSYTrB8eiui5z2m7KNYGayMb+WQ==
+X-Received: by 2002:a05:600c:210f:: with SMTP id u15mr1494200wml.53.1602650439436;
+        Tue, 13 Oct 2020 21:40:39 -0700 (PDT)
+Received: from [192.168.1.10] (static-176-175-73-29.ftth.abo.bbox.fr. [176.175.73.29])
+        by smtp.gmail.com with ESMTPSA id o6sm2726672wrm.69.2020.10.13.21.40.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Oct 2020 21:40:38 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>, wad@chromium.org,
+        bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Tycho Andersen <tycho@tycho.pizza>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco>
+ <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco>
+ <8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <7a4497ad-e595-f328-e0e1-9577dfdbd895@gmail.com>
+Date:   Wed, 14 Oct 2020 06:40:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-10-14_02:2020-10-14,2020-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 phishscore=0 adultscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010140031
-X-FB-Internal: deliver
+In-Reply-To: <8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following error when compiling selftests/bpf
+Hi Tycho,
 
-progs/profiler.inc.h:246:5: error: redefinition of 'pids_cgrp_id' as diff=
-erent kind of symbol
+Ping on the question below!
 
-pids_cgrp_id is used in cgroup code, and included in vmlinux.h. Fix the
-error by renaming pids_cgrp_id as pids_cgroup_id.
+Thanks,
 
-Fixes: 03d4d13fab3f ("selftests/bpf: Add profiler test")
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- tools/testing/selftests/bpf/progs/profiler.inc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Michael
 
-diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/tes=
-ting/selftests/bpf/progs/profiler.inc.h
-index 00578311a4233..b554c1e40b9fb 100644
---- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-+++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-@@ -243,7 +243,7 @@ static ino_t get_inode_from_kernfs(struct kernfs_node=
-* node)
- 	}
- }
-=20
--int pids_cgrp_id =3D 1;
-+int pids_cgroup_id =3D 1;
-=20
- static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_da=
-ta,
- 					 struct task_struct* task,
-@@ -262,7 +262,7 @@ static INLINE void* populate_cgroup_info(struct cgrou=
-p_data_t* cgroup_data,
- 				BPF_CORE_READ(task, cgroups, subsys[i]);
- 			if (subsys !=3D NULL) {
- 				int subsys_id =3D BPF_CORE_READ(subsys, ss, id);
--				if (subsys_id =3D=3D pids_cgrp_id) {
-+				if (subsys_id =3D=3D pids_cgroup_id) {
- 					proc_kernfs =3D BPF_CORE_READ(subsys, cgroup, kn);
- 					root_kernfs =3D BPF_CORE_READ(subsys, ss, root, kf_root, kn);
- 					break;
---=20
-2.24.1
+On 10/1/20 9:45 AM, Michael Kerrisk (man-pages) wrote:
+> On 10/1/20 1:03 AM, Tycho Andersen wrote:
+>> On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
+>>> Hi Tycho,
+>>>
+>>> Thanks for taking time to look at the page!
+>>>
+>>> On 9/30/20 5:03 PM, Tycho Andersen wrote:
+>>>> On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
+> 
+> [...]
+> 
+>>>>>        ┌─────────────────────────────────────────────────────┐
+>>>>>        │FIXME                                                │
+>>>>>        ├─────────────────────────────────────────────────────┤
+>>>>>        │Interestingly, after the event  had  been  received, │
+>>>>>        │the  file descriptor indicates as writable (verified │
+>>>>>        │from the source code and by experiment). How is this │
+>>>>>        │useful?                                              │
+>>>>
+>>>> You're saying it should just do EPOLLOUT and not EPOLLWRNORM? Seems
+>>>> reasonable.
+>>>
+>>> No, I'm saying something more fundamental: why is the FD indicating as
+>>> writable? Can you write something to it? If yes, what? If not, then
+>>> why do these APIs want to say that the FD is writable?
+>>
+>> You can't via read(2) or write(2), but conceptually NOTIFY_RECV and
+>> NOTIFY_SEND are reading and writing events from the fd. I don't know
+>> that much about the poll interface though -- is it possible to
+>> indicate "here's a pseudo-read event"? It didn't look like it, so I
+>> just (ab-)used POLLIN and POLLOUT, but probably that's wrong.
+> 
+> I think the POLLIN thing is fine.
+> 
+> So, I think maybe I now understand what you intended with setting
+> POLLOUT: the notification has been received ("read") and now the
+> FD can be used to NOTIFY_SEND ("write") a response. Right?
+> 
+> If that's correct, I don't have a problem with it. I just wonder:
+> is it useful? IOW: are there situations where the process doing the
+> NOTIFY_SEND might want to test for POLLOUT because the it doesn't
+> know whether a NOTIFY_RECV has occurred? 
+> 
+> Thanks,
+> 
+> Michael
+> 
 
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
