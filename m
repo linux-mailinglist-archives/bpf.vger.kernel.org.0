@@ -2,99 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AC328EA4A
-	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 03:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE1028EA5F
+	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 03:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389134AbgJOBji (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Oct 2020 21:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S2389420AbgJOBk1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Oct 2020 21:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389060AbgJOBjh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S2389051AbgJOBjh (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 14 Oct 2020 21:39:37 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE32C051132;
-        Wed, 14 Oct 2020 16:09:45 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id s89so644477ybi.12;
-        Wed, 14 Oct 2020 16:09:45 -0700 (PDT)
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D459BC08E750;
+        Wed, 14 Oct 2020 16:14:23 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id a12so665893ybg.9;
+        Wed, 14 Oct 2020 16:14:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SC/LgnBpbVfq5lqBs6M8hXan4SDJHmAPTG16R7Au4wQ=;
-        b=ZiBMS/r4ErmGIOXAooeA7XmMrf9AmiXugqhDCTehrPjIR1eXGu/i6OSAOQDYBkSjWk
-         Qt2puwFg/3MLqTEu3DLrteLBi4QgvEN3vGnvjpICJszy8B5a01uXci138I5P8ecxm0bY
-         y/xOo2wj1MsWTRjjPshhR9XM5+GTkYu51x8d2qucS+ZAD9eHC3hDZ4kwMdAFWz1RzFAp
-         x+tHbnefQ8kEOdJYEmJlZTMOPMNgPmJO4qAxRvxdfrdAksRMLJqg7erchJp9F5cEYnF6
-         AILvHTgtulGgMuosoPxUF0nyO7HsIjubbFvwu/fKLa2j2p5Uc5DYXMriBqVXZRbZsXBU
-         KSSA==
+        bh=+TxA1eVq5hDXrXB1ainVY56azVPdjHNrlDThbfft6Xk=;
+        b=dOlK7WgIMIvU6S8UBVybPwb1kihHLZuTIY7hRXp6YKjqHQVaPRvwPp8v2EdQKkBRvf
+         Ndz+hd1RJ3JlYH3XpQ9ur0npCUXsU4PybX9r7dh2WmL7Ts7zSXWFI3fu1ubGTLdigFTu
+         PqqAoSEmFkB76zxp/AUbYRMi5PRTwpAHZsh6sSLF14z7v8O0RWQzrQ11AZ5HD1nJEruf
+         vEUyrMA5CWIP3nOztsW6E8Ts6Byj+ePQV2HLdLlAprJo4xoXzuD3gjiXfw+gVxDzo0Gf
+         JRngFRrIz3bfL2tz0wC6ipAcSxq6CU0UFjiiv4eNGHpvNJTa+qWBg9LTnkxPMA667Iv1
+         i68A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SC/LgnBpbVfq5lqBs6M8hXan4SDJHmAPTG16R7Au4wQ=;
-        b=V4rBiJHfxTi55nRFjCZN21NlVrsMHnQlo71+Ie77r4tNsB8vWbmkLt4j4+V2bkxvQG
-         q9QokfjEh2SYF7UlRTM5uBnD+SjxKtvnHzAAufFxUKHGGN2hgjFj91EcnJBeDAoAk4se
-         V89dXRAvET6lnRSm3g9kv9GxvrJCFEy5aHJoFGb7Dh/TJ+ZDMu9m/IFzxE2oiOaIi4k8
-         sISpE5s1uhFPtbRVr7kb+nXWKmAytcTKhrd/AMkIp5ZGnS3+8bt8wAY/NRwLrCpGonVe
-         Zd2UP77FkSyBPyoea7N5U4kTVZeG6UTExoiYJvw53F9Z9vDTUI40Sb24sfItrnEjFTF0
-         BeOg==
-X-Gm-Message-State: AOAM532EKf01r+BqVpTOPKrbG30D7blojHhb+h114be2MiAMp0M4Iayl
-        KEj6cVwi1X0MzRWm1wN3T9KGwvQtF0+J4Pgyt6c=
-X-Google-Smtp-Source: ABdhPJyG8f/aMEuCgh8JKjtL23wyE26KKG0HVNdyETCDkBjWSurHxoPKI/9ZaVooW4yd8IbCg9zwSQvI42pkQPDlXX8=
-X-Received: by 2002:a25:3443:: with SMTP id b64mr1516173yba.510.1602716984539;
- Wed, 14 Oct 2020 16:09:44 -0700 (PDT)
+        bh=+TxA1eVq5hDXrXB1ainVY56azVPdjHNrlDThbfft6Xk=;
+        b=bOLa2FLf0oOcBTIwDexzKfFyeyP/NPpqzrtTeANxYDuHTOoV0UVA+fFbfkTirt1D4m
+         ZFguu+9rh1WPvAOqwUfmJsNNMTLIPu+koINiuZMDxbjjYhFuo7YOqG+eHCm5UFayMJlz
+         ywCcpJTIHfjlUSF2scpkPVx9gY9qSAJMjpbtraV7cwUsaOfA5ZscRa6Zp1uZjOpjy4ld
+         HD0In5qiUNa4i6X997tswYrAjxBvUgbuTZOHkRqSK4t3WG5edwcBecQc2EOw6UGIiIJl
+         KnhG37DbZLssQa/PXNIIKPj9XyFOAnq+I6Am/Pwdd28TdUsdsLzwIJh/zMrvwuQDDJhZ
+         0ZNw==
+X-Gm-Message-State: AOAM530MMSRyJV0df451AiGrqw+CDa8DMumhHoGFn3p+MDlI3somVSaT
+        YEeFxGyNrq/ktLeBbqW3A4IuKaDmGvTTMKwmo0s=
+X-Google-Smtp-Source: ABdhPJyVuXJtUXMg8l9uSGljdOWliCYwXqILkR18Z0VoBiCuN9zEZGNwqim7MP+XZwmRW+K4+3PNNKuT66dgSN0W/rI=
+X-Received: by 2002:a25:8541:: with SMTP id f1mr1486159ybn.230.1602717263045;
+ Wed, 14 Oct 2020 16:14:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201014175608.1416-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20201014175608.1416-1-alexei.starovoitov@gmail.com>
+References: <20201014144612.2245396-1-yhs@fb.com>
+In-Reply-To: <20201014144612.2245396-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 14 Oct 2020 16:09:33 -0700
-Message-ID: <CAEf4BzaF2fDWoRg8h3dUKftvcastYqzEhGS2TG6MoV462fd_8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix register equivalence tracking.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+Date:   Wed, 14 Oct 2020 16:14:12 -0700
+Message-ID: <CAEf4BzZ4J-c-ODnBD3C8NJeeLOdCqLWvFadWXR8t9eFKaGZOvw@mail.gmail.com>
+Subject: Re: [PATCH net v3] net: fix pos incrementment in ipv6_route_seq_next
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        john fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Kernel Team <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Vasily Averin <vvs@virtuozzo.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 10:59 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Oct 14, 2020 at 2:53 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> Commit 4fc427e05158 ("ipv6_route_seq_next should increase position index")
+> tried to fix the issue where seq_file pos is not increased
+> if a NULL element is returned with seq_ops->next(). See bug
+>   https://bugzilla.kernel.org/show_bug.cgi?id=206283
+> The commit effectively does:
+>   - increase pos for all seq_ops->start()
+>   - increase pos for all seq_ops->next()
 >
-> The 64-bit JEQ/JNE handling in reg_set_min_max() was clearing reg->id in either
-> true or false branch. In the case 'if (reg->id)' check was done on the other
-> branch the counter part register would have reg->id == 0 when called into
-> find_equal_scalars(). In such case the helper would incorrectly identify other
-> registers with id == 0 as equivalent and propagate the state incorrectly.
-> Fix it by preserving ID across reg_set_min_max().
-> In other words any kind of comparison operator on the scalar register
-> should preserve its ID to recognize:
-> r1 = r2
-> if (r1 == 20) {
->   #1 here both r1 and r2 == 20
-> } else if (r2 < 20) {
->   #2 here both r1 and r2 < 20
-> }
+> For ipv6_route, increasing pos for all seq_ops->next() is correct.
+> But increasing pos for seq_ops->start() is not correct
+> since pos is used to determine how many items to skip during
+> seq_ops->start():
+>   iter->skip = *pos;
+> seq_ops->start() just fetches the *current* pos item.
+> The item can be skipped only after seq_ops->show() which essentially
+> is the beginning of seq_ops->next().
 >
-> The patch is addressing #1 case. The #2 was working correctly already.
+> For example, I have 7 ipv6 route entries,
+>   root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=4096
+>   00000000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000400 00000001 00000000 00000001     eth0
+>   fe800000000000000000000000000000 40 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000001 00000000 00000001     eth0
+>   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>   00000000000000000000000000000001 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000003 00000000 80200001       lo
+>   fe800000000000002050e3fffebd3be8 80 00000000000000000000000000000000 00 00000000000000000000000000000000 00000000 00000002 00000000 80200001     eth0
+>   ff000000000000000000000000000000 08 00000000000000000000000000000000 00 00000000000000000000000000000000 00000100 00000004 00000000 00000001     eth0
+>   00000000000000000000000000000000 00 00000000000000000000000000000000 00 00000000000000000000000000000000 ffffffff 00000001 00000000 00200200       lo
+>   0+1 records in
+>   0+1 records out
+>   1050 bytes (1.0 kB, 1.0 KiB) copied, 0.00707908 s, 148 kB/s
+>   root@arch-fb-vm1:~/net-next
 >
-> Fixes: 75748837b7e5 ("bpf: Propagate scalar ranges through register assignments.")
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+> In the above, I specify buffer size 4096, so all records can be returned
+> to user space with a single trip to the kernel.
+>
+> If I use buffer size 128, since each record size is 149, internally
+> kernel seq_read() will read 149 into its internal buffer and return the data
+> to user space in two read() syscalls. Then user read() syscall will trigger
+> next seq_ops->start(). Since the current implementation increased pos even
+> for seq_ops->start(), it will skip record #2, #4 and #6, assuming the first
+> record is #1.
+>
+>   root@arch-fb-vm1:~/net-next dd if=/proc/net/ipv6_route bs=128
 
-Number of underscores is a bit subtle a difference, but this fixes the bug, so:
+Did you test with non-zero skip= parameter as well (to force lseek)?
+To make sure we don't break the scenario that original fix tried to
+fix.
+
+If that works:
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-
->  kernel/bpf/verifier.c                         | 38 ++++++++++++-------
->  .../testing/selftests/bpf/verifier/regalloc.c | 26 +++++++++++++
->  2 files changed, 51 insertions(+), 13 deletions(-)
->
-
 [...]
+
+> diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+> index 141c0a4c569a..605cdd38a919 100644
+> --- a/net/ipv6/ip6_fib.c
+> +++ b/net/ipv6/ip6_fib.c
+> @@ -2622,8 +2622,10 @@ static void *ipv6_route_seq_start(struct seq_file *seq, loff_t *pos)
+>         iter->skip = *pos;
+>
+>         if (iter->tbl) {
+> +               loff_t p = 0;
+> +
+>                 ipv6_route_seq_setup_walk(iter, net);
+> -               return ipv6_route_seq_next(seq, NULL, pos);
+> +               return ipv6_route_seq_next(seq, NULL, &p);
+
+nit: comment here wouldn't hurt for the next guy stumbling upon this
+code and wondering why we ignore p afterwards
+
+>         } else {
+>                 return NULL;
+>         }
+> --
+> 2.24.1
+>
