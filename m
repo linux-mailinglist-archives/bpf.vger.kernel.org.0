@@ -2,94 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00FA28DDEA
-	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 11:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C5728E1B2
+	for <lists+bpf@lfdr.de>; Wed, 14 Oct 2020 15:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727278AbgJNJqY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Oct 2020 05:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        id S1726680AbgJNNvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Oct 2020 09:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgJNJqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Oct 2020 05:46:24 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D88C061755;
-        Wed, 14 Oct 2020 02:46:24 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f21so1660141wml.3;
-        Wed, 14 Oct 2020 02:46:24 -0700 (PDT)
+        with ESMTP id S1726119AbgJNNvT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Oct 2020 09:51:19 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADCB7C061755
+        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 06:51:18 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id l15so1728061wmh.1
+        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 06:51:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=CfnUA7lPs13+RkY13s7qGHXOH+QwqeJG5S0NDdqc//A=;
-        b=BdKm5DUb5YHQLwciujai1hznrA0naxCz2ZZ8ifFnrKF+9/dcR2xOhHefVYa0NDsxlj
-         Geb7m42lxK9a7w+lTCbiMBsqIoe2kw6B2wbb4SLNaHKc/0Uq22MhsE25VCrWKwfr46jq
-         5IvvfNLb1yJXcZLA50dDx06UBPdoYCP5mxZrwhQKjH2egtNPw8ePv/yj1KqA0UrtNT0W
-         IlQbz0alr3LrH2/7YkRbgKS29WneQOs/ffVN2UACUmUww8cWmGlMBlIOwjv3Z5AM9LUE
-         f9o0nSA+Ixm8kn12y0WTEa319wLXPKLC6/546m0pyX8shtvj4ozZSoqUY34TzwzhuhH5
-         BogA==
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=WjaovaCQ0eCt8Yl43E3wEUK378r499nXJLq1rTHlnNU=;
+        b=DYXBXD1D1629Vq6QcQ0plYMDrbU8+8AXifChm7Uq3HQGO0vgH5k7/GZ1jPbrjjCR0h
+         psZuVGf2q8LW2O6rrMTF9+TnUihyZeM/Bha7IRsq3r/KYuzO9A2qVy/Z6GCVCZaRUOYl
+         yNa2Dz8zmcMJbp8oZ06EANbLi16dA0o6u9/HknS91ySySFZDh97DCkwcb+AIkcZoNk9j
+         mo+/fiSX95coCLDFKQbn8ssLR7Qo2GCtXKS1Gm7np8MPW6bL817c6jBxxUBeUu2bZ8/t
+         HPhgKTPIOnZsWWz7DZMZZ0B9VbQoh7C8PZy+0p4BRdS3sNP+xKPQGRhBL0nXemCt2Hns
+         uoMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=CfnUA7lPs13+RkY13s7qGHXOH+QwqeJG5S0NDdqc//A=;
-        b=qfynyBnOACEWF4Qx2LWKN0d8G4cw0o9HnhqL7br7Y2prxPUY7COk6RUBsWFtn0qBtF
-         WaXAYrFhPUP/zJTcMMjKoliySNdUw/kAYeQKx6INPsDLGeIh14T65+ASi5qE4siDcllM
-         FDxsa0sn8L46fY07SUI8cTzOpqB9gI/A/moP3AGW0XTt92IVi5xe6KuoJuXEP3e6Jq9e
-         X61oyBktpC46gp/H3iHHJlkfPUvSxNSClwsPJBED8HnKMRpLp239nsdLXJzAiHG3DYvt
-         8jzcHijfZ8jQQERoucP0HhFX6VTA7f7ZBZRmavQbwHpxRjEc1a7QLY3U8bOtIkWqXzb5
-         cBPA==
-X-Gm-Message-State: AOAM531NpxJxcruUYJaw6PpnoUuEKuebgEwHBEZHZ/n+ZdWrVVTwPu1M
-        uR2kmGXVhIu8tzwh1AwRtvK+gX8Jce7kHZdO
-X-Google-Smtp-Source: ABdhPJwGaqynFd9Wu1Qx7mnra13c+vM06XaTSAYrsjS3vddBQNkYNdGPSyfh8sMS1grAu24T/vogog==
-X-Received: by 2002:a1c:e903:: with SMTP id q3mr2598216wmc.42.1602668782840;
-        Wed, 14 Oct 2020 02:46:22 -0700 (PDT)
-Received: from [192.168.0.66] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id v17sm4499293wrc.23.2020.10.14.02.46.21
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WjaovaCQ0eCt8Yl43E3wEUK378r499nXJLq1rTHlnNU=;
+        b=aHsJ+agZAsIU67hycKoPhajYDwuL3nelnmAgRd9sqCIBqk0e96yX4yPY5mO/nocupP
+         mAWrli0hlE8Fluu75/1Y8D3mrNKcQDeGvPZTHLfG1rXA5GoKRFHoHlJ6hUAl0bvzF6ZL
+         AizkQ/x3Dj5NTIcgOnLCI1fsxhInbIlknF7OvBdDwF0KGeQSCo9v4HSlNRXkpKHyDLQA
+         snU8s0nSEBSz9n1/k81nJjtHH71ktxFGpUstBjZleODUOmv/42vRzgLLuvzktJJB3Fuq
+         ExF3nNgFmRR+14GzjyMMQOcwHk0XA0ak/d1Pf5djRh7VjUyts+TYaE/+Yr+97YhDy73l
+         1I1g==
+X-Gm-Message-State: AOAM530MSDieFNKw4uqLPNVSwIg43U6cZEJeNkCYyuKEQdRjam2DvIQw
+        JqkSLVGMbz/THCPgGEA+OqKtlYFCf527
+X-Google-Smtp-Source: ABdhPJzsKZAq3cZJWkhFCXcF25V7z2nQSXh4IDEKM9Lhd0aBKoaqaqlJl3ezbjcWdZDyMjLYKkxZ3Q==
+X-Received: by 2002:a1c:3d86:: with SMTP id k128mr3609292wma.153.1602683476996;
+        Wed, 14 Oct 2020 06:51:16 -0700 (PDT)
+Received: from [192.168.254.199] (x4dbe9d8e.dyn.telefonica.de. [77.190.157.142])
+        by smtp.gmail.com with ESMTPSA id 1sm5450511wre.61.2020.10.14.06.51.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Oct 2020 02:46:22 -0700 (PDT)
-Subject: Re: [PATCH] net: sockmap: Don't call bpf_prog_put() on NULL pointer
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201012170952.60750-1-alex.dewar90@gmail.com>
- <877drtqhj6.fsf@cloudflare.com>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <58d4578e-3314-9121-8723-7aaef9d02604@gmail.com>
-Date:   Wed, 14 Oct 2020 10:45:55 +0100
+        Wed, 14 Oct 2020 06:51:16 -0700 (PDT)
+Subject: Re: BUG: kernel NULL pointer dereference in
+ __cgroup_bpf_run_filter_skb
+From:   Thomas Reim <reimth@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+References: <CAOLRBTUSkRbku25rbw6Fyb019wFqFvEN=6xGM+RgFJFQ=NH4KQ@mail.gmail.com>
+ <b62a18d0-1f78-3bf5-38b2-08d9a779e432@iogearbox.net>
+ <92acbf2d-9d21-5074-cb07-0a3f206bd090@gmail.com>
+Message-ID: <f00e8a89-98ea-94c7-3956-3fc1f565d763@gmail.com>
+Date:   Wed, 14 Oct 2020 15:51:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <877drtqhj6.fsf@cloudflare.com>
+In-Reply-To: <92acbf2d-9d21-5074-cb07-0a3f206bd090@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 14/10/2020 10:32, Jakub Sitnicki wrote:
-> On Mon, Oct 12, 2020 at 07:09 PM CEST, Alex Dewar wrote:
->> If bpf_prog_inc_not_zero() fails for skb_parser, then bpf_prog_put() is
->> called unconditionally on skb_verdict, even though it may be NULL. Fix
->> and tidy up error path.
 >>
->> Addresses-Coverity-ID: 1497799: Null pointer dereferences (FORWARD_NULL)
->> Fixes: 743df8b7749f ("bpf, sockmap: Check skb_verdict and skb_parser programs explicitly")
->> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
->> ---
-> Note to maintainers: the issue exists only in bpf-next where we have:
->
->    https://lore.kernel.org/bpf/160239294756.8495.5796595770890272219.stgit@john-Precision-5820-Tower/
->
-> The patch also looks like it is supposed to be applied on top of the above.
-Yes, the patch is based on linux-next.
+>> Fix is under discussion here:
+>>
+>> https://lore.kernel.org/netdev/20200616180352.18602-1-xiyou.wangcong@gmail.com/ 
+>>
+>>
+>> Thanks,
+>> Daniel
+> 
+> Dear Daniel,
+> 
+> thank you for the hint. I will try to follow-up the discussion. For your 
+> convenience I have added some of our many and various logs to this 
+> thread. Maybe it will be of some help for the team.
+> 
+
+There seems to be not much progress in above mentioned thread. Don't 
+know if there have been other discussions that have resulted in a patch.
+
+But last week we successfully tested kernel 5.8.11 (5.8.11-1-MANJARO 
+x64) without experiencing a kernel panic/freeze.. In the userspace 
+systemd 246.6 was running. No idea which changes have solved our issue. 
+But here kernel is back stable again.
+
+We will switch the workstations from intermediate kernel 4.9 LTS, which 
+was stable all the time, back to kernel 5.8.
+
+Thank you.
+
+
+
