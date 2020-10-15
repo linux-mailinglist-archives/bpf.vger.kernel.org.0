@@ -2,63 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114C028F799
-	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 19:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F2E28F829
+	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 20:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404942AbgJORYC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Oct 2020 13:24:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404921AbgJORYB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Oct 2020 13:24:01 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59F8C22210;
-        Thu, 15 Oct 2020 17:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602782640;
-        bh=2XeKjuAuyGfPWYFkfNE8b5tzApIKKHz0ppha135J0h8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LTTeIaxKyYzWlYDK5zeZgqh2/tVafcDJeSwjhQU26eoPLQbuzjbbcONz/CbCwnKZG
-         MRPHRSvWYurTGpOcpLEk4fs7zwuXyAZB/uFrFspFjyh9u9jE46uih0a+zFT9/ks5ll
-         KQpJCtzcv22LTps5cPlkD7u3xP/t4+m9ijbY73io=
-Date:   Thu, 15 Oct 2020 10:23:58 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Vasily Averin <vvs@virtuozzo.com>
-Subject: Re: [PATCH net v3] net: fix pos incrementment in
- ipv6_route_seq_next
-Message-ID: <20201015102358.0cdef2ca@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201014144612.2245396-1-yhs@fb.com>
-References: <20201014144612.2245396-1-yhs@fb.com>
+        id S2388367AbgJOSKR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Oct 2020 14:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732646AbgJOSKR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:10:17 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0513C061755;
+        Thu, 15 Oct 2020 11:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=pQvZdltOltA0dyBKgaso5o0xbvv6X+nw3aKhIVJIkFk=; b=NlcAC/03sf67CYz3rzJqY4SdC5
+        4pzFX9Tcde5Z/WanzweKaWtxqEZq/xfVhpdtoZbq7UMHNVdDUXl1oOuso0A9bMoeAWLG6YBHZwEOk
+        upyzbRvv0eYJz9NFyPcmx6cQe0WuhDaos5MZVQGzQ51EmMa7elnXZcG5Yg4cm6jusCHkmlHO266OW
+        5Alk3rhJppD4nG9O/OCRfZVxQmkqTlBgPYll1xh+8Crs2ysEAktmlaQn4m8A7jSOZ5AOwg8b/t2kl
+        wV8d3VsW92mSpfTQkrXN9FWa10Bhn8uF80DzE3JyMljgOEYeYtFsdZnLz4racXqk1XhMdqPGI3OyA
+        xmW+0Ikg==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kT7hc-0003u7-4u; Thu, 15 Oct 2020 18:10:12 +0000
+Subject: Re: linux-next: Tree for Sep 25 [kernel/bpf/preload/bpf_preload.ko]
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+References: <20200925205540.37d86b03@canb.auug.org.au>
+ <7c80effa-310e-141f-3b6f-0c964838d5c7@infradead.org>
+Message-ID: <906b72d0-6ced-c014-3810-624299c21278@infradead.org>
+Date:   Thu, 15 Oct 2020 11:10:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <7c80effa-310e-141f-3b6f-0c964838d5c7@infradead.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 14 Oct 2020 07:46:12 -0700 Yonghong Song wrote:
-> Commit 4fc427e05158 ("ipv6_route_seq_next should increase position index")
-> tried to fix the issue where seq_file pos is not increased
-> if a NULL element is returned with seq_ops->next(). See bug
->   https://bugzilla.kernel.org/show_bug.cgi?id=206283
-> The commit effectively does:
->   - increase pos for all seq_ops->start()
->   - increase pos for all seq_ops->next()
+On 9/25/20 9:15 AM, Randy Dunlap wrote:
+> On 9/25/20 3:55 AM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Changes since 20200924:
+>>
 > 
-> For ipv6_route, increasing pos for all seq_ops->next() is correct.
-> But increasing pos for seq_ops->start() is not correct
-> since pos is used to determine how many items to skip during
-> seq_ops->start():
->   iter->skip = *pos;
-> seq_ops->start() just fetches the *current* pos item.
-> The item can be skipped only after seq_ops->show() which essentially
-> is the beginning of seq_ops->next().
+> 
+> on x86_64:
+> 
+> ERROR: modpost: "bpf_preload_ops" [kernel/bpf/preload/bpf_preload.ko] undefined!
+> 
+> Full randconfig file is attached.
+> 
 
-Applied, queued for stable, thanks!
+This build error still happens when (on today's linux-next 20201015)
+
+CONFIG_BPF=y
+# CONFIG_BPF_SYSCALL is not set
+CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+CONFIG_USERMODE_DRIVER=y
+CONFIG_BPF_PRELOAD=y
+CONFIG_BPF_PRELOAD_UMD=m
+
+
+-- 
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
