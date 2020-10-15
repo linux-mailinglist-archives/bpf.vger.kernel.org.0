@@ -2,79 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F2E28F829
-	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 20:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317E328F8F2
+	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 20:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388367AbgJOSKR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Oct 2020 14:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
+        id S2391069AbgJOSxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Oct 2020 14:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732646AbgJOSKR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:10:17 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0513C061755;
-        Thu, 15 Oct 2020 11:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=pQvZdltOltA0dyBKgaso5o0xbvv6X+nw3aKhIVJIkFk=; b=NlcAC/03sf67CYz3rzJqY4SdC5
-        4pzFX9Tcde5Z/WanzweKaWtxqEZq/xfVhpdtoZbq7UMHNVdDUXl1oOuso0A9bMoeAWLG6YBHZwEOk
-        upyzbRvv0eYJz9NFyPcmx6cQe0WuhDaos5MZVQGzQ51EmMa7elnXZcG5Yg4cm6jusCHkmlHO266OW
-        5Alk3rhJppD4nG9O/OCRfZVxQmkqTlBgPYll1xh+8Crs2ysEAktmlaQn4m8A7jSOZ5AOwg8b/t2kl
-        wV8d3VsW92mSpfTQkrXN9FWa10Bhn8uF80DzE3JyMljgOEYeYtFsdZnLz4racXqk1XhMdqPGI3OyA
-        xmW+0Ikg==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kT7hc-0003u7-4u; Thu, 15 Oct 2020 18:10:12 +0000
-Subject: Re: linux-next: Tree for Sep 25 [kernel/bpf/preload/bpf_preload.ko]
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-References: <20200925205540.37d86b03@canb.auug.org.au>
- <7c80effa-310e-141f-3b6f-0c964838d5c7@infradead.org>
-Message-ID: <906b72d0-6ced-c014-3810-624299c21278@infradead.org>
-Date:   Thu, 15 Oct 2020 11:10:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        with ESMTP id S2391065AbgJOSxW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Oct 2020 14:53:22 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC0EC061755;
+        Thu, 15 Oct 2020 11:53:21 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id f21so4218251ljh.7;
+        Thu, 15 Oct 2020 11:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cCCE4YtFTVJq/2VDGFn6Aptk+OGDPex4RVpqANY0ajc=;
+        b=eOe65PlCHYMlKyLKE79QtpMiCnRCGzMfDhTlnuTXa3H6yASakhYUZzKdgS7quLTmr7
+         +LzLFH0sVg+A7dl+B7QH30Qal6DNSnBaLP1NFvF6okphNxdvpD8grAtKqPSBj8+ziAnm
+         tXXryoWVNq2YMr3nwqgGwhLIb+B9N2JrjSapo3J4C+fb1OW/vSBPjBVuTJ9jA39uAEfP
+         0e02tiBLTlzMRJuywWzbU6TPPfKj2wFW2hibwcU4qXMx3UQ6JsXeHrt8ftwWe0wO7VHM
+         xxPHSNUurTX4iX68sOBEIy5B/Ocelnj4IarlZhbutkAfn8aFGCdbSK7YuMFsDu8iUV2t
+         RDFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cCCE4YtFTVJq/2VDGFn6Aptk+OGDPex4RVpqANY0ajc=;
+        b=ImkE5J/J8zbpr4rffVsxDXyqvIldd/l9GIuelQmiQjudqL5Nwj1MFj+6I3TdK08KTS
+         yyGUBoQCzDNOXf9noVOPxTkBXuvUxqsN8soKu2Yo+ZP42w3agd6ib00kESkvZTU6RiQU
+         hBxgjtDHZkAPKafpjM2wujWMSfyAUnUNs/Ij8Xd+kLkpatXt7UIX7pqqoRl3SwrXWNKE
+         vG0ZJrJg7vHAXp+FrDQRokb+Y9iFziae/+w49L7XFQchrz3VbJolYvqtFbPmas3QlUvU
+         2FwW79JgTngMPIyUGu2rC3MUQfkIgsQ4EZyPrA9GaeylL48XlpFct8qXpXhiDJqF03ky
+         /Inw==
+X-Gm-Message-State: AOAM5301zRW0KrEPZC1GFax4Id7pgk/ReScMs2q8Q9A4+KM+PCD1HTtd
+        Fsntcw/oKvus+2KTlDBg6hbkY/F4edyIAEq2vtE=
+X-Google-Smtp-Source: ABdhPJxnj+CpCo+jWWUGnPD/LssgI2suQ52wVLqo0qvlncvNzhCqO8GhZL4RmjkihtMJC9zkc/uQxQgGS8d8ruApKoQ=
+X-Received: by 2002:a2e:a162:: with SMTP id u2mr55026ljl.283.1602788000220;
+ Thu, 15 Oct 2020 11:53:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7c80effa-310e-141f-3b6f-0c964838d5c7@infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201014091749.25488-1-yuehaibing@huawei.com> <20201015093748.587a72b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201015093748.587a72b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 15 Oct 2020 11:53:08 -0700
+Message-ID: <CAADnVQKJ=iDMiJpELmuATsdf2vxGJ=Y9r+vjJG6m4BDRNPmP3g@mail.gmail.com>
+Subject: Re: [PATCH] bpfilter: Fix build error with CONFIG_BPFILTER_UMH
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/25/20 9:15 AM, Randy Dunlap wrote:
-> On 9/25/20 3:55 AM, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20200924:
->>
-> 
-> 
-> on x86_64:
-> 
-> ERROR: modpost: "bpf_preload_ops" [kernel/bpf/preload/bpf_preload.ko] undefined!
-> 
-> Full randconfig file is attached.
-> 
+On Thu, Oct 15, 2020 at 9:37 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed, 14 Oct 2020 17:17:49 +0800 YueHaibing wrote:
+> > IF CONFIG_BPFILTER_UMH is set, building fails:
+> >
+> > In file included from /usr/include/sys/socket.h:33:0,
+> >                  from net/bpfilter/main.c:6:
+> > /usr/include/bits/socket.h:390:10: fatal error: asm/socket.h: No such file or directory
+> >  #include <asm/socket.h>
+> >           ^~~~~~~~~~~~~~
+> > compilation terminated.
+> > scripts/Makefile.userprogs:43: recipe for target 'net/bpfilter/main.o' failed
+> > make[2]: *** [net/bpfilter/main.o] Error 1
+> >
+> > Add missing include path to fix this.
+> >
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>
+> Applied, thank you!
 
-This build error still happens when (on today's linux-next 20201015)
-
-CONFIG_BPF=y
-# CONFIG_BPF_SYSCALL is not set
-CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
-CONFIG_USERMODE_DRIVER=y
-CONFIG_BPF_PRELOAD=y
-CONFIG_BPF_PRELOAD_UMD=m
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Please revert. The patch makes no sense.
+Also please don't take bpf patches.
