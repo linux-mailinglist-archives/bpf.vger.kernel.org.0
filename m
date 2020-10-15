@@ -2,107 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1109528EC41
-	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 06:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C200B28EC4F
+	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 06:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgJOE3c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Oct 2020 00:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
+        id S1728598AbgJOEda (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Oct 2020 00:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgJOE3b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:29:31 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC12FC061755;
-        Wed, 14 Oct 2020 21:29:31 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h4so1153813pjk.0;
-        Wed, 14 Oct 2020 21:29:31 -0700 (PDT)
+        with ESMTP id S1725208AbgJOEda (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Oct 2020 00:33:30 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FEFC061755;
+        Wed, 14 Oct 2020 21:33:29 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id n9so1065471pgf.9;
+        Wed, 14 Oct 2020 21:33:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=9ZoAVfqbflRLpkXrUCWqnTItWukjEplCwqKSdU8/gNY=;
-        b=f+nyTiPowS1e0Zr1/HEQUk8JPAOTObUdAO0SiPrz7Uj/dW4n3QvVjL8mFrCwVhnmK6
-         jyZQCVWOvLmruMA5k2Y2+l45oOnfUT70E9X0H8Hu9LtKSuK2lJzFrPDcZTB3UsIqqhM9
-         ctzFDYrS5cBRJm1Kk5FFXtcj7SJ55wXZasoQV2Y4+X8xuVOpO4H7KOEjE4aZlNICQuk6
-         7Ugldn8OfA3ecqgDoEnpDuZzQK2CB0ACvkc9FxL+9CKTBZBFlO+MM/R7D/8F48DGBrHi
-         2FPFqlkdfwwzudIkHPeQkt0+HBEFCiURm4VGwl3dvss6EEWylXSwoW+PJv6wpLXhE8QI
-         zlLg==
+        bh=BoSX3rBWIH0BfpEjF76Dmbb/3sKDbh5PYS0JdSEYDAA=;
+        b=W2vCDoxSf13zj8g9zZY1eIf+g4kb/0I6Rs4x2A6doe9Aw9+/dn1Fh5A90ARpCMc2r+
+         VwNVOY7sRAsdtXRizSsUzHpnr703Df4rPXB9wpE3s30ytolY2/y0G2qD2AT7X1PaxbbW
+         S2yakTx0cFnEVeHAaLnNNZSvHGHnz+/lDlLB0ejvbDtFsOY+3D00h/mG8D3RONbjLxJe
+         HO3vGaEHQoWiOzjLUgv1ApaVPNdEcbGFvrpWAilhBKT1FYeteMOzuqMIJCmH+zp4L/Jh
+         EzADXMoYrrXJIKImlLqq/mhoviaj4ug9+QjMifRLIncmpjhFrd5ArydKNnMyu5IOWOyG
+         nYfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9ZoAVfqbflRLpkXrUCWqnTItWukjEplCwqKSdU8/gNY=;
-        b=NBXKHR9zfbEphKmbYCWp54FGPVM6lAYMkHMMI3fxmJuV9Ns1pL8xxTeX2NNgn1epJW
-         Bn40GNMg9ARwKPM1MTDSu1qVViC+7cRmWrG8BR9/lz89mBaA8LsjekaCKggpXUC1lMwo
-         6dWQWZgQKyhsaNdaDe6XyCHPS43SP9Jm+uRr2rKwR4s9/+HXlT9wAKoyFiyDKwXmsI1A
-         XYCucukFRssGLtuTwi2J5rq8i4V6h6FfiRj2HxgXN9GmAIPQf4BnQ5qU0494f4SAnhY9
-         g1mlmz/T/JvGOloX1e+5Y5/+fQ8oQ0rBMDl9/wJK22GXcDj59g5DkMr3bNvA9ZMqv9B7
-         MLZQ==
-X-Gm-Message-State: AOAM532dylPUXZFC1irvTbgPtpcab+msA/63p2k7xbrOZqPJW9M2N41Q
-        NwY3Swuwt6QvTN0/sp5BZNk=
-X-Google-Smtp-Source: ABdhPJwdLLwHRo/RdhrZNjjwLIMAx50gxpf8n1CcimKJhIf65X6Wjig6RXwm0FxX7o7OUHwiGX4+zA==
-X-Received: by 2002:a17:90a:c796:: with SMTP id gn22mr2578655pjb.224.1602736171197;
-        Wed, 14 Oct 2020 21:29:31 -0700 (PDT)
+        bh=BoSX3rBWIH0BfpEjF76Dmbb/3sKDbh5PYS0JdSEYDAA=;
+        b=E1b4f5zLISztN5oV9oTH6bNbsSAuld9B8x0Xbmbp2cpfrHF1SN7JjGNnDoLgBSNmnD
+         E2eDkOpqg2xIP0LVX7TlkbD9HtYYsqBxPpCopJCN4XJgj34mbzAZc183PswyEWek5FQW
+         qIY8HwQoTdUUPaxBg3xrYXopvrdUCaNtpwpAkXbdAVy0A7BDocYtfR8DLYBI4UDHR1FK
+         D5D9FhseqeY0HbnpDBsx1rA+haL7LemKOLP+oS2ZN+QG+qrcLOtIYjLvzmGM47IGNY4s
+         5lM7GaQWq6Ac0zdTQLY8y2O+MFBF8ZSDjMxz30wM9AAKYnEERA5pO6T4v/YKYBU08vx4
+         HX8Q==
+X-Gm-Message-State: AOAM53355DH41liREA1DYeU6/fyYqOWb/eeA8f1isr1qWggzkBe5fK3J
+        s6NijA68mCvX8fWMyW8pwZ4=
+X-Google-Smtp-Source: ABdhPJyfUA7VeZdb0UrSGUs4ReOt9DflZquI1UGtleSJyhY3oG3RlPdoVwjivuTKkZgWo8IGVZxt7A==
+X-Received: by 2002:a63:d40d:: with SMTP id a13mr1952033pgh.344.1602736409526;
+        Wed, 14 Oct 2020 21:33:29 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f594])
-        by smtp.gmail.com with ESMTPSA id w17sm1321383pga.16.2020.10.14.21.29.29
+        by smtp.gmail.com with ESMTPSA id kc21sm1264251pjb.36.2020.10.14.21.33.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 21:29:30 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 21:29:28 -0700
+        Wed, 14 Oct 2020 21:33:28 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 21:33:27 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        kpsingh@chromium.org
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix compilation error in
- progs/profiler.inc.h
-Message-ID: <20201015042928.hvluj5xbz3qxqq6r@ast-mbp.dhcp.thefacebook.com>
-References: <20201014043638.3770558-1-songliubraving@fb.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] bpf: Fix register equivalence tracking.
+Message-ID: <20201015043327.stqhrupw2adhd5hl@ast-mbp.dhcp.thefacebook.com>
+References: <20201014175608.1416-1-alexei.starovoitov@gmail.com>
+ <CAEf4BzaF2fDWoRg8h3dUKftvcastYqzEhGS2TG6MoV462fd_8Q@mail.gmail.com>
+ <5f87ca47436f3_b7602088f@john-XPS-13-9370.notmuch>
+ <20201015041952.n3crk6kvtbgev6rw@ast-mbp.dhcp.thefacebook.com>
+ <5f87cfa5b1a77_b7602087e@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201014043638.3770558-1-songliubraving@fb.com>
+In-Reply-To: <5f87cfa5b1a77_b7602087e@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 13, 2020 at 09:36:38PM -0700, Song Liu wrote:
-> Fix the following error when compiling selftests/bpf
+On Wed, Oct 14, 2020 at 09:27:17PM -0700, John Fastabend wrote:
+> Alexei Starovoitov wrote:
+> > On Wed, Oct 14, 2020 at 09:04:23PM -0700, John Fastabend wrote:
+> > > Andrii Nakryiko wrote:
+> > > > On Wed, Oct 14, 2020 at 10:59 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > From: Alexei Starovoitov <ast@kernel.org>
+> > > > >
+> > > > > The 64-bit JEQ/JNE handling in reg_set_min_max() was clearing reg->id in either
+> > > > > true or false branch. In the case 'if (reg->id)' check was done on the other
+> > > > > branch the counter part register would have reg->id == 0 when called into
+> > > > > find_equal_scalars(). In such case the helper would incorrectly identify other
+> > > > > registers with id == 0 as equivalent and propagate the state incorrectly.
+> > > 
+> > > One thought. It seems we should never have reg->id=0 in find_equal_scalars()
+> > > would it be worthwhile to add an additional check here? Something like,
+> > > 
+> > >   if (known_reg->id == 0)
+> > > 	return
+> > >
+> > > Or even a WARN_ON_ONCE() there? Not sold either way, but maybe worth thinking
+> > > about.
+> > 
+> > That cannot happen anymore due to
+> > if (dst_reg->id && !WARN_ON_ONCE(dst_reg->id != other_branch_regs[insn->dst_reg].id))
+> > check in the caller.
+> > I prefer not to repeat the same check twice. Also I really don't like defensive programming.
+> > if (known_reg->id == 0)
+> >        return;
+> > is exactly that.
+> > If we had that already, as Andrii argued in the original thread, we would have
+> > never noticed this issue. <, >, <= ops would have worked, but == would be
+> > sort-of working. It would mark one branch instead of both, and sometimes
+> > neither of the branches. I'd rather have bugs like this one hurting and caught
+> > quickly instead of warm feeling of being safe and sailing into unknown.
 > 
-> progs/profiler.inc.h:246:5: error: redefinition of 'pids_cgrp_id' as different kind of symbol
-> 
-> pids_cgrp_id is used in cgroup code, and included in vmlinux.h. Fix the
-> error by renaming pids_cgrp_id as pids_cgroup_id.
-> 
-> Fixes: 03d4d13fab3f ("selftests/bpf: Add profiler test")
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->  tools/testing/selftests/bpf/progs/profiler.inc.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> index 00578311a4233..b554c1e40b9fb 100644
-> --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-> +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> @@ -243,7 +243,7 @@ static ino_t get_inode_from_kernfs(struct kernfs_node* node)
->  	}
->  }
->  
-> -int pids_cgrp_id = 1;
-> +int pids_cgroup_id = 1;
+> Agree. Although a WARN_ON_ONCE would have also been caught.
 
-I would prefer to try one of three options that Andrii suggested.
-
->  static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
->  					 struct task_struct* task,
-> @@ -262,7 +262,7 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
->  				BPF_CORE_READ(task, cgroups, subsys[i]);
->  			if (subsys != NULL) {
->  				int subsys_id = BPF_CORE_READ(subsys, ss, id);
-> -				if (subsys_id == pids_cgrp_id) {
-> +				if (subsys_id == pids_cgroup_id) {
->  					proc_kernfs = BPF_CORE_READ(subsys, cgroup, kn);
->  					root_kernfs = BPF_CORE_READ(subsys, ss, root, kf_root, kn);
->  					break;
-> -- 
-> 2.24.1
-> 
+Right. Such WARN_ON_ONCE would definitely have been nice either in the caller
+or in the callee. If I could have thought that id could be zero somehow here.
+In retrospect it makes sense that there is possibility that IDs of regs in
+this_branch and other_branch may diverge.
+Hence I'm adding the warn to check for this specific divergence.
