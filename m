@@ -2,104 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F34528F990
-	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 21:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466AA28F9CA
+	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 21:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391690AbgJOTet (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Oct 2020 15:34:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26242 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727194AbgJOTet (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 15 Oct 2020 15:34:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1602790487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vSj8vDR2DNOYUB0QW+UhasHeIc9xSKF9iKcQSBl0cps=;
-        b=BJ6LZYOU4vc0PoB2zC9Qc1R8vqGf7v5lFGnjUtD6K9D1YVEZilTMdj9vhvpP9xvc1biU9V
-        9CBgFHuf5qT05s7depOu2v5Q+pE3NvjWtc+Z3UuPcnkRvzf1CjUe5k0aCWo54YQbOzvA0+
-        +Yv447U79OxiNs/jm+w8uUt81BF2raw=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-fdgQb3plOGyu__ge58-aXw-1; Thu, 15 Oct 2020 15:34:46 -0400
-X-MC-Unique: fdgQb3plOGyu__ge58-aXw-1
-Received: by mail-qk1-f197.google.com with SMTP id w64so2801767qkc.14
-        for <bpf@vger.kernel.org>; Thu, 15 Oct 2020 12:34:46 -0700 (PDT)
+        id S1728252AbgJOT5q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Oct 2020 15:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727534AbgJOT5q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Oct 2020 15:57:46 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA359C061755;
+        Thu, 15 Oct 2020 12:57:45 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a5so63320ljj.11;
+        Thu, 15 Oct 2020 12:57:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKudZxWK9EEotNrmtlMDNbg20bqbty8lC8eoQ/FpCCo=;
+        b=qWK07KOB7pQo3ovYpeX7oyC2H5e8qflRYEJYQ/wxaiCGbDmv/3ZWZ/wGvaMo/Pkf5j
+         vBxPjfZbDczcZy/qmQBJTTHpZMSReDkWfcgSNZovdia+UsZFZXGsGnCsbSc5fhs7ZvRe
+         qnch+YfJc9JhzwxZAXRvShLExOp/V933weVWpRPNLIvgPfl7BUJPGZXOH4BLewGHuvzu
+         nsr4KtC6WG66agKCCx2rcR+R+opoOJSdvf1W98bgizJQ6SiYvBmIdooJf9nh45RsKK5u
+         qF635hh+WPUDD4SZ94wp8/El1nDEcXy4YQ4B4cKh3+Fu0YXIrqV0yNHdL+1sWn/zVNSp
+         r0ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=vSj8vDR2DNOYUB0QW+UhasHeIc9xSKF9iKcQSBl0cps=;
-        b=LG0uL4MusPJT4HxO4PfEyOBxYmmRi5vuX/bufCSgpSTTInS3kPwALLH1jURfZVyrFr
-         XR6j98R2d+tXBROJ/9gkvmql2ILsJK1lEBIPWv/yrT+bBjusdlacgnpqw5Xat4p7NmbT
-         F6z0HKfil0ftxKMWPgAQq7lWFpjO1R/eekOteVlbm7JAYoxre9SZd6Q2wXVlD7yKxNfL
-         g2K88RwtSn6L7hgKY4wCLUiQDdXNKoJMwU5cUn3Ro2nhGLrKmL3oZ7LoBz/ZvufFCrx4
-         e0Sefcyb6PV2oGAPl+DzizDwYAi1HBqVIzZ1IoGB0yfOz7f+jMUZtABBRuNzXMEDBcsi
-         FsZw==
-X-Gm-Message-State: AOAM530594/ZCIVk+ZhQOiemaUNy9awuUs4VhLVRqlqmeA1SOyqDjvA7
-        NduLS0Nft3NDl+wIjgKbbhh0HPhhzUtVICf0E7q4MOUz1SbnePSHhk1/NKEbxHIqafXMqhFJfO2
-        HA5qDRPXZxcCZ
-X-Received: by 2002:ac8:6cf:: with SMTP id j15mr5963650qth.219.1602790485646;
-        Thu, 15 Oct 2020 12:34:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5zJz4gy95DbzmXm66L19SJYsxC2ITRBsARMgaFry/ldXKRehmkmSxJrSpH2+01S1Lp/KDig==
-X-Received: by 2002:ac8:6cf:: with SMTP id j15mr5963620qth.219.1602790485355;
-        Thu, 15 Oct 2020 12:34:45 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id i20sm1537937qkl.65.2020.10.15.12.34.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 12:34:44 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id EAEF71837DD; Thu, 15 Oct 2020 21:34:41 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next 1/2] bpf_redirect_neigh: Support supplying
- the nexthop as a helper parameter
-In-Reply-To: <d5c14618-089d-5f29-7f10-11d11b0d59ab@gmail.com>
-References: <160277680746.157904.8726318184090980429.stgit@toke.dk>
- <160277680864.157904.8719768977907736015.stgit@toke.dk>
- <d5c14618-089d-5f29-7f10-11d11b0d59ab@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 15 Oct 2020 21:34:41 +0200
-Message-ID: <87blh3gu5q.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKudZxWK9EEotNrmtlMDNbg20bqbty8lC8eoQ/FpCCo=;
+        b=daG7m9lR1RLXnA2RvPl0xzlvQnco0bsm4qgDSNfXZxtbsnkW9f3F7qVBr5ccSVG/AF
+         WFm/WGTJvPdYNHOprHhQ72IfwHFRk9gLBSXOSM8GU0e+B3xC5pl5DeB3Wwb+3HV6A4lu
+         FzY4segEOh+x9VhctlPuUCt04xGGSrWyQqsD7piOVDsIEdIgQgvBF3yXghW86IrEH86N
+         EIH1zFdbo39j0UBSY5xWB8+YuOW6g5Tyu8KsxHdmWxqwrti4IoEilKLAHXcDKgAUTAXP
+         gS6JeJqnEd3z5XUdC4snntePl/m+ve6gpwcNN/GfEPj4PCFPYdguhTwbsUYi1wie1qZH
+         jt3Q==
+X-Gm-Message-State: AOAM530Ih+GQwP/ln288sg5apXelSqvjsdZvrCV6LIsZQPyqi1H8mZVJ
+        q6/X0mub/Dw2jrw7CSiIioMRUIJIvRTEYtPrAJE=
+X-Google-Smtp-Source: ABdhPJwvg4HGucuypRt7n+8tHJ22sh4O+qz/n8yyT2zmUYCciy9BT3zMWMDlM7sMO5oXfZOCTb0VpCYiCWKnn1uFs2E=
+X-Received: by 2002:a2e:7014:: with SMTP id l20mr143714ljc.91.1602791864323;
+ Thu, 15 Oct 2020 12:57:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20201014091749.25488-1-yuehaibing@huawei.com> <20201015093748.587a72b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQKJ=iDMiJpELmuATsdf2vxGJ=Y9r+vjJG6m4BDRNPmP3g@mail.gmail.com>
+ <20201015115643.3a4d4820@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQLVvd_2zJTQJ7m=322H7M7NdTFfFE7f800XA=9HXVY28Q@mail.gmail.com> <20201015122624.0ca7b58c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201015122624.0ca7b58c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 15 Oct 2020 12:57:32 -0700
+Message-ID: <CAADnVQLiYfi3DvT=S_jgb+X=qD4GC1WJynWmh8988scUQJozWA@mail.gmail.com>
+Subject: Re: [PATCH] bpfilter: Fix build error with CONFIG_BPFILTER_UMH
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David Ahern <dsahern@gmail.com> writes:
-
-> On 10/15/20 9:46 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index bf5a99d803e4..980cc1363be8 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -3677,15 +3677,19 @@ union bpf_attr {
->>   * 	Return
->>   * 		The id is returned or 0 in case the id could not be retrieved.
->>   *
->> - * long bpf_redirect_neigh(u32 ifindex, u64 flags)
->> + * long bpf_redirect_neigh(u32 ifindex, struct bpf_redir_neigh *params,=
- int plen, u64 flags)
+On Thu, Oct 15, 2020 at 12:26 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> why not fold ifindex into params? with params and plen this should be
-> extensible later if needed.
+> On Thu, 15 Oct 2020 12:03:14 -0700 Alexei Starovoitov wrote:
+> > On Thu, Oct 15, 2020 at 11:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > How so? It's using in-tree headers instead of system ones.
+> > > Many samples seem to be doing the same thing.
+> >
+> > There is no such thing as "usr/include" in the kernel build and source trees.
+>
+> Hm. I thought bpfilter somehow depends on make headers. But it doesn't
+> seem to. Reverting now.
 
-Figured this way would make it easier to run *without* the params (like
-in the existing examples). But don't feel strongly about it, let's see
-what Daniel thinks.
+Thanks!
+Right. To explain it a bit further for the author of the patch:
+Some samples makefiles use this -I usr/include pattern.
+That's different. This local "usr/include" is a result of 'make
+headers_install'.
+For samples and such it's ok to depend on that, but bpfilter is
+the part of the kernel build.
+It cannot depend on the 'make headers_install' step,
+so the fix has to be different.
 
-> A couple of nits below that caught me eye.
+> > > > Also please don't take bpf patches.
+> > >
+> > > You had it marked it as netdev in your patchwork :/
+> >
+> > It was delegated automatically by the patchwork system.
+> > I didn't have time to reassign, but you should have known better
+> > when you saw 'bpfilter' in the subject.
+>
+> The previous committers for bpfilter are almost all Dave, so I checked
+> your patchwork to make sure and it was netdev...
 
-Thanks, will fix; the kernel bot also found a sparse warning, so I guess
-I need to respin anyway (but waiting for Daniel's comments and/or
-instructions on what tree to properly submit this to).
-
--Toke
-
+It was my fault. I was sloppy in the past and didn't pay enough attention
+to bpfilter and it started to bitrot because Dave was applying patches
+with his normal SLAs while I was silent.
