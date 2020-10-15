@@ -2,89 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C8128EC0B
-	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 06:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF24928EC0D
+	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 06:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbgJOEWG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Oct 2020 00:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        id S1725977AbgJOEYo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Oct 2020 00:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728294AbgJOEWG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Oct 2020 00:22:06 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D979C061755
-        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 21:22:06 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id z2so1104535ilh.11
-        for <bpf@vger.kernel.org>; Wed, 14 Oct 2020 21:22:06 -0700 (PDT)
+        with ESMTP id S1725208AbgJOEYo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Oct 2020 00:24:44 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0E5C061755;
+        Wed, 14 Oct 2020 21:24:43 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k6so2693594ior.2;
+        Wed, 14 Oct 2020 21:24:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=Somlrf0ExP10Fj8WfOm+BVLtpunVfzX2Kv+d9BC5xZ8=;
-        b=aHj42zYfOm75QSl7bzVqS+Vis1sHH8s13SgshSRiF8kWtO2uudolFrp8BX9w866rD/
-         zAHh4B6XIgi5uh0CTbEza3BcEnNkzHECUJMBSAYu5c90VWnuBd/fiJAtwZSPEGVZizU+
-         DymhhppeB9q2kB6AHjZSQJ0zV97QI/CAa/SOhBJLhRBeoi65DY25peRw9QogLFunsqXM
-         85kL7V/j9qpvuWOiAepYGKPOshXs6NYSjT5lSJDhmbhKDUe4PnDMvQW2r3LUBk6+Tmjr
-         QqMQLGJkWvFWNdoZ4DID/mNEvp29FA1xEsl4yeJE3FqypHYjHJ7tazZsXIWZzw+xGpiz
-         cvJA==
+        bh=oNcEJhw55ywRjfZAJbg+/DFo+lApYdVywIBdG/1c8/0=;
+        b=DJEVufa/6EoZwA8g2RuS3VgMyVWvJ0LZhY+WwDDL4LAAWeMSc8AExtZDUDLHiQyUE5
+         RiU7ePVOud+yYiQGlmTA7U30/+przU8y2144JLOpCSAegshcVGoFys4G2mCp3D1bVoJJ
+         JBb3JI0excZlHyBPUfiOkzlulp8+7XftnjgWKVodsBNQa65P0Vu4OxstuBVop5beImWo
+         f0xXduJALXa5dl8NDhJd5Nyz/Z4qEqqeYRFXhCGFtv1jS3+H/FfL7VXPr74uO9Fg5+zR
+         c/6svrn6hzDNS0PUSrUR4WUzQlcfCkljH8RUI82NilReWN6iqR7kvjneOtMc/oVTPow7
+         djvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=Somlrf0ExP10Fj8WfOm+BVLtpunVfzX2Kv+d9BC5xZ8=;
-        b=Hfb5ehxQKDn9cFb53NG2dmlg/XTRvw2rN3vbplJAM6+dR8PJSJzQRB/Cgh2t3EG9+c
-         Qx6uK2Ljj36SD5Ws3/T0VqCIKX8Gq2C/m+/h68zvCJNKTDpIA52RE/labT3wcrVKFNBS
-         5CN5VXythdm4QMNpiYsbmRr64lmvopCEFDyMgEj/w+Ubt5AtZMOGKtiSRrjs16oMkoTK
-         SFTPMgYy5sb1aO29U2x66BZqhMWoTMd+6mekBDIKl9LkArOKGxrhLkQ0ZmQwT+GmUaUL
-         FyQDCznCf745OSky4kqc4aodXPD1Gt8fYV5vImPOzinTU7MICSlx2VUJ+yoUtgY9kYoj
-         CDYA==
-X-Gm-Message-State: AOAM532vJkCaZx9tQW3U5MlciiCFKlrc6a87rlktFQQ83JTh8qnbytdT
-        MT3rpcIgqltwFDI2ZAet09U=
-X-Google-Smtp-Source: ABdhPJzUGkHe50D4Cqn2Y8PBEyEehsG9cV4sqc9ytfBoyu3cJ6yB9CBF+54Nx6mLG+QyIAicQtO6mQ==
-X-Received: by 2002:a92:8404:: with SMTP id l4mr1953594ild.134.1602735725021;
-        Wed, 14 Oct 2020 21:22:05 -0700 (PDT)
+        bh=oNcEJhw55ywRjfZAJbg+/DFo+lApYdVywIBdG/1c8/0=;
+        b=nIgWsmSIzgn1Z42YN0e5raHM1x+/GD5AqZn4mJEJHoiWyPbKMOZ9sSSImgO7qeLM6n
+         zIMp8xocVnfGNzGujyGVEzYPn5YEyVhyCRjIt13CPA1mrp1cClgdJ8hMkL4OoFKgPKWV
+         9lmCkISOizcnFed2bUEuMDpHH8ssi537q37MFGZWrA3nVm29YRKs/VSjD6eIBVsezfEB
+         IJYj8j1hfNerosYa53pLKMqgBk3gpEyAnUxMT5VttjcI5IpTcco3KeahGLcR/fyDvWWo
+         LZSKzXJlrAJ6yymyG7oWJyENWrAJRSEZOzbab+Nrcgsa2HpKm3Qy0xT5FEMl1JNZwr+4
+         V3LA==
+X-Gm-Message-State: AOAM532w1O6bLHXVBnLYDICza4fdEGyuHKwQ3Zfa1SPwGkYehmyQ+kYv
+        12rdBvN6FsbWFEfCjjm5NAM=
+X-Google-Smtp-Source: ABdhPJzq7YtqBRFf1tmr6M3ouAl5ssjK0l3oYpdDF6PaJkAh/QIAu9g2gqSOxayeK3fZcFFictJJpw==
+X-Received: by 2002:a05:6602:2a42:: with SMTP id k2mr1927530iov.82.1602735883204;
+        Wed, 14 Oct 2020 21:24:43 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id d7sm1454830ilr.31.2020.10.14.21.22.02
+        by smtp.gmail.com with ESMTPSA id z15sm1432763ilb.73.2020.10.14.21.24.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Oct 2020 21:22:04 -0700 (PDT)
-Date:   Wed, 14 Oct 2020 21:21:56 -0700
+        Wed, 14 Oct 2020 21:24:42 -0700 (PDT)
+Date:   Wed, 14 Oct 2020 21:24:26 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Florian Lehner <dev@der-flo.net>, john.fastabend@gmail.com
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        dev@der-flo.net
-Message-ID: <5f87ce648edd5_b7602085a@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201013144515.298647-1-dev@der-flo.net>
-References: <20200922190234.224161-1-dev@der-flo.net>
- <20201013144515.298647-1-dev@der-flo.net>
-Subject: RE: [PATCH bpf-next v2] bpf: Lift hashtab key_size limit
+To:     Song Liu <songliubraving@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+Message-ID: <5f87cefaa8401_b7602084e@john-XPS-13-9370.notmuch>
+In-Reply-To: <96F50C6A-1A46-441D-AAEE-A67D7D5A903D@fb.com>
+References: <20201014043638.3770558-1-songliubraving@fb.com>
+ <96F50C6A-1A46-441D-AAEE-A67D7D5A903D@fb.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix compilation error in
+ progs/profiler.inc.h
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Florian Lehner wrote:
-> John Fastabend wrote:
-> > I think this is OK, but just curious is there a real use-case
-> > that has keys bigger than stack size or is this just an
-> > in-theory observation.
-> =
+Song Liu wrote:
+> 
+> 
+> > On Oct 13, 2020, at 9:36 PM, Song Liu <songliubraving@fb.com> wrote:
+> > 
+> > Fix the following error when compiling selftests/bpf
+> > 
+> > progs/profiler.inc.h:246:5: error: redefinition of 'pids_cgrp_id' as different kind of symbol
+> > 
+> > pids_cgrp_id is used in cgroup code, and included in vmlinux.h. Fix the
+> > error by renaming pids_cgrp_id as pids_cgroup_id.
+> > 
+> > Fixes: 03d4d13fab3f ("selftests/bpf: Add profiler test")
+> > Signed-off-by: Song Liu <songliubraving@fb.com>
+> 
+> I forgot to mention
+> 
+> Reported-by: Jiri Olsa <jolsa@kernel.org>
 
-> The use-case for this patch originates to implement allow/disallow
-> lists for files and file paths. The maximum length of file paths is
-> defined by PATH_MAX with 4096 chars including nul.
-> This limit exceeds=C2=A0MAX_BPF_STACK.=C2=A0
-> =
-
-> Thanks,
->  Florian
-
-OK the check appears unnecessary. It seems a bit excessive to have
-such large keys though.
-
-Daniel, Alexei I couldn't find this patch in patchworks, not sure
-where it went.
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>=
+Acked-by: John Fastabend <john.fastabend@gmail.com>
