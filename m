@@ -2,80 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC9928F8F9
-	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 20:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165A628F90B
+	for <lists+bpf@lfdr.de>; Thu, 15 Oct 2020 21:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391238AbgJOS4u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Oct 2020 14:56:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391214AbgJOS4s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Oct 2020 14:56:48 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5A2D22203;
-        Thu, 15 Oct 2020 18:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1602788207;
-        bh=h9H7MfGkVZEtGRU8G3mXGwKdxB+rvRRijM3a/AJ1TF0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Gny40sOvk+IJG+h0WMba5SeHcPxvb/n+QcR/fC5gh9A+4V6BqvbfCGfrJUBtGRZFp
-         sLhqar70zwGwu3+pNMWW+yMb7KdME2S5ZFiquOsS82g4E2JNqPu9g/bhsSXjuNGO1v
-         9azo058IoVy8sFBmz1zNA4/2xX3SOYw184D/ARRQ=
-Date:   Thu, 15 Oct 2020 11:56:43 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     YueHaibing <yuehaibing@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S1727023AbgJOTCP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Oct 2020 15:02:15 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45596 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726031AbgJOTCN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Oct 2020 15:02:13 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kT8Vu-00019f-VQ; Thu, 15 Oct 2020 21:02:10 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kT8Vu-000DmG-OL; Thu, 15 Oct 2020 21:02:10 +0200
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix compilation error in
+ progs/profiler.inc.h
+To:     Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpfilter: Fix build error with CONFIG_BPFILTER_UMH
-Message-ID: <20201015115643.3a4d4820@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAADnVQKJ=iDMiJpELmuATsdf2vxGJ=Y9r+vjJG6m4BDRNPmP3g@mail.gmail.com>
-References: <20201014091749.25488-1-yuehaibing@huawei.com>
-        <20201015093748.587a72b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAADnVQKJ=iDMiJpELmuATsdf2vxGJ=Y9r+vjJG6m4BDRNPmP3g@mail.gmail.com>
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>
+References: <20201014043638.3770558-1-songliubraving@fb.com>
+ <20201015042928.hvluj5xbz3qxqq6r@ast-mbp.dhcp.thefacebook.com>
+ <5A67779B-B40B-46D4-8863-A804E20FD43C@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1bc18cef-0a73-7a8e-0293-483f9775be26@iogearbox.net>
+Date:   Thu, 15 Oct 2020 21:02:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <5A67779B-B40B-46D4-8863-A804E20FD43C@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25958/Thu Oct 15 15:56:23 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 15 Oct 2020 11:53:08 -0700 Alexei Starovoitov wrote:
-> On Thu, Oct 15, 2020 at 9:37 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Wed, 14 Oct 2020 17:17:49 +0800 YueHaibing wrote:  
-> > > IF CONFIG_BPFILTER_UMH is set, building fails:
-> > >
-> > > In file included from /usr/include/sys/socket.h:33:0,
-> > >                  from net/bpfilter/main.c:6:
-> > > /usr/include/bits/socket.h:390:10: fatal error: asm/socket.h: No such file or directory
-> > >  #include <asm/socket.h>
-> > >           ^~~~~~~~~~~~~~
-> > > compilation terminated.
-> > > scripts/Makefile.userprogs:43: recipe for target 'net/bpfilter/main.o' failed
-> > > make[2]: *** [net/bpfilter/main.o] Error 1
-> > >
-> > > Add missing include path to fix this.
-> > >
-> > > Signed-off-by: YueHaibing <yuehaibing@huawei.com>  
-> >
-> > Applied, thank you!  
+On 10/15/20 7:50 AM, Song Liu wrote:
+>> On Oct 14, 2020, at 9:29 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>> On Tue, Oct 13, 2020 at 09:36:38PM -0700, Song Liu wrote:
+>>> Fix the following error when compiling selftests/bpf
+>>>
+>>> progs/profiler.inc.h:246:5: error: redefinition of 'pids_cgrp_id' as different kind of symbol
+>>>
+>>> pids_cgrp_id is used in cgroup code, and included in vmlinux.h. Fix the
+>>> error by renaming pids_cgrp_id as pids_cgroup_id.
+>>>
+>>> Fixes: 03d4d13fab3f ("selftests/bpf: Add profiler test")
+>>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>>> ---
+>>> tools/testing/selftests/bpf/progs/profiler.inc.h | 4 ++--
+>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
+>>> index 00578311a4233..b554c1e40b9fb 100644
+>>> --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
+>>> +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+>>> @@ -243,7 +243,7 @@ static ino_t get_inode_from_kernfs(struct kernfs_node* node)
+>>> 	}
+>>> }
+>>>
+>>> -int pids_cgrp_id = 1;
+>>> +int pids_cgroup_id = 1;
+>>
+>> I would prefer to try one of three options that Andrii suggested.
 > 
-> Please revert. The patch makes no sense.
+> Ah, I missed that email (because of vger lag, I guess). Just verified
+> Andrii's version works.
 
-How so? It's using in-tree headers instead of system ones.
-Many samples seem to be doing the same thing.
-
-> Also please don't take bpf patches.
-
-You had it marked it as netdev in your patchwork :/
+Pls either you or Andrii respin in that case.
