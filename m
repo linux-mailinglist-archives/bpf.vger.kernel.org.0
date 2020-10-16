@@ -2,101 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8250028FE21
-	for <lists+bpf@lfdr.de>; Fri, 16 Oct 2020 08:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9AD28FFD1
+	for <lists+bpf@lfdr.de>; Fri, 16 Oct 2020 10:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391232AbgJPGTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Oct 2020 02:19:10 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33818 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2393991AbgJPGTK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Oct 2020 02:19:10 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 258D7E95BBEB13B85C01;
-        Fri, 16 Oct 2020 14:18:59 +0800 (CST)
-Received: from [10.174.176.180] (10.174.176.180) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 16 Oct 2020 14:18:54 +0800
-Subject: Re: [PATCH] bpfilter: Fix build error with CONFIG_BPFILTER_UMH
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20201014091749.25488-1-yuehaibing@huawei.com>
- <20201015093748.587a72b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQKJ=iDMiJpELmuATsdf2vxGJ=Y9r+vjJG6m4BDRNPmP3g@mail.gmail.com>
- <20201015115643.3a4d4820@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQLVvd_2zJTQJ7m=322H7M7NdTFfFE7f800XA=9HXVY28Q@mail.gmail.com>
- <20201015122624.0ca7b58c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAADnVQLiYfi3DvT=S_jgb+X=qD4GC1WJynWmh8988scUQJozWA@mail.gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <888cb447-dda7-dd1a-38ab-fbae08032e23@huawei.com>
-Date:   Fri, 16 Oct 2020 14:18:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S2405074AbgJPIMq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Oct 2020 04:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405029AbgJPIMN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Oct 2020 04:12:13 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9D1C061755
+        for <bpf@vger.kernel.org>; Fri, 16 Oct 2020 01:12:11 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id x16so1517941ljh.2
+        for <bpf@vger.kernel.org>; Fri, 16 Oct 2020 01:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=A4ib7j7aHMB5AZLZqqJ7kHKqCwJSjJ7AV9PvDxTPhD8=;
+        b=YSw2kXsvB4Fuhm5ctlwdEuIiw9szo4zxhZvIrDk68AoiVxMV0MVznZsciZHzrSGdbF
+         yGsUpnExe7McrSV0FeOX4qejEs6ZliuseMNHVu5fahoIwn/DgJr1WA2DiD8slSeB7IiV
+         fwiHDB7Z3bEbGKFYABXoRmX37sL4ASKuXFjqM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=A4ib7j7aHMB5AZLZqqJ7kHKqCwJSjJ7AV9PvDxTPhD8=;
+        b=J9KPNGc2d9jfbdxhfx62E0EgmZfWnixyaTiyLqlgCYpnk6XZ8b6dugucDsnqzqCUZU
+         B/oQQK8YZ6j48vrWsXq3+KAJ9WPeWrBs4xxqcnnXbQhWvat5UJglC622EutroKH08qID
+         LfnLOqW6AJQuu2LdbciVK62E9TDwpmzdJ6CKW6QkYFqmbqcS1gxqvWI25/fUeFx0qLIT
+         Z6lSwsaLvGjlZiKUbqDprTRWPSl629NMJs98Om/GTULIcqC+5TUpghSRJTM+zlYIfMss
+         cjGNxfqW6B0xBo6am1lFWOs1u3ymcB29uSACNcBkaYQk6F6ZgP0Q1c0fODWWF+Mx2309
+         mWGg==
+X-Gm-Message-State: AOAM531PVw+DkfoEK+RJ3pDVX/SlZ/miD2H9KKOt3WT9ofEIan55EioT
+        zA48lXSiVP0byH758MXo+jyATw==
+X-Google-Smtp-Source: ABdhPJyJW5Ve+xVPu/bKbLSeKxgSIVOrxYmNFbuLg3jeKlkNkgvACMFzQZmdtlfxfQ6Q8ACtL6lXZA==
+X-Received: by 2002:a2e:7216:: with SMTP id n22mr1069971ljc.187.1602835929933;
+        Fri, 16 Oct 2020 01:12:09 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id m132sm579890lfa.34.2020.10.16.01.12.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2020 01:12:09 -0700 (PDT)
+References: <160239226775.8495.15389345509643354423.stgit@john-Precision-5820-Tower> <160239302638.8495.17125996694402793471.stgit@john-Precision-5820-Tower>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, lmb@cloudflare.com
+Subject: Re: [bpf-next PATCH 4/4] bpf, selftests: Add three new sockmap tests for verdict only programs
+In-reply-to: <160239302638.8495.17125996694402793471.stgit@john-Precision-5820-Tower>
+Date:   Fri, 16 Oct 2020 10:12:08 +0200
+Message-ID: <87blh2vbc7.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLiYfi3DvT=S_jgb+X=qD4GC1WJynWmh8988scUQJozWA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.180]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sun, Oct 11, 2020 at 07:10 AM CEST, John Fastabend wrote:
+> Here we add three new tests for sockmap to test having a verdict program
+> without setting the parser program.
+>
+> The first test covers the most simply case,
+>
+>    sender         proxy_recv proxy_send      recv
+>      |                |                       |
+>      |              verdict -----+            |
+>      |                |          |            |
+>      +----------------+          +------------+
+>
+> We load the verdict program on the proxy_recv socket without a
+> parser program. It then does a redirect into the send path of the
+> proxy_send socket using sendpage_locked().
+>
+> Next we test the drop case to ensure if we kfree_skb as a result of
+> the verdict program everything behaves as expected.
+>
+> Next we test the same configuration above, but with ktls and a
+> redirect into socket ingress queue. Shown here
+>
+>    tls                                       tls
+>    sender         proxy_recv proxy_send      recv
+>      |                |                       |
+>      |              verdict ------------------+
+>      |                |      redirect_ingress
+>      +----------------+
+>
+> Also to set up ping/pong test
+>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
 
+Looks like setup commands got filtered out by git commmit.
 
-On 2020/10/16 3:57, Alexei Starovoitov wrote:
-> On Thu, Oct 15, 2020 at 12:26 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Thu, 15 Oct 2020 12:03:14 -0700 Alexei Starovoitov wrote:
->>> On Thu, Oct 15, 2020 at 11:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>>> How so? It's using in-tree headers instead of system ones.
->>>> Many samples seem to be doing the same thing.
->>>
->>> There is no such thing as "usr/include" in the kernel build and source trees.
->>
->> Hm. I thought bpfilter somehow depends on make headers. But it doesn't
->> seem to. Reverting now.
-> 
-> Thanks!
-> Right. To explain it a bit further for the author of the patch:
-> Some samples makefiles use this -I usr/include pattern.
-> That's different. This local "usr/include" is a result of 'make
-> headers_install'.
-
-I didn't notice this, sorry for the wrong fix.
-
-> For samples and such it's ok to depend on that, but bpfilter is
-> the part of the kernel build.
-> It cannot depend on the 'make headers_install' step,
-> so the fix has to be different.
-
-Yes, this should rework.
-
-> 
->>>>> Also please don't take bpf patches.
->>>>
->>>> You had it marked it as netdev in your patchwork :/
->>>
->>> It was delegated automatically by the patchwork system.
->>> I didn't have time to reassign, but you should have known better
->>> when you saw 'bpfilter' in the subject.
->>
->> The previous committers for bpfilter are almost all Dave, so I checked
->> your patchwork to make sure and it was netdev...
-> 
-> It was my fault. I was sloppy in the past and didn't pay enough attention
-> to bpfilter and it started to bitrot because Dave was applying patches
-> with his normal SLAs while I was silent.
-> .
-> 
+[...]
