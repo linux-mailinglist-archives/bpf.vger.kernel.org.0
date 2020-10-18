@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395872916F4
-	for <lists+bpf@lfdr.de>; Sun, 18 Oct 2020 12:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF62629171A
+	for <lists+bpf@lfdr.de>; Sun, 18 Oct 2020 13:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726459AbgJRKbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Oct 2020 06:31:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39562 "EHLO
+        id S1726486AbgJRLE2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Oct 2020 07:04:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43947 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726469AbgJRKbh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 18 Oct 2020 06:31:37 -0400
+        by vger.kernel.org with ESMTP id S1726330AbgJRLE2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 18 Oct 2020 07:04:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603017095;
+        s=mimecast20190719; t=1603019066;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Jmp8YCoG/WrNynJOk5e9pIS3/VMDiD36mwPrboLfjZc=;
-        b=b5Nb2eH9nwVlVq7JBGXheA29Y5zqCl8osRvL8ZTk3aVMp24G8cukdN5slpsxWwB1Qf+MeE
-        vYPj9tkqIPZl+VP5carZsEOvPvZurq4wqnm8Xu2x+rBvVsq0tjmyeFRxtPvi8LZbvxdNO/
-        7PBmaiZCBsPTij9p/82Dl0nCQCZ/qMI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-dujVW43pM2O-PfTMsG4iOQ-1; Sun, 18 Oct 2020 06:31:33 -0400
-X-MC-Unique: dujVW43pM2O-PfTMsG4iOQ-1
-Received: by mail-wm1-f70.google.com with SMTP id f26so2739670wml.1
-        for <bpf@vger.kernel.org>; Sun, 18 Oct 2020 03:31:33 -0700 (PDT)
+        bh=MJ6BzLjbDTsug3CqNe/ce+OSC+Izok5rhoFFYaIASks=;
+        b=St+Br9rFpYCteAIROcgoPgZDa2Kfkoe+Ap6y8ysC5LkFw1nTB9VxSW8uRN317zkRdpe1RX
+        fvLg2juUqQHHJkD4BUCZAivfF8y+jICzSk64lSTFGVSX1hHZhNqiypco33XAU0LM73jmCv
+        NDhB9ChegbfUR8oRLbxzHRbzBkiBRFA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-XcM6H0KGP9utFQabmAQKjw-1; Sun, 18 Oct 2020 07:04:24 -0400
+X-MC-Unique: XcM6H0KGP9utFQabmAQKjw-1
+Received: by mail-wr1-f71.google.com with SMTP id b11so6074293wrm.3
+        for <bpf@vger.kernel.org>; Sun, 18 Oct 2020 04:04:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
          :content-disposition;
-        bh=Jmp8YCoG/WrNynJOk5e9pIS3/VMDiD36mwPrboLfjZc=;
-        b=gRIpaK2tmP5IDysrqbPosxtmipOJhdag+KRjd6CpAq8FGnMGyipdSR2PKSOwtNC/Qw
-         kJq8Z10r5BirPYHlWcmDpKQuutr2mJKV+iwz0mFtqSuN72yFJ5Ok6W/KiBfcl/Zd/2fM
-         Usu6Iga39cCyp2+NKJejEwVNvZQd5LG/HknIu/JLNBIqadxz2pUVlAXJMVSQsmtm9VcZ
-         7EeTgYthwuLPH1SpQE0RNnB7UmB+taSoTX/vcOHRmeWdeZp5Mt27qq8iYbyo8dhT2sBV
-         knj/EKMeRbWniTOReiWtT5G5UtgCOOxEtgg6c0HlrGvoJR8rkSB+bM8cjcp/+qbvxhXg
-         w4yg==
-X-Gm-Message-State: AOAM531sSCxH1wra/USiKcWDPg84XF14+H4qMsAOKB3ZyvwA0hCM/gQZ
-        PGj033EOZyC8Qj8PKYskDpIEXUxy4RzQUYkqrQ+1AK6y+CNK3Il2JFkX7GdvhyjuyVgEuO9/FyY
-        jAmVgW96kXLSn
-X-Received: by 2002:adf:fc83:: with SMTP id g3mr14230128wrr.200.1603017089691;
-        Sun, 18 Oct 2020 03:31:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzFgBYW13xTtas95AM+GAmL+tmojRa7wsy3ERg/R+Ej3Bo2glQw7VO5gvpuElbr4/ySC8xwhw==
-X-Received: by 2002:adf:fc83:: with SMTP id g3mr14230106wrr.200.1603017089391;
-        Sun, 18 Oct 2020 03:31:29 -0700 (PDT)
+        bh=MJ6BzLjbDTsug3CqNe/ce+OSC+Izok5rhoFFYaIASks=;
+        b=oMpww031OfNcoA/zkMNPWsOYwaBrJzlOmJZf/dTkyBls4qzljTYqrSXhSR9+LUcYB7
+         1YD97GTSxBVAv7TgEza+GBqkfcKTHf9dfUrGo4sGc0aGimbV5AzrOM4YOEEGZNXEFrW2
+         a7MHGWvaOcZwwA56BxOPMRvivm9cKlA/7k2C7FHRmZwm7W8e+9EwEvBHO4sEvZLVonJY
+         owyabqKNA/vY7IEGVd46C7YbZxql84BWlfY2PqAO4zlUg/q123J8/Z95B9YVGFJs904h
+         QDpHHErmCXWBON5h8AeKB4HqQRlMvW5A2autALiAH4drcAZ9zhWMppkl/VZYgClBGV2f
+         UWxQ==
+X-Gm-Message-State: AOAM532AZGVpRm6AQ3Itp4sIxBsaeRKRI57eazhZY3SfPlcFUhUDewLr
+        JAvlwHdWoa6VOFsMVUyu9F8FWKW3QubXJP84pHYdA6+ykNASrT0Nf6AfUv4pcPV2tidpOENOpkE
+        fhMlHMHmHwVph
+X-Received: by 2002:a1c:7518:: with SMTP id o24mr12923407wmc.137.1603018635190;
+        Sun, 18 Oct 2020 03:57:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyhBChsRcKi1HmmVluBqKWN4RWPYG/xwhYJgweQn6/dfxmiCpXiUvFB+vKqcsTdGqpZVszT3A==
+X-Received: by 2002:a1c:7518:: with SMTP id o24mr12923391wmc.137.1603018634956;
+        Sun, 18 Oct 2020 03:57:14 -0700 (PDT)
 Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
-        by smtp.gmail.com with ESMTPSA id v6sm6947001wrp.69.2020.10.18.03.31.27
+        by smtp.gmail.com with ESMTPSA id h3sm13108268wrw.78.2020.10.18.03.57.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Oct 2020 03:31:28 -0700 (PDT)
-Date:   Sun, 18 Oct 2020 06:31:26 -0400
+        Sun, 18 Oct 2020 03:57:14 -0700 (PDT)
+Date:   Sun, 18 Oct 2020 06:57:10 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
@@ -63,13 +63,12 @@ Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
         virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH] Revert "virtio-net: ethtool configurable RXCSUM"
+Subject: [PATCH net repost] Revert "virtio-net: ethtool configurable RXCSUM"
 Message-ID: <20201018103122.454967-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -171,6 +170,10 @@ Fixes: 3618ad2a7c0e7 ("virtio-net: ethtool configurable RXCSUM")
 Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
+
+Reposting with net tag
+
+
  drivers/net/virtio_net.c | 50 +++++++++++-----------------------------
  1 file changed, 13 insertions(+), 37 deletions(-)
 
