@@ -2,87 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11F62930E2
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 00:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFFC2931C3
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 01:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387748AbgJSWCa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Oct 2020 18:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56258 "EHLO
+        id S2388887AbgJSXFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Oct 2020 19:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729617AbgJSWCa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Oct 2020 18:02:30 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4348C0613CE
-        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 15:02:29 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 23so2111232ljv.7
-        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 15:02:29 -0700 (PDT)
+        with ESMTP id S1727822AbgJSXFt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Oct 2020 19:05:49 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735B6C0613D6
+        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 16:05:49 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id 67so43834iob.8
+        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 16:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7II6SS5VqohjtAxbqQemDFOC71upiwxLecRxANCNdAA=;
-        b=DVWtZVhp0ODdbWPZM/uqX8YbYkBHXbrwLrbJfPocE1kwxKCgDZMaRqKX4soNAaDpsd
-         L/z78idFgbA+twmnc68FAKtzKK5uWMY7/642sb964f/GeK4fdOsGlqfqRPM49T2Z3zxe
-         SRwhkuzRslWMP+73uhoWsVPvvdJQ/ZYairmNreiXRPpc+DL4FtG6JKV9iwBCupsDdqHd
-         CrfNFjfVdkQO2rQogYCY/MuYpgW3F7ot3h0QqdKyqHWnO9LZBQ8yA3a++2mE4bPt7mAG
-         hgfsKhdI6ZD0T/9WI1gMu3bxbco/6zKtnf4wfTELgQAu7FOt2mgj/UC6G0BKgTnTlKBc
-         Fi8g==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KZcwJitFojA7RhzeD/UU8gbzehCBdvf6g5ia0ZYCrq4=;
+        b=R0THCPfeT+NjRv5n7wRuWr3+iQQVH5mYQugrcFEorv7jMlZOJpq4gWO8x2sltRZ1S3
+         8+uXkfK+0xraFRPc7RLEyC+L1Eqn+lwfgcQ60rCu3Ir6T0iqCUlHxkXPI8IxQxljNihW
+         MxA7dERE+Fo0B6yhfEPLGm6gbjuMrGvt0ee7i4ozPAa6C0OwTV1SJBaz+sj8rzyyiIix
+         DQ1LhxNguLsVQ2r9xWcmCur9QDHoeimXQtC/UVpN+4Yl8O9ZbpYKUwlrKFZtzYHwjpgZ
+         iC+kREvCZvwgmOBCIm7DmgxG6/6ncKrp6QDCnbxkp/qIzrhuMyauJsg53LWTp//HSslk
+         z+3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7II6SS5VqohjtAxbqQemDFOC71upiwxLecRxANCNdAA=;
-        b=p/XnoZoM9Px9T9Iz38z/6OX/C448svZ+Ev4qfuq+VVwez9mZn7+RY5r8XuY1A9k4I6
-         DEXC4leBoERoUivxFVVbqvaScdWRbv0KcOJues034wKzCKEFqRXigkfRdbp2KAZHlv9e
-         QBTD8EY/Lasrk5nUUZFl2JxLL3CGE45GCw3s5FCLIAodX3z+dlXPqBVRxeKKyclTYJni
-         RilM8tuxCxUSoZN3yBo4uRpPAYXHN9rMZoLOo8imDIg1ZIEcijhcAE551eTImx7xFt67
-         5fE0ll76MBHdLeLvOiVhU4QwcoZJn4MYG8flAHiDufOxaAKvalBnwri10zRH6UBZ4MG+
-         GNSQ==
-X-Gm-Message-State: AOAM530hMh/wV0XugJABMxxWBxw4Y8sOpQfLiOXsiEirmLPtbJUuD1Kv
-        79gk0Tx98vYYx28Klqh9/6RvqnOSar8CNNZ0mkEPs2rmJAo=
-X-Google-Smtp-Source: ABdhPJz9p1UoghsGE2UfVR/QxeYyYAQzBsqu0W/cOzuTyfKKZDHIOTbKZ3o/lQgX/eBsk1Noe12WNdLuirrFBK/GQB4=
-X-Received: by 2002:a2e:9015:: with SMTP id h21mr845674ljg.450.1603144947830;
- Mon, 19 Oct 2020 15:02:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KZcwJitFojA7RhzeD/UU8gbzehCBdvf6g5ia0ZYCrq4=;
+        b=uBtcd1HQLkhhp07nPwEucZv/00lc7rLMeorm6m5V6pzQgCc0v8/MPVmHzNriGvMqsn
+         HseQjUCkpxDiyz+wBa7Mv/k/2NfeVWE9srwKpyogUs0tm7Av7s/2ABr16GmaLS3qgmf+
+         3UgLXNmP01U10XAdmTaeaBMlJoCasMJ52BjMmrZ4sb1luuLmSAA+EqAX8YXE5GDAxxph
+         Jfg566FHZXwwmcJjewSkMyatjWuW5tkIHGWdqlZI3TbyEvQLKvpDuHWHviZXmWjACC6d
+         q/X9Z+7xB8+Ak1WzPp6Q1YZmr9sCFrIgVNXcykV7/TS4JDuLuG/nVU1z5PxG/Q8JBbJL
+         vzEA==
+X-Gm-Message-State: AOAM5300iMUkPcxhrj2pZbzePG09kl77c/4CwHOTopU9zi6AuCG3nQFp
+        GccRHKzHejADdtxkmEKgn1Puvg==
+X-Google-Smtp-Source: ABdhPJwE/qhLAedndnNRaUrUDMs331Onaq8Iz+VDEVRJN+4h4B5ckC67pNXDnvS9MRF/DxLJjNlnIQ==
+X-Received: by 2002:a6b:5019:: with SMTP id e25mr44377iob.123.1603148748578;
+        Mon, 19 Oct 2020 16:05:48 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id u8sm7938ilm.36.2020.10.19.16.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 16:05:47 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kUeDq-002hRf-LL; Mon, 19 Oct 2020 20:05:46 -0300
+Date:   Mon, 19 Oct 2020 20:05:46 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Tom Rix <trix@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        linux-edac@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-block@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        industrypack-devel@lists.sourceforge.net,
+        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-can@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org, ath10k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com, linux-nfc@lists.01.org,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-pci@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
+        storagedev@microchip.com, devel@driverdev.osuosl.org,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net,
+        linux-watchdog@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        bpf <bpf@vger.kernel.org>, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        George Burgess <gbiv@google.com>
+Subject: Re: [RFC] treewide: cleanup unreachable breaks
+Message-ID: <20201019230546.GH36674@ziepe.ca>
+References: <20201017160928.12698-1-trix@redhat.com>
+ <20201018054332.GB593954@kroah.com>
+ <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAOjtDRXzkwG84UCUVw0J_WmRt585OhOSjuWbdenYFNFinsSG0Q@mail.gmail.com>
- <CAEf4BzazaFZQHLcNARGWn4TTJJTQPdBVbskg+bJGp-dds-t1xw@mail.gmail.com>
- <CAOjtDRXrSzqb4PTBXDAHMuCArYjpMoTcT0Maw2UqefJN2DbATA@mail.gmail.com>
- <8cc1629c-8a85-2d84-f779-6a20bb5d36bd@iogearbox.net> <CAEf4BzatiTgwSqyP8tJRM32YWyHe1QSDEQWKezWTHE9ocLcgjQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzatiTgwSqyP8tJRM32YWyHe1QSDEQWKezWTHE9ocLcgjQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 19 Oct 2020 15:02:16 -0700
-Message-ID: <CAADnVQLLQnyiwnw8jPxgJtb59t78wz8X6JQZhTxUe0gw+yRz7w@mail.gmail.com>
-Subject: Re: Running JITed and interpreted programs simultaneously
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
-        David Marcinkovic <david.marcinkovic@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 11:26 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> That wasn't happening last time people reported this on ARM32.
-> BPF_XADD was causing load failure, no fail back to interpreter mode.
->
+On Mon, Oct 19, 2020 at 12:42:15PM -0700, Nick Desaulniers wrote:
+> On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 > >
-> > Wrt force-interpret vs force-jit BPF_PROG_LOAD flag, I'm more concerned that this
-> > decision will then be pushed to the user who should not have to care about these
-> > internals. And how would generic loaders try to react if force-jit fails? They would
-> > then fallback to force-interpret same way as kernel does?
->
-> The way I imagined this was if the user wants to force the mode and
-> the kernel doesn't support it (or the program can't be loaded in that
-> mode), then it's a fail-stop, no fall back. And it's strictly an
-> opt-in flag, if nothing is specified then it's current behavior with
-> fallback (which apparently doesn't always work).
+> > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > >
+> > > This is a upcoming change to clean up a new warning treewide.
+> > > I am wondering if the change could be one mega patch (see below) or
+> > > normal patch per file about 100 patches or somewhere half way by collecting
+> > > early acks.
+> >
+> > Please break it up into one-patch-per-subsystem, like normal, and get it
+> > merged that way.
+> >
+> > Sending us a patch, without even a diffstat to review, isn't going to
+> > get you very far...
+> 
+> Tom,
+> If you're able to automate this cleanup, I suggest checking in a
+> script that can be run on a directory.  Then for each subsystem you
+> can say in your commit "I ran scripts/fix_whatever.py on this subdir."
+>  Then others can help you drive the tree wide cleanup.  Then we can
+> enable -Wunreachable-code-break either by default, or W=2 right now
+> might be a good idea.
 
-That doesn't sound right.
-Fallback to interpreter should always work unless features like
-trampoline are used.
-But that's not the case for arm32. Missing xadd support shouldn't cause
-load failure.
+I remember using clang-modernize in the past to fix issues very
+similar to this, if clang machinery can generate the warning, can't
+something like clang-tidy directly generate the patch?
+
+You can send me a patch for drivers/infiniband/* as well
+
+Thanks,
+Jason
