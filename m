@@ -2,326 +2,279 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B07A292B13
-	for <lists+bpf@lfdr.de>; Mon, 19 Oct 2020 18:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A59292CDA
+	for <lists+bpf@lfdr.de>; Mon, 19 Oct 2020 19:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730286AbgJSQFL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Oct 2020 12:05:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22656 "EHLO
+        id S1726973AbgJSRcX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Oct 2020 13:32:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60162 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730568AbgJSQFF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Oct 2020 12:05:05 -0400
+        by vger.kernel.org with ESMTP id S1725887AbgJSRcX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 19 Oct 2020 13:32:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603123503;
+        s=mimecast20190719; t=1603128740;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNPjravVaxcCo6ufyTkom4COG7g6erShkorV8bvLIFg=;
-        b=DfkobQGU0oGvvTIc48LhPpReL04evHrGCvrafExeShrEydIEQ+I6CK8BqJZgzSI3d+Ww+c
-        Z4TxIc9Kpn1JJU08dW5Lg2ws85sjdbj7ZZxcThHBFRTFynZVPkR5gF3zTcViBneJ2OL4pY
-        B/fAQeiSSFXcPW9lBrLELYoVQVrQmB0=
-Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
- [209.85.217.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-DDgWXZ6jNrufsIB-PwkW1w-1; Mon, 19 Oct 2020 12:05:00 -0400
-X-MC-Unique: DDgWXZ6jNrufsIB-PwkW1w-1
-Received: by mail-vs1-f71.google.com with SMTP id d9so2070657vsl.12
-        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 09:05:00 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=IwxK6Q4h+WdvKv/XP6x1buGTHeGA/6smjojpEbN3Qsc=;
+        b=QTgSB2VnwBoUeiZdxjNDTQmwF85lR0yR1Mll1BrEXXqicFxBtgVTjPKcnra6SQif94iQul
+        jD+4HjuAaitGUho5FDyIFGJXaSptqC6qAqcHNPAOOCPbneC6A7LQqZCiJHZ1w/V6Q9l2rN
+        zQ4Qgke/KqvHvsHIVRrPUIZG7ZMMzZs=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-483-s_YvXiA0OZSTAbiEzzDlNA-1; Mon, 19 Oct 2020 13:32:19 -0400
+X-MC-Unique: s_YvXiA0OZSTAbiEzzDlNA-1
+Received: by mail-wm1-f72.google.com with SMTP id s25so74971wmj.7
+        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 10:32:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=oNPjravVaxcCo6ufyTkom4COG7g6erShkorV8bvLIFg=;
-        b=SM7FhadpmA5py15o92QP+e5qJuMwBU0c0bBUUIoMVmWDqlFJ3zuIu7jlSJ6SkPYHnq
-         s6F/O8MRY1Y3l1cRzpCnEat3lX+HKAd62Wati25W/jU3+16QvySH5CSsNQJCKP6V9RwB
-         m5R1tKW+NFWrWQvYsfZrQwbWlIuI8xgltSS/5aIR0dj0xP9BNoCgeaNf2cBoU4TsUFet
-         9dbb/lUJP1Rs8UqaMHZK89gO/5qCRjo4+p5W152l3LmNR6TKbGomaVf31Zfr+xMPTTBV
-         ZtK1zKe764TGuTHRIW0LGI1n0qNr2yHT6ld4yuwj5wO4VU974aqxPQeIUaSVGCYmpRXI
-         ojKg==
-X-Gm-Message-State: AOAM532TBNtmiOJq4UDFR5cc1zlxnM4p5N/kYwazMxSopag+DuzKoxeL
-        ksiUsnLBGH3q+RGeCFeAdrvCyOpz5wH1jtoWxkgi0AvWIf8A4ffv8z+JA80Lxp4Re88O78eYpp5
-        TYiD86L7Wu+HZ
-X-Received: by 2002:a67:fd59:: with SMTP id g25mr644186vsr.29.1603123499499;
-        Mon, 19 Oct 2020 09:04:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykanLKQDu6ikfoanjSVL64s34Jz+KxL3muYO7CNjH7kGwaVwMqrW7AMXxfl0mIFz7FSmDSkw==
-X-Received: by 2002:a67:fd59:: with SMTP id g25mr644143vsr.29.1603123499187;
-        Mon, 19 Oct 2020 09:04:59 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id j15sm30858vke.49.2020.10.19.09.04.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=IwxK6Q4h+WdvKv/XP6x1buGTHeGA/6smjojpEbN3Qsc=;
+        b=fiaOAS4jGbsicBUgF9VAzwHMrTXpeskO+fYFQG1xtzwKJqgh/JgFWxbv8AM0YB770w
+         R2u91pet8s2sWfLPWcFScLDuQ8ee8rFPohBd267s9ixbRqVbdxLbefmjQKTHVkmDhwJE
+         POOGIvhj9HEDKMX7+sVHsqKHHx3mRQnGgb4xvpbZL6o9ekWbju6f6r9zTWzYX05+PIow
+         AVhTIKSEMQ0fOXqakaHpN+ENBACYTYPBrGjVfaq1tyEfK1E46mDgor/T6YPcZk61/B01
+         1pOZzwiHOI0E3pZ1ur2wopNNe4LG7dNFg2O7AGlXdikQ6nPL0hebaWBZYJkFRpDiJCRp
+         d53w==
+X-Gm-Message-State: AOAM532/ivnJn3664N/4a3nQAetfUZ/Vm7qBwCjvt2pEyfxmXHOTPzIi
+        OJcvOCbgQ3ngFV+uugoJtVRxYPZ16Wy8XDOP24G6V81glSdTRcIYPTw159KiJkVmLuyexzYmVsA
+        Qrf6tJd/Ubcps
+X-Received: by 2002:a7b:ce97:: with SMTP id q23mr300392wmj.19.1603128736827;
+        Mon, 19 Oct 2020 10:32:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7z8oVSaWaVNfcjAEoHyyZqhoqznYik9UTpBXMJWvO/x87KAJCbKUUGAAv3K0C8vP5KF0Yww==
+X-Received: by 2002:a7b:ce97:: with SMTP id q23mr300362wmj.19.1603128736514;
+        Mon, 19 Oct 2020 10:32:16 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-118-93.red.bezeqint.net. [79.176.118.93])
+        by smtp.gmail.com with ESMTPSA id y10sm464362wrq.73.2020.10.19.10.32.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2020 09:04:57 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 357D21838FF; Mon, 19 Oct 2020 18:04:56 +0200 (CEST)
-Subject: [PATCH bpf 2/2] selftests: Update test_tc_redirect.sh to use the
- modified bpf_redirect_neigh()
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        Mon, 19 Oct 2020 10:32:15 -0700 (PDT)
+Date:   Mon, 19 Oct 2020 13:32:12 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Date:   Mon, 19 Oct 2020 18:04:56 +0200
-Message-ID: <160312349612.7917.2292641333686513322.stgit@toke.dk>
-In-Reply-To: <160312349392.7917.6673239142315191801.stgit@toke.dk>
-References: <160312349392.7917.6673239142315191801.stgit@toke.dk>
-User-Agent: StGit/0.23
+Subject: [PATCH net v2] Revert "virtio-net: ethtool configurable RXCSUM"
+Message-ID: <20201018103122.454967-1-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+This reverts commit 3618ad2a7c0e78e4258386394d5d5f92a3dbccf8.
 
-This updates the test_tc_neigh prog in selftests to use the new syntax of
-bpf_redirect_neigh(). To exercise the helper both with and without the
-optional parameter, add an additional test_tc_neigh_fib test program, which
-does a bpf_fib_lookup() followed by a call to bpf_redirect_neigh() instead
-of looking up the ifindex in a map.
+When the device does not have a control vq (e.g. when using a
+version of QEMU based on upstream v0.10 or older, or when specifying
+ctrl_vq=off,ctrl_rx=off,ctrl_vlan=off,ctrl_rx_extra=off,ctrl_mac_addr=off
+for the device on the QEMU command line), that commit causes a crash:
 
-Update the test_tc_redirect.sh script to run both versions of the test, and
-while we're add it, fix it to work on systems that have a consolidated
-dual-stack 'ping' binary instead of separate ping/ping6 versions.
+[   72.229171] kernel BUG at drivers/net/virtio_net.c:1667!
+[   72.230266] invalid opcode: 0000 [#1] PREEMPT SMP
+[   72.231172] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc8-02934-g3618ad2a7c0e7 #1
+[   72.231172] EIP: virtnet_send_command+0x120/0x140
+[   72.231172] Code: 00 0f 94 c0 8b 7d f0 65 33 3d 14 00 00 00 75 1c 8d 65 f4 5b 5e 5f 5d c3 66 90 be 01 00 00 00 e9 6e ff ff ff 8d b6 00
++00 00 00 <0f> 0b e8 d9 bb 82 00 eb 17 8d b4 26 00 00 00 00 8d b4 26 00 00 00
+[   72.231172] EAX: 0000000d EBX: f72895c0 ECX: 00000017 EDX: 00000011
+[   72.231172] ESI: f7197800 EDI: ed69bd00 EBP: ed69bcf4 ESP: ed69bc98
+[   72.231172] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
+[   72.231172] CR0: 80050033 CR2: 00000000 CR3: 02c84000 CR4: 000406f0
+[   72.231172] Call Trace:
+[   72.231172]  ? __virt_addr_valid+0x45/0x60
+[   72.231172]  ? ___cache_free+0x51f/0x760
+[   72.231172]  ? kobject_uevent_env+0xf4/0x560
+[   72.231172]  virtnet_set_guest_offloads+0x4d/0x80
+[   72.231172]  virtnet_set_features+0x85/0x120
+[   72.231172]  ? virtnet_set_guest_offloads+0x80/0x80
+[   72.231172]  __netdev_update_features+0x27a/0x8e0
+[   72.231172]  ? kobject_uevent+0xa/0x20
+[   72.231172]  ? netdev_register_kobject+0x12c/0x160
+[   72.231172]  register_netdevice+0x4fe/0x740
+[   72.231172]  register_netdev+0x1c/0x40
+[   72.231172]  virtnet_probe+0x728/0xb60
+[   72.231172]  ? _raw_spin_unlock+0x1d/0x40
+[   72.231172]  ? virtio_vdpa_get_status+0x1c/0x20
+[   72.231172]  virtio_dev_probe+0x1c6/0x271
+[   72.231172]  really_probe+0x195/0x2e0
+[   72.231172]  driver_probe_device+0x26/0x60
+[   72.231172]  device_driver_attach+0x49/0x60
+[   72.231172]  __driver_attach+0x46/0xc0
+[   72.231172]  ? device_driver_attach+0x60/0x60
+[   72.231172]  bus_add_driver+0x197/0x1c0
+[   72.231172]  driver_register+0x66/0xc0
+[   72.231172]  register_virtio_driver+0x1b/0x40
+[   72.231172]  virtio_net_driver_init+0x61/0x86
+[   72.231172]  ? veth_init+0x14/0x14
+[   72.231172]  do_one_initcall+0x76/0x2e4
+[   72.231172]  ? rdinit_setup+0x2a/0x2a
+[   72.231172]  do_initcalls+0xb2/0xd5
+[   72.231172]  kernel_init_freeable+0x14f/0x179
+[   72.231172]  ? rest_init+0x100/0x100
+[   72.231172]  kernel_init+0xd/0xe0
+[   72.231172]  ret_from_fork+0x1c/0x30
+[   72.231172] Modules linked in:
+[   72.269563] ---[ end trace a6ebc4afea0e6cb1 ]---
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+The reason is that virtnet_set_features now calls virtnet_set_guest_offloads
+unconditionally, it used to only call it when there is something
+to configure.
+
+If device does not have a control vq, everything breaks.
+
+Looking at this some more, I noticed that it's not really checking the
+hardware too much. E.g.
+
+        if ((dev->features ^ features) & NETIF_F_LRO) {
+                if (features & NETIF_F_LRO)
+                        offloads |= GUEST_OFFLOAD_LRO_MASK &
+                                    vi->guest_offloads_capable;
+                else
+                        offloads &= ~GUEST_OFFLOAD_LRO_MASK;
+        }
+
+and
+
+                                (1ULL << VIRTIO_NET_F_GUEST_TSO6) | \
+                                (1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
+                                (1ULL << VIRTIO_NET_F_GUEST_UFO))
+
+But there's no guarantee that e.g. VIRTIO_NET_F_GUEST_TSO6 is set.
+
+If it isn't command should not send it.
+
+Further
+
+static int virtnet_set_features(struct net_device *dev,
+                                netdev_features_t features)
+{
+        struct virtnet_info *vi = netdev_priv(dev);
+        u64 offloads = vi->guest_offloads;
+
+seems wrong since guest_offloads is zero initialized,
+it does not reflect the state after reset which comes from
+the features.
+
+Revert the original commit for now.
+
+Cc: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Fixes: 3618ad2a7c0e7 ("virtio-net: ethtool configurable RXCSUM")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- tools/testing/selftests/bpf/progs/test_tc_neigh.c  |    5 -
- .../selftests/bpf/progs/test_tc_neigh_fib.c        |  142 ++++++++++++++++++++
- tools/testing/selftests/bpf/test_tc_redirect.sh    |   27 +++-
- 3 files changed, 169 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_neigh_fib.c
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_neigh.c b/tools/testing/selftests/bpf/progs/test_tc_neigh.c
-index fe182616b112..b985ac4e7a81 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_neigh.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_neigh.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <stddef.h>
- #include <stdint.h>
- #include <stdbool.h>
+changes from v1:
+	- clarify how to reproduce the bug in the log
+
+
+ drivers/net/virtio_net.c | 50 +++++++++++-----------------------------
+ 1 file changed, 13 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index d2d2c4a53cf2..21b71148c532 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -68,8 +68,6 @@ static const unsigned long guest_offloads[] = {
+ 				(1ULL << VIRTIO_NET_F_GUEST_ECN)  | \
+ 				(1ULL << VIRTIO_NET_F_GUEST_UFO))
  
-@@ -118,7 +119,7 @@ SEC("dst_ingress") int tc_dst(struct __sk_buff *skb)
- 	if (bpf_skb_store_bytes(skb, 0, &zero, sizeof(zero), 0) < 0)
- 		return TC_ACT_SHOT;
- 
--	return bpf_redirect_neigh(get_dev_ifindex(dev_src), 0);
-+	return bpf_redirect_neigh(get_dev_ifindex(dev_src), NULL, 0, 0);
+-#define GUEST_OFFLOAD_CSUM_MASK (1ULL << VIRTIO_NET_F_GUEST_CSUM)
+-
+ struct virtnet_stat_desc {
+ 	char desc[ETH_GSTRING_LEN];
+ 	size_t offset;
+@@ -2524,48 +2522,29 @@ static int virtnet_get_phys_port_name(struct net_device *dev, char *buf,
+ 	return 0;
  }
  
- SEC("src_ingress") int tc_src(struct __sk_buff *skb)
-@@ -142,7 +143,7 @@ SEC("src_ingress") int tc_src(struct __sk_buff *skb)
- 	if (bpf_skb_store_bytes(skb, 0, &zero, sizeof(zero), 0) < 0)
- 		return TC_ACT_SHOT;
+-static netdev_features_t virtnet_fix_features(struct net_device *netdev,
+-					      netdev_features_t features)
+-{
+-	/* If Rx checksum is disabled, LRO should also be disabled. */
+-	if (!(features & NETIF_F_RXCSUM))
+-		features &= ~NETIF_F_LRO;
+-
+-	return features;
+-}
+-
+ static int virtnet_set_features(struct net_device *dev,
+ 				netdev_features_t features)
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+-	u64 offloads = vi->guest_offloads;
++	u64 offloads;
+ 	int err;
  
--	return bpf_redirect_neigh(get_dev_ifindex(dev_dst), 0);
-+	return bpf_redirect_neigh(get_dev_ifindex(dev_dst), NULL, 0, 0);
+-	/* Don't allow configuration while XDP is active. */
+-	if (vi->xdp_queue_pairs)
+-		return -EBUSY;
+-
+ 	if ((dev->features ^ features) & NETIF_F_LRO) {
++		if (vi->xdp_queue_pairs)
++			return -EBUSY;
++
+ 		if (features & NETIF_F_LRO)
+-			offloads |= GUEST_OFFLOAD_LRO_MASK &
+-				    vi->guest_offloads_capable;
++			offloads = vi->guest_offloads_capable;
+ 		else
+-			offloads &= ~GUEST_OFFLOAD_LRO_MASK;
++			offloads = vi->guest_offloads_capable &
++				   ~GUEST_OFFLOAD_LRO_MASK;
++
++		err = virtnet_set_guest_offloads(vi, offloads);
++		if (err)
++			return err;
++		vi->guest_offloads = offloads;
+ 	}
+ 
+-	if ((dev->features ^ features) & NETIF_F_RXCSUM) {
+-		if (features & NETIF_F_RXCSUM)
+-			offloads |= GUEST_OFFLOAD_CSUM_MASK &
+-				    vi->guest_offloads_capable;
+-		else
+-			offloads &= ~GUEST_OFFLOAD_CSUM_MASK;
+-	}
+-
+-	err = virtnet_set_guest_offloads(vi, offloads);
+-	if (err)
+-		return err;
+-
+-	vi->guest_offloads = offloads;
+ 	return 0;
  }
  
- char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_neigh_fib.c b/tools/testing/selftests/bpf/progs/test_tc_neigh_fib.c
-new file mode 100644
-index 000000000000..055c7582c86c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_neigh_fib.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdint.h>
-+#include <stdbool.h>
-+#include <stddef.h>
-+
-+#include <linux/bpf.h>
-+#include <linux/stddef.h>
-+#include <linux/pkt_cls.h>
-+#include <linux/if_ether.h>
-+#include <linux/in.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+#ifndef ctx_ptr
-+# define ctx_ptr(field)		(void *)(long)(field)
-+#endif
-+
-+#define AF_INET 2
-+#define AF_INET6 10
-+
-+static __always_inline int fill_fib_params_v4(struct __sk_buff *skb,
-+					      struct bpf_fib_lookup *fib_params)
-+{
-+	void *data_end = ctx_ptr(skb->data_end);
-+	void *data = ctx_ptr(skb->data);
-+	struct iphdr *ip4h;
-+
-+	if (data + sizeof(struct ethhdr) > data_end)
-+		return -1;
-+
-+	ip4h = (struct iphdr *)(data + sizeof(struct ethhdr));
-+	if ((void *)(ip4h + 1) > data_end)
-+		return -1;
-+
-+	fib_params->family = AF_INET;
-+	fib_params->tos = ip4h->tos;
-+	fib_params->l4_protocol = ip4h->protocol;
-+	fib_params->sport = 0;
-+	fib_params->dport = 0;
-+	fib_params->tot_len = bpf_ntohs(ip4h->tot_len);
-+	fib_params->ipv4_src = ip4h->saddr;
-+	fib_params->ipv4_dst = ip4h->daddr;
-+
-+	return 0;
-+}
-+
-+static __always_inline int fill_fib_params_v6(struct __sk_buff *skb,
-+					      struct bpf_fib_lookup *fib_params)
-+{
-+	struct in6_addr *src = (struct in6_addr *)fib_params->ipv6_src;
-+	struct in6_addr *dst = (struct in6_addr *)fib_params->ipv6_dst;
-+	void *data_end = ctx_ptr(skb->data_end);
-+	void *data = ctx_ptr(skb->data);
-+	struct ipv6hdr *ip6h;
-+
-+	if (data + sizeof(struct ethhdr) > data_end)
-+		return -1;
-+
-+	ip6h = (struct ipv6hdr *)(data + sizeof(struct ethhdr));
-+	if ((void *)(ip6h + 1) > data_end)
-+		return -1;
-+
-+	fib_params->family = AF_INET6;
-+	fib_params->flowinfo = 0;
-+	fib_params->l4_protocol = ip6h->nexthdr;
-+	fib_params->sport = 0;
-+	fib_params->dport = 0;
-+	fib_params->tot_len = bpf_ntohs(ip6h->payload_len);
-+	*src = ip6h->saddr;
-+	*dst = ip6h->daddr;
-+
-+	return 0;
-+}
-+
-+SEC("chk_egress") int tc_chk(struct __sk_buff *skb)
-+{
-+	void *data_end = ctx_ptr(skb->data_end);
-+	void *data = ctx_ptr(skb->data);
-+	__u32 *raw = data;
-+
-+	if (data + sizeof(struct ethhdr) > data_end)
-+		return TC_ACT_SHOT;
-+
-+	return !raw[0] && !raw[1] && !raw[2] ? TC_ACT_SHOT : TC_ACT_OK;
-+}
-+
-+SEC("redir_ingress") int tc_dst(struct __sk_buff *skb)
-+{
-+	struct bpf_fib_lookup fib_params = { .ifindex = skb->ingress_ifindex };
-+	__u8 zero[ETH_ALEN * 2];
-+	int ret = -1;
-+
-+	switch (skb->protocol) {
-+	case __bpf_constant_htons(ETH_P_IP):
-+		ret = fill_fib_params_v4(skb, &fib_params);
-+		break;
-+	case __bpf_constant_htons(ETH_P_IPV6):
-+		ret = fill_fib_params_v6(skb, &fib_params);
-+		break;
-+	}
-+
-+	if (ret)
-+		return TC_ACT_OK;
-+
-+	ret = bpf_fib_lookup(skb, &fib_params, sizeof(fib_params), 0);
-+	if (ret == BPF_FIB_LKUP_RET_NOT_FWDED || ret < 0)
-+		return TC_ACT_OK;
-+
-+	__builtin_memset(&zero, 0, sizeof(zero));
-+	if (bpf_skb_store_bytes(skb, 0, &zero, sizeof(zero), 0) < 0)
-+		return TC_ACT_SHOT;
-+
-+	if (ret == BPF_FIB_LKUP_RET_SUCCESS) {
-+		void *data_end = ctx_ptr(skb->data_end);
-+		struct ethhdr *eth = ctx_ptr(skb->data);
-+
-+		if (eth + 1 > data_end)
-+			return TC_ACT_SHOT;
-+
-+		__builtin_memcpy(eth->h_dest, fib_params.dmac, ETH_ALEN);
-+		__builtin_memcpy(eth->h_source, fib_params.smac, ETH_ALEN);
-+
-+		return bpf_redirect(fib_params.ifindex, 0);
-+
-+	} else if (ret == BPF_FIB_LKUP_RET_NO_NEIGH) {
-+		struct bpf_redir_neigh nh_params = {};
-+
-+		nh_params.nh_family = fib_params.family;
-+		__builtin_memcpy(&nh_params.ipv6_nh, &fib_params.ipv6_dst,
-+				 sizeof(nh_params.ipv6_nh));
-+
-+		return bpf_redirect_neigh(fib_params.ifindex, &nh_params,
-+					  sizeof(nh_params), 0);
-+	}
-+
-+	return TC_ACT_SHOT;
-+}
-+
-+char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tc_redirect.sh b/tools/testing/selftests/bpf/test_tc_redirect.sh
-index 6d7482562140..a4903739846d 100755
---- a/tools/testing/selftests/bpf/test_tc_redirect.sh
-+++ b/tools/testing/selftests/bpf/test_tc_redirect.sh
-@@ -24,8 +24,7 @@ command -v timeout >/dev/null 2>&1 || \
- 	{ echo >&2 "timeout is not available"; exit 1; }
- command -v ping >/dev/null 2>&1 || \
- 	{ echo >&2 "ping is not available"; exit 1; }
--command -v ping6 >/dev/null 2>&1 || \
--	{ echo >&2 "ping6 is not available"; exit 1; }
-+if command -v ping6 >/dev/null 2>&1; then PING6=ping6; else PING6=ping; fi
- command -v perl >/dev/null 2>&1 || \
- 	{ echo >&2 "perl is not available"; exit 1; }
- command -v jq >/dev/null 2>&1 || \
-@@ -152,7 +151,7 @@ netns_test_connectivity()
- 	echo -e "${TEST}: ${GREEN}PASS${NC}"
+@@ -2584,7 +2563,6 @@ static const struct net_device_ops virtnet_netdev = {
+ 	.ndo_features_check	= passthru_features_check,
+ 	.ndo_get_phys_port_name	= virtnet_get_phys_port_name,
+ 	.ndo_set_features	= virtnet_set_features,
+-	.ndo_fix_features	= virtnet_fix_features,
+ };
  
- 	TEST="ICMPv6 connectivity test"
--	ip netns exec ${NS_SRC} ping6 $PING_ARG ${IP6_DST}
-+	ip netns exec ${NS_SRC} $PING6 $PING_ARG ${IP6_DST}
- 	if [ $? -ne 0 ]; then
- 		echo -e "${TEST}: ${RED}FAIL${NC}"
- 		exit 1
-@@ -192,6 +191,24 @@ netns_setup_bpf()
- 	done
- }
+ static void virtnet_config_changed_work(struct work_struct *work)
+@@ -3035,10 +3013,8 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 	if (virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO4) ||
+ 	    virtio_has_feature(vdev, VIRTIO_NET_F_GUEST_TSO6))
+ 		dev->features |= NETIF_F_LRO;
+-	if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS)) {
+-		dev->hw_features |= NETIF_F_RXCSUM;
++	if (virtio_has_feature(vdev, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS))
+ 		dev->hw_features |= NETIF_F_LRO;
+-	}
  
-+netns_setup_bpf_fib()
-+{
-+	local obj=$1
-+
-+	ip netns exec ${NS_FWD} tc qdisc add dev veth_src_fwd clsact
-+	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj $obj sec redir_ingress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj $obj sec chk_egress
-+
-+	ip netns exec ${NS_FWD} tc qdisc add dev veth_dst_fwd clsact
-+	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj $obj sec redir_ingress
-+	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj $obj sec chk_egress
-+
-+	# bpf_fib_lookup() checks if forwarding is enabled
-+	ip netns exec ${NS_FWD} sysctl -w net.ipv4.ip_forward=1
-+	ip netns exec ${NS_FWD} sysctl -w net.ipv6.conf.veth_dst_fwd.forwarding=1
-+	ip netns exec ${NS_FWD} sysctl -w net.ipv6.conf.veth_src_fwd.forwarding=1
-+}
-+
- trap netns_cleanup EXIT
- set -e
+ 	dev->vlan_features = dev->features;
  
-@@ -200,5 +217,9 @@ netns_setup_bpf test_tc_neigh.o
- netns_test_connectivity
- netns_cleanup
- netns_setup
-+netns_setup_bpf_fib test_tc_neigh_fib.o
-+netns_test_connectivity
-+netns_cleanup
-+netns_setup
- netns_setup_bpf test_tc_peer.o
- netns_test_connectivity
+-- 
+MST
 
