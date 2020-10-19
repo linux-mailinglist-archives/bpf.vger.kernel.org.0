@@ -2,204 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978C62929EF
-	for <lists+bpf@lfdr.de>; Mon, 19 Oct 2020 17:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B894292B0C
+	for <lists+bpf@lfdr.de>; Mon, 19 Oct 2020 18:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729715AbgJSPBS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Oct 2020 11:01:18 -0400
-Received: from www62.your-server.de ([213.133.104.62]:36530 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729630AbgJSPBS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Oct 2020 11:01:18 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kUWev-00089g-2C; Mon, 19 Oct 2020 17:01:13 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kUWeu-00051W-Ti; Mon, 19 Oct 2020 17:01:12 +0200
-Subject: Re: [PATCH RFC bpf-next 1/2] bpf_redirect_neigh: Support supplying
- the nexthop as a helper parameter
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+        id S1730565AbgJSQFC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Oct 2020 12:05:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32524 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730286AbgJSQFC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 19 Oct 2020 12:05:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603123500;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8bo8cf5aJo8M1yKCvFmSlNrAoAUtB8iBLzXxibkxA9Q=;
+        b=C+CnhrfDyigWQQL9wPxwUko3PV/Mx5YSwh6KhyHklL9ohsshVNVM9FLGPzPLsRdwk2WOwM
+        6rrM7W1sVQJRGwOMk/sWhya+bNLxiaij1Ha5oCPo7MniE0575FRGOrgaSv/xDPSbM+nXBw
+        QWTDxGt8w42UYl9ywCWeZY9p58kERoI=
+Received: from mail-vk1-f198.google.com (mail-vk1-f198.google.com
+ [209.85.221.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-92_quxVlMmCYlfKRyhO1zQ-1; Mon, 19 Oct 2020 12:04:58 -0400
+X-MC-Unique: 92_quxVlMmCYlfKRyhO1zQ-1
+Received: by mail-vk1-f198.google.com with SMTP id x134so94938vkd.17
+        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 09:04:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=8bo8cf5aJo8M1yKCvFmSlNrAoAUtB8iBLzXxibkxA9Q=;
+        b=mi5btKlfGn5r6Jz+dd8h/BQbEeAG0sd/SrNIc9criuteyMfu+IpXRGAaYTUdD+tiwf
+         370LqbtEyYc7ppV/8DQW4EPMzfCqfBJHKa3LPV6OmvgWolAwjinr5t6edjiE8Vn9eVkK
+         QawQTMyCAhOedDHxpj4gN+J5QvIa8oT7IY6hD31kZNtXxQ8D0kE7C2ingsMaKCCGTqfh
+         Eixg4mILsZV2vfXLanP9YBlY9f4ZgtwCXRA276GngG2jc37jXrpAozG29FRGueMxVad1
+         B6hjUX64ZLsc5rpRWFHqwFNzSLl2ZmBNhYN6OYOuk+pGAw2II7Ldm8hvqHkik07vqKJm
+         e9xw==
+X-Gm-Message-State: AOAM531jGR+IMXZOOKhahbvUpSSY/38TpZifIgJ1t8zOspgmM7/+OY2D
+        9SpwxAQG4vQXuxhzUpecyR8B1kzjbDYFW6BmxfMIhC8KesMX6DUq5BYfYAFJQAIoh45u9iWrFXO
+        VhsFtQaxkRHZP
+X-Received: by 2002:ab0:77d8:: with SMTP id y24mr115576uar.72.1603123497784;
+        Mon, 19 Oct 2020 09:04:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7hgqYDiGK3fo9M+EQ0I/2eoGDqyHzpBNKEi1QG1ZZ12eqNIarn7r9ERJu1rzkvpreT3iOaA==
+X-Received: by 2002:ab0:77d8:: with SMTP id y24mr115521uar.72.1603123497295;
+        Mon, 19 Oct 2020 09:04:57 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id r126sm34843vke.27.2020.10.19.09.04.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Oct 2020 09:04:56 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0811C1838FB; Mon, 19 Oct 2020 18:04:53 +0200 (CEST)
+Subject: [PATCH bpf 0/2] bpf: Rework bpf_redirect_neigh() to allow supplying
+ nexthop from caller
+From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-References: <160277680746.157904.8726318184090980429.stgit@toke.dk>
- <160277680864.157904.8719768977907736015.stgit@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <013e2c8b-13b5-661c-89c5-508b91cd3f4c@iogearbox.net>
-Date:   Mon, 19 Oct 2020 17:01:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Date:   Mon, 19 Oct 2020 18:04:53 +0200
+Message-ID: <160312349392.7917.6673239142315191801.stgit@toke.dk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <160277680864.157904.8719768977907736015.stgit@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25962/Mon Oct 19 15:57:02 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/15/20 5:46 PM, Toke Høiland-Jørgensen wrote:
-[...]
-> +struct bpf_redir_neigh {
-> +	/* network family for lookup (AF_INET, AF_INET6)
-> +	 */
-> +	__u8	nh_family;
-> +	/* network address of nexthop; skips fib lookup to find gateway */
-> +	union {
-> +		__be32		ipv4_nh;
-> +		__u32		ipv6_nh[4];  /* in6_addr; network order */
-> +	};
-> +};
-> +
->   enum bpf_task_fd_type {
->   	BPF_FD_TYPE_RAW_TRACEPOINT,	/* tp name */
->   	BPF_FD_TYPE_TRACEPOINT,		/* tp name */
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index c5e2a1c5fd8d..d073031a3a61 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2165,12 +2165,11 @@ static int __bpf_redirect(struct sk_buff *skb, struct net_device *dev,
->   }
->   
->   #if IS_ENABLED(CONFIG_IPV6)
-> -static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb)
-> +static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb,
-> +			    struct net_device *dev, const struct in6_addr *nexthop)
->   {
-> -	struct dst_entry *dst = skb_dst(skb);
-> -	struct net_device *dev = dst->dev;
->   	u32 hh_len = LL_RESERVED_SPACE(dev);
-> -	const struct in6_addr *nexthop;
-> +	struct dst_entry *dst = NULL;
->   	struct neighbour *neigh;
->   
->   	if (dev_xmit_recursion()) {
-> @@ -2196,8 +2195,11 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb)
->   	}
->   
->   	rcu_read_lock_bh();
-> -	nexthop = rt6_nexthop(container_of(dst, struct rt6_info, dst),
-> -			      &ipv6_hdr(skb)->daddr);
-> +	if (!nexthop) {
-> +		dst = skb_dst(skb);
-> +		nexthop = rt6_nexthop(container_of(dst, struct rt6_info, dst),
-> +				      &ipv6_hdr(skb)->daddr);
-> +	}
->   	neigh = ip_neigh_gw6(dev, nexthop);
->   	if (likely(!IS_ERR(neigh))) {
->   		int ret;
-> @@ -2210,36 +2212,46 @@ static int bpf_out_neigh_v6(struct net *net, struct sk_buff *skb)
->   		return ret;
->   	}
->   	rcu_read_unlock_bh();
-> -	IP6_INC_STATS(dev_net(dst->dev),
-> -		      ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
-> +	if (dst)
-> +		IP6_INC_STATS(dev_net(dst->dev),
-> +			      ip6_dst_idev(dst), IPSTATS_MIB_OUTNOROUTES);
->   out_drop:
->   	kfree_skb(skb);
->   	return -ENETDOWN;
->   }
->   
-> -static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev)
-> +static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev,
-> +				   struct bpf_nh_params *nh)
->   {
->   	const struct ipv6hdr *ip6h = ipv6_hdr(skb);
-> +	struct in6_addr *nexthop = NULL;
->   	struct net *net = dev_net(dev);
->   	int err, ret = NET_XMIT_DROP;
-> -	struct dst_entry *dst;
-> -	struct flowi6 fl6 = {
-> -		.flowi6_flags	= FLOWI_FLAG_ANYSRC,
-> -		.flowi6_mark	= skb->mark,
-> -		.flowlabel	= ip6_flowinfo(ip6h),
-> -		.flowi6_oif	= dev->ifindex,
-> -		.flowi6_proto	= ip6h->nexthdr,
-> -		.daddr		= ip6h->daddr,
-> -		.saddr		= ip6h->saddr,
-> -	};
->   
-> -	dst = ipv6_stub->ipv6_dst_lookup_flow(net, NULL, &fl6, NULL);
-> -	if (IS_ERR(dst))
-> -		goto out_drop;
-> +	if (!nh->nh_family) {
-> +		struct dst_entry *dst;
-> +		struct flowi6 fl6 = {
-> +			.flowi6_flags = FLOWI_FLAG_ANYSRC,
-> +			.flowi6_mark = skb->mark,
-> +			.flowlabel = ip6_flowinfo(ip6h),
-> +			.flowi6_oif = dev->ifindex,
-> +			.flowi6_proto = ip6h->nexthdr,
-> +			.daddr = ip6h->daddr,
-> +			.saddr = ip6h->saddr,
+Based on previous discussion[0], we determined that it would be beneficial to
+rework bpf_redirect_neigh() so the caller can supply the nexthop information
+(e.g., from a previous call to bpf_fib_lookup()). This way, the two helpers can
+be combined without incurring a second FIB lookup to find the nexthop, and
+bpf_fib_lookup() becomes usable even if no nexthop entry currently exists.
 
-nit: Would be good for readability to keep the previous whitespace alignment intact.
+This patch (and accompanying selftest update) accomplishes this by way of an
+optional paramter to bpf_redirect_neigh(). This series is against the -bpf tree,
+since we need to change this call signature before it becomes API.
 
-> +		};
-> +
-> +		dst = ipv6_stub->ipv6_dst_lookup_flow(net, NULL, &fl6, NULL);
-> +		if (IS_ERR(dst))
-> +			goto out_drop;
->   
-> -	skb_dst_set(skb, dst);
-> +		skb_dst_set(skb, dst);
-> +	} else if (nh->nh_family == AF_INET6) {
-> +		nexthop = &nh->ipv6_nh;
-> +	} else {
-> +		goto out_drop;
-> +	}
->   
-> -	err = bpf_out_neigh_v6(net, skb);
-> +	err = bpf_out_neigh_v6(net, skb, dev, nexthop);
+[0] https://lore.kernel.org/bpf/393e17fc-d187-3a8d-2f0d-a627c7c63fca@iogearbox.net/
 
-I'd probably model the bpf_out_neigh_v{4,6}() as close as possible similar to each other in terms
-of args we pass etc. In the v6 case you pass the nexthop in6_addr directly whereas v4 passes
-bpf_nh_params, I'd probably also stick to the latter for v6 to keep it symmetric.
+Changelog:
 
->   	if (unlikely(net_xmit_eval(err)))
->   		dev->stats.tx_errors++;
->   	else
-> @@ -2260,11 +2272,9 @@ static int __bpf_redirect_neigh_v6(struct sk_buff *skb, struct net_device *dev)
->   #endif /* CONFIG_IPV6 */
->   
->   #if IS_ENABLED(CONFIG_INET)
-> -static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb)
-> +static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb,
-> +			    struct net_device *dev, struct bpf_nh_params *nh)
->   {
-> -	struct dst_entry *dst = skb_dst(skb);
-> -	struct rtable *rt = container_of(dst, struct rtable, dst);
-> -	struct net_device *dev = dst->dev;
->   	u32 hh_len = LL_RESERVED_SPACE(dev);
->   	struct neighbour *neigh;
->   	bool is_v6gw = false;
-> @@ -2292,7 +2302,20 @@ static int bpf_out_neigh_v4(struct net *net, struct sk_buff *skb)
->   	}
->   
->   	rcu_read_lock_bh();
-> -	neigh = ip_neigh_for_gw(rt, skb, &is_v6gw);
-> +	if (!nh) {
-> +		struct dst_entry *dst = skb_dst(skb);
-> +		struct rtable *rt = container_of(dst, struct rtable, dst);
-> +
-> +		neigh = ip_neigh_for_gw(rt, skb, &is_v6gw);
-> +	} else if (nh->nh_family == AF_INET6) {
-> +		neigh = ip_neigh_gw6(dev, &nh->ipv6_nh);
-> +		is_v6gw = true;
-> +	} else if (nh->nh_family == AF_INET) {
-> +		neigh = ip_neigh_gw4(dev, nh->ipv4_nh);
-> +	} else {
-> +		goto out_drop;
-> +	}
-> +
->   	if (likely(!IS_ERR(neigh))) {
->   		int ret;
->   
+v1:
+- Rebase on -bpf tree
+- Fix compilation with INET/INET6 disabled (kbot)
+- Keep v4/v6 signatures similar, use internal flag (Daniel)
+- Use a separate selftest BPF program instead of modifying existing one (Daniel)
+- Fix a few style nits (David Ahern)
+
+---
+
+Toke Høiland-Jørgensen (2):
+      bpf_redirect_neigh: Support supplying the nexthop as a helper parameter
+      selftests: Update test_tc_redirect.sh to use the modified bpf_redirect_neigh()
+
+
+ .../selftests/bpf/progs/test_tc_neigh.c       |   5 +-
+ .../selftests/bpf/progs/test_tc_neigh_fib.c   | 142 ++++++++++++++++++
+ .../testing/selftests/bpf/test_tc_redirect.sh |  27 +++-
+ 3 files changed, 169 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tc_neigh_fib.c
+
