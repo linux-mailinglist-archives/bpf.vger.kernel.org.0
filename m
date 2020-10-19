@@ -2,111 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C55D2927C2
-	for <lists+bpf@lfdr.de>; Mon, 19 Oct 2020 14:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28682927E6
+	for <lists+bpf@lfdr.de>; Mon, 19 Oct 2020 15:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727202AbgJSM6n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Oct 2020 08:58:43 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47710 "EHLO
+        id S1727185AbgJSNJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Oct 2020 09:09:28 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49354 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727227AbgJSM6n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Oct 2020 08:58:43 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
+        with ESMTP id S1726931AbgJSNJ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Oct 2020 09:09:28 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kUUkK-0006lw-Sx; Mon, 19 Oct 2020 14:58:40 +0200
+        id 1kUUuh-0007PM-MO; Mon, 19 Oct 2020 15:09:23 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kUUkK-000AHt-NJ; Mon, 19 Oct 2020 14:58:40 +0200
-Subject: Re: Running JITed and interpreted programs simultaneously
-To:     Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
-        David Marcinkovic <david.marcinkovic@sartura.hr>,
-        alexei.starovoitov@gmail.com
-References: <CAOjtDRXzkwG84UCUVw0J_WmRt585OhOSjuWbdenYFNFinsSG0Q@mail.gmail.com>
- <CAEf4BzazaFZQHLcNARGWn4TTJJTQPdBVbskg+bJGp-dds-t1xw@mail.gmail.com>
- <CAOjtDRXrSzqb4PTBXDAHMuCArYjpMoTcT0Maw2UqefJN2DbATA@mail.gmail.com>
+        id 1kUUuh-0007DK-GW; Mon, 19 Oct 2020 15:09:23 +0200
+Subject: Re: [PATCH RFC bpf-next 1/2] bpf_redirect_neigh: Support supplying
+ the nexthop as a helper parameter
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        David Ahern <dsahern@gmail.com>
+Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <160277680746.157904.8726318184090980429.stgit@toke.dk>
+ <160277680864.157904.8719768977907736015.stgit@toke.dk>
+ <d5c14618-089d-5f29-7f10-11d11b0d59ab@gmail.com> <87blh3gu5q.fsf@toke.dk>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8cc1629c-8a85-2d84-f779-6a20bb5d36bd@iogearbox.net>
-Date:   Mon, 19 Oct 2020 14:58:40 +0200
+Message-ID: <5365aae3-dd9c-fdde-822b-636cbcd33669@iogearbox.net>
+Date:   Mon, 19 Oct 2020 15:09:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAOjtDRXrSzqb4PTBXDAHMuCArYjpMoTcT0Maw2UqefJN2DbATA@mail.gmail.com>
+In-Reply-To: <87blh3gu5q.fsf@toke.dk>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.102.4/25961/Sun Oct 18 15:56:23 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/19/20 12:20 PM, Juraj Vijtiuk wrote:
-> On Wed, Oct 14, 2020 at 12:05 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->> On Fri, Oct 9, 2020 at 12:58 PM Juraj Vijtiuk <juraj.vijtiuk@sartura.hr> wrote:
->>>
->>> It would be great to hear if anyone has any thoughts on running a set
->>> of BPF programs JITed while other programs are run by the interpreter.
->>>
->>> Something like that would be useful on 32-bit architectures, as the
->>> JIT compiler there doesn't support some instructions, primarily
->>> instructions that work with 64-bit data. As far as I can tell, it is
->>> unlikely that support will be coming soon as it is a general issue for
->>> all 32-bit architectures. Atomic operations like BPF_XADD look
->>> especially problematic regarding support on 32 bit platforms. From
->>> what I managed to see such a conclusion appeared in a few patches
->>> where support for 32-bit JITs was added, for example [0].
->>> That results in some programs being runnable with BPF JIT enabled, and
->>> some failing during load time, but running successfully without JIT on
->>> 32-bit platforms.
->>>
->>> The only way to run some programs with JIT and some without, that
->>> seems possible right now, is to manually change
->>> /proc/sys/net/core/bpf_jit_enable every time a program is loaded.
->>> Although I've managed to do that and it seems to be working, it seems
->>> pretty hacky and looks like it could cause race conditions if multiple
->>> programs were loaded, especially by independent loaders.
+On 10/15/20 9:34 PM, Toke Høiland-Jørgensen wrote:
+> David Ahern <dsahern@gmail.com> writes:
+>> On 10/15/20 9:46 AM, Toke Høiland-Jørgensen wrote:
+>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>> index bf5a99d803e4..980cc1363be8 100644
+>>> --- a/include/uapi/linux/bpf.h
+>>> +++ b/include/uapi/linux/bpf.h
+>>> @@ -3677,15 +3677,19 @@ union bpf_attr {
+>>>    * 	Return
+>>>    * 		The id is returned or 0 in case the id could not be retrieved.
+>>>    *
+>>> - * long bpf_redirect_neigh(u32 ifindex, u64 flags)
+>>> + * long bpf_redirect_neigh(u32 ifindex, struct bpf_redir_neigh *params, int plen, u64 flags)
 >>
->> I agree, the global file is not flexible enough and can cause problems
->> in production environment.
->>
->> I don't see any reason why we shouldn't allow to decide interpreted vs
->> jitted mode per program during BPF_PROG_LOAD.
->>
->> See kernel/bpf/core.c, bpf_prog's jit_requested field determines
->> whether a program is going to be jitted or not. It should be trivial
->> to allow overriding that during BPF_PROG_LOAD command.
->>
->> We can probably also generalize this to allow to "force-jit" or
->> "force-interpret" by users, which would fail if kernel didn't support
->> requested mode.
+>> why not fold ifindex into params? with params and plen this should be
+>> extensible later if needed.
 > 
-> Thanks for the suggestion, that makes sense. I've started working on a
-> patch today.
-> I'll post again when I get something working and test it.
+> Figured this way would make it easier to run *without* the params (like
+> in the existing examples). But don't feel strongly about it, let's see
+> what Daniel thinks.
 
-Hmm, I'm probably missing some context, but why is it not enough to just set the
-bpf_jit_enable to 1, and if 32 bit JITs don't support specific instructions like
-BPF_XADD then they should transparently fall back to interpreter if you have
-the latter compiled in. That is what it /should/ do today and user loading the
-prog shouldn't have to care about it. Juraj, you are suggesting that this is not
-happening in your case? Or is the issue tail calls?
+My preference is what Toke has here, this simplifies use by just being able to
+call bpf_redirect_neigh(ifindex, NULL, 0, 0) when just single external facing
+device is used.
 
-Wrt force-interpret vs force-jit BPF_PROG_LOAD flag, I'm more concerned that this
-decision will then be pushed to the user who should not have to care about these
-internals. And how would generic loaders try to react if force-jit fails? They would
-then fallback to force-interpret same way as kernel does?
+>> A couple of nits below that caught me eye.
+> 
+> Thanks, will fix; the kernel bot also found a sparse warning, so I guess
+> I need to respin anyway (but waiting for Daniel's comments and/or
+> instructions on what tree to properly submit this to).
 
-Wrt BPF_XADD, maybe 32 bit platforms should just implement a function call to the
-atomic64_add() internally, it will be slow but otoh the rest can then be JITed, so
-most likely this still ends up being faster than using interpreter for everything
-anyway.
-
-Thanks,
-Daniel
+Given API change, lets do bpf. (Will review the rest later today.)
