@@ -2,120 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2BF291976
-	for <lists+bpf@lfdr.de>; Sun, 18 Oct 2020 21:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A58E292550
+	for <lists+bpf@lfdr.de>; Mon, 19 Oct 2020 12:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgJRTSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Oct 2020 15:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
+        id S1727696AbgJSKRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Oct 2020 06:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgJRTSD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Oct 2020 15:18:03 -0400
-X-Greylist: delayed 264 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 18 Oct 2020 12:18:03 PDT
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA74C061755;
-        Sun, 18 Oct 2020 12:18:03 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7A1D5128046A;
-        Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1603048682;
-        bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
-         1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
-         r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ywWMwLsGscQI; Sun, 18 Oct 2020 12:18:02 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 340C31280456;
-        Sun, 18 Oct 2020 12:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1603048682;
-        bh=aTHhEGSm6DrUFNt/hKuOWL0f+WzaMvx/rc4IP5RJYRs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=WcP5INjnqihCMCJ+2ZkHdzEWBsqi3wavZOcf0NGlcoun37UNiQ4GoZk+2AoMrr8hd
-         1s2t7Y8IzQcDUGm581+QcIuy/enpzpZm6HswhyX4zoKl9l3S5fk96frr/LU4I9kVw8
-         r8s7AtR/5wOGbwEsua/QdQrVgo3j6VSqYIXYukhg=
-Message-ID: <0a739bcd421a3154c2521b49779b287e6c0d08a2.camel@HansenPartnership.com>
-Subject: Re: [Ocfs2-devel] [RFC] treewide: cleanup unreachable breaks
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     trix@redhat.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, clang-built-linux@googlegroups.com,
-        linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
-        storagedev@microchip.com, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        keyrings@vger.kernel.org, linux-mtd@lists.infradead.org,
-        ath10k@lists.infradead.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        usb-storage@lists.one-eyed-alien.net,
-        linux-watchdog@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, amd-gfx@lists.freedesktop.org,
-        linux-acpi@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        industrypack-devel@lists.sourceforge.net,
-        linux-pci@vger.kernel.org, spice-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-pm@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-gpio@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-amlogic@lists.infradead.org,
-        openipmi-developer@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
-        bpf@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-power@fi.rohmeurope.com
-Date:   Sun, 18 Oct 2020 12:17:59 -0700
-In-Reply-To: <20201018191618.GO20115@casper.infradead.org>
-References: <20201017160928.12698-1-trix@redhat.com>
-         <20201018185943.GM20115@casper.infradead.org>
-         <45efa7780c79972eae9ca9bdeb9f7edbab4f3643.camel@HansenPartnership.com>
-         <20201018191618.GO20115@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        with ESMTP id S1727436AbgJSKRf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Oct 2020 06:17:35 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445DAC0613CE
+        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 03:17:35 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id a7so13458950lfk.9
+        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 03:17:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=osqVRR7NKEZeTxdL8fvwacFAlgcehNbNVRbt9Ptb0gk=;
+        b=e5KnIPgQlFsyLy0bBwZOzINzBvPzYgGeFKJbWzXVIVa4c9Eq0zK9gnRK/Mg6cXfAmN
+         4W1791Kx7spPprsxVSREmxmipK0m5X4EvOEZkfF6THXkmxn8fe8SaAJte1bWQWAZMl8R
+         wlNPz0Bl/HQP4KbiLNlaIEtfo8R6ceGHaCxUuMUAW3yoUIVfs9ra/1+k9zHcZhkxomEQ
+         hDDzEcslX//HtxTH9I80bzCAEA4dg6tL5gWGL3eePMFoZFsFGMY+97DH7BmEHf4Q/R7c
+         s6lllT1b1c81t2gtz2QVLequ+GrZ2Jq08sFrjUGgDRHdSZULXiQUPDEzJxGZUNzsqXAW
+         ioGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=osqVRR7NKEZeTxdL8fvwacFAlgcehNbNVRbt9Ptb0gk=;
+        b=mb86SVgC/gyGHN/FE65XLfcoaH/v96BHW142CIjcQGSmUcQOlpUdfYz3a4qyCX+1mv
+         35lKyghNzHmfidkUN3Zn7FnsKYKh4b8X11wvyzTWK01rX8ME3T1OcXr8CkbX0njcu4bY
+         +jgxS+JVY+r8B/MD/ADdejcJ3Ziw4okblhcHp9/fhMRUO6jXBuEFfbf6gzG+2lAflQEW
+         CfZuBh4yb1RzEVvkYfZNA9P/xot5D6GhBynrm6MkEyWp3Jqfk+XyNOYapO3zLEPPGNIG
+         +tpJyxtHvDBi5fVhBfNpfLJ6OaarZiwfOFC3yrD89SHLSo0w3HHDUC1pbjqbifwolY8g
+         QnZA==
+X-Gm-Message-State: AOAM533eQoksfglWZhsG8Yp3sl7t9clbiZ9jgmxSiRIT7PAd404rqFRa
+        aCYdIjtZuA/Sdcc5RyUWz84ndu4YOjq8UZJteb1YZZQVv2Q=
+X-Google-Smtp-Source: ABdhPJytsX2XorD32HZP2HYGM11zYW8sgH1t2Ob8Qwe68QFUZYuiplVUeJO7LHkQMclW01WEo0SqXvxpb1uXHOmm424=
+X-Received: by 2002:a19:80d5:: with SMTP id b204mr5263038lfd.384.1603102653164;
+ Mon, 19 Oct 2020 03:17:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <CAOjtDRXzkwG84UCUVw0J_WmRt585OhOSjuWbdenYFNFinsSG0Q@mail.gmail.com>
+ <CAEf4BzazaFZQHLcNARGWn4TTJJTQPdBVbskg+bJGp-dds-t1xw@mail.gmail.com>
+In-Reply-To: <CAEf4BzazaFZQHLcNARGWn4TTJJTQPdBVbskg+bJGp-dds-t1xw@mail.gmail.com>
+From:   Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Date:   Mon, 19 Oct 2020 12:20:05 +0200
+Message-ID: <CAOjtDRXrSzqb4PTBXDAHMuCArYjpMoTcT0Maw2UqefJN2DbATA@mail.gmail.com>
+Subject: Re: Running JITed and interpreted programs simultaneously
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
+        David Marcinkovic <david.marcinkovic@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 2020-10-18 at 20:16 +0100, Matthew Wilcox wrote:
-> On Sun, Oct 18, 2020 at 12:13:35PM -0700, James Bottomley wrote:
-> > On Sun, 2020-10-18 at 19:59 +0100, Matthew Wilcox wrote:
-> > > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
-> > > > clang has a number of useful, new warnings see
-> > > > https://urldefense.com/v3/__https://clang.llvm.org/docs/DiagnosticsReference.html__;!!GqivPVa7Brio!Krxz78O3RKcB9JBMVo_F98FupVhj_jxX60ddN6tKGEbv_cnooXc1nnBmchm-e_O9ieGnyQ$ 
-> > > 
-> > > Please get your IT department to remove that stupidity.  If you
-> > > can't, please send email from a non-Red Hat email address.
-> > 
-> > Actually, the problem is at Oracle's end somewhere in the ocfs2
-> > list ... if you could fix it, that would be great.  The usual real
-> > mailing lists didn't get this transformation
-> > 
-> > https://lore.kernel.org/bpf/20201017160928.12698-1-trix@redhat.com/
-> > 
-> > but the ocfs2 list archive did:
-> > 
-> > https://oss.oracle.com/pipermail/ocfs2-devel/2020-October/015330.html
-> > 
-> > I bet Oracle IT has put some spam filter on the list that mangles
-> > URLs this way.
-> 
-> *sigh*.  I'm sure there's a way.  I've raised it with someone who
-> should be able to fix it.
+On Wed, Oct 14, 2020 at 12:05 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Oct 9, 2020 at 12:58 PM Juraj Vijtiuk <juraj.vijtiuk@sartura.hr> wrote:
+> >
+> > It would be great to hear if anyone has any thoughts on running a set
+> > of BPF programs JITed while other programs are run by the interpreter.
+> >
+> > Something like that would be useful on 32-bit architectures, as the
+> > JIT compiler there doesn't support some instructions, primarily
+> > instructions that work with 64-bit data. As far as I can tell, it is
+> > unlikely that support will be coming soon as it is a general issue for
+> > all 32-bit architectures. Atomic operations like BPF_XADD look
+> > especially problematic regarding support on 32 bit platforms. From
+> > what I managed to see such a conclusion appeared in a few patches
+> > where support for 32-bit JITs was added, for example [0].
+> > That results in some programs being runnable with BPF JIT enabled, and
+> > some failing during load time, but running successfully without JIT on
+> > 32-bit platforms.
+> >
+> > The only way to run some programs with JIT and some without, that
+> > seems possible right now, is to manually change
+> > /proc/sys/net/core/bpf_jit_enable every time a program is loaded.
+> > Although I've managed to do that and it seems to be working, it seems
+> > pretty hacky and looks like it could cause race conditions if multiple
+> > programs were loaded, especially by independent loaders.
+>
+> I agree, the global file is not flexible enough and can cause problems
+> in production environment.
+>
+> I don't see any reason why we shouldn't allow to decide interpreted vs
+> jitted mode per program during BPF_PROG_LOAD.
+>
+> See kernel/bpf/core.c, bpf_prog's jit_requested field determines
+> whether a program is going to be jitted or not. It should be trivial
+> to allow overriding that during BPF_PROG_LOAD command.
+>
+> We can probably also generalize this to allow to "force-jit" or
+> "force-interpret" by users, which would fail if kernel didn't support
+> requested mode.
+>
 
-As someone who works for IBM I can only say I feel your pain ...
+Thanks for the suggestion, that makes sense. I've started working on a
+patch today.
+I'll post again when I get something working and test it.
 
-James
-
-
+> >
+> > At first glance it seems that if something like this was to be added
+> > to a loader, it would have to either somehow be aware of other BPF
+> > programs being loaded or possibly implement some sort of locking
+> > mechanism which also seems hacky. From what I understand, doing it in
+> > the kernel looks even less promising as bpf_jit_enable is a system
+> > wide setting, and I imagine that changing it to work on a per program
+> > basis would pretty much require a rework of the current design, so
+> > that looks even less promising.
+> >
+> > It looks like the best option right now is to just run everything in
+> > interpreted mode, but I want to make sure that I am not missing
+> > something. If someone has tried doing something similar, it would be
+> > great to know about that.
+> >
+> > Thanks,
+> > Juraj Vijtiuk
+> >
+> > [0] https://lore.kernel.org/netdev/20200305050207.4159-3-luke.r.nels@gmail.com/
