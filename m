@@ -2,144 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD7A2932E8
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 03:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169CC293371
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 05:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390199AbgJTB6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Oct 2020 21:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        id S2390955AbgJTDII (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Oct 2020 23:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730029AbgJTB6M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Oct 2020 21:58:12 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1ABC0613CE
-        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 18:58:10 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id c3so458503ybl.0
-        for <bpf@vger.kernel.org>; Mon, 19 Oct 2020 18:58:10 -0700 (PDT)
+        with ESMTP id S2390952AbgJTDII (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Oct 2020 23:08:08 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788E0C0613CE;
+        Mon, 19 Oct 2020 20:08:08 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id z2so463632ilh.11;
+        Mon, 19 Oct 2020 20:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=D6N+zEZdpGCMSjZ6Hx0ZZUIkx/nwROY1sIBasTIMtPw=;
-        b=M+LD5R7oPQgGrvjxZ+aGix1ftVk1B0liOi0pYwnAAvlygWzVC8TXqbeiwGYZ5E15gZ
-         otBg2Uky2i/VgxrFLMMsk8M4gIjCnPahd908Omii5aeDUsLJuWszJF5l7EERvdXiafiL
-         /JQdYP8jd6QCUaBy+xYHBaAvmEEiw3Yi2mcMde5R78Vkx3R5wlPzQlcnd5aZHeDkVDuI
-         DlaXIKIXgOtMjYEk0KAj4iM0v7fRdvPVT5ZrN1X2MVwUZCXIvmLZZySnV4LFveG65n1x
-         MhjcyxN6eVYTfuVtC7wuDuHo9EoXMNRxn2WSPFEul8k/qvMnRcJDVcz+uzF16U8/dYTg
-         eR3w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5lJyEo7KXPKHiht9CRtCwqcK3OQPKIQh4fHOIgIHyHc=;
+        b=iyPVc69cqmP0czajK3Hq3x+RmDDxnmk1Ej3KSQPkdDFS9XWHUHmrvTYcSXI9oX+h3t
+         7j2kvYmYxFAWNqFX1AKocy71n5vRsnt8LwKnoZmFL6LHFxIKzHpDw9WvZ5SQ+pCunH7i
+         ymfuvDuf9qDaIeHprKQDnq15Ez6xgcLJwFxu7onY6SrMUwuf6GNdCHKhLhObxDrhg6Hc
+         0Tk5g5DzfoybFN9DYWzxwWOAdnQ3Sjy/6Y8FUXpbY0kmPpm3/VvuWUaiOfnPy2XOg6i6
+         wf14JXl3NPk2K2etAlDOZD1YbUEOU9qQD0zw6Rmk+ls3oOyHG3TmcpJK34jg82f2WZJY
+         63DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=D6N+zEZdpGCMSjZ6Hx0ZZUIkx/nwROY1sIBasTIMtPw=;
-        b=Juxuqdy3xyzoDKPORQpTs2ZDv4HHHarvKRtMgsMQEZ20JN8HoTTl3b730NlzBzS5LB
-         NdnpZ+8kpbusluFS8Cz1o0H5spWnCMzj/KzQzkL8WcYEpxY5QdzsTL5GInB433KCylZ6
-         izEeNEOhucs8QWuIE2Tw4UZBt0ppdXEgX5UGv80EmcXlMXVYbcziKNt3rB/nPZDEGeGZ
-         hso/BFisEWIpA2QjWeeOwD8Jxr1AO8A4nWbmU83Grpdxn4GxbO9MUKZFL/FUFOXu3Qdz
-         Xy8FM66dPGdmWpGP8o6c9VCV0CApoT7uqmlYvIF3hM0wksYBwgt4exe++WfrJ4z5TZWV
-         6G+Q==
-X-Gm-Message-State: AOAM5304HZX/d7mcKCDingV9G+NoUlsSTQBMCtTYlFqkU6uZ+82+sKoJ
-        fMmyEkZJtcjVIHIiNm0irigY7w9hf/GGg70PHLdRHo0FYaw=
-X-Google-Smtp-Source: ABdhPJy3T42ZwSSP/KubY+K6XyNfSPCWAJbtAazrsemZlPz/Lq3EAV+lvuwMEzY6aWNiYk173riXZhNtQVXaMtWQzXU=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr999527ybl.347.1603159090032;
- Mon, 19 Oct 2020 18:58:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5lJyEo7KXPKHiht9CRtCwqcK3OQPKIQh4fHOIgIHyHc=;
+        b=JmSdZJ1C6fdi4hIw8djH+vgLI+oMYEmFTeRPIM8SFQjbjFZvsYqQmO4YyUf9bIoQeM
+         ZUALn4uwSsyiQQUhjYTeU9loqKtmZiqx7us9NxGB6bPN5PJkCc6sFaXUfDTnmnUuLa4c
+         CuECletVuq6ONcHAxGw75e6XVyGCvQPYM8aC0dVTp0JTbz5tmja9gDz46WyaT0cRn0vS
+         +TZu8GdJWr9/TdvovQbYufRtFMtaiB+s1va5nPDHvNg27OvCC6uQdiU+IJL57z2EyxV1
+         FYO8ndl7rIcUAwWAyFwVLUFQ6e8QSLPyepryeRkR4IVxw0sVhyQWZHucwIWKyDDrZXWP
+         wAQw==
+X-Gm-Message-State: AOAM533v2HNyfNVgRFiR/ub7Bbe/G2ZPvI6uo/DSHAomdVM8bGoQRFcT
+        TaL8bVs8BxldmktbZRvLEqyxcvz/WNg=
+X-Google-Smtp-Source: ABdhPJzzH2CsAZPEu4Qnz69GkJXvw2Dw7h/JvfoFjiw//3jdDBJRDaKPGQAR7NLWECizCh8hndROZw==
+X-Received: by 2002:a92:d390:: with SMTP id o16mr398197ilo.213.1603163287803;
+        Mon, 19 Oct 2020 20:08:07 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:9d8a:40ec:eef5:44b4])
+        by smtp.googlemail.com with ESMTPSA id z15sm535615ioj.22.2020.10.19.20.08.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Oct 2020 20:08:07 -0700 (PDT)
+Subject: Re: [PATCH bpf 1/2] bpf_redirect_neigh: Support supplying the nexthop
+ as a helper parameter
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <160312349392.7917.6673239142315191801.stgit@toke.dk>
+ <160312349501.7917.13131363910387009253.stgit@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <77ba3525-acde-97e0-77b8-057d31f0c40a@gmail.com>
+Date:   Mon, 19 Oct 2020 21:08:04 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <CAON2a1G_rqvOLumP-0Vcw0v2qiAiwc0hR32TegvNYyEd26e9bA@mail.gmail.com>
-In-Reply-To: <CAON2a1G_rqvOLumP-0Vcw0v2qiAiwc0hR32TegvNYyEd26e9bA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 19 Oct 2020 18:57:59 -0700
-Message-ID: <CAEf4BzZBKco0=-HDfjOKPOJDXnicxOVyOY6ouAu+00s78_CJng@mail.gmail.com>
-Subject: Re: help using bpf_probe_read_user with uprobe on linux 4.19 for aarch64
-To:     sheng chen <eason.sheng.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <160312349501.7917.13131363910387009253.stgit@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is the third identical email you've sent, please don't spam the
-mailing list. Sometimes it takes a bit of time on the mailing list to
-get an answer. Re-sending your email will just annoy people and won't
-help you get an answer.
+On 10/19/20 10:04 AM, Toke Høiland-Jørgensen wrote:
+> @@ -4906,6 +4910,16 @@ struct bpf_fib_lookup {
+>  	__u8	dmac[6];     /* ETH_ALEN */
+>  };
+>  
+> +struct bpf_redir_neigh {
+> +	/* network family for lookup (AF_INET, AF_INET6) */
+> +	__u8	nh_family;
 
-As an advice for the future, please try to formulate your problem
-clearly, before asking a seemingly-random set of questions. See below,
-I tried to answer your questions as best as I could.
+Define every byte. This is a 3-byte hole that should have unused's and
+the helper verifies they are set to 0.
+
+> +	/* network address of nexthop; skips fib lookup to find gateway */
+> +	union {
+> +		__be32		ipv4_nh;
+> +		__u32		ipv6_nh[4];  /* in6_addr; network order */
+> +	};
+> +};
+> +
+>  enum bpf_task_fd_type {
+>  	BPF_FD_TYPE_RAW_TRACEPOINT,	/* tp name */
+>  	BPF_FD_TYPE_TRACEPOINT,		/* tp name */
 
 
-On Mon, Oct 19, 2020 at 6:45 PM sheng chen <eason.sheng.chen@gmail.com> wro=
-te:
->
-> Hi Andrii,
->
-> I'm developing bpftrace tools for Android aarch64 devices to analyze perf=
-ormance, mostly using uprobe/uretprobe and kprobe/kretprobe.
->
-> I'm using the project https://github.com/facebookexperimental/ExtendedAnd=
-roidTools for build bpftrace cmd tool. libbpf still not included.
->
->
-> First question:
->
-> Currently there is an issue(https://github.com/iovisor/bpftrace/issues/15=
-03) block me to correctly access the pointer address of the uprobe paramete=
-rs.
->
-> Seems like this require bpf_probe_read_user on linux 5.5(as mension in ht=
-tps://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md), if I use=
- the older kernel, I need to apply the patch about the function bpf_probe_r=
-ead_user, is there any reference code I need to apply as well?
-
-I don't understand what reference code you mean. And given this is a
-bpftrace question, it's probably best to route it to bpftrace Github
-repo? This mailing list is discussing kernel BPF subsystem and libbpf,
-for the most part.
-
->
-> like the following parts:
->
-> linux/include/linux/bpf.h
-> linux/include/uapi/bpf.h
-> linux/include/linux/filter.h
-> linux/include/uapi/filter.h
-> linux/kernel/bpf/
-> linux/net/core/filter.c
-> linux/kernel/trace/bpf_trace.c
-> linux/tools/bpf/
-> linux/tools/lib/bpf/
->
->
-> Second question:
->
-> Does the trace program like using uprobe/uretprobe and kprobe/kretprobe n=
-eed libbpf built-in?
->
-
-I don't think bpftrace relies on libbpf, so I suppose no?
-
-> For a specific kernel(like 4.19), how to choose the right version of libb=
-pf for build as the dependency for bcc?
-
-You should build with whatever version of libbpf BCC depends on. But
-then I'm even more confused between you talking about bpftrace, BCC,
-and libbpf. All three are quite independent projects, with libbpf used
-by BCC for some functionality.
-
->
-> Third question:
->
-> Does my kernel need support BTF? Since I need to access the struct member=
-s from kernel and userspace.
-
-I don't know, because I don't know which kernel is *your* kernel.
-bpftrace has --btf parameter with which it can use kernel BTF, so I'm
-guessing that's what you are asking about? If yes, kernels starting
-from 5.2 version support emitting kernel BTF, but you need to enable
-it through CONFIG_DEBUG_INFO_BTF=3Dy config value.
-
->
->
-> Thanks
->
-> Eason
