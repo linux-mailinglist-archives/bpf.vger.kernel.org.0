@@ -2,172 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A41293812
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 11:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570BA29386C
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 11:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392871AbgJTJeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 05:34:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392766AbgJTJeA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Oct 2020 05:34:00 -0400
-Received: from lore-desk.redhat.com (unknown [151.66.125.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2403952AbgJTJq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 05:46:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24666 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403950AbgJTJq2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Oct 2020 05:46:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603187187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=knt9S68tgKirjQKsf7Zso0Y78A5lUiSAACpKMVJzeN8=;
+        b=UP1Mi+zpGG9b2ssmgVBqS4N4qPeeK7q2Qx6iy5cZJvSTP3oRsDBx3usPvnFPeyZZiry4iX
+        0WeN4SblcBtpOz/jsKSahPtFX3Mjn49odEIOW2MxufygwDnPWqHQCScCLVojRnQwXIl980
+        guAqZxNz1k+2eDtE8GHvHFFt4CfQN+M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-IaPcN5B_O_i6gFbNsz2Www-1; Tue, 20 Oct 2020 05:46:24 -0400
+X-MC-Unique: IaPcN5B_O_i6gFbNsz2Www-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1B44223C6;
-        Tue, 20 Oct 2020 09:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603186439;
-        bh=M5WlBZtyTGQG1tc8djGKTOxquF2qQdaDPsN9eWxctO8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UDps+fJCjLNACla8cYhgBtnnNhjY+NCq5yLo+yh8+2AIgtgVc68GUQxMuzi9co2h5
-         ngquHz3DJsl7WVIPXIAcLwU+ncxjbnngjmhXw+gqzC0T0J6EQ7vDiZLQ9VUHlAO1i2
-         05PquipGaaL2BuhophGsmvDZGrzwopNhnAj/dvqc=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        ilias.apalodimas@linaro.org
-Subject: [RFC 2/2] net: page_pool: add bulk support for ptr_ring
-Date:   Tue, 20 Oct 2020 11:33:38 +0200
-Message-Id: <5017913dc83b31ef389c804f0c560e25746b3506.1603185591.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603185591.git.lorenzo@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 632A018A0760;
+        Tue, 20 Oct 2020 09:46:23 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B7B5A5B4A3;
+        Tue, 20 Oct 2020 09:46:14 +0000 (UTC)
+Date:   Tue, 20 Oct 2020 11:46:13 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, lorenzo.bianconi@redhat.com,
+        ilias.apalodimas@linaro.org, brouer@redhat.com
+Subject: Re: [RFC 1/2] net: xdp: introduce bulking for xdp tx return path
+Message-ID: <20201020114613.752a979c@carbon>
+In-Reply-To: <62165fcacf47521edae67ae739827aa5f751fb8b.1603185591.git.lorenzo@kernel.org>
 References: <cover.1603185591.git.lorenzo@kernel.org>
+        <62165fcacf47521edae67ae739827aa5f751fb8b.1603185591.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce the capability to batch page_pool ptr_ring refill since it is
-usually run inside the driver NAPI tx completion loop.
+On Tue, 20 Oct 2020 11:33:37 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- include/net/page_pool.h | 21 +++++++++++++++++++++
- net/core/page_pool.c    | 37 +++++++++++++++++++++++++++++++++++++
- net/core/xdp.c          | 13 ++++++-------
- 3 files changed, 64 insertions(+), 7 deletions(-)
+> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> index 54b0bf574c05..af33cc62ed4c 100644
+> --- a/drivers/net/ethernet/marvell/mvneta.c
+> +++ b/drivers/net/ethernet/marvell/mvneta.c
+> @@ -663,6 +663,8 @@ struct mvneta_tx_queue {
+>  
+>  	/* Affinity mask for CPUs*/
+>  	cpumask_t affinity_mask;
+> +
+> +	struct xdp_frame_bulk bq;
+>  };
+>  
+>  struct mvneta_rx_queue {
+> @@ -1854,12 +1856,10 @@ static void mvneta_txq_bufs_free(struct mvneta_port *pp,
+>  			dev_kfree_skb_any(buf->skb);
+>  		} else if (buf->type == MVNETA_TYPE_XDP_TX ||
+>  			   buf->type == MVNETA_TYPE_XDP_NDO) {
+> -			if (napi && buf->type == MVNETA_TYPE_XDP_TX)
+> -				xdp_return_frame_rx_napi(buf->xdpf);
+> -			else
+> -				xdp_return_frame(buf->xdpf);
+> +			xdp_return_frame_bulk(buf->xdpf, &txq->bq, napi);
 
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index 81d7773f96cd..1330419efec7 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -169,6 +169,8 @@ static inline void page_pool_release_page(struct page_pool *pool,
- 
- void page_pool_put_page(struct page_pool *pool, struct page *page,
- 			unsigned int dma_sync_size, bool allow_direct);
-+void page_pool_put_page_bulk(struct page_pool *pool, void **data, int count,
-+			     bool allow_direct);
- 
- /* Same as above but will try to sync the entire area pool->max_len */
- static inline void page_pool_put_full_page(struct page_pool *pool,
-@@ -215,4 +217,23 @@ static inline void page_pool_nid_changed(struct page_pool *pool, int new_nid)
- 	if (unlikely(pool->p.nid != new_nid))
- 		page_pool_update_nid(pool, new_nid);
- }
-+
-+static inline void page_pool_ring_lock(struct page_pool *pool)
-+	__acquires(&pool->ring.producer_lock)
-+{
-+	if (in_serving_softirq())
-+		spin_lock(&pool->ring.producer_lock);
-+	else
-+		spin_lock_bh(&pool->ring.producer_lock);
-+}
-+
-+static inline void page_pool_ring_unlock(struct page_pool *pool)
-+	__releases(&pool->ring.producer_lock)
-+{
-+	if (in_serving_softirq())
-+		spin_unlock(&pool->ring.producer_lock);
-+	else
-+		spin_unlock_bh(&pool->ring.producer_lock);
-+}
-+
- #endif /* _NET_PAGE_POOL_H */
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index ef98372facf6..03c3a92c9179 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -11,6 +11,8 @@
- #include <linux/device.h>
- 
- #include <net/page_pool.h>
-+#include <net/xdp.h>
-+
- #include <linux/dma-direction.h>
- #include <linux/dma-mapping.h>
- #include <linux/page-flags.h>
-@@ -408,6 +410,41 @@ void page_pool_put_page(struct page_pool *pool, struct page *page,
- }
- EXPORT_SYMBOL(page_pool_put_page);
- 
-+void page_pool_put_page_bulk(struct page_pool *pool, void **data, int count,
-+			     bool allow_direct)
-+{
-+	struct page *page_ring[XDP_BULK_QUEUE_SIZE];
-+	int i, len = 0;
-+
-+	for (i = 0; i < count; i++) {
-+		struct page *page = virt_to_head_page(data[i]);
-+
-+		if (unlikely(page_ref_count(page) != 1 ||
-+			     !pool_page_reusable(pool, page))) {
-+			page_pool_release_page(pool, page);
-+			put_page(page);
-+			continue;
-+		}
-+
-+		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-+			page_pool_dma_sync_for_device(pool, page, -1);
-+
-+		if (allow_direct && in_serving_softirq() &&
-+		    page_pool_recycle_in_cache(page, pool))
-+			continue;
-+
-+		page_ring[len++] = page;
-+	}
-+
-+	page_pool_ring_lock(pool);
-+	for (i = 0; i < len; i++) {
-+		if (__ptr_ring_produce(&pool->ring, page_ring[i]))
-+			page_pool_return_page(pool, page_ring[i]);
-+	}
-+	page_pool_ring_unlock(pool);
-+}
-+EXPORT_SYMBOL(page_pool_put_page_bulk);
-+
- static void page_pool_empty_ring(struct page_pool *pool)
- {
- 	struct page *page;
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index b05467a916b4..7ebe159e3835 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -384,14 +384,13 @@ void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq,
- 			  bool napi_direct)
- {
- 	struct xdp_mem_allocator *xa = bq->xa;
--	int i;
- 
--	for (i = 0; i < bq->count; i++) {
--		napi_direct &= !xdp_return_frame_no_direct();
--		page_pool_put_full_page(xa->page_pool,
--					virt_to_head_page(bq->q[i]),
--					napi_direct);
--	}
-+	if (unlikely(!bq->count))
-+		return;
-+
-+	napi_direct &= !xdp_return_frame_no_direct();
-+	page_pool_put_page_bulk(xa->page_pool, bq->q, bq->count,
-+				napi_direct);
- 	bq->count = 0;
- }
- EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
+Hmm, I don't think you can use 'napi' directly here.
+
+You are circumventing check (buf->type == MVNETA_TYPE_XDP_TX), and will
+now also allow XDP_NDO (XDP_REDIRECT) to basically use xdp_return_frame_rx_napi().
+
+
+>  		}
+>  	}
+> +	xdp_flush_frame_bulk(&txq->bq, napi);
+>  
+>  	netdev_tx_completed_queue(nq, pkts_compl, bytes_compl);
+>  }
+
+
+
 -- 
-2.26.2
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
