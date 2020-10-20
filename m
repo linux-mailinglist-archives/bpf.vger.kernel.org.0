@@ -2,70 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957B22941E8
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 20:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9872941EA
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 20:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387975AbgJTSI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 14:08:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28715 "EHLO
+        id S2408954AbgJTSIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 14:08:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56169 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387945AbgJTSI0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 20 Oct 2020 14:08:26 -0400
+        by vger.kernel.org with ESMTP id S2387945AbgJTSI3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Oct 2020 14:08:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603217304;
+        s=mimecast20190719; t=1603217308;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ylwd13Ov01mxhZUrqRrb1cyJib4LmTp4McUSypk4XCc=;
-        b=VJ0TQS+IH4xMgdQveaVRs0YOxzgqQApnTxWoOfq+5YzJFZM8NBwD+TM0zmpIuV0HBaUuml
-        qNi1i8oAPhI5SNPFJck4aqWPf9C8f/iidG17AxFOi6QeG94T9BAZ3++V8nYvBZvoHdoJsM
-        PFzD2ojhT8qAonbxEieakAFwB/ObZVE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-0kxHZCbFM_qHWIZtQPsc0Q-1; Tue, 20 Oct 2020 14:08:22 -0400
-X-MC-Unique: 0kxHZCbFM_qHWIZtQPsc0Q-1
-Received: by mail-ed1-f70.google.com with SMTP id a73so916682edf.16
-        for <bpf@vger.kernel.org>; Tue, 20 Oct 2020 11:08:21 -0700 (PDT)
+        bh=tYbzd59+8jONE13NYNfdI5cI4F2XnnmBUm6WJUpf2+Y=;
+        b=EmYCXprDsyapFv2tqTwqfP2Zj8jdEgX4HvF6wZdnFLBzTlUb27m63XxGfGh2OA0muEZSfY
+        7j6IhrObeODREUdNRq2TI+LZCIGgpxklfKAXgKx5+AnPm5+l4AajO8/FwFguW5Su/p5d8R
+        v7Gw/I4L+FPI8lCiWA0PLFytd7M0Tdc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-1iS1aLxvMC6u4ls0xQbPcg-1; Tue, 20 Oct 2020 14:08:25 -0400
+X-MC-Unique: 1iS1aLxvMC6u4ls0xQbPcg-1
+Received: by mail-wm1-f69.google.com with SMTP id u207so737557wmu.4
+        for <bpf@vger.kernel.org>; Tue, 20 Oct 2020 11:08:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=Ylwd13Ov01mxhZUrqRrb1cyJib4LmTp4McUSypk4XCc=;
-        b=UJmJL3JH6J0SyomHFWUr/I8sC4V0Rh1iF1/zbvbp9Re9qmYa0IUIqRIPFqX6fJwzhm
-         aEkq+hEjVvYZdpqkPG+7nlesee7FHDgmtwI37kiYXjZhtkhD4Ym9cORwgqZQ0yN3tTMm
-         Zf7Isith/Iot8td65EXSiwweyguK3KjKa2QXYwc68+5oTr0PXlsLTyGN3IlRzdCC4pWC
-         Za+W+4LRKMbQR+ldntGaciKmVUcwy3F8JbzC27KmQ9QOXz2mj6klVLONf9L28gUy61CC
-         lKqRkxBjhAwVtRCrGtUMQ+GmE2PUjEBs3gMdmQjTd8s4WNvFFU3+agHmxDjtYfL8ymf1
-         4eWQ==
-X-Gm-Message-State: AOAM533IDH++eeOmx0dDNxuQmHYEjaUUzKthpNLj6M0vp1QFIRIaEaRh
-        dpnnjkV/XEBXKD97KEkSh+vPNL3C6DLjOkLygT1TzCQUTEPFz3E3jVgSN7jYX+ajusWwiKumraJ
-        6aAGhtG5+5nsX
-X-Received: by 2002:a05:6402:b0c:: with SMTP id bm12mr4090725edb.108.1603217300393;
-        Tue, 20 Oct 2020 11:08:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxt/YV0A5l1MfBGBIMlKh2H6ZQjvtnow2vOtzhLpMKD/Qh0Ky9srrl/ZHNYsU1pLH6RBLApA==
-X-Received: by 2002:a05:6402:b0c:: with SMTP id bm12mr4090675edb.108.1603217299800;
-        Tue, 20 Oct 2020 11:08:19 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id f23sm3487656ejd.5.2020.10.20.11.08.19
+        bh=tYbzd59+8jONE13NYNfdI5cI4F2XnnmBUm6WJUpf2+Y=;
+        b=PWb1uXsoeG4//1BwVoQIN+TDYoI8pKoOtTQsC/MSAQ5HnU+Pbf8JoA5t1JWRtvs1E6
+         aa8aZrrTk26wdxVCfH3e2VdDp35ujOdM60E6lWsaaFNR/QuhWyJbtdUhOgKc6AFW1Pfs
+         Lt4MC/Ue8WObe+CZx1a/rQRfi6nI3kvhnbWRb7Du+5RW2zVZpFCbNOH6n17rp5mJl8iu
+         Dtd5yqCwUzEDym0szYqvHNMpsEL3Of8VXmoScHO44rVE57JnMDNQ8Q8qk8w4Khpzd19g
+         Otv2v/vEclLGV5Qf/MEwPh22KsTL5fpXCRhMDMhlv5hO4hMdoDfLBPX6gcyXR7vuWxz6
+         T17Q==
+X-Gm-Message-State: AOAM530Q/quWAaup0UHGPskELF2IHz+9TJQQdENZOCKOzm0qG12CVnq0
+        XdDKxh9HwkqqsYUmOlJYY1Lg9qOEnMVEAfH0rwu4hGA1wbeymJDkOLj/uH8Jd8i8YV9sKUxRxYp
+        PFVuhkEh4DbHr
+X-Received: by 2002:a1c:111:: with SMTP id 17mr4108853wmb.126.1603217303472;
+        Tue, 20 Oct 2020 11:08:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxa63yJUlYyrfh0gQEOGZzuXPBWt8Hvi3B9kOjcKh2ifmZqEME33JbT8bSoi85kfyilhjgH6w==
+X-Received: by 2002:a1c:111:: with SMTP id 17mr4108817wmb.126.1603217302918;
+        Tue, 20 Oct 2020 11:08:22 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 24sm3699630wmg.8.2020.10.20.11.08.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 11:08:19 -0700 (PDT)
+        Tue, 20 Oct 2020 11:08:22 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D6F5D1838FA; Tue, 20 Oct 2020 20:08:18 +0200 (CEST)
+        id DD5DA1838FA; Tue, 20 Oct 2020 20:08:21 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Subject: Re: [PATCH bpf v2 1/3] bpf_redirect_neigh: Support supplying the
  nexthop as a helper parameter
-In-Reply-To: <20201020093003.6e1c7fdb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <d6967cfe-fd0e-268a-5526-dd03f0e476e6@iogearbox.net>
 References: <160319106111.15822.18417665895694986295.stgit@toke.dk>
  <160319106221.15822.2629789706666194966.stgit@toke.dk>
- <20201020093003.6e1c7fdb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <d6967cfe-fd0e-268a-5526-dd03f0e476e6@iogearbox.net>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 20 Oct 2020 20:08:18 +0200
-Message-ID: <87v9f422jx.fsf@toke.dk>
+Date:   Tue, 20 Oct 2020 20:08:21 +0200
+Message-ID: <87tuuo22ju.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -73,49 +72,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> writes:
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-> On Tue, 20 Oct 2020 12:51:02 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> diff --git a/include/linux/filter.h b/include/linux/filter.h
->> index 20fc24c9779a..ba9de7188cd0 100644
->> --- a/include/linux/filter.h
->> +++ b/include/linux/filter.h
->> @@ -607,12 +607,21 @@ struct bpf_skb_data_end {
->>  	void *data_end;
->>  };
->>=20=20
->> +struct bpf_nh_params {
->> +	u8 nh_family;
->> +	union {
->> +		__u32 ipv4_nh;
->> +		struct in6_addr ipv6_nh;
->> +	};
->> +};
+> On 10/20/20 12:51 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> [...]
+>>   BPF_CALL_3(bpf_clone_redirect, struct sk_buff *, skb, u32, ifindex, u6=
+4, flags)
+>> @@ -2455,8 +2487,8 @@ int skb_do_redirect(struct sk_buff *skb)
+>>   		return -EAGAIN;
+>>   	}
+>>   	return flags & BPF_F_NEIGH ?
+>> -	       __bpf_redirect_neigh(skb, dev) :
+>> -	       __bpf_redirect(skb, dev, flags);
+>> +		__bpf_redirect_neigh(skb, dev, flags & BPF_F_NEXTHOP ? &ri->nh : NULL=
+) :
+>> +		__bpf_redirect(skb, dev, flags);
+>>   out_drop:
+>>   	kfree_skb(skb);
+>>   	return -EINVAL;
+>> @@ -2504,16 +2536,25 @@ static const struct bpf_func_proto bpf_redirect_=
+peer_proto =3D {
+>>   	.arg2_type      =3D ARG_ANYTHING,
+>>   };
+>>=20=20=20
+>> -BPF_CALL_2(bpf_redirect_neigh, u32, ifindex, u64, flags)
+>> +BPF_CALL_4(bpf_redirect_neigh, u32, ifindex, struct bpf_redir_neigh *, =
+params,
+>> +	   int, plen, u64, flags)
+>>   {
+>>   	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
+>>=20=20=20
+>> -	if (unlikely(flags))
+>> +	if (unlikely((plen && plen < sizeof(*params)) || flags))
+>> +		return TC_ACT_SHOT;
+>> +
+>> +	if (unlikely(plen && (params->unused[0] || params->unused[1] ||
+>> +			      params->unused[2])))
 >
->> @@ -4906,6 +4910,18 @@ struct bpf_fib_lookup {
->>  	__u8	dmac[6];     /* ETH_ALEN */
->>  };
->>=20=20
->> +struct bpf_redir_neigh {
->> +	/* network family for lookup (AF_INET, AF_INET6) */
->> +	__u8 nh_family;
->> +	 /* avoid hole in struct - must be set to 0 */
->> +	__u8 unused[3];
->> +	/* network address of nexthop; skips fib lookup to find gateway */
->> +	union {
->> +		__be32		ipv4_nh;
->> +		__u32		ipv6_nh[4];  /* in6_addr; network order */
->> +	};
->> +};
+> small nit: maybe fold this into the prior check that already tests non-ze=
+ro plen
 >
-> Isn't this backward? The hole could be named in the internal structure.
-> This is a bit of a gray area, but if you name this hole in uAPI and
-> programs start referring to it you will never be able to reuse it.
-> So you may as well not require it to be zeroed..
+> if (unlikely((plen && (plen < sizeof(*params) ||
+>                         (params->unused[0] | params->unused[1] |
+>                          params->unused[2]))) || flags))
+>          return TC_ACT_SHOT;
 
-Hmm, yeah, suppose you're right. Doesn't the verifier prevent any part
-of the memory from being unitialised anyway? I seem to recall having run
-into verifier complaints when I didn't initialise struct on the stack...
+Well that was my first thought as well, but I thought it was uglier.
+Isn't the compiler smart enough to make those two equivalent?
+
+Anyway, given Jakub's comment, I guess this is moot anyway, as we should
+just get rid of the member, no?
 
 -Toke
 
