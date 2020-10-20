@@ -2,176 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5CB294110
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 19:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D4829411F
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 19:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395119AbgJTRHD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 13:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
+        id S2395213AbgJTRKb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 13:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389534AbgJTRHC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Oct 2020 13:07:02 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0E5C0613CE
-        for <bpf@vger.kernel.org>; Tue, 20 Oct 2020 10:07:02 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id h196so2543741ybg.4
-        for <bpf@vger.kernel.org>; Tue, 20 Oct 2020 10:07:02 -0700 (PDT)
+        with ESMTP id S2395212AbgJTRKb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Oct 2020 13:10:31 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD38FC0613CE;
+        Tue, 20 Oct 2020 10:10:30 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id h196so2553348ybg.4;
+        Tue, 20 Oct 2020 10:10:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=M4moeZsT/gRK0c8JL0PI/kuTTRsQ0gF3kdY3ZQfWQ2o=;
-        b=c6I1JUemmDGYjgP/AZnfSdMiJddsmFPNBAn4BhDUA0XH1XRy6d7FL2Bwvh2mNu3+lK
-         814LTRk/qmgX0EmBHbhM6OfumQa8Ptyld8bgaSKrV0c3DCwQYIpwmLAbUXCIUt6aU2Wt
-         fJ/wSESzkFpQK8s0Gkd7FmfqUxSoeTrtJamxYSoBdBR+25n8XzU15e24s9QuYkDwnjYd
-         NQHqjxn/WuEJm4wIMdtvenqzmSN7P61/udcgkDbckZctMOIXd0liYuuM/dKyWeuZMG1B
-         ywPxwpv5kQXFCxsgZcx+Z45Gdz5rODNX+dTHeKqofIMqabRF5CFl52Kt6IoGVmiCN/xJ
-         4OnQ==
+         :cc:content-transfer-encoding;
+        bh=o8bJWogw44BNpGh0N1sglmlnpyMYbnS/gX2LPW8mIHU=;
+        b=LGgXEMsKKo6KaV6pIFg6AM1v/HwY6IBJTH4Wn0IFoYdwG5YpK/pQICa/DXVfaD9fNe
+         0DBG5nRFm6xOo+0zm0nsZvwRy/2xrhp2VQsd8pyjoTHbOZHULs4z6ln5D+UdNxtOES5P
+         10XBmyZQfNGuH21C4jzSa9zDRkyZ/PcESo83YrSyHj0tpxiApUCMHbFOIThhYMQx3VLe
+         /Icfv2QoLk+rhcJs1MmiGVykI3D19QC0uF2kDG23UQINq5wWT7dxqwP2ID5jT4GSPyOr
+         7RkXViMiPSAVhMfZdYw7b2MFEZFRZFhA3jwXJuBBTuX8mdzFlsFGqDd8t4hnepEMemy7
+         b1zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=M4moeZsT/gRK0c8JL0PI/kuTTRsQ0gF3kdY3ZQfWQ2o=;
-        b=BR+QCIdZgzQLYuZKlZ5HbyCa4fdG8TIKEh04Vy4031TP+91uPcSgW2cQo1ppwnL86F
-         66Vk7xEGuoxsnIxPav+DnMYQyMy9PC4rePo9yWiN8eg3e63gvs+uqc+XU6Z4UYe+0/3g
-         F/zu3cu+nR9463LwtRTICYxDJB+K0RdAAWYIJz7wjKjzorK8UnRqmRU03RVMYps3OdA+
-         u2UYkWJcSN4D9ryRL0wz+Ukz04u72nSvsgqQUwZ6nQXgKpJHeXlqdmHmUirGOqELME+A
-         F1+SI9n/KbvClMTOF+bujvHNGimfBv2S5ZYTqMaP1Cp5Mh7WK1KeRDKGBm7eDElTUy7N
-         kW3g==
-X-Gm-Message-State: AOAM532m+TOBITSx/gyXrzTdh4bHxJqRUFs7kd50g2iLV4Dnz59Kv2TR
-        dO1/ug771zdarvCUCiBFcNTEjvl1UCLqiIROzLfxtkl7
-X-Google-Smtp-Source: ABdhPJxvWCGn/AEJVVfOL5iXrhhrv7BYQI2PHBCqxg7qeHvFUIUqY5dKbNa99IkFmHFFvtJp68Pce9H5oqSnz6PNbQc=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr5752094ybk.260.1603213621604;
- Tue, 20 Oct 2020 10:07:01 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=o8bJWogw44BNpGh0N1sglmlnpyMYbnS/gX2LPW8mIHU=;
+        b=JGla488CJjinOko7BTCiIrPmLBh95j4i9toa4aCNIK//i9TE1wbdxqNCv/Ru7WFLzk
+         g8HzK2PSBQEbP7HZRvxVdHH+fNgVzxZNt7jZIbpM+Qcqn7dGYFfi/oiQq2XQKQowUexk
+         /SZv2zDjFtXto3fOi+4qocLFRHMReoac90Pj6DBrxZCEWqNO4OnEPe6IgG/A8+pmFWfa
+         fdgvE5lQu6gam07AirJYff9d8GhpdV8cQBrNt+DpqVX7O5AI0/EcnRdOZ5llZWgX62Rs
+         WYQvv/9wK0AcLz8/iELPGDRs+1GLb6gDCoY/D7oEJI2FN+btmWpnXX3l43XehNAnGpS9
+         rPmA==
+X-Gm-Message-State: AOAM530BuHrG+6yniP9ttaHd7Qbfhk3mRh+ErZfMr8Knk5rupgKthuMb
+        QEXtrT16CxJTUXdjepj/BPylYYq+7ps8ggIVS+Y=
+X-Google-Smtp-Source: ABdhPJxAMn6WL22yz3j0NiswyRDYh5IymMUCTPm7I0g0TPmvZGXOauVy/NFd+jUmnfUzPKDkWe6zFbv1fW+X4nGRIIs=
+X-Received: by 2002:a25:5382:: with SMTP id h124mr5265591ybb.425.1603213829960;
+ Tue, 20 Oct 2020 10:10:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAON2a1G_rqvOLumP-0Vcw0v2qiAiwc0hR32TegvNYyEd26e9bA@mail.gmail.com>
- <CAEf4BzZBKco0=-HDfjOKPOJDXnicxOVyOY6ouAu+00s78_CJng@mail.gmail.com> <CAON2a1ERRSkk-o5xBqvJoZwp0Y6aL5+9k1NONgg35HMOoC8Czw@mail.gmail.com>
-In-Reply-To: <CAON2a1ERRSkk-o5xBqvJoZwp0Y6aL5+9k1NONgg35HMOoC8Czw@mail.gmail.com>
+References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+ <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org> <20201020122015.GH2294271@kernel.org>
+ <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
+In-Reply-To: <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Oct 2020 10:06:50 -0700
-Message-ID: <CAEf4BzaTEauBV6XnzZfO4R-ibmSuYSuPPgAOKh33VNANoo6EdQ@mail.gmail.com>
-Subject: Re: help using bpf_probe_read_user with uprobe on linux 4.19 for aarch64
-To:     sheng chen <eason.sheng.chen@gmail.com>, bpf <bpf@vger.kernel.org>
+Date:   Tue, 20 Oct 2020 10:10:19 -0700
+Message-ID: <CAEf4BzYDvvthK_S7EecsTO3HAVXiAf6AqHaiEWbf9+K7sjMiLA@mail.gmail.com>
+Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+To:     Hao Luo <haoluo@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?B?w4lyaWNvIFJvbGlt?= <erico.erc@gmail.com>,
+        dwarves@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 8:43 PM sheng chen <eason.sheng.chen@gmail.com> wro=
-te:
+On Tue, Oct 20, 2020 at 10:05 AM Hao Luo <haoluo@google.com> wrote:
 >
-> Hi Andrii,
+> Thanks for reporting this and cc'ing me. I forgot to update the error
+> messages when renaming the flags. I will send a patch to fix the error
+> message.
 >
+> The commit
+>
+> commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+> Author:     Hao Luo <haoluo@google.com>
+> AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+>
+>      btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
+>
+> encodes kernel global variables into BTF so that bpf programs can
+> directly access them. If there is no need to access kernel global
+> variables, it's perfectly fine to use '--btf_encode_force' to skip
+> encoding bad symbols into BTF, or '--skip_encoding_btf_vars' to skip
+> encoding all global vars all together. I will add these info into the
+> updated error message.
+>
+> Also cc bpf folks for attention of this bug.
+
+I've already fixed the message as part of
+2e719cca6672 ("btf_encoder: revamp how per-CPU variables are encoded")
+
+It's currently still in the tmp.libbtf_encoder branch in pahole repo.
+
+>
+> Hao
+>
+> On Tue, Oct 20, 2020 at 5:20 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Tue, Oct 20, 2020 at 11:01:39AM +0200, Jiri Slaby escreveu:
+> > > Hi,
+> > >
+> > > On 19. 10. 20, 1:18, =C3=89rico Rolim wrote:
+> > > > I'm trying to build kernel 5.9.1 for arm64, and my dotconfig has
+> > > > `CONFIG_DEBUG_INFO_BTF=3Dy`, which requires pahole for building. Ho=
+wever, pahole
+> > > > version 1.18 segfaults during the build, as can be seen below:
+> > > >
+> > > > PAHOLE: Error: Found symbol of zero size when encoding btf (sym:
+> > > > '__kvm_nvhe_arm64_ssbd_callback_required', cu:
+> > > > 'arch/arm64/kernel/cpu_errata.c').
+> > >
+> > > The symbol is an alias coming from arch/arm64/kernel/vmlinux.lds:
+> > > __kvm_nvhe_arm64_ssbd_callback_required =3D arm64_ssbd_callback_requi=
+red;;
+> > >
+> > > > PAHOLE: Error: Use '-j' or '--force' to ignore such symbols and for=
+ce
+> > > > emit the btf.
+> > > > scripts/link-vmlinux.sh: line 141: 43837 Segmentation fault
+> > > > LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
+> > > >    LD      .tmp_vmlinux.kallsyms1
+> > > >    KSYM    .tmp_vmlinux.kallsyms1.o
+> > > >    LD      .tmp_vmlinux.kallsyms2
+> > > >    KSYM    .tmp_vmlinux.kallsyms2.o
+> > > >    LD      vmlinux
+> > > >    BTFIDS  vmlinux
+> > > > FAILED: load BTF from vmlinux: Unknown error -2make: ***
+> > > > [Makefile:1162: vmlinux] Error 255
+> > > >
+> > > > It is possible to force the build to continue if
+> > > >
+> > > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J ${1}
+> > > >
+> > > > in scripts/link-vmlinux.sh is changed to
+> > > >
+> > > >    LLVM_OBJCOPY=3D${OBJCOPY} ${PAHOLE} -J --btf_encode_force ${1}
+> > > >
+> > > > The suggested `-j` or `--force` flags don't exist, since they were =
+removed in
+> > > > [1]. I believe `--btf_encode_force` should be suggested instead.
+> > >
+> > > Agreed, '--btf_encode_force' makes pahole to proceed without crashes.
+> > >
+> > > > It should be noted that the same build, but with pahole version 1.1=
+7, works
+> > > > without issue, so I think this is either a regression in pahole or =
+the script
+> > > > will need to be changed for newer versions of pahole.
+> > >
+> > > Yeah, I observe the very same. I reported it at:
+> > > https://bugzilla.suse.com/show_bug.cgi?id=3D1177921
+> >
+> > Would it be possible to try with
+> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=3Dtmp.=
+libbtf_encoder
+> > ?
+> >
+> > This switches to using libbpf for the BTF encoder and may have fixed
+> > this problem.
+> >
+> > - Arnaldo
+> >
 
 [...]
 
->
-> I'm using vendor qcom's kernel 4.19, and want to use bpf_probe_read_user(=
-available on linux 5.5) on linux 4.19, so I need to apply the bpf_probe_rea=
-d_user
->   function patches from upstream linux 5.5 to my local kernel 4.19, is th=
-at a suitable solution?
-
-On older kernels that don't yet support bpf_probe_read_user() you can
-just use bpf_probe_read() instead and get the same results. Again, I
-don't know bpftrace specifics and whether you can do that easily, but
-you don't really have to backport any kernel changes just to read
-user-space memory from BPF program.
-
->
-> Thanks
-> Eason
->
->
->
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> =E4=BA=8E2020=E5=B9=B410=E6=
-=9C=8820=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=889:58=E5=86=99=E9=81=
-=93=EF=BC=9A
->>
->> This is the third identical email you've sent, please don't spam the
->> mailing list. Sometimes it takes a bit of time on the mailing list to
->> get an answer. Re-sending your email will just annoy people and won't
->> help you get an answer.
->>
->> As an advice for the future, please try to formulate your problem
->> clearly, before asking a seemingly-random set of questions. See below,
->> I tried to answer your questions as best as I could.
->>
->>
->> On Mon, Oct 19, 2020 at 6:45 PM sheng chen <eason.sheng.chen@gmail.com> =
-wrote:
->> >
->> > Hi Andrii,
->> >
->> > I'm developing bpftrace tools for Android aarch64 devices to analyze p=
-erformance, mostly using uprobe/uretprobe and kprobe/kretprobe.
->> >
->> > I'm using the project https://github.com/facebookexperimental/Extended=
-AndroidTools for build bpftrace cmd tool. libbpf still not included.
->> >
->> >
->> > First question:
->> >
->> > Currently there is an issue(https://github.com/iovisor/bpftrace/issues=
-/1503) block me to correctly access the pointer address of the uprobe param=
-eters.
->> >
->> > Seems like this require bpf_probe_read_user on linux 5.5(as mension in=
- https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md), if I =
-use the older kernel, I need to apply the patch about the function bpf_prob=
-e_read_user, is there any reference code I need to apply as well?
->>
->> I don't understand what reference code you mean. And given this is a
->> bpftrace question, it's probably best to route it to bpftrace Github
->> repo? This mailing list is discussing kernel BPF subsystem and libbpf,
->> for the most part.
->>
->> >
->> > like the following parts:
->> >
->> > linux/include/linux/bpf.h
->> > linux/include/uapi/bpf.h
->> > linux/include/linux/filter.h
->> > linux/include/uapi/filter.h
->> > linux/kernel/bpf/
->> > linux/net/core/filter.c
->> > linux/kernel/trace/bpf_trace.c
->> > linux/tools/bpf/
->> > linux/tools/lib/bpf/
->> >
->> >
->> > Second question:
->> >
->> > Does the trace program like using uprobe/uretprobe and kprobe/kretprob=
-e need libbpf built-in?
->> >
->>
->> I don't think bpftrace relies on libbpf, so I suppose no?
->>
->> > For a specific kernel(like 4.19), how to choose the right version of l=
-ibbpf for build as the dependency for bcc?
->>
->> You should build with whatever version of libbpf BCC depends on. But
->> then I'm even more confused between you talking about bpftrace, BCC,
->> and libbpf. All three are quite independent projects, with libbpf used
->> by BCC for some functionality.
->>
->> >
->> > Third question:
->> >
->> > Does my kernel need support BTF? Since I need to access the struct mem=
-bers from kernel and userspace.
->>
->> I don't know, because I don't know which kernel is *your* kernel.
->> bpftrace has --btf parameter with which it can use kernel BTF, so I'm
->> guessing that's what you are asking about? If yes, kernels starting
->> from 5.2 version support emitting kernel BTF, but you need to enable
->> it through CONFIG_DEBUG_INFO_BTF=3Dy config value.
->>
->> >
->> >
->> > Thanks
->> >
->> > Eason
+> > >
+> > >
+> > > I suspect:
+> > > commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+> > > Author:     Hao Luo <haoluo@google.com>
+> > > AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+> > >
+> > >     btf_encoder: Teach pahole to store percpu variables in vmlinux BT=
+F.
+> > >
+> > >
+> > > Which added this machinery (btf_elf__add_datasec_type in particular).
+> > >
+> > > > - [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit=
+/pahole.c?h=3Dv1.18&id=3D1abc001417b579b86a9b27ff88c9095d8f498a46
+> > > >
+> > > > Thanks,
+> > > > =C3=89rico
+> > > >
+> > >
+> > >
+> > > --
+> > > js
+> > > suse labs
+> >
+> > --
+> >
+> > - Arnaldo
