@@ -2,100 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F955293D9D
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 15:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E12293DEB
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 15:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407614AbgJTNtH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 09:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407599AbgJTNtH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Oct 2020 09:49:07 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88A5C061755;
-        Tue, 20 Oct 2020 06:49:06 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id l16so2255655ilt.13;
-        Tue, 20 Oct 2020 06:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kEZikIhuP3ICGW+QYVSf/s/Nkdnnhq0yTrlrZjHMOZY=;
-        b=lv9XAvpO7yYUY04EA03STItZ2yNCeV0e0vwRGNB0/8s5PpN160oel0z6UZkSa1kHWf
-         IysvfHEuSxq0TaIUKrNIZVHBSx497jIE01BLQsjjAk7z2Zww5/gc+HYxV33fjEn/QP1t
-         udc88i1Jg97JH/MkLyX5Q79GdFOXEzIg1+u+j7dzZ+gnotoBGrAfUjYNrfHvrOiAzFXV
-         zABa9y5rHVepgWrkg9hVUTMCAhQ3T2dqzWe3LnF0zh5gZpMqI95U7Ir0op9T8GOq0HoK
-         6Tbrqo0VMRvt2uRmNElJmY8B4wSes6WCFJl52nORFeQlfW36A9V1f4wP5p78n8lLJWIN
-         ZlJA==
+        id S2407745AbgJTN4Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 09:56:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407729AbgJTN4F (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Oct 2020 09:56:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603202163;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HyQ28xr5/lapv6azTtFCvHFT5XQ1+OzeHk+84iEm66Y=;
+        b=QUp+Tm/49C2D2ArfwdGiXcYEZLmxY3ITF9bXZyS+HEfcJJoqaGxmch+2EHiNHeADDWpHNz
+        Ouzap4oFcZixuWmorb4Ub+lRVmWRZDipZO+0tL8W1vnU06zVM/xfLz81/8VfcBPp80A1RW
+        EdBHqnK2mgm1gY9dzcmZeB2rW1Al8Fc=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-Ke8_hqDFMQa3Da85o0Wj3w-1; Tue, 20 Oct 2020 09:56:01 -0400
+X-MC-Unique: Ke8_hqDFMQa3Da85o0Wj3w-1
+Received: by mail-qv1-f71.google.com with SMTP id t13so1395603qvm.14
+        for <bpf@vger.kernel.org>; Tue, 20 Oct 2020 06:56:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kEZikIhuP3ICGW+QYVSf/s/Nkdnnhq0yTrlrZjHMOZY=;
-        b=uHciJ8Uc85pNDEstMLR3dY8QuNQr7CmSF6Lt/ugiE8/VAWPgalAzGGjx2/xlu6oDhz
-         SGTMgZkkLI7Y0hDjxQ95B5RR9zX9IF1Pn04E9J84r42a7/BWjgwo8t0KGmlNdjuHSPwL
-         MJaVLkd6pjIRQ3HLcxiOkKAwFLoyVeTvq8McGIozJSE2jy3nye6aRs10g1huRdrb7twh
-         mGEHOD+SCPcmaDd+rBhVe3eKLY/LCpL3a4G3fVxB+ol8kc+84CJVd8IlH5Nv0p7C2l2v
-         R967KHaqsG0tLwN9p6ofRPXCp8v/nNcw2/eewuPC2civdNlf6fsED1FwvgMEWRugiD6p
-         x9Fw==
-X-Gm-Message-State: AOAM530piqpXoXyN0oTIdQCItLnHafFSkxJQv74ULAAulClZ0ex+6Rrb
-        vbeff4hSBAaWMmfq28KFCVvn8syqxhU=
-X-Google-Smtp-Source: ABdhPJzqZuK9336eq/IzluqgquisojaUIrWT576Z9XoRE8M83rkudPL/Dcs5cj/jrnFG4zM1Nivq4A==
-X-Received: by 2002:a92:9a8c:: with SMTP id c12mr2086223ill.186.1603201746110;
-        Tue, 20 Oct 2020 06:49:06 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:9d8a:40ec:eef5:44b4])
-        by smtp.googlemail.com with ESMTPSA id 18sm1750496ilg.3.2020.10.20.06.49.05
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HyQ28xr5/lapv6azTtFCvHFT5XQ1+OzeHk+84iEm66Y=;
+        b=jMpRMPnXSKMiOxcXWxOAO5SoVk0RZ6Sv2BdHt+5wxR4959GPyw5q2XeFL5CGaZikAe
+         Ao2SI7Li5fNCKvgfE600NOpfV7Dx4wr6z7jYcRckMq2UN2JCtuPnhNecmydz76EGJ1Fg
+         WIp4BTIYEieQKNaCkfXp8ct3mB59Yg8iPOJtkeanoPrfqkppGNWOX2atMAY7DxwSV1Rv
+         qjdPDZqtwfkn/dfRPgajH3WjVlDRP9pLhcYbGHtP/3vjGB3WnyRKNJh6C9V+5wih+15E
+         Gf13Zdz9xWqa6rAgKEQJacyc5WIDELnsCn6nz5pjNO3EdC1nDTHFgkYtkjxqsVg/Lxz3
+         eCpQ==
+X-Gm-Message-State: AOAM533+P+CH790SNjs1CE7Z+6+kvSBxT1kQJSb3RwvUo0IfK3Q/yj+J
+        tyEBrIZ/tGlTt9wS+vnVHXRv8AG69odZrvquHeZZtAl1xN1JZVSjAfIxl8HljReVM8kPspY0HOI
+        51a9QC7yEu0K5
+X-Received: by 2002:a05:6214:174f:: with SMTP id dc15mr3370421qvb.25.1603202160687;
+        Tue, 20 Oct 2020 06:56:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLUAfqrAOJzxwKF3+voCBF5yQYNbMOvfOkDZhumkJj3bEnT15V4x8vUJ5iQ5pWt9KusIZtsQ==
+X-Received: by 2002:a05:6214:174f:: with SMTP id dc15mr3370377qvb.25.1603202160139;
+        Tue, 20 Oct 2020 06:56:00 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b8sm775938qkn.133.2020.10.20.06.55.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 06:49:05 -0700 (PDT)
-Subject: Re: [PATCH bpf v2 2/3] bpf_fib_lookup: optionally skip neighbour
- lookup
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <160319106111.15822.18417665895694986295.stgit@toke.dk>
- <160319106331.15822.2945713836148003890.stgit@toke.dk>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <20784134-7f4c-c263-5d62-facbb2adb8a8@gmail.com>
-Date:   Tue, 20 Oct 2020 07:49:01 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        Tue, 20 Oct 2020 06:55:59 -0700 (PDT)
+Subject: Re: [RFC] treewide: cleanup unreachable breaks
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        industrypack-devel@lists.sourceforge.net,
+        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-can@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org, ath10k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com, linux-nfc@lists.01.org,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-pci@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
+        storagedev@microchip.com, devel@driverdev.osuosl.org,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net,
+        linux-watchdog@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        bpf <bpf@vger.kernel.org>, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        George Burgess <gbiv@google.com>, Joe Perches <joe@perches.com>
+References: <20201017160928.12698-1-trix@redhat.com>
+ <20201018054332.GB593954@kroah.com>
+ <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ca1f50d6-1005-8e3d-8d5c-98c82a704338@redhat.com>
+Date:   Tue, 20 Oct 2020 06:55:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <160319106331.15822.2945713836148003890.stgit@toke.dk>
+In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/20/20 4:51 AM, Toke Høiland-Jørgensen wrote:
-> From: Toke Høiland-Jørgensen <toke@redhat.com>
-> 
-> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
-> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
-> that the BPF program will deal with this condition, either by passing the
-> packet up the stack, or by using bpf_redirect_neigh().
-> 
-> The neighbour lookup is done via a hash table (through ___neigh_lookup_noref()),
-> which incurs some overhead. If the caller knows this is likely to fail
-> anyway, it may want to skip that and go unconditionally to
-> bpf_redirect_neigh(). For this use case, add a flag to bpf_fib_lookup()
-> that will make it skip the neighbour lookup and instead always return
-> BPF_FIB_LKUP_RET_NO_NEIGH (but still populate the gateway and target
-> ifindex).
-> 
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
->  include/uapi/linux/bpf.h       |   10 ++++++----
->  net/core/filter.c              |   16 ++++++++++++++--
->  tools/include/uapi/linux/bpf.h |   10 ++++++----
->  3 files changed, 26 insertions(+), 10 deletions(-)
 
-Nack. Please don't.
+On 10/19/20 12:42 PM, Nick Desaulniers wrote:
+> On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>> On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+>>> From: Tom Rix <trix@redhat.com>
+>>>
+>>> This is a upcoming change to clean up a new warning treewide.
+>>> I am wondering if the change could be one mega patch (see below) or
+>>> normal patch per file about 100 patches or somewhere half way by collecting
+>>> early acks.
+>> Please break it up into one-patch-per-subsystem, like normal, and get it
+>> merged that way.
+>>
+>> Sending us a patch, without even a diffstat to review, isn't going to
+>> get you very far...
+> Tom,
+> If you're able to automate this cleanup, I suggest checking in a
+> script that can be run on a directory.  Then for each subsystem you
+> can say in your commit "I ran scripts/fix_whatever.py on this subdir."
+>  Then others can help you drive the tree wide cleanup.  Then we can
+> enable -Wunreachable-code-break either by default, or W=2 right now
+> might be a good idea.
 
-As I mentioned in my reply to Daniel, I would prefer such logic be
-pushed to the bpf programs. There is no reason for rare run time events
-to warrant a new flag and new check in the existing FIB helpers. The bpf
-programs can take the hit of the extra lookup.
+I should have waited for Joe Perches's fixer addition to checkpatch :)
+
+The easy fixes I did only cover about 1/2 of the problems.
+
+Remaining are mostly nested switches, which from a complexity standpoint is bad.
+
+>
+> Ah, George (gbiv@, cc'ed), did an analysis recently of
+> `-Wunreachable-code-loop-increment`, `-Wunreachable-code-break`, and
+> `-Wunreachable-code-return` for Android userspace.  From the review:
+> ```
+> Spoilers: of these, it seems useful to turn on
+> -Wunreachable-code-loop-increment and -Wunreachable-code-return by
+> default for Android
+
+In my simple add-a-cflag bot, i see there are about 250
+
+issues for -Wunreachable-code-return.
+
+I'll see about doing this one next.
+
+> ...
+> While these conventions about always having break arguably became
+> obsolete when we enabled -Wfallthrough, my sample turned up zero
+> potential bugs caught by this warning, and we'd need to put a lot of
+> effort into getting a clean tree. So this warning doesn't seem to be
+> worth it.
+> ```
+> Looks like there's an order of magnitude of `-Wunreachable-code-break`
+> than the other two.
+>
+> We probably should add all 3 to W=2 builds (wrapped in cc-option).
+> I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
+> follow up on.
+
+Yes, i think think these should be added.
+
+Tom
+
