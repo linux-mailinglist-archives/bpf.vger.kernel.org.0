@@ -2,77 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A5629374A
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 10:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDD929380D
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 11:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390073AbgJTI72 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 04:59:28 -0400
-Received: from www62.your-server.de ([213.133.104.62]:49560 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390070AbgJTI72 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Oct 2020 04:59:28 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kUnUG-0003KR-TG; Tue, 20 Oct 2020 10:59:20 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kUnUG-000766-NF; Tue, 20 Oct 2020 10:59:20 +0200
-Subject: Re: [PATCH bpf 1/2] bpf_redirect_neigh: Support supplying the nexthop
- as a helper parameter
-To:     David Ahern <dsahern@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <160312349392.7917.6673239142315191801.stgit@toke.dk>
- <160312349501.7917.13131363910387009253.stgit@toke.dk>
- <3785e450-313f-c6f0-2742-716c10b6f8a4@iogearbox.net>
- <e4188697-4467-61fe-72c4-cc387ea9a727@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <dd953598-c897-e4f5-39e5-43f62bd15431@iogearbox.net>
-Date:   Tue, 20 Oct 2020 10:59:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2391751AbgJTJdw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 05:33:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391743AbgJTJdw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Oct 2020 05:33:52 -0400
+Received: from lore-desk.redhat.com (unknown [151.66.125.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81CF4222C8;
+        Tue, 20 Oct 2020 09:33:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603186432;
+        bh=xJJ2mll+trXb9qquBSjZ4m8KzNDyoJUSqV1Laxoot+Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fY1OYO0oj6Xxh8rpXCAYzE9GWGziQyhK9xHgN61Mpghbu8xMZIRbcoHWMbhQqZbw7
+         0HtyyYbSyz6ar9K+xbWLrRocjwI/jOPmiQIimQlYReae7OQG4VtRs2OmRki5aVptp0
+         QmMrRNOwpxDSZqsNt/XMoLsL/YFdjoHw+p3lVleE=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com,
+        ilias.apalodimas@linaro.org
+Subject: [RFC 0/2] xdp: introduce bulking for page_pool tx return path
+Date:   Tue, 20 Oct 2020 11:33:36 +0200
+Message-Id: <cover.1603185591.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <e4188697-4467-61fe-72c4-cc387ea9a727@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25962/Mon Oct 19 15:57:02 2020)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/20/20 5:12 AM, David Ahern wrote:
-> On 10/19/20 12:23 PM, Daniel Borkmann wrote:
->> Looks good to me, thanks! I'll wait till David gets a chance as well to
->> review.
->> One thing that would have made sense to me (probably worth a v2) is to
->> keep the
->> fib lookup flag you had back then, meaning sth like BPF_FIB_SKIP_NEIGH
->> which
->> would then return a BPF_FIB_LKUP_RET_NO_NEIGH before doing the neigh
->> lookup inside
->> the bpf_ipv{4,6}_fib_lookup() so that programs can just unconditionally
->> use the
->> combination of bpf_fib_lookup(skb, [...], BPF_FIB_SKIP_NEIGH) with the
->> bpf_redirect_neigh([...]) extension in that case and not do this
->> bpf_redirect()
->> vs bpf_redirect_neigh() dance as you have in the selftest in patch 2/2.
-> 
-> That puts the overhead on bpf_ipv{4,6}_fib_lookup. The existiong helpers
-> return BPF_FIB_LKUP_RET_NO_NEIGH which is the key to the bpf program to
-> call the bpf_redirect_neigh - making the program deal with the overhead
-> as needed on failures.
+xdp_return_frame/xdp_return_frame_napi and page_pool_put_page are usually
+run inside the driver NAPI tx completion loop so it is possible batch them.
+Introduce bulking capability in xdp tx return path (XDP_TX and XDP_REDIRECT).
+Convert mvneta driver to xdp_return_frame_bulk APIs.
 
-But if I know there's high chance anyway that __ipv*_neigh_lookup_noref*()
-is failing for bpf_ipv{4,6}_fib_lookup() why even paying the price of the
-hash table lookup in there? Simple test to skip and return early would be
-much cheaper, and branch predictor should work it out just fine given that
-setting is pretty much static anyway; I'm not sure I'm seeing why this would
-be much of a concern..
+mvneta upstream code:
+XDP_TX:		~296Kpps
+XDP_REDIRECT:	~273Kpps
+
+mvneta + xdp_return_frame_bulk APIs:
+XDP_TX:		~303Kpps
+XDP_REDIRECT:	~287Kpps
+
+Lorenzo Bianconi (2):
+  net: xdp: introduce bulking for xdp tx return path
+  net: page_pool: add bulk support for ptr_ring
+
+ drivers/net/ethernet/marvell/mvneta.c |  8 ++---
+ include/net/page_pool.h               | 21 ++++++++++++
+ include/net/xdp.h                     | 11 ++++++
+ net/core/page_pool.c                  | 37 ++++++++++++++++++++
+ net/core/xdp.c                        | 49 +++++++++++++++++++++++++++
+ 5 files changed, 122 insertions(+), 4 deletions(-)
+
+-- 
+2.26.2
+
