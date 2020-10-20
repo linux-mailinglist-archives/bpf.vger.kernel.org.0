@@ -2,89 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336E9294202
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 20:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8416F29424E
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 20:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437309AbgJTSPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 14:15:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437306AbgJTSPD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:15:03 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71C752098B;
-        Tue, 20 Oct 2020 18:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603217702;
-        bh=ATM9YDiM0sfiA1zQ3/mGre1Rk3rzW7SWzPouzYHlM78=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=to+3jR8iGDo3+ysj5KO1PtNhTAmQNcVvJSKliTIfhbaiyKHGnx84gHB6AXD7FuXLF
-         jhAkIXo3VyPBX1+4F/LO+nKQh5NVgv0CGeO2yOLGCp1mYaHQYWzygLUz6WgZjxRgjD
-         IrR/LMzdbJtaSXJE0J29dOiiasGfLufpA8gnRd24=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 095AC403C2; Tue, 20 Oct 2020 15:14:59 -0300 (-03)
-Date:   Tue, 20 Oct 2020 15:14:58 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, Jiri Slaby <jirislaby@kernel.org>,
-        =?iso-8859-1?Q?=C9rico?= Rolim <erico.erc@gmail.com>,
-        dwarves@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
-Message-ID: <20201020181458.GA2342001@kernel.org>
-References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
- <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
- <20201020122015.GH2294271@kernel.org>
- <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
- <CAEf4BzYDvvthK_S7EecsTO3HAVXiAf6AqHaiEWbf9+K7sjMiLA@mail.gmail.com>
+        id S2437567AbgJTSmz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 14:42:55 -0400
+Received: from smtprelay0130.hostedemail.com ([216.40.44.130]:38858 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2437566AbgJTSmy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Oct 2020 14:42:54 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 43FA51260;
+        Tue, 20 Oct 2020 18:42:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2560:2563:2682:2685:2731:2828:2859:2911:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4425:5007:6742:6743:7576:7903:8957:9025:10004:10400:10450:10455:10848:11232:11658:11914:12043:12295:12297:12663:12740:12760:12895:13153:13228:13439:14181:14659:14721:19904:19999:21080:21451:21627:21939:21990:30012:30034:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: humor84_3a06a8527241
+X-Filterd-Recvd-Size: 4943
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 20 Oct 2020 18:42:43 +0000 (UTC)
+Message-ID: <3bc5c2e3b3edc22a4d167ec807ecdaaf8dcda76d.camel@perches.com>
+Subject: Re: [RFC] treewide: cleanup unreachable breaks
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-edac@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        industrypack-devel@lists.sourceforge.net,
+        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-can@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        intel-wired-lan@lists.osuosl.org, ath10k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com, linux-nfc@lists.01.org,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-pci@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
+        storagedev@microchip.com, devel@driverdev.osuosl.org,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net,
+        linux-watchdog@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        bpf <bpf@vger.kernel.org>, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        George Burgess <gbiv@google.com>
+Date:   Tue, 20 Oct 2020 11:42:42 -0700
+In-Reply-To: <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+References: <20201017160928.12698-1-trix@redhat.com>
+         <20201018054332.GB593954@kroah.com>
+         <CAKwvOdkR_Ttfo7_JKUiZFVqr=Uh=4b05KCPCSuzwk=zaWtA2_Q@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYDvvthK_S7EecsTO3HAVXiAf6AqHaiEWbf9+K7sjMiLA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Oct 20, 2020 at 10:10:19AM -0700, Andrii Nakryiko escreveu:
-> On Tue, Oct 20, 2020 at 10:05 AM Hao Luo <haoluo@google.com> wrote:
-> > Thanks for reporting this and cc'ing me. I forgot to update the error
-> > messages when renaming the flags. I will send a patch to fix the error
-> > message.
+On Mon, 2020-10-19 at 12:42 -0700, Nick Desaulniers wrote:
+> On Sat, Oct 17, 2020 at 10:43 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > On Sat, Oct 17, 2020 at 09:09:28AM -0700, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+> > > 
+> > > This is a upcoming change to clean up a new warning treewide.
+> > > I am wondering if the change could be one mega patch (see below) or
+> > > normal patch per file about 100 patches or somewhere half way by collecting
+> > > early acks.
+> > 
+> > Please break it up into one-patch-per-subsystem, like normal, and get it
+> > merged that way.
+> > 
+> > Sending us a patch, without even a diffstat to review, isn't going to
+> > get you very far...
+> 
+> Tom,
+> If you're able to automate this cleanup, I suggest checking in a
+> script that can be run on a directory.  Then for each subsystem you
+> can say in your commit "I ran scripts/fix_whatever.py on this subdir."
+>  Then others can help you drive the tree wide cleanup.  Then we can
+> enable -Wunreachable-code-break either by default, or W=2 right now
+> might be a good idea.
+> 
+> Ah, George (gbiv@, cc'ed), did an analysis recently of
+> `-Wunreachable-code-loop-increment`, `-Wunreachable-code-break`, and
+> `-Wunreachable-code-return` for Android userspace.  From the review:
+> ```
+> Spoilers: of these, it seems useful to turn on
+> -Wunreachable-code-loop-increment and -Wunreachable-code-return by
+> default for Android
+> ...
+> While these conventions about always having break arguably became
+> obsolete when we enabled -Wfallthrough, my sample turned up zero
+> potential bugs caught by this warning, and we'd need to put a lot of
+> effort into getting a clean tree. So this warning doesn't seem to be
+> worth it.
+> ```
+> Looks like there's an order of magnitude of `-Wunreachable-code-break`
+> than the other two.
+> 
+> We probably should add all 3 to W=2 builds (wrapped in cc-option).
+> I've filed https://github.com/ClangBuiltLinux/linux/issues/1180 to
+> follow up on.
 
-> > The commit
+I suggest using W=1 as people that are doing cleanups
+generally use that and not W=123 or any other style.
 
-> > commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
-> > Author:     Hao Luo <haoluo@google.com>
-> > AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+Every other use of W= is still quite noisy and these
+code warnings are relatively trivially to fix up.
 
-> >      btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
 
-> > encodes kernel global variables into BTF so that bpf programs can
-> > directly access them. If there is no need to access kernel global
-> > variables, it's perfectly fine to use '--btf_encode_force' to skip
-> > encoding bad symbols into BTF, or '--skip_encoding_btf_vars' to skip
-> > encoding all global vars all together. I will add these info into the
-> > updated error message.
-
-> > Also cc bpf folks for attention of this bug.
-
-> I've already fixed the message as part of
-> 2e719cca6672 ("btf_encoder: revamp how per-CPU variables are encoded")
-
-> It's currently still in the tmp.libbtf_encoder branch in pahole repo.
-
-I'm now running:
-
-  $ grep BTF=y ../build/s390x-v5.9.0+/.config
-  CONFIG_DEBUG_INFO_BTF=y
-  $ make -j24 CROSS_COMPILE=s390x-linux-gnu- ARCH=s390 O=../build/s390x-v5.9.0+/
-
-To do the last test I wanted before moving it to master.
-
-- Arnaldo
