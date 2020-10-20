@@ -2,42 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638E0293F30
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 17:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0EF293F45
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 17:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731301AbgJTPEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 11:04:50 -0400
-Received: from www62.your-server.de ([213.133.104.62]:56692 "EHLO
+        id S1731577AbgJTPIq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 11:08:46 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57264 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729180AbgJTPEu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Oct 2020 11:04:50 -0400
+        with ESMTP id S1731500AbgJTPIq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Oct 2020 11:08:46 -0400
 Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kUtBt-0001LI-3n; Tue, 20 Oct 2020 17:04:45 +0200
+        id 1kUtFi-0001ad-Hn; Tue, 20 Oct 2020 17:08:42 +0200
 Received: from [178.196.57.75] (helo=pc-9.home)
         by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kUtBs-000HJs-UX; Tue, 20 Oct 2020 17:04:44 +0200
-Subject: Re: [PATCH bpf v2 2/3] bpf_fib_lookup: optionally skip neighbour
- lookup
-To:     David Ahern <dsahern@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
+        id 1kUtFi-00011m-DE; Tue, 20 Oct 2020 17:08:42 +0200
+Subject: Re: [PATCH bpf v2 1/3] bpf_redirect_neigh: Support supplying the
+ nexthop as a helper parameter
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
 Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 References: <160319106111.15822.18417665895694986295.stgit@toke.dk>
- <160319106331.15822.2945713836148003890.stgit@toke.dk>
- <20784134-7f4c-c263-5d62-facbb2adb8a8@gmail.com>
+ <160319106221.15822.2629789706666194966.stgit@toke.dk>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9506a687-64a7-8cf4-008f-c4a10f867c01@iogearbox.net>
-Date:   Tue, 20 Oct 2020 17:04:44 +0200
+Message-ID: <d6967cfe-fd0e-268a-5526-dd03f0e476e6@iogearbox.net>
+Date:   Tue, 20 Oct 2020 17:08:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20784134-7f4c-c263-5d62-facbb2adb8a8@gmail.com>
+In-Reply-To: <160319106221.15822.2629789706666194966.stgit@toke.dk>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -47,35 +44,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/20/20 3:49 PM, David Ahern wrote:
-> On 10/20/20 4:51 AM, Toke Høiland-Jørgensen wrote:
->> From: Toke Høiland-Jørgensen <toke@redhat.com>
->>
->> The bpf_fib_lookup() helper performs a neighbour lookup for the destination
->> IP and returns BPF_FIB_LKUP_NO_NEIGH if this fails, with the expectation
->> that the BPF program will deal with this condition, either by passing the
->> packet up the stack, or by using bpf_redirect_neigh().
->>
->> The neighbour lookup is done via a hash table (through ___neigh_lookup_noref()),
->> which incurs some overhead. If the caller knows this is likely to fail
->> anyway, it may want to skip that and go unconditionally to
->> bpf_redirect_neigh(). For this use case, add a flag to bpf_fib_lookup()
->> that will make it skip the neighbour lookup and instead always return
->> BPF_FIB_LKUP_RET_NO_NEIGH (but still populate the gateway and target
->> ifindex).
->>
->> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> ---
->>   include/uapi/linux/bpf.h       |   10 ++++++----
->>   net/core/filter.c              |   16 ++++++++++++++--
->>   tools/include/uapi/linux/bpf.h |   10 ++++++----
->>   3 files changed, 26 insertions(+), 10 deletions(-)
-> 
-> Nack. Please don't.
-> 
-> As I mentioned in my reply to Daniel, I would prefer such logic be
-> pushed to the bpf programs. There is no reason for rare run time events
-> to warrant a new flag and new check in the existing FIB helpers. The bpf
-> programs can take the hit of the extra lookup.
+On 10/20/20 12:51 PM, Toke Høiland-Jørgensen wrote:
+> From: Toke Høiland-Jørgensen <toke@redhat.com>
+[...]
+>   BPF_CALL_3(bpf_clone_redirect, struct sk_buff *, skb, u32, ifindex, u64, flags)
+> @@ -2455,8 +2487,8 @@ int skb_do_redirect(struct sk_buff *skb)
+>   		return -EAGAIN;
+>   	}
+>   	return flags & BPF_F_NEIGH ?
+> -	       __bpf_redirect_neigh(skb, dev) :
+> -	       __bpf_redirect(skb, dev, flags);
+> +		__bpf_redirect_neigh(skb, dev, flags & BPF_F_NEXTHOP ? &ri->nh : NULL) :
+> +		__bpf_redirect(skb, dev, flags);
+>   out_drop:
+>   	kfree_skb(skb);
+>   	return -EINVAL;
+> @@ -2504,16 +2536,25 @@ static const struct bpf_func_proto bpf_redirect_peer_proto = {
+>   	.arg2_type      = ARG_ANYTHING,
+>   };
+>   
+> -BPF_CALL_2(bpf_redirect_neigh, u32, ifindex, u64, flags)
+> +BPF_CALL_4(bpf_redirect_neigh, u32, ifindex, struct bpf_redir_neigh *, params,
+> +	   int, plen, u64, flags)
+>   {
+>   	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
+>   
+> -	if (unlikely(flags))
+> +	if (unlikely((plen && plen < sizeof(*params)) || flags))
+> +		return TC_ACT_SHOT;
+> +
+> +	if (unlikely(plen && (params->unused[0] || params->unused[1] ||
+> +			      params->unused[2])))
 
-Fair enough, lets push it to progs then.
+small nit: maybe fold this into the prior check that already tests non-zero plen
+
+if (unlikely((plen && (plen < sizeof(*params) ||
+                        (params->unused[0] | params->unused[1] |
+                         params->unused[2]))) || flags))
+         return TC_ACT_SHOT;
+
+>   		return TC_ACT_SHOT;
+>   
+> -	ri->flags = BPF_F_NEIGH;
+> +	ri->flags = BPF_F_NEIGH | (plen ? BPF_F_NEXTHOP : 0);
+>   	ri->tgt_index = ifindex;
+>   
+> +	BUILD_BUG_ON(sizeof(struct bpf_redir_neigh) != sizeof(struct bpf_nh_params));
+> +	if (plen)
+> +		memcpy(&ri->nh, params, sizeof(ri->nh));
+> +
+>   	return TC_ACT_REDIRECT;
+>   }
+>   
