@@ -2,95 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169CC293371
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 05:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9CF293377
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 05:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390955AbgJTDII (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Oct 2020 23:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
+        id S2390970AbgJTDMr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Oct 2020 23:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390952AbgJTDII (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Oct 2020 23:08:08 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788E0C0613CE;
-        Mon, 19 Oct 2020 20:08:08 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id z2so463632ilh.11;
-        Mon, 19 Oct 2020 20:08:08 -0700 (PDT)
+        with ESMTP id S1729136AbgJTDMr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Oct 2020 23:12:47 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5656FC0613CE;
+        Mon, 19 Oct 2020 20:12:47 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z5so896754iob.1;
+        Mon, 19 Oct 2020 20:12:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5lJyEo7KXPKHiht9CRtCwqcK3OQPKIQh4fHOIgIHyHc=;
-        b=iyPVc69cqmP0czajK3Hq3x+RmDDxnmk1Ej3KSQPkdDFS9XWHUHmrvTYcSXI9oX+h3t
-         7j2kvYmYxFAWNqFX1AKocy71n5vRsnt8LwKnoZmFL6LHFxIKzHpDw9WvZ5SQ+pCunH7i
-         ymfuvDuf9qDaIeHprKQDnq15Ez6xgcLJwFxu7onY6SrMUwuf6GNdCHKhLhObxDrhg6Hc
-         0Tk5g5DzfoybFN9DYWzxwWOAdnQ3Sjy/6Y8FUXpbY0kmPpm3/VvuWUaiOfnPy2XOg6i6
-         wf14JXl3NPk2K2etAlDOZD1YbUEOU9qQD0zw6Rmk+ls3oOyHG3TmcpJK34jg82f2WZJY
-         63DA==
+        bh=GxvQGZoYmIMTnn71Z7et99BXyWneaN3uEqCTAR40K3U=;
+        b=SGuw9d0N2S+8DnkFub4spS+FTzgv93qLyn3BQSHNB4cAnSkMi/6HC75AvhFSsCRV/6
+         CQtajHqm99jictGiwA67FKDFwbmJLUWqVUwvZZEnXjNRcivUGdX4tT/jvzIDdTchhUlw
+         HBEgiRQXeL4wQg49ERqnN6yxO/k+FRLarw2pUI1l+6FmuDLwGrSKgfpA+pGSxfeGy9MC
+         Da+giqA7zYnberUWsdY6UpCeBu0SR18ShjvJsSixDtSMB2nn8CG4Q0vaThVjGjGhxyT7
+         7U0M755wR8hFjNKi9Ac8yFCxNAaZCVsJfoluKenVs9MlS9XaKbjcDQbq1QXonPMNSgtY
+         7LKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=5lJyEo7KXPKHiht9CRtCwqcK3OQPKIQh4fHOIgIHyHc=;
-        b=JmSdZJ1C6fdi4hIw8djH+vgLI+oMYEmFTeRPIM8SFQjbjFZvsYqQmO4YyUf9bIoQeM
-         ZUALn4uwSsyiQQUhjYTeU9loqKtmZiqx7us9NxGB6bPN5PJkCc6sFaXUfDTnmnUuLa4c
-         CuECletVuq6ONcHAxGw75e6XVyGCvQPYM8aC0dVTp0JTbz5tmja9gDz46WyaT0cRn0vS
-         +TZu8GdJWr9/TdvovQbYufRtFMtaiB+s1va5nPDHvNg27OvCC6uQdiU+IJL57z2EyxV1
-         FYO8ndl7rIcUAwWAyFwVLUFQ6e8QSLPyepryeRkR4IVxw0sVhyQWZHucwIWKyDDrZXWP
-         wAQw==
-X-Gm-Message-State: AOAM533v2HNyfNVgRFiR/ub7Bbe/G2ZPvI6uo/DSHAomdVM8bGoQRFcT
-        TaL8bVs8BxldmktbZRvLEqyxcvz/WNg=
-X-Google-Smtp-Source: ABdhPJzzH2CsAZPEu4Qnz69GkJXvw2Dw7h/JvfoFjiw//3jdDBJRDaKPGQAR7NLWECizCh8hndROZw==
-X-Received: by 2002:a92:d390:: with SMTP id o16mr398197ilo.213.1603163287803;
-        Mon, 19 Oct 2020 20:08:07 -0700 (PDT)
+        bh=GxvQGZoYmIMTnn71Z7et99BXyWneaN3uEqCTAR40K3U=;
+        b=iS7R0NKBz4bYNl5orGwu0OhwkhHvLb0KHsb14qVBSi4nxLA531CpGZBiueRCA3ok+R
+         pRH9ES3xgh87NOTTs3eUuJYIJrc/Or3HcHZahHR2T/8gL1rD0soRMBCiv1dT4QfIkYyH
+         oPkK67SqsCfp9VczDHdy1QHtFYEHHYG5KJ9P5bYFv8p4bRllTavgGRzBi4BUwn1qQzH1
+         d8ByAkIIAKe/l9Y9iuYqOVBgsYveuMgjQG97JlntGVmoEoQ8WbCeOWZqpFd+7FVRyQai
+         tsii+FvLsFNbIgxUMTVnhTO6ifdZvAz28bT9i+Pm8T/BuXYTJVBip3IyS79MOFlYTbpe
+         +d+g==
+X-Gm-Message-State: AOAM530qdvfSS9eI8jTw2jwxnOBPIUnExOJd2aIPfdA0X3fIsNuSSzeM
+        XhC8GRLcqlE5QI/xpZDd19Im/MHrB1I=
+X-Google-Smtp-Source: ABdhPJzRVApPWE5OEPALgT5Yat592X3DS5SzlTtfaEGGw8ac3jA8nQpBTEXgF9gIJf+gh0+ltp6FUw==
+X-Received: by 2002:a6b:1497:: with SMTP id 145mr670294iou.202.1603163566600;
+        Mon, 19 Oct 2020 20:12:46 -0700 (PDT)
 Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:9d8a:40ec:eef5:44b4])
-        by smtp.googlemail.com with ESMTPSA id z15sm535615ioj.22.2020.10.19.20.08.07
+        by smtp.googlemail.com with ESMTPSA id z9sm511206iln.87.2020.10.19.20.12.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2020 20:08:07 -0700 (PDT)
+        Mon, 19 Oct 2020 20:12:46 -0700 (PDT)
 Subject: Re: [PATCH bpf 1/2] bpf_redirect_neigh: Support supplying the nexthop
  as a helper parameter
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
 Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 References: <160312349392.7917.6673239142315191801.stgit@toke.dk>
  <160312349501.7917.13131363910387009253.stgit@toke.dk>
+ <3785e450-313f-c6f0-2742-716c10b6f8a4@iogearbox.net>
 From:   David Ahern <dsahern@gmail.com>
-Message-ID: <77ba3525-acde-97e0-77b8-057d31f0c40a@gmail.com>
-Date:   Mon, 19 Oct 2020 21:08:04 -0600
+Message-ID: <e4188697-4467-61fe-72c4-cc387ea9a727@gmail.com>
+Date:   Mon, 19 Oct 2020 21:12:43 -0600
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <160312349501.7917.13131363910387009253.stgit@toke.dk>
+In-Reply-To: <3785e450-313f-c6f0-2742-716c10b6f8a4@iogearbox.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/19/20 10:04 AM, Toke Høiland-Jørgensen wrote:
-> @@ -4906,6 +4910,16 @@ struct bpf_fib_lookup {
->  	__u8	dmac[6];     /* ETH_ALEN */
->  };
->  
-> +struct bpf_redir_neigh {
-> +	/* network family for lookup (AF_INET, AF_INET6) */
-> +	__u8	nh_family;
+On 10/19/20 12:23 PM, Daniel Borkmann wrote:
+> Looks good to me, thanks! I'll wait till David gets a chance as well to
+> review.
+> One thing that would have made sense to me (probably worth a v2) is to
+> keep the
+> fib lookup flag you had back then, meaning sth like BPF_FIB_SKIP_NEIGH
+> which
+> would then return a BPF_FIB_LKUP_RET_NO_NEIGH before doing the neigh
+> lookup inside
+> the bpf_ipv{4,6}_fib_lookup() so that programs can just unconditionally
+> use the
+> combination of bpf_fib_lookup(skb, [...], BPF_FIB_SKIP_NEIGH) with the
+> bpf_redirect_neigh([...]) extension in that case and not do this
+> bpf_redirect()
+> vs bpf_redirect_neigh() dance as you have in the selftest in patch 2/2.
 
-Define every byte. This is a 3-byte hole that should have unused's and
-the helper verifies they are set to 0.
-
-> +	/* network address of nexthop; skips fib lookup to find gateway */
-> +	union {
-> +		__be32		ipv4_nh;
-> +		__u32		ipv6_nh[4];  /* in6_addr; network order */
-> +	};
-> +};
-> +
->  enum bpf_task_fd_type {
->  	BPF_FD_TYPE_RAW_TRACEPOINT,	/* tp name */
->  	BPF_FD_TYPE_TRACEPOINT,		/* tp name */
-
-
+That puts the overhead on bpf_ipv{4,6}_fib_lookup. The existiong helpers
+return BPF_FIB_LKUP_RET_NO_NEIGH which is the key to the bpf program to
+call the bpf_redirect_neigh - making the program deal with the overhead
+as needed on failures.
