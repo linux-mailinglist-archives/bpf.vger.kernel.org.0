@@ -2,100 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570BA29386C
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 11:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36B3293931
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 12:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403952AbgJTJq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 05:46:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403950AbgJTJq2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 20 Oct 2020 05:46:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603187187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=knt9S68tgKirjQKsf7Zso0Y78A5lUiSAACpKMVJzeN8=;
-        b=UP1Mi+zpGG9b2ssmgVBqS4N4qPeeK7q2Qx6iy5cZJvSTP3oRsDBx3usPvnFPeyZZiry4iX
-        0WeN4SblcBtpOz/jsKSahPtFX3Mjn49odEIOW2MxufygwDnPWqHQCScCLVojRnQwXIl980
-        guAqZxNz1k+2eDtE8GHvHFFt4CfQN+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-IaPcN5B_O_i6gFbNsz2Www-1; Tue, 20 Oct 2020 05:46:24 -0400
-X-MC-Unique: IaPcN5B_O_i6gFbNsz2Www-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2392112AbgJTKeG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 06:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389466AbgJTKeG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Oct 2020 06:34:06 -0400
+Received: from localhost (unknown [151.66.125.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 632A018A0760;
-        Tue, 20 Oct 2020 09:46:23 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B7B5A5B4A3;
-        Tue, 20 Oct 2020 09:46:14 +0000 (UTC)
-Date:   Tue, 20 Oct 2020 11:46:13 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5421522247;
+        Tue, 20 Oct 2020 10:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603190045;
+        bh=BS7tdLZHlco/0BxmbMLTRmEyMojZXM+vWBkCObveunU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Os+Ese8GbpXMK4ntdyW8TyeFhQJG52mL58ZOzW4neMhVYquNHKXCo5sJCmVdrFAqI
+         2xmVTbYEASM8Zrsqum5VNDs4qUvf4Hk4xyAgB/AvK9TpIFCkFXitY3T2nBP6Y0Rp4f
+         6NQlub1N4eWwgVSp8Em/M3Sc2oj0kXSz5kOtL0AY=
+Date:   Tue, 20 Oct 2020 12:34:00 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
         kuba@kernel.org, lorenzo.bianconi@redhat.com,
-        ilias.apalodimas@linaro.org, brouer@redhat.com
+        ilias.apalodimas@linaro.org
 Subject: Re: [RFC 1/2] net: xdp: introduce bulking for xdp tx return path
-Message-ID: <20201020114613.752a979c@carbon>
-In-Reply-To: <62165fcacf47521edae67ae739827aa5f751fb8b.1603185591.git.lorenzo@kernel.org>
+Message-ID: <20201020103400.GA186228@lore-desk>
 References: <cover.1603185591.git.lorenzo@kernel.org>
-        <62165fcacf47521edae67ae739827aa5f751fb8b.1603185591.git.lorenzo@kernel.org>
+ <62165fcacf47521edae67ae739827aa5f751fb8b.1603185591.git.lorenzo@kernel.org>
+ <20201020114613.752a979c@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
+Content-Disposition: inline
+In-Reply-To: <20201020114613.752a979c@carbon>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 20 Oct 2020 11:33:37 +0200
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-> index 54b0bf574c05..af33cc62ed4c 100644
-> --- a/drivers/net/ethernet/marvell/mvneta.c
-> +++ b/drivers/net/ethernet/marvell/mvneta.c
-> @@ -663,6 +663,8 @@ struct mvneta_tx_queue {
->  
->  	/* Affinity mask for CPUs*/
->  	cpumask_t affinity_mask;
-> +
-> +	struct xdp_frame_bulk bq;
->  };
->  
->  struct mvneta_rx_queue {
-> @@ -1854,12 +1856,10 @@ static void mvneta_txq_bufs_free(struct mvneta_port *pp,
->  			dev_kfree_skb_any(buf->skb);
->  		} else if (buf->type == MVNETA_TYPE_XDP_TX ||
->  			   buf->type == MVNETA_TYPE_XDP_NDO) {
-> -			if (napi && buf->type == MVNETA_TYPE_XDP_TX)
-> -				xdp_return_frame_rx_napi(buf->xdpf);
-> -			else
-> -				xdp_return_frame(buf->xdpf);
-> +			xdp_return_frame_bulk(buf->xdpf, &txq->bq, napi);
+--HlL+5n6rz5pIUxbD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hmm, I don't think you can use 'napi' directly here.
+> On Tue, 20 Oct 2020 11:33:37 +0200
+> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>=20
+> > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethern=
+et/marvell/mvneta.c
+> > index 54b0bf574c05..af33cc62ed4c 100644
+> > --- a/drivers/net/ethernet/marvell/mvneta.c
+> > +++ b/drivers/net/ethernet/marvell/mvneta.c
+> > @@ -663,6 +663,8 @@ struct mvneta_tx_queue {
+> > =20
+> >  	/* Affinity mask for CPUs*/
+> >  	cpumask_t affinity_mask;
+> > +
+> > +	struct xdp_frame_bulk bq;
+> >  };
+> > =20
+> >  struct mvneta_rx_queue {
+> > @@ -1854,12 +1856,10 @@ static void mvneta_txq_bufs_free(struct mvneta_=
+port *pp,
+> >  			dev_kfree_skb_any(buf->skb);
+> >  		} else if (buf->type =3D=3D MVNETA_TYPE_XDP_TX ||
+> >  			   buf->type =3D=3D MVNETA_TYPE_XDP_NDO) {
+> > -			if (napi && buf->type =3D=3D MVNETA_TYPE_XDP_TX)
+> > -				xdp_return_frame_rx_napi(buf->xdpf);
+> > -			else
+> > -				xdp_return_frame(buf->xdpf);
+> > +			xdp_return_frame_bulk(buf->xdpf, &txq->bq, napi);
+>=20
+> Hmm, I don't think you can use 'napi' directly here.
+>=20
+> You are circumventing check (buf->type =3D=3D MVNETA_TYPE_XDP_TX), and wi=
+ll
+> now also allow XDP_NDO (XDP_REDIRECT) to basically use xdp_return_frame_r=
+x_napi().
 
-You are circumventing check (buf->type == MVNETA_TYPE_XDP_TX), and will
-now also allow XDP_NDO (XDP_REDIRECT) to basically use xdp_return_frame_rx_napi().
+ack, right. I will fix it.
 
+Regards,
+Lorenzo
 
->  		}
->  	}
-> +	xdp_flush_frame_bulk(&txq->bq, napi);
->  
->  	netdev_tx_completed_queue(nq, pkts_compl, bytes_compl);
->  }
+>=20
+>=20
+> >  		}
+> >  	}
+> > +	xdp_flush_frame_bulk(&txq->bq, napi);
+> > =20
+> >  	netdev_tx_completed_queue(nq, pkts_compl, bytes_compl);
+> >  }
+>=20
+>=20
+>=20
+> --=20
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>=20
 
+--HlL+5n6rz5pIUxbD
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX469FgAKCRA6cBh0uS2t
+rMw+AQC+wTICxuV3t+HEomo4sgqeT5s/EKnTJFzEVG6ywe/2KQEA1I/zywkowV8W
+dR3L8xi6iIOcfse0rFD0eCxhjAx9cAI=
+=owQY
+-----END PGP SIGNATURE-----
 
+--HlL+5n6rz5pIUxbD--
