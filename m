@@ -2,97 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CF82941F9
-	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 20:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336E9294202
+	for <lists+bpf@lfdr.de>; Tue, 20 Oct 2020 20:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408973AbgJTSOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Oct 2020 14:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408970AbgJTSOU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Oct 2020 14:14:20 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED11C0613CE;
-        Tue, 20 Oct 2020 11:14:20 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j17so3600275ilr.2;
-        Tue, 20 Oct 2020 11:14:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QefG8nC0M6FiwaH3/vs+QotCepEbPANzojpXiJ1xDFo=;
-        b=FqsWlhN7LF3qFL+mecj3HRfGxX0uRW9Q7aHPmd7qXqTokAR/ym0FNgkIhVg8zvzuoY
-         Im25UiRfAglcWu0vw/KMTJpsMJwuYjTSgEnOehQMDOaB6rdndb5LSL/oBLL8RN0l7EJN
-         MUWpGV+1eF81Ta6hovYhLBVnS0/6HmDVmZXWrC+BYvJFQzWIRRUyddctZwTHtW4/QSU4
-         pQa6eqaxSn5Nv70zDTAowc0joERubWmHXOtWF0MBxn6FoIpOvFjiTeV02I0BC8Pz2Tni
-         loz94jCZs9gPNlyU5T9pWMIFD1yrMw1MWcUPGyzHCDYfQKul5dIqlntshNz4wzzPjNDE
-         13Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QefG8nC0M6FiwaH3/vs+QotCepEbPANzojpXiJ1xDFo=;
-        b=twFsr/oHfRTXn5dYLPbNYJf6giW/KASHvaktbQKe7SACa2zX2ZZ3XuSV8pGDT9vqNw
-         Duc+299UBuQAOjDEwAxi1IwPFtE3rsRLlb744I+904BKhwrynj7+nPETreaGD+qYjE+N
-         iWCyIgQKkSCCf9JwY1BtQ8O4ibjbaG55ZYFW6nidkkUImeFQ9E9dbk/wk711Al/m/x27
-         04g9ODGpQ1CZe0xc+S0dL9z6DdTRk7qPpuPB3KFWhjsKA0VobsZkBR6QM9HR1QQlFdE1
-         jLDDHIlgUug4JrYQ4YAqiQNPsDGQi/D1x7T6X5aevRNCd8CNF0tnsgGakG0egxxD0Kfc
-         b2bA==
-X-Gm-Message-State: AOAM532d8IiwS7EzPScCTCulKPzxrvZb86QsQPRxnKkobkplUadu+9rl
-        CtCBq9xYV25iIZ0Oz04QWghBY1IkW7I=
-X-Google-Smtp-Source: ABdhPJwg8VvAeemicOy4wZeTBG87FWE8uBNikNvL8fe/DU9/HSGiUVJkJUwrs799Hgmdzk7gWJ+Jeg==
-X-Received: by 2002:a92:d248:: with SMTP id v8mr2915798ilg.297.1603217659751;
-        Tue, 20 Oct 2020 11:14:19 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:2cd9:64d4:cacf:1e54])
-        by smtp.googlemail.com with ESMTPSA id x13sm2415884iob.8.2020.10.20.11.14.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 11:14:19 -0700 (PDT)
-Subject: Re: [PATCH bpf v2 1/3] bpf_redirect_neigh: Support supplying the
- nexthop as a helper parameter
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <160319106111.15822.18417665895694986295.stgit@toke.dk>
- <160319106221.15822.2629789706666194966.stgit@toke.dk>
- <20201020093405.59079473@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87zh4g22ro.fsf@toke.dk>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <e8c261bf-2d43-ca4b-945d-353ada65c20a@gmail.com>
-Date:   Tue, 20 Oct 2020 12:14:16 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.1
+        id S2437309AbgJTSPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Oct 2020 14:15:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437306AbgJTSPD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Oct 2020 14:15:03 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71C752098B;
+        Tue, 20 Oct 2020 18:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603217702;
+        bh=ATM9YDiM0sfiA1zQ3/mGre1Rk3rzW7SWzPouzYHlM78=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=to+3jR8iGDo3+ysj5KO1PtNhTAmQNcVvJSKliTIfhbaiyKHGnx84gHB6AXD7FuXLF
+         jhAkIXo3VyPBX1+4F/LO+nKQh5NVgv0CGeO2yOLGCp1mYaHQYWzygLUz6WgZjxRgjD
+         IrR/LMzdbJtaSXJE0J29dOiiasGfLufpA8gnRd24=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 095AC403C2; Tue, 20 Oct 2020 15:14:59 -0300 (-03)
+Date:   Tue, 20 Oct 2020 15:14:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Hao Luo <haoluo@google.com>, Jiri Slaby <jirislaby@kernel.org>,
+        =?iso-8859-1?Q?=C9rico?= Rolim <erico.erc@gmail.com>,
+        dwarves@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+Message-ID: <20201020181458.GA2342001@kernel.org>
+References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+ <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
+ <20201020122015.GH2294271@kernel.org>
+ <CA+khW7gcDPAw4h=0U9mMxTJoaCyOXCMwyw34dcBp1xBKJG6xkg@mail.gmail.com>
+ <CAEf4BzYDvvthK_S7EecsTO3HAVXiAf6AqHaiEWbf9+K7sjMiLA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87zh4g22ro.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYDvvthK_S7EecsTO3HAVXiAf6AqHaiEWbf9+K7sjMiLA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/20/20 12:03 PM, Toke Høiland-Jørgensen wrote:
-> Jakub Kicinski <kuba@kernel.org> writes:
-> 
->> On Tue, 20 Oct 2020 12:51:02 +0200 Toke Høiland-Jørgensen wrote:
->>> +struct bpf_nh_params {
->>> +	u8 nh_family;
->>> +	union {
->>> +		__u32 ipv4_nh;
->>> +		struct in6_addr ipv6_nh;
->>> +	};
->>> +};
->>
->> Folks, not directly related to this set, but there's a SRv6 patch going
->> around which adds ifindex, otherwise nh can't be link local.
->>
->> I wonder if we want to consider this use case from the start (or the
->> close approximation of start in this case ;)).
-> 
-> The ifindex is there, it's just in the function call signature instead
-> of the struct... Or did you mean something different?
-> 
+Em Tue, Oct 20, 2020 at 10:10:19AM -0700, Andrii Nakryiko escreveu:
+> On Tue, Oct 20, 2020 at 10:05 AM Hao Luo <haoluo@google.com> wrote:
+> > Thanks for reporting this and cc'ing me. I forgot to update the error
+> > messages when renaming the flags. I will send a patch to fix the error
+> > message.
 
-ifindex as the first argument qualifies the device for the address.
+> > The commit
+
+> > commit f3d9054ba8ff1df0fc44e507e3a01c0964cabd42
+> > Author:     Hao Luo <haoluo@google.com>
+> > AuthorDate: Wed Jul 8 13:44:10 2020 -0700
+
+> >      btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.
+
+> > encodes kernel global variables into BTF so that bpf programs can
+> > directly access them. If there is no need to access kernel global
+> > variables, it's perfectly fine to use '--btf_encode_force' to skip
+> > encoding bad symbols into BTF, or '--skip_encoding_btf_vars' to skip
+> > encoding all global vars all together. I will add these info into the
+> > updated error message.
+
+> > Also cc bpf folks for attention of this bug.
+
+> I've already fixed the message as part of
+> 2e719cca6672 ("btf_encoder: revamp how per-CPU variables are encoded")
+
+> It's currently still in the tmp.libbtf_encoder branch in pahole repo.
+
+I'm now running:
+
+  $ grep BTF=y ../build/s390x-v5.9.0+/.config
+  CONFIG_DEBUG_INFO_BTF=y
+  $ make -j24 CROSS_COMPILE=s390x-linux-gnu- ARCH=s390 O=../build/s390x-v5.9.0+/
+
+To do the last test I wanted before moving it to master.
+
+- Arnaldo
