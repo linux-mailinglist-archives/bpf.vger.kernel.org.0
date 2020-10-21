@@ -2,123 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF0929521E
-	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 20:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DE22952E8
+	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 21:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503991AbgJUSUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Oct 2020 14:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504015AbgJUSUY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Oct 2020 14:20:24 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AC4C0613CE;
-        Wed, 21 Oct 2020 11:20:23 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l18so1988321pgg.0;
-        Wed, 21 Oct 2020 11:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=bQDv4ngMFmZAdWeS/hQnXH5tSvDx9O8/9xskgAUaTrI=;
-        b=X46oR3eBSh2053rRWIWetOLLHKNJC5MrkUFbuZYYQ/Emwu53GxqgsjpFHsP182RTOg
-         tg0Hvs0XgywmeepsO/wM69unwC7S32euFaI92MMaJPUGSOiREUOrVaLG6WIQlg4wZ4Eg
-         Juxh+3c5jU702Tlz3AnQ0niO9BYF93kc5JTFrOvPaOwFgnfa+7y2NR6/VjF/GMLm6mAf
-         ftEgb9SGgARMUdwV9ErhD3Ny4YBz7viLqpCwdlHvElG6EHNMkbl4Na7DMGFsteP5/7xh
-         5U/Yg73+0qKO61cupIfA7Ic3Q0bx1u1UtQMrJJRd4k93jYE/Ph2xzZjvfo1pcdxSjCqq
-         GuJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=bQDv4ngMFmZAdWeS/hQnXH5tSvDx9O8/9xskgAUaTrI=;
-        b=a7TO4cEiQ1ZM1IZckB7fZVtRCyFDGBzgqLjeHBKJ8dM43sKUU5FF5dDvejGVsDdUQ8
-         sXueiYJcavQSWTDukHtAo9WwEhDUklwPU6STqJI9AwaaUFoNKtXM/3xmOrXACcmyLUAR
-         KJE8pzlpXyX3LniLwpy5aPcpb6iWtsjClDc1LoDVS5GbaoFjAv5U5Vxqm9Rdvz9dGnbt
-         PKODa1QarQ3HVWqf2XIGdrKLSX13KMfIzWmD+x7YGzUYC52Tw5mIhxbDhzoWywUSgQ93
-         uDmP330Lj7xwVG2xA6U+YF5AICNh53zAAqU1ia/Gxh0QDMWIt2LC56dv5yNmDbagz2EM
-         cdUw==
-X-Gm-Message-State: AOAM531fbV59ezJ3zBD4hFju6kNiD2/xjdC+awUcbKyVyPosniKLE/tj
-        4pRYWLAwbedMobKt/2s9zrkS/zLJYKQWBQ==
-X-Google-Smtp-Source: ABdhPJxZyxDtbzpG5mUyRqAWvs7NoPaBMFcVzJ7dRJ6jytmimjb6flMakIqqNwVqaAUnCBbIbHg2kQ==
-X-Received: by 2002:a63:e:: with SMTP id 14mr4635728pga.426.1603304423461;
-        Wed, 21 Oct 2020 11:20:23 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id v3sm2618672pfu.165.2020.10.21.11.20.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 11:20:22 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add asm tests for pkt vs pkt_end comparison.
-Date:   Wed, 21 Oct 2020 11:20:15 -0700
-Message-Id: <20201021182015.39000-4-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
-In-Reply-To: <20201021182015.39000-1-alexei.starovoitov@gmail.com>
-References: <20201021182015.39000-1-alexei.starovoitov@gmail.com>
+        id S2504476AbgJUTZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Oct 2020 15:25:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441904AbgJUTZe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Oct 2020 15:25:34 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1737824170;
+        Wed, 21 Oct 2020 19:25:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603308333;
+        bh=XmGtBDIc8rDQrH+DPZt5CdCuiMuBmj/fWwAZdzc8B3Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TkanMKHvCJdb4SrnL21T/IdHnW9G3ajKYy2gfB+zD8NqWiCeFF7Aek91Pi0wlSDhp
+         GQ2aBuGNjgLRTMOInKjjdlZZjiEFHAgkLZ+fRkKWq3VYJQ2mVomNgmswPa87llMmnk
+         MIHqFw5ylmcDYLJPKoo4LL99uJ7NCivXpc9v8slU=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5C1EA403C2; Wed, 21 Oct 2020 16:25:30 -0300 (-03)
+Date:   Wed, 21 Oct 2020 16:25:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        ast@kernel.org
+Subject: Re: [PATCH dwarves] btf_loader: handle union forward declaration
+ properly
+Message-ID: <20201021192530.GS2342001@kernel.org>
+References: <20201009192607.699835-1-andrii@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201009192607.699835-1-andrii@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+Em Fri, Oct 09, 2020 at 12:26:07PM -0700, Andrii Nakryiko escreveu:
+> Differentiate between struct and union forwards. For BTF_KIND_FWD this is
+> determined by kflag. So teach btf_loader to use that bit to decide whether
+> forward is for union or struct.
 
-Add few assembly tests for packet comparison.
+So, before this patch 'btfdiff vmlinux' comes clean, i.e. pretty
+printing from DWARF matches pretty printing from BTF, after it:
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- .../testing/selftests/bpf/verifier/ctx_skb.c  | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
+[acme@five pahole]$ btfdiff vmlinux  | wc -l
+1500
+[acme@five pahole]$
 
-diff --git a/tools/testing/selftests/bpf/verifier/ctx_skb.c b/tools/testing/selftests/bpf/verifier/ctx_skb.c
-index 2e16b8e268f2..2022c0f2cd75 100644
---- a/tools/testing/selftests/bpf/verifier/ctx_skb.c
-+++ b/tools/testing/selftests/bpf/verifier/ctx_skb.c
-@@ -1089,3 +1089,45 @@
- 	.errstr_unpriv = "R1 leaks addr",
- 	.result = REJECT,
- },
-+{
-+       "pkt > pkt_end taken check",
-+       .insns = {
-+       BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,                //  0. r2 = *(u32 *)(r1 + data_end)
-+                   offsetof(struct __sk_buff, data_end)),
-+       BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1,                //  1. r4 = *(u32 *)(r1 + data)
-+                   offsetof(struct __sk_buff, data)),
-+       BPF_MOV64_REG(BPF_REG_3, BPF_REG_4),                    //  2. r3 = r4
-+       BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 42),                  //  3. r3 += 42
-+       BPF_MOV64_IMM(BPF_REG_1, 0),                            //  4. r1 = 0
-+       BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_2, 2),          //  5. if r3 > r2 goto 8
-+       BPF_ALU64_IMM(BPF_ADD, BPF_REG_4, 14),                  //  6. r4 += 14
-+       BPF_MOV64_REG(BPF_REG_1, BPF_REG_4),                    //  7. r1 = r4
-+       BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_2, 1),          //  8. if r3 > r2 goto 10
-+       BPF_LDX_MEM(BPF_H, BPF_REG_2, BPF_REG_1, 9),            //  9. r2 = *(u8 *)(r1 + 9)
-+       BPF_MOV64_IMM(BPF_REG_0, 0),                            // 10. r0 = 0
-+       BPF_EXIT_INSN(),                                        // 11. exit
-+       },
-+       .result = ACCEPT,
-+       .prog_type = BPF_PROG_TYPE_SK_SKB,
-+},
-+{
-+       "pkt_end < pkt taken check",
-+       .insns = {
-+       BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1,                //  0. r2 = *(u32 *)(r1 + data_end)
-+                   offsetof(struct __sk_buff, data_end)),
-+       BPF_LDX_MEM(BPF_W, BPF_REG_4, BPF_REG_1,                //  1. r4 = *(u32 *)(r1 + data)
-+                   offsetof(struct __sk_buff, data)),
-+       BPF_MOV64_REG(BPF_REG_3, BPF_REG_4),                    //  2. r3 = r4
-+       BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 42),                  //  3. r3 += 42
-+       BPF_MOV64_IMM(BPF_REG_1, 0),                            //  4. r1 = 0
-+       BPF_JMP_REG(BPF_JGT, BPF_REG_3, BPF_REG_2, 2),          //  5. if r3 > r2 goto 8
-+       BPF_ALU64_IMM(BPF_ADD, BPF_REG_4, 14),                  //  6. r4 += 14
-+       BPF_MOV64_REG(BPF_REG_1, BPF_REG_4),                    //  7. r1 = r4
-+       BPF_JMP_REG(BPF_JLT, BPF_REG_2, BPF_REG_3, 1),          //  8. if r2 < r3 goto 10
-+       BPF_LDX_MEM(BPF_H, BPF_REG_2, BPF_REG_1, 9),            //  9. r2 = *(u8 *)(r1 + 9)
-+       BPF_MOV64_IMM(BPF_REG_0, 0),                            // 10. r0 = 0
-+       BPF_EXIT_INSN(),                                        // 11. exit
-+       },
-+       .result = ACCEPT,
-+       .prog_type = BPF_PROG_TYPE_SK_SKB,
-+},
+One of the differences:
+
+@@ -117457,7 +117457,7 @@ struct wireless_dev {
+
+ 	/* XXX last struct has 1 byte of padding */
+
+-	struct cfg80211_cqm_config * cqm_config;         /*   952     8 */
++	union cfg80211_cqm_config * cqm_config;          /*   952     8 */
+ 	/* --- cacheline 15 boundary (960 bytes) --- */
+ 	struct list_head           pmsr_list;            /*   960    16 */
+ 	spinlock_t                 pmsr_lock;            /*   976     4 */
+[acme@five pahole]$
+
+Looking at the source code:
+
+struct wireless_dev {
+...
+        struct cfg80211_cqm_config *cqm_config;
+...
+}
+
+Also:
+
+ struct nfnl_ct_hook {
+-	struct nf_conn *           (*get_ct)(const struct sk_buff  *, enum ip_conntrack_info *); /*     0     8 */
+-	size_t                     (*build_size)(const struct nf_conn  *); /*     8     8 */
+-	int                        (*build)(struct sk_buff *, struct nf_conn *, enum ip_conntrack_info, u_int16_t, u_int16_t); /*    16     8 */
+-	int                        (*parse)(const struct nlattr  *, struct nf_conn *); /*    24     8 */
+-	int                        (*attach_expect)(const struct nlattr  *, struct nf_conn *, u32, u32); /*    32     8 */
+-	void                       (*seq_adjust)(struct sk_buff *, struct nf_conn *, enum ip_conntrack_info, s32); /*    40     8 */
++	union nf_conn *            (*get_ct)(const struct sk_buff  *, enum ip_conntrack_info *); /*     0     8 */
++	size_t                     (*build_size)(const union nf_conn  *); /*     8     8 */
++	int                        (*build)(struct sk_buff *, union nf_conn *, enum ip_conntrack_info, u_int16_t, u_int16_t); /*    16     8 */
++	int                        (*parse)(const struct nlattr  *, union nf_conn *); /*    24     8 */
++	int                        (*attach_expect)(const struct nlattr  *, union nf_conn *, u32, u32); /*    32     8 */
++	void                       (*seq_adjust)(struct sk_buff *, union nf_conn *, enum ip_conntrack_info, s32); /*    40     8 */1
+
+Looking at the source code:
+
+struct nfnl_ct_hook {
+        struct nf_conn *(*get_ct)(const struct sk_buff *skb,
+                                  enum ip_conntrack_info *ctinfo);
+        size_t (*build_size)(const struct nf_conn *ct);
+        int (*build)(struct sk_buff *skb, struct nf_conn *ct,
+                     enum ip_conntrack_info ctinfo,
+                     u_int16_t ct_attr, u_int16_t ct_info_attr);
+        int (*parse)(const struct nlattr *attr, struct nf_conn *ct);
+        int (*attach_expect)(const struct nlattr *attr, struct nf_conn *ct,
+                             u32 portid, u32 report);
+        void (*seq_adjust)(struct sk_buff *skb, struct nf_conn *ct,
+                           enum ip_conntrack_info ctinfo, s32 off);
+};
+
+- Arnaldo
+ 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+> N.B. This patch is based on top of tmp.libbtf_encoder branch.
+> 
+> Also seems like non-forward declared union has a slightly different
+> representation from struct (class). Not sure why it is so, but this change
+> doesn't seem to break anything.
+> ---
+> 
+>  btf_loader.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/btf_loader.c b/btf_loader.c
+> index 9b5da3a4997a..0cb23967fec3 100644
+> --- a/btf_loader.c
+> +++ b/btf_loader.c
+> @@ -134,12 +134,13 @@ static struct type *type__new(uint16_t tag, strings_t name, size_t size)
+>  	return type;
+>  }
+>  
+> -static struct class *class__new(strings_t name, size_t size)
+> +static struct class *class__new(strings_t name, size_t size, bool is_union)
+>  {
+>  	struct class *class = tag__alloc(sizeof(*class));
+> +	uint32_t tag = is_union ? DW_TAG_union_type : DW_TAG_structure_type;
+>  
+>  	if (class != NULL) {
+> -		type__init(&class->type, DW_TAG_structure_type, name, size);
+> +		type__init(&class->type, tag, name, size);
+>  		INIT_LIST_HEAD(&class->vtable);
+>  	}
+>  
+> @@ -228,7 +229,7 @@ static int create_members(struct btf_elf *btfe, const struct btf_type *tp,
+>  
+>  static int create_new_class(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
+>  {
+> -	struct class *class = class__new(tp->name_off, tp->size);
+> +	struct class *class = class__new(tp->name_off, tp->size, false);
+>  	int member_size = create_members(btfe, tp, &class->type);
+>  
+>  	if (member_size < 0)
+> @@ -313,7 +314,7 @@ static int create_new_subroutine_type(struct btf_elf *btfe, const struct btf_typ
+>  
+>  static int create_new_forward_decl(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
+>  {
+> -	struct class *fwd = class__new(tp->name_off, 0);
+> +	struct class *fwd = class__new(tp->name_off, 0, btf_kind(tp));
+>  
+>  	if (fwd == NULL)
+>  		return -ENOMEM;
+> -- 
+> 2.24.1
+> 
+
 -- 
-2.23.0
 
+- Arnaldo
