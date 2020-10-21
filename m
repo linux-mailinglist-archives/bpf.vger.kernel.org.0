@@ -2,164 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E674294866
-	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 08:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2D0294AB5
+	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 11:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394622AbgJUGgW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Oct 2020 02:36:22 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:57906 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394592AbgJUGgW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:36:22 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201021063604euoutp0181c125ca8fb8a7c16e7a8f12ec8a8276~-7nHBXaOx1239012390euoutp01z
-        for <bpf@vger.kernel.org>; Wed, 21 Oct 2020 06:36:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201021063604euoutp0181c125ca8fb8a7c16e7a8f12ec8a8276~-7nHBXaOx1239012390euoutp01z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603262164;
-        bh=ESAFEoSvJZv3zI6kdwpy5+Kf3FaMswyAoOzJ89FNF0c=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Wiy31xkqYu+kEfJWg/NQGWGP6WBpbTopPzosKjClUtFiBmtqf31Ro0CbCzELLzEVA
-         kEmH3NNK3qWVgvdXZSlfUQQIQts3i4nNU63mtaT5wOi7jTaKX5/bxJa+GKOrOER4P3
-         qbwxdASk5BunSwmjcTywLSkB6piCppiALR90eHbM=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20201021063556eucas1p22240959c43270ef52457c4d34c17c01f~-7m-San052167021670eucas1p2J;
-        Wed, 21 Oct 2020 06:35:56 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 97.47.05997.CC6DF8F5; Wed, 21
-        Oct 2020 07:35:56 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20201021063555eucas1p24f8486354866fea4640a8f28e487d3c4~-7m_zTIUF2170121701eucas1p2J;
-        Wed, 21 Oct 2020 06:35:55 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201021063555eusmtrp1866d482630cd1ddef9574a129274bc4b~-7m_yijaE0358403584eusmtrp1h;
-        Wed, 21 Oct 2020 06:35:55 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-d5-5f8fd6cc173a
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id C4.00.06017.BC6DF8F5; Wed, 21
-        Oct 2020 07:35:55 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201021063555eusmtip1000698fc810e12c390545db71534e0d7~-7m_IGsVT0811308113eusmtip1m;
-        Wed, 21 Oct 2020 06:35:55 +0000 (GMT)
-Subject: Re: arm64 build broken on linux next 20201021 -
- include/uapi/asm-generic/unistd.h:862:26: error: array index in initializer
- exceeds array bounds
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <12dfa2bb-e567-fb42-d74f-5aaa0c5c43df@samsung.com>
-Date:   Wed, 21 Oct 2020 08:35:55 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.3.3
+        id S2436518AbgJUJns (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Oct 2020 05:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409043AbgJUJnr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:43:47 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE8EC0613CE
+        for <bpf@vger.kernel.org>; Wed, 21 Oct 2020 02:43:46 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id h24so2233947ejg.9
+        for <bpf@vger.kernel.org>; Wed, 21 Oct 2020 02:43:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KLiNIgX251FgXrsbtrlNaZzuGlrVpBn41hZfRaEd3vM=;
+        b=br9WuAvbkCdYTFusGjApUYiBoRnFVrtLeAAlmKvayRcjBWwQjF1RF45IjivbTH6PqL
+         HvOO+2pNk03lz0AaElyxErgd2/7BdVv6cZimcJApeUB7O/oi57c3tSrowjGlFclmOdmE
+         O8qVsDxXE6ouMxItk/HUS7HqNWsIC0CxjHL4cpy+hmpRXZH/vkfoUo6EerpJDnwEez/A
+         q5/I902kFYZvzmucpI00VGzCc/O2VSnFiTzi6v8OXWNE0nzR9GDbE55+DjAVncYsdsn+
+         u9zOYT88Pm0w2aiPQoy596oiZfk9EvKp0MQFLobNNLLZ78HPWuU2VSYTkabWGt5rCB+I
+         yCag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KLiNIgX251FgXrsbtrlNaZzuGlrVpBn41hZfRaEd3vM=;
+        b=GARerBaU+zsKE1lrFPSaPK89fhCGQX29WyWcFwoKBqx/Owed/jUj5u3tHv9f6TT+Wv
+         iU/QKSY10rehcQeokYGHpayWDZ4CBuElk7TCXNIgJ7Ad6+HRDKztTZ3TdckZgiy+lQ5R
+         LfjziSKiH75iwjZJry7WqrqQzTOxClfME1TaoMWNcpnoJdNykDI6laME2AKjcdu85L2K
+         +hs8YIS3LDIWg9rZbvPhSDmEWZFHG8qAB7Qvs1zTimhys9YsXSWrf7wAnW2mZ5FCkKug
+         Cu7nVNGzTSxoqS6hIec9Rp3IbQEANDaVjr+O20yJXyNFuUpmTMsWGBr+MgY7iA9pmm59
+         0qBw==
+X-Gm-Message-State: AOAM532wIklERBYvrt/pVv9Zes7e0K7vtz7EdU5sSRH46P1SUbpvBdrE
+        49V7++WCX6+O3R2lea4j4+3SgOD+gBGQeX1RjSs=
+X-Google-Smtp-Source: ABdhPJxWXw46yYrH8h3xKc33q+RbZnTkEdntxk9T1UQCgvYyHsUnpPh0ga8XWQDmgS2E3nIzbtLsr/KxsbaPkSjXJZ8=
+X-Received: by 2002:a17:906:489b:: with SMTP id v27mr2711268ejq.315.1603273424637;
+ Wed, 21 Oct 2020 02:43:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYuL9O2BLDfCWN7+aJRER3sQW=C-ayo4Tb7QKdffjMYKDw@mail.gmail.com>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBKsWRmVeSWpSXmKPExsWy7djP87pnrvXHG8yaJWLxd9IxdovPR46z
-        Wbxf1sNo0fhO2aJj11cWi02Pr7FaXN41h83i4MI2Rout96axW9z6xG9xbIGYxda9V9ktWu6Y
-        OvB6rJm3htHj969JjB5/535k9mi8cYPNY9OqTjaPO9f2sHlsXlLvcfvfY2aPz5vkAjijuGxS
-        UnMyy1KL9O0SuDL+rzrHVvCJu2LmrwPMDYwdXF2MnBwSAiYSK3acYOti5OIQEljBKPH40Q0o
-        5wujxNdFd6Gcz4wSHSsmssO0fPh/kBEisZxRYueGuVBV7xklpv1Yzw7iCAvMZZR4M/85WIuI
-        wEsmiRUNkSA2s8B0RokF1zRBbDYBQ4mut11A3RwcvAJ2EkceWIGEWQRUJU79XMICYosKJElc
-        ut8ENoZXQFDi5MwnYHFOgUCJXx/vsECMlJdo3jqbGcIWl7j1ZD4TyA0SAj/ZJV5uWMwKcbaL
-        xLLZ39kgbGGJV8e3QL0jI3F6cg8LREMzo8TDc2vZIZweRonLTTMYIaqsJe6c+wV2KbOApsT6
-        XfogpoSAo8S71eoQJp/EjbeCEDfwSUzaNp0ZIswr0dEmBDFDTWLW8XVwWw9euMQ8gVFpFpLP
-        ZiH5ZhaSb2YhrF3AyLKKUTy1tDg3PbXYKC+1XK84Mbe4NC9dLzk/dxMjML2d/nf8yw7GXX+S
-        DjEKcDAq8fBWMPXHC7EmlhVX5h5ilOBgVhLhdTp7Ok6INyWxsiq1KD++qDQntfgQozQHi5I4
-        r/Gil7FCAumJJanZqakFqUUwWSYOTqkGRivVyyFpCz7v5/tqevT8lUXZDbreS8Ln1KruuftB
-        c9rqTzViX9aL3rDzly5Y/itDNqrO5uKbnf/W/oi5ERLxSNlqrWpBjbLO1cidsm85a9zPL32t
-        9tbo84k/8i6+k84tktP2DSny2+GeXl9f4dv+eNLSzTLTf2ns7i6zSV+jn5So8Xml9+P4d0os
-        xRmJhlrMRcWJABblmihrAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNIsWRmVeSWpSXmKPExsVy+t/xu7qnr/XHG/QeM7L4O+kYu8XnI8fZ
-        LN4v62G0aHynbNGx6yuLxabH11gtLu+aw2ZxcGEbo8XWe9PYLW594rc4tkDMYuveq+wWLXdM
-        HXg91sxbw+jx+9ckRo+/cz8yezTeuMHmsWlVJ5vHnWt72Dw2L6n3uP3vMbPH501yAZxRejZF
-        +aUlqQoZ+cUltkrRhhZGeoaWFnpGJpZ6hsbmsVZGpkr6djYpqTmZZalF+nYJehn/V51jK/jE
-        XTHz1wHmBsYOri5GTg4JAROJD/8PMnYxcnEICSxllJh85wErREJG4uS0BihbWOLPtS42iKK3
-        jBInjlxmBXGEBeYySryZ/5wdxBEReMkk8envdRaQFmaB6YwSk3oDQWwhgQCJ91dXM4PYbAKG
-        El1vQUZxcPAK2EkceWAFEmYRUJU49XMJWKuoQJLE/hM3wWxeAUGJkzOfgNmcAoESvz7egRpv
-        JjFv80NmCFteonnrbChbXOLWk/lMExiFZiFpn4WkZRaSlllIWhYwsqxiFEktLc5Nzy020itO
-        zC0uzUvXS87P3cQIjOhtx35u2cHY9S74EKMAB6MSD+8Flv54IdbEsuLK3EOMEhzMSiK8TmdP
-        xwnxpiRWVqUW5ccXleakFh9iNAV6biKzlGhyPjDZ5JXEG5oamltYGpobmxubWSiJ83YIHIwR
-        EkhPLEnNTk0tSC2C6WPi4JRqYCzNVl5zu3X+1ZYV31/xNCfWTFHgv85ydg1LW67e1hWFtfJl
-        PxbY7o/juzetobduWYa7l/98C9NfL44Wftklknps0XxmocfHZmaJPz63Yallw4Lza6K6f9/S
-        VhNuXL891f1Q233TdNkoV6l5s2Zl/LxZ0hFWe9R93jqz92+OlVknvVj7Z/J1YQ8lluKMREMt
-        5qLiRAD8wt3P/gIAAA==
-X-CMS-MailID: 20201021063555eucas1p24f8486354866fea4640a8f28e487d3c4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20201021063555eucas1p24f8486354866fea4640a8f28e487d3c4
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20201021063555eucas1p24f8486354866fea4640a8f28e487d3c4
-References: <CA+G9fYuL9O2BLDfCWN7+aJRER3sQW=C-ayo4Tb7QKdffjMYKDw@mail.gmail.com>
-        <CGME20201021063555eucas1p24f8486354866fea4640a8f28e487d3c4@eucas1p2.samsung.com>
+References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
+ <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net> <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
+ <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net> <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
+ <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net> <CAEf4Bza4KFJ_j7vmg-x_Zinp0PUM-zmWYHMq_y+2zWmX485sBQ@mail.gmail.com>
+ <ece9975d-717c-a868-be51-c97aeae8e011@iogearbox.net> <CAEf4BzawvpsYybaOXf=GvJguiavC16BmdDeJfO4kEAR5naOKug@mail.gmail.com>
+ <231e3e6b-0118-f600-05c5-f4e2f2c76129@fb.com> <CAMy7=ZWYn9MnmQJU7S_FUz5PArkGtVUcS1czn3oVCqa1aEniXw@mail.gmail.com>
+ <322077f3-efea-8bd0-0b67-b4636428fc5a@iogearbox.net>
+In-Reply-To: <322077f3-efea-8bd0-0b67-b4636428fc5a@iogearbox.net>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Wed, 21 Oct 2020 12:43:33 +0300
+Message-ID: <CAMy7=ZVjYvMz2aFJxcPK5nK4L3AXZJPuVpQvPVk98ph8scpYEA@mail.gmail.com>
+Subject: Re: libbpf error: unknown register name 'r0' in asm
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Naresh,
-
-On 21.10.2020 07:05, Naresh Kamboju wrote:
-> arm64 build broken while building linux next 20201021 tag.
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=D7=
+=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-22:58 =D7=9E=D7=90=D7=AA =
+=E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+<=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
 >
-> include/uapi/asm-generic/unistd.h:862:26: error: array index in
-> initializer exceeds array bounds
-> #define __NR_watch_mount 441
->                           ^
+> On 10/9/20 9:33 PM, Yaniv Agman wrote:
+> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=
+=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-22:08 =D7=9E=D7=90=D7=
+=AA =E2=80=AAYonghong Song=E2=80=AC=E2=80=8F <=E2=80=AAyhs@fb.com=E2=80=AC=
+=E2=80=8F>:=E2=80=AC
+> >> On 10/9/20 11:59 AM, Andrii Nakryiko wrote:
+> >>> On Fri, Oct 9, 2020 at 11:41 AM Daniel Borkmann <daniel@iogearbox.net=
+> wrote:
+> >>>> On 10/9/20 8:35 PM, Andrii Nakryiko wrote:
+> >>>>> On Fri, Oct 9, 2020 at 11:21 AM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+> >>>>>> On 10/9/20 8:09 PM, Yaniv Agman wrote:
+> >>>>>>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =
+=D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-20:39 =D7=9E=D7=
+=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> >>>>>>> <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> >>>>>>>>
+> >>>>>>>> On 10/9/20 6:56 PM, Yaniv Agman wrote:
+> >>>>>>>>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=
+=9D =D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-19:27 =D7=9E=
+=D7=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> >>>>>>>>> <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> >>>>>>>>>>
+> >>>>>>>>>> [ Cc +Yonghong ]
+> >>>>>>>>>>
+> >>>>>>>>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
+> >>>>>>>>>>> Pulling the latest changes of libbpf and compiling my applica=
+tion with it,
+> >>>>>>>>>>> I see the following error:
+> >>>>>>>>>>>
+> >>>>>>>>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: erro=
+r:
+> >>>>>>>>>>> unknown register name 'r0' in asm
+> >>>>>>>>>>>                            : "r0", "r1", "r2", "r3", "r4", "r=
+5");
+> >>>>>>>>>>>
+> >>>>>>>>>>> The commit which introduced this change is:
+> >>>>>>>>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
+> >>>>>>>>>>>
+> >>>>>>>>>>> I'm not sure if I'm doing something wrong (missing include?),=
+ or this
+> >>>>>>>>>>> is a genuine error
+> >>>>>>>>>>
+> >>>>>>>>>> Seems like your clang/llvm version might be too old.
+> >>>>>>>>>
+> >>>>>>>>> I'm using clang 10.0.1
+> >>>>>>>>
+> >>>>>>>> Ah, okay, I see. Would this diff do the trick for you?
+> >>>>>>>
+> >>>>>>> Yes! Now it compiles without any problems!
+> >>>>>>
+> >>>>>> Great, thx, I'll cook proper fix and check with clang6 as Yonghong=
+ mentioned.
+> >>>>>
+> >>>>> Am I the only one confused here?... Yonghong said it should be
+> >>>>> supported as early as clang 6, Yaniv is using Clang 10 and is still
+> >>>>> getting this error. Let's figure out what's the problem before addi=
+ng
+> >>>>> unnecessary checks.
+> >>>>>
+> >>>>> I think it's not the clang_major check that helped, rather __bpf__
+> >>>>> check. So please hold off on the fix, let's get to the bottom of th=
+is
+> >>>>> first.
+> >>>>
+> >>>> I don't see confusion here (maybe other than which minimal clang/llv=
+m version
+> >>>> libbpf should support). If we do `#if __clang_major__ >=3D 6 && defi=
+ned(__bpf__)`
+> >>>> for the final patch, then this means that user passed clang -target =
+bpf and
+> >>>> the min supported version for inline assembly was there, otherwise w=
+e fall back
+> >>>> to bpf_tail_call. In Yaniv's case, he probably had native target wit=
+h -emit-llvm
+> >>>> and then used llc invocation.
+> >>>
+> >>> The "-emit-llvm" was the part that we were missing and had to figure
+> >>> it out, before we could discuss the fix.
+> >>
+> >> Maybe Yaniv can confirm. I think the following properly happens.
+> >>      - clang10 -O2 -g -S -emit-llvm t.c  // This is native compilation
+> >> becasue some header files. Maybe some thing is guarded with x86 specif=
+ic
+> >> config's which is not available to -target bpf. This is mostly for
+> >> tracing programs and Yanic mentions pt_regs which should be related
+> >> to tracing.
+> >>      - llc -march=3Dbpf t.ll
+> >
+> > Yes, like I said,  I do use --emit-llvm, and indeed have a tracing prog=
+ram
+> >
+> >> So guarding the function with __bpf__ should be the one fixing this is=
+sue.
+> >>
+> >> guard with clang version >=3D6 should not hurt and may prevent
+> >> compilation failures if people use < 6 llvm with clang -target bpf.
+> >> I think most people should already use newer llvm, but who knows.
 >
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Yeah that was my thinking for those stuck for whatever reason on old LLVM=
+.
+>
+> >>>>>>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_hel=
+pers.h
+> >>>>>>>> index 2bdb7d6dbad2..31e356831fcf 100644
+> >>>>>>>> --- a/tools/lib/bpf/bpf_helpers.h
+> >>>>>>>> +++ b/tools/lib/bpf/bpf_helpers.h
+> >>>>>>>> @@ -72,6 +72,7 @@
+> >>>>>>>>       /*
+> >>>>>>>>        * Helper function to perform a tail call with a constant/=
+immediate map slot.
+> >>>>>>>>        */
+> >>>>>>>> +#if __clang_major__ >=3D 10 && defined(__bpf__)
+> >>>>>>>>       static __always_inline void
+> >>>>>>>>       bpf_tail_call_static(void *ctx, const void *map, const __u=
+32 slot)
+> >>>>>>>>       {
+> >>>>>>>> @@ -98,6 +99,9 @@ bpf_tail_call_static(void *ctx, const void *ma=
+p, const __u32 slot)
+> >>>>>>>>                          :: [ctx]"r"(ctx), [map]"r"(map), [slot]=
+"i"(slot)
+> >>>>>>>>                          : "r0", "r1", "r2", "r3", "r4", "r5");
+> >>>>>>>>       }
+> >>>>>>>> +#else
+> >>>>>>>> +# define bpf_tail_call_static  bpf_tail_call
+> >>>
+> >>> bpf_tail_call_static has very specific guarantees, so in cases where
+> >>> we can't use inline assembly to satisfy those guarantees, I think we
+> >>> should not just silently redefine bpf_tail_call_static as
+> >>> bpf_tail_call, rather make compilation fail if someone is attempting
+> >>> to use bpf_tail_call_static. _Static_assert could be used to provide =
+a
+> >>> better error message here, probably.
+>
+> Makes sense as well, I was mainly thinking if people include header files=
+ in
+> their project which are shared between tracing & non-tracing, so they com=
+pile
+> just fine, but I can see the point that wrt very specific guarantees, ful=
+ly
+> agree. In that sense we should just have it defined with the clang + __bp=
+f__
+> constraints mentioned earlier.
+>
+> Thanks,
+> Daniel
 
-Conflict resolution in commit 5394c6318b32f is incomplete.
+Hi Daniel,
 
-This fixes the build:
+Is this change going to happen?
+I'm still having a compilation error when using master branch
 
-diff --git a/arch/arm64/include/asm/unistd.h 
-b/arch/arm64/include/asm/unistd.h
-index b3b2019f8d16..86a9d7b3eabe 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -38,7 +38,7 @@
-  #define __ARM_NR_compat_set_tls (__ARM_NR_COMPAT_BASE + 5)
-  #define __ARM_NR_COMPAT_END            (__ARM_NR_COMPAT_BASE + 0x800)
-
--#define __NR_compat_syscalls           441
-+#define __NR_compat_syscalls           442
-  #endif
-
-  #define __ARCH_WANT_SYS_CLONE
-diff --git a/include/uapi/asm-generic/unistd.h 
-b/include/uapi/asm-generic/unistd.h
-index 094a685aa0f9..5df46517260e 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -863,7 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
-  __SYSCALL(__NR_watch_mount, sys_watch_mount)
-
-  #undef __NR_syscalls
--#define __NR_syscalls 441
-+#define __NR_syscalls 442
-
-  /*
-   * 32 bit systems traditionally used different
-
-
-Best regards
-
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Thanks,
+Yaniv
