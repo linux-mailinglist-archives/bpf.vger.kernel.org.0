@@ -2,175 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0648295167
-	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 19:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDAA295219
+	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 20:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408844AbgJURSQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Oct 2020 13:18:16 -0400
-Received: from www62.your-server.de ([213.133.104.62]:59586 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389946AbgJURSP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:18:15 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kVHka-0001FC-6b; Wed, 21 Oct 2020 19:18:12 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kVHka-000UFF-1u; Wed, 21 Oct 2020 19:18:12 +0200
-Subject: Re: libbpf error: unknown register name 'r0' in asm
-To:     Yaniv Agman <yanivagman@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
- <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net>
- <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
- <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net>
- <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
- <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net>
- <CAEf4Bza4KFJ_j7vmg-x_Zinp0PUM-zmWYHMq_y+2zWmX485sBQ@mail.gmail.com>
- <ece9975d-717c-a868-be51-c97aeae8e011@iogearbox.net>
- <CAEf4BzawvpsYybaOXf=GvJguiavC16BmdDeJfO4kEAR5naOKug@mail.gmail.com>
- <231e3e6b-0118-f600-05c5-f4e2f2c76129@fb.com>
- <CAMy7=ZWYn9MnmQJU7S_FUz5PArkGtVUcS1czn3oVCqa1aEniXw@mail.gmail.com>
- <322077f3-efea-8bd0-0b67-b4636428fc5a@iogearbox.net>
- <CAMy7=ZVjYvMz2aFJxcPK5nK4L3AXZJPuVpQvPVk98ph8scpYEA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b18125f2-ae98-9ca1-a9c9-099262b8a388@iogearbox.net>
-Date:   Wed, 21 Oct 2020 19:18:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAMy7=ZVjYvMz2aFJxcPK5nK4L3AXZJPuVpQvPVk98ph8scpYEA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25512/Tue Jul 16 10:09:55 2019)
+        id S2504003AbgJUSUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Oct 2020 14:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503991AbgJUSUS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Oct 2020 14:20:18 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F4AC0613CE;
+        Wed, 21 Oct 2020 11:20:18 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id n9so1962932pgt.8;
+        Wed, 21 Oct 2020 11:20:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=B9MhHCAAHPcD+y4BjpxYMfmOMONf3nd959tG9AXqEms=;
+        b=uja448HnGbNV/EVsA7qHZu7ZN5QdXgfMz9r3XizHyjIe0cQdCvO520aIzP7vNdtgpn
+         T3BP+sCr+Vxaa/o1aDJckcsEqKZ1+1pV7WUismWH2sBhb/BKH2Y5/CvzceHV1BzOD3er
+         I4bweGLIO/hvqvematbcKIjDgJgqMKVvyuG9jlAKXtg1G7uihmM025mwolVr4w8+JNS/
+         /xhampPxqH2y7LxOVIB73ZhM9mkZdzH0BEHGs7anDFZiRI17v8V6je2bg023YgEg30NB
+         NIGtt4bwQzizpdJAclLbbj0eDKKAeDdBgJKjJxguqktNoPW/ZQ+b5lGA2KFKuFJjWDo8
+         xcvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=B9MhHCAAHPcD+y4BjpxYMfmOMONf3nd959tG9AXqEms=;
+        b=cJ53Z/PpAF/b6VaOmD30L5SDoZGdWuNrHNJ5qztIBPEDSfLPK4GYbgJAsvz289tN3s
+         JodpIYxRXkb9CbXavV0LPW+eZW0aUyG9fducNOgoo7AeBLr2x5EJ7qEMqgpWJ48mLf3c
+         oOtuG198ht/QbsgIfXDNUJPBtJ6CpoY8x6CvzJ3dfZPceqlv9ohk05GKmZ97exXIHVni
+         ovX39j7iiY0vpIMDiQU7Iu8V2GoeFJzqiBvjjsDIe4CYg3U6oYJluQTY+pIWSWN8O9v0
+         5UE5SEtcVbQflWvZbkfiVdV0XUXuLOn8/Bn/spTLevZD+IOOsiEkWmwb6ePuredEO1Hx
+         hw+g==
+X-Gm-Message-State: AOAM530r1WrHr32VS8fZOQr0oJmFbRwOFh7q7vjiN3EiX7HCu/qHfbwS
+        eOPCBBl6KLKLJ37gr53+t+zcRB0i8mAQ1w==
+X-Google-Smtp-Source: ABdhPJyYxdYelacXXBFrseO0Bjw2KVstHbUFRGjzL5JDKI4PatKA+On2s71F5GjKvFQnqUgd9R3Y/A==
+X-Received: by 2002:a62:e81a:0:b029:152:97f9:9775 with SMTP id c26-20020a62e81a0000b029015297f99775mr4706999pfi.29.1603304418284;
+        Wed, 21 Oct 2020 11:20:18 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id v3sm2618672pfu.165.2020.10.21.11.20.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Oct 2020 11:20:17 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf-next 0/3] bpf: Pointers beyond packet end.
+Date:   Wed, 21 Oct 2020 11:20:12 -0700
+Message-Id: <20201021182015.39000-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/21/20 11:43 AM, Yaniv Agman wrote:
-> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-22:58 מאת ‪Daniel Borkmann‬‏
-> <‪daniel@iogearbox.net‬‏>:‬
->> On 10/9/20 9:33 PM, Yaniv Agman wrote:
->>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-22:08 מאת ‪Yonghong Song‬‏ <‪yhs@fb.com‬‏>:‬
->>>> On 10/9/20 11:59 AM, Andrii Nakryiko wrote:
->>>>> On Fri, Oct 9, 2020 at 11:41 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>>> On 10/9/20 8:35 PM, Andrii Nakryiko wrote:
->>>>>>> On Fri, Oct 9, 2020 at 11:21 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>>>>> On 10/9/20 8:09 PM, Yaniv Agman wrote:
->>>>>>>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-20:39 מאת ‪Daniel Borkmann‬‏
->>>>>>>>> <‪daniel@iogearbox.net‬‏>:‬
->>>>>>>>>>
->>>>>>>>>> On 10/9/20 6:56 PM, Yaniv Agman wrote:
->>>>>>>>>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-19:27 מאת ‪Daniel Borkmann‬‏
->>>>>>>>>>> <‪daniel@iogearbox.net‬‏>:‬
->>>>>>>>>>>>
->>>>>>>>>>>> [ Cc +Yonghong ]
->>>>>>>>>>>>
->>>>>>>>>>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
->>>>>>>>>>>>> Pulling the latest changes of libbpf and compiling my application with it,
->>>>>>>>>>>>> I see the following error:
->>>>>>>>>>>>>
->>>>>>>>>>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
->>>>>>>>>>>>> unknown register name 'r0' in asm
->>>>>>>>>>>>>                             : "r0", "r1", "r2", "r3", "r4", "r5");
->>>>>>>>>>>>>
->>>>>>>>>>>>> The commit which introduced this change is:
->>>>>>>>>>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
->>>>>>>>>>>>>
->>>>>>>>>>>>> I'm not sure if I'm doing something wrong (missing include?), or this
->>>>>>>>>>>>> is a genuine error
->>>>>>>>>>>>
->>>>>>>>>>>> Seems like your clang/llvm version might be too old.
->>>>>>>>>>>
->>>>>>>>>>> I'm using clang 10.0.1
->>>>>>>>>>
->>>>>>>>>> Ah, okay, I see. Would this diff do the trick for you?
->>>>>>>>>
->>>>>>>>> Yes! Now it compiles without any problems!
->>>>>>>>
->>>>>>>> Great, thx, I'll cook proper fix and check with clang6 as Yonghong mentioned.
->>>>>>>
->>>>>>> Am I the only one confused here?... Yonghong said it should be
->>>>>>> supported as early as clang 6, Yaniv is using Clang 10 and is still
->>>>>>> getting this error. Let's figure out what's the problem before adding
->>>>>>> unnecessary checks.
->>>>>>>
->>>>>>> I think it's not the clang_major check that helped, rather __bpf__
->>>>>>> check. So please hold off on the fix, let's get to the bottom of this
->>>>>>> first.
->>>>>>
->>>>>> I don't see confusion here (maybe other than which minimal clang/llvm version
->>>>>> libbpf should support). If we do `#if __clang_major__ >= 6 && defined(__bpf__)`
->>>>>> for the final patch, then this means that user passed clang -target bpf and
->>>>>> the min supported version for inline assembly was there, otherwise we fall back
->>>>>> to bpf_tail_call. In Yaniv's case, he probably had native target with -emit-llvm
->>>>>> and then used llc invocation.
->>>>>
->>>>> The "-emit-llvm" was the part that we were missing and had to figure
->>>>> it out, before we could discuss the fix.
->>>>
->>>> Maybe Yaniv can confirm. I think the following properly happens.
->>>>       - clang10 -O2 -g -S -emit-llvm t.c  // This is native compilation
->>>> becasue some header files. Maybe some thing is guarded with x86 specific
->>>> config's which is not available to -target bpf. This is mostly for
->>>> tracing programs and Yanic mentions pt_regs which should be related
->>>> to tracing.
->>>>       - llc -march=bpf t.ll
->>>
->>> Yes, like I said,  I do use --emit-llvm, and indeed have a tracing program
->>>
->>>> So guarding the function with __bpf__ should be the one fixing this issue.
->>>>
->>>> guard with clang version >=6 should not hurt and may prevent
->>>> compilation failures if people use < 6 llvm with clang -target bpf.
->>>> I think most people should already use newer llvm, but who knows.
->>
->> Yeah that was my thinking for those stuck for whatever reason on old LLVM.
->>
->>>>>>>>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
->>>>>>>>>> index 2bdb7d6dbad2..31e356831fcf 100644
->>>>>>>>>> --- a/tools/lib/bpf/bpf_helpers.h
->>>>>>>>>> +++ b/tools/lib/bpf/bpf_helpers.h
->>>>>>>>>> @@ -72,6 +72,7 @@
->>>>>>>>>>        /*
->>>>>>>>>>         * Helper function to perform a tail call with a constant/immediate map slot.
->>>>>>>>>>         */
->>>>>>>>>> +#if __clang_major__ >= 10 && defined(__bpf__)
->>>>>>>>>>        static __always_inline void
->>>>>>>>>>        bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
->>>>>>>>>>        {
->>>>>>>>>> @@ -98,6 +99,9 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
->>>>>>>>>>                           :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
->>>>>>>>>>                           : "r0", "r1", "r2", "r3", "r4", "r5");
->>>>>>>>>>        }
->>>>>>>>>> +#else
->>>>>>>>>> +# define bpf_tail_call_static  bpf_tail_call
->>>>>
->>>>> bpf_tail_call_static has very specific guarantees, so in cases where
->>>>> we can't use inline assembly to satisfy those guarantees, I think we
->>>>> should not just silently redefine bpf_tail_call_static as
->>>>> bpf_tail_call, rather make compilation fail if someone is attempting
->>>>> to use bpf_tail_call_static. _Static_assert could be used to provide a
->>>>> better error message here, probably.
->>
->> Makes sense as well, I was mainly thinking if people include header files in
->> their project which are shared between tracing & non-tracing, so they compile
->> just fine, but I can see the point that wrt very specific guarantees, fully
->> agree. In that sense we should just have it defined with the clang + __bpf__
->> constraints mentioned earlier.
-> 
-> Is this change going to happen?
-> I'm still having a compilation error when using master branch
+From: Alexei Starovoitov <ast@kernel.org>
 
-Yeah, I'll submit something tonight.
+In some cases LLVM uses the knowledge that branch is taken to optimze the code
+which causes the verifier to reject valid programs.
+Teach the verifier to recognize that
+r1 = skb->data;
+r1 += 10;
+r2 = skb->data_end;
+if (r1 > r2) {
+  here r1 points beyond packet_end and subsequent
+  if (r1 > r2) // always evaluates to "true".
+}
 
-Thanks,
-Daniel
+Alexei Starovoitov (3):
+  bpf: Support for pointers beyond pkt_end.
+  selftests/bpf: Add skb_pkt_end test
+  selftests/bpf: Add asm tests for pkt vs pkt_end comparison.
+
+ include/linux/bpf_verifier.h                  |   2 +-
+ kernel/bpf/verifier.c                         | 131 +++++++++++++++---
+ .../bpf/prog_tests/test_skb_pkt_end.c         |  41 ++++++
+ .../testing/selftests/bpf/progs/skb_pkt_end.c |  54 ++++++++
+ .../testing/selftests/bpf/verifier/ctx_skb.c  |  42 ++++++
+ 5 files changed, 247 insertions(+), 23 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c
+ create mode 100644 tools/testing/selftests/bpf/progs/skb_pkt_end.c
+
+-- 
+2.23.0
+
