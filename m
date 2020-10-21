@@ -2,168 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DE22952E8
-	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 21:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29BC295300
+	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 21:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504476AbgJUTZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Oct 2020 15:25:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42300 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441904AbgJUTZe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:25:34 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1737824170;
-        Wed, 21 Oct 2020 19:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603308333;
-        bh=XmGtBDIc8rDQrH+DPZt5CdCuiMuBmj/fWwAZdzc8B3Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TkanMKHvCJdb4SrnL21T/IdHnW9G3ajKYy2gfB+zD8NqWiCeFF7Aek91Pi0wlSDhp
-         GQ2aBuGNjgLRTMOInKjjdlZZjiEFHAgkLZ+fRkKWq3VYJQ2mVomNgmswPa87llMmnk
-         MIHqFw5ylmcDYLJPKoo4LL99uJ7NCivXpc9v8slU=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5C1EA403C2; Wed, 21 Oct 2020 16:25:30 -0300 (-03)
-Date:   Wed, 21 Oct 2020 16:25:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        ast@kernel.org
-Subject: Re: [PATCH dwarves] btf_loader: handle union forward declaration
- properly
-Message-ID: <20201021192530.GS2342001@kernel.org>
-References: <20201009192607.699835-1-andrii@kernel.org>
+        id S2505001AbgJUTeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Oct 2020 15:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505000AbgJUTeK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Oct 2020 15:34:10 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AF4C0613CE
+        for <bpf@vger.kernel.org>; Wed, 21 Oct 2020 12:34:10 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id v19so3719795edx.9
+        for <bpf@vger.kernel.org>; Wed, 21 Oct 2020 12:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2NJtQ9GZugLDbw/a1HPP6/pljp0ferlo6GBdWNCHNso=;
+        b=u67JYbATMDunUQR1j/j1v8hztYPucEd530dbVmDShpgRmGDWMFl/HoXR3whsQOAmUf
+         M9i901/nshuq9qWdi2OmCJKF5Um1xAv7u0Zat2sYJYv2xRjq36fO5Bg/he9KSEvm3z8Q
+         bXEK6df5gVOg/uPBDsBi67sgo2m50Gt7W2Uw+Lk9dXU3I6oRub2LIAhdOkZJ/DszmHh4
+         AfU8Km33LGmA+TgNnbhsC2JORf8RG4zL/qSSQxuZv34Y2F0fLSMQdgfviwE1Ux42UwZg
+         7LuAhUtZ5nQjVh7i697wrXl0NFYbiANlmnkPfHKWHr/JXHXdgX8L8suQZjrTWW0XzMRd
+         +aog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2NJtQ9GZugLDbw/a1HPP6/pljp0ferlo6GBdWNCHNso=;
+        b=C/Faz9sCYlu722V+Omh0jxM16Q8tw2GO1QprY26XnrekwTC6deeK4tP3YZKblx4wqR
+         UI9tbph9WHoYlkE3HuOyKVTO/AAIdg5Mwt33DZpXiXfeq1HaXag/o9ZBIAaiCf5yRxkP
+         yKsfDco1JcR5snmYTrDLWag3YWevHgC8GCL+JKKVREwuGDF0NHdOd82F5Kr6FOAoq6xy
+         TJDcBkFOXWKp/fXRF6gPy6IrtaIjhrxlzEg85m8wkpHBBhShvKMSZD9VWzbEhB67i8Sw
+         issUO88DbK89i0nRVpZTdVRcLBTruDRgrWj917H9x3PxZqrmvi8waNQG0tQkweM6/Dle
+         jEMg==
+X-Gm-Message-State: AOAM530zoTwxWwWWB9nMYgSKlSaNMUi4ELkDp4njPEGd6vmp+l9VVHnC
+        KyMtXOqqT4gIMRDY+f5LvLsWVj84XJuH4LbfbV0=
+X-Google-Smtp-Source: ABdhPJwDtJBAW+UbQZQRfYjCZdklGNBTvYoO6VlTIHb/9iuufe/CnRBHeO9zpYqzyHkxogxiW24yQ86UnFIJEHbSsBc=
+X-Received: by 2002:a50:d642:: with SMTP id c2mr4791908edj.342.1603308848655;
+ Wed, 21 Oct 2020 12:34:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009192607.699835-1-andrii@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
+ <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net> <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
+ <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net> <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
+ <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net> <CAEf4Bza4KFJ_j7vmg-x_Zinp0PUM-zmWYHMq_y+2zWmX485sBQ@mail.gmail.com>
+ <ece9975d-717c-a868-be51-c97aeae8e011@iogearbox.net> <CAEf4BzawvpsYybaOXf=GvJguiavC16BmdDeJfO4kEAR5naOKug@mail.gmail.com>
+ <231e3e6b-0118-f600-05c5-f4e2f2c76129@fb.com> <CAMy7=ZWYn9MnmQJU7S_FUz5PArkGtVUcS1czn3oVCqa1aEniXw@mail.gmail.com>
+ <322077f3-efea-8bd0-0b67-b4636428fc5a@iogearbox.net> <CAMy7=ZVjYvMz2aFJxcPK5nK4L3AXZJPuVpQvPVk98ph8scpYEA@mail.gmail.com>
+ <b18125f2-ae98-9ca1-a9c9-099262b8a388@iogearbox.net>
+In-Reply-To: <b18125f2-ae98-9ca1-a9c9-099262b8a388@iogearbox.net>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Wed, 21 Oct 2020 22:33:57 +0300
+Message-ID: <CAMy7=ZWkZ-pYBvPgqEsch7SHpuX68BqWLkG7QWARUBF3BBCE=w@mail.gmail.com>
+Subject: Re: libbpf error: unknown register name 'r0' in asm
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Oct 09, 2020 at 12:26:07PM -0700, Andrii Nakryiko escreveu:
-> Differentiate between struct and union forwards. For BTF_KIND_FWD this is
-> determined by kflag. So teach btf_loader to use that bit to decide whether
-> forward is for union or struct.
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=93=D7=
+=B3, 21 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-20:18 =D7=9E=D7=90=D7=AA=
+ =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+<=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+>
+> On 10/21/20 11:43 AM, Yaniv Agman wrote:
+> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=
+=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-22:58 =D7=9E=D7=90=D7=
+=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> > <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> >> On 10/9/20 9:33 PM, Yaniv Agman wrote:
+> >>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=
+=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-22:08 =D7=9E=D7=90=
+=D7=AA =E2=80=AAYonghong Song=E2=80=AC=E2=80=8F <=E2=80=AAyhs@fb.com=E2=80=
+=AC=E2=80=8F>:=E2=80=AC
+> >>>> On 10/9/20 11:59 AM, Andrii Nakryiko wrote:
+> >>>>> On Fri, Oct 9, 2020 at 11:41 AM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+> >>>>>> On 10/9/20 8:35 PM, Andrii Nakryiko wrote:
+> >>>>>>> On Fri, Oct 9, 2020 at 11:21 AM Daniel Borkmann <daniel@iogearbox=
+.net> wrote:
+> >>>>>>>> On 10/9/20 8:09 PM, Yaniv Agman wrote:
+> >>>>>>>>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=
+=9D =D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-20:39 =D7=9E=
+=D7=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> >>>>>>>>> <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> >>>>>>>>>>
+> >>>>>>>>>> On 10/9/20 6:56 PM, Yaniv Agman wrote:
+> >>>>>>>>>>> =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=
+=9D =D7=95=D7=B3, 9 =D7=91=D7=90=D7=95=D7=A7=D7=B3 2020 =D7=91-19:27 =D7=9E=
+=D7=90=D7=AA =E2=80=AADaniel Borkmann=E2=80=AC=E2=80=8F
+> >>>>>>>>>>> <=E2=80=AAdaniel@iogearbox.net=E2=80=AC=E2=80=8F>:=E2=80=AC
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> [ Cc +Yonghong ]
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
+> >>>>>>>>>>>>> Pulling the latest changes of libbpf and compiling my appli=
+cation with it,
+> >>>>>>>>>>>>> I see the following error:
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: er=
+ror:
+> >>>>>>>>>>>>> unknown register name 'r0' in asm
+> >>>>>>>>>>>>>                             : "r0", "r1", "r2", "r3", "r4",=
+ "r5");
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> The commit which introduced this change is:
+> >>>>>>>>>>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> I'm not sure if I'm doing something wrong (missing include?=
+), or this
+> >>>>>>>>>>>>> is a genuine error
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Seems like your clang/llvm version might be too old.
+> >>>>>>>>>>>
+> >>>>>>>>>>> I'm using clang 10.0.1
+> >>>>>>>>>>
+> >>>>>>>>>> Ah, okay, I see. Would this diff do the trick for you?
+> >>>>>>>>>
+> >>>>>>>>> Yes! Now it compiles without any problems!
+> >>>>>>>>
+> >>>>>>>> Great, thx, I'll cook proper fix and check with clang6 as Yongho=
+ng mentioned.
+> >>>>>>>
+> >>>>>>> Am I the only one confused here?... Yonghong said it should be
+> >>>>>>> supported as early as clang 6, Yaniv is using Clang 10 and is sti=
+ll
+> >>>>>>> getting this error. Let's figure out what's the problem before ad=
+ding
+> >>>>>>> unnecessary checks.
+> >>>>>>>
+> >>>>>>> I think it's not the clang_major check that helped, rather __bpf_=
+_
+> >>>>>>> check. So please hold off on the fix, let's get to the bottom of =
+this
+> >>>>>>> first.
+> >>>>>>
+> >>>>>> I don't see confusion here (maybe other than which minimal clang/l=
+lvm version
+> >>>>>> libbpf should support). If we do `#if __clang_major__ >=3D 6 && de=
+fined(__bpf__)`
+> >>>>>> for the final patch, then this means that user passed clang -targe=
+t bpf and
+> >>>>>> the min supported version for inline assembly was there, otherwise=
+ we fall back
+> >>>>>> to bpf_tail_call. In Yaniv's case, he probably had native target w=
+ith -emit-llvm
+> >>>>>> and then used llc invocation.
+> >>>>>
+> >>>>> The "-emit-llvm" was the part that we were missing and had to figur=
+e
+> >>>>> it out, before we could discuss the fix.
+> >>>>
+> >>>> Maybe Yaniv can confirm. I think the following properly happens.
+> >>>>       - clang10 -O2 -g -S -emit-llvm t.c  // This is native compilat=
+ion
+> >>>> becasue some header files. Maybe some thing is guarded with x86 spec=
+ific
+> >>>> config's which is not available to -target bpf. This is mostly for
+> >>>> tracing programs and Yanic mentions pt_regs which should be related
+> >>>> to tracing.
+> >>>>       - llc -march=3Dbpf t.ll
+> >>>
+> >>> Yes, like I said,  I do use --emit-llvm, and indeed have a tracing pr=
+ogram
+> >>>
+> >>>> So guarding the function with __bpf__ should be the one fixing this =
+issue.
+> >>>>
+> >>>> guard with clang version >=3D6 should not hurt and may prevent
+> >>>> compilation failures if people use < 6 llvm with clang -target bpf.
+> >>>> I think most people should already use newer llvm, but who knows.
+> >>
+> >> Yeah that was my thinking for those stuck for whatever reason on old L=
+LVM.
+> >>
+> >>>>>>>>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_h=
+elpers.h
+> >>>>>>>>>> index 2bdb7d6dbad2..31e356831fcf 100644
+> >>>>>>>>>> --- a/tools/lib/bpf/bpf_helpers.h
+> >>>>>>>>>> +++ b/tools/lib/bpf/bpf_helpers.h
+> >>>>>>>>>> @@ -72,6 +72,7 @@
+> >>>>>>>>>>        /*
+> >>>>>>>>>>         * Helper function to perform a tail call with a consta=
+nt/immediate map slot.
+> >>>>>>>>>>         */
+> >>>>>>>>>> +#if __clang_major__ >=3D 10 && defined(__bpf__)
+> >>>>>>>>>>        static __always_inline void
+> >>>>>>>>>>        bpf_tail_call_static(void *ctx, const void *map, const =
+__u32 slot)
+> >>>>>>>>>>        {
+> >>>>>>>>>> @@ -98,6 +99,9 @@ bpf_tail_call_static(void *ctx, const void *=
+map, const __u32 slot)
+> >>>>>>>>>>                           :: [ctx]"r"(ctx), [map]"r"(map), [sl=
+ot]"i"(slot)
+> >>>>>>>>>>                           : "r0", "r1", "r2", "r3", "r4", "r5"=
+);
+> >>>>>>>>>>        }
+> >>>>>>>>>> +#else
+> >>>>>>>>>> +# define bpf_tail_call_static  bpf_tail_call
+> >>>>>
+> >>>>> bpf_tail_call_static has very specific guarantees, so in cases wher=
+e
+> >>>>> we can't use inline assembly to satisfy those guarantees, I think w=
+e
+> >>>>> should not just silently redefine bpf_tail_call_static as
+> >>>>> bpf_tail_call, rather make compilation fail if someone is attemptin=
+g
+> >>>>> to use bpf_tail_call_static. _Static_assert could be used to provid=
+e a
+> >>>>> better error message here, probably.
+> >>
+> >> Makes sense as well, I was mainly thinking if people include header fi=
+les in
+> >> their project which are shared between tracing & non-tracing, so they =
+compile
+> >> just fine, but I can see the point that wrt very specific guarantees, =
+fully
+> >> agree. In that sense we should just have it defined with the clang + _=
+_bpf__
+> >> constraints mentioned earlier.
+> >
+> > Is this change going to happen?
+> > I'm still having a compilation error when using master branch
+>
+> Yeah, I'll submit something tonight.
+>
+> Thanks,
+> Daniel
 
-So, before this patch 'btfdiff vmlinux' comes clean, i.e. pretty
-printing from DWARF matches pretty printing from BTF, after it:
+Great, Thanks!
 
-[acme@five pahole]$ btfdiff vmlinux  | wc -l
-1500
-[acme@five pahole]$
-
-One of the differences:
-
-@@ -117457,7 +117457,7 @@ struct wireless_dev {
-
- 	/* XXX last struct has 1 byte of padding */
-
--	struct cfg80211_cqm_config * cqm_config;         /*   952     8 */
-+	union cfg80211_cqm_config * cqm_config;          /*   952     8 */
- 	/* --- cacheline 15 boundary (960 bytes) --- */
- 	struct list_head           pmsr_list;            /*   960    16 */
- 	spinlock_t                 pmsr_lock;            /*   976     4 */
-[acme@five pahole]$
-
-Looking at the source code:
-
-struct wireless_dev {
-...
-        struct cfg80211_cqm_config *cqm_config;
-...
-}
-
-Also:
-
- struct nfnl_ct_hook {
--	struct nf_conn *           (*get_ct)(const struct sk_buff  *, enum ip_conntrack_info *); /*     0     8 */
--	size_t                     (*build_size)(const struct nf_conn  *); /*     8     8 */
--	int                        (*build)(struct sk_buff *, struct nf_conn *, enum ip_conntrack_info, u_int16_t, u_int16_t); /*    16     8 */
--	int                        (*parse)(const struct nlattr  *, struct nf_conn *); /*    24     8 */
--	int                        (*attach_expect)(const struct nlattr  *, struct nf_conn *, u32, u32); /*    32     8 */
--	void                       (*seq_adjust)(struct sk_buff *, struct nf_conn *, enum ip_conntrack_info, s32); /*    40     8 */
-+	union nf_conn *            (*get_ct)(const struct sk_buff  *, enum ip_conntrack_info *); /*     0     8 */
-+	size_t                     (*build_size)(const union nf_conn  *); /*     8     8 */
-+	int                        (*build)(struct sk_buff *, union nf_conn *, enum ip_conntrack_info, u_int16_t, u_int16_t); /*    16     8 */
-+	int                        (*parse)(const struct nlattr  *, union nf_conn *); /*    24     8 */
-+	int                        (*attach_expect)(const struct nlattr  *, union nf_conn *, u32, u32); /*    32     8 */
-+	void                       (*seq_adjust)(struct sk_buff *, union nf_conn *, enum ip_conntrack_info, s32); /*    40     8 */1
-
-Looking at the source code:
-
-struct nfnl_ct_hook {
-        struct nf_conn *(*get_ct)(const struct sk_buff *skb,
-                                  enum ip_conntrack_info *ctinfo);
-        size_t (*build_size)(const struct nf_conn *ct);
-        int (*build)(struct sk_buff *skb, struct nf_conn *ct,
-                     enum ip_conntrack_info ctinfo,
-                     u_int16_t ct_attr, u_int16_t ct_info_attr);
-        int (*parse)(const struct nlattr *attr, struct nf_conn *ct);
-        int (*attach_expect)(const struct nlattr *attr, struct nf_conn *ct,
-                             u32 portid, u32 report);
-        void (*seq_adjust)(struct sk_buff *skb, struct nf_conn *ct,
-                           enum ip_conntrack_info ctinfo, s32 off);
-};
-
-- Arnaldo
- 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
-> N.B. This patch is based on top of tmp.libbtf_encoder branch.
-> 
-> Also seems like non-forward declared union has a slightly different
-> representation from struct (class). Not sure why it is so, but this change
-> doesn't seem to break anything.
-> ---
-> 
->  btf_loader.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/btf_loader.c b/btf_loader.c
-> index 9b5da3a4997a..0cb23967fec3 100644
-> --- a/btf_loader.c
-> +++ b/btf_loader.c
-> @@ -134,12 +134,13 @@ static struct type *type__new(uint16_t tag, strings_t name, size_t size)
->  	return type;
->  }
->  
-> -static struct class *class__new(strings_t name, size_t size)
-> +static struct class *class__new(strings_t name, size_t size, bool is_union)
->  {
->  	struct class *class = tag__alloc(sizeof(*class));
-> +	uint32_t tag = is_union ? DW_TAG_union_type : DW_TAG_structure_type;
->  
->  	if (class != NULL) {
-> -		type__init(&class->type, DW_TAG_structure_type, name, size);
-> +		type__init(&class->type, tag, name, size);
->  		INIT_LIST_HEAD(&class->vtable);
->  	}
->  
-> @@ -228,7 +229,7 @@ static int create_members(struct btf_elf *btfe, const struct btf_type *tp,
->  
->  static int create_new_class(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	struct class *class = class__new(tp->name_off, tp->size);
-> +	struct class *class = class__new(tp->name_off, tp->size, false);
->  	int member_size = create_members(btfe, tp, &class->type);
->  
->  	if (member_size < 0)
-> @@ -313,7 +314,7 @@ static int create_new_subroutine_type(struct btf_elf *btfe, const struct btf_typ
->  
->  static int create_new_forward_decl(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
->  {
-> -	struct class *fwd = class__new(tp->name_off, 0);
-> +	struct class *fwd = class__new(tp->name_off, 0, btf_kind(tp));
->  
->  	if (fwd == NULL)
->  		return -ENOMEM;
-> -- 
-> 2.24.1
-> 
-
--- 
-
-- Arnaldo
+Yaniv
