@@ -2,119 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6532950E6
-	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 18:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0648295167
+	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 19:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503010AbgJUQiM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Oct 2020 12:38:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503008AbgJUQiM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:38:12 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2792321D7B;
-        Wed, 21 Oct 2020 16:38:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603298291;
-        bh=sKDb+NXa1tgVKJb1me9HmWAbKfzQZxx2q4/FUQH/2Gc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LZ6+g/u/4Wx3BI8ak73zGDTDX3xDfDl7x4PaXO5cjyskT7CbS/r+xXmGEd42tVmSZ
-         h/BYhtXG8mnwmf+xNU+jTNtIKj5L1u59c7OVoyJpkpXu883VRrrJSL2hQb9FfkIBsp
-         T71ZqjLtKCSo0hnV43BtRRbmRINpoSAdB0SCbo7Y=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 02D65403C2; Wed, 21 Oct 2020 13:38:08 -0300 (-03)
-Date:   Wed, 21 Oct 2020 13:38:08 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH dwarves] btf_loader: handle union forward declaration
- properly
-Message-ID: <20201021163808.GR2342001@kernel.org>
-References: <20201009192607.699835-1-andrii@kernel.org>
- <CAEf4BzY4k4B5Pc93wSOWD-Hjw=_uoFjfByxc44uXAipV+PV96g@mail.gmail.com>
+        id S2408844AbgJURSQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Oct 2020 13:18:16 -0400
+Received: from www62.your-server.de ([213.133.104.62]:59586 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389946AbgJURSP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:18:15 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kVHka-0001FC-6b; Wed, 21 Oct 2020 19:18:12 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kVHka-000UFF-1u; Wed, 21 Oct 2020 19:18:12 +0200
+Subject: Re: libbpf error: unknown register name 'r0' in asm
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+References: <CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com>
+ <a8abb367-ccad-2ee4-8c5e-ce3da7c4915d@iogearbox.net>
+ <CAMy7=ZXjna6q53h0uuar58fmAMi026w7u=ciVjTQXK2OHiOPJg@mail.gmail.com>
+ <fadd5bd2-ed87-7e6b-d4bd-a802eb9ef6f8@iogearbox.net>
+ <CAMy7=ZV5pZzzs_vuqn1eqEe9tBjgmQHT=hv0CXhgxYrjO_8wZg@mail.gmail.com>
+ <e385d737-1a4b-a1b6-9a2e-23a71d2ca1b7@iogearbox.net>
+ <CAEf4Bza4KFJ_j7vmg-x_Zinp0PUM-zmWYHMq_y+2zWmX485sBQ@mail.gmail.com>
+ <ece9975d-717c-a868-be51-c97aeae8e011@iogearbox.net>
+ <CAEf4BzawvpsYybaOXf=GvJguiavC16BmdDeJfO4kEAR5naOKug@mail.gmail.com>
+ <231e3e6b-0118-f600-05c5-f4e2f2c76129@fb.com>
+ <CAMy7=ZWYn9MnmQJU7S_FUz5PArkGtVUcS1czn3oVCqa1aEniXw@mail.gmail.com>
+ <322077f3-efea-8bd0-0b67-b4636428fc5a@iogearbox.net>
+ <CAMy7=ZVjYvMz2aFJxcPK5nK4L3AXZJPuVpQvPVk98ph8scpYEA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b18125f2-ae98-9ca1-a9c9-099262b8a388@iogearbox.net>
+Date:   Wed, 21 Oct 2020 19:18:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzY4k4B5Pc93wSOWD-Hjw=_uoFjfByxc44uXAipV+PV96g@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAMy7=ZVjYvMz2aFJxcPK5nK4L3AXZJPuVpQvPVk98ph8scpYEA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25512/Tue Jul 16 10:09:55 2019)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Oct 21, 2020 at 08:35:34AM -0700, Andrii Nakryiko escreveu:
-> On Fri, Oct 9, 2020 at 12:26 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Differentiate between struct and union forwards. For BTF_KIND_FWD this is
-> > determined by kflag. So teach btf_loader to use that bit to decide whether
-> > forward is for union or struct.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> > N.B. This patch is based on top of tmp.libbtf_encoder branch.
-> >
-> > Also seems like non-forward declared union has a slightly different
-> > representation from struct (class). Not sure why it is so, but this change
-> > doesn't seem to break anything.
-> > ---
+On 10/21/20 11:43 AM, Yaniv Agman wrote:
+> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-22:58 מאת ‪Daniel Borkmann‬‏
+> <‪daniel@iogearbox.net‬‏>:‬
+>> On 10/9/20 9:33 PM, Yaniv Agman wrote:
+>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-22:08 מאת ‪Yonghong Song‬‏ <‪yhs@fb.com‬‏>:‬
+>>>> On 10/9/20 11:59 AM, Andrii Nakryiko wrote:
+>>>>> On Fri, Oct 9, 2020 at 11:41 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>>> On 10/9/20 8:35 PM, Andrii Nakryiko wrote:
+>>>>>>> On Fri, Oct 9, 2020 at 11:21 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>>>>> On 10/9/20 8:09 PM, Yaniv Agman wrote:
+>>>>>>>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-20:39 מאת ‪Daniel Borkmann‬‏
+>>>>>>>>> <‪daniel@iogearbox.net‬‏>:‬
+>>>>>>>>>>
+>>>>>>>>>> On 10/9/20 6:56 PM, Yaniv Agman wrote:
+>>>>>>>>>>> ‫בתאריך יום ו׳, 9 באוק׳ 2020 ב-19:27 מאת ‪Daniel Borkmann‬‏
+>>>>>>>>>>> <‪daniel@iogearbox.net‬‏>:‬
+>>>>>>>>>>>>
+>>>>>>>>>>>> [ Cc +Yonghong ]
+>>>>>>>>>>>>
+>>>>>>>>>>>> On 10/9/20 6:05 PM, Yaniv Agman wrote:
+>>>>>>>>>>>>> Pulling the latest changes of libbpf and compiling my application with it,
+>>>>>>>>>>>>> I see the following error:
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> ../libbpf/src//root/usr/include/bpf/bpf_helpers.h:99:10: error:
+>>>>>>>>>>>>> unknown register name 'r0' in asm
+>>>>>>>>>>>>>                             : "r0", "r1", "r2", "r3", "r4", "r5");
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> The commit which introduced this change is:
+>>>>>>>>>>>>> 80c7838600d39891f274e2f7508b95a75e4227c1
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> I'm not sure if I'm doing something wrong (missing include?), or this
+>>>>>>>>>>>>> is a genuine error
+>>>>>>>>>>>>
+>>>>>>>>>>>> Seems like your clang/llvm version might be too old.
+>>>>>>>>>>>
+>>>>>>>>>>> I'm using clang 10.0.1
+>>>>>>>>>>
+>>>>>>>>>> Ah, okay, I see. Would this diff do the trick for you?
+>>>>>>>>>
+>>>>>>>>> Yes! Now it compiles without any problems!
+>>>>>>>>
+>>>>>>>> Great, thx, I'll cook proper fix and check with clang6 as Yonghong mentioned.
+>>>>>>>
+>>>>>>> Am I the only one confused here?... Yonghong said it should be
+>>>>>>> supported as early as clang 6, Yaniv is using Clang 10 and is still
+>>>>>>> getting this error. Let's figure out what's the problem before adding
+>>>>>>> unnecessary checks.
+>>>>>>>
+>>>>>>> I think it's not the clang_major check that helped, rather __bpf__
+>>>>>>> check. So please hold off on the fix, let's get to the bottom of this
+>>>>>>> first.
+>>>>>>
+>>>>>> I don't see confusion here (maybe other than which minimal clang/llvm version
+>>>>>> libbpf should support). If we do `#if __clang_major__ >= 6 && defined(__bpf__)`
+>>>>>> for the final patch, then this means that user passed clang -target bpf and
+>>>>>> the min supported version for inline assembly was there, otherwise we fall back
+>>>>>> to bpf_tail_call. In Yaniv's case, he probably had native target with -emit-llvm
+>>>>>> and then used llc invocation.
+>>>>>
+>>>>> The "-emit-llvm" was the part that we were missing and had to figure
+>>>>> it out, before we could discuss the fix.
+>>>>
+>>>> Maybe Yaniv can confirm. I think the following properly happens.
+>>>>       - clang10 -O2 -g -S -emit-llvm t.c  // This is native compilation
+>>>> becasue some header files. Maybe some thing is guarded with x86 specific
+>>>> config's which is not available to -target bpf. This is mostly for
+>>>> tracing programs and Yanic mentions pt_regs which should be related
+>>>> to tracing.
+>>>>       - llc -march=bpf t.ll
+>>>
+>>> Yes, like I said,  I do use --emit-llvm, and indeed have a tracing program
+>>>
+>>>> So guarding the function with __bpf__ should be the one fixing this issue.
+>>>>
+>>>> guard with clang version >=6 should not hurt and may prevent
+>>>> compilation failures if people use < 6 llvm with clang -target bpf.
+>>>> I think most people should already use newer llvm, but who knows.
+>>
+>> Yeah that was my thinking for those stuck for whatever reason on old LLVM.
+>>
+>>>>>>>>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+>>>>>>>>>> index 2bdb7d6dbad2..31e356831fcf 100644
+>>>>>>>>>> --- a/tools/lib/bpf/bpf_helpers.h
+>>>>>>>>>> +++ b/tools/lib/bpf/bpf_helpers.h
+>>>>>>>>>> @@ -72,6 +72,7 @@
+>>>>>>>>>>        /*
+>>>>>>>>>>         * Helper function to perform a tail call with a constant/immediate map slot.
+>>>>>>>>>>         */
+>>>>>>>>>> +#if __clang_major__ >= 10 && defined(__bpf__)
+>>>>>>>>>>        static __always_inline void
+>>>>>>>>>>        bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+>>>>>>>>>>        {
+>>>>>>>>>> @@ -98,6 +99,9 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+>>>>>>>>>>                           :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
+>>>>>>>>>>                           : "r0", "r1", "r2", "r3", "r4", "r5");
+>>>>>>>>>>        }
+>>>>>>>>>> +#else
+>>>>>>>>>> +# define bpf_tail_call_static  bpf_tail_call
+>>>>>
+>>>>> bpf_tail_call_static has very specific guarantees, so in cases where
+>>>>> we can't use inline assembly to satisfy those guarantees, I think we
+>>>>> should not just silently redefine bpf_tail_call_static as
+>>>>> bpf_tail_call, rather make compilation fail if someone is attempting
+>>>>> to use bpf_tail_call_static. _Static_assert could be used to provide a
+>>>>> better error message here, probably.
+>>
+>> Makes sense as well, I was mainly thinking if people include header files in
+>> their project which are shared between tracing & non-tracing, so they compile
+>> just fine, but I can see the point that wrt very specific guarantees, fully
+>> agree. In that sense we should just have it defined with the clang + __bpf__
+>> constraints mentioned earlier.
 > 
-> Ping on this one, let's include it with upcoming pahole 1.19 as well?
+> Is this change going to happen?
+> I'm still having a compilation error when using master branch
 
-I missed this one, but please consider providing concrete examples, can
-you provide one so that its completely spelled out, like for a 4.9yo
-kid? 8-)
+Yeah, I'll submit something tonight.
 
-- Arnaldo
- 
-> >
-> >  btf_loader.c | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/btf_loader.c b/btf_loader.c
-> > index 9b5da3a4997a..0cb23967fec3 100644
-> > --- a/btf_loader.c
-> > +++ b/btf_loader.c
-> > @@ -134,12 +134,13 @@ static struct type *type__new(uint16_t tag, strings_t name, size_t size)
-> >         return type;
-> >  }
-> >
-> > -static struct class *class__new(strings_t name, size_t size)
-> > +static struct class *class__new(strings_t name, size_t size, bool is_union)
-> >  {
-> >         struct class *class = tag__alloc(sizeof(*class));
-> > +       uint32_t tag = is_union ? DW_TAG_union_type : DW_TAG_structure_type;
-> >
-> >         if (class != NULL) {
-> > -               type__init(&class->type, DW_TAG_structure_type, name, size);
-> > +               type__init(&class->type, tag, name, size);
-> >                 INIT_LIST_HEAD(&class->vtable);
-> >         }
-> >
-> > @@ -228,7 +229,7 @@ static int create_members(struct btf_elf *btfe, const struct btf_type *tp,
-> >
-> >  static int create_new_class(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
-> >  {
-> > -       struct class *class = class__new(tp->name_off, tp->size);
-> > +       struct class *class = class__new(tp->name_off, tp->size, false);
-> >         int member_size = create_members(btfe, tp, &class->type);
-> >
-> >         if (member_size < 0)
-> > @@ -313,7 +314,7 @@ static int create_new_subroutine_type(struct btf_elf *btfe, const struct btf_typ
-> >
-> >  static int create_new_forward_decl(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
-> >  {
-> > -       struct class *fwd = class__new(tp->name_off, 0);
-> > +       struct class *fwd = class__new(tp->name_off, 0, btf_kind(tp));
-> >
-> >         if (fwd == NULL)
-> >                 return -ENOMEM;
-> > --
-> > 2.24.1
-> >
-
--- 
-
-- Arnaldo
+Thanks,
+Daniel
