@@ -2,106 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D35295366
-	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 22:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E2629537F
+	for <lists+bpf@lfdr.de>; Wed, 21 Oct 2020 22:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505260AbgJUUP1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Oct 2020 16:15:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505114AbgJUUP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:15:26 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF13E2098B;
-        Wed, 21 Oct 2020 20:15:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603311326;
-        bh=lza32zk4geg5fIRx0MFlGMJDr6NBqZMi1MST+xv7P5Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L1Oob8WORq4yvRbq6p0rcvCHw9b1C+cZ9TeS47OYAiYCmwirX4hcfdkK/yLA/3jYC
-         g9LfEv1TiD59BZpmRT7lQUH15Vfn1EoYYN19agjFEsDymV8R3fOlS1fgNi0gzRfMHl
-         5Pc7Oqx5J0LMotVsXVSZ/KLGBGFLRaHe5oODaU9w=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 195B4403C2; Wed, 21 Oct 2020 17:15:23 -0300 (-03)
-Date:   Wed, 21 Oct 2020 17:15:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH dwarves] btf_loader: handle union forward declaration
- properly
-Message-ID: <20201021201523.GA2385845@kernel.org>
-References: <20201009192607.699835-1-andrii@kernel.org>
- <20201021192530.GS2342001@kernel.org>
- <CAEf4BzaCXKYOeyTN74Zm1gbjyBSmBCi1XpgvqKn8-E+ZusrGeA@mail.gmail.com>
+        id S2505370AbgJUUdS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Oct 2020 16:33:18 -0400
+Received: from www62.your-server.de ([213.133.104.62]:58516 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505367AbgJUUdR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Oct 2020 16:33:17 -0400
+Received: from 75.57.196.178.dynamic.wline.res.cust.swisscom.ch ([178.196.57.75] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kVKnK-0000A7-Ho; Wed, 21 Oct 2020 22:33:14 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     alexei.starovoitov@gmail.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, yanivagman@gmail.com,
+        yhs@fb.com, andrii.nakryiko@gmail.com,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf] bpf, libbpf: guard bpf inline asm from bpf_tail_call_static
+Date:   Wed, 21 Oct 2020 22:32:57 +0200
+Message-Id: <20201021203257.26223-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaCXKYOeyTN74Zm1gbjyBSmBCi1XpgvqKn8-E+ZusrGeA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25512/Tue Jul 16 10:09:55 2019)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Oct 21, 2020 at 12:47:30PM -0700, Andrii Nakryiko escreveu:
-> On Wed, Oct 21, 2020 at 12:25 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > > @@ -313,7 +314,7 @@ static int create_new_subroutine_type(struct btf_elf *btfe, const struct btf_typ
-> > >
-> > >  static int create_new_forward_decl(struct btf_elf *btfe, const struct btf_type *tp, uint32_t id)
-> > >  {
-> > > -     struct class *fwd = class__new(tp->name_off, 0);
-> > > +     struct class *fwd = class__new(tp->name_off, 0, btf_kind(tp));
+Yaniv reported a compilation error after pulling latest libbpf:
+
+  [...]
+  ../libbpf/src/root/usr/include/bpf/bpf_helpers.h:99:10: error:
+  unknown register name 'r0' in asm
+                     : "r0", "r1", "r2", "r3", "r4", "r5");
+  [...]
+
+The issue got triggered given Yaniv was compiling tracing programs with native
+target (e.g. x86) instead of BPF target, hence no BTF generated vmlinux.h nor
+CO-RE used, and later llc with -march=bpf was invoked to compile from LLVM IR
+to BPF object file. Given that clang was expecting x86 inline asm and not BPF
+one the error complained that these regs don't exist on the former.
+
+Guard bpf_tail_call_static() with defined(__bpf__) where BPF inline asm is valid
+to use. BPF tracing programs on more modern kernels use BPF target anyway and
+thus the bpf_tail_call_static() function will be available for them. BPF inline
+asm is supported since clang 7 (clang <= 6 otherwise throws same above error),
+and __bpf_unreachable() since clang 8, therefore include the latter condition
+in order to prevent compilation errors for older clang versions. Given even an
+old Ubuntu 18.04 LTS has official LLVM packages all the way up to llvm-10, I did
+not bother to special case the __bpf_unreachable() inside bpf_tail_call_static()
+further.
+
+Fixes: 0e9f6841f664 ("bpf, libbpf: Add bpf_tail_call_static helper for bpf programs")
+Reported-by: Yaniv Agman <yanivagman@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/CAMy7=ZUk08w5Gc2Z-EKi4JFtuUCaZYmE4yzhJjrExXpYKR4L8w@mail.gmail.com
+---
+ tools/lib/bpf/bpf_helpers.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index 2bdb7d6dbad2..72b251110c4d 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -72,6 +72,7 @@
+ /*
+  * Helper function to perform a tail call with a constant/immediate map slot.
+  */
++#if __clang_major__ >= 8 && defined(__bpf__)
+ static __always_inline void
+ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+ {
+@@ -98,6 +99,7 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+ 		     :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
+ 		     : "r0", "r1", "r2", "r3", "r4", "r5");
+ }
++#endif
  
-> *FACEPALM*... This should be btf_kflag(tp) instead. I'll use btfdiff
-> on all my patches from now on, sorry about this!
+ /*
+  * Helper structure used by eBPF C program
+-- 
+2.17.1
 
-:-)
-
-I'll retest when you resubmit.
-
-One other thing I like to use is 'fullcircle':
-
-
-<SNIP>
-# See how your DW_AT_producer looks like and find the
-# right regexp to get after the GCC version string, this one
-# seems good enough for Red Hat/Fedora/CentOS that look like:
-#
-#   DW_AT_producer    : (indirect string, offset: 0x3583): GNU C89 8.2.1 20181215 (Red Hat 8.2.1-6) -mno-sse -mno-mmx
-#
-# So we need from -mno-sse onwards
-
-CFLAGS=$(readelf -wi $file | grep -w DW_AT_producer | sed -r      's/.*\)( -[[:alnum:]]+.*)+/\1/g')
-
-# Check if we managed to do the sed or if this is something like GNU AS
-[ "${CFLAGS/DW_AT_producer/}" != "${CFLAGS}" ] && exit
-
-${pfunct_bin} --compile $file > $c_output
-gcc $CFLAGS -c -g $c_output -o $o_output
-${codiff_bin} -q -s $file $o_output
-<SNIP>
-
-
-$ pfunct --help |& grep compile
-      --compile[=FUNCTION]   Generate compilable source code with types
-$
-
-It generates code for all functions in a .o that touch its parameters
-and right before those functions it regenerates all the types, so you go
-from type information to C code that gets compiled with the same
-compiler command line setting (obtained from DW_AT_producer for DWARF)
-with type information and then it compares the original type information
-with the one generated from the regenerated "original" source code.
-
-Right now it works only with DWARF, because for it we derive the packed
-attribute (pahole does that for BTF too) but, unlike bpftool btf it
-doesn't add the needed padding for __alignment__ things, and DWARF
-provides that info.
-
-I'll work on that eventually and then fullcircle will do it for both
-DWARF and for BTF.
-
-- Arnaldo
