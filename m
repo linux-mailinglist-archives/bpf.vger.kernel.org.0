@@ -2,240 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB3C295A2C
-	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 10:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C714E295C2E
+	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 11:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895487AbgJVIW7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 22 Oct 2020 04:22:59 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:40119 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2895475AbgJVIW6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Oct 2020 04:22:58 -0400
+        id S2895247AbgJVJsJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Oct 2020 05:48:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36154 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2509920AbgJVJsI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 22 Oct 2020 05:48:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603360086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9XQkLZVZQx4DjBArygkCNODq84ypuNcvahgE7zZrd14=;
+        b=LCq3qDfeBxv1MHOIlnzSjVCsU82YLE/EImLEFLn19bDnkB+BrGRInWRkhbZC1oWLJ4/4eU
+        rF6ia1EL/Rp0p+eY+TKuimeYDyFdBRYUWa8wKQ9kCwIbUlV3VPsbBjthUZujKShqlE0iUV
+        /o7RcIyra/Y0uudQ8NYaA7xdzWsVi7Y=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-IawCvyt2OLSZqIgMHxnCnQ-1; Thu, 22 Oct 2020 04:22:53 -0400
-X-MC-Unique: IawCvyt2OLSZqIgMHxnCnQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-559-yE851czBOIOUzGIEnaaPHQ-1; Thu, 22 Oct 2020 05:48:02 -0400
+X-MC-Unique: yE851czBOIOUzGIEnaaPHQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0070510E2186;
-        Thu, 22 Oct 2020 08:22:52 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.195.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D845060BFA;
-        Thu, 22 Oct 2020 08:22:48 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: [RFC bpf-next 16/16] selftests/bpf: Add attach batch test (NOT TO BE MERGED)
-Date:   Thu, 22 Oct 2020 10:21:38 +0200
-Message-Id: <20201022082138.2322434-17-jolsa@kernel.org>
-In-Reply-To: <20201022082138.2322434-1-jolsa@kernel.org>
-References: <20201022082138.2322434-1-jolsa@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C12A186DD29;
+        Thu, 22 Oct 2020 09:48:01 +0000 (UTC)
+Received: from krava (unknown [10.40.195.55])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 23F3E19C4F;
+        Thu, 22 Oct 2020 09:47:58 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 11:47:58 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net,
+        john.fastabend@gmail.com, jolsa@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 0/3] bpf: Pointers beyond packet end.
+Message-ID: <20201022094758.GC2318292@krava>
+References: <20201021182015.39000-1-alexei.starovoitov@gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021182015.39000-1-alexei.starovoitov@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding test that attaches to 50 known functions,
-that are also added to kernel.
+On Wed, Oct 21, 2020 at 11:20:12AM -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> In some cases LLVM uses the knowledge that branch is taken to optimze the code
+> which causes the verifier to reject valid programs.
+> Teach the verifier to recognize that
+> r1 = skb->data;
+> r1 += 10;
+> r2 = skb->data_end;
+> if (r1 > r2) {
+>   here r1 points beyond packet_end and subsequent
+>   if (r1 > r2) // always evaluates to "true".
+> }
+> 
+> Alexei Starovoitov (3):
+>   bpf: Support for pointers beyond pkt_end.
+>   selftests/bpf: Add skb_pkt_end test
+>   selftests/bpf: Add asm tests for pkt vs pkt_end comparison.
 
-This test is meant only for fast check on attach times,
-and can be probably in a different mergeable way, but
-at the moment it fits the need.
+Tested-by: Jiri Olsa <jolsa@redhat.com>
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- net/bpf/test_run.c                            | 55 ++++++++++++++++
- .../selftests/bpf/prog_tests/attach_test.c    | 27 ++++++++
- .../testing/selftests/bpf/progs/attach_test.c | 62 +++++++++++++++++++
- 3 files changed, 144 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/attach_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/attach_test.c
+thanks,
+jirka
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index c1c30a9f76f3..8fc6d27fc07f 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -167,6 +167,61 @@ int noinline bpf_modify_return_test(int a, int *b)
- 	*b += 1;
- 	return a + *b;
- }
-+
-+#define ATTACH_TEST(__n) \
-+	int noinline __PASTE(bpf_attach_test, __n)(void) { return 0; }
-+
-+ATTACH_TEST(0)
-+ATTACH_TEST(1)
-+ATTACH_TEST(2)
-+ATTACH_TEST(3)
-+ATTACH_TEST(4)
-+ATTACH_TEST(5)
-+ATTACH_TEST(6)
-+ATTACH_TEST(7)
-+ATTACH_TEST(8)
-+ATTACH_TEST(9)
-+ATTACH_TEST(10)
-+ATTACH_TEST(11)
-+ATTACH_TEST(12)
-+ATTACH_TEST(13)
-+ATTACH_TEST(14)
-+ATTACH_TEST(15)
-+ATTACH_TEST(16)
-+ATTACH_TEST(17)
-+ATTACH_TEST(18)
-+ATTACH_TEST(19)
-+ATTACH_TEST(20)
-+ATTACH_TEST(21)
-+ATTACH_TEST(22)
-+ATTACH_TEST(23)
-+ATTACH_TEST(24)
-+ATTACH_TEST(25)
-+ATTACH_TEST(26)
-+ATTACH_TEST(27)
-+ATTACH_TEST(28)
-+ATTACH_TEST(29)
-+ATTACH_TEST(30)
-+ATTACH_TEST(31)
-+ATTACH_TEST(32)
-+ATTACH_TEST(33)
-+ATTACH_TEST(34)
-+ATTACH_TEST(35)
-+ATTACH_TEST(36)
-+ATTACH_TEST(37)
-+ATTACH_TEST(38)
-+ATTACH_TEST(39)
-+ATTACH_TEST(40)
-+ATTACH_TEST(41)
-+ATTACH_TEST(42)
-+ATTACH_TEST(43)
-+ATTACH_TEST(44)
-+ATTACH_TEST(45)
-+ATTACH_TEST(46)
-+ATTACH_TEST(47)
-+ATTACH_TEST(48)
-+ATTACH_TEST(49)
-+
- __diag_pop();
- 
- ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_test.c b/tools/testing/selftests/bpf/prog_tests/attach_test.c
-new file mode 100644
-index 000000000000..c5c6534c49c9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_test.c
-@@ -0,0 +1,27 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "attach_test.skel.h"
-+
-+void test_attach_test(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	struct attach_test *attach_skel = NULL;
-+	__u32 duration = 0;
-+	int err;
-+
-+	opts.trampoline_attach_batch = true;
-+	attach_skel = attach_test__open_opts(&opts);
-+	if (CHECK(!attach_skel, "attach_test__open_opts", "open skeleton failed\n"))
-+		goto cleanup;
-+
-+	err = attach_test__load(attach_skel);
-+	if (CHECK(err, "attach_skel_load", "attach skeleton failed\n"))
-+		goto cleanup;
-+
-+	err = attach_test__attach(attach_skel);
-+	if (CHECK(err, "attach", "attach failed: %d\n", err))
-+		goto cleanup;
-+
-+cleanup:
-+	attach_test__destroy(attach_skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/attach_test.c b/tools/testing/selftests/bpf/progs/attach_test.c
-new file mode 100644
-index 000000000000..51b18f83c109
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/attach_test.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define ATTACH_PROG(__n)			\
-+SEC("fentry/bpf_attach_test" #__n)		\
-+int BPF_PROG(prog ## __n) { return 0; }
-+
-+ATTACH_PROG(0)
-+ATTACH_PROG(1)
-+ATTACH_PROG(2)
-+ATTACH_PROG(3)
-+ATTACH_PROG(4)
-+ATTACH_PROG(5)
-+ATTACH_PROG(6)
-+ATTACH_PROG(7)
-+ATTACH_PROG(8)
-+ATTACH_PROG(9)
-+ATTACH_PROG(10)
-+ATTACH_PROG(11)
-+ATTACH_PROG(12)
-+ATTACH_PROG(13)
-+ATTACH_PROG(14)
-+ATTACH_PROG(15)
-+ATTACH_PROG(16)
-+ATTACH_PROG(17)
-+ATTACH_PROG(18)
-+ATTACH_PROG(19)
-+ATTACH_PROG(20)
-+ATTACH_PROG(21)
-+ATTACH_PROG(22)
-+ATTACH_PROG(23)
-+ATTACH_PROG(24)
-+ATTACH_PROG(25)
-+ATTACH_PROG(26)
-+ATTACH_PROG(27)
-+ATTACH_PROG(28)
-+ATTACH_PROG(29)
-+ATTACH_PROG(30)
-+ATTACH_PROG(31)
-+ATTACH_PROG(32)
-+ATTACH_PROG(33)
-+ATTACH_PROG(34)
-+ATTACH_PROG(35)
-+ATTACH_PROG(36)
-+ATTACH_PROG(37)
-+ATTACH_PROG(38)
-+ATTACH_PROG(39)
-+ATTACH_PROG(40)
-+ATTACH_PROG(41)
-+ATTACH_PROG(42)
-+ATTACH_PROG(43)
-+ATTACH_PROG(44)
-+ATTACH_PROG(45)
-+ATTACH_PROG(46)
-+ATTACH_PROG(47)
-+ATTACH_PROG(48)
-+ATTACH_PROG(49)
--- 
-2.26.2
+> 
+>  include/linux/bpf_verifier.h                  |   2 +-
+>  kernel/bpf/verifier.c                         | 131 +++++++++++++++---
+>  .../bpf/prog_tests/test_skb_pkt_end.c         |  41 ++++++
+>  .../testing/selftests/bpf/progs/skb_pkt_end.c |  54 ++++++++
+>  .../testing/selftests/bpf/verifier/ctx_skb.c  |  42 ++++++
+>  5 files changed, 247 insertions(+), 23 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/skb_pkt_end.c
+> 
+> -- 
+> 2.23.0
+> 
 
