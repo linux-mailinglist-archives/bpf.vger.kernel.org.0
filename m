@@ -2,177 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61052958DC
-	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 09:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D91E295A06
+	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 10:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505519AbgJVHNW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Oct 2020 03:13:22 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:53952 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505495AbgJVHNV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:13:21 -0400
-Received: by mail-io1-f72.google.com with SMTP id q13so594011iot.20
-        for <bpf@vger.kernel.org>; Thu, 22 Oct 2020 00:13:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jKhvVYGza2z6DwAdCGTtRAQGQcgl6+fOtpFD9e3IahA=;
-        b=h4JMm8KLNsAH1UGXTf0c9cV30+2ei1e4Ur0CGx4Qyvf4X9+SF0jCd5HglFUj4oi1ob
-         2TZwuuW+2hJ8CH/TknL09UMBKTKUWGCPk0m0OvhVEgyZqK2uDPnj+z6Ya5kiNUKtDnU5
-         bnyfPrEMAeUsKFlawcfZ1tyLXSXVx8eCF9Qc7fUXVvCIW5S9F81oUABKOr9w+Jg0dYMV
-         khzHKvdeMIk2JjJ1Kz90+b1z5TIrgoqyJEdFVLrcx7+Evw1zfse9I+swNiWLeSJ2Ic+h
-         0KDQ49tfEBKhFsfu+XuFBfuBsvrG1qdeAApiYV4q3CK2BnslndWn2ttRl/YjlbDgH0Ib
-         FCyQ==
-X-Gm-Message-State: AOAM532fSstfWQGfqPgqcTwUGefidetoeBiINOhr+3xc3BTQsW4nnTdi
-        ojqkbJ/6OkbsW7tiQ5X1xj2SsujdojaBqMahea/d6iICVg91
-X-Google-Smtp-Source: ABdhPJynOk7VmlvKDICWLW10O8Bf9qcfCvJrtCcamCDBoxJTqmFWiN7LM0wJA8MkEWZ7Q6ql7OUvmQjHAM7MnsZXt9HI2pju7KrZ
+        id S2443483AbgJVIVz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 22 Oct 2020 04:21:55 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:60540 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2895049AbgJVIVz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 22 Oct 2020 04:21:55 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-UXij8cUAMvG-Ypff4P0s4Q-1; Thu, 22 Oct 2020 04:21:48 -0400
+X-MC-Unique: UXij8cUAMvG-Ypff4P0s4Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD2A4800461;
+        Thu, 22 Oct 2020 08:21:45 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.195.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F2B760BFA;
+        Thu, 22 Oct 2020 08:21:39 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: [RFC bpf-next 00/16] bpf: Speed up trampoline attach
+Date:   Thu, 22 Oct 2020 10:21:22 +0200
+Message-Id: <20201022082138.2322434-1-jolsa@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:111:: with SMTP id t17mr943475ilm.79.1603350798738;
- Thu, 22 Oct 2020 00:13:18 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 00:13:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf2beb05b23d328f@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_trace_run3
-From:   syzbot <syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        mmullins@fb.com, netdev@vger.kernel.org, rostedt@goodmis.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+hi,
+this patchset tries to speed up the attach time for trampolines
+and make bpftrace faster for wildcard use cases like:
 
-syzbot found the following issue on:
+  # bpftrace -ve "kfunc:__x64_sys_s* { printf("test\n"); }"
 
-HEAD commit:    9ff9b0d3 Merge tag 'net-next-5.10' of git://git.kernel.org..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=140e3e78500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d13c3fa80bc4bcc1
-dashboard link: https://syzkaller.appspot.com/bug?extid=83aa762ef23b6f0d1991
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14113907900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130d3310500000
+Profiles show mostly ftrace backend, because we add trampoline
+functions one by one and ftrace direct function registering is
+quite expensive. Thus main change in this patchset is to allow
+batch attach and use just single ftrace call to attach or detach
+multiple ips/trampolines.
 
-The issue was bisected to:
+This patchset also contains other speedup changes that showed
+up in profiles:
 
-commit 9df1c28bb75217b244257152ab7d788bb2a386d0
-Author: Matt Mullins <mmullins@fb.com>
-Date:   Fri Apr 26 18:49:47 2019 +0000
+  - delayed link free
+    to bypass detach cycles completely
 
-    bpf: add writable context for raw tracepoints
+  - kallsyms rbtree search
+    change linear search to rb tree search
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=159e3e78500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=179e3e78500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=139e3e78500000
+For clean attach workload I added also new attach selftest,
+which is not meant to be merged but is used to show profile
+results.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-Fixes: 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
+Following numbers show speedup after applying specific change
+on top of the previous (and including the previous changes).
 
-FAULT_INJECTION: forcing a failure.
-name failslab, interval 1, probability 0, space 0, times 0
-BUG: unable to handle page fault for address: ffffc90000e84030
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD aa000067 
-P4D aa000067 
-PUD aa1ee067 
-PMD a9074067 
-PTE 0
+profiled with: 'perf stat -r 5 -e cycles:k,cycles:u ...'
 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 6879 Comm: syz-executor875 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-RIP: 0010:bpf_trace_run3+0x145/0x3f0 kernel/trace/bpf_trace.c:2083
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 9f 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 c3 00 f7 ff e8 fe 32 c3 06 31 ff 89 c3 89 c6 e8 13 fd
-RSP: 0018:ffffc90005457838 EFLAGS: 00010082
+For bpftrace:
 
-RAX: 0000000000000000 RBX: ffffc90000e84000 RCX: ffffffff817e37b0
-RDX: 0000000000000000 RSI: ffffc90000e84038 RDI: ffffc90005457860
-RBP: 1ffff92000a8af08 R08: 0000000000000000 R09: ffffffff8d7149a7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888092df4440 R14: 0000000000000001 R15: ffff8880a8f2e300
-FS:  0000000001666880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000e84030 CR3: 000000009d9ab000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __bpf_trace_sched_switch+0xdc/0x120 include/trace/events/sched.h:138
- __traceiter_sched_switch+0x64/0xb0 include/trace/events/sched.h:138
- trace_sched_switch include/trace/events/sched.h:138 [inline]
- __schedule+0x1197/0x2200 kernel/sched/core.c:4520
- preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:4682
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:40
- vprintk_emit+0x2d7/0x6e0 kernel/printk/printk.c:2029
- vprintk_func+0x8d/0x1e0 kernel/printk/printk_safe.c:393
- printk+0xba/0xed kernel/printk/printk.c:2076
- fail_dump lib/fault-inject.c:45 [inline]
- should_fail+0x472/0x5a0 lib/fault-inject.c:146
- should_failslab+0x5/0x10 mm/slab_common.c:1194
- slab_pre_alloc_hook.constprop.0+0xf4/0x200 mm/slab.h:512
- slab_alloc mm/slab.c:3300 [inline]
- __do_kmalloc mm/slab.c:3655 [inline]
- __kmalloc+0x6f/0x360 mm/slab.c:3666
- kmalloc include/linux/slab.h:559 [inline]
- allocate_probes kernel/tracepoint.c:58 [inline]
- func_remove kernel/tracepoint.c:210 [inline]
- tracepoint_remove_func kernel/tracepoint.c:297 [inline]
- tracepoint_probe_unregister+0x1cf/0x890 kernel/tracepoint.c:382
- bpf_raw_tp_link_release+0x51/0xa0 kernel/bpf/syscall.c:2734
- bpf_link_free+0xe6/0x1b0 kernel/bpf/syscall.c:2327
- bpf_link_put+0x15e/0x1b0 kernel/bpf/syscall.c:2353
- bpf_link_release+0x33/0x40 kernel/bpf/syscall.c:2361
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
- exit_to_user_mode_prepare+0x20e/0x230 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441509
-Code: e8 ac e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd2b2c6888 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000441509
-RDX: fffffffffffffffd RSI: 0000000000000001 RDI: 0000000000000004
-RBP: 00007ffd2b2c68a0 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-R13: 0000000000000003 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: ffffc90000e84030
----[ end trace a42c1d698c9da70b ]---
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:644 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-RIP: 0010:bpf_trace_run3+0x145/0x3f0 kernel/trace/bpf_trace.c:2083
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 9f 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 c3 00 f7 ff e8 fe 32 c3 06 31 ff 89 c3 89 c6 e8 13 fd
-RSP: 0018:ffffc90005457838 EFLAGS: 00010082
-RAX: 0000000000000000 RBX: ffffc90000e84000 RCX: ffffffff817e37b0
-RDX: 0000000000000000 RSI: ffffc90000e84038 RDI: ffffc90005457860
-RBP: 1ffff92000a8af08 R08: 0000000000000000 R09: ffffffff8d7149a7
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888092df4440 R14: 0000000000000001 R15: ffff8880a8f2e300
-FS:  0000000001666880(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000e84030 CR3: 000000009d9ab000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  # bpftrace -ve "kfunc:__x64_sys_s* { printf("test\n"); } i:ms:10 { printf("exit\n"); exit();}"
+
+  - base
+
+      3,290,457,628      cycles:k         ( +-  0.27% )
+        933,581,973      cycles:u         ( +-  0.20% )
+
+      50.25 +- 4.79 seconds time elapsed  ( +-  9.53% )
+
+  + delayed link free
+
+      2,535,458,767      cycles:k         ( +-  0.55% )
+        940,046,382      cycles:u         ( +-  0.27% )
+
+      33.60 +- 3.27 seconds time elapsed  ( +-  9.73% )
+
+  + kallsym rbtree search
+
+      2,199,433,771      cycles:k         ( +-  0.55% )
+        936,105,469      cycles:u         ( +-  0.37% )
+
+      26.48 +- 3.57 seconds time elapsed  ( +- 13.49% )
+
+  + batch support
+
+      1,456,854,867      cycles:k         ( +-  0.57% )
+        937,737,431      cycles:u         ( +-  0.13% )
+
+      12.44 +- 2.98 seconds time elapsed  ( +- 23.95% )
+
+  + rcu fix
+
+      1,427,959,119      cycles:k         ( +-  0.87% )
+        930,833,507      cycles:u         ( +-  0.23% )
+
+      14.53 +- 3.51 seconds time elapsed  ( +- 24.14% )
+
+
+For attach_test numbers do not show direct time speedup when
+using the batch support, but show big decrease in kernel cycles.
+It seems the time is spent in rcu waiting, which I tried to
+address in most likely wrong rcu fix:
+
+  # ./test_progs -t attach_test
+
+  - base
+
+      1,350,136,760      cycles:k         ( +-  0.07% )
+         70,591,712      cycles:u         ( +-  0.26% )
+
+      24.26 +- 2.82 seconds time elapsed  ( +- 11.62% )
+
+  + delayed link free
+
+        996,152,309      cycles:k         ( +-  0.37% )
+         69,263,150      cycles:u         ( +-  0.50% )
+
+      15.63 +- 1.80 seconds time elapsed  ( +- 11.51% )
+
+  + kallsym rbtree search
+
+        390,217,706      cycles:k         ( +-  0.66% )
+         68,999,019      cycles:u         ( +-  0.46% )
+
+      14.11 +- 2.11 seconds time elapsed  ( +- 14.98% )
+
+  + batch support
+
+         37,410,887      cycles:k         ( +-  0.98% )
+         70,062,158      cycles:u         ( +-  0.39% )
+
+      26.80 +- 4.10 seconds time elapsed  ( +- 15.31% )
+
+  + rcu fix
+
+         36,812,432      cycles:k         ( +-  2.52% )
+         69,907,191      cycles:u         ( +-  0.38% )
+
+      15.04 +- 2.94 seconds time elapsed  ( +- 19.54% )
+
+
+I still need to go through the changes and double check them,
+also those ftrace changes are most likely wrong and most likely
+I broke few tests (hence it's RFC), but I wonder you guys would
+like this batch solution and if there are any thoughts on that.
+
+Also available in
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/batch
+
+thanks,
+jirka
 
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Jiri Olsa (16):
+      ftrace: Add check_direct_entry function
+      ftrace: Add adjust_direct_size function
+      ftrace: Add get/put_direct_func function
+      ftrace: Add ftrace_set_filter_ips function
+      ftrace: Add register_ftrace_direct_ips function
+      ftrace: Add unregister_ftrace_direct_ips function
+      kallsyms: Use rb tree for kallsyms name search
+      bpf: Use delayed link free in bpf_link_put
+      bpf: Add BPF_TRAMPOLINE_BATCH_ATTACH support
+      bpf: Add BPF_TRAMPOLINE_BATCH_DETACH support
+      bpf: Sync uapi bpf.h to tools
+      bpf: Move synchronize_rcu_mult for batch processing (NOT TO BE MERGED)
+      libbpf: Add trampoline batch attach support
+      libbpf: Add trampoline batch detach support
+      selftests/bpf: Add trampoline batch test
+      selftests/bpf: Add attach batch test (NOT TO BE MERGED)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+ include/linux/bpf.h                                       |  18 +++++-
+ include/linux/ftrace.h                                    |   7 +++
+ include/uapi/linux/bpf.h                                  |   8 +++
+ kernel/bpf/syscall.c                                      | 125 ++++++++++++++++++++++++++++++++++----
+ kernel/bpf/trampoline.c                                   |  95 +++++++++++++++++++++++------
+ kernel/kallsyms.c                                         |  95 ++++++++++++++++++++++++++---
+ kernel/trace/ftrace.c                                     | 304 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------
+ net/bpf/test_run.c                                        |  55 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                            |   8 +++
+ tools/lib/bpf/bpf.c                                       |  24 ++++++++
+ tools/lib/bpf/bpf.h                                       |   2 +
+ tools/lib/bpf/libbpf.c                                    | 126 ++++++++++++++++++++++++++++++++++++++-
+ tools/lib/bpf/libbpf.h                                    |   5 +-
+ tools/lib/bpf/libbpf.map                                  |   2 +
+ tools/testing/selftests/bpf/prog_tests/attach_test.c      |  27 +++++++++
+ tools/testing/selftests/bpf/prog_tests/trampoline_batch.c |  45 ++++++++++++++
+ tools/testing/selftests/bpf/progs/attach_test.c           |  62 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/trampoline_batch_test.c |  75 +++++++++++++++++++++++
+ 18 files changed, 995 insertions(+), 88 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/attach_test.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/trampoline_batch.c
+ create mode 100644 tools/testing/selftests/bpf/progs/attach_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/trampoline_batch_test.c
+
