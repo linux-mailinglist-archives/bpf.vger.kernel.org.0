@@ -2,24 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381D6296014
-	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 15:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693DE2960BA
+	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 16:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900123AbgJVNfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Oct 2020 09:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726257AbgJVNfP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:35:15 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2895167AbgJVOMN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Oct 2020 10:12:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24952 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2443552AbgJVOMN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 22 Oct 2020 10:12:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603375931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9xm/wjrf+bJwVnEJL99y1rb6Xy0StOQXlEFvSqTpGFo=;
+        b=US2fGE22zOxSmrTLJP6vDFucHVXvokXtIUzlpB/5rqN3S+y0j7a+VPM7TzQDXWplo1zUhM
+        k6u/zZU7GrI1qg+xE970W1vaitjHSZbKucv1KqoQaJIKkUB6rI54ItY6H7C7xNWVM1tzhr
+        zmTpcpPP967FJUEcoCCjUtwk3prmLeo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-3-nMc0O0MkqmeFiqWz2eKw-1; Thu, 22 Oct 2020 10:12:04 -0400
+X-MC-Unique: 3-nMc0O0MkqmeFiqWz2eKw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C46B720BED;
-        Thu, 22 Oct 2020 13:35:12 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 09:35:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C309E1006CA8;
+        Thu, 22 Oct 2020 14:12:01 +0000 (UTC)
+Received: from krava (unknown [10.40.195.55])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 38EA91002C01;
+        Thu, 22 Oct 2020 14:11:55 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 16:11:54 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
@@ -27,47 +43,60 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
         Jesper Brouer <jbrouer@redhat.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
         Viktor Malik <vmalik@redhat.com>
 Subject: Re: [RFC bpf-next 00/16] bpf: Speed up trampoline attach
-Message-ID: <20201022093510.37e8941f@gandalf.local.home>
-In-Reply-To: <20201022082138.2322434-1-jolsa@kernel.org>
+Message-ID: <20201022141154.GB2332608@krava>
 References: <20201022082138.2322434-1-jolsa@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+ <20201022093510.37e8941f@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022093510.37e8941f@gandalf.local.home>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 22 Oct 2020 10:21:22 +0200
-Jiri Olsa <jolsa@kernel.org> wrote:
-
-> hi,
-> this patchset tries to speed up the attach time for trampolines
-> and make bpftrace faster for wildcard use cases like:
+On Thu, Oct 22, 2020 at 09:35:10AM -0400, Steven Rostedt wrote:
+> On Thu, 22 Oct 2020 10:21:22 +0200
+> Jiri Olsa <jolsa@kernel.org> wrote:
 > 
->   # bpftrace -ve "kfunc:__x64_sys_s* { printf("test\n"); }"
+> > hi,
+> > this patchset tries to speed up the attach time for trampolines
+> > and make bpftrace faster for wildcard use cases like:
+> > 
+> >   # bpftrace -ve "kfunc:__x64_sys_s* { printf("test\n"); }"
+> > 
+> > Profiles show mostly ftrace backend, because we add trampoline
+> > functions one by one and ftrace direct function registering is
+> > quite expensive. Thus main change in this patchset is to allow
+> > batch attach and use just single ftrace call to attach or detach
+> > multiple ips/trampolines.
 > 
-> Profiles show mostly ftrace backend, because we add trampoline
-> functions one by one and ftrace direct function registering is
-> quite expensive. Thus main change in this patchset is to allow
-> batch attach and use just single ftrace call to attach or detach
-> multiple ips/trampolines.
+> The issue I have with this change is that the purpose of the direct
+> trampoline was to give bpf access to the parameters of a function as if it
+> was called directly. That is, it could see the parameters of a function
+> quickly. I even made the direct function work if it wanted to also trace
+> the return code.
+> 
+> What the direct calls is NOT, is a generic tracing function tracer. If that
+> is required, then bpftrace should be registering itself with ftrace.
+> If you are attaching to a set of functions, where it becomes obvious that
+> its not being used to access specific parameters, then that's an abuse of
+> the direct calls.
+> 
+> We already have one generic function tracer, we don't need another.
 
-The issue I have with this change is that the purpose of the direct
-trampoline was to give bpf access to the parameters of a function as if it
-was called directly. That is, it could see the parameters of a function
-quickly. I even made the direct function work if it wanted to also trace
-the return code.
+I understand direct calls as a way that bpf trampolines and ftrace can
+co-exist together - ebpf trampolines need that functionality of accessing
+parameters of a function as if it was called directly and at the same
+point we need to be able attach to any function and to as many functions
+as we want in a fast way
 
-What the direct calls is NOT, is a generic tracing function tracer. If that
-is required, then bpftrace should be registering itself with ftrace.
-If you are attaching to a set of functions, where it becomes obvious that
-its not being used to access specific parameters, then that's an abuse of
-the direct calls.
+the bpftrace example above did not use arguments for simplicity, but they
+could have been there ... I think we could detect arguments presence in
+ebpf programs and use ftrace_ops directly in case they are not needed
 
-We already have one generic function tracer, we don't need another.
+jirka
 
--- Steve
