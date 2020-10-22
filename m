@@ -2,36 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D547295DFF
-	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 14:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381D6296014
+	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 15:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897857AbgJVMHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Oct 2020 08:07:20 -0400
-Received: from [218.145.71.143] ([218.145.71.143]:47468 "EHLO
-        ntmail.icomis.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2897856AbgJVMHU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:07:20 -0400
-X-Greylist: delayed 1015 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Oct 2020 08:07:20 EDT
-Received: from User ([103.99.1.170])
-        (authenticated bits=0)
-        by ntmail.icomis.com (8.14.4/8.14.4) with ESMTP id 09MBW7ue024259;
-        Thu, 22 Oct 2020 20:32:08 +0900
-Message-Id: <202010221132.09MBW7ue024259@ntmail.icomis.com>
-Reply-To: <wkennth@zohomail.com>
-From:   "euro-millions.com" <nina@vizenhosting.com>
-Subject: Congratulation: You're a winner!
-Date:   Thu, 22 Oct 2020 04:32:25 -0700
+        id S2900123AbgJVNfP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Oct 2020 09:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726257AbgJVNfP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:35:15 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C46B720BED;
+        Thu, 22 Oct 2020 13:35:12 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 09:35:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [RFC bpf-next 00/16] bpf: Speed up trampoline attach
+Message-ID: <20201022093510.37e8941f@gandalf.local.home>
+In-Reply-To: <20201022082138.2322434-1-jolsa@kernel.org>
+References: <20201022082138.2322434-1-jolsa@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-<<< No Message Collected >>>
+On Thu, 22 Oct 2020 10:21:22 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
+
+> hi,
+> this patchset tries to speed up the attach time for trampolines
+> and make bpftrace faster for wildcard use cases like:
+> 
+>   # bpftrace -ve "kfunc:__x64_sys_s* { printf("test\n"); }"
+> 
+> Profiles show mostly ftrace backend, because we add trampoline
+> functions one by one and ftrace direct function registering is
+> quite expensive. Thus main change in this patchset is to allow
+> batch attach and use just single ftrace call to attach or detach
+> multiple ips/trampolines.
+
+The issue I have with this change is that the purpose of the direct
+trampoline was to give bpf access to the parameters of a function as if it
+was called directly. That is, it could see the parameters of a function
+quickly. I even made the direct function work if it wanted to also trace
+the return code.
+
+What the direct calls is NOT, is a generic tracing function tracer. If that
+is required, then bpftrace should be registering itself with ftrace.
+If you are attaching to a set of functions, where it becomes obvious that
+its not being used to access specific parameters, then that's an abuse of
+the direct calls.
+
+We already have one generic function tracer, we don't need another.
+
+-- Steve
