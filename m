@@ -2,100 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F462965F5
-	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 22:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CAB296634
+	for <lists+bpf@lfdr.de>; Thu, 22 Oct 2020 22:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900850AbgJVU1z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 22 Oct 2020 16:27:55 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11552 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2898010AbgJVU1y (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Oct 2020 16:27:54 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MK5D5m021932
-        for <bpf@vger.kernel.org>; Thu, 22 Oct 2020 13:27:54 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34aa6uuu5t-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 22 Oct 2020 13:27:53 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 22 Oct 2020 13:27:53 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 671D32EC8370; Thu, 22 Oct 2020 13:27:48 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf] selftest/bpf: fix profiler test using CO-RE relocation for enums
-Date:   Thu, 22 Oct 2020 13:27:38 -0700
-Message-ID: <20201022202739.3667367-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S371987AbgJVUwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Oct 2020 16:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S371979AbgJVUwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Oct 2020 16:52:34 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E49CC0613CE;
+        Thu, 22 Oct 2020 13:52:34 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id n16so1711798pgv.13;
+        Thu, 22 Oct 2020 13:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ag5R8ANFXiIKHrZi3CpUKkJaLv+KTVPp7lGufqkGA/Q=;
+        b=d6+CBZngB4ab2gx0rcr80/mUgsqGHrDfBj1/ysacUwotFwRiXDdiFVeXasFIZHuxHV
+         1x42nCvwwG6yQagKIIf1tCqN7+6tPyMBG1vriokW70nyWmsc8sMnME4tilAanNACPt9O
+         UzNtsCl8lGUuz9Im9a2MYKC37+MOa7tXY3edPXllbkN0hCEGFSQJnOVjVtVIAq/+HJLn
+         puZeL7mEq755h14QQNrKiJO3EdeJ0uF64975sPV2JD6dBoaXPh5ct0LHO4hygeT08KGT
+         jSXmP5u+fSJpVAIRfAuEVSd0XPlAxR+NDLBHr9Bh1K2r/SHLCD+LPnn7xcu4RCGkQK5K
+         2CnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ag5R8ANFXiIKHrZi3CpUKkJaLv+KTVPp7lGufqkGA/Q=;
+        b=O7JKExU18i8h5t8FeQ8pekLfr5vW2QMhyLht6agAp/FCfedQiX1tERjHcDGH5Vl1ms
+         /iDDBfd3SqQblaN2Me8KYjcPG3XgwZmnGrAY/la8HnDP9kFFa+Z1dIs8kMtajVgqIZgs
+         ElPdcFs0WEME/jCuw8+lnIXiSnragfrTIAK0zjPBdewhsCMA2KA5csWfSgCfy+ZDZeKQ
+         LpWqMFIGS2pTEKqZ8cNCKciTgjGfwDFJnLxiZrkmRghycAhexEvTMnf1N9bZifJFUNeu
+         Wn0OYyz7gsfzhs3ZAQkqmwzVtp+jMdPYwQRKihIeJNNurB7kKUg03SxWx0oMnElk9Vjp
+         GGHA==
+X-Gm-Message-State: AOAM530BAvB8+L1wcG2mL/k74EuzqT7M8tz1WYF57kwpaMaK7bW/YGnL
+        iVCOHIX5+ZW5q2+oLYt/iDvvBX2Pi1z4WfvaMzc=
+X-Google-Smtp-Source: ABdhPJx+dBEdcJ+BztG+kLdnt+vX7FpE4LlJQH01ipc7IDV0pS9xsoGFMHkw/BUBCjO1GOwzT0IU3w3pZk202vhKcQg=
+X-Received: by 2002:a17:90a:f184:: with SMTP id bv4mr3823913pjb.1.1603399952372;
+ Thu, 22 Oct 2020 13:52:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_15:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
- bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
- priorityscore=1501 mlxlogscore=638 impostorscore=0 lowpriorityscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010220131
-X-FB-Internal: deliver
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook> <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+In-Reply-To: <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 22 Oct 2020 15:52:20 -0500
+Message-ID: <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of hard-coding invalid pids_cgrp_id, use Kconfig to detect the
-presence of that enum value and CO-RE to capture its actual value in the
-hosts's kernel.
+On Mon, Oct 12, 2020 at 7:31 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+>
+> On Mon, Oct 12, 2020 at 5:57 PM Kees Cook <keescook@chromium.org> wrote:
+> > I think it's fine to just have this "dangle" with a help text update of
+> > "if seccomp action caching is supported by the architecture, provide the
+> > /proc/$pid ..."
+>
+> I think it would be weird if someone sees this help text and wonder...
+> "hmm does my architecture support seccomp action caching" and without
+> a clear pointer to how seccomp action cache works, goes and compiles
+> the kernel with this config option on for the purpose of knowing if
+> their arch supports it... Or, is it a common practice in the kernel to
+> leave dangling configs?
 
-Tested-by: Song Liu <songliubraving@fb.com>
-Fixes: 03d4d13fab3f ("selftests/bpf: Add profiler test")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/progs/profiler.inc.h | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+Bump, in case this question was missed. I don't really want to miss
+the 5.10 merge window...
 
-diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
-index 00578311a423..30982a7e4d0f 100644
---- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-+++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-@@ -243,7 +243,10 @@ static ino_t get_inode_from_kernfs(struct kernfs_node* node)
- 	}
- }
- 
--int pids_cgrp_id = 1;
-+extern bool CONFIG_CGROUP_PIDS __kconfig __weak;
-+enum cgroup_subsys_id___local {
-+	pids_cgrp_id___local = 123, /* value doesn't matter */
-+};
- 
- static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
- 					 struct task_struct* task,
-@@ -253,7 +256,9 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
- 		BPF_CORE_READ(task, nsproxy, cgroup_ns, root_cset, dfl_cgrp, kn);
- 	struct kernfs_node* proc_kernfs = BPF_CORE_READ(task, cgroups, dfl_cgrp, kn);
- 
--	if (ENABLE_CGROUP_V1_RESOLVER) {
-+	if (ENABLE_CGROUP_V1_RESOLVER && CONFIG_CGROUP_PIDS) {
-+		int cgrp_id = bpf_core_enum_value(enum cgroup_subsys_id___local,
-+						  pids_cgrp_id___local);
- #ifdef UNROLL
- #pragma unroll
- #endif
-@@ -262,7 +267,7 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
- 				BPF_CORE_READ(task, cgroups, subsys[i]);
- 			if (subsys != NULL) {
- 				int subsys_id = BPF_CORE_READ(subsys, ss, id);
--				if (subsys_id == pids_cgrp_id) {
-+				if (subsys_id == cgrp_id) {
- 					proc_kernfs = BPF_CORE_READ(subsys, cgroup, kn);
- 					root_kernfs = BPF_CORE_READ(subsys, ss, root, kf_root, kn);
- 					break;
--- 
-2.24.1
-
+YiFei Zhu
