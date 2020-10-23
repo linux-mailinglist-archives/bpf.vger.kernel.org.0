@@ -2,134 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702CA2977D5
-	for <lists+bpf@lfdr.de>; Fri, 23 Oct 2020 21:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9872B2977DD
+	for <lists+bpf@lfdr.de>; Fri, 23 Oct 2020 21:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754927AbgJWTq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Oct 2020 15:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754901AbgJWTq1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Oct 2020 15:46:27 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F176C0613CE;
-        Fri, 23 Oct 2020 12:46:27 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id f140so2158737ybg.3;
-        Fri, 23 Oct 2020 12:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8K+Yumi9kyjveoiqi6yCm6sjzyyeKTQw8sa+wYBvFMo=;
-        b=UnopzMWWSCyXa63QdFguw02OBGdWTikzQkQudqsAMrJnUscWSSlVL12UcCk9TalHc4
-         r1rVyrStj+d4nRjVXCqzgeHNyA8P1DXoLDw+g5k2aqc6JEgRcM6Y8DbwtXcb+r8cAsdQ
-         8NwVZweudhjbO7Jnt78nq3XLaI6JLPi/PGOBq0mS0dFCYg5qRKiou+u+em5UYHOJwcjW
-         +NLeJUhq2WL2Qim97fwCGzNF1tINbLYOp1axLgvVKxxlIpd31LJ0IzUj+SgXF5SFkKL9
-         cxH1mYxVAQRlSLjCkNEJm9bSPEu54qD0FHxXXGMwhrhFhgijFxwm/8i5pr7YGBpKlWGV
-         Yajg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8K+Yumi9kyjveoiqi6yCm6sjzyyeKTQw8sa+wYBvFMo=;
-        b=IJGIZIAedjfhGwXXQ7BN4ngvR2NeY3H5YtVnCUpxRp0pUX8U0kp8OuG8h7V9rlXh05
-         O8+PU80j0W5SPBjAQs8s6LQzkvGRySSH0TXMHGdvFkFttS93xVMRVmdL4f+tDw47QMFL
-         c9FkdbEwwKQUo1lPMfyWycq92ZTCxNmcbtxbadz5SJryai5Hv3OV2ggagL33G5rAcgLw
-         rtNkxdrsHc9kn0/3j2Sv7sWU+8t7F6uyY15dfXNkvCGbFfiq5GP6/YIyfVUSqO5Iy6TN
-         15D6OxV+spXfjtJKKUnw9OBwQmV56Vhj6YuRnqsFWXROrAoUd+1Voh9ae4zr7mAUEgVs
-         33rg==
-X-Gm-Message-State: AOAM532eUw+3oW9Nccrs5O8vvxDT7lrBDBDKIzz8RgVBoW7gwo2RkaX0
-        Gbu6gjDFGGIg+IG7aYapp56Nt9D/wny0RQnstW0=
-X-Google-Smtp-Source: ABdhPJx/dzB7rSkpRF2uaX2RK0YpyYc9XOQ8HwbGIfnAuAF6ycqR7/0I8zKjHkG3TQdzvF4dzym2Ix6k3/a5rAqToZc=
-X-Received: by 2002:a25:3443:: with SMTP id b64mr5587652yba.510.1603482386320;
- Fri, 23 Oct 2020 12:46:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201022082138.2322434-1-jolsa@kernel.org> <20201022082138.2322434-9-jolsa@kernel.org>
-In-Reply-To: <20201022082138.2322434-9-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Oct 2020 12:46:15 -0700
-Message-ID: <CAEf4BzZ9zwA=SrLTx9JT50OeM6fVPg0Py0Gx+K9ah2we8YtCRA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 08/16] bpf: Use delayed link free in bpf_link_put
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        id S1755012AbgJWTyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Oct 2020 15:54:19 -0400
+Received: from mail.efficios.com ([167.114.26.124]:45578 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S463594AbgJWTyT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Oct 2020 15:54:19 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D9049279803;
+        Fri, 23 Oct 2020 15:54:17 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id MiMvdgLqwa2p; Fri, 23 Oct 2020 15:54:17 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7C40B279621;
+        Fri, 23 Oct 2020 15:54:17 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7C40B279621
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1603482857;
+        bh=72FXe7XbiRUBCbyjx8FqEitIcCm0DjJMktXzOLswNDc=;
+        h=From:To:Date:Message-Id:MIME-Version;
+        b=l5qwzvrOP577xDYZuFZl1MkQkVFTuzub1PK8l2tVRASmHNJ/B4hUyjMSUSRa4D3e2
+         0oPrsjcrD/4+L8CkmQnskNSa2XQiFfdPrQ5i2soumpK/Oh8RhTQUjYZbeN24Rzw/AC
+         Xex7vYpDDBiZ6FzPTBAKKIEmx0rUILBsSjcSqT0HduKbND9Erk5C8InTWhgNJPKN/C
+         XtC6Cev8nwEV3mmsYZlmb1KQF/TKvuDZ9oTMDcos6dJrfJJ1rz9WxJWdYZL4vGR7CL
+         l+0GcMURUiy7/aJCbEbfGkn0bc4aWY6kw4dt0us4jNA7qQ9eTWqfi/uIU+FLX7KcNa
+         iG+HjzMiI1XgA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id tt-dha39xSFv; Fri, 23 Oct 2020 15:54:17 -0400 (EDT)
+Received: from localhost.localdomain (96-127-212-112.qc.cable.ebox.net [96.127.212.112])
+        by mail.efficios.com (Postfix) with ESMTPSA id 6E196279561;
+        Fri, 23 Oct 2020 15:54:14 -0400 (EDT)
+From:   Michael Jeanson <mjeanson@efficios.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     mathieu.desnoyers@efficios.com,
+        Michael Jeanson <mjeanson@efficios.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>, bpf@vger.kernel.org
+Subject: [RFC PATCH 0/6] Sleepable tracepoints
+Date:   Fri, 23 Oct 2020 15:53:46 -0400
+Message-Id: <20201023195352.26269-1-mjeanson@efficios.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 8:01 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Moving bpf_link_free call into delayed processing so we don't
-> need to wait for it when releasing the link.
->
-> For example bpf_tracing_link_release could take considerable
-> amount of time in bpf_trampoline_put function due to
-> synchronize_rcu_tasks call.
->
-> It speeds up bpftrace release time in following example:
->
-> Before:
->
->  Performance counter stats for './src/bpftrace -ve kfunc:__x64_sys_s*
->     { printf("test\n"); } i:ms:10 { printf("exit\n"); exit();}' (5 runs):
->
->      3,290,457,628      cycles:k                                 ( +-  0.27% )
->        933,581,973      cycles:u                                 ( +-  0.20% )
->
->              50.25 +- 4.79 seconds time elapsed  ( +-  9.53% )
->
-> After:
->
->  Performance counter stats for './src/bpftrace -ve kfunc:__x64_sys_s*
->     { printf("test\n"); } i:ms:10 { printf("exit\n"); exit();}' (5 runs):
->
->      2,535,458,767      cycles:k                                 ( +-  0.55% )
->        940,046,382      cycles:u                                 ( +-  0.27% )
->
->              33.60 +- 3.27 seconds time elapsed  ( +-  9.73% )
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/bpf/syscall.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 1110ecd7d1f3..61ef29f9177d 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2346,12 +2346,8 @@ void bpf_link_put(struct bpf_link *link)
->         if (!atomic64_dec_and_test(&link->refcnt))
->                 return;
->
-> -       if (in_atomic()) {
-> -               INIT_WORK(&link->work, bpf_link_put_deferred);
-> -               schedule_work(&link->work);
-> -       } else {
-> -               bpf_link_free(link);
-> -       }
-> +       INIT_WORK(&link->work, bpf_link_put_deferred);
-> +       schedule_work(&link->work);
+When invoked from system call enter/exit instrumentation, accessing
+user-space data is a common use-case for tracers. However, tracepoints
+currently disable preemption around iteration on the registered
+tracepoint probes and invocation of the probe callbacks, which prevents
+tracers from handling page faults.
 
-We just recently reverted this exact change. Doing this makes it
-non-deterministic from user-space POV when the BPF program is
-**actually** detached. This makes user-space programming much more
-complicated and unpredictable. So please don't do this. Let's find
-some other way to speed this up.
+Extend the tracepoint and trace event APIs to allow specific tracer
+probes to take page faults. Adapt ftrace, perf, and ebpf to allow being
+called from sleepable context, and convert the system call enter/exit
+instrumentation to sleepable tracepoints.
 
->  }
->
->  static int bpf_link_release(struct inode *inode, struct file *filp)
-> --
-> 2.26.2
->
+This series only implements the tracepoint infrastructure required to
+allow tracers to handle page faults. Modifying each tracer to handle
+those page faults would be a next step after we all agree on this piece
+of instrumentation infrastructure.
+
+This patchset is base on v5.9.1.
+
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
+Cc: bpf@vger.kernel.org
+
+Mathieu Desnoyers (1):
+  tracing: use sched-RCU instead of SRCU for rcuidle tracepoints
+
+Michael Jeanson (5):
+  tracing: introduce sleepable tracepoints
+  tracing: ftrace: add support for sleepable tracepoints
+  tracing: bpf-trace: add support for sleepable tracepoints
+  tracing: perf: add support for sleepable tracepoints
+  tracing: convert sys_enter/exit to sleepable tracepoints
+
+ include/linux/tracepoint-defs.h |  11 ++++
+ include/linux/tracepoint.h      | 104 +++++++++++++++++++++-----------
+ include/trace/bpf_probe.h       |  23 ++++++-
+ include/trace/define_trace.h    |   7 +++
+ include/trace/events/syscalls.h |   4 +-
+ include/trace/perf.h            |  26 ++++++--
+ include/trace/trace_events.h    |  79 ++++++++++++++++++++++--
+ init/Kconfig                    |   1 +
+ kernel/trace/bpf_trace.c        |   5 +-
+ kernel/trace/trace_events.c     |  15 ++++-
+ kernel/trace/trace_syscalls.c   |  68 +++++++++++++--------
+ kernel/tracepoint.c             | 104 +++++++++++++++++++++++++-------
+ 12 files changed, 351 insertions(+), 96 deletions(-)
+
+--=20
+2.25.1
+
