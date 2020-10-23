@@ -2,154 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D03297935
-	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 00:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C1C297946
+	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 00:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753263AbgJWWCn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Oct 2020 18:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
+        id S1757091AbgJWWXW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Oct 2020 18:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752808AbgJWWCn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Oct 2020 18:02:43 -0400
+        with ESMTP id S1757090AbgJWWXW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Oct 2020 18:23:22 -0400
 Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27682C0613CE
-        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 15:02:43 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id c129so2406328yba.8
-        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 15:02:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2DCC0613CE;
+        Fri, 23 Oct 2020 15:23:22 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id l15so2456601ybp.2;
+        Fri, 23 Oct 2020 15:23:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LhodysNWfesoEr27BBcoydZSeeh81d51gQbDjShlE0Y=;
-        b=B3FFPsQmHwww8kArC/biZ2cRWpshxrdIabVzztw3HZ7z90jaqfqzzONDqd28YxeLmQ
-         T7dIDFju2PJJdAi3LN74iW3kt8cL2DJjLgdy1r8npvVBgC263kD/Ahz+TAJFUkzSPQV8
-         TEc5VPJkVbJBHqEvgWzu8eEOVOn5VDKoks4I3qr6YllnqXegaAhBktEFt9WP7Tl/on1V
-         En2tjWZ8rJJ7oX5VDqpEcfoIhlpgwYTs9zl2lEMbiGGmw7Ct9WyOBU6T5EA8i3eQ+xQJ
-         rzvNEUTL1DQSClHuEpsEBHbasoxXetKLlGphgLEj5MBijuJaWWrPR1s7D3akVuzoxB6u
-         M1wg==
+        bh=teoadB9A4wSfj5Ud7RaxveSuWTipSA4mNAPFFIKYL90=;
+        b=T6OvFAIayET/EkhtDXbUtqzI6e9iIqNEhS+zXPn/yPVBAhhykWrISE0kGQmAPk55u/
+         lM1CoZ79sQvdYdV8yFjLm3TTcuP5yj3SXFJ0CvLndlUmDexxO23s7sNVJW4p8yC7bi8B
+         rxNBVjw6FwoFsdowjOmr2yBnuV0aOgML8WmxQUaCaK9IxEOl9h3aKzrOeeiY6PhLgt0c
+         0IE4qG7YOzqk2XrRLSnuJ9NPyu3vdmk6nymSwiaG0lyx23Hul4KSlnEMelJfiVFYaK2i
+         vpK7WvbdfdwHDaGXbrl/wJdiCczmw/TvcpK05WEJMBUPHhs/tfaqQ+Ms9Nv1i7yulcl5
+         U/hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LhodysNWfesoEr27BBcoydZSeeh81d51gQbDjShlE0Y=;
-        b=A4i3z3qox/UlGntFzOAkDe5R8vXPa92AJOLDQVc2xArqF870KrejxA8D+/jhqoJniu
-         hzLgjrHOzQhX4qr4lra8Hz/13D5PUosKGJryHsSyUFc7yhz7L9lKYb6yWo2PNJ2+GrgC
-         8TAVt8YF37A/PuErOJrlqURNXxnBmfyHycwsEOjmeN2Gas3Iuejfc4vJxSiT5O3JhRNw
-         KgwqEuHIXVBXzy4JRTzQYQq/8jYrb8bC777Oqm4u5MkWvEhZ1na+phfx4y9rQEDSxN71
-         K0WxbwI813h7tg3PzInuADzgch/8zF0ooyYf/CYEOryxKwazvANBy54ACH2Pr3J2A0h0
-         Mdnw==
-X-Gm-Message-State: AOAM530wG9dmWd/7ye9BqiTX/a1MWDHFXG8xFRZu3eowVhQAGKTc0NJJ
-        9UyEABP5Zv1SImrpH0i1ym9nNA2D9+thwFmW1hVGu2LmwNc=
-X-Google-Smtp-Source: ABdhPJysUPz2QX/c3pLGyVoZBf4MSkWkzpbibOIoXMqdJ+tJCMjpRYzthQQC3ol1h5yvsOp90DR0yMBhlhXYhII53UM=
-X-Received: by 2002:a25:da4e:: with SMTP id n75mr6428082ybf.425.1603490562280;
- Fri, 23 Oct 2020 15:02:42 -0700 (PDT)
+        bh=teoadB9A4wSfj5Ud7RaxveSuWTipSA4mNAPFFIKYL90=;
+        b=YeIjkO/zfIvHlSQgaaDUA3JwbNtU3H+iOrRlN2iIGSz1UuKqfPCTRYC7eeUhGQND83
+         ZYjM4nw+XWwMBVHmpXLvYoNAkkOblWTmuAAodVcOJ2B8teWJuSYeTDjRRXKFhavv/8rC
+         x6uUH0q5K2iWmRlTgSP/YEOWrFr6M85OJORh1tCBasai3MHv66oVz+10MaL40F+wUNG7
+         tG3PUrgHJ0t2enNt3AaKmHd6Oux8vIHBd877wVm+CG6/jJ2VYjp9BhlmQw7wCvDjAvLs
+         3ITYArbbQeLTzUV8ZxGn9AFmnIAQqF4VZo9i5RHMdrVf5AyngxnujVkUSWLR4E6hg9ds
+         BexA==
+X-Gm-Message-State: AOAM531WVLtoeG1e4htpBnzt/wOGk56gGjsqK9KG4/ELlIw4f0oMX9Rx
+        hjAnQdbXY2gbildvzBKfdFZH+ZcWclBt29lNmJg=
+X-Google-Smtp-Source: ABdhPJzl3woa7gaYNBi3jy1QEUdw6w1/CF/hzDcBzOq2AcNgG1OkkhM8QeQc1VcxUDndFWZkxovgwyGhzVQQIPXWfXI=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr6922247ybe.403.1603491801621;
+ Fri, 23 Oct 2020 15:23:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915121743.GA2199675@krava> <20200916090624.GD2301783@krava>
- <20201016213835.GJ1461394@krava> <20201021194209.GB2276476@krava>
- <CAEf4BzaZa2NDz38j=J=g=9szqj=ruStE7EiSs2ueQ5rVHXYRpQ@mail.gmail.com>
- <20201023053651.GE2332608@krava> <20201023065832.GA2435078@krava>
- <CAEf4BzbM=FhKUUjaM9msL1k=t_CSrhoWUNYcubzToZvbAJCJ-A@mail.gmail.com>
- <20201023201702.GA2495983@krava> <CAEf4BzZzMNfBBPGeXazk0Qh8pbXMPip-i3iaSt6QqXE-tttT=A@mail.gmail.com>
- <20201023204539.GB2495983@krava>
-In-Reply-To: <20201023204539.GB2495983@krava>
+References: <20201022082138.2322434-1-jolsa@kernel.org> <20201022082138.2322434-10-jolsa@kernel.org>
+ <CAEf4Bzb_HPmGSoUX+9+LvSP2Yb95OqEQKtjpMiW1Um-rixAM8Q@mail.gmail.com> <20201023163110.54e4a202@gandalf.local.home>
+In-Reply-To: <20201023163110.54e4a202@gandalf.local.home>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Oct 2020 15:02:31 -0700
-Message-ID: <CAEf4BzZKKLecyK3L+b6zqBvA4W3x3YbZ7y=8-kXwY+XoUvwgcg@mail.gmail.com>
-Subject: Re: Build failures: unresolved symbol vfs_getattr
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Veronika Kabatova <vkabatov@redhat.com>,
+Date:   Fri, 23 Oct 2020 15:23:10 -0700
+Message-ID: <CAEf4Bza4=KKZS_OGnaLvFELE8W+Nm4sah2--CYP6wopQecxg5g@mail.gmail.com>
+Subject: Re: [RFC bpf-next 09/16] bpf: Add BPF_TRAMPOLINE_BATCH_ATTACH support
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        bpf <bpf@vger.kernel.org>, "Frank Ch. Eigler" <fche@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 1:45 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, Oct 23, 2020 at 1:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Fri, Oct 23, 2020 at 01:32:44PM -0700, Andrii Nakryiko wrote:
+> On Fri, 23 Oct 2020 13:03:22 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> SNIP
+> > Basically, maybe ftrace subsystem could provide a set of APIs to
+> > prepare a set of functions to attach to. Then BPF subsystem would just
+> > do what it does today, except instead of attaching to a specific
+> > kernel function, it would attach to ftrace's placeholder. I don't know
+> > anything about ftrace implementation, so this might be far off. But I
+> > thought that looking at this problem from a bit of a different angle
+> > would benefit the discussion. Thoughts?
 >
-> > > right, we can generate them in bpftrace, but it's a shame
-> > >
-> > >
-> > > >
-> > > > But otherwise, I don't really have a good feeling what's the perfect
-> > > > solution here...
-> > >
-> > > I tried the check of dwarf record against function symbols
-> > > with adresses mentioned earlier (attached)
-> > >
-> > > getting more functions of course ;-)
-> > >
-> > > $ bpftool btf dump file ./vmlinux | grep 'FUNC '  | wc -l
-> > > 46606
-> > >
-> > > compared to 22869 on the same .config with working gcc
-> > > and current pahole
-> >
-> > Just curious, what's the change in BTF size due to this?
->
-> current: 3342279
-> new:     4361045
->
-> so about 1MB
-
-ok, not too bad for almost 24k functions and bringing fentry/fexit on
-par with kprobe/kretprobe in terms of what to attach to
-
->
-> >
-> > >
-> > > and resolve_btfids is happy, because there are no duplications
-> > >
-> > > jirka
-> > >
-> > >
-> > > ---
-> >
-> > [...]
-> >
-> > >  static int btf_var_secinfo_cmp(const void *a, const void *b)
-> > >  {
-> > >         const struct btf_var_secinfo *av = a;
-> > > @@ -72,6 +157,7 @@ struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
-> > >         if (!btfe)
-> > >                 return NULL;
-> > >
-> > > +       btfe->symbols = RB_ROOT;
-> >
-> > Can you please check what we do for per-cpu variables with ELF
-> > symbols? Perhaps we can unify approaches. I'd also favor using a sort
-> > + bsearch approach instead of rb_tree, given we don't really need to
-> > dynamically add/delete elements, it's a one-time operation to iterate
-> > and initialize everything. Also binary search of linear arrays would
-> > be more memory-efficient and cache-efficient, most probably.
->
-> ok, will check
+> I probably understand bpf internals as much as you understand ftrace
+> internals ;-)
 >
 
-thanks!
+Heh :) But while we are here, what do you think about this idea of
+preparing a no-op trampoline, that a bunch (thousands, potentially) of
+function entries will jump to. And once all that is ready and patched
+through kernel functions entry points, then allow to attach BPF
+program or ftrace callback (if I get the terminology right) in a one
+fast and simple operation? For users that would mean that they will
+either get calls for all or none of attached kfuncs, with a simple and
+reliable semantics.
 
-> jirka
+Something like this, where bpf_prog attachment (which replaces nop)
+happens as step 2:
+
++------------+  +----------+  +----------+
+|  kfunc1    |  |  kfunc2  |  |  kfunc3  |
++------+-----+  +----+-----+  +----+-----+
+       |             |             |
+       |             |             |
+       +---------------------------+
+                     |
+                     v
+                 +---+---+           +-----------+
+                 |  nop  +----------->  bpf_prog |
+                 +-------+           +-----------+
+
+
+> Anyway, what I'm currently working on, is a fast way to get to the
+> arguments of a function. For now, I'm just focused on x86_64, and only add
+> 6 argments.
 >
-> >
-> > >         btfe->in_fd = -1;
-> > >         btfe->filename = strdup(filename);
-> > >         if (btfe->filename == NULL)
-> > > @@ -177,6 +263,7 @@ void btf_elf__delete(struct btf_elf *btfe)
-> > >                         elf_end(btfe->elf);
-> > >         }
-> > >
-> > > +       btfe__delete_symbols(btfe);
-> > >         elf_symtab__delete(btfe->symtab);
-> > >         __gobuffer__delete(&btfe->percpu_secinfo);
-> > >         btf__free(btfe->btf);
-> >
-> > [...]
-> >
+> The main issue that Alexei had with using the ftrace trampoline, was that
+> the only way to get to the arguments was to set the "REGS" flag, which
+> would give a regs parameter that contained a full pt_regs. The problem with
+> this approach is that it required saving *all* regs for every function
+> traced. Alexei felt that this was too much overehead.
 >
+> Looking at Jiri's patch, I took a look at the creation of the bpf
+> trampoline, and noticed that it's copying the regs on a stack (at least
+> what is used, which I think could be an issue).
+
+Right. And BPF doesn't get access to the entire pt_regs struct, so it
+doesn't have to pay the prices of saving it.
+
+But just FYI. Alexei is out till next week, so don't expect him to
+reply in the next few days. But he's probably best to discuss these
+nitty-gritty details with :)
+
+>
+> For tracing a function, one must store all argument registers used, and
+> restore them, as that's how they are passed from caller to callee. And
+> since they are stored anyway, I figure, that should also be sent to the
+> function callbacks, so that they have access to them too.
+>
+> I'm working on a set of patches to make this a reality.
+>
+> -- Steve
