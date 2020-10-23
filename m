@@ -2,331 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598862968E0
-	for <lists+bpf@lfdr.de>; Fri, 23 Oct 2020 05:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E17296967
+	for <lists+bpf@lfdr.de>; Fri, 23 Oct 2020 07:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375003AbgJWDjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Oct 2020 23:39:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39488 "EHLO
+        id S370827AbgJWFhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Oct 2020 01:37:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41362 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S374972AbgJWDjp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Oct 2020 23:39:45 -0400
+        by vger.kernel.org with ESMTP id S370820AbgJWFhG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 23 Oct 2020 01:37:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603424382;
+        s=mimecast20190719; t=1603431424;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mNpTnhqVT/lkkDzOBStmitBv9qqoRpOHiUUiZ8tRN8I=;
-        b=DiFXm7lYzRpONrMYAE+o2tq94B6PggkQ039BavbkjK/dulfA98fIy6ageaSmAFvEb28Y1D
-        JbVEGi9lmDHCqxqGdcrssBWfWJ3PTdxswUcblA++oOEzfX9WBE7zan0msIlfcDMoU769Ej
-        4UO50yP/8iC6yiFtebhr9h+Srh5GZc8=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-b0UPK3JgNFaOOshzQ4n1Zw-1; Thu, 22 Oct 2020 23:39:40 -0400
-X-MC-Unique: b0UPK3JgNFaOOshzQ4n1Zw-1
-Received: by mail-pf1-f199.google.com with SMTP id g24so32363pfo.1
-        for <bpf@vger.kernel.org>; Thu, 22 Oct 2020 20:39:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mNpTnhqVT/lkkDzOBStmitBv9qqoRpOHiUUiZ8tRN8I=;
-        b=b2dT1nNomZXFF+L+laPuGyu/3y4TTI7yadVpBYPu7XyNr4nhmFCsoxB/myZKM+zFU6
-         UDjsivNERrRv4V/TPYl7llHogbknMmF4jBcuL5bf16FneM3uJzgB+6t/M4U8MF51eQNm
-         o9yCAB42VvYUvvWXfQOiSPqpQMqCSUNe43Dj6Y8F5cy7WhRKNrO5XA4YUYMIaiNPtGh0
-         5JaKTTwi/IWLNa49WQ2wJepGjHg93C28a8tZpr/GF/zMB0Fm4rx4uadSJR/XGBQj9dWO
-         6UtUf/zriJ/mnkGzLgBd636xHA51+CPC2WkV6tMGnXm0T2Bmk0a7bqd+YOzJFiDu8gKo
-         feCw==
-X-Gm-Message-State: AOAM533q1AOzTsFN/xe6MDVbjc8G/zm9jjo0peZDY3O9jPsXismKeR5F
-        ACMXROJ0m8UfPx7AC+g2qtnaOzKiWS+1eV/WdYqlvoEXJ8OwmDlOMRjhQORXL3Qe8QJePvRKFAU
-        Mu1ccoVXrGI0=
-X-Received: by 2002:a17:90a:fa96:: with SMTP id cu22mr231923pjb.80.1603424379755;
-        Thu, 22 Oct 2020 20:39:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4xiU89odVDnj7icVmrqB6X6PMVtfCkeN3FXBtqwJtLcmLO76O7PAANpizBcpXQC+F03suEw==
-X-Received: by 2002:a17:90a:fa96:: with SMTP id cu22mr231905pjb.80.1603424379502;
-        Thu, 22 Oct 2020 20:39:39 -0700 (PDT)
-Received: from localhost.localdomain.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id e23sm185442pfi.191.2020.10.22.20.39.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 20:39:38 -0700 (PDT)
-From:   Hangbin Liu <haliu@redhat.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Hangbin Liu <haliu@redhat.com>
-Subject: [PATCH iproute2-next 5/5] examples/bpf: add bpf examples with BTF defined maps
-Date:   Fri, 23 Oct 2020 11:38:55 +0800
-Message-Id: <20201023033855.3894509-6-haliu@redhat.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201023033855.3894509-1-haliu@redhat.com>
-References: <20201023033855.3894509-1-haliu@redhat.com>
+        bh=HWBykkt7mvfQvNaQqiJjdTW8rBvyNw0+OJsykVGYI6o=;
+        b=BV2l6ItpdmWSkkr0pDBWSNXgavsUR69krapX4ZfzPtm0tw6Xus8mazY7BGCHZkyIpG7Hcz
+        ifE4atfpP88pMaarU/GZFSZp0cZBmcr8Ks8+T9Ytd0r99Rvp3OHlywStY7gwPkJAl6xIFA
+        OoiydiwAkb4H2NI12jRJqu6RT27FlIc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-aVBmoo7AP32Y9pqEjJs8Ww-1; Fri, 23 Oct 2020 01:36:58 -0400
+X-MC-Unique: aVBmoo7AP32Y9pqEjJs8Ww-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 239FF835B8C;
+        Fri, 23 Oct 2020 05:36:57 +0000 (UTC)
+Received: from krava (unknown [10.40.192.63])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1A9305B4AC;
+        Fri, 23 Oct 2020 05:36:51 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 07:36:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Veronika Kabatova <vkabatov@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        bpf <bpf@vger.kernel.org>, "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: Build failures: unresolved symbol vfs_getattr
+Message-ID: <20201023053651.GE2332608@krava>
+References: <1723352278.11013122.1600093319730.JavaMail.zimbra@redhat.com>
+ <748495289.11017858.1600094916732.JavaMail.zimbra@redhat.com>
+ <20200914182513.GK1714160@krava>
+ <CAEf4Bzb7B+_s0Y2oN5TZARTmJby3npTVKDuDKDKfgmbBkAdpPQ@mail.gmail.com>
+ <20200915073030.GE1714160@krava>
+ <20200915121743.GA2199675@krava>
+ <20200916090624.GD2301783@krava>
+ <20201016213835.GJ1461394@krava>
+ <20201021194209.GB2276476@krava>
+ <CAEf4BzaZa2NDz38j=J=g=9szqj=ruStE7EiSs2ueQ5rVHXYRpQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaZa2NDz38j=J=g=9szqj=ruStE7EiSs2ueQ5rVHXYRpQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Users should try use the new BTF defined maps instead of struct
-bpf_elf_map defined maps. The tail call examples are not added yet
-as libbpf doesn't currently support declaratively populating tail call
-maps.
+On Thu, Oct 22, 2020 at 01:00:19PM -0700, Andrii Nakryiko wrote:
 
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Hangbin Liu <haliu@redhat.com>
----
- examples/bpf/README           |  6 ++++
- examples/bpf/bpf_graft.c      | 66 +++++++++++++++++++++++++++++++++++
- examples/bpf/bpf_map_in_map.c | 55 +++++++++++++++++++++++++++++
- examples/bpf/bpf_shared.c     | 53 ++++++++++++++++++++++++++++
- include/bpf_api.h             | 13 +++++++
- 5 files changed, 193 insertions(+)
- create mode 100644 examples/bpf/bpf_graft.c
- create mode 100644 examples/bpf/bpf_map_in_map.c
- create mode 100644 examples/bpf/bpf_shared.c
+SNIP
 
-diff --git a/examples/bpf/README b/examples/bpf/README
-index 732bcc83..b7261191 100644
---- a/examples/bpf/README
-+++ b/examples/bpf/README
-@@ -1,6 +1,12 @@
- eBPF toy code examples (running in kernel) to familiarize yourself
- with syntax and features:
- 
-+- BTF defined map examples
-+ - bpf_graft.c		-> Demo on altering runtime behaviour
-+ - bpf_shared.c 	-> Ingress/egress map sharing example
-+ - bpf_map_in_map.c	-> Using map in map example
-+
-+- legacy struct bpf_elf_map defined map examples
-  - legacy/bpf_shared.c		-> Ingress/egress map sharing example
-  - legacy/bpf_tailcall.c	-> Using tail call chains
-  - legacy/bpf_cyclic.c		-> Simple cycle as tail calls
-diff --git a/examples/bpf/bpf_graft.c b/examples/bpf/bpf_graft.c
-new file mode 100644
-index 00000000..8066dcce
---- /dev/null
-+++ b/examples/bpf/bpf_graft.c
-@@ -0,0 +1,66 @@
-+#include "../../include/bpf_api.h"
-+
-+/* This example demonstrates how classifier run-time behaviour
-+ * can be altered with tail calls. We start out with an empty
-+ * jmp_tc array, then add section aaa to the array slot 0, and
-+ * later on atomically replace it with section bbb. Note that
-+ * as shown in other examples, the tc loader can prepopulate
-+ * tail called sections, here we start out with an empty one
-+ * on purpose to show it can also be done this way.
-+ *
-+ * tc filter add dev foo parent ffff: bpf obj graft.o
-+ * tc exec bpf dbg
-+ *   [...]
-+ *   Socket Thread-20229 [001] ..s. 138993.003923: : fallthrough
-+ *   <idle>-0            [001] ..s. 138993.202265: : fallthrough
-+ *   Socket Thread-20229 [001] ..s. 138994.004149: : fallthrough
-+ *   [...]
-+ *
-+ * tc exec bpf graft m:globals/jmp_tc key 0 obj graft.o sec aaa
-+ * tc exec bpf dbg
-+ *   [...]
-+ *   Socket Thread-19818 [002] ..s. 139012.053587: : aaa
-+ *   <idle>-0            [002] ..s. 139012.172359: : aaa
-+ *   Socket Thread-19818 [001] ..s. 139012.173556: : aaa
-+ *   [...]
-+ *
-+ * tc exec bpf graft m:globals/jmp_tc key 0 obj graft.o sec bbb
-+ * tc exec bpf dbg
-+ *   [...]
-+ *   Socket Thread-19818 [002] ..s. 139022.102967: : bbb
-+ *   <idle>-0            [002] ..s. 139022.155640: : bbb
-+ *   Socket Thread-19818 [001] ..s. 139022.156730: : bbb
-+ *   [...]
-+ */
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(key_size, sizeof(uint32_t));
-+	__uint(value_size, sizeof(uint32_t));
-+	__uint(max_entries, 1);
-+	__uint(pinning, LIBBPF_PIN_BY_NAME);
-+} jmp_tc __section(".maps");
-+
-+__section("aaa")
-+int cls_aaa(struct __sk_buff *skb)
-+{
-+	printt("aaa\n");
-+	return TC_H_MAKE(1, 42);
-+}
-+
-+__section("bbb")
-+int cls_bbb(struct __sk_buff *skb)
-+{
-+	printt("bbb\n");
-+	return TC_H_MAKE(1, 43);
-+}
-+
-+__section_cls_entry
-+int cls_entry(struct __sk_buff *skb)
-+{
-+	tail_call(skb, &jmp_tc, 0);
-+	printt("fallthrough\n");
-+	return BPF_H_DEFAULT;
-+}
-+
-+BPF_LICENSE("GPL");
-diff --git a/examples/bpf/bpf_map_in_map.c b/examples/bpf/bpf_map_in_map.c
-new file mode 100644
-index 00000000..39c86268
---- /dev/null
-+++ b/examples/bpf/bpf_map_in_map.c
-@@ -0,0 +1,55 @@
-+#include "../../include/bpf_api.h"
-+
-+struct inner_map {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(uint32_t));
-+	__uint(value_size, sizeof(uint32_t));
-+	__uint(max_entries, 1);
-+} map_inner __section(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(key_size, sizeof(uint32_t));
-+	__uint(value_size, sizeof(uint32_t));
-+	__uint(max_entries, 1);
-+	__uint(pinning, LIBBPF_PIN_BY_NAME);
-+	__array(values, struct inner_map);
-+} map_outer __section(".maps") = {
-+	.values = {
-+		[0] = &map_inner,
-+	},
-+};
-+
-+__section("egress")
-+int emain(struct __sk_buff *skb)
-+{
-+	struct bpf_elf_map *map_inner;
-+	int key = 0, *val;
-+
-+	map_inner = map_lookup_elem(&map_outer, &key);
-+	if (map_inner) {
-+		val = map_lookup_elem(map_inner, &key);
-+		if (val)
-+			lock_xadd(val, 1);
-+	}
-+
-+	return BPF_H_DEFAULT;
-+}
-+
-+__section("ingress")
-+int imain(struct __sk_buff *skb)
-+{
-+	struct bpf_elf_map *map_inner;
-+	int key = 0, *val;
-+
-+	map_inner = map_lookup_elem(&map_outer, &key);
-+	if (map_inner) {
-+		val = map_lookup_elem(map_inner, &key);
-+		if (val)
-+			printt("map val: %d\n", *val);
-+	}
-+
-+	return BPF_H_DEFAULT;
-+}
-+
-+BPF_LICENSE("GPL");
-diff --git a/examples/bpf/bpf_shared.c b/examples/bpf/bpf_shared.c
-new file mode 100644
-index 00000000..99a332f4
---- /dev/null
-+++ b/examples/bpf/bpf_shared.c
-@@ -0,0 +1,53 @@
-+#include "../../include/bpf_api.h"
-+
-+/* Minimal, stand-alone toy map pinning example:
-+ *
-+ * clang -target bpf -O2 [...] -o bpf_shared.o -c bpf_shared.c
-+ * tc filter add dev foo parent 1: bpf obj bpf_shared.o sec egress
-+ * tc filter add dev foo parent ffff: bpf obj bpf_shared.o sec ingress
-+ *
-+ * Both classifier will share the very same map instance in this example,
-+ * so map content can be accessed from ingress *and* egress side!
-+ *
-+ * This example has a pinning of PIN_OBJECT_NS, so it's private and
-+ * thus shared among various program sections within the object.
-+ *
-+ * A setting of PIN_GLOBAL_NS would place it into a global namespace,
-+ * so that it can be shared among different object files. A setting
-+ * of PIN_NONE (= 0) means no sharing, so each tc invocation a new map
-+ * instance is being created.
-+ */
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(uint32_t));
-+	__uint(value_size, sizeof(uint32_t));
-+	__uint(max_entries, 1);
-+	__uint(pinning, LIBBPF_PIN_BY_NAME);	/* or LIBBPF_PIN_NONE */
-+} map_sh __section(".maps");
-+
-+__section("egress")
-+int emain(struct __sk_buff *skb)
-+{
-+	int key = 0, *val;
-+
-+	val = map_lookup_elem(&map_sh, &key);
-+	if (val)
-+		lock_xadd(val, 1);
-+
-+	return BPF_H_DEFAULT;
-+}
-+
-+__section("ingress")
-+int imain(struct __sk_buff *skb)
-+{
-+	int key = 0, *val;
-+
-+	val = map_lookup_elem(&map_sh, &key);
-+	if (val)
-+		printt("map val: %d\n", *val);
-+
-+	return BPF_H_DEFAULT;
-+}
-+
-+BPF_LICENSE("GPL");
-diff --git a/include/bpf_api.h b/include/bpf_api.h
-index 89d3488d..82c47089 100644
---- a/include/bpf_api.h
-+++ b/include/bpf_api.h
-@@ -19,6 +19,19 @@
- 
- #include "bpf_elf.h"
- 
-+/** libbpf pin type. */
-+enum libbpf_pin_type {
-+	LIBBPF_PIN_NONE,
-+	/* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) */
-+	LIBBPF_PIN_BY_NAME,
-+};
-+
-+/** Type helper macros. */
-+
-+#define __uint(name, val) int (*name)[val]
-+#define __type(name, val) typeof(val) *name
-+#define __array(name, val) typeof(val) *name[]
-+
- /** Misc macros. */
- 
- #ifndef __stringify
--- 
-2.25.4
+> >
+> > hi,
+> > FYI there's still no solution yet, so far the progress is:
+> >
+> > the proposed workaround was to use the negation -> we don't have
+> > DW_AT_declaration tag, so let's find out instead which DW_TAG_subprogram
+> > tags have attached code and skip them if they don't have any:
+> >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060#c10
+> >
+> > the attached patch is doing that, but the resulting BTF is missing
+> > several functions due to another bug in dwarf:
+> >   https://bugzilla.redhat.com/show_bug.cgi?id=1890107
+> 
+> It seems fine if there are only few functions (especially if those are
+> unlikely to be traced). Do you have an estimate of how many functions
+> have this second DWARF bug?
+
+it wasn't that many, I'll recheck
+
+> 
+> >
+> >
+> > the only other workaround I can think of is to check each DW_TAG_subprogram
+> > tag name with vmlinux symbol to ensure it's actually present,
+> > I'll check on it, because as Mark suggested it might be good
+> > for future not to completely rely on dwarf being correct, even
+> > if that gcc bug gets eventually fixed
+> 
+> This might be a good thing to do anyways. Currently BTF contains only
+> global functions, but a lot of static functions that didn't end up
+> inlined are available for attachment, but because BTF info is not
+> there, we can't use fentry/fexit on them. Checking against ELF symbols
+> would match kallsyms, right? So we would be able to drop fn->external
+> requirement and have all the attachable functions available.
+
+right, both static and global
+
+> 
+> Have you tried this? I'm curious how good the data is and how much
+> bigger BTF size is with all the functions included?
+
+I did not realize that with droping fn->external this would bring
+static functions as well, now I want to try ;-)
+
+jirka
+
+> 
+> >
+> > jirka
+> >
+> >
+> > ---
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index e90150784282..51a370d580b7 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -302,8 +302,9 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> >
+> >         cu__for_each_function(cu, core_id, fn) {
+> >                 int btf_fnproto_id, btf_fn_id;
+> > +               bool has_pc = !!function__addr(fn) || fn->ranges;
+> >
+> > -               if (fn->declaration || !fn->external)
+> > +               if (!has_pc || !fn->external)
+> >                         continue;
+> >
+> >                 btf_fnproto_id = btf_elf__add_func_proto(btfe, &fn->proto, type_id_off);
+> > diff --git a/dwarf_loader.c b/dwarf_loader.c
+> > index d3586aa5b0dd..4763b9118475 100644
+> > --- a/dwarf_loader.c
+> > +++ b/dwarf_loader.c
+> > @@ -953,6 +953,7 @@ static struct function *function__new(Dwarf_Die *die, struct cu *cu)
+> >                 func->declaration     = dwarf_hasattr(die, DW_AT_declaration);
+> >                 func->external        = dwarf_hasattr(die, DW_AT_external);
+> >                 func->abstract_origin = dwarf_hasattr(die, DW_AT_abstract_origin);
+> > +               func->ranges          = dwarf_hasattr(die, DW_AT_ranges);
+> >                 dwarf_tag__set_spec(func->proto.tag.priv,
+> >                                     attr_type(die, DW_AT_specification));
+> >                 func->accessibility   = attr_numeric(die, DW_AT_accessibility);
+> > @@ -2023,8 +2024,10 @@ static int tag__recode_dwarf_type(struct tag *tag, struct cu *cu)
+> >                         dtype = dwarf_cu__find_tag_by_ref(cu->priv, &dtag->abstract_origin);
+> >                         if (dtype == NULL)
+> >                                 dtype = dwarf_cu__find_tag_by_ref(cu->priv, &specification);
+> > -                       if (dtype != NULL)
+> > +                       if (dtype != NULL) {
+> >                                 fn->name = tag__function(dtype->tag)->name;
+> > +                               fn->external = tag__function(dtype->tag)->external;
+> > +                       }
+> >                         else {
+> >                                 fprintf(stderr,
+> >                                         "%s: couldn't find name for "
+> > diff --git a/dwarves.h b/dwarves.h
+> > index 7c4254eded1f..3204f69abfe5 100644
+> > --- a/dwarves.h
+> > +++ b/dwarves.h
+> > @@ -813,6 +813,7 @@ struct function {
+> >         uint8_t          virtuality:2; /* DW_VIRTUALITY_{none,virtual,pure_virtual} */
+> >         uint8_t          declaration:1;
+> >         uint8_t          btf:1;
+> > +       uint8_t          ranges:1;
+> >         int32_t          vtable_entry;
+> >         struct list_head vtable_node;
+> >         /* fields used by tools */
+> >
+> 
 
