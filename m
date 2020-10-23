@@ -2,84 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D8C297836
-	for <lists+bpf@lfdr.de>; Fri, 23 Oct 2020 22:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B758C297840
+	for <lists+bpf@lfdr.de>; Fri, 23 Oct 2020 22:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756033AbgJWU1y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Oct 2020 16:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756082AbgJWU1x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:27:53 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9653CC0613CE
-        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 13:27:53 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id c3so2248698ybl.0
-        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 13:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HFXm37Qr5xXi36i8NUhvr6aKhojTpRtpohdMplDqryw=;
-        b=W2kEhKQ/kBhsqERVmQrIizVahLcu+yz0wJ3dmoSn5SPZfmrHxQ8qcyoD9CdpwQc/H/
-         Y69GMMtU5efOkU/72dTXoUE7zdRKcZTCYOlHfTIxtB9AbzwLuVOYrtwDiRUZrhEK3dBf
-         g/a++UQMdLADO5dGP1xSIN+oBTW6E1axOrPgZmZXnBY3QNpfkpxsLWHYaDEQ+7Dzp17M
-         zyr7AYCEUE9QdAJdy7i2wVqzj9Ez+PNKHpP1QGpcOGl3rXK7ilF4ONaWazuIM7e1l0u2
-         3I8v+ypzcay/EbtPfFicFHnZ5j39wueSasK5xKFXdQ+NU8EChXQirEJSR48sOMymmvn2
-         SJvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HFXm37Qr5xXi36i8NUhvr6aKhojTpRtpohdMplDqryw=;
-        b=M23Jj1/sthACSzLPZyHZIs7bswBR9jp6JcF6SouykaO63mnwX2A5kTuolv03JPl/Uz
-         oVoxRCyiddl6q2aYu1YsYhqRudG5MwG8rYCtS8IZPGYacJGxw4PGt19fMkAdyhidzN7T
-         oDuANeooE7iKNzIjpM1c7vZPWzM15toDZqYYNkG44gGXE1D0HD9OnU+H5t9p5bjQXw9C
-         ek6b+LQjChzthl6nDVDGJSftWC2oUsHna54vNY/oxlrVRMZEyzohSOC9WTr8f7oGQwqA
-         lV0xXj1NNBcIRUi1OOawHkXBBU9u15PCk9glkclf09MWzbTz1UEdJb3NQqHTW5Y6P8ke
-         +ZBg==
-X-Gm-Message-State: AOAM531mxI79oIYdmc9rtpkP4AwsuI+sK1VR89QIsEUyXWpFB7xjMXOQ
-        mhICTwMcmCoXYqqSCELSy5ZxdURFqZTVGW0e4LE=
-X-Google-Smtp-Source: ABdhPJzxOAUST4a6puV252W2th1Q5oaPSKJJN0h9vPNBpU3fxEI9vryxrbiXqQRtQleJbbhR9zvl2sKAvubctwU8LKU=
-X-Received: by 2002:a25:da4e:: with SMTP id n75mr5897854ybf.425.1603484872899;
- Fri, 23 Oct 2020 13:27:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200922190234.224161-1-dev@der-flo.net> <20201013144515.298647-1-dev@der-flo.net>
- <5f87ce648edd5_b7602085a@john-XPS-13-9370.notmuch> <20201023163518.GA4777@der-flo.net>
-In-Reply-To: <20201023163518.GA4777@der-flo.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Oct 2020 13:27:42 -0700
-Message-ID: <CAEf4BzZ4OYxA9YBtV+NcktT5EvA7a05xzn_ry8gWgVcN5GstJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Lift hashtab key_size limit
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1756124AbgJWUbO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Oct 2020 16:31:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S465603AbgJWUbO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Oct 2020 16:31:14 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B12B20897;
+        Fri, 23 Oct 2020 20:31:12 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 16:31:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [RFC bpf-next 09/16] bpf: Add BPF_TRAMPOLINE_BATCH_ATTACH
+ support
+Message-ID: <20201023163110.54e4a202@gandalf.local.home>
+In-Reply-To: <CAEf4Bzb_HPmGSoUX+9+LvSP2Yb95OqEQKtjpMiW1Um-rixAM8Q@mail.gmail.com>
+References: <20201022082138.2322434-1-jolsa@kernel.org>
+        <20201022082138.2322434-10-jolsa@kernel.org>
+        <CAEf4Bzb_HPmGSoUX+9+LvSP2Yb95OqEQKtjpMiW1Um-rixAM8Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 9:38 AM Florian Lehner <dev@der-flo.net> wrote:
->
-> On Wed, Oct 14, 2020 at 09:21:56PM -0700, John Fastabend wrote:
-> >
-> > OK the check appears unnecessary. It seems a bit excessive to have
-> > such large keys though.
-> >
-> > Daniel, Alexei I couldn't find this patch in patchworks, not sure
-> > where it went.
-> >
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>
->
-> Is there something left I have missed to address?
-> Or should I rebase the patch and send it in again?
+On Fri, 23 Oct 2020 13:03:22 -0700
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-Yeah, please rebase and resubmit. There were some problems with
-patchworks and a bunch of patches didn't make it to the system. Yours
-might have been one of them.
+> Basically, maybe ftrace subsystem could provide a set of APIs to
+> prepare a set of functions to attach to. Then BPF subsystem would just
+> do what it does today, except instead of attaching to a specific
+> kernel function, it would attach to ftrace's placeholder. I don't know
+> anything about ftrace implementation, so this might be far off. But I
+> thought that looking at this problem from a bit of a different angle
+> would benefit the discussion. Thoughts?
 
->
-> Thanks,
->  Florian
+I probably understand bpf internals as much as you understand ftrace
+internals ;-)
+
+Anyway, what I'm currently working on, is a fast way to get to the
+arguments of a function. For now, I'm just focused on x86_64, and only add
+6 argments.
+
+The main issue that Alexei had with using the ftrace trampoline, was that
+the only way to get to the arguments was to set the "REGS" flag, which
+would give a regs parameter that contained a full pt_regs. The problem with
+this approach is that it required saving *all* regs for every function
+traced. Alexei felt that this was too much overehead.
+
+Looking at Jiri's patch, I took a look at the creation of the bpf
+trampoline, and noticed that it's copying the regs on a stack (at least
+what is used, which I think could be an issue).
+
+For tracing a function, one must store all argument registers used, and
+restore them, as that's how they are passed from caller to callee. And
+since they are stored anyway, I figure, that should also be sent to the
+function callbacks, so that they have access to them too.
+
+I'm working on a set of patches to make this a reality.
+
+-- Steve
