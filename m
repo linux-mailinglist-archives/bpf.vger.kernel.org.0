@@ -2,192 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB0F297B65
-	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 10:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A311297B7D
+	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 10:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759989AbgJXIMw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Oct 2020 04:12:52 -0400
-Received: from mx.der-flo.net ([193.160.39.236]:42772 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756366AbgJXIG7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Oct 2020 04:06:59 -0400
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id C5E2C4428F; Sat, 24 Oct 2020 10:06:41 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:146b:10e2:afb5:be30])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 1F457441C5;
-        Sat, 24 Oct 2020 10:06:24 +0200 (CEST)
-From:   Florian Lehner <dev@der-flo.net>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, Florian Lehner <dev@der-flo.net>
-Subject: [PATCH bpf-next v3] bpf: Lift hashtab key_size limit
-Date:   Sat, 24 Oct 2020 10:05:41 +0200
-Message-Id: <20201024080541.51683-1-dev@der-flo.net>
-X-Mailer: git-send-email 2.26.2
+        id S461515AbgJXIcG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Oct 2020 04:32:06 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:35076 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S460277AbgJXIcF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Oct 2020 04:32:05 -0400
+X-Greylist: delayed 525 seconds by postgrey-1.27 at vger.kernel.org; Sat, 24 Oct 2020 04:32:05 EDT
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 915D572CCE7;
+        Sat, 24 Oct 2020 11:23:19 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id 8357B7CF99C; Sat, 24 Oct 2020 11:23:19 +0300 (MSK)
+Date:   Sat, 24 Oct 2020 11:23:19 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     Vitaly Chikunov <vt@altlinux.org>
+Cc:     bpf@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: tools/bpf: Compilation issue on powerpc: unknown type name
+ '__vector128'
+Message-ID: <20201024082319.GA24131@altlinux.org>
+References: <20201023230641.xomukhg3zrhtuxez@altlinux.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023230641.xomukhg3zrhtuxez@altlinux.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently key_size of hashtab is limited to MAX_BPF_STACK.
-As the key of hashtab can also be a value from a per cpu map it can be
-larger than MAX_BPF_STACK.
+Hi,
 
-The use-case for this patch originates to implement allow/disallow
-lists for files and file paths. The maximum length of file paths is
-defined by PATH_MAX with 4096 chars including nul.
-This limit exceeds MAX_BPF_STACK.
+On Sat, Oct 24, 2020 at 02:06:41AM +0300, Vitaly Chikunov wrote:
+> Hi,
+> 
+> Commit f143c11bb7b9 ("tools: bpf: Use local copy of headers including
+> uapi/linux/filter.h") introduces compilation issue on powerpc:
+>  
+>   builder@powerpc64le:~/linux$ make -C tools/bpf V=1
+>   make: Entering directory '/usr/src/linux/tools/bpf'
+>   gcc -Wall -O2 -D__EXPORTED_HEADERS__ -I/usr/src/linux/tools/include/uapi -I/usr/src/linux/tools/include -DDISASM_FOUR_ARGS_SIGNATURE -c -o bpf_dbg.o /usr/src/linux/tools/bpf/bpf_dbg.c
+>   In file included from /usr/include/asm/sigcontext.h:14,
+> 		   from /usr/include/bits/sigcontext.h:30,
+> 		   from /usr/include/signal.h:291,
+> 		   from /usr/src/linux/tools/bpf/bpf_dbg.c:51:
+>   /usr/include/asm/elf.h:160:9: error: unknown type name '__vector128'
+>     160 | typedef __vector128 elf_vrreg_t;
+> 	|         ^~~~~~~~~~~
+>   make: *** [Makefile:67: bpf_dbg.o] Error 1
+>   make: Leaving directory '/usr/src/linux/tools/bpf'
 
-Changelog:
+__vector128 is defined in arch/powerpc/include/uapi/asm/types.h;
+while include/uapi/linux/types.h does #include <asm/types.h>,
+tools/include/uapi/linux/types.h doesn't, resulting to this
+compilation error.
 
-v3:
- - Rebase
 
-v2:
- - Add a test for bpf side
-
-Signed-off-by: Florian Lehner <dev@der-flo.net>
----
- kernel/bpf/hashtab.c                          | 16 +++----
- .../selftests/bpf/prog_tests/hash_large_key.c | 28 ++++++++++++
- .../selftests/bpf/progs/test_hash_large_key.c | 45 +++++++++++++++++++
- tools/testing/selftests/bpf/test_maps.c       |  2 +-
- 4 files changed, 79 insertions(+), 12 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 1815e97d4c9c..10097d6bcc35 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
- 	    attr->value_size == 0)
- 		return -EINVAL;
- 
--	if (attr->key_size > MAX_BPF_STACK)
--		/* eBPF programs initialize keys on stack, so they cannot be
--		 * larger than max stack size
--		 */
--		return -E2BIG;
--
--	if (attr->value_size >= KMALLOC_MAX_SIZE -
--	    MAX_BPF_STACK - sizeof(struct htab_elem))
--		/* if value_size is bigger, the user space won't be able to
--		 * access the elements via bpf syscall. This check also makes
--		 * sure that the elem_size doesn't overflow and it's
-+	if ((attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
-+	    sizeof(struct htab_elem))
-+		/* if key_size + value_size is bigger, the user space won't be
-+		 * able to access the elements via bpf syscall. This check
-+		 * also makes sure that the elem_size doesn't overflow and it's
- 		 * kmalloc-able later in htab_map_update_elem()
- 		 */
- 		return -E2BIG;
-diff --git a/tools/testing/selftests/bpf/prog_tests/hash_large_key.c b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-new file mode 100644
-index 000000000000..962f56060b76
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Florian Lehner
-+
-+#include <test_progs.h>
-+
-+void test_hash_large_key(void)
-+{
-+	const char *file = "./test_hash_large_key.o";
-+	int prog_fd, map_fd[2];
-+	struct bpf_object *obj = NULL;
-+	int err = 0;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
-+	if (CHECK_FAIL(err)) {
-+		printf("test_hash_large_key: bpf_prog_load errno %d", errno);
-+		goto close_prog;
-+	}
-+
-+	map_fd[0] = bpf_find_map(__func__, obj, "hash_map");
-+	if (CHECK_FAIL(map_fd[0] < 0))
-+		goto close_prog;
-+	map_fd[1] = bpf_find_map(__func__, obj, "key_map");
-+	if (CHECK_FAIL(map_fd[1] < 0))
-+		goto close_prog;
-+
-+close_prog:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_hash_large_key.c b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
-new file mode 100644
-index 000000000000..622ee73a4572
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Florian Lehner
-+
-+#include <linux/bpf.h>
-+#include <linux/version.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct bigelement {
-+	int a;
-+	char b[4096];
-+	long long c;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1);
-+	__type(key, struct bigelement);
-+	__type(value, __u32);
-+} hash_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct bigelement);
-+} key_map SEC(".maps");
-+
-+SEC("hash_large_key_demo")
-+int bpf_hash_large_key_test(struct __sk_buf *skb)
-+{
-+	int zero = 0, err = 1, value = 42;
-+	struct bigelement *key;
-+
-+	key = bpf_map_lookup_elem(&key_map, &zero);
-+	if (!key)
-+		goto err;
-+
-+	if (bpf_map_update_elem(&hash_map, key, &value, BPF_ANY))
-+		goto err;
-+	err = 0;
-+err:
-+	return err;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 0d92ebcb335d..17fe19a2114d 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1225,7 +1225,7 @@ static void test_map_large(void)
- {
- 	struct bigkey {
- 		int a;
--		char b[116];
-+		char b[4096];
- 		long long c;
- 	} key;
- 	int fd, i, value;
 -- 
-2.26.2
-
+ldv
