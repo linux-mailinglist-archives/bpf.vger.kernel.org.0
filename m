@@ -2,145 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C14C2979E7
-	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 02:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B277297A63
+	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 04:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756162AbgJXAVc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Oct 2020 20:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
+        id S1759162AbgJXCvn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Oct 2020 22:51:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756159AbgJXAVc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:21:32 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED5CC0613CE;
-        Fri, 23 Oct 2020 17:21:31 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id s89so2609179ybi.12;
-        Fri, 23 Oct 2020 17:21:31 -0700 (PDT)
+        with ESMTP id S1758805AbgJXCvm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Oct 2020 22:51:42 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F50C0613CE
+        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id g12so1932278pgm.8
+        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0Jsu8JegTWNMP2ZCcQXmxGDaWEXGegtl9u5H7TqMuOI=;
-        b=WRaMRdHRkLCifvvDL94bJ+qqob/LH/6Hj4/ipG8RPocz0M/45y1tbPAgohDTo6s5OQ
-         lnxATvgwDxu41IXlL7uhFCrR0TWtLkWiitSR4heoWpAue+fBwGKMpMw8SiEc7FMJ94tb
-         l6xKXNpBjZ5QI4WHUuo8w2rWyjG4x3oul7IFbFPVMwv3h7+uMrp7+HxK2kazY88Jy88x
-         GA6WB91JOoECccFwVgL0RxAPtFt/fT1y1wY05E8R1gvFNGBSbBUMRMKJIBwrfm9jM5ch
-         UlYFcZ4lcUFugYWL1O48tdXH1pyOx1BB7Ib4LkMAccwQehltAr86K72uRs7H9AHfrrcA
-         MbVA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=exQNVvRWJFpZVay5bCbuF8Chc+K90S79cyDW4pCR96s=;
+        b=KV9CaDvJWjMnPRerYDVMgQAXXWpZHin64zb+D/uzzh1jn14cp0unh77C/PFSi1YRzK
+         RZfD1gMNw3MWr1O3MZFrAq4q3G7PSiATA+70iI9uAQA2HKgtdZPU5ZKeEhN0FxWII7A1
+         PAl5jVvc7Gf5OQwDzQpiXkqTFQP3OLcIftsxw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0Jsu8JegTWNMP2ZCcQXmxGDaWEXGegtl9u5H7TqMuOI=;
-        b=XjaLWM1XgWNiXg6EkapBQzX+kk9FBsbS2drzvVgFs1tL5KsCcVamjc8GZQ72vWvp/f
-         IoQyEVs/oUdlXp5AbsWBglMN1bfR838tdzok5ShnNTcIiE+JVoyoulcOU3q7erGTG4n6
-         Yv3RgJxZbhQlYKuT9ExpolfuigLpm1QcPt9oksj73+VnfkQtYoHaSpT1qfb/Nr2Gf9Vt
-         7psu6V0Xj+VcpiUPjsMv928MP5NtK/4ZS2Q/saMbfVOlY0gSDnrFJkTwdx4EiVZ39q7w
-         UQrVW2KheYOqRIaCOlzFGd1Dcz5zaGdyye3Sf4TASJ/fVox1r/ll7bAteY9YZ1OALlg7
-         OqzA==
-X-Gm-Message-State: AOAM532MYGLmUxpih/Z6LSPz8Fb0EYobR9tDSDRWhHJBE6zMS7dUjKO+
-        SGJjOVNh/k6moNVXwJDv3XD5PH92bBJsICpveqyUT9Y1UL4=
-X-Google-Smtp-Source: ABdhPJwfnh+0jFXkwRSt+k7l4xItkp58TaqfczDrYYubsomnG7+fVtyewlcs8m/O1T/YryT9H2uFFgejAdTGnBWheyw=
-X-Received: by 2002:a25:c001:: with SMTP id c1mr6702705ybf.27.1603498891057;
- Fri, 23 Oct 2020 17:21:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=exQNVvRWJFpZVay5bCbuF8Chc+K90S79cyDW4pCR96s=;
+        b=gtrIQ3+ZP8jBvFkxR0VlUA+s75y1Pu0z6hdW8y2bDt+5HsbpUfTyVBRBHSlZ7x8DB8
+         gXvY8aRlLXjzmGhrOhOplK/T5HVQ1n5247rq8ax3DBCbY2eBt+bmQu3fAznHnVCY9R+N
+         KfPjQOcGg7dWZC4j1yDJMDe1m93B0iYyBUfmMPSc/PWf3p0sXu7K7J/nhm7rKqKC8Ilg
+         Aqe2D0D+krb7mYUawvVI/Uw7kDKwFsC+41BoithgJf9qnbBL535gZc7kA/K7T6RKtYGP
+         iHfEj1XfyqZM5fMYL53KVtTnAX11MZh/wh/GtLdI55UKLsFvMlfuBWxe5I5TBH8AcXS4
+         skUg==
+X-Gm-Message-State: AOAM533Hji0Zn5EPKEatHQPCYXtih3qpRCMVY8XcUtbDiDLWCGzWunHk
+        ieQ+Va8nS7QP4RYw+/FkHpL95w==
+X-Google-Smtp-Source: ABdhPJzyHxgz6MKrJyx7Q6S+HFMiDqjWeZc2uxi66QjlrB6Ze3vMN0w5ckv5WraSwYbQvKBy86p7Rg==
+X-Received: by 2002:a63:f84c:: with SMTP id v12mr4442172pgj.125.1603507902217;
+        Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s20sm3363159pfu.112.2020.10.23.19.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 19:51:41 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 19:51:40 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202010231945.90FA4A4AA@keescook>
+References: <cover.1602263422.git.yifeifz2@illinois.edu>
+ <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook>
+ <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook>
+ <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+ <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
+ <202010221520.44C5A7833E@keescook>
+ <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201023033855.3894509-1-haliu@redhat.com> <20201023033855.3894509-4-haliu@redhat.com>
-In-Reply-To: <20201023033855.3894509-4-haliu@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Oct 2020 17:21:20 -0700
-Message-ID: <CAEf4BzbPW8itEQjR=DsjJbtoUFWjiC1WC7F=9x_u4ddSAkZPhg@mail.gmail.com>
-Subject: Re: [PATCH iproute2-next 3/5] lib: add libbpf support
-To:     Hangbin Liu <haliu@redhat.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 8:39 PM Hangbin Liu <haliu@redhat.com> wrote:
->
-> This patch converts iproute2 to use libbpf for loading and attaching
-> BPF programs when it is available, which is started by Toke's
-> implementation[1]. With libbpf iproute2 could correctly process BTF
-> information and support the new-style BTF-defined maps, while keeping
-> compatibility with the old internal map definition syntax.
->
-> The old iproute2 bpf code is kept and will be used if no suitable libbpf
-> is available. When using libbpf, wrapper code in bpf_legacy.c ensures tha=
-t
-> iproute2 will still understand the old map definition format, including
-> populating map-in-map and tail call maps before load.
->
-> In bpf_libbpf.c, we init iproute2 ctx and elf info first to check the
-> legacy bytes. When handling the legacy maps, for map-in-maps, we create
-> them manually and re-use the fd as they are associated with id/inner_id.
-> For pin maps, we only set the pin path and let libbp load to handle it.
-> For tail calls, we find it first and update the element after prog load.
+On Thu, Oct 22, 2020 at 06:40:08PM -0500, YiFei Zhu wrote:
+> On Thu, Oct 22, 2020 at 5:32 PM Kees Cook <keescook@chromium.org> wrote:
+> > I've been going back and forth on this, and I think what I've settled
+> > on is I'd like to avoid new CONFIG dependencies just for this feature.
+> > Instead, how about we just fill in SECCOMP_NATIVE and SECCOMP_COMPAT
+> > for all the HAVE_ARCH_SECCOMP_FILTER architectures, and then the
+> > cache reporting can be cleanly tied to CONFIG_SECCOMP_FILTER? It
+> > should be relatively simple to extract those details and make
+> > SECCOMP_ARCH_{NATIVE,COMPAT}_NAME part of the per-arch enabling patches?
+> 
+> Hmm. So I could enable the cache logic to every architecture (one
+> patch per arch) that does not have the sparse syscall numbers, and
+> then have the proc reporting after the arch patches? I could do that.
+> I don't have test machines to run anything other than x86_64 or ia32,
+> so they will need a closer look by people more familiar with those
+> arches.
 
-I never implemented tail call map initialization using the same
-approach as declarative map-in-map support in libbpf, because no one
-asked and/or showed a use case. But all the pieces are there, and if
-there's interest, we should probably support that in libbpf as well.
+Cool, yes please. It looks like MIPS will need to be skipped for now. I
+would have the debug cache reporting patch then depend on
+!CONFIG_HAVE_SPARSE_SYSCALL_NR.
 
->
-> Other maps/progs will be loaded by libbpf directly.
->
-> Note: ip/ipvrf.c is not convert to use libbpf as it only encodes a few
-> instructions and load directly.
->
-> [1] https://lore.kernel.org/bpf/20190820114706.18546-1-toke@redhat.com/
->
-> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Signed-off-by: Hangbin Liu <haliu@redhat.com>
-> ---
->  include/bpf_util.h |  11 ++
->  lib/Makefile       |   4 +
->  lib/bpf_legacy.c   | 178 ++++++++++++++++++++++++
->  lib/bpf_libbpf.c   | 338 +++++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 531 insertions(+)
->  create mode 100644 lib/bpf_libbpf.c
->
+> > I'd still like to get more specific workload performance numbers too.
+> > The microbenchmark is nice, but getting things like build times under
+> > docker's default seccomp filter, etc would be lovely. I've almost gotten
+> > there, but my benchmarks are still really noisy and CPU isolation
+> > continues to frustrate me. :)
+> 
+> Ok, let me know if I can help.
 
-[...]
+Do you have a test environment where you can compare the before/after
+of repeated kernel build times (or some other sufficiently
+complex/interesting) workload under these conditions:
 
-> +
-> +static int load_bpf_object(struct bpf_cfg_in *cfg)
-> +{
-> +       struct bpf_program *p, *prog =3D NULL;
-> +       struct bpf_object *obj;
-> +       char root_path[PATH_MAX];
-> +       struct bpf_map *map;
-> +       int prog_fd, ret =3D 0;
-> +
-> +       ret =3D iproute2_get_root_path(root_path, PATH_MAX);
-> +       if (ret)
-> +               return ret;
-> +
-> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts,
-> +                       .relaxed_maps =3D true,
-> +                       .pin_root_path =3D root_path,
-> +       );
-> +
-> +       obj =3D bpf_object__open_file(cfg->object, &open_opts);
-> +       if (IS_ERR_OR_NULL(obj))
+bare metal
+docker w/ seccomp policy disabled
+docker w/ default seccomp policy
 
-libbpf defines libbpf_get_error() to check that the returned pointer
-is not encoding error, you shouldn't need to define your IS_ERR
-macros.
+This is what I've been trying to construct, but it's really noisy, so
+I've been trying to pin CPUs and NUMA memory nodes, but it's not really
+helping yet. :P
 
-> +               return -ENOENT;
-> +
-
-[...]
+-- 
+Kees Cook
