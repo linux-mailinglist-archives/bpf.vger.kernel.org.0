@@ -2,129 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B277297A63
-	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 04:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB0F297B65
+	for <lists+bpf@lfdr.de>; Sat, 24 Oct 2020 10:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759162AbgJXCvn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Oct 2020 22:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1758805AbgJXCvm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Oct 2020 22:51:42 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F50C0613CE
-        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g12so1932278pgm.8
-        for <bpf@vger.kernel.org>; Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=exQNVvRWJFpZVay5bCbuF8Chc+K90S79cyDW4pCR96s=;
-        b=KV9CaDvJWjMnPRerYDVMgQAXXWpZHin64zb+D/uzzh1jn14cp0unh77C/PFSi1YRzK
-         RZfD1gMNw3MWr1O3MZFrAq4q3G7PSiATA+70iI9uAQA2HKgtdZPU5ZKeEhN0FxWII7A1
-         PAl5jVvc7Gf5OQwDzQpiXkqTFQP3OLcIftsxw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=exQNVvRWJFpZVay5bCbuF8Chc+K90S79cyDW4pCR96s=;
-        b=gtrIQ3+ZP8jBvFkxR0VlUA+s75y1Pu0z6hdW8y2bDt+5HsbpUfTyVBRBHSlZ7x8DB8
-         gXvY8aRlLXjzmGhrOhOplK/T5HVQ1n5247rq8ax3DBCbY2eBt+bmQu3fAznHnVCY9R+N
-         KfPjQOcGg7dWZC4j1yDJMDe1m93B0iYyBUfmMPSc/PWf3p0sXu7K7J/nhm7rKqKC8Ilg
-         Aqe2D0D+krb7mYUawvVI/Uw7kDKwFsC+41BoithgJf9qnbBL535gZc7kA/K7T6RKtYGP
-         iHfEj1XfyqZM5fMYL53KVtTnAX11MZh/wh/GtLdI55UKLsFvMlfuBWxe5I5TBH8AcXS4
-         skUg==
-X-Gm-Message-State: AOAM533Hji0Zn5EPKEatHQPCYXtih3qpRCMVY8XcUtbDiDLWCGzWunHk
-        ieQ+Va8nS7QP4RYw+/FkHpL95w==
-X-Google-Smtp-Source: ABdhPJzyHxgz6MKrJyx7Q6S+HFMiDqjWeZc2uxi66QjlrB6Ze3vMN0w5ckv5WraSwYbQvKBy86p7Rg==
-X-Received: by 2002:a63:f84c:: with SMTP id v12mr4442172pgj.125.1603507902217;
-        Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s20sm3363159pfu.112.2020.10.23.19.51.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 19:51:41 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 19:51:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202010231945.90FA4A4AA@keescook>
-References: <cover.1602263422.git.yifeifz2@illinois.edu>
- <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
- <202010091613.B671C86@keescook>
- <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
- <202010121556.1110776B83@keescook>
- <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
- <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
- <202010221520.44C5A7833E@keescook>
- <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+        id S1759989AbgJXIMw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Oct 2020 04:12:52 -0400
+Received: from mx.der-flo.net ([193.160.39.236]:42772 "EHLO mx.der-flo.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1756366AbgJXIG7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Oct 2020 04:06:59 -0400
+Received: by mx.der-flo.net (Postfix, from userid 110)
+        id C5E2C4428F; Sat, 24 Oct 2020 10:06:41 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:146b:10e2:afb5:be30])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.der-flo.net (Postfix) with ESMTPSA id 1F457441C5;
+        Sat, 24 Oct 2020 10:06:24 +0200 (CEST)
+From:   Florian Lehner <dev@der-flo.net>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, Florian Lehner <dev@der-flo.net>
+Subject: [PATCH bpf-next v3] bpf: Lift hashtab key_size limit
+Date:   Sat, 24 Oct 2020 10:05:41 +0200
+Message-Id: <20201024080541.51683-1-dev@der-flo.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 06:40:08PM -0500, YiFei Zhu wrote:
-> On Thu, Oct 22, 2020 at 5:32 PM Kees Cook <keescook@chromium.org> wrote:
-> > I've been going back and forth on this, and I think what I've settled
-> > on is I'd like to avoid new CONFIG dependencies just for this feature.
-> > Instead, how about we just fill in SECCOMP_NATIVE and SECCOMP_COMPAT
-> > for all the HAVE_ARCH_SECCOMP_FILTER architectures, and then the
-> > cache reporting can be cleanly tied to CONFIG_SECCOMP_FILTER? It
-> > should be relatively simple to extract those details and make
-> > SECCOMP_ARCH_{NATIVE,COMPAT}_NAME part of the per-arch enabling patches?
-> 
-> Hmm. So I could enable the cache logic to every architecture (one
-> patch per arch) that does not have the sparse syscall numbers, and
-> then have the proc reporting after the arch patches? I could do that.
-> I don't have test machines to run anything other than x86_64 or ia32,
-> so they will need a closer look by people more familiar with those
-> arches.
+Currently key_size of hashtab is limited to MAX_BPF_STACK.
+As the key of hashtab can also be a value from a per cpu map it can be
+larger than MAX_BPF_STACK.
 
-Cool, yes please. It looks like MIPS will need to be skipped for now. I
-would have the debug cache reporting patch then depend on
-!CONFIG_HAVE_SPARSE_SYSCALL_NR.
+The use-case for this patch originates to implement allow/disallow
+lists for files and file paths. The maximum length of file paths is
+defined by PATH_MAX with 4096 chars including nul.
+This limit exceeds MAX_BPF_STACK.
 
-> > I'd still like to get more specific workload performance numbers too.
-> > The microbenchmark is nice, but getting things like build times under
-> > docker's default seccomp filter, etc would be lovely. I've almost gotten
-> > there, but my benchmarks are still really noisy and CPU isolation
-> > continues to frustrate me. :)
-> 
-> Ok, let me know if I can help.
+Changelog:
 
-Do you have a test environment where you can compare the before/after
-of repeated kernel build times (or some other sufficiently
-complex/interesting) workload under these conditions:
+v3:
+ - Rebase
 
-bare metal
-docker w/ seccomp policy disabled
-docker w/ default seccomp policy
+v2:
+ - Add a test for bpf side
 
-This is what I've been trying to construct, but it's really noisy, so
-I've been trying to pin CPUs and NUMA memory nodes, but it's not really
-helping yet. :P
+Signed-off-by: Florian Lehner <dev@der-flo.net>
+---
+ kernel/bpf/hashtab.c                          | 16 +++----
+ .../selftests/bpf/prog_tests/hash_large_key.c | 28 ++++++++++++
+ .../selftests/bpf/progs/test_hash_large_key.c | 45 +++++++++++++++++++
+ tools/testing/selftests/bpf/test_maps.c       |  2 +-
+ 4 files changed, 79 insertions(+), 12 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
 
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 1815e97d4c9c..10097d6bcc35 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+ 	    attr->value_size == 0)
+ 		return -EINVAL;
+ 
+-	if (attr->key_size > MAX_BPF_STACK)
+-		/* eBPF programs initialize keys on stack, so they cannot be
+-		 * larger than max stack size
+-		 */
+-		return -E2BIG;
+-
+-	if (attr->value_size >= KMALLOC_MAX_SIZE -
+-	    MAX_BPF_STACK - sizeof(struct htab_elem))
+-		/* if value_size is bigger, the user space won't be able to
+-		 * access the elements via bpf syscall. This check also makes
+-		 * sure that the elem_size doesn't overflow and it's
++	if ((attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
++	    sizeof(struct htab_elem))
++		/* if key_size + value_size is bigger, the user space won't be
++		 * able to access the elements via bpf syscall. This check
++		 * also makes sure that the elem_size doesn't overflow and it's
+ 		 * kmalloc-able later in htab_map_update_elem()
+ 		 */
+ 		return -E2BIG;
+diff --git a/tools/testing/selftests/bpf/prog_tests/hash_large_key.c b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
+new file mode 100644
+index 000000000000..962f56060b76
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2020 Florian Lehner
++
++#include <test_progs.h>
++
++void test_hash_large_key(void)
++{
++	const char *file = "./test_hash_large_key.o";
++	int prog_fd, map_fd[2];
++	struct bpf_object *obj = NULL;
++	int err = 0;
++
++	err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
++	if (CHECK_FAIL(err)) {
++		printf("test_hash_large_key: bpf_prog_load errno %d", errno);
++		goto close_prog;
++	}
++
++	map_fd[0] = bpf_find_map(__func__, obj, "hash_map");
++	if (CHECK_FAIL(map_fd[0] < 0))
++		goto close_prog;
++	map_fd[1] = bpf_find_map(__func__, obj, "key_map");
++	if (CHECK_FAIL(map_fd[1] < 0))
++		goto close_prog;
++
++close_prog:
++	bpf_object__close(obj);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_hash_large_key.c b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
+new file mode 100644
+index 000000000000..622ee73a4572
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2020 Florian Lehner
++
++#include <linux/bpf.h>
++#include <linux/version.h>
++#include <bpf/bpf_helpers.h>
++
++struct bigelement {
++	int a;
++	char b[4096];
++	long long c;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, struct bigelement);
++	__type(value, __u32);
++} hash_map SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, struct bigelement);
++} key_map SEC(".maps");
++
++SEC("hash_large_key_demo")
++int bpf_hash_large_key_test(struct __sk_buf *skb)
++{
++	int zero = 0, err = 1, value = 42;
++	struct bigelement *key;
++
++	key = bpf_map_lookup_elem(&key_map, &zero);
++	if (!key)
++		goto err;
++
++	if (bpf_map_update_elem(&hash_map, key, &value, BPF_ANY))
++		goto err;
++	err = 0;
++err:
++	return err;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 0d92ebcb335d..17fe19a2114d 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1225,7 +1225,7 @@ static void test_map_large(void)
+ {
+ 	struct bigkey {
+ 		int a;
+-		char b[116];
++		char b[4096];
+ 		long long c;
+ 	} key;
+ 	int fd, i, value;
 -- 
-Kees Cook
+2.26.2
+
