@@ -2,40 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC6A298352
-	for <lists+bpf@lfdr.de>; Sun, 25 Oct 2020 20:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AF1298367
+	for <lists+bpf@lfdr.de>; Sun, 25 Oct 2020 20:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418456AbgJYTMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Oct 2020 15:12:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39429 "EHLO
+        id S1418590AbgJYTli (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Oct 2020 15:41:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40883 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1418442AbgJYTMA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 25 Oct 2020 15:12:00 -0400
+        by vger.kernel.org with ESMTP id S1418563AbgJYTli (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 25 Oct 2020 15:41:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603653118;
+        s=mimecast20190719; t=1603654896;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9i4dznMVP5SvA5wMK+9MnDleX92buH7TMCalgFn3FPc=;
-        b=SBQat1mJFqzE8zfMEZs4liU98aiavmQe7M0NDGtdntdyJfD5oGSbqo/KqEuC26AXhSk4Be
-        OIG0fwRbeRPKerxX7oxSdKpP8GmLS1CsJfB91wbA/UP6iqCay187Ckt65JnhdBnmMCDLEb
-        2LTETV+/7rNdCPyP5a6CIn0uapBWAgM=
+        bh=j9Dfcijr9zWaJQGCdM62UJQj29w0VqaAFbm9IQLiRk0=;
+        b=PW8A83Wprn3S0he6fzni4X0apz0KEGUhWLTNVKLbM+WX96ApV+UrDa/8F90hmAasBqIz7H
+        Cc806blr6Vn799IqS0XCUJsz19ttGqBEovNUTzPJNssbk229QiM3auD0gYYnFa8LVciSkf
+        sni+8EG6KxppsnKuj9AS0ETxDWw/Sg0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-Q-KtTis0M7yc0VcuVdaNSA-1; Sun, 25 Oct 2020 15:11:56 -0400
-X-MC-Unique: Q-KtTis0M7yc0VcuVdaNSA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-205-D9omz1PZMxSvfj8Pq9Zd3Q-1; Sun, 25 Oct 2020 15:41:32 -0400
+X-MC-Unique: D9omz1PZMxSvfj8Pq9Zd3Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE0C1186840B;
-        Sun, 25 Oct 2020 19:11:54 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CFD4804B74;
+        Sun, 25 Oct 2020 19:41:30 +0000 (UTC)
 Received: from krava (unknown [10.40.192.51])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6BC151051D;
-        Sun, 25 Oct 2020 19:11:48 +0000 (UTC)
-Date:   Sun, 25 Oct 2020 20:11:47 +0100
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4E6126EF44;
+        Sun, 25 Oct 2020 19:41:24 +0000 (UTC)
+Date:   Sun, 25 Oct 2020 20:41:23 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -43,84 +44,122 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Jesper Brouer <jbrouer@redhat.com>,
         Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
         Viktor Malik <vmalik@redhat.com>
-Subject: Re: [RFC bpf-next 13/16] libbpf: Add trampoline batch attach support
-Message-ID: <20201025191147.GC2681365@krava>
+Subject: Re: [RFC bpf-next 09/16] bpf: Add BPF_TRAMPOLINE_BATCH_ATTACH support
+Message-ID: <20201025194123.GD2681365@krava>
 References: <20201022082138.2322434-1-jolsa@kernel.org>
- <20201022082138.2322434-14-jolsa@kernel.org>
- <CAEf4Bzbch2SGNwG-tTUT6pPdDCsFyGPbS1Zkx4f6-nLmcv+wOA@mail.gmail.com>
+ <20201022082138.2322434-10-jolsa@kernel.org>
+ <CAEf4Bzb_HPmGSoUX+9+LvSP2Yb95OqEQKtjpMiW1Um-rixAM8Q@mail.gmail.com>
+ <20201023163110.54e4a202@gandalf.local.home>
+ <CAEf4Bza4=KKZS_OGnaLvFELE8W+Nm4sah2--CYP6wopQecxg5g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbch2SGNwG-tTUT6pPdDCsFyGPbS1Zkx4f6-nLmcv+wOA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CAEf4Bza4=KKZS_OGnaLvFELE8W+Nm4sah2--CYP6wopQecxg5g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 01:09:26PM -0700, Andrii Nakryiko wrote:
-> On Thu, Oct 22, 2020 at 2:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Fri, Oct 23, 2020 at 03:23:10PM -0700, Andrii Nakryiko wrote:
+> On Fri, Oct 23, 2020 at 1:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 > >
-> > Adding trampoline batch attach support so it's possible to use
-> > batch mode to load tracing programs.
+> > On Fri, 23 Oct 2020 13:03:22 -0700
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > >
-> > Adding trampoline_attach_batch bool to struct bpf_object_open_opts.
-> > When set to true the bpf_object__attach_skeleton will try to load
-> > all tracing programs via batch mode.
+> > > Basically, maybe ftrace subsystem could provide a set of APIs to
+> > > prepare a set of functions to attach to. Then BPF subsystem would just
+> > > do what it does today, except instead of attaching to a specific
+> > > kernel function, it would attach to ftrace's placeholder. I don't know
+> > > anything about ftrace implementation, so this might be far off. But I
+> > > thought that looking at this problem from a bit of a different angle
+> > > would benefit the discussion. Thoughts?
 > >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
+> > I probably understand bpf internals as much as you understand ftrace
+> > internals ;-)
+> >
 > 
-> Assuming we go with the current kernel API for batch-attach, why can't
-> libbpf just detect kernel support for it and just use it always,
-> without requiring users to opt into anything?
+> Heh :) But while we are here, what do you think about this idea of
+> preparing a no-op trampoline, that a bunch (thousands, potentially) of
+> function entries will jump to. And once all that is ready and patched
+> through kernel functions entry points, then allow to attach BPF
+> program or ftrace callback (if I get the terminology right) in a one
+> fast and simple operation? For users that would mean that they will
+> either get calls for all or none of attached kfuncs, with a simple and
+> reliable semantics.
 
-yea, it's rfc ;-) I wanted some simple usage of the
-interface so it's obvious how it works
+so the main pain point the batch interface is addressing, is that
+every attach (BPF_RAW_TRACEPOINT_OPEN command) calls register_ftrace_direct,
+and you'll need to do the same for nop trampoline, no?
 
-if we'll end up with some batch interface I agree
-we should use it as you suggested
+I wonder if we could create some 'transaction object' represented
+by fd and add it to bpf_attr::raw_tracepoint
 
-> 
-> But I'm also confused a bit how this is supposed to be used with BPF
-> skeleton. You use case described in a cover letter (bpftrace glob
-> attach, right?) would have a single BPF program attached to many
-> different functions. While here you are trying to collect different
-> programs and attach each one to its respective kernel function. Do you
-> expect users to have hundreds of BPF programs in their skeletons? If
-> not, I don't really see why adding this complexity. What am I missing?
+then attach (BPF_RAW_TRACEPOINT_OPEN command) would add program to this
+new 'transaction object' instead of updating ftrace directly
 
-AFAIU when you use trampoline program you declare the attach point
-at the load time, so you actually can't use same program for different
-kernel functions - which would be great speed up actually, because
-that's where the rest of the cycles in bpftrace is spent (in that cover
-letter example) - load/verifier check of all those programs
+and when the collection is done (all BPF_RAW_TRACEPOINT_OPEN command
+are executed), we'd call new bpf syscall command on that transaction
+and it would call ftrace interface
 
-it's different for kprobe where you hook single kprobe via multiple
-kprobe perf events to different kernel function
+something like:
 
-> 
-> Now it also seems weird to me for the kernel API to allow attaching
-> many-to-many BPF programs-to-attach points. One BPF program-to-many
-> attach points seems like a more sane and common requirement, no?
-
-right, but that's the consequence of what I wrote above
+  bpf(TRANSACTION_NEW) = fd
+  bpf(BPF_RAW_TRACEPOINT_OPEN) for prog_fd_1, fd
+  bpf(BPF_RAW_TRACEPOINT_OPEN) for prog_fd_2, fd
+  ...
+  bpf(TRANSACTION_DONE) for fd
 
 jirka
 
 > 
+> Something like this, where bpf_prog attachment (which replaces nop)
+> happens as step 2:
 > 
-> >  tools/lib/bpf/bpf.c      | 12 +++++++
-> >  tools/lib/bpf/bpf.h      |  1 +
-> >  tools/lib/bpf/libbpf.c   | 76 +++++++++++++++++++++++++++++++++++++++-
-> >  tools/lib/bpf/libbpf.h   |  5 ++-
-> >  tools/lib/bpf/libbpf.map |  1 +
-> >  5 files changed, 93 insertions(+), 2 deletions(-)
+> +------------+  +----------+  +----------+
+> |  kfunc1    |  |  kfunc2  |  |  kfunc3  |
+> +------+-----+  +----+-----+  +----+-----+
+>        |             |             |
+>        |             |             |
+>        +---------------------------+
+>                      |
+>                      v
+>                  +---+---+           +-----------+
+>                  |  nop  +----------->  bpf_prog |
+>                  +-------+           +-----------+
+> 
+> 
+> > Anyway, what I'm currently working on, is a fast way to get to the
+> > arguments of a function. For now, I'm just focused on x86_64, and only add
+> > 6 argments.
 > >
+> > The main issue that Alexei had with using the ftrace trampoline, was that
+> > the only way to get to the arguments was to set the "REGS" flag, which
+> > would give a regs parameter that contained a full pt_regs. The problem with
+> > this approach is that it required saving *all* regs for every function
+> > traced. Alexei felt that this was too much overehead.
+> >
+> > Looking at Jiri's patch, I took a look at the creation of the bpf
+> > trampoline, and noticed that it's copying the regs on a stack (at least
+> > what is used, which I think could be an issue).
 > 
-> [...]
+> Right. And BPF doesn't get access to the entire pt_regs struct, so it
+> doesn't have to pay the prices of saving it.
+> 
+> But just FYI. Alexei is out till next week, so don't expect him to
+> reply in the next few days. But he's probably best to discuss these
+> nitty-gritty details with :)
+> 
+> >
+> > For tracing a function, one must store all argument registers used, and
+> > restore them, as that's how they are passed from caller to callee. And
+> > since they are stored anyway, I figure, that should also be sent to the
+> > function callbacks, so that they have access to them too.
+> >
+> > I'm working on a set of patches to make this a reality.
+> >
+> > -- Steve
 > 
 
