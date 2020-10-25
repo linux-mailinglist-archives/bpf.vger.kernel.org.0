@@ -2,164 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AF1298367
-	for <lists+bpf@lfdr.de>; Sun, 25 Oct 2020 20:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC772983D6
+	for <lists+bpf@lfdr.de>; Sun, 25 Oct 2020 23:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418590AbgJYTli (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Oct 2020 15:41:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40883 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1418563AbgJYTli (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 25 Oct 2020 15:41:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603654896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j9Dfcijr9zWaJQGCdM62UJQj29w0VqaAFbm9IQLiRk0=;
-        b=PW8A83Wprn3S0he6fzni4X0apz0KEGUhWLTNVKLbM+WX96ApV+UrDa/8F90hmAasBqIz7H
-        Cc806blr6Vn799IqS0XCUJsz19ttGqBEovNUTzPJNssbk229QiM3auD0gYYnFa8LVciSkf
-        sni+8EG6KxppsnKuj9AS0ETxDWw/Sg0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-D9omz1PZMxSvfj8Pq9Zd3Q-1; Sun, 25 Oct 2020 15:41:32 -0400
-X-MC-Unique: D9omz1PZMxSvfj8Pq9Zd3Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CFD4804B74;
-        Sun, 25 Oct 2020 19:41:30 +0000 (UTC)
-Received: from krava (unknown [10.40.192.51])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4E6126EF44;
-        Sun, 25 Oct 2020 19:41:24 +0000 (UTC)
-Date:   Sun, 25 Oct 2020 20:41:23 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1419151AbgJYWMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Oct 2020 18:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1419150AbgJYWMi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Oct 2020 18:12:38 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9E3DC061755;
+        Sun, 25 Oct 2020 15:12:36 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id q25so7980780ioh.4;
+        Sun, 25 Oct 2020 15:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CCLWLpAlHU9Dh1dZ7UTlBHF0U829I1FR53xIgiCWEt4=;
+        b=UX1w2aaSO2NmIgl6qUrz9WeLM/hr5vi2D/7bA4uwRGbF73qcp+ppTxihkIwWL2S7my
+         WTkN4+oU/UKqfv8HfNOgcpSchn5qATbvZ0QRikxHiBNbafP246Cg/6VeI4POt5Kl557h
+         ymlKcVUBepP0E1m+0xBLFK4X6n+oyraEzDoS7o8FCHsmZiq1r7TmUxMi5anU2HblrQU0
+         4Uj9VlGVStcCGrYNyvCpFwtUq/rIoEVKzfKCnEvnir0Lo9DqK10JENOKPsMgBeaDmwht
+         X6GzvN6jcBc5ubdWeSNS2RhffrOHY3mTEPxKydGErINOzfSLDG0Fx1531KkIffZh3oP6
+         FPYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CCLWLpAlHU9Dh1dZ7UTlBHF0U829I1FR53xIgiCWEt4=;
+        b=CMl/yMBh5kCtA2QtcLQACZ6S6r2897YFrqufi2i57DGLU2gWUfiWV0hASPWWa2iChk
+         60yqu2Ccb+F+y4Bv2pWCWJMZppYLqh1djGdaJKLcAGudytWcfmCzY5pNp80tvbwMl1qm
+         r+mdS6ogk7G5ZJObWqqaZYpjIoZ+VZDM821y9NLEtgciHhWZfimRx1wL1gqly6Vf/S3E
+         /Q9QzdYyNg3mDlb9g08+ZoCZQI9/X6lV9CLCvH/NPVQxjlyhihbjkMG4WRK2N1gQ/gfr
+         yAiumBaXrh1VBh4gKxB8bOo+xVBiLDuMWmn0ezVi6SIgQ6p7Irz/oQjBdQSetPH7jjVR
+         Sibg==
+X-Gm-Message-State: AOAM531/dWecgCWpDF9FwxzNeVSZNh6WWqqetnOee/e3G8HH/Q24TFkV
+        Wou8pNjrqXJEBm9qgBfxKso=
+X-Google-Smtp-Source: ABdhPJwhCiI1HfU5Mwu6CE9suaF+u9PFOa6DguVcgdmsPQFuRJfGZ6+kXT9h2IMGGCZcIMXmzUceyQ==
+X-Received: by 2002:a02:1783:: with SMTP id 125mr9240721jah.121.1603663956272;
+        Sun, 25 Oct 2020 15:12:36 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:e928:c58a:d675:869a])
+        by smtp.googlemail.com with ESMTPSA id e13sm1010703ili.67.2020.10.25.15.12.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Oct 2020 15:12:35 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next 3/5] lib: add libbpf support
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: Re: [RFC bpf-next 09/16] bpf: Add BPF_TRAMPOLINE_BATCH_ATTACH support
-Message-ID: <20201025194123.GD2681365@krava>
-References: <20201022082138.2322434-1-jolsa@kernel.org>
- <20201022082138.2322434-10-jolsa@kernel.org>
- <CAEf4Bzb_HPmGSoUX+9+LvSP2Yb95OqEQKtjpMiW1Um-rixAM8Q@mail.gmail.com>
- <20201023163110.54e4a202@gandalf.local.home>
- <CAEf4Bza4=KKZS_OGnaLvFELE8W+Nm4sah2--CYP6wopQecxg5g@mail.gmail.com>
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20201023033855.3894509-1-haliu@redhat.com>
+ <20201023033855.3894509-4-haliu@redhat.com>
+ <29c13bd0-d2f6-b914-775c-2d90270f86d4@gmail.com> <87eelm5ofg.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <91aed9d1-d550-cf6c-d8bb-e6737d0740e0@gmail.com>
+Date:   Sun, 25 Oct 2020 16:12:34 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bza4=KKZS_OGnaLvFELE8W+Nm4sah2--CYP6wopQecxg5g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <87eelm5ofg.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 03:23:10PM -0700, Andrii Nakryiko wrote:
-> On Fri, Oct 23, 2020 at 1:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Fri, 23 Oct 2020 13:03:22 -0700
-> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > > Basically, maybe ftrace subsystem could provide a set of APIs to
-> > > prepare a set of functions to attach to. Then BPF subsystem would just
-> > > do what it does today, except instead of attaching to a specific
-> > > kernel function, it would attach to ftrace's placeholder. I don't know
-> > > anything about ftrace implementation, so this might be far off. But I
-> > > thought that looking at this problem from a bit of a different angle
-> > > would benefit the discussion. Thoughts?
-> >
-> > I probably understand bpf internals as much as you understand ftrace
-> > internals ;-)
-> >
+On 10/25/20 9:13 AM, Toke Høiland-Jørgensen wrote:
+> David Ahern <dsahern@gmail.com> writes:
 > 
-> Heh :) But while we are here, what do you think about this idea of
-> preparing a no-op trampoline, that a bunch (thousands, potentially) of
-> function entries will jump to. And once all that is ready and patched
-> through kernel functions entry points, then allow to attach BPF
-> program or ftrace callback (if I get the terminology right) in a one
-> fast and simple operation? For users that would mean that they will
-> either get calls for all or none of attached kfuncs, with a simple and
-> reliable semantics.
-
-so the main pain point the batch interface is addressing, is that
-every attach (BPF_RAW_TRACEPOINT_OPEN command) calls register_ftrace_direct,
-and you'll need to do the same for nop trampoline, no?
-
-I wonder if we could create some 'transaction object' represented
-by fd and add it to bpf_attr::raw_tracepoint
-
-then attach (BPF_RAW_TRACEPOINT_OPEN command) would add program to this
-new 'transaction object' instead of updating ftrace directly
-
-and when the collection is done (all BPF_RAW_TRACEPOINT_OPEN command
-are executed), we'd call new bpf syscall command on that transaction
-and it would call ftrace interface
-
-something like:
-
-  bpf(TRANSACTION_NEW) = fd
-  bpf(BPF_RAW_TRACEPOINT_OPEN) for prog_fd_1, fd
-  bpf(BPF_RAW_TRACEPOINT_OPEN) for prog_fd_2, fd
-  ...
-  bpf(TRANSACTION_DONE) for fd
-
-jirka
-
+>> On 10/22/20 9:38 PM, Hangbin Liu wrote:
+>>> Note: ip/ipvrf.c is not convert to use libbpf as it only encodes a few
+>>> instructions and load directly.
+>>
+>> for completeness, libbpf should be able to load a program from a buffer
+>> as well.
 > 
-> Something like this, where bpf_prog attachment (which replaces nop)
-> happens as step 2:
-> 
-> +------------+  +----------+  +----------+
-> |  kfunc1    |  |  kfunc2  |  |  kfunc3  |
-> +------+-----+  +----+-----+  +----+-----+
->        |             |             |
->        |             |             |
->        +---------------------------+
->                      |
->                      v
->                  +---+---+           +-----------+
->                  |  nop  +----------->  bpf_prog |
->                  +-------+           +-----------+
-> 
-> 
-> > Anyway, what I'm currently working on, is a fast way to get to the
-> > arguments of a function. For now, I'm just focused on x86_64, and only add
-> > 6 argments.
-> >
-> > The main issue that Alexei had with using the ftrace trampoline, was that
-> > the only way to get to the arguments was to set the "REGS" flag, which
-> > would give a regs parameter that contained a full pt_regs. The problem with
-> > this approach is that it required saving *all* regs for every function
-> > traced. Alexei felt that this was too much overehead.
-> >
-> > Looking at Jiri's patch, I took a look at the creation of the bpf
-> > trampoline, and noticed that it's copying the regs on a stack (at least
-> > what is used, which I think could be an issue).
-> 
-> Right. And BPF doesn't get access to the entire pt_regs struct, so it
-> doesn't have to pay the prices of saving it.
-> 
-> But just FYI. Alexei is out till next week, so don't expect him to
-> reply in the next few days. But he's probably best to discuss these
-> nitty-gritty details with :)
-> 
-> >
-> > For tracing a function, one must store all argument registers used, and
-> > restore them, as that's how they are passed from caller to callee. And
-> > since they are stored anyway, I figure, that should also be sent to the
-> > function callbacks, so that they have access to them too.
-> >
-> > I'm working on a set of patches to make this a reality.
-> >
-> > -- Steve
+> It can, but the particular use in ipvrf is just loading half a dozen
+> instructions defined inline in C - there's no object files, BTF or
+> anything. So why bother with going through libbpf in this case? The
+> actual attachment is using the existing code anyway...
 > 
 
+actually, it already does: bpf_load_program
+
+I recalled figuring out how to do it, just did not remember if it was
+local changes to libbpf. Does not look like any changes were needed:
+
+https://github.com/dsahern/bpf-progs/blob/master/src/cgroup_sock.c
