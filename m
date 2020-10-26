@@ -2,85 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F812988B9
-	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 09:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0B32988BB
+	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 09:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772048AbgJZIpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 04:45:51 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:46928 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771224AbgJZIpv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:45:51 -0400
-X-Greylist: delayed 1517 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 04:45:51 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cG+bUw0htssS2VsM1tSm5/tJVv+7Iw86NvNGo250wAA=; b=b2Jg5WMEQkbZCXLmYMhmlHHGD0
-        i0wezkUlu8euA7C3i2l6BEyNR+Rvd9yXt2Gi2xU83cNxNkLuIMgdipp7/bU3SQs4dWi1jCAbIu7lM
-        C/wcBsh2JqIVv2iIIFP9QTKo98vhcZnUap3lPxPWCQ0yn2XH8Bb32SuF0hMvpnWguLjEZNa/mmuze
-        Fpl/ZJFgwddm2cJ6/vlI5ZnRRnIOafcwoSdE4NBPojQDX51UGO47kKX23tdMytouXJolVVCkJvq2a
-        UjNGewtz2ZPHOwXqRt2sPujjEOqzwWNNlmWPo3uKGuHVFpIfOrF2/hmIg9rgGDWF0xIdUbVfXf93X
-        fAR5oAWw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kWxjh-00070s-OX; Mon, 26 Oct 2020 08:20:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1772058AbgJZIqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 04:46:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1771245AbgJZIqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 04:46:09 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9853A301179;
-        Mon, 26 Oct 2020 09:20:10 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5E077214ECD42; Mon, 26 Oct 2020 09:20:10 +0100 (CET)
-Date:   Mon, 26 Oct 2020 09:20:10 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        Steven Rostedt <rostedt@goodmis.org>,
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63BC0223B0;
+        Mon, 26 Oct 2020 08:46:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603701968;
+        bh=qB8CzEhahOaemFq9YE9Yhqr27FC97Yq4A5dMZ2W97vA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YJNlyfwJQditZkvquRY4rdDE6DpqfnPaFff4rU1MwySaJIOxFdeqpc6y+R7kGWWZL
+         I/tukEwESjrSwbzxCYBJzNLH5FBxALk/Q/v6jS9owoz33A9Ll/Wu8dLcq+BXWtPCea
+         fS1uMobVWUkzGZyos56M/aN2N2Tq413y6210TygY=
+Date:   Mon, 26 Oct 2020 08:46:02 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Vitaly Chikunov <vt@altlinux.org>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
- rcuidle tracepoints
-Message-ID: <20201026082010.GC2628@hirez.programming.kicks-ass.net>
-References: <20201023195352.26269-1-mjeanson@efficios.com>
- <20201023195352.26269-7-mjeanson@efficios.com>
- <20201023211359.GC3563800@google.com>
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: tools/bpf: Compilation issue on powerpc: unknown type name
+ '__vector128'
+Message-ID: <20201026084602.GD23739@willie-the-truck>
+References: <20201023230641.xomukhg3zrhtuxez@altlinux.org>
+ <20201024082319.GA24131@altlinux.org>
+ <20201024203040.4cjxnxrdy6qx557c@altlinux.org>
+ <87y2jtwq64.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023211359.GC3563800@google.com>
+In-Reply-To: <87y2jtwq64.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 05:13:59PM -0400, Joel Fernandes wrote:
-> On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
-> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > 
-> > Considering that tracer callbacks expect RCU to be watching (for
-> > instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
-> > rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
-> > no point in using SRCU anymore given that rcuidle tracepoints need to
-> > ensure RCU is watching. Therefore, simply use sched-RCU like normal
-> > tracepoints for rcuidle tracepoints.
+On Mon, Oct 26, 2020 at 03:45:55PM +1100, Michael Ellerman wrote:
+> Vitaly Chikunov <vt@altlinux.org> writes:
+> > Adding netdev and PowerPC maintainers JFYI.
 > 
-> High level question:
+> Thanks.
 > 
-> IIRC, doing this increases overhead for general tracing that does not use
-> perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
-> tracepoints. I remember adding SRCU because of this reason.
+> > On Sat, Oct 24, 2020 at 11:23:19AM +0300, Dmitry V. Levin wrote:
+> >> Hi,
+> >> 
+> >> On Sat, Oct 24, 2020 at 02:06:41AM +0300, Vitaly Chikunov wrote:
+> >> > Hi,
+> >> > 
+> >> > Commit f143c11bb7b9 ("tools: bpf: Use local copy of headers including
+> >> > uapi/linux/filter.h") introduces compilation issue on powerpc:
+> >> >  
+> >> >   builder@powerpc64le:~/linux$ make -C tools/bpf V=1
+> >> >   make: Entering directory '/usr/src/linux/tools/bpf'
+> >> >   gcc -Wall -O2 -D__EXPORTED_HEADERS__ -I/usr/src/linux/tools/include/uapi -I/usr/src/linux/tools/include -DDISASM_FOUR_ARGS_SIGNATURE -c -o bpf_dbg.o /usr/src/linux/tools/bpf/bpf_dbg.c
 > 
-> Can the 'rcuidle' information not be pushed down further, such that perf does
-> it because it requires RCU to be watching, so that it does not effect, say,
-> trace events?
+> Defining __EXPORTED_HEADERS__ is a hack to circumvent the checks in the
+> uapi headers.
+> 
+> So first comment is to stop doing that, although it doesn't actually fix
+> this issue.
+> 
+> >> >   In file included from /usr/include/asm/sigcontext.h:14,
+> >> > 		   from /usr/include/bits/sigcontext.h:30,
+> >> > 		   from /usr/include/signal.h:291,
+> >> > 		   from /usr/src/linux/tools/bpf/bpf_dbg.c:51:
+> >> >   /usr/include/asm/elf.h:160:9: error: unknown type name '__vector128'
+> >> >     160 | typedef __vector128 elf_vrreg_t;
+> >> > 	|         ^~~~~~~~~~~
+> >> >   make: *** [Makefile:67: bpf_dbg.o] Error 1
+> >> >   make: Leaving directory '/usr/src/linux/tools/bpf'
+> >> 
+> >> __vector128 is defined in arch/powerpc/include/uapi/asm/types.h;
+> >> while include/uapi/linux/types.h does #include <asm/types.h>,
+> >> tools/include/uapi/linux/types.h doesn't, resulting to this
+> >> compilation error.
+> >
+> > This is too puzzling to fix portably.
+> 
+> I don't really understand how this is expected to work.
+> 
+> We have tools/include/uapi/linux/types.h which is some sort of hand
+> hacked types.h, but doesn't match the real types.h from
+> include/uapi/linux.
+> 
+> In particular the tools/include types.h doesn't include asm/types.h,
+> which is why this breaks.
+> 
+> I can build bpf_dbg if I copy the properly exported header in:
+> 
+>   $ make INSTALL_HDR_PATH=$PWD/headers headers_install
+>   $ cp headers/include/linux/types.h tools/include/uapi/linux/
+>   $ make -C tools/bpf bpf_dbg
+>   make: Entering directory '/home/michael/linux/tools/bpf'
+>   
+>   Auto-detecting system features:
+>   ...                        libbfd: [ on  ]
+>   ...        disassembler-four-args: [ on  ]
+>   
+>     CC       bpf_dbg.o
+>     LINK     bpf_dbg
+>   make: Leaving directory '/home/michael/linux/tools/bpf
+> 
+> 
+> I'm not sure what the proper fix is.
+> 
+> Maybe sync the tools/include types.h with the real one?
 
-There's very few trace_.*_rcuidle() users left. We should eradicate them
-and remove the option. It's bugs to begin with.
+Yeah, all f143c11bb7b9 did was sync the local copy with the result of
+'headers_install', so if that's sufficient then I think that's the right
+way to fix the immediate breakage.
+
+> Or TBH I would have thought the best option is to not have
+> tools/include/uapi at all, but instead just run headers_install before
+> building and use the properly exported headers.
+
+Agreed, although in some cases I suspect that kernel-internal parts are
+being used.
+
+Wiil
