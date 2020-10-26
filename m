@@ -2,120 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9272999B5
-	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 23:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 972282999BB
+	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 23:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394522AbgJZWdA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 18:33:00 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:35555 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394179AbgJZWdA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:33:00 -0400
-Received: by mail-yb1-f194.google.com with SMTP id m188so4036091ybf.2;
-        Mon, 26 Oct 2020 15:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tYGKgBOvXd0V/keZVVJoez9jaPUFednPhovrcJOgA2g=;
-        b=kAauVYU8XtFtg2dOaqnJQwkbqB52ez/V5BY4VECXf1bDCA3xkrgRxmc8mhHkcL7Sh2
-         AnPLxWk9P9V1Lreux98xz77OgW9JboFSUIItFrvNvleQT0UzZqghu4150Ors4lsor85u
-         gRoREfMaYdYZhjfAARgesMNdkJCswegVeHEWUIfeRxBQ5gQle3JJN5ORqwnMaSZuqUbe
-         FALLq7z6Uf9W7P2t1zkJcuOiBjPeJbdCNQM82B7viQLfowGVyApJqeWkEBNtry0VWiCp
-         LtwOeOXqtIen5DMkS5jbnd6DPA+/SQfqUxiLg9kUyrnEEscb7eIv0G0MOnvPkiMCdVT0
-         RzUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tYGKgBOvXd0V/keZVVJoez9jaPUFednPhovrcJOgA2g=;
-        b=O4YIv+7NEXQm19X/WYq0dMHS7qDu9RmEugG4/o2EAmxRWHNnlTQ9sLsiufFnBOfzwK
-         BoHa00e13JFh5fYF9mzvdYmjJPDk9si3OGZWzC92utChH3WNTv7UzoMjPKCuOmgot+yQ
-         bAZv1svxNNr8F8PxlLGuMuVOIkDwSHV1Hzn8PYBwKa9Vvb2SiwuvD4xx1dh+Uduks5wv
-         qSlhJTtGGvscj8v/09hjMnYzoJXFiAsj8XXAm+VFt+RmnrxP7B5fHNfa3z2d+n31yy5Q
-         xICSfmSVZ5hGuUKQ310a5ZhoTIZq83jEXTHOg3vzgyVTv/IEtYYNrG5QcBknQEy5Uqxa
-         7MPw==
-X-Gm-Message-State: AOAM532OJ+4sTGKHUXHMltBAOQkpO2Zn6B1IyXA0H9g5wbKrpRL+cgKU
-        uIkM8iPxcebuLnNQdHGOPP1nZcMgZrhCiJY/WcA=
-X-Google-Smtp-Source: ABdhPJzJ8WKki2YfYpJmDD9XUL4ndI92W9goc0lwvGF2XEbq+khib6ri7e9trS95QelSwRqFNcMe0EnnNUduMZUawrk=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr27858824ybk.260.1603751578973;
- Mon, 26 Oct 2020 15:32:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201026210355.3885283-1-arnd@kernel.org>
-In-Reply-To: <20201026210355.3885283-1-arnd@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 26 Oct 2020 15:32:48 -0700
-Message-ID: <CAEf4BzYbH_x3s0Z4YGv4spOQ5oQAYbYNBf+3Fy5eopCK8=nuNw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: fix incorrect initialization of bpf_ctx_convert_map
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
+        id S2394540AbgJZWga convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 26 Oct 2020 18:36:30 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:59899 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390190AbgJZWga (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 26 Oct 2020 18:36:30 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-QSUjQuWVNhqXOqaRy69d0g-1; Mon, 26 Oct 2020 18:36:25 -0400
+X-MC-Unique: QSUjQuWVNhqXOqaRy69d0g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBE988049D7;
+        Mon, 26 Oct 2020 22:36:23 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 33F926EF50;
+        Mon, 26 Oct 2020 22:36:18 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
         Hao Luo <haoluo@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: [RFC 0/3] pahole: Workaround dwarf bug for function encoding
+Date:   Mon, 26 Oct 2020 23:36:14 +0100
+Message-Id: <20201026223617.2868431-1-jolsa@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 2:04 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc -Wextra points out that a field may get overridden in some
-> configurations such as x86 allmodconfig, when the next index after the one
-> that has been assigned last already had a value, in this case for index
-> BPF_PROG_TYPE_SK_LOOKUP, which comes after BPF_PROG_TYPE_LSM in the list:
->
-> kernel/bpf/btf.c:4225:2: warning: initialized field overwritten [-Woverride-init]
->  4225 |  0, /* avoid empty array */
->       |  ^
-> kernel/bpf/btf.c:4225:2: note: (near initialization for 'bpf_ctx_convert_map[30]')
->
-> Move the zero-initializer first instead. This avoids the warning since
-> nothing else uses index 0, and the last element does not have to be zero.
+hi,
+because of gcc bug [1] we can no longer rely on DW_AT_declaration
+attribute to filter out declarations and end up with just
+one copy of the function in the BTF data.
 
-Wouldn't it be cleaner and more explicit to add __MAX_BPF_PROG_TYPE to
-enum bpf_prog_type in include/uapi/linux/bpf.h, similarly to how we do
-it with enum bpf_attach_type? Then just specify the size of the array
-here explicitly? Unless we are trying to save a few bytes for more
-minimal configurations where some BPF program types are not used (but
-still defined in an enum)?
+It seems this bug is not easy to fix, but regardless if the
+it's coming soon, it's probably good idea not to depend so
+much only on dwarf data and make some extra checks.
+
+Thus for function encoding we are now doing following checks:
+  - argument names are defined for the function
+  - there's symbol and address defined for the function
+  - function is generated only once
+
+These checks ensure that we encode function with defined
+symbol/address and argument names.
+
+I marked this post as RFC, because with this workaround in
+place we are also encoding assembly functions, which were
+not present when using the previous gcc version.
+
+Full functions diff to previous gcc working version:
+
+  http://people.redhat.com/~jolsa/functions.diff.txt
+
+I'm not sure this does not break some rule for functions in
+BTF data, becuse those assembly functions are not attachable
+by bpf trampolines, so I don't think there's any use for them.
+
+thoughts?
+jirka
 
 
->
-> Fixes: e9ddbb7707ff ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point")
-> Fixes: 4c80c7bc583a ("bpf: Fix build in minimal configurations, again")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  kernel/bpf/btf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index ed7d02e8bc93..2a4a4aeeaac1 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -4218,11 +4218,11 @@ enum {
->         __ctx_convert_unused, /* to avoid empty enum in extreme .config */
->  };
->  static u8 bpf_ctx_convert_map[] = {
-> +       [0] = 0, /* avoid empty array */
->  #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type) \
->         [_id] = __ctx_convert##_id,
->  #include <linux/bpf_types.h>
->  #undef BPF_PROG_TYPE
-> -       0, /* avoid empty array */
->  };
->  #undef BPF_MAP_TYPE
->  #undef BPF_LINK_TYPE
-> --
-> 2.27.0
->
+[1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
+---
+Jiri Olsa (3):
+      btf_encoder: Move find_all_percpu_vars in generic config function
+      btf_encoder: Change functions check due to broken dwarf
+      btf_encoder: Include static functions to BTF data
+
+ btf_encoder.c | 221 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------
+ elf_symtab.h  |   8 +++++
+ 2 files changed, 170 insertions(+), 59 deletions(-)
+
