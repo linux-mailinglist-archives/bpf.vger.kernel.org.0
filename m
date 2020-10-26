@@ -2,169 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D19299A30
-	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 00:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5DF299A45
+	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 00:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395428AbgJZXIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 19:08:12 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:40933 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394676AbgJZXIK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:08:10 -0400
-Received: by mail-yb1-f193.google.com with SMTP id n142so9105921ybf.7;
-        Mon, 26 Oct 2020 16:08:10 -0700 (PDT)
+        id S2403961AbgJZXQB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 19:16:01 -0400
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:39778 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403923AbgJZXQA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:16:00 -0400
+Received: by mail-yb1-f196.google.com with SMTP id 67so9114929ybt.6;
+        Mon, 26 Oct 2020 16:15:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kY3ST5v22Tq7SgipsKGJCPPLOdbub6AVwGCbFCogewY=;
-        b=vevT0upiGembVlwg+p1QaMFmS1TC2tInlZh8A1flekbSfcoGX63Kl/xQAKtuObZnpD
-         9k9wcD0oTwrrtEXIkiae2hDEQeKdlfLpOITaut6uwOMJBNyacCo1bpPA05z2YymW/svo
-         glQzdq9ueZ8ndES1zq+ykrnUOzM/PhkZxahAyozEM4PIZAEKDd7txYnygbIlCn63LDXL
-         91L9FlT7IKB9hZriRFfE03Wz3owor5BVXmznD+vf+13yLwq2twCUCVQS+KKYT7lRUKqn
-         d+BpsFqPrvr5fOI1tsGKYCdqTIiZie1SMQMQWVEhQaQ9sFzqHEMNyTLVLwYecdNUmfAI
-         w1HA==
+        bh=LiJKb3rNHBHV0g7paRfDUdXaN166fPs4Ik4Tz+yATK0=;
+        b=iURVlDor88SLf82CltlomOnUANa+7QQb3IeWZOQvArzvXKS229Il58ujiKPOCJzNQ3
+         AESC8KWJZtAyXQENZ5M2/jvbHfQ817NtQTj4WBO9aCWxbDCbx1IyuDt+H1WBZaV/M2Ja
+         FpGmFHfOUv2S7dPGzX/NkcYpd+mAm92+SzC45oE675rvnkCwbTxgp200ylm+5v6tW2f/
+         ZwrrL25tXkSPRji5KKpj9U4+ZiXl8O/kI4ylE1k+xW+7dxpakudibl3VCij5SCK38sSI
+         CBaQvReoQc1+emo/5a2VO7X/oV0ROg7K+/WCO3cXF5K3mRUkIYwPZSMUUrgEad3hHG4D
+         w1bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kY3ST5v22Tq7SgipsKGJCPPLOdbub6AVwGCbFCogewY=;
-        b=LP7+Zt0TW+DXJFCE4iNGIQyIBML/aq9cfvrCz3huXrfxULsRYJkFO51HKIIpFhImQu
-         Ejbm8w36HLDasPGaBX7vGbcemoLzXhnJV/FmcYZulOjlhkemHelL5p1IqluNQ3oAud84
-         tL8c7FBl0PGS9ZZDwHg5hGsluydjlL36zJalQdkMtxNhcxGEsQTSE20TGoJZ6iSQWWLu
-         YNxhBoJPGIJ9WE85sn6FL2oPzWgXNAmZMlF0nPMmYN1lmjYxI0qrYw+5BwEVCd+xwguG
-         P1mkvGVS4ChcQ6M/mz/NEolKbRxy14AWhMmJJaGoisGsyIfo+S7KAGUHziEaPeaYmn7r
-         ffeA==
-X-Gm-Message-State: AOAM5327htnXxNa/7UnhsFY/uN3m4ulmJiEOul2rbWXwyLsvOJw6WY8H
-        UFFbcYuqlkbGufDuOEY59LDCmkkrHuuVm1mawmY=
-X-Google-Smtp-Source: ABdhPJyyu2U9HJJJR8Q1IhRXScEZ9pYS+vZ23fGFqKcAYZ2idP9WC5GQplffi9lsDNffQt505GPAxWH8YJVgnP5r/vc=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr27714170ybl.347.1603753689534;
- Mon, 26 Oct 2020 16:08:09 -0700 (PDT)
+        bh=LiJKb3rNHBHV0g7paRfDUdXaN166fPs4Ik4Tz+yATK0=;
+        b=q6VF8nra0+WfemfWE1Ylqwj7IX4sfKS2X+smkCRE14zTWL5XnWDPgZYQLZl/38FQr7
+         k3Ts64zEsM9JkOVhoKAlybs66PolLg1Cfl1m3x2KGEsIICzvBqYvbYIQ6qku6M/P7/34
+         q/XKhj3upeEEhMskjo7dZup4bW0gL7fQCBdMKDlSCRaRdTkHNtF59Dv+il+dvytzJX0T
+         YRszJYkL5E+QzYdkIeSJclbkWv+v4eC5a/v5Y4412bXDrMRXOo7eSFsbtpT36mPhfPSi
+         uk/U1QqxeI0zo3OP0nJdBKUlRme3wV6RZZ4whj7MOAq0+G+PHqh+wpKGzKD8OW5Crv0n
+         Yjdw==
+X-Gm-Message-State: AOAM531SAWzGGgVqfQgD56pacKiyAooWd9xJWf0BsJLu3FD3ZkDd80HX
+        RYC8ry/+Va/26dNqVA6aZKxuQO18bour2zvKJQI=
+X-Google-Smtp-Source: ABdhPJwN7RDFpaAh7FEHa6HVCTg6ng/kDVHVGpnw5GRCqCNrGhGaEiMVvDfF1S6aCS3TSxWqtRXue5ByGiXwSgGxSyI=
+X-Received: by 2002:a25:cb10:: with SMTP id b16mr24100302ybg.459.1603754158866;
+ Mon, 26 Oct 2020 16:15:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201024080541.51683-1-dev@der-flo.net>
-In-Reply-To: <20201024080541.51683-1-dev@der-flo.net>
+References: <20201022082138.2322434-1-jolsa@kernel.org> <20201022082138.2322434-14-jolsa@kernel.org>
+ <CAEf4Bzbch2SGNwG-tTUT6pPdDCsFyGPbS1Zkx4f6-nLmcv+wOA@mail.gmail.com> <20201025191147.GC2681365@krava>
+In-Reply-To: <20201025191147.GC2681365@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 26 Oct 2020 16:07:58 -0700
-Message-ID: <CAEf4BzY-bNN7fx2eAvRBq89pDHptEqoftgSSF=0dv_GgeNACvw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: Lift hashtab key_size limit
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 26 Oct 2020 16:15:48 -0700
+Message-ID: <CAEf4BzaJByux3tJ=r47pj4SSzbDEShTW6yBVJg+g1sWsLerdbQ@mail.gmail.com>
+Subject: Re: [RFC bpf-next 13/16] libbpf: Add trampoline batch attach support
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        john fastabend <john.fastabend@gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 7:10 AM Florian Lehner <dev@der-flo.net> wrote:
+On Sun, Oct 25, 2020 at 12:12 PM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> Currently key_size of hashtab is limited to MAX_BPF_STACK.
-> As the key of hashtab can also be a value from a per cpu map it can be
-> larger than MAX_BPF_STACK.
+> On Fri, Oct 23, 2020 at 01:09:26PM -0700, Andrii Nakryiko wrote:
+> > On Thu, Oct 22, 2020 at 2:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding trampoline batch attach support so it's possible to use
+> > > batch mode to load tracing programs.
+> > >
+> > > Adding trampoline_attach_batch bool to struct bpf_object_open_opts.
+> > > When set to true the bpf_object__attach_skeleton will try to load
+> > > all tracing programs via batch mode.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> >
+> > Assuming we go with the current kernel API for batch-attach, why can't
+> > libbpf just detect kernel support for it and just use it always,
+> > without requiring users to opt into anything?
 >
-> The use-case for this patch originates to implement allow/disallow
-> lists for files and file paths. The maximum length of file paths is
-> defined by PATH_MAX with 4096 chars including nul.
-> This limit exceeds MAX_BPF_STACK.
+> yea, it's rfc ;-) I wanted some simple usage of the
+> interface so it's obvious how it works
 >
-> Changelog:
+> if we'll end up with some batch interface I agree
+> we should use it as you suggested
 >
-> v3:
->  - Rebase
+> >
+> > But I'm also confused a bit how this is supposed to be used with BPF
+> > skeleton. You use case described in a cover letter (bpftrace glob
+> > attach, right?) would have a single BPF program attached to many
+> > different functions. While here you are trying to collect different
+> > programs and attach each one to its respective kernel function. Do you
+> > expect users to have hundreds of BPF programs in their skeletons? If
+> > not, I don't really see why adding this complexity. What am I missing?
 >
-> v2:
->  - Add a test for bpf side
+> AFAIU when you use trampoline program you declare the attach point
+> at the load time, so you actually can't use same program for different
+> kernel functions - which would be great speed up actually, because
+> that's where the rest of the cycles in bpftrace is spent (in that cover
+> letter example) - load/verifier check of all those programs
+
+Ah, I see, you are right. And yes, I agree, it would be nice to not
+have to clone the BPF program many times to attach to fentry/fexit, if
+the program itself doesn't really change.
+
 >
-> Signed-off-by: Florian Lehner <dev@der-flo.net>
-> ---
-
-You dropped the ack from John, btw.
-
->  kernel/bpf/hashtab.c                          | 16 +++----
->  .../selftests/bpf/prog_tests/hash_large_key.c | 28 ++++++++++++
->  .../selftests/bpf/progs/test_hash_large_key.c | 45 +++++++++++++++++++
->  tools/testing/selftests/bpf/test_maps.c       |  2 +-
->  4 files changed, 79 insertions(+), 12 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
+> it's different for kprobe where you hook single kprobe via multiple
+> kprobe perf events to different kernel function
 >
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 1815e97d4c9c..10097d6bcc35 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
->             attr->value_size == 0)
->                 return -EINVAL;
+> >
+> > Now it also seems weird to me for the kernel API to allow attaching
+> > many-to-many BPF programs-to-attach points. One BPF program-to-many
+> > attach points seems like a more sane and common requirement, no?
 >
-> -       if (attr->key_size > MAX_BPF_STACK)
-> -               /* eBPF programs initialize keys on stack, so they cannot be
-> -                * larger than max stack size
-> -                */
-> -               return -E2BIG;
-> -
-> -       if (attr->value_size >= KMALLOC_MAX_SIZE -
-> -           MAX_BPF_STACK - sizeof(struct htab_elem))
-> -               /* if value_size is bigger, the user space won't be able to
-> -                * access the elements via bpf syscall. This check also makes
-> -                * sure that the elem_size doesn't overflow and it's
-> +       if ((attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
+> right, but that's the consequence of what I wrote above
 
-key_size+value_size can overflow, can't it? So probably want to cast
-to (size_t) or __u64?
+Well, maybe we should get rid of that limitation first ;)
 
-> +           sizeof(struct htab_elem))
-> +               /* if key_size + value_size is bigger, the user space won't be
-> +                * able to access the elements via bpf syscall. This check
-> +                * also makes sure that the elem_size doesn't overflow and it's
->                  * kmalloc-able later in htab_map_update_elem()
->                  */
->                 return -E2BIG;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/hash_large_key.c b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-> new file mode 100644
-> index 000000000000..962f56060b76
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2020 Florian Lehner
-> +
-> +#include <test_progs.h>
-> +
-> +void test_hash_large_key(void)
-> +{
-> +       const char *file = "./test_hash_large_key.o";
-> +       int prog_fd, map_fd[2];
-> +       struct bpf_object *obj = NULL;
-> +       int err = 0;
-> +
-> +       err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
-
-Please utilize the BPF skeleton in the new tests.
-
-> +       if (CHECK_FAIL(err)) {
-> +               printf("test_hash_large_key: bpf_prog_load errno %d", errno);
-> +               goto close_prog;
-> +       }
-> +
-> +       map_fd[0] = bpf_find_map(__func__, obj, "hash_map");
-> +       if (CHECK_FAIL(map_fd[0] < 0))
-> +               goto close_prog;
-> +       map_fd[1] = bpf_find_map(__func__, obj, "key_map");
-> +       if (CHECK_FAIL(map_fd[1] < 0))
-> +               goto close_prog;
-
-You are not really checking much here.
-
-Why don't you check that the value was set to 42 here? Consider also
-using big global variables as your key and value. You can specify them
-from user-space with BPF skeleton easily to any custom value (not just
-zeroes).
-
-
-> +
-> +close_prog:
-> +       bpf_object__close(obj);
-> +}
-
-[...]
+>
+> jirka
+>
+> >
+> >
+> > >  tools/lib/bpf/bpf.c      | 12 +++++++
+> > >  tools/lib/bpf/bpf.h      |  1 +
+> > >  tools/lib/bpf/libbpf.c   | 76 +++++++++++++++++++++++++++++++++++++++-
+> > >  tools/lib/bpf/libbpf.h   |  5 ++-
+> > >  tools/lib/bpf/libbpf.map |  1 +
+> > >  5 files changed, 93 insertions(+), 2 deletions(-)
+> > >
+> >
+> > [...]
+> >
+>
