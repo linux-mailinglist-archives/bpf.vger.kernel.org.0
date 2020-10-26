@@ -2,88 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93860299827
-	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 21:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF58D29987F
+	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 22:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389152AbgJZUpD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 16:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41256 "EHLO mail.kernel.org"
+        id S1729515AbgJZVDm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 17:03:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389145AbgJZUpD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:45:03 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729508AbgJZVDm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:03:42 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 406002070E;
-        Mon, 26 Oct 2020 20:45:01 +0000 (UTC)
-Date:   Mon, 26 Oct 2020 16:44:59 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 18EE72076D;
+        Mon, 26 Oct 2020 21:03:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603746221;
+        bh=OZnv8+PjDr0EFxf38kgdpGPhhv077FnV6tC8I5FI3EI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=zPARCHdA9ue578l2WNv3HF5JQC66D+2G1czAaiUWHuljt43wVHu9Ag64RWvezDW5S
+         96QhQmAsHFlZfscCcGj7/BKu6q28YWewp7nWSScDPjVBtaxMkKtwKLm6knI2CKKcAt
+         nMNlKljZpXWPhqWmn7Ho1uzZPEqQmeLNMj50ILXk=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        David Miller <davem@davemloft.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
- rcuidle tracepoints
-Message-ID: <20201026164459.1d514d0a@gandalf.local.home>
-In-Reply-To: <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
-References: <20201023195352.26269-1-mjeanson@efficios.com>
-        <20201023195352.26269-7-mjeanson@efficios.com>
-        <20201023211359.GC3563800@google.com>
-        <20201026082010.GC2628@hirez.programming.kicks-ass.net>
-        <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: suppress -Wcast-function-type warning
+Date:   Mon, 26 Oct 2020 22:03:20 +0100
+Message-Id: <20201026210332.3885166-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> I agree with Peter. Removing the trace_.*_rcuidle weirdness from the tracepoint
-> API and fixing all callers to ensure they trace from a context where RCU is
-> watching would simplify instrumentation of the Linux kernel, thus making it harder
-> for subtle bugs to hide and be unearthed only when tracing is enabled. This is
+Building with -Wextra shows lots of warnings in the bpf
+code such as
 
-Note, the lockdep RCU checking of a tracepoint is outside of it being
-enabled or disable. So if a non rcuidle() tracepoint is in a location that
-RCU is not watching, it will complain loudly, even if you don't enable that
-tracepoint.
+kernel/bpf/verifier.c: In function ‘jit_subprogs’:
+include/linux/filter.h:345:4: warning: cast between incompatible function types from ‘unsigned int (*)(const void *, const struct bpf_insn *)’ to ‘u64 (*)(u64,  u64,  u64,  u64,  u64)’ {aka ‘long long unsigned int (*)(long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int,  long long unsigned int)’} [-Wcast-function-type]
+  345 |   ((u64 (*)(u64, u64, u64, u64, u64))(x))
+      |    ^
+kernel/bpf/verifier.c:10706:16: note: in expansion of macro ‘BPF_CAST_CALL’
+10706 |    insn->imm = BPF_CAST_CALL(func[subprog]->bpf_func) -
+      |                ^~~~~~~~~~~~~
 
-> AFAIU the general approach Thomas Gleixner has been aiming for recently, and I
-> think it is a good thing.
-> 
-> So if we consider this our target, and that the current state of things is that
-> we need to have RCU watching around callback invocation, then removing the
-> dependency on SRCU seems like an overall simplification which does not regress
-> feature-wise nor speed-wise compared with what we have upstream today. The next
-> steps would then be to audit all rcuidle tracepoints and make sure the context
-> where they are placed has RCU watching already, so we can remove the tracepoint
+This appears to be intentional, so change the cast in a way that
+suppresses the warning.
 
-Just remove the _rcuidle() from them, and lockdep will complain if they are
-being called without RCU watching.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/filter.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- Steve
-
-
-> rcuidle API. That would effectively remove the calls to rcu_irq_{enter,exit}_irqson
-> from the tracepoint code.
-> 
-> This is however beyond the scope of the proposed patch set.
-> 
-> Thanks,
-> 
-> Mathieu
-> 
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 1b62397bd124..20ba04583eaa 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -342,7 +342,7 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+ /* Function call */
+ 
+ #define BPF_CAST_CALL(x)					\
+-		((u64 (*)(u64, u64, u64, u64, u64))(x))
++		((u64 (*)(u64, u64, u64, u64, u64))(uintptr_t)(x))
+ 
+ #define BPF_EMIT_CALL(FUNC)					\
+ 	((struct bpf_insn) {					\
+-- 
+2.27.0
 
