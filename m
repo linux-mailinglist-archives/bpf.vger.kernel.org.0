@@ -2,90 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFC529880B
-	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 09:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F812988B9
+	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 09:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771259AbgJZIKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 04:10:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48845 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1771253AbgJZIKw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 26 Oct 2020 04:10:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603699850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AJnXwmLIksLwIfYM1G6H+JTSIVXaTXvTLIO1g2gy9ew=;
-        b=eBUnjqgDzkvvCjt/tHp0NhkCVyDw2BSVgq8JYodK+KrVQVM8sPnJ4yt1ndMOsUtY5qHFvf
-        hYoiq/KoPA+ka+yaOnLN12S+ncKnix4WF0uecZQnmyjQQDlaosBaUKbNW2qjrF9I0QbFo4
-        6HuEuiNITaUJjsSTp8fYWiTeAZX5TPo=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-4wRTpRKHNhKPJoO4WdCi2w-1; Mon, 26 Oct 2020 04:10:48 -0400
-X-MC-Unique: 4wRTpRKHNhKPJoO4WdCi2w-1
-Received: by mail-pf1-f199.google.com with SMTP id 203so2168941pfx.10
-        for <bpf@vger.kernel.org>; Mon, 26 Oct 2020 01:10:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AJnXwmLIksLwIfYM1G6H+JTSIVXaTXvTLIO1g2gy9ew=;
-        b=O8dao0u6bZDKIP0n2QwxBCgNgUeSM8g6dGM3wZVqKmpnqsh/MaPNwS8fFope8O59gx
-         orKTP4TASb7I8yYn+teieKZd8Ox1MPmk25qglrYwALlqH5m3ztujJeqyaFwzDhHgykH7
-         lxxh7U3Vlad3T9MeoijXGeXNsDtf+yIU9n74uel9Zmig3N1qeLe4atWxlTNcWv2dcB9k
-         XNTfRwy3D1th15tbRSQm2OHCFS24muaIYKVvsbkgmzXZTcZzooYI0NVpKMum9rmv+TnL
-         +XC67Ifak7XJ4DACrNztZ6OME5N2/2tqrLJkg0P7nF0ogHYXQrAG6p2kp/6SkyZtEVvO
-         ugWg==
-X-Gm-Message-State: AOAM5302FiY40vUOs4dEKY9PPBASHctI4R5hqMUAuaVWmXFIYvrYm5y5
-        VS5mxOIaSYbKK5JX4VtHscnHGeHiH6mM3poapLHNqP00l6gJfTL10W6ijcR3DPfYoocMF8VtJXI
-        9WtxMZjVRD8g=
-X-Received: by 2002:a62:30c2:0:b029:15c:77c7:4687 with SMTP id w185-20020a6230c20000b029015c77c74687mr12902358pfw.19.1603699847323;
-        Mon, 26 Oct 2020 01:10:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlS+pWF9Mjtc8Sm9XigHDfYnODfGwSv55cE+RivEdR5IgUPym7g+odJVaH4FPxfitbeCWC0A==
-X-Received: by 2002:a62:30c2:0:b029:15c:77c7:4687 with SMTP id w185-20020a6230c20000b029015c77c74687mr12902332pfw.19.1603699847014;
-        Mon, 26 Oct 2020 01:10:47 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z21sm11091085pfr.43.2020.10.26.01.10.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 01:10:46 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 16:10:34 +0800
-From:   Hangbin Liu <haliu@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
+        id S1772048AbgJZIpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 04:45:51 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:46928 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1771224AbgJZIpv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 04:45:51 -0400
+X-Greylist: delayed 1517 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 04:45:51 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cG+bUw0htssS2VsM1tSm5/tJVv+7Iw86NvNGo250wAA=; b=b2Jg5WMEQkbZCXLmYMhmlHHGD0
+        i0wezkUlu8euA7C3i2l6BEyNR+Rvd9yXt2Gi2xU83cNxNkLuIMgdipp7/bU3SQs4dWi1jCAbIu7lM
+        C/wcBsh2JqIVv2iIIFP9QTKo98vhcZnUap3lPxPWCQ0yn2XH8Bb32SuF0hMvpnWguLjEZNa/mmuze
+        Fpl/ZJFgwddm2cJ6/vlI5ZnRRnIOafcwoSdE4NBPojQDX51UGO47kKX23tdMytouXJolVVCkJvq2a
+        UjNGewtz2ZPHOwXqRt2sPujjEOqzwWNNlmWPo3uKGuHVFpIfOrF2/hmIg9rgGDWF0xIdUbVfXf93X
+        fAR5oAWw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kWxjh-00070s-OX; Mon, 26 Oct 2020 08:20:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9853A301179;
+        Mon, 26 Oct 2020 09:20:10 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5E077214ECD42; Mon, 26 Oct 2020 09:20:10 +0100 (CET)
+Date:   Mon, 26 Oct 2020 09:20:10 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        Steven Rostedt <rostedt@goodmis.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH iproute2-next 3/5] lib: add libbpf support
-Message-ID: <20201026081034.GD2408@dhcp-12-153.nay.redhat.com>
-References: <20201023033855.3894509-1-haliu@redhat.com>
- <20201023033855.3894509-4-haliu@redhat.com>
- <CAEf4BzbPW8itEQjR=DsjJbtoUFWjiC1WC7F=9x_u4ddSAkZPhg@mail.gmail.com>
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
+ rcuidle tracepoints
+Message-ID: <20201026082010.GC2628@hirez.programming.kicks-ass.net>
+References: <20201023195352.26269-1-mjeanson@efficios.com>
+ <20201023195352.26269-7-mjeanson@efficios.com>
+ <20201023211359.GC3563800@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbPW8itEQjR=DsjJbtoUFWjiC1WC7F=9x_u4ddSAkZPhg@mail.gmail.com>
+In-Reply-To: <20201023211359.GC3563800@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 05:21:20PM -0700, Andrii Nakryiko wrote:
-> > +       obj = bpf_object__open_file(cfg->object, &open_opts);
-> > +       if (IS_ERR_OR_NULL(obj))
+On Fri, Oct 23, 2020 at 05:13:59PM -0400, Joel Fernandes wrote:
+> On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
+> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > 
+> > Considering that tracer callbacks expect RCU to be watching (for
+> > instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
+> > rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
+> > no point in using SRCU anymore given that rcuidle tracepoints need to
+> > ensure RCU is watching. Therefore, simply use sched-RCU like normal
+> > tracepoints for rcuidle tracepoints.
 > 
-> libbpf defines libbpf_get_error() to check that the returned pointer
-> is not encoding error, you shouldn't need to define your IS_ERR
-> macros.
+> High level question:
+> 
+> IIRC, doing this increases overhead for general tracing that does not use
+> perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
+> tracepoints. I remember adding SRCU because of this reason.
+> 
+> Can the 'rcuidle' information not be pushed down further, such that perf does
+> it because it requires RCU to be watching, so that it does not effect, say,
+> trace events?
 
-Thanks for this tip, I will fix it in next version.
-
-Hangbin
-
+There's very few trace_.*_rcuidle() users left. We should eradicate them
+and remove the option. It's bugs to begin with.
