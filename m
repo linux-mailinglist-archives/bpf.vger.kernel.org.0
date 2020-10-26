@@ -2,122 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78AA298F43
-	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 15:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFB5298F55
+	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 15:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781433AbgJZO2J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 10:28:09 -0400
-Received: from mail.efficios.com ([167.114.26.124]:52272 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781431AbgJZO2J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:28:09 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 333A8241008;
-        Mon, 26 Oct 2020 10:28:08 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Xg14e8EdwAjX; Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B696B240EA5;
-        Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B696B240EA5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603722487;
-        bh=b+GvRyxbmnlNapP2hfxVxVrD6YKJjDQAOCHDyfDeiQM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=vGsTu2H3JKJdzT8unx9/Fv4fVOf456LViyeWlMNx7UwqsFUquU4lfXmFtACDtQ3/J
-         miTb+yJ6YY7x+zlBpZoV/j7xlWrE5y83SKAX3WHCTgObaYMc1CjIYCVWxA3Lf7d10T
-         l5e7NMPDBzTixdEHrITvBwUCRsqhKW2Db77Ms0LtgJNNg8sO/b9LSaniK8b17Wg7ko
-         eJs7BnJB9GcHiiF/2aHoC9mTmbdJKiHdlK/ndo9hHq6MjaLdtJMhGF8FjzBnmfpFCM
-         5c761C+1Fx2AncVEVef3SDuGUd4AB/xxprSfe3vLnp/V1CYTCffLMleWUyzQNgty0Q
-         0T3g4sF2sROuw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id tcJv_BKkx5ct; Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A226A240D1F;
-        Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-Date:   Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Cc:     Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201026082010.GC2628@hirez.programming.kicks-ass.net>
-References: <20201023195352.26269-1-mjeanson@efficios.com> <20201023195352.26269-7-mjeanson@efficios.com> <20201023211359.GC3563800@google.com> <20201026082010.GC2628@hirez.programming.kicks-ass.net>
-Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
- rcuidle tracepoints
+        id S1781514AbgJZOan (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 10:30:43 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:43911 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781510AbgJZOan (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:30:43 -0400
+Received: by mail-ot1-f65.google.com with SMTP id k68so8129752otk.10;
+        Mon, 26 Oct 2020 07:30:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=+62REvLl90oSoyuDks7xdfiXCVRonn7cl65cbO1ln/E=;
+        b=JnQ0MIpC39NGj7T4hBFlbdnbI8BIWOudxMb9DwRB+2vErYWqGaeDk6rew3qbtnq6zE
+         xTQK3COatM2HRhx7Xj9lHlrGrcm71hnK8BNlqHvJIskesC/YoT/AlMOcjB5nyYP/qEr5
+         nGqst5eVhCd7URgCMzm/Z1ajkuwlpxD5SqPAKMFSs8E/vhjMV8gwqMpNkgRp9Bp6Xpn4
+         RRyiGkWI03aSsA5qqbLzT5bAviyyV57u+uzzZa6LYP23zz1MUbbGQTIEtIrCFOljySFY
+         9LUzk5kBx9rPqA30qiWylDiDgAPXMjP9b5T3y/ZQo5jB7TcU7uUb3usgvmVod9XA6i/4
+         aeSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=+62REvLl90oSoyuDks7xdfiXCVRonn7cl65cbO1ln/E=;
+        b=iMxpJoL3xGlJWe9fCAkw24Z183mbIYd+7RyuQdsh6cPdOspTKXn1hCDi2vp1rWUyAy
+         e8rd8yiNDtMp9Df9KMNJxunQ02g2ONkTN3e/fkhMG37Td8RL/0sGY9BUj+n6gbKy6EGl
+         z7A2cDAO5+Dm2la8NgQK6WvHN3lTDG76+x+kPlNeaQ1HcK7ooPXvFKRItsgE2wGGlpFw
+         20HpOGYoE2acRxVruARID/EaZKvxBA8AJyWytISZpmq767jNGUeKuJw4w7tmU1cFD4uU
+         69RxQO50mFc+rw/y/iSHtPW3OVeyN8V80ft5/EKgXxLbacJQrFxaeSpVkTQnKL+ilRKC
+         iLIw==
+X-Gm-Message-State: AOAM5316PNo3JKV79GREk3Sr8ZPa2mzYVfqSbC2UcN9L/at3LWAeD4qI
+        AAtCm+MNej5yse5c58OWJRtw4CpFcq3Dz5T5ZuPLhkfL4gI=
+X-Google-Smtp-Source: ABdhPJwW15tzyEC/krpp35iEMIIcjSyagUOGYZYuoOMQvqf+nEg1onUBKRqqUolszW2AyHG3hi9a91s1aH2f5EGSzME=
+X-Received: by 2002:a05:6830:22eb:: with SMTP id t11mr13557647otc.114.1603722641926;
+ Mon, 26 Oct 2020 07:30:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: tracing: use sched-RCU instead of SRCU for rcuidle tracepoints
-Thread-Index: He6ZVtkzgwO4+WmVRRp7McQ4EPG+Cw==
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com> <20201026135418.GN1884107@cisco>
+In-Reply-To: <20201026135418.GN1884107@cisco>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Mon, 26 Oct 2020 15:30:29 +0100
+Message-ID: <CAKgNAkgbvuEJ0rkLrZGgCf0OTC8YH2vxemNic8SsDxjh=Z22uw@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
------ On Oct 26, 2020, at 4:20 AM, Peter Zijlstra peterz@infradead.org wrote:
+Hi Tycho,
 
-> On Fri, Oct 23, 2020 at 05:13:59PM -0400, Joel Fernandes wrote:
->> On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
->> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> > 
->> > Considering that tracer callbacks expect RCU to be watching (for
->> > instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
->> > rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
->> > no point in using SRCU anymore given that rcuidle tracepoints need to
->> > ensure RCU is watching. Therefore, simply use sched-RCU like normal
->> > tracepoints for rcuidle tracepoints.
->> 
->> High level question:
->> 
->> IIRC, doing this increases overhead for general tracing that does not use
->> perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
->> tracepoints. I remember adding SRCU because of this reason.
->> 
->> Can the 'rcuidle' information not be pushed down further, such that perf does
->> it because it requires RCU to be watching, so that it does not effect, say,
->> trace events?
-> 
-> There's very few trace_.*_rcuidle() users left. We should eradicate them
-> and remove the option. It's bugs to begin with.
+Thanks for getting back to me.
 
-I agree with Peter. Removing the trace_.*_rcuidle weirdness from the tracepoint
-API and fixing all callers to ensure they trace from a context where RCU is
-watching would simplify instrumentation of the Linux kernel, thus making it harder
-for subtle bugs to hide and be unearthed only when tracing is enabled. This is
-AFAIU the general approach Thomas Gleixner has been aiming for recently, and I
-think it is a good thing.
+On Mon, 26 Oct 2020 at 14:54, Tycho Andersen <tycho@tycho.pizza> wrote:
+>
+> On Mon, Oct 26, 2020 at 10:55:04AM +0100, Michael Kerrisk (man-pages) wrote:
+> > Hi all (and especially Tycho and Sargun),
+> >
+> > Following review comments on the first draft (thanks to Jann, Kees,
+> > Christian and Tycho), I've made a lot of changes to this page.
+> > I've also added a few FIXMEs relating to outstanding API issues.
+> > I'd like a second pass review of the page before I release it.
+> > But also, this mail serves as a way of noting the outstanding API
+> > issues.
+> >
+> > Tycho: I still have an outstanding question for you at [2].
+> > [2] https://lore.kernel.org/linux-man/8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com/
+>
+> I don't have that thread in my inbox any more, but I can reply here:
+> no, I don't know any users of this info, but I also don't anticipate
+> knowing how people will all use this feature :)
 
-So if we consider this our target, and that the current state of things is that
-we need to have RCU watching around callback invocation, then removing the
-dependency on SRCU seems like an overall simplification which does not regress
-feature-wise nor speed-wise compared with what we have upstream today. The next
-steps would then be to audit all rcuidle tracepoints and make sure the context
-where they are placed has RCU watching already, so we can remove the tracepoint
-rcuidle API. That would effectively remove the calls to rcu_irq_{enter,exit}_irqson
-from the tracepoint code.
+Yes, but my questions were:
 
-This is however beyond the scope of the proposed patch set.
+[[
+[1] So, I think maybe I now understand what you intended with setting
+POLLOUT: the notification has been received ("read") and now the
+FD can be used to NOTIFY_SEND ("write") a response. Right?
+
+[2] If that's correct, I don't have a problem with it. I just wonder:
+is it useful? IOW: are there situations where the process doing the
+NOTIFY_SEND might want to test for POLLOUT because the it doesn't
+know whether a NOTIFY_RECV has occurred?
+]]
+
+So, do I understand right in [1]? (The implication from your reply is
+yes, but I want to be sure...)
+
+For [2], my question was not about users, but *use cases*. The
+question I asked myself is: why does the feature exist? Hence my
+question [2] reworded: "when you designed this, did you have in mind
+scenarios here the process doing the NOTIFY_SEND might need to test
+for POLLOUT because it doesn't know whether a NOTIFY_RECV has
+occurred?"
 
 Thanks,
 
-Mathieu
+Michael
+
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
