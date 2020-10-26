@@ -2,90 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B3B29997D
-	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 23:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BF8299982
+	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 23:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393148AbgJZWUd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 18:20:33 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:45931 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393132AbgJZWUc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 26 Oct 2020 18:20:32 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-226-CxmIqS_MMd6bNjgoAN5dHg-1; Mon, 26 Oct 2020 22:20:28 +0000
-X-MC-Unique: CxmIqS_MMd6bNjgoAN5dHg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 26 Oct 2020 22:20:27 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 26 Oct 2020 22:20:27 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        David Miller <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] bpf: suppress -Wcast-function-type warning
-Thread-Topic: [PATCH] bpf: suppress -Wcast-function-type warning
-Thread-Index: AQHWq9uAWK+UHblJmEuANCC8GziLxqmqc8OQ
-Date:   Mon, 26 Oct 2020 22:20:27 +0000
-Message-ID: <0f6785599a2f4903bd65c5e498b9a197@AcuMS.aculab.com>
-References: <20201026210332.3885166-1-arnd@kernel.org>
-In-Reply-To: <20201026210332.3885166-1-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S2393335AbgJZWV7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 18:21:59 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:34384 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392831AbgJZWV6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 18:21:58 -0400
+Received: by mail-yb1-f194.google.com with SMTP id o70so9029428ybc.1;
+        Mon, 26 Oct 2020 15:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BTw89jH44ZNymuvHm6SIrFy7eskw2jT7W9hmnpvtaBs=;
+        b=O5w3U2jvbkSIy3PN9hi4QpMnUEqNwwYd1WlVlUlSjZhV9UqeSf5N4qGFc5j5r7EqZq
+         q1asT+skC0OQRokoaGKrJgGg/g5A66ShyqBE8UE0hkMfElYF8AUAtmkYmELhdax6UxLM
+         h0DhrL4hEqRoVDkNIGCjncnpUoKgMG/okrhtViHEOXSRASZ3qLUEauHgEkD2LYmEKWuO
+         aHMAbQFbkuPQxGpOUNe+IPqrT4B5CbUQ84kR8RIfqqTGf+jxBlWJ8u9MVchfPNUhonFA
+         v062Nm373HYv9IhYPpdKYqjBOlubkqB4+WQvnFmiSkXdFyUEawz/aW/xBntoGjUfVmNY
+         c0KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BTw89jH44ZNymuvHm6SIrFy7eskw2jT7W9hmnpvtaBs=;
+        b=b6Q8FSnVKCLtn48EDWx0EllXXzn2przG04T3X8t9hklxqb7wrJ6sYn/VJnesLO5X6t
+         5qODBnA9f2rLFJVqAalKImhDqNhem7bUBePO0wPRBEWZ1yvG1wtrRi7CkL+mpK7WNtA2
+         Rwam5a6TD3wbeH3+zcEF4pWd6bwDfEk8vZV7P1ikWNw8EJu9pTOmEvfkYNhDAUPKcjLH
+         zquqDnJuPft+AukPT4HGE5JAvnJ+FOiHP1kEVSesZIG5pmPPLEMLFju1y8cgK04WXejl
+         Swv1BLytpsgdKpDCIWnmmQoBYGCYvJ2Qkbbi2fnNUwHVPOtv6KihpJwEbI5MGlwZZPCI
+         gH5g==
+X-Gm-Message-State: AOAM5312fNBJYcObuVCWHKyK74Ps2n45rATBzFP1lysheIhwpmldQWtJ
+        mP8SJ4+j+cSV6B1EXSDZji+pRLjOYKDX8RGRqGEuqF7bH+tsKg==
+X-Google-Smtp-Source: ABdhPJy9NQBEHxMI15PKklrhwj2CYIVPRMYhu/kHcIsiFxGqzhJ/6wWEgoEp4augi3eron2GFv/lt3N8mYbnsmk9vQE=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr27176366ybe.403.1603750917686;
+ Mon, 26 Oct 2020 15:21:57 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20201026162110.3710415-1-arnd@kernel.org>
+In-Reply-To: <20201026162110.3710415-1-arnd@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 26 Oct 2020 15:21:46 -0700
+Message-ID: <CAEf4BzaAaB8yR17JjyW9m9H3duvEhR+NdA9u8=1w+zFzC0gQxA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: fix -Wshadow warnings
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAyNiBPY3RvYmVyIDIwMjAgMjE6MDMNCj4gDQo+
-IEZyb206IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+DQo+IA0KPiBCdWlsZGluZyB3aXRo
-IC1XZXh0cmEgc2hvd3MgbG90cyBvZiB3YXJuaW5ncyBpbiB0aGUgYnBmDQo+IGNvZGUgc3VjaCBh
-cw0KPiANCj4ga2VybmVsL2JwZi92ZXJpZmllci5jOiBJbiBmdW5jdGlvbiDigJhqaXRfc3VicHJv
-Z3PigJk6DQo+IGluY2x1ZGUvbGludXgvZmlsdGVyLmg6MzQ1OjQ6IHdhcm5pbmc6IGNhc3QgYmV0
-d2VlbiBpbmNvbXBhdGlibGUgZnVuY3Rpb24gdHlwZXMgZnJvbSDigJh1bnNpZ25lZCBpbnQNCj4g
-KCopKGNvbnN0IHZvaWQgKiwgY29uc3Qgc3RydWN0IGJwZl9pbnNuICop4oCZIHRvIOKAmHU2NCAo
-KikodTY0LCAgdTY0LCAgdTY0LCAgdTY0LCAgdTY0KeKAmSB7YWthIOKAmGxvbmcgbG9uZw0KPiB1
-bnNpZ25lZCBpbnQgKCopKGxvbmcgbG9uZyB1bnNpZ25lZCBpbnQsICBsb25nIGxvbmcgdW5zaWdu
-ZWQgaW50LCAgbG9uZyBsb25nIHVuc2lnbmVkIGludCwgIGxvbmcgbG9uZw0KPiB1bnNpZ25lZCBp
-bnQsICBsb25nIGxvbmcgdW5zaWduZWQgaW50KeKAmX0gWy1XY2FzdC1mdW5jdGlvbi10eXBlXQ0K
-PiAgIDM0NSB8ICAgKCh1NjQgKCopKHU2NCwgdTY0LCB1NjQsIHU2NCwgdTY0KSkoeCkpDQo+ICAg
-ICAgIHwgICAgXg0KPiBrZXJuZWwvYnBmL3ZlcmlmaWVyLmM6MTA3MDY6MTY6IG5vdGU6IGluIGV4
-cGFuc2lvbiBvZiBtYWNybyDigJhCUEZfQ0FTVF9DQUxM4oCZDQo+IDEwNzA2IHwgICAgaW5zbi0+
-aW1tID0gQlBGX0NBU1RfQ0FMTChmdW5jW3N1YnByb2ddLT5icGZfZnVuYykgLQ0KPiAgICAgICB8
-ICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn4NCj4gDQo+IFRoaXMgYXBwZWFycyB0byBiZSBp
-bnRlbnRpb25hbCwgc28gY2hhbmdlIHRoZSBjYXN0IGluIGEgd2F5IHRoYXQNCj4gc3VwcHJlc3Nl
-cyB0aGUgd2FybmluZy4NCg0KSXQgaXMgYWxzbyB1dHRlcmx5IGhvcnJpZC4NCklmIHRoZSB2YWx1
-ZSBpcyBldmVyIGNhc3QgYmFjayB0aGVuIHRoZXJlIGlzIGEgbG90IG9mIHNjb3BlDQpmb3IgaXQg
-Z29pbmcgYmFkbHkgd3Jvbmcgc29tZXdoZXJlLg0KSXQgY2VydGFpbmx5IGlzbid0IHZhbGlkIHRv
-IHVzZSB0aGUgdGFyZ2V0IHR5cGUgdG8gY2FsbCB0aGUgb3JpZ2luYWwgZnVuY3Rpb24uDQoNCglE
-YXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
-bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
-NzM4NiAoV2FsZXMpDQo=
+On Mon, Oct 26, 2020 at 12:37 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> There are thousands of warnings about one macro in a W=2 build:
+>
+> include/linux/filter.h:561:6: warning: declaration of 'ret' shadows a previous local [-Wshadow]
+>
+> Prefix all the locals in that macro with __ to avoid most of
+> these warnings.
+>
+> Fixes: 492ecee892c2 ("bpf: enable program stats")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  include/linux/filter.h | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 954f279fde01..20ba04583eaa 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -558,21 +558,21 @@ struct sk_filter {
+>  DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+>
+>  #define __BPF_PROG_RUN(prog, ctx, dfunc)       ({                      \
+> -       u32 ret;                                                        \
+> +       u32 __ret;                                                      \
+>         cant_migrate();                                                 \
+>         if (static_branch_unlikely(&bpf_stats_enabled_key)) {           \
+> -               struct bpf_prog_stats *stats;                           \
+> -               u64 start = sched_clock();                              \
+> -               ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);     \
+> -               stats = this_cpu_ptr(prog->aux->stats);                 \
+> -               u64_stats_update_begin(&stats->syncp);                  \
+> -               stats->cnt++;                                           \
+> -               stats->nsecs += sched_clock() - start;                  \
+> -               u64_stats_update_end(&stats->syncp);                    \
+> +               struct bpf_prog_stats *__stats;                         \
+> +               u64 __start = sched_clock();                            \
+> +               __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
+> +               __stats = this_cpu_ptr(prog->aux->stats);               \
+> +               u64_stats_update_begin(&__stats->syncp);                \
+> +               __stats->cnt++;                                         \
+> +               __stats->nsecs += sched_clock() - __start;              \
+> +               u64_stats_update_end(&__stats->syncp);                  \
+>         } else {                                                        \
+> -               ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);     \
+> +               __ret = dfunc(ctx, (prog)->insnsi, (prog)->bpf_func);   \
+>         }                                                               \
+> -       ret; })
+> +       __ret; })
+>
+>  #define BPF_PROG_RUN(prog, ctx)                                                \
+>         __BPF_PROG_RUN(prog, ctx, bpf_dispatcher_nop_func)
+> --
+> 2.27.0
+>
