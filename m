@@ -2,155 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F08299AB5
-	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 00:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84342299FE3
+	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 01:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407170AbgJZXgm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 19:36:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48550 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2407157AbgJZXgm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 26 Oct 2020 19:36:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603755400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Aw1C3SX8MwtokG3KPK8WvRy0mlIpK2ccLFmN/0ezULg=;
-        b=LuPu/vWJoVRodXSP2LApmJA1HMsye1Ho26Z4ELMx7fmFpTkvhpRY2MgkZ5SDp0KCELkroh
-        k0I6RRlCFPzf0oKYSFa4Ng6VpveQGTc7r2RDLP5s+3/uB9sP/RLfp8/J5Si0C36X0hWRpu
-        W4BQ25pykD+iAKh3lFqFOHcq7V48yo0=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-Srn8kJOEOqywgHF0unrXHQ-1; Mon, 26 Oct 2020 19:36:38 -0400
-X-MC-Unique: Srn8kJOEOqywgHF0unrXHQ-1
-Received: by mail-io1-f70.google.com with SMTP id k13so6981192iok.12
-        for <bpf@vger.kernel.org>; Mon, 26 Oct 2020 16:36:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Aw1C3SX8MwtokG3KPK8WvRy0mlIpK2ccLFmN/0ezULg=;
-        b=aUzw8wHxTC+M44RHAOEUb8rlU2/dX0p/0UMaG5ck5gQLyK+tt8kNPzLZJGJyLrUzur
-         3JBmb7lDO0Wb6Fa1JI248PX3oSCujJOtQRUvzd/jayzWLxFOrxKjDdNrkf1tRqw9Oc++
-         ECzR03YDkyduWKSqWdGgi8bkZD9dOF8Wc8eBUjY97GcPIqqK1nihzrEpuy+JFfgaN9ZC
-         U1lqCU3FqXA6y+Iu+eWckYK2Rzm4mQOt4D8dCC9XwN/MimnbUAVNNz13Gz2elLUzeQ1i
-         PYhRUC6hNikmGeo7GsCn+pyZhm0noulgPDKHZ9S5TwlDYLzlidU9gNZlFvsz4pkMfOGz
-         INmA==
-X-Gm-Message-State: AOAM5312GJw0YIwnFZUmcuqA4pky9eMULNR3bKbJARsgLVVEnfaJ/g9X
-        Wu9Mdwa4acOBy2rwx5QQm8qBMlXZ4j+IOCrNf6GUjFCX7hT5SuZZy4CEzfap94z2CfL+L5KJKHC
-        jmzHucqzvB6V4
-X-Received: by 2002:a92:8742:: with SMTP id d2mr12988629ilm.153.1603755397711;
-        Mon, 26 Oct 2020 16:36:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHqQK3o+vUOW+FCj6F4hqe/Yu+gQQs5ZAQqnqHW1/7nCVMTu8A7UdbzysD2E6mDne9pR90vw==
-X-Received: by 2002:a92:8742:: with SMTP id d2mr12988618ilm.153.1603755397381;
-        Mon, 26 Oct 2020 16:36:37 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id g9sm3457470iob.1.2020.10.26.16.36.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 16:36:36 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CEE31181CED; Tue, 27 Oct 2020 00:36:34 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, brouer@redhat.com
-Subject: [PATCH bpf] samples/bpf: Set rlimit for memlock to infinity in all samples
-Date:   Tue, 27 Oct 2020 00:36:23 +0100
-Message-Id: <20201026233623.91728-1-toke@redhat.com>
-X-Mailer: git-send-email 2.29.0
+        id S2409979AbgJZXxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409972AbgJZXxL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:11 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDFB22151B;
+        Mon, 26 Oct 2020 23:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603756389;
+        bh=lBTaitZwC3DCh27k3l38N89/0TU95O7CiRGAQNlNUdc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hc2MqyvQma7Eyi++QFkJAQZsDg3fwR9BqWh7ms7fxzVR/qDTvKnusOfDlJW6JwmRV
+         kscV9c2kFR++8Am3Y6SSXg6BIXhTEMKnTXgLG9+m7pIiMON6UsNjN+nEm+Y/2vXfqC
+         4ZRI+nCOP0L8qFlGmo6HNtfNjWgrCzUxz6+n3A8s=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 5.8 052/132] bpf: Permit map_ptr arithmetic with opcode add and offset 0
+Date:   Mon, 26 Oct 2020 19:50:44 -0400
+Message-Id: <20201026235205.1023962-52-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
+References: <20201026235205.1023962-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The memlock rlimit is a notorious source of failure for BPF programs. Most
-of the samples just set it to infinity, but a few used a lower limit. The
-problem with unconditionally setting a lower limit is that this will also
-override the limit if the system-wide setting is *higher* than the limit
-being set, which can lead to failures on systems that lock a lot of memory,
-but set 'ulimit -l' to unlimited before running a sample.
+From: Yonghong Song <yhs@fb.com>
 
-One fix for this is to only conditionally set the limit if the current
-limit is lower, but it is simpler to just unify all the samples and have
-them all set the limit to infinity.
+[ Upstream commit 7c6967326267bd5c0dded0a99541357d70dd11ac ]
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Commit 41c48f3a98231 ("bpf: Support access
+to bpf map fields") added support to access map fields
+with CORE support. For example,
+
+            struct bpf_map {
+                    __u32 max_entries;
+            } __attribute__((preserve_access_index));
+
+            struct bpf_array {
+                    struct bpf_map map;
+                    __u32 elem_size;
+            } __attribute__((preserve_access_index));
+
+            struct {
+                    __uint(type, BPF_MAP_TYPE_ARRAY);
+                    __uint(max_entries, 4);
+                    __type(key, __u32);
+                    __type(value, __u32);
+            } m_array SEC(".maps");
+
+            SEC("cgroup_skb/egress")
+            int cg_skb(void *ctx)
+            {
+                    struct bpf_array *array = (struct bpf_array *)&m_array;
+
+                    /* .. array->map.max_entries .. */
+            }
+
+In kernel, bpf_htab has similar structure,
+
+	    struct bpf_htab {
+		    struct bpf_map map;
+                    ...
+            }
+
+In the above cg_skb(), to access array->map.max_entries, with CORE, the clang will
+generate two builtin's.
+            base = &m_array;
+            /* access array.map */
+            map_addr = __builtin_preserve_struct_access_info(base, 0, 0);
+            /* access array.map.max_entries */
+            max_entries_addr = __builtin_preserve_struct_access_info(map_addr, 0, 0);
+	    max_entries = *max_entries_addr;
+
+In the current llvm, if two builtin's are in the same function or
+in the same function after inlining, the compiler is smart enough to chain
+them together and generates like below:
+            base = &m_array;
+            max_entries = *(base + reloc_offset); /* reloc_offset = 0 in this case */
+and we are fine.
+
+But if we force no inlining for one of functions in test_map_ptr() selftest, e.g.,
+check_default(), the above two __builtin_preserve_* will be in two different
+functions. In this case, we will have code like:
+   func check_hash():
+            reloc_offset_map = 0;
+            base = &m_array;
+            map_base = base + reloc_offset_map;
+            check_default(map_base, ...)
+   func check_default(map_base, ...):
+            max_entries = *(map_base + reloc_offset_max_entries);
+
+In kernel, map_ptr (CONST_PTR_TO_MAP) does not allow any arithmetic.
+The above "map_base = base + reloc_offset_map" will trigger a verifier failure.
+  ; VERIFY(check_default(&hash->map, map));
+  0: (18) r7 = 0xffffb4fe8018a004
+  2: (b4) w1 = 110
+  3: (63) *(u32 *)(r7 +0) = r1
+   R1_w=invP110 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
+  ; VERIFY_TYPE(BPF_MAP_TYPE_HASH, check_hash);
+  4: (18) r1 = 0xffffb4fe8018a000
+  6: (b4) w2 = 1
+  7: (63) *(u32 *)(r1 +0) = r2
+   R1_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R2_w=invP1 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
+  8: (b7) r2 = 0
+  9: (18) r8 = 0xffff90bcb500c000
+  11: (18) r1 = 0xffff90bcb500c000
+  13: (0f) r1 += r2
+  R1 pointer arithmetic on map_ptr prohibited
+
+To fix the issue, let us permit map_ptr + 0 arithmetic which will
+result in exactly the same map_ptr.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/20200908175702.2463625-1-yhs@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/task_fd_query_user.c    | 2 +-
- samples/bpf/tracex2_user.c          | 2 +-
- samples/bpf/tracex3_user.c          | 2 +-
- samples/bpf/xdp_redirect_cpu_user.c | 2 +-
- samples/bpf/xdp_rxq_info_user.c     | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ kernel/bpf/verifier.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
-index 4a74531dc403..b68bd2f8fdc9 100644
---- a/samples/bpf/task_fd_query_user.c
-+++ b/samples/bpf/task_fd_query_user.c
-@@ -290,7 +290,7 @@ static int test_debug_fs_uprobe(char *binary_path, long offset, bool is_return)
- 
- int main(int argc, char **argv)
- {
--	struct rlimit r = {1024*1024, RLIM_INFINITY};
-+	struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
- 	extern char __executable_start;
- 	char filename[256], buf[256];
- 	__u64 uprobe_file_offset;
-diff --git a/samples/bpf/tracex2_user.c b/samples/bpf/tracex2_user.c
-index 3e36b3e4e3ef..3d6eab711d23 100644
---- a/samples/bpf/tracex2_user.c
-+++ b/samples/bpf/tracex2_user.c
-@@ -116,7 +116,7 @@ static void int_exit(int sig)
- 
- int main(int ac, char **argv)
- {
--	struct rlimit r = {1024*1024, RLIM_INFINITY};
-+	struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
- 	long key, next_key, value;
- 	struct bpf_link *links[2];
- 	struct bpf_program *prog;
-diff --git a/samples/bpf/tracex3_user.c b/samples/bpf/tracex3_user.c
-index 70e987775c15..83e0fecbb01a 100644
---- a/samples/bpf/tracex3_user.c
-+++ b/samples/bpf/tracex3_user.c
-@@ -107,7 +107,7 @@ static void print_hist(int fd)
- 
- int main(int ac, char **argv)
- {
--	struct rlimit r = {1024*1024, RLIM_INFINITY};
-+	struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_link *links[2];
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
-diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
-index 6fb8dbde62c5..f78cb18319aa 100644
---- a/samples/bpf/xdp_redirect_cpu_user.c
-+++ b/samples/bpf/xdp_redirect_cpu_user.c
-@@ -765,7 +765,7 @@ static int load_cpumap_prog(char *file_name, char *prog_name,
- 
- int main(int argc, char **argv)
- {
--	struct rlimit r = {10 * 1024 * 1024, RLIM_INFINITY};
-+	struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
- 	char *prog_name = "xdp_cpu_map5_lb_hash_ip_pairs";
- 	char *mprog_filename = "xdp_redirect_kern.o";
- 	char *redir_interface = NULL, *redir_map = NULL;
-diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
-index caa4e7ffcfc7..93fa1bc54f13 100644
---- a/samples/bpf/xdp_rxq_info_user.c
-+++ b/samples/bpf/xdp_rxq_info_user.c
-@@ -450,7 +450,7 @@ static void stats_poll(int interval, int action, __u32 cfg_opt)
- int main(int argc, char **argv)
- {
- 	__u32 cfg_options= NO_TOUCH ; /* Default: Don't touch packet memory */
--	struct rlimit r = {10 * 1024 * 1024, RLIM_INFINITY};
-+	struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
- 	struct bpf_prog_load_attr prog_load_attr = {
- 		.prog_type	= BPF_PROG_TYPE_XDP,
- 	};
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 89b07db146763..2b318db54bf39 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5042,6 +5042,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 			dst, reg_type_str[ptr_reg->type]);
+ 		return -EACCES;
+ 	case CONST_PTR_TO_MAP:
++		/* smin_val represents the known value */
++		if (known && smin_val == 0 && opcode == BPF_ADD)
++			break;
++		/* fall-through */
+ 	case PTR_TO_PACKET_END:
+ 	case PTR_TO_SOCKET:
+ 	case PTR_TO_SOCKET_OR_NULL:
 -- 
-2.29.0
+2.25.1
 
