@@ -2,122 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF2B2999D8
-	for <lists+bpf@lfdr.de>; Mon, 26 Oct 2020 23:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D19299A30
+	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 00:08:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394695AbgJZWsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Oct 2020 18:48:04 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:38941 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394693AbgJZWsE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:48:04 -0400
-Received: by mail-yb1-f195.google.com with SMTP id 67so9064508ybt.6;
-        Mon, 26 Oct 2020 15:48:03 -0700 (PDT)
+        id S2395428AbgJZXIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Oct 2020 19:08:12 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:40933 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394676AbgJZXIK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:08:10 -0400
+Received: by mail-yb1-f193.google.com with SMTP id n142so9105921ybf.7;
+        Mon, 26 Oct 2020 16:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PA2hhwrwqtvoOE+FLl+y7isib+ymGtY6avG/tLKX2Xk=;
-        b=aJCbZos+nqsSXDhOpj87YejpT0j5KCVzCavOAn4pxK0wOV5swptqtNjXoISVn0F5ez
-         zu1fIF8KkCddX8aZIrHqPji48zEOcpSVshtT9u0LoNOwDt+FHF+fvWWbmDgHq9FjURzg
-         J6NOdtgsz4Gi9sH5eiY9a1QtZu7dGleQfGYkQ/UUxe9p4XReIGIg2oj6Xa3YxV50N3sS
-         aK86UYCU44CZ3aR+xs8JelKyOimYgBD+19eswAs5bUUBW7oPCS5dv+MyDaYIkK/0a/NO
-         nQKqG87dvbnTJlwSpTy7Prt2/ltqQ0Cn8t9I7iXl1f1hSJXsy9EHML6Vo/8Gd31L+734
-         gqPg==
+        bh=kY3ST5v22Tq7SgipsKGJCPPLOdbub6AVwGCbFCogewY=;
+        b=vevT0upiGembVlwg+p1QaMFmS1TC2tInlZh8A1flekbSfcoGX63Kl/xQAKtuObZnpD
+         9k9wcD0oTwrrtEXIkiae2hDEQeKdlfLpOITaut6uwOMJBNyacCo1bpPA05z2YymW/svo
+         glQzdq9ueZ8ndES1zq+ykrnUOzM/PhkZxahAyozEM4PIZAEKDd7txYnygbIlCn63LDXL
+         91L9FlT7IKB9hZriRFfE03Wz3owor5BVXmznD+vf+13yLwq2twCUCVQS+KKYT7lRUKqn
+         d+BpsFqPrvr5fOI1tsGKYCdqTIiZie1SMQMQWVEhQaQ9sFzqHEMNyTLVLwYecdNUmfAI
+         w1HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PA2hhwrwqtvoOE+FLl+y7isib+ymGtY6avG/tLKX2Xk=;
-        b=akV56xis7vh6kwKoMCyzZ+ymMcfWfIHxm0Tai4fwVS1f05vN+TZBPpcOpcBYBAaCPs
-         uuzFW5bu8wMqJHi21SedF+KTukcSjPyJpNtoulc7KAKcJHZ6On9ON8m3Kv6G892C3P3k
-         e9rP7BIoaZAxSvXpZhMd/9pNKE65VPNnQw4F5kVbHNvSzhxJU4qsP+uCYQgzath4znYx
-         bwua4SllQ6fFP5Uq/Cp5XmU7wmHj1iiU/Ucwy1NysvLoXdaMl5bq+ajzcsC+4LjlIakb
-         KKM4p8jDF4NrM44aY0QQjgdaRtnlEexeeOQ5IfBMQddY9b5NGq6DM6wStySIGEdqR2ax
-         efzQ==
-X-Gm-Message-State: AOAM533273LEobYFqU9xSstD+DzojK9LTE9bUccnZ+8W181t3mfGs0Kh
-        xEVBKCJLdeHLId18nDPcxXopiZgZfWYM8GFFjqnM3/OUf8Q=
-X-Google-Smtp-Source: ABdhPJzqLzSh3NdCaWLdV1qCZnoGLPNbcf+wWI9Pi2IVD2005O92IpCE32wJVXJAXi7STygW/I0SZWVLilCg4kJE6Qk=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr27942447ybk.260.1603752482632;
- Mon, 26 Oct 2020 15:48:02 -0700 (PDT)
+        bh=kY3ST5v22Tq7SgipsKGJCPPLOdbub6AVwGCbFCogewY=;
+        b=LP7+Zt0TW+DXJFCE4iNGIQyIBML/aq9cfvrCz3huXrfxULsRYJkFO51HKIIpFhImQu
+         Ejbm8w36HLDasPGaBX7vGbcemoLzXhnJV/FmcYZulOjlhkemHelL5p1IqluNQ3oAud84
+         tL8c7FBl0PGS9ZZDwHg5hGsluydjlL36zJalQdkMtxNhcxGEsQTSE20TGoJZ6iSQWWLu
+         YNxhBoJPGIJ9WE85sn6FL2oPzWgXNAmZMlF0nPMmYN1lmjYxI0qrYw+5BwEVCd+xwguG
+         P1mkvGVS4ChcQ6M/mz/NEolKbRxy14AWhMmJJaGoisGsyIfo+S7KAGUHziEaPeaYmn7r
+         ffeA==
+X-Gm-Message-State: AOAM5327htnXxNa/7UnhsFY/uN3m4ulmJiEOul2rbWXwyLsvOJw6WY8H
+        UFFbcYuqlkbGufDuOEY59LDCmkkrHuuVm1mawmY=
+X-Google-Smtp-Source: ABdhPJyyu2U9HJJJR8Q1IhRXScEZ9pYS+vZ23fGFqKcAYZ2idP9WC5GQplffi9lsDNffQt505GPAxWH8YJVgnP5r/vc=
+X-Received: by 2002:a25:b0d:: with SMTP id 13mr27714170ybl.347.1603753689534;
+ Mon, 26 Oct 2020 16:08:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201023123754.30304-1-david.verbeiren@tessares.net>
-In-Reply-To: <20201023123754.30304-1-david.verbeiren@tessares.net>
+References: <20201024080541.51683-1-dev@der-flo.net>
+In-Reply-To: <20201024080541.51683-1-dev@der-flo.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 26 Oct 2020 15:47:51 -0700
-Message-ID: <CAEf4BzZaJaYw0tB0R+q3qoQX7=qy3T9jvzf5q=TH++t66wNd-w@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: zero-fill re-used per-cpu map element
-To:     David Verbeiren <david.verbeiren@tessares.net>
+Date:   Mon, 26 Oct 2020 16:07:58 -0700
+Message-ID: <CAEf4BzY-bNN7fx2eAvRBq89pDHptEqoftgSSF=0dv_GgeNACvw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: Lift hashtab key_size limit
+To:     Florian Lehner <dev@der-flo.net>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        john fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 8:48 AM David Verbeiren
-<david.verbeiren@tessares.net> wrote:
+On Sat, Oct 24, 2020 at 7:10 AM Florian Lehner <dev@der-flo.net> wrote:
 >
-> Zero-fill element values for all cpus, just as when not using
-> prealloc. This is the only way the bpf program can ensure known
-> initial values for cpus other than the current one ('onallcpus'
-> cannot be set when coming from the bpf program).
+> Currently key_size of hashtab is limited to MAX_BPF_STACK.
+> As the key of hashtab can also be a value from a per cpu map it can be
+> larger than MAX_BPF_STACK.
 >
-> The scenario is: bpf program inserts some elements in a per-cpu
-> map, then deletes some (or userspace does). When later adding
-> new elements using bpf_map_update_elem(), the bpf program can
-> only set the value of the new elements for the current cpu.
-> When prealloc is enabled, previously deleted elements are re-used.
-> Without the fix, values for other cpus remain whatever they were
-> when the re-used entry was previously freed.
+> The use-case for this patch originates to implement allow/disallow
+> lists for files and file paths. The maximum length of file paths is
+> defined by PATH_MAX with 4096 chars including nul.
+> This limit exceeds MAX_BPF_STACK.
 >
-> Fixes: 6c9059817432 ("bpf: pre-allocate hash map elements")
-> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
+> Changelog:
+>
+> v3:
+>  - Rebase
+>
+> v2:
+>  - Add a test for bpf side
+>
+> Signed-off-by: Florian Lehner <dev@der-flo.net>
 > ---
->  kernel/bpf/hashtab.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+
+You dropped the ack from John, btw.
+
+>  kernel/bpf/hashtab.c                          | 16 +++----
+>  .../selftests/bpf/prog_tests/hash_large_key.c | 28 ++++++++++++
+>  .../selftests/bpf/progs/test_hash_large_key.c | 45 +++++++++++++++++++
+>  tools/testing/selftests/bpf/test_maps.c       |  2 +-
+>  4 files changed, 79 insertions(+), 12 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
 >
 > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 1815e97d4c9c..667553cce65a 100644
+> index 1815e97d4c9c..10097d6bcc35 100644
 > --- a/kernel/bpf/hashtab.c
 > +++ b/kernel/bpf/hashtab.c
-> @@ -836,6 +836,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
->         bool prealloc = htab_is_prealloc(htab);
->         struct htab_elem *l_new, **pl_new;
->         void __percpu *pptr;
-> +       int cpu;
+> @@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+>             attr->value_size == 0)
+>                 return -EINVAL;
 >
->         if (prealloc) {
->                 if (old_elem) {
-> @@ -880,6 +881,17 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
->                 size = round_up(size, 8);
->                 if (prealloc) {
->                         pptr = htab_elem_get_ptr(l_new, key_size);
+> -       if (attr->key_size > MAX_BPF_STACK)
+> -               /* eBPF programs initialize keys on stack, so they cannot be
+> -                * larger than max stack size
+> -                */
+> -               return -E2BIG;
+> -
+> -       if (attr->value_size >= KMALLOC_MAX_SIZE -
+> -           MAX_BPF_STACK - sizeof(struct htab_elem))
+> -               /* if value_size is bigger, the user space won't be able to
+> -                * access the elements via bpf syscall. This check also makes
+> -                * sure that the elem_size doesn't overflow and it's
+> +       if ((attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
+
+key_size+value_size can overflow, can't it? So probably want to cast
+to (size_t) or __u64?
+
+> +           sizeof(struct htab_elem))
+> +               /* if key_size + value_size is bigger, the user space won't be
+> +                * able to access the elements via bpf syscall. This check
+> +                * also makes sure that the elem_size doesn't overflow and it's
+>                  * kmalloc-able later in htab_map_update_elem()
+>                  */
+>                 return -E2BIG;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/hash_large_key.c b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
+> new file mode 100644
+> index 000000000000..962f56060b76
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2020 Florian Lehner
 > +
-> +                       /* zero-fill element values for all cpus, just as when
-> +                        * not using prealloc. Only way for bpf program to
-> +                        * ensure known initial values for cpus other than
-> +                        * current one (onallcpus=false when coming from bpf
-> +                        * prog).
-> +                        */
-> +                       if (!onallcpus)
-> +                               for_each_possible_cpu(cpu)
-> +                                       memset((void *)per_cpu_ptr(pptr, cpu),
-> +                                              0, size);
+> +#include <test_progs.h>
+> +
+> +void test_hash_large_key(void)
+> +{
+> +       const char *file = "./test_hash_large_key.o";
+> +       int prog_fd, map_fd[2];
+> +       struct bpf_object *obj = NULL;
+> +       int err = 0;
+> +
+> +       err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
 
-Technically, you don't have to memset() for the current CPU, right?
-Don't know if extra check is cheaper than avoiding one memset() call,
-though.
+Please utilize the BPF skeleton in the new tests.
 
-But regardless, this 6 level nesting looks pretty bad, maybe move the
-for_each_possible_cpu() loop into a helper function?
+> +       if (CHECK_FAIL(err)) {
+> +               printf("test_hash_large_key: bpf_prog_load errno %d", errno);
+> +               goto close_prog;
+> +       }
+> +
+> +       map_fd[0] = bpf_find_map(__func__, obj, "hash_map");
+> +       if (CHECK_FAIL(map_fd[0] < 0))
+> +               goto close_prog;
+> +       map_fd[1] = bpf_find_map(__func__, obj, "key_map");
+> +       if (CHECK_FAIL(map_fd[1] < 0))
+> +               goto close_prog;
 
-Also, does the per-CPU LRU hashmap need the same treatment?
+You are not really checking much here.
 
->                 } else {
->                         /* alloc_percpu zero-fills */
->                         pptr = __alloc_percpu_gfp(size, 8,
-> --
-> 2.29.0
->
+Why don't you check that the value was set to 42 here? Consider also
+using big global variables as your key and value. You can specify them
+from user-space with BPF skeleton easily to any custom value (not just
+zeroes).
+
+
+> +
+> +close_prog:
+> +       bpf_object__close(obj);
+> +}
+
+[...]
