@@ -2,119 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD9229B162
-	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 15:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747AC29B361
+	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 15:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759214AbgJ0O2V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Oct 2020 10:28:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22028 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1759205AbgJ0O2U (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 27 Oct 2020 10:28:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603808899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LK7Mui4e4v09fi5cFY5cXbC0c03SKE7y2UkxK+apedU=;
-        b=TYYZALUC7DrfFOllKZSz0FScOozq8cJRR0jDtyuSldvGoJbMNcV0B2lKi92t+VXfifzA2T
-        UZosZUQXXEEdniEfVg+S++SD8KgUDnEe3nVDNXb+S7eMovpD2/nAlnUmZ5uicX46Ahyxjt
-        Yj6AQKjSlnPtUs4c/gmQWUFbLzXuZAU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-I0c1CvcnMYCLZwkTt-HFxA-1; Tue, 27 Oct 2020 10:28:14 -0400
-X-MC-Unique: I0c1CvcnMYCLZwkTt-HFxA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66B0BAF9A9;
-        Tue, 27 Oct 2020 14:28:12 +0000 (UTC)
-Received: from krava (unknown [10.40.195.208])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C8AEB60C07;
-        Tue, 27 Oct 2020 14:28:04 +0000 (UTC)
-Date:   Tue, 27 Oct 2020 15:28:03 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: Re: [RFC bpf-next 00/16] bpf: Speed up trampoline attach
-Message-ID: <20201027142803.GJ2900849@krava>
-References: <20201022082138.2322434-1-jolsa@kernel.org>
- <20201022093510.37e8941f@gandalf.local.home>
- <20201022141154.GB2332608@krava>
- <20201022104205.728dd135@gandalf.local.home>
- <20201027043014.ebzcbzospzsaptvu@ast-mbp.dhcp.thefacebook.com>
+        id S1766444AbgJ0Ost (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Oct 2020 10:48:49 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:43886 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1766431AbgJ0Oss (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 10:48:48 -0400
+Received: by mail-ej1-f66.google.com with SMTP id k3so2584100ejj.10
+        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 07:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kwzPKBS10xp0kZ0eSIGEka98bJnI718M6peMcnII3s0=;
+        b=gS0Qmln69qwRP6vm8nCUQMt+jleHtvUILQP6a5aeUv0EEWU2WZZ/MkWnVoI5Gg2PBo
+         UrRWGPxaeBOPJ9OdKHJXqHUBO9BIlQdNZTfd3xsAI5Xd1gQCyrHpodMhekLH6xEPCOok
+         V+zStFbxyf9sBLxc81xYt+7qn47clmnNxIQ1+GZbtgVZZ3CebpuxmAO+tN19c6t4VRcw
+         SLoPHqdYM7wT12+ItmV9uryWqbs7vutituOt6M1Th8Wd3nB9SCaDQ7BTp0at5Ucbdcc5
+         I1QkySuXvjnX6PfGe/oTPHP5I9udqmQ+UzKeb2Mo1op/m7cHYUrPDXeqEln0ljmPiROp
+         bb5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kwzPKBS10xp0kZ0eSIGEka98bJnI718M6peMcnII3s0=;
+        b=DGTz1TwzX7HZMAV7pcpeDhIjn2fG5oYCicbxUTladM03riaum7+vVrjcPcnv2TbB13
+         q6dXDHhs8xwf8+fd7Rh0HmDiW3Xqerhn2STm5yZcCfEmD2yTKSrn5Fb58NJD/9sCHRfF
+         8k1IKtbndobYPXDjNqYPq3oRDRDVzAq2MMhLoEv0e26OB7GPt0MwIrZBg/XtEXMmLFxn
+         unY4fsTGYa5t5JFZsnV/SWSjuLCRjrBBdueQxfKvELuVjKrE0j6uBITVGvtZZ2r7uvip
+         PQfubx19jLVs/UzBWW6FwzaUd1i8byd6tFgOXwLV9sFrpLyGRZMjHva33x//I5G5oI3e
+         CpxA==
+X-Gm-Message-State: AOAM532p9oNyS3UNecMLoEJBj+q8NJMWZWyMrPSg6bYciBh4YgxxqESk
+        LJwa920xIbwVOft/EMY8WJy/5/b4s2EeSN1cnpq3/g==
+X-Google-Smtp-Source: ABdhPJwWE1LJ1ZI3to6EJIQrY6e4ZoysSouUhDOOa74fUtzLN9La7DPUDFZL6wtiN0JdiQf0PsKqWZI4hUiO55jBhFE=
+X-Received: by 2002:a17:906:3a8c:: with SMTP id y12mr2645126ejd.531.1603810126576;
+ Tue, 27 Oct 2020 07:48:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027043014.ebzcbzospzsaptvu@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201023123754.30304-1-david.verbeiren@tessares.net> <CAEf4BzZaJaYw0tB0R+q3qoQX7=qy3T9jvzf5q=TH++t66wNd-w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZaJaYw0tB0R+q3qoQX7=qy3T9jvzf5q=TH++t66wNd-w@mail.gmail.com>
+From:   David Verbeiren <david.verbeiren@tessares.net>
+Date:   Tue, 27 Oct 2020 15:48:28 +0100
+Message-ID: <CAHzPrnF0yZY8rk6_qMS55_=gLCKwHq1s7LaRtSqGy823gtwLMA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: zero-fill re-used per-cpu map element
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 09:30:14PM -0700, Alexei Starovoitov wrote:
-> On Thu, Oct 22, 2020 at 10:42:05AM -0400, Steven Rostedt wrote:
-> > On Thu, 22 Oct 2020 16:11:54 +0200
-> > Jiri Olsa <jolsa@redhat.com> wrote:
-> > 
-> > > I understand direct calls as a way that bpf trampolines and ftrace can
-> > > co-exist together - ebpf trampolines need that functionality of accessing
-> > > parameters of a function as if it was called directly and at the same
-> > > point we need to be able attach to any function and to as many functions
-> > > as we want in a fast way
-> > 
-> > I was sold that bpf needed a quick and fast way to get the arguments of a
-> > function, as the only way to do that with ftrace is to save all registers,
-> > which, I was told was too much overhead, as if you only care about
-> > arguments, there's much less that is needed to save.
-> > 
-> > Direct calls wasn't added so that bpf and ftrace could co-exist, it was
-> > that for certain cases, bpf wanted a faster way to access arguments,
-> > because it still worked with ftrace, but the saving of regs was too
-> > strenuous.
-> 
-> Direct calls in ftrace were done so that ftrace and trampoline can co-exist.
-> There is no other use for it.
-> 
-> Jiri,
-> could you please redo your benchmarking hardcoding ftrace_managed=false ?
-> If going through register_ftrace_direct() is indeed so much slower
-> than arch_text_poke() then something gotta give.
-> Either register_ftrace_direct() has to become faster or users
-> have to give up on co-existing of bpf and ftrace.
-> So far not a single user cared about using trampoline and ftrace together.
-> So the latter is certainly an option.
+On Mon, Oct 26, 2020 at 11:48 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Oct 23, 2020 at 8:48 AM David Verbeiren
+> <david.verbeiren@tessares.net> wrote:
+> > [...]
+> > +                       if (!onallcpus)
+> > +                               for_each_possible_cpu(cpu)
+> > +                                       memset((void *)per_cpu_ptr(pptr, cpu),
+> > +                                              0, size);
+>
+> Technically, you don't have to memset() for the current CPU, right?
+> Don't know if extra check is cheaper than avoiding one memset() call,
+> though.
 
-I tried that, and IIRC it was not much faster, but I don't have details
-on that.. but it should be quick check, I'll do it
+I thought about that as well but, because it depends on the 'size',
+I decided to keep it simple. However, taking into account your other
+comments, I think there is a possibility to combine it all nicely in a
+separate function.
 
-anyway later I realized that for us we need ftrace to stay, so I abandoned
-this idea ;-) and started to check on how to keep them both together and
-just make it faster
+> But regardless, this 6 level nesting looks pretty bad, maybe move the
+> for_each_possible_cpu() loop into a helper function?
+>
+> Also, does the per-CPU LRU hashmap need the same treatment?
+I think it does. Good catch!
 
-also currently bpf trampolines will not work without ftrace being
-enabled, because ftrace is doing the preparation work during compile,
-and replaces all the fentry calls with nop instructions and the
-replace code depends on those nops...  so if we go this way, we would
-need to make this preparation code generic
-
-> 
-> Regardless, the patch 7 (rbtree of kallsyms) is probably good on its own.
-> Can you benchmark it independently and maybe resubmit if it's useful
-> without other patches?
-
-yes, I'll submit that in separate patch
-
-thanks,
-jirka
-
+Thanks for your feedback. v2 is coming.
