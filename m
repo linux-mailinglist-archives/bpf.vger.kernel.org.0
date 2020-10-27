@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3229E29CD6A
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2330B29CD67
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725554AbgJ1BiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1725801AbgJ1BiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 27 Oct 2020 21:38:17 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:36991 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1832978AbgJ0XMR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:12:17 -0400
-Received: by mail-yb1-f193.google.com with SMTP id h196so2696992ybg.4;
-        Tue, 27 Oct 2020 16:12:16 -0700 (PDT)
+Received: from mail-yb1-f195.google.com ([209.85.219.195]:34493 "EHLO
+        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1832983AbgJ0XN7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 19:13:59 -0400
+Received: by mail-yb1-f195.google.com with SMTP id o70so2696614ybc.1;
+        Tue, 27 Oct 2020 16:13:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=liJO0UMBseJNqhQ8h4VmFtQtQMXB3zNjeUaURQyVCEo=;
-        b=Obe/XgPbNO/BHqgDadY9cgOjPedKu51zbnkO62vClNGy7TVe0YFA773/odhGJBUW97
-         XvGVVUaNSNO/pHcxO/xVlqxjx9EtpOl+GN+8BRsfTCK4ybntWwXU3JHOQRosFvDyTgVz
-         WWrCOofusRIcYQC8BcSfQth6k8Ezg7kco5y0Ggw3wfIvrtnm0FRr5kdxIil41ZplaBpC
-         /KdWsNnB1/q3CRSp+IEKFlL04TttaVJSwzsqZD2f4xudmjfucal8tio1D8mRFSlBuiXV
-         7qU1nd4GXgZATX5BEn4tLwogBwmcWmE1B3FkvZvef5vepbATMAwaYwPVxJ0IbvvLj9vS
-         ZI8Q==
+        bh=lvzvO7UkHoLp6bkIPJxnSFNtgIvr1KOH0hJqM4unTfU=;
+        b=qUkPq7ZFhFzs5LR9U3fMl8D2fYy1FHRHMtvMek7LFrY+nt102d/1MLVT+ef0GeuHV/
+         FmFlKDpPHWtKi37j/2IZMn+onQjR+pe1+pNCyjeCGMhgeadkHn90/PRwUHCooF4qYhBA
+         LW/PKmeSMqm/bhlITIvyprPKCzr/n+l+fmmLgBmOQIY3G2FrghvcgFHtSI43lzEQ0WLI
+         29yixOV8iPE69GCUQh+JPEqvGiSLaVrK6xjsol0xIMQ2XoTFbNZdLC90/l9rrrRLs35W
+         zb4THAplZ8HwP2ORjBy9/uev8EEOKt1qY6kgagJWpGw6V4dJCS8CJdZclrOD+f0XfLmr
+         +HAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=liJO0UMBseJNqhQ8h4VmFtQtQMXB3zNjeUaURQyVCEo=;
-        b=dtLL90MQxc4u0PMb0MjOIJCgJ4ujlBpthHeLEJa91KK6sBprtlURbe+WE/Hekzarld
-         r4SqLWgxThw1ELJfHHKZfYpuvqBFHlV5WwCx14/GUPJzwCEvV0PREQKu1BnES0R9sstc
-         sL37GiAJ6SxXb8AjEHw+GREhpa9run3BRyzXL8L895FKTjj7Xd7mqP9ggrxXjEgk74AW
-         LkneSBiHhxlusi0k/83MqP5gHCewd3rNxwikPYpRmQvYvEgtkZGLGq3D3/8gRsP3O3sn
-         xOPSAWNhZbmf/lMdUii5FZDVM3W7bR2SaZDfta7w7Nqwdgan3QHzT+dKurkkCITgmjKw
-         PRmw==
-X-Gm-Message-State: AOAM530fDmvSc9uqn3I6t5LxC6Yf1x4xHEIoConMImef+PI4po+2UXvF
-        qptrxIJfwJb6nU9n0UWzRQfmFft1bYBhSK0pjl0=
-X-Google-Smtp-Source: ABdhPJxw1hKiK5CplvZxp7ME/ZAqyGFIHtoXGPX8jDl/CvgnipqvxLbWWva4oBFRgiiouSI9QxmBvKKLaGAUIccf2XE=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr7032229ybk.260.1603840335916;
- Tue, 27 Oct 2020 16:12:15 -0700 (PDT)
+        bh=lvzvO7UkHoLp6bkIPJxnSFNtgIvr1KOH0hJqM4unTfU=;
+        b=AtIvAuwO3gBUytTnbUb+c3QyNX535Ay+QjA8i39qHPcrh2C//fR6EUJmP9Lw3Ifk6U
+         gCXBVYZswJSIbfnhUxYrrAJVVtKkv5HF5drA4Mwd/b+tOhyxmWUlSYr7lY8ESHex4jgC
+         VMfQ9Ge8auLKmnpI33I3n5IGfIlKdlX0/97nyUw10c2kfQPDiwaj1vLVD/FGnad9kfur
+         ZfwFeFc+b9ZwmdPG3oDtqn7jbNgPra11BunH6zZuz0kwy43qd3kQrLgxPfqEcn7eJ8rV
+         2mfdBXotaKSEFS2TzOCeNRPo08OY+dwcFUO6eE1WC95ObtAsk8Q3alQOK84sNzugZFCH
+         meAQ==
+X-Gm-Message-State: AOAM53131wqJz+OKZX5fduZ0mlsOx5CR1kKvL9BB9SZkpvRuTLlsw+de
+        3RDNEqKgZoihAE2V0zQmN0OiMs8TiC8PvP9pfB9ruvhTlnY=
+X-Google-Smtp-Source: ABdhPJwDgezAymWsWLijEuobwRZR53nnskYQalpDevRQvH5gaTo0V6JQUBYQv20WtCWPbcH9GYaIjYsaU/t4Z/ShYfk=
+X-Received: by 2002:a25:cb10:: with SMTP id b16mr6836946ybg.459.1603840437584;
+ Tue, 27 Oct 2020 16:13:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201026223617.2868431-1-jolsa@kernel.org> <20201026223617.2868431-2-jolsa@kernel.org>
-In-Reply-To: <20201026223617.2868431-2-jolsa@kernel.org>
+References: <20201026223617.2868431-1-jolsa@kernel.org>
+In-Reply-To: <20201026223617.2868431-1-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Oct 2020 16:12:04 -0700
-Message-ID: <CAEf4Bzan6=Jjfez17=S55Zu9EQTF_J2dg2DST4v+CfENm8cbUQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] btf_encoder: Move find_all_percpu_vars in generic
- config function
+Date:   Tue, 27 Oct 2020 16:13:46 -0700
+Message-ID: <CAEf4Bzav_WF3duq4JYmaPvyUXdREkXJMPAb+ASUxAxq_mqXd5Q@mail.gmail.com>
+Subject: Re: [RFC 0/3] pahole: Workaround dwarf bug for function encoding
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
@@ -63,51 +62,55 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Oct 26, 2020 at 5:07 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Moving find_all_percpu_vars under generic onfig function
-> that walks over symbols and calls config_percpu_var.
+> hi,
+> because of gcc bug [1] we can no longer rely on DW_AT_declaration
+> attribute to filter out declarations and end up with just
+> one copy of the function in the BTF data.
 >
-> We will add another config function that needs to go
-> through all the symbols, so it's better they go through
-> them just once.
+> It seems this bug is not easy to fix, but regardless if the
+> it's coming soon, it's probably good idea not to depend so
+> much only on dwarf data and make some extra checks.
 >
-> There's no functional change intended.
+> Thus for function encoding we are now doing following checks:
+>   - argument names are defined for the function
+>   - there's symbol and address defined for the function
+>   - function is generated only once
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> These checks ensure that we encode function with defined
+> symbol/address and argument names.
+>
+> I marked this post as RFC, because with this workaround in
+> place we are also encoding assembly functions, which were
+> not present when using the previous gcc version.
+>
+> Full functions diff to previous gcc working version:
+>
+>   http://people.redhat.com/~jolsa/functions.diff.txt
+>
+> I'm not sure this does not break some rule for functions in
+> BTF data, becuse those assembly functions are not attachable
+> by bpf trampolines, so I don't think there's any use for them.
+
+What will happen if we do try to attach to those assembly functions?
+Will there be some corruption or crash, or will it just fail and
+return error cleanly? What we actually want in BTF is all the
+functions that are attachable through BPF trampoline, which is all the
+functions that ftrace subsystem can attach to, right? So how does
+ftrace system know what can or cannot be attached to?
+
+>
+> thoughts?
+> jirka
+>
+>
+> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
 > ---
->  btf_encoder.c | 126 ++++++++++++++++++++++++++------------------------
->  1 file changed, 66 insertions(+), 60 deletions(-)
+> Jiri Olsa (3):
+>       btf_encoder: Move find_all_percpu_vars in generic config function
+>       btf_encoder: Change functions check due to broken dwarf
+>       btf_encoder: Include static functions to BTF data
 >
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 2a6455be4c52..2dd26c904039 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -250,7 +250,64 @@ static bool percpu_var_exists(uint64_t addr, uint32_t *sz, const char **name)
->         return true;
->  }
+>  btf_encoder.c | 221 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------
+>  elf_symtab.h  |   8 +++++
+>  2 files changed, 170 insertions(+), 59 deletions(-)
 >
-> -static int find_all_percpu_vars(struct btf_elf *btfe)
-> +static int config_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
-
-I find the "config" name completely misleading. How about
-"collect_percpu_var" or something along those lines?
-
-> +{
-> +       const char *sym_name;
-> +       uint64_t addr;
-> +       uint32_t size;
-> +
-
-[...]
-
-> +}
-> +
-> +static int config(struct btf_elf *btfe, bool do_percpu_vars)
-
-same here, config is generic and misrepresenting what we are doing
-here. E.g., collect_symbols would probably be more clear.
-
->  {
->         uint32_t core_id;
->         GElf_Sym sym;
-
-[...]
