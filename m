@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2330B29CD67
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310E529CD65
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgJ1BiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Oct 2020 21:38:17 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:34493 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1832983AbgJ0XN7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:13:59 -0400
-Received: by mail-yb1-f195.google.com with SMTP id o70so2696614ybc.1;
-        Tue, 27 Oct 2020 16:13:58 -0700 (PDT)
+        id S1725809AbgJ1BiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Oct 2020 21:38:18 -0400
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:34109 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1832995AbgJ0XUW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 19:20:22 -0400
+Received: by mail-yb1-f196.google.com with SMTP id o70so2707628ybc.1;
+        Tue, 27 Oct 2020 16:20:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lvzvO7UkHoLp6bkIPJxnSFNtgIvr1KOH0hJqM4unTfU=;
-        b=qUkPq7ZFhFzs5LR9U3fMl8D2fYy1FHRHMtvMek7LFrY+nt102d/1MLVT+ef0GeuHV/
-         FmFlKDpPHWtKi37j/2IZMn+onQjR+pe1+pNCyjeCGMhgeadkHn90/PRwUHCooF4qYhBA
-         LW/PKmeSMqm/bhlITIvyprPKCzr/n+l+fmmLgBmOQIY3G2FrghvcgFHtSI43lzEQ0WLI
-         29yixOV8iPE69GCUQh+JPEqvGiSLaVrK6xjsol0xIMQ2XoTFbNZdLC90/l9rrrRLs35W
-         zb4THAplZ8HwP2ORjBy9/uev8EEOKt1qY6kgagJWpGw6V4dJCS8CJdZclrOD+f0XfLmr
-         +HAw==
+        bh=h4SAdGOpiLm65FSUnkwtEuHmAnkcY3IBxAs940sqDlE=;
+        b=lFVR0zjuXI9GV+bp8fGB78GnizBP5jkr7yutKHwB3Qv+iZ1m2MbGxOdXcJDwUlTXvo
+         J4mTkrze2vYUnC1/8LJ3OZnTXqUd4d3Rg6l4/2b637/nj2CPik2uyGJOF6AVPJx9lDlQ
+         vicqgHdPH+EdhvuKsIMntGcZFEc56BB7Q2tM82d6dd6YxRqJF6COWFGqK5D3DkNxMDoJ
+         I/hzd/EWCfUPbYYrGgl7q2zQ92KrwU9iTebr3S+MjbRuAwgZNnzhdTN8aRJnFWCRa5j8
+         Q08HHOL3I1Bzh9z+q+MRgVeH9ispR9vvY+UgZcgLdNnejPKwPe284IxwDdzEaX15m+a5
+         pPuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lvzvO7UkHoLp6bkIPJxnSFNtgIvr1KOH0hJqM4unTfU=;
-        b=AtIvAuwO3gBUytTnbUb+c3QyNX535Ay+QjA8i39qHPcrh2C//fR6EUJmP9Lw3Ifk6U
-         gCXBVYZswJSIbfnhUxYrrAJVVtKkv5HF5drA4Mwd/b+tOhyxmWUlSYr7lY8ESHex4jgC
-         VMfQ9Ge8auLKmnpI33I3n5IGfIlKdlX0/97nyUw10c2kfQPDiwaj1vLVD/FGnad9kfur
-         ZfwFeFc+b9ZwmdPG3oDtqn7jbNgPra11BunH6zZuz0kwy43qd3kQrLgxPfqEcn7eJ8rV
-         2mfdBXotaKSEFS2TzOCeNRPo08OY+dwcFUO6eE1WC95ObtAsk8Q3alQOK84sNzugZFCH
-         meAQ==
-X-Gm-Message-State: AOAM53131wqJz+OKZX5fduZ0mlsOx5CR1kKvL9BB9SZkpvRuTLlsw+de
-        3RDNEqKgZoihAE2V0zQmN0OiMs8TiC8PvP9pfB9ruvhTlnY=
-X-Google-Smtp-Source: ABdhPJwDgezAymWsWLijEuobwRZR53nnskYQalpDevRQvH5gaTo0V6JQUBYQv20WtCWPbcH9GYaIjYsaU/t4Z/ShYfk=
-X-Received: by 2002:a25:cb10:: with SMTP id b16mr6836946ybg.459.1603840437584;
- Tue, 27 Oct 2020 16:13:57 -0700 (PDT)
+        bh=h4SAdGOpiLm65FSUnkwtEuHmAnkcY3IBxAs940sqDlE=;
+        b=kqHbpsLX1ZrHcnYk0EnQRsdAMRXnKPOKwXvuW75X1NFHWLyaPoCJXHEdTcBRaZSRiw
+         ql7nGcgdHFtV3JaXrG0EBmDpvLV6PFlsv1+VvL8DfYlOhxxvD9BywIhfD0kvvvvMlR6K
+         /Oj2Xao9RofzVb6EMTgPDImwR7gSAlkBaGwQikcksjb8bl4+6nTbiDiih1Vw5eBtGmMk
+         ftAM7rLqXPVjorA/f0l1U7E5RSZ12eZv/tQZXS6urAho3cD3NSM/ubQPPscjWWDh3G2e
+         UUMDPK6PdSKHa/oCZQB6VIK9wAgc4aHlJhKK+M9e3AYQH099r2qm1KUk27NKlwy7zGqH
+         Xp8w==
+X-Gm-Message-State: AOAM530dc77X6k6l9gbUmqC367IMM5b77Hr7Dhe10iVzVHYvzF+iLPIe
+        2qajMtuA6D8rtlihzlhTuhCgykCW1sQVv27LBZs=
+X-Google-Smtp-Source: ABdhPJwfmhODCMSJtXjcs0e2v8f3Q4//GuPxCZ1DI8ofGUMdVAGVRqQii4RT+0Y4tkztjSbwUuPacmN1+AnZeira8NM=
+X-Received: by 2002:a25:da4e:: with SMTP id n75mr6546039ybf.425.1603840821264;
+ Tue, 27 Oct 2020 16:20:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201026223617.2868431-1-jolsa@kernel.org>
-In-Reply-To: <20201026223617.2868431-1-jolsa@kernel.org>
+References: <20201026223617.2868431-1-jolsa@kernel.org> <20201026223617.2868431-3-jolsa@kernel.org>
+In-Reply-To: <20201026223617.2868431-3-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Oct 2020 16:13:46 -0700
-Message-ID: <CAEf4Bzav_WF3duq4JYmaPvyUXdREkXJMPAb+ASUxAxq_mqXd5Q@mail.gmail.com>
-Subject: Re: [RFC 0/3] pahole: Workaround dwarf bug for function encoding
+Date:   Tue, 27 Oct 2020 16:20:10 -0700
+Message-ID: <CAEf4BzZZ6abHMB4Y2wHF+0vGVqJ_UtMnjDfSscVXbHUZcfEGtg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] btf_encoder: Change functions check due to broken dwarf
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
@@ -62,55 +62,109 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Oct 26, 2020 at 5:07 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> hi,
-> because of gcc bug [1] we can no longer rely on DW_AT_declaration
-> attribute to filter out declarations and end up with just
-> one copy of the function in the BTF data.
+> We need to generate just single BTF instance for the
+> function, while DWARF data contains multiple instances
+> of DW_TAG_subprogram tag.
 >
-> It seems this bug is not easy to fix, but regardless if the
-> it's coming soon, it's probably good idea not to depend so
-> much only on dwarf data and make some extra checks.
+> Unfortunately we can no longer rely on DW_AT_declaration
+> tag (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
 >
-> Thus for function encoding we are now doing following checks:
+> Instead we apply following checks:
 >   - argument names are defined for the function
 >   - there's symbol and address defined for the function
 >   - function is generated only once
 >
-> These checks ensure that we encode function with defined
-> symbol/address and argument names.
+> They might be slightly superfluous together, but it's
+> better to be ready for another DWARF mishap.
 >
-> I marked this post as RFC, because with this workaround in
-> place we are also encoding assembly functions, which were
-> not present when using the previous gcc version.
->
-> Full functions diff to previous gcc working version:
->
->   http://people.redhat.com/~jolsa/functions.diff.txt
->
-> I'm not sure this does not break some rule for functions in
-> BTF data, becuse those assembly functions are not attachable
-> by bpf trampolines, so I don't think there's any use for them.
-
-What will happen if we do try to attach to those assembly functions?
-Will there be some corruption or crash, or will it just fail and
-return error cleanly? What we actually want in BTF is all the
-functions that are attachable through BPF trampoline, which is all the
-functions that ftrace subsystem can attach to, right? So how does
-ftrace system know what can or cannot be attached to?
-
->
-> thoughts?
-> jirka
->
->
-> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
-> Jiri Olsa (3):
->       btf_encoder: Move find_all_percpu_vars in generic config function
->       btf_encoder: Change functions check due to broken dwarf
->       btf_encoder: Include static functions to BTF data
+>  btf_encoder.c | 102 +++++++++++++++++++++++++++++++++++++++++++++++++-
+>  elf_symtab.h  |   8 ++++
+>  2 files changed, 109 insertions(+), 1 deletion(-)
 >
->  btf_encoder.c | 221 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------
->  elf_symtab.h  |   8 +++++
->  2 files changed, 170 insertions(+), 59 deletions(-)
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 2dd26c904039..99b9abe36993 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -26,6 +26,62 @@
+>   */
+>  #define KSYM_NAME_LEN 128
+>
+> +struct elf_function {
+> +       const char *name;
+> +       bool generated;
+> +};
+> +
+> +static struct elf_function *functions;
+> +static int functions_alloc;
+> +static int functions_cnt;
+> +
+> +static int functions_cmp(const void *_a, const void *_b)
+> +{
+> +       const struct elf_function *a = _a;
+> +       const struct elf_function *b = _b;
+> +
+> +       return strcmp(a->name, b->name);
+> +}
+> +
+> +static void delete_functions(void)
+> +{
+> +       free(functions);
+> +       functions_alloc = functions_cnt = 0;
+> +}
+> +
+> +static int config_function(struct btf_elf *btfe, GElf_Sym *sym)
+> +{
+> +       if (!elf_sym__is_function(sym))
+> +               return 0;
+> +       if (!elf_sym__value(sym))
+> +               return 0;
+> +
+> +       if (functions_cnt == functions_alloc) {
+> +               functions_alloc += 5000;
+
+maybe just do a conventional exponential size increase? Not
+necessarily * 2, could be (* 3 / 2) or (* 4 / 3), libbpf uses such
+approach.
+
+> +               functions = realloc(functions, functions_alloc * sizeof(*functions));
+> +               if (!functions)
+> +                       return -1;
+> +       }
+> +
+> +       functions[functions_cnt].name = elf_sym__name(sym, btfe->symtab);
+> +       functions_cnt++;
+> +       return 0;
+> +}
+> +
+
+[...]
+
+> diff --git a/elf_symtab.h b/elf_symtab.h
+> index 359add69c8ab..094ec4683d01 100644
+> --- a/elf_symtab.h
+> +++ b/elf_symtab.h
+> @@ -63,6 +63,14 @@ static inline uint64_t elf_sym__value(const GElf_Sym *sym)
+>         return sym->st_value;
+>  }
+>
+> +static inline int elf_sym__is_function(const GElf_Sym *sym)
+> +{
+> +       return (elf_sym__type(sym) == STT_FUNC ||
+> +               elf_sym__type(sym) == STT_GNU_IFUNC) &&
+
+Why do we need to collect STT_GNU_IFUNC? That is some PLT special
+magic, does the kernel use that? Even if it does, are we even able to
+attach to that? Could that remove some of the assembly functions?
+
+> +               sym->st_name != 0 &&
+> +               sym->st_shndx != SHN_UNDEF;
+> +}
+> +
+>  static inline bool elf_sym__is_local_function(const GElf_Sym *sym)
+>  {
+>         return elf_sym__type(sym) == STT_FUNC &&
+> --
+> 2.26.2
 >
