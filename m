@@ -2,104 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D835B29CD55
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2392029CD5E
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725839AbgJ1BiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Oct 2020 21:38:18 -0400
-Received: from mail-pj1-f74.google.com ([209.85.216.74]:51982 "EHLO
-        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1833024AbgJ0XhB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:37:01 -0400
-Received: by mail-pj1-f74.google.com with SMTP id 21so1603792pje.1
-        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 16:37:01 -0700 (PDT)
+        id S1725847AbgJ1BiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Oct 2020 21:38:19 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:45753 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1833061AbgJ0XzD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 19:55:03 -0400
+Received: by mail-ed1-f67.google.com with SMTP id dg9so3252130edb.12
+        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 16:55:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=4a9MYiiaTByHEbKl6To5Tz0gAmU1s4D2bue8aWKymII=;
-        b=ti0ysnDzMX8K9s3iOF6d3+2ZR/oAqISGhCt//Y8qyqRAD+FFbTBuNGhv/HfDxO0iWO
-         Tnksd0YoilK4CS7LK0en3GtVxELV5DhrS8cpR1XC4IEjbU9qoA7CbX9fg4xVGcSZe4aY
-         CDDrO2ZjyZhFnSVvdFL/nbOFmlZKk2d0TGMPT+qdGsuBVZhjmeKfuMIYt4dfGcFQv2iT
-         I8t3YhyERHXCwFzAPrm9TY1WmCkybWOg7uhosZ5ze9YDVNm+FUb1s31Qwi6gwIfXF66F
-         kpYyUxxUkNsmtGwKEV4suUGGYe56pCNYU7pj6pHyITQfO8mZsJDLMKmFuZ0bVhQHYiIq
-         ZZJw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KltW5WB7nh9FObbMtAxJQyGKMUmzgBf2jMpmw0XbnqA=;
+        b=wOFqmJWQKCHXYXtesyDb2GRVCsde5sIaS6tCQxPY0hkqe7wvf95wmM/WdkfKOwTX6L
+         ldhdtlxJjsKasB3nt/LcLTPi1FAUPZlMkAMejBWZVY13mnKfkeBAXaKaFnUA+XGVYZ+u
+         4TUWKyfRXM4t7C4q/JrA7rxhaFYKqEah5dCPmuqeIUN15oEcipcEUD49yLsZPHHSKCq1
+         rVPcffanWjK0iP1C0wntSlJjxgG8Urjx2RdKvLQm2/dGgTwOYkYmrxOmGM7OGFUo+ydK
+         k6M/6JFSDWrDsgfYH5MBSOHsKs9bAZIOM5sv7i9rGNVFvAMr94IRU9SgJT73cr9QfIyp
+         gp3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4a9MYiiaTByHEbKl6To5Tz0gAmU1s4D2bue8aWKymII=;
-        b=tZvpVKYLCTsZiQX1sr9lc9GNrVC40eSH3tuNb2HeQplX7FbQTG+eaKug6dYeVvuYG0
-         i6Bl5eDUHvzrIYjepuShszBc8QnItYIO27ejQrrHoW0sAcYeYKvudOu51TnhCCtqdyrI
-         t7ZExN2jAHNMt1q0bhXzVq4OIncg7/4f4kjV4NXZbanrKvS31/fIuyxJXDYy3b3maRc9
-         eoMShSJgRX5g4KvArICKZvFpPrQU87zeS/Zs5TCJVfbwLdApGpV3napC73IQPhcvr2W6
-         Bs7Bq1RxWdLXoJ0qZ9pHzuWVuDVp0VpDUiGk6uB3Opg5DbFq0ljRMid5U5ILxnpOqmc1
-         lX8g==
-X-Gm-Message-State: AOAM530Sm7Zk20A71UsNSz0EDFaFf6blZpDXGB6hyji4nTH83iIpVOLF
-        VIXBCsPGg20w0gCDqucFnlGVEdoPIiRY
-X-Google-Smtp-Source: ABdhPJyFHO0f4PxvIORwWA5M0VfCJIehQ4AlnLeaLHsxZx+/28M/X1yaGhFBvfcBbffl9uTCEYmyzwBptmWK
-Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a17:90a:7e0a:: with SMTP id
- i10mr4190504pjl.89.1603841820716; Tue, 27 Oct 2020 16:37:00 -0700 (PDT)
-Date:   Tue, 27 Oct 2020 16:36:46 -0700
-In-Reply-To: <20201027233646.3434896-1-irogers@google.com>
-Message-Id: <20201027233646.3434896-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20201027233646.3434896-1-irogers@google.com>
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH 2/2] tools, bpftool: Remove two unused variables.
-From:   Ian Rogers <irogers@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Michal Rostecki <mrostecki@opensuse.org>,
-        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KltW5WB7nh9FObbMtAxJQyGKMUmzgBf2jMpmw0XbnqA=;
+        b=Gm0D3f97Lx45zHuFLeyKxPvrGVbjmGWJKf5XfS+5QRhSSywsoZPdrVEQ1BpqMvY8Ke
+         YiYQRxa6EHd470Olm5mn/SI7vEn37q+KDpQy7P8xhnEGjAFhp1nUtS5BQYSokajYKMeI
+         JGF3WTkjogX+Py09ut1W+M7ETjwrK7xCymQqNPbPlnzW7W7/lpxn0BGVVnSU5MUuk5K/
+         /A8Hv6AInoeqBmFHTZQdKr1tbe52/NnS2HguecplbBwV33AvKnGAcoVZxKK/gHSED0g7
+         Pu4AaUdGFQgDLn/507bUfj5LETcRdPYTViV2SQm7btKyfOXA0z8xWBUjCU8Wu6sMX+an
+         NAzA==
+X-Gm-Message-State: AOAM531IeJ7cFSZK15WpTrKBptgosxDp1+Ca5W3ylc+v2/F76FsLBhMW
+        WAhW7WrJKgA3P4IMcG+FzWClVJ7QmEfTdzwKVV1mmg==
+X-Google-Smtp-Source: ABdhPJxcK6X5g6DskaxzCUWkXWbt0gzFPeJD/e4ZpL4bZzpV5QJmaXtQt+UlTDMbM5AxxWsViaU8yLjULq+7hHa1Ek4=
+X-Received: by 2002:a50:eb8e:: with SMTP id y14mr5055957edr.285.1603842900302;
+ Tue, 27 Oct 2020 16:55:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201026223617.2868431-1-jolsa@kernel.org> <20201026223617.2868431-2-jolsa@kernel.org>
+ <CAEf4Bzan6=Jjfez17=S55Zu9EQTF_J2dg2DST4v+CfENm8cbUQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzan6=Jjfez17=S55Zu9EQTF_J2dg2DST4v+CfENm8cbUQ@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 27 Oct 2020 16:54:49 -0700
+Message-ID: <CA+khW7hriWpy9-V9WgdMEv_5814_bzxrZ6we8=525ecanXUjSg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] btf_encoder: Move find_all_percpu_vars in generic
+ config function
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Avoid an unused variable warning.
+Agree with Andrii. The function name 'config' is too generic and
+'config_per_var' is confusing to me. But the rest looked good. Thanks
+for taking a look at this.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/bpf/bpftool/skeleton/profiler.bpf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hao
 
-diff --git a/tools/bpf/bpftool/skeleton/profiler.bpf.c b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-index 4e3512f700c0..ce5b65e07ab1 100644
---- a/tools/bpf/bpftool/skeleton/profiler.bpf.c
-+++ b/tools/bpf/bpftool/skeleton/profiler.bpf.c
-@@ -70,7 +70,7 @@ int BPF_PROG(fentry_XXX)
- static inline void
- fexit_update_maps(u32 id, struct bpf_perf_event_value *after)
- {
--	struct bpf_perf_event_value *before, diff, *accum;
-+	struct bpf_perf_event_value *before, diff;
- 
- 	before = bpf_map_lookup_elem(&fentry_readings, &id);
- 	/* only account samples with a valid fentry_reading */
-@@ -95,7 +95,7 @@ int BPF_PROG(fexit_XXX)
- {
- 	struct bpf_perf_event_value readings[MAX_NUM_MATRICS];
- 	u32 cpu = bpf_get_smp_processor_id();
--	u32 i, one = 1, zero = 0;
-+	u32 i, zero = 0;
- 	int err;
- 	u64 *count;
- 
--- 
-2.29.0.rc2.309.g374f81d7ae-goog
 
+On Tue, Oct 27, 2020 at 4:12 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Oct 26, 2020 at 5:07 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Moving find_all_percpu_vars under generic onfig function
+> > that walks over symbols and calls config_percpu_var.
+> >
+> > We will add another config function that needs to go
+> > through all the symbols, so it's better they go through
+> > them just once.
+> >
+> > There's no functional change intended.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  btf_encoder.c | 126 ++++++++++++++++++++++++++------------------------
+> >  1 file changed, 66 insertions(+), 60 deletions(-)
+> >
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 2a6455be4c52..2dd26c904039 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -250,7 +250,64 @@ static bool percpu_var_exists(uint64_t addr, uint32_t *sz, const char **name)
+> >         return true;
+> >  }
+> >
+> > -static int find_all_percpu_vars(struct btf_elf *btfe)
+> > +static int config_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
+>
+> I find the "config" name completely misleading. How about
+> "collect_percpu_var" or something along those lines?
+>
+> > +{
+> > +       const char *sym_name;
+> > +       uint64_t addr;
+> > +       uint32_t size;
+> > +
+>
+> [...]
+>
+> > +}
+> > +
+> > +static int config(struct btf_elf *btfe, bool do_percpu_vars)
+>
+> same here, config is generic and misrepresenting what we are doing
+> here. E.g., collect_symbols would probably be more clear.
+>
+> >  {
+> >         uint32_t core_id;
+> >         GElf_Sym sym;
+>
+> [...]
