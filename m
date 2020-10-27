@@ -2,125 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B982029CC3C
-	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 23:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9385929CC89
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 00:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793828AbgJ0Wzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Oct 2020 18:55:35 -0400
-Received: from mail-yb1-f196.google.com ([209.85.219.196]:33646 "EHLO
-        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1793812AbgJ0Wzd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:55:33 -0400
-Received: by mail-yb1-f196.google.com with SMTP id c3so2669393ybl.0;
-        Tue, 27 Oct 2020 15:55:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uOT2cv6lRdiliWs62LyNQj+t0f3tiV/jTixSklraP9c=;
-        b=iE0szS7X8ftg+fPcpGU1JjGuVYrWKwrGJNuggsnGAXMNeYSFqQfJ1FAOmSXEoOEJeY
-         pBNC2zHM/6vn+2LtrXk+6FjbGDDmZMZzUHUvy9KVV7UVyc1DxmwmhR4GmbKza1e1dxF/
-         G32YKC5GaW+rQTtW/NFdkJBIcUZpD4vDCWzR78GWE/zhFDmBqWqj3LETTYhPt8N0Amt0
-         85VZMntRjrLHDRCoAPazopnAs0wHL3WsQPGDLfQYy/ZCiJwDYvltN6sXtcooRi8HrJxN
-         g3qpMmA5b7xe+Of20TnMuBlgEh1t8VzaOly5uoWJK3DcOukViFYo5Yb9Tm/HF35/AwHv
-         VHcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uOT2cv6lRdiliWs62LyNQj+t0f3tiV/jTixSklraP9c=;
-        b=bzsrGCOs5i+hqQtrwvtNAjI5TNCj/GrE2jPgDbDiPdvSNwZvFG77Gctzps+e1Cdy6z
-         aGUqKb+fFiRRqQPoWZWpZ5egB5xQCTUU343mvzyH0JoH9QRlwU2rb9SWIH+7gro++ndZ
-         RBhOmwct/KjfTbg1/tBA2MSGaXwlCJP5VKVucrqtNBmR1Ax7tH1it6qelPFhVqZ849wK
-         x9+gWIxAHT2Sl6pRpPJXNO3D9JKmAxXS1sKbGjGMmvRuEvWCk4bgCXAxG6toRBlx5YdT
-         p1yabRbeUG6+NofhRAVTbzsgXHK/Q57qNPJ5Ld0b/RiaQJ4O8FuxEOkuUUyB+1St+Kq2
-         02nA==
-X-Gm-Message-State: AOAM5322fv02pPMG+7mBnA212D+BmbcEziuf5hhYJ4k1tL7ZvSbzY0iO
-        AE0bpZilcOXjYDlhgZywC6SvHzoy4f91T5OydaOEkiWIDQ81wg==
-X-Google-Smtp-Source: ABdhPJztLytSckmlYoU4KdGXXYYCMGKjNBKM5UYyixxiLfc93NcsH/Daia1vtqqO551fxsYAEcLsZZSjmq5Uycd2Ot8=
-X-Received: by 2002:a25:cb10:: with SMTP id b16mr6742246ybg.459.1603839331953;
- Tue, 27 Oct 2020 15:55:31 -0700 (PDT)
+        id S1832660AbgJ0XEc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Oct 2020 19:04:32 -0400
+Received: from www62.your-server.de ([213.133.104.62]:38368 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1832658AbgJ0XEc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 19:04:32 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kXY0w-0002mG-Dd; Wed, 28 Oct 2020 00:04:26 +0100
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kXY0w-000MGw-4i; Wed, 28 Oct 2020 00:04:26 +0100
+Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
+ disable GCSE
+To:     Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, arnd@arndb.de,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+References: <20201027205723.12514-1-ardb@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <72f0dd64-9f65-cbd0-873a-684540912847@iogearbox.net>
+Date:   Wed, 28 Oct 2020 00:04:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20201023123754.30304-1-david.verbeiren@tessares.net> <20201027221324.27894-1-david.verbeiren@tessares.net>
-In-Reply-To: <20201027221324.27894-1-david.verbeiren@tessares.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Oct 2020 15:55:21 -0700
-Message-ID: <CAEf4Bzb84+Uv1dZa6WE5Eow3tovFqL+FpP8QfGP0C-QQj1JDTw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] bpf: zero-fill re-used per-cpu map element
-To:     David Verbeiren <david.verbeiren@tessares.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201027205723.12514-1-ardb@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25970/Tue Oct 27 13:18:55 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 3:15 PM David Verbeiren
-<david.verbeiren@tessares.net> wrote:
->
-> Zero-fill element values for all other cpus than current, just as
-> when not using prealloc. This is the only way the bpf program can
-> ensure known initial values for all cpus ('onallcpus' cannot be
-> set when coming from the bpf program).
->
-> The scenario is: bpf program inserts some elements in a per-cpu
-> map, then deletes some (or userspace does). When later adding
-> new elements using bpf_map_update_elem(), the bpf program can
-> only set the value of the new elements for the current cpu.
-> When prealloc is enabled, previously deleted elements are re-used.
-> Without the fix, values for other cpus remain whatever they were
-> when the re-used entry was previously freed.
->
-> Fixes: 6c9059817432 ("bpf: pre-allocate hash map elements")
-> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
-> ---
->
+On 10/27/20 9:57 PM, Ard Biesheuvel wrote:
+> Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
+> ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
+> function scope __attribute__((optimize("-fno-gcse"))), to disable a
+> GCC specific optimization that was causing trouble on x86 builds, and
+> was not expected to have any positive effect in the first place.
+> 
+> However, as the GCC manual documents, __attribute__((optimize))
+> is not for production use, and results in all other optimization
+> options to be forgotten for the function in question. This can
+> cause all kinds of trouble, but in one particular reported case,
 
-Looks good, but would be good to have a unit test (see below). Maybe
-in a follow up.
+Looks like there are couple more as well aside from __no_fgcse, are you
+also planning to fix them?
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+   arch/powerpc/kernel/setup.h:14:#define __nostackprotector __attribute__((__optimize__("no-stack-protector")))
+   tools/include/linux/compiler-gcc.h:37:#define __no_tail_call	__attribute__((optimize("no-optimize-sibling-calls")))
 
-> Notes:
->     v2:
->       - Moved memset() to separate pcpu_init_value() function,
->         which replaces pcpu_copy_value() but delegates to it
->         for the cases where no memset() is needed (Andrii).
->       - This function now also avoids doing the memset() for
->         the current cpu for which the value must be set
->         anyhow (Andrii).
->       - Same pcpu_init_value() used for per-cpu LRU map
->         (Andrii).
->
->       Note that I could not test the per-cpu LRU other than
->       by running the bpf selftests. lru_map and maps tests
->       passed but for the rest of the test suite, I don't
->       think I know how to spot problems...
+> it causes -fno-asynchronous-unwind-tables to be disregarded,
+> resulting in .eh_frame info to be emitted for the function
+> inadvertently.
 
-It would be good to write a new selftest specifically for this. You
-can create a single-element pre-allocated per-CPU hashmap. From
-user-space, initialize it to non-zeros on all CPUs. Then delete that
-key (it will get put on the free list). Then trigger BPF program, do
-an update (that should take an element from the freelist), doesn't
-matter which value you set (could be zero). Then from user-space get
-all per-CPU values for than new key. It should all be zeroes with your
-fix and non-zero without it.
+Would have been useful to add a pointer to the original discussion with
+Link tag.
 
-It sounds more complicated than it would look like in practice :)
+Link: https://lore.kernel.org/lkml/CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com/
 
->
->       Question: Is it ok to use raw_smp_processor_id() in
->       these contexts? bpf prog context should be fine, I think.
->       Is it also ok in the syscall context?
-
-From the BPF program side it's definitely ok, because we disable CPU
-migration even for sleepable programs. For syscall context, it always
-uses onallcpus=true, so we'll never run this logic from syscall
-context. So I think it's fine.
-
->
->  kernel/bpf/hashtab.c | 30 ++++++++++++++++++++++++++++--
->  1 file changed, 28 insertions(+), 2 deletions(-)
-
+> This reverts commit 3193c0836f203, and instead, it disables the -fgcse
+> optimization for the entire source file, but only when building for
+> X86.
+> 
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Arvind Sankar <nivedita@alum.mit.edu>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 [...]
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index bdc8cd1b6767..02b58f44c479 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -1,6 +1,8 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   obj-y := core.o
+> -CFLAGS_core.o += $(call cc-disable-warning, override-init)
+> +# ___bpf_prog_run() needs GCSE disabled on x86; see 3193c0836f203 for details
+> +cflags-core-$(CONFIG_X86) := -fno-gcse
+> +CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-core-y)
+
+Also, this needs to be guarded behind !CONFIG_RETPOLINE and !CONFIG_BPF_JIT_ALWAYS_ON
+in particular the latter since only in this case interpreter is compiled in ... most
+distros have the CONFIG_BPF_JIT_ALWAYS_ON set these days for x86.
+
+Do you have an analysis for the commit log on what else this penalizes in core.c if
+it's now for the entire translation unit?
+
+>   obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
+>   obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 9268d77898b7..55454d2278b1 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1369,7 +1369,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
+>    *
+>    * Decode and execute eBPF instructions.
+>    */
+> -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+> +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+>   {
+>   #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
+>   #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
+> 
+
