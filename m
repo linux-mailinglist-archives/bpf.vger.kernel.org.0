@@ -2,104 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E0029CBB3
-	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 23:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C06729CBDD
+	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 23:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1832143AbgJ0WDo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Oct 2020 18:03:44 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:35916 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756627AbgJ0WDo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 18:03:44 -0400
-Received: by mail-pf1-f196.google.com with SMTP id w65so1725035pfd.3
-        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 15:03:43 -0700 (PDT)
+        id S374821AbgJ0WQ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Oct 2020 18:16:28 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:38855 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374824AbgJ0WQ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 18:16:27 -0400
+Received: by mail-ed1-f66.google.com with SMTP id k9so967857edo.5
+        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 15:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BIgA23QX48XZ046Ge9ljl2tKSIQwwh1UxXCcpF43RtQ=;
-        b=DQ4QYs8mm70+rmT6lRf4l6/moOr/APcehE0qI2sTetrRpD0rKQcuE06shQpHs4ISpv
-         +xskUF2josJN6OZ7d1A7Szw1vnt+kuUpFQR9AMXT1EDP+t9+TC0zAGPXYCQYI2F+v573
-         ncdjsWm5Lk/qtYVSspLjcRFflT9AVKO93yQwXSpZpqGOZKI8TOiMPnggSNISM68S9udt
-         G/QCm6BtoytS6FFs4Cib7tax4L4ONjrZI1HVW00ZAS1uygE38BcNPpv+dzMtTzFMC0ss
-         +BqJM6oJmL3i3yTBUH/czr/Y7LWL8D5KjZVFlF+xNlOG+YauJn6iVtG0d7sgAr1HwTVy
-         UYZQ==
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NOIDTRFCD+4gLa0iV6oczkhHHisCeCf4dMyrXVdDhjA=;
+        b=rcUXZcPLjKSubOTKbGxtJ2Ec3857UkKCJVn7vm2k6U+lq62TMjXybsloLIvIyVS9aV
+         zWtKlagwwQ4JmHp67/mpwuY6En1jvuKu3PQMg6c0CzHVEQh8UEvzBTrweTGS+ruNV0/A
+         5I+yUHqaBEqJRPvInXORsnPEHcsiHAnMnfL9laXCP66Jxq6rHqZyB7TyZjFph4vQji9w
+         ftVRffNJ/9QqawWMHD9GtTubCG0S6mMoTHTYLPJJmglw7a9Ql4KMdHgCwWm7z+0iDSc3
+         JswOWraLeP13df2ODjqfGiqrsvBLvQBOJdUctGwPeDH2yJC0GYBOp0Bb6psE+nIXlKbQ
+         BEdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BIgA23QX48XZ046Ge9ljl2tKSIQwwh1UxXCcpF43RtQ=;
-        b=SShFjDndlAZOKoWTiBD8rd1573oVisqPkZaKBePVjLxfZLI5ymgchDqLMsM549o/FB
-         n8b59+N6Chx4aVb7XTyRA6K8PxBGRN0lraHaMPWN3WR0JRau5nJDM4uS8mjzzkBf69Ti
-         77VzIuwFHGLnjF43A0G3R6ecB4+uXQTP/O+TmFVxke4AiLVIlhSMylRiXTu4ETJ+EThc
-         wWcCiBgErsb2rJYObY8sljzDTjewqsJMltJV+uNW0XbTtd9rMJDxvZWSeNXkcsiwbXTE
-         15gyjJyF+BYF1VKRMExkf9Cqqh5broPMLJinpGUPJhx7BmT/ueNNGBnMl4tnqqBD4D/C
-         HNNA==
-X-Gm-Message-State: AOAM5306Tcy2KXzZE5fiaTJ4qFsMKnOU+NCiawHt4aog+yaCdHg3+SC/
-        wwF0/m1mFlnKAZ5fxxsprBUGUVllylfegp//vf65AQ==
-X-Google-Smtp-Source: ABdhPJx8L1OiCbNFAi5Sliu7v9cXX6Ed/uwWX333oVtC4BVqOz5Cs6zhmcXllfQaAoaMy9QHY2yTF0fhz6TiuhuH5rw=
-X-Received: by 2002:a62:ce41:0:b029:160:c0c:e03d with SMTP id
- y62-20020a62ce410000b02901600c0ce03dmr4426890pfg.15.1603836222920; Tue, 27
- Oct 2020 15:03:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NOIDTRFCD+4gLa0iV6oczkhHHisCeCf4dMyrXVdDhjA=;
+        b=kaXyXiBcKinBHwWT/pKd14HQXooH9fXiidJfhJDc5SyArfkJTjttFPQsjtMciB2VTX
+         eFQQzoVxNp0L2668A4p/PR7TB57vZf9v13tjlOkws8Lzos2shdQ9a4ENv23K2lYFGLI9
+         VAJoPwyNGcvFunRAC5uwHTO2bkw6EWPDN2ycFgL4B3LQZ2b/57tSGpszvLgiAV+ZTgap
+         GdzNAve/fFjucV6KKMXtBB7SQ/6y4ol3i3nP52P4BP7TitexfiVSicE9HAFW9jJw8GuP
+         STWAeAWAQrRxag3EthX0mXutTLih3LtyUr3BGt3/13VlyAWupj1kMZRK5TWuGaGk0bCI
+         oqXQ==
+X-Gm-Message-State: AOAM531Az/weU1TK6ZiX1d9zfKvcIZlcBj1QauQpSXYLiBigrdI2pJ4E
+        UPVjXz2eN0gIdnMGHThVDjhgkn9FWYVzuz/W
+X-Google-Smtp-Source: ABdhPJwq5e0F2RFpd5QVVLLtqJegZnMqaRVmZ9iGU9NG1j77209AW1rmjf4+lmNS5bKOD3BHDlE6Tw==
+X-Received: by 2002:a05:6402:1bc9:: with SMTP id ch9mr4702603edb.386.1603836924972;
+        Tue, 27 Oct 2020 15:15:24 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a03f:689e:3400:b894:bc77:ad21:b2db])
+        by smtp.gmail.com with ESMTPSA id s25sm1668289ejc.29.2020.10.27.15.15.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 15:15:24 -0700 (PDT)
+From:   David Verbeiren <david.verbeiren@tessares.net>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: [PATCH bpf v2] bpf: zero-fill re-used per-cpu map element
+Date:   Tue, 27 Oct 2020 23:13:24 +0100
+Message-Id: <20201027221324.27894-1-david.verbeiren@tessares.net>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <20201023123754.30304-1-david.verbeiren@tessares.net>
+References: <20201023123754.30304-1-david.verbeiren@tessares.net>
 MIME-Version: 1.0
-References: <20201027205723.12514-1-ardb@kernel.org> <CAKwvOdmSaVcgq2eKRjRL+_StdFNG2QnNe3nGCs2PWfH=HceadA@mail.gmail.com>
- <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com>
-In-Reply-To: <CAMj1kXHb8Fe9fqpj4-90ccEMB+NJ6cbuuog-2Vuo7tr7VjZaTA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Oct 2020 15:03:31 -0700
-Message-ID: <CAKwvOdnfkZXJdZkKO6qT53j6nH4HF=CcpUZcr7XOqdnQLSShmw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
- disable GCSE
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 2:50 PM Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 27 Oct 2020 at 22:20, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Tue, Oct 27, 2020 at 1:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> > > index 6e390d58a9f8..ac3fa37a84f9 100644
-> > > --- a/include/linux/compiler_types.h
-> > > +++ b/include/linux/compiler_types.h
-> > > @@ -247,10 +247,6 @@ struct ftrace_likely_data {
-> > >  #define asm_inline asm
-> > >  #endif
-> > >
-> > > -#ifndef __no_fgcse
-> > > -# define __no_fgcse
-> > > -#endif
-> > > -
-> > Finally, this is going to disable GCSE for the whole translation unit,
-> > which may be overkill.   Previously it was isolated to one function
-> > definition.  You could lower the definition of the preprocessor define
-> > into kernel/bpf/core.c to keep its use isolated as far as possible.
-> >
->
-> Which preprocessor define?
+Zero-fill element values for all other cpus than current, just as
+when not using prealloc. This is the only way the bpf program can
+ensure known initial values for all cpus ('onallcpus' cannot be
+set when coming from the bpf program).
 
-__no_fgcse
+The scenario is: bpf program inserts some elements in a per-cpu
+map, then deletes some (or userspace does). When later adding
+new elements using bpf_map_update_elem(), the bpf program can
+only set the value of the new elements for the current cpu.
+When prealloc is enabled, previously deleted elements are re-used.
+Without the fix, values for other cpus remain whatever they were
+when the re-used entry was previously freed.
 
->
-> > I'm fine with either approach, but we should avoid new warnings for
-> > clang.  Thanks for the patch!
+Fixes: 6c9059817432 ("bpf: pre-allocate hash map elements")
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
+---
 
+Notes:
+    v2:
+      - Moved memset() to separate pcpu_init_value() function,
+        which replaces pcpu_copy_value() but delegates to it
+        for the cases where no memset() is needed (Andrii).
+      - This function now also avoids doing the memset() for
+        the current cpu for which the value must be set
+        anyhow (Andrii).
+      - Same pcpu_init_value() used for per-cpu LRU map
+        (Andrii).
+    
+      Note that I could not test the per-cpu LRU other than
+      by running the bpf selftests. lru_map and maps tests
+      passed but for the rest of the test suite, I don't
+      think I know how to spot problems...
+    
+      Question: Is it ok to use raw_smp_processor_id() in
+      these contexts? bpf prog context should be fine, I think.
+      Is it also ok in the syscall context?
+
+ kernel/bpf/hashtab.c | 30 ++++++++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 1815e97d4c9c..1fccba6e88c4 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -821,6 +821,32 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
+ 	}
+ }
+ 
++static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr,
++			    void *value, bool onallcpus)
++{
++	/* When using prealloc and not setting the initial value on all cpus,
++	 * zero-fill element values for other cpus (just as what happens when
++	 * not using prealloc). Otherwise, bpf program has no way to ensure
++	 * known initial values for cpus other than current one
++	 * (onallcpus=false always when coming from bpf prog).
++	 */
++	if (htab_is_prealloc(htab) && !onallcpus) {
++		u32 size = round_up(htab->map.value_size, 8);
++		int current_cpu = raw_smp_processor_id();
++		int cpu;
++
++		for_each_possible_cpu(cpu) {
++			if (cpu == current_cpu)
++				bpf_long_memcpy(per_cpu_ptr(pptr, cpu), value,
++						size);
++			else
++				memset(per_cpu_ptr(pptr, cpu), 0, size);
++		}
++	} else {
++		pcpu_copy_value(htab, pptr, value, onallcpus);
++	}
++}
++
+ static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
+ {
+ 	return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
+@@ -891,7 +917,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
+ 			}
+ 		}
+ 
+-		pcpu_copy_value(htab, pptr, value, onallcpus);
++		pcpu_init_value(htab, pptr, value, onallcpus);
+ 
+ 		if (!prealloc)
+ 			htab_elem_set_ptr(l_new, key_size, pptr);
+@@ -1183,7 +1209,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+ 		pcpu_copy_value(htab, htab_elem_get_ptr(l_old, key_size),
+ 				value, onallcpus);
+ 	} else {
+-		pcpu_copy_value(htab, htab_elem_get_ptr(l_new, key_size),
++		pcpu_init_value(htab, htab_elem_get_ptr(l_new, key_size),
+ 				value, onallcpus);
+ 		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
+ 		l_new = NULL;
 -- 
-Thanks,
-~Nick Desaulniers
+2.29.0
+
