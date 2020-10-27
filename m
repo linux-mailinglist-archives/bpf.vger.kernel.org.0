@@ -2,108 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C2B29A39E
-	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 05:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC0E29A490
+	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 07:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505401AbgJ0EaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Oct 2020 00:30:19 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:33927 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444598AbgJ0EaS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 00:30:18 -0400
-Received: by mail-pf1-f195.google.com with SMTP id o129so182503pfb.1;
-        Mon, 26 Oct 2020 21:30:18 -0700 (PDT)
+        id S2506316AbgJ0GOI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Oct 2020 02:14:08 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:37565 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506314AbgJ0GOI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 02:14:08 -0400
+Received: by mail-wm1-f41.google.com with SMTP id c16so219330wmd.2;
+        Mon, 26 Oct 2020 23:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EvxluNYScqE9/+oNpimTLZ/MpaH9PmvWUZKFcfNbe9w=;
-        b=eg06qM1loGza6vY7nRp0z7TUUiVYvjMRW/Vnr0JOIKrCF/MCSSbaFsQ4jhm9+Ov4Bt
-         zb/gz29Etk7mERr2UgirYbMPi+Sv9qDISaTLD+s2FnaQd3KyAS0cN2ZViOVzBFFnHqXH
-         vbqDldI2g3OJNYFQ90A2n8w7envMcS8herRPB9UwWI3zJr3pa+Owo4btMwH0+RnR3+2C
-         p0T6o1JmBEIhq51Q7XEIezVieTKY2aBJP16b+9c/usDfroiHfo+GHXfcEoRiuNT5vmBx
-         A7cIqLlgz43cxfV74bAmt0Arv1BUGogeUkybojd99AQMTuz+gvgPCC3e3F3x5WJSa8J+
-         6WAQ==
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jfo31Pg0Y7mNoQfq9W2rm3LaBQTFU19PRMYhqK7FonA=;
+        b=WHPoAqPE0Dd/RhKzTIxJwQH+MFeHpNXlvqU0h7kdlg1bE8i0aPbIeAZsk3hw1vgRip
+         TQuBp4mC1gN35ZWzblEla1HJM8N6X7WKrWXST8kLDJqgH6QmT0N62BWUQc27l21rQZRq
+         jVOKJjyoJdGIgtp4tJvmXDvChbS2xUqO8q3o+hpykn6hchir4SpuhRCH/uzoLfoqWsaG
+         pd5iNEVN4FyK7ck56tlLqUQfijGNK6kBRDydA0jMzNA6pB0xG+y3qej+9mA6DVxDuJHR
+         XaTtm5fjg8vmn1XStmo1KumJU/wBhVJ+ZDsH9Orr26Q+gTnUN4rpg5i67wjxI/966aDn
+         lfoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EvxluNYScqE9/+oNpimTLZ/MpaH9PmvWUZKFcfNbe9w=;
-        b=gUIZAOuquxanU/OWFR688uaQE2+ERiJWPjnykRFDR80T9k2bqnLvtul6hzLz/5Bz1u
-         xR+EkfRMANiOhpNhdsyqt2JmLcElER7qNZML858xnQj/8R/Qrt+xbgdW2mReJxrg4s8A
-         tEWiq/C4+WDP7sDNXjWA3oJIq3nNe8upz774vk8CKx8iDDvz1PYkBtQk/kp0w7viM2Vi
-         SRnUVM4as4lrLWBeyT4ZjJm7IAahH66PDrISr7omyfbi5J3HUVdmxr8ZSUA54Dbuv7gc
-         Ip/mYsn4/5vSc/LUk/+nXYNieorkZRoePFU3Y7ffPmbYXKnGdEr8jkA4qgYOlBSeBKgC
-         CDYg==
-X-Gm-Message-State: AOAM532uVdaYjEIkiH+dQmRudGWj9ccmdhjregFztv5rTGPX7ZeNlxLS
-        Lv2PdSUDSJyAjSGPXbRNSSY=
-X-Google-Smtp-Source: ABdhPJyoLi8xWvgUHzfW1mpR0/pR9kM8v65Q7bgu94YbETTydWKda4uy3DFjX8BrzmvhlErSD2foow==
-X-Received: by 2002:a62:3004:0:b029:156:47d1:4072 with SMTP id w4-20020a6230040000b029015647d14072mr580435pfw.63.1603773017827;
-        Mon, 26 Oct 2020 21:30:17 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::4:6966])
-        by smtp.gmail.com with ESMTPSA id h2sm324403pjv.15.2020.10.26.21.30.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 21:30:16 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 21:30:14 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jfo31Pg0Y7mNoQfq9W2rm3LaBQTFU19PRMYhqK7FonA=;
+        b=UprbWufSixD7nRQ/upOurjOOHKWXM37g1N5SGjjc3J20n7hUi/4fAk3ndq9AQ7Ou2t
+         Bg+vLkDaa/c+Yiu0J5HYi5GyrXy9ItUTQgTT0GBntHMObNijZm+bVFQieVPlglhWGpYl
+         qjjqTH2UGJgCCdgmUeEeKIkHP3/GLgPourbUS4koRVlHQBFwOPBBXoNrtFEMdAI/gxng
+         sp2qTwACV2dcgk+TfAbO2SXTQCodD0DzDeoWwN0Ewq0Aym7szeD4hhSe+ln3Wqwv/UCt
+         zvUiJJfBWOP9gONONy8UuG4Ul8qp3ZHDdK1f1dT1/h5VeEViR3oaWhkpKv/tzXmHm/y9
+         sl9w==
+X-Gm-Message-State: AOAM530LvzEEIFDIMTyDBP8UOlf4ht0fusVWrucIclgEzbzi3Wo1AuM1
+        ExJ+symxDo4PusQVEwfjOds=
+X-Google-Smtp-Source: ABdhPJyeBBAzzf4v0qJDy0pr93s4VjEbFAKQ9XmS93oq+JSHL537pXNmrsKz2g4mKxXCEYsD92OKYw==
+X-Received: by 2002:a1c:b486:: with SMTP id d128mr813191wmf.164.1603779245705;
+        Mon, 26 Oct 2020 23:14:05 -0700 (PDT)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id v189sm622729wmg.14.2020.10.26.23.14.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 23:14:04 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: Re: [RFC bpf-next 00/16] bpf: Speed up trampoline attach
-Message-ID: <20201027043014.ebzcbzospzsaptvu@ast-mbp.dhcp.thefacebook.com>
-References: <20201022082138.2322434-1-jolsa@kernel.org>
- <20201022093510.37e8941f@gandalf.local.home>
- <20201022141154.GB2332608@krava>
- <20201022104205.728dd135@gandalf.local.home>
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Jann Horn <jannh@google.com>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco>
+ <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco>
+ <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+ <20200930232456.GB1260245@cisco>
+ <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+ <CAG48ez3kpEDO1x_HfvOM2R9M78Ach9O_4+Pjs-vLLfqvZL+13A@mail.gmail.com>
+ <656a37b5-75e3-0ded-6ba8-3bb57b537b24@gmail.com>
+ <CAG48ez2Uy8=Tz9k1hcr0suLPHjbJi1qUviSGzDQ-XWEGsdNU+A@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <e2643168-b5d5-4d8c-947a-7895bcabc268@gmail.com>
+Date:   Tue, 27 Oct 2020 07:14:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022104205.728dd135@gandalf.local.home>
+In-Reply-To: <CAG48ez2Uy8=Tz9k1hcr0suLPHjbJi1qUviSGzDQ-XWEGsdNU+A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:42:05AM -0400, Steven Rostedt wrote:
-> On Thu, 22 Oct 2020 16:11:54 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
+On 10/26/20 4:54 PM, Jann Horn wrote:
+> On Sun, Oct 25, 2020 at 5:32 PM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+[...]
+>> I tried applying the patch below to vanilla 5.9.0.
+>> (There's one typo: s/ENOTCON/ENOTCONN).
+>>
+>> It seems not to work though; when I send a signal to my test
+>> target process that is sleeping waiting for the notification
+>> response, the process enters the uninterruptible D state.
+>> Any thoughts?
 > 
-> > I understand direct calls as a way that bpf trampolines and ftrace can
-> > co-exist together - ebpf trampolines need that functionality of accessing
-> > parameters of a function as if it was called directly and at the same
-> > point we need to be able attach to any function and to as many functions
-> > as we want in a fast way
+> Ah, yeah, I think I was completely misusing the wait API. I'll go change that.
 > 
-> I was sold that bpf needed a quick and fast way to get the arguments of a
-> function, as the only way to do that with ftrace is to save all registers,
-> which, I was told was too much overhead, as if you only care about
-> arguments, there's much less that is needed to save.
-> 
-> Direct calls wasn't added so that bpf and ftrace could co-exist, it was
-> that for certain cases, bpf wanted a faster way to access arguments,
-> because it still worked with ftrace, but the saving of regs was too
-> strenuous.
+> (Btw, in general, for reports about hangs like that, it can be helpful
+> to have the contents of /proc/$pid/stack. And for cases where CPUs are
+> spinning, the relevant part from the output of the "L" sysrq, or
+> something like that.)
 
-Direct calls in ftrace were done so that ftrace and trampoline can co-exist.
-There is no other use for it.
+Thanks for the tipcs!
 
-Jiri,
-could you please redo your benchmarking hardcoding ftrace_managed=false ?
-If going through register_ftrace_direct() is indeed so much slower
-than arch_text_poke() then something gotta give.
-Either register_ftrace_direct() has to become faster or users
-have to give up on co-existing of bpf and ftrace.
-So far not a single user cared about using trampoline and ftrace together.
-So the latter is certainly an option.
+> Also, I guess we can probably break this part of UAPI after all, since
+> the only user of this interface seems to currently be completely
+> broken in this case anyway? So I think we want the other
+> implementation without the ->canceled_reqs logic after all.
 
-Regardless, the patch 7 (rbtree of kallsyms) is probably good on its own.
-Can you benchmark it independently and maybe resubmit if it's useful
-without other patches?
+Okay.
+
+> I'm a bit on the fence now on whether non-blocking mode should use
+> ENOTCONN or not... I guess if we returned ENOENT even when there are
+> no more listeners, you'd have to disambiguate through the poll()
+> revents, which would be kinda ugly?
+
+I must confess, I'm not quite clear on which two cases you 
+are trying to distinguish. Can you elaborate?
+
+> I'll try to turn this into a proper patch submission...
+
+Thank you!!
+
+Cheers,
+
+Michael
+
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
