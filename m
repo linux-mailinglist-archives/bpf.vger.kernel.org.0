@@ -2,143 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8C829AD40
-	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 14:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ADC29AD82
+	for <lists+bpf@lfdr.de>; Tue, 27 Oct 2020 14:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410461AbgJ0N0d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Oct 2020 09:26:33 -0400
-Received: from mx.der-flo.net ([193.160.39.236]:45332 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440857AbgJ0N0d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 09:26:33 -0400
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id D349F442C1; Tue, 27 Oct 2020 14:26:30 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: *
-X-Spam-Status: No, score=1.5 required=4.0 tests=ALL_TRUSTED,SORTED_RECIPS
-        autolearn=no autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 35558442C1;
-        Tue, 27 Oct 2020 14:25:53 +0100 (CET)
-Date:   Tue, 27 Oct 2020 14:25:42 +0100
-From:   Florian Lehner <dev@der-flo.net>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        dev@der-flo.net, john.fastabend@gmail.com, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3] bpf: Lift hashtab key_size limit
-Message-ID: <20201027132542.GA2902@der-flo.net>
-References: <20201024080541.51683-1-dev@der-flo.net>
- <CAEf4BzY-bNN7fx2eAvRBq89pDHptEqoftgSSF=0dv_GgeNACvw@mail.gmail.com>
+        id S1752348AbgJ0NhM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Oct 2020 09:37:12 -0400
+Received: from mail.efficios.com ([167.114.26.124]:44956 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752347AbgJ0NhL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 09:37:11 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3D86E2C212D;
+        Tue, 27 Oct 2020 09:37:09 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uOhxkHk0w0PA; Tue, 27 Oct 2020 09:37:09 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E0F1E2C203F;
+        Tue, 27 Oct 2020 09:37:08 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E0F1E2C203F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1603805828;
+        bh=5vxbruFVegvc+6TjTUjdAWbbpMPPX6No3cdGEm7syY0=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=XfwWiQxr7vg4LSL6tApC2uCPISf2hu6lBusE69I8zAy/icwY5kzj1hTV4Kmjx0AF+
+         0HaDK11C9EvwAJpxnrwSCcu34p62jB+V/u5VJ0D4/5s8OPZ631SDvGQMLLLt2yokVG
+         iWp2fEYw5QAkYI5dmxWrpVkBXAsG2nGf+gV3bbZxmOZru1cflkG1m6na9prE1ShHzB
+         d3s2k9cNj3pIe0HxwnNSlgee7Fwa7jzP6u2v9IDJbO43LIKh13L4Iye47Ig1KsmtOY
+         S6KkTevvTbh9AgjlCHKUDNb2xPLRESx4CoKQ3ClrWEt+zOn5YWqRUq0epIrSuERo63
+         nMVEA19qfBvSg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id vn7AgBRFUqT6; Tue, 27 Oct 2020 09:37:08 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id CD58A2C212B;
+        Tue, 27 Oct 2020 09:37:08 -0400 (EDT)
+Date:   Tue, 27 Oct 2020 09:37:08 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        bpf <bpf@vger.kernel.org>
+Message-ID: <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com> <20201023195352.26269-2-mjeanson@efficios.com> <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [RFC PATCH 1/6] tracing: introduce sleepable tracepoints
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzY-bNN7fx2eAvRBq89pDHptEqoftgSSF=0dv_GgeNACvw@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3968)
+Thread-Topic: tracing: introduce sleepable tracepoints
+Thread-Index: 4pHNdC5/eJo5J7MQUBxo9CiBOWhRyg==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 04:07:58PM -0700, Andrii Nakryiko wrote:
-> >
-> > Signed-off-by: Florian Lehner <dev@der-flo.net>
-> > ---
-> 
-> You dropped the ack from John, btw.
 
-I was not sure if it is ok to keep the ACK for an updated patch. So I
-did not include it.
+----- On Oct 26, 2020, at 6:43 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
 
-> >  kernel/bpf/hashtab.c                          | 16 +++----
-> >  .../selftests/bpf/prog_tests/hash_large_key.c | 28 ++++++++++++
-> >  .../selftests/bpf/progs/test_hash_large_key.c | 45 +++++++++++++++++++
-> >  tools/testing/selftests/bpf/test_maps.c       |  2 +-
-> >  4 files changed, 79 insertions(+), 12 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
-> >
-> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> > index 1815e97d4c9c..10097d6bcc35 100644
-> > --- a/kernel/bpf/hashtab.c
-> > +++ b/kernel/bpf/hashtab.c
-> > @@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
-> >             attr->value_size == 0)
-> >                 return -EINVAL;
-> >
-> > -       if (attr->key_size > MAX_BPF_STACK)
-> > -               /* eBPF programs initialize keys on stack, so they cannot be
-> > -                * larger than max stack size
-> > -                */
-> > -               return -E2BIG;
-> > -
-> > -       if (attr->value_size >= KMALLOC_MAX_SIZE -
-> > -           MAX_BPF_STACK - sizeof(struct htab_elem))
-> > -               /* if value_size is bigger, the user space won't be able to
-> > -                * access the elements via bpf syscall. This check also makes
-> > -                * sure that the elem_size doesn't overflow and it's
-> > +       if ((attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
+> On Fri, Oct 23, 2020 at 03:53:47PM -0400, Michael Jeanson wrote:
+>> -#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
+>> +#define __DO_TRACE(tp, proto, args, cond, rcuidle, tp_flags)		\
+>>  	do {								\
+>>  		struct tracepoint_func *it_func_ptr;			\
+>>  		void *it_func;						\
+>>  		void *__data;						\
+>>  		int __maybe_unused __idx = 0;				\
+>> +		bool maysleep = (tp_flags) & TRACEPOINT_MAYSLEEP;	\
+>>  									\
+>>  		if (!(cond))						\
+>>  			return;						\
+>> @@ -170,8 +178,13 @@ static inline struct tracepoint
+>> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>  		/* srcu can't be used from NMI */			\
+>>  		WARN_ON_ONCE(rcuidle && in_nmi());			\
+>>  									\
+>> -		/* keep srcu and sched-rcu usage consistent */		\
+>> -		preempt_disable_notrace();				\
+>> +		if (maysleep) {						\
+>> +			might_sleep();					\
 > 
-> key_size+value_size can overflow, can't it? So probably want to cast
-> to (size_t) or __u64?
-> 
+> The main purpose of the patch set is to access user memory in tracepoints,
+> right?
 
-I will add this cast to u64.
+Yes, exactly.
 
-> > +           sizeof(struct htab_elem))
-> > +               /* if key_size + value_size is bigger, the user space won't be
-> > +                * able to access the elements via bpf syscall. This check
-> > +                * also makes sure that the elem_size doesn't overflow and it's
-> >                  * kmalloc-able later in htab_map_update_elem()
-> >                  */
-> >                 return -E2BIG;
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/hash_large_key.c b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-> > new file mode 100644
-> > index 000000000000..962f56060b76
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-> > @@ -0,0 +1,28 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2020 Florian Lehner
-> > +
-> > +#include <test_progs.h>
-> > +
-> > +void test_hash_large_key(void)
-> > +{
-> > +       const char *file = "./test_hash_large_key.o";
-> > +       int prog_fd, map_fd[2];
-> > +       struct bpf_object *obj = NULL;
-> > +       int err = 0;
-> > +
-> > +       err = bpf_prog_load(file, BPF_PROG_TYPE_CGROUP_SKB, &obj, &prog_fd);
-> 
-> Please utilize the BPF skeleton in the new tests.
-> 
+> In such case I suggest to use stronger might_fault() here.
+> We used might_sleep() in sleepable bpf and it wasn't enough to catch
+> a combination where sleepable hook was invoked while mm->mmap_lock was
+> taken which may cause a deadlock.
 
-I will update the test and utilize the BPF skeleton.
+Good point! We will do that for the next round.
 
-> > +       if (CHECK_FAIL(err)) {
-> > +               printf("test_hash_large_key: bpf_prog_load errno %d", errno);
-> > +               goto close_prog;
-> > +       }
-> > +
-> > +       map_fd[0] = bpf_find_map(__func__, obj, "hash_map");
-> > +       if (CHECK_FAIL(map_fd[0] < 0))
-> > +               goto close_prog;
-> > +       map_fd[1] = bpf_find_map(__func__, obj, "key_map");
-> > +       if (CHECK_FAIL(map_fd[1] < 0))
-> > +               goto close_prog;
+By the way, we named this "sleepable" tracepoint (with flag TRACEPOINT_MAYSLEEP),
+but we are open to a better name. Would TRACEPOINT_MAYFAULT be more descriptive ?
+(a "faultable" tracepoint sounds weird though)
+
+Thanks,
+
+Mathieu
+
 > 
-> You are not really checking much here.
-> 
-> Why don't you check that the value was set to 42 here? Consider also
-> using big global variables as your key and value. You can specify them
-> from user-space with BPF skeleton easily to any custom value (not just
-> zeroes).
-> 
-> 
-> > +
-> > +close_prog:
-> > +       bpf_object__close(obj);
-> > +}
-> 
-> [...]
+>> +			rcu_read_lock_trace();				\
+>> +		} else {						\
+>> +			/* keep srcu and sched-rcu usage consistent */	\
+>> +			preempt_disable_notrace();			\
+> > +		}							\
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
