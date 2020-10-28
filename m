@@ -2,123 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2392029CD5E
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB6629CD6E
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 02:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgJ1BiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1725867AbgJ1BiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 27 Oct 2020 21:38:19 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:45753 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1833061AbgJ0XzD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Oct 2020 19:55:03 -0400
-Received: by mail-ed1-f67.google.com with SMTP id dg9so3252130edb.12
-        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 16:55:01 -0700 (PDT)
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42851 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1833076AbgJ1AGw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Oct 2020 20:06:52 -0400
+Received: by mail-pf1-f195.google.com with SMTP id x13so1866821pfa.9
+        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 17:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KltW5WB7nh9FObbMtAxJQyGKMUmzgBf2jMpmw0XbnqA=;
-        b=wOFqmJWQKCHXYXtesyDb2GRVCsde5sIaS6tCQxPY0hkqe7wvf95wmM/WdkfKOwTX6L
-         ldhdtlxJjsKasB3nt/LcLTPi1FAUPZlMkAMejBWZVY13mnKfkeBAXaKaFnUA+XGVYZ+u
-         4TUWKyfRXM4t7C4q/JrA7rxhaFYKqEah5dCPmuqeIUN15oEcipcEUD49yLsZPHHSKCq1
-         rVPcffanWjK0iP1C0wntSlJjxgG8Urjx2RdKvLQm2/dGgTwOYkYmrxOmGM7OGFUo+ydK
-         k6M/6JFSDWrDsgfYH5MBSOHsKs9bAZIOM5sv7i9rGNVFvAMr94IRU9SgJT73cr9QfIyp
-         gp3Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SkTc2vk73nmebVshjgjHKREV7i/15yy96aB46LsoBJM=;
+        b=jq2lkcWdmOTv8Lyx6yvybZKderM4WXlS2x5SBBIvdhQC/Hadg0P/Asbj5KmjCOTFJW
+         b/5r/M8+iPrJTWUBXb1TpZz1FSZE9Wh3YyzP9ty15mnJxMgQl+mm7WMRmhYiQZc1bFhD
+         kE4RwvzkUp3hEXlMoBodJdAcAXdxgbK7pYOyo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KltW5WB7nh9FObbMtAxJQyGKMUmzgBf2jMpmw0XbnqA=;
-        b=Gm0D3f97Lx45zHuFLeyKxPvrGVbjmGWJKf5XfS+5QRhSSywsoZPdrVEQ1BpqMvY8Ke
-         YiYQRxa6EHd470Olm5mn/SI7vEn37q+KDpQy7P8xhnEGjAFhp1nUtS5BQYSokajYKMeI
-         JGF3WTkjogX+Py09ut1W+M7ETjwrK7xCymQqNPbPlnzW7W7/lpxn0BGVVnSU5MUuk5K/
-         /A8Hv6AInoeqBmFHTZQdKr1tbe52/NnS2HguecplbBwV33AvKnGAcoVZxKK/gHSED0g7
-         Pu4AaUdGFQgDLn/507bUfj5LETcRdPYTViV2SQm7btKyfOXA0z8xWBUjCU8Wu6sMX+an
-         NAzA==
-X-Gm-Message-State: AOAM531IeJ7cFSZK15WpTrKBptgosxDp1+Ca5W3ylc+v2/F76FsLBhMW
-        WAhW7WrJKgA3P4IMcG+FzWClVJ7QmEfTdzwKVV1mmg==
-X-Google-Smtp-Source: ABdhPJxcK6X5g6DskaxzCUWkXWbt0gzFPeJD/e4ZpL4bZzpV5QJmaXtQt+UlTDMbM5AxxWsViaU8yLjULq+7hHa1Ek4=
-X-Received: by 2002:a50:eb8e:: with SMTP id y14mr5055957edr.285.1603842900302;
- Tue, 27 Oct 2020 16:55:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SkTc2vk73nmebVshjgjHKREV7i/15yy96aB46LsoBJM=;
+        b=cZADaEbNkJv6DfuOmNl+2DjFEN2hk6TxsJaziYbJBeafYBBYvDS4gvfJzPG5tC68Dp
+         dhyuAPQ1+TS9YCNOytWjzO5e/0hqQGjvD/0YfGRHtSKkS2qOzhSCtE0euAlf7aX6LLD2
+         fgsitMdf9go3hbsLBxkQz6xXUmA260sQkYBtFF83gziSsAU4KQgstRbS5TqMvE060mYC
+         xBolbYVPR0lQFw4wXa01bKr8/dbNFTMaWx9S0+6iXftRvJIt/EdWjLWFN0JWKZwZCcDJ
+         o46ZRRwav5ZkpeIEGApbje9YMfxsNM5foBENN5y+8C5p8ih3+X9inFKF0Sj/qEkv3/+G
+         QmIQ==
+X-Gm-Message-State: AOAM533G9qeVbT6si45QeXt/W58oep6zpxAdPOTAeiRrhj5HeHFWkGYm
+        OCWdBJYtHWugHc/NHCDxcoVbXA==
+X-Google-Smtp-Source: ABdhPJwkntKG+LnH43OBYo1mCeJ2Eb7oSC1DQiZMoYaqhPnztVbnQQPjzDgbtBZac+mXdy1h1HBdYQ==
+X-Received: by 2002:aa7:9ad7:0:b029:160:948:44a6 with SMTP id x23-20020aa79ad70000b0290160094844a6mr4533190pfp.25.1603843611476;
+        Tue, 27 Oct 2020 17:06:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 21sm3688285pfw.36.2020.10.27.17.06.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 17:06:50 -0700 (PDT)
+Date:   Tue, 27 Oct 2020 17:06:49 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v2 seccomp 1/6] seccomp: Move config option SECCOMP to
+ arch/Kconfig
+Message-ID: <202010271653.B6D7D6B@keescook>
+References: <cover.1600951211.git.yifeifz2@illinois.edu>
+ <9ede6ef35c847e58d61e476c6a39540520066613.1600951211.git.yifeifz2@illinois.edu>
+ <CAMuHMdXTLKr6pvoE+JAdn_P5kVxL6gx8PJ8mqfXcS+SF+pRbkQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201026223617.2868431-1-jolsa@kernel.org> <20201026223617.2868431-2-jolsa@kernel.org>
- <CAEf4Bzan6=Jjfez17=S55Zu9EQTF_J2dg2DST4v+CfENm8cbUQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzan6=Jjfez17=S55Zu9EQTF_J2dg2DST4v+CfENm8cbUQ@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 27 Oct 2020 16:54:49 -0700
-Message-ID: <CA+khW7hriWpy9-V9WgdMEv_5814_bzxrZ6we8=525ecanXUjSg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] btf_encoder: Move find_all_percpu_vars in generic
- config function
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXTLKr6pvoE+JAdn_P5kVxL6gx8PJ8mqfXcS+SF+pRbkQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Agree with Andrii. The function name 'config' is too generic and
-'config_per_var' is confusing to me. But the rest looked good. Thanks
-for taking a look at this.
-
-Hao
-
-
-On Tue, Oct 27, 2020 at 4:12 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Oct 26, 2020 at 5:07 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Oct 27, 2020 at 10:52:39AM +0100, Geert Uytterhoeven wrote:
+> Hi Yifei,
+> 
+> On Thu, Sep 24, 2020 at 2:48 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > From: YiFei Zhu <yifeifz2@illinois.edu>
 > >
-> > Moving find_all_percpu_vars under generic onfig function
-> > that walks over symbols and calls config_percpu_var.
+> > In order to make adding configurable features into seccomp
+> > easier, it's better to have the options at one single location,
+> > considering easpecially that the bulk of seccomp code is
+> > arch-independent. An quick look also show that many SECCOMP
+> > descriptions are outdated; they talk about /proc rather than
+> > prctl.
 > >
-> > We will add another config function that needs to go
-> > through all the symbols, so it's better they go through
-> > them just once.
+> > As a result of moving the config option and keeping it default
+> > on, architectures arm, arm64, csky, riscv, sh, and xtensa
+> > did not have SECCOMP on by default prior to this and SECCOMP will
+> > be default in this change.
 > >
-> > There's no functional change intended.
+> > Architectures microblaze, mips, powerpc, s390, sh, and sparc
+> > have an outdated depend on PROC_FS and this dependency is removed
+> > in this change.
 > >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  btf_encoder.c | 126 ++++++++++++++++++++++++++------------------------
-> >  1 file changed, 66 insertions(+), 60 deletions(-)
+> > Suggested-by: Jann Horn <jannh@google.com>
+> > Link: https://lore.kernel.org/lkml/CAG48ez1YWz9cnp08UZgeieYRhHdqh-ch7aNwc4JRBnGyrmgfMg@mail.gmail.com/
+> > Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
+> 
+> Thanks for your patch. which is now commit 282a181b1a0d66de ("seccomp:
+> Move config option SECCOMP to arch/Kconfig") in v5.10-rc1.
+> 
+> > --- a/arch/Kconfig
+> > +++ b/arch/Kconfig
+> > @@ -458,6 +462,23 @@ config HAVE_ARCH_SECCOMP_FILTER
+> >             results in the system call being skipped immediately.
+> >           - seccomp syscall wired up
 > >
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index 2a6455be4c52..2dd26c904039 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -250,7 +250,64 @@ static bool percpu_var_exists(uint64_t addr, uint32_t *sz, const char **name)
-> >         return true;
-> >  }
-> >
-> > -static int find_all_percpu_vars(struct btf_elf *btfe)
-> > +static int config_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
->
-> I find the "config" name completely misleading. How about
-> "collect_percpu_var" or something along those lines?
->
-> > +{
-> > +       const char *sym_name;
-> > +       uint64_t addr;
-> > +       uint32_t size;
+> > +config SECCOMP
+> > +       def_bool y
+> > +       depends on HAVE_ARCH_SECCOMP
+> > +       prompt "Enable seccomp to safely compute untrusted bytecode"
+> > +       help
+> > +         This kernel feature is useful for number crunching applications
+> > +         that may need to compute untrusted bytecode during their
+> > +         execution. By using pipes or other transports made available to
+> > +         the process as file descriptors supporting the read/write
+> > +         syscalls, it's possible to isolate those applications in
+> > +         their own address space using seccomp. Once seccomp is
+> > +         enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
+> > +         and the task is only allowed to execute a few safe syscalls
+> > +         defined by each seccomp mode.
 > > +
->
-> [...]
->
-> > +}
+> > +         If unsure, say Y. Only embedded should say N here.
 > > +
-> > +static int config(struct btf_elf *btfe, bool do_percpu_vars)
->
-> same here, config is generic and misrepresenting what we are doing
-> here. E.g., collect_symbols would probably be more clear.
->
-> >  {
-> >         uint32_t core_id;
-> >         GElf_Sym sym;
->
-> [...]
+> 
+> Please tell me why SECCOMP is special, and deserves to default to be
+> enabled.  Is it really that critical, given only 13.5 (half of sparc
+> ;-) out of 24
+> architectures implement support for it?
+
+That's an excellent point; I missed this in my review as I saw several
+Kconfig already marked "def_bool y" but failed to note it wasn't _all_
+of them. Okay, checking before this patch, these had them effectively
+enabled:
+
+via Kconfig:
+
+parisc
+s390
+um
+x86
+
+via defconfig, roughly speaking:
+
+arm
+arm64
+sh
+
+How about making the default depend on HAVE_ARCH_SECCOMP_FILTER?
+
+These have SECCOMP_FILTER support:
+
+arch/arm/Kconfig:       select HAVE_ARCH_SECCOMP_FILTER if AEABI && !OABI_COMPAT
+arch/arm64/Kconfig:     select HAVE_ARCH_SECCOMP_FILTER
+arch/csky/Kconfig:      select HAVE_ARCH_SECCOMP_FILTER
+arch/mips/Kconfig:      select HAVE_ARCH_SECCOMP_FILTER
+arch/parisc/Kconfig:    select HAVE_ARCH_SECCOMP_FILTER
+arch/powerpc/Kconfig:   select HAVE_ARCH_SECCOMP_FILTER
+arch/riscv/Kconfig:     select HAVE_ARCH_SECCOMP_FILTER
+arch/s390/Kconfig:      select HAVE_ARCH_SECCOMP_FILTER
+arch/sh/Kconfig:        select HAVE_ARCH_SECCOMP_FILTER
+arch/um/Kconfig:        select HAVE_ARCH_SECCOMP_FILTER
+arch/x86/Kconfig:       select HAVE_ARCH_SECCOMP_FILTER
+arch/xtensa/Kconfig:    select HAVE_ARCH_SECCOMP_FILTER
+
+So the "new" promotions would be:
+
+csky
+mips
+powerpc
+riscv
+xtensa
+
+Which would leave only these two:
+
+arch/microblaze/Kconfig:        select HAVE_ARCH_SECCOMP
+arch/sparc/Kconfig:     select HAVE_ARCH_SECCOMP if SPARC64
+
+At this point, given the ubiquity of seccomp usage (e.g. systemd), I
+guess it's not unreasonable to make it def_bool y?
+
+I'm open to suggestions!
+
+-- 
+Kees Cook
