@@ -2,118 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D699129D654
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 23:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3857929D748
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 23:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731141AbgJ1WN6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 18:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731161AbgJ1WN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:13:57 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63162C0613CF
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 15:13:57 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id z5so1093012ejw.7
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 15:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gg/EaFLk9AbLnAJGafga7GK4mhL0MiGRMckcdbCQP44=;
-        b=Qr2glRpNJyYB1wEgmcO7j2dDJ0YYTC0HcATnft1fXy5hzdCT9TQV4nCCI5OmohzHYv
-         jaZsfV337DR46W0TcI+Ok2P7UbclJCCLHCYsNP0QvCCKLn/V/WvwaUZjw3L5oZL2EjBi
-         v4nH/d2otzmLKkyCW2PR8A+POOTuPl8rQfuM6hnRNPWADs/fiO6wnMVUf9vl3Oae0FKV
-         h6F0cvRNBGXfGSgq5uMiyeEihAN4ya5qkYIPxEHMIRZJmXEw7wPZ9fxIAEk1gCRDFAd6
-         JGrbQOV+P9Hob0cwIJ40R4mhbi+F9uFI7T4au5rVbiVvNe9qrK6UQaqdAQQEf5epN2L2
-         ZwTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gg/EaFLk9AbLnAJGafga7GK4mhL0MiGRMckcdbCQP44=;
-        b=O6FsTvp/KM7SFLIfUcUuNSH+EEQ2W8FcT3licRLRlSZHfhaWcPv15+I6X/+LXYo4P9
-         5BtF8TBsXrAUAvi0zHNKXh7IgJ/Ebnqc9fTcGpMS59mCIRz5/IUNTpDuZTqPolGhW8JZ
-         NonA6RPYbpkOadjyXqO55WjEP7IqBzRYCaLj3EoyRbiCJ6gsJp+00gfVbNWzfeiqejFn
-         aHJRxddj5HY+kOMjrcpBFX/Hb1eMS+nTKGJTNAvgBMmTr3wY67UT0CTXBS2X68pE8622
-         F8lO8HCaGRRDPgbOiL3en0S8/rsvTSGQqc0srGgk9p9CifVEMB0Zt6X4PExZL88wlrtN
-         fcKQ==
-X-Gm-Message-State: AOAM5300+CmNJzjN1/d2hL/q21g/hV/D9Mpv/gIOzRn+Djh9cg4G+0+M
-        y7sQOG7eLl/yM0eTMJ6vTtWCfWHReLUVWA==
-X-Google-Smtp-Source: ABdhPJzOLRnn/gCi+t8WLxcqYMWXmzddvrpIa1d39PECWp4w0aND7XCXyZ2rwAZ+CV3hzmJVN62Okg==
-X-Received: by 2002:adf:f643:: with SMTP id x3mr8622889wrp.180.1603882796063;
-        Wed, 28 Oct 2020 03:59:56 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id b5sm6287867wrs.97.2020.10.28.03.59.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 03:59:55 -0700 (PDT)
-Date:   Wed, 28 Oct 2020 12:59:51 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
+        id S1731813AbgJ1WWd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 18:22:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732591AbgJ1WWZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:22:25 -0400
+Received: from localhost (unknown [151.66.125.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52073246C9;
+        Wed, 28 Oct 2020 11:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603885387;
+        bh=nKhGK3Y1PvrhhiSe3Be8yClivksH9012Cv34ky/cpVA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wdmDG2GBTHwcpjOYYPQlmtSoRWfd50tBPDiYqSTyEG8ZBZFUEwBRMTQ3rTFGzIVw7
+         TrxDpE9d39D0+CpnsZbXlVM7jloJDthzgV0Paj8J7WAQh5QVzuthtgTf4ZRC72bP0h
+         yw4v9U6pp8Nj9gx75pBwszf0d72yVKUsi0K5jG8Q=
+Date:   Wed, 28 Oct 2020 12:43:01 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        brouer@redhat.com
+        ilias.apalodimas@linaro.org
 Subject: Re: [PATCH net-next 1/4] net: xdp: introduce bulking for xdp tx
  return path
-Message-ID: <20201028105951.GA52697@apalos.home>
+Message-ID: <20201028114301.GC5386@lore-desk>
 References: <cover.1603824486.git.lorenzo@kernel.org>
  <7495b5ac96b0fd2bf5ab79b12e01bf0ee0fff803.1603824486.git.lorenzo@kernel.org>
- <20201028092734.GA51291@apalos.home>
- <20201028102304.GA5386@lore-desk>
+ <20201028123419.27e1ac54@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="f0KYrhQ4vYSV2aJu"
 Content-Disposition: inline
-In-Reply-To: <20201028102304.GA5386@lore-desk>
+In-Reply-To: <20201028123419.27e1ac54@carbon>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 11:23:04AM +0100, Lorenzo Bianconi wrote:
-> > Hi Lorenzo,
-> 
-> Hi Ilias,
-> 
-> thx for the review.
-> 
-> > 
-> > On Tue, Oct 27, 2020 at 08:04:07PM +0100, Lorenzo Bianconi wrote:
-> 
+
+--f0KYrhQ4vYSV2aJu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> On Tue, 27 Oct 2020 20:04:07 +0100
+> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>=20
+> > Introduce bulking capability in xdp tx return path (XDP_REDIRECT).
+> > xdp_return_frame is usually run inside the driver NAPI tx completion
+> > loop so it is possible batch it.
+> > Current implementation considers only page_pool memory model.
+> > Convert mvneta driver to xdp_return_frame_bulk APIs.
+> >=20
+> > Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+Hi Jesper,
+
+thx for the review.
+
+>=20
+> I think you/we have to explain better in this commit message, what the
+> idea/concept behind this bulk return is.  Or even explain this as a
+> comment above "xdp_return_frame_bulk".
+>=20
+> Maybe add/append text to commit below:
+>=20
+> The bulk API introduced is a defer and flush API, that will defer
+> the return if the xdp_mem_allocator object is the same, identified
+> via the mem.id field (xdp_mem_info).  Thus, the flush operation will
+> operate on the same xdp_mem_allocator object.
+>=20
+> The bulk queue size of 16 is no coincident.  This is connected to how
+> XDP redirect will bulk xmit (upto 16) frames. Thus, the idea is for the
+> API to find these boundaries (via mem.id match), which is optimal for
+> both the I-cache and D-cache for the memory allocator code and object.
+>=20
+> The data structure (xdp_frame_bulk) used for deferred elements is
+> stored/allocated on the function call-stack, which allows lockfree
+> access.
+
+ack, I will add it in v2
+
+>=20
+>=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
 > [...]
-> 
-> > > +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
-> > > +			   struct xdp_frame_bulk *bq)
-> > > +{
-> > > +	struct xdp_mem_info *mem = &xdpf->mem;
-> > > +	struct xdp_mem_allocator *xa, *nxa;
-> > > +
-> > > +	if (mem->type != MEM_TYPE_PAGE_POOL) {
-> > > +		__xdp_return(xdpf->data, &xdpf->mem, false);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	rcu_read_lock();
-> > > +
-> > > +	xa = bq->xa;
-> > > +	if (unlikely(!xa || mem->id != xa->mem.id)) {
-> > 
-> > Why is this marked as unlikely? The driver passes it as NULL. Should unlikely be
-> > checked on both xa and the comparison?
-> 
-> xa is NULL only for the first xdp_frame in the burst while it is set for
-> subsequent ones. Do you think it is better to remove it?
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index 3814fb631d52..9567110845ef 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -104,6 +104,12 @@ struct xdp_frame {
+> >  	struct net_device *dev_rx; /* used by cpumap */
+> >  };
+> > =20
+> > +#define XDP_BULK_QUEUE_SIZE	16
+>=20
+> Maybe "#define DEV_MAP_BULK_SIZE 16" should be def to
+> XDP_BULK_QUEUE_SIZE, to express the described connection.
 
-Ah correct, missed the general context of the driver this runs in.
+ack, I guess we can fix it in a following patch
 
-> 
-> > 
-> > > +		nxa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
-> > 
-> > Is there a chance nxa can be NULL?
-> 
-> I do not think so since the page_pool is not destroyed while there are
-> in-flight pages, right?
+>=20
+> > +struct xdp_frame_bulk {
+> > +	void *q[XDP_BULK_QUEUE_SIZE];
+> > +	int count;
+> > +	void *xa;
+>=20
+> Just a hunch (not benchmarked), but I think it will be more optimal to
+> place 'count' and '*xa' above the '*q' array.  (It might not matter at
+> all, as we cannot control the start alignment, when this is on the
+> stack.)
 
-I think so but I am not 100% sure. I'll apply the patch and have a closer look
+ack. I will fix in v2.
 
-Cheers
-/Ilias
+>=20
+> > +};
+> [...]
+>=20
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 48aba933a5a8..93eabd789246 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -380,6 +380,57 @@ void xdp_return_frame_rx_napi(struct xdp_frame *xd=
+pf)
+> >  }
+> >  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
+> > =20
+> > +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
+> > +{
+> > +	struct xdp_mem_allocator *xa =3D bq->xa;
+> > +	int i;
+> > +
+> > +	if (unlikely(!xa))
+> > +		return;
+> > +
+> > +	for (i =3D 0; i < bq->count; i++) {
+> > +		struct page *page =3D virt_to_head_page(bq->q[i]);
+> > +
+> > +		page_pool_put_full_page(xa->page_pool, page, false);
+> > +	}
+> > +	bq->count =3D 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
+> > +
+>=20
+> Wondering if we should have a comment that explains the intent and idea
+> behind this function?
+>=20
+> /* Defers return when frame belongs to same mem.id as previous frame */
+>=20
+
+ack.
+
+Regards,
+Lorenzo
+
+> > +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+> > +			   struct xdp_frame_bulk *bq)
+> > +{
+> > +	struct xdp_mem_info *mem =3D &xdpf->mem;
+> > +	struct xdp_mem_allocator *xa, *nxa;
+> > +
+> > +	if (mem->type !=3D MEM_TYPE_PAGE_POOL) {
+> > +		__xdp_return(xdpf->data, &xdpf->mem, false);
+> > +		return;
+> > +	}
+> > +
+> > +	rcu_read_lock();
+> > +
+> > +	xa =3D bq->xa;
+> > +	if (unlikely(!xa || mem->id !=3D xa->mem.id)) {
+> > +		nxa =3D rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+> > +		if (unlikely(!xa)) {
+> > +			bq->count =3D 0;
+> > +			bq->xa =3D nxa;
+> > +			xa =3D nxa;
+> > +		}
+> > +	}
+> > +
+> > +	if (mem->id !=3D xa->mem.id || bq->count =3D=3D XDP_BULK_QUEUE_SIZE)
+> > +		xdp_flush_frame_bulk(bq);
+> > +
+> > +	bq->q[bq->count++] =3D xdpf->data;
+> > +	if (mem->id !=3D xa->mem.id)
+> > +		bq->xa =3D nxa;
+> > +
+> > +	rcu_read_unlock();
+> > +}
+> > +EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
+>=20
+>=20
+> --=20
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>=20
+
+--f0KYrhQ4vYSV2aJu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX5lZQwAKCRA6cBh0uS2t
+rGghAQCsjyWtmmXoycnxIZMORxYbKSaJyXko6AQRy3qh9aoQrQD+JsCSh0fl0EwU
+WBK8b10ukrS2m2shhuMKdnt5EeEM4wc=
+=yZRU
+-----END PGP SIGNATURE-----
+
+--f0KYrhQ4vYSV2aJu--
