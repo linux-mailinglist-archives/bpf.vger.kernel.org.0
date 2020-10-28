@@ -2,129 +2,416 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECA929D390
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 22:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3111C29D485
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 22:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727147AbgJ1VpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 17:45:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:14000 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726259AbgJ1VpD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Oct 2020 17:45:03 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09S1NG5o010394;
-        Tue, 27 Oct 2020 18:28:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=WsM+lcS2bLEBZmF9n0F/D+H0IWH4imIpvFtzJ+gdvrs=;
- b=q4p0Xili46tdFzr/Na3UOG9qXjnu3se+e+w9tehlMdiYbBACdrNcr91LfiOXpLL7mdpV
- XdJ5qSrl4wQt9JrvyYHkjbVlKO3nUbPPLOclidEBCV8yNOzZbDlID5Rs+N0kIpMZZS/l
- oE13cBj0l/0+LrCfAjxZJCM8tJ21WnI8C1U= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34d4hpq0fu-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 27 Oct 2020 18:28:21 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 27 Oct 2020 18:27:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nq31DN9l1ZnCa3wrXHtLj7jtnsTYzlzIHgKrZAgmforHCQ3GU8WQMX4C5whybTdkudd+vSOZmAEij5/Vqj3wqzTJoixFAk8yCfUGcUAjqEzJ90pioDioIfN7t/twPRr8A/eduz9+FtExDpd8mMpJSizSoQbpjryJ19plDy7aVYNKxXLStZP+CgZTlLCoLjgsfzh8lCxc9f+V4B28fqYvQMSjunxNswkeHAf2iZrwhlMUP/WATKf2gb+s5X08SnzpQe1ODIY+XsmPG2FmOdsG5xyctGzhy+OysGGxYkr2J8MxEwlrBNDArwGAO8K/FWWITgIaDi9yIpWR6qqbyv3KYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WsM+lcS2bLEBZmF9n0F/D+H0IWH4imIpvFtzJ+gdvrs=;
- b=mBQ7hGzsKHw/sWd8cmkCYvdfDnOKRtU5nImVSEUL3SUxMhjlw+5OE2ip2Dz3VgXj/Elcg+MiheYbkEh+nzJbmAU5MbNc9e2/vVKQWhamx6BecS3/3wfIssJEGo9K14cwPI2Atj+1RSuI0Ythk+r/9lLxmmdJ3WWF4ssDDv6Xw+a/uv3hduwpLOPmwTfEzZ5QUwrBEGqpHcAMAfeD/f5Z3PlmwpqeWDbYhtpPw2QTEapaBkyKtNvxHvm6ZuI6QcQ9sjSTaKiEJstYO9GTVxnLvV64WvQTLh9NuX/P9kp6kBxTf4PamFDs6Jr0JSW7aLjiQoBXZxvE+aNoAR9fdDR64Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WsM+lcS2bLEBZmF9n0F/D+H0IWH4imIpvFtzJ+gdvrs=;
- b=TxXn50IgOMkTccqGXGYRNYiX98gp8NVPXhWR0Bc402FMoHSPy82zfjGQsd5D2+pmdnx8ZwTYGNhBIv3uKXwKf+NlK243qx/iE8k07sFaub6HzW3/2V4onBnEiCqjyxWLFJ693W/zFd3bxwdbMMBD0skmCcQOgFu0EpDEpbTLeCM=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3512.namprd15.prod.outlook.com (2603:10b6:a03:10a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 28 Oct
- 2020 01:27:21 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3477.028; Wed, 28 Oct 2020
- 01:27:21 +0000
-Date:   Tue, 27 Oct 2020 18:27:15 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     KP Singh <kpsingh@chromium.org>
-CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next 2/5] bpf: Implement get_current_task_btf and
- RET_PTR_TO_BTF_ID
-Message-ID: <20201028012715.z57277wl45odspbs@kafai-mbp>
-References: <20201027170317.2011119-1-kpsingh@chromium.org>
- <20201027170317.2011119-3-kpsingh@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201027170317.2011119-3-kpsingh@chromium.org>
-X-Originating-IP: [2620:10d:c090:400::4:9723]
-X-ClientProxiedBy: MWHPR15CA0055.namprd15.prod.outlook.com
- (2603:10b6:301:4c::17) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1728210AbgJ1VwD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 17:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728236AbgJ1VwA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:52:00 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E01C0613CF;
+        Wed, 28 Oct 2020 14:52:00 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id y10so261177vkl.5;
+        Wed, 28 Oct 2020 14:52:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=YIOUqWyBZIfavDIAu4dN9j2zqYJXRubizG/6KqaU4Tc=;
+        b=u7r1f/kzAgex8NQbV5A+cSGwPBWrxSgYHYVYq3UTXzrwJ4YU7nfo8dsp5WcVZcEfCI
+         GulNQZmgev3dGGvhpv4oYCC464jFTl/7vW9BIQKFLSAQTmPT91nIdCkC6Nd+CADn8mPR
+         2IIMGprRctKbhZzAVQgXCc+dNRPfaqGCwoS7cMqAW5UW16E6AsIOEyzJ9XRGxHXzUNVg
+         toRtxgmDmA4xsib5NYUFPHkAZs3Rlh+KLhIbuGqzwOAAORcSc5F/NLpsEbMxu0P8C7kD
+         w/4UfmzCkvd+K+HmcKsM9z5mcU5jRFdBATK99B/APFNKVp4sFORJlGIlbwq9dNIrTjru
+         ks1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=YIOUqWyBZIfavDIAu4dN9j2zqYJXRubizG/6KqaU4Tc=;
+        b=mXpW5pYE8VcNoF1+rKje5RPHPvnTb/3gmv25vYvYadnmXthio5zpZjY2EKDywHzJGE
+         F7/re78ognjxeQlwPCrdgX+idH1a72lzmIg2/K5rG8Wnlw5SBQ+DViUOj7y6W0oiRjpl
+         ad7khHQLXPCS4X03PE3BTLsCod4br4+LzrjBhD72ehKo3hBahQcO+pB3NELXEXwwkhNl
+         Cg5jyzBr/1arrAVX6rMlvqAcVmNwzflf1v2a/ed5Z7TAZteJZu01ZD7pAS6JGxFmFjeV
+         5ZIjvauW/+BYb4agKckZE2Y/bT9ZAV4ad60PIQVKglbTXNj88BVpgn7PIVgw1vM2+GdK
+         gC2g==
+X-Gm-Message-State: AOAM531mACDltVVRkiuj+h5nXrFxU6YWUOvOnseUPFQs9TBmSn00sKbk
+        8s2ZeFgWgRfK9B/F9aGZ15ytin2EsLjVkg==
+X-Google-Smtp-Source: ABdhPJzoSPlqBzE395zc0+3gCtAIjluHEduOK2pyLmq6FNkdc50liDSOjjTgzYbtBsYk4mWYTOtnEA==
+X-Received: by 2002:a0c:9e53:: with SMTP id z19mr5356512qve.23.1603849635467;
+        Tue, 27 Oct 2020 18:47:15 -0700 (PDT)
+Received: from localhost.localdomain ([2001:470:b:9c3:9e5c:8eff:fe4f:f2d0])
+        by smtp.gmail.com with ESMTPSA id 185sm2080485qke.16.2020.10.27.18.47.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Oct 2020 18:47:14 -0700 (PDT)
+Subject: [bpf-next PATCH 2/4] selftests/bpf: Drop python client/server in
+ favor of threads
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        john.fastabend@gmail.com, kernel-team@fb.com,
+        netdev@vger.kernel.org, edumazet@google.com, brakmo@fb.com,
+        alexanderduyck@fb.com
+Date:   Tue, 27 Oct 2020 18:47:13 -0700
+Message-ID: <160384963313.698509.13129692731727238158.stgit@localhost.localdomain>
+In-Reply-To: <160384954046.698509.132709669068189999.stgit@localhost.localdomain>
+References: <160384954046.698509.132709669068189999.stgit@localhost.localdomain>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::4:9723) by MWHPR15CA0055.namprd15.prod.outlook.com (2603:10b6:301:4c::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 28 Oct 2020 01:27:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c7674bc1-facc-4ddc-e628-08d87ae09df7
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3512:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3512C5FE4F5BD7BE447EDF74D5170@BYAPR15MB3512.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kyoAe7KJqRa5zad4lAQywB8kxhensHrd5gLK7i0F1DAZ5paVmYc5eGCAkACRVw44wTXMBcT5vIS14a+8AGypLstAgUMpAhh7QT0Sbh9QYawm0xTCLXJUnD/KRqYX8fUhaY8KIqfAH00vCj2qHhZGgjIUcv8qQBl2MpzGGh6CienYDNx537gBy307WFo2WO8shsFzR8W+v5xrzSNE8dXY/QWuul7GwcL9W/mvwq5J/iuTGCmErzKk/BqrGYa3OO8z1EX1n9RTihDXWejB1LQUxdClHh4+5bFZoQ99rC3gYLJ8P2xJZOAwqkFDRdo4L25T
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(376002)(39860400002)(396003)(6666004)(316002)(8676002)(66476007)(66556008)(9686003)(5660300002)(66946007)(86362001)(2906002)(4326008)(16526019)(8936002)(4744005)(1076003)(6496006)(33716001)(6916009)(186003)(52116002)(478600001)(54906003)(83380400001)(55016002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: ZFRud/GvEWsAn0EGpsHV7RYpONi3eD68EFcUkMNZ3qnPTY95Ho5N9PF05drJMTbM2qdQfE2w3+N8WVzOtz4mDEVbFClyqj9zHJ097w0BUZaBAGo+B1DvCs1EDunCtXt/QsYSSShRjXL96lsm6QioygcqhQ/nfQt7il/tiOOMeJu9vACM46Jkb7pi3KbCTYEJNERor1CYA+zHQ52BZByakrYNKGMwLSsvESP2JeEOzUF3dZZyRL8BTPML9EmeQVGjJ4y0JgSSm70G2XEcKnW8vwlCni9vLScCHAZrKsDwtZLwjkwj955Eufp4ipso2sr4OarqLNktIJP/5BLJ1wcPv2iSDOZG2WERP9kfEE3K0zeJePCZxHqdjUAw48eo7rigCLjhlk5OHUx3bQLz/7M7lpI0jl11vkA1Fy9tghrGFvMkSZVO2CTTo3hRl94plMDxdDkbm+qGxzkWIdg/TEveaCQlCEV2sNR4bXFI3QUIg4Z+I66pdT3JDv+uuIWXmcuOWXcQbw6WZx5vIdljpp7sGLAcXty7SsoOM73PR0n7LX0Fh96ALr2D5iToAz35ebVQ83H0L2X0fsJnNfXqUzR94dBu8uDXGej36Mazvg+08UGPiV4o9N1/bZHegjWJKlF4U5gbLUICeRr/lLSv5hdA2E2OGlK2r2toEuQDNM9PL1LQ1dQI4/aBXrEMxgKynwpH
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7674bc1-facc-4ddc-e628-08d87ae09df7
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Oct 2020 01:27:21.6706
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yS+/F8kG9htwIKjn8DtoJpblw60YLqbwLekZJlJzxbjZ9W08y35lksOSaP/DJTfZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3512
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-27_17:2020-10-26,2020-10-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
- suspectscore=1 impostorscore=0 adultscore=0 priorityscore=1501
- clxscore=1015 mlxlogscore=993 phishscore=0 lowpriorityscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010280004
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 06:03:14PM +0100, KP Singh wrote:
-[ ... ]
+From: Alexander Duyck <alexanderduyck@fb.com>
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b0790876694f..eb0aef85fc11 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -493,7 +493,8 @@ static bool is_ptr_cast_function(enum bpf_func_id func_id)
->  		func_id == BPF_FUNC_skc_to_tcp6_sock ||
->  		func_id == BPF_FUNC_skc_to_udp6_sock ||
->  		func_id == BPF_FUNC_skc_to_tcp_timewait_sock ||
-> -		func_id == BPF_FUNC_skc_to_tcp_request_sock;
-> +		func_id == BPF_FUNC_skc_to_tcp_request_sock ||
-> +		func_id == BPF_FUNC_get_current_task_btf;
-This change is not needed.  The helper does not take any
-argument or do any type casting.
+Drop the tcp_client/server.py files in favor of using a client and server
+thread within the test case. Specifically we spawn a new thread to play the
+role of the server, and the main testing thread plays the role of client.
+
+Doing this we are able to reduce overhead since we don't have two python
+workers possibly floating around. In addition we don't have to worry about
+synchronization issues and as such the retry loop waiting for the threads
+to close the sockets can be dropped as we will have already closed the
+sockets in the local executable and synchronized the server thread.
+
+Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+---
+ .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |  125 +++++++++++++++++---
+ tools/testing/selftests/bpf/tcp_client.py          |   50 --------
+ tools/testing/selftests/bpf/tcp_server.py          |   80 -------------
+ 3 files changed, 107 insertions(+), 148 deletions(-)
+ delete mode 100755 tools/testing/selftests/bpf/tcp_client.py
+ delete mode 100755 tools/testing/selftests/bpf/tcp_server.py
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+index 5becab8b04e3..71ab82e37eb7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
++++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+@@ -1,14 +1,65 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <inttypes.h>
+ #include <test_progs.h>
++#include <network_helpers.h>
+ 
+ #include "test_tcpbpf.h"
+ #include "cgroup_helpers.h"
+ 
++#define LO_ADDR6 "::1"
+ #define CG_NAME "/tcpbpf-user-test"
+ 
+-/* 3 comes from one listening socket + both ends of the connection */
+-#define EXPECTED_CLOSE_EVENTS		3
++static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
++static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
++
++static void *server_thread(void *arg)
++{
++	struct sockaddr_storage addr;
++	socklen_t len = sizeof(addr);
++	int fd = *(int *)arg;
++	char buf[1000];
++	int client_fd;
++	int err = 0;
++	int i;
++
++	err = listen(fd, 1);
++
++	pthread_mutex_lock(&server_started_mtx);
++	pthread_cond_signal(&server_started);
++	pthread_mutex_unlock(&server_started_mtx);
++
++	if (err < 0) {
++		perror("Failed to listen on socket");
++		err = errno;
++		goto err;
++	}
++
++	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
++	if (client_fd < 0) {
++		perror("Failed to accept client");
++		err = errno;
++		goto err;
++	}
++
++	if (recv(client_fd, buf, 1000, 0) < 1000) {
++		perror("failed/partial recv");
++		err = errno;
++		goto out_clean;
++	}
++
++	for (i = 0; i < 500; i++)
++		buf[i] = '.';
++
++	if (send(client_fd, buf, 500, 0) < 500) {
++		perror("failed/partial send");
++		err = errno;
++		goto out_clean;
++	}
++out_clean:
++	close(client_fd);
++err:
++	return (void *)(long)err;
++}
+ 
+ #define EXPECT_EQ(expected, actual, fmt)			\
+ 	do {							\
+@@ -43,7 +94,9 @@ int verify_result(const struct tcpbpf_globals *result)
+ 	EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
+ 	EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
+ 	EXPECT_EQ(1, result->num_listen, PRIu32);
+-	EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
++
++	/* 3 comes from one listening socket + both ends of the connection */
++	EXPECT_EQ(3, result->num_close_events, PRIu32);
+ 
+ 	return ret;
+ }
+@@ -67,6 +120,52 @@ int verify_sockopt_result(int sock_map_fd)
+ 	return ret;
+ }
+ 
++static int run_test(void)
++{
++	int server_fd, client_fd;
++	void *server_err;
++	char buf[1000];
++	pthread_t tid;
++	int err = -1;
++	int i;
++
++	server_fd = start_server(AF_INET6, SOCK_STREAM, LO_ADDR6, 0, 0);
++	if (CHECK_FAIL(server_fd < 0))
++		return err;
++
++	pthread_mutex_lock(&server_started_mtx);
++	if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
++				      (void *)&server_fd)))
++		goto close_server_fd;
++
++	pthread_cond_wait(&server_started, &server_started_mtx);
++	pthread_mutex_unlock(&server_started_mtx);
++
++	client_fd = connect_to_fd(server_fd, 0);
++	if (client_fd < 0)
++		goto close_server_fd;
++
++	for (i = 0; i < 1000; i++)
++		buf[i] = '+';
++
++	if (CHECK_FAIL(send(client_fd, buf, 1000, 0) < 1000))
++		goto close_client_fd;
++
++	if (CHECK_FAIL(recv(client_fd, buf, 500, 0) < 500))
++		goto close_client_fd;
++
++	pthread_join(tid, &server_err);
++
++	err = (int)(long)server_err;
++	CHECK_FAIL(err);
++
++close_client_fd:
++	close(client_fd);
++close_server_fd:
++	close(server_fd);
++	return err;
++}
++
+ void test_tcpbpf_user(void)
+ {
+ 	const char *file = "test_tcpbpf_kern.o";
+@@ -74,7 +173,6 @@ void test_tcpbpf_user(void)
+ 	struct tcpbpf_globals g = {0};
+ 	struct bpf_object *obj;
+ 	int cg_fd = -1;
+-	int retry = 10;
+ 	__u32 key = 0;
+ 	int rv;
+ 
+@@ -94,11 +192,6 @@ void test_tcpbpf_user(void)
+ 		goto err;
+ 	}
+ 
+-	if (CHECK_FAIL(system("./tcp_server.py"))) {
+-		fprintf(stderr, "FAILED: TCP server\n");
+-		goto err;
+-	}
+-
+ 	map_fd = bpf_find_map(__func__, obj, "global_map");
+ 	if (CHECK_FAIL(map_fd < 0))
+ 		goto err;
+@@ -107,21 +200,17 @@ void test_tcpbpf_user(void)
+ 	if (CHECK_FAIL(sock_map_fd < 0))
+ 		goto err;
+ 
+-retry_lookup:
++	if (run_test()) {
++		fprintf(stderr, "FAILED: TCP server\n");
++		goto err;
++	}
++
+ 	rv = bpf_map_lookup_elem(map_fd, &key, &g);
+ 	if (CHECK_FAIL(rv != 0)) {
+ 		fprintf(stderr, "FAILED: bpf_map_lookup_elem returns %d\n", rv);
+ 		goto err;
+ 	}
+ 
+-	if (g.num_close_events != EXPECTED_CLOSE_EVENTS && retry--) {
+-		fprintf(stderr,
+-			"Unexpected number of close events (%d), retrying!\n",
+-			g.num_close_events);
+-		usleep(100);
+-		goto retry_lookup;
+-	}
+-
+ 	if (CHECK_FAIL(verify_result(&g))) {
+ 		fprintf(stderr, "FAILED: Wrong stats\n");
+ 		goto err;
+diff --git a/tools/testing/selftests/bpf/tcp_client.py b/tools/testing/selftests/bpf/tcp_client.py
+deleted file mode 100755
+index bfff82be3fc1..000000000000
+--- a/tools/testing/selftests/bpf/tcp_client.py
++++ /dev/null
+@@ -1,50 +0,0 @@
+-#!/usr/bin/env python3
+-#
+-# SPDX-License-Identifier: GPL-2.0
+-#
+-
+-import sys, os, os.path, getopt
+-import socket, time
+-import subprocess
+-import select
+-
+-def read(sock, n):
+-    buf = b''
+-    while len(buf) < n:
+-        rem = n - len(buf)
+-        try: s = sock.recv(rem)
+-        except (socket.error) as e: return b''
+-        buf += s
+-    return buf
+-
+-def send(sock, s):
+-    total = len(s)
+-    count = 0
+-    while count < total:
+-        try: n = sock.send(s)
+-        except (socket.error) as e: n = 0
+-        if n == 0:
+-            return count;
+-        count += n
+-    return count
+-
+-
+-serverPort = int(sys.argv[1])
+-
+-# create active socket
+-sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+-try:
+-    sock.connect(('::1', serverPort))
+-except socket.error as e:
+-    sys.exit(1)
+-
+-buf = b''
+-n = 0
+-while n < 1000:
+-    buf += b'+'
+-    n += 1
+-
+-sock.settimeout(1);
+-n = send(sock, buf)
+-n = read(sock, 500)
+-sys.exit(0)
+diff --git a/tools/testing/selftests/bpf/tcp_server.py b/tools/testing/selftests/bpf/tcp_server.py
+deleted file mode 100755
+index 42ab8882f00f..000000000000
+--- a/tools/testing/selftests/bpf/tcp_server.py
++++ /dev/null
+@@ -1,80 +0,0 @@
+-#!/usr/bin/env python3
+-#
+-# SPDX-License-Identifier: GPL-2.0
+-#
+-
+-import sys, os, os.path, getopt
+-import socket, time
+-import subprocess
+-import select
+-
+-def read(sock, n):
+-    buf = b''
+-    while len(buf) < n:
+-        rem = n - len(buf)
+-        try: s = sock.recv(rem)
+-        except (socket.error) as e: return b''
+-        buf += s
+-    return buf
+-
+-def send(sock, s):
+-    total = len(s)
+-    count = 0
+-    while count < total:
+-        try: n = sock.send(s)
+-        except (socket.error) as e: n = 0
+-        if n == 0:
+-            return count;
+-        count += n
+-    return count
+-
+-
+-SERVER_PORT = 12877
+-MAX_PORTS = 2
+-
+-serverPort = SERVER_PORT
+-serverSocket = None
+-
+-# create passive socket
+-serverSocket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+-
+-try: serverSocket.bind(('::1', 0))
+-except socket.error as msg:
+-    print('bind fails: ' + str(msg))
+-
+-sn = serverSocket.getsockname()
+-serverPort = sn[1]
+-
+-cmdStr = ("./tcp_client.py %d &") % (serverPort)
+-os.system(cmdStr)
+-
+-buf = b''
+-n = 0
+-while n < 500:
+-    buf += b'.'
+-    n += 1
+-
+-serverSocket.listen(MAX_PORTS)
+-readList = [serverSocket]
+-
+-while True:
+-    readyRead, readyWrite, inError = \
+-        select.select(readList, [], [], 2)
+-
+-    if len(readyRead) > 0:
+-        waitCount = 0
+-        for sock in readyRead:
+-            if sock == serverSocket:
+-                (clientSocket, address) = serverSocket.accept()
+-                address = str(address[0])
+-                readList.append(clientSocket)
+-            else:
+-                sock.settimeout(1);
+-                s = read(sock, 1000)
+-                n = send(sock, buf)
+-                sock.close()
+-                serverSocket.close()
+-                sys.exit(0)
+-    else:
+-        print('Select timeout!')
+-        sys.exit(1)
+
 
