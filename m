@@ -2,118 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096EC29E293
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 03:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C928F29E2E7
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 03:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732848AbgJ2C2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 22:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732825AbgJ2C1c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 22:27:32 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713C8C0613D1;
-        Wed, 28 Oct 2020 19:27:32 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id i186so894698ybc.11;
-        Wed, 28 Oct 2020 19:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b9BOAnMXMoVPK4YONayTBt7vqZItsUD5u5uhV9sIfiI=;
-        b=FlGEB0LTTPM4gZS86lNMm1Fc30sNdacUX6shfO+qwnZA0Jz+Zh3WXZmKY2cxSG7XpP
-         A2NNzYYmRjXM5LcQypfBzYgzTSDGWLwSsUU3Jy6hpYCrzTUIGHffr6nqDwdqB6n98G1W
-         NSp7IxpPD6BitsmDe7y+BN90LFBgXCNANNnaxA8fhyyoltN24+jjd/IbPJr2zY1xbUB/
-         Uw4EgyZmxUViFlQTaKptVdWw+ZNPBv+Gy7SWX2NPlCdvwyGS9LK2LLRYewN2BfM2XWwf
-         sqnaBteTpBkeBl4liyyq6T8MdtMihgLYKPxCU5S6lK6Vc52haHktdgjQsPTzNuXlu+Xi
-         pmSA==
+        id S1726699AbgJ1VfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 17:35:09 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:34437 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbgJ1VfF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 17:35:05 -0400
+Received: by mail-ot1-f66.google.com with SMTP id k3so539594otp.1;
+        Wed, 28 Oct 2020 14:35:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=b9BOAnMXMoVPK4YONayTBt7vqZItsUD5u5uhV9sIfiI=;
-        b=HWV9q0CmFxIQTc97B053vZ6SMDGGzvjeM2Db5r/IHarEAEvKErpib48NQ9F89Ug+RE
-         8ZdaG+CWG2ir3BlJgGD6WU+E4PGiy4efVQOaHmpdwUQqTOzbZOsKFR3u4Ju+VTJX5KWn
-         3e05BsBMzfjvJcZXrqLQwffEWpZH1QY9p7GETNfo0U6bu/LMkDuHlVSjqZu3+wqr+AGD
-         aqA5kKkknkWPQBQec42NgGZBVTL3vnJbWP8TYCb7mzMtMMU+lyf6FCM0GrGH/tNNJ/YI
-         dZl2BYWz1RloAbxHP2D6x9SgLM5Wpjo+9iTv9KZYSgAMFm/YpVKleHmlQOX8yDylS9Bp
-         T2XA==
-X-Gm-Message-State: AOAM530f/k/F8+AhMxZYbbp61VuQlDsO7q1EbC0rV0ZOcKiXYtwb0l11
-        +9oFixOu0BJcORr/9C1Ab4J7oeumZCQJS1pEZ9I=
-X-Google-Smtp-Source: ABdhPJxhGtV3S29KlyIGapKNKUXB3jYo/wYK3U/CETHFe/x6wevLSF4vrBGS4iZg9auYULOohzrgtng+0q+/g+YnEeI=
-X-Received: by 2002:a25:c001:: with SMTP id c1mr2879701ybf.27.1603938451449;
- Wed, 28 Oct 2020 19:27:31 -0700 (PDT)
+        bh=dm29FGJ3HmM/IlgprUU1WrHRYzNgHTCNIAv/rcKqb3E=;
+        b=B2LxXgI1ogF0WFOJCxCq3Hxyf3TKRVpH2mAubeklbKWFSVuJmDy5g18jCdArVR+DcZ
+         HvWKI44eYHvr/R83MgiBPBhAiBpRN2+2Jq3dwum5+byv/xQP83TZMtuh1DIzXl6Ic6fv
+         PJ3fW2ZY5Yf5Mp/2/wW0893vbUlqdZdMlHT43MEX2zVbTjIBeANH6Nr26cBPaRZDfFjA
+         su+Bs6iFBRew8SjCYILlq6ACQYpkhMT1yeTQ6dwR7INEsreZRgvURvVr67OqOHCIawJE
+         9glllvegRQ8LWrso1soCrJj7ufoBpoalnn8EZ7yEUueX2GoevgiAKT5YS343LLJQmmMt
+         LA2A==
+X-Gm-Message-State: AOAM532Bwv0AUEijQC+ckAShqVz59wxAd/xiaU5FTjbSgqT3RCU0ZYXp
+        WZmCINeXDjxXSL8keBaI61psi+c4IfONjdxQ1XBZQ8iAPtowqQ==
+X-Google-Smtp-Source: ABdhPJyiFo5ZuvsGBWsEWNiTUNzawsjQjWkumJ/qvE8apdgG5pLkLHcLQeoXYV3O5WRNlHx+5G1aglKsES1yvUIXIU4=
+X-Received: by 2002:a9d:5e14:: with SMTP id d20mr4090804oti.107.1603873848080;
+ Wed, 28 Oct 2020 01:30:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201023033855.3894509-1-haliu@redhat.com> <20201028132529.3763875-1-haliu@redhat.com>
- <7babcccb-2b31-f9bf-16ea-6312e449b928@gmail.com> <20201029020637.GM2408@dhcp-12-153.nay.redhat.com>
-In-Reply-To: <20201029020637.GM2408@dhcp-12-153.nay.redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Oct 2020 19:27:20 -0700
-Message-ID: <CAEf4BzZR4MqQJCD4kzFsbhpfmp4RB7SHcP5AbAiqzqK7to2u+g@mail.gmail.com>
-Subject: Re: [PATCHv2 iproute2-next 0/5] iproute2: add libbpf support
-To:     Hangbin Liu <haliu@redhat.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20201027205723.12514-1-ardb@kernel.org>
+In-Reply-To: <20201027205723.12514-1-ardb@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 28 Oct 2020 09:30:37 +0100
+Message-ID: <CAMuHMdVmOCmRsJVixPA2U9jB5AKL7NQdCzxx8f5FoXpyOpDwGA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
+ disable GCSE
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 7:06 PM Hangbin Liu <haliu@redhat.com> wrote:
->
-> On Wed, Oct 28, 2020 at 05:02:34PM -0600, David Ahern wrote:
-> > fails to compile on Ubuntu 20.10:
-> >
-> > root@u2010-sfo3:~/iproute2.git# ./configure
-> > TC schedulers
-> >  ATM  yes
-> >  IPT  using xtables
-> >  IPSET  yes
-> >
-> > iptables modules directory: /usr/lib/x86_64-linux-gnu/xtables
-> > libc has setns: yes
-> > SELinux support: yes
-> > libbpf support: yes
-> > ELF support: yes
-> > libmnl support: yes
-> > Berkeley DB: no
-> > need for strlcpy: yes
-> > libcap support: yes
-> >
-> > root@u2010-sfo3:~/iproute2.git# make clean
-> >
-> > root@u2010-sfo3:~/iproute2.git# make -j 4
-> > ...
-> > /usr/bin/ld: ../lib/libutil.a(bpf_libbpf.o): in function `load_bpf_object':
-> > bpf_libbpf.c:(.text+0x3cb): undefined reference to
-> > `bpf_program__section_name'
-> > /usr/bin/ld: bpf_libbpf.c:(.text+0x438): undefined reference to
-> > `bpf_program__section_name'
-> > /usr/bin/ld: bpf_libbpf.c:(.text+0x716): undefined reference to
-> > `bpf_program__section_name'
-> > collect2: error: ld returned 1 exit status
-> > make[1]: *** [Makefile:27: ip] Error 1
-> > make[1]: *** Waiting for unfinished jobs....
-> > make: *** [Makefile:64: all] Error 2
->
-> You need to update libbpf to latest version.
+Hi Ard,
 
-Why not using libbpf from submodule?
+On Tue, Oct 27, 2020 at 9:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
+> Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
+> ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
+> function scope __attribute__((optimize("-fno-gcse"))), to disable a
+> GCC specific optimization that was causing trouble on x86 builds, and
+> was not expected to have any positive effect in the first place.
+>
+> However, as the GCC manual documents, __attribute__((optimize))
+> is not for production use, and results in all other optimization
+> options to be forgotten for the function in question. This can
+> cause all kinds of trouble, but in one particular reported case,
+> it causes -fno-asynchronous-unwind-tables to be disregarded,
+> resulting in .eh_frame info to be emitted for the function
+> inadvertently.
+>
+> This reverts commit 3193c0836f203, and instead, it disables the -fgcse
+> optimization for the entire source file, but only when building for
+> X86.
+>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Arvind Sankar <nivedita@alum.mit.edu>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
->
-> But this also remind me that I need to add bpf_program__section_name() to
-> configure checking. I will see if I missed other functions' checking.
->
-> Thanks
-> Hangbin
->
+Thanks, this gets rid of the following warning, which you may
+want to quote in the patch description:
+
+    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
+`kernel/bpf/core.o' being placed in section `.eh_frame'
+
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
