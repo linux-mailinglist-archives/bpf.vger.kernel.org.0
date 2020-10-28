@@ -2,172 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0189D29DF2A
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 01:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A94A229E032
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 02:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403946AbgJ2A7h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 28 Oct 2020 20:59:37 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12570 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2403942AbgJ2A7g (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Oct 2020 20:59:36 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09T0ob5M021314
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 17:59:35 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 34ejk2arnr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 17:59:35 -0700
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 28 Oct 2020 17:59:33 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id DA1922EC875F; Wed, 28 Oct 2020 17:59:30 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 11/11] tools/bpftool: add bpftool support for split BTF
-Date:   Wed, 28 Oct 2020 17:59:02 -0700
-Message-ID: <20201029005902.1706310-12-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201029005902.1706310-1-andrii@kernel.org>
-References: <20201029005902.1706310-1-andrii@kernel.org>
+        id S1729583AbgJ1WFN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 18:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729966AbgJ1WFM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:05:12 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EB2C0613D1;
+        Wed, 28 Oct 2020 15:05:12 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id w25so409733vsk.9;
+        Wed, 28 Oct 2020 15:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sBa77MmCFN0T1+VtUx1HDnNMT2/Xv5NhXqq896ClIPA=;
+        b=ThThPoDIPRt59MZkfI1qQFRnAS2OlQaGLzpGPN2cxTSQfDtCdz08ENqwNG9U8jzOSq
+         s34Q276RHnCcq8eK/nTv0czP0MtEL51wsFyO+l0/EF/aZx+dKou4D7B6eVgK94JVOkJy
+         gNfNJgZzXGP//V7CiqZ3l8ybUm24uPVJ0zBOsk3MEzh+BQ/TucW/kMC61IEEHLyMgwnz
+         6TaxNwP8l906lqpO77tS0TEDJFzAltKegGSigo6TgM+iVrTnY7ITYI4zxmNp2cKEmth2
+         8o4dgHKzSDhquPjaHN+aQt5e/yANa4V1Nlnmnor+iDQiKXFMgUOhuOG8XxBJGAdtrER9
+         PYdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sBa77MmCFN0T1+VtUx1HDnNMT2/Xv5NhXqq896ClIPA=;
+        b=CpanmAL7sESG0s+5JOewhFV3rblxzAaHakFJx7sD3yAuJQj50LYmJsEr50r8ID3Kor
+         +wMVb3xQRm5P4ST60RnF83fnRwVaZ/TTy00x8QP6mGCEdSZytCCyxSROha3uiOwf4FP8
+         EyZrLbidrcpQNdR+TWnarUpjvSt0aHTIixD6n2d29jBDJY3x40Ks8ZTM+s3WBq6xQHy9
+         2oUjMJMM+enQan+OXcYUe/4ag2w7wVU4MlHjQsvyJMrkbXRq4eFCs2avtixKEFFDmqud
+         83ywZiI9f0j1MWAwWY3PSW9DqEa3CDGK689U2PJTnxkATzaxYB5r2IufkbhT3UPwTh1Y
+         DTsw==
+X-Gm-Message-State: AOAM530JWLoBBhpQBvGrbdA9cMJVxWaWL/vfmGl7Qegzoanmt5VeeZuK
+        XTiHrxZOTNkFqI252gaa5k7iL5rjk/Bho8E7
+X-Google-Smtp-Source: ABdhPJx1sVLTojg+U9YZMBvRLhAg0GBPcu5nq1fPysti/X+d+Gmy//kTyoSjwtScwRHBrv8BGUyEYA==
+X-Received: by 2002:a62:ea0c:0:b029:164:3789:547b with SMTP id t12-20020a62ea0c0000b02901643789547bmr7074341pfh.27.1603892133273;
+        Wed, 28 Oct 2020 06:35:33 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.43])
+        by smtp.gmail.com with ESMTPSA id q14sm5935393pjp.43.2020.10.28.06.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 06:35:32 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        maciej.fijalkowski@intel.com, sridhar.samudrala@intel.com,
+        jesse.brandeburg@intel.com, qi.z.zhang@intel.com, kuba@kernel.org,
+        edumazet@google.com, intel-wired-lan@lists.osuosl.org,
+        jonathan.lemon@gmail.com
+Subject: [RFC PATCH bpf-next 5/9] xsk: add busy-poll support for {recv,send}msg()
+Date:   Wed, 28 Oct 2020 14:34:33 +0100
+Message-Id: <20201028133437.212503-6-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201028133437.212503-1-bjorn.topel@gmail.com>
+References: <20201028133437.212503-1-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-28_09:2020-10-28,2020-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
- phishscore=0 suspectscore=25 adultscore=0 bulkscore=0 impostorscore=0
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010290001
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add ability to work with split BTF by providing extra -B flag, which allows to
-specify the path to the base BTF file.
+From: Björn Töpel <bjorn.topel@intel.com>
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Wire-up XDP socket busy-poll support for recvmsg() and sendmsg().
+
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- tools/bpf/bpftool/btf.c  |  9 ++++++---
- tools/bpf/bpftool/main.c | 15 ++++++++++++++-
- tools/bpf/bpftool/main.h |  1 +
- 3 files changed, 21 insertions(+), 4 deletions(-)
+ net/xdp/xsk.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 8ab142ff5eac..c96b56e8e3a4 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -358,8 +358,12 @@ static int dump_btf_raw(const struct btf *btf,
- 		}
- 	} else {
- 		int cnt = btf__get_nr_types(btf);
-+		int start_id = 1;
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 2e5b9f27c7a3..da649b4f377c 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -23,6 +23,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/rculist.h>
+ #include <net/xdp_sock_drv.h>
++#include <net/busy_poll.h>
+ #include <net/xdp.h>
  
--		for (i = 1; i <= cnt; i++) {
-+		if (base_btf)
-+			start_id = btf__get_nr_types(base_btf) + 1;
+ #include "xsk_queue.h"
+@@ -472,6 +473,9 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+ 	if (unlikely(need_wait))
+ 		return -EOPNOTSUPP;
+ 
++	if (sk_can_busy_loop(sk))
++		sk_busy_loop(sk, 1); /* only support non-blocking sockets */
 +
-+		for (i = start_id; i <= cnt; i++) {
- 			t = btf__type_by_id(btf, i);
- 			dump_btf_type(btf, i, t);
- 		}
-@@ -438,7 +442,6 @@ static int do_dump(int argc, char **argv)
- 		return -1;
- 	}
- 	src = GET_ARG();
--
- 	if (is_prefix(src, "map")) {
- 		struct bpf_map_info info = {};
- 		__u32 len = sizeof(info);
-@@ -499,7 +502,7 @@ static int do_dump(int argc, char **argv)
- 		}
- 		NEXT_ARG();
- 	} else if (is_prefix(src, "file")) {
--		btf = btf__parse(*argv, NULL);
-+		btf = btf__parse_split(*argv, base_btf);
- 		if (IS_ERR(btf)) {
- 			err = -PTR_ERR(btf);
- 			btf = NULL;
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 682daaa49e6a..b86f450e6fce 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -11,6 +11,7 @@
+ 	pool = xs->pool;
+ 	if (pool->cached_need_wakeup & XDP_WAKEUP_TX)
+ 		return __xsk_sendmsg(sk);
+@@ -493,6 +497,9 @@ static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int fl
+ 	if (unlikely(need_wait))
+ 		return -EOPNOTSUPP;
  
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-+#include <bpf/btf.h>
- 
- #include "main.h"
- 
-@@ -28,6 +29,7 @@ bool show_pinned;
- bool block_mount;
- bool verifier_logs;
- bool relaxed_maps;
-+struct btf *base_btf;
- struct pinned_obj_table prog_table;
- struct pinned_obj_table map_table;
- struct pinned_obj_table link_table;
-@@ -391,6 +393,7 @@ int main(int argc, char **argv)
- 		{ "mapcompat",	no_argument,	NULL,	'm' },
- 		{ "nomount",	no_argument,	NULL,	'n' },
- 		{ "debug",	no_argument,	NULL,	'd' },
-+		{ "base-btf",	required_argument, NULL, 'B' },
- 		{ 0 }
- 	};
- 	int opt, ret;
-@@ -407,7 +410,7 @@ int main(int argc, char **argv)
- 	hash_init(link_table.table);
- 
- 	opterr = 0;
--	while ((opt = getopt_long(argc, argv, "Vhpjfmnd",
-+	while ((opt = getopt_long(argc, argv, "VhpjfmndB:",
- 				  options, NULL)) >= 0) {
- 		switch (opt) {
- 		case 'V':
-@@ -441,6 +444,15 @@ int main(int argc, char **argv)
- 			libbpf_set_print(print_all_levels);
- 			verifier_logs = true;
- 			break;
-+		case 'B':
-+			base_btf = btf__parse(optarg, NULL);
-+			if (libbpf_get_error(base_btf)) {
-+				p_err("failed to parse base BTF at '%s': %ld\n",
-+				      optarg, libbpf_get_error(base_btf));
-+				base_btf = NULL;
-+				return -1;
-+			}
-+			break;
- 		default:
- 			p_err("unrecognized option '%s'", argv[optind - 1]);
- 			if (json_output)
-@@ -465,6 +477,7 @@ int main(int argc, char **argv)
- 		delete_pinned_obj_table(&map_table);
- 		delete_pinned_obj_table(&link_table);
- 	}
-+	btf__free(base_btf);
- 
- 	return ret;
- }
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index c46e52137b87..76e91641262b 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -90,6 +90,7 @@ extern bool show_pids;
- extern bool block_mount;
- extern bool verifier_logs;
- extern bool relaxed_maps;
-+extern struct btf *base_btf;
- extern struct pinned_obj_table prog_table;
- extern struct pinned_obj_table map_table;
- extern struct pinned_obj_table link_table;
++	if (sk_can_busy_loop(sk))
++		sk_busy_loop(sk, 1); /* only support non-blocking sockets */
++
+ 	if (xs->pool->cached_need_wakeup & XDP_WAKEUP_RX && xs->zc)
+ 		return xsk_wakeup(xs, XDP_WAKEUP_RX);
+ 	return 0;
 -- 
-2.24.1
+2.27.0
 
