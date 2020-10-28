@@ -2,416 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3111C29D485
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 22:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB6929D30A
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 22:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgJ1VwD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 17:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728236AbgJ1VwA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:52:00 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E01C0613CF;
-        Wed, 28 Oct 2020 14:52:00 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id y10so261177vkl.5;
-        Wed, 28 Oct 2020 14:52:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=YIOUqWyBZIfavDIAu4dN9j2zqYJXRubizG/6KqaU4Tc=;
-        b=u7r1f/kzAgex8NQbV5A+cSGwPBWrxSgYHYVYq3UTXzrwJ4YU7nfo8dsp5WcVZcEfCI
-         GulNQZmgev3dGGvhpv4oYCC464jFTl/7vW9BIQKFLSAQTmPT91nIdCkC6Nd+CADn8mPR
-         2IIMGprRctKbhZzAVQgXCc+dNRPfaqGCwoS7cMqAW5UW16E6AsIOEyzJ9XRGxHXzUNVg
-         toRtxgmDmA4xsib5NYUFPHkAZs3Rlh+KLhIbuGqzwOAAORcSc5F/NLpsEbMxu0P8C7kD
-         w/4UfmzCkvd+K+HmcKsM9z5mcU5jRFdBATK99B/APFNKVp4sFORJlGIlbwq9dNIrTjru
-         ks1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=YIOUqWyBZIfavDIAu4dN9j2zqYJXRubizG/6KqaU4Tc=;
-        b=mXpW5pYE8VcNoF1+rKje5RPHPvnTb/3gmv25vYvYadnmXthio5zpZjY2EKDywHzJGE
-         F7/re78ognjxeQlwPCrdgX+idH1a72lzmIg2/K5rG8Wnlw5SBQ+DViUOj7y6W0oiRjpl
-         ad7khHQLXPCS4X03PE3BTLsCod4br4+LzrjBhD72ehKo3hBahQcO+pB3NELXEXwwkhNl
-         Cg5jyzBr/1arrAVX6rMlvqAcVmNwzflf1v2a/ed5Z7TAZteJZu01ZD7pAS6JGxFmFjeV
-         5ZIjvauW/+BYb4agKckZE2Y/bT9ZAV4ad60PIQVKglbTXNj88BVpgn7PIVgw1vM2+GdK
-         gC2g==
-X-Gm-Message-State: AOAM531mACDltVVRkiuj+h5nXrFxU6YWUOvOnseUPFQs9TBmSn00sKbk
-        8s2ZeFgWgRfK9B/F9aGZ15ytin2EsLjVkg==
-X-Google-Smtp-Source: ABdhPJzoSPlqBzE395zc0+3gCtAIjluHEduOK2pyLmq6FNkdc50liDSOjjTgzYbtBsYk4mWYTOtnEA==
-X-Received: by 2002:a0c:9e53:: with SMTP id z19mr5356512qve.23.1603849635467;
-        Tue, 27 Oct 2020 18:47:15 -0700 (PDT)
-Received: from localhost.localdomain ([2001:470:b:9c3:9e5c:8eff:fe4f:f2d0])
-        by smtp.gmail.com with ESMTPSA id 185sm2080485qke.16.2020.10.27.18.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Oct 2020 18:47:14 -0700 (PDT)
-Subject: [bpf-next PATCH 2/4] selftests/bpf: Drop python client/server in
- favor of threads
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        john.fastabend@gmail.com, kernel-team@fb.com,
-        netdev@vger.kernel.org, edumazet@google.com, brakmo@fb.com,
-        alexanderduyck@fb.com
-Date:   Tue, 27 Oct 2020 18:47:13 -0700
-Message-ID: <160384963313.698509.13129692731727238158.stgit@localhost.localdomain>
-In-Reply-To: <160384954046.698509.132709669068189999.stgit@localhost.localdomain>
-References: <160384954046.698509.132709669068189999.stgit@localhost.localdomain>
-User-Agent: StGit/0.23
+        id S1725809AbgJ1VkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 17:40:19 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28736 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727180AbgJ1Vj4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 28 Oct 2020 17:39:56 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09S6AYmp023114
+        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 23:10:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=U6BoXiWMHGAsm1rlC5G8Hk5JeD1n0A1ivodTLVeGgpU=;
+ b=co5mwPz4yk4YgWVuxB5ibUrKqrc6sRh+gkKrXuLoa77IranYoYOSG5u77b2tTfQM2zCg
+ Gq60M75kZ7Z7QN+IwVJ2pQuhXk6MW+MiLRJ6shSD6UCpvzyRr0raLlghsZt1Nc5uRRNf
+ Ff0ykf5vQweJxBsfzT0rdFdT2ATQE8e5ZHY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 34ejk25e5p-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 27 Oct 2020 23:10:56 -0700
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 27 Oct 2020 23:10:55 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 679FF37059B3; Tue, 27 Oct 2020 23:10:54 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next] bpf: permit cond_resched for some iterators
+Date:   Tue, 27 Oct 2020 23:10:54 -0700
+Message-ID: <20201028061054.1411116-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-10-28_01:2020-10-26,2020-10-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
+ phishscore=0 suspectscore=13 adultscore=0 bulkscore=0 impostorscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010280039
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexander Duyck <alexanderduyck@fb.com>
+Commit e679654a704e ("bpf: Fix a rcu_sched stall issue with
+bpf task/task_file iterator") tries to fix rcu stalls warning
+which is caused by bpf task_file iterator when running
+"bpftool prog".
 
-Drop the tcp_client/server.py files in favor of using a client and server
-thread within the test case. Specifically we spawn a new thread to play the
-role of the server, and the main testing thread plays the role of client.
+      rcu: INFO: rcu_sched self-detected stall on CPU
+      rcu: \x097-....: (20999 ticks this GP) idle=3D302/1/0x4000000000000=
+000 softirq=3D1508852/1508852 fqs=3D4913
+      \x09(t=3D21031 jiffies g=3D2534773 q=3D179750)
+      NMI backtrace for cpu 7
+      CPU: 7 PID: 184195 Comm: bpftool Kdump: loaded Tainted: G        W =
+        5.8.0-00004-g68bfc7f8c1b4 #6
+      Hardware name: Quanta Twin Lakes MP/Twin Lakes Passive MP, BIOS F09=
+_3A17 05/03/2019
+      Call Trace:
+      <IRQ>
+      dump_stack+0x57/0x70
+      nmi_cpu_backtrace.cold+0x14/0x53
+      ? lapic_can_unplug_cpu.cold+0x39/0x39
+      nmi_trigger_cpumask_backtrace+0xb7/0xc7
+      rcu_dump_cpu_stacks+0xa2/0xd0
+      rcu_sched_clock_irq.cold+0x1ff/0x3d9
+      ? tick_nohz_handler+0x100/0x100
+      update_process_times+0x5b/0x90
+      tick_sched_timer+0x5e/0xf0
+      __hrtimer_run_queues+0x12a/0x2a0
+      hrtimer_interrupt+0x10e/0x280
+      __sysvec_apic_timer_interrupt+0x51/0xe0
+      asm_call_on_stack+0xf/0x20
+      </IRQ>
+      sysvec_apic_timer_interrupt+0x6f/0x80
+      ...
+      task_file_seq_next+0x52/0xa0
+      bpf_seq_read+0xb9/0x320
+      vfs_read+0x9d/0x180
+      ksys_read+0x5f/0xe0
+      do_syscall_64+0x38/0x60
+      entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Doing this we are able to reduce overhead since we don't have two python
-workers possibly floating around. In addition we don't have to worry about
-synchronization issues and as such the retry loop waiting for the threads
-to close the sockets can be dropped as we will have already closed the
-sockets in the local executable and synchronized the server thread.
+The fix is to limit the number of bpf program runs to be
+one million. This fixed the program in most cases. But
+we also found under heavy load, which can increase the wallclock
+time for bpf_seq_read(), the warning may still be possible.
 
-Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+For example, calling bpf_delay() in the "while" loop of
+bpf_seq_read(), which will introduce artificial delay,
+the warning will show up in my qemu run.
+
+  static unsigned q;
+  volatile unsigned *p =3D &q;
+  volatile unsigned long long ll;
+  static void bpf_delay(void)
+  {
+         int i, j;
+
+         for (i =3D 0; i < 10000; i++)
+                 for (j =3D 0; j < 10000; j++)
+                         ll +=3D *p;
+  }
+
+There are two ways to fix this issue. One is to reduce the above
+one million threshold to say 100,000 and hopefully rcu warning will
+not show up any more. Another is to introduce a target feature
+which enables bpf_seq_read() calling cond_resched().
+
+This patch took second approach as the first approach may cause
+more -EAGAIN failures for read() syscalls. Note that not all bpf_iter
+targets can permit cond_resched() in bpf_seq_read() as some, e.g.,
+netlink seq iterator, rcu read lock critical section spans through
+seq_ops->next() -> seq_ops->show() -> seq_ops->next().
+
+For the kernel code with the above hack, "bpftool p" roughly takes
+38 seconds to finish on my VM with 184 bpf program runs.
+Using the following command, I am able to collect the number of
+context switches:
+   perf stat -e context-switches -- ./bpftool p >& log
+Without this patch,
+   69      context-switches
+With this patch,
+   75      context-switches
+This patch added additional 6 context switches, roughly every 6 seconds
+to reschedule, to avoid lengthy no-rescheduling which may cause the
+above RCU warnings.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |  125 +++++++++++++++++---
- tools/testing/selftests/bpf/tcp_client.py          |   50 --------
- tools/testing/selftests/bpf/tcp_server.py          |   80 -------------
- 3 files changed, 107 insertions(+), 148 deletions(-)
- delete mode 100755 tools/testing/selftests/bpf/tcp_client.py
- delete mode 100755 tools/testing/selftests/bpf/tcp_server.py
+ include/linux/bpf.h    |  5 +++++
+ kernel/bpf/bpf_iter.c  | 14 ++++++++++++++
+ kernel/bpf/task_iter.c |  2 ++
+ 3 files changed, 21 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-index 5becab8b04e3..71ab82e37eb7 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-@@ -1,14 +1,65 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <inttypes.h>
- #include <test_progs.h>
-+#include <network_helpers.h>
- 
- #include "test_tcpbpf.h"
- #include "cgroup_helpers.h"
- 
-+#define LO_ADDR6 "::1"
- #define CG_NAME "/tcpbpf-user-test"
- 
--/* 3 comes from one listening socket + both ends of the connection */
--#define EXPECTED_CLOSE_EVENTS		3
-+static pthread_mutex_t server_started_mtx = PTHREAD_MUTEX_INITIALIZER;
-+static pthread_cond_t server_started = PTHREAD_COND_INITIALIZER;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2b16bf48aab6..2fffd30e13ac 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1294,6 +1294,10 @@ typedef void (*bpf_iter_show_fdinfo_t) (const stru=
+ct bpf_iter_aux_info *aux,
+ typedef int (*bpf_iter_fill_link_info_t)(const struct bpf_iter_aux_info =
+*aux,
+ 					 struct bpf_link_info *info);
+=20
++enum bpf_iter_feature {
++	BPF_ITER_RESCHED	=3D BIT(0),
++};
 +
-+static void *server_thread(void *arg)
-+{
-+	struct sockaddr_storage addr;
-+	socklen_t len = sizeof(addr);
-+	int fd = *(int *)arg;
-+	char buf[1000];
-+	int client_fd;
-+	int err = 0;
-+	int i;
-+
-+	err = listen(fd, 1);
-+
-+	pthread_mutex_lock(&server_started_mtx);
-+	pthread_cond_signal(&server_started);
-+	pthread_mutex_unlock(&server_started_mtx);
-+
-+	if (err < 0) {
-+		perror("Failed to listen on socket");
-+		err = errno;
-+		goto err;
-+	}
-+
-+	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
-+	if (client_fd < 0) {
-+		perror("Failed to accept client");
-+		err = errno;
-+		goto err;
-+	}
-+
-+	if (recv(client_fd, buf, 1000, 0) < 1000) {
-+		perror("failed/partial recv");
-+		err = errno;
-+		goto out_clean;
-+	}
-+
-+	for (i = 0; i < 500; i++)
-+		buf[i] = '.';
-+
-+	if (send(client_fd, buf, 500, 0) < 500) {
-+		perror("failed/partial send");
-+		err = errno;
-+		goto out_clean;
-+	}
-+out_clean:
-+	close(client_fd);
-+err:
-+	return (void *)(long)err;
-+}
- 
- #define EXPECT_EQ(expected, actual, fmt)			\
- 	do {							\
-@@ -43,7 +94,9 @@ int verify_result(const struct tcpbpf_globals *result)
- 	EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
- 	EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
- 	EXPECT_EQ(1, result->num_listen, PRIu32);
--	EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
-+
-+	/* 3 comes from one listening socket + both ends of the connection */
-+	EXPECT_EQ(3, result->num_close_events, PRIu32);
- 
- 	return ret;
+ #define BPF_ITER_CTX_ARG_MAX 2
+ struct bpf_iter_reg {
+ 	const char *target;
+@@ -1302,6 +1306,7 @@ struct bpf_iter_reg {
+ 	bpf_iter_show_fdinfo_t show_fdinfo;
+ 	bpf_iter_fill_link_info_t fill_link_info;
+ 	u32 ctx_arg_info_size;
++	u32 feature;
+ 	struct bpf_ctx_arg_aux ctx_arg_info[BPF_ITER_CTX_ARG_MAX];
+ 	const struct bpf_iter_seq_info *seq_info;
+ };
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 8f10e30ea0b0..5454161407f1 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -67,6 +67,15 @@ static void bpf_iter_done_stop(struct seq_file *seq)
+ 	iter_priv->done_stop =3D true;
  }
-@@ -67,6 +120,52 @@ int verify_sockopt_result(int sock_map_fd)
- 	return ret;
- }
- 
-+static int run_test(void)
+=20
++static bool bpf_iter_support_resched(struct seq_file *seq)
 +{
-+	int server_fd, client_fd;
-+	void *server_err;
-+	char buf[1000];
-+	pthread_t tid;
-+	int err = -1;
-+	int i;
++	struct bpf_iter_priv_data *iter_priv;
 +
-+	server_fd = start_server(AF_INET6, SOCK_STREAM, LO_ADDR6, 0, 0);
-+	if (CHECK_FAIL(server_fd < 0))
-+		return err;
-+
-+	pthread_mutex_lock(&server_started_mtx);
-+	if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
-+				      (void *)&server_fd)))
-+		goto close_server_fd;
-+
-+	pthread_cond_wait(&server_started, &server_started_mtx);
-+	pthread_mutex_unlock(&server_started_mtx);
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (client_fd < 0)
-+		goto close_server_fd;
-+
-+	for (i = 0; i < 1000; i++)
-+		buf[i] = '+';
-+
-+	if (CHECK_FAIL(send(client_fd, buf, 1000, 0) < 1000))
-+		goto close_client_fd;
-+
-+	if (CHECK_FAIL(recv(client_fd, buf, 500, 0) < 500))
-+		goto close_client_fd;
-+
-+	pthread_join(tid, &server_err);
-+
-+	err = (int)(long)server_err;
-+	CHECK_FAIL(err);
-+
-+close_client_fd:
-+	close(client_fd);
-+close_server_fd:
-+	close(server_fd);
-+	return err;
++	iter_priv =3D container_of(seq->private, struct bpf_iter_priv_data,
++				 target_private);
++	return iter_priv->tinfo->reg_info->feature & BPF_ITER_RESCHED;
 +}
 +
- void test_tcpbpf_user(void)
+ /* maximum visited objects before bailing out */
+ #define MAX_ITER_OBJECTS	1000000
+=20
+@@ -83,6 +92,7 @@ static ssize_t bpf_seq_read(struct file *file, char __u=
+ser *buf, size_t size,
+ 	struct seq_file *seq =3D file->private_data;
+ 	size_t n, offs, copied =3D 0;
+ 	int err =3D 0, num_objs =3D 0;
++	bool can_resched;
+ 	void *p;
+=20
+ 	mutex_lock(&seq->lock);
+@@ -135,6 +145,7 @@ static ssize_t bpf_seq_read(struct file *file, char _=
+_user *buf, size_t size,
+ 		goto done;
+ 	}
+=20
++	can_resched =3D bpf_iter_support_resched(seq);
+ 	while (1) {
+ 		loff_t pos =3D seq->index;
+=20
+@@ -180,6 +191,9 @@ static ssize_t bpf_seq_read(struct file *file, char _=
+_user *buf, size_t size,
+ 			}
+ 			break;
+ 		}
++
++		if (can_resched)
++			cond_resched();
+ 	}
+ stop:
+ 	offs =3D seq->count;
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 5b6af30bfbcd..1fdb2fc196cd 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -337,6 +337,7 @@ static const struct bpf_iter_seq_info task_seq_info =3D=
  {
- 	const char *file = "test_tcpbpf_kern.o";
-@@ -74,7 +173,6 @@ void test_tcpbpf_user(void)
- 	struct tcpbpf_globals g = {0};
- 	struct bpf_object *obj;
- 	int cg_fd = -1;
--	int retry = 10;
- 	__u32 key = 0;
- 	int rv;
- 
-@@ -94,11 +192,6 @@ void test_tcpbpf_user(void)
- 		goto err;
- 	}
- 
--	if (CHECK_FAIL(system("./tcp_server.py"))) {
--		fprintf(stderr, "FAILED: TCP server\n");
--		goto err;
--	}
--
- 	map_fd = bpf_find_map(__func__, obj, "global_map");
- 	if (CHECK_FAIL(map_fd < 0))
- 		goto err;
-@@ -107,21 +200,17 @@ void test_tcpbpf_user(void)
- 	if (CHECK_FAIL(sock_map_fd < 0))
- 		goto err;
- 
--retry_lookup:
-+	if (run_test()) {
-+		fprintf(stderr, "FAILED: TCP server\n");
-+		goto err;
-+	}
-+
- 	rv = bpf_map_lookup_elem(map_fd, &key, &g);
- 	if (CHECK_FAIL(rv != 0)) {
- 		fprintf(stderr, "FAILED: bpf_map_lookup_elem returns %d\n", rv);
- 		goto err;
- 	}
- 
--	if (g.num_close_events != EXPECTED_CLOSE_EVENTS && retry--) {
--		fprintf(stderr,
--			"Unexpected number of close events (%d), retrying!\n",
--			g.num_close_events);
--		usleep(100);
--		goto retry_lookup;
--	}
--
- 	if (CHECK_FAIL(verify_result(&g))) {
- 		fprintf(stderr, "FAILED: Wrong stats\n");
- 		goto err;
-diff --git a/tools/testing/selftests/bpf/tcp_client.py b/tools/testing/selftests/bpf/tcp_client.py
-deleted file mode 100755
-index bfff82be3fc1..000000000000
---- a/tools/testing/selftests/bpf/tcp_client.py
-+++ /dev/null
-@@ -1,50 +0,0 @@
--#!/usr/bin/env python3
--#
--# SPDX-License-Identifier: GPL-2.0
--#
--
--import sys, os, os.path, getopt
--import socket, time
--import subprocess
--import select
--
--def read(sock, n):
--    buf = b''
--    while len(buf) < n:
--        rem = n - len(buf)
--        try: s = sock.recv(rem)
--        except (socket.error) as e: return b''
--        buf += s
--    return buf
--
--def send(sock, s):
--    total = len(s)
--    count = 0
--    while count < total:
--        try: n = sock.send(s)
--        except (socket.error) as e: n = 0
--        if n == 0:
--            return count;
--        count += n
--    return count
--
--
--serverPort = int(sys.argv[1])
--
--# create active socket
--sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
--try:
--    sock.connect(('::1', serverPort))
--except socket.error as e:
--    sys.exit(1)
--
--buf = b''
--n = 0
--while n < 1000:
--    buf += b'+'
--    n += 1
--
--sock.settimeout(1);
--n = send(sock, buf)
--n = read(sock, 500)
--sys.exit(0)
-diff --git a/tools/testing/selftests/bpf/tcp_server.py b/tools/testing/selftests/bpf/tcp_server.py
-deleted file mode 100755
-index 42ab8882f00f..000000000000
---- a/tools/testing/selftests/bpf/tcp_server.py
-+++ /dev/null
-@@ -1,80 +0,0 @@
--#!/usr/bin/env python3
--#
--# SPDX-License-Identifier: GPL-2.0
--#
--
--import sys, os, os.path, getopt
--import socket, time
--import subprocess
--import select
--
--def read(sock, n):
--    buf = b''
--    while len(buf) < n:
--        rem = n - len(buf)
--        try: s = sock.recv(rem)
--        except (socket.error) as e: return b''
--        buf += s
--    return buf
--
--def send(sock, s):
--    total = len(s)
--    count = 0
--    while count < total:
--        try: n = sock.send(s)
--        except (socket.error) as e: n = 0
--        if n == 0:
--            return count;
--        count += n
--    return count
--
--
--SERVER_PORT = 12877
--MAX_PORTS = 2
--
--serverPort = SERVER_PORT
--serverSocket = None
--
--# create passive socket
--serverSocket = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
--
--try: serverSocket.bind(('::1', 0))
--except socket.error as msg:
--    print('bind fails: ' + str(msg))
--
--sn = serverSocket.getsockname()
--serverPort = sn[1]
--
--cmdStr = ("./tcp_client.py %d &") % (serverPort)
--os.system(cmdStr)
--
--buf = b''
--n = 0
--while n < 500:
--    buf += b'.'
--    n += 1
--
--serverSocket.listen(MAX_PORTS)
--readList = [serverSocket]
--
--while True:
--    readyRead, readyWrite, inError = \
--        select.select(readList, [], [], 2)
--
--    if len(readyRead) > 0:
--        waitCount = 0
--        for sock in readyRead:
--            if sock == serverSocket:
--                (clientSocket, address) = serverSocket.accept()
--                address = str(address[0])
--                readList.append(clientSocket)
--            else:
--                sock.settimeout(1);
--                s = read(sock, 1000)
--                n = send(sock, buf)
--                sock.close()
--                serverSocket.close()
--                sys.exit(0)
--    else:
--        print('Select timeout!')
--        sys.exit(1)
-
+=20
+ static struct bpf_iter_reg task_reg_info =3D {
+ 	.target			=3D "task",
++	.feature		=3D BPF_ITER_RESCHED,
+ 	.ctx_arg_info_size	=3D 1,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__task, task),
+@@ -354,6 +355,7 @@ static const struct bpf_iter_seq_info task_file_seq_i=
+nfo =3D {
+=20
+ static struct bpf_iter_reg task_file_reg_info =3D {
+ 	.target			=3D "task_file",
++	.feature		=3D BPF_ITER_RESCHED,
+ 	.ctx_arg_info_size	=3D 2,
+ 	.ctx_arg_info		=3D {
+ 		{ offsetof(struct bpf_iter__task_file, task),
+--=20
+2.24.1
 
