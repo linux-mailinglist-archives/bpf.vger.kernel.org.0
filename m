@@ -2,121 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B210829D8EC
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 23:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6907529D93B
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 23:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389070AbgJ1Wk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 18:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730725AbgJ1Wk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:40:58 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D610C0613CF;
-        Wed, 28 Oct 2020 15:40:58 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id b138so542324yba.5;
-        Wed, 28 Oct 2020 15:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jg45dpTkIStnq7FH8sB1G6csIoi0LJaAOaqWI/KVCvI=;
-        b=noS8dvS1P9698Fp6wHJWJPKA+/s9WfOrs3eI0eKM7tXYQIY+jDH6Ivu06+vFjdr6tR
-         m82s7srotwXwMAhUpxBzkw9o/OMYtJra6MkONeYOdQZMK8DZ5nh9f0DuuUpXSzx9xjC/
-         Is5X+0B55s4egZElRcBoYkhwSx5z+lbt43kRaGUeEyTJqn0EmwZZyr79GyLfJXIJZxyx
-         mDGGiIO+maiihAloxafvli/rpUTQy8IoP/1sn9Hk4DEK+WFy0R4/7jpVFFzRfotzH8sR
-         45ToxSia4MLemgUbQ9+HCYWdSwPzcwEC5U97K78w1YtRk5q3bBSM8687/prdUbe6YM1c
-         rzsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jg45dpTkIStnq7FH8sB1G6csIoi0LJaAOaqWI/KVCvI=;
-        b=bNP0xXFHnzBit1JPYBlxKg1ev4E86bZ0uwAQeCaNgXE2lzN81q1T3oA3rSnJVr0/Hf
-         lLlJZpX+0rwBwJlSEbhtO/9YXS42useXwywouY2N/6lqypr+XaHZPnh0KWmz9vAgs9rI
-         5TCic22NNSVYMSkJ5b3gr+YjB2Abs264l/pDdP5pp2OjBw0eTC9U4oO7ryY0budz4a2E
-         gKUAKyQCbWAXaUXQWfyDjNZe9abAhnaS6zpNpAnyQ+YyZpEWH8fxvCD0NWYzu3keLe5M
-         nkHNSh9WQ+L9lLX+5g9QkxY45eC47rutejmM50+XLONjyuNE2N9fk6zYW23ZatQ2P/kk
-         HfAw==
-X-Gm-Message-State: AOAM532UOVWIJ6bUXLP1SxN9a2QHnwq9wCy0ZvpOIjuL1tWLJ5j+GXpC
-        6wOigaEvulvjtLuRJ5yMPCzA6y2R22Y7VsY1qYQ=
-X-Google-Smtp-Source: ABdhPJzjR9v72td9M8NZQP+eitD1eMiz3OsKtziYoQQJVouthGxKy6BQyiXpmiZ9+bPbeYxIQSPgdVC+fQkcTwS6lm4=
-X-Received: by 2002:a25:c001:: with SMTP id c1mr1976005ybf.27.1603924857840;
- Wed, 28 Oct 2020 15:40:57 -0700 (PDT)
+        id S2389540AbgJ1WuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 18:50:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389530AbgJ1WuF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:50:05 -0400
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603925404;
+        bh=YkIvDKPErt3NvCXUo0fvJk/pdkjkI5dN3QZ8rVeGMDU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GGt4d08MLbClyJrEjlzzv+OFpRxQLZy65gEG7uBbRKJdYklCpEXWT9mqCuqitsH11
+         ZGVE6VZukrjY6BsBV0qX8JSHjoyCX4w34jsg1SRH4YS3kh+ULLSznAsW9IPBVbGPS9
+         xuUyHNPrjzHXCdyiatJiafTbs3aqdCNbfH8tFcrA=
 MIME-Version: 1.0
-References: <20201022082138.2322434-1-jolsa@kernel.org> <20201022082138.2322434-8-jolsa@kernel.org>
- <20201028182534.GS2900849@krava>
-In-Reply-To: <20201028182534.GS2900849@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Oct 2020 15:40:46 -0700
-Message-ID: <CAEf4BzarrQLrh4PXZvMmrL8KpBTjB65V9+jxn0os-Yd2jN2aYQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 07/16] kallsyms: Use rb tree for kallsyms name search
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: permit cond_resched for some iterators
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160392540439.15061.11814721370459886312.git-patchwork-notify@kernel.org>
+Date:   Wed, 28 Oct 2020 22:50:04 +0000
+References: <20201028061054.1411116-1-yhs@fb.com>
+In-Reply-To: <20201028061054.1411116-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, andrii@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 3:29 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Thu, Oct 22, 2020 at 10:21:29AM +0200, Jiri Olsa wrote:
-> > The kallsyms_expand_symbol function showed in several bpf related
-> > profiles, because it's doing linear search.
-> >
-> > Before:
-> >
-> >  Performance counter stats for './src/bpftrace -ve kfunc:__x64_sys_s* \
-> >    { printf("test\n"); } i:ms:10 { printf("exit\n"); exit();}' (5 runs):
-> >
-> >      2,535,458,767      cycles:k                         ( +-  0.55% )
-> >        940,046,382      cycles:u                         ( +-  0.27% )
-> >
-> >              33.60 +- 3.27 seconds time elapsed  ( +-  9.73% )
-> >
-> > Loading all the vmlinux symbols in rbtree and and switch to rbtree
-> > search in kallsyms_lookup_name function to save few cycles and time.
-> >
-> > After:
-> >
-> >  Performance counter stats for './src/bpftrace -ve kfunc:__x64_sys_s* \
-> >    { printf("test\n"); } i:ms:10 { printf("exit\n"); exit();}' (5 runs):
-> >
-> >      2,199,433,771      cycles:k                         ( +-  0.55% )
-> >        936,105,469      cycles:u                         ( +-  0.37% )
-> >
-> >              26.48 +- 3.57 seconds time elapsed  ( +- 13.49% )
-> >
-> > Each symbol takes 160 bytes, so for my .config I've got about 18 MBs
-> > used for 115285 symbols.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->
-> FYI there's init_kprobes dependency on kallsyms_lookup_name in early
-> init call, so this won't work as it is :-\ will address this in v2
->
-> also I'll switch to sorted array and bsearch, because kallsyms is not
-> dynamically updated
+Hello:
 
-what about kernel modules then?
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
->
-> jirka
->
-> > ---
-> >  kernel/kallsyms.c | 95 ++++++++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 86 insertions(+), 9 deletions(-)
-> >
+On Tue, 27 Oct 2020 23:10:54 -0700 you wrote:
+> Commit e679654a704e ("bpf: Fix a rcu_sched stall issue with
+> bpf task/task_file iterator") tries to fix rcu stalls warning
+> which is caused by bpf task_file iterator when running
+> "bpftool prog".
+> 
+>       rcu: INFO: rcu_sched self-detected stall on CPU
+>       rcu: \x097-....: (20999 ticks this GP) idle=302/1/0x4000000000000000 softirq=1508852/1508852 fqs=4913
+>       \x09(t=21031 jiffies g=2534773 q=179750)
+>       NMI backtrace for cpu 7
+>       CPU: 7 PID: 184195 Comm: bpftool Kdump: loaded Tainted: G        W         5.8.0-00004-g68bfc7f8c1b4 #6
+>       Hardware name: Quanta Twin Lakes MP/Twin Lakes Passive MP, BIOS F09_3A17 05/03/2019
+>       Call Trace:
+>       <IRQ>
+>       dump_stack+0x57/0x70
+>       nmi_cpu_backtrace.cold+0x14/0x53
+>       ? lapic_can_unplug_cpu.cold+0x39/0x39
+>       nmi_trigger_cpumask_backtrace+0xb7/0xc7
+>       rcu_dump_cpu_stacks+0xa2/0xd0
+>       rcu_sched_clock_irq.cold+0x1ff/0x3d9
+>       ? tick_nohz_handler+0x100/0x100
+>       update_process_times+0x5b/0x90
+>       tick_sched_timer+0x5e/0xf0
+>       __hrtimer_run_queues+0x12a/0x2a0
+>       hrtimer_interrupt+0x10e/0x280
+>       __sysvec_apic_timer_interrupt+0x51/0xe0
+>       asm_call_on_stack+0xf/0x20
+>       </IRQ>
+>       sysvec_apic_timer_interrupt+0x6f/0x80
+>       ...
+>       task_file_seq_next+0x52/0xa0
+>       bpf_seq_read+0xb9/0x320
+>       vfs_read+0x9d/0x180
+>       ksys_read+0x5f/0xe0
+>       do_syscall_64+0x38/0x60
+>       entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> [...]
 
-[...]
+Here is the summary with links:
+  - [bpf-next] bpf: permit cond_resched for some iterators
+    https://git.kernel.org/bpf/bpf-next/c/cf83b2d2e2b6
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
