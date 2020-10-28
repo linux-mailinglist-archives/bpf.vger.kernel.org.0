@@ -2,216 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115A929DE6B
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 01:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FA329DCD7
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 01:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732294AbgJ1WTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 18:19:07 -0400
-Received: from mx.der-flo.net ([193.160.39.236]:46468 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731992AbgJ1WS2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:18:28 -0400
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id 1D0BD442F2; Wed, 28 Oct 2020 21:11:00 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:146b:10e2:afb5:be30])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 9680B442EB;
-        Wed, 28 Oct 2020 21:10:31 +0100 (CET)
-From:   Florian Lehner <dev@der-flo.net>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, Florian Lehner <dev@der-flo.net>
-Subject: [PATCH bpf-next v4] bpf: Lift hashtab key_size limit
-Date:   Wed, 28 Oct 2020 21:09:52 +0100
-Message-Id: <20201028200952.7869-1-dev@der-flo.net>
-X-Mailer: git-send-email 2.26.2
+        id S1728765AbgJ2Acm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 20:32:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41819 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387427AbgJ1W2q (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 28 Oct 2020 18:28:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603924125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wApZcyyCg/oHvQuw/XW+jOLHSnrOSTRGBkRyfmnnuNo=;
+        b=fekCzrqXAdg5Q4oFFYv5tWJ6oD7aVUZMQb0ICgdDHmb4UAAkjtwWlcZvnY6VEBHZeJli0H
+        T14Qtk/lN1bAXtgNopTIiWT9ynrPuetGDfehv6FjvFgD4Wgih1pE4ulLlWNzqxe3XXvHWN
+        a1PGNqpjMhbUpqGBXXQ614jJIiB4NI4=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-328-CgES4BPLO0KGCE7RyhSEXQ-1; Wed, 28 Oct 2020 18:28:43 -0400
+X-MC-Unique: CgES4BPLO0KGCE7RyhSEXQ-1
+Received: by mail-qk1-f197.google.com with SMTP id s14so657586qke.1
+        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 15:28:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=wApZcyyCg/oHvQuw/XW+jOLHSnrOSTRGBkRyfmnnuNo=;
+        b=m/60bDO5B3t13KGgOuh74CpbPZL6Ojbq3hjfTjO4n/xYtqMcB9Wzf8MJKCaqqToAqH
+         BmzoREoyRIJhD9HR4zHCJ2xLWcgXfN0bYEaMiIEhKd7Eo+XFTnHVG+d+zK8ATPmGt176
+         LZEPSXpHuEkuyFKfro6IzzGS6avzs2RHXqd4sUuR+LD1+d45RiGSucPttZIiY5U6LTin
+         Pa8pLQRwcLJepF2jzPt8fN+Uto/4gxHbyrFRHY3E4L8hk42OYwEc+Yr5PBeAQaTBgWaJ
+         sfizh1cvo52pxr0i0uxCAvkuqTC7v0CzfRRyhW6s0YS6bT4ZHEL8MdLxl3CUHbRT9W6Z
+         OEDw==
+X-Gm-Message-State: AOAM531VRaEKFz9XOolkr2LsCPRwOBMqCkP28u1ypTMq3iq3l0Vt6XqP
+        p8PO8QB19Eh0i/iDA4eeMKFQYSzvsZXKoWbVNW5aUM6d2K8vT0711CZWSR0T/JRIkkCkh8367G9
+        dJoroaGmZtGNi
+X-Received: by 2002:a0c:9e0e:: with SMTP id p14mr1219951qve.25.1603924123522;
+        Wed, 28 Oct 2020 15:28:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwq9yyBSFxRxsVFnZ8IGw0Fts+hBOX/aebL+kXk1aaU6kEom8zA0qdvrPB2Hx90ZyB0KN/Pbw==
+X-Received: by 2002:a0c:9e0e:: with SMTP id p14mr1219935qve.25.1603924123248;
+        Wed, 28 Oct 2020 15:28:43 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 29sm423854qks.28.2020.10.28.15.28.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Oct 2020 15:28:42 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id DE5FF181CED; Wed, 28 Oct 2020 23:28:40 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii@kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] bpf: add struct bpf_redir_neigh forward
+ declaration to BPF helper defs
+In-Reply-To: <20201028181204.111241-1-andrii@kernel.org>
+References: <20201028181204.111241-1-andrii@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 28 Oct 2020 23:28:40 +0100
+Message-ID: <87eelim1d3.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently key_size of hashtab is limited to MAX_BPF_STACK.
-As the key of hashtab can also be a value from a per cpu map it can be
-larger than MAX_BPF_STACK.
+Andrii Nakryiko <andrii@kernel.org> writes:
 
-The use-case for this patch originates to implement allow/disallow
-lists for files and file paths. The maximum length of file paths is
-defined by PATH_MAX with 4096 chars including nul.
-This limit exceeds MAX_BPF_STACK.
+> Forward-declare struct bpf_redir_neigh in bpf_helper_defs.h to avoid
+> compiler warning about unknown structs.
+>
+> Fixes: ba452c9e996d ("bpf: Fix bpf_redirect_neigh helper api to support s=
+upplying nexthop")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Changelog:
+Ah! I did actually include that in my local tree at some point, but
+guess it never made it into the patch; sorry about that!
 
-v4:
- - Utilize BPF skeleton in tests
- - Rebase
+I guess this should go into the bpf tree, rather than bpf-next, no?
 
-v3:
- - Rebase
-
-v2:
- - Add a test for bpf side
-
-Signed-off-by: Florian Lehner <dev@der-flo.net>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- kernel/bpf/hashtab.c                          | 16 ++-----
- .../selftests/bpf/prog_tests/hash_large_key.c | 43 +++++++++++++++++
- .../selftests/bpf/progs/test_hash_large_key.c | 46 +++++++++++++++++++
- tools/testing/selftests/bpf/test_maps.c       |  3 +-
- 4 files changed, 96 insertions(+), 12 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 1815e97d4c9c..fff7cd05b9e3 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
- 	    attr->value_size == 0)
- 		return -EINVAL;
- 
--	if (attr->key_size > MAX_BPF_STACK)
--		/* eBPF programs initialize keys on stack, so they cannot be
--		 * larger than max stack size
--		 */
--		return -E2BIG;
--
--	if (attr->value_size >= KMALLOC_MAX_SIZE -
--	    MAX_BPF_STACK - sizeof(struct htab_elem))
--		/* if value_size is bigger, the user space won't be able to
--		 * access the elements via bpf syscall. This check also makes
--		 * sure that the elem_size doesn't overflow and it's
-+	if ((u64)(attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
-+	   sizeof(struct htab_elem))
-+		/* if key_size + value_size is bigger, the user space won't be
-+		 * able to access the elements via bpf syscall. This check
-+		 * also makes sure that the elem_size doesn't overflow and it's
- 		 * kmalloc-able later in htab_map_update_elem()
- 		 */
- 		return -E2BIG;
-diff --git a/tools/testing/selftests/bpf/prog_tests/hash_large_key.c b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-new file mode 100644
-index 000000000000..34684c0fc76d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/hash_large_key.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include "test_hash_large_key.skel.h"
-+
-+void test_hash_large_key(void)
-+{
-+	int err, value = 21, duration = 0, hash_map_fd;
-+	struct test_hash_large_key *skel;
-+
-+	struct bigelement {
-+		int a;
-+		char b[4096];
-+		long long c;
-+	} key;
-+	bzero(&key, sizeof(key));
-+
-+	skel = test_hash_large_key__open_and_load();
-+	if (CHECK(!skel, "skel_open_and_load", "skeleton open/load failed\n"))
-+		return;
-+
-+	hash_map_fd = bpf_map__fd(skel->maps.hash_map);
-+	if (CHECK(hash_map_fd < 0, "bpf_map__fd", "failed\n"))
-+		goto cleanup;
-+
-+	err = test_hash_large_key__attach(skel);
-+	if (CHECK(err, "attach_raw_tp", "err %d\n", err))
-+		goto cleanup;
-+
-+	err = bpf_map_update_elem(hash_map_fd, &key, &value, BPF_ANY);
-+	if (CHECK(err, "bpf_map_update_elem", "errno=%d\n", errno))
-+		goto cleanup;
-+
-+	key.c = 1;
-+	err = bpf_map_lookup_elem(hash_map_fd, &key, &value);
-+	if (CHECK(err, "bpf_map_lookup_elem", "errno=%d\n", errno))
-+		goto cleanup;
-+
-+	CHECK_FAIL(value != 42);
-+
-+cleanup:
-+	test_hash_large_key__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_hash_large_key.c b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
-new file mode 100644
-index 000000000000..dfee6db260eb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_hash_large_key.c
-@@ -0,0 +1,46 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 2);
-+	__type(key, struct bigelement);
-+	__type(value, __u32);
-+} hash_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct bigelement);
-+} key_map SEC(".maps");
-+
-+struct bigelement {
-+	int a;
-+	char b[4096];
-+	long long c;
-+};
-+
-+SEC("raw_tracepoint/sys_enter")
-+int bpf_hash_large_key_test(void *ctx)
-+{
-+	int zero = 0, err = 1, value = 42;
-+	struct bigelement *key;
-+
-+	key = bpf_map_lookup_elem(&key_map, &zero);
-+	if (!key)
-+		goto err;
-+
-+	key->c = 1;
-+	if (bpf_map_update_elem(&hash_map, key, &value, BPF_ANY))
-+		goto err;
-+
-+	err = 0;
-+err:
-+	return err;
-+}
-+
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 0d92ebcb335d..0ad3e6305ff0 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1223,9 +1223,10 @@ static void test_map_in_map(void)
- 
- static void test_map_large(void)
- {
-+
- 	struct bigkey {
- 		int a;
--		char b[116];
-+		char b[4096];
- 		long long c;
- 	} key;
- 	int fd, i, value;
--- 
-2.26.2
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
