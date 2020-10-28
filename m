@@ -2,113 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94A229E032
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 02:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE85429E073
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 02:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgJ1WFN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 18:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729966AbgJ1WFM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:05:12 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EB2C0613D1;
-        Wed, 28 Oct 2020 15:05:12 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id w25so409733vsk.9;
-        Wed, 28 Oct 2020 15:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sBa77MmCFN0T1+VtUx1HDnNMT2/Xv5NhXqq896ClIPA=;
-        b=ThThPoDIPRt59MZkfI1qQFRnAS2OlQaGLzpGPN2cxTSQfDtCdz08ENqwNG9U8jzOSq
-         s34Q276RHnCcq8eK/nTv0czP0MtEL51wsFyO+l0/EF/aZx+dKou4D7B6eVgK94JVOkJy
-         gNfNJgZzXGP//V7CiqZ3l8ybUm24uPVJ0zBOsk3MEzh+BQ/TucW/kMC61IEEHLyMgwnz
-         6TaxNwP8l906lqpO77tS0TEDJFzAltKegGSigo6TgM+iVrTnY7ITYI4zxmNp2cKEmth2
-         8o4dgHKzSDhquPjaHN+aQt5e/yANa4V1Nlnmnor+iDQiKXFMgUOhuOG8XxBJGAdtrER9
-         PYdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sBa77MmCFN0T1+VtUx1HDnNMT2/Xv5NhXqq896ClIPA=;
-        b=CpanmAL7sESG0s+5JOewhFV3rblxzAaHakFJx7sD3yAuJQj50LYmJsEr50r8ID3Kor
-         +wMVb3xQRm5P4ST60RnF83fnRwVaZ/TTy00x8QP6mGCEdSZytCCyxSROha3uiOwf4FP8
-         EyZrLbidrcpQNdR+TWnarUpjvSt0aHTIixD6n2d29jBDJY3x40Ks8ZTM+s3WBq6xQHy9
-         2oUjMJMM+enQan+OXcYUe/4ag2w7wVU4MlHjQsvyJMrkbXRq4eFCs2avtixKEFFDmqud
-         83ywZiI9f0j1MWAwWY3PSW9DqEa3CDGK689U2PJTnxkATzaxYB5r2IufkbhT3UPwTh1Y
-         DTsw==
-X-Gm-Message-State: AOAM530JWLoBBhpQBvGrbdA9cMJVxWaWL/vfmGl7Qegzoanmt5VeeZuK
-        XTiHrxZOTNkFqI252gaa5k7iL5rjk/Bho8E7
-X-Google-Smtp-Source: ABdhPJx1sVLTojg+U9YZMBvRLhAg0GBPcu5nq1fPysti/X+d+Gmy//kTyoSjwtScwRHBrv8BGUyEYA==
-X-Received: by 2002:a62:ea0c:0:b029:164:3789:547b with SMTP id t12-20020a62ea0c0000b02901643789547bmr7074341pfh.27.1603892133273;
-        Wed, 28 Oct 2020 06:35:33 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.43])
-        by smtp.gmail.com with ESMTPSA id q14sm5935393pjp.43.2020.10.28.06.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Oct 2020 06:35:32 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        maciej.fijalkowski@intel.com, sridhar.samudrala@intel.com,
-        jesse.brandeburg@intel.com, qi.z.zhang@intel.com, kuba@kernel.org,
-        edumazet@google.com, intel-wired-lan@lists.osuosl.org,
-        jonathan.lemon@gmail.com
-Subject: [RFC PATCH bpf-next 5/9] xsk: add busy-poll support for {recv,send}msg()
-Date:   Wed, 28 Oct 2020 14:34:33 +0100
-Message-Id: <20201028133437.212503-6-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201028133437.212503-1-bjorn.topel@gmail.com>
-References: <20201028133437.212503-1-bjorn.topel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1728305AbgJ1WEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 18:04:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729508AbgJ1WCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 18:02:23 -0400
+Received: from e123331-lin.nice.arm.com (lfbn-nic-1-188-42.w2-15.abo.wanadoo.fr [2.15.37.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA850247F5;
+        Wed, 28 Oct 2020 17:15:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603905313;
+        bh=FsmcOn0XxpUX5de9S0UmGY+4ZGOqbW4cCRPICKIXKI4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NF6yHpW3jDsvWT6SJd9HhXl7b6oqz9sIEwd04rVK4NSy14dPU/rkmGH6SIv1YrILN
+         2gNIEFCQsug2/rZ1HaJlj57elsl5UcgBaYU4petFMPCGb7JZOhmYkhIDcuqzQ06lzI
+         B+TZ0wVcZ2fGIg/Q7v0lAo6dKYN2geM0EFiiH28c=
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, arnd@arndb.de,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH v2 0/2] get rid of GCC __attribute__((optimize)) for BPF
+Date:   Wed, 28 Oct 2020 18:15:04 +0100
+Message-Id: <20201028171506.15682-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+This is a followup to [0]:
+[PATCH] bpf: don't rely on GCC __attribute__((optimize)) to disable GCSE[0]
 
-Wire-up XDP socket busy-poll support for recvmsg() and sendmsg().
+Changes since v1:
+- only use -fno-gcse when CONFIG_BPF_JIT_ALWAYS_ON=y and CONFIG_CC_IS_GCC=y
+  (but ignore CONFIG_RETPOLINE since we want to avoid GCSE in all cases)
+- to avoid potential impact of disabling GCSE on other code, put the
+  interpreter in a separate file (patch #2)
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- net/xdp/xsk.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Note that patch #1 is intended for backporting, as function scope GCC
+optimization attributes are really quite broken.
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 2e5b9f27c7a3..da649b4f377c 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -23,6 +23,7 @@
- #include <linux/netdevice.h>
- #include <linux/rculist.h>
- #include <net/xdp_sock_drv.h>
-+#include <net/busy_poll.h>
- #include <net/xdp.h>
- 
- #include "xsk_queue.h"
-@@ -472,6 +473,9 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- 	if (unlikely(need_wait))
- 		return -EOPNOTSUPP;
- 
-+	if (sk_can_busy_loop(sk))
-+		sk_busy_loop(sk, 1); /* only support non-blocking sockets */
-+
- 	pool = xs->pool;
- 	if (pool->cached_need_wakeup & XDP_WAKEUP_TX)
- 		return __xsk_sendmsg(sk);
-@@ -493,6 +497,9 @@ static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int fl
- 	if (unlikely(need_wait))
- 		return -EOPNOTSUPP;
- 
-+	if (sk_can_busy_loop(sk))
-+		sk_busy_loop(sk, 1); /* only support non-blocking sockets */
-+
- 	if (xs->pool->cached_need_wakeup & XDP_WAKEUP_RX && xs->zc)
- 		return xsk_wakeup(xs, XDP_WAKEUP_RX);
- 	return 0;
+I don't have a strong opinion on whether the interpreter code should be
+split off or not, but it looks like it can be done fairly painlessly,
+so it is probably a good idea to do it anyway.
+
+[0] https://lore.kernel.org/bpf/20201027205723.12514-1-ardb@kernel.org/
+
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Kees Cook <keescook@chromium.org>
+
+Ard Biesheuvel (2):
+  bpf: don't rely on GCC __attribute__((optimize)) to disable GCSE
+  bpf: move interpreter into separate source file
+
+ include/linux/compiler-gcc.h   |   2 -
+ include/linux/compiler_types.h |   4 -
+ include/linux/filter.h         |   1 +
+ kernel/bpf/Makefile            |   7 +-
+ kernel/bpf/core.c              | 567 ------------------
+ kernel/bpf/interp.c            | 601 ++++++++++++++++++++
+ 6 files changed, 607 insertions(+), 575 deletions(-)
+ create mode 100644 kernel/bpf/interp.c
+
 -- 
-2.27.0
+2.17.1
 
