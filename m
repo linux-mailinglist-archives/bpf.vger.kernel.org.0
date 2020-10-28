@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C23329D455
-	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 22:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E4229D472
+	for <lists+bpf@lfdr.de>; Wed, 28 Oct 2020 22:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgJ1Vv0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 17:51:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23957 "EHLO
+        id S1728283AbgJ1VwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 17:52:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28344 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727481AbgJ1VvW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Oct 2020 17:51:22 -0400
+        by vger.kernel.org with ESMTP id S1728281AbgJ1VwL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 28 Oct 2020 17:52:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603921880;
+        s=mimecast20190719; t=1603921930;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kneR4tnwy4pTTLA25Zm/bUt3+Ry5M5dryQBZQKk/NwE=;
-        b=UDq7ZtYdaMjtft7Y84jBe/uuOXwITuhfoTgvniu0TY1PyGS3uLIP2l0GjAxMEhrK/IleuH
-        gtIV8PBzFUNaAAG+H0tRo1uYXsICWkCE1ZuWvX9oByeiBTBafAj4yMXRnO/ChgrKwdgv60
-        L/Exva/LYBL7PWRLDqD1FtQxY+O127Y=
+        bh=8LozTGWjHxSdQ35uV/IvBWdUB+pje99WiRl59ynoTvg=;
+        b=MzK06hw1DE3CjUDu9YQEJ8pqY+4qFaoWtEzeg9BIeyHlqu+dwMhU3zlynXAsefjaTLScSb
+        6+S9Qpol0+RxBKPbrJ9YcbnweEOhiwBpiSuvlIiJk3HD/KnQ3yXna2bEy7tq4LI7uu5bE2
+        vaal7qD9ogYHnhTzcpyzmuYzpU7Znxw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-OE3dl1aqOH-VWbEVVTG89g-1; Wed, 28 Oct 2020 11:49:34 -0400
-X-MC-Unique: OE3dl1aqOH-VWbEVVTG89g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-286-N5zYHUK1MmuHPRUbIdx7MA-1; Wed, 28 Oct 2020 11:50:57 -0400
+X-MC-Unique: N5zYHUK1MmuHPRUbIdx7MA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57CD6760C1;
-        Wed, 28 Oct 2020 15:49:32 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45A411891E89;
+        Wed, 28 Oct 2020 15:50:56 +0000 (UTC)
 Received: from krava (unknown [10.40.192.64])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 61D0960C04;
-        Wed, 28 Oct 2020 15:49:26 +0000 (UTC)
-Date:   Wed, 28 Oct 2020 16:49:25 +0100
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7B94E6266E;
+        Wed, 28 Oct 2020 15:50:50 +0000 (UTC)
+Date:   Wed, 28 Oct 2020 16:50:49 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>,
@@ -43,84 +43,137 @@ Cc:     Jiri Olsa <jolsa@kernel.org>,
         Hao Luo <haoluo@google.com>,
         "Frank Ch. Eigler" <fche@redhat.com>,
         Mark Wielaard <mjw@redhat.com>
-Subject: Re: [RFC 0/3] pahole: Workaround dwarf bug for function encoding
-Message-ID: <20201028154925.GO2900849@krava>
+Subject: Re: [PATCH 2/3] btf_encoder: Change functions check due to broken
+ dwarf
+Message-ID: <20201028155049.GP2900849@krava>
 References: <20201026223617.2868431-1-jolsa@kernel.org>
- <CAEf4Bzav_WF3duq4JYmaPvyUXdREkXJMPAb+ASUxAxq_mqXd5Q@mail.gmail.com>
+ <20201026223617.2868431-3-jolsa@kernel.org>
+ <CAEf4BzZZ6abHMB4Y2wHF+0vGVqJ_UtMnjDfSscVXbHUZcfEGtg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzav_WF3duq4JYmaPvyUXdREkXJMPAb+ASUxAxq_mqXd5Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CAEf4BzZZ6abHMB4Y2wHF+0vGVqJ_UtMnjDfSscVXbHUZcfEGtg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 04:13:46PM -0700, Andrii Nakryiko wrote:
+On Tue, Oct 27, 2020 at 04:20:10PM -0700, Andrii Nakryiko wrote:
 > On Mon, Oct 26, 2020 at 5:07 PM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > hi,
-> > because of gcc bug [1] we can no longer rely on DW_AT_declaration
-> > attribute to filter out declarations and end up with just
-> > one copy of the function in the BTF data.
+> > We need to generate just single BTF instance for the
+> > function, while DWARF data contains multiple instances
+> > of DW_TAG_subprogram tag.
 > >
-> > It seems this bug is not easy to fix, but regardless if the
-> > it's coming soon, it's probably good idea not to depend so
-> > much only on dwarf data and make some extra checks.
+> > Unfortunately we can no longer rely on DW_AT_declaration
+> > tag (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
 > >
-> > Thus for function encoding we are now doing following checks:
+> > Instead we apply following checks:
 > >   - argument names are defined for the function
 > >   - there's symbol and address defined for the function
 > >   - function is generated only once
 > >
-> > These checks ensure that we encode function with defined
-> > symbol/address and argument names.
+> > They might be slightly superfluous together, but it's
+> > better to be ready for another DWARF mishap.
 > >
-> > I marked this post as RFC, because with this workaround in
-> > place we are also encoding assembly functions, which were
-> > not present when using the previous gcc version.
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  btf_encoder.c | 102 +++++++++++++++++++++++++++++++++++++++++++++++++-
+> >  elf_symtab.h  |   8 ++++
+> >  2 files changed, 109 insertions(+), 1 deletion(-)
 > >
-> > Full functions diff to previous gcc working version:
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 2dd26c904039..99b9abe36993 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -26,6 +26,62 @@
+> >   */
+> >  #define KSYM_NAME_LEN 128
 > >
-> >   http://people.redhat.com/~jolsa/functions.diff.txt
-> >
-> > I'm not sure this does not break some rule for functions in
-> > BTF data, becuse those assembly functions are not attachable
-> > by bpf trampolines, so I don't think there's any use for them.
+> > +struct elf_function {
+> > +       const char *name;
+> > +       bool generated;
+> > +};
+> > +
+> > +static struct elf_function *functions;
+> > +static int functions_alloc;
+> > +static int functions_cnt;
+> > +
+> > +static int functions_cmp(const void *_a, const void *_b)
+> > +{
+> > +       const struct elf_function *a = _a;
+> > +       const struct elf_function *b = _b;
+> > +
+> > +       return strcmp(a->name, b->name);
+> > +}
+> > +
+> > +static void delete_functions(void)
+> > +{
+> > +       free(functions);
+> > +       functions_alloc = functions_cnt = 0;
+> > +}
+> > +
+> > +static int config_function(struct btf_elf *btfe, GElf_Sym *sym)
+> > +{
+> > +       if (!elf_sym__is_function(sym))
+> > +               return 0;
+> > +       if (!elf_sym__value(sym))
+> > +               return 0;
+> > +
+> > +       if (functions_cnt == functions_alloc) {
+> > +               functions_alloc += 5000;
 > 
-> What will happen if we do try to attach to those assembly functions?
-> Will there be some corruption or crash, or will it just fail and
+> maybe just do a conventional exponential size increase? Not
+> necessarily * 2, could be (* 3 / 2) or (* 4 / 3), libbpf uses such
+> approach.
 
-the attach code checks for the __fentry__ nop,
-so it will fail probably with EBUSY
+ok, will change
 
-> return error cleanly? What we actually want in BTF is all the
-> functions that are attachable through BPF trampoline, which is all the
-> functions that ftrace subsystem can attach to, right? So how does
-> ftrace system know what can or cannot be attached to?
+> 
+> > +               functions = realloc(functions, functions_alloc * sizeof(*functions));
+> > +               if (!functions)
+> > +                       return -1;
+> > +       }
+> > +
+> > +       functions[functions_cnt].name = elf_sym__name(sym, btfe->symtab);
+> > +       functions_cnt++;
+> > +       return 0;
+> > +}
+> > +
+> 
+> [...]
+> 
+> > diff --git a/elf_symtab.h b/elf_symtab.h
+> > index 359add69c8ab..094ec4683d01 100644
+> > --- a/elf_symtab.h
+> > +++ b/elf_symtab.h
+> > @@ -63,6 +63,14 @@ static inline uint64_t elf_sym__value(const GElf_Sym *sym)
+> >         return sym->st_value;
+> >  }
+> >
+> > +static inline int elf_sym__is_function(const GElf_Sym *sym)
+> > +{
+> > +       return (elf_sym__type(sym) == STT_FUNC ||
+> > +               elf_sym__type(sym) == STT_GNU_IFUNC) &&
+> 
+> Why do we need to collect STT_GNU_IFUNC? That is some PLT special
+> magic, does the kernel use that? Even if it does, are we even able to
+> attach to that? Could that remove some of the assembly functions?
 
-not sure, I think it records all the functions with
-__fentry__ calls, perhaps we could take these records
-as base for FUNCs, I'll check
+I missed that when I copied that function from perf ;-) I'll check
 
 jirka
 
 > 
-> >
-> > thoughts?
-> > jirka
-> >
-> >
-> > [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
-> > ---
-> > Jiri Olsa (3):
-> >       btf_encoder: Move find_all_percpu_vars in generic config function
-> >       btf_encoder: Change functions check due to broken dwarf
-> >       btf_encoder: Include static functions to BTF data
-> >
-> >  btf_encoder.c | 221 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------------------------------
-> >  elf_symtab.h  |   8 +++++
-> >  2 files changed, 170 insertions(+), 59 deletions(-)
+> > +               sym->st_name != 0 &&
+> > +               sym->st_shndx != SHN_UNDEF;
+> > +}
+> > +
+> >  static inline bool elf_sym__is_local_function(const GElf_Sym *sym)
+> >  {
+> >         return elf_sym__type(sym) == STT_FUNC &&
+> > --
+> > 2.26.2
 > >
 > 
 
