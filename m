@@ -2,448 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FE729E3E6
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 08:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D07929E3FD
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 08:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725855AbgJ2HVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 03:21:14 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34126 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725781AbgJ2HUn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Oct 2020 03:20:43 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09T7IeQG004515
-        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 00:20:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=n5un1TOjg4zumUX3obhV3mFg6fx1cUEqKSrhMSWOkvw=;
- b=coavtNB0GZdyxy0lfv6ooKuQgoXuZJf6KSiJu2vBtOfPL2zre98KxR2fBmORP+BhaXCK
- 4unFz5etCs5+L+IojbydtbbPHujJaB35duSKYOILlC1wmqteKHRkYrpegkn1k5BCGR9N
- aQhPbwKuuv/5nQoNobdAEmv1I5xjMleGKJI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34esepsdmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 00:20:41 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 29 Oct 2020 00:20:40 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 8652E62E580C; Thu, 29 Oct 2020 00:20:33 -0700 (PDT)
-From:   Song Liu <songliubraving@fb.com>
-To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next 2/2] bpf: Avoid hashtab deadlock with map_locked
-Date:   Thu, 29 Oct 2020 00:19:25 -0700
-Message-ID: <20201029071925.3103400-3-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201029071925.3103400-1-songliubraving@fb.com>
-References: <20201029071925.3103400-1-songliubraving@fb.com>
+        id S1728360AbgJ2H0a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 03:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728393AbgJ2HZb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:25:31 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4E4C0613D1
+        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 00:25:30 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k10so260181wrw.13
+        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 00:25:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p8arlK+Beb7st/ApIAXUziRhCdd+hqTNC9oSIz8cS/I=;
+        b=WffDFAChY1XXoEF3z34JPg4coRv0He3mCxXSe+x93smaO8DYgPYX1sBPD8QqewKjO0
+         kZezQVvr5A9rs7Upj4uhPVT7yEmG0a4ssEIssLqs9DBm4UogHUcztadqA8GQbOUhRBGK
+         5v3kQB8qwskjkAW+LmNNj2UfmOISlZ7ijrXhnSmOG6LWCLAjQiB1JwR28STZmZrFrMYW
+         JfIgvMpWZk7MAMOdgfbPg52ijybF2phR5qZZH5G4NC7rPXjURlGfvAmgKTxpsGwPUnl/
+         AL/BM8M9vNepXNe5A5jfz+u/c2jH773EvinrQ75hn99ihJAvnvSu2qpPmg3A2sbsI3VE
+         exPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p8arlK+Beb7st/ApIAXUziRhCdd+hqTNC9oSIz8cS/I=;
+        b=pHvLSdAHS21D7Au/L5XVJeKuSNHe0WFToBXdSsFJa1W7OP5fd5j0WedMhhY7H0hs4j
+         QyfBidHBChb3ER7seLtC7eWTRKmKBu6EuOYA3wiKPbNO0GrnLh8CP/h6Na1gsvG2sS/E
+         HMnEr9gh20Kj1BGcOFnjNMvweJTpxWZmJHLPeQci6HqY8Sm9m9dMLr2PI96HyywbVMS+
+         vbvDTFYWc/uRWd9QoozWB/3rNyksMPGXnsqiivveMzMspsNnXDOKfda94sozWlatvMUV
+         zr0BLoArF4zFDjUh0W2E2cvVRg8Fh51X8JavXnd9maHEZohOp6PpEWRR2QyroSnl7vVe
+         yAvg==
+X-Gm-Message-State: AOAM532cmNnZJ9zo4aztmAlYLyv/R0Odj2q/4VDvGfBoZSLHYg+HnNP1
+        J6tU7unsPZIyD60bTRDUM1V6ug==
+X-Google-Smtp-Source: ABdhPJxqMd6WvmNSmRkmWqlg/+S0Y9J+TXBN1OpZIQJ3wfwzn9XG7HaXykO1KxU76QzI/Jy1lqODJw==
+X-Received: by 2002:adf:fe8b:: with SMTP id l11mr3860128wrr.9.1603956328906;
+        Thu, 29 Oct 2020 00:25:28 -0700 (PDT)
+Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
+        by smtp.gmail.com with ESMTPSA id t199sm2733227wmt.46.2020.10.29.00.25.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 00:25:28 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 09:25:26 +0200
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        brouer@redhat.com
+Subject: Re: [PATCH net-next 2/4] net: page_pool: add bulk support for
+ ptr_ring
+Message-ID: <20201029072526.GA61828@apalos.home>
+References: <cover.1603824486.git.lorenzo@kernel.org>
+ <cd58ca966fbe11cabbd6160decea6ce748ebce9f.1603824486.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_03:2020-10-29,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=884 clxscore=1015 priorityscore=1501
- suspectscore=2 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
- mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010290051
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd58ca966fbe11cabbd6160decea6ce748ebce9f.1603824486.git.lorenzo@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If a hashtab is accessed in both non-NMI and NMI context, the system may
-deadlock on bucket->lock. Fix this issue with percpu counter map_locked.
-map_locked rejects concurrent access to the same bucket from the same CPU=
-.
-To reduce memory overhead, map_locked is not added per bucket. Instead,
-8 percpu counters are added to each hashtab. buckets are assigned to thes=
-e
-counters based on the lower bits of its hash.
+On Tue, Oct 27, 2020 at 08:04:08PM +0100, Lorenzo Bianconi wrote:
+> Introduce the capability to batch page_pool ptr_ring refill since it is
+> usually run inside the driver NAPI tx completion loop.
+> 
+> Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/page_pool.h | 26 ++++++++++++++++++++++++++
+>  net/core/page_pool.c    | 33 +++++++++++++++++++++++++++++++++
+>  net/core/xdp.c          |  9 ++-------
+>  3 files changed, 61 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index 81d7773f96cd..b5b195305346 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -152,6 +152,8 @@ struct page_pool *page_pool_create(const struct page_pool_params *params);
+>  void page_pool_destroy(struct page_pool *pool);
+>  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *));
+>  void page_pool_release_page(struct page_pool *pool, struct page *page);
+> +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+> +			     int count);
+>  #else
+>  static inline void page_pool_destroy(struct page_pool *pool)
+>  {
+> @@ -165,6 +167,11 @@ static inline void page_pool_release_page(struct page_pool *pool,
+>  					  struct page *page)
+>  {
+>  }
+> +
+> +static inline void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+> +					   int count)
+> +{
+> +}
+>  #endif
+>  
+>  void page_pool_put_page(struct page_pool *pool, struct page *page,
+> @@ -215,4 +222,23 @@ static inline void page_pool_nid_changed(struct page_pool *pool, int new_nid)
+>  	if (unlikely(pool->p.nid != new_nid))
+>  		page_pool_update_nid(pool, new_nid);
+>  }
+> +
+> +static inline void page_pool_ring_lock(struct page_pool *pool)
+> +	__acquires(&pool->ring.producer_lock)
+> +{
+> +	if (in_serving_softirq())
+> +		spin_lock(&pool->ring.producer_lock);
+> +	else
+> +		spin_lock_bh(&pool->ring.producer_lock);
+> +}
+> +
+> +static inline void page_pool_ring_unlock(struct page_pool *pool)
+> +	__releases(&pool->ring.producer_lock)
+> +{
+> +	if (in_serving_softirq())
+> +		spin_unlock(&pool->ring.producer_lock);
+> +	else
+> +		spin_unlock_bh(&pool->ring.producer_lock);
+> +}
+> +
+>  #endif /* _NET_PAGE_POOL_H */
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index ef98372facf6..84fb21f8865e 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -11,6 +11,8 @@
+>  #include <linux/device.h>
+>  
+>  #include <net/page_pool.h>
+> +#include <net/xdp.h>
+> +
+>  #include <linux/dma-direction.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/page-flags.h>
+> @@ -408,6 +410,37 @@ void page_pool_put_page(struct page_pool *pool, struct page *page,
+>  }
+>  EXPORT_SYMBOL(page_pool_put_page);
+>  
+> +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+> +			     int count)
+> +{
+> +	struct page *page_ring[XDP_BULK_QUEUE_SIZE];
+> +	int i, len = 0;
+> +
+> +	for (i = 0; i < count; i++) {
+> +		struct page *page = virt_to_head_page(data[i]);
+> +
+> +		if (unlikely(page_ref_count(page) != 1 ||
+> +			     !pool_page_reusable(pool, page))) {
+> +			page_pool_release_page(pool, page);
+> +			put_page(page);
+> +			continue;
+> +		}
+> +
+> +		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> +			page_pool_dma_sync_for_device(pool, page, -1);
+> +
+> +		page_ring[len++] = page;
+> +	}
+> +
+> +	page_pool_ring_lock(pool);
+> +	for (i = 0; i < len; i++) {
+> +		if (__ptr_ring_produce(&pool->ring, page_ring[i]))
+> +			page_pool_return_page(pool, page_ring[i]);
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- kernel/bpf/hashtab.c | 114 +++++++++++++++++++++++++++++++------------
- 1 file changed, 82 insertions(+), 32 deletions(-)
+Can we add a comment here on why the explicit spinlock needs to protect 
+page_pool_return_page() as well instead of just using ptr_ring_produce()?
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 278da031c91ab..da59ba978d172 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -86,6 +86,9 @@ struct bucket {
- 	};
- };
-=20
-+#define HASHTAB_MAP_LOCK_COUNT 8
-+#define HASHTAB_MAP_LOCK_MASK (HASHTAB_MAP_LOCK_COUNT - 1)
-+
- struct bpf_htab {
- 	struct bpf_map map;
- 	struct bucket *buckets;
-@@ -100,6 +103,7 @@ struct bpf_htab {
- 	u32 elem_size;	/* size of each element in bytes */
- 	u32 hashrnd;
- 	struct lock_class_key lockdep_key;
-+	int __percpu *map_locked[HASHTAB_MAP_LOCK_COUNT];
- };
-=20
- /* each htab element is struct htab_elem + key + value */
-@@ -152,26 +156,41 @@ static void htab_init_buckets(struct bpf_htab *htab=
-)
- 	}
- }
-=20
--static inline unsigned long htab_lock_bucket(const struct bpf_htab *htab=
-,
--					     struct bucket *b)
-+static inline int htab_lock_bucket(const struct bpf_htab *htab,
-+				   struct bucket *b, u32 hash,
-+				   unsigned long *pflags)
- {
- 	unsigned long flags;
-=20
-+	hash =3D hash & HASHTAB_MAP_LOCK_MASK;
-+
-+	migrate_disable();
-+	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) !=3D 1)) =
-{
-+		__this_cpu_dec(*(htab->map_locked[hash]));
-+		migrate_enable();
-+		return -EBUSY;
-+	}
-+
- 	if (htab_use_raw_lock(htab))
- 		raw_spin_lock_irqsave(&b->raw_lock, flags);
- 	else
- 		spin_lock_irqsave(&b->lock, flags);
--	return flags;
-+	*pflags =3D flags;
-+
-+	return 0;
- }
-=20
- static inline void htab_unlock_bucket(const struct bpf_htab *htab,
--				      struct bucket *b,
-+				      struct bucket *b, u32 hash,
- 				      unsigned long flags)
- {
-+	hash =3D hash & HASHTAB_MAP_LOCK_MASK;
- 	if (htab_use_raw_lock(htab))
- 		raw_spin_unlock_irqrestore(&b->raw_lock, flags);
- 	else
- 		spin_unlock_irqrestore(&b->lock, flags);
-+	__this_cpu_dec(*(htab->map_locked[hash]));
-+	migrate_enable();
- }
-=20
- static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *nod=
-e);
-@@ -429,8 +448,8 @@ static struct bpf_map *htab_map_alloc(union bpf_attr =
-*attr)
- 	bool percpu_lru =3D (attr->map_flags & BPF_F_NO_COMMON_LRU);
- 	bool prealloc =3D !(attr->map_flags & BPF_F_NO_PREALLOC);
- 	struct bpf_htab *htab;
-+	int err, i;
- 	u64 cost;
--	int err;
-=20
- 	htab =3D kzalloc(sizeof(*htab), GFP_USER);
- 	if (!htab)
-@@ -487,6 +506,13 @@ static struct bpf_map *htab_map_alloc(union bpf_attr=
- *attr)
- 	if (!htab->buckets)
- 		goto free_charge;
-=20
-+	for (i =3D 0; i < HASHTAB_MAP_LOCK_COUNT; i++) {
-+		htab->map_locked[i] =3D __alloc_percpu_gfp(sizeof(int),
-+							 sizeof(int), GFP_USER);
-+		if (!htab->map_locked[i])
-+			goto free_map_locked;
-+	}
-+
- 	if (htab->map.map_flags & BPF_F_ZERO_SEED)
- 		htab->hashrnd =3D 0;
- 	else
-@@ -497,7 +523,7 @@ static struct bpf_map *htab_map_alloc(union bpf_attr =
-*attr)
- 	if (prealloc) {
- 		err =3D prealloc_init(htab);
- 		if (err)
--			goto free_buckets;
-+			goto free_map_locked;
-=20
- 		if (!percpu && !lru) {
- 			/* lru itself can remove the least used element, so
-@@ -513,7 +539,9 @@ static struct bpf_map *htab_map_alloc(union bpf_attr =
-*attr)
-=20
- free_prealloc:
- 	prealloc_destroy(htab);
--free_buckets:
-+free_map_locked:
-+	for (i =3D 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
-+		free_percpu(htab->map_locked[i]);
- 	bpf_map_area_free(htab->buckets);
- free_charge:
- 	bpf_map_charge_finish(&htab->map.memory);
-@@ -694,12 +722,15 @@ static bool htab_lru_map_delete_node(void *arg, str=
-uct bpf_lru_node *node)
- 	struct hlist_nulls_node *n;
- 	unsigned long flags;
- 	struct bucket *b;
-+	int ret;
-=20
- 	tgt_l =3D container_of(node, struct htab_elem, lru_node);
- 	b =3D __select_bucket(htab, tgt_l->hash);
- 	head =3D &b->head;
-=20
--	flags =3D htab_lock_bucket(htab, b);
-+	ret =3D htab_lock_bucket(htab, b, tgt_l->hash, &flags);
-+	if (ret)
-+		return false;
-=20
- 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
- 		if (l =3D=3D tgt_l) {
-@@ -707,7 +738,7 @@ static bool htab_lru_map_delete_node(void *arg, struc=
-t bpf_lru_node *node)
- 			break;
- 		}
-=20
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, tgt_l->hash, flags);
-=20
- 	return l =3D=3D tgt_l;
- }
-@@ -979,7 +1010,9 @@ static int htab_map_update_elem(struct bpf_map *map,=
- void *key, void *value,
- 		 */
- 	}
-=20
--	flags =3D htab_lock_bucket(htab, b);
-+	ret =3D htab_lock_bucket(htab, b, hash, &flags);
-+	if (ret)
-+		return ret;
-=20
- 	l_old =3D lookup_elem_raw(head, hash, key, key_size);
-=20
-@@ -1020,7 +1053,7 @@ static int htab_map_update_elem(struct bpf_map *map=
-, void *key, void *value,
- 	}
- 	ret =3D 0;
- err:
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, hash, flags);
- 	return ret;
- }
-=20
-@@ -1058,7 +1091,9 @@ static int htab_lru_map_update_elem(struct bpf_map =
-*map, void *key, void *value,
- 		return -ENOMEM;
- 	memcpy(l_new->key + round_up(map->key_size, 8), value, map->value_size)=
-;
-=20
--	flags =3D htab_lock_bucket(htab, b);
-+	ret =3D htab_lock_bucket(htab, b, hash, &flags);
-+	if (ret)
-+		return ret;
-=20
- 	l_old =3D lookup_elem_raw(head, hash, key, key_size);
-=20
-@@ -1077,7 +1112,7 @@ static int htab_lru_map_update_elem(struct bpf_map =
-*map, void *key, void *value,
- 	ret =3D 0;
-=20
- err:
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, hash, flags);
-=20
- 	if (ret)
- 		bpf_lru_push_free(&htab->lru, &l_new->lru_node);
-@@ -1112,7 +1147,9 @@ static int __htab_percpu_map_update_elem(struct bpf=
-_map *map, void *key,
- 	b =3D __select_bucket(htab, hash);
- 	head =3D &b->head;
-=20
--	flags =3D htab_lock_bucket(htab, b);
-+	ret =3D htab_lock_bucket(htab, b, hash, &flags);
-+	if (ret)
-+		return ret;
-=20
- 	l_old =3D lookup_elem_raw(head, hash, key, key_size);
-=20
-@@ -1135,7 +1172,7 @@ static int __htab_percpu_map_update_elem(struct bpf=
-_map *map, void *key,
- 	}
- 	ret =3D 0;
- err:
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, hash, flags);
- 	return ret;
- }
-=20
-@@ -1175,7 +1212,9 @@ static int __htab_lru_percpu_map_update_elem(struct=
- bpf_map *map, void *key,
- 			return -ENOMEM;
- 	}
-=20
--	flags =3D htab_lock_bucket(htab, b);
-+	ret =3D htab_lock_bucket(htab, b, hash, &flags);
-+	if (ret)
-+		return ret;
-=20
- 	l_old =3D lookup_elem_raw(head, hash, key, key_size);
-=20
-@@ -1197,7 +1236,7 @@ static int __htab_lru_percpu_map_update_elem(struct=
- bpf_map *map, void *key,
- 	}
- 	ret =3D 0;
- err:
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, hash, flags);
- 	if (l_new)
- 		bpf_lru_push_free(&htab->lru, &l_new->lru_node);
- 	return ret;
-@@ -1225,7 +1264,7 @@ static int htab_map_delete_elem(struct bpf_map *map=
-, void *key)
- 	struct htab_elem *l;
- 	unsigned long flags;
- 	u32 hash, key_size;
--	int ret =3D -ENOENT;
-+	int ret;
-=20
- 	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
-=20
-@@ -1235,17 +1274,20 @@ static int htab_map_delete_elem(struct bpf_map *m=
-ap, void *key)
- 	b =3D __select_bucket(htab, hash);
- 	head =3D &b->head;
-=20
--	flags =3D htab_lock_bucket(htab, b);
-+	ret =3D htab_lock_bucket(htab, b, hash, &flags);
-+	if (ret)
-+		return ret;
-=20
- 	l =3D lookup_elem_raw(head, hash, key, key_size);
-=20
- 	if (l) {
- 		hlist_nulls_del_rcu(&l->hash_node);
- 		free_htab_elem(htab, l);
--		ret =3D 0;
-+	} else {
-+		ret =3D -ENOENT;
- 	}
-=20
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, hash, flags);
- 	return ret;
- }
-=20
-@@ -1257,7 +1299,7 @@ static int htab_lru_map_delete_elem(struct bpf_map =
-*map, void *key)
- 	struct htab_elem *l;
- 	unsigned long flags;
- 	u32 hash, key_size;
--	int ret =3D -ENOENT;
-+	int ret;
-=20
- 	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
-=20
-@@ -1267,16 +1309,18 @@ static int htab_lru_map_delete_elem(struct bpf_ma=
-p *map, void *key)
- 	b =3D __select_bucket(htab, hash);
- 	head =3D &b->head;
-=20
--	flags =3D htab_lock_bucket(htab, b);
-+	ret =3D htab_lock_bucket(htab, b, hash, &flags);
-+	if (ret)
-+		return ret;
-=20
- 	l =3D lookup_elem_raw(head, hash, key, key_size);
-=20
--	if (l) {
-+	if (l)
- 		hlist_nulls_del_rcu(&l->hash_node);
--		ret =3D 0;
--	}
-+	else
-+		ret =3D -ENOENT;
-=20
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, hash, flags);
- 	if (l)
- 		bpf_lru_push_free(&htab->lru, &l->lru_node);
- 	return ret;
-@@ -1302,6 +1346,7 @@ static void delete_all_elements(struct bpf_htab *ht=
-ab)
- static void htab_map_free(struct bpf_map *map)
- {
- 	struct bpf_htab *htab =3D container_of(map, struct bpf_htab, map);
-+	int i;
-=20
- 	/* bpf_free_used_maps() or close(map_fd) will trigger this map_free cal=
-lback.
- 	 * bpf_free_used_maps() is called after bpf prog is no longer executing=
-.
-@@ -1320,6 +1365,8 @@ static void htab_map_free(struct bpf_map *map)
- 	free_percpu(htab->extra_elems);
- 	bpf_map_area_free(htab->buckets);
- 	lockdep_unregister_key(&htab->lockdep_key);
-+	for (i =3D 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
-+		free_percpu(htab->map_locked[i]);
- 	kfree(htab);
- }
-=20
-@@ -1423,8 +1470,11 @@ __htab_map_lookup_and_delete_batch(struct bpf_map =
-*map,
- 	b =3D &htab->buckets[batch];
- 	head =3D &b->head;
- 	/* do not grab the lock unless need it (bucket_cnt > 0). */
--	if (locked)
--		flags =3D htab_lock_bucket(htab, b);
-+	if (locked) {
-+		ret =3D htab_lock_bucket(htab, b, batch, &flags);
-+		if (ret)
-+			goto next_batch;
-+	}
-=20
- 	bucket_cnt =3D 0;
- 	hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
-@@ -1441,7 +1491,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *=
-map,
- 		/* Note that since bucket_cnt > 0 here, it is implicit
- 		 * that the locked was grabbed, so release it.
- 		 */
--		htab_unlock_bucket(htab, b, flags);
-+		htab_unlock_bucket(htab, b, batch, flags);
- 		rcu_read_unlock();
- 		bpf_enable_instrumentation();
- 		goto after_loop;
-@@ -1452,7 +1502,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *=
-map,
- 		/* Note that since bucket_cnt > 0 here, it is implicit
- 		 * that the locked was grabbed, so release it.
- 		 */
--		htab_unlock_bucket(htab, b, flags);
-+		htab_unlock_bucket(htab, b, batch, flags);
- 		rcu_read_unlock();
- 		bpf_enable_instrumentation();
- 		kvfree(keys);
-@@ -1505,7 +1555,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *=
-map,
- 		dst_val +=3D value_size;
- 	}
-=20
--	htab_unlock_bucket(htab, b, flags);
-+	htab_unlock_bucket(htab, b, batch, flags);
- 	locked =3D false;
-=20
- 	while (node_to_free) {
---=20
-2.24.1
+> +	}
+> +	page_pool_ring_unlock(pool);
+> +}
+> +EXPORT_SYMBOL(page_pool_put_page_bulk);
+> +
+>  static void page_pool_empty_ring(struct page_pool *pool)
+>  {
+>  	struct page *page;
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 93eabd789246..9f9a8d14df38 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -383,16 +383,11 @@ EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
+>  void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
+>  {
+>  	struct xdp_mem_allocator *xa = bq->xa;
+> -	int i;
+>  
+> -	if (unlikely(!xa))
+> +	if (unlikely(!xa || !bq->count))
+>  		return;
+>  
+> -	for (i = 0; i < bq->count; i++) {
+> -		struct page *page = virt_to_head_page(bq->q[i]);
+> -
+> -		page_pool_put_full_page(xa->page_pool, page, false);
+> -	}
+> +	page_pool_put_page_bulk(xa->page_pool, bq->q, bq->count);
+>  	bq->count = 0;
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
+> -- 
+> 2.26.2
+> 
 
+Thanks
+/Ilias
