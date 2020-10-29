@@ -2,182 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB30929E3F8
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 08:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E5D29E401
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 08:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgJ2HYn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 03:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
+        id S1728447AbgJ2H0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 03:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726732AbgJ2HYe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 03:24:34 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50C7C0613AB
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 21:44:03 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id t13so1626215ljk.12
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 21:44:03 -0700 (PDT)
+        with ESMTP id S1728274AbgJ2HY7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:24:59 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E11C08EA7B
+        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 00:08:52 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s9so1538838wro.8
+        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 00:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8vJY7X+2qf9mk4yjNjSimkTKUqnRW4h3rIif/0iLOrE=;
-        b=gZ8H/p46CECRx9wDoVffbN/h0TJ0bUslUCW4zEC9UGCLKm/cXqu5uiZC1A8cryr+E8
-         e0dLqac5CrQ0wZy68hcC5mDMEnQW3ZBUwc7+nrlVGLwjzOWHmxGB84B6A7tq9XDnv19s
-         M7QjYPJ1Rgm+8fE1FFuZrcNgCnJkq5XlKbHAN6QN93QfeuU4o+r0DZj/rSPyFxLyR9HX
-         goLYDldHw4PKN4C16oNQfIjUL+sxQTmKcTIGcQlhOv8tjXF8krfMfUE47zD8S0ABnIzk
-         C8yOWDT4K5Mx4UbUn4ZaqYyEFrICmzbt6zNb1oXbkYLIFdMceLLg+ASw3I9w2T4L15rH
-         1NBg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=90tbSpftzM+wEfef3WTFwlNnTYj4eB/xYx32SzM4xzY=;
+        b=wd3BV9e7/tLO+tTEwJuHf0XowRZux2zcVXGkWnmWxHKaABtDBZbBMJhMsBXsKICwMx
+         feRmzUDOoP0VZUDY99ZbnIjrSxCy+Riwq/xzNFtM7X2XAq2Yb1anaoxGJn6QS6mN15v0
+         JmQcbx1RGPZiOK4c8hrNPxtuEJCUWZTwh3eAzk4W/EuTvDWz6NBcF7c7YKJ7PlM0jdeM
+         2vPUx96xM+HmpSsvTeBqzpr8r6oOIiHOIxW6Iqw3WBL9LiHoYvEtAPsRIHMn6GdK1n6t
+         S0CpK9gIHMs+PBsQnGcmfh73bQhw1WkpHWQTBlz9Qwdy/pHtNpv8PRTJOX/Kg3agTT6q
+         msPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8vJY7X+2qf9mk4yjNjSimkTKUqnRW4h3rIif/0iLOrE=;
-        b=cnm+RxQU8myCDiZHZ4kk32lGZ0Rjq4WkctBlHGYxHdaTSl9qRjWAubCW/Q0a0T93DQ
-         7dBVU/LumBivJBULgCJLsii2PT1xMfHLufWQNvY0y9tBTg8S7wxgJP1CK5sncBBtQ0On
-         H4WsnjxIZ5LoSvEV4ttuJ2S9UbwQ7w3yJYBdkT+eXDVJ8a0y1ax7pMWAjgkTrYmWp3J6
-         GN6VOg0E+Lt1iCs0+TIFU6p0WeO8EJq/j5ZNDgB1xypDofWXyqSJcONA4YHWDtwOGiGu
-         Fb/mwMPFf61WEFGDohReamF+TObeIZbpDb/F3Tdr5F5X89H5Knb92mstaMu8fkuem64Y
-         zDCA==
-X-Gm-Message-State: AOAM5317FGmST7KEB4/p5uD8XfnDVwdXZqwvD2gbgbVp5dp4Nmz6FBqO
-        iYxIXWbor7ZdclORaR1/f6h/ih57glGpYv4ka0o59A==
-X-Google-Smtp-Source: ABdhPJw/sZxb5qRToKpsO6Tov3q5O2h9QxUZH9e9awkjhLv1ZkCLPaqe/eslUoWDbcpwUPRAcE7vE1CzAPHEQGncXAA=
-X-Received: by 2002:a2e:9c84:: with SMTP id x4mr981272lji.326.1603946642027;
- Wed, 28 Oct 2020 21:44:02 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=90tbSpftzM+wEfef3WTFwlNnTYj4eB/xYx32SzM4xzY=;
+        b=FW1Lg5DQ1jr2se3M44SXiI85P0CXdrSRLG2iRcj9aEYBQF5jTSgcZ67+Ivj/EAt+dN
+         Nz+6IC1gxl9aLDGe5TELzxydwbXFMgm9A+gqJK6nWBG0i76USfUylqSiJgTFHMQIxoUg
+         ZYbjOmhrJMDNki/YcNBMSHcIBPLA2plzHmUSvdUj6A99Sgvt4bGOiQcanZpU3MX0XReL
+         toTu6OaOqiYREnIZ8XEAflAVDveDB9lOsxSg/bqezG9Ow/nqW/Pq8F+CqqUzbaXtEvdn
+         ugu6Wta0g7mzU0buoL4a9etpPxfJ7IbqDCqPzTCLoGR49jtpF0bOQDPR8KIbqg2y1Iaz
+         i3nA==
+X-Gm-Message-State: AOAM530UtuGyUXX7BMwg2ZkXMK8PZ7qoDlPBEZj9hdaqjz9k9XFsAvsM
+        5EErPUrPWKLftQZ0DG/2KEyBiA==
+X-Google-Smtp-Source: ABdhPJyULY90N+uT8BWJ9LyldpfhK6Uh03XxkLYsulvOCfzFhpQstR0+n+ZnQDwSI9v/6zo0UOUO6Q==
+X-Received: by 2002:a5d:6506:: with SMTP id x6mr3826155wru.71.1603955331470;
+        Thu, 29 Oct 2020 00:08:51 -0700 (PDT)
+Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
+        by smtp.gmail.com with ESMTPSA id i33sm3324230wri.79.2020.10.29.00.08.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 00:08:51 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 09:08:48 +0200
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        brouer@redhat.com
+Subject: Re: [PATCH net-next 2/4] net: page_pool: add bulk support for
+ ptr_ring
+Message-ID: <20201029070848.GA61336@apalos.home>
+References: <cover.1603824486.git.lorenzo@kernel.org>
+ <cd58ca966fbe11cabbd6160decea6ce748ebce9f.1603824486.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com> <20201029020438.GA25673@cisco>
-In-Reply-To: <20201029020438.GA25673@cisco>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 29 Oct 2020 05:43:35 +0100
-Message-ID: <CAG48ez1Jz5YqqEMFYoFhgSroHwMeiNqUU9i=QqLN2uLibKthDQ@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     Tycho Andersen <tycho@tycho.pizza>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd58ca966fbe11cabbd6160decea6ce748ebce9f.1603824486.git.lorenzo@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 3:04 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> On Thu, Oct 29, 2020 at 02:42:58AM +0100, Jann Horn wrote:
-> > On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
-> > <mtk.manpages@gmail.com> wrote:
-> > >        static bool
-> > >        getTargetPathname(struct seccomp_notif *req, int notifyFd,
-> > >                          char *path, size_t len)
-> > >        {
-> > >            char procMemPath[PATH_MAX];
-> > >
-> > >            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
-> > >
-> > >            int procMemFd = open(procMemPath, O_RDONLY);
-> > >            if (procMemFd == -1)
-> > >                errExit("\tS: open");
-> > >
-> > >            /* Check that the process whose info we are accessing is still alive.
-> > >               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
-> > >               in checkNotificationIdIsValid()) succeeds, we know that the
-> > >               /proc/PID/mem file descriptor that we opened corresponds to the
-> > >               process for which we received a notification. If that process
-> > >               subsequently terminates, then read() on that file descriptor
-> > >               will return 0 (EOF). */
-> > >
-> > >            checkNotificationIdIsValid(notifyFd, req->id);
-> > >
-> > >            /* Read bytes at the location containing the pathname argument
-> > >               (i.e., the first argument) of the mkdir(2) call */
-> > >
-> > >            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
-> > >            if (nread == -1)
-> > >                errExit("pread");
-> >
-> > As discussed at
-> > <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
-> > we need to re-check checkNotificationIdIsValid() after reading remote
-> > memory but before using the read value in any way. Otherwise, the
-> > syscall could in the meantime get interrupted by a signal handler, the
-> > signal handler could return, and then the function that performed the
-> > syscall could free() allocations or return (thereby freeing buffers on
-> > the stack).
-> >
-> > In essence, this pread() is (unavoidably) a potential use-after-free
-> > read; and to make that not have any security impact, we need to check
-> > whether UAF read occurred before using the read value. This should
-> > probably be called out elsewhere in the manpage, too...
-> >
-> > Now, of course, **reading** is the easy case. The difficult case is if
-> > we have to **write** to the remote process... because then we can't
-> > play games like that. If we write data to a freed pointer, we're
-> > screwed, that's it. (And for somewhat unrelated bonus fun, consider
-> > that /proc/$pid/mem is originally intended for process debugging,
-> > including installing breakpoints, and will therefore happily write
-> > over "readonly" private mappings, such as typical mappings of
-> > executable code.)
-> >
-> > So, uuuuh... I guess if anyone wants to actually write memory back to
-> > the target process, we'd better come up with some dedicated API for
-> > that, using an ioctl on the seccomp fd that magically freezes the
->
-> By freeze here you mean a killable wait instead of an interruptible
-> wait, right?
+Hi Lorenzo, 
 
-Nope, nonkillable.
+On Tue, Oct 27, 2020 at 08:04:08PM +0100, Lorenzo Bianconi wrote:
+> Introduce the capability to batch page_pool ptr_ring refill since it is
+> usually run inside the driver NAPI tx completion loop.
+> 
+> Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/page_pool.h | 26 ++++++++++++++++++++++++++
+>  net/core/page_pool.c    | 33 +++++++++++++++++++++++++++++++++
+>  net/core/xdp.c          |  9 ++-------
+>  3 files changed, 61 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index 81d7773f96cd..b5b195305346 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -152,6 +152,8 @@ struct page_pool *page_pool_create(const struct page_pool_params *params);
+>  void page_pool_destroy(struct page_pool *pool);
+>  void page_pool_use_xdp_mem(struct page_pool *pool, void (*disconnect)(void *));
+>  void page_pool_release_page(struct page_pool *pool, struct page *page);
+> +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+> +			     int count);
+>  #else
+>  static inline void page_pool_destroy(struct page_pool *pool)
+>  {
+> @@ -165,6 +167,11 @@ static inline void page_pool_release_page(struct page_pool *pool,
+>  					  struct page *page)
+>  {
+>  }
+> +
+> +static inline void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+> +					   int count)
+> +{
+> +}
+>  #endif
+>  
+>  void page_pool_put_page(struct page_pool *pool, struct page *page,
+> @@ -215,4 +222,23 @@ static inline void page_pool_nid_changed(struct page_pool *pool, int new_nid)
+>  	if (unlikely(pool->p.nid != new_nid))
+>  		page_pool_update_nid(pool, new_nid);
+>  }
+> +
+> +static inline void page_pool_ring_lock(struct page_pool *pool)
+> +	__acquires(&pool->ring.producer_lock)
+> +{
+> +	if (in_serving_softirq())
+> +		spin_lock(&pool->ring.producer_lock);
+> +	else
+> +		spin_lock_bh(&pool->ring.producer_lock);
+> +}
+> +
+> +static inline void page_pool_ring_unlock(struct page_pool *pool)
+> +	__releases(&pool->ring.producer_lock)
+> +{
+> +	if (in_serving_softirq())
+> +		spin_unlock(&pool->ring.producer_lock);
+> +	else
+> +		spin_unlock_bh(&pool->ring.producer_lock);
+> +}
+> +
+>  #endif /* _NET_PAGE_POOL_H */
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index ef98372facf6..84fb21f8865e 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -11,6 +11,8 @@
+>  #include <linux/device.h>
+>  
+>  #include <net/page_pool.h>
+> +#include <net/xdp.h>
+> +
+>  #include <linux/dma-direction.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/page-flags.h>
+> @@ -408,6 +410,37 @@ void page_pool_put_page(struct page_pool *pool, struct page *page,
+>  }
+>  EXPORT_SYMBOL(page_pool_put_page);
+>  
+> +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+> +			     int count)
+> +{
+> +	struct page *page_ring[XDP_BULK_QUEUE_SIZE];
+> +	int i, len = 0;
+> +
+> +	for (i = 0; i < count; i++) {
+> +		struct page *page = virt_to_head_page(data[i]);
+> +
+> +		if (unlikely(page_ref_count(page) != 1 ||
+> +			     !pool_page_reusable(pool, page))) {
+> +			page_pool_release_page(pool, page);
 
-Consider the case of vfork(), where a target process does something like this:
+Mind switching this similarly to how page_pool_put_page() is using it?
+unlikely -> likely and remove the !
 
-void spawn_executable(char **argv, char **envv) {
-  pid_t child = vfork();
-  if (child == 0) {
-    char path[1000];
-    sprintf(path, ...);
-    execve(path, argv, envv);
-  }
-}
+> +			put_page(page);
+> +			continue;
+> +		}
+> +
+> +		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> +			page_pool_dma_sync_for_device(pool, page, -1);
+> +
+> +		page_ring[len++] = page;
+> +	}
+> +
+> +	page_pool_ring_lock(pool);
+> +	for (i = 0; i < len; i++) {
+> +		if (__ptr_ring_produce(&pool->ring, page_ring[i]))
+> +			page_pool_return_page(pool, page_ring[i]);
+> +	}
+> +	page_pool_ring_unlock(pool);
+> +}
+> +EXPORT_SYMBOL(page_pool_put_page_bulk);
+> +
+>  static void page_pool_empty_ring(struct page_pool *pool)
+>  {
+>  	struct page *page;
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 93eabd789246..9f9a8d14df38 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -383,16 +383,11 @@ EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
+>  void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
+>  {
+>  	struct xdp_mem_allocator *xa = bq->xa;
+> -	int i;
+>  
+> -	if (unlikely(!xa))
+> +	if (unlikely(!xa || !bq->count))
+>  		return;
+>  
+> -	for (i = 0; i < bq->count; i++) {
+> -		struct page *page = virt_to_head_page(bq->q[i]);
+> -
+> -		page_pool_put_full_page(xa->page_pool, page, false);
+> -	}
+> +	page_pool_put_page_bulk(xa->page_pool, bq->q, bq->count);
+>  	bq->count = 0;
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
+> -- 
+> 2.26.2
+> 
 
-and the seccomp notifier wants to look at the execve() path (as a
-somewhat silly example). The child process is just borrowing the
-parent's stack, and as soon as the child either gets far enough into
-execve() or dies, the parent continues using that stack. So keeping
-the child in killable sleep would not be enough to prevent reuse of
-the child's stack.
-
-
-But conceptually that's not really a big problem - we already have a
-way to force the target task to stay inside the seccomp code no matter
-if it gets SIGKILLed or whatever, and that is to take the notify_lock.
-When the target task wakes up and wants to continue executing, it has
-to first get through mutex_lock(&match->notify_lock) - and that will
-always block until the lock is free. So we could e.g. do something
-like:
-
- - Grab references to the source pages in the supervisor's address
-space with get_user_pages_fast().
- - Take mmap_sem on the target.
- - Grab references to pages in the relevant range with pin_user_pages_remote().
- - Drop the mmap_sem.
- - Take the notify_lock.
- - Recheck whether the notification with the right ID is still there.
- - Copy data from the pinned source pages to the pinned target pages.
- - Drop the notify_lock.
- - Drop the page references.
-
-and this way we would still guarantee that the target process would
-only be blocked in noninterruptible sleep for a small amount of time
-(and would not be indirectly blocked on sleeping operations through
-the mutex). It'd be pretty straightforward, I think. But as long as we
-don't actually need it, it might be easier to just note in the manpage
-that this is not currently supported.
+Cheers
+/Ilias
