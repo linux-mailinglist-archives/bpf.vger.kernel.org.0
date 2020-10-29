@@ -2,250 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D3729F428
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 19:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEAB29F4AF
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 20:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbgJ2Sg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 14:36:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbgJ2Sg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 14:36:26 -0400
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C45120759;
-        Thu, 29 Oct 2020 18:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603996584;
-        bh=1zNo5J90tuLOYAACGimlMDt5iKknN7hXSGTCcYmDCiM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tT8YuBPg94R1AMuklLBpbjwaTNczGoEM9mqH9LbisHpUYKxQ911wExDiYMrCcw5k/
-         GycHpts+RxUcZ8bfHu5i0ODCx7goNSFztIiiEjlNcmUUQwgOIWjn+02b/lesWItqz6
-         qThxZb0IutBpUdTBjVqekP1nMrbQDz49GkHsvbws=
-Received: by mail-lf1-f47.google.com with SMTP id b1so4550604lfp.11;
-        Thu, 29 Oct 2020 11:36:24 -0700 (PDT)
-X-Gm-Message-State: AOAM532hSDiDiQdAHiBWJXdVZJNxYxh9iDXn8RXnADtj+Bd6Npg/HAQY
-        UOZqYD8QRimqDZHouyxUEF/H2XueQkscYsSWTvk=
-X-Google-Smtp-Source: ABdhPJzgHlLM/3uYT1Smzn4i22TwEX9JYWMD85Bsd/BGgFJTEI5Sg28ykPy+82rzy5W5XB0SirLw8b9Bbiz9Ex+LWNw=
-X-Received: by 2002:a19:804d:: with SMTP id b74mr2038802lfd.55.1603996582303;
- Thu, 29 Oct 2020 11:36:22 -0700 (PDT)
+        id S1725857AbgJ2TO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 15:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbgJ2TOz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 15:14:55 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE8EC0613D4;
+        Thu, 29 Oct 2020 12:14:55 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 13so876329wmf.0;
+        Thu, 29 Oct 2020 12:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tzpyO8iGd6ISqQqB76LQ2KRMJcjgxpyukpb6ZzZ/qvE=;
+        b=i9kfCzOCGtS9KMw8oYc1qSbcxpwLdGZowXhT3dMtToGHcRX1ULk0IvYdInIlb3jvV8
+         b+HMFAFpqgF/Ydf8YxHBhQFpUV6UDvanpuV13RBYXwiAzP7VoFPK9fuxLSZpsb8+Marf
+         Ambv+Tz1gSb0pUjlxS9Sf1mdlZzZ53zzIb1hAQPBa0EvJwqZyZSwTg/6c/YcHahKHyyy
+         39pN8cJSg3j8WRIRoYT+p7CSI41bzBeVjq4PuCbPwrlsSKkiSF1k+xUi/e781l3h6R8x
+         lZGwor4THZFGSuv/Qly+7OOhiGXWJD5TlKHXhEYv8sfuZzTjQd8VNQsqEyn3Qmb/wDgn
+         /0Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tzpyO8iGd6ISqQqB76LQ2KRMJcjgxpyukpb6ZzZ/qvE=;
+        b=VVzECyZ87c/S2pj6iMhIjR6CBCtPiAUwMMkuMSc/kdJAN4evv5WELe6ds0YeNanA8c
+         zE7GYxvo79ERUqBMNI8hnpOtCSZOkFGXV37E1HfcJQ+8NP9750/45f1tLlxLx64HILQa
+         ZmEIe67We3WFnYveARk6Kaaaw/I4xyUxgWc0mu4fbu574bxBJUB8cLaNeCxpSTiJExhC
+         VFxAVoeePDB7KqVvlEans5ikfuaNGT5KZlbbNYposp/icO0ZaXyb+mnOIHP8x7vt4ND1
+         YuLkiCt6UgXpThUrKrPRHJY6TR8LbSUiNnoDTCiHcLNCn0NgOyF5x6iBsLFu00y+tRRd
+         jFIw==
+X-Gm-Message-State: AOAM5305tMxY/8+rY1GJxkBdTx4yedP23Spj3778PlOD+7vC/5g/W4yx
+        l9vtrg0kBT+XR1EecV+CZg0=
+X-Google-Smtp-Source: ABdhPJyMDfgiSIKtY0aILPTyTuQphrwaTfKpj58BkdDWPukoZrBGtNtR5YqHCMlsAzRuOSAyoLrlhA==
+X-Received: by 2002:a1c:e4c1:: with SMTP id b184mr689291wmh.73.1603998894166;
+        Thu, 29 Oct 2020 12:14:54 -0700 (PDT)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id u195sm1433563wmu.18.2020.10.29.12.14.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 12:14:52 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <93cfdc79-4c48-bceb-3620-4c63e9f4822e@gmail.com>
+Date:   Thu, 29 Oct 2020 20:14:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201029111730.6881-1-david.verbeiren@tessares.net>
-In-Reply-To: <20201029111730.6881-1-david.verbeiren@tessares.net>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 29 Oct 2020 11:36:10 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7o7D-6VW-Z3Umdw8z-7Ab+kkZrJf2EU9nCDFh0Xbn7sA@mail.gmail.com>
-Message-ID: <CAPhsuW7o7D-6VW-Z3Umdw8z-7Ab+kkZrJf2EU9nCDFh0Xbn7sA@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftest/bpf: Validate initial values of per-cpu hash elems
-To:     David Verbeiren <david.verbeiren@tessares.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 4:19 AM David Verbeiren
-<david.verbeiren@tessares.net> wrote:
->
-> Tests that when per-cpu hash map or LRU hash map elements are
-> re-used as a result of a bpf program inserting elements, the
-> element values for the other CPUs than the one executing the
-> BPF code are reset to 0.
->
-> This validates the fix proposed in:
-> https://lkml.kernel.org/bpf/20201027221324.27894-1-david.verbeiren@tessares.net/
->
-> Change-Id: I38bc7b3744ed40704a7b2cc6efa179fb344c4bee
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
-> ---
->  .../selftests/bpf/prog_tests/map_init.c       | 204 ++++++++++++++++++
->  1 file changed, 204 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
-> new file mode 100644
-> index 000000000000..9640cf925908
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
-> @@ -0,0 +1,204 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// Copyright (c) 2020 Tessares SA <http://www.tessares.net>
-> +
-> +#include <test_progs.h>
-> +
-> +#define TEST_VALUE 0x1234
-> +
-> +static int nr_cpus;
-> +static int duration;
-> +static char bpf_log_buf[BPF_LOG_BUF_SIZE];
-> +
-> +typedef unsigned long long map_key_t;
-> +typedef unsigned long long map_value_t;
-> +typedef struct {
-> +       map_value_t v; /* padding */
-> +} __bpf_percpu_val_align pcpu_map_value_t;
-> +
-> +/* executes bpf program that updates map with key, value */
-> +static int bpf_prog_insert_elem(int fd, map_key_t key, map_value_t value)
-> +{
-> +       struct bpf_load_program_attr prog;
-> +       struct bpf_insn insns[] = {
-> +               BPF_LD_IMM64(BPF_REG_8, key),
-> +               BPF_LD_IMM64(BPF_REG_9, value),
-> +
-> +               /* update: R1=fd, R2=&key, R3=&value, R4=flags */
-> +               BPF_LD_MAP_FD(BPF_REG_1, fd),
-> +               BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-> +               BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-> +               BPF_STX_MEM(BPF_DW, BPF_REG_2, BPF_REG_8, 0),
-> +               BPF_MOV64_REG(BPF_REG_3, BPF_REG_2),
-> +               BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, -8),
-> +               BPF_STX_MEM(BPF_DW, BPF_REG_3, BPF_REG_9, 0),
-> +               BPF_MOV64_IMM(BPF_REG_4, 0),
-> +               BPF_EMIT_CALL(BPF_FUNC_map_update_elem),
-> +
-> +               BPF_MOV64_IMM(BPF_REG_0, 0),
-> +               BPF_EXIT_INSN(),
-> +       };
+Hello Jann,
 
-Impressive hand written assembly. ;-) I would recommend using skeleton
-for future work. For example:
+On 10/29/20 2:42 AM, Jann Horn wrote:
+> On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+>>        static bool
+>>        getTargetPathname(struct seccomp_notif *req, int notifyFd,
+>>                          char *path, size_t len)
+>>        {
+>>            char procMemPath[PATH_MAX];
+>>
+>>            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
+>>
+>>            int procMemFd = open(procMemPath, O_RDONLY);
+>>            if (procMemFd == -1)
+>>                errExit("\tS: open");
+>>
+>>            /* Check that the process whose info we are accessing is still alive.
+>>               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
+>>               in checkNotificationIdIsValid()) succeeds, we know that the
+>>               /proc/PID/mem file descriptor that we opened corresponds to the
+>>               process for which we received a notification. If that process
+>>               subsequently terminates, then read() on that file descriptor
+>>               will return 0 (EOF). */
+>>
+>>            checkNotificationIdIsValid(notifyFd, req->id);
+>>
+>>            /* Read bytes at the location containing the pathname argument
+>>               (i.e., the first argument) of the mkdir(2) call */
+>>
+>>            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
+>>            if (nread == -1)
+>>                errExit("pread");
+> 
+> As discussed at
+> <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+> we need to re-check checkNotificationIdIsValid() after reading remote
+> memory but before using the read value in any way. Otherwise, the
+> syscall could in the meantime get interrupted by a signal handler, the
+> signal handler could return, and then the function that performed the
+> syscall could free() allocations or return (thereby freeing buffers on
+> the stack).
+> 
+> In essence, this pread() is (unavoidably) a potential use-after-free
+> read; and to make that not have any security impact, we need to check
+> whether UAF read occurred before using the read value. This should
+> probably be called out elsewhere in the manpage, too...
+> 
+> Now, of course, **reading** is the easy case. The difficult case is if
+> we have to **write** to the remote process... because then we can't
+> play games like that. If we write data to a freed pointer, we're
+> screwed, that's it. (And for somewhat unrelated bonus fun, consider
+> that /proc/$pid/mem is originally intended for process debugging,
+> including installing breakpoints, and will therefore happily write
+> over "readonly" private mappings, such as typical mappings of
+> executable code.)
+> 
+> So, uuuuh... I guess if anyone wants to actually write memory back to
+> the target process, we'd better come up with some dedicated API for
+> that, using an ioctl on the seccomp fd that magically freezes the
+> target process inside the syscall while writing to its memory, or
+> something like that? And until then, the manpage should have a big fat
+> warning that writing to the target's memory is simply not possible
+> (safely).
 
-    BPF program: selftests/bpf/progs/bpf_iter_bpf_map.c
-    Use the program in tests:
-selftests/bpf/prog_tests/bpf_iter.c:#include "bpf_iter_bpf_map.skel.h"
+Thank you for your very clear explanation! It turned out to be 
+trivially easy to demonstrate this issue with a slightly modified
+version of my program.
 
+As well as the change to the code example that I already mentioned
+my reply of a few hours ago, I've added the following text to the 
+page:
 
-> +       char buf[64] = {};
-> +       int pfd, err;
-> +       __u32 retval = 0;
-> +
-> +       memset(&prog, 0, sizeof(prog));
-> +       prog.prog_type = BPF_PROG_TYPE_SCHED_CLS;
-> +       prog.insns = insns;
-> +       prog.insns_cnt = ARRAY_SIZE(insns);
-> +       prog.license = "GPL";
-> +
-> +       pfd = bpf_load_program_xattr(&prog, bpf_log_buf, BPF_LOG_BUF_SIZE);
-> +       if (CHECK(pfd < 0, "bpf_load_program_xattr", "failed: %s\n%s\n",
-> +                 strerror(errno), bpf_log_buf))
-> +               return -1;
-> +
-> +       err = bpf_prog_test_run(pfd, 1, buf, sizeof(buf), NULL, NULL,
-> +                               &retval, NULL);
-> +       if (CHECK(err || retval, "bpf_prog_test_run",
-> +                 "err=%d retval=%d errno=%d\n", err, retval, errno))
-> +               err = -1;
-> +
-> +       close(pfd);
-> +
-> +       return err;
-> +}
-> +
-> +static int check_values_one_cpu(pcpu_map_value_t *value, map_value_t expected)
-> +{
-> +       int i, nzCnt = 0;
-> +       map_value_t val;
-> +
-> +       for (i = 0; i < nr_cpus; i++) {
-> +               val = bpf_percpu(value, i);
-> +               if (val) {
-> +                       if (val != expected) {
-> +                               PRINT_FAIL("Unexpected value (cpu %d): 0x%llx\n",
-> +                                          i, val);
+   Caveats regarding the use of /proc/[tid]/mem
+       The discussion above noted the need to use the
+       SECCOMP_IOCTL_NOTIF_ID_VALID ioctl(2) when opening the
+       /proc/[tid]/mem file of the target to avoid the possibility of
+       accessing the memory of the wrong process in the event that the
+       target terminates and its ID is recycled by another (unrelated)
+       thread.  However, the use of this ioctl(2) operation is also
+       necessary in other situations, as explained in the following
+       pargraphs.
 
-I guess we can also use CHECK() here?
+       Consider the following scenario, where the supervisor tries to
+       read the pathname argument of a target's blocked mount(2) system
+       call:
 
-> +                               return -1;
-> +                       }
-[...]
+       • From one of its functions (func()), the target calls mount(2),
+         which triggers a user-space notification and causes the target
+         to block.
 
-> +
-> +       /* delete key=1 element so it will later be re-used*/
-> +       key = 1;
-> +       err = bpf_map_delete_elem(map_fd, &key);
-> +       if (CHECK(err, "bpf_map_delete_elem", "failed: %s\n", strerror(errno)))
-> +               goto error_map;
-> +
-> +       /* run bpf prog that inserts new elem, re-using the slot just freed */
-> +       err = bpf_prog_insert_elem(map_fd, key, TEST_VALUE);
-> +       if (!ASSERT_OK(err, "bpf_prog_insert_elem"))
-> +               goto error_map;
+       • The supervisor receives the notification, opens
+         /proc/[tid]/mem, and (successfully) performs the
+         SECCOMP_IOCTL_NOTIF_ID_VALID check.
 
-What's the reason to use ASSERT_OK() instead of CHECK()?
+       • The target receives a signal, which causes the mount(2) to
+         abort.
 
-> +
-> +       /* check that key=1 was re-created by bpf prog */
-> +       err = bpf_map_lookup_elem(map_fd, &key, value);
-> +       if (CHECK(err, "bpf_map_lookup_elem", "failed: %s\n", strerror(errno)))
-> +               goto error_map;
-> +
-> +       /* and has expected value for just a single CPU, 0 for all others */
-> +       check_values_one_cpu(value, TEST_VALUE);
-> +
-> +error_map:
-> +       close(map_fd);
-> +}
-> +
-> +/* Add key=1 and key=2 elems with values set for all CPUs
-> + * Run bpf prog that inserts new key=3 elem
-> + *   (only for current cpu; other cpus should have initial value = 0)
-> + * Lookup Key=1 and check value is as expected for all CPUs
-> + */
-> +static void test_pcpu_lru_map_init(void)
-> +{
-> +       pcpu_map_value_t value[nr_cpus];
-> +       int map_fd, err;
-> +       map_key_t key;
-> +
-> +       /* Set up LRU map with 2 elements, values filled for all CPUs.
-> +        * With these 2 elements, the LRU map is full
-> +        */
-> +       map_fd = map_setup(BPF_MAP_TYPE_LRU_PERCPU_HASH, 2, 2);
-> +       if (CHECK(map_fd < 0, "map_setup", "failed\n"))
-> +               return;
-> +
-> +       /* run bpf prog that inserts new key=3 element, re-using LRU slot */
-> +       key = 3;
-> +       err = bpf_prog_insert_elem(map_fd, key, TEST_VALUE);
-> +       if (!ASSERT_OK(err, "bpf_prog_insert_elem"))
-> +               goto error_map;
+       • The signal handler executes in the target, and returns.
 
-ditto
+       • Upon return from the handler, the execution of func() resumes,
+         and it returns (and perhaps other functions are called,
+         overwriting the memory that had been used for the stack frame
+         of func()).
 
-> +
-> +       /* check that key=3 present */
-> +       err = bpf_map_lookup_elem(map_fd, &key, value);
-> +       if (CHECK(err, "bpf_map_lookup_elem", "failed: %s\n", strerror(errno)))
-> +               goto error_map;
-> +
-> +       /* and has expected value for just a single CPU, 0 for all others */
-> +       check_values_one_cpu(value, TEST_VALUE);
-> +
-> +error_map:
-> +       close(map_fd);
-> +}
-> +
-> +void test_map_init(void)
-> +{
-> +       nr_cpus = bpf_num_possible_cpus();
-> +       if (CHECK(nr_cpus <= 1, "nr_cpus", "> 1 needed for this test"))
-> +               return;
+       • Using the address provided in the notification information, the
+         supervisor reads from the target's memory location that used to
+         contain the pathname.
 
-Instead of failing the test, let's skip the tests with something like:
+       • The supervisor now calls mount(2) with some arbitrary bytes
+         obtained in the previous step.
 
-                printf("%s:SKIP: >1 cpu needed for this test\n", __func__);
-                test__skip();
+       The conclusion from the above scenario is this: since the
+       target's blocked system call may be interrupted by a signal
+       handler, the supervisor must be written to expect that the target
+       may abandon its system call at any time; in such an event, any
+       information that the supervisor obtained from the target's memory
+       must be considered invalid.
 
-> +
-> +       if (test__start_subtest("pcpu_map_init"))
-> +               test_pcpu_map_init();
-> +       if (test__start_subtest("pcpu_lru_map_init"))
-> +               test_pcpu_lru_map_init();
-> +}
-> --
-> 2.29.0
->
+       To prevent such scenarios, every read from the target's memory
+       must be separated from use of the bytes so obtained by a
+       SECCOMP_IOCTL_NOTIF_ID_VALID check.  In the above example, the
+       check would be placed between the two final steps.  An example of
+       such a check is shown in EXAMPLES.
+
+       Following on from the above, it should be clear that a write by
+       the supervisor into the target's memory can never be considered
+       safe.
+
+Seem okay?
+
+By the way, is there any analogous kind of issue concerning
+pidfd_getfd()? I'm thinking not, but I wonder if I've missed
+something.
+
+Cheers,
+
+Michael
+
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
