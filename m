@@ -2,142 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D722129F5F4
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 21:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5FC29F635
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 21:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726246AbgJ2UQQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 16:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        id S1725820AbgJ2Ual (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 16:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725764AbgJ2UQP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 16:16:15 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FC6C0613CF;
-        Thu, 29 Oct 2020 13:16:15 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id 67so3233351ybt.6;
-        Thu, 29 Oct 2020 13:16:15 -0700 (PDT)
+        with ESMTP id S1725764AbgJ2Uak (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 16:30:40 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14781C0613CF;
+        Thu, 29 Oct 2020 13:30:40 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id h196so3270397ybg.4;
+        Thu, 29 Oct 2020 13:30:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UXsl9bQpXcF7K7v4cdbgLf4h8xLzYJsNQHUjicy4A60=;
-        b=bPcwa0ysJlIGJYf1scyyYHje68zwHXR5Te+w0R0UuyqJivrqkyA0TcMf0dT48CROS3
-         F+XeR48XXtMglzj2lzsRQx38MCAMRnXybfPmsX3K7WIhn8OH3Q+X1BdzR9TEg6p5BspW
-         R+B7cUedURK2v18Xl6onC5xPlqHqu7ydJXx1IjP3NTfD6Goy5s1RE5mo6H+9E2uYGrJp
-         wF37NHswSjrQulQQziqZu6KLONLFpF/U9dT4evuMSGfM6tVDhTv+Ff0qFZrAAUQUAsQc
-         izm0cyB1A2RVkQmPJMOVZPZzqj9LtnJvunycz6l3Vm4eLw7OY5B6VA/2WR6YqEqNsYRo
-         HaYg==
+        bh=OupQpSO/sS5FTJxTabAsu1fVC7KBudZXyt8yG3aNEF0=;
+        b=VgrwgJe63b2c4rwQDhYFLKEb/PtrF/DA5NYzERrW/+os5xcYFYPQa+cB8Zj9TbWSEh
+         sQoypf6yTwEMMBXFLdGid8UVCelW4cs+Tyoa8/6CxGqd5HfkuuWxfSfbBKQDtwwGWMni
+         TFds2znryMtLBAcj8Efh3vVlH5ih6CPTotLXaFYgxJKk3akpbigWGBp5OD3e5pgqEaZu
+         oUVVBp6cOw8zq9nwIUoq+seO71nuWmegfPYhDFjHZtH+Phtp2D+0qMTp43TRWIn0xRsa
+         /3N/4wE08+BKM/xe3m5qQj5J8Zr93HuNseH7ywaRYG7er0kb7A9UY2duGJqyzXUSVP+x
+         70Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UXsl9bQpXcF7K7v4cdbgLf4h8xLzYJsNQHUjicy4A60=;
-        b=WP6UqgncBb0m7NDvBlP/MiGNOLDmMYuK6A6IDSyBayIwJ+WMsZMetU/1r+ckzxPk5Z
-         DQ5xItQDrRc/3C8ts+fB+jz/62m7IthCZnPdiPRjypwmHjBiMuJWyv4bITBuJI3T9/5W
-         glsqQ5Q7xce8cNT0YRc2uPAuOgbhLWub4HyU+xzyd3sNUVpD3m0Y30z7z4NS0iGYni++
-         JWcAX34vTMG0HAbHHc/kXmp9iLGPM0iaSmqnmxMf6B7QmyYp1hbl9Pwz6rwYkCwHzggy
-         Q+cHWtx9IKQNkY5f8fnkwm+qv8R+ZP6cWsF8LfkAF081LzOfDxta2bncMjKBdykhQ2rW
-         xoGQ==
-X-Gm-Message-State: AOAM532s4FPnBOAbQa9lx8oKoTA40/NzjaffRG0ZrerNfJN+972S+3xX
-        e0Wd9TzHZolS2Cu0gvKwZJvKa2/LG1zrX0SdRcA=
-X-Google-Smtp-Source: ABdhPJw8ekdgD4QdOyfCCLIZg9Z24SU4y3qDBdQFfPNB//ELn5AI6MtZuTnFUNJGIKN5sciSbqCgwDdpToNc3t+I61M=
-X-Received: by 2002:a25:25c2:: with SMTP id l185mr7758431ybl.230.1604002574839;
- Thu, 29 Oct 2020 13:16:14 -0700 (PDT)
+        bh=OupQpSO/sS5FTJxTabAsu1fVC7KBudZXyt8yG3aNEF0=;
+        b=hczqRQmlmGq2T822iG4a08/XANmoE3PFr5mMvJijHfxTy0Fjl3Ny8m11GbodD7uKf2
+         dsC9A3yr9Sk24LXUE6qqz6DXaZyD+JeRel3ZNTa4qAN0Wsv6nB0/v0CwI0p2LGIBCZ3T
+         eVFCXq+MDNsVULwOvufmcZpof0HBoDxRUFS/f3d/Udsu4ypq9OmQflDZgM6c5BSZNJO1
+         dZgK0Z2s5PFHHgxZjhzVXPvOQaCb2aUQa9LvYAOrqqkK0xjyj4VZSDKOy15LrsGMM0aQ
+         hZvmFgukHyKMF1gZhJFrTqVwQxaBSZBx384rJlpFtzv4a8PDZTobnUq3oN63K4baI/9S
+         /HhA==
+X-Gm-Message-State: AOAM530alvfKYz/rK3oeksFNRRndnijbcN4YavRfMqp1L7Dchz41GK+c
+        WA1ZaZg8/WgArcuQktoWccyTP5boVjUj6FRcFaE=
+X-Google-Smtp-Source: ABdhPJyBBJwPL/hSuW1Uu/ym4PaSMKs/a+hHsrYOM+JGpFnDdFBhBfLGjtJLygJV4bZ+a8ZZLPC3nUkwqdgZoG/6ZxY=
+X-Received: by 2002:a25:b0d:: with SMTP id 13mr8630671ybl.347.1604003439145;
+ Thu, 29 Oct 2020 13:30:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029160938.154084-1-irogers@google.com>
-In-Reply-To: <20201029160938.154084-1-irogers@google.com>
+References: <20201023033855.3894509-1-haliu@redhat.com> <20201028132529.3763875-1-haliu@redhat.com>
+ <7babcccb-2b31-f9bf-16ea-6312e449b928@gmail.com> <20201029020637.GM2408@dhcp-12-153.nay.redhat.com>
+ <CAEf4BzZR4MqQJCD4kzFsbhpfmp4RB7SHcP5AbAiqzqK7to2u+g@mail.gmail.com>
+ <20201028193438.21f1c9b0@hermes.local> <CAEf4BzY1gz2fR0DXOYgbheDArdYhWA66YRFuy=xMRveHTx=VVQ@mail.gmail.com>
+ <20201029123801.4d03ebb5@carbon>
+In-Reply-To: <20201029123801.4d03ebb5@carbon>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Oct 2020 13:16:03 -0700
-Message-ID: <CAEf4BzZGUmtrATZnExcUY-BaiCmUKBDo4QOb6PjfumhYG_3c5w@mail.gmail.com>
-Subject: Re: [PATCH] libbpf hashmap: Fix undefined behavior in hash_bits
-To:     Ian Rogers <irogers@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 29 Oct 2020 13:30:28 -0700
+Message-ID: <CAEf4BzYZZa7FkQ5F=aKyjyrX2ekU6D67SN_pkCLZ=5tchmWurw@mail.gmail.com>
+Subject: Re: [PATCHv2 iproute2-next 0/5] iproute2: add libbpf support
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Hangbin Liu <haliu@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        David Miller <davem@davemloft.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 9:11 AM Ian Rogers <irogers@google.com> wrote:
+On Thu, Oct 29, 2020 at 4:38 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> If bits is 0, the case when the map is empty, then the >> is the size of
-> the register which is undefined behavior - on x86 it is the same as a
-> shift by 0. Fix by handling the 0 case explicitly when running with
-> address sanitizer.
+> On Wed, 28 Oct 2020 19:50:51 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> A variant of this patch was posted previously as:
-> https://lore.kernel.org/lkml/20200508063954.256593-1-irogers@google.com/
+> > On Wed, Oct 28, 2020 at 7:34 PM Stephen Hemminger
+> > <stephen@networkplumber.org> wrote:
+> > >
+> > > On Wed, 28 Oct 2020 19:27:20 -0700
+> > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > > On Wed, Oct 28, 2020 at 7:06 PM Hangbin Liu <haliu@redhat.com> wrote:
+> > > > >
+> > > > > On Wed, Oct 28, 2020 at 05:02:34PM -0600, David Ahern wrote:
+> > > > > > fails to compile on Ubuntu 20.10:
+> > > > > >
+> [...]
+> > > > > You need to update libbpf to latest version.
+> > > >
+> > > > Why not using libbpf from submodule?
+> > >
+> > > Because it makes it harder for people downloading tarballs and distributions.
+> >
+> > Genuinely curious, making harder how exactly? When packaging sources
+> > as a tarball you'd check out submodules before packaging, right?
+> >
+> > > Iproute2 has worked well by being standalone.
+> >
+> > Again, maybe I'm missing something, but what makes it not a
+> > standalone, if it is using a submodule? Pahole, for instance, is using
+> > libbpf through submodule and just bypasses all the problems with
+> > detection of features and library availability. I haven't heard anyone
+> > complaining about it made working with pahole harder in any way.
 >
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/lib/bpf/hashmap.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> I do believe you are missing something.
+
+I don't think I got an answer how submodules make it harder for people
+downloading tarballs and distributions, and the standalone-ness issue.
+Your security angle is a very different aspect.
+
+>  I guess I can be the relay for
+> complains, so you will officially hear about this.  Red Hat and Fedora
+> security is complaining that we are packaging a library (libbpf)
+> directly into the individual packages.  They complain because in case
+> of a security issue, they have to figure out to rebuild all the software
+> packages that are statically compiled with this library.
+
+They must be having nightmares already about BCC, bpftool, pahole, as
+well as perf built with libbpf statically (perf on my server is, at
+least). I also wonder how many other projects do use either submodules
+or static linking with libraries as well.
+
 >
-> diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> index d9b385fe808c..27d0556527d3 100644
-> --- a/tools/lib/bpf/hashmap.h
-> +++ b/tools/lib/bpf/hashmap.h
-> @@ -12,9 +12,23 @@
->  #include <stddef.h>
->  #include <limits.h>
+> Maybe you say I don't care that Distro security teams have to do more
+> work and update more packages.  Then security team says, we expect
+> customers will use this library right, and if we ship it as a dynamic
+> loadable (.so) file, then we can update and fix security issues in
+> library without asking customers to recompile. (Notice the same story
+> goes if we can update the base-image used by a container).
+
+It's a trade off, and everyone decides for themselves where they want
+to stand on this.
+
+On the one hand, there are security folks obsessing about hypothetical
+security vulnerabilities in libbpf so bad that they will need to
+update libbpf overnight.
+
+On the other hand, extra complexity for multiple users of libbpf to do
+feature detection and working around the lack of some of the APIs in
+libbpf due to older versions in the system. That extra complexity
+might lead to more problems, bugs, vulnerabilities in the long run.
+
+I understand the concerns and how dynamic libraries make it easier. We
+can't really know for sure which of those two aspects would lead to
+more pain and problems overall. I personally choose simplicity,
+though.
+
+But as I said, it's up to iproute2 folks to decide. Was just curious
+about some of the claims I cited.
+
+
 >
-> +#ifdef __has_feature
-> +#define HAVE_FEATURE(f) __has_feature(f)
-> +#else
-> +#define HAVE_FEATURE(f) 0
-> +#endif
-> +
->  static inline size_t hash_bits(size_t h, int bits)
->  {
->         /* shuffle bits and return requested number of upper bits */
-> +#if defined(ADDRESS_SANITIZER) || HAVE_FEATURE(address_sanitizer)
-> +       /*
-> +        * If the requested bits == 0 avoid undefined behavior from a
-> +        * greater-than bit width shift right (aka invalid-shift-exponent).
-> +        */
-> +       if (bits == 0)
-> +               return -1;
-> +#endif
-
-Oh, just too much # magic here :(... If we want to prevent hash_bits()
-from being called with bits == 0 (despite the result never used),
-let's just adjust hashmap__for_each_key_entry and
-hashmap__for_each_key_entry_safe macros:
-
-diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-index d9b385fe808c..488e0ef236cb 100644
---- a/tools/lib/bpf/hashmap.h
-+++ b/tools/lib/bpf/hashmap.h
-@@ -174,9 +174,9 @@ bool hashmap__find(const struct hashmap *map,
-const void *key, void **value);
-  * @key: key to iterate entries for
-  */
- #define hashmap__for_each_key_entry(map, cur, _key)                        \
--       for (cur = ({ size_t bkt = hash_bits(map->hash_fn((_key), map->ctx),\
--                                            map->cap_bits);                \
--                    map->buckets ? map->buckets[bkt] : NULL; });           \
-+       for (cur = map->buckets                                             \
-+                  ? map->buckets[hash_bits(map->hash_fn((_key),
-map->ctx), map->cap_bits)] \
-+                  : NULL;                                                  \
-             cur;                                                           \
-             cur = cur->next)                                               \
-                if (map->equal_fn(cur->key, (_key), map->ctx))
-
-Either way it's a bit ugly and long, but at least we don't have extra
-#-driven ugliness.
-
-
->  #if (__SIZEOF_SIZE_T__ == __SIZEOF_LONG_LONG__)
->         /* LP64 case */
->         return (h * 11400714819323198485llu) >> (__SIZEOF_LONG_LONG__ * 8 - bits);
+>
 > --
-> 2.29.1.341.ge80a0c044ae-goog
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
 >
