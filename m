@@ -2,212 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CC929E14E
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 03:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F4629E0F1
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 02:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728215AbgJ1Vvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 17:51:49 -0400
-Received: from casper.infradead.org ([90.155.50.34]:44160 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728210AbgJ1Vvs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:51:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=595wyER3Jfy3tKx4o4a22TZSRUbtKvSEWw+YCChN/Kw=; b=iN9WATrYjhrq+LIUJUUMxH3J7n
-        Px53cmS6thwi2rTPB14yJ3ow9EwACB71uAiKjfMmziIwu/hbKxjQIFwQZqoUDsUMt1seQ6I545ciM
-        xMnhI/dleTidGLSu/mGkFph5uCxOFt4otjU9x9IbOQLCvYtjgH1xgMK1aMYaVZfoPBc74aBzjSjkr
-        CcqtQ4lsye6OXDGw4H/xmhlQjxNYCIgtDRn96KpkvFUjriLyLy4TMdvNYDtjbZEmRZlFtb4esPLLQ
-        9ZnmgpbkBNhvmwbfCXGIzt9fw7/scTueXQzkbJsf5KuEsgaezKkaH1znsfiKHNTfg3dCBlQit8D9o
-        docG3rpg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kXgYJ-00034a-1I; Wed, 28 Oct 2020 08:11:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 11FFA30018A;
-        Wed, 28 Oct 2020 09:11:23 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E43D520B2858C; Wed, 28 Oct 2020 09:11:23 +0100 (CET)
-Date:   Wed, 28 Oct 2020 09:11:23 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH] tools/perf: Remove broken __no_tail_call attribute
-Message-ID: <20201028081123.GT2628@hirez.programming.kicks-ass.net>
-References: <20201027205723.12514-1-ardb@kernel.org>
- <72f0dd64-9f65-cbd0-873a-684540912847@iogearbox.net>
- <CAKwvOdmvyBbqKiR=wFmyiZcXaN1mYHe-VJtqbBS9enhDcUcN=w@mail.gmail.com>
+        id S1729111AbgJ2Bna (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 21:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729109AbgJ2Bn1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 21:43:27 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238E5C0613D2
+        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 18:43:27 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id d24so1318524ljg.10
+        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 18:43:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=geZ/oO3CDuXNyCg7XC5g4ztQiJhRJ6O3ZCqLsRDfncw=;
+        b=sLyaw6q6IpMdxy0i+OrwQjeQfMFuDOZH3wZnxjQU/9rDKBm6tuuxuSZwVs5vSb5WCr
+         dhr5wJNw0eYDPLOVlnAfChnG0rwQ3X3IxyOhhms90HJjdyXu5TJC0nW/joAq2f2CND/0
+         CfiNH8M48AdnqYWCsLEkk41NY0rIcwZgm0kQcdKN0ApOcudxbm6lIQIC9aN3G5/6sTDd
+         E0nFCedw0IDNiUhrY+kLYDTgjCvAEsr7GQTQqiccy0MVtif7ayBSqtuFcqw/pBfWXhhK
+         7t/SE3CAxJQ50Fz1/BKEQTbMkwVW/T9PhUh0MdDok3/8p8gBv5Oh9gBVe4i4ApP4av2Y
+         EmxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=geZ/oO3CDuXNyCg7XC5g4ztQiJhRJ6O3ZCqLsRDfncw=;
+        b=kS82Ba592YL8KvDFqa3ZDmXvtHoyJT2GYZ6XJ1cPC/TciWABH546NuBgv2GVX7nbhU
+         H6Q/sLN1UYpkFLsTCu2xtuOSaMuOvYr3xk2vbdyVgOmQNIahq2R65tj7VIuY4Ag/hlSp
+         9tDlV4t3Up1kpxyys0PZmyU3OcatxgyQm5L0QyB5itEIP2eHq6GuM3bDLURhUgKokuAk
+         yXwJCCvZ2Q7exBBFLj0MZ22Dc08luEhoSNuVgN5Szg11se0+IgXaIqqFS1cGMv7NmIgp
+         9UQH5paX/gT3/IUDYijI2c88qNlZ4XGoTFqJOODahKP6GuTj97vlJ8LJP+moQpifIzX+
+         rWEA==
+X-Gm-Message-State: AOAM531SjPV+bp4mbi4u1Px0mHPeJ1soml4oaaIOXM4bCLPelTlrxyR0
+        CPUkQnfWX+/9g8bL73pDod0j078FnAf5V63zOYQ3aQ==
+X-Google-Smtp-Source: ABdhPJz6TDKuIczDEuNWhwAZLwIsi7p/r5pwANkEoLv02bXcTUl1ox9pp4nTanH9lSHFwu+RpElyT1qPIgjQUosCQDo=
+X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr744683ljo.74.1603935804881;
+ Wed, 28 Oct 2020 18:43:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdmvyBbqKiR=wFmyiZcXaN1mYHe-VJtqbBS9enhDcUcN=w@mail.gmail.com>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+In-Reply-To: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 29 Oct 2020 02:42:58 +0100
+Message-ID: <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 04:11:27PM -0700, Nick Desaulniers wrote:
-> On Tue, Oct 27, 2020 at 4:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >
-> > On 10/27/20 9:57 PM, Ard Biesheuvel wrote:
-> > > Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
-> > > ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-> > > function scope __attribute__((optimize("-fno-gcse"))), to disable a
-> > > GCC specific optimization that was causing trouble on x86 builds, and
-> > > was not expected to have any positive effect in the first place.
-> > >
-> > > However, as the GCC manual documents, __attribute__((optimize))
-> > > is not for production use, and results in all other optimization
-> > > options to be forgotten for the function in question. This can
-> > > cause all kinds of trouble, but in one particular reported case,
-> >
-> > Looks like there are couple more as well aside from __no_fgcse, are you
-> > also planning to fix them?
-> >
-> >    arch/powerpc/kernel/setup.h:14:#define __nostackprotector __attribute__((__optimize__("no-stack-protector")))
-> 
-> GCC literally just landed support for
-> __attribute__((no_stack_protector)) a few days ago.  I was planning on
-> sending a patch adding it to compiler_attributes.h, but we won't be
-> able to rely on it for a while.  Now I see I'll have to clean up ppc a
-> bit. Surely they've had bugs related to optimize attribute
-> unexpectedly dropping flags.
-> 
-> >    tools/include/linux/compiler-gcc.h:37:#define __no_tail_call __attribute__((optimize("no-optimize-sibling-calls")))
-> 
-> Only used in perf?
-> tools/perf/tests/dwarf-unwind.c
+On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+>        static bool
+>        getTargetPathname(struct seccomp_notif *req, int notifyFd,
+>                          char *path, size_t len)
+>        {
+>            char procMemPath[PATH_MAX];
+>
+>            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
+>
+>            int procMemFd = open(procMemPath, O_RDONLY);
+>            if (procMemFd == -1)
+>                errExit("\tS: open");
+>
+>            /* Check that the process whose info we are accessing is still alive.
+>               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
+>               in checkNotificationIdIsValid()) succeeds, we know that the
+>               /proc/PID/mem file descriptor that we opened corresponds to the
+>               process for which we received a notification. If that process
+>               subsequently terminates, then read() on that file descriptor
+>               will return 0 (EOF). */
+>
+>            checkNotificationIdIsValid(notifyFd, req->id);
+>
+>            /* Read bytes at the location containing the pathname argument
+>               (i.e., the first argument) of the mkdir(2) call */
+>
+>            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
+>            if (nread == -1)
+>                errExit("pread");
 
-Right, that should probably be fixed. It also probably doesn't matter
-too much since its an unwinder tests, but still, having that attribute
-is dangerous.
+As discussed at
+<https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+we need to re-check checkNotificationIdIsValid() after reading remote
+memory but before using the read value in any way. Otherwise, the
+syscall could in the meantime get interrupted by a signal handler, the
+signal handler could return, and then the function that performed the
+syscall could free() allocations or return (thereby freeing buffers on
+the stack).
 
-The only cross-compiler way of doing this is like in commit
-a9a3ed1eff360.
+In essence, this pread() is (unavoidably) a potential use-after-free
+read; and to make that not have any security impact, we need to check
+whether UAF read occurred before using the read value. This should
+probably be called out elsewhere in the manpage, too...
 
----
-Subject: tools/perf: Remove broken __no_tail_call attribute
+Now, of course, **reading** is the easy case. The difficult case is if
+we have to **write** to the remote process... because then we can't
+play games like that. If we write data to a freed pointer, we're
+screwed, that's it. (And for somewhat unrelated bonus fun, consider
+that /proc/$pid/mem is originally intended for process debugging,
+including installing breakpoints, and will therefore happily write
+over "readonly" private mappings, such as typical mappings of
+executable code.)
 
-The GCC specific __attribute__((optimize)) attribute does not what is
-commonly expected and is explicitly recommended against using in
-production code by the GCC people.
+So, uuuuh... I guess if anyone wants to actually write memory back to
+the target process, we'd better come up with some dedicated API for
+that, using an ioctl on the seccomp fd that magically freezes the
+target process inside the syscall while writing to its memory, or
+something like that? And until then, the manpage should have a big fat
+warning that writing to the target's memory is simply not possible
+(safely).
 
-Unlike what is often expected, it doesn't add to the optimization flags,
-but it fully replaces them, loosing any and all optimization flags
-provided by the compiler commandline.
-
-The only guaranteed upon means of inhibiting tail-calls is by placing a
-volatile asm with side-effects after the call such that the tail-call
-simply cannot be done.
-
-Given the original commit wasn't specific on which calls were the
-problem, this removal might re-introduce the problem, which can then be
-re-analyzed and cured properly.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- tools/include/linux/compiler-gcc.h | 12 ------------
- tools/include/linux/compiler.h     |  3 ---
- tools/perf/tests/dwarf-unwind.c    | 10 +++++-----
- 3 files changed, 5 insertions(+), 20 deletions(-)
-
-diff --git a/tools/include/linux/compiler-gcc.h b/tools/include/linux/compiler-gcc.h
-index b9d4322e1e65..95c072b70d0e 100644
---- a/tools/include/linux/compiler-gcc.h
-+++ b/tools/include/linux/compiler-gcc.h
-@@ -27,18 +27,6 @@
- #define  __pure		__attribute__((pure))
- #endif
- #define  noinline	__attribute__((noinline))
--#ifdef __has_attribute
--#if __has_attribute(disable_tail_calls)
--#define __no_tail_call	__attribute__((disable_tail_calls))
--#endif
--#endif
--#ifndef __no_tail_call
--#if GCC_VERSION > 40201
--#define __no_tail_call	__attribute__((optimize("no-optimize-sibling-calls")))
--#else
--#define __no_tail_call
--#endif
--#endif
- #ifndef __packed
- #define __packed	__attribute__((packed))
- #endif
-diff --git a/tools/include/linux/compiler.h b/tools/include/linux/compiler.h
-index 2b3f7353e891..d22a974372c0 100644
---- a/tools/include/linux/compiler.h
-+++ b/tools/include/linux/compiler.h
-@@ -47,9 +47,6 @@
- #ifndef noinline
- #define noinline
- #endif
--#ifndef __no_tail_call
--#define __no_tail_call
--#endif
- 
- /* Are two types/vars the same type (ignoring qualifiers)? */
- #ifndef __same_type
-diff --git a/tools/perf/tests/dwarf-unwind.c b/tools/perf/tests/dwarf-unwind.c
-index 2491d167bf76..83638097c3bc 100644
---- a/tools/perf/tests/dwarf-unwind.c
-+++ b/tools/perf/tests/dwarf-unwind.c
-@@ -95,7 +95,7 @@ static int unwind_entry(struct unwind_entry *entry, void *arg)
- 	return strcmp((const char *) symbol, funcs[idx]);
- }
- 
--__no_tail_call noinline int test_dwarf_unwind__thread(struct thread *thread)
-+noinline int test_dwarf_unwind__thread(struct thread *thread)
- {
- 	struct perf_sample sample;
- 	unsigned long cnt = 0;
-@@ -126,7 +126,7 @@ __no_tail_call noinline int test_dwarf_unwind__thread(struct thread *thread)
- 
- static int global_unwind_retval = -INT_MAX;
- 
--__no_tail_call noinline int test_dwarf_unwind__compare(void *p1, void *p2)
-+noinline int test_dwarf_unwind__compare(void *p1, void *p2)
- {
- 	/* Any possible value should be 'thread' */
- 	struct thread *thread = *(struct thread **)p1;
-@@ -145,7 +145,7 @@ __no_tail_call noinline int test_dwarf_unwind__compare(void *p1, void *p2)
- 	return p1 - p2;
- }
- 
--__no_tail_call noinline int test_dwarf_unwind__krava_3(struct thread *thread)
-+noinline int test_dwarf_unwind__krava_3(struct thread *thread)
- {
- 	struct thread *array[2] = {thread, thread};
- 	void *fp = &bsearch;
-@@ -164,12 +164,12 @@ __no_tail_call noinline int test_dwarf_unwind__krava_3(struct thread *thread)
- 	return global_unwind_retval;
- }
- 
--__no_tail_call noinline int test_dwarf_unwind__krava_2(struct thread *thread)
-+noinline int test_dwarf_unwind__krava_2(struct thread *thread)
- {
- 	return test_dwarf_unwind__krava_3(thread);
- }
- 
--__no_tail_call noinline int test_dwarf_unwind__krava_1(struct thread *thread)
-+noinline int test_dwarf_unwind__krava_1(struct thread *thread)
- {
- 	return test_dwarf_unwind__krava_2(thread);
- }
+>            if (nread == 0) {
+>                fprintf(stderr, "\tS: pread() of /proc/PID/mem "
+>                        "returned 0 (EOF)\n");
+>                exit(EXIT_FAILURE);
+>            }
