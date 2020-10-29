@@ -2,90 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9701429F913
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 00:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5E229F92A
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 00:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725769AbgJ2X2M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 19:28:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59462 "EHLO mail.kernel.org"
+        id S1725372AbgJ2XhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 19:37:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725372AbgJ2X2M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 19:28:12 -0400
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+        id S1725379AbgJ2XhV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 19:37:21 -0400
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 305BD20BED;
-        Thu, 29 Oct 2020 23:28:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2F432074A;
+        Thu, 29 Oct 2020 23:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604014091;
-        bh=ZGC+Xp6nyJqG7qQE4W73onxUN0sycaXuLyBzJX/PmHo=;
+        s=default; t=1604014641;
+        bh=hUm6EKixMzK0UQl5hwaT/IX58lVoysxhR2u/b2BAN5Y=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pmYHMztfmCpO3ah+/yJRu1db0AsnD1WO6AhahE2I+BumtOhoxSIWNRpafkV5Q8Wx8
-         c0q6g91/SD15ADY4HFR4BVXhRkBe4OVfD5qeMy1YHcRPed7jkkCilp9KScJgsRE8L6
-         28L6TeGAbrBndY4vIgvJ4GwUY1UTHmC2dDsXVO40=
-Received: by mail-lj1-f181.google.com with SMTP id 2so4908116ljj.13;
-        Thu, 29 Oct 2020 16:28:11 -0700 (PDT)
-X-Gm-Message-State: AOAM532Hc6D/GfpSkhM+j8m/uEDTGOBUqEF3PCsLZIsbvLYe0oUpy0yr
-        C1ycP9whcniltiaOOOflFx0azLjsz4ElZ/p8/8A=
-X-Google-Smtp-Source: ABdhPJxOGJLwtLYEFStmDIc3k+4w9x2xuYQZn/5sV0IRSs+f/rMDH16JY+DKvKX8LGuv7SN5GGwZXcQy+nh4+JDz1BE=
-X-Received: by 2002:a2e:a0d4:: with SMTP id f20mr1241951ljm.350.1604014089320;
- Thu, 29 Oct 2020 16:28:09 -0700 (PDT)
+        b=E13C8bLEkGyKTKREDMOd4y/w8DeqflUjJoNr27mXOmII2WR6JLRKZFUxaJ9ZdZlci
+         8QeqM7rUsAd2JrAN2kgvQgo33rQz5Orm2nVm4zY96uUB9zw2zOcLso1EVY2e7DMYTU
+         ueWiRmTEL//jzjYQtThbozMbQYv1/6DukSGZHYpU=
+Received: by mail-lf1-f50.google.com with SMTP id l28so5521497lfp.10;
+        Thu, 29 Oct 2020 16:37:20 -0700 (PDT)
+X-Gm-Message-State: AOAM531IQmRFpPHVZ8YwGBf2mq3Hkx3p9ed48uA/gL3e5t3vRA5PuZ0J
+        zl8gHjALClYJNRQbnQc89+ku0WMtASGx7d2XR7g=
+X-Google-Smtp-Source: ABdhPJyU2lM5iu04/2jnRLC1CU4J1bDtoExBLSlgTl54uv6N38AkCeREq3T1GnTGDAHc8ReP6NQj0ab9HvX4/Lt+wEQ=
+X-Received: by 2002:a19:ee12:: with SMTP id g18mr2761655lfb.515.1604014638909;
+ Thu, 29 Oct 2020 16:37:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201027170317.2011119-1-kpsingh@chromium.org> <20201027170317.2011119-2-kpsingh@chromium.org>
-In-Reply-To: <20201027170317.2011119-2-kpsingh@chromium.org>
+References: <20201029111730.6881-1-david.verbeiren@tessares.net>
+ <CAPhsuW7o7D-6VW-Z3Umdw8z-7Ab+kkZrJf2EU9nCDFh0Xbn7sA@mail.gmail.com> <CAEf4BzZaZ2PT7nOrXGo-XM7ysgQ8JpDObUysnS+oxGV7e6GQgA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZaZ2PT7nOrXGo-XM7ysgQ8JpDObUysnS+oxGV7e6GQgA@mail.gmail.com>
 From:   Song Liu <song@kernel.org>
-Date:   Thu, 29 Oct 2020 16:27:58 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
-Message-ID: <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
+Date:   Thu, 29 Oct 2020 16:37:08 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6JH=eoa0VVJziCMfN78E88G4Vy4jpxkKDm3z-Xh0jVYQ@mail.gmail.com>
+Message-ID: <CAPhsuW6JH=eoa0VVJziCMfN78E88G4Vy4jpxkKDm3z-Xh0jVYQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftest/bpf: Validate initial values of per-cpu hash elems
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     David Verbeiren <david.verbeiren@tessares.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 9:17 AM KP Singh <kpsingh@chromium.org> wrote:
+On Thu, Oct 29, 2020 at 3:37 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> From: KP Singh <kpsingh@google.com>
+> On Thu, Oct 29, 2020 at 11:36 AM Song Liu <song@kernel.org> wrote:
+> >
+> > On Thu, Oct 29, 2020 at 4:19 AM David Verbeiren
+> > <david.verbeiren@tessares.net> wrote:
+> > >
+> > > Tests that when per-cpu hash map or LRU hash map elements are
+> > > re-used as a result of a bpf program inserting elements, the
+> > > element values for the other CPUs than the one executing the
+> > > BPF code are reset to 0.
+
+[...]
+
+> >
+> > > +                               return -1;
+> > > +                       }
+> > [...]
+> >
+> > > +
+> > > +       /* delete key=1 element so it will later be re-used*/
+> > > +       key = 1;
+> > > +       err = bpf_map_delete_elem(map_fd, &key);
+> > > +       if (CHECK(err, "bpf_map_delete_elem", "failed: %s\n", strerror(errno)))
+> > > +               goto error_map;
+> > > +
+> > > +       /* run bpf prog that inserts new elem, re-using the slot just freed */
+> > > +       err = bpf_prog_insert_elem(map_fd, key, TEST_VALUE);
+> > > +       if (!ASSERT_OK(err, "bpf_prog_insert_elem"))
+> > > +               goto error_map;
+> >
+> > What's the reason to use ASSERT_OK() instead of CHECK()?
 >
-> Similar to bpf_local_storage for sockets and inodes add local storage
-> for task_struct.
->
-> The life-cycle of storage is managed with the life-cycle of the
-> task_struct.  i.e. the storage is destroyed along with the owning task
-> with a callback to the bpf_task_storage_free from the task_free LSM
-> hook.
+> I've recently added the ASSERT_xxx() family of macros to accommodate
+> most common checks and provide sensible details printing. So I now
+> always prefer ASSERT() macroses, it saves a bunch of typing and time.
 
-It looks like task local storage is tightly coupled to LSM. As we discussed,
-it will be great to use task local storage in tracing programs. Would you
-like to enable it from the beginning? Alternatively, I guess we can also do
-follow-up patches.
-
->
-> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
-> the security blob which are now stackable and can co-exist with other
-> LSMs.
->
-> The userspace map operations can be done by using a pid fd as a key
-> passed to the lookup, update and delete operations.
-
-While testing task local storage, I noticed a limitation of pid fd:
-
-/* Currently, the process identified by
- * @pid must be a thread-group leader. This restriction currently exists
- * for all aspects of pidfds including pidfd creation (CLONE_PIDFD cannot
- * be used with CLONE_THREAD) and pidfd polling (only supports thread group
- * leaders).
- */
-
-This could be a problem for some use cases. How about we try to remove
-this restriction (maybe with a new flag to pidfd_open) as part of this set?
+I see. It is definitely less typing. :)
 
 Thanks,
 Song
