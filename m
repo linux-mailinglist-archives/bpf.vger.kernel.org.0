@@ -2,145 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F2229E982
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 11:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E19229EA24
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 12:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbgJ2Kv2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 06:51:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53233 "EHLO
+        id S1727653AbgJ2LJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 07:09:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59821 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726351AbgJ2Kv2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Oct 2020 06:51:28 -0400
+        by vger.kernel.org with ESMTP id S1727655AbgJ2LJr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 29 Oct 2020 07:09:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603968686;
+        s=mimecast20190719; t=1603969785;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=wo1MURne1pPoQywmHfVL+vA75iRnzvStQtotC3YcIKM=;
-        b=ES76HXEQK/9b/M7ucL1/t6p1Y1+W0FGiNNGMBtCAjjZVamZDxJ0gYuLdRKMoFuQ+gd9Fxt
-        qsjT79h2UqV1eyVXZ7zImIlO7ucWGdfgntxuq9uzmnxCaoCkNerOU6UYNYclLrDmcKDgQa
-        WBA6gVVLJ72Y4O2HesFnmTJaG9IyHjM=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-hVHSBZShMzy9KV6GTNOGeA-1; Thu, 29 Oct 2020 06:51:24 -0400
-X-MC-Unique: hVHSBZShMzy9KV6GTNOGeA-1
-Received: by mail-il1-f200.google.com with SMTP id b6so1610655ilm.6
-        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 03:51:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=wo1MURne1pPoQywmHfVL+vA75iRnzvStQtotC3YcIKM=;
-        b=m8UbRZb0fxUHiqft52+uC5YOxPHzn8MZulmDugEUvDiS0PqJARl6J/rrbHC5zi8CxU
-         JqXmt86KASB2aTQ4sE/0MqAKKn8+u5iB77R9kAdY8oXicTl5QMxtt4lQxUXGPq/VWJX6
-         Hh0WbQk7DV/tRusgwFF19hfAtYlYmzPbYojvIStiwCL0t0eL3iSx7ogFN9jK1twCY6KC
-         1w9qi80xNc03+ilnLZnj7Xk05z7oiSLtxx+G3Qe46KTyPboJkNkbad0hz0BgLthxj5l6
-         HWJuIqfcAQgUQ19dQppFlClL/pfOxJe3ZgYExqtwfdwqy1cZuGWww5uYCZPZ3oBGpLEA
-         CW6Q==
-X-Gm-Message-State: AOAM531es593Ov+5KCgDTwjLov0Rxe57e7GFXvaqPeiWGUhoPNazYXwu
-        FMgcVi56EhwN9qXzTVLLD9w4/oPj4mfVNZrJ/fJ9MFi1yR5W0xIy/rdEknRDJyABWJ2+v3ZB6nB
-        QXy325gz1V6Z5
-X-Received: by 2002:a92:9944:: with SMTP id p65mr2543908ili.127.1603968683333;
-        Thu, 29 Oct 2020 03:51:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJylVRz942a/PiLEaeJa5Y8bNYpwa4pEHKBVrfO1ld+5U+Z8qKZGIiVcssTINxCWcqFrPoEaRA==
-X-Received: by 2002:a92:9944:: with SMTP id p65mr2543883ili.127.1603968682986;
-        Thu, 29 Oct 2020 03:51:22 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id r12sm1892194ilm.28.2020.10.29.03.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 03:51:22 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3A600181CED; Thu, 29 Oct 2020 11:51:19 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <haliu@redhat.com>, David Ahern <dsahern@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        bh=mUmBmibR91G10RNiRrOkfIxo1o/9rdeO2Vew3fkkmi4=;
+        b=EV8fIBGQfam8FjUHs4UzoPxnMekaDf/0aXyD9hvum/0kBDWJ9acP/CWvyN/XSYgAJYkVco
+        QQrqW4ODL2i+AdKqCVpCUkkRxcCgYcBml8jB6KdiNkNaPyv2KbOHUM0gf8uiZU4nYBK7hU
+        45M3dleb+DAzpFTEhjkweDp8oZ6qSbo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-ll3KQL2rOH2KH7xjpiTcoA-1; Thu, 29 Oct 2020 07:09:44 -0400
+X-MC-Unique: ll3KQL2rOH2KH7xjpiTcoA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 007DC10E2186;
+        Thu, 29 Oct 2020 11:09:42 +0000 (UTC)
+Received: from krava (unknown [10.40.193.60])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A64585B4AA;
+        Thu, 29 Oct 2020 11:09:35 +0000 (UTC)
+Date:   Thu, 29 Oct 2020 12:09:34 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCHv2 iproute2-next 0/5] iproute2: add libbpf support
-In-Reply-To: <20201029102656.GU2408@dhcp-12-153.nay.redhat.com>
-References: <20201023033855.3894509-1-haliu@redhat.com>
- <20201028132529.3763875-1-haliu@redhat.com>
- <7babcccb-2b31-f9bf-16ea-6312e449b928@gmail.com>
- <20201029020637.GM2408@dhcp-12-153.nay.redhat.com>
- <7a412e24-0846-bffe-d533-3407d06d83c4@gmail.com>
- <20201029024506.GN2408@dhcp-12-153.nay.redhat.com>
- <99d68384-c638-1d65-5945-2814ccd2e09e@gmail.com>
- <20201029102656.GU2408@dhcp-12-153.nay.redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 29 Oct 2020 11:51:19 +0100
-Message-ID: <874kmdmhjs.fsf@toke.dk>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [RFC bpf-next 00/16] bpf: Speed up trampoline attach
+Message-ID: <20201029110934.GD3027684@krava>
+References: <20201022082138.2322434-1-jolsa@kernel.org>
+ <20201022093510.37e8941f@gandalf.local.home>
+ <20201022141154.GB2332608@krava>
+ <20201022104205.728dd135@gandalf.local.home>
+ <20201027043014.ebzcbzospzsaptvu@ast-mbp.dhcp.thefacebook.com>
+ <20201027142803.GJ2900849@krava>
+ <20201028211325.vstp37ukcvoilmk3@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028211325.vstp37ukcvoilmk3@ast-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <haliu@redhat.com> writes:
+On Wed, Oct 28, 2020 at 02:13:25PM -0700, Alexei Starovoitov wrote:
+> On Tue, Oct 27, 2020 at 03:28:03PM +0100, Jiri Olsa wrote:
+> > On Mon, Oct 26, 2020 at 09:30:14PM -0700, Alexei Starovoitov wrote:
+> > > On Thu, Oct 22, 2020 at 10:42:05AM -0400, Steven Rostedt wrote:
+> > > > On Thu, 22 Oct 2020 16:11:54 +0200
+> > > > Jiri Olsa <jolsa@redhat.com> wrote:
+> > > > 
+> > > > > I understand direct calls as a way that bpf trampolines and ftrace can
+> > > > > co-exist together - ebpf trampolines need that functionality of accessing
+> > > > > parameters of a function as if it was called directly and at the same
+> > > > > point we need to be able attach to any function and to as many functions
+> > > > > as we want in a fast way
+> > > > 
+> > > > I was sold that bpf needed a quick and fast way to get the arguments of a
+> > > > function, as the only way to do that with ftrace is to save all registers,
+> > > > which, I was told was too much overhead, as if you only care about
+> > > > arguments, there's much less that is needed to save.
+> > > > 
+> > > > Direct calls wasn't added so that bpf and ftrace could co-exist, it was
+> > > > that for certain cases, bpf wanted a faster way to access arguments,
+> > > > because it still worked with ftrace, but the saving of regs was too
+> > > > strenuous.
+> > > 
+> > > Direct calls in ftrace were done so that ftrace and trampoline can co-exist.
+> > > There is no other use for it.
+> > > 
+> > > Jiri,
+> > > could you please redo your benchmarking hardcoding ftrace_managed=false ?
+> > > If going through register_ftrace_direct() is indeed so much slower
+> > > than arch_text_poke() then something gotta give.
+> > > Either register_ftrace_direct() has to become faster or users
+> > > have to give up on co-existing of bpf and ftrace.
+> > > So far not a single user cared about using trampoline and ftrace together.
+> > > So the latter is certainly an option.
+> > 
+> > I tried that, and IIRC it was not much faster, but I don't have details
+> > on that.. but it should be quick check, I'll do it
+> > 
+> > anyway later I realized that for us we need ftrace to stay, so I abandoned
+> > this idea ;-) and started to check on how to keep them both together and
+> > just make it faster
+> > 
+> > also currently bpf trampolines will not work without ftrace being
+> > enabled, because ftrace is doing the preparation work during compile,
+> > and replaces all the fentry calls with nop instructions and the
+> > replace code depends on those nops...  so if we go this way, we would
+> > need to make this preparation code generic
+> 
+> I didn't mean that part.
+> I was talking about register_ftrace_direct() only.
+> Could you please still do ftrace_managed=false experiment?
+> Sounds like the time to attach/detach will stay the same?
+> If so, then don't touch ftrace internals then. What's the point?
 
-> On Wed, Oct 28, 2020 at 09:00:41PM -0600, David Ahern wrote:
->> >> nope. you need to be able to handle this. Ubuntu 20.10 was just
->> >> released, and it has a version of libbpf. If you are going to integrate
->> >> libbpf into other packages like iproute2, it needs to just work with
->> >> that version.
->> > 
->> > OK, I can replace bpf_program__section_name by bpf_program__title().
->> 
->> I believe this one can be handled through a compatability check. Looks
->> the rename / deprecation is fairly recent (78cdb58bdf15f from Sept 2020).
->
-> Hi David,
->
-> I just come up with another way. In configure, build a temp program and update
-> the function checking every time is not graceful. How about just check the
-> libbpf version, since libbpf has exported all functions in src/libbpf.map.
->
-> Currently, only bpf_program__section_name() is added in 0.2.0, all other
-> needed functions are supported in 0.1.0.
->
-> So in configure, the new check would like:
+actually, there's some speedup.. by running:
 
-Why is this easier than just checking for the function you need? In
-xdp-tools configure we have a test like this:
+  # perf stat --table -e cycles:k,cycles:u -r 10 ./src/bpftrace -ve 'kfunc:__x64_sys_s* { } i:ms:10 { print("exit\n"); exit();}'
 
-check_perf_consume()
-{
-    cat >$TMPDIR/libbpftest.c <<EOF
-#include <bpf/libbpf.h>
-int main(int argc, char **argv) {
-    perf_buffer__consume(NULL);
-    return 0;
-}
-EOF
-    libbpf_err=$($CC -o $TMPDIR/libbpftest $TMPDIR/libbpftest.c $LIBBPF_CFLAGS $LIBBPF_LDLIBS 2>&1)
-    if [ "$?" -eq "0" ]; then
-        echo "HAVE_LIBBPF_PERF_BUFFER__CONSUME:=y" >>"$CONFIG"
-        echo "yes"
-    else
-        echo "HAVE_LIBBPF_PERF_BUFFER__CONSUME:=n" >>"$CONFIG"
-        echo "no"
-    fi
-}
+I've got following numbers on base:
 
-Just do that for __section_name(), and you'll also be able to work with
-custom libbpf versions using LIBBPF_DIR.
+     3,463,157,566      cycles:k                                                      ( +-  0.14% )
+     1,164,026,270      cycles:u                                                      ( +-  0.29% )
 
-> static const char *get_bpf_program__section_name(const struct bpf_program *prog)
-> {
-> #ifdef HAVE_LIBBPF_SECTION_NAME
-> 	return bpf_program__section_name(prog);
-> #else
-> 	return bpf_program__title(prog, false);
-> #endif
-> }
+             # Table of individual measurements:
+             37.61 (-12.20) #######
+             49.35 (-0.46) #
+             54.03 (+4.22) ##
+             50.82 (+1.01) #
+             46.87 (-2.94) ##
+             53.10 (+3.29) ##
+             58.27 (+8.46) ###
+             64.85 (+15.04) #####
+             47.37 (-2.44) ##
+             35.83 (-13.98) ########
 
-This bit is fine :)
+             # Final result:
+             49.81 +- 2.76 seconds time elapsed  ( +-  5.54% )
 
--Toke
+
+and following numbers with the patch below:
+
+     2,037,364,413      cycles:k        ( +-  0.52% )
+     1,164,769,939      cycles:u        ( +-  0.19% )
+
+             # Table of individual measurements:
+             30.52 (-8.54) ######
+             43.43 (+4.37) ###
+             43.72 (+4.66) ###
+             35.70 (-3.36) ##
+             40.70 (+1.63) #
+             43.51 (+4.44) ###
+             26.44 (-12.62) ##########
+             40.21 (+1.14) #
+             43.32 (+4.25) ##
+             43.09 (+4.03) ##
+
+             # Final result:
+             39.06 +- 1.95 seconds time elapsed  ( +-  4.99% )
+
+
+it looks like even ftrace_managed=false could be faster
+with batch update, which is not used, but there's support
+for it via text_poke_bp_batch function
+
+jirka
+
+
+---
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 35c5887d82ff..0a241e6eac7d 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -111,6 +111,8 @@ static int is_ftrace_location(void *ip)
+ {
+ 	long addr;
+ 
++	return 0;
++
+ 	addr = ftrace_location((long)ip);
+ 	if (!addr)
+ 		return 0;
 
