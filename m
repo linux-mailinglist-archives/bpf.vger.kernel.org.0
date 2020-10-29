@@ -2,194 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FD729EDE2
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 15:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7884229EE09
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 15:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgJ2OIp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 10:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
+        id S1725940AbgJ2OTw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 10:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgJ2OIo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 10:08:44 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE358C0613D4
-        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 07:08:42 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g12so2900595wrp.10
-        for <bpf@vger.kernel.org>; Thu, 29 Oct 2020 07:08:42 -0700 (PDT)
+        with ESMTP id S1725300AbgJ2OTw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 10:19:52 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE529C0613CF;
+        Thu, 29 Oct 2020 07:19:51 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id y12so2967507wrp.6;
+        Thu, 29 Oct 2020 07:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pacpunGvitI/VJhyOX0bJnSJLDkujjO41NLKC5ChE0M=;
-        b=QPqbeKQF2q7f09LV0KQ0OlMf3pHSMPSEaOM+0fVp7hw42OlDcxrjU9fegfD4ql1HIB
-         ryBfhF5lnLpJxR+USIwsdDhHoYDkUwqFN1cQ0axYTlyCrhlcUP0gmE7gjYs0c3O1IW91
-         ALQUdsE2yn45kiG05RFvM+Zqw1c4ikYv58vxwlVBdvPHOTI+kObb57mV+9f3uI8BFEF+
-         ujb0ZR/oPA8NWyR3Y+OWSpRoaPne8mATWKXmAAm7X6UeY1CnqN6RU45X6lbbTJy/rImG
-         i7S1dmOh9nHDBd+UcriT0gljdZJ8wd75IxQFKY5wwa474zzocCWlNOB+XRz3EnQjMNkM
-         XfLA==
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IG7tsLJmeRfHh6RhAZa+dQgZB0okc8aPFoAcBoJ4Rrg=;
+        b=rpkj0Jc75yJkzo7xNX6lc0EksZSpF9MeOYniMB45rwEzzLCMwxAQPpDmyY7IhCFbxE
+         Zw922+i3sidiSvYnZ8HossRSuxUVSDRMWCCpXsVQHe2OoXQqi4iG3leW8u12iTErdfpO
+         4CLcho2aHQTCi9v2z0Pck4m+ZPvbVWvi84YCi4LecEkcnhssZ5HgYhAi35V+MAFaOFVs
+         T6hYs4h7BEfZojdm6yKECBuWaieovAhiHKT81+AkM3TyazL4WbZgZz6Y/jlprCTo9giw
+         0ZpRCBnS4s6h9Fbxwpr3G4JtQ7C/tlAAHd5PW6x61ySnXZuOsrG01jTjbZf8hhVcFAD1
+         G/SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pacpunGvitI/VJhyOX0bJnSJLDkujjO41NLKC5ChE0M=;
-        b=AYlNgyKSRcU9BVb0rjpeWd+SgOTD107ogfuC8eHg3eDw2S92ELr/dj9woYnWsV9C6z
-         hXkl2d3WO2yH2Jx0Znk+EwWHpt9/HHrC33JkEUbM+Vb8YH6+yIA7X/mp0cClm2kzLGGd
-         h0jwZUO571ZFNI4tsp5g/D3X/KbHQcLz//iK182AFWhzs3nj+R9Xc6hcyVwO0FF6TI20
-         Nb+2uqYSx6RPcEq/g7CTrInMGj2EyUB/hS3J3xsL8d/l4okdY95FwCBbw03lCNzQt4EC
-         fSWBmigTcp684qKN9gBa/AJurDu+8VQjNfwGbLEZCB46h5BMk+c5MVdKEi4QD55uN0Vn
-         ptuA==
-X-Gm-Message-State: AOAM531QsKu0M1Ecv4ECCyEeH0sKvXM0ciizCrHU0S3D9uEMpJ5+vc75
-        m7U03P8/sxlzNPpmtdfy1FHIOA==
-X-Google-Smtp-Source: ABdhPJxqTYOZv5vdTLGtePWSSg6MPyuKCqun2mPtVFqYJe81oXd88wkGlIl/yys9LFK5he7RlMt64Q==
-X-Received: by 2002:adf:f511:: with SMTP id q17mr5718423wro.192.1603980521440;
-        Thu, 29 Oct 2020 07:08:41 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id p13sm5228508wrt.73.2020.10.29.07.08.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2020 07:08:40 -0700 (PDT)
-Date:   Thu, 29 Oct 2020 16:08:38 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org
-Subject: Re: [PATCH net-next 1/4] net: xdp: introduce bulking for xdp tx
- return path
-Message-ID: <20201029140838.GA69963@apalos.home>
-References: <cover.1603824486.git.lorenzo@kernel.org>
- <7495b5ac96b0fd2bf5ab79b12e01bf0ee0fff803.1603824486.git.lorenzo@kernel.org>
- <20201029145239.6f6d1713@carbon>
- <20201029140216.GE15697@lore-desk>
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IG7tsLJmeRfHh6RhAZa+dQgZB0okc8aPFoAcBoJ4Rrg=;
+        b=VXYJqNE56ZWWuWiAsQd6GPyQGOWyCyoopIEvvxDh4RBH2YXAlE3exnxyz+Yee9RDV3
+         8l2SRm2sxNVSie0pbgbASwADB7tif8iGYuKCgj1nV+re6kqmapB071+OZAL7J2o6rp6U
+         78AZAuGg4JnGIVlMj/zdAZuW6XiBKTTgl8zzloANttJ85V/32k60vcYw6Nb42nKUWZwj
+         +UKRE2kaMraV+b8dD3cXf/dPgCHn25/ZxlYs+3AE0NMTRy7NoviXyXwfilQVNcBYHOF1
+         7WEm1p45lPa7a7a3Z6GsU/HFUNzmAiuY1M5kybophD/EWplvoQtedke4lky9DtCt87av
+         m93A==
+X-Gm-Message-State: AOAM533gpEMR0ynf6a/mqQJTdYWGt34mk93EkEn0js2faWaQOR3IPi3b
+        W3YdblGPFBAS5XbZRf2CImc=
+X-Google-Smtp-Source: ABdhPJySnfrnD0+l5dneed6fFIU3+/0xpO41ctDgfWTaEnqrPyFvDhe+3nU9GLoPc83nDDVqmBg11w==
+X-Received: by 2002:a5d:490c:: with SMTP id x12mr5816557wrq.193.1603981190393;
+        Thu, 29 Oct 2020 07:19:50 -0700 (PDT)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id x21sm6413570wmi.3.2020.10.29.07.19.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Oct 2020 07:19:49 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com>
+Date:   Thu, 29 Oct 2020 15:19:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201029140216.GE15697@lore-desk>
+In-Reply-To: <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 03:02:16PM +0100, Lorenzo Bianconi wrote:
-> > On Tue, 27 Oct 2020 20:04:07 +0100
-> > Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > 
-> > > diff --git a/net/core/xdp.c b/net/core/xdp.c
-> > > index 48aba933a5a8..93eabd789246 100644
-> > > --- a/net/core/xdp.c
-> > > +++ b/net/core/xdp.c
-> > > @@ -380,6 +380,57 @@ void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
-> > >  
-> > > +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
-> > > +{
-> > > +	struct xdp_mem_allocator *xa = bq->xa;
-> > > +	int i;
-> > > +
-> > > +	if (unlikely(!xa))
-> > > +		return;
-> > > +
-> > > +	for (i = 0; i < bq->count; i++) {
-> > > +		struct page *page = virt_to_head_page(bq->q[i]);
-> > > +
-> > > +		page_pool_put_full_page(xa->page_pool, page, false);
-> > > +	}
-> > > +	bq->count = 0;
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
-> > > +
-> > > +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
-> > > +			   struct xdp_frame_bulk *bq)
-> > > +{
-> > > +	struct xdp_mem_info *mem = &xdpf->mem;
-> > > +	struct xdp_mem_allocator *xa, *nxa;
-> > > +
-> > > +	if (mem->type != MEM_TYPE_PAGE_POOL) {
-> > > +		__xdp_return(xdpf->data, &xdpf->mem, false);
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	rcu_read_lock();
-> > > +
-> > > +	xa = bq->xa;
-> > > +	if (unlikely(!xa || mem->id != xa->mem.id)) {
-> > > +		nxa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
-> > > +		if (unlikely(!xa)) {
-> > > +			bq->count = 0;
-> > > +			bq->xa = nxa;
-> > > +			xa = nxa;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	if (mem->id != xa->mem.id || bq->count == XDP_BULK_QUEUE_SIZE)
-> > > +		xdp_flush_frame_bulk(bq);
-> > > +
-> > > +	bq->q[bq->count++] = xdpf->data;
-> > > +	if (mem->id != xa->mem.id)
-> > > +		bq->xa = nxa;
-> > > +
-> > > +	rcu_read_unlock();
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
-> > 
-> > We (Ilias my co-maintainer and I) think above code is hard to read and
-> > understand (as a reader you need to keep too many cases in your head).
-> > 
-> > I think we both have proposals to improve this, here is mine:
-> > 
-> > /* Defers return when frame belongs to same mem.id as previous frame */
-> > void xdp_return_frame_bulk(struct xdp_frame *xdpf,
-> >                            struct xdp_frame_bulk *bq)
-> > {
-> >         struct xdp_mem_info *mem = &xdpf->mem;
-> >         struct xdp_mem_allocator *xa;
-> > 
-> >         if (mem->type != MEM_TYPE_PAGE_POOL) {
-> >                 __xdp_return(xdpf->data, &xdpf->mem, false);
-> >                 return;
-> >         }
-> > 
-> >         rcu_read_lock();
-> > 
-> >         xa = bq->xa;
-> >         if (unlikely(!xa)) {
-> > 		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
-> >                 bq->count = 0;
-> >                 bq->xa = xa;
-> >         }
-> > 
-> >         if (bq->count == XDP_BULK_QUEUE_SIZE)
-> >                 xdp_flush_frame_bulk(bq);
-> > 
-> >         if (mem->id != xa->mem.id) {
-> > 		xdp_flush_frame_bulk(bq);
-> > 		bq->xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
-> >         }
-> > 
-> > 	bq->q[bq->count++] = xdpf->data;
-> > 
-> >         rcu_read_unlock();
-> > }
-> > 
-> > Please review for correctness, and also for readability.
+Hello Jann,
+
+On 10/29/20 2:42 AM, Jann Horn wrote:
+> On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+>>        static bool
+>>        getTargetPathname(struct seccomp_notif *req, int notifyFd,
+>>                          char *path, size_t len)
+>>        {
+>>            char procMemPath[PATH_MAX];
+>>
+>>            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
+>>
+>>            int procMemFd = open(procMemPath, O_RDONLY);
+>>            if (procMemFd == -1)
+>>                errExit("\tS: open");
+>>
+>>            /* Check that the process whose info we are accessing is still alive.
+>>               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
+>>               in checkNotificationIdIsValid()) succeeds, we know that the
+>>               /proc/PID/mem file descriptor that we opened corresponds to the
+>>               process for which we received a notification. If that process
+>>               subsequently terminates, then read() on that file descriptor
+>>               will return 0 (EOF). */
+>>
+>>            checkNotificationIdIsValid(notifyFd, req->id);
+>>
+>>            /* Read bytes at the location containing the pathname argument
+>>               (i.e., the first argument) of the mkdir(2) call */
+>>
+>>            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
+>>            if (nread == -1)
+>>                errExit("pread");
 > 
-> the code seems fine to me (and even easier to read :)).
-> I will update v2 using this approach. Thx.
-+1 this is close to what we discussed this morning and it detangles 1 more 'weird' 
-if case 
-
-
-Thanks
-/Ilias
+> As discussed at
+> <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
+> we need to re-check checkNotificationIdIsValid() after reading remote
+> memory but before using the read value in any way. Otherwise, the
+> syscall could in the meantime get interrupted by a signal handler, the
+> signal handler could return, and then the function that performed the
+> syscall could free() allocations or return (thereby freeing buffers on
+> the stack).
 > 
-> Regards,
-> Lorenzo
+> In essence, this pread() is (unavoidably) a potential use-after-free
+> read; and to make that not have any security impact, we need to check
+> whether UAF read occurred before using the read value. This should
+> probably be called out elsewhere in the manpage, too...
+
+Thanks very much for pointing me at this!
+
+So, I want to conform that the fix to the code is as simple as
+adding a check following the pread() call, something like:
+
+[[
+     ssize_t nread = pread(procMemFd, path, len, req->data.args[argNum]);
+     if (nread == -1)
+        errExit("Supervisor: pread");
+ 
+     if (nread == 0) {
+        fprintf(stderr, "\tS: pread() of /proc/PID/mem "
+                "returned 0 (EOF)\n");
+        exit(EXIT_FAILURE);
+     }
+ 
+     if (close(procMemFd) == -1)
+        errExit("Supervisor: close-/proc/PID/mem");
+ 
++    /* Once again check that the notification ID is still valid. The
++       case we are particularly concerned about here is that just
++       before we fetched the pathname, the target's blocked system
++       call was interrupted by a signal handler, and after the handler
++       returned, the target carried on execution (past the interrupted
++       system call). In that case, we have no guarantees about what we
++       are reading, since the target's memory may have been arbitrarily
++       changed by subsequent operations. */
++
++    if (!notificationIdIsValid(notifyFd, req->id, "post-open"))
++        return false;
++
+     /* We have no guarantees about what was in the memory of the target
+        process. We therefore treat the buffer returned by pread() as
+        untrusted input. The buffer should be terminated by a null byte;
+        if not, then we will trigger an error for the target process. */
+ 
+     if (strnlen(path, nread) < nread)
+         return true;
+]]
+
+> Now, of course, **reading** is the easy case. The difficult case is if
+> we have to **write** to the remote process... because then we can't
+> play games like that. If we write data to a freed pointer, we're
+> screwed, that's it. (And for somewhat unrelated bonus fun, consider
+> that /proc/$pid/mem is originally intended for process debugging,
+> including installing breakpoints, and will therefore happily write
+> over "readonly" private mappings, such as typical mappings of
+> executable code.)
 > 
-> > 
-> > -- 
-> > Best regards,
-> >   Jesper Dangaard Brouer
-> >   MSc.CS, Principal Kernel Engineer at Red Hat
-> >   LinkedIn: http://www.linkedin.com/in/brouer
-> > 
+> So, uuuuh... I guess if anyone wants to actually write memory back to
+> the target process, we'd better come up with some dedicated API for
+> that, using an ioctl on the seccomp fd that magically freezes the
+> target process inside the syscall while writing to its memory, or
+> something like that? And until then, the manpage should have a big fat
+> warning that writing to the target's memory is simply not possible
+> (safely).
+> 
+>>            if (nread == 0) {
+>>                fprintf(stderr, "\tS: pread() of /proc/PID/mem "
+>>                        "returned 0 (EOF)\n");
+>>                exit(EXIT_FAILURE);
+>>            }
+> .
+
+I'll think over some changes to the text of the manual page.
+
+Cheers,
+
+Michael
 
 
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
