@@ -2,111 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B708D29E08E
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 02:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026B029E03E
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 02:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgJ2BXA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 21:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        id S2389329AbgJ2BMM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 21:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729909AbgJ1WEG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 18:04:06 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05E6C0613CF
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 15:04:05 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id r21so149295uaw.10
-        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 15:04:05 -0700 (PDT)
+        with ESMTP id S2404298AbgJ2BMI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 21:12:08 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5828FC0613D1
+        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 18:12:08 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id a7so1177155lfk.9
+        for <bpf@vger.kernel.org>; Wed, 28 Oct 2020 18:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=CdW40nYadQLqv6cb7mCz4sTrno0A47FG3PBCzX7v7CU=;
-        b=c4yr+D92WuPp96ZSV0c8nFdLLLxszLAkvuvRgHEWAZ2GddAP3egj3rHisDXQiX7NHI
-         qPJ9alhRarN04Ve4l6Wil24bkvBTZgbPNNuCY4g3oJ2qiCd1iz6DGJJMGkvuUxQhRCsu
-         H3tXu414dZTiO5MxYW9KmyL1kps7isoOg5B1j65PLzMvW8XL/Fi0+xO6hJzMIbiTCuTV
-         9wePPK8LxZXFRgF8I0DL/bJFVZzkqv3T2tbhaDMH39rzB9frwpeRkuNR4DoD5Znoce1V
-         eg0z7QI8CVwfczmBIKE8Q/SF7FCwtkOYEe9fvYasC5LCvvGWZTOlLmQRzUU3oWqDwylJ
-         tk+g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2+uYu86LDWGsnC4W37LGE2qpMcN2MpffcV3JWIw2MFQ=;
+        b=vciGCxCgV8AP2QARHScqr2zKoGS/+nJtrToSziCQ8d8h1NRdDiev7b4FY2OwCqgP1d
+         pQbxRv3nm4M5jbQFhB27QEFUsCLY1i6eh1m09u0GR/aIZBCnQqfxLzxjTF3jSSNq63Ix
+         7tc/61a9Eg7G4x1Q2ubkcaETyM84zF0DBSoX0Z35kXIp9RaUo5oEwdbRcGo1NCv5ThrS
+         xv91Ll0nIZQR9E4a8eCFWpzRS93StI1OfrXVYHm3aQtiSQCjRfQnJM7yFQeATQ7e3KqK
+         nI1O4QIZNutVL1kAoz9zNnzUTHY2AP0CtWCW2iHkQa6Wv2OlTNpHsTkIDscq6Ww8Qb6w
+         b/Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=CdW40nYadQLqv6cb7mCz4sTrno0A47FG3PBCzX7v7CU=;
-        b=i6mwAYcF+XU0KVuUWnEg3RLPiouwAbHN1d0wMCuZBJ6Fe2IcUzQ49AzCo/2m42RIf5
-         WjWRLo/Zz1cZs5F15y3mQ3Qyg+MHEYaWL7B0UkxzOEqKj/6XQD5VDT24hvEJjtyTbL1V
-         Rr0xMTL7D/SSU8DZq/aupUBoDRr7zclYG4Bk0llW+9THDSQ5iTVhpY/yn5YXMCRZcqUX
-         6gruPcJc+tLPQfRDk2L88GfIzhfNa0w0hvyDT7CAjifKz4MqauVLM7xG7Q6Qvg6uW4Hy
-         nlkYsoKwKRB+xIJgg5mtAT5KOxSGGaBfg/k2TMHzxwEX/jSpQMd9FWQ1KA+7rWnarn9D
-         JYeA==
-X-Gm-Message-State: AOAM530MYt1wLgGtaLhoLhaI16cCakHFa6EsDe2F0pY79mRnCVez18QA
-        1QLiFHxS5OWXhUGMdiiR9PJmPoVSiBbe7ozF5FoxVZi/QelGLQ==
-X-Google-Smtp-Source: ABdhPJwDKbnCr0296sxTih51p120CRfNj370FV+iPvb3EokXerTJmvvNPYAOuuYM60PxKh626fAlR76VahUf5L4YbN0=
-X-Received: by 2002:a25:da4e:: with SMTP id n75mr394457ybf.425.1603907275407;
- Wed, 28 Oct 2020 10:47:55 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2+uYu86LDWGsnC4W37LGE2qpMcN2MpffcV3JWIw2MFQ=;
+        b=QUtemM5prYG+pJaW3UTcfaBJCu2U6xdKp4jrwG8hw7HWpTiXqkKVyWFkYWhzN1wv7w
+         gncCiB7IkFvuyIHtdumrE1BZhi/btc+cq65+YnMdWAq0KSda/E9x1qinMdtp0fA2Uvyu
+         +/KYzDw++rX3m/ua1RVVM98RhMtKWs89W8azV2Ap8Kuvryrnf4YNwXAJoVGIPVvNah+X
+         dV4d8erAvmOFREDnV/frZmiXWYuDMUtN4sNogVKrz+GVWQsVoQW6DwtgHPoubxm9Lhs2
+         TrV50t959C4gzuWLdwns+DlWrr5WIpBsgZCrLmv6zKldb9vTi6eJROKGA6Y7YDVyZmli
+         yQPA==
+X-Gm-Message-State: AOAM533Wz0cuT092TYSBXotE1y3c5KCemJaWxAQji1lQc8ePBZp/6EkA
+        yj5t680VN8vpG4sjcGPWoBTxzUhF+oxcfa7hBoRf2g==
+X-Google-Smtp-Source: ABdhPJzzc/J1JBJXAToRCeQHDdOVsoNE6U9yTJzDUPWdlDCEb1Uk4v5ySj0pBCeZjS4xxD+zSOrd96XH4omhzWIDEkE=
+X-Received: by 2002:a19:83c1:: with SMTP id f184mr559337lfd.97.1603933926604;
+ Wed, 28 Oct 2020 18:12:06 -0700 (PDT)
 MIME-Version: 1.0
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Oct 2020 10:47:44 -0700
-Message-ID: <CAEf4BzZZAm_jFtPwmrxowVgmUQn-TJMpGBtVOtVepSsxe8S19w@mail.gmail.com>
-Subject: libbpf v0.2 released
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+ <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+ <202010251725.2BD96926E3@keescook> <CAG48ez2b-fnsp8YAR=H5uRMT4bBTid_hyU4m6KavHxDko1Efog@mail.gmail.com>
+ <CAG48ez2OWhpH3HHUJSrAmokJ8=SVwKrmQMSw0gEbTJmKE4myCw@mail.gmail.com> <202010281553.A72E162A7@keescook>
+In-Reply-To: <202010281553.A72E162A7@keescook>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 29 Oct 2020 02:11:39 +0100
+Message-ID: <CAG48ez0FS49ki=RfO_nrSnwH32g9oRS73OSUOhz6tVh+YwCNLg@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi all,
+On Wed, Oct 28, 2020 at 11:56 PM Kees Cook <keescook@chromium.org> wrote:
+> On Mon, Oct 26, 2020 at 11:31:01AM +0100, Jann Horn wrote:
+> > Or I guess we could also just set O_NONBLOCK on the fd by default?
+> > Since the one existing user is eventloop-based...
+>
+> I thought about that initially, but it rubs me the wrong way: it
+> violates least-surprise for me. File descriptors are expected to be
+> default-blocking. It *is* a special fd, though, so maybe it could work.
+> The only case I can think of it would break would be ioctl-loop case
+> that is already buggy in that it didn't handle non-zero returns?
 
-I've just cut v0.2 libbpf release on Github ([0]). I figured it would
-be a good refresher on what went into libbpf for this release cycle. I
-apologize if I missed something important in the summary, though. And
-if you see any problem with this release, please report ASAP.
-
-## New features/APIs:
-  - full support for BPF-to-BPF function calls, no more need for
-`__always_inline`;
-  - support for multiple BPF programs with the same section name;
-  - support for accessing in-kernel per-CPU variables;
-  - support for type and enum value CO-RE relocations;
-  - libbpf will auto-adjust CO-RE direct memory loads to adjust to
-32-bit host architecture;
-  - BPF_PROG_BIND_MAP support, .rodata will be bound automatically if
-kernel supports it;
-  - new APIs for programmatic generation of BTF;
-  - support for big-endian and little-endian endianness in BTF;
-  - perf buffer API additions allowing better integration with polling
-libraries (`perf_buffer__buffer_cnt()`, `perf_buffer__buffer_fd()`,
-`perf_buffer__consume_buffer()`);
-  - `bpf_prog_test_run_opts()` API;
-  - `bpf_program__attach_freplace()` API.
-
-## New BPF program types supported:
-  - sleepable fentry/fexit/fmod_ret/lsm BPF program.
-
-## BPF-side changes:
-  - libbpf will automatically fall back to `bpf_probe_read[_str]()` if
-`bpf_probe_read_{kernel, user}[_str]()` are not supported on older
-kernels, so it's always safe to use `bpf_probe_read_{kernel,
-user}[_str]()` in your application and not worry about kernel version
-compatibility;
-  - `bpf_d_path()` helper;
-  - `bpf_per_cpu_ptr()` and `bpf_this_cpu_ptr()` helpers for working
-with per-CPU kernel variables;
-  - `bpf_copy_from_user()` helper;
-  - `bpf_load_hdr_opt()`, `bpf_store_hdr_opt()`,
-`bpf_reserve_hdr_opt()` helpers;
-  - `bpf_skb_cgroup_classid()` helper;
-  - `bpf_redirect_neigh()` and `bpf_redirect_peer()` helpers;
-  - `bpf_seq_printf_btf()` and `bpf_snprintf_btf()` helpers;
-  - `__noinline` convenience macro;
-  - `bpf_tail_call_static()` wrapper.
-
-## Deprecations:
-  - BPF program's "title" terminology is deprecated, please use
-clearer "section_name". New API `bpf_program__section_name()` added;
-  - `btf_ext__reloc_line_info()` and `btf_ext__reloc_func_info()`
-(used by BCC) are deprecated.
-
-
-  [0] https://github.com/libbpf/libbpf/releases/tag/v0.2
-
-
--- Andrii
+We don't have any actual users that use the API that way outside of
+the kernel's selftest/sample code, right?
