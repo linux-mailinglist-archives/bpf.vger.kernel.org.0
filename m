@@ -2,102 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46A629E658
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 09:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2643A29E67A
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 09:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729466AbgJ2IZq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 04:25:46 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:37058 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727146AbgJ2IZp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 04:25:45 -0400
-Received: by mail-oi1-f193.google.com with SMTP id f7so2415805oib.4;
-        Thu, 29 Oct 2020 01:25:44 -0700 (PDT)
+        id S1727905AbgJ2Ifu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 04:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgJ2Ifr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 04:35:47 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CD7C0613D2;
+        Thu, 29 Oct 2020 01:35:46 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l8so1603102wmg.3;
+        Thu, 29 Oct 2020 01:35:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ivBwB6jIx8a7CJdFOF324R+b6Z/WH4ZEOu7vP5tzztQ=;
+        b=KW6V5TrlmvP8xBFlILzNLJIzpUYNefybdkLgTZIdP8d7YNRZtetO8UJ7dzSkhXIpgG
+         CM7JQAl+iPrrelzndQa8pjcG0GkiJ4zmCytzIIWvdhNIK9LjMWE7UTvg3Hb3w+hhIhXE
+         Jgp+v7c+UxsVI3Ef0mdVEyXr4lmDuJ4uVWgCJnBT8zkHUK92oo4AzsFQ7EmHmpuzUo1T
+         LWNi1unZvOupQLxVjlLhOxLYZde20Yhn/Aye0oBi14OsmQLY4SeZyENxDzEOOWcRVF72
+         sjEZAb7gKxKrvdtzxyQd4VZ/FWPh4b4KeLCGbufRn9t2b+bi/4w5vy+Aarv0qYdUK0Rk
+         Ifxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8GwF8lKQ/mn1SZ1RobWt+1TreFjiPRalR0H8KvHn3LY=;
-        b=oC4Q8ShtuNj/DQl5n4WISJDp30sLUq4t5wOZJqd4xZAITigNGiMKyFichMf7SgMLvm
-         qT3ML6K106D5kO+xjmfcXA3BbdUMzaoRPcIWSybRLoaFgLjNbj0D9JerFT4Vw66IFcyF
-         0xpSQE+SnDNCvzzPC9/s8zEAZ2zWONaufAv02lszC+thEB/QrwabsvhOQnzNrhACHzMT
-         oRJp3rY41IiEbPyn53fQN4ez9UZyyE70q3GK/N1LIxZa1wSodsRG8OaRyfk7UBMQ1ng0
-         K1seRS51uq50Mmo4K5ei7fHK+/eCmqImnmmnn8Tef+FdPcRV4XZ2rkThbcWTzZgWbmKz
-         q+9Q==
-X-Gm-Message-State: AOAM531fwYKLgSQDyUnC7s01VlDCWwU5rMA2piDvePQ9L4eW0ykxqx//
-        HTB56/UQIQ9+cbpKfj/x1/adT/zZtX11BY22bkk=
-X-Google-Smtp-Source: ABdhPJx87qX9BOdfwH3qv6RLp/CViLF+OMQGLC5vN5b4+x9eNDcJsPC53Y3tP4N8J33BYk0mnPKJZhViwITEYgrleeY=
-X-Received: by 2002:aca:c490:: with SMTP id u138mr2180030oif.54.1603959944525;
- Thu, 29 Oct 2020 01:25:44 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ivBwB6jIx8a7CJdFOF324R+b6Z/WH4ZEOu7vP5tzztQ=;
+        b=btlE4JsjsKyWid6rXsGoK1+UBXZHHmv6AzNcSxszdRldNo4+ubxr/ddD9j/ibcNmcz
+         83qugLNx4m88xk5s8EI2qtDlFMi7xXc1UYdlZWMTxm6ADK+d1A1aaqUacCkyJkgFtvYH
+         Cm7m+eTiOHXauL6luNutnbDkeKnIR6RxlEZQK+lhhwkni+zVHIX6Ax+a58CJ0nZ19VRL
+         JMJSV27r/6E14xWBWGibP2fb60J74yzw1xnf8yuxyRdGDsCk6fOAdfCHZ1OZ8TYUvAkx
+         25DIxouk/uTKAv8EeJkrJMwQePb5dYJdxKToRF7d5i1k1jwxwkdBvsQvaWtI4L5v3kw1
+         VPww==
+X-Gm-Message-State: AOAM533rN5wAASkberk4yYXzHXSggf8Zk+fzy1bXcvaypyfcG7dozQKq
+        bepcsmsY81df1CF6fhX+85KyUeIJ4gjm+u+sCQI=
+X-Google-Smtp-Source: ABdhPJwDZ3AgI/TBlHv0/9LtT5xYG6KFEtL/xmRrTJwshppqq1Qf4XDaEI73HNQ782ddgU9gb6KQZ4a3QU7LpuhN6w4=
+X-Received: by 2002:a1c:dd05:: with SMTP id u5mr3240876wmg.56.1603960545585;
+ Thu, 29 Oct 2020 01:35:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028171506.15682-1-ardb@kernel.org> <20201028171506.15682-2-ardb@kernel.org>
-In-Reply-To: <20201028171506.15682-2-ardb@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 29 Oct 2020 09:25:33 +0100
-Message-ID: <CAMuHMdWdORV2u5zCWVspUha-WVixg=-ik_R2tRgszarptnsOsA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
- to disable GCSE
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+References: <1603801921-2712-1-git-send-email-magnus.karlsson@gmail.com>
+In-Reply-To: <1603801921-2712-1-git-send-email-magnus.karlsson@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 29 Oct 2020 09:35:34 +0100
+Message-ID: <CAJ+HfNi=NZKsrjM5dJ-4TE1o8WonCqJyien3G+Jh6LsuF0SJXg@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: fix possible memory leak at socket close
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 6:15 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> Commit 3193c0836 ("bpf: Disable GCC -fgcse optimization for
-> ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-> function scope __attribute__((optimize("-fno-gcse"))), to disable a
-> GCC specific optimization that was causing trouble on x86 builds, and
-> was not expected to have any positive effect in the first place.
+On Wed, 28 Oct 2020 at 08:32, Magnus Karlsson <magnus.karlsson@gmail.com> w=
+rote:
 >
-> However, as the GCC manual documents, __attribute__((optimize))
-> is not for production use, and results in all other optimization
-> options to be forgotten for the function in question. This can
-> cause all kinds of trouble, but in one particular reported case,
-> it causes -fno-asynchronous-unwind-tables to be disregarded,
-> resulting in .eh_frame info to be emitted for the function.
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
 >
-> This reverts commit 3193c0836, and instead, it disables the -fgcse
-> optimization for the entire source file, but only when building for
-> X86 using GCC with CONFIG_BPF_JIT_ALWAYS_ON disabled. Note that the
-> original commit states that CONFIG_RETPOLINE=n triggers the issue,
-> whereas CONFIG_RETPOLINE=y performs better without the optimization,
-> so it is kept disabled in both cases.
+> Fix a possible memory leak at xsk socket close that is caused by the
+> refcounting of the umem object being wrong. The reference count of the
+> umem was decremented only after the pool had been freed. Note that if
+> the buffer pool is destroyed, it is important that the umem is
+> destroyed after the pool, otherwise the umem would disappear while the
+> driver is still running. And as the buffer pool needs to be destroyed
+> in a work queue, the umem is also (if its refcount reaches zero)
+> destroyed after the buffer pool in that same work queue.
 >
-> Fixes: 3193c0836 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> Link: https://lore.kernel.org/lkml/CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com/
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> What was missing is that the refcount also needs to be decremented
+> when the pool is not freed and when the pool has not even been
+> created. The first case happens when the refcount of the pool is
+> higher than 1, i.e. it is still being used by some other socket using
+> the same device and queue id. In this case, it is safe to decrement
+> the refcount of the umem outside of the work queue as the umem will
+> never be freed because the refcount of the umem is always greater than
+> or equal to the refcount of the buffer pool. The second case is if the
+> buffer pool has not been created yet, i.e. the socket was closed
+> before it was bound but after the umem was created. In this case, it
+> is safe to destroy the umem outside of the work queue, since there is
+> no pool that can use it by definition.
+>
+> Fixes: 1c1efc2af158 ("xsk: Create and free buffer pool independently from=
+ umem")
+> Reported-by: syzbot+eb71df123dc2be2c1456@syzkaller.appspotmail.com
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-(probably you missed by tag on v1 due to kernel.org hickups)
-
-Thanks, this gets rid of the following warning, which you may
-want to quote in the patch description:
-
-    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-`kernel/bpf/core.o' being placed in section `.eh_frame'
-
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
