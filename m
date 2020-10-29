@@ -2,115 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9875B29F78C
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 23:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57E229F7DA
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 23:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgJ2WNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 18:13:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725822AbgJ2WNR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 18:13:17 -0400
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CFC521534;
-        Thu, 29 Oct 2020 22:13:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604009596;
-        bh=6G0KYvEIe0We8NX5HSEENfq+P+g0aXPqwOaw5vT8pHU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=t9s2F4T1BSutTSAYQzkKV9Vwzcfoj1IZCcvn6qLY+IE0toQSmiRzknnoOoZJq6OAX
-         O6GW5hYvnaJUWLZeshE3vvF5kX80yJDcPHTp3QBZ2QK6IPjBDWoTR8Hw+gn1mhS4K0
-         0aLWnqu+HPTdsm3sh/b27IUFocXEI8+jrdfoKUMU=
-Received: by mail-oi1-f173.google.com with SMTP id f7so4684919oib.4;
-        Thu, 29 Oct 2020 15:13:16 -0700 (PDT)
-X-Gm-Message-State: AOAM531h1wDfksxWMhD1RgyEOOc3toMDldpAAGH2j60G8DBC1nfnFHMM
-        3KG+GWrDrhQNgRIePGJB72jzGa8xpEucHMybW6c=
-X-Google-Smtp-Source: ABdhPJyCaru79zu3HxLlCyL7++Unf5ik6G+WcAV4bSZkMJOFXhdSAOc40vpKleOl7hnH1hBldv/dlbFhkw/866xLEgY=
-X-Received: by 2002:aca:2310:: with SMTP id e16mr940329oie.47.1604009595232;
- Thu, 29 Oct 2020 15:13:15 -0700 (PDT)
+        id S1725881AbgJ2WZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 18:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ2WZD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 18:25:03 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530F3C0613CF;
+        Thu, 29 Oct 2020 15:25:02 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id b138so3497266yba.5;
+        Thu, 29 Oct 2020 15:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uj2l+dvKbdMwpYX4cQk7PUdaO5o8LISaAemCD5aYDG0=;
+        b=vT0MhveRj9Tkq/mDcJDowdsvH7avpHwh8ZMEgVeybkMT092bZmYC2iwZRk63HkK5EY
+         2dk78LiD9V6xm5Cesc8PMAYf+dOlhh4Ze7tl9zAXdHKKzWwoTBriOAJhIQs8x0o6a/mM
+         ZaAIhgrnythaEa1ee34rB56Lz5tX2DLTUdkdsq+iztMPHVFX95+t+Io0IhaQNqSUnUmS
+         NPsHntF7VyshbMW28egSaURO2pIRd6kw/MVG0zbuo/a5QdXI7HEHv6gUqQ5tFxAwZ84M
+         cMCgx522u3ZiEKCCpYmRqb5ZWEifC3m513GAScFjDuPBDcHhZCdeVgqgfuK1KBRAo2Wd
+         UX5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uj2l+dvKbdMwpYX4cQk7PUdaO5o8LISaAemCD5aYDG0=;
+        b=RaXzIUYYVDDh1M5fauOk0gMxMezwyn/x7NIxLXpOvFeDeWdqww9jj0LsE8yCjusxtY
+         z+d6ffa9KTgUTWmDhZiuB/zE43g3SKbZeRNK+oD7Alfy5Josx1fGqmTuBgyR/tfYoQsy
+         Ky4SZ907H8rss/XigJq8voVe0nUD50ilSqmDmt9N/7mi3KV88phfgrlK1Xir0h/pfAWo
+         aVwNJy28ChsUBdIpnAFV9rDOXJZi1qWaTUdDFuTC+m+2CZliOHC5uj4BKm6gsAn8+BFt
+         9+RU92K1tgoxU4f0a15FvqywOG7XPhVV00lO0R3hWf9nl6fJDic3afKNa3cf68lzBBfW
+         IhTg==
+X-Gm-Message-State: AOAM530vUmwfUzxP1MaR0JNOpQW6MBAuMFKIrecDOpdidX76hWvWLOP1
+        Miur4pHtQkCIRV57WVSXsln7ufQmyrYUSjNdzy0=
+X-Google-Smtp-Source: ABdhPJwecE56Lli3ZfpQZNfHAVVekkfObaWGruxtsKcfg067aF2G4yUaiE+cidRARDox/ovjv9wyLMj+u6ubgfdAsCM=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr9434780ybe.403.1604010301511;
+ Thu, 29 Oct 2020 15:25:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028171506.15682-1-ardb@kernel.org> <20201028171506.15682-2-ardb@kernel.org>
- <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
- <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
- <20201028225919.6ydy3m2u4p7x3to7@ast-mbp.dhcp.thefacebook.com>
- <CAMj1kXG8PmvO6bLhGXPWtzKMnAsip2WDa-qdrd+kFfr30sd8-A@mail.gmail.com>
- <20201028232001.pp7erdwft7oyt2xm@ast-mbp.dhcp.thefacebook.com>
- <20201029025745.GA2386070@rani.riverdale.lan> <20201029203113.GJ2672@gate.crashing.org>
-In-Reply-To: <20201029203113.GJ2672@gate.crashing.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 29 Oct 2020 23:13:04 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHxX+u5-cN0v3SLdqZTSiKsWsFOvc2SC5=-ScaUZOu8Ng@mail.gmail.com>
-Message-ID: <CAMj1kXHxX+u5-cN0v3SLdqZTSiKsWsFOvc2SC5=-ScaUZOu8Ng@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
- to disable GCSE
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20201029220919.481279-1-irogers@google.com>
+In-Reply-To: <20201029220919.481279-1-irogers@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 29 Oct 2020 15:24:50 -0700
+Message-ID: <CAEf4BzaRZ60zajtDDkKA+0UwXCsT4HZpJ=f12_GzrEa+rkPfcQ@mail.gmail.com>
+Subject: Re: [PATCH] libbpf hashmap: Avoid undefined behavior in hash_bits
+To:     Ian Rogers <irogers@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-toolchains@vger.kernel.org
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 29 Oct 2020 at 21:35, Segher Boessenkool
-<segher@kernel.crashing.org> wrote:
+On Thu, Oct 29, 2020 at 3:10 PM Ian Rogers <irogers@google.com> wrote:
 >
-> On Wed, Oct 28, 2020 at 10:57:45PM -0400, Arvind Sankar wrote:
-> > On Wed, Oct 28, 2020 at 04:20:01PM -0700, Alexei Starovoitov wrote:
-> > > All compilers have bugs. Kernel has bugs. What can go wrong?
+> If bits is 0, the case when the map is empty, then the >> is the size of
+> the register which is undefined behavior - on x86 it is the same as a
+> shift by 0.
+> Avoid calling hash_bits with bits == 0 by adding additional empty
+> hashmap tests.
 >
-> Heh.
+> Suggested-by: Andrii Nakryiko <andriin@fb.com>,
+> Suggested-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+
+I didn't realize you'd need to add three extra checks. If that's the
+case, let's just add `if (!bits) return 0;` to hash_bits() and be done
+with it. Please keep
+hashmap__for_each_key_entry_safe/hashmap__for_each_key_entry changes,
+they are ok regardless.
+
+>  tools/lib/bpf/hashmap.c | 12 ++++++++++--
+>  tools/lib/bpf/hashmap.h | 12 ++++++------
+>  2 files changed, 16 insertions(+), 8 deletions(-)
 >
-> > +linux-toolchains. GCC updated the documentation in 7.x to discourage
-> > people from using the optimize attribute.
-> >
-> > https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=893100c3fa9b3049ce84dcc0c1a839ddc7a21387
->
-> https://patchwork.ozlabs.org/project/gcc/patch/20151213081911.GA320@x4/
-> has all the discussion around that GCC patch.
->
 
-For everyone's convenience, let me reproduce here how the GCC
-developers describe this attribute on their wiki [0]:
-
-"""
-Currently (2015), this attribute is known to have several critical
-bugs (PR37565, PR63401, PR60580, PR50782). Using it may produce not
-effect at all or lead to wrong-code.
-
-Quoting one GCC maintainer: "I consider the optimize attribute code
-seriously broken and unmaintained (but sometimes useful for debugging
-- and only that)." source
-
-Unfortunately, the people who added it are either not working on GCC
-anymore or not interested in fixing it. Do not try to guess how it is
-supposed to work by trial-and-error. There is not a list of options
-that are safe to use or known to be broken. Bug reports about the
-optimize attribute being broken will probably be closed as WONTFIX
-(PR59262), thus it is not worth to open new ones. If it works for you
-for a given version of GCC, it doesn't mean it will work on a
-different machine or a different version.
-
-The only realistic choices are to not use it, to use it and accept its
-brokenness (current or future one, since it is unmaintained), or join
-GCC and fix it (perhaps motivating other people along the way to join
-your effort).
-"""
-
-[0] https://gcc.gnu.org/wiki/FAQ#optimize_attribute_broken
+[...]
