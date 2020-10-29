@@ -2,142 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCBD29F8BF
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 23:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7103D29F8EC
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 00:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725785AbgJ2W6D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 18:58:03 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3098 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725379AbgJ2W6C (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Oct 2020 18:58:02 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09TMraTJ031147;
-        Thu, 29 Oct 2020 15:57:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=N1QMs2Z+6gUU+hn6xK3so9SFJxytUgzDK0FQqZYvxjw=;
- b=k+uOfaZU/Wz6W112/4eC4DECCpyAkzwygM70/DgqbI/KLzmVnLMTw+LNJhW7kcrojfnU
- LBAdHdl2oz4/600gS42bxIWT2eW/4mSDAOabauVu/eZdICFcTkZdJrR3sRfGx6PlttX8
- WwaUqcIZF0iqc96DWFiPjZhJDmE0hosN4wA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34f7pjjebh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Oct 2020 15:57:44 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 29 Oct 2020 15:57:43 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j2uxp9kmis8RWZlqbMOSVMr14DzvHAEWQ+14AssUYEEv+hekdMYKUQtMYs/Jm+plVSfdgJK/ygCXHWpw09gx7QE3GSsph8gTXl97Tq2O5jkX312TeYW0l9hnmdZF8buKQqPaQ/zrALqxuwP+6SHb8rAySjMA0APG6WCUiPg5wxH1Jf9ffJ+vsfjUzb+j6Zu5Yha50JmjniT+VBe6tNLfrCRIaeSJj1HLgH7b2eU0UO6y6uTzI4rYrdmCgXMJi8TJ5p0Y0QozoRhs6Vu8BvJQdxFehcCNyCfD/jsTwxJ6N2TZq2qgt7/+1zViewSTszO2zUHkeHnrvhJC13/UILt0Gw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N1QMs2Z+6gUU+hn6xK3so9SFJxytUgzDK0FQqZYvxjw=;
- b=RILkg0MpELaGlRhiaaGC3LVFRIKa+jVBqrzy7+0DwetGPs1pXBjk+D0h7HyIPd/cNiqbvLK84F/QzI6w1+n1nxuMlpQ5zS6M8paY0PVaSW9xtBN6VUNyxFBuWoU9cRIuWVNkwk6trtFM0G+iCjnYCIMlVLajZlcDE5kq9UKhrWxfjTs1USyfNgCatx4UzHwvdp/88Y4xL+2BbyeVYiFlwx2Vza5WJPTaJVVVgKXIt8jT+59ds7MaHd5Skqj3ToZu+xccdt3BhV7FrWTJ6xlvDQlOMnxBEJ0/tc6/zH87vyLJObQZPyrBgXJGcbCsxW4HCmfITeDa8gFoIgLsVpfMWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N1QMs2Z+6gUU+hn6xK3so9SFJxytUgzDK0FQqZYvxjw=;
- b=kf39UsIG2SZxfxTG/tE1WsMQULckIgkTs+StqK/CsJ8/LzxwEWrvYp+D09733DzelarZtvKaTgGWapU1lfZA3hTxLHb02uCnC+mfO0n89JzUWHfwFw70MZ7CDhe8w3y0AAsiN+fI/oHWyObf6igYzAQ3xsaC75jwphSp1gU2tWg=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3254.namprd15.prod.outlook.com (2603:10b6:a03:110::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 29 Oct
- 2020 22:57:42 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
- 22:57:42 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Ian Rogers <irogers@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, "Yonghong Song" <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] libbpf hashmap: Fix undefined behavior in hash_bits
-Thread-Topic: [PATCH v2] libbpf hashmap: Fix undefined behavior in hash_bits
-Thread-Index: AQHWrkQcbGvCsMR2DkaqEAjiMgI9kamvLAUAgAAFQYA=
-Date:   Thu, 29 Oct 2020 22:57:42 +0000
-Message-ID: <8A7F0E86-9A11-4ED9-AE8A-881A5A260DB7@fb.com>
-References: <20201029223707.494059-1-irogers@google.com>
- <CAEf4BzaX4KT5tOn9gSR24OtrX8MT3yW2yfTq244ewnRouWDJdA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaX4KT5tOn9gSR24OtrX8MT3yW2yfTq244ewnRouWDJdA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:c2a2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 978ceea4-109c-4e05-3d17-08d87c5e0ae1
-x-ms-traffictypediagnostic: BYAPR15MB3254:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB32549BDAE88850F58EBABF6BB3140@BYAPR15MB3254.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4vALZQ+Aeyg/sPxzbkgHSd/FHLeHwGBE+zYeaKkzf625/ZRDGSnjZXCFJ5nZT2F4yCuUvpIXQMFUiBTxmNJcKKNjIoRD+HsSMBZkA/LOdyGCWYgNL9ZNVFH5ciVQimieEIOtXvwBDq1M1rhtC+MOUswyKcFosqVLsqiTe0cTpD1ygVIlayFTmupEcqaewSMcqr1Ntm6Znj/2bovcks/3OhWig3qkQTdXZ4/S8naeOFxtx77/KA+QwroRpbKDMkTAa4KjIurxYb8FzPPDgFhpp1jNktOmJ6J9TLQV+S7P0C6Ftg62OhG4FC6WM9QfjNwE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(346002)(39860400002)(366004)(478600001)(6512007)(86362001)(6486002)(186003)(316002)(4326008)(6916009)(54906003)(8936002)(8676002)(36756003)(71200400001)(6506007)(53546011)(2616005)(2906002)(66946007)(66476007)(66556008)(64756008)(66446008)(76116006)(91956017)(5660300002)(33656002)(4744005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: QiwUnjFyg5SUPO5MpI3TI2PLRAa0jDWhSA8qMGsIpaAkLBQLn3I0r7mBQ0XITK0/yeCy9qjFrHAB0eTdRqj6uxNZl3hLJMANdy4fptGSPPupLqgxVzMXBxc/eG+iY2nnKx8tsBPbdaoEx+RJmqnKxv92s9qGM7vTcPM2bSlpWFKzBvP621GwM2prtLdHGvGB11AUWWJaO2QR/zUfteOIpp3ZRsgyIv1rbBd4QripCWaiLQ2yWoCmuBxVFI32MDhN3OmXqAosEX6I/pexI5PkcsXQ6UqTPWWo0CrnnKA3Wbl1GLE69X7uuylZvxaE1G5SDyBtBx8dzz1Tkm17flcnpVHgLTXRrTy/vjp8UskWp1NFE5rCZGyqvMCWeWjL5vVy+HNYnRNWRuUPgvUXB8GzAbffqcLP/ZkSdQeoPro53OCUY3MmuE+kC6avz1cganQtcK8Oc8w8+PdvlJuF2L472zTzGPycNWBykHxsWsgJRlO/KKiEubJ/IH/D9Pw8cOEZzyc4EG8glfG5Jr/3i/ER2+IHhKL9TFWDofmLy5tb7wYeiWt3NrZxHeIw16DxvI0vvOZrtFgTYsrOyUIkN6I2q4TvQvgosfpECc+MkpmTD9mI58XPZTUt8sIBERAzN+ylSB1e94VtEBVI8AK28hnVJIitXJwe4puHHwiY+H6zZQQ97Zr5kMqz67qgbPguTkA6
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1214202F9591934F803C75400C4E3847@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1725763AbgJ2XMd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 19:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725372AbgJ2XMd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 19:12:33 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E04C0613CF;
+        Thu, 29 Oct 2020 16:12:33 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id o70so3614067ybc.1;
+        Thu, 29 Oct 2020 16:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f/Bc/v64iDP0ELb4JzwzGaOTdRaZ/Pl633zholMKGEQ=;
+        b=rrPh9YBMHLayCIOnNBd+I557HWsz0Hjw2myKwuqoVwVRgDWZYcnTacswIiL/OF+ov2
+         prOnRW4h3dS4YxLn6nPVHbNxYvsmlfnYv2Z/u20QmoRv9FCfSqxePhRWj3DRa1P6d+iO
+         i7H/iz+G/2xFNEztZPA9AFQ+w5Mae7Dbp9NDcXLvcQRbXnIPT0JgNRVPtv+GyS0goH27
+         fAyqCAFWxhN3l0BmRPb4oaMeRl8p5hHsJilJQDNgbj1QxpfSO6GIoTKM2zVkIEuvp9Wb
+         Fzjb+lK94uGYl9J31d+bi4y37BIzhLVHZfXJ4M4g5MF6A5XZrqdcKlXOfFfgVZV3jYrf
+         g/2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f/Bc/v64iDP0ELb4JzwzGaOTdRaZ/Pl633zholMKGEQ=;
+        b=GovOmvjAw2wlPOZZmRlhSZ94L0dEKfpzxlQ5NJlkChNvR5rfzJuhj9mqR8JmSlHuim
+         1iCjJCzvqOASOStGJ1T+YB1LH8ieRheyiYmRaxQ4AVTnFnjBPzS3vT8+CAlJvM6v+01w
+         DAOvLoAEkjO7Q1VGa/bEWGFQql4g2haVTIzt+qo+hQKZLkkMSJDeT6D9sJsQhoYXPlN7
+         O67ODlf2pVL1KyTyZ2xTJDmS4BjLavvRSKkL+FXsWRO3d0RQ501l6Vf51wu1PpC5WPDf
+         1KdDA04TLX6OrZsZ78ZSks7c5xCMmgY/XCM6SuzThxI1B7APNqD+XX8kFY8fG+leaw0z
+         3/rw==
+X-Gm-Message-State: AOAM531UhRswcJO7sgYvlBAGdCHukpOoP4muNIHOemJC4ziyTXUBqlfS
+        BoRQa77P7Zi2Ye05oflMSquSG5EGOW4FXIK+5QQ=
+X-Google-Smtp-Source: ABdhPJxvSoa9Pw97zqBolMtyoHthXRB/rqjijrszK40wG5o2sLWgEEwKv89ZKmNtRvhbDq+/AMzjd61ZkoY/lLYjCjk=
+X-Received: by 2002:a25:da4e:: with SMTP id n75mr9183989ybf.425.1604013152317;
+ Thu, 29 Oct 2020 16:12:32 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 978ceea4-109c-4e05-3d17-08d87c5e0ae1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2020 22:57:42.3129
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Oe/4pG8GJpFcRZhTYTFGCqmeVyzAu5geCZ8Q8AQIIqBosT+oNWwYEsm9EE5Urjo6lYQNDBiHHimQmuYaZszFQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3254
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_12:2020-10-29,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- adultscore=0 impostorscore=0 phishscore=0 priorityscore=1501
- suspectscore=0 spamscore=0 malwarescore=0 mlxlogscore=969 mlxscore=0
- bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010290158
-X-FB-Internal: deliver
+References: <20201027170317.2011119-1-kpsingh@chromium.org> <20201027170317.2011119-2-kpsingh@chromium.org>
+In-Reply-To: <20201027170317.2011119-2-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 29 Oct 2020 16:12:20 -0700
+Message-ID: <CAEf4BzatLFGpht-CiSmOfSjBY_nATZsgnWhLnUFuDgvMi4yXLw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Oct 28, 2020 at 9:17 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> Similar to bpf_local_storage for sockets and inodes add local storage
+> for task_struct.
+>
+> The life-cycle of storage is managed with the life-cycle of the
+> task_struct.  i.e. the storage is destroyed along with the owning task
+> with a callback to the bpf_task_storage_free from the task_free LSM
+> hook.
+>
+> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
+> the security blob which are now stackable and can co-exist with other
+> LSMs.
+>
+> The userspace map operations can be done by using a pid fd as a key
+> passed to the lookup, update and delete operations.
+>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
 
+Please also double-check all three of get_pid_task() uses, you need to
+put_task_struct() in all cases.
 
-> On Oct 29, 2020, at 3:38 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
-wrote:
->=20
-> On Thu, Oct 29, 2020 at 3:38 PM Ian Rogers <irogers@google.com> wrote:
->>=20
->> If bits is 0, the case when the map is empty, then the >> is the size of
->> the register which is undefined behavior - on x86 it is the same as a
->> shift by 0. Fix by handling the 0 case explicitly and guarding calls to
->> hash_bits for empty maps in hashmap__for_each_key_entry and
->> hashmap__for_each_entry_safe.
->>=20
->> Suggested-by: Andrii Nakryiko <andriin@fb.com>,
->> Signed-off-by: Ian Rogers <irogers@google.com>
->> ---
->=20
-> Looks good. Thanks and sorry for unnecessary iterations.
->=20
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>  include/linux/bpf_lsm.h                       |  23 ++
+>  include/linux/bpf_types.h                     |   1 +
+>  include/uapi/linux/bpf.h                      |  39 +++
+>  kernel/bpf/Makefile                           |   1 +
+>  kernel/bpf/bpf_lsm.c                          |   4 +
+>  kernel/bpf/bpf_task_storage.c                 | 327 ++++++++++++++++++
+>  kernel/bpf/syscall.c                          |   3 +-
+>  kernel/bpf/verifier.c                         |  10 +
+>  security/bpf/hooks.c                          |   2 +
+>  .../bpf/bpftool/Documentation/bpftool-map.rst |   3 +-
+>  tools/bpf/bpftool/bash-completion/bpftool     |   2 +-
+>  tools/bpf/bpftool/map.c                       |   4 +-
+>  tools/include/uapi/linux/bpf.h                |  39 +++
+>  tools/lib/bpf/libbpf_probes.c                 |   2 +
+>  14 files changed, 456 insertions(+), 4 deletions(-)
+>  create mode 100644 kernel/bpf/bpf_task_storage.c
 
-Acked-by: Song Liu <songliubraving@fb.com>=
+Please split out bpftool, bpftool documentation, and libbpf changes
+into their respective patches.
+
+[...]
+
+> + *
+> + * int bpf_task_storage_delete(struct bpf_map *map, void *task)
+
+please use long for return type, as all other helpers (except
+bpf_inode_storage_delete, which would be nice to fix as well) do.
+
+> + *     Description
+> + *             Delete a bpf_local_storage from a *task*.
+> + *     Return
+> + *             0 on success.
+> + *
+> + *             **-ENOENT** if the bpf_local_storage cannot be found.
+>   */
+
+[...]
+
+> +
+> +void bpf_task_storage_free(struct task_struct *task)
+> +{
+> +       struct bpf_local_storage_elem *selem;
+> +       struct bpf_local_storage *local_storage;
+> +       bool free_task_storage = false;
+> +       struct bpf_storage_blob *bsb;
+> +       struct hlist_node *n;
+> +
+> +       bsb = bpf_task(task);
+> +       if (!bsb)
+> +               return;
+> +
+> +       rcu_read_lock();
+> +
+> +       local_storage = rcu_dereference(bsb->storage);
+> +       if (!local_storage) {
+> +               rcu_read_unlock();
+> +               return;
+> +       }
+> +
+> +       /* Netiher the bpf_prog nor the bpf-map's syscall
+
+typo: Neither
+
+> +        * could be modifying the local_storage->list now.
+> +        * Thus, no elem can be added-to or deleted-from the
+> +        * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+> +        *
+> +        * It is racing with bpf_local_storage_map_free() alone
+> +        * when unlinking elem from the local_storage->list and
+> +        * the map's bucket->list.
+> +        */
+> +       raw_spin_lock_bh(&local_storage->lock);
+> +       hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> +               /* Always unlink from map before unlinking from
+> +                * local_storage.
+> +                */
+> +               bpf_selem_unlink_map(selem);
+> +               free_task_storage = bpf_selem_unlink_storage_nolock(
+> +                       local_storage, selem, false);
+
+this will override the previous value of free_task_storage. Did you
+intend to do || here?
+
+> +       }
+> +       raw_spin_unlock_bh(&local_storage->lock);
+> +       rcu_read_unlock();
+> +
+> +       /* free_task_storage should always be true as long as
+> +        * local_storage->list was non-empty.
+> +        */
+> +       if (free_task_storage)
+> +               kfree_rcu(local_storage, rcu);
+> +}
+> +
+
+[...]
