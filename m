@@ -2,184 +2,426 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B8C29F391
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 18:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD0D29F3E4
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 19:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgJ2Rpm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 13:45:42 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56464 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727964AbgJ2Rpl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Oct 2020 13:45:41 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09THesLf014520;
-        Thu, 29 Oct 2020 10:45:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=7wVtQGaRqT+dMe+ph9UuWoewSIDaRsljnZo1MCw7Axk=;
- b=HgFzDecu5yseo0wCbIrvawUr2a69R7iSld087DKwqI3nWk60a+s71oR2NqZmCqj6SRva
- PPKiBytO2M4TY9kCv09u5gCbkuwrflSFJ37BcEDgx7DWIAzarP9XHxxsj+qXu8ldRgdf
- RqoNME4xeubutLZW7ZtDTVOrzmd+wL7g414= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34f7a6rrsc-2
+        id S1725766AbgJ2SN2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 14:13:28 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29562 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725747AbgJ2SN1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 29 Oct 2020 14:13:27 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09TI9O49015834;
+        Thu, 29 Oct 2020 11:13:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=QMu6yJpCcLo2t8QTwLHAh7ff56Hkbcn5Olyv18963Ug=;
+ b=i+kIaNCexeV/St2M3iI4xst/3sQzgF/NpILQ/lKETylilCe7PnA66SgXVFYcJtKgjW7w
+ Vz6XAs5rGknFhnpu+L1NOYSaKYkRLOZ55bybaNLCA1cxtzXIueURWgqJoKD15CreEbAo
+ 1KohshJbtOUg6vJ6bDPASvWDeqadweIY6F0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 34f0jnakab-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Oct 2020 10:45:21 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+        Thu, 29 Oct 2020 11:13:10 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 29 Oct 2020 10:45:16 -0700
+ 15.1.1979.3; Thu, 29 Oct 2020 11:13:09 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fmHW/6kF/bep97OSV2zuH1HpsfcOgF0GspwSl7gBFWUR75qEo9aaOlQpula04jLWzg6nijvAH3+3KTHHFSsBFP/Nq1KGLAzlkUvmJdrmvgiXXVeSXL/yOVgkoCeNblqQdH/Ww+Bh4W5rgcu4GtRbEPV8aqhwZGo7gw/ojBUbLYX9Vl/JYTY3QegYXsWnn1WB+B6euYxNvf9IMwzWIdmbNR5uTbPAMpN1Jkww/7928ORKGMTW/K4J0YCW0xUhuFy8t5bsPzF+MxIFaXd/09S+3Owp4gzhR4S1f8vqtt+r2n5PrWUcLQHpNFYy41jG7IfWxAs7O/K86+7tyRU0KqQC+g==
+ b=LAz/dbJbOzGjS0q1/wOLY8YTZVZPmAL3JYkZO04B8VFOyzWAKJ3WVRFjV1lfmXIf84LzCVnWN1Q1oquDERmEXwfwKreqjVSSckusCOpzHUrPU62C61RKVBZ3mS29aee9UHp7qTZVHhTH1/n6WV2A+F4D38Anb+cuk/mazfk1kRBiVRGKObn/Pp9bU2Ihr/5ssQciL5hAR+urAWkvPLQTOqn86gsEa2WxdykHdubX67Nd9taaAn/ktPtvepnHQNKaisb82aJL45Im6E2gDdRtKzQUaeoW5g5+GlzNCA/N/kJwyglkZVGJlvexcSGHgnzYd+pa9Jo2go0BuJ1AY7d58g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7wVtQGaRqT+dMe+ph9UuWoewSIDaRsljnZo1MCw7Axk=;
- b=Z4vVy72wXxyYqkk0dio2WpjanAtqFGr5ObnUuNM3LjzHGO6mLB6oYnwHnACm+ARijPKwaoVjvFsnl7MvGedXA3aK+4vWVLjsqwoEFn4l/L0dW7M5h1pZEMKDKWTaQw943A2Z+++r3qO5EczVRePtg/xERTPlaWHm8CYFgLoggPhvAXWLZo6O+adhO2JB+lbnN6mhdNj8kX020C45Oh0wqqcrKEDF6R/l76pmckf60ogKhlUeJ9Lcb/P1EfdGJNlSavM7GGbQh4sj+kWvKC2HXqdbE1zG66xsPZgmZ3s3qAQpO2reds59FQe9EldXaar16ygoC923p7dnoaNDEbxCcA==
+ bh=QMu6yJpCcLo2t8QTwLHAh7ff56Hkbcn5Olyv18963Ug=;
+ b=JneTjJjIA+gZKEqLV0HtvKH4Vdgex3Pkhfei8vxKYwryOQ/8z1oIsaHOSoq6j+HDEVU5cuLG/2GcwkTLylfNm0R/2MzvAER2zkZNH3i2HcwbEBUkutf1w9m+XhnItoHMqy8vsiE23CdrUC5skmOc8ANPQd6oOqIaDhReb1IkImpsuoFVCf9102xYDVgPhnSjSGefbx3PFZ2yKRhZE75SoO05yTbwpJLLFEpElgm3MMt4jeaEAWm8xhhWDIeYPivK5d+5JryIkTJpp8vsxV4QAXwwcVaarVrweHHR/8CxxjJmizl4Tu/Ct0KaW89Vqnc+MqReL3da7klHEvR1zBxqPg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7wVtQGaRqT+dMe+ph9UuWoewSIDaRsljnZo1MCw7Axk=;
- b=fRPqU4FeYvnCzynxFYOmy2xmV+EYwN6l2T4Ouxsvy7Ob2w8lGvalNjSCtm6sCTcVl5pTzD0mITJes3rCh4i9WG3x3YpjRtOIPpnQU6yjGxwfm8O22BXVkS9dH/71ra1q5/O+XykT2d5sFoThBXAv/hcGuTJ68OOJPP1SVfrp4lw=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2726.namprd15.prod.outlook.com (2603:10b6:a03:157::23) with
+ bh=QMu6yJpCcLo2t8QTwLHAh7ff56Hkbcn5Olyv18963Ug=;
+ b=k5Ult2HxSkxALDvCmQvy8OPVDDFHyizCLNPjC48a90hDVW3+2oCeNCtAtdsmQ7vZst+nxFT5/89pj/5eTWYXx+uVvxx18zAhEYvoIsXkBDOnEHUudO0yE4QbhmMpecBPdZ/52h/XaLm/WpZrS2j1+o1hqTuGhmND0F/FtWhzg4w=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2261.namprd15.prod.outlook.com (2603:10b6:a02:8e::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Thu, 29 Oct
- 2020 17:45:14 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
- 17:45:14 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Ian Rogers <irogers@google.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Thu, 29 Oct
+ 2020 18:13:05 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
+ 18:13:05 +0000
+Date:   Thu, 29 Oct 2020 11:12:58 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] libbpf hashmap: Fix undefined behavior in hash_bits
-Thread-Topic: [PATCH] libbpf hashmap: Fix undefined behavior in hash_bits
-Thread-Index: AQHWrg3tjprFy4LddUi1ivGW9wO6rqmu2mWA
-Date:   Thu, 29 Oct 2020 17:45:14 +0000
-Message-ID: <497F86C5-BD00-4C38-BD87-C6EFB92D1088@fb.com>
-References: <20201029160938.154084-1-irogers@google.com>
-In-Reply-To: <20201029160938.154084-1-irogers@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:9fb]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 603015af-6abe-4dac-6608-08d87c326442
-x-ms-traffictypediagnostic: BYAPR15MB2726:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2726D9AC10E34159D738976AB3140@BYAPR15MB2726.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5ke7IgHHTtVryJkRMMFFn5Fv/km2FnRwyIab5+eTxOfl2oTCmZjM8h6iumqjGzl3vlE7o06M/3QrI1gYHCz3+YsbTrF5OekN2XoWP5tr/j0x3RFJDaYNsCoIZJYqyAC3Z+i79zEMqQn/SQH2953Vve52JqWgw3KJdQbpuf8RDKkc9E3mbmDwntyTSpat+/cB3kvt+Psdq7Yodqg/xKCe7RxzSaRJ5DGh9eg65cj9TMVTYox7Q20nZb1m/EnUPPgKbfqQrYHDVkcj+LGef8agtZsYv8hY5t0vmlUcffaHR2eU7adQFPs52FA9tPfAYb6gVqdsQi631tnGBO17O/gmmxr/s/Ti024avQqd6IErcJUufEHmudmM8tVihrQZ6aH858c3ognn4lFUCnIfR79hSQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(39860400002)(346002)(396003)(71200400001)(478600001)(64756008)(8676002)(4326008)(66946007)(66556008)(316002)(66476007)(54906003)(966005)(2616005)(186003)(53546011)(5660300002)(2906002)(66446008)(76116006)(6506007)(36756003)(6486002)(8936002)(86362001)(83380400001)(33656002)(6916009)(6512007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: PVwujb+YL0NnLvPwKhK68T+6+Tv6R+C3XZPrsI2P2BRJHSeWWaZFaJvnYAAoAN6GJ+rJ3EfDPMh7La2uWxVylry5124yetBlKWThhHSrQU2g5tQAixn3oK26cLfExA03V7j0ZRYS3ESD0oaRolxhQY9f/YmhDQyfQ+D8UBVAhGeXxoeVvjwLqviDDedhvOHv1SjJdqVOMgMPJslG8He96b61NIlEL02uxMDv07oqHpFYZcAziy7l5yVZMKcR/QCYpeWfs6sq61iqcI7rgvIpry9ROajSkOxoBHbcVdiDvsCESCgAfsGQPI8BMxPNTCbv2wUavHAfxIf7/uyR+TpQ7JOnMzw/kFERZeuNl+2u6NcTohl0N0L72q29N8yC4c7Eqt1UTzTW1P8ZXWExNoNLHBqZMqbNATC23Knbx7vqzRwCWNmcfHJoTdBAdSyQb05NAeyFziDT7jPL56L23v4J+2/Fd7Cig/VcenTST85Ra4knTFOTrjJlZ6+zbOuMTdE6C1+DRNMQW2Ay7jGmt03vp2SaqROLMT8e3gHHsNnWpkuuDR1VF67BiHCIsYgGkNHhNoAdLYIXHXOPcba6Yhy8MZX5Op1H1e+aQGZRR7VXcooerax15bWCh7SzY5ndAztSoKfafw52F+YroVo0xO9clCuSfGLPmFFx7zLsxquQWoM=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A721E4E0FAB0344EB41E1F7B834AB9A0@namprd15.prod.outlook.com>
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 603015af-6abe-4dac-6608-08d87c326442
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2020 17:45:14.3358
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /t3Ylasq+/YecZFl/SbPJt0CtjFRCDJAJQQnfcM7V4+xtNImH05FtRg//o9tvUVvdpk0LxrSgM29oLV2xWLcMg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2726
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Kernel Team <kernel-team@fb.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>, <brakmo@fb.com>,
+        <alexanderduyck@fb.com>
+Subject: Re: [bpf-next PATCH 2/4] selftests/bpf: Drop python client/server in
+ favor of threads
+Message-ID: <20201029181258.ezff3vfpar7fxbam@kafai-mbp.dhcp.thefacebook.com>
+References: <160384954046.698509.132709669068189999.stgit@localhost.localdomain>
+ <160384963313.698509.13129692731727238158.stgit@localhost.localdomain>
+ <20201029015115.jotej3wgi3p6yn6u@kafai-mbp>
+ <CAKgT0UcpqQaHOdjcOGybF0pWuZS_ZqYOArQ8kLfvheGFE-ur-w@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKgT0UcpqQaHOdjcOGybF0pWuZS_ZqYOArQ8kLfvheGFE-ur-w@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::4:c696]
+X-ClientProxiedBy: MWHPR02CA0007.namprd02.prod.outlook.com
+ (2603:10b6:300:4b::17) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::4:c696) by MWHPR02CA0007.namprd02.prod.outlook.com (2603:10b6:300:4b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 29 Oct 2020 18:13:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 842cfbe1-4a2a-4bdd-5e0f-08d87c364833
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2261:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2261C2E2727F5B0073ED0F45D5140@BYAPR15MB2261.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ElgD9ybiPE4oT2I9mlmrwShEYTk7w4tA45CApUe4s01uQmDFDytrQiVsMlLMDZpYlpF3jUWNOELgW6lzIV/v+BRbf5vEEkxit5eyhw6ARR4AVDWSeug2V99fgBClWJGtd8UocJmsnpQsI4JKrqcbK+tBMR7CiPSf5STpoHcThNVPUR0Uag65hN4ss23TQgGlegnSxZu2ar4s7KQGEYDyp2V3ZftNqta79hsI9+3Qh+MUAIu9MctAMiS5EaKV2xcx8vHBA7S17w5rmOc9qvm9n4rS8yAZyNEuq8xes6nmp8NW4n+BAh0QW/C2d73BXQJcOhLhfOyXgMCST817niJ+fw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(376002)(366004)(396003)(346002)(54906003)(6666004)(16526019)(186003)(7696005)(66556008)(6916009)(52116002)(1076003)(66946007)(66476007)(8676002)(30864003)(478600001)(9686003)(86362001)(316002)(4326008)(83380400001)(2906002)(55016002)(5660300002)(8936002)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Nq4BGkuruuvUK/pptfCaPcTRTMSGFO02uEX0+dMt3tbhp8a5wGNFryEHYQACfJbtgN4dOWHsgvOaF0qu3bCNT0fBormkbkds1OXk/WnBkvh5Uifr9+X/RWdZW+p5QEUIxoq1cwrEwCYvAYFA1XXKqQ8Gn1BkkoWW35PunYtXbkehTT7VO++Oj4AJDY2e7H9KcyZ6rJ3rHhSHPnD5ON+8RPcZ6oRtcNI811DdaQBagex2y20u2OxP39BPEuXbecENRlMuTGfYaGbitVzc/ggevISN1/dA95mX4WcNojVC0aRQLaK2nlFQL/LX4/TJWAWU14OnVMcErz9bbfxabSBad+m7kSX5/JuzfNYaDSgzjxlWsrU8kYXKurpp/jImwgoAdnULEAUuYbqVigm+NrKA1BL0JPicuCFo4ANTC3MoxKAzm3xAv6E34ICbhLCFdOkmJNlSt1OsMOj93iXp9q6RZqlXz4Zd39+oBOWpHdSlsLRALUWbFPG9+a3WQaVr9wql8q7q3SdgESQp8MMmzktW0TNPAwHay2ilzRjW9EQZLn8Q09c86hpGD2MQ/gRxZ1PoK2s6JLLO3eEM6KSCqFPXxzLKlA9FdS/7qLTNYU3UTyEMMYyCZu9yghzjh23tWOQchf5o+Dz0+XullNl0NqZDVXr1CU3NMoCldmHOZJewl0g=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 842cfbe1-4a2a-4bdd-5e0f-08d87c364833
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2020 18:13:05.7397
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VuhdZBTOsfgAgdS40mg3wCj5d8cvuvQNNwwadqMOIo/LaCeFqHBQ1TdtfrTQRX6a
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2261
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-10-29_11:2020-10-29,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 phishscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- spamscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- clxscore=1011 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010290123
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 malwarescore=0
+ suspectscore=2 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010290127
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Oct 29, 2020 at 09:58:15AM -0700, Alexander Duyck wrote:
+[ ... ]
 
+> > > @@ -43,7 +94,9 @@ int verify_result(const struct tcpbpf_globals *result)
+> > >       EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
+> > >       EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
+> > >       EXPECT_EQ(1, result->num_listen, PRIu32);
+> > > -     EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
+> > > +
+> > > +     /* 3 comes from one listening socket + both ends of the connection */
+> > > +     EXPECT_EQ(3, result->num_close_events, PRIu32);
+> > >
+> > >       return ret;
+> > >  }
+> > > @@ -67,6 +120,52 @@ int verify_sockopt_result(int sock_map_fd)
+> > >       return ret;
+> > >  }
+> > >
+> > > +static int run_test(void)
+> > > +{
+> > > +     int server_fd, client_fd;
+> > > +     void *server_err;
+> > > +     char buf[1000];
+> > > +     pthread_t tid;
+> > > +     int err = -1;
+> > > +     int i;
+> > > +
+> > > +     server_fd = start_server(AF_INET6, SOCK_STREAM, LO_ADDR6, 0, 0);
+> > > +     if (CHECK_FAIL(server_fd < 0))
+> > > +             return err;
+> > > +
+> > > +     pthread_mutex_lock(&server_started_mtx);
+> > > +     if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
+> > > +                                   (void *)&server_fd)))
+> > > +             goto close_server_fd;
+> > > +
+> > > +     pthread_cond_wait(&server_started, &server_started_mtx);
+> > > +     pthread_mutex_unlock(&server_started_mtx);
+> > > +
+> > > +     client_fd = connect_to_fd(server_fd, 0);
+> > > +     if (client_fd < 0)
+> > > +             goto close_server_fd;
+> > > +
+> > > +     for (i = 0; i < 1000; i++)
+> > > +             buf[i] = '+';
+> > > +
+> > > +     if (CHECK_FAIL(send(client_fd, buf, 1000, 0) < 1000))
+> > > +             goto close_client_fd;
+> > > +
+> > > +     if (CHECK_FAIL(recv(client_fd, buf, 500, 0) < 500))
+> > > +             goto close_client_fd;
+> > > +
+> > > +     pthread_join(tid, &server_err);
+> > I think this can be further simplified without starting thread
+> > and do everything in run_test() instead.
+> >
+> > Something like this (uncompiled code):
+> >
+> >         accept_fd = accept(server_fd, NULL, 0);
+> >         send(client_fd, plus_buf, 1000, 0);
+> >         recv(accept_fd, recv_buf, 1000, 0);
+> >         send(accept_fd, dot_buf, 500, 0);
+> >         recv(client_fd, recv_buf, 500, 0);
+> 
+> I can take a look at switching it over.
+> 
+> > > +
+> > > +     err = (int)(long)server_err;
+> > > +     CHECK_FAIL(err);
+> > > +
+> > > +close_client_fd:
+> > > +     close(client_fd);
+> > > +close_server_fd:
+> > > +     close(server_fd);
+> > > +     return err;
+> > > +}
+> > > +
+> > >  void test_tcpbpf_user(void)
+> > >  {
+> > >       const char *file = "test_tcpbpf_kern.o";
+> > > @@ -74,7 +173,6 @@ void test_tcpbpf_user(void)
+> > >       struct tcpbpf_globals g = {0};
+> > >       struct bpf_object *obj;
+> > >       int cg_fd = -1;
+> > > -     int retry = 10;
+> > >       __u32 key = 0;
+> > >       int rv;
+> > >
+> > > @@ -94,11 +192,6 @@ void test_tcpbpf_user(void)
+> > >               goto err;
+> > >       }
+> > >
+> > > -     if (CHECK_FAIL(system("./tcp_server.py"))) {
+> > > -             fprintf(stderr, "FAILED: TCP server\n");
+> > > -             goto err;
+> > > -     }
+> > > -
+> > >       map_fd = bpf_find_map(__func__, obj, "global_map");
+> > >       if (CHECK_FAIL(map_fd < 0))
+> > >               goto err;
+> > > @@ -107,21 +200,17 @@ void test_tcpbpf_user(void)
+> > >       if (CHECK_FAIL(sock_map_fd < 0))
+> > >               goto err;
+> > >
+> > > -retry_lookup:
+> > > +     if (run_test()) {
+> > > +             fprintf(stderr, "FAILED: TCP server\n");
+> > > +             goto err;
+> > > +     }
+> > > +
+> > >       rv = bpf_map_lookup_elem(map_fd, &key, &g);
+> > >       if (CHECK_FAIL(rv != 0)) {
+> > CHECK() is a better one here if it needs to output error message.
+> > The same goes for similar usages in this patch set.
+> >
+> > For the start_server() above which has already logged the error message,
+> > CHECK_FAIL() is good enough.
+> >
+> > >               fprintf(stderr, "FAILED: bpf_map_lookup_elem returns %d\n", rv);
+> > >               goto err;
+> > >       }
+> > >
+> > > -     if (g.num_close_events != EXPECTED_CLOSE_EVENTS && retry--) {
+> > It is good to have a solution to avoid a test depending on some number
+> > of retries.
+> >
+> > After looking at BPF_SOCK_OPS_STATE_CB in test_tcpbpf_kern.c,
+> > it is not clear to me removing python alone is enough to avoid the
+> > race (so the retry--).  One of the sk might still be in TCP_LAST_ACK
+> > instead of TCP_CLOSE.
+> >
+> 
+> After you pointed this out I decided to go back through and do some
+> further testing. After testing this for several thousand iterations it
+> does look like the issue can still happen, it was just significantly
+> less frequent with the threaded approach, but it was still there. So I
+> will go back through and add this back and then fold it into the
+> verify_results function in the third patch. Although I might reduce
+> the wait times as it seems like with the inline approach we only need
+> in the 10s of microseconds instead of 100s for the sockets to close
+> out.
+I think this retry-and-wait can be avoided.  More on this...
 
-> On Oct 29, 2020, at 9:09 AM, Ian Rogers <irogers@google.com> wrote:
->=20
-> If bits is 0, the case when the map is empty, then the >> is the size of
-> the register which is undefined behavior - on x86 it is the same as a
-> shift by 0. Fix by handling the 0 case explicitly when running with
-> address sanitizer.
->=20
-> A variant of this patch was posted previously as:
-> https://lore.kernel.org/lkml/20200508063954.256593-1-irogers@google.com/
->=20
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
-> tools/lib/bpf/hashmap.h | 14 ++++++++++++++
-> 1 file changed, 14 insertions(+)
->=20
-> diff --git a/tools/lib/bpf/hashmap.h b/tools/lib/bpf/hashmap.h
-> index d9b385fe808c..27d0556527d3 100644
-> --- a/tools/lib/bpf/hashmap.h
-> +++ b/tools/lib/bpf/hashmap.h
-> @@ -12,9 +12,23 @@
-> #include <stddef.h>
-> #include <limits.h>
->=20
-> +#ifdef __has_feature
-> +#define HAVE_FEATURE(f) __has_feature(f)
-> +#else
-> +#define HAVE_FEATURE(f) 0
-> +#endif
-> +
-> static inline size_t hash_bits(size_t h, int bits)
-> {
-> 	/* shuffle bits and return requested number of upper bits */
-> +#if defined(ADDRESS_SANITIZER) || HAVE_FEATURE(address_sanitizer)
+> 
+> > Also, when looking closer at BPF_SOCK_OPS_STATE_CB in test_tcpbpf_kern.c,
+> > it seems the map value "gp" is slapped together across multiple
+> > TCP_CLOSE events which may be not easy to understand.
+> >
+> > How about it checks different states: TCP_CLOSE, TCP_LAST_ACK,
+> > and BPF_TCP_FIN_WAIT2.  Each of this state will update its own
+> > values under "gp".  Something like this (only compiler tested on
+> > top of patch 4):
+> >
+> > diff --git i/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c w/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > index 7e92c37976ac..65b247b03dfc 100644
+> > --- i/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > +++ w/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > @@ -90,15 +90,14 @@ static void verify_result(int map_fd, int sock_map_fd)
+> >               result.event_map, expected_events);
+> >
+> >         ASSERT_EQ(result.bytes_received, 501, "bytes_received");
+> > -       ASSERT_EQ(result.bytes_acked, 1002, "bytes_acked");
+> > +       ASSERT_EQ(result.bytes_acked, 1001, "bytes_acked");
+> >         ASSERT_EQ(result.data_segs_in, 1, "data_segs_in");
+> >         ASSERT_EQ(result.data_segs_out, 1, "data_segs_out");
+> >         ASSERT_EQ(result.bad_cb_test_rv, 0x80, "bad_cb_test_rv");
+> >         ASSERT_EQ(result.good_cb_test_rv, 0, "good_cb_test_rv");
+> > -       ASSERT_EQ(result.num_listen, 1, "num_listen");
+> > -
+> > -       /* 3 comes from one listening socket + both ends of the connection */
+> > -       ASSERT_EQ(result.num_close_events, 3, "num_close_events");
+> > +       ASSERT_EQ(result.num_listen_close, 1, "num_listen");
+> > +       ASSERT_EQ(result.num_last_ack, 1, "num_last_ack");
+> > +       ASSERT_EQ(result.num_fin_wait2, 1, "num_fin_wait2");
+> >
+> >         /* check setsockopt for SAVE_SYN */
+> >         key = 0;
+> > diff --git i/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c w/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
+> > index 3e6912e4df3d..2c5ffb50d6e0 100644
+> > --- i/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
+> > +++ w/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
+> > @@ -55,9 +55,11 @@ int bpf_testcb(struct bpf_sock_ops *skops)
+> >  {
+> >         char header[sizeof(struct ipv6hdr) + sizeof(struct tcphdr)];
+> >         struct bpf_sock_ops *reuse = skops;
+> > +       struct tcpbpf_globals *gp;
+> >         struct tcphdr *thdr;
+> >         int good_call_rv = 0;
+> >         int bad_call_rv = 0;
+> > +       __u32 key_zero = 0;
+> >         int save_syn = 1;
+> >         int rv = -1;
+> >         int v = 0;
+> > @@ -155,26 +157,21 @@ int bpf_testcb(struct bpf_sock_ops *skops)
+> >         case BPF_SOCK_OPS_RETRANS_CB:
+> >                 break;
+> >         case BPF_SOCK_OPS_STATE_CB:
+> > -               if (skops->args[1] == BPF_TCP_CLOSE) {
+> > -                       __u32 key = 0;
+> > -                       struct tcpbpf_globals g, *gp;
+> > -
+> > -                       gp = bpf_map_lookup_elem(&global_map, &key);
+> > -                       if (!gp)
+> > -                               break;
+> > -                       g = *gp;
+> > -                       if (skops->args[0] == BPF_TCP_LISTEN) {
+> > -                               g.num_listen++;
+> > -                       } else {
+> > -                               g.total_retrans = skops->total_retrans;
+> > -                               g.data_segs_in = skops->data_segs_in;
+> > -                               g.data_segs_out = skops->data_segs_out;
+> > -                               g.bytes_received = skops->bytes_received;
+> > -                               g.bytes_acked = skops->bytes_acked;
+> > -                       }
+> > -                       g.num_close_events++;
+> > -                       bpf_map_update_elem(&global_map, &key, &g,
+> > -                                           BPF_ANY);
+> > +               gp = bpf_map_lookup_elem(&global_map, &key_zero);
+> > +               if (!gp)
+> > +                       break;
+> > +               if (skops->args[1] == BPF_TCP_CLOSE &&
+> > +                   skops->args[0] == BPF_TCP_LISTEN) {
+> > +                       gp->num_listen_close++;
+> > +               } else if (skops->args[1] == BPF_TCP_LAST_ACK) {
+> > +                       gp->total_retrans = skops->total_retrans;
+> > +                       gp->data_segs_in = skops->data_segs_in;
+> > +                       gp->data_segs_out = skops->data_segs_out;
+> > +                       gp->bytes_received = skops->bytes_received;
+> > +                       gp->bytes_acked = skops->bytes_acked;
+> > +                       gp->num_last_ack++;
+> > +               } else if (skops->args[1] == BPF_TCP_FIN_WAIT2) {
+> > +                       gp->num_fin_wait2++;
+I meant with the above change in "case BPF_SOCK_OPS_STATE_CB".
+The retry-and-wait in tcpbpf_user.c can be avoided.
 
-I am not very familiar with these features. Is address sanitizer same
-as undefined behavior sanitizer (mentioned in previous version)?
+What may still be needed in tcpbpf_user.c is to use shutdown and
+read-zero to ensure the sk has gone through those states before
+calling verify_result().  Something like this [ uncompiled code again :) ]:
 
-> +	/*
-> +	 * If the requested bits =3D=3D 0 avoid undefined behavior from a
-> +	 * greater-than bit width shift right (aka invalid-shift-exponent).
-> +	 */
-> +	if (bits =3D=3D 0)
-> +		return -1;
+        /* Always send FIN from accept_fd first to
+         * ensure it will go through FIN_WAIT_2.
+         */
+        shutdown(accept_fd, SHUT_WR);
+        /* Ensure client_fd gets the FIN */
+        err = read(client_fd, buf, sizeof(buf));
+        if (CHECK(err != 0, "read-after-shutdown(client_fd):",
+                  "err:%d errno:%d\n", err, errno))
+                goto close_accept_fd;
 
-Shall we return 0 or -1 (0xffffffff) here?=20
+        /* FIN sends from client_fd and it must be in LAST_ACK now */
+        shutdown(client_fd, SHUT_WR);
+        /* Ensure accept_fd gets the FIN-ACK.
+         * accept_fd must have passed the FIN_WAIT2.
+         */
+        err = read(accept_fd, buf, sizeof(buf));
+        if (CHECK(err != 0, "read-after-shutdown(accept_fd):",
+                  "err:%d errno:%d\n", err, errno))
+                goto close_accept_fd;
 
-Also, we have HASHMAP_MIN_CAP_BITS =3D=3D 2. Shall we just make sure we
-never feed bits =3D=3D 0 into hash_bits()?
+	close(server_fd);
+	close(accept_fd);
+	close(client_fd);
 
-Thanks,
-Song
+	/* All sk has gone through the states being tested.
+	 * check the results now.
+	 */
+	verify_result(map_fd, sock_map_fd);
 
-
-> +#endif
-> #if (__SIZEOF_SIZE_T__ =3D=3D __SIZEOF_LONG_LONG__)
-> 	/* LP64 case */
-> 	return (h * 11400714819323198485llu) >> (__SIZEOF_LONG_LONG__ * 8 - bits=
-);
-> --=20
-> 2.29.1.341.ge80a0c044ae-goog
->=20
-
+> >                 }
+> >                 break;
+> >         case BPF_SOCK_OPS_TCP_LISTEN_CB:
+> > diff --git i/tools/testing/selftests/bpf/test_tcpbpf.h w/tools/testing/selftests/bpf/test_tcpbpf.h
+> > index 6220b95cbd02..0dec324ba4a6 100644
+> > --- i/tools/testing/selftests/bpf/test_tcpbpf.h
+> > +++ w/tools/testing/selftests/bpf/test_tcpbpf.h
+> > @@ -12,7 +12,8 @@ struct tcpbpf_globals {
+> >         __u32 good_cb_test_rv;
+> >         __u64 bytes_received;
+> >         __u64 bytes_acked;
+> > -       __u32 num_listen;
+> > -       __u32 num_close_events;
+> > +       __u32 num_listen_close;
+> > +       __u32 num_last_ack;
+> > +       __u32 num_fin_wait2;
+> >  };
+> >  #endif
+> 
+> I can look at pulling this in and including it as a patch 5 if you
+> would prefer. If I find any issues I will let you know.
+> 
+> > I also noticed the bytes_received/acked depends on the order of close(),
+> > i.e. always close the accepted fd first.  I think a comment
+> > in the tcpbpf_user.c is good enough for now.
+> 
+> Okay, I can add a comment explaining this.
+> 
+> > [ It does not have to be in this set and it can be done in another
+> >   follow up effort.
+> >   Instead of using a bpf map to store the result, using global
+> >   variables in test_tcpbpf_kern.c will simplify the code further. ]
+> 
+> I assume this comment is about the changes to test_tcpbpf_kern.c? Just
+> want to clarify as I assume this isn't about adding the comment about
+> the socket closing order affecting the bytes_received/acked.
+Right, it is unrelated to the "adding the comment about socket closing order".
+It is about changing test_tcpbpf_kern.c and tcpbpf_user.c to
+use global variables instead of bpf map to store results.
+Again, it can be done later.  This can be used as an example:
+b18c1f0aa477 ("bpf: selftest: Adapt sock_fields test to use skel and global variables")
