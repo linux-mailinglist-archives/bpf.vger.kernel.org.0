@@ -2,426 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD0D29F3E4
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 19:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D3729F428
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 19:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725766AbgJ2SN2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 14:13:28 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29562 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725747AbgJ2SN1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Oct 2020 14:13:27 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09TI9O49015834;
-        Thu, 29 Oct 2020 11:13:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=QMu6yJpCcLo2t8QTwLHAh7ff56Hkbcn5Olyv18963Ug=;
- b=i+kIaNCexeV/St2M3iI4xst/3sQzgF/NpILQ/lKETylilCe7PnA66SgXVFYcJtKgjW7w
- Vz6XAs5rGknFhnpu+L1NOYSaKYkRLOZ55bybaNLCA1cxtzXIueURWgqJoKD15CreEbAo
- 1KohshJbtOUg6vJ6bDPASvWDeqadweIY6F0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 34f0jnakab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 29 Oct 2020 11:13:10 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 29 Oct 2020 11:13:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LAz/dbJbOzGjS0q1/wOLY8YTZVZPmAL3JYkZO04B8VFOyzWAKJ3WVRFjV1lfmXIf84LzCVnWN1Q1oquDERmEXwfwKreqjVSSckusCOpzHUrPU62C61RKVBZ3mS29aee9UHp7qTZVHhTH1/n6WV2A+F4D38Anb+cuk/mazfk1kRBiVRGKObn/Pp9bU2Ihr/5ssQciL5hAR+urAWkvPLQTOqn86gsEa2WxdykHdubX67Nd9taaAn/ktPtvepnHQNKaisb82aJL45Im6E2gDdRtKzQUaeoW5g5+GlzNCA/N/kJwyglkZVGJlvexcSGHgnzYd+pa9Jo2go0BuJ1AY7d58g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMu6yJpCcLo2t8QTwLHAh7ff56Hkbcn5Olyv18963Ug=;
- b=JneTjJjIA+gZKEqLV0HtvKH4Vdgex3Pkhfei8vxKYwryOQ/8z1oIsaHOSoq6j+HDEVU5cuLG/2GcwkTLylfNm0R/2MzvAER2zkZNH3i2HcwbEBUkutf1w9m+XhnItoHMqy8vsiE23CdrUC5skmOc8ANPQd6oOqIaDhReb1IkImpsuoFVCf9102xYDVgPhnSjSGefbx3PFZ2yKRhZE75SoO05yTbwpJLLFEpElgm3MMt4jeaEAWm8xhhWDIeYPivK5d+5JryIkTJpp8vsxV4QAXwwcVaarVrweHHR/8CxxjJmizl4Tu/Ct0KaW89Vqnc+MqReL3da7klHEvR1zBxqPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMu6yJpCcLo2t8QTwLHAh7ff56Hkbcn5Olyv18963Ug=;
- b=k5Ult2HxSkxALDvCmQvy8OPVDDFHyizCLNPjC48a90hDVW3+2oCeNCtAtdsmQ7vZst+nxFT5/89pj/5eTWYXx+uVvxx18zAhEYvoIsXkBDOnEHUudO0yE4QbhmMpecBPdZ/52h/XaLm/WpZrS2j1+o1hqTuGhmND0F/FtWhzg4w=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2261.namprd15.prod.outlook.com (2603:10b6:a02:8e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Thu, 29 Oct
- 2020 18:13:05 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.027; Thu, 29 Oct 2020
- 18:13:05 +0000
-Date:   Thu, 29 Oct 2020 11:12:58 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>, <brakmo@fb.com>,
-        <alexanderduyck@fb.com>
-Subject: Re: [bpf-next PATCH 2/4] selftests/bpf: Drop python client/server in
- favor of threads
-Message-ID: <20201029181258.ezff3vfpar7fxbam@kafai-mbp.dhcp.thefacebook.com>
-References: <160384954046.698509.132709669068189999.stgit@localhost.localdomain>
- <160384963313.698509.13129692731727238158.stgit@localhost.localdomain>
- <20201029015115.jotej3wgi3p6yn6u@kafai-mbp>
- <CAKgT0UcpqQaHOdjcOGybF0pWuZS_ZqYOArQ8kLfvheGFE-ur-w@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UcpqQaHOdjcOGybF0pWuZS_ZqYOArQ8kLfvheGFE-ur-w@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::4:c696]
-X-ClientProxiedBy: MWHPR02CA0007.namprd02.prod.outlook.com
- (2603:10b6:300:4b::17) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1725870AbgJ2Sg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 14:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbgJ2Sg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 14:36:26 -0400
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C45120759;
+        Thu, 29 Oct 2020 18:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603996584;
+        bh=1zNo5J90tuLOYAACGimlMDt5iKknN7hXSGTCcYmDCiM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tT8YuBPg94R1AMuklLBpbjwaTNczGoEM9mqH9LbisHpUYKxQ911wExDiYMrCcw5k/
+         GycHpts+RxUcZ8bfHu5i0ODCx7goNSFztIiiEjlNcmUUQwgOIWjn+02b/lesWItqz6
+         qThxZb0IutBpUdTBjVqekP1nMrbQDz49GkHsvbws=
+Received: by mail-lf1-f47.google.com with SMTP id b1so4550604lfp.11;
+        Thu, 29 Oct 2020 11:36:24 -0700 (PDT)
+X-Gm-Message-State: AOAM532hSDiDiQdAHiBWJXdVZJNxYxh9iDXn8RXnADtj+Bd6Npg/HAQY
+        UOZqYD8QRimqDZHouyxUEF/H2XueQkscYsSWTvk=
+X-Google-Smtp-Source: ABdhPJzgHlLM/3uYT1Smzn4i22TwEX9JYWMD85Bsd/BGgFJTEI5Sg28ykPy+82rzy5W5XB0SirLw8b9Bbiz9Ex+LWNw=
+X-Received: by 2002:a19:804d:: with SMTP id b74mr2038802lfd.55.1603996582303;
+ Thu, 29 Oct 2020 11:36:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::4:c696) by MWHPR02CA0007.namprd02.prod.outlook.com (2603:10b6:300:4b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 29 Oct 2020 18:13:04 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 842cfbe1-4a2a-4bdd-5e0f-08d87c364833
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2261:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2261C2E2727F5B0073ED0F45D5140@BYAPR15MB2261.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ElgD9ybiPE4oT2I9mlmrwShEYTk7w4tA45CApUe4s01uQmDFDytrQiVsMlLMDZpYlpF3jUWNOELgW6lzIV/v+BRbf5vEEkxit5eyhw6ARR4AVDWSeug2V99fgBClWJGtd8UocJmsnpQsI4JKrqcbK+tBMR7CiPSf5STpoHcThNVPUR0Uag65hN4ss23TQgGlegnSxZu2ar4s7KQGEYDyp2V3ZftNqta79hsI9+3Qh+MUAIu9MctAMiS5EaKV2xcx8vHBA7S17w5rmOc9qvm9n4rS8yAZyNEuq8xes6nmp8NW4n+BAh0QW/C2d73BXQJcOhLhfOyXgMCST817niJ+fw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(376002)(366004)(396003)(346002)(54906003)(6666004)(16526019)(186003)(7696005)(66556008)(6916009)(52116002)(1076003)(66946007)(66476007)(8676002)(30864003)(478600001)(9686003)(86362001)(316002)(4326008)(83380400001)(2906002)(55016002)(5660300002)(8936002)(6506007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Nq4BGkuruuvUK/pptfCaPcTRTMSGFO02uEX0+dMt3tbhp8a5wGNFryEHYQACfJbtgN4dOWHsgvOaF0qu3bCNT0fBormkbkds1OXk/WnBkvh5Uifr9+X/RWdZW+p5QEUIxoq1cwrEwCYvAYFA1XXKqQ8Gn1BkkoWW35PunYtXbkehTT7VO++Oj4AJDY2e7H9KcyZ6rJ3rHhSHPnD5ON+8RPcZ6oRtcNI811DdaQBagex2y20u2OxP39BPEuXbecENRlMuTGfYaGbitVzc/ggevISN1/dA95mX4WcNojVC0aRQLaK2nlFQL/LX4/TJWAWU14OnVMcErz9bbfxabSBad+m7kSX5/JuzfNYaDSgzjxlWsrU8kYXKurpp/jImwgoAdnULEAUuYbqVigm+NrKA1BL0JPicuCFo4ANTC3MoxKAzm3xAv6E34ICbhLCFdOkmJNlSt1OsMOj93iXp9q6RZqlXz4Zd39+oBOWpHdSlsLRALUWbFPG9+a3WQaVr9wql8q7q3SdgESQp8MMmzktW0TNPAwHay2ilzRjW9EQZLn8Q09c86hpGD2MQ/gRxZ1PoK2s6JLLO3eEM6KSCqFPXxzLKlA9FdS/7qLTNYU3UTyEMMYyCZu9yghzjh23tWOQchf5o+Dz0+XullNl0NqZDVXr1CU3NMoCldmHOZJewl0g=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 842cfbe1-4a2a-4bdd-5e0f-08d87c364833
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Oct 2020 18:13:05.7397
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VuhdZBTOsfgAgdS40mg3wCj5d8cvuvQNNwwadqMOIo/LaCeFqHBQ1TdtfrTQRX6a
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2261
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-10-29_11:2020-10-29,2020-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- adultscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 malwarescore=0
- suspectscore=2 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010290127
-X-FB-Internal: deliver
+References: <20201029111730.6881-1-david.verbeiren@tessares.net>
+In-Reply-To: <20201029111730.6881-1-david.verbeiren@tessares.net>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 29 Oct 2020 11:36:10 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7o7D-6VW-Z3Umdw8z-7Ab+kkZrJf2EU9nCDFh0Xbn7sA@mail.gmail.com>
+Message-ID: <CAPhsuW7o7D-6VW-Z3Umdw8z-7Ab+kkZrJf2EU9nCDFh0Xbn7sA@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftest/bpf: Validate initial values of per-cpu hash elems
+To:     David Verbeiren <david.verbeiren@tessares.net>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 09:58:15AM -0700, Alexander Duyck wrote:
-[ ... ]
+On Thu, Oct 29, 2020 at 4:19 AM David Verbeiren
+<david.verbeiren@tessares.net> wrote:
+>
+> Tests that when per-cpu hash map or LRU hash map elements are
+> re-used as a result of a bpf program inserting elements, the
+> element values for the other CPUs than the one executing the
+> BPF code are reset to 0.
+>
+> This validates the fix proposed in:
+> https://lkml.kernel.org/bpf/20201027221324.27894-1-david.verbeiren@tessares.net/
+>
+> Change-Id: I38bc7b3744ed40704a7b2cc6efa179fb344c4bee
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
+> ---
+>  .../selftests/bpf/prog_tests/map_init.c       | 204 ++++++++++++++++++
+>  1 file changed, 204 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
+> new file mode 100644
+> index 000000000000..9640cf925908
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
+> @@ -0,0 +1,204 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright (c) 2020 Tessares SA <http://www.tessares.net>
+> +
+> +#include <test_progs.h>
+> +
+> +#define TEST_VALUE 0x1234
+> +
+> +static int nr_cpus;
+> +static int duration;
+> +static char bpf_log_buf[BPF_LOG_BUF_SIZE];
+> +
+> +typedef unsigned long long map_key_t;
+> +typedef unsigned long long map_value_t;
+> +typedef struct {
+> +       map_value_t v; /* padding */
+> +} __bpf_percpu_val_align pcpu_map_value_t;
+> +
+> +/* executes bpf program that updates map with key, value */
+> +static int bpf_prog_insert_elem(int fd, map_key_t key, map_value_t value)
+> +{
+> +       struct bpf_load_program_attr prog;
+> +       struct bpf_insn insns[] = {
+> +               BPF_LD_IMM64(BPF_REG_8, key),
+> +               BPF_LD_IMM64(BPF_REG_9, value),
+> +
+> +               /* update: R1=fd, R2=&key, R3=&value, R4=flags */
+> +               BPF_LD_MAP_FD(BPF_REG_1, fd),
+> +               BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
+> +               BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
+> +               BPF_STX_MEM(BPF_DW, BPF_REG_2, BPF_REG_8, 0),
+> +               BPF_MOV64_REG(BPF_REG_3, BPF_REG_2),
+> +               BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, -8),
+> +               BPF_STX_MEM(BPF_DW, BPF_REG_3, BPF_REG_9, 0),
+> +               BPF_MOV64_IMM(BPF_REG_4, 0),
+> +               BPF_EMIT_CALL(BPF_FUNC_map_update_elem),
+> +
+> +               BPF_MOV64_IMM(BPF_REG_0, 0),
+> +               BPF_EXIT_INSN(),
+> +       };
 
-> > > @@ -43,7 +94,9 @@ int verify_result(const struct tcpbpf_globals *result)
-> > >       EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
-> > >       EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
-> > >       EXPECT_EQ(1, result->num_listen, PRIu32);
-> > > -     EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
-> > > +
-> > > +     /* 3 comes from one listening socket + both ends of the connection */
-> > > +     EXPECT_EQ(3, result->num_close_events, PRIu32);
-> > >
-> > >       return ret;
-> > >  }
-> > > @@ -67,6 +120,52 @@ int verify_sockopt_result(int sock_map_fd)
-> > >       return ret;
-> > >  }
-> > >
-> > > +static int run_test(void)
-> > > +{
-> > > +     int server_fd, client_fd;
-> > > +     void *server_err;
-> > > +     char buf[1000];
-> > > +     pthread_t tid;
-> > > +     int err = -1;
-> > > +     int i;
-> > > +
-> > > +     server_fd = start_server(AF_INET6, SOCK_STREAM, LO_ADDR6, 0, 0);
-> > > +     if (CHECK_FAIL(server_fd < 0))
-> > > +             return err;
-> > > +
-> > > +     pthread_mutex_lock(&server_started_mtx);
-> > > +     if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
-> > > +                                   (void *)&server_fd)))
-> > > +             goto close_server_fd;
-> > > +
-> > > +     pthread_cond_wait(&server_started, &server_started_mtx);
-> > > +     pthread_mutex_unlock(&server_started_mtx);
-> > > +
-> > > +     client_fd = connect_to_fd(server_fd, 0);
-> > > +     if (client_fd < 0)
-> > > +             goto close_server_fd;
-> > > +
-> > > +     for (i = 0; i < 1000; i++)
-> > > +             buf[i] = '+';
-> > > +
-> > > +     if (CHECK_FAIL(send(client_fd, buf, 1000, 0) < 1000))
-> > > +             goto close_client_fd;
-> > > +
-> > > +     if (CHECK_FAIL(recv(client_fd, buf, 500, 0) < 500))
-> > > +             goto close_client_fd;
-> > > +
-> > > +     pthread_join(tid, &server_err);
-> > I think this can be further simplified without starting thread
-> > and do everything in run_test() instead.
-> >
-> > Something like this (uncompiled code):
-> >
-> >         accept_fd = accept(server_fd, NULL, 0);
-> >         send(client_fd, plus_buf, 1000, 0);
-> >         recv(accept_fd, recv_buf, 1000, 0);
-> >         send(accept_fd, dot_buf, 500, 0);
-> >         recv(client_fd, recv_buf, 500, 0);
-> 
-> I can take a look at switching it over.
-> 
-> > > +
-> > > +     err = (int)(long)server_err;
-> > > +     CHECK_FAIL(err);
-> > > +
-> > > +close_client_fd:
-> > > +     close(client_fd);
-> > > +close_server_fd:
-> > > +     close(server_fd);
-> > > +     return err;
-> > > +}
-> > > +
-> > >  void test_tcpbpf_user(void)
-> > >  {
-> > >       const char *file = "test_tcpbpf_kern.o";
-> > > @@ -74,7 +173,6 @@ void test_tcpbpf_user(void)
-> > >       struct tcpbpf_globals g = {0};
-> > >       struct bpf_object *obj;
-> > >       int cg_fd = -1;
-> > > -     int retry = 10;
-> > >       __u32 key = 0;
-> > >       int rv;
-> > >
-> > > @@ -94,11 +192,6 @@ void test_tcpbpf_user(void)
-> > >               goto err;
-> > >       }
-> > >
-> > > -     if (CHECK_FAIL(system("./tcp_server.py"))) {
-> > > -             fprintf(stderr, "FAILED: TCP server\n");
-> > > -             goto err;
-> > > -     }
-> > > -
-> > >       map_fd = bpf_find_map(__func__, obj, "global_map");
-> > >       if (CHECK_FAIL(map_fd < 0))
-> > >               goto err;
-> > > @@ -107,21 +200,17 @@ void test_tcpbpf_user(void)
-> > >       if (CHECK_FAIL(sock_map_fd < 0))
-> > >               goto err;
-> > >
-> > > -retry_lookup:
-> > > +     if (run_test()) {
-> > > +             fprintf(stderr, "FAILED: TCP server\n");
-> > > +             goto err;
-> > > +     }
-> > > +
-> > >       rv = bpf_map_lookup_elem(map_fd, &key, &g);
-> > >       if (CHECK_FAIL(rv != 0)) {
-> > CHECK() is a better one here if it needs to output error message.
-> > The same goes for similar usages in this patch set.
-> >
-> > For the start_server() above which has already logged the error message,
-> > CHECK_FAIL() is good enough.
-> >
-> > >               fprintf(stderr, "FAILED: bpf_map_lookup_elem returns %d\n", rv);
-> > >               goto err;
-> > >       }
-> > >
-> > > -     if (g.num_close_events != EXPECTED_CLOSE_EVENTS && retry--) {
-> > It is good to have a solution to avoid a test depending on some number
-> > of retries.
-> >
-> > After looking at BPF_SOCK_OPS_STATE_CB in test_tcpbpf_kern.c,
-> > it is not clear to me removing python alone is enough to avoid the
-> > race (so the retry--).  One of the sk might still be in TCP_LAST_ACK
-> > instead of TCP_CLOSE.
-> >
-> 
-> After you pointed this out I decided to go back through and do some
-> further testing. After testing this for several thousand iterations it
-> does look like the issue can still happen, it was just significantly
-> less frequent with the threaded approach, but it was still there. So I
-> will go back through and add this back and then fold it into the
-> verify_results function in the third patch. Although I might reduce
-> the wait times as it seems like with the inline approach we only need
-> in the 10s of microseconds instead of 100s for the sockets to close
-> out.
-I think this retry-and-wait can be avoided.  More on this...
+Impressive hand written assembly. ;-) I would recommend using skeleton
+for future work. For example:
 
-> 
-> > Also, when looking closer at BPF_SOCK_OPS_STATE_CB in test_tcpbpf_kern.c,
-> > it seems the map value "gp" is slapped together across multiple
-> > TCP_CLOSE events which may be not easy to understand.
-> >
-> > How about it checks different states: TCP_CLOSE, TCP_LAST_ACK,
-> > and BPF_TCP_FIN_WAIT2.  Each of this state will update its own
-> > values under "gp".  Something like this (only compiler tested on
-> > top of patch 4):
-> >
-> > diff --git i/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c w/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > index 7e92c37976ac..65b247b03dfc 100644
-> > --- i/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > +++ w/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > @@ -90,15 +90,14 @@ static void verify_result(int map_fd, int sock_map_fd)
-> >               result.event_map, expected_events);
-> >
-> >         ASSERT_EQ(result.bytes_received, 501, "bytes_received");
-> > -       ASSERT_EQ(result.bytes_acked, 1002, "bytes_acked");
-> > +       ASSERT_EQ(result.bytes_acked, 1001, "bytes_acked");
-> >         ASSERT_EQ(result.data_segs_in, 1, "data_segs_in");
-> >         ASSERT_EQ(result.data_segs_out, 1, "data_segs_out");
-> >         ASSERT_EQ(result.bad_cb_test_rv, 0x80, "bad_cb_test_rv");
-> >         ASSERT_EQ(result.good_cb_test_rv, 0, "good_cb_test_rv");
-> > -       ASSERT_EQ(result.num_listen, 1, "num_listen");
-> > -
-> > -       /* 3 comes from one listening socket + both ends of the connection */
-> > -       ASSERT_EQ(result.num_close_events, 3, "num_close_events");
-> > +       ASSERT_EQ(result.num_listen_close, 1, "num_listen");
-> > +       ASSERT_EQ(result.num_last_ack, 1, "num_last_ack");
-> > +       ASSERT_EQ(result.num_fin_wait2, 1, "num_fin_wait2");
-> >
-> >         /* check setsockopt for SAVE_SYN */
-> >         key = 0;
-> > diff --git i/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c w/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-> > index 3e6912e4df3d..2c5ffb50d6e0 100644
-> > --- i/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-> > +++ w/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-> > @@ -55,9 +55,11 @@ int bpf_testcb(struct bpf_sock_ops *skops)
-> >  {
-> >         char header[sizeof(struct ipv6hdr) + sizeof(struct tcphdr)];
-> >         struct bpf_sock_ops *reuse = skops;
-> > +       struct tcpbpf_globals *gp;
-> >         struct tcphdr *thdr;
-> >         int good_call_rv = 0;
-> >         int bad_call_rv = 0;
-> > +       __u32 key_zero = 0;
-> >         int save_syn = 1;
-> >         int rv = -1;
-> >         int v = 0;
-> > @@ -155,26 +157,21 @@ int bpf_testcb(struct bpf_sock_ops *skops)
-> >         case BPF_SOCK_OPS_RETRANS_CB:
-> >                 break;
-> >         case BPF_SOCK_OPS_STATE_CB:
-> > -               if (skops->args[1] == BPF_TCP_CLOSE) {
-> > -                       __u32 key = 0;
-> > -                       struct tcpbpf_globals g, *gp;
-> > -
-> > -                       gp = bpf_map_lookup_elem(&global_map, &key);
-> > -                       if (!gp)
-> > -                               break;
-> > -                       g = *gp;
-> > -                       if (skops->args[0] == BPF_TCP_LISTEN) {
-> > -                               g.num_listen++;
-> > -                       } else {
-> > -                               g.total_retrans = skops->total_retrans;
-> > -                               g.data_segs_in = skops->data_segs_in;
-> > -                               g.data_segs_out = skops->data_segs_out;
-> > -                               g.bytes_received = skops->bytes_received;
-> > -                               g.bytes_acked = skops->bytes_acked;
-> > -                       }
-> > -                       g.num_close_events++;
-> > -                       bpf_map_update_elem(&global_map, &key, &g,
-> > -                                           BPF_ANY);
-> > +               gp = bpf_map_lookup_elem(&global_map, &key_zero);
-> > +               if (!gp)
-> > +                       break;
-> > +               if (skops->args[1] == BPF_TCP_CLOSE &&
-> > +                   skops->args[0] == BPF_TCP_LISTEN) {
-> > +                       gp->num_listen_close++;
-> > +               } else if (skops->args[1] == BPF_TCP_LAST_ACK) {
-> > +                       gp->total_retrans = skops->total_retrans;
-> > +                       gp->data_segs_in = skops->data_segs_in;
-> > +                       gp->data_segs_out = skops->data_segs_out;
-> > +                       gp->bytes_received = skops->bytes_received;
-> > +                       gp->bytes_acked = skops->bytes_acked;
-> > +                       gp->num_last_ack++;
-> > +               } else if (skops->args[1] == BPF_TCP_FIN_WAIT2) {
-> > +                       gp->num_fin_wait2++;
-I meant with the above change in "case BPF_SOCK_OPS_STATE_CB".
-The retry-and-wait in tcpbpf_user.c can be avoided.
+    BPF program: selftests/bpf/progs/bpf_iter_bpf_map.c
+    Use the program in tests:
+selftests/bpf/prog_tests/bpf_iter.c:#include "bpf_iter_bpf_map.skel.h"
 
-What may still be needed in tcpbpf_user.c is to use shutdown and
-read-zero to ensure the sk has gone through those states before
-calling verify_result().  Something like this [ uncompiled code again :) ]:
 
-        /* Always send FIN from accept_fd first to
-         * ensure it will go through FIN_WAIT_2.
-         */
-        shutdown(accept_fd, SHUT_WR);
-        /* Ensure client_fd gets the FIN */
-        err = read(client_fd, buf, sizeof(buf));
-        if (CHECK(err != 0, "read-after-shutdown(client_fd):",
-                  "err:%d errno:%d\n", err, errno))
-                goto close_accept_fd;
+> +       char buf[64] = {};
+> +       int pfd, err;
+> +       __u32 retval = 0;
+> +
+> +       memset(&prog, 0, sizeof(prog));
+> +       prog.prog_type = BPF_PROG_TYPE_SCHED_CLS;
+> +       prog.insns = insns;
+> +       prog.insns_cnt = ARRAY_SIZE(insns);
+> +       prog.license = "GPL";
+> +
+> +       pfd = bpf_load_program_xattr(&prog, bpf_log_buf, BPF_LOG_BUF_SIZE);
+> +       if (CHECK(pfd < 0, "bpf_load_program_xattr", "failed: %s\n%s\n",
+> +                 strerror(errno), bpf_log_buf))
+> +               return -1;
+> +
+> +       err = bpf_prog_test_run(pfd, 1, buf, sizeof(buf), NULL, NULL,
+> +                               &retval, NULL);
+> +       if (CHECK(err || retval, "bpf_prog_test_run",
+> +                 "err=%d retval=%d errno=%d\n", err, retval, errno))
+> +               err = -1;
+> +
+> +       close(pfd);
+> +
+> +       return err;
+> +}
+> +
+> +static int check_values_one_cpu(pcpu_map_value_t *value, map_value_t expected)
+> +{
+> +       int i, nzCnt = 0;
+> +       map_value_t val;
+> +
+> +       for (i = 0; i < nr_cpus; i++) {
+> +               val = bpf_percpu(value, i);
+> +               if (val) {
+> +                       if (val != expected) {
+> +                               PRINT_FAIL("Unexpected value (cpu %d): 0x%llx\n",
+> +                                          i, val);
 
-        /* FIN sends from client_fd and it must be in LAST_ACK now */
-        shutdown(client_fd, SHUT_WR);
-        /* Ensure accept_fd gets the FIN-ACK.
-         * accept_fd must have passed the FIN_WAIT2.
-         */
-        err = read(accept_fd, buf, sizeof(buf));
-        if (CHECK(err != 0, "read-after-shutdown(accept_fd):",
-                  "err:%d errno:%d\n", err, errno))
-                goto close_accept_fd;
+I guess we can also use CHECK() here?
 
-	close(server_fd);
-	close(accept_fd);
-	close(client_fd);
+> +                               return -1;
+> +                       }
+[...]
 
-	/* All sk has gone through the states being tested.
-	 * check the results now.
-	 */
-	verify_result(map_fd, sock_map_fd);
+> +
+> +       /* delete key=1 element so it will later be re-used*/
+> +       key = 1;
+> +       err = bpf_map_delete_elem(map_fd, &key);
+> +       if (CHECK(err, "bpf_map_delete_elem", "failed: %s\n", strerror(errno)))
+> +               goto error_map;
+> +
+> +       /* run bpf prog that inserts new elem, re-using the slot just freed */
+> +       err = bpf_prog_insert_elem(map_fd, key, TEST_VALUE);
+> +       if (!ASSERT_OK(err, "bpf_prog_insert_elem"))
+> +               goto error_map;
 
-> >                 }
-> >                 break;
-> >         case BPF_SOCK_OPS_TCP_LISTEN_CB:
-> > diff --git i/tools/testing/selftests/bpf/test_tcpbpf.h w/tools/testing/selftests/bpf/test_tcpbpf.h
-> > index 6220b95cbd02..0dec324ba4a6 100644
-> > --- i/tools/testing/selftests/bpf/test_tcpbpf.h
-> > +++ w/tools/testing/selftests/bpf/test_tcpbpf.h
-> > @@ -12,7 +12,8 @@ struct tcpbpf_globals {
-> >         __u32 good_cb_test_rv;
-> >         __u64 bytes_received;
-> >         __u64 bytes_acked;
-> > -       __u32 num_listen;
-> > -       __u32 num_close_events;
-> > +       __u32 num_listen_close;
-> > +       __u32 num_last_ack;
-> > +       __u32 num_fin_wait2;
-> >  };
-> >  #endif
-> 
-> I can look at pulling this in and including it as a patch 5 if you
-> would prefer. If I find any issues I will let you know.
-> 
-> > I also noticed the bytes_received/acked depends on the order of close(),
-> > i.e. always close the accepted fd first.  I think a comment
-> > in the tcpbpf_user.c is good enough for now.
-> 
-> Okay, I can add a comment explaining this.
-> 
-> > [ It does not have to be in this set and it can be done in another
-> >   follow up effort.
-> >   Instead of using a bpf map to store the result, using global
-> >   variables in test_tcpbpf_kern.c will simplify the code further. ]
-> 
-> I assume this comment is about the changes to test_tcpbpf_kern.c? Just
-> want to clarify as I assume this isn't about adding the comment about
-> the socket closing order affecting the bytes_received/acked.
-Right, it is unrelated to the "adding the comment about socket closing order".
-It is about changing test_tcpbpf_kern.c and tcpbpf_user.c to
-use global variables instead of bpf map to store results.
-Again, it can be done later.  This can be used as an example:
-b18c1f0aa477 ("bpf: selftest: Adapt sock_fields test to use skel and global variables")
+What's the reason to use ASSERT_OK() instead of CHECK()?
+
+> +
+> +       /* check that key=1 was re-created by bpf prog */
+> +       err = bpf_map_lookup_elem(map_fd, &key, value);
+> +       if (CHECK(err, "bpf_map_lookup_elem", "failed: %s\n", strerror(errno)))
+> +               goto error_map;
+> +
+> +       /* and has expected value for just a single CPU, 0 for all others */
+> +       check_values_one_cpu(value, TEST_VALUE);
+> +
+> +error_map:
+> +       close(map_fd);
+> +}
+> +
+> +/* Add key=1 and key=2 elems with values set for all CPUs
+> + * Run bpf prog that inserts new key=3 elem
+> + *   (only for current cpu; other cpus should have initial value = 0)
+> + * Lookup Key=1 and check value is as expected for all CPUs
+> + */
+> +static void test_pcpu_lru_map_init(void)
+> +{
+> +       pcpu_map_value_t value[nr_cpus];
+> +       int map_fd, err;
+> +       map_key_t key;
+> +
+> +       /* Set up LRU map with 2 elements, values filled for all CPUs.
+> +        * With these 2 elements, the LRU map is full
+> +        */
+> +       map_fd = map_setup(BPF_MAP_TYPE_LRU_PERCPU_HASH, 2, 2);
+> +       if (CHECK(map_fd < 0, "map_setup", "failed\n"))
+> +               return;
+> +
+> +       /* run bpf prog that inserts new key=3 element, re-using LRU slot */
+> +       key = 3;
+> +       err = bpf_prog_insert_elem(map_fd, key, TEST_VALUE);
+> +       if (!ASSERT_OK(err, "bpf_prog_insert_elem"))
+> +               goto error_map;
+
+ditto
+
+> +
+> +       /* check that key=3 present */
+> +       err = bpf_map_lookup_elem(map_fd, &key, value);
+> +       if (CHECK(err, "bpf_map_lookup_elem", "failed: %s\n", strerror(errno)))
+> +               goto error_map;
+> +
+> +       /* and has expected value for just a single CPU, 0 for all others */
+> +       check_values_one_cpu(value, TEST_VALUE);
+> +
+> +error_map:
+> +       close(map_fd);
+> +}
+> +
+> +void test_map_init(void)
+> +{
+> +       nr_cpus = bpf_num_possible_cpus();
+> +       if (CHECK(nr_cpus <= 1, "nr_cpus", "> 1 needed for this test"))
+> +               return;
+
+Instead of failing the test, let's skip the tests with something like:
+
+                printf("%s:SKIP: >1 cpu needed for this test\n", __func__);
+                test__skip();
+
+> +
+> +       if (test__start_subtest("pcpu_map_init"))
+> +               test_pcpu_map_init();
+> +       if (test__start_subtest("pcpu_lru_map_init"))
+> +               test_pcpu_lru_map_init();
+> +}
+> --
+> 2.29.0
+>
