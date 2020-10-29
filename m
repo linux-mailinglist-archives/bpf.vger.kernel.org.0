@@ -2,174 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA14629E2C6
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 03:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC60D29E3F3
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 08:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726886AbgJ2CiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 22:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729588AbgJ2Cgi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 22:36:38 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21470C0613CF;
-        Wed, 28 Oct 2020 19:36:38 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id o70so955518ybc.1;
-        Wed, 28 Oct 2020 19:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TXhexRQYTJZaX12a+CEFo2ey4jNoNUVcsefrRM8fqb0=;
-        b=morPS1rKmVmwcJZK82tUO/cgv+bWnRoUD5LCKu12VeiyBhwMyYiT/k2BdwrrcmjGhz
-         +U/8lLskiF+AixIQCvnaIJwagnQfnsYSksvdg+sIBAqZibtRcx5sG3f8+qS5vURHY51j
-         aQqoTCAtfVLBjuT4TFVf7uXd2TSEzMkNFCXFqaOza7rUkpK0eAJhIDCLLQE6+MjhOf7V
-         qI4a/tjFFMZqcXlisvTW4ezQ2bPW0GHFDWuubqcYHZjG/NWcBrT1ysyFxjdo2SxVNA4J
-         xvB+LG+6ZVnQztxOkr7CpWdPhI6eamK6eBMiFrDICMyHAGH+V4al5u3LjmSJ8Xopoa3R
-         h0/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TXhexRQYTJZaX12a+CEFo2ey4jNoNUVcsefrRM8fqb0=;
-        b=Gks9vYFqW9J4soza1oF2BTmk1fv36SCDLNDKZdVZDRXe3MaJa2Alzw3LAa92J1AojC
-         fOrTe4z92m3/M8y1lWuwrvWn1TNJlupf20wVa0/j3hnC88TtjTLNzOf+OqE8u8I4vUIy
-         jeh74DcJeUfDB4mx0EOECYmwqHkOsUxPRBAUpdsMWrTvexwEtafqVZUjUBFoLACBAoez
-         ZJB108GHeuzfmRXm1WSid4nBqRrDx9V/s6c+G3NOviyxQ6AC376sewqvZO6ifxrHBZBl
-         RX/wnXtVI0MPRUotpiAYcOIhhJNHEEPjV+65mdFmKuhDOtMV3dIRmqaB+fVPq+GzA0PY
-         SDnA==
-X-Gm-Message-State: AOAM5333VdCOPLAtylg8exLxV+zUSVweBvYacvmaw7US0hpo8vOZKiee
-        3fypZebWN2Yr5KBYUiZq3cYphc72dTIbSUmk8hM=
-X-Google-Smtp-Source: ABdhPJwtHZSw9Q6Sx8ODeo4QZeyM/3Jcz311so7MhMZni52xhelWxjqGEyNMkL1bEjcuiEGd92sshWoquuR8cYhkvvw=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr3207159ybk.260.1603938997408;
- Wed, 28 Oct 2020 19:36:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201028200952.7869-1-dev@der-flo.net>
-In-Reply-To: <20201028200952.7869-1-dev@der-flo.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Oct 2020 19:36:26 -0700
-Message-ID: <CAEf4BzZbtdgK-6y1cX6U2_sV9T6QHO=fAj2j0L_CtuqW0DZ1Rw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4] bpf: Lift hashtab key_size limit
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726709AbgJ2HYd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 03:24:33 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:46036 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726704AbgJ2HYY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 03:24:24 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 09T4F1CJ016347;
+        Thu, 29 Oct 2020 05:15:01 +0100
+Date:   Thu, 29 Oct 2020 05:15:01 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Alon, Liran" <liran@amazon.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dan Aloni <dan@kernelim.com>, bpf <bpf@vger.kernel.org>,
+        security@kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        john fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH] btf: Expose kernel BTF only to tasks with CAP_PERFMON
+Message-ID: <20201029041501.GA16341@1wt.eu>
+References: <20201028203853.2412751-1-dan@kernelim.com>
+ <CAEf4BzZxabLCaNj0E5UEcnrEY25ujSLOzTbYRXneJy2HrY64JA@mail.gmail.com>
+ <3bccbaac-ec63-bc06-0e4b-5501c0788822@amazon.com>
+ <20201028230602.4g7guvb5nzgosgwb@ast-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201028230602.4g7guvb5nzgosgwb@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 3:21 PM Florian Lehner <dev@der-flo.net> wrote:
->
-> Currently key_size of hashtab is limited to MAX_BPF_STACK.
-> As the key of hashtab can also be a value from a per cpu map it can be
-> larger than MAX_BPF_STACK.
->
-> The use-case for this patch originates to implement allow/disallow
-> lists for files and file paths. The maximum length of file paths is
-> defined by PATH_MAX with 4096 chars including nul.
-> This limit exceeds MAX_BPF_STACK.
->
-> Changelog:
->
-> v4:
->  - Utilize BPF skeleton in tests
->  - Rebase
->
-> v3:
->  - Rebase
->
-> v2:
->  - Add a test for bpf side
->
-> Signed-off-by: Florian Lehner <dev@der-flo.net>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  kernel/bpf/hashtab.c                          | 16 ++-----
->  .../selftests/bpf/prog_tests/hash_large_key.c | 43 +++++++++++++++++
->  .../selftests/bpf/progs/test_hash_large_key.c | 46 +++++++++++++++++++
->  tools/testing/selftests/bpf/test_maps.c       |  3 +-
->  4 files changed, 96 insertions(+), 12 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
->
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 1815e97d4c9c..fff7cd05b9e3 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -390,17 +390,11 @@ static int htab_map_alloc_check(union bpf_attr *attr)
->             attr->value_size == 0)
->                 return -EINVAL;
->
-> -       if (attr->key_size > MAX_BPF_STACK)
-> -               /* eBPF programs initialize keys on stack, so they cannot be
-> -                * larger than max stack size
-> -                */
-> -               return -E2BIG;
-> -
-> -       if (attr->value_size >= KMALLOC_MAX_SIZE -
-> -           MAX_BPF_STACK - sizeof(struct htab_elem))
-> -               /* if value_size is bigger, the user space won't be able to
-> -                * access the elements via bpf syscall. This check also makes
-> -                * sure that the elem_size doesn't overflow and it's
-> +       if ((u64)(attr->key_size + attr->value_size) >= KMALLOC_MAX_SIZE -
+On Wed, Oct 28, 2020 at 04:06:02PM -0700, Alexei Starovoitov wrote:
+> On Thu, Oct 29, 2020 at 12:30:49AM +0200, Alon, Liran wrote:
+> > > Guarding /sys/kernel/bpf/vmlinux behind CAP_PERFMON would break a lot
+> > > of users relying on BTF availability to build their BPF applications.
+> > True. If this patch is applied, would need to at least be behind an optin
+> > knob. Similar to dmesg_restrict.
+> 
+> It's not going to be applied. If a file shouldn't be read by a user
+> it should have appropriate file permissions instead of 444.
+> Checking capable() in read() is very non-unix way to deal with permissions.
 
-this will add both as u32, then will cast overflown result to u64.
-Instead just do:
+Not only it's a non-unix way, both don't achieve the same goals at all!
 
-if ((u64)attr->key_size + attr->value_size >= ....)
+One checks for permissions at open() time and may for example allow a
+process to drop its uid after opening, while the other one allows to
+filter who can really read it, particularly in case the FD is inherited
+between processes. With this said, I don't see why there would be a
+special case for this one, it should definitely stick to file permissions
+only.
 
-> +          sizeof(struct htab_elem))
-> +               /* if key_size + value_size is bigger, the user space won't be
-> +                * able to access the elements via bpf syscall. This check
-> +                * also makes sure that the elem_size doesn't overflow and it's
->                  * kmalloc-able later in htab_map_update_elem()
->                  */
->                 return -E2BIG;
-
-[...]
-
-> +
-> +SEC("raw_tracepoint/sys_enter")
-> +int bpf_hash_large_key_test(void *ctx)
-> +{
-> +       int zero = 0, err = 1, value = 42;
-> +       struct bigelement *key;
-> +
-> +       key = bpf_map_lookup_elem(&key_map, &zero);
-> +       if (!key)
-> +               goto err;
-> +
-> +       key->c = 1;
-> +       if (bpf_map_update_elem(&hash_map, key, &value, BPF_ANY))
-> +               goto err;
-> +
-> +       err = 0;
-> +err:
-> +       return err;
-
-return value from raw_tracepoint doesn't really communicate error, you
-might as well just return 0 always
-
-> +}
-> +
-> diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-> index 0d92ebcb335d..0ad3e6305ff0 100644
-> --- a/tools/testing/selftests/bpf/test_maps.c
-> +++ b/tools/testing/selftests/bpf/test_maps.c
-> @@ -1223,9 +1223,10 @@ static void test_map_in_map(void)
->
->  static void test_map_large(void)
->  {
-> +
->         struct bigkey {
->                 int a;
-> -               char b[116];
-> +               char b[4096];
->                 long long c;
->         } key;
->         int fd, i, value;
-> --
-> 2.26.2
->
+Willy
