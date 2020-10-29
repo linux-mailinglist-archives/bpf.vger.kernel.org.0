@@ -2,108 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C928F29E2E7
-	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 03:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC3229E2AE
+	for <lists+bpf@lfdr.de>; Thu, 29 Oct 2020 03:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgJ1VfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Oct 2020 17:35:09 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34437 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgJ1VfF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Oct 2020 17:35:05 -0400
-Received: by mail-ot1-f66.google.com with SMTP id k3so539594otp.1;
-        Wed, 28 Oct 2020 14:35:04 -0700 (PDT)
+        id S1726897AbgJ2CcY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Oct 2020 22:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726055AbgJ2Ca5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Oct 2020 22:30:57 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F11C0613CF;
+        Wed, 28 Oct 2020 19:20:58 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id k6so1792852ior.2;
+        Wed, 28 Oct 2020 19:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KpAmy8R8W8FSv8OXlUtqLiCP76FJNmvLZoJQVbUNCDc=;
+        b=JgAYlplVb/pEpMqWZIp3SXJtuH4Hus05Syh+tbLieu3xI98XgpOED9CBHUeKTv5Rb9
+         CkqtaBgfi5noiOSEYszpMb7CfUu5R8Siw8zXnPWv4o1Ut0tENBsj+THamRrTW0K9A1I+
+         50w8nrzzuklVibqhFp1RImge4KuquTutyZbZ9PXsY5rOHtlffbUdarQdbAIGEWWZhL6/
+         ezxR0RODmK8prdpa9quwYJI9Z5aoEmbG6RXjzOajqFtv/7QuYQNDrxENaI95ld0xTgm5
+         jXfYIVAdl2/DrdIuJQJ90loItyqjY3Zy9/688CPhcydW1AEK5PnR997H9HGFZ+WkMZFX
+         Wq0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dm29FGJ3HmM/IlgprUU1WrHRYzNgHTCNIAv/rcKqb3E=;
-        b=B2LxXgI1ogF0WFOJCxCq3Hxyf3TKRVpH2mAubeklbKWFSVuJmDy5g18jCdArVR+DcZ
-         HvWKI44eYHvr/R83MgiBPBhAiBpRN2+2Jq3dwum5+byv/xQP83TZMtuh1DIzXl6Ic6fv
-         PJ3fW2ZY5Yf5Mp/2/wW0893vbUlqdZdMlHT43MEX2zVbTjIBeANH6Nr26cBPaRZDfFjA
-         su+Bs6iFBRew8SjCYILlq6ACQYpkhMT1yeTQ6dwR7INEsreZRgvURvVr67OqOHCIawJE
-         9glllvegRQ8LWrso1soCrJj7ufoBpoalnn8EZ7yEUueX2GoevgiAKT5YS343LLJQmmMt
-         LA2A==
-X-Gm-Message-State: AOAM532Bwv0AUEijQC+ckAShqVz59wxAd/xiaU5FTjbSgqT3RCU0ZYXp
-        WZmCINeXDjxXSL8keBaI61psi+c4IfONjdxQ1XBZQ8iAPtowqQ==
-X-Google-Smtp-Source: ABdhPJyiFo5ZuvsGBWsEWNiTUNzawsjQjWkumJ/qvE8apdgG5pLkLHcLQeoXYV3O5WRNlHx+5G1aglKsES1yvUIXIU4=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr4090804oti.107.1603873848080;
- Wed, 28 Oct 2020 01:30:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201027205723.12514-1-ardb@kernel.org>
-In-Reply-To: <20201027205723.12514-1-ardb@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 28 Oct 2020 09:30:37 +0100
-Message-ID: <CAMuHMdVmOCmRsJVixPA2U9jB5AKL7NQdCzxx8f5FoXpyOpDwGA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: don't rely on GCC __attribute__((optimize)) to
- disable GCSE
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KpAmy8R8W8FSv8OXlUtqLiCP76FJNmvLZoJQVbUNCDc=;
+        b=FTsOEGDJ4iOS+A38iDvY2hS2Y9xyYd+gyd/6r6UWRx2d35A+Q1YhmcZCq+IrvIzuQH
+         AyCRjl1DM632eygF8LTgn534bLmYv8K7antkhwhsGYlAzbpUmBDvtPnUe5VIBSTP9cIl
+         2nVfBS99CsD4bRGwY/Xog540eG18UGAZgGTuIpTVLeZVGgBExVVzWjpPjD55SC5JjQn1
+         3r1X3vEPo1MDX400PMYR5A/eN7IO8Dk0dmT1NM1YGg1Lg+TW+VxthBX4S3702I3061Ty
+         T2V+BIkGe60pZPLAUN2bds5IqQOJfP0igtyCplQoebnT2eGrk4BdlnoOyPVP3yAKvqrt
+         4T8w==
+X-Gm-Message-State: AOAM5339MF2YhS6n1kv87Q/40QnWz7SAGGFxNhJXC4GFCYl90DInl4lx
+        j4Q2Gklp5ZFQaCZOA/YQ15k=
+X-Google-Smtp-Source: ABdhPJxwiSrxtT02874BNkFVV1g7meD23uFfPYMyc5KUmWjL45fZ8aHhPDYabLtjCjQmgcUiSxB3zw==
+X-Received: by 2002:a6b:9108:: with SMTP id t8mr1844128iod.206.1603938057532;
+        Wed, 28 Oct 2020 19:20:57 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:e1b0:db06:9a2d:91c5])
+        by smtp.googlemail.com with ESMTPSA id t2sm1012135iob.5.2020.10.28.19.20.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Oct 2020 19:20:56 -0700 (PDT)
+Subject: Re: [PATCHv2 iproute2-next 0/5] iproute2: add libbpf support
+To:     Hangbin Liu <haliu@redhat.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
+        <toke@redhat.com>
+References: <20201023033855.3894509-1-haliu@redhat.com>
+ <20201028132529.3763875-1-haliu@redhat.com>
+ <7babcccb-2b31-f9bf-16ea-6312e449b928@gmail.com>
+ <20201029020637.GM2408@dhcp-12-153.nay.redhat.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <7a412e24-0846-bffe-d533-3407d06d83c4@gmail.com>
+Date:   Wed, 28 Oct 2020 20:20:55 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <20201029020637.GM2408@dhcp-12-153.nay.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ard,
+On 10/28/20 8:06 PM, Hangbin Liu wrote:
+> On Wed, Oct 28, 2020 at 05:02:34PM -0600, David Ahern wrote:
+>> fails to compile on Ubuntu 20.10:
+>>
+>> root@u2010-sfo3:~/iproute2.git# ./configure
+>> TC schedulers
+>>  ATM	yes
+>>  IPT	using xtables
+>>  IPSET  yes
+>>
+>> iptables modules directory: /usr/lib/x86_64-linux-gnu/xtables
+>> libc has setns: yes
+>> SELinux support: yes
+>> libbpf support: yes
+>> ELF support: yes
+>> libmnl support: yes
+>> Berkeley DB: no
+>> need for strlcpy: yes
+>> libcap support: yes
+>>
+>> root@u2010-sfo3:~/iproute2.git# make clean
+>>
+>> root@u2010-sfo3:~/iproute2.git# make -j 4
+>> ...
+>> /usr/bin/ld: ../lib/libutil.a(bpf_libbpf.o): in function `load_bpf_object':
+>> bpf_libbpf.c:(.text+0x3cb): undefined reference to
+>> `bpf_program__section_name'
+>> /usr/bin/ld: bpf_libbpf.c:(.text+0x438): undefined reference to
+>> `bpf_program__section_name'
+>> /usr/bin/ld: bpf_libbpf.c:(.text+0x716): undefined reference to
+>> `bpf_program__section_name'
+>> collect2: error: ld returned 1 exit status
+>> make[1]: *** [Makefile:27: ip] Error 1
+>> make[1]: *** Waiting for unfinished jobs....
+>> make: *** [Makefile:64: all] Error 2
+> 
+> You need to update libbpf to latest version.
 
-On Tue, Oct 27, 2020 at 9:57 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> Commit 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for
-> ___bpf_prog_run()") introduced a __no_fgcse macro that expands to a
-> function scope __attribute__((optimize("-fno-gcse"))), to disable a
-> GCC specific optimization that was causing trouble on x86 builds, and
-> was not expected to have any positive effect in the first place.
->
-> However, as the GCC manual documents, __attribute__((optimize))
-> is not for production use, and results in all other optimization
-> options to be forgotten for the function in question. This can
-> cause all kinds of trouble, but in one particular reported case,
-> it causes -fno-asynchronous-unwind-tables to be disregarded,
-> resulting in .eh_frame info to be emitted for the function
-> inadvertently.
->
-> This reverts commit 3193c0836f203, and instead, it disables the -fgcse
-> optimization for the entire source file, but only when building for
-> X86.
->
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Arvind Sankar <nivedita@alum.mit.edu>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Fixes: 3193c0836f203 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+nope. you need to be able to handle this. Ubuntu 20.10 was just
+released, and it has a version of libbpf. If you are going to integrate
+libbpf into other packages like iproute2, it needs to just work with
+that version.
 
-Thanks, this gets rid of the following warning, which you may
-want to quote in the patch description:
+> 
+> But this also remind me that I need to add bpf_program__section_name() to
+> configure checking. I will see if I missed other functions' checking.
 
-    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-`kernel/bpf/core.o' being placed in section `.eh_frame'
+This is going to be an on-going problem. iproute2 should work with
+whatever version of libbpf is installed on that system.
 
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
