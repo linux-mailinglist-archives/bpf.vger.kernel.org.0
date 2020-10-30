@@ -2,187 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D4F2A0EED
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28022A0F35
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 21:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgJ3T42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 15:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
+        id S1727218AbgJ3UIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 16:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727004AbgJ3T41 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:56:27 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F294C0613D7
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:56:27 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id g13so3334211qvu.1
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:56:27 -0700 (PDT)
+        with ESMTP id S1727134AbgJ3UH6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 16:07:58 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0ADC0613CF;
+        Fri, 30 Oct 2020 13:07:57 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k125so3272630wmf.0;
+        Fri, 30 Oct 2020 13:07:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xCXdIDDEOQ4sp35BxxEEwDK4u7wEsOXSjw7fR5lQ1JM=;
-        b=vSrIWJfPbZcyzboU1vKIyWhst9w6jkZcPg2Fd/Tyr/+5CsiSbu6ptsTz5Soh4jBnSD
-         3d1HnaDhJZn9EjJglKvv49w7CobE+jurkMtZr4ontDfkag7fi8SMbKRE9K9iDEHM8d/r
-         b8PaN2BYUxO4vhprE3ysd+Nz+bafxOlSE52B/xKdBxRMgEE82BqyuUTkV/sN9j1nm33W
-         5pwRVCFeS/MgH+7kB9uvyyhPHbpiukb9ZrmJCP4YffU4dVFLpi0rS8nLvgsZQvkPSGxm
-         A0+7Vg38JWaO54eyWDMDNHz8l0xAi5gk8+WQSphC/9CaBpqNYnuF2s2KwntRGphDdthR
-         J1Ig==
+        d=gmail.com; s=20161025;
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FpCslJZ/vqty4l/vz2YpbZGTlDZJ7cQIaDs0z8MBb9Q=;
+        b=YcN9bdquotAjnrthfpW3IwHIEkgx6h42SlkjKXvr0CpceHRxdmjmaYllQhz0bPMBZt
+         3icp020XsDQDBucbMTtt1SU6D/cUzNLj1NRRgq8OKrrZCDmSBnhhJcGGWoLyYP/5AtoJ
+         XlnMFNSB4iOVvfOQ16M14Dd8tGmwatI/40hvL8dPt7tuMQAURvwDrISXwJgwyBzhXfbg
+         XzLdvwZP+9ZhFYrcn+lKV0mwT63/XGHADrurSBn6/tQg0CPWeJcMklmELuSNJ/RBT/+S
+         MEZRpvWfuwB3oCbxo8nlbfgbaqv8p+IF4/SA+AqrZB1jyW1tt3hVIbzxQLqEB/4VA4Kq
+         8/HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xCXdIDDEOQ4sp35BxxEEwDK4u7wEsOXSjw7fR5lQ1JM=;
-        b=k00tmDgjOmPWoIZ95rGXya9OTKWlbPf1rMaC515XsBRmMJYB5/D5EXpn0+Rb1f0cLf
-         6q86CI1xT5OA2Sefrgp62seZibPog2PYr3WzG7JGhXl3rg/8DEpnEOo2H6/LVIcyqnTX
-         LQSmZBp7IOyymQGPpE7PPXLqkAyYdaXjWq/vo70SNzXSZ008Hz9xzFKmFGs/tmzwd50u
-         lokEn0xO8H/p1dLm3B/OkMdPUITQHoA7GuUW6axRR/QyEqHxVqa+JZVO0BYei43TuwUg
-         kYx69qDH/vCgMsVFSPsSnIIhwlQlzH1X2GNcGRvfm0iKOODPJ71wshJIORiwKSGc2mXK
-         RHWA==
-X-Gm-Message-State: AOAM5301EZ15YGDbA9xr8IXS29e6tPh0GgXimbsWq/T3xc90Hdxqrh3F
-        jz7F7XkNcNalKnb9N/NkLLBrdVRfR+0PPrCw7Mdxjg==
-X-Google-Smtp-Source: ABdhPJxs/TiX12vaQ2OCHQSHT0seDFqKNQ1HIDLofONsrmnhk8Sokx0OyG77Wl1u033wcuYrmkJaHnokNGqh8OxS2bo=
-X-Received: by 2002:a0c:8d8b:: with SMTP id t11mr11297208qvb.13.1604087786355;
- Fri, 30 Oct 2020 12:56:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
- <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
- <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
- <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com> <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
-In-Reply-To: <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 30 Oct 2020 20:56:14 +0100
-Message-ID: <CACT4Y+a2aSoEZpytAGKnx77a012z0yzOSu6P2rKQpoBYFBzBDg@mail.gmail.com>
-Subject: Re: general protection fault in security_inode_getattr
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        network dev <netdev@vger.kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FpCslJZ/vqty4l/vz2YpbZGTlDZJ7cQIaDs0z8MBb9Q=;
+        b=kG+HnApDrJFT2XSNYMYv67us0iTxpcqJ0MJtdeTdwsHqrej8Z0Ie97iC1s0e5QXKBM
+         XHWgAA6BjXGrxmAaUC2rCv2H/k+F/Hy/Q9r1jsyhejoLDcUKF2MdaCobJls3vRBmeRKK
+         d3RoLMbU2eMNgwaBg1hgyyBurDQTR76ZV+otPZhnzQKO4FSWVzrKNWV9lgfOuWopWP6i
+         Xu5eK7O6tfY1Xoef8xuBRCDQrLSU+GUbRfT6fzrPA7/fgV75wXuImSiw2FHy5zPUuzci
+         IFspwPuPR914K91/XV+Uiiw7l/dA7uQkiaZmaAnWkCoQqH6cmjrpbyZdy/6zXw5U/8yK
+         c6XQ==
+X-Gm-Message-State: AOAM530gloPcfLV5FXEj3A4uR+IOkSUrmUdXvYvkLs+nDanFRjWU8XBk
+        dzq6C4RKhhGHKo1SJyLmCCI=
+X-Google-Smtp-Source: ABdhPJztQtotCRmX3fj5tBmhKO5lYUgAvoZG+N03iU1161n3w8ULxgpWHp87pzLrq1ac+M8i05ZZQQ==
+X-Received: by 2002:a1c:c90b:: with SMTP id f11mr4614649wmb.54.1604088476501;
+        Fri, 30 Oct 2020 13:07:56 -0700 (PDT)
+Received: from ?IPv6:2001:a61:245a:d801:2e74:88ad:ef9:5218? ([2001:a61:245a:d801:2e74:88ad:ef9:5218])
+        by smtp.gmail.com with ESMTPSA id j9sm11929205wrp.59.2020.10.30.13.07.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Oct 2020 13:07:55 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
         Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Will Drewry <wad@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-man <linux-man@vger.kernel.org>,
+        Robert Sesek <rsesek@google.com>,
+        Containers <containers@lists.linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Christian Brauner <christian@brauner.io>
+Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
+To:     Jann Horn <jannh@google.com>
+References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
+ <20201029152609.k3urvzjocf3s7uml@gmail.com>
+ <91b74ce1-de95-2b92-c62e-e2715d6071d3@gmail.com>
+ <CAG48ez0TZrwBoEi4d6n+FUN19hq6Pc+DOGNrRb-zHDSZVm9kfw@mail.gmail.com>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Message-ID: <f610cecf-d824-3501-e188-357efd9b1c76@gmail.com>
+Date:   Fri, 30 Oct 2020 21:07:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
+MIME-Version: 1.0
+In-Reply-To: <CAG48ez0TZrwBoEi4d6n+FUN19hq6Pc+DOGNrRb-zHDSZVm9kfw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 8:21 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > > On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > > >
-> > > > On Mon, Aug 24, 2020 at 9:37 PM syzbot
-> > > > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
-> > > > > syzbot has found a reproducer for the following issue on:
-> > > >
-> > > > Looping in fsdevel and OverlayFS maintainers, as this seems to be
-> > > > FS/OverlayFS related...
-> > >
-> > > Hmm, the oopsing code is always something like:
-> > >
-> > > All code
-> > > ========
-> > >    0: 1b fe                sbb    %esi,%edi
-> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
-> > >    6: 48 89 d8              mov    %rbx,%rax
-> > >    9: 48 c1 e8 03          shr    $0x3,%rax
-> > >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
-> > >   12: 74 08                je     0x1c
-> > >   14: 48 89 df              mov    %rbx,%rdi
-> > >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
-> > >   1c: 48 8b 1b              mov    (%rbx),%rbx
-> > >   1f: 48 83 c3 68          add    $0x68,%rbx
-> > >   23: 48 89 d8              mov    %rbx,%rax
-> > >   26: 48 c1 e8 03          shr    $0x3,%rax
-> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-> > >   2f: 74 08                je     0x39
-> > >   31: 48 89 df              mov    %rbx,%rdi
-> > >   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
-> > >   39: 48 8b 1b              mov    (%rbx),%rbx
-> > >   3c: 48 83 c3 0c          add    $0xc,%rbx
-> > >
-> > >
-> > > And that looks (to me) like the unrolled loop in call_int_hook().  I
-> > > don't see how that could be related to overlayfs, though it's
-> > > definitely interesting why it only triggers from
-> > > overlay->vfs_getattr()->security_inode_getattr()...
-> >
-> >
-> > >   26: 48 c1 e8 03          shr    $0x3,%rax
-> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-> >
-> >
-> > This access is part of KASAN check. But the original address kernel
-> > tries to access is NULL, so it's not an issue with KASAN.
-> >
-> > The line is this:
-> >
-> > int security_inode_getattr(const struct path *path)
-> > {
-> >     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
-> >         return 0;
-> >
-> > So it's either path is NULL, or something in d_backing_inode
-> > dereferences NULL path->dentry.
-> >
-> > The reproducer does involve overlayfs:
-> >
-> > mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
-> > mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
-> > r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
-> > mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
-> > mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
-> > &(0x7f0000000100)='overlay\x00', 0x0,
-> > &(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
-> > link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
-> > write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
-> > acct(&(0x7f0000000040)='./bus/file0\x00')
-> >
-> > Though, it may be overlayfs-related, or it may be a generic bug that
-> > requires a tricky reproducer and the only reproducer syzbot come up
-> > with happened to involve overlayfs.
-> > But there are 4 reproducers on syzbot dashboard and all of them
-> > involve overlayfs and they are somewhat different. So my bet would be
-> > on overlayfs.
->
-> Seems there's no C reproducer, though.   Can this be reproduced
-> without KASAN obfuscating the oops?
+On 10/30/20 8:24 PM, Jann Horn wrote:
+> On Thu, Oct 29, 2020 at 8:53 PM Michael Kerrisk (man-pages)
+> <mtk.manpages@gmail.com> wrote:
+>> On 10/29/20 4:26 PM, Christian Brauner wrote:
+>>> I like this manpage. I think this is the most comprehensive explanation
+>>> of any seccomp feature
+>>
+>> Thanks (at least, I think so...)
+>>
+>>> and somewhat understandable.
+>>       ^^^^^^^^
+>>
+>> (... but I'm not sure ;-).)
+> 
+> Relevant: http://tinefetz.net/files/gimgs/78_78_17.jpg
 
-I guess so.
-If you are interest in what exact field is NULL, I think there is
-enough info in the asm already:
+Perfekt :-).
 
-> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
-> > >    6: 48 89 d8              mov    %rbx,%rax
-> > >    9: 48 c1 e8 03          shr    $0x3,%rax
-> > >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
-> > >   12: 74 08                je     0x1c
-> > >   14: 48 89 df              mov    %rbx,%rdi
-> > >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
-> > >   1c: 48 8b 1b              mov    (%rbx),%rbx
-> > >   1f: 48 83 c3 68          add    $0x68,%rbx
-> > >   23: 48 89 d8              mov    %rbx,%rax
-> > >   26: 48 c1 e8 03          shr    $0x3,%rax
-> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
 
-The access via the NULL pointer happens with offset 0x68:
-
-> > >   1f: 48 83 c3 68          add    $0x68,%rbx
-
-So we just need to find what's here accesses with offset 0x68:
-
-> >     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
-
-And that pointer itself was loaded from something at offset 0x8 previously:
-
-> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
