@@ -2,173 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D75C2A0DB2
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 19:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E33632A0E69
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgJ3SpL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 14:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        id S1727323AbgJ3TQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 15:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgJ3SpL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:45:11 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E11EC0613CF;
-        Fri, 30 Oct 2020 11:45:11 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id s89so5914051ybi.12;
-        Fri, 30 Oct 2020 11:45:11 -0700 (PDT)
+        with ESMTP id S1726693AbgJ3TQj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:16:39 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650EFC0613CF
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:16:39 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id i18so1820445ots.0
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=px7rt6ijxGxZewVuPhhCu4O2Znk18+YN05hNd4GISOc=;
-        b=F61meXiccORHVK6D0lJmOhHIHrwksEueF9s0fHbIB6jUKFfQF7jXBd2xPD/rn8AlQY
-         G70yCMvGjOKRYk19+vU9r2W6gwu9fzGJkPqD6vARDsnhLV4o+yGxskj6UlLJ86ou50tY
-         iYPV7ZQyMOQBAho+C2eYsCl6MUV3S0UoNE9rnulmNarOMscvBXpNAxNs3zen8KBOxuq+
-         FIMICPqLb91TFn8uAzLf4wSMM19izlQxXbkU80Mi+I50hO2NjIoSFhRPTyrvfBK+hU1g
-         WhC3yRkqci75D2Qo+IbQG01uMKhBs2NfVXvxdnwVKonlGNLfvcQRQVm9BtYgh88RFco5
-         +Qgw==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=ETmLqyudWdwsXw7h+1qB3Egpb5agg4/veOj74MbPzAA=;
+        b=bLZMTp89K92g3jDGpV4wE/NzKncR1zk5Lpxv3s2LZ3qRvCNXZSs3duuYCfdEHfLrCF
+         To3xmw3TdtC63CbdyNHYYqsyOBcr0tXNeSnR8xgJFjuGmWglqrr4wSsnl61KYwLBAFaD
+         iLC+40Grovjv7ZBWOC37qkxBXflrRKdoyQercXHoVoItM3Nu1nIOtjBi76o0DdpP1xR2
+         VpknLT3fkWweECDSGt0Jrx4U4EelQaqkoJdlaN0WWKWBtd1OAHgDknBfXzc/DBTRkNZx
+         9PpvqgrFwEsuDZw5awIfrlic/xBbMLwZ9E9xK/D9JYZ0X7+GOXogt35U20YGkyxS4OTm
+         w86Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=px7rt6ijxGxZewVuPhhCu4O2Znk18+YN05hNd4GISOc=;
-        b=uKgYF3qzblgrFlT6j3WEp0IKrloJK+PhSduq33xgPhhcqpTfvSK4QhyQ5Y/JjKa1d5
-         Yf/adY4Z7axu/lbr7SqYV2KseT2o4/AHC4iY94N1D2KnOFK/a4vQD9xivPl+HHck/Sbv
-         YgaMWJWmKNOUvvS229bZTaVaqR87uFzZTKyzsJdn57593LdKPm2FSu5/ani8+SGwvHG6
-         TGB9hjqKNnLV6pMyKADUwnERxdu0Cm08iRDe6hvm4QNnMbheU8o2b6RpDShD7dP1a/Dm
-         b93hKiJ56JunenR24kHgz+XfUvtkesEf8evXwtt28lRBdt2uiG5dFg51mUbOakBYUBn7
-         nBNA==
-X-Gm-Message-State: AOAM533ekRzqWwIyQ0aRMZUMDSlu71Y4C2T1gVfrExi2O0ukBDYS6Oe3
-        iLzD5Sdnl2szoI17xG5XRUXBAkEazz2tJa5wb6c=
-X-Google-Smtp-Source: ABdhPJznuci0A5uzK2h1NPbjFkX6C21r1cnLhWmWI00PBsP9m4bZy854eN7DcE2jpydOe0o/j0I+/bCYARzpOMcPNLo=
-X-Received: by 2002:a25:25c2:: with SMTP id l185mr5090304ybl.230.1604083510800;
- Fri, 30 Oct 2020 11:45:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201029005902.1706310-1-andrii@kernel.org> <20201029005902.1706310-3-andrii@kernel.org>
- <CAPhsuW6DxoRjBPJEgwzEtmVt-Uunw-MAmAF2tgh-ksjcKuJ4Bw@mail.gmail.com>
-In-Reply-To: <CAPhsuW6DxoRjBPJEgwzEtmVt-Uunw-MAmAF2tgh-ksjcKuJ4Bw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Oct 2020 11:44:59 -0700
-Message-ID: <CAEf4Bzaj6mfLPtMbXBNJ9Z2E4AKS8W4vcYG6OGuO_XftAqKBeQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/11] selftest/bpf: relax btf_dedup test checks
-To:     Song Liu <song@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=ETmLqyudWdwsXw7h+1qB3Egpb5agg4/veOj74MbPzAA=;
+        b=VVV43r26FkkDGgv+i258wOtuGPBLCbqCFr7iPVJDinYtSHeHHo4cfeRS5/o7xTPNl8
+         lZIRANwaaCAdtLoRZNZJC5DIQxxgJO4NzWbNHBNr3AB2QDEG0cpU/Spb9GmHymFtJcQ5
+         i5dznPWU/IP/Z40zkn6kIfkAtyZTFXmt+BHfQn4geprBmzJWHMhGQoKn5HQLLpoUN/q8
+         PWf4UiYlBKOQlXZWBR1ieCA/+6SfH8KoJFnmQIDy8MroqggiSx+NmY6FpsRH7CiRdo2M
+         oJPjEeG9dvwbPYYX12Vi+Inn3IzUzqN6uTzB29faTxVr1q6WGATGvl4i17oA+7/A40Sr
+         xyjQ==
+X-Gm-Message-State: AOAM530shHrFGAJxj0zSJQdqvPSjkKiM01kGOhRVYvxs6SHPALpZplMw
+        NnkwJolJFTg3icTEGwJic/k=
+X-Google-Smtp-Source: ABdhPJzloQyHiSuNiVouJPVgly645hTwmVFa1eBRnUURPIk1jH8iyd8lcAJ4566CVZ3Kthrec2GCag==
+X-Received: by 2002:a9d:eca:: with SMTP id 68mr2666323otj.141.1604085398877;
+        Fri, 30 Oct 2020 12:16:38 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id h7sm1543300oop.40.2020.10.30.12.16.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 12:16:38 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 12:16:29 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        KP Singh <kpsingh@google.com>
+Message-ID: <5f9c668d9a55a_16d420895@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4Bza-KX7C5ghXSVs30R_xkKtqjDwM8snH2B2A_VCAxSim2g@mail.gmail.com>
+References: <VI1PR8303MB008003C9E3B937033A593C47FB150@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+ <CAEf4Bza-KX7C5ghXSVs30R_xkKtqjDwM8snH2B2A_VCAxSim2g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: update verifier to stop perf ring buffer
+ corruption
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 9:43 AM Song Liu <song@kernel.org> wrote:
->
-> On Thu, Oct 29, 2020 at 1:40 AM Andrii Nakryiko <andrii@kernel.org> wrote:
+Andrii Nakryiko wrote:
+> On Fri, Oct 30, 2020 at 5:08 AM Kevin Sheldrake
+> <Kevin.Sheldrake@microsoft.com> wrote:
 > >
-> > Remove the requirement of a strictly exact string section contents. This used
-> > to be true when string deduplication was done through sorting, but with string
-> > dedup done through hash table, it's no longer true. So relax test harness to
-> > relax strings checks and, consequently, type checks, which now don't have to
-> > have exactly the same string offsets.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/btf.c | 34 +++++++++++---------
-> >  1 file changed, 19 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-> > index 93162484c2ca..2ccc23b2a36f 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/btf.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-> > @@ -6652,7 +6652,7 @@ static void do_test_dedup(unsigned int test_num)
-> >         const void *test_btf_data, *expect_btf_data;
-> >         const char *ret_test_next_str, *ret_expect_next_str;
-> >         const char *test_strs, *expect_strs;
-> > -       const char *test_str_cur, *test_str_end;
-> > +       const char *test_str_cur;
-> >         const char *expect_str_cur, *expect_str_end;
-> >         unsigned int raw_btf_size;
-> >         void *raw_btf;
-> > @@ -6719,12 +6719,18 @@ static void do_test_dedup(unsigned int test_num)
-> >                 goto done;
-> >         }
-> >
-> > -       test_str_cur = test_strs;
-> > -       test_str_end = test_strs + test_hdr->str_len;
-> >         expect_str_cur = expect_strs;
-> >         expect_str_end = expect_strs + expect_hdr->str_len;
-> > -       while (test_str_cur < test_str_end && expect_str_cur < expect_str_end) {
-> > +       while (expect_str_cur < expect_str_end) {
-> >                 size_t test_len, expect_len;
-> > +               int off;
-> > +
-> > +               off = btf__find_str(test_btf, expect_str_cur);
-> > +               if (CHECK(off < 0, "exp str '%s' not found: %d\n", expect_str_cur, off)) {
-> > +                       err = -1;
-> > +                       goto done;
-> > +               }
-> > +               test_str_cur = btf__str_by_offset(test_btf, off);
-> >
-> >                 test_len = strlen(test_str_cur);
-> >                 expect_len = strlen(expect_str_cur);
-> > @@ -6741,15 +6747,8 @@ static void do_test_dedup(unsigned int test_num)
-> >                         err = -1;
-> >                         goto done;
-> >                 }
-> > -               test_str_cur += test_len + 1;
-> >                 expect_str_cur += expect_len + 1;
-> >         }
-> > -       if (CHECK(test_str_cur != test_str_end,
-> > -                 "test_str_cur:%p != test_str_end:%p",
-> > -                 test_str_cur, test_str_end)) {
-> > -               err = -1;
-> > -               goto done;
-> > -       }
-> >
-> >         test_nr_types = btf__get_nr_types(test_btf);
-> >         expect_nr_types = btf__get_nr_types(expect_btf);
-> > @@ -6775,10 +6774,15 @@ static void do_test_dedup(unsigned int test_num)
-> >                         err = -1;
-> >                         goto done;
-> >                 }
-> > -               if (CHECK(memcmp((void *)test_type,
-> > -                                (void *)expect_type,
-> > -                                test_size),
-> > -                         "type #%d: contents differ", i)) {
->
-> I guess test_size and expect_size are not needed anymore?
+> > As discussed, bpf_perf_event_output() takes a u64 for the sample size parameter but the perf ring buffer uses a u16 internally.  This results in overlapping samples where the total sample size (including header/padding) exceeds 64K, and prevents samples from being submitted when the total sample size ==  64K.
 
-hm.. they are used just one check above, still needed
+[...]
 
->
-> > +               if (CHECK(btf_kind(test_type) != btf_kind(expect_type),
-> > +                         "type %d kind: exp %d != got %u\n",
-> > +                         i, btf_kind(expect_type), btf_kind(test_type))) {
-> > +                       err = -1;
-> > +                       goto done;
-> > +               }
-> > +               if (CHECK(test_type->info != expect_type->info,
-> > +                         "type %d info: exp %d != got %u\n",
-> > +                         i, expect_type->info, test_type->info)) {
->
-> btf_kind() returns part of ->info, so we only need the second check, no?
+> >Also I don't know what the size reduction of -24 relates to (it doesn't match any header struct I've found) but it was found through experimentation.
+> 
+> So -24 should have been a clue that something fishy is going on. Look
+> at perf_prepare_sample() in kernel/events/core.c. header->size (which
+> is u16) contains the entire size of the data in the perf event. This
+> includes raw data that you send with bpf_perf_event_output(), but it
+> can also have tons of other stuff (e.g., call stacks, LBR data, etc).
+> What gets added to the perf sample depends on how the perf event was
+> configured in the first place. And it happens automatically on each
+> perf event output.
+> 
+> So, all that means that there could be no reliable static check in the
+> verifier which would prevent the corruption. It has to be checked by
+> perf_prepare_sample() in runtime based on the actual size of the
+> sample. We can do an extra check in verifier, but I wouldn't bother
+> because it's never going to be 100% correct.
 
-technically yes, but when kind mismatches, figuring that out from raw
-info field is quite painful, so having a better, more targeted check
-is still good.
+Please don't add the check in the verifier if its not 100% correct. I
+think that will confuse readers and make it appear "safe" when it is
+not. Even if you add a big warning comment there it will make the error
+case harder to hit. So lets just solve it as Andrii notes. My $.02
 
->
-> IIUC, test_type and expect_type may have different name_off now. Shall
-> we check ->size matches?
-
-yep, sure, I'll add
-
->
->
-> >                         err = -1;
-> >                         goto done;
-> >                 }
-> > --
-> > 2.24.1
-> >
+Thanks.
