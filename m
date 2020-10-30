@@ -2,216 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519F729FF91
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 09:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCD52A024D
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 11:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgJ3IWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 04:22:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3IWx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 04:22:53 -0400
-Received: from localhost (unknown [151.66.29.159])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9286D22210;
-        Fri, 30 Oct 2020 08:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604046172;
-        bh=tw9ZIbGM1l3QaYwhoYxULYl8xwmfWBMkqsLUQwH5Iqg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sCOg4XOeHUvSaznQWeHjUrDcvnA1HF8T7JnluU3Tr3SQ7vJPBK5DUqoieAA+oFocQ
-         BDDtUf1jBHJBpwEzKSUHCTk+Qy4YbyeoPnqW5LKM8w1nzth7byaWD9MRySPUfknF+h
-         xgJu9TeCRGSCXX5mhY1jqhL0bPzed+8bq5LCGT/Y=
-Date:   Fri, 30 Oct 2020 09:22:47 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        brouer@redhat.com
-Subject: Re: [PATCH v2 net-next 1/4] net: xdp: introduce bulking for xdp tx
- return path
-Message-ID: <20201030082247.GA2041@lore-desk>
-References: <cover.1603998519.git.lorenzo@kernel.org>
- <aaf417930ccfdd57ee3a7339e2fff59b8ad50409.1603998519.git.lorenzo@kernel.org>
- <20201030043254.GA100756@apalos.home>
+        id S1726572AbgJ3KJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 06:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgJ3KJ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:09:28 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92295C0613D4
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 03:09:27 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id r8so3642636qtp.13
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 03:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HKjKG8xLf4hl4KGL08wOz97Uf/Uq5FWc5fG42s+qDsY=;
+        b=TM5Bw6PAIXOz+nTtr9excRpuvtiVbOKmoM/ZeNWT5OhVP0dd5hqlhFOupj+2xCEgRN
+         JeTxtgoWs+jeudgZ9IA8jtZiSnAw9Ipf8F4oNo4DhZotD2GG46YCALurZc48vpamdnDH
+         bDAYZYY0UDMQ4U+tcY/twD+X67yMUxY6dRKbYjO+3b0g5XaelEVxkUzLkp1zB392AI2K
+         2m1MttwmSo88t9aQ6aoIM2VaCRsaWaHkFa8ns2v0yZP3BySGZxcpF1apImCJxqUoZIbo
+         UqwzELNBZTiNLFtr5GfmkHii7LfNU4pXAIlwrARUL93aTJZAiyuWQgCHMSlSVdrG3j69
+         IX8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HKjKG8xLf4hl4KGL08wOz97Uf/Uq5FWc5fG42s+qDsY=;
+        b=NywWUozO3UxxH8E0XD6FECFUlKFJ6HdQKMd7nGvlTF5YBu1ZGIGHbrdQyj/vki96AD
+         Tq4DynDjIBnncQHQ8rc4ES9gXBZomuSxgb0xrWyYWbaEo/Dvek0yVJ+jBI5H97g7yFlI
+         QMnQfuxPPPTNhGyLyG/e0Uwb9H/lTHeXU67PNr/QWLmPWFzCRtns+lcY2mZvHjUo6mi6
+         SSLR6oTPyZVr8M2/2z0lICCouVS+g6nCVIVkQPOrITKWdC8sk+IwzCH16hoz0sQ5EHSP
+         y2fl1huTk6ZUii+b4tICC9C0K3lalIlaLX68lv4LI3MY2sg72S+a5pL+MvZo+WciWI/M
+         FF+Q==
+X-Gm-Message-State: AOAM532BGziEBFh+X+fYWfmf4idXwQB/kpzpVJjE1zNrlRNZyseXlWSV
+        kjx2yKSBXTEuL55KwVYxeXqSzHRdUeAsDPrQiqajBA==
+X-Google-Smtp-Source: ABdhPJyT07TAhVCTLBh3geO1R4D7Y/mZhb7Bp9lH2jDEIbAYWD4tuFn+d8WZdEQUt+YDaRTSu12xKZ/EE1zqHUQncd8=
+X-Received: by 2002:ac8:44ae:: with SMTP id a14mr1318678qto.67.1604052566546;
+ Fri, 30 Oct 2020 03:09:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-In-Reply-To: <20201030043254.GA100756@apalos.home>
+References: <000000000000c82fe505aef233c6@google.com> <CAEf4BzbuUDEktVCYZAonUTM6iYBcAOPjKho2gMRD+9Q=N5cYxQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbuUDEktVCYZAonUTM6iYBcAOPjKho2gMRD+9Q=N5cYxQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 11:09:15 +0100
+Message-ID: <CACT4Y+aCTgfd1DXQENpxpsC=9WmJcg7CvY+NcXZOCAF6t4Cp3Q@mail.gmail.com>
+Subject: Re: WARNING in bpf_raw_tp_link_fill_link_info
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     syzbot <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Sep 11, 2020 at 12:01 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Sep 10, 2020 at 2:31 AM syzbot
+> <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    7fb5eefd selftests/bpf: Fix test_sysctl_loop{1, 2} failure..
+> > git tree:       bpf-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1424fdb3900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=976d5ecfab0c7eb43ac3
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a1f411900000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10929c11900000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com
+> >
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 check_copy_size include/linux/thread_info.h:150 [inline]
+> > WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 copy_to_user include/linux/uaccess.h:167 [inline]
+> > WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
+> > Kernel panic - not syncing: panic_on_warn set ...
+> > CPU: 0 PID: 6854 Comm: syz-executor574 Not tainted 5.9.0-rc1-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+> >  panic+0x2e3/0x75c kernel/panic.c:231
+> >  __warn.cold+0x20/0x4a kernel/panic.c:600
+> >  report_bug+0x1bd/0x210 lib/bug.c:198
+> >  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+> >  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+> >  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+> > RIP: 0010:check_copy_size include/linux/thread_info.h:150 [inline]
+> > RIP: 0010:copy_to_user include/linux/uaccess.h:167 [inline]
+> > RIP: 0010:bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
+> > Code: 41 bc ea ff ff ff e9 35 ff ff ff 4c 89 ff e8 41 66 33 00 e9 d0 fd ff ff 4c 89 ff e8 a4 66 33 00 e9 06 ff ff ff e8 ca ed f2 ff <0f> 0b eb 94 48 89 ef e8 2e 66 33 00 e9 65 fd ff ff e8 24 66 33 00
+> > RSP: 0018:ffffc900051c7bd0 EFLAGS: 00010293
+> > RAX: 0000000000000000 RBX: ffffc900051c7c60 RCX: ffffffff818179d6
+> > RDX: ffff88808b490000 RSI: ffffffff81817a96 RDI: 0000000000000006
+> > RBP: 0000000000000019 R08: 0000000000000000 R09: ffffc900051c7c7f
+> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000019
+> > R13: 0000000000001265 R14: ffffffff8986ecc0 R15: ffffc900051c7c78
+> >  bpf_link_get_info_by_fd kernel/bpf/syscall.c:3626 [inline]
+> >  bpf_obj_get_info_by_fd+0x43a/0xc40 kernel/bpf/syscall.c:3664
+> >  __do_sys_bpf+0x1906/0x4b30 kernel/bpf/syscall.c:4237
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x4405f9
+> > Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+> > RSP: 002b:00007fff47155808 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> > RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004405f9
+> > RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 000000000000000f
+> > RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+> > R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401e00
+> > R13: 0000000000401e90 R14: 0000000000000000 R15: 0000000000000000
+> > Kernel Offset: disabled
+> > Rebooting in 86400 seconds..
+> >
+>
+> #syz fix: b474959d5afd ("bpf: Fix a buffer out-of-bound access when
+> filling raw_tp link_info")
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Complete patch title:
 
-> Hi Lorenzo,=20
->=20
-> On Thu, Oct 29, 2020 at 08:28:44PM +0100, Lorenzo Bianconi wrote:
-[...]
-> > index 54b0bf574c05..43ab8a73900e 100644
-> > --- a/drivers/net/ethernet/marvell/mvneta.c
-> > +++ b/drivers/net/ethernet/marvell/mvneta.c
-> > @@ -1834,8 +1834,10 @@ static void mvneta_txq_bufs_free(struct mvneta_p=
-ort *pp,
-> >  				 struct netdev_queue *nq, bool napi)
-> >  {
-> >  	unsigned int bytes_compl =3D 0, pkts_compl =3D 0;
-> > +	struct xdp_frame_bulk bq;
-> >  	int i;
-> > =20
-> > +	bq.xa =3D NULL;
-> >  	for (i =3D 0; i < num; i++) {
-> >  		struct mvneta_tx_buf *buf =3D &txq->buf[txq->txq_get_index];
-> >  		struct mvneta_tx_desc *tx_desc =3D txq->descs +
-> > @@ -1857,9 +1859,10 @@ static void mvneta_txq_bufs_free(struct mvneta_p=
-ort *pp,
-> >  			if (napi && buf->type =3D=3D MVNETA_TYPE_XDP_TX)
-> >  				xdp_return_frame_rx_napi(buf->xdpf);
-> >  			else
-> > -				xdp_return_frame(buf->xdpf);
-> > +				xdp_return_frame_bulk(buf->xdpf, &bq);
-> >  		}
-> >  	}
-> > +	xdp_flush_frame_bulk(&bq);
-> > =20
-> >  	netdev_tx_completed_queue(nq, pkts_compl, bytes_compl);
-> >  }
->=20
-> Sorry I completely forgot to mention this on the v1 review.
-> I think this belongs to a patch of it's own similar to mellanox and mvpp2=
-=20
-> drivers
-
-ack, I am fine with it. I will fix it in v3.
-
-Regards,
-Lorenzo
-
->=20
-> > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > index 3814fb631d52..a1f48a73e6df 100644
-> > --- a/include/net/xdp.h
-> > +++ b/include/net/xdp.h
-> > @@ -104,6 +104,12 @@ struct xdp_frame {
-> >  	struct net_device *dev_rx; /* used by cpumap */
-> >  };
-> > =20
-> > +#define XDP_BULK_QUEUE_SIZE	16
-> > +struct xdp_frame_bulk {
-> > +	int count;
-> > +	void *xa;
-> > +	void *q[XDP_BULK_QUEUE_SIZE];
-> > +};
-> > =20
-> >  static inline struct skb_shared_info *
-> >  xdp_get_shared_info_from_frame(struct xdp_frame *frame)
-> > @@ -194,6 +200,9 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct =
-xdp_buff *xdp)
-> >  void xdp_return_frame(struct xdp_frame *xdpf);
-> >  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
-> >  void xdp_return_buff(struct xdp_buff *xdp);
-> > +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
-> > +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
-> > +			   struct xdp_frame_bulk *bq);
-> > =20
-> >  /* When sending xdp_frame into the network stack, then there is no
-> >   * return point callback, which is needed to release e.g. DMA-mapping
-> > diff --git a/net/core/xdp.c b/net/core/xdp.c
-> > index 48aba933a5a8..66ac275a0360 100644
-> > --- a/net/core/xdp.c
-> > +++ b/net/core/xdp.c
-> > @@ -380,6 +380,67 @@ void xdp_return_frame_rx_napi(struct xdp_frame *xd=
-pf)
-> >  }
-> >  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
-> > =20
-> > +/* XDP bulk APIs introduce a defer/flush mechanism to return
-> > + * pages belonging to the same xdp_mem_allocator object
-> > + * (identified via the mem.id field) in bulk to optimize
-> > + * I-cache and D-cache.
-> > + * The bulk queue size is set to 16 to be aligned to how
-> > + * XDP_REDIRECT bulking works. The bulk is flushed when
-> > + * it is full or when mem.id changes.
-> > + * xdp_frame_bulk is usually stored/allocated on the function
-> > + * call-stack to avoid locking penalties.
-> > + */
-> > +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
-> > +{
-> > +	struct xdp_mem_allocator *xa =3D bq->xa;
-> > +	int i;
-> > +
-> > +	if (unlikely(!xa))
-> > +		return;
-> > +
-> > +	for (i =3D 0; i < bq->count; i++) {
-> > +		struct page *page =3D virt_to_head_page(bq->q[i]);
-> > +
-> > +		page_pool_put_full_page(xa->page_pool, page, false);
-> > +	}
-> > +	bq->count =3D 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
-> > +
-> > +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
-> > +			   struct xdp_frame_bulk *bq)
-> > +{
-> > +	struct xdp_mem_info *mem =3D &xdpf->mem;
-> > +	struct xdp_mem_allocator *xa;
-> > +
-> > +	if (mem->type !=3D MEM_TYPE_PAGE_POOL) {
-> > +		__xdp_return(xdpf->data, &xdpf->mem, false);
-> > +		return;
-> > +	}
-> > +
-> > +	rcu_read_lock();
-> > +
-> > +	xa =3D bq->xa;
-> > +	if (unlikely(!xa)) {
-> > +		xa =3D rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
-> > +		bq->count =3D 0;
-> > +		bq->xa =3D xa;
-> > +	}
-> > +
-> > +	if (bq->count =3D=3D XDP_BULK_QUEUE_SIZE)
-> > +		xdp_flush_frame_bulk(bq);
-> > +
-> > +	if (mem->id !=3D xa->mem.id) {
-> > +		xdp_flush_frame_bulk(bq);
-> > +		bq->xa =3D rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
-> > +	}
-> > +
-> > +	bq->q[bq->count++] =3D xdpf->data;
-> > +
-> > +	rcu_read_unlock();
-> > +}
-> > +EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
-> > +
-> >  void xdp_return_buff(struct xdp_buff *xdp)
-> >  {
-> >  	__xdp_return(xdp->data, &xdp->rxq->mem, true);
-> > --=20
-> > 2.26.2
-> >=20
->=20
->=20
-> Cheers
-> /Ilias
-
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX5vNUwAKCRA6cBh0uS2t
-rOg0AP9pBwNK7NMtva8Bh06OlVD04ffBRe6Y5LMbqca50IV7DwEA0kJ2O/Ci3Y3y
-i6wnVNkq2QMyTNBbTCNZ5ofEsZlr4gQ=
-=HAq8
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
+#syz fix:
+bpf: Fix a buffer out-of-bound access when filling raw_tp link_info
