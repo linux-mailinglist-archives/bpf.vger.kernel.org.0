@@ -2,117 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6B429FF15
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 08:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519F729FF91
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 09:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725823AbgJ3Hvl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 03:51:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57676 "EHLO mail.kernel.org"
+        id S1725790AbgJ3IWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 04:22:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgJ3Hvk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 03:51:40 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725355AbgJ3IWx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 04:22:53 -0400
+Received: from localhost (unknown [151.66.29.159])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7040622245;
-        Fri, 30 Oct 2020 07:51:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9286D22210;
+        Fri, 30 Oct 2020 08:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604044299;
-        bh=D/aIIrSzt2ELKTXPH9by2IoB0Bg74n2JeiRz65oPpmc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HFNHX7Ptz1xj5maXrLWDNsKFrMC3B1a4MEBGmeab0Kn0qIcOk7y9ZIyyrDFHW+9jB
-         TBVv02b9NS83EknczYO4Nv9Z311VfE5GwmvONSVtWjP5UeQzZ6cyHFREAT3o94Rl7q
-         eLcoSDaHIBrVwlhmdaEoVpsJHgV9JZ3vdsZ9+5Bg=
-Received: by mail-oo1-f54.google.com with SMTP id v123so1384317ooa.5;
-        Fri, 30 Oct 2020 00:51:39 -0700 (PDT)
-X-Gm-Message-State: AOAM533qSZqnKHQDo4ZMVLWFHRTEb7rkIEe/QY3p08Sc99feXkjJhDM9
-        2KYdo7YumGy9tGO0cSvFAcwP6R53Bq8kWjMDdoc=
-X-Google-Smtp-Source: ABdhPJyCH6aeDgANE72vDMvakcnLN2mSF/m847ZvdLdUdjshm/qtRYpKbnaorpXUYQu+qx20bd/1uWLRsLfhe1fwG7o=
-X-Received: by 2002:a4a:9806:: with SMTP id y6mr807310ooi.45.1604044298526;
- Fri, 30 Oct 2020 00:51:38 -0700 (PDT)
+        s=default; t=1604046172;
+        bh=tw9ZIbGM1l3QaYwhoYxULYl8xwmfWBMkqsLUQwH5Iqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sCOg4XOeHUvSaznQWeHjUrDcvnA1HF8T7JnluU3Tr3SQ7vJPBK5DUqoieAA+oFocQ
+         BDDtUf1jBHJBpwEzKSUHCTk+Qy4YbyeoPnqW5LKM8w1nzth7byaWD9MRySPUfknF+h
+         xgJu9TeCRGSCXX5mhY1jqhL0bPzed+8bq5LCGT/Y=
+Date:   Fri, 30 Oct 2020 09:22:47 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        brouer@redhat.com
+Subject: Re: [PATCH v2 net-next 1/4] net: xdp: introduce bulking for xdp tx
+ return path
+Message-ID: <20201030082247.GA2041@lore-desk>
+References: <cover.1603998519.git.lorenzo@kernel.org>
+ <aaf417930ccfdd57ee3a7339e2fff59b8ad50409.1603998519.git.lorenzo@kernel.org>
+ <20201030043254.GA100756@apalos.home>
 MIME-Version: 1.0
-References: <20201028171506.15682-1-ardb@kernel.org> <20201028171506.15682-2-ardb@kernel.org>
- <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
- <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
- <20201028225919.6ydy3m2u4p7x3to7@ast-mbp.dhcp.thefacebook.com>
- <CAMj1kXG8PmvO6bLhGXPWtzKMnAsip2WDa-qdrd+kFfr30sd8-A@mail.gmail.com>
- <20201028232001.pp7erdwft7oyt2xm@ast-mbp.dhcp.thefacebook.com>
- <CAKwvOd=Zrza=i54_=H3n2HkmMhg9EJ3Wy0kR5AXTSqBowsQV5g@mail.gmail.com> <20201030032247.twch6rvnk6ql3zjb@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20201030032247.twch6rvnk6ql3zjb@ast-mbp.dhcp.thefacebook.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 30 Oct 2020 08:51:27 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGzrTU7-x1vcNotxy-W=buSk=3OUX=WNvwZy59SGTRAxA@mail.gmail.com>
-Message-ID: <CAMj1kXGzrTU7-x1vcNotxy-W=buSk=3OUX=WNvwZy59SGTRAxA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
- to disable GCSE
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
+Content-Disposition: inline
+In-Reply-To: <20201030043254.GA100756@apalos.home>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 30 Oct 2020 at 04:22, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Oct 29, 2020 at 05:28:11PM -0700, Nick Desaulniers wrote:
-> >
-> > We already know that -fno-asynchronous-unwind-tables get dropped,
-> > hence this patch.
->
-> On arm64 only. Not on x86
->
-> > And we know -fomit-frame-pointer or
-> > -fno-omit-frame-pointer I guess gets dropped, hence your ask.
->
-> yep. that one is bugged.
->
-> > We might not know the full extent which other flags get dropped with the
-> > optimize attribute, but I'd argue that my list above can all result in
-> > pretty bad bugs when accidentally omitted (ok, maybe not -fshort-wchar
-> > or -fmacro-prefix-map, idk what those do) or when mixed with code that
->
-> true.
-> Few month back I've checked that strict-aliasing and no-common flags
-> from your list are not dropped by this attr in gcc [6789].
-> I've also checked that no-red-zone and model=kernel preserved as well.
->
-> > has different values those flags control.  Searching GCC's bug tracker
-> > for `__attribute__((optimize` turns up plenty of reports to make me
-> > think this attribute maybe doesn't work the way folks suspect or
-> > intend: https://gcc.gnu.org/bugzilla/buglist.cgi?quicksearch=__attribute__%28%28optimize&list_id=283390.
->
-> There is a risk.
-> Is it a footgun? Sure.
-> Yet. gcc testsuite is using __attribute__((optimize)).
-> And some of these tests were added _after_ offical gcc doc said that this
-> attribute is broken.
-> imo it's like 'beware of the dog' sign.
->
-> > There's plenty of folks arguing against the use of the optimize
-> > attribute in favor of the command line flag.  I urge you to please
-> > reconsider the request.
->
-> ok. Applied this first patch to bpf tree and will get it to Linus soon.
-> Second patch that is splitting interpreter out because of this mess
-> is dropped. The effect of gcse on performance is questionable.
-> iirc some interpreters used to do -fno-gcse to gain performance.
 
-That is absolutely fine. I only included the second patch to address
-Daniel's concern that -fno-gcse could affect unrelated code living in
-the same source file as __bpf_prog_run(), but if you don't care about
-that, nor will I.
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> Hi Lorenzo,=20
+>=20
+> On Thu, Oct 29, 2020 at 08:28:44PM +0100, Lorenzo Bianconi wrote:
+[...]
+> > index 54b0bf574c05..43ab8a73900e 100644
+> > --- a/drivers/net/ethernet/marvell/mvneta.c
+> > +++ b/drivers/net/ethernet/marvell/mvneta.c
+> > @@ -1834,8 +1834,10 @@ static void mvneta_txq_bufs_free(struct mvneta_p=
+ort *pp,
+> >  				 struct netdev_queue *nq, bool napi)
+> >  {
+> >  	unsigned int bytes_compl =3D 0, pkts_compl =3D 0;
+> > +	struct xdp_frame_bulk bq;
+> >  	int i;
+> > =20
+> > +	bq.xa =3D NULL;
+> >  	for (i =3D 0; i < num; i++) {
+> >  		struct mvneta_tx_buf *buf =3D &txq->buf[txq->txq_get_index];
+> >  		struct mvneta_tx_desc *tx_desc =3D txq->descs +
+> > @@ -1857,9 +1859,10 @@ static void mvneta_txq_bufs_free(struct mvneta_p=
+ort *pp,
+> >  			if (napi && buf->type =3D=3D MVNETA_TYPE_XDP_TX)
+> >  				xdp_return_frame_rx_napi(buf->xdpf);
+> >  			else
+> > -				xdp_return_frame(buf->xdpf);
+> > +				xdp_return_frame_bulk(buf->xdpf, &bq);
+> >  		}
+> >  	}
+> > +	xdp_flush_frame_bulk(&bq);
+> > =20
+> >  	netdev_tx_completed_queue(nq, pkts_compl, bytes_compl);
+> >  }
+>=20
+> Sorry I completely forgot to mention this on the v1 review.
+> I think this belongs to a patch of it's own similar to mellanox and mvpp2=
+=20
+> drivers
+
+ack, I am fine with it. I will fix it in v3.
+
+Regards,
+Lorenzo
+
+>=20
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index 3814fb631d52..a1f48a73e6df 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -104,6 +104,12 @@ struct xdp_frame {
+> >  	struct net_device *dev_rx; /* used by cpumap */
+> >  };
+> > =20
+> > +#define XDP_BULK_QUEUE_SIZE	16
+> > +struct xdp_frame_bulk {
+> > +	int count;
+> > +	void *xa;
+> > +	void *q[XDP_BULK_QUEUE_SIZE];
+> > +};
+> > =20
+> >  static inline struct skb_shared_info *
+> >  xdp_get_shared_info_from_frame(struct xdp_frame *frame)
+> > @@ -194,6 +200,9 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct =
+xdp_buff *xdp)
+> >  void xdp_return_frame(struct xdp_frame *xdpf);
+> >  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
+> >  void xdp_return_buff(struct xdp_buff *xdp);
+> > +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
+> > +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+> > +			   struct xdp_frame_bulk *bq);
+> > =20
+> >  /* When sending xdp_frame into the network stack, then there is no
+> >   * return point callback, which is needed to release e.g. DMA-mapping
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 48aba933a5a8..66ac275a0360 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -380,6 +380,67 @@ void xdp_return_frame_rx_napi(struct xdp_frame *xd=
+pf)
+> >  }
+> >  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
+> > =20
+> > +/* XDP bulk APIs introduce a defer/flush mechanism to return
+> > + * pages belonging to the same xdp_mem_allocator object
+> > + * (identified via the mem.id field) in bulk to optimize
+> > + * I-cache and D-cache.
+> > + * The bulk queue size is set to 16 to be aligned to how
+> > + * XDP_REDIRECT bulking works. The bulk is flushed when
+> > + * it is full or when mem.id changes.
+> > + * xdp_frame_bulk is usually stored/allocated on the function
+> > + * call-stack to avoid locking penalties.
+> > + */
+> > +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
+> > +{
+> > +	struct xdp_mem_allocator *xa =3D bq->xa;
+> > +	int i;
+> > +
+> > +	if (unlikely(!xa))
+> > +		return;
+> > +
+> > +	for (i =3D 0; i < bq->count; i++) {
+> > +		struct page *page =3D virt_to_head_page(bq->q[i]);
+> > +
+> > +		page_pool_put_full_page(xa->page_pool, page, false);
+> > +	}
+> > +	bq->count =3D 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
+> > +
+> > +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+> > +			   struct xdp_frame_bulk *bq)
+> > +{
+> > +	struct xdp_mem_info *mem =3D &xdpf->mem;
+> > +	struct xdp_mem_allocator *xa;
+> > +
+> > +	if (mem->type !=3D MEM_TYPE_PAGE_POOL) {
+> > +		__xdp_return(xdpf->data, &xdpf->mem, false);
+> > +		return;
+> > +	}
+> > +
+> > +	rcu_read_lock();
+> > +
+> > +	xa =3D bq->xa;
+> > +	if (unlikely(!xa)) {
+> > +		xa =3D rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+> > +		bq->count =3D 0;
+> > +		bq->xa =3D xa;
+> > +	}
+> > +
+> > +	if (bq->count =3D=3D XDP_BULK_QUEUE_SIZE)
+> > +		xdp_flush_frame_bulk(bq);
+> > +
+> > +	if (mem->id !=3D xa->mem.id) {
+> > +		xdp_flush_frame_bulk(bq);
+> > +		bq->xa =3D rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+> > +	}
+> > +
+> > +	bq->q[bq->count++] =3D xdpf->data;
+> > +
+> > +	rcu_read_unlock();
+> > +}
+> > +EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
+> > +
+> >  void xdp_return_buff(struct xdp_buff *xdp)
+> >  {
+> >  	__xdp_return(xdp->data, &xdp->rxq->mem, true);
+> > --=20
+> > 2.26.2
+> >=20
+>=20
+>=20
+> Cheers
+> /Ilias
+
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX5vNUwAKCRA6cBh0uS2t
+rOg0AP9pBwNK7NMtva8Bh06OlVD04ffBRe6Y5LMbqca50IV7DwEA0kJ2O/Ci3Y3y
+i6wnVNkq2QMyTNBbTCNZ5ofEsZlr4gQ=
+=HAq8
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
