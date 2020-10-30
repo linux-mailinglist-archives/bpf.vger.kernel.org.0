@@ -2,182 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F153D2A0506
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 13:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF8B2A051B
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 13:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgJ3MI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 08:08:28 -0400
-Received: from mail-eopbgr150113.outbound.protection.outlook.com ([40.107.15.113]:36366
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726519AbgJ3MI2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:08:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c2hR8vgkN72shuSOJayCGpIoCaqI/szlD+90tz15oLykAyF2BCAX/nS5W0PAlsrFo11XbQN1r+stTYgXR8VBGqOYK1QRDvwMlQ/CvqNNU/bBWShjodFvjhmMli3cbZmNFr8T0tHnRsina2sVxNEEhbMa5tv0CPM9tLDXSMoGWvamw+gqlONWd6Stll0UitszUoGJUIMXUp+HsUFDQaGxiM5NpNdwfiaLLzL4wVOIDfhHfHwg6d9ld02aH0qNwKny7ebHaIO/xQVrBp+nlm4Oi2x5E9NAeD8BjW6fFZ80exuVSgWYNS2mEFLFOkPGoDaO5iSKwMIfrOwuMF2QgJsL/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QsavJvg5npk+jK0woA1MBQiCy5B58vVQbSUoxYPlhuI=;
- b=S/sl1uCa5cebsqmf+TESQqGIJ17AATtzuOL2yuBOjx2iaURplHaWkjggyR1REUVjyx8cEIlrskyoUrXzwmftJ9xU9yhfQD0+M3epS4Z+xZ0EZzHZHoJvfv4IcdJlXehY4x0ROXtbNhD0Tc7Fj1RknzErFlMBkLTmBMZiusPoyqSr+9K40CzfrXDbVhx2PGChXD6zD1GWliCnHOVxUbjECt4e60SMPPcpuqKbPruQ0HQQb3AAj/X28i+4+7C0iP7W3LUBucowspLuAT1SxwPZ2qWbzbENUtf7A0vcGqCQnTNPs6K9P8FiKLsbpZut8r6xanPpZLrVV8yt25JNF6ufKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QsavJvg5npk+jK0woA1MBQiCy5B58vVQbSUoxYPlhuI=;
- b=PMBmg8egPEy6/u8Ru0gD/srsrOrTYtqyl7tK1Jujj9BeRzvZJkcpX1yZIwBSs96/c+qWDKm5BGDVD0yLhZvNYeEC53xOg+p2RLzqbTXFmCJdgAhrPpQPa3lGo7A/Fwuz5Y2bN11Fm5APM84knYRUMNglWdzy5pbORmxpyb2+CtI=
-Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
- (2603:10a6:820:1b::23) by VI1PR83MB0333.EURPRD83.prod.outlook.com
- (2603:10a6:802:3b::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.7; Fri, 30 Oct
- 2020 12:08:19 +0000
-Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
- ([fe80::c857:1a78:d155:fc99]) by VI1PR8303MB0080.EURPRD83.prod.outlook.com
- ([fe80::c857:1a78:d155:fc99%10]) with mapi id 15.20.3541.007; Fri, 30 Oct
- 2020 12:08:19 +0000
-From:   Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@google.com>
-Subject: [PATCH bpf-next] bpf: update verifier to stop perf ring buffer
- corruption
-Thread-Topic: [PATCH bpf-next] bpf: update verifier to stop perf ring buffer
- corruption
-Thread-Index: AdautGZ4+1YSnWihRZa8ESQSP7NSdQ==
-Date:   Fri, 30 Oct 2020 12:08:19 +0000
-Message-ID: <VI1PR8303MB008003C9E3B937033A593C47FB150@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=kesheldr@microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-10-30T12:08:17.4323933Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c00ceaae-cd6b-42aa-8f23-a340a3b8d3a1;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [149.12.0.58]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 63d1f721-2a42-4098-ddc3-08d87ccc7d90
-x-ms-traffictypediagnostic: VI1PR83MB0333:
-x-microsoft-antispam-prvs: <VI1PR83MB0333A6858480C34C89985886FB150@VI1PR83MB0333.EURPRD83.prod.outlook.com>
-x-o365-sonar-daas-pilot: True
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KSRAhUdArSp6qMYyCVsyo2kIPwbSQBrQ1/PyzrUBGEsJwdrKU9baXgc15EJWpWfLAWaU5xMschRtR7yOQ2KtOQV8MbCEf8/YroTMH9FzGSvITzI8SKt7GzrGeLCy+b3JUGFoGqcl5qDDnRxhUkoiDx0YxU1c6Ls9f0+ksqt4UH064ys5PTvu3n8VlvzKim4WtpuXd1wM6lCOSIGYriU2bBj2bPVybJCfN+5m8el7o67ODwYiX7z3buOI50/xLYwUH778rr4e/HYQyY0kjYBEpOmKcMchyQ4nh1Lyf3sNIOL44Aubwig0OM+8vm59+UhclXl7O6xzYdTb37NaYmv7RQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR8303MB0080.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(366004)(26005)(33656002)(55016002)(9686003)(7696005)(4326008)(8936002)(8676002)(6506007)(86362001)(8990500004)(6916009)(2906002)(186003)(52536014)(478600001)(54906003)(82960400001)(83380400001)(82950400001)(76116006)(5660300002)(66556008)(66476007)(66446008)(64756008)(10290500003)(71200400001)(66946007)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: bDfYRXHItrQodpoOjhpKhguEe4U5b3VJen/FVCk4YpmeIhbU0SHKpI5+xFuFj4S8KJoxeBV4Z2nejgupR4EtoyTVuBR1ym4+nPt0QgAutiHqnx1cwyzg85KbU+Sy8m5rimZeT46sBJpffG2SR49knxDKWRtO6emWjFbwrM8XIGc8dCfyWv9yvnvRe+J0zvjNYRIke7swJ0oc07ApHd3phL2ue4B4k3ndOw2HbnqKAvbucMuFzyRrymi6cJ9gX4VxXU+R/y9o408uvD+ZU3TnXnBSlv2a/2GG/AJVta5tq+4/fQEIUMsdfQ0YP85pAYkXHUYdhivwji0U4rZ8r0pdp1fxgWMVGAJ+/qdpiouR2cixBXDoGNb98XbEjfxlUBkwtLy9uzQBvGP47wk7l8gofQ9Q+JH8rCNSFdMDVMi48eGGGMyLtLjDDAIu7yhO07JX2r70CqC0aNopL494z1wrZEMwDCoDP0OrCMDlautnQuSgqKOceCS2S1KsZ3cY71OlbdTd/tWnM5PvBajRigSizeDkfQm/8m4wyS5S2tw3iNbRMCRLtnkGhWnsgEQg2AsLRa1ZgrfJMBOMEnLCApeTnwWtWfgPraiIet0fNVCHohHC7nA9uMxXpPW/FUBxRNqvMk2XkhIIEGUP/4C+tcd2vA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726272AbgJ3MOg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 08:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgJ3MOg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 08:14:36 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6998C0613D2;
+        Fri, 30 Oct 2020 05:14:35 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g12so6187839wrp.10;
+        Fri, 30 Oct 2020 05:14:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YM6lVvP1rsbQaoeXf51BiJbGQods3VmOPaRIQze1Y/4=;
+        b=HYS7Z4uAi2/xNN9o74spG3l4kzUyP8VyV1TecIsI0doBZ3KR403fmibbpqsKbbgf1I
+         3YWsELKS/7CS8edlysu8nDc8RcDcXMmEGa4o1BQqQLKZe87LrkxJ58Kz1Epu/BxhLZa2
+         SyShNcHGq1zDPLgM10ram2PFohrsa3jhJOWizJV8PO0Wz++hR+C10AzNUhRMFNrMTcIE
+         5kE+QciPzpMLTBsx/B+SjWbEm0JFjOfIgDoRl/aOyHJ8AoSyZW0z4fea/VU5b2rg3GYi
+         NWz9y4KXE6Z4SsKitRMANq9qNhAnIRcQFnigs4kXnYaJqXClKX7njkNtK1BI53TwQ2OW
+         /taQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YM6lVvP1rsbQaoeXf51BiJbGQods3VmOPaRIQze1Y/4=;
+        b=Laf0vRhRHfsWG9Jx2wY85vLWMuOA/4gVZikG/k+uhsS9l4g9Y3TTAiXFW/804wa/XE
+         PcXHfwGXTMXYFtRlVjFeoxST487kzHqT2sTilELvbV8HhZP/vi4ZMCUvsrr9s0t99RlZ
+         qAMCOdYXF8BKZvDXbG2NFrNgMjrikJYVNjzZOhI/xuFn0HLC8VJ2TRAMCyIp1H0ndYnY
+         IAJ2FcU3SInSFGTa9RnMjRLg27p0fTMs3PP+Al97gGlvGefpHB2JSneVwTqO8iEC/gEj
+         rV+y2moXGPNKVBO9hFpPK3++3UVNwWutlLcWLYvVY5NrevxGTeD9G3g7igqU6zo8BJ92
+         E2xA==
+X-Gm-Message-State: AOAM532iCEHJYwLgcARj5jhhfm+UZUqApWoG76/B2/hRzqug1zSrDiT3
+        vf50GVIeIG7VN6Ut8gmLGaxSyB3kLZ3Xo0dJ/iE=
+X-Google-Smtp-Source: ABdhPJwickHJXtZNeeSxMgk7CR4/SX9TpUvLmsnUgAWwQfcePxqc+JJdQMVbyqrvcOZmy3D37IpNYw==
+X-Received: by 2002:a05:6000:12c2:: with SMTP id l2mr2949137wrx.249.1604060073865;
+        Fri, 30 Oct 2020 05:14:33 -0700 (PDT)
+Received: from kernel-dev.chello.ie ([80.111.136.190])
+        by smtp.gmail.com with ESMTPSA id 90sm10020925wrh.35.2020.10.30.05.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 05:14:33 -0700 (PDT)
+From:   Weqaar Janjua <weqaar.janjua@gmail.com>
+X-Google-Original-From: Weqaar Janjua <weqaar.a.janjua@intel.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, magnus.karlsson@gmail.com, bjorn.topel@intel.com
+Cc:     Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
+        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        anders.roxell@linaro.org, jonathan.lemon@gmail.com
+Subject: [PATCH bpf-next 0/5] selftests/xsk: xsk selftests
+Date:   Fri, 30 Oct 2020 12:13:42 +0000
+Message-Id: <20201030121347.26984-1-weqaar.a.janjua@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR8303MB0080.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63d1f721-2a42-4098-ddc3-08d87ccc7d90
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2020 12:08:19.1545
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Aa4ahDsPPQQngqZqlv3/K7VIlsN7leHuSPxE705NX8IAY+9O4tjqpQqfBJBkaGZR0rUiVEcDk8UiywLKo4I0mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR83MB0333
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As discussed, bpf_perf_event_output() takes a u64 for the sample size param=
-eter but the perf ring buffer uses a u16 internally.  This results in overl=
-apping samples where the total sample size (including header/padding) excee=
-ds 64K, and prevents samples from being submitted when the total sample siz=
-e =3D=3D  64K.
+This patch set adds AF_XDP selftests based on veth to selftests/xsk/.
 
-This patch adds a check to the verifier to force the total sample size to b=
-e less than 64K.  I'm not convinced it is in the right place stylistically,=
- but it does work.  This is the first patch I've submitted to this list so =
-please forgive me if I'm doing this wrong, and let me know what I should ha=
-ve done.  Also I don't know what the size reduction of -24 relates to (it d=
-oesn't match any header struct I've found) but it was found through experim=
-entation.
+# Topology:
+# ---------
+#                 -----------
+#               _ | Process | _
+#              /  -----------  \
+#             /        |        \
+#            /         |         \
+#      -----------     |     -----------
+#      | Thread1 |     |     | Thread2 |
+#      -----------     |     -----------
+#           |          |          |
+#      -----------     |     -----------
+#      |  xskX   |     |     |  xskY   |
+#      -----------     |     -----------
+#           |          |          |
+#      -----------     |     ----------
+#      |  vethX  | --------- |  vethY |
+#      -----------   peer    ----------
+#           |          |          |
+#      namespaceX      |     namespaceY
 
-Thanks
+These selftests test AF_XDP SKB and Native/DRV modes using veth Virtual
+Ethernet interfaces.
 
-Kevin Sheldrake
+The test program contains two threads, each thread is single socket with
+a unique UMEM. It validates in-order packet delivery and packet content
+by sending packets to each other.
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index e83ef6f..0941731 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -18,6 +18,13 @@
-  */
- #define BPF_MAX_VAR_SIZ        (1 << 29)
+Prerequisites setup by script TEST_PREREQUISITES.sh:
 
-+/* Maximum variable size permitted for size param to bpf_perf_event_output=
-().
-+ * This ensures the samples sent into the perf ring buffer do not overflow=
- the
-+ * size parameter in the perf event header.
-+ */
-+#define BPF_PERF_RAW_SIZ_BITS sizeof(((struct perf_event_header *)0)->size=
-)
-+#define BPF_MAX_PERF_SAMP_SIZ ((1 << (BPF_PERF_RAW_SIZ_BITS * 8)) - 24)
-+
- /* Liveness marks, used for registers and spilled-regs (in stack slots).
-  * Read marks propagate upwards until they find a write mark; they record =
-that
-  * "one of this state's descendants read this reg" (and therefore the reg =
-is
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6200519..42211d4 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4997,7 +4997,7 @@ static int check_reference_leak(struct bpf_verifier_e=
-nv *env)
- static int check_helper_call(struct bpf_verifier_env *env, int func_id, in=
-t insn_idx)
- {
-        const struct bpf_func_proto *fn =3D NULL;
--       struct bpf_reg_state *regs;
-+       struct bpf_reg_state *regs, *reg;
-        struct bpf_call_arg_meta meta;
-        bool changes_data;
-        int i, err;
-@@ -5054,6 +5054,15 @@ static int check_helper_call(struct bpf_verifier_env=
- *env, int func_id, int insn
-                        return err;
-        }
+   Set up veth interfaces as per the topology shown ^^:
+   * setup two veth interfaces and one namespace
+   ** veth<xxxx> in root namespace
+   ** veth<yyyy> in af_xdp<xxxx> namespace
+   ** namespace af_xdp<xxxx>
+   * create a spec file veth.spec that includes this run-time configuration
+     that is read by test scripts - filenames prefixed with TEST_XSK
+   *** xxxx and yyyy are randomly generated 4 digit numbers used to avoid
+       conflict with any existing interface.
 
-+       /* special check for bpf_perf_event_output() size */
-+       regs =3D cur_regs(env);
-+       reg =3D &regs[BPF_REG_5];
-+       if (func_id =3D=3D BPF_FUNC_perf_event_output && reg->umax_value >=
-=3D BPF_MAX_PERF_SAMP_SIZ) {
-+               verbose(env, "bpf_perf_output_event()#%d size parameter mus=
-t be less than %ld\n",
-+                       BPF_FUNC_perf_event_output, BPF_MAX_PERF_SAMP_SIZ);
-+               return -E2BIG;
-+       }
-+
-        err =3D record_func_map(env, &meta, func_id, insn_idx);
-        if (err)
-                return err;
-@@ -5087,8 +5096,6 @@ static int check_helper_call(struct bpf_verifier_env =
-*env, int func_id, int insn
-                }
-        }
+The following tests are provided:
 
--       regs =3D cur_regs(env);
--
-        /* check that flags argument in get_local_storage(map, flags) is 0,
-         * this is required because get_local_storage() can't return an err=
-or.
-         */
+1. AF_XDP SKB mode
+   Generic mode XDP is driver independent, used when the driver does
+   not have support for XDP. Works on any netdevice using sockets and
+   generic XDP path. XDP hook from netif_receive_skb().
+   a. nopoll - soft-irq processing
+   b. poll - using poll() syscall
+   c. Socket Teardown
+      Create a Tx and a Rx socket, Tx from one socket, Rx on another.
+      Destroy both sockets, then repeat multiple times. Only nopoll mode
+	  is used
+   d. Bi-directional Sockets
+      Configure sockets as bi-directional tx/rx sockets, sets up fill
+	  and completion rings on each socket, tx/rx in both directions.
+	  Only nopoll mode is used
+
+2. AF_XDP DRV/Native mode
+   Works on any netdevice with XDP_REDIRECT support, driver dependent.
+   Processes packets before SKB allocation. Provides better performance
+   than SKB. Driver hook available just after DMA of buffer descriptor.
+   a. nopoll
+   b. poll
+   c. Socket Teardown
+   d. Bi-directional Sockets
+   * Only copy mode is supported because veth does not currently support
+     zero-copy mode
+
+Total tests: 8.
+
+Flow:
+* Single process spawns two threads: Tx and Rx
+* Each of these two threads attach to a veth interface within their
+  assigned namespaces
+* Each thread creates one AF_XDP socket connected to a unique umem
+  for each veth interface
+* Tx thread transmits 10k packets from veth<xxxx> to veth<yyyy>
+* Rx thread verifies if all 10k packets were received and delivered
+  in-order, and have the right content
+
+Structure of the patch set:
+
+Patch 1: This patch adds XSK Selftests framework under
+         tools/testing/selftests/xsk, and README
+Patch 2: Adds tests: SKB poll and nopoll mode, mac-ip-udp debug,
+         and README updates
+Patch 3: Adds tests: DRV poll and nopoll mode, and README updates
+Patch 4: Adds tests: SKB and DRV Socket Teardown, and README updates
+Patch 5: Adds tests: SKB and DRV Bi-directional Sockets, and README
+         updates
+
+Thanks: Weqaar
+
+Weqaar Janjua (5):
+  selftests/xsk: xsk selftests framework
+  selftests/xsk: xsk selftests - SKB POLL, NOPOLL
+  selftests/xsk: xsk selftests - DRV POLL, NOPOLL
+  selftests/xsk: xsk selftests - Socket Teardown - SKB, DRV
+  selftests/xsk: xsk selftests - Bi-directional Sockets - SKB, DRV
+
+ MAINTAINERS                                   |    1 +
+ tools/testing/selftests/Makefile              |    1 +
+ tools/testing/selftests/xsk/Makefile          |   34 +
+ tools/testing/selftests/xsk/README            |  125 +++
+ .../selftests/xsk/TEST_PREREQUISITES.sh       |   53 +
+ tools/testing/selftests/xsk/TEST_XSK.sh       |   15 +
+ .../xsk/TEST_XSK_DRV_BIDIRECTIONAL.sh         |   22 +
+ .../selftests/xsk/TEST_XSK_DRV_NOPOLL.sh      |   18 +
+ .../selftests/xsk/TEST_XSK_DRV_POLL.sh        |   18 +
+ .../selftests/xsk/TEST_XSK_DRV_TEARDOWN.sh    |   18 +
+ .../xsk/TEST_XSK_SKB_BIDIRECTIONAL.sh         |   19 +
+ .../selftests/xsk/TEST_XSK_SKB_NOPOLL.sh      |   18 +
+ .../selftests/xsk/TEST_XSK_SKB_POLL.sh        |   18 +
+ .../selftests/xsk/TEST_XSK_SKB_TEARDOWN.sh    |   18 +
+ tools/testing/selftests/xsk/config            |   12 +
+ tools/testing/selftests/xsk/prereqs.sh        |  119 ++
+ tools/testing/selftests/xsk/xdpprogs/Makefile |   64 ++
+ .../selftests/xsk/xdpprogs/Makefile.target    |   68 ++
+ .../selftests/xsk/xdpprogs/xdpxceiver.c       | 1000 +++++++++++++++++
+ .../selftests/xsk/xdpprogs/xdpxceiver.h       |  159 +++
+ tools/testing/selftests/xsk/xskenv.sh         |   33 +
+ 21 files changed, 1833 insertions(+)
+ create mode 100644 tools/testing/selftests/xsk/Makefile
+ create mode 100644 tools/testing/selftests/xsk/README
+ create mode 100755 tools/testing/selftests/xsk/TEST_PREREQUISITES.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_DRV_BIDIRECTIONAL.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_DRV_NOPOLL.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_DRV_POLL.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_DRV_TEARDOWN.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_SKB_BIDIRECTIONAL.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_SKB_NOPOLL.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_SKB_POLL.sh
+ create mode 100755 tools/testing/selftests/xsk/TEST_XSK_SKB_TEARDOWN.sh
+ create mode 100644 tools/testing/selftests/xsk/config
+ create mode 100755 tools/testing/selftests/xsk/prereqs.sh
+ create mode 100644 tools/testing/selftests/xsk/xdpprogs/Makefile
+ create mode 100644 tools/testing/selftests/xsk/xdpprogs/Makefile.target
+ create mode 100644 tools/testing/selftests/xsk/xdpprogs/xdpxceiver.c
+ create mode 100644 tools/testing/selftests/xsk/xdpprogs/xdpxceiver.h
+ create mode 100755 tools/testing/selftests/xsk/xskenv.sh
+
+-- 
+2.20.1
+
