@@ -2,115 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1BA29FB58
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 03:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248C929FC1E
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 04:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725815AbgJ3Cd1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Oct 2020 22:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
+        id S1725922AbgJ3DWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Oct 2020 23:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgJ3Cd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Oct 2020 22:33:27 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF52C0613CF;
-        Thu, 29 Oct 2020 19:33:27 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id n142so3900336ybf.7;
-        Thu, 29 Oct 2020 19:33:27 -0700 (PDT)
+        with ESMTP id S1725800AbgJ3DWw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Oct 2020 23:22:52 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89AB1C0613CF;
+        Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r10so4013416pgb.10;
+        Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iqyWJvIbQ2m2Q07/bq5tarOXlrpOxgQxrm0lLsIywI4=;
-        b=WgykwtdHaKmz2H54pqo/02jf77lvV2bEpU9uy4lUwMbpNZilswcC41Rm9GLoFkssrv
-         vzpQMm66i3BipHrDEMUOHmLbdo0eYvOjHD/xCrXyrUdclpPWVbJtDpo3X0TJRJM13zGL
-         Qi/7x2RncQg1Cw3OWd1bJnBe6U+yoxBn7PBaJzdC69fdneCLjWwlcAhlu0jFRfZp7HOJ
-         DpdQFxd/z109P+MgNcasoyrTYUwPj+1fLgsmXML5OVD3KO8DBu9FqDxunyBZ57LnZpOb
-         uDw7u30wGZrwNkesUr7CkeJVEkCJe/BiGkV+sM78CX3Gk5AftAnC2q55AH30sftVPlt6
-         eqDA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9STGJQi8a1xzdZYEEhl0ksIPPGpWDWskcupD6CiT7K0=;
+        b=LveUchPbVi1koQW7bKPxDDHOqgNcdw++j1kJJT/288hBHAcCW9eTY/N6DKotpp6I5d
+         4kwKicvd8PviMhSE1oo7tq9EgnDV/KUXiaRtGdk35u7nCC/AsVeoJEWlg+aKakP7Yxay
+         U6QLpa3KZdUQWdTwtsz+Is2q0+jbVzFQ4lXSwigNsWkcJltZ/6Aln9NxiU6H/GiN/9GI
+         xSzKhbPoQXY+m2ilqmg6gM96Nir9msMKNpXQa3UkLy9OtopOZE+xuCCTgCg/gmVB67hr
+         zWCJH2xAX94cNiJYCLoRh3TAcMA0QUN1hTKArLNFjMImgMnkK+zKI3PolyFpGnSbgyI8
+         lUKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iqyWJvIbQ2m2Q07/bq5tarOXlrpOxgQxrm0lLsIywI4=;
-        b=QswjeOJGnd/FimXcK3jgW/pgf0bcPv3Lc+cknYT6j/l7F7oLqD/uT1QBZA6IA9BJR3
-         HQxCmKuRrudnUVS30K02W0jg9MXRiRE36iOGldRjQvIjkuIw3KNgtomlR16HF++Cpn/R
-         jIiFdsNYeK7SQeNMnGEEyI6ZunKggo422j0Qn7RkmqdOy6i/GCMhO6cqsVilb75IA3aJ
-         2o8ptqAua9vUADpY9Yz4JItU2O1ImKXzm8Cins5y3YqNj75MKshgVJt5mYFh0rLv6XjA
-         y1AGMzv9mbusNr9NioV9Z06YUPv1iMquykGir3tEcp9jJizIuiiKdgRX6TEGG5dZymwd
-         dSyA==
-X-Gm-Message-State: AOAM530nw75LUv1T9zEf9zHqUZcZ2vTdCoZCcABePYVLH+mIDIYLSSPo
-        fX+FrbJxybCIehPjwVTtB1WgGi5oMKSlU/nJ6j8=
-X-Google-Smtp-Source: ABdhPJwxTZvtp9c3al0IBnwajkcu6AqoaKf0VGqZCGClaUCr5qEt4NLwwMqKyMZViLmoQpUduFfMLAkwXhs2OOiUcJg=
-X-Received: by 2002:a25:cb10:: with SMTP id b16mr550277ybg.459.1604025206750;
- Thu, 29 Oct 2020 19:33:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201029005902.1706310-1-andrii@kernel.org> <4427E5BD-5EBF-47E8-B7F6-9255BEAE2D53@fb.com>
-In-Reply-To: <4427E5BD-5EBF-47E8-B7F6-9255BEAE2D53@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 29 Oct 2020 19:33:15 -0700
-Message-ID: <CAEf4BzbtiByaU_-pEV8gVZH1N9_xCTWJBxb6DYPXF5p9b9+_kg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/11] libbpf: split BTF support
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9STGJQi8a1xzdZYEEhl0ksIPPGpWDWskcupD6CiT7K0=;
+        b=oTo5j6UFckwKMSbBMvb9wIT6dtT4nhNEwOrG0wdwOYz+HKS6ZkmrWuP/Xhsad2y5m0
+         IfMyoUiF+d32oDqFjOz6otxSJlAvQT5Lkw+33lkkgcLMYOVgSOUBwFskkPOFCBvmJWtm
+         4c5okXbBMn47WDggu0c6KUA/CLoLAqA+fI9PsljHCR4+oShNPxO4Ax4MHazlUMkmeYZL
+         cyRhJCWs9Uh/bG8mMiXlhzeQGlcdNJXUSt0RNg0JvVPalLJ8mDC2UYikTQxpEgWtfgik
+         7roMJUiPrNmEz1Ckj6/zB2833xZHhNyHl67LN+0k8azAicvxi0pjfBNw6QwV+xLe2YOv
+         0kCg==
+X-Gm-Message-State: AOAM5329ZdLtDqkeNKmKhCrJpq0kx1bgIhJ+FHsYkEB0NHTUK1OJcdeV
+        xXH4HOPn4QeYVaIACO5WCIU=
+X-Google-Smtp-Source: ABdhPJzQgMOq4ZzNF7YAn7j1F6iUJAwbfZIdjJV25dsV4gdUa17Loyaj4ME/CxIUiGaUuXS0fRaUCw==
+X-Received: by 2002:a17:90a:f293:: with SMTP id fs19mr312500pjb.41.1604028172052;
+        Thu, 29 Oct 2020 20:22:52 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:71de])
+        by smtp.gmail.com with ESMTPSA id q123sm4370329pfq.56.2020.10.29.20.22.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Oct 2020 20:22:50 -0700 (PDT)
+Date:   Thu, 29 Oct 2020 20:22:47 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
+        <bpf@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2 1/2] bpf: don't rely on GCC __attribute__((optimize))
+ to disable GCSE
+Message-ID: <20201030032247.twch6rvnk6ql3zjb@ast-mbp.dhcp.thefacebook.com>
+References: <20201028171506.15682-1-ardb@kernel.org>
+ <20201028171506.15682-2-ardb@kernel.org>
+ <20201028213903.fvdjydadqt6tx765@ast-mbp.dhcp.thefacebook.com>
+ <CAMj1kXFHcM-Jb+MwsLtB4NMUmMyAGGLeNGNLC9vTATot3NJLrA@mail.gmail.com>
+ <20201028225919.6ydy3m2u4p7x3to7@ast-mbp.dhcp.thefacebook.com>
+ <CAMj1kXG8PmvO6bLhGXPWtzKMnAsip2WDa-qdrd+kFfr30sd8-A@mail.gmail.com>
+ <20201028232001.pp7erdwft7oyt2xm@ast-mbp.dhcp.thefacebook.com>
+ <CAKwvOd=Zrza=i54_=H3n2HkmMhg9EJ3Wy0kR5AXTSqBowsQV5g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=Zrza=i54_=H3n2HkmMhg9EJ3Wy0kR5AXTSqBowsQV5g@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 5:33 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Oct 28, 2020, at 5:58 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > This patch set adds support for generating and deduplicating split BTF. This
-> > is an enhancement to the BTF, which allows to designate one BTF as the "base
-> > BTF" (e.g., vmlinux BTF), and one or more other BTFs as "split BTF" (e.g.,
-> > kernel module BTF), which are building upon and extending base BTF with extra
-> > types and strings.
-> >
-> > Once loaded, split BTF appears as a single unified BTF superset of base BTF,
-> > with continuous and transparent numbering scheme. This allows all the existing
-> > users of BTF to work correctly and stay agnostic to the base/split BTFs
-> > composition.  The only difference is in how to instantiate split BTF: it
-> > requires base BTF to be alread instantiated and passed to btf__new_xxx_split()
-> > or btf__parse_xxx_split() "constructors" explicitly.
-> >
-> > This split approach is necessary if we are to have a reasonably-sized kernel
-> > module BTFs. By deduping each kernel module's BTF individually, resulting
-> > module BTFs contain copies of a lot of kernel types that are already present
-> > in vmlinux BTF. Even those single copies result in a big BTF size bloat. On my
-> > kernel configuration with 700 modules built, non-split BTF approach results in
-> > 115MBs of BTFs across all modules. With split BTF deduplication approach,
-> > total size is down to 5.2MBs total, which is on part with vmlinux BTF (at
-> > around 4MBs). This seems reasonable and practical. As to why we'd need kernel
-> > module BTFs, that should be pretty obvious to anyone using BPF at this point,
-> > as it allows all the BTF-powered features to be used with kernel modules:
-> > tp_btf, fentry/fexit/fmod_ret, lsm, bpf_iter, etc.
->
-> Some high level questions. Do we plan to use split BTF for in-tree modules
-> (those built together with the kernel) or out-of-tree modules (those built
-> separately)? If it is for in-tree modules, is it possible to build split BTF
-> into vmlinux BTF?
+On Thu, Oct 29, 2020 at 05:28:11PM -0700, Nick Desaulniers wrote:
+> 
+> We already know that -fno-asynchronous-unwind-tables get dropped,
+> hence this patch.  
 
-It will be possible to use for both in-tree and out-of-tree. For
-in-tree, this will be integrated into the kernel build process. For
-out-of-tree, whoever builds their kernel module will need to invoke
-pahole -J with an extra flag pointing to the right vmlinux image (I
-haven't looked into the exact details of this integration, maybe there
-are already scripts in Linux repo that out-of-tree modules have to
-use, in such case we can add this integration there).
+On arm64 only. Not on x86
 
-Merging all in-tree modules' BTFs into vmlinux's BTF defeats the
-purpose of the split BTF and will just increase the size of vmlinux
-BTF unnecessarily.
+> And we know -fomit-frame-pointer or
+> -fno-omit-frame-pointer I guess gets dropped, hence your ask.  
 
->
-> Thanks,
-> Song
->
-> [...]
+yep. that one is bugged.
+
+> We might not know the full extent which other flags get dropped with the
+> optimize attribute, but I'd argue that my list above can all result in
+> pretty bad bugs when accidentally omitted (ok, maybe not -fshort-wchar
+> or -fmacro-prefix-map, idk what those do) or when mixed with code that
+
+true.
+Few month back I've checked that strict-aliasing and no-common flags
+from your list are not dropped by this attr in gcc [6789].
+I've also checked that no-red-zone and model=kernel preserved as well.
+
+> has different values those flags control.  Searching GCC's bug tracker
+> for `__attribute__((optimize` turns up plenty of reports to make me
+> think this attribute maybe doesn't work the way folks suspect or
+> intend: https://gcc.gnu.org/bugzilla/buglist.cgi?quicksearch=__attribute__%28%28optimize&list_id=283390.
+
+There is a risk.
+Is it a footgun? Sure.
+Yet. gcc testsuite is using __attribute__((optimize)).
+And some of these tests were added _after_ offical gcc doc said that this
+attribute is broken.
+imo it's like 'beware of the dog' sign.
+
+> There's plenty of folks arguing against the use of the optimize
+> attribute in favor of the command line flag.  I urge you to please
+> reconsider the request.
+
+ok. Applied this first patch to bpf tree and will get it to Linus soon.
+Second patch that is splitting interpreter out because of this mess
+is dropped. The effect of gcse on performance is questionable.
+iirc some interpreters used to do -fno-gcse to gain performance.
