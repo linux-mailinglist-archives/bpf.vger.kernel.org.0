@@ -2,196 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFFF2A0A61
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 16:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC972A0B88
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 17:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgJ3Put (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 11:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgJ3Pus (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 11:50:48 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B603FC0613CF;
-        Fri, 30 Oct 2020 08:50:48 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id u62so7971656iod.8;
-        Fri, 30 Oct 2020 08:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HxnSxsE+M9fmWZ2rJEKUv08v/eoEDXQx96qUIuOYyS0=;
-        b=qVFlWNc/vbn9Ku+VY4QkXb77T4NlUAGQIti4I7K/Ime3KZbaDt9yul/qM8r/71iwSE
-         LIvkw8uzTeaFfvzKamMC8Vuka/JvoavsqRlOS79eCjGCxjUTrELegQPu3BlDoFoROtd2
-         l2RkGqiQb3MjPuKz4tLt7HSk9NWpAWt5oRBi8HwABk+CMzKE1sAYIX//5rYoRsVFQXc2
-         VGE4X1fGubdSmybPE38zbuHPCvCcpu4LGKlersTyXBxreYNd1skHSzCTR91pop72OzMm
-         uplS0jomiOvd4AzIGAau3pm62/UdfIOeO+J2rKTffaooBYRYt7ZWaZ9wLgeLBWiG0HIv
-         VHMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HxnSxsE+M9fmWZ2rJEKUv08v/eoEDXQx96qUIuOYyS0=;
-        b=fLthT5pqgqx++weBfN2ROQPsBp6hrbYzkh2BahmBTS3XO9Ps8aaKRxFJPJmtrWibtZ
-         YGSdUTW6GV0p7UHoSbQ2ZuAF2PVvKSnEnhKj2hP/MJ+SDyE1vIje6aYkpJkjCB53IChK
-         LavJw1hJDHbHgeRxtiW8lCGJcAMPcPwtiBEGP7XrkHGli3BGy8/PjYysxxOH0oPW26uT
-         g0s3TIaHtsj63KUF8Qz+hWh/v7AqQZX11llcIndHExhiIFHipDdmAa/8Iaen6VzdzbVk
-         COPOAqMqlSLDe52GtwWNOwWuPEoCAhGyUnOeDhfIR2siP/pBT1b5Az2DJCDyK5p4trdQ
-         9A/Q==
-X-Gm-Message-State: AOAM533v1fdeKrf1l/+2UR7VoLUqFDPP7t+n6Ur7Z7Vrg2hJ84qAzUwp
-        ChzNtF8iz934wJD/2L6CKM12KeqaxXQJ/kjA+Gs=
-X-Google-Smtp-Source: ABdhPJx92+zYQgqCO6HMYmwyoylayJzqYs5CQtqk+zu86pd1I1sTXQZcfQ6PgmxeAuwewe2P6Z2V9OpcwLcTUcTSzXY=
-X-Received: by 2002:a02:c80a:: with SMTP id p10mr2412474jao.114.1604073047953;
- Fri, 30 Oct 2020 08:50:47 -0700 (PDT)
+        id S1727136AbgJ3Qnu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 12:43:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725808AbgJ3Qnu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 12:43:50 -0400
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A94220727;
+        Fri, 30 Oct 2020 16:43:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604076229;
+        bh=+c90p9MaJzJuRoN3BvzXiKmnGAJxiR0Sa0P4b8aUQzo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t88tlPU/NUroEniVPjW4TqLnvWhrIfH7ontb/tEW1sdRT1FnoiQWKwy+fSUx68sT0
+         rs+vZHx9YuNZDX4RlYGkx+PYCs8BQegue4RXJCYXSWqtTEusaM36gdfe9y47LRbpYq
+         RMWf3ILhVtq4udvvmC0MqjaXWbCMgZYZmibfi+A8=
+Received: by mail-lj1-f171.google.com with SMTP id m8so1531797ljj.0;
+        Fri, 30 Oct 2020 09:43:48 -0700 (PDT)
+X-Gm-Message-State: AOAM532qaDsqxVA3X6h99Ub1b4JpHMEpTene47Fd6aJCiygLTnVKTH25
+        8iOmZ1CUJAdzTQ7nWT7BrCHiR26dDKFN1loC/f4=
+X-Google-Smtp-Source: ABdhPJxm9sgEJSwmgM8hEzqnta7s9o9UIZv9ydY0U2OJxGGE0P5Itz/d9cN8+Gju9yF5FTpwjHbDKtASYlPQqQbzWVY=
+X-Received: by 2002:a05:651c:1341:: with SMTP id j1mr1556651ljb.41.1604076227193;
+ Fri, 30 Oct 2020 09:43:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <160384954046.698509.132709669068189999.stgit@localhost.localdomain>
- <160384964803.698509.11020605670605638967.stgit@localhost.localdomain>
- <CAEf4BzaELDiuHLbSdWdZZcjw5eNCJELBeHUc2CRiursUcUj_kg@mail.gmail.com>
- <CAKgT0UcQzJ06ayURwpU78ybW+WYRUbbEH++6O9nPUxSSHnU89Q@mail.gmail.com> <CAEf4BzY73uiNE8V_zyhRuMpX8+e6JyR+BkfHqPfztOpm9Orjng@mail.gmail.com>
-In-Reply-To: <CAEf4BzY73uiNE8V_zyhRuMpX8+e6JyR+BkfHqPfztOpm9Orjng@mail.gmail.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Fri, 30 Oct 2020 08:50:37 -0700
-Message-ID: <CAKgT0UcRh50K9UvZ61MD3U2PzqKsYaJRWOh_s-p-6YFZgR2YVw@mail.gmail.com>
-Subject: Re: [bpf-next PATCH 4/4] selftests/bpf: Migrate tcpbpf_user.c to use
- BPF skeleton
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20201029005902.1706310-1-andrii@kernel.org> <20201029005902.1706310-3-andrii@kernel.org>
+In-Reply-To: <20201029005902.1706310-3-andrii@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 30 Oct 2020 09:43:35 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6DxoRjBPJEgwzEtmVt-Uunw-MAmAF2tgh-ksjcKuJ4Bw@mail.gmail.com>
+Message-ID: <CAPhsuW6DxoRjBPJEgwzEtmVt-Uunw-MAmAF2tgh-ksjcKuJ4Bw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 02/11] selftest/bpf: relax btf_dedup test checks
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Lawrence Brakmo <brakmo@fb.com>, alexanderduyck@fb.com
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 7:30 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Oct 29, 2020 at 1:40 AM Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> On Thu, Oct 29, 2020 at 5:42 PM Alexander Duyck
-> <alexander.duyck@gmail.com> wrote:
-> >
-> > On Thu, Oct 29, 2020 at 4:20 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Thu, Oct 29, 2020 at 12:57 AM Alexander Duyck
-> > > <alexander.duyck@gmail.com> wrote:
-> > > >
-> > > > From: Alexander Duyck <alexanderduyck@fb.com>
-> > > >
-> > > > Update tcpbpf_user.c to make use of the BPF skeleton. Doing this we can
-> > > > simplify test_tcpbpf_user and reduce the overhead involved in setting up
-> > > > the test.
-> > > >
-> > > > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> > > > ---
-> > >
-> > > Few suggestions below, but overall looks good:
-> > >
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > >
-> > > >  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |   48 +++++++++-----------
-> > > >  1 file changed, 21 insertions(+), 27 deletions(-)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > > > index 4e1190894e1e..7e92c37976ac 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > > > @@ -5,6 +5,7 @@
-> > > >
-> > > >  #include "test_tcpbpf.h"
-> > > >  #include "cgroup_helpers.h"
-> > > > +#include "test_tcpbpf_kern.skel.h"
-> > > >
-> > > >  #define LO_ADDR6 "::1"
-> > > >  #define CG_NAME "/tcpbpf-user-test"
-> > > > @@ -162,39 +163,32 @@ static void run_test(int map_fd, int sock_map_fd)
-> > > >
-> > > >  void test_tcpbpf_user(void)
-> > > >  {
-> > > > -       const char *file = "test_tcpbpf_kern.o";
-> > > > -       int prog_fd, map_fd, sock_map_fd;
-> > > > -       struct bpf_object *obj;
-> > > > +       struct test_tcpbpf_kern *skel;
-> > > > +       int map_fd, sock_map_fd;
-> > > > +       struct bpf_link *link;
-> > > >         int cg_fd = -1;
-> > > > -       int rv;
-> > > > -
-> > > > -       cg_fd = cgroup_setup_and_join(CG_NAME);
-> > > > -       if (CHECK_FAIL(cg_fd < 0))
-> > > > -               goto err;
-> > > >
-> > > > -       if (CHECK_FAIL(bpf_prog_load(file, BPF_PROG_TYPE_SOCK_OPS, &obj, &prog_fd))) {
-> > > > -               fprintf(stderr, "FAILED: load_bpf_file failed for: %s\n", file);
-> > > > -               goto err;
-> > > > -       }
-> > > > +       skel = test_tcpbpf_kern__open_and_load();
-> > > > +       if (CHECK(!skel, "open and load skel", "failed"))
-> > > > +               return;
-> > > >
-> > > > -       rv = bpf_prog_attach(prog_fd, cg_fd, BPF_CGROUP_SOCK_OPS, 0);
-> > > > -       if (CHECK_FAIL(rv)) {
-> > > > -               fprintf(stderr, "FAILED: bpf_prog_attach: %d (%s)\n",
-> > > > -                      errno, strerror(errno));
-> > > > -               goto err;
-> > > > -       }
-> > > > +       cg_fd = test__join_cgroup(CG_NAME);
-> > > > +       if (CHECK_FAIL(cg_fd < 0))
-> > >
-> > > please use either CHECK() or one of the newer ASSERT_xxx() macro (also
-> > > defined in test_progs.h), CHECK_FAIL should be avoided in general.
-> >
-> > So the plan I had was to actually move over to the following:
-> >         cg_fd = test__join_cgroup(CG_NAME);
-> >         if (CHECK_FAIL(cg_fd < 0))
-> >                 goto cleanup_skel;
-> >
-> > It still makes use of CHECK_FAIL but it looks like test__join_cgroup
-> > already takes care of error messaging so using CHECK_FAIL in this case
-> > makes more sense.
+> Remove the requirement of a strictly exact string section contents. This used
+> to be true when string deduplication was done through sorting, but with string
+> dedup done through hash table, it's no longer true. So relax test harness to
+> relax strings checks and, consequently, type checks, which now don't have to
+> have exactly the same string offsets.
 >
-> CHECK (and ASSERT) leave a paper-trail in verbose test log, so it
-> makes it easier to debug tests, if something fails. CHECK_FAIL is
-> invisible, unless if fails. So CHECK_FAIL should be used only for
-> things that are happening on the order of hundreds of instances per
-> test, or more.
-
-Okay, well in that case I will go through and replace the CHECK_FAIL
-calls with a CHECK.
-
-> >
-> > > > +               goto cleanup_skel;
-> > > >
-> > > > -       map_fd = bpf_find_map(__func__, obj, "global_map");
-> > > > -       if (CHECK_FAIL(map_fd < 0))
-> > > > -               goto err;
-> > > > +       map_fd = bpf_map__fd(skel->maps.global_map);
-> > > > +       sock_map_fd = bpf_map__fd(skel->maps.sockopt_results);
-> > > >
-> > > > -       sock_map_fd = bpf_find_map(__func__, obj, "sockopt_results");
-> > > > -       if (CHECK_FAIL(sock_map_fd < 0))
-> > > > -               goto err;
-> > > > +       link = bpf_program__attach_cgroup(skel->progs.bpf_testcb, cg_fd);
-> > >
-> > > you can do skel->links.bpf_testcb = bpf_program__attach_cgroup() and
-> > > skeleton's __destroy() call will take care of destroying the link
-> >
-> > Okay, I can look into using that. Actually this has me wondering if
-> > there wouldn't be some way to make use of test_tcpbpf_kern__attach to
-> > achieve this in some standard way. I'll get that sorted before I
-> > submit v2.
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/btf.c | 34 +++++++++++---------
+>  1 file changed, 19 insertions(+), 15 deletions(-)
 >
-> cgroup BPF programs can't be auto-attached, because they expect cgroup
-> FD, which you can't provide at compilation time (declaratively) in BPF
-> code. So it has to be manually attached. skeleton's attach() will just
-> ignore such programs.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+> index 93162484c2ca..2ccc23b2a36f 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+> @@ -6652,7 +6652,7 @@ static void do_test_dedup(unsigned int test_num)
+>         const void *test_btf_data, *expect_btf_data;
+>         const char *ret_test_next_str, *ret_expect_next_str;
+>         const char *test_strs, *expect_strs;
+> -       const char *test_str_cur, *test_str_end;
+> +       const char *test_str_cur;
+>         const char *expect_str_cur, *expect_str_end;
+>         unsigned int raw_btf_size;
+>         void *raw_btf;
+> @@ -6719,12 +6719,18 @@ static void do_test_dedup(unsigned int test_num)
+>                 goto done;
+>         }
+>
+> -       test_str_cur = test_strs;
+> -       test_str_end = test_strs + test_hdr->str_len;
+>         expect_str_cur = expect_strs;
+>         expect_str_end = expect_strs + expect_hdr->str_len;
+> -       while (test_str_cur < test_str_end && expect_str_cur < expect_str_end) {
+> +       while (expect_str_cur < expect_str_end) {
+>                 size_t test_len, expect_len;
+> +               int off;
+> +
+> +               off = btf__find_str(test_btf, expect_str_cur);
+> +               if (CHECK(off < 0, "exp str '%s' not found: %d\n", expect_str_cur, off)) {
+> +                       err = -1;
+> +                       goto done;
+> +               }
+> +               test_str_cur = btf__str_by_offset(test_btf, off);
+>
+>                 test_len = strlen(test_str_cur);
+>                 expect_len = strlen(expect_str_cur);
+> @@ -6741,15 +6747,8 @@ static void do_test_dedup(unsigned int test_num)
+>                         err = -1;
+>                         goto done;
+>                 }
+> -               test_str_cur += test_len + 1;
+>                 expect_str_cur += expect_len + 1;
+>         }
+> -       if (CHECK(test_str_cur != test_str_end,
+> -                 "test_str_cur:%p != test_str_end:%p",
+> -                 test_str_cur, test_str_end)) {
+> -               err = -1;
+> -               goto done;
+> -       }
+>
+>         test_nr_types = btf__get_nr_types(test_btf);
+>         expect_nr_types = btf__get_nr_types(expect_btf);
+> @@ -6775,10 +6774,15 @@ static void do_test_dedup(unsigned int test_num)
+>                         err = -1;
+>                         goto done;
+>                 }
+> -               if (CHECK(memcmp((void *)test_type,
+> -                                (void *)expect_type,
+> -                                test_size),
+> -                         "type #%d: contents differ", i)) {
 
-Yeah, I figured that out after reviewing the code further.
+I guess test_size and expect_size are not needed anymore?
 
-Thanks.
+> +               if (CHECK(btf_kind(test_type) != btf_kind(expect_type),
+> +                         "type %d kind: exp %d != got %u\n",
+> +                         i, btf_kind(expect_type), btf_kind(test_type))) {
+> +                       err = -1;
+> +                       goto done;
+> +               }
+> +               if (CHECK(test_type->info != expect_type->info,
+> +                         "type %d info: exp %d != got %u\n",
+> +                         i, expect_type->info, test_type->info)) {
 
-- Alex
+btf_kind() returns part of ->info, so we only need the second check, no?
+
+IIUC, test_type and expect_type may have different name_off now. Shall
+we check ->size matches?
+
+
+>                         err = -1;
+>                         goto done;
+>                 }
+> --
+> 2.24.1
+>
