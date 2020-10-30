@@ -2,49 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38012A1046
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 22:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC622A10DC
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 23:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgJ3VjO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 17:39:14 -0400
-Received: from 93804.cloudwaysapps.com ([178.62.255.238]:57218 "EHLO
-        93804.cloudwaysapps.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726163AbgJ3VjO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Oct 2020 17:39:14 -0400
-X-Greylist: delayed 7507 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 17:39:14 EDT
-Received: from 127.0.0.1 (93804.cloudwaysapps.com [127.0.0.1])
-        by 93804.cloudwaysapps.com (Postfix) with SMTP id 788CE214E0;
-        Fri, 30 Oct 2020 19:04:52 +0000 (UTC)
-Received: from [77.238.40.188]
-        by 127.0.0.1 SMTP id JuUdklzboP79w9;
-        Fri, 30 Oct 2020 18:00:10 -0200
-Message-ID: <w$yrw9yo6fud7e$353@fer.o4.ppi>
-From:   "JOHN PHIL" <gerradfinancialplanning@gmail.com>
-Reply-To: "JOHN PHIL" <gerradfinancialplanning@gmail.com>
-To:     bpardo@kcwizards.com
-Subject: November Equity Investment 20-20 
-Date:   Fri, 30 Oct 20 18:00:10 GMT
-X-Mailer: Microsoft Outlook Express 5.00.2919.6700
+        id S1725909AbgJ3Wac (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 18:30:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725780AbgJ3Wac (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 18:30:32 -0400
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76F05221EB;
+        Fri, 30 Oct 2020 22:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604097031;
+        bh=1SEtV+7K6WPgubjmBr0YXBpynUzAYHX6x8Trau0hjY0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PFkdvN/uN9mwQJ+RX4cJkafCuiraa/ClnR4xIV6pv4X4aAUln6IbnhWR2rPiG2PDf
+         KyTty//Nrb1jVh5HpeLzwv0nhZocvCGg3o5cX5yUNPQDyNnQHEkcgyDMG6AzXLqvQe
+         6u+IQ7D9/fQB+tyWNDpK7Q4vM3YuHL5MCA9tm+4k=
+Received: by mail-lf1-f50.google.com with SMTP id b1so9777512lfp.11;
+        Fri, 30 Oct 2020 15:30:31 -0700 (PDT)
+X-Gm-Message-State: AOAM531x6jSz/5sMJsbjMb1lnuUNT9Cfc1YKRqkWcpZoxL5oelc+dw9N
+        bIfegCmU7xitDZ567+Z8XoB4asuE5pCiMXWrPFg=
+X-Google-Smtp-Source: ABdhPJzBOsmHcOgFpWu50Y+0W3w/cW4Zma33T1uq8r0sgrEgI4b1bnx7rbJvjFkshhwvSIx7y56JXfOI4P5gcm8EXCE=
+X-Received: by 2002:a19:c703:: with SMTP id x3mr1653157lff.105.1604097029626;
+ Fri, 30 Oct 2020 15:30:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="8CB3_E6_8.E4"
-X-Priority: 1
-X-MSMail-Priority: High
+References: <20201029005902.1706310-1-andrii@kernel.org> <20201029005902.1706310-3-andrii@kernel.org>
+ <CAPhsuW6DxoRjBPJEgwzEtmVt-Uunw-MAmAF2tgh-ksjcKuJ4Bw@mail.gmail.com> <CAEf4Bzaj6mfLPtMbXBNJ9Z2E4AKS8W4vcYG6OGuO_XftAqKBeQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzaj6mfLPtMbXBNJ9Z2E4AKS8W4vcYG6OGuO_XftAqKBeQ@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 30 Oct 2020 15:30:18 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5yKwo47uhpJVqGNvQBDw2w7adkZYfW9nk9Uk0RKRC-og@mail.gmail.com>
+Message-ID: <CAPhsuW5yKwo47uhpJVqGNvQBDw2w7adkZYfW9nk9Uk0RKRC-og@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 02/11] selftest/bpf: relax btf_dedup test checks
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Oct 30, 2020 at 11:45 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+[...]
+> > > @@ -6775,10 +6774,15 @@ static void do_test_dedup(unsigned int test_num)
+> > >                         err = -1;
+> > >                         goto done;
+> > >                 }
+> > > -               if (CHECK(memcmp((void *)test_type,
+> > > -                                (void *)expect_type,
+> > > -                                test_size),
+> > > -                         "type #%d: contents differ", i)) {
+> >
+> > I guess test_size and expect_size are not needed anymore?
+>
+> hm.. they are used just one check above, still needed
 
---8CB3_E6_8.E4
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Hmm... I don't know what happened to me back then.. Please ignore.
 
-How are you doing today I have a proposal which i think may interest you a=
-nd benefit you.I will like to give you full details of this via email:  ge=
-rradfinancialplanning@gmail.com
-Thanks.
+>
+> >
+> > > +               if (CHECK(btf_kind(test_type) != btf_kind(expect_type),
+> > > +                         "type %d kind: exp %d != got %u\n",
+> > > +                         i, btf_kind(expect_type), btf_kind(test_type))) {
+> > > +                       err = -1;
+> > > +                       goto done;
+> > > +               }
+> > > +               if (CHECK(test_type->info != expect_type->info,
+> > > +                         "type %d info: exp %d != got %u\n",
+> > > +                         i, expect_type->info, test_type->info)) {
+> >
+> > btf_kind() returns part of ->info, so we only need the second check, no?
+>
+> technically yes, but when kind mismatches, figuring that out from raw
+> info field is quite painful, so having a better, more targeted check
+> is still good.
 
-John PHIL
+Fair enough. We can have a more clear check.
 
---8CB3_E6_8.E4--
-
+Thanks,
+Song
