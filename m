@@ -2,143 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCD52A024D
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 11:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE402A0354
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 11:53:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgJ3KJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 06:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50536 "EHLO
+        id S1726294AbgJ3KxN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 06:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726566AbgJ3KJ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 06:09:28 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92295C0613D4
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 03:09:27 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id r8so3642636qtp.13
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 03:09:27 -0700 (PDT)
+        with ESMTP id S1726157AbgJ3KxM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 06:53:12 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633E3C0613CF
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 03:53:12 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id l28so7257948lfp.10
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 03:53:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HKjKG8xLf4hl4KGL08wOz97Uf/Uq5FWc5fG42s+qDsY=;
-        b=TM5Bw6PAIXOz+nTtr9excRpuvtiVbOKmoM/ZeNWT5OhVP0dd5hqlhFOupj+2xCEgRN
-         JeTxtgoWs+jeudgZ9IA8jtZiSnAw9Ipf8F4oNo4DhZotD2GG46YCALurZc48vpamdnDH
-         bDAYZYY0UDMQ4U+tcY/twD+X67yMUxY6dRKbYjO+3b0g5XaelEVxkUzLkp1zB392AI2K
-         2m1MttwmSo88t9aQ6aoIM2VaCRsaWaHkFa8ns2v0yZP3BySGZxcpF1apImCJxqUoZIbo
-         UqwzELNBZTiNLFtr5GfmkHii7LfNU4pXAIlwrARUL93aTJZAiyuWQgCHMSlSVdrG3j69
-         IX8A==
+        bh=RGxKu6N/ljpRrMPYO1GHJVR+cRftYgBFEsOMeaX+uIU=;
+        b=jZND6rDLmrO9spICzgJTCgUyIjDgF2iwHIqFMlTUr5c9lYncRHD31/x/7EQi8MjLrT
+         uCRhE0xLq1LIUI/SSr+wlB7wQUcMXvAaLBBVYkc80DlaSVmw2nlcyDEh7KQtFUjODJfH
+         QdvLS+s3ocJFBCsofDUuwLvK2t30YKuqtpn8w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HKjKG8xLf4hl4KGL08wOz97Uf/Uq5FWc5fG42s+qDsY=;
-        b=NywWUozO3UxxH8E0XD6FECFUlKFJ6HdQKMd7nGvlTF5YBu1ZGIGHbrdQyj/vki96AD
-         Tq4DynDjIBnncQHQ8rc4ES9gXBZomuSxgb0xrWyYWbaEo/Dvek0yVJ+jBI5H97g7yFlI
-         QMnQfuxPPPTNhGyLyG/e0Uwb9H/lTHeXU67PNr/QWLmPWFzCRtns+lcY2mZvHjUo6mi6
-         SSLR6oTPyZVr8M2/2z0lICCouVS+g6nCVIVkQPOrITKWdC8sk+IwzCH16hoz0sQ5EHSP
-         y2fl1huTk6ZUii+b4tICC9C0K3lalIlaLX68lv4LI3MY2sg72S+a5pL+MvZo+WciWI/M
-         FF+Q==
-X-Gm-Message-State: AOAM532BGziEBFh+X+fYWfmf4idXwQB/kpzpVJjE1zNrlRNZyseXlWSV
-        kjx2yKSBXTEuL55KwVYxeXqSzHRdUeAsDPrQiqajBA==
-X-Google-Smtp-Source: ABdhPJyT07TAhVCTLBh3geO1R4D7Y/mZhb7Bp9lH2jDEIbAYWD4tuFn+d8WZdEQUt+YDaRTSu12xKZ/EE1zqHUQncd8=
-X-Received: by 2002:ac8:44ae:: with SMTP id a14mr1318678qto.67.1604052566546;
- Fri, 30 Oct 2020 03:09:26 -0700 (PDT)
+        bh=RGxKu6N/ljpRrMPYO1GHJVR+cRftYgBFEsOMeaX+uIU=;
+        b=Nb6lWITKOadcaZGxh319rOxi75UwiCmlHLP+cr82hckRFmAKbFTuzqVBkFtfkO580J
+         cWIeiiicl1IemC6w4blhTu/nscRLlPOOLvPKknYgICrvvqkfR+vmJ/vHdHkW8fllvuxP
+         g5Cqk2Zk36nou6EWg2b91+xCkIvxA/pQqsjcAZ23xiOBMg+KgnPg7ixJvquQFn5NYl1q
+         GHjx+TPfcwYb9HkIATE2Az2WQqHj/uI6ArAL4ALwmWYklxnENWRSpjxdsPiCCxFsyDUL
+         1Hm4kvQ0/YS2G+bgokchg3QPUFPMXLJz1gb4MhqN88+zD/YkcspLnfRkzgu/dY6kOfqq
+         ef8Q==
+X-Gm-Message-State: AOAM531aMXzn72AHHM/oinE1WG1DB2CNB2O3suGs5rD2XfbBDtZaByK7
+        9CoLK0UzWCPdht7fhkadkkh3XVJ67XJ8aY9p5oWynQ==
+X-Google-Smtp-Source: ABdhPJyn8C/IW8kpR0WGiynCq34PNMOu9BFU7lnVDmeeTtH6KSiBOtCcj00bW85p7RR18fFKc7htyMPhRGrh8t1bYY4=
+X-Received: by 2002:a19:c80a:: with SMTP id y10mr736934lff.329.1604055190871;
+ Fri, 30 Oct 2020 03:53:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000c82fe505aef233c6@google.com> <CAEf4BzbuUDEktVCYZAonUTM6iYBcAOPjKho2gMRD+9Q=N5cYxQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbuUDEktVCYZAonUTM6iYBcAOPjKho2gMRD+9Q=N5cYxQ@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 30 Oct 2020 11:09:15 +0100
-Message-ID: <CACT4Y+aCTgfd1DXQENpxpsC=9WmJcg7CvY+NcXZOCAF6t4Cp3Q@mail.gmail.com>
-Subject: Re: WARNING in bpf_raw_tp_link_fill_link_info
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     syzbot <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20201027170317.2011119-1-kpsingh@chromium.org>
+ <20201027170317.2011119-2-kpsingh@chromium.org> <20201028011321.4yu62347lfzisxwy@kafai-mbp>
+In-Reply-To: <20201028011321.4yu62347lfzisxwy@kafai-mbp>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Fri, 30 Oct 2020 11:53:00 +0100
+Message-ID: <CACYkzJ5VU2Pd2ZiY7AKJM0yZ2NsDbQOu1Y_FYwkBv6M6NFvkcw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 12:01 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Sep 10, 2020 at 2:31 AM syzbot
-> <syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    7fb5eefd selftests/bpf: Fix test_sysctl_loop{1, 2} failure..
-> > git tree:       bpf-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1424fdb3900000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b6856d16f78d8fa9
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=976d5ecfab0c7eb43ac3
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a1f411900000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10929c11900000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+976d5ecfab0c7eb43ac3@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 check_copy_size include/linux/thread_info.h:150 [inline]
-> > WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 copy_to_user include/linux/uaccess.h:167 [inline]
-> > WARNING: CPU: 0 PID: 6854 at include/linux/thread_info.h:150 bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
-> > Kernel panic - not syncing: panic_on_warn set ...
-> > CPU: 0 PID: 6854 Comm: syz-executor574 Not tainted 5.9.0-rc1-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x18f/0x20d lib/dump_stack.c:118
-> >  panic+0x2e3/0x75c kernel/panic.c:231
-> >  __warn.cold+0x20/0x4a kernel/panic.c:600
-> >  report_bug+0x1bd/0x210 lib/bug.c:198
-> >  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
-> >  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
-> >  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-> > RIP: 0010:check_copy_size include/linux/thread_info.h:150 [inline]
-> > RIP: 0010:copy_to_user include/linux/uaccess.h:167 [inline]
-> > RIP: 0010:bpf_raw_tp_link_fill_link_info+0x306/0x350 kernel/bpf/syscall.c:2661
-> > Code: 41 bc ea ff ff ff e9 35 ff ff ff 4c 89 ff e8 41 66 33 00 e9 d0 fd ff ff 4c 89 ff e8 a4 66 33 00 e9 06 ff ff ff e8 ca ed f2 ff <0f> 0b eb 94 48 89 ef e8 2e 66 33 00 e9 65 fd ff ff e8 24 66 33 00
-> > RSP: 0018:ffffc900051c7bd0 EFLAGS: 00010293
-> > RAX: 0000000000000000 RBX: ffffc900051c7c60 RCX: ffffffff818179d6
-> > RDX: ffff88808b490000 RSI: ffffffff81817a96 RDI: 0000000000000006
-> > RBP: 0000000000000019 R08: 0000000000000000 R09: ffffc900051c7c7f
-> > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000019
-> > R13: 0000000000001265 R14: ffffffff8986ecc0 R15: ffffc900051c7c78
-> >  bpf_link_get_info_by_fd kernel/bpf/syscall.c:3626 [inline]
-> >  bpf_obj_get_info_by_fd+0x43a/0xc40 kernel/bpf/syscall.c:3664
-> >  __do_sys_bpf+0x1906/0x4b30 kernel/bpf/syscall.c:4237
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > RIP: 0033:0x4405f9
-> > Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> > RSP: 002b:00007fff47155808 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> > RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004405f9
-> > RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 000000000000000f
-> > RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-> > R10: 00000000004002c8 R11: 0000000000000246 R12: 0000000000401e00
-> > R13: 0000000000401e90 R14: 0000000000000000 R15: 0000000000000000
-> > Kernel Offset: disabled
-> > Rebooting in 86400 seconds..
-> >
->
-> #syz fix: b474959d5afd ("bpf: Fix a buffer out-of-bound access when
-> filling raw_tp link_info")
+Thanks for taking a look!
 
-Complete patch title:
+On Wed, Oct 28, 2020 at 2:13 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Oct 27, 2020 at 06:03:13PM +0100, KP Singh wrote:
+> [ ... ]
+>
+> > diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
+> > new file mode 100644
+> > index 000000000000..774140c458cc
+> > --- /dev/null
+> > +++ b/kernel/bpf/bpf_task_storage.c
+> > @@ -0,0 +1,327 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2019 Facebook
+> > + * Copyright 2020 Google LLC.
+> > + */
+> > +
+> > +#include "linux/pid.h"
+> > +#include "linux/sched.h"
+> > +#include <linux/rculist.h>
+> > +#include <linux/list.h>
+> > +#include <linux/hash.h>
+> > +#include <linux/types.h>
+> > +#include <linux/spinlock.h>
+> > +#include <linux/bpf.h>
+> > +#include <linux/bpf_local_storage.h>
+> > +#include <net/sock.h>
+> Is this required?
 
-#syz fix:
-bpf: Fix a buffer out-of-bound access when filling raw_tp link_info
+Nope. Removed.
+
+>
+> > +#include <uapi/linux/sock_diag.h>
+> > +#include <uapi/linux/btf.h>
+> > +#include <linux/bpf_lsm.h>
+> > +#include <linux/btf_ids.h>
+> > +#include <linux/fdtable.h>
+> > +
+> > +DEFINE_BPF_STORAGE_CACHE(task_cache);
+> > +
+> > +static struct bpf_local_storage __rcu **task_storage_ptr(void *owner)
+
+[...]
+
+> > +             err = -EBADF;
+> > +             goto out_fput;
+> > +     }
+> > +
+> > +     pid = get_pid(f->private_data);
+> n00b question. Is get_pid(f->private_data) required?
+> f->private_data could be freed while holding f->f_count?
+
+I would assume that holding a reference to the file should also
+keep the private_data alive but I was not sure so I grabbed the
+extra reference.
+
+>
+> > +     task = get_pid_task(pid, PIDTYPE_PID);
+> Should put_task_struct() be called before returning?
+
+If we keep using get_pid_task then, yes, I see it grabs a reference to the task.
+We could also call pid_task under rcu locks but it might be cleaner to
+just get_pid_task
+and put_task_struct().
+
+>
+> > +     if (!task || !task_storage_ptr(task)) {
+> "!task_storage_ptr(task)" is unnecessary, task_storage_lookup() should
+> have taken care of it.
+>
+>
+> > +             err = -ENOENT;
+> > +             goto out;
+> > +     }
+> > +
+> > +     sdata = task_storage_lookup(task, map, true);
+> > +     put_pid(pid);
+
+[...]
+
+> > +     .map_lookup_elem = bpf_pid_task_storage_lookup_elem,
+> > +     .map_update_elem = bpf_pid_task_storage_update_elem,
+> > +     .map_delete_elem = bpf_pid_task_storage_delete_elem,
+> Please exercise the syscall use cases also in the selftest.
+
+Will do. Thanks for the nudge :)
+
+>
+> > +     .map_check_btf = bpf_local_storage_map_check_btf,
+> > +     .map_btf_name = "bpf_local_storage_map",
+> > +     .map_btf_id = &task_storage_map_btf_id,
+> > +     .map_owner_storage_ptr = task_storage_ptr,
+> > +};
+> > +
