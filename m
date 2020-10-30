@@ -2,144 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A83D2A0E93
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3312A0E87
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgJ3TWw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 15:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        id S1727524AbgJ3TW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 15:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727589AbgJ3TUw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:20:52 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748AAC0613D5
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:20:52 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id i6so9304307lfd.1
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:20:52 -0700 (PDT)
+        with ESMTP id S1727641AbgJ3TVy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:21:54 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC35C0613D8
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:21:54 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id u202so1694192vkb.4
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=szeredi.hu; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7ltXFGIEC1wD1/DcBqIE9Zp9UpD0Eob4weHsly+LU6s=;
-        b=NKzAXeWRhEzSsyPxWy8lABW/VB/K7yCL712Wgf/ZLf7MLh2aHZKNViiJYIbi5Z9IUk
-         0D2VbKnfwvyD2QdfVIYU+1lfoDbLp2UF9hubMPUnOM8plYKIesS4Jd32XnljUf+5Wr21
-         fZ+UR9thk5kKUDBVcXk7E/KewhR4XtulAfljMrcCfiNYGTQrDJ4EF1AvjbDZkzjilzB1
-         1k4tGbZ6wS/da8Gqb6S3LJWsxLFX5rCei0jdonnPR7zzIioIklmXmIkKlgBZLR+ERq9I
-         TtV6o7qnXxRlP9zqMwKYrd9GYW6Mnx069+xDdw7tkMGQAZ/IdoP9rZYBB5nLy51sfqsR
-         3SeQ==
+        bh=8I5vCt7sQpLxqO9fFZglUpeymmnJZb+1HjzCHkxiFnI=;
+        b=SuJtxiwkoB6tT6rUkiqexK55I2Znto0HzbzoxVsqOK/P6c9gFQuP6oaZkgRXt529ZU
+         a+bJWmyqi0+flho90rhtlkwHEs/7it0kmTdVLD/LJTnan7DMQe7EUfH5HwKopELvdr6c
+         zUX1a7CTPjVwz/VH/TBiLoorR+ZXggEpvShSQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7ltXFGIEC1wD1/DcBqIE9Zp9UpD0Eob4weHsly+LU6s=;
-        b=Sn2Q+EpqXnLCelH1Oq5xeuiue6oP/WOedHjv1HnUT98ZU93lR/XG1CxF6wzeKeOlmj
-         muBQTTt9HhPj4yLr1BmIi2fUrz2xDzVTk+gClWNIzSutG/aeJyKIzEJdqwefembAlAdd
-         PB4CiQQDgzzpGsVfDrkNw5LT8hPI0If5PTjcLjxlAXvbYzxi8wiKiZUvmi55cOQNY/Li
-         krdvC0i1vA7G0YitapyYwOszHVtZ1L1XVYF+ZM7eLAPDhhH4/PmZ7y4h92meJtziFyIt
-         LbArHg/F9ZM2Tq0mWLGNFTMREX98IPdnLoP1ABzfaM2v9b0uzLm6isAr6+CQR7ddmKTp
-         77CQ==
-X-Gm-Message-State: AOAM532Gx2xZ5ZuZYjAScrG8KsNkMJ9xzfB15zyZAM1Z9CuX15u4sxOt
-        z0FDifXRkhwNIULSkU4tbTWUbC8O7SsqzJT1pXreTg==
-X-Google-Smtp-Source: ABdhPJzPd9Yn3eLEZ6vKKsiFecuFzporMourNqE58Gif0brpSLNfw6y269RW0/w1hGnLsri5OaWqZgnLzVxfJTsympg=
-X-Received: by 2002:a19:c357:: with SMTP id t84mr1432560lff.34.1604085650471;
- Fri, 30 Oct 2020 12:20:50 -0700 (PDT)
+        bh=8I5vCt7sQpLxqO9fFZglUpeymmnJZb+1HjzCHkxiFnI=;
+        b=ktuKjKULBlYbJI0p3lH+AnmcJ01s/nZpthDR0OuurRw39t2+7LXIBY+RyK0eJCTKpQ
+         JnmHGbQ9E1lIVgfbhtrKZNN9tO2s0uu9mW55kblkcsu+D8w4wYHbToMmQJe8MCW8RCTN
+         RbjioMampoCEkbcpsCwjt23UuK9lw0xNqe76X2FVsJalI6LAJXdXcUfowrj0GiN18dZw
+         tZ2wybJ1ovsyEQE68GkKASPCmSsbC0BjhIiQS0cLyvB52mDs/a7OR/2JD2e4a1SqwIrP
+         AkI9pHnR8hJ7lWhTS6UqfrCZ58t4m32y9rCXhCRFXUHzeZ3efeCFkSzV7h0TTTNz9Pe0
+         fOng==
+X-Gm-Message-State: AOAM532+orIehXGmSsKBeWQd/i5EWjeU8rmzPEhnEzM4GIpZR7fbC09b
+        vswCbXODcXBXIXCwREt6IBfZjKrz6722Prt8r2XjtQ==
+X-Google-Smtp-Source: ABdhPJxhGLBaazY1X0XxdFRD1fbdQdiuFWbQMhMjddSkpPS+9nVoe7eHxNfL0vqo7pYecWi6tpSi1Itb0ThaHuhtKN4=
+X-Received: by 2002:a1f:23d0:: with SMTP id j199mr8477163vkj.11.1604085713313;
+ Fri, 30 Oct 2020 12:21:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com> <93cfdc79-4c48-bceb-3620-4c63e9f4822e@gmail.com>
-In-Reply-To: <93cfdc79-4c48-bceb-3620-4c63e9f4822e@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 30 Oct 2020 20:20:24 +0100
-Message-ID: <CAG48ez3nH2Oiz9wMSpvUxxX_TRYTT98d3Nj1vnCuJOj9CCXH8Q@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
+References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
+ <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
+ <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com> <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com>
+In-Reply-To: <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 30 Oct 2020 20:21:42 +0100
+Message-ID: <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
+Subject: Re: general protection fault in security_inode_getattr
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
         Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 8:14 PM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
-> On 10/29/20 2:42 AM, Jann Horn wrote:
-> > As discussed at
-> > <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
-> > we need to re-check checkNotificationIdIsValid() after reading remote
-> > memory but before using the read value in any way. Otherwise, the
-> > syscall could in the meantime get interrupted by a signal handler, the
-> > signal handler could return, and then the function that performed the
-> > syscall could free() allocations or return (thereby freeing buffers on
-> > the stack).
-> >
-> > In essence, this pread() is (unavoidably) a potential use-after-free
-> > read; and to make that not have any security impact, we need to check
-> > whether UAF read occurred before using the read value. This should
-> > probably be called out elsewhere in the manpage, too...
-> >
-> > Now, of course, **reading** is the easy case. The difficult case is if
-> > we have to **write** to the remote process... because then we can't
-> > play games like that. If we write data to a freed pointer, we're
-> > screwed, that's it. (And for somewhat unrelated bonus fun, consider
-> > that /proc/$pid/mem is originally intended for process debugging,
-> > including installing breakpoints, and will therefore happily write
-> > over "readonly" private mappings, such as typical mappings of
-> > executable code.)
-> >
-> > So, uuuuh... I guess if anyone wants to actually write memory back to
-> > the target process, we'd better come up with some dedicated API for
-> > that, using an ioctl on the seccomp fd that magically freezes the
-> > target process inside the syscall while writing to its memory, or
-> > something like that? And until then, the manpage should have a big fat
-> > warning that writing to the target's memory is simply not possible
-> > (safely).
+On Fri, Oct 30, 2020 at 7:42 PM Dmitry Vyukov <dvyukov@google.com> wrote:
 >
-> Thank you for your very clear explanation! It turned out to be
-> trivially easy to demonstrate this issue with a slightly modified
-> version of my program.
+> On Fri, Oct 30, 2020 at 2:02 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> >
+> > On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > >
+> > > On Mon, Aug 24, 2020 at 9:37 PM syzbot
+> > > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
+> > > > syzbot has found a reproducer for the following issue on:
+> > >
+> > > Looping in fsdevel and OverlayFS maintainers, as this seems to be
+> > > FS/OverlayFS related...
+> >
+> > Hmm, the oopsing code is always something like:
+> >
+> > All code
+> > ========
+> >    0: 1b fe                sbb    %esi,%edi
+> >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+> >    6: 48 89 d8              mov    %rbx,%rax
+> >    9: 48 c1 e8 03          shr    $0x3,%rax
+> >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+> >   12: 74 08                je     0x1c
+> >   14: 48 89 df              mov    %rbx,%rdi
+> >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+> >   1c: 48 8b 1b              mov    (%rbx),%rbx
+> >   1f: 48 83 c3 68          add    $0x68,%rbx
+> >   23: 48 89 d8              mov    %rbx,%rax
+> >   26: 48 c1 e8 03          shr    $0x3,%rax
+> >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+> >   2f: 74 08                je     0x39
+> >   31: 48 89 df              mov    %rbx,%rdi
+> >   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
+> >   39: 48 8b 1b              mov    (%rbx),%rbx
+> >   3c: 48 83 c3 0c          add    $0xc,%rbx
+> >
+> >
+> > And that looks (to me) like the unrolled loop in call_int_hook().  I
+> > don't see how that could be related to overlayfs, though it's
+> > definitely interesting why it only triggers from
+> > overlay->vfs_getattr()->security_inode_getattr()...
 >
-> As well as the change to the code example that I already mentioned
-> my reply of a few hours ago, I've added the following text to the
-> page:
 >
->    Caveats regarding the use of /proc/[tid]/mem
->        The discussion above noted the need to use the
->        SECCOMP_IOCTL_NOTIF_ID_VALID ioctl(2) when opening the
->        /proc/[tid]/mem file of the target to avoid the possibility of
->        accessing the memory of the wrong process in the event that the
->        target terminates and its ID is recycled by another (unrelated)
->        thread.  However, the use of this ioctl(2) operation is also
->        necessary in other situations, as explained in the following
->        pargraphs.
+> >   26: 48 c1 e8 03          shr    $0x3,%rax
+> >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+>
+>
+> This access is part of KASAN check. But the original address kernel
+> tries to access is NULL, so it's not an issue with KASAN.
+>
+> The line is this:
+>
+> int security_inode_getattr(const struct path *path)
+> {
+>     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
+>         return 0;
+>
+> So it's either path is NULL, or something in d_backing_inode
+> dereferences NULL path->dentry.
+>
+> The reproducer does involve overlayfs:
+>
+> mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
+> mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
+> r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
+> mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
+> mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
+> &(0x7f0000000100)='overlay\x00', 0x0,
+> &(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
+> link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
+> write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
+> acct(&(0x7f0000000040)='./bus/file0\x00')
+>
+> Though, it may be overlayfs-related, or it may be a generic bug that
+> requires a tricky reproducer and the only reproducer syzbot come up
+> with happened to involve overlayfs.
+> But there are 4 reproducers on syzbot dashboard and all of them
+> involve overlayfs and they are somewhat different. So my bet would be
+> on overlayfs.
 
-(nit: paragraphs)
+Seems there's no C reproducer, though.   Can this be reproduced
+without KASAN obfuscating the oops?
 
->        Consider the following scenario, where the supervisor tries to
->        read the pathname argument of a target's blocked mount(2) system
->        call:
-[...]
-> Seem okay?
-
-Yeah, sounds good.
-
-> By the way, is there any analogous kind of issue concerning
-> pidfd_getfd()? I'm thinking not, but I wonder if I've missed
-> something.
-
-When it is used by a seccomp supervisor, you mean? I think basically
-the same thing applies - when resource identifiers (such as memory
-addresses or file descriptors) are passed to a syscall, it generally
-has to be assumed that those identifiers may become invalid and be
-reused as soon as the syscall has returned.
+Thanks,
+Miklos
