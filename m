@@ -2,94 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0CF2A0C04
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 18:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D1A2A0D43
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 19:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbgJ3RBT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 13:01:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40263 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727267AbgJ3RBS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Oct 2020 13:01:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604077277;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O2t9zbtiEUpqP/Ze0QZ2b0Kxf46gRkKbL+zw0zhCGSA=;
-        b=Ztq5GHqQAWfHLhaPtrmL4Ykvbs3uNo87U6Ic/4b9c/MgLjUcmKxatd/dvA/hSmYUZz9LFA
-        ctne30R6IrSCYngesuALchrfbJdj8i9t29MoCm1kp4sR6+8XA3G16EdOZBBrtsAEln4khG
-        v6CmYAO+tYq3ShuIJUU719cwsmE5+co=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-zOtu47g4NR62XwfXeGfrMA-1; Fri, 30 Oct 2020 13:01:14 -0400
-X-MC-Unique: zOtu47g4NR62XwfXeGfrMA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2949101962A;
-        Fri, 30 Oct 2020 17:01:11 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 808025DA2A;
-        Fri, 30 Oct 2020 17:01:04 +0000 (UTC)
-Date:   Fri, 30 Oct 2020 18:01:02 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next V4 2/5] bpf: bpf_fib_lookup return MTU value as
- output when looked up
-Message-ID: <20201030180102.567d3751@carbon>
-In-Reply-To: <b41f461b-ec5b-edb0-d69d-b413e93359de@gmail.com>
-References: <160381592923.1435097.2008820753108719855.stgit@firesoul>
-        <160381601522.1435097.11103677488984953095.stgit@firesoul>
-        <b41f461b-ec5b-edb0-d69d-b413e93359de@gmail.com>
+        id S1726061AbgJ3SUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 14:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725844AbgJ3SUb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:20:31 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1837C0613D5
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 11:20:29 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id f6so5919393ybr.0
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 11:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=51Ky1A37m0KLXARbMA/xuRzb6qNQEPjjCd1wcTWqlOQ=;
+        b=FKNNHCsgBBbqLLcAbOAbPNfgUB8are8I6QJUcwWrYcxizw/BYdIIg7mWaOydxxRnVZ
+         BTnzc3AvmqZbsO67l1TYasGn8G0dGxJzk4MoxKu6RmMWzJozXpfn4ezlaWtq/iZ7JboS
+         FhWwAL+3MLUlqxDZl7nCLxuyGwAssnNoQiHMnoqvvcni5ULKD8ux4ub72wLQmW7yKkFb
+         PoAgPx3BrCH+Lnrj/IDSzb2eW3VrTWuujDramrIDoSoKPTo4410sFx20mtbsMFCaqvz5
+         bNxOZ+CTVXQNKKr1PI//A0P+QpjwIKCDwq9yadC/L6a64l/TdBEh9WvRgVDQcQI54DLM
+         BAAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=51Ky1A37m0KLXARbMA/xuRzb6qNQEPjjCd1wcTWqlOQ=;
+        b=PYXUuTSqfGq15BjNvUXgV0+6b3lgEmVK7G2cHaCLpuXuqrtBq+vD5UvY9VwY6xu1fD
+         U1NuSE76yZwfRgppfXpzs0Q+vMN14U74Lv03+TWPJMEC7owK6p0nQsI5M1AXJdVMXUda
+         Sb4aDHP4gRO4k6vmLX6wZH9bew+G2LdihLJcsW9d0EWGPbiUGDrwYNSL5yCCbnQrOqaH
+         sYOn3rGledWW30XiSVOxSvvl6Hzxl9LZGlxe0rVCPbvPZvHpoCySfTQhURY/OZsRQxha
+         5rrE72FS7mAJo71Ki4ChjZMz4L9wlRimW4HI28Qr+vRo+zwQ4oE7g9OPyI5eeE8DgrhC
+         7rhg==
+X-Gm-Message-State: AOAM531KB9JeJZaeSf7uJ/Zgx+1eGt8Hs4a4/W9mvQvTwEPd8u46oxou
+        DiX8VECmAF3bD2D38wW6QKFugutqEMTP/XPyi0I=
+X-Google-Smtp-Source: ABdhPJwafnk9PSVz2BuSzQnL3uGReX9/nE9JBXsrktqguUEbZYXQyriRWz0eNyc9HEv+qClGSuzy5YBvjOpdTxMY7jY=
+X-Received: by 2002:a25:b0d:: with SMTP id 13mr5461483ybl.347.1604082029056;
+ Fri, 30 Oct 2020 11:20:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <VI1PR8303MB008003C9E3B937033A593C47FB150@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+In-Reply-To: <VI1PR8303MB008003C9E3B937033A593C47FB150@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 30 Oct 2020 11:20:17 -0700
+Message-ID: <CAEf4Bza-KX7C5ghXSVs30R_xkKtqjDwM8snH2B2A_VCAxSim2g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: update verifier to stop perf ring buffer corruption
+To:     Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        KP Singh <kpsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 27 Oct 2020 11:15:31 -0600
-David Ahern <dsahern@gmail.com> wrote:
+On Fri, Oct 30, 2020 at 5:08 AM Kevin Sheldrake
+<Kevin.Sheldrake@microsoft.com> wrote:
+>
+> As discussed, bpf_perf_event_output() takes a u64 for the sample size par=
+ameter but the perf ring buffer uses a u16 internally.  This results in ove=
+rlapping samples where the total sample size (including header/padding) exc=
+eeds 64K, and prevents samples from being submitted when the total sample s=
+ize =3D=3D  64K.
+>
+> This patch adds a check to the verifier to force the total sample size to=
+ be less than 64K.  I'm not convinced it is in the right place stylisticall=
+y, but it does work.
+> This is the first patch I've submitted to this list so please forgive me =
+if I'm doing this wrong, and let me know what I should have done.
 
-> On 10/27/20 10:26 AM, Jesper Dangaard Brouer wrote:
-> > The BPF-helpers for FIB lookup (bpf_xdp_fib_lookup and bpf_skb_fib_lookup)
-> > can perform MTU check and return BPF_FIB_LKUP_RET_FRAG_NEEDED.  The BPF-prog
-> > don't know the MTU value that caused this rejection.
-> > 
-> > If the BPF-prog wants to implement PMTU (Path MTU Discovery) (rfc1191) it
-> > need to know this MTU value for the ICMP packet.
-> > 
-> > Patch change lookup and result struct bpf_fib_lookup, to contain this MTU
-> > value as output via a union with 'tot_len' as this is the value used for
-> > the MTU lookup.
-> > 
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  include/uapi/linux/bpf.h       |   11 +++++++++--
-> >  net/core/filter.c              |   17 ++++++++++++-----
-> >  tools/include/uapi/linux/bpf.h |   11 +++++++++--
-> >  3 files changed, 30 insertions(+), 9 deletions(-)
-> 
-> Reviewed-by: David Ahern <dsahern@kernel.org>
+See [0] for some guidelines. I use git format-patch and git send-email
+for my patch workflow. And please make sure your email client/editor
+wraps the lines, it's hard to reply if the entire paragraph is one
+long line.
 
-Thanks a lot for the review.  I didn't propagate-it-over in V5 of this
-patch, as I changed the name of the output member from mtu to
-mtu_result in V5.  Please review V5 and give your review consent.
+  [0] https://kernelnewbies.org/FirstKernelPatch
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+>Also I don't know what the size reduction of -24 relates to (it doesn't ma=
+tch any header struct I've found) but it was found through experimentation.
 
+So -24 should have been a clue that something fishy is going on. Look
+at perf_prepare_sample() in kernel/events/core.c. header->size (which
+is u16) contains the entire size of the data in the perf event. This
+includes raw data that you send with bpf_perf_event_output(), but it
+can also have tons of other stuff (e.g., call stacks, LBR data, etc).
+What gets added to the perf sample depends on how the perf event was
+configured in the first place. And it happens automatically on each
+perf event output.
+
+So, all that means that there could be no reliable static check in the
+verifier which would prevent the corruption. It has to be checked by
+perf_prepare_sample() in runtime based on the actual size of the
+sample. We can do an extra check in verifier, but I wouldn't bother
+because it's never going to be 100% correct.
+
+>
+> Thanks
+>
+> Kevin Sheldrake
+>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index e83ef6f..0941731 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -18,6 +18,13 @@
+>   */
+>  #define BPF_MAX_VAR_SIZ        (1 << 29)
+>
+> +/* Maximum variable size permitted for size param to bpf_perf_event_outp=
+ut().
+> + * This ensures the samples sent into the perf ring buffer do not overfl=
+ow the
+> + * size parameter in the perf event header.
+> + */
+> +#define BPF_PERF_RAW_SIZ_BITS sizeof(((struct perf_event_header *)0)->si=
+ze)
+> +#define BPF_MAX_PERF_SAMP_SIZ ((1 << (BPF_PERF_RAW_SIZ_BITS * 8)) - 24)
+> +
+
+[...]
