@@ -2,167 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70A52A0ED0
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FD02A0ECF
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgJ3TPG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 15:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
+        id S1727230AbgJ3Tkp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 15:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727423AbgJ3TPG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:15:06 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE619C0613D5
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:15:05 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 126so9236400lfi.8
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:15:05 -0700 (PDT)
+        with ESMTP id S1726607AbgJ3Tkb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:40:31 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD31C0613D2;
+        Fri, 30 Oct 2020 12:40:31 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id i18so1883662ots.0;
+        Fri, 30 Oct 2020 12:40:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wG/u6QLDIeO3+GPNzepwWscTWygaEgqcNOvOguEOtzE=;
-        b=GEScQJl/XRE+Al+2evygNVW34IiBSkoia8s5HzAl8Hv6DEbsHP21Lirga/6tIsjkoR
-         6pndjXo3bhKZOW1Dk5Uub2F/QyY+XpBeX+nLyHZxDUaPhBwraxjKmyUU389u1/xqXlL/
-         voC7OY6hmd5Fr4gE/vpOFEq+3M/K4uBWKjshMkpddljKtLvb7oEgjUepvGxdHLB+qlRi
-         lsXaJFer4KS7uPl33OEqYL9fA3HJYLgu76FbsgqoBkyILSU1vMZhuNLi6w9qOqfkXaAU
-         ytPJv1sI1qSIE1x7QKh8O++0G+mtEs+XlsK0dEAC2cz1JpC6LyJR8sRuqTs2bq0q6mTh
-         QDIw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=gWR7GXD+A3nP28R5gy8PB5/5HzBDjhKdxtj8DfG8v9A=;
+        b=MaVONzX2Vr0YbQ4kLdGl7/G4kZ4+9hNtKVTpNYqC3m6wUQjmZOvcittmYyiD5Jenbm
+         xtH/JlMowgfrIZNq0VuWVrc3Y6qZYdEfQMRGlx4V2NnwzV2t5c1Mn69hihlW0MEOhYz/
+         zZ7ivYZ89HEdPyfh5ZoivWK4YfhdUoYmfQKQF7Q9f1zl6B+imegjzk8ltzFd2GHr0rAu
+         T6SVfR4U6f27yHT2UPq5kUtUmeGnHhhtPSerXnOM7RfBZosOl9OweD4tvn5DSZ2JSzDt
+         W6iXQoByiRffLZDP0EF9hqFXZehZyGRhFIzKectWRdWE4zyfMTIfD++rRNhuy+NmWO/o
+         1AuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wG/u6QLDIeO3+GPNzepwWscTWygaEgqcNOvOguEOtzE=;
-        b=a2JQCYwPiM4jEiiPweBuFWyi5cfTMw+yR9yzAq+QSuUVAs76ZOOaARozLOrcIHvyBq
-         9g9Ut8ghBQS6hr5IMaLBAH9suvx+/oVCKrJEy45EgLa8aqgFB17+PCH+5I+KvqCBkQYX
-         fRWYRScTEiOtp8Slsh1bh1PeGGuuoN5C919z6Cfjffk5D9J2EXBqbdUMC2EJM58+VA04
-         RqI/NN+0X7Ht/6Dc46MqDAHsl9AfX+uh9RjEgQab9XZ24FA0PPajjvxuVTh3XwfgNMDw
-         X2DWnC4v0o8BySW5o//MXWLBF564Zplnx9t7sOy1dE2V3eLuLiV6ueOzJTzQpj9p/HUy
-         UVWQ==
-X-Gm-Message-State: AOAM531OKJOgaEalpvz67DRrtWREL+zgwQCy4pGxmN6Ga32zKY9jHg8T
-        3ddSG/gf/ni4f/w2f+SFO+OeOS2qjG23hoV9mc5LOg==
-X-Google-Smtp-Source: ABdhPJwWwVpiw9gJ/puN8rWssNkdz8vVGHPzS0mmXDNNvTGXQ5m+dUeuCNcHNeJlQwiyM5w1WvddtFCfbNI2DKeMRtk=
-X-Received: by 2002:a05:6512:1054:: with SMTP id c20mr1626841lfb.576.1604085303713;
- Fri, 30 Oct 2020 12:15:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <CAG48ez0fBE6AJfWh0in=WKkgt98y=KjAen=SQPyTYtvsUbF1yA@mail.gmail.com> <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com>
-In-Reply-To: <0de41eb1-e1fd-85da-61b7-fac4e3006726@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 30 Oct 2020 20:14:37 +0100
-Message-ID: <CAG48ez3qKg-ReY4R=S_thQ6tOzv2ZHV=xW5qBxpqs0iSjH_oFQ@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=gWR7GXD+A3nP28R5gy8PB5/5HzBDjhKdxtj8DfG8v9A=;
+        b=J1zUZY6So76Fa3IHaV8d2IyuBE449R9o6VDe7e8qc48pRlvCpHmKjcip9YFnF7TF9O
+         hD9X7p0HbiI2mqfg7E/B9g2wVsQvhMSv5fzBkOT5KbetjtKiuDV0NiUA1aULk+g3TT5s
+         O7aaKTyyCfMGu5oxVqQOWkD7KGIYC7a844UUTWAOb2e4qn8KvkR5Wr+X5JDs0hVTCQtG
+         vXoPgEm0rQyoq53SN6BwY6RcfWhtrcW3+NUWNBoRDhA4Y2FOCeiicPIdVtWZFvFlSoa3
+         9v0J42nf7rUqxF7No7/2j+yUfxkPwba4vJTkPTeCi3Tzfd58v6oDAwlfrk3e2KG+cq4V
+         4d7g==
+X-Gm-Message-State: AOAM530u7NcgaAu/MFjkozrQnpc3aHuNgzqhvGK1ofa356pAiYZdp899
+        5kkTtYppTflYhFJ7eQw78As=
+X-Google-Smtp-Source: ABdhPJwaklQ8F1QAciRpc0Xw4LnbAkaVfau8CjsfSVvlTGHx3elUFOtlGTDf9GkyiwQ9QjOtKzWfcg==
+X-Received: by 2002:a05:6830:19e1:: with SMTP id t1mr3067313ott.196.1604086830584;
+        Fri, 30 Oct 2020 12:40:30 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id w79sm368344oia.28.2020.10.30.12.40.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 12:40:29 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 12:40:21 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com
+Message-ID: <5f9c6c259dfe5_16d420817@john-XPS-13-9370.notmuch>
+In-Reply-To: <160407665728.1525159.18300199766779492971.stgit@firesoul>
+References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
+ <160407665728.1525159.18300199766779492971.stgit@firesoul>
+Subject: RE: [PATCH bpf-next V5 2/5] bpf: bpf_fib_lookup return MTU value as
+ output when looked up
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 29, 2020 at 3:19 PM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
-> On 10/29/20 2:42 AM, Jann Horn wrote:
-> > On Mon, Oct 26, 2020 at 10:55 AM Michael Kerrisk (man-pages)
-> > <mtk.manpages@gmail.com> wrote:
-> >>        static bool
-> >>        getTargetPathname(struct seccomp_notif *req, int notifyFd,
-> >>                          char *path, size_t len)
-> >>        {
-> >>            char procMemPath[PATH_MAX];
-> >>
-> >>            snprintf(procMemPath, sizeof(procMemPath), "/proc/%d/mem", req->pid);
-> >>
-> >>            int procMemFd = open(procMemPath, O_RDONLY);
-> >>            if (procMemFd == -1)
-> >>                errExit("\tS: open");
-> >>
-> >>            /* Check that the process whose info we are accessing is still alive.
-> >>               If the SECCOMP_IOCTL_NOTIF_ID_VALID operation (performed
-> >>               in checkNotificationIdIsValid()) succeeds, we know that the
-> >>               /proc/PID/mem file descriptor that we opened corresponds to the
-> >>               process for which we received a notification. If that process
-> >>               subsequently terminates, then read() on that file descriptor
-> >>               will return 0 (EOF). */
-> >>
-> >>            checkNotificationIdIsValid(notifyFd, req->id);
-> >>
-> >>            /* Read bytes at the location containing the pathname argument
-> >>               (i.e., the first argument) of the mkdir(2) call */
-> >>
-> >>            ssize_t nread = pread(procMemFd, path, len, req->data.args[0]);
-> >>            if (nread == -1)
-> >>                errExit("pread");
-> >
-> > As discussed at
-> > <https://lore.kernel.org/r/CAG48ez0m4Y24ZBZCh+Tf4ORMm9_q4n7VOzpGjwGF7_Fe8EQH=Q@mail.gmail.com>,
-> > we need to re-check checkNotificationIdIsValid() after reading remote
-> > memory but before using the read value in any way. Otherwise, the
-> > syscall could in the meantime get interrupted by a signal handler, the
-> > signal handler could return, and then the function that performed the
-> > syscall could free() allocations or return (thereby freeing buffers on
-> > the stack).
-> >
-> > In essence, this pread() is (unavoidably) a potential use-after-free
-> > read; and to make that not have any security impact, we need to check
-> > whether UAF read occurred before using the read value. This should
-> > probably be called out elsewhere in the manpage, too...
->
-> Thanks very much for pointing me at this!
->
-> So, I want to conform that the fix to the code is as simple as
-> adding a check following the pread() call, something like:
->
-> [[
->      ssize_t nread = pread(procMemFd, path, len, req->data.args[argNum]);
->      if (nread == -1)
->         errExit("Supervisor: pread");
->
->      if (nread == 0) {
->         fprintf(stderr, "\tS: pread() of /proc/PID/mem "
->                 "returned 0 (EOF)\n");
->         exit(EXIT_FAILURE);
->      }
->
->      if (close(procMemFd) == -1)
->         errExit("Supervisor: close-/proc/PID/mem");
->
-> +    /* Once again check that the notification ID is still valid. The
-> +       case we are particularly concerned about here is that just
-> +       before we fetched the pathname, the target's blocked system
-> +       call was interrupted by a signal handler, and after the handler
-> +       returned, the target carried on execution (past the interrupted
-> +       system call). In that case, we have no guarantees about what we
-> +       are reading, since the target's memory may have been arbitrarily
-> +       changed by subsequent operations. */
-> +
-> +    if (!notificationIdIsValid(notifyFd, req->id, "post-open"))
-> +        return false;
-> +
->      /* We have no guarantees about what was in the memory of the target
->         process. We therefore treat the buffer returned by pread() as
->         untrusted input. The buffer should be terminated by a null byte;
->         if not, then we will trigger an error for the target process. */
->
->      if (strnlen(path, nread) < nread)
->          return true;
-> ]]
+Jesper Dangaard Brouer wrote:
+> The BPF-helpers for FIB lookup (bpf_xdp_fib_lookup and bpf_skb_fib_lookup)
+> can perform MTU check and return BPF_FIB_LKUP_RET_FRAG_NEEDED.  The BPF-prog
+> don't know the MTU value that caused this rejection.
+> 
+> If the BPF-prog wants to implement PMTU (Path MTU Discovery) (rfc1191) it
+> need to know this MTU value for the ICMP packet.
+> 
+> Patch change lookup and result struct bpf_fib_lookup, to contain this MTU
+> value as output via a union with 'tot_len' as this is the value used for
+> the MTU lookup.
+> 
+> V5:
+>  - Fixed uninit value spotted by Dan Carpenter.
+>  - Name struct output member mtu_result
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  include/uapi/linux/bpf.h       |   11 +++++++++--
+>  net/core/filter.c              |   22 +++++++++++++++-------
+>  tools/include/uapi/linux/bpf.h |   11 +++++++++--
+>  3 files changed, 33 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index e6ceac3f7d62..01b2b17c645a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -2219,6 +2219,9 @@ union bpf_attr {
+>   *		* > 0 one of **BPF_FIB_LKUP_RET_** codes explaining why the
+>   *		  packet is not forwarded or needs assist from full stack
+>   *
+> + *		If lookup fails with BPF_FIB_LKUP_RET_FRAG_NEEDED, then the MTU
+> + *		was exceeded and result params->mtu contains the MTU.
+> + *
 
-Yeah, that should do the job. With the caveat that a cancelled syscall
-could've also led to the memory being munmap()ed, so the nread==0 case
-could also happen legitimately - so you might want to move this check
-up above the nread==0 (mm went away) and nread==-1 (mm still exists,
-but read from address failed, errno EIO) checks if the error message
-shouldn't appear spuriously.
+Do we need to hide this behind a flag? It seems otherwise you might confuse
+users. I imagine on error we could reuse the params arg, but now we changed
+the tot_len value underneath them?
+
+>   * long bpf_sock_hash_update(struct bpf_sock_ops *skops, struct bpf_map *map, void *key, u64 flags)
+>   *	Description
+>   *		Add an entry to, or update a sockhash *map* referencing sockets.
+> @@ -4872,9 +4875,13 @@ struct bpf_fib_lookup {
+>  	__be16	sport;
+>  	__be16	dport;
