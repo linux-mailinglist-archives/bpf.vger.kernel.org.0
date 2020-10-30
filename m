@@ -2,121 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905BA2A03AF
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 12:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8962A0410
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 12:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725993AbgJ3LHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 07:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725355AbgJ3LHo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 07:07:44 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC912C0613CF
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 04:07:43 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id h6so7354951lfj.3
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 04:07:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t19jBLJy8LyrL1w4Rgl5+7QGWOjDVZBVKjSp5AohpkU=;
-        b=KwD16XGcCGelvdk31q/ME/V6nhyu08SDG+H3PJOXuzKVHCZ+2dFy/+QUD2ZzXeqccu
-         hf5KusIjaFa5eEr7rhIiU9nMcbX3fMYyrktBgAuhGpqtPlSKHYF0rzWeGtq3Y3m5oSkn
-         2MoL5X4WUloxRTeuw6+H4sNe1U33QuiZWVicI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t19jBLJy8LyrL1w4Rgl5+7QGWOjDVZBVKjSp5AohpkU=;
-        b=cKRsbjtyskT4Ymmsm8zuyZrp/g3VMgby7YuLP96HD2MXarwfvIUcSzCldCyb60y4MU
-         /l420qJcMlPwa+WEFwLR0LZ5sCLh3CuYgJQrYw6hKBxZn83Ulbu6hzopb2dj5OzEWsAh
-         oInqU1E+9mqgKFJKWxFzabLkCZzvmYjFrP6TvZRwcek9fjCb/a48atqfd+EW8Hu408Ux
-         bc8+aY2rxh3AjmbPB+PkTCFutOVKT9ZFIZ8BF16DQX4w18fJepj18SDHKeP9mXHnlt+q
-         xZppkfGEU9tHOpHqTd5ANP301GJ7ZJYl0iyysZxspXOJs5YJulOwHdYeLLKVTIkBwonf
-         gscw==
-X-Gm-Message-State: AOAM532ftJk/oQAgTRk8RuR4k0E8mZ/EWBII8JEgN73OllpKp9u5bTti
-        LHjOU0YwYl47Z79qLjJLHoDgosGvSszykqe5sGmwTQ==
-X-Google-Smtp-Source: ABdhPJxVQTJKl961Cy0dCCCnHaPVtkvgBeMDN42MBovSsFHmEYN7LHhxL8KHUH75lODFfnld3jZ6oOAoT7kkBaaacxE=
-X-Received: by 2002:a05:6512:3102:: with SMTP id n2mr666158lfb.153.1604056062234;
- Fri, 30 Oct 2020 04:07:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201027170317.2011119-1-kpsingh@chromium.org>
- <20201027170317.2011119-2-kpsingh@chromium.org> <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW6yFbWLGZwpCE4whUm_ncJG4Fr7kf75XeqYLRWG8PvnWQ@mail.gmail.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Fri, 30 Oct 2020 12:07:31 +0100
-Message-ID: <CACYkzJ7kbq0Nq71fJCkHSwEmJfKFKOsvRZos_tT64N1f-aT4-A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: Implement task local storage
-To:     Song Liu <song@kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1726061AbgJ3LYG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 07:24:06 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55603 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726055AbgJ3LYF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 07:24:05 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CN0Lp2L3Gz9sTD;
+        Fri, 30 Oct 2020 22:24:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1604057043;
+        bh=1921BYj0UW4d0ZcLBKhvGnqz9a10y136F0EiqIep73c=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=BNwBUdxk334VdxuvKh4tfMmfNYQt2uhE/Rwfi3Oy2ijuKnDPD9kX3QMJXwkjiQ0Wy
+         1eQwasPLmIAw34GrlUPZXkRQRy7oj3yWDmYpsG1HwfiDkElpDhozzWUsLPQuhNMsXC
+         YPdZDQfz0TSK/fmRUopsFLm1m1rrS1mt+siLOWTjtwzY8VPWnxd00LwADvybHz7QNC
+         +3/a/wzBVjrqaYv+o/G7itU7aK0DGyMf3Pn74Nx6sg8zkDNOZD3AYmksVxwt3OGN+q
+         Cuq8dHwwL4w3BbbF3pwOwCuthahIag5gUxhGT+b/5eKu9RdtSuQ7E2s/H0VMBsxdAt
+         WH3ekx2zybthw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Willy Tarreau <w@1wt.eu>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Alon\, Liran" <liran@amazon.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dan Aloni <dan@kernelim.com>, bpf <bpf@vger.kernel.org>,
+        security@kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH] btf: Expose kernel BTF only to tasks with CAP_PERFMON
+In-Reply-To: <20201029041501.GA16341@1wt.eu>
+References: <20201028203853.2412751-1-dan@kernelim.com> <CAEf4BzZxabLCaNj0E5UEcnrEY25ujSLOzTbYRXneJy2HrY64JA@mail.gmail.com> <3bccbaac-ec63-bc06-0e4b-5501c0788822@amazon.com> <20201028230602.4g7guvb5nzgosgwb@ast-mbp.dhcp.thefacebook.com> <20201029041501.GA16341@1wt.eu>
+Date:   Fri, 30 Oct 2020 22:23:57 +1100
+Message-ID: <87k0v8ufci.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"
-
-On Fri, Oct 30, 2020 at 12:28 AM Song Liu <song@kernel.org> wrote:
+Willy Tarreau <w@1wt.eu> writes:
+> On Wed, Oct 28, 2020 at 04:06:02PM -0700, Alexei Starovoitov wrote:
+>> On Thu, Oct 29, 2020 at 12:30:49AM +0200, Alon, Liran wrote:
+>> > > Guarding /sys/kernel/bpf/vmlinux behind CAP_PERFMON would break a lot
+>> > > of users relying on BTF availability to build their BPF applications.
+>> > True. If this patch is applied, would need to at least be behind an optin
+>> > knob. Similar to dmesg_restrict.
+>> 
+>> It's not going to be applied. If a file shouldn't be read by a user
+>> it should have appropriate file permissions instead of 444.
+>> Checking capable() in read() is very non-unix way to deal with permissions.
 >
-> On Wed, Oct 28, 2020 at 9:17 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > Similar to bpf_local_storage for sockets and inodes add local storage
-> > for task_struct.
-> >
-> > The life-cycle of storage is managed with the life-cycle of the
-> > task_struct.  i.e. the storage is destroyed along with the owning task
-> > with a callback to the bpf_task_storage_free from the task_free LSM
-> > hook.
+> Not only it's a non-unix way, both don't achieve the same goals at all!
 >
-> It looks like task local storage is tightly coupled to LSM. As we discussed,
-> it will be great to use task local storage in tracing programs. Would you
-> like to enable it from the beginning? Alternatively, I guess we can also do
-> follow-up patches.
->
+> One checks for permissions at open() time and may for example allow a
+> process to drop its uid after opening, while the other one allows to
+> filter who can really read it, particularly in case the FD is inherited
+> between processes. With this said, I don't see why there would be a
+> special case for this one, it should definitely stick to file permissions
+> only.
 
-I would prefer if we do it in follow-up patches.
+From include/linux/bpf.h:
 
-> >
-> > The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
-> > the security blob which are now stackable and can co-exist with other
-> > LSMs.
-> >
-> > The userspace map operations can be done by using a pid fd as a key
-> > passed to the lookup, update and delete operations.
->
-> While testing task local storage, I noticed a limitation of pid fd:
->
-> /* Currently, the process identified by
->  * @pid must be a thread-group leader. This restriction currently exists
->  * for all aspects of pidfds including pidfd creation (CLONE_PIDFD cannot
->  * be used with CLONE_THREAD) and pidfd polling (only supports thread group
->  * leaders).
->  */
->
-> This could be a problem for some use cases. How about we try to remove
-> this restriction (maybe with a new flag to pidfd_open) as part of this set?
+static inline bool bpf_allow_ptr_leaks(void)
+{
+	return perfmon_capable();
+}
 
-I would appreciate it if we could also do this in a follow-up patch.
+static inline bool bpf_allow_ptr_to_map_access(void)
+{
+	return perfmon_capable();
+}
 
-I do see that there is a comment in fork.c:
+static inline bool bpf_bypass_spec_v1(void)
+{
+	return perfmon_capable();
+}
 
-    "CLONE_THREAD is blocked until someone really needs it."
+static inline bool bpf_bypass_spec_v4(void)
+{
+	return perfmon_capable();
+}
 
-But I don't understand the requirements well enough and would thus prefer
-to do this in a follow-up series.
 
-- KP
+There's also several cases in bpf_base_func_proto().
 
->
-> Thanks,
-> Song
->
-> [...]
+So it seems entirely reasonable to suggest that perfmon_capable() is the
+right check here.
+
+cheers
