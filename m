@@ -2,82 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0730C2A075D
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 15:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B94A2A07FA
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 15:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgJ3ODc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 10:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgJ3ODb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 10:03:31 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6A4C0613CF
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 07:03:31 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id j62so4155145qtd.0
-        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 07:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
-        b=HNSpgyn6hGRWFtgn4qBMzdeQg+PpGVoTqrEVuKXV4A4GYhtcGXaIKm1QtSb0ZLYTHb
-         dfoubLOWkryWTiwj07YvSES8/70bf/YeC1fbphM+5g4t/esysW/xF9PbZHdmzpFrLiGO
-         zyyG7blPF/ErYPPPucKh6JGmJuGdt3mOtyLgHehZykG1pLm7azeIL68jM6AI8C2RtYA4
-         QOuWdKFdJjweky6/7AVyHcO6LpxiRw3UTGMTz0NdMjEAqaF619tN7vs0hQlQ1TT57d8v
-         lfVGTSr6q8Y+CugOX87iuFQrBfosxkLSSutxoG2H2hryZJZaXY37mz1KxGRv9YiUaxMV
-         AoVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9fkQXWnoPSypfyxvIrXWSyd1r4Ua0eeDJczOBpIf/BU=;
-        b=mvdMK6nvLQE9plx4DOjNdu/HEQ08q/lzvN8QE2IX5ufxMFDWlnbmFqcst4qeOMwYsz
-         pgpxvYMPxu7YdwcP53OLJ5359ESoRi1F+o0NbS2Nh+pXplK8rLFkkwvCwI4KP3V1LBrb
-         WxT6XTbGHVe4kyspYhk1ei3l88ploe7EOb0GW10QyVwwlNQ5WCTmFTcbx1zbnu4rNcTS
-         sZoOwDbOHat4YNB939LSgCGRNXoCuSwLflu/ZyVDTg6IUXsVAz3dItYRnVTTDbV0gp7S
-         eUlHqsVxnJCMiMUaaI1IauQ2qsy7hzTG55PSGpxVN5MrlMPqH34SyOh2FdMIM4tgXP6k
-         lLtw==
-X-Gm-Message-State: AOAM531YmZlF6wd/YrfhMIFB+BBkjHYsuR6zyigtLyjcWc4KlcHO24zr
-        LpU5yUzlHluKj/yjKG8430eglezhpI1E5VfbhlY=
-X-Google-Smtp-Source: ABdhPJygHUJ/hL9FAW0XXGbvtxJQtVeYjIqzRs08h7JmfbY/Frh8MH8s7m83GKBo1gJcFyBtoZRHvn3CoeYXlIRRa6I=
-X-Received: by 2002:ac8:764f:: with SMTP id i15mr2187358qtr.68.1604066610979;
- Fri, 30 Oct 2020 07:03:30 -0700 (PDT)
+        id S1726645AbgJ3Ofl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 10:35:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726101AbgJ3Ofl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 30 Oct 2020 10:35:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604068540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G/uUf4x5jmqoio45UotElBXDDV5Ef+L5uB7zqE76nAQ=;
+        b=MB0XzSiBOcao3Sih8lkm5XbwS007u17qZwCLlEDIcuS9P4PFL9MxUBq2gzRoiWhTuo1hIm
+        EB29BQ2y4xKnhwiT3+6t/keBkqvN6RdoCnJ0pBTCtGvnxGXCIDME/EBl9vI3H0MVaE8gFg
+        4H3GilbMCbfVHzHSsPBLPjJRsu/kdno=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-21-EDFthimKOPGHh7oFb3zDAg-1; Fri, 30 Oct 2020 10:35:34 -0400
+X-MC-Unique: EDFthimKOPGHh7oFb3zDAg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1F788F62C6;
+        Fri, 30 Oct 2020 14:35:32 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E76921002C01;
+        Fri, 30 Oct 2020 14:35:22 +0000 (UTC)
+Date:   Fri, 30 Oct 2020 15:35:21 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, bpf@vger.kernel.org, lkp@intel.com,
+        kbuild-all@lists.01.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next V4 2/5] bpf: bpf_fib_lookup return MTU value as
+ output when looked up
+Message-ID: <20201030153521.727bfb80@carbon>
+In-Reply-To: <20201028124942.GE1042@kadam>
+References: <160381601522.1435097.11103677488984953095.stgit@firesoul>
+        <20201028124942.GE1042@kadam>
 MIME-Version: 1.0
-Received: by 2002:a37:9f8b:0:0:0:0:0 with HTTP; Fri, 30 Oct 2020 07:03:30
- -0700 (PDT)
-Reply-To: li.anable85@gmail.com
-From:   Liliane Abel <waynegrigsby0001@gmail.com>
-Date:   Fri, 30 Oct 2020 15:03:30 +0100
-Message-ID: <CAHqwDVbex4KtYFkCQe_L-Q20kg95eSTNOOQ5ftVr7mckTb_bQw@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dearest
+On Wed, 28 Oct 2020 15:49:42 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-Greeting my dear, I am Liliane Abel by name, The only daughter of late
-Mr.Benson Abel. My father is one of the top Politician in our country
-and my mother is a farmers and cocoa merchant when they were both
-alive. After the death of my mother, long ago, my father was
-controlling their business until he was poisoned by his business
-associates which he suffered and died.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> New smatch warnings:
+> net/core/filter.c:5395 bpf_ipv4_fib_lookup() error: uninitialized symbol 'mtu'.
 
-Before the death of my father, He told me about (two million five
-hundred thousand united states dollars) which he deposited in the bank
-in Lome-Togo, It was the money he intended to transfer overseas for
-investment before he was poisoned. He also instructed me that I should
-seek for foreign partners in any country of my choice who will assist
-me transfer this money in overseas account where the money will be
-wisely invested.
-I am seeking for your kind assistance in the following ways:  (1) to
-provide a safe bank account into where the money will be transferred
-for investment. (2) To serve as a guardian of this fund since I am a
-girl of 19 years old. (3) To make arrangement for me to come over to
-your country to further my education. This is my reason for writing to
-you. Please if you are willing to assist me I will offer you 25% of
-the total money. Reply if  you are interested
-Best regards.
-Liliane Abel.
+I will fix and send V5.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
