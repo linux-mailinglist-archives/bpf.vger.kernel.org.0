@@ -2,119 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FD02A0ECF
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D4F2A0EED
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 20:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727230AbgJ3Tkp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 15:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
+        id S1726607AbgJ3T42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 15:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbgJ3Tkb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 15:40:31 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD31C0613D2;
-        Fri, 30 Oct 2020 12:40:31 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id i18so1883662ots.0;
-        Fri, 30 Oct 2020 12:40:31 -0700 (PDT)
+        with ESMTP id S1727004AbgJ3T41 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 15:56:27 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F294C0613D7
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:56:27 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id g13so3334211qvu.1
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 12:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=gWR7GXD+A3nP28R5gy8PB5/5HzBDjhKdxtj8DfG8v9A=;
-        b=MaVONzX2Vr0YbQ4kLdGl7/G4kZ4+9hNtKVTpNYqC3m6wUQjmZOvcittmYyiD5Jenbm
-         xtH/JlMowgfrIZNq0VuWVrc3Y6qZYdEfQMRGlx4V2NnwzV2t5c1Mn69hihlW0MEOhYz/
-         zZ7ivYZ89HEdPyfh5ZoivWK4YfhdUoYmfQKQF7Q9f1zl6B+imegjzk8ltzFd2GHr0rAu
-         T6SVfR4U6f27yHT2UPq5kUtUmeGnHhhtPSerXnOM7RfBZosOl9OweD4tvn5DSZ2JSzDt
-         W6iXQoByiRffLZDP0EF9hqFXZehZyGRhFIzKectWRdWE4zyfMTIfD++rRNhuy+NmWO/o
-         1AuQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xCXdIDDEOQ4sp35BxxEEwDK4u7wEsOXSjw7fR5lQ1JM=;
+        b=vSrIWJfPbZcyzboU1vKIyWhst9w6jkZcPg2Fd/Tyr/+5CsiSbu6ptsTz5Soh4jBnSD
+         3d1HnaDhJZn9EjJglKvv49w7CobE+jurkMtZr4ontDfkag7fi8SMbKRE9K9iDEHM8d/r
+         b8PaN2BYUxO4vhprE3ysd+Nz+bafxOlSE52B/xKdBxRMgEE82BqyuUTkV/sN9j1nm33W
+         5pwRVCFeS/MgH+7kB9uvyyhPHbpiukb9ZrmJCP4YffU4dVFLpi0rS8nLvgsZQvkPSGxm
+         A0+7Vg38JWaO54eyWDMDNHz8l0xAi5gk8+WQSphC/9CaBpqNYnuF2s2KwntRGphDdthR
+         J1Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=gWR7GXD+A3nP28R5gy8PB5/5HzBDjhKdxtj8DfG8v9A=;
-        b=J1zUZY6So76Fa3IHaV8d2IyuBE449R9o6VDe7e8qc48pRlvCpHmKjcip9YFnF7TF9O
-         hD9X7p0HbiI2mqfg7E/B9g2wVsQvhMSv5fzBkOT5KbetjtKiuDV0NiUA1aULk+g3TT5s
-         O7aaKTyyCfMGu5oxVqQOWkD7KGIYC7a844UUTWAOb2e4qn8KvkR5Wr+X5JDs0hVTCQtG
-         vXoPgEm0rQyoq53SN6BwY6RcfWhtrcW3+NUWNBoRDhA4Y2FOCeiicPIdVtWZFvFlSoa3
-         9v0J42nf7rUqxF7No7/2j+yUfxkPwba4vJTkPTeCi3Tzfd58v6oDAwlfrk3e2KG+cq4V
-         4d7g==
-X-Gm-Message-State: AOAM530u7NcgaAu/MFjkozrQnpc3aHuNgzqhvGK1ofa356pAiYZdp899
-        5kkTtYppTflYhFJ7eQw78As=
-X-Google-Smtp-Source: ABdhPJwaklQ8F1QAciRpc0Xw4LnbAkaVfau8CjsfSVvlTGHx3elUFOtlGTDf9GkyiwQ9QjOtKzWfcg==
-X-Received: by 2002:a05:6830:19e1:: with SMTP id t1mr3067313ott.196.1604086830584;
-        Fri, 30 Oct 2020 12:40:30 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id w79sm368344oia.28.2020.10.30.12.40.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 12:40:29 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 12:40:21 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xCXdIDDEOQ4sp35BxxEEwDK4u7wEsOXSjw7fR5lQ1JM=;
+        b=k00tmDgjOmPWoIZ95rGXya9OTKWlbPf1rMaC515XsBRmMJYB5/D5EXpn0+Rb1f0cLf
+         6q86CI1xT5OA2Sefrgp62seZibPog2PYr3WzG7JGhXl3rg/8DEpnEOo2H6/LVIcyqnTX
+         LQSmZBp7IOyymQGPpE7PPXLqkAyYdaXjWq/vo70SNzXSZ008Hz9xzFKmFGs/tmzwd50u
+         lokEn0xO8H/p1dLm3B/OkMdPUITQHoA7GuUW6axRR/QyEqHxVqa+JZVO0BYei43TuwUg
+         kYx69qDH/vCgMsVFSPsSnIIhwlQlzH1X2GNcGRvfm0iKOODPJ71wshJIORiwKSGc2mXK
+         RHWA==
+X-Gm-Message-State: AOAM5301EZ15YGDbA9xr8IXS29e6tPh0GgXimbsWq/T3xc90Hdxqrh3F
+        jz7F7XkNcNalKnb9N/NkLLBrdVRfR+0PPrCw7Mdxjg==
+X-Google-Smtp-Source: ABdhPJxs/TiX12vaQ2OCHQSHT0seDFqKNQ1HIDLofONsrmnhk8Sokx0OyG77Wl1u033wcuYrmkJaHnokNGqh8OxS2bo=
+X-Received: by 2002:a0c:8d8b:: with SMTP id t11mr11297208qvb.13.1604087786355;
+ Fri, 30 Oct 2020 12:56:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
+ <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com>
+ <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
+ <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com> <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
+In-Reply-To: <CAJfpegsAabASuHYtoi_DoooV1vM7Evfrd8ESZDDTx2oXHiR6cw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 20:56:14 +0100
+Message-ID: <CACT4Y+a2aSoEZpytAGKnx77a012z0yzOSu6P2rKQpoBYFBzBDg@mail.gmail.com>
+Subject: Re: general protection fault in security_inode_getattr
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com
-Message-ID: <5f9c6c259dfe5_16d420817@john-XPS-13-9370.notmuch>
-In-Reply-To: <160407665728.1525159.18300199766779492971.stgit@firesoul>
-References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
- <160407665728.1525159.18300199766779492971.stgit@firesoul>
-Subject: RE: [PATCH bpf-next V5 2/5] bpf: bpf_fib_lookup return MTU value as
- output when looked up
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jesper Dangaard Brouer wrote:
-> The BPF-helpers for FIB lookup (bpf_xdp_fib_lookup and bpf_skb_fib_lookup)
-> can perform MTU check and return BPF_FIB_LKUP_RET_FRAG_NEEDED.  The BPF-prog
-> don't know the MTU value that caused this rejection.
-> 
-> If the BPF-prog wants to implement PMTU (Path MTU Discovery) (rfc1191) it
-> need to know this MTU value for the ICMP packet.
-> 
-> Patch change lookup and result struct bpf_fib_lookup, to contain this MTU
-> value as output via a union with 'tot_len' as this is the value used for
-> the MTU lookup.
-> 
-> V5:
->  - Fixed uninit value spotted by Dan Carpenter.
->  - Name struct output member mtu_result
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  include/uapi/linux/bpf.h       |   11 +++++++++--
->  net/core/filter.c              |   22 +++++++++++++++-------
->  tools/include/uapi/linux/bpf.h |   11 +++++++++--
->  3 files changed, 33 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index e6ceac3f7d62..01b2b17c645a 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2219,6 +2219,9 @@ union bpf_attr {
->   *		* > 0 one of **BPF_FIB_LKUP_RET_** codes explaining why the
->   *		  packet is not forwarded or needs assist from full stack
->   *
-> + *		If lookup fails with BPF_FIB_LKUP_RET_FRAG_NEEDED, then the MTU
-> + *		was exceeded and result params->mtu contains the MTU.
-> + *
+On Fri, Oct 30, 2020 at 8:21 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > > On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > >
+> > > > On Mon, Aug 24, 2020 at 9:37 PM syzbot
+> > > > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
+> > > > > syzbot has found a reproducer for the following issue on:
+> > > >
+> > > > Looping in fsdevel and OverlayFS maintainers, as this seems to be
+> > > > FS/OverlayFS related...
+> > >
+> > > Hmm, the oopsing code is always something like:
+> > >
+> > > All code
+> > > ========
+> > >    0: 1b fe                sbb    %esi,%edi
+> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+> > >    6: 48 89 d8              mov    %rbx,%rax
+> > >    9: 48 c1 e8 03          shr    $0x3,%rax
+> > >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+> > >   12: 74 08                je     0x1c
+> > >   14: 48 89 df              mov    %rbx,%rdi
+> > >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+> > >   1c: 48 8b 1b              mov    (%rbx),%rbx
+> > >   1f: 48 83 c3 68          add    $0x68,%rbx
+> > >   23: 48 89 d8              mov    %rbx,%rax
+> > >   26: 48 c1 e8 03          shr    $0x3,%rax
+> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+> > >   2f: 74 08                je     0x39
+> > >   31: 48 89 df              mov    %rbx,%rdi
+> > >   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
+> > >   39: 48 8b 1b              mov    (%rbx),%rbx
+> > >   3c: 48 83 c3 0c          add    $0xc,%rbx
+> > >
+> > >
+> > > And that looks (to me) like the unrolled loop in call_int_hook().  I
+> > > don't see how that could be related to overlayfs, though it's
+> > > definitely interesting why it only triggers from
+> > > overlay->vfs_getattr()->security_inode_getattr()...
+> >
+> >
+> > >   26: 48 c1 e8 03          shr    $0x3,%rax
+> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+> >
+> >
+> > This access is part of KASAN check. But the original address kernel
+> > tries to access is NULL, so it's not an issue with KASAN.
+> >
+> > The line is this:
+> >
+> > int security_inode_getattr(const struct path *path)
+> > {
+> >     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
+> >         return 0;
+> >
+> > So it's either path is NULL, or something in d_backing_inode
+> > dereferences NULL path->dentry.
+> >
+> > The reproducer does involve overlayfs:
+> >
+> > mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
+> > mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
+> > r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
+> > mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
+> > mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
+> > &(0x7f0000000100)='overlay\x00', 0x0,
+> > &(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
+> > link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
+> > write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
+> > acct(&(0x7f0000000040)='./bus/file0\x00')
+> >
+> > Though, it may be overlayfs-related, or it may be a generic bug that
+> > requires a tricky reproducer and the only reproducer syzbot come up
+> > with happened to involve overlayfs.
+> > But there are 4 reproducers on syzbot dashboard and all of them
+> > involve overlayfs and they are somewhat different. So my bet would be
+> > on overlayfs.
+>
+> Seems there's no C reproducer, though.   Can this be reproduced
+> without KASAN obfuscating the oops?
 
-Do we need to hide this behind a flag? It seems otherwise you might confuse
-users. I imagine on error we could reuse the params arg, but now we changed
-the tot_len value underneath them?
+I guess so.
+If you are interest in what exact field is NULL, I think there is
+enough info in the asm already:
 
->   * long bpf_sock_hash_update(struct bpf_sock_ops *skops, struct bpf_map *map, void *key, u64 flags)
->   *	Description
->   *		Add an entry to, or update a sockhash *map* referencing sockets.
-> @@ -4872,9 +4875,13 @@ struct bpf_fib_lookup {
->  	__be16	sport;
->  	__be16	dport;
+> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+> > >    6: 48 89 d8              mov    %rbx,%rax
+> > >    9: 48 c1 e8 03          shr    $0x3,%rax
+> > >    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+> > >   12: 74 08                je     0x1c
+> > >   14: 48 89 df              mov    %rbx,%rdi
+> > >   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+> > >   1c: 48 8b 1b              mov    (%rbx),%rbx
+> > >   1f: 48 83 c3 68          add    $0x68,%rbx
+> > >   23: 48 89 d8              mov    %rbx,%rax
+> > >   26: 48 c1 e8 03          shr    $0x3,%rax
+> > >   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+
+The access via the NULL pointer happens with offset 0x68:
+
+> > >   1f: 48 83 c3 68          add    $0x68,%rbx
+
+So we just need to find what's here accesses with offset 0x68:
+
+> >     if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
+
+And that pointer itself was loaded from something at offset 0x8 previously:
+
+> > >    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
