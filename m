@@ -2,170 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED822A0D9E
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 19:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A466A2A0DA8
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 19:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgJ3SlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 14:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
+        id S1727311AbgJ3Smi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 14:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgJ3SlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 14:41:05 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DBAC0613CF;
-        Fri, 30 Oct 2020 11:30:59 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id m188so5918698ybf.2;
-        Fri, 30 Oct 2020 11:30:59 -0700 (PDT)
+        with ESMTP id S1725975AbgJ3Smc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 14:42:32 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B383C0613D6
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 11:42:30 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id a64so2407095qkc.5
+        for <bpf@vger.kernel.org>; Fri, 30 Oct 2020 11:42:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NudX4n3QUbIMKdjUaAuCUx9HsnXJXU+X0TWHhojMmc8=;
-        b=PWeMS4BY0Vtcum/l1sfo20MCwqrdolqjcB+j0JzqTBmd6eIUyEcMmCMSgrFvkJQXmc
-         QkBBVCrZov0hp6UIk1GfZES2sCfEDdAXnWwwErIIrt593Lq5ubBap4IbhT3jhX0VeVUE
-         hOoluLjaHclNHchylIA7H0hh4UQ/TXJA+4M0fw38uRitI/oxiST06MKzSlE2xRf2nZDA
-         R/m/msp9rqzDvWgCEKuETx9+nPmDmsbR0tM0KJAY+IAFIvBiflliHviQEyGfOCk3XX7T
-         JvvDBNtZM0kdnFocvd1fdnevuK0+hYS4LztQctDsoaVJa6GU4U60GIwpYzcLmDmIetIy
-         irNQ==
+        bh=AIX0iUNYmKTGpsjIpq65NL9/sGsFnH8oZZCQcI/WsJo=;
+        b=bYlk+E9UZt4DRqoUdZ6MTPapJE+3m7W6ymaVF0A/Ytf9ysgpdiRa2L3mNtWF5+Vqjs
+         RUnhj68xulwkUTq7j5c+HznqkyxNCukA4LIN6ia0n8qO/Kg3DtA91F3vJui8So439Q1B
+         cggJSTEdzhgvZe1TGhZPgF6lf16mwOJWW8TEp5PTzSQGsuDd3fDgy6s+XiODTahP9RQY
+         VB2sNyLygfTA4c91kLbgbihNfNrxuJ4YT+AJzF0Fse4fAzUT/P4vszrp25TBRhOXY4kc
+         lTUsNHB/0fpFCNRNNH56EWKkzwpAZ5naDTicUEgS2YMjYDTr3lNkagtjB5K+TxakydPn
+         pFfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NudX4n3QUbIMKdjUaAuCUx9HsnXJXU+X0TWHhojMmc8=;
-        b=LwPGk3NMMB273GNiHLzWTIEsomwMgU58JMnkHsewmbGEQAkzzZ91qxBHX6F+CyZX/P
-         87Zo9AIgqjDYM/s1T8HudSwfN+vC5goonX6OgvccAPS/MaWFcpZV/T7o+A8Hhc2Bdq94
-         DsGKFXcfEEO91yp5W8tpKgkrBG9LFJf0x9jm6cMP8EQ+s4c/NZ2S527gRq9REr8msPqc
-         Z2fSdNhOOEwVPvZ06K8pE5do/aJxlJjfWVGGeP+GkZGlL1NTJnp2f71yQMqhZ6kQS5kg
-         SDTkUD7a53Ss+cY+kd843SQDmgoDcX+vRbH39VZfVwi2BUAWUt7Vv5bnMc2PS1Ofqlc9
-         gIjA==
-X-Gm-Message-State: AOAM53066OXxYJ21JuBQIMj+p+gWx9anL2L2G7+ElVICYL7HzjfD2ABZ
-        0+LtYp8WnqgVPlGqoHa47LQMAnLMYrnC051hJWdgC+kLSyYuzA==
-X-Google-Smtp-Source: ABdhPJzOg/ZcL3/HHm74nct4ghm2+RkxmremugaS4xAjm8QHCVJvqi9Ix+sgC1FxLlEDM5w9rlCwJ2YoF38bKgHDJ5A=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr5520897ybl.347.1604082658167;
- Fri, 30 Oct 2020 11:30:58 -0700 (PDT)
+        bh=AIX0iUNYmKTGpsjIpq65NL9/sGsFnH8oZZCQcI/WsJo=;
+        b=Fc8RT9/blQBRPqsIqd7xJ3kh+3pONXM6UiOvpgm/zKgRhnRtmYd4DkgLnAMn64Gjv7
+         mmKzgUAQgBNdhPXnZM9kyt8eQ+YAPZpdhpwu68/GvQ74JzyEhATlc/A9s52U5EFl/5DD
+         GHfjA7Rv3jlTTB5OUiGzaPK63agc87+PkOW4oAtmeDYa3OM+F7cRTRql7ecKskAxOuLE
+         poVYO2MLyR5XCJBAPMuFIiXIsNlRGHV0b39FlLsuqZuCWKGYGnP4gG2J6cVSw0yBf4cf
+         XxGWEg1Auz0fPqpCTL0mwiZE4aut3l1zZz8GayC+kZS8xUDbVaBjFMWxwsijSL1Vq/9b
+         HZ+A==
+X-Gm-Message-State: AOAM530FVw4AT3FCq3hsaFqtuolxBoTc6yvKFZwDJvcml71RwboL44LF
+        Hz6awo/gLfTMSWAQ8mpSTLGfe0lRSsYomC9zD4O9iQ==
+X-Google-Smtp-Source: ABdhPJwWqIIGNUYiTZ//s/YW0jRWPtDrC/n5h2OIIkwmgvD9ZkczTEC7CFfpCs24TkfvR1NV9DvQppWgtO49wZ3mj+4=
+X-Received: by 2002:a37:9747:: with SMTP id z68mr3469115qkd.424.1604083349448;
+ Fri, 30 Oct 2020 11:42:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201029005902.1706310-1-andrii@kernel.org> <4427E5BD-5EBF-47E8-B7F6-9255BEAE2D53@fb.com>
- <CAEf4BzbtiByaU_-pEV8gVZH1N9_xCTWJBxb6DYPXF5p9b9+_kg@mail.gmail.com> <alpine.LRH.2.21.2010301144050.25037@localhost>
-In-Reply-To: <alpine.LRH.2.21.2010301144050.25037@localhost>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Oct 2020 11:30:47 -0700
-Message-ID: <CAEf4BzbqkbYOybjtdMJRGOO3XKtEJ4ytz+SeKSteJNtsyVAbfg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/11] libbpf: split BTF support
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <0000000000008caae305ab9a5318@google.com> <000000000000a726a405ada4b6cf@google.com>
+ <CAFqZXNvQcjp201ahjLBhYJJCuYqZrYLGDA-wE3hXiJpRNgbTKg@mail.gmail.com> <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
+In-Reply-To: <CAJfpegtzQB09ind8tkYzaiu6ODJvhMKj3myxVS75vbjTcOxU8g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 30 Oct 2020 19:42:18 +0100
+Message-ID: <CACT4Y+Yyxdju4FR-E3bc5ERM6xhecnos6mkJR5==xS+RS_DUuw@mail.gmail.com>
+Subject: Re: general protection fault in security_inode_getattr
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
+        James Morris <jmorris@namei.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 5:06 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Fri, Oct 30, 2020 at 2:02 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
 >
-> On Thu, 29 Oct 2020, Andrii Nakryiko wrote:
->
-> > On Thu, Oct 29, 2020 at 5:33 PM Song Liu <songliubraving@fb.com> wrote:
-> > >
-> > >
-> > >
-> > > > On Oct 28, 2020, at 5:58 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
-> > > >
-> > > > This patch set adds support for generating and deduplicating split BTF. This
-> > > > is an enhancement to the BTF, which allows to designate one BTF as the "base
-> > > > BTF" (e.g., vmlinux BTF), and one or more other BTFs as "split BTF" (e.g.,
-> > > > kernel module BTF), which are building upon and extending base BTF with extra
-> > > > types and strings.
-> > > >
-> > > > Once loaded, split BTF appears as a single unified BTF superset of base BTF,
-> > > > with continuous and transparent numbering scheme. This allows all the existing
-> > > > users of BTF to work correctly and stay agnostic to the base/split BTFs
-> > > > composition.  The only difference is in how to instantiate split BTF: it
-> > > > requires base BTF to be alread instantiated and passed to btf__new_xxx_split()
-> > > > or btf__parse_xxx_split() "constructors" explicitly.
-> > > >
-> > > > This split approach is necessary if we are to have a reasonably-sized kernel
-> > > > module BTFs. By deduping each kernel module's BTF individually, resulting
-> > > > module BTFs contain copies of a lot of kernel types that are already present
-> > > > in vmlinux BTF. Even those single copies result in a big BTF size bloat. On my
-> > > > kernel configuration with 700 modules built, non-split BTF approach results in
-> > > > 115MBs of BTFs across all modules. With split BTF deduplication approach,
-> > > > total size is down to 5.2MBs total, which is on part with vmlinux BTF (at
-> > > > around 4MBs). This seems reasonable and practical. As to why we'd need kernel
-> > > > module BTFs, that should be pretty obvious to anyone using BPF at this point,
-> > > > as it allows all the BTF-powered features to be used with kernel modules:
-> > > > tp_btf, fentry/fexit/fmod_ret, lsm, bpf_iter, etc.
-> > >
-> > > Some high level questions. Do we plan to use split BTF for in-tree modules
-> > > (those built together with the kernel) or out-of-tree modules (those built
-> > > separately)? If it is for in-tree modules, is it possible to build split BTF
-> > > into vmlinux BTF?
+> On Mon, Aug 24, 2020 at 11:00 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
 > >
-> > It will be possible to use for both in-tree and out-of-tree. For
-> > in-tree, this will be integrated into the kernel build process. For
-> > out-of-tree, whoever builds their kernel module will need to invoke
-> > pahole -J with an extra flag pointing to the right vmlinux image (I
-> > haven't looked into the exact details of this integration, maybe there
-> > are already scripts in Linux repo that out-of-tree modules have to
-> > use, in such case we can add this integration there).
+> > On Mon, Aug 24, 2020 at 9:37 PM syzbot
+> > <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com> wrote:
+> > > syzbot has found a reproducer for the following issue on:
 > >
-> > Merging all in-tree modules' BTFs into vmlinux's BTF defeats the
-> > purpose of the split BTF and will just increase the size of vmlinux
-> > BTF unnecessarily.
-> >
+> > Looping in fsdevel and OverlayFS maintainers, as this seems to be
+> > FS/OverlayFS related...
 >
-> Again more of a question about how module BTF will be exposed, but
-> I'm wondering if there will be a way for a consumer to ask for
-> type info across kernel and module BTF, i.e. something like
-> libbpf_find_kernel_btf_id() ?
-
-I'm still playing with the options, but I think libbpf will do all the
-search across vmlinux and modules. I'm considering allowing users to
-specify module name as an optional hint. Just in case if there are
-conflicting types/functions in two different modules with the same
-name.
-
-> Similarly will __builtin_btf_type_id()
-> work across both vmlinux and modules? I'm thinking of the case where we
-> potentially don't know which module a type is defined in.
-
-I think we'll need another built-in/relocation to specify
-module/vmlinux ID. Type ID itself is not unique enough to identify the
-module.
-
-Alternatively, we can extend its return type to u64 and have BTF
-object ID in upper 4 bytes, and BTF type ID in lower 4 bytes. Need to
-think about this and discuss it with Yonghong.
-
+> Hmm, the oopsing code is always something like:
 >
-> I realize in some cases type names may refer to different types in
-> different modules (not sure how frequent this is in practice?) but
-> I'm curious how the split model for modules will interact with existing
-> APIs and helpers.
+> All code
+> ========
+>    0: 1b fe                sbb    %esi,%edi
+>    2: 49 8d 5e 08          lea    0x8(%r14),%rbx
+>    6: 48 89 d8              mov    %rbx,%rax
+>    9: 48 c1 e8 03          shr    $0x3,%rax
+>    d: 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1)
+>   12: 74 08                je     0x1c
+>   14: 48 89 df              mov    %rbx,%rdi
+>   17: e8 bc b4 5b fe        callq  0xfffffffffe5bb4d8
+>   1c: 48 8b 1b              mov    (%rbx),%rbx
+>   1f: 48 83 c3 68          add    $0x68,%rbx
+>   23: 48 89 d8              mov    %rbx,%rax
+>   26: 48 c1 e8 03          shr    $0x3,%rax
+>   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+>   2f: 74 08                je     0x39
+>   31: 48 89 df              mov    %rbx,%rdi
+>   34: e8 9f b4 5b fe        callq  0xfffffffffe5bb4d8
+>   39: 48 8b 1b              mov    (%rbx),%rbx
+>   3c: 48 83 c3 0c          add    $0xc,%rbx
 >
-> In some cases it's likely that modules may share types with
-> each other that they do not share with vmlinux; in such cases
-> will those types get deduplicated also, or is deduplication just
-> between kernel/module, and not module/module?
-
-Yes, they will be duplicated in two modules. It's a start schema,
-where vmlinux BTF is the base for all kernel modules. It's technically
-possible to have a longer chain of BTFs, but we'd need to deal with
-dependencies between modules, making sure that dependent BTF is loaded
-and available first, etc. That can be added later without breaking
-anything, if there is a need.
-
 >
-> Sorry I know these questions aren't about this patchset in
-> particular, but I'm just trying to get a sense of the bigger
-> picture. Thanks!
+> And that looks (to me) like the unrolled loop in call_int_hook().  I
+> don't see how that could be related to overlayfs, though it's
+> definitely interesting why it only triggers from
+> overlay->vfs_getattr()->security_inode_getattr()...
 
-These are fair questions, I just didn't want to go into too many
-details in this particular patch set, because it's pretty agnostic to
-all of those concerns. The next patch set will be dealing with all the
-details of kernel/user space interface.
 
->
-> Alan
+>   26: 48 c1 e8 03          shr    $0x3,%rax
+>   2a:* 42 80 3c 38 00        cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+
+
+This access is part of KASAN check. But the original address kernel
+tries to access is NULL, so it's not an issue with KASAN.
+
+The line is this:
+
+int security_inode_getattr(const struct path *path)
+{
+    if (unlikely(IS_PRIVATE(d_backing_inode(path->dentry))))
+        return 0;
+
+So it's either path is NULL, or something in d_backing_inode
+dereferences NULL path->dentry.
+
+The reproducer does involve overlayfs:
+
+mkdir(&(0x7f0000000240)='./file1\x00', 0x0)
+mkdir(&(0x7f0000000300)='./bus\x00', 0x0)
+r0 = creat(&(0x7f00000000c0)='./bus/file1\x00', 0x0)
+mkdir(&(0x7f0000000080)='./file0\x00', 0x0)
+mount$overlay(0x400002, &(0x7f0000000000)='./bus\x00',
+&(0x7f0000000100)='overlay\x00', 0x0,
+&(0x7f00000003c0)=ANY=[@ANYBLOB='upperdir=./file1,lowerdir=./bus,workdir=./file0,metacopy=on'])
+link(&(0x7f0000000200)='./bus/file1\x00', &(0x7f00000002c0)='./bus/file0\x00')
+write$RDMA_USER_CM_CMD_RESOLVE_ADDR(r0, 0x0, 0x0)
+acct(&(0x7f0000000040)='./bus/file0\x00')
+
+Though, it may be overlayfs-related, or it may be a generic bug that
+requires a tricky reproducer and the only reproducer syzbot come up
+with happened to involve overlayfs.
+But there are 4 reproducers on syzbot dashboard and all of them
+involve overlayfs and they are somewhat different. So my bet would be
+on overlayfs.
