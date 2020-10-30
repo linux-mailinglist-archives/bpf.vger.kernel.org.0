@@ -2,146 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156B32A04FA
-	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 13:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F153D2A0506
+	for <lists+bpf@lfdr.de>; Fri, 30 Oct 2020 13:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgJ3MHb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Oct 2020 08:07:31 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:47550 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgJ3MHa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Oct 2020 08:07:30 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UC5Mea187402;
-        Fri, 30 Oct 2020 12:06:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=PA5vm8YYxJcMJz7FkXJPGgwFOrfVUarZqcqKwGiR5pw=;
- b=vEWlzI++kJ99DZQRzwgFRaholuNA8Vo/M9bKIgdech0cXpLpnjcvmA8anPdbvzA158Cl
- 4Y2JzbFSWfMk1uOoFmdyaAYdz9x36iQdGakCHuPaiZ1JiplwdHkll5xtTpHMBeDX7INh
- IPgrca+O3sbFI+29PbYOi+A5kDLDtRVLWn6koUeLufrxK9FZEqfSX+xLobAmgpY2zpGB
- pz7gFP8WRMKzzc0LMPKFsyw9uNLyYCjQ1Rkpxkjdz9Y3oLXSxgACWY4gsZGvFSp2+Elf
- F8u+mUs4zpTbpogYa3M4blYW+s+ShOTfFW5FB0YaLQDMau7HEe9izo75u3P7zsI7cb0D gw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 34c9sb9h3g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 12:06:38 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UC0TeT106000;
-        Fri, 30 Oct 2020 12:04:37 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34cx1ud1gv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 12:04:37 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09UC4aHZ030085;
-        Fri, 30 Oct 2020 12:04:36 GMT
-Received: from dhcp-10-175-216-65.vpn.oracle.com (/10.175.216.65)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 30 Oct 2020 05:04:35 -0700
-Date:   Fri, 30 Oct 2020 12:04:27 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-cc:     Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 00/11] libbpf: split BTF support
-In-Reply-To: <CAEf4BzbtiByaU_-pEV8gVZH1N9_xCTWJBxb6DYPXF5p9b9+_kg@mail.gmail.com>
-Message-ID: <alpine.LRH.2.21.2010301144050.25037@localhost>
-References: <20201029005902.1706310-1-andrii@kernel.org> <4427E5BD-5EBF-47E8-B7F6-9255BEAE2D53@fb.com> <CAEf4BzbtiByaU_-pEV8gVZH1N9_xCTWJBxb6DYPXF5p9b9+_kg@mail.gmail.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1726413AbgJ3MI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Oct 2020 08:08:28 -0400
+Received: from mail-eopbgr150113.outbound.protection.outlook.com ([40.107.15.113]:36366
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726519AbgJ3MI2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Oct 2020 08:08:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c2hR8vgkN72shuSOJayCGpIoCaqI/szlD+90tz15oLykAyF2BCAX/nS5W0PAlsrFo11XbQN1r+stTYgXR8VBGqOYK1QRDvwMlQ/CvqNNU/bBWShjodFvjhmMli3cbZmNFr8T0tHnRsina2sVxNEEhbMa5tv0CPM9tLDXSMoGWvamw+gqlONWd6Stll0UitszUoGJUIMXUp+HsUFDQaGxiM5NpNdwfiaLLzL4wVOIDfhHfHwg6d9ld02aH0qNwKny7ebHaIO/xQVrBp+nlm4Oi2x5E9NAeD8BjW6fFZ80exuVSgWYNS2mEFLFOkPGoDaO5iSKwMIfrOwuMF2QgJsL/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QsavJvg5npk+jK0woA1MBQiCy5B58vVQbSUoxYPlhuI=;
+ b=S/sl1uCa5cebsqmf+TESQqGIJ17AATtzuOL2yuBOjx2iaURplHaWkjggyR1REUVjyx8cEIlrskyoUrXzwmftJ9xU9yhfQD0+M3epS4Z+xZ0EZzHZHoJvfv4IcdJlXehY4x0ROXtbNhD0Tc7Fj1RknzErFlMBkLTmBMZiusPoyqSr+9K40CzfrXDbVhx2PGChXD6zD1GWliCnHOVxUbjECt4e60SMPPcpuqKbPruQ0HQQb3AAj/X28i+4+7C0iP7W3LUBucowspLuAT1SxwPZ2qWbzbENUtf7A0vcGqCQnTNPs6K9P8FiKLsbpZut8r6xanPpZLrVV8yt25JNF6ufKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QsavJvg5npk+jK0woA1MBQiCy5B58vVQbSUoxYPlhuI=;
+ b=PMBmg8egPEy6/u8Ru0gD/srsrOrTYtqyl7tK1Jujj9BeRzvZJkcpX1yZIwBSs96/c+qWDKm5BGDVD0yLhZvNYeEC53xOg+p2RLzqbTXFmCJdgAhrPpQPa3lGo7A/Fwuz5Y2bN11Fm5APM84knYRUMNglWdzy5pbORmxpyb2+CtI=
+Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
+ (2603:10a6:820:1b::23) by VI1PR83MB0333.EURPRD83.prod.outlook.com
+ (2603:10a6:802:3b::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.7; Fri, 30 Oct
+ 2020 12:08:19 +0000
+Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
+ ([fe80::c857:1a78:d155:fc99]) by VI1PR8303MB0080.EURPRD83.prod.outlook.com
+ ([fe80::c857:1a78:d155:fc99%10]) with mapi id 15.20.3541.007; Fri, 30 Oct
+ 2020 12:08:19 +0000
+From:   Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@google.com>
+Subject: [PATCH bpf-next] bpf: update verifier to stop perf ring buffer
+ corruption
+Thread-Topic: [PATCH bpf-next] bpf: update verifier to stop perf ring buffer
+ corruption
+Thread-Index: AdautGZ4+1YSnWihRZa8ESQSP7NSdQ==
+Date:   Fri, 30 Oct 2020 12:08:19 +0000
+Message-ID: <VI1PR8303MB008003C9E3B937033A593C47FB150@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=kesheldr@microsoft.com;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-10-30T12:08:17.4323933Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c00ceaae-cd6b-42aa-8f23-a340a3b8d3a1;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [149.12.0.58]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 63d1f721-2a42-4098-ddc3-08d87ccc7d90
+x-ms-traffictypediagnostic: VI1PR83MB0333:
+x-microsoft-antispam-prvs: <VI1PR83MB0333A6858480C34C89985886FB150@VI1PR83MB0333.EURPRD83.prod.outlook.com>
+x-o365-sonar-daas-pilot: True
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KSRAhUdArSp6qMYyCVsyo2kIPwbSQBrQ1/PyzrUBGEsJwdrKU9baXgc15EJWpWfLAWaU5xMschRtR7yOQ2KtOQV8MbCEf8/YroTMH9FzGSvITzI8SKt7GzrGeLCy+b3JUGFoGqcl5qDDnRxhUkoiDx0YxU1c6Ls9f0+ksqt4UH064ys5PTvu3n8VlvzKim4WtpuXd1wM6lCOSIGYriU2bBj2bPVybJCfN+5m8el7o67ODwYiX7z3buOI50/xLYwUH778rr4e/HYQyY0kjYBEpOmKcMchyQ4nh1Lyf3sNIOL44Aubwig0OM+8vm59+UhclXl7O6xzYdTb37NaYmv7RQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR8303MB0080.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(366004)(26005)(33656002)(55016002)(9686003)(7696005)(4326008)(8936002)(8676002)(6506007)(86362001)(8990500004)(6916009)(2906002)(186003)(52536014)(478600001)(54906003)(82960400001)(83380400001)(82950400001)(76116006)(5660300002)(66556008)(66476007)(66446008)(64756008)(10290500003)(71200400001)(66946007)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: bDfYRXHItrQodpoOjhpKhguEe4U5b3VJen/FVCk4YpmeIhbU0SHKpI5+xFuFj4S8KJoxeBV4Z2nejgupR4EtoyTVuBR1ym4+nPt0QgAutiHqnx1cwyzg85KbU+Sy8m5rimZeT46sBJpffG2SR49knxDKWRtO6emWjFbwrM8XIGc8dCfyWv9yvnvRe+J0zvjNYRIke7swJ0oc07ApHd3phL2ue4B4k3ndOw2HbnqKAvbucMuFzyRrymi6cJ9gX4VxXU+R/y9o408uvD+ZU3TnXnBSlv2a/2GG/AJVta5tq+4/fQEIUMsdfQ0YP85pAYkXHUYdhivwji0U4rZ8r0pdp1fxgWMVGAJ+/qdpiouR2cixBXDoGNb98XbEjfxlUBkwtLy9uzQBvGP47wk7l8gofQ9Q+JH8rCNSFdMDVMi48eGGGMyLtLjDDAIu7yhO07JX2r70CqC0aNopL494z1wrZEMwDCoDP0OrCMDlautnQuSgqKOceCS2S1KsZ3cY71OlbdTd/tWnM5PvBajRigSizeDkfQm/8m4wyS5S2tw3iNbRMCRLtnkGhWnsgEQg2AsLRa1ZgrfJMBOMEnLCApeTnwWtWfgPraiIet0fNVCHohHC7nA9uMxXpPW/FUBxRNqvMk2XkhIIEGUP/4C+tcd2vA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=3 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010300093
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 phishscore=0 clxscore=1011 suspectscore=3
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300094
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR8303MB0080.EURPRD83.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63d1f721-2a42-4098-ddc3-08d87ccc7d90
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Oct 2020 12:08:19.1545
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Aa4ahDsPPQQngqZqlv3/K7VIlsN7leHuSPxE705NX8IAY+9O4tjqpQqfBJBkaGZR0rUiVEcDk8UiywLKo4I0mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR83MB0333
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 29 Oct 2020, Andrii Nakryiko wrote:
+As discussed, bpf_perf_event_output() takes a u64 for the sample size param=
+eter but the perf ring buffer uses a u16 internally.  This results in overl=
+apping samples where the total sample size (including header/padding) excee=
+ds 64K, and prevents samples from being submitted when the total sample siz=
+e =3D=3D  64K.
 
-> On Thu, Oct 29, 2020 at 5:33 PM Song Liu <songliubraving@fb.com> wrote:
-> >
-> >
-> >
-> > > On Oct 28, 2020, at 5:58 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > This patch set adds support for generating and deduplicating split BTF. This
-> > > is an enhancement to the BTF, which allows to designate one BTF as the "base
-> > > BTF" (e.g., vmlinux BTF), and one or more other BTFs as "split BTF" (e.g.,
-> > > kernel module BTF), which are building upon and extending base BTF with extra
-> > > types and strings.
-> > >
-> > > Once loaded, split BTF appears as a single unified BTF superset of base BTF,
-> > > with continuous and transparent numbering scheme. This allows all the existing
-> > > users of BTF to work correctly and stay agnostic to the base/split BTFs
-> > > composition.  The only difference is in how to instantiate split BTF: it
-> > > requires base BTF to be alread instantiated and passed to btf__new_xxx_split()
-> > > or btf__parse_xxx_split() "constructors" explicitly.
-> > >
-> > > This split approach is necessary if we are to have a reasonably-sized kernel
-> > > module BTFs. By deduping each kernel module's BTF individually, resulting
-> > > module BTFs contain copies of a lot of kernel types that are already present
-> > > in vmlinux BTF. Even those single copies result in a big BTF size bloat. On my
-> > > kernel configuration with 700 modules built, non-split BTF approach results in
-> > > 115MBs of BTFs across all modules. With split BTF deduplication approach,
-> > > total size is down to 5.2MBs total, which is on part with vmlinux BTF (at
-> > > around 4MBs). This seems reasonable and practical. As to why we'd need kernel
-> > > module BTFs, that should be pretty obvious to anyone using BPF at this point,
-> > > as it allows all the BTF-powered features to be used with kernel modules:
-> > > tp_btf, fentry/fexit/fmod_ret, lsm, bpf_iter, etc.
-> >
-> > Some high level questions. Do we plan to use split BTF for in-tree modules
-> > (those built together with the kernel) or out-of-tree modules (those built
-> > separately)? If it is for in-tree modules, is it possible to build split BTF
-> > into vmlinux BTF?
-> 
-> It will be possible to use for both in-tree and out-of-tree. For
-> in-tree, this will be integrated into the kernel build process. For
-> out-of-tree, whoever builds their kernel module will need to invoke
-> pahole -J with an extra flag pointing to the right vmlinux image (I
-> haven't looked into the exact details of this integration, maybe there
-> are already scripts in Linux repo that out-of-tree modules have to
-> use, in such case we can add this integration there).
-> 
-> Merging all in-tree modules' BTFs into vmlinux's BTF defeats the
-> purpose of the split BTF and will just increase the size of vmlinux
-> BTF unnecessarily.
->
+This patch adds a check to the verifier to force the total sample size to b=
+e less than 64K.  I'm not convinced it is in the right place stylistically,=
+ but it does work.  This is the first patch I've submitted to this list so =
+please forgive me if I'm doing this wrong, and let me know what I should ha=
+ve done.  Also I don't know what the size reduction of -24 relates to (it d=
+oesn't match any header struct I've found) but it was found through experim=
+entation.
 
-Again more of a question about how module BTF will be exposed, but
-I'm wondering if there will be a way for a consumer to ask for
-type info across kernel and module BTF, i.e. something like
-libbpf_find_kernel_btf_id() ? Similarly will __builtin_btf_type_id()
-work across both vmlinux and modules? I'm thinking of the case where we 
-potentially don't know which module a type is defined in.
+Thanks
 
-I realize in some cases type names may refer to different types in 
-different modules (not sure how frequent this is in practice?) but
-I'm curious how the split model for modules will interact with existing 
-APIs and helpers.
+Kevin Sheldrake
 
-In some cases it's likely that modules may share types with
-each other that they do not share with vmlinux; in such cases 
-will those types get deduplicated also, or is deduplication just
-between kernel/module, and not module/module? 
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index e83ef6f..0941731 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -18,6 +18,13 @@
+  */
+ #define BPF_MAX_VAR_SIZ        (1 << 29)
 
-Sorry I know these questions aren't about this patchset in
-particular, but I'm just trying to get a sense of the bigger
-picture. Thanks!
++/* Maximum variable size permitted for size param to bpf_perf_event_output=
+().
++ * This ensures the samples sent into the perf ring buffer do not overflow=
+ the
++ * size parameter in the perf event header.
++ */
++#define BPF_PERF_RAW_SIZ_BITS sizeof(((struct perf_event_header *)0)->size=
+)
++#define BPF_MAX_PERF_SAMP_SIZ ((1 << (BPF_PERF_RAW_SIZ_BITS * 8)) - 24)
++
+ /* Liveness marks, used for registers and spilled-regs (in stack slots).
+  * Read marks propagate upwards until they find a write mark; they record =
+that
+  * "one of this state's descendants read this reg" (and therefore the reg =
+is
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6200519..42211d4 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4997,7 +4997,7 @@ static int check_reference_leak(struct bpf_verifier_e=
+nv *env)
+ static int check_helper_call(struct bpf_verifier_env *env, int func_id, in=
+t insn_idx)
+ {
+        const struct bpf_func_proto *fn =3D NULL;
+-       struct bpf_reg_state *regs;
++       struct bpf_reg_state *regs, *reg;
+        struct bpf_call_arg_meta meta;
+        bool changes_data;
+        int i, err;
+@@ -5054,6 +5054,15 @@ static int check_helper_call(struct bpf_verifier_env=
+ *env, int func_id, int insn
+                        return err;
+        }
 
-Alan
++       /* special check for bpf_perf_event_output() size */
++       regs =3D cur_regs(env);
++       reg =3D &regs[BPF_REG_5];
++       if (func_id =3D=3D BPF_FUNC_perf_event_output && reg->umax_value >=
+=3D BPF_MAX_PERF_SAMP_SIZ) {
++               verbose(env, "bpf_perf_output_event()#%d size parameter mus=
+t be less than %ld\n",
++                       BPF_FUNC_perf_event_output, BPF_MAX_PERF_SAMP_SIZ);
++               return -E2BIG;
++       }
++
+        err =3D record_func_map(env, &meta, func_id, insn_idx);
+        if (err)
+                return err;
+@@ -5087,8 +5096,6 @@ static int check_helper_call(struct bpf_verifier_env =
+*env, int func_id, int insn
+                }
+        }
+
+-       regs =3D cur_regs(env);
+-
+        /* check that flags argument in get_local_storage(map, flags) is 0,
+         * this is required because get_local_storage() can't return an err=
+or.
+         */
