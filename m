@@ -2,124 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766BF2A2A05
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 12:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE5F2A2AEF
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 13:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgKBLyU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 06:54:20 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:50371 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgKBLyU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Nov 2020 06:54:20 -0500
-Received: by mail-io1-f72.google.com with SMTP id l17so8146402iol.17
-        for <bpf@vger.kernel.org>; Mon, 02 Nov 2020 03:54:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Sqg30VMwJSZq5RzUJ0TKC6IYhWARWZMMQaebzmFa2Bs=;
-        b=h+ORCHPtEyUnDSoxSXmNvo0htaoVviwHJITWvf2jW22kkupGZQ6EOBaef45Q268zwQ
-         V6hcIOyzXU9JNgVfWr52ysDQHhgSsX95bD7QgnYqYlrjv5bDkR7LF7np6mx3r4bX77OX
-         pJsUdEMr76GfaEEPmKn7oiypbSIMuIR4KzqXeXERzNOWLKGhWBVWze255UaTOL6ZRD5J
-         UPMEUDysWFQDQdA6q0wSvZSWezWHOmhhnZgrNomYYB0JBuNGjZZyqN+dKXz486byAxPd
-         5VzJLOpMItulBffO7L7tGzMhj4LEqgSe6SZkIiMVb/fROWYt1DAmWVc0aNePaXtWZ7gH
-         m0uQ==
-X-Gm-Message-State: AOAM531GCRKEDtocRucQMUjj9c8M2uFTbiM9hhs1pSf1h834b3d1gk/e
-        /slzJLwpUkjCIAInN3B6/8cYJbZF7G8CiW8BgPEfsiL/abGj
-X-Google-Smtp-Source: ABdhPJzeAjcJdN0YGKzTLSqfQrOARKnqcntkz+9kHIx7O7P/lTjX7+lWTsd7tuJKF/DOg2/FJXdyMafZt4L+yNRUHK0I8dVFfFet
+        id S1728569AbgKBMrO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 07:47:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45854 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728547AbgKBMrO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 07:47:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604321232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mzT0AhlYvj48ay046KlpqQOJqmioK9ASEFfbnK3s3So=;
+        b=BH3YeCnpB2bFRkepdUvdvtD43vRDPBgEA8PiozS09VeEcz3MIvPXw8TPnn5vnbJcUxYktM
+        WpjpC0wRsNBCnMCUKNi9HIJOjYCGmfIYIYl759ecd0NysfSr9QvZ//FbAQ4FqtrwCSzJuh
+        wrzhp54c5elDkdCKodaohCB6uGa9cZE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-eyAdvIpqNXyEn0lcoINg6g-1; Mon, 02 Nov 2020 07:47:08 -0500
+X-MC-Unique: eyAdvIpqNXyEn0lcoINg6g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 657D6AADF79;
+        Mon,  2 Nov 2020 12:47:06 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 26C675B4D8;
+        Mon,  2 Nov 2020 12:46:59 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 13:46:58 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next V5 4/5] bpf: drop MTU check when doing TC-BPF
+ redirect to ingress
+Message-ID: <20201102134658.081fd974@carbon>
+In-Reply-To: <5f9c7935c6991_16d420838@john-XPS-13-9370.notmuch>
+References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
+        <160407666748.1525159.1515139110258948831.stgit@firesoul>
+        <5f9c7935c6991_16d420838@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a808:: with SMTP id f8mr2628773jaj.84.1604318059055;
- Mon, 02 Nov 2020 03:54:19 -0800 (PST)
-Date:   Mon, 02 Nov 2020 03:54:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000004500b05b31e68ce@google.com>
-Subject: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run3
-From:   syzbot <syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mingo@elte.hu, mingo@redhat.com,
-        mmullins@fb.com, netdev@vger.kernel.org, peterz@infradead.org,
-        rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, 30 Oct 2020 13:36:05 -0700
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-syzbot found the following issue on:
+> Jesper Dangaard Brouer wrote:
+> > The use-case for dropping the MTU check when TC-BPF does redirect to
+> > ingress, is described by Eyal Birger in email[0]. The summary is the
+> > ability to increase packet size (e.g. with IPv6 headers for NAT64) and
+> > ingress redirect packet and let normal netstack fragment packet as needed.
+> > 
+> > [0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
+> > 
+> > V4:
+> >  - Keep net_device "up" (IFF_UP) check.
+> >  - Adjustment to handle bpf_redirect_peer() helper
+> > 
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  include/linux/netdevice.h |   31 +++++++++++++++++++++++++++++--
+> >  net/core/dev.c            |   19 ++-----------------
+> >  net/core/filter.c         |   14 +++++++++++---
+> >  3 files changed, 42 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 964b494b0e8d..bd02ddab8dfe 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -3891,11 +3891,38 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
+> >  bool is_skb_forwardable(const struct net_device *dev,
+> >  			const struct sk_buff *skb);
+> >  
+> > +static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
+> > +						 const struct sk_buff *skb,
+> > +						 const bool check_mtu)  
+> 
+> It looks like if check_mtu=false then this is just an interface up check.
+> Can we leave is_skb_forwardable logic alone and just change the spots where
+> this is called with false to something with a name that describes the check,
+> such as is_dev_up(dev). I think it will make this change smaller and the
+> code easier to read. Did I miss something?
 
-HEAD commit:    080b6f40 bpf: Don't rely on GCC __attribute__((optimize)) ..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=1089d37c500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
-dashboard link: https://syzkaller.appspot.com/bug?extid=d29e58bb557324e55e5e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f4b032500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1371a47c500000
+People should realized that this is constructed such, the compiler will
+compile-time remove the actual argument (the const bool check_mtu).
+And this propagates also to ____dev_forward_skb() where the call places
+are also inlined.
 
-The issue was bisected to:
-
-commit 9df1c28bb75217b244257152ab7d788bb2a386d0
-Author: Matt Mullins <mmullins@fb.com>
-Date:   Fri Apr 26 18:49:47 2019 +0000
-
-    bpf: add writable context for raw tracepoints
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b6c4da500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b6c4da500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b6c4da500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-Fixes: 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
-
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
-Read of size 8 at addr ffffc90000e6c030 by task kworker/0:3/3754
-
-CPU: 0 PID: 3754 Comm: kworker/0:3 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue:  0x0 (events)
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
- bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
- __bpf_trace_sched_switch+0xdc/0x120 include/trace/events/sched.h:138
- __traceiter_sched_switch+0x64/0xb0 include/trace/events/sched.h:138
- trace_sched_switch include/trace/events/sched.h:138 [inline]
- __schedule+0xeb8/0x2130 kernel/sched/core.c:4520
- schedule+0xcf/0x270 kernel/sched/core.c:4601
- worker_thread+0x14c/0x1120 kernel/workqueue.c:2439
- kthread+0x3af/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Yes, this (check_mtu=false) is basically an interface up check, but the
+only place it is used directly is in the ndo_get_peer_dev() case, and
+reading the code I find it more readable that is says
+__is_skb_forwardable because this is used as part of a forwarding step,
+and is_dev_up() doesn't convey the intent in this use-case.
 
 
-Memory state around the buggy address:
- ffffc90000e6bf00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e6bf80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc90000e6c000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                     ^
- ffffc90000e6c080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e6c100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
+> > +{
+> > +	const u32 vlan_hdr_len = 4; /* VLAN_HLEN */
+> > +	unsigned int len;
+> > +
+> > +	if (!(dev->flags & IFF_UP))
+> > +		return false;
+> > +
+> > +	if (!check_mtu)
+> > +		return true;
+> > +
+> > +	len = dev->mtu + dev->hard_header_len + vlan_hdr_len;
+> > +	if (skb->len <= len)
+> > +		return true;
+> > +
+> > +	/* if TSO is enabled, we don't care about the length as the packet
+> > +	 * could be forwarded without being segmented before
+> > +	 */
+> > +	if (skb_is_gso(skb))
+> > +		return true;
+> > +
+> > +	return false;
+> > +}
+> > +
+> >  static __always_inline int ____dev_forward_skb(struct net_device *dev,
+> > -					       struct sk_buff *skb)
+> > +					       struct sk_buff *skb,
+> > +					       const bool check_mtu)
+> >  {  
+> 
+> I guess you will get some duplication here if you have a dev_forward_skb()
+> and a dev_forward_skb_nocheck() or something. Take it or leave it. I know
+> I've added my share of bool swivel bits like this, but better to avoid
+> it if possible IMO.
+
+As I wrote the bool will actually get compile-time removed, so I don't
+see that as problematic.  And I avoided replicating the code in more
+places.
+
+The problematic part (which you didn't comment) on is this:
+
+On Fri, 30 Oct 2020 17:51:07 +0100
+Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index bd4a416bd9ad..71b78b8d443c 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2083,13 +2083,21 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+>  
+>  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+>  {
+> -	return dev_forward_skb(dev, skb);
+> +	int ret = ____dev_forward_skb(dev, skb, false);
+> +
+> +	if (likely(!ret)) {
+> +		skb->protocol = eth_type_trans(skb, dev);
+> +		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+> +		ret = netif_rx(skb);
+> +	}
+> +
+> +	return ret;
+>  }
+
+I'm replicating two lines from dev_forward_skb(), but I couldn't find a
+way to avoid this, without causing larger code changes (and slower code).
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> Other than style aspects it looks correct to me.
+> 
+> >  	if (skb_orphan_frags(skb, GFP_ATOMIC) ||
+> > -	    unlikely(!is_skb_forwardable(dev, skb))) {
+> > +	    unlikely(!__is_skb_forwardable(dev, skb, check_mtu))) {
+> >  		atomic_long_inc(&dev->rx_dropped);
+> >  		kfree_skb(skb);
+> >  		return NET_RX_DROP;
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 9499a414d67e..445ccf92c149 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -2188,28 +2188,13 @@ static inline void net_timestamp_set(struct sk_buff *skb)
+> >    
+> 
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
