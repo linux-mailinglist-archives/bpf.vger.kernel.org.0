@@ -2,108 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E78D2A36D3
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 23:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369B52A36F1
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 00:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725829AbgKBW5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 17:57:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48836 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725833AbgKBW5M (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 17:57:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604357831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xAfRhWimI1jHGTVmCKQhK61uXzAn1vDaUQsK5qSZb3s=;
-        b=XliRkOaeBBHVBIgnnqPeKgtHMp16q736G5RNsa89ogEIhZBLfqc9/YQvJss3GJFUpySy3+
-        QJpKdvlR7MjPJa+WHrceGAWbM46ZMpiaQ+awsVijJw9z+UhNypvInB23RKPEMVWpNsZ7DU
-        H7t+H6YZXDRlAjdo0wWxQliryPRyT90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-572-2KIihxFDPW636vKdPMkKRg-1; Mon, 02 Nov 2020 17:57:08 -0500
-X-MC-Unique: 2KIihxFDPW636vKdPMkKRg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6454801F9A;
-        Mon,  2 Nov 2020 22:57:06 +0000 (UTC)
-Received: from krava (unknown [10.40.192.162])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7160960CCC;
-        Mon,  2 Nov 2020 22:56:59 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 23:56:58 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: Re: [PATCH 2/2] btf_encoder: Change functions check due to broken
- dwarf
-Message-ID: <20201102225658.GD3597846@krava>
-References: <20201031223131.3398153-1-jolsa@kernel.org>
- <20201031223131.3398153-3-jolsa@kernel.org>
- <20201102215908.GC3597846@krava>
+        id S1725942AbgKBXI1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 18:08:27 -0500
+Received: from www62.your-server.de ([213.133.104.62]:57012 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbgKBXI1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 18:08:27 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kZiw4-0006ru-Gj; Tue, 03 Nov 2020 00:08:24 +0100
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kZiw4-000Dwv-8f; Tue, 03 Nov 2020 00:08:24 +0100
+Subject: Re: [PATCH bpf-next 0/5] selftests/xsk: xsk selftests
+To:     Weqaar Janjua <weqaar.janjua@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@kernel.org, magnus.karlsson@gmail.com,
+        bjorn.topel@intel.com
+Cc:     Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
+        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        anders.roxell@linaro.org, jonathan.lemon@gmail.com,
+        andrii.nakryiko@gmail.com
+References: <20201030121347.26984-1-weqaar.a.janjua@intel.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <0fef6ce4-86cd-ae3a-0a29-953d87402afe@iogearbox.net>
+Date:   Tue, 3 Nov 2020 00:08:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201102215908.GC3597846@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20201030121347.26984-1-weqaar.a.janjua@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25976/Mon Nov  2 14:23:56 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 02, 2020 at 10:59:08PM +0100, Jiri Olsa wrote:
-> On Sat, Oct 31, 2020 at 11:31:31PM +0100, Jiri Olsa wrote:
-> > We need to generate just single BTF instance for the
-> > function, while DWARF data contains multiple instances
-> > of DW_TAG_subprogram tag.
-> > 
-> > Unfortunately we can no longer rely on DW_AT_declaration
-> > tag (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
-> > 
-> > Instead we apply following checks:
-> >   - argument names are defined for the function
-> >   - there's symbol and address defined for the function
-> >   - function is generated only once
-> > 
-> > Also because we want to follow kernel's ftrace traceable
-> > functions, this patchset is adding extra check that the
-> > function is one of the ftrace's functions.
-> > 
-> > All ftrace functions addresses are stored in vmlinux
-> > binary within symbols:
-> >   __start_mcount_loc
-> >   __stop_mcount_loc
+On 10/30/20 1:13 PM, Weqaar Janjua wrote:
+> This patch set adds AF_XDP selftests based on veth to selftests/xsk/.
 > 
-> hum, for some reason this does not pass through bpf internal
-> functions like bpf_iter_bpf_map.. I learned it hard way ;-)
-> will check
+> # Topology:
+> # ---------
+> #                 -----------
+> #               _ | Process | _
+> #              /  -----------  \
+> #             /        |        \
+> #            /         |         \
+> #      -----------     |     -----------
+> #      | Thread1 |     |     | Thread2 |
+> #      -----------     |     -----------
+> #           |          |          |
+> #      -----------     |     -----------
+> #      |  xskX   |     |     |  xskY   |
+> #      -----------     |     -----------
+> #           |          |          |
+> #      -----------     |     ----------
+> #      |  vethX  | --------- |  vethY |
+> #      -----------   peer    ----------
+> #           |          |          |
+> #      namespaceX      |     namespaceY
+> 
+> These selftests test AF_XDP SKB and Native/DRV modes using veth Virtual
+> Ethernet interfaces.
+> 
+> The test program contains two threads, each thread is single socket with
+> a unique UMEM. It validates in-order packet delivery and packet content
+> by sending packets to each other.
+> 
+> Prerequisites setup by script TEST_PREREQUISITES.sh:
+> 
+>     Set up veth interfaces as per the topology shown ^^:
+>     * setup two veth interfaces and one namespace
+>     ** veth<xxxx> in root namespace
+>     ** veth<yyyy> in af_xdp<xxxx> namespace
+>     ** namespace af_xdp<xxxx>
+>     * create a spec file veth.spec that includes this run-time configuration
+>       that is read by test scripts - filenames prefixed with TEST_XSK
+>     *** xxxx and yyyy are randomly generated 4 digit numbers used to avoid
+>         conflict with any existing interface.
+> 
+> The following tests are provided:
+> 
+> 1. AF_XDP SKB mode
+>     Generic mode XDP is driver independent, used when the driver does
+>     not have support for XDP. Works on any netdevice using sockets and
+>     generic XDP path. XDP hook from netif_receive_skb().
+>     a. nopoll - soft-irq processing
+>     b. poll - using poll() syscall
+>     c. Socket Teardown
+>        Create a Tx and a Rx socket, Tx from one socket, Rx on another.
+>        Destroy both sockets, then repeat multiple times. Only nopoll mode
+> 	  is used
+>     d. Bi-directional Sockets
+>        Configure sockets as bi-directional tx/rx sockets, sets up fill
+> 	  and completion rings on each socket, tx/rx in both directions.
+> 	  Only nopoll mode is used
+> 
+> 2. AF_XDP DRV/Native mode
+>     Works on any netdevice with XDP_REDIRECT support, driver dependent.
+>     Processes packets before SKB allocation. Provides better performance
+>     than SKB. Driver hook available just after DMA of buffer descriptor.
+>     a. nopoll
+>     b. poll
+>     c. Socket Teardown
+>     d. Bi-directional Sockets
+>     * Only copy mode is supported because veth does not currently support
+>       zero-copy mode
+> 
+> Total tests: 8.
+> 
+> Flow:
+> * Single process spawns two threads: Tx and Rx
+> * Each of these two threads attach to a veth interface within their
+>    assigned namespaces
+> * Each thread creates one AF_XDP socket connected to a unique umem
+>    for each veth interface
+> * Tx thread transmits 10k packets from veth<xxxx> to veth<yyyy>
+> * Rx thread verifies if all 10k packets were received and delivered
+>    in-order, and have the right content
+> 
+> Structure of the patch set:
+> 
+> Patch 1: This patch adds XSK Selftests framework under
+>           tools/testing/selftests/xsk, and README
+> Patch 2: Adds tests: SKB poll and nopoll mode, mac-ip-udp debug,
+>           and README updates
+> Patch 3: Adds tests: DRV poll and nopoll mode, and README updates
+> Patch 4: Adds tests: SKB and DRV Socket Teardown, and README updates
+> Patch 5: Adds tests: SKB and DRV Bi-directional Sockets, and README
+>           updates
+> 
+> Thanks: Weqaar
+> 
+> Weqaar Janjua (5):
+>    selftests/xsk: xsk selftests framework
+>    selftests/xsk: xsk selftests - SKB POLL, NOPOLL
+>    selftests/xsk: xsk selftests - DRV POLL, NOPOLL
+>    selftests/xsk: xsk selftests - Socket Teardown - SKB, DRV
+>    selftests/xsk: xsk selftests - Bi-directional Sockets - SKB, DRV
 
-so it gets filtered out because it's __init function
-I'll check if the fix below catches all internal functions,
-but I guess we should do something more robust
+Thanks a lot for adding the selftests, Weqaar! Given this needs to copy quite
+a bit of BPF selftest base infra e.g. from Makefiles I'd prefer if you could
+place these under selftests/bpf/ instead to avoid duplicating changes into two
+locations. I understand that these tests don't integrate well into test_progs,
+but for example see test_tc_redirect.sh or test_tc_edt.sh for stand-alone tests
+which could be done similarly with the xsk ones. Would be great if you could
+integrate them and spin a v2 with that.
 
-jirka
-
-
----
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 0a378aa92142..3cd94280c35b 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -143,7 +143,8 @@ static int filter_functions(struct btf_elf *btfe, struct mcount_symbols *ms)
- 		/* Do not enable .init section functions. */
- 		if (init_filter &&
- 		    func->addr >= ms->init_begin &&
--		    func->addr <  ms->init_end)
-+		    func->addr <  ms->init_end &&
-+		    strncmp("bpf_", func->name, 4))
- 			continue;
- 
- 		/* Make sure function is within mcount addresses. */
-
+Thanks,
+Daniel
