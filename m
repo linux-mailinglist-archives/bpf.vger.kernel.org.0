@@ -2,240 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112382A32FD
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 19:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A772A333C
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 19:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgKBS3g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 13:29:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S1726360AbgKBSny (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 13:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgKBS3g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:29:36 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC80DC061A04
-        for <bpf@vger.kernel.org>; Mon,  2 Nov 2020 10:29:35 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id t11so15254433edj.13
-        for <bpf@vger.kernel.org>; Mon, 02 Nov 2020 10:29:35 -0800 (PST)
+        with ESMTP id S1725831AbgKBSnx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:43:53 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958F7C0617A6
+        for <bpf@vger.kernel.org>; Mon,  2 Nov 2020 10:43:53 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id o205so5606233qke.10
+        for <bpf@vger.kernel.org>; Mon, 02 Nov 2020 10:43:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OpMCV6DiwA90oIx03s3EMjuhB60pir+cNI+VltB5GH8=;
-        b=VWjnqBTIlGrpPuF2LFgbeKu/sj0wZiKz1w3US24Lq1tK5vaaRd0hO3CZShJkGigzd6
-         h2pIds/m16oOuFMiYOb8zOJYacIoR05iV43irQ81eVBcuGAnmTjJVzKvVtX6ATQl1f1I
-         kpKkEza3WeGI/EHY50TsiwqvPMU+aXxAUz+jwhGdNcMz3r1bZgPji311QHJhOxdI1CBW
-         3kbZPtACoxXXzvN9UWdRcJguAo8xoLf5GX+MieDpKhaBzCM4JBpKeKwDR4CBUzWjTg81
-         DoiT5Ept1roX1wKjcCyasINyrbdbtRaL6/runLOm9WAcVmzXjfQAZfA7sHBDGhfjDair
-         YXUQ==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qiHZ1hrsvinTv/K83q0Rhp/LFKZP3RXggPFNrMPda6o=;
+        b=mlUxWUYczJS33fR/iEwt/7WalH3MyWBBWGTZPF3zH1DpEprnioF1fYaxu2gUKfLdKw
+         1WMZTm5lKn3mAjOa41gApSWGp+MEayPPgZTLRwmfUBDhuWArFWjsSASOHXFb+IfhiElE
+         SmHeEPC+CaEHSaIUeDgtVjphVl0ukNHXln5sE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OpMCV6DiwA90oIx03s3EMjuhB60pir+cNI+VltB5GH8=;
-        b=YHsJkoRBBHBEV9JZyEiuM//G+njnyBxeDs6w582q01NLjiSO5TZyqGhB4In8l0AEob
-         lBu2vg6LFslPeG7mtkKH1NtMkDiKmolpNUYGBypxyinHA8Vi6BldWGSUbxowboSjch/8
-         EebkRqH7q6nM6uKsviFczyW7HNHomBuFG5mB5qTjyp6FtZnsULcSaihF60dUUZENbwya
-         /mkAsJl+xzpjevgRE+sDhenCYM38CAQWRoLoiwQYkw9UPZ3WDYMT212+e+zA9PohjYx2
-         jME48IRLgNDo87eJ50i094FT8xfByvRUrEEZreG0WgMO1mVGuNNoQPhZXvZt0662THxC
-         gspQ==
-X-Gm-Message-State: AOAM533+lX8TvoRJ1UmLHPA0YqvotDjzxLcXvPeDqwsTlhWdb/42nTph
-        GKsCp1lMrPELK9WNlIIPrZbJkq+FLGHxwxAECzFcdA==
-X-Google-Smtp-Source: ABdhPJxeMAsEsTOEEkH4GYmiXn1rIW4mdT597X8DL0FwXDSaY5ZRiEMF+yTIqat9/8JA+MGqOWEN6L2WR3AZNiEL9F4=
-X-Received: by 2002:aa7:dc12:: with SMTP id b18mr17898467edu.295.1604341774102;
- Mon, 02 Nov 2020 10:29:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201031223131.3398153-1-jolsa@kernel.org> <20201031223131.3398153-2-jolsa@kernel.org>
-In-Reply-To: <20201031223131.3398153-2-jolsa@kernel.org>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 2 Nov 2020 10:29:22 -0800
-Message-ID: <CA+khW7hRm4xwKKDjdoJkaQADfjANCzy9hpp-xL_T-Two3oNAfA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] btf_encoder: Move find_all_percpu_vars in generic collect_symbols
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qiHZ1hrsvinTv/K83q0Rhp/LFKZP3RXggPFNrMPda6o=;
+        b=OR2eIJAXrY6Qbb5HlxgKAATRpT+SMJ2wf7z6M8Ne7eZDDlPrTtcZaFaEun0zTYuBRs
+         8GknxHkoVNkRj8GZt6G2h/GfxARVlSqm7mZXsyyy4AhfRpdvrrSl2fMF9vTJUEFKkvHx
+         GvLzMrc8wnXNVEkjfQk5UZUHpsr2CHIyENgz//bxdt28SPboIRAg6ORMfm6PnfgKTcFo
+         vhznwl+tIJtQnOwB6B5Th2K9P9EXQlGEH0DhyW/jFgNXlG/FxHlhNYGu4I9cxZaiHZDH
+         sKd4t82/uZCLo1d98VK6GQXHX/D4zP+ymNKfBhR6PUMPVI8R/4MB9EBnWdFDoqMn5HHK
+         P+Tw==
+X-Gm-Message-State: AOAM530E508IgmZIZ5ZkQqeT2Dsax6PVBCmhZRKBq9kaGZgVdz1YNCWu
+        wb9a3GT4UYk1g9LKvN9KItKTOw==
+X-Google-Smtp-Source: ABdhPJxhYLiuNq2MONOb69Pm6DrknVY7dG6jwS8GHGFR1nX80wOdGTryPPiTHxLvnkYi9O5IVdbUng==
+X-Received: by 2002:a05:620a:2144:: with SMTP id m4mr16144470qkm.269.1604342632790;
+        Mon, 02 Nov 2020 10:43:52 -0800 (PST)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id 71sm8719856qko.55.2020.11.02.10.43.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 10:43:52 -0800 (PST)
+Date:   Mon, 2 Nov 2020 13:43:51 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
+ rcuidle tracepoints
+Message-ID: <20201102184351.GA595952@google.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com>
+ <20201023195352.26269-7-mjeanson@efficios.com>
+ <20201023211359.GC3563800@google.com>
+ <20201026082010.GC2628@hirez.programming.kicks-ass.net>
+ <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This looks good to me. Thanks, Jiri.
+On Mon, Oct 26, 2020 at 10:28:07AM -0400, Mathieu Desnoyers wrote:
+> ----- On Oct 26, 2020, at 4:20 AM, Peter Zijlstra peterz@infradead.org wrote:
+> 
+> > On Fri, Oct 23, 2020 at 05:13:59PM -0400, Joel Fernandes wrote:
+> >> On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
+> >> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> >> > 
+> >> > Considering that tracer callbacks expect RCU to be watching (for
+> >> > instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
+> >> > rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
+> >> > no point in using SRCU anymore given that rcuidle tracepoints need to
+> >> > ensure RCU is watching. Therefore, simply use sched-RCU like normal
+> >> > tracepoints for rcuidle tracepoints.
+> >> 
+> >> High level question:
+> >> 
+> >> IIRC, doing this increases overhead for general tracing that does not use
+> >> perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
+> >> tracepoints. I remember adding SRCU because of this reason.
+> >> 
+> >> Can the 'rcuidle' information not be pushed down further, such that perf does
+> >> it because it requires RCU to be watching, so that it does not effect, say,
+> >> trace events?
+> > 
+> > There's very few trace_.*_rcuidle() users left. We should eradicate them
+> > and remove the option. It's bugs to begin with.
+> 
+> I agree with Peter. Removing the trace_.*_rcuidle weirdness from the tracepoint
+> API and fixing all callers to ensure they trace from a context where RCU is
+> watching would simplify instrumentation of the Linux kernel, thus making it harder
+> for subtle bugs to hide and be unearthed only when tracing is enabled. This is
+> AFAIU the general approach Thomas Gleixner has been aiming for recently, and I
+> think it is a good thing.
+> 
+> So if we consider this our target, and that the current state of things is that
+> we need to have RCU watching around callback invocation, then removing the
+> dependency on SRCU seems like an overall simplification which does not regress
+> feature-wise nor speed-wise compared with what we have upstream today. The next
+> steps would then be to audit all rcuidle tracepoints and make sure the context
+> where they are placed has RCU watching already, so we can remove the tracepoint
+> rcuidle API. That would effectively remove the calls to rcu_irq_{enter,exit}_irqson
+> from the tracepoint code.
+> 
+> This is however beyond the scope of the proposed patch set.
 
-Acked-by: Hao Luo <haoluo@google.com>
+You are right, it doesn't regress speedwise - I got confused since the code
+was modified to call rcu_enter_irqson() even for the rcuidle case (which I
+had avoided when I added SRCU). So in current code, SRCU is kind of
+pointless. I think keep the patch in the series.
 
-On Sat, Oct 31, 2020 at 3:31 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Moving find_all_percpu_vars under generic collect_symbols
-> function that walks over symbols and calls collect_percpu_var.
->
-> We will add another collect function that needs to go through
-> all the symbols, so it's better we go through them just once.
->
-> There's no functional change intended.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  btf_encoder.c | 124 +++++++++++++++++++++++++++-----------------------
->  1 file changed, 67 insertions(+), 57 deletions(-)
->
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 4c92908beab2..1866bb16a8ba 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -250,75 +250,85 @@ static bool percpu_var_exists(uint64_t addr, uint32_t *sz, const char **name)
->         return true;
->  }
->
-> -static int find_all_percpu_vars(struct btf_elf *btfe)
-> +static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
->  {
-> -       uint32_t core_id;
-> -       GElf_Sym sym;
-> +       const char *sym_name;
-> +       uint64_t addr;
-> +       uint32_t size;
->
-> -       /* cache variables' addresses, preparing for searching in symtab. */
-> -       percpu_var_cnt = 0;
-> +       /* compare a symbol's shndx to determine if it's a percpu variable */
-> +       if (elf_sym__section(sym) != btfe->percpu_shndx)
-> +               return 0;
-> +       if (elf_sym__type(sym) != STT_OBJECT)
-> +               return 0;
->
-> -       /* search within symtab for percpu variables */
-> -       elf_symtab__for_each_symbol(btfe->symtab, core_id, sym) {
-> -               const char *sym_name;
-> -               uint64_t addr;
-> -               uint32_t size;
-> +       addr = elf_sym__value(sym);
-> +       /*
-> +        * Store only those symbols that have allocated space in the percpu section.
-> +        * This excludes the following three types of symbols:
-> +        *
-> +        *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
-> +        *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
-> +        *  3. __exitcall(fn), functions which are labeled as exit calls.
-> +        *
-> +        * In addition, the variables defined using DEFINE_PERCPU_FIRST are
-> +        * also not included, which currently includes:
-> +        *
-> +        *  1. fixed_percpu_data
-> +        */
-> +       if (!addr)
-> +               return 0;
->
-> -               /* compare a symbol's shndx to determine if it's a percpu variable */
-> -               if (elf_sym__section(&sym) != btfe->percpu_shndx)
-> -                       continue;
-> -               if (elf_sym__type(&sym) != STT_OBJECT)
-> -                       continue;
-> +       size = elf_sym__size(sym);
-> +       if (!size)
-> +               return 0; /* ignore zero-sized symbols */
->
-> -               addr = elf_sym__value(&sym);
-> -               /*
-> -                * Store only those symbols that have allocated space in the percpu section.
-> -                * This excludes the following three types of symbols:
-> -                *
-> -                *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
-> -                *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
-> -                *  3. __exitcall(fn), functions which are labeled as exit calls.
-> -                *
-> -                * In addition, the variables defined using DEFINE_PERCPU_FIRST are
-> -                * also not included, which currently includes:
-> -                *
-> -                *  1. fixed_percpu_data
-> -                */
-> -               if (!addr)
-> -                       continue;
-> +       sym_name = elf_sym__name(sym, btfe->symtab);
-> +       if (!btf_name_valid(sym_name)) {
-> +               dump_invalid_symbol("Found symbol of invalid name when encoding btf",
-> +                                   sym_name, btf_elf__verbose, btf_elf__force);
-> +               if (btf_elf__force)
-> +                       return 0;
-> +               return -1;
-> +       }
->
-> -               size = elf_sym__size(&sym);
-> -               if (!size)
-> -                       continue; /* ignore zero-sized symbols */
-> +       if (btf_elf__verbose)
-> +               printf("Found per-CPU symbol '%s' at address 0x%lx\n", sym_name, addr);
->
-> -               sym_name = elf_sym__name(&sym, btfe->symtab);
-> -               if (!btf_name_valid(sym_name)) {
-> -                       dump_invalid_symbol("Found symbol of invalid name when encoding btf",
-> -                                           sym_name, btf_elf__verbose, btf_elf__force);
-> -                       if (btf_elf__force)
-> -                               continue;
-> -                       return -1;
-> -               }
-> +       if (percpu_var_cnt == MAX_PERCPU_VAR_CNT) {
-> +               fprintf(stderr, "Reached the limit of per-CPU variables: %d\n",
-> +                       MAX_PERCPU_VAR_CNT);
-> +               return -1;
-> +       }
-> +       percpu_vars[percpu_var_cnt].addr = addr;
-> +       percpu_vars[percpu_var_cnt].sz = size;
-> +       percpu_vars[percpu_var_cnt].name = sym_name;
-> +       percpu_var_cnt++;
->
-> -               if (btf_elf__verbose)
-> -                       printf("Found per-CPU symbol '%s' at address 0x%lx\n", sym_name, addr);
-> +       return 0;
-> +}
-> +
-> +static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
-> +{
-> +       uint32_t core_id;
-> +       GElf_Sym sym;
->
-> -               if (percpu_var_cnt == MAX_PERCPU_VAR_CNT) {
-> -                       fprintf(stderr, "Reached the limit of per-CPU variables: %d\n",
-> -                               MAX_PERCPU_VAR_CNT);
-> +       /* cache variables' addresses, preparing for searching in symtab. */
-> +       percpu_var_cnt = 0;
-> +
-> +       /* search within symtab for percpu variables */
-> +       elf_symtab__for_each_symbol(btfe->symtab, core_id, sym) {
-> +               if (collect_percpu_vars && collect_percpu_var(btfe, &sym))
->                         return -1;
-> -               }
-> -               percpu_vars[percpu_var_cnt].addr = addr;
-> -               percpu_vars[percpu_var_cnt].sz = size;
-> -               percpu_vars[percpu_var_cnt].name = sym_name;
-> -               percpu_var_cnt++;
->         }
->
-> -       if (percpu_var_cnt)
-> -               qsort(percpu_vars, percpu_var_cnt, sizeof(percpu_vars[0]), percpu_var_cmp);
-> +       if (collect_percpu_vars) {
-> +               if (percpu_var_cnt)
-> +                       qsort(percpu_vars, percpu_var_cnt, sizeof(percpu_vars[0]), percpu_var_cmp);
->
-> -       if (btf_elf__verbose)
-> -               printf("Found %d per-CPU variables!\n", percpu_var_cnt);
-> +               if (btf_elf__verbose)
-> +                       printf("Found %d per-CPU variables!\n", percpu_var_cnt);
-> +       }
->         return 0;
->  }
->
-> @@ -347,7 +357,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->                 if (!btfe)
->                         return -1;
->
-> -               if (!skip_encoding_vars && find_all_percpu_vars(btfe))
-> +               if (collect_symbols(btfe, !skip_encoding_vars))
->                         goto out;
->
->                 has_index_type = false;
-> --
-> 2.26.2
->
+thanks,
+
+ - Joel
+
