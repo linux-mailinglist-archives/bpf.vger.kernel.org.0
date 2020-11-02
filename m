@@ -2,125 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4742A34D9
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 21:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079702A34F2
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 21:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725833AbgKBUEv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 15:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgKBUEu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Nov 2020 15:04:50 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE3FC0617A6
-        for <bpf@vger.kernel.org>; Mon,  2 Nov 2020 12:04:50 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 184so19037034lfd.6
-        for <bpf@vger.kernel.org>; Mon, 02 Nov 2020 12:04:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SygJ0YMRNg3kRA+P+/o9DS9VAcEeWET+xfXo18MSK8w=;
-        b=IenDEOwcE7acdWlt3upinLTTJLqi4UdRIK+PzIcZHwuf5PctnsoAcu0L8yOZf6HI57
-         vlaLdkuBhc5qdDVb0YDoMMcI+rHBUzP1McRaXIovcqGA3X5wyw0sq1O9rJjQTyvAFkj4
-         861P7yLhcvBsg8AEdFaV57Edi1EdHZvsLJOIhT0vSnbaUEmhGJo+AL4jNz0rqo8af+d7
-         cYAj0ZM/aUC4Y3Lce948K0l4awqBXzXiDZrI1AgyGl4zivZne7XLXGpiLRjzEdn9aDzo
-         98Kq0yEKIoz8niqnACP7ZZTeuT7fEmNkLrHA5ATKyJZvfX9PycBSL5wJNWljhEo8JtAX
-         fcFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SygJ0YMRNg3kRA+P+/o9DS9VAcEeWET+xfXo18MSK8w=;
-        b=qSze6mqWxE3++0DSjArXFC7mJRdal/dDv+hv1i6OB5zD6NMRBokOk3jxu9W6W+3RO8
-         th3bl2voLx+4SXWAQ/8zJQOnVDnWEA1GmU/BG105Y0jfQ1rcT/d21kz7AGdQBVRBbQh/
-         1XEpiE81rmMQ4qzET94vEWKBh0AGEO/rKHx0+m3bHVoTOaEI5n2eTeQ8s4fH2hP1ABdP
-         kmCpevG+gXOtFkRsRc9DUAMstz8trl3w4IaYCYRDAru84BUcfONDvQOnSivrKsP7R21x
-         zuNggNAmlDn8PqZrZRFgqeB5/9F4+/LtMpsBiVQBVcmOSQs0XoW59D72iAWRCY2ajzBI
-         R+9g==
-X-Gm-Message-State: AOAM531LNpz1/jaM6Mb0eoxuzr4wi09wg8uqjYdvZQk+8h7PtkA6ZrWI
-        ybkJX8lsMHCVQRJ4wqC9enB1Ji/4NXd/YEuqjsjXZA==
-X-Google-Smtp-Source: ABdhPJxFX44DEsMSrcm7kaqxDUVJ2f5DqziIyHEn1UgPjdye5o9apeArOqF6mOkc2usLmVXmtr2vu76cCQnMUTiCBGM=
-X-Received: by 2002:a19:c357:: with SMTP id t84mr5844550lff.34.1604347488712;
- Mon, 02 Nov 2020 12:04:48 -0800 (PST)
+        id S1725929AbgKBUMH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 15:12:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50551 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726031AbgKBUKv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 15:10:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604347850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WGIbK10Z9+MOpQwKytgwL0i3O6nKvV+A3q1tlV6k+Vw=;
+        b=ay0H052i28ZMDhbXbru4CPJ4ZTjmrpRi+AeIs/rQrTizIom3B+/laaSEoihzxVou5FDncG
+        SZPJP0FcrBy0HvTpkUbZ+B/r3wfRmbY0MjNXpINBac6rulNHiBAjEfoFj1tOa46vDXUQ+W
+        QhR9o/vKeaV/lhCmaAMkfOyFS2QI+r4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-mqgl-XmrPTK8678Ea0I3dg-1; Mon, 02 Nov 2020 15:10:46 -0500
+X-MC-Unique: mqgl-XmrPTK8678Ea0I3dg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB1F21009E26;
+        Mon,  2 Nov 2020 20:10:43 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EE177366F;
+        Mon,  2 Nov 2020 20:10:37 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 21:10:34 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next V5 3/5] bpf: add BPF-helper for MTU checking
+Message-ID: <20201102211034.563ef994@carbon>
+In-Reply-To: <5fa04a3c7c173_1ecdb20821@john-XPS-13-9370.notmuch>
+References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
+        <160407666238.1525159.9197344855524540198.stgit@firesoul>
+        <5f9c764fc98c6_16d4208d5@john-XPS-13-9370.notmuch>
+        <20201102121548.5e2c36b1@carbon>
+        <5fa04a3c7c173_1ecdb20821@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com>
- <20201029085312.GC29881@ircssh-2.c.rugged-nimbus-611.internal>
- <48e5937b-80f5-c48b-1c67-e8c9db263ca5@gmail.com> <20201030202720.GA4088@ircssh-2.c.rugged-nimbus-611.internal>
- <606199d6-b48c-fee2-6e79-1e52bd7f429f@gmail.com> <CAMp4zn9AaQ46EyG6QFrF33efpUHnK_TyMYkTicr=iwY5hcKrBg@mail.gmail.com>
- <964c2191-db78-ff4d-5664-1d80dc382df4@gmail.com> <CAMp4zn9Eaq7UQqL4Gk7Cs2O3dj1Gfp8L_YDpWxhvru_kVEBVfw@mail.gmail.com>
-In-Reply-To: <CAMp4zn9Eaq7UQqL4Gk7Cs2O3dj1Gfp8L_YDpWxhvru_kVEBVfw@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 2 Nov 2020 21:04:22 +0100
-Message-ID: <CAG48ez2vPUCiZX-swrE2oWx8j-6QCzCRiFGnCPFoGMN+oBFGQw@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 8:50 PM Sargun Dhillon <sargun@sargun.me> wrote:
-> On Mon, Nov 2, 2020 at 11:45 AM Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
-> >    Caveats regarding blocking system calls
-> >        Suppose that the target performs a blocking system call (e.g.,
-> >        accept(2)) that the supervisor should handle.  The supervisor
-> >        might then in turn execute the same blocking system call.
-> >
-> >        In this scenario, it is important to note that if the target's
-> >        system call is now interrupted by a signal, the supervisor is not
-> >        informed of this.  If the supervisor does not take suitable steps
-> >        to actively discover that the target's system call has been
-> >        canceled, various difficulties can occur.  Taking the example of
-> >        accept(2), the supervisor might remain blocked in its accept(2)
-> >        holding a port number that the target (which, after the
-> >        interruption by the signal handler, perhaps closed  its listening
-> >        socket) might expect to be able to reuse in a bind(2) call.
-> >
-> >        Therefore, when the supervisor wishes to emulate a blocking system
-> >        call, it must do so in such a way that it gets informed if the
-> >        target's system call is interrupted by a signal handler.  For
-> >        example, if the supervisor itself executes the same blocking
-> >        system call, then it could employ a separate thread that uses the
-> >        SECCOMP_IOCTL_NOTIF_ID_VALID operation to check if the target is
-> >        still blocked in its system call.  Alternatively, in the accept(2)
-> >        example, the supervisor might use poll(2) to monitor both the
-> >        notification file descriptor (so as as to discover when the
-> >        target's accept(2) call has been interrupted) and the listening
-> >        file descriptor (so as to know when a connection is available).
-> >
-> >        If the target's system call is interrupted, the supervisor must
-> >        take care to release resources (e.g., file descriptors) that it
-> >        acquired on behalf of the target.
-> >
-> > Does that seem okay?
-> >
-> This is far clearer than my explanation. The one thing is that *just*
-> poll is not good enough, you would poll, with some timeout, and when
-> that timeout is hit, check if all the current notifications are valid,
-> as poll isn't woken up when an in progress notification goes off
-> AFAIK.
+On Mon, 02 Nov 2020 10:04:44 -0800
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-Arguably that's so terrible that it qualifies for being in the BUGS
-section of the manpage.
+> > > > +
+> > > > +	/*  Same relax as xdp_ok_fwd_dev() and is_skb_forwardable() */
+> > > > +	if (flags & BPF_MTU_CHK_RELAX)
+> > > > +		mtu += VLAN_HLEN;    
+> > > 
+> > > I'm trying to think about the use case where this might be used?
+> > > Compared to just adjusting MTU in BPF program side as needed for
+> > > packet encapsulation/headers/etc.  
+> > 
+> > As I wrote above, this were added because the kernels own forwarding
+> > have this relaxation in it's checks (in is_skb_forwardable()).  I even
+> > tried to dig through the history, introduced in [1] and copy-pasted
+> > in[2].  And this seems to be a workaround, that have become standard,
+> > that still have practical implications.
+> > 
+> > My practical experiments showed, that e.g. ixgbe driver with MTU=1500
+> > (L3-size) will allow and fully send packets with 1504 (L3-size). But
+> > i40e will not, and drops the packet in hardware/firmware step.  So,
+> > what is the correct action, strict or relaxed?
+> > 
+> > My own conclusion is that we should inverse the flag.  Meaning to
+> > default add this VLAN_HLEN (4 bytes) relaxation, and have a flag to do
+> > more strict check,  e.g. BPF_MTU_CHK_STRICT. As for historical reasons
+> > we must act like kernels version of MTU check. Unless you object, I will
+> > do this in V6.  
+> 
+> I'm fine with it either way as long as its documented in the helper
+> description so I have a chance of remembering this discussion in 6 months.
+> But, if you make it default won't this break for XDP cases? I assume the
+> XDP use case doesn't include the VLAN 4-bytes. Would you need to prevent
+> the flag from being used from XDP?
 
-If you want this to be fixed properly, I recommend that someone
-implements my proposal from
-<https://lore.kernel.org/lkml/CAG48ez1O2H5HDikPO-_o-toXTheU8GnZot9woGDsNRNJqSWesA@mail.gmail.com/>,
-unless you can come up with something better.
+XDP actually do include the VLAN_HLEN 4-bytes, see xdp_ok_fwd_dev(). I
+was so certain that you John added this code, but looking through git
+blame it pointed back to myself.  Going 5 levels git history deep and
+3+ years, does seem like I move/reused some of Johns code containing
+VLAN_HLEN in the MTU check, introduced for xdp-generic (6103aa96ec077)
+which I acked.  Thus, I guess I cannot push this away and have to take
+blame myself ;-)
+
+I conclude that we default need to include this VLAN_HLEN, else the XDP
+bpf_check_mtu could say deny, while it would have passed the check in
+xdp_ok_fwd_dev().  As i40e will drop 1504 this at HW/FW level, I still
+see a need for a BPF_MTU_CHK_STRICT flag for programs that want to
+catch this.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
