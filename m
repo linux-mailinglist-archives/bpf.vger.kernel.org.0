@@ -2,325 +2,285 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3052A3247
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 18:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13422A3282
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 19:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725801AbgKBRvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 12:51:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
+        id S1725968AbgKBSEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 13:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgKBRvt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Nov 2020 12:51:49 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC17EC0617A6
-        for <bpf@vger.kernel.org>; Mon,  2 Nov 2020 09:51:48 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id v4so15264803edi.0
-        for <bpf@vger.kernel.org>; Mon, 02 Nov 2020 09:51:48 -0800 (PST)
+        with ESMTP id S1725768AbgKBSEy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:04:54 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B386C0617A6;
+        Mon,  2 Nov 2020 10:04:54 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id n15so13431334otl.8;
+        Mon, 02 Nov 2020 10:04:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lYTztL3aVgMivkLAylzSGesmA8tITP5QP3Tu9ZrQyxg=;
-        b=QRxZ1ffnwRo1IH4WhZqPMIFFWBzk2fVVyA7ClmKyxYZbNToPddEaOuyUPCE8cz+m6Z
-         GJYDrwy63Q0faFS2ux34izDC2w4DwG/Lhv+kia8GruO3sO6HMxQHbIYKbkaQ4meUYYTX
-         VVxC9mAOsB0zYMquaX71ddi+5FxS43429eZQGspbb26SbzhZtRQ5xLWNQl9oUd69Land
-         fBGfp2NhXTqBN7dxTquphUeFoXdsw89s05FPtlt03YkUjvRQdu3yMezV0dgxJvLHiMDK
-         tGjvuwu8fpSw9TaK0rG2G6Jrsyrdu1OXjz2DA8mW7s1E2GSWjssqfNJMsRIAFhxHn1qC
-         Dr+g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=oYjbib//4OMOd2feerHxeK2v6gODdU5Sfo96oCfjNbA=;
+        b=mCIeyCAIwsbyXbmT/XucjF9jUgWCqDO+LHyQAfiFx6Sq1PDCaXqxkYyEcGPG8YhE4O
+         9+3nCwX7kmth7LC5oW4exgeYQHGB3A3c+p77SjtKLLC8pUuqV3R0gzik3/IWmGb3cvHB
+         IMlgqhEAGPISqfmhiBFy4IaUjlETQ5cR/CVOhyit0z3ozU9JNLLLNJamBy+JDWmMNGqX
+         tpm3WoMhAk4JhgyuZsKiJ6L+ASmyppV+pqMN0RzkAIeqs0PH5IIHlJdvVhAtgibIWhtr
+         YBU3BmquBB/7XZwXqlHN4loH+9FJZoK7GjlE6op+oCKIEuDIrX5RHGdodBg3hIP7W/0W
+         hK7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lYTztL3aVgMivkLAylzSGesmA8tITP5QP3Tu9ZrQyxg=;
-        b=cqOmtIZBMdLBaRveDPwd8Jbb2F1/5RZ/NfJ3vFgI9utT4OpjW3sfzV3dPhnaNzX19A
-         WRHn4pgORjvG9iaYmk7oqtYS4eA34xfh9XhDHXSRqqtTwculrWpKSd/KQYke6VXBkxy7
-         f/RmWwFFhSA5wDL/7kAk+qTGLoiHALeQvN77pz6c5Gt43hKnhGvJ1ssR7thzjsIMXOOZ
-         cmT9PSU2Rb9fIbaHDVXydeILvczlpgeUkiY0LDPVo4GV/GfKr4neH1RLIEnQkErAKPmO
-         E56hLlkxAF+TIyJ+ykQFQB1nKl9pBj1xPQ+Pr0OmV1PYzu8Jom9WjyGalJh9r6hPL2Vk
-         3CQQ==
-X-Gm-Message-State: AOAM532+wE6aMI69dumdbJuyeRCSr36xNujSJQKHgvgltMvf35QWRlp0
-        esajvwI1OeyAa/yDbYisM0lzzshnVLs6rtfBRSj7SQ==
-X-Google-Smtp-Source: ABdhPJwGcoZIxKwxhqfPaNYb3h3O1u27X6V+gs+rOmpHuRu8xPffab+4y9QnbhjAnIc7bXUV8mtiaqiWuxtxo9Glmbo=
-X-Received: by 2002:aa7:d709:: with SMTP id t9mr2750342edq.305.1604339507291;
- Mon, 02 Nov 2020 09:51:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20201029125744.GQ31092@shao2-debian> <CAEf4BzZm=PoaivFjC63di-WtCsJZzNUUY-eoDp+wz=MhsnS8_g@mail.gmail.com>
- <CA+khW7i_NSTeXA8tvfuP7uMJNQCebWtHd0xxuHoV_JXek3sx4g@mail.gmail.com>
-In-Reply-To: <CA+khW7i_NSTeXA8tvfuP7uMJNQCebWtHd0xxuHoV_JXek3sx4g@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 2 Nov 2020 09:51:35 -0800
-Message-ID: <CA+khW7iO+7N=WeM21M7BMf4bbQ=en0gpZ-PNphRW0Pqe6OWHZQ@mail.gmail.com>
-Subject: Re: [selftest/bpf] 472547778d: WARNING:at_kernel/bpf/verifier.c:#resolve_pseudo_ldimm64
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        lkp@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=oYjbib//4OMOd2feerHxeK2v6gODdU5Sfo96oCfjNbA=;
+        b=hx7KE1ePw3FAQkcE3v5NUiDYSJK5dj220LGfq2BoLXSvL9LSYKRiCtTozo9sESDEt6
+         VLtnYpnmcb1MX76mSWwC4QY99iUI3wBU9FhwdRQZV5KeddDpCGxHETuyxkEwb4vP1SOG
+         j3zPbx1TQuFeHxjc9Snf0jsZ9w8LnA8nSsVa9fC7ofFxDig1i8CP2MCo9PtY5Tduvgt6
+         GbdFLdoTYsOnoZoNi0oXx7qCFWoy4mADiGiZJ+rEzKdveBDTWPEBjmM+3CDZA0PsnJg8
+         tqex+6PK+PEMQdDcxmW3y8FREGdG2019jlXberNCET8KCDspbFO4wuFJZOP3xYvbnKeW
+         Sklg==
+X-Gm-Message-State: AOAM530ZOyXGVZwdmHfuCd65/BujardqaNwDr8u3JM91+SOVI+LnrTG+
+        YctuLnxYeVzftySq2KacX6Ovt8Zcgznl8A==
+X-Google-Smtp-Source: ABdhPJxlL4rLv7TutC1kfqcilonIx4kDwFuUHOLAw0+swULHeyPQWkUUscmIGOkJ1GF+UL7s3bSUZA==
+X-Received: by 2002:a9d:7507:: with SMTP id r7mr12635048otk.336.1604340293581;
+        Mon, 02 Nov 2020 10:04:53 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id j108sm2615977otc.8.2020.11.02.10.04.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 10:04:52 -0800 (PST)
+Date:   Mon, 02 Nov 2020 10:04:44 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        brouer@redhat.com
+Message-ID: <5fa04a3c7c173_1ecdb20821@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201102121548.5e2c36b1@carbon>
+References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
+ <160407666238.1525159.9197344855524540198.stgit@firesoul>
+ <5f9c764fc98c6_16d4208d5@john-XPS-13-9370.notmuch>
+ <20201102121548.5e2c36b1@carbon>
+Subject: Re: [PATCH bpf-next V5 3/5] bpf: add BPF-helper for MTU checking
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-May I ask what's the map that fd 0 is mapped to? IIUC, it looks like
-the tests (of tracing programs) access the map of fd 0 and the
-verifier complains the map is not preallocated. I think it's faster
-just ask here.
+Jesper Dangaard Brouer wrote:
+> On Fri, 30 Oct 2020 13:23:43 -0700
+> John Fastabend <john.fastabend@gmail.com> wrote:
+> 
+> > Jesper Dangaard Brouer wrote:
+> > > This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
+> > > 
+> > > The API is designed to help the BPF-programmer, that want to do packet
+> > > context size changes, which involves other helpers. These other helpers
+> > > usually does a delta size adjustment. This helper also support a delta
+> > > size (len_diff), which allow BPF-programmer to reuse arguments needed by
+> > > these other helpers, and perform the MTU check prior to doing any actual
+> > > size adjustment of the packet context.
+> > > 
+> > > It is on purpose, that we allow the len adjustment to become a negative
+> > > result, that will pass the MTU check. This might seem weird, but it's not
+> > > this helpers responsibility to "catch" wrong len_diff adjustments. Other
+> > > helpers will take care of these checks, if BPF-programmer chooses to do
+> > > actual size adjustment.
+> > > 
+> > > V4: Lot of changes
+> > >  - ifindex 0 now use current netdev for MTU lookup
+> > >  - rename helper from bpf_mtu_check to bpf_check_mtu
+> > >  - fix bug for GSO pkt length (as skb->len is total len)
+> > >  - remove __bpf_len_adj_positive, simply allow negative len adj
+> > > 
+> > > V3: Take L2/ETH_HLEN header size into account and document it.
+> > > 
+> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > ---  
+> > 
+> > Sorry for the late feedback here.
+> > 
+> > This seems like a lot of baked in functionality into the helper? Can you
+> > say something about why the simpler and, at least to me, more intuitive
+> > helper to simply return the ifindex mtu is not ideal?
+> 
+> I tried to explain this in the patch description.  This is for easier
+> collaboration with other helpers, that also have the len_diff parameter.
+> This API allow to check the MTU *prior* to doing the size adjustment.
+> 
+> Let me explain what is not in the patch desc:
+
+OK extra details helps.
+
+> 
+> In the first patchset, I started with the simply implementation of
+> returning the MTU.  Then I realized that this puts more work into the
+> BPF program (thus increasing BPF code instructions).  As we in BPF-prog
+> need to extract the packet length to compare against the returned MTU
+> size. Looking at other programs that does the ctx/packet size adjust, we
+> don't extract the packet length as ctx is about to change, and we don't
+> need the MTU variable in the BPF prog (unless it fails).
+
+On recent kernels instruction counts should not be a problem. So, looks
+like the argument is to push the skb->len lookup from BPF program into
+helper. I'm not sure it matters much if the insn is run in helper or
+in the BPF program. I have a preference for the simpler "give me
+the MTU and I'll figure out what to do with it". Real programs
+will have to handle the failing case and will need to deal with MTU
+anyways. We could do it as a BPF implemented helper in one of the
+BPF headers so users could just call the BPF "helper" and not know parts of
+it are implemented in BPF.
+
+> 
+> 
+> > Rough pseudo code being,
+> > 
+> >  my_sender(struct __sk_buff *skb, int fwd_ifindex)
+> >  {
+> >    mtu = bpf_get_ifindex_mtu(fwd_ifindex, 0);
+> >    if (skb->len + HDR_SIZE < mtu)
+> >        return send_with_hdrs(skb);
+> >    return -EMSGSIZE
+> >  }
+> > 
+> > 
+> > >  include/uapi/linux/bpf.h       |   70 +++++++++++++++++++++++
+> > >  net/core/filter.c              |  120 ++++++++++++++++++++++++++++++++++++++++
+> > >  tools/include/uapi/linux/bpf.h |   70 +++++++++++++++++++++++
+> > >  3 files changed, 260 insertions(+)
+> > >   
+> > 
+> > [...]
+> > 
+> > > + *              **BPF_MTU_CHK_RELAX**
+> > > + *			This flag relax or increase the MTU with room for one
+> > > + *			VLAN header (4 bytes). This relaxation is also used by
+> > > + *			the kernels own forwarding MTU checks.  
+> > 
+> > I noted below as well, but not sure why this is needed. Seems if user
+> > knows to add a flag because they want a vlan header we can just as
+> > easily expect BPF program to do it. Alsoer it only works for VLAN headers
+> > any other header data wont be accounted for so it seems only useful
+> > in one specific case.
+> 
+> This was added because the kernels own forwarding have this relaxation
+> build in.  Thus, I though that I should add flag to compatible with the
+> kernels forwarding checks.
+
+OK, I guess it doesn't hurt.
+
+> 
+> > > + *
+> > > + *		**BPF_MTU_CHK_SEGS**
+> > > + *			This flag will only works for *ctx* **struct sk_buff**.
+> > > + *			If packet context contains extra packet segment buffers
+> > > + *			(often knows as GSO skb), then MTU check is partly
+> > > + *			skipped, because in transmit path it is possible for the
+> > > + *			skb packet to get re-segmented (depending on net device
+> > > + *			features).  This could still be a MTU violation, so this
+> > > + *			flag enables performing MTU check against segments, with
+> > > + *			a different violation return code to tell it apart.
+> > > + *
+> > > + *		The *mtu_result* pointer contains the MTU value of the net
+> > > + *		device including the L2 header size (usually 14 bytes Ethernet
+> > > + *		header). The net device configured MTU is the L3 size, but as
+> > > + *		XDP and TX length operate at L2 this helper include L2 header
+> > > + *		size in reported MTU.
+> > > + *
+> > > + *	Return
+> > > + *		* 0 on success, and populate MTU value in *mtu_result* pointer.
+> > > + *
+> > > + *		* < 0 if any input argument is invalid (*mtu_result* not updated)
+> > > + *
+> > > + *		MTU violations return positive values, but also populate MTU
+> > > + *		value in *mtu_result* pointer, as this can be needed for
+> > > + *		implementing PMTU handing:
+> > > + *
+> > > + *		* **BPF_MTU_CHK_RET_FRAG_NEEDED**
+> > > + *		* **BPF_MTU_CHK_RET_SEGS_TOOBIG**
+> > > + *
+> > >   */  
+> > 
+> > [...]
+> > 
+> > > +static int __bpf_lookup_mtu(struct net_device *dev_curr, u32 ifindex, u64 flags)
+> > > +{
+> > > +	struct net *netns = dev_net(dev_curr);
+> > > +	struct net_device *dev;
+> > > +	int mtu;
+> > > +
+> > > +	/* Non-redirect use-cases can use ifindex=0 and save ifindex lookup */
+> > > +	if (ifindex == 0)
+> > > +		dev = dev_curr;
+> > > +	else
+> > > +		dev = dev_get_by_index_rcu(netns, ifindex);
+> > > +
+> > > +	if (!dev)
+> > > +		return -ENODEV;
+> > > +
+> > > +	/* XDP+TC len is L2: Add L2-header as dev MTU is L3 size */
+> > > +	mtu = dev->mtu + dev->hard_header_len;  
+> > 
+> > READ_ONCE() on dev->mtu and hard_header_len as well? We don't have
+> > any locks.
+> 
+> This is based on similar checks done in the same execution context,
+> which don't have these READ_ONCE() macros.  I'm not introducing reading
+> these, I'm simply moving when they are read.  If this is really needed,
+> then I think we need separate fixes patches, for stable backporting.
+> 
+> While doing this work, I've realized that mtu + hard_header_len is
+> located on two different cache-lines, which is unfortunate, but I will
+> look at fixing this in followup patches.
+
+Looks like a follow up then. But, would be best to add the READ_ONCE
+here. The netdevice.h header has this comment,
+
+	/* Note : dev->mtu is often read without holding a lock.
+	 * Writers usually hold RTNL.
+	 * It is recommended to use READ_ONCE() to annotate the reads,
+	 * and to use WRITE_ONCE() to annotate the writes.
+	 */
+
+> 
+> 
+> > > +
+> > > +	/*  Same relax as xdp_ok_fwd_dev() and is_skb_forwardable() */
+> > > +	if (flags & BPF_MTU_CHK_RELAX)
+> > > +		mtu += VLAN_HLEN;  
+> > 
+> > I'm trying to think about the use case where this might be used?
+> > Compared to just adjusting MTU in BPF program side as needed for
+> > packet encapsulation/headers/etc.
+> 
+> As I wrote above, this were added because the kernels own forwarding
+> have this relaxation in it's checks (in is_skb_forwardable()).  I even
+> tried to dig through the history, introduced in [1] and copy-pasted
+> in[2].  And this seems to be a workaround, that have become standard,
+> that still have practical implications.
+> 
+> My practical experiments showed, that e.g. ixgbe driver with MTU=1500
+> (L3-size) will allow and fully send packets with 1504 (L3-size). But
+> i40e will not, and drops the packet in hardware/firmware step.  So,
+> what is the correct action, strict or relaxed?
+> 
+> My own conclusion is that we should inverse the flag.  Meaning to
+> default add this VLAN_HLEN (4 bytes) relaxation, and have a flag to do
+> more strict check,  e.g. BPF_MTU_CHK_STRICT. As for historical reasons
+> we must act like kernels version of MTU check. Unless you object, I will
+> do this in V6.
+
+I'm fine with it either way as long as its documented in the helper
+description so I have a chance of remembering this discussion in 6 months.
+But, if you make it default won't this break for XDP cases? I assume the
+XDP use case doesn't include the VLAN 4-bytes. Would you need to prevent
+the flag from being used from XDP?
 
 Thanks,
-Hao
-
-On Thu, Oct 29, 2020 at 1:49 PM Hao Luo <haoluo@google.com> wrote:
->
-> Sure, let me take a look at it.
->
-> On Thu, Oct 29, 2020 at 1:43 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > Hao,
-> >
-> > This seems to be coming from resolve_pseudo_ldimm64(), could you
-> > please take a look? Thanks!
-> >
-> > -- Andrii
-> >
-> > On Thu, Oct 29, 2020 at 5:58 AM kernel test robot <lkp@intel.com> wrote=
-:
-> > >
-> > > Greeting,
-> > >
-> > > FYI, we noticed the following commit (built with gcc-9):
-> > >
-> > > commit: 472547778de24e2764ab325268dd5b77e6923939 ("selftest/bpf: Fix =
-profiler test using CO-RE relocation for enums")
-> > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git mast=
-er
-> > >
-> > >
-> > > in testcase: kernel-selftests
-> > > version: kernel-selftests-x86_64-b5a583fb-1_20201015
-> > > with following parameters:
-> > >
-> > >         group: kselftests-bpf
-> > >         ucode: 0xd6
-> > >
-> > > test-description: The kernel contains a set of "self tests" under the=
- tools/testing/selftests/ directory. These are intended to be small unit te=
-sts to exercise individual code paths in the kernel.
-> > > test-url: https://www.kernel.org/doc/Documentation/kselftest.txt
-> > >
-> > >
-> > > on test machine: 4 threads Intel(R) Core(TM) i7-7567U CPU @ 3.50GHz w=
-ith 32G memory
-> > >
-> > > caused below changes (please refer to attached dmesg/kmsg for entire =
-log/backtrace):
-> > >
-> > >
-> > > +------------------------------------------+------------+------------=
-+
-> > > |                                          | 435ccfa894 | 472547778d =
-|
-> > > +------------------------------------------+------------+------------=
-+
-> > > | boot_successes                           | 10         | 0          =
-|
-> > > | boot_failures                            | 0          | 10         =
-|
-> > > | BUG:using__this_cpu_read()in_preemptible | 0          | 10         =
-|
-> > > +------------------------------------------+------------+------------=
-+
-> > >
-> > >
-> > > If you fix the issue, kindly add following tag
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > >
-> > > kern  :warn  : [  325.530080] WARNING: CPU: 3 PID: 20214 at kernel/bp=
-f/verifier.c:9718 resolve_pseudo_ldimm64+0x6b8/0x8e0
-> > > kern  :warn  : [  325.530812] Modules linked in: rpcsec_gss_krb5 auth=
-_rpcgss nfsv4 dns_resolver netconsole snd_hda_codec_hdmi snd_hda_codec_real=
-tek snd_hda_codec_generic ledtrig_audio btrfs blake2b_generic xor zstd_comp=
-ress raid6_pq libcrc32c intel_rapl_msr intel_rapl_common sd_mod t10_pi sg i=
-915 btusb wmi_bmof intel_wmi_thunderbolt x86_pkg_temp_thermal intel_powercl=
-amp snd_soc_skl snd_soc_sst_ipc snd_soc_sst_dsp snd_hda_ext_core snd_soc_ac=
-pi_intel_match snd_soc_acpi snd_soc_core snd_compress coretemp crct10dif_pc=
-lmul snd_hda_intel crc32_pclmul btrtl crc32c_intel btbcm ghash_clmulni_inte=
-l btintel snd_intel_dspcfg snd_hda_codec snd_hda_core iwlwifi aesni_intel c=
-rypto_simd ahci snd_hwdep bluetooth snd_pcm libahci cryptd cfg80211 snd_tim=
-er glue_helper ir_rc6_decoder pcspkr ecdh_generic libata mei_me snd ecc rc_=
-rc6_mce mei soundcore i2c_i801 rfkill i2c_smbus wmi ipmi_devintf ite_cir ip=
-mi_msghandler rc_core acpi_pad video intel_pmc_core ip_tables
-> > > user  :notice: [  325.533201] # #3/p valid map access into an array w=
-ith a constant OK
-> > > kern  :warn  : [  325.537207] CPU: 3 PID: 20214 Comm: test_verifier N=
-ot tainted 5.9.0-13427-g472547778de2 #1
-> > >
-> > > kern  :warn  : [  325.538572] Hardware name: Intel Corporation NUC7i7=
-BNH/NUC7i7BNB, BIOS BNKBL357.86A.0067.2018.0814.1500 08/14/2018
-> > > kern  :warn  : [  325.539414] RIP: 0010:resolve_pseudo_ldimm64+0x6b8/=
-0x8e0
-> > > kern  :warn  : [  325.539835] Code: ff ff c7 44 24 28 ea ff ff ff e9 =
-49 fc ff ff 48 c7 c7 58 a8 5e 82 89 0c 24 48 89 54 24 08 c6 05 21 71 ff 01 =
-01 e8 46 38 aa 00 <0f> 0b 8b 0c 24 48 8b 54 24 08 e9 5d fd ff ff 48 c7 c6 d=
-8 a7 5e 82
-> > > kern  :warn  : [  325.541298] RSP: 0018:ffffc90003b0fc50 EFLAGS: 0001=
-0282
-> > > kern  :warn  : [  325.541732] RAX: 0000000000000000 RBX: 000000000000=
-0004 RCX: 0000000000000000
-> > > kern  :warn  : [  325.542274] RDX: 0000000000000001 RSI: ffffffff811d=
-234f RDI: ffffffff811d234f
-> > > kern  :warn  : [  325.542847] RBP: ffffc90003b0fcb8 R08: 000000000000=
-0001 R09: 0000000000000001
-> > > kern  :warn  : [  325.543389] R10: 0000000000000001 R11: 000000000000=
-0001 R12: ffff888100c3a000
-> > > user  :notice: [  325.543850] # #4/u valid map access into an array w=
-ith a register OK
-> > > kern  :warn  : [  325.543996] R13: ffff8882c025dc00 R14: 000000000000=
-0025 R15: ffffc9000108d058
-> > >
-> > > kern  :warn  : [  325.545045] FS:  00007fd26e745740(0000) GS:ffff8888=
-7ed80000(0000) knlGS:0000000000000000
-> > > kern  :warn  : [  325.545893] CS:  0010 DS: 0000 ES: 0000 CR0: 000000=
-0080050033
-> > > kern  :warn  : [  325.546334] CR2: 000055a9904a3e30 CR3: 00000002c073=
-0002 CR4: 00000000003706e0
-> > > kern  :warn  : [  325.546900] Call Trace:
-> > > kern  :warn  : [  325.547114]  bpf_check+0x907/0x17c0
-> > > kern  :warn  : [  325.547396]  ? find_held_lock+0x2b/0x80
-> > > kern  :warn  : [  325.547781]  bpf_prog_load+0x48c/0x8c0
-> > > kern  :warn  : [  325.548133]  ? find_held_lock+0x2b/0x80
-> > > kern  :warn  : [  325.548450]  __do_sys_bpf+0x93e/0x1a60
-> > > kern  :warn  : [  325.548791]  do_syscall_64+0x33/0x40
-> > > kern  :warn  : [  325.549076]  entry_SYSCALL_64_after_hwframe+0x44/0x=
-a9
-> > > kern  :warn  : [  325.549468] RIP: 0033:0x7fd26e83df59
-> > > kern  :warn  : [  325.549771] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 =
-00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c =
-8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 6f 0c 00 f7 d8 6=
-4 89 01 48
-> > > kern  :warn  : [  325.551230] RSP: 002b:00007ffc55a5fc08 EFLAGS: 0000=
-0246 ORIG_RAX: 0000000000000141
-> > > user  :notice: [  325.551650] # #4/p valid map access into an array w=
-ith a register OK
-> > > kern  :warn  : [  325.551853] RAX: ffffffffffffffda RBX: 000000000000=
-0000 RCX: 00007fd26e83df59
-> > >
-> > > kern  :warn  : [  325.552308] RDX: 0000000000000078 RSI: 00007ffc55a5=
-fc30 RDI: 0000000000000005
-> > > kern  :warn  : [  325.552309] RBP: 00007ffc55a5fc30 R08: 000000000000=
-0004 R09: 0000000000000000
-> > > kern  :warn  : [  325.552310] R10: 0000000000000025 R11: 000000000000=
-0246 R12: 0000000000000005
-> > > kern  :warn  : [  325.552311] R13: 0000000000000000 R14: 00007ffc55a5=
-fda0 R15: 00007ffc55a5fda0
-> > > kern  :warn  : [  325.552325] CPU: 3 PID: 20214 Comm: test_verifier N=
-ot tainted 5.9.0-13427-g472547778de2 #1
-> > > user  :notice: [  325.554366] # #5/u valid map access into an array w=
-ith a variable OK
-> > > kern  :warn  : [  325.554456] Hardware name: Intel Corporation NUC7i7=
-BNH/NUC7i7BNB, BIOS BNKBL357.86A.0067.2018.0814.1500 08/14/2018
-> > > kern  :warn  : [  325.554457] Call Trace:
-> > > kern  :warn  : [  325.554461]  dump_stack+0x8d/0xb5
-> > > kern  :warn  : [  325.554464]  ? resolve_pseudo_ldimm64+0x6b8/0x8e0
-> > >
-> > > kern  :warn  : [  325.555551]  __warn.cold+0x24/0x4b
-> > > kern  :warn  : [  325.555554]  ? resolve_pseudo_ldimm64+0x6b8/0x8e0
-> > > kern  :warn  : [  325.555558]  report_bug+0xd1/0x100
-> > > user  :notice: [  325.557680] # #5/p valid map access into an array w=
-ith a variable OK
-> > > kern  :warn  : [  325.557869]  ? tick_nohz_tick_stopped+0x12/0x40
-> > > kern  :warn  : [  325.557873]  handle_bug+0x3a/0xa0
-> > > kern  :warn  : [  325.557876]  exc_invalid_op+0x14/0x80
-> > >
-> > > kern  :warn  : [  325.558465]  asm_exc_invalid_op+0x12/0x20
-> > > kern  :warn  : [  325.560172] RIP: 0010:resolve_pseudo_ldimm64+0x6b8/=
-0x8e0
-> > > user  :notice: [  325.560516] # #6/u valid map access into an array w=
-ith a signed variable OK
-> > > kern  :warn  : [  325.560553] Code: ff ff c7 44 24 28 ea ff ff ff e9 =
-49 fc ff ff 48 c7 c7 58 a8 5e 82 89 0c 24 48 89 54 24 08 c6 05 21 71 ff 01 =
-01 e8 46 38 aa 00 <0f> 0b 8b 0c 24 48 8b 54 24 08 e9 5d fd ff ff 48 c7 c6 d=
-8 a7 5e 82
-> > > kern  :warn  : [  325.560554] RSP: 0018:ffffc90003b0fc50 EFLAGS: 0001=
-0282
-> > >
-> > >
-> > > kern  :warn  : [  325.562354] RAX: 0000000000000000 RBX: 000000000000=
-0004 RCX: 0000000000000000
-> > > kern  :warn  : [  325.562355] RDX: 0000000000000001 RSI: ffffffff811d=
-234f RDI: ffffffff811d234f
-> > > kern  :warn  : [  325.562356] RBP: ffffc90003b0fcb8 R08: 000000000000=
-0001 R09: 0000000000000001
-> > > kern  :warn  : [  325.562357] R10: 0000000000000001 R11: 000000000000=
-0001 R12: ffff888100c3a000
-> > > kern  :warn  : [  325.562358] R13: ffff8882c025dc00 R14: 000000000000=
-0025 R15: ffffc9000108d058
-> > > kern  :warn  : [  325.562369]  ? wake_up_klogd+0x4f/0x80
-> > > kern  :warn  : [  325.562371]  ? wake_up_klogd+0x4f/0x80
-> > > kern  :warn  : [  325.562391]  bpf_check+0x907/0x17c0
-> > > user  :notice: [  325.564634] # #6/p valid map access into an array w=
-ith a signed variable OK
-> > > kern  :warn  : [  325.565045]  ? find_held_lock+0x2b/0x80
-> > > kern  :warn  : [  325.565057]  bpf_prog_load+0x48c/0x8c0
-> > >
-> > > kern  :warn  : [  325.565875]  ? find_held_lock+0x2b/0x80
-> > > kern  :warn  : [  325.565889]  __do_sys_bpf+0x93e/0x1a60
-> > > kern  :warn  : [  325.565911]  do_syscall_64+0x33/0x40
-> > > user  :notice: [  325.567592] # #7/u invalid map access into an array=
- with a constant OK
-> > > kern  :warn  : [  325.567640]  entry_SYSCALL_64_after_hwframe+0x44/0x=
-a9
-> > >
-> > > kern  :warn  : [  325.568193] RIP: 0033:0x7fd26e83df59
-> > > kern  :warn  : [  325.569659] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 =
-00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c =
-8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 6f 0c 00 f7 d8 6=
-4 89 01 48
-> > > user  :notice: [  325.569825] # #7/p invalid map access into an array=
- with a constant OK
-> > > kern  :warn  : [  325.570965] RSP: 002b:00007ffc55a5fc08 EFLAGS: 0000=
-0246 ORIG_RAX: 0000000000000141
-> > > kern  :warn  : [  325.570967] RAX: ffffffffffffffda RBX: 000000000000=
-0000 RCX: 00007fd26e83df59
-> > > kern  :warn  : [  325.570968] RDX: 0000000000000078 RSI: 00007ffc55a5=
-fc30 RDI: 0000000000000005
-> > > kern  :warn  : [  325.570969] RBP: 00007ffc55a5fc30 R08: 000000000000=
-0004 R09: 0000000000000000
-> > > kern  :warn  : [  325.570970] R10: 0000000000000025 R11: 000000000000=
-0246 R12: 0000000000000005
-> > > kern  :warn  : [  325.570972] R13: 0000000000000000 R14: 00007ffc55a5=
-fda0 R15: 00007ffc55a5fda0
-> > >
-> > > kern  :warn  : [  325.573227] irq event stamp: 93003
-> > > kern  :warn  : [  325.575115] hardirqs last  enabled at (93103): [<ff=
-ffffff811d30b3>] console_unlock+0x4d3/0x5c0
-> > > user  :notice: [  325.575571] # #8/u invalid map access into an array=
- with a register OK
-> > >
-> > > kern  :warn  : [  325.575873] hardirqs last disabled at (93130): [<ff=
-ffffff81ddfa21>] __schedule+0x6e1/0xaa0
-> > > kern  :warn  : [  325.577041] softirqs last  enabled at (93170): [<ff=
-ffffff8200034e>] __do_softirq+0x34e/0x49c
-> > > kern  :warn  : [  325.577666] softirqs last disabled at (93187): [<ff=
-ffffff81e010f2>] asm_call_irq_on_stack+0x12/0x20
-> > > kern  :warn  : [  325.578385] ---[ end trace 54e7a2ba0948b528 ]---
-> > >
-> > >
-> > > To reproduce:
-> > >
-> > >         git clone https://github.com/intel/lkp-tests.git
-> > >         cd lkp-tests
-> > >         bin/lkp install job.yaml  # job file is attached in this emai=
-l
-> > >         bin/lkp run     job.yaml
-> > >
-> > >
-> > >
-> > > Thanks,
-> > > lkp
-> > >
+John
