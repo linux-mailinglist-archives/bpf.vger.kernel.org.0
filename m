@@ -2,243 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3094E2A28D9
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 12:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B5A2A29A7
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 12:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgKBLQD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 06:16:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53969 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728253AbgKBLQD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 06:16:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604315760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RMlHTzqu9dwMlTgXD4m+TiGPhehrYvoCAtcJOkl1hus=;
-        b=DtGtmiYta2gJLPItycjmdXh71+9PxcJ5xelU6nbdFN9OYRekayW9KtBod++Itm/pdqDCF2
-        KiLE9Vk4QuEU+apCbjo48M306KFu8BCPJ8yIl+4AmJozU9ecXauPqJV5Y7bM3z8ouQSQSX
-        FaruCG7aeJsyZQDmLK2ujkKt2aQDdTQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-D3Sx_8bCOauk1d-s7caCLA-1; Mon, 02 Nov 2020 06:15:59 -0500
-X-MC-Unique: D3Sx_8bCOauk1d-s7caCLA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1972210866C3;
-        Mon,  2 Nov 2020 11:15:57 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1F7915C629;
-        Mon,  2 Nov 2020 11:15:49 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 12:15:48 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next V5 3/5] bpf: add BPF-helper for MTU checking
-Message-ID: <20201102121548.5e2c36b1@carbon>
-In-Reply-To: <5f9c764fc98c6_16d4208d5@john-XPS-13-9370.notmuch>
-References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
-        <160407666238.1525159.9197344855524540198.stgit@firesoul>
-        <5f9c764fc98c6_16d4208d5@john-XPS-13-9370.notmuch>
+        id S1728414AbgKBLlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 06:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728297AbgKBLlG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 06:41:06 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABCDC0617A6;
+        Mon,  2 Nov 2020 03:41:06 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id z24so10571423pgk.3;
+        Mon, 02 Nov 2020 03:41:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pjlyXXm52wfYFVFE3okvomUK69BQYy61gTCsuwArXNk=;
+        b=nzeoMjWzR2CpmtCRUXYHBfP6+bqrJbms0H6w84vybROwwOCDIr61j7BZMHe9Tu+WkY
+         NWGP0BfIpIpusDD1sUkNEZy2XMKIehiJ+WZd7zig4Q+i9JES2ryHc14BMlNpmMVdtwQC
+         Qyo4TR3YimWLgM5zRJx3gC/2ESRIprUQv0KdJnU413SC/Ksfzy4hoFxR8+JDE50SGHBu
+         FWebrr/fr4aeZnN7mRwWnb1yBx6/Y91fn2DAItwtEIsTkNlbx1f5gc6Vl+MBZ52mjfHJ
+         rQJcCXqW2sbO4DXmJcsVf1wzotlyeJuZzktvdx8IeFbab1q8GkQrVX9jBPCVfZiHWZ2S
+         aADA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pjlyXXm52wfYFVFE3okvomUK69BQYy61gTCsuwArXNk=;
+        b=PaGY/JGtEwQ7ZFP8sIeteb2w8C3A2BwRi7bUiidprKIMNuxHYddrQ2o98TnPMIT+LW
+         LHInLKgOmwXTf/KcdkEil+sBVKnlEZDuVSFV/prk7S5UIkx4gU1ISW2m5ddoCGMMeaLh
+         NbFmNx3fDsHlOSYx0cGPUZwecfzpeworBlyrNRgplKxpsDzCiRQ41xwRELOUa2xDl74a
+         qknowa34a7UUiGDdMeBuMTzWXvOkLrbtYQD2YznzMbRJenSyIO6AAu2MdF8olU1cHQNf
+         RiSEAZ5suGmJZQvgck/apAtf/DMpzgT+Zmn81RsPR9r7Z67e8Trxi9GL6swUC6uSmpfJ
+         yulg==
+X-Gm-Message-State: AOAM531oLmSJaOI+EXuAUQHqQQMpGcyxX46UW9Gl1AaNIAPCy/1E4Ofj
+        NED9aath6Cj8dwFVPR03aac=
+X-Google-Smtp-Source: ABdhPJxqA1SRdeu+x+EnFaLDWrmrtiAr8sQ1CoI1S+X1T98q/yuyg/0Eh94IOGUmkexFRtvyJPTf6A==
+X-Received: by 2002:a65:460a:: with SMTP id v10mr12715035pgq.81.1604317265546;
+        Mon, 02 Nov 2020 03:41:05 -0800 (PST)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:7220:84ff:fe09:1424])
+        by smtp.gmail.com with ESMTPSA id i123sm13710036pfc.13.2020.11.02.03.41.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 03:41:04 -0800 (PST)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        bpf <bpf@vger.kernel.org>, syzbot <syzkaller@googlegroups.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-net] bpf: fix error path in htab_map_alloc()
+Date:   Mon,  2 Nov 2020 03:41:00 -0800
+Message-Id: <20201102114100.3103180-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 30 Oct 2020 13:23:43 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
+From: Eric Dumazet <edumazet@google.com>
 
-> Jesper Dangaard Brouer wrote:
-> > This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
-> > 
-> > The API is designed to help the BPF-programmer, that want to do packet
-> > context size changes, which involves other helpers. These other helpers
-> > usually does a delta size adjustment. This helper also support a delta
-> > size (len_diff), which allow BPF-programmer to reuse arguments needed by
-> > these other helpers, and perform the MTU check prior to doing any actual
-> > size adjustment of the packet context.
-> > 
-> > It is on purpose, that we allow the len adjustment to become a negative
-> > result, that will pass the MTU check. This might seem weird, but it's not
-> > this helpers responsibility to "catch" wrong len_diff adjustments. Other
-> > helpers will take care of these checks, if BPF-programmer chooses to do
-> > actual size adjustment.
-> > 
-> > V4: Lot of changes
-> >  - ifindex 0 now use current netdev for MTU lookup
-> >  - rename helper from bpf_mtu_check to bpf_check_mtu
-> >  - fix bug for GSO pkt length (as skb->len is total len)
-> >  - remove __bpf_len_adj_positive, simply allow negative len adj
-> > 
-> > V3: Take L2/ETH_HLEN header size into account and document it.
-> > 
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---  
-> 
-> Sorry for the late feedback here.
-> 
-> This seems like a lot of baked in functionality into the helper? Can you
-> say something about why the simpler and, at least to me, more intuitive
-> helper to simply return the ifindex mtu is not ideal?
+syzbot was able to trigger a use-after-free in htab_map_alloc() [1]
 
-I tried to explain this in the patch description.  This is for easier
-collaboration with other helpers, that also have the len_diff parameter.
-This API allow to check the MTU *prior* to doing the size adjustment.
+htab_map_alloc() lacks a call to lockdep_unregister_key() in its error path.
 
-Let me explain what is not in the patch desc:
+lockdep_register_key() and lockdep_unregister_key() can not fail,
+it seems better to use them right after htab allocation and before
+htab freeing, avoiding more goto/labels in htab_map_alloc()
 
-In the first patchset, I started with the simply implementation of
-returning the MTU.  Then I realized that this puts more work into the
-BPF program (thus increasing BPF code instructions).  As we in BPF-prog
-need to extract the packet length to compare against the returned MTU
-size. Looking at other programs that does the ctx/packet size adjust, we
-don't extract the packet length as ctx is about to change, and we don't
-need the MTU variable in the BPF prog (unless it fails).
+[1]
+BUG: KASAN: use-after-free in lockdep_register_key+0x356/0x3e0 kernel/locking/lockdep.c:1182
+Read of size 8 at addr ffff88805fa67ad8 by task syz-executor.3/2356
 
+CPU: 1 PID: 2356 Comm: syz-executor.3 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ lockdep_register_key+0x356/0x3e0 kernel/locking/lockdep.c:1182
+ htab_init_buckets kernel/bpf/hashtab.c:144 [inline]
+ htab_map_alloc+0x6c5/0x14a0 kernel/bpf/hashtab.c:521
+ find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+ map_create kernel/bpf/syscall.c:825 [inline]
+ __do_sys_bpf+0xa80/0x5180 kernel/bpf/syscall.c:4381
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45deb9
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f0eafee1c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000001a00 RCX: 000000000045deb9
+RDX: 0000000000000040 RSI: 0000000020000040 RDI: 405a020000000000
+RBP: 000000000118bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118bf2c
+R13: 00007ffd3cf9eabf R14: 00007f0eafee29c0 R15: 000000000118bf2c
 
-> Rough pseudo code being,
-> 
->  my_sender(struct __sk_buff *skb, int fwd_ifindex)
->  {
->    mtu = bpf_get_ifindex_mtu(fwd_ifindex, 0);
->    if (skb->len + HDR_SIZE < mtu)
->        return send_with_hdrs(skb);
->    return -EMSGSIZE
->  }
-> 
-> 
-> >  include/uapi/linux/bpf.h       |   70 +++++++++++++++++++++++
-> >  net/core/filter.c              |  120 ++++++++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h |   70 +++++++++++++++++++++++
-> >  3 files changed, 260 insertions(+)
-> >   
-> 
-> [...]
-> 
-> > + *              **BPF_MTU_CHK_RELAX**
-> > + *			This flag relax or increase the MTU with room for one
-> > + *			VLAN header (4 bytes). This relaxation is also used by
-> > + *			the kernels own forwarding MTU checks.  
-> 
-> I noted below as well, but not sure why this is needed. Seems if user
-> knows to add a flag because they want a vlan header we can just as
-> easily expect BPF program to do it. Also it only works for VLAN headers
-> any other header data wont be accounted for so it seems only useful
-> in one specific case.
+Allocated by task 2053:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:461
+ kmalloc include/linux/slab.h:554 [inline]
+ kzalloc include/linux/slab.h:666 [inline]
+ htab_map_alloc+0xdf/0x14a0 kernel/bpf/hashtab.c:454
+ find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+ map_create kernel/bpf/syscall.c:825 [inline]
+ __do_sys_bpf+0xa80/0x5180 kernel/bpf/syscall.c:4381
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-This was added because the kernels own forwarding have this relaxation
-build in.  Thus, I though that I should add flag to compatible with the
-kernels forwarding checks.
+Freed by task 2053:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x102/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xdb/0x360 mm/slub.c:4124
+ htab_map_alloc+0x3f9/0x14a0 kernel/bpf/hashtab.c:549
+ find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+ map_create kernel/bpf/syscall.c:825 [inline]
+ __do_sys_bpf+0xa80/0x5180 kernel/bpf/syscall.c:4381
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> > + *
-> > + *		**BPF_MTU_CHK_SEGS**
-> > + *			This flag will only works for *ctx* **struct sk_buff**.
-> > + *			If packet context contains extra packet segment buffers
-> > + *			(often knows as GSO skb), then MTU check is partly
-> > + *			skipped, because in transmit path it is possible for the
-> > + *			skb packet to get re-segmented (depending on net device
-> > + *			features).  This could still be a MTU violation, so this
-> > + *			flag enables performing MTU check against segments, with
-> > + *			a different violation return code to tell it apart.
-> > + *
-> > + *		The *mtu_result* pointer contains the MTU value of the net
-> > + *		device including the L2 header size (usually 14 bytes Ethernet
-> > + *		header). The net device configured MTU is the L3 size, but as
-> > + *		XDP and TX length operate at L2 this helper include L2 header
-> > + *		size in reported MTU.
-> > + *
-> > + *	Return
-> > + *		* 0 on success, and populate MTU value in *mtu_result* pointer.
-> > + *
-> > + *		* < 0 if any input argument is invalid (*mtu_result* not updated)
-> > + *
-> > + *		MTU violations return positive values, but also populate MTU
-> > + *		value in *mtu_result* pointer, as this can be needed for
-> > + *		implementing PMTU handing:
-> > + *
-> > + *		* **BPF_MTU_CHK_RET_FRAG_NEEDED**
-> > + *		* **BPF_MTU_CHK_RET_SEGS_TOOBIG**
-> > + *
-> >   */  
-> 
-> [...]
-> 
-> > +static int __bpf_lookup_mtu(struct net_device *dev_curr, u32 ifindex, u64 flags)
-> > +{
-> > +	struct net *netns = dev_net(dev_curr);
-> > +	struct net_device *dev;
-> > +	int mtu;
-> > +
-> > +	/* Non-redirect use-cases can use ifindex=0 and save ifindex lookup */
-> > +	if (ifindex == 0)
-> > +		dev = dev_curr;
-> > +	else
-> > +		dev = dev_get_by_index_rcu(netns, ifindex);
-> > +
-> > +	if (!dev)
-> > +		return -ENODEV;
-> > +
-> > +	/* XDP+TC len is L2: Add L2-header as dev MTU is L3 size */
-> > +	mtu = dev->mtu + dev->hard_header_len;  
-> 
-> READ_ONCE() on dev->mtu and hard_header_len as well? We don't have
-> any locks.
+The buggy address belongs to the object at ffff88805fa67800
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 728 bytes inside of
+ 1024-byte region [ffff88805fa67800, ffff88805fa67c00)
+The buggy address belongs to the page:
+page:000000003c5582c4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x5fa60
+head:000000003c5582c4 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 ffffea0000bc1200 0000000200000002 ffff888010041140
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
-This is based on similar checks done in the same execution context,
-which don't have these READ_ONCE() macros.  I'm not introducing reading
-these, I'm simply moving when they are read.  If this is really needed,
-then I think we need separate fixes patches, for stable backporting.
+Memory state around the buggy address:
+ ffff88805fa67980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88805fa67a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88805fa67a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                    ^
+ ffff88805fa67b00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88805fa67b80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
 
-While doing this work, I've realized that mtu + hard_header_len is
-located on two different cache-lines, which is unfortunate, but I will
-look at fixing this in followup patches.
+Fixes: c50eb518e262 ("bpf: Use separate lockdep class for each hashtab")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Cc: Song Liu <songliubraving@fb.com>
+---
+ kernel/bpf/hashtab.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-
-> > +
-> > +	/*  Same relax as xdp_ok_fwd_dev() and is_skb_forwardable() */
-> > +	if (flags & BPF_MTU_CHK_RELAX)
-> > +		mtu += VLAN_HLEN;  
-> 
-> I'm trying to think about the use case where this might be used?
-> Compared to just adjusting MTU in BPF program side as needed for
-> packet encapsulation/headers/etc.
-
-As I wrote above, this were added because the kernels own forwarding
-have this relaxation in it's checks (in is_skb_forwardable()).  I even
-tried to dig through the history, introduced in [1] and copy-pasted
-in[2].  And this seems to be a workaround, that have become standard,
-that still have practical implications.
-
-My practical experiments showed, that e.g. ixgbe driver with MTU=1500
-(L3-size) will allow and fully send packets with 1504 (L3-size). But
-i40e will not, and drops the packet in hardware/firmware step.  So,
-what is the correct action, strict or relaxed?
-
-My own conclusion is that we should inverse the flag.  Meaning to
-default add this VLAN_HLEN (4 bytes) relaxation, and have a flag to do
-more strict check,  e.g. BPF_MTU_CHK_STRICT. As for historical reasons
-we must act like kernels version of MTU check. Unless you object, I will
-do this in V6.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-[1] https://git.kernel.org/torvalds/c/57f89bfa2140 ("network: Allow af_packet to transmit +4 bytes for VLAN packets.") (Author: Ben Greear)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index da59ba978d17230684276001dce1de8e7816cb12..23f73d4649c9c9eaf6246f1088ddfee2d3875ea9 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -141,7 +141,6 @@ static void htab_init_buckets(struct bpf_htab *htab)
+ {
+ 	unsigned i;
  
-[2] https://git.kernel.org/torvalds/c/79b569f0ec53 ("netdev: fix mtu check when TSO is enabled") (Author: Daniel Lezcano)
+-	lockdep_register_key(&htab->lockdep_key);
+ 	for (i = 0; i < htab->n_buckets; i++) {
+ 		INIT_HLIST_NULLS_HEAD(&htab->buckets[i].head, i);
+ 		if (htab_use_raw_lock(htab)) {
+@@ -455,6 +454,8 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ 	if (!htab)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	lockdep_register_key(&htab->lockdep_key);
++
+ 	bpf_map_init_from_attr(&htab->map, attr);
+ 
+ 	if (percpu_lru) {
+@@ -546,6 +547,7 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+ free_charge:
+ 	bpf_map_charge_finish(&htab->map.memory);
+ free_htab:
++	lockdep_unregister_key(&htab->lockdep_key);
+ 	kfree(htab);
+ 	return ERR_PTR(err);
+ }
+@@ -1364,9 +1366,9 @@ static void htab_map_free(struct bpf_map *map)
+ 
+ 	free_percpu(htab->extra_elems);
+ 	bpf_map_area_free(htab->buckets);
+-	lockdep_unregister_key(&htab->lockdep_key);
+ 	for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
+ 		free_percpu(htab->map_locked[i]);
++	lockdep_unregister_key(&htab->lockdep_key);
+ 	kfree(htab);
+ }
+ 
+-- 
+2.29.1.341.ge80a0c044ae-goog
 
