@@ -2,285 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13422A3282
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 19:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 112382A32FD
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 19:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgKBSEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 13:04:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
+        id S1725974AbgKBS3g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 13:29:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgKBSEy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Nov 2020 13:04:54 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B386C0617A6;
-        Mon,  2 Nov 2020 10:04:54 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id n15so13431334otl.8;
-        Mon, 02 Nov 2020 10:04:54 -0800 (PST)
+        with ESMTP id S1725833AbgKBS3g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 13:29:36 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC80DC061A04
+        for <bpf@vger.kernel.org>; Mon,  2 Nov 2020 10:29:35 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id t11so15254433edj.13
+        for <bpf@vger.kernel.org>; Mon, 02 Nov 2020 10:29:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=oYjbib//4OMOd2feerHxeK2v6gODdU5Sfo96oCfjNbA=;
-        b=mCIeyCAIwsbyXbmT/XucjF9jUgWCqDO+LHyQAfiFx6Sq1PDCaXqxkYyEcGPG8YhE4O
-         9+3nCwX7kmth7LC5oW4exgeYQHGB3A3c+p77SjtKLLC8pUuqV3R0gzik3/IWmGb3cvHB
-         IMlgqhEAGPISqfmhiBFy4IaUjlETQ5cR/CVOhyit0z3ozU9JNLLLNJamBy+JDWmMNGqX
-         tpm3WoMhAk4JhgyuZsKiJ6L+ASmyppV+pqMN0RzkAIeqs0PH5IIHlJdvVhAtgibIWhtr
-         YBU3BmquBB/7XZwXqlHN4loH+9FJZoK7GjlE6op+oCKIEuDIrX5RHGdodBg3hIP7W/0W
-         hK7g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OpMCV6DiwA90oIx03s3EMjuhB60pir+cNI+VltB5GH8=;
+        b=VWjnqBTIlGrpPuF2LFgbeKu/sj0wZiKz1w3US24Lq1tK5vaaRd0hO3CZShJkGigzd6
+         h2pIds/m16oOuFMiYOb8zOJYacIoR05iV43irQ81eVBcuGAnmTjJVzKvVtX6ATQl1f1I
+         kpKkEza3WeGI/EHY50TsiwqvPMU+aXxAUz+jwhGdNcMz3r1bZgPji311QHJhOxdI1CBW
+         3kbZPtACoxXXzvN9UWdRcJguAo8xoLf5GX+MieDpKhaBzCM4JBpKeKwDR4CBUzWjTg81
+         DoiT5Ept1roX1wKjcCyasINyrbdbtRaL6/runLOm9WAcVmzXjfQAZfA7sHBDGhfjDair
+         YXUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=oYjbib//4OMOd2feerHxeK2v6gODdU5Sfo96oCfjNbA=;
-        b=hx7KE1ePw3FAQkcE3v5NUiDYSJK5dj220LGfq2BoLXSvL9LSYKRiCtTozo9sESDEt6
-         VLtnYpnmcb1MX76mSWwC4QY99iUI3wBU9FhwdRQZV5KeddDpCGxHETuyxkEwb4vP1SOG
-         j3zPbx1TQuFeHxjc9Snf0jsZ9w8LnA8nSsVa9fC7ofFxDig1i8CP2MCo9PtY5Tduvgt6
-         GbdFLdoTYsOnoZoNi0oXx7qCFWoy4mADiGiZJ+rEzKdveBDTWPEBjmM+3CDZA0PsnJg8
-         tqex+6PK+PEMQdDcxmW3y8FREGdG2019jlXberNCET8KCDspbFO4wuFJZOP3xYvbnKeW
-         Sklg==
-X-Gm-Message-State: AOAM530ZOyXGVZwdmHfuCd65/BujardqaNwDr8u3JM91+SOVI+LnrTG+
-        YctuLnxYeVzftySq2KacX6Ovt8Zcgznl8A==
-X-Google-Smtp-Source: ABdhPJxlL4rLv7TutC1kfqcilonIx4kDwFuUHOLAw0+swULHeyPQWkUUscmIGOkJ1GF+UL7s3bSUZA==
-X-Received: by 2002:a9d:7507:: with SMTP id r7mr12635048otk.336.1604340293581;
-        Mon, 02 Nov 2020 10:04:53 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id j108sm2615977otc.8.2020.11.02.10.04.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2020 10:04:52 -0800 (PST)
-Date:   Mon, 02 Nov 2020 10:04:44 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        brouer@redhat.com
-Message-ID: <5fa04a3c7c173_1ecdb20821@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201102121548.5e2c36b1@carbon>
-References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
- <160407666238.1525159.9197344855524540198.stgit@firesoul>
- <5f9c764fc98c6_16d4208d5@john-XPS-13-9370.notmuch>
- <20201102121548.5e2c36b1@carbon>
-Subject: Re: [PATCH bpf-next V5 3/5] bpf: add BPF-helper for MTU checking
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OpMCV6DiwA90oIx03s3EMjuhB60pir+cNI+VltB5GH8=;
+        b=YHsJkoRBBHBEV9JZyEiuM//G+njnyBxeDs6w582q01NLjiSO5TZyqGhB4In8l0AEob
+         lBu2vg6LFslPeG7mtkKH1NtMkDiKmolpNUYGBypxyinHA8Vi6BldWGSUbxowboSjch/8
+         EebkRqH7q6nM6uKsviFczyW7HNHomBuFG5mB5qTjyp6FtZnsULcSaihF60dUUZENbwya
+         /mkAsJl+xzpjevgRE+sDhenCYM38CAQWRoLoiwQYkw9UPZ3WDYMT212+e+zA9PohjYx2
+         jME48IRLgNDo87eJ50i094FT8xfByvRUrEEZreG0WgMO1mVGuNNoQPhZXvZt0662THxC
+         gspQ==
+X-Gm-Message-State: AOAM533+lX8TvoRJ1UmLHPA0YqvotDjzxLcXvPeDqwsTlhWdb/42nTph
+        GKsCp1lMrPELK9WNlIIPrZbJkq+FLGHxwxAECzFcdA==
+X-Google-Smtp-Source: ABdhPJxeMAsEsTOEEkH4GYmiXn1rIW4mdT597X8DL0FwXDSaY5ZRiEMF+yTIqat9/8JA+MGqOWEN6L2WR3AZNiEL9F4=
+X-Received: by 2002:aa7:dc12:: with SMTP id b18mr17898467edu.295.1604341774102;
+ Mon, 02 Nov 2020 10:29:34 -0800 (PST)
+MIME-Version: 1.0
+References: <20201031223131.3398153-1-jolsa@kernel.org> <20201031223131.3398153-2-jolsa@kernel.org>
+In-Reply-To: <20201031223131.3398153-2-jolsa@kernel.org>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 2 Nov 2020 10:29:22 -0800
+Message-ID: <CA+khW7hRm4xwKKDjdoJkaQADfjANCzy9hpp-xL_T-Two3oNAfA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btf_encoder: Move find_all_percpu_vars in generic collect_symbols
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jesper Dangaard Brouer wrote:
-> On Fri, 30 Oct 2020 13:23:43 -0700
-> John Fastabend <john.fastabend@gmail.com> wrote:
-> 
-> > Jesper Dangaard Brouer wrote:
-> > > This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
-> > > 
-> > > The API is designed to help the BPF-programmer, that want to do packet
-> > > context size changes, which involves other helpers. These other helpers
-> > > usually does a delta size adjustment. This helper also support a delta
-> > > size (len_diff), which allow BPF-programmer to reuse arguments needed by
-> > > these other helpers, and perform the MTU check prior to doing any actual
-> > > size adjustment of the packet context.
-> > > 
-> > > It is on purpose, that we allow the len adjustment to become a negative
-> > > result, that will pass the MTU check. This might seem weird, but it's not
-> > > this helpers responsibility to "catch" wrong len_diff adjustments. Other
-> > > helpers will take care of these checks, if BPF-programmer chooses to do
-> > > actual size adjustment.
-> > > 
-> > > V4: Lot of changes
-> > >  - ifindex 0 now use current netdev for MTU lookup
-> > >  - rename helper from bpf_mtu_check to bpf_check_mtu
-> > >  - fix bug for GSO pkt length (as skb->len is total len)
-> > >  - remove __bpf_len_adj_positive, simply allow negative len adj
-> > > 
-> > > V3: Take L2/ETH_HLEN header size into account and document it.
-> > > 
-> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > > ---  
-> > 
-> > Sorry for the late feedback here.
-> > 
-> > This seems like a lot of baked in functionality into the helper? Can you
-> > say something about why the simpler and, at least to me, more intuitive
-> > helper to simply return the ifindex mtu is not ideal?
-> 
-> I tried to explain this in the patch description.  This is for easier
-> collaboration with other helpers, that also have the len_diff parameter.
-> This API allow to check the MTU *prior* to doing the size adjustment.
-> 
-> Let me explain what is not in the patch desc:
+This looks good to me. Thanks, Jiri.
 
-OK extra details helps.
+Acked-by: Hao Luo <haoluo@google.com>
 
-> 
-> In the first patchset, I started with the simply implementation of
-> returning the MTU.  Then I realized that this puts more work into the
-> BPF program (thus increasing BPF code instructions).  As we in BPF-prog
-> need to extract the packet length to compare against the returned MTU
-> size. Looking at other programs that does the ctx/packet size adjust, we
-> don't extract the packet length as ctx is about to change, and we don't
-> need the MTU variable in the BPF prog (unless it fails).
-
-On recent kernels instruction counts should not be a problem. So, looks
-like the argument is to push the skb->len lookup from BPF program into
-helper. I'm not sure it matters much if the insn is run in helper or
-in the BPF program. I have a preference for the simpler "give me
-the MTU and I'll figure out what to do with it". Real programs
-will have to handle the failing case and will need to deal with MTU
-anyways. We could do it as a BPF implemented helper in one of the
-BPF headers so users could just call the BPF "helper" and not know parts of
-it are implemented in BPF.
-
-> 
-> 
-> > Rough pseudo code being,
-> > 
-> >  my_sender(struct __sk_buff *skb, int fwd_ifindex)
-> >  {
-> >    mtu = bpf_get_ifindex_mtu(fwd_ifindex, 0);
-> >    if (skb->len + HDR_SIZE < mtu)
-> >        return send_with_hdrs(skb);
-> >    return -EMSGSIZE
-> >  }
-> > 
-> > 
-> > >  include/uapi/linux/bpf.h       |   70 +++++++++++++++++++++++
-> > >  net/core/filter.c              |  120 ++++++++++++++++++++++++++++++++++++++++
-> > >  tools/include/uapi/linux/bpf.h |   70 +++++++++++++++++++++++
-> > >  3 files changed, 260 insertions(+)
-> > >   
-> > 
-> > [...]
-> > 
-> > > + *              **BPF_MTU_CHK_RELAX**
-> > > + *			This flag relax or increase the MTU with room for one
-> > > + *			VLAN header (4 bytes). This relaxation is also used by
-> > > + *			the kernels own forwarding MTU checks.  
-> > 
-> > I noted below as well, but not sure why this is needed. Seems if user
-> > knows to add a flag because they want a vlan header we can just as
-> > easily expect BPF program to do it. Alsoer it only works for VLAN headers
-> > any other header data wont be accounted for so it seems only useful
-> > in one specific case.
-> 
-> This was added because the kernels own forwarding have this relaxation
-> build in.  Thus, I though that I should add flag to compatible with the
-> kernels forwarding checks.
-
-OK, I guess it doesn't hurt.
-
-> 
-> > > + *
-> > > + *		**BPF_MTU_CHK_SEGS**
-> > > + *			This flag will only works for *ctx* **struct sk_buff**.
-> > > + *			If packet context contains extra packet segment buffers
-> > > + *			(often knows as GSO skb), then MTU check is partly
-> > > + *			skipped, because in transmit path it is possible for the
-> > > + *			skb packet to get re-segmented (depending on net device
-> > > + *			features).  This could still be a MTU violation, so this
-> > > + *			flag enables performing MTU check against segments, with
-> > > + *			a different violation return code to tell it apart.
-> > > + *
-> > > + *		The *mtu_result* pointer contains the MTU value of the net
-> > > + *		device including the L2 header size (usually 14 bytes Ethernet
-> > > + *		header). The net device configured MTU is the L3 size, but as
-> > > + *		XDP and TX length operate at L2 this helper include L2 header
-> > > + *		size in reported MTU.
-> > > + *
-> > > + *	Return
-> > > + *		* 0 on success, and populate MTU value in *mtu_result* pointer.
-> > > + *
-> > > + *		* < 0 if any input argument is invalid (*mtu_result* not updated)
-> > > + *
-> > > + *		MTU violations return positive values, but also populate MTU
-> > > + *		value in *mtu_result* pointer, as this can be needed for
-> > > + *		implementing PMTU handing:
-> > > + *
-> > > + *		* **BPF_MTU_CHK_RET_FRAG_NEEDED**
-> > > + *		* **BPF_MTU_CHK_RET_SEGS_TOOBIG**
-> > > + *
-> > >   */  
-> > 
-> > [...]
-> > 
-> > > +static int __bpf_lookup_mtu(struct net_device *dev_curr, u32 ifindex, u64 flags)
-> > > +{
-> > > +	struct net *netns = dev_net(dev_curr);
-> > > +	struct net_device *dev;
-> > > +	int mtu;
-> > > +
-> > > +	/* Non-redirect use-cases can use ifindex=0 and save ifindex lookup */
-> > > +	if (ifindex == 0)
-> > > +		dev = dev_curr;
-> > > +	else
-> > > +		dev = dev_get_by_index_rcu(netns, ifindex);
-> > > +
-> > > +	if (!dev)
-> > > +		return -ENODEV;
-> > > +
-> > > +	/* XDP+TC len is L2: Add L2-header as dev MTU is L3 size */
-> > > +	mtu = dev->mtu + dev->hard_header_len;  
-> > 
-> > READ_ONCE() on dev->mtu and hard_header_len as well? We don't have
-> > any locks.
-> 
-> This is based on similar checks done in the same execution context,
-> which don't have these READ_ONCE() macros.  I'm not introducing reading
-> these, I'm simply moving when they are read.  If this is really needed,
-> then I think we need separate fixes patches, for stable backporting.
-> 
-> While doing this work, I've realized that mtu + hard_header_len is
-> located on two different cache-lines, which is unfortunate, but I will
-> look at fixing this in followup patches.
-
-Looks like a follow up then. But, would be best to add the READ_ONCE
-here. The netdevice.h header has this comment,
-
-	/* Note : dev->mtu is often read without holding a lock.
-	 * Writers usually hold RTNL.
-	 * It is recommended to use READ_ONCE() to annotate the reads,
-	 * and to use WRITE_ONCE() to annotate the writes.
-	 */
-
-> 
-> 
-> > > +
-> > > +	/*  Same relax as xdp_ok_fwd_dev() and is_skb_forwardable() */
-> > > +	if (flags & BPF_MTU_CHK_RELAX)
-> > > +		mtu += VLAN_HLEN;  
-> > 
-> > I'm trying to think about the use case where this might be used?
-> > Compared to just adjusting MTU in BPF program side as needed for
-> > packet encapsulation/headers/etc.
-> 
-> As I wrote above, this were added because the kernels own forwarding
-> have this relaxation in it's checks (in is_skb_forwardable()).  I even
-> tried to dig through the history, introduced in [1] and copy-pasted
-> in[2].  And this seems to be a workaround, that have become standard,
-> that still have practical implications.
-> 
-> My practical experiments showed, that e.g. ixgbe driver with MTU=1500
-> (L3-size) will allow and fully send packets with 1504 (L3-size). But
-> i40e will not, and drops the packet in hardware/firmware step.  So,
-> what is the correct action, strict or relaxed?
-> 
-> My own conclusion is that we should inverse the flag.  Meaning to
-> default add this VLAN_HLEN (4 bytes) relaxation, and have a flag to do
-> more strict check,  e.g. BPF_MTU_CHK_STRICT. As for historical reasons
-> we must act like kernels version of MTU check. Unless you object, I will
-> do this in V6.
-
-I'm fine with it either way as long as its documented in the helper
-description so I have a chance of remembering this discussion in 6 months.
-But, if you make it default won't this break for XDP cases? I assume the
-XDP use case doesn't include the VLAN 4-bytes. Would you need to prevent
-the flag from being used from XDP?
-
-Thanks,
-John
+On Sat, Oct 31, 2020 at 3:31 PM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Moving find_all_percpu_vars under generic collect_symbols
+> function that walks over symbols and calls collect_percpu_var.
+>
+> We will add another collect function that needs to go through
+> all the symbols, so it's better we go through them just once.
+>
+> There's no functional change intended.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  btf_encoder.c | 124 +++++++++++++++++++++++++++-----------------------
+>  1 file changed, 67 insertions(+), 57 deletions(-)
+>
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 4c92908beab2..1866bb16a8ba 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -250,75 +250,85 @@ static bool percpu_var_exists(uint64_t addr, uint32_t *sz, const char **name)
+>         return true;
+>  }
+>
+> -static int find_all_percpu_vars(struct btf_elf *btfe)
+> +static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
+>  {
+> -       uint32_t core_id;
+> -       GElf_Sym sym;
+> +       const char *sym_name;
+> +       uint64_t addr;
+> +       uint32_t size;
+>
+> -       /* cache variables' addresses, preparing for searching in symtab. */
+> -       percpu_var_cnt = 0;
+> +       /* compare a symbol's shndx to determine if it's a percpu variable */
+> +       if (elf_sym__section(sym) != btfe->percpu_shndx)
+> +               return 0;
+> +       if (elf_sym__type(sym) != STT_OBJECT)
+> +               return 0;
+>
+> -       /* search within symtab for percpu variables */
+> -       elf_symtab__for_each_symbol(btfe->symtab, core_id, sym) {
+> -               const char *sym_name;
+> -               uint64_t addr;
+> -               uint32_t size;
+> +       addr = elf_sym__value(sym);
+> +       /*
+> +        * Store only those symbols that have allocated space in the percpu section.
+> +        * This excludes the following three types of symbols:
+> +        *
+> +        *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
+> +        *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
+> +        *  3. __exitcall(fn), functions which are labeled as exit calls.
+> +        *
+> +        * In addition, the variables defined using DEFINE_PERCPU_FIRST are
+> +        * also not included, which currently includes:
+> +        *
+> +        *  1. fixed_percpu_data
+> +        */
+> +       if (!addr)
+> +               return 0;
+>
+> -               /* compare a symbol's shndx to determine if it's a percpu variable */
+> -               if (elf_sym__section(&sym) != btfe->percpu_shndx)
+> -                       continue;
+> -               if (elf_sym__type(&sym) != STT_OBJECT)
+> -                       continue;
+> +       size = elf_sym__size(sym);
+> +       if (!size)
+> +               return 0; /* ignore zero-sized symbols */
+>
+> -               addr = elf_sym__value(&sym);
+> -               /*
+> -                * Store only those symbols that have allocated space in the percpu section.
+> -                * This excludes the following three types of symbols:
+> -                *
+> -                *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
+> -                *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
+> -                *  3. __exitcall(fn), functions which are labeled as exit calls.
+> -                *
+> -                * In addition, the variables defined using DEFINE_PERCPU_FIRST are
+> -                * also not included, which currently includes:
+> -                *
+> -                *  1. fixed_percpu_data
+> -                */
+> -               if (!addr)
+> -                       continue;
+> +       sym_name = elf_sym__name(sym, btfe->symtab);
+> +       if (!btf_name_valid(sym_name)) {
+> +               dump_invalid_symbol("Found symbol of invalid name when encoding btf",
+> +                                   sym_name, btf_elf__verbose, btf_elf__force);
+> +               if (btf_elf__force)
+> +                       return 0;
+> +               return -1;
+> +       }
+>
+> -               size = elf_sym__size(&sym);
+> -               if (!size)
+> -                       continue; /* ignore zero-sized symbols */
+> +       if (btf_elf__verbose)
+> +               printf("Found per-CPU symbol '%s' at address 0x%lx\n", sym_name, addr);
+>
+> -               sym_name = elf_sym__name(&sym, btfe->symtab);
+> -               if (!btf_name_valid(sym_name)) {
+> -                       dump_invalid_symbol("Found symbol of invalid name when encoding btf",
+> -                                           sym_name, btf_elf__verbose, btf_elf__force);
+> -                       if (btf_elf__force)
+> -                               continue;
+> -                       return -1;
+> -               }
+> +       if (percpu_var_cnt == MAX_PERCPU_VAR_CNT) {
+> +               fprintf(stderr, "Reached the limit of per-CPU variables: %d\n",
+> +                       MAX_PERCPU_VAR_CNT);
+> +               return -1;
+> +       }
+> +       percpu_vars[percpu_var_cnt].addr = addr;
+> +       percpu_vars[percpu_var_cnt].sz = size;
+> +       percpu_vars[percpu_var_cnt].name = sym_name;
+> +       percpu_var_cnt++;
+>
+> -               if (btf_elf__verbose)
+> -                       printf("Found per-CPU symbol '%s' at address 0x%lx\n", sym_name, addr);
+> +       return 0;
+> +}
+> +
+> +static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+> +{
+> +       uint32_t core_id;
+> +       GElf_Sym sym;
+>
+> -               if (percpu_var_cnt == MAX_PERCPU_VAR_CNT) {
+> -                       fprintf(stderr, "Reached the limit of per-CPU variables: %d\n",
+> -                               MAX_PERCPU_VAR_CNT);
+> +       /* cache variables' addresses, preparing for searching in symtab. */
+> +       percpu_var_cnt = 0;
+> +
+> +       /* search within symtab for percpu variables */
+> +       elf_symtab__for_each_symbol(btfe->symtab, core_id, sym) {
+> +               if (collect_percpu_vars && collect_percpu_var(btfe, &sym))
+>                         return -1;
+> -               }
+> -               percpu_vars[percpu_var_cnt].addr = addr;
+> -               percpu_vars[percpu_var_cnt].sz = size;
+> -               percpu_vars[percpu_var_cnt].name = sym_name;
+> -               percpu_var_cnt++;
+>         }
+>
+> -       if (percpu_var_cnt)
+> -               qsort(percpu_vars, percpu_var_cnt, sizeof(percpu_vars[0]), percpu_var_cmp);
+> +       if (collect_percpu_vars) {
+> +               if (percpu_var_cnt)
+> +                       qsort(percpu_vars, percpu_var_cnt, sizeof(percpu_vars[0]), percpu_var_cmp);
+>
+> -       if (btf_elf__verbose)
+> -               printf("Found %d per-CPU variables!\n", percpu_var_cnt);
+> +               if (btf_elf__verbose)
+> +                       printf("Found %d per-CPU variables!\n", percpu_var_cnt);
+> +       }
+>         return 0;
+>  }
+>
+> @@ -347,7 +357,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>                 if (!btfe)
+>                         return -1;
+>
+> -               if (!skip_encoding_vars && find_all_percpu_vars(btfe))
+> +               if (collect_symbols(btfe, !skip_encoding_vars))
+>                         goto out;
+>
+>                 has_index_type = false;
+> --
+> 2.26.2
+>
