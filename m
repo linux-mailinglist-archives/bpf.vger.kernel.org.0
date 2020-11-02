@@ -2,203 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE5F2A2AEF
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 13:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1863F2A2B52
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 14:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728569AbgKBMrO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 07:47:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45854 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728547AbgKBMrO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 07:47:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604321232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mzT0AhlYvj48ay046KlpqQOJqmioK9ASEFfbnK3s3So=;
-        b=BH3YeCnpB2bFRkepdUvdvtD43vRDPBgEA8PiozS09VeEcz3MIvPXw8TPnn5vnbJcUxYktM
-        WpjpC0wRsNBCnMCUKNi9HIJOjYCGmfIYIYl759ecd0NysfSr9QvZ//FbAQ4FqtrwCSzJuh
-        wrzhp54c5elDkdCKodaohCB6uGa9cZE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-32-eyAdvIpqNXyEn0lcoINg6g-1; Mon, 02 Nov 2020 07:47:08 -0500
-X-MC-Unique: eyAdvIpqNXyEn0lcoINg6g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 657D6AADF79;
-        Mon,  2 Nov 2020 12:47:06 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 26C675B4D8;
-        Mon,  2 Nov 2020 12:46:59 +0000 (UTC)
-Date:   Mon, 2 Nov 2020 13:46:58 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next V5 4/5] bpf: drop MTU check when doing TC-BPF
- redirect to ingress
-Message-ID: <20201102134658.081fd974@carbon>
-In-Reply-To: <5f9c7935c6991_16d420838@john-XPS-13-9370.notmuch>
-References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
-        <160407666748.1525159.1515139110258948831.stgit@firesoul>
-        <5f9c7935c6991_16d420838@john-XPS-13-9370.notmuch>
+        id S1726064AbgKBNSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 08:18:36 -0500
+Received: from mga09.intel.com ([134.134.136.24]:37117 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725809AbgKBNSg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 08:18:36 -0500
+IronPort-SDR: 0GjzbbETSwf2UXBxXTtx23d5vIScxDYrjlLxat1H9mWGJqL6p99sMaCufqhX8TEcv4nzLhbvFq
+ RdeyieWhTs2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9792"; a="169014002"
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="169014002"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 05:18:35 -0800
+IronPort-SDR: gXs2cRatzNWLtI1Kc93gxLyk5eZYzv6rjauVohxwDpwa51yIVRrhc2sN9aYH87I29DZ1vrObmi
+ j7AG2yaEj4aw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,445,1596524400"; 
+   d="scan'208";a="538016734"
+Received: from unknown (HELO localhost.igk.intel.com) ([10.102.102.63])
+  by orsmga005.jf.intel.com with ESMTP; 02 Nov 2020 05:18:33 -0800
+From:   Michal Swiatkowski <michal.swiatkowski@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, bjorn.topel@intel.com,
+        anthony.l.nguyen@intel.com,
+        Michal Swiatkowski <michal.swiatkowski@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH net-next] ice: Remove xsk_buff_pool from VSI structure
+Date:   Mon,  2 Nov 2020 04:37:27 -0500
+Message-Id: <20201102093727.15388-1-michal.swiatkowski@intel.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 30 Oct 2020 13:36:05 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
+Current implementation of netdev already contains xsk_buff_pools.
+We no longer have to contain these structures in ice_vsi.
 
-> Jesper Dangaard Brouer wrote:
-> > The use-case for dropping the MTU check when TC-BPF does redirect to
-> > ingress, is described by Eyal Birger in email[0]. The summary is the
-> > ability to increase packet size (e.g. with IPv6 headers for NAT64) and
-> > ingress redirect packet and let normal netstack fragment packet as needed.
-> > 
-> > [0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
-> > 
-> > V4:
-> >  - Keep net_device "up" (IFF_UP) check.
-> >  - Adjustment to handle bpf_redirect_peer() helper
-> > 
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  include/linux/netdevice.h |   31 +++++++++++++++++++++++++++++--
-> >  net/core/dev.c            |   19 ++-----------------
-> >  net/core/filter.c         |   14 +++++++++++---
-> >  3 files changed, 42 insertions(+), 22 deletions(-)
-> > 
-> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > index 964b494b0e8d..bd02ddab8dfe 100644
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -3891,11 +3891,38 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
-> >  bool is_skb_forwardable(const struct net_device *dev,
-> >  			const struct sk_buff *skb);
-> >  
-> > +static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
-> > +						 const struct sk_buff *skb,
-> > +						 const bool check_mtu)  
-> 
-> It looks like if check_mtu=false then this is just an interface up check.
-> Can we leave is_skb_forwardable logic alone and just change the spots where
-> this is called with false to something with a name that describes the check,
-> such as is_dev_up(dev). I think it will make this change smaller and the
-> code easier to read. Did I miss something?
+Refactor the code to operate on netdev-provided xsk_buff_pools.
 
-People should realized that this is constructed such, the compiler will
-compile-time remove the actual argument (the const bool check_mtu).
-And this propagates also to ____dev_forward_skb() where the call places
-are also inlined.
+Move scheduling napi on each queue to a separate function to
+simplify setup function.
 
-Yes, this (check_mtu=false) is basically an interface up check, but the
-only place it is used directly is in the ndo_get_peer_dev() case, and
-reading the code I find it more readable that is says
-__is_skb_forwardable because this is used as part of a forwarding step,
-and is_dev_up() doesn't convey the intent in this use-case.
+Signed-off-by: Michal Swiatkowski <michal.swiatkowski@intel.com>
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice.h      | 10 +---
+ drivers/net/ethernet/intel/ice/ice_main.c | 28 +++++----
+ drivers/net/ethernet/intel/ice/ice_xsk.c  | 71 +++--------------------
+ 3 files changed, 30 insertions(+), 79 deletions(-)
 
-
-> > +{
-> > +	const u32 vlan_hdr_len = 4; /* VLAN_HLEN */
-> > +	unsigned int len;
-> > +
-> > +	if (!(dev->flags & IFF_UP))
-> > +		return false;
-> > +
-> > +	if (!check_mtu)
-> > +		return true;
-> > +
-> > +	len = dev->mtu + dev->hard_header_len + vlan_hdr_len;
-> > +	if (skb->len <= len)
-> > +		return true;
-> > +
-> > +	/* if TSO is enabled, we don't care about the length as the packet
-> > +	 * could be forwarded without being segmented before
-> > +	 */
-> > +	if (skb_is_gso(skb))
-> > +		return true;
-> > +
-> > +	return false;
-> > +}
-> > +
-> >  static __always_inline int ____dev_forward_skb(struct net_device *dev,
-> > -					       struct sk_buff *skb)
-> > +					       struct sk_buff *skb,
-> > +					       const bool check_mtu)
-> >  {  
-> 
-> I guess you will get some duplication here if you have a dev_forward_skb()
-> and a dev_forward_skb_nocheck() or something. Take it or leave it. I know
-> I've added my share of bool swivel bits like this, but better to avoid
-> it if possible IMO.
-
-As I wrote the bool will actually get compile-time removed, so I don't
-see that as problematic.  And I avoided replicating the code in more
-places.
-
-The problematic part (which you didn't comment) on is this:
-
-On Fri, 30 Oct 2020 17:51:07 +0100
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
-
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index bd4a416bd9ad..71b78b8d443c 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2083,13 +2083,21 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
->  
->  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
->  {
-> -	return dev_forward_skb(dev, skb);
-> +	int ret = ____dev_forward_skb(dev, skb, false);
-> +
-> +	if (likely(!ret)) {
-> +		skb->protocol = eth_type_trans(skb, dev);
-> +		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
-> +		ret = netif_rx(skb);
-> +	}
-> +
-> +	return ret;
->  }
-
-I'm replicating two lines from dev_forward_skb(), but I couldn't find a
-way to avoid this, without causing larger code changes (and slower code).
-
-
-
-> Other than style aspects it looks correct to me.
-> 
-> >  	if (skb_orphan_frags(skb, GFP_ATOMIC) ||
-> > -	    unlikely(!is_skb_forwardable(dev, skb))) {
-> > +	    unlikely(!__is_skb_forwardable(dev, skb, check_mtu))) {
-> >  		atomic_long_inc(&dev->rx_dropped);
-> >  		kfree_skb(skb);
-> >  		return NET_RX_DROP;
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index 9499a414d67e..445ccf92c149 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -2188,28 +2188,13 @@ static inline void net_timestamp_set(struct sk_buff *skb)
-> >    
-> 
-
-
-
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index a0723831c4e4..c53cd2e84ef6 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -39,6 +39,7 @@
+ #include <net/devlink.h>
+ #include <net/ipv6.h>
+ #include <net/xdp_sock.h>
++#include <net/xdp_sock_drv.h>
+ #include <net/geneve.h>
+ #include <net/gre.h>
+ #include <net/udp_tunnel.h>
+@@ -325,9 +326,6 @@ struct ice_vsi {
+ 	struct ice_ring **xdp_rings;	 /* XDP ring array */
+ 	u16 num_xdp_txq;		 /* Used XDP queues */
+ 	u8 xdp_mapping_mode;		 /* ICE_MAP_MODE_[CONTIG|SCATTER] */
+-	struct xsk_buff_pool **xsk_pools;
+-	u16 num_xsk_pools_used;
+-	u16 num_xsk_pools;
+ } ____cacheline_internodealigned_in_smp;
+ 
+ /* struct that defines an interrupt vector */
+@@ -516,17 +514,15 @@ static inline void ice_set_ring_xdp(struct ice_ring *ring)
+  */
+ static inline struct xsk_buff_pool *ice_xsk_pool(struct ice_ring *ring)
+ {
+-	struct xsk_buff_pool **pools = ring->vsi->xsk_pools;
+ 	u16 qid = ring->q_index;
+ 
+ 	if (ice_ring_is_xdp(ring))
+ 		qid -= ring->vsi->num_xdp_txq;
+ 
+-	if (qid >= ring->vsi->num_xsk_pools || !pools || !pools[qid] ||
+-	    !ice_is_xdp_ena_vsi(ring->vsi))
++	if (!ice_is_xdp_ena_vsi(ring->vsi))
+ 		return NULL;
+ 
+-	return pools[qid];
++	return xsk_get_pool_from_qid(ring->vsi->netdev, qid);
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index 2dea4d0e9415..997bc37f7d2b 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -2481,6 +2481,22 @@ int ice_destroy_xdp_rings(struct ice_vsi *vsi)
+ 			       max_txqs);
+ }
+ 
++/**
++ * ice_vsi_rx_napi_schedule - Schedule napi on RX queues from VSI
++ * @vsi: VSI to schedule napi on
++ */
++static void ice_vsi_rx_napi_schedule(struct ice_vsi *vsi)
++{
++	int i;
++
++	ice_for_each_rxq(vsi, i) {
++		struct ice_ring *rx_ring = vsi->rx_rings[i];
++
++		if (rx_ring->xsk_pool)
++			napi_schedule(&rx_ring->q_vector->napi);
++	}
++}
++
+ /**
+  * ice_xdp_setup_prog - Add or remove XDP eBPF program
+  * @vsi: VSI to setup XDP for
+@@ -2525,16 +2541,8 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
+ 	if (if_running)
+ 		ret = ice_up(vsi);
+ 
+-	if (!ret && prog && vsi->xsk_pools) {
+-		int i;
+-
+-		ice_for_each_rxq(vsi, i) {
+-			struct ice_ring *rx_ring = vsi->rx_rings[i];
+-
+-			if (rx_ring->xsk_pool)
+-				napi_schedule(&rx_ring->q_vector->napi);
+-		}
+-	}
++	if (!ret && prog)
++		ice_vsi_rx_napi_schedule(vsi);
+ 
+ 	return (ret || xdp_ring_err) ? -ENOMEM : 0;
+ }
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 797886524054..4d44431c71a0 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -259,45 +259,6 @@ static int ice_qp_ena(struct ice_vsi *vsi, u16 q_idx)
+ 	return err;
+ }
+ 
+-/**
+- * ice_xsk_alloc_pools - allocate a buffer pool for an XDP socket
+- * @vsi: VSI to allocate the buffer pool on
+- *
+- * Returns 0 on success, negative on error
+- */
+-static int ice_xsk_alloc_pools(struct ice_vsi *vsi)
+-{
+-	if (vsi->xsk_pools)
+-		return 0;
+-
+-	vsi->xsk_pools = kcalloc(vsi->num_xsk_pools, sizeof(*vsi->xsk_pools),
+-				 GFP_KERNEL);
+-
+-	if (!vsi->xsk_pools) {
+-		vsi->num_xsk_pools = 0;
+-		return -ENOMEM;
+-	}
+-
+-	return 0;
+-}
+-
+-/**
+- * ice_xsk_remove_pool - Remove an buffer pool for a certain ring/qid
+- * @vsi: VSI from which the VSI will be removed
+- * @qid: Ring/qid associated with the buffer pool
+- */
+-static void ice_xsk_remove_pool(struct ice_vsi *vsi, u16 qid)
+-{
+-	vsi->xsk_pools[qid] = NULL;
+-	vsi->num_xsk_pools_used--;
+-
+-	if (vsi->num_xsk_pools_used == 0) {
+-		kfree(vsi->xsk_pools);
+-		vsi->xsk_pools = NULL;
+-		vsi->num_xsk_pools = 0;
+-	}
+-}
+-
+ /**
+  * ice_xsk_pool_disable - disable a buffer pool region
+  * @vsi: Current VSI
+@@ -307,12 +268,12 @@ static void ice_xsk_remove_pool(struct ice_vsi *vsi, u16 qid)
+  */
+ static int ice_xsk_pool_disable(struct ice_vsi *vsi, u16 qid)
+ {
+-	if (!vsi->xsk_pools || qid >= vsi->num_xsk_pools ||
+-	    !vsi->xsk_pools[qid])
++	struct xsk_buff_pool *pool = xsk_get_pool_from_qid(vsi->netdev, qid);
++
++	if (!pool)
+ 		return -EINVAL;
+ 
+-	xsk_pool_dma_unmap(vsi->xsk_pools[qid], ICE_RX_DMA_ATTR);
+-	ice_xsk_remove_pool(vsi, qid);
++	xsk_pool_dma_unmap(pool, ICE_RX_DMA_ATTR);
+ 
+ 	return 0;
+ }
+@@ -333,22 +294,11 @@ ice_xsk_pool_enable(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+ 	if (vsi->type != ICE_VSI_PF)
+ 		return -EINVAL;
+ 
+-	if (!vsi->num_xsk_pools)
+-		vsi->num_xsk_pools = min_t(u16, vsi->num_rxq, vsi->num_txq);
+-	if (qid >= vsi->num_xsk_pools)
++	if (qid >= vsi->netdev->real_num_rx_queues ||
++	    qid >= vsi->netdev->real_num_tx_queues)
+ 		return -EINVAL;
+ 
+-	err = ice_xsk_alloc_pools(vsi);
+-	if (err)
+-		return err;
+-
+-	if (vsi->xsk_pools && vsi->xsk_pools[qid])
+-		return -EBUSY;
+-
+-	vsi->xsk_pools[qid] = pool;
+-	vsi->num_xsk_pools_used++;
+-
+-	err = xsk_pool_dma_map(vsi->xsk_pools[qid], ice_pf_to_dev(vsi->back),
++	err = xsk_pool_dma_map(pool, ice_pf_to_dev(vsi->back),
+ 			       ICE_RX_DMA_ATTR);
+ 	if (err)
+ 		return err;
+@@ -842,11 +792,8 @@ bool ice_xsk_any_rx_ring_ena(struct ice_vsi *vsi)
+ {
+ 	int i;
+ 
+-	if (!vsi->xsk_pools)
+-		return false;
+-
+-	for (i = 0; i < vsi->num_xsk_pools; i++) {
+-		if (vsi->xsk_pools[i])
++	ice_for_each_rxq(vsi, i) {
++		if (xsk_get_pool_from_qid(vsi->netdev, i))
+ 			return true;
+ 	}
+ 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.21.3
 
