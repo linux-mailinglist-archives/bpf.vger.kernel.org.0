@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FF22A2E7A
-	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 16:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08AF2A2E94
+	for <lists+bpf@lfdr.de>; Mon,  2 Nov 2020 16:47:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgKBPlM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 10:41:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
+        id S1726228AbgKBPrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 10:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgKBPlM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Nov 2020 10:41:12 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7063DC0617A6;
-        Mon,  2 Nov 2020 07:41:12 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id a20so13300840ilk.13;
-        Mon, 02 Nov 2020 07:41:12 -0800 (PST)
+        with ESMTP id S1725837AbgKBPrM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 10:47:12 -0500
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04914C0617A6;
+        Mon,  2 Nov 2020 07:47:12 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id s24so8564067ioj.13;
+        Mon, 02 Nov 2020 07:47:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9Z71+CRHeSSYfHh/rdABmuoHOyi/fRlH7aLBxC2yDpU=;
-        b=iSWetLUMc7RYDMQf5wr2cews90QZqJUKFaGXZ5iccbb/Qq6vxKAI2fsK+HrKyq2WrY
-         HCLym+/7eZrauEfvsp3rJ0xLkajaMPmpeo3Lwfs+Bz+kOpNcBJnO0izJKZ7fh3unelnF
-         d2uwS5+rNylKpfVEUmguS9RL8gisWele/+s5eGJMs6UEis2nRekRcALmwHflutfmOEIk
-         nJFoM+KQ2AO7J+b9VekcMfIY6MsPbQJTpAg4Ucj/pyLeAEtEEIl9sRRohe+gnwdGkQd2
-         E9q9IeCsSHuqwy5yKjpY68kIHhw/dHkS4zNj+lip4EfmdkQcTtJgivuuykvXFVnG5nUg
-         D1IQ==
+        bh=EJo4Lc1lqAgthYLdSr5xKFb0sp4iI0l39NPBNmW46vs=;
+        b=GPv3O9DByzQZdM0BsLH9NYfXEDcMS6Um8cZXdmaIvLMxZM+7sIAl6JYljeQVk25dLm
+         lF0eVzmWuMuMM7CU4Wef14YNStS0/FTSSpEKh8js1HJlREOfoPFK4v2b1L8I+Uykrp6d
+         q4ALeD00+GIIRMeyypLLCphf5SqukYazP7DuzFlP3XzZW/rgLk2y/cR0kaPxaTVS9PT5
+         x3MZT51TtvBLdbYcjcQKJHpqEXt/m6BNsxPw2SGy9eMuTxtMWjtpIrZzOxRiqK1HqlyC
+         PT13bSatCRKSl3Xskf1w5v7uqKNkvLMMP4aaL0krNld90NlNMWyZVokLevLc19S1ZTl3
+         6aaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9Z71+CRHeSSYfHh/rdABmuoHOyi/fRlH7aLBxC2yDpU=;
-        b=JTqpsSMKdOGbJ52qV/HHeMKUXDuqFBK6OPOgLwFqUtkRU4FabDroczfwuwk7o84S8q
-         Ry2XUC5o/Nw5RVr3VeJN5ejPSAQKn7+Wsf8OFJzME4EUIqbRTJzD67ZEtCddOLiFQixM
-         t+0zjVhGm9mEMa9Bt0ApdM8fHmwVYJPTRAn9Q1eRVNGWz+BNQ1cKF0uvuZT5cvFnyn4q
-         CFo/6ciytEnTjFNqHxfSwoAgdilQGfMRX7CMUYi1X2e/GTsBiXC7FUNhTG+f14I8pc0C
-         vRUa14jllctDkXjj2KKN2oZSXXwKMeVeQdDLciPW4LaigmWVlWLcjxER1mRlz5iVUdHa
-         dMDA==
-X-Gm-Message-State: AOAM530NyBh6wQAwLeDZ2FLC84Ob6aySiq7SWm1R4Vd2wP/+D8dGMqJM
-        73HT13TK/Ooemc82fXfkC0I=
-X-Google-Smtp-Source: ABdhPJxV61ZiI7s8SbvcMnnKq+94/IApK6HApTDx6Sj5KuzesYwg0evJj3jEJOTGUpPGx0B5tW+4xw==
-X-Received: by 2002:a05:6e02:52c:: with SMTP id h12mr10997668ils.196.1604331671827;
-        Mon, 02 Nov 2020 07:41:11 -0800 (PST)
+        bh=EJo4Lc1lqAgthYLdSr5xKFb0sp4iI0l39NPBNmW46vs=;
+        b=NlUBZhx7K7wA9PD2CxAWwogZJy69AFP/HXiEspA3235xe/uZkzny43V2QkK2V65ANe
+         0U3AygGKqj/xlDHoytz8rb8xjqFTIB9/zljTBu5bLkx3wI1cofsVPA3jAQnQcltgXXFJ
+         syVFmkJT343Mwd+d8PfRxpTaOVLbeqUHMonPPQ4An4dm5rPCCp2z+IIWTkXjsgr5ick4
+         3mvJ5ZrS5xL6WzP+3NzySn+VjUGSc/4/m3XndeL3zckZe54j8wabm1hNOqfTZT4xYMS+
+         4ZHYRd0yAs+tdHr6nb8TgnSR9otFUtMf8CoM2JAm2RfQvH9cwfAPh9e1b+guu9PyO8F3
+         1pbA==
+X-Gm-Message-State: AOAM533/V+GjvmZ1nLYCjQpeclEevzSNojAV8KonHg+7JKuKgS8OrOtR
+        41PRzKq8Fz9CrlQi9Lnan8k=
+X-Google-Smtp-Source: ABdhPJzMJCi9ifw/mE34R3OQrB2zJvTNG9MolOcgzcfeXczJ2hW9xPuvfG3sd9VG6838T2KgWpRfLQ==
+X-Received: by 2002:a02:5e84:: with SMTP id h126mr12207031jab.128.1604332031403;
+        Mon, 02 Nov 2020 07:47:11 -0800 (PST)
 Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:4ca9:ddcf:e3b:9c54])
-        by smtp.googlemail.com with ESMTPSA id r17sm9499041iov.7.2020.11.02.07.41.10
+        by smtp.googlemail.com with ESMTPSA id v88sm11255235ila.71.2020.11.02.07.47.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Nov 2020 07:41:11 -0800 (PST)
-Subject: Re: [PATCHv3 iproute2-next 3/5] lib: add libbpf support
+        Mon, 02 Nov 2020 07:47:10 -0800 (PST)
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
 To:     Hangbin Liu <haliu@redhat.com>,
         Stephen Hemminger <stephen@networkplumber.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -63,93 +63,78 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         <toke@redhat.com>
 References: <20201028132529.3763875-1-haliu@redhat.com>
  <20201029151146.3810859-1-haliu@redhat.com>
- <20201029151146.3810859-4-haliu@redhat.com>
 From:   David Ahern <dsahern@gmail.com>
-Message-ID: <db14a227-1d5e-ed3a-9ada-ecf99b526bf6@gmail.com>
-Date:   Mon, 2 Nov 2020 08:41:09 -0700
+Message-ID: <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+Date:   Mon, 2 Nov 2020 08:47:08 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <20201029151146.3810859-4-haliu@redhat.com>
+In-Reply-To: <20201029151146.3810859-1-haliu@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 10/29/20 9:11 AM, Hangbin Liu wrote:
-> diff --git a/ip/ipvrf.c b/ip/ipvrf.c
-> index 33150ac2..afaf1de7 100644
-> --- a/ip/ipvrf.c
-> +++ b/ip/ipvrf.c
-> @@ -28,8 +28,14 @@
->  #include "rt_names.h"
->  #include "utils.h"
->  #include "ip_common.h"
-> +
->  #include "bpf_util.h"
->  
-> +#ifdef HAVE_LIBBPF
-> +#include <bpf/bpf.h>
-> +#include <bpf/libbpf.h>
-> +#endif
-> +
->  #define CGRP_PROC_FILE  "/cgroup.procs"
->  
->  static struct link_filter vrf_filter;
-> @@ -256,8 +262,13 @@ static int prog_load(int idx)
->  		BPF_EXIT_INSN(),
->  	};
->  
-> +#ifdef HAVE_LIBBPF
-> +	return bpf_load_program(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
-> +				"GPL", 0, bpf_log_buf, sizeof(bpf_log_buf));
-> +#else
->  	return bpf_prog_load_buf(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
->  			         "GPL", bpf_log_buf, sizeof(bpf_log_buf));
-> +#endif
->  }
->  
->  static int vrf_configure_cgroup(const char *path, int ifindex)
-> @@ -288,7 +299,11 @@ static int vrf_configure_cgroup(const char *path, int ifindex)
->  		goto out;
->  	}
->  
-> +#ifdef HAVE_LIBBPF
-> +	if (bpf_prog_attach(prog_fd, cg_fd, BPF_CGROUP_INET_SOCK_CREATE, 0)) {
-> +#else
->  	if (bpf_prog_attach_fd(prog_fd, cg_fd, BPF_CGROUP_INET_SOCK_CREATE)) {
-> +#endif
->  		fprintf(stderr, "Failed to attach prog to cgroup: '%s'\n",
->  			strerror(errno));
->  		goto out;
+> This series converts iproute2 to use libbpf for loading and attaching
+> BPF programs when it is available. This means that iproute2 will
+> correctly process BTF information and support the new-style BTF-defined
+> maps, while keeping compatibility with the old internal map definition
+> syntax.
+> 
+> This is achieved by checking for libbpf at './configure' time, and using
+> it if available. By default the system libbpf will be used, but static
+> linking against a custom libbpf version can be achieved by passing
+> LIBBPF_DIR to configure. FORCE_LIBBPF can be set to force configure to
+> abort if no suitable libbpf is found (useful for automatic packaging
+> that wants to enforce the dependency).
+> 
+> The old iproute2 bpf code is kept and will be used if no suitable libbpf
+> is available. When using libbpf, wrapper code ensures that iproute2 will
+> still understand the old map definition format, including populating
+> map-in-map and tail call maps before load.
+> 
+> The examples in bpf/examples are kept, and a separate set of examples
+> are added with BTF-based map definitions for those examples where this
+> is possible (libbpf doesn't currently support declaratively populating
+> tail call maps).
+> 
+> At last, Thanks a lot for Toke's help on this patch set.
+> 
 
-I would prefer to have these #ifdef .. #endif checks consolidated in the
-lib code. Create a bpf_compat file for these. e.g.,
+In regards to comments from v2 of the series:
 
-int bpf_program_load(enum bpf_prog_type type, const struct bpf_insn *insns,
-                     size_t size_insns, const char *license, char *log,
-                     size_t size_log)
-{
-+#ifdef HAVE_LIBBPF
-+	return bpf_load_program(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
-+				"GPL", 0, bpf_log_buf, sizeof(bpf_log_buf));
-+#else
- 	return bpf_prog_load_buf(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
- 			         "GPL", bpf_log_buf, sizeof(bpf_log_buf));
-+#endif
-}
+iproute2 is a stable, production package that requires minimal support
+from external libraries. The external packages it does require are also
+stable with few to no relevant changes.
 
-Similarly for bpf_program_attach.
+bpf and libbpf on the other hand are under active development and
+rapidly changing month over month. The git submodule approach has its
+conveniences for rapid development but is inappropriate for a package
+like iproute2 and will not be considered.
 
+To explicitly state what I think should be obvious to any experienced
+Linux user, iproute2 code should always compile and work *without
+functionality loss* on LTS versions N and N-1 of well known OS’es with
+LTS releases (e.g., Debian, Ubuntu, RHEL). Meaning iproute2 will compile
+and work with the external dependencies as they exist in that OS version.
 
-I think even the includes can be done once in bpf_util.h with a single
-+#ifdef HAVE_LIBBPF
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+#endif
-+
+I believe there are more than enough established compatibility and
+library version checks to find the middle ground to integrate new
+features requiring new versions of libbpf while maintaining stability
+and compatibility with older releases. The biannual releases of Ubuntu
+and Fedora serve as testing grounds for integrating new features
+requiring a newer version of libbpf while continuing to work with
+released versions of libbpf. It appears Debian Bullseye will also fall
+into this category.
 
-The iproute2_* functions added later in this patch can be in the compat
-file as well.
+Finally, bpf-based features in iproute2 will only be committed once
+relevant support exists in a released version of libbpf (ie., the github
+version, not just commits to the in-kernel tree version). Patches can
+and should be sent for review based on testing with the in-kernel tree
+version of libbpf, but I will not commit them until the library has been
+released.
+
+Thanks for working on this, Hangbin. It is right direction in the long term.
