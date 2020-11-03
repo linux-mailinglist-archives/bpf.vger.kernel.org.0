@@ -2,198 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C832A3B9E
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 06:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D4D2A3BAB
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 06:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgKCFCv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 00:02:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43664 "EHLO
+        id S1725980AbgKCFKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 00:10:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgKCFCv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 00:02:51 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12388C0617A6;
-        Mon,  2 Nov 2020 21:02:50 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id s89so13720996ybi.12;
-        Mon, 02 Nov 2020 21:02:50 -0800 (PST)
+        with ESMTP id S1725958AbgKCFKG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 00:10:06 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7BEC0617A6;
+        Mon,  2 Nov 2020 21:10:06 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id w65so13182194pfd.3;
+        Mon, 02 Nov 2020 21:10:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y/zf1fidHoOUMZMOng7SS2sBqt5LEfn99qbN9X6BnF4=;
-        b=Nq7IDZtBmq+EoQXtOIVIGJ0O+dMGzTU1ntfVsajoCtFsotDvv2n/D7XCCVIikdY+Ug
-         FqF/m9dDy6+oQS2lj+DvVgM/s6ohv8bZMF03Kz63NUGvUip6yUJeAxkNz0UAH0/EmCj/
-         C8K3u4JwTKxjl7M7ZyGq0n2m5BdsCVsGS/umekWBFm5OCBzcEk3FYq5/H+Jh3EnVQVIV
-         uEHI3wDy4cqhM667lXhYaBinoWW+aNhjuRMHLpgBVvqbKIixGyb64AVYbQRdjeQJVZTI
-         yt0yYZqEWcGfSv0Cs9u418JF7NldEjyU5lXipXvhlcbT82Sg2E7SpHCuIFqi6m/ka4M6
-         zybQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tCyGkq/pHteVAh0HIDT7egDnjjzBOE7dZIpKsnhRnsM=;
+        b=etNDRHh0vuI9pqe4UUpt/3cX9ZGv/0D5ySVu4E5ayITnJPmyVjLJ29aHzsLWT4CYnp
+         ewXSLKkexigwdSTrG3Pdd7OLPdALbFDX/QU9huvOeOUgMb6ZNNG2R9oB3QkBi1Ncxhhd
+         Z1iVjRPXnnHixMgNs+SUjwJp/P1GJW9392gsolU+AwbWZVPx/j4E858An7jCIsRaYNJH
+         LOfb4uhr/qGf71+HE3dwjN62SNmKMjyYTOm997UpJRG8EEqpLKUs30liHmyfgVqEKIl+
+         kfQBPtMtIlzJlHaofm9/O1RofswfIgLyTaLfRheSm5ZqV8MBzwMXbQK03tgFvqZPba/W
+         +RzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y/zf1fidHoOUMZMOng7SS2sBqt5LEfn99qbN9X6BnF4=;
-        b=W4soCdsN4EtFctCANvGSFoifdi3QW36JxPt8nQtg8y1uRI67/j/qEKU6BBkcEXO8P2
-         BtHUr7CEJ9njihXUNNkTDCN4swmWUHEAkSTBcYpMzYLR2tkarU+uAyvavfK/jTEl/PTC
-         VKJG7z0wIAWjHxvs6RXqYdtsrKeAtmHhnK7OnbYigp2fyY2+I3xGWmu5Lbm0hTgFdnOp
-         uRbN2KOX0z9ikP1qPKfe2JAGJfQnojy1iz8BQQ/Oe4AvVaIdVfoV7GrIAt/EAtphdfC8
-         rrs7QzR5904JbHcqtnR/i/3acw7x0R8SmXtrBHsed9R2kDrjAhOYQGe8Su8j/qIbVENH
-         XHhA==
-X-Gm-Message-State: AOAM533HM6LmWcD/GjwMxedYYctDfvHa/YZG8zbY93Q6ERyhGuUc5EkE
-        TxyNalp1ikqO6wzs9hoSPfYZzHNmdAAxLMiyNC3bWCJaLlyj9w==
-X-Google-Smtp-Source: ABdhPJxYWKmEL1x9/hs3HcsGG1MSubj9RdjhrnuFkSmgKPjEnib23Y3+y33FKIhztW3sZwahsvkFgJeM5rbXwsgkLIA=
-X-Received: by 2002:a25:3443:: with SMTP id b64mr25057604yba.510.1604379769346;
- Mon, 02 Nov 2020 21:02:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tCyGkq/pHteVAh0HIDT7egDnjjzBOE7dZIpKsnhRnsM=;
+        b=M16fTPgu3H+Rg73k4tSO93ObTIDdJxMwufzOKVFL7AKvqGft9ztNX3bzRLQpb3qIsd
+         XRykihYePi301LOoTiqlH0iSs8LR9i00uzWSM8l+8rM9PsSOxSFiUWidtfMpwoKh1Pcx
+         ycBUkWd0tAuwmfKlvs/dcPfmk2AktYf0fBc3mVV/qV4pf/IrQeEMXCRl54ADqERRHuaK
+         pQSW/ntPm1U7NG8IfPajkmKz1jeDeDv8I3L21W2i6n7takiBYSUEeYLWIuMhp6LEPgpf
+         OoQufpqJXwrJKuk8MbR98oVBqfgAgMhsXtFItEfvVSqVUBlB/mhuM2JEZEfZ40kJkHfG
+         wF+A==
+X-Gm-Message-State: AOAM531Xuezg1XAz441ErohFiVY/7mLdtL5YjDACKlr0V1LUxSifQ723
+        MpS0EpiSkpevbrTo0kX9AV4=
+X-Google-Smtp-Source: ABdhPJxdAZ9knOjZVXZk9desjGLDSbJ9bzfrYQjovHhCJhcQruH8pe8JufMTU6EKZxQPeJe0kloP3A==
+X-Received: by 2002:a17:90a:b63:: with SMTP id 90mr2006281pjq.154.1604380206267;
+        Mon, 02 Nov 2020 21:10:06 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4055])
+        by smtp.gmail.com with ESMTPSA id f21sm3733267pga.32.2020.11.02.21.10.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 21:10:05 -0800 (PST)
+Date:   Mon, 2 Nov 2020 21:10:03 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 08/11] libbpf: support BTF dedup of split BTFs
+Message-ID: <20201103051003.i565jv3ph54lw5rj@ast-mbp.dhcp.thefacebook.com>
+References: <20201029005902.1706310-1-andrii@kernel.org>
+ <20201029005902.1706310-9-andrii@kernel.org>
 MIME-Version: 1.0
-References: <20201029005902.1706310-1-andrii@kernel.org> <20201029005902.1706310-5-andrii@kernel.org>
- <DE5FDF1D-0E5B-409B-80DF-EDA5349FE3A6@fb.com>
-In-Reply-To: <DE5FDF1D-0E5B-409B-80DF-EDA5349FE3A6@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 2 Nov 2020 21:02:38 -0800
-Message-ID: <CAEf4BzanQsEopXA7cGQi51hf_Q0hNb7NUTvtnkD8xg9AHoU9Ng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 04/11] libbpf: implement basic split BTF support
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201029005902.1706310-9-andrii@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 3:24 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Oct 28, 2020, at 5:58 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
->
-> [...]
->
-> >
-> > BTF deduplication is not yet supported for split BTF and support for it will
-> > be added in separate patch.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
->
-> With a couple nits:
->
-> > ---
-> > tools/lib/bpf/btf.c      | 205 ++++++++++++++++++++++++++++++---------
-> > tools/lib/bpf/btf.h      |   8 ++
-> > tools/lib/bpf/libbpf.map |   9 ++
-> > 3 files changed, 175 insertions(+), 47 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index db9331fea672..20c64a8441a8 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -78,10 +78,32 @@ struct btf {
-> >       void *types_data;
-> >       size_t types_data_cap; /* used size stored in hdr->type_len */
-> >
-> > -     /* type ID to `struct btf_type *` lookup index */
-> > +     /* type ID to `struct btf_type *` lookup index
-> > +      * type_offs[0] corresponds to the first non-VOID type:
-> > +      *   - for base BTF it's type [1];
-> > +      *   - for split BTF it's the first non-base BTF type.
-> > +      */
-> >       __u32 *type_offs;
-> >       size_t type_offs_cap;
-> > +     /* number of types in this BTF instance:
-> > +      *   - doesn't include special [0] void type;
-> > +      *   - for split BTF counts number of types added on top of base BTF.
-> > +      */
-> >       __u32 nr_types;
->
-> This is a little confusing. Maybe add a void type for every split BTF?
+On Wed, Oct 28, 2020 at 05:58:59PM -0700, Andrii Nakryiko wrote:
+> @@ -2942,6 +2948,13 @@ struct btf_dedup {
+>  	__u32 *hypot_list;
+>  	size_t hypot_cnt;
+>  	size_t hypot_cap;
+> +	/* Whether hypothethical mapping, if successful, would need to adjust
+> +	 * already canonicalized types (due to a new forward declaration to
+> +	 * concrete type resolution). In such case, during split BTF dedup
+> +	 * candidate type would still be considered as different, because base
+> +	 * BTF is considered to be immutable.
+> +	 */
+> +	bool hypot_adjust_canon;
 
-Agree about being a bit confusing. But I don't want VOID in every BTF,
-that seems sloppy (there's no continuity). I'm currently doing similar
-changes on kernel side, and so far everything also works cleanly with
-start_id == 0 && nr_types including VOID (for base BTF), and start_id
-== base_btf->nr_type && nr_types has all the added types (for split
-BTF). That seems a bit more straightforward, so I'll probably do that
-here as well (unless I'm missing something, I'll double check).
-
->
-> > +     /* if not NULL, points to the base BTF on top of which the current
-> > +      * split BTF is based
-> > +      */
->
-> [...]
->
-> >
-> > @@ -252,12 +274,20 @@ static int btf_parse_str_sec(struct btf *btf)
-> >       const char *start = btf->strs_data;
-> >       const char *end = start + btf->hdr->str_len;
-> >
-> > -     if (!hdr->str_len || hdr->str_len - 1 > BTF_MAX_STR_OFFSET ||
-> > -         start[0] || end[-1]) {
-> > -             pr_debug("Invalid BTF string section\n");
-> > -             return -EINVAL;
-> > +     if (btf->base_btf) {
-> > +             if (hdr->str_len == 0)
-> > +                     return 0;
-> > +             if (hdr->str_len - 1 > BTF_MAX_STR_OFFSET || end[-1]) {
-> > +                     pr_debug("Invalid BTF string section\n");
-> > +                     return -EINVAL;
-> > +             }
-> > +     } else {
-> > +             if (!hdr->str_len || hdr->str_len - 1 > BTF_MAX_STR_OFFSET ||
-> > +                 start[0] || end[-1]) {
-> > +                     pr_debug("Invalid BTF string section\n");
-> > +                     return -EINVAL;
-> > +             }
-> >       }
-> > -
-> >       return 0;
->
-> I found this function a little difficult to follow. Maybe rearrange it as
->
->         /* too long, or not \0 terminated */
->         if (hdr->str_len - 1 > BTF_MAX_STR_OFFSET || end[-1])
->                 goto err_out;
-
-this won't work, if str_len == 0. Both str_len - 1 will underflow, and
-end[-1] will be reading garbage
-
-How about this:
-
-if (btf->base_btf && hdr->str_len == 0)
-    return 0;
-
-if (!hdr->str_len || hdr->str_len - 1 > BTF_MAX_STR_OFFSET || end[-1])
-    return -EINVAL;
-
-if (!btf->base_btf && start[0])
-    return -EINVAL;
-
-return 0;
-
-This seems more straightforward, right?
-
-
->
->         /* for base btf, .... */
->         if (!btf->base_btf && (!hdr->str_len || start[0]))
->                 goto err_out;
->
->         return 0;
-> err_out:
->         pr_debug("Invalid BTF string section\n");
->         return -EINVAL;
-> }
-> > }
-> >
-> > @@ -372,19 +402,9 @@ static int btf_parse_type_sec(struct btf *btf)
-> >       struct btf_header *hdr = btf->hdr;
-> >       void *next_type = btf->types_data;
-> >       void *end_type = next_type + hdr->type_len;
-> > -     int err, i = 0, type_size;
->
-> [...]
->
+why one flag per dedup session is enough?
+Don't you have a case where some fwd are pointing to base btf and shouldn't
+be adjusted while some are in split btf and should be?
+It seems when this flag is set to true it will miss fwd in split btf?
