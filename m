@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F492A5A22
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 23:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD8F2A5A59
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 23:56:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730374AbgKCWdB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 17:33:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        id S1729275AbgKCWz7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 17:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730357AbgKCWdA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:33:00 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BB1C0613D1;
-        Tue,  3 Nov 2020 14:33:00 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id x7so17642984ili.5;
-        Tue, 03 Nov 2020 14:33:00 -0800 (PST)
+        with ESMTP id S1729078AbgKCWz7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 17:55:59 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006A7C0613D1;
+        Tue,  3 Nov 2020 14:55:58 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id 13so15638084pfy.4;
+        Tue, 03 Nov 2020 14:55:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bLaMoE5mWGLn19yG8GvJ/7C3mZHkgchPhbpxvLvLVLg=;
-        b=Yjoub5mtbc5gxcL3zn3qyDubboh2mM3ooeQGoA4plz5nEvxXNjMyOMAwQIHyv7Di+C
-         i93tLjFus4XHK4D6CcskWuYom4bLiTZSuDG07UwSKXTV5bYN53y8TpuVoYLDMz5GVJyo
-         XyK9TgQHdmgxlWSaokWO4IlJGDthI5EH7N6zvR4m4ufEcrI7xHW/U3Xv0IB7Ib00qPbd
-         BG2vxJlkONpptZQnTJ3yOE8ICrQhzsnZZnc0YRqoy1HcjBJph4rd7yxQc47vqY/sibij
-         aGpkM9cr2Az1tz9N8scvJrIkDqqGKmacPVX0c2O4G5tKJA7r/6+1k1i9Z9UtlBz8h+v+
-         E9IQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Y9rC6CEfjXUJcDEVAQhothgdJOVJi8hJqCH+5bsgPRw=;
+        b=AJMV1wRc1HYlzxcS1TwbAy1floVfKkjV19NaJpPgn0NnRlarLq30PirhQreB26tUns
+         IZokwT8vHV92wTZbw1oW0lc68tLzSrz6hY1CmRaD+QeLDRNX9BhnfpPwbxjNhPsbBS9A
+         OPmfQ9dl1FNe5LVo/xXqQQuMOReC0h9c0RzuPfSawBKa1fri4mZjlPWqPgM8Kwg/bJ0U
+         Z4m3febUHBLaKMgI8B/GPxEhjzwOHb7SWo6sw/GFi+20/k42TpNG5Ly8lR1fCKn6kSc3
+         SNeWHz6v7XjTHXF2ozbeiu24iza5GeMKRAOMjQM3BD0q+KmyBMnfVJjq6QuTTyUDm6DX
+         0LVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bLaMoE5mWGLn19yG8GvJ/7C3mZHkgchPhbpxvLvLVLg=;
-        b=radkvgfjStq6OJauykJm8/AGok0K5fGl/WqiLsL3VPg2yeP7pkxgzak0NVbL8aLPu5
-         KEDyFCvviqOkAc1QVXeme1bOFhPsSEZuyiHUbL0QMpCDFXGRMMjLKzwW7880pheC7pwi
-         yTh/9xwWa2Uo0Pom2Uc1m8iHIxT9c2fWAj6y8vjiWD/J7Nrj7ac0nvvm1ujQwOsD722i
-         dSdAe8OJAjwTfZr1uuz9M9v5ip6qtsHtqTYLdXfeemXHePlCiL1ORqMa6OEokSC2+Jh+
-         BRFOduHyXfikpDnMW0ICcEfR909Dq49DK7SkfMW1jQ0aISsgZBlVo6BRBl7s8CstakF/
-         LPjg==
-X-Gm-Message-State: AOAM5309n8Du3mWGytG0N2Cfk9TjumjM5FCzWHWZ6hEzOXz5X8S+M75a
-        O5s2hrZY0L6dgPs7wPM8Hnw=
-X-Google-Smtp-Source: ABdhPJxtiRejlCng0cx9di8hIO6HiS865b5qrc74giGvn38kOyW/NFseE1Vg9XtYJ5sa6OUGeHHDlQ==
-X-Received: by 2002:a92:dd91:: with SMTP id g17mr16297156iln.180.1604442780063;
-        Tue, 03 Nov 2020 14:33:00 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:def:1f9b:2059:ffac])
-        by smtp.googlemail.com with ESMTPSA id u18sm71816iob.53.2020.11.03.14.32.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Nov 2020 14:32:58 -0800 (PST)
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y9rC6CEfjXUJcDEVAQhothgdJOVJi8hJqCH+5bsgPRw=;
+        b=QGJ5P/9wBFTpqxbExMqUTtqsWHWCNVCjKMWfQqcgpK1aqiqXP5kc2bo/C2RksZstji
+         V9NDtBTKoJnbBebkFvyCOwKinf9RTJIdCBjhcX9VEKMidTnGa9/7SQSPUugcJ/pHqmzv
+         mVha72UX3rn00tXySfBV53XefhOVSki3Pu9UU76J+LaahJMjW7GdIkMirhNIUmBja7gS
+         BgnSgfccbj6ujFW8P/t5GrGNpUs8WUkMEQ8bhIGx07dA0P6GEHcup1sbqaOtsy60M6SN
+         rec5yC/NIoelZxzOCW/V3dOtn+5KHCQRPw9OF3YdSdGzpKUlywEtcyt3MOAbVivvLR4a
+         aXqg==
+X-Gm-Message-State: AOAM532rpolGPlxWd/mRAl+QOYOR0bGxDCz8wf5rM6cy8kMMZQDKPfGD
+        Fi0SeUuLTnaYJw9NnQUCixw=
+X-Google-Smtp-Source: ABdhPJz7uT/tDSxLDYzNQd/1ObDCzWHxki/itiK3jD2YN34gVKavsMGrPzkuZUEpon7LUBP7P05CIA==
+X-Received: by 2002:a63:ab07:: with SMTP id p7mr18791206pgf.326.1604444158346;
+        Tue, 03 Nov 2020 14:55:58 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4055])
+        by smtp.gmail.com with ESMTPSA id 63sm161820pfv.25.2020.11.03.14.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Nov 2020 14:55:57 -0800 (PST)
+Date:   Tue, 3 Nov 2020 14:55:54 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Ahern <dsahern@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Hangbin Liu <haliu@redhat.com>,
@@ -62,7 +62,9 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Jiri Benc <jbenc@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
 References: <20201028132529.3763875-1-haliu@redhat.com>
  <20201029151146.3810859-1-haliu@redhat.com>
  <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
@@ -70,28 +72,40 @@ References: <20201028132529.3763875-1-haliu@redhat.com>
  <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
  <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
  <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
-Date:   Tue, 3 Nov 2020 15:32:55 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+ <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/3/20 10:47 AM, Alexei Starovoitov wrote:
-> since David is deaf to technical arguments,
-It is not that I am "deaf to technical arguments"; you do not like my
-response.
+On Tue, Nov 03, 2020 at 03:32:55PM -0700, David Ahern wrote:
+> On 11/3/20 10:47 AM, Alexei Starovoitov wrote:
+> > since David is deaf to technical arguments,
+> It is not that I am "deaf to technical arguments"; you do not like my
+> response.
+> 
+> The scope of bpf in iproute2 is tiny - a few tc modules (and VRF but it
+> does not need libbpf) which is a small subset of the functionality and
+> commands within the package.
 
-The scope of bpf in iproute2 is tiny - a few tc modules (and VRF but it
-does not need libbpf) which is a small subset of the functionality and
-commands within the package.
-
-The configure script will allow you to use any libbpf version you wish.
-Standard operating procedure for configuring a dependency within a package.
+When Hangbin sent this patch set I got excited that finally tc command
+will start working with the latest bpf elf files.
+Currently "tc" supports 4 year old files which caused plenty of pain to bpf users.
+I got excited, but now I've realized that this patch set will make it worse.
+The bpf support in "tc" command instead of being obviously old and obsolete
+will be sort-of working with unpredictable delay between released kernel
+and released iproute2 version. The iproute2 release that suppose to match kernel
+release will be meaningless.
+More so, the upgrade of shared libbpf.so can make older iproute2/tc to do 
+something new and unpredictable.
+The user experience will be awful. Not only the users won't know
+what to expect out of 'tc' command they won't have a way to debug it.
+All of it because iproute2 build will take system libbpf and link it
+as shared library by default.
+So I think iproute2 must not use libbpf. If I could remove bpf support
+from iproute2 I would do so as well.
+The current state of iproute2 is hurting bpf ecosystem and proposed
+libbpf+iproute2 integration will make it worse.
