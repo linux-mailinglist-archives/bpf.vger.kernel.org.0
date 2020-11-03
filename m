@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D51A2A4F74
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 19:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430622A4F7E
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 19:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728621AbgKCS4K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 13:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
+        id S1728767AbgKCS7M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 13:59:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727706AbgKCS4K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:56:10 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F09AC0613D1;
-        Tue,  3 Nov 2020 10:56:10 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id c18so2919438ybj.10;
-        Tue, 03 Nov 2020 10:56:10 -0800 (PST)
+        with ESMTP id S1725892AbgKCS7M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:59:12 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809BCC0613D1;
+        Tue,  3 Nov 2020 10:59:10 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id s89so15740582ybi.12;
+        Tue, 03 Nov 2020 10:59:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bJY7WGKB7t34pOHGgzWmhtYgvBjvp3KhjCHKCPGb0xA=;
-        b=pKNrNsIgQLNwjPkOfhHctTdoROV6VPQSQKuKUqDdMYCyVeiVSS8fNvpD5r1lQSPze/
-         JUA5WKYZbpO23qTIafJ7y/Rra12H5/JcwFQhPpk0uyJ10D+fcmMGJKXmhA/VLXiyVI0M
-         wcNQtCry21Xek4wPWuY98WsFOGYglFAb7gMoewNbuzfOownQyZPDpujLCeFTdctoz9ZQ
-         5B2fyySp27l6fsAmhE5+wyJ0jadBFEMZzXqK3soJFPtIy5lfF/47PuW0TlrOVbuFe+Xb
-         ps43HJnb2j88P6fgDCU6F2vElH90iwg6MxAKd1qZltCEdJTdTNtjgkmUZZspRwkKwl+b
-         AXGw==
+        bh=5fqIMy9vXApfUFcPxd191BrCKM+CJUMN+VBtwVSq+qI=;
+        b=brpxZ7taVQmaLlgHbb8JhBG12PfPip+0Xo9lKO/+GrdkpmGUSLeC2TijLvKmuklKoY
+         4wbrbyA1C7Nv/TV5l/P5U7QEFCweRiIl4h/2wrRDGkvbP+nYPKyijVkgMiLYvPArPQbG
+         ruc9IGq/rqDIJwFefTyVgGUF03GPDH1shBJHV+SYFQ7MrS7EcWNDV8RdYhHp+6O5UxtU
+         vXkvpQlIW2x/VuwU2d5kvAuVDOUtMblE7hE5mCGb1Cozo4WYtBiKp/yJ7Xq9PUy2/nST
+         f2N1w6+A9zK0iA1zod6B+3M2ZZekNoHzZ4yZ41mhCVDNpBO5OUSrW7H/LH3kQdXJko8u
+         YEaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bJY7WGKB7t34pOHGgzWmhtYgvBjvp3KhjCHKCPGb0xA=;
-        b=SFf0GOD4nywANZfyuGGcgO6l0jsD2tllbxwJtuPjPOGYmMPYzV8LFXbkjseUtD293b
-         9NFQvP4d52Mc0LHOTavgiZT75SCa6Mpt4/xFgtJF0heKlSvPYAvHJzCh2K9xv2knArYK
-         hbLMIzDm6VvjG4epvNgD7yKm7s5XFGjI0IcU5K9dWaStJJo1h8FOynAnKeGOpE1cdq6Z
-         PMedMgPgxhXE3a82eRKON74FuWSd6+HruV4IRrRSiYHc4TkMXtygI84lOm6NvkdkGCsq
-         qFSKRThsh0ycKp/01RrAOnZF+cTps0CQjLQSDHpYLXWAjjrPSbcImqZUWw6UqqqksU17
-         fMHw==
-X-Gm-Message-State: AOAM530flElSYPV/Qwn4Ot19tGSVoUJyng2khM9NHhGhw6/ffB4y0+Cy
-        Fak0I8yc8vI5lcltmBWZEb3YSpDdJ8PtYbBqLJg=
-X-Google-Smtp-Source: ABdhPJxEQHFV82ObgeYiQ+S1ZtWJyM3hHPFGHeXNGtKBavynYcsIeWzJYfiLoCjFoqYT06Wi6CnCWO/1qMq8P5R/jcI=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr31109160ybe.403.1604429769824;
- Tue, 03 Nov 2020 10:56:09 -0800 (PST)
+        bh=5fqIMy9vXApfUFcPxd191BrCKM+CJUMN+VBtwVSq+qI=;
+        b=E63TkItj6bQDD+lVFy+e5fO6iLauVXvxGR/YYKR8xGAdNMSaRWJ4ZUmtUTXt0v99Tw
+         baSILt8mKFdrZmBEo0S4CTapJLLl/CbTAT5uI8QODMwSboLFEGIikBJDp0nFD4kWYXmJ
+         tF0c+E+lhI+Dvf5sf94q8nY0eECgRHe6V7b4JntATv7QYc6yq+VWV+7ELF6WAF0K8gk6
+         8dGtpSYMHAJZ5PWc22BOURMhmep0+YabOOjFehA5MZuuGTcZYIqqylLl4NDg5AubSYUy
+         e9MwG5PSkrZ4EL8/HRSoU1hUw9BT2fAUbVjYj2I/HG9vbArqDMZBQxmJpYSe6ZagRKd1
+         7c2g==
+X-Gm-Message-State: AOAM532g7YOk8acqXAJb/bNxI9Jb2yAE0YyJ3SDgP1Nqat+nYxzsx978
+        AXTIH5o73t+ts5G6Gk+oijDyPLW7a9mUlJS5Ogo=
+X-Google-Smtp-Source: ABdhPJy66Dum8Vfeq/PZJbd2yxqSd9YmDMUPuKHPPHRoSxrWOzgIiHgh3BOkkjiRMVxVw0Qriz0cdZlaIrQr5CHcGWI=
+X-Received: by 2002:a25:bdc7:: with SMTP id g7mr31548206ybk.260.1604429949816;
+ Tue, 03 Nov 2020 10:59:09 -0800 (PST)
 MIME-Version: 1.0
 References: <20201031223131.3398153-1-jolsa@kernel.org> <20201031223131.3398153-3-jolsa@kernel.org>
-In-Reply-To: <20201031223131.3398153-3-jolsa@kernel.org>
+ <20201102215908.GC3597846@krava> <20201102225658.GD3597846@krava>
+In-Reply-To: <20201102225658.GD3597846@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Nov 2020 10:55:58 -0800
-Message-ID: <CAEf4BzYeaiQJ+-NCtCK4wB-2ia3U40RtTWez6c7osCuzpy11Zg@mail.gmail.com>
+Date:   Tue, 3 Nov 2020 10:58:58 -0800
+Message-ID: <CAEf4BzbdGwogFQiLE2eH9ER67hne7NgW4S8miYBM4CRb8NDPvg@mail.gmail.com>
 Subject: Re: [PATCH 2/2] btf_encoder: Change functions check due to broken dwarf
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -63,216 +65,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 3:32 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Mon, Nov 2, 2020 at 2:57 PM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> We need to generate just single BTF instance for the
-> function, while DWARF data contains multiple instances
-> of DW_TAG_subprogram tag.
+> On Mon, Nov 02, 2020 at 10:59:08PM +0100, Jiri Olsa wrote:
+> > On Sat, Oct 31, 2020 at 11:31:31PM +0100, Jiri Olsa wrote:
+> > > We need to generate just single BTF instance for the
+> > > function, while DWARF data contains multiple instances
+> > > of DW_TAG_subprogram tag.
+> > >
+> > > Unfortunately we can no longer rely on DW_AT_declaration
+> > > tag (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
+> > >
+> > > Instead we apply following checks:
+> > >   - argument names are defined for the function
+> > >   - there's symbol and address defined for the function
+> > >   - function is generated only once
+> > >
+> > > Also because we want to follow kernel's ftrace traceable
+> > > functions, this patchset is adding extra check that the
+> > > function is one of the ftrace's functions.
+> > >
+> > > All ftrace functions addresses are stored in vmlinux
+> > > binary within symbols:
+> > >   __start_mcount_loc
+> > >   __stop_mcount_loc
+> >
+> > hum, for some reason this does not pass through bpf internal
+> > functions like bpf_iter_bpf_map.. I learned it hard way ;-)
+
+what's the exact name of the function that was missing?
+bpf_iter_bpf_map doesn't exist. And if it's __init function, why does
+it matter, it's not going to be even available at runtime, right?
+
+
+> > will check
 >
-> Unfortunately we can no longer rely on DW_AT_declaration
-> tag (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
+> so it gets filtered out because it's __init function
+> I'll check if the fix below catches all internal functions,
+> but I guess we should do something more robust
 >
-> Instead we apply following checks:
->   - argument names are defined for the function
->   - there's symbol and address defined for the function
->   - function is generated only once
+> jirka
 >
-> Also because we want to follow kernel's ftrace traceable
-> functions, this patchset is adding extra check that the
-> function is one of the ftrace's functions.
 >
-> All ftrace functions addresses are stored in vmlinux
-> binary within symbols:
->   __start_mcount_loc
->   __stop_mcount_loc
->
-> During object preparation code we read those addresses,
-> sort them and use them as filter for all detected dwarf
-> functions.
->
-> We also filter out functions within .init section, ftrace
-> is doing that in runtime.
->
-> I can still see several differences to ftrace functions in
-> /sys/kernel/debug/tracing/available_filter_functions file:
->
->   - available_filter_functions includes modules (7086 functions)
->   - available_filter_functions includes functions like:
->       __acpi_match_device.part.0.constprop.0
->       acpi_ns_check_sorted_list.constprop.0
->       acpi_os_unmap_generic_address.part.0
->       acpiphp_check_bridge.part.0
->
->     which are not part of dwarf data (1164 functions)
->   - BTF includes multiple functions like:
->       __clk_register_clkdev
->       clk_register_clkdev
->
->     which share same code so they appear just as single function
->     in available_filter_functions, but dwarf keeps track of both
->     of them (16 functions)
->
-> With this change I'm getting 38334 BTF functions, which
-> when added above functions to consideration gives same
-> amount of functions in available_filter_functions.
->
-> The patch still keeps the original function filter condition
-> (that uses current fn->declaration check) in case the object
-> does not contain *_mcount_loc symbol -> object is not vmlinux.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  btf_encoder.c | 222 +++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 220 insertions(+), 2 deletions(-)
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 0a378aa92142..3cd94280c35b 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -143,7 +143,8 @@ static int filter_functions(struct btf_elf *btfe, struct mcount_symbols *ms)
+>                 /* Do not enable .init section functions. */
+>                 if (init_filter &&
+>                     func->addr >= ms->init_begin &&
+> -                   func->addr <  ms->init_end)
+> +                   func->addr <  ms->init_end &&
+> +                   strncmp("bpf_", func->name, 4))
 
-[...]
+this looks like a very wrong way to do this? Can you please elaborate
+on what's missing and why it shouldn't be missing?
 
-> +static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
-> +{
-> +       if (elf_sym__type(sym) != STT_FUNC)
-> +               return 0;
-> +       if (!elf_sym__value(sym))
-> +               return 0;
-> +
-> +       if (functions_cnt == functions_alloc) {
-> +               functions_alloc = max(1000, functions_alloc * 3 / 2);
-> +               functions = realloc(functions, functions_alloc * sizeof(*functions));
-> +               if (!functions)
-> +                       return -1;
-
-memory leak right here. You need to use a temporary variable and check
-if for NULL, before overwriting functions.
-
-> +       }
-> +
-> +       functions[functions_cnt].name = elf_sym__name(sym, btfe->symtab);
-> +       functions[functions_cnt].addr = elf_sym__value(sym);
-> +       functions[functions_cnt].generated = false;
-> +       functions[functions_cnt].valid = false;
-> +       functions_cnt++;
-> +       return 0;
-> +}
-> +
-> +static int addrs_cmp(const void *_a, const void *_b)
-> +{
-> +       const unsigned long *a = _a;
-> +       const unsigned long *b = _b;
-> +
-> +       return *a - *b;
-
-this is cute, but is it always correct? instead of thinking how this
-works with overflows, maybe let's keep it simple with
-
-if (*a == *b)
-  return 0;
-return *a < *b ? -1 : 1;
-
-?
-
-> +}
-> +
-> +static int filter_functions(struct btf_elf *btfe, struct mcount_symbols *ms)
-> +{
-> +       bool init_filter = ms->init_begin && ms->init_end;
-> +       unsigned long *addrs, count, offset, i;
-> +       Elf_Data *data;
-> +       GElf_Shdr shdr;
-> +       Elf_Scn *sec;
-> +
-> +       /*
-> +        * Find mcount addressed marked by __start_mcount_loc
-> +        * and __stop_mcount_loc symbols and load them into
-> +        * sorted array.
-> +        */
-> +       sec = elf_getscn(btfe->elf, ms->start_section);
-> +       if (!sec || !gelf_getshdr(sec, &shdr)) {
-> +               fprintf(stderr, "Failed to get section(%lu) header.\n",
-> +                       ms->start_section);
-> +               return -1;
-> +       }
-> +
-> +       offset = ms->start - shdr.sh_addr;
-> +       count  = (ms->stop - ms->start) / 8;
-> +
-> +       data = elf_getdata(sec, 0);
-> +       if (!data) {
-> +               fprintf(stderr, "Failed to section(%lu) data.\n",
-
-typo: failed to get?
-
-> +                       ms->start_section);
-> +               return -1;
-> +       }
-> +
-> +       addrs = malloc(count * sizeof(addrs[0]));
-> +       if (!addrs) {
-> +               fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
-> +               return -1;
-> +       }
-> +
-
-[...]
-
+>                         continue;
 >
-> +#define SET_SYMBOL(__sym, __var)                                               \
-> +       if (!ms->__var && !strcmp(__sym, elf_sym__name(sym, btfe->symtab)))     \
-> +               ms->__var = sym->st_value;                                      \
-> +
-> +static void collect_mcount_symbol(GElf_Sym *sym, struct mcount_symbols *ms)
-> +{
-> +       if (!ms->start &&
-> +           !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
-> +               ms->start = sym->st_value;
-> +               ms->start_section = sym->st_shndx;
-> +       }
-> +       SET_SYMBOL("__stop_mcount_loc", stop)
-> +       SET_SYMBOL("__init_begin", init_begin)
-> +       SET_SYMBOL("__init_end", init_end)
-
-please don't use macro here, it doesn't save much code but complicates
-reading it quite significantly
-
-> +}
-> +
-> +#undef SET_SYMBOL
-> +
->  static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
->  {
-> +       struct mcount_symbols ms = { };
->         uint32_t core_id;
->         GElf_Sym sym;
+>                 /* Make sure function is within mcount addresses. */
 >
-> @@ -320,6 +485,9 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
->         elf_symtab__for_each_symbol(btfe->symtab, core_id, sym) {
->                 if (collect_percpu_vars && collect_percpu_var(btfe, &sym))
->                         return -1;
-> +               if (collect_function(btfe, &sym))
-> +                       return -1;
-> +               collect_mcount_symbol(&sym, &ms);
->         }
->
->         if (collect_percpu_vars) {
-> @@ -329,9 +497,34 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
->                 if (btf_elf__verbose)
->                         printf("Found %d per-CPU variables!\n", percpu_var_cnt);
->         }
-> +
-> +       if (functions_cnt) {
-> +               qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
-> +               if (ms.start && ms.stop &&
-> +                   filter_functions(btfe, &ms)) {
-
-nit: single line should fit well, no?
-
-> +                       fprintf(stderr, "Failed to filter dwarf functions\n");
-> +                       return -1;
-> +               }
-> +               if (btf_elf__verbose)
-> +                       printf("Found %d functions!\n", functions_valid);
-> +       }
-> +
->         return 0;
->  }
->
-
-[...]
