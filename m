@@ -2,157 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6772A3C90
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 07:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1304C2A3CCA
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 07:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgKCGGB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 01:06:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S1727165AbgKCG1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 01:27:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgKCGGA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 01:06:00 -0500
+        with ESMTP id S1725958AbgKCG1d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 01:27:33 -0500
 Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6483C0617A6;
-        Mon,  2 Nov 2020 22:06:00 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id b138so13848319yba.5;
-        Mon, 02 Nov 2020 22:06:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED58C0617A6;
+        Mon,  2 Nov 2020 22:27:32 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id m188so13904784ybf.2;
+        Mon, 02 Nov 2020 22:27:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BkHNdvekNpFBtDOo1TDcnKNomP3ALEaor20sqebrboo=;
-        b=RNhDGW6qrJjIYrwb0FDJGa0oY3+pE2WtEjU/+PNfaNePS58qf5raCAFTYIN3bZ6vtN
-         ctpm0Ls2LQEjRun5WXXFPNKoiRbSqJOxqXJOGj7qzvHyGEIAE1J6DJhj47UJOIqoYW7l
-         S3D1ivCEWQiU+zb1IpQd2HqTZk42S3CWkFWU80PDreCfYsNnE9G7+7a9ERfQQRPuZeBA
-         CNuQyl0edVRf4Vw5CWIuVrfKofQplmJ7vXqKk8s2L1LUu+FMl1cT05Dv6YGIJNsa0iSJ
-         SN0fXy06bYarJidX7iGkTjiKQ4OhsKRJqgprPz1j2IOlTum7QvT5RIsJKHdo7dKZZ8JY
-         5nJg==
+        bh=rTRO4F1w5EMvWqRm9rx/p6VM9VDpE92UT3UmHBF1JwU=;
+        b=IT7npgXArKO4DpXqaLINH76X6L4lhc8pEUQU804tI6S+zPh+qhA86UZ7cwPLjLT/SB
+         fFjRVQUOq1cO2IMFJd6SE2JTMD5QOYv3hXIcTgS3LA/FGZXRL8LAmGcSwhoIg+PhWTNP
+         qzyHwWQ01KVJEb17qHzNCODsDOUN6Oe3dXxIiaZgdc6uS61rVFm5pIlzssvVHzuf9tr+
+         WcnhoknDwGEdCnQfj8IVU2FCXB5MMz+bStd30/QfoxHG1GdSC1N8HLUeuPsf4lzVO0s9
+         mucsAiL+vEphtFmVMg5Ui4Akl3jL4iTaynybtu1rd4xtUPVKYkEevNwRAh5fYnW6ElqU
+         D9ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BkHNdvekNpFBtDOo1TDcnKNomP3ALEaor20sqebrboo=;
-        b=G9vpYFUNaGko10y2ZV+CrxeTEp562xIqQF9r7VbR42a6tJQ2F4O7S7736NkqbO6t8Z
-         phUhVHAQSygyr9QrQUlfwzKH3dNDsIVroAvsQFv+7uuG+BIj4hBQml0hUGGcZbgTM4ZG
-         zzEucwneee2YbnSHoBxb7KVp9C6E2F6OzmzhDF4wonthAQn3MEWLQJgJVmi1Z0Ctm+lC
-         TjNVw3a1b4cPOjkclTfYpYVR+wh6hM1ZVCEIVOAcE2slKPF6BrF6CguMfOlVP4GNsEcX
-         /PYcrEraZBjXeF+WA9a8lDcxTPS76RPbAcFiKRadXpzNJvAwdO9o1XRA0TwC3mSKbEX1
-         za5Q==
-X-Gm-Message-State: AOAM532EuZ80NZpBq5QomsNHadtXjI0J7gfVETCZ0vOu74VbYdaseNF8
-        L4pVjEidJsEjwehYuQCyhcl0xkstsFRFcKT+Okk=
-X-Google-Smtp-Source: ABdhPJxpO+OzaJycdr7flXWkg9BYiVSiSCkMwwbWnVG5WsSuZqh04G3Szi8YFcoCVqrQitYP6oVkEZiKv7x25tjepDw=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr26901830ybl.347.1604383560007;
- Mon, 02 Nov 2020 22:06:00 -0800 (PST)
+        bh=rTRO4F1w5EMvWqRm9rx/p6VM9VDpE92UT3UmHBF1JwU=;
+        b=sz0ZH6W+DX7NE0K/GlVhhqYz5eaFt8gXG2UZkf83PDQoBtpS8BXz3jFDkIIjVAxWxL
+         ASAGLN9161Aksw8J/6FE2ldkA6xFTJNfltz88boqjTL75RjjH9cHZNYZWXi+2WK6uPMy
+         8fc1wbS2kU0OU5kRD3ImimKFCCcbDT95GyL2YN2N1S7hv1XWyKOvhi9w2QdOdWHJdLxX
+         ltkH5RbFxcPxV7vNZ039H2vmLp67r2JafnG7VglmM9KG51zJmBlotSa1aNauoWhBgX5f
+         AXL1izegbDRrGrtxp3rjhMjr79dmFj88/8H6hcGuyTIc80NxKHCGNYRIT8xQM2DZwwmH
+         e25Q==
+X-Gm-Message-State: AOAM531/r577uLYGmYF/NYIDuOTrMZP/qTBM0C75jHpahg8+IqZ2b8hf
+        rUTGnLK3webJFGjgxPQqkzs04y9sm+2NavCfri0=
+X-Google-Smtp-Source: ABdhPJwYCz8P5u3NALtDms7RyYJ2NlDPRwug9D1wKu/MzfSj9kLAG6jW5SgvKi/OwtgBWxS8HNk/ZW2AX0s8Plg2KOI=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr27017276ybe.403.1604384851614;
+ Mon, 02 Nov 2020 22:27:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20201029005902.1706310-1-andrii@kernel.org> <20201029005902.1706310-11-andrii@kernel.org>
- <23399683-99A4-4E91-9C7B-8B0E3A4083DE@fb.com>
-In-Reply-To: <23399683-99A4-4E91-9C7B-8B0E3A4083DE@fb.com>
+References: <20201029005902.1706310-1-andrii@kernel.org> <20201029005902.1706310-9-andrii@kernel.org>
+ <20201103051003.i565jv3ph54lw5rj@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201103051003.i565jv3ph54lw5rj@ast-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 2 Nov 2020 22:05:48 -0800
-Message-ID: <CAEf4Bzbqi_PNU8ZJHBwjxDoHNieDwaviPojox_LynmQjcmaFLw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 10/11] selftests/bpf: add split BTF dedup selftests
-To:     Song Liu <songliubraving@fb.com>
+Date:   Mon, 2 Nov 2020 22:27:20 -0800
+Message-ID: <CAEf4BzZV8oysWVmkF0K=FBFa5x=98duK8c+ixfiCFFP8dzWg2w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 08/11] libbpf: support BTF dedup of split BTFs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 9:35 PM Song Liu <songliubraving@fb.com> wrote:
+On Mon, Nov 2, 2020 at 9:10 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
+> On Wed, Oct 28, 2020 at 05:58:59PM -0700, Andrii Nakryiko wrote:
+> > @@ -2942,6 +2948,13 @@ struct btf_dedup {
+> >       __u32 *hypot_list;
+> >       size_t hypot_cnt;
+> >       size_t hypot_cap;
+> > +     /* Whether hypothethical mapping, if successful, would need to adjust
+> > +      * already canonicalized types (due to a new forward declaration to
+> > +      * concrete type resolution). In such case, during split BTF dedup
+> > +      * candidate type would still be considered as different, because base
+> > +      * BTF is considered to be immutable.
+> > +      */
+> > +     bool hypot_adjust_canon;
 >
->
-> > On Oct 28, 2020, at 5:59 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Add selftests validating BTF deduplication for split BTF case. Add a helper
-> > macro that allows to validate entire BTF with raw BTF dump, not just
-> > type-by-type. This saves tons of code and complexity.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
->
-> with a couple nits:
->
-> [...]
->
-> >
-> > int fprintf_btf_type_raw(FILE *out, const struct btf *btf, __u32 id);
-> > const char *btf_type_raw_dump(const struct btf *btf, int type_id);
-> > +int btf_validate_raw(struct btf *btf, int nr_types, const char *exp_types[]);
-> >
-> > +#define VALIDATE_RAW_BTF(btf, raw_types...)                          \
-> > +     btf_validate_raw(btf,                                           \
-> > +                      sizeof((const char *[]){raw_types})/sizeof(void *),\
-> > +                      (const char *[]){raw_types})
-> > +
-> > +const char *btf_type_c_dump(const struct btf *btf);
-> > #endif
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-> > new file mode 100644
-> > index 000000000000..097370a41b60
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
-> > @@ -0,0 +1,326 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2020 Facebook */
-> > +#include <test_progs.h>
-> > +#include <bpf/btf.h>
-> > +#include "btf_helpers.h"
-> > +
-> > +
-> > +static void test_split_simple() {
-> > +     const struct btf_type *t;
-> > +     struct btf *btf1, *btf2 = NULL;
-> > +     int str_off, err;
-> > +
-> > +     btf1 = btf__new_empty();
-> > +     if (!ASSERT_OK_PTR(btf1, "empty_main_btf"))
-> > +             return;
-> > +
-> > +     btf__set_pointer_size(btf1, 8); /* enforce 64-bit arch */
-> > +
-> > +     btf__add_int(btf1, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-> > +     btf__add_ptr(btf1, 1);                          /* [2] ptr to int */
-> > +     btf__add_struct(btf1, "s1", 4);                 /* [3] struct s1 { */
-> > +     btf__add_field(btf1, "f1", 1, 0, 0);            /*      int f1; */
-> > +                                                     /* } */
-> > +
->
-> nit: two empty lines.
+> why one flag per dedup session is enough?
 
-There is a comment on one of them, so I figured it's not an empty line?
+So the entire hypot_xxx state is reset before each struct/union type
+graph equivalence check. Then for each struct/union type we might do
+potentially many type graph equivalence checks against each of
+potential canonical (already deduplicated) struct. Let's keep that in
+mind for the answer below.
 
->
-> > +     VALIDATE_RAW_BTF(
-> > +             btf1,
-> > +             "[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-> > +             "[2] PTR '(anon)' type_id=1",
-> > +             "[3] STRUCT 's1' size=4 vlen=1\n"
-> > +             "\t'f1' type_id=1 bits_offset=0");
-> > +
->
-> [...]
->
-> > +
-> > +cleanup:
-> > +     btf__free(btf2);
-> > +     btf__free(btf1);
-> > +}
-> > +
-> > +static void test_split_struct_duped() {
-> > +     struct btf *btf1, *btf2 = NULL;
->
-> nit: No need to initialize btf2, for all 3 tests.
+> Don't you have a case where some fwd are pointing to base btf and shouldn't
+> be adjusted while some are in split btf and should be?
+> It seems when this flag is set to true it will miss fwd in split btf?
 
-yep, fixed all three
+So keeping the above note in mind, let's think about this case. You
+are saying that some FWDs would have candidates in base BTF, right?
+That means that the canonical type we are checking equivalence against
+has to be in the base BTF. That also means that all the canonical type
+graph types are in the base BTF, right? Because no base BTF type can
+reference types from split BTF. This, subsequently, means that no FWDs
+from split BTF graph could have canonical matching types in split BTF,
+because we are comparing split types against only base BTF types.
 
->
-> > +     int err;
-> > +
-> [...]
->
+With that, if hypot_adjust_canon is triggered, *entire graph*
+shouldn't be matched. No single type in that (connected) graph should
+be matched to base BTF. We essentially pretend that canonical type
+doesn't even exist for us (modulo the subtle bit of still recording
+base BTF's FWD mapping to a concrete type in split BTF for FWD-to-FWD
+resolution at the very end, we can ignore that here, though, it's an
+ephemeral bookkeeping discarded after dedup).
+
+In your example you worry about resolving FWD in split BTF to concrete
+type in split BTF. If that's possible (i.e., we have duplicates and
+enough information to infer the FWD-to-STRUCT mapping), then we'll
+have another canonical type to compare against, at which point we'll
+establish FWD-to-STRUCT mapping, like usual, and hypot_adjust_canon
+will stay false (because we'll be staying with split BTF types only).
+
+But honestly, with graphs it can get so complicated that I wouldn't be
+surprised if I'm still missing something. So far, manually checking
+the resulting BTF showed that generated deduped BTF types look
+correct. Few cases where module BTFs had duplicated types from vmlinux
+I was able to easily find where exactly vmlinux had FWD while modules
+had STRUCT/UNION.
+
+But also, by being conservative with hypot_adjust_canon, the worst
+case would be slight duplication of types, which is not the end of the
+world. Everything will keep working, no data will be corrupted, libbpf
+will still perform CO-RE relocation correctly (because memory layout
+of duplicated structs will be consistent across all copies, just like
+it was with task_struct until ring_buffers were renamed).
