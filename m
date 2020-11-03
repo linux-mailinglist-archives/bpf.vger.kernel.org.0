@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E032A4EF2
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 19:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88202A4F07
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 19:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbgKCSeO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 13:34:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
+        id S1728889AbgKCSiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 13:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgKCSeN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:34:13 -0500
+        with ESMTP id S1725892AbgKCSiY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:38:24 -0500
 Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC4FC0613D1;
-        Tue,  3 Nov 2020 10:34:13 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id a12so15671493ybg.9;
-        Tue, 03 Nov 2020 10:34:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F62C0613D1;
+        Tue,  3 Nov 2020 10:38:23 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id f6so15760525ybr.0;
+        Tue, 03 Nov 2020 10:38:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=f5gZDG7PJd1ojE4K5U9IsMyGTaYwuZZg5TPUY7S9wyw=;
-        b=aLE/md7NGzZXyeCYzLrc3GrGk7NpJrcNSUZLFZrRoGZF2MAhCxBvytkUNqTK9IXEZ9
-         1Nl3UVkd7Vq130KRpBrnd9l6zAarLEUbsNnvtuso+DP/um7dhNhdRFd78/yH++gw1sWh
-         BgYMIfW7dHJ1bH+da+GXhj1kbuBME76I1gmCQOgBQUNr1TeuHNmzdZz6cqwvsd0E9RIr
-         HcJeURHY501S1AHG/TnuVS6WZ/e9XVHfWAHJdDpJMlD6yKJ5SBOCWEf3dg/8fC9nWu1X
-         YLSIzRkwf6E+2LGhJw7H6/Wvp+qxZ/dNeKeCSwUfjWFwJm6MUkjvxY8h1wWfcZTrkCrV
-         AdgA==
+        bh=jneL8MPC5rNVRFrvszgK7JhEwgVGSd4T313AsWNvH4M=;
+        b=c7JaPiAa/OfN9iQzjrg2wJPLWeWr784NcIrVeFzruUIa/03XetElg1FjMFOc7jyLSL
+         lIKvD1kC21hVPGmtqmgZFKnRd1oLNm09Jz2oY2KAGSTz/gbVN1ocbX14ApRyBd/gJKyj
+         M0mHQTKx1pSrMJMSybQybGpLdnLVslF+oCxxEUwaEHsqVE4dUe33TTF7ufv6mzeOjHHn
+         NZjqz1yrBs3m3Ii2mUMYasErkX1TkybdVnwIs5/JOmg6OLkUe2tKAyqNxhLn1tsUiNiB
+         JlOsJmAseZTOK4rBvbLDc6+p8mYJyMdsT8Z6L6gT1fM5F+gS7WEvqhWw+lmATb142J82
+         1fSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=f5gZDG7PJd1ojE4K5U9IsMyGTaYwuZZg5TPUY7S9wyw=;
-        b=atsZ54sD5GzM2F7lLWj8L76AripFQPwiumllx/M+5hQG1KNfKOWWcQefL0Q4RGUhDG
-         ttPeBrpydYnsRuSYWT7tWQ7GkoFDfdoRGG3a3uxdPNqc7Ssg4F0oswsIpr/sqDqKpM2N
-         Q/retwAQC3eQ2OullWq2jX2GTfod3xiIkiR/RDpU99tFAl8ocAfpBMPJmolExZUn7S1l
-         MnqyJihPsVCmSkQPgiO07LKZ0EYHVXPeVs+rOI/xDFVovba475rl8nA5RwF6lsihE63y
-         YTZL7ZJgK/YWsa6JdXemrIQpioeR0GGKLfxP13+53UqNiZtcvJeAS8yCksTLiZI848mt
-         u8JA==
-X-Gm-Message-State: AOAM531jfLnKua95Hzc1RTWmzQPIBZwj2tuS0mwQH0TO9BhLMRAP0DAj
-        WT1VvHK07h3fpjHrYLMr9zcmU0fZEfvsgp5WKVM=
-X-Google-Smtp-Source: ABdhPJzGSw2t/jV+XII12ttHjVo9klroF+FwG2mww/Jx67EFlfiZMfM7/PHwWZ9pQDCj1E6M3+fWqe/LMmesNKCbRs0=
-X-Received: by 2002:a05:6902:72e:: with SMTP id l14mr1351502ybt.230.1604428453019;
- Tue, 03 Nov 2020 10:34:13 -0800 (PST)
+        bh=jneL8MPC5rNVRFrvszgK7JhEwgVGSd4T313AsWNvH4M=;
+        b=YD8DyE7dcXEHZiEmm8x+M4XBvGIoiuhcxAXIJiF250fJ+f0vGN+AxHlFoulGrm2MPA
+         Ksxb9lP8QNNkmr5ERI6Mak2SG4ZN9zrrZLkVNJvbAvAfea1yBZxs1dV2em5XpKQH/c/F
+         zMjy2uchJEjV5PC0F5vWN4h3+qc+u4HKcRVj8bz0uCQ6wiRgHOnda4V6Pb4VKZKMBddE
+         MUFN0r9M9IR10N0Pd00xIEIAkhLhln9HiU/V7FG1ZKiCOfFLYIK6QsxfP0Oh8bSEuot7
+         MFX73JBwmacgynupyzm+hEjs2NhVHgi79zOxMP3Rhcq8anSVMLrTy2ykucSIJ27GRs4D
+         6YTg==
+X-Gm-Message-State: AOAM530aY+c3rTwBwtYNSI0dStB5ckoM4odThTXi9oLeaqCplG8CLqRe
+        L4q3iAAqhiw4UAXw+ayVu0EfX4v7HGdPZ5K6bkY=
+X-Google-Smtp-Source: ABdhPJyYMv7sBOFtfOghPZyQE0FkV7MkDrx6BX2kXGLE/5KxogoIbW9eoMAUV5CwcvKHLoE/1rtfkTDfgbAfHnBcQRU=
+X-Received: by 2002:a25:b0d:: with SMTP id 13mr31096731ybl.347.1604428703140;
+ Tue, 03 Nov 2020 10:38:23 -0800 (PST)
 MIME-Version: 1.0
 References: <160416890683.710453.7723265174628409401.stgit@localhost.localdomain>
- <160417033167.2823.10759249192027767614.stgit@localhost.localdomain>
-In-Reply-To: <160417033167.2823.10759249192027767614.stgit@localhost.localdomain>
+ <160417034457.2823.10600750891200038944.stgit@localhost.localdomain>
+In-Reply-To: <160417034457.2823.10600750891200038944.stgit@localhost.localdomain>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Nov 2020 10:34:02 -0800
-Message-ID: <CAEf4BzbyNVfkEe+X4ZW-vnWS_XhiD8sh059dNehGpX5eZrxaoQ@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v2 1/5] selftests/bpf: Move test_tcppbf_user into test_progs
+Date:   Tue, 3 Nov 2020 10:38:12 -0800
+Message-ID: <CAEf4BzbauAT-ujG4LQDUY3WUkwGqMZb2JL3xuwXAu2Ot3e4w6Q@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 3/5] selftests/bpf: Replace EXPECT_EQ with
+ ASSERT_EQ and refactor verify_results
 To:     Alexander Duyck <alexander.duyck@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -70,39 +71,51 @@ On Sat, Oct 31, 2020 at 11:52 AM Alexander Duyck
 >
 > From: Alexander Duyck <alexanderduyck@fb.com>
 >
-> Recently a bug was missed due to the fact that test_tcpbpf_user is not a
-> part of test_progs. In order to prevent similar issues in the future move
-> the test functionality into test_progs. By doing this we can make certain
-> that it is a part of standard testing and will not be overlooked.
+> There is already logic in test_progs.h for asserting that a value is
+> expected to be another value. So instead of reinventing it we should just
+> make use of ASSERT_EQ in tcpbpf_user.c. This will allow for better
+> debugging and integrates much more closely with the test_progs framework.
 >
-> As a part of moving the functionality into test_progs it is necessary to
-> integrate with the test_progs framework and to drop any redundant code.
-> This patch:
-> 1. Cleans up the include headers
-> 2. Dropped a duplicate definition of bpf_find_map
-> 3. Switched over to using test_progs specific cgroup functions
-> 4. Replaced printf calls with fprintf to stderr
-
-This is not necessary. test_progs intercept both stdout and stderr, so
-you could have kept the code as is and minimize this diff further. But
-it also doesn't matter all that much, so:
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> 5. Renamed main to test_tcpbpf_user
-> 6. Dropped return value in favor of CHECK_FAIL to check for errors
+> In addition we can refactor the code a bit to merge together the two
+> verify functions and tie them together into a single function. Doing this
+> helps to clean the code up a bit and makes it more readable as all the
+> verification is now done in one function.
 >
-> The general idea is that I wanted to keep the changes as small as possible
-> while moving the file into the test_progs framework. The follow-on patches
-> are meant to clean up the remaining issues such as the use of CHECK_FAIL.
+> Lastly we can relocate the verification to the end of the run_test since it
+> is logically part of the test itself. With this we can drop the need for a
+> return value from run_test since verification becomes the last step of the
+> call and then immediately following is the tear down of the test setup.
 >
 > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
 > ---
->  tools/testing/selftests/bpf/.gitignore             |    1
->  tools/testing/selftests/bpf/Makefile               |    3 -
->  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |   63 ++++++--------------
->  3 files changed, 21 insertions(+), 46 deletions(-)
->  rename tools/testing/selftests/bpf/{test_tcpbpf_user.c => prog_tests/tcpbpf_user.c} (70%)
+>  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |  114 ++++++++------------
+>  1 file changed, 44 insertions(+), 70 deletions(-)
 >
+
+[...]
+
+> +       rv = bpf_map_lookup_elem(map_fd, &key, &result);
+> +       if (CHECK(rv, "bpf_map_lookup_elem(map_fd)", "err:%d errno:%d",
+> +                 rv, errno))
+> +               return;
+> +
+> +       /* check global map */
+> +       CHECK(expected_events != result.event_map, "event_map",
+> +             "unexpected event_map: actual %#" PRIx32" != expected %#" PRIx32 "\n",
+> +             result.event_map, expected_events);
+
+nit: libbpf and selftests don't use PRI modifiers approach. Just cast
+to a consistent long, int, unsigned, whichever matches the needs and
+use appropriate explicit % specifier.
+
+> +
+> +       ASSERT_EQ(result.bytes_received, 501, "bytes_received");
+> +       ASSERT_EQ(result.bytes_acked, 1002, "bytes_acked");
+> +       ASSERT_EQ(result.data_segs_in, 1, "data_segs_in");
+> +       ASSERT_EQ(result.data_segs_out, 1, "data_segs_out");
+> +       ASSERT_EQ(result.bad_cb_test_rv, 0x80, "bad_cb_test_rv");
+> +       ASSERT_EQ(result.good_cb_test_rv, 0, "good_cb_test_rv");
+> +       ASSERT_EQ(result.num_listen, 1, "num_listen");
+> +
 
 [...]
