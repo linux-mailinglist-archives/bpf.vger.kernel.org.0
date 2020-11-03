@@ -2,143 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340402A5A90
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 00:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282762A5AAE
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 00:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726033AbgKCX2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 18:28:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbgKCX2J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 18:28:09 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C74C0613D1;
-        Tue,  3 Nov 2020 15:28:09 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id x13so14929503pgp.7;
-        Tue, 03 Nov 2020 15:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eRl//7At+Wm2EvC4VlJ9A50IgrwQOr/jqI3Y/MXhPxg=;
-        b=kmZVUoU/Ml29s2vai8g/wNXjAaEbkI2ty7/6v1tIWH/TsVrRa4VJjMGFgMG6+GfqOd
-         9YUZ70jBPbJJsjQW/+jbVP+kYL/cKNZnzawk7FKkjXECBfHU0twg+Y03hcoyYt1HAV4r
-         dwuVHNxylpag7OCuMJnFlLe/C1x/Gtlnr/dRj2KKStNq7iQecKuIkiwlgblsw44EQOCi
-         +u/IO3JItZUNB9dcbEqwcJ6zSBEnqh3W7zEq03ns+7jyjKspZ61r4pdJQZGsqvvgg8Rt
-         oeJ/OCsatIzsx20LV3rXcQ4JRKe03TqSXJu1lX8dMm4zOhLKyK9wt7RGo0qAPkfiqv6S
-         cdoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eRl//7At+Wm2EvC4VlJ9A50IgrwQOr/jqI3Y/MXhPxg=;
-        b=PpDYWBpft5QfqqDUOiW0aB0i+brG0Lt9ZC1YaiIPzwHmu2WrNNo/wZCUVMzJLMqhOJ
-         B3rt2xvc2uEe0OfHDyHx/J7A0YeC0JoSK6HYvsrOhT402fopcCEFd95MDar4OqSInD5V
-         2FDX6yCpElEw5vW3QrM7cPN0yeKrmvNNRFBru4QshYJBr+GFeM8qWAmijF8QcKj1vtsX
-         fSbmGz5R+m5MvWoJsv9VLPlOWoA0HXDx5b0kkuY6ClO7DamhE7FBeNbW3XRHtjgRdJNh
-         MQrtgJk3FH9SH0hPq2uNOnEXzLDaGqGP9var9GzLwqbZ3XGwiwF1LiMUqZdrNSax9zUM
-         EBCA==
-X-Gm-Message-State: AOAM531ILp624++hlI6MXOk72A0peev0YvUd8J1NT497jvDloDWQLLZG
-        q3D1bvq4ZW1qLGfE0GengZI=
-X-Google-Smtp-Source: ABdhPJwA1Y3V3bXAbq5RWgN0tRPA1Lm5ZwU9tdZvWFuGd5NX2rWIgARC5HkbuwN5Li8owzB81DvZcw==
-X-Received: by 2002:a63:5153:: with SMTP id r19mr18783989pgl.130.1604446089195;
-        Tue, 03 Nov 2020 15:28:09 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4055])
-        by smtp.gmail.com with ESMTPSA id w19sm209327pff.6.2020.11.03.15.28.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 15:28:08 -0800 (PST)
-Date:   Tue, 3 Nov 2020 15:28:05 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1727754AbgKCXr2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 18:47:28 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34854 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725769AbgKCXr1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 18:47:27 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3NiNBo031018;
+        Tue, 3 Nov 2020 15:47:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=ysewCAZlmKV1J6KMfcKg11ClNQEQpxs5rk5jU7NFps4=;
+ b=C8O1iwA4qGqw7DbLOg4Q0e5arGDEkasDEnB4XWPoIKsB87NI1StLeq4hmn6Ih3YhCmgU
+ EesQ4mBCchfiBBondc5Osiz4Ld4iwvxC07lBEY3aKmyT5s8d8F1BvLX5UOCwMTlfQhG3
+ Y7VNmZV9cHCGSXzf/CfUtrvFiozMgDwyzWw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34hr6p6sck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 03 Nov 2020 15:47:07 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 3 Nov 2020 15:47:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V83Mck+EhmNjtLKim/74gq0RIb8OGZLqO9e5qjILkdZjn44bRY1EPR/MHkwOjr6jBmUI35UuaLOfChszgOk9+l8h1dkADnipZWXDbBcbBqa8k5nOUZrv9zZ9MJNbAVSwoQ0qSVB8JIBjQdXUHPMsfHpOeDQjSnViAgIQi7Bw0xBfnWmrD5Wf86X9dRSNfHElmVR2ZESwaKauguv77Ed3sSHubTTu4aPliZecN1LYUEm8COIPogNQRDWwIAYvITtsslR33FuscJuO7TzmrgaiLYEyUZPfV5dkMtHiUCLO9hl3Jzr7CUFMX4haEo6DhWxwQNOy+MqJZbFH1/xtUW5k9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ysewCAZlmKV1J6KMfcKg11ClNQEQpxs5rk5jU7NFps4=;
+ b=IsUT+ft1X7cYe9w1S5Z/dV/JC1BUVchQgQEyO+MtUf7a82fnq5rhxFCV3Vw/YAITUs3m4dqpFOmvxuywKuAgj2buIhXd4e+TmR5iOmxA6TyU9WTceND/YngjBiBW+pmByds+HRRI6yfnKW1V7G6HpLbQbGXRuXUD2V7x86+zX5RuFLv4wn39VTZqsm6zrAtIjgTjvSvPfAo01+16Go5X+G3+OWSt/ktflMYCuY1KeraLqUZM4TFmem9/vRZ9klcJ9UKHWW9YvAWrUohxiNjjDESj9uKnnAVsDiT/EyUzb4p5CMwOMxTvB2P6zb/SlXSy5w2kBJj/pMnGdzNklU90sA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ysewCAZlmKV1J6KMfcKg11ClNQEQpxs5rk5jU7NFps4=;
+ b=VVKsSLg/8pIGwyuohR9VQi7l1YBub4coGU9b1Ez3sttSsj+y5d2cLBN3v5k7Hcc1IKfsbX+pbY+yZd5t5+eZULgSQ+PuMPUgyBBKFvAalyyEsOBwCzbKDhcuQehmB+Fzgv1MKzLNtmcY7DkETljkbnPoGW24QKuSzCILvOF+JjA=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2455.namprd15.prod.outlook.com (2603:10b6:a02:90::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.28; Tue, 3 Nov
+ 2020 23:47:05 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
+ 23:47:05 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-Message-ID: <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
-References: <20201007152355.2446741-1-Kenny.Ho@amd.com>
- <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
- <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
- <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
- <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
- <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
+        Martin Lau <kafai@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v2 1/8] bpf: Implement task local storage
+Thread-Topic: [PATCH bpf-next v2 1/8] bpf: Implement task local storage
+Thread-Index: AQHWsfZy11My4qB0sUqP8aoNnCOHA6m3E1YA
+Date:   Tue, 3 Nov 2020 23:47:04 +0000
+Message-ID: <B5563E63-BA82-4D15-8480-354FA733ED43@fb.com>
+References: <20201103153132.2717326-1-kpsingh@chromium.org>
+ <20201103153132.2717326-2-kpsingh@chromium.org>
+In-Reply-To: <20201103153132.2717326-2-kpsingh@chromium.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:ca49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1a68b312-5c87-4446-12b7-08d88052c4d6
+x-ms-traffictypediagnostic: BYAPR15MB2455:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB24557F5032238B0928C96A5BB3110@BYAPR15MB2455.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TmznDiHoZVs4YZ18dW9/yVJAntniRXgGNGkg9XEuRuQ31KPBf9aKlWJDFVKZEAlTwt6AhzkDo4SeYrttdvyDH3Q0Uo1PVloLhN0Y8JJwGdw9yLwBAfTKlDkYdTrxBaDQPFkJw5akdzddZ88U1bKHYRapXdODcqchJ8Qq8wvphdf4+2vJSGxVvOiswfj1688zSeS/01tYRy6OX9w+xIyeiHbRLBJf3Niju+Nzfa6WaGfT3MqWGnIfuv5QXA6axLVYk27FQeeXz2Ksb6TRUyaqvyg85kxS8IVElikTlp61aYdbmyWPIrjYn4FyJRQQG8KHba2n2SPJc+WxJfMBCu8ohw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(376002)(346002)(39860400002)(2616005)(71200400001)(64756008)(66946007)(66476007)(76116006)(5660300002)(53546011)(6512007)(66556008)(66446008)(91956017)(6506007)(83380400001)(186003)(33656002)(8676002)(478600001)(36756003)(54906003)(86362001)(8936002)(2906002)(4326008)(316002)(6916009)(6486002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: f+RiwVG/SWKOytlaKzwz1YgOdHyRAzpcSnXFAwY1VbaJEmXtJqCuleekm59KftcLnsYdHwaHuH53G//tKyx1k7IywBnLQ3rLOwZu+vTH1mINWfTvIinvh83Hg26pyVX0javoKIPqp6zy9Ss9ackDzkIuwGwqI5eim/ZiWUGAAloe8GDyEA4HkrRp7TUTEFG3DhxuWy3hASxzQ6zlRkgkxQKcnfxTzekH92gbBt7Z+lLAtBbojXmdjutWhoxYIRRbxDV14li/PeOFH5VL5Ar7TnvolcgbDOcE9BjyK9klhahyMoyh/XJNKlYk/nPlqp/SOczQ2QmKKsHXQSnZK9ljmdzgdK8rZF9d28b61BfLGlE4BOHi+D68niwJQv2XAcFb5Xc+G+ZeN5Fy/D0Ra/wR5gIM/e7/4ewPpTPCtqEc+hpr1TngmfBVSWiE7F/zdYrJCgkd/7ZhpEvHDYSx77yrV0rH7Hcr9B9VPfhC8ABkO7QZQ+zDr+bjROb2drekBjO5uVHgYQkRPS3yGNFnVAQHpTKRMWrI8mFpV81+dxQkHKlfRrcqFHEBXFK+7VL9IIrr94VXNDPUepemVNS4ZxiATrVGEaJUhAZuA6iuLqEAIICTjeoIt3h83Ui0bZerIUFgquOD7xDWpRs5KTtmWsYgHmq3du9DcJH56l4neUUBexMfimK1NizN9VP4sVQ3gynD
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3EFB5B04F62C13498AAE9037BA0EEED3@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a68b312-5c87-4446-12b7-08d88052c4d6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 23:47:05.0043
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OwrVjSMohLzODSeDXcVxgdZpCEZ6BotsN7Ua8ZizpLb7fNIjWe5ywnQfSjQ/vpixE3eVjYwHc7uAmU0ibNTEDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2455
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_17:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030157
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 05:57:47PM -0500, Kenny Ho wrote:
-> On Tue, Nov 3, 2020 at 4:04 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Nov 03, 2020 at 02:19:22PM -0500, Kenny Ho wrote:
-> > > On Tue, Nov 3, 2020 at 12:43 AM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > > On Mon, Nov 2, 2020 at 9:39 PM Kenny Ho <y2kenny@gmail.com> wrote:
-> >
-> > Sounds like either bpf_lsm needs to be made aware of cgv2 (which would
-> > be a great thing to have regardless) or cgroup-bpf needs a drm/gpu specific hook.
-> > I think generic ioctl hook is too broad for this use case.
-> > I suspect drm/gpu internal state would be easier to access inside
-> > bpf program if the hook is next to gpu/drm. At ioctl level there is 'file'.
-> > It's probably too abstract for the things you want to do.
-> > Like how VRAM/shader/etc can be accessed through file?
-> > Probably possible through a bunch of lookups and dereferences, but
-> > if the hook is custom to GPU that info is likely readily available.
-> > Then such cgroup-bpf check would be suitable in execution paths where
-> > ioctl-based hook would be too slow.
-> Just to clarify, when you say drm specific hook, did you mean just a
-> unique attach_type or a unique prog_type+attach_type combination?  (I
-> am still a bit fuzzy on when a new prog type is needed vs a new attach
-> type.  I think prog type is associated with a unique type of context
-> that the bpf prog will get but I could be missing some nuances.)
-> 
-> When I was thinking of doing an ioctl wide hook, the file would be the
-> device file and the thinking was to have a helper function provided by
-> device drivers to further disambiguate.  For our (AMD's) driver, we
-> have a bunch of ioctls for set/get/create/destroy
-> (https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c#L1763)
-> so the bpf prog can make the decision after the disambiguation.  For
-> example, we have an ioctl called "kfd_ioctl_set_cu_mask."  You can
 
-Thanks for the pointer.
-That's one monster ioctl. So much copy_from_user.
-BPF prog would need to be sleepable to able to examine the args in such depth.
-After quick glance at the code I would put a new hook into
-kfd_ioctl() right before
-retcode = func(filep, process, kdata);
-At this point kdata is already copied from user space 
-and usize, that is cmd specific, is known.
-So bpf prog wouldn't need to copy that data again.
-That will save one copy.
-To drill into details of kfd_ioctl_set_cu_mask() the prog would
-need to be sleepable to do second copy_from_user of cu_mask.
-At least it's not that big.
-Yes, the attachment point will be amd driver specific,
-but the program doesn't need to be.
-It can be generic tracing prog that is agumented to use BTF.
-Something like writeable tracepoint with BTF support would do.
-So on the bpf side there will be minimal amount of changes.
-And in the driver you'll add one or few writeable tracepoints
-and the result of the tracepoint will gate
-retcode = func(filep, process, kdata);
-call in kfd_ioctl().
-The writeable tracepoint would need to be cgroup-bpf based.
-So that's the only tricky part. BPF infra doesn't have
-cgroup+tracepoint scheme. It's probably going to be useful
-in other cases like this. See trace_nbd_send_request.
+> On Nov 3, 2020, at 7:31 AM, KP Singh <kpsingh@chromium.org> wrote:
+>=20
+> From: KP Singh <kpsingh@google.com>
+>=20
+> Similar to bpf_local_storage for sockets and inodes add local storage
+> for task_struct.
+>=20
+> The life-cycle of storage is managed with the life-cycle of the
+> task_struct.  i.e. the storage is destroyed along with the owning task
+> with a callback to the bpf_task_storage_free from the task_free LSM
+> hook.
+>=20
+> The BPF LSM allocates an __rcu pointer to the bpf_local_storage in
+> the security blob which are now stackable and can co-exist with other
+> LSMs.
+>=20
+> The userspace map operations can be done by using a pid fd as a key
+> passed to the lookup, update and delete operations.
+>=20
+> Signed-off-by: KP Singh <kpsingh@google.com>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+with a few nits:
+
+> ---
+> include/linux/bpf_lsm.h        |  23 +++
+> include/linux/bpf_types.h      |   1 +
+> include/uapi/linux/bpf.h       |  39 ++++
+> kernel/bpf/Makefile            |   1 +
+> kernel/bpf/bpf_lsm.c           |   4 +
+> kernel/bpf/bpf_task_storage.c  | 313 +++++++++++++++++++++++++++++++++
+> kernel/bpf/syscall.c           |   3 +-
+> kernel/bpf/verifier.c          |  10 ++
+> security/bpf/hooks.c           |   2 +
+> tools/include/uapi/linux/bpf.h |  39 ++++
+> 10 files changed, 434 insertions(+), 1 deletion(-)
+> create mode 100644 kernel/bpf/bpf_task_storage.c
+>=20
+> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> index aaacb6aafc87..326cb68a3632 100644
+> --- a/include/linux/bpf_lsm.h
+> +++ b/include/linux/bpf_lsm.h
+> @@ -7,6 +7,7 @@
+> #ifndef _LINUX_BPF_LSM_H
+> #define _LINUX_BPF_LSM_H
+>=20
+> +#include "linux/sched.h"
+
+vscode?
+
+> #include <linux/bpf.h>
+> #include <linux/lsm_hooks.h>
+>=20
+> @@ -35,9 +36,21 @@ static inline struct bpf_storage_blob *bpf_inode(
+> 	return inode->i_security + bpf_lsm_blob_sizes.lbs_inode;
+> }
+
+[...]
+
+> index 000000000000..f5ed5eedc532
+> --- /dev/null
+> +++ b/kernel/bpf/bpf_task_storage.c
+> @@ -0,0 +1,313 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2019 Facebook
+
+nit: I guess we shouldn't say 2019 Facebook=20
+
+> + * Copyright 2020 Google LLC.
+> + */
+> +
+> +#include "linux/pid.h"
+> +#include "linux/sched.h"
+> +#include <linux/rculist.h>
+> +#include <linux/list.h>
+> +#include <linux/hash.h>
+> +#include <linux/types.h>
+
+[...]
+
+> +}
+> +
+> +BPF_CALL_2(bpf_task_storage_delete, struct bpf_map *, map, struct task_s=
+truct *,
+> +	   task)
+> +{
+> +	/* This helper must only called from where the task is guaranteed
+> +	 * to have a refcount and cannot be freed.
+> +	 */
+> +	return task_storage_delete(task, map);
+> +}
+> +
+> +static int notsupp_get_next_key(struct bpf_map *map, void *key, void *ne=
+xt_key)
+> +{
+> +	return -ENOTSUPP;
+> +}
+
+This is the third copy of notsupp_get_next_key(). We can probably move it t=
+o bpf.h.=20
+
+[...]
+
