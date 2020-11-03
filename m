@@ -2,98 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2BE92A5A62
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 23:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE5A2A5A76
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 00:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbgKCW6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 17:58:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgKCW6j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 17:58:39 -0500
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF34C0613D1
-        for <bpf@vger.kernel.org>; Tue,  3 Nov 2020 14:58:38 -0800 (PST)
-Received: by mail-lf1-x144.google.com with SMTP id s30so2246780lfc.4
-        for <bpf@vger.kernel.org>; Tue, 03 Nov 2020 14:58:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tNac8HNLE00Dbwz8t1yzhVyitl7+yNqN0tC3TOZ7uVU=;
-        b=lL9nbjzjMJDsdViJoWfCpeQI+/QggG5+5MAJjiaBqsnftDueWMr+NLcxM87G0Bov5h
-         lf/3wEi/V+f23ndIkCpyOco/b01/JwHobRGP3moJPD/0cRC0H7dgalEHDrSNbEWtWq6c
-         Y0xYV2hQfWFzrsz5edWvgTas04uKm4p4PDEjQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tNac8HNLE00Dbwz8t1yzhVyitl7+yNqN0tC3TOZ7uVU=;
-        b=s2N7cDkpm0qAzJ6Vvh3n0YU48zem3fWK7a2H+7khmbqlb8++Szr+wuZdzas6yilKlZ
-         6znkSiJSwW0GIc9rFAys+mBLv9bwd1OlUJzwIIyg8vU8HeUN2MWDbyzn5Z7VvhEXhMRM
-         C1Sl8o4yC9F3/jCiA0u9+Mv3gBRKek1H+WB7zTcJD0G+okGkh8+GhNaMtgjG1sxhBYlq
-         HCr71QVetlaVV00+kUddpaARIJjjCvhXRH7TfK2X7TA1veAjMo8fDoryjsJcZRYuY2ZX
-         l8is62b/s5cLZVOOUFO4ZZXUtyveHtlG2LOJSzRauVvdem9/FAcn1QFwV1D7cu1LUTw6
-         coNw==
-X-Gm-Message-State: AOAM532P62cuN0R5vr/ID7uGvR/WZDGteGxXRvL5pKuKDivkUP9PZ8Im
-        +5qysC1n/wmwNIAup+enqIRp+zsju2Cmdd/DIDcq2g==
-X-Google-Smtp-Source: ABdhPJzAAQm6lplXZGkvzp/jqHJ1GiOKomPzELC3I1EzT5pG1/JVMXWKMFt6iG7S/Hcm7zuNq4FhL8v9WrNb9yWWv+A=
-X-Received: by 2002:a05:6512:34d3:: with SMTP id w19mr8030260lfr.418.1604444317196;
- Tue, 03 Nov 2020 14:58:37 -0800 (PST)
+        id S1728326AbgKCXSi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 18:18:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42766 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728206AbgKCXSi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 18:18:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604445517;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cdp/CXXpC3BZzpn6iHoH+GMSR/z9Kw5PfRI2yEVai0g=;
+        b=aiLZW+G2j+DWmS3ucSxt+hL9Ip/w/WjadJk9O/yo9NU2myOYvobssUsdZH0osQ5O2jJu0L
+        /AEYTWuKwpxvn+JkBskCaR6LS7xkM4eems7R+Oa68dRsiKxJFH6YEK4/uTdjSRstMfWY3y
+        Gc2PTpGIfV6uh8Zcl7e/k7XBPgN70oY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-6dBtCt6VPpCBWY9hhlrSlQ-1; Tue, 03 Nov 2020 18:18:35 -0500
+X-MC-Unique: 6dBtCt6VPpCBWY9hhlrSlQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D51085F9D2;
+        Tue,  3 Nov 2020 23:18:33 +0000 (UTC)
+Received: from krava (unknown [10.40.195.210])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 28CB95D9DC;
+        Tue,  3 Nov 2020 23:18:27 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 00:18:27 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Hao Luo <haoluo@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 2/2] btf_encoder: Change functions check due to broken
+ dwarf
+Message-ID: <20201103231827.GA3861143@krava>
+References: <20201031223131.3398153-1-jolsa@kernel.org>
+ <20201031223131.3398153-3-jolsa@kernel.org>
+ <20201102215908.GC3597846@krava>
+ <20201102225658.GD3597846@krava>
+ <CAEf4BzbdGwogFQiLE2eH9ER67hne7NgW4S8miYBM4CRb8NDPvg@mail.gmail.com>
+ <20201103190559.GI3597846@krava>
+ <CAEf4BzbMOzAdsyMT736idoGnJ1RuxRa5y9wf-egh+LKz406m1g@mail.gmail.com>
+ <5bbb9838-d98a-c04d-ecba-878f2f934ae0@fb.com>
 MIME-Version: 1.0
-References: <20201103153132.2717326-1-kpsingh@chromium.org>
- <20201103153132.2717326-9-kpsingh@chromium.org> <87AD7DC4-63DD-4DE2-B035-A3FA2D708601@fb.com>
-In-Reply-To: <87AD7DC4-63DD-4DE2-B035-A3FA2D708601@fb.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Tue, 3 Nov 2020 23:58:26 +0100
-Message-ID: <CACYkzJ4nFq9ugMvW9K9yO8JK8uv1Q86aCh5wsnPPhR7_7=TQJA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 8/8] bpf: Exercise syscall operations for
- inode and sk storage
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5bbb9838-d98a-c04d-ecba-878f2f934ae0@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 11:32 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Nov 3, 2020, at 7:31 AM, KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
->
-> A short commit log would be great...
+On Tue, Nov 03, 2020 at 12:27:56PM -0800, Yonghong Song wrote:
 
-Sure :) No excuses for not having one, will add it in the next revision.
+SNIP
 
-- KP
+> > > > 
+> > > 
+> > > bpf_map iter definition:
+> > > 
+> > > DEFINE_BPF_ITER_FUNC(bpf_map, struct bpf_iter_meta *meta, struct bpf_map *map)
+> > > 
+> > > goes to:
+> > > 
+> > > #define DEFINE_BPF_ITER_FUNC(target, args...)                   \
+> > >          extern int bpf_iter_ ## target(args);                   \
+> > >          int __init bpf_iter_ ## target(args) { return 0; }
+> > > 
+> > > that creates __init bpf_iter_bpf_map function that will make
+> > > it into BTF where it's expected when opening iterator, but the
+> > > code will be freed because it's __init function
+> > 
+> > hm... should we just drop __init there?
+> > 
+> > Yonghong, is __init strictly necessary, or was just an optimization to
+> > save a tiny bit of space?
+> 
+> It is an optimization to save some space. We only need function
+> signature, not function body, for bpf_iter.
+> 
+> The macro definition is in include/linux/bpf.h.
+> 
+> #define DEFINE_BPF_ITER_FUNC(target, args...)                   \
+>         extern int bpf_iter_ ## target(args);                   \
+>         int __init bpf_iter_ ## target(args) { return 0; }
+> 
+> Maybe you could have a section, e.g., called
+>   .init.bpf.preserve_type
+> which you can scan through to preserve the types.
 
-[...]
+right, sounds good, will send v3 with that
 
-> > +                                   serv_sk))
-> > +             goto close_prog;
->
-> We shouldn't need this goto, otherwise we may leak serv_sk.
+thanks,
+jirka
 
-Good point, I will just move the close(serv_sk); along with the other
-descriptor clean up.
-
->
-> > +
-> >       close(serv_sk);
-> >
-> > close_prog:
-> > +     close(rm_fd);
-> >       close(task_fd);
-> >       local_storage__destroy(skel);
-> > }
-> > --
-> > 2.29.1.341.ge80a0c044ae-goog
-> >
->
