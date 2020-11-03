@@ -2,120 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1210E2A4FA9
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 20:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77C32A4FAF
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 20:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbgKCTFd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 14:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729618AbgKCTF3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:05:29 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCDFC0613D1;
-        Tue,  3 Nov 2020 11:05:29 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id o70so15815134ybc.1;
-        Tue, 03 Nov 2020 11:05:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sKLt9YXgDPSIyALmmWTUZKWktUXxvPCs3PqzBJAVioM=;
-        b=QjJV/9pBD/jLf94VijrB8uYcxZo/vxq94tTDkgpBsRa9GrtSyfQhE1AMoZ86ZyK4PG
-         84zo9TJ+8u0Q9+bnjWxZwowhu6FEDkuA+uBET5LAtU3K+Vjj/zAmQxPa0MhbF7Qda4dY
-         joPCQXnTD0YWgk0JB0j/0PPraJ5HmMrqmoNrimwgmK/H7XFXmY6xV/8Hrl2BUELeYGgN
-         UFplhqrAskFXquIzeSFv7DcoNiwzRtAzjswspjAC3aebnX2H1qdkyYOzTN5vOBO+bVeP
-         bf/nySFT22E/eYejx4ZCtHUPvzYqlnYIQFESnxHDKNr6/497FiBeZ+Y9Jtkd0g3RlAVL
-         Mj6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sKLt9YXgDPSIyALmmWTUZKWktUXxvPCs3PqzBJAVioM=;
-        b=fAKojckQ6eJ6JJ+fnw9GwgqswS3U0w9bAWPQl8dcP19ebo9eQTWRRPLZBXg/yNP0Hh
-         i10ivOFAPf312os1CgS+jTUbUMOw5VMBJKia4lrFOsJxkfZdgHZAPlVxlJMmVkZxZYPD
-         fY7u6H0mv0/r4sRHPdBlvqbDym1/wvVjlZtIqPBgl1QvseW6eHxyXMCPgX1UlfsJOXtV
-         /mFGxfR9ZLZcoDtp5eh1M4yDzG8gvQSoFSi6dIwqhlTRpIU/Q449mFweU8aBLelgU4wI
-         AumNfh/XxnZIwv1YXmxsYwlI6ybGLzYLmijkIXMnvG4T20iuDzqliRoIQ9oxFFmJ/ssm
-         WnTA==
-X-Gm-Message-State: AOAM532Kju9l2dXN2vxhEdnQ05LFFqnIhcVNsh9VvSETqGQDwoH1mdUY
-        2UxZHO501CDh2mGCI7tFAXPaEdTok1QAoKjyKCI=
-X-Google-Smtp-Source: ABdhPJy9hhLxa5CZ1z7Psy/GqVxdW6WsKPxEBM0KU3JDGpS2tnjUQO+Wc24oKchU8xF0HtI0TWSsxlxC9BNrdzt0KRk=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr31274067ybl.347.1604430328891;
- Tue, 03 Nov 2020 11:05:28 -0800 (PST)
-MIME-Version: 1.0
-References: <1604396490-12129-1-git-send-email-magnus.karlsson@gmail.com> <1604396490-12129-3-git-send-email-magnus.karlsson@gmail.com>
-In-Reply-To: <1604396490-12129-3-git-send-email-magnus.karlsson@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Nov 2020 11:05:17 -0800
-Message-ID: <CAEf4Bzah-7akFkjUAJR=ovXLAnLd6EvLMMOy+GBbc4R28TY-eg@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] libbpf: fix possible use after free in xsk_socket__delete
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        id S1729367AbgKCTGM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 14:06:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40157 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727688AbgKCTGM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 14:06:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604430371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+1jv8dAufhwlVyK/l9a+Ro6BDlBegfAhIUHtscx1n3k=;
+        b=iL+r4o2HrIasGeVRnAp2BmK+U9UNa6JrTM5vhJ+3oie0DVukM09H8rURX4lySxqoUfWwDp
+        kemCfiyAm4k7f/hgi3PMPMSnDJ8kclFhdC/wpWyIjhXZ/kI/rbPDFApeHkL3BWVUkG/ULS
+        FeLGj2hdKVFrlTulO15K3RsfMg/RmTE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-m51H6txFOT-a2xEXShyqHQ-1; Tue, 03 Nov 2020 14:06:07 -0500
+X-MC-Unique: m51H6txFOT-a2xEXShyqHQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43D746414C;
+        Tue,  3 Nov 2020 19:06:06 +0000 (UTC)
+Received: from krava (unknown [10.40.195.210])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D3A7B60BF1;
+        Tue,  3 Nov 2020 19:06:00 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 20:05:59 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 2/2] btf_encoder: Change functions check due to broken
+ dwarf
+Message-ID: <20201103190559.GI3597846@krava>
+References: <20201031223131.3398153-1-jolsa@kernel.org>
+ <20201031223131.3398153-3-jolsa@kernel.org>
+ <20201102215908.GC3597846@krava>
+ <20201102225658.GD3597846@krava>
+ <CAEf4BzbdGwogFQiLE2eH9ER67hne7NgW4S8miYBM4CRb8NDPvg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbdGwogFQiLE2eH9ER67hne7NgW4S8miYBM4CRb8NDPvg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 1:42 AM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
->
-> Fix a possible use after free in xsk_socket__delete that will happen
-> if xsk_put_ctx() frees the ctx. To fix, save the umem reference taken
-> from the context and just use that instead.
->
-> Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  tools/lib/bpf/xsk.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index 504b7a8..9bc537d 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -892,6 +892,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
->  {
->         size_t desc_sz = sizeof(struct xdp_desc);
->         struct xdp_mmap_offsets off;
-> +       struct xsk_umem *umem;
->         struct xsk_ctx *ctx;
->         int err;
->
-> @@ -899,6 +900,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
->                 return;
->
->         ctx = xsk->ctx;
-> +       umem = ctx->umem;
->         if (ctx->prog_fd != -1) {
->                 xsk_delete_bpf_maps(xsk);
->                 close(ctx->prog_fd);
-> @@ -918,11 +920,11 @@ void xsk_socket__delete(struct xsk_socket *xsk)
->
->         xsk_put_ctx(ctx);
->
-> -       ctx->umem->refcount--;
-> +       umem->refcount--;
+On Tue, Nov 03, 2020 at 10:58:58AM -0800, Andrii Nakryiko wrote:
+> On Mon, Nov 2, 2020 at 2:57 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Mon, Nov 02, 2020 at 10:59:08PM +0100, Jiri Olsa wrote:
+> > > On Sat, Oct 31, 2020 at 11:31:31PM +0100, Jiri Olsa wrote:
+> > > > We need to generate just single BTF instance for the
+> > > > function, while DWARF data contains multiple instances
+> > > > of DW_TAG_subprogram tag.
+> > > >
+> > > > Unfortunately we can no longer rely on DW_AT_declaration
+> > > > tag (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060)
+> > > >
+> > > > Instead we apply following checks:
+> > > >   - argument names are defined for the function
+> > > >   - there's symbol and address defined for the function
+> > > >   - function is generated only once
+> > > >
+> > > > Also because we want to follow kernel's ftrace traceable
+> > > > functions, this patchset is adding extra check that the
+> > > > function is one of the ftrace's functions.
+> > > >
+> > > > All ftrace functions addresses are stored in vmlinux
+> > > > binary within symbols:
+> > > >   __start_mcount_loc
+> > > >   __stop_mcount_loc
+> > >
+> > > hum, for some reason this does not pass through bpf internal
+> > > functions like bpf_iter_bpf_map.. I learned it hard way ;-)
+> 
+> what's the exact name of the function that was missing?
+> bpf_iter_bpf_map doesn't exist. And if it's __init function, why does
+> it matter, it's not going to be even available at runtime, right?
+> 
 
-if you moved ctx->umem->refcount--; to before xdk_put_ctx(ctx), would
-that also work?
+bpf_map iter definition:
 
->         /* Do not close an fd that also has an associated umem connected
->          * to it.
->          */
-> -       if (xsk->fd != ctx->umem->fd)
-> +       if (xsk->fd != umem->fd)
->                 close(xsk->fd);
->         free(xsk);
->  }
-> --
-> 2.7.4
->
+DEFINE_BPF_ITER_FUNC(bpf_map, struct bpf_iter_meta *meta, struct bpf_map *map)
+
+goes to:
+
+#define DEFINE_BPF_ITER_FUNC(target, args...)                   \
+        extern int bpf_iter_ ## target(args);                   \
+        int __init bpf_iter_ ## target(args) { return 0; }
+
+that creates __init bpf_iter_bpf_map function that will make
+it into BTF where it's expected when opening iterator, but the
+code will be freed because it's __init function
+
+there are few iteratos functions like that, and I was going to
+check if there's more
+
+> 
+> > > will check
+> >
+> > so it gets filtered out because it's __init function
+> > I'll check if the fix below catches all internal functions,
+> > but I guess we should do something more robust
+> >
+> > jirka
+> >
+> >
+> > ---
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 0a378aa92142..3cd94280c35b 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -143,7 +143,8 @@ static int filter_functions(struct btf_elf *btfe, struct mcount_symbols *ms)
+> >                 /* Do not enable .init section functions. */
+> >                 if (init_filter &&
+> >                     func->addr >= ms->init_begin &&
+> > -                   func->addr <  ms->init_end)
+> > +                   func->addr <  ms->init_end &&
+> > +                   strncmp("bpf_", func->name, 4))
+> 
+> this looks like a very wrong way to do this? Can you please elaborate
+> on what's missing and why it shouldn't be missing?
+
+yes, it's just a hack, we should do something more
+robust as I mentioned above
+
+it just allowed me to use iterators finaly ;-)
+
+jirka
+
