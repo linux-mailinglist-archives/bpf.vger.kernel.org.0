@@ -2,192 +2,300 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B732A4A8E
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 17:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9616A2A4C7D
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 18:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgKCQBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 11:01:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgKCQBU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 11:01:20 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE93C0613D1;
-        Tue,  3 Nov 2020 08:01:20 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id n12so7283063ioc.2;
-        Tue, 03 Nov 2020 08:01:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4dKUAsXJBZEUrqdUnF/j4ZiY0ub+/LwLLjcRdluZZDw=;
-        b=iCMfic03coleRE/4ylmAhjky/BfHegzHAjSgIclnSUKiu5Ufcq6jSDf2qeA2qsTBTb
-         JLDKgUTXFZEmf7tRJ9UkCxIy7790IT3NdCXNuMAsCarjvjE0me09ywCSL5zsZ8wox+61
-         MzJOBOXleavsmme8+5iCWj65g19Drci6HS9QtDYN7dvKTr0HE4qadbebfwakrSc2umd9
-         FvPmJU4iUc02nXTbcUe/sOBf2nqbFmTax+wcMLf9CojsO9KAoN7M5NyE/+HyqIVGBNyY
-         PmjjdIR2nS+6g+JgY+R2XQMBsQK9ZNpegfdpJvADL6+vr0W+TFNYUbd/fc7u54TY8Fzu
-         g2iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4dKUAsXJBZEUrqdUnF/j4ZiY0ub+/LwLLjcRdluZZDw=;
-        b=emvrgBWk5HKhb1oaWBQwqF4qpxErIsL8c+9S2LJ1RVzmY5tUiZNB+1inncIikCtOqH
-         WKxUSsN5W/5NNKTo9di3w/uUo9u5WSQ7Nuzm6lWtDAjueeh5QrWtTADcZAo8Yrv3VTPu
-         8+LDQEHt3FQC1FTAY8fxcFRW+v8gagnV/xGa1gl8Jbk7RGiD0SFtubn7SF0snJzgxgxq
-         jpJlpfEr11HVa85IhIwZ3SpawJJ4XQ+JUYpOjS6zCddP4oKBU9aZ3geNAxUlQP5sT/Z4
-         XTpAiSOiuH5NlFUB82jZ9+c0lqyXBHAmiinxGM0wDYodG9ZEf+/iCMmGUIbK9UWhlvGF
-         xuig==
-X-Gm-Message-State: AOAM531u8mTjl68wyG5ZnYYyA/1rwAl3mtYMRWR6zvFj4c9phuIZ+R4E
-        RxG0zD1kCNDKKVPlwDNukzHqGAIWPjZKLi/d1fk=
-X-Google-Smtp-Source: ABdhPJyzgj5KUCC5YmsU+8RYrG59gF8arynDcLoU8e9GrUPpPUZrsL3yl7aPJhcOuuZiebPr149/3SR4zF7FfXq0J4o=
-X-Received: by 2002:a02:1783:: with SMTP id 125mr16575634jah.121.1604419279517;
- Tue, 03 Nov 2020 08:01:19 -0800 (PST)
+        id S1727323AbgKCRQT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 12:16:19 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57350 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727530AbgKCRQR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 12:16:17 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3HFiIi021088;
+        Tue, 3 Nov 2020 09:16:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=+YDdL47IugvHH7Uqk7GROx67nXFM7UU6Z/TJsoL5FoU=;
+ b=Sb/E5XPazVIU02VO7Dzm8Ty2ya//4sXmbb73EjuXre46o4yCSIqA/B2StUAe/UXct7v6
+ ihradLYoiraZ0y0vH2QddmP/utrwjRw7UqR1oU5/0nClv2mykKbK18IgWm9WP9uDN8Vg
+ rtDEJeCKiB1Rk+oFcsSWaHmSYrlt7n4YkaY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34jy1c3pfd-16
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 03 Nov 2020 09:16:01 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 3 Nov 2020 09:15:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VuNfPTW4JIAdDwVBQlbZlq0ibPJo+5a5lDM5+cW78myPka64QnUwaEo1/sdwyaUdbwbRaXOKXVYtusa+XlhgpWnswkxt1L81POFsQoG4ykerU1H/M5aKwbkkFCcTJD4u0Vo/5xT2ZkiwbcVZGDuwmAiF3wjYWiCBiFYDjIvqbnEFTExduMIfOItsPPshUFYo/ySXJFqIjJYSu+PtdeNT0vCDw9foVbdMdgEk13+CfwD/eOolFuyGsow4UUWTcq04zEYdWsEdJGls1s4Tnhz5VGoFsZSaPjTY57G5Fcem28rIfkqP4qyj9FLJKB4l0LwJOQz5rzPJEcoZbagkNtijgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+YDdL47IugvHH7Uqk7GROx67nXFM7UU6Z/TJsoL5FoU=;
+ b=Gxo2vmqiILgs8ciz5uEp5tGFMJNOiyGCbxWLNaV3A41I5MpvvnP63ptSfel9Y8OAeSZjJAKMrdzzf8epzm4GWuzLFuJLhInk+Jvpa39xNK8+HzqyazDRlqbfo75uo3c4bx/SLpyoO/JAupn/I6iLAklbEJ9ZDSxNcvL9HsAon8FdVcLWZc1VRTs3mphH1el84CxA4UdDOkPjBbWjz0+5kGfM2nJ/ZUeaewxgQ+PNUVz8zlZEtZxKSusx09p+XGn0cGu8vVV9T6LWaFc4BzjSCMLl44eW90dFv1pof3XyETYyrMDU/9o4329kuw/aubdCpL5wsT0AhsA95izcT7R8rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+YDdL47IugvHH7Uqk7GROx67nXFM7UU6Z/TJsoL5FoU=;
+ b=XRcF8Cle2bo5HRY0+8MN7wkby2T0QmZpDLNOK3Gus9GcPVb8EtLhQdUsYACNf5NIb2s0qTRFw3Zuoq+Scz5B8tZ8GD2bflYttco8loalNaEyCBQNRg3iR1zreJpl6uk7DaYbH4K4FP6+y69rvQu77OsnC1HphvSdU1xNCopcjVo=
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB2566.namprd15.prod.outlook.com (2603:10b6:a03:150::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Tue, 3 Nov
+ 2020 17:15:54 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
+ 17:15:54 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 08/11] libbpf: support BTF dedup of split BTFs
+Thread-Topic: [PATCH bpf-next 08/11] libbpf: support BTF dedup of split BTFs
+Thread-Index: AQHWrY7ZXkKOliwbJ0Kq0MPekL/6Ham1vMIAgAArjoCAAAl7gIAACQIAgAC0DYA=
+Date:   Tue, 3 Nov 2020 17:15:54 +0000
+Message-ID: <E2960A61-279C-4B52-AB63-C8E87D2905A6@fb.com>
+References: <20201029005902.1706310-1-andrii@kernel.org>
+ <20201029005902.1706310-9-andrii@kernel.org>
+ <4D4CB508-5358-40B3-878C-30D97BCA4192@fb.com>
+ <CAEf4BzaxLMH-ZN+FEhg54J3quGTAHZVg143KWSsD0PFEM5E3yg@mail.gmail.com>
+ <4EEF76DA-2E9F-4B09-BD31-817148CDC445@fb.com>
+ <CAEf4BzaL51nf_rKF7-pUWHeCiWm37fuFGfku4Z0kmXxmdHRAVA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaL51nf_rKF7-pUWHeCiWm37fuFGfku4Z0kmXxmdHRAVA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:ca49]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c76e4b08-7f2f-4878-258f-08d8801c1f51
+x-ms-traffictypediagnostic: BYAPR15MB2566:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2566E185F9C0C9E5F72F0326B3110@BYAPR15MB2566.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6xXpPxPcZB+tS9QZC+H2pdxvqXtpwcy5P3vUTDvjx/grtWTREswZHVLOLEO7yeFMoLM7d+WuZWjlDf5Y07QybVyN1p6SpIz/mDCGJ1yUlprmFOYuywx4CfU9o0SCVEHztIUaAB9b6EGyN6uRM+8WB0BsCsM4yJLZHHpSYKi607WXGY9ypIeMp+k6ohzWSjc7mZPhsEOQLSUoQCTeVhLKdk6Fp9vkFANsfMflGlVxDBhylkWtUuZG+1S3uTkZtskOgfmR4F8G7RIFkJQfovvHnZsqGmtLKmiWvIB31KvA9AKjDRFD8OkW755jhKbwkYJ7JfrBEw56S4NN7BYfIck+Fw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(396003)(366004)(346002)(136003)(64756008)(8676002)(6486002)(66446008)(66476007)(8936002)(66946007)(66556008)(186003)(36756003)(54906003)(83380400001)(2616005)(6512007)(76116006)(91956017)(6506007)(6916009)(53546011)(2906002)(71200400001)(478600001)(4326008)(86362001)(5660300002)(33656002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: PgQT6/wedyWJkmX1QE8DEii0CnHbUPHRdTV3S8XSfVUonXGVtp/U1dGH2GOJ27gkaZkujjmVHFBP7VPYGZKO7DYYvhjENQ68bVeuLROsYX5Lyu0Ie23KvEqtdPQJynFm4BTh3/n1ffo9F6kRIs/Djdu18vdgsY0pTwVp+XZAOzmhBKOib6iD/8b21HnrKWTTMKz9SugcdaN6e0eugOwcsgaO/3EyV4+7PYVdSZAdoih+zkeYLIsRtewvCiryHpB5crV2h2a3d90sFpZW+rLU/ZUt/5lZ/66+7Zs0RnNIWe383XE1iHfkR9hD4bzf4akOvpGYybvlEznYlzSP0IJsFzxV6iGV9s287Oa5xJ1NRAVuJiCgCZ306faVUauTZKV+m13o3PgX0687D7fCAmUJ80xm8BUp2bqRQye4jp2x8f9ciWYaOmZqgYWBNmm05bTGd8mUHpW6UBD99KGCDapZaRBqAnwcRnY7ZSzMq43R5K0FjfSk2KIl38LxyyZS5UdNLemgjLgtIgf+p46ex3cLzG2ihr2deuJxQbBBiEQ1Z54IUmOuPp5VJdcsyB3xMgR3oa4lwp8Wwa8g4RmRa63K9Ojns9PDg1gOeBaLL89w+pzhKhKveFl3q6wwz8wMadpj4GWoYFFZ+SAzbkkeLrasslFbBx1yJ8tdnAPdor3We/9iysO4W1PT4XRYlTwo0Hlq
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9B17A8BC00923F4E8B9A8319C334D0A0@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <160416890683.710453.7723265174628409401.stgit@localhost.localdomain>
- <160417033818.2823.4460428938483935516.stgit@localhost.localdomain>
- <20201103003836.2ngjz6yqewhn7aln@kafai-mbp.dhcp.thefacebook.com>
- <CAKgT0UceQhVGXbkZWj_aj0+Ew8oOEJMAgwAUE5GLN5EexqAhkQ@mail.gmail.com> <20201103013310.wbs7i3jm5vwnrctn@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20201103013310.wbs7i3jm5vwnrctn@kafai-mbp.dhcp.thefacebook.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 3 Nov 2020 08:01:08 -0800
-Message-ID: <CAKgT0Ud4xo0WY9CBesVzgJ06Nw9dnEuYYs_h-WEqzFGXhmJpVw@mail.gmail.com>
-Subject: Re: [bpf-next PATCH v2 2/5] selftests/bpf: Drop python client/server
- in favor of threads
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        alexanderduyck@fb.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c76e4b08-7f2f-4878-258f-08d8801c1f51
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 17:15:54.3937
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Wwcfunv4sMUVWTJJkWrnL1E+V9QalPuy6XjujhlTrRpFk/3igyyQuN89ueRX7a3iZWZqp0fC5nhOvXMrDvJdrQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2566
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1015
+ mlxscore=0 phishscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011030116
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 5:33 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Mon, Nov 02, 2020 at 04:49:42PM -0800, Alexander Duyck wrote:
-> > On Mon, Nov 2, 2020 at 4:38 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Sat, Oct 31, 2020 at 11:52:18AM -0700, Alexander Duyck wrote:
-> > > > From: Alexander Duyck <alexanderduyck@fb.com>
-> > > >
-> > > > Drop the tcp_client/server.py files in favor of using a client and server
-> > > > thread within the test case. Specifically we spawn a new thread to play the
-> > > The thread comment may be outdated in v2.
-> > >
-> > > > role of the server, and the main testing thread plays the role of client.
-> > > >
-> > > > Add logic to the end of the run_test function to guarantee that the sockets
-> > > > are closed when we begin verifying results.
-> > > >
-> > > > Doing this we are able to reduce overhead since we don't have two python
-> > > > workers possibly floating around. In addition we don't have to worry about
-> > > > synchronization issues and as such the retry loop waiting for the threads
-> > > > to close the sockets can be dropped as we will have already closed the
-> > > > sockets in the local executable and synchronized the server thread.
-> > > >
-> > > > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> > > > ---
-> > > >  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |   96 ++++++++++++++++----
-> > > >  tools/testing/selftests/bpf/tcp_client.py          |   50 ----------
-> > > >  tools/testing/selftests/bpf/tcp_server.py          |   80 -----------------
-> > > >  3 files changed, 78 insertions(+), 148 deletions(-)
-> > > >  delete mode 100755 tools/testing/selftests/bpf/tcp_client.py
-> > > >  delete mode 100755 tools/testing/selftests/bpf/tcp_server.py
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > > > index 54f1dce97729..17d4299435df 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> > > > @@ -1,13 +1,14 @@
-> > > >  // SPDX-License-Identifier: GPL-2.0
-> > > >  #include <inttypes.h>
-> > > >  #include <test_progs.h>
-> > > > +#include <network_helpers.h>
-> > > >
-> > > >  #include "test_tcpbpf.h"
-> > > >
-> > > > +#define LO_ADDR6 "::1"
-> > > >  #define CG_NAME "/tcpbpf-user-test"
-> > > >
-> > > > -/* 3 comes from one listening socket + both ends of the connection */
-> > > > -#define EXPECTED_CLOSE_EVENTS                3
-> > > > +static __u32 duration;
-> > > >
-> > > >  #define EXPECT_EQ(expected, actual, fmt)                     \
-> > > >       do {                                                    \
-> > > > @@ -42,7 +43,9 @@ int verify_result(const struct tcpbpf_globals *result)
-> > > >       EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
-> > > >       EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
-> > > >       EXPECT_EQ(1, result->num_listen, PRIu32);
-> > > > -     EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
-> > > > +
-> > > > +     /* 3 comes from one listening socket + both ends of the connection */
-> > > > +     EXPECT_EQ(3, result->num_close_events, PRIu32);
-> > > >
-> > > >       return ret;
-> > > >  }
-> > > > @@ -66,6 +69,75 @@ int verify_sockopt_result(int sock_map_fd)
-> > > >       return ret;
-> > > >  }
-> > > >
-> > > > +static int run_test(void)
-> > > > +{
-> > > > +     int listen_fd = -1, cli_fd = -1, accept_fd = -1;
-> > > > +     char buf[1000];
-> > > > +     int err = -1;
-> > > > +     int i;
-> > > > +
-> > > > +     listen_fd = start_server(AF_INET6, SOCK_STREAM, LO_ADDR6, 0, 0);
-> > > > +     if (CHECK(listen_fd == -1, "start_server", "listen_fd:%d errno:%d\n",
-> > > > +               listen_fd, errno))
-> > > > +             goto done;
-> > > > +
-> > > > +     cli_fd = connect_to_fd(listen_fd, 0);
-> > > > +     if (CHECK(cli_fd == -1, "connect_to_fd(listen_fd)",
-> > > > +               "cli_fd:%d errno:%d\n", cli_fd, errno))
-> > > > +             goto done;
-> > > > +
-> > > > +     accept_fd = accept(listen_fd, NULL, NULL);
-> > > > +     if (CHECK(accept_fd == -1, "accept(listen_fd)",
-> > > > +               "accept_fd:%d errno:%d\n", accept_fd, errno))
-> > > > +             goto done;
-> > > > +
-> > > > +     /* Send 1000B of '+'s from cli_fd -> accept_fd */
-> > > > +     for (i = 0; i < 1000; i++)
-> > > > +             buf[i] = '+';
-> > > > +
-> > > > +     err = send(cli_fd, buf, 1000, 0);
-> > > > +     if (CHECK(err != 1000, "send(cli_fd)", "err:%d errno:%d\n", err, errno))
-> > > > +             goto done;
-> > > > +
-> > > > +     err = recv(accept_fd, buf, 1000, 0);
-> > > > +     if (CHECK(err != 1000, "recv(accept_fd)", "err:%d errno:%d\n", err, errno))
-> > > > +             goto done;
-> > > > +
-> > > > +     /* Send 500B of '.'s from accept_fd ->cli_fd */
-> > > > +     for (i = 0; i < 500; i++)
-> > > > +             buf[i] = '.';
-> > > > +
-> > > > +     err = send(accept_fd, buf, 500, 0);
-> > > > +     if (CHECK(err != 500, "send(accept_fd)", "err:%d errno:%d\n", err, errno))
-> > > > +             goto done;
-> > > > +
-> > > > +     err = recv(cli_fd, buf, 500, 0);
-> > > Unlikely, but err from the above send()/recv() could be 0.
-> >
-> > Is that an issue? It would still trigger the check below as that is not 500.
-> Mostly for consistency.  "err" will be returned and tested for non-zero
-> in test_tcpbpf_user().
 
-Okay that makes sense. Now that I have looked it over more it does
-lead to an error in the final product since it will attempt to verify
-data on a failed connection so I will probably just replaced err with
-a new variable such as rv for the send/recv part of the function so
-that err stays at -1 until we are closing the sockets.
+
+> On Nov 2, 2020, at 10:31 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> =
+wrote:
+>=20
+> On Mon, Nov 2, 2020 at 9:59 PM Song Liu <songliubraving@fb.com> wrote:
+>>=20
+>>=20
+>>=20
+>>> On Nov 2, 2020, at 9:25 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
+ wrote:
+>>>=20
+>>> On Mon, Nov 2, 2020 at 6:49 PM Song Liu <songliubraving@fb.com> wrote:
+>>>>=20
+>>>>=20
+>>>>=20
+>>>>> On Oct 28, 2020, at 5:58 PM, Andrii Nakryiko <andrii@kernel.org> wrot=
+e:
+>>>>>=20
+>>>>> Add support for deduplication split BTFs. When deduplicating split BT=
+F, base
+>>>>> BTF is considered to be immutable and can't be modified or adjusted. =
+99% of
+>>>>> BTF deduplication logic is left intact (module some type numbering ad=
+justments).
+>>>>> There are only two differences.
+>>>>>=20
+>>>>> First, each type in base BTF gets hashed (expect VAR and DATASEC, of =
+course,
+>>>>> those are always considered to be self-canonical instances) and added=
+ into
+>>>>> a table of canonical table candidates. Hashing is a shallow, fast ope=
+ration,
+>>>>> so mostly eliminates the overhead of having entire base BTF to be a p=
+art of
+>>>>> BTF dedup.
+>>>>>=20
+>>>>> Second difference is very critical and subtle. While deduplicating sp=
+lit BTF
+>>>>> types, it is possible to discover that one of immutable base BTF BTF_=
+KIND_FWD
+>>>>> types can and should be resolved to a full STRUCT/UNION type from the=
+ split
+>>>>> BTF part.  This is, obviously, can't happen because we can't modify t=
+he base
+>>>>> BTF types anymore. So because of that, any type in split BTF that dir=
+ectly or
+>>>>> indirectly references that newly-to-be-resolved FWD type can't be con=
+sidered
+>>>>> to be equivalent to the corresponding canonical types in base BTF, be=
+cause
+>>>>> that would result in a loss of type resolution information. So in suc=
+h case,
+>>>>> split BTF types will be deduplicated separately and will cause some
+>>>>> duplication of type information, which is unavoidable.
+>>>>>=20
+>>>>> With those two changes, the rest of the algorithm manages to deduplic=
+ate split
+>>>>> BTF correctly, pointing all the duplicates to their canonical counter=
+-parts in
+>>>>> base BTF, but also is deduplicating whatever unique types are present=
+ in split
+>>>>> BTF on their own.
+>>>>>=20
+>>>>> Also, theoretically, split BTF after deduplication could end up with =
+either
+>>>>> empty type section or empty string section. This is handled by libbpf
+>>>>> correctly in one of previous patches in the series.
+>>>>>=20
+>>>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>>>>=20
+>>>> Acked-by: Song Liu <songliubraving@fb.com>
+>>>>=20
+>>>> With some nits:
+>>>>=20
+>>>>> ---
+>>>>=20
+>>>> [...]
+>>>>=20
+>>>>>=20
+>>>>>     /* remap string offsets */
+>>>>>     err =3D btf_for_each_str_off(d, strs_dedup_remap_str_off, d);
+>>>>> @@ -3553,6 +3582,63 @@ static bool btf_compat_fnproto(struct btf_type=
+ *t1, struct btf_type *t2)
+>>>>>     return true;
+>>>>> }
+>>>>>=20
+>>>>=20
+>>>> An overview comment about bpf_deup_prep() will be great.
+>>>=20
+>>> ok
+>>>=20
+>>>>=20
+>>>>> +static int btf_dedup_prep(struct btf_dedup *d)
+>>>>> +{
+>>>>> +     struct btf_type *t;
+>>>>> +     int type_id;
+>>>>> +     long h;
+>>>>> +
+>>>>> +     if (!d->btf->base_btf)
+>>>>> +             return 0;
+>>>>> +
+>>>>> +     for (type_id =3D 1; type_id < d->btf->start_id; type_id++)
+>>>>> +     {
+>>>>=20
+>>>> Move "{" to previous line?
+>>>=20
+>>> yep, my bad
+>>>=20
+>>>>=20
+>>>>> +             t =3D btf_type_by_id(d->btf, type_id);
+>>>>> +
+>>>>> +             /* all base BTF types are self-canonical by definition =
+*/
+>>>>> +             d->map[type_id] =3D type_id;
+>>>>> +
+>>>>> +             switch (btf_kind(t)) {
+>>>>> +             case BTF_KIND_VAR:
+>>>>> +             case BTF_KIND_DATASEC:
+>>>>> +                     /* VAR and DATASEC are never hash/deduplicated =
+*/
+>>>>> +                     continue;
+>>>>=20
+>>>> [...]
+>>>>=20
+>>>>>     /* we are going to reuse hypot_map to store compaction remapping =
+*/
+>>>>>     d->hypot_map[0] =3D 0;
+>>>>> -     for (i =3D 1; i <=3D d->btf->nr_types; i++)
+>>>>> -             d->hypot_map[i] =3D BTF_UNPROCESSED_ID;
+>>>>> +     /* base BTF types are not renumbered */
+>>>>> +     for (id =3D 1; id < d->btf->start_id; id++)
+>>>>> +             d->hypot_map[id] =3D id;
+>>>>> +     for (i =3D 0, id =3D d->btf->start_id; i < d->btf->nr_types; i+=
++, id++)
+>>>>> +             d->hypot_map[id] =3D BTF_UNPROCESSED_ID;
+>>>>=20
+>>>> We don't really need i in the loop, shall we just do
+>>>>       for (id =3D d->btf->start_id; id < d->btf->start_id + d->btf->nr=
+_types; id++)
+>>>> ?
+>>>>=20
+>>>=20
+>>> I prefer the loop with i iterating over the count of types, it seems
+>>> more "obviously correct". For simple loop like this I could do
+>>>=20
+>>> for (i =3D 0; i < d->btf->nr_types; i++)
+>>>   d->hypot_map[d->start_id + i] =3D ...;
+>>>=20
+>>> But for the more complicated one below I found that maintaining id as
+>>> part of the for loop control block is a bit cleaner. So I just stuck
+>>> to the consistent pattern across all of them.
+>>=20
+>> How about
+>>=20
+>>        for (i =3D 0; i < d->btf->nr_types; i++) {
+>>                id =3D d->start_id + i;
+>>                ...
+>> ?
+>=20
+> this would be excessive for that single-line for loop. I'd really like
+> to keep it consistent and confined within the for () block.
+>=20
+>>=20
+>> I would expect for loop with two loop variable to do some tricks, like t=
+wo
+>> termination conditions, or another conditional id++ somewhere in the loo=
+p.
+>=20
+> Libbpf already uses such two variable loops for things like iterating
+> over btf_type's members, enums, func args, etc. So it's not an
+> entirely alien construct. I really appreciate you trying to keep the
+> code as simple and clean as possible, but I think it's pretty
+> straightforward in this case and there's no need to simplify it
+> further.
+
+No problem. It was just a nitpick. The loop is totally fine as is.=20
+
+Thanks,
+Song=
