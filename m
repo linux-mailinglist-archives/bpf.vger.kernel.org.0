@@ -2,214 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C662A3811
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 01:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E65F22A3815
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 01:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725940AbgKCA4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 19:56:14 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62134 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725855AbgKCA4O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 19:56:14 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A30kuM1004512;
-        Mon, 2 Nov 2020 16:55:55 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=9LsMBzquP9Voeq+w7SMnh4QlPOiINg+C89y7ZuwdtI0=;
- b=PiUmVBGd3TpivFblAmh+l3fVBMWtrkK3HvBp65NNzeD11qtqh8VhexaEo+Vr+D3SK3jn
- m73qncI/e7qcFY9e3stVvV6ZcBFCdfRJN2WQAO5uHflVD+alAwjTnzPtZBEOoJZSeGTX
- OPOzwq29er2sHU43GJl0aSJsmbYoj5Fj1c8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34hqdu8d6j-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 02 Nov 2020 16:55:55 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 2 Nov 2020 16:55:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AuTTxGtr56YRZBk6X0il09lIZ8+1k9CFP6O5SpkgooThPBQ3Zvi/m5VDgqjMq9gCKHxWwz0wviJEbyo8JbTg2yD/fIjKiVJ80BfF+fqdswftBsEMDJhYSfWsBPNAf6dt7KciZWY1WJBLqHfYiXnu3TTtnREYyB+VBG68QkAmGRmPXSbm+6RVx0C/shFHwxyuooxoYMdY7BaNOiTJdKjUDk0FQGtaCK/hfH8wGeaZz8/ygn3qZIqUfBWS/U7UqYwqUm/aUCrCjqMTAl39KsK8asIWE30SzMn+sAmBhJSayjf38APfoW80fFdQZ681LAZ5XCGXE21+fBiduTc6y+1Jwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9LsMBzquP9Voeq+w7SMnh4QlPOiINg+C89y7ZuwdtI0=;
- b=JtSkOtUDx4a+pnMGk5ZooeSfT2zUXJ3hMYCalv3+745qX2uoyhrO+wCh6HN8qiTcM+kQFlRHGHydVkkvzAgFNs+mduOt8RTQKMxNjR8XheRfQXpRp9RswRGs/lcArbpqpWuwN76BKIgY9qyVzLG/YUmZerETNKT7frSdecdlqhyMoTDqe4WVi7BOzXgweVEESkAcZKYO0unrx8I6rHmc20FpOMtcxvgDE2ZRsaijsAJbZlPoEJUZWE3HcOjpV8zmJlsQDkCpt4NhWVPUsMb4GbneyBRyj2zoq9rnSvg0ixahVd5Wr5V6V4abjY6fdLXgvkUo96HmukdhUKNkIz2TUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9LsMBzquP9Voeq+w7SMnh4QlPOiINg+C89y7ZuwdtI0=;
- b=CrqLbG6cEms9JlBwy8/TlLdiB6NzaipHrKD/ex4qcNtjrC4kPHr01lpEYvtLxu9fPfzrXKSJhpdPKYoGOt7Dvt5QYzrdueC80wujXzN/ivq188WX39lkaK0v1NEU58nr3VmjnE4kaqodwswqdJUubSqvc1Wng54hOD4/e2nX+VM=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3509.namprd15.prod.outlook.com (2603:10b6:a03:108::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Tue, 3 Nov
- 2020 00:55:53 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
- 00:55:53 +0000
-Date:   Mon, 2 Nov 2020 16:55:47 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <john.fastabend@gmail.com>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>, <edumazet@google.com>, <brakmo@fb.com>,
-        <andrii.nakryiko@gmail.com>, <alexanderduyck@fb.com>
-Subject: Re: [bpf-next PATCH v2 4/5] selftests/bpf: Migrate tcpbpf_user.c to
- use BPF skeleton
-Message-ID: <20201103005547.buhyl6tsi5shm374@kafai-mbp.dhcp.thefacebook.com>
-References: <160416890683.710453.7723265174628409401.stgit@localhost.localdomain>
- <160417035105.2823.2453428685023319711.stgit@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160417035105.2823.2453428685023319711.stgit@localhost.localdomain>
-X-Originating-IP: [2620:10d:c090:400::5:8aa6]
-X-ClientProxiedBy: CO2PR04CA0109.namprd04.prod.outlook.com
- (2603:10b6:104:7::11) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1725855AbgKCA4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 19:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgKCA4u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 19:56:50 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5838EC0617A6;
+        Mon,  2 Nov 2020 16:56:49 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id u21so6233827iol.12;
+        Mon, 02 Nov 2020 16:56:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KTjcyyNQ1ZVM4tx3K0LcevL4qKFD7CdWvMEsz26zxLs=;
+        b=urGyGZDwAcGB98IU2puOY7mrK0waBCxqRry3XEmrzXDj9Q6hRlRUJfO2b2F05g5TJc
+         DvrKY/6TnrP3BDNDRR5scEtD34wwZL+/DbaatsHwvuFVLD2zNP8eV41Zhk/SZsSGZiG0
+         KNP93y5qaZiMt9uGI9VLgePSHW5BV1MRoO3X+3HxjlJk5RVVCH3lbIy5vXvVHqWfXtoo
+         yxkda/TXbJtQOgpH45Ks67EICbILMbOhNaU8dEszugIyoXrVA71YUuwuYSipurs8C6Im
+         /o2zz6/ZZl0iaI8Q3nA0be7lcEcyvovkbz6aGOnCCPieB46M2wvZuC+xr/ZM9wFgkFpD
+         JD6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KTjcyyNQ1ZVM4tx3K0LcevL4qKFD7CdWvMEsz26zxLs=;
+        b=kbA7iIrQjSVW9g+QP+/WxK+6yWnze/L8yFw22rrvnkQD6XEoFammrgGx9wBC/rsDQh
+         qZk8G5NEBHZ93l9Xmw3+pJK18g/LOU0kLLbfnKSrJglyQ1To2m6cD1QlyheYIIR3VkyB
+         njX9deaV4QT+vd93ybGP1YX12Llwph2zRtyXiO+fujwL0kuptBMMcH6sglct8nYhljiv
+         IgsJpVNu9C+Ox7+mviDYOsYe004LBcKFaZqQW5PLbDhZlB63VH5iZY0sazXP5JGOhryB
+         EVjMEd8+annQkRnnQrhC5CbNjiPnVv4RAN57pz4kpGd+AzoiB1zKX5NSL/ss9V7V0MI3
+         aHjQ==
+X-Gm-Message-State: AOAM530FjyzlkDKl3TWOI7PNhHaT25h9PdFgusDb9fG+9VsUVZ5fs23c
+        pGzJFhRJ64nKn6a3n0il+YUhYNPmLkEMUcHbYLs=
+X-Google-Smtp-Source: ABdhPJzISjrCNFZs7hql1HdBG9QLCXjp1yr4/ON4ZxMRhtu2sUPcljI3BShxZor622COiPGRvJtrMQ7A85GNIsrTL2I=
+X-Received: by 2002:a6b:e40f:: with SMTP id u15mr11904173iog.88.1604365008586;
+ Mon, 02 Nov 2020 16:56:48 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:8aa6) by CO2PR04CA0109.namprd04.prod.outlook.com (2603:10b6:104:7::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27 via Frontend Transport; Tue, 3 Nov 2020 00:55:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 22b87a8e-c5dd-474c-a71f-08d87f9336ff
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3509:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3509C8F802C8BB1A98FE31F5D5110@BYAPR15MB3509.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:337;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 07LMz+tI1jOzTmPq7w1OtcmcrHhgmWdL5oXOb95IzI0R2cjpGGSmLoDPJxIJN5XOidBk0MwlZSAytJMpb/7zRJRFEact/nmNKrvje9dNKfAIfJBGDkejNGkXdfwLJI5NKkhv5UhuM3I344965L82KnzMDf2uuJhqoptrVB8rfP9SoV3Gh8gNKH2Jof5dQ9L1j7I8txfYfkHT3ML1LZ2T2iAnvxgCtl8Ulsp38fec5FRWIQZDcyYS1BRAn1YKreyeekWxJxygvoS/ERaZwINE5cznS5OUajT36rwKUyJdiBZJgNcBZrWS2jlpFNWEk+iWjd9hxGAqBCdzufXytr0aGg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(136003)(376002)(346002)(52116002)(9686003)(4326008)(6506007)(8676002)(2906002)(86362001)(8936002)(16526019)(7696005)(186003)(55016002)(5660300002)(6916009)(66556008)(1076003)(66476007)(6666004)(83380400001)(478600001)(66946007)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 5E2JSBf769CyzArH6hpaI1aUQW5aHVBbpwudUvmk2w3BuTH6n5n5pFip14ujzCYUt5BkIKK0eyblZ6uYrWKHP2/LcKcMqorGc94SjXEXCKnziIGOcdimZDgir/YDRFeq2/ZqEg/rMMqJWDpCbHDwtLN+iXVAiL306TrO9lwoyBTQ1NLlpOeFKIO3TivbglFJ6zO9jvUIR2u946Dmsw3Br/LS218QNie90UaoUWNFcQD7+lSVQQuQHdpC/eV18uceHoHxSe0vmndxZwfmD7+LTiNYNIu2mySuFxLVhRYCmq7jpQ4u6uJdrlpMKZB2NpLPqT3KjvnkvStM7EZtgwLLEBcVNXauXR1s1xmO3ijDmpYkFfi8lWu7L1pdSgODO5XGgtbY3Fek+P6FjCCMCB9+2jN8+DVMZU8UqyLQZaT3IK9kkxjsAjcHJBge4KuOm3y3lY3C2y5yWH8LhM8gywywDw5DaZrL0x+91i1nasnDB8sSTa1BPIDz1fIm6mML8PPkyaeAOVXVTBoxpv219lTJc7x+Kw99ptYcxRsJAUllaW7gQHJZoPhNO3/r5Vy3Qg24kkOsAdhusil3/v0h+zOxYQT0B5MLxNJtoSZyzoZhylAr/6lFrkfdiN1hLGeqtQdXFffNIqdHF5sDVpyaypGzuu8WfsGoSYY1reHMXqs+CsLoreL8jXeguBjSkJY2ReNg
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22b87a8e-c5dd-474c-a71f-08d87f9336ff
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2020 00:55:53.3958
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h9wQiONETUhagu9lIB4yB9Cjd7PVaV3bRMFg9JykQ6B3qslM5+0N/eWmGYeCQIjS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3509
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-02_16:2020-11-02,2020-11-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
- malwarescore=0 adultscore=0 suspectscore=1 bulkscore=0 mlxscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011030002
-X-FB-Internal: deliver
+References: <160416890683.710453.7723265174628409401.stgit@localhost.localdomain>
+ <160417034457.2823.10600750891200038944.stgit@localhost.localdomain> <20201103004205.qbyabntlc4yl5vwn@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201103004205.qbyabntlc4yl5vwn@kafai-mbp.dhcp.thefacebook.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 2 Nov 2020 16:56:37 -0800
+Message-ID: <CAKgT0Uec9rUxych344UKFF5J1p4aMp3GWfudZ3-mxRq+fqEyNQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 3/5] selftests/bpf: Replace EXPECT_EQ with
+ ASSERT_EQ and refactor verify_results
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        alexanderduyck@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 31, 2020 at 11:52:31AM -0700, Alexander Duyck wrote:
-> From: Alexander Duyck <alexanderduyck@fb.com>
-> 
-> Update tcpbpf_user.c to make use of the BPF skeleton. Doing this we can
-> simplify test_tcpbpf_user and reduce the overhead involved in setting up
-> the test.
-> 
-> In addition we can clean up the remaining bits such as the one remaining
-> CHECK_FAIL at the end of test_tcpbpf_user so that the function only makes
-> use of CHECK as needed.
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+On Mon, Nov 2, 2020 at 4:42 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Sat, Oct 31, 2020 at 11:52:24AM -0700, Alexander Duyck wrote:
+> > From: Alexander Duyck <alexanderduyck@fb.com>
+> >
+> > There is already logic in test_progs.h for asserting that a value is
+> > expected to be another value. So instead of reinventing it we should just
+> > make use of ASSERT_EQ in tcpbpf_user.c. This will allow for better
+> > debugging and integrates much more closely with the test_progs framework.
+> >
+> > In addition we can refactor the code a bit to merge together the two
+> > verify functions and tie them together into a single function. Doing this
+> > helps to clean the code up a bit and makes it more readable as all the
+> > verification is now done in one function.
+> >
+> > Lastly we can relocate the verification to the end of the run_test since it
+> > is logically part of the test itself. With this we can drop the need for a
+> > return value from run_test since verification becomes the last step of the
+> > call and then immediately following is the tear down of the test setup.
+> >
+> > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-> ---
->  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |   48 ++++++++------------
->  1 file changed, 18 insertions(+), 30 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> index d96f4084d2f5..c7a61b0d616a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-> @@ -4,6 +4,7 @@
->  #include <network_helpers.h>
->  
->  #include "test_tcpbpf.h"
-> +#include "test_tcpbpf_kern.skel.h"
->  
->  #define LO_ADDR6 "::1"
->  #define CG_NAME "/tcpbpf-user-test"
-> @@ -133,44 +134,31 @@ static void run_test(int map_fd, int sock_map_fd)
->  
->  void test_tcpbpf_user(void)
->  {
-> -	const char *file = "test_tcpbpf_kern.o";
-> -	int prog_fd, map_fd, sock_map_fd;
-> -	int error = EXIT_FAILURE;
-> -	struct bpf_object *obj;
-> +	struct test_tcpbpf_kern *skel;
-> +	int map_fd, sock_map_fd;
->  	int cg_fd = -1;
-> -	int rv;
-> -
-> -	cg_fd = test__join_cgroup(CG_NAME);
-> -	if (cg_fd < 0)
-> -		goto err;
->  
-> -	if (bpf_prog_load(file, BPF_PROG_TYPE_SOCK_OPS, &obj, &prog_fd)) {
-> -		fprintf(stderr, "FAILED: load_bpf_file failed for: %s\n", file);
-> -		goto err;
-> -	}
-> +	skel = test_tcpbpf_kern__open_and_load();
-> +	if (CHECK(!skel, "open and load skel", "failed"))
-> +		return;
->  
-> -	rv = bpf_prog_attach(prog_fd, cg_fd, BPF_CGROUP_SOCK_OPS, 0);
-> -	if (rv) {
-> -		fprintf(stderr, "FAILED: bpf_prog_attach: %d (%s)\n",
-> -		       errno, strerror(errno));
-> -		goto err;
-> -	}
-> +	cg_fd = test__join_cgroup(CG_NAME);
-> +	if (CHECK(cg_fd < 0, "test__join_cgroup(" CG_NAME ")",
-> +		  "cg_fd:%d errno:%d", cg_fd, errno))
-> +		goto cleanup_skel;
->  
-> -	map_fd = bpf_find_map(__func__, obj, "global_map");
-> -	if (map_fd < 0)
-> -		goto err;
-> +	map_fd = bpf_map__fd(skel->maps.global_map);
-> +	sock_map_fd = bpf_map__fd(skel->maps.sockopt_results);
->  
-> -	sock_map_fd = bpf_find_map(__func__, obj, "sockopt_results");
-> -	if (sock_map_fd < 0)
-> -		goto err;
-> +	skel->links.bpf_testcb = bpf_program__attach_cgroup(skel->progs.bpf_testcb, cg_fd);
-> +	if (ASSERT_OK_PTR(skel->links.bpf_testcb, "attach_cgroup(bpf_testcb)"))
-> +		goto cleanup_namespace;
->  
->  	run_test(map_fd, sock_map_fd);
->  
-> -	error = 0;
-> -err:
-> -	bpf_prog_detach(cg_fd, BPF_CGROUP_SOCK_OPS);
-> +cleanup_namespace:
-nit.
+Thanks for the review.
 
-may be "cleanup_cgroup" instead?
+> > ---
+> >  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |  114 ++++++++------------
+> >  1 file changed, 44 insertions(+), 70 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > index 17d4299435df..d96f4084d2f5 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > @@ -10,66 +10,58 @@
+> >
+> >  static __u32 duration;
+> >
+> > -#define EXPECT_EQ(expected, actual, fmt)                     \
+> > -     do {                                                    \
+> > -             if ((expected) != (actual)) {                   \
+> > -                     fprintf(stderr, "  Value of: " #actual "\n"     \
+> > -                            "    Actual: %" fmt "\n"         \
+> > -                            "  Expected: %" fmt "\n",        \
+> > -                            (actual), (expected));           \
+> > -                     ret--;                                  \
+> > -             }                                               \
+> > -     } while (0)
+> > -
+> > -int verify_result(const struct tcpbpf_globals *result)
+> > -{
+> > -     __u32 expected_events;
+> > -     int ret = 0;
+> > -
+> > -     expected_events = ((1 << BPF_SOCK_OPS_TIMEOUT_INIT) |
+> > -                        (1 << BPF_SOCK_OPS_RWND_INIT) |
+> > -                        (1 << BPF_SOCK_OPS_TCP_CONNECT_CB) |
+> > -                        (1 << BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB) |
+> > -                        (1 << BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB) |
+> > -                        (1 << BPF_SOCK_OPS_NEEDS_ECN) |
+> > -                        (1 << BPF_SOCK_OPS_STATE_CB) |
+> > -                        (1 << BPF_SOCK_OPS_TCP_LISTEN_CB));
+> > -
+> > -     EXPECT_EQ(expected_events, result->event_map, "#" PRIx32);
+> > -     EXPECT_EQ(501ULL, result->bytes_received, "llu");
+> > -     EXPECT_EQ(1002ULL, result->bytes_acked, "llu");
+> > -     EXPECT_EQ(1, result->data_segs_in, PRIu32);
+> > -     EXPECT_EQ(1, result->data_segs_out, PRIu32);
+> > -     EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
+> > -     EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
+> > -     EXPECT_EQ(1, result->num_listen, PRIu32);
+> > -
+> > -     /* 3 comes from one listening socket + both ends of the connection */
+> > -     EXPECT_EQ(3, result->num_close_events, PRIu32);
+> > -
+> > -     return ret;
+> > -}
+> > -
+> > -int verify_sockopt_result(int sock_map_fd)
+> > +static void verify_result(int map_fd, int sock_map_fd)
+> >  {
+> > +     __u32 expected_events = ((1 << BPF_SOCK_OPS_TIMEOUT_INIT) |
+> > +                              (1 << BPF_SOCK_OPS_RWND_INIT) |
+> > +                              (1 << BPF_SOCK_OPS_TCP_CONNECT_CB) |
+> > +                              (1 << BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB) |
+> > +                              (1 << BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB) |
+> > +                              (1 << BPF_SOCK_OPS_NEEDS_ECN) |
+> > +                              (1 << BPF_SOCK_OPS_STATE_CB) |
+> > +                              (1 << BPF_SOCK_OPS_TCP_LISTEN_CB));
+> > +     struct tcpbpf_globals result = { 0 };
+> nit. init is not needed.
 
-or only have one jump label to handle failure since "cg_fd != -1" has been
-tested already.
+I had copied/pasted it from the original code that was defining this.
+If a v3 is needed I can drop the initialization.
 
->  	if (cg_fd != -1)
->  		close(cg_fd);
-> -
-> -	CHECK_FAIL(error);
-> +cleanup_skel:
-> +	test_tcpbpf_kern__destroy(skel);
->  }
-> 
-> 
+> >       __u32 key = 0;
+> > -     int ret = 0;
+> >       int res;
+> >       int rv;
+> >
+> > +     rv = bpf_map_lookup_elem(map_fd, &key, &result);
+> > +     if (CHECK(rv, "bpf_map_lookup_elem(map_fd)", "err:%d errno:%d",
+> > +               rv, errno))
+> > +             return;
+> > +
+> > +     /* check global map */
+> > +     CHECK(expected_events != result.event_map, "event_map",
+> > +           "unexpected event_map: actual %#" PRIx32" != expected %#" PRIx32 "\n",
+> > +           result.event_map, expected_events);
+> > +
+> > +     ASSERT_EQ(result.bytes_received, 501, "bytes_received");
+> > +     ASSERT_EQ(result.bytes_acked, 1002, "bytes_acked");
+> > +     ASSERT_EQ(result.data_segs_in, 1, "data_segs_in");
+> > +     ASSERT_EQ(result.data_segs_out, 1, "data_segs_out");
+> > +     ASSERT_EQ(result.bad_cb_test_rv, 0x80, "bad_cb_test_rv");
+> > +     ASSERT_EQ(result.good_cb_test_rv, 0, "good_cb_test_rv");
+> > +     ASSERT_EQ(result.num_listen, 1, "num_listen");
+> > +
+> > +     /* 3 comes from one listening socket + both ends of the connection */
+> > +     ASSERT_EQ(result.num_close_events, 3, "num_close_events");
+> > +
+> >       /* check setsockopt for SAVE_SYN */
+> > +     key = 0;
+> nit. not needed.
+
+I assume you mean it is redundant since it was initialized to 0 when
+we declared key in the first place?
+
+> >       rv = bpf_map_lookup_elem(sock_map_fd, &key, &res);
+> > -     EXPECT_EQ(0, rv, "d");
+> > -     EXPECT_EQ(0, res, "d");
+> > -     key = 1;
+> > +     CHECK(rv, "bpf_map_lookup_elem(sock_map_fd)", "err:%d errno:%d",
+> > +           rv, errno);
+> > +     ASSERT_EQ(res, 0, "bpf_setsockopt(TCP_SAVE_SYN)");
+> > +
+> >       /* check getsockopt for SAVED_SYN */
+> > +     key = 1;
+> >       rv = bpf_map_lookup_elem(sock_map_fd, &key, &res);
+> > -     EXPECT_EQ(0, rv, "d");
+> > -     EXPECT_EQ(1, res, "d");
+> > -     return ret;
+> > +     CHECK(rv, "bpf_map_lookup_elem(sock_map_fd)", "err:%d errno:%d",
+> > +           rv, errno);
+> > +     ASSERT_EQ(res, 1, "bpf_getsockopt(TCP_SAVED_SYN)");
+> >  }
