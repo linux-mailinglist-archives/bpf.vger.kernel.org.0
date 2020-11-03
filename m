@@ -2,98 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D292A501C
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 20:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A9D2A502F
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 20:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729671AbgKCT2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 14:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgKCT2N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 14:28:13 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700DBC0613D1;
-        Tue,  3 Nov 2020 11:28:13 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id h196so15862193ybg.4;
-        Tue, 03 Nov 2020 11:28:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=086QXPQOFmQa0/qNNMQMF6FnV1pJVActXTh078XtSYc=;
-        b=p3LFK3c3EHixzrX4mi7n6oPv+ZpesKIo7xuKoHcCiotv7JoEIM41cEMwWam6g2FeWF
-         xadndj/3JZ/H+GK+iIrOtl/gtUyESLr2lQkgJOGt3vYg0wR/aL/peh49K6O8RbDcC3Zl
-         EoaTjVEbZF7GGVeeRQm5ALl1b1caWaKBQM8EfDXi04E2zLGzy16/Cx7ROIm4RhE1+Tv7
-         p9M1YSIPkoMH8Yn5r5H2I9KOfaYoljvaatBGOHEJARaYb9Hw3zfOFmnvF+WJ/z2/kBLZ
-         g2PylIY5JUB8SD6YxZuC0hadhgLf/cRZwZcyDRoiUbeQP3qA3w7YjlpjtDwHihh5GzmT
-         VXHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=086QXPQOFmQa0/qNNMQMF6FnV1pJVActXTh078XtSYc=;
-        b=s5WgEef3Cp6LFPKEO66OrjGoQyCTTOJTfaTEMwkIkozL+nJFNYoy9vf4mz/y1XF+cc
-         QTHwPS/zq+ZRTMNpTydprgZV45iLrkvRizU7u5gsRvBtEKgBeQRyzAbreSoUKBqMKbiR
-         pjZJw3U5wJvj2JYZrGHj60kwVw4B++btlUxfR/LwlDFlTwbzW8Efe+cwXQ2MDuE+4C2p
-         +WV2q7WHS4zbCCXRaeke1L9TRLqj8hii5SvDQNZ1lxq5ZSZw5EWahApuGFjAC53Osum9
-         g8sTNLGd30IlmIm5xZG8zXVye0q/PvSR+NBoLq3ZeJwssvVRbvQ8vV1YQ6XxidXYAyDa
-         E5sw==
-X-Gm-Message-State: AOAM530HB/c0rRZJoeGO3BIEPPQdkMo43pKMtLbVBbskd4xtabg5qQ6n
-        NNZvJPHbe8ogkSUUANcNbqTT4wouvuGxpS00BexZ4dvw+Vk=
-X-Google-Smtp-Source: ABdhPJyRTxVYFvH+vCHhvE92SRpLSfLl8VAUYb6s2IyLJxS5DZNcR4smEyOo1rR106jfLpou5Z8wIScaTzq10cmmU/0=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr31418948ybl.347.1604431692776;
- Tue, 03 Nov 2020 11:28:12 -0800 (PST)
+        id S1726660AbgKCTe0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 14:34:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39533 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725957AbgKCTe0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 14:34:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604432064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zTaA5gUZSRFLtoUCw2qbfO/TZcEBTod+GMbYlqinI7g=;
+        b=DEyxHXUdAEfLTeDqUzcBMCD0qr09l8v68NyHhf0y/lap8czmrFkgBwdlwxXXpQHMfj13x0
+        rlHXv1rgPH+rCcGl2K2tXKHOYVIEP0A0Y//sbOtdVAGLUdtnD8sLcy0GqfboUegGR2777C
+        Ak+xpTT3SmPyDOdVL8nznKCg7hj9zBA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-fkmvn8AjM7mgMTg7P7cAbw-1; Tue, 03 Nov 2020 14:34:22 -0500
+X-MC-Unique: fkmvn8AjM7mgMTg7P7cAbw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0FB5A189942A;
+        Tue,  3 Nov 2020 19:34:21 +0000 (UTC)
+Received: from krava (unknown [10.40.195.210])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6E2D51A4D6;
+        Tue,  3 Nov 2020 19:34:15 +0000 (UTC)
+Date:   Tue, 3 Nov 2020 20:34:14 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 2/2] btf_encoder: Change functions check due to broken
+ dwarf
+Message-ID: <20201103193414.GK3597846@krava>
+References: <20201031223131.3398153-1-jolsa@kernel.org>
+ <20201031223131.3398153-3-jolsa@kernel.org>
+ <20201102215908.GC3597846@krava>
+ <20201102225658.GD3597846@krava>
+ <CAEf4BzbdGwogFQiLE2eH9ER67hne7NgW4S8miYBM4CRb8NDPvg@mail.gmail.com>
+ <20201103190559.GI3597846@krava>
+ <CAEf4BzbMOzAdsyMT736idoGnJ1RuxRa5y9wf-egh+LKz406m1g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201103153132.2717326-1-kpsingh@chromium.org> <20201103153132.2717326-3-kpsingh@chromium.org>
-In-Reply-To: <20201103153132.2717326-3-kpsingh@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 3 Nov 2020 11:28:01 -0800
-Message-ID: <CAEf4Bza=80OMCBMLJJa5Vu1qokwzCtePcu4arruXUi8jHK8eWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/8] libbpf: Add support for task local storage
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbMOzAdsyMT736idoGnJ1RuxRa5y9wf-egh+LKz406m1g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 7:34 AM KP Singh <kpsingh@chromium.org> wrote:
->
-> From: KP Singh <kpsingh@google.com>
->
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> ---
->  tools/lib/bpf/libbpf_probes.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> index 5482a9b7ae2d..bed00ca194f0 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
->  /* Copyright (c) 2019 Netronome Systems, Inc. */
->
-> +#include "linux/bpf.h"
+On Tue, Nov 03, 2020 at 11:23:33AM -0800, Andrii Nakryiko wrote:
 
-why "", not <>?
+SNIP
 
->  #include <errno.h>
->  #include <fcntl.h>
->  #include <string.h>
-> @@ -230,6 +231,7 @@ bool bpf_probe_map_type(enum bpf_map_type map_type, __u32 ifindex)
->                 break;
->         case BPF_MAP_TYPE_SK_STORAGE:
->         case BPF_MAP_TYPE_INODE_STORAGE:
-> +       case BPF_MAP_TYPE_TASK_STORAGE:
->                 btf_key_type_id = 1;
->                 btf_value_type_id = 3;
->                 value_size = 8;
-> --
-> 2.29.1.341.ge80a0c044ae-goog
->
+> > > on what's missing and why it shouldn't be missing?
+> >
+> > yes, it's just a hack, we should do something more
+> > robust as I mentioned above
+> >
+> > it just allowed me to use iterators finaly ;-)
+> 
+> sure, I get it, I was just trying to understand why there is such a
+> problem in the first place. Turns out we need FUNCs not just for
+> fentry/fexit and similar, but also for bpf_iter, which is an entirely
+> different use case (similar to raw_tp, but raw_tp is using typedef ->
+> func_proto approach).
+> 
+> So I don't know, we might as well just not do mcount checks?.. As an
+> alternative, but it's not great as well.
+
+how about moving all such functions to separate new .init.XXX section,
+and pahole would make one extr acheck for that.. and it still gets freed
+
+jirka
+
