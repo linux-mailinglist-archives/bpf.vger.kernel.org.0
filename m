@@ -2,226 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDC72A4E07
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 19:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADC92A4E40
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 19:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729079AbgKCSMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 13:12:42 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:19432 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729268AbgKCSM0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 13:12:26 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A3IApEE032673;
-        Tue, 3 Nov 2020 10:12:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=9GTcIZB1mSpuFwcAyWNKV2m0Po4twk5AZT2Qher33D0=;
- b=LxVoTDDDDEnPjnoP3/0F3+DOAjhxa5PyKSQNcy/eF5bpsQqkWuNGrShnsAcHGyrkrh9r
- +93g6S0NDLwVn0l+vIp3GpXWQGA4WjfHy4jqsDtbtK++SAPYNLxtzkALRJqWnQ4uXIdp
- wO2R8V9gojep6SWkyP9T+kHxY+w9K3e4EbY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34hqducw3h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 03 Nov 2020 10:12:09 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 3 Nov 2020 10:12:08 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E1yf/mTffvnCiOyoY/Pi5eKqE4jpKKuK70fPxxAVUMBIZ4nr3tmyo9WoHNrksh/azBkH4Sh8CC9NLbzCtXs7Prezaa3U8TWE8x3AcYHLfl965DjrRqWrfg7YrEJRaOCEpnjieGUrrtuVDKk6RdZsnWLUUzuqmSe7oImSq5UeMVKq0ismQk2JDGcLECdOLQ1jexAMkDFJD/ek5zetQ3r0kVRxkH1ggXY5Yq0sQVucfJrFurBuPS+E5Fl6LiBBzvkcagoNJSjSZyRNkrM5wVOjjvh0VxMzR6E6ZvrHRx2bpm/dMyh7kxo2kyagRjt9UyZ9RVcWa0C3KrrblzQXoG3peg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9GTcIZB1mSpuFwcAyWNKV2m0Po4twk5AZT2Qher33D0=;
- b=iGWLqAaLW7+MDUwE9ILUGFOR1TIRITr3XQ/U3vRCZQMUn+UJCsl81pNOC3YRVbd+f0Nfj+ZSbvRyYo4IKi7wpgyAgNjPMDOS2b94cRU3QDXH76eYxot+7ukLvBQXB4HDiroIJvVTZQT9rP9Sr2Epxnih4Kh3k7DaSxeo9Dt+blQG4N/VdQYdMG4N7Qghik1A9YMHQzcTMWRHCLpY7/6vDD4m1Id5MjY4YDZYtnXjL/42K/oqDvDOHZA2nRtVUaLcngmTNmoXqUoZMaU+hGNAezBuNl8L3tKSKTc/qW+SKGqut0HwnRxlgg3ppvaSNXX0wTOOhRwvhCQzO+SsG50nBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9GTcIZB1mSpuFwcAyWNKV2m0Po4twk5AZT2Qher33D0=;
- b=etRdOhkzabmDP7IlO2mqS6bhGQ+hoER32gMYAelzDtu2zm/Rtj2PHrT4oqa3ju3rrLQ5EdDxHQdLOsLOGNfNUMWGREVFrf032QmsvzkUh4+lu2Edmu8jNpjfe/o9zYlWUdSIXuSwAjdU5qhMpn4icMooJsGHP5P1wKgK7QpqKUA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2840.namprd15.prod.outlook.com (2603:10b6:a03:b2::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Tue, 3 Nov
- 2020 18:12:07 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Tue, 3 Nov 2020
- 18:12:07 +0000
-Date:   Tue, 3 Nov 2020 10:12:00 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Lawrence Brakmo <brakmo@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        <alexanderduyck@fb.com>
-Subject: Re: [bpf-next PATCH v2 5/5] selftest/bpf: Use global variables
- instead of maps for test_tcpbpf_kern
-Message-ID: <20201103181200.5h4pp4p3issazgpd@kafai-mbp.dhcp.thefacebook.com>
-References: <160416890683.710453.7723265174628409401.stgit@localhost.localdomain>
- <160417035730.2823.6697632421519908152.stgit@localhost.localdomain>
- <20201103012552.twbqzgbhc35nushq@kafai-mbp.dhcp.thefacebook.com>
- <CAKgT0UebGOEf4aqAqsisUVKzU6+pas+qFkHy-OoHeHYTCAE_+A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKgT0UebGOEf4aqAqsisUVKzU6+pas+qFkHy-OoHeHYTCAE_+A@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:1da0]
-X-ClientProxiedBy: MWHPR02CA0009.namprd02.prod.outlook.com
- (2603:10b6:300:4b::19) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1729175AbgKCSTT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 13:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729170AbgKCSTR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 13:19:17 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F57C0613D1;
+        Tue,  3 Nov 2020 10:19:17 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id s89so15634010ybi.12;
+        Tue, 03 Nov 2020 10:19:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+MnVRGp1lkEU8jeFVY9M5pC4CJoPd8hOwGMGI5wGX8Y=;
+        b=NLt5+QMBlK6xmkhKZ9Pd3e1QjMZ6sQPK4is1SEZ/HHMZt2FdrPMBZopSM4drn+pENV
+         Al09VYjPrBSq6VSOO6VetvscwLEv2J7YmUKRCczB94YLbv+EZRBHOL10odCv6X6EvcZ5
+         ZZK2mBrRMPXyvOxFpnIqsdZHmZvwY8bdiewMpGWLCrYcJ4aX/Yh0VycyY71TAifeGXpY
+         CH5vYQet1zsFoCOy2Qi8krVQLLOpM8q8EPI2Mxgn3POO0W+Cfbg0dJBnavm67AP5p3ZT
+         71NXSnE6O9x0ScCgr09WofAxfvilC1tIOpxzFsnGt6ysEb5GmDg8OAhjI+Q02SYTXQcl
+         CQgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+MnVRGp1lkEU8jeFVY9M5pC4CJoPd8hOwGMGI5wGX8Y=;
+        b=BKwvwFKnoLwJyNhovqger1RX045DmLgNw0YHavpZva0K77JvGh1gAvzDCD/0yQbhwj
+         Ert4WGBjMY5hCshwaGZbNeMbuCxv9V4kf4bWShjszZWYn9TPYO5dsxP9jt+S2vLxxcLj
+         ch0r0J3/StWvOavgQfTh6QJLHAnQg6q85dAXBtpNijHajJPlxEIlcej6MikdyNDsTpuS
+         mBMGjFQWDKORVzCYpuztIBxxFJGv8i2V2Kjh+x+NoCrFbchjKlBvyvwuVxr/Ws/X6GvB
+         khjhwm1RPh4t6BJCfgMtmbvIvQJJm+FGT1ttz8Ph2QHWtxUjWaHEeNTa1kS+Rh9CP5HR
+         BVAw==
+X-Gm-Message-State: AOAM530jmMeth8ug8iHoqKnu12fA1xA5xlzDiW2LutHB+5Yd+F70Kk88
+        TMHxIISC855sK2Bm8OufI1rmJpWB7xrO7CbGsycvLFcLPdIsQw==
+X-Google-Smtp-Source: ABdhPJzH7EixjMFatBDaUL1G/hXUSJa9a+R9KPXKbC+OBmV+WDHem73Isk6SQd9U+WpGdl6auIjdqx5elKEfn1nnWZg=
+X-Received: by 2002:a25:c001:: with SMTP id c1mr28393208ybf.27.1604427557002;
+ Tue, 03 Nov 2020 10:19:17 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:1da0) by MWHPR02CA0009.namprd02.prod.outlook.com (2603:10b6:300:4b::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Tue, 3 Nov 2020 18:12:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 790b5c3e-1116-4e35-1067-08d88023f982
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2840:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2840529A9074EEC248D274F5D5110@BYAPR15MB2840.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WwHxROnq8zi5BWFhOItnXoDN+M5eR0DW9V+ixWSCC40t9JKfigBsWt/qKdI6CK00juAL7znTTUzjZy5JNcBTXLJuWLlLh37m1TF6q27QRYm0c4+hwm8OzxJvRBH5DDZRAXlvsJYIe61cSLEVDj2Fztb02AcSATXliCrP34UaXj3idOOjkNI43Ha5RWb2DxRVXZdH0jFEUf0Rj+oXCKS7wuiAownnZQ2VTFpJ1OIUXRD3yHCGWYbcomhqfpokQcmf4MjpStGvSIXNeuPpNzgZpKaqbiKty0Yazx4Bot6n1IT8rumVKEsqfUvG5tcU72bt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(136003)(39860400002)(366004)(376002)(7696005)(16526019)(54906003)(316002)(52116002)(186003)(6666004)(66476007)(66946007)(66556008)(478600001)(6916009)(2906002)(8676002)(83380400001)(86362001)(5660300002)(8936002)(4326008)(9686003)(53546011)(6506007)(55016002)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: /Jp++xnCePKoQPXOkae5o8dVlswghqv5ghF636mJ6Am2TEdHuO2q0dF+2Qp8CQjVEPumtb05FTAsJCk2d1Kbyh07wMZaqZHWRWcyGriOXxHcNh7Yx1detLuT2xW098r2YZI62Pf4b41OSDZowuE2sRVzBloRycZcKaHa6ublTh06tIs1aEBByNdtYf2RdOZdeCSNDIT5xGiL0rrHeG5jdocO8qMxwZUMpbVureo1YeeOkHv3sCuDS/z9bV86CHV/gzqBpTLNoPcmJRj9mRV8jmDe8lmqvacGVLqBOCeQvQZgh01f+dFlbBGieVU2Pf2WYXQ7RN+RBp5vYKEYXBwsmPeRoyaB8VZFyUpsTz4a1kq6DBLep0uXp3yPwMcW8UOMufBzjmrSkv7AykNsRMxfbQjHCz3bvD6h5tiqguuKsetegU5b2uIRXo5W2dcNvoZUyGON+veMV9AFEpwSXopRDnT0CyiaUA3I0k0vkMUp9Cwq7Mh/Mjra23E+eL7HKIM/oT48zaId7QR9jg+FcXRwDVJHWHie82O36AGSDXwBsmCH5Oe3zlMu5HGtI5rCLToGrfkn4/5j7L+ef1foxt2GaHRfDh4PMUcU9lyt9ICrGpqCfw8WximuCNEktWgCDuJs5P/SaqeZih+am2scjoQW/m4IKd/RgkQO8dG94zWpmGM=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 790b5c3e-1116-4e35-1067-08d88023f982
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2020 18:12:07.3365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yetGtiA8WNnHTHpYUN3vhkmIuRgAnby6s3mnby2a21vM332/GZENf0cmsi5ExsWq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2840
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-03_08:2020-11-03,2020-11-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=708 priorityscore=1501 impostorscore=0
- malwarescore=0 adultscore=0 suspectscore=1 bulkscore=0 mlxscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011030124
-X-FB-Internal: deliver
+References: <20201027221324.27894-1-david.verbeiren@tessares.net> <20201103154738.29809-1-david.verbeiren@tessares.net>
+In-Reply-To: <20201103154738.29809-1-david.verbeiren@tessares.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 3 Nov 2020 10:19:06 -0800
+Message-ID: <CAEf4Bzajj+1Kh+YcWH2K0i21ZGM7q=gt6EXGY_YsFwTcmt0nKw@mail.gmail.com>
+Subject: Re: [PATCH bpf v3] bpf: zero-fill re-used per-cpu map element
+To:     David Verbeiren <david.verbeiren@tessares.net>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, Song Liu <song@kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 07:42:46AM -0800, Alexander Duyck wrote:
-> On Mon, Nov 2, 2020 at 5:26 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Sat, Oct 31, 2020 at 11:52:37AM -0700, Alexander Duyck wrote:
-> > [ ... ]
-> >
-> > > +struct tcpbpf_globals global = { 0 };
-> > >  int _version SEC("version") = 1;
-> > >
-> > >  SEC("sockops")
-> > > @@ -105,29 +72,15 @@ int bpf_testcb(struct bpf_sock_ops *skops)
-> > >
-> > >       op = (int) skops->op;
-> > >
-> > > -     update_event_map(op);
-> > > +     global.event_map |= (1 << op);
-> > >
-> > >       switch (op) {
-> > >       case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
-> > >               /* Test failure to set largest cb flag (assumes not defined) */
-> > > -             bad_call_rv = bpf_sock_ops_cb_flags_set(skops, 0x80);
-> > > +             global.bad_cb_test_rv = bpf_sock_ops_cb_flags_set(skops, 0x80);
-> > >               /* Set callback */
-> > > -             good_call_rv = bpf_sock_ops_cb_flags_set(skops,
-> > > +             global.good_cb_test_rv = bpf_sock_ops_cb_flags_set(skops,
-> > >                                                BPF_SOCK_OPS_STATE_CB_FLAG);
-> > > -             /* Update results */
-> > > -             {
-> > > -                     __u32 key = 0;
-> > > -                     struct tcpbpf_globals g, *gp;
-> > > -
-> > > -                     gp = bpf_map_lookup_elem(&global_map, &key);
-> > > -                     if (!gp)
-> > > -                             break;
-> > > -                     g = *gp;
-> > > -                     g.bad_cb_test_rv = bad_call_rv;
-> > > -                     g.good_cb_test_rv = good_call_rv;
-> > > -                     bpf_map_update_elem(&global_map, &key, &g,
-> > > -                                         BPF_ANY);
-> > > -             }
-> > >               break;
-> > >       case BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB:
-> > >               skops->sk_txhash = 0x12345f;
-> > > @@ -143,10 +96,8 @@ int bpf_testcb(struct bpf_sock_ops *skops)
-> > >
-> > >                               thdr = (struct tcphdr *)(header + offset);
-> > >                               v = thdr->syn;
-> > > -                             __u32 key = 1;
-> > >
-> > > -                             bpf_map_update_elem(&sockopt_results, &key, &v,
-> > > -                                                 BPF_ANY);
-> > > +                             global.tcp_saved_syn = v;
-> > >                       }
-> > >               }
-> > >               break;
-> > > @@ -156,25 +107,16 @@ int bpf_testcb(struct bpf_sock_ops *skops)
-> > >               break;
-> > >       case BPF_SOCK_OPS_STATE_CB:
-> > >               if (skops->args[1] == BPF_TCP_CLOSE) {
-> > > -                     __u32 key = 0;
-> > > -                     struct tcpbpf_globals g, *gp;
-> > > -
-> > > -                     gp = bpf_map_lookup_elem(&global_map, &key);
-> > > -                     if (!gp)
-> > > -                             break;
-> > > -                     g = *gp;
-> > >                       if (skops->args[0] == BPF_TCP_LISTEN) {
-> > > -                             g.num_listen++;
-> > > +                             global.num_listen++;
-> > >                       } else {
-> > > -                             g.total_retrans = skops->total_retrans;
-> > > -                             g.data_segs_in = skops->data_segs_in;
-> > > -                             g.data_segs_out = skops->data_segs_out;
-> > > -                             g.bytes_received = skops->bytes_received;
-> > > -                             g.bytes_acked = skops->bytes_acked;
-> > > +                             global.total_retrans = skops->total_retrans;
-> > > +                             global.data_segs_in = skops->data_segs_in;
-> > > +                             global.data_segs_out = skops->data_segs_out;
-> > > +                             global.bytes_received = skops->bytes_received;
-> > > +                             global.bytes_acked = skops->bytes_acked;
-> > >                       }
-> > > -                     g.num_close_events++;
-> > > -                     bpf_map_update_elem(&global_map, &key, &g,
-> > > -                                         BPF_ANY);
-> > It is interesting that there is no race in the original "g.num_close_events++"
-> > followed by the bpf_map_update_elem().  It seems quite fragile though.
-> 
-> How would it race with the current code though? At this point we are
-> controlling the sockets in a single thread. As such the close events
-> should already be serialized shouldn't they? This may have been a
-> problem with the old code, but even then it was only two sockets so I
-> don't think there was much risk of them racing against each other
-> since the two sockets were linked anyway.
-> 
-> > > +                     global.num_close_events++;
-> > There is __sync_fetch_and_add().
-> >
-> > not sure about the global.event_map though, may be use an individual
-> > variable for each _CB.  Thoughts?
-> 
-> I think this may be overkill for what we actually need. Since we are
-> closing the sockets in a single threaded application there isn't much
-> risk of the sockets all racing against each other in the close is
-> there?
-Make sense.
+On Tue, Nov 3, 2020 at 7:49 AM David Verbeiren
+<david.verbeiren@tessares.net> wrote:
+>
+> Zero-fill element values for all other cpus than current, just as
+> when not using prealloc. This is the only way the bpf program can
+> ensure known initial values for all cpus ('onallcpus' cannot be
+> set when coming from the bpf program).
+>
+> The scenario is: bpf program inserts some elements in a per-cpu
+> map, then deletes some (or userspace does). When later adding
+> new elements using bpf_map_update_elem(), the bpf program can
+> only set the value of the new elements for the current cpu.
+> When prealloc is enabled, previously deleted elements are re-used.
+> Without the fix, values for other cpus remain whatever they were
+> when the re-used entry was previously freed.
+>
+> A selftest is added to validate correct operation in above
+> scenario as well as in case of LRU per-cpu map element re-use.
+>
+> Fixes: 6c9059817432 ("bpf: pre-allocate hash map elements")
+> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
+> ---
+>
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+Tests look really nice, thanks! I'm worried about still racy once
+check, see suggestions below. Otherwise looks great!
+
+> Notes:
+>     v3:
+>       - Added selftest that was initially provided as separate
+>         patch, and reworked to
+>         * use skeleton (Andrii, Song Liu)
+>         * skip test if <=1 CPU (Song Liu)
+>
+>     v2:
+>       - Moved memset() to separate pcpu_init_value() function,
+>         which replaces pcpu_copy_value() but delegates to it
+>         for the cases where no memset() is needed (Andrii).
+>       - This function now also avoids doing the memset() for
+>         the current cpu for which the value must be set
+>         anyhow (Andrii).
+>       - Same pcpu_init_value() used for per-cpu LRU map
+>         (Andrii).
+>
+>  kernel/bpf/hashtab.c                          |  30 ++-
+>  .../selftests/bpf/prog_tests/map_init.c       | 213 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_map_init.c       |  34 +++
+>  3 files changed, 275 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_map_init.c
+>
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
+> new file mode 100644
+> index 000000000000..386d9439bad9
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
+> @@ -0,0 +1,213 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +// Copyright (c) 2020 Tessares SA <http://www.tessares.net>
+> +
+
+nit: see below, /* */
+
+> +#include <test_progs.h>
+> +#include "test_map_init.skel.h"
+> +
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_map_init.c b/tools/testing/selftests/bpf/progs/test_map_init.c
+> new file mode 100644
+> index 000000000000..280a45e366d6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_map_init.c
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2020 Tessares SA <http://www.tessares.net>
+
+nit: I think copyright line has to be in /* */ comment block
+
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +
+> +__u64 inKey = 0;
+> +__u64 inValue = 0;
+> +__u32 once = 0;
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_PERCPU_HASH);
+> +       __uint(max_entries, 2);
+> +       __type(key, __u64);
+> +       __type(value, __u64);
+> +} hashmap1 SEC(".maps");
+> +
+> +
+> +SEC("raw_tp/sys_enter")
+> +int sys_enter(const void *ctx)
+> +{
+> +       /* Just do it once so the value is only updated for a single CPU.
+> +        * Indeed, this tracepoint will quickly be hit from different CPUs.
+> +        */
+> +       if (!once) {
+> +               __sync_fetch_and_add(&once, 1);
+
+This is quite racy, actually, especially for the generic sys_enter
+tracepoint. The way I did this before (see progs/trigger_bench.c) was
+through doing a "tp/syscalls/sys_enter_getpgid" tracepoint program and
+checking for thread id. Or you can use bpf_test_run, probably, with a
+different type of BPF program. I just find bpf_test_run() too
+inconvenient with all the extra setup, so I usually stick to
+tracepoints.
+
+> +
+> +               bpf_map_update_elem(&hashmap1, &inKey, &inValue, BPF_NOEXIST);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.29.0
+>
