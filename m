@@ -2,97 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAB42A3F3F
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 09:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F2F2A4076
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 10:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbgKCIqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 03:46:49 -0500
-Received: from www62.your-server.de ([213.133.104.62]:34794 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgKCIqs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 03:46:48 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kZrxW-0007cZ-IC; Tue, 03 Nov 2020 09:46:30 +0100
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kZrxW-000ARu-8N; Tue, 03 Nov 2020 09:46:30 +0100
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-Cc:     Hangbin Liu <haliu@redhat.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
- <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
-Date:   Tue, 3 Nov 2020 09:46:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25976/Mon Nov  2 14:23:56 2020)
+        id S1726018AbgKCJl5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 04:41:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbgKCJl4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 04:41:56 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A236FC0613D1;
+        Tue,  3 Nov 2020 01:41:56 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id u4so1434343pgr.9;
+        Tue, 03 Nov 2020 01:41:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=71pEoABsLOEAuijMMTA3hRAUwqnBuXZOUGcdfoF5GQ0=;
+        b=UU1TEjmrUmCLXP6heyM5/FGX8qbADy9djjoC56rwgBHcyrdoRNlnQwbxEk/XHVAeI4
+         eciwHUQ9ovyn8rn+Id6xbj/UHY7xXp4lIZ88XuGigjExJZgFv0iBWZdRaESVnqJ3hV9z
+         HxX1oP9wHbYuEEBz9GmNHT5uN65QYuAHAk1it3sUxGwuvxefvjTX5JPtUGsYFH4fNYxQ
+         vVJ9dYPDVwr2xCNZKkXrUrCZLAJgbRxXG5f2LjrSTaouRm8BA/6RsptdHurCuSkH8NXG
+         SC7ZfBFU61Xj3NEcKcZhtGGJldKwOO8pv1zrB4DAkXi63jcX2rnchCZC/xpI45anfvSF
+         cJLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=71pEoABsLOEAuijMMTA3hRAUwqnBuXZOUGcdfoF5GQ0=;
+        b=LEoDVXftjfb5lIeRCz9ctZa6OJ5k882yhQ91b/gSX3GXH7Xr5AlAbw5ycrCVL3BQ1i
+         y9uHMQoaZs43+KlLaeq2IwvhhGt5kITh7mH1TMKIS0bXcwHq3fnYqT2uBbeKcQvrTiAV
+         mdSvdp08NrK4kpzI+++25oiIbhJzX6wCpO+pM09QP5PdsKJuHqD2VuVbUf47++2CGAxo
+         pMpj+tzoMS/h0Ad72lRvW9wKLzbsj7FDjWk1Hb2Ff9wCKLEuHSVgoSg9bAZj2x97Ixka
+         iXb11CWozQKoyQH7Vsu6Wmq7IXZIXUtYIZ/KeWApg3H5XtetfhAjz8rYIMdqV93KVATY
+         9IRQ==
+X-Gm-Message-State: AOAM530RiQ8oUQklI+yP9uhBXygKR88tEFYInGZEiFlqfErZ/mCM/hGJ
+        wceFPFm8/5MKWGWErw2MU++xlZa446BTcAKb9xc=
+X-Google-Smtp-Source: ABdhPJwu0zWoU0g7+5SWR2aoKpI3hIkyU6fCeF+qO7sLpaTKzMBfWWenvQFIOVymjzLG/C8/xmwbOw==
+X-Received: by 2002:a17:90a:540f:: with SMTP id z15mr2860609pjh.111.1604396516323;
+        Tue, 03 Nov 2020 01:41:56 -0800 (PST)
+Received: from VM.ger.corp.intel.com ([192.55.55.41])
+        by smtp.gmail.com with ESMTPSA id b16sm16419842pfp.195.2020.11.03.01.41.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Nov 2020 01:41:55 -0800 (PST)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, andrii.nakryiko@gmail.com
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>, bpf@vger.kernel.org
+Subject: [PATCH bpf 0/2] libbpf: fix two bugs in xsk_socket__delete
+Date:   Tue,  3 Nov 2020 10:41:28 +0100
+Message-Id: <1604396490-12129-1-git-send-email-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/3/20 7:58 AM, Andrii Nakryiko wrote:
-> On Mon, Nov 2, 2020 at 7:47 AM David Ahern <dsahern@gmail.com> wrote:
->> On 10/29/20 9:11 AM, Hangbin Liu wrote:
->>> This series converts iproute2 to use libbpf for loading and attaching
->>> BPF programs when it is available. This means that iproute2 will
->>> correctly process BTF information and support the new-style BTF-defined
->>> maps, while keeping compatibility with the old internal map definition
->>> syntax.
->>>
->>> This is achieved by checking for libbpf at './configure' time, and using
->>> it if available. By default the system libbpf will be used, but static
->>> linking against a custom libbpf version can be achieved by passing
->>> LIBBPF_DIR to configure. FORCE_LIBBPF can be set to force configure to
->>> abort if no suitable libbpf is found (useful for automatic packaging
->>> that wants to enforce the dependency).
->>>
->>> The old iproute2 bpf code is kept and will be used if no suitable libbpf
->>> is available. When using libbpf, wrapper code ensures that iproute2 will
->>> still understand the old map definition format, including populating
->>> map-in-map and tail call maps before load.
->>>
->>> The examples in bpf/examples are kept, and a separate set of examples
->>> are added with BTF-based map definitions for those examples where this
->>> is possible (libbpf doesn't currently support declaratively populating
->>> tail call maps).
->>>
->>> At last, Thanks a lot for Toke's help on this patch set.
->>
->> In regards to comments from v2 of the series:
->>
->> iproute2 is a stable, production package that requires minimal support
->> from external libraries. The external packages it does require are also
->> stable with few to no relevant changes.
->>
->> bpf and libbpf on the other hand are under active development and
->> rapidly changing month over month. The git submodule approach has its
->> conveniences for rapid development but is inappropriate for a package
->> like iproute2 and will not be considered.
+This small series fixes two bugs in xsk_socket__delete. Details can be
+found in the individual commit messages, but a brief summary follows:
 
-I thought last time this discussion came up there was consensus that the
-submodule could be an explicit opt in for the configure script at least?
+Patch 1: fix null pointer dereference in xsk_socket__delete
+Patch 2: fix possible use after free in xsk_socket__delete
+
+This patch has been applied against commit 7a078d2d1880 ("libbpf, hashmap: Fix undefined behavior in hash_bits")
+
+Thanks: Magnus
+
+Magnus Karlsson (2):
+  libbpf: fix null dereference in xsk_socket__delete
+  libbpf: fix possible use after free in xsk_socket__delete
+
+ tools/lib/bpf/xsk.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+--
+2.7.4
