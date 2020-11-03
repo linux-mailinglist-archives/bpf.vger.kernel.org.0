@@ -2,227 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6272A4512
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 13:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E73972A45F4
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 14:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728920AbgKCM1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 07:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
+        id S1728993AbgKCNAe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 08:00:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728168AbgKCM1H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 07:27:07 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A457C0613D1;
-        Tue,  3 Nov 2020 04:27:07 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id o70so14686287ybc.1;
-        Tue, 03 Nov 2020 04:27:07 -0800 (PST)
+        with ESMTP id S1726388AbgKCNAe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 08:00:34 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8CAC0613D1;
+        Tue,  3 Nov 2020 05:00:33 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id z3so7746865pfz.6;
+        Tue, 03 Nov 2020 05:00:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/oGvFRQbq4HreLrXjHnEtr7tAWzubMYz9Ycf6hG9M6Y=;
-        b=PMqrhYu5rRVDsRsmZwdpvhUCtEaGa8UvENFKcH1PBZmbgvyJNsmKrgvE7ljueeMcLg
-         NhV1VT1DSTdh4F9yel+w8GHjCDDsjJTY1KplwnQEGMs4G6U8arqlSDGKp0drghJKvM/Y
-         9J7nXLfhSGKs0PurizR1TsmriKkZyh/4mDq1gd99YH/QAJO1BR6ZxlqNc+Yj1OE5/0p2
-         kOoEY9igKRfbogRgaHq5D1BuiyNv20BI2zgkfsRb+tVnfkZaR1V1VyZXfCxPIDbZmYHb
-         wh6cK7UmLZ6Cr0O9sPnwePWvYCO5zAjt62U/t1xswaj6wUNyAZ1lLH+PzH160TyfLQJ9
-         tR/Q==
+        bh=cLOijGoctpVii6lG3GNscCwHl4zBjRguK02Pj+vC7Bo=;
+        b=Lnt8Hjmu9dGoSLDAasF005iIBbNvJDUDXT2QOAwpwOqhEQdjNHVxckiiJFr8mU4us4
+         ZfvZURxeeV5pnQwRthC7wy5OhPHWgFUG+/dOdwLIl0starUECLJ9LsqKhehkbUNWbd+W
+         Gk40A7rI2KRJIH1RbJpPY9GOqOxSiWOz5ua9ugFXxzjUDbUsv8kMQdEWKNvX6VsLw7n/
+         Z/wiuG6cRq9ieuH87Rmjj6KfKi8oWILHkl2ewcbROaYc73EbRg5fyydXWz+3H1wFoUe9
+         y7HhwZtgPvyA5h3Hv1fhVJNm3akcVlQ9BYdE+WTW2Dmb7vNqchZ5wD9Su7dBPwQn1Tdu
+         8I5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/oGvFRQbq4HreLrXjHnEtr7tAWzubMYz9Ycf6hG9M6Y=;
-        b=t1iPwoFeHgDkzQXVx4KyoaHQy9vuwMaNBvR0QqlCIKYNnaon5mRaJWoekdanc/QyVi
-         ci9QKG573OU3157MIrwssVE9jTy/XcgZSQc2+boRyg6H6t3qTFRRT9P5uFn8EcGBtXE0
-         dQwwWeGWJ1OY5dkbGMah9J4a5wy3dbk+UK+M/n+I6lcHUAaH8IfiWNBY7OGRcnDKb2Vc
-         wVmFlAbMx4o2QCvRgYmLUV7xR6X2wplFg6oJo7V11zJKxhDfyPMSLMGn5DaFDaFQU7oD
-         6llN+TCou1TYQfS9BWDZAzmGVbfjVz8OGvdV3aoVLryO1p2J0l4E5MFsEZuFA/rW+866
-         8oCw==
-X-Gm-Message-State: AOAM533iEtZWzlpVjortBdjIKt6WEF+L0193zA7TcF9Oze6Tj05igpEV
-        z7mrV69gMroJnga1ajF/mREHjUZen4XIFo3fsLA=
-X-Google-Smtp-Source: ABdhPJxTjZ0FInF8gzileXbGEcynkRQ7h7V3u+6gpPHTLS21zRCkdqLqLCyaVG7AyYNf3KIkMk4IbzUXax6fobsYOzI=
-X-Received: by 2002:a25:4757:: with SMTP id u84mr26255916yba.179.1604406426527;
- Tue, 03 Nov 2020 04:27:06 -0800 (PST)
+        bh=cLOijGoctpVii6lG3GNscCwHl4zBjRguK02Pj+vC7Bo=;
+        b=tmQCwqwjUTvMkEI+P1Ie/5YLDEaRu4NijUMGdNk5k8sau8EW3sAUC91rsG5c9CGd44
+         Q7UbrXHgwW+C8d1susSVAuGOCaxLY5OS9k/fw39c0Vtj9z3/CvxDaWZ4WInVOmI3++3m
+         YIqhcYl85l2yW22/vU15bqLmba9z6684y9QgdkOCDICx37OYJwPYu8zpWOpa8cg+Z6Jr
+         woG6FQLguuQvvNBdqsXwkHM/vDTewpNztaNnNb7hkA79/So/Ll5IauKvbBwY5RQ5CyXn
+         LlOgyLQZXYBPgy7Kwwzdbl1ICuhjyfnI4bUIuJAaZLjZP4NYsaCDUz/d7WtkV9FA1DIj
+         Pr0Q==
+X-Gm-Message-State: AOAM530ohaxqJy0wbtyom/6WBGwabHu4WTlsKX99K1DC7yC5YLyq9d0o
+        eGqdT4jUXGm6nrlct0AUT95G3HIPEjeLWkKBwQo=
+X-Google-Smtp-Source: ABdhPJw+ttTwVOHCreEYANGBLEJOjyklNontnw0owjnvgHA5/sZlnEhBwxgZCZadbjBWnXjZWUz50lU3Vv1QK1Vv3D4=
+X-Received: by 2002:a17:90a:f184:: with SMTP id bv4mr3599635pjb.1.1604408433473;
+ Tue, 03 Nov 2020 05:00:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20201030121347.26984-1-weqaar.a.janjua@intel.com> <0fef6ce4-86cd-ae3a-0a29-953d87402afe@iogearbox.net>
-In-Reply-To: <0fef6ce4-86cd-ae3a-0a29-953d87402afe@iogearbox.net>
-From:   Weqaar Janjua <weqaar.janjua@gmail.com>
-Date:   Tue, 3 Nov 2020 12:26:40 +0000
-Message-ID: <CAPLEeBa3PL03mW4STe_avwK8wr-KKu_epJ1uAM07OgMzUFJw1w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] selftests/xsk: xsk selftests
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
-        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        jonathan.lemon@gmail.com, andrii.nakryiko@gmail.com
+References: <cover.1602263422.git.yifeifz2@illinois.edu> <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook> <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+ <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
+ <202010221520.44C5A7833E@keescook> <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+ <202010231945.90FA4A4AA@keescook> <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
+In-Reply-To: <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Tue, 3 Nov 2020 07:00:22 -0600
+Message-ID: <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2 Nov 2020 at 23:08, Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Fri, Oct 30, 2020 at 7:18 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> I got a bare metal test machine with Intel(R) Xeon(R) CPU E5-2660 v3 @
+> 2.60GHz, running Ubuntu 18.04. Test kernels are compiled at
+> 57a339117e52 ("selftests/seccomp: Compare bitmap vs filter overhead")
+> and 3650b228f83a ("Linux 5.10-rc1"), built with Ubuntu's
+> 5.3.0-64-generic's config, then `make olddefconfig`. "Mitigations off"
+> indicate the kernel was booted with "nospectre_v2 nospectre_v1
+> no_stf_barrier tsx=off tsx_async_abort=off".
 >
-> On 10/30/20 1:13 PM, Weqaar Janjua wrote:
-> > This patch set adds AF_XDP selftests based on veth to selftests/xsk/.
-> >
-> > # Topology:
-> > # ---------
-> > #                 -----------
-> > #               _ | Process | _
-> > #              /  -----------  \
-> > #             /        |        \
-> > #            /         |         \
-> > #      -----------     |     -----------
-> > #      | Thread1 |     |     | Thread2 |
-> > #      -----------     |     -----------
-> > #           |          |          |
-> > #      -----------     |     -----------
-> > #      |  xskX   |     |     |  xskY   |
-> > #      -----------     |     -----------
-> > #           |          |          |
-> > #      -----------     |     ----------
-> > #      |  vethX  | --------- |  vethY |
-> > #      -----------   peer    ----------
-> > #           |          |          |
-> > #      namespaceX      |     namespaceY
-> >
-> > These selftests test AF_XDP SKB and Native/DRV modes using veth Virtual
-> > Ethernet interfaces.
-> >
-> > The test program contains two threads, each thread is single socket with
-> > a unique UMEM. It validates in-order packet delivery and packet content
-> > by sending packets to each other.
-> >
-> > Prerequisites setup by script TEST_PREREQUISITES.sh:
-> >
-> >     Set up veth interfaces as per the topology shown ^^:
-> >     * setup two veth interfaces and one namespace
-> >     ** veth<xxxx> in root namespace
-> >     ** veth<yyyy> in af_xdp<xxxx> namespace
-> >     ** namespace af_xdp<xxxx>
-> >     * create a spec file veth.spec that includes this run-time configuration
-> >       that is read by test scripts - filenames prefixed with TEST_XSK
-> >     *** xxxx and yyyy are randomly generated 4 digit numbers used to avoid
-> >         conflict with any existing interface.
-> >
-> > The following tests are provided:
-> >
-> > 1. AF_XDP SKB mode
-> >     Generic mode XDP is driver independent, used when the driver does
-> >     not have support for XDP. Works on any netdevice using sockets and
-> >     generic XDP path. XDP hook from netif_receive_skb().
-> >     a. nopoll - soft-irq processing
-> >     b. poll - using poll() syscall
-> >     c. Socket Teardown
-> >        Create a Tx and a Rx socket, Tx from one socket, Rx on another.
-> >        Destroy both sockets, then repeat multiple times. Only nopoll mode
-> >         is used
-> >     d. Bi-directional Sockets
-> >        Configure sockets as bi-directional tx/rx sockets, sets up fill
-> >         and completion rings on each socket, tx/rx in both directions.
-> >         Only nopoll mode is used
-> >
-> > 2. AF_XDP DRV/Native mode
-> >     Works on any netdevice with XDP_REDIRECT support, driver dependent.
-> >     Processes packets before SKB allocation. Provides better performance
-> >     than SKB. Driver hook available just after DMA of buffer descriptor.
-> >     a. nopoll
-> >     b. poll
-> >     c. Socket Teardown
-> >     d. Bi-directional Sockets
-> >     * Only copy mode is supported because veth does not currently support
-> >       zero-copy mode
-> >
-> > Total tests: 8.
-> >
-> > Flow:
-> > * Single process spawns two threads: Tx and Rx
-> > * Each of these two threads attach to a veth interface within their
-> >    assigned namespaces
-> > * Each thread creates one AF_XDP socket connected to a unique umem
-> >    for each veth interface
-> > * Tx thread transmits 10k packets from veth<xxxx> to veth<yyyy>
-> > * Rx thread verifies if all 10k packets were received and delivered
-> >    in-order, and have the right content
-> >
-> > Structure of the patch set:
-> >
-> > Patch 1: This patch adds XSK Selftests framework under
-> >           tools/testing/selftests/xsk, and README
-> > Patch 2: Adds tests: SKB poll and nopoll mode, mac-ip-udp debug,
-> >           and README updates
-> > Patch 3: Adds tests: DRV poll and nopoll mode, and README updates
-> > Patch 4: Adds tests: SKB and DRV Socket Teardown, and README updates
-> > Patch 5: Adds tests: SKB and DRV Bi-directional Sockets, and README
-> >           updates
-> >
-> > Thanks: Weqaar
-> >
-> > Weqaar Janjua (5):
-> >    selftests/xsk: xsk selftests framework
-> >    selftests/xsk: xsk selftests - SKB POLL, NOPOLL
-> >    selftests/xsk: xsk selftests - DRV POLL, NOPOLL
-> >    selftests/xsk: xsk selftests - Socket Teardown - SKB, DRV
-> >    selftests/xsk: xsk selftests - Bi-directional Sockets - SKB, DRV
+> The benchmark was single-job make on x86_64 defconfig of 5.9.1, with
+> CPU affinity to set only processor #0. Raw results are appended below.
+> Each boot is tested by running the build directly and inside docker,
+> with and without seccomp. The commands used are attached below. Each
+> test is 4 trials, with the middle two (non-minimum, non-maximum) wall
+> clock time averaged. Results summary:
 >
-> Thanks a lot for adding the selftests, Weqaar! Given this needs to copy quite
-> a bit of BPF selftest base infra e.g. from Makefiles I'd prefer if you could
-> place these under selftests/bpf/ instead to avoid duplicating changes into two
-> locations. I understand that these tests don't integrate well into test_progs,
-> but for example see test_tc_redirect.sh or test_tc_edt.sh for stand-alone tests
-> which could be done similarly with the xsk ones. Would be great if you could
-> integrate them and spin a v2 with that.
+>                 Mitigations On                  Mitigations Off
+>                 With Cache      Without Cache   With Cache      Without Cache
+> Native          18:17.38        18:13.78        18:16.08        18:15.67
+> D. no seccomp   18:15.54        18:17.71        18:17.58        18:16.75
+> D. + seccomp    20:42.47        20:45.04        18:47.67        18:49.01
 >
-> Thanks,
-> Daniel
+> To be honest, I'm somewhat surprised that it didn't produce as much of
+> a dent in the seccomp overhead in this macro benchmark as I had
+> expected.
 
-Hi Daniel,
+My peers pointed out that in my previous benchmark there are still a
+few mitigations left on, and suggested to use "noibrs noibpb nopti
+nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable
+no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off".
+Results with "Mitigations Off" updated:
 
-Appreciate the pointers and suggestions which I will re-evaluate
-against merging of selftests/xsk into selftests/bpf, let me explain a
-bit to get your opinion re-evaluated on this - perhaps selftests/xsk
-could still work (as per my clarifications below) or we somehow have
-selftests/bpf/Makefile trigger selftests/bpf/test_xsk/Makefile<or
-whatever>.
+                        Mitigations On            Mitigations Off
+                With Cache      Without Cache   With Cache      Without Cache
+Native          18:17.38        18:13.78        17:43.42        17:47.68
+D. no seccomp   18:15.54        18:17.71        17:34.59        17:37.54
+D. + seccomp    20:42.47        20:45.04        17:35.70        17:37.16
 
-I had a look at selftests/bpf earlier, the problem was the same as you
-indicated - xsk tests do not integrate well into selftests/bpf as the
-semantics in the top level Makefile for both do no merge well - the
-way xsk tests are designed is systematically different.
+Whether seccomp is on or off seems not to make much of a difference
+for this benchmark. Bitmap being enabled does seem to decrease the
+overall compilation time but it also affects where seccomp is off, so
+the speedup is probably from other factors. We are thinking about
+using more syscall-intensive workloads, such as httpd.
 
-If you look closely into the patch set patches -> 2/5 - 5/5, that is
-where the major difference shows up, xsk/xdpprogs/xdpxceiver.* is a
-self-contained binary utilized for testing and it is a major piece of
-code:
-tools/testing/selftests/xsk/xdpprogs/Makefile |   64 ++
- .../selftests/xsk/xdpprogs/Makefile.target    |   68 ++
- .../selftests/xsk/xdpprogs/xdpxceiver.c       | 1000 +++++++++++++++++
- .../selftests/xsk/xdpprogs/xdpxceiver.h       |  159 +++
-...
- 21 files changed, 1833 insertions(+)
+Thugh, this does make me wonder, where does the 3-minute overhead with
+seccomp with mitigations come from? Is it data cache misses? If that
+is the case, can we somehow preload the seccomp bitmap cache maybe? I
+mean, mitigations only cause around half a minute slowdown without
+seccomp but seccomp somehow amplify the slowdown with an additional
+2.5 minutes, so something must be off here.
 
-Bits that -> copy quite a bit of BPF selftest base infra isn't the
-top-level selftests/xsk/Makefile|*, it is these (patches -> 2/5 -
-5/5):
-tools/testing/selftests/xsk/xdpprogs/Makefile |   64 ++
- .../selftests/xsk/xdpprogs/Makefile.target    |   68 ++
+This is the raw output for the time commands:
 
-This is 132++ of 1833++ or ~7% of similarity.
+==== with cache, mitigations off ====
 
-I had a look at these today, and some other tests earlier:
-- test_tc_redirect.sh -> test_xdp_redirect.sh (perhaps you meant this?)
-- test_tc_edt.sh
+947.02user 108.62system 17:47.65elapsed 98%CPU (0avgtext+0avgdata
+239804maxresident)k
+25112inputs+217152outputs (166major+51934447minor)pagefaults 0swaps
 
-Patch 1/5 might look similar to these^^ as that sets up the base xsk
-test framework, but the xsk tests really start with patches -> 2/5 -
-5/5 which will give you a better picture, please let me know if this
-clarifies my intent for selftests/xsk/, or otherwise if you insist
-merging into selftests/bpf, I will then go ahead and work it out
-accordingly.
+947.91user 108.20system 17:46.53elapsed 99%CPU (0avgtext+0avgdata
+239576maxresident)k
+0inputs+217152outputs (0major+51941524minor)pagefaults 0swaps
 
-Thanks,
+948.33user 108.70system 17:47.72elapsed 98%CPU (0avgtext+0avgdata
+239604maxresident)k
+0inputs+217152outputs (0major+51938566minor)pagefaults 0swaps
 
-/Weqaar
+948.65user 108.81system 17:48.41elapsed 98%CPU (0avgtext+0avgdata
+239692maxresident)k
+0inputs+217152outputs (0major+51935349minor)pagefaults 0swaps
+
+
+932.12user 113.68system 17:37.24elapsed 98%CPU (0avgtext+0avgdata
+239660maxresident)k
+0inputs+217152outputs (0major+51547571minor)pagefaults 0swap
+
+931.69user 114.12system 17:37.84elapsed 98%CPU (0avgtext+0avgdata
+239448maxresident)k
+0inputs+217152outputs (0major+51539964minor)pagefaults 0swaps
+
+932.25user 113.39system 17:37.75elapsed 98%CPU (0avgtext+0avgdata
+239372maxresident)k
+0inputs+217152outputs (0major+51538018minor)pagefaults 0swaps
+
+931.09user 114.25system 17:37.34elapsed 98%CPU (0avgtext+0avgdata
+239508maxresident)k
+0inputs+217152outputs (0major+51537700minor)pagefaults 0swaps
+
+
+929.96user 113.42system 17:36.23elapsed 98%CPU (0avgtext+0avgdata
+239448maxresident)k
+984inputs+217152outputs (22major+51544059minor)pagefaults 0swaps
+
+929.73user 115.13system 17:38.09elapsed 98%CPU (0avgtext+0avgdata
+239464maxresident)k
+0inputs+217152outputs (0major+51540259minor)pagefaults 0swaps
+
+930.13user 112.71system 17:36.17elapsed 98%CPU (0avgtext+0avgdata
+239620maxresident)k
+0inputs+217152outputs (0major+51540623minor)pagefaults 0swaps
+
+930.57user 113.02system 17:49.70elapsed 97%CPU (0avgtext+0avgdata
+239432maxresident)k
+0inputs+217152outputs (0major+51537776minor)pagefaults 0swaps
+
+==== without cache, mitigations off ====
+
+947.59user 108.06system 17:44.56elapsed 99%CPU (0avgtext+0avgdata
+239484maxresident)k
+25112inputs+217152outputs (167major+51938723minor)pagefaults 0swaps
+
+947.95user 108.58system 17:43.40elapsed 99%CPU (0avgtext+0avgdata
+239580maxresident)k
+0inputs+217152outputs (0major+51943434minor)pagefaults 0swaps
+
+948.54user 106.62system 17:42.39elapsed 99%CPU (0avgtext+0avgdata
+239608maxresident)k
+0inputs+217152outputs (0major+51936408minor)pagefaults 0swaps
+
+947.85user 107.92system 17:43.44elapsed 99%CPU (0avgtext+0avgdata
+239656maxresident)k
+0inputs+217152outputs (0major+51931633minor)pagefaults 0swaps
+
+
+931.28user 111.16system 17:33.59elapsed 98%CPU (0avgtext+0avgdata
+239440maxresident)k
+0inputs+217152outputs (0major+51543540minor)pagefaults 0swaps
+
+930.21user 112.56system 17:34.20elapsed 98%CPU (0avgtext+0avgdata
+239400maxresident)k
+0inputs+217152outputs (0major+51539699minor)pagefaults 0swaps
+
+930.16user 113.74system 17:35.06elapsed 98%CPU (0avgtext+0avgdata
+239344maxresident)k
+0inputs+217152outputs (0major+51543072minor)pagefaults 0swaps
+
+930.17user 112.77system 17:34.98elapsed 98%CPU (0avgtext+0avgdata
+239176maxresident)k
+0inputs+217152outputs (0major+51540777minor)pagefaults 0swaps
+
+
+931.92user 113.31system 17:36.05elapsed 98%CPU (0avgtext+0avgdata
+239520maxresident)k
+984inputs+217152outputs (22major+51534636minor)pagefaults 0swaps
+
+931.14user 112.81system 17:35.35elapsed 98%CPU (0avgtext+0avgdata
+239524maxresident)k
+0inputs+217152outputs (0major+51549007minor)pagefaults 0swaps
+
+930.93user 114.56system 17:37.72elapsed 98%CPU (0avgtext+0avgdata
+239360maxresident)k
+0inputs+217152outputs (0major+51542191minor)pagefaults 0swaps
+
+932.26user 111.54system 17:35.36elapsed 98%CPU (0avgtext+0avgdata
+239572maxresident)k
+0inputs+217152outputs (0major+51537921minor)pagefaults 0swaps
+
+YiFei Zhu
