@@ -2,138 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6FE2A3B46
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 05:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606272A3B64
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 05:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725952AbgKCEBC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 23:01:02 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:57890 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725921AbgKCEBC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 23:01:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1604376060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=zWSZUslS9wjYmSXqMY1j2f1IFb6ssBRY1CiBCtx1cjQ=;
-        b=kt/g8qwsFD3NpAkSGHUWrSPq2xdNrSAPtPXiesHJ6491LRswhtCf6tvEV97F1M8UXQBhit
-        Cnay7QDU/sKpsHFiB+mlc49CAbHQl+T4A+9OXH0bzd4fDZDw/aAZL7WhvneD+Q0VcQFCmU
-        Yq1ca3n/oLpfOJKDRqCsepxytL+ThI4=
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-db3eur04lp2050.outbound.protection.outlook.com [104.47.12.50]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-4-S1-ahqdbOACObIF0-1-VWQ-1;
- Tue, 03 Nov 2020 05:00:58 +0100
-X-MC-Unique: S1-ahqdbOACObIF0-1-VWQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I6afn+k8oE7aBwSPrCAaNEdISU9SoDOMBpB8tlPoWotJBnHG1BOeADxPQ+7gJSzbCOC3VagH7rTyk3cY8GPPVLuEGihqfNZpHdO3YZmSZtmeKzzaCw+Wr1z2JF/u35qIk+ArqxxiOU4jcmhpd2eQZ7zw6aMa1HLqVFIwJzhDxqz4kZq1ErmUw3L87Vary5eyCz9VQhk8Cqtzx+ecmEWWQGSQNOaLKVYk/Ud+oN4EcGZ7JRqQpONyd7Tf0HVibHIuC194iUCFpAQ15JQBp0GOFEwh37QFMbedUwSm5QyWL2XEABNIimbtG79IdItxbgIUWulnJtrKurzzqp7o3UVTNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zWSZUslS9wjYmSXqMY1j2f1IFb6ssBRY1CiBCtx1cjQ=;
- b=ikratSr0t+mF+TMRvcyFCuQFYi8M6aAW+duZFrwNOZ7t93MOOk5AEdgsNjXzUWWidVC7EVOwIoRled04WBxu73iQQ9/H0lrgMgBzn7trvzqdyv/+yQQgJsE5PcXUtULvAZpZPNK3PuD8djcvCmLfsTZ4Wjr1XixJPJrZs9vnY2x7T/gXQ5qfebxsAaNXaBkBMuKkhdNsweFHfVlrYJCRxRO4XoDzjmlYRzDmJeM3IeBOhK8+YHhW1cmJQVDKswWi1ueY4pyAElnpB4QwNADG6EAHk3vij2pBHEri80Dw+SOA2OVPgLeyjh/VXHGct2sRGh8fBEVEfQPehHcJ65CT/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com (2603:10a6:8:b::12)
- by DB6PR0402MB2918.eurprd04.prod.outlook.com (2603:10a6:4:9a::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Tue, 3 Nov
- 2020 04:00:56 +0000
-Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com
- ([fe80::c84:f086:9b2e:2bf1]) by DB3PR0402MB3641.eurprd04.prod.outlook.com
- ([fe80::c84:f086:9b2e:2bf1%7]) with mapi id 15.20.3455.040; Tue, 3 Nov 2020
- 04:00:56 +0000
-Date:   Tue, 3 Nov 2020 12:00:48 +0800
-From:   Gary Lin <glin@suse.com>
-To:     bpf <bpf@vger.kernel.org>
-Cc:     andreas.taschner@suse.com
-Subject: x86 BPF JIT failed to load a program with continuous JMPs
-Message-ID: <20201103040048.GN19552@GaryWorkstation>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Originating-IP: [60.251.47.115]
-X-ClientProxiedBy: FR2P281CA0018.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a::28) To DB3PR0402MB3641.eurprd04.prod.outlook.com
- (2603:10a6:8:b::12)
+        id S1725952AbgKCE31 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 23:29:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgKCE31 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Nov 2020 23:29:27 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C84C0617A6;
+        Mon,  2 Nov 2020 20:29:26 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id u2so2025580pls.10;
+        Mon, 02 Nov 2020 20:29:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9yJafI9JzO1hsUL/IVtMBiZmlV+MWNs1li/SRBTAGFc=;
+        b=RYBdNi+kLm1a2p+43ST8IpXxrsEeZ4mpmdwbFJMve/Ia59IpU+TPyGHq2H0UaZ8iXq
+         i6tvGdQy5jfDGXTKMDBhMBCFcijaz8yTbL+CDyk00mlYSFxF6SJRKEWzHRthF0aX1eNu
+         Ho3YZ+0EL5deQrdvXUd6qOWqdniXE0kR+g/kI/2OpfCeqRh/UNtOS+jdbMUapUBXPxfO
+         LJDdUIf4Z7YZn3Y44bdcTi/IySvRNzfisv6cA1D3Kfy0FGN3aGdDpdpULtGFOKLGqF7q
+         rPEjBUD/rh3UTCC+ph0AA9ds683Zu5RXvTvMkXIeD2G6JkfgAhq/oJvHccNmGoW/EJyw
+         H9DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9yJafI9JzO1hsUL/IVtMBiZmlV+MWNs1li/SRBTAGFc=;
+        b=QZ7MWIDRalQ572YnygSXtPBbQVT79H5J+YncBhe4u6fkGP2rZjjxPuV23h9fEihMiw
+         m4iybxkWdK+u7HKso77lKDEdU3/gUbHWXWFWE9G4rzGpw6hTNQ77Z2VtiFZnX4ATrpr3
+         uU++B5Ip4FAI7YdZ0ND6NNNi7b7mVEZMU5AXvFMNIXHGqTL5RQfHiv12kY0ycuV8YXYP
+         QT3Ke572QPaO+s44sXKw3/35LMozT3lQuOJ1MWxIN+U3RJKk+4GGBjyS3AXZdkyE6Kbb
+         CTd6w5teXE2VoFi2S7AIT5ywboocSFeQHgXf5ORthOJxdO9k08MBgL2AKhEtk+r2tQM2
+         ySIg==
+X-Gm-Message-State: AOAM531Pb4aU/G4Mv4NlE6rtBMqq2YghbSVIi9lENbb1QT8Ldt7uTQ+9
+        Jn7GoN7fAP0QDBnYRqhzm24fu2jJOol5E6gk
+X-Google-Smtp-Source: ABdhPJyOsne5KS/h4dyUSqu5G1qPHXnWhApA9IBMtDIUJz43h2u+u/OJPQ9JV7JOoCS75QRGKXXDvA==
+X-Received: by 2002:a17:902:7298:b029:d4:c71a:357a with SMTP id d24-20020a1709027298b02900d4c71a357amr23695229pll.38.1604377765269;
+        Mon, 02 Nov 2020 20:29:25 -0800 (PST)
+Received: from localhost.localdomain.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b6sm13683279pgq.58.2020.11.02.20.29.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 20:29:24 -0800 (PST)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     William Tu <u9012063@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCH bpf-next 0/2] selftest/bpf: improve bpf tunnel test
+Date:   Tue,  3 Nov 2020 12:29:06 +0800
+Message-Id: <20201103042908.2825734-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from GaryWorkstation (60.251.47.115) by FR2P281CA0018.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.10 via Frontend Transport; Tue, 3 Nov 2020 04:00:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea6bd661-daf3-466f-624d-08d87fad10e6
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2918:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB29181EC10FDB1A76A7C174BAA9110@DB6PR0402MB2918.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PAz/qSvAsFGiZaIe74+zzjN1LmiXIKrO7dmsstZN9FbZy7ZB7eEbHseKrgdM/5crL1xQLjn0eyMuZNQStwsU4iOePI5UdamO3pSZPdFBEHenBLsgbSTJNfvFGIPK4EPy6TZ2OrwEJ5L4vrAR7HM4jq7naN39Rtto+815SFH65hAX/M1NKeTXRM/ATmrP7b/3oixlwzUYO9G5Li1gQ9KA5zUWLjxiZYQFYDjE7HniR58fcZ6/VowvmgX3K6Q8jKwnm/t7VkHZSm3ABmnMdKoVrLfjVX2jjgJHnmOS+j3Bdszz2kwUp+ntHxb1PDBN82UG8qjVQbUGYTkEDB+q+SQC2FcjcUR/zEE8UTzjH//3WkruS61TeJ8Hpodh7k/wuibi1Xj61p42p6sBg+3ELBO16Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3641.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(136003)(346002)(376002)(186003)(66476007)(8676002)(4326008)(956004)(66946007)(66556008)(8936002)(26005)(83380400001)(16526019)(478600001)(107886003)(86362001)(316002)(52116002)(9686003)(33656002)(55016002)(6666004)(33716001)(55236004)(5660300002)(966005)(2906002)(1076003)(6916009)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: FTebK1MxJK+tDCoDaD7Hqb9G8nwr5Agx5dj97LEQYmKMs4EbNTacsvDi8CG6Kag0faUXlQ5MxKZk3+IHJSohGAmES1e3Maj0C98jIzT4TwOREXgJcFJf/6iFRwrkFIPva3MF29ZH3udHL3TAPFXNUAkPXl45FbdvIA+qRjFSy+NKkBRZPoCZRHP30mUbyr9H7NNrGOlC5diojpf7WFfu342k3u7g5+xNwNKdcACekFd0uk/xgXHYC1G6gExVvM5sGG0LrwrM+sqxHtwnH6daNGTUlmnN8F8Zdtfikov1fPLd1PhZrIXiLaqPg/q7uI0wz/nav1OLUqe2vBXhyTKdudFYG7vfpSJxz3MtXNSSjwvK+5pbS6oQ7PZIfIEBs02m6YFCTqbuC/uX7KBM50TZD1o3iY//et4bzdecuI1M72OIehGfbRqQgVwvYfbumtyDONZnxyHduhhSOWdZ65MbmjCCf11WCHbInJclwY80qL9IHzJII4Tq5cYQk5kzaxsNI29jUmm9ug/bX59NGHk1sRVrHps/zzfc7Sclpca+srSxdvDA1nFbxB6pS5DZ2hoHxf+G9I4L4Bu06Jbpd4U4YXjd6BlvHeSIIBfOvi8StD41zjcMPj//Fvmpj143LoZ1XSJnCbzZaTknoeMsV15rwA==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea6bd661-daf3-466f-624d-08d87fad10e6
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3641.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2020 04:00:56.4577
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7bTnZ1PigRxsQ9+3Rm6jUeCoDxBIC++uVGX7c/yVol+5uCViQQktMR6S/Pc2poKI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2918
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+In comment 173ca26e9b51 ("samples/bpf: add comprehensive ipip, ipip6,
+ip6ip6 test") we added some bpf tunnel tests. In commit 933a741e3b82
+("selftests/bpf: bpf tunnel test.") when we moved it to the current
+folder, we missed some points:
 
-We recently got a bug report from a customer about the x86 BPF JIT, and
-the bpf program is like this:
+1. ip6ip6 test is not added
+2. forgot to remove test_ipip.sh in sample folder
+3. TCP test code is not removed in test_tunnel_kern.c
 
-l0:     ldh [4]
-l1:     jeq #0x537d, l2, l40
-l2:     ld [0]
-l3:     jeq #0xfa163e0d, l4, l40
-l4:     ldh [12]
-l5:     ldx #0xe
-l6:     jeq #0x86dd, l41, l7
-l7:     jeq #0x800, l8, l41
-l8:     ld [x+16]
-l9:     ja 41
-  [... repeated ja 41 ]
-l40:    ja 41
-l41:    ret #0
-l42:    ld #len
-l43:    ret a
+In this patch set I add back ip6ip6 test and remove unused code.
+As I'm not sure if this should be a fixup, I didn't add the Fixes flag.
 
-They declared a sock_filter array with a lot of "ja 41" in order to
-replace them dynamically with other BPF instructions and attached the
-program to a socket with setsockopt(SO_ATTACH_FILTER). It worked fine
-with BPF interpreter until upgrading to the kernel with
-BPF_JIT_ALWAYS_ON.
+Here is the test result:
+```
+  Testing IP6IP6 tunnel...
+  PING ::11(::11) 56 data bytes
 
-In the beginning, I thought it's rejected by the verifier due to
-unreachable instructions. However, the verifier didn't involve since
-it's attached through SO_ATTACH_FILTER. The program was sent to BPF
-JIT directly and rejected with ENOTSUPP. In the end, I found that it
-failed in bpf_int_jit_compile()(*). Every time do_jit() was invoked,
-it removed one "ja 41" right before "ret #0", so bpf_int_jit_compile()
-failed to remove all "ja 41" within 20 runs. If I reduced the number of
-JMPs to 19, BPF JIT accepted the program. It seems a corner case that
-BPF JIT could not handle.
+  --- ::11 ping statistics ---
+  3 packets transmitted, 3 received, 0% packet loss, time 47ms
+  rtt min/avg/max/mdev = 0.031/1023.035/2044.975/834.846 ms, pipe 2
+  PING 1::11(1::11) 56 data bytes
 
-A quick "fix" might be iterating do_jit() until the image converges,
-but I guess the limited iteration is designed to bound the compilation
-time of BPF JIT, so I'm not sure if this is a good option.
+  --- 1::11 ping statistics ---
+  3 packets transmitted, 3 received, 0% packet loss, time 47ms
+  rtt min/avg/max/mdev = 0.027/0.046/0.058/0.013 ms
+  PING 1::22(1::22) 56 data bytes
 
-BTW, as a workaround, I suggested the customer to replace the JMPs with
-0 offset JMPs so that do_jit() can optimize them out in 1 pass. But I
-still would like to know how to handle this kind of programs properly.
+  --- 1::22 ping statistics ---
+  3 packets transmitted, 3 received, 0% packet loss, time 47ms
+  rtt min/avg/max/mdev = 0.041/0.056/0.074/0.014 ms
+  PASS: ip6ip6tnl
+```
 
-Thanks
+Hangbin Liu (2):
+  selftest/bpf: add missed ip6ip6 test back
+  selftest/bpf: remove unused bpf tunnel testing code
 
-Gary Lin
+ samples/bpf/test_ipip.sh                      | 179 ------------------
+ .../selftests/bpf/progs/test_tunnel_kern.c    |  87 +--------
+ tools/testing/selftests/bpf/test_tunnel.sh    |  39 +++-
+ 3 files changed, 40 insertions(+), 265 deletions(-)
+ delete mode 100755 samples/bpf/test_ipip.sh
 
-(*) https://github.com/torvalds/linux/blob/v5.9/arch/x86/net/bpf_jit_comp.c#L1876-L1921
+-- 
+2.25.4
 
