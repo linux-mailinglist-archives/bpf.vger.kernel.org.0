@@ -2,72 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A2F2A373B
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 00:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7437F2A377A
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 01:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgKBXg7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Nov 2020 18:36:59 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32838 "EHLO
+        id S1726778AbgKCAIY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Nov 2020 19:08:24 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44456 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725831AbgKBXg7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 18:36:59 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A2NXJqW030807;
-        Mon, 2 Nov 2020 15:36:45 -0800
+        by vger.kernel.org with ESMTP id S1725910AbgKCAIY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 2 Nov 2020 19:08:24 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A305WVx024766;
+        Mon, 2 Nov 2020 16:08:11 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=FIuBskFN1AeFHSF+39mz1ezyOPDowNwnkja34j2U+Hc=;
- b=kvmHnkuvQ385oAfX6Rzyo7OCTn3CaYdusw6rD6ajzTwWMClwWZTFNu0jaxNrPQHlQRrU
- TP65JZ7X1LCTIiMiLa/YkIdIcQOtPcGH0JzwmRbZNQDlx7wT/XVbHeJI2tciCXi2XpTX
- HwYVExhLXUatZRqsgBUsDqaXR6pZ/FHRfig= 
+ bh=aSsF5UJbfGx8tr4+w0albPDWJ4L+5AdtmAYBLz0IgCU=;
+ b=Gu28nqWWnxHU4T/MZaM8A++u6BJmwPBWcUQWbLl3FIHNCQNeIcWV58OqSkMaqK/Zi56m
+ 3QG6Bc441x4icQVVFWNtgLN3pU3SeTYtwiKjMUWsVXgr1WufncPspIGZdar22NOOLiav
+ xzZuHQfYepd6JXOQnxBZiGz5OddoTdiTRlA= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34hqrkr5t4-1
+        by mx0a-00082601.pphosted.com with ESMTP id 34hqeb86rp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 02 Nov 2020 15:36:45 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+        Mon, 02 Nov 2020 16:08:11 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 2 Nov 2020 15:36:43 -0800
+ 15.1.1979.3; Mon, 2 Nov 2020 16:08:09 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PH6+rx/2i3QoYECNwX61VuI9MmLGmLQByt53LBEWPWjdHJ2vcSbhfEUWwG7y+H33KO1BNg47nhZ/bBYf8D0wWIPcSCuRRMXa+XVGXx9DCSdy0p0FP9vvkgkTxrTSm3L5SkMF+j/ZMc6Tp5dHBU3ZA86mbghH80GIARPd1DJDLmF6o6x1p4sq3xRpqAj9wltM+bc6uZr6pzPHdqTnHlArK4ZtVwsSI5tRcyIX4Nrl9spgsoSNunkflWs3InpUOV59rTwpnlNmUcfyuyHXmVC8/d7ezQqmLar5H2OPO/Bpv8UQIY4r7XUYIKOlCSDlBHpyZSBYvX8+m8ilIK8GlbfGLQ==
+ b=XSH0NyelLEg9jddcHESFiJ9xxAfLabJ1YRS5wetD1lfwTeuY0yaspQQVGe6nSxmbjo9xsZnVFu8dfyicjAmJ6e0SsH/r9TCBfV4IwUGa4alTNYjjzHH9i1tqAZq061QV9SxCRtloZ9Vz3TiepbUGDgC4ip8cEbEBajUUc5zS7ARkN7eIUaHuZ0AJcOaaZ+Tfr14G2dfTqdu/NVnjySBpOrPZ6eAhNeNnv/9+YI6K1qfrbR/OZEVDFj8khszJEaVVnhPLFOTOh2J2HPUpqIDLb/ubqNSE5m04QdVrrLe+4lMR7Sv7VgYjP0ilyJepfdkRI+nY30dkZe2RTeUBffH39A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FIuBskFN1AeFHSF+39mz1ezyOPDowNwnkja34j2U+Hc=;
- b=ZO2f4d6c4hwuYyEQbfK6cgRiecYyqoalEn/c/S/qH15xGJvhJqAXeRf4zGh4lXeGLkkc2WqkpFlkWBc1nz7/xUJr0JOmCNcxMMF0Cr92490/UwDVpJsypzWpRVyeQDTIgRman9NMDGdNwiCyQzln4e11j3ZqEj8UjyTfak9N9NhDowfJukKOT/42jvgXmD7AlOOOEuF2gn0Um87MQC9fyAYG5fNmN+DdQRzHdJuJeKPsi0ozU9E7d7SkOMsVhYlOFfbvCEUFBmVO1RThREVvW1l2C2QjCISD1cJdqtihggSJ4I9WRMsCFLeL/kmcGDZvtuNjPUl8CUmAtPRxov4Gtg==
+ bh=aSsF5UJbfGx8tr4+w0albPDWJ4L+5AdtmAYBLz0IgCU=;
+ b=igvDKKoO+PDgD+bPX4Bgy1nX991Xqxha8elluE711Rb7BgOeA6fTaRHid4OTzx19HkABNPyFQqXWvjbXnWlQfKAIaayBSmngdWghF0QRb6DmbBKoSig4xHFK+AbnXz4i4JgBri/4T2cmyPHlYYpaIul5awzQQZp3lN+G47zm8XFYEknxpzFdGJoKbuuuiteuukF0FG4RYR5EiUIv1z/fgamV/ldthn72+8FBr+SewK4A8jgVCZg/Cf0RdeHqWhBhBuFOwQ5gkKto5x2us8sKhn37MkGcu+6nImX7OtV7cFrxlxlbWi3BG0Jb0FYDbkL+dc4/uF1hzfT2cWXy0VrNpQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FIuBskFN1AeFHSF+39mz1ezyOPDowNwnkja34j2U+Hc=;
- b=A9y5Pyw3u6VCCTDuB9Q7ik/tYpPEeY5NbgrJYDEKgl91peK96M+IfK6zIsgSwO3dmRGQoIrSxtXJpPd3DbhN49y/0gTVb/fdrhxWZe7p8PpTuKwZw16BSUd3jhe2U+Ydk0raFfn7/+U7mL/sPjWFFkoZ8Ygsbi8PnLVba8ORruI=
+ bh=aSsF5UJbfGx8tr4+w0albPDWJ4L+5AdtmAYBLz0IgCU=;
+ b=dbmixp+Gwn7bAXren3sW9BZXUHLDBP2mqTkLowHkI+0w6a+/D1mop65Qrf9RiHoaXSW6tsvSwZhHoEc6P8EyIJkE9tQN6keCR0i5HqTlItuf6DBtQD1NC8guybgKq2fd2xEktj+jy+PlFYkUhXHdAp/bISuUqY6/3PL3z3Ld9oA=
 Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by SJ0PR15MB4202.namprd15.prod.outlook.com (2603:10b6:a03:2ed::5) with
+ by BYAPR15MB3302.namprd15.prod.outlook.com (2603:10b6:a03:10f::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.28; Mon, 2 Nov
- 2020 23:36:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Tue, 3 Nov
+ 2020 00:08:08 +0000
 Received: from BYAPR15MB2999.namprd15.prod.outlook.com
  ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Mon, 2 Nov 2020
- 23:36:43 +0000
+ ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Tue, 3 Nov 2020
+ 00:08:08 +0000
 From:   Song Liu <songliubraving@fb.com>
 To:     Andrii Nakryiko <andrii@kernel.org>
 CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 05/11] selftests/bpf: add split BTF basic test
-Thread-Topic: [PATCH bpf-next 05/11] selftests/bpf: add split BTF basic test
-Thread-Index: AQHWrY7KbgzCAkRyykW/orFh7CKGn6m1husA
-Date:   Mon, 2 Nov 2020 23:36:42 +0000
-Message-ID: <62331693-EDCE-4173-86C0-D9E771DA5C22@fb.com>
+        Kernel Team <Kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next 06/11] selftests/bpf: add checking of raw type
+ dump in BTF writer APIs selftests
+Thread-Topic: [PATCH bpf-next 06/11] selftests/bpf: add checking of raw type
+ dump in BTF writer APIs selftests
+Thread-Index: AQHWrY7Ggw2+ahrOxUa+p1/YeHxTram1j7KA
+Date:   Tue, 3 Nov 2020 00:08:08 +0000
+Message-ID: <507AB3B7-50BF-43CA-82CA-7C24CD5DF8A4@fb.com>
 References: <20201029005902.1706310-1-andrii@kernel.org>
- <20201029005902.1706310-6-andrii@kernel.org>
-In-Reply-To: <20201029005902.1706310-6-andrii@kernel.org>
+ <20201029005902.1706310-7-andrii@kernel.org>
+In-Reply-To: <20201029005902.1706310-7-andrii@kernel.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -77,39 +80,39 @@ authentication-results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
 x-originating-ip: [2620:10d:c090:400::5:c2a2]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 540a0961-1b10-413b-e793-08d87f8827a0
-x-ms-traffictypediagnostic: SJ0PR15MB4202:
+x-ms-office365-filtering-correlation-id: 8427146d-ddf2-46d2-e658-08d87f8c8b6d
+x-ms-traffictypediagnostic: BYAPR15MB3302:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR15MB4202899D20729F5FFDFCFF12B3100@SJ0PR15MB4202.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <BYAPR15MB3302D94F9898503404D48809B3110@BYAPR15MB3302.namprd15.prod.outlook.com>
 x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:549;
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ctXNtqHFfSi8vxNcXTu/ccSnbjCt4uMTR3hKMUefNVV9dxVmsUP9GkYkJ3Q6893c1DwEohYjiirYBz/9UsgbPwBRJfCSWNLsnrZDzB+Nm0hAUWA//WM0Oz6Wx83J5sEhPuUVkaLXuNN6uFBNWU74y0GQRAN+FLTO1khwZEyxdYCLt+WTJF7lquUWEDM7bZYBE15JJkd2Zpr6KE7ai2AyQZepgB7/lq+UUc+KwWsZjY6xRJq6i0wZlbIM45M6B/RsErAkeJi/SM9BxiICXO6keAiejm3hm0gIKFipV+ZL45Y7rbCvzFBw9vf4kC5yfgrC
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(346002)(39860400002)(136003)(53546011)(6506007)(64756008)(2616005)(66556008)(66476007)(66946007)(91956017)(76116006)(6512007)(66446008)(71200400001)(5660300002)(4744005)(186003)(33656002)(2906002)(36756003)(316002)(6486002)(478600001)(54906003)(86362001)(4326008)(8676002)(6916009)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: t24RvinBz7mNqTY2jU0YLhLmAq0/TkA5aSiF6h1WPQkHIdLdYEXS4Sfr04F/oJ0sW8bUFEp+X2dGZRMPbavp7riPqkHm0p4YKx9aekNdSMpRPPqNvs5YvyVuVYJY8TpP530Td4x/k+qMbFE9vOLMIZ0k0RUMgGV3vSGYvUZ6kdAorxmPwLL5XgFP3MqmBR2VcKLk+xNCUfa0OWrQ0v57XprbJXt+brtygblBreWLknyF0uSUR7wIcO+x4e1DkNB7LSSkcZYLG0+n3bqeFyR6mvnwukHjAx5L+YhNd/jRqGTKMxrYyzUk8J5Q/XGMnKLXkYuxWX9DDhTDplGptR3Fy44zy3tBSpKjCkdLIDx2gdMLEnpe2dtZxaLc11IKz5o0k3fS31tV2UllfbdSDaiscjeUckoVoNflj/FAd1od7XjXQ0qLElRpX5HP09n8lJos152XUAuDbiC/b+w+AZ7LualMav0KYXCcxExSJ0+nwxC6sQFLA59FfsX9ogn16EWleyJogg5deJ6J9eBA2GMzGnXth77Qxv6RJB3Y7YxsgPz1Od/l+CxvGJBRCOQ6w2Q1J3oPg4MHUTUgCUZYohkoQ33VKdPjSSMXWBW6RjtdFaotfLe+Jw7Tq9yIDMRrNuGZ+3BTAsCPhMOnOO7wD5Vu4rXtrUDde0U9Ya1Bs4VZ2gjGEmjH1B561D4Icmi1St1/
+x-microsoft-antispam-message-info: PywD4aweVl8tzQgbxEOfI53zYyL0dn28jdV//feB+ZLxFqhubHR5vbx2xjYxoucGo+o6X1gArnnxv/VFSSxaELc7PqYVN/75vFlRkHNsIJ+UFDMxNIWcdj6gGhfEoYdEAoGymJEJgaroYwINClBuEddd+OXRVoUmda4qhDZ8wXkwAKTrT7Kx0AjqnLRFERQOWTkXqePDhhgDT6XXcvAqS6h0pxbTUQJHFQbvCdTJlwfmPKW0YBKEKIPd58BB7rJcRTIk/59GVD5G6JWbfTl5DZHIuXDuhTyFE9bcLlrWEvrBOMvtvW3YNRFMgrJLJTFVlcgT1u3beR/9ducZ1XlFCA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(366004)(346002)(376002)(76116006)(6506007)(186003)(86362001)(53546011)(36756003)(66446008)(64756008)(8936002)(66556008)(66476007)(6916009)(66946007)(33656002)(6486002)(478600001)(71200400001)(5660300002)(2906002)(8676002)(54906003)(83380400001)(316002)(4326008)(2616005)(6512007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: pFOL8M+OSeAVqmZ/ANnPncGh8wuI3NkVzhZHbGPYKzl8ETeAi/6E11/f7NVVuUfaAWVuA28vdjp//CJEFBkIwphN7T9dm7aZn4WfIunFJ/q+JXwTk/P58xFAJx/ilsFyO7U8GLQP3zVdBVVILFuVCdMquHBRj0a3MHZv7A+llozHT7hQ1CU48ibnrjPB9DFMlVcVQ+dmIDDZ6lBiclTEXecI4SL3TGDT7focf1ZvYDJU2TVnxIqvQtHXvmvtiyD/ZB3H41qAxZTRcCppYXjGPFstlJ2IS1kGvY4cpktjwANnzj/XNNFlZGXVCnkycx9OfKJK12pRj+T3qWlMgPkIpgKC0btH4LxYWx/QeIKftDWEEajbA5WxrCapIA3zx/OAcwItDpS93+8HTtCEgOYDaPrPv3SYDLROMmTwu4KmcYlrc3eicliBp+KNQ+9r81wX7D9JnQhwFTQ3+yXZ84zDAbiTO9zRBCKdzCIL4dp+nnYr5Vak2Wum2K+y3/KP8Oul+5/6k9/AtFgrDzYKJPZJpQyiGmZlbZhPw0kFpNG/woUlG7CHkAdvHkyMKRAGL/0P60FVji2PnYGtM6KSFMMJqS1DRPTunZrhZ//MWjuPDqoEoxqFr+Tmc2+VLccco3Qav9bKtBefepWjdRoJmNtOy2hgL+XFVKrM+iyRsPKZ5gIHcguRfiJnoR/31mxmqYqO
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <869EEABE27A963448C10A1A98695F343@namprd15.prod.outlook.com>
+Content-ID: <FBF55194407D774D818AC0CE2E195EB3@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 540a0961-1b10-413b-e793-08d87f8827a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Nov 2020 23:36:42.8352
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8427146d-ddf2-46d2-e658-08d87f8c8b6d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2020 00:08:08.3430
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: REq7NKOhb4FF1rZfQCqK53v/zqEGBkUc5QmtMyERcO8fkXMzFI7aPes34jY5+E1XWUXjYHeS1OvFJQTpM+Hxyg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4202
+X-MS-Exchange-CrossTenant-userprincipalname: jNpx/yV9+wDeJN3/mkp78j1ygkiM+KuqrxQkDxjIs9YdKd5XLjsfhQhsmoF1Sy4tWCZ9aIQuddIP3euyqaxfvg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3302
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-02_16:2020-11-02,2020-11-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- impostorscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 mlxscore=0
- bulkscore=0 spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011020181
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 malwarescore=0 clxscore=1015 mlxscore=0
+ adultscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011020186
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -119,39 +122,98 @@ X-Mailing-List: bpf@vger.kernel.org
 
 > On Oct 28, 2020, at 5:58 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
 >=20
-> Add selftest validating ability to programmatically generate and then dum=
-p
-> split BTF.
+> From: Andrii Nakryiko <andriin@fb.com>
+>=20
+> Add re-usable btf_helpers.{c,h} to provide BTF-related testing routines. =
+Start
+> with adding a raw BTF dumping helpers.
+>=20
+> Raw BTF dump is the most succinct and at the same time a very human-frien=
+dly
+> way to validate exact contents of BTF types. Cross-validate raw BTF dump =
+and
+> writable BTF in a single selftest. Raw type dump checks also serve as a g=
+ood
+> self-documentation.
 >=20
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
 Acked-by: Song Liu <songliubraving@fb.com>
 
-With a nit:
+with a couple nits:
 
 [...]
->=20
+
 > +
-> +static void btf_dump_printf(void *ctx, const char *fmt, va_list args)
+> +/* Print raw BTF type dump into a local buffer and return string pointer=
+ back.
+> + * Buffer *will* be overwritten by subsequent btf_type_raw_dump() calls
+> + */
+> +const char *btf_type_raw_dump(const struct btf *btf, int type_id)
 > +{
-> +	vfprintf(ctx, fmt, args);
+> +	static char buf[16 * 1024];
+> +	FILE *buf_file;
+> +
+> +	buf_file =3D fmemopen(buf, sizeof(buf) - 1, "w");
+> +	if (!buf_file) {
+> +		fprintf(stderr, "Failed to open memstream: %d\n", errno);
+> +		return NULL;
+> +	}
+> +
+> +	fprintf_btf_type_raw(buf_file, btf, type_id);
+> +	fflush(buf_file);
+> +	fclose(buf_file);
+> +
+> +	return buf;
 > +}
+> diff --git a/tools/testing/selftests/bpf/btf_helpers.h b/tools/testing/se=
+lftests/bpf/btf_helpers.h
+> new file mode 100644
+> index 000000000000..2c9ce1b61dc9
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/btf_helpers.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright (c) 2020 Facebook */
+> +#ifndef __BTF_HELPERS_H
+> +#define __BTF_HELPERS_H
 > +
-> +void test_btf_split() {
-> +	struct btf_dump_opts opts;
-> +	struct btf_dump *d =3D NULL;
-> +	const struct btf_type *t;
-> +	struct btf *btf1, *btf2 =3D NULL;
-
-No need to initialize btf2 to NULL.=20
-
-> +	int str_off, i, err;
+> +#include <stdio.h>
+> +#include <bpf/btf.h>
 > +
-> +	btf1 =3D btf__new_empty();
-> +	if (!ASSERT_OK_PTR(btf1, "empty_main_btf"))
-> +		return;
+> +int fprintf_btf_type_raw(FILE *out, const struct btf *btf, __u32 id);
+> +const char *btf_type_raw_dump(const struct btf *btf, int type_id);
 > +
+> +#endif
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf_write.c b/tools/t=
+esting/selftests/bpf/prog_tests/btf_write.c
+> index 314e1e7c36df..bc1412de1b3d 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/btf_write.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf_write.c
+> @@ -2,6 +2,7 @@
+> /* Copyright (c) 2020 Facebook */
+> #include <test_progs.h>
+> #include <bpf/btf.h>
+> +#include "btf_helpers.h"
 >=20
+> static int duration =3D 0;
+>=20
+> @@ -11,12 +12,12 @@ void test_btf_write() {
+> 	const struct btf_member *m;
+> 	const struct btf_enum *v;
+> 	const struct btf_param *p;
+> -	struct btf *btf;
+> +	struct btf *btf =3D NULL;
 
-[...]
+No need to initialize btf.=20
 
+> 	int id, err, str_off;
+>=20
+> 	btf =3D btf__new_empty();
+> 	if (CHECK(IS_ERR(btf), "new_empty", "failed: %ld\n", PTR_ERR(btf)))
+> -		return;
+> +		goto err_out;
+
+err_out is not needed either.=20
+
+[...]=
