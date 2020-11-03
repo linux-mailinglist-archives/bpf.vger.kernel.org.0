@@ -2,108 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB312A3F29
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 09:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAB42A3F3F
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 09:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgKCIms (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 03:42:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46177 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725997AbgKCImr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 03:42:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604392966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hrCT/XemvFvlhZnm+062tCDMJvlkgHd9UbXAuXqPsXI=;
-        b=TBwUzyo7nMtL+4cNtxyJiVpf3bAssI3EOdYq6ax3pCskAyVW96gKGHRt7v5O1aCborEmEb
-        0GYGe8Dv3hAo/CmiyGQy24wBGOSFk4eleIUC3jfJLVINHDlY/Ze5YNWTh1hOjkfeCOJW4c
-        P5BnaeAk0mI4S7Au5CcNhh5A8q7IDhg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-422-W_zeLT4DMaujKlpogxh6Ow-1; Tue, 03 Nov 2020 03:42:42 -0500
-X-MC-Unique: W_zeLT4DMaujKlpogxh6Ow-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7018D800050;
-        Tue,  3 Nov 2020 08:42:40 +0000 (UTC)
-Received: from localhost (unknown [10.40.194.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E67BE60BF1;
-        Tue,  3 Nov 2020 08:42:26 +0000 (UTC)
-Date:   Tue, 3 Nov 2020 09:42:24 +0100
-From:   Jiri Benc <jbenc@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>, Hangbin Liu <haliu@redhat.com>,
+        id S1725988AbgKCIqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 03:46:49 -0500
+Received: from www62.your-server.de ([213.133.104.62]:34794 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725982AbgKCIqs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 03:46:48 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kZrxW-0007cZ-IC; Tue, 03 Nov 2020 09:46:30 +0100
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kZrxW-000ARu-8N; Tue, 03 Nov 2020 09:46:30 +0100
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+Cc:     Hangbin Liu <haliu@redhat.com>,
         Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         David Miller <davem@davemloft.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-Message-ID: <20201103094224.6de1470d@redhat.com>
-In-Reply-To: <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
 References: <20201028132529.3763875-1-haliu@redhat.com>
-        <20201029151146.3810859-1-haliu@redhat.com>
-        <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
-        <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+ <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+Date:   Tue, 3 Nov 2020 09:46:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25976/Mon Nov  2 14:23:56 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2 Nov 2020 22:58:06 -0800, Andrii Nakryiko wrote:
-> But I don't think I got a real answer as to what's the exact reason
-> against the submodule. Like what "inappropriate" even means in this
-> case? Jesper's security argument so far was the only objective
-> criteria, as far as I can tell.
+On 11/3/20 7:58 AM, Andrii Nakryiko wrote:
+> On Mon, Nov 2, 2020 at 7:47 AM David Ahern <dsahern@gmail.com> wrote:
+>> On 10/29/20 9:11 AM, Hangbin Liu wrote:
+>>> This series converts iproute2 to use libbpf for loading and attaching
+>>> BPF programs when it is available. This means that iproute2 will
+>>> correctly process BTF information and support the new-style BTF-defined
+>>> maps, while keeping compatibility with the old internal map definition
+>>> syntax.
+>>>
+>>> This is achieved by checking for libbpf at './configure' time, and using
+>>> it if available. By default the system libbpf will be used, but static
+>>> linking against a custom libbpf version can be achieved by passing
+>>> LIBBPF_DIR to configure. FORCE_LIBBPF can be set to force configure to
+>>> abort if no suitable libbpf is found (useful for automatic packaging
+>>> that wants to enforce the dependency).
+>>>
+>>> The old iproute2 bpf code is kept and will be used if no suitable libbpf
+>>> is available. When using libbpf, wrapper code ensures that iproute2 will
+>>> still understand the old map definition format, including populating
+>>> map-in-map and tail call maps before load.
+>>>
+>>> The examples in bpf/examples are kept, and a separate set of examples
+>>> are added with BTF-based map definitions for those examples where this
+>>> is possible (libbpf doesn't currently support declaratively populating
+>>> tail call maps).
+>>>
+>>> At last, Thanks a lot for Toke's help on this patch set.
+>>
+>> In regards to comments from v2 of the series:
+>>
+>> iproute2 is a stable, production package that requires minimal support
+>> from external libraries. The external packages it does require are also
+>> stable with few to no relevant changes.
+>>
+>> bpf and libbpf on the other hand are under active development and
+>> rapidly changing month over month. The git submodule approach has its
+>> conveniences for rapid development but is inappropriate for a package
+>> like iproute2 and will not be considered.
 
-It's the fundamental objection. Distributions in general have the "no
-bundled libraries" policy. It is sometimes annoying but it helps to
-understand that the policy is not a whim of distros, it's coming from
-years of experience with package maintenance for security and stability.
-
-> But I also see that using libbpf through submodule gives iproute2
-> exact control over which version of libbpf is being used. And that
-> does not depend at all on any specific Linux distribution, its
-> version, LTS vs non-LTS, etc. iproute2 will just work the same across
-> all of them. So matches your stated goals very directly and
-> explicitly.
-
-If you take this route, the end result would be all dependencies for
-all projects being included as submodules and bundled. At the first
-sight, this sounds easier for the developers. Why bother with dynamic
-linking at all? Everything can be linked statically.
-
-The result would be nightmare for both distros and users. No timely
-security updates possible, critical bugs not being fixed in some
-programs, etc. There is enough experience with this kind of setup to
-conclude it is not the right way to go.
-
-Yes, dynamic linking is initially more work for developers of both apps
-and libraries. However, it pays off over time - there's no need to keep
-track of security and other important fixes in the dependencies, it
-comes for free from the distro work.
-
-Btw, taking the bundling to the extreme, every app could bundle its own
-well tested and compatible kernel version and be run in a VM. This
-might sound far fetched but there were actual attempts to do that. It
-didn't take off; I think part of the reason was that the Linux kernel
-is very good in keeping its APIs stable.
-
-And I'm convinced this is the way to go for libraries, too: put an
-emphasis on API stability. Make it easy to get consumed and updated
-under the hood. Everybody wins this way.
-
- Jiri
-
+I thought last time this discussion came up there was consensus that the
+submodule could be an explicit opt in for the configure script at least?
