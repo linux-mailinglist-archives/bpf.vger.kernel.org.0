@@ -2,427 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB132A4A53
-	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 16:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B732A4A8E
+	for <lists+bpf@lfdr.de>; Tue,  3 Nov 2020 17:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgKCPtV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 10:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S1726018AbgKCQBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 11:01:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727246AbgKCPtV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 10:49:21 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31301C0617A6
-        for <bpf@vger.kernel.org>; Tue,  3 Nov 2020 07:49:21 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id k9so18804638edo.5
-        for <bpf@vger.kernel.org>; Tue, 03 Nov 2020 07:49:21 -0800 (PST)
+        with ESMTP id S1725982AbgKCQBU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 11:01:20 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE93C0613D1;
+        Tue,  3 Nov 2020 08:01:20 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id n12so7283063ioc.2;
+        Tue, 03 Nov 2020 08:01:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=svot3fsM1VQnNA8akDzMbU5oumV28F1AVURlyqN2/5c=;
-        b=A8g7sVZQ93r5uFMe+kf9s9jL8NcHDjLrNFFlwOeDDcOYUvG8V6JhUkjIIoVLg1H7GH
-         9GoZDyYopHLo3oGdJdVKrCY3p4rkLDuv4u+IeSMoEyhUC5akaiup1glYrkftpmatXzTw
-         bdM9AndbsYisNAFr5pcUX2YwFT/xRi1MMWn1EfnXUh8caLurI2vo5posyv3GsNIMT8Ov
-         3m+WlqufRPss4fjFfxMCse32FDybH8+7/V9IWxoA5FcIp9hJq0jTLHQony74NzwVl0Gu
-         aH+LOizVSD8EqW4vfyiIsfPM1/edoxOxKW3ZgcVSLYoYXzFmZBXx00aj/dO+cIs1ebaN
-         6EDw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4dKUAsXJBZEUrqdUnF/j4ZiY0ub+/LwLLjcRdluZZDw=;
+        b=iCMfic03coleRE/4ylmAhjky/BfHegzHAjSgIclnSUKiu5Ufcq6jSDf2qeA2qsTBTb
+         JLDKgUTXFZEmf7tRJ9UkCxIy7790IT3NdCXNuMAsCarjvjE0me09ywCSL5zsZ8wox+61
+         MzJOBOXleavsmme8+5iCWj65g19Drci6HS9QtDYN7dvKTr0HE4qadbebfwakrSc2umd9
+         FvPmJU4iUc02nXTbcUe/sOBf2nqbFmTax+wcMLf9CojsO9KAoN7M5NyE/+HyqIVGBNyY
+         PmjjdIR2nS+6g+JgY+R2XQMBsQK9ZNpegfdpJvADL6+vr0W+TFNYUbd/fc7u54TY8Fzu
+         g2iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=svot3fsM1VQnNA8akDzMbU5oumV28F1AVURlyqN2/5c=;
-        b=uBrqVKSmugjQYToAe7WotPgl815qb0Z4E4SX11KQL+n95jpuh8os2qttbsoqXjHI+C
-         PhuENI6+ea4hYrcdPJrFyt4mJVb+m+VbmR2EOfge9lTLeBDFk2tpF7XUM1Gbkt5fGi6K
-         9oRWSAPO7s3PXR7oevdSv3sxnoYJoXsLqzhamLRnmt1wTCreZbUOZ0bZxJYYk2JyaSWH
-         OUla6qiwDaLCYy4V2FxqvGxyT15ZEZ0E7srs7c21JaP1EnqxZgc0hj9D1H6nydZY3+kj
-         UlFG3dYr8CJu3nN0jg3KFP9h+3XOYpcHF1kVxh+9ZjfVCe1qe7NCrRIxDOr+nHPefgAJ
-         gTbg==
-X-Gm-Message-State: AOAM531RhYxocn+C+k6eUq4+b/CGX7UoLDxfLGllXAX4ugJzj+HRqJdX
-        ijAtQ+9a/6JjQmkGBXb/pPD29IN0/9x+hjqd
-X-Google-Smtp-Source: ABdhPJyOJyr91+hFoVafDQ1DoaPxEFOATps/TV4MCx/YjX/A7Jc/tTQrgwSSG0yDILeoUtSWqLzlIg==
-X-Received: by 2002:a05:6402:1206:: with SMTP id c6mr6172163edw.2.1604418559417;
-        Tue, 03 Nov 2020 07:49:19 -0800 (PST)
-Received: from localhost.localdomain ([2a02:a03f:689e:3400:b894:bc77:ad21:b2db])
-        by smtp.gmail.com with ESMTPSA id s12sm12061319edu.28.2020.11.03.07.49.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Nov 2020 07:49:18 -0800 (PST)
-From:   David Verbeiren <david.verbeiren@tessares.net>
-To:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, Song Liu <song@kernel.org>,
-        David Verbeiren <david.verbeiren@tessares.net>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: [PATCH bpf v3] bpf: zero-fill re-used per-cpu map element
-Date:   Tue,  3 Nov 2020 16:47:38 +0100
-Message-Id: <20201103154738.29809-1-david.verbeiren@tessares.net>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201027221324.27894-1-david.verbeiren@tessares.net>
-References: <20201027221324.27894-1-david.verbeiren@tessares.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4dKUAsXJBZEUrqdUnF/j4ZiY0ub+/LwLLjcRdluZZDw=;
+        b=emvrgBWk5HKhb1oaWBQwqF4qpxErIsL8c+9S2LJ1RVzmY5tUiZNB+1inncIikCtOqH
+         WKxUSsN5W/5NNKTo9di3w/uUo9u5WSQ7Nuzm6lWtDAjueeh5QrWtTADcZAo8Yrv3VTPu
+         8+LDQEHt3FQC1FTAY8fxcFRW+v8gagnV/xGa1gl8Jbk7RGiD0SFtubn7SF0snJzgxgxq
+         jpJlpfEr11HVa85IhIwZ3SpawJJ4XQ+JUYpOjS6zCddP4oKBU9aZ3geNAxUlQP5sT/Z4
+         XTpAiSOiuH5NlFUB82jZ9+c0lqyXBHAmiinxGM0wDYodG9ZEf+/iCMmGUIbK9UWhlvGF
+         xuig==
+X-Gm-Message-State: AOAM531u8mTjl68wyG5ZnYYyA/1rwAl3mtYMRWR6zvFj4c9phuIZ+R4E
+        RxG0zD1kCNDKKVPlwDNukzHqGAIWPjZKLi/d1fk=
+X-Google-Smtp-Source: ABdhPJyzgj5KUCC5YmsU+8RYrG59gF8arynDcLoU8e9GrUPpPUZrsL3yl7aPJhcOuuZiebPr149/3SR4zF7FfXq0J4o=
+X-Received: by 2002:a02:1783:: with SMTP id 125mr16575634jah.121.1604419279517;
+ Tue, 03 Nov 2020 08:01:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <160416890683.710453.7723265174628409401.stgit@localhost.localdomain>
+ <160417033818.2823.4460428938483935516.stgit@localhost.localdomain>
+ <20201103003836.2ngjz6yqewhn7aln@kafai-mbp.dhcp.thefacebook.com>
+ <CAKgT0UceQhVGXbkZWj_aj0+Ew8oOEJMAgwAUE5GLN5EexqAhkQ@mail.gmail.com> <20201103013310.wbs7i3jm5vwnrctn@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201103013310.wbs7i3jm5vwnrctn@kafai-mbp.dhcp.thefacebook.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 3 Nov 2020 08:01:08 -0800
+Message-ID: <CAKgT0Ud4xo0WY9CBesVzgJ06Nw9dnEuYYs_h-WEqzFGXhmJpVw@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 2/5] selftests/bpf: Drop python client/server
+ in favor of threads
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Lawrence Brakmo <brakmo@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        alexanderduyck@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zero-fill element values for all other cpus than current, just as
-when not using prealloc. This is the only way the bpf program can
-ensure known initial values for all cpus ('onallcpus' cannot be
-set when coming from the bpf program).
+On Mon, Nov 2, 2020 at 5:33 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Mon, Nov 02, 2020 at 04:49:42PM -0800, Alexander Duyck wrote:
+> > On Mon, Nov 2, 2020 at 4:38 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Sat, Oct 31, 2020 at 11:52:18AM -0700, Alexander Duyck wrote:
+> > > > From: Alexander Duyck <alexanderduyck@fb.com>
+> > > >
+> > > > Drop the tcp_client/server.py files in favor of using a client and server
+> > > > thread within the test case. Specifically we spawn a new thread to play the
+> > > The thread comment may be outdated in v2.
+> > >
+> > > > role of the server, and the main testing thread plays the role of client.
+> > > >
+> > > > Add logic to the end of the run_test function to guarantee that the sockets
+> > > > are closed when we begin verifying results.
+> > > >
+> > > > Doing this we are able to reduce overhead since we don't have two python
+> > > > workers possibly floating around. In addition we don't have to worry about
+> > > > synchronization issues and as such the retry loop waiting for the threads
+> > > > to close the sockets can be dropped as we will have already closed the
+> > > > sockets in the local executable and synchronized the server thread.
+> > > >
+> > > > Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+> > > > ---
+> > > >  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |   96 ++++++++++++++++----
+> > > >  tools/testing/selftests/bpf/tcp_client.py          |   50 ----------
+> > > >  tools/testing/selftests/bpf/tcp_server.py          |   80 -----------------
+> > > >  3 files changed, 78 insertions(+), 148 deletions(-)
+> > > >  delete mode 100755 tools/testing/selftests/bpf/tcp_client.py
+> > > >  delete mode 100755 tools/testing/selftests/bpf/tcp_server.py
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > > > index 54f1dce97729..17d4299435df 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+> > > > @@ -1,13 +1,14 @@
+> > > >  // SPDX-License-Identifier: GPL-2.0
+> > > >  #include <inttypes.h>
+> > > >  #include <test_progs.h>
+> > > > +#include <network_helpers.h>
+> > > >
+> > > >  #include "test_tcpbpf.h"
+> > > >
+> > > > +#define LO_ADDR6 "::1"
+> > > >  #define CG_NAME "/tcpbpf-user-test"
+> > > >
+> > > > -/* 3 comes from one listening socket + both ends of the connection */
+> > > > -#define EXPECTED_CLOSE_EVENTS                3
+> > > > +static __u32 duration;
+> > > >
+> > > >  #define EXPECT_EQ(expected, actual, fmt)                     \
+> > > >       do {                                                    \
+> > > > @@ -42,7 +43,9 @@ int verify_result(const struct tcpbpf_globals *result)
+> > > >       EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
+> > > >       EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
+> > > >       EXPECT_EQ(1, result->num_listen, PRIu32);
+> > > > -     EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
+> > > > +
+> > > > +     /* 3 comes from one listening socket + both ends of the connection */
+> > > > +     EXPECT_EQ(3, result->num_close_events, PRIu32);
+> > > >
+> > > >       return ret;
+> > > >  }
+> > > > @@ -66,6 +69,75 @@ int verify_sockopt_result(int sock_map_fd)
+> > > >       return ret;
+> > > >  }
+> > > >
+> > > > +static int run_test(void)
+> > > > +{
+> > > > +     int listen_fd = -1, cli_fd = -1, accept_fd = -1;
+> > > > +     char buf[1000];
+> > > > +     int err = -1;
+> > > > +     int i;
+> > > > +
+> > > > +     listen_fd = start_server(AF_INET6, SOCK_STREAM, LO_ADDR6, 0, 0);
+> > > > +     if (CHECK(listen_fd == -1, "start_server", "listen_fd:%d errno:%d\n",
+> > > > +               listen_fd, errno))
+> > > > +             goto done;
+> > > > +
+> > > > +     cli_fd = connect_to_fd(listen_fd, 0);
+> > > > +     if (CHECK(cli_fd == -1, "connect_to_fd(listen_fd)",
+> > > > +               "cli_fd:%d errno:%d\n", cli_fd, errno))
+> > > > +             goto done;
+> > > > +
+> > > > +     accept_fd = accept(listen_fd, NULL, NULL);
+> > > > +     if (CHECK(accept_fd == -1, "accept(listen_fd)",
+> > > > +               "accept_fd:%d errno:%d\n", accept_fd, errno))
+> > > > +             goto done;
+> > > > +
+> > > > +     /* Send 1000B of '+'s from cli_fd -> accept_fd */
+> > > > +     for (i = 0; i < 1000; i++)
+> > > > +             buf[i] = '+';
+> > > > +
+> > > > +     err = send(cli_fd, buf, 1000, 0);
+> > > > +     if (CHECK(err != 1000, "send(cli_fd)", "err:%d errno:%d\n", err, errno))
+> > > > +             goto done;
+> > > > +
+> > > > +     err = recv(accept_fd, buf, 1000, 0);
+> > > > +     if (CHECK(err != 1000, "recv(accept_fd)", "err:%d errno:%d\n", err, errno))
+> > > > +             goto done;
+> > > > +
+> > > > +     /* Send 500B of '.'s from accept_fd ->cli_fd */
+> > > > +     for (i = 0; i < 500; i++)
+> > > > +             buf[i] = '.';
+> > > > +
+> > > > +     err = send(accept_fd, buf, 500, 0);
+> > > > +     if (CHECK(err != 500, "send(accept_fd)", "err:%d errno:%d\n", err, errno))
+> > > > +             goto done;
+> > > > +
+> > > > +     err = recv(cli_fd, buf, 500, 0);
+> > > Unlikely, but err from the above send()/recv() could be 0.
+> >
+> > Is that an issue? It would still trigger the check below as that is not 500.
+> Mostly for consistency.  "err" will be returned and tested for non-zero
+> in test_tcpbpf_user().
 
-The scenario is: bpf program inserts some elements in a per-cpu
-map, then deletes some (or userspace does). When later adding
-new elements using bpf_map_update_elem(), the bpf program can
-only set the value of the new elements for the current cpu.
-When prealloc is enabled, previously deleted elements are re-used.
-Without the fix, values for other cpus remain whatever they were
-when the re-used entry was previously freed.
-
-A selftest is added to validate correct operation in above
-scenario as well as in case of LRU per-cpu map element re-use.
-
-Fixes: 6c9059817432 ("bpf: pre-allocate hash map elements")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
----
-
-Notes:
-    v3:
-      - Added selftest that was initially provided as separate
-        patch, and reworked to
-        * use skeleton (Andrii, Song Liu)
-        * skip test if <=1 CPU (Song Liu)
-    
-    v2:
-      - Moved memset() to separate pcpu_init_value() function,
-        which replaces pcpu_copy_value() but delegates to it
-        for the cases where no memset() is needed (Andrii).
-      - This function now also avoids doing the memset() for
-        the current cpu for which the value must be set
-        anyhow (Andrii).
-      - Same pcpu_init_value() used for per-cpu LRU map
-        (Andrii).
-
- kernel/bpf/hashtab.c                          |  30 ++-
- .../selftests/bpf/prog_tests/map_init.c       | 213 ++++++++++++++++++
- .../selftests/bpf/progs/test_map_init.c       |  34 +++
- 3 files changed, 275 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_map_init.c
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 1815e97d4c9c..1fccba6e88c4 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -821,6 +821,32 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
- 	}
- }
- 
-+static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr,
-+			    void *value, bool onallcpus)
-+{
-+	/* When using prealloc and not setting the initial value on all cpus,
-+	 * zero-fill element values for other cpus (just as what happens when
-+	 * not using prealloc). Otherwise, bpf program has no way to ensure
-+	 * known initial values for cpus other than current one
-+	 * (onallcpus=false always when coming from bpf prog).
-+	 */
-+	if (htab_is_prealloc(htab) && !onallcpus) {
-+		u32 size = round_up(htab->map.value_size, 8);
-+		int current_cpu = raw_smp_processor_id();
-+		int cpu;
-+
-+		for_each_possible_cpu(cpu) {
-+			if (cpu == current_cpu)
-+				bpf_long_memcpy(per_cpu_ptr(pptr, cpu), value,
-+						size);
-+			else
-+				memset(per_cpu_ptr(pptr, cpu), 0, size);
-+		}
-+	} else {
-+		pcpu_copy_value(htab, pptr, value, onallcpus);
-+	}
-+}
-+
- static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
- {
- 	return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
-@@ -891,7 +917,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 			}
- 		}
- 
--		pcpu_copy_value(htab, pptr, value, onallcpus);
-+		pcpu_init_value(htab, pptr, value, onallcpus);
- 
- 		if (!prealloc)
- 			htab_elem_set_ptr(l_new, key_size, pptr);
-@@ -1183,7 +1209,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
- 		pcpu_copy_value(htab, htab_elem_get_ptr(l_old, key_size),
- 				value, onallcpus);
- 	} else {
--		pcpu_copy_value(htab, htab_elem_get_ptr(l_new, key_size),
-+		pcpu_init_value(htab, htab_elem_get_ptr(l_new, key_size),
- 				value, onallcpus);
- 		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
- 		l_new = NULL;
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
-new file mode 100644
-index 000000000000..386d9439bad9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
-@@ -0,0 +1,213 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+// Copyright (c) 2020 Tessares SA <http://www.tessares.net>
-+
-+#include <test_progs.h>
-+#include "test_map_init.skel.h"
-+
-+#define TEST_VALUE 0x1234
-+#define FILL_VALUE 0xdeadbeef
-+
-+static int nr_cpus;
-+static int duration;
-+
-+typedef unsigned long long map_key_t;
-+typedef unsigned long long map_value_t;
-+typedef struct {
-+	map_value_t v; /* padding */
-+} __bpf_percpu_val_align pcpu_map_value_t;
-+
-+
-+static int map_populate(int map_fd, int num)
-+{
-+	pcpu_map_value_t value[nr_cpus];
-+	int i, err;
-+	map_key_t key;
-+
-+	for (i = 0; i < nr_cpus; i++)
-+		bpf_percpu(value, i) = FILL_VALUE;
-+
-+	for (key = 1; key <= num; key++) {
-+		err = bpf_map_update_elem(map_fd, &key, value, BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct test_map_init *setup(enum bpf_map_type map_type, int map_sz,
-+			    int *map_fd, int populate)
-+{
-+	struct test_map_init *skel;
-+	int err;
-+
-+	skel = test_map_init__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return NULL;
-+
-+	err = bpf_map__set_type(skel->maps.hashmap1, map_type);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err = bpf_map__set_max_entries(skel->maps.hashmap1, map_sz);
-+	if (!ASSERT_OK(err, "bpf_map__set_max_entries"))
-+		goto error;
-+
-+	err = test_map_init__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto error;
-+
-+	*map_fd = bpf_map__fd(skel->maps.hashmap1);
-+	if (CHECK(*map_fd < 0, "bpf_map__fd", "failed\n"))
-+		goto error;
-+
-+	err = map_populate(*map_fd, populate);
-+	if (!ASSERT_OK(err, "map_populate"))
-+		goto error_map;
-+
-+	return skel;
-+
-+error_map:
-+	close(*map_fd);
-+error:
-+	test_map_init__destroy(skel);
-+	return NULL;
-+}
-+
-+/* executes bpf program that updates map with key, value */
-+static int prog_run_insert_elem(struct test_map_init *skel, map_key_t key,
-+				map_value_t value)
-+{
-+	struct test_map_init__bss *bss;
-+
-+	bss = skel->bss;
-+
-+	bss->inKey = key;
-+	bss->inValue = value;
-+
-+	if (!ASSERT_OK(test_map_init__attach(skel), "skel_attach"))
-+		return -1;
-+
-+	/* Let tracepoint trigger */
-+	usleep(1);
-+
-+	test_map_init__detach(skel);
-+
-+	return 0;
-+}
-+
-+static int check_values_one_cpu(pcpu_map_value_t *value, map_value_t expected)
-+{
-+	int i, nzCnt = 0;
-+	map_value_t val;
-+
-+	for (i = 0; i < nr_cpus; i++) {
-+		val = bpf_percpu(value, i);
-+		if (val) {
-+			if (CHECK(val != expected, "map value",
-+				  "unexpected for cpu %d: 0x%llx\n", i, val))
-+				return -1;
-+			nzCnt++;
-+		}
-+	}
-+
-+	if (CHECK(nzCnt != 1, "map value", "set for %d CPUs instead of 1!\n",
-+		  nzCnt))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+/* Add key=1 elem with values set for all CPUs
-+ * Delete elem key=1
-+ * Run bpf prog that inserts new key=1 elem with value=0x1234
-+ *   (bpf prog can only set value for current CPU)
-+ * Lookup Key=1 and check value is as expected for all CPUs:
-+ *   value set by bpf prog for one CPU, 0 for all others
-+ */
-+static void test_pcpu_map_init(void)
-+{
-+	pcpu_map_value_t value[nr_cpus];
-+	struct test_map_init *skel;
-+	int map_fd, err;
-+	map_key_t key;
-+
-+	/* max 1 elem in map so insertion is forced to reuse freed entry */
-+	skel = setup(BPF_MAP_TYPE_PERCPU_HASH, 1, &map_fd, 1);
-+	if (!ASSERT_OK_PTR(skel, "prog_setup"))
-+		return;
-+
-+	/* delete element so the entry can be re-used*/
-+	key = 1;
-+	err = bpf_map_delete_elem(map_fd, &key);
-+	if (!ASSERT_OK(err, "bpf_map_delete_elem"))
-+		goto cleanup;
-+
-+	/* run bpf prog that inserts new elem, re-using the slot just freed */
-+	err = prog_run_insert_elem(skel, key, TEST_VALUE);
-+	if (!ASSERT_OK(err, "prog_run_insert_elem"))
-+		goto cleanup;
-+
-+	/* check that key=1 was re-created by bpf prog */
-+	err = bpf_map_lookup_elem(map_fd, &key, value);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto cleanup;
-+
-+	/* and has expected values */
-+	check_values_one_cpu(value, TEST_VALUE);
-+
-+cleanup:
-+	test_map_init__destroy(skel);
-+}
-+
-+/* Add key=1 and key=2 elems with values set for all CPUs
-+ * Run bpf prog that inserts new key=3 elem
-+ *   (only for current cpu; other cpus should have initial value = 0)
-+ * Lookup Key=1 and check value is as expected for all CPUs
-+ */
-+static void test_pcpu_lru_map_init(void)
-+{
-+	pcpu_map_value_t value[nr_cpus];
-+	struct test_map_init *skel;
-+	int map_fd, err;
-+	map_key_t key;
-+
-+	/* Set up LRU map with 2 elements, values filled for all CPUs.
-+	 * With these 2 elements, the LRU map is full
-+	 */
-+	skel = setup(BPF_MAP_TYPE_LRU_PERCPU_HASH, 2, &map_fd, 2);
-+	if (!ASSERT_OK_PTR(skel, "prog_setup"))
-+		return;
-+
-+	/* run bpf prog that inserts new key=3 element, re-using LRU slot */
-+	key = 3;
-+	err = prog_run_insert_elem(skel, key, TEST_VALUE);
-+	if (!ASSERT_OK(err, "prog_run_insert_elem"))
-+		goto cleanup;
-+
-+	/* check that key=3 replaced one of earlier elements */
-+	err = bpf_map_lookup_elem(map_fd, &key, value);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto cleanup;
-+
-+	/* and has expected values */
-+	check_values_one_cpu(value, TEST_VALUE);
-+
-+cleanup:
-+	test_map_init__destroy(skel);
-+}
-+
-+void test_map_init(void)
-+{
-+	nr_cpus = bpf_num_possible_cpus();
-+	if (nr_cpus <= 1) {
-+		printf("%s:SKIP: >1 cpu needed for this test\n", __func__);
-+		test__skip();
-+		return;
-+	}
-+
-+	if (test__start_subtest("pcpu_map_init"))
-+		test_pcpu_map_init();
-+	if (test__start_subtest("pcpu_lru_map_init"))
-+		test_pcpu_lru_map_init();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_map_init.c b/tools/testing/selftests/bpf/progs/test_map_init.c
-new file mode 100644
-index 000000000000..280a45e366d6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_map_init.c
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Tessares SA <http://www.tessares.net>
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+__u64 inKey = 0;
-+__u64 inValue = 0;
-+__u32 once = 0;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
-+	__uint(max_entries, 2);
-+	__type(key, __u64);
-+	__type(value, __u64);
-+} hashmap1 SEC(".maps");
-+
-+
-+SEC("raw_tp/sys_enter")
-+int sys_enter(const void *ctx)
-+{
-+	/* Just do it once so the value is only updated for a single CPU.
-+	 * Indeed, this tracepoint will quickly be hit from different CPUs.
-+	 */
-+	if (!once) {
-+		__sync_fetch_and_add(&once, 1);
-+
-+		bpf_map_update_elem(&hashmap1, &inKey, &inValue, BPF_NOEXIST);
-+	}
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.29.0
-
+Okay that makes sense. Now that I have looked it over more it does
+lead to an error in the final product since it will attempt to verify
+data on a failed connection so I will probably just replaced err with
+a new variable such as rv for the send/recv part of the function so
+that err stays at -1 until we are closing the sockets.
