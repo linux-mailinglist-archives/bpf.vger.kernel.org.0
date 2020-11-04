@@ -2,153 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15EEF2A5FDF
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 09:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F12202A604F
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 10:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgKDIwH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 03:52:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35230 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725946AbgKDIwG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 03:52:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604479924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xEUt5EUH16YvaUhu9JLMer/1MWLivZjYY/q1IODAmqs=;
-        b=BjJCyAtK6Pk4VFJY3kALAeNEr3HoRW5WpXvmecYpipVB21usXFtFBCdWu3YYDU1cnS8RgT
-        fvNiPhR8sTi7rkVj4qHNVYw9xhloZ182D7hyk/tsoupgBKhfTR2PBMRjsMT6lzQha1Ta7T
-        rRBXzx7mEpQc/9SnxUxPDobrBUHngWA=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-PCqslXHaMxK_T4H6GXQJoA-1; Wed, 04 Nov 2020 03:52:03 -0500
-X-MC-Unique: PCqslXHaMxK_T4H6GXQJoA-1
-Received: by mail-pl1-f200.google.com with SMTP id z11so12632528pln.0
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 00:52:03 -0800 (PST)
+        id S1727246AbgKDJKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 04:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728607AbgKDJG0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:06:26 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347A8C040201
+        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 01:06:25 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id w14so21151773wrs.9
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 01:06:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZVySsFYAxVyvKjZwFTKaFMnVATseHBsi4tJ0dIp9TLE=;
+        b=K1+Rdz5ogf/5T2jMdF3v9m88jLY/gNqsMKJm061QdgaEQGjK4st39GT4kTZK6c7eAv
+         3cJicgPoZBh9YEvxLFGZcZyHE0XnNqBy1XOiWQuoMPDL9faO4RhxQ9VP++HCtvthQR9S
+         799P3oQD3ZEWTAn8Z+1PDWW2WOSIRjZ/YNizWauRHAov45YgSsQGFvDCGkpGdXI1KiOg
+         QyMiZ+qAf84rNKlDHGrCMb3Z298LfBhK4STT2/MKrClXtDUj1+DxmNn50j9f2xT6h0lS
+         2FLRla4Vx5B06Pb85+k62n0XQr8agXXsfRziu37OjAXEKgzSYzjV1kzmZ4S3HLfgeg3X
+         jRpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xEUt5EUH16YvaUhu9JLMer/1MWLivZjYY/q1IODAmqs=;
-        b=umgOvGPqrtDxTVFQ028fPbF+cKX8w3F7IiawAalCkPoygYhYBcp5rVZjZiul8irb2V
-         9B6wf2O0VTtWTzijXADanbzfiuwT+zKnxgB81A+uoUy02DVajPB9IKt0LDVf0vSrMJpG
-         u8I9gHlbj91VtXLpEssJRggfs5cEfHsH6jwhAskjK42urAYrh6ODsy3jVj95hwWyYZga
-         wWOeXsf9T/d9qh6DxGeYy5ZVkJP1X3aku1JFTyEj0qZvqL9itjN+YnB22nydkZVmsply
-         Rn7AtcRZ8fv9s4C+rrpKMolRCo6CDU9p2/mlVtkFHo7UqBkaN1fgzv4wHRlX2nKynNOL
-         NEbw==
-X-Gm-Message-State: AOAM532BZJkbOUr4KlyfPT7ecXqmu42QNVluYdMdse/ltNBLC9to84+w
-        2SpL1KnLOba6aRWL/BWZWp6Rly488MkvaiCReLgNPifdaE0I0zfuL3WV/MjpsuAsfTyH8/qjVZ1
-        1JUMMlcZJPxk=
-X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr2678193pjb.81.1604479922129;
-        Wed, 04 Nov 2020 00:52:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxCQhWYERz6hxQnPPSTbwhK08O8t2kDESGcVJbn64vjo7BnJ8Ci65snM49uwBfRwT/tIVeA9g==
-X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr2678176pjb.81.1604479921809;
-        Wed, 04 Nov 2020 00:52:01 -0800 (PST)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id nh24sm1511767pjb.44.2020.11.04.00.51.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZVySsFYAxVyvKjZwFTKaFMnVATseHBsi4tJ0dIp9TLE=;
+        b=hWZqLG6eh9LWp+3bnASkg3GR5ZDYkyUGE1qd/A5z7GZII1ym34EonwuKiwQcDLcPSO
+         QE4AO42ooIpkvTYEg28f4oUnWMob+oWOuUUiGHuhZij4F5K5b2fiZCge0XdXD1bM6unX
+         VulcbCUkxEP7/y6XTsov6CvSv5wGxCHW3ZToKcmL34kq8r/+Y1BtOTHvCqM4DloVXQYI
+         6Pt24rDzjb9nwWbSMhFQP8KBTYqgbTRJXtNFBkIk3G1ltb8bcWgdVwOKPZEq3ScJWc3H
+         vD43J7q1r/xarQgY9SijB8DTbJaDLmB794S0HNphmVCOkSGohhhnW7oA15LB4iL2Jlj0
+         w3ww==
+X-Gm-Message-State: AOAM531uj+j2xW64QB7R/D691KOBQ/qA4t5wchoYTFnzSs47noMA2QMW
+        GDfOcJ/yS9P4gTGWwPtUK8AjOw==
+X-Google-Smtp-Source: ABdhPJzn8d8Abh2QVS+FdXToKUqdpB6TwiMSAYlD5+ls0hMcq+h/pWmcBsJhdaEKInesWzdpNiQxsw==
+X-Received: by 2002:adf:e384:: with SMTP id e4mr31089426wrm.227.1604480782887;
+        Wed, 04 Nov 2020 01:06:22 -0800 (PST)
+Received: from dell.default ([91.110.221.242])
+        by smtp.gmail.com with ESMTPSA id e25sm1607823wrc.76.2020.11.04.01.06.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 00:52:01 -0800 (PST)
-Date:   Wed, 4 Nov 2020 16:51:49 +0800
-From:   Hangbin Liu <haliu@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Wed, 04 Nov 2020 01:06:22 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCHv3 iproute2-next 1/5] configure: add check_libbpf() for
- later libbpf support
-Message-ID: <20201104085149.GQ2408@dhcp-12-153.nay.redhat.com>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <20201029151146.3810859-2-haliu@redhat.com>
- <78c5df29-bf06-0b60-d914-bdab3d65b198@gmail.com>
- <20201103055419.GI2408@dhcp-12-153.nay.redhat.com>
- <e3368c04-2887-3daf-8be8-8717960e9a18@gmail.com>
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Dany Madden <drt@linux.ibm.com>,
+        Daris A Nevil <dnevil@snmc.com>,
+        Dustin McIntire <dustin@sensoria.com>,
+        Erik Stahlman <erik@vt.edu>,
+        Geoff Levand <geoff@infradead.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Allen <jallen@linux.vnet.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        John Williams <john.williams@xilinx.com>,
+        Juergen Gross <jgross@suse.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-usb@vger.kernel.org, Martin Habets <mhabets@solarflare.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        Paul Durrant <paul@xen.org>, Paul Mackerras <paulus@samba.org>,
+        Peter Cammaert <pc@denkart.be>,
+        Russell King <rmk@arm.linux.org.uk>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Santiago Leon <santi_leon@yahoo.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Song Liu <songliubraving@fb.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
+        Utz Bacher <utz.bacher@de.ibm.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        xen-devel@lists.xenproject.org, Yonghong Song <yhs@fb.com>
+Subject: [PATCH 00/12] [Set 2] Rid W=1 warnings in Net
+Date:   Wed,  4 Nov 2020 09:05:58 +0000
+Message-Id: <20201104090610.1446616-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3368c04-2887-3daf-8be8-8717960e9a18@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 10:32:37AM -0700, David Ahern wrote:
-> configure scripts usually allow you to control options directly,
-> overriding the autoprobe.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-What do you think of the follow update? It's a little rough and only controls
-libbpf.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-$ git diff
-diff --git a/configure b/configure
-index 711bb69c..be35c024 100755
---- a/configure
-+++ b/configure
-@@ -442,6 +442,35 @@ endif
- EOF
- }
+This is the last set.
 
-+usage()
-+{
-+       cat <<EOF
-+Usage: $0 [OPTIONS]
-+  -h | --help                  Show this usage info
-+  --no-libbpf                  build the package without libbpf
-+  --libbpf-dir=DIR             build the package with self defined libbpf dir
-+EOF
-+       exit $1
-+}
-+
-+while true; do
-+       case "$1" in
-+               --libbpf-dir)
-+                       LIBBPF_DIR="$2"
-+                       shift 2 ;;
-+               --no-libbpf)
-+                       NO_LIBBPF_CHECK=1
-+                       shift ;;
-+               -h | --help)
-+                       usage 0 ;;
-+               "")
-+                       break ;;
-+               *)
-+                       usage 1 ;;
-+       esac
-+done
-+
-+
- echo "# Generated config based on" $INCLUDE >$CONFIG
- quiet_config >> $CONFIG
+Lee Jones (12):
+  net: usb: lan78xx: Remove lots of set but unused 'ret' variables
+  net: ethernet: smsc: smc911x: Mark 'status' as __maybe_unused
+  net: ethernet: xilinx: xilinx_emaclite: Document 'txqueue' even if it
+    is unused
+  net: ethernet: smsc: smc91x: Demote non-conformant kernel function
+    header
+  net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+  net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function
+    header
+  net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en'
+    parameter
+  net: xen-netfront: Demote non-kernel-doc headers to standard comment
+    blocks
+  net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
+  net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc
+    misdemeanours
+  net: ethernet: toshiba: spider_net: Document a whole bunch of function
+    parameters
+  net: ethernet: ibm: ibmvnic: Fix some kernel-doc issues
 
-@@ -476,8 +505,10 @@ check_setns
- echo -n "SELinux support: "
- check_selinux
+ drivers/net/ethernet/ibm/ibmvnic.c            |  27 ++-
+ drivers/net/ethernet/smsc/smc911x.c           |   6 +-
+ drivers/net/ethernet/smsc/smc91x.c            |   2 +-
+ drivers/net/ethernet/ti/am65-cpsw-qos.c       |   2 +-
+ drivers/net/ethernet/ti/am65-cpts.c           |   2 +-
+ drivers/net/ethernet/toshiba/ps3_gelic_net.c  |   9 +-
+ drivers/net/ethernet/toshiba/spider_net.c     |  18 +-
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c |   1 +
+ drivers/net/usb/lan78xx.c                     | 212 +++++++++---------
+ drivers/net/xen-netback/xenbus.c              |   4 +-
+ drivers/net/xen-netfront.c                    |   6 +-
+ 11 files changed, 141 insertions(+), 148 deletions(-)
 
--echo -n "libbpf support: "
--check_libbpf
-+if [ -z $NO_LIBBPF_CHECK ]; then
-+       echo -n "libbpf support: "
-+       check_libbpf
-+fi
-
- echo -n "ELF support: "
- check_elf
-
-
-$ ./configure -h
-Usage: ./configure [OPTIONS]
-  -h | --help                   Show this usage info
-  --no-libbpf                   build the package without libbpf
-  --libbpf-dir=DIR              build the package with self defined libbpf dir
-
-Thanks
-Hangbin
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: bpf@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Dany Madden <drt@linux.ibm.com>
+Cc: Daris A Nevil <dnevil@snmc.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dustin McIntire <dustin@sensoria.com>
+Cc: Erik Stahlman <erik@vt.edu>
+Cc: Geoff Levand <geoff@infradead.org>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
+Cc: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Allen <jallen@linux.vnet.ibm.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: John Williams <john.williams@xilinx.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: KP Singh <kpsingh@chromium.org>
+Cc: Kurt Kanzenbach <kurt@linutronix.de>
+Cc: Lijun Pan <ljp@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-usb@vger.kernel.org
+Cc: Martin Habets <mhabets@solarflare.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Cc: netdev@vger.kernel.org
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Paul Durrant <paul@xen.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Cammaert <pc@denkart.be>
+Cc: Russell King <rmk@arm.linux.org.uk>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Santiago Leon <santi_leon@yahoo.com>
+Cc: Shannon Nelson <snelson@pensando.io>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
+Cc: Utz Bacher <utz.bacher@de.ibm.com>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: Woojung Huh <woojung.huh@microchip.com>
+Cc: xen-devel@lists.xenproject.org
+Cc: Yonghong Song <yhs@fb.com>
+-- 
+2.25.1
 
