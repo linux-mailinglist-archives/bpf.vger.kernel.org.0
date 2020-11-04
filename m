@@ -2,138 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8462A6E48
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 20:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963302A6EBE
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 21:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728841AbgKDTnH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 14:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725889AbgKDTnH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:43:07 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227E4C0613D3;
-        Wed,  4 Nov 2020 11:43:06 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id h196so19061169ybg.4;
-        Wed, 04 Nov 2020 11:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WjTjCXElFnEr9OHvxQOceWPjvEGPkIs3Wf6wPRplaK4=;
-        b=CkXUlDj3sVxfOcF/pOyG6S2l94WPUs96xGVUjxYyTkWRBRBcxmO4yaW+84og6KTtH1
-         WKIqO5D7NUjxCst8+trH4KIfDo7M7A9wRRIv3otadX9QUx38ygygJ/ADULYLbdnayuq8
-         FzqgWI/FKdEECL26wZwJBUSSXWhxdNN5hw52UCIuhG5x9j/GSIf3Lj7HjwjQ3oN63Hnr
-         dw/fAfuLYFAEs66kCQvrfx0e9UTue0UnFTugXIYPg2WerD9jHWnsiIsz5WLhcVF2e3jh
-         b/ulaI/klEzFspog+qVAORRXxgv5eN4+0EFA1zHcItaMqGoNxbRGA/I9OUmLpOICRZe7
-         uv5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WjTjCXElFnEr9OHvxQOceWPjvEGPkIs3Wf6wPRplaK4=;
-        b=XW4GJDZ/PKgXejRIUcnd3ZlJKfn4NNw1lsvnuWEdpotut86MOrDeuSXNat/Uz0TIZ7
-         wPyF/6qtjweSnTZkjAR4sqc94KXM8runKGQbrfN3kGzbbppbP7ZZOMGy7NI9V1ImjOV3
-         RtWYKJp8Rko9TdzjLEPC/lsK5ceyMaOL3WQV2GuNVrP8V+HbxHy+keQqqHeQ4AWGyI45
-         5KFsMnhlPsyrha4+ksis8Bf9U+2wbX9LxvjNAfKaPP6Z1C2N7N1tPmJfm2JL+Rt2OSTJ
-         iiabOOashnkx21yVZW+JVu+885AOHZqOAulpWJjrti9HxuPIhhYIHDyA6jB6mYKEK4dm
-         s9Rg==
-X-Gm-Message-State: AOAM533vUqxAi2kOUZE6NPH2eDArnZk0IAG7UID6J1GnOheuiZBHY+tJ
-        WJGbwB91mgIFkXg7+Zbvp0w2RdhnQIkJrdUuSGo=
-X-Google-Smtp-Source: ABdhPJyvgNOUYUHJcGD+hE68gDiC+YC83DKko1JXPNrvhK4YisSgKwgJ6TiPnqu9e4xTBBSetlFtcRuULhemCfaTfQM=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr39195887ybl.347.1604518984966;
- Wed, 04 Nov 2020 11:43:04 -0800 (PST)
-MIME-Version: 1.0
-References: <1604396490-12129-1-git-send-email-magnus.karlsson@gmail.com>
- <1604396490-12129-3-git-send-email-magnus.karlsson@gmail.com>
- <CAEf4Bzah-7akFkjUAJR=ovXLAnLd6EvLMMOy+GBbc4R28TY-eg@mail.gmail.com> <CAJ8uoz2Cqtw0gPpuyk79z4Rt8dYLmxd9DsSeAB4fQFJWMHLHVw@mail.gmail.com>
-In-Reply-To: <CAJ8uoz2Cqtw0gPpuyk79z4Rt8dYLmxd9DsSeAB4fQFJWMHLHVw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 4 Nov 2020 11:42:54 -0800
-Message-ID: <CAEf4Bzazw67MNAE9gkFLKLdQnDSvvnmuNrPb7gMf51LkK3pYpg@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] libbpf: fix possible use after free in xsk_socket__delete
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731941AbgKDUa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 15:30:59 -0500
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:53465 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731930AbgKDUa7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 15:30:59 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 40541861;
+        Wed,  4 Nov 2020 15:30:58 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 04 Nov 2020 15:30:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:content-transfer-encoding:content-type:subject:from
+        :to:cc:date:message-id:in-reply-to; s=fm1; bh=MkLJkdfTsuZq/m6LE9
+        YRQzCBoNH8ynmTEDbZNbvS6iI=; b=g2pMChyJTziDlBcbes8G39qPB6Fl0cFSMS
+        wkJfD48McDRDD5kqQTMLM2V/+krbbOJlf8x3NdfTCPIh7xOT9PxKlR5pGx5Ku+Th
+        zPDe0+0Kdgy9NYMhsWYkuOTNHFpXopAwWZDmSzCkAmMHJpYEh5lkp0L4H05GPHEC
+        LijlX1cnXVjUwg/T2DsWwuIB9HuSVTlfYH9fNjvGbF4JKAT5uSa7tMYzdLtCq1CF
+        88qdB417M7t4HZwlJCog8eEMKKnq3Qa4SJSwZ/vOhaOs6ijnQXN496CZX1fXBOaN
+        UshnWpF93OG6ElWsEfw8DI4Yb6x3W4UNf2UTwpYZKNYprtCP2kcg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=MkLJkdfTsuZq/m6LE9YRQzCBoNH8ynmTEDbZNbvS6iI=; b=crfFKnTj
+        vOWrtkInXILdjiDPoKS1wSVYqh0+hwPzy7L2EVsDkStSdhopmM3dspmYIYriy1KS
+        leWsUFouBOwXpdCXwdqn7G6CxJA7E07pLNA8Kg07N8d2AzWZYoTqFpQUCisdBMZA
+        tSlNUJ/SMBbStK33Fht1Zu/3LAHU/+OvJE1qm/T7FX7nzLUFqosmuThKh4x6weWK
+        DTiwPbv6Lk7lZ844G4ru6vagjaPirHRV+opJT9uIyZzFetgJ4buskdQSCyoHFXK6
+        MH5zAWSkSxfZbwNAuRr672++8c/T3UexBM6zxly5UY+qd8vGlUFUu+CLa3WDtpNZ
+        jTXEIdjprPdu+A==
+X-ME-Sender: <xms:gQ-jX_78RHKyPoMffseekO0TYuJn38IoFL0vzMMcRVUT2hnBkMH0dw>
+    <xme:gQ-jX04IymhsW_9Zud7yJJljZhV_g63933OAPOdfsSCX4hOFXvYHmig4yboiltNnY
+    fkVz7f_5mPuut1krw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddthedgudeflecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddt
+    jeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeejfefhudeffefhjedvvefhheduledtueejvedugedvjedv
+    jeeljefggedtjeejveenucfkphepieelrddukedurddutdehrdeigeenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:gQ-jX2f1w2RpYUpXmJfDIK5-I6Ca_OmhZLiqG5cagCHtyLPJxQzQ4A>
+    <xmx:gQ-jXwJzwccQA9RpfW4XUrWF5Whft_i-KbajWsbMoGMG36dx3LnDTQ>
+    <xmx:gQ-jXzKIzdiwdfsmlNOXvp25WczknosU3Ji3Rx6a7JdT87KdSmBHVA>
+    <xmx:gQ-jX6WpGhTcdQZyurBtZz2sUu-F5EEWPm7pEUrOmZ3g-4ictzL2VA>
+Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4AE3132800E0;
+        Wed,  4 Nov 2020 15:30:56 -0500 (EST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Daniel Borkmann" <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ast@kernel.org>
+Cc:     <kernel-team@fb.com>
+Date:   Wed, 04 Nov 2020 12:18:49 -0800
+Message-Id: <C6UR9QUUYXKW.3PHSMQ3EXUYI3@maharaja>
+In-Reply-To: <7831c092-5ab4-033e-8fb3-ad9702332d79@iogearbox.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 12:27 AM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> On Tue, Nov 3, 2020 at 8:05 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Tue, Nov 3, 2020 at 1:42 AM Magnus Karlsson
-> > <magnus.karlsson@gmail.com> wrote:
-> > >
-> > > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> > >
-> > > Fix a possible use after free in xsk_socket__delete that will happen
-> > > if xsk_put_ctx() frees the ctx. To fix, save the umem reference taken
-> > > from the context and just use that instead.
-> > >
-> > > Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
-> > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > ---
-> > >  tools/lib/bpf/xsk.c | 6 ++++--
-> > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> > > index 504b7a8..9bc537d 100644
-> > > --- a/tools/lib/bpf/xsk.c
-> > > +++ b/tools/lib/bpf/xsk.c
-> > > @@ -892,6 +892,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
-> > >  {
-> > >         size_t desc_sz = sizeof(struct xdp_desc);
-> > >         struct xdp_mmap_offsets off;
-> > > +       struct xsk_umem *umem;
-> > >         struct xsk_ctx *ctx;
-> > >         int err;
-> > >
-> > > @@ -899,6 +900,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
-> > >                 return;
-> > >
-> > >         ctx = xsk->ctx;
-> > > +       umem = ctx->umem;
-> > >         if (ctx->prog_fd != -1) {
-> > >                 xsk_delete_bpf_maps(xsk);
-> > >                 close(ctx->prog_fd);
-> > > @@ -918,11 +920,11 @@ void xsk_socket__delete(struct xsk_socket *xsk)
-> > >
-> > >         xsk_put_ctx(ctx);
-> > >
-> > > -       ctx->umem->refcount--;
-> > > +       umem->refcount--;
-> >
-> > if you moved ctx->umem->refcount--; to before xdk_put_ctx(ctx), would
-> > that also work?
->
-> Yes, it would for that statement, but I still need the umem pointer
-> for the statement below. And this statement of potentially closing the
-> fd needs to be after xsk_put_ctx(). So we might as well keep
-> ujmem->refcount-- where it is, if that is ok with you?
+Hi Daniel,
 
-Ah, missed the umem->fd below. Then it makes sense, thanks.
+On Wed Nov 4, 2020 at 8:24 AM PST, Daniel Borkmann wrote:
+> On 11/4/20 3:29 AM, Daniel Xu wrote:
+> > do_strncpy_from_user() may copy some extra bytes after the NUL
+> > terminator into the destination buffer. This usually does not matter fo=
+r
+> > normal string operations. However, when BPF programs key BPF maps with
+> > strings, this matters a lot.
+> >=20
+> > A BPF program may read strings from user memory by calling the
+> > bpf_probe_read_user_str() helper which eventually calls
+> > do_strncpy_from_user(). The program can then key a map with the
+> > resulting string. BPF map keys are fixed-width and string-agnostic,
+> > meaning that map keys are treated as a set of bytes.
+> >=20
+> > The issue is when do_strncpy_from_user() overcopies bytes after the NUL
+> > terminator, it can result in seemingly identical strings occupying
+> > multiple slots in a BPF map. This behavior is subtle and totally
+> > unexpected by the user.
+> >=20
+> > This commit uses the proper word-at-a-time APIs to avoid overcopying.
+> >=20
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+>
+> It looks like this is a regression from the recent refactoring of the
+> mem probing
+> util functions?
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+I think it was like this from the beginning, at 6ae08ae3dea2 ("bpf: Add
+probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers").
+The old bpf_probe_read_str() used the kernel's byte-by-byte copying
+routine. bpf_probe_read_user_str() started using strncpy_from_user()
+which has been doing the long-sized strides since ~2012 or earlier.
+
+I tried to build and test the kernel at that commit but it seems my
+compiler is too new to build that old code. Bunch of build failures.
+
+I assume the refactor you're referring to is 8d92db5c04d1 ("bpf: rework
+the compat kernel probe handling").
+
+> Could we add a Fixes tag and then we'd also need to target the fix
+> against bpf tree instead of bpf-next, no?
+
+Sure, will do in v2.
 
 >
-> > >         /* Do not close an fd that also has an associated umem connected
-> > >          * to it.
-> > >          */
-> > > -       if (xsk->fd != ctx->umem->fd)
-> > > +       if (xsk->fd != umem->fd)
-> > >                 close(xsk->fd);
-> > >         free(xsk);
-> > >  }
-> > > --
-> > > 2.7.4
-> > >
+> Moreover, a BPF kselftest would help to make sure it doesn't regress in
+> future again.
+
+Ditto.
+
+[..]
+
+Thanks,
+Daniel
