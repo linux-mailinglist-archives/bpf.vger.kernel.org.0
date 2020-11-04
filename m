@@ -2,110 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F722A6D8D
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 20:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8B52A6DB6
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 20:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730274AbgKDTLI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 14:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKDTLH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 14:11:07 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BDEC0613D3
-        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 11:11:06 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id i8so7659183qka.15
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 11:11:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=gz5WtjKs0m8q7p+Y5q8+JmbEub8VEm+/kecg2iLZjKw=;
-        b=EsW35ZmvLxRuca8q/4WsVMEXKOOcWAI+IZtfjnfqqDE4U4MLjllfGtcsMOf4vN1Z8F
-         sCDuQYQEGKAAeuniI68VVBPH4nGP99IJnTLhSX8rCzF1/vTz5aFgVXtY/OTaKF9CaZZK
-         Djz3ylgLOzL+Te9i20ZCxN0a096laVkVdb9RlfnsMFhgABTgsPy5ACgXS8UnDCk+B1Fh
-         /tfTApWfYkT48/bsDcNN3nWUHgRPr209KCLuurjnhcWL82jbdStOWkq85NMu5BUK3kLB
-         /egvdyqSkn/Q2MdaOelejjP9c+CBEPCgZTz1nL8WqgWfafgybvvUR49Cu/qeaCAsnLB+
-         lTCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=gz5WtjKs0m8q7p+Y5q8+JmbEub8VEm+/kecg2iLZjKw=;
-        b=sT6eNdrrlsLOlWK03WiBi1Utvk5d+vEt40ssyYFtczJZvUt2535lhm0AqckUSKYvZ7
-         aH4n8azdBXGszwxpY9dA5hVWk6B2EObIn40OHqXDMutTFDxy75fidd4GuyaW/OJScEvt
-         NJDj2s7417QKdsSC1h1zK9XbIIVhLDmxNIFC/Zhb0dE2clXGDxBO56F4Wp7Ypb4MS9GS
-         jpzY0GYQ64MAeBoSS3A0e1wg2TJod97uhQzgxAzk+tZ/42ZVXwN5+sFdhepRxDSywkU5
-         RN+XOcoVueEEIGoNLPpHuzyOgdG3EDnld2Ub/bn27eTVmOed9hFs64ZhZUCRgwYbZLh9
-         XsiQ==
-X-Gm-Message-State: AOAM532JbN46YVOaoa7dVTYwOFX3v/0DPxAyzrWy8+A4eHw8HwC+PmKm
-        ZtvKGbjJSUHq1vYzX9BcRg9ZdW93xd6BS44D2Sk=
-X-Google-Smtp-Source: ABdhPJyQtmG0KXYIon8XRTO/l+GuGjkNMEgT2DkP9uvR9AgSNTEqc7Cjl9cQ1CKa3Pb65D8Ff3QgJyMABq9VwnEEk6s=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:186b:: with SMTP id
- eh11mr33319123qvb.49.1604517064979; Wed, 04 Nov 2020 11:11:04 -0800 (PST)
-Date:   Wed,  4 Nov 2020 11:10:51 -0800
-Message-Id: <20201104191052.390657-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-Subject: [PATCH] compiler-clang: remove version check for BPF Tracing
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>, stable@vger.kernel.org,
-        Chen Yu <yu.chen.surf@gmail.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
+        id S1728045AbgKDTRo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 14:17:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726564AbgKDTRo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 14:17:44 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBDCA206ED;
+        Wed,  4 Nov 2020 19:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604517463;
+        bh=U8ozNp5ifQlNXX/adooj82tLzOu1cZZm3u/AWu7tK7U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jRKrJ3CsHrC5T01auRWtdHl2thKKgEHFtp0udRp1L2h+HnAjdGFnpcYKiHqqUt6r+
+         H9H2JbFHlBM25tFku7AeI8Ny9GOPhSWJ2jTLZAtUDlmRb2xirbEfafx31jTKLcEWvA
+         Hz0ZXe8S70zDBkGNWCupOs0qhcRyDNq5OS3Eycfk=
+Date:   Wed, 4 Nov 2020 11:17:39 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201104111708.0595e2a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <5de7eb11-010b-e66e-c72d-07ece638c25e@iogearbox.net>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+        <20201029151146.3810859-1-haliu@redhat.com>
+        <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+        <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+        <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+        <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+        <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+        <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+        <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+        <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+        <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+        <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
+        <87zh3xv04o.fsf@toke.dk>
+        <5de7eb11-010b-e66e-c72d-07ece638c25e@iogearbox.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpftrace parses the kernel headers and uses Clang under the hood. Remove
-the version check when __BPF_TRACING__ is defined (as bpftrace does) so
-that this tool can continue to parse kernel headers, even with older
-clang sources.
+On Wed, 4 Nov 2020 14:12:47 +0100 Daniel Borkmann wrote:
+> If we would have done lib/bpf.c as a dynamic library back then, we wouldn't be
+> where we are today since users might be able to start consuming BPF functionality
+> just now, don't you agree? This was an explicit design choice back then for exactly
+> this reason. If we extend lib/bpf.c or import libbpf one way or another then there
+> is consistency across distros and users would be able to consume it in a predictable
+> way starting from next major releases. And you could start making this assumption
+> on all major distros in say, 3 months from now. The discussion is somehow focused
+> on the PoV of /a/ distro which is all nice and good, but the ones consuming the
+> loader shipping software /across/ distros are users writing BPF progs, all I'm
+> trying to say is that the _user experience_ should be the focus of this discussion
+> and right now we're trying hard making it rather painful for them to consume it.
 
-Cc: <stable@vger.kernel.org>
-Fixes: commit 1f7a44f63e6c ("compiler-clang: add build check for clang 10.0.1")
-Reported-by: Chen Yu <yu.chen.surf@gmail.com>
-Reported-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- include/linux/compiler-clang.h | 2 ++
- 1 file changed, 2 insertions(+)
+IIUC you're saying that we cannot depend on libbpf updates from distro.
+Isn't that a pretty bad experience for all users who would like to link
+against it? There are 4 components (kernel, lib, tools, compiler) all
+need to be kept up to date for optimal user experience. Cutting corners
+with one of them leads nowhere medium term IMHO.
 
-diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-index dd7233c48bf3..98cff1b4b088 100644
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -8,8 +8,10 @@
- 		     + __clang_patchlevel__)
- 
- #if CLANG_VERSION < 100001
-+#ifndef __BPF_TRACING__
- # error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
- #endif
-+#endif
- 
- /* Compiler specific definitions for Clang compiler */
- 
--- 
-2.29.1.341.ge80a0c044ae-goog
+Unless what you guys are saying is that libbpf is _not_ supposed to be
+backward compatible from the user side, and must be used a submodule.
+But then why bother defining ABI versions, or build it as an .so at all.
 
+I'm also confused by the testing argument. Surely the solution is to
+add unit / system tests for iproute2. Distros will rebuild packages
+when dependencies change and retest. If we have 0 tests doesn't matter
+what update strategy there is.
