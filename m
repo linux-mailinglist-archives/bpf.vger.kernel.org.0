@@ -2,432 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562EF2A633E
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 12:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF282A6380
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 12:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729430AbgKDL0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 06:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729427AbgKDL0O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:26:14 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1728C061A4A
-        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 03:26:13 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id t11so21960389edj.13
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 03:26:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XCJVvVC37q/FBSmwNc5ZxOB0A7aigYwdjEhLEv3R8Xg=;
-        b=EHLGx+Ww685I4ungPQqZnCIINO8THUogzMVyMs7+SZYi8V9BmswLIEJta1UkriORlO
-         Q2AEg93jXCd9FBsZ//QLqCGz+Y6z3OGUzikR/rFGsnxcnqIulg6qCF1VwCO3D+viTaKm
-         /bkXTqETCSM/z7eWkzjfHUuZPsjTjjDGuXXkZ5IPLX26BoAlgVM39mf4KFYafUtoE+D5
-         TKHjlrGLv3ecsvEuQoBuT3j2DGXzc6smebryFdOSaPbR2QGyrHkmIdGnDs1b3kfs755E
-         osVbmCkf+s4ly5F/lgRXxFgIAP5JMViwJo+8AkvWvcu0nYVB//75raGpkyW8MB4pD1Fh
-         EIKg==
+        id S1729382AbgKDLkj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 06:40:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728508AbgKDLki (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 06:40:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604490037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BbXtJr1dHD0dQcJP1qBIGeMvFCv/x6tlJ+vHdKbEP2c=;
+        b=MhoBzpPkUrwWiOayJfRu0fbUaiuPbcXAnSFQSNyD9LHUmpzshEK8Rw6zUjkkY51ZfMpqIy
+        jZGoYaijGL4Ozk3SaBx0xIpEufkA4KVnFss+XrBas4p/2Hw0ENbYW3yHPm04ZbrOjQkqcA
+        EElsUE9B2zSpN75WwNtmQc0nCRNfd0w=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-yhBkryElP8uUPp-CFF98uA-1; Wed, 04 Nov 2020 06:40:35 -0500
+X-MC-Unique: yhBkryElP8uUPp-CFF98uA-1
+Received: by mail-pl1-f199.google.com with SMTP id p15so9272287plr.2
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 03:40:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XCJVvVC37q/FBSmwNc5ZxOB0A7aigYwdjEhLEv3R8Xg=;
-        b=ggzeCbugH52dmcWlQF4PqWRTJQ2Ifk5++HDqquynn6xJfuIWjRKAn5mRCMQzA/qyuk
-         YPlcf3+bIr9AudALAj8x0ZKGoHPdZ50tMvU/c7xyTG5mcUGBtFlu5rnz5VASArfAFm83
-         fTx2zKEswmcFZ33tgyzRAV36qXPXlvzrePvMeFS8yBcn6IG/31/E0c6TTvbuHXfCakKg
-         VMKc/9juhsMnFqBZprxIQ8rUFkQaBZINtD2SYmzqPvl15ghf/XexzxPljZmLPEsx04Ie
-         C+sWCgeof3Wmzd7PgSTj3apjUPdqb2PN69VIKYKu1HcxudjXk9wzXt4H6/pGSYwch1MK
-         T20A==
-X-Gm-Message-State: AOAM532zaFYAWHA++UO2PK2ptF9eh31hhsOg4wj9EV8CYF2p1w0MJFrq
-        N0KAhDU6inVoF17NNdgNyKK/HmR9pnkoTfAT
-X-Google-Smtp-Source: ABdhPJzNE8ssFpCvJKh6CU7JpMesV+B+CO/XNtt+VJfiasHNeGK+C9NcNHIFXVBohss9u/35qwHqOw==
-X-Received: by 2002:a05:6402:1bdb:: with SMTP id ch27mr24103555edb.63.1604489171826;
-        Wed, 04 Nov 2020 03:26:11 -0800 (PST)
-Received: from dverbeir-mobl.lan ([2a02:a03f:689e:3400:b894:bc77:ad21:b2db])
-        by smtp.gmail.com with ESMTPSA id d20sm892456edz.14.2020.11.04.03.26.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Nov 2020 03:26:11 -0800 (PST)
-From:   David Verbeiren <david.verbeiren@tessares.net>
-To:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org,
-        David Verbeiren <david.verbeiren@tessares.net>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: [PATCH bpf v4] bpf: zero-fill re-used per-cpu map element
-Date:   Wed,  4 Nov 2020 12:23:32 +0100
-Message-Id: <20201104112332.15191-1-david.verbeiren@tessares.net>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20201103154738.29809-1-david.verbeiren@tessares.net>
-References: <20201103154738.29809-1-david.verbeiren@tessares.net>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BbXtJr1dHD0dQcJP1qBIGeMvFCv/x6tlJ+vHdKbEP2c=;
+        b=cD12y2FM+0d4cRplV3+poHynGyj3AdnN6eC3ZIixrutXXlyi3Sv5WdpDQPrkA55mW7
+         9ejqMCLMZw4ZgHCt8AS/eequ5u7NEc3I/F2rFqEysRVPQXsD2FsbP0yVKO1ZaUvZgun2
+         AfLwwD/L4wRyx3KCAqcaO4BVs9UMEZfc8QzNVgTU/oWQZdnJD0OXwE7dR7pmy3AzhpE8
+         1wMy9+AsYtJlbVq9k4XzZKFxuGE3mMy/ihCcCYATL6uODUL5zWgiv0d6lkocG19davRI
+         nqXatgL/ZuxjIMdK1TomN6Z8qUqOoNxUENaOqk/ugRTD2ncI426pMICi0F6WNK+t7JAm
+         7KPw==
+X-Gm-Message-State: AOAM530+rH6gpwbrVE0nfBakjpyqYix1UCLci63Kx1ECVDBeVVlXPxHK
+        lM8zjhQortFrpsxnsGFP9qBsxkO5NMkmi41GrnH+qmkVVNQb2VqDzWyWTSyQiz9/UhFmtERWugN
+        jTLg/TPQTGlY=
+X-Received: by 2002:a17:902:aa97:b029:d5:ac09:c5ec with SMTP id d23-20020a170902aa97b02900d5ac09c5ecmr28486706plr.78.1604490034685;
+        Wed, 04 Nov 2020 03:40:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzK1HpR5JogT3rQBpkEAcWfj0+LSPy8jNWpuodh+nKorkF/EJJoBpmGfvlQGlsW9ufuWBJ6Eg==
+X-Received: by 2002:a17:902:aa97:b029:d5:ac09:c5ec with SMTP id d23-20020a170902aa97b02900d5ac09c5ecmr28486686plr.78.1604490034389;
+        Wed, 04 Nov 2020 03:40:34 -0800 (PST)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y141sm2158651pfb.17.2020.11.04.03.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 03:40:33 -0800 (PST)
+Date:   Wed, 4 Nov 2020 19:40:22 +0800
+From:   Hangbin Liu <haliu@redhat.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     David Ahern <dsahern@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCHv3 iproute2-next 1/5] configure: add check_libbpf() for
+ later libbpf support
+Message-ID: <20201104114022.GS2408@dhcp-12-153.nay.redhat.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <20201029151146.3810859-2-haliu@redhat.com>
+ <78c5df29-bf06-0b60-d914-bdab3d65b198@gmail.com>
+ <20201103055419.GI2408@dhcp-12-153.nay.redhat.com>
+ <e3368c04-2887-3daf-8be8-8717960e9a18@gmail.com>
+ <20201104085149.GQ2408@dhcp-12-153.nay.redhat.com>
+ <87361pwf8k.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <87361pwf8k.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Zero-fill element values for all other cpus than current, just as
-when not using prealloc. This is the only way the bpf program can
-ensure known initial values for all cpus ('onallcpus' cannot be
-set when coming from the bpf program).
+On Wed, Nov 04, 2020 at 12:09:15PM +0100, Toke Høiland-Jørgensen wrote:
+> > +usage()
+> > +{
+> > +       cat <<EOF
+> > +Usage: $0 [OPTIONS]
+> > +  -h | --help                  Show this usage info
+> > +  --no-libbpf                  build the package without libbpf
+> > +  --libbpf-dir=DIR             build the package with self defined libbpf dir
+> > +EOF
+> > +       exit $1
+> > +}
+> 
+> This would be the only command line arg that configure takes; all other
+> options are passed via the environment. I think we should be consistent
+> here; and since converting the whole configure script is probably out of
+> scope for this patch, why not just use the existing FORCE_LIBBPF
+> variable?
 
-The scenario is: bpf program inserts some elements in a per-cpu
-map, then deletes some (or userspace does). When later adding
-new elements using bpf_map_update_elem(), the bpf program can
-only set the value of the new elements for the current cpu.
-When prealloc is enabled, previously deleted elements are re-used.
-Without the fix, values for other cpus remain whatever they were
-when the re-used entry was previously freed.
+Yes, converting the whole configure script should be split as another patch
+work.
+> 
+> I.e., FORCE_LIBBPF=on will fail if not libbpf is present,
+> FORCE_LIBBPF=off will disable libbpf entirely, and if the variable is
+> unset, libbpf will be used if found?
 
-A selftest is added to validate correct operation in above
-scenario as well as in case of LRU per-cpu map element re-use.
+I like this one, with only one variable. I will check how to re-organize the
+script.
 
-Fixes: 6c9059817432 ("bpf: pre-allocate hash map elements")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: David Verbeiren <david.verbeiren@tessares.net>
----
+> 
+> Alternatively, keep them as two separate variables (FORCE_LIBBPF and
+> DISABLE_LIBBPF?). I don't have any strong preference as to which of
+> those is best, but I think they'd both be more consistent with the
+> existing configure script logic...
 
-Notes:
-    v4:
-      - Replaced racy "once" test by getpgid syscall with
-        check on pid. (Andrii)
-      - Copyright lines use /* */ (Andrii)
-    
-    v3:
-      - Added selftest that was initially provided as separate
-        patch, and reworked to
-        * use skeleton (Andrii, Song Liu)
-        * skip test if <=1 CPU (Song Liu)
-    
-    v2:
-      - Moved memset() to separate pcpu_init_value() function,
-        which replaces pcpu_copy_value() but delegates to it
-        for the cases where no memset() is needed (Andrii).
-      - This function now also avoids doing the memset() for
-        the current cpu for which the value must be set
-        anyhow (Andrii).
-      - Same pcpu_init_value() used for per-cpu LRU map
-        (Andrii).
+Please tell me if others have any other ideas.
 
- kernel/bpf/hashtab.c                          |  30 ++-
- .../selftests/bpf/prog_tests/map_init.c       | 214 ++++++++++++++++++
- .../selftests/bpf/progs/test_map_init.c       |  33 +++
- 3 files changed, 275 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_map_init.c
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 1815e97d4c9c..1fccba6e88c4 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -821,6 +821,32 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
- 	}
- }
- 
-+static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr,
-+			    void *value, bool onallcpus)
-+{
-+	/* When using prealloc and not setting the initial value on all cpus,
-+	 * zero-fill element values for other cpus (just as what happens when
-+	 * not using prealloc). Otherwise, bpf program has no way to ensure
-+	 * known initial values for cpus other than current one
-+	 * (onallcpus=false always when coming from bpf prog).
-+	 */
-+	if (htab_is_prealloc(htab) && !onallcpus) {
-+		u32 size = round_up(htab->map.value_size, 8);
-+		int current_cpu = raw_smp_processor_id();
-+		int cpu;
-+
-+		for_each_possible_cpu(cpu) {
-+			if (cpu == current_cpu)
-+				bpf_long_memcpy(per_cpu_ptr(pptr, cpu), value,
-+						size);
-+			else
-+				memset(per_cpu_ptr(pptr, cpu), 0, size);
-+		}
-+	} else {
-+		pcpu_copy_value(htab, pptr, value, onallcpus);
-+	}
-+}
-+
- static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
- {
- 	return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
-@@ -891,7 +917,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 			}
- 		}
- 
--		pcpu_copy_value(htab, pptr, value, onallcpus);
-+		pcpu_init_value(htab, pptr, value, onallcpus);
- 
- 		if (!prealloc)
- 			htab_elem_set_ptr(l_new, key_size, pptr);
-@@ -1183,7 +1209,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
- 		pcpu_copy_value(htab, htab_elem_get_ptr(l_old, key_size),
- 				value, onallcpus);
- 	} else {
--		pcpu_copy_value(htab, htab_elem_get_ptr(l_new, key_size),
-+		pcpu_init_value(htab, htab_elem_get_ptr(l_new, key_size),
- 				value, onallcpus);
- 		hlist_nulls_add_head_rcu(&l_new->hash_node, head);
- 		l_new = NULL;
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_init.c b/tools/testing/selftests/bpf/prog_tests/map_init.c
-new file mode 100644
-index 000000000000..14a31109dd0e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/map_init.c
-@@ -0,0 +1,214 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2020 Tessares SA <http://www.tessares.net> */
-+
-+#include <test_progs.h>
-+#include "test_map_init.skel.h"
-+
-+#define TEST_VALUE 0x1234
-+#define FILL_VALUE 0xdeadbeef
-+
-+static int nr_cpus;
-+static int duration;
-+
-+typedef unsigned long long map_key_t;
-+typedef unsigned long long map_value_t;
-+typedef struct {
-+	map_value_t v; /* padding */
-+} __bpf_percpu_val_align pcpu_map_value_t;
-+
-+
-+static int map_populate(int map_fd, int num)
-+{
-+	pcpu_map_value_t value[nr_cpus];
-+	int i, err;
-+	map_key_t key;
-+
-+	for (i = 0; i < nr_cpus; i++)
-+		bpf_percpu(value, i) = FILL_VALUE;
-+
-+	for (key = 1; key <= num; key++) {
-+		err = bpf_map_update_elem(map_fd, &key, value, BPF_NOEXIST);
-+		if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct test_map_init *setup(enum bpf_map_type map_type, int map_sz,
-+			    int *map_fd, int populate)
-+{
-+	struct test_map_init *skel;
-+	int err;
-+
-+	skel = test_map_init__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return NULL;
-+
-+	err = bpf_map__set_type(skel->maps.hashmap1, map_type);
-+	if (!ASSERT_OK(err, "bpf_map__set_type"))
-+		goto error;
-+
-+	err = bpf_map__set_max_entries(skel->maps.hashmap1, map_sz);
-+	if (!ASSERT_OK(err, "bpf_map__set_max_entries"))
-+		goto error;
-+
-+	err = test_map_init__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto error;
-+
-+	*map_fd = bpf_map__fd(skel->maps.hashmap1);
-+	if (CHECK(*map_fd < 0, "bpf_map__fd", "failed\n"))
-+		goto error;
-+
-+	err = map_populate(*map_fd, populate);
-+	if (!ASSERT_OK(err, "map_populate"))
-+		goto error_map;
-+
-+	return skel;
-+
-+error_map:
-+	close(*map_fd);
-+error:
-+	test_map_init__destroy(skel);
-+	return NULL;
-+}
-+
-+/* executes bpf program that updates map with key, value */
-+static int prog_run_insert_elem(struct test_map_init *skel, map_key_t key,
-+				map_value_t value)
-+{
-+	struct test_map_init__bss *bss;
-+
-+	bss = skel->bss;
-+
-+	bss->inKey = key;
-+	bss->inValue = value;
-+	bss->inPid = getpid();
-+
-+	if (!ASSERT_OK(test_map_init__attach(skel), "skel_attach"))
-+		return -1;
-+
-+	/* Let tracepoint trigger */
-+	syscall(__NR_getpgid);
-+
-+	test_map_init__detach(skel);
-+
-+	return 0;
-+}
-+
-+static int check_values_one_cpu(pcpu_map_value_t *value, map_value_t expected)
-+{
-+	int i, nzCnt = 0;
-+	map_value_t val;
-+
-+	for (i = 0; i < nr_cpus; i++) {
-+		val = bpf_percpu(value, i);
-+		if (val) {
-+			if (CHECK(val != expected, "map value",
-+				  "unexpected for cpu %d: 0x%llx\n", i, val))
-+				return -1;
-+			nzCnt++;
-+		}
-+	}
-+
-+	if (CHECK(nzCnt != 1, "map value", "set for %d CPUs instead of 1!\n",
-+		  nzCnt))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+/* Add key=1 elem with values set for all CPUs
-+ * Delete elem key=1
-+ * Run bpf prog that inserts new key=1 elem with value=0x1234
-+ *   (bpf prog can only set value for current CPU)
-+ * Lookup Key=1 and check value is as expected for all CPUs:
-+ *   value set by bpf prog for one CPU, 0 for all others
-+ */
-+static void test_pcpu_map_init(void)
-+{
-+	pcpu_map_value_t value[nr_cpus];
-+	struct test_map_init *skel;
-+	int map_fd, err;
-+	map_key_t key;
-+
-+	/* max 1 elem in map so insertion is forced to reuse freed entry */
-+	skel = setup(BPF_MAP_TYPE_PERCPU_HASH, 1, &map_fd, 1);
-+	if (!ASSERT_OK_PTR(skel, "prog_setup"))
-+		return;
-+
-+	/* delete element so the entry can be re-used*/
-+	key = 1;
-+	err = bpf_map_delete_elem(map_fd, &key);
-+	if (!ASSERT_OK(err, "bpf_map_delete_elem"))
-+		goto cleanup;
-+
-+	/* run bpf prog that inserts new elem, re-using the slot just freed */
-+	err = prog_run_insert_elem(skel, key, TEST_VALUE);
-+	if (!ASSERT_OK(err, "prog_run_insert_elem"))
-+		goto cleanup;
-+
-+	/* check that key=1 was re-created by bpf prog */
-+	err = bpf_map_lookup_elem(map_fd, &key, value);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto cleanup;
-+
-+	/* and has expected values */
-+	check_values_one_cpu(value, TEST_VALUE);
-+
-+cleanup:
-+	test_map_init__destroy(skel);
-+}
-+
-+/* Add key=1 and key=2 elems with values set for all CPUs
-+ * Run bpf prog that inserts new key=3 elem
-+ *   (only for current cpu; other cpus should have initial value = 0)
-+ * Lookup Key=1 and check value is as expected for all CPUs
-+ */
-+static void test_pcpu_lru_map_init(void)
-+{
-+	pcpu_map_value_t value[nr_cpus];
-+	struct test_map_init *skel;
-+	int map_fd, err;
-+	map_key_t key;
-+
-+	/* Set up LRU map with 2 elements, values filled for all CPUs.
-+	 * With these 2 elements, the LRU map is full
-+	 */
-+	skel = setup(BPF_MAP_TYPE_LRU_PERCPU_HASH, 2, &map_fd, 2);
-+	if (!ASSERT_OK_PTR(skel, "prog_setup"))
-+		return;
-+
-+	/* run bpf prog that inserts new key=3 element, re-using LRU slot */
-+	key = 3;
-+	err = prog_run_insert_elem(skel, key, TEST_VALUE);
-+	if (!ASSERT_OK(err, "prog_run_insert_elem"))
-+		goto cleanup;
-+
-+	/* check that key=3 replaced one of earlier elements */
-+	err = bpf_map_lookup_elem(map_fd, &key, value);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto cleanup;
-+
-+	/* and has expected values */
-+	check_values_one_cpu(value, TEST_VALUE);
-+
-+cleanup:
-+	test_map_init__destroy(skel);
-+}
-+
-+void test_map_init(void)
-+{
-+	nr_cpus = bpf_num_possible_cpus();
-+	if (nr_cpus <= 1) {
-+		printf("%s:SKIP: >1 cpu needed for this test\n", __func__);
-+		test__skip();
-+		return;
-+	}
-+
-+	if (test__start_subtest("pcpu_map_init"))
-+		test_pcpu_map_init();
-+	if (test__start_subtest("pcpu_lru_map_init"))
-+		test_pcpu_lru_map_init();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_map_init.c b/tools/testing/selftests/bpf/progs/test_map_init.c
-new file mode 100644
-index 000000000000..c89d28ead673
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_map_init.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Tessares SA <http://www.tessares.net> */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+__u64 inKey = 0;
-+__u64 inValue = 0;
-+__u32 inPid = 0;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
-+	__uint(max_entries, 2);
-+	__type(key, __u64);
-+	__type(value, __u64);
-+} hashmap1 SEC(".maps");
-+
-+
-+SEC("tp/syscalls/sys_enter_getpgid")
-+int sysenter_getpgid(const void *ctx)
-+{
-+	/* Just do it for once, when called from our own test prog. This
-+	 * ensures the map value is only updated for a single CPU.
-+	 */
-+	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-+
-+	if (cur_pid == inPid)
-+		bpf_map_update_elem(&hashmap1, &inKey, &inValue, BPF_NOEXIST);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.29.0
+Thanks
+Hnagbin
 
