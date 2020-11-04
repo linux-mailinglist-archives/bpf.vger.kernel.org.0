@@ -2,135 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1A02A6A2F
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 17:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38512A6C73
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 19:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731365AbgKDQqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 11:46:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60608 "EHLO
+        id S1730008AbgKDSIT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 13:08:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36118 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730154AbgKDQqE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 11:46:04 -0500
+        by vger.kernel.org with ESMTP id S1729883AbgKDSIS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 13:08:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604508362;
+        s=mimecast20190719; t=1604513297;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1cW8DZx44Ft/UJKyMxnwWKu5EBpXA6JwZoQX8qWDLTE=;
-        b=FHbImQZ1Ywb0LLFfA9fBhjAhUaQp89l/VbJIBgc4o9lKjGfvz9y04z0eTHaElprYT+u4Ci
-        ifIXsSUHU9BV87PnaSftKF3GNc17sSXAQq67gjd821E4dpj2PnVp63tSBtmjoMDPm3GXk6
-        5LDdns/2TzFos8G66w5jsHN8R+Xw0qI=
+        bh=xlVyIMj+D4C0ZjIheXkr79wdXwzVXbnqV1PApwQPET0=;
+        b=W0wXLW0QX0DRevLtXLdE7Pb81yDhE4rj+VzGKHRr0OhbLh6i24GeyFiz7sKfBD/6DWpmcv
+        mShzQvDICZBzyWNTnp9iGM8j9n+jV7gPh3+aItX3DAu6ESmkRVHBAn+dohrAo9gdYuAiMP
+        pdWq4dId08ZM2jfxrFpTvpYw2A2/ayQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-235-4dMxcShON1yrcemzc-s_bg-1; Wed, 04 Nov 2020 11:45:58 -0500
-X-MC-Unique: 4dMxcShON1yrcemzc-s_bg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-534-dY3dCW71OnCs-Tztt5j-EQ-1; Wed, 04 Nov 2020 13:08:13 -0500
+X-MC-Unique: dY3dCW71OnCs-Tztt5j-EQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 120106D243;
-        Wed,  4 Nov 2020 16:45:57 +0000 (UTC)
-Received: from krava (unknown [10.40.192.118])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 58FF955784;
-        Wed,  4 Nov 2020 16:45:54 +0000 (UTC)
-Date:   Wed, 4 Nov 2020 17:45:53 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 3/4] selftests/bpf: Add profiler test
-Message-ID: <20201104164215.GH3861143@krava>
-References: <20201009011240.48506-1-alexei.starovoitov@gmail.com>
- <20201009011240.48506-4-alexei.starovoitov@gmail.com>
- <20201013195622.GB1305928@krava>
- <CAADnVQLYSk0YgK7_dUSF-5Rau10vOdDgosVhE9xmEr1dp+=2vg@mail.gmail.com>
- <CAEf4BzbWO3fgWxAWQw4Pee=F7=UqU+N6LtKYV7V9ZZrfkPZ3gw@mail.gmail.com>
- <561A9F0C-BDAE-406A-8B93-011ECAB22B1C@fb.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16D7D8014C1;
+        Wed,  4 Nov 2020 18:08:12 +0000 (UTC)
+Received: from localhost (unknown [10.40.194.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4FEF6756A6;
+        Wed,  4 Nov 2020 18:08:10 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 19:08:08 +0100
+From:   Jiri Benc <jbenc@redhat.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, sdf@google.com,
+        jakub@cloudflare.com, john.fastabend@gmail.com,
+        kernel-team@cloudflare.com, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf v2 1/6] bpf: flow_dissector: check value of unused
+ flags to BPF_PROG_ATTACH
+Message-ID: <20201104190808.417b9a4b@redhat.com>
+In-Reply-To: <20200629095630.7933-2-lmb@cloudflare.com>
+References: <20200629095630.7933-1-lmb@cloudflare.com>
+        <20200629095630.7933-2-lmb@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <561A9F0C-BDAE-406A-8B93-011ECAB22B1C@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 06:09:14AM +0000, Song Liu wrote:
+On Mon, 29 Jun 2020 10:56:25 +0100, Lorenz Bauer wrote:
+> Using BPF_PROG_ATTACH on a flow dissector program supports neither
+> target_fd, attach_flags or replace_bpf_fd but accepts any value.
 > 
+> Enforce that all of them are zero. This is fine for replace_bpf_fd
+> since its presence is indicated by BPF_F_REPLACE. It's more
+> problematic for target_fd, since zero is a valid fd. Should we
+> want to use the flag later on we'd have to add an exception for
+> fd 0. The alternative is to force a value like -1. This requires
+> more changes to tests. There is also precedent for using 0,
+> since bpf_iter uses this for target_fd as well.
 > 
-> > On Oct 13, 2020, at 2:56 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> Fixes: b27f7bb590ba ("flow_dissector: Move out netns_bpf prog callbacks")
+> ---
+>  kernel/bpf/net_namespace.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> [...]
-> 
-> > 
-> > I'd go with Kconfig + bpf_core_enum_value(), as it's shorter and
-> > nicer. This compiles and works with my Kconfig, but I haven't checked
-> > with CONFIG_CGROUP_PIDS defined.
-> 
-> Tested with CONFIG_CGROUP_PIDS, it looks good. 
-> 
-> Tested-by: Song Liu <songliubraving@fb.com>
+> diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+> index 3e89c7ad42cb..bf18eabeaea2 100644
+> --- a/kernel/bpf/net_namespace.c
+> +++ b/kernel/bpf/net_namespace.c
+> @@ -217,6 +217,9 @@ int netns_bpf_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>  	struct net *net;
+>  	int ret;
+>  
+> +	if (attr->target_fd || attr->attach_flags || attr->replace_bpf_fd)
+> +		return -EINVAL;
 
-hi,
-I still need to apply my workaround to compile tests,
-so I wonder this fell through cracks
+I'm debugging failing test_flow_dissector.sh selftest and I wonder how
+this patch works.
 
-thanks,
-jirka
+The test_flow_dissector.sh selftest at line 28 runs:
 
-> 
-> > 
-> > 
-> > diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > index 00578311a423..79b8d2860a5c 100644
-> > --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > @@ -243,7 +243,11 @@ static ino_t get_inode_from_kernfs(struct
-> > kernfs_node* node)
-> >        }
-> > }
-> > 
-> > -int pids_cgrp_id = 1;
-> > +extern bool CONFIG_CGROUP_PIDS __kconfig __weak;
-> > +
-> > +enum cgroup_subsys_id___local {
-> > +       pids_cgrp_id___local = 1, /* anything but zero */
-> > +};
-> > 
-> > static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
-> >                                         struct task_struct* task,
-> > @@ -253,7 +257,9 @@ static INLINE void* populate_cgroup_info(struct
-> > cgroup_data_t* cgroup_data,
-> >                BPF_CORE_READ(task, nsproxy, cgroup_ns, root_cset,
-> > dfl_cgrp, kn);
-> >        struct kernfs_node* proc_kernfs = BPF_CORE_READ(task, cgroups,
-> > dfl_cgrp, kn);
-> > 
-> > -       if (ENABLE_CGROUP_V1_RESOLVER) {
-> > +       if (ENABLE_CGROUP_V1_RESOLVER && CONFIG_CGROUP_PIDS) {
-> > +               int cgrp_id = bpf_core_enum_value(enum
-> > cgroup_subsys_id___local, pids_cgrp_id___local);
-> > +
-> > #ifdef UNROLL
-> > #pragma unroll
-> > #endif
-> > @@ -262,7 +268,7 @@ static INLINE void* populate_cgroup_info(struct
-> > cgroup_data_t* cgroup_data,
-> >                                BPF_CORE_READ(task, cgroups, subsys[i]);
-> >                        if (subsys != NULL) {
-> >                                int subsys_id = BPF_CORE_READ(subsys, ss, id);
-> > -                               if (subsys_id == pids_cgrp_id) {
-> > +                               if (subsys_id == cgrp_id) {
-> >                                        proc_kernfs =
-> > BPF_CORE_READ(subsys, cgroup, kn);
-> >                                        root_kernfs =
-> > BPF_CORE_READ(subsys, ss, root, kf_root, kn);
-> >                                        break;
-> 
+bpftool prog -d attach pinned /sys/fs/bpf/flow/flow_dissector flow_dissector
+
+which invokes this code:
+
+static int parse_attach_detach_args(int argc, char **argv, int *progfd,
+                                    enum bpf_attach_type *attach_type,
+                                    int *mapfd)
+{
+	[...]
+        if (*attach_type == BPF_FLOW_DISSECTOR) {
+                *mapfd = -1;
+                return 0;
+        }
+	[...]
+}
+
+The mapfd is later used as attr->target_fd:
+
+static int do_attach(int argc, char **argv)
+{
+	[...]
+        err = bpf_prog_attach(progfd, mapfd, attach_type, 0);
+	[...]
+}
+
+and rejected in the kernel by the line added by this patch. Seems that
+setting flow dissector using bpftool does not work since this patch was
+applied? What am I missing?
+
+ Jiri
 
