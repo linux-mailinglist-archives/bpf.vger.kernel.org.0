@@ -2,128 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5E72A5B04
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 01:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6322A5BE1
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 02:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbgKDA3l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 19:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
+        id S1728420AbgKDB1g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 20:27:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729021AbgKDA3k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Nov 2020 19:29:40 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB8AC061A4D
-        for <bpf@vger.kernel.org>; Tue,  3 Nov 2020 16:29:40 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id p4so2088902plr.1
-        for <bpf@vger.kernel.org>; Tue, 03 Nov 2020 16:29:40 -0800 (PST)
+        with ESMTP id S1725769AbgKDB1g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Nov 2020 20:27:36 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F65C040203;
+        Tue,  3 Nov 2020 17:27:35 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id t13so21108122ljk.12;
+        Tue, 03 Nov 2020 17:27:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F06dNnLo5pVFz2CmGuB3AtlTt9h+PO3FFpFt/YqI8Cg=;
-        b=H5API/cU2kCLm/rlmuWDHVdK/0fMqgPkW2hN+G7SbD2sk7CpKG1mpmYyfaYlF/fKt7
-         wFOtq7PtHhIJM/OthEAdxoACuFnD193rR3n0aUSNCkpr6WyyGgMbqvIVCI2RbqO/ZU+S
-         u/ysWEXSnty3nhLrLjTspLlf7adjMgKSny6Lc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YEAfa71F3RcjJKMcoFNETu5MYla8QPOqFeyC5ZSEg5Y=;
+        b=hDViSq+nsPw95gkn0wsOimJQVOF80z7bBZQtasvuxdTX9uF6TYJItlxP8E0B+RqBx+
+         0666BcbIgbo+K+Lsjev9FU42BKYlNXxevFJLAw0ZoN5fMOlH9Ar8x1YmmGDbcUXhtvIN
+         2Oc5YGGeiQ2VasjcmeUQjTG9bl6+BlfnZr5kJ2EJgo6LdyDDvB70OGf9gUJtzpKUfgvt
+         y7xUP1DEBWKQlqLFe0YBt1pmmoVmZt0SRXRzIJh3WyuB6lu+T4gPmqFh/Vz2TCxzdUP1
+         B+Yf+n9RyFgEffu2CGJn9vIIxesWIOwMNj0+3obL8F7oBwCOwQemNxdaWJnNL7Yh5bPJ
+         E0ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F06dNnLo5pVFz2CmGuB3AtlTt9h+PO3FFpFt/YqI8Cg=;
-        b=QtbvKRi7cinjIXHy+HzwQsFWsTL0hJEgFb4UsTZEdu/OEUEGltq004509Eqr7nqI6B
-         Lozi1YIOHg/20ii5AX8U3a69rzaCmDeRUmbkQqYXhuekU8jWMAETKcvnELsrg5rk/jE+
-         9pu6rAEDpHGXaMQ5nBpNrfoG4tDdn9wf0LNnimRjoNNCkn8YcTNNn7sGHmtPBWWsca89
-         cnVXILlDCTXIeKhoFyQQ06fVj8VazrPWFtrEUFa7f1LI7dWk1FJKvSP6X9kxk0+XPisp
-         oEzkVHLxHVBe477lCMMWqKgTPTfR9AZuwWPjQRXtQ9S5h6b0vGVVGm3Xno6JgLGGKIFu
-         a9yg==
-X-Gm-Message-State: AOAM532xo5DzvksvlB8YdmkVwqkNXghBzaSISxfKk9zJ5qmL1/z+fDsj
-        DzWF7Huml63tL96p0JXPo31EZQ==
-X-Google-Smtp-Source: ABdhPJx8PYXz0HMlsmRPwbUvWUVC3l2Awz7GVLjlBRUJvcJR3PRRG641cCj38glJarsx77xPHhgOPg==
-X-Received: by 2002:a17:902:bd83:b029:d6:c53f:a771 with SMTP id q3-20020a170902bd83b02900d6c53fa771mr13437431pls.23.1604449780276;
-        Tue, 03 Nov 2020 16:29:40 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id w63sm271309pfc.120.2020.11.03.16.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 16:29:39 -0800 (PST)
-Date:   Tue, 3 Nov 2020 16:29:38 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202011031612.6AA505157@keescook>
-References: <202010091613.B671C86@keescook>
- <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
- <202010121556.1110776B83@keescook>
- <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
- <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
- <202010221520.44C5A7833E@keescook>
- <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
- <202010231945.90FA4A4AA@keescook>
- <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
- <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YEAfa71F3RcjJKMcoFNETu5MYla8QPOqFeyC5ZSEg5Y=;
+        b=NxLRenwI0jw0/v32HPp2Zhkjg6+Tr+VhVl65FyOSUG6QeEEyueF4FeTB3Fg3iQm1x/
+         zG2unwWQx5Ebz2DHh8/lWgPMILahax5cGw6RpuksucK40bveiwzmCxhqz8bHJyB68Yfm
+         0YfZCu4Nl6sGuhSDFBPZ+O7sPtLfSQJOt8nATONgyMsoKit9+joA0MQhMtH7AAePBXEJ
+         sY4HsMJIwvw5IG95rreE4mpfD5fAvBY4i7FXAJEYZJ78XQeDiAKsuZrusDBSgwduGCWu
+         XW/bnkJ8NLafF+LpEJi5BpMV/jRVyr8YkrWDj4FCQ7ewnzpg0DE8EKa10906ZZ343cNl
+         O/rg==
+X-Gm-Message-State: AOAM531ynCtxdHFO6rvU/f2/6WXTVw+uCXf1CajWuBevdt8A+wFKpoO1
+        G567UP7fyzn7Y7EXqyyT7ssibfHpBA7+iidwKE4=
+X-Google-Smtp-Source: ABdhPJzoRhezbY7tyeiJ3/1HM6PGOTDEIJw8OZsS7jJK1vVvt8ivJFZtiIeNgg8x/gTCMlGll3RhY+d1FH+bUGkH3Y4=
+X-Received: by 2002:a2e:b0f8:: with SMTP id h24mr9997538ljl.2.1604453254171;
+ Tue, 03 Nov 2020 17:27:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com>
+References: <20201103153132.2717326-1-kpsingh@chromium.org>
+ <20201103153132.2717326-8-kpsingh@chromium.org> <20201103184714.iukuqfw2byls3s4k@ast-mbp.dhcp.thefacebook.com>
+ <CACYkzJ6A5GrQhBhv7GC8aeeLpoc7bnN=6Rn2UoM1P90odLZZ=g@mail.gmail.com> <CACYkzJ6D=vwaEhgaB2vevOo0186m=yfxeKBQ8eWWck8xjtczNA@mail.gmail.com>
+In-Reply-To: <CACYkzJ6D=vwaEhgaB2vevOo0186m=yfxeKBQ8eWWck8xjtczNA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 3 Nov 2020 17:27:22 -0800
+Message-ID: <CAADnVQ+DBHXkf8SFwnTKmSKi7mdAx56dWbpp5++Cc02CQjz+Ng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 7/8] bpf: Add tests for task_local_storage
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 07:00:22AM -0600, YiFei Zhu wrote:
-> My peers pointed out that in my previous benchmark there are still a
-> few mitigations left on, and suggested to use "noibrs noibpb nopti
-> nospectre_v2 nospectre_v1 l1tf=off nospec_store_bypass_disable
-> no_stf_barrier mds=off tsx=on tsx_async_abort=off mitigations=off".
-> Results with "Mitigations Off" updated:
-> 
->                         Mitigations On            Mitigations Off
->                 With Cache      Without Cache   With Cache      Without Cache
-> Native          18:17.38        18:13.78        17:43.42        17:47.68
-> D. no seccomp   18:15.54        18:17.71        17:34.59        17:37.54
-> D. + seccomp    20:42.47        20:45.04        17:35.70        17:37.16
-> 
-> Whether seccomp is on or off seems not to make much of a difference
-> for this benchmark. Bitmap being enabled does seem to decrease the
-> overall compilation time but it also affects where seccomp is off, so
-> the speedup is probably from other factors. We are thinking about
-> using more syscall-intensive workloads, such as httpd.
+On Tue, Nov 3, 2020 at 4:05 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> On Tue, Nov 3, 2020 at 7:59 PM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > On Tue, Nov 3, 2020 at 7:47 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Nov 03, 2020 at 04:31:31PM +0100, KP Singh wrote:
+> > > > +
+> > > > +struct storage {
+> > > > +     void *inode;
+> > > > +     unsigned int value;
+> > > > +     /* Lock ensures that spin locked versions of local stoage operations
+> > > > +      * also work, most operations in this tests are still single threaded
+> > > > +      */
+> > > > +     struct bpf_spin_lock lock;
+> > > > +};
+> > >
+> > > I think it's a good idea to test spin_lock in local_storage,
+> > > but it seems the test is not doing it fully.
+> > > It's only adding it to the storage, but the program is not accessing it.
+> >
+> > I added it here just to check if the offset calculations (map->spin_lock_off)
+> > are correctly happening for these new maps.
+> >
+> > As mentioned in the updates, I do intend to generalize
+> > tools/testing/selftests/bpf/map_tests/sk_storage_map.c which already has
+> >  the threading logic to exercise bpf_spin_lock in storage maps.
+> >
+>
+> Actually, after I added simple bpf_spin_{lock, unlock} to the test programs, I
+> ended up realizing that we have not exposed spin locks to LSM programs
+> for now, this is because they inherit the tracing helpers.
+>
+> I saw the docs mention that these are not exposed to tracing programs due to
+> insufficient preemption checks. Do you think it would be okay to allow them
+> for LSM programs?
 
-Yeah, this is very interesting. That there is anything measurably _slower_
-with the cache is surprising. Though with only 4 runs, I wonder if it's
-still noisy? What happens at 10 runs -- more importantly what is the
-standard deviation?
+hmm. Isn't it allowed already?
+The verifier does:
+        if ((is_tracing_prog_type(prog_type) ||
+             prog_type == BPF_PROG_TYPE_SOCKET_FILTER) &&
+            map_value_has_spin_lock(map)) {
+                verbose(env, "tracing progs cannot use bpf_spin_lock yet\n");
+                return -EINVAL;
+        }
 
-> Thugh, this does make me wonder, where does the 3-minute overhead with
-> seccomp with mitigations come from? Is it data cache misses? If that
-> is the case, can we somehow preload the seccomp bitmap cache maybe? I
-> mean, mitigations only cause around half a minute slowdown without
-> seccomp but seccomp somehow amplify the slowdown with an additional
-> 2.5 minutes, so something must be off here.
-
-I assume this is from Indirect Branch Prediction Barrier (IBPB) and
-Single Threaded Indirect Branch Prediction (STIBP) (which get enabled
-for threads under seccomp by default).
-
-Try booting with "spectre_v2_user=prctl"
-
-https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/spectre.html#spectre-mitigation-control-command-line
-
--- 
-Kees Cook
+BPF_PROG_TYPE_LSM is not in this list.
