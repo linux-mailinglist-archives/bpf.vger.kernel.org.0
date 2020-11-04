@@ -2,74 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB0C2A63D1
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 13:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBB52A6432
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 13:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728841AbgKDMBA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 07:01:00 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36584 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbgKDMBA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 07:01:00 -0500
-Received: by mail-wr1-f67.google.com with SMTP id x7so21774894wrl.3;
-        Wed, 04 Nov 2020 04:00:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QUSmpWIO++p+EaBmzWHWB9j11K6ZCt/BSPj+8TR1MOs=;
-        b=f79KrGMlxesFNUiOai4quZrkJvRhdOFnvzrETivqjHFMtCbXF+7sqSw5i0S2+YOJwJ
-         kCR6BxySGkumQ6dzoW5XcqE5iCWx3Q0ZcYE/36sUWSUs3tbm95Hi+udJDAcwgqZ0jFnV
-         aio1ogK+jqv9C0wn1dx6F4MHTI6zmwIjsLA3HPwj8h9mzpTs6UeQzr5wCAq/o+mJ2dc0
-         jU+wHxEw35yGmUy5ta0dGPKjsG+6kxFFJ8lVNgRMFJYgY3OaSY0F2CV3AhhzFv4PltPP
-         me6GDiwdgTAyDpl1jIjEA1+3Y7QQtBT8E2s+eyNS4hlrOFP1EgW2IQbUo/cRFVXQmHIA
-         rXyw==
-X-Gm-Message-State: AOAM532PAfKpeDsPVCZuYOcj3iwuPInKOZpdc5H7eHG7dMFErKqM2kjD
-        +ukalBdj3VL27kGyXsf8gNM=
-X-Google-Smtp-Source: ABdhPJyP8064AZcp00/CMnWH1Yf6wcBkvvv9giu/iKtPrEyY0N09EFUoBTXsieznUVpGwXIewZnkPQ==
-X-Received: by 2002:a5d:4148:: with SMTP id c8mr31429901wrq.261.1604491256613;
-        Wed, 04 Nov 2020 04:00:56 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id t199sm1871437wmt.46.2020.11.04.04.00.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 04:00:56 -0800 (PST)
-Date:   Wed, 4 Nov 2020 12:00:54 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 05/12] net: xen-netback: xenbus: Demote nonconformant
- kernel-doc headers
-Message-ID: <20201104120054.jaukbhblpooi5hwf@liuwe-devbox-debian-v2>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-6-lee.jones@linaro.org>
+        id S1729744AbgKDMYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 07:24:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21543 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726344AbgKDMYv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 07:24:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604492689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OoCAW5bYOrSTsyToPsJ15TqE4jwYO9Qy/CvnKeekXrI=;
+        b=PMJiB+vUNXg1YZYum7/mA13Oyj43oFEY0yU0FlYPZxGVhu/WbQY+AfKnlQ8m5P2fFsdTeq
+        FoEVZITuclybX/2Rikt6lhAZXZi1xtX+x6mLY6hS/lieVJcG79edHz5B20Yw9pVAoxirAW
+        fFaMNs/QxDXoxsL7IIabHaaEvU5DfQ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-qx5xiX-UOju6eqjokG9sVA-1; Wed, 04 Nov 2020 07:24:48 -0500
+X-MC-Unique: qx5xiX-UOju6eqjokG9sVA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84DEB8797D3;
+        Wed,  4 Nov 2020 12:24:46 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B94DF6266E;
+        Wed,  4 Nov 2020 12:24:32 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 13:24:30 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ilias.apalodimas@linaro.org, brouer@redhat.com
+Subject: Re: [PATCH v3 net-next 2/5] net: page_pool: add bulk support for
+ ptr_ring
+Message-ID: <20201104132430.73594bb6@carbon>
+In-Reply-To: <b8638a44f1aee8feb3a1f6b949653e2125eb0867.1604484917.git.lorenzo@kernel.org>
+References: <cover.1604484917.git.lorenzo@kernel.org>
+        <b8638a44f1aee8feb3a1f6b949653e2125eb0867.1604484917.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104090610.1446616-6-lee.jones@linaro.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 09:06:03AM +0000, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'dev' not described in 'frontend_changed'
->  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'frontend_state' not described in 'frontend_changed'
->  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'dev' not described in 'netback_probe'
->  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'id' not described in 'netback_probe'
-> 
-> Cc: Wei Liu <wei.liu@kernel.org>
+On Wed,  4 Nov 2020 11:22:55 +0100 Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-If this is ever needed:
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index ef98372facf6..236c5ed3aa66 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+[...]
+> @@ -408,6 +410,39 @@ void page_pool_put_page(struct page_pool *pool, struct page *page,
+>  }
+>  EXPORT_SYMBOL(page_pool_put_page);
+>  
+> +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
+> +			     int count)
+> +{
+> +	int i, len = 0;
+> +
+> +	for (i = 0; i < count; i++) {
+> +		struct page *page = virt_to_head_page(data[i]);
+> +
+> +		if (likely(page_ref_count(page) == 1 &&
+> +			   pool_page_reusable(pool, page))) {
+> +			if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> +				page_pool_dma_sync_for_device(pool, page, -1);
+> +
+> +			/* bulk pages for ptr_ring cache */
+> +			data[len++] = page;
+> +		} else {
+> +			page_pool_release_page(pool, page);
+> +			put_page(page);
+> +		}
+> +	}
+> +
+> +	/* Grab the producer spinlock for concurrent access to
+> +	 * ptr_ring page_pool cache
+> +	 */
+> +	page_pool_ring_lock(pool);
+> +	for (i = 0; i < len; i++) {
+> +		if (__ptr_ring_produce(&pool->ring, data[i]))
+> +			page_pool_return_page(pool, data[i]);
+> +	}
+> +	page_pool_ring_unlock(pool);
+> +}
+> +EXPORT_SYMBOL(page_pool_put_page_bulk);
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+I don't like that you are replicating the core logic from
+page_pool_put_page() in this function.  This means that we as
+maintainers need to keep both of this places up-to-date.
+
+Let me try to re-implement this, while sharing the refcnt logic:
+(completely untested, not even compiled)
+
+---
+ net/core/page_pool.c |   58 +++++++++++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 51 insertions(+), 9 deletions(-)
+
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index ef98372facf6..c785e9825a0d 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -362,8 +362,9 @@ static bool pool_page_reusable(struct page_pool *pool, struct page *page)
+  * If the page refcnt != 1, then the page will be returned to memory
+  * subsystem.
+  */
+-void page_pool_put_page(struct page_pool *pool, struct page *page,
+-			unsigned int dma_sync_size, bool allow_direct)
++static struct page*
++__page_pool_put_page(struct page_pool *pool, struct page *page,
++		     unsigned int dma_sync_size, bool allow_direct)
+ {
+ 	/* This allocator is optimized for the XDP mode that uses
+ 	 * one-frame-per-page, but have fallbacks that act like the
+@@ -381,13 +382,10 @@ void page_pool_put_page(struct page_pool *pool, struct page *page,
+ 
+ 		if (allow_direct && in_serving_softirq())
+ 			if (page_pool_recycle_in_cache(page, pool))
+-				return;
++				return NULL;
+ 
+-		if (!page_pool_recycle_in_ring(pool, page)) {
+-			/* Cache full, fallback to free pages */
+-			page_pool_return_page(pool, page);
+-		}
+-		return;
++		/* Page found as candidate for recycling */
++		return page;
+ 	}
+ 	/* Fallback/non-XDP mode: API user have elevated refcnt.
+ 	 *
+@@ -405,9 +403,53 @@ void page_pool_put_page(struct page_pool *pool, struct page *page,
+ 	/* Do not replace this with page_pool_return_page() */
+ 	page_pool_release_page(pool, page);
+ 	put_page(page);
++	return NULL;
++}
++
++void page_pool_put_page(struct page_pool *pool, struct page *page,
++			unsigned int dma_sync_size, bool allow_direct)
++{
++	page = __page_pool_put_page(pool, page, dma_sync_size, allow_direct);
++
++	if (page && !page_pool_recycle_in_ring(pool, page)) {
++		/* Cache full, fallback to free pages */
++		page_pool_return_page(pool, page);
++	}
+ }
+ EXPORT_SYMBOL(page_pool_put_page);
+ 
++/* Caller must not use data area after call, as this function overwrites it */
++void page_pool_put_page_bulk(struct page_pool *pool, void **data, int count)
++{
++	int i, len = 0, len2 = 0;
++
++	for (i = 0; i < count; i++) {
++		struct page *page = virt_to_head_page(data[i]);
++
++		page = __page_pool_put_page(pool, page, -1 , false);
++
++		/* Approved for recycling for ptr_ring cache */
++		if (page)
++			data[len++] = page;
++	}
++
++	/* Bulk producer into ptr_ring page_pool cache */
++	page_pool_ring_lock(pool);
++	for (i = 0; i < len; i++) {
++		if (__ptr_ring_produce(&pool->ring, data[i]))
++			data[len2++] = data[i];
++	}
++	page_pool_ring_unlock(pool);
++
++	/* Unlikely case of ptr_ring cache full, free pages outside producer
++	 * lock, given put_page() with refcnt==1 can be an expensive operation.
++	 */
++	for (i = 0; i < len2; i++) {
++		page_pool_return_page(pool, data[i]);
++	}
++}
++EXPORT_SYMBOL(page_pool_put_page_bulk);
++
+ static void page_pool_empty_ring(struct page_pool *pool)
+ {
+ 	struct page *page;
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
