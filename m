@@ -2,125 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF282A6380
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 12:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF5C2A6384
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 12:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbgKDLkj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 06:40:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30971 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728508AbgKDLki (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 06:40:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604490037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BbXtJr1dHD0dQcJP1qBIGeMvFCv/x6tlJ+vHdKbEP2c=;
-        b=MhoBzpPkUrwWiOayJfRu0fbUaiuPbcXAnSFQSNyD9LHUmpzshEK8Rw6zUjkkY51ZfMpqIy
-        jZGoYaijGL4Ozk3SaBx0xIpEufkA4KVnFss+XrBas4p/2Hw0ENbYW3yHPm04ZbrOjQkqcA
-        EElsUE9B2zSpN75WwNtmQc0nCRNfd0w=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-yhBkryElP8uUPp-CFF98uA-1; Wed, 04 Nov 2020 06:40:35 -0500
-X-MC-Unique: yhBkryElP8uUPp-CFF98uA-1
-Received: by mail-pl1-f199.google.com with SMTP id p15so9272287plr.2
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 03:40:35 -0800 (PST)
+        id S1729737AbgKDLlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 06:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729630AbgKDLlF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 06:41:05 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58DDC0613D3;
+        Wed,  4 Nov 2020 03:41:03 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id c20so17061459pfr.8;
+        Wed, 04 Nov 2020 03:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LrTKUro/EAfrSfquqr6fzY3elZ7+MZodt7l7Rb7VaMA=;
+        b=TA/upDzkSlqE8bbPerc9M1oYcPB/SCguB/fv6tsU0qNJEICokPJOWWbzUO1heqjx1X
+         3MJkKQbgC+mF0e9Skbu2tODntCXpim0YAGDgj8FN7sDDIYQ3LWENybyqXCZl/be+XIV7
+         WkLl+XHEOUOo5pQruyx0qVAlxfInjmoyHlqVQGeveukro3khLO1jYepKUOZHrwFZ9ajK
+         qadPobf/QXXP57jlIZ1IuZ5JjtLZc2rA7A6Suqtp3Kq9x2PAu07ziUDnyQuTlnoexYBH
+         aFgJjI+kgZNHMfPu8OpcuPuLOyBtB9ucJUa6Vc1pIoNedcqDe7XyKvzwxbAnHqPdVC/8
+         3d2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=BbXtJr1dHD0dQcJP1qBIGeMvFCv/x6tlJ+vHdKbEP2c=;
-        b=cD12y2FM+0d4cRplV3+poHynGyj3AdnN6eC3ZIixrutXXlyi3Sv5WdpDQPrkA55mW7
-         9ejqMCLMZw4ZgHCt8AS/eequ5u7NEc3I/F2rFqEysRVPQXsD2FsbP0yVKO1ZaUvZgun2
-         AfLwwD/L4wRyx3KCAqcaO4BVs9UMEZfc8QzNVgTU/oWQZdnJD0OXwE7dR7pmy3AzhpE8
-         1wMy9+AsYtJlbVq9k4XzZKFxuGE3mMy/ihCcCYATL6uODUL5zWgiv0d6lkocG19davRI
-         nqXatgL/ZuxjIMdK1TomN6Z8qUqOoNxUENaOqk/ugRTD2ncI426pMICi0F6WNK+t7JAm
-         7KPw==
-X-Gm-Message-State: AOAM530+rH6gpwbrVE0nfBakjpyqYix1UCLci63Kx1ECVDBeVVlXPxHK
-        lM8zjhQortFrpsxnsGFP9qBsxkO5NMkmi41GrnH+qmkVVNQb2VqDzWyWTSyQiz9/UhFmtERWugN
-        jTLg/TPQTGlY=
-X-Received: by 2002:a17:902:aa97:b029:d5:ac09:c5ec with SMTP id d23-20020a170902aa97b02900d5ac09c5ecmr28486706plr.78.1604490034685;
-        Wed, 04 Nov 2020 03:40:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzK1HpR5JogT3rQBpkEAcWfj0+LSPy8jNWpuodh+nKorkF/EJJoBpmGfvlQGlsW9ufuWBJ6Eg==
-X-Received: by 2002:a17:902:aa97:b029:d5:ac09:c5ec with SMTP id d23-20020a170902aa97b02900d5ac09c5ecmr28486686plr.78.1604490034389;
-        Wed, 04 Nov 2020 03:40:34 -0800 (PST)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y141sm2158651pfb.17.2020.11.04.03.40.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 03:40:33 -0800 (PST)
-Date:   Wed, 4 Nov 2020 19:40:22 +0800
-From:   Hangbin Liu <haliu@redhat.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCHv3 iproute2-next 1/5] configure: add check_libbpf() for
- later libbpf support
-Message-ID: <20201104114022.GS2408@dhcp-12-153.nay.redhat.com>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <20201029151146.3810859-2-haliu@redhat.com>
- <78c5df29-bf06-0b60-d914-bdab3d65b198@gmail.com>
- <20201103055419.GI2408@dhcp-12-153.nay.redhat.com>
- <e3368c04-2887-3daf-8be8-8717960e9a18@gmail.com>
- <20201104085149.GQ2408@dhcp-12-153.nay.redhat.com>
- <87361pwf8k.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LrTKUro/EAfrSfquqr6fzY3elZ7+MZodt7l7Rb7VaMA=;
+        b=gXzrw5l7wvDRlPFIygshd7oftKBYo3pjLMzFSgvRdP/Kd/+AIWv5BsuWtj2GY9cfvH
+         TtRT4rvAkVNmmcrxkIK3WoWWWY3Hu3WjhJ3LmyA3zbJckbKQarJryi4pRvH3Xq0NbQjg
+         E24fsDwwacaRwU0t0CUKx97Vv26fBRieT8m397lRWYKzl1cR8g0cLI6hI29LsUewI57r
+         6kki9Q/5+0BJZzoaKuS4cOH9mWgBkkaIxo7qTT6FJV8PDMH2ROBjjDRxtcRYPxBejZq/
+         yzJm8PF79kPku3HmbksQY7LGBzXqQ9D3E8cqxpk6KtccAduKI50aCZfhCLipuUgO6DwT
+         jcag==
+X-Gm-Message-State: AOAM533IEE09U06Ifvqfuk5QAR3ImE0oCXXZE1FP9b3F/AXlfQ12LFix
+        O/435oEcidkH/aTdWev8u4J/C6Tu1GbuU1GBlyw=
+X-Google-Smtp-Source: ABdhPJxXrmLrL+mP1OQCNUcSRgpIRR5lxJCHjx9kumQZ9Rb2jjUaKiD5ojjTiFRpWH3+G31Xb1/FBX1ZKkxWCv735h0=
+X-Received: by 2002:a63:f445:: with SMTP id p5mr20807325pgk.293.1604490063419;
+ Wed, 04 Nov 2020 03:41:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87361pwf8k.fsf@toke.dk>
+References: <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook> <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+ <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
+ <202010221520.44C5A7833E@keescook> <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+ <202010231945.90FA4A4AA@keescook> <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
+ <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com> <202011031612.6AA505157@keescook>
+In-Reply-To: <202011031612.6AA505157@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Wed, 4 Nov 2020 05:40:51 -0600
+Message-ID: <CABqSeASFkTFn8ix8-5D0vdZ_FR9bR1PpU3j5eQPYOMshK6FuNA@mail.gmail.com>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 12:09:15PM +0100, Toke Høiland-Jørgensen wrote:
-> > +usage()
-> > +{
-> > +       cat <<EOF
-> > +Usage: $0 [OPTIONS]
-> > +  -h | --help                  Show this usage info
-> > +  --no-libbpf                  build the package without libbpf
-> > +  --libbpf-dir=DIR             build the package with self defined libbpf dir
-> > +EOF
-> > +       exit $1
-> > +}
-> 
-> This would be the only command line arg that configure takes; all other
-> options are passed via the environment. I think we should be consistent
-> here; and since converting the whole configure script is probably out of
-> scope for this patch, why not just use the existing FORCE_LIBBPF
-> variable?
+On Tue, Nov 3, 2020 at 6:29 PM Kees Cook <keescook@chromium.org> wrote:
+> Yeah, this is very interesting. That there is anything measurably _slower_
+> with the cache is surprising. Though with only 4 runs, I wonder if it's
+> still noisy? What happens at 10 runs -- more importantly what is the
+> standard deviation?
 
-Yes, converting the whole configure script should be split as another patch
-work.
-> 
-> I.e., FORCE_LIBBPF=on will fail if not libbpf is present,
-> FORCE_LIBBPF=off will disable libbpf entirely, and if the variable is
-> unset, libbpf will be used if found?
+I could do that. it just takes such a long time. Each run takes about
+20 minutes so with 10 runs per environment, 3 environments (native + 2
+docker) per boot, and 4 boots (2 bootparam * 2 compile config), it's
+27 hours of compilation. I should probably script it at that point.
 
-I like this one, with only one variable. I will check how to re-organize the
-script.
+> I assume this is from Indirect Branch Prediction Barrier (IBPB) and
+> Single Threaded Indirect Branch Prediction (STIBP) (which get enabled
+> for threads under seccomp by default).
+>
+> Try booting with "spectre_v2_user=prctl"
 
-> 
-> Alternatively, keep them as two separate variables (FORCE_LIBBPF and
-> DISABLE_LIBBPF?). I don't have any strong preference as to which of
-> those is best, but I think they'd both be more consistent with the
-> existing configure script logic...
+Hmm, to make sure, boot with just "spectre_v2_user=prctl" on the
+command line and test the performance of that?
 
-Please tell me if others have any other ideas.
-
-Thanks
-Hnagbin
-
+YiFei Zhu
