@@ -2,144 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532192A6030
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 10:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB142A6079
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 10:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgKDJGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 04:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728941AbgKDJGf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:06:35 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC90C0401C3
-        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 01:06:35 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c18so1616670wme.2
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 01:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kRmJDRZK6hYnZwsJWtSyII6GRFG28FGG7WVn2jtoat0=;
-        b=Vy0ifnFNZsdam2EYQqrtqEkqnpo+nDE+vtZ1Exog/zDTxcDNqjIjGsjIU1pi4kN3El
-         WJb+mUgrcdzGRp3ibB8ikQUE/nHlWxpqRKWFVzAojniHotRo1+HOdbKPDVdxQrzIx6sR
-         o5bH/KMSqaIrUmQaZkvfPrv1gFxI//c+XLeUSm9xVA3kwk7Z26qKNIX1zX0RkPnJ08Uu
-         3N/AsWZ+Jl5bU+SZ4vt/SsxAgf4VmWQbEcGIUXSUX2VSwqItVn590AY7hkgF110FhA9z
-         j+QBoryGrshn3GGWS2c27qqPt497aXTtIabvKKAeyhw/gsk+3P4aFPmg5/JE0C/2HE/p
-         rbiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kRmJDRZK6hYnZwsJWtSyII6GRFG28FGG7WVn2jtoat0=;
-        b=qOwUhliF4Mid0Mm7x1zzCjrOcxs//+jI7AJBRnck16ymrrea8hlkrurLdVnJNBb2DQ
-         QdRlsyyXtr0l1N2lPeilDNSzoTQR0HiF268HjHyzxD8BUNTCRZR0L35uaLZ+D2bxDaHR
-         jsGR6Id/IVTcmUzboE1qkYzwv/Od8u93uy0AkF1taESfp7VLZ4EPBrd0JuEPOWktb7HZ
-         18D8mDtSDvdmhUW6HfkYK5iftcsQYkCfH7RBfGmxb3fk6Uv4dk+AoBHE35JxBM+CT7J/
-         MNpjJ1mw1iWdaBq3rbhHhpgIlRpYzpbYEYsFqveh9dKRY+m3UEVYCpWTKqpmpGfYnYUF
-         7izw==
-X-Gm-Message-State: AOAM533+gIZWxgxN3dYu+EJnZdnSOplmKb9c3n//BljqzUJabj7lU/HH
-        cMUVJ8FKDEIX3ODwEClbJujOgQ==
-X-Google-Smtp-Source: ABdhPJwqi0yB/+B9/s0ULCABSavH/6P6SV0tchgnVRlqqMJnN0CKjV/Hb1Yj3pHPlBIYEvJ5zSVeQA==
-X-Received: by 2002:a1c:1dc1:: with SMTP id d184mr3360241wmd.169.1604480793874;
-        Wed, 04 Nov 2020 01:06:33 -0800 (PST)
-Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id e25sm1607823wrc.76.2020.11.04.01.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 01:06:33 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726539AbgKDJ2e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 04:28:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42542 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726029AbgKDJ2e (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 04:28:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604482112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IjLTjKXlCDXrw9S6rX2biZHmfLe4DCe+5yEr2yygy7A=;
+        b=c1fPu0cbbWAKNVpg2caIcfPHX0G4AgZ+pzXL6t6tlEoUrkm+GtHsFuEMGs7s3+g7Rkq51y
+        7YNRcIGURuE0WqljDFRSxgh/9W8Rgertr5sWOH3feudPImvngPitl324S0P0Yqyfw2l1WR
+        ys4w715rjjvxZHe1DDvWkPdTgpPRl68=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-KA2r3GBOMUOuiuHpamXq3w-1; Wed, 04 Nov 2020 04:28:30 -0500
+X-MC-Unique: KA2r3GBOMUOuiuHpamXq3w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA07757207;
+        Wed,  4 Nov 2020 09:28:28 +0000 (UTC)
+Received: from localhost (unknown [10.40.194.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2AE645C1D0;
+        Wed,  4 Nov 2020 09:28:17 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 10:28:16 +0100
+From:   Jiri Benc <jbenc@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH 08/12] net: xen-netfront: Demote non-kernel-doc headers to standard comment blocks
-Date:   Wed,  4 Nov 2020 09:06:06 +0000
-Message-Id: <20201104090610.1446616-9-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201104090610.1446616-1-lee.jones@linaro.org>
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201104102816.472a9400@redhat.com>
+In-Reply-To: <20201104024559.gxullc7e6boaupuk@ast-mbp.dhcp.thefacebook.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+        <20201029151146.3810859-1-haliu@redhat.com>
+        <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+        <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+        <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+        <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+        <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+        <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+        <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+        <ce441cb4-0e36-eae6-ca19-efebb6fb55f1@gmail.com>
+        <20201104024559.gxullc7e6boaupuk@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, 3 Nov 2020 18:45:59 -0800, Alexei Starovoitov wrote:
+> libbpf is the only library I know that is backward and forward compatible.
 
- drivers/net/xen-netfront.c: In function ‘store_rxbuf’:
- drivers/net/xen-netfront.c:2416:16: warning: variable ‘target’ set but not used [-Wunused-but-set-variable]
- drivers/net/xen-netfront.c:1592: warning: Function parameter or member 'dev' not described in 'netfront_probe'
- drivers/net/xen-netfront.c:1592: warning: Function parameter or member 'id' not described in 'netfront_probe'
- drivers/net/xen-netfront.c:1669: warning: Function parameter or member 'dev' not described in 'netfront_resume'
- drivers/net/xen-netfront.c:2313: warning: Function parameter or member 'dev' not described in 'netback_changed'
- drivers/net/xen-netfront.c:2313: warning: Function parameter or member 'backend_state' not described in 'netback_changed'
+This is great to hear. It means there will be no problem with iproute2
+using the system libbpf. As libbpf is both backward and forward
+compatible, iproute2 will just work with whatever version it is used
+with.
 
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: xen-devel@lists.xenproject.org
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/net/xen-netfront.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> All other libraries are backwards compatible only.
 
-diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-index 920cac4385bf7..93740ef4cf1b4 100644
---- a/drivers/net/xen-netfront.c
-+++ b/drivers/net/xen-netfront.c
-@@ -1582,7 +1582,7 @@ static struct net_device *xennet_create_dev(struct xenbus_device *dev)
- 	return ERR_PTR(err);
- }
- 
--/**
-+/*
-  * Entry point to this code when a new device is created.  Allocate the basic
-  * structures and the ring buffers for communication with the backend, and
-  * inform the backend of the appropriate details for those.
-@@ -1659,7 +1659,7 @@ static void xennet_disconnect_backend(struct netfront_info *info)
- 	}
- }
- 
--/**
-+/*
-  * We are reconnecting to the backend, due to a suspend/resume, or a backend
-  * driver restart.  We tear down our netif structure and recreate it, but
-  * leave the device-layer structures intact so that this is transparent to the
-@@ -2305,7 +2305,7 @@ static int xennet_connect(struct net_device *dev)
- 	return 0;
- }
- 
--/**
-+/*
-  * Callback received when the backend's state changes.
-  */
- static void netback_changed(struct xenbus_device *dev,
--- 
-2.25.1
+Backward compatibility would be enough for iproute2 but forward
+compatibility does not hurt, of course.
+
+> The users can upgrade and downgrade libbpf version at any time.
+> They can upgrade and downgrade kernel while keeping libbpf version the same.
+> The users can upgrade llvm as well and libbpf has to expect unexpected
+> and deal with all combinations.
+
+This actually goes beyond what would be needed for iproute2 dynamically
+linked against system libbpf.
+
+> > How so? If libbpf is written against kernel APIs and properly versioned,
+> > it should just work. A new version of libbpf changes the .so version, so
+> > old commands will not load it.  
+> 
+> Please point out where do you see this happening in the patch set.
+> See tools/lib/bpf/README.rst to understand the versioning.
+
+If the iproute2 binaries are linked against a symbol of a newer version than
+is available in the system libbpf (which should not really happen
+unless the system is broken), the dynamic linker will refuse to load
+it. If the binary is linked against an old version of a particular
+symbol, that old version will be used, if it's still provided by the
+library. Otherwise, it will not load. I don't see a problem here?
+
+The only problem would be if a particular function changed its
+semantics while retaining ABI. But since libbpf is backward and forward
+compatible, this should not happen.
+
+ Jiri
 
