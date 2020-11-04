@@ -2,130 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3062A5F97
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 09:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EEF2A5FDF
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 09:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725889AbgKDI1I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 03:27:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgKDI1I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 03:27:08 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5073DC0613D3;
-        Wed,  4 Nov 2020 00:27:08 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id k7so653022plk.3;
-        Wed, 04 Nov 2020 00:27:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sm0bYnR9BabPCwhpSs3V4HEq+Bn8rcs4J3qjEZM1/nU=;
-        b=mbV61XkSv6ars9sJJbl+wxJUM0tgJEVQdh71oivOZZCqLclLXonUMPiUaai/IbL6/W
-         hTYV69qUrD4eRaAOxwMmyV9tKh+dHlWhdLolvWawU6s32Dh7PldQRCn0lcu7mn060ftH
-         0K8DmB6Mg3HW7bqMAp7Ytc8579vCP4MfMoWyzHhAV7z9mPzo08tamAjbsYOSSdPYt+HY
-         5gzsxWwHwmKWlEbaUt8DtobSUxdEJUx8AJ3l8y0b3bNgKEH/u13JqqoaleA/v3I0fnfp
-         fWn4Qfm1I8aMu+r7eJAFDTdW6JC9LwoHi9ajIvrsFCAsh9UVNhG9M1/E6NzDicdhKDOi
-         rR5Q==
+        id S1726225AbgKDIwH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 03:52:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35230 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725946AbgKDIwG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 03:52:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604479924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xEUt5EUH16YvaUhu9JLMer/1MWLivZjYY/q1IODAmqs=;
+        b=BjJCyAtK6Pk4VFJY3kALAeNEr3HoRW5WpXvmecYpipVB21usXFtFBCdWu3YYDU1cnS8RgT
+        fvNiPhR8sTi7rkVj4qHNVYw9xhloZ182D7hyk/tsoupgBKhfTR2PBMRjsMT6lzQha1Ta7T
+        rRBXzx7mEpQc/9SnxUxPDobrBUHngWA=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-PCqslXHaMxK_T4H6GXQJoA-1; Wed, 04 Nov 2020 03:52:03 -0500
+X-MC-Unique: PCqslXHaMxK_T4H6GXQJoA-1
+Received: by mail-pl1-f200.google.com with SMTP id z11so12632528pln.0
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 00:52:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sm0bYnR9BabPCwhpSs3V4HEq+Bn8rcs4J3qjEZM1/nU=;
-        b=m75nqK0XLgTFtoKk1ZBT4vmMpE/GoUvZCk//n8wMUuN38V26BMFHRM1SivZ3OVEqKB
-         BYc3hD+U9lmdDjC66mA3luaWt72Y6lWaL7v1pMTWMaZLXZiwL5FwRt9fLCo/DgjccOzA
-         u5MreIU2QNisGL23uc8YYHnVPQ/YatBRGdtFTVsAHkuMcsdtdCUNLv+KN9yTrEGkRA4A
-         l4RYT5tpGFTKLep9on19qLSNg6zZ7I6fypEx++gw6/CD0r/3jNQ2rS+WnJktjcobuyhZ
-         gB5/3qvdqs4/KaOoObcIJiJvMq0LuWkpTHTm02NLI2wmLCcB0irQg8XiiF28yFMKXnpN
-         rE1Q==
-X-Gm-Message-State: AOAM533ZnzQskI9LkDKvUAuFQyQY5alaTQDG77a+VZRQ7+5ocBQ6DjYd
-        0Gj72xAwHrPtbEn0YG3sYqrr74Rac11XcrRAb8E=
-X-Google-Smtp-Source: ABdhPJx0aqe8L0eL27Yjanj6wzkunGyBSo/i9COLkOpK0ZyILJnYC70B+DTOd82wSyYxK2YyjFL4b27P99J2SegzpRQ=
-X-Received: by 2002:a17:902:c1d2:b029:d3:e6e9:c391 with SMTP id
- c18-20020a170902c1d2b02900d3e6e9c391mr28692499plc.49.1604478427884; Wed, 04
- Nov 2020 00:27:07 -0800 (PST)
-MIME-Version: 1.0
-References: <1604396490-12129-1-git-send-email-magnus.karlsson@gmail.com>
- <1604396490-12129-3-git-send-email-magnus.karlsson@gmail.com> <CAEf4Bzah-7akFkjUAJR=ovXLAnLd6EvLMMOy+GBbc4R28TY-eg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzah-7akFkjUAJR=ovXLAnLd6EvLMMOy+GBbc4R28TY-eg@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 4 Nov 2020 09:26:57 +0100
-Message-ID: <CAJ8uoz2Cqtw0gPpuyk79z4Rt8dYLmxd9DsSeAB4fQFJWMHLHVw@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] libbpf: fix possible use after free in xsk_socket__delete
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xEUt5EUH16YvaUhu9JLMer/1MWLivZjYY/q1IODAmqs=;
+        b=umgOvGPqrtDxTVFQ028fPbF+cKX8w3F7IiawAalCkPoygYhYBcp5rVZjZiul8irb2V
+         9B6wf2O0VTtWTzijXADanbzfiuwT+zKnxgB81A+uoUy02DVajPB9IKt0LDVf0vSrMJpG
+         u8I9gHlbj91VtXLpEssJRggfs5cEfHsH6jwhAskjK42urAYrh6ODsy3jVj95hwWyYZga
+         wWOeXsf9T/d9qh6DxGeYy5ZVkJP1X3aku1JFTyEj0qZvqL9itjN+YnB22nydkZVmsply
+         Rn7AtcRZ8fv9s4C+rrpKMolRCo6CDU9p2/mlVtkFHo7UqBkaN1fgzv4wHRlX2nKynNOL
+         NEbw==
+X-Gm-Message-State: AOAM532BZJkbOUr4KlyfPT7ecXqmu42QNVluYdMdse/ltNBLC9to84+w
+        2SpL1KnLOba6aRWL/BWZWp6Rly488MkvaiCReLgNPifdaE0I0zfuL3WV/MjpsuAsfTyH8/qjVZ1
+        1JUMMlcZJPxk=
+X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr2678193pjb.81.1604479922129;
+        Wed, 04 Nov 2020 00:52:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxCQhWYERz6hxQnPPSTbwhK08O8t2kDESGcVJbn64vjo7BnJ8Ci65snM49uwBfRwT/tIVeA9g==
+X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr2678176pjb.81.1604479921809;
+        Wed, 04 Nov 2020 00:52:01 -0800 (PST)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id nh24sm1511767pjb.44.2020.11.04.00.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 00:52:01 -0800 (PST)
+Date:   Wed, 4 Nov 2020 16:51:49 +0800
+From:   Hangbin Liu <haliu@redhat.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 1/5] configure: add check_libbpf() for
+ later libbpf support
+Message-ID: <20201104085149.GQ2408@dhcp-12-153.nay.redhat.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <20201029151146.3810859-2-haliu@redhat.com>
+ <78c5df29-bf06-0b60-d914-bdab3d65b198@gmail.com>
+ <20201103055419.GI2408@dhcp-12-153.nay.redhat.com>
+ <e3368c04-2887-3daf-8be8-8717960e9a18@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3368c04-2887-3daf-8be8-8717960e9a18@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 8:05 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Nov 3, 2020 at 1:42 AM Magnus Karlsson
-> <magnus.karlsson@gmail.com> wrote:
-> >
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Fix a possible use after free in xsk_socket__delete that will happen
-> > if xsk_put_ctx() frees the ctx. To fix, save the umem reference taken
-> > from the context and just use that instead.
-> >
-> > Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >  tools/lib/bpf/xsk.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> > index 504b7a8..9bc537d 100644
-> > --- a/tools/lib/bpf/xsk.c
-> > +++ b/tools/lib/bpf/xsk.c
-> > @@ -892,6 +892,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
-> >  {
-> >         size_t desc_sz = sizeof(struct xdp_desc);
-> >         struct xdp_mmap_offsets off;
-> > +       struct xsk_umem *umem;
-> >         struct xsk_ctx *ctx;
-> >         int err;
-> >
-> > @@ -899,6 +900,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
-> >                 return;
-> >
-> >         ctx = xsk->ctx;
-> > +       umem = ctx->umem;
-> >         if (ctx->prog_fd != -1) {
-> >                 xsk_delete_bpf_maps(xsk);
-> >                 close(ctx->prog_fd);
-> > @@ -918,11 +920,11 @@ void xsk_socket__delete(struct xsk_socket *xsk)
-> >
-> >         xsk_put_ctx(ctx);
-> >
-> > -       ctx->umem->refcount--;
-> > +       umem->refcount--;
->
-> if you moved ctx->umem->refcount--; to before xdk_put_ctx(ctx), would
-> that also work?
+On Tue, Nov 03, 2020 at 10:32:37AM -0700, David Ahern wrote:
+> configure scripts usually allow you to control options directly,
+> overriding the autoprobe.
 
-Yes, it would for that statement, but I still need the umem pointer
-for the statement below. And this statement of potentially closing the
-fd needs to be after xsk_put_ctx(). So we might as well keep
-ujmem->refcount-- where it is, if that is ok with you?
+What do you think of the follow update? It's a little rough and only controls
+libbpf.
 
-> >         /* Do not close an fd that also has an associated umem connected
-> >          * to it.
-> >          */
-> > -       if (xsk->fd != ctx->umem->fd)
-> > +       if (xsk->fd != umem->fd)
-> >                 close(xsk->fd);
-> >         free(xsk);
-> >  }
-> > --
-> > 2.7.4
-> >
+$ git diff
+diff --git a/configure b/configure
+index 711bb69c..be35c024 100755
+--- a/configure
++++ b/configure
+@@ -442,6 +442,35 @@ endif
+ EOF
+ }
+
++usage()
++{
++       cat <<EOF
++Usage: $0 [OPTIONS]
++  -h | --help                  Show this usage info
++  --no-libbpf                  build the package without libbpf
++  --libbpf-dir=DIR             build the package with self defined libbpf dir
++EOF
++       exit $1
++}
++
++while true; do
++       case "$1" in
++               --libbpf-dir)
++                       LIBBPF_DIR="$2"
++                       shift 2 ;;
++               --no-libbpf)
++                       NO_LIBBPF_CHECK=1
++                       shift ;;
++               -h | --help)
++                       usage 0 ;;
++               "")
++                       break ;;
++               *)
++                       usage 1 ;;
++       esac
++done
++
++
+ echo "# Generated config based on" $INCLUDE >$CONFIG
+ quiet_config >> $CONFIG
+
+@@ -476,8 +505,10 @@ check_setns
+ echo -n "SELinux support: "
+ check_selinux
+
+-echo -n "libbpf support: "
+-check_libbpf
++if [ -z $NO_LIBBPF_CHECK ]; then
++       echo -n "libbpf support: "
++       check_libbpf
++fi
+
+ echo -n "ELF support: "
+ check_elf
+
+
+$ ./configure -h
+Usage: ./configure [OPTIONS]
+  -h | --help                   Show this usage info
+  --no-libbpf                   build the package without libbpf
+  --libbpf-dir=DIR              build the package with self defined libbpf dir
+
+Thanks
+Hangbin
+
