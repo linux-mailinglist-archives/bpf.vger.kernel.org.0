@@ -2,125 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0392A6A25
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 17:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1A02A6A2F
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 17:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731252AbgKDQpR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 11:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731294AbgKDQpI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:45:08 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E68C061A4A
-        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 08:45:08 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id w13so17199550eju.13
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 08:45:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=thk0dsFzxKUTJg2wIhday9Zx1B4NcEyIkuylRVdGgcw=;
-        b=NGLM86TG3ew60zP6WbLEJY7uGdhXZ9lUSsMDVB7el2JvmIyX9hqobGAp3SaRzQ2N4l
-         MYOTav4soBanSqatdv/UMbxfN5DZRTCC/aMozzOcdVEo9h5ZTjCVL2pU5WUzK7M1oIN9
-         grVF5LN92QrwA0GbJa33y7ImE8bAsBKLxU1CQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=thk0dsFzxKUTJg2wIhday9Zx1B4NcEyIkuylRVdGgcw=;
-        b=nbDamDwo5KQ2/PIpgsF5P14edgAZapEI7I/Q8pQqc1k4SxsXIAebXOMPqzp34W+0Ke
-         hQqPUt73ZpQ8ntT8loK+gf+QLXNb2x6HlRXdlJh0L3ZsbeLeEQTOInXtV85GNgF7GdXX
-         h1Vy/VmYE+SJi40VZcvzzfzp6MJi9uesBJM4FG7n7awhialrWr4J/v2X20AVNHdqTHRD
-         kvcWfaKinCeasK0sMydLOAcLCThi2xNpEM3Y1xe7xg92X0RNv0bGYeDZuSnayhrlyqYW
-         gtCcUFfRn5611Y7itEm3IH7oG+Eg45NxFUcakR4bkarKg31ivoALc6Edz/rMVz9DLll6
-         6Odg==
-X-Gm-Message-State: AOAM530hq1bXEQZ8FLzQxkyF4KWEt5fZRiv1/bC6+OWE1Kbis2SFQt8i
-        QddZsyLW2ewD/xWi9mNtUWbWdyFl/EjSvmN0
-X-Google-Smtp-Source: ABdhPJxFbVmZEmH1aQ4Y7bnw5PfXhhXQjkeU50nmpu9mwvltAGMH1dqAapFxHNJVy5h3/USnN1pzZg==
-X-Received: by 2002:a17:906:c186:: with SMTP id g6mr24580689ejz.465.1604508307179;
-        Wed, 04 Nov 2020 08:45:07 -0800 (PST)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id g20sm1283551ejz.88.2020.11.04.08.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:45:06 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1731365AbgKDQqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 11:46:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60608 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730154AbgKDQqE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 11:46:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604508362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1cW8DZx44Ft/UJKyMxnwWKu5EBpXA6JwZoQX8qWDLTE=;
+        b=FHbImQZ1Ywb0LLFfA9fBhjAhUaQp89l/VbJIBgc4o9lKjGfvz9y04z0eTHaElprYT+u4Ci
+        ifIXsSUHU9BV87PnaSftKF3GNc17sSXAQq67gjd821E4dpj2PnVp63tSBtmjoMDPm3GXk6
+        5LDdns/2TzFos8G66w5jsHN8R+Xw0qI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-4dMxcShON1yrcemzc-s_bg-1; Wed, 04 Nov 2020 11:45:58 -0500
+X-MC-Unique: 4dMxcShON1yrcemzc-s_bg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 120106D243;
+        Wed,  4 Nov 2020 16:45:57 +0000 (UTC)
+Received: from krava (unknown [10.40.192.118])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 58FF955784;
+        Wed,  4 Nov 2020 16:45:54 +0000 (UTC)
+Date:   Wed, 4 Nov 2020 17:45:53 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf-next v3 9/9] bpf: Exercise syscall operations for inode and sk storage
-Date:   Wed,  4 Nov 2020 17:44:53 +0100
-Message-Id: <20201104164453.74390-10-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
-In-Reply-To: <20201104164453.74390-1-kpsingh@chromium.org>
-References: <20201104164453.74390-1-kpsingh@chromium.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] selftests/bpf: Add profiler test
+Message-ID: <20201104164215.GH3861143@krava>
+References: <20201009011240.48506-1-alexei.starovoitov@gmail.com>
+ <20201009011240.48506-4-alexei.starovoitov@gmail.com>
+ <20201013195622.GB1305928@krava>
+ <CAADnVQLYSk0YgK7_dUSF-5Rau10vOdDgosVhE9xmEr1dp+=2vg@mail.gmail.com>
+ <CAEf4BzbWO3fgWxAWQw4Pee=F7=UqU+N6LtKYV7V9ZZrfkPZ3gw@mail.gmail.com>
+ <561A9F0C-BDAE-406A-8B93-011ECAB22B1C@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <561A9F0C-BDAE-406A-8B93-011ECAB22B1C@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Thu, Oct 15, 2020 at 06:09:14AM +0000, Song Liu wrote:
+> 
+> 
+> > On Oct 13, 2020, at 2:56 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> 
+> [...]
+> 
+> > 
+> > I'd go with Kconfig + bpf_core_enum_value(), as it's shorter and
+> > nicer. This compiles and works with my Kconfig, but I haven't checked
+> > with CONFIG_CGROUP_PIDS defined.
+> 
+> Tested with CONFIG_CGROUP_PIDS, it looks good. 
+> 
+> Tested-by: Song Liu <songliubraving@fb.com>
 
-Use the check_syscall_operations added for task_local_storage to
-exercise syscall operations for other local storage maps:
+hi,
+I still need to apply my workaround to compile tests,
+so I wonder this fell through cracks
 
-* Check the absence of an element for the given fd.
-* Create a new element, retrieve and compare its value.
-* Delete the element and check again for absence.
+thanks,
+jirka
 
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- .../bpf/prog_tests/test_local_storage.c         | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-index feba23f8848b..48c9237f1314 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -145,7 +145,7 @@ bool check_syscall_operations(int map_fd, int obj_fd)
- void test_test_local_storage(void)
- {
- 	char tmp_exec_path[PATH_MAX] = "/tmp/copy_of_rmXXXXXX";
--	int err, serv_sk = -1, task_fd = -1;
-+	int err, serv_sk = -1, task_fd = -1, rm_fd = -1;
- 	struct local_storage *skel = NULL;
- 
- 	skel = local_storage__open_and_load();
-@@ -169,6 +169,15 @@ void test_test_local_storage(void)
- 	if (CHECK(err < 0, "copy_rm", "err %d errno %d\n", err, errno))
- 		goto close_prog;
- 
-+	rm_fd = open(tmp_exec_path, O_RDONLY);
-+	if (CHECK(rm_fd < 0, "open", "failed to open %s err:%d, errno:%d",
-+		  tmp_exec_path, rm_fd, errno))
-+		goto close_prog;
-+
-+	if (!check_syscall_operations(bpf_map__fd(skel->maps.inode_storage_map),
-+				      rm_fd))
-+		goto close_prog;
-+
- 	/* Sets skel->bss->monitored_pid to the pid of the forked child
- 	 * forks a child process that executes tmp_exec_path and tries to
- 	 * unlink its executable. This operation should be denied by the loaded
-@@ -197,9 +206,13 @@ void test_test_local_storage(void)
- 	CHECK(skel->data->sk_storage_result != 0, "sk_storage_result",
- 	      "sk_local_storage not set\n");
- 
--	close(serv_sk);
-+	if (!check_syscall_operations(bpf_map__fd(skel->maps.sk_storage_map),
-+				      serv_sk))
-+		goto close_prog;
- 
- close_prog:
-+	close(serv_sk);
-+	close(rm_fd);
- 	close(task_fd);
- 	local_storage__destroy(skel);
- }
--- 
-2.29.1.341.ge80a0c044ae-goog
+> 
+> > 
+> > 
+> > diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h
+> > b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> > index 00578311a423..79b8d2860a5c 100644
+> > --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
+> > +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> > @@ -243,7 +243,11 @@ static ino_t get_inode_from_kernfs(struct
+> > kernfs_node* node)
+> >        }
+> > }
+> > 
+> > -int pids_cgrp_id = 1;
+> > +extern bool CONFIG_CGROUP_PIDS __kconfig __weak;
+> > +
+> > +enum cgroup_subsys_id___local {
+> > +       pids_cgrp_id___local = 1, /* anything but zero */
+> > +};
+> > 
+> > static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
+> >                                         struct task_struct* task,
+> > @@ -253,7 +257,9 @@ static INLINE void* populate_cgroup_info(struct
+> > cgroup_data_t* cgroup_data,
+> >                BPF_CORE_READ(task, nsproxy, cgroup_ns, root_cset,
+> > dfl_cgrp, kn);
+> >        struct kernfs_node* proc_kernfs = BPF_CORE_READ(task, cgroups,
+> > dfl_cgrp, kn);
+> > 
+> > -       if (ENABLE_CGROUP_V1_RESOLVER) {
+> > +       if (ENABLE_CGROUP_V1_RESOLVER && CONFIG_CGROUP_PIDS) {
+> > +               int cgrp_id = bpf_core_enum_value(enum
+> > cgroup_subsys_id___local, pids_cgrp_id___local);
+> > +
+> > #ifdef UNROLL
+> > #pragma unroll
+> > #endif
+> > @@ -262,7 +268,7 @@ static INLINE void* populate_cgroup_info(struct
+> > cgroup_data_t* cgroup_data,
+> >                                BPF_CORE_READ(task, cgroups, subsys[i]);
+> >                        if (subsys != NULL) {
+> >                                int subsys_id = BPF_CORE_READ(subsys, ss, id);
+> > -                               if (subsys_id == pids_cgrp_id) {
+> > +                               if (subsys_id == cgrp_id) {
+> >                                        proc_kernfs =
+> > BPF_CORE_READ(subsys, cgroup, kn);
+> >                                        root_kernfs =
+> > BPF_CORE_READ(subsys, ss, root, kf_root, kn);
+> >                                        break;
+> 
 
