@@ -2,123 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1169E2A5E62
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 07:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F752A5F44
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 09:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgKDGvk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 01:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbgKDGvk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 01:51:40 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BCDC061A4D;
-        Tue,  3 Nov 2020 22:51:40 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id s21so21191642oij.0;
-        Tue, 03 Nov 2020 22:51:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=ww8C00KkabtDLxcKDhOCeqOXU2u0UX9A1QT4C+4IqFg=;
-        b=U+oNG1i1btw1zXWh+bm57bzcwFK4mYE4QByksZ31ZOpagHl1C+v/SOUHCSg7CswSd6
-         PTALrp62R1Zd8o9Y2R4V+5pfOT3M3V17TSN4pIWQYirQTCsraF9BmMCa9HTYEcOhzRI6
-         rGK786eMxm2RXA5HdI85KXlzyUyZDPdQ/K3LpagBqDCjooWEpQC47PVpuET5ReKHkqAN
-         yPH5rnqhxev3jEnC9f/hYHs/HCsNCd06op0/ksCYK/NFIkHeh27ebS8RmQNk4AUYSS/y
-         gQ2zSOgJ4tkFBwdR5yXoOf82s3pQt86EctYNMw+0zoXy0dANx6Y1gV4hE99tet0przAN
-         dhhg==
+        id S1726152AbgKDIWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 03:22:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22405 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725812AbgKDIWW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 03:22:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604478140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0rRMbD9qVHc0o9yWb4QjRcw9fAM73631vYZJD6kplJY=;
+        b=Jvbx0sS7/TH8Zgb0+TBeZFzK/yrhB89uB3dTuFo4P0fflJdXHZr53zet/XprJ+E99GqZq2
+        vl3XOkHBp6BaWy30WFRMGSs7w5ns8kUzEZ2l9kI9qNPLZx0qpIgA//cWoLz10iNzY0oIPC
+        wXyvbmshMFqYkTu8SnRXnIjBeZVnPWc=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-C8xQVDfsMViswc61ueOoPQ-1; Wed, 04 Nov 2020 03:22:17 -0500
+X-MC-Unique: C8xQVDfsMViswc61ueOoPQ-1
+Received: by mail-pl1-f200.google.com with SMTP id q4so12513155plr.11
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 00:22:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=ww8C00KkabtDLxcKDhOCeqOXU2u0UX9A1QT4C+4IqFg=;
-        b=OmHFjjwYCA/8mCMNtWhy1eZecHveNnO1E6YFoNocxjA9QnIjjjnrv6UM5E+scgxM6M
-         kUR+LtICxHt2efgWRbFPTSU2v0uBCOW376pHsw33q4a0ZdO6VOtFSEoyqOFlKQQ28w7C
-         THcCsuAnTd4VlQIY5zMq2PIHN+3ydzDO3/prBOIs+PLnKxpOO09dimyiB2OqrA33MCbh
-         YLxEZeiCK8Vs+QDvShkgx2gw1agvmhHdMUgMece3eEDr0XwofONYky6bvhBUFju4FMcM
-         PrJVN4F2bI9M/1goSzeb2BTvL4Q18kGA+bDjnJXdiqY9A58bY4cO/IGZ22U/MJsOX64b
-         Xp4g==
-X-Gm-Message-State: AOAM530tA6crOrZUcqqeMgyz4MnHlOyeN/7TEtqT/DurJHm71wYGr8Il
-        UzRcUeuwmmeNM9f3P1VticDl1qtE16EGtA==
-X-Google-Smtp-Source: ABdhPJzyun/H7Hi4rEAyd54p/J+uvbUT3Lpvv2RlIVlAbVFszhVzGqMO/sgbsnF8KixxOElEmKZGPQ==
-X-Received: by 2002:aca:5b85:: with SMTP id p127mr1872802oib.34.1604472699568;
-        Tue, 03 Nov 2020 22:51:39 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id h15sm303563ots.31.2020.11.03.22.51.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0rRMbD9qVHc0o9yWb4QjRcw9fAM73631vYZJD6kplJY=;
+        b=ebwdOizNDWB4SjMk1AMEkHH3H5ES15waWng7dxxcdwtWliT+GSGLq1sTtFXUt1dIGs
+         xcMSdSh/8zj1wFONRSqS/wyr8Z6hC6Ie8bG3FjTTaeiUM88mlA1nbj8NjgyZtaB/yy+I
+         fv8J1W5F53qaQLf50iCtrZKG/y6NNCM1q03dBlxQlUDltTX6fwKPiABpsg60/Lv9AhMo
+         MU2l8ggSKYshRgUEvdTUfCxJohDL3DIbJBpjXnsBLsPihnxSSqzlGUVh81yVj8nbguH0
+         c+rIsoeYXV1FipHM/MTM/6ijP5p4PE5+UrchaTflN9WNviJLU0OkKsmeqrhQ+3HLXPn0
+         7brQ==
+X-Gm-Message-State: AOAM532DWAvNYJlgE2sjXT2qnq2NLe7GLhiyJkVHEUx/Zp4EumI2RZg/
+        cP8daIzKKFZE41azU2O067tN5+z3dVZeUEsDI53BNWWsKbAvjkD/WORNm1hyFWD7SyJjqOUQR2E
+        T4jDX0M6noX0=
+X-Received: by 2002:a17:902:6bc2:b029:d6:e0ba:f2ff with SMTP id m2-20020a1709026bc2b02900d6e0baf2ffmr7475709plt.10.1604478136229;
+        Wed, 04 Nov 2020 00:22:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzfLh4HROldjTqHGlCJSe2gxrVWFlzxRqzxOsnP/Snxqrs+kwwFE6YqQtzdw8IZqm84UJ84Bw==
+X-Received: by 2002:a17:902:6bc2:b029:d6:e0ba:f2ff with SMTP id m2-20020a1709026bc2b02900d6e0baf2ffmr7475690plt.10.1604478135972;
+        Wed, 04 Nov 2020 00:22:15 -0800 (PST)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s18sm1389573pgh.60.2020.11.04.00.22.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 22:51:38 -0800 (PST)
-Date:   Tue, 03 Nov 2020 22:51:30 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Wed, 04 Nov 2020 00:22:15 -0800 (PST)
+Date:   Wed, 4 Nov 2020 16:22:03 +0800
+From:   Hangbin Liu <haliu@redhat.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Message-ID: <5fa24f72dd48e_9fa0e20871@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAADnVQLKhmA49RGH=SSCg3qHxZOzU5bHp+sw+Yw7M_7KB0zD4g@mail.gmail.com>
-References: <20201103153132.2717326-1-kpsingh@chromium.org>
- <20201103153132.2717326-8-kpsingh@chromium.org>
- <20201103184714.iukuqfw2byls3s4k@ast-mbp.dhcp.thefacebook.com>
- <CACYkzJ6A5GrQhBhv7GC8aeeLpoc7bnN=6Rn2UoM1P90odLZZ=g@mail.gmail.com>
- <CACYkzJ6D=vwaEhgaB2vevOo0186m=yfxeKBQ8eWWck8xjtczNA@mail.gmail.com>
- <CAADnVQ+DBHXkf8SFwnTKmSKi7mdAx56dWbpp5++Cc02CQjz+Ng@mail.gmail.com>
- <CACYkzJ6uc4fbRMNmj3kFeSu=V2JqWruJLFjMnPet_HXW-EdRng@mail.gmail.com>
- <CAADnVQLKhmA49RGH=SSCg3qHxZOzU5bHp+sw+Yw7M_7KB0zD4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 7/8] bpf: Add tests for task_local_storage
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 3/5] lib: add libbpf support
+Message-ID: <20201104082203.GP2408@dhcp-12-153.nay.redhat.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <20201029151146.3810859-4-haliu@redhat.com>
+ <db14a227-1d5e-ed3a-9ada-ecf99b526bf6@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db14a227-1d5e-ed3a-9ada-ecf99b526bf6@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Tue, Nov 3, 2020 at 5:55 PM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > [...]
-> >
-> > > >
-> > > > I saw the docs mention that these are not exposed to tracing programs due to
-> > > > insufficient preemption checks. Do you think it would be okay to allow them
-> > > > for LSM programs?
-> > >
-> > > hmm. Isn't it allowed already?
-> > > The verifier does:
-> > >         if ((is_tracing_prog_type(prog_type) ||
-> > >              prog_type == BPF_PROG_TYPE_SOCKET_FILTER) &&
-> > >             map_value_has_spin_lock(map)) {
-> > >                 verbose(env, "tracing progs cannot use bpf_spin_lock yet\n");
-> > >                 return -EINVAL;
-> > >         }
-> > >
-> > > BPF_PROG_TYPE_LSM is not in this list.
-> >
-> > The verifier does not have any problem, it's just that the helpers are not
-> > exposed to LSM programs via bpf_lsm_func_proto.
-> >
-> > So all we need is:
-> >
-> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > index 61f8cc52fd5b..93383df2140b 100644
-> > --- a/kernel/bpf/bpf_lsm.c
-> > +++ b/kernel/bpf/bpf_lsm.c
-> > @@ -63,6 +63,10 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const
-> > struct bpf_prog *prog)
-> >                 return &bpf_task_storage_get_proto;
-> >         case BPF_FUNC_task_storage_delete:
-> >                 return &bpf_task_storage_delete_proto;
-> > +       case BPF_FUNC_spin_lock:
-> > +               return &bpf_spin_lock_proto;
-> > +       case BPF_FUNC_spin_unlock:
-> > +               return &bpf_spin_unlock_proto;
+On Mon, Nov 02, 2020 at 08:41:09AM -0700, David Ahern wrote:
+> On 10/29/20 9:11 AM, Hangbin Liu wrote:
+> > diff --git a/ip/ipvrf.c b/ip/ipvrf.c
+> > index 33150ac2..afaf1de7 100644
+> > --- a/ip/ipvrf.c
+> > +++ b/ip/ipvrf.c
+> > @@ -28,8 +28,14 @@
+> >  #include "rt_names.h"
+> >  #include "utils.h"
+> >  #include "ip_common.h"
+> > +
+> >  #include "bpf_util.h"
+> >  
+> > +#ifdef HAVE_LIBBPF
+> > +#include <bpf/bpf.h>
+> > +#include <bpf/libbpf.h>
+> > +#endif
+> > +
+> >  #define CGRP_PROC_FILE  "/cgroup.procs"
+> >  
+> >  static struct link_filter vrf_filter;
+> > @@ -256,8 +262,13 @@ static int prog_load(int idx)
+> >  		BPF_EXIT_INSN(),
+> >  	};
+> >  
+> > +#ifdef HAVE_LIBBPF
+> > +	return bpf_load_program(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
+> > +				"GPL", 0, bpf_log_buf, sizeof(bpf_log_buf));
+> > +#else
+> >  	return bpf_prog_load_buf(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
+> >  			         "GPL", bpf_log_buf, sizeof(bpf_log_buf));
+> > +#endif
+> >  }
+> >  
+> >  static int vrf_configure_cgroup(const char *path, int ifindex)
+> > @@ -288,7 +299,11 @@ static int vrf_configure_cgroup(const char *path, int ifindex)
+> >  		goto out;
+> >  	}
+> >  
+> > +#ifdef HAVE_LIBBPF
+> > +	if (bpf_prog_attach(prog_fd, cg_fd, BPF_CGROUP_INET_SOCK_CREATE, 0)) {
+> > +#else
+> >  	if (bpf_prog_attach_fd(prog_fd, cg_fd, BPF_CGROUP_INET_SOCK_CREATE)) {
+> > +#endif
+> >  		fprintf(stderr, "Failed to attach prog to cgroup: '%s'\n",
+> >  			strerror(errno));
+> >  		goto out;
 > 
-> Ahh. Yes. That should do it. Right now I don't see concerns with safety
-> of the bpf_spin_lock in bpf_lsm progs.
+> I would prefer to have these #ifdef .. #endif checks consolidated in the
+> lib code. Create a bpf_compat file for these. e.g.,
+> 
+> int bpf_program_load(enum bpf_prog_type type, const struct bpf_insn *insns,
+>                      size_t size_insns, const char *license, char *log,
+>                      size_t size_log)
+> {
+> +#ifdef HAVE_LIBBPF
+> +	return bpf_load_program(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
+> +				"GPL", 0, bpf_log_buf, sizeof(bpf_log_buf));
+> +#else
+>  	return bpf_prog_load_buf(BPF_PROG_TYPE_CGROUP_SOCK, prog, sizeof(prog),
+>  			         "GPL", bpf_log_buf, sizeof(bpf_log_buf));
+> +#endif
+> }
+> 
+> Similarly for bpf_program_attach.
+> 
+> 
+> I think even the includes can be done once in bpf_util.h with a single
+> +#ifdef HAVE_LIBBPF
+> +#include <bpf/bpf.h>
+> +#include <bpf/libbpf.h>
+> +#endif
+> +
 
-What about sleepable lsm hooks? Normally we wouldn't expect to sleep with
-a spinlock held. Should we have a check to ensure programs bpf_spin_lock
-are not also sleepable?
+Oh, I just found why I didn't include libbpf.h in bpf_legacy.c.
+The reason is there are more function conflicts. e.g.
+bpf_obj_get, bpf_obj_pin, bpf_prog_attach.
+
+If we move this #ifdef HAVE_LIBBPF to bpf_legacy.c, we need to rename
+them all. With current patch, we limit all the legacy functions in bpf_legacy
+and doesn't mix them with libbpf.h. What do you think?
+
+Thanks
+Hangbin
+
