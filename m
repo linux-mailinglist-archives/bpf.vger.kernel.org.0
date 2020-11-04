@@ -2,98 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4192A6085
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 10:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2260C2A60D8
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 10:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgKDJbr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 04:31:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56098 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgKDJbq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:31:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1604482305;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fUfLaQh80kHxebGdmT1vb0kxk26aLHgtzDNP5/t+WZE=;
-        b=SZrkiHwWie88Qb3OFFLiaA9/AhqXOuvNgLEitRn+N6FRqb9Uh3EsjZ9d0S49sjR2FlKuFc
-        Bhtfq6Pd4C+GZFy4DoiO71w7l6VdgfborjXI8SLvgNczSGRmD48czMgilXZc3JYKIq6TPt
-        1eA2iBb0G+GKtbJz5IFM8r33XkRQ8iU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0BAD1AC0C;
-        Wed,  4 Nov 2020 09:31:45 +0000 (UTC)
-Subject: Re: [PATCH 08/12] net: xen-netfront: Demote non-kernel-doc headers to
- standard comment blocks
-To:     Lee Jones <lee.jones@linaro.org>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20201104090610.1446616-1-lee.jones@linaro.org>
- <20201104090610.1446616-9-lee.jones@linaro.org>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <9ba500df-9d22-3a4e-056f-9bb5f2b42440@suse.com>
-Date:   Wed, 4 Nov 2020 10:31:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727070AbgKDJqe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 04:46:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbgKDJqe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:46:34 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3113BC0613D3;
+        Wed,  4 Nov 2020 01:46:32 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id i6so26317261lfd.1;
+        Wed, 04 Nov 2020 01:46:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMKW2AFJKBbvyHNdmj0rshzU7XEGh8XGmlxj8IfZRIE=;
+        b=iRt7d66utjU+hsGwwlScOiDE7g5ky2eBA6Iz8NnTE2QIIIoZys5CH1jN6FxLEx9vrJ
+         w7PXT2WsOnzGUv1jmraWAjwbGHwEqFUO4xY3j1Hp2YaOne1TYpxT0GGt5MD0COCbBMI+
+         ZEvFIztU2QWUW5pMK3N1O/cywMcG6PDT1CczYApm8QIfEMEX2YaASqJYk9jEeQnN5wkb
+         +hUdPEXSUpzZpi6m9lexu7WBwMbhg52i0Tt4J1N518Y317OdSEm3KBocoTuFMpK47NwY
+         dgJ6K2vwjeNCm8UIqh7cFSPnkcwWhh0RGoz3u8rYF6MQxJhdfGGd1cIqk+pZqvO66NL4
+         oeAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JMKW2AFJKBbvyHNdmj0rshzU7XEGh8XGmlxj8IfZRIE=;
+        b=XHatvz/Pk276KRkoNJGMmbj435fbtmJ/acaPkA9xdUP4g927uyDctZDSjO+3HvzTiF
+         XKDM1Xp4LD6g4Vi3ON1KNn3L1uskmI1F+Rme/4pcM5lsPWWAQ/Uf7LlxB5gMaY4zd4n3
+         6Qz3HyoVaZY1bb0UmIhsMmtXCA4tX4uFE6xxQTDbghBBmsU4W8ulrYIXyaxq/vqD6YjC
+         qUD4TuSAxcDHu28qSVoM0R/b2ZwQh1xIQ9FmBcUwJIt6ObHNXjI9CS5c6RwThxeD1C/H
+         rveKrei9vXjcNMPGJhhryFCxGaph4XfQG9gHbYmnQLOWnjQ92QLmH4sna7rxqRyKot0V
+         0/5Q==
+X-Gm-Message-State: AOAM530RSC6VyhT/MvFRNMX3BV/eh+rOMDQnQEwculYAzCBf3z1B04XL
+        ZjcyWFVAtfmE5KiIBUpkBhI=
+X-Google-Smtp-Source: ABdhPJzGxrQE4UfIJaRsy6vQz+E0ImSj0JceLDiO425MIYhQ7+64xbm5/Qy2YriRxmXGzwG/ohmBdQ==
+X-Received: by 2002:a19:48c6:: with SMTP id v189mr8801817lfa.284.1604483190654;
+        Wed, 04 Nov 2020 01:46:30 -0800 (PST)
+Received: from localhost.localdomain (host-89-229-233-64.dynamic.mm.pl. [89.229.233.64])
+        by smtp.gmail.com with ESMTPSA id x18sm355624lfc.73.2020.11.04.01.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 01:46:30 -0800 (PST)
+From:   mariusz.dudek@gmail.com
+X-Google-Original-From: mariuszx.dudek@intel.com
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org, Mariusz Dudek <mariuszx.dudek@intel.com>
+Subject: [PATCH bpf-next 0/2] libbpf: add support for privileged/unprivileged control separation
+Date:   Wed,  4 Nov 2020 10:46:24 +0100
+Message-Id: <20201104094626.3406-1-mariuszx.dudek@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20201104090610.1446616-9-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 04.11.20 10:06, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/net/xen-netfront.c: In function ‘store_rxbuf’:
->   drivers/net/xen-netfront.c:2416:16: warning: variable ‘target’ set but not used [-Wunused-but-set-variable]
+From: Mariusz Dudek <mariuszx.dudek@intel.com>
 
-Those two warnings are not fixed by the patch.
+	This patch series adds support for separation of eBPF program
+	load and xsk socket creation. In for example a Kubernetes
+	environment you can have an AF_XDP CNI or daemonset that is 
+	responsible for launching pods that execute an application 
+	using AF_XDP sockets. It is desirable that the pod runs with
+	as low privileges as possible, CAP_NET_RAW in this case, 
+	and that all operations that require privileges are contained
+	in the CNI or daemonset.
+	
+	In this case, you have to be able separate ePBF program load from
+	xsk socket creation.
 
->   drivers/net/xen-netfront.c:1592: warning: Function parameter or member 'dev' not described in 'netfront_probe'
->   drivers/net/xen-netfront.c:1592: warning: Function parameter or member 'id' not described in 'netfront_probe'
->   drivers/net/xen-netfront.c:1669: warning: Function parameter or member 'dev' not described in 'netfront_resume'
->   drivers/net/xen-netfront.c:2313: warning: Function parameter or member 'dev' not described in 'netback_changed'
->   drivers/net/xen-netfront.c:2313: warning: Function parameter or member 'backend_state' not described in 'netback_changed'
-> 
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: Stefano Stabellini <sstabellini@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: KP Singh <kpsingh@chromium.org>
-> Cc: xen-devel@lists.xenproject.org
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+	Currently, this will not work with the xsk_socket__create APIs
+	because you need to have CAP_NET_ADMIN privileges to load eBPF
+	program and CAP_SYS_ADMIN privileges to create update xsk_bpf_maps.
+	To be exact xsk_set_bpf_maps does not need those privileges but
+	it takes the prog_fd and xsks_map_fd and those are known only to
+	process that was loading eBPF program. The api bpf_prog_get_fd_by_id
+	that looks up the fd of the prog using an prog_id and
+	bpf_map_get_fd_by_id that looks for xsks_map_fd usinb map_id both
+	requires CAP_SYS_ADMIN.
 
-With the commit message fixed you can have my:
+	With this patch, the pod can be run with CAP_NET_RAW capability
+	only. In case your umem is larger or equal process limit for
+	MEMLOCK you need either increase the limit or CAP_IPC_LOCK capability. 
+	Without this patch in case of insufficient rights ENOPERM is
+	returned by xsk_socket__create.
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+	To resolve this privileges issue two new APIs are introduced:
+	- xsk_setup_xdp_prog - prepares bpf program if given and
+	loads it on a selected network interface or loads the built in
+	XDP program, if no XDP program is supplied. It can also return
+	xsks_map_fd which is needed by unprivileged process to update
+	xsks_map with AF_XDP socket "fd"
+	- xsk_update_xskmap - inserts an AF_XDP socket into an xskmap for a
+	particular xsk_socket
 
+	Usage example:
+	int xsk_setup_xdp_prog(int ifindex, struct bpf_prog_cfg *cfg,
+			int *xsks_map_fd)
 
-Juergen
+	if cfg == NULL, then the default program is loaded.
+
+	Instead of NULL user can pass pointer to struct
+	bpf_prog_cfg and provide own bpf program. 
+
+	int xsk_update_xskmap(struct xsk_socket *xsk, int xsks_map_fd);
+
+	Inserts AF_XDP socket "fd" into the xskmap.
+
+	The first patch introduces the new APIs. The second patch provides
+	a new sample applications working as control and modification to
+	existing xdpsock application to work with less privileges.
+
+	This patch set is based on bpf-next commit cb5dc5b062a9
+	("Merge branch 'bpf: safeguard hashtab locking in NMI context')
+
+Mariusz Dudek (2):
+  libbpf: separate XDP program load with xsk socket creation
+  samples/bpf: sample application for eBPF load and socket creation
+    split
+
+ samples/bpf/Makefile            |   4 +-
+ samples/bpf/xdpsock.h           |   8 ++
+ samples/bpf/xdpsock_ctrl_proc.c | 184 ++++++++++++++++++++++++++++++++
+ samples/bpf/xdpsock_user.c      | 146 +++++++++++++++++++++++--
+ tools/lib/bpf/libbpf.map        |   2 +
+ tools/lib/bpf/xsk.c             | 157 ++++++++++++++++++++++-----
+ tools/lib/bpf/xsk.h             |  13 +++
+ 7 files changed, 478 insertions(+), 36 deletions(-)
+ create mode 100644 samples/bpf/xdpsock_ctrl_proc.c
+
+-- 
+2.20.1
+
