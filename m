@@ -2,59 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6ADC2A6A23
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 17:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BCD2A6A20
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 17:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731292AbgKDQpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 11:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
+        id S1731299AbgKDQpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 11:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731281AbgKDQpH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 11:45:07 -0500
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706BFC040201
-        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 08:45:06 -0800 (PST)
-Received: by mail-ej1-x642.google.com with SMTP id oq3so28844300ejb.7
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 08:45:06 -0800 (PST)
+        with ESMTP id S1731296AbgKDQpJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 11:45:09 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF248C0613D3
+        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 08:45:07 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id 7so30720212ejm.0
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 08:45:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kutD/q+xVupSFcvYOVJRfZWueeRA7xbNvILSb9eee7Q=;
-        b=UR/q/Nn1X/y65cTeJfdgWYcCtSKQyBLclIjrztWUIvvPunynakU3O6KgHQNspU42Ck
-         owF7m5lCaKXa/Vscp/JlS7bbQZlqobpKty25OyiAAJ/TjZTCgSnR23XCE2vSFrsZFLzs
-         0S+5Z+3zYW0Cua6bsQQbtq1IswVI4BU6spRCY=
+        bh=bfcTcfxBUXUo/rquci5lcju84a9v0kx0TTqHn8xfiB8=;
+        b=UJ7ujSh69Wh5aI7ynE5Ko1d1SYD+hCUXBTm6PY2XZC0EhamlA/WTizCwz4HLrDZ3J1
+         wLySxn0C7btP2sZFn0nf8MxA6MfnapjeZWKZ5Yltsy+AfSWp1LlNArnF59KN4V9LXMjB
+         nNGlAo7Kgc/7uysi5AGVaBsBd9lLpBB/cLWDI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kutD/q+xVupSFcvYOVJRfZWueeRA7xbNvILSb9eee7Q=;
-        b=BrWVUYF1OOweET5CKZ7scJVaMepK6AtYGJYK59vfgFrpuE8oHnYJtkv9k4oWVvP5mC
-         LnJpllA0dmcv21rHweYSIIRSBjZYPAHw5fWgUQIp+vUzBDR6Z9xEnDVExKfzGpNvuaeq
-         eVsKIfa8nu5qvMCN3DMOCGdSSZbsfJ/h6LvzU1A4syweFvWq0t9s4YaD0ZcEmjJmRNB7
-         ghGyqeva3ktQeum+LreUQFFCALW7I0lOVqPdeuxZDaCweXo+T38kdk5EbMrlBOxDh7bk
-         NC81ihzDb9x9IjwetY7SLjyftsRzec9Xtapn1QveZJF8eEpizeDMBMM4CIBjZuP5fAP/
-         VATQ==
-X-Gm-Message-State: AOAM531I1qMQ8YV70+wVSVdS/NiKgI36vsOCWnpq6l17EAFpU4oW5RbJ
-        NosNgIW1UJp3YiZFKJxa6Xcxwg==
-X-Google-Smtp-Source: ABdhPJyRDdmq7NWXYAFlGH/uNx7rCU+Nk5gt4kpw6GcPQW7WBnSgC9XU+K7b8rZFJVarcBuNWnXjBQ==
-X-Received: by 2002:a17:906:1643:: with SMTP id n3mr25456761ejd.459.1604508305184;
-        Wed, 04 Nov 2020 08:45:05 -0800 (PST)
+        bh=bfcTcfxBUXUo/rquci5lcju84a9v0kx0TTqHn8xfiB8=;
+        b=bx+wfvDtKYA+oDj4JdSqP4pQhFoYDAKsKmF+rK9UkvDhXdG4dt1NIV/+pJXG4cfzs7
+         rzPy3QwDv696g99+WMWbNfCBpcTQD24eX80lHMtdKTGEXuhvcQiwLLV932rpEBxGflPs
+         KYdPUCpKrv+/GLIieRuELlMfOVv7Sgp7dPTxxr1qrJYdboHqFRvGpeViYYTPt5sflSIA
+         g19lMsx6MHjjwdQ9pSpl/ncpxwSVo1+NAnt24eijh1Vt+Gr+/8tEUgcskupxgDAOJgw6
+         wSxzV8B8oLWEjmEJSrUAekoFf6QysgyCLXEdRi021P75QVnKpYeUKL9JLzpnuIbe63Yo
+         PTCw==
+X-Gm-Message-State: AOAM530SR6JvPMe+Zns02asbqGt09bX7LCYISkYno0t/tjp3Zzr1l6Za
+        n5eRRHtvCRhK5pDnea/54PSBbw==
+X-Google-Smtp-Source: ABdhPJz53x2Zvuwsp9K7HsSE1V+e+abzlGxbGGGOJVEgukWWcqaDDKwNcxeIlX6WoRCrc36q/rAz1Q==
+X-Received: by 2002:a17:906:1955:: with SMTP id b21mr26779304eje.42.1604508306201;
+        Wed, 04 Nov 2020 08:45:06 -0800 (PST)
 Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id g20sm1283551ejz.88.2020.11.04.08.45.04
+        by smtp.gmail.com with ESMTPSA id g20sm1283551ejz.88.2020.11.04.08.45.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 08:45:04 -0800 (PST)
+        Wed, 04 Nov 2020 08:45:05 -0800 (PST)
 From:   KP Singh <kpsingh@chromium.org>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf-next v3 7/9] bpf: Update selftests for local_storage to use vmlinux.h
-Date:   Wed,  4 Nov 2020 17:44:51 +0100
-Message-Id: <20201104164453.74390-8-kpsingh@chromium.org>
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next v3 8/9] bpf: Add tests for task_local_storage
+Date:   Wed,  4 Nov 2020 17:44:52 +0100
+Message-Id: <20201104164453.74390-9-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 In-Reply-To: <20201104164453.74390-1-kpsingh@chromium.org>
 References: <20201104164453.74390-1-kpsingh@chromium.org>
@@ -66,54 +65,386 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-With the fixing of BTF pruning of embedded types being fixed, the test
-can be simplified to use vmlinux.h
+The test exercises the syscall based map operations by creating a pidfd
+for the current process.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+For verifying kernel / LSM functionality, the test implements a simple
+MAC policy which denies an executable from unlinking itself. The LSM
+program bprm_committed_creds sets a task_local_storage with a pointer to
+the inode. This is then used to detect if the task is trying to unlink
+itself in the inode_unlink LSM hook.
+
+The test copies /bin/rm to /tmp and executes it in a child thread with
+the intention of deleting itself. A successful test should prevent the
+the running executable from deleting itself.
+
+The bpf programs are also updated to call bpf_spin_{lock, unlock} to
+trigger the verfier checks for spin locks.
+
+The temporary file is cleaned up later in the test.
+
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- .../selftests/bpf/progs/local_storage.c       | 20 +------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+ .../bpf/prog_tests/test_local_storage.c       | 167 ++++++++++++++++--
+ .../selftests/bpf/progs/local_storage.c       |  61 ++++++-
+ 2 files changed, 210 insertions(+), 18 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-index 09529e33be98..ef3822bc7542 100644
---- a/tools/testing/selftests/bpf/progs/local_storage.c
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -4,9 +4,8 @@
-  * Copyright 2020 Google LLC.
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+index 91cd6f357246..feba23f8848b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+@@ -4,30 +4,149 @@
+  * Copyright (C) 2020 Google LLC.
   */
  
-+#include "vmlinux.h"
- #include <errno.h>
--#include <linux/bpf.h>
--#include <stdbool.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
++#define _GNU_SOURCE
++
++#include <asm-generic/errno-base.h>
++#include <unistd.h>
++#include <sys/stat.h>
+ #include <test_progs.h>
+ #include <linux/limits.h>
  
-@@ -36,23 +35,6 @@ struct {
- 	__type(value, struct dummy_storage);
+ #include "local_storage.skel.h"
+ #include "network_helpers.h"
+ 
+-int create_and_unlink_file(void)
++static inline int sys_pidfd_open(pid_t pid, unsigned int flags)
++{
++	return syscall(__NR_pidfd_open, pid, flags);
++}
++
++unsigned int duration;
++
++#define TEST_STORAGE_VALUE 0xbeefdead
++
++struct storage {
++	void *inode;
++	unsigned int value;
++	/* Lock ensures that spin locked versions of local stoage operations
++	 * also work, most operations in this tests are still single threaded
++	 */
++	struct bpf_spin_lock lock;
++};
++
++/* Copies an rm binary to a temp file. dest is a mkstemp template */
++int copy_rm(char *dest)
+ {
+-	char fname[PATH_MAX] = "/tmp/fileXXXXXX";
+-	int fd;
++	int ret, fd_in, fd_out;
++	struct stat stat;
+ 
+-	fd = mkstemp(fname);
+-	if (fd < 0)
+-		return fd;
++	fd_in = open("/bin/rm", O_RDONLY);
++	if (fd_in < 0)
++		return fd_in;
+ 
+-	close(fd);
+-	unlink(fname);
++	fd_out = mkstemp(dest);
++	if (fd_out < 0)
++		return fd_out;
++
++	ret = fstat(fd_in, &stat);
++	if (ret == -1)
++		return errno;
++
++	ret = copy_file_range(fd_in, NULL, fd_out, NULL, stat.st_size, 0);
++	if (ret == -1)
++		return errno;
++
++	/* Set executable permission on the copied file */
++	ret = chmod(dest, 0100);
++	if (ret == -1)
++		return errno;
++
++	close(fd_in);
++	close(fd_out);
+ 	return 0;
+ }
+ 
++/* Fork and exec the provided rm binary and return the exit code of the
++ * forked process and its pid.
++ */
++int run_self_unlink(int *monitored_pid, const char *rm_path)
++{
++	int child_pid, child_status, ret;
++	int null_fd;
++
++	child_pid = fork();
++	if (child_pid == 0) {
++		null_fd = open("/dev/null", O_WRONLY);
++		dup2(null_fd, STDOUT_FILENO);
++		dup2(null_fd, STDERR_FILENO);
++		close(null_fd);
++
++		*monitored_pid = getpid();
++		/* Use the copied /usr/bin/rm to delete itself
++		 * /tmp/copy_of_rm /tmp/copy_of_rm.
++		 */
++		ret = execlp(rm_path, rm_path, rm_path, NULL);
++		if (ret)
++			exit(errno);
++	} else if (child_pid > 0) {
++		waitpid(child_pid, &child_status, 0);
++		return WEXITSTATUS(child_status);
++	}
++
++	return -EINVAL;
++}
++
++bool check_syscall_operations(int map_fd, int obj_fd)
++{
++	struct storage val = { .value = TEST_STORAGE_VALUE, .lock = { 0 } },
++		       lookup_val = { .value = 0, .lock = { 0 } };
++	int err;
++
++	/* Looking up an existing element should fail initially */
++	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val,
++					BPF_F_LOCK);
++	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
++		  "err:%d errno:%d\n", err, errno))
++		return false;
++
++	/* Create a new element */
++	err = bpf_map_update_elem(map_fd, &obj_fd, &val,
++				  BPF_NOEXIST | BPF_F_LOCK);
++	if (CHECK(err < 0, "bpf_map_update_elem", "err:%d errno:%d\n", err,
++		  errno))
++		return false;
++
++	/* Lookup the newly created element */
++	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val,
++					BPF_F_LOCK);
++	if (CHECK(err < 0, "bpf_map_lookup_elem", "err:%d errno:%d", err,
++		  errno))
++		return false;
++
++	/* Check the value of the newly created element */
++	if (CHECK(lookup_val.value != val.value, "bpf_map_lookup_elem",
++		  "value got = %x errno:%d", lookup_val.value, val.value))
++		return false;
++
++	err = bpf_map_delete_elem(map_fd, &obj_fd);
++	if (CHECK(err, "bpf_map_delete_elem()", "err:%d errno:%d\n", err,
++		  errno))
++		return false;
++
++	/* The lookup should fail, now that the element has been deleted */
++	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val,
++					BPF_F_LOCK);
++	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
++		  "err:%d errno:%d\n", err, errno))
++		return false;
++
++	return true;
++}
++
+ void test_test_local_storage(void)
+ {
++	char tmp_exec_path[PATH_MAX] = "/tmp/copy_of_rmXXXXXX";
++	int err, serv_sk = -1, task_fd = -1;
+ 	struct local_storage *skel = NULL;
+-	int err, duration = 0, serv_sk = -1;
+ 
+ 	skel = local_storage__open_and_load();
+ 	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
+@@ -37,10 +156,35 @@ void test_test_local_storage(void)
+ 	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
+ 		goto close_prog;
+ 
++	task_fd = sys_pidfd_open(getpid(), 0);
++	if (CHECK(task_fd < 0, "pidfd_open",
++		  "failed to get pidfd err:%d, errno:%d", task_fd, errno))
++		goto close_prog;
++
++	if (!check_syscall_operations(bpf_map__fd(skel->maps.task_storage_map),
++				      task_fd))
++		goto close_prog;
++
++	err = copy_rm(tmp_exec_path);
++	if (CHECK(err < 0, "copy_rm", "err %d errno %d\n", err, errno))
++		goto close_prog;
++
++	/* Sets skel->bss->monitored_pid to the pid of the forked child
++	 * forks a child process that executes tmp_exec_path and tries to
++	 * unlink its executable. This operation should be denied by the loaded
++	 * LSM program.
++	 */
++	err = run_self_unlink(&skel->bss->monitored_pid, tmp_exec_path);
++	if (CHECK(err != EPERM, "run_self_unlink", "err %d want EPERM\n", err))
++		goto close_prog;
++
++	/* Set the process being monitored to be the current process */
+ 	skel->bss->monitored_pid = getpid();
+ 
+-	err = create_and_unlink_file();
+-	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
++	/* Remove the temporary created executable */
++	err = unlink(tmp_exec_path);
++	if (CHECK(err != 0, "unlink", "unable to unlink %s: %d", tmp_exec_path,
++		  errno))
+ 		goto close_prog;
+ 
+ 	CHECK(skel->data->inode_storage_result != 0, "inode_storage_result",
+@@ -56,5 +200,6 @@ void test_test_local_storage(void)
+ 	close(serv_sk);
+ 
+ close_prog:
++	close(task_fd);
+ 	local_storage__destroy(skel);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
+index ef3822bc7542..3e3de130f28f 100644
+--- a/tools/testing/selftests/bpf/progs/local_storage.c
++++ b/tools/testing/selftests/bpf/progs/local_storage.c
+@@ -17,41 +17,64 @@ int monitored_pid = 0;
+ int inode_storage_result = -1;
+ int sk_storage_result = -1;
+ 
+-struct dummy_storage {
++struct local_storage {
++	struct inode *exec_inode;
+ 	__u32 value;
++	struct bpf_spin_lock lock;
+ };
+ 
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC);
+ 	__type(key, int);
+-	__type(value, struct dummy_storage);
++	__type(value, struct local_storage);
+ } inode_storage_map SEC(".maps");
+ 
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
+ 	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
+ 	__type(key, int);
+-	__type(value, struct dummy_storage);
++	__type(value, struct local_storage);
  } sk_storage_map SEC(".maps");
  
--/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
-- */
--struct sock {} __attribute__((preserve_access_index));
--struct sockaddr {} __attribute__((preserve_access_index));
--struct socket {
--	struct sock *sk;
--} __attribute__((preserve_access_index));
--
--struct inode {} __attribute__((preserve_access_index));
--struct dentry {
--	struct inode *d_inode;
--} __attribute__((preserve_access_index));
--struct file {
--	struct inode *f_inode;
--} __attribute__((preserve_access_index));
--
--
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct local_storage);
++} task_storage_map SEC(".maps");
++
  SEC("lsm/inode_unlink")
  int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
  {
+ 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
+-	struct dummy_storage *storage;
++	struct local_storage *storage;
++	bool is_self_unlink;
+ 	int err;
+ 
+ 	if (pid != monitored_pid)
+ 		return 0;
+ 
++	storage = bpf_task_storage_get(&task_storage_map,
++				       bpf_get_current_task_btf(), 0, 0);
++	if (storage) {
++		/* Don't let an executable delete itself */
++		bpf_spin_lock(&storage->lock);
++		is_self_unlink = storage->exec_inode == victim->d_inode;
++		bpf_spin_unlock(&storage->lock);
++		if (is_self_unlink)
++			return -EPERM;
++	}
++
+ 	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
+ 					BPF_LOCAL_STORAGE_GET_F_CREATE);
+ 	if (!storage)
+ 		return 0;
+ 
++	bpf_spin_lock(&storage->lock);
+ 	if (storage->value != DUMMY_STORAGE_VALUE)
+ 		inode_storage_result = -1;
++	bpf_spin_unlock(&storage->lock);
+ 
+ 	err = bpf_inode_storage_delete(&inode_storage_map, victim->d_inode);
+ 	if (!err)
+@@ -65,7 +88,7 @@ int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
+ 	     int addrlen)
+ {
+ 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
+-	struct dummy_storage *storage;
++	struct local_storage *storage;
+ 	int err;
+ 
+ 	if (pid != monitored_pid)
+@@ -76,8 +99,10 @@ int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
+ 	if (!storage)
+ 		return 0;
+ 
++	bpf_spin_lock(&storage->lock);
+ 	if (storage->value != DUMMY_STORAGE_VALUE)
+ 		sk_storage_result = -1;
++	bpf_spin_unlock(&storage->lock);
+ 
+ 	err = bpf_sk_storage_delete(&sk_storage_map, sock->sk);
+ 	if (!err)
+@@ -91,7 +116,7 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
+ 	     int protocol, int kern)
+ {
+ 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
+-	struct dummy_storage *storage;
++	struct local_storage *storage;
+ 
+ 	if (pid != monitored_pid)
+ 		return 0;
+@@ -101,7 +126,9 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
+ 	if (!storage)
+ 		return 0;
+ 
++	bpf_spin_lock(&storage->lock);
+ 	storage->value = DUMMY_STORAGE_VALUE;
++	bpf_spin_unlock(&storage->lock);
+ 
+ 	return 0;
+ }
+@@ -110,7 +137,7 @@ SEC("lsm/file_open")
+ int BPF_PROG(file_open, struct file *file)
+ {
+ 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
+-	struct dummy_storage *storage;
++	struct local_storage *storage;
+ 
+ 	if (pid != monitored_pid)
+ 		return 0;
+@@ -123,6 +150,26 @@ int BPF_PROG(file_open, struct file *file)
+ 	if (!storage)
+ 		return 0;
+ 
++	bpf_spin_lock(&storage->lock);
+ 	storage->value = DUMMY_STORAGE_VALUE;
++	bpf_spin_unlock(&storage->lock);
+ 	return 0;
+ }
++
++/* This uses the local storage to remember the inode of the binary that a
++ * process was originally executing.
++ */
++SEC("lsm/bprm_committed_creds")
++void BPF_PROG(exec, struct linux_binprm *bprm)
++{
++	struct local_storage *storage;
++
++	storage = bpf_task_storage_get(&task_storage_map,
++				       bpf_get_current_task_btf(), 0,
++				       BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (storage) {
++		bpf_spin_lock(&storage->lock);
++		storage->exec_inode = bprm->file->f_inode;
++		bpf_spin_unlock(&storage->lock);
++	}
++}
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
