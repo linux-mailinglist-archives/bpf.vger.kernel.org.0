@@ -2,132 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE652A5CA5
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 03:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E401E2A5CB2
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 03:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730431AbgKDCRt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Nov 2020 21:17:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32385 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730581AbgKDCRs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 21:17:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604456266;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YzFdOT4sSy+gtRGqNJYIbR08zdA8+yJn9WFrFMBKz9Y=;
-        b=RXn5MQ5k3taks6nrDmfoB4i9MAokio1oVF2UFwzKNlUCSiQZbaBi2w+M0M36L98Htg1pCj
-        Jpvxe+zOBXjY0lqzpT2kmcNhVaOcIaDh5CZMvrZyQkEZmxaX9NWFucYfIUiDI9VlHvLds3
-        9p+8mOheVjWWd82y7Ezhgaxkdwy7+yU=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-570-znOpK7WMMzO5pASbaIdLog-1; Tue, 03 Nov 2020 21:17:44 -0500
-X-MC-Unique: znOpK7WMMzO5pASbaIdLog-1
-Received: by mail-pg1-f198.google.com with SMTP id t1so12596604pgo.23
-        for <bpf@vger.kernel.org>; Tue, 03 Nov 2020 18:17:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YzFdOT4sSy+gtRGqNJYIbR08zdA8+yJn9WFrFMBKz9Y=;
-        b=KAPtJivfgtw7drNufBsuRq77Yt/TElF27akDGlFnbvvlGA9w1Wf/RoAWUVYs+N9NSr
-         6GOXzveKIg0Fx/4iwqRt9qmYVZeweR/gttBzloN2FRn6drWnB9N2xBvfrPRalEGUePZX
-         qdOpmMw04EPiiy6WGquyhlmdCdFrQa0KtijU6oHQ6H4IqtPErRAqur9akbDEg8S6FCXd
-         QxU83GWLLobZSBFD7bDo/h7J9NM1MVPdZS/SlUHQe/YajD53HMPie5SRTtfIZUh+76sO
-         KYwmzX27mGT3LCSU6m4ztf4e6ugO59rto4DIVJlRLnZpt3drgH+GlGXf5s/A8bWTCcT+
-         XBPg==
-X-Gm-Message-State: AOAM530KBw1c78dKhUTSCab8G4h5gb/4nIb0aJK8hFgMeN3fjJ8TDacm
-        FXTCCph24HPvPng1tmgjYjWlSqjCIBj6WwvtPLxnxE9LTn4WgNCdp/4UzOVednRqQhxppKNC7Qy
-        C5aLrJGc2L20=
-X-Received: by 2002:a17:90b:f85:: with SMTP id ft5mr2258891pjb.86.1604456263725;
-        Tue, 03 Nov 2020 18:17:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxs8Oa/blLWguavogwFehe51SmCSeyMC8revx+N56HvetA+wUvqzMbck15mQ3ugMhG+tEAbMg==
-X-Received: by 2002:a17:90b:f85:: with SMTP id ft5mr2258869pjb.86.1604456263431;
-        Tue, 03 Nov 2020 18:17:43 -0800 (PST)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id n1sm275586pgl.31.2020.11.03.18.17.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 18:17:42 -0800 (PST)
-Date:   Wed, 4 Nov 2020 10:17:30 +0800
-From:   Hangbin Liu <haliu@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-Message-ID: <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
- <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
- <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
- <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
- <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
- <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
- <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+        id S1730216AbgKDCaq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Nov 2020 21:30:46 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:60075 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729188AbgKDCap (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 3 Nov 2020 21:30:45 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 64B6B5C00CC;
+        Tue,  3 Nov 2020 21:30:44 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 03 Nov 2020 21:30:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=WE7yAH2aWA3fpPsJ2XJxmxiCEv
+        3IiFflvFYkvVNFDuQ=; b=H4Wk1mVfzFJCSyX9lNHb20rXl9RDucaXdEQwfD9toY
+        K56XkJANQhatj1b0723ffSKBoWmz+FsmPSDLtAUjnyWx0Yq45rzoH4gLZlirmdnk
+        gx2CBlux45P0XiIQt20worGPYPyHDjtPDNn275e7EJ8G+5c0oa9xISXuNkOdVhKn
+        E50fD52uQTEDzqr546PntIiCkn50wcJZiK+vl39lHVKVbi3eEqTcPrlBmD3hp2i4
+        Mr3wtDwleuxyDcNVgav1rcmDe4f9zMo6Gu5HjnrUmHkJiMrpfxdErpV1tUx8tLDZ
+        937YLNgxJg6EeQtNhv7LdGu5OfgDQV3kTH0E8z+UywkA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WE7yAH2aWA3fpPsJ2
+        XJxmxiCEv3IiFflvFYkvVNFDuQ=; b=Rb7WTGEEavUFi1ld6gc9+wCoTe+pPrZKg
+        jPKgaJNW5m/C1/RSM+jrRT/xdCJQ+Q7cpzDYNteaoYfE+Us1fN8HRaNVAMgsxUrD
+        hxQGhWSaFA6eyyklm0PA8gd+LGPKcSw7G3DvQVL3g3uasB2z80FOLs/JiJPmB7bw
+        1f13/lVDP20Fnk6DulUl8qdho5QvYmGlhdEJ/pHs7ZU5xu7X28zbpbBq3jvkRSnu
+        2ZEqTHv1QPAdxeVXWpm/7nVeSQq3XbMvdZ9vRIj80kvgXxC8BbSaQxpe7iGiETq+
+        9g+lywL7L0HPuWFVYFD/j8pHJwp99tqfTQsclMoeAbT2fKLViehrg==
+X-ME-Sender: <xms:UxKiX1r8s8NvGSWgtdgteEil4xsUnV-zKQJvRxIuwXxx8b5WMNDHJQ>
+    <xme:UxKiX3pqSf8KYK5QrS5Ri09g1LA5xb5s3sAu3N3w1PyYDG3qfzlsu6Bp-SsNK_sYQ
+    FQkQ7MTxGJdXPzVqA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtgedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
+    effeeivdefheeiveevjeduieeigfetieevieffffenucfkphepieelrddukedurddutdeh
+    rdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:UxKiXyNKxJNTe52tze373PLkoVhd9MsdjU7yatjbH8ZsaLyS_yFxNQ>
+    <xmx:UxKiXw5vVjzMHrSaSHZlCYlVSnrNAOWY1JU9sIhgV12aUczQq48l0g>
+    <xmx:UxKiX06hvxn9YXPm3YD3G5mWcgklw3zhom1y0IehvtU7BeJpJ9o-OQ>
+    <xmx:VBKiX0FK9NVJQHc5qrgMFwxdbRSC-jCmERmvZuKHfIFq4PTmcV1sVQ>
+Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1C67B3064687;
+        Tue,  3 Nov 2020 21:30:43 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
+Subject: [PATCH bpf-next] lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
+Date:   Tue,  3 Nov 2020 18:29:43 -0800
+Message-Id: <eb78270e61e4d2e8ece047430d8397e000ef8569.1604456921.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 02:55:54PM -0800, Alexei Starovoitov wrote:
-> > The scope of bpf in iproute2 is tiny - a few tc modules (and VRF but it
-> > does not need libbpf) which is a small subset of the functionality and
-> > commands within the package.
-> 
-> When Hangbin sent this patch set I got excited that finally tc command
-> will start working with the latest bpf elf files.
-> Currently "tc" supports 4 year old files which caused plenty of pain to bpf users.
-> I got excited, but now I've realized that this patch set will make it worse.
-> The bpf support in "tc" command instead of being obviously old and obsolete
-> will be sort-of working with unpredictable delay between released kernel
-> and released iproute2 version. The iproute2 release that suppose to match kernel
-> release will be meaningless.
-> More so, the upgrade of shared libbpf.so can make older iproute2/tc to do 
-> something new and unpredictable.
-> The user experience will be awful. Not only the users won't know
-> what to expect out of 'tc' command they won't have a way to debug it.
-> All of it because iproute2 build will take system libbpf and link it
-> as shared library by default.
-> So I think iproute2 must not use libbpf. If I could remove bpf support
-> from iproute2 I would do so as well.
-> The current state of iproute2 is hurting bpf ecosystem and proposed
-> libbpf+iproute2 integration will make it worse.
+do_strncpy_from_user() may copy some extra bytes after the NUL
+terminator into the destination buffer. This usually does not matter for
+normal string operations. However, when BPF programs key BPF maps with
+strings, this matters a lot.
 
-Hi Guys,
+A BPF program may read strings from user memory by calling the
+bpf_probe_read_user_str() helper which eventually calls
+do_strncpy_from_user(). The program can then key a map with the
+resulting string. BPF map keys are fixed-width and string-agnostic,
+meaning that map keys are treated as a set of bytes.
 
-Please take it easy. IMHO, it always very hard to make a perfect solution.
-From development side, it's easier and could get latest features by using
-libbpf as submodule. But we need to take care of users, backward
-compatibility, distros policy etc.
+The issue is when do_strncpy_from_user() overcopies bytes after the NUL
+terminator, it can result in seemingly identical strings occupying
+multiple slots in a BPF map. This behavior is subtle and totally
+unexpected by the user.
 
-I like using iproute2 to load bpf objs. But it's not standardized and too old
-to load the new BTF defined objs. I think all of us like to improve it by
-using libbpf. But users and distros are slowly. Some user are still using
-`ifconfig`. Distros have policies to link the shared .so, etc. We have to
-compromise on something.
+This commit uses the proper word-at-a-time APIs to avoid overcopying.
 
-Our purpose is to push the user to use new features. As this patchset
-does, push users to try libbpf instead of legacy code. But this need time.
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ lib/strncpy_from_user.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Sorry if my word make you feel confused. I'm not a native speaker, but I hope
-we could find a solution that all(we, users, distros) could accept instead of
-break/give up.
-
-Thanks
-Hangbin
+diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
+index e6d5fcc2cdf3..d084189eb05c 100644
+--- a/lib/strncpy_from_user.c
++++ b/lib/strncpy_from_user.c
+@@ -35,17 +35,22 @@ static inline long do_strncpy_from_user(char *dst, const char __user *src,
+ 		goto byte_at_a_time;
+ 
+ 	while (max >= sizeof(unsigned long)) {
+-		unsigned long c, data;
++		unsigned long c, data, mask, *out;
+ 
+ 		/* Fall back to byte-at-a-time if we get a page fault */
+ 		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time);
+ 
+-		*(unsigned long *)(dst+res) = c;
+ 		if (has_zero(c, &data, &constants)) {
+ 			data = prep_zero_mask(c, data, &constants);
+ 			data = create_zero_mask(data);
++			mask = zero_bytemask(data);
++			out = (unsigned long *)(dst+res);
++			*out = (*out & ~mask) | (c & mask);
+ 			return res + find_zero(data);
++		} else  {
++			*(unsigned long *)(dst+res) = c;
+ 		}
++
+ 		res += sizeof(unsigned long);
+ 		max -= sizeof(unsigned long);
+ 	}
+-- 
+2.28.0
 
