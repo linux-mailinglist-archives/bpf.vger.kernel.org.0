@@ -2,80 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917332A716F
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 00:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058912A71D4
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 00:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732560AbgKDXWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 18:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730888AbgKDXWc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:22:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2834FC0613CF;
-        Wed,  4 Nov 2020 15:22:32 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1604532150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tBjbPwkoZzQZHjlBJZXMKZQC7+j9Z1jjpOPhzPzBOz4=;
-        b=aEXqHgDKSYI/jSf7QUGF8FwFdVyFO2ODKDZwNvh3sSqfRarkbFeYePmaC3uCmY1cGhFGTK
-        nXN3f4O4TtWODbhWMDOycrjnaEeqisXqBtYFmUnTJN/pVbVfoQodZpa7jqUkwonW1KWQLV
-        X1Pl2Nlwob25n/tYJ4Q3UA+GtNpgXda4scAJWa77Za7d+zbg9Gm+8z4isOK6fooSILehA2
-        u830wn9MvJRLyy4G2nyk0m6ke+iGJvf8QBjadmF0Dhk8pfYF1i8mFAHm7phZzU6eNgsDKT
-        CTpHZkplCEZH2658win+A44REEu69DStTYxfTDGiO68QqAmVPF8xzO5ROI5gCg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1604532150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tBjbPwkoZzQZHjlBJZXMKZQC7+j9Z1jjpOPhzPzBOz4=;
-        b=F3Okx9gCgBZcaKEu8c7K2GEmaOdNF+i1KUunvoTSdRmVZu+DHO7NbBNU7ECja+bQTLrQ2L
-        ALe06HvysKaaPGDQ==
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: RFC: default to spec_store_bypass_disable=prctl spectre_v2_user=prctl
-In-Reply-To: <20201104215702.GG24993@redhat.com>
-References: <20201104215702.GG24993@redhat.com>
-Date:   Thu, 05 Nov 2020 00:22:29 +0100
-Message-ID: <87eel8lnbe.fsf@nanos.tec.linutronix.de>
+        id S1732604AbgKDXdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 18:33:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731539AbgKDXdW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 18:33:22 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AEA22074B;
+        Wed,  4 Nov 2020 23:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604532802;
+        bh=pLgzlZcEoMWv2J4Mk1Xd7jOAN5YoKXgl49GtlZW2QNo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JmQgCSoSsXOhiz82qHrpYSpMT86LMGk98P+q/NWFve+aj9dPapUGXW2jZtVpjbCl/
+         lBnZXOwQS4ULyHLXRG0cdVMt+bbLtxZ5Ttcj9SIMxFSEEBYU/jrGwVB/hTcaLzotjg
+         +b2z5paNfpiUwSq5ORfkMRu/7q+Vm9ROOGUecoZE=
+Date:   Wed, 4 Nov 2020 15:33:20 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, anthony.l.nguyen@intel.com,
+        maciej.fijalkowski@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH bpf-next 1/6] i40e: introduce lazy Tx completions for
+ AF_XDP zero-copy
+Message-ID: <20201104153320.66cecba8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1604498942-24274-2-git-send-email-magnus.karlsson@gmail.com>
+References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
+        <1604498942-24274-2-git-send-email-magnus.karlsson@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 04 2020 at 16:57, Andrea Arcangeli wrote:
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 5 ++---
+On Wed,  4 Nov 2020 15:08:57 +0100 Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Introduce lazy Tx completions when a queue is used for AF_XDP
+> zero-copy. In the current design, each time we get into the NAPI poll
+> loop we try to complete as many Tx packets as possible from the
+> NIC. This is performed by reading the head pointer register in the NIC
+> that tells us how many packets have been completed. Reading this
+> register is expensive as it is across PCIe, so let us try to limit the
+> number of times it is read by only completing Tx packets to user-space
+> when the number of available descriptors in the Tx HW ring is below
+> some threshold. This will decrease the number of reads issued to the
+> NIC and improves performance with 1.5% - 2% for the l2fwd xdpsock
+> microbenchmark.
+> 
+> The threshold is set to the minimum possible size that the HW ring can
+> have. This so that we do not run into a scenario where the threshold
+> is higher than the configured number of descriptors in the HW ring.
+> 
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Is Documentation/admin-guide/hw-vuln/* still correct? If not, please
-fix that as well.
+I feel like this needs a big fat warning somewhere.
 
-Aside of that please send patches in the proper format so they do not
-need manual interaction when picking them up.
-
-Thanks,
-
-        tglx
+It's perfectly fine to never complete TCP packets, but AF_XDP could be
+used to implement protocols in user space. What if someone wants to
+implement something like TSQ?
