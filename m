@@ -2,151 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845B32A64B4
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 13:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED1D2A64E1
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 14:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbgKDMx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 07:53:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35543 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729630AbgKDMx6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 07:53:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604494436;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U3GfiVmojJ/giml1Tqa4nmxIiU4dmaRVwJTGJun6v7A=;
-        b=PFSbWZa3A5oO8VtT9Q1PyTL+xQfw92iwRzB899jCCRgR5WNcVozrFZuBlF6wbilBF21h/J
-        da1VWbjtsudaLCcPrUprKcmvxkSK2kPHnAgKiZ/F2Q4FMcnQT6QztFipdO8ApfVhXqYBMT
-        gaXwudGx6f554qtlRyE/8teWsWjx00U=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-HcbWaVrwOque6Ud0PAJtsw-1; Wed, 04 Nov 2020 07:53:54 -0500
-X-MC-Unique: HcbWaVrwOque6Ud0PAJtsw-1
-Received: by mail-wr1-f72.google.com with SMTP id f11so9203974wro.15
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 04:53:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U3GfiVmojJ/giml1Tqa4nmxIiU4dmaRVwJTGJun6v7A=;
-        b=LuoApdnBMGcdtm7i0b1xcv8O7eMPsz+8OuINMdz7k8FYRJum5kIpB5Wl//3n9YxMMy
-         fpBFMmwHecJ3mTSzLir5RR1uaaOtn2G6A7C6sO7eGjGvPqPKUvs5LR+jKY2mEQqG1eGM
-         eSXmmegVvR8c98GbYzOa+RoHsgbJS51TFGDdFO9vH5F31LcGeSsqiA5QBDGm4u4PYuZL
-         6U5/IU9vfSvPRk2oh4BU7l3hO57ZWt11LVtedTR8C8R6ubhRUXuidFB71383Nhot4yV/
-         Y4oNpSrzhRC7W9ztrG2wC/r6YzDkaRXt8WRy0axUWv9VyE4k2IN7OMokNAh/VhoJ2iXp
-         YmRw==
-X-Gm-Message-State: AOAM531vNi8Vz+bsK0pGWBO+qgLIw0fSfi6J7xlqXdz6KOzD2OShihjB
-        o6UpC8eWBHueqkEu2QklCheU8dgiJLZWIxaL8pghnMwILBj4g9fJuC6zNtw0GMQOSH7casnq+Bd
-        CD5YuPTdwsBDn
-X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr4373160wmt.26.1604494433175;
-        Wed, 04 Nov 2020 04:53:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwqhue0FYtSpv7hREqFpU9VyHO+M/sHtBrZN1EZbG/t1LwNg38tJ9Yv3FhYG32ejNKMr9khhA==
-X-Received: by 2002:a1c:2d8f:: with SMTP id t137mr4373147wmt.26.1604494432988;
-        Wed, 04 Nov 2020 04:53:52 -0800 (PST)
-Received: from localhost ([151.66.8.153])
-        by smtp.gmail.com with ESMTPSA id a128sm2080408wmf.5.2020.11.04.04.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 04:53:52 -0800 (PST)
-Date:   Wed, 4 Nov 2020 13:53:48 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ilias.apalodimas@linaro.org, Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>
-Subject: Re: [PATCH v3 net-next 1/5] net: xdp: introduce bulking for xdp tx
- return path
-Message-ID: <20201104125348.GB11993@lore-desk>
-References: <cover.1604484917.git.lorenzo@kernel.org>
- <5ef0c2886518d8ae1577c8b60ea6ef55d031673e.1604484917.git.lorenzo@kernel.org>
- <20201104121158.597fa64d@carbon>
- <20201104111902.GA11993@lore-desk>
- <20201104132834.07fc3dfd@carbon>
+        id S1728999AbgKDNNG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 08:13:06 -0500
+Received: from www62.your-server.de ([213.133.104.62]:48702 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726350AbgKDNNG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 08:13:06 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kaIam-0004qo-Vb; Wed, 04 Nov 2020 14:12:49 +0100
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kaIam-000CYP-LV; Wed, 04 Nov 2020 14:12:48 +0100
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>
+Cc:     David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+ <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+ <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+ <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+ <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+ <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+ <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+ <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+ <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+ <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net> <87zh3xv04o.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5de7eb11-010b-e66e-c72d-07ece638c25e@iogearbox.net>
+Date:   Wed, 4 Nov 2020 14:12:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="QTprm0S8XgL7H0Dt"
-Content-Disposition: inline
-In-Reply-To: <20201104132834.07fc3dfd@carbon>
+In-Reply-To: <87zh3xv04o.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25977/Tue Nov  3 14:18:27 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 11/4/20 12:20 PM, Toke Høiland-Jørgensen wrote:
+> Daniel Borkmann <daniel@iogearbox.net> writes:
+> 
+>> Back in the days when developing lib/bpf.c, it was explicitly done as
+>> built-in for iproute2 so that it doesn't take years for users to
+>> actually get to the point where they can realistically make use of it.
+>> If we were to extend the internal lib/bpf.c to similar feature state
+>> as libbpf today, how is that different in the bigger picture compared
+>> to sync or submodule... so far noone complained about lib/bpf.c.
+> 
+> Except that this whole effort started because lib/bpf.c is slowly
+> bitrotting into oblivion? If all the tools are dynamically linked
+> against libbpf, that's only one package the distros have to keep
+> up-to-date instead of a whole list of tools. How does that make things
+> *worse*?
 
---QTprm0S8XgL7H0Dt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It sounds good in theory if that would all work out as expected, but reality
+differs unfortunately. Today on vast majority of distros you are able to use
+iproute2's BPF loader via lib/bpf.c given it's a fixed built-in, even if
+it's bitrotting for a while now in terms of features^BTF, but the base functionality
+that is in there can be used, and it is used in the wild today. If libbpf is
+dynamically linked to iproute2, then I - as a user - am left with continuing
+to assume that the current lib/bpf.c is the /only/ base that is really /guaranteed/
+to be available as a loader across distros, but iproute2 + libbpf may not be
+(it may be the case for RHEL but potentially not others). So from user PoV
+I might be sticking to the current lib/bpf.c that iproute2 ships instead of
+converting code over until even major distros catch up in maybe 2 years from now
+(that is in fact how long it took Canonical to get bpftool included, not kidding).
+If we would have done lib/bpf.c as a dynamic library back then, we wouldn't be
+where we are today since users might be able to start consuming BPF functionality
+just now, don't you agree? This was an explicit design choice back then for exactly
+this reason. If we extend lib/bpf.c or import libbpf one way or another then there
+is consistency across distros and users would be able to consume it in a predictable
+way starting from next major releases. And you could start making this assumption
+on all major distros in say, 3 months from now. The discussion is somehow focused
+on the PoV of /a/ distro which is all nice and good, but the ones consuming the
+loader shipping software /across/ distros are users writing BPF progs, all I'm
+trying to say is that the _user experience_ should be the focus of this discussion
+and right now we're trying hard making it rather painful for them to consume it.
 
-> On Wed, 4 Nov 2020 12:19:02 +0100
-> Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
->=20
-> > > On Wed,  4 Nov 2020 11:22:54 +0100
-> > > Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > >  =20
-> >=20
-> > [...]
-> >=20
-> > > > +/* XDP bulk APIs introduce a defer/flush mechanism to return
-> > > > + * pages belonging to the same xdp_mem_allocator object
-> > > > + * (identified via the mem.id field) in bulk to optimize
-> > > > + * I-cache and D-cache.
-> > > > + * The bulk queue size is set to 16 to be aligned to how
-> > > > + * XDP_REDIRECT bulking works. The bulk is flushed when =20
-> > >=20
-> > > If this is connected, then why have you not redefined DEV_MAP_BULK_SI=
-ZE?
-> > >=20
-> > > Cc. DPAA2 maintainers as they use this define in their drivers.
-> > > You want to make sure this driver is flexible enough for future chang=
-es.
-> > >=20
-> > > Like:
-> > >=20
-> > > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > > index 3814fb631d52..44440a36f96f 100644
-> > > --- a/include/net/xdp.h
-> > > +++ b/include/net/xdp.h
-> > > @@ -245,6 +245,6 @@ bool xdp_attachment_flags_ok(struct xdp_attachmen=
-t_info *info,
-> > >  void xdp_attachment_setup(struct xdp_attachment_info *info,
-> > >                           struct netdev_bpf *bpf);
-> > > =20
-> > > -#define DEV_MAP_BULK_SIZE 16
-> > > +#define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE =20
-> >=20
-> > my idea was to address it in a separated patch, but if you prefer I can=
- merge
-> > this change in v4
-
-sure, will do in v4.
-
-Regards,
-Lorenzo
-
->=20
-> Please merge in V4.  As this patch contains the explanation, and we
-> want to avoid too much churn (remember our colleagues need to backport
-> and review this).
->=20
-> --=20
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->=20
-
---QTprm0S8XgL7H0Dt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX6KkWQAKCRA6cBh0uS2t
-rJUnAP9J5wjqs75zYlgbQ24TkJx8NSzweAzGYMQBt1gMf5tQkQEAoz/fT9pUm+1D
-dTIddZzlYGfm0TUgPT/SDrOU91LYnQg=
-=MpCz
------END PGP SIGNATURE-----
-
---QTprm0S8XgL7H0Dt--
-
+Cheers,
+Daniel
