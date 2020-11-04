@@ -2,101 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF5C2A6384
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 12:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB0C2A63D1
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 13:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729737AbgKDLlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 06:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729630AbgKDLlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 06:41:05 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58DDC0613D3;
-        Wed,  4 Nov 2020 03:41:03 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id c20so17061459pfr.8;
-        Wed, 04 Nov 2020 03:41:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LrTKUro/EAfrSfquqr6fzY3elZ7+MZodt7l7Rb7VaMA=;
-        b=TA/upDzkSlqE8bbPerc9M1oYcPB/SCguB/fv6tsU0qNJEICokPJOWWbzUO1heqjx1X
-         3MJkKQbgC+mF0e9Skbu2tODntCXpim0YAGDgj8FN7sDDIYQ3LWENybyqXCZl/be+XIV7
-         WkLl+XHEOUOo5pQruyx0qVAlxfInjmoyHlqVQGeveukro3khLO1jYepKUOZHrwFZ9ajK
-         qadPobf/QXXP57jlIZ1IuZ5JjtLZc2rA7A6Suqtp3Kq9x2PAu07ziUDnyQuTlnoexYBH
-         aFgJjI+kgZNHMfPu8OpcuPuLOyBtB9ucJUa6Vc1pIoNedcqDe7XyKvzwxbAnHqPdVC/8
-         3d2A==
+        id S1728841AbgKDMBA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 07:01:00 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:36584 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728523AbgKDMBA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 07:01:00 -0500
+Received: by mail-wr1-f67.google.com with SMTP id x7so21774894wrl.3;
+        Wed, 04 Nov 2020 04:00:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LrTKUro/EAfrSfquqr6fzY3elZ7+MZodt7l7Rb7VaMA=;
-        b=gXzrw5l7wvDRlPFIygshd7oftKBYo3pjLMzFSgvRdP/Kd/+AIWv5BsuWtj2GY9cfvH
-         TtRT4rvAkVNmmcrxkIK3WoWWWY3Hu3WjhJ3LmyA3zbJckbKQarJryi4pRvH3Xq0NbQjg
-         E24fsDwwacaRwU0t0CUKx97Vv26fBRieT8m397lRWYKzl1cR8g0cLI6hI29LsUewI57r
-         6kki9Q/5+0BJZzoaKuS4cOH9mWgBkkaIxo7qTT6FJV8PDMH2ROBjjDRxtcRYPxBejZq/
-         yzJm8PF79kPku3HmbksQY7LGBzXqQ9D3E8cqxpk6KtccAduKI50aCZfhCLipuUgO6DwT
-         jcag==
-X-Gm-Message-State: AOAM533IEE09U06Ifvqfuk5QAR3ImE0oCXXZE1FP9b3F/AXlfQ12LFix
-        O/435oEcidkH/aTdWev8u4J/C6Tu1GbuU1GBlyw=
-X-Google-Smtp-Source: ABdhPJxXrmLrL+mP1OQCNUcSRgpIRR5lxJCHjx9kumQZ9Rb2jjUaKiD5ojjTiFRpWH3+G31Xb1/FBX1ZKkxWCv735h0=
-X-Received: by 2002:a63:f445:: with SMTP id p5mr20807325pgk.293.1604490063419;
- Wed, 04 Nov 2020 03:41:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QUSmpWIO++p+EaBmzWHWB9j11K6ZCt/BSPj+8TR1MOs=;
+        b=f79KrGMlxesFNUiOai4quZrkJvRhdOFnvzrETivqjHFMtCbXF+7sqSw5i0S2+YOJwJ
+         kCR6BxySGkumQ6dzoW5XcqE5iCWx3Q0ZcYE/36sUWSUs3tbm95Hi+udJDAcwgqZ0jFnV
+         aio1ogK+jqv9C0wn1dx6F4MHTI6zmwIjsLA3HPwj8h9mzpTs6UeQzr5wCAq/o+mJ2dc0
+         jU+wHxEw35yGmUy5ta0dGPKjsG+6kxFFJ8lVNgRMFJYgY3OaSY0F2CV3AhhzFv4PltPP
+         me6GDiwdgTAyDpl1jIjEA1+3Y7QQtBT8E2s+eyNS4hlrOFP1EgW2IQbUo/cRFVXQmHIA
+         rXyw==
+X-Gm-Message-State: AOAM532PAfKpeDsPVCZuYOcj3iwuPInKOZpdc5H7eHG7dMFErKqM2kjD
+        +ukalBdj3VL27kGyXsf8gNM=
+X-Google-Smtp-Source: ABdhPJyP8064AZcp00/CMnWH1Yf6wcBkvvv9giu/iKtPrEyY0N09EFUoBTXsieznUVpGwXIewZnkPQ==
+X-Received: by 2002:a5d:4148:: with SMTP id c8mr31429901wrq.261.1604491256613;
+        Wed, 04 Nov 2020 04:00:56 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t199sm1871437wmt.46.2020.11.04.04.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 04:00:56 -0800 (PST)
+Date:   Wed, 4 Nov 2020 12:00:54 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 05/12] net: xen-netback: xenbus: Demote nonconformant
+ kernel-doc headers
+Message-ID: <20201104120054.jaukbhblpooi5hwf@liuwe-devbox-debian-v2>
+References: <20201104090610.1446616-1-lee.jones@linaro.org>
+ <20201104090610.1446616-6-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
- <202010121556.1110776B83@keescook> <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
- <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
- <202010221520.44C5A7833E@keescook> <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
- <202010231945.90FA4A4AA@keescook> <CABqSeAQ4cCwiPuXEeaGdErMmLDCGxJ-RgweAbUqdrdm+XJXxeg@mail.gmail.com>
- <CABqSeATiV0sQvqpvCuqkOXNbjetY=1=6ry_SciMVmo63W9A88A@mail.gmail.com> <202011031612.6AA505157@keescook>
-In-Reply-To: <202011031612.6AA505157@keescook>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Wed, 4 Nov 2020 05:40:51 -0600
-Message-ID: <CABqSeASFkTFn8ix8-5D0vdZ_FR9bR1PpU3j5eQPYOMshK6FuNA@mail.gmail.com>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104090610.1446616-6-lee.jones@linaro.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 3, 2020 at 6:29 PM Kees Cook <keescook@chromium.org> wrote:
-> Yeah, this is very interesting. That there is anything measurably _slower_
-> with the cache is surprising. Though with only 4 runs, I wonder if it's
-> still noisy? What happens at 10 runs -- more importantly what is the
-> standard deviation?
+On Wed, Nov 04, 2020 at 09:06:03AM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'dev' not described in 'frontend_changed'
+>  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'frontend_state' not described in 'frontend_changed'
+>  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'dev' not described in 'netback_probe'
+>  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'id' not described in 'netback_probe'
+> 
+> Cc: Wei Liu <wei.liu@kernel.org>
 
-I could do that. it just takes such a long time. Each run takes about
-20 minutes so with 10 runs per environment, 3 environments (native + 2
-docker) per boot, and 4 boots (2 bootparam * 2 compile config), it's
-27 hours of compilation. I should probably script it at that point.
+If this is ever needed:
 
-> I assume this is from Indirect Branch Prediction Barrier (IBPB) and
-> Single Threaded Indirect Branch Prediction (STIBP) (which get enabled
-> for threads under seccomp by default).
->
-> Try booting with "spectre_v2_user=prctl"
-
-Hmm, to make sure, boot with just "spectre_v2_user=prctl" on the
-command line and test the performance of that?
-
-YiFei Zhu
+Acked-by: Wei Liu <wei.liu@kernel.org>
