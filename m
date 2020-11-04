@@ -2,145 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9BE2A6F5D
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 22:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C77B2A6F6E
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 22:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730810AbgKDVHg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 16:07:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729141AbgKDVHf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 16:07:35 -0500
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06DEC0613D3;
-        Wed,  4 Nov 2020 13:07:35 -0800 (PST)
-Received: by mail-il1-x143.google.com with SMTP id e16so6238924ile.0;
-        Wed, 04 Nov 2020 13:07:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xRTJTm16MzYFc6tnTNpETymG3CnUlFu2YFwP/lSugCA=;
-        b=D208ziDiiog9+MFdIphsHicrFFSO9yFaD3FtCzHShTVB1pHFcb/vV3JjjbejHOWzVS
-         JbLdsVbiBpK+XlxlJDnob5Q7v66NA0Fn9iMiRsxNeMhbskPNkH63MP64CVkRW25vIud8
-         9AfPjupPp4RDQzYJcgIsiTmZ0B91vCU8Gx1svLsrOAlmsDCCu8OaPwBX0utVLLpsmS60
-         uTDCXGkrH99sG2U6O8y6faJl5+J8B6s0GVgVgd6NQc6jMvqLZz+OXIK6gVKAhotm5mOi
-         ZjOLVS8fWZTAIp32rsbk2Hv9QO0KJP8iI7iJ/IM3/CLLo1f7bwv5WWI6WEXFIk303ZyE
-         Zl9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xRTJTm16MzYFc6tnTNpETymG3CnUlFu2YFwP/lSugCA=;
-        b=TXdck47TVykbMzOZZy2YioXWpb0tr/0lAIlsBfMgqAoDxlDdBSI0IxzWaakkrPvmr4
-         9mMM5TdLlFZX+dUJoHVs8xvmy8Kgq5aZCShqxU7F6HTeHwuJYVEQma6U/2jeLcOo0uzs
-         OwsSP4ozKwQSuAtK+X0NKhCyfrwgU3c5CQyMens0s/DEkRr7SSsAHA479ltGDhuzri3v
-         DB2GWqkxlkzsCtGA0e4bmqNBdKBvUgIOlkYDC+yTOODW4jfNtS6Rw3YmGc2jrgfzaRZW
-         sXNM5d+V1GrR5OtrcJegIZN8g5yK7TvH6kXRtytfvkHck/HxJG74kQIwFgZSn+OBOUrA
-         EGEA==
-X-Gm-Message-State: AOAM531jx7npO7pJ9SEyRcQiTd4FhDizTcrjCKKhkaXBsORgMWKPGZ/E
-        BkWFQsMuQJPN7C+KhlrOtNfDnES1ANWcesbYPek=
-X-Google-Smtp-Source: ABdhPJw/ikUIhtOj9IL+5w64h9P9tx2Kxr15oTQ7fXew5nveFTwTnu+cN3dP55LXsDfmS6Bb83w7VlP1jgWkkeWh+KU=
-X-Received: by 2002:a92:850f:: with SMTP id f15mr7917725ilh.286.1604524054961;
- Wed, 04 Nov 2020 13:07:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201104094626.3406-1-mariuszx.dudek@intel.com> <20201104094626.3406-2-mariuszx.dudek@intel.com>
-In-Reply-To: <20201104094626.3406-2-mariuszx.dudek@intel.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 4 Nov 2020 13:07:24 -0800
-Message-ID: <CAEf4BzZMJV+Ko07DjXD-VxpX9dWtDhd_eGENiTSTHA5uiVLWLw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: separate XDP program load with xsk
- socket creation
-To:     mariusz.dudek@gmail.com
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1727379AbgKDVQN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 16:16:13 -0500
+Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:53602 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726152AbgKDVQM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 16:16:12 -0500
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.61])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 0AAB56007D;
+        Wed,  4 Nov 2020 21:16:12 +0000 (UTC)
+Received: from us4-mdac16-43.ut7.mdlocal (unknown [10.7.64.26])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 07C0D800B0;
+        Wed,  4 Nov 2020 21:16:12 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.90])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 77D1280082;
+        Wed,  4 Nov 2020 21:16:11 +0000 (UTC)
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id D942E9C005F;
+        Wed,  4 Nov 2020 21:16:10 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 4 Nov 2020
+ 21:16:00 +0000
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>
+CC:     David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Mariusz Dudek <mariuszx.dudek@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Martin KaFai Lau" <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+ <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+ <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+ <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+ <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+ <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+ <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+ <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+ <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <bb04a01a-8a96-7a6a-c77e-28ee63983d9a@solarflare.com>
+Date:   Wed, 4 Nov 2020 21:15:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.6.1012-25766.003
+X-TM-AS-Result: No-2.907200-8.000000-10
+X-TMASE-MatchedRID: fgYTp5XatxbmLzc6AOD8DfHkpkyUphL9ffXpER5TkJGfU46p0ASzaB2x
+        y09wV0IjxkZvHPhWAryQNn3qLQygcwBeuT9ROxL1naJwCyoIjbzydGTzcdHw7psoi2XrUn/JIq9
+        5DjCZh0zLOq+UXtqwWAtuKBGekqUpbGVEmIfjf3sHljKReaQYdJAA96KDAFX2Yp9BDB3Z5hHYvt
+        AzrYyDHT0aAd9xlsgbUdNvZjjOj9C63BPMcrcQuXeYWV2RaAfD+kkf6HhPsBc=
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--2.907200-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.6.1012-25766.003
+X-MDID: 1604524572-1ahBbnotrzbL
+X-PPE-DISP: 1604524572;1ahBbnotrzbL
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 1:47 AM <mariusz.dudek@gmail.com> wrote:
->
-> From: Mariusz Dudek <mariuszx.dudek@intel.com>
->
->         Add support for separation of eBPF program load and xsk socket
->         creation.
->
->         This is needed for use-case when you want to privide as little
->         privileges as possible to the data plane application that will
->         handle xsk socket creation and incoming traffic.
->
->         With this patch the data entity container can be run with only
->         CAP_NET_RAW capability to fulfill its purpose of creating xsk
->         socket and handling packages. In case your umem is larger or
->         equal process limit for MEMLOCK you need either increase the
->         limit or CAP_IPC_LOCK capability.
->
->         To resolve privileges issue two APIs are introduced:
->
->         - xsk_setup_xdp_prog - prepares bpf program if given and
->         loads it on a selected network interface or loads the built in
->         XDP program, if no XDP program is supplied. It can also return
->         xsks_map_fd which is needed by unprivileged process to update
->         xsks_map with AF_XDP socket "fd"
->
->         - xsk_update_xskmap - inserts an AF_XDP socket into an xskmap
->         for a particular xsk_socket
->
+On 04/11/2020 03:11, Alexei Starovoitov wrote:
+> The user will do 'tc -V'. Does version mean anything from bpf loading pov?
+> It's not. The user will do "ldd `which tc`" and then what?
+Is it beyond the wit of man for 'tc -V' to output somethingabout
+ libbpf version?
+Other libraries seem to solve these problems all the time, I
+ haven't seen anyone explain what makes libbpf so special that it
+ has to be different.
 
-Your commit message seems to be heavily shifted right...
-
-
-> Signed-off-by: Mariusz Dudek <mariuszx.dudek@intel.com>
-> ---
->  tools/lib/bpf/libbpf.map |   2 +
->  tools/lib/bpf/xsk.c      | 157 ++++++++++++++++++++++++++++++++-------
->  tools/lib/bpf/xsk.h      |  13 ++++
->  3 files changed, 146 insertions(+), 26 deletions(-)
->
-
-[...]
-
-> diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
-> index 1069c46364ff..c42b91935d3c 100644
-> --- a/tools/lib/bpf/xsk.h
-> +++ b/tools/lib/bpf/xsk.h
-> @@ -201,6 +201,19 @@ struct xsk_umem_config {
->         __u32 flags;
->  };
->
-> +struct bpf_prog_cfg {
-> +       struct bpf_insn *prog;
-> +       const char *license;
-> +       size_t insns_cnt;
-> +       int xsks_map_fd;
-> +};
-
-This config will have problems with backward/forward compatibility.
-Please check how xxx_opts are done and use them for extensible options
-structs.
-
-
-> +
-> +LIBBPF_API int xsk_setup_xdp_prog(int ifindex,
-> +                                 struct bpf_prog_cfg *cfg,
-> +                                 int *xsks_map_fd);
-> +LIBBPF_API int xsk_update_xskmap(struct xsk_socket *xsk,
-> +                                int xsks_map_fd);
-
-this should be called xsk_socket__update_map? BTW, what's xskmap? Is
-that a special BPF map type?
-
-> +
->  /* Flags for the libbpf_flags field. */
->  #define XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD (1 << 0)
->
-> --
-> 2.20.1
->
+-ed
