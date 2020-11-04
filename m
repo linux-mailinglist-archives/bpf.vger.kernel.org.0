@@ -2,93 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4202A703F
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 23:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEC62A704E
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 23:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731414AbgKDWKj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 17:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        id S1732100AbgKDWOL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 17:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgKDWKj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 17:10:39 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D8FC0613D3;
-        Wed,  4 Nov 2020 14:10:39 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id e27so6409676lfn.7;
-        Wed, 04 Nov 2020 14:10:39 -0800 (PST)
+        with ESMTP id S1726777AbgKDWOK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 17:14:10 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F5BC0613D3
+        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 14:14:10 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id z3so12109838pfz.6
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 14:14:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Yk2mj75i8xa8ayUVBQ83JlZDKWwjs6t8SW4iIqQ0FL8=;
-        b=KANFOam0HlCtXCJKxEuU+poGR57CGLU6/zmeHIPrjcjIfkW00DexlF9LqBPk1p5pXq
-         vxp8ESNn3E0OZNZeYDdCUJSLW/qJZx22Cf416XUH8J3ANooFmsCb8UIwmcc5XL22E5kO
-         937DmY/OO5bps0pihshlNQy8MSGL+w5FjluXGJBdE9IkQZsYz85TASPkatJwHsR1x3in
-         GZna+Lwq6va5sQtb6limwg+TU3Olwwbr5g1aaJKKfjcTOqYDdkXo6Hud1Jv0hxQJWGqg
-         QA7HxRzsUkeCYRL5Acfx/1VySgVdi5cVudimmEe5fbvpuJpMu+QHbeNf0jKJT4xNcxk1
-         Up+w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4SX8JmQlcxK5oX4LLeWbxpL7OAoTDYcCU+6+RVvGYlM=;
+        b=RX2JBijVQFv1L+Mod4nyguYVc83aMkdQnTSA4fshKUc7aV23uLUvF08QHDh0Is4Pqc
+         Y8C7u7YARCq/nsAwL8gHMGWDjRZ/i8rf6teR9z+sDJZUgLYQtq2wJ0I48zHOVm1zkNrf
+         ta1xYjO+dpWNT4NcIGfE2jZIbJ6ZSCtbIauIs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yk2mj75i8xa8ayUVBQ83JlZDKWwjs6t8SW4iIqQ0FL8=;
-        b=RKRRQGQ1mdFEiiLnOPCxy7sTYICFvpNtius7i4LYUaCEgiRkR2YKLOQ4k7lR8eRT3t
-         GoMrOpFGrnevqrP2LqRmDvbiJdHrByjwrxwYEC3jjh1Hk4HLq6z9LWdt2yRImia8+038
-         MU09nqvTfT9G3uTDaId8hc36eJUnHtyICopwxOKMQ3DKDYC2SCxqRLoH0HqlRX5vhj0F
-         jaIYQ5uE7qTnTfNN159h3N8+W+I1lrmtripd3JGa4OFB+w3gb9N9V95twEt5YNFD6moo
-         d3k01mdtrxv0k+IXYMKLQQknvT+ycpVPyihHdGkE1HvoxZ8/39aIfhpNWO7ji++qMVoZ
-         Ahbw==
-X-Gm-Message-State: AOAM531FWnPzNNsuuCg3DXku6FASwtlBXijA5zNzXQOZR3GXkWNCjBsq
-        +tQ5+EmRZXpyZnmDFPsdzdex93TeLkyEsc2XUEM=
-X-Google-Smtp-Source: ABdhPJz5XSkiQ1cv/9X7KUiC72fGiP+TjMWeNoh7HI4hGLD2ZP40tU35M5i5UPWTJDnGhRPZVmqhsgMlFOMeEjT3+pc=
-X-Received: by 2002:ac2:5e83:: with SMTP id b3mr9823957lfq.119.1604527837537;
- Wed, 04 Nov 2020 14:10:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4SX8JmQlcxK5oX4LLeWbxpL7OAoTDYcCU+6+RVvGYlM=;
+        b=eR58sdE4kXTH7Z5jYwU4iFuqGA/XpJ+izrs+wMwJ8i5BpPxhqBP3UBL4ttLpCL2Zlh
+         HJnXYMR+JBTQv0NtFz2e22cc4eIz4UW+shNwKZBK9RaZIhCWlpMEz4UjzIHG0ntKHX+3
+         OO2TiktIvgN0Lzk2imEaB/wAep3l/0TiCPEhc3DQX63GvOW5fO3oZU6gIjYxBNF81Ne2
+         Cm0CR9diapR9T2t6DVkA2NzVoVOxehCINWWe13R1xvByNZgMk0Q4b3ec4Y3hP+7IAEfv
+         15HqhjUTGxSAq/6wtTQzaXu97ZrUh6NoTXkeS8qqxDho4MoNVQrUfb3T8zHChzqdRV8I
+         VvAA==
+X-Gm-Message-State: AOAM533QygvFIDzsCBmP+8pvLqAKkm7PWuCuolwBO9A1dd3/TsqQYXOa
+        c2cSmZIpKuY6/K68eZ29YYonZw==
+X-Google-Smtp-Source: ABdhPJwnQvdrXkvZA4YnhjXoMmBDm+dt32SsDETknXAd989qVmGT8ZvBz6SW/KD78kJNz8WtONYvwA==
+X-Received: by 2002:a17:90b:b12:: with SMTP id bf18mr11114pjb.205.1604528049604;
+        Wed, 04 Nov 2020 14:14:09 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j20sm3306738pgh.15.2020.11.04.14.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2020 14:14:08 -0800 (PST)
+Date:   Wed, 4 Nov 2020 14:14:07 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: RFC: default to spec_store_bypass_disable=prctl
+ spectre_v2_user=prctl
+Message-ID: <202011041411.AD961737EA@keescook>
+References: <20201104215702.GG24993@redhat.com>
 MIME-Version: 1.0
-References: <20201028132529.3763875-1-haliu@redhat.com> <20201029151146.3810859-1-haliu@redhat.com>
- <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com> <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
- <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net> <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
- <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
- <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com> <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
- <20201104021730.GK2408@dhcp-12-153.nay.redhat.com> <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
- <bb04a01a-8a96-7a6a-c77e-28ee63983d9a@solarflare.com>
-In-Reply-To: <bb04a01a-8a96-7a6a-c77e-28ee63983d9a@solarflare.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 4 Nov 2020 14:10:25 -0800
-Message-ID: <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     Hangbin Liu <haliu@redhat.com>, David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201104215702.GG24993@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 1:16 PM Edward Cree <ecree@solarflare.com> wrote:
->
-> On 04/11/2020 03:11, Alexei Starovoitov wrote:
-> > The user will do 'tc -V'. Does version mean anything from bpf loading pov?
-> > It's not. The user will do "ldd `which tc`" and then what?
-> Is it beyond the wit of man for 'tc -V' to output somethingabout
->  libbpf version?
-> Other libraries seem to solve these problems all the time, I
->  haven't seen anyone explain what makes libbpf so special that it
->  has to be different.
+On Wed, Nov 04, 2020 at 04:57:02PM -0500, Andrea Arcangeli wrote:
+> Switch the kernel default of SSBD and STIBP to the ones with
+> CONFIG_SECCOMP=n (i.e. spec_store_bypass_disable=prctl
+> spectre_v2_user=prctl) even if CONFIG_SECCOMP=y.
 
-slow vger? Please see Daniel and Andrii detailed explanations.
+Agreed. I think this is the right time to flip this switch. I agree with
+the (very well described) rationales. :)
 
-libbpf is not your traditional library.
-Looking through the installed libraries on my devserver in /lib64/ directory
-I think the closest is libbfd.so
-Then think why gdb always statically links it.
+Fundamentally, likely everyone who is interested in manipulating the
+mitigations are doing so now, and it doesn't make sense (on many fronts)
+to tie some to seccomp mode any more (which was intended as a temporary
+defense to gain coverage while sysadmins absorbed what the best
+practices should be).
+
+Thanks for sending this!
+
+Acked-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
