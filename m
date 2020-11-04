@@ -2,205 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12202A604F
-	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 10:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD69F2A6044
+	for <lists+bpf@lfdr.de>; Wed,  4 Nov 2020 10:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbgKDJKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 04:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
+        id S1726152AbgKDJJY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 04:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgKDJG0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 04:06:26 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347A8C040201
-        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 01:06:25 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id w14so21151773wrs.9
-        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 01:06:25 -0800 (PST)
+        with ESMTP id S1728817AbgKDJGb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 04:06:31 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D406AC0401C1
+        for <bpf@vger.kernel.org>; Wed,  4 Nov 2020 01:06:30 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id c17so1814916wrc.11
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 01:06:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZVySsFYAxVyvKjZwFTKaFMnVATseHBsi4tJ0dIp9TLE=;
-        b=K1+Rdz5ogf/5T2jMdF3v9m88jLY/gNqsMKJm061QdgaEQGjK4st39GT4kTZK6c7eAv
-         3cJicgPoZBh9YEvxLFGZcZyHE0XnNqBy1XOiWQuoMPDL9faO4RhxQ9VP++HCtvthQR9S
-         799P3oQD3ZEWTAn8Z+1PDWW2WOSIRjZ/YNizWauRHAov45YgSsQGFvDCGkpGdXI1KiOg
-         QyMiZ+qAf84rNKlDHGrCMb3Z298LfBhK4STT2/MKrClXtDUj1+DxmNn50j9f2xT6h0lS
-         2FLRla4Vx5B06Pb85+k62n0XQr8agXXsfRziu37OjAXEKgzSYzjV1kzmZ4S3HLfgeg3X
-         jRpA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PvDQ8jiSdggfocg7QevhSStHyCThX2E8vELTACyHnVM=;
+        b=O+gghJDvfp86xHKWNgfCUbwJBZer6plfg8irRb7mhXGvdo7nvbxcHUd63h6bvqOdkS
+         tSUboDCoCYlt9DCY7qiK941vY9cWWcrT5dhUFhaoj+IwczKKPvBRX+IcCuLvSThGRsjC
+         D58ezTytuMvEmOQY2bTv2oJzSy7M8A1Ra31v/4WhDJ/gdw2Ed9Acb+z0jHdgaSO/RfzF
+         aUbBPxkvtygM9zIr6Vg1dDhySOxbbryxrnmEFSg9EURVG1o51j2usPgmkNmwHgmn7/fp
+         pBtT9CLc2nU/2WTyzWyLqGfkFnDvqMLpQf/WYFc17TlKpg2vLmamvONRa7oY8mjJW1dG
+         wp2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZVySsFYAxVyvKjZwFTKaFMnVATseHBsi4tJ0dIp9TLE=;
-        b=hWZqLG6eh9LWp+3bnASkg3GR5ZDYkyUGE1qd/A5z7GZII1ym34EonwuKiwQcDLcPSO
-         QE4AO42ooIpkvTYEg28f4oUnWMob+oWOuUUiGHuhZij4F5K5b2fiZCge0XdXD1bM6unX
-         VulcbCUkxEP7/y6XTsov6CvSv5wGxCHW3ZToKcmL34kq8r/+Y1BtOTHvCqM4DloVXQYI
-         6Pt24rDzjb9nwWbSMhFQP8KBTYqgbTRJXtNFBkIk3G1ltb8bcWgdVwOKPZEq3ScJWc3H
-         vD43J7q1r/xarQgY9SijB8DTbJaDLmB794S0HNphmVCOkSGohhhnW7oA15LB4iL2Jlj0
-         w3ww==
-X-Gm-Message-State: AOAM531uj+j2xW64QB7R/D691KOBQ/qA4t5wchoYTFnzSs47noMA2QMW
-        GDfOcJ/yS9P4gTGWwPtUK8AjOw==
-X-Google-Smtp-Source: ABdhPJzn8d8Abh2QVS+FdXToKUqdpB6TwiMSAYlD5+ls0hMcq+h/pWmcBsJhdaEKInesWzdpNiQxsw==
-X-Received: by 2002:adf:e384:: with SMTP id e4mr31089426wrm.227.1604480782887;
-        Wed, 04 Nov 2020 01:06:22 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PvDQ8jiSdggfocg7QevhSStHyCThX2E8vELTACyHnVM=;
+        b=Lk1hbtMZe+FhNu724fMOAAFw0XDzUHaFw3AqYOkUvijLJQwXkbIJ95R2YAS6QeZOdD
+         KcUfXl02iMYcKpdcKyC1Ip51lgo4tid+hGmWf/wr9RL4v6nuehU746EshUc3S7FMbGPT
+         CkNqmJpj4ASORCRx42GfB4bOw3I3mlNyHfbe2z8tqQ4D5tFF+B4gjoiH72GZMpq51KNr
+         ID1AwKGsL1RVOJjVZSdGnE0yw9MDHPE04H6pa3bceIhaLA6nCCMzDeIlCn8uMH3lFsov
+         O/VIHKtDLv16lY4zFvELGfo8ZP2haplAx8eyty2F+scBYwv+8s/6rn9FzEh0bDcscB+B
+         OkBQ==
+X-Gm-Message-State: AOAM533MQHEpCpad/mSfw9t6qcptOgPeEKvukSiXrLGixHkR5qZtF4y3
+        4eswTRxcXb9WolUPW+psEhjLBg==
+X-Google-Smtp-Source: ABdhPJxJr4EKzyziM/kfu7bfvSRJog/0BPh5wKW3PHtRCRM2FSGZw1LpbirvmDeO5VkFIi4ChKf8FQ==
+X-Received: by 2002:a5d:490a:: with SMTP id x10mr30228709wrq.289.1604480789629;
+        Wed, 04 Nov 2020 01:06:29 -0800 (PST)
 Received: from dell.default ([91.110.221.242])
-        by smtp.gmail.com with ESMTPSA id e25sm1607823wrc.76.2020.11.04.01.06.20
+        by smtp.gmail.com with ESMTPSA id e25sm1607823wrc.76.2020.11.04.01.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 01:06:22 -0800 (PST)
+        Wed, 04 Nov 2020 01:06:29 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Dany Madden <drt@linux.ibm.com>,
-        Daris A Nevil <dnevil@snmc.com>,
-        Dustin McIntire <dustin@sensoria.com>,
-        Erik Stahlman <erik@vt.edu>,
-        Geoff Levand <geoff@infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Allen <jallen@linux.vnet.ibm.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        John Williams <john.williams@xilinx.com>,
-        Juergen Gross <jgross@suse.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-usb@vger.kernel.org, Martin Habets <mhabets@solarflare.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        Paul Durrant <paul@xen.org>, Paul Mackerras <paulus@samba.org>,
-        Peter Cammaert <pc@denkart.be>,
-        Russell King <rmk@arm.linux.org.uk>,
         Rusty Russell <rusty@rustcorp.com.au>,
-        Santiago Leon <santi_leon@yahoo.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Song Liu <songliubraving@fb.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        xen-devel@lists.xenproject.org, Yonghong Song <yhs@fb.com>
-Subject: [PATCH 00/12] [Set 2] Rid W=1 warnings in Net
-Date:   Wed,  4 Nov 2020 09:05:58 +0000
-Message-Id: <20201104090610.1446616-1-lee.jones@linaro.org>
+        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 05/12] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+Date:   Wed,  4 Nov 2020 09:06:03 +0000
+Message-Id: <20201104090610.1446616-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201104090610.1446616-1-lee.jones@linaro.org>
+References: <20201104090610.1446616-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Fixes the following W=1 kernel build warning(s):
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+ drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'dev' not described in 'frontend_changed'
+ drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'frontend_state' not described in 'frontend_changed'
+ drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'dev' not described in 'netback_probe'
+ drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'id' not described in 'netback_probe'
 
-This is the last set.
-
-Lee Jones (12):
-  net: usb: lan78xx: Remove lots of set but unused 'ret' variables
-  net: ethernet: smsc: smc911x: Mark 'status' as __maybe_unused
-  net: ethernet: xilinx: xilinx_emaclite: Document 'txqueue' even if it
-    is unused
-  net: ethernet: smsc: smc91x: Demote non-conformant kernel function
-    header
-  net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
-  net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function
-    header
-  net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en'
-    parameter
-  net: xen-netfront: Demote non-kernel-doc headers to standard comment
-    blocks
-  net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
-  net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc
-    misdemeanours
-  net: ethernet: toshiba: spider_net: Document a whole bunch of function
-    parameters
-  net: ethernet: ibm: ibmvnic: Fix some kernel-doc issues
-
- drivers/net/ethernet/ibm/ibmvnic.c            |  27 ++-
- drivers/net/ethernet/smsc/smc911x.c           |   6 +-
- drivers/net/ethernet/smsc/smc91x.c            |   2 +-
- drivers/net/ethernet/ti/am65-cpsw-qos.c       |   2 +-
- drivers/net/ethernet/ti/am65-cpts.c           |   2 +-
- drivers/net/ethernet/toshiba/ps3_gelic_net.c  |   9 +-
- drivers/net/ethernet/toshiba/spider_net.c     |  18 +-
- drivers/net/ethernet/xilinx/xilinx_emaclite.c |   1 +
- drivers/net/usb/lan78xx.c                     | 212 +++++++++---------
- drivers/net/xen-netback/xenbus.c              |   4 +-
- drivers/net/xen-netfront.c                    |   6 +-
- 11 files changed, 141 insertions(+), 148 deletions(-)
-
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: bpf@vger.kernel.org
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Dany Madden <drt@linux.ibm.com>
-Cc: Daris A Nevil <dnevil@snmc.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Dustin McIntire <dustin@sensoria.com>
-Cc: Erik Stahlman <erik@vt.edu>
-Cc: Geoff Levand <geoff@infradead.org>
-Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
-Cc: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jens Osterkamp <Jens.Osterkamp@de.ibm.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Allen <jallen@linux.vnet.ibm.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: John Williams <john.williams@xilinx.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: Kurt Kanzenbach <kurt@linutronix.de>
-Cc: Lijun Pan <ljp@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-usb@vger.kernel.org
-Cc: Martin Habets <mhabets@solarflare.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Cc: netdev@vger.kernel.org
-Cc: Nicolas Pitre <nico@fluxnic.net>
-Cc: Paul Durrant <paul@xen.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Peter Cammaert <pc@denkart.be>
-Cc: Russell King <rmk@arm.linux.org.uk>
-Cc: Rusty Russell <rusty@rustcorp.com.au>
-Cc: Santiago Leon <santi_leon@yahoo.com>
-Cc: Shannon Nelson <snelson@pensando.io>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Cc: Thomas Falcon <tlfalcon@linux.vnet.ibm.com>
-Cc: Utz Bacher <utz.bacher@de.ibm.com>
 Cc: Wei Liu <wei.liu@kernel.org>
-Cc: Woojung Huh <woojung.huh@microchip.com>
+Cc: Paul Durrant <paul@xen.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
 Cc: xen-devel@lists.xenproject.org
-Cc: Yonghong Song <yhs@fb.com>
+Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/net/xen-netback/xenbus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/xen-netback/xenbus.c b/drivers/net/xen-netback/xenbus.c
+index f1c1624cec8f5..de1b5471d929b 100644
+--- a/drivers/net/xen-netback/xenbus.c
++++ b/drivers/net/xen-netback/xenbus.c
+@@ -411,7 +411,7 @@ static void read_xenbus_frontend_xdp(struct backend_info *be,
+ 	vif->xdp_headroom = headroom;
+ }
+ 
+-/**
++/*
+  * Callback received when the frontend's state changes.
+  */
+ static void frontend_changed(struct xenbus_device *dev,
+@@ -992,7 +992,7 @@ static int netback_remove(struct xenbus_device *dev)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Entry point to this code when a new device is created.  Allocate the basic
+  * structures and switch to InitWait.
+  */
 -- 
 2.25.1
 
