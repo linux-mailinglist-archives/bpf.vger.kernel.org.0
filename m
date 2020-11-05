@@ -2,76 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E14532A8277
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 16:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C33A32A82D3
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 16:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731309AbgKEPpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 10:45:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731202AbgKEPpO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 10:45:14 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FF3B206FA;
-        Thu,  5 Nov 2020 15:45:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604591113;
-        bh=RYfcojP3xQPdgNO24dCEuSYbe3kFwBI9UaElG668AGk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WUwkmm5MK3MfjMJKe/ZGRT7ERL++vJOrKm12aDuXQEi30a6pVcfAU6unoYTvoEOlF
-         I+zYBqAGCEYm9vIR+7awtLUxv0p75nKTNY/qrgObV4Ns3gOD1775K0cM1XKiYZM6bd
-         P6Pq35Qn0c69LObw3Lo2vkRNCDgGpXO27/tg2Q84=
-Date:   Thu, 5 Nov 2020 07:45:11 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFQ=?= =?UTF-8?B?w7ZwZWw=?= 
-        <bjorn.topel@intel.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
-        anthony.l.nguyen@intel.com,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
-Subject: Re: [PATCH bpf-next 1/6] i40e: introduce lazy Tx completions for
- AF_XDP zero-copy
-Message-ID: <20201105074511.6935e8b7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAJ8uoz3-tjXekU=kR+HfMhGBcHtAFnKGq1ZvpFq99T_S-mknPg@mail.gmail.com>
-References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
-        <1604498942-24274-2-git-send-email-magnus.karlsson@gmail.com>
-        <20201104153320.66cecba8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAJ8uoz3-tjXekU=kR+HfMhGBcHtAFnKGq1ZvpFq99T_S-mknPg@mail.gmail.com>
+        id S1731492AbgKEP6H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 10:58:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31146 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731254AbgKEP6B (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 10:58:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604591880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pADWP+enNt6yiUgOW0VHOOnF0ho/du1JKG+QQdolo1M=;
+        b=EaO2HmHCDwuSDOPids+ZjczfrjmQhG87PUK1PO+GjiOIoNI7S/A5yyvhBO4nRXSr5YiziQ
+        20KxtyJlQXyEkXMBtFR1ZmWf7yZfddmC7AgQHJ0V5lAjTxhbkh0AqGZe+DYadR9meSavLy
+        4/Byat9wNQ+So4jfT9s7MLlSTjd8ZOU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-9dCGYxjmMHqATmvttTc_cg-1; Thu, 05 Nov 2020 10:57:58 -0500
+X-MC-Unique: 9dCGYxjmMHqATmvttTc_cg-1
+Received: by mail-wm1-f72.google.com with SMTP id o81so539546wma.0
+        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 07:57:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=pADWP+enNt6yiUgOW0VHOOnF0ho/du1JKG+QQdolo1M=;
+        b=GYziBkJhzOVyvKxiuC3L0etnf/uAImKUPsSsLmK3XNswtdQSnQhKsG5eYfYv9cUDmu
+         QraX3/3Vwar4m6lTkBZPAc93s7O7CDnxz6Mo3P2FTXzpiIgZ7An3QkI42qHByrwPsDEi
+         2ol2lrE23buiGuWAuQ3z0pXllhyZfWL5o2nrhLxy/Tl5Yi4JOCNesFGTJnJ0Rw30SAV9
+         wDum4ReMcaxHWym4ISH9Nr3uEjg6/+Ehy2LmeZX+1cYFzl0/BumNc9y695Asnwzq3IN4
+         Lxc1C/aZCQegp9G//mbigJJdR+6OSh52skVeQnZj1J5VTZFn6vAnTrbeu+PrljwkI/XD
+         yPTQ==
+X-Gm-Message-State: AOAM530j//JYDCPZJHO69k9+gk6zYQ+T1SCBYIvmmcfJTiiNNjc+MbZl
+        IDMkBCfCbxA6x89VIqePmfovxb82OCdf3RBsy8tNkccuRA6QRt79K3ge/W8kIAEUoHVfr8SG9OL
+        swrZh8E45iMON
+X-Received: by 2002:adf:fe46:: with SMTP id m6mr3480138wrs.254.1604591876878;
+        Thu, 05 Nov 2020 07:57:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJySOwJGJtWXTJj/9Zb69rUDm8assKwkVCRdMHE/t33oyQWP+MNiO8KGN+Zqmq3xyszpxt4FOw==
+X-Received: by 2002:adf:fe46:: with SMTP id m6mr3480126wrs.254.1604591876723;
+        Thu, 05 Nov 2020 07:57:56 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id v6sm3611600wrb.53.2020.11.05.07.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Nov 2020 07:57:56 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 86769181CED; Thu,  5 Nov 2020 16:57:55 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     David Ahern <dsahern@gmail.com>, Hangbin Liu <haliu@redhat.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCHv3 iproute2-next 3/5] lib: add libbpf support
+In-Reply-To: <3c3f892a-6137-d176-0006-e5ddaeeed2b5@gmail.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <20201029151146.3810859-4-haliu@redhat.com>
+ <db14a227-1d5e-ed3a-9ada-ecf99b526bf6@gmail.com>
+ <20201104082203.GP2408@dhcp-12-153.nay.redhat.com>
+ <61a678ce-e4bc-021b-ab4e-feb90e76a66c@gmail.com>
+ <20201105075121.GV2408@dhcp-12-153.nay.redhat.com>
+ <3c3f892a-6137-d176-0006-e5ddaeeed2b5@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 05 Nov 2020 16:57:55 +0100
+Message-ID: <87sg9nssn0.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 5 Nov 2020 15:17:50 +0100 Magnus Karlsson wrote:
-> > I feel like this needs a big fat warning somewhere.
-> >
-> > It's perfectly fine to never complete TCP packets, but AF_XDP could be
-> > used to implement protocols in user space. What if someone wants to
-> > implement something like TSQ?  
-> 
-> I might misunderstand you, but with TSQ here (for something that
-> bypasses qdisk and any buffering and just goes straight to the driver)
-> you mean the ability to have just a few buffers outstanding and
-> continuously reuse these? If so, that is likely best achieved by
-> setting a low Tx queue size on the NIC. Note that even without this
-> patch, completions could be delayed. Though this patch makes that the
-> normal case. In any way, I think this calls for some improved
-> documentation.
+David Ahern <dsahern@gmail.com> writes:
 
-TSQ tries to limit the amount of data the TCP stack queues into TC/sched
-and drivers. Say 1MB ~ 16 GSO frames. It will not queue more data until
-some of the transfer is reported as completed. 
+> On 11/5/20 12:51 AM, Hangbin Liu wrote:
+>> On Wed, Nov 04, 2020 at 07:33:40PM -0700, David Ahern wrote:
+>>> On 11/4/20 1:22 AM, Hangbin Liu wrote:
+>>>> If we move this #ifdef HAVE_LIBBPF to bpf_legacy.c, we need to rename
+>>>> them all. With current patch, we limit all the legacy functions in bpf_legacy
+>>>> and doesn't mix them with libbpf.h. What do you think?
+>>>
+>>> Let's rename conflicts with a prefix -- like legacy. In fact, those
+>>> iproute2_ functions names could use the legacy_ prefix as well.
+>>>
+>> 
+>> Sorry, when trying to rename the functions. I just found another issue.
+>> Even we fix the conflicts right now. What if libbpf add new functions
+>> and we got another conflict in future? There are too much bpf functions
+>> in bpf_legacy.c which would have more risks for naming conflicts..
+>> 
+>> With bpf_libbpf.c, there are less functions and has less risk for naming
+>> conflicts. So I think it maybe better to not include libbpf.h in bpf_legacy.c.
+>> What do you think?
+>> 
+>>
+>
+> Is there a way to sort the code such that bpf_legacy.c is not used when
+> libbpf is enabled and bpf_libbpf.c is not compiled when libbpf is disabled.
 
-IIUC you're allowing up to 64 descriptors to linger without reporting
-back that the transfer is done. That means that user space implementing
-a scheme similar to TSQ may see its transfers stalled.
+That's basically what we were going for, i.e.:
+
+git mv lib/bpf.c lib/bpf_legacy.c
+git add lib/bpf_libbpf.c
+
+and then adding ifdefs to bpf_legacy.c and only including the other if
+libbpf support is enabled.
+
+I guess we could split it further into lib/bpf_{libbpf,legacy,glue}.c
+and have the two former ones be completely devoid of ifdefs and
+conditionally included based on whether or not libbpf support is
+enabled?
+
+-Toke
+
