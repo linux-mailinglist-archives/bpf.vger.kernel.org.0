@@ -2,151 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A1B2A7630
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 04:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1502A7672
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 05:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388717AbgKEDsi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 22:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388670AbgKEDsf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 22:48:35 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84689C0613CF;
-        Wed,  4 Nov 2020 19:48:35 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id j12so415313iow.0;
-        Wed, 04 Nov 2020 19:48:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zU4o/Vz/jeSjdyJy2A21CMrZyLkZu8yOx/H+G2wHTdc=;
-        b=Cc+4+3Nry85BqsIZjrlLbXJjopgkClUH0XNo4UAHtONrfMvHoqk0Ke8rFBXZUfdEkM
-         1mG+YXiNpRJUBK6OrvaE7+POHwi26+4G27OQQDUzLY0ru82+7Kjfc/03/APvhmaNB6Ix
-         ycWUco6ldzhRb1JoD2Xl0pZQWKhKGAkkFGnP7Kk6ms84K4cJwFhJVnMgK3XR7NqxutiC
-         gPYsDJNhkVCNMvk8nkn3m0ldSAmoej48HB3nOo7l5aWPW8gT4MTP1JZ665HEe5235xg5
-         ThS2aizKBl9ei4FpxYwLEqC25nBoyjZZ45EQF/F9A661JS+kj8tmxHXz8Dp8PwN91/kn
-         lEng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zU4o/Vz/jeSjdyJy2A21CMrZyLkZu8yOx/H+G2wHTdc=;
-        b=bQOjzLLfIRM3edJrBi4q7Bo0rH56RVp8pGhZgX+0J5xiy54Ot8gpxXdVsISX4yrh9y
-         vVdbIwfTrcLy5YMVNPM7W6JHWG4ZlztVYI4swNJPwqAFPJCKLZGD1sUX2q+gp7pmIouG
-         FWsc7mXKzRnuLSYlBMfIg5Y2g5uZ/F0aj2QQaeWviPcZ+tztymYywx0uwxH7THHi+UPA
-         P7AVWMzXPeWEmW7QC+67G/If+a4BKEJQGr7JVQXU5Q0wDrHkXnvKhuda6yKI4uFvco1M
-         YyGbhkGDnmASwpUuDkk1lPrxhOezYT8AfrXWwdcoa/LEb2mAbCPnnDJatlanTGHKG5mY
-         e8TA==
-X-Gm-Message-State: AOAM532EvnRfwl/RyRni6XYSg2vFyZODAASA5mArooxAiXdbtwzOUdTa
-        Iac3qnd7oUVj8/EgB1MQf4M=
-X-Google-Smtp-Source: ABdhPJzB6Cv89hAt0Kq68a1+gDz4Ekbjl69lPl05kP/NBRjPeQcW/soBUypuRI/+QJ2keC5ryNUOxg==
-X-Received: by 2002:a6b:911:: with SMTP id t17mr426548ioi.197.1604548114992;
-        Wed, 04 Nov 2020 19:48:34 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:6dfd:4f87:68ce:497b])
-        by smtp.googlemail.com with ESMTPSA id p83sm222221iod.49.2020.11.04.19.48.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Nov 2020 19:48:34 -0800 (PST)
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Hangbin Liu <haliu@redhat.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
- <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
- <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
- <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
- <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
- <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
- <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
- <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
- <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
- <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net> <87zh3xv04o.fsf@toke.dk>
- <5de7eb11-010b-e66e-c72d-07ece638c25e@iogearbox.net>
- <20201104111708.0595e2a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAEf4BzY2pAaEmv_x_nGQC83373ZWUuNv-wcYRye+vfZ3Fa2qbw@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <dba0723f-fd55-5dd6-dccc-4e0a649c860e@gmail.com>
-Date:   Wed, 4 Nov 2020 20:48:31 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        id S1730411AbgKEEeP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 4 Nov 2020 23:34:15 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23302 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730705AbgKEEeO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 23:34:14 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A54X32F017947
+        for <bpf@vger.kernel.org>; Wed, 4 Nov 2020 20:34:13 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 34jthepagf-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 04 Nov 2020 20:34:13 -0800
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 4 Nov 2020 20:34:12 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 80C262EC8E04; Wed,  4 Nov 2020 20:34:03 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v2 bpf-next 00/11] libbpf: split BTF support
+Date:   Wed, 4 Nov 2020 20:33:50 -0800
+Message-ID: <20201105043402.2530976-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzY2pAaEmv_x_nGQC83373ZWUuNv-wcYRye+vfZ3Fa2qbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_01:2020-11-05,2020-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=8
+ mlxlogscore=999 malwarescore=0 phishscore=0 impostorscore=0 bulkscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011050032
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/4/20 1:43 PM, Andrii Nakryiko wrote:
-> 
-> What users writing BPF programs can expect from iproute2 in terms of
-> available BPF features is what matters. And by not enforcing a
-> specific minimal libbpf version, iproute2 version doesn't matter all
-> that much, because libbpf version that iproute2 ends up linking
-> against might be very old.
-> 
-> There was a lot of talk about API stability and backwards
-> compatibility. Libbpf has had a stable API and ABI for at least 1.5
-> years now and is very conscious about that when adding or extending
-> new APIs. That's not even a factor in me arguing for submodules. I'll
-> give a few specific examples of libbpf API not changing at all, but
-> how end user experience gets tremendously better.
-> 
-> Some of the most important APIs of libbpf are, arguably,
-> bpf_object__open() and bpf_object__load(). They accept a BPF ELF file,
-> do some preprocessing and in the end load BPF instructions into the
-> kernel for verification. But while API doesn't change across libbpf
-> versions, BPF-side code features supported changes quite a lot.
-> 
-> 1. BTF sanitization. Newer versions of clang would emit a richer set
-> of BTF type information. Old kernels might not support BTF at all (but
-> otherwise would work just fine), or might not support some specific
-> newer additions to BTF. If someone was to use the latest Clang, but
-> outdated libbpf and old kernel, they would have a bad time, because
-> their BPF program would fail due to the kernel being strict about BTF.
-> But new libbpf would "sanitize" BTF, according to supported features
-> of the kernel, or just drop BTF altogether, if the kernel is that old.
-> 
+This patch set adds support for generating and deduplicating split BTF. This
+is an enhancement to the BTF, which allows to designate one BTF as the "base
+BTF" (e.g., vmlinux BTF), and one or more other BTFs as "split BTF" (e.g.,
+kernel module BTF), which are building upon and extending base BTF with extra
+types and strings.
 
-In my experience, compilers are the least likely change in a typical
-Linux development environment. BPF should not be forcing new versions
-(see me last response).
+Once loaded, split BTF appears as a single unified BTF superset of base BTF,
+with continuous and transparent numbering scheme. This allows all the existing
+users of BTF to work correctly and stay agnostic to the base/split BTFs
+composition.  The only difference is in how to instantiate split BTF: it
+requires base BTF to be alread instantiated and passed to btf__new_xxx_split()
+or btf__parse_xxx_split() "constructors" explicitly.
 
-> 
-> 2. bpf_probe_read_user() falling back to bpf_probe_read(). Newer
-> kernels warn if a BPF application isn't using a proper _kernel() or
-> _user() variant of bpf_probe_read(), and eventually will just stop
-> supporting generic bpf_probe_read(). So what this means is that end
-> users would need to compile to variants of their BPF application, one
-> for older kernels with bpf_probe_read(), another with
-> bpf_probe_read_kernel()/bpf_probe_read_user(). That's a massive pain
-> in the butt. But newer libbpf versions provide a completely
-> transparent fallback from _user()/_kernel() variants to generic one,
-> if the kernel doesn't support new variants. So the instruction to
-> users becomes simple: always use
-> bpf_probe_read_user()/bpf_probe_read_kernel().
-> 
+This split approach is necessary if we are to have a reasonably-sized kernel
+module BTFs. By deduping each kernel module's BTF individually, resulting
+module BTFs contain copies of a lot of kernel types that are already present
+in vmlinux BTF. Even those single copies result in a big BTF size bloat. On my
+kernel configuration with 700 modules built, non-split BTF approach results in
+115MBs of BTFs across all modules. With split BTF deduplication approach,
+total size is down to 5.2MBs total, which is on part with vmlinux BTF (at
+around 4MBs). This seems reasonable and practical. As to why we'd need kernel
+module BTFs, that should be pretty obvious to anyone using BPF at this point,
+as it allows all the BTF-powered features to be used with kernel modules:
+tp_btf, fentry/fexit/fmod_ret, lsm, bpf_iter, etc.
 
-I vaguely recall a thread about having BPF system call return user
-friendly messages, but that was shot down. I take this example to mean
-the solution is to have libbpf handle the quirks and various changes
-which means that now libbpf takes on burden - the need for constant
-updates to handle quirks. extack has been very successful at making
-networking configuration mistakes more user friendly. Other kernel
-features should be using the same kind of extension.
+This patch set is a pre-requisite to adding split BTF support to pahole, which
+is a prerequisite to integrating split BTF into the Linux kernel build setup
+to generate BTF for kernel modules. The latter will come as a follow-up patch
+series once this series makes it to the libbpf and pahole makes use of it.
+
+Patch #4 introduces necessary basic support for split BTF into libbpf APIs.
+Patch #8 implements minimal changes to BTF dedup algorithm to allow
+deduplicating split BTFs. Patch #11 adds extra -B flag to bpftool to allow to
+specify the path to base BTF for cases when one wants to dump or inspect split
+BTF. All the rest are refactorings, clean ups, bug fixes and selftests.
+
+v1->v2:
+  - addressed Song's feedback.
+
+
+Andrii Nakryiko (11):
+  libbpf: factor out common operations in BTF writing APIs
+  selftest/bpf: relax btf_dedup test checks
+  libbpf: unify and speed up BTF string deduplication
+  libbpf: implement basic split BTF support
+  selftests/bpf: add split BTF basic test
+  selftests/bpf: add checking of raw type dump in BTF writer APIs
+    selftests
+  libbpf: fix BTF data layout checks and allow empty BTF
+  libbpf: support BTF dedup of split BTFs
+  libbpf: accomodate DWARF/compiler bug with duplicated identical arrays
+  selftests/bpf: add split BTF dedup selftests
+  tools/bpftool: add bpftool support for split BTF
+
+ tools/bpf/bpftool/btf.c                       |   9 +-
+ tools/bpf/bpftool/main.c                      |  15 +-
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/lib/bpf/btf.c                           | 807 ++++++++++--------
+ tools/lib/bpf/btf.h                           |   8 +
+ tools/lib/bpf/libbpf.map                      |   9 +
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ tools/testing/selftests/bpf/btf_helpers.c     | 259 ++++++
+ tools/testing/selftests/bpf/btf_helpers.h     |  19 +
+ tools/testing/selftests/bpf/prog_tests/btf.c  |  40 +-
+ .../bpf/prog_tests/btf_dedup_split.c          | 325 +++++++
+ .../selftests/bpf/prog_tests/btf_split.c      |  99 +++
+ .../selftests/bpf/prog_tests/btf_write.c      |  43 +
+ tools/testing/selftests/bpf/test_progs.h      |  11 +
+ 14 files changed, 1292 insertions(+), 355 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/btf_helpers.c
+ create mode 100644 tools/testing/selftests/bpf/btf_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_split.c
+
+-- 
+2.24.1
+
