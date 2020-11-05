@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B2B2A8A3B
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 23:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19BB52A8A3E
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 23:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732415AbgKEW6f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 17:58:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S1732504AbgKEW6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 17:58:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732035AbgKEW6e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:58:34 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F25C0613D2
-        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 14:58:34 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id y12so3605968wrp.6
-        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 14:58:34 -0800 (PST)
+        with ESMTP id S1732430AbgKEW6f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:58:35 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A79C0613D2
+        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 14:58:35 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id n18so3609458wrs.5
+        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 14:58:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GQFn82EPSsaqSkZSdg3eEn7h3cPHKXwNy46wDlBGgtk=;
-        b=AfUyQ0GCER1kiz7y6Er5a1XrBzRmWwQCRun4Q/B9r1TDkD2nUEKBjTGy1TPuorkFl0
-         A7uaOrPmRVGcBIOh/PdHDQ0IIzPmTh0CI8qQj5+5Vtb1Ey5bnQo3alrLKWw9/WneLLiH
-         jT6fUjsyzTE6pnSt9h21AStcAzVSyyplBxSTM=
+        bh=aSzUbTNsne9al3ng9/59i+9c1bESHaPY8FhaRGWHPGM=;
+        b=g6qYBO05iUB0cm/lqCdeg0InQvZWeFPoV0wFXeSG74v2stDp5QroUZ61bEvVXBU2u0
+         NvqmoCfpR4L7CdpvdspgK5zn4NjEpM0X5mh3aeis3eMqRLztZyGIPnd7HFrGGlP+mzMJ
+         38Nlpkc+FHl3DwRynVu/B9jHNi7UWOb5WvEfs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GQFn82EPSsaqSkZSdg3eEn7h3cPHKXwNy46wDlBGgtk=;
-        b=HJFxccDS1rA6jNT7tgXiCKHhqovuwfcCdkZd2W0wReqRh/v21HZ7i4FkQX05BAvx+Q
-         x5Gv6zinCqWFaYpsvE3VLqmYAbx7Tn6AhwHyvdYDWWBOr16ZadWWyowJQg+TJRXiVNqM
-         8K1mUDPJWrlqouK/20V3+PPVjel188S8qYoiMVresGqlEOCE/8zFH+aI3gAixsdVHnx2
-         EbJvlW8sQAVyfDoUpuXFkyRiLYlHxN9FocElU4psz4bZncwAxJb4wIHqkcYQk/0gHW5b
-         Rqz0PK/OfvdAJl70uEftzIqfgSvnxscVrpNbf3uYkZPBjvWChkRP/NCK5dunEvCG0eaI
-         S/1w==
-X-Gm-Message-State: AOAM533KTHvo3Tkex4rX9j5892M+jy+J3X2eAPG7TkftU9w5zG0E4Tob
-        /L/DIfDvukhyweP2McSP8cjRmA==
-X-Google-Smtp-Source: ABdhPJyjHaHvfqN5Y2NQXokSE81fyWCQfq4G9DExZPFwX3NWsRso7D5U9KJBjPOH3fh/6tf0ePei2A==
-X-Received: by 2002:adf:f90f:: with SMTP id b15mr5487937wrr.343.1604617113044;
+        bh=aSzUbTNsne9al3ng9/59i+9c1bESHaPY8FhaRGWHPGM=;
+        b=uHRQkqqdd7YOquehZrmtdqT8gJ6Mc4MGc8+WzTqDYkthG0SHqisu0MYABPdLlGsc05
+         Qocva8ZKvx3YXr+TcuhAikNNsOLo5b0m0qshBKADk1PctD6KBnz11f/Kzn/RGBG4Ok16
+         IBtLJpspbmFUCcszED9ydrfaScHmBVvmG8VirddgeZWDYJqDJZwvrspTBb5bGSrRaley
+         3oPSNreJXsUWtj6Gdsb7g2+Pvxr4UYwns1+g9C56NchMBZ0X/znA7g1XclUP3orLWX43
+         Dq3pIvIZZ+qCNzAxZhDfnD+Gzp6s4gBQ37CdNizxu9mtS1vKw4+NAkGySY9EmZc/jHrN
+         imWw==
+X-Gm-Message-State: AOAM533j0gBTybwmSLt/Xlt2xGizj4ZUZu3dJZDF0zwWf1V12ZAdgLzg
+        cX73Y1Sd04QkYrK1lpIKFxlHy70VSnpdEo8n
+X-Google-Smtp-Source: ABdhPJzyTCmCvCKNIyBSvHg10s/bOj6yoiAMYsXrCmiPuKR8pRIZWbN5fYurkSho3Cq0ODgfKoBx8Q==
+X-Received: by 2002:adf:94e3:: with SMTP id 90mr5139155wrr.380.1604617113942;
         Thu, 05 Nov 2020 14:58:33 -0800 (PST)
 Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id f19sm3977366wml.21.2020.11.05.14.58.32
+        by smtp.gmail.com with ESMTPSA id f19sm3977366wml.21.2020.11.05.14.58.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 14:58:32 -0800 (PST)
+        Thu, 05 Nov 2020 14:58:33 -0800 (PST)
 From:   KP Singh <kpsingh@chromium.org>
 To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
+Cc:     Song Liu <songliubraving@fb.com>, Martin KaFai Lau <kafai@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf-next v5 3/9] libbpf: Add support for task local storage
-Date:   Thu,  5 Nov 2020 22:58:21 +0000
-Message-Id: <20201105225827.2619773-4-kpsingh@chromium.org>
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next v5 4/9] bpftool: Add support for task local storage
+Date:   Thu,  5 Nov 2020 22:58:22 +0000
+Message-Id: <20201105225827.2619773-5-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
 In-Reply-To: <20201105225827.2619773-1-kpsingh@chromium.org>
 References: <20201105225827.2619773-1-kpsingh@chromium.org>
@@ -65,27 +65,68 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-Updates the bpf_probe_map_type API to also support
-BPF_MAP_TYPE_TASK_STORAGE similar to other local storage maps.
+Updates the binary to handle the BPF_MAP_TYPE_TASK_STORAGE as
+"task_storage" for printing and parsing. Also updates the documentation
+and bash completion
 
+Acked-by: Song Liu <songliubraving@fb.com>
 Acked-by: Martin KaFai Lau <kafai@fb.com>
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- tools/lib/bpf/libbpf_probes.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/bpf/bpftool/Documentation/bpftool-map.rst | 3 ++-
+ tools/bpf/bpftool/bash-completion/bpftool       | 2 +-
+ tools/bpf/bpftool/map.c                         | 4 +++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index 5482a9b7ae2d..ecaae2927ab8 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -230,6 +230,7 @@ bool bpf_probe_map_type(enum bpf_map_type map_type, __u32 ifindex)
- 		break;
- 	case BPF_MAP_TYPE_SK_STORAGE:
- 	case BPF_MAP_TYPE_INODE_STORAGE:
-+	case BPF_MAP_TYPE_TASK_STORAGE:
- 		btf_key_type_id = 1;
- 		btf_value_type_id = 3;
- 		value_size = 8;
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+index dade10cdf295..3d52256ba75f 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+@@ -50,7 +50,8 @@ MAP COMMANDS
+ |		| **lru_percpu_hash** | **lpm_trie** | **array_of_maps** | **hash_of_maps**
+ |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
+ |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
+-|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage** }
++|		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
++		| **task_storage** }
+ 
+ DESCRIPTION
+ ===========
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 3f1da30c4da6..fdffbc64c65c 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -705,7 +705,7 @@ _bpftool()
+                                 hash_of_maps devmap devmap_hash sockmap cpumap \
+                                 xskmap sockhash cgroup_storage reuseport_sockarray \
+                                 percpu_cgroup_storage queue stack sk_storage \
+-                                struct_ops inode_storage' -- \
++                                struct_ops inode_storage task_storage' -- \
+                                                    "$cur" ) )
+                             return 0
+                             ;;
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index a7efbd84fbcc..b400364ee054 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -51,6 +51,7 @@ const char * const map_type_name[] = {
+ 	[BPF_MAP_TYPE_STRUCT_OPS]		= "struct_ops",
+ 	[BPF_MAP_TYPE_RINGBUF]			= "ringbuf",
+ 	[BPF_MAP_TYPE_INODE_STORAGE]		= "inode_storage",
++	[BPF_MAP_TYPE_TASK_STORAGE]		= "task_storage",
+ };
+ 
+ const size_t map_type_name_size = ARRAY_SIZE(map_type_name);
+@@ -1464,7 +1465,8 @@ static int do_help(int argc, char **argv)
+ 		"                 lru_percpu_hash | lpm_trie | array_of_maps | hash_of_maps |\n"
+ 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
+ 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
+-		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage }\n"
++		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
++		"		  task_storage }\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+ 		bin_name, argv[-2]);
 -- 
 2.29.1.341.ge80a0c044ae-goog
 
