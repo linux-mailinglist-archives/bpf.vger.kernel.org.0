@@ -2,114 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFCF2A8A66
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 00:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF112A8A9F
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 00:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732563AbgKEXG6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 18:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732035AbgKEXG6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 18:06:58 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D3BC0613CF
-        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 15:06:56 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id c9so3152873wml.5
-        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 15:06:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZO1WsVXcNThD4KNpxonBQj7KL+pDl5MHxmVg0Y0eqsk=;
-        b=DPSNFhUnO3TrL+auXDPON8bJqnAVZJk3NA4/IzPO866ApKvFxG170gr/XGkA06KbUR
-         jdoc1f3YLQh0g4iRcz0IAROVtVE0jzzqlaPdy+sGQy57TNnKzBywjdCy5TaDOl4KLIrb
-         9tpLiwK6/D2r7peDoIgkH4CXXwS4FQI6wnySE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZO1WsVXcNThD4KNpxonBQj7KL+pDl5MHxmVg0Y0eqsk=;
-        b=Eb5LIFmnF5cIAS+p/WjvvsKtpNzcjB0g5x4iAoVvJG9L0lyuvT8fzrozAwYlWBgQLy
-         vL4FpzOFr21TFtC1G+G51snDrRcjOuLHCbu06i57+rKAyN71qaz8RXsFYvb6f/JbevzK
-         zLHbUiQrhxipWsKyEduloJsgqNZ0r3wWBjg/e9vz9/r8U2aDCbL2Eyl76PXvt+HqBzaR
-         wF3kIHebQGIO3FSeo+QzgxUeV3/h+m99i+Vu1wT5liKc/l3y89K4r7s1ldJWMs/6p50D
-         jCqQlTezRyun8SnJhgk6XBocPZgmMYICfZaOQsEGTOpM9G8sy4PrVm5OtiVSgatXblnP
-         MwyA==
-X-Gm-Message-State: AOAM533Sqy7V8dJWMVtbQYK84nGFaoUPfn6j0Qch3OXYjAZfifPvgcSB
-        Mk0k7aXAVhwSIN+q0EMAtuJc7Q==
-X-Google-Smtp-Source: ABdhPJzwfB5dKY+FMn+ZTmEla+9VMAGUjU1ABkMAL1elptfzxKg9dZtudab7qmtdJRd0aH5806SKhw==
-X-Received: by 2002:a1c:bd0b:: with SMTP id n11mr5133188wmf.111.1604617615216;
-        Thu, 05 Nov 2020 15:06:55 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id c185sm4473044wma.44.2020.11.05.15.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 15:06:54 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v2] bpf: Update verification logic for LSM programs
-Date:   Thu,  5 Nov 2020 23:06:51 +0000
-Message-Id: <20201105230651.2621917-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.1.341.ge80a0c044ae-goog
+        id S1729162AbgKEXVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 18:21:50 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20272 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726801AbgKEXVu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 18:21:50 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A5NCXNE009718;
+        Thu, 5 Nov 2020 15:21:31 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Vbnt7SnS7m7VuYo2BtskuTUlwRF8f90Pgoq3WT669YA=;
+ b=pOb008k40+yV5yhArEaCRn7kX+MmjuLBHAk3floTh7BHT6K0hCvgQjDuFF/LgYUQSkZc
+ RhmBZQNyI8K3ruu1xw85xKh07gxCs7jL2adag8R8LH7FcP/8Yg2FGoGO1yrOz2m3Ehly
+ 9p2siad2YhPKNuT4WcoZp6N1wLzuBC0yt4s= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 34mek34fsx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 05 Nov 2020 15:21:31 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 5 Nov 2020 15:21:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P8wtXltCcUceBEduKYH1yNHiawHYyOzYfVACyG5NbHxiYdRFx5nOYsTw46augqjGFkKKMngz4x5DkqAJCCv8GQqvlHzNTclN2j+zDUPhsoBS0uv7eQ3gKvzPM+sRqYY8b/gLZYsymzrEsmT5zhibDIUsdtWUT5a53aeyzQ8xC1KQaXuz7CSozIbc8nSe1ZWXKEuIwcvhTDjoLX7PcR4ujd+T5OR/bkpGo8EJFDELlnypkeY5QGvUQxUydquGyILF39HbRNTpRV+QciieUbpX7/jxXhMKWdSswqGEEnWvKQPj+t5MoPN9PpwML3pOSXd4ysPYVgnBWJhN5B10ITelaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vbnt7SnS7m7VuYo2BtskuTUlwRF8f90Pgoq3WT669YA=;
+ b=HyoeRgdoAFBT/FP8Flvw9vbgfRiyHmJLmJkvemVw8u5eLTxl2RVqgURwki3ps4Lp+tVPn2td14zy8kF+5Mqw2pdtBkG0F+L0Hr2x1iMjXu+5Ph/gyVA5R70Hr8xYWsgwQvBnC3QpMBQS2m9uJoAv3n1FzjVcVtXIiBUD9j6HxNYQFErvvXxmt11VQNBuSQp2BudmEnwYNhhEuv6IdMOj14TgULaM1iJynBXEyvzsn5MN93Vv8aK0eN/K0UXG9rfH6OngcK3YLkmo5kUGUwlY4lJrLBbvnJqIViDOS/GdAN5VE7UGU87pFWUwWTaCYz18Yt+o54GnRsE+UwIxeKxMuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vbnt7SnS7m7VuYo2BtskuTUlwRF8f90Pgoq3WT669YA=;
+ b=PrdywoiKXL0U7Ip30c+xuyXB1qPtpnK2oxrHlIZqaDyTMmh2M87BkmWz41BTvr9k4Xe/Jz00zcz58gE3ccOYPG3NXYbFMOs+ZpPJJK5ALvqT6mN1bz9Jm8CcZvVdlV1n64EtPlHVkTUY4QpbqTwi4tNbGvsmip8mrDkuoaUE+zc=
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BY5PR15MB3665.namprd15.prod.outlook.com (2603:10b6:a03:1f7::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Thu, 5 Nov
+ 2020 23:21:26 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3499.032; Thu, 5 Nov 2020
+ 23:21:25 +0000
+Date:   Thu, 5 Nov 2020 15:21:17 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     KP Singh <kpsingh@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
+        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next v5 8/9] bpf: Add tests for task_local_storage
+Message-ID: <20201105232117.wxjt66r7okihgbcf@kafai-mbp.dhcp.thefacebook.com>
+References: <20201105225827.2619773-1-kpsingh@chromium.org>
+ <20201105225827.2619773-9-kpsingh@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105225827.2619773-9-kpsingh@chromium.org>
+X-Originating-IP: [2620:10d:c090:400::5:3041]
+X-ClientProxiedBy: MWHPR01CA0038.prod.exchangelabs.com (2603:10b6:300:101::24)
+ To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3041) by MWHPR01CA0038.prod.exchangelabs.com (2603:10b6:300:101::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Thu, 5 Nov 2020 23:21:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 12bc0957-1a77-4926-2828-08d881e1840e
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3665:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB366553DAA82C649EE598A6E9D5EE0@BY5PR15MB3665.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XBURs7GVt7o5dLNptyyjCc8XO3Znr5xrL2AZCMoXSRZfqarLCiZIb0JxSyTUJhH/0PfKfRWDunX2Sp7px3Wz1qe7ncf3UIKV54Xrp8PvkHRpwRgOKizG9dKepN0Twkd5l44Mid6dpbACX/tLdTPpHzwqJzaJhK+CNIetoPay1Hb9DKeWJhG4gAm8yBDCRJlohMP1hJvXOfbiTj4TSeYltBJo24EJOYAPX/E/zpmoXuLwI2Yhts6tThgWpw203snF4Em/Jj+itorbnStXX/HPYDpIsl/Qgj3HXwmSBljI0zqKdjnHrbfkVKH8/Bnm+1Eg9ObaSZkBkeT6C64loGyKwA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(396003)(39860400002)(366004)(2906002)(83380400001)(4744005)(8936002)(66556008)(1076003)(8676002)(6666004)(316002)(4326008)(6916009)(5660300002)(66946007)(66476007)(55016002)(54906003)(9686003)(52116002)(7696005)(6506007)(16526019)(186003)(478600001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: qe2Cwj4mg746Cuj2kgodnAHQEhG/XjapB3NmKe7tudh3m3GiTGjY6hNErSmrsjeaoRZM8QGLtAaMLPk6WsUYOgg4Al+DJk1Zw8HrFeNtZ7RDoQtXqbjFZQdmylieKANZDNRUxfFacmusSbVrSuchX1BN99DJmnveU6kG19HjR1omVuI+rZq0lKZuS/KYHw+zva+R3bZbKQC6JS+jbTBePdG0BZ8vHszxhyT6tnULnp+Bhiw9+YWJ+21sUI3pgU5UHBcxwdVAtciNUT37KVSqXYOgKe9dY0y8ecN2rVQB1Bp9/NrIRh43jCUSeelboG/T8P67tll8U1ggwVDotAwIMqt9VnItAQQ5r6jqDX5DGmIQiGeX6/mvFsunny4SkBV/qnlv3Wd/468fRvLty3ycrL5ahlu+qpCWspQ7xuPtzPddjBjXPYz6bRLCOOOqT1YEnPa/Mz4tiYt9/7Ztf25MYqporq8j/inMHe/XskvXnpO+sc9r2/gytBMf38W+DUtKE7+oPM5h3VlrB9zWyuTR9B86ZZe/KtDHT3eNbmn9jwsR4rZpmQ+v+JbRC3ZgPKaic1isqeUiJTmOJvQRy2SocgQPMu2MeEOW5kVRMrQfivl60h0IP0rBrs4oyLhxVrVElLYVmrcBfKg7Gle0qNYz4i4wGriUmt+Wg0+YLTsrwlw1qI7CKt0vmSd/khCtBVcq
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12bc0957-1a77-4926-2828-08d881e1840e
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Nov 2020 23:21:25.8738
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V47BgDrZ6pVNgHTWQQE4+/YACN91YRs3tPQg3IOtgI+57o8yHLhkplXpgm8z7M7v
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3665
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-05_16:2020-11-05,2020-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 mlxscore=0 adultscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 suspectscore=1 bulkscore=0 mlxlogscore=443
+ lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011050151
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
-
-The current logic checks if the name of the BTF type passed in
-attach_btf_id starts with "bpf_lsm_", this is not sufficient as it also
-allows attachment to non-LSM hooks like the very function that performs
-this check, i.e. bpf_lsm_verify_prog.
-
-In order to ensure that this verification logic allows attachment to
-only LSM hooks, the LSM_HOOK definitions in lsm_hook_defs.h are used to
-generate a BTF_ID set. Upon verification, the attach_btf_id of the
-program being attached is checked for presence in this set.
-
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- kernel/bpf/bpf_lsm.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 78ea8a7bd27f..56cc5a915f67 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -13,6 +13,7 @@
- #include <linux/bpf_verifier.h>
- #include <net/bpf_sk_storage.h>
- #include <linux/bpf_local_storage.h>
-+#include <linux/btf_ids.h>
- 
- /* For every LSM hook that allows attachment of BPF programs, declare a nop
-  * function where a BPF program can be attached.
-@@ -26,7 +27,11 @@ noinline RET bpf_lsm_##NAME(__VA_ARGS__)	\
- #include <linux/lsm_hook_defs.h>
- #undef LSM_HOOK
- 
--#define BPF_LSM_SYM_PREFX  "bpf_lsm_"
-+#define LSM_HOOK(RET, DEFAULT, NAME, ...) BTF_ID(func, bpf_lsm_##NAME)
-+BTF_SET_START(bpf_lsm_hooks)
-+#include <linux/lsm_hook_defs.h>
-+#undef LSM_HOOK
-+BTF_SET_END(bpf_lsm_hooks)
- 
- int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
- 			const struct bpf_prog *prog)
-@@ -37,8 +42,7 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
- 		return -EINVAL;
- 	}
- 
--	if (strncmp(BPF_LSM_SYM_PREFX, prog->aux->attach_func_name,
--		    sizeof(BPF_LSM_SYM_PREFX) - 1)) {
-+	if (!btf_id_set_contains(&bpf_lsm_hooks, prog->aux->attach_btf_id)) {
- 		bpf_log(vlog, "attach_btf_id %u points to wrong type name %s\n",
- 			prog->aux->attach_btf_id, prog->aux->attach_func_name);
- 		return -EINVAL;
--- 
-2.29.1.341.ge80a0c044ae-goog
-
+On Thu, Nov 05, 2020 at 10:58:26PM +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
+> 
+> The test exercises the syscall based map operations by creating a pidfd
+> for the current process.
+> 
+> For verifying kernel / LSM functionality, the test implements a simple
+> MAC policy which denies an executable from unlinking itself. The LSM
+> program bprm_committed_creds sets a task_local_storage with a pointer to
+> the inode. This is then used to detect if the task is trying to unlink
+> itself in the inode_unlink LSM hook.
+> 
+> The test copies /bin/rm to /tmp and executes it in a child thread with
+> the intention of deleting itself. A successful test should prevent the
+> the running executable from deleting itself.
+> 
+> The bpf programs are also updated to call bpf_spin_{lock, unlock} to
+> trigger the verfier checks for spin locks.
+> 
+> The temporary file is cleaned up later in the test.
+> 
+> Signed-off-by: KP Singh <kpsingh@google.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
