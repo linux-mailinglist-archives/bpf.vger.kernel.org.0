@@ -2,83 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D3C2A82F1
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 17:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D707F2A82F6
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 17:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgKEQCT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 11:02:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
+        id S1726557AbgKEQE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 11:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgKEQCS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 11:02:18 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E718C0613CF;
-        Thu,  5 Nov 2020 08:02:18 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id u62so2291069iod.8;
-        Thu, 05 Nov 2020 08:02:18 -0800 (PST)
+        with ESMTP id S1725308AbgKEQEZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 11:04:25 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DA8C0613CF
+        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 08:04:25 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id s14so1596126qkg.11
+        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 08:04:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MAHLshw60eEwdm37ATqaQRT7lcxyOw4IoZI+r9s+npo=;
-        b=Val3pzDUUT5h643nG0XfwDd2Cuq87OCzVWCY57vXYfe29bMYLitJ2W+4aM43gSWOJz
-         OADVNuuZ/PGARZR93yMcQyVUvvzKnoLiuRJ5RYA3wuEP/VlV0zjzr2wQkH9zJlY7Wfw/
-         CrJQFjIPr9YNdEhALNWzyPfYy9380REU0odePPmow9r3iRfES1koiKfqwkzVrvne26zF
-         M+VH93f3yRKPkwBKYh7cljowVFRle/CCaEGqsp7e7RZ5XoLCMhuMLtaLUnPVf42l+Dl7
-         nNN8FHbO9s/qAyKslfBbI1mO1XHbUvOKe/8vRCgBTiXibuADKCL/8u3cfrA4TMGYGpvh
-         IspQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+tURLqj53bgxTZF38AE1KHeiSZCcGjzikfA/Ky/suCM=;
+        b=EOjUmvVrxNsz5p6GVtZkhwOFEey0SrM9+/KmskwoTmlzcdTx9KzaS8jzsGajBvjYJG
+         qpNWRkoQJECFyrfbs7J7iCKyiCrvZ9TJGlvZjXFBkihzDefwzX4o5mhKH9uB+JZv2VNZ
+         GAYoJrzIxFGtRsiAhPjcsBoRy6mwJIHK7wvHoJ8HSe2fapbiu2xPbou+PNRcAXe3vx8R
+         dMBUd2pd1fE5j8lzu4vnVXm7MZF/bgEmAkYqyKGxAQzGXp8Ln5cTfgV2Ifo9BtTQ09yy
+         IND4bxdBqtP96tG3ikp0WOAABs1NgrQenSdCYUwabuTk9zpi1Yb9msEcKFwW7IV+U6aV
+         qwnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MAHLshw60eEwdm37ATqaQRT7lcxyOw4IoZI+r9s+npo=;
-        b=tDSTfeg+F1eDKVfh65eYqmhvrylMpf7tNefe+NotzghXNxMfCUITngBoPXihHtJEKZ
-         KysSfmEQB6tdxHYGfHFeZPa+KMu6LSAKQ1SNHKp7QVKauebaaTbSn/hKBMpDCzKN/prU
-         txsADWZTqTbUpreS5OLTMnG09xiSeCVXwLJwchgqEiQROhh4UB052A0ByF47nsu/7xQg
-         Lbio4M+RVIFGWQwfdnuH+61gkt6rzi41SirGeB+32mVS+FZWzAd6NUER8r7i1raCfjLl
-         LZ4ufYQ9e+HSvtDq0G6FGsrDs0mow/VeUiFnH3uMH/rzv5igdO68xutJz08FlmxRXlZ6
-         uLfQ==
-X-Gm-Message-State: AOAM531g14Ho/HrYcejwHavHCF4fgyyTWexrMDZl6TaHdnOc7KKScS68
-        x0VdS7+7L8jm5Jdv/sL9PO8KRQ4phds=
-X-Google-Smtp-Source: ABdhPJx2BG6R6fonv2lCeZzkQrFoeMk8Xmc+gJoeNIFTIcUwi3K6iXLxTxeajzGrbsA92B115uFy6g==
-X-Received: by 2002:a6b:dc0f:: with SMTP id s15mr2182871ioc.180.1604592137899;
-        Thu, 05 Nov 2020 08:02:17 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:291c:9506:5e60:11ce])
-        by smtp.googlemail.com with ESMTPSA id j3sm1343072ilq.85.2020.11.05.08.02.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 08:02:17 -0800 (PST)
-Subject: Re: [PATCHv3 iproute2-next 3/5] lib: add libbpf support
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Hangbin Liu <haliu@redhat.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <20201029151146.3810859-4-haliu@redhat.com>
- <db14a227-1d5e-ed3a-9ada-ecf99b526bf6@gmail.com>
- <20201104082203.GP2408@dhcp-12-153.nay.redhat.com>
- <61a678ce-e4bc-021b-ab4e-feb90e76a66c@gmail.com>
- <20201105075121.GV2408@dhcp-12-153.nay.redhat.com>
- <3c3f892a-6137-d176-0006-e5ddaeeed2b5@gmail.com> <87sg9nssn0.fsf@toke.dk>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <9cd3ed2a-48e2-8d2a-3223-51f47c4f6cbc@gmail.com>
-Date:   Thu, 5 Nov 2020 09:02:15 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+tURLqj53bgxTZF38AE1KHeiSZCcGjzikfA/Ky/suCM=;
+        b=aqc59UYHVTkYhj3v8At0/SKGIv47m8YsK6JwTrPB6Cz19p977PV5vkaFt46gB/ZCnm
+         KhkEL98em+u63Pl2rCtX9NNq6pa6UV6YtJtp8Pid1pd1oZEowF+vJ/CLrUDNPlJzqqLj
+         aECv+QRz2ZIXBM2uJe1jlOGy0uwh3IJrTC/cXHWzT072S6+EpcaLWe/xBBEx6xt0xo8s
+         CnFOFQ2lLc5XZvb2dhyuUTqA61iiyP4JxNET7pV+PqwhkXGgPZVpIq5Ylqh6Oz9pBmiC
+         bFnh7ICBbD9+tdLz79uElnKSOBay1wcZ5AkhXmxVoIlqkpq5nER5oKbHA7RVAbrxBqec
+         6dBQ==
+X-Gm-Message-State: AOAM531gfmjnqK3JWhA3Zb6m3jZAuU9IFIDFw0FkPH9zocyDBnzdcF1g
+        JKRvwfoLVEeQCOFFnwDbM1isJ+r0b1bdUPDKbAbEdA==
+X-Google-Smtp-Source: ABdhPJyCifz3T1j3BRtl2nukRNSIx99Vhc4Zh8PrGcmWxY9uXOS8gyA/2vG7tOtX5fB67FH97jWNFUWwcLOg/Sx7Jl8=
+X-Received: by 2002:a37:4d11:: with SMTP id a17mr2610960qkb.448.1604592264434;
+ Thu, 05 Nov 2020 08:04:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87sg9nssn0.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200629095630.7933-1-lmb@cloudflare.com> <20200629095630.7933-2-lmb@cloudflare.com>
+ <20201104190808.417b9a4b@redhat.com> <CACAyw98rvXpcdQBE_XzFR0Y0s=rgtum-D0dcyE3DSZXUL-im=Q@mail.gmail.com>
+ <20201105120821.07d8ee8c@redhat.com>
+In-Reply-To: <20201105120821.07d8ee8c@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 5 Nov 2020 08:04:13 -0800
+Message-ID: <CAKH8qBuvN28371CAdOq8mUik+Ds=qPW+TWRAMXYbNWVvU_Nc6g@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/6] bpf: flow_dissector: check value of unused
+ flags to BPF_PROG_ATTACH
+To:     Jiri Benc <jbenc@redhat.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/5/20 8:57 AM, Toke Høiland-Jørgensen wrote:
-> I guess we could split it further into lib/bpf_{libbpf,legacy,glue}.c
-> and have the two former ones be completely devoid of ifdefs and
-> conditionally included based on whether or not libbpf support is
-> enabled?
-
-that sounds reasonable.
+On Thu, Nov 5, 2020 at 3:08 AM Jiri Benc <jbenc@redhat.com> wrote:
+>
+> On Thu, 5 Nov 2020 11:00:45 +0000, Lorenz Bauer wrote:
+> > I had a cursory look at bpftool packaging in Debian, Ubuntu and
+> > Fedora, it seems they all package bpftool in a kernel version
+> > dependent package. So the most straightforward fix is probably to
+> > change bpftool to use *mapfd = 0 and then land that via the bpf tree.
+> >
+> > What do you think?
+>
+> Apparently nobody is using bpftool for this (otherwise someone would
+> notice), so I'd say go ahead.
+Might be a good time to switch selftests to use bpftool to attach the
+flow dissector.
+I think right now we have a custom binary to do it (mainly because
+bpftool wasn't available in the selftests when the flow dissector was
+added).
