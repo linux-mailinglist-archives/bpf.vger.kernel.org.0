@@ -2,170 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF522A89DB
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 23:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971512A8A05
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 23:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbgKEWdC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 17:33:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
+        id S1726801AbgKEWl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 17:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgKEWdC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 17:33:02 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AB6C0613D2
-        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 14:33:01 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id 11so3289603ljf.2
-        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 14:33:01 -0800 (PST)
+        with ESMTP id S1726729AbgKEWlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:41:25 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9BBC0613CF;
+        Thu,  5 Nov 2020 14:41:23 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id g15so2310284ybq.6;
+        Thu, 05 Nov 2020 14:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xkf+MRN9XePNXQPjQufkefpR5sElzsUbOnIrHmIP770=;
-        b=dxIKfNfpEsAXmY/xWOqRrYkM9KlFylLD9rFoRLmTkO8jjuZkfPUeH0cTLVuRwfCvWw
-         qaB2uzaQVJRgtANQv72cpW4iYK8to0dPByIUhVM1XpLoRsQnF6fn/QU8IZFB39U4CSh/
-         QTVk/i2gdidGlBeNCjcofGE6FcM3VUzrU6R/I=
+        bh=IBg+B0rdAMqhMwTgaI8LziA2jYJLHwjFSBV29scAohA=;
+        b=rUrahyxuN6kfjFp229eJ/LTfObTNtvtTIHiIWb7au6TG74Whyq9VUBDlxK9GC654eo
+         mP824ODmongdaZg1WVqDncjRalMWCAc/VN2rVP0PL35P6F4RZLOOTvWygja8wsrqI2CL
+         QCqv5PXTWmBuycuQrA8TtJeflkjwOVfSz0sZme1S4OeS3VAhY80FeyjJxJM3S1udAzHM
+         cyZKyruU2zKR9/M3dFSUejIZQI1kfXjVCGrgGm3AzksdAzJiORDJJsrZ+qzYUej1vbax
+         5rtncLCiVrwOJqDk0gP0zddgHQpDk2IcRC844mAOvlOuVbuY5Fm/ABhwqOuOw/vYAhWb
+         qc/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xkf+MRN9XePNXQPjQufkefpR5sElzsUbOnIrHmIP770=;
-        b=LlrcMTpp1r2Op0i7i+e+jd+JA1rM1gey1wzmR9eZFNjjYxfu+Al7MKU8xIolRv1M6C
-         cugx9oq5RXJybM0LnSm2bav5vECNq9VjFdwJdVUoDNYJBZih6ofiI3fPfT2P9Ft2VzxF
-         6JYYB4PNGv+6toMLJkvb2Gq70beTgmJLxlrZMxLVrRUQB2gmAJ6r/MQXW06kVTQtipr5
-         3AzKo6NbranDiF6crFTo19k95x3mPxDMH9H2DlvB/b3El6n9NEt7rcf4CtNnkJmRV2Lf
-         HbIhVwwCRqI7aYVo+H3cOVrlHf0hct8FfBDMZ6kMzFPv6834nvuOKP2WZZTOba+egC3l
-         qSYQ==
-X-Gm-Message-State: AOAM530V0JmODHbd0xXOOE/8p6DeB+F1qzIY3GniLt2jkroOqOe8hWwT
-        6yqA+2FCAVp3MnFDSvWMcWm/s8IwWky2Dr4o5vAbNw==
-X-Google-Smtp-Source: ABdhPJzZTghwKY2TlTpaD9Gyq4u7DA0d8+dC+wDNWpMnhTTPrPUtIgXcNu8LgDgNWstlwwFF0idUGjoHJyQTVyKjv68=
-X-Received: by 2002:a2e:7016:: with SMTP id l22mr1593857ljc.466.1604615580262;
- Thu, 05 Nov 2020 14:33:00 -0800 (PST)
+        bh=IBg+B0rdAMqhMwTgaI8LziA2jYJLHwjFSBV29scAohA=;
+        b=WhB0Zfxy2zZxzuJZOiEyXx2/ICxLeUUIYyXri9BVSiuNj7pPQhfx7+H+i/DncUGCms
+         h2enOOHdv15mJjWPOJ/xGjI0AOdFUviFxL5908A4nqYtzZYQa+x9dzD5uBR7RE+jxWGp
+         D1eVP5XVdqWWqZzbW+/4NJYKgkE42qz4Jc/G6F23/I6cBsvic6iRHDG6+hniMIPSKFRk
+         WP/YTrgQ5VjPtrlKlYTdkklg2ZWeIzkrFMn7gVXe6KujFvd3pRjv3FtKTKEDd6/fy+Le
+         Qon19Oqtp+bDllXUsdj7OOD0T6r1bV+HqpmWhbfoGF+EDAsyOEvag3ncF97MLrOUEHgt
+         zrEg==
+X-Gm-Message-State: AOAM533dmVrh3OXklE0oq4AC1AQSe1LzysV4Z882Dw0X2gChN/bhCCE1
+        6XLEjkXnm3XBNiCLgONcCjdUof0SBdih2rTJs0RiOSplUEUmYA==
+X-Google-Smtp-Source: ABdhPJwtPxU64n9y4j0lyNA0hiiUGXVvYBD9vOWJ7De2/xeDWk5IiKwPrufiTv3Bd7JhIboXkvewPF9jjOCSlfiF3/k=
+X-Received: by 2002:a05:6902:72e:: with SMTP id l14mr6266826ybt.230.1604616083224;
+ Thu, 05 Nov 2020 14:41:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20201105144755.214341-1-kpsingh@chromium.org> <20201105144755.214341-9-kpsingh@chromium.org>
- <20201105220250.uvm3unmbne36lsoz@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20201105220250.uvm3unmbne36lsoz@kafai-mbp.dhcp.thefacebook.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 5 Nov 2020 23:32:49 +0100
-Message-ID: <CACYkzJ4sNH+PjrjzTYBQ-wcRqCN+b+v+qSk6otx-b3M-U-V3-A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 8/9] bpf: Add tests for task_local_storage
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20200423195850.1259827-1-andriin@fb.com> <20201105170202.5bb47fef@redhat.com>
+ <CAEf4Bzb7r-9TEAnQC3gwiwX52JJJuoRd_ZHrkGviiuFKvy8qJg@mail.gmail.com> <20201105135338.316e1677@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201105135338.316e1677@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 5 Nov 2020 14:41:12 -0800
+Message-ID: <CAEf4BzZgXO1Uv49cGQ6PMoe6gXiF8obJr9uKBTeE2MzzHEr=PA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] bpf: make verifier log more relevant by default
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jiri Benc <jbenc@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:03 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Thu, Nov 5, 2020 at 1:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> On Thu, Nov 05, 2020 at 03:47:54PM +0100, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
+> On Thu, 5 Nov 2020 13:22:12 -0800 Andrii Nakryiko wrote:
+> > On Thu, Nov 5, 2020 at 8:02 AM Jiri Benc <jbenc@redhat.com> wrote:
+> > > On Thu, 23 Apr 2020 12:58:50 -0700, Andrii Nakryiko wrote:
+> > > > To make BPF verifier verbose log more releavant and easier to use to debug
+> > > > verification failures, "pop" parts of log that were successfully verified.
+> > > > This has effect of leaving only verifier logs that correspond to code branches
+> > > > that lead to verification failure, which in practice should result in much
+> > > > shorter and more relevant verifier log dumps. This behavior is made the
+> > > > default behavior and can be overriden to do exhaustive logging by specifying
+> > > > BPF_LOG_LEVEL2 log level.
+> > >
+> > > This patch broke the test_offload.py selftest:
+> > >
+> > > [...]
+> > > Test TC offloads work...
+> > > FAIL: Missing or incorrect message from netdevsim in verifier log
+> > > [...]
+> > >
+> > > The selftest expects to receive "[netdevsim] Hello from netdevsim!" in
+> > > the log (coming from nsim_bpf_verify_insn) but that part of the log is
+> > > cleared by bpf_vlog_reset added by this patch.
 > >
-> > The test exercises the syscall based map operations by creating a pidfd
-> > for the current process.
-> >
-
-[...]
-
-> > +}
-> > +
-> > +unsigned int duration;
-> static
-
-Fixed.
-
+> > Should we just drop check_verifier_log() checks?
 >
-> > +
-> > +#define TEST_STORAGE_VALUE 0xbeefdead
-> > +
-> > +struct storage {
-> > +     void *inode;
-> > +     unsigned int value;
-> > +     /* Lock ensures that spin locked versions of local stoage operations
-> > +      * also work, most operations in this tests are still single threaded
-> > +      */
-> > +     struct bpf_spin_lock lock;
-> > +};
-> > +
-> > +/* Copies an rm binary to a temp file. dest is a mkstemp template */
-> > +int copy_rm(char *dest)
-> static
+> Drivers only print error messages when something goes wrong, so the
+> messages are high priority. IIUC this change was just supposed to
+> decrease verbosity, right?
 
-FIxed.
-
-[...]
-
-> > +     ret = chmod(dest, 0100);
-> > +     if (ret == -1)
-> > +             return errno;
-> > +
-> > +     close(fd_in);
-> > +     close(fd_out);
-> fd_in and fd_out are not closed in error cases.
-
-Fixed.
-
->
-> >  {
-> > -     char fname[PATH_MAX] = "/tmp/fileXXXXXX";
-> > -     int fd;
-> > +     int ret, fd_in, fd_out;
-> > +     struct stat stat;
-> >
-
-[...]
-
-> > + */
-> > +int run_self_unlink(int *monitored_pid, const char *rm_path)
-> static
-
-Fixed.
-
->
-> [ ... ]
->
-> > +bool check_syscall_operations(int map_fd, int obj_fd)
-> static
-
-Fixed.
-
->
-> [ ... ]
->
-> >  void test_test_local_storage(void)
-> >  {
-> > +     char tmp_exec_path[PATH_MAX] = "/tmp/copy_of_rmXXXXXX";
-> > +     int err, serv_sk = -1, task_fd = -1;
-> >       struct local_storage *skel = NULL;
-> > -     int err, duration = 0, serv_sk = -1;
-> >
-
-[...]
-
-> > +     err = unlink(tmp_exec_path);
-
-> Will tmp_exec_path file be removed if there is error earlier?
-
-No. Since I cannot move this unlink as inode_unlink LSM hook sets the
-inode_storage
-result, I added another label close_prog_unlink which cleans it up for
-the errors
-before this succeeds.
-
-
->
-> > +     if (CHECK(err != 0, "unlink", "unable to unlink %s: %d", tmp_exec_path,
-> > +               errno))
-> >               goto close_prog;
-> >
-> >       CHECK(skel->data->inode_storage_result != 0, "inode_storage_result",
-> > @@ -56,5 +200,6 @@ void test_test_local_storage(void)
-> >       close(serv_sk);
-> >
-> >  close_prog:
-> > +     close(task_fd);
-> >       local_storage__destroy(skel);
-> >  }
+Seems like check_verifier_log() in test_offline.py is only called for
+successful cases. This patch truncates parts of the verifier log that
+correspond to successfully validated code paths, so that in case if
+verification fails, only relevant parts are left. So for completely
+successful verification the log will be almost empty, with only final
+stats available.
