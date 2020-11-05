@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9852A7568
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 03:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0C52A756E
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 03:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387605AbgKEC0K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 21:26:10 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38473 "EHLO
+        id S1728301AbgKEC0L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 21:26:11 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:50127 "EHLO
         out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728065AbgKEC0I (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 21:26:08 -0500
+        by vger.kernel.org with ESMTP id S2387593AbgKEC0J (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 21:26:09 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id AA01F5C0196;
-        Wed,  4 Nov 2020 21:26:07 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 7ACA85C01CA;
+        Wed,  4 Nov 2020 21:26:08 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 04 Nov 2020 21:26:07 -0500
+  by compute3.internal (MEProxy); Wed, 04 Nov 2020 21:26:08 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=Jg0fjrJsxf5md
-        rs5PcyEWR+0hj8wkkuXo6wpkjxI3eo=; b=Meiy97Q/qyIzMPuHXK6PlCOOxTID8
-        exUHj9DpPM4Qb6q/td43JQLeD+qhEB3taWqs4t/mSeMQQYZXIe+fnhbq5PB4GOFT
-        HXd7lir+b+WXH0aaBKfIwGMrkjUe4OaMznT/KxK0FIhIiHtzbPd1zvt55Lx10Y4D
-        +52RejQ5vgduuY3kOv90ZSSjaVmQwXQgNMqNz7r71wwMLkGEfVWkEj9BztRPKQXK
-        CorvGBpt2f5tNfQYRccMDak1tPWCATOpLW+YnX36KJo3xmww8KAkVaZ3vNBza6Nn
-        6shfC++Qu878fHHwBSs4UTxvqkyxxiSwTXWwWti60oiU/Mg396B5yld8w==
+        :mime-version:content-transfer-encoding; s=fm1; bh=d921gZrveLgVW
+        10+cFYgvJSXNaGtEusR13nH1+m1Jf0=; b=NHLemwZ2SFJVN2DDESiS+inFiQTxo
+        qozfwGi1E4c/jSGV5fN/iXRqHyd1Ot3fCXgsPhpEDC+HQyyewpnsKj5tRsxcUdK/
+        nYn4YPCZebptPuqGxizveVIbFW20E4YgCEpajJL555BTU0IzjBggYRp6LJuJ1aFi
+        oL4HdSKlGwB3f//JA/MnsCqym9HUQIdSkkLEdBXmRyiE95YoMVRK+6Z3ffENd0v6
+        eodXi29zfOp9rNboh0nEX3hTC5Q6J7bRzehdrgF11iszGM/sMlUu2/oycm9Ahzk8
+        0L9xqK1fHEzeThMgz0boO2cZfAd4107U9uOt0PFj2jfykDSw92R4bQhsA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=Jg0fjrJsxf5mdrs5PcyEWR+0hj8wkkuXo6wpkjxI3eo=; b=pIqwjl0K
-        h+XWfQPisO/g8gQUFrjE7SrdCQv/cYtVz9LQ/96SdCg3qSEvs35raS0RGOzUq3co
-        /71mU3SxWa24xPYE6ZS7etrx3vCcOoDI0iMKhcEiORlxbrX61wcDP4km9PIUV5k1
-        NI03mZkEAKySZNNYpstcfkhD22CPu/4GKiQsWyPeUtwBX/l9NqpwLtiek+fFgWL7
-        MK/pNWAXV4a4H0XDalbiAlkJscWUM0YWeM5axmpiYuw90USqyZ0QWGa0XLpnTx09
-        CXslF8N7eynwT2vzhvcsUlNEmgCP3RulTcSPFpGonB1GoABtKTCaDcyxWTJooK+7
-        ujeAjQ1gI0odVw==
-X-ME-Sender: <xms:v2KjX2HCIo5sWWaHKiLou7RbueVz9ORgsqtveiCsoW3D_x51lCAoow>
-    <xme:v2KjX3UF0lY0wsMEAlhdnsDXAjJ0YsHUzTmm1D29qNRoUVn_GxrLsenMZiGNARKAO
-    Yw559BXxftbL7tMGQ>
+        fm1; bh=d921gZrveLgVW10+cFYgvJSXNaGtEusR13nH1+m1Jf0=; b=PqvG9s5K
+        hay7O1tv73p3Y7tBEWNLWfU7RFtb1XnZVILYE34g42SqCoxa2W6Fugs967Mvtjz3
+        +ePu27QYMee5D0Uv7j0Mo/aMLUW1Su8hawM2OpfHVZIVJANX1ffoTVF9SaqO++KL
+        uVJFEPROZ/FbTSnPp7+IyAuuPI93K6T/BJCmLmmF9zKNs7NeYauwbNIPWzZlbSqK
+        jRJAm9Owd3cqxbiLA88JW2JLaODXTCWqJBzDUeVwRi3jVTkbPUUhXR4fiPo4FGkq
+        dEtuJ/R04/k2s3gXz9XuSWSVLpjVzGPJP4kzLdoGgBWFiKPM55WJ/QcHhpXYY6wL
+        A8cYHIrPm0wSsg==
+X-ME-Sender: <xms:wGKjX8x3t0GvZ3DTNFqM1W0q_QXeTDYPOKonl4Sd886LVvStt7DhjA>
+    <xme:wGKjXwRmxXBxktGaWN6HX4v9NCk24oVy6D0HJDzhjaWphwflJTwBytNHb6MS0S0Ed
+    T2a0oE_bwVjWyAYUw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtiedggeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
@@ -47,20 +47,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtiedggeejucetufdoteggod
     fgvdegfeejfefguedvuddthffggffhhedtueeuteefieenucfkphepieelrddukedurddu
     tdehrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
     hmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:v2KjXwLJjx0CL0LC4nA9VmEu3dh1d9eMK55JOp7MCX-NYRZ5Ydfr1w>
-    <xmx:v2KjXwHOixOg91A8TgkMHkCvMcLh4KPr1DrJWyYvJqd_sqVY_Nkiow>
-    <xmx:v2KjX8Vgy_CL7SwrnS9Yfj6NZGdMBjSvSse7TeMJvg6zkMp5ioDiSw>
-    <xmx:v2KjXzSnngJcIsLVyzAeqQJuYwI2WLwd65-DJAF4AF_010lX6OUS7A>
+X-ME-Proxy: <xmx:wGKjX-VfxNg6Kjobcm0SQgzp_eRZj-pDG43INXfGmorda6gJtcH0Eg>
+    <xmx:wGKjX6j-w_uzhkSHD4LbZgoi1A0iju5b9AurAFbcSy31-YSNsTqWiA>
+    <xmx:wGKjX-AhYviP-1tCfDqdDtq9pPfsdVIGPTQ2BMi8OTM8AXUPXPdzcQ>
+    <xmx:wGKjX5NS8B8CL-9EHx0Mo1s0iT6t7AfhBDTv20hhQWzpYnzoRCZrlA>
 Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D6209328037B;
-        Wed,  4 Nov 2020 21:26:06 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id A37AA32801D7;
+        Wed,  4 Nov 2020 21:26:07 -0500 (EST)
 From:   Daniel Xu <dxu@dxuuu.xyz>
 To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
         daniel@iogearbox.net
 Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH bpf v2 1/2] lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
-Date:   Wed,  4 Nov 2020 18:25:37 -0800
-Message-Id: <487a07aa911b4e822a0b931f7b33a4f67fedb6bd.1604542786.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes after NUL
+Date:   Wed,  4 Nov 2020 18:25:38 -0800
+Message-Id: <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1604542786.git.dxu@dxuuu.xyz>
 References: <cover.1604542786.git.dxu@dxuuu.xyz>
@@ -70,59 +70,128 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-do_strncpy_from_user() may copy some extra bytes after the NUL
-terminator into the destination buffer. This usually does not matter for
-normal string operations. However, when BPF programs key BPF maps with
-strings, this matters a lot.
+Previously, bpf_probe_read_user_str() could potentially overcopy the
+trailing bytes after the NUL due to how do_strncpy_from_user() does the
+copy in long-sized strides. The issue has been fixed in the previous
+commit.
 
-A BPF program may read strings from user memory by calling the
-bpf_probe_read_user_str() helper which eventually calls
-do_strncpy_from_user(). The program can then key a map with the
-resulting string. BPF map keys are fixed-width and string-agnostic,
-meaning that map keys are treated as a set of bytes.
+This commit adds a selftest that ensures we don't regress
+bpf_probe_read_user_str() again.
 
-The issue is when do_strncpy_from_user() overcopies bytes after the NUL
-terminator, it can result in seemingly identical strings occupying
-multiple slots in a BPF map. This behavior is subtle and totally
-unexpected by the user.
-
-This commit uses the proper word-at-a-time APIs to avoid overcopying.
-
-Fixes: 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers")
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- lib/strncpy_from_user.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
+ .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
+ 2 files changed, 94 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
 
-diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
-index e6d5fcc2cdf3..d084189eb05c 100644
---- a/lib/strncpy_from_user.c
-+++ b/lib/strncpy_from_user.c
-@@ -35,17 +35,22 @@ static inline long do_strncpy_from_user(char *dst, const char __user *src,
- 		goto byte_at_a_time;
- 
- 	while (max >= sizeof(unsigned long)) {
--		unsigned long c, data;
-+		unsigned long c, data, mask, *out;
- 
- 		/* Fall back to byte-at-a-time if we get a page fault */
- 		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time);
- 
--		*(unsigned long *)(dst+res) = c;
- 		if (has_zero(c, &data, &constants)) {
- 			data = prep_zero_mask(c, data, &constants);
- 			data = create_zero_mask(data);
-+			mask = zero_bytemask(data);
-+			out = (unsigned long *)(dst+res);
-+			*out = (*out & ~mask) | (c & mask);
- 			return res + find_zero(data);
-+		} else  {
-+			*(unsigned long *)(dst+res) = c;
- 		}
+diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+new file mode 100644
+index 000000000000..597a166e6c8d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include "test_probe_read_user_str.skel.h"
 +
- 		res += sizeof(unsigned long);
- 		max -= sizeof(unsigned long);
- 	}
++static const char str[] = "mestring";
++
++void test_probe_read_user_str(void)
++{
++	struct test_probe_read_user_str *skel;
++	int fd, err, duration = 0;
++	char buf[256];
++	ssize_t n;
++
++	skel = test_probe_read_user_str__open_and_load();
++	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
++		  "skeleton open and load failed\n"))
++		goto out;
++
++	err = test_probe_read_user_str__attach(skel);
++	if (CHECK(err, "test_probe_read_user_str__attach",
++		  "skeleton attach failed: %d\n", err))
++		goto out;
++
++	fd = open("/dev/null", O_WRONLY);
++	if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
++		goto out;
++
++	/* Give pid to bpf prog so it doesn't read from anyone else */
++	skel->bss->pid = getpid();
++
++	/* Ensure bytes after string are ones */
++	memset(buf, 1, sizeof(buf));
++	memcpy(buf, str, sizeof(str));
++
++	/* Trigger tracepoint */
++	n = write(fd, buf, sizeof(buf));
++	if (CHECK(n != sizeof(buf), "write", "write failed: %ld\n", n))
++		goto fd_out;
++
++	/* Did helper fail? */
++	if (CHECK(skel->bss->ret < 0, "prog ret", "prog returned: %d\n",
++		  skel->bss->ret))
++		goto fd_out;
++
++	/* Check that string was copied correctly */
++	err = memcmp(skel->bss->buf, str, sizeof(str));
++	if (CHECK(err, "memcmp", "prog copied wrong string"))
++		goto fd_out;
++
++	/* Now check that no extra trailing bytes were copied */
++	memset(buf, 0, sizeof(buf));
++	err = memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeof(str));
++	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
++		goto fd_out;
++
++fd_out:
++	close(fd);
++out:
++	test_probe_read_user_str__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+new file mode 100644
+index 000000000000..41c3e296566e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+@@ -0,0 +1,34 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++#include <sys/types.h>
++
++struct sys_enter_write_args {
++	unsigned long long pad;
++	int syscall_nr;
++	int pad1; /* 4 byte hole */
++	unsigned int fd;
++	int pad2; /* 4 byte hole */
++	const char *buf;
++	size_t count;
++};
++
++pid_t pid = 0;
++int ret = 0;
++char buf[256] = {};
++
++SEC("tracepoint/syscalls/sys_enter_write")
++int on_write(struct sys_enter_write_args *ctx)
++{
++	if (pid != (bpf_get_current_pid_tgid() >> 32))
++		return 0;
++
++	ret = bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.28.0
 
