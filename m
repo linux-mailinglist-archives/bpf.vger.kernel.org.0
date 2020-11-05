@@ -2,136 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D848C2A86E3
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 20:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82B22A8726
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 20:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgKETQc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 14:16:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbgKETQb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:16:31 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A577C0613CF;
-        Thu,  5 Nov 2020 11:16:31 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id s8so128100yba.13;
-        Thu, 05 Nov 2020 11:16:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UQDWwq8QvMqdJVjzKGOETKiS1dHDi+D7vZxRLNj3byE=;
-        b=azygivsUO3WQ3joNx+4dX4Nbmg2PNAghBNk/vpB/zvr95CQWczH5VKrdKtgSmtZ76Q
-         mEXaKtXwJ2FUDibZdfn/c4DWWfu+lw3bdhv7lZK0gWtgtEMgNR+AEyu3fM67BtvWDpAU
-         uwHVmEIQL7VfJ93hX0RpFkirXlB0yyqWL6JmDM2uYlMbDP2BUiss5aJyxyWFSaIl6ts/
-         byqnNf25QOP53SxZ1IzachOloGnOGiq6TCRTpeZrihj1lkipfIkMN3zODz6EPugNN2Kq
-         f7NIgu9a1N44TFllgqC/IMQbQyy2zwgvtyuct2hRzo1F+P2DuWHCHgw5GN6qYWyPk4lo
-         FLbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UQDWwq8QvMqdJVjzKGOETKiS1dHDi+D7vZxRLNj3byE=;
-        b=fJSCMFUZdlYIKtzuuqij/i69+Cnor86h4PVDX5o4cRy+wLvp+cmUjkYyP90CTw6KqI
-         m1Mez89XLr+cffc48hvfWmSw31ERxeCwwUAo10zagF5p6uf5Jb3O9zOojNyiNW/tRuYZ
-         DJ6NtG1kjcuQazHocOdOBbB/bA9jLU9xnoVDDwbBZAxTvNb1hJX2DgQ9swIW6Wsr94JT
-         s56ehMI8oOGawBKcFVgppJqCbXvgN5rojn2gMadsSpWI5Z5rGh9ZEdAw4aHqhgivwXec
-         FS+XqtGgc3qKQq7Tj2ox/ogH2qyIHtD22ceCe+qwNtC+8UstY9bNlMxtdthTZMsRiOsR
-         juoQ==
-X-Gm-Message-State: AOAM531G35oG81OyTbFIW14PcUumVm6RbsEfQurYknIZydnbgSNJHetn
-        xlgf/3Y9ikDX05cfpttPoMbMyfRzJW4Jp+hyccA=
-X-Google-Smtp-Source: ABdhPJyCyz06QqQEAxYz9uaHbc6oT73ifk10hhdeAkNDkDovRgGK1ZtVOdvbeHkjfe1kT0ho0uvoZ4IuZ+ucRo50c1U=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr5738478ybe.403.1604603790660;
- Thu, 05 Nov 2020 11:16:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20201105043402.2530976-1-andrii@kernel.org> <20201105105254.27c84b78@carbon>
-In-Reply-To: <20201105105254.27c84b78@carbon>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 5 Nov 2020 11:16:19 -0800
-Message-ID: <CAEf4BzYOcQt1dv2f5UmVqCGWJVqM95DoUAumH+sRuXW3rzejMg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/11] libbpf: split BTF support
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Anton Protopopov <aspsk2@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1732011AbgKET2O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 14:28:14 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59709 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732133AbgKET2L (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 14:28:11 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6ADBD5C00EB;
+        Thu,  5 Nov 2020 14:28:10 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 05 Nov 2020 14:28:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:content-transfer-encoding:content-type:cc:subject
+        :from:to:date:message-id:in-reply-to; s=fm1; bh=43Dc/Y9QBFZVEJ5n
+        ctwhETgLISxd+T8jon80wTz0I60=; b=UIy6YlPw8mzEdhhCZ/4N1uw7oBsstJ2b
+        qivyGyiJu0yquM+j3r6wyZyJD5Qv/1ZUHi/Anfbf/DJyRu31olSe5bbribdstDmn
+        emSAbFXTN4VcZs2KBpWt3jh/5v/pzVo1q/zsC7AlKGde0m7FmPZ1ciBVH9L41XXd
+        bGYnpZEvIgHhE4F+ltQeclAtwXcMOIQgWc7z6g11y38CHCYXOUgRQImJudK3Lusx
+        O5RB7cJdUdJf98D8apZC3w0IWG+zb1m81VWWqWtfVdXIjg92nsF1A25/bWpsshKC
+        uPB93REWIXekfEP+8NZUFCcB5IEb9ZtvIGbgrmjPF3O6hBZ0nQ5O+g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=43Dc/Y9QBFZVEJ5nctwhETgLISxd+T8jon80wTz0I60=; b=rNhoaRcC
+        braNnrp8mRFzc7m40DMBkpSV91jSeoVKu/GjmrpeyqHVgqA5LcsKuvH4BLfW9Gw1
+        4ZkLowxwD4C5uKMJs7Vg0L1Chhg9m7IzuDEgqXreCFWugREKarbUpcyyqW8Kkyi3
+        QobIsSVmVkpRNRushuEVQAAd5cZ0G4dpKwLlKoyh2P+Ypg4B2fOuJEREKTtqgFBi
+        2I5Ymnb5IXOpVQyOs1hBZkRmwI/ywRG+DykzCRkRaQ432kZ+R0wOnyGQ3XraOmWk
+        AI4SW7uap+oFZDFZkQWUspoJIlrkMhVU2jIJqhnpA96OrNG6fz+Y6QnmkEc8PRwB
+        OrlDClWAe0eorQ==
+X-ME-Sender: <xms:SVKkX_L12YLftyWYq6MYtDgYyH4sVw-L1vMVIH4IWXd_rbvrjZpxDw>
+    <xme:SVKkXzJA02ifbofokvsw9dKLfyo0NhMfcxZp5zGt-sF81L25JsWGjRGOWIAndrfXC
+    ZWSU9uJjCVs5IErYA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtjedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddt
+    jeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeejfefhudeffefhjedvvefhheduledtueejvedugedvjedv
+    jeeljefggedtjeejveenucfkphepieelrddukedurddutdehrdeigeenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:SVKkX3uZF-_mgxIUk_cqTPDsRskzex_cp9OWheKPcsRo2aC3w1aQ3g>
+    <xmx:SVKkX4ZHOG2HGSd60BtEH7lKP16nS-Ka2tj76XkeRWQS2T_Yy0ME4g>
+    <xmx:SVKkX2acBHHYOcY5-EvB7DHreTfUDFwzl9qymdaEo2EzVrYzr6otXA>
+    <xmx:SlKkX2F17KWtf3BZYvoAXX_gu7Jra6quPl-vfiQNiKEUD2vQRM7ayw>
+Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3B63032802F8;
+        Thu,  5 Nov 2020 14:28:09 -0500 (EST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     "bpf" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "Kernel Team" <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Song Liu" <songliubraving@fb.com>
+Date:   Thu, 05 Nov 2020 11:27:41 -0800
+Message-Id: <C6VKT56JAC76.R5KKJWKRBWYM@maharaja>
+In-Reply-To: <B9A62DF7-8C1B-448C-8672-0AF6FC1773BE@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 1:53 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+On Thu Nov 5, 2020 at 10:30 AM PST, Song Liu wrote:
 >
-> On Wed, 4 Nov 2020 20:33:50 -0800
-> Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> > This patch set adds support for generating and deduplicating split BTF. This
-> > is an enhancement to the BTF, which allows to designate one BTF as the "base
-> > BTF" (e.g., vmlinux BTF), and one or more other BTFs as "split BTF" (e.g.,
-> > kernel module BTF), which are building upon and extending base BTF with extra
-> > types and strings.
-> >
-> > Once loaded, split BTF appears as a single unified BTF superset of base BTF,
-> > with continuous and transparent numbering scheme. This allows all the existing
-> > users of BTF to work correctly and stay agnostic to the base/split BTFs
-> > composition.  The only difference is in how to instantiate split BTF: it
-> > requires base BTF to be alread instantiated and passed to btf__new_xxx_split()
-> > or btf__parse_xxx_split() "constructors" explicitly.
-> >
-> > This split approach is necessary if we are to have a reasonably-sized kernel
-> > module BTFs. By deduping each kernel module's BTF individually, resulting
-> > module BTFs contain copies of a lot of kernel types that are already present
-> > in vmlinux BTF. Even those single copies result in a big BTF size bloat. On my
-> > kernel configuration with 700 modules built, non-split BTF approach results in
-> > 115MBs of BTFs across all modules. With split BTF deduplication approach,
-> > total size is down to 5.2MBs total, which is on part with vmlinux BTF (at
-> > around 4MBs). This seems reasonable and practical. As to why we'd need kernel
-> > module BTFs, that should be pretty obvious to anyone using BPF at this point,
-> > as it allows all the BTF-powered features to be used with kernel modules:
-> > tp_btf, fentry/fexit/fmod_ret, lsm, bpf_iter, etc.
+> > On Nov 4, 2020, at 6:25 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >=20
+> > Previously, bpf_probe_read_user_str() could potentially overcopy the
+> > trailing bytes after the NUL due to how do_strncpy_from_user() does the
+> > copy in long-sized strides. The issue has been fixed in the previous
+> > commit.
+> >=20
+> > This commit adds a selftest that ensures we don't regress
+> > bpf_probe_read_user_str() again.
+> >=20
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> > .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
+> > .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
+> > 2 files changed, 94 insertions(+)
+> > create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_us=
+er_str.c
+> > create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_us=
+er_str.c
+> >=20
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str=
+.c b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> > new file mode 100644
+> > index 000000000000..597a166e6c8d
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> > @@ -0,0 +1,60 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <test_progs.h>
+> > +#include "test_probe_read_user_str.skel.h"
+> > +
+> > +static const char str[] =3D "mestring";
+> > +
+> > +void test_probe_read_user_str(void)
+> > +{
+> > +	struct test_probe_read_user_str *skel;
+> > +	int fd, err, duration =3D 0;
+> > +	char buf[256];
+> > +	ssize_t n;
+> > +
+> > +	skel =3D test_probe_read_user_str__open_and_load();
+> > +	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
+> > +		  "skeleton open and load failed\n"))
+> > +		goto out;
 >
-> I love to see this work going forward.
+> nit: we can just return here.
 >
+> > +
+> > +	err =3D test_probe_read_user_str__attach(skel);
+> > +	if (CHECK(err, "test_probe_read_user_str__attach",
+> > +		  "skeleton attach failed: %d\n", err))
+> > +		goto out;
+> > +
+> > +	fd =3D open("/dev/null", O_WRONLY);
+> > +	if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
+> > +		goto out;
+> > +
+> > +	/* Give pid to bpf prog so it doesn't read from anyone else */
+> > +	skel->bss->pid =3D getpid();
+>
+> It is better to set pid before attaching skel.
+>
+> > +
+> > +	/* Ensure bytes after string are ones */
+> > +	memset(buf, 1, sizeof(buf));
+> > +	memcpy(buf, str, sizeof(str));
+> > +
+> > +	/* Trigger tracepoint */
+> > +	n =3D write(fd, buf, sizeof(buf));
+> > +	if (CHECK(n !=3D sizeof(buf), "write", "write failed: %ld\n", n))
+> > +		goto fd_out;
+> > +
+> > +	/* Did helper fail? */
+> > +	if (CHECK(skel->bss->ret < 0, "prog ret", "prog returned: %d\n",
+>
+> In most cases, we use underscore instead of spaces in the second
+> argument
+> of CHECK(). IOW, please use "prog_ret" instead of "prog ret".
+>
+> > +		  skel->bss->ret))
+> > +		goto fd_out;
+> > +
+> > +	/* Check that string was copied correctly */
+> > +	err =3D memcmp(skel->bss->buf, str, sizeof(str));
+> > +	if (CHECK(err, "memcmp", "prog copied wrong string"))
+> > +		goto fd_out;
+> > +
+> > +	/* Now check that no extra trailing bytes were copied */
+> > +	memset(buf, 0, sizeof(buf));
+> > +	err =3D memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeo=
+f(str));
+> > +	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
+> > +		goto fd_out;
+> > +
+> > +fd_out:
+> > +	close(fd);
+> > +out:
+> > +	test_probe_read_user_str__destroy(skel);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str=
+.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> > new file mode 100644
+> > index 000000000000..41c3e296566e
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> > @@ -0,0 +1,34 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +#include <sys/types.h>
+> > +
+> > +struct sys_enter_write_args {
+> > +	unsigned long long pad;
+> > +	int syscall_nr;
+> > +	int pad1; /* 4 byte hole */
+> > +	unsigned int fd;
+> > +	int pad2; /* 4 byte hole */
+> > +	const char *buf;
+> > +	size_t count;
+> > +};
+> > +
+> > +pid_t pid =3D 0;
+> > +int ret =3D 0;
+> > +char buf[256] =3D {};
+> > +
+> > +SEC("tracepoint/syscalls/sys_enter_write")
+> > +int on_write(struct sys_enter_write_args *ctx)
+> > +{
+> > +	if (pid !=3D (bpf_get_current_pid_tgid() >> 32))
+> > +		return 0;
+> > +
+> > +	ret =3D bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
+>
+> bpf_probe_read_user_str() returns "long". Let's use "long ret;"
 
-Thanks.
+Thanks for review, will send v3 with these changes.
 
-> My/Our (+Saeed +Ahern) use-case is for NIC-driver kernel modules.  I
-> want drivers to define a BTF struct that describe a meta-data area that
-> can be consumed/used by XDP, also available during xdp_frame to SKB
-> transition, which happens in net-core. So, I hope BTF-IDs are also
-> "available" from core kernel code?
-
-I'll probably need a more specific example to understand what exactly
-you are asking and how you see everything working together, sorry.
-
-If you are asking about support for using BTF_ID_LIST() macro in a
-kernel module, then right now we don't call resolve_btfids on modules,
-so it's not supported there yet. It's trivial to add, but we'll
-probably need to teach resolve_btfids to understand split BTF. We can
-do that separately after the basic "infra" lands, though.
-
->
->
-> > This patch set is a pre-requisite to adding split BTF support to pahole, which
-> > is a prerequisite to integrating split BTF into the Linux kernel build setup
-> > to generate BTF for kernel modules. The latter will come as a follow-up patch
-> > series once this series makes it to the libbpf and pahole makes use of it.
-> >
-> > Patch #4 introduces necessary basic support for split BTF into libbpf APIs.
-> > Patch #8 implements minimal changes to BTF dedup algorithm to allow
-> > deduplicating split BTFs. Patch #11 adds extra -B flag to bpftool to allow to
-> > specify the path to base BTF for cases when one wants to dump or inspect split
-> > BTF. All the rest are refactorings, clean ups, bug fixes and selftests.
-> >
-> > v1->v2:
-> >   - addressed Song's feedback.
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->
+[...]
