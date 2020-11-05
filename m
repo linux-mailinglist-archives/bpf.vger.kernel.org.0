@@ -2,130 +2,357 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF0D2A7CE1
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 12:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD5E2A7D64
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 12:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729263AbgKELYp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 06:24:45 -0500
-Received: from mail-eopbgr60132.outbound.protection.outlook.com ([40.107.6.132]:4238
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730270AbgKELYp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:24:45 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=afXgGuIrgZ7EBvaHGV1MqA6croCKVA7gbjE3bcuPLXjbH4snWII2RKi1kdce2C5CQPcJ/jCeAYfI6BmA9NY7isTrv/iAMA4RMzjiDF8pgkcfo8eueADMXByv08JLM7gvG+fmwr7fJKwMajytwwGOKTY+9e1sJ9VgRaT3okiKNu5DZivAQHLedQrb46evpxmZitQ5hF2/AQ+bdWVL3C/pk6Lr9mALmjoa72fOjoiz3SskObH0GlqGEsstlXPBF7y0uqmTjdS6mMAcXKV5YUqHFsbfDJgSK1vudipMAjA05eale/wQRykOMkmfXCUoOq60ITRfsE39xjV8aTCRF5VB9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mgIXIGtB2Q7iO10E8kQ1NU+PTRfPkp4FxRb55BizI8Y=;
- b=PUGYZ1uuFuN3ScqykLM0PVvszSl3BNm844C9/9BnNVaIelJk/yeDFVBM1kvbdbmZIByANAtitO30+mxg0bgJBOUA/8eF+ixTz5qXU3DlXUNcZhAks7fIceIVniWXf3oILA95ibaPQjBO+tKe6Vg9zsFgztjdSkbGGN9lAzTqmf0W2YFoqmMH1wFb5igg4DuLGtO3FPbmuDUQtUQcObitWMptQOilMVWXQ0fGY/orGk8VZtgZgJd9hdFKreHQV50Es4zn9lH6L/dfECOoKkPpTRfj+IEsH6RU8Q8EFfPZdr7n0gxydWsAxDwH4ioXDo1+iH/qblv8MGCkUwZ1x/GS7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mgIXIGtB2Q7iO10E8kQ1NU+PTRfPkp4FxRb55BizI8Y=;
- b=bhQmYARP2qv+c8DDrE5L/PKCnmOKGpzCKk3LjXlGzkQi0GoDfThwNzIsLgBzOYHQ06KWIR1R9rXX7M73KUuGdQM5z1Yv2BJKToG3f3pPcOFGhKUg1pfPUJAcaZptFS9Sm7sdz27tSa2/ekaetbEBLOEDGq0gAVuAg5HdyJRTEzc=
-Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
- (2603:10a6:820:1b::23) by VI1PR83MB0256.EURPRD83.prod.outlook.com
- (2603:10a6:802:78::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.6; Thu, 5 Nov
- 2020 11:24:40 +0000
-Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
- ([fe80::c857:1a78:d155:fc99]) by VI1PR8303MB0080.EURPRD83.prod.outlook.com
- ([fe80::c857:1a78:d155:fc99%10]) with mapi id 15.20.3564.010; Thu, 5 Nov 2020
- 11:24:40 +0000
-From:   Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-To:     KP Singh <kpsingh@chromium.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@google.com>
-Subject: RE: [EXTERNAL] Re: [PATCH bpf-next] Update perf ring buffer to
- prevent corruption
-Thread-Topic: [EXTERNAL] Re: [PATCH bpf-next] Update perf ring buffer to
- prevent corruption
-Thread-Index: AdazYC1vg+x0B4GYSm+iiVVe+II4ywABZuYAAAAGmTA=
-Date:   Thu, 5 Nov 2020 11:24:40 +0000
-Message-ID: <VI1PR8303MB0080BEF79FD7CF83959A092BFBEE0@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
-References: <VI1PR8303MB00802B04481D53CBBEBCF0DDFBEE0@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
- <CACYkzJ7uUb97TeWi+r8zLAOMUMk8z_zVvQ=c7p8z2gAP0X5C3A@mail.gmail.com>
-In-Reply-To: <CACYkzJ7uUb97TeWi+r8zLAOMUMk8z_zVvQ=c7p8z2gAP0X5C3A@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-05T11:24:38Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=21c98253-5022-41c9-bfb5-df14b4de02be;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [149.12.0.58]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e95524b8-259d-4b29-cf9e-08d8817d6305
-x-ms-traffictypediagnostic: VI1PR83MB0256:
-x-microsoft-antispam-prvs: <VI1PR83MB0256898978F79B60AA934EB1FBEE0@VI1PR83MB0256.EURPRD83.prod.outlook.com>
-x-o365-sonar-daas-pilot: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NG/AaYHiebVga5JuEWIWCliLegAoWsh4TkM7el1fa8ByiZONO7b+/1INiEjgbZ2t4Y1a4kL/E4Zf7IXsSIILGDz74bq1TLVn4uS8w7UbjDgB1TANXAfaF52kriT835qDwUTe81IknkJEMfFhlqw5YB8HLjAXug4bdVYkJR0faTA/3gR2mcrFPOariX0xyeAWEhJ3E05If66np6e4wJkLIaD7e1TLYj40xce//mlP+lqgDqrA90QnqbWxcLEzPVh+JXMmVA2BF4VZYwd60rngukX7KOfdEmq42UHtDzcLkz1gr29zh1Wsu9EfqFq5he/7zbbi9D7+O2cfFGoqXoci4A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR8303MB0080.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(366004)(39860400002)(6916009)(86362001)(9686003)(55016002)(478600001)(54906003)(5660300002)(4326008)(316002)(10290500003)(76116006)(8936002)(52536014)(8676002)(66446008)(66556008)(66476007)(66946007)(83380400001)(82960400001)(8990500004)(82950400001)(186003)(26005)(7696005)(6506007)(53546011)(71200400001)(15650500001)(2906002)(33656002)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: KzgjfbArDwFvc7d9bwShePyEOYjZ3Erwsts5yshE/D2zlcD8MGK+TROvf0jcpk5UZ18dgW1YlfmG6OKlycl/oxitOGZbSzpjZ/M/r6T5KDg/1w6MR2J5lzBc8/KIvgyWSAfN2myJhuFBTcScvpHdLtjZ5riePqi9uBaCy4KduldWm42yO1Ez1aL2iBvm3bMPT7+u99r0+EA3YRWm6P963XuvFPENn9lMGBtawKVNUgJNljubaZT9gNkDEeOjN808wwTJrfg4zQIOE6uzb7l/jf4TgViTSlPIXYGI9ZcCWpkgVlnRR9eULdKt6d7R0fYwEfmntSR6oHEDVnG2M1HtQYL4MIKsLlKh3BI3nbOXMlHqVkxbhlJhLf2ST8Itvl6GbKWg0zknb9IYAwZXjB25RkWYvoIaAWyiKKgsR12GEt69PzGEuMd8UFuOfn5UIiDANs3o5uqMeZPWDt4NB/8HmsLjOnUORQwxkBYS6CDc//Hcz5T/TkhGwNLactmE1H0eilb6h7MPZ/PiWteV4V3yZN7zs3a4YlfQz/xWugHTOMO9C18D/lXi21xiEsdxFG2dyOjtHtsjcCFCBLA95DH4TXRmbvMkVeIuoD2fjO4pKe1KqPwl7jbEV+NZCQlVDOShuJBlxbr6KwX4M7n+dLyPBpRaY9A5PNRoQDS9UMa7UvPcyIaTrsDXF5iSU99kDKk11KU6OruWPSYR5mvZi0Y5ny4jzBJn9Wn6LWmSgIv/N7VHF3tSZUNezTfkDVjrb/OMffx03kQDnIyThOxIgy5LAb1MzS39t+rJvA6DTaBYA77o9wk8JXRKd48VsHhTKeMAgsYIaSzPKwt7XoX7A0sPVCugjBYZXAUv7HqWALDhOkzPGenSEEy3IqZBtT5zw9DbJYU0yK+Klhdpyjtif6JAAA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729016AbgKELms (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 06:42:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726665AbgKELmr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 06:42:47 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B6FC2071A;
+        Thu,  5 Nov 2020 11:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604576565;
+        bh=5VRTwjpmKBu9KB8BMN+QsZm3R0MwdEqWWrsMOe7819Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rENQCXuShVZPMGR73KAG6hXzuZLV4Ly5xRK8AaRdBKUMhIy04FKYk7q3bOF9TDWxP
+         nM74Wu7vAJMuYGzWLNyXA54GWqDf8PjQJ59LyqCVB+9C4cXk7w577s5p9sOOTvjAUP
+         XN3fYqTG4d5cNB+jPBSZ25lFwZ1+GjJcWfRriRQQ=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 04D96411D1; Thu,  5 Nov 2020 08:42:43 -0300 (-03)
+Date:   Thu, 5 Nov 2020 08:42:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [RFC PATCH dwarves] btf: add support for split BTF loading and
+ encoding
+Message-ID: <20201105114242.GH262228@kernel.org>
+References: <20201105043936.2555804-1-andrii@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR8303MB0080.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e95524b8-259d-4b29-cf9e-08d8817d6305
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 11:24:40.2536
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VTBbir/Mwj5Tl91aBdhOc7Bi5GWGoQquQmQpzRbth9INxLRaY7CFNhbWxGeosP+htA5hON1VvOScoBfM36zN5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR83MB0256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201105043936.2555804-1-andrii@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBLUCBTaW5naCA8a3BzaW5naEBj
-aHJvbWl1bS5vcmc+DQo+IFNlbnQ6IDA1IE5vdmVtYmVyIDIwMjAgMTE6MjENCj4gVG86IEtldmlu
-IFNoZWxkcmFrZSA8S2V2aW4uU2hlbGRyYWtlQG1pY3Jvc29mdC5jb20+DQo+IENjOiBicGZAdmdl
-ci5rZXJuZWwub3JnOyBBbmRyaWkgTmFrcnlpa28gPGFuZHJpaS5uYWtyeWlrb0BnbWFpbC5jb20+
-OyBLUA0KPiBTaW5naCA8a3BzaW5naEBnb29nbGUuY29tPg0KPiBTdWJqZWN0OiBbRVhURVJOQUxd
-IFJlOiBbUEFUQ0ggYnBmLW5leHRdIFVwZGF0ZSBwZXJmIHJpbmcgYnVmZmVyIHRvDQo+IHByZXZl
-bnQgY29ycnVwdGlvbg0KPiANCj4gT24gVGh1LCBOb3YgNSwgMjAyMCBhdCAxMTo0MSBBTSBLZXZp
-biBTaGVsZHJha2UNCj4gPEtldmluLlNoZWxkcmFrZUBtaWNyb3NvZnQuY29tPiB3cm90ZToNCj4g
-Pg0KPiA+IEZyb20gODQyNTQyNmQwZmIyNTZhY2Y3YzJlNTBmMGFhNjQyNDUwYWRjMzY2YSBNb24g
-U2VwIDE3IDAwOjAwOjAwDQo+IDIwMDENCj4gPiBGcm9tOiBLZXZpbiBTaGVsZHJha2UgPGtldmlu
-LnNoZWxkcmFrZUBtaWNyb3NvZnQuY29tPg0KPiA+IERhdGU6IFdlZCwgNCBOb3YgMjAyMCAxNTo0
-Mjo1NCArMDAwMA0KPiA+IFN1YmplY3Q6IFtQQVRDSF0gVXBkYXRlIHBlcmYgcmluZyBidWZmZXIg
-dG8gcHJldmVudCBjb3JydXB0aW9uIGZyb20NCj4gPiAgYnBmX3BlcmZfb3V0cHV0X2V2ZW50KCkN
-Cj4gPg0KPiA+IFRoZSBicGZfcGVyZl9vdXRwdXRfZXZlbnQoKSBoZWxwZXIgdGFrZXMgYSBzYW1w
-bGUgc2l6ZSBwYXJhbWV0ZXIgb2YNCj4gdTY0LCBidXQNCj4gPiB0aGUgdW5kZXJseWluZyBwZXJm
-IHJpbmcgYnVmZmVyIHVzZXMgYSB1MTYgaW50ZXJuYWxseS4gVGhpcyA2NEtCIG1heGltdW0NCj4g
-c2l6ZQ0KPiA+IGhhcyB0byBhbHNvIGFjY29tbW9kYXRlIGEgdmFyaWFibGUgc2l6ZWQgaGVhZGVy
-LiBGYWlsdXJlIHRvIG9ic2VydmUgdGhpcw0KPiA+IHJlc3RyaWN0aW9uIGNhbiByZXN1bHQgaW4g
-Y29ycnVwdGlvbiBvZiB0aGUgcGVyZiByaW5nIGJ1ZmZlciBhcyBzYW1wbGVzDQo+ID4gb3Zlcmxh
-cC4NCj4gPg0KPiA+IFRydW5jYXRlIHRoZSByYXcgc2FtcGxlIHR5cGUgdXNlZCBieSBFQlBGIHNv
-IHRoYXQgdGhlIHRvdGFsIHNpemUgb2YgdGhlDQo+ID4gc2FtcGxlIGlzIDwgVTE2X01BWC4gVGhl
-IHNpemUgcGFyYW1ldGVyIG9mIHRoZSByZWNlaXZlZCBzYW1wbGUgd2lsbA0KPiBtYXRjaCB0aGUN
-Cj4gPiBzaXplIG9mIHRoZSB0cnVuY2F0ZWQgc2FtcGxlLCBzbyB1c2VycyBjYW4gYmUgY29uZmlk
-ZW50IGFib3V0IGhvdyBtdWNoDQo+IGRhdGENCj4gPiB3YXMgcmVjZWl2ZWQuDQo+ID4NCj4gDQo+
-IEkgZG9uJ3QgdGhpbmsgdHJ1bmNhdGlvbiB3aXRob3V0IGFueSBpbmRpY2F0aW9uIHRvIHRoZSB1
-c2VyIGlzIGEgZ29vZA0KPiBpZGVhIGFuZCBjYW4gbGVhZCB0byBvdGhlciBzdXJwcmlzaW5nIHBy
-b2JsZW1zDQo+IChlc3BlY2lhbGx5IHdoZW4gdGhlIHVzZXJzcGFjZSBleHBlY3RzIHRoZSBkYXRh
-IHRvIGJlIGluIGEgY2VydGFpbiBmb3JtYXQsDQo+IHdoaWNoIGl0IGFsbW9zdCBhbHdheXMgZG9l
-cykuDQo+IA0KPiBJIHRoaW5rIHRoZSBjb21wbGV0ZSBzYW1wbGUgc2hvdWxkIGJlIGRpc2NhcmRl
-ZCBpZiB0aGUgc2l6ZSBpcyB0b28gYmlnIGFuZCBhbg0KPiBFMkJJRyAvIG9yIHNvbWUgZXJyb3Ig
-c2hvdWxkIGJlIHJldHVybmVkLg0KDQpJJ20gaGFwcHkgdG8gZG8gZWl0aGVyOyBJJ2xsIG1ha2Ug
-YW4gYWx0ZXJuYXRpdmUgdGhhdCBqdXN0IHJldHVybnMgYW4gZXJyb3IuDQoNClRoYW5rcw0KDQpL
-ZXYNCg0K
+Em Wed, Nov 04, 2020 at 08:39:36PM -0800, Andrii Nakryiko escreveu:
+> Add support for generating split BTF, in which there is a designated base
+> BTF, containing a base set of types, and a split BTF, which extends main BTF
+> with extra types, that can reference types and strings from the main BTF.
+> 
+> This is going to be used to generate compact BTFs for kernel modules, with
+> vmlinux BTF being a main BTF, which all kernel modules are based off of.
+> 
+> These changes rely on patch set [0] to be present in libbpf submodule.
+> 
+>   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=377859&state=*
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+> 
+> This is posted before libbpf changes landed to show end-to-end how kernel
+> module BTFs are going to be integrated into the kernel. Once libbpf split BTF
+> support lands, I'll sync it into Github repo and will post a proper v1.
+> 
+>  btf_encoder.c | 15 ++++++++-------
+>  btf_loader.c  |  2 +-
+>  libbtf.c      | 43 +++++++++++++++++++++++++++----------------
+>  libbtf.h      |  4 +++-
+>  pahole.c      | 23 +++++++++++++++++++++++
+>  5 files changed, 62 insertions(+), 25 deletions(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 4c92908beab2..d67e29b9cbee 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -12,6 +12,7 @@
+>  #include "dwarves.h"
+>  #include "libbtf.h"
+>  #include "lib/bpf/include/uapi/linux/btf.h"
+> +#include "lib/bpf/src/libbpf.h"
+>  #include "hash.h"
+>  #include "elf_symtab.h"
+>  #include "btf_encoder.h"
+> @@ -343,7 +344,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>  	}
+>  
+>  	if (!btfe) {
+> -		btfe = btf_elf__new(cu->filename, cu->elf);
+> +		btfe = btf_elf__new(cu->filename, cu->elf, base_btf);
+>  		if (!btfe)
+>  			return -1;
+>  
+> @@ -358,22 +359,22 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>  			printf("File %s:\n", btfe->filename);
+>  	}
+>  
+> +	btf_elf__verbose = verbose;
+> +	btf_elf__force = force;
+> +	type_id_off = btf__get_nr_types(btfe->btf);
+> +
+>  	if (!has_index_type) {
+>  		/* cu__find_base_type_by_name() takes "type_id_t *id" */
+>  		type_id_t id;
+>  		if (cu__find_base_type_by_name(cu, "int", &id)) {
+>  			has_index_type = true;
+> -			array_index_id = id;
+> +			array_index_id = type_id_off + id;
+>  		} else {
+>  			has_index_type = false;
+> -			array_index_id = cu->types_table.nr_entries;
+> +			array_index_id = type_id_off + cu->types_table.nr_entries;
+>  		}
+>  	}
+>  
+> -	btf_elf__verbose = verbose;
+> -	btf_elf__force = force;
+> -	type_id_off = btf__get_nr_types(btfe->btf);
+> -
+>  	cu__for_each_type(cu, core_id, pos) {
+>  		int32_t btf_type_id = tag__encode_btf(cu, pos, core_id, btfe, array_index_id, type_id_off);
+>  
+> diff --git a/btf_loader.c b/btf_loader.c
+> index 6ea207ea65b4..ec286f413f36 100644
+> --- a/btf_loader.c
+> +++ b/btf_loader.c
+> @@ -534,7 +534,7 @@ struct debug_fmt_ops btf_elf__ops;
+>  int btf_elf__load_file(struct cus *cus, struct conf_load *conf, const char *filename)
+>  {
+>  	int err;
+> -	struct btf_elf *btfe = btf_elf__new(filename, NULL);
+> +	struct btf_elf *btfe = btf_elf__new(filename, NULL, base_btf);
+>  
+>  	if (btfe == NULL)
+>  		return -1;
+> diff --git a/libbtf.c b/libbtf.c
+> index babf4fe8cd9e..3c52aa0d482b 100644
+> --- a/libbtf.c
+> +++ b/libbtf.c
+> @@ -27,6 +27,7 @@
+>  #include "dwarves.h"
+>  #include "elf_symtab.h"
+>  
+> +struct btf *base_btf;
+>  uint8_t btf_elf__verbose;
+>  uint8_t btf_elf__force;
+>  
+> @@ -52,9 +53,9 @@ int btf_elf__load(struct btf_elf *btfe)
+>  	/* free initial empty BTF */
+>  	btf__free(btfe->btf);
+>  	if (btfe->raw_btf)
+> -		btfe->btf = btf__parse_raw(btfe->filename);
+> +		btfe->btf = btf__parse_raw_split(btfe->filename, btfe->base_btf);
+>  	else
+> -		btfe->btf = btf__parse_elf(btfe->filename, NULL);
+> +		btfe->btf = btf__parse_elf_split(btfe->filename, btfe->base_btf);
+>  
+>  	err = libbpf_get_error(btfe->btf);
+>  	if (err)
+> @@ -63,7 +64,7 @@ int btf_elf__load(struct btf_elf *btfe)
+>  	return 0;
+>  }
+>  
+> -struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
+> +struct btf_elf *btf_elf__new(const char *filename, Elf *elf, struct btf *base_btf)
+>  {
+>  	struct btf_elf *btfe = zalloc(sizeof(*btfe));
+>  	GElf_Shdr shdr;
+> @@ -77,7 +78,8 @@ struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
+>  	if (btfe->filename == NULL)
+>  		goto errout;
+>  
+> -	btfe->btf = btf__new_empty();
+> +	btfe->base_btf = base_btf;
+> +	btfe->btf = btf__new_empty_split(base_btf);
+>  	if (libbpf_get_error(btfe->btf)) {
+>  		fprintf(stderr, "%s: failed to create empty BTF.\n", __func__);
+>  		goto errout;
+> @@ -679,11 +681,11 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+>  {
+>  	GElf_Shdr shdr_mem, *shdr;
+>  	GElf_Ehdr ehdr_mem, *ehdr;
+> -	Elf_Data *btf_elf = NULL;
+> +	Elf_Data *btf_data = NULL;
+
+Can you please split this into two patches, one doing just the rename
+of btf_elf to btf_data and then moving to btf__new_empty_split()? Eases
+reviewing.
+
+With this split btf code would it be possible to paralelize the encoding
+of the modules BTF? I have to check the other patches and how this gets
+used in the kernel build process... :-)
+
+- Arnaldo
+
+>  	Elf_Scn *scn = NULL;
+>  	Elf *elf = NULL;
+> -	const void *btf_data;
+> -	uint32_t btf_size;
+> +	const void *raw_btf_data;
+> +	uint32_t raw_btf_size;
+>  	int fd, err = -1;
+>  	size_t strndx;
+>  
+> @@ -735,18 +737,18 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+>  			continue;
+>  		char *secname = elf_strptr(elf, strndx, shdr->sh_name);
+>  		if (strcmp(secname, ".BTF") == 0) {
+> -			btf_elf = elf_getdata(scn, btf_elf);
+> +			btf_data = elf_getdata(scn, btf_data);
+>  			break;
+>  		}
+>  	}
+>  
+> -	btf_data = btf__get_raw_data(btf, &btf_size);
+> +	raw_btf_data = btf__get_raw_data(btf, &raw_btf_size);
+>  
+> -	if (btf_elf) {
+> +	if (btf_data) {
+>  		/* Exisiting .BTF section found */
+> -		btf_elf->d_buf = (void *)btf_data;
+> -		btf_elf->d_size = btf_size;
+> -		elf_flagdata(btf_elf, ELF_C_SET, ELF_F_DIRTY);
+> +		btf_data->d_buf = (void *)raw_btf_data;
+> +		btf_data->d_size = raw_btf_size;
+> +		elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
+>  
+>  		if (elf_update(elf, ELF_C_NULL) >= 0 &&
+>  		    elf_update(elf, ELF_C_WRITE) >= 0)
+> @@ -770,12 +772,21 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+>  			goto out;
+>  		}
+>  
+> +		if (write(fd, raw_btf_data, raw_btf_size) != raw_btf_size) {
+> +			fprintf(stderr, "%s: write of %d bytes to '%s' failed: %d!\n",
+> +				__func__, raw_btf_size, tmp_fn, errno);
+> +			goto out;
+> +		}
+> +
+>  		snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
+>  			 llvm_objcopy, tmp_fn, filename);
+> +		if (system(cmd)) {
+> +			fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
+> +				__func__, tmp_fn, errno);
+> +			goto out;
+> +		}
+>  
+> -		if (write(fd, btf_data, btf_size) == btf_size && !system(cmd))
+> -			err = 0;
+> -
+> +		err = 0;
+>  		unlink(tmp_fn);
+>  	}
+>  
+> diff --git a/libbtf.h b/libbtf.h
+> index 887b5bc55c8e..71f6cecbea93 100644
+> --- a/libbtf.h
+> +++ b/libbtf.h
+> @@ -27,8 +27,10 @@ struct btf_elf {
+>  	uint32_t	  percpu_shndx;
+>  	uint64_t	  percpu_base_addr;
+>  	struct btf	  *btf;
+> +	struct btf	  *base_btf;
+>  };
+>  
+> +extern struct btf *base_btf;
+>  extern uint8_t btf_elf__verbose;
+>  extern uint8_t btf_elf__force;
+>  #define btf_elf__verbose_log(fmt, ...) { if (btf_elf__verbose) printf(fmt, __VA_ARGS__); }
+> @@ -39,7 +41,7 @@ struct cu;
+>  struct base_type;
+>  struct ftype;
+>  
+> -struct btf_elf *btf_elf__new(const char *filename, Elf *elf);
+> +struct btf_elf *btf_elf__new(const char *filename, Elf *elf, struct btf *base_btf);
+>  void btf_elf__delete(struct btf_elf *btf);
+>  
+>  int32_t btf_elf__add_base_type(struct btf_elf *btf, const struct base_type *bt,
+> diff --git a/pahole.c b/pahole.c
+> index bd9b993777ee..d18092c1212c 100644
+> --- a/pahole.c
+> +++ b/pahole.c
+> @@ -22,12 +22,15 @@
+>  #include "dutil.h"
+>  #include "ctf_encoder.h"
+>  #include "btf_encoder.h"
+> +#include "libbtf.h"
+> +#include "lib/bpf/src/libbpf.h"
+>  
+>  static bool btf_encode;
+>  static bool ctf_encode;
+>  static bool first_obj_only;
+>  static bool skip_encoding_btf_vars;
+>  static bool btf_encode_force;
+> +static const char *base_btf_file;
+>  
+>  static uint8_t class__include_anonymous;
+>  static uint8_t class__include_nested_anonymous;
+> @@ -820,6 +823,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
+>  #define ARGP_skip_encoding_btf_vars 317
+>  #define ARGP_btf_encode_force	   318
+>  #define ARGP_just_packed_structs   319
+> +#define ARGP_btf_base		   320
+>  
+>  static const struct argp_option pahole__options[] = {
+>  	{
+> @@ -1093,6 +1097,12 @@ static const struct argp_option pahole__options[] = {
+>  		.key  = ARGP_hex_fmt,
+>  		.doc  = "Print offsets and sizes in hexadecimal",
+>  	},
+> +	{
+> +		.name = "btf_base",
+> +		.key  = ARGP_btf_base,
+> +		.arg  = "SIZE",
+> +		.doc  = "Path to the base BTF file",
+> +	},
+>  	{
+>  		.name = "btf_encode",
+>  		.key  = 'J',
+> @@ -1234,6 +1244,9 @@ static error_t pahole__options_parser(int key, char *arg,
+>  		skip_encoding_btf_vars = true;		break;
+>  	case ARGP_btf_encode_force:
+>  		btf_encode_force = true;		break;
+> +	case ARGP_btf_base:
+> +		base_btf_file = arg;
+> +		break;
+>  	default:
+>  		return ARGP_ERR_UNKNOWN;
+>  	}
+> @@ -2682,6 +2695,15 @@ int main(int argc, char *argv[])
+>  		goto out;
+>  	}
+>  
+> +	if (base_btf_file) {
+> +		base_btf = btf__parse(base_btf_file, NULL);
+> +		if (libbpf_get_error(base_btf)) {
+> +			fprintf(stderr, "Failed to parse base BTF '%s': %ld\n",
+> +				base_btf_file, libbpf_get_error(base_btf));
+> +			goto out;
+> +		}
+> +	}
+> +
+>  	struct cus *cus = cus__new();
+>  	if (cus == NULL) {
+>  		fputs("pahole: insufficient memory\n", stderr);
+> @@ -2766,6 +2788,7 @@ out_cus_delete:
+>  #ifdef DEBUG_CHECK_LEAKS
+>  	cus__delete(cus);
+>  	structures__delete();
+> +	btf__free(base_btf);
+>  #endif
+>  out_dwarves_exit:
+>  #ifdef DEBUG_CHECK_LEAKS
+> -- 
+> 2.24.1
+> 
+
+-- 
+
+- Arnaldo
