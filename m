@@ -2,87 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775FB2A7606
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 04:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A1B2A7630
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 04:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731990AbgKEDUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 22:20:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
+        id S2388717AbgKEDsi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 22:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbgKEDUT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 22:20:19 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC86C0613CF;
-        Wed,  4 Nov 2020 19:20:19 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id j18so273315pfa.0;
-        Wed, 04 Nov 2020 19:20:19 -0800 (PST)
+        with ESMTP id S2388670AbgKEDsf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Nov 2020 22:48:35 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84689C0613CF;
+        Wed,  4 Nov 2020 19:48:35 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id j12so415313iow.0;
+        Wed, 04 Nov 2020 19:48:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RWhsZukF3wxR9G9dqgPdfhoRJe3o6eJlTweOM5Ck3ks=;
-        b=A4sDp2GiKP/OR35CMFeLLO3H0LSZzOyH3UowTbYxB9E5oEJHq66Q4tC/ZLwJCg+2p4
-         Ev0ZHMVJyDwzmhT/poKEnHu0ndNG3EUV7vVwS7KGWGq/3Bo1hHX3E6oYvt96tHIqKFbl
-         2ADRT8Q7tG+ohf8/YANchRvUl46xQ7UxnqXTPJJuyTHHroik8OposMQc8mkTW+R7yWEY
-         73GfX0xnA0c7UBtHEEx6F6d/KYRHRaKwtIq5k+23WVx8iUfRkbfiKmOYClv2VB3O2q3B
-         ymJtIOvIOXned4OM1hhJvaRtkK0SxA0p/9+SzFqmQ0kGE6HDlslsFy1/o0G0JYDGQJf2
-         +WJA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zU4o/Vz/jeSjdyJy2A21CMrZyLkZu8yOx/H+G2wHTdc=;
+        b=Cc+4+3Nry85BqsIZjrlLbXJjopgkClUH0XNo4UAHtONrfMvHoqk0Ke8rFBXZUfdEkM
+         1mG+YXiNpRJUBK6OrvaE7+POHwi26+4G27OQQDUzLY0ru82+7Kjfc/03/APvhmaNB6Ix
+         ycWUco6ldzhRb1JoD2Xl0pZQWKhKGAkkFGnP7Kk6ms84K4cJwFhJVnMgK3XR7NqxutiC
+         gPYsDJNhkVCNMvk8nkn3m0ldSAmoej48HB3nOo7l5aWPW8gT4MTP1JZ665HEe5235xg5
+         ThS2aizKBl9ei4FpxYwLEqC25nBoyjZZ45EQF/F9A661JS+kj8tmxHXz8Dp8PwN91/kn
+         lEng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RWhsZukF3wxR9G9dqgPdfhoRJe3o6eJlTweOM5Ck3ks=;
-        b=BAfi7D8DuHAnrRFeCHBaoKtpZzQZG7YPMxG1/IB1dGtpCx3Haw5Fkpp/Z1RCVlZYIH
-         UDDAiDrAI+sPc+UO/nobwChjuuqHwXKfDBfSr25tkwLLnOrQ6do9ZDCRseknaqsMbFa6
-         sNOotfB4LJ1MDjPmYS9h2iFMeFOLQUHvUcVZYPos8M6kYzEGj/Stid0R4gLif0Gy4oAU
-         FKDL43ev1jjrFTRPOmFkZh70JebMylpqLHrCSqYSUgusHxyt2YqPKLkzmq42Ag3EzJhX
-         58HsOXw6I/HdMgDzcgcZ7/cJxVZ0WMV9oPpMPHUg4DnOKNT+qvkYl4eed3SocQYjH8ln
-         mG1g==
-X-Gm-Message-State: AOAM531YYp0K0hVMggUtL3rtN5hVT2sPWLcHe7vI8gXIJN8pAX5zugRo
-        kU+4P0AQ6i9kzTcWF6LGnD2WJnRpazQLSuYQ
-X-Google-Smtp-Source: ABdhPJxpdoaP5v7K9p4mvDG6aBPWxjput0LuYRxmWTUq0yTN7sB0dVaamf8vQ9dnjjoiytZ/pJy3kw==
-X-Received: by 2002:a62:75c6:0:b029:18a:d510:ff60 with SMTP id q189-20020a6275c60000b029018ad510ff60mr385547pfc.35.1604546418841;
-        Wed, 04 Nov 2020 19:20:18 -0800 (PST)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id v126sm300083pfb.137.2020.11.04.19.20.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 19:20:18 -0800 (PST)
-Date:   Thu, 5 Nov 2020 11:20:08 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, William Tu <u9012063@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] selftest/bpf: add missed ip6ip6 test back
-Message-ID: <20201105032008.GS2531@dhcp-12-153.nay.redhat.com>
-References: <20201103042908.2825734-1-liuhangbin@gmail.com>
- <20201103042908.2825734-2-liuhangbin@gmail.com>
- <20201104184034.c2fse6kj2nwer3kv@kafai-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zU4o/Vz/jeSjdyJy2A21CMrZyLkZu8yOx/H+G2wHTdc=;
+        b=bQOjzLLfIRM3edJrBi4q7Bo0rH56RVp8pGhZgX+0J5xiy54Ot8gpxXdVsISX4yrh9y
+         vVdbIwfTrcLy5YMVNPM7W6JHWG4ZlztVYI4swNJPwqAFPJCKLZGD1sUX2q+gp7pmIouG
+         FWsc7mXKzRnuLSYlBMfIg5Y2g5uZ/F0aj2QQaeWviPcZ+tztymYywx0uwxH7THHi+UPA
+         P7AVWMzXPeWEmW7QC+67G/If+a4BKEJQGr7JVQXU5Q0wDrHkXnvKhuda6yKI4uFvco1M
+         YyGbhkGDnmASwpUuDkk1lPrxhOezYT8AfrXWwdcoa/LEb2mAbCPnnDJatlanTGHKG5mY
+         e8TA==
+X-Gm-Message-State: AOAM532EvnRfwl/RyRni6XYSg2vFyZODAASA5mArooxAiXdbtwzOUdTa
+        Iac3qnd7oUVj8/EgB1MQf4M=
+X-Google-Smtp-Source: ABdhPJzB6Cv89hAt0Kq68a1+gDz4Ekbjl69lPl05kP/NBRjPeQcW/soBUypuRI/+QJ2keC5ryNUOxg==
+X-Received: by 2002:a6b:911:: with SMTP id t17mr426548ioi.197.1604548114992;
+        Wed, 04 Nov 2020 19:48:34 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:6dfd:4f87:68ce:497b])
+        by smtp.googlemail.com with ESMTPSA id p83sm222221iod.49.2020.11.04.19.48.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Nov 2020 19:48:34 -0800 (PST)
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+ <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+ <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+ <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+ <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+ <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+ <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+ <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+ <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+ <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net> <87zh3xv04o.fsf@toke.dk>
+ <5de7eb11-010b-e66e-c72d-07ece638c25e@iogearbox.net>
+ <20201104111708.0595e2a3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAEf4BzY2pAaEmv_x_nGQC83373ZWUuNv-wcYRye+vfZ3Fa2qbw@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <dba0723f-fd55-5dd6-dccc-4e0a649c860e@gmail.com>
+Date:   Wed, 4 Nov 2020 20:48:31 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104184034.c2fse6kj2nwer3kv@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <CAEf4BzY2pAaEmv_x_nGQC83373ZWUuNv-wcYRye+vfZ3Fa2qbw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 10:40:34AM -0800, Martin KaFai Lau wrote:
-> > +	check $TYPE
-> > +	config_device
-> > +	add_ipip6tnl_tunnel
-> > +	ip link set dev veth1 mtu 1500
-> > +	attach_bpf $DEV ipip6_set_tunnel ipip6_get_tunnel
-> From looking at the ipip6_set_tunnel in test_tunnel_kern.c.
-> I don't think they are testing an ip6ip6 packet.
-> If the intention is to test ip6ip6, why the existing
-> ip6ip6_set_tunnel does not need to be exercised?
+On 11/4/20 1:43 PM, Andrii Nakryiko wrote:
+> 
+> What users writing BPF programs can expect from iproute2 in terms of
+> available BPF features is what matters. And by not enforcing a
+> specific minimal libbpf version, iproute2 version doesn't matter all
+> that much, because libbpf version that iproute2 ends up linking
+> against might be very old.
+> 
+> There was a lot of talk about API stability and backwards
+> compatibility. Libbpf has had a stable API and ABI for at least 1.5
+> years now and is very conscious about that when adding or extending
+> new APIs. That's not even a factor in me arguing for submodules. I'll
+> give a few specific examples of libbpf API not changing at all, but
+> how end user experience gets tremendously better.
+> 
+> Some of the most important APIs of libbpf are, arguably,
+> bpf_object__open() and bpf_object__load(). They accept a BPF ELF file,
+> do some preprocessing and in the end load BPF instructions into the
+> kernel for verification. But while API doesn't change across libbpf
+> versions, BPF-side code features supported changes quite a lot.
+> 
+> 1. BTF sanitization. Newer versions of clang would emit a richer set
+> of BTF type information. Old kernels might not support BTF at all (but
+> otherwise would work just fine), or might not support some specific
+> newer additions to BTF. If someone was to use the latest Clang, but
+> outdated libbpf and old kernel, they would have a bad time, because
+> their BPF program would fail due to the kernel being strict about BTF.
+> But new libbpf would "sanitize" BTF, according to supported features
+> of the kernel, or just drop BTF altogether, if the kernel is that old.
+> 
 
-Hi Martin,
+In my experience, compilers are the least likely change in a typical
+Linux development environment. BPF should not be forcing new versions
+(see me last response).
 
-Maybe I missed something. But I saw both ipip6_set_tunnel and
-ip6ip6_set_tunnel in test_tunnel_kern.c. only set remote IPv6 address.
-They didn't do anything else. The only difference between
-ipip6 and ip6ip6 are in overlay network, using IPv4 or IPv6.
+> 
+> 2. bpf_probe_read_user() falling back to bpf_probe_read(). Newer
+> kernels warn if a BPF application isn't using a proper _kernel() or
+> _user() variant of bpf_probe_read(), and eventually will just stop
+> supporting generic bpf_probe_read(). So what this means is that end
+> users would need to compile to variants of their BPF application, one
+> for older kernels with bpf_probe_read(), another with
+> bpf_probe_read_kernel()/bpf_probe_read_user(). That's a massive pain
+> in the butt. But newer libbpf versions provide a completely
+> transparent fallback from _user()/_kernel() variants to generic one,
+> if the kernel doesn't support new variants. So the instruction to
+> users becomes simple: always use
+> bpf_probe_read_user()/bpf_probe_read_kernel().
+> 
 
-
-Thanks
-Hangbin
+I vaguely recall a thread about having BPF system call return user
+friendly messages, but that was shot down. I take this example to mean
+the solution is to have libbpf handle the quirks and various changes
+which means that now libbpf takes on burden - the need for constant
+updates to handle quirks. extack has been very successful at making
+networking configuration mistakes more user friendly. Other kernel
+features should be using the same kind of extension.
