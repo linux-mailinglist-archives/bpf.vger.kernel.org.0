@@ -2,81 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2BC2A79EE
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 10:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606202A7B08
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 10:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729977AbgKEJAG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 5 Nov 2020 04:00:06 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:43950 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725827AbgKEJAG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 04:00:06 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-231-8UX6HNYcNJS69Go7Z9G_5w-1; Thu, 05 Nov 2020 09:00:01 +0000
-X-MC-Unique: 8UX6HNYcNJS69Go7Z9G_5w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 5 Nov 2020 09:00:00 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 5 Nov 2020 09:00:00 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Daniel Xu' <dxu@dxuuu.xyz>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-CC:     "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: RE: [PATCH bpf v2 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-Thread-Topic: [PATCH bpf v2 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-Thread-Index: AQHWsxsIE6fPG3mijk+FzhsUr3fzDam5OvTg
-Date:   Thu, 5 Nov 2020 09:00:00 +0000
-Message-ID: <cbe00e1421db4566a076102506b6d670@AcuMS.aculab.com>
-References: <cover.1604542786.git.dxu@dxuuu.xyz>
- <487a07aa911b4e822a0b931f7b33a4f67fedb6bd.1604542786.git.dxu@dxuuu.xyz>
-In-Reply-To: <487a07aa911b4e822a0b931f7b33a4f67fedb6bd.1604542786.git.dxu@dxuuu.xyz>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726715AbgKEJxJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 04:53:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42905 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725308AbgKEJxI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 04:53:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604569986;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v68pTldC72rGzl0v43axscm9I8YxwT4eCi9uwDHXezc=;
+        b=gflpVHyO6B4wMrezYvF88yXD2btJdFgxDiH3UGogkVO3LhGW7gA9YR1x1XEAsptuUlT2xc
+        /I5nFDmT9l4RFl7XVU+QWaNAtRSW1uLlKOVKznBdhb5R2iHSXn/V/JoW4lsgARktbZ9+4E
+        sRufaWXdFr1rYS2usH/ZGvDVMOJnd+c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-VANGFFfwPJiGu4rGYch0BA-1; Thu, 05 Nov 2020 04:53:02 -0500
+X-MC-Unique: VANGFFfwPJiGu4rGYch0BA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DC3310B9CAB;
+        Thu,  5 Nov 2020 09:53:01 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93F54508E8;
+        Thu,  5 Nov 2020 09:52:55 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 10:52:54 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     brouer@redhat.com, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <ast@fb.com>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Anton Protopopov <aspsk2@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/11] libbpf: split BTF support
+Message-ID: <20201105105254.27c84b78@carbon>
+In-Reply-To: <20201105043402.2530976-1-andrii@kernel.org>
+References: <20201105043402.2530976-1-andrii@kernel.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Xu
-> Sent: 05 November 2020 02:26
-...
-> --- a/lib/strncpy_from_user.c
-> +++ b/lib/strncpy_from_user.c
-> @@ -35,17 +35,22 @@ static inline long do_strncpy_from_user(char *dst, const char __user *src,
->  		goto byte_at_a_time;
+On Wed, 4 Nov 2020 20:33:50 -0800
+Andrii Nakryiko <andrii@kernel.org> wrote:
+
+> This patch set adds support for generating and deduplicating split BTF. This
+> is an enhancement to the BTF, which allows to designate one BTF as the "base
+> BTF" (e.g., vmlinux BTF), and one or more other BTFs as "split BTF" (e.g.,
+> kernel module BTF), which are building upon and extending base BTF with extra
+> types and strings.
 > 
->  	while (max >= sizeof(unsigned long)) {
-> -		unsigned long c, data;
-> +		unsigned long c, data, mask, *out;
+> Once loaded, split BTF appears as a single unified BTF superset of base BTF,
+> with continuous and transparent numbering scheme. This allows all the existing
+> users of BTF to work correctly and stay agnostic to the base/split BTFs
+> composition.  The only difference is in how to instantiate split BTF: it
+> requires base BTF to be alread instantiated and passed to btf__new_xxx_split()
+> or btf__parse_xxx_split() "constructors" explicitly.
 > 
->  		/* Fall back to byte-at-a-time if we get a page fault */
->  		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time);
+> This split approach is necessary if we are to have a reasonably-sized kernel
+> module BTFs. By deduping each kernel module's BTF individually, resulting
+> module BTFs contain copies of a lot of kernel types that are already present
+> in vmlinux BTF. Even those single copies result in a big BTF size bloat. On my
+> kernel configuration with 700 modules built, non-split BTF approach results in
+> 115MBs of BTFs across all modules. With split BTF deduplication approach,
+> total size is down to 5.2MBs total, which is on part with vmlinux BTF (at
+> around 4MBs). This seems reasonable and practical. As to why we'd need kernel
+> module BTFs, that should be pretty obvious to anyone using BPF at this point,
+> as it allows all the BTF-powered features to be used with kernel modules:
+> tp_btf, fentry/fexit/fmod_ret, lsm, bpf_iter, etc.
 
-It's not related to this change, but since both addresses
-are aligned (checked earlier) a page fault on the word read
-is fatal.
+I love to see this work going forward.
 
-	David
+My/Our (+Saeed +Ahern) use-case is for NIC-driver kernel modules.  I
+want drivers to define a BTF struct that describe a meta-data area that
+can be consumed/used by XDP, also available during xdp_frame to SKB
+transition, which happens in net-core. So, I hope BTF-IDs are also
+"available" from core kernel code?
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ 
+> This patch set is a pre-requisite to adding split BTF support to pahole, which
+> is a prerequisite to integrating split BTF into the Linux kernel build setup
+> to generate BTF for kernel modules. The latter will come as a follow-up patch
+> series once this series makes it to the libbpf and pahole makes use of it.
+> 
+> Patch #4 introduces necessary basic support for split BTF into libbpf APIs.
+> Patch #8 implements minimal changes to BTF dedup algorithm to allow
+> deduplicating split BTFs. Patch #11 adds extra -B flag to bpftool to allow to
+> specify the path to base BTF for cases when one wants to dump or inspect split
+> BTF. All the rest are refactorings, clean ups, bug fixes and selftests.
+> 
+> v1->v2:
+>   - addressed Song's feedback.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
