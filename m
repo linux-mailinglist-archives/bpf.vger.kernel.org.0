@@ -2,150 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A642A805E
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 15:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF3B2A80A1
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 15:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbgKEOFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 09:05:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
+        id S1730618AbgKEOSD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 09:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730746AbgKEOFw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:05:52 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25750C0613D2
-        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 06:05:52 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id b18so1195762qkc.9
-        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 06:05:52 -0800 (PST)
+        with ESMTP id S1730466AbgKEOSD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:18:03 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC3FC0613CF;
+        Thu,  5 Nov 2020 06:18:01 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id r10so1506870pgb.10;
+        Thu, 05 Nov 2020 06:18:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kGsS3CDA+A4yL0j/LqXfYl8CzhC0b4YwmHrFB9LaQUI=;
-        b=g9Z4SEZOKnUkWvEkyoPAGPSbaj0mK3KIkrq5A8KpV43SpGg2cSQlwyucY/qwAhIxff
-         nsWnIgpGvlvtw3fnTkzKn7CuzHmFOUNnUfXBQ8t8sVbGdv/tT1KTGMmsMx3VDMi4ifQH
-         cOHrODhh2GytYB/lkF6RQu+XbghSsp8ze/k9qApGY75NeFhyncZr6Yy4RhmdSNITLACX
-         6Sl1KMP1KBbIT+S+FTJ2UHNWuYEnxzSyPP37Yxq9PkZUvV/VbN6wpn9nFcIihWYrArNe
-         58miXECm1Er+1SjyeK2ZNXqRayPMaRm9lEN3TcB9bdb3F+znrwwdfTCAR5qa6IcDD1oT
-         fyxQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gsfXgYp6d/745vIPy5RjIVehOz0ZLPpOeltimNylI9o=;
+        b=DM48THk5JPXrFvaL+o/TrrTHlDQ/280/s6v+YSRtkTpzJ9BCVGqZF022NuUiRSIzZx
+         yIjnwa2FEACXxwFnOaHSQ43NBZ2GasIGFJ6qxNFnepnRy0M0S4bn/RY7PWQFgV6zknlH
+         9TRqWmOpIXADcfph7/2yhJx9V2Skptm5tegyFBkeMp+sEe1v4fTYAnk7zgejXDorRo4f
+         ghtO8PypWRds4kV+DiEttpOMl01qtLpb5UM7T+i4UinQj82wGBF6gzffv77Sg0xAT2pE
+         mE4mIgkMnrMx7FYsQ8kELZ4ko0r4VETfSQmj1lsAMk0YMlLvPp2qvfJNkVP/ex+kRp1A
+         5i8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kGsS3CDA+A4yL0j/LqXfYl8CzhC0b4YwmHrFB9LaQUI=;
-        b=O/47WQ4qGz/Ve7UHo0vD+vEFLs/JyeXC5ZBpL4xGB1Q8H93SA4lQ+sPcitMSRehkFC
-         +EcGfpOnCr/mQIDB/e/XR2ReVWHECz8YsALFryYw+O7c1B004EITRxPhbAdpZain+VRo
-         v99IUPH5w2YmZNpCdzozQd64AzM209a8T6GcwbEFIGx7jRHjI+xnpEmS5StlIaXIbLiX
-         G4K5EdquS7LXOLJxO9laKOkwhCSHrat1auFbNLt0sFjtwSTgl7ShFM/64SGGO+foqBVY
-         DSRlfB6FQ8sxe1HURdzfz0ohFRVCSCS6T7fVMxPWpCfCy3J5xHFRXjwSGdt4T+EuzM/p
-         zNhQ==
-X-Gm-Message-State: AOAM533qGysZYyhCmkzpj9dgIbRdfZSTaNse8S9sRmJNUx7JZleMJSPA
-        7aaBrh5lg3gWi2o9nJ4/AAu30w==
-X-Google-Smtp-Source: ABdhPJy85uIXg+WyZbDaRM8Js2JSe3kWh26Yp7y6E+mYU+A488fs9Hf/sAzIu1VJsQAjejXwgL+/5g==
-X-Received: by 2002:a37:a5c3:: with SMTP id o186mr2158945qke.259.1604585151255;
-        Thu, 05 Nov 2020 06:05:51 -0800 (PST)
-Received: from [192.168.2.28] (bras-base-kntaon1617w-grc-10-184-147-165-106.dsl.bell.ca. [184.147.165.106])
-        by smtp.googlemail.com with ESMTPSA id m25sm1040025qki.105.2020.11.05.06.05.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Nov 2020 06:05:50 -0800 (PST)
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Hangbin Liu <haliu@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
- <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
- <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
- <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
- <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
- <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
- <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
- <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
- <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
- <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
- <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Message-ID: <1118ef27-3302-d077-021a-43aa8d8f3ebb@mojatatu.com>
-Date:   Thu, 5 Nov 2020 09:05:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gsfXgYp6d/745vIPy5RjIVehOz0ZLPpOeltimNylI9o=;
+        b=Hnuk1jxTBDfQD17cq/0dokF3Fj+gmrytVYedweRa9UgVWf2qADNPqm04Jo+RnABPRu
+         aNKvPfkgmb30RtG2cD95u5dFt+lYJzFaoh/L5f5S8hkIfotwNsCxXP/jbutuoOe2flLl
+         /AohaW9L7hlKanEBuu+1UaZZ1WW110CnxSu8yVq237rHnfpXOhMfzOZjcTQU0AaU/Xy8
+         NaUAO6a9915YHSOytfi6RKcssMndROtrcZTTCHNpFtx5C2wJ2fLV4xYLZaowwDXfPhzH
+         XAT6Pr3/ovFiia2zFw8WKufG8GwrlMqjK+3FdsCIqTPnyoEm4NMcZ66b3BtVaZqKxSF8
+         TLqg==
+X-Gm-Message-State: AOAM530npWrBBeNpTI0NIKCPqMDyemXFH7km0p5zsc0oUZODe7DBq8b5
+        5fOkQRabUwpB9M1SqQ0unxr8RHpEPR6AgR+MAic=
+X-Google-Smtp-Source: ABdhPJwXTwb01LuOIuCIJoXgHdk44wasB0pppP3vWiPTqrgsJlDGm7O4K9WDFYnd65Jf4ac9TImWunVd9mjBa315xpI=
+X-Received: by 2002:aa7:8428:0:b029:18b:b43:6cc with SMTP id
+ q8-20020aa784280000b029018b0b4306ccmr2692443pfn.73.1604585881330; Thu, 05 Nov
+ 2020 06:18:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
+ <1604498942-24274-2-git-send-email-magnus.karlsson@gmail.com> <20201104153320.66cecba8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201104153320.66cecba8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 5 Nov 2020 15:17:50 +0100
+Message-ID: <CAJ8uoz3-tjXekU=kR+HfMhGBcHtAFnKGq1ZvpFq99T_S-mknPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/6] i40e: introduce lazy Tx completions for
+ AF_XDP zero-copy
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
+        anthony.l.nguyen@intel.com,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-11-04 10:19 p.m., David Ahern wrote:
+On Thu, Nov 5, 2020 at 12:33 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Wed,  4 Nov 2020 15:08:57 +0100 Magnus Karlsson wrote:
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> >
+> > Introduce lazy Tx completions when a queue is used for AF_XDP
+> > zero-copy. In the current design, each time we get into the NAPI poll
+> > loop we try to complete as many Tx packets as possible from the
+> > NIC. This is performed by reading the head pointer register in the NIC
+> > that tells us how many packets have been completed. Reading this
+> > register is expensive as it is across PCIe, so let us try to limit the
+> > number of times it is read by only completing Tx packets to user-space
+> > when the number of available descriptors in the Tx HW ring is below
+> > some threshold. This will decrease the number of reads issued to the
+> > NIC and improves performance with 1.5% - 2% for the l2fwd xdpsock
+> > microbenchmark.
+> >
+> > The threshold is set to the minimum possible size that the HW ring can
+> > have. This so that we do not run into a scenario where the threshold
+> > is higher than the configured number of descriptors in the HW ring.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>
+> I feel like this needs a big fat warning somewhere.
+>
+> It's perfectly fine to never complete TCP packets, but AF_XDP could be
+> used to implement protocols in user space. What if someone wants to
+> implement something like TSQ?
 
-[..]
-> 
-> User experience keeps getting brought up, but I also keep reading the
-> stance that BPF users can not expect a consistent experience unless they
-> are constantly chasing latest greatest versions of *ALL* S/W related to
-> BPF. That is not a realistic expectation for users. Distributions exist
-> for a reason. They solve real packaging problems.
-> 
-> As libbpf and bpf in general reach a broader audience, the requirements
-> to use, deploy and even tryout BPF features needs to be more user
-> friendly and that starts with maintainers of the BPF code and how they
-> approach extensions and features. Telling libbpf consumers to make
-> libbpf a submodule of their project and update the reference point every
-> time a new release comes out is not user friendly.
-> 
-> Similarly, it is not realistic or user friendly to *require* general
-> Linux users to constantly chase latest versions of llvm, clang, dwarves,
-> bcc, bpftool, libbpf, (I am sure I am missing more), and, by extension
-> of what you want here, iproute2 just to upgrade their production kernel
-> to say v5.10, the next LTS, or to see what relevant new ebpf features
-> exists in the new kernel. As a specific example BTF extensions are added
-> in a way that is all or nothing. Meaning, you want to compile kernel
-> version X with CONFIG_DEBUG_INFO_BTF enabled, update your toolchain.
-> Sure, you are using the latest LTS of $distro, and it worked fine with
-> kernel version X-1 last week, but now compile fails completely unless
-> the pahole version is updated. Horrible user experience. Again, just an
-> example and one I brought up in July. I am sure there more.
-> 
+I might misunderstand you, but with TSQ here (for something that
+bypasses qdisk and any buffering and just goes straight to the driver)
+you mean the ability to have just a few buffers outstanding and
+continuously reuse these? If so, that is likely best achieved by
+setting a low Tx queue size on the NIC. Note that even without this
+patch, completions could be delayed. Though this patch makes that the
+normal case. In any way, I think this calls for some improved
+documentation.
 
+I also discovered a corner case that will lead to a deadlock if the
+completion ring size is half the size of the Tx NIC ring size. This
+needs to be fixed, so I will spin a v2.
 
-2cents feedback from a dabbler in ebpf on user experience:
-
-What David described above *has held me back*.
-Over time it seems things have gotten better with libbpf
-(although a few times i find myself copying includes from the
-latest iproute into libbpf). I ended up just doing static links.
-The idea of upgrading clang/llvm every 2 months i revisit ebpf is
-the most painful. At times code that used to compile just fine
-earlier doesnt anymore. There's a minor issue of requiring i install
-kernel headers every time i want to run something in samples, etc
-but i am probably lacking knowledge on how to ease the pain in that
-regard.
-
-I find the loader and associated tooling in iproute2/tc to be quiet
-stable (not shiny but works everytime).
-And for that reason i often find myself sticking to just tc instead
-of toying with other areas.
-Slight tangent:
-One thing that would help libbpf adoption is to include an examples/
-directory. Put a bunch of sample apps for tc, probes, xdp etc.
-And have them compile outside of the kernel. Maybe useful Makefiles
-that people can cutnpaste from. Every time you add a new feature
-put some sample code in the examples.
-
-cheers,
-jamal
+Thanks: Magnus
