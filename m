@@ -2,232 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF372A7C0E
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 11:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E74E2A7C1C
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 11:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729361AbgKEKlS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 05:41:18 -0500
-Received: from mail-eopbgr00123.outbound.protection.outlook.com ([40.107.0.123]:43499
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        id S1725862AbgKEKrA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 05:47:00 -0500
+Received: from mail-am6eur05on2108.outbound.protection.outlook.com ([40.107.22.108]:7873
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729662AbgKEKlR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 05:41:17 -0500
+        id S1725827AbgKEKq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 05:46:59 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K0SkxYZUiRG85CONk9USLMfkV5JDZ6VscP34O4bg0NWtQYtWbLYm0iIVnYL2MhtP1DT29a7ELmmKqyD7hUW7/lh8WvoenIy7KSiKHN8iBTqH16tuXTQeYBFaXHY5KaAWENGq77lMlq+yynDGiSO1UFsoAg2NlXsF48EMjPOCmInPggUoyReHYxrHts/z+J4lh9XJ8xxRViFSAAvkXSvEvVYjAUgl/+TkbXTp7bP6A7Kmx6P3XVNMMBdH+VOCD0U6L75nrUJvYQsgc+98IS8JU6GhUcGrqq3AyiXeuN0JxOhK5IuVU+YkWdvOVv7CQd+rNdLxEJwi1d9FpStAt5rWiQ==
+ b=d1RqczFmng1Cb3HJkY/zU4Z9PHtV4GVTbVmcViP3FYQOfxaI/BzwDm+cno0csBs0F+mbSEc34AmxvKKNnUddHoVoMXgEdchYnE0XNHEpOTIfG3fcpRhhXhtA7gJuH+FlaQNSG/k4RXIF9l9yo0MBlo49WCJoAHSPmaoCJxUpDRuuWJ5+mTfMLd+eJJTHpVsXFo5a6BkjX5syM3y2kLletSxnw/bUeukA0i3Es317C95bk81RfpacoX/zOD8is9hkg+fZ2gsgZY7rJwPoOXGPTBRbkSC2qZSon83oZuSxrVFlFiImuo2ZSd6yriNZgY8GbEpmyRB+KD3aRg4Vb+WLMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J9ip4zrIYHOC1/eZroEFQ4xmduz9mRDVXDi6lyCO1/s=;
- b=Dk7qH9Ajh1GE7UkwZEzc+gNUH0gp1drtN5PnqZ1wzZ6CpsZeqlGus+lfX7nVC7FaMsrGx1pOiI5FIGXIeXrscrj3qUUgkCV2dlJgD04XD6Z2qRoi+ubhgBfNzG71661+D0VjoXBiB3oFICHPiXcMsNSll4QQgKrpEKxid/A/uHMS6yczUVpmQql1Flz66/n8/mr9fl2IbZZftc6riDS+k1FVNDwd0Qr3jurpq5wGOZj3zl5PPYTzftzgxoVw2JUR9Clae0vbInUpWRO+HY1t2ijLcu/oE/inVeKqQhcLOTYv9Mj/tEhEyLiTWObKhyWCavg32Wnz2y2w5lElspLO7w==
+ bh=zHDkGar590XOs/mS1KWVi98ohGWJM1LvcOu+NgJzq+I=;
+ b=j1Qyj2N1OOM72pZmPmq2/j4fvYobWGL0KChBCkSUn0z8OVLIGIxyD5qvdtdGMtNJ4dGH+uvxZ5J0NgnlnyMa7A5qmquRUzE9WBIRjAPKpnzu2t/3vEenxGlgQX7hTl/FPHK/9iBpp0lpb3RjX2HSFRFZpQm7k2Ha8Ac3VwoLGw8alNCrridMblL+QpeHky66i6T3+IlHJ27g8hYJJDdVixbXP2JpwdUDfFF8GbUnjpfY08X1n996s7OLBp7Zg0NXbIBaHqRHcOcv97NA10xbfMLpmbiRmTWHTd0ATFm4u1jIHF/e28Cd7NTLaL9uykuwHslUgtk32s4vfRLTP+aysw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=microsoft.com; dmarc=pass action=none
  header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J9ip4zrIYHOC1/eZroEFQ4xmduz9mRDVXDi6lyCO1/s=;
- b=eJVbjtkofSPn7VYcywxRNNJBoJwoeqQVmkQhHrFoer8kxURmz1fcn9eT2UKfKaVaGxxP/nGlFPIvk4wmncerV1uKVN4NB2bmzUPhLfLsFfYixWQlDm5gC9UPj036smXWTYduA/8zQg9qTFpo94zJEGfiyBEZAkxrGg4LyZkzxq0=
+ bh=zHDkGar590XOs/mS1KWVi98ohGWJM1LvcOu+NgJzq+I=;
+ b=TqRwftrLolmDBPYTYOu1zpkgJvPN9g2AyL3M9KQKh9aokL+w02WkMEcqJtg8jToiSGRDaXY87wQd7RKJSV52atK7FIwhQ9pnmARU3ENTOr8AHrdaruC05rbFC22EDM4ATiEDDeNcsvqwN6+srH6eZXonhjPo0nabqER/lvJ3UF8=
 Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
- (2603:10a6:820:1b::23) by VI1PR83MB0351.EURPRD83.prod.outlook.com
- (2603:10a6:802:3b::20) with Microsoft SMTP Server (version=TLS1_2,
+ (2603:10a6:820:1b::23) by VI1PR83MB0174.EURPRD83.prod.outlook.com
+ (2603:10a6:802:3b::27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.6; Thu, 5 Nov
- 2020 10:41:13 +0000
+ 2020 10:46:56 +0000
 Received: from VI1PR8303MB0080.EURPRD83.prod.outlook.com
  ([fe80::c857:1a78:d155:fc99]) by VI1PR8303MB0080.EURPRD83.prod.outlook.com
  ([fe80::c857:1a78:d155:fc99%10]) with mapi id 15.20.3564.010; Thu, 5 Nov 2020
- 10:41:13 +0000
+ 10:46:56 +0000
 From:   Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         KP Singh <kpsingh@google.com>
-Subject: [PATCH bpf-next] Update perf ring buffer to prevent corruption 
-Thread-Topic: [PATCH bpf-next] Update perf ring buffer to prevent corruption 
-Thread-Index: AdazYC1vg+x0B4GYSm+iiVVe+II4yw==
-Date:   Thu, 5 Nov 2020 10:41:13 +0000
-Message-ID: <VI1PR8303MB00802B04481D53CBBEBCF0DDFBEE0@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+Subject: RE: [EXTERNAL] Re: [PATCH bpf-next] bpf: update verifier to stop perf
+ ring buffer corruption
+Thread-Topic: [EXTERNAL] Re: [PATCH bpf-next] bpf: update verifier to stop
+ perf ring buffer corruption
+Thread-Index: AdautGZ4+1YSnWihRZa8ESQSP7NSdQANOrqAAR28kqA=
+Date:   Thu, 5 Nov 2020 10:46:56 +0000
+Message-ID: <VI1PR8303MB0080C6107883B839835953DFFBEE0@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+References: <VI1PR8303MB008003C9E3B937033A593C47FB150@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+ <CAEf4Bza-KX7C5ghXSVs30R_xkKtqjDwM8snH2B2A_VCAxSim2g@mail.gmail.com>
+In-Reply-To: <CAEf4Bza-KX7C5ghXSVs30R_xkKtqjDwM8snH2B2A_VCAxSim2g@mail.gmail.com>
 Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-05T10:38:55Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-11-05T10:41:48Z;
  MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
  MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
  MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=7a341e6a-fd77-4f79-99d0-869cf2339d4d;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=6c76da68-a215-402e-b096-b0921d5a4bfd;
  MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=microsoft.com;
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
 x-originating-ip: [149.12.0.58]
 x-ms-publictraffictype: Email
 x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 39a565ff-d806-4ec7-093e-08d881775105
-x-ms-traffictypediagnostic: VI1PR83MB0351:
-x-microsoft-antispam-prvs: <VI1PR83MB0351E26FA6F4A889BBB20C6BFBEE0@VI1PR83MB0351.EURPRD83.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 084ed22e-6388-4acc-430c-08d881781d87
+x-ms-traffictypediagnostic: VI1PR83MB0174:
+x-microsoft-antispam-prvs: <VI1PR83MB01748AE2122398CBFB67CA18FBEE0@VI1PR83MB0174.EURPRD83.prod.outlook.com>
 x-o365-sonar-daas-pilot: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oCrsg5GVUMYPJ7HBchF9YNhVHDHqkC3XTDeyBpBZGcYzC5epsdUuKnquuGHua4UaPklpxvzOtDWH6DuetlMJqBHHh83Uw3bR4TyfgvVD9xKDDogTf0j7pks6rSgxHNVKHvlPUy1Hv+/YHjk0IPnSxT5th7y1FnPlTln7/FdEzaoNCemNneAPhBTSjFu2fBNZvlGh01F8v63AA/tLyCCddDzSdbBtn0BMQspAaQlauwwLDi2/QrAbGZ/+yxFthinyN9igqigVxMPsf6FhlkUMbg+1oqHbt3P/Zm9kr2wQf2x1UOsrx13hDN3usz6lGGlbKbEI7zE6qJoIcIrsPGaiaQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR8303MB0080.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(366004)(136003)(82960400001)(52536014)(66446008)(66946007)(66556008)(5660300002)(7696005)(64756008)(9686003)(83380400001)(2906002)(76116006)(66476007)(33656002)(86362001)(8936002)(55016002)(82950400001)(186003)(6916009)(8990500004)(53546011)(8676002)(15650500001)(10290500003)(478600001)(54906003)(71200400001)(4326008)(316002)(26005)(6506007)(4743002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: VLV0f4i91yXtVVHr3UhYUyNzsDDeW/TSdApJV9vNMxzRua74VaCiJdhFbK2nQBMVbR2h6ZE7IdwPifCGJoGnIaztvC1DuJdzj5ObBLVmi1/V8a7sBzpu81Mn4864uVihMKq3Bk8Q2yfYvJR8wFLIUmAyoVZq7G5/mpLSwGODO73uo5Ngtee0aX+CyVl2gs5Sby1Es/acKmAqnBIaVDztkS2apAcXPOaMgANV8gnO6TpeXOs17DRlthZhw2+t/DTFWlKerti6dtX2hxWW8lyTnJWWeUROqMWX2/1MWzYm/5OqW8AGdeQqYczkjrpyRV6Fyxaz/wb5y5TlqZxVCltAQZzGJRoJBH8FH3VKoaeL5vYTlOK7qzHBwItgrmJjQvuX3ZvmEFgVE0LmGzR7owTj0EqCP7+0i8gb8z/ICNCUwIU8mI1vGNQdXZsYCXCcDiBHd5jAHA0K3gBRzzAbw+DkG0Q5fWPTjOVFxtWr5McC6zGLGAVTC5SKZ+9kWQm3AFMqe/KSRBXvKeZudtQapzpaSopUGNdGpawmIuRCzv4r0rIgJYeJY9PEnosYhxaxZKBZueZ7axRs6pu0UzuZettOS3X5X0YhWAt7qKfVSuwdjJ3hH43pi8m1dtkCNLmIOlyn/+H+J8zHEQ+F4AhpZ/9Ua1kjV4gNVwp7xCUIfQVReHFCzdhtCuEci1TpFE7UT40bhFND5ro40B2MRyxeCSKa6i1akUBgDH/yANdAIMkQY3JRY57pLG14E/LDsQl+mJyDKPT8nvE+8CzNLNzPxz7W4K/ionLYg1dPEBCEsxNDVLyp6zlv/vyJ9V5AJNbESG3bCVSSkm2oS1b+my4CdhcMLSrCZXQre/+yHSKCaj0yLPT/itvyJYUsJln2P/eu0xUvEKPl2TWR8vgdOZVB5Iq9aw==
+x-microsoft-antispam-message-info: yFzhi3FfbvGWdwH8oIQZzntFE5Y5WBEgl0ypTUa4nr60bnCciAigwHCEhKNPyiNkkJtX9sSeihiamNiOGy9NBlZBBUqIGbw3RMhDzO+6+mTWq46hZJFDqYsIlFDXT6n9e6VW39Py+AeyrXQR2PwdBIu3FXrppzlbkZkoi17m5ypu27epREk422MSobDLuLOc2eZ/MaItnWiI47TvXT/osn0roKiOjBbUwvEZtemAkV8pxH1opW5nM5880Sfy6Na5LGNS722YCqMYoyYEfxukGn158C590oxw6HY6a3JXcGb0zp9HCNgqhiFpv4HOLmioVHgbG5kJLVAqzTl2XqoSYw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR8303MB0080.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(396003)(39860400002)(136003)(66476007)(66556008)(4326008)(54906003)(66946007)(64756008)(76116006)(52536014)(86362001)(478600001)(66446008)(2906002)(8990500004)(186003)(9686003)(8676002)(26005)(15650500001)(55016002)(10290500003)(83380400001)(316002)(53546011)(8936002)(7696005)(82960400001)(71200400001)(82950400001)(6916009)(6506007)(33656002)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: yFG8TypwPCrGIuruU/qyg5ZoNUpa7XzK5Sa9PyXmd5Qfis8bh0xNqkVQD/3Jz3f6kIo9h4b+yO/PxHANnDOlhhQ3FJgMCywlUOL9ZMORgqMtEpqc8WgFFY6E5QIVLEkr2fsK/Juik5m5IbJ2SolrFbHC4ySemqCho7LONxKfARzfE8mgy33jLsX+AxEJm/12uajL5RXyxckDCnQWvJd7TsxJV/6mBX5lwKzCJ58uMruUZOknGqo/kYgetYEmX/Ld75W8GZnNB+kr1DCuG+n93Q3dks8Y3jk3suLSONqRXfZmt0Vx//3o1fviPzUJTeB656b5epZtNxrYaeKKbbnyJFvgpYCtdyWbRek6suq8mcNOZ1i1Ou6/KPLmOMLMNfFMRnXW4fWnsdrT0I8YbQHzZ33p/pc9aSO70Ewi96j3K5mEY8J6FjYA4mXAKnuoBeh7FLXW6vKjb8+PMdvAfqJPnIhByTU71mAwM5xZH4S/wRjAmi6y9kozPk0vN1zDyn86YaM2Ewo8OXJiVNRRlDptcRrcHQy9JIkrC4C/da2wXDwHANDJ68PMy7JaCcs5NsEXCz/5+r019tC8vNKDms5HUcGxeStEuo8AxTWSfeAxtVDn7NPKUsycLJ5iSMGIkVcGYhW/Nn/JBrgm87bS8SJUq3bzUDUV+T4gy9iL2Ycw6A/0+YU6ueG2T5w3gBDnI0tWpwEedKQ3tUO18owbUB79LqfAaAYfxuix+qniMOF+g6hp0i2mymoBBAsr8UAkd5Tga+KX7t3cnqt6Mq5GjjU1nb4feH4R9fzqYu+DcOuUfJI6b8HQXfELVu3WI2DfMPdDM7QFqnewQlXpO278Rhav40zy08gy/bPs/KHqziZYFwFVfltp+qnDGkx1dwPItdeI+tKZuUusbNglLBw9Ie9pcQ==
 x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR8303MB0080.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39a565ff-d806-4ec7-093e-08d881775105
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 10:41:13.0232
+X-MS-Exchange-CrossTenant-Network-Message-Id: 084ed22e-6388-4acc-430c-08d881781d87
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 10:46:56.1968
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5eHY65yaiOHLqfjGw8inTQscrM/SKqRg1F3qEr3L8c+hBcx59QeW+hvmyOq8N5VgZDFoEcLDgAzVnlq35rOQSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR83MB0351
+X-MS-Exchange-CrossTenant-userprincipalname: jTyaSFnLyHWSwwG5pV49x/C71fBRCw0O627UD7RjQ4Qn/QvMJX1SKOzCuWn0MnLVydMBrcR70RJSUDEi19sHDg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR83MB0174
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From 8425426d0fb256acf7c2e50f0aa642450adc366a Mon Sep 17 00:00:00 2001
-From: Kevin Sheldrake <kevin.sheldrake@microsoft.com>
-Date: Wed, 4 Nov 2020 15:42:54 +0000
-Subject: [PATCH] Update perf ring buffer to prevent corruption from
- bpf_perf_output_event()
-
-The bpf_perf_output_event() helper takes a sample size parameter of u64, bu=
-t
-the underlying perf ring buffer uses a u16 internally. This 64KB maximum si=
-ze
-has to also accommodate a variable sized header. Failure to observe this
-restriction can result in corruption of the perf ring buffer as samples
-overlap.
-
-Truncate the raw sample type used by EBPF so that the total size of the
-sample is < U16_MAX. The size parameter of the received sample will match t=
-he
-size of the truncated sample, so users can be confident about how much data
-was received.
-
-Signed-off-by: Kevin Sheldrake <kevin.sheldrake@microsoft.com>
----
- kernel/events/core.c | 83 ++++++++++++++++++++++++++++++++++++------------=
-----
- 1 file changed, 58 insertions(+), 25 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index da467e1..45684a6 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -7016,6 +7016,21 @@ perf_callchain(struct perf_event *event, struct pt_r=
-egs *regs)
- 	return callchain ?: &__empty_callchain;
- }
-=20
-+bool
-+__prep_frag_size(u32 sum, int *frag_size, u16 header_size)
-+{
-+	u32 size, diff;
-+	size =3D round_up(sum + *frag_size + sizeof(u32), sizeof(u64));
-+	if (header_size + size < U16_MAX)
-+		return false;
-+	/* fragment is too big, need to truncate */
-+	diff =3D round_up(header_size + size - U16_MAX, sizeof(u64));
-+	*frag_size =3D round_up(*frag_size - diff, sizeof(u32));
-+	if (*frag_size % 8 =3D=3D 0)
-+		*frag_size +=3D sizeof(u32);
-+	return true;
-+}
-+
- void perf_prepare_sample(struct perf_event_header *header,
- 			 struct perf_sample_data *data,
- 			 struct perf_event *event,
-@@ -7045,31 +7060,6 @@ void perf_prepare_sample(struct perf_event_header *h=
-eader,
- 		header->size +=3D size * sizeof(u64);
- 	}
-=20
--	if (sample_type & PERF_SAMPLE_RAW) {
--		struct perf_raw_record *raw =3D data->raw;
--		int size;
--
--		if (raw) {
--			struct perf_raw_frag *frag =3D &raw->frag;
--			u32 sum =3D 0;
--
--			do {
--				sum +=3D frag->size;
--				if (perf_raw_frag_last(frag))
--					break;
--				frag =3D frag->next;
--			} while (1);
--
--			size =3D round_up(sum + sizeof(u32), sizeof(u64));
--			raw->size =3D size - sizeof(u32);
--			frag->pad =3D raw->size - sum;
--		} else {
--			size =3D sizeof(u64);
--		}
--
--		header->size +=3D size;
--	}
--
- 	if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
- 		int size =3D sizeof(u64); /* nr */
- 		if (data->br_stack) {
-@@ -7170,6 +7160,49 @@ void perf_prepare_sample(struct perf_event_header *h=
-eader,
- 		WARN_ON_ONCE(size + header->size > U16_MAX);
- 		header->size +=3D size;
- 	}
-+
-+	if (sample_type & PERF_SAMPLE_RAW) {
-+		struct perf_raw_record *raw =3D data->raw;
-+		int size;
-+		bool truncate =3D false;
-+
-+		/*
-+		 * Given the 16bit nature of header::size, a RAW sample can
-+		 * easily overflow it. Make sure this doesn't happen by using
-+		 * up to U16_MAX bytes per sample in total (rounded down to 8
-+		 * byte boundary). This requires modification of the fragment
-+		 * sizes, so the first oversized fragment is truncated to
-+		 * the maximum safe size, and every subsequent fragment is
-+		 * truncated to 0 size.
-+		 */
-+
-+		if (raw) {
-+			struct perf_raw_frag *frag =3D &raw->frag;
-+			u32 sum =3D 0;
-+
-+			do {
-+				if (truncate) {
-+					frag->size =3D 0;
-+				} else {
-+					truncate =3D __prep_frag_size(sum,
-+						&frag->size, header->size);
-+				}
-+				sum +=3D frag->size;
-+				if (perf_raw_frag_last(frag))
-+					break;
-+				frag =3D frag->next;
-+			} while (1);
-+
-+			size =3D round_up(sum + sizeof(u32), sizeof(u64));
-+			raw->size =3D size - sizeof(u32);
-+			frag->pad =3D raw->size - sum;
-+		} else {
-+			size =3D sizeof(u64);
-+		}
-+
-+		header->size +=3D size;
-+	}
-+
- 	/*
- 	 * If you're adding more sample types here, you likely need to do
- 	 * something about the overflowing header::size, like repurpose the
---=20
-2.7.4
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW5kcmlpIE5ha3J5aWtv
+IDxhbmRyaWkubmFrcnlpa29AZ21haWwuY29tPg0KPiBTZW50OiAzMCBPY3RvYmVyIDIwMjAgMTg6
+MjANCj4gVG86IEtldmluIFNoZWxkcmFrZSA8S2V2aW4uU2hlbGRyYWtlQG1pY3Jvc29mdC5jb20+
+DQo+IENjOiBicGZAdmdlci5rZXJuZWwub3JnOyBLUCBTaW5naCA8a3BzaW5naEBnb29nbGUuY29t
+Pg0KPiBTdWJqZWN0OiBbRVhURVJOQUxdIFJlOiBbUEFUQ0ggYnBmLW5leHRdIGJwZjogdXBkYXRl
+IHZlcmlmaWVyIHRvIHN0b3AgcGVyZg0KPiByaW5nIGJ1ZmZlciBjb3JydXB0aW9uDQo+IA0KWy4u
+Ll0NCj4gU2VlIFswXSBmb3Igc29tZSBndWlkZWxpbmVzLiBJIHVzZSBnaXQgZm9ybWF0LXBhdGNo
+IGFuZCBnaXQgc2VuZC1lbWFpbCBmb3IgbXkNCj4gcGF0Y2ggd29ya2Zsb3cuIEFuZCBwbGVhc2Ug
+bWFrZSBzdXJlIHlvdXIgZW1haWwgY2xpZW50L2VkaXRvciB3cmFwcyB0aGUNCj4gbGluZXMsIGl0
+J3MgaGFyZCB0byByZXBseSBpZiB0aGUgZW50aXJlIHBhcmFncmFwaCBpcyBvbmUgbG9uZyBsaW5l
+Lg0KDQpUaGFuayB5b3UgZm9yIHRoZSByZWZlcmVuY2VzLiAgSG9wZWZ1bGx5IG15IG5ld2x5IHN1
+Ym1pdHRlZCBwYXRjaCAod2l0aCBhDQpuZXcvYXBwcm9wcmlhdGUgc3ViamVjdCBsaW5lKSBhZGRy
+ZXNzZXMgdGhlc2UgaXNzdWVzLg0KDQpbLi4uXQ0KPiBTbyAtMjQgc2hvdWxkIGhhdmUgYmVlbiBh
+IGNsdWUgdGhhdCBzb21ldGhpbmcgZmlzaHkgaXMgZ29pbmcgb24uIExvb2sgYXQNCj4gcGVyZl9w
+cmVwYXJlX3NhbXBsZSgpIGluIGtlcm5lbC9ldmVudHMvY29yZS5jLiBoZWFkZXItPnNpemUgKHdo
+aWNoIGlzIHUxNikNCj4gY29udGFpbnMgdGhlIGVudGlyZSBzaXplIG9mIHRoZSBkYXRhIGluIHRo
+ZSBwZXJmIGV2ZW50LiBUaGlzIGluY2x1ZGVzIHJhdyBkYXRhDQo+IHRoYXQgeW91IHNlbmQgd2l0
+aCBicGZfcGVyZl9ldmVudF9vdXRwdXQoKSwgYnV0IGl0IGNhbiBhbHNvIGhhdmUgdG9ucyBvZg0K
+PiBvdGhlciBzdHVmZiAoZS5nLiwgY2FsbCBzdGFja3MsIExCUiBkYXRhLCBldGMpLg0KPiBXaGF0
+IGdldHMgYWRkZWQgdG8gdGhlIHBlcmYgc2FtcGxlIGRlcGVuZHMgb24gaG93IHRoZSBwZXJmIGV2
+ZW50IHdhcw0KPiBjb25maWd1cmVkIGluIHRoZSBmaXJzdCBwbGFjZS4gQW5kIGl0IGhhcHBlbnMg
+YXV0b21hdGljYWxseSBvbiBlYWNoIHBlcmYgZXZlbnQNCj4gb3V0cHV0Lg0KPiANCj4gU28sIGFs
+bCB0aGF0IG1lYW5zIHRoYXQgdGhlcmUgY291bGQgYmUgbm8gcmVsaWFibGUgc3RhdGljIGNoZWNr
+IGluIHRoZSB2ZXJpZmllcg0KPiB3aGljaCB3b3VsZCBwcmV2ZW50IHRoZSBjb3JydXB0aW9uLiBJ
+dCBoYXMgdG8gYmUgY2hlY2tlZCBieQ0KPiBwZXJmX3ByZXBhcmVfc2FtcGxlKCkgaW4gcnVudGlt
+ZSBiYXNlZCBvbiB0aGUgYWN0dWFsIHNpemUgb2YgdGhlIHNhbXBsZS4NCj4gV2UgY2FuIGRvIGFu
+IGV4dHJhIGNoZWNrIGluIHZlcmlmaWVyLCBidXQgSSB3b3VsZG4ndCBib3RoZXIgYmVjYXVzZSBp
+dCdzIG5ldmVyDQo+IGdvaW5nIHRvIGJlIDEwMCUgY29ycmVjdC4NCj4gDQoNClRoYW5rIHlvdSBh
+Z2FpbjsgSSd2ZSBidWlsdCBhIGNoZWNrIGludG8gcGVyZl9wcmVwYXJlX3NhbXBsZSgpLg0KDQpb
+Li4uXQ0K
