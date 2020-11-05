@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9C52A85FE
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 19:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599822A861F
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 19:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgKESTE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 13:19:04 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62078 "EHLO
+        id S1727275AbgKESab (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 13:30:31 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62996 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727851AbgKESTD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 13:19:03 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5I9ohE017537;
-        Thu, 5 Nov 2020 10:18:48 -0800
+        by vger.kernel.org with ESMTP id S1726729AbgKESab (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 13:30:31 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A5IU4Kn027446;
+        Thu, 5 Nov 2020 10:30:13 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=Oe/UBA2R9ekVaZrc/6eiIqXDY5hhwva0tfLj5AXj/bY=;
- b=rj2LUf2L8slhbkQ/3Lk82y9DBPxCfOzGa4mu13K9yb+mlejNBoD20tdcK+wNPiaNcjE+
- Vk0WAi7UQeRy2JgSXbsO1kK/MzxVEagA0SslLEPGxcnzynstu7Rlaxd0/PDqJguybLl8
- /6pwYaDl705PFXsR4Fb3kcposdB3K92ClWY= 
+ bh=oY0ToNE0y+u3G5NPrllVdo9GsLJigMN/dFeiQTA3hk8=;
+ b=qtYZ8GnyTqsftzti5gRKybgaho/GGp8RPThg+3wP10HFf+4C+4DOZqtaxEZGijMGSdVp
+ xSBJu5DhtJD1JUIgtOPXj7rHojNsnTSt1hz/lJVoe+uZE4IyXP9dF8W23bzphWgmR5/K
+ 2xcm1xO4pxwz4te+9HP2hTil/7QdDQhi0ns= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34kg7m3cu8-2
+        by mx0a-00082601.pphosted.com with ESMTP id 34m81m4c55-10
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 05 Nov 2020 10:18:48 -0800
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        Thu, 05 Nov 2020 10:30:13 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 5 Nov 2020 10:18:47 -0800
+ 15.1.1979.3; Thu, 5 Nov 2020 10:30:11 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MbSkNjt5VTaNa3mRdEmQCat4hKI/fqsBB1+BhNVTNmfUWSAPGHLXJalmIUW20jFSC7105tM5jTc6oAf9ahNc6Ebd5Ozrhfxr+0Xu4RFIrZQb8dB9UYXNiQw/gjdCUeRGHC1LDyfs1qYiZA8fptMdwxpKnKYPsLlQSuvOPbKxswuo2+VXnTlKcc/g1KUNkKw+sug3Va5N/tk2bqC2NLSgOAdEhfsWfeXAxgB+vO8D9RunaX1EDfrEqTEzl+eJ5adYwxhqHzU17t89lOCQ6zTzY03JzSk1nth27FlYuswrMrNV93TsYtZqjjBULk32faCZir1gSFJYm8Oi9tK+6eEVWA==
+ b=T44fN7eLq4cO1p9/gy/MuaZphUsN8eGZx5fqB1n8TA1AHit2PaMxAnMY9bqmQF7BnjML469xYztZySRkxKv4EMXqBr6wi040irqdLLewiwtNw38k2u+1kikO/fMCIx8k/rG8Hi6Wlr2O9p0iPulB0QE+5ubK796gYASVE/zudy3SDUqkgHCrZwutMZLvu+oSKGmacEQoPG4d/2J/qYcBNQMY/OVk+H1HSudHnNNVelYKMOgdVRDKpZmQu5nt4KSiMycNSzJZ/Nr5rCEvFZnU3PObkQUFofL47O9UMV8rgYBJ8IXj22rMb7Idg9CffeIhK2zqUkHqWkOvwII1tdxz+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oe/UBA2R9ekVaZrc/6eiIqXDY5hhwva0tfLj5AXj/bY=;
- b=FQHJW7eCh13tjJFvPwPi1yvNwXu52LhxU24Wys9o+UUw1ebeEwp9LCoyiGP1smGYNU+EII3906jW8DLbnCi10StrN3MvaGwKEAfYEvWQdw0ZZx1iEcVVO6nUAU0gA5yx3vp9A9bx9FO49e1sOI+UgV2GlZpbQKt97rEnMTYpP9OXYRJe5VZFyed6trIjv6IK8SP19n5iNdQxaraTzYWqcxvgSVMHcMms5tKcN99ikoDS+Xkm60cf5U/epZTfC0om3J0dD3BAu0lYzodfXKGKjMtDLchGGRdwbLkotrXHpy7qMzrakcwALsgPUp1tSWF1dWIrkIUI75ho+vPgoEVaAQ==
+ bh=oY0ToNE0y+u3G5NPrllVdo9GsLJigMN/dFeiQTA3hk8=;
+ b=WEpi2dV2vvE/wDz5FULRXe+W11RgwmNplGAsYGYRalQHSc8MIGVT3e4xizzTF0hQL1wh0X/KsvUVR5jvE+TZa/z1EKP6i/bDayIV2iAGpzn1CHNAhVE0vn4DNzHv79zNv+73VBc36BybPNZOiJk7HWBY22fecmfV4VSwFP8zpEatsVwC61kHKl37XupoYGWd0e1zbjbrUqBt6LjNHe8upPu+PpPGBCsFrV6AqwAof96sUe/4XuLzprjzoYonNltW3Wmrt6a2AFHZoB0czdQrwKHfXtdfdEyhZQCilh9oI7rGM79cPTdLgrCXE9j8Px5R520t3IizZvI2Vc6VSvPULg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Oe/UBA2R9ekVaZrc/6eiIqXDY5hhwva0tfLj5AXj/bY=;
- b=gZeQnQlIpzl3XTBSB0SwlSWyswwrx7AjumqXfC6Wf2h6W8V6fOSEIuMDwIDiMVpBfXe6wk5UrGWUfsVI5+Aw7+PQD1wYGdzEagGaCzc5pU0jLSB2lxqNbsYoHfFf1oXww05Hgi9lc3/bU3V0UqpnUFGHGnPIck9OHrmGLyGdkxg=
+ bh=oY0ToNE0y+u3G5NPrllVdo9GsLJigMN/dFeiQTA3hk8=;
+ b=KAqj8dSSXYm+R+coRQeVegseMtXRCLEqnf7h1pM9vaf8AAXieX626UC3FfKIaorYiPuZTRAsg7WbscehkSMTY33NfgGCKHD2ovnOlvMlLS3AKUJ1PGs8qCDn08rZcWWIPL2LIq1DFH151sR8dchv28mFmiTh0bgbjj3F/ANqkWw=
 Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2568.namprd15.prod.outlook.com (2603:10b6:a03:14c::33) with
+ by BYAPR15MB2646.namprd15.prod.outlook.com (2603:10b6:a03:155::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
- 2020 18:18:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Thu, 5 Nov
+ 2020 18:30:08 +0000
 Received: from BYAPR15MB2999.namprd15.prod.outlook.com
  ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
  ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Thu, 5 Nov 2020
- 18:18:43 +0000
+ 18:30:08 +0000
 From:   Song Liu <songliubraving@fb.com>
 To:     Daniel Xu <dxu@dxuuu.xyz>
 CC:     bpf <bpf@vger.kernel.org>,
@@ -60,17 +60,16 @@ CC:     bpf <bpf@vger.kernel.org>,
         "ast@kernel.org" <ast@kernel.org>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf v2 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-Thread-Topic: [PATCH bpf v2 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-Thread-Index: AQHWsxsGDNyincyzREiD40J5/8I0oqm52XIAgAAAhgA=
-Date:   Thu, 5 Nov 2020 18:18:43 +0000
-Message-ID: <7DA54E81-F1FD-4CF7-946A-5B629B56C4A5@fb.com>
+Subject: Re: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+Thread-Topic: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+Thread-Index: AQHWsxsKExRyW1CBMkWOL7EY14SiVKm53SiA
+Date:   Thu, 5 Nov 2020 18:30:08 +0000
+Message-ID: <B9A62DF7-8C1B-448C-8672-0AF6FC1773BE@fb.com>
 References: <cover.1604542786.git.dxu@dxuuu.xyz>
- <487a07aa911b4e822a0b931f7b33a4f67fedb6bd.1604542786.git.dxu@dxuuu.xyz>
- <CE6BCF1F-2112-40DC-87C8-91FA2D6C86FC@fb.com>
-In-Reply-To: <CE6BCF1F-2112-40DC-87C8-91FA2D6C86FC@fb.com>
+ <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
+In-Reply-To: <4e3e8b9b525c8bed39c0ee2aa68f2dff701f56a4.1604542786.git.dxu@dxuuu.xyz>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -80,39 +79,39 @@ authentication-results: dxuuu.xyz; dkim=none (message not signed)
  header.d=none;dxuuu.xyz; dmarc=none action=none header.from=fb.com;
 x-originating-ip: [2620:10d:c090:400::5:ca49]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0233d72d-e646-480c-3cc2-08d881b73a75
-x-ms-traffictypediagnostic: BYAPR15MB2568:
+x-ms-office365-filtering-correlation-id: e47254ed-1771-43ea-24ba-08d881b8d311
+x-ms-traffictypediagnostic: BYAPR15MB2646:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB25684BBF0E441E599EE9402AB3EE0@BYAPR15MB2568.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <BYAPR15MB2646636F91D7CEB7C22FB8FBB3EE0@BYAPR15MB2646.namprd15.prod.outlook.com>
 x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:1013;
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SUqgRRS8l78Z/c4NXwoa9fRJeQZRLBSyscQqen8FANAifxA2D/b+WIiCq81pbws6sGqiIyqdDgPWtt72fNbIZO3lBhx2i/h9lkLx0ihil51qD0k98RUO0XjRTD1+w1znnOpaq2zmuZ/KT5HhApK/t+3QLYp3cTfni6SXs/j7ntoz3Ic4mw55LYTL1ElpOBvb1kHvFlqSrf8aOw0UCn6P2fKnYoCtiROvKqeN9zGxY69HP92++TRPqAv6eHV9WiIy5HJklZyPrHIEahp69g/ER/r/ZqAQQVTD5hCLUVWXheI3p3r+py2l4og4RcvqbqB5Pi8M3j0ZNZiOuBLAF8Gekg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(39860400002)(396003)(366004)(2906002)(66556008)(76116006)(8936002)(53546011)(6486002)(71200400001)(64756008)(316002)(66446008)(66476007)(66946007)(6512007)(83380400001)(91956017)(2616005)(4326008)(8676002)(186003)(54906003)(478600001)(86362001)(6506007)(5660300002)(36756003)(6916009)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Ced/rNFvErdZr4UG8Ru8/THSA3BQoHEMiUv35E4VwwvxgyJxE5MvouOm3EuqVGi9rwe3H8m8ZY8w8KFcjYNrmWHy/Dj091zy1Fx8JRrGL4cibotWPq21MSb4Sv9c7jp4cxDsVs5I3PXbw4Kq16UInkZHVHrqMeHWcmcy3+PVyckHd5/l6vOqiZS7xgO2ht+WwuOv6Bd9j2Vb6P5Zwj/ygWLB1CqWGPTIMocEuprogaW0PtbMrW7ga+VcXtNdySXIsriYQDhzjoZFDDJX3fyqe5QRWXlkiL8PwSa+mNKUsIE6xX9GeZ8JOLnt8IrJZqFWP6EYEbYl/h2Dbk94u1MbN/UdPC8eYCXI9x16s3Pi6N7HmOpob3gt1Prkx4GKA6vHoET4mnLqMSelH4Uh+ceeron2esbQ+m/qZL3LARFwSg8n2Xe6DMnf6HSDVGBhby5cD7L0fbaiCtp6XvBZzWyO82U2ns3710dFh8UOT632uN+Z4rOOL5SFtlpIDGjky7uMrdxPSWlqLtpgx+gQNqQpnZ+gGYKofe1dq9scUY7F4s7SUTck7GQLbefpqyPA6bbFkO7OGSG2Hog4kUX8OWn2z2v9x2QSkYLAobLnIm7dHtMqR9ErPxzrnjxxJ7AWmfnBu8LoP9/YMXxFiMkyWooRyP5Rnn83fIom7IGoYUh+AkR2IokwV5Emky5J+21RFv42
+x-microsoft-antispam-message-info: REbl8JQ8qxZmEP55lQ2jZL6gxF6w0nIiICDjFNkRPw7+9D/kqSrkNRqiDeNns0RSUfh0YGJ7RVIR2vDW1hlZxs7PVzq4AAvkvrYl7fGb9VmyC2vX9XvDFdmY6/9wEHRRtYAT0QD1PZgBtD4uVVwyo6PJp57SkgzdoVuvQkyizC914SzCF1I80158cOuDkH3c361rNbv+6h6vsQsqgm7DYx2Gm+1bOxq38ZJ6qquJvu1v8q4pCLbMlHHB5ThUg6AyKyK0xGVJDl0l6LaZqKaiR1bT5pvDw+rp5bFpGr+ZXjInzr+0sCKNSmL3jKdhQeSwAl7yh/ViGalEah9V9iLMHw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(396003)(366004)(6512007)(6506007)(2616005)(53546011)(36756003)(186003)(71200400001)(4326008)(8676002)(8936002)(76116006)(91956017)(66476007)(316002)(83380400001)(33656002)(6486002)(478600001)(86362001)(54906003)(66946007)(5660300002)(2906002)(6916009)(66556008)(64756008)(66446008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: KJM8MVDRwcv2NIzgprHdEENiriLUePW6VhHo/LJ8MOZd4tdTEA/G1p+uujMJ+koY4ZftlD5rf4HjT1StxoRu06QlvBv1az+WBm2KnJfUf4h0Wx1suCy9W5nL8fJLmQGsQT1EdQsoHUtQ8T/Mg9rUphHyiM7alRlg7w+pJ73CGjoxsjmBtHiyJLObLs1fuHbkzAY/I8ZLRLajPOYYpFrq62MwBDJb5QPLy297yvGiEM6qGx+ibbzqE1A+aGzqOUr2xm43JXTTqj+Tfc0olxCng+aOY27CIGQM1xeXzV5iQY/tWDFdMQwvtBTwaTpPFdJx7QiCuE7rmxaOJTajxu8l1hx+PiG6Ml/ESflBOhV5G1+DhTJJXcBbWPeW/gEAuZt73uHPcYcXcWs+2nKZoDPP9EP5HFss8XmFqXHz38s7yt9VgwtwSqIv6ZtITCCgr2G3B2JWibTMMU9hKWfpwgbbO/wfCMTblA/SPxYWot0wmK1ucWmqK5p2HAzDq5STMlXzqdb4SATpglUmV/rj5+IvTLCoGUehJMboNKoEKMnsl116kQxhlLU9yJbwoTRC0pHKL+EeSbPur7UsqUcDnSfo1dgmBioO0IEa1YdXVRd7RiCKlMrkHA0T+8RwU7AKRzWI9L3ODdhHYpOM9lO4ySxutctJ8cXEmhaclSYXIUqW+lYEwx36HZaXemMs0+mTxY1A
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <258FD37F3A020348808839C251152AD6@namprd15.prod.outlook.com>
+Content-ID: <F7980FD980A33A48A137B5D06A39C0CB@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0233d72d-e646-480c-3cc2-08d881b73a75
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 18:18:43.1625
+X-MS-Exchange-CrossTenant-Network-Message-Id: e47254ed-1771-43ea-24ba-08d881b8d311
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 18:30:08.6907
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TfhizBgGj0nP37p8wQ3zk87bTB5I8m53aPtEWmiXNOGnRYTqlFdAHlVxMnaRjSGaAi5cHhyf9TeCVO4ZI7qLPg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2568
+X-MS-Exchange-CrossTenant-userprincipalname: buF8G2BIjncz9SNmPZRnFdL1aPs8r08s4shrxds04P/+FSCESrhBq8CxCqlXqdN7rDK4q/ba+k8Ak9G2sslY8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2646
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-05_11:2020-11-05,2020-11-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 phishscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011050118
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 spamscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011050121
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -120,76 +119,149 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Nov 5, 2020, at 10:16 AM, Song Liu <songliubraving@fb.com> wrote:
+> On Nov 4, 2020, at 6:25 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
 >=20
+> Previously, bpf_probe_read_user_str() could potentially overcopy the
+> trailing bytes after the NUL due to how do_strncpy_from_user() does the
+> copy in long-sized strides. The issue has been fixed in the previous
+> commit.
 >=20
+> This commit adds a selftest that ensures we don't regress
+> bpf_probe_read_user_str() again.
 >=20
->> On Nov 4, 2020, at 6:25 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
->>=20
->> do_strncpy_from_user() may copy some extra bytes after the NUL
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+> .../bpf/prog_tests/probe_read_user_str.c      | 60 +++++++++++++++++++
+> .../bpf/progs/test_probe_read_user_str.c      | 34 +++++++++++
+> 2 files changed, 94 insertions(+)
+> create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user=
+_str.c
+> create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user=
+_str.c
 >=20
-> We have multiple use of "NUL" here, should be "NULL"?
+> diff --git a/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c=
+ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> new file mode 100644
+> index 000000000000..597a166e6c8d
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+> @@ -0,0 +1,60 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include "test_probe_read_user_str.skel.h"
+> +
+> +static const char str[] =3D "mestring";
+> +
+> +void test_probe_read_user_str(void)
+> +{
+> +	struct test_probe_read_user_str *skel;
+> +	int fd, err, duration =3D 0;
+> +	char buf[256];
+> +	ssize_t n;
+> +
+> +	skel =3D test_probe_read_user_str__open_and_load();
+> +	if (CHECK(!skel, "test_probe_read_user_str__open_and_load",
+> +		  "skeleton open and load failed\n"))
+> +		goto out;
 
-Just realized strncpy_from_user.c uses "NUL", so nevermind...
+nit: we can just return here.=20
 
+> +
+> +	err =3D test_probe_read_user_str__attach(skel);
+> +	if (CHECK(err, "test_probe_read_user_str__attach",
+> +		  "skeleton attach failed: %d\n", err))
+> +		goto out;
+> +
+> +	fd =3D open("/dev/null", O_WRONLY);
+> +	if (CHECK(fd < 0, "open", "open /dev/null failed: %d\n", fd))
+> +		goto out;
+> +
+> +	/* Give pid to bpf prog so it doesn't read from anyone else */
+> +	skel->bss->pid =3D getpid();
+
+It is better to set pid before attaching skel.=20
+
+> +
+> +	/* Ensure bytes after string are ones */
+> +	memset(buf, 1, sizeof(buf));
+> +	memcpy(buf, str, sizeof(str));
+> +
+> +	/* Trigger tracepoint */
+> +	n =3D write(fd, buf, sizeof(buf));
+> +	if (CHECK(n !=3D sizeof(buf), "write", "write failed: %ld\n", n))
+> +		goto fd_out;
+> +
+> +	/* Did helper fail? */
+> +	if (CHECK(skel->bss->ret < 0, "prog ret", "prog returned: %d\n",
+
+In most cases, we use underscore instead of spaces in the second argument=20
+of CHECK(). IOW, please use "prog_ret" instead of "prog ret".=20
+
+> +		  skel->bss->ret))
+> +		goto fd_out;
+> +
+> +	/* Check that string was copied correctly */
+> +	err =3D memcmp(skel->bss->buf, str, sizeof(str));
+> +	if (CHECK(err, "memcmp", "prog copied wrong string"))
+> +		goto fd_out;
+> +
+> +	/* Now check that no extra trailing bytes were copied */
+> +	memset(buf, 0, sizeof(buf));
+> +	err =3D memcmp(skel->bss->buf + sizeof(str), buf, sizeof(buf) - sizeof(=
+str));
+> +	if (CHECK(err, "memcmp", "trailing bytes were not stripped"))
+> +		goto fd_out;
+> +
+> +fd_out:
+> +	close(fd);
+> +out:
+> +	test_probe_read_user_str__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c=
+ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> new file mode 100644
+> index 000000000000..41c3e296566e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+> @@ -0,0 +1,34 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +#include <sys/types.h>
+> +
+> +struct sys_enter_write_args {
+> +	unsigned long long pad;
+> +	int syscall_nr;
+> +	int pad1; /* 4 byte hole */
+> +	unsigned int fd;
+> +	int pad2; /* 4 byte hole */
+> +	const char *buf;
+> +	size_t count;
+> +};
+> +
+> +pid_t pid =3D 0;
+> +int ret =3D 0;
+> +char buf[256] =3D {};
+> +
+> +SEC("tracepoint/syscalls/sys_enter_write")
+> +int on_write(struct sys_enter_write_args *ctx)
+> +{
+> +	if (pid !=3D (bpf_get_current_pid_tgid() >> 32))
+> +		return 0;
+> +
+> +	ret =3D bpf_probe_read_user_str(buf, sizeof(buf), ctx->buf);
+
+bpf_probe_read_user_str() returns "long". Let's use "long ret;"
+
+> +
+> +	return 0;
+> +}
+> +
+> +char _license[] SEC("license") =3D "GPL";
+> --=20
+> 2.28.0
 >=20
->> terminator into the destination buffer. This usually does not matter for
->> normal string operations. However, when BPF programs key BPF maps with
->> strings, this matters a lot.
->>=20
->> A BPF program may read strings from user memory by calling the
->> bpf_probe_read_user_str() helper which eventually calls
->> do_strncpy_from_user(). The program can then key a map with the
->> resulting string. BPF map keys are fixed-width and string-agnostic,
->> meaning that map keys are treated as a set of bytes.
->>=20
->> The issue is when do_strncpy_from_user() overcopies bytes after the NUL
->> terminator, it can result in seemingly identical strings occupying
->> multiple slots in a BPF map. This behavior is subtle and totally
->> unexpected by the user.
->>=20
->> This commit uses the proper word-at-a-time APIs to avoid overcopying.
->>=20
->> Fixes: 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_=
-{user, kernel}_str helpers")
->> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
->> ---
->> lib/strncpy_from_user.c | 9 +++++++--
->> 1 file changed, 7 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
->> index e6d5fcc2cdf3..d084189eb05c 100644
->> --- a/lib/strncpy_from_user.c
->> +++ b/lib/strncpy_from_user.c
->> @@ -35,17 +35,22 @@ static inline long do_strncpy_from_user(char *dst, c=
-onst char __user *src,
->> 		goto byte_at_a_time;
->>=20
->> 	while (max >=3D sizeof(unsigned long)) {
->> -		unsigned long c, data;
->> +		unsigned long c, data, mask, *out;
->>=20
->> 		/* Fall back to byte-at-a-time if we get a page fault */
->> 		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time);
->>=20
->> -		*(unsigned long *)(dst+res) =3D c;
->> 		if (has_zero(c, &data, &constants)) {
->> 			data =3D prep_zero_mask(c, data, &constants);
->> 			data =3D create_zero_mask(data);
->> +			mask =3D zero_bytemask(data);
->> +			out =3D (unsigned long *)(dst+res);
->> +			*out =3D (*out & ~mask) | (c & mask);
->> 			return res + find_zero(data);
->> +		} else  {
->=20
-> This else clause is not needed, as we return in the if clause.=20
->=20
->> +			*(unsigned long *)(dst+res) =3D c;
->> 		}
->> +
->> 		res +=3D sizeof(unsigned long);
->> 		max -=3D sizeof(unsigned long);
->> 	}
->> --=20
->> 2.28.0
 
