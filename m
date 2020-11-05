@@ -2,89 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2F02A7D90
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 12:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8542A8035
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 14:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgKELxP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 06:53:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
+        id S1730898AbgKEN6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 08:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730258AbgKELxL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 06:53:11 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0612C0613D3
-        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 03:53:10 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id g12so1409521wrp.10
-        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 03:53:10 -0800 (PST)
+        with ESMTP id S1727275AbgKEN6k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 08:58:40 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D534CC0613CF;
+        Thu,  5 Nov 2020 05:58:39 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id n16so444467ooj.2;
+        Thu, 05 Nov 2020 05:58:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GXF1SqOriWJ7aOraSXefzzIqR43tkx0ONzj50WfCuDg=;
-        b=zGTLcxiZZV78qsG3GcPQhbs6hZm9UW+qwSl1J9Rc4mi0VpXJEpe9I/xGZ+PmvUDj1Q
-         eHQEBduQhpnLeffenHiQUpr7Psk+RKNcSMVhvUv/VE2CgLiGsalgOjAVXwPl3lzVxLgk
-         ysd/6nRrijW0em5Tj92Aku24eVxfTorX8oNkY=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xg8iAob1rs15mwMHlhe0dunXTn8k6lqy3ajL1s6kKI8=;
+        b=nuspwaHoxKoXZax0NolTi3e9gKAXkPs7jNuqoAGKfD0blKq/CnFKHqob7XW0/kgGqG
+         xwrHcW5/LEPPaQgZrzt2azRmxs1mrb4oFWMLEc7rKIdxZNIu8HFqkhZ8LWhy3m9RJ1pc
+         urPQBQVDZiQtK1L7FS2/0lxhqbOI+uvMVSciuUkcBysKGc7PI3rPZo+VgKR00Ai8dvph
+         5WEiRw5PAK5aUyxomdU3Xbj5tCbkxS8EWkIWBy1pDebCxQYH+U8qxpw1ep6az4Cxg1xd
+         UyRbWNbwlhBMwq5YFMZU2ETlPBYVY4nnNKk720s22a2tSvJk7AL9+vtsHqa1CmZM3ipD
+         M7Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GXF1SqOriWJ7aOraSXefzzIqR43tkx0ONzj50WfCuDg=;
-        b=DXCW9NfqzD0zqMISka0vEihHPP5uFtx17J5zhj82A9Edf5MHinn/OhuIr01qcaK04l
-         ghQ3WHSI9n/QEgwa7xoHcVKuSbBHWAIgbpJYYmFrNGi+DWNCgs4EcOavb6Eig1wUvAU4
-         J2ujrkx3K9gkaFTsqeivNVvyYqfE7Cp2Wsblyd3DP8xV+GgW9iwAH9lup/JwxFGIU5lG
-         UDmP1lR6Jb4z+xSooxtG/ABJnMA/+ymc9Fhq9HYS1PobtO2CLrNN9h+ojKT2Sxf/wQ9s
-         BiRZeBBkd44OA7rBShqv5jRnPo+cqMtaRYsHyDZyDPY4QPm3v1YY62NRGAWPDzezH6Yd
-         c2Uw==
-X-Gm-Message-State: AOAM532zzQdaO59xBi1d+qnRgUhqD2r510mlEvF7EodFpn8utoTGBP7S
-        NCTlJp3uKlStzNuY/VMRiyMRZw==
-X-Google-Smtp-Source: ABdhPJzzNkmxfb9gJuURyKkFNJ0rPyrbz1mHyaZcFFdgejmsCf3LvQME3YFn2QGfmCcxQxs7+t/AEg==
-X-Received: by 2002:a5d:4207:: with SMTP id n7mr2466805wrq.76.1604577189172;
-        Thu, 05 Nov 2020 03:53:09 -0800 (PST)
-Received: from antares.lan (b.f.7.4.3.0.f.a.d.b.3.c.e.c.d.3.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:3dce:c3bd:af03:47fb])
-        by smtp.gmail.com with ESMTPSA id r10sm2264214wmg.16.2020.11.05.03.53.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 03:53:08 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Cc:     kernel-team@cloudflare.com, Jiri Benc <jbenc@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] tools/bpftool: fix attaching flow dissector
-Date:   Thu,  5 Nov 2020 11:52:30 +0000
-Message-Id: <20201105115230.296657-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xg8iAob1rs15mwMHlhe0dunXTn8k6lqy3ajL1s6kKI8=;
+        b=Edt6BW4Lbjl5PWVt+2ycKE7H6ZSxWTBgvqSg9pjqhGZHXjOC3WT2+ZcM4webuY2BGH
+         3qzSxnpF3uv8kBrkqUoYLvqzHuCZsyZ0MmbXTio0OSU6xB4uqrycs8OKU46fgwXz9WfE
+         Z5AMSGOFt0/pzRMOAfQxsNpPBCF6oWbp/YAz2c6nM5h1hsDVoO6ItcGS4SV5AOOxNxb9
+         hZeBxA6vX63m+ZF252V2v/wFMh+YEMy4ZIAewJIrffN3O2HC7mLaO1pd2qPeEDKjRCPQ
+         yGYP+dOQiezr97bI54q2M/Ow/KIklkfJMk1S/qlaR+5XBe0xVQICr/FIGxCCBJrDZvmq
+         /dMw==
+X-Gm-Message-State: AOAM530Tk0i0d9WDsmNxw35u+2b6ojjRhwlFiKdGM6l1zZf/Ft9S0Mqx
+        mk0G+B9X+jllL54N+wLJwyDd2xNrXfha82OCETA=
+X-Google-Smtp-Source: ABdhPJzNbtYsk9ZNJlUKWoQiHEnxij1ZvvfSA6QRqtnpcGabJLt2bNM+qEf0n7skI6kc3jckztKfwNL1j3g6qqV2Skg=
+X-Received: by 2002:a4a:be14:: with SMTP id l20mr1844911oop.27.1604584719243;
+ Thu, 05 Nov 2020 05:58:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201104094626.3406-1-mariuszx.dudek@intel.com>
+ <20201104094626.3406-2-mariuszx.dudek@intel.com> <CAEf4BzZMJV+Ko07DjXD-VxpX9dWtDhd_eGENiTSTHA5uiVLWLw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZMJV+Ko07DjXD-VxpX9dWtDhd_eGENiTSTHA5uiVLWLw@mail.gmail.com>
+From:   Mariusz Dudek <mariusz.dudek@gmail.com>
+Date:   Thu, 5 Nov 2020 14:58:27 +0100
+Message-ID: <CADm5B_NEt14sqhi6V_cx48sOViweYi_GXO8GgrvpXJjYSueg3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: separate XDP program load with xsk
+ socket creation
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Mariusz Dudek <mariuszx.dudek@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-My earlier patch to reject non-zero arguments to flow dissector attach
-broke attaching via bpftool. Instead of 0 it uses -1 for target_fd.
-Fix this by passing a zero argument when attaching the flow dissector.
-
-Fixes: 1b514239e859 ("bpf: flow_dissector: Check value of unused flags to BPF_PROG_ATTACH")
-Reported-by: Jiri Benc <jbenc@redhat.com>
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- tools/bpf/bpftool/prog.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index d942c1e3372c..acdb2c245f0a 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -940,7 +940,7 @@ static int parse_attach_detach_args(int argc, char **argv, int *progfd,
- 	}
- 
- 	if (*attach_type == BPF_FLOW_DISSECTOR) {
--		*mapfd = -1;
-+		*mapfd = 0;
- 		return 0;
- 	}
- 
--- 
-2.25.1
-
+On Wed, Nov 4, 2020 at 10:07 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Nov 4, 2020 at 1:47 AM <mariusz.dudek@gmail.com> wrote:
+> >
+> > From: Mariusz Dudek <mariuszx.dudek@intel.com>
+> >
+> >         Add support for separation of eBPF program load and xsk socket
+> >         creation.
+> >
+> >         This is needed for use-case when you want to privide as little
+> >         privileges as possible to the data plane application that will
+> >         handle xsk socket creation and incoming traffic.
+> >
+> >         With this patch the data entity container can be run with only
+> >         CAP_NET_RAW capability to fulfill its purpose of creating xsk
+> >         socket and handling packages. In case your umem is larger or
+> >         equal process limit for MEMLOCK you need either increase the
+> >         limit or CAP_IPC_LOCK capability.
+> >
+> >         To resolve privileges issue two APIs are introduced:
+> >
+> >         - xsk_setup_xdp_prog - prepares bpf program if given and
+> >         loads it on a selected network interface or loads the built in
+> >         XDP program, if no XDP program is supplied. It can also return
+> >         xsks_map_fd which is needed by unprivileged process to update
+> >         xsks_map with AF_XDP socket "fd"
+> >
+> >         - xsk_update_xskmap - inserts an AF_XDP socket into an xskmap
+> >         for a particular xsk_socket
+> >
+>
+> Your commit message seems to be heavily shifted right...
+>
+Will be fixed
+>
+> > Signed-off-by: Mariusz Dudek <mariuszx.dudek@intel.com>
+> > ---
+> >  tools/lib/bpf/libbpf.map |   2 +
+> >  tools/lib/bpf/xsk.c      | 157 ++++++++++++++++++++++++++++++++-------
+> >  tools/lib/bpf/xsk.h      |  13 ++++
+> >  3 files changed, 146 insertions(+), 26 deletions(-)
+> >
+>
+> [...]
+>
+> > diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+> > index 1069c46364ff..c42b91935d3c 100644
+> > --- a/tools/lib/bpf/xsk.h
+> > +++ b/tools/lib/bpf/xsk.h
+> > @@ -201,6 +201,19 @@ struct xsk_umem_config {
+> >         __u32 flags;
+> >  };
+> >
+> > +struct bpf_prog_cfg {
+> > +       struct bpf_insn *prog;
+> > +       const char *license;
+> > +       size_t insns_cnt;
+> > +       int xsks_map_fd;
+> > +};
+>
+> This config will have problems with backward/forward compatibility.
+> Please check how xxx_opts are done and use them for extensible options
+> structs.
+>
+I will add struct size as first parameter and #define for __last_field
+to be inline with xxx_opts
+>
+> > +
+> > +LIBBPF_API int xsk_setup_xdp_prog(int ifindex,
+> > +                                 struct bpf_prog_cfg *cfg,
+> > +                                 int *xsks_map_fd);
+> > +LIBBPF_API int xsk_update_xskmap(struct xsk_socket *xsk,
+> > +                                int xsks_map_fd);
+>
+> this should be called xsk_socket__update_map? BTW, what's xskmap? Is
+> that a special BPF map type?
+>
+I will change the API name as you suggested. XSKMAP is a special
+BPF_MAP_TYPE_XSKMAP.
+It defines how packets are being distributed from an XDP program to the XSKs.
+> > +
+> >  /* Flags for the libbpf_flags field. */
+> >  #define XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD (1 << 0)
+> >
+> > --
+> > 2.20.1
+> >
