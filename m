@@ -2,221 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9332A86CD
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 20:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D848C2A86E3
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 20:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgKETK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 14:10:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        id S1729783AbgKETQc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 14:16:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgKETK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 14:10:26 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37768C0613CF;
-        Thu,  5 Nov 2020 11:10:26 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id b138so2289641yba.5;
-        Thu, 05 Nov 2020 11:10:26 -0800 (PST)
+        with ESMTP id S1727376AbgKETQb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 14:16:31 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A577C0613CF;
+        Thu,  5 Nov 2020 11:16:31 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id s8so128100yba.13;
+        Thu, 05 Nov 2020 11:16:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KJ4/h1YdYd4I+aTdeDT3O49xOtynQ0iW9/9nrkdHlSY=;
-        b=mqTZSqStnElJ0DB99TJ+ZXfMw0LAgrNyxf84zgIS4zMzDV76+C4h4Kmr6z4NuLOm25
-         rB4qmFaHf6Z8l15Vu5zfmAPuz7Y++XoamhpO1+eL5htjNE8xIOMw8zPrithvwJg4QBtJ
-         P/+y74/kUAlyhm0DdHdY+gOyGRKR7vV+CB0GXRKey9s/r6zcrK2svbKvOgQFUnhks4LW
-         qJxVG9u2ZpH+uwEfWAMskDC6mGd+z/up4+DkeDL4orXWJbHCITWXekVxd5hnqFGkKXRg
-         Rkb7yr2ls6/gYT3IELx98pabiR7CL7Oxws+CkCmZoRtvb7Pbe30iYvoqycdyM099o0Zy
-         JdNw==
+        bh=UQDWwq8QvMqdJVjzKGOETKiS1dHDi+D7vZxRLNj3byE=;
+        b=azygivsUO3WQ3joNx+4dX4Nbmg2PNAghBNk/vpB/zvr95CQWczH5VKrdKtgSmtZ76Q
+         mEXaKtXwJ2FUDibZdfn/c4DWWfu+lw3bdhv7lZK0gWtgtEMgNR+AEyu3fM67BtvWDpAU
+         uwHVmEIQL7VfJ93hX0RpFkirXlB0yyqWL6JmDM2uYlMbDP2BUiss5aJyxyWFSaIl6ts/
+         byqnNf25QOP53SxZ1IzachOloGnOGiq6TCRTpeZrihj1lkipfIkMN3zODz6EPugNN2Kq
+         f7NIgu9a1N44TFllgqC/IMQbQyy2zwgvtyuct2hRzo1F+P2DuWHCHgw5GN6qYWyPk4lo
+         FLbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KJ4/h1YdYd4I+aTdeDT3O49xOtynQ0iW9/9nrkdHlSY=;
-        b=JDvx53kaKvMlrrYvk8+WX2BU7Y4+HUIeNEtoQHEbwYbfa0oKXnI7HB2RgpmeswgBTY
-         ot9/4k9f9IAadK96L7EtvPRQElNd9o0IPgzS9tq4FwLrGPocNVDVvnqwH85NlkbRbHvo
-         bdn2cjA3TaNTSIxjdHDaRyVdri4sVnPgHFl7j3JStPbQmWnqQj8ldv3/xY7oMpcfnZoo
-         LntNQE5zGPQJe6GCzbJxpGCpb310yU5/w1HatUvs/4SLBLT3H4wfV06m1QROq+fp/PpP
-         ZkkTssBQa5pCXTDADMg1ptPnBc8sswfLkiLY7pW3UDvrmJPIEl0MVEejN1cPp2WL3tzS
-         YG7w==
-X-Gm-Message-State: AOAM530P69YIupSf5DqCKcTiIa8AemeLSScSnukVmofWkan2Tue5wX4k
-        /WPoEoyRTSFfhaKFOu6xMKqUNtMz+TBU399CjYtBCalb1yKSLw==
-X-Google-Smtp-Source: ABdhPJzlhxiNo8PRISb3zoqcj9C5zkRRZd/6NiTpBEhxnvnLcm3coEBUWZSlSPmKeQb1R24jRXKRTb460wZsURJs1Wk=
-X-Received: by 2002:a25:cb10:: with SMTP id b16mr5605715ybg.459.1604603425243;
- Thu, 05 Nov 2020 11:10:25 -0800 (PST)
+        bh=UQDWwq8QvMqdJVjzKGOETKiS1dHDi+D7vZxRLNj3byE=;
+        b=fJSCMFUZdlYIKtzuuqij/i69+Cnor86h4PVDX5o4cRy+wLvp+cmUjkYyP90CTw6KqI
+         m1Mez89XLr+cffc48hvfWmSw31ERxeCwwUAo10zagF5p6uf5Jb3O9zOojNyiNW/tRuYZ
+         DJ6NtG1kjcuQazHocOdOBbB/bA9jLU9xnoVDDwbBZAxTvNb1hJX2DgQ9swIW6Wsr94JT
+         s56ehMI8oOGawBKcFVgppJqCbXvgN5rojn2gMadsSpWI5Z5rGh9ZEdAw4aHqhgivwXec
+         FS+XqtGgc3qKQq7Tj2ox/ogH2qyIHtD22ceCe+qwNtC+8UstY9bNlMxtdthTZMsRiOsR
+         juoQ==
+X-Gm-Message-State: AOAM531G35oG81OyTbFIW14PcUumVm6RbsEfQurYknIZydnbgSNJHetn
+        xlgf/3Y9ikDX05cfpttPoMbMyfRzJW4Jp+hyccA=
+X-Google-Smtp-Source: ABdhPJyCyz06QqQEAxYz9uaHbc6oT73ifk10hhdeAkNDkDovRgGK1ZtVOdvbeHkjfe1kT0ho0uvoZ4IuZ+ucRo50c1U=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr5738478ybe.403.1604603790660;
+ Thu, 05 Nov 2020 11:16:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20201105043936.2555804-1-andrii@kernel.org> <20201105114242.GH262228@kernel.org>
-In-Reply-To: <20201105114242.GH262228@kernel.org>
+References: <20201105043402.2530976-1-andrii@kernel.org> <20201105105254.27c84b78@carbon>
+In-Reply-To: <20201105105254.27c84b78@carbon>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 5 Nov 2020 11:10:14 -0800
-Message-ID: <CAEf4BzYshEY3K=fqt2iQJaVcZeepcger0C7+uOXNhG=MLC9R-w@mail.gmail.com>
-Subject: Re: [RFC PATCH dwarves] btf: add support for split BTF loading and encoding
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Date:   Thu, 5 Nov 2020 11:16:19 -0800
+Message-ID: <CAEf4BzYOcQt1dv2f5UmVqCGWJVqM95DoUAumH+sRuXW3rzejMg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/11] libbpf: split BTF support
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Anton Protopopov <aspsk2@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 3:42 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+On Thu, Nov 5, 2020 at 1:53 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 >
-> Em Wed, Nov 04, 2020 at 08:39:36PM -0800, Andrii Nakryiko escreveu:
-> > Add support for generating split BTF, in which there is a designated base
-> > BTF, containing a base set of types, and a split BTF, which extends main BTF
-> > with extra types, that can reference types and strings from the main BTF.
-> >
-> > This is going to be used to generate compact BTFs for kernel modules, with
-> > vmlinux BTF being a main BTF, which all kernel modules are based off of.
-> >
-> > These changes rely on patch set [0] to be present in libbpf submodule.
-> >
-> >   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=377859&state=*
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >
-> > This is posted before libbpf changes landed to show end-to-end how kernel
-> > module BTFs are going to be integrated into the kernel. Once libbpf split BTF
-> > support lands, I'll sync it into Github repo and will post a proper v1.
-> >
-> >  btf_encoder.c | 15 ++++++++-------
-> >  btf_loader.c  |  2 +-
-> >  libbtf.c      | 43 +++++++++++++++++++++++++++----------------
-> >  libbtf.h      |  4 +++-
-> >  pahole.c      | 23 +++++++++++++++++++++++
-> >  5 files changed, 62 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index 4c92908beab2..d67e29b9cbee 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -12,6 +12,7 @@
-> >  #include "dwarves.h"
-> >  #include "libbtf.h"
-> >  #include "lib/bpf/include/uapi/linux/btf.h"
-> > +#include "lib/bpf/src/libbpf.h"
-> >  #include "hash.h"
-> >  #include "elf_symtab.h"
-> >  #include "btf_encoder.h"
-> > @@ -343,7 +344,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> >       }
-> >
-> >       if (!btfe) {
-> > -             btfe = btf_elf__new(cu->filename, cu->elf);
-> > +             btfe = btf_elf__new(cu->filename, cu->elf, base_btf);
-> >               if (!btfe)
-> >                       return -1;
-> >
-> > @@ -358,22 +359,22 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> >                       printf("File %s:\n", btfe->filename);
-> >       }
-> >
-> > +     btf_elf__verbose = verbose;
-> > +     btf_elf__force = force;
-> > +     type_id_off = btf__get_nr_types(btfe->btf);
-> > +
-> >       if (!has_index_type) {
-> >               /* cu__find_base_type_by_name() takes "type_id_t *id" */
-> >               type_id_t id;
-> >               if (cu__find_base_type_by_name(cu, "int", &id)) {
-> >                       has_index_type = true;
-> > -                     array_index_id = id;
-> > +                     array_index_id = type_id_off + id;
-> >               } else {
-> >                       has_index_type = false;
-> > -                     array_index_id = cu->types_table.nr_entries;
-> > +                     array_index_id = type_id_off + cu->types_table.nr_entries;
-> >               }
-> >       }
-> >
-> > -     btf_elf__verbose = verbose;
-> > -     btf_elf__force = force;
-> > -     type_id_off = btf__get_nr_types(btfe->btf);
-> > -
-> >       cu__for_each_type(cu, core_id, pos) {
-> >               int32_t btf_type_id = tag__encode_btf(cu, pos, core_id, btfe, array_index_id, type_id_off);
-> >
-> > diff --git a/btf_loader.c b/btf_loader.c
-> > index 6ea207ea65b4..ec286f413f36 100644
-> > --- a/btf_loader.c
-> > +++ b/btf_loader.c
-> > @@ -534,7 +534,7 @@ struct debug_fmt_ops btf_elf__ops;
-> >  int btf_elf__load_file(struct cus *cus, struct conf_load *conf, const char *filename)
-> >  {
-> >       int err;
-> > -     struct btf_elf *btfe = btf_elf__new(filename, NULL);
-> > +     struct btf_elf *btfe = btf_elf__new(filename, NULL, base_btf);
-> >
-> >       if (btfe == NULL)
-> >               return -1;
-> > diff --git a/libbtf.c b/libbtf.c
-> > index babf4fe8cd9e..3c52aa0d482b 100644
-> > --- a/libbtf.c
-> > +++ b/libbtf.c
-> > @@ -27,6 +27,7 @@
-> >  #include "dwarves.h"
-> >  #include "elf_symtab.h"
-> >
-> > +struct btf *base_btf;
-> >  uint8_t btf_elf__verbose;
-> >  uint8_t btf_elf__force;
-> >
-> > @@ -52,9 +53,9 @@ int btf_elf__load(struct btf_elf *btfe)
-> >       /* free initial empty BTF */
-> >       btf__free(btfe->btf);
-> >       if (btfe->raw_btf)
-> > -             btfe->btf = btf__parse_raw(btfe->filename);
-> > +             btfe->btf = btf__parse_raw_split(btfe->filename, btfe->base_btf);
-> >       else
-> > -             btfe->btf = btf__parse_elf(btfe->filename, NULL);
-> > +             btfe->btf = btf__parse_elf_split(btfe->filename, btfe->base_btf);
-> >
-> >       err = libbpf_get_error(btfe->btf);
-> >       if (err)
-> > @@ -63,7 +64,7 @@ int btf_elf__load(struct btf_elf *btfe)
-> >       return 0;
-> >  }
-> >
-> > -struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
-> > +struct btf_elf *btf_elf__new(const char *filename, Elf *elf, struct btf *base_btf)
-> >  {
-> >       struct btf_elf *btfe = zalloc(sizeof(*btfe));
-> >       GElf_Shdr shdr;
-> > @@ -77,7 +78,8 @@ struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
-> >       if (btfe->filename == NULL)
-> >               goto errout;
-> >
-> > -     btfe->btf = btf__new_empty();
-> > +     btfe->base_btf = base_btf;
-> > +     btfe->btf = btf__new_empty_split(base_btf);
-> >       if (libbpf_get_error(btfe->btf)) {
-> >               fprintf(stderr, "%s: failed to create empty BTF.\n", __func__);
-> >               goto errout;
-> > @@ -679,11 +681,11 @@ static int btf_elf__write(const char *filename, struct btf *btf)
-> >  {
-> >       GElf_Shdr shdr_mem, *shdr;
-> >       GElf_Ehdr ehdr_mem, *ehdr;
-> > -     Elf_Data *btf_elf = NULL;
-> > +     Elf_Data *btf_data = NULL;
+> On Wed, 4 Nov 2020 20:33:50 -0800
+> Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> Can you please split this into two patches, one doing just the rename
-> of btf_elf to btf_data and then moving to btf__new_empty_split()? Eases
-> reviewing.
-
-sure, will do in the next version
-
+> > This patch set adds support for generating and deduplicating split BTF. This
+> > is an enhancement to the BTF, which allows to designate one BTF as the "base
+> > BTF" (e.g., vmlinux BTF), and one or more other BTFs as "split BTF" (e.g.,
+> > kernel module BTF), which are building upon and extending base BTF with extra
+> > types and strings.
+> >
+> > Once loaded, split BTF appears as a single unified BTF superset of base BTF,
+> > with continuous and transparent numbering scheme. This allows all the existing
+> > users of BTF to work correctly and stay agnostic to the base/split BTFs
+> > composition.  The only difference is in how to instantiate split BTF: it
+> > requires base BTF to be alread instantiated and passed to btf__new_xxx_split()
+> > or btf__parse_xxx_split() "constructors" explicitly.
+> >
+> > This split approach is necessary if we are to have a reasonably-sized kernel
+> > module BTFs. By deduping each kernel module's BTF individually, resulting
+> > module BTFs contain copies of a lot of kernel types that are already present
+> > in vmlinux BTF. Even those single copies result in a big BTF size bloat. On my
+> > kernel configuration with 700 modules built, non-split BTF approach results in
+> > 115MBs of BTFs across all modules. With split BTF deduplication approach,
+> > total size is down to 5.2MBs total, which is on part with vmlinux BTF (at
+> > around 4MBs). This seems reasonable and practical. As to why we'd need kernel
+> > module BTFs, that should be pretty obvious to anyone using BPF at this point,
+> > as it allows all the BTF-powered features to be used with kernel modules:
+> > tp_btf, fentry/fexit/fmod_ret, lsm, bpf_iter, etc.
 >
-> With this split btf code would it be possible to paralelize the encoding
-> of the modules BTF? I have to check the other patches and how this gets
-> used in the kernel build process... :-)
-
-Yes, each module's BTF is generated completely independently. See some
-numbers in [0].
-
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201105045140.2589346-4-andrii@kernel.org/
-
->
-> - Arnaldo
+> I love to see this work going forward.
 >
 
-[...]
+Thanks.
+
+> My/Our (+Saeed +Ahern) use-case is for NIC-driver kernel modules.  I
+> want drivers to define a BTF struct that describe a meta-data area that
+> can be consumed/used by XDP, also available during xdp_frame to SKB
+> transition, which happens in net-core. So, I hope BTF-IDs are also
+> "available" from core kernel code?
+
+I'll probably need a more specific example to understand what exactly
+you are asking and how you see everything working together, sorry.
+
+If you are asking about support for using BTF_ID_LIST() macro in a
+kernel module, then right now we don't call resolve_btfids on modules,
+so it's not supported there yet. It's trivial to add, but we'll
+probably need to teach resolve_btfids to understand split BTF. We can
+do that separately after the basic "infra" lands, though.
+
+>
+>
+> > This patch set is a pre-requisite to adding split BTF support to pahole, which
+> > is a prerequisite to integrating split BTF into the Linux kernel build setup
+> > to generate BTF for kernel modules. The latter will come as a follow-up patch
+> > series once this series makes it to the libbpf and pahole makes use of it.
+> >
+> > Patch #4 introduces necessary basic support for split BTF into libbpf APIs.
+> > Patch #8 implements minimal changes to BTF dedup algorithm to allow
+> > deduplicating split BTFs. Patch #11 adds extra -B flag to bpftool to allow to
+> > specify the path to base BTF for cases when one wants to dump or inspect split
+> > BTF. All the rest are refactorings, clean ups, bug fixes and selftests.
+> >
+> > v1->v2:
+> >   - addressed Song's feedback.
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
