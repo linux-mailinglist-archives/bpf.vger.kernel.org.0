@@ -2,146 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB9D2A8655
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 19:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1B02A86A1
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 20:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732052AbgKESpf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 13:45:35 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16676 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731854AbgKESpe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 13:45:34 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A5IcXQ2001682;
-        Thu, 5 Nov 2020 10:45:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=8hd1FQlCfuHQX3jPZvYDADSY9p2pyyFF5qKbCJnCJU0=;
- b=C1saIGv/80cuphGG0XxbmwVtbpKKIEn9Y9QwsvXdAI6Q7dl1GtnWAWOrXC5lJlwU6y11
- mr5AOP4Hu1s8ht5qbcM0Ic3Rm8koVQyRWImqympcvGPsvMIRYDVU33BaL2i8xo++SJft
- lhDBG5AGE/VOwgmSzDFG4/duoY4fK7yFUlU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 34mek331dk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 05 Nov 2020 10:45:17 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 5 Nov 2020 10:45:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WG9X3SbHZj7JZmjm6DR5zLS7LZx4X4houaSBHxuaIrjwhE6nuTz5VR4Y1z11762mEzXBMvdD+T9cP6R+pCQQiD3wCq4VSEftmNneACpgJoK/at5yl01K+rp90QCyOQ0BAOzGVjdE1X9i39Em2GUApIYbTPTluyAtbCg7ybpnCPdsqwIqsH1SbjQz768sCD2UxaAspuEAJQgBAuGBFbwg08VHaaruXiS/YutdiWTGe9IwKBC/s43OYpRSdNm/mmCM9LR8+oN4BVeVALNcv4s0Ddny4QInT6JWGyob4lyt8Z84bEkOqvD8jkiWW3b3u0VdDk5J3rv4Aa5ZU3MJD7A0XQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8hd1FQlCfuHQX3jPZvYDADSY9p2pyyFF5qKbCJnCJU0=;
- b=BLHqMgrwa/5MQmFNhVACCigZQWFDXTzie4wkPYnzyiv+wvm5SbHY3a5UUc/oMYRGoqa1Do5/xPb+wwwf2GyQX5Yb4OJdU9e1J5oecXF/OMoo57/7aV01OvvHOgV//mARkckqMS6LpOKXcGXxCgTYhgtHx0OA9gmUytyGrxcf2w57K5UPkIe8c/2moM95rN9wtuESr1dMkFX736CgTS1mXL7D6hWDpW7loQTCzge6ytKViYkImhT6AMPhCQ2I0Ux3QeJBCqlnNnLKev1oQW65WB1E1LI2k/XgGwDxjsYLoGZHm6hNV6BtJNd+kldNr/8sKOVZRlc0ZM8Cycken6D7QA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8hd1FQlCfuHQX3jPZvYDADSY9p2pyyFF5qKbCJnCJU0=;
- b=k5AlX4/KDwfSLeKQAwmzOtfFZbn98MFoQHp5QXQbIdboPtdX9V2unU7APFw802W/wFcnToDFqFIgomUH2Rkz2p4yvxNbA2vA9293C0JB5mI5uMn2a7FTxyzjlyGvzk+kfvvPa4B+39aDgbxjxGCr6cCojEOZhLyWwsIUBiH8JY8=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2374.namprd15.prod.outlook.com (2603:10b6:a02:8b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.27; Thu, 5 Nov
- 2020 18:45:15 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::7d77:205b:bbc4:4c70%6]) with mapi id 15.20.3499.030; Thu, 5 Nov 2020
- 18:45:15 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     KP Singh <kpsingh@chromium.org>
-CC:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next v4 1/9] bpf: Allow LSM programs to use bpf spin
- locks
-Thread-Topic: [PATCH bpf-next v4 1/9] bpf: Allow LSM programs to use bpf spin
- locks
-Thread-Index: AQHWs4KvQRXv4p6YTkGVsnueG+A+cKm54JIA
-Date:   Thu, 5 Nov 2020 18:45:15 +0000
-Message-ID: <F1D417CF-8E33-4C65-9F91-FB391ABA5774@fb.com>
-References: <20201105144755.214341-1-kpsingh@chromium.org>
- <20201105144755.214341-2-kpsingh@chromium.org>
-In-Reply-To: <20201105144755.214341-2-kpsingh@chromium.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:ca49]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6091a312-0712-48e0-ce76-08d881baef66
-x-ms-traffictypediagnostic: BYAPR15MB2374:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB23747CF5738D910C32DC3E90B3EE0@BYAPR15MB2374.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OLZoZG4yXoO1U1TrTHEXvXljG3swYQU1bfiPU8tpiBiHANsTHNW18BQDSJTF34O5fjKFsxSxCGlfUeX3Bi4ybR1YK8Jbxja21w6WnlEcXEVomFGBaVUm9ylcyqaj5DycA6nMcDEWfI2bLSACjfJoO7+E2qSQbiSnEjMIZnHWh5UHmusfitd6MNSwpYnqsKtDktodUNom+HBI+IWC+8Ifxi4ahhB+jhF4uMixxcg1aMu4w3ug8fjBEYo0JLpcRRGv4DE3Q1uJhHgduMH9d8kHJdpWXJbin5NdRFeWQtrTXk3pcgfEBokHuBaQdkqeGHSO4pdVSPf5RQY/DMZrWLk6m/3iY32xKxdLSYQpTYi1myg5gQEAPkBjbrfudF1lSeBbvhELUJmvj/5lc0/UcdoSew==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(376002)(366004)(136003)(5660300002)(478600001)(86362001)(2616005)(186003)(53546011)(6506007)(71200400001)(54906003)(8936002)(4744005)(8676002)(966005)(316002)(2906002)(33656002)(66556008)(6486002)(83380400001)(4326008)(64756008)(66476007)(91956017)(66946007)(36756003)(6512007)(76116006)(66446008)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: FyyYdIwijGs6sypcnXiK/wIyhaS8HsTt++TeVyN8jKEkzcg7X1fJ5ffTXYFzxxgLIVsb8FsaUzd97KrNKLmgtxFojX6kcqLKug0mD0C+hqdJp6hfsi4jqPZn+Mic68bEgWs6TVG9piVo+4ePbR6uyFwka7J40gh6Cu1kUbMIV7f6GEWJ5RsJxi1IuBmP0/nOqF6dBm75nE1lJynGKgbCp4sve6cB9DD/OpboiCO3g5EtYvFJPz/EK7w72purXRwTRYnN/o1YLZpWravyh6ujoHblAkmQ4W1j3XxKUDynfUEB9hNOOb+n1RM/ztXCfIU+rIjuMuNxadQW9DpYcWJyrSrFxluzvli7aMnfOradnViwgXVytugVV422CjwMywFxdkigD/+i+iWpVhQQRDO4fBxKDySuRe3n86pUddpXeSmXH6XEMUa+lCpgQsH8W9+9pVCdXIEge0xOt8NeCOrv2HnQY8ifTU9hTd5kUZx0GkU3Y5G8dVTr9KlWiNZhmg5qfyRIS+8R2qvj3ufjro0IbUjFV4uOmQa2W/zLTGQFzdLgq0aqqhijQy+xprm3ef6sGsflKxAbUeEZQGu1tZhMuUQmT0VmPl19E74rF948pJSU0JR/AWPMoDIonhmngrle31H+T0PvqrVIQx7Ko3bSMV/445yGMPJX6n+N17RR+JySaGd1uoTHdZDRlXQlm0d7
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <ECE40D940CAA8546B315F62F39945495@namprd15.prod.outlook.com>
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6091a312-0712-48e0-ce76-08d881baef66
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2020 18:45:15.1858
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rmz2LjcX9BXWbO6oqxnpY5EyCFj1FKueOc5GuMslrcfTF+PA5xWq2WwxTHa7+52dUz1cfMcitablC/nqLl9u4Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2374
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1731234AbgKETBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 14:01:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731644AbgKETB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 14:01:27 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25889C0613CF;
+        Thu,  5 Nov 2020 11:01:27 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id i186so2242439ybc.11;
+        Thu, 05 Nov 2020 11:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pUnL/CYasanNGQGKwZYF4l9ptvaitgiceIreKhvBBAY=;
+        b=QtTuIKsXrgSuBdYaU4RcAXdV7dt1s4/ingmc5bhmC3KhpAa2njlYIZNMMfMQ0iD8sc
+         kWiX+r2HVhKw62YROoUd4du3KFmprfu2CLJCivH95HxcVnnLfPt0/QUQG3T7jCeZQziB
+         DN2dUrUijG6TUKdhOXeHR8FT91YnIY7d/QybBA+gMhROtjWqYwlgKhxm/+7rRMOwBj6c
+         pzCATAcAb6our+BnZOXI/EFFXIMXB/XMHzOSqfIEx0JStsLKC/0lkQCKhir8P/amz/tV
+         sRkmSlonym4lnCrqiR+5kyOJ70Quv5Pue1rO3E8O+vaUa62K+EEuMsjM5MJw5nf6/vGv
+         ObFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pUnL/CYasanNGQGKwZYF4l9ptvaitgiceIreKhvBBAY=;
+        b=Kpv3IcDVysIgGjStojvgOrefSrnlDtp4Yd8w8f0Hd2EGCrihVAUdHosjiTRchsq9GE
+         BsDT5cKax9VQK1+o7odcEQXaeOHML/OnpdZtIAOZAsXCvFcyxsIihHdY59sJ+HOZ1u+p
+         veeSH/jm7JgVi7EhYyZRge1OjZNXocu50bh8vi1ktJy5zbODLa6J2lLt9XIQ+XeextKp
+         KcUnULb4cyPMWuIsIamyuwpZefb74rqWcNoylyxUZd3uTx0AMxhyCplxsdaKsUhWF5ar
+         m9T2y65bpaHrLzH0bEsnk0T7LpTQ2la1NRN/BMjWK5AD7lr+N5z04H183PqiTJwFcXDh
+         tr8A==
+X-Gm-Message-State: AOAM533JOBMUMIKXcxYiU2d39qOrw62sCuOlarPHKGETopTsFRcaQWHl
+        qioY0ODhA7NH+kuM6W0oNvnu3jMM3ZgVhKpdPos=
+X-Google-Smtp-Source: ABdhPJyQIN+4ekCQeixYIYktOAkmsTPODuFumaWBVbkgLGTkD6eow815f7IPD11BieHj9nOA9/iGJOf2SiILiPuJPG8=
+X-Received: by 2002:a25:da4e:: with SMTP id n75mr5580573ybf.425.1604602886337;
+ Thu, 05 Nov 2020 11:01:26 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-05_11:2020-11-05,2020-11-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 mlxscore=0 adultscore=0 clxscore=1015 spamscore=0
- priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=842
- lowpriorityscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011050122
-X-FB-Internal: deliver
+References: <20201105045140.2589346-1-andrii@kernel.org> <20201105045140.2589346-5-andrii@kernel.org>
+ <20201105083925.68433e51@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <20201105164616.GA1201462@kroah.com>
+In-Reply-To: <20201105164616.GA1201462@kroah.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 5 Nov 2020 11:01:15 -0800
+Message-ID: <CAEf4Bza6CGgJO6eOSU66mj-usbaGuFgZhRz1i+mFjg_f75Jn5A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 4/5] bpf: load and verify kernel module BTFs
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Nov 5, 2020 at 8:45 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Nov 05, 2020 at 08:39:25AM -0800, Jakub Kicinski wrote:
+> > On Wed, 4 Nov 2020 20:51:39 -0800 Andrii Nakryiko wrote:
+> > > Add kernel module listener that will load/validate and unload module BTF.
+> > > Module BTFs gets ID generated for them, which makes it possible to iterate
+> > > them with existing BTF iteration API. They are given their respective module's
+> > > names, which will get reported through GET_OBJ_INFO API. They are also marked
+> > > as in-kernel BTFs for tooling to distinguish them from user-provided BTFs.
+> > >
+> > > Also, similarly to vmlinux BTF, kernel module BTFs are exposed through
+> > > sysfs as /sys/kernel/btf/<module-name>. This is convenient for user-space
+> > > tools to inspect module BTF contents and dump their types with existing tools:
+> >
+> > Is there any precedent for creating per-module files under a new
+> > sysfs directory structure? My intuition would be that these files
+> > belong under /sys/module/
+>
+> Ick, why?  What's wrong with them under btf?  The module core code
+> "owns" the /sys/modules/ tree.  If you want others to mess with that, it
+> will get tricky.
+>
+>
+> > Also the CC list on these patches is quite narrow. You should have
+> > at least CCed the module maintainer. Adding some folks now.
+> >
+> > > [vmuser@archvm bpf]$ ls -la /sys/kernel/btf
+> > > total 0
+> > > drwxr-xr-x  2 root root       0 Nov  4 19:46 .
+> > > drwxr-xr-x 13 root root       0 Nov  4 19:46 ..
+> > >
+> > > ...
+> > >
+> > > -r--r--r--  1 root root     888 Nov  4 19:46 irqbypass
+> > > -r--r--r--  1 root root  100225 Nov  4 19:46 kvm
+> > > -r--r--r--  1 root root   35401 Nov  4 19:46 kvm_intel
+> > > -r--r--r--  1 root root     120 Nov  4 19:46 pcspkr
+> > > -r--r--r--  1 root root     399 Nov  4 19:46 serio_raw
+> > > -r--r--r--  1 root root 4094095 Nov  4 19:46 vmlinux
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  include/linux/bpf.h    |   2 +
+> > >  include/linux/module.h |   4 +
+> > >  kernel/bpf/btf.c       | 193 +++++++++++++++++++++++++++++++++++++++++
+> > >  kernel/bpf/sysfs_btf.c |   2 +-
+> > >  kernel/module.c        |  32 +++++++
+> > >  5 files changed, 232 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 2fffd30e13ac..3cb89cd7177b 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -36,9 +36,11 @@ struct seq_operations;
+> > >  struct bpf_iter_aux_info;
+> > >  struct bpf_local_storage;
+> > >  struct bpf_local_storage_map;
+> > > +struct kobject;
+> > >
+> > >  extern struct idr btf_idr;
+> > >  extern spinlock_t btf_idr_lock;
+> > > +extern struct kobject *btf_kobj;
+>
+> I don't see any Documentation/ABI/ updates for the sysfs changes here,
+> did I miss it?
+>
 
+Nope, my bad, completely forgot to add it. Last time I touched sysfs
+was quite a while ago, I forgot about adding ABI description. Will add
+in the next version.
 
-> On Nov 5, 2020, at 6:47 AM, KP Singh <kpsingh@chromium.org> wrote:
->=20
-> From: KP Singh <kpsingh@google.com>
->=20
-> Usage of spin locks was not allowed for tracing programs due to
-> insufficient preemption checks. The verifier does not currently prevent
-> LSM programs from using spin locks, but the helpers are not exposed
-> via bpf_lsm_func_proto.
->=20
-> Based on the discussion in [1], non-sleepable LSM programs should be
-> able to use bpf_spin_{lock, unlock}.
->=20
-> Sleepable LSM programs can be preempted which means that allowng spin
-> locks will need more work (disabling preemption and the verifier
-> ensuring that no sleepable helpers are called when a spin lock is held).
->=20
-> [1]: https://lore.kernel.org/bpf/20201103153132.2717326-1-kpsingh@chromiu=
-m.org/T/#md601a053229287659071600d3483523f752cd2fb
->=20
-> Signed-off-by: KP Singh <kpsingh@google.com>
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
-[...]
-
+> thanks,
+>
+> greg k-h
