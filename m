@@ -2,114 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF3B2A80A1
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 15:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604B92A8107
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 15:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730618AbgKEOSD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 09:18:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730466AbgKEOSD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 09:18:03 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC3FC0613CF;
-        Thu,  5 Nov 2020 06:18:01 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id r10so1506870pgb.10;
-        Thu, 05 Nov 2020 06:18:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gsfXgYp6d/745vIPy5RjIVehOz0ZLPpOeltimNylI9o=;
-        b=DM48THk5JPXrFvaL+o/TrrTHlDQ/280/s6v+YSRtkTpzJ9BCVGqZF022NuUiRSIzZx
-         yIjnwa2FEACXxwFnOaHSQ43NBZ2GasIGFJ6qxNFnepnRy0M0S4bn/RY7PWQFgV6zknlH
-         9TRqWmOpIXADcfph7/2yhJx9V2Skptm5tegyFBkeMp+sEe1v4fTYAnk7zgejXDorRo4f
-         ghtO8PypWRds4kV+DiEttpOMl01qtLpb5UM7T+i4UinQj82wGBF6gzffv77Sg0xAT2pE
-         mE4mIgkMnrMx7FYsQ8kELZ4ko0r4VETfSQmj1lsAMk0YMlLvPp2qvfJNkVP/ex+kRp1A
-         5i8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gsfXgYp6d/745vIPy5RjIVehOz0ZLPpOeltimNylI9o=;
-        b=Hnuk1jxTBDfQD17cq/0dokF3Fj+gmrytVYedweRa9UgVWf2qADNPqm04Jo+RnABPRu
-         aNKvPfkgmb30RtG2cD95u5dFt+lYJzFaoh/L5f5S8hkIfotwNsCxXP/jbutuoOe2flLl
-         /AohaW9L7hlKanEBuu+1UaZZ1WW110CnxSu8yVq237rHnfpXOhMfzOZjcTQU0AaU/Xy8
-         NaUAO6a9915YHSOytfi6RKcssMndROtrcZTTCHNpFtx5C2wJ2fLV4xYLZaowwDXfPhzH
-         XAT6Pr3/ovFiia2zFw8WKufG8GwrlMqjK+3FdsCIqTPnyoEm4NMcZ66b3BtVaZqKxSF8
-         TLqg==
-X-Gm-Message-State: AOAM530npWrBBeNpTI0NIKCPqMDyemXFH7km0p5zsc0oUZODe7DBq8b5
-        5fOkQRabUwpB9M1SqQ0unxr8RHpEPR6AgR+MAic=
-X-Google-Smtp-Source: ABdhPJwXTwb01LuOIuCIJoXgHdk44wasB0pppP3vWiPTqrgsJlDGm7O4K9WDFYnd65Jf4ac9TImWunVd9mjBa315xpI=
-X-Received: by 2002:aa7:8428:0:b029:18b:b43:6cc with SMTP id
- q8-20020aa784280000b029018b0b4306ccmr2692443pfn.73.1604585881330; Thu, 05 Nov
- 2020 06:18:01 -0800 (PST)
+        id S1730808AbgKEOfp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 09:35:45 -0500
+Received: from www62.your-server.de ([213.133.104.62]:60618 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgKEOfp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:35:45 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kagMZ-00037S-Ph; Thu, 05 Nov 2020 15:35:43 +0100
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kagMZ-000MrI-KZ; Thu, 05 Nov 2020 15:35:43 +0100
+Subject: Re: [PATCH bpf-next] Update perf ring buffer to prevent corruption
+To:     KP Singh <kpsingh@chromium.org>,
+        Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@google.com>
+References: <VI1PR8303MB00802B04481D53CBBEBCF0DDFBEE0@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+ <CACYkzJ7uUb97TeWi+r8zLAOMUMk8z_zVvQ=c7p8z2gAP0X5C3A@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <81be3d16-8538-f6d6-180f-ff401df1d915@iogearbox.net>
+Date:   Thu, 5 Nov 2020 15:35:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
- <1604498942-24274-2-git-send-email-magnus.karlsson@gmail.com> <20201104153320.66cecba8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201104153320.66cecba8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Thu, 5 Nov 2020 15:17:50 +0100
-Message-ID: <CAJ8uoz3-tjXekU=kR+HfMhGBcHtAFnKGq1ZvpFq99T_S-mknPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/6] i40e: introduce lazy Tx completions for
- AF_XDP zero-copy
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
-        anthony.l.nguyen@intel.com,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACYkzJ7uUb97TeWi+r8zLAOMUMk8z_zVvQ=c7p8z2gAP0X5C3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25978/Wed Nov  4 14:18:13 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 12:33 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Wed,  4 Nov 2020 15:08:57 +0100 Magnus Karlsson wrote:
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Introduce lazy Tx completions when a queue is used for AF_XDP
-> > zero-copy. In the current design, each time we get into the NAPI poll
-> > loop we try to complete as many Tx packets as possible from the
-> > NIC. This is performed by reading the head pointer register in the NIC
-> > that tells us how many packets have been completed. Reading this
-> > register is expensive as it is across PCIe, so let us try to limit the
-> > number of times it is read by only completing Tx packets to user-space
-> > when the number of available descriptors in the Tx HW ring is below
-> > some threshold. This will decrease the number of reads issued to the
-> > NIC and improves performance with 1.5% - 2% for the l2fwd xdpsock
-> > microbenchmark.
-> >
-> > The threshold is set to the minimum possible size that the HW ring can
-> > have. This so that we do not run into a scenario where the threshold
-> > is higher than the configured number of descriptors in the HW ring.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
->
-> I feel like this needs a big fat warning somewhere.
->
-> It's perfectly fine to never complete TCP packets, but AF_XDP could be
-> used to implement protocols in user space. What if someone wants to
-> implement something like TSQ?
+On 11/5/20 12:21 PM, KP Singh wrote:
+> On Thu, Nov 5, 2020 at 11:41 AM Kevin Sheldrake
+> <Kevin.Sheldrake@microsoft.com> wrote:
+>>
+>>  From 8425426d0fb256acf7c2e50f0aa642450adc366a Mon Sep 17 00:00:00 2001
+>> From: Kevin Sheldrake <kevin.sheldrake@microsoft.com>
+>> Date: Wed, 4 Nov 2020 15:42:54 +0000
+>> Subject: [PATCH] Update perf ring buffer to prevent corruption from
+>>   bpf_perf_output_event()
+>>
+>> The bpf_perf_output_event() helper takes a sample size parameter of u64, but
+>> the underlying perf ring buffer uses a u16 internally. This 64KB maximum size
+>> has to also accommodate a variable sized header. Failure to observe this
+>> restriction can result in corruption of the perf ring buffer as samples
+>> overlap.
+>>
+>> Truncate the raw sample type used by EBPF so that the total size of the
+>> sample is < U16_MAX. The size parameter of the received sample will match the
+>> size of the truncated sample, so users can be confident about how much data
+>> was received.
+> 
+> I don't think truncation without any indication to the user is a good
+> idea and can lead to other surprising problems
+> (especially when the userspace expects the data to be in a certain format,
+> which it almost always does).
 
-I might misunderstand you, but with TSQ here (for something that
-bypasses qdisk and any buffering and just goes straight to the driver)
-you mean the ability to have just a few buffers outstanding and
-continuously reuse these? If so, that is likely best achieved by
-setting a low Tx queue size on the NIC. Note that even without this
-patch, completions could be delayed. Though this patch makes that the
-normal case. In any way, I think this calls for some improved
-documentation.
++1
 
-I also discovered a corner case that will lead to a deadlock if the
-completion ring size is half the size of the Tx NIC ring size. This
-needs to be fixed, so I will spin a v2.
+> I think the complete sample should be discarded if the size is too big and an
+> E2BIG / or some error should be returned.
 
-Thanks: Magnus
+Right, just let the helper bail out early and then BPF prog would be able to react to
+E2BIG exception internally (e.g. shrinking sample size, logging error, etc).
+
+Thanks,
+Daniel
