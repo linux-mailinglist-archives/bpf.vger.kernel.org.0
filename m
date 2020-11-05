@@ -2,117 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33A32A82D3
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 16:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B632A82EE
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 17:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731492AbgKEP6H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 10:58:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31146 "EHLO
+        id S1731437AbgKEQCN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 11:02:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41883 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731254AbgKEP6B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 10:58:01 -0500
+        by vger.kernel.org with ESMTP id S1731435AbgKEQCN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 11:02:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604591880;
+        s=mimecast20190719; t=1604592132;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pADWP+enNt6yiUgOW0VHOOnF0ho/du1JKG+QQdolo1M=;
-        b=EaO2HmHCDwuSDOPids+ZjczfrjmQhG87PUK1PO+GjiOIoNI7S/A5yyvhBO4nRXSr5YiziQ
-        20KxtyJlQXyEkXMBtFR1ZmWf7yZfddmC7AgQHJ0V5lAjTxhbkh0AqGZe+DYadR9meSavLy
-        4/Byat9wNQ+So4jfT9s7MLlSTjd8ZOU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-37-9dCGYxjmMHqATmvttTc_cg-1; Thu, 05 Nov 2020 10:57:58 -0500
-X-MC-Unique: 9dCGYxjmMHqATmvttTc_cg-1
-Received: by mail-wm1-f72.google.com with SMTP id o81so539546wma.0
-        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 07:57:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=pADWP+enNt6yiUgOW0VHOOnF0ho/du1JKG+QQdolo1M=;
-        b=GYziBkJhzOVyvKxiuC3L0etnf/uAImKUPsSsLmK3XNswtdQSnQhKsG5eYfYv9cUDmu
-         QraX3/3Vwar4m6lTkBZPAc93s7O7CDnxz6Mo3P2FTXzpiIgZ7An3QkI42qHByrwPsDEi
-         2ol2lrE23buiGuWAuQ3z0pXllhyZfWL5o2nrhLxy/Tl5Yi4JOCNesFGTJnJ0Rw30SAV9
-         wDum4ReMcaxHWym4ISH9Nr3uEjg6/+Ehy2LmeZX+1cYFzl0/BumNc9y695Asnwzq3IN4
-         Lxc1C/aZCQegp9G//mbigJJdR+6OSh52skVeQnZj1J5VTZFn6vAnTrbeu+PrljwkI/XD
-         yPTQ==
-X-Gm-Message-State: AOAM530j//JYDCPZJHO69k9+gk6zYQ+T1SCBYIvmmcfJTiiNNjc+MbZl
-        IDMkBCfCbxA6x89VIqePmfovxb82OCdf3RBsy8tNkccuRA6QRt79K3ge/W8kIAEUoHVfr8SG9OL
-        swrZh8E45iMON
-X-Received: by 2002:adf:fe46:: with SMTP id m6mr3480138wrs.254.1604591876878;
-        Thu, 05 Nov 2020 07:57:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJySOwJGJtWXTJj/9Zb69rUDm8assKwkVCRdMHE/t33oyQWP+MNiO8KGN+Zqmq3xyszpxt4FOw==
-X-Received: by 2002:adf:fe46:: with SMTP id m6mr3480126wrs.254.1604591876723;
-        Thu, 05 Nov 2020 07:57:56 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id v6sm3611600wrb.53.2020.11.05.07.57.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 07:57:56 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 86769181CED; Thu,  5 Nov 2020 16:57:55 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     David Ahern <dsahern@gmail.com>, Hangbin Liu <haliu@redhat.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCHv3 iproute2-next 3/5] lib: add libbpf support
-In-Reply-To: <3c3f892a-6137-d176-0006-e5ddaeeed2b5@gmail.com>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <20201029151146.3810859-4-haliu@redhat.com>
- <db14a227-1d5e-ed3a-9ada-ecf99b526bf6@gmail.com>
- <20201104082203.GP2408@dhcp-12-153.nay.redhat.com>
- <61a678ce-e4bc-021b-ab4e-feb90e76a66c@gmail.com>
- <20201105075121.GV2408@dhcp-12-153.nay.redhat.com>
- <3c3f892a-6137-d176-0006-e5ddaeeed2b5@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 05 Nov 2020 16:57:55 +0100
-Message-ID: <87sg9nssn0.fsf@toke.dk>
+        bh=7n7s4CcoYzzsxrI8cFoyqhkSkqzPJ3hlumXdPdudtBo=;
+        b=HlNrV25m80E1wf3FwnbM7d+/9u2iuCauk1SQie4MRgREHOxP0frE+ZV7mljOdmmAAzGPuC
+        tNXPwD9TrUWI5bASjx+vLDk28reJEf9NRze+5z24lnWkA8wpyFqeTEKbd++HAH9t020jc5
+        h9Km2Ps4AC3389WupAn6wZqUgaXNkZw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-H73a57wPO3e0W5f99H6hxw-1; Thu, 05 Nov 2020 11:02:07 -0500
+X-MC-Unique: H73a57wPO3e0W5f99H6hxw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4324E10866AD;
+        Thu,  5 Nov 2020 16:02:06 +0000 (UTC)
+Received: from localhost (unknown [10.40.192.150])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6E2195B4CA;
+        Thu,  5 Nov 2020 16:02:04 +0000 (UTC)
+Date:   Thu, 5 Nov 2020 17:02:02 +0100
+From:   Jiri Benc <jbenc@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <andrii.nakryiko@gmail.com>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next] bpf: make verifier log more relevant by
+ default
+Message-ID: <20201105170202.5bb47fef@redhat.com>
+In-Reply-To: <20200423195850.1259827-1-andriin@fb.com>
+References: <20200423195850.1259827-1-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David Ahern <dsahern@gmail.com> writes:
+On Thu, 23 Apr 2020 12:58:50 -0700, Andrii Nakryiko wrote:
+> To make BPF verifier verbose log more releavant and easier to use to debug
+> verification failures, "pop" parts of log that were successfully verified.
+> This has effect of leaving only verifier logs that correspond to code branches
+> that lead to verification failure, which in practice should result in much
+> shorter and more relevant verifier log dumps. This behavior is made the
+> default behavior and can be overriden to do exhaustive logging by specifying
+> BPF_LOG_LEVEL2 log level.
 
-> On 11/5/20 12:51 AM, Hangbin Liu wrote:
->> On Wed, Nov 04, 2020 at 07:33:40PM -0700, David Ahern wrote:
->>> On 11/4/20 1:22 AM, Hangbin Liu wrote:
->>>> If we move this #ifdef HAVE_LIBBPF to bpf_legacy.c, we need to rename
->>>> them all. With current patch, we limit all the legacy functions in bpf_legacy
->>>> and doesn't mix them with libbpf.h. What do you think?
->>>
->>> Let's rename conflicts with a prefix -- like legacy. In fact, those
->>> iproute2_ functions names could use the legacy_ prefix as well.
->>>
->> 
->> Sorry, when trying to rename the functions. I just found another issue.
->> Even we fix the conflicts right now. What if libbpf add new functions
->> and we got another conflict in future? There are too much bpf functions
->> in bpf_legacy.c which would have more risks for naming conflicts..
->> 
->> With bpf_libbpf.c, there are less functions and has less risk for naming
->> conflicts. So I think it maybe better to not include libbpf.h in bpf_legacy.c.
->> What do you think?
->> 
->>
->
-> Is there a way to sort the code such that bpf_legacy.c is not used when
-> libbpf is enabled and bpf_libbpf.c is not compiled when libbpf is disabled.
+This patch broke the test_offload.py selftest:
 
-That's basically what we were going for, i.e.:
+[...]
+Test TC offloads work...
+FAIL: Missing or incorrect message from netdevsim in verifier log
+[...]
 
-git mv lib/bpf.c lib/bpf_legacy.c
-git add lib/bpf_libbpf.c
+The selftest expects to receive "[netdevsim] Hello from netdevsim!" in
+the log (coming from nsim_bpf_verify_insn) but that part of the log is
+cleared by bpf_vlog_reset added by this patch.
 
-and then adding ifdefs to bpf_legacy.c and only including the other if
-libbpf support is enabled.
+How can this be fixed? The log level 1 comes from the "verbose" keyword
+passed to tc, I don't think it should be increased to 2.
 
-I guess we could split it further into lib/bpf_{libbpf,legacy,glue}.c
-and have the two former ones be completely devoid of ifdefs and
-conditionally included based on whether or not libbpf support is
-enabled?
+On a related note, the selftest had to start failing after this commit.
+It's a bit surprising it did not get caught, is there a bug somewhere
+in the test matrix?
 
--Toke
+Thanks,
+
+ Jiri
 
