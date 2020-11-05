@@ -2,109 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4059D2A8A34
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 23:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 135092A8A35
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 23:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgKEW4b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 17:56:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46428 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726801AbgKEW4b (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 17:56:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604616990;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C+3TCobREZNEd40HyH1ZY7BViufAqVh7MIgfcPDtSbs=;
-        b=EzQFH8tOFLKVPFd3WTMEhrCp8lvmniUwozhmAbFh5LGmLF+4uFCDrNJRnY2Vs8xdmg9TXX
-        4ymrz9M1HwwYfYhU5QidfAIs26Hx89XJXXkstFHWs9IK4uDYqcTtaK7CQYgFgpkzu71SW1
-        QbRXvWK5EECm780KtD56nKI1+BWu9T0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-0lIZyU9nNem3ZMhLEBaTjQ-1; Thu, 05 Nov 2020 17:56:26 -0500
-X-MC-Unique: 0lIZyU9nNem3ZMhLEBaTjQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731899AbgKEW5P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 17:57:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731694AbgKEW5P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 17:57:15 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC5CF86ABD6;
-        Thu,  5 Nov 2020 22:56:23 +0000 (UTC)
-Received: from krava (unknown [10.40.192.38])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 371DD1002C03;
-        Thu,  5 Nov 2020 22:56:18 +0000 (UTC)
-Date:   Thu, 5 Nov 2020 23:56:17 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 45F2E20719;
+        Thu,  5 Nov 2020 22:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604617034;
+        bh=4HiUMXFfTMWojhcYABhByqsUoN31oPzYLU2VOxm5slc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kGASsWQxXe3caLLm/7vBWyqdqt8vB+YGs/iklalrGZY17PjESICpdi2+Ovy0wd5XA
+         /Sx89fXIpP89yBg7H2BfL6qe1cWjTugPCWPWbrIo6YDgnQTmxuNapVP1XMwnxgsP1o
+         kfst2YRAXM5dBv64fqz636++qSHj/37CuS31rDww=
+Date:   Thu, 5 Nov 2020 14:57:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: Re: [PATCH 3/3] btf_encoder: Change functions check due to broken
- dwarf
-Message-ID: <20201105225617.GB4112111@krava>
-References: <20201104215923.4000229-1-jolsa@kernel.org>
- <20201104215923.4000229-4-jolsa@kernel.org>
- <CAEf4BzZaUyY0TA_Gq559ojEeT2mHtdc3aUbvB9Q_4u0pZ+WiWQ@mail.gmail.com>
+Cc:     Jiri Benc <jbenc@redhat.com>, Andrii Nakryiko <andriin@fb.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next] bpf: make verifier log more relevant by
+ default
+Message-ID: <20201105145713.10af539e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAEf4BzZgXO1Uv49cGQ6PMoe6gXiF8obJr9uKBTeE2MzzHEr=PA@mail.gmail.com>
+References: <20200423195850.1259827-1-andriin@fb.com>
+        <20201105170202.5bb47fef@redhat.com>
+        <CAEf4Bzb7r-9TEAnQC3gwiwX52JJJuoRd_ZHrkGviiuFKvy8qJg@mail.gmail.com>
+        <20201105135338.316e1677@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAEf4BzZgXO1Uv49cGQ6PMoe6gXiF8obJr9uKBTeE2MzzHEr=PA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZaUyY0TA_Gq559ojEeT2mHtdc3aUbvB9Q_4u0pZ+WiWQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 05, 2020 at 11:52:35AM -0800, Andrii Nakryiko wrote:
-
-SNIP
-
-> > +        * Let's got through all collected functions and filter
-> > +        * out those that are not in ftrace and init code.
-> > +        */
-> > +       for (i = 0; i < functions_cnt; i++) {
-> > +               struct elf_function *func = &functions[i];
-> > +
-> > +               /*
-> > +                * Do not enable .init section functions,
-> > +                * but keep .init.bpf.preserve_type functions.
-> > +                */
-> > +               if (is_init(ms, func->addr) && !is_bpf_init(ms, func->addr))
-> > +                       continue;
-> > +
-> > +               /* Make sure function is within ftrace addresses. */
-> > +               if (bsearch(&func->addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
-> > +                       /*
-> > +                        * We iterate over sorted array, so we can easily skip
-> > +                        * not valid item and move following valid field into
-> > +                        * its place, and still keep the 'new' array sorted.
-> > +                        */
-> > +                       if (i != functions_valid)
-> > +                               functions[functions_valid] = functions[i];
-> > +                       functions_valid++;
-> > +               }
-> > +       }
+On Thu, 5 Nov 2020 14:41:12 -0800 Andrii Nakryiko wrote:
+> On Thu, Nov 5, 2020 at 1:53 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > On Thu, 5 Nov 2020 13:22:12 -0800 Andrii Nakryiko wrote:  
+> > > Should we just drop check_verifier_log() checks?  
+> >
+> > Drivers only print error messages when something goes wrong, so the
+> > messages are high priority. IIUC this change was just supposed to
+> > decrease verbosity, right?  
 > 
-> can we re-assign function_cnt = functions_valid here? and
-> functions_valid could be just a local temporary variable?
+> Seems like check_verifier_log() in test_offline.py is only called for
+> successful cases. This patch truncates parts of the verifier log that
+> correspond to successfully validated code paths, so that in case if
+> verification fails, only relevant parts are left. So for completely
+> successful verification the log will be almost empty, with only final
+> stats available.
 
-good idea, should be simpler.. will change
+If you're saying the driver message would still be there if
+verification or translation failed that's perfectly fine, we 
+can definitely adjust the test. But some check that driver 
+message reporting is working is needed, don't just remove it.
 
-and ack to all naming changes above ;-)
-
-thanks,
-jirka
-
-> 
-> > +
-> > +       free(addrs);
-> > +       return 0;
-> > +}
-> > +
-> 
-> [...]
-> 
-
+Sorry, don't have cycles to look closely :(
