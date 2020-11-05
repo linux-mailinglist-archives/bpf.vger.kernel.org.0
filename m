@@ -2,155 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8542A8035
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 14:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A642A805E
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 15:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730898AbgKEN6l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 08:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39614 "EHLO
+        id S1729990AbgKEOFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 09:05:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKEN6k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 08:58:40 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D534CC0613CF;
-        Thu,  5 Nov 2020 05:58:39 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id n16so444467ooj.2;
-        Thu, 05 Nov 2020 05:58:39 -0800 (PST)
+        with ESMTP id S1730746AbgKEOFw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 09:05:52 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25750C0613D2
+        for <bpf@vger.kernel.org>; Thu,  5 Nov 2020 06:05:52 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id b18so1195762qkc.9
+        for <bpf@vger.kernel.org>; Thu, 05 Nov 2020 06:05:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xg8iAob1rs15mwMHlhe0dunXTn8k6lqy3ajL1s6kKI8=;
-        b=nuspwaHoxKoXZax0NolTi3e9gKAXkPs7jNuqoAGKfD0blKq/CnFKHqob7XW0/kgGqG
-         xwrHcW5/LEPPaQgZrzt2azRmxs1mrb4oFWMLEc7rKIdxZNIu8HFqkhZ8LWhy3m9RJ1pc
-         urPQBQVDZiQtK1L7FS2/0lxhqbOI+uvMVSciuUkcBysKGc7PI3rPZo+VgKR00Ai8dvph
-         5WEiRw5PAK5aUyxomdU3Xbj5tCbkxS8EWkIWBy1pDebCxQYH+U8qxpw1ep6az4Cxg1xd
-         UyRbWNbwlhBMwq5YFMZU2ETlPBYVY4nnNKk720s22a2tSvJk7AL9+vtsHqa1CmZM3ipD
-         M7Qw==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kGsS3CDA+A4yL0j/LqXfYl8CzhC0b4YwmHrFB9LaQUI=;
+        b=g9Z4SEZOKnUkWvEkyoPAGPSbaj0mK3KIkrq5A8KpV43SpGg2cSQlwyucY/qwAhIxff
+         nsWnIgpGvlvtw3fnTkzKn7CuzHmFOUNnUfXBQ8t8sVbGdv/tT1KTGMmsMx3VDMi4ifQH
+         cOHrODhh2GytYB/lkF6RQu+XbghSsp8ze/k9qApGY75NeFhyncZr6Yy4RhmdSNITLACX
+         6Sl1KMP1KBbIT+S+FTJ2UHNWuYEnxzSyPP37Yxq9PkZUvV/VbN6wpn9nFcIihWYrArNe
+         58miXECm1Er+1SjyeK2ZNXqRayPMaRm9lEN3TcB9bdb3F+znrwwdfTCAR5qa6IcDD1oT
+         fyxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xg8iAob1rs15mwMHlhe0dunXTn8k6lqy3ajL1s6kKI8=;
-        b=Edt6BW4Lbjl5PWVt+2ycKE7H6ZSxWTBgvqSg9pjqhGZHXjOC3WT2+ZcM4webuY2BGH
-         3qzSxnpF3uv8kBrkqUoYLvqzHuCZsyZ0MmbXTio0OSU6xB4uqrycs8OKU46fgwXz9WfE
-         Z5AMSGOFt0/pzRMOAfQxsNpPBCF6oWbp/YAz2c6nM5h1hsDVoO6ItcGS4SV5AOOxNxb9
-         hZeBxA6vX63m+ZF252V2v/wFMh+YEMy4ZIAewJIrffN3O2HC7mLaO1pd2qPeEDKjRCPQ
-         yGYP+dOQiezr97bI54q2M/Ow/KIklkfJMk1S/qlaR+5XBe0xVQICr/FIGxCCBJrDZvmq
-         /dMw==
-X-Gm-Message-State: AOAM530Tk0i0d9WDsmNxw35u+2b6ojjRhwlFiKdGM6l1zZf/Ft9S0Mqx
-        mk0G+B9X+jllL54N+wLJwyDd2xNrXfha82OCETA=
-X-Google-Smtp-Source: ABdhPJzNbtYsk9ZNJlUKWoQiHEnxij1ZvvfSA6QRqtnpcGabJLt2bNM+qEf0n7skI6kc3jckztKfwNL1j3g6qqV2Skg=
-X-Received: by 2002:a4a:be14:: with SMTP id l20mr1844911oop.27.1604584719243;
- Thu, 05 Nov 2020 05:58:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20201104094626.3406-1-mariuszx.dudek@intel.com>
- <20201104094626.3406-2-mariuszx.dudek@intel.com> <CAEf4BzZMJV+Ko07DjXD-VxpX9dWtDhd_eGENiTSTHA5uiVLWLw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZMJV+Ko07DjXD-VxpX9dWtDhd_eGENiTSTHA5uiVLWLw@mail.gmail.com>
-From:   Mariusz Dudek <mariusz.dudek@gmail.com>
-Date:   Thu, 5 Nov 2020 14:58:27 +0100
-Message-ID: <CADm5B_NEt14sqhi6V_cx48sOViweYi_GXO8GgrvpXJjYSueg3w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: separate XDP program load with xsk
- socket creation
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kGsS3CDA+A4yL0j/LqXfYl8CzhC0b4YwmHrFB9LaQUI=;
+        b=O/47WQ4qGz/Ve7UHo0vD+vEFLs/JyeXC5ZBpL4xGB1Q8H93SA4lQ+sPcitMSRehkFC
+         +EcGfpOnCr/mQIDB/e/XR2ReVWHECz8YsALFryYw+O7c1B004EITRxPhbAdpZain+VRo
+         v99IUPH5w2YmZNpCdzozQd64AzM209a8T6GcwbEFIGx7jRHjI+xnpEmS5StlIaXIbLiX
+         G4K5EdquS7LXOLJxO9laKOkwhCSHrat1auFbNLt0sFjtwSTgl7ShFM/64SGGO+foqBVY
+         DSRlfB6FQ8sxe1HURdzfz0ohFRVCSCS6T7fVMxPWpCfCy3J5xHFRXjwSGdt4T+EuzM/p
+         zNhQ==
+X-Gm-Message-State: AOAM533qGysZYyhCmkzpj9dgIbRdfZSTaNse8S9sRmJNUx7JZleMJSPA
+        7aaBrh5lg3gWi2o9nJ4/AAu30w==
+X-Google-Smtp-Source: ABdhPJy85uIXg+WyZbDaRM8Js2JSe3kWh26Yp7y6E+mYU+A488fs9Hf/sAzIu1VJsQAjejXwgL+/5g==
+X-Received: by 2002:a37:a5c3:: with SMTP id o186mr2158945qke.259.1604585151255;
+        Thu, 05 Nov 2020 06:05:51 -0800 (PST)
+Received: from [192.168.2.28] (bras-base-kntaon1617w-grc-10-184-147-165-106.dsl.bell.ca. [184.147.165.106])
+        by smtp.googlemail.com with ESMTPSA id m25sm1040025qki.105.2020.11.05.06.05.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 05 Nov 2020 06:05:50 -0800 (PST)
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+To:     David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Mariusz Dudek <mariuszx.dudek@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+ <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+ <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+ <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+ <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+ <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+ <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+ <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+ <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+ <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
+ <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <1118ef27-3302-d077-021a-43aa8d8f3ebb@mojatatu.com>
+Date:   Thu, 5 Nov 2020 09:05:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 4, 2020 at 10:07 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Nov 4, 2020 at 1:47 AM <mariusz.dudek@gmail.com> wrote:
-> >
-> > From: Mariusz Dudek <mariuszx.dudek@intel.com>
-> >
-> >         Add support for separation of eBPF program load and xsk socket
-> >         creation.
-> >
-> >         This is needed for use-case when you want to privide as little
-> >         privileges as possible to the data plane application that will
-> >         handle xsk socket creation and incoming traffic.
-> >
-> >         With this patch the data entity container can be run with only
-> >         CAP_NET_RAW capability to fulfill its purpose of creating xsk
-> >         socket and handling packages. In case your umem is larger or
-> >         equal process limit for MEMLOCK you need either increase the
-> >         limit or CAP_IPC_LOCK capability.
-> >
-> >         To resolve privileges issue two APIs are introduced:
-> >
-> >         - xsk_setup_xdp_prog - prepares bpf program if given and
-> >         loads it on a selected network interface or loads the built in
-> >         XDP program, if no XDP program is supplied. It can also return
-> >         xsks_map_fd which is needed by unprivileged process to update
-> >         xsks_map with AF_XDP socket "fd"
-> >
-> >         - xsk_update_xskmap - inserts an AF_XDP socket into an xskmap
-> >         for a particular xsk_socket
-> >
->
-> Your commit message seems to be heavily shifted right...
->
-Will be fixed
->
-> > Signed-off-by: Mariusz Dudek <mariuszx.dudek@intel.com>
-> > ---
-> >  tools/lib/bpf/libbpf.map |   2 +
-> >  tools/lib/bpf/xsk.c      | 157 ++++++++++++++++++++++++++++++++-------
-> >  tools/lib/bpf/xsk.h      |  13 ++++
-> >  3 files changed, 146 insertions(+), 26 deletions(-)
-> >
->
-> [...]
->
-> > diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
-> > index 1069c46364ff..c42b91935d3c 100644
-> > --- a/tools/lib/bpf/xsk.h
-> > +++ b/tools/lib/bpf/xsk.h
-> > @@ -201,6 +201,19 @@ struct xsk_umem_config {
-> >         __u32 flags;
-> >  };
-> >
-> > +struct bpf_prog_cfg {
-> > +       struct bpf_insn *prog;
-> > +       const char *license;
-> > +       size_t insns_cnt;
-> > +       int xsks_map_fd;
-> > +};
->
-> This config will have problems with backward/forward compatibility.
-> Please check how xxx_opts are done and use them for extensible options
-> structs.
->
-I will add struct size as first parameter and #define for __last_field
-to be inline with xxx_opts
->
-> > +
-> > +LIBBPF_API int xsk_setup_xdp_prog(int ifindex,
-> > +                                 struct bpf_prog_cfg *cfg,
-> > +                                 int *xsks_map_fd);
-> > +LIBBPF_API int xsk_update_xskmap(struct xsk_socket *xsk,
-> > +                                int xsks_map_fd);
->
-> this should be called xsk_socket__update_map? BTW, what's xskmap? Is
-> that a special BPF map type?
->
-I will change the API name as you suggested. XSKMAP is a special
-BPF_MAP_TYPE_XSKMAP.
-It defines how packets are being distributed from an XDP program to the XSKs.
-> > +
-> >  /* Flags for the libbpf_flags field. */
-> >  #define XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD (1 << 0)
-> >
-> > --
-> > 2.20.1
-> >
+On 2020-11-04 10:19 p.m., David Ahern wrote:
+
+[..]
+> 
+> User experience keeps getting brought up, but I also keep reading the
+> stance that BPF users can not expect a consistent experience unless they
+> are constantly chasing latest greatest versions of *ALL* S/W related to
+> BPF. That is not a realistic expectation for users. Distributions exist
+> for a reason. They solve real packaging problems.
+> 
+> As libbpf and bpf in general reach a broader audience, the requirements
+> to use, deploy and even tryout BPF features needs to be more user
+> friendly and that starts with maintainers of the BPF code and how they
+> approach extensions and features. Telling libbpf consumers to make
+> libbpf a submodule of their project and update the reference point every
+> time a new release comes out is not user friendly.
+> 
+> Similarly, it is not realistic or user friendly to *require* general
+> Linux users to constantly chase latest versions of llvm, clang, dwarves,
+> bcc, bpftool, libbpf, (I am sure I am missing more), and, by extension
+> of what you want here, iproute2 just to upgrade their production kernel
+> to say v5.10, the next LTS, or to see what relevant new ebpf features
+> exists in the new kernel. As a specific example BTF extensions are added
+> in a way that is all or nothing. Meaning, you want to compile kernel
+> version X with CONFIG_DEBUG_INFO_BTF enabled, update your toolchain.
+> Sure, you are using the latest LTS of $distro, and it worked fine with
+> kernel version X-1 last week, but now compile fails completely unless
+> the pahole version is updated. Horrible user experience. Again, just an
+> example and one I brought up in July. I am sure there more.
+> 
+
+
+2cents feedback from a dabbler in ebpf on user experience:
+
+What David described above *has held me back*.
+Over time it seems things have gotten better with libbpf
+(although a few times i find myself copying includes from the
+latest iproute into libbpf). I ended up just doing static links.
+The idea of upgrading clang/llvm every 2 months i revisit ebpf is
+the most painful. At times code that used to compile just fine
+earlier doesnt anymore. There's a minor issue of requiring i install
+kernel headers every time i want to run something in samples, etc
+but i am probably lacking knowledge on how to ease the pain in that
+regard.
+
+I find the loader and associated tooling in iproute2/tc to be quiet
+stable (not shiny but works everytime).
+And for that reason i often find myself sticking to just tc instead
+of toying with other areas.
+Slight tangent:
+One thing that would help libbpf adoption is to include an examples/
+directory. Put a bunch of sample apps for tc, probes, xdp etc.
+And have them compile outside of the kernel. Maybe useful Makefiles
+that people can cutnpaste from. Every time you add a new feature
+put some sample code in the examples.
+
+cheers,
+jamal
