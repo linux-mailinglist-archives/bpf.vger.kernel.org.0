@@ -2,203 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2317D2A733B
-	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 00:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2862A73A8
+	for <lists+bpf@lfdr.de>; Thu,  5 Nov 2020 01:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387637AbgKDXw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Nov 2020 18:52:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387413AbgKDXvf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Nov 2020 18:51:35 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6A2C0613CF;
-        Wed,  4 Nov 2020 15:51:35 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id c129so388203yba.8;
-        Wed, 04 Nov 2020 15:51:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5SXEw3JSIGW3Psk2prScqqxL6pBfWjo/0m1owJI93UY=;
-        b=d8xV+8dKCCv9EA1kEN6XgcwCnwwYy7tlpjp1NEEPGmtgVLIPTEF84WFfFiUJDP8bvU
-         JSG/4hUTcKmD2AbDssL54Lb76tHumfWA725Tjog/+vdz3LEtsS6RxiEVGD71L3VgmZq4
-         AoSNxrHTntcqIyXsIBWOO1oDjMGFOCylr6lGnOq2DudE3G1TkfuLKJWtA9/97zNDhJ8B
-         wwUi7rKX2W93b/C+yJ0z2YSbA1y+0GoVgGhRAXFTTQE0B6wjgqnyCJONInmXya+qy1/6
-         4t7eKUqlOWH7BB8zeC5akZyFjJsmBI8C0woQ2qUUH1TORikgcr+G4q3L1aDKtw1oynlg
-         oBFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5SXEw3JSIGW3Psk2prScqqxL6pBfWjo/0m1owJI93UY=;
-        b=MBzMujUsQCRc6vkAfJUl0e4dnWOVUCmH6dNi2zCUQ6o+FgZbdrKz/2NmgU4tAZroVq
-         IZtIQcQ/ki3AhTTZhdohNWBTZQO5LdSkYbB2dE2qULtRGzarlqqhiGvd0u9sK7AcRjkq
-         +ITWpvB6wOE5ETY3ozec7LrNlyMlpMexRWQH1WQ4j5ATL1Yeu6sksABaGt/pjeuW6xiX
-         be/G/LLnbllySsbD9qTAgoLFmHH3tPqrk/q63VlevEfTcc/fOXRauJm0lWo1GICdXUvW
-         aix1f2Q+N2EOp+4DMrnkhKvW/1Fh/iLvWMpbcnQrkQhRW445hPbQD821zcyvSPR+wONy
-         U0yQ==
-X-Gm-Message-State: AOAM533R5pG3iRLGVW/7vs6nH8wlsD5DsfTyQWgV2QyHq5IRB/rSsp/a
-        etWSqxxNdLM8iLDx1cTABpdQYS2I0Ihecx+VLQ3pZld431g=
-X-Google-Smtp-Source: ABdhPJwtTVLfQcirFVXCxHmbcB52Rbb4SjVg1g4xwnGgXxY7y2cWiDak7j7X7aE45Yrkhj2+6ombDdaqe1M15tkfz0g=
-X-Received: by 2002:a25:afc1:: with SMTP id d1mr386276ybj.27.1604533894306;
- Wed, 04 Nov 2020 15:51:34 -0800 (PST)
+        id S1732361AbgKEAOQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Nov 2020 19:14:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59823 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732089AbgKEAOQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Nov 2020 19:14:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604535255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YpxN4DkuIzAbt2hDdqNcN1aOeH/92/gcdneAJlXM470=;
+        b=hN2+CQw5wTYftjVgmGGfcngLZZktcGjqjPC4OPpFinBd2udxTssVYICCYfO57DqP2OJbNE
+        Ye8YEeQdioALDz1/OwLU56qzfsnAYHzyUuukmEXI2MQTPwK0NEh3/a/6+9i0KZxCUqn1lJ
+        CCW2PNxjga44BCoH+/Or9V2VCihB2S4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96-eOsDhTjSPN-qDjb6vQQW8w-1; Wed, 04 Nov 2020 19:14:13 -0500
+X-MC-Unique: eOsDhTjSPN-qDjb6vQQW8w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C5531084C80;
+        Thu,  5 Nov 2020 00:14:11 +0000 (UTC)
+Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B5B571007608;
+        Thu,  5 Nov 2020 00:14:06 +0000 (UTC)
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>, Jiri Kosina <jikos@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH 0/1] x86: deduplicate the spectre_v2_user documentation
+Date:   Wed,  4 Nov 2020 19:14:05 -0500
+Message-Id: <20201105001406.13005-1-aarcange@redhat.com>
+In-Reply-To: <20201104234047.GA18850@redhat.com>
+References: <20201104234047.GA18850@redhat.com>
 MIME-Version: 1.0
-References: <20201029005902.1706310-1-andrii@kernel.org> <20201029005902.1706310-5-andrii@kernel.org>
- <DE5FDF1D-0E5B-409B-80DF-EDA5349FE3A6@fb.com> <CAEf4BzanQsEopXA7cGQi51hf_Q0hNb7NUTvtnkD8xg9AHoU9Ng@mail.gmail.com>
- <80AB5729-CBCA-4306-9048-8E8114EB0A66@fb.com>
-In-Reply-To: <80AB5729-CBCA-4306-9048-8E8114EB0A66@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 4 Nov 2020 15:51:23 -0800
-Message-ID: <CAEf4BzYUfvgYx-MPY05_rtwZics1ze0812xVxYBn=RSqSvhDpg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 04/11] libbpf: implement basic split BTF support
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 9:41 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Nov 2, 2020, at 9:02 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Nov 2, 2020 at 3:24 PM Song Liu <songliubraving@fb.com> wrote:
-> >>
-> >>
-> >>
-> >>> On Oct 28, 2020, at 5:58 PM, Andrii Nakryiko <andrii@kernel.org> wrote:
-> >>>
-> >>
-> >> [...]
-> >>
-> >>>
-> >>> BTF deduplication is not yet supported for split BTF and support for it will
-> >>> be added in separate patch.
-> >>>
-> >>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >>
-> >> Acked-by: Song Liu <songliubraving@fb.com>
-> >>
-> >> With a couple nits:
-> >>
-> >>> ---
-> >>> tools/lib/bpf/btf.c      | 205 ++++++++++++++++++++++++++++++---------
-> >>> tools/lib/bpf/btf.h      |   8 ++
-> >>> tools/lib/bpf/libbpf.map |   9 ++
-> >>> 3 files changed, 175 insertions(+), 47 deletions(-)
-> >>>
-> >>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> >>> index db9331fea672..20c64a8441a8 100644
-> >>> --- a/tools/lib/bpf/btf.c
-> >>> +++ b/tools/lib/bpf/btf.c
-> >>> @@ -78,10 +78,32 @@ struct btf {
-> >>>      void *types_data;
-> >>>      size_t types_data_cap; /* used size stored in hdr->type_len */
-> >>>
-> >>> -     /* type ID to `struct btf_type *` lookup index */
-> >>> +     /* type ID to `struct btf_type *` lookup index
-> >>> +      * type_offs[0] corresponds to the first non-VOID type:
-> >>> +      *   - for base BTF it's type [1];
-> >>> +      *   - for split BTF it's the first non-base BTF type.
-> >>> +      */
-> >>>      __u32 *type_offs;
-> >>>      size_t type_offs_cap;
-> >>> +     /* number of types in this BTF instance:
-> >>> +      *   - doesn't include special [0] void type;
-> >>> +      *   - for split BTF counts number of types added on top of base BTF.
-> >>> +      */
-> >>>      __u32 nr_types;
-> >>
-> >> This is a little confusing. Maybe add a void type for every split BTF?
-> >
-> > Agree about being a bit confusing. But I don't want VOID in every BTF,
-> > that seems sloppy (there's no continuity). I'm currently doing similar
-> > changes on kernel side, and so far everything also works cleanly with
-> > start_id == 0 && nr_types including VOID (for base BTF), and start_id
-> > == base_btf->nr_type && nr_types has all the added types (for split
-> > BTF). That seems a bit more straightforward, so I'll probably do that
-> > here as well (unless I'm missing something, I'll double check).
->
-> That sounds good.
+Hello,
 
-So I don't think I can do that in libbpf representation,
-unfortunately. I did miss something, turns out. The difference is that
-in kernel BTF is always immutable, so we can store stable pointers for
-id -> btf_type lookups. For libbpf, BTF can be modified, so pointers
-could be invalidated. So I instead store offsets relative to the
-beginning of the type data array. With such representation having VOID
-as element #0 is more tricky (I actually tried, but it's too
-cumbersome). So this representation will have to be slightly different
-between kernel and libbpf. But that's ok, because it's just an
-internal implementation. API abstracts all of that.
+Could you help checking if this incremental doc cleanup is possible?
 
->
-> >
-> >>
-> >>> +     /* if not NULL, points to the base BTF on top of which the current
-> >>> +      * split BTF is based
-> >>> +      */
-> >>
-> >> [...]
-> >>
-> >>>
-> >>> @@ -252,12 +274,20 @@ static int btf_parse_str_sec(struct btf *btf)
-> >>>      const char *start = btf->strs_data;
-> >>>      const char *end = start + btf->hdr->str_len;
-> >>>
-> >>> -     if (!hdr->str_len || hdr->str_len - 1 > BTF_MAX_STR_OFFSET ||
-> >>> -         start[0] || end[-1]) {
-> >>> -             pr_debug("Invalid BTF string section\n");
-> >>> -             return -EINVAL;
-> >>> +     if (btf->base_btf) {
-> >>> +             if (hdr->str_len == 0)
-> >>> +                     return 0;
-> >>> +             if (hdr->str_len - 1 > BTF_MAX_STR_OFFSET || end[-1]) {
-> >>> +                     pr_debug("Invalid BTF string section\n");
-> >>> +                     return -EINVAL;
-> >>> +             }
-> >>> +     } else {
-> >>> +             if (!hdr->str_len || hdr->str_len - 1 > BTF_MAX_STR_OFFSET ||
-> >>> +                 start[0] || end[-1]) {
-> >>> +                     pr_debug("Invalid BTF string section\n");
-> >>> +                     return -EINVAL;
-> >>> +             }
-> >>>      }
-> >>> -
-> >>>      return 0;
-> >>
-> >> I found this function a little difficult to follow. Maybe rearrange it as
-> >>
-> >>        /* too long, or not \0 terminated */
-> >>        if (hdr->str_len - 1 > BTF_MAX_STR_OFFSET || end[-1])
-> >>                goto err_out;
-> >
-> > this won't work, if str_len == 0. Both str_len - 1 will underflow, and
-> > end[-1] will be reading garbage
-> >
-> > How about this:
-> >
-> > if (btf->base_btf && hdr->str_len == 0)
-> >    return 0;
-> >
-> > if (!hdr->str_len || hdr->str_len - 1 > BTF_MAX_STR_OFFSET || end[-1])
-> >    return -EINVAL;
-> >
-> > if (!btf->base_btf && start[0])
-> >    return -EINVAL;
-> >
-> > return 0;
-> >
-> > This seems more straightforward, right?
->
-> Yeah, I like this version. BTW, short comment for each condition will be
-> helpful.
->
->
+After the previous patch is applied, there's still a leftover mention
+of seccomp that should be removed in a duped bit of documentation, so
+I tentatively referred the original documentation already updated in
+sync, instead of keeping the dup around and applying the same update
+to the dup.
+
+Note: as far as I can tell spec_store_bypass_disable= documentation is
+not duplicated in spectre.rst, that's better in my view. The more dups
+we have the more one goes out of sync..
+
+Andrea Arcangeli (1):
+  x86: deduplicate the spectre_v2_user documentation
+
+ Documentation/admin-guide/hw-vuln/spectre.rst | 51 +------------------
+ 1 file changed, 2 insertions(+), 49 deletions(-)
+
