@@ -2,66 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A242A91D9
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 09:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388E52A91EC
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 10:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbgKFI5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 03:57:09 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:18669 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgKFI5J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Nov 2020 03:57:09 -0500
-X-Greylist: delayed 565 seconds by postgrey-1.27 at vger.kernel.org; Fri, 06 Nov 2020 03:57:09 EST
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id F2A94666AB2;
-        Fri,  6 Nov 2020 16:47:41 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1725835AbgKFJA0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 04:00:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29640 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726034AbgKFJA0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 6 Nov 2020 04:00:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1604653224;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=he4A2qRDDhagMH7Jn8XWRMdBJcrftH5FW7crWt5oWTM=;
+        b=HFGq7pS04UuS5dzwo4F1E2G//B2D8r+p8N09HCbqI3tVr1Hf1vcgiOSBLTBop4A8LWD9GM
+        yrIdjcbB3MfGPV+PlxzT3OhnKFQOjk3dRoEoh1JyKChkJSNcWORXqT0adz86TTz174+9tL
+        W4Ga2N2ThIy8pK2Y2Y4jak7La3MvXow=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-WqMMeZOqOv2O7JDkEdZiHg-1; Fri, 06 Nov 2020 04:00:20 -0500
+X-MC-Unique: WqMMeZOqOv2O7JDkEdZiHg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E207188C124;
+        Fri,  6 Nov 2020 09:00:18 +0000 (UTC)
+Received: from localhost (unknown [10.40.193.217])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE00F19D6C;
+        Fri,  6 Nov 2020 09:00:08 +0000 (UTC)
+Date:   Fri, 6 Nov 2020 10:00:07 +0100
+From:   Jiri Benc <jbenc@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] trace: Fix passing zero to 'PTR_ERR' warning
-Date:   Fri,  6 Nov 2020 16:47:32 +0800
-Message-Id: <1604652452-11494-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGE4YGUNOT09KGUhNVkpNS09NTklPTUlDT0pVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NTY6Mww6CT8iLx0KDUILTAsJ
-        OChPCTNVSlVKTUtPTU5JT01ISU1IVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKQkxDNwY+
-X-HM-Tid: 0a759cbd72669373kuwsf2a94666ab2
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201106100007.10049857@redhat.com>
+In-Reply-To: <CAEf4BzbQz5ZqoB3TEtM-4e=Ndx9WCGN16Be8-JoK+mvUyAGC3w@mail.gmail.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+        <20201029151146.3810859-1-haliu@redhat.com>
+        <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+        <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+        <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+        <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+        <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+        <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+        <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+        <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+        <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+        <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
+        <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
+        <CAEf4BzbQz5ZqoB3TEtM-4e=Ndx9WCGN16Be8-JoK+mvUyAGC3w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix smatch warning.
+On Thu, 5 Nov 2020 12:45:39 -0800, Andrii Nakryiko wrote:
+> That's not true. If you need new functionality like BTF, CO-RE,
+> function-by-function verification, etc., then yes, you have to update
+> kernel, compiler, libbpf, sometimes pahole. But if you have an BPF
+> application that doesn't use and need any of the newer features, it
+> will keep working just fine with the old kernel, old libbpf, and old
+> compiler.
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- kernel/trace/bpf_trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm fine with this.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 4517c8b..2cb9c45
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1198,7 +1198,7 @@ static int bpf_btf_printf_prepare(struct btf_ptr *ptr, u32 btf_ptr_size,
- 	*btf = bpf_get_btf_vmlinux();
- 
- 	if (IS_ERR_OR_NULL(*btf))
--		return PTR_ERR(*btf);
-+		return PTR_ERR_OR_ZERO(*btf);
- 
- 	if (ptr->type_id > 0)
- 		*btf_id = ptr->type_id;
--- 
-2.7.4
+It doesn't work that well in practice, we've found ourselves chasing
+problems caused by llvm update (problems for older bpf programs, not
+new ones), problems on non-x86_64 caused by kernel updates, etc. It can
+be attributed to living on the edge and it should stabilize over time,
+hopefully. But it's still what the users are experiencing and it's
+probably what David is referring to. I expect it to smooth itself over
+time.
+
+Add to that the fact that something that is in fact a new feature is
+perceived as a bug fix by some users. For example, a perfectly valid
+and simple C program, not using anything shiny but a basic simple loop,
+compiles just fine but is rejected by the kernel. A newer kernel and a
+newer compiler and a newer libbpf and a newer pahole will cause the
+same program to be accepted. Now, the user does not see that for this,
+a new load of BTF functionality had to be added and all those mentioned
+projects enhanced with substantial code. All they see is their simple
+hello world test program did not work and now it does.
+
+I'm not saying I have a solution nor I'm saying you should do something
+about it. Just trying to explain the perception.
+
+ Jiri
 
