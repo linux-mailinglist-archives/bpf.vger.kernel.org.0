@@ -2,55 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8552A9F1A
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 22:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E982A9F7E
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 22:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbgKFVcz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 16:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728096AbgKFVcy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:32:54 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF531C0613CF;
-        Fri,  6 Nov 2020 13:32:54 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id a12so2372291ybg.9;
-        Fri, 06 Nov 2020 13:32:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cHcHgXcRJlXjahuwxlXNQLlz52MRv1C06pV1zHy8MSY=;
-        b=Rg3fB6qrZs8sy2GckFNiyCIx74uH5F+E9NTYX6KH8N17ObhUlXAPisch75/UgzIsLr
-         6rt8q8JbGgqNbq0NZpzNvRUemywChuv6VU2Lrbm8F5zPZpJnaiUe0PL9rLVpBgEnbCrh
-         ood+6cqWsRHzhHchp9U8MVTsxMnb3+ONSzZS/A4/I8rntqTfBHoDGaj7L00LXEFZfJVw
-         5RH0tvJ2VFBPVmoa1FIlkle6npURscxHBoOLFbvhtJaIdEC8748jeqwYyoCh5lHPw9qp
-         vngsQaV4rvGbRzIFAHrYE0W6zDlTBcVoFvV8q66Xnu1saK4RMJ2NrrLMhV0POuymlOcL
-         UFGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cHcHgXcRJlXjahuwxlXNQLlz52MRv1C06pV1zHy8MSY=;
-        b=X6HX/nhjgjwQ6X5eaNY0fknVXB0+3a+1sY/Ayu0YlRNvDRTlveLrgyxWbbtixhgfn7
-         gJ7f7JZrEoi39FfG1o5f4PJNnADAw0c79R83lQkhT/LlBp3akc8xuYuLWQ7FtegEWMIN
-         yREm/3qH6rzS7aE0E9snYErZznvWXGu/UcC2Xcmih/qIc0V4iRTQkiuqDeSDjcqPNL7d
-         wZjU6bvHzCFwByVfK+LibagOxNt5KxngHPuHYSHNhUeI/5nXV7OBst2NtdSNSQggme9y
-         tpSTzEhzAuSsmi0+FPDk1xlyaW2MJjiTIWrsmf5QdBViHiihmh3ttDglXhvNA7zAPi2C
-         lhFA==
-X-Gm-Message-State: AOAM533+yyDZpCOrWsI6yTsZqokxp6rsupAE5yqLgOkrD2K2z2tHmPvW
-        aSsDeKDTTEsyCzlZJgR/c57fISJnXDgRJfDnXqk=
-X-Google-Smtp-Source: ABdhPJw+xunr/HQDnP2jT985pevV7liCe9lpCITmmzYsfo1cqOjlA2O1DA5spBRlYf1BtDOza9eIYYXXaeiv1ezPyR8=
-X-Received: by 2002:a25:da4e:: with SMTP id n75mr5615969ybf.425.1604698374190;
- Fri, 06 Nov 2020 13:32:54 -0800 (PST)
-MIME-Version: 1.0
-References: <1604646759-785-1-git-send-email-kaixuxia@tencent.com>
-In-Reply-To: <1604646759-785-1-git-send-email-kaixuxia@tencent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 Nov 2020 13:32:43 -0800
-Message-ID: <CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com>
+        id S1728823AbgKFVuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 16:50:35 -0500
+Received: from smtprelay0176.hostedemail.com ([216.40.44.176]:38860 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728771AbgKFVuN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 6 Nov 2020 16:50:13 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 4980E1800F08D;
+        Fri,  6 Nov 2020 21:50:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3871:3872:3873:4321:4605:5007:7514:7903:7904:10004:10400:10848:11026:11232:11473:11658:11783:11889:11914:12043:12295:12296:12297:12555:12740:12895:12986:13160:13229:13439:13894:14181:14659:14721:21080:21433:21451:21627:21939:21990:30029:30041:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: rod14_3b0fb74272d5
+X-Filterd-Recvd-Size: 3501
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  6 Nov 2020 21:50:09 +0000 (UTC)
+Message-ID: <d1cefb17a0a915fdabe7a80d14895ff3d85970c1.camel@perches.com>
 Subject: Re: [PATCH] libbpf: Remove unnecessary conversion to bool
-To:     xiakaixu1987@gmail.com
+From:   Joe Perches <joe@perches.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, xiakaixu1987@gmail.com
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
@@ -59,41 +34,92 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
         Kaixu Xia <kaixuxia@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 06 Nov 2020 13:50:08 -0800
+In-Reply-To: <CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com>
+References: <1604646759-785-1-git-send-email-kaixuxia@tencent.com>
+         <CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 11:12 PM <xiakaixu1987@gmail.com> wrote:
->
-> From: Kaixu Xia <kaixuxia@tencent.com>
->
-> Fix following warning from coccinelle:
->
-> ./tools/lib/bpf/libbpf.c:1478:43-48: WARNING: conversion to bool not needed here
->
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> ---
->  tools/lib/bpf/libbpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 313034117070..fb9625077983 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -1475,7 +1475,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
->                                 ext->name, value);
->                         return -EINVAL;
->                 }
-> -               *(bool *)ext_val = value == 'y' ? true : false;
-> +               *(bool *)ext_val = value == 'y';
+On Fri, 2020-11-06 at 13:32 -0800, Andrii Nakryiko wrote:
+> On Thu, Nov 5, 2020 at 11:12 PM <xiakaixu1987@gmail.com> wrote:
+> > Fix following warning from coccinelle:
+> > ./tools/lib/bpf/libbpf.c:1478:43-48: WARNING: conversion to bool not needed here
+[]
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+[]
+> > @@ -1475,7 +1475,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
+> >                                 ext->name, value);
+> >                         return -EINVAL;
+> >                 }
+> > -               *(bool *)ext_val = value == 'y' ? true : false;
+> > +               *(bool *)ext_val = value == 'y';
+> 
+> I actually did this intentionally. x = y == z; pattern looked too
+> obscure to my taste, tbh.
 
-I actually did this intentionally. x = y == z; pattern looked too
-obscure to my taste, tbh.
+It's certainly a question of taste and obviously there is nothing
+wrong with yours.
 
->                 break;
->         case KCFG_TRISTATE:
->                 if (value == 'y')
-> --
-> 2.20.0
->
+Maybe adding parentheses makes the below look less obscure to you?
+
+	x = (y == z);
+
+My taste would run to something like:
+---
+ tools/lib/bpf/libbpf.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 313034117070..5d9c9c8d50c9 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1469,25 +1469,34 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
+ 			      char value)
+ {
+ 	switch (ext->kcfg.type) {
+-	case KCFG_BOOL:
++	case KCFG_BOOL: {
++		bool *p = ext_val;
++
+ 		if (value == 'm') {
+ 			pr_warn("extern (kcfg) %s=%c should be tristate or char\n",
+ 				ext->name, value);
+ 			return -EINVAL;
+ 		}
+-		*(bool *)ext_val = value == 'y' ? true : false;
++		*p = (value == 'y');
+ 		break;
+-	case KCFG_TRISTATE:
++	}
++	case KCFG_TRISTATE: {
++		enum libbpf_tristate *p = ext_val;
++
+ 		if (value == 'y')
+-			*(enum libbpf_tristate *)ext_val = TRI_YES;
++			*p = TRI_YES;
+ 		else if (value == 'm')
+-			*(enum libbpf_tristate *)ext_val = TRI_MODULE;
++			*p = TRI_MODULE;
+ 		else /* value == 'n' */
+-			*(enum libbpf_tristate *)ext_val = TRI_NO;
++			*p = TRI_NO;
+ 		break;
+-	case KCFG_CHAR:
+-		*(char *)ext_val = value;
++	}
++	case KCFG_CHAR: {
++		char *p = ext_val;
++
++		*p = value;
+ 		break;
++	}
+ 	case KCFG_UNKNOWN:
+ 	case KCFG_INT:
+ 	case KCFG_CHAR_ARR:
+
