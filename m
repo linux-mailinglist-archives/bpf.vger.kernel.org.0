@@ -2,87 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AF92A9490
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 11:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533C52A9886
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 16:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgKFKjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 05:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S1727505AbgKFP17 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 10:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbgKFKjr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Nov 2020 05:39:47 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA8AC0613D2
-        for <bpf@vger.kernel.org>; Fri,  6 Nov 2020 02:39:47 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id b1so1219459lfp.11
-        for <bpf@vger.kernel.org>; Fri, 06 Nov 2020 02:39:46 -0800 (PST)
+        with ESMTP id S1727524AbgKFP16 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Nov 2020 10:27:58 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0107C0613D2
+        for <bpf@vger.kernel.org>; Fri,  6 Nov 2020 07:27:56 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id t191so182687qka.4
+        for <bpf@vger.kernel.org>; Fri, 06 Nov 2020 07:27:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=J2yvdHsoKp1oMN1psgcnuYwd/2InocpPLSKi5LUXlgY=;
-        b=DOxSvSO6p3ITlvfLOX0xa5YgF9eLZhy9CsZ9nlQ2njxpWX0Y4NsBg5GX0ioXld/N4o
-         8Kxm/vzF3VyILxdu86LKszT670k8+rDcmiDgX1wpjlpjj5ypgOeOqmnyI1+bmOAIA9vV
-         oZQwdprT/YABRmjWzrKMo5rDMjDWbmhRwi7MY=
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MRCDqFeCLqw9GHk0394i8qLuY6gO7+ykE3myG5PJBbI=;
+        b=wkpaZOrox1Spg5eAeNy7q5Y1ENwvRqyqAJvlp7OVOgHv6awLQLjjwWYdOdgKjkZA8c
+         f7FTGZciheVnrJqRWrROuxIP7UoX/AeCHVuJfYLF9TWSkvRXlOnp5HuNLlFsGqHTj4Rs
+         ibowrjvtIgMuCiLiqImSHO+u0EZJvYtiykfhE00XkbilUxi0BimdiAGdW+ZcuRdqVIA0
+         vwvnRR6zoEfNpwdmtyopJjdXA7+wwcbfWIIJoktzrLgcO9u0IL0fnd1SBXcym/g3urnj
+         6hE+28G9pnrE9oh2OPaYt8fxe0IiXbSGl5xGlBRzfbYUUQBiiXsaLq5X8RNV1ui4G3+7
+         0TTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=J2yvdHsoKp1oMN1psgcnuYwd/2InocpPLSKi5LUXlgY=;
-        b=aogBG2hprMlOUzl45CsovO4EPRVUwFTc3tw1DUb5TACHeWZOWiWihUVmmfnuyoKADI
-         awcW4tqfQVLmcMPZMKfGL0u1H0U+pGOfpKUOEj4ingv9bgHprKWiv/Vi/V5o54fWsg6G
-         gxi9WVY1JKDUYTutpvdMdD+8DRSxNUbIG8qPXa1NKwEn/0K8ap9NTjeQ3Orl5QG99HpE
-         XkongBU4wZOfBqCI/1GIbMTjyYONw/3eBQnUVczpeGAEDvJMkN/hpoCwSF0DHy07VzYJ
-         JnC5gU1DdYuS+TT323ctDrK9Jaq4dKRdlTU9u5koc88NQkGYr2IdZkS+/t/J6WY4atHT
-         t/pw==
-X-Gm-Message-State: AOAM533Z4CFLTNh5a38AyFh8f2THKeHYUUg/tdN1m73E/uu07DpyTGhn
-        qf72jxJQ80wdj1On9UiItVJ3JmU0Vwj7gVvdc370bA==
-X-Google-Smtp-Source: ABdhPJyeP7xRVY/y3shA3XXPN/+BGxlH2GFZDqB4MLTzVW559sj32dKbBNeK1q/sp3XNYonhQ7jgeD3Oyi9A+bHls2g=
-X-Received: by 2002:ac2:562a:: with SMTP id b10mr606392lff.562.1604659185518;
- Fri, 06 Nov 2020 02:39:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20201105225827.2619773-1-kpsingh@chromium.org>
- <20201105225827.2619773-9-kpsingh@chromium.org> <20201106021418.w34sar72sbddzwqo@ast-mbp>
-In-Reply-To: <20201106021418.w34sar72sbddzwqo@ast-mbp>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Fri, 6 Nov 2020 11:39:34 +0100
-Message-ID: <CACYkzJ5yQUywf3bkmh1dmmN3xmK5nED94oHs6cfEGcby=-j-Hg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 8/9] bpf: Add tests for task_local_storage
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MRCDqFeCLqw9GHk0394i8qLuY6gO7+ykE3myG5PJBbI=;
+        b=pXNuq3Cz+Jcwdu5CYOCn7NFPi+22V4DhTbdOE6JgVCDkdjX2t24L1LdRyZOV+3vh/o
+         gYnYK1mhUP/9YmVmnJwQuZWh7CWD88HjO43T+v3WFRmIQ9GGluwIcvwfrsZm9+ekdlpC
+         sclOR/ZkVxv35VEC5+AzVeqCCDfC+AOtiZG/AxV9p8k4BNnfzVlGwjU/+0vPm1iH3Ts1
+         XmRQehGlIMgNpfP/J+mj4S8vOUm9xKyIFmjO4iVnKxMkBVnqcUMRxTU4mdi0Xksbm7/d
+         qhJNAmMNe5WW1qboFmc1r2uQHNJDWtR0HAMn+Jy0FmuKk9O96wxKvudeFZUCJxa+Z4jt
+         l8/A==
+X-Gm-Message-State: AOAM533Q21LLy8bnKWv65CYBygZiB/DUTOzqvkvPjYZhH+NYHPtWjlZO
+        nXLeCBlEWn9GS4RFz0HKQPD44A==
+X-Google-Smtp-Source: ABdhPJwV21iipVPsbeIUD04K2O8C7hRThZwePhL4UxnI/+HZy+fmZIASONnJS0X1k5RKNcZ86ccfRA==
+X-Received: by 2002:a05:620a:4eb:: with SMTP id b11mr1917692qkh.306.1604676475927;
+        Fri, 06 Nov 2020 07:27:55 -0800 (PST)
+Received: from [192.168.2.28] (bras-base-kntaon1617w-grc-10-184-147-165-106.dsl.bell.ca. [184.147.165.106])
+        by smtp.googlemail.com with ESMTPSA id z1sm287437qtz.46.2020.11.06.07.27.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Nov 2020 07:27:54 -0800 (PST)
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Paul Turner <pjt@google.com>,
-        Jann Horn <jannh@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+References: <20201028132529.3763875-1-haliu@redhat.com>
+ <20201029151146.3810859-1-haliu@redhat.com>
+ <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
+ <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
+ <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
+ <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
+ <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
+ <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+ <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+ <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+ <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+ <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
+ <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
+ <1118ef27-3302-d077-021a-43aa8d8f3ebb@mojatatu.com>
+ <CAEf4Bzag9XCRKCV_vkFU3TyCza3W+NJzm=Vh=NPkSNBY+Qke_A@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <3d7090ab-8bc9-bc68-642f-1e84d7a6ec08@mojatatu.com>
+Date:   Fri, 6 Nov 2020 10:27:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <CAEf4Bzag9XCRKCV_vkFU3TyCza3W+NJzm=Vh=NPkSNBY+Qke_A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 3:14 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Nov 05, 2020 at 10:58:26PM +0000, KP Singh wrote:
-> > +
-> > +     ret =3D copy_file_range(fd_in, NULL, fd_out, NULL, stat.st_size, =
-0);
->
-> centos7 glibc doesn't have it.
->
-> /prog_tests/test_local_storage.c:59:8: warning: implicit declaration of f=
-unction =E2=80=98copy_file_range=E2=80=99; did you mean =E2=80=98sync_file_=
-range=E2=80=99? [-Wimplicit-function-declaration]
->    59 |  ret =3D copy_file_range(fd_in, NULL, fd_out, NULL, stat.st_size,=
- 0);
->       |        ^~~~~~~~~~~~~~~
->       |        sync_file_range
->   BINARY   test_progs
->   BINARY   test_progs-no_alu32
-> ld: test_local_storage.test.o: in function `copy_rm':
-> test_local_storage.c:59: undefined reference to `copy_file_range'
->
-> Could you use something else or wrap it similar to pidfd_open ?
+On 2020-11-05 4:01 p.m., Andrii Nakryiko wrote:
+> On Thu, Nov 5, 2020 at 6:05 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>>
+>> On 2020-11-04 10:19 p.m., David Ahern wrote:
+>>
+>> [..]
 
-Sure, I created a wrapper similar to pidfd_open and sent out a v6.
+[..]
+
+>> 2cents feedback from a dabbler in ebpf on user experience:
+>>
+>> What David described above *has held me back*.
+>> Over time it seems things have gotten better with libbpf
+>> (although a few times i find myself copying includes from the
+>> latest iproute into libbpf). I ended up just doing static links.
+>> The idea of upgrading clang/llvm every 2 months i revisit ebpf is
+>> the most painful. At times code that used to compile just fine
+>> earlier doesnt anymore. There's a minor issue of requiring i install
+> 
+> Do you have a specific example of something that stopped compiling?
+> I'm not saying that can't happen, but we definitely try hard to avoid
+> any regressions. I might be forgetting something, but I don't recall
+> the situation when something would stop compiling just due to newer
+> libbpf.
+> 
+
+Unfortunately the ecosystem is more than libbpf; sometimes it is
+the kernel code that is being exercised by libbpf that is problematic.
+This may sound unfair to libbpf but it is hard to separate the two for
+someone who is dabbling like me.
+
+The last issue iirc correctly had to do with one of the tcp notifier
+variants either in samples or selftests(both user space and kernel).
+I can go back and look at the details.
+The fix always more than half the time was need to upgrade
+clang/llvm. At one point i think it required that i had to grab
+the latest and greatest git version. I think the machine i have
+right now has version 11. The first time i found out about these
+clang upgrades was trying to go from 8->9 or maybe it was 9->10.
+Somewhere along there also was discovery that something that
+compiled under earlier version wasnt compiling under newer version.
+
+>> kernel headers every time i want to run something in samples, etc
+>> but i am probably lacking knowledge on how to ease the pain in that
+>> regard.
+>>
+>> I find the loader and associated tooling in iproute2/tc to be quiet
+>> stable (not shiny but works everytime).
+>> And for that reason i often find myself sticking to just tc instead
+>> of toying with other areas.
+> 
+> That's the part that others on this thread mentioned is bit rotting?
+
+Yes. Reason is i dont have to deal with new discoveries of things
+that require some upgrade or copying etc.
+I should be clear on the "it is the ecosystem": this is not just because
+of user space code but also the simplicity of writing the tc kernel code
+and loading it with tc tooling and then have a separate user tool for
+control.
+Lately i started linking the control tool with static libbpf instead.
+
+Bpftool seems improved last time i tried to load something in XDP. I 
+like the load-map-then-attach-program approach that bpftool gets
+out of libbpf. I dont think that feature is possible with tc tooling.
+
+However, I am still loading with tc and xdp with ip because of old
+habits and what i consider to be a very simple workflow.
+
+> Doesn't seem like everyone is happy about that, though. Stopping any
+> development definitely makes things stable by definition. BPF and
+> libbpf try to be stable while not stagnating, which is harder than
+> just stopping any development, unfortunately.
+> 
+
+I am for moving to libbpf. I think it is a bad idea to have multiple
+loaders for example. Note: I am not a demanding user, but there
+are a few useful features that i feel i need that are missing in
+iproute2 version. e.g, one thing i was playing with about a month
+ago was some TOCTOU issue in the kernel code and getting
+the bpf_lock integrated into the tc code proved challenging.
+I ended rewriting the code to work around the tooling.
+
+The challenge - when making changes in the name of progress - is to
+not burden a user like myself with a complex workflow but still give
+me the features i need.
+
+>> Slight tangent:
+>> One thing that would help libbpf adoption is to include an examples/
+>> directory. Put a bunch of sample apps for tc, probes, xdp etc.
+>> And have them compile outside of the kernel. Maybe useful Makefiles
+>> that people can cutnpaste from. Every time you add a new feature
+>> put some sample code in the examples.
+> 
+> That's what tools/testing/selftests/bpf in kernel source are for. It's
+> not the greatest showcase of examples, but all the new features have a
+> test demonstrating its usage. I do agree about having simple Makefiles
+> and we do have that at [0]. I'm also about to do another sample repo
+> with a lot of things pre-setup, for tinkering and using that as a
+> bootstrap for BPF development with libbpf.
+> 
+>    [0] https://github.com/iovisor/bcc/tree/master/libbpf-tools
+
+
+I pull that tree regularly.
+selftests is good for aggregating things developers submit and
+then have the robots test.
+For better usability, it has to be something that is standalone that 
+would work out of the box with libbf.
+selftests and samples are not what i would consider for the
+faint-hearted.
+It may look easy to you because you eat this stuff for
+breakfast but consider all those masses you want to be part of this.
+They dont have the skills and people with average skills dont
+have the patience.
+
+This again comes back to "the ecosystem" - just getting libbpf to get
+things stable for userland is not enough. Maybe have part of the libbpf
+testing also to copy things from selftests.
+
+cheers,
+jamal
