@@ -2,135 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D49B2A8B0A
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 00:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A852A8B1B
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 01:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730895AbgKEXzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 18:55:52 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:35557 "EHLO
+        id S1732046AbgKFAGr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 19:06:47 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33541 "EHLO
         out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729784AbgKEXzw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 18:55:52 -0500
+        by vger.kernel.org with ESMTP id S1729162AbgKFAGr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Nov 2020 19:06:47 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 799775C0109;
-        Thu,  5 Nov 2020 18:55:51 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 77B735C0238;
+        Thu,  5 Nov 2020 19:06:46 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 05 Nov 2020 18:55:51 -0500
+  by compute3.internal (MEProxy); Thu, 05 Nov 2020 19:06:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:content-transfer-encoding:content-type:subject:from
-        :to:cc:date:message-id:in-reply-to; s=fm1; bh=eI4RIxMgvzb0GvIXx2
-        OlXfTW0lvQgGCqO2xUtCYmnl8=; b=Cp1y5WV5v73rKJzH9WfAP8ROECQ/+OUMR6
-        Qbpr+elxkMOx+gx8XDiN7MHvdURVTef14Z3AURCgkc2KB1qTHYReeSY2b1MqHPhq
-        mMaPAXiqA6oWvA02uunCWPqoObxuGG9PoXz4B6j1evRHyFvIvkow+S1w4o2zEHHK
-        kQr87LAvg4jU3Q0zhTGY13qQqoJew9F+hrVHqky/JDZTJ8UobegLnfTsbDgltOr/
-        CiinH/SyCyCjk0HV0icXflc290LOGgShH7Z59t8s31WmdckZ1TC1oGw80VKR3Ft/
-        IzpO49XzXjKuBTpAL1INCkvi53v21X9N9kr2P4T4QKcemhZpcWfg==
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=7xsynmTgqhqmmABRwsUDwqOu5v
+        23z8b/ouobTL9ZhgM=; b=Uw6r1IQ4lIgKUdRqmClAU4HT8VztZYqdv9rteT1+uf
+        wdca3/endcJpM7esZEELMw6jGa7VH/gjaSG2JMQWSHRz+FTRjQzUAztLgWktpGql
+        67TlbvVSYYZPddkY1KTfPo5Hfmtm96jGdJa1FtL7fzJ0NimeV0aHn7Ae9zmtGX07
+        kzJsrBYtlPGFnwWFGh6Q2BeZapB2CF7foAAoqNVH5xD8wQtVdJMNk3wIgEV4Rhw3
+        hleHRJp8ossBLT5N9v8IJXEoZnBtu7Jx1jcAmm+j+ZZYn/xXGjeSb9x0M280oFUb
+        Myl50zCBNjJKM9t8gWT7mNClkZuZeo/BKXbymJGui7Pg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=eI4RIxMgvzb0GvIXx2OlXfTW0lvQgGCqO2xUtCYmnl8=; b=lM83Mj2q
-        HS8cdZwI5mJhLNnJHUMbMjXfaBhlbSQ1Xg3Q6Jc/79zOPP3zmYkBFHmicMqr1NKQ
-        gqXHgfIXMgKRbZhQjuQoGOfGKt8b2EZByD57Mpm84XFJRNfI0oY7wZ6qVtGv74c8
-        WRg5pF2cceTO59lJklpNMVKlXGYGmdLgmQN632opb+iBhK7dtreqdUUR+VxJ3XwU
-        SvTw0RX7Q8cGOpc0Ul8gUNWvKXLDYRFol7FEaEy3aNWRMHY9VMZZOCkr5zbK8kZr
-        6yJY9Ug+W+0Yq4hbzn2yKAfRHKSA8DhveUXho4VzyElM1/o3+IWQBgfYVj2DoxwE
-        d+aSb/tiY8s+Sw==
-X-ME-Sender: <xms:BpGkX38e8HMOJmlGKgLUCzMXP1IHs7okSt7-wownrHoBff-j4_mrSg>
-    <xme:BpGkXzsyrZ-L1OdZRgmaMMHRb2_vUX42INaIHkohbHcwdYYpEaJhYhyKtHYGCdJK4
-    BfDLcyXYxY5nX8qTg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgudeiucetufdoteggodetrfdotf
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=7xsynmTgqhqmmABRw
+        sUDwqOu5v23z8b/ouobTL9ZhgM=; b=fw1zaxLnBzxMxHxTJ9ODBsa3gdtZthpxa
+        cwCS8IpZNcsYGY7AEFeBz89cidwa6qO22y9SAvytVZcVp27TdkKYEVzhwFTVyVtC
+        L0APiHHKtNlLy6c0I/Bhbyc10nUbdoPUa6rtty+Qtjv685RRvhexh2jXlht0nURp
+        IaYkEqobICmRj5T74OozqXKNpTgDeXg8feXU2F1rNIpqwVrMAkZgfYFbWk9eAZMr
+        +VUVd4zczTpZV1Bsd9d3Lts+FoqFLkrYX5mNHARBQFaO1gW9m0Iysg4+RvCuq0lE
+        IwWVdT/pvNA2ShBX2LbN1RQQ44tBj3cvkwzT8vZH9XGymZzPSpc+w==
+X-ME-Sender: <xms:lpOkX3UJYuuvSJPJJB0KE38KepfBDjorOrU5Fyf0TRsUhTkXQrXU7Q>
+    <xme:lpOkX_lAD8M5ENpyYELiWCyHVmtnK0YiYw8dUt5uUGwO4mt6Kj5ACZb1aDNlD3Hpc
+    VAN1dB25f7JDbpRQw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtkedgudelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpegggfgtuffhvfffkfgjsehtqhertddttdej
-    necuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepjeefhfdufeefhfejvdevhfehudeltdeujeevudegvdejvdej
-    leejgfegtdejjeevnecukfhppeeiledrudekuddruddthedrieegnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiih
-    ii
-X-ME-Proxy: <xmx:BpGkX1C9owdzwI3uL5YohnFyGJF4QNXWQGzF7jBEBm3D9Q6Ew142ew>
-    <xmx:BpGkXzfncIfIQdIUgWya7dDjubt9h-zp3GuA0V5U736PqZI1XJ1AoQ>
-    <xmx:BpGkX8OgxS8IkpmoVS7M0jS-wr1pZ6eAtn321z2gWesIzm6QaHRdDg>
-    <xmx:B5GkX5qrqkFKEQKPcKBauZzZWZOsMkZPoAoIIRbp3UKxUZYQIVtoyQ>
-Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1D90A3280261;
-        Thu,  5 Nov 2020 18:55:50 -0500 (EST)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Subject: Re: [PATCH bpf v2 2/2] selftest/bpf: Test bpf_probe_read_user_str()
- strips trailing bytes after NUL
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Song Liu" <songliubraving@fb.com>
-Cc:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>,
-        "bpf" <bpf@vger.kernel.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Kernel Team" <Kernel-team@fb.com>
-Date:   Thu, 05 Nov 2020 15:55:40 -0800
-Message-Id: <C6VQIBZJGQ3W.22AG4C72KZQLI@maharaja>
-In-Reply-To: <32285B9E-976A-4357-8C97-6A394926BDFE@fb.com>
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
+    effeeivdefheeiveevjeduieeigfetieevieffffenucfkphepieelrddukedurddutdeh
+    rdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:lpOkXza4yoxGinqOrjd4bo3w1iQaRAXQ8kKLxWSDgEv3vc5glGs-sQ>
+    <xmx:lpOkXyVffP4xeQnv9Aw5PYZWBP8wMrJ49t77-2J8Dmf50gqQ5KoMWQ>
+    <xmx:lpOkXxmFzyAX0Fkhj6sNR4SlT_4Mb0BVHQSjTbXPle3aIvF5EcZc9Q>
+    <xmx:lpOkX0u3y6S6uxEC6fKjn9NF3vbVL6md27xlNn9VP39hdq_kH2t2YA>
+Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 49ADA3280391;
+        Thu,  5 Nov 2020 19:06:45 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        andrii.nakryiko@gmail.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
+Subject: [PATCH bpf v4 0/2] Fix bpf_probe_read_user_str() overcopying
+Date:   Thu,  5 Nov 2020 16:06:33 -0800
+Message-Id: <cover.1604620776.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu Nov 5, 2020 at 3:31 PM PST, Song Liu wrote:
->
->
-> > On Nov 5, 2020, at 3:22 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >=20
-> > On Thu Nov 5, 2020 at 1:32 PM PST, Andrii Nakryiko wrote:
-> >> On Wed, Nov 4, 2020 at 8:51 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > [...]
-> >>> diff --git a/tools/testing/selftests/bpf/progs/test_probe_read_user_s=
-tr.c b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-> >>> new file mode 100644
-> >>> index 000000000000..41c3e296566e
-> >>> --- /dev/null
-> >>> +++ b/tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-> >>> @@ -0,0 +1,34 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>> +
-> >>> +#include <linux/bpf.h>
-> >>> +#include <bpf/bpf_helpers.h>
-> >>> +#include <bpf/bpf_tracing.h>
-> >>> +
-> >>> +#include <sys/types.h>
-> >>> +
-> >>> +struct sys_enter_write_args {
-> >>> +       unsigned long long pad;
-> >>> +       int syscall_nr;
-> >>> +       int pad1; /* 4 byte hole */
-> >>=20
-> >> I have a hunch that this explicit padding might break on big-endian
-> >> architectures?..
-> >>=20
-> >> Can you instead include "vmlinux.h" in this file and use struct
-> >> trace_event_raw_sys_enter? you'll just need ctx->args[2] to get that
-> >> buffer pointer.
-> >>=20
-> >> Alternatively, and it's probably simpler overall would be to just
-> >> provide user-space pointer through global variable:
-> >>=20
-> >> void *user_ptr;
-> >>=20
-> >>=20
-> >> bpf_probe_read_user_str(buf, ..., user_ptr);
-> >>=20
-> >> From user-space:
-> >>=20
-> >> skel->bss->user_ptr =3D &my_userspace_buf;
-> >>=20
-> >> Full control. You can trigger tracepoint with just an usleep(1), for
-> >> instance.
-> >=20
-> > Yeah, that sounds better. I'll send a v4 with passing a ptr.
-> >=20
-> > Thanks,
-> > Daniel
->
-> One more comment, how about we test multiple strings with different
-> lengths? In this way, we can catch other alignment issues.
+6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
+kernel}_str helpers") introduced a subtle bug where
+bpf_probe_read_user_str() would potentially copy a few extra bytes after
+the NUL terminator.
 
-Sure, will do that in v4 also.
+This issue is particularly nefarious when strings are used as map keys,
+as seemingly identical strings can occupy multiple entries in a map.
+
+This patchset fixes the issue and introduces a selftest to prevent
+future regressions.
+
+v3 -> v4:
+* directly pass userspace pointer to prog
+* test more strings of different length
+
+v2 -> v3:
+* set pid filter before attaching prog in selftest
+* use long instead of int as bpf_probe_read_user_str() retval
+* style changes
+
+v1 -> v2:
+* add Fixes: tag
+* add selftest
+
+Daniel Xu (2):
+  lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
+  selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes
+    after NUL
+
+ lib/strncpy_from_user.c                       |  9 ++-
+ .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
+ .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
+ 3 files changed, 103 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+
+-- 
+2.28.0
+
