@@ -2,158 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731B32A9FCA
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 23:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0F82AA04F
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 23:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbgKFWRV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 17:17:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
+        id S1729121AbgKFWW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 17:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgKFWRU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Nov 2020 17:17:20 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1723C0613CF;
-        Fri,  6 Nov 2020 14:17:20 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id i186so2450484ybc.11;
-        Fri, 06 Nov 2020 14:17:20 -0800 (PST)
+        with ESMTP id S1728831AbgKFWSC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Nov 2020 17:18:02 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F09BC0613CF;
+        Fri,  6 Nov 2020 14:18:02 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id x15so488393pll.2;
+        Fri, 06 Nov 2020 14:18:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BuHpNhzxvw2WFqEUK/54/hD/DX70sNQS5NUVcIFbbAo=;
-        b=LsstrjiecEpMOJjjzwElg2nTg68PwGKac60+GQv/tyt2R+RgFO3mM7cdiHHa5M6r90
-         VBABpDDxQKRGYXp2T0mJ6TiK6XamT/xEa3wT/uCPA7kjyLWm8Bt1jr6GFLShpdrfghJQ
-         17oSKmARMnZ33vgG+jFyesjWeYF3KIvrnhkucmhIXIPh3X0h/yV/fbjAlVqWICVn9IPx
-         Y+lsXISUtfYFPo/q+pcBOTqnMDlkFOMbv5y3etHnidB6zYXm2iq7QEisC/jM7zqliWZj
-         KSl5dSNmpbbQHqKccCt4GoE7nxXvyDplnPqo7qQx5YCBm3SSTMHyhKtlO4k/C+pYpVT+
-         CrJw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mt112lJeAhAZTLqtAccHSXk5WvwfNz95X0eDuczcqC4=;
+        b=T3UScf7/XuIq0a/vqGgOXyRwbQHUcwRFhJTzoaReWAOXJBPSifycuq8Mv8tpfO19Jo
+         2BzYJej+zTw/Va5H1UCPajZaee0h4ErEFZnjRwDYjHm4aXa+Iwt8Cz9YiGt0pvplavfY
+         Ym8yAoHCpEHL9jemPJo97C5r1X9WUvyVI8WUy9Uh+TaboqKQ2NU9YiRR2q42bZBWsmxZ
+         axW7TGE8dh3BYkT+AJmjl/6IQ+FZcwblOtY0719CIepFVlzF0AUrxaLG19VvjkLxOW6S
+         /VTseg8eJ8kBQcpSQ6gpq5tE8tWcsTXuxI8r+RR7btOpk/V7dW8AeXECZniT8RBgaLg5
+         vVFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BuHpNhzxvw2WFqEUK/54/hD/DX70sNQS5NUVcIFbbAo=;
-        b=rRys6csGj9X7eUW52QDmv/faQC4o8TxhY5fhvgJepdLKYovXWZndAI5KKU3rq8m95H
-         JpQSurHUO1z0Z8iNokepu412IKYRDYFJjJLdhKu1sdxyUGw1pDTsMFzm+JNbyYNRQM67
-         9gIDU1izqol2biCOeijtllcQHZKxvPZ5n2AuM/E8W0BoNbCgqhCQfa39k5Im2kaQI9Ly
-         GcSrY7lcr/3QA8wXdmUF2Rc6rLvIoJy/oGYNaBpE9fdWzInwT2MuMToz4Th7/U/D7d79
-         rvBSA/sBvjMuBwsvHx1xfBSkZXY9VLhA3SHjLxG66sMrVQx34DBjtm4MuRd5fHtZ9v0a
-         wCdQ==
-X-Gm-Message-State: AOAM533VuDMCVT4LMhhgyufRRbqGC35hkhhbvyDqCb0REovqx+B+pORE
-        14wOodAjZ2q9LyxEW28WgFKYVONE5fqvD1PqeM8=
-X-Google-Smtp-Source: ABdhPJxJ/6NjlcnECYnJecO7o0NfmGXRWsLH+WqzTOokZKn9lSHmII8MhfGZfp+zdGWnrAYm9FXCnGSStqp4FsIENKQ=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr6321822ybk.260.1604701039978;
- Fri, 06 Nov 2020 14:17:19 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mt112lJeAhAZTLqtAccHSXk5WvwfNz95X0eDuczcqC4=;
+        b=tJTqZE6NyQZWSN25Uji96iFUyrpmJOhiHjOqPlOfv+SfWeHQcnY6csISKHqcEI9JHA
+         qSZx6qTcqNnF6iXUHbVfjfhhbSITJIA+DDfIU4Mg8kEAI3G29HJZaynLMENEA0Icfq6U
+         b4Y3UPTbkurEXEQyha9jxyk3B9qu8YS5Uw/khBpWoj4lRbmkB6LzoDX+VBZayS5fXIbT
+         wjelJIRXNGY5BY1Ic6gM2UUL5GjSC7k1P2TTdxtUAI13biPA0OpZ7NQlcsuWa1VVFAik
+         nqZV/6rd3AzWVNOGEncWsRJSbKppSDrTk20xkRgwJzW3vF1SPnzTdVOzi1D4jbB5uFXH
+         azWA==
+X-Gm-Message-State: AOAM530jgAPTBSNf2NI8UMM0U4TIOZiKzuN1kbVpUWtQ5ntucYYihNhS
+        wHChnubgZXZhLv4ZNxoNMDvqjTEY3DI=
+X-Google-Smtp-Source: ABdhPJw9PBmMlLQnB8KXRTOoO629GuMv9aNh418vMYP0H/vCQHm5d1v7F4iNyPyoRSnzO6gH2kKAhQ==
+X-Received: by 2002:a17:902:8209:b029:d6:d2c9:1db5 with SMTP id x9-20020a1709028209b02900d6d2c91db5mr3330007pln.54.1604701081650;
+        Fri, 06 Nov 2020 14:18:01 -0800 (PST)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id v23sm3546739pjh.46.2020.11.06.14.18.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Nov 2020 14:18:00 -0800 (PST)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: pull-request: bpf 2020-11-06
+Date:   Fri,  6 Nov 2020 14:17:59 -0800
+Message-Id: <20201106221759.24143-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 MIME-Version: 1.0
-References: <20201106055111.3972047-1-andrii@kernel.org> <20201106055111.3972047-5-andrii@kernel.org>
- <20201106064358.GA697514@kroah.com>
-In-Reply-To: <20201106064358.GA697514@kroah.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 Nov 2020 14:17:08 -0800
-Message-ID: <CAEf4BzZ7PA0JTM2thWUFHrEh6+UkJo0UUxhpk=cAq0oN2xn=nw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/5] bpf: load and verify kernel module BTFs
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 10:44 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Nov 05, 2020 at 09:51:09PM -0800, Andrii Nakryiko wrote:
-> > Add kernel module listener that will load/validate and unload module BTF.
-> > Module BTFs gets ID generated for them, which makes it possible to iterate
-> > them with existing BTF iteration API. They are given their respective module's
-> > names, which will get reported through GET_OBJ_INFO API. They are also marked
-> > as in-kernel BTFs for tooling to distinguish them from user-provided BTFs.
-> >
-> > Also, similarly to vmlinux BTF, kernel module BTFs are exposed through
-> > sysfs as /sys/kernel/btf/<module-name>. This is convenient for user-space
-> > tools to inspect module BTF contents and dump their types with existing tools:
-> >
-> > [vmuser@archvm bpf]$ ls -la /sys/kernel/btf
-> > total 0
-> > drwxr-xr-x  2 root root       0 Nov  4 19:46 .
-> > drwxr-xr-x 13 root root       0 Nov  4 19:46 ..
-> >
-> > ...
-> >
-> > -r--r--r--  1 root root     888 Nov  4 19:46 irqbypass
-> > -r--r--r--  1 root root  100225 Nov  4 19:46 kvm
-> > -r--r--r--  1 root root   35401 Nov  4 19:46 kvm_intel
-> > -r--r--r--  1 root root     120 Nov  4 19:46 pcspkr
-> > -r--r--r--  1 root root     399 Nov  4 19:46 serio_raw
-> > -r--r--r--  1 root root 4094095 Nov  4 19:46 vmlinux
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  Documentation/ABI/testing/sysfs-kernel-btf |   8 +
-> >  include/linux/bpf.h                        |   2 +
-> >  include/linux/module.h                     |   4 +
-> >  kernel/bpf/btf.c                           | 193 +++++++++++++++++++++
-> >  kernel/bpf/sysfs_btf.c                     |   2 +-
-> >  kernel/module.c                            |  32 ++++
-> >  6 files changed, 240 insertions(+), 1 deletion(-)
-> >
+Hi David,
 
-[...]
+The following pull-request contains BPF updates for your *net* tree.
 
-> > +             if (IS_ENABLED(CONFIG_SYSFS)) {
-> > +                     struct bin_attribute *attr;
-> > +
-> > +                     attr = kzalloc(sizeof(*attr), GFP_KERNEL);
-> > +                     if (!attr) {
-> > +                             WARN(1, "failed to register module [%s] BTF in sysfs\n", mod->name);
->
-> kzalloc() will print errors on its own, no need to do this again.  Also,
-> for systems with panic-on-warn, you just crashed them, not nice :(
+We've added 15 non-merge commits during the last 14 day(s) which contain
+a total of 25 files changed, 346 insertions(+), 49 deletions(-).
 
-ah, pr_warn() is what I probably wanted here instead of WARN. I'll
-just drop this, if kzalloc will log a warning anyways.
+The main changes are:
 
->
-> > +                             goto out;
-> > +                     }
-> > +
-> > +                     attr->attr.name = btf->name;
-> > +                     attr->attr.mode = 0444;
-> > +                     attr->size = btf->data_size;
-> > +                     attr->private = btf;
-> > +                     attr->read = btf_module_read;
-> > +
-> > +                     err = sysfs_create_bin_file(btf_kobj, attr);
->
-> You forgot to call sysfs_bin_attr_init() to initialize your binary sysfs
-> attribute.  You'll only notice if you turn lockdep on.
+1) Pre-allocated per-cpu hashmap needs to zero-fill reused element, from David.
 
-Good catch, fixed. Also added CONFIG_DEBUG_LOCK_ALLOC to my config.
+2) Tighten bpf_lsm function check, from KP.
 
->
->
-> > +                     if (err) {
-> > +                             kfree(attr);
-> > +                             WARN(1, "failed to register module [%s] BTF in sysfs: %d\n",
-> > +                                  mod->name, err);
->
-> Again, just report the error and move on, don't crash systems.
->
+3) Fix bpftool attaching to flow dissector, from Lorenz.
 
-Right, fixed.
+4) Use -fno-gcse for the whole kernel/bpf/core.c instead of function attribute, from Ard.
 
-> Other than these minor things, looks good to me, nice work!
->
+Please consider pulling these changes from:
 
-Thanks!
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-> thanks,
->
-> greg k-h
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Björn Töpel, Geert Uytterhoeven, Jesper Dangaard 
+Brouer, Jiri Benc, kernel test robot, Matthieu Baerts, Nick Desaulniers, 
+Randy Dunlap, Song Liu, Tobias Klauser, Toke Høiland-Jørgensen
+
+----------------------------------------------------------------
+
+The following changes since commit 435ccfa894e35e3d4a1799e6ac030e48a7b69ef5:
+
+  tcp: Prevent low rmem stalls with SO_RCVLOWAT. (2020-10-23 19:11:20 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 6f64e477830000746c1f992050fbd45c03c89429:
+
+  bpf: Update verification logic for LSM programs (2020-11-06 13:15:21 -0800)
+
+----------------------------------------------------------------
+Andrii Nakryiko (2):
+      selftest/bpf: Fix profiler test using CO-RE relocation for enums
+      bpf: Add struct bpf_redir_neigh forward declaration to BPF helper defs
+
+Ard Biesheuvel (1):
+      bpf: Don't rely on GCC __attribute__((optimize)) to disable GCSE
+
+Arnd Bergmann (1):
+      bpf: Fix -Wshadow warnings
+
+David Verbeiren (1):
+      bpf: Zero-fill re-used per-cpu map element
+
+Ian Rogers (3):
+      tools, bpftool: Avoid array index warnings.
+      tools, bpftool: Remove two unused variables.
+      libbpf, hashmap: Fix undefined behavior in hash_bits
+
+KP Singh (1):
+      bpf: Update verification logic for LSM programs
+
+Lorenz Bauer (1):
+      tools/bpftool: Fix attaching flow dissector
+
+Magnus Karlsson (3):
+      xsk: Fix possible memory leak at socket close
+      libbpf: Fix null dereference in xsk_socket__delete
+      libbpf: Fix possible use after free in xsk_socket__delete
+
+Randy Dunlap (1):
+      bpf: BPF_PRELOAD depends on BPF_SYSCALL
+
+Toke Høiland-Jørgensen (1):
+      samples/bpf: Set rlimit for memlock to infinity in all samples
+
+ include/linux/compiler-gcc.h                      |   2 -
+ include/linux/compiler_types.h                    |   4 -
+ include/linux/filter.h                            |  22 +--
+ include/net/xsk_buff_pool.h                       |   2 +-
+ kernel/bpf/Makefile                               |   6 +-
+ kernel/bpf/bpf_lsm.c                              |  10 +-
+ kernel/bpf/core.c                                 |   2 +-
+ kernel/bpf/hashtab.c                              |  30 ++-
+ kernel/bpf/preload/Kconfig                        |   1 +
+ net/xdp/xsk.c                                     |   3 +-
+ net/xdp/xsk_buff_pool.c                           |   7 +-
+ samples/bpf/task_fd_query_user.c                  |   2 +-
+ samples/bpf/tracex2_user.c                        |   2 +-
+ samples/bpf/tracex3_user.c                        |   2 +-
+ samples/bpf/xdp_redirect_cpu_user.c               |   2 +-
+ samples/bpf/xdp_rxq_info_user.c                   |   2 +-
+ scripts/bpf_helpers_doc.py                        |   1 +
+ tools/bpf/bpftool/feature.c                       |   7 +-
+ tools/bpf/bpftool/prog.c                          |   2 +-
+ tools/bpf/bpftool/skeleton/profiler.bpf.c         |   4 +-
+ tools/lib/bpf/hashmap.h                           |  15 +-
+ tools/lib/bpf/xsk.c                               |   9 +-
+ tools/testing/selftests/bpf/prog_tests/map_init.c | 214 ++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/profiler.inc.h  |  11 +-
+ tools/testing/selftests/bpf/progs/test_map_init.c |  33 ++++
+ 25 files changed, 346 insertions(+), 49 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_init.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_map_init.c
