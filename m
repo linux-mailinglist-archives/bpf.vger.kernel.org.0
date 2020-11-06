@@ -2,120 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFCD2A9935
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 17:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D3A2A9979
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 17:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726190AbgKFQOG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 11:14:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726075AbgKFQOF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 6 Nov 2020 11:14:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604679244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EFW0/AjI5D48SWseHJMzco2NAKnAG+greLgwTvNixSU=;
-        b=LM2PfXz6a1Gyu0otTn8kLN94ErjZ0cAbyxdF8DxITs4ou5gX5F2YtPZbdLES0TQGb6teZV
-        7ZgJH6qaViva2rYhXeXovI6qPpJHEsVZxEsAWhof30ezRgELUpiS19fwPj3kzNrTuaxMxp
-        D5KAgHdHBV0jniL6EvRyC8GF+KyGcuM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-P6_JqA-JOW-edsjyXRGGtA-1; Fri, 06 Nov 2020 11:14:00 -0500
-X-MC-Unique: P6_JqA-JOW-edsjyXRGGtA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CD13E06A1;
-        Fri,  6 Nov 2020 16:13:58 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 986331002C18;
-        Fri,  6 Nov 2020 16:13:55 +0000 (UTC)
-Date:   Fri, 6 Nov 2020 17:13:52 +0100
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/xdp: remove unused macro REG_STATE_NEW
-Message-ID: <20201106171352.5c51342d@carbon>
-In-Reply-To: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
-Organization: Red Hat Inc.
+        id S1726593AbgKFQaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 11:30:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726482AbgKFQaG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Nov 2020 11:30:06 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604680206;
+        bh=7+TLDC0TsrPzHnm18zh2FFLZMNWt6KUkleHczhCixcI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=dXX4qPXCSZ2z3S19tsVQDoeV8uVoY2UQpcS9So7QF7mhy/8elRheRSPcGFIEKVT3T
+         RpWnxXv1Bt4RmQ2a+MVl5NJR50eAns7QOwfFYPf79lcIaRv4JyqgkjWFxDpCMVvhW8
+         pzIZvUDO1feib8ELeak3Z+8yrxAtNOMBdEp5be08=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow LSM programs to use bpf spin locks
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160468020631.12149.17904247795919763724.git-patchwork-notify@kernel.org>
+Date:   Fri, 06 Nov 2020 16:30:06 +0000
+References: <20201106103747.2780972-2-kpsingh@chromium.org>
+In-Reply-To: <20201106103747.2780972-2-kpsingh@chromium.org>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        songliubraving@fb.com, kafai@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, pjt@google.com, jannh@google.com,
+        haoluo@google.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri,  6 Nov 2020 13:43:51 +0800
-Alex Shi <alex.shi@linux.alibaba.com> wrote:
+Hello:
 
-> To tame gcc warning on it:
-> net/core/xdp.c:20:0: warning: macro "REG_STATE_NEW" is not used
-> [-Wunused-macros]
+This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-Hmm... REG_STATE_NEW is zero, so it is implicitly set via memset zero.
-But it is true that it is technically not directly used or referenced.
-
-It is mentioned in a comment, so please send V2 with this additional change:
-
-$ git diff
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 48aba933a5a8..6e1430971ac2 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -175,7 +175,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
-                return -ENODEV;
-        }
- 
--       /* State either UNREGISTERED or NEW */
-+       /* State either UNREGISTERED or zero */
-        xdp_rxq_info_init(xdp_rxq);
-        xdp_rxq->dev = dev;
-        xdp_rxq->queue_index = queue_index;
-
-
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: "David S. Miller" <davem@davemloft.net> 
-> Cc: Jakub Kicinski <kuba@kernel.org> 
-> Cc: Alexei Starovoitov <ast@kernel.org> 
-> Cc: Daniel Borkmann <daniel@iogearbox.net> 
-> Cc: Jesper Dangaard Brouer <hawk@kernel.org> 
-> Cc: John Fastabend <john.fastabend@gmail.com> 
-> Cc: netdev@vger.kernel.org 
-> Cc: bpf@vger.kernel.org 
-> Cc: linux-kernel@vger.kernel.org 
-> ---
->  net/core/xdp.c | 1 -
->  1 file changed, 1 deletion(-)
+On Fri,  6 Nov 2020 10:37:39 +0000 you wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 48aba933a5a8..3d88aab19c89 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -19,7 +19,6 @@
->  #include <trace/events/xdp.h>
->  #include <net/xdp_sock_drv.h>
->  
-> -#define REG_STATE_NEW		0x0
->  #define REG_STATE_REGISTERED	0x1
->  #define REG_STATE_UNREGISTERED	0x2
->  #define REG_STATE_UNUSED	0x3
+> Usage of spin locks was not allowed for tracing programs due to
+> insufficient preemption checks. The verifier does not currently prevent
+> LSM programs from using spin locks, but the helpers are not exposed
+> via bpf_lsm_func_proto.
+> 
+> [...]
 
+Here is the summary with links:
+  - [bpf-next,v6,1/9] bpf: Allow LSM programs to use bpf spin locks
+    https://git.kernel.org/bpf/bpf-next/c/9e7a4d9831e8
+  - [bpf-next,v6,2/9] bpf: Implement task local storage
+    https://git.kernel.org/bpf/bpf-next/c/4cf1bc1f1045
+  - [bpf-next,v6,3/9] libbpf: Add support for task local storage
+    https://git.kernel.org/bpf/bpf-next/c/8885274d2259
+  - [bpf-next,v6,4/9] bpftool: Add support for task local storage
+    https://git.kernel.org/bpf/bpf-next/c/864ab0616dcc
+  - [bpf-next,v6,5/9] bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
+    https://git.kernel.org/bpf/bpf-next/c/3ca1032ab7ab
+  - [bpf-next,v6,6/9] bpf: Fix tests for local_storage
+    https://git.kernel.org/bpf/bpf-next/c/f0e5ba0bc481
+  - [bpf-next,v6,7/9] bpf: Update selftests for local_storage to use vmlinux.h
+    https://git.kernel.org/bpf/bpf-next/c/a367efa71b3f
+  - [bpf-next,v6,8/9] bpf: Add tests for task_local_storage
+    https://git.kernel.org/bpf/bpf-next/c/9cde3beeadb3
+  - [bpf-next,v6,9/9] bpf: Exercise syscall operations for inode and sk storage
+    https://git.kernel.org/bpf/bpf-next/c/4170bc6baa54
 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
 
