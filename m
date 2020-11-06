@@ -2,90 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2235F2A8DC1
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 04:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9E92A8DC7
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 04:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgKFDuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Nov 2020 22:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56862 "EHLO
+        id S1725815AbgKFDxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Nov 2020 22:53:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKFDuX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Nov 2020 22:50:23 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B7F4C0613CF;
-        Thu,  5 Nov 2020 19:50:23 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id t13so3851747ljk.12;
-        Thu, 05 Nov 2020 19:50:23 -0800 (PST)
+        with ESMTP id S1725616AbgKFDxR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Nov 2020 22:53:17 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE668C0613CF;
+        Thu,  5 Nov 2020 19:53:16 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id f6so2587ybr.0;
+        Thu, 05 Nov 2020 19:53:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ou5Ggk2ttAS70UTtJcGQf5QYwhOoTYpFmbml4/rFqEM=;
-        b=ldogHyblzbwVNQ80M99gsxKLAH4tHxLA5VRbIdP4YbrOp+5qKwZggoz16uOm4gePrn
-         rcD4nId4XmjHbmBsTUlQiHPWhe7vruLiHhQcJLcisneZ+L6NKDbKUs7h0sGAohezX2Rb
-         GpAykPsiH22A7gsGQO4vOcE4565l4C/kItdMAPWa0mt+cNnGczYGxSjpsvqvUXyX/Uqz
-         vZbg9/J5raZm8411jMnkHp8jww35wpMKEc+h77FfDrYLeCLdiMdRcgdgo46Vk++gS2JW
-         KiA4EER/tZyKDpBBp5qIppTtZ9qZO2KgGZ4HuXwJltruLNwATnURSWjYxXtlBooGhkXc
-         jFCA==
+        bh=S2AIiVxkOnwPyftxYL1/j7Dy6SZMLtDsVFSo2M4HZ00=;
+        b=TH+8jr1O5vLPDH4dbuO2Dz6p1Yd/QzZehL7b5uRnz1ilNH26KAyT2Xa3p+tCJbzw9C
+         iZshgXOQHIENIB544P5LFmvJZV7d8a0h9fs1G76RIwsWCEhyC1sfm9/a0UGkJAI4wnXg
+         MPBg7RiQtiIo4yU1xnJhMtj3vGIDKb1IiEIuvK6FrSW5+ERVJedXP6VLAPP0gEw6mpwJ
+         w419HoAwpzPExfLsu1MFjkoEhcI3hge+qxaILaPFXeiMrqg3z7h7FHyBjt2Xd39jZMC8
+         t1VGPs6I9hLODV0jG5jrmQDqyRGSnrZYc0C3bxjId4DWRzHMi02fyT/XukzwNYceAMGJ
+         UzUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ou5Ggk2ttAS70UTtJcGQf5QYwhOoTYpFmbml4/rFqEM=;
-        b=cfVol4KC6mjEDjFlRMu4eLJrfzpIFLf/G2j+9UvqiRoRy4d0IptOu2Vs2/TfLiW48w
-         W+4b6/32hgz41wh9bDuynBlaaRg6tatej69A27DXsBDGR5BZMcxJ8PF2ZtPlcNLrG4PW
-         tIkJ4M0AInUOLIPeu83NX06Si9qr76OGir+aRjV5WHJzB5V2yEg3Ia1cMEzrbXhYlFXD
-         J2bi2D4ULEqFrUmOeYqO1tdjYXULqQZaTsKfcemXV1Oshp+7AKw1mEJo5jly+fAi+3dN
-         jxfDfGIm9HyGH4PMzRvmB76F0NlKeBmCBCaYcx/232BoN/Xv/sYMb/yz+oY6MUYm4Lv8
-         EZ8A==
-X-Gm-Message-State: AOAM5319a3Cd5R2lKbpUIAq4YKatd7/HliwbmmvoFpl8OkZZ0fnTSjb7
-        tlk1mvIE2jro0FrxHYLVn64EjVqdX0t7H99bUFI=
-X-Google-Smtp-Source: ABdhPJyctxI1fhiP+zeWCICz8ZGrED73ZbgML3OcIhAw22p7ZpOKPZghrk9LVhqAeAnd6Uim2Uf6X2kh78Z/CUTXnBE=
-X-Received: by 2002:a2e:b0f8:: with SMTP id h24mr17231ljl.2.1604634621299;
- Thu, 05 Nov 2020 19:50:21 -0800 (PST)
+        bh=S2AIiVxkOnwPyftxYL1/j7Dy6SZMLtDsVFSo2M4HZ00=;
+        b=ZKisKfrSPOMp7gLo1gO/Dt005VZFOpulBTApNeiAnz48YGe8mKs8cM6GJrNbTS8Vt7
+         1+3WoDN0YlExPUQ9tT46P/nx20lQRQ/uzlOcLGM62l114UiasjVr0Ate2CAtGj98pqiU
+         FV1BcEkR2c+j/ugflUx/4CZUcRvYvxXktmjQOMEMvrOhYW8hAbY5gdtBdfzle9NMjqhW
+         M7XLsjSGeOz6Kwc7GWLh5ONK4hV8O2e2YlgoYCJQVD94qgvi0SQfAkIkeRks6j4RbCM5
+         mrMkZUMKFenPOvyU5khqdSuG1EaGbqcDdvk0l6ZJ9ChjPAryCc2bQ64say0JXE2u23Zx
+         3TbQ==
+X-Gm-Message-State: AOAM533c5zjN5eeenwl6WUyzrEwKL2C3Nz0UXPG6rgn3pNTdXjX+aa06
+        CTUxhSejh/h7HPLxtZi+ZXUY5kS4mWwH7mIM1QI=
+X-Google-Smtp-Source: ABdhPJzjOn/LUMbXAzDVz/o0f2HeEUukHJv7w47ijR6bdpg0B2XCe5mt1wYLixTDSMQz5xcLln4vRswoKiRprb0uNwc=
+X-Received: by 2002:a25:da4e:: with SMTP id n75mr241475ybf.425.1604634796022;
+ Thu, 05 Nov 2020 19:53:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20201105045140.2589346-1-andrii@kernel.org> <20201105045140.2589346-4-andrii@kernel.org>
- <20201106031336.b2cufwpncvft2hs7@ast-mbp> <CAEf4BzbRqmKL3=q+GB=7JvWNxEaOz4CVAcbLQKBxoHF-Gfpv=g@mail.gmail.com>
-In-Reply-To: <CAEf4BzbRqmKL3=q+GB=7JvWNxEaOz4CVAcbLQKBxoHF-Gfpv=g@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 5 Nov 2020 19:50:09 -0800
-Message-ID: <CAADnVQJ6jVho5Ka0Qe0wgFyoqZtByhDqUpOr0vmDQHw2JjGUEA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/5] kbuild: Add CONFIG_DEBUG_INFO_BTF_MODULES
- option or module BTFs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <cover.1604620776.git.dxu@dxuuu.xyz> <8b8c8f51aff8fabac4425da9b0054b4c976c944b.1604620776.git.dxu@dxuuu.xyz>
+In-Reply-To: <8b8c8f51aff8fabac4425da9b0054b4c976c944b.1604620776.git.dxu@dxuuu.xyz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 5 Nov 2020 19:53:05 -0800
+Message-ID: <CAEf4BzafhaMDuTi3CYsF2sEp_cgOv5kohBOOwSX6qPoUr4-HWw@mail.gmail.com>
+Subject: Re: [PATCH bpf v4 2/2] selftest/bpf: Test bpf_probe_read_user_str()
+ strips trailing bytes after NUL
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
+        Song Liu <songliubraving@fb.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 5, 2020 at 7:48 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Nov 5, 2020 at 4:06 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> On Thu, Nov 5, 2020 at 7:13 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Nov 04, 2020 at 08:51:38PM -0800, Andrii Nakryiko wrote:
-> > >
-> > > +config DEBUG_INFO_BTF_MODULES
-> > > +     bool "Generate BTF for kernel modules"
-> > > +     def_bool y
-> > > +     depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> >
-> > Does it need to be a new config ?
-> > Can the build ran pahole if DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF ?
+> Previously, bpf_probe_read_user_str() could potentially overcopy the
+> trailing bytes after the NUL due to how do_strncpy_from_user() does the
+> copy in long-sized strides. The issue has been fixed in the previous
+> commit.
 >
-> It probably doesn't. If I drop the "bool" line, it will become
-> non-configurable calculated Kconfig value, convenient to use
-> everywhere. All the rest will stay exactly the same. It's nice to not
-> have to do "if defined(DEBUG_INFO_BTF) && defined(MODULES) &&
-> defined(PAHOLE_HAS_SPLIT_BTF)" checks, but rather a simple "ifdef
-> CONFIG_DEBUG_INFO_BTF_MODULES". Does that work?
+> This commit adds a selftest that ensures we don't regress
+> bpf_probe_read_user_str() again.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
-Makes sense.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
+>  .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
+>  2 files changed, 96 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
+>
+
+[...]
