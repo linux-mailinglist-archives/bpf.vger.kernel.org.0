@@ -2,44 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2912AA056
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 23:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534692AA057
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 23:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbgKFWZ3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 6 Nov 2020 17:25:29 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:49166 "EHLO
+        id S1728737AbgKFWZd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 6 Nov 2020 17:25:33 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:47985 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728518AbgKFWZ3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 6 Nov 2020 17:25:29 -0500
+        by vger.kernel.org with ESMTP id S1728698AbgKFWZd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 6 Nov 2020 17:25:33 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-x82FjvCKOTGliHA5Th65Xw-1; Fri, 06 Nov 2020 17:25:24 -0500
-X-MC-Unique: x82FjvCKOTGliHA5Th65Xw-1
+ us-mta-491-LwTcnAX_PMiJ8gaDKxfkPA-1; Fri, 06 Nov 2020 17:25:27 -0500
+X-MC-Unique: LwTcnAX_PMiJ8gaDKxfkPA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83919107ACF9;
-        Fri,  6 Nov 2020 22:25:22 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7CAA180364C;
+        Fri,  6 Nov 2020 22:25:25 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DFFB57512B;
-        Fri,  6 Nov 2020 22:25:19 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E599562A15;
+        Fri,  6 Nov 2020 22:25:22 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+Cc:     Hao Luo <haoluo@google.com>, Andrii Nakryiko <andrii@kernel.org>,
         dwarves@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Hao Luo <haoluo@google.com>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
         "Frank Ch. Eigler" <fche@redhat.com>,
         Mark Wielaard <mjw@redhat.com>
-Subject: [PATCH 1/3] bpf: Move iterator functions into special init section
-Date:   Fri,  6 Nov 2020 23:25:10 +0100
-Message-Id: <20201106222512.52454-2-jolsa@kernel.org>
+Subject: [PATCH 2/3] btf_encoder: Move find_all_percpu_vars in generic collect_symbols
+Date:   Fri,  6 Nov 2020 23:25:11 +0100
+Message-Id: <20201106222512.52454-3-jolsa@kernel.org>
 In-Reply-To: <20201106222512.52454-1-jolsa@kernel.org>
 References: <20201106222512.52454-1-jolsa@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
@@ -48,105 +46,176 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With upcoming changes to pahole, that change the way how and
-which kernel functions are stored in BTF data, we need a way
-to recognize iterator functions.
+Moving find_all_percpu_vars under generic collect_symbols
+function that walks over symbols and calls collect_percpu_var.
 
-Iterator functions need to be in BTF data, but have no real
-body and are currently placed in .init.text section, so they
-are freed after kernel init and are filtered out of BTF data
-because of that.
+We will add another collect function that needs to go through
+all the symbols, so it's better we go through them just once.
 
-The solution is to place these functions under new section:
-  .init.bpf.preserve_type
+There's no functional change intended.
 
-And add 2 new symbols to mark that area:
-  __init_bpf_preserve_type_begin
-  __init_bpf_preserve_type_end
-
-The code in pahole responsible for picking up the functions will
-be able to recognize functions from this section and add them to
-the BTF data and filter out all other .init.text functions.
-
-Suggested-by: Yonghong Song <yhs@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+Acked-by: Hao Luo <haoluo@google.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/asm-generic/vmlinux.lds.h | 16 +++++++++++++++-
- include/linux/bpf.h               |  8 +++++++-
- include/linux/init.h              |  1 +
- 3 files changed, 23 insertions(+), 2 deletions(-)
+ btf_encoder.c | 124 +++++++++++++++++++++++++++-----------------------
+ 1 file changed, 67 insertions(+), 57 deletions(-)
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index cd14444bf600..e18e1030dabf 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -685,8 +685,21 @@
- 	.BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {			\
- 		*(.BTF_ids)						\
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 4c92908beab2..1866bb16a8ba 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -250,75 +250,85 @@ static bool percpu_var_exists(uint64_t addr, uint32_t *sz, const char **name)
+ 	return true;
+ }
+ 
+-static int find_all_percpu_vars(struct btf_elf *btfe)
++static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
+ {
+-	uint32_t core_id;
+-	GElf_Sym sym;
++	const char *sym_name;
++	uint64_t addr;
++	uint32_t size;
+ 
+-	/* cache variables' addresses, preparing for searching in symtab. */
+-	percpu_var_cnt = 0;
++	/* compare a symbol's shndx to determine if it's a percpu variable */
++	if (elf_sym__section(sym) != btfe->percpu_shndx)
++		return 0;
++	if (elf_sym__type(sym) != STT_OBJECT)
++		return 0;
+ 
+-	/* search within symtab for percpu variables */
+-	elf_symtab__for_each_symbol(btfe->symtab, core_id, sym) {
+-		const char *sym_name;
+-		uint64_t addr;
+-		uint32_t size;
++	addr = elf_sym__value(sym);
++	/*
++	 * Store only those symbols that have allocated space in the percpu section.
++	 * This excludes the following three types of symbols:
++	 *
++	 *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
++	 *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
++	 *  3. __exitcall(fn), functions which are labeled as exit calls.
++	 *
++	 * In addition, the variables defined using DEFINE_PERCPU_FIRST are
++	 * also not included, which currently includes:
++	 *
++	 *  1. fixed_percpu_data
++	 */
++	if (!addr)
++		return 0;
+ 
+-		/* compare a symbol's shndx to determine if it's a percpu variable */
+-		if (elf_sym__section(&sym) != btfe->percpu_shndx)
+-			continue;
+-		if (elf_sym__type(&sym) != STT_OBJECT)
+-			continue;
++	size = elf_sym__size(sym);
++	if (!size)
++		return 0; /* ignore zero-sized symbols */
+ 
+-		addr = elf_sym__value(&sym);
+-		/*
+-		 * Store only those symbols that have allocated space in the percpu section.
+-		 * This excludes the following three types of symbols:
+-		 *
+-		 *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
+-		 *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
+-		 *  3. __exitcall(fn), functions which are labeled as exit calls.
+-		 *
+-		 * In addition, the variables defined using DEFINE_PERCPU_FIRST are
+-		 * also not included, which currently includes:
+-		 *
+-		 *  1. fixed_percpu_data
+-		 */
+-		if (!addr)
+-			continue;
++	sym_name = elf_sym__name(sym, btfe->symtab);
++	if (!btf_name_valid(sym_name)) {
++		dump_invalid_symbol("Found symbol of invalid name when encoding btf",
++				    sym_name, btf_elf__verbose, btf_elf__force);
++		if (btf_elf__force)
++			return 0;
++		return -1;
++	}
+ 
+-		size = elf_sym__size(&sym);
+-		if (!size)
+-			continue; /* ignore zero-sized symbols */
++	if (btf_elf__verbose)
++		printf("Found per-CPU symbol '%s' at address 0x%lx\n", sym_name, addr);
+ 
+-		sym_name = elf_sym__name(&sym, btfe->symtab);
+-		if (!btf_name_valid(sym_name)) {
+-			dump_invalid_symbol("Found symbol of invalid name when encoding btf",
+-					    sym_name, btf_elf__verbose, btf_elf__force);
+-			if (btf_elf__force)
+-				continue;
+-			return -1;
+-		}
++	if (percpu_var_cnt == MAX_PERCPU_VAR_CNT) {
++		fprintf(stderr, "Reached the limit of per-CPU variables: %d\n",
++			MAX_PERCPU_VAR_CNT);
++		return -1;
++	}
++	percpu_vars[percpu_var_cnt].addr = addr;
++	percpu_vars[percpu_var_cnt].sz = size;
++	percpu_vars[percpu_var_cnt].name = sym_name;
++	percpu_var_cnt++;
+ 
+-		if (btf_elf__verbose)
+-			printf("Found per-CPU symbol '%s' at address 0x%lx\n", sym_name, addr);
++	return 0;
++}
++
++static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
++{
++	uint32_t core_id;
++	GElf_Sym sym;
+ 
+-		if (percpu_var_cnt == MAX_PERCPU_VAR_CNT) {
+-			fprintf(stderr, "Reached the limit of per-CPU variables: %d\n",
+-				MAX_PERCPU_VAR_CNT);
++	/* cache variables' addresses, preparing for searching in symtab. */
++	percpu_var_cnt = 0;
++
++	/* search within symtab for percpu variables */
++	elf_symtab__for_each_symbol(btfe->symtab, core_id, sym) {
++		if (collect_percpu_vars && collect_percpu_var(btfe, &sym))
+ 			return -1;
+-		}
+-		percpu_vars[percpu_var_cnt].addr = addr;
+-		percpu_vars[percpu_var_cnt].sz = size;
+-		percpu_vars[percpu_var_cnt].name = sym_name;
+-		percpu_var_cnt++;
  	}
-+
-+/*
-+ * .init.bpf.preserve_type
-+ *
-+ * This section store special BPF function and marks them
-+ * with begin/end symbols pair for the sake of pahole tool.
-+ */
-+#define INIT_BPF_PRESERVE_TYPE						\
-+	__init_bpf_preserve_type_begin = .;                             \
-+	*(.init.bpf.preserve_type)                                      \
-+	__init_bpf_preserve_type_end = .;				\
-+	MEM_DISCARD(init.bpf.preserve_type)
- #else
- #define BTF
-+#define INIT_BPF_PRESERVE_TYPE
- #endif
  
- /*
-@@ -740,7 +753,8 @@
- #define INIT_TEXT							\
- 	*(.init.text .init.text.*)					\
- 	*(.text.startup)						\
--	MEM_DISCARD(init.text*)
-+	MEM_DISCARD(init.text*)						\
-+	INIT_BPF_PRESERVE_TYPE
+-	if (percpu_var_cnt)
+-		qsort(percpu_vars, percpu_var_cnt, sizeof(percpu_vars[0]), percpu_var_cmp);
++	if (collect_percpu_vars) {
++		if (percpu_var_cnt)
++			qsort(percpu_vars, percpu_var_cnt, sizeof(percpu_vars[0]), percpu_var_cmp);
  
- #define EXIT_DATA							\
- 	*(.exit.data .exit.data.*)					\
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 73d5381a5d5c..894f66c7703e 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1277,10 +1277,16 @@ struct bpf_link *bpf_link_get_from_fd(u32 ufd);
- int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
- int bpf_obj_get_user(const char __user *pathname, int flags);
+-	if (btf_elf__verbose)
+-		printf("Found %d per-CPU variables!\n", percpu_var_cnt);
++		if (btf_elf__verbose)
++			printf("Found %d per-CPU variables!\n", percpu_var_cnt);
++	}
+ 	return 0;
+ }
  
-+#ifdef CONFIG_DEBUG_INFO_BTF
-+#define BPF_INIT __init_bpf_preserve_type
-+#else
-+#define BPF_INIT __init
-+#endif
-+
- #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
- #define DEFINE_BPF_ITER_FUNC(target, args...)			\
- 	extern int bpf_iter_ ## target(args);			\
--	int __init bpf_iter_ ## target(args) { return 0; }
-+	int BPF_INIT bpf_iter_ ## target(args) { return 0; }
+@@ -347,7 +357,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+ 		if (!btfe)
+ 			return -1;
  
- struct bpf_iter_aux_info {
- 	struct bpf_map *map;
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 212fc9e2f691..133462863711 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -52,6 +52,7 @@
- #define __initconst	__section(.init.rodata)
- #define __exitdata	__section(.exit.data)
- #define __exit_call	__used __section(.exitcall.exit)
-+#define __init_bpf_preserve_type __section(.init.bpf.preserve_type)
+-		if (!skip_encoding_vars && find_all_percpu_vars(btfe))
++		if (collect_symbols(btfe, !skip_encoding_vars))
+ 			goto out;
  
- /*
-  * modpost check for section mismatches during the kernel build.
+ 		has_index_type = false;
 -- 
 2.26.2
 
