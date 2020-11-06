@@ -2,103 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E122A9CC2
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 19:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215EF2A9CC4
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 19:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgKFSzU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 13:55:20 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:42591 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727069AbgKFSzT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 6 Nov 2020 13:55:19 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id A0DA3D1A;
-        Fri,  6 Nov 2020 13:55:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 06 Nov 2020 13:55:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:content-transfer-encoding:content-type:cc:subject
-        :from:to:date:message-id:in-reply-to; s=fm1; bh=AFtcQY/U4BWjlT6D
-        ZL2HRQBj+myJ297DJ2kQlynYkUM=; b=WrBU30BUNg8l7TMurpazyRUvVhL0sN5Y
-        Po4X656j/EM6VKxewq27xz1Fqojh/bLURU2w5Y+qevOPlxtrRo5vNV6mjy6y8jm8
-        U5ss+MysMC+qB/cbmxEwUrJvC+lPwyoqHym+6y16eJLJqEcaPKPkk9NH5m7iGg2h
-        cB5knlhIl7CpgRhfm0DFDDDRATc5cv5HZPnj4iGT4EeJuVB2bIkUSYkLXlbGkt1d
-        qY7tt9r7AHsikk2zMhLtfRaZIOWKv3l714ibp1+/G+8vYBuBx6r06oBHY5lhxSP/
-        /H0yaX9tcvBC2lS7Bw4SWwWGbwkMaQAFrlLhUBKtRCkk8NtfY43pJQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=AFtcQY/U4BWjlT6DZL2HRQBj+myJ297DJ2kQlynYkUM=; b=E2XhQezn
-        wG4bM0eRii9XW6JWWS0LZ641B6eQQ0fmOYXNg3FzaWPnnzTLMpOY/1nBuA/q5FYn
-        IfLxssdGVekl5dU7T46pbD8PVDO3v2Y4X8iJhRI0hGBYIW4ExdiY1YVhufEOuxB8
-        1rEN41kvw4cZA7OoQ0Jo1o7DkjNJ4sCwYr7oOCavp2r8CyFM9ujY8m3BFtDvHwDD
-        oLjp4a9ahPGfvHQyrgtKPapg6W9g/KLrU3y7tf/E8+TDdoC4ZAJ0Hl3Vxbh8giRz
-        RxzmaLdd33RTgLnd1FXQhZquT/KPuCT64hUCjLadDjFCTbzs0MEL52+Xd4VkBx5y
-        jGdPD7UXINB6LA==
-X-ME-Sender: <xms:FJylX-izGoDGjqu55S6L-7Vb6K2hP8m-tRXEilMtsVI43-zWHNEmtQ>
-    <xme:FJylX_Al19qjP4Ord5Zu1Ji1KuS4oyG3BVYA1AZUMNjcJh5TiLBBcO4arrUjz-aJD
-    6quy5d4p2kkq8WnIQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddtledguddvudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculddvfedmnecujfgurhepggfgtgfuhffvfffkjgesthhqredttddt
-    jeenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpeeijeeuffekvefghfevffeugeegudffueekhfehffdtleeg
-    gfdtfeehheeuudefieenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhkvghrnhgvlh
-    drohhrghenucfkphepieelrddukedurddutdehrdeigeenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:FJylX2EfUYoX3fWtVU0P6hqNgmHGLEunzsix4U9kxOub0HgAjwDLRA>
-    <xmx:FJylX3TuChe2wac7EF8KZY9n9vQkjNjFcL3QrzZje36UMGqj9wKA8g>
-    <xmx:FJylX7yDF0mvhyZpE6ci6UiKlb3_9B2f7-hv6XAmDPQSXX4NRrQa2w>
-    <xmx:FZylX2pVzc26ae-Yn_pSqsIIXP8Bq3s1PEpi2F7vNn3ZxJNb5ZPQHQ>
-Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DE4D932801D7;
-        Fri,  6 Nov 2020 13:55:15 -0500 (EST)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     "bpf" <bpf@vger.kernel.org>, "LKML" <linux-kernel@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        "Kernel Team" <kernel-team@fb.com>, "0day robot" <lkp@intel.com>,
-        <lkp@lists.01.org>
-Subject: Re: [lib/strncpy_from_user.c] 00a4ef91e8:
- BUG:KASAN:slab-out-of-bounds_in_s
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
-        "kernel test robot" <oliver.sang@intel.com>
-Date:   Fri, 06 Nov 2020 10:54:10 -0800
-Message-Id: <C6WEQ17CF8QV.HSY7LMEWDFBX@maharaja>
-In-Reply-To: <CAADnVQLcwB8ebbpuqnjvqebGp4293zd4s4nAawJ=EaU-6+wXpA@mail.gmail.com>
+        id S1726880AbgKFS4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 13:56:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726176AbgKFS4C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:56:02 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 486C6206E3;
+        Fri,  6 Nov 2020 18:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604688961;
+        bh=9Z//xbLRx7LhHssr++ORT9ZMJG5YapfMsn1CIp+w9p0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GlnX4wZ9Uofp6FrP4idiYapMnTBEou8mQ0t1s/CuoppCQdGLBv2f1mpkAWkIRjC0r
+         9Ln+GRViccTul5ithO2ayQcJb7kkdxuDoGTBXwQDD9c/0r9gB8ApfNK7z3pzFC/Qir
+         BUWinfsdgaVO8FAkDcPlak3V6GX2z8XFWNskznyQ=
+Date:   Fri, 6 Nov 2020 10:56:00 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     netdev@vger.kernel.org, William Tu <u9012063@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCHv2 net 0/2] Remove unused test_ipip.sh test and add
+ missed ip6ip6 test
+Message-ID: <20201106105554.02a3142b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201106090117.3755588-1-liuhangbin@gmail.com>
+References: <20201103042908.2825734-1-liuhangbin@gmail.com>
+        <20201106090117.3755588-1-liuhangbin@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu Nov 5, 2020 at 8:32 PM PST, Alexei Starovoitov wrote:
-> Daniel,
->
-> the kasan complains about the previous version of your patch,
-> but your v4 version looks equivalent.
-> Could you try to repro this issue?
-> The code looks correct, but kasan complain is concerning.
->
-> On Thu, Nov 5, 2020 at 5:56 PM kernel test robot <oliver.sang@intel.com>
-> wrote:
-> >
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with clang-12):
-> >
-> > commit: 00a4ef91e8f5af6edceb9bd4bceed2305f038796 ("[PATCH bpf-next] lib=
-/strncpy_from_user.c: Don't overcopy bytes after NUL terminator")
-> > url: https://github.com/0day-ci/linux/commits/Daniel-Xu/lib-strncpy_fro=
-m_user-c-Don-t-overcopy-bytes-after-NUL-terminator/20201104-103306
-> > base: https://git.kernel.org/cgit/linux/kernel/git/bpf/bpf-next.git mas=
-ter
+On Fri,  6 Nov 2020 17:01:15 +0800 Hangbin Liu wrote:
+> In comment 173ca26e9b51 ("samples/bpf: add comprehensive ipip, ipip6,
+> ip6ip6 test") we added some bpf tunnel tests. In commit 933a741e3b82
+> ("selftests/bpf: bpf tunnel test.") when we moved it to the current
+> folder, we missed some points:
+> 
+> 1. ip6ip6 test is not added
+> 2. forgot to remove test_ipip.sh in sample folder
+> 3. TCP test code is not removed in test_tunnel_kern.c
+> 
+> In this patch set I add back ip6ip6 test and remove unused code. I'm not sure
+> if this should be net or net-next, so just set to net.
 
-[...]
-
-I'll take a look, thanks.
-
-Seems like the original email went into my spam. I'll try to fix my spam
-filter.
+I'm assuming you meant to tag this with the bpf tree.
