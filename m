@@ -2,82 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8FF2A9CC6
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 19:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD432A9D93
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 20:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgKFS6p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 13:58:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
+        id S1727994AbgKFTJz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 14:09:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgKFS6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Nov 2020 13:58:44 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A886C0613CF;
-        Fri,  6 Nov 2020 10:58:44 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id b1so3331810lfp.11;
-        Fri, 06 Nov 2020 10:58:44 -0800 (PST)
+        with ESMTP id S1727916AbgKFTJy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Nov 2020 14:09:54 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11365C0613CF;
+        Fri,  6 Nov 2020 11:09:54 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 13so2233339pfy.4;
+        Fri, 06 Nov 2020 11:09:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tuA+B6GqLZERItqqoDaOIJ0JH2dxClC2hdQn1kAzRoI=;
-        b=ERtjIyIcmYFyKcqyCl/rDk5LrIYJUr3+cdAsz53AJEcLy0UC/T9TC/W15gh/n5Ygab
-         +uSY7H5tMRuSJnF2pNdfF/Dv1etzZ+VsMPZvfIgcvnh4mRON+gTgPb5Tc0gcTnAzvXuW
-         ZroXY0b/CVg09sfY1QJiUdXWjHE461wE0kX5iRXbqBty+UX+FBZNn5YpRlwMeoEkcmBM
-         o6TRP5xyxwnDll3M3E2PKpH9I1Ft70tjhLr0UuTUjkXYXXvoG/xhcLg88Y8AGsrC8ggz
-         n5WQJvBcTsrebEf08GpLDC/d7gDn/0CmSIMDxouMb4DhABKsch1x4yW1o9lMc2Vo3AxD
-         +IWg==
+         :cc:content-transfer-encoding;
+        bh=zWilfhNuzCYQXGWyPu144qq5XXA5zk2vBoBbppBQ1Hk=;
+        b=ZoT11CJgpo+UyUVuHfpRFOp+yu6hHMe/Q86jXOsBh5ut06sHVsVeUh50wTZ4eR0hJd
+         68bqiTsrTsmeOyOanfB/xz7aOQtiJnPKN2JxcC6nsyDbw+xtgkePfOb9X3Md1lwHByDP
+         KdKZnQKwLwDXjDX6dBXGoOOVUZzYTpmy4u7B2kYaqXX6GoQv3m57vjF42J6SI3dv0MsB
+         YictuuqbYIEBtOC1E0j3iuRVfn2HqYIMec/nLHXSh3wWmchquge5CLe94/2ItyXkR+N9
+         XrAXjxsTskEYBIH9XpdSJP0YPPvPCH+G68QLM4mMZM8x+NukGRgRF9nyvbrr4ZMd0L3J
+         0g1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tuA+B6GqLZERItqqoDaOIJ0JH2dxClC2hdQn1kAzRoI=;
-        b=sIHmUvXRGmFX5aCkahgZklHoSkBq0SNoicE/tllks5IMB43cyyOPbd8jNeDny+SeCX
-         lL0lRgbihxQ/hzrFmedzmL3HRZMGZuG5spgeOfldFwnLKG5FftMEgCHr12MF3b7vaiDc
-         OQB8wZjLc2+ZyIpBeTKBB+wZIB5OwUlXHhXEsYFgmKi27LxgNiy3lpeGPfMJEq6nMgvN
-         rCSWvj5NZbBBIkY7QUu9k4pqwmp9keMMCGL629KyY2KWj+dbWto572Er8kgI5231c6Tk
-         CMW+6QPPx8wTDFvGWlcHDqoNEbIpmXYTDGplU2+dp9JlUm8AUndEqfPPIXYr7ovl6T9y
-         Ef8A==
-X-Gm-Message-State: AOAM5321bPnCEacuCRoeQnxkrATX34+ieJGbvLPmKCmUh4/ZogfqhlrT
-        LX88fBQD3G1rbv/a8xeHNMbNLvjd0pJN6RVyfSc=
-X-Google-Smtp-Source: ABdhPJx50MKHs6klorI5liJbCSQwzAWB5FBar+Nr3DIk76z+xiODjK/7yZGZL5lxI9Q0uV4VkQNZ7UsgBUBZIql8aFk=
-X-Received: by 2002:a19:6912:: with SMTP id e18mr1327239lfc.196.1604689122702;
- Fri, 06 Nov 2020 10:58:42 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zWilfhNuzCYQXGWyPu144qq5XXA5zk2vBoBbppBQ1Hk=;
+        b=fM3L7Xr99d/oysLG9roJgIAsZENAcSaK3Th/+PZq0yf2244KGuGLyHiJzwIyJygWjn
+         vMQguaXajdhMRywJ0gPZmoHi8MXSJwUY9oY4YlRbw84IZ5ls4UAmMjqoz7FRgZ4oc9ff
+         K5aAsA6OtPY+euEgnq4JHw73eFyf5JuTn6ui+R44I+qxHFACU6E+Heof5rng63aF1bz9
+         stET4ZWNRaebbL0iBRl7ysxg+t8zD4PB94en+I3jDtB8ZJ5wHCb3+xzJOx5SOIQhWzs2
+         ZCq+hlw4fkRyZhuleILiF4OQ7/Nm/WvbM2UVyv+lXA/2jvW84h9B4QTWcBt8+ks7syH7
+         WdCQ==
+X-Gm-Message-State: AOAM531PNZs7ve9qZiSpj459/lieLWGTjM5+o0cCpLwDlfONKY49tB/r
+        toyr1Sfy/gNnt3LBNocargZ557q2spSosiy2nrbn+KsWUXQuAw==
+X-Google-Smtp-Source: ABdhPJzvGct3A0nGGZ0oqUYkla1tYZiCemnARlLChRn5bl1E88r6pOtKFfQ8GbPe+3PNoHDMkWbzMrBd+gdxQJNtQOQ=
+X-Received: by 2002:a17:90a:e014:: with SMTP id u20mr1067222pjy.117.1604689793615;
+ Fri, 06 Nov 2020 11:09:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20201103042908.2825734-1-liuhangbin@gmail.com>
- <20201106090117.3755588-1-liuhangbin@gmail.com> <20201106105554.02a3142b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201106105554.02a3142b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 6 Nov 2020 10:58:30 -0800
-Message-ID: <CAADnVQLEMLwNUYwboYah+H6uR9JU=GLgem9-kF1Ut0x_VJjWRA@mail.gmail.com>
-Subject: Re: [PATCHv2 net 0/2] Remove unused test_ipip.sh test and add missed
- ip6ip6 test
+References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
+ <1604498942-24274-2-git-send-email-magnus.karlsson@gmail.com>
+ <20201104153320.66cecba8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJ8uoz3-tjXekU=kR+HfMhGBcHtAFnKGq1ZvpFq99T_S-mknPg@mail.gmail.com> <20201105074511.6935e8b7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201105074511.6935e8b7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 6 Nov 2020 20:09:42 +0100
+Message-ID: <CAJ8uoz1nyv-_X5+z-nwyDOc628uYwmUVJCLkXJpsHgFK_QV+wQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/6] i40e: introduce lazy Tx completions for
+ AF_XDP zero-copy
 To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Hangbin Liu <liuhangbin@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        William Tu <u9012063@gmail.com>,
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com,
+        anthony.l.nguyen@intel.com,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 10:56 AM Jakub Kicinski <kuba@kernel.org> wrote:
+On Thu, Nov 5, 2020 at 4:45 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> On Fri,  6 Nov 2020 17:01:15 +0800 Hangbin Liu wrote:
-> > In comment 173ca26e9b51 ("samples/bpf: add comprehensive ipip, ipip6,
-> > ip6ip6 test") we added some bpf tunnel tests. In commit 933a741e3b82
-> > ("selftests/bpf: bpf tunnel test.") when we moved it to the current
-> > folder, we missed some points:
+> On Thu, 5 Nov 2020 15:17:50 +0100 Magnus Karlsson wrote:
+> > > I feel like this needs a big fat warning somewhere.
+> > >
+> > > It's perfectly fine to never complete TCP packets, but AF_XDP could b=
+e
+> > > used to implement protocols in user space. What if someone wants to
+> > > implement something like TSQ?
 > >
-> > 1. ip6ip6 test is not added
-> > 2. forgot to remove test_ipip.sh in sample folder
-> > 3. TCP test code is not removed in test_tunnel_kern.c
-> >
-> > In this patch set I add back ip6ip6 test and remove unused code. I'm not sure
-> > if this should be net or net-next, so just set to net.
+> > I might misunderstand you, but with TSQ here (for something that
+> > bypasses qdisk and any buffering and just goes straight to the driver)
+> > you mean the ability to have just a few buffers outstanding and
+> > continuously reuse these? If so, that is likely best achieved by
+> > setting a low Tx queue size on the NIC. Note that even without this
+> > patch, completions could be delayed. Though this patch makes that the
+> > normal case. In any way, I think this calls for some improved
+> > documentation.
 >
-> I'm assuming you meant to tag this with the bpf tree.
+> TSQ tries to limit the amount of data the TCP stack queues into TC/sched
+> and drivers. Say 1MB ~ 16 GSO frames. It will not queue more data until
+> some of the transfer is reported as completed.
 
-Right. Thanks for headsup.
+Thanks. Got it. There is one more use case I can think of for quick
+completions of Tx buffers and that is if you have metadata associated
+with the completion, for example a Tx time stamp. Not that this
+capability exists today, but hopefully it will get added at some
+point.
+
+Anyway after some more thinking, I would like to remove this patch
+from the patch set and put it on the shelf for a while. The reason
+behind this is that if we can get a good busy poll solution for AF_XDP
+sockets, then we do not need this patch. With busy-poll the choice of
+when to complete Tx buffers would be left to the application in a nice
+way. If the application would like to quickly get buffers completed
+(at the cost of some performance) it would call sendto() (or friends)
+soon after it put the packet on the Tx ring. If max throughput is
+desired with no regard to when a buffer is returned, then sendto()
+would be called only after a large batch of packets have been put on
+the Tx ring. No need for any threshold or new knob, in other words,
+much nicer. So let us wait for Bj=C3=B6rn's busy poll patches and see where
+it leads. Please protest if you do not agree. Otherwise I will submit
+a v2 without this patch and with Maciej's proposed simplification.
+
+> IIUC you're allowing up to 64 descriptors to linger without reporting
+> back that the transfer is done. That means that user space implementing
+> a scheme similar to TSQ may see its transfers stalled.
