@@ -2,77 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D3A2A9979
-	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 17:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACEA2A9BB9
+	for <lists+bpf@lfdr.de>; Fri,  6 Nov 2020 19:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgKFQaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 11:30:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39326 "EHLO mail.kernel.org"
+        id S1726880AbgKFST1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 13:19:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgKFQaG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Nov 2020 11:30:06 -0500
-Content-Type: text/plain; charset="utf-8"
+        id S1726415AbgKFST1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Nov 2020 13:19:27 -0500
+Received: from localhost.localdomain (unknown [151.66.8.153])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4467220853;
+        Fri,  6 Nov 2020 18:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604680206;
-        bh=7+TLDC0TsrPzHnm18zh2FFLZMNWt6KUkleHczhCixcI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dXX4qPXCSZ2z3S19tsVQDoeV8uVoY2UQpcS9So7QF7mhy/8elRheRSPcGFIEKVT3T
-         RpWnxXv1Bt4RmQ2a+MVl5NJR50eAns7QOwfFYPf79lcIaRv4JyqgkjWFxDpCMVvhW8
-         pzIZvUDO1feib8ELeak3Z+8yrxAtNOMBdEp5be08=
+        s=default; t=1604686766;
+        bh=kUxqyP4MOyVQhNkc1WjIKVrWlS397P7MZjoOpC5WKZw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hfw1yDLws7wCw8dWUrz41C56K7ToZxCcIS19fq7O3DbF+CoVJpesuyqsl78f0J2RD
+         TgcGeX0khKbGKOxnGx7xX6Fh4zaGEF2OKdIZnszCFksr6980UkNYTzUrSV1Jo26eMG
+         TV1s3vgoNbTxRZ0iM/is3djg3EQOcqDz9CAqKfrA=
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, lorenzo.bianconi@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, brouer@redhat.com,
+        ilias.apalodimas@linaro.org
+Subject: [PATCH v4 net-next 0/5] xdp: introduce bulking for page_pool tx return path
+Date:   Fri,  6 Nov 2020 19:19:06 +0100
+Message-Id: <cover.1604686496.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 1/9] bpf: Allow LSM programs to use bpf spin locks
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160468020631.12149.17904247795919763724.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 Nov 2020 16:30:06 +0000
-References: <20201106103747.2780972-2-kpsingh@chromium.org>
-In-Reply-To: <20201106103747.2780972-2-kpsingh@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, kafai@fb.com, ast@kernel.org,
-        daniel@iogearbox.net, pjt@google.com, jannh@google.com,
-        haoluo@google.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+XDP bulk APIs introduce a defer/flush mechanism to return
+pages belonging to the same xdp_mem_allocator object
+(identified via the mem.id field) in bulk to optimize
+I-cache and D-cache since xdp_return_frame is usually run
+inside the driver NAPI tx completion loop.
+Convert mvneta, mvpp2 and mlx5 drivers to xdp_return_frame_bulk APIs.
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+Changes since v3:
+- align DEV_MAP_BULK_SIZE to XDP_BULK_QUEUE_SIZE
+- refactor page_pool_put_page_bulk to avoid code duplication
 
-On Fri,  6 Nov 2020 10:37:39 +0000 you wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> Usage of spin locks was not allowed for tracing programs due to
-> insufficient preemption checks. The verifier does not currently prevent
-> LSM programs from using spin locks, but the helpers are not exposed
-> via bpf_lsm_func_proto.
-> 
-> [...]
+Changes since v2:
+- move mvneta changes in a dedicated patch
 
-Here is the summary with links:
-  - [bpf-next,v6,1/9] bpf: Allow LSM programs to use bpf spin locks
-    https://git.kernel.org/bpf/bpf-next/c/9e7a4d9831e8
-  - [bpf-next,v6,2/9] bpf: Implement task local storage
-    https://git.kernel.org/bpf/bpf-next/c/4cf1bc1f1045
-  - [bpf-next,v6,3/9] libbpf: Add support for task local storage
-    https://git.kernel.org/bpf/bpf-next/c/8885274d2259
-  - [bpf-next,v6,4/9] bpftool: Add support for task local storage
-    https://git.kernel.org/bpf/bpf-next/c/864ab0616dcc
-  - [bpf-next,v6,5/9] bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
-    https://git.kernel.org/bpf/bpf-next/c/3ca1032ab7ab
-  - [bpf-next,v6,6/9] bpf: Fix tests for local_storage
-    https://git.kernel.org/bpf/bpf-next/c/f0e5ba0bc481
-  - [bpf-next,v6,7/9] bpf: Update selftests for local_storage to use vmlinux.h
-    https://git.kernel.org/bpf/bpf-next/c/a367efa71b3f
-  - [bpf-next,v6,8/9] bpf: Add tests for task_local_storage
-    https://git.kernel.org/bpf/bpf-next/c/9cde3beeadb3
-  - [bpf-next,v6,9/9] bpf: Exercise syscall operations for inode and sk storage
-    https://git.kernel.org/bpf/bpf-next/c/4170bc6baa54
+Changes since v1:
+- improve comments
+- rework xdp_return_frame_bulk routine logic
+- move count and xa fields at the beginning of xdp_frame_bulk struct
+- invert logic in page_pool_put_page_bulk for loop
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Lorenzo Bianconi (5):
+  net: xdp: introduce bulking for xdp tx return path
+  net: page_pool: add bulk support for ptr_ring
+  net: mvneta: add xdp tx return bulking support
+  net: mvpp2: add xdp tx return bulking support
+  net: mlx5: add xdp tx return bulking support
 
+ drivers/net/ethernet/marvell/mvneta.c         |  5 +-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  5 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  |  5 +-
+ include/net/page_pool.h                       | 26 ++++++++
+ include/net/xdp.h                             | 11 +++-
+ net/core/page_pool.c                          | 66 ++++++++++++++++---
+ net/core/xdp.c                                | 56 ++++++++++++++++
+ 7 files changed, 160 insertions(+), 14 deletions(-)
+
+-- 
+2.26.2
 
