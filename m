@@ -2,118 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ACF62AA1F4
-	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 02:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABF32AA1FD
+	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 02:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbgKGBO1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Nov 2020 20:14:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
+        id S1728079AbgKGBU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Nov 2020 20:20:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727129AbgKGBO1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Nov 2020 20:14:27 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE2CC0613CF;
-        Fri,  6 Nov 2020 17:14:25 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id a12so2742400ybg.9;
-        Fri, 06 Nov 2020 17:14:25 -0800 (PST)
+        with ESMTP id S1726987AbgKGBU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Nov 2020 20:20:27 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59ABDC0613CF;
+        Fri,  6 Nov 2020 17:20:27 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id u4so2383238pgr.9;
+        Fri, 06 Nov 2020 17:20:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KgcSZrLLiNnLdzlKpUep9GqNy0eCFir7HzXKMNzKr54=;
-        b=VgMPit4LTtlNs5ZCRHMWDmZZnp8tjz3fWTMPFJrPdlTuWzeXFVQ/qj/++t6df+67jD
-         TLqqxJngnQBp1QxHIbH5k5i0Dg1UEtbCkwg1umjLuXovcbWkCosDyPEk5CE4e+0aFQgB
-         4B5Yt41c4cpJ1AjriWDYIozwLRLSH0roaeQ7aZbNIFCyRchtZ+d6knF4HhgjlHTBUAOY
-         3VYTdMJKi9qiNvwzzuii/pBxUGNanr3h3y5/F/TRUFFh4KlGzLsqHyLPMYKw8z0yX4Mr
-         KM1HrA1YsAlLEYL+SbDuxMRhPNgqSWO4QWCGAvsFbXNdJHS8QzTmjTRgbSXKEFV0LLiP
-         /5Zw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vg4UfygjpB1OZcPNgT3WWXdXZfBOXJzBtMpTcRJYFxs=;
+        b=FB/a0ohIU8bZQz/nQMgiNxUp88UtaHBUqqJGTVVpAUXPnd+O9lkAC+VA4oP11BF8eb
+         h2cnf9Au6JQWzwsT9/povyt27F0PFh0LcDVSeoE1O4cmo7PzyvMeVeJg4sKGTR5xzAt0
+         Tdi5A2/RkrVtjiH+VYHJvZ063YHGCZ/DUQI81Mjo+pzbmt7Z7Qr6KgCALPgmHxNx6H+7
+         1KhBJ2UCnOwz0e/fRC8FFrtXCgHs6p4Oxxwu4WmKBt1kx665xbjVnrc26wh3n87A7Wcz
+         EuMO9IYu10rR7O+BZN4zWV64KWLHujnY8QRLejyKalBqekkJoWAbYOglX4H1qy4RHJgD
+         uncw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KgcSZrLLiNnLdzlKpUep9GqNy0eCFir7HzXKMNzKr54=;
-        b=UX+IE8dD4cdVgDCcQeN84vls45kRj8oCFqKpBGvoU5WuX6JJWEIJM33DKt7ReB+nsK
-         CfVAoTQ4wsaRRohJ3JXCTGi9ly84KqQCIQz7AtuxF7lasSJH2lsIr2Yr13dBALqjT7yW
-         WL1bmFkXmz47boyYEqqEvNbh4os+vVINrVrpPNZGjjUTwHyW6mQ3hbAkMbjrBq86yc/2
-         4SHIF5QIrMuc1m7trSRbPGBTKxJMoLV0LhFvcBb8rWo7ktp5u9EULyWrFWftDbUEWmS0
-         7K0PA2Mti7UzRyKtuu8EEeW5hjtYhLV5CDjlhWXT4Yc+7Xx1p5LCa+WIxKhMqO8iDa6L
-         a6ow==
-X-Gm-Message-State: AOAM530t2skdltuVy/cAs6/vDh+qmyOgwrOHgr63TxHq5lhdHqFibr8r
-        bc0FeIfpvLZHmROJl2AfvE39vtjVQKStza6dwPs=
-X-Google-Smtp-Source: ABdhPJwxq74uDpc0OlsH7CexHJp09TiigipgD+5YwG2Xrn3MFOeQXKgxSZQ9BCXB9HocAi+3H5y7IlFIHNYPB8Owj/Q=
-X-Received: by 2002:a25:b0d:: with SMTP id 13mr6535194ybl.347.1604711664888;
- Fri, 06 Nov 2020 17:14:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vg4UfygjpB1OZcPNgT3WWXdXZfBOXJzBtMpTcRJYFxs=;
+        b=aJJbD3kd0fXAk4pEwpN81KGZR/PPjFmJRLUOkzLQOC7EBmeSfyPnIJeDM7X9xB7gKR
+         gvmDFwZsHX91ZhDRJfDCCG6msWDZNuw0wR9QoyEG9PMtIsW9ijCgLdwP9/X7Wc1UCgHE
+         eqN4VCtCHIN4xZ7+9xeK89T30igIwEG4kQjD3sWqeWvNs5MMavCa9YmA0J8zhAPZMZCh
+         8+K/U84YYiXioHDgeY/kxYQmIfM3lKJdflOP5EVzkw4ISesZz6CtJQ4jmMRikFMBi3Ph
+         iyDDNCkKcYqrNyJKlHSKi98RzKwYiy49OaG8sg3qPnukrXA98M2ZPYQe6+9nENwG68A7
+         gkOQ==
+X-Gm-Message-State: AOAM532HTotEy0qcvxZm3S7VJn3l3Lx+hm6kaqii7sH6QDNcfanFzcPE
+        ui4hM9jLlFI+Pp6FJsuWwyoPmLn5kuAUs7oW
+X-Google-Smtp-Source: ABdhPJyP+UC6MnW7mzuyzxhlNFVHbNdh0HtixlqCawuhDQTEFGD0R0IiM94ltMeL3P6VBm+LowtXJA==
+X-Received: by 2002:a62:7656:0:b029:18b:c0f:1b7a with SMTP id r83-20020a6276560000b029018b0c0f1b7amr4345030pfc.80.1604712026843;
+        Fri, 06 Nov 2020 17:20:26 -0800 (PST)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id hz18sm3810326pjb.13.2020.11.06.17.20.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Nov 2020 17:20:26 -0800 (PST)
+Date:   Sat, 7 Nov 2020 09:20:16 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, William Tu <u9012063@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCHv2 net 0/2] Remove unused test_ipip.sh test and add missed
+ ip6ip6 test
+Message-ID: <20201107012016.GV2531@dhcp-12-153.nay.redhat.com>
+References: <20201103042908.2825734-1-liuhangbin@gmail.com>
+ <20201106090117.3755588-1-liuhangbin@gmail.com>
+ <20201106105554.02a3142b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20201106220750.3949423-1-kafai@fb.com> <20201106220803.3950648-1-kafai@fb.com>
-In-Reply-To: <20201106220803.3950648-1-kafai@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 6 Nov 2020 17:14:14 -0800
-Message-ID: <CAEf4BzaQMcnALQ3rPErQJxVjL-Mi8zB8aSBkL8bkR8mtivro+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Allow using bpf_sk_storage in FENTRY/FEXIT/RAW_TP
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106105554.02a3142b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 6, 2020 at 2:08 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> This patch enables the FENTRY/FEXIT/RAW_TP tracing program to use
-> the bpf_sk_storage_(get|delete) helper, so those tracing programs
-> can access the sk's bpf_local_storage and the later selftest
-> will show some examples.
->
-> The bpf_sk_storage is currently used in bpf-tcp-cc, tc,
-> cg sockops...etc which is running either in softirq or
-> task context.
->
-> This patch adds bpf_sk_storage_get_tracing_proto and
-> bpf_sk_storage_delete_tracing_proto.  They will check
-> in runtime that the helpers can only be called when serving
-> softirq or running in a task context.  That should enable
-> most common tracing use cases on sk.
->
-> During the load time, the new tracing_allowed() function
-> will ensure the tracing prog using the bpf_sk_storage_(get|delete)
-> helper is not tracing any *sk_storage*() function itself.
-> The sk is passed as "void *" when calling into bpf_local_storage.
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  include/net/bpf_sk_storage.h |  2 +
->  kernel/trace/bpf_trace.c     |  5 +++
->  net/core/bpf_sk_storage.c    | 73 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 80 insertions(+)
->
+On Fri, Nov 06, 2020 at 10:56:00AM -0800, Jakub Kicinski wrote:
+> On Fri,  6 Nov 2020 17:01:15 +0800 Hangbin Liu wrote:
+> > In comment 173ca26e9b51 ("samples/bpf: add comprehensive ipip, ipip6,
+> > ip6ip6 test") we added some bpf tunnel tests. In commit 933a741e3b82
+> > ("selftests/bpf: bpf tunnel test.") when we moved it to the current
+> > folder, we missed some points:
+> > 
+> > 1. ip6ip6 test is not added
+> > 2. forgot to remove test_ipip.sh in sample folder
+> > 3. TCP test code is not removed in test_tunnel_kern.c
+> > 
+> > In this patch set I add back ip6ip6 test and remove unused code. I'm not sure
+> > if this should be net or net-next, so just set to net.
+> 
+> I'm assuming you meant to tag this with the bpf tree.
 
-[...]
+Ah, yes, I mean to bpf tree. Sorry for the mistake.
 
-> +       switch (prog->expected_attach_type) {
-> +       case BPF_TRACE_RAW_TP:
-> +               /* bpf_sk_storage has no trace point */
-> +               return true;
-> +       case BPF_TRACE_FENTRY:
-> +       case BPF_TRACE_FEXIT:
-> +               btf_vmlinux = bpf_get_btf_vmlinux();
-> +               btf_id = prog->aux->attach_btf_id;
-> +               t = btf_type_by_id(btf_vmlinux, btf_id);
-> +               tname = btf_name_by_offset(btf_vmlinux, t->name_off);
-> +               return !strstr(tname, "sk_storage");
-
-I'm always feeling uneasy about substring checks... Also, KP just
-fixed the issue with string-based checks for LSM. Can we use a
-BTF_ID_SET of blacklisted functions instead?
-
-> +       default:
-> +               return false;
-> +       }
-> +
-> +       return false;
-> +}
-> +
-
-[...]
+Regards
+Hangbin
