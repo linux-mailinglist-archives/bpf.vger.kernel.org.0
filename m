@@ -2,91 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A532AA542
-	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 14:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634D12AA5C2
+	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 15:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgKGNIf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 7 Nov 2020 08:08:35 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35278 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727084AbgKGNIe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 7 Nov 2020 08:08:34 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UEW6ava_1604754510;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEW6ava_1604754510)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 07 Nov 2020 21:08:31 +0800
-Subject: Re: [PATCH] net/xdp: remove unused macro REG_STATE_NEW
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201106171352.5c51342d@carbon>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <3d39a08d-2e50-efeb-214f-0c7c2d1605d7@linux.alibaba.com>
-Date:   Sat, 7 Nov 2020 21:08:12 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1727863AbgKGOJH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 7 Nov 2020 09:09:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725880AbgKGOJH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 7 Nov 2020 09:09:07 -0500
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1D20206ED;
+        Sat,  7 Nov 2020 14:09:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604758145;
+        bh=AUgdj6qEYGv+IS22xMj9tBmorA9YrVTkTbR5qGCgL7w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eDkkfQkcwyt9QE7MW2OwvKeDamswGdj01mvYcfwUm441YfYyIRedM3ldVfLT7IMBl
+         ciuyBks10dmVvMXMMCtS2gP8oklY2D5thp3jMrEAIf5rtxI6Xcs9o9soa1/b7u2rBA
+         Xi+EJvN0a4PUa437e1lzqKMpsJCHkKTWhpI7ZYpg=
+Date:   Sat, 7 Nov 2020 15:09:01 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org, rafael@kernel.org, jeyu@kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v2 bpf-next 4/5] bpf: load and verify kernel module BTFs
+Message-ID: <20201107140901.GA28983@kroah.com>
+References: <20201106230228.2202-1-andrii@kernel.org>
+ <20201106230228.2202-5-andrii@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201106171352.5c51342d@carbon>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201106230228.2202-5-andrii@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-ÔÚ 2020/11/7 ÉÏÎç12:13, Jesper Dangaard Brouer Ð´µÀ:
-> Hmm... REG_STATE_NEW is zero, so it is implicitly set via memset zero.
-> But it is true that it is technically not directly used or referenced.
+On Fri, Nov 06, 2020 at 03:02:27PM -0800, Andrii Nakryiko wrote:
+> Add kernel module listener that will load/validate and unload module BTF.
+> Module BTFs gets ID generated for them, which makes it possible to iterate
+> them with existing BTF iteration API. They are given their respective module's
+> names, which will get reported through GET_OBJ_INFO API. They are also marked
+> as in-kernel BTFs for tooling to distinguish them from user-provided BTFs.
 > 
-> It is mentioned in a comment, so please send V2 with this additional change:
+> Also, similarly to vmlinux BTF, kernel module BTFs are exposed through
+> sysfs as /sys/kernel/btf/<module-name>. This is convenient for user-space
+> tools to inspect module BTF contents and dump their types with existing tools:
+> 
+> [vmuser@archvm bpf]$ ls -la /sys/kernel/btf
+> total 0
+> drwxr-xr-x  2 root root       0 Nov  4 19:46 .
+> drwxr-xr-x 13 root root       0 Nov  4 19:46 ..
+> 
+> ...
+> 
+> -r--r--r--  1 root root     888 Nov  4 19:46 irqbypass
+> -r--r--r--  1 root root  100225 Nov  4 19:46 kvm
+> -r--r--r--  1 root root   35401 Nov  4 19:46 kvm_intel
+> -r--r--r--  1 root root     120 Nov  4 19:46 pcspkr
+> -r--r--r--  1 root root     399 Nov  4 19:46 serio_raw
+> -r--r--r--  1 root root 4094095 Nov  4 19:46 vmlinux
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  Documentation/ABI/testing/sysfs-kernel-btf |   8 +
+>  include/linux/bpf.h                        |   2 +
+>  include/linux/module.h                     |   4 +
+>  kernel/bpf/btf.c                           | 194 +++++++++++++++++++++
+>  kernel/bpf/sysfs_btf.c                     |   2 +-
+>  kernel/module.c                            |  32 ++++
+>  6 files changed, 241 insertions(+), 1 deletion(-)
 
-Hi Jesper,
-
-Thanks a lot for comments. here is the v2:
-
-From 2908d25bf2e1c90ad71a83ba056743f45da283e8 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Fri, 6 Nov 2020 13:41:58 +0800
-Subject: [PATCH v2] net/xdp: remove unused macro REG_STATE_NEW
-
-To tame gcc warning on it:
-net/core/xdp.c:20:0: warning: macro "REG_STATE_NEW" is not used
-[-Wunused-macros]
-And change related comments as Jesper Dangaard Brouer suggested.
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
----
- net/core/xdp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 48aba933a5a8..0df5ee5682d9 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -19,7 +19,6 @@
- #include <trace/events/xdp.h>
- #include <net/xdp_sock_drv.h>
- 
--#define REG_STATE_NEW		0x0
- #define REG_STATE_REGISTERED	0x1
- #define REG_STATE_UNREGISTERED	0x2
- #define REG_STATE_UNUSED	0x3
-@@ -175,7 +174,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
- 		return -ENODEV;
- 	}
- 
--	/* State either UNREGISTERED or NEW */
-+	/* State either UNREGISTERED or zero */
- 	xdp_rxq_info_init(xdp_rxq);
- 	xdp_rxq->dev = dev;
- 	xdp_rxq->queue_index = queue_index;
--- 
-1.8.3.1
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
