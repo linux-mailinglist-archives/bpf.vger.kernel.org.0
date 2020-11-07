@@ -2,62 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201FB2AA342
-	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 09:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B20B2AA476
+	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 11:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgKGIK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 7 Nov 2020 03:10:59 -0500
-Received: from m176115.mail.qiye.163.com ([59.111.176.115]:36550 "EHLO
-        m176115.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727738AbgKGIK7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 7 Nov 2020 03:10:59 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m176115.mail.qiye.163.com (Hmail) with ESMTPA id 064C5665C31;
-        Sat,  7 Nov 2020 16:10:55 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1727298AbgKGKqU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 7 Nov 2020 05:46:20 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:53373 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726190AbgKGKqT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 7 Nov 2020 05:46:19 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-140-msBd2F_bM0aXdiLYBHdEZA-1; Sat, 07 Nov 2020 10:46:15 +0000
+X-MC-Unique: msBd2F_bM0aXdiLYBHdEZA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 7 Nov 2020 10:46:14 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 7 Nov 2020 10:46:14 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        "xiakaixu1987@gmail.com" <xiakaixu1987@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] bpf: remove duplicate include
-Date:   Sat,  7 Nov 2020 16:10:50 +0800
-Message-Id: <1604736650-11197-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHktKSR0fGR5OQx1OVkpNS09MSE1NTk1NTEtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQw6Pgw6TD8qIxwdNSkfVhcM
-        Tx0KFEtVSlVKTUtPTEhNTU5MSktPVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKTElCNwY+
-X-HM-Tid: 0a75a1c224b79373kuws064c5665c31
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: RE: [PATCH] libbpf: Remove unnecessary conversion to bool
+Thread-Topic: [PATCH] libbpf: Remove unnecessary conversion to bool
+Thread-Index: AQHWtIbeQirvCJY95ES7G/VMIbfcM6m8e+Tg
+Date:   Sat, 7 Nov 2020 10:46:14 +0000
+Message-ID: <72757066568b4b64b89572e04d783137@AcuMS.aculab.com>
+References: <1604646759-785-1-git-send-email-kaixuxia@tencent.com>
+         <CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com>
+ <d1cefb17a0a915fdabe7a80d14895ff3d85970c1.camel@perches.com>
+In-Reply-To: <d1cefb17a0a915fdabe7a80d14895ff3d85970c1.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove duplicate header which is included twice.
+From: Joe Perches
+> Sent: 06 November 2020 21:50
+> 
+> On Fri, 2020-11-06 at 13:32 -0800, Andrii Nakryiko wrote:
+> > On Thu, Nov 5, 2020 at 11:12 PM <xiakaixu1987@gmail.com> wrote:
+> > > Fix following warning from coccinelle:
+> > > ./tools/lib/bpf/libbpf.c:1478:43-48: WARNING: conversion to bool not needed here
+> []
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> []
+> > > @@ -1475,7 +1475,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
+> > >                                 ext->name, value);
+> > >                         return -EINVAL;
+> > >                 }
+> > > -               *(bool *)ext_val = value == 'y' ? true : false;
+> > > +               *(bool *)ext_val = value == 'y';
+> >
+> > I actually did this intentionally. x = y == z; pattern looked too
+> > obscure to my taste, tbh.
+> 
+> It's certainly a question of taste and obviously there is nothing
+> wrong with yours.
+> 
+> Maybe adding parentheses makes the below look less obscure to you?
+> 
+> 	x = (y == z);
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- kernel/bpf/btf.c | 1 -
- 1 file changed, 1 deletion(-)
+That just leads to people thinking conditionals need to be in parentheses
+and then getting the priorities for ?: all wrong as in:
+	x = a + (b == c) ? d : e;
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index ed7d02e..6324de8
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -22,7 +22,6 @@
- #include <linux/skmsg.h>
- #include <linux/perf_event.h>
- #include <linux/bsearch.h>
--#include <linux/btf_ids.h>
- #include <net/sock.h>
- 
- /* BTF (BPF Type Format) is the meta data format which describes
--- 
-2.7.4
+It would (probably) be better to make 'ext_val' be a union type
+(probably a 'pointer to a union' rather than a union of pointers)
+so that all the casts go away.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
