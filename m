@@ -2,176 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268572AA5F9
-	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 15:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964C42AA75C
+	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 19:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgKGO31 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 7 Nov 2020 09:29:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31360 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726021AbgKGO3Y (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 7 Nov 2020 09:29:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604759362;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MInUkCIO41+rIkeCbKLSVB9OTGimtitA3WjdysKoXLI=;
-        b=hJFr1JW0VqzABT88m4KO8Sz/sYpfFu8gw634AooEZDNRvHjFyjyrDNwgTDYsIem7MPMEHj
-        KOXaipJSh/pXQjEl3DOSyJ0+paLThhfl2Izil0/LCDXDPV4EHW1MAeSN4VSgutGIaD7ZSU
-        gDVXxLdpPePcMFTNPRvI4u78yAV7slM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-JChVvTA6NxCqMFOI8wpkFA-1; Sat, 07 Nov 2020 09:29:20 -0500
-X-MC-Unique: JChVvTA6NxCqMFOI8wpkFA-1
-Received: by mail-ej1-f69.google.com with SMTP id z18so1737148eji.1
-        for <bpf@vger.kernel.org>; Sat, 07 Nov 2020 06:29:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MInUkCIO41+rIkeCbKLSVB9OTGimtitA3WjdysKoXLI=;
-        b=P0PDE6v/ITtRrvPTO3n0esBSF5gk0O5iOCQfxKIX1CZOZaVWGnZ4m9V5+vZnjS6gsT
-         Kl0QbjjuEed2hEy4KzluhpqyZmQOm50RZ2EFqQfYq/Sr/vtQXPYrzhKGKXWJjU4z5jbP
-         6t8Cn3+wqXsvNHaZU3+0AB5seVATrw2qMEtnDRQGd7VzY9dJ/O2Z1fKpIx8e6dCOiUcW
-         0sp1XJeZXJCwAUs5WSnfYCni8s+6h+smFhpXR3tqW2k7b4diJsCQzKKD6T0KzeYcOZbS
-         WlXd0zEwg4GwTOZhA9QfdlqAxRQA66CMf787uUVaPuSA0I1TxQ/akFKrBLnxijMDZ7Y7
-         Temg==
-X-Gm-Message-State: AOAM533IzgVVRaYSQpe+ptQmc0Ohf9zRGt6waek0bjrL5HR/rRQuwWuL
-        QdMucDkA9wQ7aoSf6OQFn7/JdZS+oM/7g8oBX/o4niuG4ILUmFzxI5oZebBGk86PhP8bxCWpKcc
-        flg4kNdEMMcfJ
-X-Received: by 2002:a17:906:a110:: with SMTP id t16mr6820174ejy.538.1604759359169;
-        Sat, 07 Nov 2020 06:29:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxkl9oKzN6NzwTHNl/Pbqp32lc2gFlnVGu4gGbLdcf4kXpM1WXjgVcM2VNP1uVd3F2KxexafA==
-X-Received: by 2002:a17:906:a110:: with SMTP id t16mr6820161ejy.538.1604759358861;
-        Sat, 07 Nov 2020 06:29:18 -0800 (PST)
-Received: from localhost ([151.66.8.153])
-        by smtp.gmail.com with ESMTPSA id t22sm3461800edq.64.2020.11.07.06.29.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 06:29:17 -0800 (PST)
-Date:   Sat, 7 Nov 2020 15:29:13 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ilias.apalodimas@linaro.org
-Subject: Re: [PATCH v4 net-next 2/5] net: page_pool: add bulk support for
- ptr_ring
-Message-ID: <20201107142913.GA2901@lore-desk>
-References: <cover.1604686496.git.lorenzo@kernel.org>
- <1a39bf0efb8c2832245216d7ccd41582c408e9f4.1604686496.git.lorenzo@kernel.org>
- <20201106210201.644d722a@carbon>
+        id S1726614AbgKGSJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 7 Nov 2020 13:09:36 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:2626 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726333AbgKGSJg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 7 Nov 2020 13:09:36 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A7I8rif008493;
+        Sat, 7 Nov 2020 10:08:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
+ : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=TwqZxM++hfBd73X1KRRlxvntiJFNd3xpmL+Pi1QahRk=;
+ b=V4eBkDLveg2EcTOb+S6i12LakWRt1CayP/HQzyl3NanGZALChmMU1d2XDlegAtQ/oTTd
+ l7rM7V0gQUx3BKFnTEQc1vM6XiYNNaBCigqCjqlz1VbUT8c9mgn3gVwW0ELMSQ58D2fA
+ +c6BmdgD/JiHxYz+U/l3hWMMRDmNnBzpWmM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 34nr4phcj3-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 07 Nov 2020 10:08:53 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sat, 7 Nov 2020 10:08:48 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H7PM8jk/oaVdAVZg7zdeRiCcCoX0oourRaITPZV//05IIlHr0bz9Ft+Q1JLh20aZEBeAyhDZ+AUVingSdR4Vls+lkaO+CzIN+sb7rOB83xmTT2ahVAnHJbYSDgqZeY0k6CgWDwrqa/41JFXUizEY+/RlpXYrhVPOegkW8EXViT8EGeGqTTqp0kCZRuQ2l3gfpeU7LhJQIkzHqOlmbkhHgubDDG9N0Nk6gSPt3lxCSOmFaKW9u4dyStBSlJz87jKdVj1L3kgow+2cOP2ZvNdax40hTFeq7T7tiHJ1MLOmMntWy86GCN6apuaNOEj0nkFMKCMGyraDyb4fVseNOyMAjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TwqZxM++hfBd73X1KRRlxvntiJFNd3xpmL+Pi1QahRk=;
+ b=iWdMqjBXlLsp4tMcvrEjynW/TWcz7tcoS1sgSrxi0cWQzWnD4kuMjJWk08Yqea32e3vR33yVsqevz+HivxYd6acpGObhRFcCz1TP5jvVftI3kDM8pwowBPtcyFQP2c6NxJ/AxsHjbWfhP/EryKkk+qzQpZhGMmeCb0GT4fbUM2vzXCC4FOd3uyBkrDUOE//aLM3BpfhgpUzKBJXcFO4QfvdaMjo4CZs4gkyYu8ADMI98uAyrg2EPPnHf1vZTMfI6nQgcuzlTIlzHl7/qfONe8T5/fCOqUY++HAWOKT5FiyYFhmpgpC238SDKO1XIaEFlrsT4ijdXVN44YwA3bMkxBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TwqZxM++hfBd73X1KRRlxvntiJFNd3xpmL+Pi1QahRk=;
+ b=Cdsh4AnHNwTRFK6OdqrqVRO2SkwcXGOUhcwCSI85MlQV8syu3UPObYnwZ2bV1ZOtXXSgM+cWE4LbUw8txMLM2T2+kcW1tsGqsArjEAGJ7SYSaEtqwF7loYflm/dlYbxYf1EM9B7jylP+pQ0wC/JTedow94EBawqbDSWi9t//8As=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by SJ0PR15MB4204.namprd15.prod.outlook.com (2603:10b6:a03:2c8::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.29; Sat, 7 Nov
+ 2020 18:08:47 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3541.021; Sat, 7 Nov 2020
+ 18:08:47 +0000
+Subject: Re: [PATCH v3 bpf] trace: bpf: Fix passing zero to PTR_ERR()
+To:     Wang Qing <wangqing@vivo.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1604735144-686-1-git-send-email-wangqing@vivo.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <60774a8b-32a5-354d-88d5-cf86be19d51c@fb.com>
+Date:   Sat, 7 Nov 2020 10:08:43 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
+In-Reply-To: <1604735144-686-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:4dfc]
+X-ClientProxiedBy: MWHPR1201CA0006.namprd12.prod.outlook.com
+ (2603:10b6:301:4a::16) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
-Content-Disposition: inline
-In-Reply-To: <20201106210201.644d722a@carbon>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::10a6] (2620:10d:c090:400::5:4dfc) by MWHPR1201CA0006.namprd12.prod.outlook.com (2603:10b6:301:4a::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Sat, 7 Nov 2020 18:08:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b15d04e4-f661-4b43-bcfa-08d883482bbc
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4204:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4204F90B1F604551CF70A6F1D3EC0@SJ0PR15MB4204.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:361;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pst24rQbt6gwKx0CIg4r0hyl8T5RhPvZQX0oDmRcWHGa3YKbcr3EYRKqJxRQELRSbiUVFMluTJhdLdGMBGdMBsUH+FezAT4ou3n6OVIy3lecaocqYZ4BoQizRJHlNJUMXsBp3WwIYLGO5D7qXho0iVuUvqzihRE+IaHm2z85Yp0xWtHyN5U1HqviZUTNq3AsXyxhbivsuQmeQ3HcUhtKezVtIqItfkR2vCMHr6Er4ZWgjf2zzt3EHCS0H/D80wQdrz/FXzdBUeT2tV/WQGd805jSJ4zvK7qT2ShRbdVxIGNPXE0WfBCM/nnD3oi+wSLkPooHE4m1T1WTyNh9MP4B8xkNk3AAOg7moYKbmDk7wRKhehnucj4SCGp/PPcN7fYgdSDteTHvazw96oihejPpsg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(136003)(396003)(39860400002)(6486002)(2616005)(478600001)(53546011)(16526019)(66556008)(66476007)(66946007)(36756003)(5660300002)(86362001)(8676002)(110136005)(186003)(7416002)(8936002)(2906002)(52116002)(31696002)(316002)(558084003)(31686004)(921003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: X4ZIKEZtNGZxJbbIugG/joPhEo0h8xbNzJ8emWVxOdDw3j9Y5vVk9eCWT/Fw150q0xPmia0Uyx7CqiatK2FE9N+rUkRkRWbJpXw9xsdLCk/AXVUnFZGKtDhBDC2+KRiYaDN24xS/BgqR2Cln5g2NIwK7NoyLLGBFh8lYmYodCqXs7anPkDspUogsf0nIovLriwxtUqttl5DTgFjkMI+hAhK+1idGjpZUTOGJrTSeWkItjetlAs80wGWJFX61EYSvboMjYNKiLR8OGwJ/5JqzI6KAG5W57lMCEZIihAJSOYepUjNAeTEmxhr+rJbQbOE0k9F+fdPsNsmtqx89OLo4TUqc9vCR6j1gezUXxFriPGVORG7bQrTrNGpWranr/Pby8e5nm9huhiTaRXRz/hm9jQs7f6Id3BF1V04TPUCiruOgIzMrJSXtAI8mt1pyqspLnoGUWr/XcXxR8ZB2pe8DcTpCDAlzFUdirhJYHxNOsUG/ZjEJiTQveY+J6L3ycUwWrZHl5OixTQPfhAN2wyK/KqGxNZpx1scQZkMLqufYY7q9BCiA0pdTGuEQwu92XeJ1yP2SOC5/Pgl6CLqUM3m76jXYBDJqxFVmh/yJ6zNhLEH2sw4YDHkPry2THF/V6rvmVv18AUvF/sUuI9GbtqUgRbaEvladiXkMXkNREgEGqE+e540wpibqx0PFG9bPStzu
+X-MS-Exchange-CrossTenant-Network-Message-Id: b15d04e4-f661-4b43-bcfa-08d883482bbc
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2020 18:08:47.3125
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nPEGkhQkZA2XBzXjZXujws8KzFeLjTcrX/ZuNXz+FLH8CheTDrbfBlbhAEj+87bF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4204
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-07_09:2020-11-05,2020-11-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=889 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011070132
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---GvXjxJ+pjyke8COw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-> On Fri,  6 Nov 2020 19:19:08 +0100
-> Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->=20
-[...]
->=20
-> I don't like this comment.  This function is also used by non-bulking
-> case.  Reaching this point means the page is ready or fulfill the
-> requirement for being recycled into the ptr_ring.
->=20
-> I suggest (as before):
-> 		/* Page found as candidate for recycling */
+On 11/6/20 11:45 PM, Wang Qing wrote:
+> There is a bug when passing zero to PTR_ERR() and return.
+> Fix smatch err.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
 
-ack, I will fix it in v5.
-
-Regards,
-Lorenzo
-
->=20
-> > +		return page;
-> >  	}
-> >  	/* Fallback/non-XDP mode: API user have elevated refcnt.
-> >  	 *
-> > @@ -405,9 +405,55 @@ void page_pool_put_page(struct page_pool *pool, st=
-ruct page *page,
-> >  	/* Do not replace this with page_pool_return_page() */
-> >  	page_pool_release_page(pool, page);
-> >  	put_page(page);
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +void page_pool_put_page(struct page_pool *pool, struct page *page,
-> > +			unsigned int dma_sync_size, bool allow_direct)
-> > +{
-> > +	page =3D __page_pool_put_page(pool, page, dma_sync_size, allow_direct=
-);
-> > +	if (page && !page_pool_recycle_in_ring(pool, page)) {
-> > +		/* Cache full, fallback to free pages */
-> > +		page_pool_return_page(pool, page);
-> > +	}
-> >  }
-> >  EXPORT_SYMBOL(page_pool_put_page);
-> > =20
-> > +/* Caller must not use data area after call, as this function overwrit=
-es it */
-> > +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
-> > +			     int count)
-> > +{
-> > +	int i, bulk_len =3D 0, pa_len =3D 0;
-> > +
-> > +	for (i =3D 0; i < count; i++) {
-> > +		struct page *page =3D virt_to_head_page(data[i]);
-> > +
-> > +		page =3D __page_pool_put_page(pool, page, -1, false);
-> > +		/* Approved for bulk recycling in ptr_ring cache */
-> > +		if (page)
-> > +			data[bulk_len++] =3D page;
-> > +	}
-> > +
-> > +	if (!bulk_len)
-> > +		return;
-> > +
-> > +	/* Bulk producer into ptr_ring page_pool cache */
-> > +	page_pool_ring_lock(pool);
-> > +	for (i =3D 0; i < bulk_len; i++) {
-> > +		if (__ptr_ring_produce(&pool->ring, data[i]))
-> > +			data[pa_len++] =3D data[i];
-> > +	}
-> > +	page_pool_ring_unlock(pool);
-> > +
-> > +	/* ptr_ring cache full, free pages outside producer lock since
-> > +	 * put_page() with refcnt =3D=3D 1 can be an expensive operation
-> > +	 */
-> > +	for (i =3D 0; i < pa_len; i++)
-> > +		page_pool_return_page(pool, data[i]);
-> > +}
-> > +EXPORT_SYMBOL(page_pool_put_page_bulk);
->=20
-> Rest looks okay :-)
-> --=20
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->=20
-
---GvXjxJ+pjyke8COw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX6avNgAKCRA6cBh0uS2t
-rBvWAP9D9/phF5f+JHZqamch58gx6s8E2RwAbjdvJsDSa8gUzgEAzXOk2hXdJ8Xj
-x1gdO/tXFWGW3phjPuJfmAqlr8/sow4=
-=9mX4
------END PGP SIGNATURE-----
-
---GvXjxJ+pjyke8COw--
-
+Acked-by: Yonghong Song <yhs@fb.com>
