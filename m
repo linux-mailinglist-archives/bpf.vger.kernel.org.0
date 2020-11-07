@@ -2,101 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B20B2AA476
-	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 11:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A532AA542
+	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 14:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgKGKqU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 7 Nov 2020 05:46:20 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:53373 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726190AbgKGKqT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 7 Nov 2020 05:46:19 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-140-msBd2F_bM0aXdiLYBHdEZA-1; Sat, 07 Nov 2020 10:46:15 +0000
-X-MC-Unique: msBd2F_bM0aXdiLYBHdEZA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 7 Nov 2020 10:46:14 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 7 Nov 2020 10:46:14 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        "xiakaixu1987@gmail.com" <xiakaixu1987@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S1727298AbgKGNIf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 7 Nov 2020 08:08:35 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35278 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727084AbgKGNIe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 7 Nov 2020 08:08:34 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UEW6ava_1604754510;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEW6ava_1604754510)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 07 Nov 2020 21:08:31 +0800
+Subject: Re: [PATCH] net/xdp: remove unused macro REG_STATE_NEW
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     davem@davemloft.net, Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>
-Subject: RE: [PATCH] libbpf: Remove unnecessary conversion to bool
-Thread-Topic: [PATCH] libbpf: Remove unnecessary conversion to bool
-Thread-Index: AQHWtIbeQirvCJY95ES7G/VMIbfcM6m8e+Tg
-Date:   Sat, 7 Nov 2020 10:46:14 +0000
-Message-ID: <72757066568b4b64b89572e04d783137@AcuMS.aculab.com>
-References: <1604646759-785-1-git-send-email-kaixuxia@tencent.com>
-         <CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com>
- <d1cefb17a0a915fdabe7a80d14895ff3d85970c1.camel@perches.com>
-In-Reply-To: <d1cefb17a0a915fdabe7a80d14895ff3d85970c1.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1604641431-6295-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201106171352.5c51342d@carbon>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <3d39a08d-2e50-efeb-214f-0c7c2d1605d7@linux.alibaba.com>
+Date:   Sat, 7 Nov 2020 21:08:12 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20201106171352.5c51342d@carbon>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Joe Perches
-> Sent: 06 November 2020 21:50
-> 
-> On Fri, 2020-11-06 at 13:32 -0800, Andrii Nakryiko wrote:
-> > On Thu, Nov 5, 2020 at 11:12 PM <xiakaixu1987@gmail.com> wrote:
-> > > Fix following warning from coccinelle:
-> > > ./tools/lib/bpf/libbpf.c:1478:43-48: WARNING: conversion to bool not needed here
-> []
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> []
-> > > @@ -1475,7 +1475,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
-> > >                                 ext->name, value);
-> > >                         return -EINVAL;
-> > >                 }
-> > > -               *(bool *)ext_val = value == 'y' ? true : false;
-> > > +               *(bool *)ext_val = value == 'y';
-> >
-> > I actually did this intentionally. x = y == z; pattern looked too
-> > obscure to my taste, tbh.
-> 
-> It's certainly a question of taste and obviously there is nothing
-> wrong with yours.
-> 
-> Maybe adding parentheses makes the below look less obscure to you?
-> 
-> 	x = (y == z);
 
-That just leads to people thinking conditionals need to be in parentheses
-and then getting the priorities for ?: all wrong as in:
-	x = a + (b == c) ? d : e;
 
-It would (probably) be better to make 'ext_val' be a union type
-(probably a 'pointer to a union' rather than a union of pointers)
-so that all the casts go away.
+�� 2020/11/7 ����12:13, Jesper Dangaard Brouer д��:
+> Hmm... REG_STATE_NEW is zero, so it is implicitly set via memset zero.
+> But it is true that it is technically not directly used or referenced.
+> 
+> It is mentioned in a comment, so please send V2 with this additional change:
 
-	David
+Hi Jesper,
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Thanks a lot for comments. here is the v2:
+
+From 2908d25bf2e1c90ad71a83ba056743f45da283e8 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Fri, 6 Nov 2020 13:41:58 +0800
+Subject: [PATCH v2] net/xdp: remove unused macro REG_STATE_NEW
+
+To tame gcc warning on it:
+net/core/xdp.c:20:0: warning: macro "REG_STATE_NEW" is not used
+[-Wunused-macros]
+And change related comments as Jesper Dangaard Brouer suggested.
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+---
+ net/core/xdp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 48aba933a5a8..0df5ee5682d9 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -19,7 +19,6 @@
+ #include <trace/events/xdp.h>
+ #include <net/xdp_sock_drv.h>
+ 
+-#define REG_STATE_NEW		0x0
+ #define REG_STATE_REGISTERED	0x1
+ #define REG_STATE_UNREGISTERED	0x2
+ #define REG_STATE_UNUSED	0x3
+@@ -175,7 +174,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+ 		return -ENODEV;
+ 	}
+ 
+-	/* State either UNREGISTERED or NEW */
++	/* State either UNREGISTERED or zero */
+ 	xdp_rxq_info_init(xdp_rxq);
+ 	xdp_rxq->dev = dev;
+ 	xdp_rxq->queue_index = queue_index;
+-- 
+1.8.3.1
 
