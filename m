@@ -2,83 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89322AC648
-	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 21:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 269402AC680
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 22:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730621AbgKIUs3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Nov 2020 15:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729996AbgKIUs2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:48:28 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D49C0613CF;
-        Mon,  9 Nov 2020 12:48:27 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id l36so10341856ota.4;
-        Mon, 09 Nov 2020 12:48:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=J669Eof3CEJD8PSQp6rHHKzPIgW64KnkQofFLzioASo=;
-        b=G4/5zN6LEiieOdnp0FVzEq0jjCC3Bt6nRxeEu912FIZuGEK0Awj3Egi3xKEPEnd7WU
-         f/i78jXk6QS+KBwDE1Cs74Mv6EOzQSOqb7VS3PyokbP4iYt05Ujj0XL85+ykO7nMWtO/
-         8zWIzdXpp5gArk5uBbrSl2iyIEVVqpym/itcrkhMWSTHcqnYVKZ1NT/Xo9SNOp6DvxA7
-         r2KiZqtCtUKokHQ8ymV/geJPebQvIPVFEiy2jeQiT9FDuQHUiKosGmqlH6bX4EkHKVO5
-         IxFo3S6I2AP0xuvTPC02/AptGSaurYFiFS5TYug0QLOGjfvXip+SP17UXPRjcV/kYBcl
-         /PTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=J669Eof3CEJD8PSQp6rHHKzPIgW64KnkQofFLzioASo=;
-        b=lg6sphOD2hPVSL8XNielLMPMdRc2RW+idRdx5zoLa+CDQHHhch+/bkXORBKn+oHrOh
-         FskoavRh6BzZobpNwNcww19PL4tKFQDE3FszTjEqP8s1CU20ZLcyvmuQ5Jaf1igFpG5i
-         9FhplrO4eLBAVwYlEO08i6s6BJe+rNt4TwIlliaPoElggyMkVHcgcrFJNSjJbUSgMfHb
-         W0pFpY6ogD3BhGQs3anOANVPbnuKHqBtHhLBdl7FbsYLfDi6GRq63QoGkkP3avji12fK
-         ucSWkgfaEMz37F2MQbDx2qpPWKbZAKOx0x/mP2NmIZo6WqdaB6g/yhrul8z3UNsKYOlF
-         ZWIg==
-X-Gm-Message-State: AOAM532rgxjgdERqq6+2zwXJYlVF3bJ65wfIqnRGqhFyBe2cbDdbiPl+
-        pwgttumlLHmpkX3jxjn/PYo=
-X-Google-Smtp-Source: ABdhPJxz2Zu5RJ+3AlrUBvVxulSDjiP0gbPD3Btzbr1XnO6hbyOOQcdxTwOS9yEq0Ha4Kw9LBcdXBA==
-X-Received: by 2002:a9d:7505:: with SMTP id r5mr11254812otk.64.1604954907193;
-        Mon, 09 Nov 2020 12:48:27 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 61sm2862941otc.9.2020.11.09.12.48.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 12:48:26 -0800 (PST)
-Date:   Mon, 09 Nov 2020 12:48:19 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com
-Cc:     maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org,
-        bpf@vger.kernel.org
-Message-ID: <5fa9ab136176d_8c0e208cd@john-XPS-13-9370.notmuch>
-In-Reply-To: <1604498942-24274-4-git-send-email-magnus.karlsson@gmail.com>
-References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
- <1604498942-24274-4-git-send-email-magnus.karlsson@gmail.com>
-Subject: RE: [Intel-wired-lan] [PATCH bpf-next 3/6] i40e: remove unnecessary
- sw_ring access from xsk Tx
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1725946AbgKIVCc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 9 Nov 2020 16:02:32 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36744 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727070AbgKIVCc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 9 Nov 2020 16:02:32 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A9KlJZN015758
+        for <bpf@vger.kernel.org>; Mon, 9 Nov 2020 13:02:31 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 34nr4psw09-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 09 Nov 2020 13:02:30 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 9 Nov 2020 13:02:28 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id DB9BE2EC924B; Mon,  9 Nov 2020 13:00:25 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        <rafael@kernel.org>, <jeyu@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v3 bpf-next 0/5] Integrate kernel module BTF support
+Date:   Mon, 9 Nov 2020 13:00:19 -0800
+Message-ID: <20201109210024.2024572-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-09_13:2020-11-05,2020-11-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=999 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011090138
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> Remove the unnecessary access to the software ring for the AF_XDP
-> zero-copy driver. This was used to record the length of the packet so
-> that the driver Tx completion code could sum this up to produce the
-> total bytes sent. This is now performed during the transmission of the
-> packet, so no need to record this in the software ring.
-> 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
+This patch set adds BTF generation for kernel modules using a compact split
+BTF approach. Respective patches have all the details.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com
+Kernel module BTFs rely on pahole's split BTF support, which is added in [0]
+and will be available starting from v1.19. Support for it is detected
+automatically during kernel build time.
+
+This patch set implements in-kernel support for split BTF loading and
+validation. It also extends GET_OBJ_INFO API for BTFs to return BTF's module
+name and a flag whether BTF itself is in-kernel or user-provided. vmlinux BTF
+is also exposed to user-space through the same BTF object iteration APIs.
+
+Follow up patch set will utilize the fact that vmlinux and module BTFs now
+have associated ID to provide ability to attach BPF fentry/fexit/etc programs
+to functions defined in kernel modules.
+
+bpftool is also extended to show module/vmlinux BTF's name.
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=378699&state=*
+
+v2->v3:
+  - get rid of unnecessary gotos (Song);
+v2->v1:
+  - drop WARNs, add fewer pr_warn()'s instead (Greg);
+  - properly initialize sysfs binary attribute structure (Greg);
+  - add __maybe_unused to any_section_objs, used conditionally by module BTF;
+rfc->v1:
+  - CONFIG_DEBUG_INFO_BTF_MODULES is derived automatically (Alexei);
+  - vmlinux BTF now has explicit "vmlinux" name (Alexei);
+  - added sysfs ABI documentation for /sys/kernel/btf/<module> (Greg).
+
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Andrii Nakryiko (5):
+  bpf: add in-kernel split BTF support
+  bpf: assign ID to vmlinux BTF and return extra info for BTF in
+    GET_OBJ_INFO
+  kbuild: build kernel module BTFs if BTF is enabled and pahole supports
+    it
+  bpf: load and verify kernel module BTFs
+  tools/bpftool: add support for in-kernel and named BTF in `btf show`
+
+ Documentation/ABI/testing/sysfs-kernel-btf |   8 +
+ include/linux/bpf.h                        |   2 +
+ include/linux/module.h                     |   4 +
+ include/uapi/linux/bpf.h                   |   3 +
+ kernel/bpf/btf.c                           | 402 ++++++++++++++++++---
+ kernel/bpf/sysfs_btf.c                     |   2 +-
+ kernel/module.c                            |  32 ++
+ lib/Kconfig.debug                          |   9 +
+ scripts/Makefile.modfinal                  |  20 +-
+ tools/bpf/bpftool/btf.c                    |  28 +-
+ tools/include/uapi/linux/bpf.h             |   3 +
+ 11 files changed, 456 insertions(+), 57 deletions(-)
+
+-- 
+2.24.1
+
