@@ -2,93 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6422AB633
-	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 12:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA73A2AB6CB
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 12:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729174AbgKILKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Nov 2020 06:10:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        id S1727311AbgKIL3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Nov 2020 06:29:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgKILKj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Nov 2020 06:10:39 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76715C0613CF
-        for <bpf@vger.kernel.org>; Mon,  9 Nov 2020 03:10:39 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id v4so8294105edi.0
-        for <bpf@vger.kernel.org>; Mon, 09 Nov 2020 03:10:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EYdzYjuylIGj+H8L+sypn/5zvVxkpuKj9MVryD6kBvI=;
-        b=vUURe5cJ9dxB1rRI5GD/dhPlOPkXat/uEOEFlAkRfljdipvr/RQNb46O2uFbk2VyOW
-         +EbW0Wmgcu01BROcEYXAPiMep3PmISzfBUTCj/3o9jpkWKdIwi6RjjEMumnsVGlAGPYe
-         ul9EaTYAN8d1UrisOPHWarUM1LwJurFQOGF+k7N0lEhaHFJSSY8tZXrnKAjoMOrshDxq
-         G3yl7GqWoZ4MER7g582fc7N3m8Ti8FJHi/Bi6R8kEwR+cCQBpd4Gp+t4IwnBdDO8DyVG
-         xA1MeZ+7273ad+mbJYY05e7L6qNbpkOF6PgGZDSDFC9qHpxPaEC2us6moR7/QPTVwemv
-         FHXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EYdzYjuylIGj+H8L+sypn/5zvVxkpuKj9MVryD6kBvI=;
-        b=uAX0BfVUjjSof+4fbBWqqY/qM6ohHn2YmgcsPBYWTq0OFO3BQOgtZ+BGjT0P8rx7U+
-         QPt15h8anmShl8BQ5UTXvvua9ydVAM8toofhx7Bi5vlWVET2/IPx5iJYZG2XKeAWqBbp
-         Gebrkjt7qW1UT6UualbZiNo+CtpZqMgqfVbvpujbOBmOqH5fgy8fleIxJJ+2E5aH2S2Q
-         +drWUg0N2cYJ/FcGRFVDLeRpjuqMsvR1JkCFack90bHw3gjWXO1DNB7eYHuIV2wV7NLD
-         2KqJcKqCJF7w2flnPpH6LEyHdY/DOTtyPlLDqJ1F4B79W0AJtKJvB6enEE9V+Y9QgNzF
-         lGCQ==
-X-Gm-Message-State: AOAM530BYkfUkuZ/8KdaVaEscCfY/ujoEcBxwR+Hj477D6SxSyeM/uGM
-        FYs7JOtsrdRIqLdr9zYxfCIDyA==
-X-Google-Smtp-Source: ABdhPJx+HwCuV3lTXcioyOaDiKl1VSDFz1rzG7+i0p/MBQkQNHjeJ/+Wl8H2pwPZBPY4U16y2wqo4w==
-X-Received: by 2002:a50:a689:: with SMTP id e9mr4768686edc.233.1604920238175;
-        Mon, 09 Nov 2020 03:10:38 -0800 (PST)
-Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id s21sm8768064edc.42.2020.11.09.03.10.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 03:10:37 -0800 (PST)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, andriin@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH bpf-next v2 6/6] tools/runqslower: Build bpftool using HOSTCC
-Date:   Mon,  9 Nov 2020 12:09:30 +0100
-Message-Id: <20201109110929.1223538-7-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20201109110929.1223538-1-jean-philippe@linaro.org>
-References: <20201109110929.1223538-1-jean-philippe@linaro.org>
+        with ESMTP id S1726410AbgKIL3R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Nov 2020 06:29:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BFDC0613CF;
+        Mon,  9 Nov 2020 03:29:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f0ypT5y1jMSuCaEIbDm4WxPHMthhLLHRQeDIPiJut2w=; b=Qaf6Mmkh6tRnv6NGXL9afNwZla
+        S0JoPMzuaW49S3RyC/byQhEXXaXqeuD5Jx4jwaMdgf3m+IbwqbKbhwfjZud9A38yDczRgYdH9iyTo
+        gTUDwT8rvh+PyoU/e6KUu27JBo55c8dR/Vyh4Aoaa5tIEoqrxb95dar7XRNK6hCeNpv2zjP2zvky0
+        HZ3FdCYTe1FnT2cVwYMPg0uzSoSrktO5qNflonvTzQezpxgvBnUBHDfpyarBjCGjcuKQmqJi+bXBt
+        wzjtWqCDRyR5G/XebGFPC55k0tg+GaNVo5atMT0Ls2n/GLg0rTW56qcbUKP9PO9rSkxR6HQdC6rFV
+        ScBXA7dg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kc5MD-0003aT-VD; Mon, 09 Nov 2020 11:29:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A6AAF304D58;
+        Mon,  9 Nov 2020 12:29:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 928372B09ACF5; Mon,  9 Nov 2020 12:29:08 +0100 (CET)
+Date:   Mon, 9 Nov 2020 12:29:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kevin Sheldrake <Kevin.Sheldrake@microsoft.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@google.com>
+Subject: Re: [PATCH bpf-next v2] Update perf ring buffer to prevent corruption
+Message-ID: <20201109112908.GG2594@hirez.programming.kicks-ass.net>
+References: <VI1PR8303MB00802FE5D289E0D7BA95B7DDFBEE0@VI1PR8303MB0080.EURPRD83.prod.outlook.com>
+ <CAADnVQLNdDn1jfyEAeKO17vXQiN+VKAvq+VFkY2G_pvSbaPjFA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLNdDn1jfyEAeKO17vXQiN+VKAvq+VFkY2G_pvSbaPjFA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When cross building runqslower for an other architecture, the
-intermediate bpftool used to generate a skeleton must be built using the
-host toolchain. Pass HOSTCC and HOSTLD, defined in Makefile.include, to
-the bpftool Makefile.
+On Thu, Nov 05, 2020 at 08:19:47PM -0800, Alexei Starovoitov wrote:
+> On Thu, Nov 5, 2020 at 7:18 AM Kevin Sheldrake
+> <Kevin.Sheldrake@microsoft.com> wrote:
+> >
+> > Resent due to some failure at my end.  Apologies if it arrives twice.
+> >
+> > From 63e34d4106b4dd767f9bfce951f8a35f14b52072 Mon Sep 17 00:00:00 2001
+> > From: Kevin Sheldrake <kevin.sheldrake@microsoft.com>
+> > Date: Thu, 5 Nov 2020 12:18:53 +0000
+> > Subject: [PATCH] Update perf ring buffer to prevent corruption from
+> >  bpf_perf_output_event()
+> >
+> > The bpf_perf_output_event() helper takes a sample size parameter of u64, but
+> > the underlying perf ring buffer uses a u16 internally. This 64KB maximum size
+> > has to also accommodate a variable sized header. Failure to observe this
+> > restriction can result in corruption of the perf ring buffer as samples
+> > overlap.
+> >
+> > Track the sample size and return -E2BIG if too big to fit into the u16
+> > size parameter.
+> >
+> > Signed-off-by: Kevin Sheldrake <kevin.sheldrake@microsoft.com>
+> 
+> The fix makes sense to me.
+> Peter, Ingo,
+> should I take it through the bpf tree or you want to route via tip?
 
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
----
- tools/bpf/runqslower/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-index 861f4dcde960..fa5c18b70dd0 100644
---- a/tools/bpf/runqslower/Makefile
-+++ b/tools/bpf/runqslower/Makefile
-@@ -85,7 +85,8 @@ $(BPFOBJ)-clean: $(BPFOBJ_OUTPUT)
- 	$(Q)$(MAKE) -C $(LIBBPF_SRC) OUTPUT=$(BPFOBJ_OUTPUT) clean
- 
- $(DEFAULT_BPFTOOL): | $(BPFTOOL_OUTPUT)
--	$(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT)
-+	$(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT)   \
-+		    CC=$(HOSTCC) LD=$(HOSTLD)
- 
- $(DEFAULT_BPFTOOL)-clean: $(BPFTOOL_OUTPUT)
- ifeq ($(DEFAULT_BPFTOOL),$(BPFTOOL))
--- 
-2.29.1
-
+What are you doing to trigger this? The Changelog is devoid of much
+useful information?
