@@ -2,195 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A26A2AC693
-	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 22:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05A42AC69A
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 22:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729247AbgKIVGb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 9 Nov 2020 16:06:31 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57530 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729499AbgKIVGa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Nov 2020 16:06:30 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0A9KlGWN015677
-        for <bpf@vger.kernel.org>; Mon, 9 Nov 2020 13:06:29 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 34nr4psws6-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 09 Nov 2020 13:06:29 -0800
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 9 Nov 2020 13:06:27 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id A87412EC9250; Mon,  9 Nov 2020 13:00:36 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
-        <rafael@kernel.org>, <jeyu@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v3 bpf-next 5/5] tools/bpftool: add support for in-kernel and named BTF in `btf show`
-Date:   Mon, 9 Nov 2020 13:00:24 -0800
-Message-ID: <20201109210024.2024572-6-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201109210024.2024572-1-andrii@kernel.org>
-References: <20201109210024.2024572-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-09_13:2020-11-05,2020-11-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=999 spamscore=0 suspectscore=9 mlxscore=0
- bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011090138
-X-FB-Internal: deliver
+        id S1730596AbgKIVGo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Nov 2020 16:06:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730437AbgKIVGn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:06:43 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D10C0613CF;
+        Mon,  9 Nov 2020 13:06:42 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id t143so11749527oif.10;
+        Mon, 09 Nov 2020 13:06:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=dmc2tE6MNDnQkrAgLG+0UnVegaJqmlcObysEf4HngsI=;
+        b=Wo1VeJrAeAAX6gx4xgSl4SOH8CJaYeSzGYj7yNnJdr6yD4/1WCxV4H9HFLLHLQ9WOD
+         tUaeiezWOeooiao738i3iadYQbR255vDks/Cr7dqSMf2HOacIT4nkhnvhh9pePlQOnhQ
+         saMwG68s+p1bdIe/r7tXePiemG9EenlA75mY2iB5Xeb6eqZoLU8zz/BHT0W1SfakAn/6
+         B989pcaP7IrKsdDhhgaIZaL6kZU70F93bolO97nxFXPsAoK76B+vE6PwElalPuN4e1qM
+         KZlillnFv6ih1EfpG7InxICocQwuFqMTSZCSLlkU3S4mtL6W+J9U9Gq/HpK/2Oh1aJ7t
+         mBUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=dmc2tE6MNDnQkrAgLG+0UnVegaJqmlcObysEf4HngsI=;
+        b=dH9NyY/17azcOx+0dTlHM5jTy36biwZ1XI1EPZtMLsWhLNlg/ENrr39pzPHfLW+412
+         c1tbRrfDmhfJWlJ74/h/AxwCnTvABDLnsfl4K9Lv2A7eHusKs5eTxjwC80uoonOBeFEL
+         ei2RaqnQh9o25p00yk5DK9a5J01SpKI6PnIFg0Oe1hvVL0kGJCtcTpjNvkdlppNsV/vf
+         XjveZE2AeWOHrFdlPx5J9RapT6jWd6R35h49fzKDQbOUMOasTlskuq+0cM/2Qpn+xzMT
+         0+gI+avBykTAGOQS4ZOyzXaWfMu2H5IPBPiY04NpsuoOwBhsQzdwkMho3F/Vpk7uXUvg
+         N6NQ==
+X-Gm-Message-State: AOAM531HPuMaUczGzw6u87lGzL+ALYKM83noD1FMazuPxQIsX0gXaNsA
+        ygal/IU4QUGDMn20B1eYTio=
+X-Google-Smtp-Source: ABdhPJxbAP00slh6Z0LNatYLx6zk7RfhQGZtpim9Zoj76yeShFv+JSlzuJlng5H8YXkJG373unLR8w==
+X-Received: by 2002:a05:6808:649:: with SMTP id z9mr689859oih.132.1604956002273;
+        Mon, 09 Nov 2020 13:06:42 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id n62sm2776180ota.74.2020.11.09.13.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 13:06:41 -0800 (PST)
+Date:   Mon, 09 Nov 2020 13:06:33 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org,
+        bpf@vger.kernel.org
+Message-ID: <5fa9af59a5f89_8c0e208b1@john-XPS-13-9370.notmuch>
+In-Reply-To: <1604498942-24274-6-git-send-email-magnus.karlsson@gmail.com>
+References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
+ <1604498942-24274-6-git-send-email-magnus.karlsson@gmail.com>
+Subject: RE: [Intel-wired-lan] [PATCH bpf-next 5/6] xsk: introduce batched Tx
+ descriptor interfaces
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Display vmlinux BTF name and kernel module names when listing available BTFs
-on the system.
+Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Introduce batched descriptor interfaces in the xsk core code for the
+> Tx path to be used in the driver to write a code path with higher
+> performance. This interface will be used by the i40e driver in the
+> next patch. Though other drivers would likely benefit from this new
+> interface too.
+> 
+> Note that batching is only implemented for the common case when
+> there is only one socket bound to the same device and queue id. When
+> this is not the case, we fall back to the old non-batched version of
+> the function.
+> 
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  include/net/xdp_sock_drv.h |  7 ++++
+>  net/xdp/xsk.c              | 43 ++++++++++++++++++++++
+>  net/xdp/xsk_queue.h        | 89 +++++++++++++++++++++++++++++++++++++++-------
+>  3 files changed, 126 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+> index 5b1ee8a..4e295541 100644
+> --- a/include/net/xdp_sock_drv.h
+> +++ b/include/net/xdp_sock_drv.h
+> @@ -13,6 +13,7 @@
+>  
+>  void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries);
+>  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc);
+> +u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, struct xdp_desc *desc, u32 max);
+>  void xsk_tx_release(struct xsk_buff_pool *pool);
+>  struct xsk_buff_pool *xsk_get_pool_from_qid(struct net_device *dev,
+>  					    u16 queue_id);
+> @@ -128,6 +129,12 @@ static inline bool xsk_tx_peek_desc(struct xsk_buff_pool *pool,
+>  	return false;
+>  }
+>  
+> +static inline u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, struct xdp_desc *desc,
+> +						 u32 max)
+> +{
+> +	return 0;
+> +}
+> +
+>  static inline void xsk_tx_release(struct xsk_buff_pool *pool)
+>  {
+>  }
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index b71a32e..dd75b5f 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -332,6 +332,49 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+>  }
+>  EXPORT_SYMBOL(xsk_tx_peek_desc);
+>  
+> +u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, struct xdp_desc *descs,
+> +				   u32 max_entries)
+> +{
+> +	struct xdp_sock *xs;
+> +	u32 nb_pkts;
+> +
+> +	rcu_read_lock();
+> +	if (!list_is_singular(&pool->xsk_tx_list)) {
+> +		/* Fallback to the non-batched version */
+> +		rcu_read_unlock();
+> +		return xsk_tx_peek_desc(pool, &descs[0]) ? 1 : 0;
+> +	}
+> +
+> +	xs = list_first_or_null_rcu(&pool->xsk_tx_list, struct xdp_sock, tx_list);
 
-In human-readable output mode, module BTFs are reported with "name
-[module-name]", while vmlinux BTF will be reported as "name [vmlinux]".
-Square brackets are added by bpftool and follow kernel convention when
-displaying modules in human-readable text outputs.
+I'm not seeing how we avoid the null check here? Can you add a comment on why this
+is safe? I see the bind/unbind routines is it possible to unbind while this is
+running or do we have some locking here.
 
-[vmuser@archvm bpf]$ sudo ../../../bpf/bpftool/bpftool btf s
-1: name [vmlinux]  size 4082281B
-6: size 2365B  prog_ids 8,6  map_ids 3
-7: name [button]  size 46895B
-8: name [pcspkr]  size 42328B
-9: name [serio_raw]  size 39375B
-10: name [floppy]  size 57185B
-11: name [i2c_core]  size 76186B
-12: name [crc32c_intel]  size 16036B
-13: name [i2c_piix4]  size 50497B
-14: name [irqbypass]  size 14124B
-15: name [kvm]  size 197985B
-16: name [kvm_intel]  size 123564B
-17: name [cryptd]  size 42466B
-18: name [crypto_simd]  size 17187B
-19: name [glue_helper]  size 39205B
-20: name [aesni_intel]  size 41034B
-25: size 36150B
-        pids bpftool(2519)
+> +
+> +	nb_pkts = xskq_cons_peek_desc_batch(xs->tx, descs, pool, max_entries);
+> +	if (!nb_pkts) {
+> +		xs->tx->queue_empty_descs++;
+> +		goto out;
+> +	}
+> +
+> +	/* This is the backpressure mechanism for the Tx path. Try to
+> +	 * reserve space in the completion queue for all packets, but
+> +	 * if there are fewer slots available, just process that many
+> +	 * packets. This avoids having to implement any buffering in
+> +	 * the Tx path.
+> +	 */
+> +	nb_pkts = xskq_prod_reserve_addr_batch(pool->cq, descs, nb_pkts);
+> +	if (!nb_pkts)
+> +		goto out;
+> +
+> +	xskq_cons_release_n(xs->tx, nb_pkts);
+> +	__xskq_cons_release(xs->tx);
+> +	xs->sk.sk_write_space(&xs->sk);
 
-In JSON mode, two fields (boolean "kernel" and string "name") are reported for
-each BTF object. vmlinux BTF is reported with name "vmlinux" (kernel itself
-returns and empty name for vmlinux BTF).
+Can you move the out label here? Looks like nb_pkts = 0 in all cases
+where goto out is used.
 
-[vmuser@archvm bpf]$ sudo ../../../bpf/bpftool/bpftool btf s -jp
-[{
-        "id": 1,
-        "size": 4082281,
-        "prog_ids": [],
-        "map_ids": [],
-        "kernel": true,
-        "name": "vmlinux"
-    },{
-        "id": 6,
-        "size": 2365,
-        "prog_ids": [8,6
-        ],
-        "map_ids": [3
-        ],
-        "kernel": false
-    },{
-        "id": 7,
-        "size": 46895,
-        "prog_ids": [],
-        "map_ids": [],
-        "kernel": true,
-        "name": "button"
-    },{
+> +	rcu_read_unlock();
+> +	return nb_pkts;
+> +
+> +out:
+> +	rcu_read_unlock();
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(xsk_tx_peek_release_desc_batch);
+> +
+>  static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
+>  {
+>  	struct net_device *dev = xs->dev;
 
-...
+[...]
 
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/bpf/bpftool/btf.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+Other than above question LGTM.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index c96b56e8e3a4..ed5e97157241 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -742,9 +742,14 @@ show_btf_plain(struct bpf_btf_info *info, int fd,
- 	       struct btf_attach_table *btf_map_table)
- {
- 	struct btf_attach_point *obj;
-+	const char *name = u64_to_ptr(info->name);
- 	int n;
- 
- 	printf("%u: ", info->id);
-+	if (info->kernel_btf)
-+		printf("name [%s]  ", name);
-+	else if (name && name[0])
-+		printf("name %s  ", name);
- 	printf("size %uB", info->btf_size);
- 
- 	n = 0;
-@@ -771,6 +776,7 @@ show_btf_json(struct bpf_btf_info *info, int fd,
- 	      struct btf_attach_table *btf_map_table)
- {
- 	struct btf_attach_point *obj;
-+	const char *name = u64_to_ptr(info->name);
- 
- 	jsonw_start_object(json_wtr);	/* btf object */
- 	jsonw_uint_field(json_wtr, "id", info->id);
-@@ -796,6 +802,11 @@ show_btf_json(struct bpf_btf_info *info, int fd,
- 
- 	emit_obj_refs_json(&refs_table, info->id, json_wtr); /* pids */
- 
-+	jsonw_bool_field(json_wtr, "kernel", info->kernel_btf);
-+
-+	if (name && name[0])
-+		jsonw_string_field(json_wtr, "name", name);
-+
- 	jsonw_end_object(json_wtr);	/* btf object */
- }
- 
-@@ -803,15 +814,30 @@ static int
- show_btf(int fd, struct btf_attach_table *btf_prog_table,
- 	 struct btf_attach_table *btf_map_table)
- {
--	struct bpf_btf_info info = {};
-+	struct bpf_btf_info info;
- 	__u32 len = sizeof(info);
-+	char name[64];
- 	int err;
- 
-+	memset(&info, 0, sizeof(info));
- 	err = bpf_obj_get_info_by_fd(fd, &info, &len);
- 	if (err) {
- 		p_err("can't get BTF object info: %s", strerror(errno));
- 		return -1;
- 	}
-+	/* if kernel support emitting BTF object name, pass name pointer */
-+	if (info.name_len) {
-+		memset(&info, 0, sizeof(info));
-+		info.name_len = sizeof(name);
-+		info.name = ptr_to_u64(name);
-+		len = sizeof(info);
-+
-+		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+		if (err) {
-+			p_err("can't get BTF object info: %s", strerror(errno));
-+			return -1;
-+		}
-+	}
- 
- 	if (json_output)
- 		show_btf_json(&info, fd, btf_prog_table, btf_map_table);
--- 
-2.24.1
-
+Thanks,
+John
