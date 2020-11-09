@@ -2,68 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EED2AC5FB
-	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 21:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CC82AC615
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 21:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgKIUcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Nov 2020 15:32:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S1729336AbgKIUnx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Nov 2020 15:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726952AbgKIUcL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Nov 2020 15:32:11 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D21DC0613CF;
-        Mon,  9 Nov 2020 12:32:11 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id c80so11670371oib.2;
-        Mon, 09 Nov 2020 12:32:11 -0800 (PST)
+        with ESMTP id S1725946AbgKIUnx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Nov 2020 15:43:53 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7E4C0613CF;
+        Mon,  9 Nov 2020 12:43:53 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id l36so10327862ota.4;
+        Mon, 09 Nov 2020 12:43:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=etU+haCTxBNMIuMLogb6K0AULZgfd0XgNeiIr4QKckM=;
-        b=gh0UowjAE095PB5kEbF1sghiVYQ7IlWhwl/KW91tTsyadK6Pv4BE1Dl7VyyaLg1S/L
-         ekSYwwGNl7ODO5N36+sq/eeJeezzAUltURMmzZlw1kYGzj/gFzo0Jf9mgFdf8W+Rvr8r
-         e6FZXLzOljkqdhvE4Yxeeev4iNq//LCRZcjj15P5glAJ6oBDWpuASXATzXNNG61d0OV0
-         pzwP6mHvw1z32OyPUZVNFo6Jz52rpJUPcRHvQBsHb9dkVW4u++DehCBMv1kBiPsLmqwN
-         tgKmBkwEd935tT4+el2UM/DQ/VEoFxsjpYQlcVcthara0ktx8IX7LBQw64opE7vNZdWO
-         Fh3A==
+        bh=ATlrc71eVmMN7dt7E+P5qZNg9suPptLNbqRD/l6+6aY=;
+        b=plXr8QvaQSlpxzLlNSm4+pzsXkkyAtKZPCwYM1aC0PJbEZilntIxAgGEhXWqcn6vLa
+         3Nqg/F9WarxyZrWos3e9JTl04CPbvzJ9FD5RJUNy7wPIdKbeRoEQOhZLBwyxcsbgm4iU
+         5iMNIOLsZWyJijwkwFJY7/h6Jbx+V7XNhISDK2BCeYSL+m5hBXatXdb60px3Yyv5ykx2
+         2+0dKIQZXbnfVAgLYWlDE1O+tjrX7dktDrDOSZ2O3bia7oakzgoD9cIhQy4enryWNy2d
+         9XocgYlNGh3KdWanoMFigemtxu6qRXdUBJdgmK+xI/6CRAXDbDJhIE2wcxptAKa8OEKL
+         lZIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=etU+haCTxBNMIuMLogb6K0AULZgfd0XgNeiIr4QKckM=;
-        b=c/KxvShdn3/z72GileLRfZL+Je+VK3rkqmeo/XYip5b6jsUYZXgx0y1vnAYtt5LUx7
-         jyjYp2egeeGogHLq+jSKFsI14eMXCHVjuvETMslEK2Gq4JGA2n5ClMv+X/20SsEDYBf/
-         usNeqnfYKv1MqF64MhojvUJx6MkvPEoZ4rTizUqnUqA6GLg56PMDh8b3vdfThL65DPji
-         T4Yh5v6UgJaDpFn1GXigkbf4PmD7rTb/EN6Tq3lQLuBGYAK5ipxLMqEggFYCRCgUTM6a
-         tv16z4D2ANeWlsgaaiJ0mJYrfZQrbBpTucjoXQCKH5Cd8g9LQ6iUhfUcN3nsLWuPU/6u
-         sSUQ==
-X-Gm-Message-State: AOAM532s1oFoCcw1pEGtDVL4SiX9r9Bq4Slyrahmw8ojQ+BQ9f7Oniqh
-        kcJq7gDdfutbiCwXQY9ugDM=
-X-Google-Smtp-Source: ABdhPJyFJdSNCx8wdYDWH6W439ltyNTotemtlF+D8QdWBKQG0bQ43tkxtlMgMhccVvvM3KjKUdZfmQ==
-X-Received: by 2002:aca:cc08:: with SMTP id c8mr593607oig.161.1604953930839;
-        Mon, 09 Nov 2020 12:32:10 -0800 (PST)
+        bh=ATlrc71eVmMN7dt7E+P5qZNg9suPptLNbqRD/l6+6aY=;
+        b=MbOi94odkSuTVqU07cgbMJUNpx5qbxqb98IZXtxypDqu3ZzAq458Nab7nHh5imE8lL
+         pjfQg64TalHHOB3VAoYFte39eiI0aR350ismerl6xiUoXAIPZDUSqDNMjE366Dos6j0c
+         8R3jHIk4OpD683baWMzkNoxqpUnEui5iFqln/aNVgTB59zE+IL5jgwnvFZFanuMk5pCh
+         Thj/LnsGMFFFLr98HDF0SJMPqC8jDTC5ZF98Tcy4GIv/AKuwHi5LUTxd4R87tTrFoy4C
+         +/Ag41ByG7xrJJwnKclQ7N5J/NEjiZfVEdvNvrNWYZrPkcc/ezQDSxqTW0jEXv9PLuTw
+         nfjQ==
+X-Gm-Message-State: AOAM530RA5pVSCVHwuYKSqXqYJPDdU4SbL1Fn8UCEbVAwcRhw3kKslFH
+        dlBxS2nWPBGpyqMfq5Tgi+I=
+X-Google-Smtp-Source: ABdhPJz/wqdJcgTVIkfvCa6luKlYzRUqzWrUKz0KdQ0nLjlP9/+xq7vt01xn7VVeytUYno4ZOqkZxQ==
+X-Received: by 2002:a05:6830:22c9:: with SMTP id q9mr12509129otc.48.1604954632560;
+        Mon, 09 Nov 2020 12:43:52 -0800 (PST)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id z19sm2759625otm.58.2020.11.09.12.32.08
+        by smtp.gmail.com with ESMTPSA id r24sm2748068otq.77.2020.11.09.12.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 12:32:09 -0800 (PST)
-Date:   Mon, 09 Nov 2020 12:32:01 -0800
+        Mon, 09 Nov 2020 12:43:51 -0800 (PST)
+Date:   Mon, 09 Nov 2020 12:43:43 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Message-ID: <5fa9a741dc362_8c0e20827@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzbRXvWdEXC3GdT4Q_dYe6=VPymyDws5QV8wLkdnSONghQ@mail.gmail.com>
-References: <20201106220750.3949423-1-kafai@fb.com>
- <20201106220803.3950648-1-kafai@fb.com>
- <CAEf4BzaQMcnALQ3rPErQJxVjL-Mi8zB8aSBkL8bkR8mtivro+g@mail.gmail.com>
- <20201107015225.o7hm7oxpndqueae4@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4BzbRXvWdEXC3GdT4Q_dYe6=VPymyDws5QV8wLkdnSONghQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Allow using bpf_sk_storage in
- FENTRY/FEXIT/RAW_TP
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org,
+        bpf@vger.kernel.org
+Message-ID: <5fa9a9ffc2ea3_8c0e208a2@john-XPS-13-9370.notmuch>
+In-Reply-To: <1604498942-24274-5-git-send-email-magnus.karlsson@gmail.com>
+References: <1604498942-24274-1-git-send-email-magnus.karlsson@gmail.com>
+ <1604498942-24274-5-git-send-email-magnus.karlsson@gmail.com>
+Subject: RE: [Intel-wired-lan] [PATCH bpf-next 4/6] xsk: introduce padding
+ between more ring pointers
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -72,67 +69,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Fri, Nov 6, 2020 at 5:52 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Fri, Nov 06, 2020 at 05:14:14PM -0800, Andrii Nakryiko wrote:
-> > > On Fri, Nov 6, 2020 at 2:08 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > >
-> > > > This patch enables the FENTRY/FEXIT/RAW_TP tracing program to use
-> > > > the bpf_sk_storage_(get|delete) helper, so those tracing programs
-> > > > can access the sk's bpf_local_storage and the later selftest
-> > > > will show some examples.
-> > > >
-> > > > The bpf_sk_storage is currently used in bpf-tcp-cc, tc,
-> > > > cg sockops...etc which is running either in softirq or
-> > > > task context.
-> > > >
-> > > > This patch adds bpf_sk_storage_get_tracing_proto and
-> > > > bpf_sk_storage_delete_tracing_proto.  They will check
-> > > > in runtime that the helpers can only be called when serving
-> > > > softirq or running in a task context.  That should enable
-> > > > most common tracing use cases on sk.
-> > > >
-> > > > During the load time, the new tracing_allowed() function
-> > > > will ensure the tracing prog using the bpf_sk_storage_(get|delete)
-> > > > helper is not tracing any *sk_storage*() function itself.
-> > > > The sk is passed as "void *" when calling into bpf_local_storage.
-> > > >
-> > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > ---
-> > > >  include/net/bpf_sk_storage.h |  2 +
-> > > >  kernel/trace/bpf_trace.c     |  5 +++
-> > > >  net/core/bpf_sk_storage.c    | 73 ++++++++++++++++++++++++++++++++++++
-> > > >  3 files changed, 80 insertions(+)
-> > > >
-> > >
-> > > [...]
-> > >
-> > > > +       switch (prog->expected_attach_type) {
-> > > > +       case BPF_TRACE_RAW_TP:
-> > > > +               /* bpf_sk_storage has no trace point */
-> > > > +               return true;
-> > > > +       case BPF_TRACE_FENTRY:
-> > > > +       case BPF_TRACE_FEXIT:
-> > > > +               btf_vmlinux = bpf_get_btf_vmlinux();
-> > > > +               btf_id = prog->aux->attach_btf_id;
-> > > > +               t = btf_type_by_id(btf_vmlinux, btf_id);
-> > > > +               tname = btf_name_by_offset(btf_vmlinux, t->name_off);
-> > > > +               return !strstr(tname, "sk_storage");
-> > >
-> > > I'm always feeling uneasy about substring checks... Also, KP just
-> > > fixed the issue with string-based checks for LSM. Can we use a
-> > > BTF_ID_SET of blacklisted functions instead?
-> > KP one is different.  It accidentally whitelist-ed more than it should.
-> >
-> > It is a blacklist here.  It is actually cleaner and safer to blacklist
-> > all functions with "sk_storage" and too pessimistic is fine here.
+Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
 > 
-> Fine for whom? Prefix check would be half-bad, but substring check is
-> horrible. Suddenly "task_storage" (and anything related) would be also
-> blacklisted. Let's do a prefix check at least.
+> Introduce one cache line worth of padding between the consumer pointer
+> and the flags field as well as between the flags field and the start
+> of the descriptors in all the lockless rings. This so that the x86 HW
+> adjacency prefetcher will not prefetch the adjacent pointer/field when
+> only one pointer/field is going to be used. This improves throughput
+> performance for the l2fwd sample app with 1% on my machine with HW
+> prefetching turned on in the BIOS.
 > 
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
 
-Agree, prefix check sounds like a good idea. But, just doing a quick
-grep seems like it will need at least bpf_sk_storage and sk_storage to
-catch everything.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+>  net/xdp/xsk_queue.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index cdb9cf3..74fac80 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -18,9 +18,11 @@ struct xdp_ring {
+>  	/* Hinder the adjacent cache prefetcher to prefetch the consumer
+>  	 * pointer if the producer pointer is touched and vice versa.
+>  	 */
+> -	u32 pad ____cacheline_aligned_in_smp;
+> +	u32 pad1 ____cacheline_aligned_in_smp;
+>  	u32 consumer ____cacheline_aligned_in_smp;
+> +	u32 pad2 ____cacheline_aligned_in_smp;
+>  	u32 flags;
+> +	u32 pad3 ____cacheline_aligned_in_smp;
+>  };
+>  
+>  /* Used for the RX and TX queues for packets */
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> Intel-wired-lan mailing list
+> Intel-wired-lan@osuosl.org
+> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+
+
