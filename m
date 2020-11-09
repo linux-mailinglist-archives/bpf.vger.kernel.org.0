@@ -2,54 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8162AC6B6
-	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 22:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208A52AC6C9
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 22:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729336AbgKIVNe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Nov 2020 16:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
+        id S1729493AbgKIVSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Nov 2020 16:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgKIVNe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Nov 2020 16:13:34 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E05C0613CF;
-        Mon,  9 Nov 2020 13:13:34 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id n15so10395638otl.8;
-        Mon, 09 Nov 2020 13:13:34 -0800 (PST)
+        with ESMTP id S1725946AbgKIVSM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Nov 2020 16:18:12 -0500
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B028FC0613CF;
+        Mon,  9 Nov 2020 13:18:10 -0800 (PST)
+Received: by mail-ot1-x342.google.com with SMTP id a15so8689883otf.5;
+        Mon, 09 Nov 2020 13:18:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=6LKRrsHdKXReU3TBe4kSaTHSrqPQkgh4JeE0J2CjMyY=;
-        b=CXN2E3frsn+cCVTsSnV673WZp61jCIMgfSv6QI9DXWiXiLz/Yp11yTXT1ovx7Y5s2Q
-         /EqywseEPn2DEwoHKzjwHw0E7A0dq2e4UAugtaVASRrF6GUibbzFqzchfT/RuXHoWJt0
-         12cJU7cLwdzG1K1eC+xvdRO40XrICmd/YpMztxi54w04w+VXXCARMaAVzxbDoViUiO1x
-         ozhPgOMwVp1uCgq8XnVYHnqRU9fWAAru6ID75oF4xMmxTskCC0ZAE590vWNSwk7C3bkp
-         mjiv3s2aI8IPsjPnVmhT92Ec1Kk6fu+vZ54KIorDvtPt3HCrDTAz/TuktImmEwpJhnTE
-         6pww==
+        bh=59zjdzQyhp71sMG1iWXtFCQNcH3XvIU0Stj+Q44iaHY=;
+        b=BePoM79U3tOCqKP03BDWCIpjbvRQ76t9rRYgVJCjTKsfb3ipNwEB+fJ9OLqZeXWiB6
+         hPFACET1kpaDIg36+CZEqAc7S6SVLjmBjKgzzBum9Bfb/EDJ5xYPY9wzbutrApV52OdQ
+         gXr9wv8GZgyEgVmz60C9fyt1UtfDf6kBTgyAVY1BANszUec08P/UqThKVrjN320rCCzn
+         wOEFK5VWKAAQEDZQci/H3TQDD9soIEukprXlcPglHr9il7eYJx4RQOwhWVxPgdz6Co58
+         1CkJT8zwai0tGXo4uG4wzZgOEbaScmzSEnsBWI6+q8S9QlY3aL0NG3qNexXaUzbpeTMV
+         2K/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=6LKRrsHdKXReU3TBe4kSaTHSrqPQkgh4JeE0J2CjMyY=;
-        b=DJBkOi7HbkYNgs6VrLa8tDWYR6fe26IQfbbslhbIH7uUHZ3TuOiVqF7UERmEXah2gK
-         obPwEr2WxpnU/KrvYVbCCxaa7qEN+aiBwutMMaZR6eXpz/N10X9LiTrnAnjg3kjN1q7G
-         b5CE6rtD6xMZgxVpsCnUv0wUCXoB/qdo6A+DZsED5eCxeaGCkpZhomqFBRN7lHPYm9Ce
-         yTunwrN4UZiYbHyalAAfkqOR9pBwvrCGi9WoDNEtY0Ctt+tkfqoTVr4EwOABW3PRxlty
-         b6jLCTBnFXpVoi91Pustnk+lRI73r0r0IWTrSYcD3FDdSa3SJMtiWcV3lNiama9axloP
-         xn4g==
-X-Gm-Message-State: AOAM533vc0uYMNXT682zLRJgTgInaPvs7dD3xMLHcIPIaWCae1Z/LLS5
-        IO0hqjm/xxQErUdhnn2N6Lc=
-X-Google-Smtp-Source: ABdhPJy3euBqWwt6vcBeSL7pSg+brIV2jPE3uZQKJdyOd0kLBc3wPOCJ2d4PkLurDVxKobEBFQAWzw==
-X-Received: by 2002:a05:6830:2058:: with SMTP id f24mr2457111otp.250.1604956413401;
-        Mon, 09 Nov 2020 13:13:33 -0800 (PST)
+        bh=59zjdzQyhp71sMG1iWXtFCQNcH3XvIU0Stj+Q44iaHY=;
+        b=tCldRHhmPlz50ZEMrcQfMbc3qGAPEj3x1tPolclPr1H3l1k8nO8vxhEIX29Epk19ly
+         6/vtR52betfWXaPLS9rUGDoStvIMVUGvkIw0UHY2BKQ2gFZIRUBNwatPp16Rz+5iV0am
+         KkupCsVhAatonAwd7y6vHAsr2Vyc5/zXLNyUt3bohKE5lGUZv3QKEs6IW5IjXAPpwd+B
+         CN1funXkc7Wcwa0JdQvqD6/0c7loRi8muBStvzYTwS0tTqcwajzTNpuHp89WH0KRl9lN
+         4ayI9e5bUdRfY5nOpulArsvmhcoxL03irgQkwaPLU41OetDzvPhv3tx29E8GkUO5dbL7
+         gkKw==
+X-Gm-Message-State: AOAM532ul81V9Br3BNic1NPhhTpo2u/h5pCo8RtAaE1qVcbAoTf09e0/
+        WcwOnE2VmznSmwT8QTma/Tw=
+X-Google-Smtp-Source: ABdhPJy7zBoSPSd6sF9tk44JcNBE39Gv+8c70Pz8yU8jNpswflIx5sqMRbq/48X9vuCgZrjRcOqBZA==
+X-Received: by 2002:a05:6830:1556:: with SMTP id l22mr12594411otp.102.1604956690092;
+        Mon, 09 Nov 2020 13:18:10 -0800 (PST)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id p17sm2664084oov.1.2020.11.09.13.13.31
+        by smtp.gmail.com with ESMTPSA id c14sm2802175otp.1.2020.11.09.13.18.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 13:13:32 -0800 (PST)
-Date:   Mon, 09 Nov 2020 13:13:25 -0800
+        Mon, 09 Nov 2020 13:18:09 -0800 (PST)
+Date:   Mon, 09 Nov 2020 13:18:01 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Wang Qing <wangqing@vivo.com>, Alexei Starovoitov <ast@kernel.org>,
+To:     Wang Qing <wangqing@vivo.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -58,10 +61,10 @@ To:     Wang Qing <wangqing@vivo.com>, Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Wang Qing <wangqing@vivo.com>
-Message-ID: <5fa9b0f5eb2f6_8c0e20854@john-XPS-13-9370.notmuch>
-In-Reply-To: <1604736650-11197-1-git-send-email-wangqing@vivo.com>
-References: <1604736650-11197-1-git-send-email-wangqing@vivo.com>
-Subject: RE: [PATCH] bpf: remove duplicate include
+Message-ID: <5fa9b209b7eeb_8c0e208f3@john-XPS-13-9370.notmuch>
+In-Reply-To: <1604735144-686-1-git-send-email-wangqing@vivo.com>
+References: <1604735144-686-1-git-send-email-wangqing@vivo.com>
+Subject: RE: [PATCH v3 bpf] trace: bpf: Fix passing zero to PTR_ERR()
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -71,28 +74,29 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Wang Qing wrote:
-> Remove duplicate header which is included twice.
+> There is a bug when passing zero to PTR_ERR() and return.
+> Fix smatch err.
 > 
 > Signed-off-by: Wang Qing <wangqing@vivo.com>
 > ---
->  kernel/bpf/btf.c | 1 -
->  1 file changed, 1 deletion(-)
+>  kernel/trace/bpf_trace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index ed7d02e..6324de8
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -22,7 +22,6 @@
->  #include <linux/skmsg.h>
->  #include <linux/perf_event.h>
->  #include <linux/bsearch.h>
-> -#include <linux/btf_ids.h>
->  #include <net/sock.h>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 4517c8b..5113fd4
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1198,7 +1198,7 @@ static int bpf_btf_printf_prepare(struct btf_ptr *ptr, u32 btf_ptr_size,
+>  	*btf = bpf_get_btf_vmlinux();
 >  
->  /* BTF (BPF Type Format) is the meta data format which describes
+>  	if (IS_ERR_OR_NULL(*btf))
+> -		return PTR_ERR(*btf);
+> +		return IS_ERR(*btf) ? PTR_ERR(*btf) : -EINVAL;
+>  
+>  	if (ptr->type_id > 0)
+>  		*btf_id = ptr->type_id;
 > -- 
 > 2.7.4
 > 
 
-Looks fine to me. But, these types of things should go to bpf-next I
-see no reason to push these into bpf tree.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
