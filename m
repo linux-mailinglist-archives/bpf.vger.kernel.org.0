@@ -2,110 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6165C2AA7BA
-	for <lists+bpf@lfdr.de>; Sat,  7 Nov 2020 20:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0032AAECD
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 02:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgKGTj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 7 Nov 2020 14:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
+        id S1728016AbgKIBpT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 8 Nov 2020 20:45:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgKGTjZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 7 Nov 2020 14:39:25 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92CDC0613CF;
-        Sat,  7 Nov 2020 11:39:25 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id n15so4671950otl.8;
-        Sat, 07 Nov 2020 11:39:25 -0800 (PST)
+        with ESMTP id S1727979AbgKIBpT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 8 Nov 2020 20:45:19 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886ADC0613CF;
+        Sun,  8 Nov 2020 17:45:19 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w6so979405pfu.1;
+        Sun, 08 Nov 2020 17:45:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=umgOFSJKneTT4hVW+UHmrcTgF4QshDfext+F1vpx4yE=;
-        b=LkwWflC+i3Igs2WVRfu3mUGpxMJBmKVzpAfGt6qd43ryZRsh+IMOIE5z8KO8o14uzs
-         d1NDfluOkv1g05OooeqUXqWiF2R8flp8v5quuFFWe2O6gTgCMq9UwXy6au/N+Q/BbPNr
-         4vaCveIR5kveXvHcS2QFM+fkM4TLIg2cRBZykweCr8J2wWbiHiKIl2Ue+IK/CyD9Tko7
-         F3FBz29Z0JaKSmUjEAFlg03k3F4XEM5UwW5BFVfGWoFh8DXMjU50RW9UayjZ+9/WIKxr
-         U9ZJAdk7dnf04XHe7sQ3opEmwJngzCcw+l/Ac0uemG1qMNadxwsTxKdxyh9tXX88+xiB
-         kqbA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=do64FoTxiW6aSEst954wsCuxnCqK2NqrUlgo5iPVJ0U=;
+        b=V8GHN66N/wOQtHaPM8a7mgZQOx2zU+r6RW2kAjMXBFRh3itFM6zN4mn28wKBmdkXCO
+         4YjkFifLhDMlIMmvLCjYsZBkdvrBkDny40zFrCFWVZMqsl9SEjOjxLwyTQxIVUS5pvx9
+         kcNK5ixcW+MSxvijkDuFrrvhQjDkV8w+N8eple71+yG+tfoB68ANkpBD8QbKUKSYV1c+
+         U+eiaQNCGwAl2uzvXxipWUI8OSES+Ap28ZVwLBLoz++rDvbXWUVFiExtWXZFclVKPFtT
+         DEVKb3CsgtlvGvnUeNYEOaMMVvt8gSIS14kh1WkJ4DqnGfyeR6Hi6HScJyxfkpZfky/m
+         QJug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=umgOFSJKneTT4hVW+UHmrcTgF4QshDfext+F1vpx4yE=;
-        b=prxkPYozxBqMdp6wPcjOz6Elajy1pkwRNY0wXNNNu7l5UeT7GniaCzpgxw//iBoGh6
-         WAv68aZDZCfNgtS0S0PeeUGgErUVOeuKksnTJs+m1ko/2aJ923nojEg8x4SX+/1Cc3Dc
-         pC33QF+yLAfo+R3MDKAboIL2CemYud5/JqsHdwklvrbiL3Sr7y6LsphnJSU/nXzkZKbW
-         pjxr7a6RDw7Bm/BQvNGMalEyfqjf4y6ZV88faxX6bCIANaV4HAAcHN4Xqx5iOMsglM41
-         7v1oiAPUveh/qOpW/GeQ2QxiukaHTHjimVCGAAGimb6fCVJXeTwHzOXJqlAxGlfSpvc8
-         O8ZA==
-X-Gm-Message-State: AOAM533QRKh8dnI4svy0dQ00GydBQrdEivzAAUUA0+H+L+ixHXyE7l+Q
-        fzpJRAnULlCmuNoxRiqurro=
-X-Google-Smtp-Source: ABdhPJwgVaKh1amjH7VOKqvRSrC2rBZkR8YlWq223q35VVOWaHrnBEGBlrvSrJMMWsCZr/t1uOHY2g==
-X-Received: by 2002:a05:6830:1e70:: with SMTP id m16mr5098361otr.51.1604777965014;
-        Sat, 07 Nov 2020 11:39:25 -0800 (PST)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 85sm1252346oie.30.2020.11.07.11.39.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=do64FoTxiW6aSEst954wsCuxnCqK2NqrUlgo5iPVJ0U=;
+        b=In+EeSc9lm9S9DAXgIV+WkCp7mMjEDk5pP76rp9G440TVrVBuViEXK1Rj4owiphpKz
+         gn4bLfWF/AcGbIiegi6Kg659XpCYTdy4T14v2xONrEZMG34TIE7h0nTmq+w8DBCFxbGY
+         QHoljbQUj2fbqoWwJesJ7rJa31gNyfrfgV8PNFv+osa8DT8nGhikqT1I71zKzuVEyfUH
+         E6B1DYgsBEwFs9eTfMxNNFweM2mVB/WLiIHHgw2K2vEe3IOiCbZoCme+llchgF4rgBuU
+         6BpZzRVYbEIDc3ySDMQhMVpxLxCSQP34QDe08yteuI6U8pH35vjE66gQnRUey1iRVqhe
+         GTqw==
+X-Gm-Message-State: AOAM532L+ioTy/nAjZslZ3QTjy2gVe43NqNCFOr03JcsZbn5FCVVEkC4
+        LB8ZGGwbgfKq45I+FB0WYoA=
+X-Google-Smtp-Source: ABdhPJwYB3Whpu117Q8/CtmgwUK8dDudCPfXHYlVhvmYWsZeoMlQEzYEfsMOoSsoAv9yKbwNiLMBcA==
+X-Received: by 2002:a17:90a:b797:: with SMTP id m23mr783000pjr.153.1604886319127;
+        Sun, 08 Nov 2020 17:45:19 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:7b57])
+        by smtp.gmail.com with ESMTPSA id t19sm8160644pgv.37.2020.11.08.17.45.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Nov 2020 11:39:24 -0800 (PST)
-Subject: [bpf PATCH 5/5] bpf,
- sockmap: Avoid failures from skb_to_sgvec when skb has frag_list
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, jakub@cloudflare.com
-Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Date:   Sat, 07 Nov 2020 11:39:12 -0800
-Message-ID: <160477795249.608263.2308084426369232846.stgit@john-XPS-13-9370>
-In-Reply-To: <160477770483.608263.6057216691957042088.stgit@john-XPS-13-9370>
-References: <160477770483.608263.6057216691957042088.stgit@john-XPS-13-9370>
-User-Agent: StGit/0.23-36-gc01b
+        Sun, 08 Nov 2020 17:45:17 -0800 (PST)
+Date:   Sun, 8 Nov 2020 17:45:15 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201109014515.rxz3uppztndbt33k@ast-mbp>
+References: <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+ <bb04a01a-8a96-7a6a-c77e-28ee63983d9a@solarflare.com>
+ <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
+ <07f149f6-f8ac-96b9-350d-b289ef16d82f@solarflare.com>
+ <CAEf4BzaSfutBt3McEPjmu_FyxyzJa_xVGfhP_7v0oGuqG_HBEw@mail.gmail.com>
+ <20201106094425.5cc49609@redhat.com>
+ <CAEf4Bzb2fuZ+Mxq21HEUKcOEba=rYZHc+1FTQD98=MPxwj8R3g@mail.gmail.com>
+ <CAADnVQ+S7fusZ6RgXBKJL7aCtt3jpNmCnCkcXd0fLayu+Rw_6Q@mail.gmail.com>
+ <20201106152537.53737086@hermes.local>
+ <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When skb has a frag_list its possible for skb_to_sgvec() to fail. This
-happens when the scatterlist has fewer elements to store pages than would
-be needed for the initial skb plus any of its frags.
+On Fri, Nov 06, 2020 at 04:38:13PM -0700, David Ahern wrote:
+> On 11/6/20 4:25 PM, Stephen Hemminger wrote:
+> >>
+> >> I think bumping the minimal version of libbpf with every iproute2 release
+> >> is necessary as well.
+> >> Today iproute2-next should require 0.2.0. The cycle after it should be 0.3.0
+> >> and so on.
+> >> This way at least some correlation between iproute2 and libbpf will be
+> >> established.
+> >> Otherwise it's a mess of versions and functionality from user point of view.
+> 
+> If existing bpf features in iproute2 work fine with version 0.1.0, what
+> is the justification for an arbitrary requirement for iproute2 to force
+> users to bump libbpf versions just to use iproute2 from v5.11?
 
-This case appears rare, but is possible when running an RX parser/verdict
-programs exposed to the internet. Currently, when this happens we throw
-an error, break the pipe, and kfree the msg. This effectively breaks the
-application or forces it to do a retry.
+I don't understand why on one side you're pointing out existing quirkiness with
+bpf usability while at the same time arguing to make it _less_ user friendly
+when myself, Daniel, Andrii explained in detail what libbpf does and how it
+affects user experience?
 
-Lets catch this case and handle it by doing an skb_linearize() on any
-skb we receive with frags. At this point skb_to_sgvec should not fail
-because the failing conditions would require frags to be in place.
-
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- net/core/skmsg.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 59c36a672256..b2063ae5648c 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -425,9 +425,16 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
- 					struct sock *sk,
- 					struct sk_msg *msg)
- {
--	int num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
--	int copied;
-+	int num_sge, copied;
- 
-+	/* skb linearize may fail with ENOMEM, but lets simply try again
-+	 * later if this happens. Under memory pressure we don't want to
-+	 * drop the skb. We need to linearize the skb so that the mapping
-+	 * in skb_to_sgvec can not error.
-+	 */
-+	if (skb_linearize(skb))
-+		return -EAGAIN;
-+	num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
- 	if (unlikely(num_sge < 0)) {
- 		kfree(msg);
- 		return num_sge;
-
-
+The analogy of libbpf in iproute2 and libbfd in gdb is that both libraries
+perform large percentage of functionality comparing to the rest of the tool.
+When library is dynamic linked it makes user experience unpredictable. My guess
+is that libbfd is ~50% of what gdb is doing. What will the users say if gdb
+suddenly behaves differently (supports less or more elf files) because
+libbfd.so got upgraded in the background? In case of tc+libbpf the break down
+of funcionality is heavliy skewed towards libbpf. The amount of logic iproute2
+code will do to perform "tc filter ... bpf..." command is 10% iproute2 / 90%
+libbpf. Issuing few netlink calls to attach bpf prog to a qdisc is trivial
+comparing to what libbpf is doing with an elf file. There is a linker inside
+libbpf. It will separate different functions inside elf file. It will relocate
+code and adjust instructions before sending it to the kernel. libbpf is not
+a wrapper. It's a mini compiler: CO-RE logic, function relocation, dynamic
+kernel feature probing, etc. When the users use a command line tool (like
+iproute2 or bpftool) they are interfacing with the tool. It's not unix-like to
+demand that users should check the version of a shared library and adjust their
+expectations. The UI is the command line. Its version is as a promise of
+features. iproute2 of certain version in one distro should behave the same as
+iproute2 in another distro. By not doing git submodule that promise is broken.
+Hence my preference is to use fixed libbpf sha for every iproute2 release. The
+other alternative is to lag iproute2/libbpf one release behind. Hence
+repeating what I said earlier: Today iproute2-next should require 0.2.0. The
+iprtoute2 in the next cycle _must_ bump be the minimum libbpf version to 0.3.0.
+Not bumping minimum version brings us to square one and unpredicatable user
+experience. The users are jumping through enough hoops when they develop bpf
+programs. We have to make it simpler and easier. Using libbpf in iproute2
+can improve the user experience, but only if it's predictable.
