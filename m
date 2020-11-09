@@ -2,117 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182172AC425
-	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 19:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7362AC449
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 19:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729648AbgKISto (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Nov 2020 13:49:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25916 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729451AbgKISto (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Nov 2020 13:49:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1604947782;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZFlOeNxmwrUeGPa7WxgNjIYpmlrRyXw9qyVKnLpKpc=;
-        b=Wa2xmZSZM1S/OnMsGSalOLJhnS78F4+VXoioJtopJ6NewZMUzFB9Wq0tafQbppkhcko/rw
-        WLwZwCkF3FYxaK40Otgy8QFvsW6uhsbIbLNUe0OPrqEzQ/I7PVHcMebnQ/KOY2J8YcWpS8
-        bKUJkwDCcXw2cUVULFm4/WD7IH/rWR4=
+        id S1729491AbgKIS6F convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 9 Nov 2020 13:58:05 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:24854 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729302AbgKIS6E (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 9 Nov 2020 13:58:04 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-5cQ9s9_4O3ynlpgq2sd7uQ-1; Mon, 09 Nov 2020 13:49:38 -0500
-X-MC-Unique: 5cQ9s9_4O3ynlpgq2sd7uQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-350-dPqptwy7MQiaH7u9vZ87jQ-1; Mon, 09 Nov 2020 13:58:00 -0500
+X-MC-Unique: dPqptwy7MQiaH7u9vZ87jQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17E0C1074653;
-        Mon,  9 Nov 2020 18:49:37 +0000 (UTC)
-Received: from krava (unknown [10.40.192.57])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3548019D7C;
-        Mon,  9 Nov 2020 18:49:31 +0000 (UTC)
-Date:   Mon, 9 Nov 2020 19:49:30 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Hao Luo <haoluo@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: Re: [PATCH 1/3] bpf: Move iterator functions into special init
- section
-Message-ID: <20201109184930.GA362089@krava>
-References: <20201106222512.52454-1-jolsa@kernel.org>
- <20201106222512.52454-2-jolsa@kernel.org>
- <20201109180500.GC340169@kernel.org>
- <20201109180655.GD340169@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 883A81074654;
+        Mon,  9 Nov 2020 18:57:58 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E2FE7664C;
+        Mon,  9 Nov 2020 18:57:55 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCHv5 bpf] bpf: Move iterator functions into special init section
+Date:   Mon,  9 Nov 2020 19:57:54 +0100
+Message-Id: <20201109185754.377373-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201109180655.GD340169@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 09, 2020 at 03:06:55PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Nov 09, 2020 at 03:05:00PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Nov 06, 2020 at 11:25:10PM +0100, Jiri Olsa escreveu:
-> > > With upcoming changes to pahole, that change the way how and
-> > > which kernel functions are stored in BTF data, we need a way
-> > > to recognize iterator functions.
-> > > 
-> > > Iterator functions need to be in BTF data, but have no real
-> > > body and are currently placed in .init.text section, so they
-> > > are freed after kernel init and are filtered out of BTF data
-> > > because of that.
-> > > 
-> > > The solution is to place these functions under new section:
-> > >   .init.bpf.preserve_type
-> > > 
-> > > And add 2 new symbols to mark that area:
-> > >   __init_bpf_preserve_type_begin
-> > >   __init_bpf_preserve_type_end
-> > > 
-> > > The code in pahole responsible for picking up the functions will
-> > > be able to recognize functions from this section and add them to
-> > > the BTF data and filter out all other .init.text functions.
-> > 
-> > This isn't applying on torvalds/master:
-> > 
-> > [acme@five linux]$ patch -p1 < /wb/1.patch
-> > patching file include/asm-generic/vmlinux.lds.h
-> > Hunk #2 succeeded at 754 (offset 1 line).
-> > patching file include/linux/bpf.h
-> > Hunk #1 succeeded at 1276 (offset -1 lines).
-> > patching file include/linux/init.h
-> > Hunk #1 FAILED at 52.
-> > 1 out of 1 hunk FAILED -- saving rejects to file include/linux/init.h.rej
-> > [acme@five linux]$
-> > [acme@five linux]$ cat include/linux/init.h.rej
-> > --- include/linux/init.h
-> > +++ include/linux/init.h
-> > @@ -52,6 +52,7 @@
-> >  #define __initconst	__section(.init.rodata)
-> >  #define __exitdata	__section(.exit.data)
-> >  #define __exit_call	__used __section(.exitcall.exit)
-> > +#define __init_bpf_preserve_type __section(.init.bpf.preserve_type)
-> > 
-> >  /*
-> >   * modpost check for section mismatches during the kernel build.
-> > [acme@five linux]$
-> > 
-> > 
-> > I'm fixing it up by hand to try together with pahole's patches.
-> 
-> Due to:
-> 
-> 33def8498fdde180 ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
+With upcoming changes to pahole, that change the way how and
+which kernel functions are stored in BTF data, we need a way
+to recognize iterator functions.
 
-ok, I'll send new version for the kernel patch
+Iterator functions need to be in BTF data, but have no real
+body and are currently placed in .init.text section, so they
+are freed after kernel init and are filtered out of BTF data
+because of that.
 
-thanks,
-jirka
+The solution is to place these functions under new section:
+  .init.bpf.preserve_type
+
+And add 2 new symbols to mark that area:
+  __init_bpf_preserve_type_begin
+  __init_bpf_preserve_type_end
+
+The code in pahole responsible for picking up the functions will
+be able to recognize functions from this section and add them to
+the BTF data and filter out all other .init.text functions.
+
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Suggested-by: Yonghong Song <yhs@fb.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@redhat.com>
+---
+v5 changes:
+  - use "" in __section macro due to:
+    33def8498fdde180 ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
+    [Arnaldo]
+
+v4: https://lore.kernel.org/bpf/20201106222512.52454-1-jolsa@kernel.org/
+
+ include/asm-generic/vmlinux.lds.h | 16 +++++++++++++++-
+ include/linux/bpf.h               |  8 +++++++-
+ include/linux/init.h              |  1 +
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index b2b3d81b1535..f91029b3443b 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -685,8 +685,21 @@
+ 	.BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {			\
+ 		*(.BTF_ids)						\
+ 	}
++
++/*
++ * .init.bpf.preserve_type
++ *
++ * This section store special BPF function and marks them
++ * with begin/end symbols pair for the sake of pahole tool.
++ */
++#define INIT_BPF_PRESERVE_TYPE						\
++	__init_bpf_preserve_type_begin = .;                             \
++	*(.init.bpf.preserve_type)                                      \
++	__init_bpf_preserve_type_end = .;				\
++	MEM_DISCARD(init.bpf.preserve_type)
+ #else
+ #define BTF
++#define INIT_BPF_PRESERVE_TYPE
+ #endif
+ 
+ /*
+@@ -741,7 +754,8 @@
+ #define INIT_TEXT							\
+ 	*(.init.text .init.text.*)					\
+ 	*(.text.startup)						\
+-	MEM_DISCARD(init.text*)
++	MEM_DISCARD(init.text*)						\
++	INIT_BPF_PRESERVE_TYPE
+ 
+ #define EXIT_DATA							\
+ 	*(.exit.data .exit.data.*)					\
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2b16bf48aab6..73e8ededde3e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1276,10 +1276,16 @@ struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+ int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+ int bpf_obj_get_user(const char __user *pathname, int flags);
+ 
++#ifdef CONFIG_DEBUG_INFO_BTF
++#define BPF_INIT __init_bpf_preserve_type
++#else
++#define BPF_INIT __init
++#endif
++
+ #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
+ #define DEFINE_BPF_ITER_FUNC(target, args...)			\
+ 	extern int bpf_iter_ ## target(args);			\
+-	int __init bpf_iter_ ## target(args) { return 0; }
++	int BPF_INIT bpf_iter_ ## target(args) { return 0; }
+ 
+ struct bpf_iter_aux_info {
+ 	struct bpf_map *map;
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 7b53cb3092ee..a7c71e3b5f9a 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -52,6 +52,7 @@
+ #define __initconst	__section(".init.rodata")
+ #define __exitdata	__section(".exit.data")
+ #define __exit_call	__used __section(".exitcall.exit")
++#define __init_bpf_preserve_type __section(".init.bpf.preserve_type")
+ 
+ /*
+  * modpost check for section mismatches during the kernel build.
+-- 
+2.26.2
 
