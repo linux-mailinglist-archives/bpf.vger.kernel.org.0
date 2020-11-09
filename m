@@ -2,63 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA522AB16C
-	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 07:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9052AB173
+	for <lists+bpf@lfdr.de>; Mon,  9 Nov 2020 07:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729236AbgKIGum (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Nov 2020 01:50:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
+        id S1727077AbgKIG42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Nov 2020 01:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgKIGul (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Nov 2020 01:50:41 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF2CC0613CF;
-        Sun,  8 Nov 2020 22:50:41 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id a15so6232387otf.5;
-        Sun, 08 Nov 2020 22:50:41 -0800 (PST)
+        with ESMTP id S1728873AbgKIG41 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Nov 2020 01:56:27 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A673EC0613CF;
+        Sun,  8 Nov 2020 22:56:27 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id t16so9189397oie.11;
+        Sun, 08 Nov 2020 22:56:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=gcfZadTBOaegHTN/euC4Mguw64IfCJ4DO6dFkz94EFk=;
-        b=O8JKKRMUIwjbO/uEInvKIJibI26IGLwuwz+2tzloQklk2iAadrsH9eLHHvKZxvb9dN
-         TsCgCo4aMpnFD1RaBtKQlwG+jlEnAWF9J6lPRXvs6R3fQCK9T8ox3tQ+nPZVjvg51a+5
-         zuew/8iIUTHcTGnJQtsrWkv4UcZhfLOGLf13cMBC0avKGaTqL4aeN4ZYXDs4gd/tg56C
-         z/bvId2c54xGmKAyIBL1UIXHbYWVmT8UsqBp6/cl4fE7xB/cMHrvp9+kAeaX+E/iaJLF
-         73NJiSpLcr676MalXVCkrlPCKVQ0JYZ5LIKpAN4MB92eQD4MFvf4P7YFWGXF6e/WPnvS
-         BqJg==
+        bh=3t7z1OAnLWIsPyyWvxu3btLtZGPdXzBYbO08I/vW1XE=;
+        b=vFNffQDPYoC8d9yH0F7tB8VxujK2VuzRgqedXii9CykLmRunrXKLD/mstB81zVdJrL
+         0nMorH20GVVcQLidQPoHEFeDP2uuimXFVUg3dMyTrfUoDg/jb7CRdAsKqsSi67Gob/Qb
+         +Hwc79/nsnLx4D3VWsNUlFsSnU5b5hXh/2+DpqgXQHCyr/gCG33r2B4TitKCyN7//lhS
+         nHAsVBMA8cu99V6NkyRWMcusXJh8zYWto2j4W4YdC2ZYgbaHPe3tNYkeSIBalVGGr/+/
+         3eAHfj5IrCnEsJoONcMK27w4lW3b3jVgzOSG0XaidIwrO4SuAnRC2zU9t3WRW713EH8q
+         goaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=gcfZadTBOaegHTN/euC4Mguw64IfCJ4DO6dFkz94EFk=;
-        b=EqI2zboMJdJ/GJBJIqkXfRQdrkWSpaHZ6Go9l8Od4yAf4CMzhL2cyX4d4QGaqt0Ymt
-         Ml40aqvw7/pXOr0XNZ5ckKJ3hZMVLV+UdKBwDSSX3FuH4i+yOllEA5b5X9W3XsDs3GTq
-         2PUYpcBKAs1LyM6Jcsv2Bx4EZGI+/vrUPG32tG5vEHWcBJdBxGGDdj9tyDOOIXPgfOW2
-         gaPQ2geMzHFXUkSaVVOd8+raHGx9mDEaB7DQRG7R+01pGUL0tb5K+V93YR3/pd2LTzZH
-         ousheyjeUHfZeX4zpsQy0YlQ97qGqBQcj5jUqrljBmkNx5alJmHGngCqirGbiqzXPQja
-         7CQw==
-X-Gm-Message-State: AOAM531/a5/u04/izzEMiNQmUJSnXmrDNoUL/rhJtmSIl0+0Fw5ql4ul
-        7gHOrhCRik5xzEtfTPqQCVY=
-X-Google-Smtp-Source: ABdhPJyUwWS4O2EPAA2tI2OkyhSeY4qx00VdcjI586yz3z9/UCaRYn5k+Xk2vXdKIgVeM4SaCQYWJA==
-X-Received: by 2002:a05:6830:1002:: with SMTP id a2mr9794310otp.316.1604904641200;
-        Sun, 08 Nov 2020 22:50:41 -0800 (PST)
+        bh=3t7z1OAnLWIsPyyWvxu3btLtZGPdXzBYbO08I/vW1XE=;
+        b=NWMrLGZ77hdcZv8VdxvJYCCVCsQ53hLZSd9zhpicpvXca2H7DhsgHM6LDzHHiDalUM
+         NpQPNcPQjVoOa+4/QRaW80BkbMR565vbn+CeiPK7XacDsYi96ZvQvaRRteGkq9qs2Pbe
+         5VPwRVZlkaTaeJU0HkwL3etQJ8Yl+LpoiFyeaK7p+7E4m0CjSdRgMOqKN1kIv6RhOMTE
+         mwTE3ngPFWcQ6tPdSwCShbBMkJf6zJLExqOWX45X0j8lu6GJ1T2gp/DcxIfLGocFosLU
+         4/Fx23Y4625nj1PjXUdwK9xzb+XfvkLAWA7T+oHXYZ9RYoaXD/lfWDoYTNYfE9GXmCBz
+         GNRA==
+X-Gm-Message-State: AOAM530i721miAbsA/TODxtFm6k/AV5OZsJaj2BSc5s7ZmpJzMIY5IlJ
+        p5OgFfkw4Q1TyTMXweV+EM8=
+X-Google-Smtp-Source: ABdhPJxkYM+rvylKuuImJoojFPmrvGjCnvNyfRukNxRbJJxFuzWiNQpF4gN3vCSsh3czexY4RVHn7Q==
+X-Received: by 2002:aca:d9c5:: with SMTP id q188mr7914042oig.155.1604904987198;
+        Sun, 08 Nov 2020 22:56:27 -0800 (PST)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id g15sm2358644otn.12.2020.11.08.22.50.38
+        by smtp.gmail.com with ESMTPSA id 186sm2232310ooe.20.2020.11.08.22.56.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Nov 2020 22:50:40 -0800 (PST)
-Date:   Sun, 08 Nov 2020 22:50:32 -0800
+        Sun, 08 Nov 2020 22:56:26 -0800 (PST)
+Date:   Sun, 08 Nov 2020 22:56:19 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     menglong8.dong@gmail.com, daniel@iogearbox.net
-Cc:     ast@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        andrii@kernel.org, john.fastabend@gmail.cm, kpsingh@chromium.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Message-ID: <5fa8e6b8cd7d6_2056c208c0@john-XPS-13-9370.notmuch>
-In-Reply-To: <1604654034-52821-1-git-send-email-dong.menglong@zte.com.cn>
-References: <1604654034-52821-1-git-send-email-dong.menglong@zte.com.cn>
-Subject: RE: [PATCH] samples/bpf: remove duplicate include
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        netdev@vger.kernel.org
+Message-ID: <5fa8e81395e0f_2056c20834@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201106225402.4135741-1-kafai@fb.com>
+References: <20201106225402.4135741-1-kafai@fb.com>
+Subject: RE: [PATCH bpf-next] bpf: selftest: Use static globals in
+ tcp_hdr_options and btf_skc_cls_ingress
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -67,12 +66,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-menglong8.dong@ wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+Martin KaFai Lau wrote:
+> Some globals in the tcp_hdr_options test and btf_skc_cls_ingress test
+> are not using static scope.  This patch fixes it.
 > 
-> Obviously, 'bpf/bpf.h' in 'samples/bpf/hbm.c' is duplicated.
+> Targeting bpf-next branch as an improvement since it currently does not
+> break the build.
 > 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> Fixes: ad2f8eb0095e ("bpf: selftests: Tcp header options")
+> Fixes: 9a856cae2217 ("bpf: selftest: Add test_btf_skc_cls_ingress")
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
+>  .../selftests/bpf/prog_tests/btf_skc_cls_ingress.c   |  2 +-
+>  .../selftests/bpf/prog_tests/tcp_hdr_options.c       | 12 ++++++------
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
