@@ -2,141 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919532ADA93
-	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 16:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2B32ADAA0
+	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 16:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732577AbgKJPic (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Nov 2020 10:38:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732552AbgKJPia (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Nov 2020 10:38:30 -0500
-Received: from lore-desk.redhat.com (unknown [151.66.8.153])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731105AbgKJPkk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 10 Nov 2020 10:40:40 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:25922 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731108AbgKJPka (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 10 Nov 2020 10:40:30 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-3yjYcJAqPwG8xhiQ9uBrsQ-1; Tue, 10 Nov 2020 10:40:22 -0500
+X-MC-Unique: 3yjYcJAqPwG8xhiQ9uBrsQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78D3220797;
-        Tue, 10 Nov 2020 15:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605022710;
-        bh=eso8Y/0QxL6ZUd/D6BSzMmvcmQ+RLUBfTMipsyiZskw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tVIskgYEC268tgeILwPnKtzx9J3FIZNWbthoHx8Gw8jPBx7LEw3ggN58Lw33y7FgI
-         eu5E2KRymOiUqW7vBL3hD8qQwsnbGRfczJYlrEEOaJdZxkHyYt9+VlvkYCXCXKL2kk
-         lKp2HVKf+Er4y+WRdbHoO/HF+iUBuu0lxIy6Cuqs=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        ilias.apalodimas@linaro.org
-Subject: [PATCH v5 net-nex 5/5] net: mlx5: add xdp tx return bulking support
-Date:   Tue, 10 Nov 2020 16:38:00 +0100
-Message-Id: <0e898e7f201e65bdf4d9457f9ad4997d8e52dd4c.1605020963.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1605020963.git.lorenzo@kernel.org>
-References: <cover.1605020963.git.lorenzo@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE416800688;
+        Tue, 10 Nov 2020 15:40:20 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.170])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C9065D9D2;
+        Tue, 10 Nov 2020 15:40:18 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCHv6 bpf] bpf: Move iterator functions into special init section
+Date:   Tue, 10 Nov 2020 16:40:17 +0100
+Message-Id: <20201110154017.482352-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Convert mlx5 driver to xdp_return_frame_bulk APIs.
+With upcoming changes to pahole, that change the way how and
+which kernel functions are stored in BTF data, we need a way
+to recognize iterator functions.
 
-XDP_REDIRECT (upstream codepath): 8.9Mpps
-XDP_REDIRECT (upstream codepath + bulking APIs): 10.2Mpps
+Iterator functions need to be in BTF data, but have no real
+body and are currently placed in .init.text section, so they
+are freed after kernel init and are filtered out of BTF data
+because of that.
 
-Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+The solution is to place these functions under new section:
+  .init.bpf.preserve_type
+
+And add 2 new symbols to mark that area:
+  __init_bpf_preserve_type_begin
+  __init_bpf_preserve_type_end
+
+The code in pahole responsible for picking up the functions will
+be able to recognize functions from this section and add them to
+the BTF data and filter out all other .init.text functions.
+
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Suggested-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Jiri Olsa <jolsa@redhat.com>
 ---
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 22 +++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+v6 changes:
+  - simplify the change and add comment to bpf.h header based
+    on David's suggestion and remove the init.h change
+  - removing acks, because of the new changes
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index ae90d533a350..2e3e78b0f333 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -366,7 +366,8 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
- static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
- 				  struct mlx5e_xdp_wqe_info *wi,
- 				  u32 *xsk_frames,
--				  bool recycle)
-+				  bool recycle,
-+				  struct xdp_frame_bulk *bq)
- {
- 	struct mlx5e_xdp_info_fifo *xdpi_fifo = &sq->db.xdpi_fifo;
- 	u16 i;
-@@ -379,7 +380,7 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
- 			/* XDP_TX from the XSK RQ and XDP_REDIRECT */
- 			dma_unmap_single(sq->pdev, xdpi.frame.dma_addr,
- 					 xdpi.frame.xdpf->len, DMA_TO_DEVICE);
--			xdp_return_frame(xdpi.frame.xdpf);
-+			xdp_return_frame_bulk(xdpi.frame.xdpf, bq);
- 			break;
- 		case MLX5E_XDP_XMIT_MODE_PAGE:
- 			/* XDP_TX from the regular RQ */
-@@ -397,12 +398,15 @@ static void mlx5e_free_xdpsq_desc(struct mlx5e_xdpsq *sq,
- 
- bool mlx5e_poll_xdpsq_cq(struct mlx5e_cq *cq)
- {
-+	struct xdp_frame_bulk bq;
- 	struct mlx5e_xdpsq *sq;
- 	struct mlx5_cqe64 *cqe;
- 	u32 xsk_frames = 0;
- 	u16 sqcc;
- 	int i;
- 
-+	xdp_frame_bulk_init(&bq);
-+
- 	sq = container_of(cq, struct mlx5e_xdpsq, cq);
- 
- 	if (unlikely(!test_bit(MLX5E_SQ_STATE_ENABLED, &sq->state)))
-@@ -434,7 +438,7 @@ bool mlx5e_poll_xdpsq_cq(struct mlx5e_cq *cq)
- 
- 			sqcc += wi->num_wqebbs;
- 
--			mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, true);
-+			mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, true, &bq);
- 		} while (!last_wqe);
- 
- 		if (unlikely(get_cqe_opcode(cqe) != MLX5_CQE_REQ)) {
-@@ -447,6 +451,8 @@ bool mlx5e_poll_xdpsq_cq(struct mlx5e_cq *cq)
- 		}
- 	} while ((++i < MLX5E_TX_CQ_POLL_BUDGET) && (cqe = mlx5_cqwq_get_cqe(&cq->wq)));
- 
-+	xdp_flush_frame_bulk(&bq);
-+
- 	if (xsk_frames)
- 		xsk_tx_completed(sq->xsk_pool, xsk_frames);
- 
-@@ -463,8 +469,13 @@ bool mlx5e_poll_xdpsq_cq(struct mlx5e_cq *cq)
- 
- void mlx5e_free_xdpsq_descs(struct mlx5e_xdpsq *sq)
- {
-+	struct xdp_frame_bulk bq;
- 	u32 xsk_frames = 0;
- 
-+	xdp_frame_bulk_init(&bq);
-+
-+	rcu_read_lock(); /* need for xdp_return_frame_bulk */
-+
- 	while (sq->cc != sq->pc) {
- 		struct mlx5e_xdp_wqe_info *wi;
- 		u16 ci;
-@@ -474,9 +485,12 @@ void mlx5e_free_xdpsq_descs(struct mlx5e_xdpsq *sq)
- 
- 		sq->cc += wi->num_wqebbs;
- 
--		mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, false);
-+		mlx5e_free_xdpsq_desc(sq, wi, &xsk_frames, false, &bq);
+ include/asm-generic/vmlinux.lds.h | 16 +++++++++++++++-
+ include/linux/bpf.h               | 12 +++++++++++-
+ 2 files changed, 26 insertions(+), 2 deletions(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index b2b3d81b1535..f91029b3443b 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -685,8 +685,21 @@
+ 	.BTF_ids : AT(ADDR(.BTF_ids) - LOAD_OFFSET) {			\
+ 		*(.BTF_ids)						\
  	}
- 
-+	xdp_flush_frame_bulk(&bq);
-+	rcu_read_unlock();
 +
- 	if (xsk_frames)
- 		xsk_tx_completed(sq->xsk_pool, xsk_frames);
- }
++/*
++ * .init.bpf.preserve_type
++ *
++ * This section store special BPF function and marks them
++ * with begin/end symbols pair for the sake of pahole tool.
++ */
++#define INIT_BPF_PRESERVE_TYPE						\
++	__init_bpf_preserve_type_begin = .;                             \
++	*(.init.bpf.preserve_type)                                      \
++	__init_bpf_preserve_type_end = .;				\
++	MEM_DISCARD(init.bpf.preserve_type)
+ #else
+ #define BTF
++#define INIT_BPF_PRESERVE_TYPE
+ #endif
+ 
+ /*
+@@ -741,7 +754,8 @@
+ #define INIT_TEXT							\
+ 	*(.init.text .init.text.*)					\
+ 	*(.text.startup)						\
+-	MEM_DISCARD(init.text*)
++	MEM_DISCARD(init.text*)						\
++	INIT_BPF_PRESERVE_TYPE
+ 
+ #define EXIT_DATA							\
+ 	*(.exit.data .exit.data.*)					\
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2b16bf48aab6..1739a92516ed 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1276,10 +1276,20 @@ struct bpf_link *bpf_link_get_from_fd(u32 ufd);
+ int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
+ int bpf_obj_get_user(const char __user *pathname, int flags);
+ 
++/* In case we generate BTF data, we need to group all iterator
++ * functions into special init section, so pahole can track them.
++ * Otherwise pure __init section is enough.
++ */
++#ifdef CONFIG_DEBUG_INFO_BTF
++#define __init_bpf_preserve_type __section(".init.bpf.preserve_type")
++#else
++#define __init_bpf_preserve_type __init
++#endif
++
+ #define BPF_ITER_FUNC_PREFIX "bpf_iter_"
+ #define DEFINE_BPF_ITER_FUNC(target, args...)			\
+ 	extern int bpf_iter_ ## target(args);			\
+-	int __init bpf_iter_ ## target(args) { return 0; }
++	int __init_bpf_preserve_type bpf_iter_ ## target(args) { return 0; }
+ 
+ struct bpf_iter_aux_info {
+ 	struct bpf_map *map;
 -- 
 2.26.2
 
