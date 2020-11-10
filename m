@@ -2,80 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56FE2AD8B6
-	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 15:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26F42ADA7D
+	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 16:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730897AbgKJOZ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Nov 2020 09:25:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21952 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730850AbgKJOZ1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 10 Nov 2020 09:25:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605018326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d+qK/pebV9lfCTzD2UyXhbkhPqVjurjoRr6IFVLA9HE=;
-        b=MaglAjC/5Ne0B9pH16d02RBafR3oNTRFkvZenBpeySAjYOs7f3F8dUbQfxulZm1+lvr5PW
-        XERPcJcLk8L5U3gWLUiyupbQtVeCoodJCXUPJkFZNnoESptan+am78U92e83+bAJQ0Rxkt
-        XEXNQ8bkDs8eLHfcyFhxrHtu01zOY9M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-359-FaQ_K7evPU-J5TI-pK-ihA-1; Tue, 10 Nov 2020 09:25:22 -0500
-X-MC-Unique: FaQ_K7evPU-J5TI-pK-ihA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E1336D246;
-        Tue, 10 Nov 2020 14:25:20 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C99DB75135;
-        Tue, 10 Nov 2020 14:25:11 +0000 (UTC)
-Date:   Tue, 10 Nov 2020 15:25:10 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1731139AbgKJPgh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Nov 2020 10:36:37 -0500
+Received: from mga09.intel.com ([134.134.136.24]:21153 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730139AbgKJPgg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Nov 2020 10:36:36 -0500
+IronPort-SDR: IVhKB9KSv94U2xOjHbOCWEUmJmhs6o91HgGE/gF1fPcq3e+Pzfb9EfPw71V9SrmcGa9+K59qny
+ C5go1MF2LUYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9801"; a="170150358"
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="170150358"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2020 07:36:32 -0800
+IronPort-SDR: qV9nGGu/OXsEWu9weOIelifOfq5ZJzlQMF8wk/exsZy322TiS+UNMD5c3HKjlHgIQhayhSEop5
+ w8wnNasg7spw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,466,1596524400"; 
+   d="scan'208";a="541364710"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2020 07:36:30 -0800
+Date:   Tue, 10 Nov 2020 16:24:29 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Tariq Toukan <tariqt@mellanox.com>, brouer@redhat.com,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH bpf-next] samples/bpf: add xdp_redirect_map with
- xdp_prog support
-Message-ID: <20201110152510.2a7fa65c@carbon>
-In-Reply-To: <20201110124639.1941654-1-liuhangbin@gmail.com>
+Subject: Re: [PATCH bpf-next] samples/bpf: add xdp_redirect_map with xdp_prog
+ support
+Message-ID: <20201110152429.GA5283@ranger.igk.intel.com>
 References: <20201110124639.1941654-1-liuhangbin@gmail.com>
+ <20201110152510.2a7fa65c@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201110152510.2a7fa65c@carbon>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 10 Nov 2020 20:46:39 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
-
-> This patch add running xdp program on egress interface support for
-> xdp_redirect_map sample. The new prog will change the IP ttl based
-> on egress ifindex.
+On Tue, Nov 10, 2020 at 03:25:10PM +0100, Jesper Dangaard Brouer wrote:
+> On Tue, 10 Nov 2020 20:46:39 +0800
+> Hangbin Liu <liuhangbin@gmail.com> wrote:
 > 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  samples/bpf/xdp_redirect_map_kern.c | 74 ++++++++++++++++++++++++++++-
->  samples/bpf/xdp_redirect_map_user.c | 21 ++++----
+> > This patch add running xdp program on egress interface support for
+> > xdp_redirect_map sample. The new prog will change the IP ttl based
+> > on egress ifindex.
+> > 
+> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> > ---
+> >  samples/bpf/xdp_redirect_map_kern.c | 74 ++++++++++++++++++++++++++++-
+> >  samples/bpf/xdp_redirect_map_user.c | 21 ++++----
+> 
+> Hmmm... I don't think is it a good idea to modify xdp_redirect_map this way.
+> 
+> The xdp_redirect_map is used for comparative benchmarking and
+> mentioned+used in scientific articles.  As far as I can see, this
+> change will default slowdown xdp_redirect_map performance, right?
 
-Hmmm... I don't think is it a good idea to modify xdp_redirect_map this way.
++1
 
-The xdp_redirect_map is used for comparative benchmarking and
-mentioned+used in scientific articles.  As far as I can see, this
-change will default slowdown xdp_redirect_map performance, right?
+User should be able to trigger attachment of this xdp egress prog by
+himself. I don't like having it as a mandatory thing on this sample.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> 
+> -- 
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+> 
