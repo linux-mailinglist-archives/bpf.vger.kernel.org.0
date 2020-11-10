@@ -2,167 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38072AD17C
-	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 09:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004A82AD1AE
+	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 09:48:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgKJIlD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Nov 2020 03:41:03 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7512 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgKJIlC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Nov 2020 03:41:02 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CVhCP6G4dzhfWW;
-        Tue, 10 Nov 2020 16:40:49 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 10 Nov 2020 16:40:53 +0800
-Subject: Re: [PATCH v2 bpf] tools: bpftool: Add missing close before bpftool
- net attach exit
-To:     John Fastabend <john.fastabend@gmail.com>
-CC:     <quentin@isovalent.com>, <mrostecki@opensuse.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <andrii@kernel.org>,
-        <kpsingh@chromium.org>, <toke@redhat.com>,
-        <danieltimlee@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20201110014637.6055-1-wanghai38@huawei.com>
- <5faa18319b71_3e187208f@john-XPS-13-9370.notmuch>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <52cbaf9b-0680-6a4d-8d42-cd5f6d7f5714@huawei.com>
-Date:   Tue, 10 Nov 2020 16:40:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726827AbgKJIsh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Nov 2020 03:48:37 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:56904 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgKJIsg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Nov 2020 03:48:36 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1604998111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+lFM+Dy1hrzRRrrrA3qnbGkxEtyVqIh0g4peYrriLeU=;
+        b=iuo8f+7vFglLggVRQElkiZ2WEkqCMbTG8xoMGtVyBk3DBfZOlzK9bn4iYE9n5TJlXEeyiw
+        mK2AsUoeE727uJ+eyVgbEeyt2qz1CsngbkfMTC30zg6BSGbxrFxVJV/nTlcmtj9NHSMsJn
+        sU38ljGJ30NJ8ooIZ53QTax6dO6NfnLLpRxklxBphTMVejdacYZZqkmCK8e4gkxhfN2Hq9
+        zuGNw+h8VUH3NFZO14JlYgbkNPH833xVYFQ2lmqEAC35a4/baTqfi6uG7ey36+HQyygrEi
+        Jy4I41umlX4stejJrRBLu7awPrfWhbLcelHNMzqQQSqRZrKTpO34TDntXU+02A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1604998111;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+lFM+Dy1hrzRRrrrA3qnbGkxEtyVqIh0g4peYrriLeU=;
+        b=y7osrUd/437dzM5/Hc5G9cQ/HuZ2jh7vgX8EDHSswmJuPLkHyLG6iEX8rrCl2sg3XohELe
+        1aQhUu8PTNjq+DAw==
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kexec@lists.infradead.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-efi@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-um@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-nilfs@vger.kernel.org, cluster-devel@redhat.com,
+        ecryptfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-rdma@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-cachefs@redhat.com,
+        samba-technical@lists.samba.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH RFC PKS/PMEM 05/58] kmap: Introduce k[un]map_thread
+In-Reply-To: <20201110045954.GL3976735@iweiny-DESK2.sc.intel.com>
+References: <20201009195033.3208459-1-ira.weiny@intel.com> <20201009195033.3208459-6-ira.weiny@intel.com> <87h7pyhv3f.fsf@nanos.tec.linutronix.de> <20201110045954.GL3976735@iweiny-DESK2.sc.intel.com>
+Date:   Tue, 10 Nov 2020 09:48:31 +0100
+Message-ID: <87eel1iom8.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <5faa18319b71_3e187208f@john-XPS-13-9370.notmuch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-在 2020/11/10 12:33, John Fastabend 写道:
-> Wang Hai wrote:
->> progfd is created by prog_parse_fd(), before 'bpftool net attach' exit,
->> it should be closed.
->>
->> Fixes: 04949ccc273e ("tools: bpftool: add net attach command to attach XDP on interface")
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->> ---
->> v1->v2: use cleanup tag instead of repeated closes
->>   tools/bpf/bpftool/net.c | 14 ++++++++------
->>   1 file changed, 8 insertions(+), 6 deletions(-)
->>
->> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
->> index 910e7bac6e9e..1ac7228167e6 100644
->> --- a/tools/bpf/bpftool/net.c
->> +++ b/tools/bpf/bpftool/net.c
->> @@ -578,8 +578,8 @@ static int do_attach(int argc, char **argv)
->>   
->>   	ifindex = net_parse_dev(&argc, &argv);
->>   	if (ifindex < 1) {
->> -		close(progfd);
->> -		return -EINVAL;
->> +		err = -EINVAL;
->> +		goto cleanup;
->>   	}
->>   
->>   	if (argc) {
->> @@ -587,8 +587,8 @@ static int do_attach(int argc, char **argv)
->>   			overwrite = true;
->>   		} else {
->>   			p_err("expected 'overwrite', got: '%s'?", *argv);
->> -			close(progfd);
->> -			return -EINVAL;
->> +			err = -EINVAL;
->> +			goto cleanup;
->>   		}
->>   	}
->>   
->> @@ -600,13 +600,15 @@ static int do_attach(int argc, char **argv)
-> I think now that return value depends on this err it should be 'if (err)'
-> otherwise we risk retunring non-zero error code from do_attach which
-> will cause programs to fail.
-I agree with you. Thanks.
->>   	if (err < 0) {
->          ^^^^^^^^^^^^
->          if (err) {
+On Mon, Nov 09 2020 at 20:59, Ira Weiny wrote:
+> On Tue, Nov 10, 2020 at 02:13:56AM +0100, Thomas Gleixner wrote:
+> Also, we can convert the new memcpy_*_page() calls to kmap_local() as well.
+> [For now my patch just uses kmap_atomic().]
 >
->>   		p_err("interface %s attach failed: %s",
->>   		      attach_type_strings[attach_type], strerror(-err));
->> -		return err;
->> +		goto cleanup;
->>   	}
->>   
->>   	if (json_output)
->>   		jsonw_null(json_wtr);
->>   
->> -	return 0;
->
-> Alternatively we could add an 'err = 0' here, but above should never
-> return a value >0 as far as I can see.
-It's true that 'err > 0' doesn't exist currently , but adding 'err = 0' 
-would make the code clearer. Thanks for your advice.
->> +cleanup:
->> +	close(progfd);
->> +	return err;
->>   }
->>   
->>   static int do_detach(int argc, char **argv)
->> -- 
->> 2.17.1
->>
-Can it be fixed like this?
+> I've not looked at all of the patches in your latest version.  Have you
+> included converting any of the kmap() call sites?  I thought you were more
+> focused on converting the kmap_atomic() to kmap_local()?
 
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -578,8 +578,8 @@ static int do_attach(int argc, char **argv)
+I did not touch any of those yet, but it's a logical consequence to
+convert all kmap() instances which are _not_ creating a global mapping
+over to it.
 
-         ifindex = net_parse_dev(&argc, &argv);
-         if (ifindex < 1) {
--               close(progfd);
--               return -EINVAL;
-+               err = -EINVAL;
-+               goto cleanup;
-         }
+Thanks,
 
-         if (argc) {
-@@ -587,8 +587,8 @@ static int do_attach(int argc, char **argv)
-                         overwrite = true;
-                 } else {
-                         p_err("expected 'overwrite', got: '%s'?", *argv);
--                       close(progfd);
--                       return -EINVAL;
-+                       err = -EINVAL;
-+                       goto cleanup;
-                 }
-         }
+        tglx
 
-@@ -597,16 +597,19 @@ static int do_attach(int argc, char **argv)
-                 err = do_attach_detach_xdp(progfd, attach_type, ifindex,
-                                            overwrite);
-
--       if (err < 0) {
-+       if (err) {
-                 p_err("interface %s attach failed: %s",
-                       attach_type_strings[attach_type], strerror(-err));
--               return err;
-+               goto cleanup;
-         }
-
-         if (json_output)
-                 jsonw_null(json_wtr);
-
--       return 0;
-+       ret = 0;
-+cleanup:
-+       close(progfd);
-+       return err;
-  }
-
->
-> .
->
