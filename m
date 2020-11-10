@@ -2,128 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79992AD6EF
-	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 13:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA502AD707
+	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 14:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730595AbgKJM4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Nov 2020 07:56:25 -0500
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.48]:60952 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730590AbgKJM4Z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 10 Nov 2020 07:56:25 -0500
-X-Greylist: delayed 522 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Nov 2020 07:56:24 EST
-Received: from dispatch1-us1.ppe-hosted.com (localhost.localdomain [127.0.0.1])
-        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 659D6BAB5A
-        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 12:47:43 +0000 (UTC)
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.61])
-        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 8502960090;
-        Tue, 10 Nov 2020 12:47:42 +0000 (UTC)
-Received: from us4-mdac16-46.ut7.mdlocal (unknown [10.7.66.13])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 835728009E;
-        Tue, 10 Nov 2020 12:47:42 +0000 (UTC)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.91])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id ED16580056;
-        Tue, 10 Nov 2020 12:47:41 +0000 (UTC)
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 4D99CBC0061;
-        Tue, 10 Nov 2020 12:47:41 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 10 Nov
- 2020 12:47:32 +0000
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Hangbin Liu <haliu@redhat.com>
-CC:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <20201028132529.3763875-1-haliu@redhat.com>
- <20201029151146.3810859-1-haliu@redhat.com>
- <646cdfd9-5d6a-730d-7b46-f2b13f9e9a41@gmail.com>
- <CAEf4BzYupkUqfgRx62uq3gk86dHTfB00ZtLS7eyW0kKzBGxmKQ@mail.gmail.com>
- <edf565cf-f75e-87a1-157b-39af6ea84f76@iogearbox.net>
- <3306d19c-346d-fcbc-bd48-f141db26a2aa@gmail.com>
- <CAADnVQ+EWmmjec08Y6JZGnan=H8=X60LVtwjtvjO5C6M-jcfpg@mail.gmail.com>
- <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
- <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
- <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
- <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
- <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
- <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
- <1118ef27-3302-d077-021a-43aa8d8f3ebb@mojatatu.com>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <11c18a26-72af-2e0d-a411-3148cfbc91be@solarflare.com>
-Date:   Tue, 10 Nov 2020 12:47:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1730488AbgKJNCe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Nov 2020 08:02:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730231AbgKJNCb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Nov 2020 08:02:31 -0500
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF11C0613CF
+        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 05:02:29 -0800 (PST)
+Received: by mail-ej1-x643.google.com with SMTP id 7so17447809ejm.0
+        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 05:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=Tu26tgPcSzxp0jQayLJ0lZvINdp+uKPsES6yIreZi1Q=;
+        b=J37h17ukYjnSQ06PMZH5y5/tzwpw0UAVvpQcZ4n7aJNVAP1KfdTU+SAyebZbGkb/gx
+         JkW1aY8B/ImWJ2+SdKR3pyWJ113065WzkEKZUJQ87VSnH58zdQ5VYpclo5eK2mxCjUUQ
+         7jK68BNNzPAim2Fce1tVyS4D9zF9+jxPqFvQR+bRJ9r+C1KV+VQ25Cl7u2kn+a7xvYUS
+         AP28yDfhZ0KnKslfKBYBXRWjz1hHTRlhkBRyz3P8oEv0oTOhLxdN2XanOjsvUO5wBidn
+         TioyayLMQ+HkhcVU6ZJIqQJY9nIfNDGV29VqiLyBpWlLLW/8ssjnXVcY0A0ArJrHW+40
+         nrWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=Tu26tgPcSzxp0jQayLJ0lZvINdp+uKPsES6yIreZi1Q=;
+        b=lxTwOlzYkUMvLexn2WoLCB7Vcksk4XdALTniKrZ07vPjrHZIMXFT8WhmhTHnBCsrx6
+         Dv4w7gKelbyJ31z8AXdt+PBXi9Hvbn0/VPqKr6mq+HE5Tmn3BO8K6DY08uYAtLJlPAGg
+         0nscsNsCf8678IGxFPIOr5IyYjWK5ZDgxgUqgWQJVG5qxt0uL46we93hZtFlTf4EFnYX
+         sImPAUDx0gYTbcGG9z/guqS3f4Mn7/RHTxnXpJInLlX9YDA8DKw+k+sH4pjBLx1/Y8fd
+         Vho3v/NkVPQLr4sJBphFBwwbY7sx/uDv+7QYKcSilUSwSSZxazgHif3oqqi1hqhTDaLe
+         HI5w==
+X-Gm-Message-State: AOAM531gsH5FQfSM7I4HBlpjSTgBFsFDwUzFKcA/d1nPYKE6x0jcI2O2
+        rkvbuak+wrZ7/LWxtq1IZL0AI9HFmsIcuXUOqpMquQ==
+X-Google-Smtp-Source: ABdhPJwuyoPs8El5On7U+y39tdjDDjB2kFrwRvDLNnSTklVWmV/GlCYDQiy/n5BDlXgqD3X/nyFVhztXCMVnKimvvbo=
+X-Received: by 2002:a17:906:82c4:: with SMTP id a4mr18897731ejy.131.1605013348332;
+ Tue, 10 Nov 2020 05:02:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1118ef27-3302-d077-021a-43aa8d8f3ebb@mojatatu.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.6.1012-25778.003
-X-TM-AS-Result: No-7.626800-8.000000-10
-X-TMASE-MatchedRID: 1GZI+iG+MtfmLzc6AOD8DfHkpkyUphL9mIYIWwCrtbDfUZT83lbkEBbC
-        99SYja1g08KOouRPweXpA9zAtoTtQbwGAZ9mF4+tbMGKOuLn5FU2vbWaKPnQ20+86maMM3aSoqR
-        TS3ju9kjL1YnN80IdgfrX3HUSpSJtbWU+hmLYQb30VCHd+VQiHsuCYrT3WeZNI0YrtQLsSUx/HZ
-        ivtns2jCoEdDLq/Jx9DebCA+2uaihMi6dAAjypoo6MisxJraxHZAGtCJE23YjlhO+RZsN0Zgzha
-        8w4PtmsDbQK46q0MoVIK8AsRmtEnbRnkHe8f3Wi1ilQ4KKAwrcfqkfNzTRFSkvEK4FMJdoqFxHJ
-        /PgKcF7XbjtE3SWl31+24nCsUSFNjaPj0W1qn0Q7AFczfjr/7EBUz7fy5vxHDt1tO/HyQLI3c0D
-        GoeWQNPu3cx2BXcvV7l6uq4rmU/w=
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--7.626800-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.6.1012-25778.003
-X-MDID: 1605012462-t_ROz6fajzuV
-X-PPE-DISP: 1605012462;t_ROz6fajzuV
+Received: by 2002:a54:380d:0:0:0:0:0 with HTTP; Tue, 10 Nov 2020 05:02:27
+ -0800 (PST)
+X-Originating-IP: [5.35.10.61]
+In-Reply-To: <1605009019-22310-1-git-send-email-kaixuxia@tencent.com>
+References: <1605009019-22310-1-git-send-email-kaixuxia@tencent.com>
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+Date:   Tue, 10 Nov 2020 16:02:27 +0300
+Message-ID: <CAOJe8K2tL5x-dESsV+PFq1Gii-yB=fJh7i-=E-FbrJeioo6pqA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix unsigned 'datasec_id' compared with zero in check_pseudo_btf_id
+To:     xiakaixu1987@gmail.com
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05/11/2020 14:05, Jamal Hadi Salim wrote:
-> On 2020-11-04 10:19 p.m., David Ahern wrote:
+On 11/10/20, xiakaixu1987@gmail.com <xiakaixu1987@gmail.com> wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
 >
-> [..]
->> Similarly, it is not realistic or user friendly to *require* general
->> Linux users to constantly chase latest versions of llvm, clang, dwarves,
->> bcc, bpftool, libbpf, (I am sure I am missing more)
+> The unsigned variable datasec_id is assigned a return value from the call
+> to check_pseudo_btf_id(), which may return negative error code.
 >
-> 2cents feedback from a dabbler in ebpf on user experience:
+> Fixes coccicheck warning:
 >
-> What David described above *has held me back*.
-If we're doing 2¢... I gave up on trying to keep ebpf_asmabreast
- of all the latest BPF and BTF features quite some time ago, since
- there was rarely any documentation and the specifications for BPF
- elves were basically "whatever latest clang does".
-The bpf developers seem to have taken the position that since
- they're in control of clang, libbpf and the kernel, they can make
- their changes across all three and not bother with the specs that
- would allow other toolchains to interoperate.  As a result of
- which, that belief has now become true — while ebpf_asm will
- still work for what it always did (simple XDP programs), it is
- unlikely ever to gain CO-RE support so is no longer a live
- alternative to clang for BPF in general.
-Of course the bpf developers are well within their rights to not
- care about that.  But I think it illustrates why having to
- interoperate with systems outside their control and mix-and-match
- versioning of various components provides external discipline that
- is sorely needed if the BPF ecosystem is to remain healthy.
-That is why I am opposed to iproute2 'vendoring' libbpf.
+> ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared
+> with zero: datasec_id > 0
+>
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+> ---
+>  kernel/bpf/verifier.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6200519582a6..e9d8d4309bb4 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9572,7 +9572,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env
+> *env,
+>  			       struct bpf_insn *insn,
+>  			       struct bpf_insn_aux_data *aux)
+>  {
+> -	u32 datasec_id, type, id = insn->imm;
+> +	s32 datasec_id, type, id = insn->imm;
 
--ed
+but the value is passed as u32 to btf_type_by_id()...
+
+btf_find_by_name_kind() returns s32
+
+
+>  	const struct btf_var_secinfo *vsi;
+>  	const struct btf_type *datasec;
+>  	const struct btf_type *t;
+> --
+> 2.20.0
+>
+>
