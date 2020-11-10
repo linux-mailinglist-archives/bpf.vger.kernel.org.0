@@ -2,114 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294822ACE55
-	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 05:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5032ACE8D
+	for <lists+bpf@lfdr.de>; Tue, 10 Nov 2020 05:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731692AbgKJEJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Nov 2020 23:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        id S1729546AbgKJEeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Nov 2020 23:34:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731265AbgKJEJt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Nov 2020 23:09:49 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11234C0613CF;
-        Mon,  9 Nov 2020 20:09:49 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id x7so10537754ili.5;
-        Mon, 09 Nov 2020 20:09:49 -0800 (PST)
+        with ESMTP id S1729243AbgKJEeB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Nov 2020 23:34:01 -0500
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D6DC0613CF;
+        Mon,  9 Nov 2020 20:34:01 -0800 (PST)
+Received: by mail-oo1-xc41.google.com with SMTP id f8so2284921oou.0;
+        Mon, 09 Nov 2020 20:34:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Utwg1xneuTB1DBHIkBfa/pGwylx/dG7h4KQnrhH/0NM=;
-        b=uBTFA/GyAp2x/Sl39FT2wp8Hzh0vnDazURfwIMHDO6wq8d6X3cvGBGumfzy+Hcp3RN
-         jU5DTRtu3aNVO7QJfTTE1xfpYm/rDl3WDwf+H5bJWoJwFg+rScyudInBwmxoEvzuDuCg
-         AIbzyYNfIOcCFWYBZPgkYTZPsbMML7qm0GFEkOMpQvvLC41jnQkG06ij/m6n8yKbxxMV
-         rgfa7sMSJkitUNhjOSB86WPNo8B5Q4nz4bkIZ7radfTk8ypgvd5swZadEEbYByCxXKIG
-         kCSTopMwsJbd2oBaatepsGI3zeZKrfcWVZ2iROYSrvw4V9r9tPSOYFiDHKfUXrFBSaG3
-         XTrg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=5F+LG0H8FwJz3uR/PMa+Xyrt4zLmKFAZ+p5c6pKyZAA=;
+        b=ftHMIlvuwLcWtYdGKJp32CEkZYul7r2CHP8MLtwLIXqFPeirJxVvyfLt7FM1kuB0U4
+         N1po/qn3kR1ZNHoj8a02bys9zThS9pCG98ziwvHzwEZTYpxYB5vOmK2+wfpcUyxRqqAJ
+         vfJdV6cIrrzf93NYjXWq8M+RSbuHFGxDTWJszNh5msrvUjVQUidouYqV9KoRGYN2qMg/
+         iThmqFs1aGSwEbEajq5SChC3WDrH+epJ1HPwHk0uuz8h8MfokEK7ycXDd4lN8g74uBjl
+         LfRIZc6U3rtpAOGDVJDHj6CShlFsQP0Hlb6WISaRDTzgvs6PrllqHaOMdMLUa829w/+j
+         FcJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Utwg1xneuTB1DBHIkBfa/pGwylx/dG7h4KQnrhH/0NM=;
-        b=iVtZVtd7YsvilTx1epxiYhIvKlMB6zD36S8GQzGk9K2FO4N43rAtYdoNOPZ/7YluJf
-         BGFHNma/ewvzwEPSlhhIcWa8H//Y47A7HlvAxILk2C27Csv4QQBjfPC2qK1VVx9PJXZV
-         CzB8jeKlEvKfZ+JuEAcnS2dn+r6Z+DYZlP6qIkBhpxbeSg5R02Nzae9G9kEEstyHo22j
-         2qca6iX1EHHmFX3ZeywIKYkxhTEZeSuiyE4Ef+jLw3u+pSZtYkZme6JUP4Xyu5htWp2y
-         0Pn1kogvOwX/4gfEyoBPbYj/QDnMc1bovCVhLwLGSR4hS8FqmcmJRke7dgvcc/vWEoh3
-         VBGA==
-X-Gm-Message-State: AOAM531ft16nADyT7d6qHRQMMglrxsjtPrWYZ8pbrAd9Jq1FzMaV11s7
-        Bl6FoYMCXcMKchskb+CNazk=
-X-Google-Smtp-Source: ABdhPJw13o4Oa2PLdGoZBDR6cN42/13Zwro8be5eInCsk7i0PYOhbKkURYECDl3TfmJ6gTbxuDEkLQ==
-X-Received: by 2002:a05:6e02:4a9:: with SMTP id e9mr12630174ils.24.1604981388270;
-        Mon, 09 Nov 2020 20:09:48 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:7980:a277:20c7:aa44])
-        by smtp.googlemail.com with ESMTPSA id l78sm8440977ild.30.2020.11.09.20.09.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Nov 2020 20:09:47 -0800 (PST)
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vu?= =?UTF-8?Q?sen?= 
-        <toke@redhat.com>
-References: <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
- <bb04a01a-8a96-7a6a-c77e-28ee63983d9a@solarflare.com>
- <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
- <07f149f6-f8ac-96b9-350d-b289ef16d82f@solarflare.com>
- <CAEf4BzaSfutBt3McEPjmu_FyxyzJa_xVGfhP_7v0oGuqG_HBEw@mail.gmail.com>
- <20201106094425.5cc49609@redhat.com>
- <CAEf4Bzb2fuZ+Mxq21HEUKcOEba=rYZHc+1FTQD98=MPxwj8R3g@mail.gmail.com>
- <CAADnVQ+S7fusZ6RgXBKJL7aCtt3jpNmCnCkcXd0fLayu+Rw_6Q@mail.gmail.com>
- <20201106152537.53737086@hermes.local>
- <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
- <20201109014515.rxz3uppztndbt33k@ast-mbp>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
-Date:   Mon, 9 Nov 2020 21:09:44 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.1
-MIME-Version: 1.0
-In-Reply-To: <20201109014515.rxz3uppztndbt33k@ast-mbp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=5F+LG0H8FwJz3uR/PMa+Xyrt4zLmKFAZ+p5c6pKyZAA=;
+        b=uN5qssBAdVVpNYsKjiNaH/JpdoJN6LMMpAuzYnRH/a36P/xuX3Y93gLadTQetSFiCb
+         tc+y9B5dhqWWS0nNjYshE3e+JHCYTmm/5DNQu2ER/E00FKqkSXZPRcxlVDLKd43UP12K
+         JTx8oGsLlDu7AKNFMTcOaQ8YLFLIp/QGbQ+K9WUJOS5PzCEJsInD7/o/UVyl3n/Gk/YP
+         FUjZ4k3bofDNtOVliLWHfoZoVcVvVmOgzmu24RUwOxvEX8GCpi7RHQNGP4rAByY/lv30
+         OI3VAU8CApnmK0kkeiM2FaOUB8UUgnX/jM0n7OjqsHFFcVl/vcomBk2iKRpkT0qEZeVn
+         r8Nw==
+X-Gm-Message-State: AOAM530CQQbF1U7lPKIp8cL07a0ewRYFpon8TJq3D/Jlp+YcPF1XvUMv
+        EU5GiA6Avwef2QCSDJCOBcE=
+X-Google-Smtp-Source: ABdhPJzlr3PKDMTi+GB0/SwUhcWdUNgB9zHfAoWwMpTrTmMfhNo7/dFOBi52QasLAGkmKIaxPtNNng==
+X-Received: by 2002:a4a:c68d:: with SMTP id m13mr12363549ooq.64.1604982840702;
+        Mon, 09 Nov 2020 20:34:00 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id v5sm2391289oob.40.2020.11.09.20.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Nov 2020 20:34:00 -0800 (PST)
+Date:   Mon, 09 Nov 2020 20:33:53 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Wang Hai <wanghai38@huawei.com>, quentin@isovalent.com,
+        mrostecki@opensuse.org, john.fastabend@gmail.com
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        kpsingh@chromium.org, toke@redhat.com, danieltimlee@gmail.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <5faa18319b71_3e187208f@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201110014637.6055-1-wanghai38@huawei.com>
+References: <20201110014637.6055-1-wanghai38@huawei.com>
+Subject: RE: [PATCH v2 bpf] tools: bpftool: Add missing close before bpftool
+ net attach exit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/8/20 6:45 PM, Alexei Starovoitov wrote:
+Wang Hai wrote:
+> progfd is created by prog_parse_fd(), before 'bpftool net attach' exit,
+> it should be closed.
 > 
-> I don't understand why on one side you're pointing out existing quirkiness with
-> bpf usability while at the same time arguing to make it _less_ user friendly
-
-I believe you have confused my comments with others. My comments have
-focused on one aspect: The insistence by BPF maintainers that all code
-bases and users constantly chase latest and greatest versions of
-relevant S/W to use BPF - though I believe a lot of the tool chasing
-stems from BTF. I am fairly certain I have been consistent in that theme
-within this thread.
-
-> when myself, Daniel, Andrii explained in detail what libbpf does and how it
-> affects user experience?
+> Fixes: 04949ccc273e ("tools: bpftool: add net attach command to attach XDP on interface")
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
+> v1->v2: use cleanup tag instead of repeated closes
+>  tools/bpf/bpftool/net.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
 > 
-> The analogy of libbpf in iproute2 and libbfd in gdb is that both libraries
+> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+> index 910e7bac6e9e..1ac7228167e6 100644
+> --- a/tools/bpf/bpftool/net.c
+> +++ b/tools/bpf/bpftool/net.c
+> @@ -578,8 +578,8 @@ static int do_attach(int argc, char **argv)
+>  
+>  	ifindex = net_parse_dev(&argc, &argv);
+>  	if (ifindex < 1) {
+> -		close(progfd);
+> -		return -EINVAL;
+> +		err = -EINVAL;
+> +		goto cleanup;
+>  	}
+>  
+>  	if (argc) {
+> @@ -587,8 +587,8 @@ static int do_attach(int argc, char **argv)
+>  			overwrite = true;
+>  		} else {
+>  			p_err("expected 'overwrite', got: '%s'?", *argv);
+> -			close(progfd);
+> -			return -EINVAL;
+> +			err = -EINVAL;
+> +			goto cleanup;
+>  		}
+>  	}
+>  
+> @@ -600,13 +600,15 @@ static int do_attach(int argc, char **argv)
 
-Your gdb / libbfd analogy misses the mark - by a lot. That analogy is
-relevant for bpftool, not iproute2.
+I think now that return value depends on this err it should be 'if (err)'
+otherwise we risk retunring non-zero error code from do_attach which
+will cause programs to fail.
 
-iproute2 can leverage libbpf for 3 or 4 tc modules and a few xdp hooks.
-That is it, and it is a tiny percentage of the functionality in the package.
+>  	if (err < 0) {
+        ^^^^^^^^^^^^
+        if (err) {
+
+>  		p_err("interface %s attach failed: %s",
+>  		      attach_type_strings[attach_type], strerror(-err));
+> -		return err;
+> +		goto cleanup;
+>  	}
+>  
+>  	if (json_output)
+>  		jsonw_null(json_wtr);
+>  
+> -	return 0;
+
+
+Alternatively we could add an 'err = 0' here, but above should never
+return a value >0 as far as I can see.
+
+Thanks,
+John
+
+> +cleanup:
+> +	close(progfd);
+> +	return err;
+>  }
+>  
+>  static int do_detach(int argc, char **argv)
+> -- 
+> 2.17.1
+> 
+
 
