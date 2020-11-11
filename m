@@ -2,140 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270652AF444
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 15:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B284F2AF46C
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 16:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727148AbgKKO7U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 09:59:20 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:55563 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgKKO7R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:59:17 -0500
-Received: by mail-il1-f199.google.com with SMTP id w10so1504390ila.22
-        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 06:59:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=W6HwsV977k5Y95mu3agDWsdgg0NHwiZ+N76/EE+Ulz4=;
-        b=VbYIFkToe8QaZKizlnuhaC0CQgX6LbeO0Hpd7d9dNeGHTHO3/zVUMAUL2oPpBlvj7v
-         0tiocS+HErqUUVNNTwyy9iOAMKnjt9NlUIrLHOGOsjBCiDxcI4zNBM6zHo3FCOwK2Sne
-         aWXaVD9avk3qOtx/I2JSpX74hG5pCLmAX9wU1egzw2Pf2M3kKigRmRCNx9d7PEXjXaYV
-         rLnHrCJwSHWTVa1IN4kL53YfCfQtlJYitA6NwiJubXexUfyWwZwc3uTff4SXv8WdyUPy
-         nOMMRnjUiZl0qjTXBsrmgwSHwPy2VbAgiCeyTfhOpmP7EyzQAA8g5Hd2T95x8XFTTn44
-         uEhw==
-X-Gm-Message-State: AOAM533+PkCmuQGZwTsUMyAMIZ0r6oqNggjUHD+vOgh0C3ucuvjureWg
-        O51xaHXwBIUTlF0xwImW9JX7JD2CKiOElShZv0Cqr1eaeYij
-X-Google-Smtp-Source: ABdhPJwPaGTsRU/8i3pPyGnMI8Ns8iG/TZN6ny1+/swklMuMxPF9MWMmk+LV1RmWFYA2sfyjg6xPUAGGqK8jRy6rf7wctHU8gayL
+        id S1726316AbgKKPHX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 10:07:23 -0500
+Received: from www62.your-server.de ([213.133.104.62]:54106 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbgKKPHU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 10:07:20 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kcrhs-0003zw-D0; Wed, 11 Nov 2020 16:06:44 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kcrhs-0003Jh-28; Wed, 11 Nov 2020 16:06:44 +0100
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
+ <07f149f6-f8ac-96b9-350d-b289ef16d82f@solarflare.com>
+ <CAEf4BzaSfutBt3McEPjmu_FyxyzJa_xVGfhP_7v0oGuqG_HBEw@mail.gmail.com>
+ <20201106094425.5cc49609@redhat.com>
+ <CAEf4Bzb2fuZ+Mxq21HEUKcOEba=rYZHc+1FTQD98=MPxwj8R3g@mail.gmail.com>
+ <CAADnVQ+S7fusZ6RgXBKJL7aCtt3jpNmCnCkcXd0fLayu+Rw_6Q@mail.gmail.com>
+ <20201106152537.53737086@hermes.local>
+ <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
+ <20201109014515.rxz3uppztndbt33k@ast-mbp>
+ <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
+ <20201111004749.r37tqrhskrcxjhhx@ast-mbp> <874klwcg1p.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <321a2728-7a43-4a48-fe97-dab45b76e6fb@iogearbox.net>
+Date:   Wed, 11 Nov 2020 16:06:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:5101:: with SMTP id s1mr20640779jaa.74.1605106756453;
- Wed, 11 Nov 2020 06:59:16 -0800 (PST)
-Date:   Wed, 11 Nov 2020 06:59:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000b8bf805b3d60a08@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_trace_run4
-From:   syzbot <syzbot+a5bd8c75daa0e849b296@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <874klwcg1p.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25985/Wed Nov 11 14:18:01 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 11/11/20 12:02 PM, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>> On Mon, Nov 09, 2020 at 09:09:44PM -0700, David Ahern wrote:
+>>> On 11/8/20 6:45 PM, Alexei Starovoitov wrote:
+>>>>
+>>>> I don't understand why on one side you're pointing out existing quirkiness with
+>>>> bpf usability while at the same time arguing to make it _less_ user friendly
+>>>
+>>> I believe you have confused my comments with others. My comments have
+>>> focused on one aspect: The insistence by BPF maintainers that all code
+>>> bases and users constantly chase latest and greatest versions of
+>>> relevant S/W to use BPF
+>>
+>> yes, because we care about user experience while you're still insisting
+>> on make it horrible.
+>> With random pick of libbpf.so we would have no choice, but to actively tell
+>> users to avoid using tc, because sooner or later they will be pissed. I'd
+>> rather warn them ahead of time.
+> 
+> Could we *please* stop with this "my way or the highway" extortion? It's
+> incredibly rude, and it's not helping the discussion.
+> 
+>>> - though I believe a lot of the tool chasing
+>>> stems from BTF. I am fairly certain I have been consistent in that theme
+>>> within this thread.
+>>
+>> Right. A lot of features added in the last couple years depend on BTF:
+>> static vs global linking, bpf_spin_lock, function by function verification, etc
+>>
+>>>> when myself, Daniel, Andrii explained in detail what libbpf does and how it
+>>>> affects user experience?
+>>>>
+>>>> The analogy of libbpf in iproute2 and libbfd in gdb is that both libraries
+>>>
+>>> Your gdb / libbfd analogy misses the mark - by a lot. That analogy is
+>>> relevant for bpftool, not iproute2.
+>>>
+>>> iproute2 can leverage libbpf for 3 or 4 tc modules and a few xdp hooks.
+>>> That is it, and it is a tiny percentage of the functionality in the package.
+>>
+>> cat tools/lib/bpf/*.[hc]|wc -l
+>> 23950
+>> cat iproute2/tc/*.[hc]|wc -l
+>> 29542
+>>
+>> The point is that for these few tc commands the amount logic in libbpf/tc is 90/10.
+>>
+>> Let's play it out how libbpf+tc is going to get developed moving forward if
+>> libbpf is a random version. Say, there is a patch for libbpf that makes
+>> iproute2 experience better. bpf maintainers would have no choice, but to reject
+>> it, since we don't add features/apis to libbpf if there is no active user.
+>> Adding a new libbpf api that iproute2 few years from now may or may not take
+>> advantage makes little sense.
+> 
+> What? No one has said that iproute2 would never use any new features,
+> just that they would be added conditionally on a compatibility check
+> with libbpf (like the check for bpf_program__section_name() in the
+> current patch series).
+> 
+> Besides, for the entire history of BPF support in iproute2 so far, the
+> benefit has come from all the features that libbpf has just started
+> automatically supporting on load (BTF, etc), so users would have
+> benefited from automatic library updates had it *not* been vendored in.
 
-syzbot found the following issue on:
+Not really. What you imply here is that we're living in a perfect world and that
+all distros follow suite and i) add libbpf dependency to their official iproute2
+package, ii) upgrade iproute2 package along with new kernel releases and iii)
+upgrade libbpf along with it so that users are able to develop BPF programs against
+the feature set that the kernel offers (as intended). These are a lot of moving parts
+to get right, and as I pointed out earlier in the conversation, it took major distros
+2 years to get their act together to officially include bpftool as a package -
+I'm not making this up, and this sort of pace is simply not sustainable. It's also
+not clear whether distros will get point iii) correct. It's not about compatibility,
+but rather about __users__ of the loader being able to __benefit__ of the latest
+features their distro kernel ships from BPF (& libbpf) side just as they do with
+iproute2 extensions. For the integrated lib/bpf.c in iproute2 this was never an
+issue and for multiple years in the earlier days it was much further ahead than
+libbpf which was only tracing-focused before we decided to put focus on the latter
+as a more general loader instead. But if you ever want to start a deprecation process
+of the lib/bpf.c then users should not need to worry whether iproute2 was even linked
+to libbpf in the first place, they should be able to have a guarantee that it's
+__generally available__ as with lib/bpf.c, otherwise they'll always just assume
+the latter as the minimal available base when writing code against iproute2 loader.
+Hypothetically speaking, if Hangbin would have presented patches here to extend the
+existing lib/bpf.c to the point that it's feature complete (compared to libbpf),
+we wouldn't even have this whole discussion here.
 
-HEAD commit:    c6bde958 bpf: Lift hashtab key_size limit
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=159f611a500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
-dashboard link: https://syzkaller.appspot.com/bug?extid=a5bd8c75daa0e849b296
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a5bd8c75daa0e849b296@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: fffff52000194406
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 23fff2067 P4D 23fff2067 PUD 101a4067 PMD 101a6067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8505 Comm: syz-executor.1 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-RIP: 0010:bpf_trace_run4+0x135/0x3f0 kernel/trace/bpf_trace.c:2084
-Code: c7 c7 20 ed 50 89 e8 6a 5e d2 ff 0f 1f 44 00 00 e8 f0 27 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900016af5e0 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000ca2000 RCX: ffffffff8178e0f2
-RDX: 1ffff92000194406 RSI: ffffffff8178dec0 RDI: ffffc90000ca2030
-RBP: 1ffff920002d5ebd R08: 0000000000000000 R09: ffffffff8ebac667
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000001 R14: 00000000000026be R15: ffff8880563fdd38
-FS:  0000000001c6d940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff52000194406 CR3: 000000003df71000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
- __bpf_trace_ext4_free_blocks+0x10a/0x150 include/trace/events/ext4.h:887
- trace_ext4_free_blocks include/trace/events/ext4.h:887 [inline]
- ext4_free_blocks+0x150d/0x1de0 fs/ext4/mballoc.c:5303
- ext4_remove_blocks fs/ext4/extents.c:2497 [inline]
- ext4_ext_rm_leaf fs/ext4/extents.c:2663 [inline]
- ext4_ext_remove_space+0x1fad/0x4270 fs/ext4/extents.c:2911
- ext4_ext_truncate+0x1dc/0x240 fs/ext4/extents.c:4373
- ext4_truncate+0xe86/0x1420 fs/ext4/inode.c:4251
- ext4_evict_inode+0x9d2/0x1180 fs/ext4/inode.c:280
- evict+0x2ed/0x750 fs/inode.c:578
- iput_final fs/inode.c:1654 [inline]
- iput.part.0+0x3fe/0x820 fs/inode.c:1680
- iput+0x58/0x70 fs/inode.c:1670
- dentry_unlink_inode+0x2b1/0x3d0 fs/dcache.c:374
- d_delete fs/dcache.c:2470 [inline]
- d_delete+0x16b/0x1c0 fs/dcache.c:2459
- vfs_rmdir.part.0+0x37b/0x430 fs/namei.c:3726
- vfs_rmdir fs/namei.c:3698 [inline]
- do_rmdir+0x3ae/0x440 fs/namei.c:3773
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45dc27
-Code: 00 66 90 b8 57 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 8d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 54 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 6d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd7c232298 EFLAGS: 00000207 ORIG_RAX: 0000000000000054
-RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 000000000045dc27
-RDX: 0000000000000000 RSI: 000000000074e678 RDI: 00007ffd7c2333d0
-RBP: 0000000000003f22 R08: 0000000000000000 R09: 0000000000000001
-R10: 000000000000000a R11: 0000000000000207 R12: 00007ffd7c2333d0
-R13: 0000000001c6ea60 R14: 0000000000000000 R15: 00007ffd7c2333d0
-Modules linked in:
-CR2: fffff52000194406
----[ end trace 86ec96f38a2db7f5 ]---
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-RIP: 0010:bpf_trace_run4+0x135/0x3f0 kernel/trace/bpf_trace.c:2084
-Code: c7 c7 20 ed 50 89 e8 6a 5e d2 ff 0f 1f 44 00 00 e8 f0 27 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
-RSP: 0018:ffffc900016af5e0 EFLAGS: 00010a06
-RAX: dffffc0000000000 RBX: ffffc90000ca2000 RCX: ffffffff8178e0f2
-RDX: 1ffff92000194406 RSI: ffffffff8178dec0 RDI: ffffc90000ca2030
-RBP: 1ffff920002d5ebd R08: 0000000000000000 R09: ffffffff8ebac667
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000001 R14: 00000000000026be R15: ffff8880563fdd38
-FS:  0000000001c6d940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff52000194406 CR3: 000000003df71000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks,
+Daniel
