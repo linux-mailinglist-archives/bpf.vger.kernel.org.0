@@ -2,145 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13FF2AEEE9
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 11:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6432AEF14
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 12:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbgKKKnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 05:43:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgKKKnh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 05:43:37 -0500
-Received: from localhost (unknown [151.66.8.153])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A5D32063A;
-        Wed, 11 Nov 2020 10:43:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605091416;
-        bh=Y3nOWpQ6gjk1A05/pkmC0s4gAecpIOmp2sy9mnkEjFE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y0RBzUAJb2QWVVpNvp2tN0wFOuNoEniz0FIXgPrfwr+RhIHtXRAuf5TYHVDWpFxGY
-         EIwUWdZKe04dAZpiMxxt9eml18TxexXW+xj/vnBlYueMxc5QS45CBemyASNcy4HhqV
-         3c/vKdhZUm06MEQBq9kCykExyHMBAH2zHL+TWLs8=
-Date:   Wed, 11 Nov 2020 11:43:31 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        ilias.apalodimas@linaro.org
-Subject: Re: [PATCH v5 net-nex 2/5] net: page_pool: add bulk support for
- ptr_ring
-Message-ID: <20201111104331.GA3988@lore-desk>
-References: <cover.1605020963.git.lorenzo@kernel.org>
- <1229970bf6f36fd4689169a2e47fdcc664d28366.1605020963.git.lorenzo@kernel.org>
- <5fabaf0c4a68a_bb2602085a@john-XPS-13-9370.notmuch>
+        id S1725984AbgKKLCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 06:02:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46063 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725959AbgKKLCf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 06:02:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605092554;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HgnsptKYrAYETwb6RQgP12ipc3XlwLCSG6GxAjNNiQg=;
+        b=HdYebn0bjIhjrD1RljpXkyCe3gqmj/Xge1/BecCBYojGzfm0xUKSj1Xqgk5TJEsCPZ153M
+        Q19YUQfqg5L/K0FXNc/y5TSgsQKhLsc7439FDwStCJbJWgN+QosmB87WYQMsBuwmyV9N/1
+        HRUNQm7cPMsBh6EVVx52E7/tROnUVc0=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-RqlTmw6-NbSVMJGENgZcGg-1; Wed, 11 Nov 2020 06:02:32 -0500
+X-MC-Unique: RqlTmw6-NbSVMJGENgZcGg-1
+Received: by mail-qv1-f70.google.com with SMTP id c90so1131464qva.11
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 03:02:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=HgnsptKYrAYETwb6RQgP12ipc3XlwLCSG6GxAjNNiQg=;
+        b=htU6gGh60hetL0N51uZStfJ1LmUjl3VNWvsMKK1MZD1O7G/rx3n8blNlSRit1VMYPp
+         pf/yXichwDOz8VzJjhZjUq0ojLz5jeEsgbFuMAWKGob+ZlHfl79XHQHeouE9GrR5Odk8
+         /NiskvHnlnLX0w2M6e05w22NBLHtV2qYAJkvnigdHz8nPMsJQ3DD2+++0I7kiUhPMWtz
+         ekCuvzceYQYAGxv7WzkPrSxYvw4SNrwNfyv9TMPTYQqQgdUUXw7kt9UBpfPvq4eXO6mv
+         Yml08YDWzgtkEbFaCaAKMygqFzEn3kq5b1oD/8E4XmDWggjPbcCRnrWUgDZStHotwP8F
+         miuA==
+X-Gm-Message-State: AOAM532YL8R0+/1Lj7X2f+ePbjrGAexLTUuY4FzZ4jOd4u67Q8yCitH8
+        Nx1YM4NqcT18KMaovwIFwHrMmRAlRtTaXSiRVi+7lpBXM9kT2iY/OiMxZpXzvr/R/W/MVDLaus5
+        y6hkQAGIo6lpA
+X-Received: by 2002:ac8:1201:: with SMTP id x1mr12717913qti.339.1605092551561;
+        Wed, 11 Nov 2020 03:02:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzk553Y+qO9pY8i86H2Q8DT91q75yDtJJLXiQ9gewjey8d5E3lMiuoHYWNh9qdk7ow0cv4rww==
+X-Received: by 2002:ac8:1201:: with SMTP id x1mr12717886qti.339.1605092551320;
+        Wed, 11 Nov 2020 03:02:31 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id s23sm1718122qke.11.2020.11.11.03.02.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 03:02:29 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B1EAB1833E9; Wed, 11 Nov 2020 12:02:26 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        David Ahern <dsahern@gmail.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+In-Reply-To: <20201111004749.r37tqrhskrcxjhhx@ast-mbp>
+References: <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
+ <07f149f6-f8ac-96b9-350d-b289ef16d82f@solarflare.com>
+ <CAEf4BzaSfutBt3McEPjmu_FyxyzJa_xVGfhP_7v0oGuqG_HBEw@mail.gmail.com>
+ <20201106094425.5cc49609@redhat.com>
+ <CAEf4Bzb2fuZ+Mxq21HEUKcOEba=rYZHc+1FTQD98=MPxwj8R3g@mail.gmail.com>
+ <CAADnVQ+S7fusZ6RgXBKJL7aCtt3jpNmCnCkcXd0fLayu+Rw_6Q@mail.gmail.com>
+ <20201106152537.53737086@hermes.local>
+ <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
+ <20201109014515.rxz3uppztndbt33k@ast-mbp>
+ <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
+ <20201111004749.r37tqrhskrcxjhhx@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 11 Nov 2020 12:02:26 +0100
+Message-ID: <874klwcg1p.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
-Content-Disposition: inline
-In-Reply-To: <5fabaf0c4a68a_bb2602085a@john-XPS-13-9370.notmuch>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
---MGYHOYXEY6WxJCY8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Mon, Nov 09, 2020 at 09:09:44PM -0700, David Ahern wrote:
+>> On 11/8/20 6:45 PM, Alexei Starovoitov wrote:
+>> > 
+>> > I don't understand why on one side you're pointing out existing quirkiness with
+>> > bpf usability while at the same time arguing to make it _less_ user friendly
+>> 
+>> I believe you have confused my comments with others. My comments have
+>> focused on one aspect: The insistence by BPF maintainers that all code
+>> bases and users constantly chase latest and greatest versions of
+>> relevant S/W to use BPF
+>
+> yes, because we care about user experience while you're still insisting
+> on make it horrible.
+> With random pick of libbpf.so we would have no choice, but to actively tell
+> users to avoid using tc, because sooner or later they will be pissed. I'd
+> rather warn them ahead of time.
 
-> Lorenzo Bianconi wrote:
-> > Introduce the capability to batch page_pool ptr_ring refill since it is
-> > usually run inside the driver NAPI tx completion loop.
-> >=20
-> > Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  include/net/page_pool.h | 26 ++++++++++++++++
-> >  net/core/page_pool.c    | 69 +++++++++++++++++++++++++++++++++++------
-> >  net/core/xdp.c          |  9 ++----
-> >  3 files changed, 87 insertions(+), 17 deletions(-)
->=20
-> [...]
->=20
-> > +/* Caller must not use data area after call, as this function overwrit=
-es it */
-> > +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
-> > +			     int count)
-> > +{
-> > +	int i, bulk_len =3D 0, pa_len =3D 0;
-> > +
-> > +	for (i =3D 0; i < count; i++) {
-> > +		struct page *page =3D virt_to_head_page(data[i]);
-> > +
-> > +		page =3D __page_pool_put_page(pool, page, -1, false);
-> > +		/* Approved for bulk recycling in ptr_ring cache */
-> > +		if (page)
-> > +			data[bulk_len++] =3D page;
-> > +	}
-> > +
-> > +	if (unlikely(!bulk_len))
-> > +		return;
-> > +
-> > +	/* Bulk producer into ptr_ring page_pool cache */
-> > +	page_pool_ring_lock(pool);
-> > +	for (i =3D 0; i < bulk_len; i++) {
-> > +		if (__ptr_ring_produce(&pool->ring, data[i]))
-> > +			data[pa_len++] =3D data[i];
->=20
-> How about bailing out on the first error? bulk_len should be less than
-> 16 right, so should we really keep retying hoping ring->size changes?
+Could we *please* stop with this "my way or the highway" extortion? It's
+incredibly rude, and it's not helping the discussion.
 
-do you mean doing something like:
+>> - though I believe a lot of the tool chasing
+>> stems from BTF. I am fairly certain I have been consistent in that theme
+>> within this thread.
+>
+> Right. A lot of features added in the last couple years depend on BTF:
+> static vs global linking, bpf_spin_lock, function by function verification, etc
+>
+>> > when myself, Daniel, Andrii explained in detail what libbpf does and how it
+>> > affects user experience?
+>> > 
+>> > The analogy of libbpf in iproute2 and libbfd in gdb is that both libraries
+>> 
+>> Your gdb / libbfd analogy misses the mark - by a lot. That analogy is
+>> relevant for bpftool, not iproute2.
+>> 
+>> iproute2 can leverage libbpf for 3 or 4 tc modules and a few xdp hooks.
+>> That is it, and it is a tiny percentage of the functionality in the package.
+>
+> cat tools/lib/bpf/*.[hc]|wc -l
+> 23950
+> cat iproute2/tc/*.[hc]|wc -l
+> 29542
+>
+> The point is that for these few tc commands the amount logic in libbpf/tc is 90/10.
+>
+> Let's play it out how libbpf+tc is going to get developed moving forward if
+> libbpf is a random version. Say, there is a patch for libbpf that makes
+> iproute2 experience better. bpf maintainers would have no choice, but to reject
+> it, since we don't add features/apis to libbpf if there is no active user.
+> Adding a new libbpf api that iproute2 few years from now may or may not take
+> advantage makes little sense.
 
-	page_pool_ring_lock(pool);
-	if (__ptr_ring_full(&pool->ring)) {
-		pa_len =3D bulk_len;
-		page_pool_ring_unlock(pool);
-		goto out;
-	}
-	...
-out:
-	for (i =3D 0; i < pa_len; i++) {
-		...
-	}
+What? No one has said that iproute2 would never use any new features,
+just that they would be added conditionally on a compatibility check
+with libbpf (like the check for bpf_program__section_name() in the
+current patch series).
 
-I do not know if it is better or not since the consumer can run in parallel.
-@Jesper/Ilias: any idea?
+Besides, for the entire history of BPF support in iproute2 so far, the
+benefit has come from all the features that libbpf has just started
+automatically supporting on load (BTF, etc), so users would have
+benefited from automatic library updates had it *not* been vendored in.
 
-Regards,
-Lorenzo
+-Toke
 
->=20
-> > +	}
-> > +	page_pool_ring_unlock(pool);
-> > +
-> > +	if (likely(!pa_len))
-> > +		return;
-> > +
-> > +	/* ptr_ring cache full, free pages outside producer lock since
-> > +	 * put_page() with refcnt =3D=3D 1 can be an expensive operation
-> > +	 */
-> > +	for (i =3D 0; i < pa_len; i++)
-> > +		page_pool_return_page(pool, data[i]);
-> > +}
-> > +EXPORT_SYMBOL(page_pool_put_page_bulk);
-> > +
->=20
-> Otherwise LGTM.
-
---MGYHOYXEY6WxJCY8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX6vAUQAKCRA6cBh0uS2t
-rJgBAQC3lsXjP/KYpaJo7bpefhDNKJCHOuIz/Vw3s2Ueub8q1gEAiS50wKs/dWnt
-RqDHt3CSYNZq7SYA15REUFH59unf0w8=
-=1glU
------END PGP SIGNATURE-----
-
---MGYHOYXEY6WxJCY8--
