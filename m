@@ -2,29 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B284F2AF46C
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 16:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187732AF694
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 17:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgKKPHX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 10:07:23 -0500
-Received: from www62.your-server.de ([213.133.104.62]:54106 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbgKKPHU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 10:07:20 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kcrhs-0003zw-D0; Wed, 11 Nov 2020 16:06:44 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kcrhs-0003Jh-28; Wed, 11 Nov 2020 16:06:44 +0100
+        id S1726208AbgKKQdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 11:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgKKQdI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 11:33:08 -0500
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760ACC0613D1;
+        Wed, 11 Nov 2020 08:33:08 -0800 (PST)
+Received: by mail-io1-xd43.google.com with SMTP id m13so2882149ioq.9;
+        Wed, 11 Nov 2020 08:33:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3fAjIG3mgbnFVC9OfitJdgU8aFvxA1tcVc+KEAMIaZA=;
+        b=iUj4jDELk5UiZXYyi7LM3W05hrAA+UqY7foSzkvRunGEaFk52Ev2xzR0dXDhvVRlin
+         tEkNlotJ75SDtUwNQQZ5YJ+YrXyDETfRNR/p5dJUIvlWFvFSllS8HNDhjkyvYXLUIE4t
+         0adXs6C7X/tn3oBXh1E/uqmaTc2LXaP8Ud/c25ZYT91UpwaFjbmXfygSU7tDNbyRddAt
+         Y3esyNBCZc4ZNtJP8lU2EETxNk+WzJNWdMaoVGxlb3LSsCnM6Hj6GH2PobchZoBGsc2T
+         K5IgZB1vmcbQfTILCG7s2GQtog42PMgQtreioybqzenuW/x/5aMLaqUzjh1RPkOpWdmy
+         OOww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3fAjIG3mgbnFVC9OfitJdgU8aFvxA1tcVc+KEAMIaZA=;
+        b=pcgzsUDJTFgHDwDDTnKLiLPNqI0isVkDVLehyNmchyNRKWZqtwD/bsC9HbdIpWOfGs
+         u4hsT0OJfRBkf5ta6WuBNhxtit5lhYuz/aWYW2K6Fp+QHCmeZ3h55504aIz/o5d9WFWu
+         tE7fUkOOjmnxNjJJk2fBLR7RlFAdmlpXCrl15rwQEgH7EX+60aMaQfHMpAFE3jP8Hhm6
+         oWx1R5leRLOfTwPEAkkyKXJJIwb3znsOMq0Kpw4ZtConl0CuQd7FaSNPECAYg5d6Q75Y
+         9nJ55L8QwdcjVxzFdb5QE7MNyJc3WsTgzn+eJm4XEsZCoEtUPV76x1D5KbsWuxnUAfwA
+         VLjw==
+X-Gm-Message-State: AOAM533OX6DHNfcupcIJKuT5/g3iBR/X/rakksjtgWC2uIfDRksLMxh0
+        zR6ch0aGO5ICo1o9us5hjmnR/qnie8Q=
+X-Google-Smtp-Source: ABdhPJx5rCRIk61jEGHofstkNTXJwLf6Y9A0XfK5hJV8CoD/O2opRHUm8weboEY2J/+qHI1AlMRARg==
+X-Received: by 2002:a02:cb99:: with SMTP id u25mr16397606jap.73.1605112387744;
+        Wed, 11 Nov 2020 08:33:07 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:7980:a277:20c7:aa44])
+        by smtp.googlemail.com with ESMTPSA id x14sm1561669ior.7.2020.11.11.08.33.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Nov 2020 08:33:07 -0800 (PST)
 Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        David Ahern <dsahern@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Stephen Hemminger <stephen@networkplumber.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Jiri Benc <jbenc@redhat.com>,
@@ -48,108 +75,68 @@ References: <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
  <20201109014515.rxz3uppztndbt33k@ast-mbp>
  <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
  <20201111004749.r37tqrhskrcxjhhx@ast-mbp> <874klwcg1p.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <321a2728-7a43-4a48-fe97-dab45b76e6fb@iogearbox.net>
-Date:   Wed, 11 Nov 2020 16:06:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ <321a2728-7a43-4a48-fe97-dab45b76e6fb@iogearbox.net>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <8bd665e1-f82b-1543-9791-8b41da855327@gmail.com>
+Date:   Wed, 11 Nov 2020 09:33:05 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.1
 MIME-Version: 1.0
-In-Reply-To: <874klwcg1p.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <321a2728-7a43-4a48-fe97-dab45b76e6fb@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25985/Wed Nov 11 14:18:01 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/11/20 12:02 PM, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->> On Mon, Nov 09, 2020 at 09:09:44PM -0700, David Ahern wrote:
->>> On 11/8/20 6:45 PM, Alexei Starovoitov wrote:
->>>>
->>>> I don't understand why on one side you're pointing out existing quirkiness with
->>>> bpf usability while at the same time arguing to make it _less_ user friendly
->>>
->>> I believe you have confused my comments with others. My comments have
->>> focused on one aspect: The insistence by BPF maintainers that all code
->>> bases and users constantly chase latest and greatest versions of
->>> relevant S/W to use BPF
->>
->> yes, because we care about user experience while you're still insisting
->> on make it horrible.
->> With random pick of libbpf.so we would have no choice, but to actively tell
->> users to avoid using tc, because sooner or later they will be pissed. I'd
->> rather warn them ahead of time.
+On 11/11/20 8:06 AM, Daniel Borkmann wrote:
 > 
-> Could we *please* stop with this "my way or the highway" extortion? It's
-> incredibly rude, and it's not helping the discussion.
-> 
->>> - though I believe a lot of the tool chasing
->>> stems from BTF. I am fairly certain I have been consistent in that theme
->>> within this thread.
->>
->> Right. A lot of features added in the last couple years depend on BTF:
->> static vs global linking, bpf_spin_lock, function by function verification, etc
->>
->>>> when myself, Daniel, Andrii explained in detail what libbpf does and how it
->>>> affects user experience?
->>>>
->>>> The analogy of libbpf in iproute2 and libbfd in gdb is that both libraries
->>>
->>> Your gdb / libbfd analogy misses the mark - by a lot. That analogy is
->>> relevant for bpftool, not iproute2.
->>>
->>> iproute2 can leverage libbpf for 3 or 4 tc modules and a few xdp hooks.
->>> That is it, and it is a tiny percentage of the functionality in the package.
->>
->> cat tools/lib/bpf/*.[hc]|wc -l
->> 23950
->> cat iproute2/tc/*.[hc]|wc -l
->> 29542
->>
->> The point is that for these few tc commands the amount logic in libbpf/tc is 90/10.
->>
->> Let's play it out how libbpf+tc is going to get developed moving forward if
->> libbpf is a random version. Say, there is a patch for libbpf that makes
->> iproute2 experience better. bpf maintainers would have no choice, but to reject
->> it, since we don't add features/apis to libbpf if there is no active user.
->> Adding a new libbpf api that iproute2 few years from now may or may not take
->> advantage makes little sense.
-> 
-> What? No one has said that iproute2 would never use any new features,
-> just that they would be added conditionally on a compatibility check
-> with libbpf (like the check for bpf_program__section_name() in the
-> current patch series).
-> 
-> Besides, for the entire history of BPF support in iproute2 so far, the
-> benefit has come from all the features that libbpf has just started
-> automatically supporting on load (BTF, etc), so users would have
-> benefited from automatic library updates had it *not* been vendored in.
+> Not really. What you imply here is that we're living in a perfect world
+> and that
+> all distros follow suite and i) add libbpf dependency to their official
+> iproute2
+> package, ii) upgrade iproute2 package along with new kernel releases and
+> iii)
+> upgrade libbpf along with it so that users are able to develop BPF
+> programs against
+> the feature set that the kernel offers (as intended). These are a lot of
+> moving parts
+> to get right, and as I pointed out earlier in the conversation, it took
+> major distros
+> 2 years to get their act together to officially include bpftool as a
+> package -
 
-Not really. What you imply here is that we're living in a perfect world and that
-all distros follow suite and i) add libbpf dependency to their official iproute2
-package, ii) upgrade iproute2 package along with new kernel releases and iii)
-upgrade libbpf along with it so that users are able to develop BPF programs against
-the feature set that the kernel offers (as intended). These are a lot of moving parts
-to get right, and as I pointed out earlier in the conversation, it took major distros
-2 years to get their act together to officially include bpftool as a package -
-I'm not making this up, and this sort of pace is simply not sustainable. It's also
-not clear whether distros will get point iii) correct. It's not about compatibility,
-but rather about __users__ of the loader being able to __benefit__ of the latest
-features their distro kernel ships from BPF (& libbpf) side just as they do with
-iproute2 extensions. For the integrated lib/bpf.c in iproute2 this was never an
-issue and for multiple years in the earlier days it was much further ahead than
-libbpf which was only tracing-focused before we decided to put focus on the latter
-as a more general loader instead. But if you ever want to start a deprecation process
-of the lib/bpf.c then users should not need to worry whether iproute2 was even linked
-to libbpf in the first place, they should be able to have a guarantee that it's
-__generally available__ as with lib/bpf.c, otherwise they'll always just assume
-the latter as the minimal available base when writing code against iproute2 loader.
-Hypothetically speaking, if Hangbin would have presented patches here to extend the
-existing lib/bpf.c to the point that it's feature complete (compared to libbpf),
-we wouldn't even have this whole discussion here.
+Yes, there are lot of moving parts and that puts a huge burden on
+distributions. The trend that related s/w is outdated 2-3 months after a
+release can be taken as a sign that bpf is not stable and ready for
+distributions to take on and support.
 
-Thanks,
-Daniel
+bpftool is only 3 years old (Oct 2017 is first kernel commit). You can
+not expect distributions to chase every whim from kernel developers, so
+bpftool needed to evolve and prove its usefulness. It has now, so really
+the disappointment should be limited to distributions over the past 12
+months, especially Ubuntu 20.04 (most recent LTS) not having a libbpf
+and bpftool releases. But again, 20.04 was too old for BTF 3 months
+after it was released and that comes back to the bigger question of
+whether bpf is really ready for distributions to support. More below.
+
+Focusing on the future: for Ubuntu (and Debian?) bpftool is in the
+linux-tools-common package. perf has already trained distributions to
+release a tools package with kernel releases. That means bpftool updates
+follow the kernel cadence. bpftool requires libbpf and I believe given
+the feature dependencies will force libbpf versions to follow kernel
+releases, so I believe your goal is going to be achieved by those
+dependencies.
+
+But there is an on-going nagging problem which needs to be acknowledged
+and solved. As an *example*, Ubunutu has kernel updates to get new
+hardware support (HWE releases). Updating kernels on an LTS is
+problematic when the kernel update requires toolchain updates to
+maintain features (DEBUG_INFO_BTF) and library updates to get tools for
+that kernel version working. That is a huge disruption to their
+customers who want stability — the whole reason for LTS distributions.
+
+
+
+
