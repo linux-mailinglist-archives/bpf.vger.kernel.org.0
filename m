@@ -2,96 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73902AE6A9
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 03:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9EE2AE6DD
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 04:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725929AbgKKC7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Nov 2020 21:59:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36768 "EHLO
+        id S1725882AbgKKDMS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Nov 2020 22:12:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgKKC7I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Nov 2020 21:59:08 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3BEC0613D1;
-        Tue, 10 Nov 2020 18:59:08 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id z24so510781pgk.3;
-        Tue, 10 Nov 2020 18:59:08 -0800 (PST)
+        with ESMTP id S1725839AbgKKDMR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Nov 2020 22:12:17 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64D5C0613D1;
+        Tue, 10 Nov 2020 19:12:16 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id z3so722440pfb.10;
+        Tue, 10 Nov 2020 19:12:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=cmuGKLPg2fKagnBNFJRp+kMIsgYat3uEwShsaWeBPng=;
-        b=Ef5p3IggSZLJhFBl2qc/e6vxrUxuAzOZNi89+cd8dEiinnEfE5snSJzCPWf+ETVAC1
-         yzctav2eYJrGoDF+XW9fyZQcNi4nzRaBCZnLxzsO/k0MrYDKixQ9S0mgWc9E+YfSJDb4
-         /g/CGQJnaGW/P4K+xpw8OJZMGfUsDnFKV+bd5U4siPRPnOR3jnmLmh95nSnml9iqYFCI
-         KLNRRlUGFAID1lpwYdYztaC1EMfLlcNl1XsU3/b7FdaPfvDDqFyXh5JGMtST9axNyyud
-         dFoq/WSE4YtOt3nAZKRklzdkxi8T26oqUVRxQGA9Dy5HHJdriDcfzUu1vZsiGYQ+S11g
-         0RdQ==
+        bh=UAmP6NeKMxNMOOpt/70DQziGuaFShkxGokRZFSjxW1I=;
+        b=Zr3N+GeN6ldsKvMlP5YdNxK8Qb+lhruX+k0iKlGsHT2qzGUQAmofQH0YAQFTPbYnPU
+         C97C4192/7UkOQN2gVl61qbk4w8C0evj1tqF0jtvMD4PlW1eZsPy5Fq8ennHR+WO6um+
+         lL4y+3X5qz93Z2n8NZDqc6d2N2EsBn3bl9Lq2aKpQsVEiw5FeyWC+rJf+fZhcF4hfLUq
+         J5bd2bSzR0HzoNnwWOkZGRJLz3+No6Xp9Oz+B5njlX0Fjs+lDKWdjDvlsYFwwRznIzbu
+         bgxmoWFn+jEoolHgpy4kkGPZhyHCmeVWhwBXMHaz8wBUWFlVsFBO7dB4JwGpj/jVkAMI
+         U7jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=cmuGKLPg2fKagnBNFJRp+kMIsgYat3uEwShsaWeBPng=;
-        b=o6pvkmwEcTWNs0UjOk8NnopSyPA4S83dErc32s5nDwr418LJsjO9rbcL2yqz4UyPW0
-         Osa0TpkBPrQOSjt1CfbOBGKunTWfm3IP9b/2YVvDfLxoq897oSWjCd41k0lLYCoB5eIk
-         Qed83xktNf4EMKNakidqexWXAvEEQ/nBqm1Hpy6QsVdWnbLUkDWRIzZ5XfsXLomhiFDV
-         VloXybFWQFeONOK1V8Q0Jft8HOMv/bv708e5usMRnxT4Y77WGIFYoqHY/j8Lh5BA3kMD
-         38fDBSWDXQAYvbCow0Bf+dJ8rudMxjKuk3HQyA11HsSEiaARt85zsXEdMRAUgIDsjXUt
-         fCKA==
-X-Gm-Message-State: AOAM5337HfTWo6SaHy+z2+fHGVrQwY1B3TQDB8jX8EpAuaaK3ZTKajIn
-        p1lE5n7gEOmYh/kK7WlAxA==
-X-Google-Smtp-Source: ABdhPJyCD/INw5TfkdrEJdz6unWyFxd6yWmxkZ6tciyzS1mOFwlYNbMb2dXA9UAy3egxk9ggwCMksA==
-X-Received: by 2002:a17:90b:3314:: with SMTP id kf20mr1679065pjb.156.1605063548230;
-        Tue, 10 Nov 2020 18:59:08 -0800 (PST)
-Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
-        by smtp.gmail.com with ESMTPSA id c15sm406051pjc.43.2020.11.10.18.59.05
+        bh=UAmP6NeKMxNMOOpt/70DQziGuaFShkxGokRZFSjxW1I=;
+        b=pbqTGhIhOJioQtokL7mkkj0UebYBfJBfRZeG2i7Ghgkl01ihtU1/6uywpQe/UfFL3b
+         31sGUIP3T1y/EQBwtxA64H3NMzzXeDy6fUXVkNFokHYftCLOIICTLKvJhlHGxUewQAXG
+         +xGrsdJtM4Fl3Jo7eLGL0mrOexHuRbxoP0jFLy1kjNI5Ab513UYouByHyqacmZoY9hWp
+         VeXTf6qoCH2LNw85XjBYbvN9Lrrq9IY2hLyLMQBLsJCUA7PRSEuEmjSu1kt3fCCk9D27
+         VFxkabGZsIdxrJydSWxK5DKI1j2DVPINqQFrYNEYHHTX7XsarPhE6UqJgub5/RLbIZiG
+         iISw==
+X-Gm-Message-State: AOAM530FiBI5v6P7yUHlfduqVXp0IDlaQhyPmgg0rTgchTayIVxvQ6n/
+        iNk9GejmOQ5d8kY4m4hrbvo=
+X-Google-Smtp-Source: ABdhPJygrTCeUJm6xBp2lqEPgeGcBkOdrEFDuIOfhPDPd1stwYvNfdTYL52GydjXilzK9KiZ+xua9Q==
+X-Received: by 2002:a17:90a:678a:: with SMTP id o10mr1613393pjj.180.1605064336108;
+        Tue, 10 Nov 2020 19:12:16 -0800 (PST)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id o132sm506815pfg.100.2020.11.10.19.12.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Nov 2020 18:59:06 -0800 (PST)
-From:   xiakaixu1987@gmail.com
-X-Google-Original-From: kaixuxia@tencent.com
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
-        john.fastabend@gmail.com, kpsingh@chromium.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-Subject: [PATCH v2] bpf: Fix unsigned 'datasec_id' compared with zero in check_pseudo_btf_id
-Date:   Wed, 11 Nov 2020 10:59:01 +0800
-Message-Id: <1605063541-25424-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 10 Nov 2020 19:12:15 -0800 (PST)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v2 bpf-next 0/3] bpf: Pointers beyond packet end.
+Date:   Tue, 10 Nov 2020 19:12:10 -0800
+Message-Id: <20201111031213.25109-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+From: Alexei Starovoitov <ast@kernel.org>
 
-The unsigned variable datasec_id is assigned a return value from the call
-to check_pseudo_btf_id(), which may return negative error code.
+v1->v2:
+- removed set-but-unused variable.
+- added Jiri's Tested-by.
 
-Fixes coccicheck warning:
+In some cases LLVM uses the knowledge that branch is taken to optimze the code
+which causes the verifier to reject valid programs.
+Teach the verifier to recognize that
+r1 = skb->data;
+r1 += 10;
+r2 = skb->data_end;
+if (r1 > r2) {
+  here r1 points beyond packet_end and subsequent
+  if (r1 > r2) // always evaluates to "true".
+}
 
-./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
+Alexei Starovoitov (3):
+  bpf: Support for pointers beyond pkt_end.
+  selftests/bpf: Add skb_pkt_end test
+  selftests/bpf: Add asm tests for pkt vs pkt_end comparison.
 
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
----
-v2:
- -split out datasec_id definition into a separate line.
+ include/linux/bpf_verifier.h                  |   2 +-
+ kernel/bpf/verifier.c                         | 129 +++++++++++++++---
+ .../bpf/prog_tests/test_skb_pkt_end.c         |  41 ++++++
+ .../testing/selftests/bpf/progs/skb_pkt_end.c |  54 ++++++++
+ .../testing/selftests/bpf/verifier/ctx_skb.c  |  42 ++++++
+ 5 files changed, 245 insertions(+), 23 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c
+ create mode 100644 tools/testing/selftests/bpf/progs/skb_pkt_end.c
 
- kernel/bpf/verifier.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6200519582a6..3fea4fc04e94 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9572,7 +9572,8 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
- 			       struct bpf_insn *insn,
- 			       struct bpf_insn_aux_data *aux)
- {
--	u32 datasec_id, type, id = insn->imm;
-+	s32 datasec_id;
-+	u32 type, id = insn->imm;
- 	const struct btf_var_secinfo *vsi;
- 	const struct btf_type *datasec;
- 	const struct btf_type *t;
 -- 
-2.20.0
+2.24.1
 
