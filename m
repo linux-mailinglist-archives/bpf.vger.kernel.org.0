@@ -2,184 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46E82AF992
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 21:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6AF2AF9A4
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 21:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgKKUML (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 15:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgKKUML (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:12:11 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598A1C0613D1;
-        Wed, 11 Nov 2020 12:12:11 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id v92so3092546ybi.4;
-        Wed, 11 Nov 2020 12:12:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pB38drbiYuyH57f1j/OGS58rHVCVIBiVZxazCjdLplA=;
-        b=YTaod/s6xOSthLFOf5v9u0Agfru7+P51p/rp9bBE05FqDCVEEi1IKyAy/Ksck1hJgj
-         M7FKDYj9jAXS8yANQRlv8ehfwdaEx0pfj5IYInLYYzgakIcJYPsbEQGNVOedib+0DQZK
-         T/44IWZV4CD8Y2YlrVMjLeyReEPgBi76rdiY72xd3WBnHpOD0wRtZwyVWgEl9MNCD1MY
-         TNCMVgBmshhtaxiIRo3P7V1gtbsawLC7Zdo7wRWsjpcqDFWJKftVWjtGDmKI4wEueaK0
-         oE1jnTHUKV/kOnxxdTAo480tDlvuTCX7j/RwXNEFRkPmvx44to1XCma6Jlgb3Jmj+n20
-         9fow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pB38drbiYuyH57f1j/OGS58rHVCVIBiVZxazCjdLplA=;
-        b=A8/Eh2z2ZKZFf8ocBm/wnqh8T+UaL7bDa8+dWMw9lmic7b5JIN0pJRhCL7tnOc1B2G
-         PeQyYaYW3MFjJZZ27pnrzGut/JnmDqbtZoGN2oAhN7qnhV9hm/qimTuXef8ofZ6u3ZPV
-         BxhfKZ3+7O3Bjzxwx2uafIJ7W97NtInfSwrQfA9HxMePsoaNo+PSIAGvrimwX49Z80Yq
-         fLEvzVKeBe+Ibkwuc9MadiLF/YO7SkRh3k9I18FrHjNeNN4UJRNH6I5lH7tcx03bdfSM
-         +17SQbNqA8fMi6U3aTLIoC500AzgH1pu9jGnR260mOfM43fSS3Rz73KWz/CUahwYdnDN
-         +E5g==
-X-Gm-Message-State: AOAM533f7vdGe4/bLuAEbknzuXQbWHCsIjNtnWrC5gDrBSMwqTWy+e7L
-        MYChxINfXovzPXNuj0057SDGMx/5fywo7+BR26c=
-X-Google-Smtp-Source: ABdhPJzYDY7ZkALEs1trStLJuAnj+VHR91+D3T1A0rOUFfDHX+SUOJaXYI/asPu5fxHeZTrSFyR9P8zb/E7BjHmo044=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr9444434ybg.230.1605125530599;
- Wed, 11 Nov 2020 12:12:10 -0800 (PST)
+        id S1725949AbgKKUUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 15:20:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51253 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725924AbgKKUUD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 15:20:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605126001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kl1+EpU6WV2MSvXsPMxfpYfCyZuz1jV31Ln9/UIb1eo=;
+        b=N+ILbglSK6mmgNYEvF5XZMsnr51xzXDy8q3EzK9B3Pqi8MlFtAlmT8KYd8Wkx/Q6lTzxHK
+        GmakEYSRwmCsyyr2CDXidEwUFcon6KgY95G2DN+iLgtUK/7NnC3NvtVR4BGfcIskC/xjYH
+        8m9O9SV+5uH6vh3A2R/CA/LimeL5Nz4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-186-X7yYI2AXN3WDuMKwZ73a4w-1; Wed, 11 Nov 2020 15:20:00 -0500
+X-MC-Unique: X7yYI2AXN3WDuMKwZ73a4w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CCE2103098C;
+        Wed, 11 Nov 2020 20:19:57 +0000 (UTC)
+Received: from krava (unknown [10.40.194.237])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8B31176642;
+        Wed, 11 Nov 2020 20:19:30 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 21:19:29 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 3/3] btf_encoder: Change functions check due to broken
+ dwarf
+Message-ID: <20201111201929.GB619201@krava>
+References: <20201106222512.52454-1-jolsa@kernel.org>
+ <20201106222512.52454-4-jolsa@kernel.org>
+ <CAEf4BzZqFos1N-cnyAc6nL-=fHFJYn1tf9vNUewfsmSUyK4rQQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201110011932.3201430-1-andrii@kernel.org> <20201110011932.3201430-5-andrii@kernel.org>
- <20201111101316.GA5304@linux-8ccs>
-In-Reply-To: <20201111101316.GA5304@linux-8ccs>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Nov 2020 12:11:59 -0800
-Message-ID: <CAEf4BzZbKRgWhLD6KFOwJU8DDns9oufroBShczM9KqODCqbEPA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 4/5] bpf: load and verify kernel module BTFs
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZqFos1N-cnyAc6nL-=fHFJYn1tf9vNUewfsmSUyK4rQQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 2:13 AM Jessica Yu <jeyu@kernel.org> wrote:
->
-> +++ Andrii Nakryiko [09/11/20 17:19 -0800]:
-> [snipped]
-> >diff --git a/kernel/module.c b/kernel/module.c
-> >index a4fa44a652a7..f2996b02ab2e 100644
-> >--- a/kernel/module.c
-> >+++ b/kernel/module.c
-> >@@ -380,6 +380,35 @@ static void *section_objs(const struct load_info *info,
-> >       return (void *)info->sechdrs[sec].sh_addr;
-> > }
+On Wed, Nov 11, 2020 at 11:59:20AM -0800, Andrii Nakryiko wrote:
+
+SNIP
+
+> > +       if (!fl->init_bpf_begin &&
+> > +           !strcmp("__init_bpf_preserve_type_begin", elf_sym__name(sym, btfe->symtab)))
+> > +               fl->init_bpf_begin = sym->st_value;
+> > +
+> > +       if (!fl->init_bpf_end &&
+> > +           !strcmp("__init_bpf_preserve_type_end", elf_sym__name(sym, btfe->symtab)))
+> > +               fl->init_bpf_end = sym->st_value;
+> > +}
+> > +
+> > +static int has_all_symbols(struct funcs_layout *fl)
+> > +{
+> > +       return fl->mcount_start && fl->mcount_stop &&
+> > +              fl->init_begin && fl->init_end &&
+> > +              fl->init_bpf_begin && fl->init_bpf_end;
+> 
+> See below for what seems to be the root cause for the immediate problem.
+> 
+> But me, Alexei and Daniel had a discussion offline, and we concluded
+> that this special bpf_preserve_init section is probably not the right
+> approach overall. We should roll back the bpf patch and instead adjust
+> pahole's approach. I think we should just drop the __init check and
+> include all the __init functions into BTF. There could be cases where
+> we'd need to attach BPF programs to __init functions (e.g., bpf_lsm
+> security cases), so having BTFs for those FUNCs are necessary as well.
+> Ftrace currently disallows that, but it's only because no user-space
+> application has a way to attach probes early enough. This might change
+> in the future, so there is no need to invent special mechanisms now
+> for bpf_iter function preservation. Let's just include all __init
+> functions in BTF. Can you please do that change and check how much
+> more functions we get in BTF? Thanks!
+
+sure, not problem to keep all init functions, will give you the count
+
+SNIP
+
 > >
-> >+/* Find a module section: 0 means not found. Ignores SHF_ALLOC flag. */
-> >+static unsigned int find_any_sec(const struct load_info *info, const char *name)
-> >+{
-> >+      unsigned int i;
-> >+
-> >+      for (i = 1; i < info->hdr->e_shnum; i++) {
-> >+              Elf_Shdr *shdr = &info->sechdrs[i];
-> >+              if (strcmp(info->secstrings + shdr->sh_name, name) == 0)
-> >+                      return i;
-> >+      }
-> >+      return 0;
-> >+}
-> >+
-> >+/*
-> >+ * Find a module section, or NULL. Fill in number of "objects" in section.
-> >+ * Ignores SHF_ALLOC flag.
-> >+ */
-> >+static __maybe_unused void *any_section_objs(const struct load_info *info,
-> >+                                           const char *name,
-> >+                                           size_t object_size,
-> >+                                           unsigned int *num)
-> >+{
-> >+      unsigned int sec = find_any_sec(info, name);
-> >+
-> >+      /* Section 0 has sh_addr 0 and sh_size 0. */
-> >+      *num = info->sechdrs[sec].sh_size / object_size;
-> >+      return (void *)info->sechdrs[sec].sh_addr;
-> >+}
-> >+
->
-> Hm, I see this patchset has already been applied to bpf-next, but I
-> guess that doesn't preclude any follow-up patches :-)
+> > +static bool has_arg_names(struct cu *cu, struct ftype *ftype)
+> > +{
+> > +       struct parameter *param;
+> > +       const char *name;
+> > +
+> > +       ftype__for_each_parameter(ftype, param) {
+> > +               name = dwarves__active_loader->strings__ptr(cu, param->name);
+> > +               if (name == NULL)
+> > +                       return false;
+> > +       }
+> > +       return true;
+> > +}
+> > +
+> 
+> I suspect (but haven't verified) that the problem is in this function.
+> If it happens that DWARF for a function has no arguments, then we'll
+> conclude it has all arg names. Don't know what's the best solution
+> here, but please double-check this.
+> 
+> Specifically, two selftests are failing now. One of them:
+> 
+> libbpf: load bpf program failed: Permission denied
+> libbpf: -- BEGIN DUMP LOG ---
+> libbpf:
+> arg#0 type is not a struct
+> Unrecognized arg#0 type PTR
+> ; int BPF_PROG(prog_stat, struct path *path, struct kstat *stat,
+> 0: (79) r6 = *(u64 *)(r1 +0)
+> func 'security_inode_getattr' doesn't have 1-th argument
+> invalid bpf_context access off=0 size=8
+> processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+> libbpf: -- END LOG --
+> libbpf: failed to load program 'prog_stat'
+> libbpf: failed to load object 'test_d_path'
+> libbpf: failed to load BPF skeleton 'test_d_path': -4007
+> test_d_path:FAIL:setup d_path skeleton failed
+> #27 d_path:FAIL
+> 
+> This is because in generated BTF security_inode_getattr has a
+> prototype void security_inode_getattr(void); And once we emit this
+> prototype, due to logic in should_generate_function() we won't attempt
+> to do it again, even for the prototype with the right arguments.
 
-Of course!
+hum it works for me :-\
 
->
-> I am not a huge fan of the code duplication here, and also the fact
-> that they're only called in one place. any_section_objs() and
-> find_any_sec() are pretty much identical to section_objs() and
-> find_sec(), other than the fact the former drops the SHF_ALLOC check.
+	#27 d_path:OK
 
-Right, but the alternative was to add a new flag to existing
-section_objs() and find_sec() functions, which would cause much more
-code churn for no good reason (besides saving some trivial code
-duplication). And those true/false flags are harder to read in code
-anyways.
+with:
 
->
-> Moreover, since it appears that the ".BTF" section is not marked
-> SHF_ALLOC, I think this will leave mod->btf_data as a dangling pointer
-> after the module is done loading and the module's load_info has been
-> deallocated, since SHF_ALLOC sections are not allocated nor copied to
-> the module's final location in memory.
+	[25962] FUNC_PROTO '(anon)' ret_type_id=17 vlen=1
+		'path' type_id=729
+	[31327] FUNC 'security_inode_getattr' type_id=25962 linkage=static
 
-I can make sure that we also reset the btf_data pointer back to NULL,
-if that's a big concern.
 
->
-> Why not simply mark the ".BTF" section in the module SHF_ALLOC? We
-> already do some sh_flags rewriting in rewrite_section_headers(). Then
-> the module loader knows to keep the section in memory and you can use
-> section_objs(). And since the .BTF section stays in module memory,
-> that might save you the memcpy() to btf->data in btf_parse_module()
-> (unless that is still needed for some reason).
+perhaps your gcc generates DWARF that breaks the way you described
+above, but I'd expect to see function with argument without name,
+not function without arguments at all
 
-Wasn't aware about rewrite_section_headers() manipulations. Are you
-suggesting to just add SHF_ALLOC there for the .BTF section from the
-kernel side? I guess that would work, but won't avoid memory copy (so
-actually would waste kernel memory, if I understand correctly). The
-reason being that the module's BTF is registered as an independently
-ref-counted BTF object, which could be held past the kernel module
-being unloaded. So I can't directly reference module's .BTF data
-anyways.
+what gcc version are you on?
 
-Also, marking .BTF with SHF_ALLOC with pahole or objcopy tool actually
-might generate warnings because SHF_ALLOC sections need to be
-allocated to data segments, which neither of those tools know how to
-do, it requires a linker support. We do that for vmlinux with extra
-linker script logic, but for kernel modules we don't have and probably
-don't want to do that.
+when you dump debug information, do you see security_inode_getattr
+record with no arguments?
 
-So in the end, the cleanest approach still seems like not doing
-SHF_ALLOC but allowing "capturing" .BTF data with an extra helper.
+thanks,
+jirka
 
->
-> Thanks,
->
-> Jessica
->
-> > /* Provided by the linker */
-> > extern const struct kernel_symbol __start___ksymtab[];
-> > extern const struct kernel_symbol __stop___ksymtab[];
-> >@@ -3250,6 +3279,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
-> >                                          sizeof(*mod->bpf_raw_events),
-> >                                          &mod->num_bpf_raw_events);
-> > #endif
-> >+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> >+      mod->btf_data = any_section_objs(info, ".BTF", 1, &mod->btf_data_size);
-> >+#endif
-> > #ifdef CONFIG_JUMP_LABEL
-> >       mod->jump_entries = section_objs(info, "__jump_table",
-> >                                       sizeof(*mod->jump_entries),
-> >--
-> >2.24.1
-> >
