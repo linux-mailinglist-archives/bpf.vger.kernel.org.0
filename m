@@ -2,284 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891AD2AF024
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 12:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C0D2AF028
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 12:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgKKL4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 06:56:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgKKL4b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 06:56:31 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B94E1206C0;
-        Wed, 11 Nov 2020 11:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605095790;
-        bh=xmm0DontKjJfDMkWQgae0dgM+uWV8v6hCdBGKAm2aTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cUcgOl60++vSVx4iRwcnYvSZL0R9tcfwwaKqAo10PMqqcHKspQt2wPQT3hwhwj84X
-         lCG7u7USorWiSvAvxs6WLNa3Rg4pXHGaOQhLPrCcTi3cIVEnaHqvty/9WLSDpY9w8U
-         5gzezZIHtm1ut5Kz2Dhoot60KZ0jtFR9dGS9gSNo=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 35A4C411D1; Wed, 11 Nov 2020 08:56:27 -0300 (-03)
-Date:   Wed, 11 Nov 2020 08:56:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH dwarves 4/4] btf: add support for split BTF loading and
- encoding
-Message-ID: <20201111115627.GB355344@kernel.org>
-References: <20201106052549.3782099-1-andrii@kernel.org>
- <20201106052549.3782099-5-andrii@kernel.org>
+        id S1725860AbgKKL5t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 06:57:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726036AbgKKL5r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:57:47 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0B0C0613D1;
+        Wed, 11 Nov 2020 03:57:45 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id w4so1279718pgg.13;
+        Wed, 11 Nov 2020 03:57:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dZ66NkK4JlOTGKRXsVDZQA1P1CV0kN8ceHgbcIIfYbY=;
+        b=UyeuFb7T2ztfOrS9TwjIknlH4XH8EBY27dCjWQK32pkrotI4tuBTBw4ZkPJS/v1OkG
+         eU38qi40GiFsR6izfN6qfTGC2SKc+mcZt57eFJ1Wx/rXNmPd+B6KsoIfrEj3S01TUjhR
+         9KRzQbE/Vlg3P3msWCSnR2Wqp0V1uFTjSgz+GzOfONHfr9sDi1EMIew4Z2gs7yYunRmR
+         8gCfSjVVKqj/SRhvDyvA0U3JGQj3Um/7/RhqXejGrgCFI7q1eQaACwRzM9stP83ZRFnA
+         464eXrjI2FearEUoRfPvb0vcsMLuLu+x5QhjyylzyFbfHnORuKl008edfVfr8ggyzK2p
+         aOFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dZ66NkK4JlOTGKRXsVDZQA1P1CV0kN8ceHgbcIIfYbY=;
+        b=WMiz4thFcvbmgdbjNcGPELDA84vxuwuYc9rxyBLcjLeJNBirYAoypKx1IExmIKOoR2
+         T9PMETW0ekwEnjLnALJHpodXyJmhOTSnaNkNWxtx3i/lTPM54+s3vMVDV8S/2ULA1AqR
+         E+ed1rQKvnGzIKUnablI8y5yDCiLdFXFGVwPlXbH7LTMiLi50e16NQ7u6OBkpGpjNR4R
+         zGWG/9MkBzQ4uUIkGSqREmxOg1VAdcphSA63IVu6QYUQLLGeBIIvj7nGRZEFGRhHukgv
+         h/UnXZ0cr73KYKjP7OK54QfJxA1oINDrehLO65NPRmw6ldqKaVqafRASSZ8/LmUsos/0
+         gs3A==
+X-Gm-Message-State: AOAM53048SzO+Zl3xcsky3v8S+3vhJwzLpvfP0HCmIkt1dNYhTLGi66f
+        dDVdrCCVFE++HOjGnwlLiDaR2+mX5L3McCKqlf0=
+X-Google-Smtp-Source: ABdhPJxgb2Db8f1spw0DwGNBUQ7MN5ZZzD2WGy/bih6dqiJRtP2Wqtj9LhgWaDg/tBXLfS0rQNZPRxsxE6z3ln5DzPU=
+X-Received: by 2002:a63:e74a:: with SMTP id j10mr22153791pgk.208.1605095865157;
+ Wed, 11 Nov 2020 03:57:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201106052549.3782099-5-andrii@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <1605006094-31097-6-git-send-email-magnus.karlsson@gmail.com> <202011110934.GFwFDfqe-lkp@intel.com>
+In-Reply-To: <202011110934.GFwFDfqe-lkp@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 11 Nov 2020 12:57:34 +0100
+Message-ID: <CAJ8uoz2aDjLPtcTgZ_pO-=S9TgXm3c57rN8TTPXdqT7HOOKrhA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/5] i40e: use batched xsk Tx interfaces to
+ increase performance
+To:     kernel test robot <lkp@intel.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        bpf <bpf@vger.kernel.org>, jeffrey.t.kirsher@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Nov 05, 2020 at 09:25:49PM -0800, Andrii Nakryiko escreveu:
-> Add support for generating split BTF, in which there is a designated base
-> BTF, containing a base set of types, and a split BTF, which extends main BTF
-> with extra types, that can reference types and strings from the main BTF.
- 
-> This is going to be used to generate compact BTFs for kernel modules, with
-> vmlinux BTF being a main BTF, which all kernel modules are based off of.
- 
-> These changes rely on patch set [0] to be present in libbpf submodule.
- 
->   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=377859&state=*
+On Wed, Nov 11, 2020 at 2:38 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Magnus,
+>
+> I love your patch! Perhaps something to improve:
+>
+> [auto build test WARNING on bpf-next/master]
+>
+> url:    https://github.com/0day-ci/linux/commits/Magnus-Karlsson/xsk-i40e-Tx-performance-improvements/20201110-190310
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> config: powerpc64-randconfig-r025-20201110 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 4d81c8adb6ed9840257f6cb6b93f60856d422a15)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install powerpc64 cross compiling tool for clang build
+>         # apt-get install binutils-powerpc64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/b016bbeac6692a93e61b28efa430d64645032b5e
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Magnus-Karlsson/xsk-i40e-Tx-performance-improvements/20201110-190310
+>         git checkout b016bbeac6692a93e61b28efa430d64645032b5e
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> drivers/net/ethernet/intel/i40e/i40e_xsk.c:417:13: warning: unknown pragma ignored [-Wunknown-pragmas]
+>    #pragma GCC unroll 4
+>                ^
+>    1 warning generated.
 
-So, applied and added this:
+And I was hoping that unknown pragmas would be ignored, but that will
+obviously not be the case with -Wunknown-pragmas added. The unrolling
+of this inner loop where the code spends most of its time gives me
+nearly 1 Mpps extra in performance which is substantial, so I would
+like to get this unrolled in some way, but without the warning. Need
+some advice please. Here are some options that comes in mind:
 
-diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-index 4b5e0a1bf5462b28..20ee91fc911d4b39 100644
---- a/man-pages/pahole.1
-+++ b/man-pages/pahole.1
-@@ -185,6 +185,10 @@ Do not encode VARs in BTF.
- .B \-\-btf_encode_force
- Ignore those symbols found invalid when encoding BTF.
- 
-+.TP
-+.B \-\-btf_base
-+Path to the base BTF file, for instance: vmlinux when encoding kernel module BTF information.
-+
- .TP
- .B \-l, \-\-show_first_biggest_size_base_type_member
- Show first biggest size base_type member.
+#1: Suppress unknown pragma warnings in this file only by adding
+CFLAGS_i40e_xsk.o += -Wno-unknown-pragmas (or whatever that option
+might be) in the Makefile
 
----------------
+#2: Force the compiler to loop-unroll the loop with for example a
+switch statement with four cases that all fall through. This will make
+the code less readable.
 
-The entry for btf_encode/-J is missing, I'll add in a followup patch.
+#3: Manually loop-unroll the loop. This will make the code even less
+readable than #2.
 
-Also I had to fixup ARGP_btf_base to 321 as I added this, to simplify
-the kernel scripts and Makefiles:
+I prefer #1 as I like to keep the code readable, but you might have
+other better suggestions on how to tackle this.
 
-  $ pahole --numeric_version
-  118
-  $
+Thanks: Magnus
 
-Now to test this all by applying the kernel patches and the encoding
-module BTF, looking at it, etc.
-
-- Arnaldo
- 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> vim +417 drivers/net/ethernet/intel/i40e/i40e_xsk.c
+>
+>    408
+>    409  static void i40e_xmit_pkt_batch(struct i40e_ring *xdp_ring, struct xdp_desc *desc,
+>    410                                  unsigned int *total_bytes)
+>    411  {
+>    412          u16 ntu = xdp_ring->next_to_use;
+>    413          struct i40e_tx_desc *tx_desc;
+>    414          dma_addr_t dma;
+>    415          u32 i;
+>    416
+>  > 417  #pragma GCC unroll 4
+>    418          for (i = 0; i < PKTS_PER_BATCH; i++) {
+>    419                  dma = xsk_buff_raw_get_dma(xdp_ring->xsk_pool, desc[i].addr);
+>    420                  xsk_buff_raw_dma_sync_for_device(xdp_ring->xsk_pool, dma, desc[i].len);
+>    421
+>    422                  tx_desc = I40E_TX_DESC(xdp_ring, ntu++);
+>    423                  tx_desc->buffer_addr = cpu_to_le64(dma);
+>    424                  tx_desc->cmd_type_offset_bsz = build_ctob(I40E_TX_DESC_CMD_ICRC |
+>    425                                                            I40E_TX_DESC_CMD_EOP,
+>    426                                                            0, desc[i].len, 0);
+>    427
+>    428                  *total_bytes += desc[i].len;
+>    429          }
+>    430
+>    431          xdp_ring->next_to_use = ntu;
+>    432  }
+>    433
+>
 > ---
->  btf_encoder.c |  3 ++-
->  btf_loader.c  |  2 +-
->  libbtf.c      | 10 ++++++----
->  libbtf.h      |  4 +++-
->  pahole.c      | 23 +++++++++++++++++++++++
->  5 files changed, 35 insertions(+), 7 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index b3e47f172bb3..d67e29b9cbee 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -12,6 +12,7 @@
->  #include "dwarves.h"
->  #include "libbtf.h"
->  #include "lib/bpf/include/uapi/linux/btf.h"
-> +#include "lib/bpf/src/libbpf.h"
->  #include "hash.h"
->  #include "elf_symtab.h"
->  #include "btf_encoder.h"
-> @@ -343,7 +344,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->  	}
->  
->  	if (!btfe) {
-> -		btfe = btf_elf__new(cu->filename, cu->elf);
-> +		btfe = btf_elf__new(cu->filename, cu->elf, base_btf);
->  		if (!btfe)
->  			return -1;
->  
-> diff --git a/btf_loader.c b/btf_loader.c
-> index 6ea207ea65b4..ec286f413f36 100644
-> --- a/btf_loader.c
-> +++ b/btf_loader.c
-> @@ -534,7 +534,7 @@ struct debug_fmt_ops btf_elf__ops;
->  int btf_elf__load_file(struct cus *cus, struct conf_load *conf, const char *filename)
->  {
->  	int err;
-> -	struct btf_elf *btfe = btf_elf__new(filename, NULL);
-> +	struct btf_elf *btfe = btf_elf__new(filename, NULL, base_btf);
->  
->  	if (btfe == NULL)
->  		return -1;
-> diff --git a/libbtf.c b/libbtf.c
-> index b6ddd7599395..3c52aa0d482b 100644
-> --- a/libbtf.c
-> +++ b/libbtf.c
-> @@ -27,6 +27,7 @@
->  #include "dwarves.h"
->  #include "elf_symtab.h"
->  
-> +struct btf *base_btf;
->  uint8_t btf_elf__verbose;
->  uint8_t btf_elf__force;
->  
-> @@ -52,9 +53,9 @@ int btf_elf__load(struct btf_elf *btfe)
->  	/* free initial empty BTF */
->  	btf__free(btfe->btf);
->  	if (btfe->raw_btf)
-> -		btfe->btf = btf__parse_raw(btfe->filename);
-> +		btfe->btf = btf__parse_raw_split(btfe->filename, btfe->base_btf);
->  	else
-> -		btfe->btf = btf__parse_elf(btfe->filename, NULL);
-> +		btfe->btf = btf__parse_elf_split(btfe->filename, btfe->base_btf);
->  
->  	err = libbpf_get_error(btfe->btf);
->  	if (err)
-> @@ -63,7 +64,7 @@ int btf_elf__load(struct btf_elf *btfe)
->  	return 0;
->  }
->  
-> -struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
-> +struct btf_elf *btf_elf__new(const char *filename, Elf *elf, struct btf *base_btf)
->  {
->  	struct btf_elf *btfe = zalloc(sizeof(*btfe));
->  	GElf_Shdr shdr;
-> @@ -77,7 +78,8 @@ struct btf_elf *btf_elf__new(const char *filename, Elf *elf)
->  	if (btfe->filename == NULL)
->  		goto errout;
->  
-> -	btfe->btf = btf__new_empty();
-> +	btfe->base_btf = base_btf;
-> +	btfe->btf = btf__new_empty_split(base_btf);
->  	if (libbpf_get_error(btfe->btf)) {
->  		fprintf(stderr, "%s: failed to create empty BTF.\n", __func__);
->  		goto errout;
-> diff --git a/libbtf.h b/libbtf.h
-> index 887b5bc55c8e..71f6cecbea93 100644
-> --- a/libbtf.h
-> +++ b/libbtf.h
-> @@ -27,8 +27,10 @@ struct btf_elf {
->  	uint32_t	  percpu_shndx;
->  	uint64_t	  percpu_base_addr;
->  	struct btf	  *btf;
-> +	struct btf	  *base_btf;
->  };
->  
-> +extern struct btf *base_btf;
->  extern uint8_t btf_elf__verbose;
->  extern uint8_t btf_elf__force;
->  #define btf_elf__verbose_log(fmt, ...) { if (btf_elf__verbose) printf(fmt, __VA_ARGS__); }
-> @@ -39,7 +41,7 @@ struct cu;
->  struct base_type;
->  struct ftype;
->  
-> -struct btf_elf *btf_elf__new(const char *filename, Elf *elf);
-> +struct btf_elf *btf_elf__new(const char *filename, Elf *elf, struct btf *base_btf);
->  void btf_elf__delete(struct btf_elf *btf);
->  
->  int32_t btf_elf__add_base_type(struct btf_elf *btf, const struct base_type *bt,
-> diff --git a/pahole.c b/pahole.c
-> index bd9b993777ee..d18092c1212c 100644
-> --- a/pahole.c
-> +++ b/pahole.c
-> @@ -22,12 +22,15 @@
->  #include "dutil.h"
->  #include "ctf_encoder.h"
->  #include "btf_encoder.h"
-> +#include "libbtf.h"
-> +#include "lib/bpf/src/libbpf.h"
->  
->  static bool btf_encode;
->  static bool ctf_encode;
->  static bool first_obj_only;
->  static bool skip_encoding_btf_vars;
->  static bool btf_encode_force;
-> +static const char *base_btf_file;
->  
->  static uint8_t class__include_anonymous;
->  static uint8_t class__include_nested_anonymous;
-> @@ -820,6 +823,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
->  #define ARGP_skip_encoding_btf_vars 317
->  #define ARGP_btf_encode_force	   318
->  #define ARGP_just_packed_structs   319
-> +#define ARGP_btf_base		   320
->  
->  static const struct argp_option pahole__options[] = {
->  	{
-> @@ -1093,6 +1097,12 @@ static const struct argp_option pahole__options[] = {
->  		.key  = ARGP_hex_fmt,
->  		.doc  = "Print offsets and sizes in hexadecimal",
->  	},
-> +	{
-> +		.name = "btf_base",
-> +		.key  = ARGP_btf_base,
-> +		.arg  = "SIZE",
-> +		.doc  = "Path to the base BTF file",
-> +	},
->  	{
->  		.name = "btf_encode",
->  		.key  = 'J',
-> @@ -1234,6 +1244,9 @@ static error_t pahole__options_parser(int key, char *arg,
->  		skip_encoding_btf_vars = true;		break;
->  	case ARGP_btf_encode_force:
->  		btf_encode_force = true;		break;
-> +	case ARGP_btf_base:
-> +		base_btf_file = arg;
-> +		break;
->  	default:
->  		return ARGP_ERR_UNKNOWN;
->  	}
-> @@ -2682,6 +2695,15 @@ int main(int argc, char *argv[])
->  		goto out;
->  	}
->  
-> +	if (base_btf_file) {
-> +		base_btf = btf__parse(base_btf_file, NULL);
-> +		if (libbpf_get_error(base_btf)) {
-> +			fprintf(stderr, "Failed to parse base BTF '%s': %ld\n",
-> +				base_btf_file, libbpf_get_error(base_btf));
-> +			goto out;
-> +		}
-> +	}
-> +
->  	struct cus *cus = cus__new();
->  	if (cus == NULL) {
->  		fputs("pahole: insufficient memory\n", stderr);
-> @@ -2766,6 +2788,7 @@ out_cus_delete:
->  #ifdef DEBUG_CHECK_LEAKS
->  	cus__delete(cus);
->  	structures__delete();
-> +	btf__free(base_btf);
->  #endif
->  out_dwarves_exit:
->  #ifdef DEBUG_CHECK_LEAKS
-> -- 
-> 2.24.1
-> 
-
--- 
-
-- Arnaldo
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
