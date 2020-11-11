@@ -2,170 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B012AF439
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 15:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 270652AF444
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 15:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgKKO6D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 09:58:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726553AbgKKO6C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 09:58:02 -0500
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A764CC0613D1
-        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 06:58:02 -0800 (PST)
-Received: by mail-qv1-xf41.google.com with SMTP id q7so982997qvt.12
-        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 06:58:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J/T2e2MM+mxNfra1uERC4vIcmXovyjTAZssRPrCDAsQ=;
-        b=nhbHrhIPbOdB6Y2E8bijLF3eKmUZSEpLDwSxG0C+xiJ29+4IkMPrSvJ+/tdBlC75e5
-         3Mm3RpdxyC7ua5Nottgys8GAWTVQky4nf0bskVUv1YsA8ihrxlrxEfooIRrx75eko71O
-         RIBPtPSaokULzu+mzDOsM1j1tRF3wV4Sf8xomuG92f6KX410b8ZG3UJhFYwu1NYSaLrA
-         v6iN1Rc+wT9+lGE41ZdQobboPyxJYkDvkaEP1RA78r3VKkFFF9ztw/ACB86SV7JiHnOd
-         1mug29cTySxMYWFkCpnuBDJQQ9IWpUpzMRwva7btCy3Ts7pc7nMDbVKhCCpdHjoQVO/B
-         XFAg==
+        id S1727148AbgKKO7U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 09:59:20 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:55563 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726988AbgKKO7R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 09:59:17 -0500
+Received: by mail-il1-f199.google.com with SMTP id w10so1504390ila.22
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 06:59:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J/T2e2MM+mxNfra1uERC4vIcmXovyjTAZssRPrCDAsQ=;
-        b=aNOEXin4A2jg/Q5e1aukkrDiY+BNnQ5bnPem5XsVfbNN40RqvSgHdmzcq+/sDCKgh2
-         HcOeGkeyZH6pEGyPGp3kXovjJLfqX98QNFsfH2MgQgJlnp5/xORGM0J5Inop2sCxJTlj
-         bqj12gQcVLxx+r8BzziqSTsmkyv/mGY4b2lQ1oxm9MK3fihA4uYDB7LwHAT0Z6mtOonm
-         GfZ0vZfRfImJo/W663chI678TheWvlqKEeVfjcT53WUXeGQwBYdOMnMlwhpCLUMaiab/
-         o0babZTi7MFKyYSzSy0ud+/LQTtSejKwVYT1iiCYy4DzHvXWZwTSw1EwrtJH19xgXjix
-         NkwA==
-X-Gm-Message-State: AOAM5334wyB6FVpHOhz5ZygRH7BLJyrpHaOtcRVDdGCw3PZzEtbDtkY0
-        FEknZoDFOuF+SltjpwCc3gB3ln5XUl1U73SUIdYIUQ==
-X-Google-Smtp-Source: ABdhPJwjzmEanddvsSwyCHatSv0UJUued/Xxwjeernqie6g/cmeJqP6Ixrb+U8KXolDa7oKxYqRe6KODxAX2au2vAAM=
-X-Received: by 2002:a05:6214:12ed:: with SMTP id w13mr20297841qvv.23.1605106681487;
- Wed, 11 Nov 2020 06:58:01 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=W6HwsV977k5Y95mu3agDWsdgg0NHwiZ+N76/EE+Ulz4=;
+        b=VbYIFkToe8QaZKizlnuhaC0CQgX6LbeO0Hpd7d9dNeGHTHO3/zVUMAUL2oPpBlvj7v
+         0tiocS+HErqUUVNNTwyy9iOAMKnjt9NlUIrLHOGOsjBCiDxcI4zNBM6zHo3FCOwK2Sne
+         aWXaVD9avk3qOtx/I2JSpX74hG5pCLmAX9wU1egzw2Pf2M3kKigRmRCNx9d7PEXjXaYV
+         rLnHrCJwSHWTVa1IN4kL53YfCfQtlJYitA6NwiJubXexUfyWwZwc3uTff4SXv8WdyUPy
+         nOMMRnjUiZl0qjTXBsrmgwSHwPy2VbAgiCeyTfhOpmP7EyzQAA8g5Hd2T95x8XFTTn44
+         uEhw==
+X-Gm-Message-State: AOAM533+PkCmuQGZwTsUMyAMIZ0r6oqNggjUHD+vOgh0C3ucuvjureWg
+        O51xaHXwBIUTlF0xwImW9JX7JD2CKiOElShZv0Cqr1eaeYij
+X-Google-Smtp-Source: ABdhPJwPaGTsRU/8i3pPyGnMI8Ns8iG/TZN6ny1+/swklMuMxPF9MWMmk+LV1RmWFYA2sfyjg6xPUAGGqK8jRy6rf7wctHU8gayL
 MIME-Version: 1.0
-References: <00000000000004500b05b31e68ce@google.com>
-In-Reply-To: <00000000000004500b05b31e68ce@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 11 Nov 2020 15:57:50 +0100
-Message-ID: <CACT4Y+aBVQ6LKYf9wCV=AUx23xpWmb_6-mBqwkQgeyfXA3SS2A@mail.gmail.com>
-Subject: Re: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run3
-To:     syzbot <syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>,
-        Ingo Molnar <mingo@redhat.com>, mmullins@fb.com,
-        netdev <netdev@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+X-Received: by 2002:a02:5101:: with SMTP id s1mr20640779jaa.74.1605106756453;
+ Wed, 11 Nov 2020 06:59:16 -0800 (PST)
+Date:   Wed, 11 Nov 2020 06:59:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000b8bf805b3d60a08@google.com>
+Subject: BUG: unable to handle kernel paging request in bpf_trace_run4
+From:   syzbot <syzbot+a5bd8c75daa0e849b296@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 12:54 PM syzbot
-<syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    080b6f40 bpf: Don't rely on GCC __attribute__((optimize)) ..
-> git tree:       bpf
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1089d37c500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d29e58bb557324e55e5e
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f4b032500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1371a47c500000
->
-> The issue was bisected to:
->
-> commit 9df1c28bb75217b244257152ab7d788bb2a386d0
-> Author: Matt Mullins <mmullins@fb.com>
-> Date:   Fri Apr 26 18:49:47 2019 +0000
->
->     bpf: add writable context for raw tracepoints
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    c6bde958 bpf: Lift hashtab key_size limit
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=159f611a500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
+dashboard link: https://syzkaller.appspot.com/bug?extid=a5bd8c75daa0e849b296
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a5bd8c75daa0e849b296@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: fffff52000194406
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 23fff2067 P4D 23fff2067 PUD 101a4067 PMD 101a6067 PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8505 Comm: syz-executor.1 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
+RIP: 0010:bpf_trace_run4+0x135/0x3f0 kernel/trace/bpf_trace.c:2084
+Code: c7 c7 20 ed 50 89 e8 6a 5e d2 ff 0f 1f 44 00 00 e8 f0 27 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
+RSP: 0018:ffffc900016af5e0 EFLAGS: 00010a06
+RAX: dffffc0000000000 RBX: ffffc90000ca2000 RCX: ffffffff8178e0f2
+RDX: 1ffff92000194406 RSI: ffffffff8178dec0 RDI: ffffc90000ca2030
+RBP: 1ffff920002d5ebd R08: 0000000000000000 R09: ffffffff8ebac667
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000001 R14: 00000000000026be R15: ffff8880563fdd38
+FS:  0000000001c6d940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffff52000194406 CR3: 000000003df71000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+ __bpf_trace_ext4_free_blocks+0x10a/0x150 include/trace/events/ext4.h:887
+ trace_ext4_free_blocks include/trace/events/ext4.h:887 [inline]
+ ext4_free_blocks+0x150d/0x1de0 fs/ext4/mballoc.c:5303
+ ext4_remove_blocks fs/ext4/extents.c:2497 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2663 [inline]
+ ext4_ext_remove_space+0x1fad/0x4270 fs/ext4/extents.c:2911
+ ext4_ext_truncate+0x1dc/0x240 fs/ext4/extents.c:4373
+ ext4_truncate+0xe86/0x1420 fs/ext4/inode.c:4251
+ ext4_evict_inode+0x9d2/0x1180 fs/ext4/inode.c:280
+ evict+0x2ed/0x750 fs/inode.c:578
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x3fe/0x820 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
+ dentry_unlink_inode+0x2b1/0x3d0 fs/dcache.c:374
+ d_delete fs/dcache.c:2470 [inline]
+ d_delete+0x16b/0x1c0 fs/dcache.c:2459
+ vfs_rmdir.part.0+0x37b/0x430 fs/namei.c:3726
+ vfs_rmdir fs/namei.c:3698 [inline]
+ do_rmdir+0x3ae/0x440 fs/namei.c:3773
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45dc27
+Code: 00 66 90 b8 57 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 8d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 54 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 6d b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd7c232298 EFLAGS: 00000207 ORIG_RAX: 0000000000000054
+RAX: ffffffffffffffda RBX: 0000000000000065 RCX: 000000000045dc27
+RDX: 0000000000000000 RSI: 000000000074e678 RDI: 00007ffd7c2333d0
+RBP: 0000000000003f22 R08: 0000000000000000 R09: 0000000000000001
+R10: 000000000000000a R11: 0000000000000207 R12: 00007ffd7c2333d0
+R13: 0000000001c6ea60 R14: 0000000000000000 R15: 00007ffd7c2333d0
+Modules linked in:
+CR2: fffff52000194406
+---[ end trace 86ec96f38a2db7f5 ]---
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
+RIP: 0010:bpf_trace_run4+0x135/0x3f0 kernel/trace/bpf_trace.c:2084
+Code: c7 c7 20 ed 50 89 e8 6a 5e d2 ff 0f 1f 44 00 00 e8 f0 27 f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 02 00 00 48 8d 73 38 48 8d 7c 24 28 ff 53 30
+RSP: 0018:ffffc900016af5e0 EFLAGS: 00010a06
+RAX: dffffc0000000000 RBX: ffffc90000ca2000 RCX: ffffffff8178e0f2
+RDX: 1ffff92000194406 RSI: ffffffff8178dec0 RDI: ffffc90000ca2030
+RBP: 1ffff920002d5ebd R08: 0000000000000000 R09: ffffffff8ebac667
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000001 R14: 00000000000026be R15: ffff8880563fdd38
+FS:  0000000001c6d940(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffff52000194406 CR3: 000000003df71000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
 
 
-We have a number of kernel memory corruptions related to bpf_trace_run now:
-https://groups.google.com/g/syzkaller-bugs/search?q=kernel%2Ftrace%2Fbpf_trace.c
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Can raw tracepoints "legally" corrupt kernel memory (a-la /dev/kmem)?
-Or they shouldn't?
-
-Looking at the description of Matt's commit, it seems that corruptions
-should not be possible (bounded buffer, checked size, etc). Then it
-means it's a real kernel bug?
-
-
-
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b6c4da500000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b6c4da500000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16b6c4da500000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-> Fixes: 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
->
-> ==================================================================
-> BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
-> BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
-> Read of size 8 at addr ffffc90000e6c030 by task kworker/0:3/3754
->
-> CPU: 0 PID: 3754 Comm: kworker/0:3 Not tainted 5.9.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue:  0x0 (events)
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x107/0x163 lib/dump_stack.c:118
->  print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
->  __kasan_report mm/kasan/report.c:545 [inline]
->  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
->  __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
->  bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
->  __bpf_trace_sched_switch+0xdc/0x120 include/trace/events/sched.h:138
->  __traceiter_sched_switch+0x64/0xb0 include/trace/events/sched.h:138
->  trace_sched_switch include/trace/events/sched.h:138 [inline]
->  __schedule+0xeb8/0x2130 kernel/sched/core.c:4520
->  schedule+0xcf/0x270 kernel/sched/core.c:4601
->  worker_thread+0x14c/0x1120 kernel/workqueue.c:2439
->  kthread+0x3af/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
->
->
-> Memory state around the buggy address:
->  ffffc90000e6bf00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->  ffffc90000e6bf80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> >ffffc90000e6c000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->                                      ^
->  ffffc90000e6c080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->  ffffc90000e6c100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000004500b05b31e68ce%40google.com.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
