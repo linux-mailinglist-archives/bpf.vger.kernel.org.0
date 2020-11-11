@@ -2,151 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732432AF88A
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 19:50:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6AB2AF8CD
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 20:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbgKKSuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 13:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S1726953AbgKKTQ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 14:16:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbgKKSuP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:50:15 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056AEC0613D1;
-        Wed, 11 Nov 2020 10:50:15 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id i193so2884955yba.1;
-        Wed, 11 Nov 2020 10:50:14 -0800 (PST)
+        with ESMTP id S1726904AbgKKTQ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 14:16:56 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A14C0613D4
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 11:16:56 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id w6so2219939pfu.1
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 11:16:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wdXAAD0iz1oye4klAz4JXXPmQWt3mLSNY3dH2bHsMtI=;
-        b=geuRAy2iOvmO4q6hq+kpsdFiRQ+Inv7OC3joc36vcYKI/GhvTl0fXmz88cDpqMsLzZ
-         WO+kcb34EIQwQG/Dcg862oRNV35APwpjIP0SSbmhXQNO8hVMK5OVf12tcIXzJ87O5Qw6
-         LTp4x94MSmJMgvurUvcSdvDMyyrXI+YKfZKNXDkxWds0WWOA09zqzgNwo0VjGMImvyS4
-         mL9FD/sH7rKF6d/14aeylhXzZLpzIlhf0Bvda4w5B+tEXEvboAE69XDCiEP2askdhVUP
-         UJEMfsC7QwbVzcS8AY38pTT4j/O8vEY1mPPjsKXZnkZk3OBkcIbQjMATUZY/UuSLhp3R
-         7kRQ==
+        bh=m1i2WRtUNtOVarmfPGFkYgVBE/ms//4ROo7hE84/yM4=;
+        b=XPWXcEgeWhUCB0A1PFuvGNL+0YBFatkPAwHs8hPXmZwWeqCOKTZ0jpvlkHsKwSeR+5
+         xqqfZAl2hrTXEiCGxV3Vqca7uxZxNkK3+t8jcutHdbjeWE+SPBJuEaQSjBm9kx4WXp4B
+         six/YrSfaDGjZXMeDZgPor0DhlMcz+L6/NHfl+R/CER7c12ojUytagP8YpiXgpFnqip/
+         hanqij8g92XZxtev6jZ67pmD4ZvoaO499BphJckPU5mQANc7+pRsppTh8pp79QDgcExO
+         pIV9RG0PI/u7z1y3M8wa5VRdUP3UDYEA4ae0/diLy+wQeO2x1Y71kVOo8tQtpOPEcViF
+         bhiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wdXAAD0iz1oye4klAz4JXXPmQWt3mLSNY3dH2bHsMtI=;
-        b=nvGeStwvAJ9hm5oPHWthhBZotwv20b3jOgqbLAw/DhxhZlb16n48oA7qTecW5xl128
-         Mh45zPM1LIhKyme+1KKgYhJz5C+WGh8H4QxnC/YQqXSsu6pmOHkqUt88gpn6RxaXErkH
-         4r0X9G9954ORXjvd4fK/Yx3Xk0LaUX4ynjL2sQUvtCJMZ1jbtynKIji0P8mCH9chJwP7
-         cKLuqZTsZ9gwkHdN/ixPU9ObhQFWdmn1p3X+OaHfFVjkR5oondj9wiatvjlv55DL8XQ0
-         oO/Bl0ngrFQ4+nZ5HrQoqVhafnmEuSIgIxnf3/q9uylbbg4wVFRsqpctPw6zklhlBLcu
-         HnzA==
-X-Gm-Message-State: AOAM530Aet8eZkXIrUQ6YDoYBx6n1mXqcTfjrg+AOI6RrHLJouwtDyG4
-        wKI9pM+3JB7xNogbDQh62MQBQv89ju7KZf3p4/Q=
-X-Google-Smtp-Source: ABdhPJxM+9jcgSa/xo1w3FG76KYSiNw1aQVM2vejBQdVzoeXOlrbR7h1zg7yw/dPa/xpcfaHGuAjYxOghh3xY6tiIxA=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr36282677ybe.403.1605120614209;
- Wed, 11 Nov 2020 10:50:14 -0800 (PST)
+        bh=m1i2WRtUNtOVarmfPGFkYgVBE/ms//4ROo7hE84/yM4=;
+        b=LhS2gvmX1UID0v+bhzrb2Itgorc6Ey0ppojyKwwgnk0+hXCslGa7ZQSIyh22b3i9WT
+         zJhmcE7BqoPOXE3lPTsLFtxaCJq2lcLgLyZPQR+WEQ4tscTCgqioFH6RLvRc9P1ZZBlR
+         Be3pDnQIg6t0ojxxP2p/54r0iNMiNMSAOxadSzNoJC02puLN/2rA68trjsCQ88sNx7D5
+         wn023Q8fbul17OALDPqi2zFRWq3AzyvC55fooUvewQ4H0MrI7x0l/+H7ohq33I65870K
+         ORHWFMC8jyYoM7keha8NwVFnilz6w2ALzFbkbTNWcPgZvPwBq/VBw5h+Sc46xKvQam+D
+         Apfg==
+X-Gm-Message-State: AOAM533LcHNEwHzu0+gYMC6h1XUi39m30FYe3gW6fSBxZuOMlvVVspx7
+        bapBjKAg7pTYTv9rpyJEu7xVEL8OAtL3Abgzww6tmA==
+X-Google-Smtp-Source: ABdhPJyPedGtT1qPPcdjD5ERsdRvMNJG9EctIBoN3yw5n1+wk3yojXbqjLxbfHxqZ78dHxH2KuYovlV7zkujhZJwLFM=
+X-Received: by 2002:a17:90b:110b:: with SMTP id gi11mr5083485pjb.25.1605122215581;
+ Wed, 11 Nov 2020 11:16:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20201106052549.3782099-1-andrii@kernel.org> <20201106052549.3782099-5-andrii@kernel.org>
- <20201111115627.GB355344@kernel.org> <CAEf4BzZZ9HcfhVg=YF_0-7tO8Gpp8Jitm1Utg2h_jasXT0n4sw@mail.gmail.com>
- <1A8E09AB-8FE7-4B19-9287-663F8B139362@gmail.com>
-In-Reply-To: <1A8E09AB-8FE7-4B19-9287-663F8B139362@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Nov 2020 10:50:03 -0800
-Message-ID: <CAEf4Bza3EOhaVRkUXsk7f4nmDywugCOO7OYP1e-5xvq9SSUF0w@mail.gmail.com>
-Subject: Re: [PATCH dwarves 4/4] btf: add support for split BTF loading and encoding
-To:     Arnaldo <arnaldo.melo@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
+References: <1605006094-31097-6-git-send-email-magnus.karlsson@gmail.com>
+ <202011110934.GFwFDfqe-lkp@intel.com> <CAJ8uoz2aDjLPtcTgZ_pO-=S9TgXm3c57rN8TTPXdqT7HOOKrhA@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2aDjLPtcTgZ_pO-=S9TgXm3c57rN8TTPXdqT7HOOKrhA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 11 Nov 2020 11:16:43 -0800
+Message-ID: <CAKwvOd=Pws8npXdRuOVz+cgUYJ+nnztZCgMnZvP+Jr-dJ4z_Aw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/5] i40e: use batched xsk Tx interfaces to
+ increase performance
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 10:34 AM Arnaldo <arnaldo.melo@gmail.com> wrote:
+On Wed, Nov 11, 2020 at 3:57 AM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
 >
->
->
-> On November 11, 2020 3:27:58 PM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >On Wed, Nov 11, 2020 at 3:56 AM Arnaldo Carvalho de Melo
-> ><acme@kernel.org> wrote:
-> >>
-> >> Em Thu, Nov 05, 2020 at 09:25:49PM -0800, Andrii Nakryiko escreveu:
-> >> > Add support for generating split BTF, in which there is a
-> >designated base
-> >> > BTF, containing a base set of types, and a split BTF, which extends
-> >main BTF
-> >> > with extra types, that can reference types and strings from the
-> >main BTF.
-> >>
-> >> > This is going to be used to generate compact BTFs for kernel
-> >modules, with
-> >> > vmlinux BTF being a main BTF, which all kernel modules are based
-> >off of.
-> >>
-> >> > These changes rely on patch set [0] to be present in libbpf
-> >submodule.
-> >>
-> >> >   [0]
-> >https://patchwork.kernel.org/project/netdevbpf/list/?series=377859&state=*
-> >>
-> >> So, applied and added this:
+> On Wed, Nov 11, 2020 at 2:38 AM kernel test robot <lkp@intel.com> wrote:
 > >
-> >Awesome, thanks! Do you plan to release v1.19 soon?
->
-> Yes
->
+> > Hi Magnus,
 > >
-> >>
-> >> diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-> >> index 4b5e0a1bf5462b28..20ee91fc911d4b39 100644
-> >> --- a/man-pages/pahole.1
-> >> +++ b/man-pages/pahole.1
-> >> @@ -185,6 +185,10 @@ Do not encode VARs in BTF.
-> >>  .B \-\-btf_encode_force
-> >>  Ignore those symbols found invalid when encoding BTF.
-> >>
-> >> +.TP
-> >> +.B \-\-btf_base
-> >> +Path to the base BTF file, for instance: vmlinux when encoding
-> >kernel module BTF information.
-> >> +
-> >>  .TP
-> >>  .B \-l, \-\-show_first_biggest_size_base_type_member
-> >>  Show first biggest size base_type member.
-> >>
-> >> ---------------
-> >>
-> >> The entry for btf_encode/-J is missing, I'll add in a followup patch.
-> >>
-> >> Also I had to fixup ARGP_btf_base to 321 as I added this, to simplify
-> >> the kernel scripts and Makefiles:
-> >>
-> >>   $ pahole --numeric_version
-> >>   118
-> >>   $
+> > I love your patch! Perhaps something to improve:
 > >
-> >Oh, this is nice! Can't really use it with Kbuild now due to backwards
-> >compatibility, but maybe someday.
->
-> Well, if it fails with --numeric_version, then it is old and the warning about the minimal version being v1.19 should be emitted :)
+> > [auto build test WARNING on bpf-next/master]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Magnus-Karlsson/xsk-i40e-Tx-performance-improvements/20201110-190310
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> > config: powerpc64-randconfig-r025-20201110 (attached as .config)
+> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 4d81c8adb6ed9840257f6cb6b93f60856d422a15)
 
-Right, but for CONFIG_DEBUG_INFO_BTF v1.13 is still adequate enough
-and will generates useful BTF (no functions and no module BTF, but all
-the CO-RE stuff is there), I wouldn't want to force everyone to get
-v1.19 immediately...
+^ Note: clang
+
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install powerpc64 cross compiling tool for clang build
+> >         # apt-get install binutils-powerpc64-linux-gnu
+> >         # https://github.com/0day-ci/linux/commit/b016bbeac6692a93e61b28efa430d64645032b5e
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Magnus-Karlsson/xsk-i40e-Tx-performance-improvements/20201110-190310
+> >         git checkout b016bbeac6692a93e61b28efa430d64645032b5e
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> > >> drivers/net/ethernet/intel/i40e/i40e_xsk.c:417:13: warning: unknown pragma ignored [-Wunknown-pragmas]
+> >    #pragma GCC unroll 4
+> >                ^
+> >    1 warning generated.
+>
+> And I was hoping that unknown pragmas would be ignored, but that will
+> obviously not be the case with -Wunknown-pragmas added. The unrolling
+> of this inner loop where the code spends most of its time gives me
+> nearly 1 Mpps extra in performance which is substantial, so I would
+> like to get this unrolled in some way, but without the warning. Need
+> some advice please. Here are some options that comes in mind:
+>
+> #1: Suppress unknown pragma warnings in this file only by adding
+> CFLAGS_i40e_xsk.o += -Wno-unknown-pragmas (or whatever that option
+> might be) in the Makefile
+>
+> #2: Force the compiler to loop-unroll the loop with for example a
+> switch statement with four cases that all fall through. This will make
+> the code less readable.
+>
+> #3: Manually loop-unroll the loop. This will make the code even less
+> readable than #2.
+
+#4 support both compilers.  Note Clang's syntax is slightly different
+here; it doesn't accept GCC specific pragmas, and uses a slightly
+different form:
+https://clang.llvm.org/docs/LanguageExtensions.html#loop-unrolling .
+If you wrap that in a macro based on `#ifdef __clang__`, that should
+do the trick.
 
 >
-> - Arnaldo
+> I prefer #1 as I like to keep the code readable, but you might have
+> other better suggestions on how to tackle this.
+>
+> Thanks: Magnus
+>
+> > vim +417 drivers/net/ethernet/intel/i40e/i40e_xsk.c
 > >
-> >>
-> >> Now to test this all by applying the kernel patches and the encoding
-> >> module BTF, looking at it, etc.
-> >>
-> >> - Arnaldo
-> >>
+> >    408
+> >    409  static void i40e_xmit_pkt_batch(struct i40e_ring *xdp_ring, struct xdp_desc *desc,
+> >    410                                  unsigned int *total_bytes)
+> >    411  {
+> >    412          u16 ntu = xdp_ring->next_to_use;
+> >    413          struct i40e_tx_desc *tx_desc;
+> >    414          dma_addr_t dma;
+> >    415          u32 i;
+> >    416
+> >  > 417  #pragma GCC unroll 4
+> >    418          for (i = 0; i < PKTS_PER_BATCH; i++) {
+> >    419                  dma = xsk_buff_raw_get_dma(xdp_ring->xsk_pool, desc[i].addr);
+> >    420                  xsk_buff_raw_dma_sync_for_device(xdp_ring->xsk_pool, dma, desc[i].len);
+> >    421
+> >    422                  tx_desc = I40E_TX_DESC(xdp_ring, ntu++);
+> >    423                  tx_desc->buffer_addr = cpu_to_le64(dma);
+> >    424                  tx_desc->cmd_type_offset_bsz = build_ctob(I40E_TX_DESC_CMD_ICRC |
+> >    425                                                            I40E_TX_DESC_CMD_EOP,
+> >    426                                                            0, desc[i].len, 0);
+> >    427
+> >    428                  *total_bytes += desc[i].len;
+> >    429          }
+> >    430
+> >    431          xdp_ring->next_to_use = ntu;
+> >    432  }
+> >    433
 > >
-> >[...]
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 >
 > --
-> Sent from my Android device with K-9 Mail. Please excuse my brevity.
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAJ8uoz2aDjLPtcTgZ_pO-%3DS9TgXm3c57rN8TTPXdqT7HOOKrhA%40mail.gmail.com.
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
