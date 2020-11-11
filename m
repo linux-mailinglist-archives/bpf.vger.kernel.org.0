@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EC42AE7B7
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 06:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F2E2AE7B8
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 06:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725894AbgKKFE3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 00:04:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S1725828AbgKKFGb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 00:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgKKFE3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 00:04:29 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF9DC0613D1
-        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 21:04:29 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id v92so787127ybi.4
-        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 21:04:29 -0800 (PST)
+        with ESMTP id S1725468AbgKKFGa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 00:06:30 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B68DC0613D1
+        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 21:06:30 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id s8so748825yba.13
+        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 21:06:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Z81c+4AEu4uMBWSvBVF9NEwB4mFVhyrDqz2rFzjXmTU=;
-        b=E6vQW3QrCvEFPgv6DAvOJDgxkI5wSOlj6TGkc857qw1JbHCsOEOdSk9ppLuVEp1Q90
-         N2ZfGLtw15PV1mGj6auA8G/FCVjMoFAy59ep/CghHXyGDu6I92kUXyWC/wTV9YY0B/Cy
-         7PdyAUgvY8EscNZJ0khSm3yKrLSthqmtvufAaS9qhsAcquKayC/JohbfRxKoRyp+69dq
-         AV7InwFuwecBwWrYQwGPY+ndJVV1nKlt34VrqPHEIe73q1UVLTb+VVTBQX2IGPTbnE2T
-         uVuFjkbHv61Af0UVDPH+yAl+2WWXZw1tHzDuQrpyIwbPz8m1yU725U+gGdMJYyhkKKSn
-         VDEA==
+        bh=xQOQXmVOjtFvjo2NMKMUWQnQ7P/3eXWd6E4bLesOoJY=;
+        b=T5MpZ/xgPBnE/vFamoHZonQaQAz+s4LRnuBVhSW0T0EpFBIT8c//FDk0V5BCgrwOR6
+         kujLI7D7TPcYNQi+/id5SxNREZAz1ExLJ7qJFhmgsedcnUlJs5lhqC3BYv6YUiwXHQUo
+         k9NGEmE/IIG5JtiJji8p89JkBSwkb0cFDBRIa5u8dPFBctrWy9tGrAIpzAo6yl8kt+5y
+         MPzwuJ0/yo0vxoy4BhjhFsrb/Ux0LIwX8tOdEOKX0DtGWF3LRSBNFiSpn0oqZaJrMIhX
+         t4rX1GiRpJfY4qEoMO2BXJs7ljPdeg2FLNqWLXBzBWzT6mYUjQSoHK3RoyZXYgg+2p5Q
+         7RFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Z81c+4AEu4uMBWSvBVF9NEwB4mFVhyrDqz2rFzjXmTU=;
-        b=EXozDCiRplST61jN8ZnL/eYej+nEpSf0RN88lysp1LXL7m29hUVAPq7KxbzaZ8bOYV
-         qDgR0F/qKgplLeQ3BHgqrA0UWwWzS6UKgcvwGSbs6gnR3AQP8UZFdrOl7ANAd8LShcQp
-         9TtEOVm76/Bn/ObJOVhTYYISNnyi9UJgtkOhSyHRnSXuOykCrYL4up7ZfaTJN28Hu2zJ
-         yTd/5JdsjLWwcFIwZHXJDoIqAJPiKfB/5p1GjG2UYQaZqiNQLbIDrFRkgncQ+0242cY0
-         xbAQrNjT0nuYKVEQ5S4nAYT3s95QYQBbeIaGUjIzIciNazNqqLUESqiTgvDmmZAhHSRD
-         /v7Q==
-X-Gm-Message-State: AOAM533KyrHs9pQsFIks7S7qLI7Jn4SaDOaeJmnlUcyWfzXxVZPM263p
-        AdCwiKpNZrTgPXm+sIE48DC4jWd0h91k0qegeAs=
-X-Google-Smtp-Source: ABdhPJzk7PiOkou3kYIKLtxjD9znrLjTUolychJUH7ZX2s6V6gji22jGKq37P4XkbV1eKmTsmdl3Ae/Z6YL9wXEOX8E=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr31875882ybe.403.1605071068455;
- Tue, 10 Nov 2020 21:04:28 -0800 (PST)
+        bh=xQOQXmVOjtFvjo2NMKMUWQnQ7P/3eXWd6E4bLesOoJY=;
+        b=b4XrH8lKSk+7Y6Rlb4yIvY8n1B3OtdJkZf+Ze7yioeotkZdAg5PXPof6id6LTClN43
+         oBex3pmgRouhCiPv1ME3txYomBWfzeglDV7Ei0mImakKO0mjFkwJhFfeWNlXaSaE+vzQ
+         wzoBwCIneU8k6eDCvJ3l4baKbVsks/9l0YoVmk9yvXWxQQYnebN6hGCo82YrdDW9Scaz
+         J5eweLic73Zw98GrjlP0UoNlIV+q6NkjqVb6TT8Hc7TDgcMPqbI3Kq9YlE/R7ZG9a2YM
+         sGtfoPHihpPNM4Lb6cCGZ6/n1kkQrRC2i/YlBOgWoKfhC0m985AsBOCP3RTdYegcB4h6
+         k7PA==
+X-Gm-Message-State: AOAM532lGmtrf1/ohCU4v+izbFvbGh4R6MBrO+ZrY/2M1ktP83rS5N5F
+        bUGn5+L4y7ci1ETQQ80auKT4Q26968r/ppWnNPk=
+X-Google-Smtp-Source: ABdhPJwfRs/CskDKlx95v53DxzMwRg7Hw6gvJECRFKWn5sPH7/5wOQJiw720bRUFUv/kBKBFd5JcP/K2kb26KeKijHQ=
+X-Received: by 2002:a25:df82:: with SMTP id w124mr3337631ybg.347.1605071189754;
+ Tue, 10 Nov 2020 21:06:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201110164310.2600671-1-jean-philippe@linaro.org> <20201110164310.2600671-4-jean-philippe@linaro.org>
-In-Reply-To: <20201110164310.2600671-4-jean-philippe@linaro.org>
+References: <20201110164310.2600671-1-jean-philippe@linaro.org> <20201110164310.2600671-5-jean-philippe@linaro.org>
+In-Reply-To: <20201110164310.2600671-5-jean-philippe@linaro.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Nov 2020 21:04:17 -0800
-Message-ID: <CAEf4Bza8Q_xaT9-xehH=GxfDLjDE_RZ5SSo9i_Ho4979qCWkrg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/7] tools/bpftool: Fix cross-build
+Date:   Tue, 10 Nov 2020 21:06:19 -0800
+Message-ID: <CAEf4BzaOXH_Tq_c7mjnZW8kRy7Kff4vy7_7DgGuOe6oRbWhu=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/7] tools/runqslower: Use Makefile.include
 To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,26 +66,17 @@ X-Mailing-List: bpf@vger.kernel.org
 On Tue, Nov 10, 2020 at 8:44 AM Jean-Philippe Brucker
 <jean-philippe@linaro.org> wrote:
 >
-> The bpftool build first creates an intermediate binary, executed on the
-> host, to generate skeletons required by the final build. When
-> cross-building bpftool for an architecture different from the host, the
-> intermediate binary should be built using the host compiler (gcc) and
-> the final bpftool using the cross compiler (e.g. aarch64-linux-gnu-gcc).
->
-> Generate the intermediate objects into the bootstrap/ directory using
-> the host toolchain.
+> Makefile.include defines variables such as OUTPUT and CC for out-of-tree
+> build and cross-build. Include it into the runqslower Makefile and use
+> its $(QUIET*) helpers.
 >
 > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 > ---
-> v3: Always set LIBBPF_OUTPUT. Tidy the clean recipe.
-> ---
-
-LGTM.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  tools/bpf/bpftool/Makefile | 34 ++++++++++++++++++++++++++--------
->  1 file changed, 26 insertions(+), 8 deletions(-)
+>  tools/bpf/runqslower/Makefile | 24 +++++++++---------------
+>  1 file changed, 9 insertions(+), 15 deletions(-)
 >
 
 [...]
