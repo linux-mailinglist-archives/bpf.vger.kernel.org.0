@@ -2,274 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5302AFB87
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 23:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFBD2AFC11
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 02:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgKKWnu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 17:43:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
+        id S1728273AbgKLBcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 20:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726203AbgKKWlr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 17:41:47 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86A7C061A49;
-        Wed, 11 Nov 2020 14:33:22 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id 2so3380802ybc.12;
-        Wed, 11 Nov 2020 14:33:22 -0800 (PST)
+        with ESMTP id S1727194AbgKKWqp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 17:46:45 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B2CC040208;
+        Wed, 11 Nov 2020 14:37:53 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id o71so3116040ybc.2;
+        Wed, 11 Nov 2020 14:37:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jb6xUdM/LpLTOZW3X6Y/EQoOSxyDYWTFF9RUv5ehhQc=;
-        b=p34Op9HFcRQsnxzbh8yb2CoYD5PqYuC+xPR2mMEdiqtfycl3LNLgaDHlsGJBMPdi1i
-         qedhV+M06rsAVltBjVvYhZa4n/G4RMppuniLEdn3fJ1Gn2wnQFsxnom00F/4HgS5QOo5
-         4GXHczs28xP+UdPxcszmtwHNRfSN1mR739pU5jcRcHdEmxUVXYQ3IJBOoZ1Q8kJMD4WV
-         SRJXqdCjUZt9hHu8jkm1tJOrdqO/2NLWWKRdbPojkoLy48lIU6zxCOYNdRiLkXMGtIAP
-         6l0qY7jBzV4LGD0S7gajgv+lHi7vx7+dv9gsi3JmAx8927vz+QGDA+goMXTQxYXo+3aH
-         Gcaw==
+        bh=N5VYtEHc8PJh6B9Pxwlx+Xskau4NMSgJa2pe+N/+0hQ=;
+        b=mIC6jicwNMDMYFiuiMuBACCgPbD4hSINY8bHnJF3OU19jk/QMCYS7pM4BqBYavjA0W
+         pHxyF+5JWJ8hwLLq8P+ss5fOJeI9XR3Ao4i+1Qehu4nmX3b2R4SR6OlZatgHcBT+Z1MD
+         gAhYz1nodwBBFDlSTR5wkXAbX3s2h30wOkMt0Nl3Gx5gN0WuFqgPKmdajV5Fqp5EkdKL
+         DbkVkXX2DJ82y3plY4hdjt4ShFcoj1g7LOgV7GjgWklZ0FHTLCtzaDaFqkMlvVsFwSKF
+         Cam5QJUDpkf0ccxOJVmYz5OL0RQ4cnwrBEG8pgOLj+kmKXOEy1qW9ZMcrkguIMBBkY95
+         YbjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jb6xUdM/LpLTOZW3X6Y/EQoOSxyDYWTFF9RUv5ehhQc=;
-        b=hVT/aay0otzXWKTbOxAtIsXiE1/kNWsxV5tqMD5LdkbSgJ33GkfsfgfoNWWCIWPrFh
-         KhsqlfukfFwh8TENqT4j+zMqYt4d0vz/3iq+mrVg3zJ6VU8e6BYNCG3R/2jm5+D9AEpE
-         yc3pOIp05PIbQGow0/kUo9jVuK5OJyCMqfK4J87wKgVg4krr786vPrYyp3o6d8NKuaqw
-         x3OBFGrLlXx1NUuoVNiKCM7akqYz3+sp9KQgzDCkIqhWV/w3WNnUCuxnYZpSwW6LQxn2
-         Ce1/c2qo1UK82o66vK8le9A7BCHz5Q42Rd8cSDYd+bXzj4vCEB2eRKk3foZasUcorXAc
-         WZjg==
-X-Gm-Message-State: AOAM532ORtwEEypMUf6+XTSEcQw4k5ARCL/mCmli4/t2BBvntck75nxV
-        RhtnaQjywTybC6dq0Frp6gmKUegNU3Xy7kHnOqQ=
-X-Google-Smtp-Source: ABdhPJxO+/rL8mVU+Ph54MK8e/eD8ubsUrU9U5z7jQkl+OHsJ4insUUpxNUVgtexUMsxELTg9+3vvMyugNzOi55d+CI=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr10098441ybg.230.1605134002053;
- Wed, 11 Nov 2020 14:33:22 -0800 (PST)
+        bh=N5VYtEHc8PJh6B9Pxwlx+Xskau4NMSgJa2pe+N/+0hQ=;
+        b=WgQ+XSsYE2loy5eJGekzcKizIxnNM0HHKr9TlsT4HbEGtLLMPhFLh8FtVSVSNx2/cu
+         3QbVq5XwDGglodZVtn27r5EVXlOPtEFvhkwMEsk+sQ6POun/tuZUwSqFcGi6KKgThoPo
+         HbyEkFD4gGCXZUgCRM3JXcDpwi0SVDt1qS5ZGGcR2M43uGr91HSwfeRXvOOPtZyMkrwH
+         9NHmUZFdxOLGAcrm91VlWaJig9NCSuLZ7ZcEV0Z+8QscmTZ/eSCzL028Wez30jByJIM6
+         04uJx/HX6e/5ax/I2bApE1kDm5afAmqvaAl/F1eUx3Mcz82Jg1cPNwUr51NQcTKcL7kA
+         PVLA==
+X-Gm-Message-State: AOAM533FnOHm0GxSX+6EvwB6TYOdna3KBFNimIEFubyJzQLcuJEOZbJ4
+        0XItsjKKwKx9LrLoEJl2fQuc6oLRUI1z3N9lXgk=
+X-Google-Smtp-Source: ABdhPJzceVMSitP9WEByfMfPlKfV3tIMI46eRigsyjAZap2rw9WtaR+Alr/UeVY1x+3FV4YmkQ5rHafJEb0fbziZqJQ=
+X-Received: by 2002:a25:e701:: with SMTP id e1mr12067008ybh.510.1605134272385;
+ Wed, 11 Nov 2020 14:37:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20201110210342.146242-1-me@ubique.spb.ru> <CAEf4BzZQSJZMRRvfzHUE+dhyMdP2BTkeXaVyrNymFbepymvj5Q@mail.gmail.com>
- <20201111103826.GA198626@dbanschikov-fedora-PC0VG1WZ.DHCP.thefacebook.com>
-In-Reply-To: <20201111103826.GA198626@dbanschikov-fedora-PC0VG1WZ.DHCP.thefacebook.com>
+References: <20201111135425.56533-1-wanghai38@huawei.com> <6a589c0b-e2fb-5766-542b-62f40b16253a@iogearbox.net>
+In-Reply-To: <6a589c0b-e2fb-5766-542b-62f40b16253a@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Nov 2020 14:33:11 -0800
-Message-ID: <CAEf4Bzasys6pG5uKHTUJCi1Tw0+N2_8mvx=ia9uFD90ECrNq4w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: relax return code check for subprograms
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 11 Nov 2020 14:37:41 -0800
+Message-ID: <CAEf4BzZ_Fhzg=f437fS0rZANk5ZDAfTv_T3f9Hm6LCLO23pm-g@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf] tools: bpftool: Add missing close before bpftool
+ net attach exit
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Wang Hai <wanghai38@huawei.com>,
         john fastabend <john.fastabend@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Michal Rostecki <mrostecki@opensuse.org>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         KP Singh <kpsingh@chromium.org>,
         =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
+        "Daniel T. Lee" <danieltimlee@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 2:38 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+On Wed, Nov 11, 2020 at 1:24 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On Tue, Nov 10, 2020 at 08:47:13PM -0800, Andrii Nakryiko wrote:
-> > On Tue, Nov 10, 2020 at 1:03 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
-> > >
-> > > Currently verifier enforces return code checks for subprograms in the
-> > > same manner as it does for program entry points. This prevents returning
-> > > arbitrary scalar values from subprograms. Scalar type of returned values
-> > > is checked by btf_prepare_func_args() and hence it should be safe to
-> > > allow only scalars for now. Relax return code checks for subprograms and
-> > > allow any correct scalar values.
-> > >
-> > > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
-> > > Fixes: 51c39bb1d5d10 (bpf: Introduce function-by-function verification)
-> > > ---
+> On 11/11/20 2:54 PM, Wang Hai wrote:
+> > progfd is created by prog_parse_fd(), before 'bpftool net attach' exit,
+> > it should be closed.
 > >
-> > Please make sure that your subject has [PATCH bpf-next], if it's
-> > targeted against bpf-next tree.
+> > Fixes: 04949ccc273e ("tools: bpftool: add net attach command to attach XDP on interface")
+> > Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> > ---
+> > v2->v3: add 'err = 0' before successful return
+> > v1->v2: use cleanup tag instead of repeated closes
+> >   tools/bpf/bpftool/net.c | 18 +++++++++++-------
+> >   1 file changed, 11 insertions(+), 7 deletions(-)
 > >
-> > >  kernel/bpf/verifier.c                         | 26 ++++++++++++++-----
-> > >  .../bpf/prog_tests/test_global_funcs.c        |  1 +
-> > >  .../selftests/bpf/progs/test_global_func8.c   | 25 ++++++++++++++++++
-> > >  3 files changed, 45 insertions(+), 7 deletions(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func8.c
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 10da26e55130..c108b19e1fad 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -7791,7 +7791,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
-> > >         return 0;
-> > >  }
-> > >
-> > > -static int check_return_code(struct bpf_verifier_env *env)
-> > > +static int check_return_code(struct bpf_verifier_env *env, bool is_subprog)
-> > >  {
-> > >         struct tnum enforce_attach_type_range = tnum_unknown;
-> > >         const struct bpf_prog *prog = env->prog;
-> > > @@ -7801,10 +7801,12 @@ static int check_return_code(struct bpf_verifier_env *env)
-> > >         int err;
-> > >
-> > >         /* LSM and struct_ops func-ptr's return type could be "void" */
-> > > -       if ((prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
-> > > -            prog_type == BPF_PROG_TYPE_LSM) &&
-> > > -           !prog->aux->attach_func_proto->type)
-> > > -               return 0;
-> > > +       if (!is_subprog) {
+> > diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+> > index 910e7bac6e9e..f927392271cc 100644
+> > --- a/tools/bpf/bpftool/net.c
+> > +++ b/tools/bpf/bpftool/net.c
+> > @@ -578,8 +578,8 @@ static int do_attach(int argc, char **argv)
 > >
-> > I think just adding `!is_subprog` && to existing if is cleaner and
-> > more succinct.
+> >       ifindex = net_parse_dev(&argc, &argv);
+> >       if (ifindex < 1) {
+> > -             close(progfd);
+> > -             return -EINVAL;
+> > +             err = -EINVAL;
+> > +             goto cleanup;
+> >       }
 > >
-> > > +               if ((prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
-> > > +                    prog_type == BPF_PROG_TYPE_LSM) &&
-> > > +                   !prog->aux->attach_func_proto->type)
-> > > +                       return 0;
-> > > +       }
-> > >
-> > >         /* eBPF calling convetion is such that R0 is used
-> > >          * to return the value from eBPF program.
-> > > @@ -7821,6 +7823,16 @@ static int check_return_code(struct bpf_verifier_env *env)
-> > >                 return -EACCES;
-> > >         }
-> > >
-> > > +       reg = cur_regs(env) + BPF_REG_0;
-> > > +       if (is_subprog) {
-> > > +               if (reg->type != SCALAR_VALUE) {
-> > > +                       verbose(env, "At subprogram exit the register R0 is not a scalar value (%s)\n",
-> > > +                               reg_type_str[reg->type]);
-> > > +                       return -EINVAL;
-> > > +               }
-> > > +               return 0;
-> > > +       }
-> > > +
+> >       if (argc) {
+> > @@ -587,8 +587,8 @@ static int do_attach(int argc, char **argv)
+> >                       overwrite = true;
+> >               } else {
+> >                       p_err("expected 'overwrite', got: '%s'?", *argv);
+> > -                     close(progfd);
+> > -                     return -EINVAL;
+> > +                     err = -EINVAL;
+> > +                     goto cleanup;
+> >               }
+> >       }
 > >
-> > It's not clear why reg->type != SCALAR_VALUE check is done after
-> > prog_type-specific check. Is there any valid case where we'd allow
-> > non-scalar return? Maybe Alexei can chime in here.
+> > @@ -597,16 +597,20 @@ static int do_attach(int argc, char **argv)
+> >               err = do_attach_detach_xdp(progfd, attach_type, ifindex,
+> >                                          overwrite);
 > >
-> > If not, then I'd just move the existing SCALAR_VALUE check below up
-> > here, unconditionally for subprog and non-subprog. And then just exit
-> > after that, if we are processing a subprog.
+> > -     if (err < 0) {
+> > +     if (err) {
+> >               p_err("interface %s attach failed: %s",
+> >                     attach_type_strings[attach_type], strerror(-err));
+> > -             return err;
+> > +             goto cleanup;
+> >       }
+> >
+> >       if (json_output)
+> >               jsonw_null(json_wtr);
+> >
+> > -     return 0;
+> > +     err = 0;
 >
-> As comment says BPF_PROG_TYPE_STRUCT_OPS and BPF_PROG_TYPE_LSM
-> progs may return void. Hence we want allow this only for
-> entry points and not for subprograms as btf_prepare_func_args()
-> guarantees that subprogram return value has SCALAR type.
->
-> Beside that there are other cases when SCALAR type is not
-> enforced for return value: e.g. BPF_PROG_TYPE_TRACING with
-> BPF_MODIFY_RETURN expected attach type.
+> Why is the 'err = 0' still needed here given we test for err != 0 earlier?
+> Would just remove it, otherwise looks good.
 
-I'm surprised we allow returning FP or map_value pointers or something
-like that, regardless of program type. Which is why I raised this
-question. But that's a separate topic, let's punt it.
+This patch was already applied. Wang, can you please follow up with
+another patch to address Daniel's feedback?
 
 >
+> > +cleanup:
+> > +     close(progfd);
+> > +     return err;
+> >   }
 > >
-> > >         switch (prog_type) {
-> > >         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
-> > >                 if (env->prog->expected_attach_type == BPF_CGROUP_UDP4_RECVMSG ||
-> > > @@ -7874,7 +7886,6 @@ static int check_return_code(struct bpf_verifier_env *env)
-> > >                 return 0;
-> > >         }
-> > >
-> > > -       reg = cur_regs(env) + BPF_REG_0;
-> > >         if (reg->type != SCALAR_VALUE) {
-> > >                 verbose(env, "At program exit the register R0 is not a known value (%s)\n",
-> > >                         reg_type_str[reg->type]);
-> > > @@ -9266,6 +9277,7 @@ static int do_check(struct bpf_verifier_env *env)
-> > >         int insn_cnt = env->prog->len;
-> > >         bool do_print_state = false;
-> > >         int prev_insn_idx = -1;
-> > > +       const bool is_subprog = env->cur_state->frame[0]->subprogno;
+> >   static int do_detach(int argc, char **argv)
 > >
-> > this can probably be done inside check_return_code(), no?
 >
-> No.
-> Frame stack may be empty when check_return_code() is called.
-
-How can that happen? check_reg_arg() in check_return_code() relies on
-having a frame available. So does cur_regs() function, also used
-there. What am I missing?
-
->
->
-> >
-> > >
-> > >         for (;;) {
-> > >                 struct bpf_insn *insn;
-> > > @@ -9530,7 +9542,7 @@ static int do_check(struct bpf_verifier_env *env)
-> > >                                 if (err)
-> > >                                         return err;
-> > >
-> > > -                               err = check_return_code(env);
-> > > +                               err = check_return_code(env, is_subprog);
-> > >                                 if (err)
-> > >                                         return err;
-> > >  process_bpf_exit:
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> > > index 193002b14d7f..32e4348b714b 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-> > > @@ -60,6 +60,7 @@ void test_test_global_funcs(void)
-> > >                 { "test_global_func5.o" , "expected pointer to ctx, but got PTR" },
-> > >                 { "test_global_func6.o" , "modified ctx ptr R2" },
-> > >                 { "test_global_func7.o" , "foo() doesn't return scalar" },
-> > > +               { "test_global_func8.o" },
-> > >         };
-> > >         libbpf_print_fn_t old_print_fn = NULL;
-> > >         int err, i, duration = 0;
-> > > diff --git a/tools/testing/selftests/bpf/progs/test_global_func8.c b/tools/testing/selftests/bpf/progs/test_global_func8.c
-> > > new file mode 100644
-> > > index 000000000000..1e9a87f30b7c
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/test_global_func8.c
-> > > @@ -0,0 +1,25 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/* Copyright (c) 2020 Facebook */
-> > > +#include <stddef.h>
-> > > +#include <linux/bpf.h>
-> > > +#include <bpf/bpf_helpers.h>
-> > > +
-> > > +__attribute__ ((noinline))
-> >
-> > nit: use __noinline, it's defined in bpf_helpers.h
-> >
-> > > +int bar(struct __sk_buff *skb)
-> > > +{
-> > > +       return bpf_get_prandom_u32();
-> > > +}
-> > > +
-> > > +static __always_inline int foo(struct __sk_buff *skb)
-> >
-> > foo is not essential, just inline it in test_cls below
-> >
-> > > +{
-> > > +       if (!bar(skb))
-> > > +               return 0;
-> > > +
-> > > +       return 1;
-> > > +}
-> > > +
-> > > +SEC("cgroup_skb/ingress")
-> > > +int test_cls(struct __sk_buff *skb)
-> > > +{
-> > > +       return foo(skb);
-> > > +}
-> >
-> > I also wonder what happens if __noinline function has return type
-> > void? Do you mind adding another BPF program that uses non-inline
-> > global void function? We might need to handle that case in the
-> > verifier explicitly.
->
-> btf_prepare_func_args() guarantees that a subprogram may have only
-> SCALAR return type.
-
-Right, I didn't know about this, thanks. We might want to lift that
-restriction eventually.
-
->
-> >
-> >
-> > > --
-> > > 2.24.1
-> > >
