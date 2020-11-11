@@ -2,111 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29602AFC0D
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 02:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EC12AFD32
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 02:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgKLBcD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 20:32:03 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:51535 "EHLO
+        id S1728262AbgKLBcE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 20:32:04 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:41073 "EHLO
         wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726843AbgKKWqf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 17:46:35 -0500
+        by vger.kernel.org with ESMTP id S1726970AbgKKWqh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 17:46:37 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 372409CC;
-        Wed, 11 Nov 2020 17:46:34 -0500 (EST)
+        by mailout.west.internal (Postfix) with ESMTP id 198FB638;
+        Wed, 11 Nov 2020 17:46:36 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 11 Nov 2020 17:46:34 -0500
+  by compute3.internal (MEProxy); Wed, 11 Nov 2020 17:46:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=6XDxQ89oRUt1iCVzejeWV7bDGk
-        D9oU06u/1vqsZYoCc=; b=BpFVoSHsXp3GMmadYOv+KSkU3buF/32Ixsl0uSV/jL
-        zNoleE/Q4VGIsyKHebLfAGbuXcQg5rL3d3fqLzrQQbfUTC3Vdg4tk3Bm9DI+bD1+
-        l829bsePCL7qOOcUHWZH/jA2w0l/OZswkdK0RLdYPjX6ZO19UkK3T/wpEH/Vkeqe
-        czJ9XQ1uVx46YkUPvVjutQvLsCVPYVSdZWB3u19Ph9AOEbdTLnmbhm1Kb4pracap
-        LWqTkSEGwzGgYDReROxeZa4RUHF7vPCgVbqpD1nx9+ubtq5zaZX3F9CdXy+ltkIn
-        Ahb2G5O5RPuCff3DAGGBGc8/yanaHEKiVY0FAmMpHRwg==
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=JB1VBqITSKhPX
+        sfUHzxUXkMo7GYuI0H/W3InHGhrcyk=; b=FZqM56GKkg2GCPlbMg3q8u+T9Az+t
+        gpirqbGJBKtYgwu1V51EYkZcjDMQalXcufXU1zD8S2GJbbv06JXWvv4OrEwMgxpu
+        cJlX5oxhpLzBrB2FC+WEfP+uYww3RhFcUX5oh4LZxXbBADpMuOfF1l3/H9fhhkYU
+        RSg6RHDK3yVM659FSxEeh6S7KfyzvfHeooS3UvEXE9nwM3WugIwYxrjDqjFxTrKF
+        1bMQs6/Zel4vDnD4d5iOHWnADyxwnB46nPN+0Xa9POFKoDOg5MomazLhVUx9YXFm
+        aq7xjaowxPB66KrEyYCiuRcT3rThngwNaTJnKmqhfUdbFufR2OcyqrQsQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=6XDxQ89oRUt1iCVze
-        jeWV7bDGkD9oU06u/1vqsZYoCc=; b=UNDDyyEsq3sMO3rVZr0tBGnvWcyaYIByZ
-        Z1cIMzyjVzuxpqOWqDe1p0ZjSNCPo4qBw4k5EkaxVUvu6fyfrajA4xhk0oEXE6Mn
-        WvAqRVHiOz3Mq9N4KjahZReT4sDyGryOa97iqayuC7Ef5a3vaWTWavEsbVPM7b76
-        HtA6sqvGjaK+HfqgjvePw+3Kg1PcQWV5TgI0M3OqArDveA9hLqvr+25WGZDVNh0k
-        lSEU+0UT5II7MGOauF26uIQ6Q5aUQ2VWIgqHPavAVLJoGOXswOsVXzUIzt5G3DML
-        M7Mg9pRwUxIDdp0czfWoopaTVzT1erfxpAYy4Aa2Xg1WEhZTDL4AA==
-X-ME-Sender: <xms:yWmsXzm4eo55H9neZ318KjBg_dou9qZnN-MJgsmuAS7vaxr0JXs_6Q>
-    <xme:yWmsX23CRXYEn1GN0oZn9xJsdFGcZ47im9fEXT651vpPEDB_SbXOAp1jrKW5fsMIE
-    zoWXikpFrC4iseojw>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; bh=JB1VBqITSKhPXsfUHzxUXkMo7GYuI0H/W3InHGhrcyk=; b=Y7iH9vFS
+        tpwfKsdEayadu45on3j5hG/YDoswnVmEGzG2NXWEEdxhLUb52mhgNXlCFBgpiZE/
+        Fa5wVnmgZiFo339m/EVuubuOjtNFmbz29Z2pUFYF4+VyGUMDJ//3KwV+mtkKpa2C
+        xLnnqcI+cg90pblb2vfqwUxf1SJwelAig/jTlYAzjkynkzNa1TpeuLT9RV0K8gkn
+        EIhCEJ725OobPC/siONBU77D6rcXLpbnJuVaGWYJj6E0DIlwW+k8n3B6t+acnqgj
+        HXZNXvLVXg87QI5Wd4OhxtwPTGLdivk5/KEBfZea4GsYALbwDR1FMTCCuF0SVt+L
+        whya2eBzv6fObQ==
+X-ME-Sender: <xms:y2msXydB13THWVXyYqqKxsuTn1tLTS81NymqXJO9pc30Mq3Rr2oq2g>
+    <xme:y2msX8PjGU733wq4f7QvppGu66fBJTrHIOgKPSi-Bi0BkanxZkGyVeqYA1wOhJkmz
+    sbaPZLfYAMZWdKR0w>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvuddgtdefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
-    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
-    effeeivdefheeiveevjeduieeigfetieevieffffenucfkphepieelrddukedurddutdeh
-    rdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:yWmsX5oOPsI_mWXZYxmK6MQw4TrnxyAVgNnbbPqvvSDnN-8S9pYAmA>
-    <xmx:yWmsX7n_ZbyO-yT3dgCeIhGtt5YONnUenqvNgY0pq7RlZriQzNseNQ>
-    <xmx:yWmsXx3c_UNzRMPio7661CTi_en5PjSvBMgc45bQs5eMmiMmoK4a-w>
-    <xmx:yWmsX5-zW1E4yMHd6YRNszXyY3pBszBe9sxjmz55geoKDXjnp8nDBQ>
+    fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
+    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgkeduleekhfetvefhge
+    fgvdegfeejfefguedvuddthffggffhhedtueeuteefieenucfkphepieelrddukedurddu
+    tdehrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:y2msXziEy4zoMhKb28Od8-kN07Nm2j2h4piQkYXntu9f5luybjcxeg>
+    <xmx:y2msX_8H9YO3zPxei2J9-rTRB4RMk6BzwpqjXVRCAsIOP_JgYpMGkw>
+    <xmx:y2msX-tF2xGSepwuaOikA6Cq2W-s3JrRTdyTTsyKNYcBCsNFUF6YSQ>
+    <xmx:y2msXwUpxdlZcVX-OrDM42bLdjGmjbiiBN4sWUniCDQ-us5NocLKaA>
 Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 85254306301C;
-        Wed, 11 Nov 2020 17:46:32 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id B61CC3063080;
+        Wed, 11 Nov 2020 17:46:34 -0500 (EST)
 From:   Daniel Xu <dxu@dxuuu.xyz>
 To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
         daniel@iogearbox.net, songliubraving@fb.com,
         andrii.nakryiko@gmail.com
 Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
-Subject: [PATCH bpf v5 0/2] Fix bpf_probe_read_user_str() overcopying
-Date:   Wed, 11 Nov 2020 14:45:53 -0800
-Message-Id: <cover.1605134506.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
+Date:   Wed, 11 Nov 2020 14:45:54 -0800
+Message-Id: <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1605134506.git.dxu@dxuuu.xyz>
+References: <cover.1605134506.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
-kernel}_str helpers") introduced a subtle bug where
-bpf_probe_read_user_str() would potentially copy a few extra bytes after
-the NUL terminator.
+do_strncpy_from_user() may copy some extra bytes after the NUL
+terminator into the destination buffer. This usually does not matter for
+normal string operations. However, when BPF programs key BPF maps with
+strings, this matters a lot.
 
-This issue is particularly nefarious when strings are used as map keys,
-as seemingly identical strings can occupy multiple entries in a map.
+A BPF program may read strings from user memory by calling the
+bpf_probe_read_user_str() helper which eventually calls
+do_strncpy_from_user(). The program can then key a map with the
+resulting string. BPF map keys are fixed-width and string-agnostic,
+meaning that map keys are treated as a set of bytes.
 
-This patchset fixes the issue and introduces a selftest to prevent
-future regressions.
+The issue is when do_strncpy_from_user() overcopies bytes after the NUL
+terminator, it can result in seemingly identical strings occupying
+multiple slots in a BPF map. This behavior is subtle and totally
+unexpected by the user.
 
-v4 -> v5:
-* don't read potentially uninitialized memory
+This commit has strncpy start copying a byte at a time if a NUL is
+spotted.
 
-v3 -> v4:
-* directly pass userspace pointer to prog
-* test more strings of different length
+Fixes: 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers")
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ lib/strncpy_from_user.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-v2 -> v3:
-* set pid filter before attaching prog in selftest
-* use long instead of int as bpf_probe_read_user_str() retval
-* style changes
-
-v1 -> v2:
-* add Fixes: tag
-* add selftest
-
-Daniel Xu (2):
-  lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
-  selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes
-    after NUL
-
- lib/strncpy_from_user.c                       |  9 ++-
- .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
- .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
- 3 files changed, 100 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
-
+diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
+index e6d5fcc2cdf3..83180742e729 100644
+--- a/lib/strncpy_from_user.c
++++ b/lib/strncpy_from_user.c
+@@ -40,12 +40,11 @@ static inline long do_strncpy_from_user(char *dst, const char __user *src,
+ 		/* Fall back to byte-at-a-time if we get a page fault */
+ 		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time);
+ 
++		if (has_zero(c, &data, &constants))
++			goto byte_at_a_time;
++
+ 		*(unsigned long *)(dst+res) = c;
+-		if (has_zero(c, &data, &constants)) {
+-			data = prep_zero_mask(c, data, &constants);
+-			data = create_zero_mask(data);
+-			return res + find_zero(data);
+-		}
++
+ 		res += sizeof(unsigned long);
+ 		max -= sizeof(unsigned long);
+ 	}
 -- 
 2.29.2
 
