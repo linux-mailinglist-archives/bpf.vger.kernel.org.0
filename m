@@ -2,156 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6432AEF14
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 12:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9202AEF64
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 12:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725984AbgKKLCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 06:02:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46063 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725959AbgKKLCf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 06:02:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605092554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HgnsptKYrAYETwb6RQgP12ipc3XlwLCSG6GxAjNNiQg=;
-        b=HdYebn0bjIhjrD1RljpXkyCe3gqmj/Xge1/BecCBYojGzfm0xUKSj1Xqgk5TJEsCPZ153M
-        Q19YUQfqg5L/K0FXNc/y5TSgsQKhLsc7439FDwStCJbJWgN+QosmB87WYQMsBuwmyV9N/1
-        HRUNQm7cPMsBh6EVVx52E7/tROnUVc0=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-RqlTmw6-NbSVMJGENgZcGg-1; Wed, 11 Nov 2020 06:02:32 -0500
-X-MC-Unique: RqlTmw6-NbSVMJGENgZcGg-1
-Received: by mail-qv1-f70.google.com with SMTP id c90so1131464qva.11
-        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 03:02:31 -0800 (PST)
+        id S1726125AbgKKLRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 06:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgKKLRK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 06:17:10 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8D8C0613D4
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 03:17:09 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id z21so2598514lfe.12
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 03:17:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=SmD3+sLYBLHCX5kIQGy8Wg7QbI8g3por4Ij6pZStXAo=;
+        b=tuNFJUUa4Or2tzeijfJGe4TGJ8HZv0d2rT6lPqsF7xaicDwNTPXGmWjQ7VtFgQqYcN
+         tm1U67y+nY0gI/iQkmPloyM6FEu5ZtHxkCBtIVzlNDxiyYxqoMlKQp3d7hzR7lRKx9YF
+         tFyfPiEOeYh289aKQPZ+nptP3Uai5IR/nKbkI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=HgnsptKYrAYETwb6RQgP12ipc3XlwLCSG6GxAjNNiQg=;
-        b=htU6gGh60hetL0N51uZStfJ1LmUjl3VNWvsMKK1MZD1O7G/rx3n8blNlSRit1VMYPp
-         pf/yXichwDOz8VzJjhZjUq0ojLz5jeEsgbFuMAWKGob+ZlHfl79XHQHeouE9GrR5Odk8
-         /NiskvHnlnLX0w2M6e05w22NBLHtV2qYAJkvnigdHz8nPMsJQ3DD2+++0I7kiUhPMWtz
-         ekCuvzceYQYAGxv7WzkPrSxYvw4SNrwNfyv9TMPTYQqQgdUUXw7kt9UBpfPvq4eXO6mv
-         Yml08YDWzgtkEbFaCaAKMygqFzEn3kq5b1oD/8E4XmDWggjPbcCRnrWUgDZStHotwP8F
-         miuA==
-X-Gm-Message-State: AOAM532YL8R0+/1Lj7X2f+ePbjrGAexLTUuY4FzZ4jOd4u67Q8yCitH8
-        Nx1YM4NqcT18KMaovwIFwHrMmRAlRtTaXSiRVi+7lpBXM9kT2iY/OiMxZpXzvr/R/W/MVDLaus5
-        y6hkQAGIo6lpA
-X-Received: by 2002:ac8:1201:: with SMTP id x1mr12717913qti.339.1605092551561;
-        Wed, 11 Nov 2020 03:02:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzk553Y+qO9pY8i86H2Q8DT91q75yDtJJLXiQ9gewjey8d5E3lMiuoHYWNh9qdk7ow0cv4rww==
-X-Received: by 2002:ac8:1201:: with SMTP id x1mr12717886qti.339.1605092551320;
-        Wed, 11 Nov 2020 03:02:31 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id s23sm1718122qke.11.2020.11.11.03.02.29
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=SmD3+sLYBLHCX5kIQGy8Wg7QbI8g3por4Ij6pZStXAo=;
+        b=XSoceRWf8mmoB7zL0DUkS5Wvdveyr6NLL3wkZFz03j2+HRMjcMYsCB3OVSFZ/i53Zp
+         6L8fbXX6FIaJkLvUDuI4MguqS7XS/XufwZoZJ6nsF4YIFElXPxAV3Rk14YowpwkXGnP4
+         EvNVMa9+KqG1D5xmSkep6aggSXRFu7JJA8nK5OMp6H8EU23qWvthInJ3gP7W09kghyQs
+         A/8Ov22+yu0cjef1L3T5x1FsXGRaX3n60oTavolDR0pZZwhxMC1Va/Lmo7+/ubhgm3pX
+         x3r4AGlDPhT39B87WJErEFarAbZOrWXPLCpTqXeE3t/nYHp9bZmFO7rZU0hSL3taBPgH
+         KL0Q==
+X-Gm-Message-State: AOAM531bndl9bM0nKOf2GredhkqDc3EQeLu8jtDKPPEm0JMqdqlV2woz
+        awxtTCaX59uuGZwmi2tPHmOZ/A==
+X-Google-Smtp-Source: ABdhPJznBLeCBVObooLKP6FokZLlhU9L/hti/kOz52w26yVhFZYmSQl+sVV4RdcDtFEL35/OuO0Bdw==
+X-Received: by 2002:a19:8497:: with SMTP id g145mr9710785lfd.504.1605093428226;
+        Wed, 11 Nov 2020 03:17:08 -0800 (PST)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id w13sm192029lfq.72.2020.11.11.03.17.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 03:02:29 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B1EAB1833E9; Wed, 11 Nov 2020 12:02:26 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        David Ahern <dsahern@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Hangbin Liu <haliu@redhat.com>,
+        Wed, 11 Nov 2020 03:17:07 -0800 (PST)
+References: <X6rJ7c1C95uNZ/xV@santucci.pierpaolo> <CAEf4BzYTvPOtiYKuRiMFeJCKhEzYSYs6nLfhuten-EbWxn02Sg@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Santucci Pierpaolo <santucci@epigenesys.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-In-Reply-To: <20201111004749.r37tqrhskrcxjhhx@ast-mbp>
-References: <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
- <07f149f6-f8ac-96b9-350d-b289ef16d82f@solarflare.com>
- <CAEf4BzaSfutBt3McEPjmu_FyxyzJa_xVGfhP_7v0oGuqG_HBEw@mail.gmail.com>
- <20201106094425.5cc49609@redhat.com>
- <CAEf4Bzb2fuZ+Mxq21HEUKcOEba=rYZHc+1FTQD98=MPxwj8R3g@mail.gmail.com>
- <CAADnVQ+S7fusZ6RgXBKJL7aCtt3jpNmCnCkcXd0fLayu+Rw_6Q@mail.gmail.com>
- <20201106152537.53737086@hermes.local>
- <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
- <20201109014515.rxz3uppztndbt33k@ast-mbp>
- <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
- <20201111004749.r37tqrhskrcxjhhx@ast-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 11 Nov 2020 12:02:26 +0100
-Message-ID: <874klwcg1p.fsf@toke.dk>
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] selftest/bpf: fix IPV6FR handling in flow dissector
+In-reply-to: <CAEf4BzYTvPOtiYKuRiMFeJCKhEzYSYs6nLfhuten-EbWxn02Sg@mail.gmail.com>
+Date:   Wed, 11 Nov 2020 12:17:06 +0100
+Message-ID: <87imacw3bh.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Mon, Nov 09, 2020 at 09:09:44PM -0700, David Ahern wrote:
->> On 11/8/20 6:45 PM, Alexei Starovoitov wrote:
->> > 
->> > I don't understand why on one side you're pointing out existing quirkiness with
->> > bpf usability while at the same time arguing to make it _less_ user friendly
->> 
->> I believe you have confused my comments with others. My comments have
->> focused on one aspect: The insistence by BPF maintainers that all code
->> bases and users constantly chase latest and greatest versions of
->> relevant S/W to use BPF
+On Wed, Nov 11, 2020 at 05:48 AM CET, Andrii Nakryiko wrote:
+> On Tue, Nov 10, 2020 at 9:12 AM Santucci Pierpaolo
+> <santucci@epigenesys.com> wrote:
+>>
+>> From second fragment on, IPV6FR program must stop the dissection of IPV6
+>> fragmented packet. This is the same approach used for IPV4 fragmentation.
+>>
 >
-> yes, because we care about user experience while you're still insisting
-> on make it horrible.
-> With random pick of libbpf.so we would have no choice, but to actively tell
-> users to avoid using tc, because sooner or later they will be pissed. I'd
-> rather warn them ahead of time.
+> Jakub, can you please take a look as well?
 
-Could we *please* stop with this "my way or the highway" extortion? It's
-incredibly rude, and it's not helping the discussion.
+I'm not initimately familiar with this test, but looking at the change
+I'd consider that Destinations Options and encapsulation headers can
+follow the Fragment Header.
 
->> - though I believe a lot of the tool chasing
->> stems from BTF. I am fairly certain I have been consistent in that theme
->> within this thread.
+With enough of Dst Opts or levels of encapsulation, transport header
+could be pushed to the 2nd fragment. So I'm not sure if the assertion
+from the IPv4 dissector that 2nd fragment and following doesn't contain
+any parseable header holds.
+
+Taking a step back... what problem are we fixing here?
+
 >
-> Right. A lot of features added in the last couple years depend on BTF:
-> static vs global linking, bpf_spin_lock, function by function verification, etc
->
->> > when myself, Daniel, Andrii explained in detail what libbpf does and how it
->> > affects user experience?
->> > 
->> > The analogy of libbpf in iproute2 and libbfd in gdb is that both libraries
->> 
->> Your gdb / libbfd analogy misses the mark - by a lot. That analogy is
->> relevant for bpftool, not iproute2.
->> 
->> iproute2 can leverage libbpf for 3 or 4 tc modules and a few xdp hooks.
->> That is it, and it is a tiny percentage of the functionality in the package.
->
-> cat tools/lib/bpf/*.[hc]|wc -l
-> 23950
-> cat iproute2/tc/*.[hc]|wc -l
-> 29542
->
-> The point is that for these few tc commands the amount logic in libbpf/tc is 90/10.
->
-> Let's play it out how libbpf+tc is going to get developed moving forward if
-> libbpf is a random version. Say, there is a patch for libbpf that makes
-> iproute2 experience better. bpf maintainers would have no choice, but to reject
-> it, since we don't add features/apis to libbpf if there is no active user.
-> Adding a new libbpf api that iproute2 few years from now may or may not take
-> advantage makes little sense.
-
-What? No one has said that iproute2 would never use any new features,
-just that they would be added conditionally on a compatibility check
-with libbpf (like the check for bpf_program__section_name() in the
-current patch series).
-
-Besides, for the entire history of BPF support in iproute2 so far, the
-benefit has come from all the features that libbpf has just started
-automatically supporting on load (BTF, etc), so users would have
-benefited from automatic library updates had it *not* been vendored in.
-
--Toke
-
+>> Signed-off-by: Santucci Pierpaolo <santucci@epigenesys.com>
+>> ---
+>>  tools/testing/selftests/bpf/progs/bpf_flow.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
+>> index 5a65f6b51377..95a5a0778ed7 100644
+>> --- a/tools/testing/selftests/bpf/progs/bpf_flow.c
+>> +++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
+>> @@ -368,6 +368,8 @@ PROG(IPV6FR)(struct __sk_buff *skb)
+>>                  */
+>>                 if (!(keys->flags & BPF_FLOW_DISSECTOR_F_PARSE_1ST_FRAG))
+>>                         return export_flow_keys(keys, BPF_OK);
+>> +       } else {
+>> +               return export_flow_keys(keys, BPF_OK);
+>>         }
+>>
+>>         return parse_ipv6_proto(skb, fragh->nexthdr);
+>> --
+>> 2.29.2
+>>
