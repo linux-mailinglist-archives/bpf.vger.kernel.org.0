@@ -2,104 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9932AE4F8
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 01:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3092AE51C
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 01:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731713AbgKKAjU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Nov 2020 19:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
+        id S1732514AbgKKAr7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Nov 2020 19:47:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbgKKAjT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Nov 2020 19:39:19 -0500
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C141C0613D1;
-        Tue, 10 Nov 2020 16:39:19 -0800 (PST)
-Received: by mail-qt1-x842.google.com with SMTP id g15so178220qtq.13;
-        Tue, 10 Nov 2020 16:39:19 -0800 (PST)
+        with ESMTP id S1732485AbgKKAr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Nov 2020 19:47:56 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69819C0613D1;
+        Tue, 10 Nov 2020 16:47:54 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id w4so207496pgg.13;
+        Tue, 10 Nov 2020 16:47:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=VYGpBgc1MoESrTqe5G/8yvpuLVhdkwv6SHhqO98wwyo=;
-        b=scrNLD856fiumyXSZAaMMylKAXtgzTaBxuSnugJreRoJAmulCchAxrNmPlrxytdsXf
-         h9moCjqcoqHrPV31YpSuVOhSqyxkFheJ4PSH+zsl8VRcIELt3qHP3RWQidqdSh+pyytD
-         xRQzm6XYOMRxhngFEVu1zk5aoR4V1Xge6ciaMFLtL2Ajt6uQvMcSd2cQpY4BHN+5dOUG
-         Ib5U9zmLXuDcD+zKQ+FY09qOHw86ncb5uAe+Jk110W78a+tGHurZ8KwEmoRQsONxJNrh
-         Pn5qKOTmGqubU10jk2CglhXqakioisiNKdFoqtOGH80QAgamtsbPf4bjxYUnzABGitfy
-         WHzQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JwoNgdxg8ZrZ61bDPQkii1B5bpOmPdODGxawpOT/OhY=;
+        b=Se4AStJrGLvgU+qwRcI5kmgucbLew44q5SfB+BQg4LEoVrMx+K4KjygCX+LVOlbkVL
+         7iH5SFAjN0N4yEtH1zqZicl98egEmqQAy8idPed2b7NqXg6DSlE4Lx1rpHvDVQYF/YTu
+         Y5NDwqoeYu0+1LHzukpJ1VjkGPZHwWwyikE2uby5dx3OIjwjxkco+LpJTbWRimRbEh8r
+         h6t5cStruS2utk8nVUhc1+zODE6uca5xxywPgy74VPKplOg5+FxDBZqHt5DI2LGDtoU4
+         SNBgVim68hGnMhm5pESJWLUhQW8MaTyNzqUxirqdKlIdG134CBAjd+FVd6gECAXJaX5m
+         E6Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=VYGpBgc1MoESrTqe5G/8yvpuLVhdkwv6SHhqO98wwyo=;
-        b=i1Cql8EQ7A4zG1SQkDZdUdTk0QZkvQ0/NJKNvHhl4PkD8r0Kfz3r+dhRAYaNRbHkM2
-         1Vz/gez5hCmZ4BQzc530nXAlfQJdgC5d2KTcX9HuFmWFxlh5AnONxjm9GuUSGUsEiZFI
-         FoB7j26fXkTJSNNvbrRqt1gp2yuXBL1aE7iSxTKuIHPpqdQsA1khEHy516r+1iAEfhcn
-         zTxZbkEqD1hvz35H5DpG3Jl1orZORo3zzPwKsKZS05RrNs4Qq4pI+Er2mZFitM6UNuac
-         wOHo7JQ+9ET1KDSa9gGyw+3eTZKshCFhjP6MrcM6I6PyNz/L7pVNU5uCcq2/jwv/OarP
-         cmcQ==
-X-Gm-Message-State: AOAM533HMZCuvX8Fv/4CLngaQxM+WpjUlPu4Xm0KIV5LmyWuJcJx1Bpb
-        bgJELJjjeS704MyxSgg5YrvReYW3990YSw==
-X-Google-Smtp-Source: ABdhPJyNbcv+8Xlng2UeY+pHn7hiHvVtmvaY4X7hJEYOiA6jWFsg48gMa9sjwgjWH5q6VNLq1Sb5rw==
-X-Received: by 2002:ac8:42d1:: with SMTP id g17mr20542476qtm.191.1605055158576;
-        Tue, 10 Nov 2020 16:39:18 -0800 (PST)
-Received: from [192.168.86.242] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id p12sm484233qkp.88.2020.11.10.16.39.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2020 16:39:17 -0800 (PST)
-Date:   Tue, 10 Nov 2020 21:38:53 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAEf4Bzb9CJeZKxJ=Ppdpsb_1qZ2nSOTmRyk1Lj_wok0sH8NZ_w@mail.gmail.com>
-References: <20201106052549.3782099-1-andrii@kernel.org> <CAEf4BzZGXQaDEwASyaJ39AAZ7TWnbi89pgrwXB5uFi861c9CCA@mail.gmail.com> <348BC25F-0DDF-416E-8659-0C4B09F0A767@gmail.com> <CAEf4Bzb9CJeZKxJ=Ppdpsb_1qZ2nSOTmRyk1Lj_wok0sH8NZ_w@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JwoNgdxg8ZrZ61bDPQkii1B5bpOmPdODGxawpOT/OhY=;
+        b=rNGR9PMxyak6eDCYDYf7HzjDEU5ZDnoo+vNKXWspX1m5ueFq96IhClIdph2uRU3G3P
+         2bCqbccYBriiqbRpWDfkyfdIMgFE05n8/M/ML8U+FZJd/81eliFTa1/y/Vr+M7JfNfOU
+         yVrMKNst44NxDnpyIg7Ya4JOwyXD9QPiQbxDDu7BsBOnDyYno8HnetSIZ3XNvu49sebJ
+         o2IcgqYzuSgW6OqT0UVNT1Hzp9s6uGy97uBojQFbYHoE1EwZBo056kistGD86JOFbaYd
+         rw8YYfOCuBOjiWIMJKyAdz5II6CRqJ2DNV3c88E+xlfGXRJNPRw3pePVXleNjmS/W9/Y
+         w4DQ==
+X-Gm-Message-State: AOAM533gqV5JE8QlkaZA1jKm5PV11MvRkboqkRC0RpHrHbpBRPgNy5X4
+        0UDPmHwbIc+G69sB48lyWY8=
+X-Google-Smtp-Source: ABdhPJy2fxLB1dlnVWnaLAVFfdkoNbWkppSl+jZtKwfbF/Z31VOj1iTQ3aNiXlTjl8/b81TWA42NoQ==
+X-Received: by 2002:a63:8149:: with SMTP id t70mr19811263pgd.80.1605055673806;
+        Tue, 10 Nov 2020 16:47:53 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:8fc0])
+        by smtp.gmail.com with ESMTPSA id y124sm315178pfy.28.2020.11.10.16.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2020 16:47:52 -0800 (PST)
+Date:   Tue, 10 Nov 2020 16:47:49 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201111004749.r37tqrhskrcxjhhx@ast-mbp>
+References: <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
+ <07f149f6-f8ac-96b9-350d-b289ef16d82f@solarflare.com>
+ <CAEf4BzaSfutBt3McEPjmu_FyxyzJa_xVGfhP_7v0oGuqG_HBEw@mail.gmail.com>
+ <20201106094425.5cc49609@redhat.com>
+ <CAEf4Bzb2fuZ+Mxq21HEUKcOEba=rYZHc+1FTQD98=MPxwj8R3g@mail.gmail.com>
+ <CAADnVQ+S7fusZ6RgXBKJL7aCtt3jpNmCnCkcXd0fLayu+Rw_6Q@mail.gmail.com>
+ <20201106152537.53737086@hermes.local>
+ <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
+ <20201109014515.rxz3uppztndbt33k@ast-mbp>
+ <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH dwarves 0/4] Add split BTF support to pahole
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-From:   Arnaldo <arnaldo.melo@gmail.com>
-Message-ID: <334FAF0A-CA0A-448C-8317-235EEB44C7A6@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Nov 09, 2020 at 09:09:44PM -0700, David Ahern wrote:
+> On 11/8/20 6:45 PM, Alexei Starovoitov wrote:
+> > 
+> > I don't understand why on one side you're pointing out existing quirkiness with
+> > bpf usability while at the same time arguing to make it _less_ user friendly
+> 
+> I believe you have confused my comments with others. My comments have
+> focused on one aspect: The insistence by BPF maintainers that all code
+> bases and users constantly chase latest and greatest versions of
+> relevant S/W to use BPF
 
+yes, because we care about user experience while you're still insisting
+on make it horrible.
+With random pick of libbpf.so we would have no choice, but to actively tell
+users to avoid using tc, because sooner or later they will be pissed. I'd
+rather warn them ahead of time.
 
-On November 10, 2020 9:35:25 PM GMT-03:00, Andrii Nakryiko <andrii=2Enakry=
-iko@gmail=2Ecom> wrote:
->On Tue, Nov 10, 2020 at 4:30 PM Arnaldo <arnaldo=2Emelo@gmail=2Ecom> wrot=
-e:
->> On November 10, 2020 8:34:18 PM GMT-03:00, Andrii Nakryiko
-><andrii=2Enakryiko@gmail=2Ecom> wrote:
->> >On Thu, Nov 5, 2020 at 9:25 PM Andrii Nakryiko <andrii@kernel=2Eorg>
->> >wrote:
->> >>
->> >> Add ability to generate split BTF (for kernel modules), as well as
->> >load split
->> >> BTF=2E --btf_base argument is added to specify base BTF for split
->BTF=2E
->> >This
->> >> works for both btf_loader and btf_encoder=2E
->> >
->> >Arnaldo, can you please take a look at these patches? Would be nice
->to
->> >get them landed ASAP so that we can start testing out kernel module
->> >BTFs without locally applying patches first=2E Thanks!
->>
->>
->> I've been working on prepping up v1=2E19, will process these patches
->first thing in the morning, tomorrow,
->>
->
->Thanks! Do you plan to include these changes into v1=2E19 as well?
+> - though I believe a lot of the tool chasing
+> stems from BTF. I am fairly certain I have been consistent in that theme
+> within this thread.
 
+Right. A lot of features added in the last couple years depend on BTF:
+static vs global linking, bpf_spin_lock, function by function verification, etc
 
-Lemme test it tomorrow morning=2E
+> > when myself, Daniel, Andrii explained in detail what libbpf does and how it
+> > affects user experience?
+> > 
+> > The analogy of libbpf in iproute2 and libbfd in gdb is that both libraries
+> 
+> Your gdb / libbfd analogy misses the mark - by a lot. That analogy is
+> relevant for bpftool, not iproute2.
+> 
+> iproute2 can leverage libbpf for 3 or 4 tc modules and a few xdp hooks.
+> That is it, and it is a tiny percentage of the functionality in the package.
 
-- Arnaldo
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+cat tools/lib/bpf/*.[hc]|wc -l
+23950
+cat iproute2/tc/*.[hc]|wc -l
+29542
+
+The point is that for these few tc commands the amount logic in libbpf/tc is 90/10.
+
+Let's play it out how libbpf+tc is going to get developed moving forward if
+libbpf is a random version. Say, there is a patch for libbpf that makes
+iproute2 experience better. bpf maintainers would have no choice, but to reject
+it, since we don't add features/apis to libbpf if there is no active user.
+Adding a new libbpf api that iproute2 few years from now may or may not take
+advantage makes little sense.
