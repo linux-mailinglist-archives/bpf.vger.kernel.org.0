@@ -2,98 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1297D2AEDDE
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 10:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4992AEE7D
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 11:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgKKJeV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 04:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgKKJeU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 04:34:20 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD758C0613D1;
-        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id k26so1527366oiw.0;
-        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=36NotezYoC/yyfzMqnUfq9zBlq7QxW9QNIrKCRtwRLY=;
-        b=pox7M5sP0Uml+SVYXZ08brVDykvoVVYnZgc8mI0lk93NjnXTmtpK1ZYotFvDa5qcux
-         dlxxF/miW84iYycj9tSsv9N2V18A+StM1WI7N+xcCi3WDkkFKPZSI+733Uv+bMyzexGn
-         c3uhgUZIJhDMtX3sIxNyjApC0U5zJzjEX1lh1jCeW0cWRGi51pdLmHRBGyoErj29fakz
-         SBOohq3UMWrlzkNllxkf4zixaqOAwu8svdoowwW6QzlPOxjtfFgkWjNQhyoIi3zbwHYD
-         oBBD4ZkLGHy509OP4bqbI4kD+MomUXeI1zsA83Rw58cFkK84vInW0gdmsjDDpWcFy78X
-         7S7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=36NotezYoC/yyfzMqnUfq9zBlq7QxW9QNIrKCRtwRLY=;
-        b=qOkngKCC2WMXthS+9m2gisXo4uaV8+DY5Ps8yxKD6pWWeGINxbevR7JtOTozARk+mt
-         PHVoGUIGBigNAXfvoX5iTIH3QsFfYRaCcuvkZsrss3njY42cNss1IIlCuExzpH5Wksuq
-         T1z3LgM8726gDKvLSwO25qbeRwJK4kbEvPKz7gdCFCadpXACRTjIylvTFT/+WWh7mzTM
-         RjyElHfVBAh2OCYF0fnKV5D19IdeiFLAiO6rBc4zh6nAxs9AxZ4IP30QuvwX4gtxZ+r8
-         aIoYgf4vC1P4cP94q77CNFhM4EvejUUqEPWIfoKFVKvghcjkLiG/1ypSQeL12Yd6crTg
-         rZGw==
-X-Gm-Message-State: AOAM531Zi2mf0tHmuMfETw0WHn9ekPosHmZ/NpXQJ5iWBlN6cX7FiWru
-        wTU/Drg3pW1bfgqadXiY0H8=
-X-Google-Smtp-Source: ABdhPJxhY6BIamR+E6BAfcKKF3uledUuIVKFBCbjublGaqm/oVke/eYtwlyVeUJgab9VzMzvQto6kA==
-X-Received: by 2002:aca:4a0d:: with SMTP id x13mr1603348oia.155.1605087259295;
-        Wed, 11 Nov 2020 01:34:19 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id q18sm392421otf.46.2020.11.11.01.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 01:34:18 -0800 (PST)
-Date:   Wed, 11 Nov 2020 01:34:11 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, xiakaixu1987@gmail.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kaixu Xia <kaixuxia@tencent.com>
-Message-ID: <5fabb0135718_bb260208a8@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzZzGZTFky0F=U1_XKSBu8AqhuNzQgY7yibWYokrMbWK0Q@mail.gmail.com>
-References: <1605071026-25906-1-git-send-email-kaixuxia@tencent.com>
- <CAEf4BzZzGZTFky0F=U1_XKSBu8AqhuNzQgY7yibWYokrMbWK0Q@mail.gmail.com>
+        id S1727042AbgKKKHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 05:07:39 -0500
+Received: from www62.your-server.de ([213.133.104.62]:36856 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727000AbgKKKHj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 05:07:39 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kcn2J-00071P-FE; Wed, 11 Nov 2020 11:07:31 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kcn2J-00026R-65; Wed, 11 Nov 2020 11:07:31 +0100
 Subject: Re: [PATCH v3] bpf: Fix unsigned 'datasec_id' compared with zero in
  check_pseudo_btf_id
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+To:     xiakaixu1987@gmail.com, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
+References: <1605071026-25906-1-git-send-email-kaixuxia@tencent.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <154e8851-ace8-1701-00e4-beb3dd24da51@iogearbox.net>
+Date:   Wed, 11 Nov 2020 11:07:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <1605071026-25906-1-git-send-email-kaixuxia@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25984/Tue Nov 10 14:18:29 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Tue, Nov 10, 2020 at 9:03 PM <xiakaixu1987@gmail.com> wrote:
-> >
-> > From: Kaixu Xia <kaixuxia@tencent.com>
-> >
-> > The unsigned variable datasec_id is assigned a return value from the call
-> > to check_pseudo_btf_id(), which may return negative error code.
-> >
-> > Fixes coccicheck warning:
-> >
-> > ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
-> >
-> > Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> > Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-> > ---
+On 11/11/20 6:03 AM, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
 > 
-> Looks good.
+> The unsigned variable datasec_id is assigned a return value from the call
+> to check_pseudo_btf_id(), which may return negative error code.
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Fixes coccicheck warning:
 > 
-> [...]
+> ./kernel/bpf/verifier.c:9616:5-15: WARNING: Unsigned expression compared with zero: datasec_id > 0
+> 
+> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Looks good, applied & also added Fixes tags, thanks!
