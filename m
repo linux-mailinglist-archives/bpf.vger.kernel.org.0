@@ -2,199 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E922AF160
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 14:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4002AF292
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 14:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgKKNAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 08:00:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58642 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726012AbgKKNAo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 08:00:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605099642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/LHzk4kHvXcojxXA+XRzoh4JcvbpffRClf0ZQRlgeXk=;
-        b=ToV7Y9hnia3fktR0yQVbS0nvmAj3B8JFFt8IBBA9cbh0AuCyAns9ZJSvkrVD2AaU5/752+
-        x8BssFzdrbmml+sSZ0fbtBUtceZ1WejHq3lgAGV25mmRzPFNSlZo8eGu6I8nbvobZ1ydD0
-        Fw48ZJyOj1lwWwH99ktybAHLFH/6mEo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-T8wP8U-TNk68D8onxA4Pyg-1; Wed, 11 Nov 2020 08:00:37 -0500
-X-MC-Unique: T8wP8U-TNk68D8onxA4Pyg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1ACE804B90;
-        Wed, 11 Nov 2020 13:00:35 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0046A27BBE;
-        Wed, 11 Nov 2020 12:59:54 +0000 (UTC)
-Date:   Wed, 11 Nov 2020 13:59:53 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        lorenzo.bianconi@redhat.com, ilias.apalodimas@linaro.org,
-        brouer@redhat.com
-Subject: Re: [PATCH v5 net-nex 2/5] net: page_pool: add bulk support for
- ptr_ring
-Message-ID: <20201111135953.6482dff5@carbon>
-In-Reply-To: <20201111104331.GA3988@lore-desk>
-References: <cover.1605020963.git.lorenzo@kernel.org>
-        <1229970bf6f36fd4689169a2e47fdcc664d28366.1605020963.git.lorenzo@kernel.org>
-        <5fabaf0c4a68a_bb2602085a@john-XPS-13-9370.notmuch>
-        <20201111104331.GA3988@lore-desk>
+        id S1726595AbgKKNvh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 08:51:37 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:7883 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726985AbgKKNvd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 08:51:33 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CWR3536z3z75dk;
+        Wed, 11 Nov 2020 21:51:13 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Wed, 11 Nov 2020
+ 21:51:21 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <john.fastabend@gmail.com>, <quentin@isovalent.com>,
+        <mrostecki@opensuse.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andrii@kernel.org>,
+        <kpsingh@chromium.org>, <toke@redhat.com>,
+        <danieltimlee@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 bpf] tools: bpftool: Add missing close before bpftool net attach exit
+Date:   Wed, 11 Nov 2020 21:54:25 +0800
+Message-ID: <20201111135425.56533-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 11 Nov 2020 11:43:31 +0100
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+progfd is created by prog_parse_fd(), before 'bpftool net attach' exit,
+it should be closed.
 
-> > Lorenzo Bianconi wrote:  
-> > > Introduce the capability to batch page_pool ptr_ring refill since it is
-> > > usually run inside the driver NAPI tx completion loop.
-> > > 
-> > > Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > > Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > ---
-> > >  include/net/page_pool.h | 26 ++++++++++++++++
-> > >  net/core/page_pool.c    | 69 +++++++++++++++++++++++++++++++++++------
-> > >  net/core/xdp.c          |  9 ++----
-> > >  3 files changed, 87 insertions(+), 17 deletions(-)  
-> > 
-> > [...]
-> >   
-> > > +/* Caller must not use data area after call, as this function overwrites it */
-> > > +void page_pool_put_page_bulk(struct page_pool *pool, void **data,
-> > > +			     int count)
-> > > +{
-> > > +	int i, bulk_len = 0, pa_len = 0;
-> > > +
-> > > +	for (i = 0; i < count; i++) {
-> > > +		struct page *page = virt_to_head_page(data[i]);
-> > > +
-> > > +		page = __page_pool_put_page(pool, page, -1, false);
-> > > +		/* Approved for bulk recycling in ptr_ring cache */
-> > > +		if (page)
-> > > +			data[bulk_len++] = page;
-> > > +	}
-> > > +
-> > > +	if (unlikely(!bulk_len))
-> > > +		return;
-> > > +
-> > > +	/* Bulk producer into ptr_ring page_pool cache */
-> > > +	page_pool_ring_lock(pool);
-> > > +	for (i = 0; i < bulk_len; i++) {
-> > > +		if (__ptr_ring_produce(&pool->ring, data[i]))
-> > > +			data[pa_len++] = data[i];  
-> > 
-> > How about bailing out on the first error? bulk_len should be less than
-> > 16 right, so should we really keep retying hoping ring->size changes?  
-> 
-> do you mean doing something like:
-> 
-> 	page_pool_ring_lock(pool);
-> 	if (__ptr_ring_full(&pool->ring)) {
-> 		pa_len = bulk_len;
-> 		page_pool_ring_unlock(pool);
-> 		goto out;
-> 	}
-> 	...
-> out:
-> 	for (i = 0; i < pa_len; i++) {
-> 		...
-> 	}
+Fixes: 04949ccc273e ("tools: bpftool: add net attach command to attach XDP on interface")
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+v2->v3: add 'err = 0' before successful return
+v1->v2: use cleanup tag instead of repeated closes
+ tools/bpf/bpftool/net.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-I think this is the change John is looking for:
-
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index a06606f07df0..3093fe4e1cd7 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -424,7 +424,7 @@ EXPORT_SYMBOL(page_pool_put_page);
- void page_pool_put_page_bulk(struct page_pool *pool, void **data,
-                             int count)
- {
--       int i, bulk_len = 0, pa_len = 0;
-+       int i, bulk_len = 0;
-        bool order0 = (pool->p.order == 0);
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 910e7bac6e9e..f927392271cc 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -578,8 +578,8 @@ static int do_attach(int argc, char **argv)
  
-        for (i = 0; i < count; i++) {
-@@ -448,17 +448,18 @@ void page_pool_put_page_bulk(struct page_pool *pool, void **data,
-        page_pool_ring_lock(pool);
-        for (i = 0; i < bulk_len; i++) {
-                if (__ptr_ring_produce(&pool->ring, data[i]))
--                       data[pa_len++] = data[i];
-+                       break; /* ring_full */
-        }
-        page_pool_ring_unlock(pool);
+ 	ifindex = net_parse_dev(&argc, &argv);
+ 	if (ifindex < 1) {
+-		close(progfd);
+-		return -EINVAL;
++		err = -EINVAL;
++		goto cleanup;
+ 	}
  
--       if (likely(!pa_len))
-+       /* Hopefully all pages was return into ptr_ring */
-+       if (likely(i == bulk_len))
-                return;
+ 	if (argc) {
+@@ -587,8 +587,8 @@ static int do_attach(int argc, char **argv)
+ 			overwrite = true;
+ 		} else {
+ 			p_err("expected 'overwrite', got: '%s'?", *argv);
+-			close(progfd);
+-			return -EINVAL;
++			err = -EINVAL;
++			goto cleanup;
+ 		}
+ 	}
  
--       /* ptr_ring cache full, free pages outside producer lock since
--        * put_page() with refcnt == 1 can be an expensive operation
-+       /* ptr_ring cache full, free remaining pages outside producer lock
-+        * since put_page() with refcnt == 1 can be an expensive operation
-         */
--       for (i = 0; i < pa_len; i++)
-+       for (; i < bulk_len; i++)
-                page_pool_return_page(pool, data[i]);
+@@ -597,16 +597,20 @@ static int do_attach(int argc, char **argv)
+ 		err = do_attach_detach_xdp(progfd, attach_type, ifindex,
+ 					   overwrite);
+ 
+-	if (err < 0) {
++	if (err) {
+ 		p_err("interface %s attach failed: %s",
+ 		      attach_type_strings[attach_type], strerror(-err));
+-		return err;
++		goto cleanup;
+ 	}
+ 
+ 	if (json_output)
+ 		jsonw_null(json_wtr);
+ 
+-	return 0;
++	err = 0;
++
++cleanup:
++	close(progfd);
++	return err;
  }
- EXPORT_SYMBOL(page_pool_put_page_bulk);
-
-
-> I do not know if it is better or not since the consumer can run in
-> parallel. @Jesper/Ilias: any idea?
-
-Currently it is not very likely that the consumer runs in parallel, but
-is it possible. (As you experienced on your testlab with mlx5, the
-DMA-TX completion did run on another CPU, but I asked you to
-reconfigure this to have it run on same CPU, as it is suboptimal).
-When we (finally) support this memory type for SKBs it will be more
-normal to happen.
-
-But, John is right, for ptr_ring we should exit as soon the first
-"produce" fails.  This is because I know how ptr_ring works internally.
-The "consumer" will free slots in chunks of 16 slots, so it is not very
-likely that a slot opens up.
-
-> >   
-> > > +	}
-> > > +	page_pool_ring_unlock(pool);
-> > > +
-> > > +	if (likely(!pa_len))
-> > > +		return;
-> > > +
-> > > +	/* ptr_ring cache full, free pages outside producer lock since
-> > > +	 * put_page() with refcnt == 1 can be an expensive operation
-> > > +	 */
-> > > +	for (i = 0; i < pa_len; i++)
-> > > +		page_pool_return_page(pool, data[i]);
-> > > +}
-> > > +EXPORT_SYMBOL(page_pool_put_page_bulk);
-> > > +  
-> > 
-> > Otherwise LGTM.  
-
-
-
+ 
+ static int do_detach(int argc, char **argv)
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.17.1
 
