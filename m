@@ -2,72 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45CC2AF9DF
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 21:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2BA2AFA06
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 21:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgKKUkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 15:40:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726612AbgKKUkH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 15:40:07 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605127206;
-        bh=MkvWH6k+wyGwy9eJK8AegUcYtD99Xk2lFGue+FbDdRA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=2TMwqbU9q85kDndZMImQqLC7KwR2Uo/srCsAMt7Oj0RjANWemgjNN9tn3V2AvPWFE
-         dqrjfJv5pC3U9wHyaXDqk9qUCfMdvPLzn0RUDVv1MnWSNTkrjSyCsCaz8eGRoocZo1
-         nDk7YCZjNgyp9yoK6XS3SiwNMPcCp7Tei1spAYh0=
+        id S1725924AbgKKUtn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 15:49:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46688 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725959AbgKKUtm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 15:49:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605127781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a5gSkztK637nAyE3GfLnnkOXBFv/j+u6ph2hmYGdOqc=;
+        b=G12+NWQuzDCvsPA5sLp7M+O+NmyLSskWS9Iyj2gpC0i1+u4wRI9txFSLenxy7dOBRWHGF1
+        MBxyyexWvc8e1Nd94FQvQfE1vQcyROlRxllh4z/k71T5A2wc2owNgL8ZBvzOduvqV9u31t
+        G0zhUBfRkGcL1Ii6kXkr8ZSY8hA7mHQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-ceEPUErXOL2CpoF_VK0aWA-1; Wed, 11 Nov 2020 15:49:38 -0500
+X-MC-Unique: ceEPUErXOL2CpoF_VK0aWA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2DB0D3E80;
+        Wed, 11 Nov 2020 20:49:36 +0000 (UTC)
+Received: from krava (unknown [10.40.194.237])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3638210013D0;
+        Wed, 11 Nov 2020 20:49:31 +0000 (UTC)
+Date:   Wed, 11 Nov 2020 21:49:30 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 3/3] btf_encoder: Change functions check due to broken
+ dwarf
+Message-ID: <20201111204930.GD619201@krava>
+References: <20201106222512.52454-1-jolsa@kernel.org>
+ <20201106222512.52454-4-jolsa@kernel.org>
+ <CAEf4BzZqFos1N-cnyAc6nL-=fHFJYn1tf9vNUewfsmSUyK4rQQ@mail.gmail.com>
+ <20201111201929.GB619201@krava>
+ <CAEf4BzZe1owmhqjGCjShYwf892hA0tzp0BEAZ2TR41aFx4eKUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/7] tools/bpftool: Some build fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160512720643.1646.2354763888884596617.git-patchwork-notify@kernel.org>
-Date:   Wed, 11 Nov 2020 20:40:06 +0000
-References: <20201110164310.2600671-1-jean-philippe@linaro.org>
-In-Reply-To: <20201110164310.2600671-1-jean-philippe@linaro.org>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZe1owmhqjGCjShYwf892hA0tzp0BEAZ2TR41aFx4eKUw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Nov 11, 2020 at 12:26:23PM -0800, Andrii Nakryiko wrote:
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+SNIP
 
-On Tue, 10 Nov 2020 17:43:04 +0100 you wrote:
-> A few fixes for cross and out-of-tree build of bpftool and runqslower.
-> These changes allow to build for different target architectures, using
-> the same source tree.
+> > perhaps your gcc generates DWARF that breaks the way you described
+> > above, but I'd expect to see function with argument without name,
+> > not function without arguments at all
+> >
+> > what gcc version are you on?
 > 
-> Since [v2], I addressed Andrii's comments on patches 3 and 5, and added
-> patch 7 which fixes a build slowdown.
+> 10.2.0, built from sources
 > 
-> [...]
+> >
+> > when you dump debug information, do you see security_inode_getattr
+> > record with no arguments?
+> 
+> Yeah, I think so:
+> 
+> 21158467- <1><2b7e168>: Abbrev Number: 93 (DW_TAG_subprogram)
+> 21158468-    <2b7e169>   DW_AT_external    : 1
+> 21158469-    <2b7e169>   DW_AT_declaration : 1
+> 
+>   ..  BTW, we should probably still ignore DW_AT_declaration: 1, if it's set.
+> 
+> 21158470:    <2b7e169>   DW_AT_linkage_name: (indirect string, offset:
+> 0x120a0a): security_inode_getattr
+> 21158471:    <2b7e16d>   DW_AT_name        : (indirect string, offset:
+> 0x120a0a): security_inode_getattr
+> 21158472-    <2b7e171>   DW_AT_decl_file   : 141
+> 21158473-    <2b7e172>   DW_AT_decl_line   : 346
+> 21158474-    <2b7e174>   DW_AT_decl_column : 5
 
-Here is the summary with links:
-  - [bpf-next,v3,1/7] tools: Factor HOSTCC, HOSTLD, HOSTAR definitions
-    https://git.kernel.org/bpf/bpf-next/c/c8a950d0d3b9
-  - [bpf-next,v3,2/7] tools/bpftool: Force clean of out-of-tree build
-    https://git.kernel.org/bpf/bpf-next/c/9e8929fdbb9c
-  - [bpf-next,v3,3/7] tools/bpftool: Fix cross-build
-    https://git.kernel.org/bpf/bpf-next/c/8859b0da5aac
-  - [bpf-next,v3,4/7] tools/runqslower: Use Makefile.include
-    https://git.kernel.org/bpf/bpf-next/c/3290996e7133
-  - [bpf-next,v3,5/7] tools/runqslower: Enable out-of-tree build
-    https://git.kernel.org/bpf/bpf-next/c/85e59344d079
-  - [bpf-next,v3,6/7] tools/runqslower: Build bpftool using HOSTCC
-    https://git.kernel.org/bpf/bpf-next/c/2d9393fefb50
-  - [bpf-next,v3,7/7] tools/bpftool: Fix build slowdown
-    https://git.kernel.org/bpf/bpf-next/c/0639e5e97ad9
+nice.. so how about making extra loop through cu functions
+and collect all distinct functions and for each collect
+most detailed arguments and use this set for final func
+generation
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+will try to think of some way without extra loop, but can't
+think of any now
 
+jirka
 
