@@ -2,135 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7D42AF7B6
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 19:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6792AF7D6
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 19:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbgKKSIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 13:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
+        id S1726074AbgKKSWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 13:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgKKSIb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 13:08:31 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA2BC0613D1;
-        Wed, 11 Nov 2020 10:08:31 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id e7so2047616pfn.12;
-        Wed, 11 Nov 2020 10:08:31 -0800 (PST)
+        with ESMTP id S1725966AbgKKSWx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:22:53 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE626C0613D1
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 10:22:52 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id c129so2778118yba.8
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 10:22:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Jc51fArqDzqnCQpXqWk6upQKQfyxMRbqHQ8w/Ym3axI=;
-        b=ZGaVIa9ldSyTYvQyZEIUkCDSDI4pWvJfYkqp65BfniFYH0s5ksjgxnUrGMAmmDVLRk
-         sMveZn6+W8t+V+EvahMAOtGT8td00LgQSVHNz7F6HZ9NG1M4RQWJGvBLOE9IX+LnHmXC
-         b5uosrDTZPfFRVwpUahxE+Rk7GU2bqyQAKGaHm0J3EW8Rqy7d3fztwoe84f/iUQU7G/s
-         Mj99Ky57MWM2kAMqicinshajZi3ZTpLmyh4eH4tv0za+D4MqKoQhtsFNqJKLxh4mc2bx
-         rh4CXTgAaJaL+z8RPd3IbCf9KUqMNw6kTOs932/AsyLO09LEDsQ6mB74C0j5oBKGlwwY
-         3xXw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=El5Hx0zxVy9enL6a+sfGB4GoJYxxkpnGG8szmKjKFQY=;
+        b=QEVV/OfPwOHXxxq4rFyU92RnM/oBP0TQ+i7wQt84Lf+Zdu4xnwahrLCe+O0aUD9UZB
+         42VLrFl4SLkXVKOn6VZ/ouJ1EmrLZRMq0knRNfaCgfougcvLUIYGKq9OMsHrAnIuQNkZ
+         wWHuHwYgeFybDWyJaKy030ORST/82OZRdU3SUrv9tOgy94SIYq5tq/VIFL/IPG37YhN/
+         pZXvE8zf2s5Wlc7pYVkOy2x8sQ1e3dRExBaZ9Px3KPlHNnTEf+wc+8374pfe4p9QwP75
+         W2gXMIPJLNHRdrcD+ivkiUE7Rv4U85Tdlw2iOecm74L1qmZLXAVzHHjUZGgv2Zqu9toR
+         4LwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Jc51fArqDzqnCQpXqWk6upQKQfyxMRbqHQ8w/Ym3axI=;
-        b=UCMcVrw8VnU76J47Uu3C3rEBYR2JhPILRH/oX4TEgVADRYpLXFRxDDamo7t+RYHf73
-         WWKkoW7Fam7ULCC0WwB7kyrD77+IFnlg827R1ztVTvIdRSy47htjsQSHZ8iyYHtaMWQq
-         EGDASnyWZMsm/IOas+K431NNUb1RpChNSzLBdxc7SSXERcp3pXyazb12ifaXhFAr2ndn
-         LozsgfUtm5VX8dAAaOu3O2izaoi6dnExbhbOVDAPucUN9pGjrJ459RjwbUxWAJMKeJJR
-         sI/SsRFqsBHJJbohcEBTHlDS6Sa7LykwWZnLWfKqinK3qft1tlxIGdfvcqzrj/We483C
-         R7/A==
-X-Gm-Message-State: AOAM531LPgDBiEJ/RptkayPplIQerVn+sVZXDRdJpP77NGQS3qYYNnrY
-        7Krcd8IfDDD0J/cCIYcVDYc=
-X-Google-Smtp-Source: ABdhPJyiyY044Q0p8oMYklvqWl97Opwf4WdY+uSm/ttMCQNVKpyzbnmMxSIjLnNEcSy1chonY7Q/HA==
-X-Received: by 2002:a62:5293:0:b029:18b:5c86:7ad0 with SMTP id g141-20020a6252930000b029018b5c867ad0mr24519914pfb.51.1605118111139;
-        Wed, 11 Nov 2020 10:08:31 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:ba8c])
-        by smtp.gmail.com with ESMTPSA id e184sm3259212pfe.146.2020.11.11.10.08.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2020 10:08:30 -0800 (PST)
-Date:   Wed, 11 Nov 2020 10:08:27 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        David Ahern <dsahern@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hangbin Liu <haliu@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-Message-ID: <20201111180827.cbyljiknmzf5agf2@ast-mbp>
-References: <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
- <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
- <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
- <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
- <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
- <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
- <1118ef27-3302-d077-021a-43aa8d8f3ebb@mojatatu.com>
- <11c18a26-72af-2e0d-a411-3148cfbc91be@solarflare.com>
- <20201111005348.v3dtugzstf6ofnqi@ast-mbp>
- <fcd907f2-3f1d-473b-1d07-2803606005c9@solarflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=El5Hx0zxVy9enL6a+sfGB4GoJYxxkpnGG8szmKjKFQY=;
+        b=uhDxLYCSZl00ZyueGXdItvl6S4ILUyv8G7NYh393lQjbRvtfo4bB0WY/oZ1BliKqjM
+         SFLshjULg3UXw+5X5xSscfVnTNoRt1YinB4/4KhSsGi3pLf2lr6qrRyj4yBfecrzjh+W
+         YZkfCXTFgRRQIsQHSBjx5Wu59v+y+Q3nfCGrJvA83XSXyOms+wuv44BBcesekH9jGdYz
+         wBNhdCxr+VCRoVOmuZpRS3eTy2ihA4Wj0FUFT/0G6i8jhNEa0F3XvSzS8uAOknnz9OZy
+         moQ6BjJPCOs4OqzoruRQeflj4noJoo62EUv+4oCL4xAgjAzwEclXSawCJ0iseu3RRuyE
+         ItXA==
+X-Gm-Message-State: AOAM533Y4x2M8ouCs4F8oANbbWA6QFB5v9PTwePnVmYFn/CFCvBgH0WP
+        rkY1/XWWlz5cHX/7fn+qzYCkMxrpT37+LBJ2vbc=
+X-Google-Smtp-Source: ABdhPJwnylSv4dtERIDsVhkRSh/AE8kpyMsgWYsL4pXWMn2PjVvz1SI76b0LVowFac1F6SpadiihcMPK7TVuxIVekWI=
+X-Received: by 2002:a25:3d7:: with SMTP id 206mr23262882ybd.27.1605118972127;
+ Wed, 11 Nov 2020 10:22:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fcd907f2-3f1d-473b-1d07-2803606005c9@solarflare.com>
+References: <20201110164310.2600671-1-jean-philippe@linaro.org>
+ <20201110164310.2600671-3-jean-philippe@linaro.org> <CAEf4BzZSaEzg_v=bT_bLSFLpTxszTz-6j54WB=oHg5Zm5aD_wg@mail.gmail.com>
+ <20201111085445.GB2604446@myrica>
+In-Reply-To: <20201111085445.GB2604446@myrica>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 11 Nov 2020 10:22:41 -0800
+Message-ID: <CAEf4BzZqiFeLVYq-X7Z7cypRYSgLFw3dr=-EEoyzWaDJVFfzug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/7] tools/bpftool: Force clean of out-of-tree build
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 11:31:47AM +0000, Edward Cree wrote:
-> On 11/11/2020 00:53, Alexei Starovoitov wrote:
-> > On Tue, Nov 10, 2020 at 12:47:28PM +0000, Edward Cree wrote:
-> >> But I think it illustrates why having to
-> >>  interoperate with systems outside their control and mix-and-match
-> >>  versioning of various components provides external discipline that
-> >>  is sorely needed if the BPF ecosystem is to remain healthy.
-> > 
-> > I think thriving public bpf projects, startups and established companies
-> > that are obviously outside of control of few people that argue here
-> > would disagree with your assessment.
-> 
-> Correct me if I'm wrong, but aren't those bpf projects and companies
->  _things that are written in BPF_, rather than alternative toolchain
->  components for compiling, loading and otherwise wrangling BPF once
->  it's been written?
-> It is the latter that I am saying is needed in order to keep BPF
->  infrastructure development "honest", rather than treating the clang
->  frontend as The API and all layers below it as undocumented internal
->  implementation details.
-> In a healthy ecosystem, it should be possible to use a compiler,
->  assembler, linker and loader developed separately by four projects
->  unrelated to each other and to the kernel and runtime.  Thanks to
->  well-specified ABIs and file formats, in the C ecosystem this is
->  actually possible, despite the existence of some projects that
->  bundle together multiple components.
-> In the BPF ecosystem, instead, it seems like the only toolchain
->  anyone cares to support is latest clang + latest libbpf, and if you
->  try to replace any component of the toolchain with something else,
->  the spec you have to program against is "Go and read the LLVM
->  source code, figure out what it does, and copy that".
-> That is not sustainable in the long term.
+On Wed, Nov 11, 2020 at 12:55 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> On Tue, Nov 10, 2020 at 08:57:51PM -0800, Andrii Nakryiko wrote:
+> > On Tue, Nov 10, 2020 at 8:46 AM Jean-Philippe Brucker
+> > <jean-philippe@linaro.org> wrote:
+> > >
+> > > Cleaning a partial build can fail if the output directory for libbpf
+> > > wasn't created:
+> > >
+> > > $ make -C tools/bpf/bpftool O=/tmp/bpf clean
+> > > /bin/sh: line 0: cd: /tmp/bpf/libbpf/: No such file or directory
+> > > tools/scripts/Makefile.include:17: *** output directory "/tmp/bpf/libbpf/" does not exist.  Stop.
+> > > make: *** [Makefile:36: /tmp/bpf/libbpf/libbpf.a-clean] Error 2
+> > >
+> > > As a result make never gets around to clearing the leftover objects. Add
+> > > the libbpf output directory as clean dependency to ensure clean always
+> > > succeeds (similarly to the "descend" macro). The directory is later
+> > > removed by the clean recipe.
+> > >
+> > > Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > > ---
+> > >  tools/bpf/bpftool/Makefile | 8 +++++---
+> > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> > > index f60e6ad3a1df..1358c093b812 100644
+> > > --- a/tools/bpf/bpftool/Makefile
+> > > +++ b/tools/bpf/bpftool/Makefile
+> > > @@ -27,11 +27,13 @@ LIBBPF = $(LIBBPF_PATH)libbpf.a
+> > >
+> > >  BPFTOOL_VERSION ?= $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
+> > >
+> > > -$(LIBBPF): FORCE
+> > > -       $(if $(LIBBPF_OUTPUT),@mkdir -p $(LIBBPF_OUTPUT))
+> > > +$(LIBBPF_OUTPUT):
+> > > +       $(QUIET_MKDIR)mkdir -p $@
+> > > +
+> > > +$(LIBBPF): FORCE | $(LIBBPF_OUTPUT)
+> > >         $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) $(LIBBPF_OUTPUT)libbpf.a
+> > >
+> > > -$(LIBBPF)-clean:
+> > > +$(LIBBPF)-clean: $(LIBBPF_OUTPUT)
+> >
+> > shouldn't this be `| $(LIBBPF_OUTPUT)` ?
+>
+> It wouldn't have any effect here. Order-only prerequisites tell make to
+> only build the prerequisite before the target, but not to update the
+> target if the prerequisite was updated. Because $(LIBBPF)-clean is not a
+> file, the recipe is always run and adding the | doesn't make a difference.
 
-Absolutely. I agree 100% with above.
-BPF ecosystem eventually will get to a point of fixed file format,
-linker specification and 1000 page psABI document.
-One can argue that when RISCV ISA was invented recently and it came with full
-ABI document just like x86 long ago. BPF ISA is different. It grows
-"organically". We don't add all possible instructions up front. We don't define
-all possible relocation types to ELF. That fundamental difference vs all other
-ISAs help BPF follow its own path. Take BTF, for example. No other ISA have
-such concept. Yet due to BTF the BPF ecosystem can provide features no other
-ISA can. Similar story happens with clang. BPF extended C language _already_.
-The BPF C programs have a way to compare types. It is a C language extension.
-Did we go to C standard committee and argue for years that such extension is
-necessary? Obviously not. Today BPF is, as you correctly pointed out, layers of
-undocumented internal details. Obviously we're not content with such situation.
+I know. I wanted it just for consistency, because everything after |
+means "make sure it's completed, but it's not my direct input". But
+I'm ok either way, it's not that important. Also $(LIBBPF)-clean and
+$(LIBBPF_BOOTSTRAP)-clean should be .PHONY targets, but then again in
+practice won't matter, because unlikely that we'll have such files.
+Would be nice to follow up with a fix, but I'll apply your patch set
+as is.
+
+>
+> Thanks,
+> Jean
