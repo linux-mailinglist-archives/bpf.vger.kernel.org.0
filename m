@@ -2,141 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187732AF694
-	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 17:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7D42AF7B6
+	for <lists+bpf@lfdr.de>; Wed, 11 Nov 2020 19:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbgKKQdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 11:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        id S1726036AbgKKSIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 13:08:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgKKQdI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 11:33:08 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760ACC0613D1;
-        Wed, 11 Nov 2020 08:33:08 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id m13so2882149ioq.9;
-        Wed, 11 Nov 2020 08:33:08 -0800 (PST)
+        with ESMTP id S1725966AbgKKSIb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 13:08:31 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA2BC0613D1;
+        Wed, 11 Nov 2020 10:08:31 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id e7so2047616pfn.12;
+        Wed, 11 Nov 2020 10:08:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3fAjIG3mgbnFVC9OfitJdgU8aFvxA1tcVc+KEAMIaZA=;
-        b=iUj4jDELk5UiZXYyi7LM3W05hrAA+UqY7foSzkvRunGEaFk52Ev2xzR0dXDhvVRlin
-         tEkNlotJ75SDtUwNQQZ5YJ+YrXyDETfRNR/p5dJUIvlWFvFSllS8HNDhjkyvYXLUIE4t
-         0adXs6C7X/tn3oBXh1E/uqmaTc2LXaP8Ud/c25ZYT91UpwaFjbmXfygSU7tDNbyRddAt
-         Y3esyNBCZc4ZNtJP8lU2EETxNk+WzJNWdMaoVGxlb3LSsCnM6Hj6GH2PobchZoBGsc2T
-         K5IgZB1vmcbQfTILCG7s2GQtog42PMgQtreioybqzenuW/x/5aMLaqUzjh1RPkOpWdmy
-         OOww==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Jc51fArqDzqnCQpXqWk6upQKQfyxMRbqHQ8w/Ym3axI=;
+        b=ZGaVIa9ldSyTYvQyZEIUkCDSDI4pWvJfYkqp65BfniFYH0s5ksjgxnUrGMAmmDVLRk
+         sMveZn6+W8t+V+EvahMAOtGT8td00LgQSVHNz7F6HZ9NG1M4RQWJGvBLOE9IX+LnHmXC
+         b5uosrDTZPfFRVwpUahxE+Rk7GU2bqyQAKGaHm0J3EW8Rqy7d3fztwoe84f/iUQU7G/s
+         Mj99Ky57MWM2kAMqicinshajZi3ZTpLmyh4eH4tv0za+D4MqKoQhtsFNqJKLxh4mc2bx
+         rh4CXTgAaJaL+z8RPd3IbCf9KUqMNw6kTOs932/AsyLO09LEDsQ6mB74C0j5oBKGlwwY
+         3xXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3fAjIG3mgbnFVC9OfitJdgU8aFvxA1tcVc+KEAMIaZA=;
-        b=pcgzsUDJTFgHDwDDTnKLiLPNqI0isVkDVLehyNmchyNRKWZqtwD/bsC9HbdIpWOfGs
-         u4hsT0OJfRBkf5ta6WuBNhxtit5lhYuz/aWYW2K6Fp+QHCmeZ3h55504aIz/o5d9WFWu
-         tE7fUkOOjmnxNjJJk2fBLR7RlFAdmlpXCrl15rwQEgH7EX+60aMaQfHMpAFE3jP8Hhm6
-         oWx1R5leRLOfTwPEAkkyKXJJIwb3znsOMq0Kpw4ZtConl0CuQd7FaSNPECAYg5d6Q75Y
-         9nJ55L8QwdcjVxzFdb5QE7MNyJc3WsTgzn+eJm4XEsZCoEtUPV76x1D5KbsWuxnUAfwA
-         VLjw==
-X-Gm-Message-State: AOAM533OX6DHNfcupcIJKuT5/g3iBR/X/rakksjtgWC2uIfDRksLMxh0
-        zR6ch0aGO5ICo1o9us5hjmnR/qnie8Q=
-X-Google-Smtp-Source: ABdhPJx5rCRIk61jEGHofstkNTXJwLf6Y9A0XfK5hJV8CoD/O2opRHUm8weboEY2J/+qHI1AlMRARg==
-X-Received: by 2002:a02:cb99:: with SMTP id u25mr16397606jap.73.1605112387744;
-        Wed, 11 Nov 2020 08:33:07 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:7980:a277:20c7:aa44])
-        by smtp.googlemail.com with ESMTPSA id x14sm1561669ior.7.2020.11.11.08.33.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 11 Nov 2020 08:33:07 -0800 (PST)
-Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Edward Cree <ecree@solarflare.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Jc51fArqDzqnCQpXqWk6upQKQfyxMRbqHQ8w/Ym3axI=;
+        b=UCMcVrw8VnU76J47Uu3C3rEBYR2JhPILRH/oX4TEgVADRYpLXFRxDDamo7t+RYHf73
+         WWKkoW7Fam7ULCC0WwB7kyrD77+IFnlg827R1ztVTvIdRSy47htjsQSHZ8iyYHtaMWQq
+         EGDASnyWZMsm/IOas+K431NNUb1RpChNSzLBdxc7SSXERcp3pXyazb12ifaXhFAr2ndn
+         LozsgfUtm5VX8dAAaOu3O2izaoi6dnExbhbOVDAPucUN9pGjrJ459RjwbUxWAJMKeJJR
+         sI/SsRFqsBHJJbohcEBTHlDS6Sa7LykwWZnLWfKqinK3qft1tlxIGdfvcqzrj/We483C
+         R7/A==
+X-Gm-Message-State: AOAM531LPgDBiEJ/RptkayPplIQerVn+sVZXDRdJpP77NGQS3qYYNnrY
+        7Krcd8IfDDD0J/cCIYcVDYc=
+X-Google-Smtp-Source: ABdhPJyiyY044Q0p8oMYklvqWl97Opwf4WdY+uSm/ttMCQNVKpyzbnmMxSIjLnNEcSy1chonY7Q/HA==
+X-Received: by 2002:a62:5293:0:b029:18b:5c86:7ad0 with SMTP id g141-20020a6252930000b029018b5c867ad0mr24519914pfb.51.1605118111139;
+        Wed, 11 Nov 2020 10:08:31 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:ba8c])
+        by smtp.gmail.com with ESMTPSA id e184sm3259212pfe.146.2020.11.11.10.08.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Nov 2020 10:08:30 -0800 (PST)
+Date:   Wed, 11 Nov 2020 10:08:27 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Edward Cree <ecree@solarflare.com>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        David Ahern <dsahern@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Hangbin Liu <haliu@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         David Miller <davem@davemloft.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <CAADnVQKu7usDXbwwcjKChcs0NU3oP0deBsGGEavR_RuPkht74g@mail.gmail.com>
- <07f149f6-f8ac-96b9-350d-b289ef16d82f@solarflare.com>
- <CAEf4BzaSfutBt3McEPjmu_FyxyzJa_xVGfhP_7v0oGuqG_HBEw@mail.gmail.com>
- <20201106094425.5cc49609@redhat.com>
- <CAEf4Bzb2fuZ+Mxq21HEUKcOEba=rYZHc+1FTQD98=MPxwj8R3g@mail.gmail.com>
- <CAADnVQ+S7fusZ6RgXBKJL7aCtt3jpNmCnCkcXd0fLayu+Rw_6Q@mail.gmail.com>
- <20201106152537.53737086@hermes.local>
- <45d88ca7-b22a-a117-5743-b965ccd0db35@gmail.com>
- <20201109014515.rxz3uppztndbt33k@ast-mbp>
- <14c9e6da-e764-2e2c-bbbb-bc95992ed258@gmail.com>
- <20201111004749.r37tqrhskrcxjhhx@ast-mbp> <874klwcg1p.fsf@toke.dk>
- <321a2728-7a43-4a48-fe97-dab45b76e6fb@iogearbox.net>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <8bd665e1-f82b-1543-9791-8b41da855327@gmail.com>
-Date:   Wed, 11 Nov 2020 09:33:05 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.1
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv3 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201111180827.cbyljiknmzf5agf2@ast-mbp>
+References: <71af5d23-2303-d507-39b5-833dd6ea6a10@gmail.com>
+ <20201103225554.pjyuuhdklj5idk3u@ast-mbp.dhcp.thefacebook.com>
+ <20201104021730.GK2408@dhcp-12-153.nay.redhat.com>
+ <20201104031145.nmtggnzomfee4fma@ast-mbp.dhcp.thefacebook.com>
+ <2e8ba0be-51bf-9060-e1f7-2148fbaf0f1d@iogearbox.net>
+ <ec50328d-61ab-71fb-f266-5e49e9dbf98e@gmail.com>
+ <1118ef27-3302-d077-021a-43aa8d8f3ebb@mojatatu.com>
+ <11c18a26-72af-2e0d-a411-3148cfbc91be@solarflare.com>
+ <20201111005348.v3dtugzstf6ofnqi@ast-mbp>
+ <fcd907f2-3f1d-473b-1d07-2803606005c9@solarflare.com>
 MIME-Version: 1.0
-In-Reply-To: <321a2728-7a43-4a48-fe97-dab45b76e6fb@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <fcd907f2-3f1d-473b-1d07-2803606005c9@solarflare.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/11/20 8:06 AM, Daniel Borkmann wrote:
+On Wed, Nov 11, 2020 at 11:31:47AM +0000, Edward Cree wrote:
+> On 11/11/2020 00:53, Alexei Starovoitov wrote:
+> > On Tue, Nov 10, 2020 at 12:47:28PM +0000, Edward Cree wrote:
+> >> But I think it illustrates why having to
+> >>  interoperate with systems outside their control and mix-and-match
+> >>  versioning of various components provides external discipline that
+> >>  is sorely needed if the BPF ecosystem is to remain healthy.
+> > 
+> > I think thriving public bpf projects, startups and established companies
+> > that are obviously outside of control of few people that argue here
+> > would disagree with your assessment.
 > 
-> Not really. What you imply here is that we're living in a perfect world
-> and that
-> all distros follow suite and i) add libbpf dependency to their official
-> iproute2
-> package, ii) upgrade iproute2 package along with new kernel releases and
-> iii)
-> upgrade libbpf along with it so that users are able to develop BPF
-> programs against
-> the feature set that the kernel offers (as intended). These are a lot of
-> moving parts
-> to get right, and as I pointed out earlier in the conversation, it took
-> major distros
-> 2 years to get their act together to officially include bpftool as a
-> package -
+> Correct me if I'm wrong, but aren't those bpf projects and companies
+>  _things that are written in BPF_, rather than alternative toolchain
+>  components for compiling, loading and otherwise wrangling BPF once
+>  it's been written?
+> It is the latter that I am saying is needed in order to keep BPF
+>  infrastructure development "honest", rather than treating the clang
+>  frontend as The API and all layers below it as undocumented internal
+>  implementation details.
+> In a healthy ecosystem, it should be possible to use a compiler,
+>  assembler, linker and loader developed separately by four projects
+>  unrelated to each other and to the kernel and runtime.  Thanks to
+>  well-specified ABIs and file formats, in the C ecosystem this is
+>  actually possible, despite the existence of some projects that
+>  bundle together multiple components.
+> In the BPF ecosystem, instead, it seems like the only toolchain
+>  anyone cares to support is latest clang + latest libbpf, and if you
+>  try to replace any component of the toolchain with something else,
+>  the spec you have to program against is "Go and read the LLVM
+>  source code, figure out what it does, and copy that".
+> That is not sustainable in the long term.
 
-Yes, there are lot of moving parts and that puts a huge burden on
-distributions. The trend that related s/w is outdated 2-3 months after a
-release can be taken as a sign that bpf is not stable and ready for
-distributions to take on and support.
-
-bpftool is only 3 years old (Oct 2017 is first kernel commit). You can
-not expect distributions to chase every whim from kernel developers, so
-bpftool needed to evolve and prove its usefulness. It has now, so really
-the disappointment should be limited to distributions over the past 12
-months, especially Ubuntu 20.04 (most recent LTS) not having a libbpf
-and bpftool releases. But again, 20.04 was too old for BTF 3 months
-after it was released and that comes back to the bigger question of
-whether bpf is really ready for distributions to support. More below.
-
-Focusing on the future: for Ubuntu (and Debian?) bpftool is in the
-linux-tools-common package. perf has already trained distributions to
-release a tools package with kernel releases. That means bpftool updates
-follow the kernel cadence. bpftool requires libbpf and I believe given
-the feature dependencies will force libbpf versions to follow kernel
-releases, so I believe your goal is going to be achieved by those
-dependencies.
-
-But there is an on-going nagging problem which needs to be acknowledged
-and solved. As an *example*, Ubunutu has kernel updates to get new
-hardware support (HWE releases). Updating kernels on an LTS is
-problematic when the kernel update requires toolchain updates to
-maintain features (DEBUG_INFO_BTF) and library updates to get tools for
-that kernel version working. That is a huge disruption to their
-customers who want stability â€” the whole reason for LTS distributions.
-
-
-
-
+Absolutely. I agree 100% with above.
+BPF ecosystem eventually will get to a point of fixed file format,
+linker specification and 1000 page psABI document.
+One can argue that when RISCV ISA was invented recently and it came with full
+ABI document just like x86 long ago. BPF ISA is different. It grows
+"organically". We don't add all possible instructions up front. We don't define
+all possible relocation types to ELF. That fundamental difference vs all other
+ISAs help BPF follow its own path. Take BTF, for example. No other ISA have
+such concept. Yet due to BTF the BPF ecosystem can provide features no other
+ISA can. Similar story happens with clang. BPF extended C language _already_.
+The BPF C programs have a way to compare types. It is a C language extension.
+Did we go to C standard committee and argue for years that such extension is
+necessary? Obviously not. Today BPF is, as you correctly pointed out, layers of
+undocumented internal details. Obviously we're not content with such situation.
