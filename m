@@ -2,202 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24512B0FE6
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 22:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBAF2B1092
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 22:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbgKLVOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 16:14:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24005 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727251AbgKLVOX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 16:14:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605215661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SFAfTSIGe77oy15bdvNec4abRtHnUx9OrjbAjznWjZ4=;
-        b=VX5c1iPK/nc7XyVDeAprqjJtkaifXbHK5LMYFmjxwj0BeRZ2z5K0DPhxc2BvhVAss2EFlJ
-        pLVORgUgIRJP14Zld3nsJrOgMWU+K1263sffd7iLM1t+41CQyi5j9qkw+FzVhLsUU3FqnC
-        c2bazky4+z5hK/A4H9451Tg8+gVeIH4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-Jc2yE-TeNeOWngAvcXrhUA-1; Thu, 12 Nov 2020 16:14:18 -0500
-X-MC-Unique: Jc2yE-TeNeOWngAvcXrhUA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46F8A6D25C;
-        Thu, 12 Nov 2020 21:14:16 +0000 (UTC)
-Received: from krava (unknown [10.40.194.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 29CED55765;
-        Thu, 12 Nov 2020 21:14:13 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 22:14:13 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [RFC/PATCH 3/3] btf_encoder: Func generation fix
-Message-ID: <20201112211413.GA733055@krava>
-References: <20201112150506.705430-1-jolsa@kernel.org>
- <20201112150506.705430-4-jolsa@kernel.org>
- <CAEf4BzbhojeSdASwt4y4XEtgAF1caYx=-AuwzWJZv7qKgzkroA@mail.gmail.com>
+        id S1727352AbgKLVre (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 16:47:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727300AbgKLVra (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 16:47:30 -0500
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8413C0613D4
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 13:47:29 -0800 (PST)
+Received: by mail-lj1-x241.google.com with SMTP id l10so8055952lji.4
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 13:47:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jCPO2N64UvEcig0H4AyRK325HEhtw6gy9ltijyrrQU4=;
+        b=YVSK9i8GsziAJCKzxnKsYEJuAfC46RBIw034h9ZtV/DMKSu3y5Ulu+zUi6SO6opx+o
+         5mo1eG5oo8otBUymKM6lWPxgDW0REELKDr6PdgORKp1Grd1yk3LO14/0OwkNtJ44zsUr
+         CSXouw/Pop+C2uxHOy2aPuf4MntbHqieNZ9ys=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jCPO2N64UvEcig0H4AyRK325HEhtw6gy9ltijyrrQU4=;
+        b=Sff2ycQjxUTAO3J3bXtEAAEy8wENLQsMGU82BbBPuyFrU5uEQmuMrLfJ/eQhzTuGLY
+         Sij5nW1eU5n3M8uDwbwtRlTsD+7ERHNfJdnPDR62joVpHXBl6rTvMSw1RAm6oUZbxDZN
+         AwPK3A1v1a2vyC44RZN2n3mbwE0kFwmeyJyufCJgU9xzvNC8LNU4/o+x1g3x3ScIEcqv
+         NGpmuyKRpA9vN3WpBsLMq0mpU6iv+hkoBYFsZLwqUtvVJ0LYxl1wdA5EpR1HIuCet4p+
+         4Ei3Kz+ocTGRrPWwk92x+xaYE1rsvHB1zAEjjWPj9AL4VWvJo5a+EwKpSTNnbcuX1W9/
+         hS9g==
+X-Gm-Message-State: AOAM533fHI49ttU1N7qEwGAMhipssx/wwmrl2gB3JdcpM76KgyZeWJ5f
+        WLHyY0arlN8LvXEVpcwgSdtb/Z0bXxiAZIV7UARcKQ==
+X-Google-Smtp-Source: ABdhPJzbSlEsYn4VgWV4cZkM+KdjQfRdw86NaXH9ke2x62eiILm1HDlTmuFMYpnmiT7gex8p8LYdULj5CZy8l7LXf0g=
+X-Received: by 2002:a2e:b16f:: with SMTP id a15mr708014ljm.430.1605217648181;
+ Thu, 12 Nov 2020 13:47:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbhojeSdASwt4y4XEtgAF1caYx=-AuwzWJZv7qKgzkroA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201112211255.2585961-1-kafai@fb.com> <20201112211307.2587021-1-kafai@fb.com>
+In-Reply-To: <20201112211307.2587021-1-kafai@fb.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Thu, 12 Nov 2020 22:47:17 +0100
+Message-ID: <CACYkzJ4tpfT4yCdRwqrUfzftdiF4yOSe1JWHqnp+DqqguDF6Ag@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/4] bpf: Rename some functions in bpf_sk_storage
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:54:41AM -0800, Andrii Nakryiko wrote:
+On Thu, Nov 12, 2020 at 10:13 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> Rename some of the functions currently prefixed with sk_storage
+> to bpf_sk_storage.  That will make the next patch have fewer
+> prefix check and also bring the bpf_sk_storage.c to a more
+> consistent function naming.
+>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-SNIP
-
-> > @@ -624,32 +644,46 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> >                 has_index_type = true;
-> >         }
-> >
-> > -       cu__for_each_function(cu, core_id, fn) {
-> > -               /*
-> > -                * The functions_cnt != 0 means we parsed all necessary
-> > -                * kernel symbols and we are using ftrace location filter
-> > -                * for functions. If it's not available keep the current
-> > -                * dwarf declaration check.
-> > -                */
-> > -               if (functions_cnt) {
-> > +       /*
-> > +        * The functions_cnt != 0 means we parsed all necessary
-> > +        * kernel symbols and we are using ftrace location filter
-> > +        * for functions. If it's not available keep the current
-> > +        * dwarf declaration check.
-> > +        */
-> > +       if (functions_cnt) {
-> > +               cu__for_each_function(cu, core_id, fn) {
-> > +                       struct elf_function *p;
-> > +                       struct elf_function key = { .name = function__name(fn, cu) };
-> > +                       int args_cnt = 0;
-> > +
-> >                         /*
-> > -                        * We check following conditions:
-> > -                        *   - argument names are defined
-> > -                        *   - there's symbol and address defined for the function
-> > -                        *   - function address belongs to ftrace locations
-> > -                        *   - function is generated only once
-> > +                        * Collect functions that match ftrace filter
-> > +                        * and pick the one with proper argument names.
-> > +                        * The BTF generation happens at the end in
-> > +                        * btf_encoder__encode function.
-> >                          */
-> > -                       if (!has_arg_names(cu, &fn->proto))
-> > +                       p = bsearch(&key, functions, functions_cnt,
-> > +                                   sizeof(functions[0]), functions_cmp);
-> > +                       if (!p)
-> >                                 continue;
-> > -                       if (!should_generate_function(btfe, function__name(fn, cu)))
-> > +
-> > +                       if (!has_arg_names(cu, &fn->proto, &args_cnt))
-> 
-> So I can't unfortunately reproduce that GCC bug with DWARF info. What
-> was exactly the symptom? Maybe you can also share readelf -wi dump for
-> your problematic vmlinux?
-
-hum, can't see -wi working for readelf, however I placed my vmlinux
-in here:
-  http://people.redhat.com/~jolsa/vmlinux.gz
-
-the symptom is that resolve_btfids will fail kernel build:
-
-  BTFIDS  vmlinux
-FAILED unresolved symbol vfs_getattr
-
-because BTF data contains multiple FUNC records for same function
-
-and the problem is that declaration tag itself is missing:
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
-so pahole won't skip them
-
-the first workaround was to workaround that and go for function
-records that have code address attached, but that's buggy as well:
-  https://bugzilla.redhat.com/show_bug.cgi?id=1890107
-
-then after some discussions we ended up using ftrace addresses
-as filter for what we want to display.. plus we got static functions
-as well
-
-however for this way we failed to get proper arguments ;-)
-
-> 
-> The reason I'm asking is because I wonder if we should still ignore
-> functions if fn->declaration is set. E.g., for the issue we
-> investigated yesterday, the function with no arguments has declaration
-> set to 1, so just ignoring it would solve the problem. I'm wondering
-> if it's enough to do just that instead of doing this whole delayed
-> function collection/processing.
-> 
-> Also, I'd imagine the only expected cases where we can override  the
-> function (args_cnt > p->args_cnt) would be if p->args_cnt == 0, no?
-
-I don't know, because originally I'd expect that we would not see
-function record with zero args when it actualy has some
-
-> All other cases are either newly discovered "bogusness" of DWARF (and
-> would be good to know about this) or it's a name collision for
-> functions. Basically, before we go all the way to rework this again,
-> let's see if just skipping declarations would be enough?
-
-so there's actualy new developement today in:
-  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060#c14
-
-gcc might actualy get fixed, so I think we could go back to
-using declaration tag and use ftrace as additional filter..
-at least this exercise gave us static functions ;-)
-
-however we still have fedora with disabled disabled CONFIG_DEBUG_INFO_BTF
-and will need to wait for that fix to enable that back
-
-> 
-> >                                 continue;
-> > -               } else {
-> > +
-> > +                       if (!p->fn || args_cnt > p->args_cnt) {
-> > +                               p->fn = fn;
-> > +                               p->cu = cu;
-> > +                               p->args_cnt = args_cnt;
-> > +                               p->type_id_off = type_id_off;
-> > +                       }
-> > +               }
-> > +       } else {
-> > +               cu__for_each_function(cu, core_id, fn) {
-> >                         if (fn->declaration || !fn->external)
-> >                                 continue;
-> > +                       if (generate_func(btfe, cu, fn, type_id_off))
-> > +                               goto out;
-> >                 }
-> 
-> I'm trending towards disliking this completely different fallback
-> mechanism. It saved bpf-next accidentally, but otherwise obscured the
-> issue and generally makes testing pahole with artificial binary BTFs
-> (from test programs) harder. How about we unify approaches, but just
-> use mcount symbols opportunistically, as an additional filter, if it's
-> available?
-
-ok
-
-> 
-> With that, testing that we still handle functions with duplicate names
-> properly would be trivial (which I suspect we don't and we'll just
-> keep the one with more args now, right?) And it makes static functions
-> available for non-vmlinux binaries automatically (might be good or
-> bad, but still...).
-
-if we keep just the ftrace filter and rely on declaration tag,
-the args checking will go away right?
-
-jirka
-
+Acked-by: KP Singh <kpsingh@google.com>
