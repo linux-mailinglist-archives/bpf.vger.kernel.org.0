@@ -2,320 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A80D2B0E87
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC922B0E92
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgKLTyx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 14:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53338 "EHLO
+        id S1726738AbgKLT4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 14:56:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbgKLTyx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:54:53 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1017BC0613D1;
-        Thu, 12 Nov 2020 11:54:53 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id c129so6501136yba.8;
-        Thu, 12 Nov 2020 11:54:53 -0800 (PST)
+        with ESMTP id S1726702AbgKLT4i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:56:38 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FA0C0613D1;
+        Thu, 12 Nov 2020 11:56:38 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id z16so6785971otq.6;
+        Thu, 12 Nov 2020 11:56:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AhDzAapXr1oUoWZdn6YnD0neaHF6747IueUQzpazLeQ=;
-        b=mGXbect63ROJhSwG+ShuoRduGpi0km9vNAlGnnSKwZmFMdSHNSpvyKRUjRMgoFK49V
-         Kcwdg3Os48ywRhsCtt7/wXGBXUhUpheGaXZQA7bb3awK6BxjMH1YE5TOM8X01Wg78ZJP
-         N/Hb9k6LiAfKPkuVcdjAFWyPo0W1asU9M6FYqRkb6QqERsdZ0q/egcL/IcSKdZ2lkS1e
-         Z8kH8+Cm0Ef2zaOE+yFhV0rDonlPNbfopK69urRNgDyEgGTDa8wHTBJA9+Q94Smhmvhk
-         uqn0YHFGAgdd9A8cvbMQEAt0toSgEigYtDrpzJ+hZsygJkqPbrTZXmvYi0ghfzNzTt+F
-         gcgQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=qrpnM0BYCJho3ra0z2DRCUpe/Zqh4HIOiqiHUbFj3dg=;
+        b=RV+6nhQNi/9xMhCCo9vBgxu5JdIU8qBXgt/PCyVCfBKM8lEVWF7Zd0eLOJcmNURuYF
+         dmV9Q02Q2f0gn9DqeuPlE5hHEhtMJ/h/og0plU6A1iHPjbwgwEUFArYYb6xKYtAvxBUa
+         3GsYHJY/xeONVzM5ONX/MohoCc+m+H29sNybmmG9jEmPDbErNdtLHtLEPzLj6u9wUqv4
+         U4YWO2SaBiPIKifImzdzTEJBtVzb9ZA9dF3PVG3/m7kIeeVMm50DOefkEFK6uJRX5j0/
+         vKgKxVoIRomP7o7zXFHK+Cz4I/Qny0Zk50ZN5q1nn+w45NTme4vc57Vs+iBgBBjMF4oK
+         CdyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AhDzAapXr1oUoWZdn6YnD0neaHF6747IueUQzpazLeQ=;
-        b=asUQbj2S3VyE9ljc4uFhXbjHVislKtZAWo65r2O8OPYMN3T/4bR3XM5Ks71X00Miml
-         Vg1hD3UNtspmqaTON8+4LBCWn/RqprqmaDUbkRsGZoeTjYdYNwzawQkLIvWnEVZNUl1+
-         H9nFFz3QlP+h0fptXBZEH/wCswSdznK89D+qrl6BHX/gD7Frxs+dd+Rc9z7tGA1ZhBDy
-         QO6j4XSIU0r2m1OSwLKi01C5BB28LjkzUvpprgefrvITeOeCOPc67atGaUziNd50O/dM
-         MHLI12GO4uTI74UpRDu69qdguePgGTJGFbKLEssCX3fQMLxVtX2rmheS6Iy+mdRG7L9l
-         /JAg==
-X-Gm-Message-State: AOAM531vHDfDeX0klmMsi4IM/7HlnzQsa2wQ7H+Dwq0nDpclBHo08UMU
-        tpmHLhPb1WBmZcdDf0SiaK6SRWOiz5nqSoWnJuY=
-X-Google-Smtp-Source: ABdhPJxKOT89S4c1qs5h4Zv7Nkv0WPgjlLQuhUp4jVarEC7eB4cs9BdQEnBRMTs73dAt2SQ1J7G3wfBhsQwAFt2o0Ws=
-X-Received: by 2002:a25:bdc7:: with SMTP id g7mr1606411ybk.260.1605210892245;
- Thu, 12 Nov 2020 11:54:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112150506.705430-1-jolsa@kernel.org> <20201112150506.705430-4-jolsa@kernel.org>
-In-Reply-To: <20201112150506.705430-4-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Nov 2020 11:54:41 -0800
-Message-ID: <CAEf4BzbhojeSdASwt4y4XEtgAF1caYx=-AuwzWJZv7qKgzkroA@mail.gmail.com>
-Subject: Re: [RFC/PATCH 3/3] btf_encoder: Func generation fix
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=qrpnM0BYCJho3ra0z2DRCUpe/Zqh4HIOiqiHUbFj3dg=;
+        b=gV7d4FbdgnTnxXLCQQneyZUCI/hA6COkPs7WjvIdcmGSW/Z6ACX1WFTKqZqc9mY78a
+         OR/5iBGAVAYeBdS2uN+wvoFilsWIT3d0W0NR5VO4pXsmA4N3itp2K0ejrVcIYj9fwE4T
+         w2CnodQyysWNzXRPV8EoAStBngnx+Lp7IE18zI8D7nVWnaVztlOb5hNXAsSmGfnVFmGP
+         WSiariczk38ydx0IEDiXBtEDPsJX4yGOSMMeDd6eRPcPnyd4FoRuYej2PHWL7IWjs39y
+         qELX3KBa4wKRbBgb3UsJEyN9+MrHatlNDiaihrjh0poxkkausWBr9Ig4mUAvcuuE9prJ
+         autQ==
+X-Gm-Message-State: AOAM531fBhZsRoiXHoiexD1V0Cj+ovOdwx+N6bua1gFlwv6LYCJS23Qu
+        ris9p+bDk4rYJP2B+60QgB0=
+X-Google-Smtp-Source: ABdhPJyDaWi6iXjtVfHzWnbXjWGlyc6Xj4coRHU9Ih/NNluTYoawN9xA3szMFl0TDGTGBHGwX3x9+Q==
+X-Received: by 2002:a9d:6755:: with SMTP id w21mr626228otm.55.1605210998273;
+        Thu, 12 Nov 2020 11:56:38 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id t6sm1471030ooo.22.2020.11.12.11.56.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 11:56:37 -0800 (PST)
+Date:   Thu, 12 Nov 2020 11:56:30 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>, ast@kernel.org,
+        jakub@cloudflare.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <5fad936eeee38_2a6120874@john-XPS-13-9370.notmuch>
+In-Reply-To: <1aa5f637-c044-3dc6-09d5-0b5dc0521f91@iogearbox.net>
+References: <160477770483.608263.6057216691957042088.stgit@john-XPS-13-9370>
+ <160477787531.608263.10144789972668918015.stgit@john-XPS-13-9370>
+ <1aa5f637-c044-3dc6-09d5-0b5dc0521f91@iogearbox.net>
+Subject: Re: [bpf PATCH 1/5] bpf, sockmap: fix partial copy_page_to_iter so
+ progress can still be made
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 7:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Recent btf encoder's changes brakes BTF data for some gcc versions.
->
-> The problem is that some functions can appear in dwarf data in some
-> instances without arguments, while they are defined with some.
->
-> Current code will record 'no arguments' for such functions and they
-> disregard the rest of the DWARF data claiming otherwise.
->
-> This patch changes the BTF function generation, so that in the main
-> cu__encode_btf processing we do not generate any BTF function code,
-> but only collect functions 'to generate' and update their arguments.
->
-> When we process the whole data, we go through the functions and
-> generate its BTD data.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  btf_encoder.c | 110 +++++++++++++++++++++++++++++++++-----------------
->  pahole.c      |   2 +-
->  2 files changed, 73 insertions(+), 39 deletions(-)
->
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index efc4f48dbc5a..46cb7e6f5abe 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -35,7 +35,10 @@ struct funcs_layout {
->  struct elf_function {
->         const char      *name;
->         unsigned long    addr;
-> -       bool             generated;
-> +       struct cu       *cu;
-> +       struct function *fn;
-> +       int              args_cnt;
-> +       uint32_t         type_id_off;
->  };
->
->  static struct elf_function *functions;
-> @@ -64,6 +67,7 @@ static void delete_functions(void)
->  static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
->  {
->         struct elf_function *new;
-> +       char *name;
->
->         if (elf_sym__type(sym) != STT_FUNC)
->                 return 0;
-> @@ -83,9 +87,20 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
->                 functions = new;
->         }
->
-> -       functions[functions_cnt].name = elf_sym__name(sym, btfe->symtab);
-> +       /*
-> +        * At the time we process functions,
-> +        * elf object might be already released.
-> +        */
-> +       name = strdup(elf_sym__name(sym, btfe->symtab));
-> +       if (!name)
-> +               return -1;
-> +
-> +       functions[functions_cnt].name = name;
->         functions[functions_cnt].addr = elf_sym__value(sym);
-> -       functions[functions_cnt].generated = false;
-> +       functions[functions_cnt].fn = NULL;
-> +       functions[functions_cnt].cu = NULL;
-> +       functions[functions_cnt].args_cnt = 0;
-> +       functions[functions_cnt].type_id_off = 0;
->         functions_cnt++;
->         return 0;
->  }
-> @@ -164,20 +179,6 @@ static int filter_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->         return 0;
->  }
->
-> -static bool should_generate_function(const struct btf_elf *btfe, const char *name)
-> -{
-> -       struct elf_function *p;
-> -       struct elf_function key = { .name = name };
-> -
-> -       p = bsearch(&key, functions, functions_cnt,
-> -                   sizeof(functions[0]), functions_cmp);
-> -       if (!p || p->generated)
-> -               return false;
-> -
-> -       p->generated = true;
-> -       return true;
-> -}
-> -
->  static bool btf_name_char_ok(char c, bool first)
->  {
->         if (c == '_' || c == '.')
-> @@ -368,6 +369,21 @@ static int generate_func(struct btf_elf *btfe, struct cu *cu,
->         return err;
->  }
->
-> +static int process_functions(struct btf_elf *btfe)
-> +{
-> +       unsigned long i;
-> +
-> +       for (i = 0; i < functions_cnt; i++) {
-> +               struct elf_function *func = &functions[i];
-> +
-> +               if (!func->fn)
-> +                       continue;
-> +               if (generate_func(btfe, func->cu, func->fn, func->type_id_off))
-> +                       return -1;
-> +       }
-> +       return 0;
-> +}
-> +
->  int btf_encoder__encode()
->  {
->         int err;
-> @@ -375,7 +391,9 @@ int btf_encoder__encode()
->         if (gobuffer__size(&btfe->percpu_secinfo) != 0)
->                 btf_elf__add_datasec_type(btfe, PERCPU_SECTION, &btfe->percpu_secinfo);
->
-> -       err = btf_elf__encode(btfe, 0);
-> +       err = process_functions(btfe);
-> +       if (!err)
-> +               err = btf_elf__encode(btfe, 0);
->         delete_functions();
->         btf_elf__delete(btfe);
->         btfe = NULL;
-> @@ -539,15 +557,17 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
->         return 0;
->  }
->
-> -static bool has_arg_names(struct cu *cu, struct ftype *ftype)
-> +static bool has_arg_names(struct cu *cu, struct ftype *ftype, int *args_cnt)
->  {
->         struct parameter *param;
->         const char *name;
->
-> +       *args_cnt = 0;
->         ftype__for_each_parameter(ftype, param) {
->                 name = dwarves__active_loader->strings__ptr(cu, param->name);
->                 if (name == NULL)
->                         return false;
-> +               ++*args_cnt;
->         }
->         return true;
->  }
-> @@ -624,32 +644,46 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->                 has_index_type = true;
->         }
->
-> -       cu__for_each_function(cu, core_id, fn) {
-> -               /*
-> -                * The functions_cnt != 0 means we parsed all necessary
-> -                * kernel symbols and we are using ftrace location filter
-> -                * for functions. If it's not available keep the current
-> -                * dwarf declaration check.
-> -                */
-> -               if (functions_cnt) {
-> +       /*
-> +        * The functions_cnt != 0 means we parsed all necessary
-> +        * kernel symbols and we are using ftrace location filter
-> +        * for functions. If it's not available keep the current
-> +        * dwarf declaration check.
-> +        */
-> +       if (functions_cnt) {
-> +               cu__for_each_function(cu, core_id, fn) {
-> +                       struct elf_function *p;
-> +                       struct elf_function key = { .name = function__name(fn, cu) };
-> +                       int args_cnt = 0;
-> +
->                         /*
-> -                        * We check following conditions:
-> -                        *   - argument names are defined
-> -                        *   - there's symbol and address defined for the function
-> -                        *   - function address belongs to ftrace locations
-> -                        *   - function is generated only once
-> +                        * Collect functions that match ftrace filter
-> +                        * and pick the one with proper argument names.
-> +                        * The BTF generation happens at the end in
-> +                        * btf_encoder__encode function.
->                          */
-> -                       if (!has_arg_names(cu, &fn->proto))
-> +                       p = bsearch(&key, functions, functions_cnt,
-> +                                   sizeof(functions[0]), functions_cmp);
-> +                       if (!p)
->                                 continue;
-> -                       if (!should_generate_function(btfe, function__name(fn, cu)))
-> +
-> +                       if (!has_arg_names(cu, &fn->proto, &args_cnt))
+Daniel Borkmann wrote:
+> On 11/7/20 8:37 PM, John Fastabend wrote:
+> > If copy_page_to_iter() fails or even partially completes, but with fewer
+> > bytes copied than expected we currently reset sg.start and return EFAULT.
+> > This proves problematic if we already copied data into the user buffer
+> > before we return an error. Because we leave the copied data in the user
+> > buffer and fail to unwind the scatterlist so kernel side believes data
+> > has been copied and user side believes data has _not_ been received.
 
-So I can't unfortunately reproduce that GCC bug with DWARF info. What
-was exactly the symptom? Maybe you can also share readelf -wi dump for
-your problematic vmlinux?
+[...]
 
-The reason I'm asking is because I wonder if we should still ignore
-functions if fn->declaration is set. E.g., for the issue we
-investigated yesterday, the function with no arguments has declaration
-set to 1, so just ignoring it would solve the problem. I'm wondering
-if it's enough to do just that instead of doing this whole delayed
-function collection/processing.
+> > +			if (!copy) {
+> > +				return copied ? copied : -EFAULT;
+> >   			}
+> 
+> nit: no need for {}
+> 
+> >   
+> >   			copied += copy;
+> > @@ -56,6 +55,11 @@ int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
+> >   						put_page(page);
+> >   				}
+> >   			} else {
+> > +				/* Lets not optimize peek case if copy_page_to_iter
+> > +				 * didn't copy the entire length lets just break.
+> > +				 */
+> > +				if (copy != sge->length)
+> > +					goto out;
+> 
+> nit: return copied;
+> 
+> Rest lgtm for this one.
 
-Also, I'd imagine the only expected cases where we can override  the
-function (args_cnt > p->args_cnt) would be if p->args_cnt == 0, no?
-All other cases are either newly discovered "bogusness" of DWARF (and
-would be good to know about this) or it's a name collision for
-functions. Basically, before we go all the way to rework this again,
-let's see if just skipping declarations would be enough?
-
->                                 continue;
-> -               } else {
-> +
-> +                       if (!p->fn || args_cnt > p->args_cnt) {
-> +                               p->fn = fn;
-> +                               p->cu = cu;
-> +                               p->args_cnt = args_cnt;
-> +                               p->type_id_off = type_id_off;
-> +                       }
-> +               }
-> +       } else {
-> +               cu__for_each_function(cu, core_id, fn) {
->                         if (fn->declaration || !fn->external)
->                                 continue;
-> +                       if (generate_func(btfe, cu, fn, type_id_off))
-> +                               goto out;
->                 }
-
-I'm trending towards disliking this completely different fallback
-mechanism. It saved bpf-next accidentally, but otherwise obscured the
-issue and generally makes testing pahole with artificial binary BTFs
-(from test programs) harder. How about we unify approaches, but just
-use mcount symbols opportunistically, as an additional filter, if it's
-available?
-
-With that, testing that we still handle functions with duplicate names
-properly would be trivial (which I suspect we don't and we'll just
-keep the one with more args now, right?) And it makes static functions
-available for non-vmlinux binaries automatically (might be good or
-bad, but still...).
-
-> -
-> -               if (generate_func(btfe, cu, fn, type_id_off))
-> -                       goto out;
->         }
->
->         if (skip_encoding_vars)
-> diff --git a/pahole.c b/pahole.c
-> index fca27148e0bb..d6165d4164dd 100644
-> --- a/pahole.c
-> +++ b/pahole.c
-> @@ -2392,7 +2392,7 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
->                         fprintf(stderr, "Encountered error while encoding BTF.\n");
->                         exit(1);
->                 }
-> -               return LSK__DELETE;
-> +               return LSK__KEEPIT;
->         }
->
->         if (ctf_encode) {
-> --
-> 2.26.2
->
+Great, thanks for the review will fixup in v2.
