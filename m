@@ -2,118 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDBE2B07BA
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 15:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF992B0814
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 16:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727646AbgKLOpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 09:45:51 -0500
-Received: from mga09.intel.com ([134.134.136.24]:17665 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgKLOpv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 09:45:51 -0500
-IronPort-SDR: lIVe/r462j8jyITzOGIbdcocDAEN6fmmCZul7dE6Ue88swB9F6lqvmUPONDpd+XG/HattSnd8h
- Q51QWE0iAaqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9802"; a="170482625"
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="170482625"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 06:45:40 -0800
-IronPort-SDR: TN6bxwzbqoYGyDaP16dmzETsNXxfLjUrZmlyuA3QZhGcua2QYvLEl45CisQXfDaha2T/zc7k3M
- +g4KmxpgfJyg==
-X-IronPort-AV: E=Sophos;i="5.77,472,1596524400"; 
-   d="scan'208";a="542280087"
-Received: from geigerri-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.34.175])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2020 06:45:36 -0800
-Subject: Re: [PATCH bpf-next 2/9] net: add SO_BUSY_POLL_BUDGET socket option
-To:     Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        magnus.karlsson@intel.com, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        maciej.fijalkowski@intel.com,
-        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        qi.z.zhang@intel.com, Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com
-References: <20201112114041.131998-1-bjorn.topel@gmail.com>
- <20201112114041.131998-3-bjorn.topel@gmail.com>
- <CANn89i+Zumgn+phZEYPb9yCQRrJ7UYh1wY7SBio6ykg2noYz2w@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <03a5a7d5-e5c9-5c61-8e8e-9393e8772d88@intel.com>
-Date:   Thu, 12 Nov 2020 15:45:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1728493AbgKLPFT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 12 Nov 2020 10:05:19 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:55835 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728274AbgKLPFS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 10:05:18 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-vwG7bqLTMvyOpFV0Wt3oZA-1; Thu, 12 Nov 2020 10:05:11 -0500
+X-MC-Unique: vwG7bqLTMvyOpFV0Wt3oZA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1729018B9EC1;
+        Thu, 12 Nov 2020 15:05:09 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4DFCE60C0F;
+        Thu, 12 Nov 2020 15:05:07 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [RFC 0/3] btf_encoder: Fix functions BTF data generation
+Date:   Thu, 12 Nov 2020 16:05:03 +0100
+Message-Id: <20201112150506.705430-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CANn89i+Zumgn+phZEYPb9yCQRrJ7UYh1wY7SBio6ykg2noYz2w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-11-12 15:36, Eric Dumazet wrote:
-> On Thu, Nov 12, 2020 at 12:41 PM Björn Töpel <bjorn.topel@gmail.com> wrote:
->>
->> From: Björn Töpel <bjorn.topel@intel.com>
->>
->> This option lets a user set a per socket NAPI budget for
->> busy-polling. If the options is not set, it will use the default of 8.
->>
->> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
->> ---
->>
-> 
-> ...
-> 
->>   #else /* CONFIG_NET_RX_BUSY_POLL */
->>   static inline unsigned long net_busy_loop_on(void)
->> @@ -106,7 +108,8 @@ static inline void sk_busy_loop(struct sock *sk, int nonblock)
->>
->>          if (napi_id >= MIN_NAPI_ID)
->>                  napi_busy_loop(napi_id, nonblock ? NULL : sk_busy_loop_end, sk,
->> -                              READ_ONCE(sk->sk_prefer_busy_poll));
->> +                              READ_ONCE(sk->sk_prefer_busy_poll),
->> +                              sk->sk_busy_poll_budget ?: BUSY_POLL_BUDGET);
-> 
-> Please use :
-> 
->         READ_ONCE(sk->sk_busy_poll_budget) ?: BUSY_POLL_BUDGET
-> 
-> Because sk_busy_loop() is usually called without socket lock being held.
-> 
-> This will prevent yet another KCSAN report.
-> 
->>   #endif
->>   }
->>
-> 
-> ...
-> 
->> --- a/net/core/sock.c
->> +++ b/net/core/sock.c
->> @@ -1165,6 +1165,16 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
->>                  else
->>                          sk->sk_prefer_busy_poll = valbool;
->>                  break;
->> +       case SO_BUSY_POLL_BUDGET:
->> +               if (val > sk->sk_busy_poll_budget && !capable(CAP_NET_ADMIN)) {
->> +                       ret = -EPERM;
->> +               } else {
->> +                       if (val < 0)
-> 
->                 if (val < 0 || val > (u16)~0)
-> 
->> +                               ret = -EINVAL;
->> +                       else
->> +                               sk->sk_busy_poll_budget = val;
-> 
-> 
->                                 WRITE_ONCE(sk->sk_busy_poll_budget, val);
->
+hi,
+recent btf encoder's changes brakes BTF data for some gcc
+versions. The problem is that some functions can appear
+in dwarf data in some instances without arguments, while
+they are defined with some.
 
-Thanks for the review! I'll address it all.
+I tried the approach I described in my former email and
+basically process all dwarf data first and collect args
+before we generate any BTF function.
 
+I had to change LSK__DELETE to LSK__KEEPIT for every
+CU we process, so that might have some implications
+that I still need to check.
+
+Andrii,
+could you please check this with your gcc?
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (3):
+      btf_encoder: Generate also .init functions
+      btf_encoder: Put function generation code to generate_func
+      btf_encoder: Func generation fix
+
+ btf_encoder.c | 177 +++++++++++++++++++++++++++++++++++----------------------------------
+ pahole.c      |   2 +-
+ 2 files changed, 91 insertions(+), 88 deletions(-)
 
