@@ -2,98 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE872B0E27
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0082B0E2D
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgKLTh5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 14:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S1726759AbgKLTjU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 14:39:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgKLTh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:37:57 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442CDC0613D1;
-        Thu, 12 Nov 2020 11:37:57 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id o71so6161934ybc.2;
-        Thu, 12 Nov 2020 11:37:57 -0800 (PST)
+        with ESMTP id S1726513AbgKLTjU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:39:20 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C7EC0613D4
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 11:39:19 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id g7so5515589pfc.2
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 11:39:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vtLkoa9iAtcoKvRAxfNUbTm4+1oQ+ytkZHUyokgstJ4=;
-        b=cxElvG3juUSp4eDvzLwnELhSzMtlkNS9wKjPRoPk2rkjWEHgMWOzjcfVO3YWP3UshJ
-         7agQoR7fczYpY5gv33ayeLIrzXjpbCdveA0dDYtwkGLIJBK+z9oQdWtjGziumdLRzwIk
-         DCjTl8ba4L3PdBHY6NGQIKYvD9/a4Za5BDoWXyshuNJK0tq5//xrTaXWgO3PzPbVDawZ
-         9CBBtBLJo29h8ayDn7tL17HsMYMYzo85WcGxqy58HO3OkI08/mcmEnrko5ysWCfA0dka
-         UVi7K+7AWV9nipwZ1KPz6btv5c127sqCRFMvflF80lZjNs5T8T53IAUGZrN5BkuFuMq9
-         49YA==
+        bh=T6j1c8kOzPGeWxx6vJPWmOZFl41b2ThqYxcvjK4xAac=;
+        b=Fx8cSFnHBy663HzzT+4EbK60Z1zIxfExPxbuyffECxS1nJ2peKId0Xl7Jka9RjFDLW
+         pqGWOjBsda7vnfguZ0krPK64Pb64/SIc9qRjQ3ofoyaTiPWAsPJmGojlvnvf6g73LZfj
+         IeX6l3sj+yuPTKJvkPspziXi8PWK0E4CBCGcWnMm8/BoyL64pXNw4gZOgmy52MvGGSVZ
+         ABh8nOuLps7Jb4u0c9cNUTDCPeGd9AO9li02rW0Bg8w06DQpZeZW3GO80Djbp+YicSW+
+         zK4a7zC/fSHXseTWFhH/MFOjuW/bzBMBvwflL+XIo0s01kJA88VwSZenDyQ79pvRNE2Y
+         wyXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vtLkoa9iAtcoKvRAxfNUbTm4+1oQ+ytkZHUyokgstJ4=;
-        b=K2RSXwcO7sbokQd5CgGQdXrJlZ9kt8wQiTN+M0t+IKoDGwIPJvdI5ogqnPD7wjo/xU
-         eHN5SXhoWEPF3svsnT7LkhV+0pRqFxNCwyHmVe2XW2UUJHCXnDh3BgIr+b8pI0j8vkQ4
-         ne7OVaOecq9Xc6fYcnyqhQ5aio3GydtyBOOvTOJUDtpeb4XJA/MAR1xJV30N0Z1FqIQ1
-         Ta1OXuJGvlfLsRYgaI0H9wiFlxBFRX0TZxS2rj3SXIYhBH29tg9MyQOyrnp6isk3g5Jy
-         l0vVXN6/NxqVU3lcojL+cVa1WhJ7SxxdC8khMjo8yitbDpMrxmvRw+H99+KcAc4KxKQh
-         WjmQ==
-X-Gm-Message-State: AOAM532vODbrci0Ci9x3YF+Oqv6dlz3UgnAzFk8u/vYZgOSKI+4O9utI
-        aiRKdjk0mY/cycnt0buRbYoyAsiHx1HmChJgqR2+XTP2MaMGOtoM
-X-Google-Smtp-Source: ABdhPJwKVlR+yFDaUQ338b2RsN1RMVpJXiNBwI7ojXQ0kLP4DSTUgbCXr+63b/XPFcW1USZoKHRKT/LRX56I9XDgzpw=
-X-Received: by 2002:a25:3d7:: with SMTP id 206mr1643837ybd.27.1605209876608;
- Thu, 12 Nov 2020 11:37:56 -0800 (PST)
+        bh=T6j1c8kOzPGeWxx6vJPWmOZFl41b2ThqYxcvjK4xAac=;
+        b=VDKUo/t24bgzvDvecW6SGGa24wE3y3124PPx1BkaF091Z/99YfeW097U094kg//2KN
+         8g8tWcG0YxpCAAWsub3mzdx8bhIzZOTlygyUn2b5H/LD4WckG483l+exLUv7qPketRfn
+         UcZSv4cP/HwA2pTOZcyX0R9WPllBNP1yiHOhJvicuDgdn6h53IjNKpZT5iVKtVBEse1K
+         7RetcVAdz5HvQQAiQw9NsEFbMkPMexZYqVDI4RoEAqt100YATSdGFbhxrvpFIOBQ1+Yf
+         U23T7A/KS/I2+p8tvDgVG84CS4kNzvst8xlaENxTWP48WOaYFURepJ83NHpVw9+aKeIa
+         5uoA==
+X-Gm-Message-State: AOAM5328G5311Tpq/Q+Xd930BiEbRfmmIXimW9TzSTXaYSnxEA9+vWSD
+        vVtwJIJylHf+NrU0ma8Lp5QKlmO675Y0c3efBnpnQw==
+X-Google-Smtp-Source: ABdhPJy0m9wZj6JTK0++K2ehpXSSYpuGQtNCcLq4vr7EtJGn827RzTIHfEPzrDKycTjMVokHHBOCCUsx/iDmxKQ+6KI=
+X-Received: by 2002:a63:b55e:: with SMTP id u30mr830468pgo.381.1605209958904;
+ Thu, 12 Nov 2020 11:39:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20201112150506.705430-1-jolsa@kernel.org> <20201112150506.705430-2-jolsa@kernel.org>
-In-Reply-To: <20201112150506.705430-2-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Nov 2020 11:37:45 -0800
-Message-ID: <CAEf4BzbdysbGSvJRBZDN=R82KOSgQ8qm_6TDGMhEP3Pvg1RQSw@mail.gmail.com>
-Subject: Re: [RFC/PATCH 1/3] btf_encoder: Generate also .init functions
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+References: <1605006094-31097-6-git-send-email-magnus.karlsson@gmail.com>
+ <202011110934.GFwFDfqe-lkp@intel.com> <CAJ8uoz2aDjLPtcTgZ_pO-=S9TgXm3c57rN8TTPXdqT7HOOKrhA@mail.gmail.com>
+ <CAKwvOd=Pws8npXdRuOVz+cgUYJ+nnztZCgMnZvP+Jr-dJ4z_Aw@mail.gmail.com> <CAJ8uoz2PxgZybUKDpe0Y4OJOHmK3gAxU7diTc1raPJoanze4sA@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2PxgZybUKDpe0Y4OJOHmK3gAxU7diTc1raPJoanze4sA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 12 Nov 2020 11:39:07 -0800
+Message-ID: <CAKwvOdnEfRFnO60mB9D7SAjCVijW5UBVYCGGXwhQ+EGw6c18BA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/5] i40e: use batched xsk Tx interfaces to
+ increase performance
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 7:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Nov 11, 2020 at 11:45 PM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
 >
-> Currently we skip functions under .init* sections, Removing the .init*
-> section check, BTF now contains also functions from .init* sections.
+> On Wed, Nov 11, 2020 at 8:16 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Wed, Nov 11, 2020 at 3:57 AM Magnus Karlsson
+> > <magnus.karlsson@gmail.com> wrote:
+> > >
+> > > On Wed, Nov 11, 2020 at 2:38 AM kernel test robot <lkp@intel.com> wrote:
+> > > >
+> > > > Hi Magnus,
+> > > >
+> > > > I love your patch! Perhaps something to improve:
+> > > >
+> > > > [auto build test WARNING on bpf-next/master]
+> > > >
+> > > > url:    https://github.com/0day-ci/linux/commits/Magnus-Karlsson/xsk-i40e-Tx-performance-improvements/20201110-190310
+> > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> > > > config: powerpc64-randconfig-r025-20201110 (attached as .config)
+> > > > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 4d81c8adb6ed9840257f6cb6b93f60856d422a15)
+> >
+> > ^ Note: clang
+> >
+> > > > reproduce (this is a W=1 build):
+> > > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > > >         chmod +x ~/bin/make.cross
+> > > >         # install powerpc64 cross compiling tool for clang build
+> > > >         # apt-get install binutils-powerpc64-linux-gnu
+> > > >         # https://github.com/0day-ci/linux/commit/b016bbeac6692a93e61b28efa430d64645032b5e
+> > > >         git remote add linux-review https://github.com/0day-ci/linux
+> > > >         git fetch --no-tags linux-review Magnus-Karlsson/xsk-i40e-Tx-performance-improvements/20201110-190310
+> > > >         git checkout b016bbeac6692a93e61b28efa430d64645032b5e
+> > > >         # save the attached .config to linux build tree
+> > > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
+> > > >
+> > > > If you fix the issue, kindly add following tag as appropriate
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > >
+> > > > All warnings (new ones prefixed by >>):
+> > > >
+> > > > >> drivers/net/ethernet/intel/i40e/i40e_xsk.c:417:13: warning: unknown pragma ignored [-Wunknown-pragmas]
+> > > >    #pragma GCC unroll 4
+> > > >                ^
+> > > >    1 warning generated.
+> > >
+> > > And I was hoping that unknown pragmas would be ignored, but that will
+> > > obviously not be the case with -Wunknown-pragmas added. The unrolling
+> > > of this inner loop where the code spends most of its time gives me
+> > > nearly 1 Mpps extra in performance which is substantial, so I would
+> > > like to get this unrolled in some way, but without the warning. Need
+> > > some advice please. Here are some options that comes in mind:
+> > >
+> > > #1: Suppress unknown pragma warnings in this file only by adding
+> > > CFLAGS_i40e_xsk.o += -Wno-unknown-pragmas (or whatever that option
+> > > might be) in the Makefile
+> > >
+> > > #2: Force the compiler to loop-unroll the loop with for example a
+> > > switch statement with four cases that all fall through. This will make
+> > > the code less readable.
+> > >
+> > > #3: Manually loop-unroll the loop. This will make the code even less
+> > > readable than #2.
+> >
+> > #4 support both compilers.  Note Clang's syntax is slightly different
+> > here; it doesn't accept GCC specific pragmas, and uses a slightly
+> > different form:
+> > https://clang.llvm.org/docs/LanguageExtensions.html#loop-unrolling .
+> > If you wrap that in a macro based on `#ifdef __clang__`, that should
+> > do the trick.
 >
-> Andrii's explanation from email:
+> Yes, that did the trick. Tried it out with the compiler explorer at
+> https://godbolt.org/ and it compiles nicely even for clang-powerpc64.
+> Will spin a v3.
 >
-> > ...                  I think we should just drop the __init check and
-> > include all the __init functions into BTF. There could be cases where
-> > we'd need to attach BPF programs to __init functions (e.g., bpf_lsm
-> > security cases), so having BTFs for those FUNCs are necessary as well.
-> > Ftrace currently disallows that, but it's only because no user-space
-> > application has a way to attach probes early enough. This might change
-> > in the future, so there is no need to invent special mechanisms now
-> > for bpf_iter function preservation. Let's just include all __init
-> > functions in BTF.
->
-> It's over ~2000 functions on my .config:
->
->    $ bpftool btf dump file ./vmlinux | grep 'FUNC ' | wc -l
->    41505
->    $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep 'FUNC ' | wc -l
->    39256
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
+> Thank you: Magnus
 
-Looks good.
+Great job Magnus, I appreciate it!
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  btf_encoder.c | 43 ++-----------------------------------------
->  1 file changed, 2 insertions(+), 41 deletions(-)
 >
+> > >
+> > > I prefer #1 as I like to keep the code readable, but you might have
+> > > other better suggestions on how to tackle this.
+> > >
+> > > Thanks: Magnus
+> > >
+> > > > vim +417 drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> > > >
+> > > >    408
+> > > >    409  static void i40e_xmit_pkt_batch(struct i40e_ring *xdp_ring, struct xdp_desc *desc,
+> > > >    410                                  unsigned int *total_bytes)
+> > > >    411  {
+> > > >    412          u16 ntu = xdp_ring->next_to_use;
+> > > >    413          struct i40e_tx_desc *tx_desc;
+> > > >    414          dma_addr_t dma;
+> > > >    415          u32 i;
+> > > >    416
+> > > >  > 417  #pragma GCC unroll 4
+> > > >    418          for (i = 0; i < PKTS_PER_BATCH; i++) {
+> > > >    419                  dma = xsk_buff_raw_get_dma(xdp_ring->xsk_pool, desc[i].addr);
+> > > >    420                  xsk_buff_raw_dma_sync_for_device(xdp_ring->xsk_pool, dma, desc[i].len);
+> > > >    421
+> > > >    422                  tx_desc = I40E_TX_DESC(xdp_ring, ntu++);
+> > > >    423                  tx_desc->buffer_addr = cpu_to_le64(dma);
+> > > >    424                  tx_desc->cmd_type_offset_bsz = build_ctob(I40E_TX_DESC_CMD_ICRC |
+> > > >    425                                                            I40E_TX_DESC_CMD_EOP,
+> > > >    426                                                            0, desc[i].len, 0);
+> > > >    427
+> > > >    428                  *total_bytes += desc[i].len;
+> > > >    429          }
+> > > >    430
+> > > >    431          xdp_ring->next_to_use = ntu;
+> > > >    432  }
+> > > >    433
+> > > >
+> > > > ---
+> > > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > >
+> > > --
+> > > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAJ8uoz2aDjLPtcTgZ_pO-%3DS9TgXm3c57rN8TTPXdqT7HOOKrhA%40mail.gmail.com.
+> >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
 
-[...]
+
+
+-- 
+Thanks,
+~Nick Desaulniers
