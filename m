@@ -2,118 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DE32AFD25
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 02:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4A12AFD23
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 02:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgKLBcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1728298AbgKLBcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 11 Nov 2020 20:32:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgKKXWc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 18:22:32 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D0FC0613D1;
-        Wed, 11 Nov 2020 15:22:32 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id c129so3506998yba.8;
-        Wed, 11 Nov 2020 15:22:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zLAINA497HzN+bAWRfYH3EEhA2UAQMIiVvTDxBBnWcw=;
-        b=O4LUkFtRH65lwdUKgb7EIgdnmlBMdqIGl8bAIWrYe5aI8zx80wpnKIpdKFlNNytchF
-         3NoApHtOhlaVCBNmiV2czbYlGCnr15zBF+T/nChufjPUK7xM6AQDt2ObCND+LWPHDMFA
-         QSEceKpzcbbxQ5px2r/mr5qk2b6wKT4VjCKlUXJkP/eMpH3GbBKVLuopBHgKM730byA0
-         9MPVGTmGRkJuqDwV7lO/SyegzKVEnMAw7KLh+L8MqyNgYOyTmuEFOiJWryx8Yh3BlFgX
-         uc8vjsE0Zq3vduAWdSYW9y4bOkCgo8XSVWUdWRP1ZCtvXkeJWBVlmID4h+tMf6/kk7Qz
-         Q42w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zLAINA497HzN+bAWRfYH3EEhA2UAQMIiVvTDxBBnWcw=;
-        b=HsaW6rzTRJkGyDOOPYvGEq+fwd2oNJpc5YcJTBD//lhqgZGtY/1uHZgISw32lrbWt9
-         2TH2l5tHIhDmyGLIgXN4BBLT+rglVN8n2/dWXoEQiUltkJcrt+b9WF77xQCG+zZjJLrK
-         Kg54oXPuBi6hTrW8Dcu9eY+LCeW/J8+39yd80qOdU7U5/eleq4awIA5zFPcQvG+nxzeG
-         W4D9UkFptsslnb0ptsBj0vwU7C+kEZfxqbYaujxZABIyLnUkj1xrTbpQLZzMbFv9u/Mn
-         gSCPFWsrdUlUIeEiu5iMsb8htGQxAt4XK9ZmXSj5yY+6lwWUYCqVGyH68AgfXJp1B/hA
-         QkhA==
-X-Gm-Message-State: AOAM5333lK8ZFXkG5as+WhADXqkErGCIAwHe9afAmiguFQFMHleuOhYK
-        PCEKXH4zRV5z2cSSVZfD9Bh+LRiCKPqeRylstUP0sqdRFOxTDg==
-X-Google-Smtp-Source: ABdhPJx5/7pvemFIXy4D77xCw09+6AsnWpxxD7ASXsoX25rFgkB9QVSo2d/BG0rGiU6YQiUqvCPFo7dA7ht7QcwGsr8=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr10307254ybg.230.1605136951985;
- Wed, 11 Nov 2020 15:22:31 -0800 (PST)
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10828 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728045AbgKLATZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Nov 2020 19:19:25 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AC0HeeH012124
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 16:19:23 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Qs9jNaqAwvSALFjazs9WYcTGypE8uqVViyOuYjRO6go=;
+ b=i0GBKvzwgrbp9XzpHHUL/BDNqmS6+ziIiHMARSDyzCcP40sbTK1E48D9L3m2M26nGtW+
+ KxNUSJDaHklRI+KmTHWZqOmHYl2lNvZwi0Mp6PRUpCFZKyJtPc3CaLLShtRxB99ENCKP
+ fWLsgkP5JK/oae+wAKs/n+Ul5t7jPx00pA8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 34r580f033-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 11 Nov 2020 16:19:23 -0800
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 11 Nov 2020 16:19:21 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id C666A2946698; Wed, 11 Nov 2020 16:19:19 -0800 (PST)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Roman Gushchin <guro@fb.com>, KP Singh <kpsingh@chromium.org>
+Subject: [PATCH bpf-next] bpf: Fix NULL dereference in bpf_task_storage
+Date:   Wed, 11 Nov 2020 16:19:19 -0800
+Message-ID: <20201112001919.2028357-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <cover.1605134506.git.dxu@dxuuu.xyz>
-In-Reply-To: <cover.1605134506.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Nov 2020 15:22:21 -0800
-Message-ID: <CAEf4BzZx=7N6dbKk8Eb_k-FA-PmmPFBJ=V-PLhbDu38wuXkOkw@mail.gmail.com>
-Subject: Re: [PATCH bpf v5 0/2] Fix bpf_probe_read_user_str() overcopying
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-11_12:2020-11-10,2020-11-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=13
+ spamscore=0 mlxlogscore=761 malwarescore=0 phishscore=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 bulkscore=0 mlxscore=0
+ impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011120000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 11, 2020 at 2:46 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
-> kernel}_str helpers") introduced a subtle bug where
-> bpf_probe_read_user_str() would potentially copy a few extra bytes after
-> the NUL terminator.
->
-> This issue is particularly nefarious when strings are used as map keys,
-> as seemingly identical strings can occupy multiple entries in a map.
->
-> This patchset fixes the issue and introduces a selftest to prevent
-> future regressions.
->
-> v4 -> v5:
-> * don't read potentially uninitialized memory
+In bpf_pid_task_storage_update_elem(), it missed to
+test the !task_storage_ptr(task) which then could trigger a NULL
+pointer exception in bpf_local_storage_update().
 
-I think the bigger problem was that it could overwrite unintended
-memory. E.g., in BPF program, if you had something like:
+Fixes: 4cf1bc1f1045 ("bpf: Implement task local storage")
+Tested-by: Roman Gushchin <guro@fb.com>
+Cc: KP Singh <kpsingh@chromium.org>
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ kernel/bpf/bpf_task_storage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-char my_buf[8 + 3];
-char my_precious_data[5] = {1, 2, 3, 4, 5};
+diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.=
+c
+index 39a45fba4fb0..4ef1959a78f2 100644
+--- a/kernel/bpf/bpf_task_storage.c
++++ b/kernel/bpf/bpf_task_storage.c
+@@ -150,7 +150,7 @@ static int bpf_pid_task_storage_update_elem(struct bp=
+f_map *map, void *key,
+ 	 */
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+ 	task =3D pid_task(pid, PIDTYPE_PID);
+-	if (!task) {
++	if (!task || !task_storage_ptr(task)) {
+ 		err =3D -ENOENT;
+ 		goto out;
+ 	}
+--=20
+2.24.1
 
-With previous version you'd overwrite my_precious data. BTW, do you
-test such scenario in the selftests you added? If not, we should have
-something like this as well and validate 1, 2, 3, 4, 5 stay intact.
-
->
-> v3 -> v4:
-> * directly pass userspace pointer to prog
-> * test more strings of different length
->
-> v2 -> v3:
-> * set pid filter before attaching prog in selftest
-> * use long instead of int as bpf_probe_read_user_str() retval
-> * style changes
->
-> v1 -> v2:
-> * add Fixes: tag
-> * add selftest
->
-> Daniel Xu (2):
->   lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
->   selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes
->     after NUL
->
->  lib/strncpy_from_user.c                       |  9 ++-
->  .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
->  .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
->  3 files changed, 100 insertions(+), 5 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
->
-> --
-> 2.29.2
->
