@@ -2,89 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375302B0EE2
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 21:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21F02B0F08
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 21:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgKLUNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 15:13:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29193 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727087AbgKLUNJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 15:13:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605211988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UcIMxlPA0Ij3wo3HO+1X+MRzqmBG91sW8UXbWK56NoM=;
-        b=fcCgaudoUm0/jOVCR8UZ+k3Tx7Ush0hKGvU6LpFcis9xqflXpKJkDn3Cb7yYMiCi9eM8KR
-        h3W5A1PGOj0kZPwlMb8fnX6IMcSBFQTNjrXQ2G/NbQXnbn7TK+/KC2yArv9gxSCU8zUNht
-        kXFtjXCQEJ5S5zkeH0fjYvdIdJpGh0Y=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-166-9YAlpA_2P4OvS4h_6Esh9g-1; Thu, 12 Nov 2020 15:13:05 -0500
-X-MC-Unique: 9YAlpA_2P4OvS4h_6Esh9g-1
-Received: by mail-io1-f72.google.com with SMTP id a2so4753937iod.13
-        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 12:13:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=UcIMxlPA0Ij3wo3HO+1X+MRzqmBG91sW8UXbWK56NoM=;
-        b=glng1iGQ7yA4qakzWa4TrcOUAxKibd/7cV7fu0MKnl+aK2kFM3+qjrJoY2+W5ptocg
-         FwF+yLEGjsyDonjEe4GARaSVtVyrCaj+YVr7/oNTEc2+RH602l+DFuBH1bdnLoTBZRXe
-         JlYzBedF+eSoXznFIhAZj1Qv/c0ozlWAbDI5HrY8rtchB4Csncb1OmGGfnYaZ3P7AWrz
-         hGdODGCGluPqyWy4f+uenGZngbA4B2wbNro6FrAHa6SUOy/X6p8Xiz+z617HLK64PwE5
-         8ClpaysEfCMfsMfjMX6d27+79xsR6/hljZbHoeOrtPBTd4IfF46gwBV3Eno81tVc9j77
-         qj3g==
-X-Gm-Message-State: AOAM532hyo3vQTz7X0KWbRXnKYH994uQEk4EAAr69D8FmnwdhpuU07LZ
-        hQBpp2rERK6DyxwIxEm1IQY0v4X0es/ZaQItqEq9CuC4cM1sb4/tM6aLvYRQilkOZc0C6Q3KSCc
-        xMjdyCO8e2qi7
-X-Received: by 2002:a92:ca8f:: with SMTP id t15mr1068449ilo.19.1605211983952;
-        Thu, 12 Nov 2020 12:13:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzmFZEJYIs8c9FS5nyeyPzl8LXmXSjj6Obb0ZeFnlGDMRAunYnqNkvQnu+MeTxI6g3LgylZlw==
-X-Received: by 2002:a92:ca8f:: with SMTP id t15mr1068434ilo.19.1605211983725;
-        Thu, 12 Nov 2020 12:13:03 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z6sm3627612ilm.69.2020.11.12.12.13.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 12:13:03 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5794F1833E9; Thu, 12 Nov 2020 21:13:01 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf] MAINTAINERS/bpf: Update Andrii's entry.
-In-Reply-To: <8d6d521d-9ed7-df03-0a9b-d31a0103938c@iogearbox.net>
-References: <20201112180340.45265-1-alexei.starovoitov@gmail.com>
- <8d6d521d-9ed7-df03-0a9b-d31a0103938c@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 12 Nov 2020 21:13:01 +0100
-Message-ID: <87lff68hbm.fsf@toke.dk>
+        id S1726963AbgKLU2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 15:28:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgKLU2i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 15:28:38 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23199C0613D1;
+        Thu, 12 Nov 2020 12:28:38 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdJCn-004XlE-Ed; Thu, 12 Nov 2020 20:28:29 +0000
+Date:   Thu, 12 Nov 2020 20:28:29 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, yhs@fb.com, andrii@kernel.org, kpsingh@chromium.org,
+        jackmanb@chromium.org, linux-kernel@vger.kernel.org,
+        Florent Revest <revest@google.com>, netdev@vger.kernel.org
+Subject: saner sock_from_file() calling conventions (was Re: [PATCH] bpf:
+ Expose a bpf_sock_from_file helper to tracing programs)
+Message-ID: <20201112202829.GD3576660@ZenIV.linux.org.uk>
+References: <20201112200944.2726451-1-revest@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201112200944.2726451-1-revest@chromium.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+On Thu, Nov 12, 2020 at 09:09:44PM +0100, Florent Revest wrote:
+> From: Florent Revest <revest@google.com>
+> 
+> eBPF programs can already check whether a file is a socket using
+> file->f_op == &socket_file_ops but they can not convert file->private_data
+> into a struct socket with BTF information. For that, we need a new
+> helper that is essentially just a wrapper for sock_from_file.
+> 
+> sock_from_file can set an err value but this is only set to -ENOTSOCK
+> when the return value is NULL so it's useless superfluous information.
 
-> On 11/12/20 7:03 PM, Alexei Starovoitov wrote:
->> From: Alexei Starovoitov <ast@kernel.org>
->> 
->> Andrii has been a de-facto maintainer for libbpf and other components.
->> Update maintainers entry to acknowledge his work de-jure.
->> 
->> The folks with git write permissions will continue to follow the rule
->> of not applying their own patches unless absolutely trivial.
->> 
->> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->
-> Full ack, thanks for all the hard work, Andrii!
+That's a wrong way to handle that kind of stuff.  *IF* sock_from_file()
+really has no need to return an error, its calling conventions ought to
+be changed.  OTOH, if that is not the case, your API is a landmine.
 
-+1 :)
+That needs to be dealt with by netdev folks, rather than quietly papered
+over in BPF code.
 
--Toke
+It does appear that there's no realistic cause to ever need other errors
+there (well, short of some clown attaching a hook, pardon the obscenity),
+so I would recommend something like the patch below (completely untested):
 
+sanitize sock_from_file() calling conventions
+
+deal with error value (always -ENOTSOCK) in the callers
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+diff --git a/fs/seq_file.c b/fs/seq_file.c
+index 3b20e21604e7..07b33c1f34a9 100644
+--- a/fs/seq_file.c
++++ b/fs/seq_file.c
+@@ -168,7 +168,6 @@ EXPORT_SYMBOL(seq_read);
+ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ {
+ 	struct seq_file *m = iocb->ki_filp->private_data;
+-	size_t size = iov_iter_count(iter);
+ 	size_t copied = 0;
+ 	size_t n;
+ 	void *p;
+@@ -208,14 +207,11 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	}
+ 	/* if not empty - flush it first */
+ 	if (m->count) {
+-		n = min(m->count, size);
+-		if (copy_to_iter(m->buf + m->from, n, iter) != n)
+-			goto Efault;
++		n = copy_to_iter(m->buf + m->from, m->count, iter);
+ 		m->count -= n;
+ 		m->from += n;
+-		size -= n;
+ 		copied += n;
+-		if (!size)
++		if (!iov_iter_count(iter) || m->count)
+ 			goto Done;
+ 	}
+ 	/* we need at least one record in buffer */
+@@ -249,6 +245,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 	goto Done;
+ Fill:
+ 	/* they want more? let's try to get some more */
++	/* m->count is positive and there's space left in iter */
+ 	while (1) {
+ 		size_t offs = m->count;
+ 		loff_t pos = m->index;
+@@ -263,7 +260,7 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 			err = PTR_ERR(p);
+ 			break;
+ 		}
+-		if (m->count >= size)
++		if (m->count >= iov_iter_count(iter))
+ 			break;
+ 		err = m->op->show(m, p);
+ 		if (seq_has_overflowed(m) || err) {
+@@ -273,16 +270,14 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 		}
+ 	}
+ 	m->op->stop(m, p);
+-	n = min(m->count, size);
+-	if (copy_to_iter(m->buf, n, iter) != n)
+-		goto Efault;
++	n = copy_to_iter(m->buf, m->count, iter);
+ 	copied += n;
+ 	m->count -= n;
+ 	m->from = n;
+ Done:
+-	if (!copied)
+-		copied = err;
+-	else {
++	if (unlikely(!copied)) {
++		copied = m->count ? -EFAULT : err;
++	} else {
+ 		iocb->ki_pos += copied;
+ 		m->read_pos += copied;
+ 	}
+@@ -291,9 +286,6 @@ ssize_t seq_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ Enomem:
+ 	err = -ENOMEM;
+ 	goto Done;
+-Efault:
+-	err = -EFAULT;
+-	goto Done;
+ }
+ EXPORT_SYMBOL(seq_read_iter);
+ 
