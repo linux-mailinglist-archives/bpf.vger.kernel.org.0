@@ -2,270 +2,289 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2552B0817
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 16:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C349C2B0B24
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 18:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgKLPFW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 12 Nov 2020 10:05:22 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:28332 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728399AbgKLPFV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 10:05:21 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-FjoNWsRvNSW_QmNotb_lTg-1; Thu, 12 Nov 2020 10:05:17 -0500
-X-MC-Unique: FjoNWsRvNSW_QmNotb_lTg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72A6310866AD;
-        Thu, 12 Nov 2020 15:05:15 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.194.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A9D4D60C0F;
-        Thu, 12 Nov 2020 15:05:13 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [RFC/PATCH 3/3] btf_encoder: Func generation fix
-Date:   Thu, 12 Nov 2020 16:05:06 +0100
-Message-Id: <20201112150506.705430-4-jolsa@kernel.org>
-In-Reply-To: <20201112150506.705430-1-jolsa@kernel.org>
-References: <20201112150506.705430-1-jolsa@kernel.org>
+        id S1725987AbgKLRTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 12:19:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgKLRTN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 12:19:13 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97041C0613D1
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 09:19:13 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id c16so6199239wmd.2
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 09:19:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hIiYtW7qR/FH/roxvWWhkElJqW/Xs92ieMcgmOyLJXE=;
+        b=np6aFa3JX05HEeNVxZ9yFK963UJ5w+jShVPRnmRtQb6mMOATwBf0NrDdSoGiCtBkog
+         WkzeN4gCfPaE7zY/v0ouNC9rvtCFTddzFKm5ey3WqvgpS1NPvrH3mer7uxVPe4uv/CQo
+         Af2/9mF/6oh91smrJvYu60KM2Csur9SMcEK6w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hIiYtW7qR/FH/roxvWWhkElJqW/Xs92ieMcgmOyLJXE=;
+        b=hjM3oea42r+BbbfWrE0mJK9UxMHdRKILpUKypUXv51NJb/leyl6uOPfg9uLvctrH1Y
+         5DRyMiZBwE+rO2n4agtACWBLrbshN3ufq0HK+JVu7u62lpcP3X2/uNk25E1j5AXPVCFX
+         NBHMtsxZOLssUrGZEC91ntBCH5hhj3CWLJM+jvMq6lMMynmrxOaii5UyjgWPp9yz4N/I
+         89RB65/CabXzwQ2AdPf7cOL/QbVOQ7KN134sufP1KqTEQiVpd8mI0gWdmASRXviN/wwX
+         RWHtvTl+y2r+qgcCs9hCxR9vmhaC9XHsXVl+b/3UpHJXbxom43QtG9Dvveu0fomAZ0HL
+         1BLw==
+X-Gm-Message-State: AOAM530uFdCHcFOjtgtGEl9e1Kl/us6552pmK5/RuWcWXxf0r586iwHR
+        M+ieNqMrT0+lvFz5Dgb96wzVUQ==
+X-Google-Smtp-Source: ABdhPJyiICO0JugA8cA1xgA/IJ7w6P8XB8hqZUg8JSZg7iBsbJVJYwqydAQ9unVxFBpj5cg3WqQC0Q==
+X-Received: by 2002:a1c:7d12:: with SMTP id y18mr638701wmc.103.1605201551637;
+        Thu, 12 Nov 2020 09:19:11 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id m18sm5574938wru.37.2020.11.12.09.19.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 09:19:10 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next 1/2] bpf: Augment the set of sleepable LSM hooks
+Date:   Thu, 12 Nov 2020 17:19:06 +0000
+Message-Id: <20201112171907.373433-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.222.g5d2a92d10f8-goog
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Recent btf encoder's changes brakes BTF data for some gcc versions.
+From: KP Singh <kpsingh@google.com>
 
-The problem is that some functions can appear in dwarf data in some
-instances without arguments, while they are defined with some.
+Update the set of sleepable hooks with the ones that do not trigger
+a warning with might_fault() when exercised with the correct kernel
+config options enabled, i.e.
 
-Current code will record 'no arguments' for such functions and they
-disregard the rest of the DWARF data claiming otherwise.
+	DEBUG_ATOMIC_SLEEP=y
+	LOCKDEP=y
+	PROVE_LOCKING=y
 
-This patch changes the BTF function generation, so that in the main
-cu__encode_btf processing we do not generate any BTF function code,
-but only collect functions 'to generate' and update their arguments.
+This means that a sleepable LSM eBPF prorgam can be attached to these
+LSM hooks. A new helper method bpf_lsm_is_sleepable_hook is added and
+the set is maintained locally in bpf_lsm.c
 
-When we process the whole data, we go through the functions and
-generate its BTD data.
+A comment is added about the list of LSM hooks that have been observed
+to be called from softirqs, atomic contexts, or the ones that can
+trigger pagefaults and thus should not be added to this list.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- btf_encoder.c | 110 +++++++++++++++++++++++++++++++++-----------------
- pahole.c      |   2 +-
- 2 files changed, 73 insertions(+), 39 deletions(-)
+ include/linux/bpf_lsm.h |   7 +++
+ kernel/bpf/bpf_lsm.c    | 120 ++++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c   |  16 +-----
+ 3 files changed, 128 insertions(+), 15 deletions(-)
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index efc4f48dbc5a..46cb7e6f5abe 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -35,7 +35,10 @@ struct funcs_layout {
- struct elf_function {
- 	const char	*name;
- 	unsigned long	 addr;
--	bool		 generated;
-+	struct cu	*cu;
-+	struct function *fn;
-+	int		 args_cnt;
-+	uint32_t	 type_id_off;
- };
+diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+index 73226181b744..0d1c33ace398 100644
+--- a/include/linux/bpf_lsm.h
++++ b/include/linux/bpf_lsm.h
+@@ -27,6 +27,8 @@ extern struct lsm_blob_sizes bpf_lsm_blob_sizes;
+ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 			const struct bpf_prog *prog);
  
- static struct elf_function *functions;
-@@ -64,6 +67,7 @@ static void delete_functions(void)
- static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
- {
- 	struct elf_function *new;
-+	char *name;
- 
- 	if (elf_sym__type(sym) != STT_FUNC)
- 		return 0;
-@@ -83,9 +87,20 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
- 		functions = new;
- 	}
- 
--	functions[functions_cnt].name = elf_sym__name(sym, btfe->symtab);
-+	/*
-+	 * At the time we process functions,
-+	 * elf object might be already released.
-+	 */
-+	name = strdup(elf_sym__name(sym, btfe->symtab));
-+	if (!name)
-+		return -1;
++bool bpf_lsm_is_sleepable_hook(u32 btf_id);
 +
-+	functions[functions_cnt].name = name;
- 	functions[functions_cnt].addr = elf_sym__value(sym);
--	functions[functions_cnt].generated = false;
-+	functions[functions_cnt].fn = NULL;
-+	functions[functions_cnt].cu = NULL;
-+	functions[functions_cnt].args_cnt = 0;
-+	functions[functions_cnt].type_id_off = 0;
- 	functions_cnt++;
- 	return 0;
- }
-@@ -164,20 +179,6 @@ static int filter_functions(struct btf_elf *btfe, struct funcs_layout *fl)
- 	return 0;
- }
- 
--static bool should_generate_function(const struct btf_elf *btfe, const char *name)
--{
--	struct elf_function *p;
--	struct elf_function key = { .name = name };
--
--	p = bsearch(&key, functions, functions_cnt,
--		    sizeof(functions[0]), functions_cmp);
--	if (!p || p->generated)
--		return false;
--
--	p->generated = true;
--	return true;
--}
--
- static bool btf_name_char_ok(char c, bool first)
+ static inline struct bpf_storage_blob *bpf_inode(
+ 	const struct inode *inode)
  {
- 	if (c == '_' || c == '.')
-@@ -368,6 +369,21 @@ static int generate_func(struct btf_elf *btfe, struct cu *cu,
- 	return err;
- }
+@@ -54,6 +56,11 @@ void bpf_task_storage_free(struct task_struct *task);
  
-+static int process_functions(struct btf_elf *btfe)
+ #else /* !CONFIG_BPF_LSM */
+ 
++static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
 +{
-+	unsigned long i;
-+
-+	for (i = 0; i < functions_cnt; i++) {
-+		struct elf_function *func = &functions[i];
-+
-+		if (!func->fn)
-+			continue;
-+		if (generate_func(btfe, func->cu, func->fn, func->type_id_off))
-+			return -1;
-+	}
-+	return 0;
++	return false;
 +}
 +
- int btf_encoder__encode()
+ static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 				      const struct bpf_prog *prog)
  {
- 	int err;
-@@ -375,7 +391,9 @@ int btf_encoder__encode()
- 	if (gobuffer__size(&btfe->percpu_secinfo) != 0)
- 		btf_elf__add_datasec_type(btfe, PERCPU_SECTION, &btfe->percpu_secinfo);
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index e92c51bebb47..3a6e927485c2 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -13,6 +13,7 @@
+ #include <linux/bpf_verifier.h>
+ #include <net/bpf_sk_storage.h>
+ #include <linux/bpf_local_storage.h>
++#include <linux/btf_ids.h>
  
--	err = btf_elf__encode(btfe, 0);
-+	err = process_functions(btfe);
-+	if (!err)
-+		err = btf_elf__encode(btfe, 0);
- 	delete_functions();
- 	btf_elf__delete(btfe);
- 	btfe = NULL;
-@@ -539,15 +557,17 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
- 	return 0;
+ /* For every LSM hook that allows attachment of BPF programs, declare a nop
+  * function where a BPF program can be attached.
+@@ -72,6 +73,125 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	}
  }
  
--static bool has_arg_names(struct cu *cu, struct ftype *ftype)
-+static bool has_arg_names(struct cu *cu, struct ftype *ftype, int *args_cnt)
- {
- 	struct parameter *param;
- 	const char *name;
++/* The set of hooks which are called without pagefaults disabled and are allowed
++ * to "sleep and thus can be used for sleeable BPF programs.
++ *
++ * There are some hooks which have been observed to be called from a
++ * non-sleepable context and should not be added to this set:
++ *
++ *  bpf_lsm_bpf_prog_free_security
++ *  bpf_lsm_capable
++ *  bpf_lsm_cred_free
++ *  bpf_lsm_d_instantiate
++ *  bpf_lsm_file_alloc_security
++ *  bpf_lsm_file_mprotect
++ *  bpf_lsm_file_send_sigiotask
++ *  bpf_lsm_inet_conn_request
++ *  bpf_lsm_inet_csk_clone
++ *  bpf_lsm_inode_alloc_security
++ *  bpf_lsm_inode_follow_link
++ *  bpf_lsm_inode_permission
++ *  bpf_lsm_key_permission
++ *  bpf_lsm_locked_down
++ *  bpf_lsm_mmap_addr
++ *  bpf_lsm_perf_event_read
++ *  bpf_lsm_ptrace_access_check
++ *  bpf_lsm_req_classify_flow
++ *  bpf_lsm_sb_free_security
++ *  bpf_lsm_sk_alloc_security
++ *  bpf_lsm_sk_clone_security
++ *  bpf_lsm_sk_free_security
++ *  bpf_lsm_sk_getsecid
++ *  bpf_lsm_socket_sock_rcv_skb
++ *  bpf_lsm_sock_graft
++ *  bpf_lsm_task_free
++ *  bpf_lsm_task_getioprio
++ *  bpf_lsm_task_getscheduler
++ *  bpf_lsm_task_kill
++ *  bpf_lsm_task_setioprio
++ *  bpf_lsm_task_setnice
++ *  bpf_lsm_task_setpgid
++ *  bpf_lsm_task_setrlimit
++ *  bpf_lsm_unix_may_send
++ *  bpf_lsm_unix_stream_connect
++ *  bpf_lsm_vm_enough_memory
++ */
++BTF_SET_START(sleepable_lsm_hooks)BTF_ID(func, bpf_lsm_bpf)
++BTF_ID(func, bpf_lsm_bpf_map)
++BTF_ID(func, bpf_lsm_bpf_map_alloc_security)
++BTF_ID(func, bpf_lsm_bpf_map_free_security)
++BTF_ID(func, bpf_lsm_bpf_prog)
++BTF_ID(func, bpf_lsm_bprm_check_security)
++BTF_ID(func, bpf_lsm_bprm_committed_creds)
++BTF_ID(func, bpf_lsm_bprm_committing_creds)
++BTF_ID(func, bpf_lsm_bprm_creds_for_exec)
++BTF_ID(func, bpf_lsm_bprm_creds_from_file)
++BTF_ID(func, bpf_lsm_capget)
++BTF_ID(func, bpf_lsm_capset)
++BTF_ID(func, bpf_lsm_cred_prepare)
++BTF_ID(func, bpf_lsm_file_ioctl)
++BTF_ID(func, bpf_lsm_file_lock)
++BTF_ID(func, bpf_lsm_file_open)
++BTF_ID(func, bpf_lsm_file_receive)
++BTF_ID(func, bpf_lsm_inet_conn_established)
++BTF_ID(func, bpf_lsm_inode_create)
++BTF_ID(func, bpf_lsm_inode_free_security)
++BTF_ID(func, bpf_lsm_inode_getattr)
++BTF_ID(func, bpf_lsm_inode_getxattr)
++BTF_ID(func, bpf_lsm_inode_mknod)
++BTF_ID(func, bpf_lsm_inode_need_killpriv)
++BTF_ID(func, bpf_lsm_inode_post_setxattr)
++BTF_ID(func, bpf_lsm_inode_readlink)
++BTF_ID(func, bpf_lsm_inode_rename)
++BTF_ID(func, bpf_lsm_inode_rmdir)
++BTF_ID(func, bpf_lsm_inode_setattr)
++BTF_ID(func, bpf_lsm_inode_setxattr)
++BTF_ID(func, bpf_lsm_inode_symlink)
++BTF_ID(func, bpf_lsm_inode_unlink)
++BTF_ID(func, bpf_lsm_kernel_module_request)
++BTF_ID(func, bpf_lsm_kernfs_init_security)
++BTF_ID(func, bpf_lsm_key_free)
++BTF_ID(func, bpf_lsm_mmap_file)
++BTF_ID(func, bpf_lsm_netlink_send)
++BTF_ID(func, bpf_lsm_path_notify)
++BTF_ID(func, bpf_lsm_release_secctx)
++BTF_ID(func, bpf_lsm_sb_alloc_security)
++BTF_ID(func, bpf_lsm_sb_eat_lsm_opts)
++BTF_ID(func, bpf_lsm_sb_kern_mount)
++BTF_ID(func, bpf_lsm_sb_mount)
++BTF_ID(func, bpf_lsm_sb_remount)
++BTF_ID(func, bpf_lsm_sb_set_mnt_opts)
++BTF_ID(func, bpf_lsm_sb_show_options)
++BTF_ID(func, bpf_lsm_sb_statfs)
++BTF_ID(func, bpf_lsm_sb_umount)
++BTF_ID(func, bpf_lsm_settime)
++BTF_ID(func, bpf_lsm_socket_accept)
++BTF_ID(func, bpf_lsm_socket_bind)
++BTF_ID(func, bpf_lsm_socket_connect)
++BTF_ID(func, bpf_lsm_socket_create)
++BTF_ID(func, bpf_lsm_socket_getpeername)
++BTF_ID(func, bpf_lsm_socket_getpeersec_dgram)
++BTF_ID(func, bpf_lsm_socket_getsockname)
++BTF_ID(func, bpf_lsm_socket_getsockopt)
++BTF_ID(func, bpf_lsm_socket_listen)
++BTF_ID(func, bpf_lsm_socket_post_create)
++BTF_ID(func, bpf_lsm_socket_recvmsg)
++BTF_ID(func, bpf_lsm_socket_sendmsg)
++BTF_ID(func, bpf_lsm_socket_shutdown)
++BTF_ID(func, bpf_lsm_socket_socketpair)
++BTF_ID(func, bpf_lsm_syslog)
++BTF_ID(func, bpf_lsm_task_alloc)
++BTF_ID(func, bpf_lsm_task_getsecid)
++BTF_ID(func, bpf_lsm_task_prctl)
++BTF_ID(func, bpf_lsm_task_setscheduler)
++BTF_ID(func, bpf_lsm_task_to_inode)
++BTF_SET_END(sleepable_lsm_hooks)
++
++bool bpf_lsm_is_sleepable_hook(u32 btf_id)
++{
++	return btf_id_set_contains(&sleepable_lsm_hooks, btf_id);
++}
++
+ const struct bpf_prog_ops lsm_prog_ops = {
+ };
  
-+	*args_cnt = 0;
- 	ftype__for_each_parameter(ftype, param) {
- 		name = dwarves__active_loader->strings__ptr(cu, param->name);
- 		if (name == NULL)
- 			return false;
-+		++*args_cnt;
- 	}
- 	return true;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 10da26e55130..364ec1958c85 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11477,20 +11477,6 @@ static int check_attach_modify_return(unsigned long addr, const char *func_name)
+ 	return -EINVAL;
  }
-@@ -624,32 +644,46 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
- 		has_index_type = true;
- 	}
  
--	cu__for_each_function(cu, core_id, fn) {
--		/*
--		 * The functions_cnt != 0 means we parsed all necessary
--		 * kernel symbols and we are using ftrace location filter
--		 * for functions. If it's not available keep the current
--		 * dwarf declaration check.
--		 */
--		if (functions_cnt) {
-+	/*
-+	 * The functions_cnt != 0 means we parsed all necessary
-+	 * kernel symbols and we are using ftrace location filter
-+	 * for functions. If it's not available keep the current
-+	 * dwarf declaration check.
-+	 */
-+	if (functions_cnt) {
-+		cu__for_each_function(cu, core_id, fn) {
-+			struct elf_function *p;
-+			struct elf_function key = { .name = function__name(fn, cu) };
-+			int args_cnt = 0;
-+
- 			/*
--			 * We check following conditions:
--			 *   - argument names are defined
--			 *   - there's symbol and address defined for the function
--			 *   - function address belongs to ftrace locations
--			 *   - function is generated only once
-+			 * Collect functions that match ftrace filter
-+			 * and pick the one with proper argument names.
-+			 * The BTF generation happens at the end in
-+			 * btf_encoder__encode function.
- 			 */
--			if (!has_arg_names(cu, &fn->proto))
-+			p = bsearch(&key, functions, functions_cnt,
-+				    sizeof(functions[0]), functions_cmp);
-+			if (!p)
- 				continue;
--			if (!should_generate_function(btfe, function__name(fn, cu)))
-+
-+			if (!has_arg_names(cu, &fn->proto, &args_cnt))
- 				continue;
--		} else {
-+
-+			if (!p->fn || args_cnt > p->args_cnt) {
-+				p->fn = fn;
-+				p->cu = cu;
-+				p->args_cnt = args_cnt;
-+				p->type_id_off = type_id_off;
-+			}
-+		}
-+	} else {
-+		cu__for_each_function(cu, core_id, fn) {
- 			if (fn->declaration || !fn->external)
- 				continue;
-+			if (generate_func(btfe, cu, fn, type_id_off))
-+				goto out;
- 		}
+-/* non exhaustive list of sleepable bpf_lsm_*() functions */
+-BTF_SET_START(btf_sleepable_lsm_hooks)
+-#ifdef CONFIG_BPF_LSM
+-BTF_ID(func, bpf_lsm_bprm_committed_creds)
+-#else
+-BTF_ID_UNUSED
+-#endif
+-BTF_SET_END(btf_sleepable_lsm_hooks)
 -
--		if (generate_func(btfe, cu, fn, type_id_off))
--			goto out;
- 	}
- 
- 	if (skip_encoding_vars)
-diff --git a/pahole.c b/pahole.c
-index fca27148e0bb..d6165d4164dd 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -2392,7 +2392,7 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
- 			fprintf(stderr, "Encountered error while encoding BTF.\n");
- 			exit(1);
- 		}
--		return LSK__DELETE;
-+		return LSK__KEEPIT;
- 	}
- 
- 	if (ctf_encode) {
+-static int check_sleepable_lsm_hook(u32 btf_id)
+-{
+-	return btf_id_set_contains(&btf_sleepable_lsm_hooks, btf_id);
+-}
+-
+ /* list of non-sleepable functions that are otherwise on
+  * ALLOW_ERROR_INJECTION list
+  */
+@@ -11712,7 +11698,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 				/* LSM progs check that they are attached to bpf_lsm_*() funcs.
+ 				 * Only some of them are sleepable.
+ 				 */
+-				if (check_sleepable_lsm_hook(btf_id))
++				if (bpf_lsm_is_sleepable_hook(btf_id))
+ 					ret = 0;
+ 				break;
+ 			default:
 -- 
-2.26.2
+2.29.2.222.g5d2a92d10f8-goog
 
