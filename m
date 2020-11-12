@@ -2,85 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53442B0F37
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 21:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6427D2B0FD9
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 22:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727138AbgKLUtt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 15:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbgKLUts (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 15:49:48 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67972C0613D1
-        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 12:49:48 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id i17so6785156ljd.3
-        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 12:49:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=UDDtr3a9TDYeq7NhppmGXW7X+tH2xYzT3dZK8AfhIz0=;
-        b=VbqI9rl6FUKSVXACb5pQgvcimBZsiBxQw1lVG4mSyqcKX6eUsDpt/Jqt31ZNnaOQXC
-         9h4NkV8DI/oT6TnzsDqJvI3fdYR5+5yuL0MVfmGdxLc4uj2z2YA3iXy0dIQ80tHgcAVz
-         UUshqNoOJCB3bdSooKfPeB9e6yOj43WTGQ1gQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=UDDtr3a9TDYeq7NhppmGXW7X+tH2xYzT3dZK8AfhIz0=;
-        b=VgA4lsfquEFy+rr9WvDPDFd7qdzH1e7hwY0lJoSXiOOq7GrEi5SPJZbVRh1g8wFZVH
-         nVesL2zW5XhWrexAFaC8U6MCsAzph3HS3/xrmLvLrQ37KM2BzNoZmlkKHRdDkEKG5KMG
-         DZXmCNAaeObHzLpIEDULxN/3Wx6lN1vGYvazkMPoPiWEL/nfeLNMCnTr7MbrszkxodWS
-         6ss1DiM0JF87jywjOIhfCLR89CfYNO0dfrh/bBcQQzI1fBMnVLgUQPpMCwpt0HC7ZsKr
-         X2+jabRgUiu/ROJQivyc4Uko0jCtQKp33iVqyebL3iNqMhvQ3AsRGPA9IXEu5KcdUtqr
-         uvtg==
-X-Gm-Message-State: AOAM5311zJsx9DSij5n+KTVQSjDLudQEp5+LcWVG77iquqxERrsaRYhH
-        gKtB5PHMFihGlPCjfY2FS9Gp/T1sqI1y1ayaRlLwNg==
-X-Google-Smtp-Source: ABdhPJwlPKjHN36fiZaW5Zy43yaBFcAGHnCrZ+1sxsKXvWmW6G9hiR3PMDOIczZgVSqnj7d1uXWfr/z7Yy3yeXAsoFM=
-X-Received: by 2002:a2e:85c6:: with SMTP id h6mr640460ljj.110.1605214186951;
- Thu, 12 Nov 2020 12:49:46 -0800 (PST)
+        id S1727189AbgKLVM7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 16:12:59 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39094 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726337AbgKLVM7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 16:12:59 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0ACL1g2c017372
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 13:12:58 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=3TxQl2Ty/QLplzdhLjMNcbakijcLZV5aaOyIRDAPopo=;
+ b=OxOUw1eZxFKZ5XkOZlU7o7ag9pmZrItZ08qsgUW1RDxoodWkvRlVJZK41VuDpMSlsudn
+ H7pmHKS9gwaWUqGLmIZ8/oM/foHZ1kXX7t66+/GPiMrYZ8+gpe9GLUc50OTFBcCSuwmk
+ Dy1VPmWlv8bpLkXQY6AkACKPBa6SfAUcX5I= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 34r4sh5243-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 13:12:58 -0800
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 12 Nov 2020 13:12:55 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 1286B29469C4; Thu, 12 Nov 2020 13:12:55 -0800 (PST)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH v2 bpf-next 0/4] bpf: Enable bpf_sk_storage for FENTRY/FEXIT/RAW_TP
+Date:   Thu, 12 Nov 2020 13:12:55 -0800
+Message-ID: <20201112211255.2585961-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20201112180340.45265-1-alexei.starovoitov@gmail.com>
- <8d6d521d-9ed7-df03-0a9b-d31a0103938c@iogearbox.net> <87lff68hbm.fsf@toke.dk>
-In-Reply-To: <87lff68hbm.fsf@toke.dk>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 12 Nov 2020 21:49:36 +0100
-Message-ID: <CACYkzJ4miC2x4dAyn0N0pSMbVQF+sLNhaHD7ypgjdPzTC5zzkA@mail.gmail.com>
-Subject: Re: [PATCH bpf] MAINTAINERS/bpf: Update Andrii's entry.
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_12:2020-11-12,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 clxscore=1015 suspectscore=13 bulkscore=0 mlxlogscore=411
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011120123
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 9:13 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Daniel Borkmann <daniel@iogearbox.net> writes:
->
-> > On 11/12/20 7:03 PM, Alexei Starovoitov wrote:
-> >> From: Alexei Starovoitov <ast@kernel.org>
-> >>
-> >> Andrii has been a de-facto maintainer for libbpf and other components.
-> >> Update maintainers entry to acknowledge his work de-jure.
-> >>
-> >> The folks with git write permissions will continue to follow the rule
-> >> of not applying their own patches unless absolutely trivial.
-> >>
-> >> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Full ack, thanks for all the hard work, Andrii!
->
-> +1 :)
->
-> -Toke
->
+This set is to allow the FENTRY/FEXIT/RAW_TP tracing program to use
+bpf_sk_storage.  The first two patches are a cleanup.  The last patch is
+tests.  Patch 3 has the required kernel changes to
+enable bpf_sk_storage for FENTRY/FEXIT/RAW_TP.
 
-+1 Thanks for all the work Andrii!!
+Please see individual patch for details.
+
+v2:
+- Rename some of the function prefix from sk_storage to bpf_sk_storage
+- Use prefix check instead of substr check
+
+Martin KaFai Lau (4):
+  bpf: Folding omem_charge() into sk_storage_charge()
+  bpf: Rename some functions in bpf_sk_storage
+  bpf: Allow using bpf_sk_storage in FENTRY/FEXIT/RAW_TP
+  bpf: selftest: Use bpf_sk_storage in FENTRY/FEXIT/RAW_TP
+
+ include/net/bpf_sk_storage.h                  |   2 +
+ kernel/trace/bpf_trace.c                      |   5 +
+ net/core/bpf_sk_storage.c                     | 135 +++++++++++++-----
+ .../bpf/prog_tests/sk_storage_tracing.c       | 135 ++++++++++++++++++
+ .../bpf/progs/test_sk_storage_trace_itself.c  |  29 ++++
+ .../bpf/progs/test_sk_storage_tracing.c       |  95 ++++++++++++
+ 6 files changed, 369 insertions(+), 32 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_storage_tra=
+cing.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sk_storage_tra=
+ce_itself.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sk_storage_tra=
+cing.c
+
+--=20
+2.24.1
+
