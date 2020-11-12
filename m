@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061DB2B0DAB
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47592B0DC1
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgKLTQZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 14:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
+        id S1726418AbgKLTUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 14:20:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKLTQV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:16:21 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13466C0613D1;
-        Thu, 12 Nov 2020 11:16:20 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 79so6669904otc.7;
-        Thu, 12 Nov 2020 11:16:20 -0800 (PST)
+        with ESMTP id S1726255AbgKLTUD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:20:03 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F340BC0613D1;
+        Thu, 12 Nov 2020 11:20:03 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id j14so6715738ots.1;
+        Thu, 12 Nov 2020 11:20:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=Sf8Isal/8dq+37wth94G89CIsHbDMtQylm/3MbKWx0I=;
-        b=W8mzNPjzvea1D8c03V7HUBSO0Z//U2hCJIDb8Cy7V7r1J7ytwPexktBbgFyPQsUz4/
-         tmOjfeA9Cde21B+W02oYIMaCu6S2XhgF18Hwpq1Hlu2Nb1s1UF0BeUu7hLApnUauE6kt
-         umdDUKJyKCOS68a4lV5VgEwQ/qe6pkqiHijh6WTIOrolCcA4uuB/gyrbV+yke094Yw0V
-         Io9BAGZREAG0bYSXdszEdaLVZRl4WoU4ScDNdAYdu8N0mRc+WbVxgt/C27nqNM0JeDJc
-         7UPZUD31L/ihHReU4m6hfNgRhLGOUOZTgqHwOgc3Cx4Zz58nLY9goKx1yiv24GTEdaHM
-         7LTQ==
+        bh=33v82rYPkbtauRnrxMrnUeQRuS+uGenuk5EAtau1PrU=;
+        b=KipGtNW3tZHU1In/my+8qokRGJMYqlA4iv0Mn4rMohKlLpIhx058JGHjkShR1L0QLL
+         QjldFxP8kPEFc1gjjDsMbycCMhV+7JNnzihl286AOR7OdU2XNciykmBMje5OdWpB9Qmn
+         yC5Czp8cRrShbGYfa9pyZm8y/zslej4UA6o7ybZ75yXMsJulrZjRGNGowfxUJJH8+kHP
+         o96MJiBsseNRZdQp8NUIhE6U2P0IOWu49DMrBMzoU1rMV1dFO1UClM3FHXEuJx3q2c8b
+         Fk3dRpS8tsbA9bY4Ddhi90AkfhvgVHtdHJvVbkC0GmcB8Bv63jSW6dGc5NsN55JRIVZi
+         ZDdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=Sf8Isal/8dq+37wth94G89CIsHbDMtQylm/3MbKWx0I=;
-        b=DGbPvJ+dTobkpKQfADcamLVc+9f4hY7cmVcFG/CrbpL//o4l40q2JZ8nXeAsSnJjMD
-         EqnFHLDJbuzSamBG70RM0zfOevAsRTOsTwC6IVmiMMiiNJURO+eusOFMsThYdzHrYcXo
-         3asf7qKb+5tcV/KH5LpesA9ezJtpb1CosBuBPfECt4r5CZErsvFTvDu6BExJgqfyH8aT
-         19HM56wOE1LqA+8/H5ONrn5/EVGy5xQYHbdE4khv5uF4qP7+FIO4VN9pEcEdUdKScGC6
-         fey8XwyO0/CiPzxDG0KnU4kI/iukNRIWcYydlycEm50jiEwx78WAk9jCx5y600en3pYv
-         ToFg==
-X-Gm-Message-State: AOAM531DuFF1K8+FS1vXaSRv2dmlnSN/V2EecZTWYU+w05jWmN71XvKY
-        XqKqcykCAIIUwwf14tYTJUYDXYsjklP/Kw==
-X-Google-Smtp-Source: ABdhPJwly/HLYmkfD1YULNV0i3SaONOp/rS9p2+tDIlXWIn2CK7QvqcgbnMve9X5Ep1pmxa7Us5W5A==
-X-Received: by 2002:a05:6830:1af7:: with SMTP id c23mr504601otd.358.1605208579419;
-        Thu, 12 Nov 2020 11:16:19 -0800 (PST)
+        bh=33v82rYPkbtauRnrxMrnUeQRuS+uGenuk5EAtau1PrU=;
+        b=VCqWhdEA2jyyqK7XLXCDnCzj97hC/POc67yaxxEiw2ml5InqMkh7+WfY/qYos2cmtq
+         0+vaZmynhaHEvItV7xyIOCRXPFF042ijraH/EjBY+qarxT6Dpv9ZAzm8PWqwEQkqkcn3
+         TzlSqQogDHBX+f2DhtlQu90TpeGRgEYGBzNNXcfC/GAKlpjoNcfeGVj2AkSDOhQzO8JE
+         rAKXRJHaYUrmwLdH20hCsswB8T4uZO8PRKnVtvDFKJPDBxWRrVaFENnuJp+n9V9xxtA6
+         MeuiEbSd5+YWzaLQmO483HG72ZJXRrMOh7H4+ORMZw5JuoYaOp9SpPCGaSGx7y3R7EW4
+         HxNQ==
+X-Gm-Message-State: AOAM531rIEJH/Ri/CF9Y53IDW7aSNENxHra3TEb45T5cucYN4Bz3ZFje
+        XY5wQZlWulAtIVm27YHX2y4=
+X-Google-Smtp-Source: ABdhPJw9w+CicVYTvbmd1pJuUHkhkEMpE0az8k7onLnk9jRGr2seim7YySDdiis5a/rtlvmR4up0LA==
+X-Received: by 2002:a9d:6b98:: with SMTP id b24mr556778otq.46.1605208801924;
+        Thu, 12 Nov 2020 11:20:01 -0800 (PST)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id z19sm1409264otm.58.2020.11.12.11.16.16
+        by smtp.gmail.com with ESMTPSA id w3sm1453198oov.48.2020.11.12.11.20.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 11:16:18 -0800 (PST)
-Date:   Thu, 12 Nov 2020 11:16:11 -0800
+        Thu, 12 Nov 2020 11:20:01 -0800 (PST)
+Date:   Thu, 12 Nov 2020 11:19:54 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         davem@davemloft.net
 Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Message-ID: <5fad89fb649af_2a612088e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201111031213.25109-2-alexei.starovoitov@gmail.com>
+Message-ID: <5fad8adaa7c5d_2a6120828@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201111031213.25109-3-alexei.starovoitov@gmail.com>
 References: <20201111031213.25109-1-alexei.starovoitov@gmail.com>
- <20201111031213.25109-2-alexei.starovoitov@gmail.com>
-Subject: RE: [PATCH v2 bpf-next 1/3] bpf: Support for pointers beyond pkt_end.
+ <20201111031213.25109-3-alexei.starovoitov@gmail.com>
+Subject: RE: [PATCH v2 bpf-next 2/3] selftests/bpf: Add skb_pkt_end test
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -69,53 +69,38 @@ X-Mailing-List: bpf@vger.kernel.org
 Alexei Starovoitov wrote:
 > From: Alexei Starovoitov <ast@kernel.org>
 > 
-> This patch adds the verifier support to recognize inlined branch conditions.
-> The LLVM knows that the branch evaluates to the same value, but the verifier
-> couldn't track it. Hence causing valid programs to be rejected.
-> The potential LLVM workaround: https://reviews.llvm.org/D87428
-> can have undesired side effects, since LLVM doesn't know that
-> skb->data/data_end are being compared. LLVM has to introduce extra boolean
-> variable and use inline_asm trick to force easier for the verifier assembly.
+> Add a test that currently makes LLVM generate assembly code:
 > 
-> Instead teach the verifier to recognize that
-> r1 = skb->data;
-> r1 += 10;
-> r2 = skb->data_end;
-> if (r1 > r2) {
->   here r1 points beyond packet_end and
->   subsequent
->   if (r1 > r2) // always evaluates to "true".
-> }
+> $ llvm-objdump -S skb_pkt_end.o
+> 0000000000000000 <main_prog>:
+> ; 	if (skb_shorter(skb, ETH_IPV4_TCP_SIZE))
+>        0:	61 12 50 00 00 00 00 00	r2 = *(u32 *)(r1 + 80)
+>        1:	61 14 4c 00 00 00 00 00	r4 = *(u32 *)(r1 + 76)
+>        2:	bf 43 00 00 00 00 00 00	r3 = r4
+>        3:	07 03 00 00 36 00 00 00	r3 += 54
+>        4:	b7 01 00 00 00 00 00 00	r1 = 0
+>        5:	2d 23 02 00 00 00 00 00	if r3 > r2 goto +2 <LBB0_2>
+>        6:	07 04 00 00 0e 00 00 00	r4 += 14
+> ; 	if (skb_shorter(skb, ETH_IPV4_TCP_SIZE))
+>        7:	bf 41 00 00 00 00 00 00	r1 = r4
+> 0000000000000040 <LBB0_2>:
+>        8:	b4 00 00 00 ff ff ff ff	w0 = -1
+> ; 	if (!(ip = get_iphdr(skb)))
+>        9:	2d 23 05 00 00 00 00 00	if r3 > r2 goto +5 <LBB0_6>
+> ; 	proto = ip->protocol;
+>       10:	71 12 09 00 00 00 00 00	r2 = *(u8 *)(r1 + 9)
+> ; 	if (proto != IPPROTO_TCP)
+>       11:	56 02 03 00 06 00 00 00	if w2 != 6 goto +3 <LBB0_6>
+> ; 	if (tcp->dest != 0)
+>       12:	69 12 16 00 00 00 00 00	r2 = *(u16 *)(r1 + 22)
+>       13:	56 02 01 00 00 00 00 00	if w2 != 0 goto +1 <LBB0_6>
+> ; 	return tcp->urg_ptr;
+>       14:	69 10 26 00 00 00 00 00	r0 = *(u16 *)(r1 + 38)
+> 0000000000000078 <LBB0_6>:
+> ; }
+>       15:	95 00 00 00 00 00 00 00	exit
 > 
-> Tested-by: Jiri Olsa <jolsa@redhat.com>
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  include/linux/bpf_verifier.h |   2 +-
->  kernel/bpf/verifier.c        | 129 +++++++++++++++++++++++++++++------
->  2 files changed, 108 insertions(+), 23 deletions(-)
-> 
-
-Thanks, we can remove another set of inline asm logic.
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
- 
->  	if (pred >= 0) {
-> @@ -7517,7 +7601,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
->  		 */
->  		if (!__is_pointer_value(false, dst_reg))
->  			err = mark_chain_precision(env, insn->dst_reg);
-> -		if (BPF_SRC(insn->code) == BPF_X && !err)
-> +		if (BPF_SRC(insn->code) == BPF_X && !err &&
-> +		    !__is_pointer_value(false, src_reg))
-
-This could have been more specific with !type_is_pkt_pointer() correct? I
-think its fine as is though.
-
->  			err = mark_chain_precision(env, insn->src_reg);
->  		if (err)
->  			return err;
-> -- 
-> 2.24.1
-> 
-
-
