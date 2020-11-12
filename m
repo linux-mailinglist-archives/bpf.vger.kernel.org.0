@@ -2,138 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4792B0E36
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F16D2B0E82
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 20:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgKLTjz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 14:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        id S1726900AbgKLTwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 14:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbgKLTjy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 14:39:54 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B70C0613D1;
-        Thu, 12 Nov 2020 11:39:53 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id i186so6451322ybc.11;
-        Thu, 12 Nov 2020 11:39:53 -0800 (PST)
+        with ESMTP id S1726899AbgKLTwr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 14:52:47 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C87C0613D1;
+        Thu, 12 Nov 2020 11:52:46 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id z16so6775668otq.6;
+        Thu, 12 Nov 2020 11:52:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UO9DPotWn4by22yehpshPhN+vxo3lDtaNuirFdoJhWo=;
-        b=Sppq0ZOvoAMlmqvODnBlbdaF4xnhLLtRjZ2dPnI1I2fbLczUEktxRbDAQcaOYXzddw
-         yVcfc8HTceLl/XU9eydxBF5Ij5LUj4HtoxKq5T8agwif26OBkaWuumyXTO6I33pYY9VK
-         nLJqNRe13LCKJbs+f25fJHdpDaX/C4uE8z16hJs9rqTbm/NqUA6ewNOgy646T7SpGJp9
-         Rj+ykyqRhzy83dMI46n7wkmHDj9V9zeGX+2tbwoFmM3C2RDxbXR02fEL2nH3qxxmh5Q0
-         MXtsE9HYXsy0ODu3hpcdxHkiF3ULIx7q7CsFpkPi9+xF3T8HMmWAYNDW8jG9eopHgHB2
-         uewQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=xCZ+ScKBnKSg0Y3a6GGJaUS8JUdOG0wXjV3AbR5rAIY=;
+        b=hbraEew9mPZ7eAa2ghJXPfqvGIEoOvIevHLfv09KCWBE8r/HVkQR7aHdylTJLQL4r/
+         sToS37Fv1ssFODs49MBCJ61SqVQGCO6dVErh/WJYK+ibzWWnYqiS7cEKTrpOcsZrxz+M
+         C1HUxxRIRy5U93HOaccUApCdS3TTRiApnFCP1U1ppd5yT378uNjb+pQvXw23a68RRwg5
+         IYMkJIymZ6yAOnQyC/DyJb8YD9eADZLaPEnbt3UxfcqQ+3SKJzzPOt6DKY1UDIgCUCRb
+         h2CQxm8dF5kSh+oAr8n1pJhVUkaO9zeyVXLo0oT99ZtBPxSfMQUJ3WMCr3Bq+1cYQpWZ
+         knMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UO9DPotWn4by22yehpshPhN+vxo3lDtaNuirFdoJhWo=;
-        b=Hg048LMqVK2oojtD+11qYroBahOtj6flpQxyxPH73S/bccMqaatk3iGc9hPvKDx0rV
-         3OZTSBf/sUxdFF2ADPIZC9I3yo4rnSPNWpKL4yv8816vvUlrl2ekqyUTxZ/Cz86+VfQJ
-         xqMOf4/esOYA6phuCMrXDdYqlNyzPttyr1fVU/AAGRfo4CwD7xWaOCu4I5EtyfnxOLyK
-         XYPZtCpVha1G4kwSP/3eopB2Sm+KmMWD6iJ1oMiMTRJSlWb3eMBUQjJ01JF+9oiLKyP+
-         bPbMIXb+jeMZ5gvKWg/8o07wMrnewXvy/R9uPjtGbGt6bKfx6tmjhRE3fE+4RAkGBM23
-         HH7Q==
-X-Gm-Message-State: AOAM532Dv0OP27WnEeo70AR/d7LhNE3kTtgX/t/9+vAVeZ4bNVY4TDdH
-        r2rQHBrCmE+9QA4k80WoQs+ulxMHE/6YQzew8Nw=
-X-Google-Smtp-Source: ABdhPJyg3HXI4g2sbcdTWzEXGHsKcgRYsLw921xwoC8N4P3eAPZ7arw5LfQ9S5SkB+u0p9bYEtMBmgfS4P8cBIW2g6I=
-X-Received: by 2002:a25:3d7:: with SMTP id 206mr1656516ybd.27.1605209993100;
- Thu, 12 Nov 2020 11:39:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20201112150506.705430-1-jolsa@kernel.org> <20201112150506.705430-3-jolsa@kernel.org>
-In-Reply-To: <20201112150506.705430-3-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Nov 2020 11:39:42 -0800
-Message-ID: <CAEf4BzavQiEAQyeUU3kxHQ5tmwRJev6N_jbqNe=xhJpWyTAQ8Q@mail.gmail.com>
-Subject: Re: [RFC/PATCH 2/3] btf_encoder: Put function generation code to generate_func
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=xCZ+ScKBnKSg0Y3a6GGJaUS8JUdOG0wXjV3AbR5rAIY=;
+        b=iRlgYkkdu8YGHkFebbE/vuF0qUnxX9B5FRHYHTtvl5x4hbv325TnmtqcCV6Kl8OSFF
+         essvZHG9nDrAEWsQbHIq+SehEPPdhlkfjJbXHtpoHGzVhePajJzlJcLGliuIUXLYpJsL
+         NiJQUO+0af4zJ3zMmg1VPQaheB4KTvDW2U7kSRfYw9WZQ6cdx60ULFcO0YFTkxYABQ7Y
+         6P7h3arpl4ELicoipZyg+EXjTYpeBnmH/+5n/tQGlDyEdzvhsizUDyg8yAXzx81i6rJc
+         izBeozwN5mUr1gU3Nx2N6Q/DG/ebma+rGJU0ZktYZEmfYQI7XP7FIrcu/hcVEC9h5xj4
+         wWow==
+X-Gm-Message-State: AOAM532n0NVLwoO++bepuEv0Vn/wE4bnK8RudskItXtVBMmHvLCPUXkd
+        I8zBixAL9Wx9WKmW6QE2KWM=
+X-Google-Smtp-Source: ABdhPJzI+uf+xxyDwZejtDwU2oymycIKhIItgvZuHfGVsOH4+nSJ5x4GOV+Kog62rmn4RH7kvV/7bA==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr646632otj.9.1605210766415;
+        Thu, 12 Nov 2020 11:52:46 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id m29sm1439814otj.42.2020.11.12.11.52.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 11:52:45 -0800 (PST)
+Date:   Thu, 12 Nov 2020 11:52:39 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>, ast@kernel.org,
+        jakub@cloudflare.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <5fad928748443_2a6120855@john-XPS-13-9370.notmuch>
+In-Reply-To: <a49096e0-6cc7-7741-a283-27c8629da80f@iogearbox.net>
+References: <160477770483.608263.6057216691957042088.stgit@john-XPS-13-9370>
+ <160477791482.608263.14389359214124051944.stgit@john-XPS-13-9370>
+ <a49096e0-6cc7-7741-a283-27c8629da80f@iogearbox.net>
+Subject: Re: [bpf PATCH 3/5] bpf, sockmap: Avoid returning unneeded EAGAIN
+ when redirecting to self
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 7:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> We will use generate_func from another place in following change.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  btf_encoder.c | 28 ++++++++++++++++++----------
->  1 file changed, 18 insertions(+), 10 deletions(-)
->
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index d531651b1e9e..efc4f48dbc5a 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -351,6 +351,23 @@ static struct btf_elf *btfe;
->  static uint32_t array_index_id;
->  static bool has_index_type;
->
-> +static int generate_func(struct btf_elf *btfe, struct cu *cu,
-> +                        struct function *fn, uint32_t type_id_off)
-> +{
-> +       int btf_fnproto_id, btf_fn_id, err = 0;
+Daniel Borkmann wrote:
+> On 11/7/20 8:38 PM, John Fastabend wrote:
+> > If a socket redirects to itself and it is under memory pressure it is
+> > possible to get a socket stuck so that recv() returns EAGAIN and the
+> > socket can not advance for some time. This happens because when
+> > redirecting a skb to the same socket we received the skb on we first
+> > check if it is OK to enqueue the skb on the receiving socket by checking
+> > memory limits. But, if the skb is itself the object holding the memory
+> > needed to enqueue the skb we will keep retrying from kernel side
+> > and always fail with EAGAIN. Then userspace will get a recv() EAGAIN
+> > error if there are no skbs in the psock ingress queue. This will continue
+> > until either some skbs get kfree'd causing the memory pressure to
+> > reduce far enough that we can enqueue the pending packet or the
+> > socket is destroyed. In some cases its possible to get a socket
+> > stuck for a noticable amount of time if the socket is only receiving
+> > skbs from sk_skb verdict programs. To reproduce I make the socket
+> > memory limits ridiculously low so sockets are always under memory
+> > pressure. More often though if under memory pressure it looks like
+> > a spurious EAGAIN error on user space side causing userspace to retry
+> > and typically enough has moved on the memory side that it works.
+> > 
+> > To fix skip memory checks and skb_orphan if receiving on the same
+> > sock as already assigned.
+> > 
+> > For SK_PASS cases this is easy, its always the same socket so we
+> > can just omit the orphan/set_owner pair.
+> > 
+> > For backlog cases we need to check skb->sk and decide if the orphan
+> > and set_owner pair are needed.
+> > 
+> > Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >   net/core/skmsg.c |   72 ++++++++++++++++++++++++++++++++++++++++--------------
+> >   1 file changed, 53 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> > index fe44280c033e..580252e532da 100644
+> > --- a/net/core/skmsg.c
+> > +++ b/net/core/skmsg.c
+> > @@ -399,38 +399,38 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
+> >   }
+> >   EXPORT_SYMBOL_GPL(sk_msg_memcopy_from_iter);
+> >   
+> > -static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
+> > +static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
+> > +						  struct sk_buff *skb)
+> >   {
+> > -	struct sock *sk = psock->sk;
+> > -	int copied = 0, num_sge;
+> >   	struct sk_msg *msg;
+> >   
+> >   	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
+> > -		return -EAGAIN;
+> > +		return NULL;
+> > +
+> > +	if (!sk_rmem_schedule(sk, skb, skb->len))
+> 
+> Isn't accounting always truesize based, thus we should fix & convert all skb->len
+> to skb->truesize ?
 
-btf_ prefix for these variables don't contribute anything, I'd just
-drop them here
-
-> +       const char *name;
-> +
-> +       btf_fnproto_id = btf_elf__add_func_proto(btfe, cu, &fn->proto, type_id_off);
-> +       name = dwarves__active_loader->strings__ptr(cu, fn->name);
-> +       btf_fn_id = btf_elf__add_ref_type(btfe, BTF_KIND_FUNC, btf_fnproto_id, name, false);
-> +       if (btf_fnproto_id < 0 || btf_fn_id < 0) {
-> +               err = -1;
-> +               printf("error: failed to encode function '%s'\n", function__name(fn, cu));
-
-return -1;
-
-> +       }
-> +
-> +       return err;
-
-return 0; drop err variable.
-
-> +}
-> +
->  int btf_encoder__encode()
->  {
->         int err;
-> @@ -608,9 +625,6 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->         }
->
->         cu__for_each_function(cu, core_id, fn) {
-> -               int btf_fnproto_id, btf_fn_id;
-> -               const char *name;
-> -
->                 /*
->                  * The functions_cnt != 0 means we parsed all necessary
->                  * kernel symbols and we are using ftrace location filter
-> @@ -634,14 +648,8 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->                                 continue;
->                 }
->
-> -               btf_fnproto_id = btf_elf__add_func_proto(btfe, cu, &fn->proto, type_id_off);
-> -               name = dwarves__active_loader->strings__ptr(cu, fn->name);
-> -               btf_fn_id = btf_elf__add_ref_type(btfe, BTF_KIND_FUNC, btf_fnproto_id, name, false);
-> -               if (btf_fnproto_id < 0 || btf_fn_id < 0) {
-> -                       err = -1;
-> -                       printf("error: failed to encode function '%s'\n", function__name(fn, cu));
-> +               if (generate_func(btfe, cu, fn, type_id_off))
->                         goto out;
-> -               }
->         }
->
->         if (skip_encoding_vars)
-> --
-> 2.26.2
->
+Right good catch, will fix in v2.
