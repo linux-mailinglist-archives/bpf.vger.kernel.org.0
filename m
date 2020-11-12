@@ -2,130 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1962B056B
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 13:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0DD2B05DF
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 14:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbgKLM6Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 07:58:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50297 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728286AbgKLM6V (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 07:58:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605185898;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YvV+CQrTCN32yeLpEl1ht2k/pOaWJ+h+FWBa2JvuTp8=;
-        b=inI4T0ag5Kat2oHWTg0l2fKFMKdnTOUWa72n6oNTS8m8pcogmrtDxEUxDWe8W6b1rhNnmK
-        SIkzNHfOyLms/i7db3NTxP1nQkNkJzqXfbqWWpcM4dY0Czs03mkQU0kWKH5ohN9glAvv0H
-        +ZrRAe/zkBHNEp+irZWqtVffX4dHpFk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-uZs_b-8wNEWibeNAVWY3nA-1; Thu, 12 Nov 2020 07:58:16 -0500
-X-MC-Unique: uZs_b-8wNEWibeNAVWY3nA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6AAD91007B01;
-        Thu, 12 Nov 2020 12:58:14 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 138EF5D9E8;
-        Thu, 12 Nov 2020 12:58:07 +0000 (UTC)
-Date:   Thu, 12 Nov 2020 13:58:05 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next V5 3/5] bpf: add BPF-helper for MTU checking
-Message-ID: <20201112135805.315dded1@carbon>
-In-Reply-To: <20201102211034.563ef994@carbon>
-References: <160407661383.1525159.12855559773280533146.stgit@firesoul>
-        <160407666238.1525159.9197344855524540198.stgit@firesoul>
-        <5f9c764fc98c6_16d4208d5@john-XPS-13-9370.notmuch>
-        <20201102121548.5e2c36b1@carbon>
-        <5fa04a3c7c173_1ecdb20821@john-XPS-13-9370.notmuch>
-        <20201102211034.563ef994@carbon>
+        id S1728273AbgKLNDe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 08:03:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728300AbgKLNDY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 08:03:24 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307B2C061A47
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 05:03:21 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id b9so6055354edu.10
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 05:03:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yyb1E/sd7Cc/pPe6bTxgtFSJRAKklmXaLvj/I78vaIM=;
+        b=CbnNXQqapLCPRAMke5kzyf7Bl569kHtAYC/21aR5gNgbIQ3St0MyWx9Xvauwvs9/6K
+         HovsL0Qv1Iyz6llc6Y4X2R6/ggX2UFIKeahg6/f6zg1cpDhuraPb/xfg/NhDNB0JwIov
+         taxJTmFy3GGQhzOO71p9DubmpUqY5gu5ngED0g17fWLEXFyDnivPqw6RBn8YVTQt+yqg
+         IJ9biFg/UDIKD/N7cvg3uVaQAd7h+2sElIZ7y6OxSC2L0F33kmevvJCLU6NxJTXFZSXV
+         NmPDWye+2DMld+uqiHOz9NX0nVZRBiwsoPPvEyUofMzhrjnVHHwBog/rUV7Bo5ay5/yX
+         /IEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yyb1E/sd7Cc/pPe6bTxgtFSJRAKklmXaLvj/I78vaIM=;
+        b=eaqWaKTZ73hjrpKZlSbVplEC75cKbGN7xZ6BDJyK5kczhslyUI+5N/PRmpIGSZm/18
+         v5SmP1PaBkItkHSKI7TGlF6XIZTGyuQxUNtvyj0R+W51lZE4nhbqv9oJBG3R3157jQnL
+         2G9nEu1uLZvGLvuUdsK/Z8w5gJiwAelSIzjMlCrrdQhj3Ve1CgSZqaoGwhknlnHEBfbo
+         MVPbplxNJT/pw/Mf05D5bBC/5yp8LnWihbaijcyYBUHwRVwsdl8gBxeEYvA9ErXUs++o
+         cFTfOmoJxSAvTTcRrQEYg7YzfT2oN+k9y4tZlW9cp5BhXDx+8/glhctK1kDp5tHwsqdQ
+         2d7g==
+X-Gm-Message-State: AOAM533gqwP71ZAcWCgWpZZYOi4L+eQetGWsB31AkeBMucC+ALWMUSNM
+        4Zr7b4qDye8r2ZrJmxvobTgdWILNizgnb2gArvM=
+X-Google-Smtp-Source: ABdhPJzQfcUmhm3JVhjqAPFUvyMacLy1D+dMscaAuM24AJobRT4fvcels2OnwvTjWmBEEwF7rPypUA==
+X-Received: by 2002:a05:6402:31a5:: with SMTP id dj5mr5093365edb.325.1605186199794;
+        Thu, 12 Nov 2020 05:03:19 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::5:3b5c])
+        by smtp.gmail.com with ESMTPSA id s6sm2132156ejb.122.2020.11.12.05.03.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 05:03:19 -0800 (PST)
+Date:   Thu, 12 Nov 2020 13:03:12 +0000
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH] bpf: relax return code check for subprograms
+Message-ID: <20201112130312.GA286385@dbanschikov-fedora-PC0VG1WZ.dhcp.thefacebook.com>
+References: <20201110210342.146242-1-me@ubique.spb.ru>
+ <CAEf4BzZQSJZMRRvfzHUE+dhyMdP2BTkeXaVyrNymFbepymvj5Q@mail.gmail.com>
+ <20201111103826.GA198626@dbanschikov-fedora-PC0VG1WZ.DHCP.thefacebook.com>
+ <CAEf4Bzasys6pG5uKHTUJCi1Tw0+N2_8mvx=ia9uFD90ECrNq4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzasys6pG5uKHTUJCi1Tw0+N2_8mvx=ia9uFD90ECrNq4w@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2 Nov 2020 21:10:34 +0100
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+On Wed, Nov 11, 2020 at 02:33:11PM -0800, Andrii Nakryiko wrote:
 
-> On Mon, 02 Nov 2020 10:04:44 -0800
-> John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > >
+> > > >         switch (prog_type) {
+> > > >         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+> > > >                 if (env->prog->expected_attach_type == BPF_CGROUP_UDP4_RECVMSG ||
+> > > > @@ -7874,7 +7886,6 @@ static int check_return_code(struct bpf_verifier_env *env)
+> > > >                 return 0;
+> > > >         }
+> > > >
+> > > > -       reg = cur_regs(env) + BPF_REG_0;
+> > > >         if (reg->type != SCALAR_VALUE) {
+> > > >                 verbose(env, "At program exit the register R0 is not a known value (%s)\n",
+> > > >                         reg_type_str[reg->type]);
+> > > > @@ -9266,6 +9277,7 @@ static int do_check(struct bpf_verifier_env *env)
+> > > >         int insn_cnt = env->prog->len;
+> > > >         bool do_print_state = false;
+> > > >         int prev_insn_idx = -1;
+> > > > +       const bool is_subprog = env->cur_state->frame[0]->subprogno;
+> > >
+> > > this can probably be done inside check_return_code(), no?
+> >
+> > No.
+> > Frame stack may be empty when check_return_code() is called.
 > 
-> > > > > +
-> > > > > +	/*  Same relax as xdp_ok_fwd_dev() and is_skb_forwardable() */
-> > > > > +	if (flags & BPF_MTU_CHK_RELAX)
-> > > > > +		mtu += VLAN_HLEN;      
-> > > > 
-> > > > I'm trying to think about the use case where this might be used?
-> > > > Compared to just adjusting MTU in BPF program side as needed for
-> > > > packet encapsulation/headers/etc.    
-> > > 
-> > > As I wrote above, this were added because the kernels own forwarding
-> > > have this relaxation in it's checks (in is_skb_forwardable()).  I even
-> > > tried to dig through the history, introduced in [1] and copy-pasted
-> > > in[2].  And this seems to be a workaround, that have become standard,
-> > > that still have practical implications.
-> > > 
-> > > My practical experiments showed, that e.g. ixgbe driver with MTU=1500
-> > > (L3-size) will allow and fully send packets with 1504 (L3-size). But
-> > > i40e will not, and drops the packet in hardware/firmware step.  So,
-> > > what is the correct action, strict or relaxed?
-> > > 
-> > > My own conclusion is that we should inverse the flag.  Meaning to
-> > > default add this VLAN_HLEN (4 bytes) relaxation, and have a flag to do
-> > > more strict check,  e.g. BPF_MTU_CHK_STRICT. As for historical reasons
-> > > we must act like kernels version of MTU check. Unless you object, I will
-> > > do this in V6.    
-> > 
-> > I'm fine with it either way as long as its documented in the helper
-> > description so I have a chance of remembering this discussion in 6 months.
-> > But, if you make it default won't this break for XDP cases? I assume the
-> > XDP use case doesn't include the VLAN 4-bytes. Would you need to prevent
-> > the flag from being used from XDP?  
+> How can that happen? check_reg_arg() in check_return_code() relies on
+> having a frame available. So does cur_regs() function, also used
+> there. What am I missing?
+
+Yes, sorry, you are right.
+
+Verifier doesn't create a new frame for call to a global function
+and frames are freed only for nested function calls. The frame[0]
+with subprogno is prepared and freed in do_check_common() hence
+it should be safe for access it from check_return_code().
+
+Yes, it is simplier to move this check in check_return_code().
+
+
+
 > 
-> XDP actually do include the VLAN_HLEN 4-bytes, see xdp_ok_fwd_dev(). I
-> was so certain that you John added this code, but looking through git
-> blame it pointed back to myself.  Going 5 levels git history deep and
-> 3+ years, does seem like I move/reused some of Johns code containing
-> VLAN_HLEN in the MTU check, introduced for xdp-generic (6103aa96ec077)
-> which I acked.  Thus, I guess I cannot push this away and have to take
-> blame myself ;-)
+> >
+> >
+> > >
+> > > >
+> > > >         for (;;) {
+> > > >                 struct bpf_insn *insn;
+> > > > @@ -9530,7 +9542,7 @@ static int do_check(struct bpf_verifier_env *env)
+> > > >                                 if (err)
+> > > >                                         return err;
+> > > >
+> > > > -                               err = check_return_code(env);
+> > > > +                               err = check_return_code(env, is_subprog);
+> > > >                                 if (err)
+> > > >                                         return err;
+> > > >  process_bpf_exit:
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> > > > index 193002b14d7f..32e4348b714b 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> > > > @@ -60,6 +60,7 @@ void test_test_global_funcs(void)
+> > > >                 { "test_global_func5.o" , "expected pointer to ctx, but got PTR" },
+> > > >                 { "test_global_func6.o" , "modified ctx ptr R2" },
+> > > >                 { "test_global_func7.o" , "foo() doesn't return scalar" },
+> > > > +               { "test_global_func8.o" },
+> > > >         };
+> > > >         libbpf_print_fn_t old_print_fn = NULL;
+> > > >         int err, i, duration = 0;
+> > > > diff --git a/tools/testing/selftests/bpf/progs/test_global_func8.c b/tools/testing/selftests/bpf/progs/test_global_func8.c
+> > > > new file mode 100644
+> > > > index 000000000000..1e9a87f30b7c
+> > > > --- /dev/null
+> > > > +++ b/tools/testing/selftests/bpf/progs/test_global_func8.c
+> > > > @@ -0,0 +1,25 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > > +/* Copyright (c) 2020 Facebook */
+> > > > +#include <stddef.h>
+> > > > +#include <linux/bpf.h>
+> > > > +#include <bpf/bpf_helpers.h>
+> > > > +
+> > > > +__attribute__ ((noinline))
+> > >
+> > > nit: use __noinline, it's defined in bpf_helpers.h
+> > >
+> > > > +int bar(struct __sk_buff *skb)
+> > > > +{
+> > > > +       return bpf_get_prandom_u32();
+> > > > +}
+> > > > +
+> > > > +static __always_inline int foo(struct __sk_buff *skb)
+> > >
+> > > foo is not essential, just inline it in test_cls below
+> > >
+> > > > +{
+> > > > +       if (!bar(skb))
+> > > > +               return 0;
+> > > > +
+> > > > +       return 1;
+> > > > +}
+> > > > +
+> > > > +SEC("cgroup_skb/ingress")
+> > > > +int test_cls(struct __sk_buff *skb)
+> > > > +{
+> > > > +       return foo(skb);
+> > > > +}
+> > >
+> > > I also wonder what happens if __noinline function has return type
+> > > void? Do you mind adding another BPF program that uses non-inline
+> > > global void function? We might need to handle that case in the
+> > > verifier explicitly.
+> >
+> > btf_prepare_func_args() guarantees that a subprogram may have only
+> > SCALAR return type.
 > 
-> I conclude that we default need to include this VLAN_HLEN, else the XDP
-> bpf_check_mtu could say deny, while it would have passed the check in
-> xdp_ok_fwd_dev().  As i40e will drop 1504 this at HW/FW level, I still
-> see a need for a BPF_MTU_CHK_STRICT flag for programs that want to
-> catch this.
-
-Disagreeing with myself... I want to keep the BPF_MTU_CHK_RELAX, and
-let MTU check use the actual MTU value (adjusted to L2 of-cause).
-
-With the argument, that because some drivers with MTU 1500 will
-actually drop frame with MTU 1504 bytes (+14 eth_hdr) frames, it is
-wrong to "approve" this MTU size in the check.  A BPF program will know
-it is playing with VLAN headers and can choose to violate the MTU check
-with 4 bytes.  While BPF programs using other types of encap headers
-will get confused that MTU check gives them 4 bytes more, which if used
-will get dropped on a subset of drivers.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> Right, I didn't know about this, thanks. We might want to lift that
+> restriction eventually.
+> 
+> >
+> > >
+> > >
+> > > > --
+> > > > 2.24.1
+> > > >
