@@ -2,121 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653042B12EF
+	by mail.lfdr.de (Postfix) with ESMTP id D56622B12F1
 	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 00:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgKLX7e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 18:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34962 "EHLO
+        id S1726133AbgKLX7h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 18:59:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKLX7e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 18:59:34 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBCAC0613D4
-        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 15:59:33 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id s30so11196164lfc.4
-        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 15:59:33 -0800 (PST)
+        with ESMTP id S1725929AbgKLX7h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 18:59:37 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74ECFC0613D4;
+        Thu, 12 Nov 2020 15:59:37 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id y7so6018599pfq.11;
+        Thu, 12 Nov 2020 15:59:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NB51xM3BxnxRj+T4GWFKGqQkGCdh1sfty5MaDk0BKUw=;
-        b=F7tRh11KDuKimmVjHebWItlcGSDD0/Be8iksXTMbQjusEcapiZ4EkkkZbE5ewTBKB9
-         +Vm7qrxXE7b0yUW58JBQeQ8EreLtCmievgWdwBr0J7/9hCsMNt2+KrdHnjYXlCREqBHk
-         DqvzdAZcVfypEtn03x+CNhCqQLVatv8X1aCqk=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JDzw04qHC3HVb+vYiy97DsY+gSywxqNYdrSxiwIHGf0=;
+        b=X7KW+XGEQY5YhB8HLrxKev6vVoziQ8KHcurF6QFEUK0QuGzkeYJ6qr46JTiJMMeuIO
+         c/DPwWFs68uN7UKltQ2rOo+en/buxNPbMUHt9hc5GWUQjMcWuS9gb63nOakDBE0NP6hx
+         7AkeiXlGaEX+rKCtteX036PsS8uuA3l1b9hZYdQPFhs7JwNpcO+VWnA6sNcW1LIa62EK
+         Y0TUNvpkzF/kofeabWlOonib68CrBP1CVU+FUP7Xc85FgoLgUEkahx9TAL87uMrMjIo4
+         2r0UGeg1z20bNOckEnIiaZ54MdNUXzjTr+7sboe00EzoSJg5WeRkL4NczHHecoYdDu3v
+         TfXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NB51xM3BxnxRj+T4GWFKGqQkGCdh1sfty5MaDk0BKUw=;
-        b=IHGvaabBh+vh/NHR0+cnZwC1rpgmw1i5tGKxW4CAS6191W318Nk45OKtq5L+0gLC/F
-         1ubWVXwRC2z7ntJ+YwoTE1zV8XH/czLp7lnHxKcK/fphbAPZxz31sPr4KtIltfafqhff
-         GdIatuanOpYHar3gy8neDVJMPVW1f5l6ZwYXQ18OQ52kd5JVd4ZuCidqeqqoMfbxj//1
-         ilJlHlZgd+gA73WnLAQJNDhQPkBzIdz4UdYzxuYl6r0gHsIN7fRb8w2yTa2p/5fTbSrJ
-         eZRm+6HzxbTez7oRLD/GHPNmavSGackmMmc1WUboNgBJzO+V8k6QS/rEQXy65BfJGQzE
-         Q6cA==
-X-Gm-Message-State: AOAM532Q2SA9BSW10ss1S0touaNGOZv8iYzfC/ZqqIn2lhguYXNCtvax
-        ukOdVLEucDqIfxABTaJR5+/PPcvTWEAPKdGhlwHh1w==
-X-Google-Smtp-Source: ABdhPJxjjUgLoSp5F/NaxeYSaIcFGjf6CMUOlMjZ1xtTbxZYQjHeJQJb2/q4V6vxbFVZzmlF8bgCp7GheYo8k7K3a4w=
-X-Received: by 2002:a05:6512:34d3:: with SMTP id w19mr710469lfr.418.1605225572038;
- Thu, 12 Nov 2020 15:59:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JDzw04qHC3HVb+vYiy97DsY+gSywxqNYdrSxiwIHGf0=;
+        b=aCIA2HU3XuV/iCCUETL39+KMLM2YSL8tgEF2+b9SAdFbihjbURDeHNXVZnzWWfIxQW
+         oRxHCL099fkds3KVZxv80BJ+Gi2ngo0WerqggrIx8DFxFAwz9VBkY97g3yXFRQi4gHIi
+         mJ8fls02sUNRFlHza4c93mF6SwDsiAyI1UaN0LVzfiy2NUkSmH7DwCgxCsklyPf0dBVY
+         +Gmrd2W/8B/XtHcXVK8v1UcG39hc3uRpBqHI4BH9GN1frTKx5QOtlrjSmU2BjMmgmgJ0
+         EAC+No7i8lv7s9WkUt1TbkM4GcdrA5XDVHyInQhT6IthYPlkTr/Ra3U4rWIwsNkKpGyU
+         7CRw==
+X-Gm-Message-State: AOAM533jOOvOvDuLU/WwzOS61vK79Tat28AYtDzY0pod9kTzVVh3faMh
+        Z/9oaAaGuHRYciF/71Rfz/o=
+X-Google-Smtp-Source: ABdhPJyWLhOzkvtZlVExW8y3GOq9GWDQYpK1fVFoetu82zrEgaIn19tqN8Tsk1udHxQzlnzflKVnUg==
+X-Received: by 2002:a17:90b:88b:: with SMTP id bj11mr246103pjb.229.1605225576954;
+        Thu, 12 Nov 2020 15:59:36 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:a370])
+        by smtp.gmail.com with ESMTPSA id k17sm8797276pji.50.2020.11.12.15.59.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Nov 2020 15:59:36 -0800 (PST)
+Date:   Thu, 12 Nov 2020 15:59:34 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Support for pointers beyond pkt_end.
+Message-ID: <20201112235934.gkydiegea4nhin3x@ast-mbp>
+References: <20201111031213.25109-1-alexei.starovoitov@gmail.com>
+ <20201111031213.25109-2-alexei.starovoitov@gmail.com>
+ <5fad89fb649af_2a612088e@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-References: <20201112200346.404864-1-kpsingh@chromium.org> <20201112200346.404864-2-kpsingh@chromium.org>
- <5d22e146-0dd1-2054-c718-fa76f8dfa7b9@iogearbox.net>
-In-Reply-To: <5d22e146-0dd1-2054-c718-fa76f8dfa7b9@iogearbox.net>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Fri, 13 Nov 2020 00:59:21 +0100
-Message-ID: <CACYkzJ4ijbX5_k1yf6sh6rMDX72qAT9XTxVgSKhG0MfBMPYC7Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Augment the set of sleepable LSM hooks
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5fad89fb649af_2a612088e@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 11:35 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 11/12/20 9:03 PM, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > Update the set of sleepable hooks with the ones that do not trigger
-> > a warning with might_fault() when exercised with the correct kernel
-> > config options enabled, i.e.
+On Thu, Nov 12, 2020 at 11:16:11AM -0800, John Fastabend wrote:
+> Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> > 
+> > This patch adds the verifier support to recognize inlined branch conditions.
+> > The LLVM knows that the branch evaluates to the same value, but the verifier
+> > couldn't track it. Hence causing valid programs to be rejected.
+> > The potential LLVM workaround: https://reviews.llvm.org/D87428
+> > can have undesired side effects, since LLVM doesn't know that
+> > skb->data/data_end are being compared. LLVM has to introduce extra boolean
+> > variable and use inline_asm trick to force easier for the verifier assembly.
+> > 
+> > Instead teach the verifier to recognize that
+> > r1 = skb->data;
+> > r1 += 10;
+> > r2 = skb->data_end;
+> > if (r1 > r2) {
+> >   here r1 points beyond packet_end and
+> >   subsequent
+> >   if (r1 > r2) // always evaluates to "true".
+> > }
+> > 
+> > Tested-by: Jiri Olsa <jolsa@redhat.com>
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  include/linux/bpf_verifier.h |   2 +-
+> >  kernel/bpf/verifier.c        | 129 +++++++++++++++++++++++++++++------
+> >  2 files changed, 108 insertions(+), 23 deletions(-)
+> > 
+> 
+> Thanks, we can remove another set of inline asm logic.
 
-[...]
+Awesome! Please contribute your C examples to selftests when possible.
 
->
-> I think this is very useful info. I was wondering whether it would make sense
-> to annotate these more closely to the code so there's less chance this info
-> becomes stale? Maybe something like below, not sure ... issue is if you would
-> just place a cant_sleep() in there it might be wrong since this should just
-> document that it can be invoked from non-sleepable context but it might not
-> have to.
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+>  
+> >  	if (pred >= 0) {
+> > @@ -7517,7 +7601,8 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+> >  		 */
+> >  		if (!__is_pointer_value(false, dst_reg))
+> >  			err = mark_chain_precision(env, insn->dst_reg);
+> > -		if (BPF_SRC(insn->code) == BPF_X && !err)
+> > +		if (BPF_SRC(insn->code) == BPF_X && !err &&
+> > +		    !__is_pointer_value(false, src_reg))
+> 
+> This could have been more specific with !type_is_pkt_pointer() correct? I
+> think its fine as is though.
 
-Indeed, this is why I did not make an explicit cant_sleep() call for these hooks
-in __bpf_prog_enter (with a change in the signature to pass struct *prog).
+I actually meant to use __is_pointer_value() here for two reasons:
+1. to match dst_reg check just few lines above.
+2. mark_chain_precision() is for scalars only. If in the future
+  is_*_branch_taken() will support other kinds of pointers the more
+  precise !type_is_pkt_pointer() check would need to be modified.
+  That would be unnecessary code churn.
 
-> diff --git a/security/security.c b/security/security.c
-> index a28045dc9e7f..7899bf32cdaa 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -94,6 +94,11 @@ static __initdata bool debug;
->                          pr_info(__VA_ARGS__);                   \
->          } while (0)
->
-> +/*
-> + * Placeholder for now to document that hook implementation cannot sleep
-> + * since it could potentially be called from non-sleepable context, too.
-> + */
-> +#define hook_cant_sleep()              do { } while (0)
-
-Good idea!
-
-At the very least, we can update the comments in lsm_hooks.h
-which already mention some of the LSM hooks as being called from
-non-sleepable contexts.
-
-I will remove this comment, send a separate patch to security folks
-and respin these patches.
-
--KP
-
-> +
->   static bool __init is_enabled(struct lsm_info *lsm)
->   {
->          if (!lsm->enabled)
-> @@ -2522,6 +2527,7 @@ void security_bpf_map_free(struct bpf_map *map)
->   }
->   void security_bpf_prog_free(struct bpf_prog_aux *aux)
->   {
-> +       hook_cant_sleep();
->          call_void_hook(bpf_prog_free_security, aux);
->   }
->   #endif /* CONFIG_BPF_SYSCALL */
+Thanks for the review!
