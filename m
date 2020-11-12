@@ -2,121 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F462AFD26
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 02:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36782AFD29
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 02:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbgKLBcK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Nov 2020 20:32:10 -0500
-Received: from www62.your-server.de ([213.133.104.62]:55022 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728052AbgKLAWe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Nov 2020 19:22:34 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kd0Ni-0007ZF-Ab; Thu, 12 Nov 2020 01:22:30 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kd0Ni-000QHX-5J; Thu, 12 Nov 2020 01:22:30 +0100
-Subject: Re: [bpf PATCH 3/5] bpf, sockmap: Avoid returning unneeded EAGAIN
- when redirecting to self
-To:     John Fastabend <john.fastabend@gmail.com>, ast@kernel.org,
-        jakub@cloudflare.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <160477770483.608263.6057216691957042088.stgit@john-XPS-13-9370>
- <160477791482.608263.14389359214124051944.stgit@john-XPS-13-9370>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a49096e0-6cc7-7741-a283-27c8629da80f@iogearbox.net>
-Date:   Thu, 12 Nov 2020 01:22:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1728307AbgKLBcM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Nov 2020 20:32:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728104AbgKLAhi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Nov 2020 19:37:38 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93F0A205CB;
+        Thu, 12 Nov 2020 00:36:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1605141377;
+        bh=DOk7cRTHZcbOlKVbRDvxMzJo/3Y4kVTkoZ+PTgYoh3Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ig2W3ZFCr2btoWO85apExmU4ulkGa9Mf3rczwlg471zRVQQkqo003tOnYbVwwkgez
+         YGIsxroBwZTt9P/LqurIxs8aYv4yCGqHQj+F4oNg9RMfVu8bZvllGuWUu2q0kPylqt
+         O13PxFJqP+5jbQsMzD3PKh6uZ8+87QBF11AI7NZ8=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5A796411D1; Wed, 11 Nov 2020 21:36:15 -0300 (-03)
+Date:   Wed, 11 Nov 2020 21:36:15 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 3/3] btf_encoder: Change functions check due to broken
+ dwarf
+Message-ID: <20201112003615.GH380127@kernel.org>
+References: <20201106222512.52454-1-jolsa@kernel.org>
+ <20201106222512.52454-4-jolsa@kernel.org>
+ <CAEf4BzZqFos1N-cnyAc6nL-=fHFJYn1tf9vNUewfsmSUyK4rQQ@mail.gmail.com>
+ <20201111201929.GB619201@krava>
+ <20201111203130.GC619201@krava>
+ <CAEf4BzZ089_ECxY_tFBMUc5c-rwtD9Mw8n7anUsdgpzgoipsPg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <160477791482.608263.14389359214124051944.stgit@john-XPS-13-9370>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25985/Wed Nov 11 14:18:01 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZ089_ECxY_tFBMUc5c-rwtD9Mw8n7anUsdgpzgoipsPg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/7/20 8:38 PM, John Fastabend wrote:
-> If a socket redirects to itself and it is under memory pressure it is
-> possible to get a socket stuck so that recv() returns EAGAIN and the
-> socket can not advance for some time. This happens because when
-> redirecting a skb to the same socket we received the skb on we first
-> check if it is OK to enqueue the skb on the receiving socket by checking
-> memory limits. But, if the skb is itself the object holding the memory
-> needed to enqueue the skb we will keep retrying from kernel side
-> and always fail with EAGAIN. Then userspace will get a recv() EAGAIN
-> error if there are no skbs in the psock ingress queue. This will continue
-> until either some skbs get kfree'd causing the memory pressure to
-> reduce far enough that we can enqueue the pending packet or the
-> socket is destroyed. In some cases its possible to get a socket
-> stuck for a noticable amount of time if the socket is only receiving
-> skbs from sk_skb verdict programs. To reproduce I make the socket
-> memory limits ridiculously low so sockets are always under memory
-> pressure. More often though if under memory pressure it looks like
-> a spurious EAGAIN error on user space side causing userspace to retry
-> and typically enough has moved on the memory side that it works.
-> 
-> To fix skip memory checks and skb_orphan if receiving on the same
-> sock as already assigned.
-> 
-> For SK_PASS cases this is easy, its always the same socket so we
-> can just omit the orphan/set_owner pair.
-> 
-> For backlog cases we need to check skb->sk and decide if the orphan
-> and set_owner pair are needed.
-> 
-> Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->   net/core/skmsg.c |   72 ++++++++++++++++++++++++++++++++++++++++--------------
->   1 file changed, 53 insertions(+), 19 deletions(-)
-> 
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index fe44280c033e..580252e532da 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -399,38 +399,38 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
->   }
->   EXPORT_SYMBOL_GPL(sk_msg_memcopy_from_iter);
->   
-> -static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
-> +static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
-> +						  struct sk_buff *skb)
->   {
-> -	struct sock *sk = psock->sk;
-> -	int copied = 0, num_sge;
->   	struct sk_msg *msg;
->   
->   	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
-> -		return -EAGAIN;
-> +		return NULL;
-> +
-> +	if (!sk_rmem_schedule(sk, skb, skb->len))
+Em Wed, Nov 11, 2020 at 12:36:55PM -0800, Andrii Nakryiko escreveu:
+> On Wed, Nov 11, 2020 at 12:31 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > On Wed, Nov 11, 2020 at 09:19:29PM +0100, Jiri Olsa wrote:
+> > > On Wed, Nov 11, 2020 at 11:59:20AM -0800, Andrii Nakryiko wrote:
+> > > SNIP
 
-Isn't accounting always truesize based, thus we should fix & convert all skb->len
-to skb->truesize ?
+> > > > > +       if (!fl->init_bpf_begin &&
+> > > > > +           !strcmp("__init_bpf_preserve_type_begin", elf_sym__name(sym, btfe->symtab)))
+> > > > > +               fl->init_bpf_begin = sym->st_value;
+> > > > > +
+> > > > > +       if (!fl->init_bpf_end &&
+> > > > > +           !strcmp("__init_bpf_preserve_type_end", elf_sym__name(sym, btfe->symtab)))
+> > > > > +               fl->init_bpf_end = sym->st_value;
+> > > > > +}
+> > > > > +
+> > > > > +static int has_all_symbols(struct funcs_layout *fl)
+> > > > > +{
+> > > > > +       return fl->mcount_start && fl->mcount_stop &&
+> > > > > +              fl->init_begin && fl->init_end &&
+> > > > > +              fl->init_bpf_begin && fl->init_bpf_end;
 
-> +		return NULL;
->   
->   	msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
->   	if (unlikely(!msg))
-> -		return -EAGAIN;
-> -	if (!sk_rmem_schedule(sk, skb, skb->len)) {
-> -		kfree(msg);
-> -		return -EAGAIN;
-> -	}
-> +		return NULL;
->   
->   	sk_msg_init(msg);
-> -	num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
-> +	return msg;
-> +}
-> +
+> > > > See below for what seems to be the root cause for the immediate problem.
+
+> > > > But me, Alexei and Daniel had a discussion offline, and we concluded
+> > > > that this special bpf_preserve_init section is probably not the right
+> > > > approach overall. We should roll back the bpf patch and instead adjust
+> > > > pahole's approach. I think we should just drop the __init check and
+> > > > include all the __init functions into BTF. There could be cases where
+> > > > we'd need to attach BPF programs to __init functions (e.g., bpf_lsm
+> > > > security cases), so having BTFs for those FUNCs are necessary as well.
+> > > > Ftrace currently disallows that, but it's only because no user-space
+> > > > application has a way to attach probes early enough. This might change
+> > > > in the future, so there is no need to invent special mechanisms now
+> > > > for bpf_iter function preservation. Let's just include all __init
+> > > > functions in BTF. Can you please do that change and check how much
+> > > > more functions we get in BTF? Thanks!
+
+> > > sure, not problem to keep all init functions, will give you the count
+
+> > with pahole change below (on top of current master) and kernel
+> > without the special init section, I'm getting over ~2000 functions
+> > more on my .config:
+
+> >   $ bpftool btf dump file ./vmlinux | grep 'FUNC ' | wc -l
+> >   41505
+> >   $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep 'FUNC ' | wc -l
+> >   39256
+
+> That's a very small percentage increase, let's just do this.
+
+Agreed, if that is the only difference, no point in complicating things
+as before, we end up with unforeseen trouble as we noticed.
+
+- Arnaldo
