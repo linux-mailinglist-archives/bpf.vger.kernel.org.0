@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BC82B0CF4
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 19:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0322B0CFC
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 19:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726295AbgKLSsz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 13:48:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        id S1726295AbgKLSu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 13:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgKLSsy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 13:48:54 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51239C0613D1;
-        Thu, 12 Nov 2020 10:48:54 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id 2so6292518ybc.12;
-        Thu, 12 Nov 2020 10:48:54 -0800 (PST)
+        with ESMTP id S1726142AbgKLSu6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 13:50:58 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D73AC0613D1;
+        Thu, 12 Nov 2020 10:50:58 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id i186so6316312ybc.11;
+        Thu, 12 Nov 2020 10:50:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=a/LSpoK4pF1N1+aP0XtCo5Ki3nIgahuAJyPwcfQ2DDA=;
-        b=iWylZhtM3mLGYX+u/virHX72znt6VYnfX/oCsvxHtoOQGJINCcIuCOQ+cCoRP3ltzf
-         2cfkZ5tNIBBlLbfzrHv1RXVw6Mz/4D80AB4fTS57XM49A3brQQKVgvXeZRBEm7OczaaR
-         xdZ3ZmbgPn4nE2fkt7gXMmzRh2cBG/Hw0LVwumAsX2KxkTmYNQx1pXIbcvk8EJr2OX8S
-         us3kd+r5fajUcYuwq3p1189uhj65JlRZgv8mU+yzbUJpEbWIRyW0dncw9FX2n4saJhT4
-         9y57c0znVy9+uxBmgjaVy5l6gUsw6wJE55bMp9XCHgU4Ia2A81+0hUq6w81rRkXJ4IFV
-         kTTQ==
+        bh=X0S65KT2c+xPJ4n4jr5bcH8ZJLRH/T0z9HPhKC9k6xI=;
+        b=ufvAegeDUPkSEKS+F8PBsGkNrIblvHib7l3dzAn8wF0iL/I+H9pFvRD2RHnSfuqk1W
+         0JfC8fui10FM1U79fP5pt9UQ594BQx6MEw1MQV9mssLb+e0OZefwnXV1Pr0m+35t+OC8
+         3i97A61C2otdX4KkE34teTGOsaT+t8Sy4aVY/01jVgKBhPY7WL7mZuCtjL1pM+MpXHDY
+         9XikjLtAJz5QwCdRZtAGNM9TYRAWiP7010Ir0k0dY2Z4sHPxXW8b9+Fr73tQCmmJTVej
+         rBam/Ru7a2LwAAcmXpUZwrd5vyY/HRqLjp/uoRLJmZ5hCHXB49QD/Wfx+ewhb37pgZYp
+         5rqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=a/LSpoK4pF1N1+aP0XtCo5Ki3nIgahuAJyPwcfQ2DDA=;
-        b=EQAnJ90k9dsbQ0nhA98o96D3Hzp3EKeni8HOGVxLqycLqSl8nck20BKia+Rxm44YYR
-         WiSwIt9Y8cnzxGc63VDYbTJTh8eyA+abvDsGtwtHteFCa7QJj+JRPZwoQYmNwBBEHwq7
-         PLD2ZYbbWPMkaKSxp04WwIC5NeNMLg8MSiqCzjj/8ftiMy6XLSrzY2Zlo6tDhsYX5kHJ
-         WO70394PmLQJviIV39OKsRB8FgLDMFMEAYzaUUenGXeDvdvx6JJCjeYT5gc5hpvX5jMC
-         pfofiFGrlqNRTGOKsCaT/BOiyiBDk/HGrSKEEb5YcBUQFi8nwPD057G0qrUCUviCJDMi
-         ZGWQ==
-X-Gm-Message-State: AOAM531x4FeK0paDCM4jSZH/AopfjPTetRXU+u8su7aAQb2vBrb5JLhZ
-        cgyNz+NIXg1Zgq+zORmnOBYt5sd/rcVbkde+F50=
-X-Google-Smtp-Source: ABdhPJy2gsbOngrUjH8vGxp5DtVXTWhELUQDt9v8jenfp68RdrujtAPy98vpBLuCOtIH09mEO0fQrQ+wOy/OS7n1Ssg=
-X-Received: by 2002:a25:7717:: with SMTP id s23mr1121427ybc.459.1605206933429;
- Thu, 12 Nov 2020 10:48:53 -0800 (PST)
+        bh=X0S65KT2c+xPJ4n4jr5bcH8ZJLRH/T0z9HPhKC9k6xI=;
+        b=ITCYF+JJg21Xi133i2o7GVH2N5YOk7OgqIjxTBEuBYIOu6eqNf1a0d1dqw158lVYYP
+         vtr/TFjiY2OyoW98mSJ7qTbBWSW611Pyk53x2+QpHvx287CucfN3Ch9r2jrXMDrqBm4/
+         nZCian4BC0CcDkyofRyNns3lwc9j8avfkp3ewoSuX8VgQhzG0wGettXxylw90u9gnqTm
+         YMYD3P7pRnypfjALk9Dhlu4THdcvV9M1Z0ALnFiiMsqGiQa8ZJfHWT2vKaBSDAMVAVZX
+         GqfpD4NX03TwubzsyHcb0burFBJSVYyMZxhzncqh91I2PSnsRESsqycPjTQuRdH7HssE
+         HC1g==
+X-Gm-Message-State: AOAM530ZJPFabKt2HXynoNHnQ/rY3ICYwk8Tr0gTZJxOKH6pxcFOXwco
+        vQ9nro0+RyXfqblr9gAudjxCTHP60zCCLnR2+us=
+X-Google-Smtp-Source: ABdhPJyIJBDYl270dQzivO4zEZLBYFHT7gqgEKVnshufQjGl+cIRPVm447eFI5mrucQ6uoMuEGDp6hCSg6/UWcvs2Fs=
+X-Received: by 2002:a25:3d7:: with SMTP id 206mr1323254ybd.27.1605207057473;
+ Thu, 12 Nov 2020 10:50:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201112171907.373433-1-kpsingh@chromium.org>
-In-Reply-To: <20201112171907.373433-1-kpsingh@chromium.org>
+References: <20201112171907.373433-1-kpsingh@chromium.org> <20201112171907.373433-2-kpsingh@chromium.org>
+In-Reply-To: <20201112171907.373433-2-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Nov 2020 10:48:42 -0800
-Message-ID: <CAEf4BzZNg98qBmddzmw_HnzhqKJSJxEvAkfcFjz9hB8STaxvfw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Augment the set of sleepable LSM hooks
+Date:   Thu, 12 Nov 2020 10:50:46 -0800
+Message-ID: <CAEf4Bzb4sxFQQROP+4oqttUuWowBJWoQywYQJ2RbvLm-ej6vQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Expose bpf_d_path helper to sleepable
+ LSM hooks
 To:     KP Singh <kpsingh@chromium.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -68,126 +69,50 @@ On Thu, Nov 12, 2020 at 9:20 AM KP Singh <kpsingh@chromium.org> wrote:
 >
 > From: KP Singh <kpsingh@google.com>
 >
-> Update the set of sleepable hooks with the ones that do not trigger
-> a warning with might_fault() when exercised with the correct kernel
-> config options enabled, i.e.
+> Sleepable hooks are never called from an NMI/interrupt context, so it is
+> safe to use the bpf_d_path helper in LSM programs attaching to these
+> hooks.
 >
->         DEBUG_ATOMIC_SLEEP=y
->         LOCKDEP=y
->         PROVE_LOCKING=y
->
-> This means that a sleepable LSM eBPF prorgam can be attached to these
-
-typo: program
-
-> LSM hooks. A new helper method bpf_lsm_is_sleepable_hook is added and
-> the set is maintained locally in bpf_lsm.c
->
-> A comment is added about the list of LSM hooks that have been observed
-> to be called from softirqs, atomic contexts, or the ones that can
-> trigger pagefaults and thus should not be added to this list.
+> The helper is not restricted to sleepable programs and merely uses the
+> list of sleeable hooks as the initial subset of LSM hooks where it can
+> be used.
 >
 > Signed-off-by: KP Singh <kpsingh@google.com>
 > ---
->  include/linux/bpf_lsm.h |   7 +++
->  kernel/bpf/bpf_lsm.c    | 120 ++++++++++++++++++++++++++++++++++++++++
->  kernel/bpf/verifier.c   |  16 +-----
->  3 files changed, 128 insertions(+), 15 deletions(-)
+
+LGTM.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+
+>  kernel/trace/bpf_trace.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> index 73226181b744..0d1c33ace398 100644
-> --- a/include/linux/bpf_lsm.h
-> +++ b/include/linux/bpf_lsm.h
-> @@ -27,6 +27,8 @@ extern struct lsm_blob_sizes bpf_lsm_blob_sizes;
->  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
->                         const struct bpf_prog *prog);
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index e4515b0f62a8..eab1af02c90d 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/syscalls.h>
+>  #include <linux/error-injection.h>
+>  #include <linux/btf_ids.h>
+> +#include <linux/bpf_lsm.h>
 >
-> +bool bpf_lsm_is_sleepable_hook(u32 btf_id);
-> +
->  static inline struct bpf_storage_blob *bpf_inode(
->         const struct inode *inode)
+>  #include <uapi/linux/bpf.h>
+>  #include <uapi/linux/btf.h>
+> @@ -1178,7 +1179,11 @@ BTF_SET_END(btf_allowlist_d_path)
+>
+>  static bool bpf_d_path_allowed(const struct bpf_prog *prog)
 >  {
-> @@ -54,6 +56,11 @@ void bpf_task_storage_free(struct task_struct *task);
->
->  #else /* !CONFIG_BPF_LSM */
->
-> +static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
-> +{
-> +       return false;
-> +}
+> -       return btf_id_set_contains(&btf_allowlist_d_path, prog->aux->attach_btf_id);
+> +       if (prog->type == BPF_PROG_TYPE_LSM)
+> +               return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
 > +
->  static inline int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
->                                       const struct bpf_prog *prog)
->  {
-> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> index e92c51bebb47..3a6e927485c2 100644
-> --- a/kernel/bpf/bpf_lsm.c
-> +++ b/kernel/bpf/bpf_lsm.c
-> @@ -13,6 +13,7 @@
->  #include <linux/bpf_verifier.h>
->  #include <net/bpf_sk_storage.h>
->  #include <linux/bpf_local_storage.h>
-> +#include <linux/btf_ids.h>
->
->  /* For every LSM hook that allows attachment of BPF programs, declare a nop
->   * function where a BPF program can be attached.
-> @@ -72,6 +73,125 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->         }
+> +       return btf_id_set_contains(&btf_allowlist_d_path,
+> +                                  prog->aux->attach_btf_id);
 >  }
 >
-> +/* The set of hooks which are called without pagefaults disabled and are allowed
-> + * to "sleep and thus can be used for sleeable BPF programs.
-
-typo: "sleep" (both quotes) or no quotes at all?
-
-> + *
-> + * There are some hooks which have been observed to be called from a
-> + * non-sleepable context and should not be added to this set:
-> + *
-> + *  bpf_lsm_bpf_prog_free_security
-> + *  bpf_lsm_capable
-> + *  bpf_lsm_cred_free
-> + *  bpf_lsm_d_instantiate
-> + *  bpf_lsm_file_alloc_security
-> + *  bpf_lsm_file_mprotect
-> + *  bpf_lsm_file_send_sigiotask
-> + *  bpf_lsm_inet_conn_request
-> + *  bpf_lsm_inet_csk_clone
-> + *  bpf_lsm_inode_alloc_security
-> + *  bpf_lsm_inode_follow_link
-> + *  bpf_lsm_inode_permission
-> + *  bpf_lsm_key_permission
-> + *  bpf_lsm_locked_down
-> + *  bpf_lsm_mmap_addr
-> + *  bpf_lsm_perf_event_read
-> + *  bpf_lsm_ptrace_access_check
-> + *  bpf_lsm_req_classify_flow
-> + *  bpf_lsm_sb_free_security
-> + *  bpf_lsm_sk_alloc_security
-> + *  bpf_lsm_sk_clone_security
-> + *  bpf_lsm_sk_free_security
-> + *  bpf_lsm_sk_getsecid
-> + *  bpf_lsm_socket_sock_rcv_skb
-> + *  bpf_lsm_sock_graft
-> + *  bpf_lsm_task_free
-> + *  bpf_lsm_task_getioprio
-> + *  bpf_lsm_task_getscheduler
-> + *  bpf_lsm_task_kill
-> + *  bpf_lsm_task_setioprio
-> + *  bpf_lsm_task_setnice
-> + *  bpf_lsm_task_setpgid
-> + *  bpf_lsm_task_setrlimit
-> + *  bpf_lsm_unix_may_send
-> + *  bpf_lsm_unix_stream_connect
-> + *  bpf_lsm_vm_enough_memory
-> + */
-> +BTF_SET_START(sleepable_lsm_hooks)BTF_ID(func, bpf_lsm_bpf)
-
-something is off here
-
-> +BTF_ID(func, bpf_lsm_bpf_map)
-> +BTF_ID(func, bpf_lsm_bpf_map_alloc_security)
-> +BTF_ID(func, bpf_lsm_bpf_map_free_security)
-> +BTF_ID(func, bpf_lsm_bpf_prog)
-
-[...]
+>  BTF_ID_LIST_SINGLE(bpf_d_path_btf_ids, struct, path)
+> --
+> 2.29.2.222.g5d2a92d10f8-goog
+>
