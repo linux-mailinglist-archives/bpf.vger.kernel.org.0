@@ -2,163 +2,265 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64CB2B10C4
-	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 22:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014C42B112E
+	for <lists+bpf@lfdr.de>; Thu, 12 Nov 2020 23:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbgKLV6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 16:58:12 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9618 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727043AbgKLV6M (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 16:58:12 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACLeTiZ032665;
-        Thu, 12 Nov 2020 13:57:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=c+E1JedCwp7N9WoJn/4EwT0c+ZK6cM9euIzgddcDWBU=;
- b=GcrBqNfNG6tbQ0wq9zVYc3RXJuX01wnigc6+eIpNphfNM7/nR3ESR5jhh2tC2VbWnnon
- pYsSMseEf1fQaPA88kPO3WD9pFmTZgGfPuk6qXdKMUKoAWtPjZOy+tVC061a0VU4fgfa
- 2TXozrz2kjIttUiUP8saaxdrVC7mMV5WCa0= 
+        id S1727459AbgKLWQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 17:16:06 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26122 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727214AbgKLWQF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 17:16:05 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ACMB4df002518
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 14:16:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=fGpL7GC95liGhV6v9nkNzQUubkLvGqael5gOPZw7RA0=;
+ b=cerfqOGy3icrvdCESWpDNBTdChI42KyyQbq5YnG5+wUXRUh7X8BZUoNv83df4J8z+/iC
+ QQc9nn+bNh7eoxlsjZz3PwRjTGlY3kKnhDYaRlMJa6AqU5vkyHmEitp6CvvF39GF2RKv
+ wOqUtbBOrJ0KboLwFeSs/on9T4J9zEXV4L0= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34r695ms9s-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 12 Nov 2020 13:57:53 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+        by mx0a-00082601.pphosted.com with ESMTP id 34rf8st418-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 14:16:02 -0800
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 12 Nov 2020 13:57:51 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QIFwau6DjDe/m7ZACAJYKyiljl7g+U/Tzif2WYIamgcX2doXsaLOClesjdYTV7CVyLUM1L8o8TxsibahGFwzX+XcOMEQP46BwcgvtMXzT4kixO6aXkBkgixEA9NJIRr3RiF/dIyEtyfMTLEZTS0kE5odhCViUowcVgHRVXMLzEFCzVqs1J55pENdqP+X2elguideuSZO7Pmvy3ZG2PamXUF3de2+dwP+avqIwW6tn2FAwpwtfM+wObADDB06uQ3fqHz8255JFCoosQznshg1BGxXWYKLErvqxkVIhYXshJCnTtk+BMK/W7JuMX1wFZpOG0LNLxmwLJIJnRDY4/X9lA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c+E1JedCwp7N9WoJn/4EwT0c+ZK6cM9euIzgddcDWBU=;
- b=bMcA5LmpaVdy7uZLkHwoSzZq+pw9Ta14U5L1BlBTsq8xNbiA4VQoZC2OmStaPRULTFeqYoZlWKRXyFtthBmP9EzLt3G4+i6k3zx87NJ1JOCoWqT1Aco0yQzB6s8w3Mk5cljEhxHoP4GG+qmUNqDwHOODSPuqPKSJe907GgN43F6mEeyOrM23lC4Bax2Lr8AxrTTT3s0IaFqunwg6YSWDJ8VDcb9+F7ddCUKpm3CUWsdbi4X6oMrn1BDZlIKRqv/iun5XvBEGH5omJMgPBIvX2Vvgto5GWvf5QQwDe2GK5zA04K2JeAxXDH9/JVOz1/sfxL7EpwoF/dtB5LIeTAZ10g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c+E1JedCwp7N9WoJn/4EwT0c+ZK6cM9euIzgddcDWBU=;
- b=aEdEm58h6f3NSDSxQr4SIlNa1+qefpl6W7szFZK0nUNY6IMcZfhB3rhmTu9nDctqb1e9TNawdkKbqJKI5rVuRauNINImzB7IA514UnjhcB5xP8OIDc3Ta2RvrF4rFbH6b7oEtEnWHtQf/EDqbRhxmOFPZ8NIzrutBwUkUIJjzKw=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2773.namprd15.prod.outlook.com (2603:10b6:a03:150::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Thu, 12 Nov
- 2020 21:57:50 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3541.025; Thu, 12 Nov 2020
- 21:57:50 +0000
-Date:   Thu, 12 Nov 2020 13:57:42 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Florent Revest <revest@chromium.org>
-CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <yhs@fb.com>, <andrii@kernel.org>, <kpsingh@chromium.org>,
-        <jackmanb@chromium.org>, <linux-kernel@vger.kernel.org>,
-        Florent Revest <revest@google.com>
-Subject: Re: [PATCH] bpf: Expose bpf_sk_storage_* to iterator programs
-Message-ID: <20201112215742.mzznj7py3fmnl5ia@kafai-mbp>
-References: <20201112200914.2726327-1-revest@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201112200914.2726327-1-revest@chromium.org>
-X-Originating-IP: [2620:10d:c090:400::5:b515]
-X-ClientProxiedBy: MWHPR13CA0005.namprd13.prod.outlook.com
- (2603:10b6:300:16::15) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:b515) by MWHPR13CA0005.namprd13.prod.outlook.com (2603:10b6:300:16::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.21 via Frontend Transport; Thu, 12 Nov 2020 21:57:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fc3298fd-ee56-4f3e-7b4f-08d88755ff99
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2773:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB27730F5FA6EDB74DDDE07F78D5E70@BYAPR15MB2773.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UNOHBi58c5Hdyu2TD6kualrUFDinAx/F8qSxa1b700tmL1JE/PnP+gk4xk8Th5v925uYF89aer/ow3cfCYhJ4IHftSJlUHriI/LpG3N4i6I6q3jmra+emHT+ISDZQYKudnGxMjjqXybSFyjl/cLzX6kI2BdNc7zzTFxsK3SLumX/L2bY4tTSOfCzqB4jxHRRqHeqXGGOG9nGwK3wsvzfiyfrUHkDJ1GvojTMfpZXLKYMyQX3q3mO8Aqld5mTXn0bTehcl2oL0DagSaf8R1FMst6SIF+hAVBIzMw1WqoS6JjUZQKzjUFzkMwIBDs9TRdBpTkeDRc5kN1D8RCV/F6/bJawTTNyScely4y4QN3fJyQUEJFPRTDwkdxKkNNCJ06d8b2IrE4LXuvEV0CyItE2WA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(39860400002)(366004)(136003)(66476007)(5660300002)(66556008)(16526019)(52116002)(33716001)(316002)(186003)(966005)(8676002)(55016002)(6496006)(66946007)(2906002)(6916009)(478600001)(6666004)(83380400001)(86362001)(4326008)(9686003)(8936002)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: IIkYqmZWiVL3DvVCQa54sdHRtCTQjTuL5YHvC4/hTgiAgAxmGqKaFuNMnSsWZ9qvV4vO/tH5e5dj2wyRr+V+3PacK/G4HMYVzY+ZbwowP6aZleSTiZsxLmdIYoN4lVDqboHii/gnrzrsO4gu199hQvONXkdywo4krDFz5TtJKj8v+wY1vtD0SAV/47skUitIdkeI6baQMrblGaz1km8Hcnbd1vlhjQ0E3DyPo6ahqA4Z0rKe9tneN3QoOEfrvfzAqi3W5YtOHDC3AyMd/k142MpoBytOrMGfQbp8TA7Q00oy+vRQkalOWaPfKtT6rA0mqzArZ/Whj6f5ZPtFYchckbXWw1ixHkioRjxKOPLKBXz7pUIZ2dTLsV2URdCcqg8qKqrdHdJU2IlYThWAdrJccpVvdEdO6JTdfWAmxE5MKaFXTVNe9Ya+PX7ofYcNFhTTWaQQtxFkxKtXuBvEym4mKIqfqm1Z1q3dEq8SvR+Am4aZuuQjwdvjw/Iistx4MzP8DRaiUM8tbzGI4ZYHCKU+fgWN2ZK5RQEueD7mn8aX3MIrmQa1y7bZbiny2+hB9JZByaUMWcX29gFIbSlItVsUy0DsF7gC0Tz9wNYMjX7tSG8nOOyNzi9J8kQqhPygcGopZwBwGC1lipMC6Kn/i9Qp8JXBetmh4BeQk4kQ6GVxZVfv8wV2HxFZR+EHSpcUcd+FWh3e+h9addr6kBtspNdgw6YottKM38SvQVSM2J6ghRk9VcBY8B1jOXr0sJttR2EWHp7/+jdc3dGAnYIws0t1guJ9orB0FtJw1QGSZHeyQUbJCNAbUR5UtSBetaT8yupU8Q/kcZZxi5+xNgIfi2FUJvl+Zuc3fjwoQyL2GeMecoh/f9Qt2kHViukIyF5P5g0L9urEEniORSokcfEfYhzgR1LZakK+15TeP9ysh15EQi0=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc3298fd-ee56-4f3e-7b4f-08d88755ff99
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Nov 2020 21:57:50.7131
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: W3EMn0ky8fD2A145U60KXjlWtiYLmtPzdF3oh+2ZyOmljWO9lY4hZXFw7cAEHjmX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2773
-X-OriginatorOrg: fb.com
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+ 15.1.1979.3; Thu, 12 Nov 2020 14:16:01 -0800
+Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
+        id B7808A7D1C8; Thu, 12 Nov 2020 14:16:00 -0800 (PST)
+From:   Roman Gushchin <guro@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH bpf-next v5 00/34] bpf: switch to memcg-based memory accounting
+Date:   Thu, 12 Nov 2020 14:15:09 -0800
+Message-ID: <20201112221543.3621014-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-12_13:2020-11-12,2020-11-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=999 malwarescore=0
- adultscore=0 clxscore=1011 bulkscore=0 impostorscore=0 suspectscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011120125
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
+ clxscore=1015 priorityscore=1501 mlxlogscore=999 adultscore=0
+ impostorscore=0 suspectscore=38 phishscore=0 lowpriorityscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011120126
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 12, 2020 at 09:09:14PM +0100, Florent Revest wrote:
-> From: Florent Revest <revest@google.com>
-> 
-> Iterators are currently used to expose kernel information to userspace
-> over fast procfs-like files but iterators could also be used to
-> initialize local storage. For example, the task_file iterator could be
-> used to store associations between processes and sockets.
-> 
-> This exposes the socket local storage helpers to all iterators. Martin
-> Kafai checked that this was safe to call these helpers from the
-> sk_storage_map iterators.
-> 
-> Signed-off-by: Florent Revest <revest@google.com>
-> ---
->  kernel/trace/bpf_trace.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index e4515b0f62a8..3530120fa280 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -17,6 +17,8 @@
->  #include <linux/error-injection.h>
->  #include <linux/btf_ids.h>
->  
-> +#include <net/bpf_sk_storage.h>
-> +
->  #include <uapi/linux/bpf.h>
->  #include <uapi/linux/btf.h>
->  
-> @@ -1750,6 +1752,14 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  		       NULL;
->  	case BPF_FUNC_d_path:
->  		return &bpf_d_path_proto;
-> +	case BPF_FUNC_sk_storage_get:
-> +		return prog->expected_attach_type == BPF_TRACE_ITER ?
-> +		       &bpf_sk_storage_get_proto :
-> +		       NULL;
-> +	case BPF_FUNC_sk_storage_delete:
-> +		return prog->expected_attach_type == BPF_TRACE_ITER ?
-> +		       &bpf_sk_storage_delete_proto :
-> +		       NULL;
-Test(s) is needed.  e.g. iterating a bpf_sk_storage_map and also
-calling bpf_sk_storage_get/delete.
+Currently bpf is using the memlock rlimit for the memory accounting.
+This approach has its downsides and over time has created a significant
+amount of problems:
 
-I would expect to see another test/example
-showing how it works end-to-end to solve the problem you have in hand.
-This patch probably belongs to a longer series.
+1) The limit is per-user, but because most bpf operations are performed
+   as root, the limit has a little value.
 
-BTW, I am also enabling bpf_sk_storage_(get|delete) for FENTRY/FEXIT/RAW_TP
-but I think the conflict should be manageable.
-https://patchwork.ozlabs.org/project/netdev/patch/20201112211313.2587383-1-kafai@fb.com/
+2) It's hard to come up with a specific maximum value. Especially because
+   the counter is shared with non-bpf users (e.g. memlock() users).
+   Any specific value is either too low and creates false failures
+   or too high and useless.
+
+3) Charging is not connected to the actual memory allocation. Bpf code
+   should manually calculate the estimated cost and precharge the counter=
+,
+   and then take care of uncharging, including all fail paths.
+   It adds to the code complexity and makes it easy to leak a charge.
+
+4) There is no simple way of getting the current value of the counter.
+   We've used drgn for it, but it's far from being convenient.
+
+5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+   a function to "explain" this case for users.
+
+In order to overcome these problems let's switch to the memcg-based
+memory accounting of bpf objects. With the recent addition of the percpu
+memory accounting, now it's possible to provide a comprehensive accountin=
+g
+of the memory used by bpf programs and maps.
+
+This approach has the following advantages:
+1) The limit is per-cgroup and hierarchical. It's way more flexible and a=
+llows
+   a better control over memory usage by different workloads. Of course, =
+it
+   requires enabled cgroups and kernel memory accounting and properly con=
+figured
+   cgroup tree, but it's a default configuration for a modern Linux syste=
+m.
+
+2) The actual memory consumption is taken into account. It happens automa=
+tically
+   on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is=
+ also
+   performed automatically on releasing the memory. So the code on the bp=
+f side
+   becomes simpler and safer.
+
+3) There is a simple way to get the current value and statistics.
+
+In general, if a process performs a bpf operation (e.g. creates or update=
+s
+a map), it's memory cgroup is charged. However map updates performed from
+an interrupt context are charged to the memory cgroup which contained
+the process, which created the map.
+
+Providing a 1:1 replacement for the rlimit-based memory accounting is
+a non-goal of this patchset. Users and memory cgroups are completely
+orthogonal, so it's not possible even in theory.
+Memcg-based memory accounting requires a properly configured cgroup tree
+to be actually useful. However, it's the way how the memory is managed
+on a modern Linux system.
+
+
+The patchset consists of the following parts:
+1) 4 mm patches, which are already in the mm tree, but are required
+   to avoid a regression (otherwise vmallocs cannot be mapped to userspac=
+e).
+2) memcg-based accounting for various bpf objects: progs and maps
+3) removal of the rlimit-based accounting
+4) removal of rlimit adjustments in userspace samples
+
+First 4 patches are not supposed to be merged via the bpf tree. I'm inclu=
+ding
+them to make sure bpf tests will pass.
+
+v5:
+  - rebased to the latest version of the remote charging API
+  - implemented kmem accounting from an interrupt context, by Shakeel
+  - rebased to latest changes in mm allowed to map vmallocs to userspace
+  - fixed a build issue in kselftests, by Alexei
+  - fixed a use-after-free bug in bpf_map_free_deferred()
+  - added bpf line info coverage, by Shakeel
+  - split bpf map charging preparations into a separate patch
+
+v4:
+  - covered allocations made from an interrupt context, by Daniel
+  - added some clarifications to the cover letter
+
+v3:
+  - droped the userspace part for further discussions/refinements,
+    by Andrii and Song
+
+v2:
+  - fixed build issue, caused by the remaining rlimit-based accounting
+    for sockhash maps
+
+
+Roman Gushchin (34):
+  mm: memcontrol: use helpers to read page's memcg data
+  mm: memcontrol/slab: use helpers to access slab page's memcg_data
+  mm: introduce page memcg flags
+  mm: convert page kmemcg type to a page memcg flag
+  bpf: memcg-based memory accounting for bpf progs
+  bpf: prepare for memcg-based memory accounting for bpf maps
+  bpf: memcg-based memory accounting for bpf maps
+  bpf: refine memcg-based memory accounting for arraymap maps
+  bpf: refine memcg-based memory accounting for cpumap maps
+  bpf: memcg-based memory accounting for cgroup storage maps
+  bpf: refine memcg-based memory accounting for devmap maps
+  bpf: refine memcg-based memory accounting for hashtab maps
+  bpf: memcg-based memory accounting for lpm_trie maps
+  bpf: memcg-based memory accounting for bpf ringbuffer
+  bpf: memcg-based memory accounting for bpf local storage maps
+  bpf: refine memcg-based memory accounting for sockmap and sockhash
+    maps
+  bpf: refine memcg-based memory accounting for xskmap maps
+  bpf: eliminate rlimit-based memory accounting for arraymap maps
+  bpf: eliminate rlimit-based memory accounting for bpf_struct_ops maps
+  bpf: eliminate rlimit-based memory accounting for cpumap maps
+  bpf: eliminate rlimit-based memory accounting for cgroup storage maps
+  bpf: eliminate rlimit-based memory accounting for devmap maps
+  bpf: eliminate rlimit-based memory accounting for hashtab maps
+  bpf: eliminate rlimit-based memory accounting for lpm_trie maps
+  bpf: eliminate rlimit-based memory accounting for queue_stack_maps
+    maps
+  bpf: eliminate rlimit-based memory accounting for reuseport_array maps
+  bpf: eliminate rlimit-based memory accounting for bpf ringbuffer
+  bpf: eliminate rlimit-based memory accounting for sockmap and sockhash
+    maps
+  bpf: eliminate rlimit-based memory accounting for stackmap maps
+  bpf: eliminate rlimit-based memory accounting for xskmap maps
+  bpf: eliminate rlimit-based memory accounting for bpf local storage
+    maps
+  bpf: eliminate rlimit-based memory accounting infra for bpf maps
+  bpf: eliminate rlimit-based memory accounting for bpf progs
+  bpf: samples: do not touch RLIMIT_MEMLOCK
+
+ fs/buffer.c                                   |   2 +-
+ fs/iomap/buffered-io.c                        |   2 +-
+ include/linux/bpf.h                           |  27 +--
+ include/linux/memcontrol.h                    | 215 +++++++++++++++++-
+ include/linux/mm.h                            |  22 --
+ include/linux/mm_types.h                      |   5 +-
+ include/linux/page-flags.h                    |  11 +-
+ include/trace/events/writeback.h              |   2 +-
+ kernel/bpf/arraymap.c                         |  30 +--
+ kernel/bpf/bpf_local_storage.c                |  18 +-
+ kernel/bpf/bpf_struct_ops.c                   |  19 +-
+ kernel/bpf/core.c                             |  22 +-
+ kernel/bpf/cpumap.c                           |  20 +-
+ kernel/bpf/devmap.c                           |  23 +-
+ kernel/bpf/hashtab.c                          |  33 +--
+ kernel/bpf/helpers.c                          |  37 ++-
+ kernel/bpf/local_storage.c                    |  38 +---
+ kernel/bpf/lpm_trie.c                         |  17 +-
+ kernel/bpf/queue_stack_maps.c                 |  16 +-
+ kernel/bpf/reuseport_array.c                  |  12 +-
+ kernel/bpf/ringbuf.c                          |  33 +--
+ kernel/bpf/stackmap.c                         |  16 +-
+ kernel/bpf/syscall.c                          | 177 ++++----------
+ kernel/fork.c                                 |   7 +-
+ mm/debug.c                                    |   4 +-
+ mm/huge_memory.c                              |   4 +-
+ mm/memcontrol.c                               | 139 +++++------
+ mm/page_alloc.c                               |   8 +-
+ mm/page_io.c                                  |   6 +-
+ mm/slab.h                                     |  38 +---
+ mm/workingset.c                               |   2 +-
+ net/core/bpf_sk_storage.c                     |   2 +-
+ net/core/sock_map.c                           |  40 +---
+ net/xdp/xskmap.c                              |  15 +-
+ samples/bpf/map_perf_test_user.c              |   6 -
+ samples/bpf/offwaketime_user.c                |   6 -
+ samples/bpf/sockex2_user.c                    |   2 -
+ samples/bpf/sockex3_user.c                    |   2 -
+ samples/bpf/spintest_user.c                   |   6 -
+ samples/bpf/syscall_tp_user.c                 |   2 -
+ samples/bpf/task_fd_query_user.c              |   5 -
+ samples/bpf/test_lru_dist.c                   |   3 -
+ samples/bpf/test_map_in_map_user.c            |   6 -
+ samples/bpf/test_overhead_user.c              |   2 -
+ samples/bpf/trace_event_user.c                |   2 -
+ samples/bpf/tracex2_user.c                    |   6 -
+ samples/bpf/tracex3_user.c                    |   6 -
+ samples/bpf/tracex4_user.c                    |   6 -
+ samples/bpf/tracex5_user.c                    |   3 -
+ samples/bpf/tracex6_user.c                    |   3 -
+ samples/bpf/xdp1_user.c                       |   6 -
+ samples/bpf/xdp_adjust_tail_user.c            |   6 -
+ samples/bpf/xdp_monitor_user.c                |   5 -
+ samples/bpf/xdp_redirect_cpu_user.c           |   6 -
+ samples/bpf/xdp_redirect_map_user.c           |   6 -
+ samples/bpf/xdp_redirect_user.c               |   6 -
+ samples/bpf/xdp_router_ipv4_user.c            |   6 -
+ samples/bpf/xdp_rxq_info_user.c               |   6 -
+ samples/bpf/xdp_sample_pkts_user.c            |   6 -
+ samples/bpf/xdp_tx_iptunnel_user.c            |   6 -
+ samples/bpf/xdpsock_user.c                    |   7 -
+ .../selftests/bpf/progs/bpf_iter_bpf_map.c    |   2 +-
+ .../selftests/bpf/progs/map_ptr_kern.c        |   7 -
+ 63 files changed, 460 insertions(+), 743 deletions(-)
+
+--=20
+2.26.2
+
