@@ -2,114 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2342E2B2357
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 19:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEA82B235D
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 19:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgKMSIZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 13:08:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726273AbgKMSIY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 13:08:24 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B5EDC0613D1
-        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 10:08:24 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id u18so15189180lfd.9
-        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 10:08:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pmbyi1BI0q8tI1Ro2UrRWmfEfcF3PlqRU4BeSYwO1T4=;
-        b=HzaDSemThjnRC7T8nRrEMTCcXuTgeVsRwQxedVexs+AySItS/75Fj/C6FBS9pN0AnK
-         y1shSgDrHsLcD4AQfyvbVOH2ES/4qAw8LoxsjLQ8WLIfZaC4XaCaVZblBiD/g3fr7LuS
-         wi2yaRNK/lhscMht3k64fYeLrqkB55RYHOyDo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pmbyi1BI0q8tI1Ro2UrRWmfEfcF3PlqRU4BeSYwO1T4=;
-        b=C4ZG41E7p6Wo11oal8gVXDPNiO855diR3HriMwtRzWWizsdq8PzYnaQYEotRACTYVc
-         tQ5AQgTpxykx+E9V2WQnrAP1J3YfDnqGnMjhKEpsIuG4CBkAeZKi9sZ9exLA0yfZtwuv
-         TfwOrlZtXRHAfqpPK4khxbDw+zxFuHGWueQ84ibsLZ7h1u6qFuOlifVTGWDjE0ZP9p3z
-         PVNP3IivgJ7JClGIcmreeAxwoFLiTreNJDTrU46QNG1DX92kuFLM/zktCxsGGJEhq+8I
-         ljqpxKPvs7LDcIdO/Kvnfvv99CWAB4q2Ni0BtbB0dobusXt3+B9+QLvRH729u/eyUxyJ
-         wxcA==
-X-Gm-Message-State: AOAM530hM8Qewq58LDRlehcLadNVPiq7P/4LQiuSBaQpOQYUtCpdpdi1
-        2xxK0Ph0aSqfk0MuyMDfzvpTVrWAYfaK3w==
-X-Google-Smtp-Source: ABdhPJy31KCJqVl/bsiZiVIkiZcja/GhspN5jb9BrQVpp3ZqZeOz3kjGE2JBsMxm63/aP8FKHCLtPg==
-X-Received: by 2002:a19:711:: with SMTP id 17mr1233240lfh.131.1605290900083;
-        Fri, 13 Nov 2020 10:08:20 -0800 (PST)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id n28sm1646135lfh.272.2020.11.13.10.08.18
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 10:08:19 -0800 (PST)
-Received: by mail-lj1-f169.google.com with SMTP id y16so11842126ljk.1
-        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 10:08:18 -0800 (PST)
-X-Received: by 2002:a2e:a375:: with SMTP id i21mr1393175ljn.421.1605290897954;
- Fri, 13 Nov 2020 10:08:17 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605134506.git.dxu@dxuuu.xyz> <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
- <20201113170338.3uxdgb4yl55dgto5@ast-mbp>
-In-Reply-To: <20201113170338.3uxdgb4yl55dgto5@ast-mbp>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Nov 2020 10:08:02 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
-Message-ID: <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
-Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726276AbgKMSLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 13:11:17 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:34466 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbgKMSLR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Nov 2020 13:11:17 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADI5Qsm057509;
+        Fri, 13 Nov 2020 18:10:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=9orNLX1ll2a3EKw4293msaHhsYY0khsm/1CVXyi7QAQ=;
+ b=z5Ps6zwBmOair4Lh91yRIYhxbPAiihkAjknhoPHMDMSErirXw0q/+o9diyFX7juZHV8Y
+ yXaCJTDs8kGURpSKASo/8hW0hCzcd6776/BB6jvA3hKJBsNiz3hN56uW0/pUDx3fzfK7
+ XVzhtn7jkwrQiX6FY/DxfVtURRUsKa1zufkwPNGU6aYFNM0Clbu0rRnazL4DxUzBx96I
+ SwSP1hkBCd6LB1w0kYyS33vtdkL6ISbE9+Qck6cZWwUWUn29OHuUFSFnsWQrAhiyQrXN
+ LZX/kkZkBXqf8xCLaT2pus3ZKpqCur9KOPp+qwyMDFEiNn//b7Pk5n7t5T9+rFCkRz0s dA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 34p72f1taa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 13 Nov 2020 18:10:22 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0ADI5NtO055651;
+        Fri, 13 Nov 2020 18:10:21 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 34p55tgdjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 13 Nov 2020 18:10:21 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0ADIAKv6021478;
+        Fri, 13 Nov 2020 18:10:20 GMT
+Received: from localhost.uk.oracle.com (/10.175.203.107)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 13 Nov 2020 10:10:19 -0800
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        rostedt@goodmis.org, mingo@redhat.com, haoluo@google.com,
+        jolsa@kernel.org, quentin@isovalent.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [RFC bpf-next 0/3] bpf: support module BTF in btf display helpers
+Date:   Fri, 13 Nov 2020 18:10:10 +0000
+Message-Id: <1605291013-22575-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9804 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9804 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011130117
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 9:03 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> Linus,
-> I think you might have an opinion about it.
-> Please see commit log for the reason we need this fix.
+This series aims to add support to bpf_snprintf_btf() and 
+bpf_seq_printf_btf() allowing them to store string representations
+of module-specific types, as well as the kernel-specific ones
+they currently support.
 
-Why is BPF doing this?
+Patch 1 adds an additional field "const char *module" to
+"struct btf_ptr", allowing the specification of a module
+name along with a data pointer, BTF id, etc.  It is then 
+used to look up module BTF, rather than the default
+vmlinux BTF.
 
-The thing is, if you care about the data after the strncpy, you should
-be clearing it yourself.
+Patch 2 makes a small fix to libbpf to allow 
+btf__type_by_name[_kind] to work with split BTF.  Without
+this fix, type lookup of a module-specific type id will fail
+in patch 3.
 
-The kernel "strncpy_from_user()" is  *NOT* the same as "strncpy()",
-despite the name. It never has been, and it never will be. Just the
-return value being different should have given it away.
+Patch 3 is a selftest that uses veth (when built as a
+module) and a kprobe to display both a module-specific 
+and kernel-specific type; both are arguments to veth_stats_rx().
 
-In particular, "strncpy()" is documented to zero-pad the end of the
-area. strncpy_from_user() in contrast, is documented to NOT do that.
-You cannot - and must not - depend on it.
+Alan Maguire (3):
+  bpf: add module support to btf display helpers
+  libbpf: bpf__find_by_name[_kind] should use btf__get_nr_types()
+  selftests/bpf: verify module-specific types can be shown via
+    bpf_snprintf_btf
 
-If you want the zero-padding, you need to do it yourself. We're not
-slowing down strncpy_from_user() because you want it, because NOBODY
-ELSE cares, and you're depending on semantics that do not exist, and
-have never existed.
+ include/linux/btf.h                                |  8 ++
+ include/uapi/linux/bpf.h                           |  5 +-
+ kernel/bpf/btf.c                                   | 18 ++++
+ kernel/trace/bpf_trace.c                           | 42 +++++++---
+ tools/include/uapi/linux/bpf.h                     |  5 +-
+ tools/lib/bpf/btf.c                                |  4 +-
+ .../selftests/bpf/prog_tests/snprintf_btf_mod.c    | 96 ++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/btf_ptr.h        |  1 +
+ tools/testing/selftests/bpf/progs/veth_stats_rx.c  | 73 ++++++++++++++++
+ 9 files changed, 238 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c
+ create mode 100644 tools/testing/selftests/bpf/progs/veth_stats_rx.c
 
-So if you want padding, you do something like
+-- 
+1.8.3.1
 
-   long strncpy_from_user_pad(char *dst, const char __user *src, long count)
-   {
-         long res = strncpy_from_user(dst, src, count)
-         if (res >= 0)
-                memset(dst+res, 0, count-res);
-        return res;
-   }
-
-because BPF is doing things wrong as-is, and the problem is very much
-that BPF is relying on undefined data *after* the string.
-
-And again - we're not slowing down the good cases just because BPF
-depends on bad behavior.
-
-You should feel bad.
-
-                Linus
