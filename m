@@ -2,177 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4ED2B25FF
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 21:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3752B2616
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 21:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbgKMU5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 15:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35836 "EHLO
+        id S1726583AbgKMU63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 15:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgKMU5u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:57:50 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF9DC0613D1;
-        Fri, 13 Nov 2020 12:57:50 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id f27so8086113pgl.1;
-        Fri, 13 Nov 2020 12:57:50 -0800 (PST)
+        with ESMTP id S1726561AbgKMU63 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Nov 2020 15:58:29 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2164C0613D1
+        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 12:58:28 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id k2so11632167wrx.2
+        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 12:58:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=FgWxfNiEokEKcqiZexiTUyWqEBjXLDpHDhFaTerpeLM=;
-        b=L7iDid+ml1x6JuRpMAJ0opv4OYgSpDSo04+w5K3Oo9fVhIWrDEnC5jdfD6Ha2Ifnh3
-         Fr+opMUb2Z5GMu39jk14FaHiJAz+wD3sHK0Csd/GlDXLW1jU16F6wwt5evx99aFcFB71
-         nPU+ojgVOd94FZM6499zxp7ly0ICwAG0elDVt7QxpzwKkK6pk31Mm7Dst4HcI7QRNvoE
-         KWAAr7PeDCBfki3tVEH+iY1pQrmbg2TJolSUC9coXF3iauXvMzRbY5zA0YktHIOxiYdY
-         0W6zQof01Q0orY80AjOV39BwMCFUZ6SZsOtJnT5PedIc65tsDr0MfaYt6fqCpmYWW15Y
-         s3mA==
+        bh=fJQglkTPgrGpeLJvkZcI+xd5rSDqFf8jNChseOdz/6Q=;
+        b=g1++PHh1+PsNoErTpeIYT8CBTHdxgKe83UbhxNXZPlZcOazNVDvJFfUlOvIN7q8Ptr
+         GinfUf66EriUq9t81dH1XBgY2T/OiZDuuK95Y8rgzthtJYmnNhsZHOmJR4LCkKyg5rBK
+         QYXbcqX7P8zGhLOrDxis6Ke/6Y74obaAL+lCyZIukKByqWJPYBV1+aLS7KauNjxgW48a
+         nHtB4b1/8ZN3UupdgcyMSRokLi8bYm5+nF/kd08RIgCprxIn4IbBZkCm+x+yIyhZ//t9
+         +6HDZk/cTX+C24VAPWxRGHOfJYh7rvxTam2Muga+aBmUEsXZMDMtHcOpnjTveKYBI0Uk
+         nTCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=FgWxfNiEokEKcqiZexiTUyWqEBjXLDpHDhFaTerpeLM=;
-        b=JsDKKJ6/rDT1rJvEkfyerVU6f8b86sL+XW0UmpL9SKr4uUHnKXW+72r/eZDSBPOehE
-         cKYd2sW30dw53cmOnDtVqXlh7lEsXeEgxEQ6TyEqd9YBlu93jhljozzZ3d/7kue+nifp
-         jOL8o9JL5ZcJ3KOjVe7HDgIUdLNTpOXazp8XH9gTMhmdoeZpCDgBp3G721yO07q5MbHm
-         6h01mQK9DR3CyqNqMnOdl4aruyKvygjHIJiJDKcQhsEHF1Zdm21gnDlGr18+CegR0JQl
-         q/ex0SlJrsOr9NDChs194rXGGYqrxNiZuaww3N+mPn8eFRvkXzP7PYc3biGSIgq/j+Zg
-         RqNg==
-X-Gm-Message-State: AOAM533GVLNci6MFf8gmUBYWGGewq/RMCbIQ9FTrBACmXbPjNk4idyix
-        qdlY+JIDzDUybRMPxeBE2qc=
-X-Google-Smtp-Source: ABdhPJyDZ8tVJOdwlyzl0+arxSRYLknTUJFnk6OpCGx4ILbmzm4vZDubbTCPx09gjARu0PbXtA9PvQ==
-X-Received: by 2002:a17:90a:62c4:: with SMTP id k4mr4972437pjs.32.1605301069878;
-        Fri, 13 Nov 2020 12:57:49 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:b8c0])
-        by smtp.gmail.com with ESMTPSA id s6sm11205666pfh.9.2020.11.13.12.57.48
+        bh=fJQglkTPgrGpeLJvkZcI+xd5rSDqFf8jNChseOdz/6Q=;
+        b=HeUgUj6cP+NdRu2JHJiSEt0BxIxNjvVFyMVbu4VNJc8uh0dSSx935RgW5BeoX9zv+/
+         ypNjIGxgKM90T0WEP+/8dLK3jAuIFKph3zZn0pVLepMKOoWzyI4V8l5rAqCQwXa2z/lI
+         dt5hmrGZkAA9N/z/zwAUMbqTV9wr35Uee2U++2+5Ihtx2wOKNYku4XuvmK37gZuqvS0P
+         AkiiJo/RsKIRYgh4Mhueouos4Mgj/QwKClXoEscVxdQ3+qpofreCQj0Q+nOXQVz4Y+V5
+         XkPLAoecmmOrHpKSL01VrZU3FQTVDhHPweFG0YYHmKhiMvBXPB1MvNyII4pQFwZglbx5
+         oA0w==
+X-Gm-Message-State: AOAM532vnYuPSuPsJkx243KLyfE6WxWwwA/Oj584ly0y98EDAQERxbz6
+        HQj/kLPRESNuSjY7an9E4eaBxA==
+X-Google-Smtp-Source: ABdhPJwq6Hj0BXgnLkVMvi7Bu7zoMot9neY+TJC8bITGSRVgqefZuGz3L/PgrkbP5Q4mkd92utHAYQ==
+X-Received: by 2002:adf:eb07:: with SMTP id s7mr5446549wrn.320.1605301107432;
+        Fri, 13 Nov 2020 12:58:27 -0800 (PST)
+Received: from apalos.home (ppp-94-64-112-220.home.otenet.gr. [94.64.112.220])
+        by smtp.gmail.com with ESMTPSA id h62sm12337578wrh.82.2020.11.13.12.58.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 12:57:49 -0800 (PST)
-Date:   Fri, 13 Nov 2020 12:57:46 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-Message-ID: <20201113205746.htvdzudtqrw6h7oa@ast-mbp>
-References: <cover.1605134506.git.dxu@dxuuu.xyz>
- <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
- <20201113170338.3uxdgb4yl55dgto5@ast-mbp>
- <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
- <20201113191751.rwgv2gyw5dblhe3j@ast-mbp>
- <CAHk-=whpsK0s8x51rE8fUSfr4r783j09BSqXqi95uHc0WKG7ig@mail.gmail.com>
+        Fri, 13 Nov 2020 12:58:26 -0800 (PST)
+Date:   Fri, 13 Nov 2020 22:58:23 +0200
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        brouer@redhat.com, john.fastabend@gmail.com
+Subject: Re: [PATCH v6 net-nex 1/5] net: xdp: introduce bulking for xdp tx
+ return path
+Message-ID: <20201113205823.GA1267100@apalos.home>
+References: <cover.1605267335.git.lorenzo@kernel.org>
+ <e190c03eac71b20c8407ae0fc2c399eda7835f49.1605267335.git.lorenzo@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whpsK0s8x51rE8fUSfr4r783j09BSqXqi95uHc0WKG7ig@mail.gmail.com>
+In-Reply-To: <e190c03eac71b20c8407ae0fc2c399eda7835f49.1605267335.git.lorenzo@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:10:57PM -0800, Linus Torvalds wrote:
-> On Fri, Nov 13, 2020 at 11:17 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > The v4 approach preserves performance. It wasn't switching to byte_at_a_time:
+On Fri, Nov 13, 2020 at 12:48:28PM +0100, Lorenzo Bianconi wrote:
+> XDP bulk APIs introduce a defer/flush mechanism to return
+> pages belonging to the same xdp_mem_allocator object
+> (identified via the mem.id field) in bulk to optimize
+> I-cache and D-cache since xdp_return_frame is usually run
+> inside the driver NAPI tx completion loop.
+> The bulk queue size is set to 16 to be aligned to how
+> XDP_REDIRECT bulking works. The bulk is flushed when
+> it is full or when mem.id changes.
+> xdp_frame_bulk is usually stored/allocated on the function
+> call-stack to avoid locking penalties.
+> Current implementation considers only page_pool memory model.
 > 
-> That v4 looks better, but still pointless.
+> Suggested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/xdp.h | 17 +++++++++++++-
+>  net/core/xdp.c    | 59 +++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 75 insertions(+), 1 deletion(-)
 > 
-> But it might be acceptable, with that final
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 3814fb631d52..7d48b2ae217a 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -104,6 +104,18 @@ struct xdp_frame {
+>  	struct net_device *dev_rx; /* used by cpumap */
+>  };
+>  
+> +#define XDP_BULK_QUEUE_SIZE	16
+> +struct xdp_frame_bulk {
+> +	int count;
+> +	void *xa;
+> +	void *q[XDP_BULK_QUEUE_SIZE];
+> +};
+> +
+> +static __always_inline void xdp_frame_bulk_init(struct xdp_frame_bulk *bq)
+> +{
+> +	/* bq->count will be zero'ed when bq->xa gets updated */
+> +	bq->xa = NULL;
+> +}
+>  
+>  static inline struct skb_shared_info *
+>  xdp_get_shared_info_from_frame(struct xdp_frame *frame)
+> @@ -194,6 +206,9 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
+>  void xdp_return_frame(struct xdp_frame *xdpf);
+>  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf);
+>  void xdp_return_buff(struct xdp_buff *xdp);
+> +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
+> +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+> +			   struct xdp_frame_bulk *bq);
+>  
+>  /* When sending xdp_frame into the network stack, then there is no
+>   * return point callback, which is needed to release e.g. DMA-mapping
+> @@ -245,6 +260,6 @@ bool xdp_attachment_flags_ok(struct xdp_attachment_info *info,
+>  void xdp_attachment_setup(struct xdp_attachment_info *info,
+>  			  struct netdev_bpf *bpf);
+>  
+> -#define DEV_MAP_BULK_SIZE 16
+> +#define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
+>  
+>  #endif /* __LINUX_NET_XDP_H__ */
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 48aba933a5a8..bbaee7fdd44f 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -380,6 +380,65 @@ void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
+>  
+> +/* XDP bulk APIs introduce a defer/flush mechanism to return
+> + * pages belonging to the same xdp_mem_allocator object
+> + * (identified via the mem.id field) in bulk to optimize
+> + * I-cache and D-cache.
+> + * The bulk queue size is set to 16 to be aligned to how
+> + * XDP_REDIRECT bulking works. The bulk is flushed when
+> + * it is full or when mem.id changes.
+> + * xdp_frame_bulk is usually stored/allocated on the function
+> + * call-stack to avoid locking penalties.
+> + */
+> +void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq)
+> +{
+> +	struct xdp_mem_allocator *xa = bq->xa;
+> +	int i;
+> +
+> +	if (unlikely(!xa))
+> +		return;
+> +
+> +	for (i = 0; i < bq->count; i++) {
+> +		struct page *page = virt_to_head_page(bq->q[i]);
+> +
+> +		page_pool_put_full_page(xa->page_pool, page, false);
+> +	}
+> +	/* bq->xa is not cleared to save lookup, if mem.id same in next bulk */
+> +	bq->count = 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xdp_flush_frame_bulk);
+> +
+> +/* Must be called with rcu_read_lock held */
+> +void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+> +			   struct xdp_frame_bulk *bq)
+> +{
+> +	struct xdp_mem_info *mem = &xdpf->mem;
+> +	struct xdp_mem_allocator *xa;
+> +
+> +	if (mem->type != MEM_TYPE_PAGE_POOL) {
+> +		__xdp_return(xdpf->data, &xdpf->mem, false);
+> +		return;
+> +	}
+> +
+> +	xa = bq->xa;
+> +	if (unlikely(!xa)) {
+> +		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+> +		bq->count = 0;
+> +		bq->xa = xa;
+> +	}
+> +
+> +	if (bq->count == XDP_BULK_QUEUE_SIZE)
+> +		xdp_flush_frame_bulk(bq);
+> +
+> +	if (unlikely(mem->id != xa->mem.id)) {
+> +		xdp_flush_frame_bulk(bq);
+> +		bq->xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+> +	}
+> +
+> +	bq->q[bq->count++] = xdpf->data;
+> +}
+> +EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
+> +
+>  void xdp_return_buff(struct xdp_buff *xdp)
+>  {
+>  	__xdp_return(xdp->data, &xdp->rxq->mem, true);
+> -- 
+> 2.26.2
 > 
->         *out = (*out & ~mask) | (c & mask);
-> 
-> just replaced with
-> 
->         *out = c & mask;
-> 
-> which still writes past the end, but now it only writes zeroes.
-> 
-> But the only reason for that to be done is if you have exposed the
-> destination buffer to another thread before (and you zeroed it before
-> exposing it), and you want to make sure that any concurrent reader can
-> never see anything past the end of the string.
-> 
-> Again - the *only* case that could possibly matter is when you
-> pre-zeroed the buffer, because if you didn't, then a concurrent reader
-> would see random garbage *anyway*, particularly since there is no SMP
-> memory ordering imposed with the strncpy. So nothing but "pre-zeroed"
-> makes any possible sense, which means that the whole "(*out & ~mask)"
-> in that v4 patch is completely and utterly meaningless. There's
-> absolutely zero reason to try to preserve any old data.
-> 
-> In other words, you have two cases:
-> 
->  (a) no threaded and unlocked accesses to the resulting string
-> 
->  (b) you _do_ have concurrent threaded accesses to the string and no
-> locking (really? That's seriously questionable),
-> 
-> If you have case (a), then the only correct thing to do is to
-> explicitly pad afterwards. It's optimal, and doesn't make any
-> assumptions about implementation of strncpy_from_user().
 
-(a) is the only case.
-There is no concurrent access to dest.
-Theoretically it's possible for two bpf progs on different cpus
-to write into the same dest, but it's completely racy and buggy
-for other reasons.
+Could you add the changes in the Documentation as well (which can do in later)
 
-I've looked through most of the kernel code where strncpy_from_user()
-is used and couldn't find a case where dest is not used as a string.
-In particular I was worried about the code like:
-
-struct foo {
-  ...
-  char name[64];
-  ...
-} *f;
-
-f = kcalloc();
-...
-ret = strncpy_from_user(f->name, user_addr, sizeof(f->name));
-if (ret <= 0)
-   goto ...;
-f->name[ret] = 0;
-
-and then the whole *f would be passed to a hash function
-that will go over the sizeof(struct foo) assuming
-that strncpy_from_user() didn't add the garbage.
-The extra zeroing:
-f->name[ret] = 0;
-didn't save it from the garbage in the "name".
-
-I can convince myself that your new definition of strncpy_from_user:
-"
-You told it that the destination buffer was some amount of bytes, and
-strncpy_from_user() will use up to that maximum number of bytes.
-That's the only guarantee you have - it won't write _past_ the buffer
-you gave it.
-"
-makes sense from the performance point of view.
-
-But I think if glibc's strncpy() did something like this it would
-probably caused a lot of pain for user space.
-
-The hash element example above is typical bpf usage.
-One real bpf prog was converted as a test:
-tools/testing/selftests/bpf/progs/pyperf.h
-There it's populating:
-typedef struct {
-        char name[FUNCTION_NAME_LEN];
-        char file[FILE_NAME_LEN];
-} Symbol;
-with two calls:
-bpf_probe_read_user_str(&symbol->name, sizeof(symbol->name),
-                        frame->co_name + pidData->offsets.String_data);
-These are the function name inside python interpreter.
-The 'len' result is ignored by bpf prog.
-And later the whole 'Symbol' is passed into a hash map.
-
-The kernel code doesn't seem to be doing anything like this, so
-it's fine to adopt your definition of strncpy_from_user().
-
-The garbage copying part can be cleared on bpf side.
-It's easy enough to do in bpf_probe_read_user_str().
-We can just zero up to sizeof(long) bytes there.
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
