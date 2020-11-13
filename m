@@ -2,114 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF5F2B1337
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 01:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B108D2B133A
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 01:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725965AbgKMA0v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 19:26:51 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40032 "EHLO
+        id S1726005AbgKMA1K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 19:27:10 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13238 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725929AbgKMA0v (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 19:26:51 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AD0Gg29009431;
-        Thu, 12 Nov 2020 16:26:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=GhYviT4Uc9n5qdJXBSSlj8jsWO6PHVpOyh69N9gNgtk=;
- b=I1tuErGbId7wOMuRgDKdQtGSwnJeTR3WfYBdbwanleagzWL0NJCEeLscpnxqQ21Tbjcu
- snmRIjhc8McE0UQC9y1f2kk7CYDGDJYo2gPvr8pQbDwvbVklxkH7jS8mCDX14asFSyI9
- SFsJXogzJAq9PQCSEmmhXavQSC9jNVCVoCo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34rf8stppt-1
+        by vger.kernel.org with ESMTP id S1725929AbgKMA1K (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 19:27:10 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AD0GdUf008250;
+        Thu, 12 Nov 2020 16:27:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=QFDVK8+cvVjzaOR/m4UODdt1hWETX2E6qvRvnwlZgzk=;
+ b=IEv+okrBSenDMjITm2xxKWXfJLTVxCqFXjGYHJEhgLR5QDB1jz5jYynZJeFFEv+E+jqm
+ sE0G8K7jgYmrE+aS3PLNgzoH5wVToKtr7seEDXCEBeZbv6CJRX6ZYHr2pUvOmshBfNo9
+ INllMSWB1+X7rkAGt/HO8H3rqCKvQIgG1hM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34s7crk6q9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 12 Nov 2020 16:26:21 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        Thu, 12 Nov 2020 16:27:07 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 12 Nov 2020 16:26:20 -0800
+ 15.1.1979.3; Thu, 12 Nov 2020 16:27:05 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jfooogUOSl3yII6QZSPaYcBW0Cm2eVX5wNIZ94UWBbkuHVx14/FSla0apxCg4euoZhZfcZI3A+Qq5Ej98BLQsG7Od3/Ac1if7EXzImE+Gd3Itf26tqlghX1arPNQ++4iGe9+1k+KWNR1CX0WtpuGPERsKA7guY0YMgWg5mV2dGCBxpEy8Xy9ozPPsak3wnk8isB/sZ6jJ1U1kmI7XMIasak4fdN2DDWX3CuF2RSkAdlNUenQDsnWTOHse2p7Zs/zYa1tKweOhNn/XUJeKu55HL6phUreOnZMKd5fMM2/5dzLQbCFMte9UFJSHFbejkmQtIrzOCrtdyAv/x5yp2i8Kg==
+ b=UhE38umFVVs99ch+LqcJtJkbxC0dWUGVbNs/oqMtSToxnP6eZeImAFfuRpctpOUFZIbc26SoyJ5AeMJ5JyzGOc0RRmLwbllWRAKwzcZkB2RlmIHeTX7gYj32FJyoWHuETAdlLQbZiGMNt1Jbqyp05y6jqrliQA209lIyJUKQsJQepVl9rrMExY5eCgKj/EoU8Jajri87zFDNUSN9ofxz0ohD8w98Gi3qqhh0gx/f0c4u8tGfOCppXEKLX7lASju+mz6IucGIR1YG1Hq9tQ/tmLLnHDOcs290Kv08lWXQYZgmiNpbId1/O1yKuzfb0zc6Vqn/8PdvImlH3uOLD+R/2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GhYviT4Uc9n5qdJXBSSlj8jsWO6PHVpOyh69N9gNgtk=;
- b=YPaJp6QoLJ34c9zguyR3puBaheOcI42ftSbMREn4Vld8Q0A8vblrEIEhOpIE671D0ZAWTTojpU2FHLcOZey6CnjVTU3NPQr4kF1tAhhZ0G66jGEJ9fNYL+Ls2L7gJ0dOlmKIoyEwXsJGencx7VT+Fus2lGu7TDHJrGCBQsdpVZE3lt9AErjCLXzJzoVm1zgtkJItXrRu7Xq0M1sLRcFjH1RwdL9IgBSvWwGm+RPjjAwK74c2NJDuMJpzcwJS4lrfZ5K2duDT5qCl9U3GWMODXJQv2P/7ltvLZYFBNGGJ6994bXydXYEZaMUpjapEMmKogZ7j/bU8ERMJa/7Fqu3eLg==
+ bh=QFDVK8+cvVjzaOR/m4UODdt1hWETX2E6qvRvnwlZgzk=;
+ b=eTYnujegrNimCoQxCdnGDSOAggWhxIi1YQteu7oDkiIt56Md7lg4HPKsksidpVqixh9gUwuf4zx9o268DRh2WsrbSyYoqhlNjPogLn7ySfgX8I6FyBZfubf4CXCr70ezyNtYaz5reTjAW2xi/1A3zL6t3F/QCE3yhGTC+2HT/TAWaU3FeaJvw7q4TMC/xe8eRLr35COjSThZ/9axSNIl1J+6YQ7Fv9bqVfAUG/8wcvJhiG6spLpmUDpeC+RtgTIdEIm/wfgb0rB+S2Kw4XVbPN5Dt97FAuTX184jZbjfTvEewghJw7Eigo4mgQAQeVqXHlAZfJQRJj+IC3e9IM8eTg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GhYviT4Uc9n5qdJXBSSlj8jsWO6PHVpOyh69N9gNgtk=;
- b=SZPZmf0jASCoY00yze5nFT5pzG9G1XwvoDOfIa9SRBWdgwkVPBeth154GmHy68GCmun1080BtWNCmdSrSrlau/5yAu+PQizuNjBSHYC1uooNlq+VSeWRb0D8b5AEDaB9tQzu7tk8legnTHdi0aLo1VIsRW6a7njUF9eajHjQciU=
-Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
- header.d=none;canb.auug.org.au; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2343.namprd15.prod.outlook.com (2603:10b6:a02:8b::31) with
+ bh=QFDVK8+cvVjzaOR/m4UODdt1hWETX2E6qvRvnwlZgzk=;
+ b=Kz7TBwP/cIFpNwxWRfcs74kwE92jLlkxRN3ILDvpO7hPqp7RJia2R0IAcmr1SUjTw97cssEI9IlDxwtWQjYAogwGZ61WYSJuiucSbB/EZEmIYgxnfoIwMZ3y/A0/i7rJClrWk+uqRjFwfKqBOza3ypsy/BBiOCBM+r7dWxQbFsM=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BY5PR15MB3618.namprd15.prod.outlook.com (2603:10b6:a03:1b0::28) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Fri, 13 Nov
- 2020 00:26:15 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 00:26:15 +0000
-Date:   Thu, 12 Nov 2020 16:26:10 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH bpf-next v5 01/34] mm: memcontrol: use helpers to read
- page's memcg data
-Message-ID: <20201113002610.GB2934489@carbon.dhcp.thefacebook.com>
-References: <20201112221543.3621014-1-guro@fb.com>
- <20201112221543.3621014-2-guro@fb.com>
- <20201113095632.489e66e2@canb.auug.org.au>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201113095632.489e66e2@canb.auug.org.au>
-X-Originating-IP: [2620:10d:c090:400::5:6516]
-X-ClientProxiedBy: MWHPR18CA0059.namprd18.prod.outlook.com
- (2603:10b6:300:39::21) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.24; Fri, 13 Nov
+ 2020 00:27:04 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
+ 00:27:04 +0000
+Subject: Re: Extending bpf_get_ns_current_pid_tgid()
+To:     Daniel Xu <dxu@dxuuu.xyz>, <bpf@vger.kernel.org>
+CC:     <cneirabustos@gmail.com>, <ebiederm@xmission.com>, <blez@fb.com>
+References: <C71MVCBQMCPF.1CCKLFRTGYD0D@maharaja>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <3fb902d7-a88c-f9ed-03f0-460f7bd552fa@fb.com>
+Date:   Thu, 12 Nov 2020 16:27:02 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.2
+In-Reply-To: <C71MVCBQMCPF.1CCKLFRTGYD0D@maharaja>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:3ef]
+X-ClientProxiedBy: MWHPR22CA0056.namprd22.prod.outlook.com
+ (2603:10b6:300:12a::18) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:6516) by MWHPR18CA0059.namprd18.prod.outlook.com (2603:10b6:300:39::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Fri, 13 Nov 2020 00:26:14 +0000
+Received: from [IPv6:2620:10d:c085:21e1::11f6] (2620:10d:c090:400::5:3ef) by MWHPR22CA0056.namprd22.prod.outlook.com (2603:10b6:300:12a::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Fri, 13 Nov 2020 00:27:04 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5be0190a-5d96-44eb-6075-08d8876abb8a
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2343:
+X-MS-Office365-Filtering-Correlation-Id: d9c2bb30-9e87-49fa-e876-08d8876ad8b4
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3618:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2343A558E5DC223F3487855CBEE60@BYAPR15MB2343.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3618B25D2C3F812BCBDF92EDD3E60@BY5PR15MB3618.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iQOF24VYkjB59rTcNQBmfzETBabZWH+215kFhIR3JxcrKq+I79rxb81ogIC8Eh5YENJ+Gtn7mzalKeDDR1yw7hZ5uflT/beOPVlqHIfy0SaZJ9wwDwAwlPy/7NKQH7FSyDD1fFLLkVVJWGs9yahHAiOBUpr4OH1euGGCi6+7WpSb/95oppuMpx2Lt7ErB1ZYiAAZXUFyUCZmUMI8lH66rpdlbgB+8us/T2ZlvOM9EGlddPgGql/8LRpDRXVzwwnNl0RGf9UA4cBR0wUxBds3DJQ2apnkwM7PsvuYowluRGx6m6neaxLOEcrq/Tr+NJAPoZboNzacC4oJyO2uanxwxh159hP8t1LfSkqrfzOVLNcdD0akF5etJ3d0ABEF6Z1fEWjMzKXsaN11vY2uBe3vUA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(376002)(136003)(366004)(396003)(83380400001)(186003)(2906002)(6916009)(8676002)(55016002)(966005)(8936002)(52116002)(66556008)(6666004)(1076003)(7696005)(7416002)(33656002)(4326008)(16526019)(54906003)(478600001)(6506007)(66946007)(5660300002)(9686003)(86362001)(66476007)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: N/JidN7+MtCebFcyi01ou7lawwNJajITr5IcooY8m8FoeFMYt+72Ro0ujd7W8MVDiizySUVENo4HEpKiVgI3TpXvRYobYDsh4hXQDl24BsvHv0whhusz2yz7+nAwEEl2ekOP5Ylvaqa+iAEQBZJna70gCFWcF2d0NTgITzPzd/NEaFQJ1svc27C9MTBuPjw3VgaKshPZOGJoFKbZvcl4wDWvIkufAOCn9SpjcA7nuZXR48li+dhxVFzcCyK/uV1jJnBQsL4Wyg7VV2oqHv6i0ITP/JHLgf8WcIjOM9DuSffGBwcJe7G9gYrKECOxBb3uUMhKQRPDUadSY0et4Ef8ajjY1kim8jE5W+rxY+XnsXDAUR8z2D3TybUPX1gTXd4usTlyOALsjnBkH+P63LtHsIM/q4g0nY73QL+g/aRJTif15xuK7wNPXUTHclzzJPNhFN9EB/73/0b617L9WgKGiV38WaEUd3OdrjYoz8Er6r7Anv1qQfSwGm4QWfm1pS1rg+1keefNElKvt3HDFYzNVS/VZQm2dvCxuwyxSlL+RrjURieNFqCIZp7AU+mwMI8iVjOt6rbbqyrMpxi1fOMTEyBykM8Z9N+t/iJTuINvcNBteKNXPwcir3BQnlIycLL93ipXTewGCaV/VNKOVez+baanWKmMaQNPxHihzNAAixs=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5be0190a-5d96-44eb-6075-08d8876abb8a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: gd6wkE1k8vtxJp2ycCHIrMBaiRTZG5dh5M4dcW4NZlgfmJuc6VtV6uevDKAX27G89EdnIfurpawylgwdZKHCUWWw6RHI0oqmNDU/qTb0HPsQhlYLlKZm5qs9DP5+Mc2LqXasXOlDFsEu0bm6RIWvp/JCHIUBo2ATgSkXR07nAQfLSHnwIUAsziVqLcxS2+6DD5gNFIVTdjXOp7IbzxicJx1Z/YQ+EI4n6dHRyncBGZL6ij9FdB35AAmqF0XEUBxkdjSecLdoTK6GEKc5O8tFnTWmpthUOHk66eYNDWtN2Rc1nzVvdFpL9IMWNH6noQuLbtcdxUSK0v1KiBXne5dot+Dm1DcKISIjuX15Bb72ZUweqClLJfI6kRMmEw1uTPQv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(396003)(346002)(366004)(53546011)(316002)(31696002)(31686004)(8936002)(66476007)(4326008)(2906002)(6486002)(86362001)(66946007)(16526019)(36756003)(66556008)(478600001)(2616005)(8676002)(52116002)(7116003)(5660300002)(186003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 5STgtvKzCRGlgTgIwDbLhvY1ji1CWwsMeXwiIHqLbEI93+rnQoCatJBhqNVy2m9WN1NMs+sxZWR6g3kDTMyeI8bB/mC3oYLJoB6RTPtBN/EYxyIgBRcJyA04WnJedOAzYAc3ZwW3iQs1fBAJTXENj32E/FvUdAIPu2/1u9IdbTf39VtieRze7N0e8xxhqO06bVb5ALFoDnLMLwuEzV+Qjl6t/NZG3D4fsmHqsMZqD0avD75mdbWfBAEoPDfzSbc/FxlViqR5osXy/jso/8ZCedc+D47JdOO4cFJGCAnEUlfvScK1OAVx6rxn8oDUsYJ48XN03WFhL9FoUHyOVbTYTRpNC2+YXXb9hKuvq2Zj5xGWLmJG2kytNFQTh+t3LBJh0ud3fAp39hqbkLSZAWlPfWfXp+RiONbukZTVMrRKtNL2lHl/Y/gJ1yz+tC+O3CgBd/5YOLnEQlzUou1xaq4X+fwhrpw/8hoCL8J3n5hhljrQqZYwQaDbzSXva0jTsWn/SU6jD2uV7XeYpHGItEZCSN3UfN+9IZxEeDfXDw/8EHUzLdQTedPzEfqbyg9FsqyWTA2UAD6a10QKyOGzoOOMYNQv2BeLD0K9NEWe541FWhTibAxo8y5h0RhryjqBRPpq2BFlPisdg6ewVnu7EMyqp8NkzFXVjkuWm3h6qVRvweBYyndZ4RIJq0v6irG6JLacZtR/q8AuOygx2HUE0mF5bBriwqTMTbe9eeMEhELo+BNgfSw9RBLoJTmjXb5WCwxFpkh+l7mdKS9O0nps1vsxSrMsOVEVqsbQA2lQ+nd6vBwDHZnSaBuE5Fc6bFamEyW33b+iDFesLLzf2S4cyl0d1JUBFNbzjKQd4eI2ee8U8zx8gd6qAwWK+OhuHQLoOZJE1B6xRatTVjuqROV6Zx+TRQ3py4ayHZDylklMUQheFWU=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9c2bb30-9e87-49fa-e876-08d8876ad8b4
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 00:26:15.6915
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 00:27:04.7291
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XuyRvqqoGN885xGoGLEIng2jjX5ED0g7C/CRRk02TIUj+O4yvw/zDyoJBQR8qXPZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2343
+X-MS-Exchange-CrossTenant-UserPrincipalName: j+Ns0AlsWmdbgX0+9SA6dXEOZ3qlU4VVfHK5LoUdfm/zncsUsmna2FY83J9+/uoG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3618
 X-OriginatorOrg: fb.com
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-12_16:2020-11-12,2020-11-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 adultscore=0
- impostorscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1011 impostorscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2011130000
 X-FB-Internal: deliver
@@ -117,55 +108,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 09:56:32AM +1100, Stephen Rothwell wrote:
-> Hi Roman,
-> 
-> On Thu, 12 Nov 2020 14:15:10 -0800 Roman Gushchin <guro@fb.com> wrote:
-> >
-> > Patch series "mm: allow mapping accounted kernel pages to userspace", v6.
-> > 
-> > Currently a non-slab kernel page which has been charged to a memory cgroup
-> > can't be mapped to userspace.  The underlying reason is simple: PageKmemcg
-> > flag is defined as a page type (like buddy, offline, etc), so it takes a
-> > bit from a page->mapped counter.  Pages with a type set can't be mapped to
-> > userspace.
-> >
-> .....
-> > 
-> > To make sure nobody uses a direct access, struct page's
-> > mem_cgroup/obj_cgroups is converted to unsigned long memcg_data.
-> > 
-> > Link: https://lkml.kernel.org/r/20201027001657.3398190-1-guro@fb.com
-> > Link: https://lkml.kernel.org/r/20201027001657.3398190-2-guro@fb.com
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> 
-> What is going on here?  You are taking patches from linux-next and
-> submitting them to another maintainer?  Why?
 
-Hi Stephen!
 
-These patches are not intended to be merged through the bpf tree.
-They are included into the patchset to make bpf selftests pass and for
-informational purposes.
-It's written in the cover letter.
+On 11/12/20 2:20 PM, Daniel Xu wrote:
+> Hi,
+> 
+> I'm looking at the current implementation of
+> bpf_get_ns_current_pid_tgid() and the helper seems to be a bit overly
+> restricting to me. Specifically the following line:
+> 
+>      if (!ns_match(&pidns->ns, (dev_t)dev, ino))
+>              goto clear;
+> 
+> Why bail if the inode # does not match? IIUC from the old discussions,
+> it was b/c in the future pidns files might belong to different devices.
+> It's not clear to me (possibly b/c I'm missing something) why the inode
+> has to match as well.
+
+Yes, pidns file might belong to different devices in theory so we need
+to match dev as well.
+
+The inode number needs to match so we can ensure user indeed wants to
+get the *current pidns* tgid/pid.
+
+(dev, ino) input expressed user intention. Without this, in no-process
+context, it will be hard to interpret the results.
 
 > 
-> You should not do that from Andrew's tree as it changes/rebases every
-> so often ... and you should not have my SOB on there as it is only
-> there because that patch is in linux-next i.e. I in the submission
-> chain to linux-next - if the patch is to go via some other tree, then
-> my SOB should not be there.  (The same may be true for Andrew's SOB.)
-> In general you cannot add someone else's SOB to one of your patch
-> submissions.
+> Would it be possible to instead have the helper return the pid/tgid of
+> the current task as viewed _from_ the `dev`/`ino` pidns? If the current
+> task is hidden from the `dev`/`ino` pidns, then return -ENOENT. The use
+> case is for bpftrace symbolize stacks when run inside a container. For
+> example:
+> 
+>      (in-container)# bpftrace -e 'profile:hz:99 { print(ustack) }'
 
-I'm sorry for the confusion.
+I think you try to propose something like below:
+   - user provides dev/ino
+   - the helper will try to go through all pidns'es (not just active
+     one), if any match pidns match, returns tgid/pid in that pidns,
+     otherwise, returns -ENOENT.
 
-Maybe I had to just list their titles in the cover letter. Idk what's
-the best option for such cross-subsystem dependencies.
+The current helper is
+    bpf_get_ns_current_pid_tgid
+you want
+    bpf_get_ns_pid_tgid
 
-Thanks!
+I think it is possible, you need to check
+    pid->numbers[pid_level].ns
+for all pid levels. You need to get a reference count for the namespace
+to ensure valid result.
+
+This may work for root inode, but for container inode, it may have 
+issues. For example,
+   container 1: create, inode 2
+   container 1 removed
+   container 2: create, inode 2
+If you use inode 2, depending on timing you may accidentally targetting
+wrong container.
+
+I think you can workaround the issue without this helper. See below.
+
+> 
+> This currently does not work b/c bpftrace will generate a prog that gets
+> the root pidns pid, pack it with the stackid, and pass it up to
+> userspace. But b/c bpftrace is running inside the container, the root
+> pidns pid is invalid and symbolization fails.
+
+bpftrace can generate a program takes dev/inode as input parameters in
+map. The bpftrace will supply dev/inode value, by query the current 
+system/container, and then run the program.
+
+> 
+> What would be nice is if bpftrace could generate a prog that gets the
+> current pid as viewed from bpftrace's pidns. Then symbolization would
+> work.
+
+Despite the above workaround, what you really need is although it is 
+running on container, you want to get stack trace interpreted with
+root pid/tgid for symbolization purpose? But you can already achieve
+this with bpf_get_pid_tgid()?
+
+> 
+> Thanks,
+> Daniel
+> 
