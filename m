@@ -2,94 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9322B1A4F
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 12:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1085A2B1A93
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 13:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbgKMLtj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 06:49:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726852AbgKMLte (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 06:49:34 -0500
-Received: from lore-desk.redhat.com (unknown [151.66.8.153])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B394C2223C;
-        Fri, 13 Nov 2020 11:48:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605268122;
-        bh=RPaLrGPJJAuXPXMlJ74xRTTpGp01uRKuWplrEIVo6aU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FrO5hVR1L8OAs4BoPnFdLwpzSBwsgCukBVSYmUwdN+vkdZ0eezL2gRN6DeWtVOXtc
-         VaJpTCvXCM3xcERpHw+QUitstu1Nu2o1YN7I3SH84DeodYWClgo/iI9ZR1db22WHQg
-         LwVOHKKunNei5tYkxedUo++SyS4MXCnKNf2lvaNo=
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, lorenzo.bianconi@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, brouer@redhat.com,
-        ilias.apalodimas@linaro.org, john.fastabend@gmail.com
-Subject: [PATCH v6 net-nex 0/5] xdp: introduce bulking for page_pool tx return path
-Date:   Fri, 13 Nov 2020 12:48:27 +0100
-Message-Id: <cover.1605267335.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726921AbgKMMDq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 07:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726808AbgKMLmd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Nov 2020 06:42:33 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9811BC0617A6;
+        Fri, 13 Nov 2020 03:34:21 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id 33so9415345wrl.7;
+        Fri, 13 Nov 2020 03:34:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GMSoaYGH0pA9Jq20ijPobnsXJLhxhfT0yN3dukQKp6A=;
+        b=LQlxVlKrvCkLWpBdDs/58N3IpmTopAyTws9kNHZKVjci2aBi1KeRGvBuLX3Spgfi5e
+         zpsWdcAR5ty1QGG1399GotlpH1BqS5IYBsNKJDMIjqQQXunfMczgQrn1490UCWHS6P4d
+         3OwmNxDiFuwYS8ZGX/dAzL/8PBFBlsS1pGuHYAbKe0jDT8JvUG2RmWO2ShVciJ/YK/ql
+         ANmrM28vnx9onF4QRkv0o6w6p2+JYDrxbAYPfFE5B+X6ddFHhbkdMUiVKcZ4po1o8Td2
+         W3oocH6cjfpeFTp63SmGwJuwj6OHv7l+Rh9OSMNDqwkjTEOq1sgE8ugKM0f4F6lKBAFF
+         Xm+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GMSoaYGH0pA9Jq20ijPobnsXJLhxhfT0yN3dukQKp6A=;
+        b=NXL/d17CWz4UNPlCI0yqbGkA0xLhecFmQE+HEwQerFpKk1cqcL6jYRhz3BOXnT+p06
+         ZxG6Dz9wT2/Gw0wedGlJL2VegjWC9tLl2kc6fz0PmTSf+i7GOr6PhPDCff3Ejrv6BmxX
+         ZESc7W7KQjbUc9Hv+/bLJ/hnwf0Hjt79vYNJ2lpyE3NN8c9Z5ReuuhmLBPXmUUyhEQqN
+         r9rqJKGYmdUATOGMRmNP+wIjhnemQu8wb0z2QuNiZLnULTSH8exlvhZGl6+7C6y7NkhW
+         Up3WHUUt8bZ8AWzsFKLdXAsv7yZQh+wGy1mr5UGm/eX/0t6Xb6fYpgOJplr9oZY5lfRi
+         7GtQ==
+X-Gm-Message-State: AOAM530Fe/gtf9NO4trdsOyXg9Kj8o3RE0rZtMyElKUGe7SGSxiRznZ6
+        uKxPb0SxaXobvcjWGmIxvDU=
+X-Google-Smtp-Source: ABdhPJyzAQ2D5zO01xFQdEApfeD/HaEk9Rw5kL9gKvfUGhUiYT0F9Hi4TU3agolrFc6X50eVsg9zgg==
+X-Received: by 2002:adf:cf0b:: with SMTP id o11mr2844517wrj.162.1605267260409;
+        Fri, 13 Nov 2020 03:34:20 -0800 (PST)
+Received: from [192.168.8.114] ([37.167.2.65])
+        by smtp.gmail.com with ESMTPSA id g23sm9865657wmh.21.2020.11.13.03.34.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 03:34:19 -0800 (PST)
+Subject: Re: csum_partial() on different archs (selftest/bpf)
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     Tom Herbert <tom@herbertland.com>,
+        Anders Roxell <anders.roxell@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <CAJ+HfNiQbOcqCLxFUP2FMm5QrLXUUaj852Fxe3hn_2JNiucn6g@mail.gmail.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <e23c63dd-5f90-c273-615f-d5d67991529c@gmail.com>
+Date:   Fri, 13 Nov 2020 12:34:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <CAJ+HfNiQbOcqCLxFUP2FMm5QrLXUUaj852Fxe3hn_2JNiucn6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-XDP bulk APIs introduce a defer/flush mechanism to return
-pages belonging to the same xdp_mem_allocator object
-(identified via the mem.id field) in bulk to optimize
-I-cache and D-cache since xdp_return_frame is usually run
-inside the driver NAPI tx completion loop.
-Convert mvneta, mvpp2 and mlx5 drivers to xdp_return_frame_bulk APIs.
 
-More details on benchmarks run on mlx5 can be found here:
-https://github.com/xdp-project/xdp-project/blob/master/areas/mem/xdp_bulk_return01.org
 
-Changes since v5:
-- do not keep looping over ptr_ring if the cache is full but release leftover
-  pages running page_pool_return_page
+On 11/13/20 11:36 AM, Björn Töpel wrote:
+> I was running the selftest/bpf on riscv, and had a closer look at one
+> of the failing cases:
+> 
+>   #14/p valid read map access into a read-only array 2 FAIL retval
+> 65507 != -29 (run 1/1)
+> 
+> The test does a csum_partial() call via a BPF helper. riscv uses the
+> generic implementation. arm64 uses the generic csum_partial() and fail
+> in the same way [1]. arm (32-bit) has a arch specfic implementation,
+> and fail in another way (FAIL retval 131042 != -29) [2].
+> 
+> I mimicked the test case in a userland program, comparing the generic
+> csum_partial() to the x86 implementation [3], and the generic and x86
+> implementation does yield a different result.
+> 
+> x86     :    -29 : 0xffffffe3
+> generic :  65507 : 0x0000ffe3
+> arm     : 131042 : 0x0001ffe2
+> 
+> Who is correct? :-) It would be nice to get rid of this failed case...
+> 
 
-Changes since v4:
-- fix comments
-- introduce xdp_frame_bulk_init utility routine
-- compiler annotations for I-cache code layout
-- move rcu_read_lock outside fast-path
-- mlx5 xdp bulking code optimization
+There are all the same value :), they all fold to u16  0xFFE3
 
-Changes since v3:
-- align DEV_MAP_BULK_SIZE to XDP_BULK_QUEUE_SIZE
-- refactor page_pool_put_page_bulk to avoid code duplication
+Maybe the test needs a fix, there is a missing folding.
 
-Changes since v2:
-- move mvneta changes in a dedicated patch
-
-Changes since v1:
-- improve comments
-- rework xdp_return_frame_bulk routine logic
-- move count and xa fields at the beginning of xdp_frame_bulk struct
-- invert logic in page_pool_put_page_bulk for loop
-
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
-Lorenzo Bianconi (5):
-  net: xdp: introduce bulking for xdp tx return path
-  net: page_pool: add bulk support for ptr_ring
-  net: mvneta: add xdp tx return bulking support
-  net: mvpp2: add xdp tx return bulking support
-  net: mlx5: add xdp tx return bulking support
-
- drivers/net/ethernet/marvell/mvneta.c         | 10 ++-
- .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 10 ++-
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 22 ++++--
- include/net/page_pool.h                       | 26 +++++++
- include/net/xdp.h                             | 17 ++++-
- net/core/page_pool.c                          | 70 ++++++++++++++++---
- net/core/xdp.c                                | 54 ++++++++++++++
- 7 files changed, 192 insertions(+), 17 deletions(-)
-
--- 
-2.26.2
-
+> 
+> Thanks,
+> Björn
+> 
+> 
+> [1] https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201112/testrun/3430401/suite/kselftest/test/bpf.test_verifier/log
+> [2] https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v5.10-rc3-207-g585e5b17b92d/testrun/3432361/suite/kselftest/test/bpf.test_verifier/log
+> [3] https://gist.github.com/bjoto/dc22d593aa3ac63c2c90632de5ed82e0
+> 
