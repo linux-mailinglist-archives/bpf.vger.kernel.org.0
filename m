@@ -2,120 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE4B2B2523
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 21:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8EC2B2528
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 21:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbgKMUJk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 15:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
+        id S1726088AbgKMULS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 15:11:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgKMUJk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 15:09:40 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BE7C0613D1;
-        Fri, 13 Nov 2020 12:09:40 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id t16so11659938oie.11;
-        Fri, 13 Nov 2020 12:09:39 -0800 (PST)
+        with ESMTP id S1725941AbgKMULS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Nov 2020 15:11:18 -0500
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CA8C0617A6
+        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 12:11:17 -0800 (PST)
+Received: by mail-lf1-x142.google.com with SMTP id u19so9565540lfr.7
+        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 12:11:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=rXIlrbK8APZyS5ZGZmZQG+WKSGy8y97ez3A1XsZra2A=;
-        b=E0uD916oZo3b4GKb8ZA6/Ch7CyxuilW7okGr02IeymP9VBinRfg+NhWK1p0uQRk7so
-         IqeZuLMixxyXeVt0FTC1V7eDO5Ut7vtYhPEO9kz2CL4dbss+/kxvSxPC4wndOppCtWtY
-         7tnn89fvvkSn8QlZTdM+Cx/H6Ub+xfYLK1xaQzZ5d7aRLr4E3XCRzaH9k2IT4oP/OjRI
-         znM/lJ3ozykSXhaCkOo/X7e4RAjpax1Bu76RLtZVUVxKFxHqvZCK4Sh4mJ5CsiZnv5V6
-         Ha+/L9atb5FPYlHdI4x6V6VZJfsvqWiIreKSjntEAOKJh9mwQqN+YG/Zz18ipL3LiNvG
-         p5WA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bt9Ua8vaHCsnEec5qJVZpjsiJsbIoJubKs0EkxVSvXM=;
+        b=UH4Ns0j3oz/U0Q/AWcISzh4FonO68SG6sdYoa7oIq9ACsV0mNmUawKpbctSaNQiYBc
+         zpxN3i5S8qCvA7QJJmm87ul6PZNM7hr/C/GB3bjcMVBipYLYZfPaPVHizyldBazkY/67
+         U5jlKI/ZFc9jk0znAMbqDY1ctQ8bMnKCvR9sc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=rXIlrbK8APZyS5ZGZmZQG+WKSGy8y97ez3A1XsZra2A=;
-        b=mnLIH9zofUE+V4NJkYJjCaTZPOaL7PR1EGIQzqbWBephh1zvgGTB2giEguL3cIug5P
-         dwBJHDcxXugFAsGHD1bG4gRFg6RWImM7Yf+T2fhHllHeoW742rlkj8MhhyasuSjJQlmE
-         5bvFK4O74KOInwhZw0V51NBNxjAXewY9eyIedG/ymcPmOjNrlo/YwRkQXa78Y5ZLVkor
-         NoMdIfCgUppY04C0qsAFzlwNzT0AHhjmSvp4+fCmgAfN5CFGBY+XlX9hke1pX/S5XJ5C
-         5DQFAlZ48KueyFYyoGnF78zGVmWMkPlTfyDLcVFbbeZhNH+uTlcIiN6L1qofqIoH0+F1
-         LMEg==
-X-Gm-Message-State: AOAM532nNolQL4g3Cp/Ae/vXoCSvsqCPqRqdnQ3i002YoNwVaLsDYzmc
-        OzF4CI/GTyxGW0kRVbGOM7s=
-X-Google-Smtp-Source: ABdhPJzBxcnZ7IbYe0LipgtqPTC2flQDlj4eEYMBWQQX76RNx/DmggrtXWD0ouBYH5i6PpxkkQl9Lg==
-X-Received: by 2002:a54:4681:: with SMTP id k1mr2744324oic.25.1605298177443;
-        Fri, 13 Nov 2020 12:09:37 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id j16sm2286769oot.24.2020.11.13.12.09.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Nov 2020 12:09:36 -0800 (PST)
-Date:   Fri, 13 Nov 2020 12:09:29 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, lorenzo.bianconi@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, brouer@redhat.com,
-        ilias.apalodimas@linaro.org, john.fastabend@gmail.com
-Message-ID: <5faee7f9d8972_d58320848@john-XPS-13-9370.notmuch>
-In-Reply-To: <0b38c295e58e8ce251ef6b4e2187a2f457f9f7a3.1605267335.git.lorenzo@kernel.org>
-References: <cover.1605267335.git.lorenzo@kernel.org>
- <0b38c295e58e8ce251ef6b4e2187a2f457f9f7a3.1605267335.git.lorenzo@kernel.org>
-Subject: RE: [PATCH v6 net-nex 4/5] net: mvpp2: add xdp tx return bulking
- support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bt9Ua8vaHCsnEec5qJVZpjsiJsbIoJubKs0EkxVSvXM=;
+        b=jvtTvlQ/HbKehhDo3zPphUpD5jnVoC0tvqx6ECRDEPDNtfH3tPMo4zy9ZhbriM+cNz
+         hPy5SteJGNek1DamW9tUUPi41nkAJIfhKBeQ4fPKngFb9oR1Y1fEA4YyzS4T5+ySs2Zg
+         4c4kcmB/9fd+XBJ5kMR1BH1iMzarGQr5lKmvGKRNXUDFQTGd4XsXjiWEOazrZzWc2kgl
+         BvYiJnGsHBkLXL6+zbSIa2DeJX12VIW/s3wkiqdhj3kYUnqy6rtvodEwN4o04StS9vJm
+         raqtsHe+SrGu+wx918DTd3BGat0QjVt6+0BANdJWMCTEQ3I+hiKfmLG/CWvKXXARd8eH
+         nmyg==
+X-Gm-Message-State: AOAM531660zFW61ffAkAX/n5+tzCYYWKfpDm5xnnQBpF1noNkDt84q0z
+        uT38wDrmTQ4ErDnMhF7C32169nZTASRUWg==
+X-Google-Smtp-Source: ABdhPJwtrIHgymIUyBPjXg06/UyHw0wyOYXEJh7XYYYEMwUGqBHtxS6jZa7hiUiKE+AMyny9yQQMWA==
+X-Received: by 2002:a19:c1c5:: with SMTP id r188mr1701178lff.354.1605298275386;
+        Fri, 13 Nov 2020 12:11:15 -0800 (PST)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id w28sm1759549ljd.48.2020.11.13.12.11.14
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 12:11:14 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id 74so15812007lfo.5
+        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 12:11:14 -0800 (PST)
+X-Received: by 2002:a19:8544:: with SMTP id h65mr1589302lfd.344.1605298273562;
+ Fri, 13 Nov 2020 12:11:13 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1605134506.git.dxu@dxuuu.xyz> <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
+ <20201113170338.3uxdgb4yl55dgto5@ast-mbp> <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
+ <20201113191751.rwgv2gyw5dblhe3j@ast-mbp>
+In-Reply-To: <20201113191751.rwgv2gyw5dblhe3j@ast-mbp>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 13 Nov 2020 12:10:57 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whpsK0s8x51rE8fUSfr4r783j09BSqXqi95uHc0WKG7ig@mail.gmail.com>
+Message-ID: <CAHk-=whpsK0s8x51rE8fUSfr4r783j09BSqXqi95uHc0WKG7ig@mail.gmail.com>
+Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi wrote:
-> Convert mvpp2 driver to xdp_return_frame_bulk APIs.
-> 
-> XDP_REDIRECT (upstream codepath): 1.79Mpps
-> XDP_REDIRECT (upstream codepath + bulking APIs): 1.93Mpps
-> 
-> Tested-by: Matteo Croce <mcroce@microsoft.com>
-> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index f6616c8933ca..3069e192d773 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -2440,8 +2440,13 @@ static void mvpp2_txq_bufs_free(struct mvpp2_port *port,
->  				struct mvpp2_tx_queue *txq,
->  				struct mvpp2_txq_pcpu *txq_pcpu, int num)
->  {
-> +	struct xdp_frame_bulk bq;
->  	int i;
->  
-> +	xdp_frame_bulk_init(&bq);
-> +
-> +	rcu_read_lock(); /* need for xdp_return_frame_bulk */
-> +
->  	for (i = 0; i < num; i++) {
->  		struct mvpp2_txq_pcpu_buf *tx_buf =
->  			txq_pcpu->buffs + txq_pcpu->txq_get_index;
-> @@ -2454,10 +2459,13 @@ static void mvpp2_txq_bufs_free(struct mvpp2_port *port,
->  			dev_kfree_skb_any(tx_buf->skb);
->  		else if (tx_buf->type == MVPP2_TYPE_XDP_TX ||
->  			 tx_buf->type == MVPP2_TYPE_XDP_NDO)
-> -			xdp_return_frame(tx_buf->xdpf);
-> +			xdp_return_frame_bulk(tx_buf->xdpf, &bq);
->  
->  		mvpp2_txq_inc_get(txq_pcpu);
->  	}
-> +	xdp_flush_frame_bulk(&bq);
-> +
-> +	rcu_read_unlock();
->  }
->  
->  static inline struct mvpp2_rx_queue *mvpp2_get_rx_queue(struct mvpp2_port *port,
-> -- 
-> 2.26.2
-> 
+On Fri, Nov 13, 2020 at 11:17 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> The v4 approach preserves performance. It wasn't switching to byte_at_a_time:
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+That v4 looks better, but still pointless.
+
+But it might be acceptable, with that final
+
+        *out = (*out & ~mask) | (c & mask);
+
+just replaced with
+
+        *out = c & mask;
+
+which still writes past the end, but now it only writes zeroes.
+
+But the only reason for that to be done is if you have exposed the
+destination buffer to another thread before (and you zeroed it before
+exposing it), and you want to make sure that any concurrent reader can
+never see anything past the end of the string.
+
+Again - the *only* case that could possibly matter is when you
+pre-zeroed the buffer, because if you didn't, then a concurrent reader
+would see random garbage *anyway*, particularly since there is no SMP
+memory ordering imposed with the strncpy. So nothing but "pre-zeroed"
+makes any possible sense, which means that the whole "(*out & ~mask)"
+in that v4 patch is completely and utterly meaningless. There's
+absolutely zero reason to try to preserve any old data.
+
+In other words, you have two cases:
+
+ (a) no threaded and unlocked accesses to the resulting string
+
+ (b) you _do_ have concurrent threaded accesses to the string and no
+locking (really? That's seriously questionable),
+
+If you have case (a), then the only correct thing to do is to
+explicitly pad afterwards. It's optimal, and doesn't make any
+assumptions about implementation of strncpy_from_user().
+
+If you really have that case (b), and you absolutely require that the
+filling be done without exposing any temporary garbage, and thus the
+"pad afterwards" doesn't work, then you are doing something seriously
+odd.
+
+But in that seriously odd (b) case, the _only_ possibly valid thing
+you can do is to pre-zero the buffer, since strncpy_from_user()
+doesn't even imply any memory ordering in its accesses, so any
+concurrent reader by definition will see a randomly ordered partial
+string being copied. That strikes me as completely insane, but at
+least a careful reader could see a valid partial string being possibly
+in the process of being built up. But again, that use-case is only
+possible if the buffer is pre-zeroed, so doing that "(*out & ~mask)"
+cannot be relevant or sane.
+
+If you really do have that (b) case, then I'd accept that modified v4
+patch, together with an absolutely *huge* comment both in
+strncpy_from_user() and very much at the call-site, talking about that
+non-locked concurrent access to the destination buffer.
+
+            Linus
