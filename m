@@ -2,103 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DDB2B1D82
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 15:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC05F2B1E59
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 16:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgKMOc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 09:32:26 -0500
-Received: from www62.your-server.de ([213.133.104.62]:46634 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgKMOc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 09:32:26 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kda7j-0002Xg-Ge; Fri, 13 Nov 2020 15:32:23 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kda7j-0008Cr-9w; Fri, 13 Nov 2020 15:32:23 +0100
-Subject: Re: csum_partial() on different archs (selftest/bpf)
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Tom Herbert <tom@herbertland.com>,
-        Anders Roxell <anders.roxell@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <CAJ+HfNiQbOcqCLxFUP2FMm5QrLXUUaj852Fxe3hn_2JNiucn6g@mail.gmail.com>
- <20201113122440.GA2164@myrica>
- <CAJ+HfNiE5Oa25QgdAdKzfk-=X45hXLKk_t+ZCiSaeFVTzgzsrw@mail.gmail.com>
- <20201113141542.GJ3576660@ZenIV.linux.org.uk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f634b437-aa51-736b-e2f3-f6210fc6a711@iogearbox.net>
-Date:   Fri, 13 Nov 2020 15:32:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726632AbgKMPM3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 13 Nov 2020 10:12:29 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:47330 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726520AbgKMPM3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Nov 2020 10:12:29 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-CX9hI2wWPtaDmoJzA00chg-1; Fri, 13 Nov 2020 10:12:26 -0500
+X-MC-Unique: CX9hI2wWPtaDmoJzA00chg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 456D2101F021;
+        Fri, 13 Nov 2020 15:12:25 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.195.79])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DCFF5D9F1;
+        Fri, 13 Nov 2020 15:12:23 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCHv2 0/2] btf_encoder: Fix functions BTF data generation
+Date:   Fri, 13 Nov 2020 16:12:20 +0100
+Message-Id: <20201113151222.852011-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201113141542.GJ3576660@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25987/Fri Nov 13 14:19:33 2020)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/13/20 3:15 PM, Al Viro wrote:
-> On Fri, Nov 13, 2020 at 02:22:16PM +0100, Björn Töpel wrote:
-> 
->> Folding Al's input to this reply.
->>
->> I think the bpf_csum_diff() is supposed to be used in combination with
->> another helper(s) (e.g. bpf_l4_csum_replace) so I'd guess the returned
->> __wsum should be seen as an opaque value, not something BPF userland
->> can rely on.
-> 
-> Why not reduce the sucker modulo 0xffff before returning it?  Incidentally,
-> implementation is bloody awful:
-> 
->          /* This is quite flexible, some examples:
->           *
->           * from_size == 0, to_size > 0,  seed := csum --> pushing data
->           * from_size > 0,  to_size == 0, seed := csum --> pulling data
->           * from_size > 0,  to_size > 0,  seed := 0    --> diffing data
->           *
->           * Even for diffing, from_size and to_size don't need to be equal.
->           */
->          if (unlikely(((from_size | to_size) & (sizeof(__be32) - 1)) ||
->                       diff_size > sizeof(sp->diff)))
->                  return -EINVAL;
-> 
->          for (i = 0; i < from_size / sizeof(__be32); i++, j++)
->                  sp->diff[j] = ~from[i];
->          for (i = 0; i <   to_size / sizeof(__be32); i++, j++)
->                  sp->diff[j] = to[i];
-> 
->          return csum_partial(sp->diff, diff_size, seed);
-> 
-> What the hell is this (copying, scratchpad, etc.) for?  First of all,
-> _if_ you want to use csum_partial() at all (and I'm not at all sure
-> that it won't be cheaper to just go over two arrays, doing csum_add()
-> and csum_sub() resp. - depends upon the realistic sizes), you don't
-> need to copy anything.  Find the sum of from, find the sum of to and
-> then subtract (csum_sub()) the old sum from the seed and and add the
-> new one...
-> 
-> And I would strongly recommend to change the calling conventions of that
-> thing - make it return __sum16.  And take __sum16 as well...
-> 
-> Again, exposing __wsum to anything that looks like a stable ABI is
-> a mistake - it's an internal detail that can be easily abused,
-> causing unpleasant compat problems.
+hi,
+recent btf encoder's changes brakes BTF data for some gcc
+versions. The problem is that some functions can appear
+in dwarf data in some instances without arguments, while
+they are defined with some.
 
-I'll take a look at both, removing the copying and also wrt not breaking
-existing users for cascading the helper when fixing.
+v2 changes:
+  - drop patch 3 logic and just change conditions
+    based on Andrii's suggestion
+  - drop patch 2
+  - add ack for patch 1
 
-Thanks,
-Daniel
+Andrii,
+please check if it's working with your gcc.
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (2):
+      btf_encoder: Generate also .init functions
+      btf_encoder: Fix function generation
+
+ btf_encoder.c | 67 ++++++++++++-------------------------------------------------------
+ 1 file changed, 12 insertions(+), 55 deletions(-)
+
