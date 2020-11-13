@@ -2,81 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE30F2B13A8
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 02:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714722B13B7
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 02:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgKMBHH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 20:07:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26552 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726017AbgKMBHH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 20:07:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605229626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NAJPNJiBjA+zW0NJG9v+lLPLZ2lgHVWFrFFvvRxwxWI=;
-        b=D8B2w7XvCpYzQPdq9B7igXoU8P3tS/yrTlMUQKtNN7NekGenJ2cAnIz1Vm5JyPUHYA35+B
-        WAqHDgBM3OswFv39usbgeK1Ag83yEHUQgzseFK7fp+Xwm5uM7oyPoEXPXmgBwo7fon3h+6
-        7/QDJK1JXTNmSXSH7ntoVfNcz1zPerw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-qHD3FHzsMGGY3LmKWLbBEg-1; Thu, 12 Nov 2020 20:07:02 -0500
-X-MC-Unique: qHD3FHzsMGGY3LmKWLbBEg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 573EB10066FC;
-        Fri, 13 Nov 2020 01:07:00 +0000 (UTC)
-Received: from [10.72.12.208] (ovpn-12-208.pek2.redhat.com [10.72.12.208])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 04F3119C59;
-        Fri, 13 Nov 2020 01:06:53 +0000 (UTC)
-Subject: Re: [PATCH netdev 2/2] virtio, xdp: Allow xdp to load, even if there
- is not enough queue
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, mst@redhat.com, davem@davemloft.net,
-        kuba@kernel.org
-References: <cover.1605184791.git.xuanzhuo@linux.alibaba.com>
- <c2781b22ebfab5854afc1f6a1eb77b5018b11ccd.1605184791.git.xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <09cbe8ac-34ec-3945-88f4-a31e863c44f7@redhat.com>
-Date:   Fri, 13 Nov 2020 09:06:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726121AbgKMBNE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 20:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgKMBNE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 20:13:04 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFE6C0613D1;
+        Thu, 12 Nov 2020 17:13:04 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id c129so7201483yba.8;
+        Thu, 12 Nov 2020 17:13:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ti2wDmEiazIuydvYlpnT6iwtcMlYabN02+GjWqOHtYo=;
+        b=EN9H2nNORKf48jcIGzWF0t6m8XhCXPeWSheZuQfX/+Dz0Q5j7IgEYLBl64qGFctInL
+         NECriVabtb4GTReg3PLT7VuoPqNtDixXFe3evtJalIBt7I/ZK03Y3YYRFYkImjncDwta
+         MqahzIkX759TVKKOnpPPXzoSOhG4yy2Tqg8fuNS4n4aBNG0Q8xCgedcnzaeM29/YvyCt
+         Q1X2ROAFNHkhAq3gB6Dz9LTDzR/Zs5Ev4TiF301rk+xNLhn0BDKTCaWZw6CBXj3+2ibK
+         /tbIGROjFGVc0OxkfYZPPVIH1us4f1qBJUN/KkfSsccl3yZZ9Xvh+6WhpeOrpP6QBFQz
+         2OAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ti2wDmEiazIuydvYlpnT6iwtcMlYabN02+GjWqOHtYo=;
+        b=nhlTnaJFtv40wGfmKy9KXKFkFzROY507VydVSGNu9BMP6BXS4JpjA5Kr6vcGRUU0jR
+         c2pc9h4KGg/Mv1W8I4rPe/zcW+l1CLyNITV4F1szeEblHaW+ybO0Rdytu5SRaDB8fXo1
+         KKGv3zx5FlT/wAip/tY0YGaImVCg+87DFkYKXOwK2KVlv9Ag7gkNvEiGQZ1OHW+9I4Pj
+         NuRr9mt1G2kKoGAx2czi7/eo9+aau2aq/fQ5UXY/ZtaHCMvki3mcY960jzbCpJTjWvKU
+         i7Lll+NBDXSVED8SlVA7PrwpkTVT2+RKBXEmx7xU2m2l8yKERJBAYqxLUb/xsPDDj71T
+         cr1A==
+X-Gm-Message-State: AOAM533AiPZLyqIeCYcDuY3W6aFXCk+DM7cJgF9rv4nXmKPeXDWzmSh1
+        1QuC+/Gym1TxAV6JVJaB38d6ibUYogQdlmFsJ+Q=
+X-Google-Smtp-Source: ABdhPJzCsN2WTH9vA6jMTVocyLJJVd8gqdMNT0tEwH+x6eCFGQc5vHECZvGTF0nuzHlm0kToZhVeixCL0wI5x4iaURM=
+X-Received: by 2002:a25:3d7:: with SMTP id 206mr3642175ybd.27.1605229983451;
+ Thu, 12 Nov 2020 17:13:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c2781b22ebfab5854afc1f6a1eb77b5018b11ccd.1605184791.git.xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201112150506.705430-1-jolsa@kernel.org> <20201112150506.705430-4-jolsa@kernel.org>
+ <CAEf4BzbhojeSdASwt4y4XEtgAF1caYx=-AuwzWJZv7qKgzkroA@mail.gmail.com>
+ <20201112211413.GA733055@krava> <CAEf4BzbePw8gksT0MH=hwp4Pv1EV1-MOeiwfoFVR64XWFccTHw@mail.gmail.com>
+ <CAADnVQKUYFE0vE3XZB0FPNMxw_+BNpOLJ37QJ+CxLbssDPHFdw@mail.gmail.com>
+ <CAEf4BzZhRPVf=qVU7vVrtVaJzvBmsWL3hHYySKczMrrO-1Xotw@mail.gmail.com> <7834ab75-6e08-9f95-4885-d65298011ad8@fb.com>
+In-Reply-To: <7834ab75-6e08-9f95-4885-d65298011ad8@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 12 Nov 2020 17:12:52 -0800
+Message-ID: <CAEf4BzbZ-4=gh4MAREE=W9=s3-38GL1S7EU8vbMuR6-8kZD26w@mail.gmail.com>
+Subject: Re: [RFC/PATCH 3/3] btf_encoder: Func generation fix
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 2020/11/12 下午5:15, Xuan Zhuo wrote:
-> Since XDP_TX uses an independent queue to send data by default, and
-> requires a queue for each CPU, this condition is often not met when the
-> number of CPUs is relatively large, but XDP_TX is not used in many
-> cases. I hope In this case, XDP is allowed to load and a warning message
-> is submitted. If the user uses XDP_TX, another error is generated.
+On Thu, Nov 12, 2020 at 5:01 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> This is not a perfect solution, but I still hope to solve some of the
-> problems first.
 >
-> Signed-off-by: Xuan Zhuo<xuanzhuo@linux.alibaba.com>
+>
+> On 11/12/20 4:30 PM, Andrii Nakryiko wrote:
+> > On Thu, Nov 12, 2020 at 4:19 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> On Thu, Nov 12, 2020 at 4:08 PM Andrii Nakryiko
+> >> <andrii.nakryiko@gmail.com> wrote:
+> >>>
+> >>> So I looked at your vmlinux image. I think we should just keep
+> >>> everything mostly as it it right now (without changes in this patch),
+> >>> but add just two simple checks:
+> >>>
+> >>> 1. Skip if fn->declaration (ignore correctly marked func declarations)
+> >>> 2. Skip if DW_AT_inline: 1 (ignore inlined functions).
+> >>>
+> >>> I'd keep the named arguments check as is, I think it's helpful. 1)
+> >>> will skip stuff that's explicitly marked as declaration. 2) inline
+> >>> check will partially mitigate dropping of fn->external check (and we
+> >>> can't really attach to inlined functions).
+> >>
+> >> I thought DW_AT_inline is an indication that the function was marked "inline"
+> >> in C code. That doesn't mean that the function was actually inlined.
+> >> So I don't think pahole should check that bit.
+> >
+> > According to DWARF spec, there are 4 possible values:
+> >
+> > DW_INL_not_inlined = 0            Not declared inline nor inlined by
+> > the compiler
+> > DW_INL_inlined = 1                Not declared inline but inlined by
+> > the compiler
+> > DW_INL_declared_not_inlined = 2   Declared inline but not inlined by
+> > the compiler
+> > DW_INL_declared_inlined = 3       Declared inline and inlined by the compiler
+> >
+> > So DW_INL_inlined is supposed to be added to functions that are not
+> > marked inline, but were nevertheless inlined. I saw this for one of
+> > vfs_getattr entries in DWARF, which clearly is not marked inline.
+>
+> I looked at llvm source code, llvm only tries to assign DW_INL_inlined
+> and also only at certain conditions. Not sure about gcc. Probably
+> similar. So this field is not reliable, esp. without it does not mean it
+> is not inlined.
 
+Can't say I'm surprised...
 
-This leads bad user experiences.
-
-Let's do something like this:
-
-1) When TX queues is sufficient, go as in the past
-2) When TX queue is not, use tx lock to synchronize
-
-Thanks
-
+>
+> >
+> > But also that DWARF entry had proper args with names, so it would work
+> > fine as well. I don't know, with DWARF it's always some guessing game.
+> > Let's leave DW_AT_inline alone for now.
+> >
+> > Important part is skipping declarations (when they are marked as
+> > such), though I'm not claiming it will solve the problem completely...
+> > :)
+> >
