@@ -2,185 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596B72B13C8
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 02:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1752B139B
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 02:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgKMBUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 20:20:11 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:38005 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725965AbgKMBUL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 20:20:11 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 200765C0136;
-        Thu, 12 Nov 2020 20:20:10 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 12 Nov 2020 20:20:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:content-transfer-encoding:content-type:subject:from
-        :cc:to:date:message-id:in-reply-to; s=fm2; bh=+eUC68+z0ydcrOLBLk
-        YAA0zrk/j30lG/uV9w1GMqqLI=; b=owgI4oNvwsaAj3eDLg/AK4iciFuTCoNBlD
-        FReffE70LRq53r+OgzZyd/QqVly+3AjJL03eQMpmcDV1su6ongPlxGVpIG6D9IkK
-        IEKUdQv2644YlZremmIEii/uZy413hCToxXOvrCZePkdmBX1yrVAW+5Z3fmjZSbY
-        6yYKlW6mdEdH39J8Ts9GRdGhok8PKrMzO3QgZ2OoHY97V6HbKBry7k5AifmVEHje
-        fNkwZD9RASGJ0amDNVrhJFS98T6Hkk+PQ5iBosXpAOdbrL4hc9mrO0i1KmqoWZVf
-        ibaZEhRJ7rvZrbmWhM8nhnvOHpZFKywZwuxEc/72gICSLLwXR1DQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=+eUC68+z0ydcrOLBLkYAA0zrk/j30lG/uV9w1GMqqLI=; b=rFNc3H+i
-        +paQI5iQwu0n3xKjo24rRQeDgJSbtwpcsoyqkrcZ2D6/rJAtiDPF77PmCTnR8xzj
-        RtjW3YH8CMcV9XRybj1grvlo+Ai1RiwGUV8dr0uxg49whJEN8lWchEyX3QhO3C50
-        7ED/fN/gk+OLhXL2/kzOJm5FPQM6pVmxSLLg3IZUUNBKQlxA46OP/InN7rxthFNV
-        8oPeF6avpA5Tzlmz5PR84k08B3jZmNemeOt6ACo2JkpyOqIvLIJ2V2bzMdaFcCvC
-        ZAEshVK8uJKwj1E5lbuAdSZat+HJu9VCX/m1EoKTJab3BWewITUgl35q4Cd+okuS
-        sWWuOhjZy7saYg==
-X-ME-Sender: <xms:Sd-tX0iDmPi87BmGmZxxUnwkmTt5ZKYJd4ZaZT_Iq5bp3vqrVFGtEQ>
-    <xme:Sd-tX9CxOJ03ZdPELXpQRGN57Y7yU6gTen0Ioqycv9-VO2YNmzjruJ3tuZRzP_wlU
-    fpNByJyvyIubg2JWw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedruddvgedgfeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpegggf
-    gtuffhvfffkfgjsehtqhertddttdejnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepjeefhfdufeefhfejvd
-    evhfehudeltdeujeevudegvdejvdejleejgfegtdejjeevnecukfhppeeiledrudekuddr
-    uddthedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:Sd-tX8HtBCQ0M6HNxCyleDkmBfLarDojJmMbq9VJAyZVSX8uIqP7sw>
-    <xmx:Sd-tX1QNhJQZWB0p5KrnEkHCaVS_9nAXzdTrVZzNvp7uQSwCcC4QqA>
-    <xmx:Sd-tXxzp5j1FGpD1A5fEDcS6moZ2UWG-M9LAgUolYb2ixft4LuHE8g>
-    <xmx:St-tX899YzeglagW-BvGCRiWNYc8PLTWewEC9kP0qfv_-QiWTXvSmA>
-Received: from localhost (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 46B9F3280064;
-        Thu, 12 Nov 2020 20:20:09 -0500 (EST)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Subject: Re: Extending bpf_get_ns_current_pid_tgid()
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-Cc:     <cneirabustos@gmail.com>, <ebiederm@xmission.com>, <blez@fb.com>
-To:     "Yonghong Song" <yhs@fb.com>, <bpf@vger.kernel.org>
-Date:   Thu, 12 Nov 2020 16:57:00 -0800
-Message-Id: <C71Q73J0Y8S5.3PXMV3YTPDCL7@maharaja>
-In-Reply-To: <3fb902d7-a88c-f9ed-03f0-460f7bd552fa@fb.com>
+        id S1726005AbgKMBBK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 20:01:10 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7324 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725965AbgKMBBK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 12 Nov 2020 20:01:10 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AD0tTBu006989;
+        Thu, 12 Nov 2020 17:01:04 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=2d725ACVCgvyWcoqLG/Jcav9R6tMvylilSzVR3va+bs=;
+ b=rRhYh1tD61zwqDEOo0RY5C3HPBuwvNBm0Jj6y2JeB2fa1ApnaW4hmsZdZXYP1oBCwjSW
+ yAZUq1iUyOc6VGsxQwEgtph39zsdwaa7yV1b1PXD1XO/q0ccU/O51rQVf/BA5DEZhFQ6
+ JLl27t9qUDM3IrS6uVETmQF3PLVEC6q0Hfw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34s7crkb55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 12 Nov 2020 17:01:04 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 12 Nov 2020 17:01:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UoGFYfFdKdHwlv6gQ3qFH5GqiLBiWBVUlqJLReUHMdHixuE0jSgLkpvN8aaHq2rPk2wNv2bNX8gCAjaoDTfv0u0cZeHDDyBFcYTnLlCPpHz6bqvEO1LxOK7FlzFQF7c+1Ag2p1X5xtQVPYQ3cETMVID7yhdV+MkvRHR25cPhBPDH6hXWrQCRvhn+VVe0mKrLXvKo5mEIkhTOex+CUD0oUVw+iCa5BB5sOOjytq/aW9zyl5lay7Qe77SJKNezgwRCbFEc6uZL8LTo3xYGohDtc7cHBw84TzyXpu/iTt7yHwzESqg6AWibfWP0ZdaYxnzzuPMpVdbJbC3Bf9e/JX3xLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2d725ACVCgvyWcoqLG/Jcav9R6tMvylilSzVR3va+bs=;
+ b=mcqFBkfZE30BqR9U51AXvZVNIs7w1m1eFVy0aB6l8P/07+0uPCLrfgH+GDGmKj9HhM+v/+DHFiQiVcwWxY+B0r97Of7Vj9CWC0UpTi8xKhsQVb8DZSea4hTlwqeUlDA/28OzK2OavVzbkTEM48sVTTFb0+CRTecSMD/3xOO56iA/c9MC4VYKvUAanFmm0hYTmRXwsEyeWVZ3Mzf2Wl/3jXdbgilv/DIaLCrou1FNSMNELiqq3GHWzt3mnp6Tak6/59fWUWUQJxDuPotCoVVZKJSmpzi6svlNhmoCZSmBOG9SoR8gbsjSYx5WeMeG4mjk0vUrLexeOGtAvnP+UDJfEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2d725ACVCgvyWcoqLG/Jcav9R6tMvylilSzVR3va+bs=;
+ b=STub/5POAHiXXtS4dpcE26ipH9dWOQTWVvsWUgkdpWORiBXzPiFchvmeHinabFI+QDWugLpEd3ymelH/eeheqETZ0eyDex4UxZF1GAS8WcY/0mSaF+ks7Iiai0rtSZiQUf+S+45XCGxuFotA2iegQ+jY+RqXgKc152uT6PZDv1Q=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3045.namprd15.prod.outlook.com (2603:10b6:a03:f9::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.24; Fri, 13 Nov
+ 2020 01:01:02 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
+ 01:01:02 +0000
+Subject: Re: [RFC/PATCH 3/3] btf_encoder: Func generation fix
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        <dwarves@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Hao Luo <haoluo@google.com>
+References: <20201112150506.705430-1-jolsa@kernel.org>
+ <20201112150506.705430-4-jolsa@kernel.org>
+ <CAEf4BzbhojeSdASwt4y4XEtgAF1caYx=-AuwzWJZv7qKgzkroA@mail.gmail.com>
+ <20201112211413.GA733055@krava>
+ <CAEf4BzbePw8gksT0MH=hwp4Pv1EV1-MOeiwfoFVR64XWFccTHw@mail.gmail.com>
+ <CAADnVQKUYFE0vE3XZB0FPNMxw_+BNpOLJ37QJ+CxLbssDPHFdw@mail.gmail.com>
+ <CAEf4BzZhRPVf=qVU7vVrtVaJzvBmsWL3hHYySKczMrrO-1Xotw@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <7834ab75-6e08-9f95-4885-d65298011ad8@fb.com>
+Date:   Thu, 12 Nov 2020 17:00:59 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.2
+In-Reply-To: <CAEf4BzZhRPVf=qVU7vVrtVaJzvBmsWL3hHYySKczMrrO-1Xotw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:3ef]
+X-ClientProxiedBy: CO2PR04CA0111.namprd04.prod.outlook.com
+ (2603:10b6:104:7::13) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::11f6] (2620:10d:c090:400::5:3ef) by CO2PR04CA0111.namprd04.prod.outlook.com (2603:10b6:104:7::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Fri, 13 Nov 2020 01:01:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 09ac1306-769c-4fc5-8f4a-08d8876f975c
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3045:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3045E4D575045270D638CE36D3E60@BYAPR15MB3045.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AQK5+KKzmSY6IlOxMIBGA7JA2UWZCekCU6WEq/7ngodxoVpIo/Qwsh0BEOEhLcXhHdr74cuEbRsyCg/B5lDzkiTYorthxnXeSs71AHefxQYHs49IRLU1JovKYyZKF9oygDfBw9wSAs0oEd2TL+8OgYiKgnLx4c1vThgm7ZWyG+Dz+JY8sJ2oTn8ScHeTumJTx361pRE+iD5LzqRhEbVjtNrV1oMXedZT6c1ggp8+iJ+NbhfA76AECitS3cvruu40M4ms+h8iQqQhZKTrocTXE3/yC3bhz5u8DtPmyjht4xlS048uafRrSCKQoMCJjbfm0rRKKs2IM8Rt3aq+yOvKIH4A3clG0ShaESvAunuAlIkO+LX2ZXc5XKuGjtjegrAm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(346002)(376002)(136003)(366004)(31696002)(86362001)(66556008)(66476007)(2616005)(53546011)(186003)(4326008)(66946007)(6486002)(31686004)(8936002)(36756003)(52116002)(2906002)(110136005)(478600001)(54906003)(16526019)(8676002)(316002)(5660300002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 8Z8uspGkgFnuhFFzorckPVdcbn+guBGvWHVlLSKiVjFwwMmSqTVeK5sLd/CC5J49ZESpKC8XXLzoJhFQbZZL60uda6DRCSmsa8yDvS4ZwYi1qetkyiikeIDSRvXvY1os5+mBVB4cvKnBmXuJZgxsKF3UQWc/hqgglOV4/1AR2T0l6tM6WYHiCXsCDCAcTS+E21GfEWKv0O0YqUE0w1rgcOKeW4uLY+Kp1SNOgd5nBhna4gjok4PU/xPNNmp6C75vMZO5+VXX51fUW/jm8n2uMiadbWNS8jrPcEuC1AI/Pr1CRUQuWHyetJMJh424x3HezSzdbdIHwH0J7Ms3l4PY0iQ7SezhQUP18y4sMx6EvkNJb0hfJZsNrSdGMvAOJJQrZGP3OKvHTIYVMwhKIZFZxip1NgYumXqJmE2SJOg5qxQlPRC2uQ12659v2t8RpkL1lQipzqmnDos31Qg48n2zNFg8EkYfQfTVGjubHVYq5T54UITgntM06i+2P9mHAQrqg3mqDUZZYAPmnMmWW8qOsbe+OW9xGBmUwUgNSk4C1pdCoWq34TIZ4kTQs7A9AcYF5z95G+MglDEjm22TTItatO1vX3HfqNv5Je1y0WHCJow3381C5oQaQ5ZV2Lr1hJPjRKMK+c8R8UuaI39X3wBBoZjzHaXdI4itJQ4SbU8GQIBKCcXxLgImgyDcoalyXleX4oGvanBZew/Z3r1vDYMJcL7VOkcs9pUK4u6J2eOugZUqM34An+94dfUzBB0+m33wNRk8ScsR28/u2kI41yyKbHAeNeDPjJPHZdbim7dggjVi+wKfUW5uOCeUI81v3+WEpySrV/JU982Jthv/ts93w3YRc5zVMohhfKBvm1DunwEyQOAWtbs++p8EMshrmaMLm+BfNqa06RbhClT+Z2NRqB83gxHLr0K1AisH2yEWEX0=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09ac1306-769c-4fc5-8f4a-08d8876f975c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 01:01:02.5249
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f+jDDuI7A7etRHEISRylbA3JoE9kVSq8qTv2JHZFuAb8lwTKLAgGIzTsqXrAh9jR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3045
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-12_16:2020-11-12,2020-11-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 impostorscore=0 priorityscore=1501
+ malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011130002
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu Nov 12, 2020 at 4:27 PM PST, Yonghong Song wrote:
->
->
-> On 11/12/20 2:20 PM, Daniel Xu wrote:
-> > Hi,
-> >=20
-> > I'm looking at the current implementation of
-> > bpf_get_ns_current_pid_tgid() and the helper seems to be a bit overly
-> > restricting to me. Specifically the following line:
-> >=20
-> >      if (!ns_match(&pidns->ns, (dev_t)dev, ino))
-> >              goto clear;
-> >=20
-> > Why bail if the inode # does not match? IIUC from the old discussions,
-> > it was b/c in the future pidns files might belong to different devices.
-> > It's not clear to me (possibly b/c I'm missing something) why the inode
-> > has to match as well.
->
-> Yes, pidns file might belong to different devices in theory so we need
-> to match dev as well.
->
-> The inode number needs to match so we can ensure user indeed wants to
-> get the *current pidns* tgid/pid.
 
-Right, this double-checking at the API level is what feels strange to
-me -- why make the user prove they know what they're doing?
 
-Furthermore, the "proof" restricts flexibility. It's as if
-bpf_get_current_task() required a (dev,ino) pair. How would you get the
-namespaced pid for a process you don't know about yet? eg when you're
-profiling the system.
+On 11/12/20 4:30 PM, Andrii Nakryiko wrote:
+> On Thu, Nov 12, 2020 at 4:19 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Thu, Nov 12, 2020 at 4:08 PM Andrii Nakryiko
+>> <andrii.nakryiko@gmail.com> wrote:
+>>>
+>>> So I looked at your vmlinux image. I think we should just keep
+>>> everything mostly as it it right now (without changes in this patch),
+>>> but add just two simple checks:
+>>>
+>>> 1. Skip if fn->declaration (ignore correctly marked func declarations)
+>>> 2. Skip if DW_AT_inline: 1 (ignore inlined functions).
+>>>
+>>> I'd keep the named arguments check as is, I think it's helpful. 1)
+>>> will skip stuff that's explicitly marked as declaration. 2) inline
+>>> check will partially mitigate dropping of fn->external check (and we
+>>> can't really attach to inlined functions).
+>>
+>> I thought DW_AT_inline is an indication that the function was marked "inline"
+>> in C code. That doesn't mean that the function was actually inlined.
+>> So I don't think pahole should check that bit.
+> 
+> According to DWARF spec, there are 4 possible values:
+> 
+> DW_INL_not_inlined = 0            Not declared inline nor inlined by
+> the compiler
+> DW_INL_inlined = 1                Not declared inline but inlined by
+> the compiler
+> DW_INL_declared_not_inlined = 2   Declared inline but not inlined by
+> the compiler
+> DW_INL_declared_inlined = 3       Declared inline and inlined by the compiler
+> 
+> So DW_INL_inlined is supposed to be added to functions that are not
+> marked inline, but were nevertheless inlined. I saw this for one of
+> vfs_getattr entries in DWARF, which clearly is not marked inline.
 
->
-> (dev, ino) input expressed user intention. Without this, in no-process
-> context, it will be hard to interpret the results.
+I looked at llvm source code, llvm only tries to assign DW_INL_inlined
+and also only at certain conditions. Not sure about gcc. Probably 
+similar. So this field is not reliable, esp. without it does not mean it 
+is not inlined.
 
-But bpf_get_current_pid_tgid() doesn't return errors so this shouldn't
-either, right?
-
->
-> >=20
-> > Would it be possible to instead have the helper return the pid/tgid of
-> > the current task as viewed _from_ the `dev`/`ino` pidns? If the current
-> > task is hidden from the `dev`/`ino` pidns, then return -ENOENT. The use
-> > case is for bpftrace symbolize stacks when run inside a container. For
-> > example:
-> >=20
-> >      (in-container)# bpftrace -e 'profile:hz:99 { print(ustack) }'
->
-> I think you try to propose something like below:
-> - user provides dev/ino
-> - the helper will try to go through all pidns'es (not just active
-> one), if any match pidns match, returns tgid/pid in that pidns,
-> otherwise, returns -ENOENT.
-
-Right, exactly.
-
->
-> The current helper is
-> bpf_get_ns_current_pid_tgid
-> you want
-> bpf_get_ns_pid_tgid
->
-> I think it is possible, you need to check
-> pid->numbers[pid_level].ns
-> for all pid levels. You need to get a reference count for the namespace
-> to ensure valid result.
->
-> This may work for root inode, but for container inode, it may have
-> issues. For example,
-> container 1: create, inode 2
-> container 1 removed
-> container 2: create, inode 2
-> If you use inode 2, depending on timing you may accidentally targetting
-> wrong container.
-
-Yeah, so maybe an fd to /proc/<pid>/ns/pid or something.
-
->
-> I think you can workaround the issue without this helper. See below.
->
-> >=20
-> > This currently does not work b/c bpftrace will generate a prog that get=
-s
-> > the root pidns pid, pack it with the stackid, and pass it up to
-> > userspace. But b/c bpftrace is running inside the container, the root
-> > pidns pid is invalid and symbolization fails.
->
-> bpftrace can generate a program takes dev/inode as input parameters in
-> map. The bpftrace will supply dev/inode value, by query the current
-> system/container, and then run the program.
-
-I don't think it's very feasible to have bpftrace integrate with every
-container runtime out there. This also becomes really difficult to
-manage if you want to trace N processes. You'd need N maps or N progs.
-
->
-> >=20
-> > What would be nice is if bpftrace could generate a prog that gets the
-> > current pid as viewed from bpftrace's pidns. Then symbolization would
-> > work.
->
-> Despite the above workaround, what you really need is although it is
-> running on container, you want to get stack trace interpreted with
-> root pid/tgid for symbolization purpose? But you can already achieve
-> this with bpf_get_pid_tgid()?
-
-No, this isn't possible when bpftrace runs inside the container. ie
-bpftrace is in a pidns along with the tracees. Bpftrace gets the root
-pidns pid from the kernel but cannot resolve it to the pidns pid. That
-means bpftrace cannot find the executable file to symbolize against.
-
-[...]
-
-Thanks,
-Daniel
+> 
+> But also that DWARF entry had proper args with names, so it would work
+> fine as well. I don't know, with DWARF it's always some guessing game.
+> Let's leave DW_AT_inline alone for now.
+> 
+> Important part is skipping declarations (when they are marked as
+> such), though I'm not claiming it will solve the problem completely...
+> :)
+> 
