@@ -2,113 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545292B265B
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 22:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E632B26C2
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 22:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgKMVOg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 16:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgKMVOg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 16:14:36 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA8BC0613D1
-        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 13:14:35 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id a9so15072404lfh.2
-        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 13:14:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KviX0rcak+ARccgKrmiOPUL4xxtYUmjKoN9SOQyA0lM=;
-        b=WAUFm6kpKWLUNLFWWPtEeh8AyXuo9ubgQGaxugOKLHZppGH/FvHrzp6xLsLE3WqOGb
-         mE0tmYNDMRvCwecB4a0vPxOEYfF2JvNRy7T188p4baruaXy1fF5uUMo8JbqAclLdCs70
-         8LSAEVfV3Lr9haDHgZnTmtUwFwhbHYXCeswqc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KviX0rcak+ARccgKrmiOPUL4xxtYUmjKoN9SOQyA0lM=;
-        b=ZSmdZxzwgRQHS2vwUR11Wma0Fjc/Pdzf+F6azFz7lOsUdVxziuTdXJ/fcOs8vVrgEb
-         7kRQomC1LayZ/Op9y2igOL9HEzs7ZeKIjYPzJvBq6tU3uKARxPwiunQoKRo31180y1gH
-         LM7f0YTvfRdoyuVMS2RJxLW08tTtXByAVDB0k8HIldWQw1JuwejbhJZ2Pyia3RyAOF51
-         DMmShjeEFWX0xo3YuUYYRU6pi4jABSjz+utHaKmk6sUJdRuxODk2BbPIblaOuQNsi8An
-         JcTY+iXrKFI73/IbclJQy4fKGHfwsUBxFS9fWroCkGzg7LKq2nzGDpD1K3YIysU1Ndan
-         LWOQ==
-X-Gm-Message-State: AOAM5310XD0SaANMc5j3DPMtyEg3ChRLH+zqKHm/bSXLsjw7TbKtXm7g
-        9R6PQUaRz0xqtk7Mog5CqgCn6ZmirPUxXQ==
-X-Google-Smtp-Source: ABdhPJyV4L/AzKpOdFimhC8fPmAFzg8PvDKnddhRg/wbKom8yMLd4M2Uq42SIjB9GrxcG1TSphiqDg==
-X-Received: by 2002:ac2:4645:: with SMTP id s5mr1772202lfo.196.1605302073560;
-        Fri, 13 Nov 2020 13:14:33 -0800 (PST)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id p21sm1780469ljj.13.2020.11.13.13.14.28
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Nov 2020 13:14:28 -0800 (PST)
-Received: by mail-lj1-f182.google.com with SMTP id y16so12541640ljk.1
-        for <bpf@vger.kernel.org>; Fri, 13 Nov 2020 13:14:28 -0800 (PST)
-X-Received: by 2002:a05:651c:2cb:: with SMTP id f11mr1706774ljo.371.1605302068145;
- Fri, 13 Nov 2020 13:14:28 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605134506.git.dxu@dxuuu.xyz> <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
- <20201113170338.3uxdgb4yl55dgto5@ast-mbp> <CAHk-=wjNv9z6-VOFhpYbXb_7ePvsfQnjsH5ipUJJ6_KPe1PWVA@mail.gmail.com>
- <20201113191751.rwgv2gyw5dblhe3j@ast-mbp> <CAHk-=whpsK0s8x51rE8fUSfr4r783j09BSqXqi95uHc0WKG7ig@mail.gmail.com>
- <20201113205746.htvdzudtqrw6h7oa@ast-mbp>
-In-Reply-To: <20201113205746.htvdzudtqrw6h7oa@ast-mbp>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 13 Nov 2020 13:14:12 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjLp=6=nu1Zkd3cG4FepUWu2TyrBR1YpLLO8Y_WrrKyTg@mail.gmail.com>
-Message-ID: <CAHk-=wjLp=6=nu1Zkd3cG4FepUWu2TyrBR1YpLLO8Y_WrrKyTg@mail.gmail.com>
-Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S1726553AbgKMV3S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 16:29:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47296 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726598AbgKMV3S (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Nov 2020 16:29:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605302956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Yt4Yf/8RWFm42EEeYFCNqKzy2uiuXfYp7W6ukYao1A=;
+        b=d5iz8mI7piuLPixK+sjrqXlj+EdTVvHpFd2pHBKLsHpr2sHcj3NDLNW0dKkzBXuG8nDTPI
+        HHp3pbZzKeqM8guLcuy3Xj2a3VyD/mTNpaVGc82Ajjw3HTgr7DQD+XCs6E43igKe4stJ4d
+        NVDshwGzWvO485ENOJVr8a3qlJM3hbY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-4f7lXoerNWK7sFSgomwCkQ-1; Fri, 13 Nov 2020 16:29:12 -0500
+X-MC-Unique: 4f7lXoerNWK7sFSgomwCkQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B00A1006C8B;
+        Fri, 13 Nov 2020 21:29:10 +0000 (UTC)
+Received: from krava (unknown [10.40.195.79])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 11F486115F;
+        Fri, 13 Nov 2020 21:29:07 +0000 (UTC)
+Date:   Fri, 13 Nov 2020 22:29:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH 2/2] btf_encoder: Fix function generation
+Message-ID: <20201113212907.GD842058@krava>
+References: <20201113151222.852011-1-jolsa@kernel.org>
+ <20201113151222.852011-3-jolsa@kernel.org>
+ <CAEf4Bzb4yu4K+fk33n0Tas78XsKMFw+tofF2o5sOwumBC82u9Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzb4yu4K+fk33n0Tas78XsKMFw+tofF2o5sOwumBC82u9Q@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 12:57 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> (a) is the only case.
+On Fri, Nov 13, 2020 at 12:56:40PM -0800, Andrii Nakryiko wrote:
+> On Fri, Nov 13, 2020 at 7:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Current conditions for picking up function records break
+> > BTF data on some gcc versions.
+> >
+> > Some function records can appear with no arguments but with
+> > declaration tag set, so moving the 'fn->declaration' in front
+> > of other checks.
+> >
+> > Then checking if argument names are present and finally checking
+> > ftrace filter if it's present. If ftrace filter is not available,
+> > using the external tag to filter out non external functions.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> 
+> I tested locally, all seems to work fine. Left few suggestions below,
+> but those could be done in follow ups (or argued to not be done).
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> BTW, for some stats.
+> 
+> BEFORE allowing static funcs:
+> 
+> .BTF ELF section
+> =======================================
+> Data size:      4101624
+> Header size:    24
+> Types size:     2472836
+> Strings size:   1628764
+> 
+> BTF types
+> =======================================
+> Total        2472836 bytes (83310 types)
+> Struct:       920436 bytes (10305 types)
+> FuncProto:    638668 bytes (18869 types)
+> Func:         308304 bytes (25692 types)
+> Enum:         184308 bytes (2293 types)
+> Ptr:          173484 bytes (14457 types)
+> Array:         89064 bytes (3711 types)
+> Union:         81552 bytes (1961 types)
+> Const:         34368 bytes (2864 types)
+> Typedef:       32124 bytes (2677 types)
+> Var:            4688 bytes (293 types)
+> Datasec:        3528 bytes (1 types)
+> Fwd:            1656 bytes (138 types)
+> Volatile:        360 bytes (30 types)
+> Int:             272 bytes (17 types)
+> Restrict:         24 bytes (2 types)
+> 
+> 
+> AFTER allowing static funcs:
+> 
+> .BTF ELF section
+> =======================================
+> Data size:      4930558
+> Header size:    24
+> Types size:     2914016
+> Strings size:   2016518
+> 
+> BTF types
+> =======================================
+> Total        2914016 bytes (108282 types)
+> Struct:       920436 bytes (10305 types)
+> FuncProto:    851528 bytes (24814 types)
+> Func:         536664 bytes (44722 types)
+> Enum:         184308 bytes (2293 types)
+> Ptr:          173484 bytes (14457 types)
+> Array:         89064 bytes (3711 types)
+> Union:         81552 bytes (1961 types)
+> Const:         34368 bytes (2864 types)
+> Typedef:       32124 bytes (2677 types)
+> Var:            4688 bytes (293 types)
+> Datasec:        3528 bytes (1 types)
+> Fwd:            1656 bytes (138 types)
+> Volatile:        360 bytes (30 types)
+> Int:             256 bytes (16 types)
 
-Ok, good.
+nice, is this tool somewhere in the tree?
 
-The (b) case is certainly valid in theory (and we might even
-traditionaly have had something like that for things like ->comm[]
-accesses, although I think we got rid of it).
+> 
+> So 25692 vs 44722 functions, but the increase in func_proto is smaller
+> due to dedup. Good chunk is strings data for all those function and
+> parameter names.
+> 
+> 
+> >  btf_encoder.c | 24 ++++++++++--------------
+> >  1 file changed, 10 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index d531651b1e9e..de471bc754b1 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -612,25 +612,21 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> >                 const char *name;
+> >
+> >                 /*
+> > -                * The functions_cnt != 0 means we parsed all necessary
+> > -                * kernel symbols and we are using ftrace location filter
+> > -                * for functions. If it's not available keep the current
+> > -                * dwarf declaration check.
+> > +                * Skip functions that:
+> > +                *   - are marked as declarations
+> > +                *   - do not have full argument names
+> > +                *   - are not in ftrace list (if it's available)
+> > +                *   - are not external (in case ftrace filter is not available)
+> >                  */
+> > +               if (fn->declaration)
+> > +                       continue;
+> > +               if (!has_arg_names(cu, &fn->proto))
+> > +                       continue;
+> >                 if (functions_cnt) {
+> > -                       /*
+> > -                        * We check following conditions:
+> > -                        *   - argument names are defined
+> > -                        *   - there's symbol and address defined for the function
+> > -                        *   - function address belongs to ftrace locations
+> > -                        *   - function is generated only once
+> > -                        */
+> > -                       if (!has_arg_names(cu, &fn->proto))
+> > -                               continue;
+> >                         if (!should_generate_function(btfe, function__name(fn, cu)))
+> 
+> Seeing Arnaldo's confusion, I remember initially I was similarly
+> confused. I think this p->generated = true should be moved out of
+> should_generate_function() and done here explicitly. Let's turn
+> should_generate_function() into find_allowed_function() or something,
+> to encapsulate bsearch. Checking !p || p->generated could be done here
+> explicitly.
 
-But the (b) case is _so_ hard to think about and so easy to get wrong
-- readers have to be very careful to only read each byte of the source
-exactly once - that it's much much better to try to avoid it.
+ok, that should be more obvious, I'll send new version
 
-> But I think if glibc's strncpy() did something like this it would
-> probably caused a lot of pain for user space.
+> 
+> >                                 continue;
+> >                 } else {
+> > -                       if (fn->declaration || !fn->external)
+> > +                       if (!fn->external)
+> 
+> Hm.. why didn't you drop this fallback? For non-vmlinux, do you think
+> it's a problem to generate all FUNCs? Mostly theoretical question,
+> though.
 
-Oh, absolutely. The standard strncpy() function has some very strict
-behavior issues, including that zero-padding of the *whole*
-destination buffer, which would be absolutely horrid for things like
-fetching pathnames from user space (our buffer is generally close to a
-page in size).
+because it would probably allowed all static functions,
+(ftrace data has only static functions that are traceable)
+and who knows what a can of worms we'd open here ;-)
 
-In fact, the kernel strncpy() (ie the one that doesn't copy from user)
-does ado the whole "pad all zeroes at the end" exactly because people
-might depend on that. So the _actual_ strncpy() function conforms to
-the standard use - but you generally shouldn't use it, exactly because
-it's such a horrible interface. Only good for very small buffers.
+jirka
 
-> The hash element example above is typical bpf usage.
-
-The core kernel does have one very common string hash case, but it's
-for path components, and never the whole string - so it already has to
-deal with the fact that the string is very much delimited in place by
-not just NUL at the end, but also '/' characters etc.
-
-So no "copy it as a string from user space, and then use it as a
-block" that I'm aware of.
-
-              Linus
