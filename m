@@ -2,111 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524CF2B1BC7
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 14:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C60712B1CF7
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 15:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgKMNWb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 08:22:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        id S1726392AbgKMOPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 09:15:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbgKMNWb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 08:22:31 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CC9C0613D1;
-        Fri, 13 Nov 2020 05:22:30 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id p1so9868793wrf.12;
-        Fri, 13 Nov 2020 05:22:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gzAM5/34WGhJmOugyCwQPFpl5aixkDcuk0CgzVtzJO0=;
-        b=K3mFJ8hEOlm55D4UrfXq+sf04+yHRvyxv8188aJY0pqtVArXjpxOL6sPhoL9zHiov8
-         KLrP69YCyc96Iz+M37D4aPVoqP7cy7GFUffvGmcSjad+VZPXFzycpQtenLhx707ZqJ0f
-         CSUQ/tV1ra2b7NbAe6uAi9Ld5h83QhDJZ41u5kqrMrXPzFLJphgans1xKb85+YHsoxRr
-         xJos6bPWwsAcQd7qniVM4oKCIg8/UaaO+tjojmQ1Q3zC0Et3veYEh8Llqb8NwViV3EOY
-         59diiHzBNGOk+gN2Uc8FMgAIpQHPA1dG5Gn4uZ/5cnmTzshh4G0qNMnI8zXNRjiGh6Mc
-         04hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gzAM5/34WGhJmOugyCwQPFpl5aixkDcuk0CgzVtzJO0=;
-        b=NMV+I8PtqLqhtbKIvJjjDOH4WfdltaC/wiKwBtHbMzEmS/xQmC644HDMsn5MaRWjHC
-         5slSd8R7SmrdJRd5DOc7Pry1uyVb6+/EOB1NB2HHpYgmwLdVnzyZIydsARoNMcB3KY5c
-         PI4f02LpbSch8OfmkfbtMk539eggMcezWzYGzqLXKYpgKS00ipbJx2UTS6Jfz8ceycyM
-         AQnQWoul9ubGHYE2y4VlacfyVuzcnleSXFlPTzezDcNkRH7iIaaWD0EP/P64NdQP066s
-         jtoisxKUvXFcSGa6nrfNshui7bSKBCiXLQLurYXVhYrCYZCwImDukZ19j+OSRZk0gcfx
-         zg0g==
-X-Gm-Message-State: AOAM530v8G2t7UeAWx+hNa40wt2/vK8zxi7wlbez8NWHj36KJeWSbGpo
-        tJl9zZYQAl2g8LYDwPY5yWyIO02QxIEn8Gl9FxQ=
-X-Google-Smtp-Source: ABdhPJzsbxweaLb3PeIq0ZgtrnX/SUHcUw7bZeFQH523s6o7TXXrg5JBgMmvN3W4NlKC8VWr6BuZsrO3TJ4kQB0FxbI=
-X-Received: by 2002:adf:f241:: with SMTP id b1mr3485684wrp.248.1605273749327;
- Fri, 13 Nov 2020 05:22:29 -0800 (PST)
-MIME-Version: 1.0
-References: <CAJ+HfNiQbOcqCLxFUP2FMm5QrLXUUaj852Fxe3hn_2JNiucn6g@mail.gmail.com>
- <20201113122440.GA2164@myrica>
-In-Reply-To: <20201113122440.GA2164@myrica>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 13 Nov 2020 14:22:16 +0100
-Message-ID: <CAJ+HfNiE5Oa25QgdAdKzfk-=X45hXLKk_t+ZCiSaeFVTzgzsrw@mail.gmail.com>
-Subject: Re: csum_partial() on different archs (selftest/bpf)
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        viro@zeniv.linux.org.uk
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S1726278AbgKMOPt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Nov 2020 09:15:49 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D57EC0613D1;
+        Fri, 13 Nov 2020 06:15:49 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kdZra-0058ih-LK; Fri, 13 Nov 2020 14:15:42 +0000
+Date:   Fri, 13 Nov 2020 14:15:42 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Tom Herbert <tom@herbertland.com>,
         Anders Roxell <anders.roxell@gmail.com>,
         linux-riscv <linux-riscv@lists.infradead.org>,
         linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: csum_partial() on different archs (selftest/bpf)
+Message-ID: <20201113141542.GJ3576660@ZenIV.linux.org.uk>
+References: <CAJ+HfNiQbOcqCLxFUP2FMm5QrLXUUaj852Fxe3hn_2JNiucn6g@mail.gmail.com>
+ <20201113122440.GA2164@myrica>
+ <CAJ+HfNiE5Oa25QgdAdKzfk-=X45hXLKk_t+ZCiSaeFVTzgzsrw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ+HfNiE5Oa25QgdAdKzfk-=X45hXLKk_t+ZCiSaeFVTzgzsrw@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 13 Nov 2020 at 13:25, Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
->
-> Hi,
->
-> On Fri, Nov 13, 2020 at 11:36:08AM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
-> > I was running the selftest/bpf on riscv, and had a closer look at one
-> > of the failing cases:
-> >
-> >   #14/p valid read map access into a read-only array 2 FAIL retval
-> > 65507 !=3D -29 (run 1/1)
-> >
-> > The test does a csum_partial() call via a BPF helper. riscv uses the
-> > generic implementation. arm64 uses the generic csum_partial() and fail
-> > in the same way [1].
->
-> It's worse than that, because arm64, parisc, alpha and others implement
-> do_csum(), called by the generic csum_partial(), and those all return a
-> 16-bit value.
->
-> It would be good to firstly formalize the size of the value returned by
-> the bpf_csum_diff() helper, because it's not clear from the doc (and the
-> helper returns a s64).
->
-> Then homogenizing the csum_partial() implementations is difficult. One wa=
-y
-> forward, without having to immediately rewrite all arch-specific
-> implementations, would be to replace csum_partial() and do_csum() with
-> csum_partial_32(), csum_partial_16(), do_csum_32() and do_csum_16(). That
-> way we can use a generic implementation of the 32-bit variant if the
-> arch-specific implementation is 16-bit.
->
+On Fri, Nov 13, 2020 at 02:22:16PM +0100, Björn Töpel wrote:
 
-Folding Al's input to this reply.
+> Folding Al's input to this reply.
+> 
+> I think the bpf_csum_diff() is supposed to be used in combination with
+> another helper(s) (e.g. bpf_l4_csum_replace) so I'd guess the returned
+> __wsum should be seen as an opaque value, not something BPF userland
+> can rely on.
 
-I think the bpf_csum_diff() is supposed to be used in combination with
-another helper(s) (e.g. bpf_l4_csum_replace) so I'd guess the returned
-__wsum should be seen as an opaque value, not something BPF userland
-can rely on.
+Why not reduce the sucker modulo 0xffff before returning it?  Incidentally,
+implementation is bloody awful:
 
-So, for this specific test case, it's probably best to just update the
-test case (as Eric suggested).
+        /* This is quite flexible, some examples:
+         *
+         * from_size == 0, to_size > 0,  seed := csum --> pushing data
+         * from_size > 0,  to_size == 0, seed := csum --> pulling data
+         * from_size > 0,  to_size > 0,  seed := 0    --> diffing data
+         *
+         * Even for diffing, from_size and to_size don't need to be equal.
+         */
+        if (unlikely(((from_size | to_size) & (sizeof(__be32) - 1)) ||
+                     diff_size > sizeof(sp->diff)))
+                return -EINVAL;
 
+        for (i = 0; i < from_size / sizeof(__be32); i++, j++)
+                sp->diff[j] = ~from[i];
+        for (i = 0; i <   to_size / sizeof(__be32); i++, j++)
+                sp->diff[j] = to[i];
 
-Cheers, and thanks for the input!
-Bj=C3=B6rn
+        return csum_partial(sp->diff, diff_size, seed);
+
+What the hell is this (copying, scratchpad, etc.) for?  First of all,
+_if_ you want to use csum_partial() at all (and I'm not at all sure
+that it won't be cheaper to just go over two arrays, doing csum_add()
+and csum_sub() resp. - depends upon the realistic sizes), you don't
+need to copy anything.  Find the sum of from, find the sum of to and
+then subtract (csum_sub()) the old sum from the seed and and add the
+new one...
+
+And I would strongly recommend to change the calling conventions of that
+thing - make it return __sum16.  And take __sum16 as well...
+
+Again, exposing __wsum to anything that looks like a stable ABI is
+a mistake - it's an internal detail that can be easily abused,
+causing unpleasant compat problems.
