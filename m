@@ -2,155 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF642B2134
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 17:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F175C2B215D
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 18:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgKMQ7e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 11:59:34 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13320 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725941AbgKMQ7e (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 13 Nov 2020 11:59:34 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ADGuNNV004045;
-        Fri, 13 Nov 2020 08:59:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=o3rMQ2o8SVPdk9JYE4RORwuHTuYlpmGLfnxQehXDqVo=;
- b=YB2eVgDxvl9RKOWrrzv1GUGkSFjZHQwHkHc6I7PV05JhNmj+FZDGsk9w5hXbFj4pCX2Q
- Zc2w3YWO+dzwGQbyRNJxarH6jofoI80pVXgvj7Ruaz5zKTS9AldRGqz/eWy91AvY4RJf
- nvdyOnEZq2I2gRQ38lC23Xax4NR4z9Vat8g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34seqn40cx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 13 Nov 2020 08:59:30 -0800
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 13 Nov 2020 08:59:28 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gHoFfAcC+HJSNOL9OtI/t/9c5+a++DiESKuHG4RcVmrzNvjUZaHv5V1/R9OZlq+CTIWhkzJ40pxhx3qRdmL2RxO10abHMCPIlxX/lkGwzh+3Sf0NzU/QNHDmDJn9yCLyGTQa26a8tM/iOqndQUmhweKsobjnp50IxmIJT5ITbJuTThpknJwwMkMAvD6DlMpuABkS40FIOtejvTstYaGkX1qF4LD7IQH1vRfmCqZUtEDSPH60eqfiSxD6iSD6sP8jG/foC9I0yzrTCMnQ0UZH2/XGsW4OanYAjXJX5Hakb+hjkQ72CjidQmduy7qNyu0AiNwg8z6wy+iz8O4POdZukQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o3rMQ2o8SVPdk9JYE4RORwuHTuYlpmGLfnxQehXDqVo=;
- b=eiR8eu+iWuVYHorzcpB3ZHjBLSfJ1//NJukxgv52APclhnnfyHhnq1glHP3hj0K65H2ZDBcsv9uqq3xrMrcmFsH8qPF5H8mgUDzz58Prx9GGtCKC6/B7RNthDqwBsg3GV3C7YR6hiIz3ZesAeqVeClKEKWswsj50MgYW6T0VLCxiCdLa9Y1P56ODb8ixr4LXt61/1ez1xYItCwaQWhRaMBTl7M8ZU+qDAAvB9VlGhR0wWLEfCZPJa8i59EUri74+YkUQLYqIrN9O8f/k6SSQgEIO1gHJa5K/ep0CjOa/fOstytgc5s1i0J4veUE1e9cTaRHpt5pc9F1UqvheRcxrpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o3rMQ2o8SVPdk9JYE4RORwuHTuYlpmGLfnxQehXDqVo=;
- b=Zv9AISVrH24flY1FcU4PuFCUielbIQoPJm8hBI6/i9tNuVxUF2vUrCuSLjVghLs/RxjPJBxZXf1dGkOgX2Z9PNMAAyA7rluhdQ4khfDFv1HP8pZUrFNMePLjyhWgcMOqxERP/Lb10tO3vB7SBW+tJy2aSG9pFDoPQOtLf71Ssgs=
-Authentication-Results: xmission.com; dkim=none (message not signed)
- header.d=none;xmission.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2581.namprd15.prod.outlook.com (2603:10b6:a03:15a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25; Fri, 13 Nov
- 2020 16:59:28 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::8887:dd68:f497:ea42%3]) with mapi id 15.20.3541.025; Fri, 13 Nov 2020
- 16:59:28 +0000
-Subject: Re: Extending bpf_get_ns_current_pid_tgid()
-To:     carlos antonio neira bustos <cneirabustos@gmail.com>,
-        Blaise Sanouillet <blez@fb.com>
-CC:     Daniel Xu <dxu@dxuuu.xyz>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>
-References: <C71Q73J0Y8S5.3PXMV3YTPDCL7@maharaja>
- <13b5b2dd-bec0-cef2-7304-7e5a09bafb6c@fb.com>
- <MN2PR15MB2991E847DE47A265E71F1BC8A0E60@MN2PR15MB2991.namprd15.prod.outlook.com>
- <CACiB22i6d2skkJJa7uwVRrYy7dtYOxmLgFwzjtieW4BFn2tzLw@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <9067600b-f340-ec3e-2ce8-d299793c123a@fb.com>
-Date:   Fri, 13 Nov 2020 08:59:25 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.2
-In-Reply-To: <CACiB22i6d2skkJJa7uwVRrYy7dtYOxmLgFwzjtieW4BFn2tzLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:a1da]
-X-ClientProxiedBy: MW2PR16CA0048.namprd16.prod.outlook.com
- (2603:10b6:907:1::25) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::11f6] (2620:10d:c090:400::5:a1da) by MW2PR16CA0048.namprd16.prod.outlook.com (2603:10b6:907:1::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.25 via Frontend Transport; Fri, 13 Nov 2020 16:59:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 81f15152-e9c9-4454-5ae3-08d887f57b70
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2581:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2581276C967A81BBA7F94510D3E60@BYAPR15MB2581.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I/fYVeYCDpz0eaOMp4GzRG9ETVE164ksTArszqnSVYEkpLOBtdAXM0cZK5qDZV3OTkznOSFJvjIK27qn6UZSHmw3rha6k1bhkf/PF1clGjhAut9djYZmhEQKFSyhtZRCGYYKvJKseKb9Sqr+ONJRUzpourgasXxKn8Qt0D249b6yezcuXyQ3DkRqTKEQoWY1fbAdL53wJzEFGeUvY3uw8YGiWM6UPxamQ581ma3TBF0cVE0HbxBRblLp/dm22IQYEpRRQTO4RCyji0KUgW4Tdr9YUVetiWtoaNG0V5h1fOMm/U5QRh+Odj05UvM3FI0c1tg3kz951V34XZaMdy+Z5rZTTPw4S73+m6QvIQ1496MABsRJJVPNxk3nnTSSps3QbbtlvGy+ddeUQ/zoEJ0UIC7qlPzj2G4DGV+upCyUCUzqn+7PTHjPhfSdrs3VTZtOx3rfoTyXFgAt8nvJGd/Ogw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(396003)(136003)(366004)(2616005)(6636002)(5660300002)(16526019)(110136005)(31696002)(31686004)(478600001)(7116003)(6486002)(86362001)(36756003)(8676002)(316002)(66946007)(966005)(66476007)(53546011)(186003)(52116002)(2906002)(66556008)(4326008)(8936002)(54906003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 4+XjmNAEzbZFi+EitdBPJNlRwO18Ghx24P7UChZJcNFYerOXTCel6IkyXvhqWo9mUN8f29owghMihVziqsXhMJByO7dqS2u9w6tuNM7oYV6y0dtGb3oheaPvWYcCGm3nd6k8X0Y0GtZimja2RlfW7q3E3TJXkj5RN78a4czNaONX5UdEcmqNwAbwLTECpCNz7/SF1wB+TeBda0c/fPSjthXaRltsNoKwFGmpefLSCowpEQNHo6yVIlxIXpGQQehGrUEmCfxsmis484qQWuXE9hQscrrys25Bndw/LKaraXWfVj3nWcUxMPdNCxGIjMG2akNNMd9SvejvJPrVwSKUNinF32aztG51gFvhEc0BRiTJw+XWnjV1262w/K+5xK053fOH/13D8sXPgsOVDuaOQGNYsRU/ZL3dx25Jh/vOPjDCzgebRoKI4VJZMu6eu8EMqEhGS/B/BkEZOJqY5AF2frHjoOwPmX3z6K9sxGajbF2iWuDXW5Zleo38Vy1EqkBs2DfF2RGSAVeICG7LbnBobBQj57Bvk+H9MaM1gz+c9A3hTNXyp6d8bcY+sU6ZKtuOVSxXl3avZR3LBb9bTlPibZpEPBdX3wsuxuC8OivruIBoitvoBJpzlRZbfeHDeEUPX558maMGgsYyNkGwqbG4ZRpVnZ30RMyAPFzd6c7I034qCUKG/2WGe/wvx5MkQXHbh9HLqMtWTnxDtZ4bUU/0ay4xiyrvTnZOmgUV5nUdF/qkVXhOy7Ih8fIcudalby8TzleAPh0pjGZVK3Q0a9DVIWU5krr61nPnI9YAWdVolfCYyinNHOapkAoQH00VaZji1xRV0NWxOT/R9GVR4JVbOp5daoqw4zEbKtgZrnBFRMnMrlqNL8jcQIDG+M5JsvdRxNMhZdOq/WQzZ7e4lpCwzuaRSRYZpHVSoNWyFFiv6aA=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81f15152-e9c9-4454-5ae3-08d887f57b70
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2020 16:59:28.1652
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hNvT/lSZZEFYlmkX49zpbZDtM7bP9yppHTnHWl1iwJDBJFF+ZrZ+Z57t9USXoaM8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2581
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1725959AbgKMRDr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 12:03:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725941AbgKMRDr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Nov 2020 12:03:47 -0500
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161BAC0613D1;
+        Fri, 13 Nov 2020 09:03:47 -0800 (PST)
+Received: by mail-pg1-x542.google.com with SMTP id f38so7579747pgm.2;
+        Fri, 13 Nov 2020 09:03:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LhcpeztEhSnyyz+1aO3teOqINwXSucg4ESEzc6WPeoc=;
+        b=AQdsm3MNp3mnIFMz+QGpN/DdQymvfXKXy/SHFNWla4oGk4ObNpS8YeBTichXw4Esaz
+         71lSz7Cf2rgyBp5NvhxZbqu7EhhJwWU2UEwAhZY9n3e0I+XapO0ZdkHmKgHmqxFAabRp
+         hJjEXzdYHnXXDSTjdc5ZhbgLHBjIFl4HLic+AbVpAfunDIv+8YqaxyzObpZCXnYaO3jI
+         EGVTnn6/rqiDpoq/ISpOi+BJmIZ4A6dHXHWvAlQHvPysVliTN1wlgaKpeU53OyVdIsjA
+         hO6HYztdczTt8O4y5ONSc+Mv6bLCB1g+5twCHGh8fI427JBXYCSxgLWjPYJlSjHRO/07
+         1JNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LhcpeztEhSnyyz+1aO3teOqINwXSucg4ESEzc6WPeoc=;
+        b=Fos3E/Jg3YTcoQ3eHtvfwdGkU9WRnycZ2ZtVuOKympWVqIYbSztLRkGEoHTXeI1wy0
+         NdMvmDkvXFx7SpKOgFmkh1+KiMPj6V546kMGt8e1a3QPOrnpBYmDEYB9Ei1FZC8x43S8
+         Y2Kohscl1XnChBISkMtX/ewUs9SanPGhkeAKWl65ReJpMpVL17Vs0LYVxDLOLBW3r/zM
+         Zgx2J4SZEwhJ1GGAhtHQTlh9VlfVFYgqlTbXahzmYQvVnee1yPdZXxFaQfObPJrN+jDV
+         0WT8LS/81wF5MV6znDCCS/jfo5DmKTOY7Y1SsciRIf075l0nKe+ba9Xp7mbkTDI35foK
+         AcyA==
+X-Gm-Message-State: AOAM532/AHE6TpmTArKbmrM2X8lnr5yMNbes4nqT51EVzfXj5L8s0og8
+        RYiOLf3vydnwd2V3NTzReXw=
+X-Google-Smtp-Source: ABdhPJz9yGWn+D7BjLTOVW78Tfs7NDadFZE5vy8vdY6BwlWMGcXYND0VF/H8u81orR69wieqFf1h1A==
+X-Received: by 2002:a63:5466:: with SMTP id e38mr2771895pgm.23.1605287021817;
+        Fri, 13 Nov 2020 09:03:41 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:b8c0])
+        by smtp.gmail.com with ESMTPSA id k8sm9192571pgi.39.2020.11.13.09.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Nov 2020 09:03:40 -0800 (PST)
+Date:   Fri, 13 Nov 2020 09:03:38 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        torvalds@linux-foundation.org
+Subject: Re: [PATCH bpf v5 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
+ after NUL terminator
+Message-ID: <20201113170338.3uxdgb4yl55dgto5@ast-mbp>
+References: <cover.1605134506.git.dxu@dxuuu.xyz>
+ <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-13_10:2020-11-13,2020-11-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- lowpriorityscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- adultscore=0 phishscore=0 spamscore=0 bulkscore=0 mlxscore=0
- suspectscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011130110
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5eed57b42cc077d24807fc6f2f7b961d65691e5.1605134506.git.dxu@dxuuu.xyz>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Nov 11, 2020 at 02:45:54PM -0800, Daniel Xu wrote:
+> do_strncpy_from_user() may copy some extra bytes after the NUL
+> terminator into the destination buffer. This usually does not matter for
+> normal string operations. However, when BPF programs key BPF maps with
+> strings, this matters a lot.
+> 
+> A BPF program may read strings from user memory by calling the
+> bpf_probe_read_user_str() helper which eventually calls
+> do_strncpy_from_user(). The program can then key a map with the
+> resulting string. BPF map keys are fixed-width and string-agnostic,
+> meaning that map keys are treated as a set of bytes.
+> 
+> The issue is when do_strncpy_from_user() overcopies bytes after the NUL
+> terminator, it can result in seemingly identical strings occupying
+> multiple slots in a BPF map. This behavior is subtle and totally
+> unexpected by the user.
+> 
+> This commit has strncpy start copying a byte at a time if a NUL is
+> spotted.
+> 
+> Fixes: 6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user, kernel}_str helpers")
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  lib/strncpy_from_user.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/lib/strncpy_from_user.c b/lib/strncpy_from_user.c
+> index e6d5fcc2cdf3..83180742e729 100644
+> --- a/lib/strncpy_from_user.c
+> +++ b/lib/strncpy_from_user.c
+> @@ -40,12 +40,11 @@ static inline long do_strncpy_from_user(char *dst, const char __user *src,
+>  		/* Fall back to byte-at-a-time if we get a page fault */
+>  		unsafe_get_user(c, (unsigned long __user *)(src+res), byte_at_a_time);
+>  
+> +		if (has_zero(c, &data, &constants))
+> +			goto byte_at_a_time;
+> +
+>  		*(unsigned long *)(dst+res) = c;
+> -		if (has_zero(c, &data, &constants)) {
+> -			data = prep_zero_mask(c, data, &constants);
+> -			data = create_zero_mask(data);
+> -			return res + find_zero(data);
+> -		}
+> +
+>  		res += sizeof(unsigned long);
+>  		max -= sizeof(unsigned long);
+>  	}
 
+The fix looks good to me. It's indeed better than v4 approach.
 
-On 11/13/20 6:34 AM, carlos antonio neira bustos wrote:
-> Hi Blaise and Daniel,
-> 
-> 
-> I was following a couple of months ago how bpftrace was going to handle 
-> this situation. I thought this PR 
-> https://github.com/iovisor/bpftrace/pull/1602 
-> <https://github.com/iovisor/bpftrace/pull/1602> was going to be merged 
-> but just found today that is not working.
-> 
-> I agree with Yonghong Song on the approach of using the two helpers 
-> (bpf_get_pid_tgid() and bpf_get_ns_current_pid_tgid()) to move forward 
-> on the short term, bpf_get_ns_current_pid_tgid works as a replacement  
-> to bpf_get_pid_tgid when you are instrumenting inside a container.
-> 
-> But the use case described by Blaise is one I would like to use bpftrace,
-> 
-> If nobody is against it, I could start working on a new helper to 
-> address that situation as I need to have bpftrace working in that scenario.
-
-Yes, please. Thanks!
-
-> 
-> For my understanding of the problem the new helper should be able to 
-> return pid/tgid from a target namespace, is that correct?.
-
-Yes. This way, the stack trace can correlate to target namespace for
-symbolization purpose.
-
-> 
-> 
-> Bests
-> 
-> 
-[...]
+Linus,
+I think you might have an opinion about it.
+Please see commit log for the reason we need this fix.
