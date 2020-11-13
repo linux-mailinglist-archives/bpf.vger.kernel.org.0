@@ -2,106 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613542B1381
-	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 01:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 001B52B1392
+	for <lists+bpf@lfdr.de>; Fri, 13 Nov 2020 01:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgKMAud (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Nov 2020 19:50:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        id S1725965AbgKMA7j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Nov 2020 19:59:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgKMAuc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Nov 2020 19:50:32 -0500
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D3FC0613D1;
-        Thu, 12 Nov 2020 16:50:31 -0800 (PST)
-Received: by mail-oo1-xc42.google.com with SMTP id h10so212354ooi.10;
-        Thu, 12 Nov 2020 16:50:31 -0800 (PST)
+        with ESMTP id S1725929AbgKMA7j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Nov 2020 19:59:39 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7345EC0613D1
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 16:59:39 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id p8so7958570wrx.5
+        for <bpf@vger.kernel.org>; Thu, 12 Nov 2020 16:59:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=2DtYk9HZqyEvMEaETEH6zalA/3XhQS1k0ZsPubjYnnk=;
-        b=t0GmFoXmGbiGv+heed+HCO88cXvVm1/t29g3XKiIQIukIb4zdXRVeHR+Lrae5OqHDx
-         qAJw3gJG8ZC5/8C8DrOU9bsiDEkKM9FYVyfHNVPMO8GYELkL5BfPP+dLMyYIvL4/n6B4
-         7ThEO1cmNq5i7MZF/VdKyNp9bFsXj1EDlqtQMv9leH46OsyQPdWA+438jQ8XbPdQdy7U
-         w7Xsr1laomxfEgaSCs8M713mLQZ7nGnfAXLqxZR3LRIyf9vRkdWzSy2Obw2Q9NCfT5v0
-         z27AEKoYq+/ctHEl1DY/UKT4K4B2+PwWY5kbwvyN5Q/ecESWExRoYMUnXqhkL1PPqkxD
-         zQLw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lUzaJ8EeMucOBsVFqVgnjqj6uVdboqkKaNck4oy6TCM=;
+        b=BhQEmLVS8QvaL4usGLTz03Q2p3nCy3Q2M2mt/Ke8s9PkBHv/+YpDoE9ciVvqZVZxgm
+         ibT3BuXwzKyldbeNBbfKZrWd6xTBZ61kDcYN8fNfTZJNC+sgVprF49qFMeY07rGu0MiC
+         PGfk/rIPDzQhjhdwu76hfGJZHdHeF7yhOAwgo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=2DtYk9HZqyEvMEaETEH6zalA/3XhQS1k0ZsPubjYnnk=;
-        b=rBDsdZjEkCuOitkwxuvPC5Ut593rG8YCm27yKZY2eAT1sQdFhzuyJm+tGnTPZJAbt5
-         BrDzuUl2Y7LczLi5biKzcD8LnP/uD0FMtaAxL6h2Pt3/lKblzvzZCMF+TXnluBjHr6Q/
-         wxWxt4DEc6qD3S1ZN2l7lbZlGXIBxt74rHsq1ecp9I93uxoeOwzFTJHrvdLM2JGDkIDJ
-         m8GHRBdJd4ZdrZ7wyRIu2nstX62vyGAqig49mnx4XOkxgSSu2LLoea9fdHGdw3hBxDKg
-         9CD4piVvnwogYNi+Nr6J9Vpl8NhleJyxy1Zp0a7WN0K7ull9ND/HVluaELBrAqxRZad7
-         PI0g==
-X-Gm-Message-State: AOAM5304HPaku2HyookJqxou+Ea69HUjdCYWin0kTkr2OJXijRa6saPR
-        0sMqunRBmhi7+yJbEkKuKJk=
-X-Google-Smtp-Source: ABdhPJwvLtc0JIfn+lIFP0Z8u7PxKexvUTiavin7UTOHeCIdojS/tl8aT4k23PgJdP+bCgDcO4MFjQ==
-X-Received: by 2002:a4a:1e43:: with SMTP id 64mr1440265ooq.57.1605228630945;
-        Thu, 12 Nov 2020 16:50:30 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 85sm1530668oie.30.2020.11.12.16.50.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lUzaJ8EeMucOBsVFqVgnjqj6uVdboqkKaNck4oy6TCM=;
+        b=Wd0yX9NQyNQXxrSkRca99zHt8E3EK5pmpzCdsRchGg1r5OV5GA/OaWS0ZVgAcWWL6n
+         7FixVP61z+IsLaMYdPeCgrwyR3q1lagQ4OFyUVOpQ/4DTy+xvELpEhT+enh3ipMalsn+
+         yH4/YbBp3Wpxb4v03T2vDwPTrglGeN0Zo9OSCU9MVGS86lvS06xJNfeqJLVeO1pn6VgG
+         VbfHm3Abj+XavDDHAb5EHlRqKIeS5Ilku+Gjvkew4rzAh0zMjLQ/Ir5+rfgWCeH+44VL
+         aJAQp7nbApPV1X3UKV5bOh/5js3FAomnFJ10VRlnm0yMUVZhNNtzD908vPA/QpMaXJsp
+         d0uQ==
+X-Gm-Message-State: AOAM532reSNBGY3hAFu1E0oUPxZMRtZRAoCX3qK6kaVwZBHX8F+Xkqzv
+        7ZDO6kSpNFObUZl1H4IkwkjUIQ==
+X-Google-Smtp-Source: ABdhPJwT/4eiKGRT5v/QCR+GVLnIIbBdMu7AYCziCtPSsmKFM6kn59mviL6UbKz5M6j7M2GKbpNSdQ==
+X-Received: by 2002:adf:fdc5:: with SMTP id i5mr2668465wrs.26.1605229178129;
+        Thu, 12 Nov 2020 16:59:38 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id m3sm4508104wrv.6.2020.11.12.16.59.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Nov 2020 16:50:30 -0800 (PST)
-Date:   Thu, 12 Nov 2020 16:50:23 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Thu, 12 Nov 2020 16:59:37 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Santucci Pierpaolo <santucci@epigenesys.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        sdf@google.com
-Message-ID: <5fadd84fc74e4_27844208d0@john-XPS-13-9370.notmuch>
-In-Reply-To: <87h7pvvtk9.fsf@cloudflare.com>
-References: <X6rJ7c1C95uNZ/xV@santucci.pierpaolo>
- <CAEf4BzYTvPOtiYKuRiMFeJCKhEzYSYs6nLfhuten-EbWxn02Sg@mail.gmail.com>
- <87imacw3bh.fsf@cloudflare.com>
- <X6vxRV1zqn+GjLfL@santucci.pierpaolo>
- <292adb9d-899a-fcb0-a37f-cd21e848fede@iogearbox.net>
- <87h7pvvtk9.fsf@cloudflare.com>
-Subject: Re: [PATCH] selftest/bpf: fix IPV6FR handling in flow dissector
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Jann Horn <jannh@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next v3 0/2] Sleepable LSM Hooks
+Date:   Fri, 13 Nov 2020 00:59:28 +0000
+Message-Id: <20201113005930.541956-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Thu, Nov 12, 2020 at 12:06 AM CET, Daniel Borkmann wrote:
-> 
-> [...]
-> 
-> >>> I'm not initimately familiar with this test, but looking at the change
-> >>> I'd consider that Destinations Options and encapsulation headers can
-> >>> follow the Fragment Header.
-> >>>
-> >>> With enough of Dst Opts or levels of encapsulation, transport header
-> >>> could be pushed to the 2nd fragment. So I'm not sure if the assertion
-> >>> from the IPv4 dissector that 2nd fragment and following doesn't contain
-> >>> any parseable header holds.
-> >
-> > Hm, staring at rfc8200, it says that the first fragment packet must include
-> > the upper-layer header (e.g. tcp, udp). The patch here should probably add a
-> > comment wrt to the rfc.
-> 
-> You're right, it clearly says so. Nevermind my worries about malformed
-> packets then. Change LGTM:
-> 
-> Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+From: KP Singh <kpsingh@google.com>
 
-Also please add some of the details discussed here to the commit msg so
-we can remember this next time. 
+# v2 -> v3
 
-Thanks!
+  * Remove the list of non-sleepable hooks, will send a separate patch
+    to the lsm list based on the discussion with Daniel.
+  * Add Andrii's ack for real
+
+# v1 -> v2
+
+  * Fixed typos and formatting errors.
+  * Added Andrii's ack.
+
+KP Singh (2):
+  bpf: Augment the set of sleepable LSM hooks
+  bpf: Expose bpf_d_path helper to sleepable LSM hooks
+
+ include/linux/bpf_lsm.h  |  7 ++++
+ kernel/bpf/bpf_lsm.c     | 81 ++++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/verifier.c    | 16 +-------
+ kernel/trace/bpf_trace.c |  7 +++-
+ 4 files changed, 95 insertions(+), 16 deletions(-)
+
+-- 
+2.29.2.299.gdc1121823c-goog
+
