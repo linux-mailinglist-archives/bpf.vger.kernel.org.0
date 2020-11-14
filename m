@@ -2,124 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E876A2B2BDE
-	for <lists+bpf@lfdr.de>; Sat, 14 Nov 2020 08:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9E82B2CDF
+	for <lists+bpf@lfdr.de>; Sat, 14 Nov 2020 12:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726394AbgKNHCA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 14 Nov 2020 02:02:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726133AbgKNHCA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 14 Nov 2020 02:02:00 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC85C0613D1;
-        Fri, 13 Nov 2020 23:01:59 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id t33so10877164ybd.0;
-        Fri, 13 Nov 2020 23:01:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cCwYM723vu0+HDR43zM2w2KVmNOxRU7b25uAdpj/KzU=;
-        b=uQW7h6BPx5Ya3z/xNyGJ+C+sd9L36R3h52xM3F6vlgcY+1XGqCfc71tBWVRJlzWDnd
-         EegJZ2m5vWaTv5jdJ1SN1Jj+cAsi4GpHx84GQSJQmH7Jhn731cHVXLwqRsTAtXG8ikqn
-         Bc07wvt+Kjln85JIg4DK8nB/4s+bcebhZBXqA0CnWODJq1zzDwBwPh2bxk8EN4w4ujtp
-         FFeNpEOmxekrSoNMCHlMYj0lT2YrKFTrIwLy/IqZAv6lGl1GrLu6zFdD2RYLhjVRxXJG
-         JguD63nIR1xwn2SsZ4GC/WWWjyZTK9R51PL3f425mxReBt+n2gUeZ34dykcQ+8oAVxGE
-         8WZQ==
+        id S1726591AbgKNLSW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 14 Nov 2020 06:18:22 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:43355 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbgKNLSV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 14 Nov 2020 06:18:21 -0500
+Received: by mail-il1-f197.google.com with SMTP id l8so8420984ilf.10
+        for <bpf@vger.kernel.org>; Sat, 14 Nov 2020 03:18:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cCwYM723vu0+HDR43zM2w2KVmNOxRU7b25uAdpj/KzU=;
-        b=l5640U51/zCtHAZdB7mAk0ws40N7bfXTk852XnGYb6fJP6CEP0AAT5Y3JuJAJZhdXW
-         9z5igmj8TzdygEfPfRBtJkuB7oU3XHXNMfIExwFkLPY2GtSwE8gS67M+W5OLDRJK+3xe
-         HiEqzFttx9Wl0PJrNpw2Ktetq9X2idu7LMnfn0lFRdG87WX+mXyrwxRLRC9AGDpJIMR1
-         RRgXMm3flMlcV4LbxocZx0TqqS9Eka21JkbG5OJFCDtahE7XozCyyzVxCz03t1Ldx69+
-         uB+04r1dxr1XruUZj9VCCTQijQXSW+ahkz+WJlu6jObsMmG0Sp6n+9YLywZMqiL3m1z0
-         o/mw==
-X-Gm-Message-State: AOAM530QC5TayxWFg2AEMEahJ5WQmJJV8KVetD5KXGf8OjM75WPVWcyG
-        FUVgRNdWpcuQUVxydk7rXSWo55U9ccJ1Yr4ihV0=
-X-Google-Smtp-Source: ABdhPJw1skR7ONqZ9ZZWxzFVeeLNxYVf7EgcXBv24ecWx2zpqf7en+86gQAyBo6MyWQkBfLjCjga+3aUE/AfEsZqoxg=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr6721728ybg.230.1605337319290;
- Fri, 13 Nov 2020 23:01:59 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XLFjuOzkpRz0MRI7aBUzdwd+f7wbRtuKznG+mWegf8M=;
+        b=Kuj/Xio/ammTDpGtgnyzXXEwS38hRLqX2KeSkKoAgDZRxNeSj7KXtwNrpOvY1/bML7
+         GRhOP3aDqVgRheWPCUpit5R+jYrvnRRwGeiyCnzspooAc7snSfH+GTixP3OlxJrIXG2A
+         PmxiVjWsGX5h8ZHZunX+g+IWBt/k0D43/8TeVqe9z3Gi3zHS09IDOSY8KHEzrMMmYksU
+         NHYVNL3bFJtvkSDcfL27ch453WtkeIVnU4XEvidhzuISthbytNs+AqdmIp/RdZno7pOy
+         R70rTBDGp7MWgbGbttqwEx1UqPOobnCW2Fcf39F3cSdQeruji69VgytHSzbHdKo6k+AM
+         PEpg==
+X-Gm-Message-State: AOAM530VeIAaa7EmhyabYtbcMLxRKjuCvCjZbvfghks+Tf14z0KWkiDo
+        QpgxwIdvQExOihi0Io97ST5+y4LnavOuaEkIH/BAUs1AgQxa
+X-Google-Smtp-Source: ABdhPJx3UjrCFkLhpXkA+sN3PvHLNJ7F1DYLJbAnJrQtnVsV/ju74Ea6OMILYfZfJGuPzsSFBwu99c7greuNtrmzeFmxrM3+X9Au
 MIME-Version: 1.0
-References: <1605291013-22575-1-git-send-email-alan.maguire@oracle.com> <1605291013-22575-4-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1605291013-22575-4-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Nov 2020 23:01:48 -0800
-Message-ID: <CAEf4BzZdE4b5JFBvsvAFL-iSkKs7C-iE1UegiKU-X=wZdz+a_g@mail.gmail.com>
-Subject: Re: [RFC bpf-next 3/3] selftests/bpf: verify module-specific types
- can be shown via bpf_snprintf_btf
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a92:ba8c:: with SMTP id t12mr2925557ill.243.1605352698729;
+ Sat, 14 Nov 2020 03:18:18 -0800 (PST)
+Date:   Sat, 14 Nov 2020 03:18:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000058dc4205b40f4dbf@google.com>
+Subject: KASAN: use-after-free Read in blk_update_request
+From:   syzbot <syzbot+a3f809f70c0f239cda46@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, axboe@kernel.dk,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 13, 2020 at 10:11 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> Verify that specifying a module name in "struct btf_ptr *" along
-> with a type id of a module-specific type will succeed.
->
-> veth_stats_rx() is chosen because its function signature consists
-> of a module-specific type "struct veth_stats" and a kernel-specific
-> one "struct net_device".
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  .../selftests/bpf/prog_tests/snprintf_btf_mod.c    | 96 ++++++++++++++++++++++
->  tools/testing/selftests/bpf/progs/btf_ptr.h        |  1 +
->  tools/testing/selftests/bpf/progs/veth_stats_rx.c  | 73 ++++++++++++++++
->  3 files changed, 170 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c
->  create mode 100644 tools/testing/selftests/bpf/progs/veth_stats_rx.c
->
+Hello,
 
-[...]
+syzbot found the following issue on:
 
-> +       err = veth_stats_rx__load(skel);
-> +       if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-> +               goto cleanup;
-> +
-> +       bss = skel->bss;
-> +
-> +       bss->veth_stats_btf_id = btf__find_by_name(veth_btf, "veth_stats");
+HEAD commit:    407ab579 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1532ba76500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37bf5609aacce0b6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a3f809f70c0f239cda46
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
 
-This is really awkward that this needs to be done from user-space.
-Libbpf will be able to do this regardless of whether the type is in
-vmlinux or kernel module. See my comments on patch #1.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> +
-> +       if (CHECK(bss->veth_stats_btf_id <= 0, "find 'struct veth_stats'",
-> +                 "could not find 'struct veth_stats' in veth BTF: %d",
-> +                 bss->veth_stats_btf_id))
-> +               goto cleanup;
-> +
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a3f809f70c0f239cda46@syzkaller.appspotmail.com
 
-[...]
+==================================================================
+BUG: KASAN: use-after-free in __lock_acquire+0x98/0x6250 kernel/locking/lockdep.c:4701
+Read of size 8 at addr ffff8880119c1068 by task ksoftirqd/1/16
 
-> +       btf_ids[0] = veth_stats_btf_id;
-> +       ptrs[0] = (void *)PT_REGS_PARM1_CORE(ctx);
-> +#if __has_builtin(__builtin_btf_type_id)
+CPU: 1 PID: 16 Comm: ksoftirqd/1 Not tainted 5.10.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:118
+ print_address_description+0x6c/0x660 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report+0x136/0x1e0 mm/kasan/report.c:562
+ __lock_acquire+0x98/0x6250 kernel/locking/lockdep.c:4701
+ lock_acquire+0x114/0x5e0 kernel/locking/lockdep.c:5436
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x73/0xa0 kernel/locking/spinlock.c:159
+ __wake_up_common_lock kernel/sched/wait.c:122 [inline]
+ __wake_up+0xb8/0x140 kernel/sched/wait.c:142
+ req_bio_endio block/blk-core.c:263 [inline]
+ blk_update_request+0x7b7/0x1510 block/blk-core.c:1467
+ blk_mq_end_request+0x39/0x70 block/blk-mq.c:562
+ blk_done_softirq+0x2fd/0x380 block/blk-mq.c:586
+ __do_softirq+0x307/0x6be kernel/softirq.c:298
+ run_ksoftirqd+0x63/0xa0 kernel/softirq.c:653
+ smpboot_thread_fn+0x572/0x970 kernel/smpboot.c:165
+ kthread+0x36b/0x390 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
 
-nit: there are a bunch of selftests that just assume we have this
-built-in, so I don't think you need to guard it with #if here.
+Allocated by task 32733:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x111/0x140 mm/kasan/common.c:461
+ kmem_cache_alloc_trace+0x14b/0x250 mm/slub.c:2918
+ kmalloc include/linux/slab.h:552 [inline]
+ lbmLogInit fs/jfs/jfs_logmgr.c:1829 [inline]
+ lmLogInit+0x26f/0x1750 fs/jfs/jfs_logmgr.c:1278
+ open_inline_log fs/jfs/jfs_logmgr.c:1183 [inline]
+ lmLogOpen+0x4a9/0xe50 fs/jfs/jfs_logmgr.c:1077
+ jfs_mount_rw+0x92/0x4a0 fs/jfs/jfs_mount.c:259
+ jfs_fill_super+0x592/0x9a0 fs/jfs/super.c:571
+ mount_bdev+0x24f/0x360 fs/super.c:1419
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x17b4/0x2a20 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3403
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> +       btf_ids[1] = bpf_core_type_id_kernel(struct net_device);
-> +       ptrs[1] = (void *)PT_REGS_PARM2_CORE(ctx);
-> +#endif
+Freed by task 32733:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+ kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0x108/0x140 mm/kasan/common.c:422
+ slab_free_hook mm/slub.c:1544 [inline]
+ slab_free_freelist_hook+0xd6/0x1a0 mm/slub.c:1577
+ slab_free mm/slub.c:3142 [inline]
+ kfree+0xd1/0x280 mm/slub.c:4124
+ lbmLogShutdown fs/jfs/jfs_logmgr.c:1872 [inline]
+ lmLogInit+0x1195/0x1750 fs/jfs/jfs_logmgr.c:1423
+ open_inline_log fs/jfs/jfs_logmgr.c:1183 [inline]
+ lmLogOpen+0x4a9/0xe50 fs/jfs/jfs_logmgr.c:1077
+ jfs_mount_rw+0x92/0x4a0 fs/jfs/jfs_mount.c:259
+ jfs_fill_super+0x592/0x9a0 fs/jfs/super.c:571
+ mount_bdev+0x24f/0x360 fs/super.c:1419
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x88/0x270 fs/super.c:1549
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x17b4/0x2a20 fs/namespace.c:3205
+ do_mount fs/namespace.c:3218 [inline]
+ __do_sys_mount fs/namespace.c:3426 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3403
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-[...]
+Last call_rcu():
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:48
+ kasan_record_aux_stack+0xc7/0x100 mm/kasan/generic.c:346
+ __call_rcu kernel/rcu/tree.c:2953 [inline]
+ call_rcu+0x10f/0x820 kernel/rcu/tree.c:3027
+ inetdev_destroy net/ipv4/devinet.c:325 [inline]
+ inetdev_event+0x730/0x14a0 net/ipv4/devinet.c:1599
+ notifier_call_chain kernel/notifier.c:83 [inline]
+ raw_notifier_call_chain+0xe7/0x170 kernel/notifier.c:410
+ call_netdevice_notifiers_info net/core/dev.c:2035 [inline]
+ call_netdevice_notifiers_extack net/core/dev.c:2047 [inline]
+ call_netdevice_notifiers net/core/dev.c:2061 [inline]
+ rollback_registered_many+0xeb8/0x16c0 net/core/dev.c:9422
+ rollback_registered net/core/dev.c:9467 [inline]
+ unregister_netdevice_queue+0x2f3/0x4b0 net/core/dev.c:10607
+ unregister_netdevice include/linux/netdevice.h:2824 [inline]
+ __tun_detach+0x646/0x1d40 drivers/net/tun.c:673
+ tun_detach drivers/net/tun.c:690 [inline]
+ tun_chr_close+0xed/0x130 drivers/net/tun.c:3390
+ __fput+0x34f/0x7b0 fs/file_table.c:281
+ task_work_run+0x137/0x1c0 kernel/task_work.c:151
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+ exit_to_user_mode_prepare+0xe4/0x170 kernel/entry/common.c:191
+ syscall_exit_to_user_mode+0x4a/0x170 kernel/entry/common.c:266
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880119c1000
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 104 bytes inside of
+ 192-byte region [ffff8880119c1000, ffff8880119c10c0)
+The buggy address belongs to the page:
+page:00000000fe180338 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x119c1
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 ffffea000044d6c0 0000000600000006 ffff888010441500
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880119c0f00: fc fc fc fc 00 00 00 00 00 00 00 fc fc fc fc fb
+ ffff8880119c0f80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+>ffff8880119c1000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                          ^
+ ffff8880119c1080: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8880119c1100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
