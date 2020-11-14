@@ -2,69 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882C22B3040
-	for <lists+bpf@lfdr.de>; Sat, 14 Nov 2020 20:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990A22B3133
+	for <lists+bpf@lfdr.de>; Sat, 14 Nov 2020 23:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgKNTkL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 14 Nov 2020 14:40:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgKNTkL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 14 Nov 2020 14:40:11 -0500
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726248AbgKNWjE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 14 Nov 2020 17:39:04 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:36541 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726239AbgKNWjE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 14 Nov 2020 17:39:04 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-n_Hdgz59Ol2YCkkfa1wuxQ-1; Sat, 14 Nov 2020 17:38:57 -0500
+X-MC-Unique: n_Hdgz59Ol2YCkkfa1wuxQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1FAB2227F;
-        Sat, 14 Nov 2020 19:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605382811;
-        bh=ZxkmxCx0SVsZgVAhUbboaa+H7Wcy87kxAeGppg51J1U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=L5QUK3HnMWWfCppQVDJUwkIjqaj+fcIuhcAj/lNj1Rz143yigyJN/N5xEk1AF9Tkh
-         ruK96lFnHLjN8zBu4Ax2SFYqJJZQ8F1+QSyU7Ki7Frt3iW+mTEqxWx0oKAg/Ozi1aZ
-         BUeJvlOG04ZtzgWr7jKb/hcI5830j3jj9UOb3ZLU=
-Date:   Sat, 14 Nov 2020 11:40:10 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, ast@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: pull-request: bpf-next 2020-11-14
-Message-ID: <20201114114010.1b37c427@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201114020819.29584-1-daniel@iogearbox.net>
-References: <20201114020819.29584-1-daniel@iogearbox.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E4541007B02;
+        Sat, 14 Nov 2020 22:38:56 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E3F736EF56;
+        Sat, 14 Nov 2020 22:38:53 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCHv3 0/2] btf_encoder: Fix functions BTF data generation
+Date:   Sat, 14 Nov 2020 23:38:51 +0100
+Message-Id: <20201114223853.1010900-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 14 Nov 2020 03:08:19 +0100 Daniel Borkmann wrote:
-> 1) Add BTF generation for kernel modules and extend BTF infra in kernel
->    e.g. support for split BTF loading and validation, from Andrii Nakryiko.
-> 
-> 2) Support for pointers beyond pkt_end to recognize LLVM generated patterns
->    on inlined branch conditions, from Alexei Starovoitov.
-> 
-> 3) Implements bpf_local_storage for task_struct for BPF LSM, from KP Singh.
-> 
-> 4) Enable FENTRY/FEXIT/RAW_TP tracing program to use the bpf_sk_storage
->    infra, from Martin KaFai Lau.
-> 
-> 5) Add XDP bulk APIs that introduce a defer/flush mechanism to optimize the
->    XDP_REDIRECT path, from Lorenzo Bianconi.
-> 
-> 6) Fix a potential (although rather theoretical) deadlock of hashtab in NMI
->    context, from Song Liu.
-> 
-> 7) Fixes for cross and out-of-tree build of bpftool and runqslower allowing build
->    for different target archs on same source tree, from Jean-Philippe Brucker.
-> 
-> 8) Fix error path in htab_map_alloc() triggered from syzbot, from Eric Dumazet.
-> 
-> 9) Move functionality from test_tcpbpf_user into the test_progs framework so it
->    can run in BPF CI, from Alexander Duyck.
-> 
-> 10) Lift hashtab key_size limit to be larger than MAX_BPF_STACK, from Florian Lehner.
+hi,
+recent btf encoder's changes brakes BTF data for some gcc
+versions. The problem is that some functions can appear
+in dwarf data in some instances without arguments, while
+they are defined with some.
 
-Pulled, thank you!
+v3 changes:
+  - move 'generated' flag set out of should_generate_function
+  - rename should_generate_function to find_function
+  - added ack
+
+v2 changes:
+  - drop patch 3 logic and just change conditions
+    based on Andrii's suggestion
+  - drop patch 2
+  - add ack for patch 1
+
+thanks,
+jirka
+
+
+---
+Jiri Olsa (2):
+      btf_encoder: Generate also .init functions
+      btf_encoder: Fix function generation
+
+ btf_encoder.c | 86 +++++++++++++++++++++-----------------------------------------------------------------
+ 1 file changed, 21 insertions(+), 65 deletions(-)
+
