@@ -2,312 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FB92B2AC3
-	for <lists+bpf@lfdr.de>; Sat, 14 Nov 2020 03:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404D12B2AFF
+	for <lists+bpf@lfdr.de>; Sat, 14 Nov 2020 04:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgKNCIZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Nov 2020 21:08:25 -0500
-Received: from www62.your-server.de ([213.133.104.62]:38826 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgKNCIY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Nov 2020 21:08:24 -0500
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kdkzE-0005ah-3b; Sat, 14 Nov 2020 03:08:20 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2020-11-14
-Date:   Sat, 14 Nov 2020 03:08:19 +0100
-Message-Id: <20201114020819.29584-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1726166AbgKNDYr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Nov 2020 22:24:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbgKNDYr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Nov 2020 22:24:47 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8059EC0613D1;
+        Fri, 13 Nov 2020 19:24:47 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id s24so11794756ioj.13;
+        Fri, 13 Nov 2020 19:24:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yu9gcwue9CxPD4yXxmsqiMTjRC3fuaEWKdsADqqHy6s=;
+        b=iDWWLB87H2RyOGxxii8EV1z87lf2Nx+WC6hJd8fbVYmFwgIUrWygiEURNJga7KzWRs
+         z1aP4UugTMYyFFhkz6EWQR7Gq8NdaVU9VohF/TJckp/MHdgK44bKmfaBFeflST1BrKte
+         UPinXv+s8s7ie/wHKNThc0su7MFlqBvc0WmJoUxfBWVgcjeA0jsfLngeTJ2PdDqDC4q4
+         XWt+QYVZRpdCz47tuigGxnDp/v1blJm1z/satfz/GSzZDvT2Fu/Q/cp/dlhEtARyOIww
+         oaarrc1PPcu2DiT2FGX7tdfJse9OhAPsbO5liM2SZiIUwHt5XcSn3q/oFH/5YdaBbnxn
+         bt6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yu9gcwue9CxPD4yXxmsqiMTjRC3fuaEWKdsADqqHy6s=;
+        b=Xw344waCP+EedkX+H5Y0U6wdyF1XtQawbZYolkLAJ1zaRpcg9lLayS4IFfBXXqpkLE
+         uxCIcddgjSHzAmeecmCTUQd5HrP4+l4Wp/fFYrWzHqmqysZNHif9yWJKP12NXssiASg5
+         8gDZx79G9WVtK1m8+gvYNU6JtCjyN4Ay4fZqMukNr8u79UyQh7Eavz84EzMarDXRE9Va
+         ZlEGwfTGUzW2e1S1Dt+xnQyg+j5a4MIUU/TJOjwLsl/AjLdebzsSokc6K1KNl+Q69uV8
+         43JuaAfuTczJcEc8tNALd++vA4ne54qkevm/sYrNX7bDwbEQtw1Si42n4V87sL0fJhu9
+         deCA==
+X-Gm-Message-State: AOAM5304kQIZq8DmnbNg/XWn1/tdFtyw6l5dzrkaH8A5ggHV5/AZVuvN
+        RtvJpM7OZkqr1A0skx7sDSwbv44hxgk7Zw==
+X-Google-Smtp-Source: ABdhPJwulySKIzWPp/lSFlmm0qDmcc612wjv8fCnAZMX7wCHPbwqO3KD9Gg+2JBLLaWMUL1ZXrn0CQ==
+X-Received: by 2002:a05:6602:21c2:: with SMTP id c2mr2173733ioc.184.1605324286916;
+        Fri, 13 Nov 2020 19:24:46 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:99e7:10e8:ee93:9a3d])
+        by smtp.googlemail.com with ESMTPSA id b1sm5646948iog.14.2020.11.13.19.24.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Nov 2020 19:24:45 -0800 (PST)
+Subject: Re: [PATCHv4 iproute2-next 2/5] lib: rename bpf.c to bpf_legacy.c
+To:     Hangbin Liu <haliu@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+References: <20201029151146.3810859-1-haliu@redhat.com>
+ <20201109070802.3638167-1-haliu@redhat.com>
+ <20201109070802.3638167-3-haliu@redhat.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <a42a6a91-53fa-5b31-4bba-273847ee8986@gmail.com>
+Date:   Fri, 13 Nov 2020 20:24:41 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25987/Fri Nov 13 14:19:33 2020)
+In-Reply-To: <20201109070802.3638167-3-haliu@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On 11/9/20 12:07 AM, Hangbin Liu wrote:
+> diff --git a/lib/bpf_glue.c b/lib/bpf_glue.c
+> new file mode 100644
+> index 00000000..7626a893
+> --- /dev/null
+> +++ b/lib/bpf_glue.c
 
-The following pull-request contains BPF updates for your *net-next* tree.
+...
 
-We've added 66 non-merge commits during the last 22 day(s) which contain
-a total of 83 files changed, 3908 insertions(+), 1271 deletions(-).
+> +
+> +int bpf_program_load(enum bpf_prog_type type, const struct bpf_insn *insns,
+> +		     size_t size_insns, const char *license, char *log,
+> +		     size_t size_log)
+> +{
+> +#ifdef HAVE_LIBBPF
+> +	return bpf_load_program(type, insns, size_insns, license, 0, log, size_log);
+> +#else
+> +	return bpf_load_load_dev(type, insns, size_insns, license, 0, log, size_log);
+> +#endif
+> +}
+> +
 
-The main changes are:
+Fails to compile:
 
-1) Add BTF generation for kernel modules and extend BTF infra in kernel
-   e.g. support for split BTF loading and validation, from Andrii Nakryiko.
+$ LIBBPF_FORCE=off ./configure
+$ make
+...
+/usr/bin/ld: ../lib/libutil.a(bpf_glue.o): in function `bpf_program_load':
+bpf_glue.c:(.text+0x13): undefined reference to `bpf_load_load_dev'
+collect2: error: ld returned 1 exit status
+make[1]: *** [Makefile:27: ip] Error 1
+make: *** [Makefile:64: all] Error 2
 
-2) Support for pointers beyond pkt_end to recognize LLVM generated patterns
-   on inlined branch conditions, from Alexei Starovoitov.
-
-3) Implements bpf_local_storage for task_struct for BPF LSM, from KP Singh.
-
-4) Enable FENTRY/FEXIT/RAW_TP tracing program to use the bpf_sk_storage
-   infra, from Martin KaFai Lau.
-
-5) Add XDP bulk APIs that introduce a defer/flush mechanism to optimize the
-   XDP_REDIRECT path, from Lorenzo Bianconi.
-
-6) Fix a potential (although rather theoretical) deadlock of hashtab in NMI
-   context, from Song Liu.
-
-7) Fixes for cross and out-of-tree build of bpftool and runqslower allowing build
-   for different target archs on same source tree, from Jean-Philippe Brucker.
-
-8) Fix error path in htab_map_alloc() triggered from syzbot, from Eric Dumazet.
-
-9) Move functionality from test_tcpbpf_user into the test_progs framework so it
-   can run in BPF CI, from Alexander Duyck.
-
-10) Lift hashtab key_size limit to be larger than MAX_BPF_STACK, from Florian Lehner.
-
-Note that for the fix from Song we have seen a sparse report on context
-imbalance which requires changes in sparse itself for proper annotation
-detection where this is currently being discussed on linux-sparse among
-developers [0]. Once we have more clarification/guidance after their fix,
-Song will follow-up.
-
-  [0] https://lore.kernel.org/linux-sparse/CAHk-=wh4bx8A8dHnX612MsDO13st6uzAz1mJ1PaHHVevJx_ZCw@mail.gmail.com/T/
-      https://lore.kernel.org/linux-sparse/20201109221345.uklbp3lzgq6g42zb@ltop.local/T/
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alan Maguire, Andrii Nakryiko, Greg Kroah-Hartman, Ilias Apalodimas, 
-Jesper Dangaard Brouer, Jiri Olsa, John Fastabend, KP Singh, Martin 
-KaFai Lau, Matteo Croce, Rafael J. Wysocki, Roman Gushchin, Sergei 
-Iudin, Song Liu, Stephen Rothwell, syzbot, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 3cb12d27ff655e57e8efe3486dca2a22f4e30578:
-
-  Merge tag 'net-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2020-10-23 12:05:49 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to c14d61fca0d10498bf267c0ab1f381dd0b35d96b:
-
-  Merge branch 'xdp-redirect-bulk' (2020-11-14 02:30:03 +0100)
-
-----------------------------------------------------------------
-Alexander Duyck (5):
-      selftests/bpf: Move test_tcppbf_user into test_progs
-      selftests/bpf: Drop python client/server in favor of threads
-      selftests/bpf: Replace EXPECT_EQ with ASSERT_EQ and refactor verify_results
-      selftests/bpf: Migrate tcpbpf_user.c to use BPF skeleton
-      selftest/bpf: Use global variables instead of maps for test_tcpbpf_kern
-
-Alexei Starovoitov (10):
-      Merge branch 'bpf: safeguard hashtab locking in NMI context'
-      Merge branch 'selftests/bpf: Migrate test_tcpbpf_user to be a part of test_progs'
-      Merge branch 'libbpf: split BTF support'
-      selftests/bpf: Fix selftest build with old libc
-      Merge branch 'Integrate kernel module BTF support'
-      Merge branch 'Remove unused test_ipip.sh test and add missed'
-      bpf: Support for pointers beyond pkt_end.
-      selftests/bpf: Add skb_pkt_end test
-      selftests/bpf: Add asm tests for pkt vs pkt_end comparison.
-      Merge branch 'bpf: Enable bpf_sk_storage for FENTRY/FEXIT/RAW_TP'
-
-Andrii Nakryiko (18):
-      libbpf: Factor out common operations in BTF writing APIs
-      selftest/bpf: Relax btf_dedup test checks
-      libbpf: Unify and speed up BTF string deduplication
-      libbpf: Implement basic split BTF support
-      selftests/bpf: Add split BTF basic test
-      selftests/bpf: Add checking of raw type dump in BTF writer APIs selftests
-      libbpf: Fix BTF data layout checks and allow empty BTF
-      libbpf: Support BTF dedup of split BTFs
-      libbpf: Accomodate DWARF/compiler bug with duplicated identical arrays
-      selftests/bpf: Add split BTF dedup selftests
-      tools/bpftool: Add bpftool support for split BTF
-      bpf: Add in-kernel split BTF support
-      bpf: Assign ID to vmlinux BTF and return extra info for BTF in GET_OBJ_INFO
-      kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it
-      bpf: Load and verify kernel module BTFs
-      tools/bpftool: Add support for in-kernel and named BTF in `btf show`
-      bpf: Compile out btf_parse_module() if module BTF is not enabled
-      Merge branch 'tools/bpftool: Some build fixes'
-
-Daniel Borkmann (2):
-      Merge branch 'bpf-ptrs-beyond-pkt-end'
-      Merge branch 'xdp-redirect-bulk'
-
-Eric Dumazet (1):
-      bpf: Fix error path in htab_map_alloc()
-
-Florian Lehner (1):
-      bpf: Lift hashtab key_size limit
-
-Hangbin Liu (2):
-      selftest/bpf: Add missed ip6ip6 test back
-      samples/bpf: Remove unused test_ipip.sh
-
-Jean-Philippe Brucker (9):
-      tools: Factor HOSTCC, HOSTLD, HOSTAR definitions
-      tools/bpftool: Force clean of out-of-tree build
-      tools/bpftool: Fix cross-build
-      tools/runqslower: Use Makefile.include
-      tools/runqslower: Enable out-of-tree build
-      tools/runqslower: Build bpftool using HOSTCC
-      tools/bpftool: Fix build slowdown
-      tools/bpf: Add bootstrap/ to .gitignore
-      tools/bpf: Always run the *-clean recipes
-
-KP Singh (11):
-      bpf: Allow LSM programs to use bpf spin locks
-      bpf: Implement task local storage
-      libbpf: Add support for task local storage
-      bpftool: Add support for task local storage
-      bpf: Implement get_current_task_btf and RET_PTR_TO_BTF_ID
-      bpf: Fix tests for local_storage
-      bpf: Update selftests for local_storage to use vmlinux.h
-      bpf: Add tests for task_local_storage
-      bpf: Exercise syscall operations for inode and sk storage
-      bpf: Augment the set of sleepable LSM hooks
-      bpf: Expose bpf_d_path helper to sleepable LSM hooks
-
-Lorenzo Bianconi (5):
-      net: xdp: Introduce bulking for xdp tx return path
-      net: page_pool: Add bulk support for ptr_ring
-      net: mvneta: Add xdp tx return bulking support
-      net: mvpp2: Add xdp tx return bulking support
-      net: mlx5: Add xdp tx return bulking support
-
-Martin KaFai Lau (6):
-      bpf: selftest: Use static globals in tcp_hdr_options and btf_skc_cls_ingress
-      bpf: Fix NULL dereference in bpf_task_storage
-      bpf: Folding omem_charge() into sk_storage_charge()
-      bpf: Rename some functions in bpf_sk_storage
-      bpf: Allow using bpf_sk_storage in FENTRY/FEXIT/RAW_TP
-      bpf: selftest: Use bpf_sk_storage in FENTRY/FEXIT/RAW_TP
-
-Menglong Dong (1):
-      samples/bpf: Remove duplicate include in hbm
-
-Song Liu (2):
-      bpf: Use separate lockdep class for each hashtab
-      bpf: Avoid hashtab deadlock with map_locked
-
-Wang Qing (1):
-      bpf, btf: Remove the duplicate btf_ids.h include
-
-Yonghong Song (1):
-      bpf: Permit cond_resched for some iterators
-
- Documentation/ABI/testing/sysfs-kernel-btf         |   8 +
- drivers/net/ethernet/marvell/mvneta.c              |  10 +-
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |  10 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |  22 +-
- include/linux/bpf.h                                |   8 +
- include/linux/bpf_lsm.h                            |  30 +
- include/linux/bpf_types.h                          |   1 +
- include/linux/bpf_verifier.h                       |   2 +-
- include/linux/module.h                             |   4 +
- include/net/bpf_sk_storage.h                       |   2 +
- include/net/page_pool.h                            |  26 +
- include/net/xdp.h                                  |  17 +-
- include/uapi/linux/bpf.h                           |  51 ++
- kernel/bpf/Makefile                                |   1 +
- kernel/bpf/bpf_iter.c                              |  14 +
- kernel/bpf/bpf_lsm.c                               |  89 +++
- kernel/bpf/bpf_task_storage.c                      | 315 ++++++++
- kernel/bpf/btf.c                                   | 411 +++++++++--
- kernel/bpf/hashtab.c                               | 144 ++--
- kernel/bpf/syscall.c                               |   3 +-
- kernel/bpf/sysfs_btf.c                             |   2 +-
- kernel/bpf/task_iter.c                             |   2 +
- kernel/bpf/verifier.c                              | 182 +++--
- kernel/module.c                                    |  32 +
- kernel/trace/bpf_trace.c                           |  29 +-
- lib/Kconfig.debug                                  |   9 +
- net/core/bpf_sk_storage.c                          | 135 +++-
- net/core/page_pool.c                               |  70 +-
- net/core/xdp.c                                     |  54 ++
- samples/bpf/hbm.c                                  |   1 -
- samples/bpf/test_ipip.sh                           | 179 -----
- scripts/Makefile.modfinal                          |  20 +-
- security/bpf/hooks.c                               |   2 +
- tools/bpf/bpftool/.gitignore                       |   2 +-
- tools/bpf/bpftool/Documentation/bpftool-map.rst    |   3 +-
- tools/bpf/bpftool/Makefile                         |  44 +-
- tools/bpf/bpftool/bash-completion/bpftool          |   2 +-
- tools/bpf/bpftool/btf.c                            |  37 +-
- tools/bpf/bpftool/main.c                           |  15 +-
- tools/bpf/bpftool/main.h                           |   1 +
- tools/bpf/bpftool/map.c                            |   4 +-
- tools/bpf/resolve_btfids/Makefile                  |   9 -
- tools/bpf/runqslower/Makefile                      |  55 +-
- tools/build/Makefile                               |   4 -
- tools/include/uapi/linux/bpf.h                     |  51 ++
- tools/lib/bpf/btf.c                                | 807 ++++++++++++---------
- tools/lib/bpf/btf.h                                |   8 +
- tools/lib/bpf/libbpf.map                           |   9 +
- tools/lib/bpf/libbpf_probes.c                      |   1 +
- tools/objtool/Makefile                             |   9 -
- tools/perf/Makefile.perf                           |   4 -
- tools/power/acpi/Makefile.config                   |   1 -
- tools/scripts/Makefile.include                     |  10 +
- tools/testing/selftests/bpf/.gitignore             |   1 -
- tools/testing/selftests/bpf/Makefile               |   5 +-
- tools/testing/selftests/bpf/btf_helpers.c          | 259 +++++++
- tools/testing/selftests/bpf/btf_helpers.h          |  19 +
- tools/testing/selftests/bpf/prog_tests/btf.c       |  40 +-
- .../selftests/bpf/prog_tests/btf_dedup_split.c     | 325 +++++++++
- .../selftests/bpf/prog_tests/btf_skc_cls_ingress.c |   2 +-
- tools/testing/selftests/bpf/prog_tests/btf_split.c |  99 +++
- tools/testing/selftests/bpf/prog_tests/btf_write.c |  43 ++
- .../selftests/bpf/prog_tests/hash_large_key.c      |  43 ++
- .../selftests/bpf/prog_tests/sk_storage_tracing.c  | 135 ++++
- .../selftests/bpf/prog_tests/tcp_hdr_options.c     |  12 +-
- .../testing/selftests/bpf/prog_tests/tcpbpf_user.c | 141 ++++
- .../selftests/bpf/prog_tests/test_local_storage.c  | 204 +++++-
- .../selftests/bpf/prog_tests/test_skb_pkt_end.c    |  41 ++
- tools/testing/selftests/bpf/progs/local_storage.c  | 103 ++-
- tools/testing/selftests/bpf/progs/skb_pkt_end.c    |  54 ++
- .../selftests/bpf/progs/test_hash_large_key.c      |  44 ++
- .../bpf/progs/test_sk_storage_trace_itself.c       |  29 +
- .../selftests/bpf/progs/test_sk_storage_tracing.c  |  95 +++
- .../testing/selftests/bpf/progs/test_tcpbpf_kern.c |  86 +--
- .../testing/selftests/bpf/progs/test_tunnel_kern.c |  42 +-
- tools/testing/selftests/bpf/tcp_client.py          |  50 --
- tools/testing/selftests/bpf/tcp_server.py          |  80 --
- tools/testing/selftests/bpf/test_maps.c            |   3 +-
- tools/testing/selftests/bpf/test_progs.h           |  11 +
- tools/testing/selftests/bpf/test_tcpbpf.h          |   2 +
- tools/testing/selftests/bpf/test_tcpbpf_user.c     | 165 -----
- tools/testing/selftests/bpf/test_tunnel.sh         |  43 +-
- tools/testing/selftests/bpf/verifier/ctx_skb.c     |  42 ++
- 83 files changed, 3908 insertions(+), 1271 deletions(-)
- create mode 100644 kernel/bpf/bpf_task_storage.c
- delete mode 100755 samples/bpf/test_ipip.sh
- create mode 100644 tools/testing/selftests/bpf/btf_helpers.c
- create mode 100644 tools/testing/selftests/bpf/btf_helpers.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_dedup_split.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_split.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/hash_large_key.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sk_storage_tracing.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c
- create mode 100644 tools/testing/selftests/bpf/progs/skb_pkt_end.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_hash_large_key.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_sk_storage_trace_itself.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
- delete mode 100755 tools/testing/selftests/bpf/tcp_client.py
- delete mode 100755 tools/testing/selftests/bpf/tcp_server.py
- delete mode 100644 tools/testing/selftests/bpf/test_tcpbpf_user.c
