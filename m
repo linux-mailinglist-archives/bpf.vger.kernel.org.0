@@ -2,85 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4C42B45E5
-	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 15:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 857242B45E7
+	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 15:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730124AbgKPObb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Nov 2020 09:31:31 -0500
-Received: from mga02.intel.com ([134.134.136.20]:25467 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729614AbgKPObb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Nov 2020 09:31:31 -0500
-IronPort-SDR: 7WkET3B31E6scFgsZJF/xXo8HC3kyPLCYDFfdNfh8E7ic+4RghOCo9YZbpnzRqtGY+YS/dW9ik
- Hwm1OI8UsfoA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="157778516"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="157778516"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:31:29 -0800
-IronPort-SDR: K+El57vBYgY5hP1q9UKFPgeoUch/f9q3VoR1XZukigW7fBy5imXpuuCprZOKjFffXpaEwBbTLh
- jarEOLfyJcYQ==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543620406"
-Received: from wrzedzic-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.34.230])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 06:31:25 -0800
-Subject: Re: [PATCH] xsk: add cq event
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <90c58756-934d-adf6-64e8-680cfc019cd4@intel.com>
-Date:   Mon, 16 Nov 2020 15:31:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1730197AbgKPObg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Nov 2020 09:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729232AbgKPObg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Nov 2020 09:31:36 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98D1C0613CF
+        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 06:31:35 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id p22so23899507wmg.3
+        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 06:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=qMjDR0Ym+nhpvOJ6zJJnl+LYMN6YDDREpuIxO7AtctE=;
+        b=maIsAJsZ9C5ds72BdFMn8SZrZag4sqWfO/sawEbHeTLRHGOCxsrX7qrwfnuNG1YA1j
+         QZtGTqZB+Or9el/yGKjjvrccoBtEOZOyFIj2uWR0DabDfm6HTvCTdRnSue5wP33Spa0P
+         i9O51hwM6xuwY4SCPNtQ+frLZ/lUKwXYB+8XA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=qMjDR0Ym+nhpvOJ6zJJnl+LYMN6YDDREpuIxO7AtctE=;
+        b=Va63WDIsps0i3XYUEUPlbhmv6D8aA6TRWVu20GZ/1AvNpUkW0PlYkpbeEDIbsYzGmO
+         uBtWQ8ULidcGhhBqLJVV78DFhXInd5xRsKNKPs5qaizP22ScjrJY1R9IcHyLmB85d/Nm
+         3BZd9X/YoNf/+/5L7ykfWSttwqNeDGkovIVp+i6+yMBFdympJ9ITje4iDQrutScLsMSc
+         YJ/x1ADtYILaSulThv97Vavnavj9vw1Tc5Ku4sYJVIfXqTZB925IP0Oo7WdvmNtUrAI9
+         xsR8J+RqM5n86b2AfeSjbaamRd4iC1UO+hKdM7sUpTJUT5nz27nHQHTfKvieAsC3qhmg
+         9AiA==
+X-Gm-Message-State: AOAM5323jcaR2QJy1OtZmA+/TUSCJ5TvrbHE9MkKT4tuP9xE+1hRWpd3
+        1J+zs5eRDcgNj+cYEKRzAlpO1Q==
+X-Google-Smtp-Source: ABdhPJwH2qVsIs/Q09LWrmiCrFI7JYrstrUAmtDXK2/+Vjjo5XitU8+h0y5abnzV1eFvxC7rtTQtig==
+X-Received: by 2002:a7b:c845:: with SMTP id c5mr15528327wml.135.1605537094497;
+        Mon, 16 Nov 2020 06:31:34 -0800 (PST)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id u16sm22809008wrn.55.2020.11.16.06.31.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 06:31:33 -0800 (PST)
+References: <160522352433.135009.15329422887113794062.stgit@john-XPS-13-9370> <160522367856.135009.17304729578208922913.stgit@john-XPS-13-9370>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [bpf PATCH v2 5/6] bpf, sockmap: Handle memory acct if skb_verdict prog redirects to self
+In-reply-to: <160522367856.135009.17304729578208922913.stgit@john-XPS-13-9370>
+Date:   Mon, 16 Nov 2020 15:31:32 +0100
+Message-ID: <87blfxweyj.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-11-16 09:10, Xuan Zhuo wrote:
-> When we write all cq items to tx, we have to wait for a new event based
-> on poll to indicate that it is writable. But the current writability is
-> triggered based on whether tx is full or not, and In fact, when tx is
-> dissatisfied, the user of cq's item may not necessarily get it, because it
-> may still be occupied by the network card. In this case, we need to know
-> when cq is available, so this patch adds a socket option, When the user
-> configures this option using setsockopt, when cq is available, a
-> readable event is generated for all xsk bound to this umem.
-> 
-> I can't find a better description of this event,
-> I think it can also be 'readable', although it is indeed different from
-> the 'readable' of the new data. But the overhead of xsk checking whether
-> cq or rx is readable is small.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+On Fri, Nov 13, 2020 at 12:27 AM CET, John Fastabend wrote:
+> If the skb_verdict_prog redirects an skb knowingly to itself, fix your
+> BPF program this is not optimal and an abuse of the API please use
+> SK_PASS. That said there may be cases, such as socket load balancing,
+> where picking the socket is hashed based or otherwise picks the same
+> socket it was received on in some rare cases. If this happens we don't
+> want to confuse userspace giving them an EAGAIN error if we can avoid
+> it.
+>
+> To avoid double accounting in these cases. At the moment even if the
+> skb has already been charged against the sockets rcvbuf and forward
+> alloc we check it again and do set_owner_r() causing it to be orphaned
+> and recharged. For one this is useless work, but more importantly we
+> can have a case where the skb could be put on the ingress queue, but
+> because we are under memory pressure we return EAGAIN. The trouble
+> here is the skb has already been accounted for so any rcvbuf checks
+> include the memory associated with the packet already. This rolls
+> up and can result in unecessary EAGAIN errors in userspace read()
+> calls.
+>
+> Fix by doing an unlikely check and skipping checks if skb->sk == sk.
+>
+> Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  net/core/skmsg.c |   17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+>
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index 9aed5a2c7c5b..f747ee341fe8 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -404,11 +404,13 @@ static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
+>  {
+>  	struct sk_msg *msg;
+>  
+> -	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
+> -		return NULL;
+> +	if (likely(skb->sk != sk)) {
+> +		if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
+> +			return NULL;
+>  
+> -	if (!sk_rmem_schedule(sk, skb, skb->truesize))
+> -		return NULL;
+> +		if (!sk_rmem_schedule(sk, skb, skb->truesize))
+> +			return NULL;
+> +	}
+>  
+>  	msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
+>  	if (unlikely(!msg))
+> @@ -455,9 +457,12 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
+>  	 * the BPF program was run initiating the redirect to the socket
+>  	 * we will eventually receive this data on. The data will be released
+>  	 * from skb_consume found in __tcp_bpf_recvmsg() after its been copied
+> -	 * into user buffers.
+> +	 * into user buffers. If we are receiving on the same sock skb->sk is
+> +	 * already assigned, skip memory accounting and owner transition seeing
+> +	 * it already set correctly.
+>  	 */
+> -	skb_set_owner_r(skb, sk);
+> +	if (likely(skb->sk != sk))
+> +		skb_set_owner_r(skb, sk);
+>  	return sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
+>  }
+>  
 
-Thanks for the patch!
+I think all the added checks boil down to having:
 
-I'm not a fan of having two different "readable" event (both Rx and cq).
-Could you explain a bit what the use case is, so I get a better
-understanding.
+	struct sock *sk = psock->sk;
 
-The Tx queues has a back-pressure mechanism, determined of the number of
-elements in cq. Is it related to that?
+        if (unlikely(skb->sk == sk))
+                return sk_psock_skb_ingress_self(psock, skb);
 
-Please explain a bit more what you're trying to solve, and maybe we can
-figure out a better way forward!
-
-
-Thanks!
-Björn
+... on entry to sk_psock_skb_ingress().
