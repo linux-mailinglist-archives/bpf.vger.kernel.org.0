@@ -2,95 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672E42B5455
+	by mail.lfdr.de (Postfix) with ESMTP id D3EDB2B5456
 	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 23:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbgKPW2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Nov 2020 17:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        id S1730057AbgKPW3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Nov 2020 17:29:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727261AbgKPW2s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:28:48 -0500
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5B4C0613CF;
-        Mon, 16 Nov 2020 14:28:47 -0800 (PST)
-Received: by mail-oi1-x243.google.com with SMTP id t143so20469607oif.10;
-        Mon, 16 Nov 2020 14:28:47 -0800 (PST)
+        with ESMTP id S1727261AbgKPW3D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:29:03 -0500
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04916C0613CF;
+        Mon, 16 Nov 2020 14:29:03 -0800 (PST)
+Received: by mail-ot1-x343.google.com with SMTP id i18so17627906ots.0;
+        Mon, 16 Nov 2020 14:29:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=pnvePOVqVIwLlt9y+r9agWs7y1K90D0MGiWqxse5S/k=;
-        b=E0arDMs/GFaLcGxh0by2Hdztn+0I+35YJB37kzxMKiGMWmYitt6+frBYUmKuMMO9b4
-         wQ34u5soxqDHI4MYuX4Bv2BXgKbspb5AfOPjnndJmhGV9tEkw03PZRXbdP6oNc2R7vcu
-         mbhrGLszJH4Bksz9b5RIQAdX87tVtJCIZAfNiCR/OXn/mAc2QZ3fCzmSK5sgy/zJWeBq
-         j4f0Bp6ZnfQnuLv7dufjVOFlewl7c+fprAChee+JegojEdlOhjimB5AfKTuxdSePT95N
-         vKLTS34GAivpGqSh9CXUSV9cPND0nzjZkVExGT32Pgtfm2RrxZ/Tj+atDsyXLU0Y/p94
-         jnFg==
+        h=subject:from:to:cc:date:message-id:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=F0jSSl8oQ71zl5T0n2RCWV64rAXKAMsxWQ0W0YaMN9Q=;
+        b=s5zV5qH0sGhUupnBT2aeOiheB+gYq0OFhVdvz/2YEXUjpmaTcyn9w+ysN2URDXcSuP
+         E2JSOYoVe8XmrA1EKPA/hVi9hB38junKbqT3lW1Up0+AUS780txh7i4tTM2c/edbI6JL
+         9A6u+4OXHT2OUw1QY5n5ijqx2uuUKjSVl0hdciraNJV45838OOGto/3RaxNX+BDzXKWQ
+         E8QL977OXw3NG0OTs0LoaDRz4TBE3nBo7/43aXqhnS/A99waV1pwE4tNVL0dr64SwBVy
+         KpLbraJRYL1sBUVzo4q3Nv/I1OCUgUpZ/aM/AW/ivQZT4khHbt4FPUYgJZUse2GnR91X
+         TGkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=pnvePOVqVIwLlt9y+r9agWs7y1K90D0MGiWqxse5S/k=;
-        b=Fgt67gGXwBNgx5gSzlTcUHs6wB5wELOYhVoRtnh9oNWWq/LgsQ1JNssrRJfP/XNvnO
-         34FYt/hSTMFMce4LM6jM+xUCsn80gywjqYhHEfwDa4Mk/8Cq6o9Ohc9Bwe0S10Knmc6T
-         FO1CkNWB6KvFjIy507Ts2DYNCqoTzW8vmnzyhpO+qBFfQTKtHmBPBYjT0K/fm+xprR6i
-         98YYmZTuSx+C2RK+/cISk85qlzrdiZF2im7/zaHvHN8jFNp6TbJ8Y+KmV4siDbZe3pbZ
-         wLt8N0EvueWFzWffrosr7p9kdCiRfFAEl/yykWDMrwMVKNWDRm5JM1SgiDlisLUAJdkE
-         hL8w==
-X-Gm-Message-State: AOAM5333hLw9r9VbNg7gO9Z/13XfzW/u1q4pkCnrmO66YyMiLrv567+1
-        nzJWW6nbt1At6wrVMO0qFqOP3tp8aaeZgQ==
-X-Google-Smtp-Source: ABdhPJzYDQ/wAffb4t5JNyLcN2aZxuNqKBB1+yhUb81FBArTYmxzy0xfe4PoqcvufXUIzdhqYNPZ+g==
-X-Received: by 2002:aca:4257:: with SMTP id p84mr584704oia.68.1605565727442;
-        Mon, 16 Nov 2020 14:28:47 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id l12sm2846815oos.23.2020.11.16.14.28.45
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=F0jSSl8oQ71zl5T0n2RCWV64rAXKAMsxWQ0W0YaMN9Q=;
+        b=oPCJWUbXXvSQIZB/ZPcZHY5nMNwY0J2AVy7ccjIjKysSryySf1PwSyGSlw77uPgBPk
+         ZLG3yZwG+HkGEo3FsbggAImBxvbreaP3pxPi4n8OSrQC3NRX98h3fpg7bR06Hm/knYwF
+         LudNZW0+SGqIWBj07AdfqTRGcMC3FXgKiSfD8FlZbait72LZBAfFXu281WATHn5LH5eK
+         GkR45aD1kbgrm3oXxXlI4+N3v9Q2KKjQzs9ze4h4erHV3lcWInN7bUjUcYI38dESJa/z
+         pdjZ+oV1nQSgh8uTmnL4joAyh898PsjV6nNUSGMBL9Kdt92Il8LAtwKIM6a3wBPSOhJd
+         HWRQ==
+X-Gm-Message-State: AOAM532+ul9c+m1I/UETDUoXUJ4vGrwbJ3hPHI5BEGQRlMvML4NmG7t5
+        5heS0kLJIl7ORqzNiHFUavFoFKZ7Gnxyog==
+X-Google-Smtp-Source: ABdhPJxlJJI3ZNd24VcOVpPC+g61OVOPDE3AAaoCHMSO/t7UMssRgRfc2RaTcEICG0g2+hi2NJeuAQ==
+X-Received: by 2002:a05:6830:22c9:: with SMTP id q9mr1178422otc.48.1605565742118;
+        Mon, 16 Nov 2020 14:29:02 -0800 (PST)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id j6sm5125463ots.32.2020.11.16.14.28.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 14:28:46 -0800 (PST)
-Date:   Mon, 16 Nov 2020 14:28:39 -0800
+        Mon, 16 Nov 2020 14:29:01 -0800 (PST)
+Subject: [bpf PATCH v3 4/6] bpf,
+ sockmap: Avoid returning unneeded EAGAIN when redirecting to self
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+To:     jakub@cloudflare.com, ast@kernel.org, daniel@iogearbox.net
+Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
         netdev@vger.kernel.org
-Message-ID: <5fb2fd1778fe5_b976208e5@john-XPS-13-9370.notmuch>
-In-Reply-To: <87blfxweyj.fsf@cloudflare.com>
-References: <160522352433.135009.15329422887113794062.stgit@john-XPS-13-9370>
- <160522367856.135009.17304729578208922913.stgit@john-XPS-13-9370>
- <87blfxweyj.fsf@cloudflare.com>
-Subject: Re: [bpf PATCH v2 5/6] bpf, sockmap: Handle memory acct if
- skb_verdict prog redirects to self
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Date:   Mon, 16 Nov 2020 14:28:46 -0800
+Message-ID: <160556572660.73229.12566203819812939627.stgit@john-XPS-13-9370>
+In-Reply-To: <160556562395.73229.12161576665124541961.stgit@john-XPS-13-9370>
+References: <160556562395.73229.12161576665124541961.stgit@john-XPS-13-9370>
+User-Agent: StGit/0.23-36-gc01b
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Fri, Nov 13, 2020 at 12:27 AM CET, John Fastabend wrote:
-> > If the skb_verdict_prog redirects an skb knowingly to itself, fix your
-> > BPF program this is not optimal and an abuse of the API please use
-> > SK_PASS. That said there may be cases, such as socket load balancing,
-> > where picking the socket is hashed based or otherwise picks the same
-> > socket it was received on in some rare cases. If this happens we don't
-> > want to confuse userspace giving them an EAGAIN error if we can avoid
-> > it.
+If a socket redirects to itself and it is under memory pressure it is
+possible to get a socket stuck so that recv() returns EAGAIN and the
+socket can not advance for some time. This happens because when
+redirecting a skb to the same socket we received the skb on we first
+check if it is OK to enqueue the skb on the receiving socket by checking
+memory limits. But, if the skb is itself the object holding the memory
+needed to enqueue the skb we will keep retrying from kernel side
+and always fail with EAGAIN. Then userspace will get a recv() EAGAIN
+error if there are no skbs in the psock ingress queue. This will continue
+until either some skbs get kfree'd causing the memory pressure to
+reduce far enough that we can enqueue the pending packet or the
+socket is destroyed. In some cases its possible to get a socket
+stuck for a noticable amount of time if the socket is only receiving
+skbs from sk_skb verdict programs. To reproduce I make the socket
+memory limits ridiculously low so sockets are always under memory
+pressure. More often though if under memory pressure it looks like
+a spurious EAGAIN error on user space side causing userspace to retry
+and typically enough has moved on the memory side that it works.
 
-[...]
+To fix skip memory checks and skb_orphan if receiving on the same
+sock as already assigned.
+
+For SK_PASS cases this is easy, its always the same socket so we
+can just omit the orphan/set_owner pair.
+
+For backlog cases we need to check skb->sk and decide if the orphan
+and set_owner pair are needed.
+
+Fixes: 51199405f9672 ("bpf: skb_verdict, support SK_PASS on RX BPF path")
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ net/core/skmsg.c |   72 ++++++++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 53 insertions(+), 19 deletions(-)
+
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index d09426ce4af3..9aed5a2c7c5b 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -399,38 +399,38 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
+ }
+ EXPORT_SYMBOL_GPL(sk_msg_memcopy_from_iter);
  
-> 
-> I think all the added checks boil down to having:
-> 
-> 	struct sock *sk = psock->sk;
-> 
->         if (unlikely(skb->sk == sk))
->                 return sk_psock_skb_ingress_self(psock, skb);
-> 
-> ... on entry to sk_psock_skb_ingress().
+-static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
++static struct sk_msg *sk_psock_create_ingress_msg(struct sock *sk,
++						  struct sk_buff *skb)
+ {
+-	struct sock *sk = psock->sk;
+-	int copied = 0, num_sge;
+ 	struct sk_msg *msg;
+ 
+ 	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf)
+-		return -EAGAIN;
++		return NULL;
++
++	if (!sk_rmem_schedule(sk, skb, skb->truesize))
++		return NULL;
+ 
+ 	msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
+ 	if (unlikely(!msg))
+-		return -EAGAIN;
+-	if (!sk_rmem_schedule(sk, skb, skb->truesize)) {
+-		kfree(msg);
+-		return -EAGAIN;
+-	}
++		return NULL;
+ 
+ 	sk_msg_init(msg);
+-	num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
++	return msg;
++}
++
++static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
++					struct sk_psock *psock,
++					struct sock *sk,
++					struct sk_msg *msg)
++{
++	int num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
++	int copied;
++
+ 	if (unlikely(num_sge < 0)) {
+ 		kfree(msg);
+ 		return num_sge;
+ 	}
+ 
+-	/* This will transition ownership of the data from the socket where
+-	 * the BPF program was run initiating the redirect to the socket
+-	 * we will eventually receive this data on. The data will be released
+-	 * from skb_consume found in __tcp_bpf_recvmsg() after its been copied
+-	 * into user buffers.
+-	 */
+-	skb_set_owner_r(skb, sk);
+-
+ 	copied = skb->len;
+ 	msg->sg.start = 0;
+ 	msg->sg.size = copied;
+@@ -442,6 +442,40 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
+ 	return copied;
+ }
+ 
++static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
++{
++	struct sock *sk = psock->sk;
++	struct sk_msg *msg;
++
++	msg = sk_psock_create_ingress_msg(sk, skb);
++	if (!msg)
++		return -EAGAIN;
++
++	/* This will transition ownership of the data from the socket where
++	 * the BPF program was run initiating the redirect to the socket
++	 * we will eventually receive this data on. The data will be released
++	 * from skb_consume found in __tcp_bpf_recvmsg() after its been copied
++	 * into user buffers.
++	 */
++	skb_set_owner_r(skb, sk);
++	return sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
++}
++
++/* Puts an skb on the ingress queue of the socket already assigned to the
++ * skb. In this case we do not need to check memory limits or skb_set_owner_r
++ * because the skb is already accounted for here.
++ */
++static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb)
++{
++	struct sk_msg *msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
++	struct sock *sk = psock->sk;
++
++	if (unlikely(!msg))
++		return -EAGAIN;
++	sk_msg_init(msg);
++	return sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
++}
++
+ static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
+ 			       u32 off, u32 len, bool ingress)
+ {
+@@ -801,7 +835,7 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
+ 		 * retrying later from workqueue.
+ 		 */
+ 		if (skb_queue_empty(&psock->ingress_skb)) {
+-			err = sk_psock_skb_ingress(psock, skb);
++			err = sk_psock_skb_ingress_self(psock, skb);
+ 		}
+ 		if (err < 0) {
+ 			skb_queue_tail(&psock->ingress_skb, skb);
 
-Agree made the change and sent out v3 thanks. I also carried your
-Reviewed-by through on patches 1-4 and 6.
 
-Thanks for reviewing!
