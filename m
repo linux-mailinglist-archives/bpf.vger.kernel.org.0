@@ -2,180 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AF82B3F93
-	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 10:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31C52B3FE2
+	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 10:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgKPJNZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Nov 2020 04:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
+        id S1726697AbgKPJfO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Nov 2020 04:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbgKPJNZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Nov 2020 04:13:25 -0500
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203B7C0613D1
-        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 01:13:23 -0800 (PST)
-Received: by mail-ed1-x544.google.com with SMTP id d18so5027536edt.7
-        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 01:13:23 -0800 (PST)
+        with ESMTP id S1726621AbgKPJfO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Nov 2020 04:35:14 -0500
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49586C0613CF;
+        Mon, 16 Nov 2020 01:35:12 -0800 (PST)
+Received: by mail-lf1-x144.google.com with SMTP id f11so24200040lfs.3;
+        Mon, 16 Nov 2020 01:35:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=b64DklvkPbJlghCpQ9o33D4Srw1SHKJxfzxD/FgwdD0=;
-        b=jUJCvlVe/hM1y+Lb2TrbXSWEld4ElJHChOmjbH3XmloUiNlfkQPnoC81kynrL3dk5e
-         9glLcAujNINZE5THL50H3wF7IeifGRpVxckLb1XZVdvueiRaXs0pKiXWdvS72+EnXCfz
-         b4dbKIM6jdALr5LLE2z4X8t7IL59HSHub3UqeDN9yDEeHO6kanZ+4ay7uSOAkSMGd6pK
-         MNZHkTIeaGdZn6bBaEV+zp37O/XeO4dEflxdg8bhSI3DVplGC/0Aw/Alihej/IxNhO17
-         aIUjEJqXob77gF83WYO/lt8xQ/sb6ykfmErd+osD0g3CKZ/z9s9mB9ifOl+8Xw5T1TxZ
-         hE0g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=phafJMA73+KNOmHJBlDaNagv8vGkjcmIaidHQZjre5g=;
+        b=VimgtruRxZPULC4qattrtFlD0286R2FnJ8dcr0wRMQ6KLayA5SXdQjqeZS80CCvkkt
+         e9xdAjcBxHLSy8LitTPB/6OQ3gPe+7xfhVPvnr7xNvg57M6DxxpvJCUtlRktvv1rWiFr
+         tlPW+C03EQ4J2b4z/y49Uj+VobHVGYHs8jl6sMehtkGJaMTqSa4J2HzaJUZxoehRhX6E
+         Og8nk2jfQdqKB/aWeSaTzSEgjp7c+97Y5VUlRwAK8SKggJ58zNSrOEnyExnxhn6XRJkp
+         AWJ1UyCBRMfORZ//IlTfIx9raiI1onYeaEZ+Z6O3qxpoWZOq5FnlpctAXpFRFDXLq0nG
+         62iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=b64DklvkPbJlghCpQ9o33D4Srw1SHKJxfzxD/FgwdD0=;
-        b=szQXbDA0A+FfNxa9ptuNc9fRuJ3RP/yTPSt2VLTwDd/iZdzlTqQU0+IwT4XdKnFiJi
-         28mpzhLKtR8fN40N7NolSjzj92p6htVlvtL4yEgx/w7fRuXXHlFjNZuae7OUhlEnHo7B
-         FY7hz92yFoj0DM4BM1Gm3I45wpP7qCJbKBHOJ2fp5eDfO7j/Cv2YvNC2KTvWhAsWwgRP
-         8d+iZR3MbXNVL6NE37gFttze3uc7MH4nBbek8TlUYr+6pAwXxQaY87HFTEOc6VtcgljB
-         O2MI3V5M6szSR9XOxJDG5XquX7K1bA93YzvoYdcR/6K3nJ/bWELHTHagEcjTv5iGxQFR
-         Ub6w==
-X-Gm-Message-State: AOAM530ySvnd72y0a9FOxA5xyonR1H0TXUCAUTsCm/575+vmIv7SQ3yl
-        Px4V431quR2SPpE2/D7RBjiIvmG5O4ICE7wGKtJ0sQ==
-X-Google-Smtp-Source: ABdhPJzbb2CEFmZHPu02GiWFosq6pO5nK8WyF+Ii74ndpPPn+AWTh6mMqEkNn929jplJTFTFCpOa0MrY1mMrn6H/oWE=
-X-Received: by 2002:a05:6402:48d:: with SMTP id k13mr14919406edv.92.1605518001742;
- Mon, 16 Nov 2020 01:13:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=phafJMA73+KNOmHJBlDaNagv8vGkjcmIaidHQZjre5g=;
+        b=TXHV+WXuYslwX/Ej8zWpE7SFkwbJAPdZtSjOhSHX7Tsv5crB9w7dH1ozR4zrlBIltx
+         Awc8C1JS8fNIhrkmShZhpbJtYYhRvLQE5JkMCvxMlr+8a5TMiCq/7WlRj+8YrWui/v8w
+         lEt2zex4oh87UzJv9aJvCtuty838a+fx2DppeIl5m4m8Ca3f0KJVK8Y0vHD8m9ljJvzf
+         GFp9L08isZXQwR+PfK5RVcX2yIkWosEhQigVlNpTtowXd0nfabzNF4lXPZ+lCSDALaRj
+         KvBzNwdSv+BgSK60DV0g56AqPHCt5qzENedtKtZTCGup1otgjuhSHS1OHefIV8t7pkhu
+         OWFw==
+X-Gm-Message-State: AOAM530l1HYKekXOylToMfr/8axPj8YAJDNLTg8qgwGmhNA0VaRMe3ye
+        J6JZtusROGA4k8ciV6pS2JE=
+X-Google-Smtp-Source: ABdhPJxVqmfN2e4+h/bCRxlDwFEvQCslssey+W3hiVKCreqO4jwBhaQqVcPdVREk+7csPhECbGFrjQ==
+X-Received: by 2002:a19:cb8f:: with SMTP id b137mr5193330lfg.448.1605519310761;
+        Mon, 16 Nov 2020 01:35:10 -0800 (PST)
+Received: from localhost.localdomain (87-205-71-93.adsl.inetia.pl. [87.205.71.93])
+        by smtp.gmail.com with ESMTPSA id t26sm2667986lfp.296.2020.11.16.01.35.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 01:35:10 -0800 (PST)
+From:   alardam@gmail.com
+X-Google-Original-From: marekx.majtyka@intel.com
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        andrii.nakryiko@gmail.com, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org, davem@davemloft.net,
+        john.fastabend@gmail.com, hawk@kernel.org, toke@redhat.com
+Cc:     maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        bpf@vger.kernel.org, jeffrey.t.kirsher@intel.com,
+        maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>
+Subject: [PATCH 0/8] New netdev feature flags for XDP
+Date:   Mon, 16 Nov 2020 10:34:44 +0100
+Message-Id: <20201116093452.7541-1-marekx.majtyka@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Received: by 2002:a54:380d:0:0:0:0:0 with HTTP; Mon, 16 Nov 2020 01:13:21
- -0800 (PST)
-X-Originating-IP: [5.35.10.61]
-In-Reply-To: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
-References: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-Date:   Mon, 16 Nov 2020 12:13:21 +0300
-Message-ID: <CAOJe8K3wz=-LC++N-Hvrturt46+AAK1cW8VYXK+VMT9y1OSzmQ@mail.gmail.com>
-Subject: Re: [PATCH] xsk: add cq event
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     netdev@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/16/20, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> When we write all cq items to tx, we have to wait for a new event based
-> on poll to indicate that it is writable. But the current writability is
-> triggered based on whether tx is full or not, and In fact, when tx is
-> dissatisfied, the user of cq's item may not necessarily get it, because it
-> may still be occupied by the network card. In this case, we need to know
-> when cq is available, so this patch adds a socket option, When the user
-> configures this option using setsockopt, when cq is available, a
-> readable event is generated for all xsk bound to this umem.
->
-> I can't find a better description of this event,
-> I think it can also be 'readable', although it is indeed different from
-> the 'readable' of the new data. But the overhead of xsk checking whether
-> cq or rx is readable is small.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  include/net/xdp_sock.h      |  1 +
->  include/uapi/linux/if_xdp.h |  1 +
->  net/xdp/xsk.c               | 28 ++++++++++++++++++++++++++++
->  3 files changed, 30 insertions(+)
->
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 1a9559c..faf5b1a 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -49,6 +49,7 @@ struct xdp_sock {
->  	struct xsk_buff_pool *pool;
->  	u16 queue_id;
->  	bool zc;
-> +	bool cq_event;
->  	enum {
->  		XSK_READY = 0,
->  		XSK_BOUND,
-> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-> index a78a809..2dba3cb 100644
-> --- a/include/uapi/linux/if_xdp.h
-> +++ b/include/uapi/linux/if_xdp.h
-> @@ -63,6 +63,7 @@ struct xdp_mmap_offsets {
->  #define XDP_UMEM_COMPLETION_RING	6
->  #define XDP_STATISTICS			7
->  #define XDP_OPTIONS			8
-> +#define XDP_CQ_EVENT			9
->
->  struct xdp_umem_reg {
->  	__u64 addr; /* Start of packet data area */
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index cfbec39..0c53403 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -285,7 +285,16 @@ void __xsk_map_flush(void)
->
->  void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
->  {
-> +	struct xdp_sock *xs;
-> +
->  	xskq_prod_submit_n(pool->cq, nb_entries);
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> +		if (xs->cq_event)
-> +			sock_def_readable(&xs->sk);
-> +	}
-> +	rcu_read_unlock();
->  }
->  EXPORT_SYMBOL(xsk_tx_completed);
->
-> @@ -495,6 +504,9 @@ static __poll_t xsk_poll(struct file *file, struct
-> socket *sock,
->  			__xsk_sendmsg(sk);
->  	}
->
-> +	if (xs->cq_event && pool->cq && !xskq_prod_is_empty(pool->cq))
-> +		mask |= EPOLLIN | EPOLLRDNORM;
-> +
->  	if (xs->rx && !xskq_prod_is_empty(xs->rx))
->  		mask |= EPOLLIN | EPOLLRDNORM;
->  	if (xs->tx && !xskq_cons_is_full(xs->tx))
-> @@ -882,6 +894,22 @@ static int xsk_setsockopt(struct socket *sock, int
-> level, int optname,
->  		mutex_unlock(&xs->mutex);
->  		return err;
->  	}
-> +	case XDP_CQ_EVENT:
-> +	{
-> +		int cq_event;
-> +
-> +		if (optlen < sizeof(cq_event))
-> +			return -EINVAL;
-> +		if (copy_from_sockptr(&cq_event, optval, sizeof(cq_event)))
-> +			return -EFAULT;
-> +
-> +		if (cq_event)
-> +			xs->cq_event = true;
-> +		else
-> +			xs->cq_event = false;
+From: Marek Majtyka <marekx.majtyka@intel.com>
 
-It's false by default, isn't it?
+Implement support for checking if a netdev has native XDP and AF_XDP zero
+copy support. Previously, there was no way to do this other than to try
+to create an AF_XDP socket on the interface or load an XDP program and
+see if it worked. This commit changes this by extending existing
+netdev_features in the following way:
+ * xdp        - full XDP support (XDP_{TX, PASS, DROP, ABORT, REDIRECT})
+ * af-xdp-zc  - AF_XDP zero copy support
+NICs supporting these features are updated by turning the corresponding
+netdev feature flags on.
 
-> +
-> +		return 0;
-> +	}
->  	default:
->  		break;
->  	}
-> --
-> 1.8.3.1
->
->
+NOTE:
+ Only the compilation check was performed for:
+  - ice, 
+  - igb,
+  - mlx5, 
+  - bnxt, 
+  - dpaa2, 
+  - mvmeta, 
+  - mvpp2, 
+  - qede,
+  - sfc, 
+  - netsec, 
+  - cpsw, 
+  - xen, 
+  - virtio_net.
+
+Libbpf library is extended in order to provide a simple API for gathering
+information about XDP supported capabilities of a netdev. This API
+utilizes netlink interface towards kernel. With this function it is
+possible to get xsk supported options for netdev beforehand.
+The new API is used in core xsk code as well as in the xdpsock sample.
+
+These new flags also solve the problem with strict recognition of zero
+copy support. The problem is that there are drivers out there that only
+support XDP partially, so it is possible to successfully load the XDP
+program in native mode, but it will still not be able to support zero-copy
+as it does not have XDP_REDIRECT support. With af-xdp-zc flag the check
+is possible and trivial.
+
+Marek Majtyka (8):
+  net: ethtool: extend netdev_features flag set
+  drivers/net: turn XDP flags on
+  xsk: add usage of xdp netdev_features flags
+  xsk: add check for full support of XDP in bind
+  libbpf: extend netlink attribute API
+  libbpf: add functions to get XSK modes
+  libbpf: add API to get XSK/XDP caps
+  samples/bpf/xdp: apply netdev XDP/XSK modes info
+
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   1 +
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   2 +
+ drivers/net/ethernet/intel/ice/ice_main.c     |   4 +
+ drivers/net/ethernet/intel/igb/igb_main.c     |   2 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   3 +
+ drivers/net/ethernet/marvell/mvneta.c         |   1 +
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |   1 +
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   2 +
+ drivers/net/ethernet/qlogic/qede/qede_main.c  |   1 +
+ drivers/net/ethernet/sfc/efx.c                |   1 +
+ drivers/net/ethernet/socionext/netsec.c       |   1 +
+ drivers/net/ethernet/ti/cpsw.c                |   2 +
+ drivers/net/ethernet/ti/cpsw_new.c            |   2 +
+ drivers/net/tun.c                             |   4 +
+ drivers/net/veth.c                            |   1 +
+ drivers/net/virtio_net.c                      |   1 +
+ drivers/net/xen-netfront.c                    |   1 +
+ include/linux/netdev_features.h               |   6 +
+ include/net/xdp.h                             |  13 +
+ include/net/xdp_sock_drv.h                    |  11 +
+ include/uapi/linux/if_xdp.h                   |   1 +
+ net/ethtool/common.c                          |   2 +
+ net/xdp/xsk.c                                 |   4 +-
+ net/xdp/xsk_buff_pool.c                       |  21 +-
+ samples/bpf/xdpsock_user.c                    | 117 +++++-
+ tools/include/uapi/linux/ethtool.h            |  44 ++
+ tools/include/uapi/linux/if_xdp.h             |   1 +
+ tools/lib/bpf/ethtool.h                       |  49 +++
+ tools/lib/bpf/libbpf.h                        |   1 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/netlink.c                       | 379 +++++++++++++++++-
+ tools/lib/bpf/nlattr.c                        | 105 +++++
+ tools/lib/bpf/nlattr.h                        |  22 +
+ tools/lib/bpf/xsk.c                           |  54 ++-
+ tools/lib/bpf/xsk.h                           |   3 +-
+ 36 files changed, 845 insertions(+), 20 deletions(-)
+ create mode 100644 tools/lib/bpf/ethtool.h
+
+-- 
+2.20.1
+
