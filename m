@@ -2,103 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAAB2B3D95
-	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 08:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1082B3E58
+	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 09:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgKPHTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Nov 2020 02:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbgKPHTk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Nov 2020 02:19:40 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DA2C0613CF;
-        Sun, 15 Nov 2020 23:19:40 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id y16so18978180ljh.0;
-        Sun, 15 Nov 2020 23:19:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h6yq4RxQKFNJbv5LYFFym5s3TAbtk0ibN0KzJ9c9nlk=;
-        b=W59GKviwI+4mQRASZ+TZt+dmYcXbOTGQqVfGVfzmmzPIjNTsctl4x+TpAorQCk3NOY
-         QbRRCxplCsw3bRA6ws759bQfWLnAoxUwhHzzbPAIM3/+guN3kLfbPLCSHcvfLhE3px9x
-         ggm23TzVPROlBSceJxOzFRJH8wu0S41xeUOtq6z7xe5+8TLHi6BHTpplFgszI6xWDRJp
-         f+md9Q7uBylrx7gnmPqvEK6JvC8X+NlgH2bchlh2bBEhDoHBg4mb0IgAKuH/NmFrJ6Lo
-         qjbC8siyJP/0d1LcXj6KdILQUKb2KgYFVFr6q8WIuGtt46f5N7uS3kfv7FYDjf9SH/No
-         llQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h6yq4RxQKFNJbv5LYFFym5s3TAbtk0ibN0KzJ9c9nlk=;
-        b=rgKgmRNfw79LWMg90WkPBpcJ0kClbj/kMGIrMAwdWW9RqlDUeg7dB1HbFXSt8w5ZEY
-         ga8hmFeyXm8D4GLbaGBNRNjKaWB4iqhheZzJCobHMpWvUUX+OneG+pQwLAGA0KEjL/zR
-         EFwBNNY1AYDjDI1MhcTOrHJ4FvK9qNl1b8+Xi8PrlGVSoQDLhk6gV+f0mR+EXkQbga10
-         3lx7wKsSEcE47/BphXbdN5vIExUnkxF3dHoem2w2eUJM0AvTSJfdHeGOnkMwFTsvzYKO
-         U6PngjK59f5ReIaXbnY3smSsDUulU9QJOUy1Ki/Nsk1qv/noBbAbVEddkCsK8H9Lj67s
-         I/og==
-X-Gm-Message-State: AOAM533lo2a4La5h/w+jaEzFW69KWoTmtZTa3tDNjMNqSq9OxvYrcsUS
-        AjZwFo1JP6EBcBxSytaYfPOzYBCdUe1TnNt8ZqIlvDOgULA=
-X-Google-Smtp-Source: ABdhPJymjAWioE1WOL8mdPvyK2ganrrEEYQkejsX+EOYRv4e8qrEOMF7M16Srm09uPMSlX2m0Ij5zMKbcBCavMv+jv4=
-X-Received: by 2002:a2e:9681:: with SMTP id q1mr6025714lji.2.1605511178792;
- Sun, 15 Nov 2020 23:19:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20201109070802.3638167-1-haliu@redhat.com> <20201116065305.1010651-1-haliu@redhat.com>
-In-Reply-To: <20201116065305.1010651-1-haliu@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 15 Nov 2020 23:19:26 -0800
-Message-ID: <CAADnVQ+LNBYq5fdTSRUPy2ZexTdCcB6ErNH_T=r9bJ807UT=pQ@mail.gmail.com>
-Subject: Re: [PATCHv5 iproute2-next 0/5] iproute2: add libbpf support
-To:     Hangbin Liu <haliu@redhat.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        David Ahern <dsahern@gmail.com>,
+        id S1728007AbgKPILD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Nov 2020 03:11:03 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:40962 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727789AbgKPILD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Nov 2020 03:11:03 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UFVOgpP_1605514257;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UFVOgpP_1605514257)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 16 Nov 2020 16:10:58 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] xsk: add cq event
+Date:   Mon, 16 Nov 2020 16:10:55 +0800
+Message-Id: <b18c1f2cfb0c9c0b409c25f4a73248e869c8ac97.1605513087.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 15, 2020 at 10:56 PM Hangbin Liu <haliu@redhat.com> wrote:
->
-> This series converts iproute2 to use libbpf for loading and attaching
-> BPF programs when it is available. This means that iproute2 will
-> correctly process BTF information and support the new-style BTF-defined
-> maps, while keeping compatibility with the old internal map definition
-> syntax.
->
-> This is achieved by checking for libbpf at './configure' time, and using
-> it if available. By default the system libbpf will be used, but static
-> linking against a custom libbpf version can be achieved by passing
-> LIBBPF_DIR to configure. LIBBPF_FORCE can be set to on to force configure
-> abort if no suitable libbpf is found (useful for automatic packaging
-> that wants to enforce the dependency), or set off to disable libbpf check
-> and build iproute2 with legacy bpf.
->
-> The old iproute2 bpf code is kept and will be used if no suitable libbpf
-> is available. When using libbpf, wrapper code ensures that iproute2 will
-> still understand the old map definition format, including populating
-> map-in-map and tail call maps before load.
->
-> The examples in bpf/examples are kept, and a separate set of examples
-> are added with BTF-based map definitions for those examples where this
-> is possible (libbpf doesn't currently support declaratively populating
-> tail call maps).
->
-> At last, Thanks a lot for Toke's help on this patch set.
->
-> v5:
-> a) Fix LIBBPF_DIR typo and description, use libbpf DESTDIR as LIBBPF_DIR
->    dest.
-> b) Fix bpf_prog_load_dev typo.
-> c) rebase to latest iproute2-next.
+When we write all cq items to tx, we have to wait for a new event based
+on poll to indicate that it is writable. But the current writability is
+triggered based on whether tx is full or not, and In fact, when tx is
+dissatisfied, the user of cq's item may not necessarily get it, because it
+may still be occupied by the network card. In this case, we need to know
+when cq is available, so this patch adds a socket option, When the user
+configures this option using setsockopt, when cq is available, a
+readable event is generated for all xsk bound to this umem.
 
-For the reasons explained multiple times earlier:
-Nacked-by: Alexei Starovoitov <ast@kernel.org>
+I can't find a better description of this event,
+I think it can also be 'readable', although it is indeed different from
+the 'readable' of the new data. But the overhead of xsk checking whether
+cq or rx is readable is small.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ include/net/xdp_sock.h      |  1 +
+ include/uapi/linux/if_xdp.h |  1 +
+ net/xdp/xsk.c               | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 30 insertions(+)
+
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index 1a9559c..faf5b1a 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -49,6 +49,7 @@ struct xdp_sock {
+ 	struct xsk_buff_pool *pool;
+ 	u16 queue_id;
+ 	bool zc;
++	bool cq_event;
+ 	enum {
+ 		XSK_READY = 0,
+ 		XSK_BOUND,
+diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+index a78a809..2dba3cb 100644
+--- a/include/uapi/linux/if_xdp.h
++++ b/include/uapi/linux/if_xdp.h
+@@ -63,6 +63,7 @@ struct xdp_mmap_offsets {
+ #define XDP_UMEM_COMPLETION_RING	6
+ #define XDP_STATISTICS			7
+ #define XDP_OPTIONS			8
++#define XDP_CQ_EVENT			9
+ 
+ struct xdp_umem_reg {
+ 	__u64 addr; /* Start of packet data area */
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index cfbec39..0c53403 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -285,7 +285,16 @@ void __xsk_map_flush(void)
+ 
+ void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
+ {
++	struct xdp_sock *xs;
++
+ 	xskq_prod_submit_n(pool->cq, nb_entries);
++
++	rcu_read_lock();
++	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
++		if (xs->cq_event)
++			sock_def_readable(&xs->sk);
++	}
++	rcu_read_unlock();
+ }
+ EXPORT_SYMBOL(xsk_tx_completed);
+ 
+@@ -495,6 +504,9 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+ 			__xsk_sendmsg(sk);
+ 	}
+ 
++	if (xs->cq_event && pool->cq && !xskq_prod_is_empty(pool->cq))
++		mask |= EPOLLIN | EPOLLRDNORM;
++
+ 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
+ 		mask |= EPOLLIN | EPOLLRDNORM;
+ 	if (xs->tx && !xskq_cons_is_full(xs->tx))
+@@ -882,6 +894,22 @@ static int xsk_setsockopt(struct socket *sock, int level, int optname,
+ 		mutex_unlock(&xs->mutex);
+ 		return err;
+ 	}
++	case XDP_CQ_EVENT:
++	{
++		int cq_event;
++
++		if (optlen < sizeof(cq_event))
++			return -EINVAL;
++		if (copy_from_sockptr(&cq_event, optval, sizeof(cq_event)))
++			return -EFAULT;
++
++		if (cq_event)
++			xs->cq_event = true;
++		else
++			xs->cq_event = false;
++
++		return 0;
++	}
+ 	default:
+ 		break;
+ 	}
+-- 
+1.8.3.1
+
