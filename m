@@ -2,163 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E462B542E
-	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 23:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F3F2B5446
+	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 23:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgKPWQM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Nov 2020 17:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S1729304AbgKPW1l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Nov 2020 17:27:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728119AbgKPWQM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:16:12 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08546C0613D2
-        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 14:16:12 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id p12so21924597ljc.9
-        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 14:16:11 -0800 (PST)
+        with ESMTP id S1728982AbgKPW1l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:27:41 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CABC0613CF;
+        Mon, 16 Nov 2020 14:27:41 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id o3so7057644ota.8;
+        Mon, 16 Nov 2020 14:27:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iF9pv4yrV71gAZ7pO+xa+oOM736e/dHlJRDoOYN7BR4=;
-        b=SAXvYD6FrqsuD5DpNnkQhTSzDKmNP1Sh38hp3dJSoWvquXLZ9X6xzr2FaysmQoh1H8
-         Mu8JA5m8dnSCLh5avzm9QMivhW01tjdrEVuwqCzQiDmNKrvCbwE4Gk7Qben/Btt1sMzM
-         HeQv91ZaP57NbJZQ1izw2X/HW2YXwDZfu1AO4=
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=RlgwZdM9GqzQMPHs9fItBuNKu4uwvnR753hh212yRb8=;
+        b=qHxuHFsqfqQlp4t05X5lllKzsesPm9qQj4+fuO/OWl+fKVTQxBiF1H33ofs6kAyDxR
+         Zl2OfaEp0l5L64Fs1dLQ5SDWictwOUGUSy6UsU2oXI7RoWl1Y9hjH6lzV+bYif+sDORX
+         qRYGIEtoG1aea/JF2X9imQe4ZzTifdPfF1GNDUMer3czvWJp1seSc51uCKFpDS2/31+4
+         YHFpRAPIxBDjX78eGR1Pr9aZmUV/gYC+o/qKL2gBLiHGyiZgrWN1kHjWKxOpqZz8C5cD
+         tLjsX1Y5UYhxCXpsqAO16uoKhGSutgdRH2lxkmzwnwS4YUv3IAfV777Vjg+3zoXq8n//
+         T1bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iF9pv4yrV71gAZ7pO+xa+oOM736e/dHlJRDoOYN7BR4=;
-        b=acFqzQ3wAkFdUS21dsrlzyuw1NApp14ZuS67Ejx8hTkqCtAZxO7f666gW0naLDUINs
-         jk0OOdBHT+zxGeHhRDGln2q3aw+PSJJThT+6czaTv3QjqQVyH9UTTO9EFyYPPfkV0ZfV
-         ijk4D52THEZcrHVMrfqMtA42GvN1W7Mn1+VOnIgGbg1oL/BpzEOUhm0Y/VPeOprZfySR
-         gmx8rxiS0TomkbbGoQhWsxI74+6DQ7E+nOhuUMj9ijl6/YwZjdlUrbdjzG+T/LU/fKkJ
-         INPeMaNqDE7uXwOsgmA78utQpY8TPAnMTFj2qa8yLKAql+FqymhYDwanmpkl7h59MSbH
-         AYqg==
-X-Gm-Message-State: AOAM532h5AOVD3B5riMTEnJmUySo2lw+7HW8a4l/Ubh94mxXKd62NC9l
-        bW5BsTpiBxoDrmJnV5cKEp0oGt7lA7Mt5w==
-X-Google-Smtp-Source: ABdhPJwt03oxOCPqYKEFihGWphMIltfoSDa/rVQu24kxb3BwOOgWhBhz5Z3o50YB4eRY3joQE/9Vxg==
-X-Received: by 2002:a2e:a0c2:: with SMTP id f2mr554720ljm.431.1605564969711;
-        Mon, 16 Nov 2020 14:16:09 -0800 (PST)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id p1sm2873642ljn.72.2020.11.16.14.16.08
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Nov 2020 14:16:08 -0800 (PST)
-Received: by mail-lj1-f177.google.com with SMTP id x9so21938391ljc.7
-        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 14:16:08 -0800 (PST)
-X-Received: by 2002:a2e:a375:: with SMTP id i21mr498450ljn.421.1605564967930;
- Mon, 16 Nov 2020 14:16:07 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=RlgwZdM9GqzQMPHs9fItBuNKu4uwvnR753hh212yRb8=;
+        b=Gy36X+EPVRBEIJv3UeMyIUEmkZi6iHftHT7Z7GD4uhlwyU6rKVag7o3yPhUyZ2sBcO
+         3Y7fOSe/p8TvEvD7lN6LD5IYLJ+YUxb00tQem0r5RY95DrkH5xU2YioxpZisrZSN94pW
+         YF+QuSe5JyFrnyW4dFXm8OKO0veTHPWnVnm//uESgCySiw+KUAPo/sm/0zjS9z4XjnsL
+         6VHB54MMvPv86AR1We9DoAzuXcLIzzRiuUkbC4v3RFJVE5tAy5i0Ah5JIuStpDAax0Jm
+         4NCw4lfACAsmfcSjJ5DOGwKp+9Iw8WdU5LBQKValcyQOTqnk3KXJb8lI7vzemPxGOZqB
+         OYEw==
+X-Gm-Message-State: AOAM5300F/+VZaTb2ouTuP/Qerp6egvO5Okouf3JPjh6rhJr9qKk1iLw
+        5geH2xzeC6eeqhckkopRLHzYRZwz2i9oNw==
+X-Google-Smtp-Source: ABdhPJzfPJWK9CG2wB4aCbLlOjmMCdx3Of3c+dNfKbIJ81HD91DEfXGZxqDIo8ymbfSRZNJkCTPudA==
+X-Received: by 2002:a9d:19cf:: with SMTP id k73mr1064290otk.360.1605565660190;
+        Mon, 16 Nov 2020 14:27:40 -0800 (PST)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id 68sm5171333oto.71.2020.11.16.14.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 14:27:35 -0800 (PST)
+Subject: [bpf PATCH v3 0/6] sockmap fixes 
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     jakub@cloudflare.com, ast@kernel.org, daniel@iogearbox.net
+Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Date:   Mon, 16 Nov 2020 14:27:23 -0800
+Message-ID: <160556562395.73229.12161576665124541961.stgit@john-XPS-13-9370>
+User-Agent: StGit/0.23-36-gc01b
 MIME-Version: 1.0
-References: <cover.1605560917.git.dxu@dxuuu.xyz> <470ffc3c76414443fc359b884080a5394dcccec3.1605560917.git.dxu@dxuuu.xyz>
-In-Reply-To: <470ffc3c76414443fc359b884080a5394dcccec3.1605560917.git.dxu@dxuuu.xyz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 16 Nov 2020 14:15:52 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
-Message-ID: <CAHk-=wggUw3XYffJ-od8Dbfh-JkXkEuCPjSRR2Z+8HrNUNxJ=g@mail.gmail.com>
-Subject: Re: [PATCH bpf v6 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 1:17 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Based on on-list discussion and some off-list discussion with Alexei,
-> I'd like to propose the v4-style patch without the `(*out & ~mask)`
-> bit.
+This includes fixes for sockmap found after I started running skmsg and
+verdict programs on systems that I use daily. To date with attached
+series I've been running for multiple weeks without seeing any issues
+on systems doing calls, mail, movies, etc.
 
-So I've verified that at least on x86-64, this doesn't really make
-code generation any worse, and I'm ok with the patch from that
-standpoint.
+Also I started running packetdrill and after this series last remaining
+fix needed is to handle MSG_EOR correctly. This will come as a follow
+up to this, but because we use sendpage to pass pages into TCP stack
+we need to enable TCP side some.
 
-However, this was not what the discussion actually amended at as far
-as I'm concerned.
+v3:
+ - Simplify patch5 as suggested by Jakub
+v2:
+ - Added patch3 to use truesize in sk_rmem_schedule (Daniel)
+ - cleaned up some small nits... goto and extra set of brackets (Daniel)
 
-I mentioned that if BPF cares about the bytes past the end of the
-string, I want a *BIG COMMENT* about it. Yes, in strncpy_from_user()
-itself, but even more in the place that cares.
 
-And no, that does not mean bpf_probe_read_user_str().  That function
-clearly doesn't care at all, and doesn't access anything past the end
-of the string. I want a comment in whatever code that accesses past
-the end of the string.
+---
 
-And your ABI point is actively misleading:
+John Fastabend (6):
+      bpf, sockmap: fix partial copy_page_to_iter so progress can still be made
+      bpf, sockmap: Ensure SO_RCVBUF memory is observed on ingress redirect
+      bpf, sockmap: Use truesize with sk_rmem_schedule()
+      bpf, sockmap: Avoid returning unneeded EAGAIN when redirecting to self
+      bpf, sockmap: Handle memory acct if skb_verdict prog redirects to self
+      bpf, sockmap: Avoid failures from skb_to_sgvec when skb has frag_list
 
-> We can't really zero out the rest of the buffer due to ABI issues.
-> The bpf docs state for bpf_probe_read_user_str():
->
-> > In case the string length is smaller than *size*, the target is not
-> > padded with further NUL bytes.
 
-This comment is actively wrong and misleading.
+ net/core/skmsg.c   | 87 +++++++++++++++++++++++++++++++++++++++-------
+ net/ipv4/tcp_bpf.c |  3 +-
+ 2 files changed, 76 insertions(+), 14 deletions(-)
 
-The code (after the patch) clearly *does* pad a bit with "further NUL
-bytes". It's just that it doesn't pad all the way to the end.
+--
+Signature
 
-Where is the actual buffer zeroing done?
-
-Because without the buffer zeroing, this whole patch is completely
-pointless. Which is why I want that comment, and I want a pointer to
-where that zeroing is done.
-
-Really. You have two cases:
-
- (a) the buffer isn't zeroed before the strncpy_from_user()
-
- (b) the buffer is guaranteed to be zero before that
-
-and in case (a), this patch is pointless, since the data after the
-string is already undefined.
-
-And in case (b), I want to see a comment and a pointer to the code
-that actually does the zeroing.
-
-HOWEVER. Look at bpf_probe_read_user_str_common(), and notice how it
-ALREADY does the zeroing of the buffer past the end, it's just that it
-only does it in the error case.
-
-Why do you send this patch, instead of
-
- (a) get rid of the pointless pre-zeroing
-
- (b) change bpf_probe_read_user_str_common() to do
-
-        int ret;
-        u32 offset;
-
-        ret = strncpy_from_user_nofault(dst, unsafe_ptr, size);
-        offset = ret < 0 ? 0 : ret;
-        memset(dst+offset, 0, size-offset);
-        return ret;
-
-which seems to be much simpler anyway. The comment you quote about
-"target is not padded with further NUL bytes" is clearly wrong anyway,
-since that error case *does* pad the target with NUL bytes, and always
-has.
-
-So honestly, in this whole discussion, it seems rather clear to me
-that the bug has always been in bpf, not in strncpy_from_user(). The
-ABI comment you quote is clearly not true, and I can point to that
-existing bpf_probe_read_user_str_common() code itself:
-
-        ret = strncpy_from_user_nofault(dst, unsafe_ptr, size);
-        if (unlikely(ret < 0))
-                memset(dst, 0, size);
-
-as to why that is.
-
-But guys, as mentioned, I'm willing to apply this patch, but only if
-you add some actually *correct* comments about the odd bpf use of this
-string, and point to where the pre-zeroing is done.
-
-               Linus
