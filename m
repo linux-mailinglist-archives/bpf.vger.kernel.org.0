@@ -2,111 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5792A2B5462
-	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 23:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC302B5471
+	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 23:36:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730156AbgKPW3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Nov 2020 17:29:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        id S1730404AbgKPWfw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Nov 2020 17:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730174AbgKPW3n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Nov 2020 17:29:43 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74906C0613D2;
-        Mon, 16 Nov 2020 14:29:43 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id q206so20462967oif.13;
-        Mon, 16 Nov 2020 14:29:43 -0800 (PST)
+        with ESMTP id S1726527AbgKPWfw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Nov 2020 17:35:52 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38E9C0613CF;
+        Mon, 16 Nov 2020 14:35:51 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id i193so17149972yba.1;
+        Mon, 16 Nov 2020 14:35:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=el2fYd8ySBa3+ZWXicXA9IRpxKlp+zaCI41Z/ZlGF/8=;
-        b=eb1D7T4xM76sGfv40jZcqpoRXtuhCkeuThZ+CVXQaYkXUhMUB3qWpmajJR7KN3UrQm
-         W4i3euO6Rrisvhkx7PFt9TbF1oYZ+nBbvux2JDNOCnCZR3lS7L4riN5cfwuDw2rKuJvX
-         Vhx1xc7570EwX5zJ9l0fN3yhYRU7bMTb52TKUcgBrl3SfJcyOt2XKhML9DVzy73u69sS
-         AZ8iNLn1yHqRfdK4s13X0abVRmfF19ZoWHTEsAv/L7JpHRyMrrAXVWaaCaRJiAd18oFT
-         vfCxRwB4/uBnhzDJCnt6iFuO7fxPTBWJoy+TosXeMwExAZDTTeRgGfja9LlHK2Ncuze9
-         D/vQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jkHt9LMbYZ9ge4qTE4YzluKemOMBA6hYcogD0/VZWR4=;
+        b=nv4q7iUd/a2wzWxDUubWGsLt6SOhLRp4uwFy3lPFcBz+Z2vNCSLkv1JJfeMNtUSNjw
+         ftPcVUHjsZZkvhRm8KNiUHzkmArlo6ZkaBQK0ux1mkzKM2HeM44KRzoV062ORupMolyh
+         JEqV9XYOxwp6UjTC833DB84pvAVZR1nVLWzHGmzgaN55/9x+nrUYEa5zJ1dbGow1hAVP
+         laZcqqxYnqORkMM+gg+iE4q9ZqnWUj2FbSxTz8l5WeeNbxFZV39wsoWwlM/HIsjJ+oux
+         qS8nxoc1CPdZoAaD3OYffcUp+TJhgvkWVgpyZNvlFCwPp9m/xD2dCxnQwa9sAFVewGh8
+         fq1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=el2fYd8ySBa3+ZWXicXA9IRpxKlp+zaCI41Z/ZlGF/8=;
-        b=au93biyizZoBc8yK7sHWd59ZZ9wt6tW8MpHlq4juJyxlsFd8vCevcZgxD6TLW0aC68
-         gAbuWFvtBURKbBq43v3+CMzNH3176RVIZAB674eN8aW+W9dkeKDSGWyb6OAYlUx1Axqq
-         w2b6ZRQfw6v0isQQTaYNyyyTmohG8PfVtyDxYP+95jG1URVaFjTvITLJu2+RSAAu5DoG
-         r3OKcf9rlVXdMJ5hOb5P5AX47nt5H5VaosY3KHDbq35CsQRsJ0130EvsOcGssUGBsbxO
-         NOl7CVKu5iSeasppX+9ximytqcIjF2rdJ8lY0UMzQQfk9GdUyxbWCInP1gshpW6KNIR9
-         ncDQ==
-X-Gm-Message-State: AOAM530YHSMCPBiB4ho2VzOfBt5fScPuX6Q7zviAvyhecwqyXiJc1KPS
-        0CxRXsWEjCuTJL31lvuPClIAajpY66ufHA==
-X-Google-Smtp-Source: ABdhPJyNHGfQTOvUJuJt1sTZp9GqGv7Mm4QAjPRw6oJxAKQ9jrKr+OcVXm1VmBk0IJuIKgGGhX1kmg==
-X-Received: by 2002:aca:ac91:: with SMTP id v139mr539441oie.95.1605565782644;
-        Mon, 16 Nov 2020 14:29:42 -0800 (PST)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id o63sm5308469ooa.10.2020.11.16.14.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Nov 2020 14:29:41 -0800 (PST)
-Subject: [bpf PATCH v3 6/6] bpf,
- sockmap: Avoid failures from skb_to_sgvec when skb has frag_list
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     jakub@cloudflare.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     john.fastabend@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Date:   Mon, 16 Nov 2020 14:29:28 -0800
-Message-ID: <160556576837.73229.14800682790808797635.stgit@john-XPS-13-9370>
-In-Reply-To: <160556562395.73229.12161576665124541961.stgit@john-XPS-13-9370>
-References: <160556562395.73229.12161576665124541961.stgit@john-XPS-13-9370>
-User-Agent: StGit/0.23-36-gc01b
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jkHt9LMbYZ9ge4qTE4YzluKemOMBA6hYcogD0/VZWR4=;
+        b=iavO/li4vz2hhP8PL2BLqCWGF1dIiwuiTZ0JuNNDHWzSN+CfJEdkqkQdXmI+aT7Xzi
+         KnSD0loM6iHU1EToN8g0YtRFfWYONktvG5c5hImvSjT7GWqn3utvM4i54GMgdcr3/fpY
+         4PZ0iEPNlDfv7T7M4xeRpdpEitpo6Q1iBQFdjjR+V7rHY2vv3cBxUI4ulOBsNpyCtv8F
+         ztuDStTPXm21SkmwV9p9pNWe9a64i2Asi1frw5fn5oOh1Vtm6XoNXskm1ldDeESXNNyK
+         qllqMjuDLhhgcolHIGs2B/Q5GHw+H6eY+QQ9PWTOUf2C1ryHluPG2vSkyXLCzVC8ulBN
+         eqAQ==
+X-Gm-Message-State: AOAM53300phtgN1JlKULGutE9+4PtJeNOSWSkXh7oKc8GE0nmG1C58K3
+        FjSN3/W2DdGNNLqGKi+izRhHVIC0u+uTlMXGXns=
+X-Google-Smtp-Source: ABdhPJwQ9EhZXihJyYjt8djyMH7UMJ6JH/J1r6f3euOtL9sdQST0RXVx8IMRTU+h3vTVdtZoNArPBNm53c9kmcXJwMk=
+X-Received: by 2002:a25:7717:: with SMTP id s23mr26263356ybc.459.1605566151158;
+ Mon, 16 Nov 2020 14:35:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201110011932.3201430-1-andrii@kernel.org> <20201110011932.3201430-4-andrii@kernel.org>
+ <B51AA745-00B6-4F2A-A7F0-461E845C8414@fb.com> <SN6PR11MB2751CF60B28D5788B0C15B5AB5E30@SN6PR11MB2751.namprd11.prod.outlook.com>
+ <CAEf4BzYSN+XnaA4V3jTLEmoUZO=Yxwp7OAwAY+HOvVEKT5kRFA@mail.gmail.com> <20201116132409.4a5b8e0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201116132409.4a5b8e0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 16 Nov 2020 14:35:39 -0800
+Message-ID: <CAEf4Bzbs086r+sChU6wd_aXQ9KyBnKTF76-ev_Y2BNigf1jKAg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 3/5] kbuild: build kernel module BTFs if BTF
+ is enabled and pahole supports it
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "Allan, Bruce W" <bruce.w.allan@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "Starovoitov, Alexei" <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When skb has a frag_list its possible for skb_to_sgvec() to fail. This
-happens when the scatterlist has fewer elements to store pages than would
-be needed for the initial skb plus any of its frags.
-
-This case appears rare, but is possible when running an RX parser/verdict
-programs exposed to the internet. Currently, when this happens we throw
-an error, break the pipe, and kfree the msg. This effectively breaks the
-application or forces it to do a retry.
-
-Lets catch this case and handle it by doing an skb_linearize() on any
-skb we receive with frags. At this point skb_to_sgvec should not fail
-because the failing conditions would require frags to be in place.
-
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- net/core/skmsg.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 514bc9f6f8ae..25cdbb20f3a0 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -423,9 +423,16 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
- 					struct sock *sk,
- 					struct sk_msg *msg)
- {
--	int num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
--	int copied;
-+	int num_sge, copied;
- 
-+	/* skb linearize may fail with ENOMEM, but lets simply try again
-+	 * later if this happens. Under memory pressure we don't want to
-+	 * drop the skb. We need to linearize the skb so that the mapping
-+	 * in skb_to_sgvec can not error.
-+	 */
-+	if (skb_linearize(skb))
-+		return -EAGAIN;
-+	num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
- 	if (unlikely(num_sge < 0)) {
- 		kfree(msg);
- 		return num_sge;
+On Mon, Nov 16, 2020 at 1:24 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Mon, 16 Nov 2020 12:34:17 -0800 Andrii Nakryiko wrote:
+> > > This change, commit 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole
+> > > supports it") currently in net-next, linux-next, etc. breaks the use-case of compiling only a specific
+> > > kernel module (both in-tree and out-of-tree, e.g. 'make M=drivers/net/ethernet/intel/ice') after
+> > > first doing a 'make modules_prepare'.  Previously, that use-case would result in a warning noting
+> > > "Symbol info of vmlinux is missing. Unresolved symbol check will be entirely skipped" but now it
+> > > errors out after noting "No rule to make target 'vmlinux', needed by '<...>.ko'.  Stop."
+> > >
+> > > Is that intentional?
+> >
+> > I wasn't aware of such a use pattern, so definitely not intentional.
+> > But vmlinux is absolutely necessary to generate the module BTF. So I'm
+> > wondering what's the proper fix here? Leave it as is (that error
+> > message is actually surprisingly descriptive, btw)? Force vmlinux
+> > build? Or skip BTF generation for that module?
+>
+> For an external out-of-tree module there is no guarantee that vmlinux
+> will even be on the system, no? So only the last option can work in
+> that case.
 
 
+Ok, how about something like the patch below. With that I seem to be
+getting the desired behavior:
+
+$ make clean
+$ touch drivers/acpi/button.c
+$ make M=drivers/acpi
+make[1]: Entering directory `/data/users/andriin/linux-build/default-x86_64'
+  CC [M]  drivers/acpi/button.o
+  MODPOST drivers/acpi/Module.symvers
+  LD [M]  drivers/acpi/button.ko
+  BTF [M] drivers/acpi/button.ko
+Skipping BTF generation for drivers/acpi/button.ko due to
+unavailability of vmlinux
+make[1]: Leaving directory `/data/users/andriin/linux-build/default-x86_64'
+$ readelf -S ~/linux-build/default/drivers/acpi/button.ko | grep BTF -A1
+... empty ...
+
+Now with normal build:
+
+$ make all
+...
+LD [M]  drivers/acpi/button.ko
+BTF [M] drivers/acpi/button.ko
+...
+$ readelf -S ~/linux-build/default/drivers/acpi/button.ko | grep BTF -A1
+  [60] .BTF              PROGBITS         0000000000000000  00029310
+       000000000000ab3f  0000000000000000           0     0     1
+
+
+
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 02b892421f7a..d49ec001825d 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -38,7 +38,12 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+     $(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
+
+ quiet_cmd_btf_ko = BTF [M] $@
+-      cmd_btf_ko = LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
++      cmd_btf_ko =                             \
++    if [ -f vmlinux ]; then                        \
++        LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
++    else                                \
++        printf "Skipping BTF generation for %s due to unavailability
+of vmlinux\n" $@ 1>&2; \
++    fi;
+
+ # Same as newer-prereqs, but allows to exclude specified extra dependencies
+ newer_prereqs_except = $(filter-out $(PHONY) $(1),$?)
+@@ -49,7 +54,7 @@ if_changed_except = $(if $(call
+newer_prereqs_except,$(2))$(cmd-check),      \
+     printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
+
+ # Re-generate module BTFs if either module's .ko or vmlinux changed
+-$(modules): %.ko: %.o %.mod.o scripts/module.lds vmlinux FORCE
++$(modules): %.ko: %.o %.mod.o scripts/module.lds $(if
+$(KBUILD_BUILTIN),vmlinux) FORCE
+     +$(call if_changed_except,ld_ko_o,vmlinux)
+ ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+     +$(if $(newer-prereqs),$(call cmd,btf_ko))
