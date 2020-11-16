@@ -2,112 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51BB2B433F
-	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 13:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE582B437C
+	for <lists+bpf@lfdr.de>; Mon, 16 Nov 2020 13:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgKPMBy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Nov 2020 07:01:54 -0500
-Received: from mga03.intel.com ([134.134.136.65]:50464 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728829AbgKPMBy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Nov 2020 07:01:54 -0500
-IronPort-SDR: UsI7Y7N/zWqrLH94Zy4vSGszRD6wK35x3jn5KF53XT8AWn080b3UZbbhCPXp9hWUPt585kPdFU
- ziWrow1SOVdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9806"; a="170837584"
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="170837584"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:01:52 -0800
-IronPort-SDR: HF6lIwj5Ljczw1cQQ0gLhzVqEtLswe4P1qVPuAlfTMcb7Ax3VaRdVQKTPr7+0YprQv2g+u47Cj
- w14j+ADpJenQ==
-X-IronPort-AV: E=Sophos;i="5.77,482,1596524400"; 
-   d="scan'208";a="543578743"
-Received: from syeghiay-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.37.125])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2020 04:01:44 -0800
-Subject: Re: [PATCH bpf-next v2 06/10] xsk: propagate napi_id to XDP socket Rx
- path
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        maciej.fijalkowski@intel.com, sridhar.samudrala@intel.com,
-        jesse.brandeburg@intel.com, qi.z.zhang@intel.com, kuba@kernel.org,
-        edumazet@google.com, jonathan.lemon@gmail.com, maximmi@nvidia.com,
-        intel-wired-lan@lists.osuosl.org, netanel@amazon.com,
-        akiyano@amazon.com, michael.chan@broadcom.com,
-        sgoutham@marvell.com, ioana.ciornei@nxp.com,
-        ruxandra.radulescu@nxp.com, thomas.petazzoni@bootlin.com,
-        mcroce@microsoft.com, saeedm@nvidia.com, tariqt@nvidia.com,
-        aelior@marvell.com, ecree@solarflare.com,
-        ilias.apalodimas@linaro.org, grygorii.strashko@ti.com,
-        sthemmin@microsoft.com, kda@linux-powerpc.org
-References: <20201116110416.10719-1-bjorn.topel@gmail.com>
- <20201116110416.10719-7-bjorn.topel@gmail.com>
- <20201116064953-mutt-send-email-mst@kernel.org>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <614a7ce4-2b6b-129b-de7d-71428f7a71f6@intel.com>
-Date:   Mon, 16 Nov 2020 13:01:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1729575AbgKPMSP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Nov 2020 07:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729498AbgKPMSO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Nov 2020 07:18:14 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23C8C0613CF
+        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 04:18:13 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id h2so23551254wmm.0
+        for <bpf@vger.kernel.org>; Mon, 16 Nov 2020 04:18:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=yW4WlOePZHathOl6u0xCp0KPZxooAIfjqYVblGZkMr0=;
+        b=g2fsVRYWrR9L3djER+wkAkQA5aTRCWh1HZn5yEe4GXjpPSgArdMco0+PXPdg9Upq4P
+         G5y2o5pZ6QRkxwJXP/1v9CVCycAgGuUjtIhpj3C4X6t+xOml4CUiy1ZWRatQB/enY6B0
+         7gdU+qrtWq1nwF5HakdBz3HDuYQoKAaoTEPNI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=yW4WlOePZHathOl6u0xCp0KPZxooAIfjqYVblGZkMr0=;
+        b=jZZdHlCsBiNhNw7D7AxXisW8jC6yuPc/eLv0ONNNjGIthKRMQuZpuuHMrHQ78hVRl5
+         AUwWMjIfc6oaYG7xiFdM/5tE2eOou2oQQKpfexBdh+e5vwJ3KW/U6Zr3BlMWMmZ4YkvK
+         r2qeWJPFXJ1KeAf1OSxcFSRlgpztbdmt65QBBjjIiNxoGsDW62237L8cvQK7BTHTprAX
+         aECa4yC8MyYdDknCqteoA0UvlWaekl8tRXF5mutaYvZ7AAFgam5t2JcRcpyBcIMWZbPd
+         7h7Vn30NsAR2y0Mo6/KdF66bMyMy76uat5spjsvDO+p66W88cUVDY34k4Hy4YLv7RLmQ
+         Casw==
+X-Gm-Message-State: AOAM530Z/bAZYPbuJTmUCvaIGRP+3m1lePDGaoFxt8AhzIwtYg9fCx5s
+        371oxleuY+YgC0RSNnRg1M3Awg==
+X-Google-Smtp-Source: ABdhPJzMhrCC4nxbbbMPElhBZTomSITDg73gwU2ccRtd3sDgEmEe9HJJpVW0QJagbRpeJWWMMLCyMA==
+X-Received: by 2002:a1c:750b:: with SMTP id o11mr12497572wmc.32.1605529092567;
+        Mon, 16 Nov 2020 04:18:12 -0800 (PST)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id v19sm23551077wrf.40.2020.11.16.04.18.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Nov 2020 04:18:11 -0800 (PST)
+References: <X6rJ7c1C95uNZ/xV@santucci.pierpaolo> <X7JUzUj34ceE2wBm@santucci.pierpaolo>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Santucci Pierpaolo <santucci@epigenesys.com>
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2] selftest/bpf: fix IPV6FR handling in flow dissector
+In-reply-to: <X7JUzUj34ceE2wBm@santucci.pierpaolo>
+Date:   Mon, 16 Nov 2020 13:18:10 +0100
+Message-ID: <87d00dwl4t.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <20201116064953-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 2020-11-16 12:55, Michael S. Tsirkin wrote:
-> On Mon, Nov 16, 2020 at 12:04:12PM +0100, BjÃ¶rn TÃ¶pel wrote:
->> From: BjÃ¶rn TÃ¶pel <bjorn.topel@intel.com>
->>
->> Add napi_id to the xdp_rxq_info structure, and make sure the XDP
->> socket pick up the napi_id in the Rx path. The napi_id is used to find
->> the corresponding NAPI structure for socket busy polling.
->>
->> Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
->> Signed-off-by: BjÃ¶rn TÃ¶pel <bjorn.topel@intel.com>
-> 
-> A bunch of drivers just pass in 0. could you explain when
-> is that ok? how bad is it if the wrong id is used?
+On Mon, Nov 16, 2020 at 11:30 AM CET, Santucci Pierpaolo wrote:
+> From second fragment on, IPV6FR program must stop the dissection of IPV6
+> fragmented packet. This is the same approach used for IPV4 fragmentation.
+> This fixes the flow keys calculation for the upper-layer protocols.
+> Note that according to RFC8200, the first fragment packet must include
+> the upper-layer header.
 >
-
-If zero is passed, which is a non-valid NAPI_ID, busy-polling will never
-be performed.
-
-Depending on the structure of the driver, napi might or might not be
-initialized (napi_id != 0) or even available. When it wasn't obvious, I
-simply set it to zero.
-
-So, short; No harm if zero, but busy-polling cannot be used in an XDP
-context.
-
-
-[...]
->>   
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 21b71148c532..d71fe41595b7 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -1485,7 +1485,7 @@ static int virtnet_open(struct net_device *dev)
->>   			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
->>   				schedule_delayed_work(&vi->refill, 0);
->>   
->> -		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i);
->> +		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, 0);
->>   		if (err < 0)
->>   			return err;
->>   
-> 
-> Should this be rq.napi.napi_id ?
+> Signed-off-by: Santucci Pierpaolo <santucci@epigenesys.com>
+> ---
+> v2: extend the commit message, as suggested by John Fastabend
+>     <john.fastabend@gmail.com>
 >
+>  tools/testing/selftests/bpf/progs/bpf_flow.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_flow.c b/tools/testing/selftests/bpf/progs/bpf_flow.c
+> index 5a65f6b51377..95a5a0778ed7 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_flow.c
+> +++ b/tools/testing/selftests/bpf/progs/bpf_flow.c
+> @@ -368,6 +368,8 @@ PROG(IPV6FR)(struct __sk_buff *skb)
+>  		 */
+>  		if (!(keys->flags & BPF_FLOW_DISSECTOR_F_PARSE_1ST_FRAG))
+>  			return export_flow_keys(keys, BPF_OK);
+> +	} else {
+> +		return export_flow_keys(keys, BPF_OK);
+>  	}
+>  
+>  	return parse_ipv6_proto(skb, fragh->nexthdr);
 
-Yes, if rq.napi.napi_id is valid here! Is it?
-
-
-Cheers,
-Björn
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
