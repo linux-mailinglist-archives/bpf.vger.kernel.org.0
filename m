@@ -2,71 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210822B6FD1
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 21:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB522B702A
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 21:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730783AbgKQUOX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 15:14:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgKQUOW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 15:14:22 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9384C0613CF;
-        Tue, 17 Nov 2020 12:14:20 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id h23so25747726ljg.13;
-        Tue, 17 Nov 2020 12:14:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pzu8jH46SgZ+8ojxydBvx1A8kyubP5gQeS4suLTV/C8=;
-        b=sJekO8w2IrTTc+gVj1WW9UmsX131YuYv++S/Gm37dfBKw9PIh3fpGUWuGHdDEEInvY
-         8xJKAo9gkOgs00PdLgf5JTFbPB9/Eo44ezD0KfRwERu+obhPkrt9Y8lPj94wCohW4c6i
-         xFDDSmVLXJaAiIM+A+NbO9jUF5I5KGTM9md536zcHqpGOgIX1j/WU1D/ZkZniUarBy41
-         FX5a7ZPWwSzW7Jee8GXOj1KIQEvB+dey0ceqcr8Dp6wYQvyz5e4VDBojQFROS1Wyc3G4
-         NyMJmbDdX9zo0c8P+7oJZ0guOZmvpJyUHJ/coTde9Wzcl98TFavr6n6cBfLVJ/hebqbU
-         RpOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pzu8jH46SgZ+8ojxydBvx1A8kyubP5gQeS4suLTV/C8=;
-        b=BC4bp7S5cseQPgfDUsvgR86rdtPcdCFI6iQVmYj+I2lCeVnY02IFFI8JLtXqkjxduw
-         7OqnLvSt6b9NGvhOA8F4N5zmJ+ogdA7D2uUOxycQOAvYsdpgyX+Ff+94JnXV2ZwR1S+n
-         fX66xTJQeNy9/Oa69bCJUDsrgX7hReYe4GADUDhtZzj8b+g9e5JkW7V0bAo9RxgKRw3b
-         aS/e38fXUYGWxWiN3It30e4nfOOufKb9KTYza6CrOkPfrOiecJ2XUbmyXauBxDlRnU1m
-         6r75QUdjvAJ0Nz1ZRR/qjGNbOHRu2qo1swJyE5pMHFOLS7vVNbK8YqOSA6vdIP+ervBK
-         +ffA==
-X-Gm-Message-State: AOAM530ENNsADannE6pua8uNCv3msOaLgELEHv9aSxNiOCsP7AehJW8w
-        ocK8gpqjaeeb1KTqizW+xeInwXytyWsvEubisjY=
-X-Google-Smtp-Source: ABdhPJz0lAhB3VZcKHN0+whSRBsObhDazA9JH55BLyTtQhQ1O2cnfHbWtp4pdE2+IX8BEGAafKM/z3rMMx7pXJOKtd4=
-X-Received: by 2002:a2e:9648:: with SMTP id z8mr2593730ljh.91.1605644059204;
- Tue, 17 Nov 2020 12:14:19 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1605642949.git.dxu@dxuuu.xyz> <21efc982b3e9f2f7b0379eed642294caaa0c27a7.1605642949.git.dxu@dxuuu.xyz>
-In-Reply-To: <21efc982b3e9f2f7b0379eed642294caaa0c27a7.1605642949.git.dxu@dxuuu.xyz>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 17 Nov 2020 12:14:07 -0800
-Message-ID: <CAADnVQ+0=59xkFcpQMdqmZ7CcsTiXx2PDp1T6Hi2hnhj+otnhA@mail.gmail.com>
-Subject: Re: [PATCH bpf v7 1/2] lib/strncpy_from_user.c: Don't overcopy bytes
- after NUL terminator
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        id S1727287AbgKQUe5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 15:34:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726156AbgKQUe4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 15:34:56 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A0FF2225B;
+        Tue, 17 Nov 2020 20:34:53 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 15:34:51 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
+ memory allocation
+Message-ID: <20201117153451.3015c5c9@gandalf.local.home>
+In-Reply-To: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+References: <20201116175107.02db396d@gandalf.local.home>
+        <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
+        <20201117142145.43194f1a@gandalf.local.home>
+        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 12:05 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> This commit uses the proper word-at-a-time APIs to avoid overcopying.
+On Tue, 17 Nov 2020 14:47:20 -0500 (EST)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-that part of the commit log is no longer correct. I can fix it up while applying
-if Linus doesn't have an issue with the rest.
+> There seems to be more effect on the data size: adding the "stub_func" field
+> in struct tracepoint adds 8320 bytes of data to my vmlinux. But considering
+> the layout of struct tracepoint:
+> 
+> struct tracepoint {
+>         const char *name;               /* Tracepoint name */
+>         struct static_key key;
+>         struct static_call_key *static_call_key;
+>         void *static_call_tramp;
+>         void *iterator;
+>         int (*regfunc)(void);
+>         void (*unregfunc)(void);
+>         struct tracepoint_func __rcu *funcs;
+>         void *stub_func;
+> };
+> 
+> I would argue that we have many other things to optimize there if we want to
+> shrink the bloat, starting with static keys and system call reg/unregfunc pointers.
+
+This is the part that I want to decrease, and yes there's other fish to fry
+in that code, but I really don't want to be adding more.
+
+> 
+> > 
+> > Since all tracepoints callbacks have at least one parameter (__data), we
+> > could declare tp_stub_func as:
+> > 
+> > static void tp_stub_func(void *data, ...)
+> > {
+> >	return;
+> > }
+> > 
+> > And now C knows that tp_stub_func() can be called with one or more
+> > parameters, and had better be able to deal with it!  
+> 
+> AFAIU this won't work.
+> 
+> C99 6.5.2.2 Function calls
+> 
+> "If the function is defined with a type that is not compatible with the type (of the
+> expression) pointed to by the expression that denotes the called function, the behavior is
+> undefined."
+
+But is it really a problem in practice. I'm sure we could create an objtool
+function to check to make sure we don't break anything at build time.
+
+> 
+> and
+> 
+> 6.7.5.3 Function declarators (including prototypes), item 15:
+> 
+> "For two function types to be compatible, both shall specify compatible return types.
+
+But all tracepoint callbacks have void return types, which means they are
+compatible.
+
+> 
+> Moreover, the parameter type lists, if both are present, shall agree in the number of
+> parameters and in use of the ellipsis terminator; corresponding parameters shall have
+> compatible types. [...]"
+
+Which is why I gave the stub function's first parameter the same type that
+all tracepoint callbacks have a prototype that starts with "void *data"
+
+and my solution is to define:
+
+	void tp_stub_func(void *data, ...) { return; }
+
+Which is in line with: "corresponding parameters shall have compatible
+types". The corresponding parameter is simply "void *data".
+
+> 
+> What you suggest here is to use the ellipsis in the stub definition, but the caller
+> prototype does not use the ellipsis, which brings us into undefined behavior territory
+> again.
+
+And I believe the "undefined behavior" is that you can't trust what is in
+the parameters if the callee chooses to look at them, and that is not the
+case here. But since the called function doesn't care, I highly doubt it
+will ever be an issue. I mean, the only way this can break is if the caller
+places something in the stack that it expects the callee to fix. With all
+the functions in assembly we have, I'm pretty confident that if a compiler
+does something like this, it would break all over the place.
+
+-- Steve
