@@ -2,163 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2DA2B7280
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 00:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2B72B72BE
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 00:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgKQXfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 18:35:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
+        id S1726306AbgKQX47 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 18:56:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726392AbgKQXfq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 18:35:46 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2AEC0617A6
-        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 15:35:45 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id s30so306055lfc.4
-        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 15:35:45 -0800 (PST)
+        with ESMTP id S1726202AbgKQX47 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 18:56:59 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD655C0613CF;
+        Tue, 17 Nov 2020 15:56:58 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id o71so20349492ybc.2;
+        Tue, 17 Nov 2020 15:56:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BeKKFBADpWN954+IsjWIr6cgEypB+tWqmR313eWsUZQ=;
-        b=WZyZegk3XS6jrNOhpP9XVbKY/k4lwQwrmxgAQthohq39GWVWjYSa37pMS8M9R+nA6q
-         jN5lLGlDohciyA5mc2sqEmyPaVEcYzWvJhJnDfHaJtClBXNaqssKMNoQQM1to3AKnxHU
-         o8G/h1a9oa7M3n8NtiEluAKT1GWyygLT0jhao=
+        bh=cQoAHZZx8waShIFkq4ckodhg6bz4M2II3k6qw4OLlhg=;
+        b=ToTHsrCraHhGGHerk/KLH2bbjhEi5jwCeZXmgR7dQfNNEJZ7jG/VIAvQko73VQtVh/
+         9hPrbECJG4iqZbF+lG0Ga79u1o/Kfpt4uSyV7e8teR5E1S2mdZ0wVGYFgREqDXwYkDoE
+         JEZ8b0/iZCNMzhvUdiVbfe1mgeqTKB2/GPIboLaaehAFbLKOlSpOJG2hG0IcSil0EDA0
+         npkQkwoU1wTvV4uOs5zaaxfcno0/v6ZW7yw+qNbIpP0k0jyw623YetDGXPJXbqeNqDie
+         4hyMG/opQYvSLLu6pn6vHFJKyJomt9J1zqZnV0WQG+AR5KD2Nt7wyZzw7D7t6Xrevw8c
+         khYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BeKKFBADpWN954+IsjWIr6cgEypB+tWqmR313eWsUZQ=;
-        b=dpAu5xu6/os7xp+HJP75dodCyqHSS8zQqlUExbQ75v+kZB3ZipNHXLyY+/3Q0byhZO
-         Y999wiySiDy+SAX1anyAepbcf14AfTyc8p+L3BeDt01kVg/eeZwbcXlAU/SWRaO+orlP
-         PCYVAzpUU6qfpO/TinrRzroh25Q223r1IgO0WlBH/HxNC69+RuxcjUtGtg2/KZUi9teU
-         MU0UdGQ0a+IkFsFTZjbf2RMWGe6eY/zKoKVmF0Ujy2CLzYyfWzxBtQpKVclTmqWEJr6y
-         O2sbRzGOQm4yRJPINfXZN2Kz8NKorJ8EkXR5nBHFgKJmCSPPTktmX7tYrh2tow45n7BA
-         uyJQ==
-X-Gm-Message-State: AOAM531asAkZmJPdC4p0BYao0pqJxhxpGhwS0PNOUBlS9HsxGSTcPcNj
-        tX1hgmTo3TTew9Zx9k08QpISR0y09t5+FfQ7Ht3Ckg==
-X-Google-Smtp-Source: ABdhPJxYqW4KKC6wvgXSRVBXVMDStNeme+c99uG/OaKioLneRwupeJj+sC+B0/kqf9e+qh939D7483AjgJEoxO/41Jk=
-X-Received: by 2002:a19:418d:: with SMTP id o135mr2789233lfa.329.1605656144289;
- Tue, 17 Nov 2020 15:35:44 -0800 (PST)
+        bh=cQoAHZZx8waShIFkq4ckodhg6bz4M2II3k6qw4OLlhg=;
+        b=fMmeI942mXxHtJaML59XnlEOPuu/9GywgRdam08ueleMjoJhEI9gEVdjuzgWEeQ+zd
+         RvDCENnXa0CWrXbredVmXoIlxXxV5EZ1lbUBv7rn90Afj/Z+rZBhmvvko3kTRPyKL6/b
+         iHjMkbEAJmgy9dCZMyMobxU/DFgy07aHqpsDyZ6gP5+ipI0ly9mJF3TYBCKGd+XKWbOo
+         yNBM4pxhcQ3svkTyfm2iExRR6Wq+0nLNaBRa0WojZIxKEgOli2t7FcgHC36Dj0YFmiVa
+         74AYUrNGysb/iSHDdH3cxLuDO798jfd0S5ykxqEutL+7n/sCg+rdsqSDSyhvBW4Psyfb
+         ylQA==
+X-Gm-Message-State: AOAM530q4DPIKvlTFfkYhN/u4sitCHbbsYbcy4Qok14n+E7Ba/soZW2q
+        mY5Cgu5JC0D6zYTwucvw3Wuss+6/A2aj3ZPvOtVk+bsgSO7Nzp+r
+X-Google-Smtp-Source: ABdhPJz9WHJZE10jJciNNWvDwgszlENJ/BSMD7r5wy6jwexrZryN4nZNaoGHnwKyhzYPO5txV+kUwz9ZJlbzILpWO0c=
+X-Received: by 2002:a25:df8e:: with SMTP id w136mr2866036ybg.230.1605657418095;
+ Tue, 17 Nov 2020 15:56:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20201117021307.1846300-1-kpsingh@chromium.org> <cc03ab7e-dee8-f717-7a4f-413a3a5f58b7@iogearbox.net>
-In-Reply-To: <cc03ab7e-dee8-f717-7a4f-413a3a5f58b7@iogearbox.net>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 18 Nov 2020 00:35:33 +0100
-Message-ID: <CACYkzJ54zxE2uefF3actr90OVdKeWTgREffw9TKc54yWeyjAPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Add bpf_lsm_set_bprm_opts helper
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Pauline Middelink <middelin@google.com>
+References: <1605291013-22575-1-git-send-email-alan.maguire@oracle.com>
+ <1605291013-22575-2-git-send-email-alan.maguire@oracle.com>
+ <CAEf4BzaaUdMnfADQdT=myDJtQtHoQ_aW7T8XidrCkYZ=pGXuaQ@mail.gmail.com>
+ <CAADnVQK6PFAHQMBgQ=Xp7tUFkUBg5yUgBM+r5mi-Kd5UWNWHzw@mail.gmail.com>
+ <778cc9b5-2358-e491-1085-2a5c11dbbf57@fb.com> <alpine.LRH.2.21.2011151047410.2244@localhost>
+In-Reply-To: <alpine.LRH.2.21.2011151047410.2244@localhost>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 17 Nov 2020 15:56:47 -0800
+Message-ID: <CAEf4BzZ08JHG6ZLU80tM-2_d7geaoFpCW8seuEo6JoUqcH1Z_g@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/3] bpf: add module support to btf display helpers
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 11:41 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Sun, Nov 15, 2020 at 2:53 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On 11/17/20 3:13 AM, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > The helper allows modification of certain bits on the linux_binprm
-> > struct starting with the secureexec bit which can be updated using the
-> > BPF_LSM_F_BPRM_SECUREEXEC flag.
-> >
-> > secureexec can be set by the LSM for privilege gaining executions to set
-> > the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
-> > use of certain environment variables (like LD_PRELOAD).
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> >   include/uapi/linux/bpf.h       | 18 ++++++++++++++++++
-> >   kernel/bpf/bpf_lsm.c           | 27 +++++++++++++++++++++++++++
-> >   scripts/bpf_helpers_doc.py     |  2 ++
-> >   tools/include/uapi/linux/bpf.h | 18 ++++++++++++++++++
-> >   4 files changed, 65 insertions(+)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 162999b12790..bfa79054d106 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3787,6 +3787,18 @@ union bpf_attr {
-> >    *          *ARG_PTR_TO_BTF_ID* of type *task_struct*.
-> >    *  Return
-> >    *          Pointer to the current task.
-> > + *
-> > + * long bpf_lsm_set_bprm_opts(struct linux_binprm *bprm, u64 flags)
-> > + *
+> On Sat, 14 Nov 2020, Yonghong Song wrote:
 >
-> small nit: should have no extra newline (same for the tools/ copy)
->
-> > + *   Description
-> > + *           Set or clear certain options on *bprm*:
-> > + *
-> > + *           **BPF_LSM_F_BPRM_SECUREEXEC** Set the secureexec bit
-> > + *           which sets the **AT_SECURE** auxv for glibc. The bit
-> > + *           is cleared if the flag is not specified.
-> > + *   Return
-> > + *           **-EINVAL** if invalid *flags* are passed.
-> > + *
-> >    */
-> >   #define __BPF_FUNC_MAPPER(FN)               \
-> >       FN(unspec),                     \
-> > @@ -3948,6 +3960,7 @@ union bpf_attr {
-> >       FN(task_storage_get),           \
-> >       FN(task_storage_delete),        \
-> >       FN(get_current_task_btf),       \
-> > +     FN(lsm_set_bprm_opts),          \
-> >       /* */
 > >
-> >   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > @@ -4119,6 +4132,11 @@ enum bpf_lwt_encap_mode {
-> >       BPF_LWT_ENCAP_IP,
-> >   };
 > >
-> > +/* Flags for LSM helpers */
-> > +enum {
-> > +     BPF_LSM_F_BPRM_SECUREEXEC       = (1ULL << 0),
-> > +};
-> > +
-> >   #define __bpf_md_ptr(type, name)    \
-> >   union {                                     \
-> >       type name;                      \
-> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> > index 553107f4706a..cd85482228a0 100644
-> > --- a/kernel/bpf/bpf_lsm.c
-> > +++ b/kernel/bpf/bpf_lsm.c
-> > @@ -7,6 +7,7 @@
-> >   #include <linux/filter.h>
-> >   #include <linux/bpf.h>
-> >   #include <linux/btf.h>
-> > +#include <linux/binfmts.h>
-> >   #include <linux/lsm_hooks.h>
-> >   #include <linux/bpf_lsm.h>
-> >   #include <linux/kallsyms.h>
-> > @@ -51,6 +52,30 @@ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
-> >       return 0;
-> >   }
+> > On 11/14/20 8:04 AM, Alexei Starovoitov wrote:
+> > > On Fri, Nov 13, 2020 at 10:59 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > >>
+> > >> On Fri, Nov 13, 2020 at 10:11 AM Alan Maguire <alan.maguire@oracle.com>
+> > >> wrote:
+> > >>>
+> > >>> bpf_snprintf_btf and bpf_seq_printf_btf use a "struct btf_ptr *"
+> > >>> argument that specifies type information about the type to
+> > >>> be displayed.  Augment this information to include a module
+> > >>> name, allowing such display to support module types.
+> > >>>
+> > >>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > >>> ---
+> > >>>   include/linux/btf.h            |  8 ++++++++
+> > >>>   include/uapi/linux/bpf.h       |  5 ++++-
+> > >>>   kernel/bpf/btf.c               | 18 ++++++++++++++++++
+> > >>>   kernel/trace/bpf_trace.c       | 42
+> > >>>   ++++++++++++++++++++++++++++++++----------
+> > >>>   tools/include/uapi/linux/bpf.h |  5 ++++-
+> > >>>   5 files changed, 66 insertions(+), 12 deletions(-)
+> > >>>
+> > >>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > >>> index 2bf6418..d55ca00 100644
+> > >>> --- a/include/linux/btf.h
+> > >>> +++ b/include/linux/btf.h
+> > >>> @@ -209,6 +209,14 @@ static inline const struct btf_var_secinfo
+> > >>> *btf_type_var_secinfo(
+> > >>>   const struct btf_type *btf_type_by_id(const struct btf *btf, u32
+> > >>>   type_id);
+> > >>>   const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+> > >>>   struct btf *btf_parse_vmlinux(void);
+> > >>> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > >>> +struct btf *bpf_get_btf_module(const char *name);
+> > >>> +#else
+> > >>> +static inline struct btf *bpf_get_btf_module(const char *name)
+> > >>> +{
+> > >>> +       return ERR_PTR(-ENOTSUPP);
+> > >>> +}
+> > >>> +#endif
+> > >>>   struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
+> > >>>   #else
+> > >>>   static inline const struct btf_type *btf_type_by_id(const struct btf
+> > >>>   *btf,
+> > >>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > >>> index 162999b..26978be 100644
+> > >>> --- a/include/uapi/linux/bpf.h
+> > >>> +++ b/include/uapi/linux/bpf.h
+> > >>> @@ -3636,7 +3636,8 @@ struct bpf_stack_build_id {
+> > >>>    *             the pointer data is carried out to avoid kernel crashes
+> > >>>    during
+> > >>>    *             operation.  Smaller types can use string space on the
+> > >>>    stack;
+> > >>>    *             larger programs can use map data to store the string
+> > >>> - *             representation.
+> > >>> + *             representation.  Module-specific data structures can be
+> > >>> + *             displayed if the module name is supplied.
+> > >>>    *
+> > >>>    *             The string can be subsequently shared with userspace via
+> > >>>    *             bpf_perf_event_output() or ring buffer interfaces.
+> > >>> @@ -5076,11 +5077,13 @@ struct bpf_sk_lookup {
+> > >>>    * potentially to specify additional details about the BTF pointer
+> > >>>    * (rather than its mode of display) - is included for future use.
+> > >>>    * Display flags - BTF_F_* - are passed to bpf_snprintf_btf separately.
+> > >>> + * A module name can be specified for module-specific data.
+> > >>>   */
+> > >>>   struct btf_ptr {
+> > >>>          void *ptr;
+> > >>>          __u32 type_id;
+> > >>>          __u32 flags;            /* BTF ptr flags; unused at present. */
+> > >>> +       const char *module;     /* optional module name. */
+> > >>
+> > >> I think module name is a wrong API here, similarly how type name was
+> > >> wrong API for specifying the type (and thus we use type_id here).
+> > >> Using the module's BTF ID seems like a more suitable interface. That's
+> > >> what I'm going to use for all kinds of existing BPF APIs that expect
+> > >> BTF type to attach BPF programs.
+> > >>
+> > >> Right now, we use only type_id and implicitly know that it's in
+> > >> vmlinux BTF. With module BTFs, we now need a pair of BTF object ID +
+> > >> BTF type ID to uniquely identify the type. vmlinux BTF now can be
+> > >> specified in two different ways: either leaving BTF object ID as zero
+> > >> (for simplicity and backwards compatibility) or specifying it's actual
+> > >> BTF obj ID (which pretty much always should be 1, btw). This feels
+> > >> like a natural extension, WDYT?
+> > >>
+> > >> And similar to type_id, no one should expect users to specify these
+> > >> IDs by hand, Clang built-in and libbpf should work together to figure
+> > >> this out for the kernel to use.
+> > >>
+> > >> BTW, with module names there is an extra problem for end users. Some
+> > >> types could be either built-in or built as a module (e.g., XFS data
+> > >> structures). Why would we require BPF users to care which is the case
+> > >> on any given host?
+> > >
+> > > +1.
+> > > As much as possible libbpf should try to hide the difference between
+> > > type in a module vs type in the vmlinux, since that difference most of the
+> > > time is irrelevant from bpf prog pov.
 > >
-> > +/* Mask for all the currently supported BPRM option flags */
-> > +#define BPF_LSM_F_BRPM_OPTS_MASK     BPF_LSM_F_BPRM_SECUREEXEC
-> > +
-> > +BPF_CALL_2(bpf_lsm_set_bprm_opts, struct linux_binprm *, bprm, u64, flags)
-> > +{
-> > +
 >
-> ditto
->
-> Would have fixed up these things on the fly while applying, but one small item
-> I wanted to bring up here given uapi which will then freeze: it would be cleaner
-> to call the helper just bpf_bprm_opts_set() or so given it's implied that we
-> attach to lsm here and we don't use _lsm in the naming for the others either.
-> Similarly, I'd drop the _LSM from the flag/mask.
->
+> All sounds good to me - I've split out the libbpf fix and
 
-Thanks Daniel, this makes sense and is more future proof, I respun this and
-sent out another version with some minor fixes and the rename. Also added
-Martin's acks.
+yeah, thanks, I've applied yesterday.
 
-- KP
+> put together an updated patchset for the helpers/test which
+> converts the currently unused __u32 "flags" field in
+> struct btf_ptr to an "obj_id" field.  If obj_id is > 1 it
+
+I haven't seen your updated patches (you haven't sent them yet?). You
+shouldn't assume obj_id == 1 means vmlinux, though. struct btf in
+kernel would have kernel_btf == true and its name should be "vmlinux"
+for vmlinux BTF, otherwise kernel_btf == true means module BTF. We can
+add separate bool just to distinguish vmlinux vs module BTF, if it
+makes life easier, I think.
+
+> is presumed to be a module ID.  I'd suggest we could move
+> ahead with those changes, using the more clunky methods
+> to retrieve the module-specific BTF id, and later fix up
+> the test to use Yonghong's __builtin_btf_type_id()
+> modification.  Does that sound reasonable?
+
+Yonghong already updated Clang. Corresponding libbpf changes are very
+minimal, feel free to add them as well. If not, I'm going to do it
+this week anyways. Is there any hurry to land this before the proper
+module BTF lands in libbpf, though?
+
+>
+> In connection to this, I wonder if libbpf could
+> benefit from a simple helper btf__id() (similar
+> to btf__fd()), allowing easy retrieval of the
+> object ID associated with module BTF?  I suspect
+> we will always have cases in general-purpose
+> tracers where we need to look up BTF ids of
+> objects dynamically, so such a function would
+> help in that case.
+
+We can add that as a convenience wrapper on top of
+bpf_obj_get_info_by_fd() and cache the result internally, yes.
+
+
+>
+> > I just crafted a llvm patch where for __builtin_btf_type_id(), a 64bit value
+> > is returned instead of a 32bit value. libbpf can use the lower
+> > 32bit as the btf_type_id and upper 32bit as the kernel module btf id.
+> >
+> >    https://reviews.llvm.org/D91489
+> >
+> > feel free to experiment with it to see whether it helps.
+> >
+> >
+>
+> Great! I'll give it a try, thanks!
+>
+> Alan
