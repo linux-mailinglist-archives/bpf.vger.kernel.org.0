@@ -2,175 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA6E2B6F36
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 20:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847152B6F8F
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 21:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729173AbgKQTrX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 14:47:23 -0500
-Received: from mail.efficios.com ([167.114.26.124]:40818 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728948AbgKQTrW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:47:22 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4A8EB2E36C2;
-        Tue, 17 Nov 2020 14:47:21 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id GR3dE06nSY_Y; Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C2DBA2E3946;
-        Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C2DBA2E3946
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1605642440;
-        bh=+B59aLsvKUka/9WP6zUbeiECXbkqSfWKHUa+MS2yq28=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=c9pI2WHhQqyR0JFf55+95q5YT43Kp1xWnub2hm9BSUNVibjMfp+odXZ8TQ7ueM5ea
-         1DAT01hpE3YoCwl9Qbswo5oN4Dftd0GalhskDcxOr4pCn2ynpg/8lFSxh6WQH/DFch
-         aj3m2uC+ToZ3LAO9lE4UttmWlgmfVz9mTnYyVFUTmXy2NCIcXcTcI8BpzhF7VHbJte
-         h3vwS6tQc6gTF+RkvYKJbDC4PVvxoZVHP672k6E3UPaUUSzV7Y80ijSYKtG+ooW+fL
-         ZUKJ0Gypovl3miO3ZqOxeqDxnKIHlizesapoAGKwTblWyCOBbUXGjd6km7wL19ziG+
-         wRmCIAIysei6w==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iuc9IeOT2QZf; Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id AE1BB2E3945;
-        Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-Date:   Tue, 17 Nov 2020 14:47:20 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Message-ID: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201117142145.43194f1a@gandalf.local.home>
-References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home>
-Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
- memory allocation
+        id S1728258AbgKQUF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 15:05:58 -0500
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:51411 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726035AbgKQUF6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Nov 2020 15:05:58 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 993EAB70;
+        Tue, 17 Nov 2020 15:05:56 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 17 Nov 2020 15:05:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=OwSaGpFUzheZzGzXnS0ZkDLa3p
+        7OJ/mlwl9RnwCagmU=; b=KXD1+/XsQfB2V70wGjMFd8Y6UwBBTV1QvvR7vz1yST
+        JPV2l7uSCwxYfCgWvVtqKQDwYGYkfVrm0c1MSHH2qtlxLHEsJu2/hInoExU2aUlg
+        fuamtSCbdb0BBKdYJMaKVAQqfj5jXfVUJQo78BFK6VZM3E2338ZpYkYYU4GNlB6U
+        7lBfpwDaCt7f/ZvDQCp0HSHhRLJHCs2JcuqxWvHDqhsUwRDp40pkO8brArK99V5s
+        XS+KZcb+zgXALSfFc+c4BGZvcbkFqM8rRr4ae8kUiV8F04FOs41q672f7uzuF1fd
+        EjurtNHowDK4L6qY6RwC2HlaJ980yHMi8rXCnXCQ0hRg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=OwSaGpFUzheZzGzXn
+        S0ZkDLa3p7OJ/mlwl9RnwCagmU=; b=NgVN8p8t8PgPYds6WOtsAC3GuP78cWBb1
+        8U4vkV5MU4jDnypt0QbTFmjE0Zlxsb+zFoVt7ycMtwzaLESkJ2Re8TATiyF6PzdA
+        FUrE+3YfwbPwpR53wOZ6sYFuraAQTmHmAG7pWuma6UKETSYlgC42rob8IbaAnu7r
+        /LYDXXHC1H1ur90wUVDTdIRSq1RKmWwV2ZEa/IOfrrH7FpG1Glcfr7NrkLgstmb0
+        JXuLX1F/dBP7mOtJjehpci5ZvkOmYITLVLLxt7RvEoKeONy2OSK+oA3uQQKAteK8
+        M9kpN4AgLMXe99RqJolYBacKV7PQ33XCjVOxayEU9ns/zYbYbaiKQ==
+X-ME-Sender: <xms:Iy20X2hAAafFDCyvwLaSkk9BLI6Zb4xwMNQf-HkwsLZYa2NT5NVLIg>
+    <xme:Iy20X3D4OxMnGelYBGv1CDOnws3-hSQIvzKuaNggYcfJHbeeD_1NSLCV3CN0hr-ER
+    eVwTRRKRNkcFc0rdg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudeffedgudeffecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieffgfelvdffiedtleejvd
+    etfeefiedvfeehieevveejudeiiefgteeiveeiffffnecukfhppeeiledrudekuddruddt
+    hedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Iy20X-G_XTD7JHBNS41zLkadRX7lMp8bwL19ckIEp6i-X1JfxEym-A>
+    <xmx:Iy20X_REnhjnjuRJotmwOIQRk1GyJ1j7apI6XCYgd0Zk8NLqvu6wgw>
+    <xmx:Iy20XzxYihIeK3kkKTPUs2RVGY4Xy3iS7h_Uo3kMCpQiOWcCWLvsxw>
+    <xmx:JC20X6mPX0RbiOTgtuvQf7P9E9wYb9hRcqXt1cxfcKfJDmpMI6ZD6A>
+Received: from localhost.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 274DD3064AAA;
+        Tue, 17 Nov 2020 15:05:54 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, songliubraving@fb.com,
+        andrii.nakryiko@gmail.com, torvalds@linux-foundation.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, kernel-team@fb.com
+Subject: [PATCH bpf v7 0/2] Fix bpf_probe_read_user_str() overcopying
+Date:   Tue, 17 Nov 2020 12:05:44 -0800
+Message-Id: <cover.1605642949.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
-Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory allocation
-Thread-Index: cU8QSyXnFie0NdnbNChYpOJ7ycvfPg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
------ On Nov 17, 2020, at 2:21 PM, rostedt rostedt@goodmis.org wrote:
+6ae08ae3dea2 ("bpf: Add probe_read_{user, kernel} and probe_read_{user,
+kernel}_str helpers") introduced a subtle bug where
+bpf_probe_read_user_str() would potentially copy a few extra bytes after
+the NUL terminator.
 
-> On Tue, 17 Nov 2020 14:15:10 -0500 (EST)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
-> 
->> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
->> index e7c2276be33e..e0351bb0b140 100644
->> --- a/include/linux/tracepoint-defs.h
->> +++ b/include/linux/tracepoint-defs.h
->> @@ -38,6 +38,7 @@ struct tracepoint {
->>         int (*regfunc)(void);
->>         void (*unregfunc)(void);
->>         struct tracepoint_func __rcu *funcs;
->> +       void *stub_func;
->>  };
->>  
->>  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
->> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
->> index 0f21617f1a66..b0b805de3779 100644
->> --- a/include/linux/tracepoint.h
->> +++ b/include/linux/tracepoint.h
->> @@ -287,6 +287,9 @@ static inline struct tracepoint
->> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->>  #define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)              \
->>         static const char __tpstrtab_##_name[]                          \
->>         __section("__tracepoints_strings") = #_name;                    \
->> +       static void __cold __tracepoint_stub_func_##_name(void *__data, proto) \
->> +       {                                                               \
->> +       }                                                               \
-> 
-> The thing is, tracepoints are already bloated. I do not want to add
-> something like this that will unnecessarily add more text.
+This issue is particularly nefarious when strings are used as map keys,
+as seemingly identical strings can occupy multiple entries in a map.
 
-I've measured the impact of adding these stubs to kernel/sched/core.o, and
-it's entirely lost in the code alignment (it effectively adds 0 byte of text
-to my build) when using the "cold" attribute.
+This patchset fixes the issue and introduces a selftest to prevent
+future regressions.
 
-Over an entire vmlinux, it adds 256 bytes of text overall, for a 0.008% code size
-increase.
+v6 -> v7:
+* Add comments
 
-Can you measure any significant code size increase with this approach ?
+v5 -> v6:
+* zero-pad up to sizeof(unsigned long) after NUL
 
-There seems to be more effect on the data size: adding the "stub_func" field
-in struct tracepoint adds 8320 bytes of data to my vmlinux. But considering
-the layout of struct tracepoint:
+v4 -> v5:
+* don't read potentially uninitialized memory
 
-struct tracepoint {
-        const char *name;               /* Tracepoint name */
-        struct static_key key;
-        struct static_call_key *static_call_key;
-        void *static_call_tramp;
-        void *iterator;
-        int (*regfunc)(void);
-        void (*unregfunc)(void);
-        struct tracepoint_func __rcu *funcs;
-        void *stub_func;
-};
+v3 -> v4:
+* directly pass userspace pointer to prog
+* test more strings of different length
 
-I would argue that we have many other things to optimize there if we want to
-shrink the bloat, starting with static keys and system call reg/unregfunc pointers.
+v2 -> v3:
+* set pid filter before attaching prog in selftest
+* use long instead of int as bpf_probe_read_user_str() retval
+* style changes
 
-> 
-> Since all tracepoints callbacks have at least one parameter (__data), we
-> could declare tp_stub_func as:
-> 
-> static void tp_stub_func(void *data, ...)
-> {
->	return;
-> }
-> 
-> And now C knows that tp_stub_func() can be called with one or more
-> parameters, and had better be able to deal with it!
+v1 -> v2:
+* add Fixes: tag
+* add selftest
 
-AFAIU this won't work.
+Daniel Xu (2):
+  lib/strncpy_from_user.c: Don't overcopy bytes after NUL terminator
+  selftest/bpf: Test bpf_probe_read_user_str() strips trailing bytes
+    after NUL
 
-C99 6.5.2.2 Function calls
-
-"If the function is defined with a type that is not compatible with the type (of the
-expression) pointed to by the expression that denotes the called function, the behavior is
-undefined."
-
-and
-
-6.7.5.3 Function declarators (including prototypes), item 15:
-
-"For two function types to be compatible, both shall specify compatible return types.
-
-Moreover, the parameter type lists, if both are present, shall agree in the number of
-parameters and in use of the ellipsis terminator; corresponding parameters shall have
-compatible types. [...]"
-
-What you suggest here is to use the ellipsis in the stub definition, but the caller
-prototype does not use the ellipsis, which brings us into undefined behavior territory
-again.
-
-Thanks,
-
-Mathieu
+ kernel/trace/bpf_trace.c                      | 10 +++
+ lib/strncpy_from_user.c                       | 19 ++++-
+ .../bpf/prog_tests/probe_read_user_str.c      | 71 +++++++++++++++++++
+ .../bpf/progs/test_probe_read_user_str.c      | 25 +++++++
+ 4 files changed, 123 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_read_user_str.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_probe_read_user_str.c
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.29.2
+
