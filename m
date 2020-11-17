@@ -2,114 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F602B6D15
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 19:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906C22B6D4F
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 19:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730766AbgKQSTg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 13:19:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        id S1729614AbgKQS1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 13:27:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729115AbgKQSTf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:19:35 -0500
+        with ESMTP id S1726575AbgKQS1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:27:25 -0500
 Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D846C0613CF;
-        Tue, 17 Nov 2020 10:19:35 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id k7so10697637plk.3;
-        Tue, 17 Nov 2020 10:19:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FB3C0613CF;
+        Tue, 17 Nov 2020 10:27:25 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d3so10703176plo.4;
+        Tue, 17 Nov 2020 10:27:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PFq6BuwaqMtWaqivH1hlWxEaD6bmqyH7wkNMgAsZWiI=;
-        b=JeQZQdNGFQEvrnyuHqAQBpFXjtfCGjJMKqpGqNZ+Rq6IGqw89kw5ATBbpZ+anzLED6
-         vrL5Cwr0b9gi2KIfRxci1D1j1K5DhI3e5COGXIpHWhjR/60HH6HAhalsLp2KvNS0CNYa
-         gDjFOEQdCKUPEPXGlIislM49jVel77hdttQxJvXtzbBT13X9ZP7TSthnd4qNbjq9khGY
-         4TL44CvTDRuZQD806gOE8OuYLSODzaMTivkOI7/oJGeFVl565BGNaQtb3zbjsXUNb3NK
-         GLzaZaTclUMMgr8hc25VK/4uwJbDg45LJWc/IxPN/UdrObp2hBVQNfutm6IA4yL20/oB
-         plDw==
+         :content-disposition:in-reply-to;
+        bh=BzlahuoWyinnwS/4xXXocdXgOxSu6wIaLBe7RoB5Z1M=;
+        b=TAxOYJy6jCxXM75t9rh4DhV+WuIbd2FuD1e7lj5QQaDMmNcntG/2BBddDFHs+iX2N3
+         fFpxi3qPo4GpGmtXT/FFHqk+TNI6dsbRsVzH4Z76kZwrwmiMjSO6UchL1MMPuXrCBNDK
+         V+i7U7MnuRf9xkLimwe5czbPuzRke4/SHz/C69l/b5BWMQ1d+Jwa3RFb3N5ACuHMIOMC
+         5HHO8/JZBqwFktWn7YuRC2vTBB1zWYrjITMv3XqhU9N5BVL+IyzMndda9cAe5Drifick
+         r//GZOmkQw70qXYDebxg/4zo/whlMUhOfs1qYXE0dyly+tSmvEQFb4aw3DTxUdGlkahb
+         P4Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PFq6BuwaqMtWaqivH1hlWxEaD6bmqyH7wkNMgAsZWiI=;
-        b=oKwhD53dCEghg3bYF89+ZlX+nlXeMQWHxJyciidSdwokrWb9bzfHLnoboL2h69AhfO
-         O8WKme9lZi4YWd1MNfkVU2wwo0u48x4GcqLV+DgFlr55h4qTyfEOs9mBa44CQn9nBxUu
-         pMeCXuyg9cYQMBMyAKpUIjlU6sQbW8herFh9Qn8UGOXR9Fob56TO72OU3NTMMe3mqYKl
-         87fsy1yE83Ljm5M5f7XmWDG8XaeNdohvEEDUdH9apP2Q1Dy39NdjuGRqHKj+LfF1+vbe
-         rs+0vv69JOBN/0zCCxjijDhUz+6p0GwXyrcXL9VMcPuzUyZ/iRgxgnWNb/syEhsvpiCB
-         4fVQ==
-X-Gm-Message-State: AOAM531sP1dHnHRbNuFSzR3QAK++xrEzj8mKoXGBhc50QubTolHZtGxx
-        RJCEsLFx1zsYtE4sTKZ8OitaAicULkY=
-X-Google-Smtp-Source: ABdhPJxbYZkucW+PpT/ikB2rEXVzRPZxxgC/YkbNdhvKmsDw8hZK76aAWUtpn60JZUBvzdrzIALZmA==
-X-Received: by 2002:a17:90a:d3d3:: with SMTP id d19mr360881pjw.0.1605637175028;
-        Tue, 17 Nov 2020 10:19:35 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to;
+        bh=BzlahuoWyinnwS/4xXXocdXgOxSu6wIaLBe7RoB5Z1M=;
+        b=ZhFoU2YRszDHwZsXr9ddO6LIiu9zB/DNv4GGz1WxXnGZDYCSqoGjKK0OuYBK5h4VHp
+         PhaPAutPf5gGh9I5ckXspVZqkGxlE7Ipf3zrbJTMsqL/8O7W1uirAZb1Yqm5NIr5ZXCQ
+         oGAzr2OyGUCHYkmCLDPdjBlrqODwPYQ8F0xhfyyNrgQ4luSv+3BoaUwd9P2CuRgTeVbb
+         ljMf0pV5uQRWfhAOgX1o1WQUbTZm4zSp47byt8tFpgRS+srb1CwN4RdD/ueBh7N7dqG/
+         8F/IqUiOmRhq28snVz1itU+BNGEfG4z065woI0Tcl0hes2M31lsmUI548+oTXbaIdbC2
+         A1uw==
+X-Gm-Message-State: AOAM532MhNkAvUW1eLh+XfAunT6OZySdDokVfSXFIbR5wnYChyFkvQlR
+        hCTZY6bpS4YsAOahaYF7slE=
+X-Google-Smtp-Source: ABdhPJyN2ufBumsfgA200wyF1uAQlafS/Q/VIpNO4mNYFAkpQf6iKzC9jrNO3uxpOQjQyDcju5ZQGQ==
+X-Received: by 2002:a17:902:8c84:b029:d9:471:f0da with SMTP id t4-20020a1709028c84b02900d90471f0damr406157plo.84.1605637644952;
+        Tue, 17 Nov 2020 10:27:24 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:8f57])
-        by smtp.gmail.com with ESMTPSA id j19sm23926990pfd.189.2020.11.17.10.19.33
+        by smtp.gmail.com with ESMTPSA id y5sm3758457pjr.50.2020.11.17.10.27.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 10:19:34 -0800 (PST)
-Date:   Tue, 17 Nov 2020 10:19:31 -0800
+        Tue, 17 Nov 2020 10:27:24 -0800 (PST)
+Date:   Tue, 17 Nov 2020 10:27:21 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
+To:     Hangbin Liu <haliu@redhat.com>
 Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <haliu@redhat.com>,
         Stephen Hemminger <stephen@networkplumber.org>,
+        David Ahern <dsahern@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         David Miller <davem@davemloft.net>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        ecree@solarflare.com
 Subject: Re: [PATCHv5 iproute2-next 0/5] iproute2: add libbpf support
-Message-ID: <20201117181931.4gcbp4ubs2dccw4k@ast-mbp>
+Message-ID: <20201117182721.nmhewohx3dxwv34i@ast-mbp>
 References: <20201109070802.3638167-1-haliu@redhat.com>
  <20201116065305.1010651-1-haliu@redhat.com>
  <CAADnVQ+LNBYq5fdTSRUPy2ZexTdCcB6ErNH_T=r9bJ807UT=pQ@mail.gmail.com>
  <20201116155446.16fe46cf@carbon>
- <62d26815-60f8-ca9f-bdbf-d75070935f1d@gmail.com>
+ <20201117023757.qypmhucuws3sajyb@ast-mbp>
+ <20201117031933.GJ2408@dhcp-12-153.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <62d26815-60f8-ca9f-bdbf-d75070935f1d@gmail.com>
+In-Reply-To: <20201117031933.GJ2408@dhcp-12-153.nay.redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 16, 2020 at 08:38:15PM -0700, David Ahern wrote:
+On Tue, Nov 17, 2020 at 11:19:33AM +0800, Hangbin Liu wrote:
+> On Mon, Nov 16, 2020 at 06:37:57PM -0800, Alexei Starovoitov wrote:
+> > On Mon, Nov 16, 2020 at 03:54:46PM +0100, Jesper Dangaard Brouer wrote:
+> > > 
+> > > Thus, IMHO we MUST move forward and get started with converting
+> > > iproute2 to libbpf, and start on the work to deprecate the build in
+> > > BPF-ELF-loader.  I would prefer ripping out the BPF-ELF-loader and
+> > > replace it with libbpf that handle the older binary elf-map layout, but
+> > > I do understand if you want to keep this around. (at least for the next
+> > > couple of releases).
+> > 
+> > I don't understand why legacy code has to be around.
+> > Having the legacy code and an option to build tc without libbpf creates
+> > backward compatibility risk to tc users:
+> > Newer tc may not load bpf progs that older tc did.
 > 
-> As for the bigger problem, trying to force user space components to
-> constantly chase latest and greatest S/W versions is not the right answer.
+> If a distro choose to compile iproute2 with libbpf, I don't think they will
+> compile iproute2 without libbpf in new version. So yum/apt-get update from
+> official source doesn't like a problem.
+> 
+> Unless a user choose to use a self build iproute2 version. Then the self build
+> version may also don't have other supports, like libelf, libnml, libcap etc.
+> 
+> > 
+> > > I actually fear that it will be a bad user experience, when we start to
+> > > have multiple userspace tools that load BPF, but each is compiled and
+> > > statically linked with it own version of libbpf (with git submodule an
+> > > increasing number of tools will have more variations!).
+> > 
+> > So far people either freeze bpftool that they use to load progs
+> > or they use libbpf directly in their applications.
+> > Any other way means that the application behavior will be unpredictable.
+> > If a company built a bpf-based product and wants to distibute such
+> > product as a package it needs a way to specify this dependency in pkg config.
+> > 'tc -V' is not something that can be put in a spec.
+> > The main iproute2 version can be used as a dependency, but it's meaningless
+> > when presence of libbpf and its version is not strictly derived from
+> > iproute2 spec.
+> > The users should be able to write in their spec:
+> > BuildRequires: iproute-tc >= 5.10
+> > and be confident that tc will load the prog they've developed and tested.
+> 
+> The current patch does have a libbpf version check, it need at least libbpf
+> 0.1.0. So if a distro starts to build iproute2 based on libbpf, there will
+> have a dependence. The rule could be added to rpm spec file, or what else
+> the distro choose. That's the distro compiler's work.
+> 
+> Unless you want to say a company built a bpf-based product, they only
+> add iproute2 version dependence(let's say some distros has iproute2 5.12 with
+> libbpf supported), and somehow forgot add libbpf version dependence check
+> and distro check. At the same time a user run the product on a distro without
+> libbpf compiled on iproute2 5.12. That do will cause problem.
 
-Your own nexthop enhancements in the kernel code follow 1-1 with iproute2
-changes. So the users do chase the latest kernel and the latest iproute2
-if they want the networking feature.
-Yet you're arguing that for bpf features they shouldn't have such expectations
-with iproute2 which will not support the latest kernel bpf features.
-I sense a lot of bias here.
+right.
+You've answered Ed's question:
 
-> The crux of the problem here is loading bpf object files and what will
-> most likely be a never ending stream of enhancements that impact the
-> proper loading of them.
+> But if libbpf is dynamically linked, they can put
+> Requires: libbpf >= 0.3.0
+> Requires: iproute-tc >= 5.10
+> and get the dependency behaviour they need.  No?
 
-Please stop this misinformation spread.
-Multiple people explained numerous times that libbpf takes care of
-backward compatibility.
+It is a problem because >= 5.10 cannot capture legacy vs libbpf.
 
-> That said, the legacy bpf code in iproute2 has created some
-> expectations, and iproute2 can not simply remove existing capabilities.
+> But if I'm the user, I will think the company is not professional for bpf
+> product that they even do not know libbpf is needed...
+> 
+> So my opinion: for end user, the distro should take care of libbpf and
+> iproute2 version control. For bpf company, they should take care if libbpf
+> is used by the iproute2 and what distros they support.
 
-It certainly can remove them by moving to libbpf.
-
-> iproute2 is a networking configuration tool, not a bpf management tool.
-> Hangbin’s approach gives full flexibility to those who roll their own
-> and for distributions who value stability, it allows iproute2 to use
-> latest and greatest libbpf for those who want to chase the pot of gold
-> at the end of the rainbow, or they can choose stability with an OS
-> distro’s libbpf or legacy bpf. I believe this is the right compromise at
-> this point in time.
-
-In other words you're saying that upstream iproute2 is a kitchen sink
-of untested combinations of libraries and distros suppose to do a ton
-of extra work to provide their users a quality iproute2.
+So you're saying that bpf community shouldn't care about their users.
+The distros suppose to step forward and provide proper bpf support
+in tools like iproute2?
+In other words iproute2 upstream doesn't care about shipping quality product.
+It's distros job now.
+Thanks, but no.
+iproute2 should stay with legacy obsolete prog loader
+and the users should switch to bpftool + iproute2 combination.
+bpftool for loading progs and iproute2 for networking configs.
