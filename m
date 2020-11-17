@@ -2,46 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA512B70D9
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 22:23:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2B82B70F4
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 22:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbgKQVW0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 16:22:26 -0500
-Received: from mail.efficios.com ([167.114.26.124]:45334 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgKQVWZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 16:22:25 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0C7E22E4533;
-        Tue, 17 Nov 2020 16:22:24 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 3HtepbJml7JF; Tue, 17 Nov 2020 16:22:23 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B5EC62E48B3;
-        Tue, 17 Nov 2020 16:22:23 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B5EC62E48B3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1605648143;
-        bh=PXqhEjZMAdpGDq5EtZwgnWt5f+BNVFmPUhm3+bOyFR0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=Tw9cRcgaXPVyHKi40MN9iOSfhO5xKJRdw+VA7ggRRC9kzgjQzUdThFe5+tmMZR9EU
-         QcyYpCQsDpuIMZzC9CmYz/lkoE9k6Fn/2gtOpXDZz0B/kBFyxEAFkNha42bOJfw01A
-         mmQaUl3/Rfq6C3XLIxU5XvNXXiw32CsqAXnw61rn/5PT9ep/qaMS1jPzACOlG9PUoo
-         6Pud/t7/khyWU2zJDC/je8+2OI/9dyiM6SZT1qflMyymL8pXMKfx4SgL31j7tdF5S7
-         1DLMGpXwxKkGR/iSMK987WYTXWBp8mvdnBbI+AGGo6vkzwj9iocbO0bILppKDFmS8S
-         VQz8sFI0pIicQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id K29gqlNIp7JB; Tue, 17 Nov 2020 16:22:23 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A31222E48B2;
-        Tue, 17 Nov 2020 16:22:23 -0500 (EST)
-Date:   Tue, 17 Nov 2020 16:22:23 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        id S1725823AbgKQVdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 16:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgKQVdo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 16:33:44 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBC9C0613CF
+        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 13:33:44 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id v12so18151363pfm.13
+        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 13:33:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hUaB1zwScjx73jhxVMuBCb5j2bh6ePTktk1ke7nr9rk=;
+        b=JFYvqSNqyi4WhfbIp8cznUcs2B9EvtWy2hnInFGybxvfY79lwudK2stuMO8nvlv4XK
+         dUr06/LEkH+jmcdsoS2Ya6OzOxRiYK8Z+KmTEE5w3TwzgOUuXmVguB/estmpbHKih0T7
+         tVbw6PH7wSritwPoPqrt8evxWiu5nvTInDgpA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hUaB1zwScjx73jhxVMuBCb5j2bh6ePTktk1ke7nr9rk=;
+        b=YwAFsYm+llpVytyWALbTg9q6ljmRXpBM5k9ZxFbofLDGhUTiP2i7bU2tVRFukCQWuc
+         Y1BqbYk0CBDP5bhYysS21md2EPw6nZ++z7GlByWXtUlIN2aNejC0tZDUesDoq/pGy/Dk
+         Qdu1amIKIpGIcZlj6dRXXSxzI/LbzWCMlwB8DBMtEa19lt3DPoB0VH6jAq8y2Xpvj1OL
+         cTHN5pb+ImlhCCgafud5fJvY9SoOr/p9OsfPuEuvYA9t91Rr8P8BHZnVPl9jyu/eIbgt
+         g0hQ4nqxW8KRiLpStqitpHu09HpaGyoEH+48IR1PlpnFqE3Wut1b8sRTe+toOkOxSqe/
+         C9yA==
+X-Gm-Message-State: AOAM530snInrQposqOAMRdgZNybKWo9ruHKOTnSwgumwdkqqXGHt6QRH
+        uJ5RDMqlJulb/wYofiyrY+va2w==
+X-Google-Smtp-Source: ABdhPJzFakl4956d7dKMtPc85C9GfV9iMBAYJF5OBe+F6BC+H4Lh6E/Jlr0KWJRdwKJeGq67ZTPxXA==
+X-Received: by 2002:a63:6c81:: with SMTP id h123mr1073673pgc.401.1605648824004;
+        Tue, 17 Nov 2020 13:33:44 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a3sm3659073pgq.53.2020.11.17.13.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 13:33:43 -0800 (PST)
+Date:   Tue, 17 Nov 2020 13:33:42 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Matt Mullins <mmullins@mmlx.us>,
         Ingo Molnar <mingo@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -52,45 +59,35 @@ Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Message-ID: <334460618.48609.1605648143566.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201117155851.0c915705@gandalf.local.home>
-References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201117155851.0c915705@gandalf.local.home>
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
  memory allocation
+Message-ID: <202011171330.94C6BA7E93@keescook>
+References: <20201116175107.02db396d@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
-Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory allocation
-Thread-Index: UdsIJ96gFLhqXRumJL7PS/UT274UmA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201116175107.02db396d@gandalf.local.home>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
------ On Nov 17, 2020, at 3:58 PM, rostedt rostedt@goodmis.org wrote:
+On Mon, Nov 16, 2020 at 05:51:07PM -0500, Steven Rostedt wrote:
+> [ Kees, I added you because you tend to know about these things.
+>   Is it OK to assign a void func(void) that doesn't do anything and returns
+>   nothing to a function pointer that could be call with parameters? We need
+>   to add stubs for tracepoints when we fail to allocate a new array on
+>   removal of a callback, but the callbacks do have arguments, but the stub
+>   called does not have arguments.
+> 
+>   Matt, Does this patch fix the error your patch was trying to fix?
+> ]
 
-> On Tue, 17 Nov 2020 15:34:51 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-[...]
+As I think got discussed in the thread, what you had here wouldn't work
+in a CFI build if the function prototype of the call site and the
+function don't match. (Though I can't tell if .func() is ever called?)
 
-> If it comes down to not trusting calling a stub, I'll still keep the stub
-> logic in, and just add the following:
+i.e. .func's prototype must match tp_stub_func()'s.
 
-If we don't call the stub, then there is no point in having the stub at
-all, and we should just compare to a constant value, e.g. 0x1UL. As far
-as I can recall, comparing with a small immediate constant is more efficient
-than comparing with a loaded value on many architectures.
-
-Thanks,
-
-Mathieu
- 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Kees Cook
