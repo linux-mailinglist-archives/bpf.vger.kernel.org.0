@@ -2,79 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075432B6C9E
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 19:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F602B6D15
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 19:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgKQSJr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 13:09:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53248 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725808AbgKQSJr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 13:09:47 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F5762462E;
-        Tue, 17 Nov 2020 18:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605636586;
-        bh=ba1jxnREVtGGxG5sOJgs3Q5ynpcW1c5uZnFTmBA7y0M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dIVaPqn5H0XWWRPqmzSnqm7AXUUBETg8LMEXRJ+uHcSHQ01Ur5F5TUNlRI5aOffLP
-         OovfYwyaUuPrDUAMrPOz0ku3BYTcoj5WaW+hm/TOKEGbVi/V8zULYcZxeewsJOScWl
-         umZA+KjbEEv1trrv1B5MwE2x8j4mgKi8jhIZFnCA=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E2FA340E29; Tue, 17 Nov 2020 15:09:43 -0300 (-03)
-Date:   Tue, 17 Nov 2020 15:09:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH] btf_encoder: Use better fallback message
-Message-ID: <20201117180943.GW614220@kernel.org>
-References: <20201116202458.1228654-1-jolsa@kernel.org>
+        id S1730766AbgKQSTg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 13:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729115AbgKQSTf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:19:35 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D846C0613CF;
+        Tue, 17 Nov 2020 10:19:35 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id k7so10697637plk.3;
+        Tue, 17 Nov 2020 10:19:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PFq6BuwaqMtWaqivH1hlWxEaD6bmqyH7wkNMgAsZWiI=;
+        b=JeQZQdNGFQEvrnyuHqAQBpFXjtfCGjJMKqpGqNZ+Rq6IGqw89kw5ATBbpZ+anzLED6
+         vrL5Cwr0b9gi2KIfRxci1D1j1K5DhI3e5COGXIpHWhjR/60HH6HAhalsLp2KvNS0CNYa
+         gDjFOEQdCKUPEPXGlIislM49jVel77hdttQxJvXtzbBT13X9ZP7TSthnd4qNbjq9khGY
+         4TL44CvTDRuZQD806gOE8OuYLSODzaMTivkOI7/oJGeFVl565BGNaQtb3zbjsXUNb3NK
+         GLzaZaTclUMMgr8hc25VK/4uwJbDg45LJWc/IxPN/UdrObp2hBVQNfutm6IA4yL20/oB
+         plDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PFq6BuwaqMtWaqivH1hlWxEaD6bmqyH7wkNMgAsZWiI=;
+        b=oKwhD53dCEghg3bYF89+ZlX+nlXeMQWHxJyciidSdwokrWb9bzfHLnoboL2h69AhfO
+         O8WKme9lZi4YWd1MNfkVU2wwo0u48x4GcqLV+DgFlr55h4qTyfEOs9mBa44CQn9nBxUu
+         pMeCXuyg9cYQMBMyAKpUIjlU6sQbW8herFh9Qn8UGOXR9Fob56TO72OU3NTMMe3mqYKl
+         87fsy1yE83Ljm5M5f7XmWDG8XaeNdohvEEDUdH9apP2Q1Dy39NdjuGRqHKj+LfF1+vbe
+         rs+0vv69JOBN/0zCCxjijDhUz+6p0GwXyrcXL9VMcPuzUyZ/iRgxgnWNb/syEhsvpiCB
+         4fVQ==
+X-Gm-Message-State: AOAM531sP1dHnHRbNuFSzR3QAK++xrEzj8mKoXGBhc50QubTolHZtGxx
+        RJCEsLFx1zsYtE4sTKZ8OitaAicULkY=
+X-Google-Smtp-Source: ABdhPJxbYZkucW+PpT/ikB2rEXVzRPZxxgC/YkbNdhvKmsDw8hZK76aAWUtpn60JZUBvzdrzIALZmA==
+X-Received: by 2002:a17:90a:d3d3:: with SMTP id d19mr360881pjw.0.1605637175028;
+        Tue, 17 Nov 2020 10:19:35 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:8f57])
+        by smtp.gmail.com with ESMTPSA id j19sm23926990pfd.189.2020.11.17.10.19.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 10:19:34 -0800 (PST)
+Date:   Tue, 17 Nov 2020 10:19:31 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <haliu@redhat.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv5 iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201117181931.4gcbp4ubs2dccw4k@ast-mbp>
+References: <20201109070802.3638167-1-haliu@redhat.com>
+ <20201116065305.1010651-1-haliu@redhat.com>
+ <CAADnVQ+LNBYq5fdTSRUPy2ZexTdCcB6ErNH_T=r9bJ807UT=pQ@mail.gmail.com>
+ <20201116155446.16fe46cf@carbon>
+ <62d26815-60f8-ca9f-bdbf-d75070935f1d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201116202458.1228654-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <62d26815-60f8-ca9f-bdbf-d75070935f1d@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Nov 16, 2020 at 09:24:58PM +0100, Jiri Olsa escreveu:
-> Using more suitable fallback message for the case when the
-> ftrace filter can't be used because of missing symbols.
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  btf_encoder.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Nov 16, 2020 at 08:38:15PM -0700, David Ahern wrote:
 > 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 4f856cfd5577..592b31e2cdc9 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -510,7 +510,7 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
->  			printf("Found %d functions!\n", functions_cnt);
->  	} else {
->  		if (btf_elf__verbose)
-> -			printf("vmlinux not detected, falling back to dwarf data\n");
-> +			printf("ftrace symbols not detected, falling back to DWARF data\n");
->  		delete_functions();
->  	}
->  
-> -- 
-> 2.26.2
-> 
+> As for the bigger problem, trying to force user space components to
+> constantly chase latest and greatest S/W versions is not the right answer.
 
--- 
+Your own nexthop enhancements in the kernel code follow 1-1 with iproute2
+changes. So the users do chase the latest kernel and the latest iproute2
+if they want the networking feature.
+Yet you're arguing that for bpf features they shouldn't have such expectations
+with iproute2 which will not support the latest kernel bpf features.
+I sense a lot of bias here.
 
-- Arnaldo
+> The crux of the problem here is loading bpf object files and what will
+> most likely be a never ending stream of enhancements that impact the
+> proper loading of them.
+
+Please stop this misinformation spread.
+Multiple people explained numerous times that libbpf takes care of
+backward compatibility.
+
+> That said, the legacy bpf code in iproute2 has created some
+> expectations, and iproute2 can not simply remove existing capabilities.
+
+It certainly can remove them by moving to libbpf.
+
+> iproute2 is a networking configuration tool, not a bpf management tool.
+> Hangbin’s approach gives full flexibility to those who roll their own
+> and for distributions who value stability, it allows iproute2 to use
+> latest and greatest libbpf for those who want to chase the pot of gold
+> at the end of the rainbow, or they can choose stability with an OS
+> distro’s libbpf or legacy bpf. I believe this is the right compromise at
+> this point in time.
+
+In other words you're saying that upstream iproute2 is a kitchen sink
+of untested combinations of libraries and distros suppose to do a ton
+of extra work to provide their users a quality iproute2.
