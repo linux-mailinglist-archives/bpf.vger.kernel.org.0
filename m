@@ -2,79 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCB42B68E2
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 16:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E6E2B699C
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 17:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgKQPlH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 10:41:07 -0500
-Received: from mx.der-flo.net ([193.160.39.236]:54152 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725767AbgKQPlH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 10:41:07 -0500
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id D48354426F; Tue, 17 Nov 2020 16:40:48 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727440AbgKQQNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 11:13:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727522AbgKQQNJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Nov 2020 11:13:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605629588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BVsfR8T15xda2UvQfXxognwTfJY/c2OoSf9W43fPmOU=;
+        b=P9a4WBS6D+nbmoLi82bbyVUKwAhN1YZuwshnCGGF1Il221trkpxUV4hdmwm4KuqGLoNrSW
+        qDpCgE9pkM5tTp1scVg2DrEI0eLLo/baFOCZeNy1PwOTUaZ32WWU4ppaROkC4zHATvC4hf
+        9MtqzpunEUBQxfIQKR1C8xJMEoABEmM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-459-I2h5SXcZMLSFM8fbYaGRAQ-1; Tue, 17 Nov 2020 11:13:04 -0500
+X-MC-Unique: I2h5SXcZMLSFM8fbYaGRAQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 8E8E0441DD;
-        Tue, 17 Nov 2020 16:39:09 +0100 (CET)
-Date:   Tue, 17 Nov 2020 16:39:02 +0100
-From:   Florian Lehner <dev@der-flo.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@kernel.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org
-Subject: Re: [FIX bpf,perf] bpf,perf: return EOPNOTSUPP for bpf handler on
- PERF_COUNT_SW_DUMMY
-Message-ID: <20201117153902.GA6933@der-flo.net>
-References: <20201116183752.2716-1-dev@der-flo.net>
- <20201116210209.skeolnndx3gk2xav@kafai-mbp.dhcp.thefacebook.com>
- <20201117075334.GJ3121392@hirez.programming.kicks-ass.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 644825F9DE;
+        Tue, 17 Nov 2020 16:13:01 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A69A85C1D0;
+        Tue, 17 Nov 2020 16:12:49 +0000 (UTC)
+Date:   Tue, 17 Nov 2020 17:12:48 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, brakmo <brakmo@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        David Ahern <dsa@cumulusnetworks.com>,
+        Yonghong Song <yhs@fb.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>, Thomas Graf <tgraf@suug.ch>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Xdp <xdp-newbies@vger.kernel.org>,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next 9/9] samples: bpf: remove bpf_load loader
+ completely
+Message-ID: <20201117171248.465494b7@carbon>
+In-Reply-To: <20201117145644.1166255-10-danieltimlee@gmail.com>
+References: <20201117145644.1166255-1-danieltimlee@gmail.com>
+        <20201117145644.1166255-10-danieltimlee@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201117075334.GJ3121392@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 08:53:34AM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 16, 2020 at 01:02:09PM -0800, Martin KaFai Lau wrote:
-> > On Mon, Nov 16, 2020 at 07:37:52PM +0100, Florian Lehner wrote:
-> > > bpf handlers for perf events other than tracepoints, kprobes or uprobes
-> > > are attached to the overflow_handler of the perf event.
-> > > 
-> > > Perf events of type software/dummy are placeholder events. So when
-> > > attaching a bpf handle to an overflow_handler of such an event, the bpf
-> > > handler will not be triggered.
-> > > 
-> > > This fix returns the error EOPNOTSUPP to indicate that attaching a bpf
-> > > handler to a perf event of type software/dummy is not supported.
-> > > 
-> > > Signed-off-by: Florian Lehner <dev@der-flo.net>
-> > It is missing a Fixes tag.
-> 
-> I don't think it actually fixes anything. worse it could break things.
-> 
-> Atatching a bpf filter to a dummy event is pointless, but harmless. We
-> allow it now, disallowing it will break whatever programs out there are
-> doing harmless silly things.
-> 
-> I really don't see the point of this patch. It grows the kernel code for
-> absolutely no distinguishable benefit.
+On Tue, 17 Nov 2020 14:56:44 +0000
+"Daniel T. Lee" <danieltimlee@gmail.com> wrote:
 
-I agree, this fix does not implement the functionality of attaching a
-bpf handler to a perf event of type software/dummy. Instead it returns
-an error code and let the user know that this kind of action is not
-supported (yet).
-As a user I would prefer to get an error for something that is pointless
-than needing to debug why an attached bpf handler is never execute.
+> Numerous refactoring that rewrites BPF programs written with bpf_load
+> to use the libbpf loader was finally completed, resulting in BPF
+> programs using bpf_load within the kernel being completely no longer
+> present.
+> 
+> This commit removes bpf_load, an outdated bpf loader that is difficult
+> to keep up with the latest kernel BPF and causes confusion.
+> 
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+>  samples/bpf/bpf_load.c          | 667 --------------------------------
+>  samples/bpf/bpf_load.h          |  57 ---
+>  samples/bpf/xdp2skb_meta_kern.c |   2 +-
+>  3 files changed, 1 insertion(+), 725 deletions(-)
+>  delete mode 100644 samples/bpf/bpf_load.c
+>  delete mode 100644 samples/bpf/bpf_load.h
 
-Do you think it would be better to improve documentation to point this
-out? And if so, which documentation would be best to update?
+I've very happy that we can finally remove this ELF-BPF loader :-)
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
