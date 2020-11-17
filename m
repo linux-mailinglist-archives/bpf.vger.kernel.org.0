@@ -2,147 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D072B6E0A
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 20:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC372B6E38
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 20:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgKQTHd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 14:07:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgKQTHc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 14:07:32 -0500
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979A6C0613CF;
-        Tue, 17 Nov 2020 11:07:31 -0800 (PST)
-Received: by mail-ot1-x343.google.com with SMTP id 79so20494733otc.7;
-        Tue, 17 Nov 2020 11:07:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=9fgySF6K68SlluAGbdqXKQeVrDTrhLPgdEXfhoFPwX8=;
-        b=XoZH8GpCCWfsU+IoFOA00/Zk5jH4C2i3Xv8NjBnsgNDw7x87/1ZRrXEnh0/DTnx7wd
-         yT4rS+fQosOlWkWUSSMb1S4wkcVmamnYgFHuDu+G/giPJGRAsEvHsBx7aVrSHf5yeLVu
-         GBn6DveQkZ/WKVf5bLD0LGrYI2s6h7faYVGbrZOzbMxeD2SFxmwpCH44B7bKQL27z8lM
-         4VyzAdV4V/XemAMsQJDh5Q7eGlNMtjqaKFguAlWJbNYkAq4bEzyjuhhwosv4+ZzhO6wF
-         HCO6gKEQhTZ5pIeZJVxN2Vn6vy4SOFRsUhT86MkV/l7NJpIMMFVDTEo3sSFAwVce/39L
-         rHGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=9fgySF6K68SlluAGbdqXKQeVrDTrhLPgdEXfhoFPwX8=;
-        b=Np/jbq0WWkammvnLB6pZDxb6dClUk+72TTw/IQHjwdql20/CvApxxyRIvrdiINbD8f
-         IFbmA48Czz2SmODiUO/rEuIQ9WIcPQhjw5tgD1W0LDCV8fy8kkjZDU7L3oHwf5RxDULK
-         kSrNddeSh8utcFMcg3Us8rQuqqiBwVjAqQ2AsaYneL8D2uOVbwWXetwO/TXfFVG7WyCh
-         AakSagYtB3VIYrqYtl2Ui8t3nwpANJoqx7yN0gerMBBYoHsOj8YoiQB82uhpQgqcY/E6
-         VYGbj3SN3XgPUQMqfMIPtrKvdCBuYEOZWljBHFnAA/2CCEhGh5DhQySBSFVxBTDwsMIY
-         t7IA==
-X-Gm-Message-State: AOAM533FcA8PxdnJtGkQkpz0A2hUcmoHjFWQvVcL4XPjAJVJ5Xkv7O+u
-        l3tPG5n9MvY/XT1iiFH3WXvKV4C/l8KD1g==
-X-Google-Smtp-Source: ABdhPJyvLHJlKU9g2W718K3p65afXZsjKc8wVd1jMSWIOnG1FdT8bzA4YxQmeyGQS90q+L6HzaBBUg==
-X-Received: by 2002:a9d:460a:: with SMTP id y10mr3761572ote.99.1605640050975;
-        Tue, 17 Nov 2020 11:07:30 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id w22sm1804563oie.49.2020.11.17.11.07.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 11:07:30 -0800 (PST)
-Date:   Tue, 17 Nov 2020 11:07:22 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, kuba@kernel.org, john.fastabend@gmail.com
-Cc:     bpf@vger.kernel.org, jeffrey.t.kirsher@intel.com,
-        anthony.l.nguyen@intel.com, maciej.fijalkowski@intel.com,
-        maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org
-Message-ID: <5fb41f6ae195_310220813@john-XPS-13-9370.notmuch>
-In-Reply-To: <1605525167-14450-5-git-send-email-magnus.karlsson@gmail.com>
-References: <1605525167-14450-1-git-send-email-magnus.karlsson@gmail.com>
- <1605525167-14450-5-git-send-email-magnus.karlsson@gmail.com>
-Subject: RE: [PATCH bpf-next v3 4/5] xsk: introduce batched Tx descriptor
- interfaces
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S1726315AbgKQTPM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 14:15:12 -0500
+Received: from mail.efficios.com ([167.114.26.124]:52766 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbgKQTPM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 14:15:12 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 2E94B2E33B4;
+        Tue, 17 Nov 2020 14:15:11 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id PWslQkQ6au8F; Tue, 17 Nov 2020 14:15:10 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id BB10E2E31DE;
+        Tue, 17 Nov 2020 14:15:10 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com BB10E2E31DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1605640510;
+        bh=pMCjGD3W3o9yr5EI9OVWHLPsyB3UFgJfUztRMzE6NM4=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=jY4LAi5wIj9y0hghJEDCmUkZKjlFqfQxZzeIXcbKAWQKdfmVgFkazxVldbaerXptQ
+         6GNdtD99EbtEh9JfC53WO42MpRlBtZbrfF3ijfYTw5KGDknMiz7TsLBarEyMGqRRGm
+         wCDKbm81rQs7NGWMBkhNzvDup9/yYRUPqt5DJ81wpikrEoesW8nVSYRqex1680wxxX
+         QVxJo9bqPToWujHxx+PXqOAiarLY1qfs/nfmmaWxzg5NfkyjiZLOTXo1M2MpFzeq/3
+         WUxqpEZrfBNL55I3aKvGHYJ47Ufawv3ZqxGIdiDADkftupLC/55jk4P4o0F/lVSfaP
+         RjONYIA7kAiOQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id HzwNQ-9LJXv9; Tue, 17 Nov 2020 14:15:10 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id A40302E306B;
+        Tue, 17 Nov 2020 14:15:10 -0500 (EST)
+Date:   Tue, 17 Nov 2020 14:15:10 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Message-ID: <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201116175107.02db396d@gandalf.local.home>
+References: <20201116175107.02db396d@gandalf.local.home>
+Subject: Re: [PATCH] tracepoint: Do not fail unregistering a probe due to
+ memory allocation
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
+Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory allocation
+Thread-Index: wK+E+/XqwQK7hF0JAgvCAmWXa5f4Ag==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> Introduce batched descriptor interfaces in the xsk core code for the
-> Tx path to be used in the driver to write a code path with higher
-> performance. This interface will be used by the i40e driver in the
-> next patch. Though other drivers would likely benefit from this new
-> interface too.
-> 
-> Note that batching is only implemented for the common case when
-> there is only one socket bound to the same device and queue id. When
-> this is not the case, we fall back to the old non-batched version of
-> the function.
-> 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  include/net/xdp_sock_drv.h |  7 ++++
->  net/xdp/xsk.c              | 57 +++++++++++++++++++++++++++++
->  net/xdp/xsk_queue.h        | 89 +++++++++++++++++++++++++++++++++++++++-------
->  3 files changed, 140 insertions(+), 13 deletions(-)
-> 
+----- On Nov 16, 2020, at 5:51 PM, rostedt rostedt@goodmis.org wrote:
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> [ Kees, I added you because you tend to know about these things.
+>  Is it OK to assign a void func(void) that doesn't do anything and returns
+>  nothing to a function pointer that could be call with parameters? We need
+>  to add stubs for tracepoints when we fail to allocate a new array on
+>  removal of a callback, but the callbacks do have arguments, but the stub
+>  called does not have arguments.
 
-> +
-> +u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, struct xdp_desc *descs,
-> +				   u32 max_entries)
+[...]
+
+> +/* Called in removal of a func but failed to allocate a new tp_funcs */
+> +static void tp_stub_func(void)
 > +{
-> +	struct xdp_sock *xs;
-> +	u32 nb_pkts;
-> +
-> +	rcu_read_lock();
-> +	if (!list_is_singular(&pool->xsk_tx_list)) {
-> +		/* Fallback to the non-batched version */
-
-I'm going to ask even though I believe its correct.
-
-If we fallback here and then an entry is added to the list while we are
-in the fallback logic everything should still be OK, correct?
-
-> +		rcu_read_unlock();
-> +		return xsk_tx_peek_release_fallback(pool, descs, max_entries);
-> +	}
-> +
-> +	xs = list_first_or_null_rcu(&pool->xsk_tx_list, struct xdp_sock, tx_list);
-> +	if (!xs) {
-> +		nb_pkts = 0;
-> +		goto out;
-> +	}
-> +
-> +	nb_pkts = xskq_cons_peek_desc_batch(xs->tx, descs, pool, max_entries);
-> +	if (!nb_pkts) {
-> +		xs->tx->queue_empty_descs++;
-> +		goto out;
-> +	}
-> +
-> +	/* This is the backpressure mechanism for the Tx path. Try to
-> +	 * reserve space in the completion queue for all packets, but
-> +	 * if there are fewer slots available, just process that many
-> +	 * packets. This avoids having to implement any buffering in
-> +	 * the Tx path.
-> +	 */
-> +	nb_pkts = xskq_prod_reserve_addr_batch(pool->cq, descs, nb_pkts);
-> +	if (!nb_pkts)
-> +		goto out;
-> +
-> +	xskq_cons_release_n(xs->tx, nb_pkts);
-> +	__xskq_cons_release(xs->tx);
-> +	xs->sk.sk_write_space(&xs->sk);
-> +
-> +out:
-> +	rcu_read_unlock();
-> +	return nb_pkts;
+> +	return;
 > +}
-> +EXPORT_SYMBOL(xsk_tx_peek_release_desc_batch);
 > +
+
+In C, the "void" unnamed function parameter specifies that the function has no
+parameters. C99 section 6.7.5.3 Function declarators (including prototypes):
+
+"The special case of an unnamed parameter of type void as the only item in the list
+specifies that the function has no parameters."
+
+The C99 standard section "6.5.2.2 Function calls" states:
+
+"If the function is defined with a type that is not compatible with the type (of the
+expression) pointed to by the expression that denotes the called function, the behavior is
+undefined."
+
+"J.2 Undefined behavior" states:
+
+"For a call to a function without a function prototype in scope, the number of
+arguments does not equal the number of parameters (6.5.2.2)."
+
+I suspect that calling a function expecting no parameters from a call site with
+parameters might work for the cdecl calling convention because the caller
+is responsible for stack cleanup, but it seems to rely on a behavior which is
+very much tied to the calling convention, and within "undefined behavior" territory
+as far as the C standard is concerned.
+
+I checked whether going for "void tp_stub_func()" instead would work better,
+but it seems to also mean "no parameter" when applied to the function definition.
+It's only when applied on the function declarator that is not part of the definition
+that it means no information about the number or type of parameters is supplied.
+(see C99 "6.7.5.3 Function declarators (including prototypes)" items 14 and 15)
+And the kernel builds with "-Werror=strict-prototypes" which would not allow
+it anyway.
+
+One thing which would work with respect to the C standard is to define one stub
+function per tracepoint. This add 16 bytes of code per TRACE_DEFINE() on x86-64,
+but by specifying that those are cache-cold with "__cold", I notice that it adds
+no extra code size my build of kernel/sched/core.o which contains 30 tracepoint
+definitions.
+
+diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+index e7c2276be33e..e0351bb0b140 100644
+--- a/include/linux/tracepoint-defs.h
++++ b/include/linux/tracepoint-defs.h
+@@ -38,6 +38,7 @@ struct tracepoint {
+        int (*regfunc)(void);
+        void (*unregfunc)(void);
+        struct tracepoint_func __rcu *funcs;
++       void *stub_func;
+ };
+ 
+ #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 0f21617f1a66..b0b805de3779 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -287,6 +287,9 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+ #define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)              \
+        static const char __tpstrtab_##_name[]                          \
+        __section("__tracepoints_strings") = #_name;                    \
++       static void __cold __tracepoint_stub_func_##_name(void *__data, proto) \
++       {                                                               \
++       }                                                               \
+        extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name); \
+        int __traceiter_##_name(void *__data, proto);                   \
+        struct tracepoint __tracepoint_##_name  __used                  \
+@@ -298,7 +301,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+                .iterator = &__traceiter_##_name,                       \
+                .regfunc = _reg,                                        \
+                .unregfunc = _unreg,                                    \
+-               .funcs = NULL };                                        \
++               .funcs = NULL,                                          \
++               .stub_func = __tracepoint_stub_func_##_name, };         \
+        __TRACEPOINT_ENTRY(_name);                                      \
+        int __traceiter_##_name(void *__data, proto)                    \
+        {                                                               \
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
