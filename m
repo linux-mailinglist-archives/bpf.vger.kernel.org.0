@@ -2,187 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FDC2B6D8E
-	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 19:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F8D2B6DAA
+	for <lists+bpf@lfdr.de>; Tue, 17 Nov 2020 19:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgKQSi5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 13:38:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42458 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729918AbgKQSi5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Nov 2020 13:38:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605638329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m5E0/SseXfuXN9mnbZhJFdsMHAx3WO5//ot42+LxJLs=;
-        b=XQgkQOTVax/7b7JuQg3sVoVCa9d4w9cMsPXin745SCz/NbyOwQJgTLPQkG3mXPom2GfRTX
-        TTFfgH49BlN4v9o5UGDUFgzg0TjniHPhvkB+z5O4uxNGnt+fyauWwuAOvivrxhP9l3m3kw
-        lKhot8iqD0NwNtDcznMXm96O6P3jWtw=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-GRQ9stLMPS282IAERIlsFw-1; Tue, 17 Nov 2020 13:38:47 -0500
-X-MC-Unique: GRQ9stLMPS282IAERIlsFw-1
-Received: by mail-oi1-f200.google.com with SMTP id k200so10362716oih.23
-        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 10:38:47 -0800 (PST)
+        id S1727007AbgKQSqC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 13:46:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgKQSqA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 13:46:00 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94534C0617A6
+        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 10:45:58 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id e18so23586867edy.6
+        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 10:45:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8jBD6bj0JsSmbNVtR6hH8vSBzFtUGZO9+vcL7HJEL0c=;
+        b=kl+WIWKT22jxj00XkgCeIgfXjdxE0CW1y1zt6wb6Q23RXLe+sRsesj4ZWB8NnsDuj0
+         BaRV+K1LxhBlOuqlgQ68BzfFAG7UWcg9V+n3hqu32qhRDUhDn/hRU+IUDjnSPLhtK8WV
+         c5C88SxiEoxOcfnvw4E3/2i08kRvU8M9iFbZWUFhVC3lTGh9pdW7ecBWnf8w6kzeK8OC
+         NjYqLcPHYP1vKU5qtSgly7xpxuKIFqE01MV36x63LIPfxcYgnhqzd47TRWgp9rbj+m9u
+         c1zddgyKWT21L2Iv8o4S6X9Omb2pKpzxMpDR9GzmBxPLwV+4PJjqxutbO4YPT3esldiT
+         Rr+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=m5E0/SseXfuXN9mnbZhJFdsMHAx3WO5//ot42+LxJLs=;
-        b=q4tDzmMl+6Cw9a1K2H1fv1tlb/DPZS8qRZGsiJgMv51pZ9plHlowr2LmsuuM4c+uSK
-         j1lVTXmuLdQ1E9+l60s7CkBRGDOVTsU33uXk//xreGYZf0wJ7JyCroyjfjP5ULSKbcYJ
-         I19KlHyILBzMDK5gqsgr4SJrqd0m6LRLMKaoVryfhvQOtdW5NHMT4CzrTxfxquJkFVfu
-         dQY3TTT4Brb3Pn1yB6gZLUiXsX/ae+DeB4rXa09oRiKaWQ0jqFcSIAeWAZi/N6McjF53
-         cUHlq5xXNIOkZ4HIEbGl23RHnoG6e/Fd/LyfzepE+6UecWusfmvzvileMU6rrupm7dx1
-         TeGQ==
-X-Gm-Message-State: AOAM533+5LsEwJ0jsbgQMIrK8yNgd+CKlVzilh/RAyM33K14ECE1pmmv
-        BmncwMhCyo3s2PjNqOowY7mTML6TxTBjo+sQvh/AzxGIiH+BFOP7DCoPBVjG9803BJU7mf1WEoa
-        jNms2K8xMuCxz
-X-Received: by 2002:aca:f19:: with SMTP id 25mr295731oip.175.1605638326775;
-        Tue, 17 Nov 2020 10:38:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyTN9L9PixBfldKyQC4E/ow1F8kWj6YKiiPonLzZQA0YMjXGZ9yHRADwxOubQznzJnHVpA2Bw==
-X-Received: by 2002:aca:f19:: with SMTP id 25mr295698oip.175.1605638326197;
-        Tue, 17 Nov 2020 10:38:46 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id q24sm6239836otm.22.2020.11.17.10.38.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8jBD6bj0JsSmbNVtR6hH8vSBzFtUGZO9+vcL7HJEL0c=;
+        b=H/fwUK1by9xZ0WI8hcSK397idO2ijBeBmbzvJxGD9TOuRUXkwT9AMrdll+uh2Ewvvv
+         ZSGh7JDYHl1jWNNaxyXWfJwORzQvEvXXyhLPHkbmlDykFkDlgTiQIp4wTtN18i6ZbBTm
+         +yJWNlAF4CmRHn0PX2mlw02R/qbzM5ntxCWQmcpx++EBrO/osz/hCWemwkI9YgTU4f3I
+         103mdEgkr8wxJOTOThz3XcUidve1Bjzf+pjM6GuWt4qgBonL9xNSHKSu5ZBaeSfi/59K
+         01z90akQ0COdTqJDfJZWMeoiuiohyx1pvHdEMmf9pxlnmiuibEfhxgHE9NkGP7r3sFHY
+         cM0g==
+X-Gm-Message-State: AOAM5313Vs703WryT2P1hHAYO2ADxnP5z3BQnhUS5q82pjiMaG9palwn
+        U5yAaMt2KdFC145pU3CcJ9Ggq46plye7f4ucPJA=
+X-Google-Smtp-Source: ABdhPJysw3YwOx8zohtv/zTz82yA5Kab2zBfQ73umOq910ky24fKYyWRX9umMij/4bUeFV4F+j8KOQ==
+X-Received: by 2002:a50:d615:: with SMTP id x21mr22438526edi.200.1605638757126;
+        Tue, 17 Nov 2020 10:45:57 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::5:a9a1])
+        by smtp.gmail.com with ESMTPSA id p1sm12164382edx.4.2020.11.17.10.45.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Nov 2020 10:38:45 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 52A7E1833E0; Tue, 17 Nov 2020 19:38:43 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Marek Majtyka <alardam@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
-        <bjorn.topel@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>, hawk@kernel.org,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        Marek Majtyka <marekx.majtyka@intel.com>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [Intel-wired-lan] [PATCH 0/8] New netdev feature flags for XDP
-In-Reply-To: <CAAOQfrGzfKf-vpaitfC_KLDnWDo_uJFDF_PE5X9RH_G4Yt8QHA@mail.gmail.com>
-References: <20201116093452.7541-1-marekx.majtyka@intel.com>
- <875z655t80.fsf@toke.dk>
- <CAJ8uoz1C7-a7A0WJqThomSxYwmdkfLpDyC5YnB8g_J+p486RXQ@mail.gmail.com>
- <CAAOQfrGzfKf-vpaitfC_KLDnWDo_uJFDF_PE5X9RH_G4Yt8QHA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 17 Nov 2020 19:38:43 +0100
-Message-ID: <87wnyj25ho.fsf@toke.dk>
+        Tue, 17 Nov 2020 10:45:56 -0800 (PST)
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     bpf@vger.kernel.org
+Cc:     kernel-team@fb.com, rdna@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, andrii@kernel.org, john.fastabend@gmail.com,
+        kpsingh@chromium.org, toke@redhat.com, netdev@vger.kernel.org,
+        me@ubique.spb.ru
+Subject: [PATCH bpf-next] bpf: Add bpf_ktime_get_coarse_ns helper
+Date:   Tue, 17 Nov 2020 18:45:49 +0000
+Message-Id: <20201117184549.257280-1-me@ubique.spb.ru>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Marek Majtyka <alardam@gmail.com> writes:
+The helper uses CLOCK_MONOTONIC_COARSE source of time that is less
+accurate but more performant.
 
-> On Tue, Nov 17, 2020 at 8:37 AM Magnus Karlsson
-> <magnus.karlsson@gmail.com> wrote:
->
-> Thank you for your quick answers and comments.
->
->>
->> On Mon, Nov 16, 2020 at 2:25 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->> >
->> > alardam@gmail.com writes:
->> >
->> > > From: Marek Majtyka <marekx.majtyka@intel.com>
->> > >
->> > > Implement support for checking if a netdev has native XDP and AF_XDP=
- zero
->> > > copy support. Previously, there was no way to do this other than to =
-try
->> > > to create an AF_XDP socket on the interface or load an XDP program a=
-nd
->> > > see if it worked. This commit changes this by extending existing
->> > > netdev_features in the following way:
->> > >  * xdp        - full XDP support (XDP_{TX, PASS, DROP, ABORT, REDIRE=
-CT})
->> > >  * af-xdp-zc  - AF_XDP zero copy support
->> > > NICs supporting these features are updated by turning the correspond=
-ing
->> > > netdev feature flags on.
->> >
->> > Thank you for working on this! The lack of a way to discover whether an
->> > interface supports XDP is really annoying.
->> >
->> > However, I don't think just having two separate netdev feature flags f=
-or
->> > XDP and AF_XDP is going to cut it. Whatever mechanism we end up will
->> > need to be able to express at least the following, in addition to your
->> > two flags:
->> >
->> > - Which return codes does it support (with DROP/PASS, TX and REDIRECT =
-as
->> >   separate options)?
->> > - Does this interface be used as a target for XDP_REDIRECT
->> >   (supported/supported but not enabled)?
->> > - Does the interface support offloaded XDP?
->>
->> If we want feature discovery on this level, which seems to be a good
->> idea and goal to have, then it is a dead end to bunch all XDP features
->> into one. But fortunately, this can easily be addressed.
->
-> Do you think that is it still considerable to have a single netdev
-> flag that means "some" XDP feature support which would activate new
-> further functionalities?
+We have a BPF CGROUP_SKB firewall that supports event logging through
+bpf_perf_event_output(). Each event has a timestamp and currently we use
+bpf_ktime_get_ns() for it. Use of bpf_ktime_get_coarse_ns() saves ~15-20
+ns in time required for event logging.
 
-Why bother? The presence of any XDP-specific feature bits would imply
-the support for XDP :)
+bpf_ktime_get_ns():
+EgressLogByRemoteEndpoint                                  113.82ns    8.79M
+bpf_ktime_get_coarse_ns():
+EgressLogByRemoteEndpoint                                   95.40ns   10.48M
 
->> > That's already five or six more flags, and we can't rule out that we'll
->> > need more; so I'm not sure if just defining feature bits for all of th=
-em
->> > is a good idea.
->>
->> I think this is an important question. Is extending the netdev
->> features flags the right way to go? If not, is there some other
->> interface in the kernel that could be used/extended for this? If none
->> of these are possible, then we (unfortunately) need a new interface
->> and in that case, what should it look like?
->
-> Toke, are you thinking about any particular existing interface or a
-> new specific one?
+Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+---
+ include/linux/bpf.h            |  1 +
+ include/uapi/linux/bpf.h       |  9 +++++++++
+ kernel/bpf/core.c              |  1 +
+ kernel/bpf/helpers.c           | 13 +++++++++++++
+ kernel/trace/bpf_trace.c       |  2 ++
+ tools/include/uapi/linux/bpf.h |  9 +++++++++
+ 6 files changed, 35 insertions(+)
 
-I have mostly been thinking about the internal kernel interface. The
-simple thing would just be to define a whole new bitmap of XDP-specific
-feature bits that the rest of the kernel can consume. That would also
-mean we don't have to do pointer chasing to see if the ndos are
-implemented, which Jesper pointed out the other day actually shows up on
-his profiling traces.
-
-The downside to having them be feature flags is that they can get out of
-sync, of course. But if we block the support from working unless the
-right flags are set, that should at least make driver developers pay
-attention. Although we'd have to change all the drivers in one go, but I
-suppose that's not too onerous seeing as you just did that for this
-series :)
-
-So what that boils down to is basically what you're doing in this
-series, but more fine grained, via a new netdev->xdp_features instead of
-burning bits in netdev->features.
-
-As for UAPI, i dunno? Ethtool is netlink now, right? So it should be
-fairly easy to just extend with a new attribute for XDP?
-
-I believe there was originally some resistance to explicitly exposing
-XDP capabilities to userspace because we wanted all drivers to implement
-all features. Clearly that has not panned out, though, so as far as I'm
-concerned we can just expose it and be done with it :) But I'll let
-others weigh in here; the original discussions predate my involvement.
-
--Toke
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 581b2a2e78eb..e1bcb6d7345c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1842,6 +1842,7 @@ extern const struct bpf_func_proto bpf_copy_from_user_proto;
+ extern const struct bpf_func_proto bpf_snprintf_btf_proto;
+ extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
+ extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
++extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
+ 
+ const struct bpf_func_proto *bpf_tracing_func_proto(
+ 	enum bpf_func_id func_id, const struct bpf_prog *prog);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 162999b12790..b637b68b10a9 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,14 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * u64 bpf_ktime_get_coarse_ns(void)
++ * 	Description
++ * 		Return a coarse-grained version of the time elapsed since system boot, in nanoseconds.
++ * 		Does not include time the system was suspended.
++ * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
++ * 	Return
++ * 		Current *ktime*.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3956,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(ktime_get_coarse_ns),	\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 55454d2278b1..ff55cbcfbab4 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2211,6 +2211,7 @@ const struct bpf_func_proto bpf_get_smp_processor_id_proto __weak;
+ const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
+ const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
++const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto __weak;
+ 
+ const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
+ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 25520f5eeaf6..78e9bb968482 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -651,6 +651,17 @@ const struct bpf_func_proto bpf_this_cpu_ptr_proto = {
+ 	.arg1_type	= ARG_PTR_TO_PERCPU_BTF_ID,
+ };
+ 
++BPF_CALL_0(bpf_ktime_get_coarse_ns)
++{
++	return ktime_get_coarse_ns();
++}
++
++const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto = {
++	.func		= bpf_ktime_get_coarse_ns,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++};
++
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+@@ -695,6 +706,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_ringbuf_discard_proto;
+ 	case BPF_FUNC_ringbuf_query:
+ 		return &bpf_ringbuf_query_proto;
++	case BPF_FUNC_ktime_get_coarse_ns:
++		return &bpf_ktime_get_coarse_ns_proto;
+ 	default:
+ 		break;
+ 	}
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 02986c7b90eb..c3b2222ab573 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1354,6 +1354,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_per_cpu_ptr_proto;
+ 	case BPF_FUNC_bpf_this_cpu_ptr:
+ 		return &bpf_this_cpu_ptr_proto;
++	case BPF_FUNC_ktime_get_coarse_ns:
++		return &bpf_ktime_get_coarse_ns_proto;
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 162999b12790..b637b68b10a9 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3787,6 +3787,14 @@ union bpf_attr {
+  *		*ARG_PTR_TO_BTF_ID* of type *task_struct*.
+  *	Return
+  *		Pointer to the current task.
++ *
++ * u64 bpf_ktime_get_coarse_ns(void)
++ * 	Description
++ * 		Return a coarse-grained version of the time elapsed since system boot, in nanoseconds.
++ * 		Does not include time the system was suspended.
++ * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
++ * 	Return
++ * 		Current *ktime*.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3948,6 +3956,7 @@ union bpf_attr {
+ 	FN(task_storage_get),		\
+ 	FN(task_storage_delete),	\
+ 	FN(get_current_task_btf),	\
++	FN(ktime_get_coarse_ns),	\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+-- 
+2.24.1
 
