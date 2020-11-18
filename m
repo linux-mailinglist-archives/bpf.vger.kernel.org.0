@@ -2,127 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186702B8254
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 17:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBEA2B82B1
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 18:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgKRQuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 11:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbgKRQut (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Nov 2020 11:50:49 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD38EC0613D4
-        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 08:50:49 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id b3so1283314pls.11
-        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 08:50:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G9I3t8aN7L1xly0yUdg8yWu3OFUJdCn4z7Buna0vemo=;
-        b=jkwC9oZ9Upku7sbUkXC7BIfgX2KZ0ZxyHa6bNFDCZYHvGnVO88kTnC0w4u/F4ezXnc
-         GREsN/hIh3RnrYa8SD6a6CDC7MAJu4ed+jIwT1rNlu0k8plP0MOlxSgBN1JzWmUewZep
-         fvMI1gACSgiaaDnX6igKVeag6vhyjjjsSGa7q/E0k/j04aT6VwIz+wlQ/FYSAx7bNqUj
-         ssOnPGUtQ+e1ISYv323ocUT9TNcNCN0ChCc11tGc6cWmjlzvFxFi8YjvV1G+u+9PQcan
-         GfOW3i++5NOzBPcvHLHyqTw5BRpaQGfh3JSfFl21svfNJbFlG5JAmExP38mfBSiNtcje
-         cJzQ==
+        id S1727956AbgKRRIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 12:08:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57920 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726209AbgKRRIj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Nov 2020 12:08:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605719318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gjbadWafB5PZQdFuOO+0yOJJiXeAj0y04FweE/Zx/1U=;
+        b=CJ08ll/of3XOOTa2BuMpIjXmUF2UkrI4Qzz6jJ4athW50NdY+x+Mge+ZuvqVIySorEUT1w
+        HgUaeeg3la36TGLRB+w20GtimQSb7zh65bF4vJBvyxCq3fYycofFyaxmnkd73aoeoZcyoq
+        NiR4vD7x1Ls5ABLHgRFgEgaHCCzEZkU=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-5PB6IGJGOvyd31UMSAhK6w-1; Wed, 18 Nov 2020 12:08:36 -0500
+X-MC-Unique: 5PB6IGJGOvyd31UMSAhK6w-1
+Received: by mail-oo1-f71.google.com with SMTP id u13so1051396ooj.14
+        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 09:08:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G9I3t8aN7L1xly0yUdg8yWu3OFUJdCn4z7Buna0vemo=;
-        b=L8MALqqwl1s+NmSTngPYkOBtyAea/Sk55hQYIJ4SEB1ueB+HK9Nk433H/9RPeL6QL7
-         3HNXA/6pqi0Dz3d6h9Fb8S2FxDIyuZQ62MtM11ej8mB1Rs6p/j8nN3WCYmbi5+4Zl76s
-         8QGR6mbJRlcl4wm+xgBBVFq1PmpHsmyrkuklAE9ugJODv6+AlNFHXKXR+tjAP8Uuv5jj
-         KQ1cI/dexD0/YqxYpliWlYlPlLjI3xrckVw8lsPtlGKZSsASCxbHJiJR/Opl9rbsqTWY
-         JgAAyzn8atBMk/Dh5dyzUFsMhHfXEuV9rTXJZ886kePMfSkRFCf1MLv3poe2lFsrFk+u
-         d3jA==
-X-Gm-Message-State: AOAM533XucboZzhCSMb3Lgc1JEKqIR9di9LR+PVrEnVf6OqODEAf5b/K
-        4MsZjKzk5l0JHmOg8wuaSAPeY2r+bq3tVZZ/Gp5lYA==
-X-Google-Smtp-Source: ABdhPJz7vgjiZ81NHh1dkjauRy3xD7weGPoC85n8NibHpoDwygaoYq4lVfKSiolmozAPc2KrRuV7J9FbC0ZndFIPsJU=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr736163pjj.101.1605718249147;
- Wed, 18 Nov 2020 08:50:49 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gjbadWafB5PZQdFuOO+0yOJJiXeAj0y04FweE/Zx/1U=;
+        b=ORBHcazl1UNtyDHA4ahDVHeJXksPMk8XquzheTJK7GYHCjLuc5DlSAOkJmkEsnsvzF
+         dXDNJh0UR15+rORCaX+osY4Eh42upiwi099iI3kw+PAjFrCNVpW9IwiDzQKtBVDXjNwY
+         rYvDXTVmk5gdV0sHgXD5cU1CN7V41B1+2QnqdVRlOFjSxEmRoxyjBPbomaeNXGvGe/Tr
+         iVWhJSSPtgi8unJnvbcApwEXpLn5l6ULD6xW8MIJaj13ulMRBw40edM70yw+4IvidLXQ
+         w1pCrguAzEDJtq0vaOTnzHT/Ed1tOXh8UpOmZeujIQxqrrruMWeUkJz3nfUopkpFaTC/
+         cskA==
+X-Gm-Message-State: AOAM531Ty8ILiw3pf+qA6LSXp7VNmO8ukYsbx/f2EvYkdYy7GI348PZu
+        VNdFJj7ZeQk+Y+1Tlsq5ohfmPEg0JctMFxQaBAItkmmAIdWDc/IwUeE2CrYqRoAAW+oDSN6qLSp
+        Kwne4PMdkpIsI
+X-Received: by 2002:a05:6830:1e6f:: with SMTP id m15mr7041124otr.253.1605719315695;
+        Wed, 18 Nov 2020 09:08:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwTNImudshm4tcifGUoGWaxSb3c/nS2C4avfNqpMXAgIx4m3U4qu/tQSyD025QgxR0n79WQ3Q==
+X-Received: by 2002:a05:6830:1e6f:: with SMTP id m15mr7041096otr.253.1605719315388;
+        Wed, 18 Nov 2020 09:08:35 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id m65sm7624239otm.40.2020.11.18.09.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 09:08:34 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 34FF71833E0; Wed, 18 Nov 2020 18:08:32 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     daniel@iogearbox.net, ast@fb.com, andrii@kernel.org
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, brouer@redhat.com,
+        haliu@redhat.com, dsahern@gmail.com, jbenc@redhat.com
+Subject: [PATCH bpf-next] libbpf: Add libbpf_version() function to get library version at runtime
+Date:   Wed, 18 Nov 2020 18:07:38 +0100
+Message-Id: <20201118170738.324226-1-toke@redhat.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
- <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
- <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-In-Reply-To: <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 18 Nov 2020 08:50:37 -0800
-Message-ID: <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
-Subject: Re: violating function pointer signature
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 5:23 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Nov 17, 2020 at 03:34:51PM -0500, Steven Rostedt wrote:
->
-> > > > Since all tracepoints callbacks have at least one parameter (__data), we
-> > > > could declare tp_stub_func as:
-> > > >
-> > > > static void tp_stub_func(void *data, ...)
-> > > > {
-> > > >   return;
-> > > > }
-> > > >
-> > > > And now C knows that tp_stub_func() can be called with one or more
-> > > > parameters, and had better be able to deal with it!
-> > >
-> > > AFAIU this won't work.
-> > >
-> > > C99 6.5.2.2 Function calls
-> > >
-> > > "If the function is defined with a type that is not compatible with the type (of the
-> > > expression) pointed to by the expression that denotes the called function, the behavior is
-> > > undefined."
-> >
-> > But is it really a problem in practice. I'm sure we could create an objtool
-> > function to check to make sure we don't break anything at build time.
->
-> I think that as long as the function is completely empty (it never
-> touches any of the arguments) this should work in practise.
->
-> That is:
->
->   void tp_nop_func(void) { }
+As a response to patches adding libbpf support to iproute2, an extensive
+discussion ensued about libbpf version visibility and enforcement in tools
+using the library[0]. In particular, two problems came to light:
 
-or `void tp_nop_func()` if you plan to call it with different
-parameter types that are all unused in the body.  If you do plan to
-use them, maybe a pointer to a tagged union would be safer?
+1. If a tool is statically linked against libbpf, there is no way for a user
+   to discover which version of libbpf the tool is using, unless the tool
+   takes particular care to embed the library version at build time and print
+   it.
 
->
-> can be used as an argument to any function pointer that has a void
-> return. In fact, I already do that, grep for __static_call_nop().
->
-> I'm not sure what the LLVM-CFI crud makes of it, but that's their
-> problem.
+2. If a tool is dynamically linked against libbpf, but doesn't use any
+   symbols from the latest library version, the library version used at
+   runtime can be older than the one used at compile time, and the
+   application has no way to verify the version at runtime.
 
-If you have instructions on how to exercise the code in question, we
-can help test it with CFI.  Better to find any potential issues before
-they get committed.
+To make progress on resolving this, let's add a libbpf_version() function that
+will simply return a version string which is embedded into the library at
+compile time. This makes it possible for applications to unambiguously get the
+library version at runtime, resolving (2.) above, and as an added bonus makes it
+easy for applications to print the library version, which should help with (1.).
+
+[0] https://lore.kernel.org/bpf/20201109070802.3638167-1-haliu@redhat.com/T/#t
+
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ tools/lib/bpf/Makefile   |  1 +
+ tools/lib/bpf/libbpf.c   | 12 ++++++++++++
+ tools/lib/bpf/libbpf.h   |  1 +
+ tools/lib/bpf/libbpf.map |  1 +
+ 4 files changed, 15 insertions(+)
+
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 5f9abed3e226..c9999e09a0c8 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -107,6 +107,7 @@ override CFLAGS += -Werror -Wall
+ override CFLAGS += $(INCLUDES)
+ override CFLAGS += -fvisibility=hidden
+ override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
++override CFLAGS += -DLIBBPF_VERSION="$(LIBBPF_VERSION)"
+ 
+ # flags specific for shared library
+ SHLIB_FLAGS := -DSHARED -fPIC
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 313034117070..dc7bb3001fa6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -136,6 +136,18 @@ static void pr_perm_msg(int err)
+ 
+ #define STRERR_BUFSIZE  128
+ 
++#ifndef LIBBPF_VERSION
++#define LIBBPF_VERSION unset
++#endif
++#define __str(s) #s
++#define _str(s) __str(s)
++static const char *_libbpf_version = _str(LIBBPF_VERSION);
++
++const char *libbpf_version(void)
++{
++	return _libbpf_version;
++}
++
+ /* Copied from tools/perf/util/util.h */
+ #ifndef zfree
+ # define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6909ee81113a..d8256bc1e02e 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -45,6 +45,7 @@ enum libbpf_errno {
+ };
+ 
+ LIBBPF_API int libbpf_strerror(int err, char *buf, size_t size);
++LIBBPF_API const char *libbpf_version(void);
+ 
+ enum libbpf_print_level {
+         LIBBPF_WARN,
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 29ff4807b909..5f931bf1b5b0 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -345,4 +345,5 @@ LIBBPF_0.3.0 {
+ 		btf__parse_split;
+ 		btf__new_empty_split;
+ 		btf__new_split;
++                libbpf_version;
+ } LIBBPF_0.2.0;
 -- 
-Thanks,
-~Nick Desaulniers
+2.29.2
+
