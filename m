@@ -2,27 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4812B84F2
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 20:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5742B850D
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 20:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbgKRTdt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 14:33:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgKRTdt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Nov 2020 14:33:49 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56AC3238E6;
-        Wed, 18 Nov 2020 19:33:45 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 14:33:43 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
+        id S1726098AbgKRTqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 14:46:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgKRTqQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Nov 2020 14:46:16 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161ADC0613D4;
+        Wed, 18 Nov 2020 11:46:16 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id b17so3634655ljf.12;
+        Wed, 18 Nov 2020 11:46:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KKZ4gb6lDjaHxR6iESt9TC7rWEjeXXRpmBGWuLjwqho=;
+        b=UD2kY9Ja3dRw3CDr2g34AQQdxq9Id4kG+7UsWQFKu7Se6KpwNZmwIKzxkH0CBiN73E
+         WzSYz4z6USEXQJJzSyuPeDj32w3IKuLLnTqREi1ObZD6euPYVUjtv4mBJaUdLJhZ50fZ
+         rJnJtZBZGWvWI7t7R/a2VmG/fgbH9e5QYMysS5OzzLD9D517t6kW68NjdgSRjBrv81l8
+         ALaTrA7Y3XV0tBmKNR4rFTTW6Hfyg0Z+ghgJlOKUVNAAfjkJJgb5lffKZS9ta6tC/oIe
+         cjcLJ5++yvAyjgsE0k/O/egJi0ygALZDUBdILGotcOg338c/r3vWqVekySTSuL606oa8
+         eiRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KKZ4gb6lDjaHxR6iESt9TC7rWEjeXXRpmBGWuLjwqho=;
+        b=Gduq4ReqIfmHbkkmj1m3r4k0KrXvUA/+0HToYhQotllu1TYWLrq3zxfJJSXEDs4VlW
+         O/+r0mpv+0RKEjdQpHyGj2L7o7XWflgf4w4BS2Tsrt1P1haHUQnl2GHktwNOkMFwN3bv
+         vU60mRZkSc+Pwc4L/u3WbAMLVZorFxpLTfqKfNeNi6Chrzp+GyeQDmmypkemJkJ99iQq
+         1R/fsg3XrgicqdAOHwFhBPjL4pae8VYsCOUBTJ8JKA5JXASikv5A1JfkDDvQ5QhtdOtA
+         wuza7eombRWwbBiFej00Avp0SVk3FnHgOcrVPIF9SPPuadG5Hthg7KhNw9vTBMKc8+BG
+         F5Jw==
+X-Gm-Message-State: AOAM531kb/QSaQ7e4qflL8y8xF1Fe/Wb8eXiXMCeb79oexTrTdTnujni
+        gVhLmTCupMaeYMN/excgGMzpbAFbstVpEDfFo7GDTbJReRY=
+X-Google-Smtp-Source: ABdhPJwzuPmS1cgjgZVNL6pP4CI/HcN9peF/Y7NTvyncavVMzXu/u/1FNFCypGB6OXXldxaxhG+zlLvnZVpBNqBTEbQ=
+X-Received: by 2002:a2e:86c5:: with SMTP id n5mr4627251ljj.450.1605728774563;
+ Wed, 18 Nov 2020 11:46:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
+ <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+ <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+ <87h7pmwyta.fsf@mid.deneb.enyo.de> <20201118092228.4f6e5930@gandalf.local.home>
+In-Reply-To: <20201118092228.4f6e5930@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 18 Nov 2020 11:46:02 -0800
+Message-ID: <CAADnVQLv2pnw1x66Y_cYmdBg=sF+7s31VVoEmSerDnbuR0pU_g@mail.gmail.com>
+Subject: Re: violating function pointer signature
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Matt Mullins <mmullins@mmlx.us>,
@@ -39,110 +72,36 @@ Cc:     Florian Weimer <fw@deneb.enyo.de>,
         Kees Cook <keescook@chromium.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201118143343.4e86e79f@gandalf.local.home>
-In-Reply-To: <20201118191127.GM2672@gate.crashing.org>
-References: <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
-        <20201117142145.43194f1a@gandalf.local.home>
-        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-        <20201117153451.3015c5c9@gandalf.local.home>
-        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
-        <20201118121730.12ee645b@gandalf.local.home>
-        <20201118181226.GK2672@gate.crashing.org>
-        <87o8jutt2h.fsf@mid.deneb.enyo.de>
-        <20201118135823.3f0d24b7@gandalf.local.home>
-        <20201118191127.GM2672@gate.crashing.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 18 Nov 2020 13:11:27 -0600
-Segher Boessenkool <segher@kernel.crashing.org> wrote:
+On Wed, Nov 18, 2020 at 6:22 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Thus, all functions will be non-variadic in these cases.
 
-> Calling this via a different declared function type is undefined
-> behaviour, but that is independent of how the function is *defined*.
-> Your program can make ducks appear from your nose even if that function
-> is never called, if you do that.  Just don't do UB, not even once!
-
-But that's the whole point of this conversation. We are going to call this
-from functions that are going to have some random set of parameters.
-
-But there is a limit to that. All the callers will expect a void return,
-and none of the callers will have a variable number of parameters.
-
-The code in question is tracepoints and static calls. For this
-conversation, I'll stick with tracepoints (even though static calls are
-used too, but including that in the conversation is confusing).
-
-Let me define what is happening:
-
-We have a macro that creates a defined tracepoint with a defined set of
-parameters. But each tracepoint can have a different set of parameters. All
-of them will have "void *" as the first parameter, but what comes after
-that is unique to each tracepoint (defined by a macro). None of them will
-be a variadic function call.
-
-The macro looks like this:
-
-	int __traceiter_##_name(void *__data, proto)			\
-	{								\
-		struct tracepoint_func *it_func_ptr;			\
-		void *it_func;						\
-									\
-		it_func_ptr =						\
-			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
-		do {							\
-			it_func = (it_func_ptr)->func;			\
-			__data = (it_func_ptr)->data;			\
-			((void(*)(void *, proto))(it_func))(__data, args); \
-		} while ((++it_func_ptr)->func);			\
-		return 0;						\
-	}
-
-
-There's an array of struct tracepoint_func pointers, which has the
-definition of:
-
-struct tracepoint_func {
-	void *func;
-	void *data;
-	int prio;
+That's not the only case where it will blow up.
+Try this on sparc:
+struct foo {
+int a;
 };
 
+struct foo foo_struct(void) {
+struct foo f = {};
+return f;
+}
+int foo_int(void) {
+return 0;
+}
+or this link:
+https://godbolt.org/z/EdM47b
 
-And you see the above, the macro does:
+Notice:
+jmp %i7+12
+The function that returns small struct will jump to a different
+instruction in the caller.
 
-	((void(*)(void *, proto))(it_func))(__data, args);
-
-With it_func being the func from the struct tracepoint_func, which is a
-void pointer, it is typecast to the function that is defined by the
-tracepoint. args is defined as the arguments that match the proto.
-
-The way the array is updated, is to use an RCU method, which is to create a
-new array, copy the changes to the new array, then switch the "->funcs"
-over to the new copy, and after a RCU grace period is finished, we can free
-the old array.
-
-The problem we are solving is on the removal case, if the memory is tight,
-it is possible that the new array can not be allocated. But we must still
-remove the called function. The idea in this case is to replace the
-function saved with a stub. The above loop will call the stub and not the
-removed function until another update happens.
-
-This thread is about how safe is it to call:
-
-void tp_stub_func(void) { return ; }
-
-instead of the function that was removed?
-
-Thus, we are indeed calling that stub function from a call site that is not
-using the same parameters.
-
-The question is, will this break?
-
--- Steve
+I think none of the tracepoints return structs and void foo(void) is
+fine on x86.
+Just pointing out that it's more than just variadic.
