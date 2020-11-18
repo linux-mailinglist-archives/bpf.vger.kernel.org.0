@@ -2,85 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1377D2B7A31
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 10:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192F72B7B28
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 11:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgKRJSa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 18 Nov 2020 04:18:30 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22785 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726311AbgKRJS3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 18 Nov 2020 04:18:29 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-94-FSSv3gobMvWUdqkIex0ELA-1; Wed, 18 Nov 2020 09:18:25 +0000
-X-MC-Unique: FSSv3gobMvWUdqkIex0ELA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 18 Nov 2020 09:18:24 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 18 Nov 2020 09:18:24 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kuniyuki Iwashima' <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
-Thread-Topic: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
-Thread-Index: AQHWvMXedAT5e1uWx0Go2ulX1CPcBqnNnI0w
-Date:   Wed, 18 Nov 2020 09:18:24 +0000
-Message-ID: <01a5c211a87a4dd69940e19c2ff00334@AcuMS.aculab.com>
-References: <20201117094023.3685-1-kuniyu@amazon.co.jp>
-In-Reply-To: <20201117094023.3685-1-kuniyu@amazon.co.jp>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726211AbgKRKXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 05:23:01 -0500
+Received: from www62.your-server.de ([213.133.104.62]:51336 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726141AbgKRKXB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Nov 2020 05:23:01 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kfKc4-0000UL-9U; Wed, 18 Nov 2020 11:22:56 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kfKc4-000Rqw-1h; Wed, 18 Nov 2020 11:22:56 +0100
+Subject: Re: [PATCH bpf-next v6 06/34] bpf: prepare for memcg-based memory
+ accounting for bpf maps
+To:     Roman Gushchin <guro@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>, hannes@cmpxchg.org
+References: <20201117034108.1186569-1-guro@fb.com>
+ <20201117034108.1186569-7-guro@fb.com>
+ <41eb5e5b-e651-4cb3-a6ea-9ff6b8aa41fb@iogearbox.net>
+ <20201118004634.GA179309@carbon.dhcp.thefacebook.com>
+ <20201118010703.GC156448@carbon.DHCP.thefacebook.com>
+ <CAADnVQ+vSLfgVCXB7KnXMBzVe3rL20qLwrKf=xrJXpZTmUEnYA@mail.gmail.com>
+ <20201118012841.GA186396@carbon.dhcp.thefacebook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <43c845d6-ea33-0d9d-98bb-e743af4940a3@iogearbox.net>
+Date:   Wed, 18 Nov 2020 11:22:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20201118012841.GA186396@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25991/Tue Nov 17 14:12:35 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Kuniyuki Iwashima
-> Sent: 17 November 2020 09:40
+On 11/18/20 2:28 AM, Roman Gushchin wrote:
+> On Tue, Nov 17, 2020 at 05:11:00PM -0800, Alexei Starovoitov wrote:
+>> On Tue, Nov 17, 2020 at 5:07 PM Roman Gushchin <guro@fb.com> wrote:
+>>> On Tue, Nov 17, 2020 at 04:46:34PM -0800, Roman Gushchin wrote:
+>>>> On Wed, Nov 18, 2020 at 01:06:17AM +0100, Daniel Borkmann wrote:
+>>>>> On 11/17/20 4:40 AM, Roman Gushchin wrote:
+>>>>>> In the absolute majority of cases if a process is making a kernel
+>>>>>> allocation, it's memory cgroup is getting charged.
+>>>>>>
+>>>>>> Bpf maps can be updated from an interrupt context and in such
+>>>>>> case there is no process which can be charged. It makes the memory
+>>>>>> accounting of bpf maps non-trivial.
+>>>>>>
+>>>>>> Fortunately, after commit 4127c6504f25 ("mm: kmem: enable kernel
+>>>>>> memcg accounting from interrupt contexts") and b87d8cefe43c
+>>>>>> ("mm, memcg: rework remote charging API to support nesting")
+>>>>>> it's finally possible.
+>>>>>>
+>>>>>> To do it, a pointer to the memory cgroup of the process which created
+>>>>>> the map is saved, and this cgroup is getting charged for all
+>>>>>> allocations made from an interrupt context.
+>>>>>>
+>>>>>> Allocations made from a process context will be accounted in a usual way.
+>>>>>>
+>>>>>> Signed-off-by: Roman Gushchin <guro@fb.com>
+>>>>>> Acked-by: Song Liu <songliubraving@fb.com>
+>>>>> [...]
+>>>>>> +#ifdef CONFIG_MEMCG_KMEM
+>>>>>> +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
+>>>>>> +                                          void *value, u64 flags)
+>>>>>> +{
+>>>>>> + struct mem_cgroup *old_memcg;
+>>>>>> + bool in_interrupt;
+>>>>>> + int ret;
+>>>>>> +
+>>>>>> + /*
+>>>>>> +  * If update from an interrupt context results in a memory allocation,
+>>>>>> +  * the memory cgroup to charge can't be determined from the context
+>>>>>> +  * of the current task. Instead, we charge the memory cgroup, which
+>>>>>> +  * contained a process created the map.
+>>>>>> +  */
+>>>>>> + in_interrupt = in_interrupt();
+>>>>>> + if (in_interrupt)
+>>>>>> +         old_memcg = set_active_memcg(map->memcg);
+>>>>>> +
+>>>>>> + ret = map->ops->map_update_elem(map, key, value, flags);
+>>>>>> +
+>>>>>> + if (in_interrupt)
+>>>>>> +         set_active_memcg(old_memcg);
+>>>>>> +
+>>>>>> + return ret;
+>>>>>
+>>>>> Hmm, this approach here won't work, see also commit 09772d92cd5a ("bpf: avoid
+>>>>> retpoline for lookup/update/delete calls on maps") which removes the indirect
+>>>>> call, so the __bpf_map_update_elem() and therefore the set_active_memcg() is
+>>>>> not invoked for the vast majority of cases.
+>>>>
+>>>> I see. Well, the first option is to move these calls into map-specific update
+>>>> functions, but the list is relatively long:
+>>>>    nsim_map_update_elem()
+>>>>    cgroup_storage_update_elem()
+>>>>    htab_map_update_elem()
+>>>>    htab_percpu_map_update_elem()
+>>>>    dev_map_update_elem()
+>>>>    dev_map_hash_update_elem()
+>>>>    trie_update_elem()
+>>>>    cpu_map_update_elem()
+>>>>    bpf_pid_task_storage_update_elem()
+>>>>    bpf_fd_inode_storage_update_elem()
+>>>>    bpf_fd_sk_storage_update_elem()
+>>>>    sock_map_update_elem()
+>>>>    xsk_map_update_elem()
+>>>>
+>>>> Alternatively, we can set the active memcg for the whole duration of bpf
+>>>> execution. It's simpler, but will add some overhead. Maybe we can somehow
+>>>> mark programs calling into update helpers and skip all others?
+>>>
+>>> Actually, this is problematic if a program updates several maps, because
+>>> in theory they can belong to different cgroups.
+>>> So it seems that the first option is the way to go. Do you agree?
+>>
+>> May be instead of kmalloc_node() that is used by most of the map updates
+>> introduce bpf_map_kmalloc_node() that takes a map pointer as an argument?
+>> And do set_memcg inside?
 > 
-> The SO_REUSEPORT option allows sockets to listen on the same port and to
-> accept connections evenly. However, there is a defect in the current
-> implementation. When a SYN packet is received, the connection is tied to a
-> listening socket. Accordingly, when the listener is closed, in-flight
-> requests during the three-way handshake and child sockets in the accept
-> queue are dropped even if other listeners could accept such connections.
-> 
-> This situation can happen when various server management tools restart
-> server (such as nginx) processes. For instance, when we change nginx
-> configurations and restart it, it spins up new workers that respect the new
-> configuration and closes all listeners on the old workers, resulting in
-> in-flight ACK of 3WHS is responded by RST.
+> I suspect it's not only kmalloc_node(), but if there will be 2-3 allocation
+> helpers, it sounds like a good idea to me! I'll try and get back with v7 soon.
 
-Can't you do something to stop new connections being queued (like
-setting the 'backlog' to zero), then carry on doing accept()s
-for a guard time (or until the queue length is zero) before finally
-closing the listening socket.
+Could this be baked into kmalloc*() API itself given we also need to pass in
+__GFP_ACCOUNT everywhere, so we'd have a new API with additional argument where
+we pass the memcg pointer to tell it directly where to account it for instead of
+having to have the extra set_active_memcg() set/restore dance via BPF wrapper?
+It seems there would be not much specifics on BPF itself and if it's more generic
+it could also be used by other subsystems.
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Thanks,
+Daniel
