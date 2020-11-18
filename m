@@ -2,245 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82EA2B7F7C
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 15:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D70F02B8072
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 16:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgKROeL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 09:34:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725834AbgKROeK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:34:10 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727308AbgKRP2e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 10:28:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50194 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726495AbgKRP2e (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Nov 2020 10:28:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605713313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=q3a4BtFcx5O8RJ6/ReVxaOLvpbyGa2oBL+Tx0jBvhz4=;
+        b=TFiklLAIF0P1SDGUGQ0HvrRhL8xIgDCGp65WrH0yLaXf1RBesjtVz9cyERGtWzBlMvuKJh
+        ENHBhWfGEYR9zyf018mIbhdGrtaQCl7Jx6N5IK227E/HA5LiqgIpYi7HTMYD8GbN7hnSTB
+        DDKIWVrSyZ2fvr2+tMZwTdgfN1CCDHI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-JfbrFiriMXqf_qWMYit05A-1; Wed, 18 Nov 2020 10:28:29 -0500
+X-MC-Unique: JfbrFiriMXqf_qWMYit05A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13B3220A8B;
-        Wed, 18 Nov 2020 14:34:06 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 09:34:05 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC42110866AD;
+        Wed, 18 Nov 2020 15:28:26 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 249A960843;
+        Wed, 18 Nov 2020 15:28:23 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id C694932138454;
+        Wed, 18 Nov 2020 16:28:21 +0100 (CET)
+Subject: [PATCH bpf-next V6 0/7] Series short description
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: [PATCH v3] tracepoint: Do not fail unregistering a probe due to
- memory allocation
-Message-ID: <20201118093405.7a6d2290@gandalf.local.home>
-In-Reply-To: <874klmwxxm.fsf@mid.deneb.enyo.de>
-References: <20201116175107.02db396d@gandalf.local.home>
-        <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
-        <20201117142145.43194f1a@gandalf.local.home>
-        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-        <20201117153451.3015c5c9@gandalf.local.home>
-        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-        <87h7pmwyta.fsf@mid.deneb.enyo.de>
-        <20201118141226.GV3121392@hirez.programming.kicks-ass.net>
-        <874klmwxxm.fsf@mid.deneb.enyo.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+Date:   Wed, 18 Nov 2020 16:28:21 +0100
+Message-ID: <160571329106.2801162.7380460134461487044.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+The following series implements...
 
-The list of tracepoint callbacks is managed by an array that is protected
-by RCU. To update this array, a new array is allocated, the updates are
-copied over to the new array, and then the list of functions for the
-tracepoint is switched over to the new array. After a completion of an RCU
-grace period, the old array is freed.
-
-This process happens for both adding a callback as well as removing one.
-But on removing a callback, if the new array fails to be allocated, the
-callback is not removed, and may be used after it is freed by the clients
-of the tracepoint.
-
-There's really no reason to fail if the allocation for a new array fails
-when removing a function. Instead, the function can simply be replaced by a
-stub function that could be cleaned up on the next modification of the
-array. That is, instead of calling the function registered to the
-tracepoint, it would call a stub function in its place.
-
-Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
-Link: https://lore.kernel.org/r/20201116175107.02db396d@gandalf.local.home
-Link: https://lore.kernel.org/r/20201117211836.54acaef2@oasis.local.home
-
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: netdev <netdev@vger.kernel.org>
-Cc: bpf <bpf@vger.kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
-Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-Reported-by: Matt Mullins <mmullins@mmlx.us>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-Changes since v2:
-   - Went back to using a stub function and not touching
-      the fast path.
-   - Removed adding __GFP_NOFAIL from the allocation of the removal.
 
- kernel/tracepoint.c | 80 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 64 insertions(+), 16 deletions(-)
+Jesper Dangaard Brouer (7):
+      bpf: Remove MTU check in __bpf_skb_max_len
+      bpf: fix bpf_fib_lookup helper MTU check for SKB ctx
+      bpf: bpf_fib_lookup return MTU value as output when looked up
+      bpf: add BPF-helper for MTU checking
+      bpf: drop MTU check when doing TC-BPF redirect to ingress
+      bpf: make it possible to identify BPF redirected SKBs
+      selftests/bpf: use bpf_check_mtu in selftest test_cls_redirect
 
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 3f659f855074..3e261482296c 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -53,6 +53,12 @@ struct tp_probes {
- 	struct tracepoint_func probes[];
- };
- 
-+/* Called in removal of a func but failed to allocate a new tp_funcs */
-+static void tp_stub_func(void)
-+{
-+	return;
-+}
-+
- static inline void *allocate_probes(int count)
- {
- 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
-@@ -131,6 +137,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- {
- 	struct tracepoint_func *old, *new;
- 	int nr_probes = 0;
-+	int stub_funcs = 0;
- 	int pos = -1;
- 
- 	if (WARN_ON(!tp_func->func))
-@@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- 			if (old[nr_probes].func == tp_func->func &&
- 			    old[nr_probes].data == tp_func->data)
- 				return ERR_PTR(-EEXIST);
-+			if (old[nr_probes].func == tp_stub_func)
-+				stub_funcs++;
- 		}
- 	}
--	/* + 2 : one for new probe, one for NULL func */
--	new = allocate_probes(nr_probes + 2);
-+	/* + 2 : one for new probe, one for NULL func - stub functions */
-+	new = allocate_probes(nr_probes + 2 - stub_funcs);
- 	if (new == NULL)
- 		return ERR_PTR(-ENOMEM);
- 	if (old) {
--		if (pos < 0) {
-+		if (stub_funcs) {
-+			/* Need to copy one at a time to remove stubs */
-+			int probes = 0;
-+
-+			pos = -1;
-+			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-+				if (old[nr_probes].func == tp_stub_func)
-+					continue;
-+				if (pos < 0 && old[nr_probes].prio < prio)
-+					pos = probes++;
-+				new[probes++] = old[nr_probes];
-+			}
-+			nr_probes = probes;
-+			if (pos < 0)
-+				pos = probes;
-+			else
-+				nr_probes--; /* Account for insertion */
-+
-+		} else if (pos < 0) {
- 			pos = nr_probes;
- 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
- 		} else {
-@@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
- 	/* (N -> M), (N > 1, M >= 0) probes */
- 	if (tp_func->func) {
- 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
--			if (old[nr_probes].func == tp_func->func &&
--			     old[nr_probes].data == tp_func->data)
-+			if ((old[nr_probes].func == tp_func->func &&
-+			     old[nr_probes].data == tp_func->data) ||
-+			    old[nr_probes].func == tp_stub_func)
- 				nr_del++;
- 		}
- 	}
-@@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
- 		/* N -> M, (N > 1, M > 0) */
- 		/* + 1 for NULL */
- 		new = allocate_probes(nr_probes - nr_del + 1);
--		if (new == NULL)
--			return ERR_PTR(-ENOMEM);
--		for (i = 0; old[i].func; i++)
--			if (old[i].func != tp_func->func
--					|| old[i].data != tp_func->data)
--				new[j++] = old[i];
--		new[nr_probes - nr_del].func = NULL;
--		*funcs = new;
-+		if (new) {
-+			for (i = 0; old[i].func; i++)
-+				if ((old[i].func != tp_func->func
-+				     || old[i].data != tp_func->data)
-+				    && old[i].func != tp_stub_func)
-+					new[j++] = old[i];
-+			new[nr_probes - nr_del].func = NULL;
-+			*funcs = new;
-+		} else {
-+			/*
-+			 * Failed to allocate, replace the old function
-+			 * with calls to tp_stub_func.
-+			 */
-+			for (i = 0; old[i].func; i++)
-+				if (old[i].func == tp_func->func &&
-+				    old[i].data == tp_func->data) {
-+					old[i].func = tp_stub_func;
-+					/* Set the prio to the next event. */
-+					if (old[i + 1].func)
-+						old[i].prio =
-+							old[i + 1].prio;
-+					else
-+						old[i].prio = -1;
-+				}
-+			*funcs = old;
-+		}
- 	}
- 	debug_print_probes(*funcs);
- 	return old;
-@@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
- 	tp_funcs = rcu_dereference_protected(tp->funcs,
- 			lockdep_is_held(&tracepoints_mutex));
- 	old = func_remove(&tp_funcs, func);
--	if (IS_ERR(old)) {
--		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-+	if (WARN_ON_ONCE(IS_ERR(old)))
- 		return PTR_ERR(old);
--	}
-+
-+	if (tp_funcs == old)
-+		/* Failed allocating new tp_funcs, replaced func with stub */
-+		return 0;
- 
- 	if (!tp_funcs) {
- 		/* Removed last function */
--- 
-2.25.4
+
+ .../selftests/bpf/progs/test_cls_redirect.c        |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+--
+Signature
 
