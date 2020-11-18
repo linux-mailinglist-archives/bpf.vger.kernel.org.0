@@ -2,130 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C242B7653
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 07:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817C82B76BA
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 08:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgKRGcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 01:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
+        id S1726506AbgKRHQx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 02:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgKRGcf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Nov 2020 01:32:35 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD02C0613D4;
-        Tue, 17 Nov 2020 22:32:34 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id u12so1070081wrt.0;
-        Tue, 17 Nov 2020 22:32:34 -0800 (PST)
+        with ESMTP id S1725794AbgKRHQw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Nov 2020 02:16:52 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46C9C0613D4;
+        Tue, 17 Nov 2020 23:16:52 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id 18so484735pli.13;
+        Tue, 17 Nov 2020 23:16:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wqgSZ9r2kfTRap69aHQFZm5M1DT8YcVhJNk7kUqL2DY=;
-        b=F1w+kD+Ycj6h5wqFwDdP+v6KZD0wQRFvur4V7623BsRHBAQXippuoKHI1wbldMlI8q
-         5/j3GgKBDdd3iDpULoXDT1MnIJXy5UdLy10Ek5+Bmym8/8wIcReTxk0lpn1jqLEtpNma
-         O91eTm5P31EwuhbXrT0qtQ1hroncRha1CPoquMw+saESEiSC5zLX+hvcHpywi0TNN+hl
-         XN5Pk2B83/PDhsK56VLRZvpTJPTnwnSmLE3tIZG9q310w8fzFH661YaHG1L3mxIOi3Ca
-         8tXPRQlArZPMaaNseA/ceWfrHwCcu/5tcPiNnFAp51pBK8ZTpeDiZ4pBgyt1PDeO7xBy
-         scng==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U3seY/lcs8TEEmISiXOkYLuxnoviwJk63EPoYZmFSHk=;
+        b=RiXtx3DPHlRFlDgTOXZ8m4RbvrX4ymel4W9RkaXoFDy5tBZ9haArB5r/JN37Htyn4G
+         t46IT85L51o98zqItmbV0u5B9c18/6TzF/HNHa3XD3ROGLGf9QikkIgkZtDK/PBSILnJ
+         Onb7rpNF9qFt9NW/eOTdYmUZj7KgRksG98Zhf3yuG4PL1puWCFHrHld7OR1giSS6luEJ
+         4uW6r7Hfb3+9SxTinlkxryMx7NlLviZPg2V2vt58Hvbhqwn7F/3A6rywtTqdXOVLqiS9
+         17KJX6vwbxa18SiXyOjIM4/dM3adwo3EdtT1cUWeQSgtaeIAJeSh8CjHC3VK+KOW33rc
+         3jKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wqgSZ9r2kfTRap69aHQFZm5M1DT8YcVhJNk7kUqL2DY=;
-        b=sVWjv8G/b6vKY1Js3vzcOkVY5JdY7Si+ffkeAs9cTh7zf7MEHH4N0c28mS693NyQt7
-         BVIvCAZnvjoroxkN9sopwXwpnGekuqYzK8HMYO2KnvI8j8A8XECerPZl1rhgzr8nWz+L
-         L/JdxYkxCnvLHJ37zIZ56TZwJdx7b/biRltI439TzJqdDFe+ykMTMvzJVJIelUeV+p4j
-         rI93nQmTDpluhQEnCUtlwzsInH2ox23UZ4yeOyY6+CQDw/1yBk4h6GPrNb+wvGADVjoz
-         Kj3rCRNlnuuwyfSjkggOzON6JOIBGeHRcS6QX9VPVlCQUJWxlZvWQ9IF0GykFC1Hd0SH
-         m2kA==
-X-Gm-Message-State: AOAM530Q6jhcnNFHiE61+TbMkULWQl8RqWpclxUx6LAW6PmyOcSGocuQ
-        MJ9PWIyXIR8QT8dd/f9k1JKEwV+nDHjXCTNgNDE=
-X-Google-Smtp-Source: ABdhPJx/SGBBnXmA99q5yVAio/qHRvzL6aSrJc1+CarckpmICW4YIjM8xB3gt4Fz4hrAv3Nh3u4xmirC7RwsskpkD3M=
-X-Received: by 2002:adf:ed04:: with SMTP id a4mr3361502wro.172.1605681153633;
- Tue, 17 Nov 2020 22:32:33 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U3seY/lcs8TEEmISiXOkYLuxnoviwJk63EPoYZmFSHk=;
+        b=CjwYRsOiTt9iKkbers9wLpMCcgp2V0trV0c08N9I63XlX63+yuW5KfyvRGPNSc3y+a
+         EYR8LMTLTC57TJzO+eWK25IdM9I4dvODO/ErI0nJygayRED5xbLBwKP4DyqHHt2ihgEr
+         eXgQYp9te6/F1L6WRPsThzKLU6EjZmT7dV+ssSyq5gjlFHq6e8EtabZDUwIK0WyKWqBH
+         z7bGMMF/7eq8ABpnwjcsRC5Uke7E/ALhd9//0peqfKccgebN0yQKiQg71JoMnactKn5w
+         gtgUngl491VMZ1xinlPEOaTI8iY5FHMqIS0a1q8D/64MJ4tfZ5HAZy+i56MIDZGmWqk5
+         FVyg==
+X-Gm-Message-State: AOAM533sk1uAWkjEtvrnctGrV1dpY7tuC5ItfiQej+VG6uVc/+4LWVBh
+        9TLb1DpqHJoO5yOESNLLiYE=
+X-Google-Smtp-Source: ABdhPJzkewEWXj9x0t+Tj1EprABPBAe23jRnGAw5xRlVzku4s8j820vquFyHFWQh/VAannLu+8JKSw==
+X-Received: by 2002:a17:90a:b303:: with SMTP id d3mr2813534pjr.207.1605683812051;
+        Tue, 17 Nov 2020 23:16:52 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.45])
+        by smtp.gmail.com with ESMTPSA id e128sm23019382pfe.154.2020.11.17.23.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2020 23:16:50 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        xi.wang@gmail.com, luke.r.nels@gmail.com,
+        linux-riscv@lists.infradead.org, andrii.nakryiko@gmail.com
+Subject: [PATCH bpf-next v2 0/3] RISC-V selftest/bpf fixes
+Date:   Wed, 18 Nov 2020 08:16:37 +0100
+Message-Id: <20201118071640.83773-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20201117082638.43675-1-bjorn.topel@gmail.com> <20201117082638.43675-3-bjorn.topel@gmail.com>
- <CAEf4BzZYXw8cd53+owz1ctsO9diFNJ9oCzgEEGMqRVUjmsN+ew@mail.gmail.com>
-In-Reply-To: <CAEf4BzZYXw8cd53+owz1ctsO9diFNJ9oCzgEEGMqRVUjmsN+ew@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 18 Nov 2020 07:32:21 +0100
-Message-ID: <CAJ+HfNj9Ou=ftR__0gN-MnO4NMRLPCJ4krXDNxZk0uEYJAu20A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Avoid running unprivileged
- tests with alignment requirements
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Xi Wang <xi.wang@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 18 Nov 2020 at 02:43, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->
-> On Tue, Nov 17, 2020 at 12:29 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail=
-.com> wrote:
-> >
-> > Some architectures have strict alignment requirements. In that case,
-> > the BPF verifier detects if a program has unaligned accesses and
-> > rejects them. A user can pass BPF_F_ANY_ALIGNMENT to a program to
-> > override this check. That, however, will only work when a privileged
-> > user loads a program. A unprivileged user loading a program with this
-> > flag will be rejected prior entering the verifier.
->
-> I'd include this paragraph as a code comment right next to the check belo=
-w.
->
-> >
-> > Hence, it does not make sense to load unprivileged programs without
-> > strict alignment when testing the verifier. This patch avoids exactly
-> > that.
-> >
-> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
-> > ---
-> >  tools/testing/selftests/bpf/test_verifier.c | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testin=
-g/selftests/bpf/test_verifier.c
-> > index 9be395d9dc64..2075f6a98813 100644
-> > --- a/tools/testing/selftests/bpf/test_verifier.c
-> > +++ b/tools/testing/selftests/bpf/test_verifier.c
-> > @@ -1152,9 +1152,15 @@ static void get_unpriv_disabled()
-> >
-> >  static bool test_as_unpriv(struct bpf_test *test)
-> >  {
-> > -       return !test->prog_type ||
-> > -              test->prog_type =3D=3D BPF_PROG_TYPE_SOCKET_FILTER ||
-> > -              test->prog_type =3D=3D BPF_PROG_TYPE_CGROUP_SKB;
-> > +       bool req_aligned =3D false;
-> > +
-> > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> > +       req_aligned =3D test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCES=
-S;
-> > +#endif
-> > +       return (!test->prog_type ||
-> > +               test->prog_type =3D=3D BPF_PROG_TYPE_SOCKET_FILTER ||
-> > +               test->prog_type =3D=3D BPF_PROG_TYPE_CGROUP_SKB) &&
-> > +               !req_aligned;
->
-> It's a bit convoluted. This seems a bit more straightforward:
->
-> #ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
->     if (test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCESS)
->         return false;
-> #endif
-> /* the rest of logic untouched */
->
-> ?
->
-
-Ugh. Yes, indeed. *blush*
+This series contain some fixes for selftests/bpf when building/running
+on a RISC-V host. Details can be found in each individual commit.
 
 
-Bj=C3=B6rn
+Cheers,
+Björn
+
+v2:
+  Makefile cosmetics. (Andrii)
+  Simplified unpriv check and added comment. (Andrii)
+
+Björn Töpel (3):
+  selftests/bpf: Fix broken riscv build
+  selftests/bpf: Avoid running unprivileged tests with alignment
+    requirements
+  selftests/bpf: Mark tests that require unaligned memory access
+
+ tools/testing/selftests/bpf/Makefile          |  3 +-
+ tools/testing/selftests/bpf/test_verifier.c   | 13 ++++++
+ .../selftests/bpf/verifier/ctx_sk_lookup.c    |  7 +++
+ .../bpf/verifier/direct_value_access.c        |  3 ++
+ .../testing/selftests/bpf/verifier/map_ptr.c  |  1 +
+ .../selftests/bpf/verifier/raw_tp_writable.c  |  1 +
+ .../selftests/bpf/verifier/ref_tracking.c     |  4 ++
+ .../testing/selftests/bpf/verifier/regalloc.c |  8 ++++
+ .../selftests/bpf/verifier/wide_access.c      | 46 +++++++++++--------
+ 9 files changed, 67 insertions(+), 19 deletions(-)
+
+
+base-commit: ea87ae85c9b31303a2e9d4c769d9f3ee8a3a60d1
+-- 
+2.27.0
+
