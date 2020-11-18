@@ -2,80 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D74B62B80C8
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 16:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82782B80AA
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 16:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727478AbgKRPkr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 10:40:47 -0500
-Received: from gateway30.websitewelcome.com ([192.185.196.18]:17146 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727473AbgKRPkr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 18 Nov 2020 10:40:47 -0500
-X-Greylist: delayed 1720 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Nov 2020 10:40:46 EST
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 8B3CCB9A0
-        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 08:48:20 -0600 (CST)
-Received: from zastava.websitewelcome.com ([192.185.83.71])
-        by cmsmtp with SMTP
-        id fOkukUMXUfgo0fOkukOmmg; Wed, 18 Nov 2020 08:48:20 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=liamsports.com; s=default; h=Date:Message-Id:Content-Type:MIME-Version:
-        Reply-To:From:Subject:To:Sender:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DNctREwmdr2xzK+3LW6h9IegnQUayja9aGXYHpevsic=; b=QdDXORG0bnIkz+n537ZexyROFi
-        v8X/bctbPTMSfJMyIY3ahCSVR7ei/QEThCY/b30bSnNaQhdaed8IRZUS82WA0ZkqTB8lwipvXi9fG
-        uBtjwSRXC/4u9att+oj7mhWeJSaHYlwKk9MZvbEB8lv6/M/MAdC/f3pC+7HQmrRXGE7Z3lGdc4nWI
-        3cWFFvRPyPs+YQxf8ek34+QIz/l0ZfAzyZO3T8zP5QOHLEEybVbgjoForReBYybiQFkCoAhQLtcuW
-        vslNF6qxWrci5Q3W9YftA020VI1zzuKqXPzAAI529riwVZGQ4Zf2dqg/jhH3vQIG9LJGFRKNKkU5B
-        lpQsU+zQ==;
-Received: from liamsports by zastava.websitewelcome.com with local (Exim 4.93)
-        (envelope-from <info@liamsports.com>)
-        id 1kfOku-004Ksp-5x
-        for bpf@vger.kernel.org; Wed, 18 Nov 2020 08:48:20 -0600
+        id S1725787AbgKRPh0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 10:37:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725446AbgKRPh0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Nov 2020 10:37:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605713845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d8sRYGEzSwBuvAF+H53zPFqrxK3fJ+m2Pfzo+FY4+Kw=;
+        b=BFWjd9mnkqoLYhcOh1yzaKv5eEFXKnl4IU6QnmiNcKa931nI6vCnklL5uBNufWyoKp4KAS
+        hDibrKKLUY4GepPJLqgec34iB9CEXeHRkV4qWvuSFjzqh06Y9zuVgNr0ykbaMaVCCCPawb
+        OTDq68AOdxHbBDxlzfkJIVoQifQWNhI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-Yt0VGFVoMPSF14_iFirexw-1; Wed, 18 Nov 2020 10:37:21 -0500
+X-MC-Unique: Yt0VGFVoMPSF14_iFirexw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F31E219251BB;
+        Wed, 18 Nov 2020 15:37:18 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F336E60843;
+        Wed, 18 Nov 2020 15:37:11 +0000 (UTC)
+Date:   Wed, 18 Nov 2020 16:37:10 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     bpf@vger.kernel.org
-Subject: Business Proposal
-X-PHP-Script: liamsports.com/email/index.php for 202.142.189.170
-X-PHP-Originating-Script: 5244:index.php
-From:   Isabella George <info@liamsports.com>
-Reply-To: Isabella George <info@liamsports.com>
+Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V6 0/7] Series short description
+Message-ID: <20201118163710.201853da@carbon>
+In-Reply-To: <160571329106.2801162.7380460134461487044.stgit@firesoul>
+References: <160571329106.2801162.7380460134461487044.stgit@firesoul>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <E1kfOku-004Ksp-5x@zastava.websitewelcome.com>
-Date:   Wed, 18 Nov 2020 08:48:20 -0600
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - zastava.websitewelcome.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [5244 32008] / [47 12]
-X-AntiAbuse: Sender Address Domain - liamsports.com
-X-BWhitelist: no
-X-Source-IP: 
-X-Source-L: No
-X-Exim-ID: 1kfOku-004Ksp-5x
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: liamsports.com:/public_html/email
-X-Source-Sender: 
-X-Source-Auth: liamsports
-X-Email-Count: 27
-X-Source-Cap: bGlhbXNwb3J0cztwYWt3ZWlvbjt6YXN0YXZhLndlYnNpdGV3ZWxjb21lLmNvbQ==
-X-Local-Domain: yes
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello There
-Liam Sports is The Factory of custom apparels And Team Wears. we are specialist in custom apparels including Tees, Polo Shirts, Tights,  Hoodies, Tracksuits, Softshell, Club Outerwear, Training Singlets, Reversible Training Jumpers and Singlets, Compression Wears, And Club Sports Bag etc We strive to deliver the highest quality in custom sublimation and cut & sew In All Over The worldwide.
-You can ask for samples if you want to check our quality first.
+
+Sorry, please ignore this email.
+
+(Wrong invocation of stg mail from command line)
+--Jesper
 
 
-Regards
+On Wed, 18 Nov 2020 16:28:21 +0100
+Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 
-Company: Liam Sports
-Cell: +92 3127601319
-Whatsapp: +447395606980
-Website : www.liamsports.com
-Factory Address: Small Industrial Area Sialkot 51310, Punjab Pakistan 
-Instagram:  https://www.instagram.com/liamsports_official/
+> The following series implements...
+> 
+> ---
+> 
+> Jesper Dangaard Brouer (7):
+>       bpf: Remove MTU check in __bpf_skb_max_len
+>       bpf: fix bpf_fib_lookup helper MTU check for SKB ctx
+>       bpf: bpf_fib_lookup return MTU value as output when looked up
+>       bpf: add BPF-helper for MTU checking
+>       bpf: drop MTU check when doing TC-BPF redirect to ingress
+>       bpf: make it possible to identify BPF redirected SKBs
+>       selftests/bpf: use bpf_check_mtu in selftest test_cls_redirect
+> 
+> 
+>  .../selftests/bpf/progs/test_cls_redirect.c        |    7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> --
+> Signature
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
