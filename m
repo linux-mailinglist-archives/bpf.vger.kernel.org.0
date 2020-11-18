@@ -2,135 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2232B82CE
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 18:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2889E2B8340
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 18:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgKRRRg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 12:17:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgKRRRg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Nov 2020 12:17:36 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3EA8248A7;
-        Wed, 18 Nov 2020 17:17:32 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 12:17:30 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201118121730.12ee645b@gandalf.local.home>
-In-Reply-To: <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
-References: <20201116175107.02db396d@gandalf.local.home>
-        <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
-        <20201117142145.43194f1a@gandalf.local.home>
-        <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-        <20201117153451.3015c5c9@gandalf.local.home>
-        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727349AbgKRRn3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 12:43:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726554AbgKRRn3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Nov 2020 12:43:29 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33A0C0613D4;
+        Wed, 18 Nov 2020 09:43:28 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id g7so1881030pfc.2;
+        Wed, 18 Nov 2020 09:43:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=sRCwxS66ZR/salGsNwKnPDw68R6cz9+hKE+O0/zoZds=;
+        b=P2OJByOvtXt2Zw19OkJszopeo0esTfCMKBmd8GiWJ3QnCIKrCNBWlAaMzPTWqV70yq
+         lOydr4PFY0q6hEsUCAvYkSBFKtdbOL3a9Er4wM+rOhjZi5+slOhsjzaNE6UaRTOtCRdo
+         5ne9iiwfUr1xct54IImgomC4LPsJHrHXEuY5McP4NzscRrS0JgMqmIPm35PtfrcK5vvp
+         HlkALaI60jCZtZ/nGEoDqidOZMSrHPaBd3AghIrkXX0ixpDT4/mjXWhTQv0o4QEBFtf7
+         JHLhX0/0lqJAAcnAo7tUyUp8T32M6VUel3LG9vSTIYU+g6J8UUEVbzvynXcuzYUntLMQ
+         WNiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=sRCwxS66ZR/salGsNwKnPDw68R6cz9+hKE+O0/zoZds=;
+        b=TP4mGNTlyXQ4oPdnqOspoG0l8FXZteOzKMs9bn4PaYeqA37a/fXXutTfzvIbhc4T2y
+         82jutrjtPjH8pmC8WzxqSGHYBA0RSFNXQSR+rj3a50HyoNZ0Vs0cbD70fOAldfELJRDC
+         kmXLAiBzN6rm1OiD8rAFspoTcvxqVcYs9EaLKrx9tKLPFCvXox2s9mUOXedJaFuH6uiG
+         6lRK41/cP2C7B5dGlKKdErNa5dbNLIJhPDQE6xHeBcSSELSsEPRwhHZ5Pd14Ge2hwLda
+         8F+4o2xWv/d9WqKaz1b/jh74WKrqjlr53ZvjydKMZMIBTzvARi6zhT6RIIoCcdtgNlPQ
+         LnQg==
+X-Gm-Message-State: AOAM530yaFCwnkji6vtbmrvYUFDs4B+12ScDZPhkc8LWptAjXLtMmBFS
+        SpyVympuett4Xmb6LeGtD9U=
+X-Google-Smtp-Source: ABdhPJx2oirokdS8J6FmAhxzUgb4AS+8DHOeTjlmkVKnjDoLb1upkYDTtW4fa52PUg47t50SrXiAVA==
+X-Received: by 2002:aa7:955d:0:b029:18b:f646:7d21 with SMTP id w29-20020aa7955d0000b029018bf6467d21mr5174578pfq.61.1605721408542;
+        Wed, 18 Nov 2020 09:43:28 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:e6dc])
+        by smtp.gmail.com with ESMTPSA id a84sm26024058pfa.53.2020.11.18.09.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Nov 2020 09:43:27 -0800 (PST)
+Date:   Wed, 18 Nov 2020 09:43:25 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     daniel@iogearbox.net, ast@fb.com, andrii@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, brouer@redhat.com,
+        haliu@redhat.com, dsahern@gmail.com, jbenc@redhat.com
+Subject: Re: [PATCH bpf-next] libbpf: Add libbpf_version() function to get
+ library version at runtime
+Message-ID: <20201118174325.zjomd2gvybof6awa@ast-mbp>
+References: <20201118170738.324226-1-toke@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201118170738.324226-1-toke@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 18 Nov 2020 08:50:37 -0800
-Nick Desaulniers <ndesaulniers@google.com> wrote:
-
-> On Wed, Nov 18, 2020 at 5:23 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Tue, Nov 17, 2020 at 03:34:51PM -0500, Steven Rostedt wrote:
-> >  
-> > > > > Since all tracepoints callbacks have at least one parameter (__data), we
-> > > > > could declare tp_stub_func as:
-> > > > >
-> > > > > static void tp_stub_func(void *data, ...)
-> > > > > {
-> > > > >   return;
-> > > > > }
-> > > > >
-> > > > > And now C knows that tp_stub_func() can be called with one or more
-> > > > > parameters, and had better be able to deal with it!  
-> > > >
-> > > > AFAIU this won't work.
-> > > >
-> > > > C99 6.5.2.2 Function calls
-> > > >
-> > > > "If the function is defined with a type that is not compatible with the type (of the
-> > > > expression) pointed to by the expression that denotes the called function, the behavior is
-> > > > undefined."  
-> > >
-> > > But is it really a problem in practice. I'm sure we could create an objtool
-> > > function to check to make sure we don't break anything at build time.  
-> >
-> > I think that as long as the function is completely empty (it never
-> > touches any of the arguments) this should work in practise.
-> >
-> > That is:
-> >
-> >   void tp_nop_func(void) { }  
+On Wed, Nov 18, 2020 at 06:07:38PM +0100, Toke Høiland-Jørgensen wrote:
+> As a response to patches adding libbpf support to iproute2, an extensive
+> discussion ensued about libbpf version visibility and enforcement in tools
+> using the library[0]. In particular, two problems came to light:
 > 
-> or `void tp_nop_func()` if you plan to call it with different
-> parameter types that are all unused in the body.  If you do plan to
-> use them, maybe a pointer to a tagged union would be safer?
-
-This stub function will never use the parameters passed to it.
-
-You can see the patch I have for the tracepoint issue here:
-
- https://lore.kernel.org/r/20201118093405.7a6d2290@gandalf.local.home
-
-I could change the stub from (void) to () if that would be better.
-
+> 1. If a tool is statically linked against libbpf, there is no way for a user
+>    to discover which version of libbpf the tool is using, unless the tool
+>    takes particular care to embed the library version at build time and print
+>    it.
 > 
-> >
-> > can be used as an argument to any function pointer that has a void
-> > return. In fact, I already do that, grep for __static_call_nop().
-> >
-> > I'm not sure what the LLVM-CFI crud makes of it, but that's their
-> > problem.  
+> 2. If a tool is dynamically linked against libbpf, but doesn't use any
+>    symbols from the latest library version, the library version used at
+>    runtime can be older than the one used at compile time, and the
+>    application has no way to verify the version at runtime.
 > 
-> If you have instructions on how to exercise the code in question, we
-> can help test it with CFI.  Better to find any potential issues before
-> they get committed.
+> To make progress on resolving this, let's add a libbpf_version() function that
+> will simply return a version string which is embedded into the library at
+> compile time. This makes it possible for applications to unambiguously get the
+> library version at runtime, resolving (2.) above, and as an added bonus makes it
+> easy for applications to print the library version, which should help with (1.).
+> 
+> [0] https://lore.kernel.org/bpf/20201109070802.3638167-1-haliu@redhat.com/T/#t
+> 
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 
-If you apply the patch to the Linux kernel, and then apply:
-
-  https://lore.kernel.org/r/20201116181638.6b0de6f7@gandalf.local.home
-
-Which will force the failed case (to use the stubs). And build and boot the
-kernel with those patches applied, you can test it with:
-
-
- # mount -t tracefs nodev /sys/kernel/tracing
- # cd /sys/kernel/tracing
- # echo 1 > events/sched/sched_switch/enable
- # mkdir instances/foo
- # echo 1 > instances/foo/events/sched/sched_switch/enable
- # echo 0 > events/sched/sched_switch/enable
-
-Which add two callbacks to the function array for the sched_switch
-tracepoint. The remove the first one, which would add the stub instead.
-
--- Steve
+Unless iproute2 adopts scrict libbpf.so.version == iproute2.version policy
+and removes legacy bpf loader no iproute2 driven changes to libbpf will be accepted.
+Just like the kernel doesn't add features for out-of-tree modules
+libbpf doesn't add features for projects where libbpf is optional.
