@@ -2,92 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82782B80AA
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 16:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608562B8163
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 17:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725787AbgKRPh0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 10:37:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44320 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725446AbgKRPh0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 18 Nov 2020 10:37:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605713845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8sRYGEzSwBuvAF+H53zPFqrxK3fJ+m2Pfzo+FY4+Kw=;
-        b=BFWjd9mnkqoLYhcOh1yzaKv5eEFXKnl4IU6QnmiNcKa931nI6vCnklL5uBNufWyoKp4KAS
-        hDibrKKLUY4GepPJLqgec34iB9CEXeHRkV4qWvuSFjzqh06Y9zuVgNr0ykbaMaVCCCPawb
-        OTDq68AOdxHbBDxlzfkJIVoQifQWNhI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-Yt0VGFVoMPSF14_iFirexw-1; Wed, 18 Nov 2020 10:37:21 -0500
-X-MC-Unique: Yt0VGFVoMPSF14_iFirexw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F31E219251BB;
-        Wed, 18 Nov 2020 15:37:18 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F336E60843;
-        Wed, 18 Nov 2020 15:37:11 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 16:37:10 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        id S1726553AbgKRQB1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Nov 2020 11:01:27 -0500
+Received: from mail.efficios.com ([167.114.26.124]:44436 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726496AbgKRQB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Nov 2020 11:01:27 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id A801B2ECB82;
+        Wed, 18 Nov 2020 11:01:25 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ZwJ7XCNKGbub; Wed, 18 Nov 2020 11:01:25 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4FBAC2ECB05;
+        Wed, 18 Nov 2020 11:01:25 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 4FBAC2ECB05
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1605715285;
+        bh=k0a1RGHOSG7fsNrb43ytVhAyD3oE/dKDtNyXyy8B/xU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Qbs2RxYPZHVq3437Ui3yAsk8VLrqTSOLM6tl8uIbE1D+3t4YO2Lzq3YRH8NDzfHvP
+         Y7wmgNkD2kbQTYE7CrMESIGdDzNS2OYcviVTNFj9lO8FzleB+aAwXymiLaY248KdBP
+         4l/jvyiHO91lZYWLaKOcS+k4MjSMBv4ddr2cLNCASbYr/oPZWG++KoEJByvG/RNNBr
+         qgVNXbzRuXBxGwGamciMRHLOkRpbxBDO27twHHbEdQxM2CvTifblwcTzCnNfekT4Ov
+         q2eYPl+HXVOqbn2m/5gfqWm3d0kOsctj6Jc02dcCFzmQgQawcEQFtNS5FLetkN0h9Z
+         0EM+PrO/Uq9yw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id jkAbwSowY55M; Wed, 18 Nov 2020 11:01:25 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 398402EC75B;
+        Wed, 18 Nov 2020 11:01:25 -0500 (EST)
+Date:   Wed, 18 Nov 2020 11:01:25 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V6 0/7] Series short description
-Message-ID: <20201118163710.201853da@carbon>
-In-Reply-To: <160571329106.2801162.7380460134461487044.stgit@firesoul>
-References: <160571329106.2801162.7380460134461487044.stgit@firesoul>
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>
+Message-ID: <1762005214.49230.1605715285133.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201118090256.55656208@gandalf.local.home>
+References: <20201116175107.02db396d@gandalf.local.home> <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com> <20201117142145.43194f1a@gandalf.local.home> <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <20201118090256.55656208@gandalf.local.home>
+Subject: Re: violating function pointer signature
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3975 (ZimbraWebClient - FF82 (Linux)/8.8.15_GA_3975)
+Thread-Topic: violating function pointer signature
+Thread-Index: Obd4w6s/wcVB2Hvi8sMQ1l1Yr980kA==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+----- On Nov 18, 2020, at 9:02 AM, rostedt rostedt@goodmis.org wrote:
 
-Sorry, please ignore this email.
+> On Wed, 18 Nov 2020 14:21:36 +0100
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+>> I think that as long as the function is completely empty (it never
+>> touches any of the arguments) this should work in practise.
+>> 
+>> That is:
+>> 
+>>   void tp_nop_func(void) { }
+> 
+> My original version (the OP of this thread) had this:
+> 
+> +static void tp_stub_func(void)
+> +{
+> +	return;
+> +}
+> 
+>> 
+>> can be used as an argument to any function pointer that has a void
+>> return. In fact, I already do that, grep for __static_call_nop().
+>> 
+>> I'm not sure what the LLVM-CFI crud makes of it, but that's their
+>> problem.
+> 
+> If it is already done elsewhere in the kernel, then I will call this
+> precedence, and keep the original version.
 
-(Wrong invocation of stg mail from command line)
---Jesper
+It works for me. Bonus points if you can document in a comment that this
+trick depends on the cdecl calling convention.
 
+Thanks,
 
-On Wed, 18 Nov 2020 16:28:21 +0100
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+Mathieu
 
-> The following series implements...
 > 
-> ---
+> This way Alexei can't complain about adding a check in the fast path of
+> more than one callback attached.
 > 
-> Jesper Dangaard Brouer (7):
->       bpf: Remove MTU check in __bpf_skb_max_len
->       bpf: fix bpf_fib_lookup helper MTU check for SKB ctx
->       bpf: bpf_fib_lookup return MTU value as output when looked up
->       bpf: add BPF-helper for MTU checking
->       bpf: drop MTU check when doing TC-BPF redirect to ingress
->       bpf: make it possible to identify BPF redirected SKBs
->       selftests/bpf: use bpf_check_mtu in selftest test_cls_redirect
-> 
-> 
->  .../selftests/bpf/progs/test_cls_redirect.c        |    7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> --
-> Signature
+> -- Steve
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
