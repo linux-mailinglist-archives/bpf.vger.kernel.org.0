@@ -2,285 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751782B73AB
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 02:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6DF2B73C1
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 02:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgKRBUA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 20:20:00 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25246 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725767AbgKRBT7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Nov 2020 20:19:59 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI1Jb9g022686;
-        Tue, 17 Nov 2020 17:19:40 -0800
+        id S1726982AbgKRB3L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 20:29:11 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44824 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725767AbgKRB3K (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Nov 2020 20:29:10 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AI1P6NK008791;
+        Tue, 17 Nov 2020 17:28:53 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=KT5OUDRI++OJZeoQPVz3c4foFYfYYhGvGldzqw0iKq4=;
- b=kHJkMkawTNfvXPPLQKxmBKdKrfTVuNfrHG+a1QQFg+T00GLvTFDyViIZc0Dg0Anoq9Eh
- lELy9inhyG5YyCBoSsVdkGg1dQizqSuZZY/mQrMgHS3kS3iH3q+26AtIJJ1kJg7vFnW6
- n6UNAOjdJ+qJF1t/UiPlKC4ogvCWreg47Fg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34uwyg8wqf-5
+ mime-version; s=facebook; bh=8XsK0gn9bmUAeuuyz1sSJ/wNfbJleVLFHaarPnFCIcY=;
+ b=YDKPD0ZaK0bBpXO1zoQCeQY2rW0GiEFkqfAbeeLbRZ3DW9H1S7M9votQiUgunFUwkwfl
+ vUTz8os9GuvJFmNc7MWbV7BIfNNsZAhFpfBHHTFZWQURyBDkG6kUgYWgwSwhm1gMotvP
+ k8unwxw8o+d5VXwRO8XYhxbVGW6LsnIN68Y= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34vhqjb3v1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 17 Nov 2020 17:19:40 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+        Tue, 17 Nov 2020 17:28:53 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 17 Nov 2020 17:19:26 -0800
+ 15.1.1979.3; Tue, 17 Nov 2020 17:28:52 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jLWqTkR4Cz8MXxsnoWhS5Zl/ZzgDlF0z/6G9mJuxOLM6lMJ8gquGGVMpf8TMIj8+cGWHScKV34wtI1CT6/H5grhN9YJsZhwof5im9yr02SW2krFN3UsmCszppAKAm6p20fmmcyG8cbqzfqfwzy/qJ2eeUiNeCnLS0WlRfJn7hXwlaqep3ISQHTnmmtom1nc/Vdu+kS6sOaE1rLIslcWhVQ0Uzb2NdR+s6dZH3oF0Igw9jb+qYApizniJLvklotk5J1UfgzA5Dh6/f4OqptywoIte5Lgu1uFvb5wHyFF72d2pYRL7ZEPcLCM+TXyI+diV1i6HbmIWDcj+PIBTS/m1XQ==
+ b=mKGJIrzl8FnQ9h9imS23RgUrCcwsOpniyfx4N95icgETyXfYoWHjIGegWMTeMSJFnBIRHWHkcWHI2CPxdvDJliUOCOm1HonXtRw6PFg7Tbx2UiSGZg2C3lSQdr//9DwkAJXhsD2OsARyLo4Hhkh3pyUmjzSdaOps0Wk9kNG37EnekVG44ruBDqOkkWcyf8Q6MtmEZYgLFxbwmuk2e9/Tm+xFtNcpvFAHmEZlx46MeASh8nfMXP65cw2l2YTZ6/wytIL8WYYvCng+x+kuKgdA6oCS6Bu7ktSkaEbbiInYSP120Lp8pJbr5KkpBfxYQyOMpk25sw0m5AB/cUgbAuDjig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KT5OUDRI++OJZeoQPVz3c4foFYfYYhGvGldzqw0iKq4=;
- b=guK0aJN4BIfdfLTKMMLrGELvHdzfph8kFOFVk20G+3XvHsP5XU4zhvGeKL5Aa7ZCxFPIFBpw8iawnsSso4ciIR/mMBG3tpvdtTAETwogPCWojqFcm1hX8/crsMlvFRfF8O2aDdUUd5QCWIUcWSXkrSeuasFjEXdyd9o8/hSRwQ4XBCHYZYAzyBtAQaXMUNcVU8J3KOFY6nXjcYZURETA8k6Z5j3oKLls+o+j+yWiXteYKQ06mrAcLrw2I3AqsjdOxKle83g3/vvmeL79ECffhUGvaSa4kTSdUJi53DaKFdVpK6JrE9cvKali9wgnOHKL94qjMcitKsnWtLsdgU7pvw==
+ bh=8XsK0gn9bmUAeuuyz1sSJ/wNfbJleVLFHaarPnFCIcY=;
+ b=DAhm0MXW8mIIpb6YxCyVKrZPp/1x68HTVXPZR5EwjYZ9LawaR3h9wC8Bpkd9TTdV1nAYbOdIgvKJ2D6XGME92v+ZTLm1SfXpnhsEtvLDucRiOvejLtkSQuIUHdbNmXJciAZcWft4RCAa/3tKPPe8wfv8HBCtDXrdOcmCV55w6vGG3qlOVdbk+1P1g8SlUZIF0+BITrZNCtGiBWOnLmQULp+Oih3mQRmmvMCINlXyI4TGAwWSI7fmr/yVhZsdL8lUy1QbowcvA4hzrSk2TNrnSCBXduj6ymu/XQ0vGihhFNg181EBfKSyA1T2zSJM004cq3L+x18claEOPOyv9++GrQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KT5OUDRI++OJZeoQPVz3c4foFYfYYhGvGldzqw0iKq4=;
- b=RwIu/h7dHbZDye7+YR9dok6Q2zpCJ/dS/tNo3D+KUwrnkxEZLMedK57qcTs6NRFbSvvTHffbxV5eZDf7l3B8GSlueGCwb5Jc9F7BWp6Khr4EHYN5nQzahq1rZKsCZlMFlXx4NSFAfB2PyQTuOR/bib8+EWvktxg9eS7D1fdOp1o=
+ bh=8XsK0gn9bmUAeuuyz1sSJ/wNfbJleVLFHaarPnFCIcY=;
+ b=dWv3ohuZphj/0vsOxO8BWLU5DYK6aJ1SApJ5xbMIvEvQclt+fRL2ZigELgwCrAO+543f4gspMzseUTZIMc/1rXPDPLxKk7zFZh8A884MQYEZGm8ARzZswO8k2gqKYj4Bz+MiDAYsP1iDvQLb4MqrEJV8WnV/gfV5D3RZQn/xV28=
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3415.namprd15.prod.outlook.com (2603:10b6:a03:112::16) with
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3603.namprd15.prod.outlook.com (2603:10b6:a03:1f7::27) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Wed, 18 Nov
- 2020 01:19:25 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3564.028; Wed, 18 Nov 2020
- 01:19:25 +0000
-Date:   Tue, 17 Nov 2020 17:19:17 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Wed, 18 Nov
+ 2020 01:28:47 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3564.031; Wed, 18 Nov 2020
+ 01:28:47 +0000
+Date:   Tue, 17 Nov 2020 17:28:41 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, brakmo <brakmo@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        David Ahern <dsa@cumulusnetworks.com>,
-        Yonghong Song <yhs@fb.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>, Thomas Graf <tgraf@suug.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Xdp <xdp-newbies@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/9] selftests: bpf: move tracing helpers to
- trace_helper
-Message-ID: <20201118011917.v5zagoksa4h2yuei@kafai-mbp.dhcp.thefacebook.com>
-References: <20201117145644.1166255-1-danieltimlee@gmail.com>
- <20201117145644.1166255-2-danieltimlee@gmail.com>
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next v6 06/34] bpf: prepare for memcg-based memory
+ accounting for bpf maps
+Message-ID: <20201118012841.GA186396@carbon.dhcp.thefacebook.com>
+References: <20201117034108.1186569-1-guro@fb.com>
+ <20201117034108.1186569-7-guro@fb.com>
+ <41eb5e5b-e651-4cb3-a6ea-9ff6b8aa41fb@iogearbox.net>
+ <20201118004634.GA179309@carbon.dhcp.thefacebook.com>
+ <20201118010703.GC156448@carbon.DHCP.thefacebook.com>
+ <CAADnVQ+vSLfgVCXB7KnXMBzVe3rL20qLwrKf=xrJXpZTmUEnYA@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201117145644.1166255-2-danieltimlee@gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:603e]
-X-ClientProxiedBy: MWHPR12CA0039.namprd12.prod.outlook.com
- (2603:10b6:301:2::25) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+In-Reply-To: <CAADnVQ+vSLfgVCXB7KnXMBzVe3rL20qLwrKf=xrJXpZTmUEnYA@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:57cc]
+X-ClientProxiedBy: CO2PR04CA0105.namprd04.prod.outlook.com
+ (2603:10b6:104:6::31) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:603e) by MWHPR12CA0039.namprd12.prod.outlook.com (2603:10b6:301:2::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Wed, 18 Nov 2020 01:19:23 +0000
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:57cc) by CO2PR04CA0105.namprd04.prod.outlook.com (2603:10b6:104:6::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Wed, 18 Nov 2020 01:28:46 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: db9c0781-e0b8-4aae-0714-08d88b5ffc74
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3415:
+X-MS-Office365-Filtering-Correlation-Id: 51afb830-d163-49ef-9be4-08d88b614ba2
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3603:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3415A35EFE33C06A4DB74A96D5E10@BYAPR15MB3415.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3603DC405344D398FD701C92BEE10@BY5PR15MB3603.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:195;
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EphkDdnwagJkDq2La0zOCrat5Bs3LVvVIKff+GuJdhorbxzxMYYNBBe+Jqm7q6z2dsmPthcknYCDMziWALNSACQU1OSLHUBmtGCvbNSMA5YptHj/TX5xiExZ1epHgI2kzI0DXXVe+/36jateAjG2phxHhXGRJVILX1fxkMKntbD3zGGhQ63eYuHtSwa1dFW7cX4IyvA3P4+Ja3RKI5dYMD74MjsyJZNs3UD5mZEfcr0RuPmvuhjQPij2Kl4C9bNDQvcv4Ke7e9Y0bqN/bjrnJnQEXqRc6chmQvkFpNvd/JdiXHIbgT2kzhDkLMffnH5lUT/7PmzugoI6o35Qn/IpBQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(376002)(136003)(39860400002)(52116002)(7696005)(4326008)(16526019)(55016002)(2906002)(6666004)(86362001)(9686003)(1076003)(7416002)(186003)(8936002)(6916009)(83380400001)(66476007)(66556008)(6506007)(316002)(66946007)(5660300002)(8676002)(54906003)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: MpwgGuGAiklWmimU6q5xCFngepFy4HjRpc9OqKHzGE1QmnUGN3O1w0jSBxEjzG3Y7NRi80SjAWBPJr8A4AdAynggXEb3Afjz2l/CMWQIv5kEm3kl0zz1+Qo+Z9xIU289Yiuv+jOW4D5qkjyjoVJcuG4OLJod8vqqaEXJm2o32MtoQTUL5QTzQtpmIThnoB71j7ncJxH1FWaLWDMvENYIFwEcHwGdHnwrDD5CaFKqNK6GnOJrV0FGfClHdZgZEnGzJmlTLSm+oacEp2LM416e1a5zfgrieHX6Mbj8vdmqVyyXFcJffPJkfSlXfVJYJmyBHR9glJnWt9cKyux5HrtoBBTDKPKYHD1ht6QcyEWn23i6SuGEHx1SCulIGoD6CXLBWgbrllDz0zkeAXZ/2v8QPYI/ll94vjfhzruomB+E+b7kP/5+fVpvXBORnMAoOpAM7wtJtDipc9FkoeZ+nb5RATga4QhG1Q3vzBTX4+9rvMnA+YElFjDyLEqXrGFDbfzPr/A8R1gDVUvb3IiJmw83Umk+X1BRGI0LNURNVkX2b3l4W6Q5gdHBWg+BTp6PQ6u7h23ledRHiq4LXLPxbcCDcaPmk6gFOdY3Y5ey3kFlR+2LxHtLNjTF4saZjkDrl1bmT1xy4PgBou8CjFgIA4UkfenfguRDDNWfW0xWmJ4DyXGWAvThIVUFL+0mN7cbM5wAeo8z/xm9Tleuz5tkVkujukBem4rqUfxPPAWhhFu8CNajhipfZ6J+v1Tb+jxk/dqhygRmN53jJ8z1Tg0ZHWKOwDh9xLkZJd19UVUhN7o+3rKCVs/nn1fEg7TbTgSDZBFEGp9gNDmcTfoM5NvRv8QHRH5t9vt6a5eH7f1WUoMsB1SPaaz1fFpOkGUH4mOTiMbmUOAbxc57rYOkQBz+uKXTS1So2mHPx+TJSWH8veUz/CM=
-X-MS-Exchange-CrossTenant-Network-Message-Id: db9c0781-e0b8-4aae-0714-08d88b5ffc74
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: YyOxayvzol/7YLramS1LxK/VEUhRIY2OKHJpQayJL6PDuJJdHmPZ3GQ/G5PTlF6D9AgZ2252F0piZTrij1V+GF400xnosSKKOM0LciB644qnuv/SOsxuEGxI9oNGYmgSZp5he/kAagmOviyxnTTKb453zhivVTZVN6YHvWr+j9vVfVTc5p3GJJnIGThyDESWE9RWWC/lNc92yETqRqINwkwQGEGM9xSCWaFTBI/7MOqK2ZDth3zvlwO0FLKOwlQg0GCB9IoNEkDxMxdpP3uKVqsvD4pdOVeYgUsJPB6cfJt/+hcMbEJrsBrMmYRz3Ly/OX1a8piMO79260NrUpOifg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(136003)(366004)(396003)(52116002)(33656002)(66946007)(4326008)(8676002)(83380400001)(7696005)(2906002)(5660300002)(15650500001)(8936002)(1076003)(186003)(16526019)(6916009)(53546011)(66476007)(66556008)(6506007)(9686003)(6666004)(86362001)(54906003)(478600001)(316002)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 6EiUJG/lZBOTfBoWDjh346eCpJKbZkSfxUvahGOmhEnDTLtPwNxv7xRcqEs055xM+xGFnUhRN95rKhk0qAKb4++fuH+Zy94EWz5fB27kH9lXV/yr5Gq7/jexzMi2RpexnI6NU4dA9WJo7FyicEp/Uektimjn4BSIO8QWYqcZaVEi2BXazK/o7O6/neK9/pAr0BdAkn8rjJvbNnqktVjgEQer7NVEpMAXr5OqPoDs2blkz70yPMpHqb4hX4q855+rm8nhQNwB+/TmppB7oK/c3/Oaw8SLonC2ToYViGVc++LmskGk73HTC33zMMer4uUGFsxNF/PEeH9m6JL7I9hjkffwTz+8x3UqYvFOY9u7Ot8dd6CyMUoA5Fh9O63SFA3QaNwQ0cV8huEvvqEBxrXuMV2cgBOLka3oHpHXO6Uadb/BYVyhKGmCLns2UfqCK9dpWCeHAqoHWGzrIRsgrfEM/67EGrGSsRVrE1sVZxogwxZlnVqcd+rw/pKeuXDMI9SFhPF2Wdu90AoCmihC8nRbInPRFhTMLdITIGSqSUD3Q2cp/ltD9Oqwa5hrUpDRr1ffr4Ix00PUK5wp41gO8u5Ix9nG34EAW6e7VJrceSRIffYg//yKrBZEyXhALiIo/eyZs87i4vZGRQxt7BNX5b+YUrTfYf++5r7lfT65irJluyM=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51afb830-d163-49ef-9be4-08d88b614ba2
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 01:19:24.9409
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2020 01:28:47.2130
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: InKMZiHdSeO8T65QYgN5NgKQrNxlWZyVCccYA1yTA2kSE690s8Gmwqu8qEMOTx2f
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3415
+X-MS-Exchange-CrossTenant-UserPrincipalName: NLhfRPv+aJmRyPEYk4lgylhY8LGecA4Gv55OZvUma6NgUq3o9QZAXVHPkY5ChmFy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3603
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-17_15:2020-11-17,2020-11-17 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=999 priorityscore=1501 clxscore=1011 mlxscore=0
- impostorscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0 spamscore=0
- phishscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011180005
+ mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0 malwarescore=0
+ phishscore=0 lowpriorityscore=0 clxscore=1015 suspectscore=1
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011180006
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 02:56:36PM +0000, Daniel T. Lee wrote:
-> Under the samples/bpf directory, similar tracing helpers are
-> fragmented around. To keep consistent of tracing programs, this commit
-> moves the helper and define locations to increase the reuse of each
-> helper function.
+On Tue, Nov 17, 2020 at 05:11:00PM -0800, Alexei Starovoitov wrote:
+> On Tue, Nov 17, 2020 at 5:07 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > On Tue, Nov 17, 2020 at 04:46:34PM -0800, Roman Gushchin wrote:
+> > > On Wed, Nov 18, 2020 at 01:06:17AM +0100, Daniel Borkmann wrote:
+> > > > On 11/17/20 4:40 AM, Roman Gushchin wrote:
+> > > > > In the absolute majority of cases if a process is making a kernel
+> > > > > allocation, it's memory cgroup is getting charged.
+> > > > >
+> > > > > Bpf maps can be updated from an interrupt context and in such
+> > > > > case there is no process which can be charged. It makes the memory
+> > > > > accounting of bpf maps non-trivial.
+> > > > >
+> > > > > Fortunately, after commit 4127c6504f25 ("mm: kmem: enable kernel
+> > > > > memcg accounting from interrupt contexts") and b87d8cefe43c
+> > > > > ("mm, memcg: rework remote charging API to support nesting")
+> > > > > it's finally possible.
+> > > > >
+> > > > > To do it, a pointer to the memory cgroup of the process which created
+> > > > > the map is saved, and this cgroup is getting charged for all
+> > > > > allocations made from an interrupt context.
+> > > > >
+> > > > > Allocations made from a process context will be accounted in a usual way.
+> > > > >
+> > > > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > > > Acked-by: Song Liu <songliubraving@fb.com>
+> > > > [...]
+> > > > > +#ifdef CONFIG_MEMCG_KMEM
+> > > > > +static __always_inline int __bpf_map_update_elem(struct bpf_map *map, void *key,
+> > > > > +                                          void *value, u64 flags)
+> > > > > +{
+> > > > > + struct mem_cgroup *old_memcg;
+> > > > > + bool in_interrupt;
+> > > > > + int ret;
+> > > > > +
+> > > > > + /*
+> > > > > +  * If update from an interrupt context results in a memory allocation,
+> > > > > +  * the memory cgroup to charge can't be determined from the context
+> > > > > +  * of the current task. Instead, we charge the memory cgroup, which
+> > > > > +  * contained a process created the map.
+> > > > > +  */
+> > > > > + in_interrupt = in_interrupt();
+> > > > > + if (in_interrupt)
+> > > > > +         old_memcg = set_active_memcg(map->memcg);
+> > > > > +
+> > > > > + ret = map->ops->map_update_elem(map, key, value, flags);
+> > > > > +
+> > > > > + if (in_interrupt)
+> > > > > +         set_active_memcg(old_memcg);
+> > > > > +
+> > > > > + return ret;
+> > > >
+> > > > Hmm, this approach here won't work, see also commit 09772d92cd5a ("bpf: avoid
+> > > > retpoline for lookup/update/delete calls on maps") which removes the indirect
+> > > > call, so the __bpf_map_update_elem() and therefore the set_active_memcg() is
+> > > > not invoked for the vast majority of cases.
+> > >
+> > > I see. Well, the first option is to move these calls into map-specific update
+> > > functions, but the list is relatively long:
+> > >   nsim_map_update_elem()
+> > >   cgroup_storage_update_elem()
+> > >   htab_map_update_elem()
+> > >   htab_percpu_map_update_elem()
+> > >   dev_map_update_elem()
+> > >   dev_map_hash_update_elem()
+> > >   trie_update_elem()
+> > >   cpu_map_update_elem()
+> > >   bpf_pid_task_storage_update_elem()
+> > >   bpf_fd_inode_storage_update_elem()
+> > >   bpf_fd_sk_storage_update_elem()
+> > >   sock_map_update_elem()
+> > >   xsk_map_update_elem()
+> > >
+> > > Alternatively, we can set the active memcg for the whole duration of bpf
+> > > execution. It's simpler, but will add some overhead. Maybe we can somehow
+> > > mark programs calling into update helpers and skip all others?
+> >
+> > Actually, this is problematic if a program updates several maps, because
+> > in theory they can belong to different cgroups.
+> > So it seems that the first option is the way to go. Do you agree?
 > 
-> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> 
-> ---
->  samples/bpf/Makefile                        |  2 +-
->  samples/bpf/hbm.c                           | 51 ++++-----------------
->  tools/testing/selftests/bpf/trace_helpers.c | 33 ++++++++++++-
->  tools/testing/selftests/bpf/trace_helpers.h |  3 ++
->  4 files changed, 45 insertions(+), 44 deletions(-)
-> 
-> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> index aeebf5d12f32..3e83cd5ca1c2 100644
-> --- a/samples/bpf/Makefile
-> +++ b/samples/bpf/Makefile
-> @@ -110,7 +110,7 @@ xdp_fwd-objs := xdp_fwd_user.o
->  task_fd_query-objs := bpf_load.o task_fd_query_user.o $(TRACE_HELPERS)
->  xdp_sample_pkts-objs := xdp_sample_pkts_user.o $(TRACE_HELPERS)
->  ibumad-objs := bpf_load.o ibumad_user.o $(TRACE_HELPERS)
-> -hbm-objs := bpf_load.o hbm.o $(CGROUP_HELPERS)
-> +hbm-objs := bpf_load.o hbm.o $(CGROUP_HELPERS) $(TRACE_HELPERS)
->  
->  # Tell kbuild to always build the programs
->  always-y := $(tprogs-y)
-> diff --git a/samples/bpf/hbm.c b/samples/bpf/hbm.c
-> index 400e741a56eb..b9f9f771dd81 100644
-> --- a/samples/bpf/hbm.c
-> +++ b/samples/bpf/hbm.c
-> @@ -48,6 +48,7 @@
->  
->  #include "bpf_load.h"
->  #include "bpf_rlimit.h"
-> +#include "trace_helpers.h"
->  #include "cgroup_helpers.h"
->  #include "hbm.h"
->  #include "bpf_util.h"
-> @@ -65,51 +66,12 @@ bool no_cn_flag;
->  bool edt_flag;
->  
->  static void Usage(void);
-> -static void read_trace_pipe2(void);
->  static void do_error(char *msg, bool errno_flag);
->  
-> -#define DEBUGFS "/sys/kernel/debug/tracing/"
-> -
->  struct bpf_object *obj;
->  int bpfprog_fd;
->  int cgroup_storage_fd;
->  
-> -static void read_trace_pipe2(void)
-> -{
-> -	int trace_fd;
-> -	FILE *outf;
-> -	char *outFname = "hbm_out.log";
-> -
-> -	trace_fd = open(DEBUGFS "trace_pipe", O_RDONLY, 0);
-> -	if (trace_fd < 0) {
-> -		printf("Error opening trace_pipe\n");
-> -		return;
-> -	}
-> -
-> -//	Future support of ingress
-> -//	if (!outFlag)
-> -//		outFname = "hbm_in.log";
-> -	outf = fopen(outFname, "w");
-> -
-> -	if (outf == NULL)
-> -		printf("Error creating %s\n", outFname);
-> -
-> -	while (1) {
-> -		static char buf[4097];
-> -		ssize_t sz;
-> -
-> -		sz = read(trace_fd, buf, sizeof(buf) - 1);
-> -		if (sz > 0) {
-> -			buf[sz] = 0;
-> -			puts(buf);
-> -			if (outf != NULL) {
-> -				fprintf(outf, "%s\n", buf);
-> -				fflush(outf);
-> -			}
-> -		}
-> -	}
-> -}
-> -
->  static void do_error(char *msg, bool errno_flag)
->  {
->  	if (errno_flag)
-> @@ -392,8 +354,15 @@ static int run_bpf_prog(char *prog, int cg_id)
->  		fclose(fout);
->  	}
->  
-> -	if (debugFlag)
-> -		read_trace_pipe2();
-> +	if (debugFlag) {
-> +		char *out_fname = "hbm_out.log";
-> +		/* Future support of ingress */
-> +		// if (!outFlag)
-> +		//	out_fname = "hbm_in.log";
-> +
-> +		read_trace_pipe2(out_fname);
-> +	}
-> +
->  	return rc;
->  err:
->  	rc = 1;
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> index 1bbd1d9830c8..b7c184e109e8 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -11,8 +11,6 @@
->  #include <sys/mman.h>
->  #include "trace_helpers.h"
->  
-> -#define DEBUGFS "/sys/kernel/debug/tracing/"
-Is this change needed?
+> May be instead of kmalloc_node() that is used by most of the map updates
+> introduce bpf_map_kmalloc_node() that takes a map pointer as an argument?
+> And do set_memcg inside?
 
-> -
->  #define MAX_SYMS 300000
->  static struct ksym syms[MAX_SYMS];
->  static int sym_cnt;
-> @@ -136,3 +134,34 @@ void read_trace_pipe(void)
->  		}
->  	}
->  }
-> +
-> +void read_trace_pipe2(char *filename)
-> +{
-> +	int trace_fd;
-> +	FILE *outf;
-> +
-> +	trace_fd = open(DEBUGFS "trace_pipe", O_RDONLY, 0);
-> +	if (trace_fd < 0) {
-> +		printf("Error opening trace_pipe\n");
-> +		return;
-> +	}
-> +
-> +	outf = fopen(filename, "w");
-> +	if (!outf)
-> +		printf("Error creating %s\n", filename);
-> +
-> +	while (1) {
-> +		static char buf[4096];
-> +		ssize_t sz;
-> +
-> +		sz = read(trace_fd, buf, sizeof(buf) - 1);
-> +		if (sz > 0) {
-> +			buf[sz] = 0;
-> +			puts(buf);
-> +			if (outf) {
-> +				fprintf(outf, "%s\n", buf);
-> +				fflush(outf);
-> +			}
-> +		}
-> +	}
-It needs a fclose().
+I suspect it's not only kmalloc_node(), but if there will be 2-3 allocation
+helpers, it sounds like a good idea to me! I'll try and get back with v7 soon.
 
-IIUC, this function will never return.  I am not sure
-this is something that should be made available to selftests.
+Thanks!
