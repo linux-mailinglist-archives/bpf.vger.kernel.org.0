@@ -2,109 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803152B85E1
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 21:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523DE2B8664
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 22:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgKRUoi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Nov 2020 15:44:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52212 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726416AbgKRUoi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Nov 2020 15:44:38 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726761AbgKRVOC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 18 Nov 2020 16:14:02 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:50082 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726234AbgKRVOC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Nov 2020 16:14:02 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-eaZ1Bnb6M82RkuCO0PUdVQ-1; Wed, 18 Nov 2020 16:13:57 -0500
+X-MC-Unique: eaZ1Bnb6M82RkuCO0PUdVQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB5CD24686;
-        Wed, 18 Nov 2020 20:44:34 +0000 (UTC)
-Date:   Wed, 18 Nov 2020 15:44:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D102464092;
+        Wed, 18 Nov 2020 21:13:54 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8CBB760853;
+        Wed, 18 Nov 2020 21:13:51 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     Tony Ambardar <tony.ambardar@gmail.com>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Aurelien Jarno <aurelien@aurel32.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201118154432.3e6e9c80@gandalf.local.home>
-In-Reply-To: <20201118194837.GO2672@gate.crashing.org>
-References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
-        <20201117153451.3015c5c9@gandalf.local.home>
-        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
-        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
-        <20201118121730.12ee645b@gandalf.local.home>
-        <20201118181226.GK2672@gate.crashing.org>
-        <87o8jutt2h.fsf@mid.deneb.enyo.de>
-        <20201118135823.3f0d24b7@gandalf.local.home>
-        <20201118191127.GM2672@gate.crashing.org>
-        <20201118143343.4e86e79f@gandalf.local.home>
-        <20201118194837.GO2672@gate.crashing.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH] libbpf: Fix VERSIONED_SYM_COUNT number parsing
+Date:   Wed, 18 Nov 2020 22:13:50 +0100
+Message-Id: <20201118211350.1493421-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 18 Nov 2020 13:48:37 -0600
-Segher Boessenkool <segher@kernel.crashing.org> wrote:
+We remove "other info" from "readelf -s --wide" output when
+parsing GLOBAL_SYM_COUNT variable, which was added in [1].
+But we don't do that for VERSIONED_SYM_COUNT and it's failing
+the check_abi target on powerpc Fedora 33.
 
-> > With it_func being the func from the struct tracepoint_func, which is a
-> > void pointer, it is typecast to the function that is defined by the
-> > tracepoint. args is defined as the arguments that match the proto.  
-> 
-> If you have at most four or so args, what you wnat to do will work on
-> all systems the kernel currently supports, as far as I can tell.  It
-> is not valid C, and none of the compilers have an extension for this
-> either.  But it will likely work.
+The extra "other info" wasn't problem for VERSIONED_SYM_COUNT
+parsing until commit [2] added awk in the pipe, which assumes
+that the last column is symbol, but it can be "other info".
 
-Well, unfortunately, there's tracepoints with many more than 4 arguments. I
-think there's one with up to 13!
+Adding "other info" removal for VERSIONED_SYM_COUNT the same
+way as we did for GLOBAL_SYM_COUNT parsing.
 
-> 
-> > The problem we are solving is on the removal case, if the memory is tight,
-> > it is possible that the new array can not be allocated. But we must still
-> > remove the called function. The idea in this case is to replace the
-> > function saved with a stub. The above loop will call the stub and not the
-> > removed function until another update happens.
-> > 
-> > This thread is about how safe is it to call:
-> > 
-> > void tp_stub_func(void) { return ; }
-> > 
-> > instead of the function that was removed?  
-> 
-> Exactly as safe as calling a stub defined in asm.  The undefined
-> behaviour happens if your program has such a call, it doesn't matter
-> how the called function is defined, it doesn't have to be C.
-> 
-> > Thus, we are indeed calling that stub function from a call site that is not
-> > using the same parameters.
-> > 
-> > The question is, will this break?  
-> 
-> It is unlikely to break if you use just a few arguments, all of simple
-> scalar types.  Just hope you will never encounter a crazy ABI :-)
+[1] aa915931ac3e ("libbpf: Fix readelf output parsing for Fedora")
+[2] 746f534a4809 ("tools/libbpf: Avoid counting local symbols in ABI check")
 
-But in most cases, all the arguments are of scaler types, as anything else
-is not recommended, because copying is always slower than just passing a
-pointer, especially since it would need to be copied for every instance of
-that loop. I could do an audit to see if there's any that exist, and perhaps
-even add some static checker to make sure they don't.
+Cc: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc: Aurelien Jarno <aurelien@aurel32.net>
+Fixes: 746f534a4809 ("tools/libbpf: Avoid counting local symbols in ABI check")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/lib/bpf/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
--- Steve
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 5f9abed3e226..55bd78b3496f 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -146,6 +146,7 @@ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
+ 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+ 			   sort -u | wc -l)
+ VERSIONED_SYM_COUNT = $(shell readelf --dyn-syms --wide $(OUTPUT)libbpf.so | \
++			      sed 's/\[.*\]//' | \
+ 			      awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+ 			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
+ 
+@@ -214,6 +215,7 @@ check_abi: $(OUTPUT)libbpf.so
+ 		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+ 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
+ 		readelf --dyn-syms --wide $(OUTPUT)libbpf.so |		 \
++		    sed 's/\[.*\]//' |					 \
+ 		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+ 		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
+ 		    sort -u > $(OUTPUT)libbpf_versioned_syms.tmp; 	 \
+-- 
+2.26.2
+
