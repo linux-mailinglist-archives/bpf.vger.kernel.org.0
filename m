@@ -2,65 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610972B733D
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 01:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CBC2B7345
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 01:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbgKRAkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 19:40:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59344 "EHLO mail.kernel.org"
+        id S1726657AbgKRAmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 19:42:46 -0500
+Received: from hydra.tuxags.com ([64.13.172.54]:58814 "EHLO mail.tuxags.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727105AbgKRAkG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 19:40:06 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1605660006;
-        bh=go9oetv/NnAHIMcevcbrihVwJOjTRqpZY5jHueeHVSU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KgIbWTW7EjSKTjeBcWPeGnZJExVqyn1eLakhTA62HnHfS15L8tfxcWrfyqSM60f/v
-         qesjHEEsZimaDsO7L1KOiT8ASMhdI3PZwGLIfF5VCp7wSPqSFlIWPy+jX7gQaEEVNS
-         zyrb9ic3+ftVwe1bou4JWUI3gEm6Q/p7RIvjy6/A=
+        id S1725943AbgKRAmp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 19:42:45 -0500
+Received: by mail.tuxags.com (Postfix, from userid 1000)
+        id 2C755144F139C; Tue, 17 Nov 2020 16:42:44 -0800 (PST)
+Date:   Tue, 17 Nov 2020 16:42:44 -0800
+From:   Matt Mullins <mmullins@mmlx.us>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rostedt <rostedt@goodmis.org>, paulmck <paulmck@kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] bpf: don't fail kmalloc while releasing raw_tp
+Message-ID: <20201118004242.rygrwivqcdgeowi7@hydra.tuxags.com>
+Mail-Followup-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rostedt <rostedt@goodmis.org>, paulmck <paulmck@kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>, Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <00000000000004500b05b31e68ce@google.com>
+ <20201115055256.65625-1-mmullins@mmlx.us>
+ <20201116121929.1a7aeb16@gandalf.local.home>
+ <1889971276.46615.1605559047845.JavaMail.zimbra@efficios.com>
+ <20201116154437.254a8b97@gandalf.local.home>
+ <20201116160218.3b705345@gandalf.local.home>
+ <1368007646.46749.1605562481450.JavaMail.zimbra@efficios.com>
+ <20201116171027.458a6c17@gandalf.local.home>
+ <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 1/2] bpf: Add bpf_bprm_opts_set helper
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160566000595.20766.10496873955506140440.git-patchwork-notify@kernel.org>
-Date:   Wed, 18 Nov 2020 00:40:05 +0000
-References: <20201117232929.2156341-1-kpsingh@chromium.org>
-In-Reply-To: <20201117232929.2156341-1-kpsingh@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kafai@fb.com,
-        ast@kernel.org, daniel@iogearbox.net, revest@chromium.org,
-        jackmanb@chromium.org, middelin@google.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <609819191.48825.1605654351686.JavaMail.zimbra@efficios.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Tue, 17 Nov 2020 23:29:28 +0000 you wrote:
-> From: KP Singh <kpsingh@google.com>
+On Tue, Nov 17, 2020 at 06:05:51PM -0500, Mathieu Desnoyers wrote:
+> ----- On Nov 16, 2020, at 5:10 PM, rostedt rostedt@goodmis.org wrote:
 > 
-> The helper allows modification of certain bits on the linux_binprm
-> struct starting with the secureexec bit which can be updated using the
-> BPF_F_BPRM_SECUREEXEC flag.
-> 
-> secureexec can be set by the LSM for privilege gaining executions to set
-> the AT_SECURE auxv for glibc.  When set, the dynamic linker disables the
-> use of certain environment variables (like LD_PRELOAD).
+> > On Mon, 16 Nov 2020 16:34:41 -0500 (EST)
+> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
 > [...]
+> 
+> >> I think you'll want a WRITE_ONCE(old[i].func, tp_stub_func) here, matched
+> >> with a READ_ONCE() in __DO_TRACE. This introduces a new situation where the
+> >> func pointer can be updated and loaded concurrently.
+> > 
+> > I thought about this a little, and then only thing we really should worry
+> > about is synchronizing with those that unregister. Because when we make
+> > this update, there are now two states. the __DO_TRACE either reads the
+> > original func or the stub. And either should be OK to call.
+> > 
+> > Only the func gets updated and not the data. So what exactly are we worried
+> > about here?
+> 
+> Indeed with a stub function, I don't see any need for READ_ONCE/WRITE_ONCE.
 
-Here is the summary with links:
-  - [bpf-next,v4,1/2] bpf: Add bpf_bprm_opts_set helper
-    https://git.kernel.org/bpf/bpf-next/c/3f6719c7b62f
-  - [bpf-next,v4,2/2] bpf: Add tests for bpf_bprm_opts_set helper
-    https://git.kernel.org/bpf/bpf-next/c/ea87ae85c9b3
+I'm not sure if this is a practical issue, but without WRITE_ONCE, can't
+the write be torn?  A racing __traceiter_ could potentially see a
+half-modified function pointer, which wouldn't work out too well.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This was actually my gut instinct before I wrote the __GFP_NOFAIL
+instead -- currently that whole array's memory ordering is provided by
+RCU and I didn't dive deep enough to evaluate getting too clever with
+atomic modifications to it.
 
-
+> 
+> However, if we want to compare the function pointer to some other value and
+> conditionally do (or skip) the call, I think you'll need the READ_ONCE/WRITE_ONCE
+> to make sure the pointer is not re-fetched between comparison and call.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
