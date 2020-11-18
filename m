@@ -2,47 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19012B74E7
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 04:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1972B7504
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 04:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgKRDkG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 17 Nov 2020 22:40:06 -0500
-Received: from sw73-70-41.adsl.seed.net.tw ([203.73.70.41]:34893 "EHLO
-        oa.trendtek.com.tw" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgKRDkG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 22:40:06 -0500
-Received: from [156.96.44.214] ([156.96.44.214])
-        (authenticated bits=0)
-        by oa.trendtek.com.tw (8.13.8/8.13.1) with ESMTP id 0AACHdJ7003340
-        for <bpf@vger.kernel.org>; Tue, 10 Nov 2020 20:17:43 +0800
-Message-Id: <202011101217.0AACHdJ7003340@oa.trendtek.com.tw>
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1727827AbgKRDuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 22:50:21 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:33974 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727806AbgKRDuV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 22:50:21 -0500
+Received: by mail-il1-f200.google.com with SMTP id l77so580146ili.1
+        for <bpf@vger.kernel.org>; Tue, 17 Nov 2020 19:50:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/DoS+YQS9VBlKN6+t7kOlnb/cNhUvvMuTsydpQN3w74=;
+        b=nzHs1K6NNuLbLO+mvvvu3W48Y36tLSISjyfVX2AixqpHK0TiXZs3G1F6kOy3k0f36x
+         6N37gBu3lNf5kFHShJOuPbSZqNgRgWhmUgeDfPHlx/kOuDxC0Nj2hho6evb1/I0s0LU1
+         evQ4HwQpBQZsbeFWJTzl4z5oKKlCwX7jybYbwP4FKgUi4dvjfc75bpoNtVzQyvhmysmj
+         KobhadMoFulydf3wgthmy4m424k/2UBO1w0kizW6fsmG9/Dzp0bXYtqAwt+DSFYQjm00
+         OXXBdir3ITXLBgMvvlL4f90l+RHMzZVztOkQn+Ifwqi6YLsKvkgRZEP5pEMvHLpTHfDy
+         cfbg==
+X-Gm-Message-State: AOAM530SW0ZMfJMQz1nhHBdcaNw2Th5jPCSBDgrg+KeH37Ob6+yP/90n
+        RBe7NiPvP0i4tEWox6L9coMGr7f2FGwJBqSZLTzbkw1nkrpS
+X-Google-Smtp-Source: ABdhPJwi4a4IGODP4KC7xAUdxzicB5OMZ/EE96H2i+xQvPC8q+DXDy0d9Ou9uQDg6ciFNbahKMxSCVG5OnPh+ycAovjeZUGX6O5A
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Corporate and Personal Loan+
-To:     bpf@vger.kernel.org
-From:   "Investment  Corporate" <financialcapability6@gmail.com>
-Date:   Tue, 10 Nov 2020 04:17:40 -0800
-Reply-To: hmurrah39@gmail.com
+X-Received: by 2002:a02:70ce:: with SMTP id f197mr6796213jac.120.1605671419188;
+ Tue, 17 Nov 2020 19:50:19 -0800 (PST)
+Date:   Tue, 17 Nov 2020 19:50:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000911d3905b459824c@google.com>
+Subject: memory leak in bpf
+From:   syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello bpf@vger.kernel.org
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    f01c30de Merge tag 'vfs-5.10-fixes-2' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b9b181500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f13716fa0212fd
+dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b78b81500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
+
+2020/11/14 15:01:05 executed programs: 33
+2020/11/14 15:01:11 executed programs: 35
+2020/11/14 15:01:17 executed programs: 37
+2020/11/14 15:01:22 executed programs: 39
+BUG: memory leak
+unreferenced object 0xffff8881161c6440 (size 64):
+  comm "syz-executor.0", pid 8961, jiffies 4295107077 (age 12.370s)
+  hex dump (first 32 bytes):
+    80 62 58 04 00 ea ff ff c0 17 37 04 00 ea ff ff  .bX.......7.....
+    80 6f 47 04 00 ea ff ff 40 64 58 04 00 ea ff ff  .oG.....@dX.....
+  backtrace:
+    [<00000000189a27fd>] kmalloc_node include/linux/slab.h:575 [inline]
+    [<00000000189a27fd>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
+    [<00000000189a27fd>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
+    [<00000000189a27fd>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
+    [<00000000189a27fd>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
+    [<000000009e5cec3e>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+    [<000000009e5cec3e>] map_create kernel/bpf/syscall.c:825 [inline]
+    [<000000009e5cec3e>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
+    [<00000000c513b5d1>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000033006ec5>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 
-We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
-
-
-Please get back to me if you are interested for more
-
-details.
-
-
-Yours faithfully,
-
-Hashim Murrah
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
