@@ -2,117 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B557A2B754F
-	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 05:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0842B757C
+	for <lists+bpf@lfdr.de>; Wed, 18 Nov 2020 05:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727448AbgKRELD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Nov 2020 23:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S1725834AbgKREyi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Nov 2020 23:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbgKRELC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Nov 2020 23:11:02 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E34C0613D4;
-        Tue, 17 Nov 2020 20:11:01 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id f11so1009347lfs.3;
-        Tue, 17 Nov 2020 20:11:01 -0800 (PST)
+        with ESMTP id S1725446AbgKREyi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Nov 2020 23:54:38 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF59C0613D4;
+        Tue, 17 Nov 2020 20:54:37 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id b17so855065ljf.12;
+        Tue, 17 Nov 2020 20:54:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QiZ+hPWcgRrSJYrRI/DcwNjpknvcfyeQfNBRbOUcAZo=;
-        b=kCdq/mUuaZJ6pc88zsrgz7uqcd0wPOwknm5DTCqlhoCmvs/754Xfkj1NmHP7Q79d/F
-         +IvidmjpocDik3B8lo3Kg16Y2caHKLwyiUr6G4dkS6GcTbRJ6/myby64lpQNSyxer+T/
-         MuyE2e+Pt1GeN7ZpPh4CCSPW8jO5DKGt66IqFP0XCfXP8/eORwv/ock173v6lxAB2H8b
-         UfwzrHn9LR0VevS5E4IzV/vf8KyMoL1otvHuTu7LG9PLYaKx0fvJ8ajw/tecwW7Z2dg4
-         v8sf96RAFzagHJZlzw+QZz2rRE95V0wyEfzICI6SpJ7FCtW/D0NVsW55RV2iKma7YMpv
-         JPdg==
+        bh=24I/WT5xTNW1yvAVuhk4A7C50i+fvd2snMwqHW+u8Nk=;
+        b=G6R3A11ahdh3cYIpWNa0N6dA0YYnKBFSFrzU4Ss+4TrPfX+pGkpi8kDODnHn//L9rr
+         ravF95L84iESHOu4Q6oNmJDD5H+P5892x5ce89m34k3KonqNkWwCP1FERQjHdSDjCFDs
+         rOUoxNSl/xaIVWWaB758D3HFcFGR/mr428sqg7szyX9teqSl/H49M94Uzh95MQiL1yh4
+         XZX2EEV2I3AAbGMvaKKGK+icpD27qjUYbMz75Sce/GG3OOAFHik04W1MOCE7gjTf1+w/
+         2m2LD6dBhUWuWdAApz3fcecNkVzZC8pnVW09/3Ht+skBbZuJn1uiQAoEEG2zZThuJFDP
+         wcLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QiZ+hPWcgRrSJYrRI/DcwNjpknvcfyeQfNBRbOUcAZo=;
-        b=oXPDUzeI4TLgzvj5j7bjzuIMdrjAvtIwKgJeFH2PzXK8T2vGeevOllNitBS/w5XxLv
-         D7N/SWyTniXIZY6LnpqbY9yBkGHW3JLJycHwR65hS9ZFUOoEQq2MJNKMuZe5tf5Htdy4
-         VHMwk+acWU3eqWJoPQ82sU/JJLyi0syhQSuF47WlHZkWowGiXcHBQgI1Noy99Jhdm+XM
-         mWCIsfFRZkHt0FpXtS2//xDJUCG5BAyiqAMR72tnYCvTWw1vaLZULzKj5hrXzKYCojB4
-         w3WxeyVgZA0LEnqXvDV9xpSp10w+RLII6PuX1DxkKhAeNHZoG+5eQqi+Z6u8p4pfrCD/
-         eBnw==
-X-Gm-Message-State: AOAM530XJus0py8VMXUrpHBTslUg5ygh2jCQ2eiqcvZApdFdGCf9QhNp
-        qG8/0fcscSv70uC+tgHPPjpuBj/SvM32VXVbfBwmdT3H5Ew=
-X-Google-Smtp-Source: ABdhPJyW1BjaZImKMrTr6fljnV6J3SiCCfled+e4ZYa2bF2lU5eUh+EjQDFQFYiYjSQGKKB9MnnnpGkOCQnMcPkFe0o=
-X-Received: by 2002:ac2:544d:: with SMTP id d13mr2792930lfn.500.1605672659630;
- Tue, 17 Nov 2020 20:10:59 -0800 (PST)
+        bh=24I/WT5xTNW1yvAVuhk4A7C50i+fvd2snMwqHW+u8Nk=;
+        b=clrv7LlVvLT1XUNvZDwNmH7L2fkp+v7cR3aNblMiDAQ4oYuw6RWp7Yfx+TD8iGcUad
+         T7Z7gXx89GIAFN+XASbBTkqi6iJP5tNypBbB7p+FmjZOkWp2KYqbYgY+c4cy4x/YJx6j
+         +TiR2HAkReA1UVOHzU0NiLEYwssDO3HfqieN/tbQfNOP5V39cJUzqytdrVJ9HTQOqe79
+         Mq6zw/FlvLY1vTK2RF1oNz0xPD1zpQcirjmjjSxo3TkHa/ngVSHm5TQG+YvzAdw0GTj1
+         WC8j50VybU3rKMX3CPVj4kHlKzBYlUPVPzZH1ARgD19x4Sc9bhsL7GUEZJbyW0Y7gD+2
+         AtFQ==
+X-Gm-Message-State: AOAM530mgrjRreyFduwWSDe14NLsNLv/LNKmQ9EtIamTK/EZD0YBhQrS
+        FBbyVwATtmT2JKxvxFgnrY0IIPArChUeW8wcQhk=
+X-Google-Smtp-Source: ABdhPJz7nUymGspt8aiNrrgqyIe6rvpOCrj7CMFudnEGMVGpeR/xW3VUKLq8SFHlrz0MntLOYYN2Nmakg8//r/3FIhQ=
+X-Received: by 2002:a2e:1643:: with SMTP id 3mr3615213ljw.290.1605675276080;
+ Tue, 17 Nov 2020 20:54:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20201110084758.115617-1-yinxin_1989@aliyun.com>
-In-Reply-To: <20201110084758.115617-1-yinxin_1989@aliyun.com>
+References: <20201117211836.54acaef2@oasis.local.home>
+In-Reply-To: <20201117211836.54acaef2@oasis.local.home>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 17 Nov 2020 20:10:48 -0800
-Message-ID: <CAADnVQK-XuFi0yZuWa+upEeFypKYNr7XHc-8JhGtfYzFPLni9g@mail.gmail.com>
-Subject: Re: [PATCH] bpf:Fix update dirty data in lru percpu hash maps
-To:     Xin Yin <yinxin_1989@aliyun.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 17 Nov 2020 20:54:24 -0800
+Message-ID: <CAADnVQJekaejHo0eTnnUp68tOhwUv8t47DpGoOgc9Y+_19PpeA@mail.gmail.com>
+Subject: Re: [PATCH v2] tracepoint: Do not fail unregistering a probe due to
+ memory allocation
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 10, 2020 at 1:04 AM Xin Yin <yinxin_1989@aliyun.com> wrote:
+On Tue, Nov 17, 2020 at 6:18 PM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> For lru_percpu_map update elem, prealloc_lru_pop() may return
-> an unclear elem, if the func called by bpf prog and "onallcpus"
-> set to false, it may update an elem whith dirty data.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 >
-> Clear percpu value of the elem, before use it.
+> The list of tracepoint callbacks is managed by an array that is protected
+> by RCU. To update this array, a new array is allocated, the updates are
+> copied over to the new array, and then the list of functions for the
+> tracepoint is switched over to the new array. After a completion of an RCU
+> grace period, the old array is freed.
 >
-> Signed-off-by: Xin Yin <yinxin_1989@aliyun.com>
-
-The alternative fix commit d3bec0138bfb ("bpf: Zero-fill re-used
-per-cpu map element")
-was already merged.
-Please double check that it fixes your test.
-
+> This process happens for both adding a callback as well as removing one.
+> But on removing a callback, if the new array fails to be allocated, the
+> callback is not removed, and may be used after it is freed by the clients
+> of the tracepoint.
+>
+> There's really no reason to fail if the allocation for a new array fails
+> when removing a function. Instead, the function can simply be replaced by a
+> stub that will be ignored in the callback loop, and it will be cleaned up
+> on the next modification of the array.
+>
+> Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
+> Link: https://lkml.kernel.org/r/20201116175107.02db396d@gandalf.local.home
+>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Andrii Nakryiko <andriin@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@chromium.org>
+> Cc: netdev <netdev@vger.kernel.org>
+> Cc: bpf <bpf@vger.kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: stable@vger.kernel.org
+> Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
+> Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
+> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
+> Reported-by: Matt Mullins <mmullins@mmlx.us>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > ---
->  kernel/bpf/hashtab.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+> Changes since v1:
+>    Use 1L value for stub function, and ignore calling it.
 >
-> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> index 728ffec52cf3..b1f781ec20b6 100644
-> --- a/kernel/bpf/hashtab.c
-> +++ b/kernel/bpf/hashtab.c
-> @@ -709,6 +709,16 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
->         }
->  }
+>  include/linux/tracepoint.h |  9 ++++-
+>  kernel/tracepoint.c        | 80 +++++++++++++++++++++++++++++---------
+>  2 files changed, 69 insertions(+), 20 deletions(-)
 >
-> +static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr)
-> +{
-> +       u32 size = round_up(htab->map.value_size, 8);
-> +       int cpu;
+> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> index 0f21617f1a66..2e06e05b9d2a 100644
+> --- a/include/linux/tracepoint.h
+> +++ b/include/linux/tracepoint.h
+> @@ -33,6 +33,8 @@ struct trace_eval_map {
+>
+>  #define TRACEPOINT_DEFAULT_PRIO        10
+>
+> +#define TRACEPOINT_STUB                ((void *)0x1L)
 > +
-> +       for_each_possible_cpu(cpu) {
-> +               memset(per_cpu_ptr(pptr, cpu), 0, size);
-> +       }
-> +}
-> +
->  static bool fd_htab_map_needs_adjust(const struct bpf_htab *htab)
->  {
->         return htab->map.map_type == BPF_MAP_TYPE_HASH_OF_MAPS &&
-> @@ -1075,6 +1085,9 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
->                 pcpu_copy_value(htab, htab_elem_get_ptr(l_old, key_size),
->                                 value, onallcpus);
->         } else {
-> +               if (!onallcpus)
-> +                       pcpu_init_value(htab,
-> +                                       htab_elem_get_ptr(l_new, key_size));
->                 pcpu_copy_value(htab, htab_elem_get_ptr(l_new, key_size),
->                                 value, onallcpus);
->                 hlist_nulls_add_head_rcu(&l_new->hash_node, head);
-> --
-> 2.19.5
+>  extern struct srcu_struct tracepoint_srcu;
 >
+>  extern int
+> @@ -310,7 +312,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>                 do {                                                    \
+>                         it_func = (it_func_ptr)->func;                  \
+>                         __data = (it_func_ptr)->data;                   \
+> -                       ((void(*)(void *, proto))(it_func))(__data, args); \
+> +                       /*                                              \
+> +                        * Removed functions that couldn't be allocated \
+> +                        * are replaced with TRACEPOINT_STUB.           \
+> +                        */                                             \
+> +                       if (likely(it_func != TRACEPOINT_STUB))         \
+> +                               ((void(*)(void *, proto))(it_func))(__data, args); \
+
+I think you're overreacting to the problem.
+Adding run-time check to extremely unlikely problem seems wasteful.
+99.9% of the time allocate_probes() will do kmalloc from slab of small
+objects.
+If that slab is out of memory it means it cannot allocate a single page.
+In such case so many things will be failing to alloc that system
+is unlikely operational. oom should have triggered long ago.
+Imo Matt's approach to add __GFP_NOFAIL to allocate_probes()
+when it's called from func_remove() is much better.
+The error was reported by syzbot that was using
+memory fault injections. ENOMEM in allocate_probes() was
+never seen in real life and highly unlikely will ever be seen.
