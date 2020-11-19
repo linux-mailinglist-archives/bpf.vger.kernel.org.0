@@ -2,119 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0642B9D85
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 23:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A35E2B9DF6
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 00:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgKSWSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 17:18:01 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:52928 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgKSWSB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:18:01 -0500
+        id S1726433AbgKSXKC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 18:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgKSXKB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 18:10:01 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B3AC0613D4
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 15:10:01 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id x17so6808256ybr.8
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 15:10:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1605824280; x=1637360280;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=naMwbifHzZmoRi9T57FZ79pmFr4gy3EnvcPKguxXddA=;
-  b=ESA3OsRa5kTDZjfR+Vb9NccXSwWIXAVdMvBYpo4UGhnzaIrsHVSlVl4L
-   eX3FpoPfi1igyUOYP8dejd0suGRBrBN8iAM4p+LZ/qprUuBN5drvfd2+D
-   IWW8jO+okN+IQs/87mFvfG2himG5dFcGJXmzIP2fOCHG4/a00dMiEZA6a
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
-   d="scan'208";a="67539727"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 19 Nov 2020 22:17:59 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 468E7A2134;
-        Thu, 19 Nov 2020 22:17:58 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:17:57 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.229) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:17:53 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
-Date:   Fri, 20 Nov 2020 07:17:49 +0900
-Message-ID: <20201119221749.77783-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201119014913.syllymkfcohcdt4q@kafai-mbp.dhcp.thefacebook.com>
-References: <20201119014913.syllymkfcohcdt4q@kafai-mbp.dhcp.thefacebook.com>
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iBfd+tlooPrLaeehxHIKJ1u8OEErsouszEIy8ewVhcM=;
+        b=Qca1plPbvZtgNeORPQ2kD2DqCgTdfBGwLPpZ9uiHbBJzEWVCi3YBgiNfKjrAyAQFCv
+         vnlyre3S9Fw+ES0dPQ/Phak6rmsPe9qlrdpbpiJsRvnCQbRXSx9BIykDUQhQ1OaLTotr
+         ryiZErEr1Sw7lqWcYEzfeYe1wrx64mrRmeVc3786MKkPFGNE5b12qpF2dgOKQmjwq06L
+         efd7FS1/3nrpxyqcLgxAYGOjvd6b5bbSvtQ46TE30SIDLI6H0e642T9LNsQRisTgM8hx
+         CrhVqIe0eQ+JOeVsjO8yyIu4nxeZhtoUHd5aTDyaYr/2oTEFtodKGW499JJR3qu84eN0
+         1jGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iBfd+tlooPrLaeehxHIKJ1u8OEErsouszEIy8ewVhcM=;
+        b=OvlgsrhasMy6Ix9eSzjw8MMoxnASJ+BeQNdWKMSwhdcuroM1P27SAC2IvsLTJ/czWy
+         cM0BRygXvecxVhfOBuITezku9NV12t3pJYxTms+B72wkGmDkFNq1WKpY1DPinGhLm6s+
+         MS6nD2/grcvYHoZTr4+4Ca2xBOiXXIq2Iw3ydkMzopGW8ealSemDQYVgn2iMK0widkwV
+         deFW1UIcMTBGd5M2de+3XpLcQafJ4tGLe0KlysJDN+szhbOT0+Usm0RGHi8xLl9+KlUN
+         ewmeGeRXUGooSMEEJ10lhf9FzDTWAJIcyvBraqKZ+5/LQBib2A/e2jXb+nK0Gvcvciwm
+         hNKw==
+X-Gm-Message-State: AOAM530VsbymM+lYDkU3XswAV4cJQ+z5faHp8UFO9R2+zAOq38dq+dbm
+        HxL+T5qcLQRaC0r8jwsFq4NyCtne1tHutMjcj2HTQA==
+X-Google-Smtp-Source: ABdhPJwntx5yxZFlr+ABHZAtWno7pcNjvqssQwbKMZxMPeu/afiw8yhs6p5yIima6cX9q0Fjcs5qah3HyoAS42uPGV4=
+X-Received: by 2002:a25:ac19:: with SMTP id w25mr21816652ybi.278.1605827400532;
+ Thu, 19 Nov 2020 15:10:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.229]
-X-ClientProxiedBy: EX13D24UWB003.ant.amazon.com (10.43.161.222) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <160582070138.66684.11785214534154816097.stgit@localhost.localdomain>
+ <160582103106.66684.9841738004971200231.stgit@localhost.localdomain>
+In-Reply-To: <160582103106.66684.9841738004971200231.stgit@localhost.localdomain>
+From:   Wei Wang <weiwan@google.com>
+Date:   Thu, 19 Nov 2020 15:09:48 -0800
+Message-ID: <CAEA6p_BTAit9Y2h-9XaTTBdV6h6X4g0Ct5mOy1ZHfJiLD3y_Ww@mail.gmail.com>
+Subject: Re: [net PATCH 1/2] tcp: Allow full IP tos/IPv6 tclass to be
+ reflected in L3 header
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        Martin KaFai Lau <kafai@fb.com>, kernel-team@fb.com,
+        Eric Dumazet <edumazet@google.com>, brakmo@fb.com,
+        alexanderduyck@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Wed, 18 Nov 2020 17:49:13 -0800
-> On Tue, Nov 17, 2020 at 06:40:15PM +0900, Kuniyuki Iwashima wrote:
-> > The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > accept connections evenly. However, there is a defect in the current
-> > implementation. When a SYN packet is received, the connection is tied to a
-> > listening socket. Accordingly, when the listener is closed, in-flight
-> > requests during the three-way handshake and child sockets in the accept
-> > queue are dropped even if other listeners could accept such connections.
-> > 
-> > This situation can happen when various server management tools restart
-> > server (such as nginx) processes. For instance, when we change nginx
-> > configurations and restart it, it spins up new workers that respect the new
-> > configuration and closes all listeners on the old workers, resulting in
-> > in-flight ACK of 3WHS is responded by RST.
-> > 
-> > As a workaround for this issue, we can do connection draining by eBPF:
-> > 
-> >   1. Before closing a listener, stop routing SYN packets to it.
-> >   2. Wait enough time for requests to complete 3WHS.
-> >   3. Accept connections until EAGAIN, then close the listener.
-> > 
-> > Although this approach seems to work well, EAGAIN has nothing to do with
-> > how many requests are still during 3WHS. Thus, we have to know the number
-> It sounds like the application can already drain the established socket
-> by accept()?  To solve the problem that you have,
-> does it mean migrating req_sk (the in-progress 3WHS) is enough?
+On Thu, Nov 19, 2020 at 1:23 PM Alexander Duyck
+<alexander.duyck@gmail.com> wrote:
+>
+> From: Alexander Duyck <alexanderduyck@fb.com>
+>
+> An issue was recently found where DCTCP SYN/ACK packets did not have the
+> ECT bit set in the L3 header. A bit of code review found that the recent
+> change referenced below had gone though and added a mask that prevented the
+> ECN bits from being populated in the L3 header.
+>
+> This patch addresses that by rolling back the mask so that it is only
+> applied to the flags coming from the incoming TCP request instead of
+> applying it to the socket tos/tclass field. Doing this the ECT bits were
+> restored in the SYN/ACK packets in my testing.
+>
+> One thing that is not addressed by this patch set is the fact that
+> tcp_reflect_tos appears to be incompatible with ECN based congestion
+> avoidance algorithms. At a minimum the feature should likely be documented
+> which it currently isn't.
+>
+> Fixes: ac8f1710c12b ("tcp: reflect tos value received in SYN to the socket")
 
-Ideally, the application needs to drain only the accepted sockets because
-3WHS and tying a connection to a listener are just kernel behaviour. Also,
-there are some cases where we want to apply new configurations as soon as
-possible such as replacing TLS certificates.
+Acked-by: Wei Wang <weiwan@google.com>
 
-It is possible to drain the established sockets by accept(), but the
-sockets in the accept queue have not started application sessions yet. So,
-if we do not drain such sockets (or if the kernel happened to select
-another listener), we can (could) apply the new settings much earlier.
+Thanks for catching this. I was under the wrong impression that the
+ECT bits were marked in tos after the tcp layer. Upon a closer look,
+it seems right now, it only gets marked in inet_sock(sk)->tos from
+tcp_init_congestion_control() once.
+I will submit a follow-up fix to make sure we include the lower 2 bits
+in the reflection case as well.
 
-Moreover, the established sockets may start long-standing connections so
-that we cannot complete draining for a long time and may have to
-force-close them (and they would have longer lifetime if they are migrated
-to a new listener).
-
-
-> Applications can already use the bpf prog to do (1) and divert
-> the SYN to the newly started process.
-> 
-> If the application cares about service disruption,
-> it usually needs to drain the fd(s) that it already has and
-> finishes serving the pending request (e.g. https) on them anyway.
-> The time taking to finish those could already be longer than it takes
-> to drain the accept queue or finish off the 3WHS in reasonable time.
-> or the application that you have does not need to drain the fd(s) 
-> it already has and it can close them immediately?
-
-In the point of view of service disruption, I agree with you.
-
-However, I think that there are some situations where we want to apply new
-configurations rather than to drain sockets with old configurations and
-that if the kernel migrates sockets automatically, we can simplify user
-programs.
-
+> Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
+> ---
+>  net/ipv4/tcp_ipv4.c |    5 +++--
+>  net/ipv6/tcp_ipv6.c |    6 +++---
+>  2 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+> index c2d5132c523c..c5f8b686aa82 100644
+> --- a/net/ipv4/tcp_ipv4.c
+> +++ b/net/ipv4/tcp_ipv4.c
+> @@ -981,7 +981,8 @@ static int tcp_v4_send_synack(const struct sock *sk, struct dst_entry *dst,
+>         skb = tcp_make_synack(sk, dst, req, foc, synack_type, syn_skb);
+>
+>         tos = sock_net(sk)->ipv4.sysctl_tcp_reflect_tos ?
+> -                       tcp_rsk(req)->syn_tos : inet_sk(sk)->tos;
+> +                       tcp_rsk(req)->syn_tos & ~INET_ECN_MASK :
+> +                       inet_sk(sk)->tos;
+>
+>         if (skb) {
+>                 __tcp_v4_send_check(skb, ireq->ir_loc_addr, ireq->ir_rmt_addr);
+> @@ -990,7 +991,7 @@ static int tcp_v4_send_synack(const struct sock *sk, struct dst_entry *dst,
+>                 err = ip_build_and_send_pkt(skb, sk, ireq->ir_loc_addr,
+>                                             ireq->ir_rmt_addr,
+>                                             rcu_dereference(ireq->ireq_opt),
+> -                                           tos & ~INET_ECN_MASK);
+> +                                           tos);
+>                 rcu_read_unlock();
+>                 err = net_xmit_eval(err);
+>         }
+> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
+> index 8db59f4e5f13..3d49e8d0afee 100644
+> --- a/net/ipv6/tcp_ipv6.c
+> +++ b/net/ipv6/tcp_ipv6.c
+> @@ -530,12 +530,12 @@ static int tcp_v6_send_synack(const struct sock *sk, struct dst_entry *dst,
+>                 rcu_read_lock();
+>                 opt = ireq->ipv6_opt;
+>                 tclass = sock_net(sk)->ipv4.sysctl_tcp_reflect_tos ?
+> -                               tcp_rsk(req)->syn_tos : np->tclass;
+> +                               tcp_rsk(req)->syn_tos & ~INET_ECN_MASK :
+> +                               np->tclass;
+>                 if (!opt)
+>                         opt = rcu_dereference(np->opt);
+>                 err = ip6_xmit(sk, skb, fl6, sk->sk_mark, opt,
+> -                              tclass & ~INET_ECN_MASK,
+> -                              sk->sk_priority);
+> +                              tclass, sk->sk_priority);
+>                 rcu_read_unlock();
+>                 err = net_xmit_eval(err);
+>         }
+>
+>
