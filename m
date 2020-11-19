@@ -2,136 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332D52B8C35
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 08:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C002B8C64
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 08:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgKSHWf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 02:22:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726107AbgKSHWf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 02:22:35 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511D5C0613CF;
-        Wed, 18 Nov 2020 23:22:35 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id t8so3591602pfg.8;
-        Wed, 18 Nov 2020 23:22:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1RR09oXTHNj5D+VKWnXusC3Un6VRBPlQtmYv6ZSUsVI=;
-        b=SykaFT23R/hVbaREPLzvW2AP15wUqLT+sWT6x4PeBzYCErRpZXTA1blPK8ZCNOSxv9
-         z/GwsF9uEXlQR2OLiRYvAzouSE8DSpnE24YnQkxJFQONJa7luOgYcXwZfdJkrPRxT0Gu
-         kAX5lmyGFh/3df3LBvVhI0+6/LIPvbIGmYYzvt4o3biOa5rKpVjRcdwg7aaiduza9Zn3
-         MWwUrm3AVbMFTJQ+S/Gqgn/bvoan5rIB3N8hHg5cEdFqJck0lIQdUHrcn9fM33vEMfKj
-         oyTr57Bz8FN2o1sYa+eyj3Rv2XZ7eh5TCuPjJRLUHeX+M+SCVAu8CDYTYdIZOvwfUr0P
-         UfFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1RR09oXTHNj5D+VKWnXusC3Un6VRBPlQtmYv6ZSUsVI=;
-        b=Z6+1QJDmvtgTvkwfz3hdv7wIIKH9ec2a+LAFH4/zMADv8giAnJ6KGHvzcMmz2x8tAU
-         wTiQSZqcs9CTft6po5WIiwOPv/US8nHl4wa97c1W7YqUf/39rh8EwCQzkZ2Tii4lLtAt
-         iAIqnF6kvepN/TcueR9RQl8kg9eLETOUGNHNDD9Yg+/e8tSyvTu6QkizzX2+RDEjFcGX
-         /D/6Gcaslz1go0gL49MnWViUzUh+blWmv5a8MjH20oAp3rKuXsj6RG9wZon8sqGmhzRc
-         1ZvfDAXKmFaEcJpJL+AgJodCF6I/RAFnAXnUsDEqb3E/Tdo7RB0INcOcI0YjPRJGOZk3
-         O67Q==
-X-Gm-Message-State: AOAM5308NFDH5ua9OWuRC5WCJZJNFKArwV5ltmyusUOWNZI/i1K6bnwp
-        C1Cby87MbBMPCPpWn7NtJaw=
-X-Google-Smtp-Source: ABdhPJwSM7bcPvfkrjRN4rBPjOShGGjdnAqFCLalTUBjlOLyt6Pi2bllffDYwvcM9ExJ8zAEz39WSQ==
-X-Received: by 2002:a17:90a:8d03:: with SMTP id c3mr3172717pjo.100.1605770554821;
-        Wed, 18 Nov 2020 23:22:34 -0800 (PST)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id v191sm27585931pfc.19.2020.11.18.23.22.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 18 Nov 2020 23:22:34 -0800 (PST)
-Date:   Wed, 18 Nov 2020 23:22:26 -0800
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, openbmc@lists.ozlabs.org, taoren@fb.com,
-        mikechoi@fb.com
-Subject: Re: [PATCH v2 0/2] hwmon: (max127) Add Maxim MAX127 hardware
- monitoring
-Message-ID: <20201119072225.GA19877@taoren-ubuntu-R90MNF91>
-References: <20201118230929.18147-1-rentao.bupt@gmail.com>
- <20201118232719.GI1853236@lunn.ch>
- <20201118234252.GA18681@taoren-ubuntu-R90MNF91>
- <20201119010119.GA248686@roeck-us.net>
- <20201119012653.GA249502@roeck-us.net>
+        id S1726297AbgKSHbW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 02:31:22 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:41278 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726278AbgKSHbW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Nov 2020 02:31:22 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ7VMvx009870
+        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 23:31:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=bMB5WAs2JXscODARVmeFeq1ubBHkg3BhuS+EwmFMuzM=;
+ b=e2L6oad+vMLPVtLS55RCez8Id8bGwTrB9EsHcAy731UhhKh435E56Wtu7ng/gd6kjWqX
+ SCEVnlD4+0BVUNAFnIs/cXWOddzgPzeUyO6RiNZOzh5oQ2bVSPm0CHC3iRFNTTZAW8qn
+ mlayCEQkOUQ9GJv4+m+SbzfEXEP4mfMu/Dg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34vhqjnj6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 23:31:22 -0800
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 18 Nov 2020 23:30:41 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 41C2B37059A1; Wed, 18 Nov 2020 23:30:39 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-next v2] bpftool: add {i,d}tlb_misses support for bpftool profile
+Date:   Wed, 18 Nov 2020 23:30:39 -0800
+Message-ID: <20201119073039.4060095-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119012653.GA249502@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_05:2020-11-17,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0 malwarescore=0
+ phishscore=0 lowpriorityscore=0 clxscore=1015 suspectscore=13
+ priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011190054
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 05:26:53PM -0800, Guenter Roeck wrote:
-> On Wed, Nov 18, 2020 at 05:01:19PM -0800, Guenter Roeck wrote:
-> > On Wed, Nov 18, 2020 at 03:42:53PM -0800, Tao Ren wrote:
-> > > On Thu, Nov 19, 2020 at 12:27:19AM +0100, Andrew Lunn wrote:
-> > > > On Wed, Nov 18, 2020 at 03:09:27PM -0800, rentao.bupt@gmail.com wrote:
-> > > > > From: Tao Ren <rentao.bupt@gmail.com>
-> > > > > 
-> > > > > The patch series adds hardware monitoring driver for the Maxim MAX127
-> > > > > chip.
-> > > > 
-> > > > Hi Tao
-> > > > 
-> > > > Why are using sending a hwmon driver to the networking mailing list?
-> > > > 
-> > > >     Andrew
-> > > 
-> > > Hi Andrew,
-> > > 
-> > > I added netdev because the mailing list is included in "get_maintainer.pl
-> > > Documentation/hwmon/index.rst" output. Is it the right command to find
-> > > reviewers? Could you please suggest? Thank you.
-> > 
-> > I have no idea why running get_maintainer.pl on
-> > Documentation/hwmon/index.rst returns such a large list of mailing
-> > lists and people. For some reason it includes everyone in the XDP
-> > maintainer list. If anyone has an idea how that happens, please
-> > let me know - we'll want to get this fixed to avoid the same problem
-> > in the future.
-> > 
-> 
-> I found it. The XDP maintainer entry has:
-> 
-> K:    xdp
-> 
-> This matches Documentation/hwmon/index.rst.
-> 
-> $ grep xdp Documentation/hwmon/index.rst
->    xdpe12284
-> 
-> It seems to me that a context match such as "xdp" in MAINTAINERS isn't
-> really appropriate. "xdp" matches a total of 348 files in the kernel.
-> The large majority of those is not XDP related. The maintainers
-> of XDP (and all the listed mailing lists) should not be surprised
-> to get a large number of odd review requests if they want to review
-> every single patch on files which include the term "xdp".
-> 
-> Guenter
+Commit 47c09d6a9f67("bpftool: Introduce "prog profile" command")
+introduced "bpftool prog profile" command which can be used
+to profile bpf program with metrics like # of instructions,
 
-Thanks Guenter and Andrew. Given xdp maintainers were included by
-mistake, I will remove them from the future discussions of this hwmon
-patch series.
+This patch added support for itlb_misses and dtlb_misses.
+During an internal bpf program performance evaluation,
+I found these two metrics are also very useful. The following
+is an example output:
 
+ $ bpftool prog profile id 324 duration 3 cycles itlb_misses
 
-Cheers,
+           1885029 run_cnt
+        5134686073 cycles
+            306893 itlb_misses
+ $ bpftool prog profile id 324 duration 3 cycles dtlb_misses
 
-Tao
+           1827382 run_cnt
+        4943593648 cycles
+           5975636 dtlb_misses
+ $ bpftool prog profile id 324 duration 3 cycles llc_misses
+
+           1836527 run_cnt
+        5019612972 cycles
+           4161041 llc_misses
+
+From the above, we can see quite some dtlb misses, 3 dtlb misses
+perf prog run. This might be something worth further investigation.
+
+Acked-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/bpf/bpftool/prog.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
+
+changelog:
+  v1 -> v2:
+    - dropped the change for macro MAX_NUM_PROFILE_METRICS=20
+      as (1). the change is incomplete and bpf program change is also
+      needed, and (2). increasing MAX_NUM_PROFILE_METRICS may cause
+      more measurement inaccuracy and this patch is not for such a
+      usecase.
+
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index acdb2c245f0a..1fe3ba255bad 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1717,6 +1717,34 @@ struct profile_metric {
+ 		.ratio_desc =3D "LLC misses per million insns",
+ 		.ratio_mul =3D 1e6,
+ 	},
++	{
++		.name =3D "itlb_misses",
++		.attr =3D {
++			.type =3D PERF_TYPE_HW_CACHE,
++			.config =3D
++				PERF_COUNT_HW_CACHE_ITLB |
++				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
++				(PERF_COUNT_HW_CACHE_RESULT_MISS << 16),
++			.exclude_user =3D 1
++		},
++		.ratio_metric =3D 2,
++		.ratio_desc =3D "itlb misses per million insns",
++		.ratio_mul =3D 1e6,
++	},
++	{
++		.name =3D "dtlb_misses",
++		.attr =3D {
++			.type =3D PERF_TYPE_HW_CACHE,
++			.config =3D
++				PERF_COUNT_HW_CACHE_DTLB |
++				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
++				(PERF_COUNT_HW_CACHE_RESULT_MISS << 16),
++			.exclude_user =3D 1
++		},
++		.ratio_metric =3D 2,
++		.ratio_desc =3D "dtlb misses per million insns",
++		.ratio_mul =3D 1e6,
++	},
+ };
+=20
+ static __u64 profile_total_count;
+@@ -2109,7 +2137,7 @@ static int do_help(int argc, char **argv)
+ 		"                 struct_ops | fentry | fexit | freplace | sk_lookup }=
+\n"
+ 		"       ATTACH_TYPE :=3D { msg_verdict | stream_verdict | stream_parse=
+r |\n"
+ 		"                        flow_dissector }\n"
+-		"       METRIC :=3D { cycles | instructions | l1d_loads | llc_misses }=
+\n"
++		"       METRIC :=3D { cycles | instructions | l1d_loads | llc_misses |=
+ itlb_misses | dtlb_misses }\n"
+ 		"       " HELP_SPEC_OPTIONS "\n"
+ 		"",
+ 		bin_name, argv[-2]);
+--=20
+2.24.1
+
