@@ -2,87 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407842B9C41
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 21:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464042B9CCE
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 22:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgKSUuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 15:50:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57955 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725843AbgKSUuY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 19 Nov 2020 15:50:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605819023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xm4j3xfHTIGmXRRvxsdz866giYTVRYk7uSgQIas4XtQ=;
-        b=ZlIr6OuB7gsdP648VuzjW6LnUjHTHP5bIo3RS/T/j+tBtCPmVCOv3TMqoN0+cghzz6pkFQ
-        O3F7V7iejuxlf0l7j5Lu4RzBdQzzZOJuvKj16FTxwoOJf9wLOi6rm/gfurYNP/FnA0Lw7Q
-        Q9SCg5e6bqwkycYpFHD6oo0HoUnXkl8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-FA3z3dwLO_ev-eqJCxFawA-1; Thu, 19 Nov 2020 15:50:21 -0500
-X-MC-Unique: FA3z3dwLO_ev-eqJCxFawA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7472E107ACE3;
-        Thu, 19 Nov 2020 20:50:19 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D3C465C1D1;
-        Thu, 19 Nov 2020 20:50:13 +0000 (UTC)
-Date:   Thu, 19 Nov 2020 21:50:12 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBl?= =?UTF-8?B?bA==?= 
-        <bjorn.topel@intel.com>, Joe Perches <joe@perches.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH net-next] MAINTAINERS: Update XDP and AF_XDP entries
-Message-ID: <20201119215012.57d39102@carbon>
-In-Reply-To: <20201119100210.08374826@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <160580680009.2806072.11680148233715741983.stgit@firesoul>
-        <20201119100210.08374826@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        id S1726820AbgKSVOO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 16:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbgKSVOO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 16:14:14 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D3CC0613CF
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 13:14:13 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id 18so3630813pli.13
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 13:14:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tZGj0oIna+UduCQLR0+PjVPjVl9hL9hj6VDeUHmIQpA=;
+        b=mswBFci17dGbCtf84CRFOcgst+BzEvYcSvutJupIJsxPzrnAaZM58FBbcME4BQOd3I
+         WX4GKvP31SkrTbEIk+/yGrSQLDEdsRJnR9Kdauz2KbGlpOT4MRbqxZsGeRFblBKz83vU
+         IkuFiuB97Xx4I6/2zcoZU1431r2zCJeJsfXcsZZhi0T8RyYO4ydPGiECVbpNlk8i2OQx
+         yCdMfrMhX0GWQSfEO7IEK8vN5UivuFmllua/U5sUbGXMMya+3naXZ5kCxelw1ZnNqtGC
+         O+GagxXO6Uur8HF5Y6oi+1cp00ppga2qZaOizSy8dYbqs/Cax63LxvD6kyZv/ACf51R2
+         grLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tZGj0oIna+UduCQLR0+PjVPjVl9hL9hj6VDeUHmIQpA=;
+        b=TG7fQxl779JxXyWi1pUrd0UuB301LXa6y7j6eG+gtmA5R4j0l5m0eTYAlWIB7dGR0X
+         G6WbRKuH+UOGSmpo07xY2kfku4/9WL7SZYqM/tjOlEbg3HfY9Hh1LAsqavis5hiqyt1U
+         YWBp8JSDs1xI7S07u9TSaEw1GkEJLhA8tIuVBBhWfqXNnr429yXcpvG6Rn92No1FML+y
+         RAhfoOfjQm9Ry5YNfXud2H/hU/sHNDdwOy+WylJtdpzUfB+/EFBvsR3mOhb0L9xGBnBM
+         MnQDFJTRsbDyPC8N7aAOAkoD+xPMrROD1jTlfqwA5KLpcOvBZkyLokl5+6zbXjYqXYLv
+         C5gQ==
+X-Gm-Message-State: AOAM530efgvPDJkjaTnV53i8j70eZ4R3iT+DAgWNvquyUkNAxgnQoj36
+        e2t37Ys9c78LZj0Yz0veacB5g2lOQCn1B8lR5mCg0Q==
+X-Google-Smtp-Source: ABdhPJzLoefWxNuolViSU2dd6TqJGgosXjrWgwaTjJFj+EN5lBIGqVWU4UsWIXZu0IVhHR3wbrC9hahuKnGZLmqWIPY=
+X-Received: by 2002:a17:902:b28a:b029:d5:f36b:44af with SMTP id
+ u10-20020a170902b28ab02900d5f36b44afmr9918635plr.51.1605820453161; Thu, 19
+ Nov 2020 13:14:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20201119085022.3606135-1-davidgow@google.com>
+In-Reply-To: <20201119085022.3606135-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 19 Nov 2020 13:14:02 -0800
+Message-ID: <CAFd5g45MO-F-Jw9oRzdvOHJ0+19OQWDC-HwgRDwz2iPrkXJAww@mail.gmail.com>
+Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
+To:     David Gow <davidgow@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 19 Nov 2020 10:02:10 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
+On Thu, Nov 19, 2020 at 12:50 AM David Gow <davidgow@google.com> wrote:
+>
+> If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+> make O=<path>, compilation seems to fail with:
+>
+> tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+> make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+> make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+> make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [.../Makefile:1799: kernel] Error 2
+> make[1]: *** Waiting for unfinished jobs....
+> make: *** [Makefile:185: __sub-make] Error 2
+>
+> By the looks of things, this is because the (relative path) O= passed on
+> the command line is being passed to the libbpf Makefile, which then
+> can't find the directory. Given OUTPUT= is being passed anyway, we can
+> work around this by explicitly setting an empty O=, which will be
+> ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-> On Thu, 19 Nov 2020 18:26:40 +0100 Jesper Dangaard Brouer wrote:
-> > Getting too many false positive matches with current use
-> > of the content regex K: and file regex N: patterns.
-> > 
-> > This patch drops file match N: and makes K: more restricted.
-> > Some more normal F: file wildcards are added.
-> > 
-> > Notice that AF_XDP forgot to some F: files that is also
-> > updated in this patch.
-> > 
-> > Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>  
-> 
-> Ah! Sorry, I missed that you sent this before replying to Joe.
-> 
-> Would you mind respining with his regex?
+Seems sensible to me. I have no strong feeling as to whether we just
+turn this off on UML or whether we do the fix you proposed here
+though. Nevertheless, I would like to see *some* fix go in before
+v5.10 is released.
 
-Sure, I just send it... with your adjusted '(\b|_)xdp(\b|_)' regex, as
-it seems to do the same thing (and it works with egrep).
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
