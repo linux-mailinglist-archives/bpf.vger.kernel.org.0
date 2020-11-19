@@ -2,153 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C002B8C64
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 08:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464152B8D00
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 09:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgKSHbW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 02:31:22 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:41278 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726278AbgKSHbW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 19 Nov 2020 02:31:22 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJ7VMvx009870
-        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 23:31:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=bMB5WAs2JXscODARVmeFeq1ubBHkg3BhuS+EwmFMuzM=;
- b=e2L6oad+vMLPVtLS55RCez8Id8bGwTrB9EsHcAy731UhhKh435E56Wtu7ng/gd6kjWqX
- SCEVnlD4+0BVUNAFnIs/cXWOddzgPzeUyO6RiNZOzh5oQ2bVSPm0CHC3iRFNTTZAW8qn
- mlayCEQkOUQ9GJv4+m+SbzfEXEP4mfMu/Dg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34vhqjnj6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 18 Nov 2020 23:31:22 -0800
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 18 Nov 2020 23:30:41 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 41C2B37059A1; Wed, 18 Nov 2020 23:30:39 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v2] bpftool: add {i,d}tlb_misses support for bpftool profile
-Date:   Wed, 18 Nov 2020 23:30:39 -0800
-Message-ID: <20201119073039.4060095-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726358AbgKSIWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 03:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726287AbgKSIWj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:22:39 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0615C0613CF;
+        Thu, 19 Nov 2020 00:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Q5j8VmWjbCI+JHvHMjaXP6mfZ871EVq/TPzO7+IbdtM=; b=kQKX9s0j6h7jVgBO6f0DlaE/GM
+        hROzUlBOsP3v+jPW7raijXtvxttkw6mcCRuHDVE2lyW9kZbJ8oAFEyR/AX/TYFOO7ZqqT6oaNEiuV
+        4AtSEpxpxK8j2Twif+iZqfhq+fM5chPp4+9WlOShIls0MTBOPp6FTuCOUhmIP3DU26WEM6oJOoIbA
+        eMUxLzSQOLtieTcEPV6XLy/bH/5CE/iSTXEwvTXc7D7ZhmUHdQlw1220Eb9i1rEfQ1DKnzYPXwrdr
+        GWOPvWy/YmCR9pEvIkdErbRbRQHZJ6u4MBrrF7ffO1/L0qDsP0GnIIq/iXfqBfjes+m5NClYaMJtj
+        7A5R9lAw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kffCd-0002n1-7m; Thu, 19 Nov 2020 08:22:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 27314301E02;
+        Thu, 19 Nov 2020 09:21:58 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 049EE203DDBF7; Thu, 19 Nov 2020 09:21:57 +0100 (CET)
+Date:   Thu, 19 Nov 2020 09:21:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201119082157.GD3121392@hirez.programming.kicks-ass.net>
+References: <20201117153451.3015c5c9@gandalf.local.home>
+ <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+ <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+ <20201118121730.12ee645b@gandalf.local.home>
+ <20201118181226.GK2672@gate.crashing.org>
+ <87o8jutt2h.fsf@mid.deneb.enyo.de>
+ <20201118135823.3f0d24b7@gandalf.local.home>
+ <20201118191127.GM2672@gate.crashing.org>
+ <20201118143343.4e86e79f@gandalf.local.home>
+ <20201118194837.GO2672@gate.crashing.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-19_05:2020-11-17,2020-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 spamscore=0 malwarescore=0
- phishscore=0 lowpriorityscore=0 clxscore=1015 suspectscore=13
- priorityscore=1501 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011190054
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201118194837.GO2672@gate.crashing.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 47c09d6a9f67("bpftool: Introduce "prog profile" command")
-introduced "bpftool prog profile" command which can be used
-to profile bpf program with metrics like # of instructions,
+On Wed, Nov 18, 2020 at 01:48:37PM -0600, Segher Boessenkool wrote:
 
-This patch added support for itlb_misses and dtlb_misses.
-During an internal bpf program performance evaluation,
-I found these two metrics are also very useful. The following
-is an example output:
+> If you have at most four or so args, what you wnat to do will work on
+> all systems the kernel currently supports, as far as I can tell.  It
+> is not valid C, and none of the compilers have an extension for this
+> either.  But it will likely work.
 
- $ bpftool prog profile id 324 duration 3 cycles itlb_misses
+So this is where we rely on the calling convention being caller-cleanup
+(cdecl has that).
 
-           1885029 run_cnt
-        5134686073 cycles
-            306893 itlb_misses
- $ bpftool prog profile id 324 duration 3 cycles dtlb_misses
-
-           1827382 run_cnt
-        4943593648 cycles
-           5975636 dtlb_misses
- $ bpftool prog profile id 324 duration 3 cycles llc_misses
-
-           1836527 run_cnt
-        5019612972 cycles
-           4161041 llc_misses
-
-From the above, we can see quite some dtlb misses, 3 dtlb misses
-perf prog run. This might be something worth further investigation.
-
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/bpf/bpftool/prog.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
-
-changelog:
-  v1 -> v2:
-    - dropped the change for macro MAX_NUM_PROFILE_METRICS=20
-      as (1). the change is incomplete and bpf program change is also
-      needed, and (2). increasing MAX_NUM_PROFILE_METRICS may cause
-      more measurement inaccuracy and this patch is not for such a
-      usecase.
-
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index acdb2c245f0a..1fe3ba255bad 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1717,6 +1717,34 @@ struct profile_metric {
- 		.ratio_desc =3D "LLC misses per million insns",
- 		.ratio_mul =3D 1e6,
- 	},
-+	{
-+		.name =3D "itlb_misses",
-+		.attr =3D {
-+			.type =3D PERF_TYPE_HW_CACHE,
-+			.config =3D
-+				PERF_COUNT_HW_CACHE_ITLB |
-+				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
-+				(PERF_COUNT_HW_CACHE_RESULT_MISS << 16),
-+			.exclude_user =3D 1
-+		},
-+		.ratio_metric =3D 2,
-+		.ratio_desc =3D "itlb misses per million insns",
-+		.ratio_mul =3D 1e6,
-+	},
-+	{
-+		.name =3D "dtlb_misses",
-+		.attr =3D {
-+			.type =3D PERF_TYPE_HW_CACHE,
-+			.config =3D
-+				PERF_COUNT_HW_CACHE_DTLB |
-+				(PERF_COUNT_HW_CACHE_OP_READ << 8) |
-+				(PERF_COUNT_HW_CACHE_RESULT_MISS << 16),
-+			.exclude_user =3D 1
-+		},
-+		.ratio_metric =3D 2,
-+		.ratio_desc =3D "dtlb misses per million insns",
-+		.ratio_mul =3D 1e6,
-+	},
- };
-=20
- static __u64 profile_total_count;
-@@ -2109,7 +2137,7 @@ static int do_help(int argc, char **argv)
- 		"                 struct_ops | fentry | fexit | freplace | sk_lookup }=
-\n"
- 		"       ATTACH_TYPE :=3D { msg_verdict | stream_verdict | stream_parse=
-r |\n"
- 		"                        flow_dissector }\n"
--		"       METRIC :=3D { cycles | instructions | l1d_loads | llc_misses }=
-\n"
-+		"       METRIC :=3D { cycles | instructions | l1d_loads | llc_misses |=
- itlb_misses | dtlb_misses }\n"
- 		"       " HELP_SPEC_OPTIONS "\n"
- 		"",
- 		bin_name, argv[-2]);
---=20
-2.24.1
-
+I looked at the GCC preprocessor symbols but couldn't find anything that
+seems relevant to the calling convention in use, so barring that, the
+best option might to be have a boot-time self-test that triggers this.
+Then we'll quickly know if all architectures handle this correctly.
