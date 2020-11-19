@@ -2,26 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4E62B9577
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 15:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EA62B95A0
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 16:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgKSOqr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 09:46:47 -0500
-Received: from gate.crashing.org ([63.228.1.57]:45519 "EHLO gate.crashing.org"
+        id S1726712AbgKSO74 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 09:59:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728036AbgKSOqr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 09:46:47 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AJEbiJe017745;
-        Thu, 19 Nov 2020 08:37:44 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AJEbarp017727;
-        Thu, 19 Nov 2020 08:37:36 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Thu, 19 Nov 2020 08:37:35 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        id S1726641AbgKSO74 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 09:59:56 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDAB624695;
+        Thu, 19 Nov 2020 14:59:52 +0000 (UTC)
+Date:   Thu, 19 Nov 2020 09:59:51 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Florian Weimer <fw@deneb.enyo.de>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Sami Tolvanen <samitolvanen@google.com>,
@@ -42,67 +40,52 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         linux-toolchains@vger.kernel.org
 Subject: Re: violating function pointer signature
-Message-ID: <20201119143735.GU2672@gate.crashing.org>
-References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com> <20201117153451.3015c5c9@gandalf.local.home> <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com> <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home> <20201118191127.GM2672@gate.crashing.org> <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.4.2.3i
+Message-ID: <20201119095951.30269233@gandalf.local.home>
+In-Reply-To: <20201119143735.GU2672@gate.crashing.org>
+References: <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
+        <20201117153451.3015c5c9@gandalf.local.home>
+        <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
+        <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
+        <20201118121730.12ee645b@gandalf.local.home>
+        <20201118181226.GK2672@gate.crashing.org>
+        <87o8jutt2h.fsf@mid.deneb.enyo.de>
+        <20201118135823.3f0d24b7@gandalf.local.home>
+        <20201118191127.GM2672@gate.crashing.org>
+        <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
+        <20201119143735.GU2672@gate.crashing.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 09:36:48AM +0100, Peter Zijlstra wrote:
-> On Wed, Nov 18, 2020 at 01:11:27PM -0600, Segher Boessenkool wrote:
-> > Calling this via a different declared function type is undefined
-> > behaviour, but that is independent of how the function is *defined*.
-> > Your program can make ducks appear from your nose even if that function
-> > is never called, if you do that.  Just don't do UB, not even once!
+On Thu, 19 Nov 2020 08:37:35 -0600
+Segher Boessenkool <segher@kernel.crashing.org> wrote:
+
+> > Note that we have a fairly extensive tradition of defining away UB with
+> > language extentions, -fno-strict-overflow, -fno-strict-aliasing,  
 > 
-> Ah, see, here I think we disagree. UB is a flaw of the spec, but the
-> real world often has very sane behaviour there (sometimes also very
-> much not).
-
-That attitude summons ducks.
-
-> In this particular instance the behaviour is UB because the C spec
-> doesn't want to pin down the calling convention, which is something I
-> can understand.
-
-How do you know?  Were you at the meetings where this was decided?
-
-The most frequent reason something is made UB is when there are multiple
-existing implementations with irreconcilable differences.
-
-> But once you combine the C spec with the ABI(s) at hand,
-> there really isn't two ways about it. This has to work, under the
-> premise that the ABI defines a caller cleanup calling convention.
-
-This is not clear at all (and what "caller cleanup calling convention"
-would mean isn't either).  A function call at the C level does not
-necessarily correspond at all with a function call at the ABI level, to
-begin with.
-
-> So in the view that the compiler is a glorified assembler,
-
-But it isn't.
-
-> Note that we have a fairly extensive tradition of defining away UB with
-> language extentions, -fno-strict-overflow, -fno-strict-aliasing,
-
-These are options to make a large swath of not correct C programs
-compile (and often work) anyway.  This is useful because there are so
-many such programs, because a) people did not lint; and/or b) the
-problem never was obvious with some other (or older) compiler; and/or
-c) people do not care about writing portable C and prefer writing in
-their own non-C dialect.
-
-> -fno-delete-null-pointer-checks etc..
-
-This was added as a security hardening feature.  It of course also is
-useful for other things -- most flags are.  It was not added to make yet
-another dialect.
+> These are options to make a large swath of not correct C programs
+> compile (and often work) anyway.  This is useful because there are so
+> many such programs, because a) people did not lint; and/or b) the
+> problem never was obvious with some other (or older) compiler; and/or
+> c) people do not care about writing portable C and prefer writing in
+> their own non-C dialect.
 
 
-Segher
+Note, this is not about your average C program. This is about the Linux
+kernel, which already does a lot of tricks in C. There's a lot of code in
+assembly that gets called from C (and vise versa). We modify code on the
+fly (which tracepoints use two methods of that - with asm-goto/jump-labels
+and static functions).
+
+As for your point c), I'm not sure what you mean about portable C (stuck to
+a single compiler, or stuck to a single architecture?). Linux obviously
+supports multiple architectures (more than any other OS), but it is pretty
+stuck to gcc as a compiler (with LLVM just starting to work too).
+
+We are fine with being stuck to a compiler if it gives us what we want.
+
+-- Steve
