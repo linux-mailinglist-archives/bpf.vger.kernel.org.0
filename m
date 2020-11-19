@@ -2,106 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853152B8D98
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 09:39:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872DB2B8DED
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 09:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgKSIhN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 03:37:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
+        id S1726611AbgKSIuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 03:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbgKSIhN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 03:37:13 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E8BC0613CF;
-        Thu, 19 Nov 2020 00:37:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EQ5bBRTWq6ELqPUgP7TVxM2lYlJzPItyKiYHy5i08tU=; b=RUZctQwcZN8oIJJn+j5hHOtuSI
-        VGVegOMV0ogh8QHOuimZalpzMAMUxd/bbKIMQ3cKPZY5hbgrX0m3yeQb+nnhYGfqmWp59lXpBdtcI
-        8vcEMQj+9ww5i60gcb8L+08RM5hyKPBmNFjwVgPH5Lgz9FZLpfwGR4O/Rb4LdSUDZELcT1nHvoqJL
-        WTCuAMFsuIwOkDpXDbsMqIoC5HmJVjYbmClOhHrBpgFPP8+tO4lWZEwu4ivix9tFfAun0JGr2Zj1v
-        N+dWrdYRyavq3WpDcyXIhsfhuc7zkWZjs76X8C5WpX40AR08FnRq0PzY71Brso55d7WfDM9eq2i/e
-        f3idustw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kffQv-0003tZ-JT; Thu, 19 Nov 2020 08:36:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A4F0300F7A;
-        Thu, 19 Nov 2020 09:36:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3604B200DF1AB; Thu, 19 Nov 2020 09:36:48 +0100 (CET)
-Date:   Thu, 19 Nov 2020 09:36:48 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1726569AbgKSIue (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 03:50:34 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAD5C0613CF
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 00:50:32 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id v12so6304238ybi.6
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 00:50:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Lsk7hPQQOXXPeOPRHLqGluFNcrQrklmQ2zZLxLBVLEs=;
+        b=rogoZdLHkK0xlRT93V3sjOf2k/+zziO5yCc17GRsdtdcl/vROKPuKcx8Qib+EkHwWo
+         OcrzbmZrVHVINxU4jaVXAbkWA683YhcZ6rUAaCICZ6x1GTGGF93hntH1nDTFbJJX0rdT
+         zmdHZ2mcVRX5OFxLcmLICbLlBdPNVYhonLyP7gkRlh1VLeOI4pwGXrZvnBC3RTgrowyT
+         c3oq0OLEpdLKYdno0rAG1qMP27Vv7tXyRRnHgvDVA+ox/iNOih3mUMhK/6mFpkEDVY75
+         mgGa7yYQLwMdWpvU1MgIcT3JdzWwmbquZoJPsgbrjY+yv6KRvLocplkna3m6ORKzGVij
+         c2GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Lsk7hPQQOXXPeOPRHLqGluFNcrQrklmQ2zZLxLBVLEs=;
+        b=PUdpNosePSrWWjT8ruJE5jh3ROMB3f3fyBJZxx8mp2/WZZf+7ECG3X4ca0HESq3uaK
+         Aaau0PqVKAUOWNbhd+7LKkxqCphAFPLh4PHPk9/SbqKPdLVpCdcw/ebLssIW9Dm2qwRi
+         176eMF0mFtLUg3pb47FOgj/UW+47jiQGdya31XK3Pf3MWK3ABEF13sqCnmfSKl7z9uHz
+         gO/ACWv5eKrSI/+uXayJSSv0FL190U7Z0fl/Q/FsQyCTDRU/iizyNJlU5mb58A0pvF8F
+         lzFqEA+A49FtFkL4rfYPBjIEaPmLhYKXB9k+eP2krcN5OlZWRVorUT1I9j6U6F7O85G4
+         ZhHA==
+X-Gm-Message-State: AOAM532W2ufviRO+0SMXKz9nOLhElWLl4N8v3wtcTYwp7Z8UdU2zxBAn
+        974akiNfMnN57hhej4ewp3LsTrWvIIlb6w==
+X-Google-Smtp-Source: ABdhPJyrroyyQkrwDV1SmRHiPKxqKP9nfODkyTYXKi1U9UQl1FrOg4j1o6b5L4mSSOwEKmcT9CA5t/3WuvrtbA==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a05:6902:72e:: with SMTP id
+ l14mr12601049ybt.175.1605775831888; Thu, 19 Nov 2020 00:50:31 -0800 (PST)
+Date:   Thu, 19 Nov 2020 00:50:23 -0800
+Message-Id: <20201119085022.3606135-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [RFC PATCH] bpf: preload: Fix build error when O= is set
+From:   David Gow <davidgow@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: violating function pointer signature
-Message-ID: <20201119083648.GE3121392@hirez.programming.kicks-ass.net>
-References: <20201117142145.43194f1a@gandalf.local.home>
- <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
- <20201117153451.3015c5c9@gandalf.local.home>
- <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
- <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com>
- <20201118121730.12ee645b@gandalf.local.home>
- <20201118181226.GK2672@gate.crashing.org>
- <87o8jutt2h.fsf@mid.deneb.enyo.de>
- <20201118135823.3f0d24b7@gandalf.local.home>
- <20201118191127.GM2672@gate.crashing.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201118191127.GM2672@gate.crashing.org>
+        "=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?=" <toke@redhat.com>
+Cc:     David Gow <davidgow@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 01:11:27PM -0600, Segher Boessenkool wrote:
-> Calling this via a different declared function type is undefined
-> behaviour, but that is independent of how the function is *defined*.
-> Your program can make ducks appear from your nose even if that function
-> is never called, if you do that.  Just don't do UB, not even once!
+If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
+make O=<path>, compilation seems to fail with:
 
-Ah, see, here I think we disagree. UB is a flaw of the spec, but the
-real world often has very sane behaviour there (sometimes also very
-much not).
+tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
+make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
+make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [.../Makefile:1799: kernel] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:185: __sub-make] Error 2
 
-In this particular instance the behaviour is UB because the C spec
-doesn't want to pin down the calling convention, which is something I
-can understand. But once you combine the C spec with the ABI(s) at hand,
-there really isn't two ways about it. This has to work, under the
-premise that the ABI defines a caller cleanup calling convention.
+By the looks of things, this is because the (relative path) O= passed on
+the command line is being passed to the libbpf Makefile, which then
+can't find the directory. Given OUTPUT= is being passed anyway, we can
+work around this by explicitly setting an empty O=, which will be
+ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
 
-So in the view that the compiler is a glorified assembler, I'll take UB
-every day if it means I can get the thing to do what I want it to.
+Signed-off-by: David Gow <davidgow@google.com>
+---
 
-Obviously in the interest of co-operation and longer term viability, it
-would be nice if we can agree on the behaviour and get a language
-extention covering it.
+Hi all,
 
-Note that we have a fairly extensive tradition of defining away UB with
-language extentions, -fno-strict-overflow, -fno-strict-aliasing,
--fno-delete-null-pointer-checks etc..
+I'm not 100% sure this is the correct fix here -- it seems to work for
+me, and makes some sense, but let me know if there's a better way.
 
+One other thing worth noting is that I've been hitting this with
+make allyesconfig on ARCH=um, but there's a comment in the Kconfig
+suggesting that, because BPF_PRELOAD depends on !COMPILE_TEST, that
+maybe it shouldn't be being built at all. I figured that it was worth
+trying to fix this anyway.
+
+Cheers,
+-- David
+
+
+ kernel/bpf/preload/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+index 23ee310b6eb4..39848d296097 100644
+--- a/kernel/bpf/preload/Makefile
++++ b/kernel/bpf/preload/Makefile
+@@ -5,7 +5,7 @@ LIBBPF_A = $(obj)/libbpf.a
+ LIBBPF_OUT = $(abspath $(obj))
+ 
+ $(LIBBPF_A):
+-	$(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
++	$(Q)$(MAKE) -C $(LIBBPF_SRCS) O= OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+ 
+ userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
+ 	-I $(srctree)/tools/lib/ -Wno-unused-result
+-- 
+2.29.2.454.gaff20da3a2-goog
 
