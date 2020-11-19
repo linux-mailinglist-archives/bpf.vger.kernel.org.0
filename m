@@ -2,124 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF172B9D77
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 23:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15ECD2B9D80
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 23:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgKSWNn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 17:13:43 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:52159 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726644AbgKSWNn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:13:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1605824022; x=1637360022;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=6ZqawRj90596OyIiJCq+GBiWpU5fbf5vnBgay7an51Y=;
-  b=p2hZ+FACO3ZWm+JqwImGcBOq8I60J5EUrJAVjUOOJ+Iu7duT/Oz3urG/
-   onGzjPiJr+jlODsH12HqMMtvLZvQsNKx5v94MeEzeOAC6KGIhozcKckNl
-   Lik76WxePy5NPtNtabV82wNpsh8ayocJNzhtrNirX83yIEry8Aw3zPWas
-   I=;
-X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
-   d="scan'208";a="67539107"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-c7f73527.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 19 Nov 2020 22:13:41 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-c7f73527.us-east-1.amazon.com (Postfix) with ESMTPS id D8B9EAEF15;
-        Thu, 19 Nov 2020 22:13:40 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:13:40 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.67) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:13:35 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 7/8] bpf: Call bpf_run_sk_reuseport() for socket migration.
-Date:   Fri, 20 Nov 2020 07:13:31 +0900
-Message-ID: <20201119221331.77586-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201119010045.a6mqkzuv4tjruny6@kafai-mbp.dhcp.thefacebook.com>
-References: <20201119010045.a6mqkzuv4tjruny6@kafai-mbp.dhcp.thefacebook.com>
+        id S1726386AbgKSWQY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 17:16:24 -0500
+Received: from smtprelay0043.hostedemail.com ([216.40.44.43]:40716 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726463AbgKSWQY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Nov 2020 17:16:24 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id E65F5100E7B40;
+        Thu, 19 Nov 2020 22:16:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2895:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4384:5007:6120:6691:7901:9040:10004:10400:10848:10967:11232:11658:11914:12296:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14181:14659:14721:21067:21080:21433:21451:21611:21627:21740:30054:30070:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: sense04_4005a0927346
+X-Filterd-Recvd-Size: 2283
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 19 Nov 2020 22:16:21 +0000 (UTC)
+Message-ID: <8eef085f2b4d565463d5251a4868c7aaa19bf6ab.camel@perches.com>
+Subject: Re: [PATCH net-next] MAINTAINERS: Update XDP and AF_XDP entries
+From:   Joe Perches <joe@perches.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Date:   Thu, 19 Nov 2020 14:16:20 -0800
+In-Reply-To: <20201119215012.57d39102@carbon>
+References: <160580680009.2806072.11680148233715741983.stgit@firesoul>
+         <20201119100210.08374826@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+         <20201119215012.57d39102@carbon>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.67]
-X-ClientProxiedBy: EX13d09UWC002.ant.amazon.com (10.43.162.102) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Wed, 18 Nov 2020 17:00:45 -0800
-> On Tue, Nov 17, 2020 at 06:40:22PM +0900, Kuniyuki Iwashima wrote:
-> > This patch makes it possible to select a new listener for socket migration
-> > by eBPF.
-> > 
-> > The noteworthy point is that we select a listening socket in
-> > reuseport_detach_sock() and reuseport_select_sock(), but we do not have
-> > struct skb in the unhash path.
-> > 
-> > Since we cannot pass skb to the eBPF program, we run only the
-> > BPF_PROG_TYPE_SK_REUSEPORT program by calling bpf_run_sk_reuseport() with
-> > skb NULL. So, some fields derived from skb are also NULL in the eBPF
-> > program.
-> More things need to be considered here when skb is NULL.
+On Thu, 2020-11-19 at 21:50 +0100, Jesper Dangaard Brouer wrote:
+> On Thu, 19 Nov 2020 10:02:10 -0800
+> Jakub Kicinski <kuba@kernel.org> wrote:
 > 
-> Some helpers are probably assuming skb is not NULL.
+> > On Thu, 19 Nov 2020 18:26:40 +0100 Jesper Dangaard Brouer wrote:
+> > > Getting too many false positive matches with current use
+> > > of the content regex K: and file regex N: patterns.
+> > > 
+> > > This patch drops file match N: and makes K: more restricted.
+> > > Some more normal F: file wildcards are added.
+> > > 
+> > > Notice that AF_XDP forgot to some F: files that is also
+> > > updated in this patch.
+> > > 
+> > > Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>  
+> > 
+> > Ah! Sorry, I missed that you sent this before replying to Joe.
+> > 
+> > Would you mind respining with his regex?
 > 
-> Also, the sk_lookup in filter.c is actually passing a NULL skb to avoid
-> doing the reuseport select.
+> Sure, I just send it... with your adjusted '(\b|_)xdp(\b|_)' regex, as
+> it seems to do the same thing (and it works with egrep).
 
-Honestly, I have missed this point...
-I wanted users to reuse the same eBPF program seamlessly, but it seems unsafe.
+The regexes in MAINTAINERS are perl not egrep and using (\b|_)
+creates unnecessary capture groups.
 
+It _really_ should be (?:\b|_)xdp(?:\b|_)
 
-> > Moreover, we can cancel migration by returning SK_DROP. This feature is
-> > useful when listeners have different settings at the socket API level or
-> > when we want to free resources as soon as possible.
-> > 
-> > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > ---
-> >  net/core/filter.c          | 26 +++++++++++++++++++++-----
-> >  net/core/sock_reuseport.c  | 23 ++++++++++++++++++++---
-> >  net/ipv4/inet_hashtables.c |  2 +-
-> >  3 files changed, 42 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 01e28f283962..ffc4591878b8 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -8914,6 +8914,22 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
-> >  	SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(S, NS, F, NF,		       \
-> >  					     BPF_FIELD_SIZEOF(NS, NF), 0)
-> >  
-> > +#define SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF_OR_NULL(S, NS, F, NF, SIZE, OFF)	\
-> > +	do {									\
-> > +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(S, F), si->dst_reg,	\
-> > +				      si->src_reg, offsetof(S, F));		\
-> > +		*insn++ = BPF_JMP_IMM(BPF_JEQ, si->dst_reg, 0, 1);		\
-> Although it may not matter much, always doing this check seems not very ideal
-> considering the fast path will always have skb and only the slow
-> path (accept-queue migrate) has skb is NULL.  I think the req_sk usually
-> has the skb also except the timer one.
-
-Yes, but the migration happens only when/after the listener is closed, so
-I think it does not occur so frequently and will not be a problem.
+ 
 
 
-> First thought is to create a temp skb but it has its own issues.
-> or it may actually belong to a new prog type.  However, lets keep
-> exploring possible options (including NULL skb).
-
-I also thought up the two ideas, but the former will be a bit complicated.
-And the latter makes users implement the new eBPF program. I did not want
-users to struggle anymore, so I have selected the NULL skb. However, it is
-not safe, so adding a new prog type seems to be the better way.
