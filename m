@@ -2,171 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05832B97E5
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 17:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4462B985D
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 17:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgKSQ1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 11:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728905AbgKSQ1i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 11:27:38 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4993C061A48
-        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 08:27:37 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id 10so7768244wml.2
-        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 08:27:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cupBjlguXrCl4ZT1v3zs9G+3ZU+aGNpRnTKwt9ssey4=;
-        b=Ec6NYYeS63zOmWW5s4jQ0VA0BK5/FyqPEgNIfEDWtMD11omBPX2zXZ1Qbk62bSfXej
-         1abfFXPgm2FZhpzIHEEW4lBVsB2w74f3jX/vM+mIE1mEdNxwfu82OIkbzuyUnd/EfNnI
-         G01b3pfmZhD1qdvhLrM1RDLshAbCliqKSb4nE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cupBjlguXrCl4ZT1v3zs9G+3ZU+aGNpRnTKwt9ssey4=;
-        b=k+ErNrGEyLZzZvmTPMTOP56+IGs4nSYLRVfkZLJ8OhItbNd9mTvC1Fv4ReO9U26IiT
-         T/iayWJXcJLkgNQsQFr8Z+ITuyPNJpQCpsMrGvsXZI29QCe+gr/NHfnWCFFZ1VKC8or3
-         0uoIxV+1G9awAoXFktUERsD4R9kWy5GhYZMK+H/yQY8uqwn460Iy+6SVDTJZzDwafMrU
-         M4ECaXdbRQMgzUuHtJKGmFokZp0p/Xvoy7dc9UZ+o/VuUV1e1BtZsR4cTYurSmNxZPeK
-         D4N9XSOlwJV/dPt8amTY+zhTWTwPdf7Xs8x9TRbhoKgxOP+3XMeO+kDtFix7qJW/eqTr
-         sRRQ==
-X-Gm-Message-State: AOAM533ah0tN9XN4En/2j0AbQ8i8RyNUXg4NLxNSR9eCMj/T1Y6vCR9A
-        R460RIlsAxkqo1Og4aDxA9bblqVDWHmBOB/4
-X-Google-Smtp-Source: ABdhPJz6+4/1nN99shYibUPJq3+bbKwakw+4YYiqeSuPjaLugrNgNfBAIEyszlLHPcfpw1DUtHwTjQ==
-X-Received: by 2002:a1c:6557:: with SMTP id z84mr5572401wmb.144.1605803256233;
-        Thu, 19 Nov 2020 08:27:36 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id i5sm380061wrw.45.2020.11.19.08.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Nov 2020 08:27:35 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
-        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v2 5/5] bpf: Add an iterator selftest for bpf_sk_storage_get
-Date:   Thu, 19 Nov 2020 17:26:54 +0100
-Message-Id: <20201119162654.2410685-5-revest@chromium.org>
-X-Mailer: git-send-email 2.29.2.299.gdc1121823c-goog
-In-Reply-To: <20201119162654.2410685-1-revest@chromium.org>
-References: <20201119162654.2410685-1-revest@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728970AbgKSQof (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 11:44:35 -0500
+Received: from gate.crashing.org ([63.228.1.57]:60554 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727853AbgKSQoe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 11:44:34 -0500
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 0AJGZWpN025422;
+        Thu, 19 Nov 2020 10:35:32 -0600
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 0AJGZUTd025421;
+        Thu, 19 Nov 2020 10:35:30 -0600
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Thu, 19 Nov 2020 10:35:29 -0600
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matt Mullins <mmullins@mmlx.us>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: violating function pointer signature
+Message-ID: <20201119163529.GV2672@gate.crashing.org>
+References: <20201118132136.GJ3121378@hirez.programming.kicks-ass.net> <CAKwvOdkptuS=75WjzwOho9ZjGVHGMirEW3k3u4Ep8ya5wCNajg@mail.gmail.com> <20201118121730.12ee645b@gandalf.local.home> <20201118181226.GK2672@gate.crashing.org> <87o8jutt2h.fsf@mid.deneb.enyo.de> <20201118135823.3f0d24b7@gandalf.local.home> <20201118191127.GM2672@gate.crashing.org> <20201119083648.GE3121392@hirez.programming.kicks-ass.net> <20201119143735.GU2672@gate.crashing.org> <20201119095951.30269233@gandalf.local.home>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119095951.30269233@gandalf.local.home>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Florent Revest <revest@google.com>
+On Thu, Nov 19, 2020 at 09:59:51AM -0500, Steven Rostedt wrote:
+> On Thu, 19 Nov 2020 08:37:35 -0600
+> Segher Boessenkool <segher@kernel.crashing.org> wrote:
+> > > Note that we have a fairly extensive tradition of defining away UB with
+> > > language extentions, -fno-strict-overflow, -fno-strict-aliasing,  
+> > 
+> > These are options to make a large swath of not correct C programs
+> > compile (and often work) anyway.  This is useful because there are so
+> > many such programs, because a) people did not lint; and/or b) the
+> > problem never was obvious with some other (or older) compiler; and/or
+> > c) people do not care about writing portable C and prefer writing in
+> > their own non-C dialect.
+> 
+> Note, this is not about your average C program. This is about the Linux
+> kernel, which already does a lot of tricks in C.
 
-The eBPF program iterates over all files and tasks. For all socket
-files, it stores the tgid of the last task it encountered with a handle
-to that socket. This is a heuristic for finding the "owner" of a socket
-similar to what's done by lsof, ss, netstat or fuser. Potentially, this
-information could be used from a cgroup_skb/*gress hook to try to
-associate network traffic with processes.
+Yes, I know.  And some of that can be supported just fine (usually
+because the compiler explicitly supports it); some of that will not
+cause problems in practice (e.g. the scope it could cause problems in
+is very limited); and some of that is just waiting to break down.  The
+question is what category your situation here is in.  The middle one I
+think.
 
-The test makes sure that a socket it created is tagged with prog_tests's
-pid.
+> There's a lot of code in
+> assembly that gets called from C (and vise versa).
 
-Signed-off-by: Florent Revest <revest@google.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 35 +++++++++++++++++++
- .../progs/bpf_iter_bpf_sk_storage_helpers.c   | 26 ++++++++++++++
- 2 files changed, 61 insertions(+)
+That is just fine, that is what ABIs are for :-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index bb4a638f2e6f..4d0626003c03 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -975,6 +975,39 @@ static void test_bpf_sk_storage_delete(void)
- 	bpf_iter_bpf_sk_storage_helpers__destroy(skel);
- }
- 
-+/* The BPF program stores in every socket the tgid of a task owning a handle to
-+ * it. The test verifies that a locally-created socket is tagged with its pid
-+ */
-+static void test_bpf_sk_storage_get(void)
-+{
-+	struct bpf_iter_bpf_sk_storage_helpers *skel;
-+	int err, map_fd, val = -1;
-+	int sock_fd = -1;
-+
-+	skel = bpf_iter_bpf_sk_storage_helpers__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_bpf_sk_storage_helpers__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	sock_fd = socket(AF_INET6, SOCK_STREAM, 0);
-+	if (CHECK(sock_fd < 0, "socket", "errno: %d\n", errno))
-+		goto out;
-+
-+	do_dummy_read(skel->progs.fill_socket_owners);
-+
-+	map_fd = bpf_map__fd(skel->maps.sk_stg_map);
-+
-+	err = bpf_map_lookup_elem(map_fd, &sock_fd, &val);
-+	CHECK(err || val != getpid(), "bpf_map_lookup_elem",
-+	      "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
-+	      getpid(), val, err);
-+
-+	if (sock_fd >= 0)
-+		close(sock_fd);
-+out:
-+	bpf_iter_bpf_sk_storage_helpers__destroy(skel);
-+}
-+
- static void test_bpf_sk_storage_map(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-@@ -1131,6 +1164,8 @@ void test_bpf_iter(void)
- 		test_bpf_sk_storage_map();
- 	if (test__start_subtest("bpf_sk_storage_delete"))
- 		test_bpf_sk_storage_delete();
-+	if (test__start_subtest("bpf_sk_storage_get"))
-+		test_bpf_sk_storage_get();
- 	if (test__start_subtest("rdonly-buf-out-of-bound"))
- 		test_rdonly_buf_out_of_bound();
- 	if (test__start_subtest("buf-neg-offset"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
-index 01ff3235e413..7206fd6f09ab 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_helpers.c
-@@ -21,3 +21,29 @@ int delete_bpf_sk_storage_map(struct bpf_iter__bpf_sk_storage_map *ctx)
- 
- 	return 0;
- }
-+
-+SEC("iter/task_file")
-+int fill_socket_owners(struct bpf_iter__task_file *ctx)
-+{
-+	struct task_struct *task = ctx->task;
-+	struct file *file = ctx->file;
-+	struct socket *sock;
-+	int *sock_tgid;
-+
-+	if (!task || !file || task->tgid != task->pid)
-+		return 0;
-+
-+	sock = bpf_sock_from_file(file);
-+	if (!sock)
-+		return 0;
-+
-+	sock_tgid = bpf_sk_storage_get(&sk_stg_map, sock->sk, 0,
-+				       BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!sock_tgid)
-+		return 0;
-+
-+	*sock_tgid = task->tgid;
-+
-+	return 0;
-+}
-+
--- 
-2.29.2.299.gdc1121823c-goog
+> We modify code on the
+> fly (which tracepoints use two methods of that - with asm-goto/jump-labels
+> and static functions).
 
+And that is a lot trickier.  It can be made to work, but there are many
+dark nooks and crannies problems can hide in.
+
+> As for your point c), I'm not sure what you mean about portable C
+
+I just meant "valid C language code as defined by the standards".  Many
+people want all UB to just go away, while that is *impossible* to do for
+many compilers: for example where different architectures or different
+ABIs have contradictory requirements.
+
+> (stuck to
+> a single compiler, or stuck to a single architecture?). Linux obviously
+> supports multiple architectures (more than any other OS), but it is pretty
+> stuck to gcc as a compiler (with LLVM just starting to work too).
+> 
+> We are fine with being stuck to a compiler if it gives us what we want.
+
+Right.  Just know that a compiler can make defined behaviour for *some*
+things that are UB in standard C (possibly at a runtime performance
+cost), but most things are not feasible.
+
+Alexei's SPARC example (thanks!) shows that even "obvious" things are
+not so obviously (or at all) implemented the way you expect on all
+systems you care about.
+
+
+Segher
