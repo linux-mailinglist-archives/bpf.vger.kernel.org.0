@@ -2,146 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A35E2B9DF6
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 00:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB942B9E0E
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 00:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgKSXKC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 18:10:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgKSXKB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 18:10:01 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B3AC0613D4
-        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 15:10:01 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id x17so6808256ybr.8
-        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 15:10:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iBfd+tlooPrLaeehxHIKJ1u8OEErsouszEIy8ewVhcM=;
-        b=Qca1plPbvZtgNeORPQ2kD2DqCgTdfBGwLPpZ9uiHbBJzEWVCi3YBgiNfKjrAyAQFCv
-         vnlyre3S9Fw+ES0dPQ/Phak6rmsPe9qlrdpbpiJsRvnCQbRXSx9BIykDUQhQ1OaLTotr
-         ryiZErEr1Sw7lqWcYEzfeYe1wrx64mrRmeVc3786MKkPFGNE5b12qpF2dgOKQmjwq06L
-         efd7FS1/3nrpxyqcLgxAYGOjvd6b5bbSvtQ46TE30SIDLI6H0e642T9LNsQRisTgM8hx
-         CrhVqIe0eQ+JOeVsjO8yyIu4nxeZhtoUHd5aTDyaYr/2oTEFtodKGW499JJR3qu84eN0
-         1jGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iBfd+tlooPrLaeehxHIKJ1u8OEErsouszEIy8ewVhcM=;
-        b=OvlgsrhasMy6Ix9eSzjw8MMoxnASJ+BeQNdWKMSwhdcuroM1P27SAC2IvsLTJ/czWy
-         cM0BRygXvecxVhfOBuITezku9NV12t3pJYxTms+B72wkGmDkFNq1WKpY1DPinGhLm6s+
-         MS6nD2/grcvYHoZTr4+4Ca2xBOiXXIq2Iw3ydkMzopGW8ealSemDQYVgn2iMK0widkwV
-         deFW1UIcMTBGd5M2de+3XpLcQafJ4tGLe0KlysJDN+szhbOT0+Usm0RGHi8xLl9+KlUN
-         ewmeGeRXUGooSMEEJ10lhf9FzDTWAJIcyvBraqKZ+5/LQBib2A/e2jXb+nK0Gvcvciwm
-         hNKw==
-X-Gm-Message-State: AOAM530VsbymM+lYDkU3XswAV4cJQ+z5faHp8UFO9R2+zAOq38dq+dbm
-        HxL+T5qcLQRaC0r8jwsFq4NyCtne1tHutMjcj2HTQA==
-X-Google-Smtp-Source: ABdhPJwntx5yxZFlr+ABHZAtWno7pcNjvqssQwbKMZxMPeu/afiw8yhs6p5yIima6cX9q0Fjcs5qah3HyoAS42uPGV4=
-X-Received: by 2002:a25:ac19:: with SMTP id w25mr21816652ybi.278.1605827400532;
- Thu, 19 Nov 2020 15:10:00 -0800 (PST)
+        id S1725890AbgKSXW4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 19 Nov 2020 18:22:56 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38622 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726321AbgKSXW4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Nov 2020 18:22:56 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AJNK4jm032595
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 15:22:54 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34wjmxetnj-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 15:22:54 -0800
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 19 Nov 2020 15:22:47 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id AF24B2EC9B9C; Thu, 19 Nov 2020 15:22:45 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/6] libbpf: add support for kernel module BTF CO-RE relocations
+Date:   Thu, 19 Nov 2020 15:22:38 -0800
+Message-ID: <20201119232244.2776720-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <160582070138.66684.11785214534154816097.stgit@localhost.localdomain>
- <160582103106.66684.9841738004971200231.stgit@localhost.localdomain>
-In-Reply-To: <160582103106.66684.9841738004971200231.stgit@localhost.localdomain>
-From:   Wei Wang <weiwan@google.com>
-Date:   Thu, 19 Nov 2020 15:09:48 -0800
-Message-ID: <CAEA6p_BTAit9Y2h-9XaTTBdV6h6X4g0Ct5mOy1ZHfJiLD3y_Ww@mail.gmail.com>
-Subject: Re: [net PATCH 1/2] tcp: Allow full IP tos/IPv6 tclass to be
- reflected in L3 header
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, daniel@iogearbox.net,
-        Martin KaFai Lau <kafai@fb.com>, kernel-team@fb.com,
-        Eric Dumazet <edumazet@google.com>, brakmo@fb.com,
-        alexanderduyck@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-19_14:2020-11-19,2020-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ impostorscore=0 mlxlogscore=862 malwarescore=0 adultscore=0 clxscore=1015
+ spamscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=8
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011190160
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 1:23 PM Alexander Duyck
-<alexander.duyck@gmail.com> wrote:
->
-> From: Alexander Duyck <alexanderduyck@fb.com>
->
-> An issue was recently found where DCTCP SYN/ACK packets did not have the
-> ECT bit set in the L3 header. A bit of code review found that the recent
-> change referenced below had gone though and added a mask that prevented the
-> ECN bits from being populated in the L3 header.
->
-> This patch addresses that by rolling back the mask so that it is only
-> applied to the flags coming from the incoming TCP request instead of
-> applying it to the socket tos/tclass field. Doing this the ECT bits were
-> restored in the SYN/ACK packets in my testing.
->
-> One thing that is not addressed by this patch set is the fact that
-> tcp_reflect_tos appears to be incompatible with ECN based congestion
-> avoidance algorithms. At a minimum the feature should likely be documented
-> which it currently isn't.
->
-> Fixes: ac8f1710c12b ("tcp: reflect tos value received in SYN to the socket")
+Implement libbpf support for performing CO-RE relocations against types in
+kernel module BTFs, in addition to existing vmlinux BTF support.
 
-Acked-by: Wei Wang <weiwan@google.com>
+This is a first step towards fully supporting kernel module BTFs. Subsequent
+patch sets will expand kernel and libbpf sides to allow using other
+BTF-powered capabilities (fentry/fexit, struct_ops, ksym externs, etc). For
+CO-RE relocations support, though, no extra kernel changes are necessary.
 
-Thanks for catching this. I was under the wrong impression that the
-ECT bits were marked in tos after the tcp layer. Upon a closer look,
-it seems right now, it only gets marked in inet_sock(sk)->tos from
-tcp_init_congestion_control() once.
-I will submit a follow-up fix to make sure we include the lower 2 bits
-in the reflection case as well.
+This patch set also sets up a convenient and fully-controlled custom kernel
+module (called "bpf_sidecar"), that is a predictable playground for all the
+BPF selftests, that rely on module BTFs.
 
-> Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
-> ---
->  net/ipv4/tcp_ipv4.c |    5 +++--
->  net/ipv6/tcp_ipv6.c |    6 +++---
->  2 files changed, 6 insertions(+), 5 deletions(-)
->
-> diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-> index c2d5132c523c..c5f8b686aa82 100644
-> --- a/net/ipv4/tcp_ipv4.c
-> +++ b/net/ipv4/tcp_ipv4.c
-> @@ -981,7 +981,8 @@ static int tcp_v4_send_synack(const struct sock *sk, struct dst_entry *dst,
->         skb = tcp_make_synack(sk, dst, req, foc, synack_type, syn_skb);
->
->         tos = sock_net(sk)->ipv4.sysctl_tcp_reflect_tos ?
-> -                       tcp_rsk(req)->syn_tos : inet_sk(sk)->tos;
-> +                       tcp_rsk(req)->syn_tos & ~INET_ECN_MASK :
-> +                       inet_sk(sk)->tos;
->
->         if (skb) {
->                 __tcp_v4_send_check(skb, ireq->ir_loc_addr, ireq->ir_rmt_addr);
-> @@ -990,7 +991,7 @@ static int tcp_v4_send_synack(const struct sock *sk, struct dst_entry *dst,
->                 err = ip_build_and_send_pkt(skb, sk, ireq->ir_loc_addr,
->                                             ireq->ir_rmt_addr,
->                                             rcu_dereference(ireq->ireq_opt),
-> -                                           tos & ~INET_ECN_MASK);
-> +                                           tos);
->                 rcu_read_unlock();
->                 err = net_xmit_eval(err);
->         }
-> diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-> index 8db59f4e5f13..3d49e8d0afee 100644
-> --- a/net/ipv6/tcp_ipv6.c
-> +++ b/net/ipv6/tcp_ipv6.c
-> @@ -530,12 +530,12 @@ static int tcp_v6_send_synack(const struct sock *sk, struct dst_entry *dst,
->                 rcu_read_lock();
->                 opt = ireq->ipv6_opt;
->                 tclass = sock_net(sk)->ipv4.sysctl_tcp_reflect_tos ?
-> -                               tcp_rsk(req)->syn_tos : np->tclass;
-> +                               tcp_rsk(req)->syn_tos & ~INET_ECN_MASK :
-> +                               np->tclass;
->                 if (!opt)
->                         opt = rcu_dereference(np->opt);
->                 err = ip6_xmit(sk, skb, fl6, sk->sk_mark, opt,
-> -                              tclass & ~INET_ECN_MASK,
-> -                              sk->sk_priority);
-> +                              tclass, sk->sk_priority);
->                 rcu_read_unlock();
->                 err = net_xmit_eval(err);
->         }
->
->
+Andrii Nakryiko (6):
+  bpf: fix bpf_put_raw_tracepoint()'s use of __module_address()
+  libbpf: add internal helper to load BTF data by FD
+  libbpf: refactor CO-RE relocs to not assume a single BTF object
+  libbpf: add kernel module BTF support for CO-RE relocations
+  selftests/bpf: add bpf_sidecar kernel module for testing
+  selftests/bpf: add CO-RE relocs selftest relying on kernel module BTF
+
+ kernel/trace/bpf_trace.c                      |   6 +-
+ tools/lib/bpf/btf.c                           |  61 +--
+ tools/lib/bpf/libbpf.c                        | 352 ++++++++++++++----
+ tools/lib/bpf/libbpf_internal.h               |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |  12 +-
+ .../selftests/bpf/bpf_sidecar/.gitignore      |   6 +
+ .../selftests/bpf/bpf_sidecar/Makefile        |  20 +
+ .../bpf/bpf_sidecar/bpf_sidecar-events.h      |  36 ++
+ .../selftests/bpf/bpf_sidecar/bpf_sidecar.c   |  51 +++
+ .../selftests/bpf/bpf_sidecar/bpf_sidecar.h   |  14 +
+ .../selftests/bpf/prog_tests/core_reloc.c     |  72 +++-
+ .../selftests/bpf/progs/core_reloc_types.h    |  17 +
+ .../bpf/progs/test_core_reloc_module.c        |  66 ++++
+ tools/testing/selftests/bpf/test_progs.c      |  52 +++
+ 15 files changed, 647 insertions(+), 120 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_sidecar/.gitignore
+ create mode 100644 tools/testing/selftests/bpf/bpf_sidecar/Makefile
+ create mode 100644 tools/testing/selftests/bpf/bpf_sidecar/bpf_sidecar-events.h
+ create mode 100644 tools/testing/selftests/bpf/bpf_sidecar/bpf_sidecar.c
+ create mode 100644 tools/testing/selftests/bpf/bpf_sidecar/bpf_sidecar.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_module.c
+
+-- 
+2.24.1
+
