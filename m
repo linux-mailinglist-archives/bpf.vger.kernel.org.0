@@ -2,65 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379F32B9D46
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 23:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C906C2B9D55
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 23:06:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgKSWBy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 17:01:54 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:6946 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgKSWBy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:01:54 -0500
+        id S1726342AbgKSWFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 17:05:22 -0500
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:40966 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbgKSWFV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:05:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1605823315; x=1637359315;
+  s=amazon201209; t=1605823522; x=1637359522;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=dPnWxdnajZFQOuvUOMzQJleM8jxXhD+BGr5YatZS0dM=;
-  b=fGm014lUe221JAnqbs/JOQ+AmCqGPju2VlSj6aOLf6pMZ2+TloMHnkTT
-   QFgZI/gocJMGjObddNXctPT5pAIz+t0fe3kkPfQRjBl5kZOVyPrPDH3B+
-   ajuMpgMVRgVs9SP5nRsiUw9wJmeLbbHGk2SPtIlHIS5+dxGJCWIGndBsG
-   E=;
+  bh=NNbBtZjCXMsp/4fAvjLPa6JOaO0+DpCcEqpiZ7EczYg=;
+  b=oYARo9sC4KbPLUoo6+UOHC7x0AToj3YdfuRtX0rKL/lqlv+x9NNKKXah
+   ISFb6BI7UxMrbj6uNn9evlB2A/6DMtU8y29jqoWBaS5iXu7YOvq52Plzc
+   XECQnJR3VvsjnCs+BftUKdTn2jVCRIOV82ymEyY6fcDA/VuZmjFT9v71d
+   0=;
 X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
-   d="scan'208";a="66094964"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Nov 2020 22:01:53 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 4D42AA1F2D;
-        Thu, 19 Nov 2020 22:01:51 +0000 (UTC)
+   d="scan'208";a="97172015"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 19 Nov 2020 22:05:21 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 2A830A18E8;
+        Thu, 19 Nov 2020 22:05:17 +0000 (UTC)
 Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
  EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:01:50 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.161.102) by
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:05:17 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.55) by
  EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 19 Nov 2020 22:01:46 +0000
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:05:13 +0000
 From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <david.laight@aculab.com>
+To:     <eric.dumazet@gmail.com>
 CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
         <daniel@iogearbox.net>, <davem@davemloft.net>,
         <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
         <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
         <netdev@vger.kernel.org>
-Subject: RE: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
-Date:   Fri, 20 Nov 2020 07:01:41 +0900
-Message-ID: <20201119220141.73844-1-kuniyu@amazon.co.jp>
+Subject: Re: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
+Date:   Fri, 20 Nov 2020 07:05:09 +0900
+Message-ID: <20201119220509.74768-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <01a5c211a87a4dd69940e19c2ff00334@AcuMS.aculab.com>
-References: <01a5c211a87a4dd69940e19c2ff00334@AcuMS.aculab.com>
+In-Reply-To: <5feaafd3-72ca-72da-0fe8-cc4206bc29e6@gmail.com>
+References: <5feaafd3-72ca-72da-0fe8-cc4206bc29e6@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.43.161.102]
-X-ClientProxiedBy: EX13D46UWB004.ant.amazon.com (10.43.161.204) To
+X-Originating-IP: [10.43.161.55]
+X-ClientProxiedBy: EX13D33UWB003.ant.amazon.com (10.43.161.92) To
  EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   David Laight <David.Laight@ACULAB.COM>
-Date:   Wed, 18 Nov 2020 09:18:24 +0000
-> From: Kuniyuki Iwashima
-> > Sent: 17 November 2020 09:40
-> > 
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Date:   Wed, 18 Nov 2020 17:25:44 +0100
+> On 11/17/20 10:40 AM, Kuniyuki Iwashima wrote:
 > > The SO_REUSEPORT option allows sockets to listen on the same port and to
 > > accept connections evenly. However, there is a defect in the current
 > > implementation. When a SYN packet is received, the connection is tied to a
@@ -73,32 +71,50 @@ Date:   Wed, 18 Nov 2020 09:18:24 +0000
 > > configurations and restart it, it spins up new workers that respect the new
 > > configuration and closes all listeners on the old workers, resulting in
 > > in-flight ACK of 3WHS is responded by RST.
+> > 
 > 
-> Can't you do something to stop new connections being queued (like
-> setting the 'backlog' to zero), then carry on doing accept()s
-> for a guard time (or until the queue length is zero) before finally
-> closing the listening socket.
-
-Yes, but with eBPF.
-There are some ideas suggested and well discussed in the thread below,
-resulting in that connection draining by eBPF was merged.
-https://lore.kernel.org/netdev/1443313848-751-1-git-send-email-tolga.ceylan@gmail.com/
-
-
-Also, setting zero to backlog does not work well.
-https://lore.kernel.org/netdev/1447262610.17135.114.camel@edumazet-glaptop2.roam.corp.google.com/
-
----8<---
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as
- drain mode
-Date: Wed, 11 Nov 2015 09:23:30 -0800
-> Actually listen(fd, 0) is not going to work well :
+> I know some programs are simply removing a listener from the group,
+> so that they no longer handle new SYN packets,
+> and wait until all timers or 3WHS have completed before closing them.
 > 
-> For request_sock that were created (by incoming SYN packet) before this
-> listen(fd, 0) call, the 3rd packet (ACK coming from client) would not be
-> able to create a child attached to this listener.
-> 
-> sk_acceptq_is_full() test in tcp_v4_syn_recv_sock() would simply drop
-> the thing.
----8<---
+> They pass fd of newly accepted children to more recent programs using af_unix fd passing,
+> while in this draining mode.
+
+Just out of curiosity, can I know the software for more study?
+
+
+> Quite frankly, mixing eBPF in the picture is distracting.
+
+I agree.
+Also, I think eBPF itself is not always necessary in many cases and want
+to make user programs simpler with this patchset.
+
+The SO_REUSEPORT implementation is excellent to improve the scalability. On
+the other hand, as a trade-off, users have to know deeply how the kernel
+handles SYN packets and to implement connection draining by eBPF.
+
+
+> It seems you want some way to transfer request sockets (and/or not yet accepted established ones)
+> from fd1 to fd2, isn't it something that should be discussed independently ?
+
+I understand that you are asking that I should discuss the issue and how to
+transfer sockets independently. Please correct me if I have misunderstood
+your question.
+
+The kernel handles 3WHS and users cannot know its existence (without eBPF).
+Many users believe SO_REUSEPORT should make it possible to distribute all
+connections across available listeners ideally, but actually, there are
+possibly some connections aborted silently. Some user may think that if the
+kernel selected other listeners, the connections would not be dropped.
+
+The root cause is within the kernel, so the issue should be addressed in
+the kernel space and should not be visible to userspace. In order not to
+make users bother with implementing new some stuff, I want to fix the root
+cause by transferring sockets automatically so that users need not take
+care of kernel implementation and connection draining.
+
+Moreover, if possible, I did not want to mix eBPF with the issue. But there
+may be some cases that different applications listen on the same port and
+eBPF routes packets to each by some rules. In such cases, redistributing
+sockets without user intention will break the application. This patchset
+will work in many cases, but to care such cases, I added the eBPF part.
