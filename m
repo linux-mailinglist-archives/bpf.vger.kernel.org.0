@@ -2,80 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339102B9D58
-	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 23:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50CC2B9D65
+	for <lists+bpf@lfdr.de>; Thu, 19 Nov 2020 23:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgKSWFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 17:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgKSWFY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 17:05:24 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958F9C0617A7
-        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 14:05:23 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id f11so10557458lfs.3
-        for <bpf@vger.kernel.org>; Thu, 19 Nov 2020 14:05:23 -0800 (PST)
+        id S1726105AbgKSWJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Nov 2020 17:09:36 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:8451 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgKSWJf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Nov 2020 17:09:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=caVbQJgTNUd3ZyBW7a7yHO/mVe+/+dynQ8Kf/1ZeYWM=;
-        b=jZ3KTQBKpps0OPiXvYOFLRGYnVQSV8UQx5Naaeo4ejKpoO68Nap6Q/ZOeoAuRo9dJI
-         +k6J/WmjgoZ5TEHw9YkYFm0Oh5vB1p4PAYgmRroQD1P8MKDua1PuOix1olFyLDSyx/o5
-         ltLlZKvBklVAuDrt9VCsiX6xp3ANEd8LHmnIk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=caVbQJgTNUd3ZyBW7a7yHO/mVe+/+dynQ8Kf/1ZeYWM=;
-        b=rIeVFCwOrvkyGl+9Re2KmcoycbOTVrIey/7hZQQxwQx+0tHW0PsudeaZ0Ll6CeCaV/
-         EV1Ia2Rr4v8Jr8e4Z+QKkyX0xh61cASYCPKglpkJnbhj9uLo37a82QSTJB9m+RJhmc0f
-         O9fIRd7zMLJ/e5D7TYJW/pePZPpbHOTN6yej7dPT/xwcxRz8jOhD0MRnnSueBcGMnx8q
-         8V5tgePfYZ9uGGu5Imyn+sn/w6mbxcHGzp3DXGM60wDmEl1MQISESOX3vq9X4B0IBMps
-         B9KyIOsGSWd0hTagQkCdB+X8A0wvfhLPFhm+fsqjRe3QkmASmLvxZSKd48bOsz/eWd4t
-         YoMA==
-X-Gm-Message-State: AOAM531aDKdN3MKs9EBGsRF6+fbEyoMk/0oJIxQL/sqyRwgdbn2tJ1lw
-        nCjsdbWIlVBA8ZaFIk9J2/OyAOG4oC70GFnqli/mCA==
-X-Google-Smtp-Source: ABdhPJykoD4e40Ht9VbmfCWlQEro37Hq5PyVDkPKQiE1le37+k8HUvT460q+r8/KCm8efY+hU9FmjEhGTBZs65Br5mo=
-X-Received: by 2002:ac2:5591:: with SMTP id v17mr6402331lfg.562.1605823521321;
- Thu, 19 Nov 2020 14:05:21 -0800 (PST)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1605823775; x=1637359775;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=C3GbARp6xmIDQgt1IUlMUOOF3LZmIfZFb3Gj/uy73EY=;
+  b=K4qv/5IlJycKnqjlLq2NjuGZTq/HlL9iZHAf2oJhUch5P/YzRZHb3TbZ
+   ChhglR0JgdnVSStnZX3K6UPQfjU1KELuvu+f9h1AJe1Gr2dAp1Jfs1+nX
+   6CO7eFH38/oEmllA9SRM0i/2q04nSFnata1O8oleKmnC10b8hr8DZEZec
+   k=;
+X-IronPort-AV: E=Sophos;i="5.78,354,1599523200"; 
+   d="scan'208";a="66096825"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Nov 2020 22:09:34 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id A21E1A1D76;
+        Thu, 19 Nov 2020 22:09:31 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:09:30 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.124) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 19 Nov 2020 22:09:26 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 3/8] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+Date:   Fri, 20 Nov 2020 07:09:22 +0900
+Message-ID: <20201119220922.75145-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <20201118235017.xrudgf6bfwgkaukh@kafai-mbp.dhcp.thefacebook.com>
+References: <20201118235017.xrudgf6bfwgkaukh@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <20201119162654.2410685-1-revest@chromium.org> <20201119162654.2410685-3-revest@chromium.org>
-In-Reply-To: <20201119162654.2410685-3-revest@chromium.org>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 19 Nov 2020 23:05:10 +0100
-Message-ID: <CACYkzJ6rPmuOQbHYJyDGS77WFqZ1igHnuXyR=Go8Vpw=_h-TDg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] bpf: Expose bpf_sk_storage_* to iterator programs
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.124]
+X-ClientProxiedBy: EX13D49UWC003.ant.amazon.com (10.43.162.10) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 5:27 PM Florent Revest <revest@chromium.org> wrote:
->
-> From: Florent Revest <revest@google.com>
->
-> Iterators are currently used to expose kernel information to userspace
-> over fast procfs-like files but iterators could also be used to
-> manipulate local storage. For example, the task_file iterator could be
-> used to initialize a socket local storage with associations between
-> processes and sockets or to selectively delete local storage values.
->
-> This exposes both socket local storage helpers to all iterators.
-> Alternatively we could expose it to only certain iterators with strcmps
-> on prog->aux->attach_func_name.
+From: Martin KaFai Lau <kafai@fb.com>
+Date: Wed, 18 Nov 2020 15:50:17 -0800
+> On Tue, Nov 17, 2020 at 06:40:18PM +0900, Kuniyuki Iwashima wrote:
+> > This patch lets reuseport_detach_sock() return a pointer of struct sock,
+> > which is used only by inet_unhash(). If it is not NULL,
+> > inet_csk_reqsk_queue_migrate() migrates TCP_ESTABLISHED/TCP_SYN_RECV
+> > sockets from the closing listener to the selected one.
+> > 
+> > Listening sockets hold incoming connections as a linked list of struct
+> > request_sock in the accept queue, and each request has reference to a full
+> > socket and its listener. In inet_csk_reqsk_queue_migrate(), we unlink the
+> > requests from the closing listener's queue and relink them to the head of
+> > the new listener's queue. We do not process each request, so the migration
+> > completes in O(1) time complexity. However, in the case of TCP_SYN_RECV
+> > sockets, we will take special care in the next commit.
+> > 
+> > By default, we select the last element of socks[] as the new listener.
+> > This behaviour is based on how the kernel moves sockets in socks[].
+> > 
+> > For example, we call listen() for four sockets (A, B, C, D), and close the
+> > first two by turns. The sockets move in socks[] like below. (See also [1])
+> > 
+> >   socks[0] : A <-.      socks[0] : D          socks[0] : D
+> >   socks[1] : B   |  =>  socks[1] : B <-.  =>  socks[1] : C
+> >   socks[2] : C   |      socks[2] : C --'
+> >   socks[3] : D --'
+> > 
+> > Then, if C and D have newer settings than A and B, and each socket has a
+> > request (a, b, c, d) in their accept queue, we can redistribute old
+> > requests evenly to new listeners.
+> I don't think it should emphasize/claim there is a specific way that
+> the kernel-pick here can redistribute the requests evenly.  It depends on
+> how the application close/listen.  The userspace can not expect the
+> ordering of socks[] will behave in a certain way.
 
-Since you mentioned the alternative here, maybe you can also
-explain why you chose the current approach.
+I've expected replacing listeners by generations as a general use case.
+But exactly. Users should not expect the undocumented kernel internal.
+
+
+> The primary redistribution policy has to depend on BPF which is the
+> policy defined by the user based on its application logic (e.g. how
+> its binary restart work).  The application (and bpf) knows which one
+> is a dying process and can avoid distributing to it.
+> 
+> The kernel-pick could be an optional fallback but not a must.  If the bpf
+> prog is attached, I would even go further to call bpf to redistribute
+> regardless of the sysctl, so I think the sysctl is not necessary.
+
+I also think it is just an optional fallback, but to pick out a different
+listener everytime, choosing the moved socket was reasonable. So the even
+redistribution for a specific use case is a side effect of such socket
+selection.
+
+But, users should decide to use either way:
+  (1) let the kernel select a new listener randomly
+  (2) select a particular listener by eBPF
+
+I will update the commit message like:
+The kernel selects a new listener randomly, but as the side effect, it can
+redistribute packets evenly for a specific case where an application
+replaces listeners by generations.
