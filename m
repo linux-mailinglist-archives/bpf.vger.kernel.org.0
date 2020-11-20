@@ -2,109 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9682BA73B
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 11:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC932BA99C
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 12:54:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgKTKUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 05:20:09 -0500
-Received: from mga14.intel.com ([192.55.52.115]:2583 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbgKTKUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Nov 2020 05:20:09 -0500
-IronPort-SDR: qAd9Y4jY3p0s6fUTkdaCkBvlRsug3v4qPBa9h/Q8pAsrZxR0L1uorsqmmBM4aPNyB2Zws1EH+l
- zqxSLhPV+R4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9810"; a="170669444"
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="170669444"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 02:20:09 -0800
-IronPort-SDR: wmc0JH8A7o1ERwpw4MsSCZ5YZBzwpK2CGxwjAJk6lkbSCf5qUeJJA8JSeiv2S+AasTeqLfLvwU
- 3eW9LBYnDlhA==
-X-IronPort-AV: E=Sophos;i="5.78,356,1599548400"; 
-   d="scan'208";a="477175051"
-Received: from schuenem-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.37.132])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 02:20:06 -0800
-Subject: Re: [PATCH net-next V3] MAINTAINERS: Update XDP and AF_XDP entries
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>, joe@perches.com
-References: <160586238944.2808432.4401269290440394008.stgit@firesoul>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <c40b7ae2-78e5-a507-79df-4968924a0cfb@intel.com>
-Date:   Fri, 20 Nov 2020 11:20:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <160586238944.2808432.4401269290440394008.stgit@firesoul>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1725952AbgKTLxw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 06:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgKTLxw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Nov 2020 06:53:52 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E029C0613CF;
+        Fri, 20 Nov 2020 03:53:52 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 62so7087349pgg.12;
+        Fri, 20 Nov 2020 03:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fTyws4Wcb8JbJ0XNofEOfF91urRPW0CoPidlACaoz7U=;
+        b=D7H/6ge4iO+I7BL0bZUHJ1rNLYXA3vNFtQHbUev1Zxkwiz25SlE7lrzhPqzrqYKh4+
+         kvkiJUoYaNoAjpAGTR4lbeg2xdSYyw1HSk8L7NnF1GYHtyUZmtXijdlvSu/RtrQWXkGh
+         sU+5unlzZuxnmL0343wpnPa5TkRvftH6OXSb8XJLSzrQ64XaAVCe8ROjfhtA+UHvoLsG
+         Y0vqwtQoiCV1akveocp6VeIEkxExyKa/4ZJAX/G8KuIX+jU7O0TDDOlvwgZ/KYFYpBIE
+         eTTQEU8Ze9W+HvT97HowEATrY6elejEIDbEsnD6jim9BiDA9JRS/Mnldtekuyn5ZYJKV
+         L8Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fTyws4Wcb8JbJ0XNofEOfF91urRPW0CoPidlACaoz7U=;
+        b=IZS4ABtREusNGOuZCiKqtOb8CldOlHVNMOAigpdoECNgMWllqXuZfJiCrbG4vpN/hC
+         XtEaYXWWo63hImLUAfBbNNMSOPs8xizsTpuQjaFGl+5pCT8gDlUtpdK+v+vmi5hX45Iv
+         +Zx2PHTn29vW+Fo56FtNZObXywH1dsy2u75hp0vMz25vSN4EqnaZg7RPMV5jQr12nOUv
+         uhdIhdC2O+6JWBOnVStWyZJzp1hzz1iI7l/fmG863DyQpcb9tySQ8YMm7Zt2q4zW7ozo
+         9TbzZW0KkHaS+AIpWaDicJNwWBFpy4kCSsirWHhzQZsN0Tvg32q8CcUX5j4ObcduCNXQ
+         IIdQ==
+X-Gm-Message-State: AOAM532nHC1Wi/5WB/cCUWpumf01u//B4eDlFV0VSp0zzgDnBwR663cV
+        k4miibV7fMQz6fqPK49zohK+PsA19CsMqyzEucQ=
+X-Google-Smtp-Source: ABdhPJx06t1DqEmP6ElG5P45hXR8UNJ3PeAPO2bEgLkM9yDPDgzcWDEH50z7gF2UFVaqxy6BMzjJuQ==
+X-Received: by 2002:a17:90a:f0f:: with SMTP id 15mr9865390pjy.127.1605873231683;
+        Fri, 20 Nov 2020 03:53:51 -0800 (PST)
+Received: from localhost.localdomain ([192.55.54.40])
+        by smtp.gmail.com with ESMTPSA id k25sm3349155pfi.42.2020.11.20.03.53.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 20 Nov 2020 03:53:51 -0800 (PST)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     alardam@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH bpf] xsk: fix umem cleanup bug at socket destruct
+Date:   Fri, 20 Nov 2020 12:53:39 +0100
+Message-Id: <1605873219-21629-1-git-send-email-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-11-20 09:53, Jesper Dangaard Brouer wrote:
-> Getting too many false positive matches with current use
-> of the content regex K: and file regex N: patterns.
-> 
-> This patch drops file match N: and makes K: more restricted.
-> Some more normal F: file wildcards are added.
-> 
-> Notice that AF_XDP forgot to some F: files that is also
-> updated in this patch.
-> 
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Thanks Jesper!
+Fix a bug that is triggered when a partially setup socket is
+destroyed. For a fully setup socket, a socket that has been bound to a
+device, the cleanup of the umem is performed at the end of the buffer
+pool's cleanup work queue item. This has to be performed in a work
+queue, and not in RCU cleanup, as it is doing a vunmap that cannot
+execute in interrupt context. However, when a socket has only been
+partially set up so that a umem has been created but the buffer pool
+has not, the code erroneously directly calls the umem cleanup function
+instead of using a work queue, and this leads to a BUG_ON() in
+vunmap().
 
-Acked-by: Björn Töpel <bjorn.topel@intel.com>
+As there in this case is no buffer pool, we cannot use its work queue,
+so we need to introduce a work queue for the umem and schedule this for
+the cleanup. So in the case there is no pool, we are going to use the
+umem's own work queue to schedule the cleanup. But if there is a
+pool, the cleanup of the umem is still being performed by the pool's
+work queue, as it is important that the umem is cleaned up after the
+pool.
 
-> ---
->   MAINTAINERS |   12 ++++++++++--
->   1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index af9f6a3ab100..f827f504251b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -19105,12 +19105,17 @@ L:	netdev@vger.kernel.org
->   L:	bpf@vger.kernel.org
->   S:	Supported
->   F:	include/net/xdp.h
-> +F:	include/net/xdp_priv.h
->   F:	include/trace/events/xdp.h
->   F:	kernel/bpf/cpumap.c
->   F:	kernel/bpf/devmap.c
->   F:	net/core/xdp.c
-> -N:	xdp
-> -K:	xdp
-> +F:	samples/bpf/xdp*
-> +F:	tools/testing/selftests/bpf/*xdp*
-> +F:	tools/testing/selftests/bpf/*/*xdp*
-> +F:	drivers/net/ethernet/*/*/*/*/*xdp*
-> +F:	drivers/net/ethernet/*/*/*xdp*
-> +K:	(?:\b|_)xdp(?:\b|_)
->   
->   XDP SOCKETS (AF_XDP)
->   M:	Björn Töpel <bjorn.topel@intel.com>
-> @@ -19119,9 +19124,12 @@ R:	Jonathan Lemon <jonathan.lemon@gmail.com>
->   L:	netdev@vger.kernel.org
->   L:	bpf@vger.kernel.org
->   S:	Maintained
-> +F:	Documentation/networking/af_xdp.rst
->   F:	include/net/xdp_sock*
->   F:	include/net/xsk_buff_pool.h
->   F:	include/uapi/linux/if_xdp.h
-> +F:	include/uapi/linux/xdp_diag.h
-> +F:	include/net/netns/xdp.h
->   F:	net/xdp/
->   F:	samples/bpf/xdpsock*
->   F:	tools/lib/bpf/xsk*
-> 
-> 
+Fixes: e5e1a4bc916d ("xsk: Fix possible memory leak at socket close")
+Reported-by: Marek Majtyka <marekx.majtyka@intel.com>
+Tested-by: Marek Majtyka <marekx.majtyka@intel.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ include/net/xdp_sock.h  |  1 +
+ net/xdp/xdp_umem.c      | 19 ++++++++++++++++---
+ net/xdp/xdp_umem.h      |  2 +-
+ net/xdp/xsk.c           |  2 +-
+ net/xdp/xsk_buff_pool.c |  2 +-
+ 5 files changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+index 1a9559c..4f4e93b 100644
+--- a/include/net/xdp_sock.h
++++ b/include/net/xdp_sock.h
+@@ -31,6 +31,7 @@ struct xdp_umem {
+ 	struct page **pgs;
+ 	int id;
+ 	struct list_head xsk_dma_list;
++	struct work_struct work;
+ };
+ 
+ struct xsk_map {
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 56d052b..56a28a6 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -66,18 +66,31 @@ static void xdp_umem_release(struct xdp_umem *umem)
+ 	kfree(umem);
+ }
+ 
++static void xdp_umem_release_deferred(struct work_struct *work)
++{
++	struct xdp_umem *umem = container_of(work, struct xdp_umem, work);
++
++	xdp_umem_release(umem);
++}
++
+ void xdp_get_umem(struct xdp_umem *umem)
+ {
+ 	refcount_inc(&umem->users);
+ }
+ 
+-void xdp_put_umem(struct xdp_umem *umem)
++void xdp_put_umem(struct xdp_umem *umem, bool defer_cleanup)
+ {
+ 	if (!umem)
+ 		return;
+ 
+-	if (refcount_dec_and_test(&umem->users))
+-		xdp_umem_release(umem);
++	if (refcount_dec_and_test(&umem->users)) {
++		if (defer_cleanup) {
++			INIT_WORK(&umem->work, xdp_umem_release_deferred);
++			schedule_work(&umem->work);
++		} else {
++			xdp_umem_release(umem);
++		}
++	}
+ }
+ 
+ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
+diff --git a/net/xdp/xdp_umem.h b/net/xdp/xdp_umem.h
+index 181fdda..aa9fe27 100644
+--- a/net/xdp/xdp_umem.h
++++ b/net/xdp/xdp_umem.h
+@@ -9,7 +9,7 @@
+ #include <net/xdp_sock_drv.h>
+ 
+ void xdp_get_umem(struct xdp_umem *umem);
+-void xdp_put_umem(struct xdp_umem *umem);
++void xdp_put_umem(struct xdp_umem *umem, bool defer_cleanup);
+ struct xdp_umem *xdp_umem_create(struct xdp_umem_reg *mr);
+ 
+ #endif /* XDP_UMEM_H_ */
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index cfbec39..5a6cdf7 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -1147,7 +1147,7 @@ static void xsk_destruct(struct sock *sk)
+ 		return;
+ 
+ 	if (!xp_put_pool(xs->pool))
+-		xdp_put_umem(xs->umem);
++		xdp_put_umem(xs->umem, !xs->pool);
+ 
+ 	sk_refcnt_debug_dec(sk);
+ }
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index 8a3bf4e..3c5a142 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -242,7 +242,7 @@ static void xp_release_deferred(struct work_struct *work)
+ 		pool->cq = NULL;
+ 	}
+ 
+-	xdp_put_umem(pool->umem);
++	xdp_put_umem(pool->umem, false);
+ 	xp_destroy(pool);
+ }
+ 
+-- 
+2.7.4
+
