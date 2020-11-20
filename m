@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6D42BAAF1
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 14:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A692BAAF0
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 14:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727721AbgKTNRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1727404AbgKTNRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 20 Nov 2020 08:17:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727657AbgKTNRP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Nov 2020 08:17:15 -0500
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69532C061A48
+        with ESMTP id S1727657AbgKTNRO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Nov 2020 08:17:14 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0083C0617A7
         for <bpf@vger.kernel.org>; Fri, 20 Nov 2020 05:17:13 -0800 (PST)
-Received: by mail-wm1-x342.google.com with SMTP id 1so9779119wme.3
+Received: by mail-wr1-x442.google.com with SMTP id b6so10023596wrt.4
         for <bpf@vger.kernel.org>; Fri, 20 Nov 2020 05:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kcXVWXPxoLKih6EtdFRtl2N21qH/p1/6u4SC99t+On8=;
-        b=d64b+CWLC9dd2UR9cP7cGgIkvtHwVlwtPcgshP7H3YBR3mfTayvFqZj6OUBgjcR+/D
-         Bpm6Jn5NFW1pEkT0XNWlVEopRlcyIYzk8XK6AgugHYhgEnIcbhoeYI55F5PmxDY73kgQ
-         fZ9SauyaqxHBc8/ok/wpYVuMyx3rfNyq3ylyo=
+        bh=KobsDfLvvwwoQBJaQpY6EUfIO/NscqTe50uGy1eW/88=;
+        b=XkdruCUCJy0vVXiI0GdwzPsjTOtz+tLforHPSGq48dki799F2HBzUYbMZEaoQGkyz8
+         NyLIqjENSc/9cf89Uo7YA/4fY7/UCK6qyp7hCF1l9+4whOJmqJrj2iOR7teHYo98Eb9i
+         IJ3UiZWpp1zl/QGGMJ3snJvt4i9Q0ShVd9O0s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kcXVWXPxoLKih6EtdFRtl2N21qH/p1/6u4SC99t+On8=;
-        b=hvAlKYfCqcBziH9mSCnbDCMlbBJScG+wJnbog+qh6vB+Xl+JioFeGz9c72mDBkjvSG
-         dFzflAeRk6w9A2YG/EZR22RIDwl22ci0YIeHJxGC0Xv7qIXBhDMRPRn57CuskPhLaV/A
-         C8wOZkcwo7VbxzSzJizb8TLwStOgfM404ZEWRD6AZse1cf4WZQ0kpELPWhukYIVuANlF
-         8FeqqUi1RYAoig6YVguemau1B+d3WOsqbFqnyedC+cH3P/QWW9y0AHut78iiGB7TEsyQ
-         H1YcuCSZUxlzGHq7TJl1AYHOFSQpskKooGaydHDZI1gaOyMNb1P63hk+uSonoh1NHP5L
-         7xYw==
-X-Gm-Message-State: AOAM531wGKDzos+PcioW0B0+VkDi51iBjlu4BJC4iwzmhII9ZdwgQE+p
-        yc6X/pwLc403UGQusoJkAHwJTA==
-X-Google-Smtp-Source: ABdhPJygynZo+wiqSSmRj0zeAT8u4UVO6uobDEBWToYjLGR4EHpLdKr7WO7f55wFrIBQAF7BeFXK9w==
-X-Received: by 2002:a1c:44f:: with SMTP id 76mr10120516wme.181.1605878232016;
+        bh=KobsDfLvvwwoQBJaQpY6EUfIO/NscqTe50uGy1eW/88=;
+        b=rB8bKXFL7JVHkTwS3mTNiLswyiwahc5yOJF/9DZ2JtSxgRb1V9ssTpJkj8mHIHn8ju
+         eaIXnbTjo6dzjvGjgFU/SZNlsFn3l80KUjT+JO1aUCqax2d95+UL4k3dwbRtMM1Xfrkx
+         PK6uzEEQuNf3rWniKjg/bCOOzP8SQLarBgi05tQNQavWtV1JyQaohlNTVXLljkz3AL+F
+         eKnkcK6vEraZbPWuUu7CoBnSUUaOk61vk258lm2zAxEIkpU8UBgyM/ZJn87buJNgaJ4O
+         U8XqDuBtp9tsbZWwLteq9pyMqSoLP6EHDa1q1Q+oaBWRmBVacbPbTmlzVT1zk7vuCh+0
+         ZvMA==
+X-Gm-Message-State: AOAM530b7d/hHohd1CjyX42Fc+8BLiPCoNdgaXUdboD5J9y03kAjCEAH
+        /2A4VpwkKVa5K1Q2RvslK/ZFSw==
+X-Google-Smtp-Source: ABdhPJzUiKdrYOVWCnJTxkk/+DH44xU6PKfkwEBAAvSc9pFneQYoKimqm1y1FMfpgOt5H2pwz7MT3A==
+X-Received: by 2002:adf:f246:: with SMTP id b6mr15269927wrp.238.1605878232682;
         Fri, 20 Nov 2020 05:17:12 -0800 (PST)
 Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id u203sm4260197wme.32.2020.11.20.05.17.11
+        by smtp.gmail.com with ESMTPSA id u203sm4260197wme.32.2020.11.20.05.17.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Nov 2020 05:17:11 -0800 (PST)
+        Fri, 20 Nov 2020 05:17:12 -0800 (PST)
 From:   KP Singh <kpsingh@chromium.org>
 To:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org, linux-security-module@vger.kernel.org
@@ -52,9 +52,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
         Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH bpf-next 2/3] bpf: Add a BPF helper for getting the IMA hash of an inode
-Date:   Fri, 20 Nov 2020 13:17:07 +0000
-Message-Id: <20201120131708.3237864-2-kpsingh@chromium.org>
+Subject: [PATCH bpf-next 3/3] bpf: Update LSM selftests for bpf_ima_inode_hash
+Date:   Fri, 20 Nov 2020 13:17:08 +0000
+Message-Id: <20201120131708.3237864-3-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 In-Reply-To: <20201120131708.3237864-1-kpsingh@chromium.org>
 References: <20201120131708.3237864-1-kpsingh@chromium.org>
@@ -66,143 +66,114 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-Provide a wrapper function to get the IMA hash of an inode. This helper
-is useful in fingerprinting files (e.g executables on execution) and
-using these fingerprints in detections like an executable unlinking
-itself.
+- Update the IMA policy before executing the test binary (this is not an
+  override of the policy, just an append that ensures that hashes are
+  calculated on executions).
 
-Since the ima_inode_hash can sleep, it's only allowed for sleepable
-LSM hooks.
+- Call the bpf_ima_inode_hash in the bprm_committed_creds hook and check
+  if the call succeeded and a hash was calculated.
 
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- include/uapi/linux/bpf.h       | 11 +++++++++++
- kernel/bpf/bpf_lsm.c           | 26 ++++++++++++++++++++++++++
- scripts/bpf_helpers_doc.py     |  1 +
- tools/include/uapi/linux/bpf.h | 11 +++++++++++
- 4 files changed, 49 insertions(+)
+ tools/testing/selftests/bpf/config            |  3 ++
+ .../selftests/bpf/prog_tests/test_lsm.c       | 32 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/lsm.c       |  7 +++-
+ 3 files changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 3ca6146f001a..dd5b8622bb89 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3807,6 +3807,16 @@ union bpf_attr {
-  * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
-  * 	Return
-  * 		Current *ktime*.
-+ *
-+ * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
-+ *	Description
-+ *		Returns the stored IMA hash of the *inode* (if it's avaialable).
-+ *		If the hash is larger than *size*, then only *size*
-+ *		bytes will be copied to *dst*
-+ *	Return
-+ *		The **hash_algo** of is returned on success,
-+ *		**-EOPNOTSUP** if IMA is disabled and **-EINVAL** if
-+ *		invalid arguments are passed.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3970,6 +3980,7 @@ union bpf_attr {
- 	FN(get_current_task_btf),	\
- 	FN(bprm_opts_set),		\
- 	FN(ktime_get_coarse_ns),	\
-+	FN(ima_inode_hash),		\
- 	/* */
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 2118e23ac07a..4b5764031368 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -39,3 +39,6 @@ CONFIG_BPF_JIT=y
+ CONFIG_BPF_LSM=y
+ CONFIG_SECURITY=y
+ CONFIG_LIRC=y
++CONFIG_IMA=y
++CONFIG_IMA_WRITE_POLICY=y
++CONFIG_IMA_READ_POLICY=y
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+index 6ab29226c99b..3f5d64adb233 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+@@ -52,6 +52,28 @@ int exec_cmd(int *monitored_pid)
+ 	return -EINVAL;
+ }
  
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index b4f27a874092..51c36f61339e 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -15,6 +15,7 @@
- #include <net/bpf_sk_storage.h>
- #include <linux/bpf_local_storage.h>
- #include <linux/btf_ids.h>
-+#include <linux/ima.h>
- 
- /* For every LSM hook that allows attachment of BPF programs, declare a nop
-  * function where a BPF program can be attached.
-@@ -75,6 +76,29 @@ const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
-+BPF_CALL_3(bpf_ima_inode_hash, struct inode *, inode, void *, dst, u32, size)
++#define IMA_POLICY "measure func=BPRM_CHECK"
++
++/* This does not override the policy, IMA policy updates are
++ * append only, so this just ensures that "measure func=BPRM_CHECK"
++ * is in the policy. IMA does not allow us to remove this line once
++ * it is added.
++ */
++static int update_ima_policy(void)
 +{
-+	return ima_inode_hash(inode, dst, size);
++	int fd, ret = 0;
++
++	fd = open("/sys/kernel/security/ima/policy", O_WRONLY);
++	if (fd < 0)
++		return -errno;
++
++	if (write(fd, IMA_POLICY, sizeof(IMA_POLICY)) == -1)
++		ret = -errno;
++
++	close(fd);
++	return ret;
 +}
 +
-+static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
-+{
-+	return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
-+}
-+
-+BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
-+
-+const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
-+	.func		= bpf_ima_inode_hash,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_BTF_ID,
-+	.arg1_btf_id	= &bpf_ima_inode_hash_btf_ids[0],
-+	.arg2_type	= ARG_PTR_TO_UNINIT_MEM,
-+	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
-+	.allowed	= bpf_ima_inode_hash_allowed,
-+};
-+
- static const struct bpf_func_proto *
- bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ void test_test_lsm(void)
  {
-@@ -97,6 +121,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_task_storage_delete_proto;
- 	case BPF_FUNC_bprm_opts_set:
- 		return &bpf_bprm_opts_set_proto;
-+	case BPF_FUNC_ima_inode_hash:
-+		return &bpf_ima_inode_hash_proto;
- 	default:
- 		return tracing_prog_func_proto(func_id, prog);
- 	}
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index add7fcb32dcd..cb16687acb66 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -430,6 +430,7 @@ class PrinterHelpers(Printer):
-             'struct tcp_request_sock',
-             'struct udp6_sock',
-             'struct task_struct',
-+            'struct inode',
+ 	struct lsm *skel = NULL;
+@@ -66,6 +88,10 @@ void test_test_lsm(void)
+ 	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
+ 		goto close_prog;
  
-             'struct __sk_buff',
-             'struct sk_msg_md',
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 3ca6146f001a..dd5b8622bb89 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -3807,6 +3807,16 @@ union bpf_attr {
-  * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
-  * 	Return
-  * 		Current *ktime*.
-+ *
-+ * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
-+ *	Description
-+ *		Returns the stored IMA hash of the *inode* (if it's avaialable).
-+ *		If the hash is larger than *size*, then only *size*
-+ *		bytes will be copied to *dst*
-+ *	Return
-+ *		The **hash_algo** of is returned on success,
-+ *		**-EOPNOTSUP** if IMA is disabled and **-EINVAL** if
-+ *		invalid arguments are passed.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3970,6 +3980,7 @@ union bpf_attr {
- 	FN(get_current_task_btf),	\
- 	FN(bprm_opts_set),		\
- 	FN(ktime_get_coarse_ns),	\
-+	FN(ima_inode_hash),		\
- 	/* */
++	err = update_ima_policy();
++	if (CHECK(err != 0, "update_ima_policy", "error = %d\n", err))
++		goto close_prog;
++
+ 	err = exec_cmd(&skel->bss->monitored_pid);
+ 	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
+ 		goto close_prog;
+@@ -83,6 +109,12 @@ void test_test_lsm(void)
+ 	CHECK(skel->bss->mprotect_count != 1, "mprotect_count",
+ 	      "mprotect_count = %d\n", skel->bss->mprotect_count);
  
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
++	CHECK(skel->data->ima_hash_ret < 0, "ima_hash_ret",
++	      "ima_hash_ret = %d\n", skel->data->ima_hash_ret);
++
++	CHECK(skel->bss->ima_hash == 0, "ima_hash",
++	      "ima_hash = %lu\n", skel->bss->ima_hash);
++
+ 	syscall(__NR_setdomainname, &buf, -2L);
+ 	syscall(__NR_setdomainname, 0, -3L);
+ 	syscall(__NR_setdomainname, ~0L, -4L);
+diff --git a/tools/testing/selftests/bpf/progs/lsm.c b/tools/testing/selftests/bpf/progs/lsm.c
+index ff4d343b94b5..b0f9639e4b0a 100644
+--- a/tools/testing/selftests/bpf/progs/lsm.c
++++ b/tools/testing/selftests/bpf/progs/lsm.c
+@@ -35,6 +35,8 @@ char _license[] SEC("license") = "GPL";
+ int monitored_pid = 0;
+ int mprotect_count = 0;
+ int bprm_count = 0;
++int ima_hash_ret = -1;
++u64 ima_hash = 0;
+ 
+ SEC("lsm/file_mprotect")
+ int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
+@@ -65,8 +67,11 @@ int BPF_PROG(test_void_hook, struct linux_binprm *bprm)
+ 	__u32 key = 0;
+ 	__u64 *value;
+ 
+-	if (monitored_pid == pid)
++	if (monitored_pid == pid) {
+ 		bprm_count++;
++		ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
++						  &ima_hash, sizeof(ima_hash));
++	}
+ 
+ 	bpf_copy_from_user(args, sizeof(args), (void *)bprm->vma->vm_mm->arg_start);
+ 	bpf_copy_from_user(args, sizeof(args), (void *)bprm->mm->arg_start);
 -- 
 2.29.2.454.gaff20da3a2-goog
 
