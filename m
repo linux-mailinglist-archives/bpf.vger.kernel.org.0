@@ -2,62 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D642D2BAC50
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 16:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05862BAC52
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 16:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgKTPAG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 10:00:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
+        id S1727978AbgKTPAH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 10:00:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727801AbgKTPAF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:00:05 -0500
+        id S1727872AbgKTPAG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Nov 2020 10:00:06 -0500
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1605884405;
-        bh=BYiLKOVqkNAYoJTZqSUDLeWZewVr01bS2rylzop/SuM=;
+        bh=JtOBq9k5Q7gxm5FYBu4N1VZSOARirpJvz4gTERAL3Pk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=xQ0KBj1Kf+h81KTB7asTInYDP6htasrK0iUApPcOKhrODsiUn1QOxYUV1QpgoBd1D
-         NKsYxHtsBbkh6eI7dC9J94U22GXW5NvLVKCjNQquH4yqRVpvDGFc7A7e4zTlMlzys7
-         mqzwucccjrvwfmjdearkUFtlieDte/THJJxmRWi4=
+        b=Z29qCP65QBLi6ywgoo6qVQINqsqolPX3Ouc+/8N/g/AJaSGyH4Ow1LNjdH90vNVwf
+         GgOUtJiTiHrtJxOx89HwhCompIgfbdvVmm/3fvlOD4s1TxxmrQFVFzWU4jczTIfSZN
+         YB0SaaeJFoauaIXUqUsocuKL34nJFgELswxeLCkk=
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] xsk: fix umem cleanup bug at socket destruct
+Subject: Re: [PATCH bpf-next v2] bpftool: add {i,d}tlb_misses support for bpftool
+ profile
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160588440537.22328.3077027679091299701.git-patchwork-notify@kernel.org>
+Message-Id: <160588440572.22328.16982569855942163.git-patchwork-notify@kernel.org>
 Date:   Fri, 20 Nov 2020 15:00:05 +0000
-References: <1605873219-21629-1-git-send-email-magnus.karlsson@gmail.com>
-In-Reply-To: <1605873219-21629-1-git-send-email-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, alardam@gmail.com, bpf@vger.kernel.org
+References: <20201119073039.4060095-1-yhs@fb.com>
+In-Reply-To: <20201119073039.4060095-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, songliubraving@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Fri, 20 Nov 2020 12:53:39 +0100 you wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Wed, 18 Nov 2020 23:30:39 -0800 you wrote:
+> Commit 47c09d6a9f67("bpftool: Introduce "prog profile" command")
+> introduced "bpftool prog profile" command which can be used
+> to profile bpf program with metrics like # of instructions,
 > 
-> Fix a bug that is triggered when a partially setup socket is
-> destroyed. For a fully setup socket, a socket that has been bound to a
-> device, the cleanup of the umem is performed at the end of the buffer
-> pool's cleanup work queue item. This has to be performed in a work
-> queue, and not in RCU cleanup, as it is doing a vunmap that cannot
-> execute in interrupt context. However, when a socket has only been
-> partially set up so that a umem has been created but the buffer pool
-> has not, the code erroneously directly calls the umem cleanup function
-> instead of using a work queue, and this leads to a BUG_ON() in
-> vunmap().
+> This patch added support for itlb_misses and dtlb_misses.
+> During an internal bpf program performance evaluation,
+> I found these two metrics are also very useful. The following
+> is an example output:
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] xsk: fix umem cleanup bug at socket destruct
-    https://git.kernel.org/bpf/bpf/c/537cf4e3cc2f
+  - [bpf-next,v2] bpftool: add {i,d}tlb_misses support for bpftool profile
+    https://git.kernel.org/bpf/bpf-next/c/450d060e8f75
 
 You are awesome, thank you!
 --
