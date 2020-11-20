@@ -2,154 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E9A2BA132
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 04:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C922BA499
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 09:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgKTDcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Nov 2020 22:32:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726105AbgKTDcH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Nov 2020 22:32:07 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EC8C0613CF;
-        Thu, 19 Nov 2020 19:32:06 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id l14so7313192ybq.3;
-        Thu, 19 Nov 2020 19:32:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MDSChj7t8E0nOBelKAVeGIp649rp0iplARF6aGlNqvw=;
-        b=ptmUv8f9Gl69JK7a/YBc7s3Z1+m6ERmOWBawdvXIGfuVBxXuz0mCMa4YaRflW91bmP
-         5y22aLYYnjbT0dJjQRUXywl1sYFnERYUx+JICdTMWr7TzUZmq3SFnlSlmUMc+FdfJHUN
-         u02PhjBlzPbJ612ArzowlZgz+0yZz/IY3ORjtGkNrKOfL6hJRKspw78uNeQLLkSd/60y
-         2W3Izzol1JsRBV38OuQvwFufMoztGXdPk7ghcWKCIXfqjfDbkAOe/rW7n+p2qw+hjZkG
-         zRAMNsTXbiKcQ2dU5D0oX1N5xqfFOT9DB9r5YZ5fxCnlCon+rPx1PvMSz3otF72KEfsm
-         bMEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MDSChj7t8E0nOBelKAVeGIp649rp0iplARF6aGlNqvw=;
-        b=lMA9OUhruR17Lqbne+unNySzVdzB68+l9al4MfTa9t4qLy3lzqvgOta1pIOScRz1B0
-         HxJlxFShc1cGawMZvYs7s0QWb3CdM+scu3J0XM1Q1sIl/x7WZq0GQfKRunx/fU60yrUV
-         TEP8fBYWpSB0DqOYeg+s2pWWv34X7yc2kNNG7WcGf77TekDaa5eVkvpgwHj6lv+3e833
-         BLlUMOlnSXLx+/WE+FfT2whgOBuZrOSKzmtHicJiR0YwCBoMaaMkVGwF/xHhW9h34RPj
-         yfs5aqH9W/qfgooyENtk40752bjdxIpRwgwz2X+dwyoDVnvZfi1Y7RPGOnGgr0eRLcDh
-         3RTw==
-X-Gm-Message-State: AOAM533pS/OkBGd2GpTmZN07YZwSSglznXm0yD6vBlAzVwXRKBu06EFp
-        RINZCDvPTQ/MnGjYC1cspxxjC4TQDr+6fd+yAHk=
-X-Google-Smtp-Source: ABdhPJzMG5f2CUvTuJkLQZrKh4JSphCj1EjRVb8WpOTydHpA5PzcqTUnK6mBuxsGnInTzvH9FsTNmvSZ2UlPrg1e0s4=
-X-Received: by 2002:a25:7717:: with SMTP id s23mr23026247ybc.459.1605843125502;
- Thu, 19 Nov 2020 19:32:05 -0800 (PST)
+        id S1727043AbgKTI0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 03:26:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57551 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725805AbgKTI0z (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Nov 2020 03:26:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605860814;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U2YimWpDUws6BcP/KA0i+1IY7B/VrO0r4M6jQRKX2a0=;
+        b=chKcmWKDHX8zwT//xoA2WJBak3mWqqhNV8dBDCgxGoKSC4r7VkqMvt0vvSLUDCx4nxq+/D
+        27aTqjPbhtgOYwAwJcP+Z0zUVgHccMuRQ+4ie+OP24En2YTFecNBkpxCD0YM5udxl80qkW
+        mi27VxrOeQNyD9Qb9UMPiCOpKcPyx3g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-2R1Y9FVCO6Owey6T2y9aKQ-1; Fri, 20 Nov 2020 03:26:50 -0500
+X-MC-Unique: 2R1Y9FVCO6Owey6T2y9aKQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17F7C1005D69;
+        Fri, 20 Nov 2020 08:26:48 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C5AA91002393;
+        Fri, 20 Nov 2020 08:26:39 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:26:38 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V6 2/7] bpf: fix bpf_fib_lookup helper MTU
+ check for SKB ctx
+Message-ID: <20201120092638.14e09025@carbon>
+In-Reply-To: <160571337537.2801246.15228178384451037535.stgit@firesoul>
+References: <160571331409.2801246.11527010115263068327.stgit@firesoul>
+        <160571337537.2801246.15228178384451037535.stgit@firesoul>
 MIME-Version: 1.0
-References: <20201119232244.2776720-1-andrii@kernel.org> <20201119232244.2776720-5-andrii@kernel.org>
- <20201120004624.GA25728@ranger.igk.intel.com> <CAEf4BzbZihTe74R_mHU=6S0QcrXaKEFoubByP5HVRq6O-t6c-Q@mail.gmail.com>
- <20201120020527.GB26162@ranger.igk.intel.com>
-In-Reply-To: <20201120020527.GB26162@ranger.igk.intel.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 19 Nov 2020 19:31:54 -0800
-Message-ID: <CAEf4BzbzcjjiqN=dReEp8xTcBHsFJmewKUyvU83S2sU+0_FTjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/6] libbpf: add kernel module BTF support for
- CO-RE relocations
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 6:14 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Thu, Nov 19, 2020 at 05:24:43PM -0800, Andrii Nakryiko wrote:
-> > On Thu, Nov 19, 2020 at 4:55 PM Maciej Fijalkowski
-> > <maciej.fijalkowski@intel.com> wrote:
-> > >
-> > > On Thu, Nov 19, 2020 at 03:22:42PM -0800, Andrii Nakryiko wrote:
-> > > > Teach libbpf to search for candidate types for CO-RE relocations across kernel
-> > > > modules BTFs, in addition to vmlinux BTF. If at least one candidate type is
-> > > > found in vmlinux BTF, kernel module BTFs are not iterated. If vmlinux BTF has
-> > > > no matching candidates, then find all kernel module BTFs and search for all
-> > > > matching candidates across all of them.
-> > > >
-> > > > Kernel's support for module BTFs are inferred from the support for BTF name
-> > > > pointer in BPF UAPI.
-> > > >
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > > >  tools/lib/bpf/libbpf.c | 185 ++++++++++++++++++++++++++++++++++++++---
-> > > >  1 file changed, 172 insertions(+), 13 deletions(-)
-> > > >
-> > >
-> > > [...]
-> > >
-> > > > +static int probe_module_btf(void)
-> > > > +{
-> > > > +     static const char strs[] = "\0int";
-> > > > +     __u32 types[] = {
-> > > > +             /* int */
-> > > > +             BTF_TYPE_INT_ENC(1, BTF_INT_SIGNED, 0, 32, 4),
-> > > > +     };
-> > > > +     struct bpf_btf_info info;
-> > > > +     __u32 len = sizeof(info);
-> > > > +     char name[16];
-> > > > +     int fd, err;
-> > > > +
-> > > > +     fd = libbpf__load_raw_btf((char *)types, sizeof(types), strs, sizeof(strs));
-> > > > +     if (fd < 0)
-> > > > +             return 0; /* BTF not supported at all */
-> > > > +
-> > > > +     len = sizeof(info);
-> > >
-> > > nit: reinit of len
-> > >
-> >
-> > oops, right, I'll remove it
-> >
-> >
-> > > > +     memset(&info, 0, sizeof(info));
-> > >
-> > > use len in memset
-> >
-> > why?
->
-> Hm, just to make use of local var? We might argue that current version is
+On Wed, 18 Nov 2020 16:29:35 +0100
+Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 
-I agree, I think sizeof(info) is more readable. But my point is that
-if you suggest something, please provide at least some argument for
-why you think it's better or why existing code is worse or wrong (if
-you think it is).
+> BPF end-user on Cilium slack-channel (Carlo Carraro) wants to use
+> bpf_fib_lookup for doing MTU-check, but *prior* to extending packet size,
+> by adjusting fib_params 'tot_len' with the packet length plus the
+> expected encap size. (Just like the bpf_check_mtu helper supports). He
+> discovered that for SKB ctx the param->tot_len was not used, instead
+> skb->len was used (via MTU check in is_skb_forwardable()).
+> 
+> Fix this by using fib_params 'tot_len' for MTU check.  If not provided
+> (e.g. zero) then keep existing behaviour intact.
 
-> more readable, but then again I would question the len's existence.
+Carlo pointed out (in slack) that the logic is not correctly
+implemented in this patch.
 
-len is passed to the kernel by reference and the kernel is updating it
-with the actual length it has (which could be <, ==, or > than what
-the program specified). So it has to be in a variable.
+I will send a V7.
 
->
-> Do whatever you want, these were just nits :)
->
-> >
-> > >
-> > > > +     info.name = ptr_to_u64(name);
-> > > > +     info.name_len = sizeof(name);
-> > > > +
-> > > > +     /* check that BPF_OBJ_GET_INFO_BY_FD supports specifying name pointer;
-> > > > +      * kernel's module BTF support coincides with support for
-> > > > +      * name/name_len fields in struct bpf_btf_info.
-> > > > +      */
-> > > > +     err = bpf_obj_get_info_by_fd(fd, &info, &len);
 
-here -------------------------------------------------^^^^
+> Fixes: 4c79579b44b1 ("bpf: Change bpf_fib_lookup to return lookup status")
+> Reported-by: Carlo Carraro <colrack@gmail.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  net/core/filter.c |   12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 1ee97fdeea64..ae1fe8e6069a 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5567,10 +5567,20 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
+>  
+>  	if (!rc) {
+>  		struct net_device *dev;
+> +		u32 mtu;
+>  
+>  		dev = dev_get_by_index_rcu(net, params->ifindex);
+> -		if (!is_skb_forwardable(dev, skb))
+> +		mtu = dev->mtu;
+> +
+> +		/* Using tot_len for L3 MTU check if provided by user. Notice at
+> +		 * this TC cls_bpf level skb->len contains L2 size, but
+> +		 * is_skb_forwardable takes that into account.
+> +		 */
+> +		if (params->tot_len > mtu) {
+>  			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
+> +		} else if (!is_skb_forwardable(dev, skb)) {
+> +			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
+> +		}
+>  	}
+>  
+>  	return rc;
 
-> > > > +     close(fd);
-> > > > +     return !err;
-> > > > +}
-> > >
-> > > [...]
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
