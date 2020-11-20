@@ -2,278 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377DD2BB1B3
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 18:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC1F2BB1D3
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 18:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgKTRsD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 12:48:03 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32942 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728292AbgKTRsC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 20 Nov 2020 12:48:02 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AKHk8xk011661;
-        Fri, 20 Nov 2020 09:47:45 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=nFXJs59iKppT/kHGULH4YEXuAgAArAjUu4YR3HqjoLk=;
- b=ANhDEr02IKtBHAGF6He1K4tKVeHzvI2Pwz5up0MqV4YzFAnMLI7bk8io3KFp9IkWnYNz
- xm1X8OWy5NIsiQZHCUUsKKEpDWDvePyPiMisuI+oQPDgtizmn/YTU04Y7lh7SjoNr0WH
- jTtHtArrpq4xy5KfZDLeWDW/q18WKEPxlyM= 
+        id S1728507AbgKTR4K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 12:56:10 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13680 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727421AbgKTR4K (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Nov 2020 12:56:10 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AKHsq32026006;
+        Fri, 20 Nov 2020 09:55:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=AWE/ABXLERkTEiAqEbFnLkfWw3Yveqj5Q7RlhDk8bT4=;
+ b=clvWPgSa7AFMHiQ7W3A4PzDQLUqcovMVq0/7brvbChkkGf9miyMe0pbQHbNqUHt93oMr
+ raDudDD4iKHYHlVWuTplQ14KovRvYIhSkgrLvDGEOTkZ+9Tpmdq8wW0YBBv1vkfZPQZz
+ t8RCIBeHrNan6m1GShXodBXJfYiCI/4KQsE= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34xat42gxc-1
+        by mx0a-00082601.pphosted.com with ESMTP id 34x9f9txa1-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 20 Nov 2020 09:47:45 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+        Fri, 20 Nov 2020 09:55:56 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 20 Nov 2020 09:47:43 -0800
+ 15.1.1979.3; Fri, 20 Nov 2020 09:55:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LifHS/gwO6liW1m2kZ9aJ9T8+3MQr/68wjKGvJImtQxk6QT4igqovQWhtIcNED23e+IhKcolheEM7unJKQkpLwImqkuNmdDrXcNmZM2wz2t6KBv1ybe9RTuWmE3iUPYzRi1ihUWBZ7ngg5ORjqR4BHtuGfRuzw/nO3iMsUssr2yTl2zrx4fqDS8K4uNKUVKCCbXtVmVtE5p/H9S69EhIXRvZJyKiz1JeMzYMN5FuRiLX0606TN5MVqo+IBBjtA3GY/Q8WHcPDLAMpN63437x55ilnYt/2BnYJ+sZKgQmQJP7fs1CFt+4qB3tUANfleguX7Smslxse1X9cLSKB6KP3g==
+ b=MwHFU4BKrLEDJtkGAHlnhtnwsssVHYvmqQB0UwOQzet4bnbBRJqZWMTRn8useqqu4a7PKFCTwx2q5XwO3vmwrx4CcdAp6EbliU/kWozNhQt9UU8yE++EspLzgR62kGLjV/sie3s5UOhEEinbNuc0gJC+D8R/McXybHb0NvHS42psH5ZTw9aVa6CvZWfOfAU1w/v9U91EPzzgZxH+KG1vpE30eZgSiulzWKjBYmIPq//tfD0UGQywbUQntxuIYktuLv+Xpn6PbRFLD46heFXlQbOtU1lzyHfavkKhsQj1U4aBrZJCAV2mEXz+7DHIqPajlOKAEWxPO0UL/b4j7vIMmQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nFXJs59iKppT/kHGULH4YEXuAgAArAjUu4YR3HqjoLk=;
- b=R3OzgqDOvrq/s844hjx1+EusXMIFwzVPqpaJRWMb5jkce/vwChRBHx+tfLMbuHPR48lX+alhovgycdYOu1zNHEXr0+LvQF/oL/xcrpPa3GkAlZ8Ka2xGAVwRvR6b8/OT3+3RZad3v3QQcZlN4+dhGbQ51D8iice/pRDhZwU9U3Q4GvdtK1+Acos3xBgEVrmFHmT72xfvfG6RRCBEHDidJuugoNpt/Wy23POZp+fwudo+DFx6EVWM1/CLPONsGUd7XNiKT8Rw4uFMYyVsBcRWpP4JwOkXPqlsODzvR7F9+FSV56DlqOXCdSYStk08AGXhCf/l2Ia1AZVyx7ubMPE06g==
+ bh=AWE/ABXLERkTEiAqEbFnLkfWw3Yveqj5Q7RlhDk8bT4=;
+ b=iiRPqM/lpOVBO4T0ekrO5qObUtzgfwfLZt+N1sIJgti5aPUS5InL9r8hrlQbflnNcafw6Jav3myXgDOOdQqiic5Rop4OvKSahThkG7HIK6Bq1QhB3rF9NQjwZ+zSO0Zsb4PPzb2zwOv8aS60HKyXOu4dln9xVu82kjju+xPmvlfedTRIJ0P/LH25n2JSl4+9NPAy85B44iEltsgGjKlY9l50HDwlAMRwDWDDDl6ehs9WkvS8vIDr1vjOt1A0sqdo8iHhQYC5uxAeo5coAqvukJ0d9JvywDT/2zDDgWATPbiRG05aG+XCtdN7ej/FS4Fp/fMmoeYu6VnTlmYCLGmGKA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nFXJs59iKppT/kHGULH4YEXuAgAArAjUu4YR3HqjoLk=;
- b=K0RHrhAUAm3N9OPXYwIYIPt+DJbNYiKRiKyzpm2ZNQ8X1hyizw8F6WHabL090JMrwj/+z2iGDbOR1PyjYuwNlig3FDKds/Pn4kLxvPDHoMHIqRKPILFtQdoLKZK/EpAiHvdqtGN9j9SY+b/rUeTyHaEgbPwsVVYB2rbhVAvUATU=
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3208.namprd15.prod.outlook.com (2603:10b6:a03:10c::13) with
+ bh=AWE/ABXLERkTEiAqEbFnLkfWw3Yveqj5Q7RlhDk8bT4=;
+ b=lVzzTRIHWefCU4qmhsOyjYpIIB+gj1IlOTJmN1yKcCglm5D/pga9oy4PKHFhyDuHv12wxkTq/4zX7dOB2nzcoiCWz0DJkF5Ynjn69Mt4DVW1ygEErUON10IUjMmCmzCcpiRxhnPxnpgGjaoag4EZJIe18jYwvNc2+sIU7q7g3b8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2263.namprd15.prod.outlook.com (2603:10b6:a02:87::27) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.21; Fri, 20 Nov
- 2020 17:47:29 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%6]) with mapi id 15.20.3564.028; Fri, 20 Nov 2020
- 17:47:29 +0000
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add a BPF helper for getting the IMA
- hash of an inode
-To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-References: <20201120131708.3237864-1-kpsingh@chromium.org>
- <20201120131708.3237864-2-kpsingh@chromium.org>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a9336dd5-df17-85d9-7c63-d8ab4b74b459@fb.com>
-Date:   Fri, 20 Nov 2020 09:47:26 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
-In-Reply-To: <20201120131708.3237864-2-kpsingh@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:f0a]
-X-ClientProxiedBy: CO1PR15CA0049.namprd15.prod.outlook.com
- (2603:10b6:101:1f::17) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Fri, 20 Nov
+ 2020 17:55:51 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::bc1d:484f:cb1f:78ee%4]) with mapi id 15.20.3564.034; Fri, 20 Nov 2020
+ 17:55:51 +0000
+Date:   Fri, 20 Nov 2020 09:55:45 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/6] bpf: fix bpf_put_raw_tracepoint()'s use of
+ __module_address()
+Message-ID: <20201120175545.c6y7wuj3v5icxrq7@kafai-mbp.dhcp.thefacebook.com>
+References: <20201119232244.2776720-1-andrii@kernel.org>
+ <20201119232244.2776720-2-andrii@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201119232244.2776720-2-andrii@kernel.org>
+X-Originating-IP: [2620:10d:c090:400::5:603e]
+X-ClientProxiedBy: CO2PR04CA0166.namprd04.prod.outlook.com
+ (2603:10b6:104:4::20) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1688] (2620:10d:c090:400::5:f0a) by CO1PR15CA0049.namprd15.prod.outlook.com (2603:10b6:101:1f::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Fri, 20 Nov 2020 17:47:28 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:603e) by CO2PR04CA0166.namprd04.prod.outlook.com (2603:10b6:104:4::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20 via Frontend Transport; Fri, 20 Nov 2020 17:55:50 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: caabdbb8-db9d-4ce5-0097-08d88d7c59b8
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3208:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3208BBF583341EDEA38B4837D3FF0@BYAPR15MB3208.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 883d0bb4-10ab-4d6d-6251-08d88d7d84c8
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2263:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB226307F8B1C5EF2334D4C57BD5FF0@BYAPR15MB2263.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ptaw6LsvrMJYeedQCE/gA6rRMLs+ChFC8iThHS3buEjug44DMwaRbO3ltclWzPKY3V3CDOBV61RTrwAE4j6VI6S2fSNyq3tMGgLO/qccBqLlV9KgIQ6VL6RVG9UpmWWzMyEI4tOyy1oRIwewKcEGssYccNShtBfn6IFhE58vz0iGgcCHr3y+lNs4xpPW11ZGUn943NnbXWfSXxuM9YjUCjsYDxnlhWaC8BccDUI1+lQlr0LQq+U28c5Ilmqn0DSA/mcqCxaqje5doPkAOrjgp4gnbp7j8NrYAvALIDFSSExYtWaRJw4vCLheSA7YGmP722MyboppY1qV4fivPfbQc5W1Y9aXd34zNwMiNyq9PbZbBamazVqw2OwuB5X52qqo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(346002)(366004)(39860400002)(36756003)(66476007)(110136005)(316002)(186003)(16526019)(8936002)(5660300002)(83380400001)(8676002)(86362001)(53546011)(478600001)(6486002)(66946007)(4326008)(52116002)(66556008)(31696002)(2616005)(31686004)(2906002)(7416002)(54906003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: lM77Rmaamdeq/zcaV1b/5Qla9CcDF1p4ui4hiZOHtdxe8GSSnY0BGdluaA0X0rdqIyuZNbFp2xfZe4x8McbICvRjeWFC7tBcWTZH9cnX9/RnGk7CdG9XBsA7ME8/f76279puDlrjb6uEKWx2MfchT8qY3323UgL2JO/FqQ48ThTgR6SRwjjwyvvlZetT1FZqZqBR4/oLySYKgL/hdit1U5zEQBZGbILM3bDScniuyr7lp+gHyTj3D39bac5tTmqXHbC7E+xA2gN0s46rp4FTpHaiWWVnSiOXZHLxQzHeVE94BuL/ERfqT52jcaL3PcGE0lmSSRKI907wt9xi7ATSE9WzW/r83mIYV7uUMrIr/eSziSYpgpaYLuZFKO23SoaRfo10zwZeGU7TCnVOB5NP+S2kPJ11LLNyb4HxUNjIUpDZCNuA0bh9QQ+DRCI552S9XMjeuTQKFP9NbIbIox0S2vhZ46lGROiINAHuCYBLtRgGmkBoiITtwviEUToIScwwUb5GPaCAJcJDtJVjj8FTCellK2pVdPTiIKzMLWG6vzoI0BdFFF10pt8HkIZ76ceJ2sFEvIn/+BM7Mf1QV39wO2aPSMkcTY3lNA7lb45Wa7UI+KWHt1iRWu37sqH9czWpFV+uKsFVZ8oIBbqmWsdbK1TZs0jgBuST2SZDaegdkb2nOT0nRhUIlvefO/BrW3sQrZimFxn4tGWyp9Yo5DiWO60U++ohxj0xGcw6tcdVVv1lY+E/aHn6Xr88cdWoXS2+kwRvyxtHTm/YmhOhkkm+gxrHJsek7KU8gkMn1z8lBqh+9/ajc2C9j75EqXULlZzjzMl40rcJJ55up8RbK2/IOXDQi1yUwYkKWgBQIzwNOwzv6FlFkX6gOPaVPyJ1rP22eYcITQ3bU/Ihke8og5v6iaUq12zbC98NMO28bEsrGFI=
-X-MS-Exchange-CrossTenant-Network-Message-Id: caabdbb8-db9d-4ce5-0097-08d88d7c59b8
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: gmRWbY78pSiCy9GEYB6Ip9dSUoxbioG/xFXxd2TqlQqH7oIDaD/fB9mZ2hs+Hlx5Tt13Mp5tPcm4X2L50qgoifkcMGQblLKysp5TOzdTg0+uy8CfxJg1pxw++foFTZ5Qmqrpcgtev0ughBh1ToSxy2nT/y267AK3KwW9vsMF+4z9LymTYz3ToFuGkLPH/3VPsTHECYyAWiTorzJLY5PytGcT8VTpqlwVKT4ytMeFTLCFAjK3a3c/IdejkXfxzXBosKlXrIvocbqm286XXQbQTg8h+rp68QttxHEsLecZnNMXgP+3GKEgv1SQkpZAWA2O343SU82MhkaL41PbtmI+cw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(366004)(396003)(39860400002)(83380400001)(5660300002)(8676002)(6916009)(55016002)(16526019)(66946007)(66476007)(9686003)(186003)(66556008)(7696005)(52116002)(1076003)(2906002)(6666004)(478600001)(316002)(4326008)(8936002)(86362001)(558084003)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: JE2RLMnLSWAXDRZC3ic2xwWFwcH5onC75WGsYAv01PI7XdrHYaUe0zQFhrIeqARP4xMAEdMyGlKSc45DAIV4n37ZmkBN5DNE8jR5WwpjW8D9ltLE72ca2PzT6dA+8zJycgTBRGgRjY9TajY03Vt49A4A5fWv7/dZ6RcCvdqiZkj/q7xj+xrsvFhMklcmsVmqhIqIsc2QEgejOySYtkxJcyy7y09VxMyiMpH6rdtHQWffbz2YJn8dMWEo2E3BZkfdwS2WhYQE/p+q6geMMEV3XqU0Of+RHEBbFAo0AatzO4T2wxS6Ton8dzuWSm8x10vsIIJPPiZHApBw9dreZUH3tg9VavV+5LmpZP4moKH28r3DoLixasWC0ljlP2Vkl9lU7iKj9qhwTYtsQKiBuSAedgM0aPZGmIu4PDbd6dZPsIvCcLCVPpJdzfmG+fI43gKVt/G8eiAYh3KI13RcFrDJIJO265eEeAHVxNiM37Syh6FNUyxpPKd37ZpUDzITWbzNxLS0E77dsbT9KHTYhY6ntH8GONZf40VmvQWlT4tEiQrVosbCwfHh5RMpx9sOElfrGJpGH1dt8vba3y44o2DTcv2HSOtDKrk4XP5LfiRRd7ZLZLIn9XSZdLBTtgU9hX0S6U2mRJaQ9S34JdG7EHeTHRWUnxrkjE/A+yP++VZmdT1tNuZLzA4Y682FAF0tmO0bHsiIPtKxmBsj+wENii983mWOmOwP5MD/Fyi+EVvOw/E+SeZ0lZzMwIg1VX6F6P9uP6rbYxH4m96+dxC+BuO/ohJILskL8HO9vytLrYd9O8ROA0qJ2aPLC4U1grR7Vafy3tXxjcyY1JLUAj2WpkgVWZsfOnnFDMXb4/JztxYa8dcJ94qfjAu/1a48kYPMmywbR3QrBvVDT5UWR3beKMGLmtadBOpwfnd2ssd0/sEf8Rg=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 883d0bb4-10ab-4d6d-6251-08d88d7d84c8
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2020 17:47:29.4976
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2020 17:55:51.4116
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: p7BmP82ReeOe01XCEvSQNyt9iockiO8YOIG3lWmV0ke2jnCOKpOvVWnQc/MI+zZg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3208
+X-MS-Exchange-CrossTenant-UserPrincipalName: eMSMwLJePpgd3WoEJjLYavJ8CpI1T4ywJ84A2ufqRp9FPFdaQx1vJgnWjts9w8D9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2263
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-20_09:2020-11-20,2020-11-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011200122
+ definitions=2020-11-20_12:2020-11-20,2020-11-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 mlxlogscore=824 suspectscore=1
+ bulkscore=0 spamscore=0 clxscore=1015 phishscore=0 adultscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011200123
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 11/20/20 5:17 AM, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
-> 
-> Provide a wrapper function to get the IMA hash of an inode. This helper
-> is useful in fingerprinting files (e.g executables on execution) and
-> using these fingerprints in detections like an executable unlinking
-> itself.
-> 
-> Since the ima_inode_hash can sleep, it's only allowed for sleepable
-> LSM hooks.
-> 
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> ---
->   include/uapi/linux/bpf.h       | 11 +++++++++++
->   kernel/bpf/bpf_lsm.c           | 26 ++++++++++++++++++++++++++
->   scripts/bpf_helpers_doc.py     |  1 +
->   tools/include/uapi/linux/bpf.h | 11 +++++++++++
->   4 files changed, 49 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 3ca6146f001a..dd5b8622bb89 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3807,6 +3807,16 @@ union bpf_attr {
->    * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
->    * 	Return
->    * 		Current *ktime*.
-> + *
-> + * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
-> + *	Description
-> + *		Returns the stored IMA hash of the *inode* (if it's avaialable).
-> + *		If the hash is larger than *size*, then only *size*
-> + *		bytes will be copied to *dst*
-> + *	Return > + *		The **hash_algo** of is returned on success,
-
-of => if?
-
-> + *		**-EOPNOTSUP** if IMA is disabled and **-EINVAL** if
-
-and => or
-
-> + *		invalid arguments are passed.
->    */
->   #define __BPF_FUNC_MAPPER(FN)		\
->   	FN(unspec),			\
-> @@ -3970,6 +3980,7 @@ union bpf_attr {
->   	FN(get_current_task_btf),	\
->   	FN(bprm_opts_set),		\
->   	FN(ktime_get_coarse_ns),	\
-> +	FN(ima_inode_hash),		\
->   	/* */
->   
->   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> index b4f27a874092..51c36f61339e 100644
-> --- a/kernel/bpf/bpf_lsm.c
-> +++ b/kernel/bpf/bpf_lsm.c
-> @@ -15,6 +15,7 @@
->   #include <net/bpf_sk_storage.h>
->   #include <linux/bpf_local_storage.h>
->   #include <linux/btf_ids.h>
-> +#include <linux/ima.h>
->   
->   /* For every LSM hook that allows attachment of BPF programs, declare a nop
->    * function where a BPF program can be attached.
-> @@ -75,6 +76,29 @@ const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
->   	.arg2_type	= ARG_ANYTHING,
->   };
->   
-> +BPF_CALL_3(bpf_ima_inode_hash, struct inode *, inode, void *, dst, u32, size)
-> +{
-> +	return ima_inode_hash(inode, dst, size);
-> +}
-> +
-> +static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
-> +{
-> +	return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
-> +}
-> +
-> +BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
-> +
-> +const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
-> +	.func		= bpf_ima_inode_hash,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_PTR_TO_BTF_ID,
-> +	.arg1_btf_id	= &bpf_ima_inode_hash_btf_ids[0],
-> +	.arg2_type	= ARG_PTR_TO_UNINIT_MEM,
-> +	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
-
-I know ARG_CONST_SIZE_OR_ZERO provides some flexibility and may
-make verifier easier to verify programs. But beyond that did
-you see any real use case user will pass a zero size buf to
-get hash value?
-
-> +	.allowed	= bpf_ima_inode_hash_allowed,
-> +};
-> +
->   static const struct bpf_func_proto *
->   bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   {
-> @@ -97,6 +121,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   		return &bpf_task_storage_delete_proto;
->   	case BPF_FUNC_bprm_opts_set:
->   		return &bpf_bprm_opts_set_proto;
-> +	case BPF_FUNC_ima_inode_hash:
-> +		return &bpf_ima_inode_hash_proto;
->   	default:
->   		return tracing_prog_func_proto(func_id, prog);
->   	}
-> diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-> index add7fcb32dcd..cb16687acb66 100755
-> --- a/scripts/bpf_helpers_doc.py
-> +++ b/scripts/bpf_helpers_doc.py
-> @@ -430,6 +430,7 @@ class PrinterHelpers(Printer):
->               'struct tcp_request_sock',
->               'struct udp6_sock',
->               'struct task_struct',
-> +            'struct inode',
->   
->               'struct __sk_buff',
->               'struct sk_msg_md',
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 3ca6146f001a..dd5b8622bb89 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -3807,6 +3807,16 @@ union bpf_attr {
->    * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
->    * 	Return
->    * 		Current *ktime*.
-> + *
-> + * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
-> + *	Description
-> + *		Returns the stored IMA hash of the *inode* (if it's avaialable).
-> + *		If the hash is larger than *size*, then only *size*
-> + *		bytes will be copied to *dst*
-> + *	Return
-> + *		The **hash_algo** of is returned on success,
-
-of => if?
-
-> + *		**-EOPNOTSUP** if IMA is disabled and **-EINVAL** if
-
-and => or.
-
-> + *		invalid arguments are passed.
->    */
->   #define __BPF_FUNC_MAPPER(FN)		\
->   	FN(unspec),			\
-> @@ -3970,6 +3980,7 @@ union bpf_attr {
->   	FN(get_current_task_btf),	\
->   	FN(bprm_opts_set),		\
->   	FN(ktime_get_coarse_ns),	\
-> +	FN(ima_inode_hash),		\
->   	/* */
->   
->   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> 
+On Thu, Nov 19, 2020 at 03:22:39PM -0800, Andrii Nakryiko wrote:
+> __module_address() needs to be called with preemption disabled or with
+> module_mutex taken. preempt_disable() is enough for read-only uses, which is
+> what this fix does.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
