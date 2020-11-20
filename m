@@ -2,30 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406942BB6EE
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 21:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAABA2BB6E6
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 21:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731136AbgKTUa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 15:30:27 -0500
-Received: from mga07.intel.com ([134.134.136.100]:10348 "EHLO mga07.intel.com"
+        id S1731082AbgKTUaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 15:30:14 -0500
+Received: from mga07.intel.com ([134.134.136.100]:10342 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731017AbgKTUaF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S1731023AbgKTUaF (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 20 Nov 2020 15:30:05 -0500
-IronPort-SDR: Y/Mh/T9GvdCZFtMqTf6wPcjw49m4asX23QB7wCRKt3lTlIfgQtQ6JH5aAcjo1AV70V4QjxeX4K
- inuBMoOtCBjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="235683296"
+IronPort-SDR: K2d95Nu4mp/a4670UE8IY5Wnz0GTiZGFqnjXwYRXAq4ZHQKzykQnpYSSNXJsTTAR2rc3xH0g/1
+ OzZRtPm8nknQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9811"; a="235683303"
 X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="235683296"
+   d="scan'208";a="235683303"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 12:30:03 -0800
-IronPort-SDR: II4ekpkhOvKaWBqJedqpw9lKC/FogA54M5cqtk2mIsaXaaDR8zAXkVs+TgD+DICnZJ3XUcjpCg
- sq9q0khmZD0w==
+IronPort-SDR: E3Uc8tOndvBdwSPq0RRlnOjyyziKbRbBuO7nCsOiNMuCDPsSgn1Bym+Sc3Bcy/sFyeXqTRpAyd
+ 3bo/AIxGPz6A==
 X-IronPort-AV: E=Sophos;i="5.78,357,1599548400"; 
-   d="scan'208";a="342163300"
+   d="scan'208";a="342163305"
 Received: from rpedgeco-mobl.amr.corp.intel.com (HELO localhost.intel.com) ([10.209.105.214])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 12:30:02 -0800
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2020 12:30:03 -0800
 From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
 To:     akpm@linux-foundation.org, jeyu@kernel.org, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net, luto@kernel.org,
@@ -34,9 +34,9 @@ To:     akpm@linux-foundation.org, jeyu@kernel.org, bpf@vger.kernel.org,
         dan.j.williams@intel.com
 Cc:     elena.reshetova@intel.com, ira.weiny@intel.com,
         Rick Edgecombe <rick.p.edgecombe@intel.com>
-Subject: [PATCH RFC 05/10] x86/modules: Use real perm_allocations
-Date:   Fri, 20 Nov 2020 12:24:21 -0800
-Message-Id: <20201120202426.18009-6-rick.p.edgecombe@intel.com>
+Subject: [PATCH RFC 06/10] x86/alternatives: Handle perm_allocs for modules
+Date:   Fri, 20 Nov 2020 12:24:22 -0800
+Message-Id: <20201120202426.18009-7-rick.p.edgecombe@intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
 References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
@@ -46,167 +46,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-x86 relocations require all of the text sections to be within 2GB of
-eachother. So as long as the allocations are somewhere in the module area,
-relocations can be applied. So relax the restriction of having the module
-regions for a module core or init area be virtually contiguous.
-
-Also, apply relocations at the writable address of the perm_allocation to
-support a future implementation that has the writable address in a
-different allocation.
+Modules being loaded using perm_allocs may have a separate writable
+address. Handle this case in alternatives for operations called during
+module loading.
 
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- arch/x86/kernel/module.c | 84 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 71 insertions(+), 13 deletions(-)
+ arch/x86/kernel/alternative.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index 34b153cbd4ac..7b369f5ffdb7 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -85,6 +85,58 @@ void *module_alloc(unsigned long size)
- 	return p;
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 2400ad62f330..e6d8a696540b 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -373,7 +373,7 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 						  struct alt_instr *end)
+ {
+ 	struct alt_instr *a;
+-	u8 *instr, *replacement;
++	u8 *instr, *writ_instr, *replacement, *writ_replacement;
+ 	u8 insn_buff[MAX_PATCH_LEN];
+ 
+ 	DPRINTK("alt table %px, -> %px", start, end);
+@@ -391,11 +391,13 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 
+ 		instr = (u8 *)&a->instr_offset + a->instr_offset;
+ 		replacement = (u8 *)&a->repl_offset + a->repl_offset;
++		writ_instr = (u8 *)module_adjust_writable_addr(instr);
++		writ_replacement = (u8 *)module_adjust_writable_addr(replacement);
+ 		BUG_ON(a->instrlen > sizeof(insn_buff));
+ 		BUG_ON(a->cpuid >= (NCAPINTS + NBUGINTS) * 32);
+ 		if (!boot_cpu_has(a->cpuid)) {
+ 			if (a->padlen > 1)
+-				optimize_nops(a, instr);
++				optimize_nops(a, writ_instr);
+ 
+ 			continue;
+ 		}
+@@ -403,13 +405,13 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 		DPRINTK("feat: %d*32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d), pad: %d",
+ 			a->cpuid >> 5,
+ 			a->cpuid & 0x1f,
+-			instr, instr, a->instrlen,
++			writ_instr, instr, a->instrlen,
+ 			replacement, a->replacementlen, a->padlen);
+ 
+ 		DUMP_BYTES(instr, a->instrlen, "%px: old_insn: ", instr);
+ 		DUMP_BYTES(replacement, a->replacementlen, "%px: rpl_insn: ", replacement);
+ 
+-		memcpy(insn_buff, replacement, a->replacementlen);
++		memcpy(insn_buff, writ_replacement, a->replacementlen);
+ 		insn_buff_sz = a->replacementlen;
+ 
+ 		/*
+@@ -435,7 +437,7 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+ 		}
+ 		DUMP_BYTES(insn_buff, insn_buff_sz, "%px: final_insn: ", instr);
+ 
+-		text_poke_early(instr, insn_buff, insn_buff_sz);
++		text_poke_early(writ_instr, insn_buff, insn_buff_sz);
+ 	}
  }
  
-+bool module_perm_alloc(struct module_layout *layout)
-+{
-+	unsigned long vstart = MODULES_VADDR + get_module_load_offset();
-+	unsigned long vend = MODULES_END;
-+	unsigned int text_page_cnt = PAGE_ALIGN(layout->text.size) >> PAGE_SHIFT;
-+	unsigned int ro_page_cnt = PAGE_ALIGN(layout->ro.size) >> PAGE_SHIFT;
-+	unsigned int ro_after_init_page_cnt = PAGE_ALIGN(layout->ro_after_init.size) >> PAGE_SHIFT;
-+	unsigned int rw_page_cnt = PAGE_ALIGN(layout->rw.size) >> PAGE_SHIFT;
-+
-+	layout->text.alloc = NULL;
-+	layout->ro.alloc = NULL;
-+	layout->ro_after_init.alloc = NULL;
-+	layout->rw.alloc = NULL;
-+
-+	layout->text.alloc = perm_alloc(vstart, vend, text_page_cnt, PERM_RX);
-+	if (!layout->text.alloc && layout->text.size)
-+		goto out;
-+
-+	layout->ro.alloc = perm_alloc(vstart, vend, ro_page_cnt, PERM_R);
-+	if (!layout->ro.alloc && layout->ro.size)
-+		goto text_free_out;
-+
-+	layout->ro_after_init.alloc = perm_alloc(vstart, vend, ro_after_init_page_cnt, PERM_RW);
-+	if (!layout->ro_after_init.alloc && layout->ro_after_init.size)
-+		goto ro_free_out;
-+
-+	layout->rw.alloc = perm_alloc(vstart, vend, rw_page_cnt, PERM_RW);
-+	if (!layout->rw.alloc && layout->rw.size)
-+		goto ro_after_init_out;
-+
-+	return true;
-+ro_after_init_out:
-+	perm_free(layout->ro_after_init.alloc);
-+	layout->ro_after_init.alloc = NULL;
-+ro_free_out:
-+	perm_free(layout->ro.alloc);
-+	layout->ro.alloc = NULL;
-+text_free_out:
-+	perm_free(layout->text.alloc);
-+	layout->text.alloc = NULL;
-+out:
-+	return false;
-+}
-+
-+void module_perm_free(struct module_layout *layout)
-+{
-+	perm_free(layout->text.alloc);
-+	perm_free(layout->ro.alloc);
-+	perm_free(layout->ro_after_init.alloc);
-+	perm_free(layout->rw.alloc);
-+}
-+
- #ifdef CONFIG_X86_32
- int apply_relocate(Elf32_Shdr *sechdrs,
- 		   const char *strtab,
-@@ -134,9 +186,11 @@ static int __apply_relocate_add(Elf64_Shdr *sechdrs,
- 		   void *(*write)(void *dest, const void *src, size_t len))
+@@ -496,6 +498,10 @@ void __init_or_module alternatives_smp_module_add(struct module *mod,
+ 						  void *text,  void *text_end)
  {
- 	unsigned int i;
-+	struct perm_allocation *alloc;
- 	Elf64_Rela *rel = (void *)sechdrs[relsec].sh_addr;
- 	Elf64_Sym *sym;
- 	void *loc;
-+	void *writable_loc;
- 	u64 val;
+ 	struct smp_alt_module *smp;
++	void *w_locks = module_adjust_writable_addr(locks);
++	void *w_locks_end = module_adjust_writable_addr(locks_end);
++	void *w_text = module_adjust_writable_addr(text);
++	void *w_text_end = module_adjust_writable_addr(text_end);
  
- 	DEBUGP("Applying relocate section %u to %u\n",
-@@ -146,6 +200,9 @@ static int __apply_relocate_add(Elf64_Shdr *sechdrs,
- 		loc = (void *)sechdrs[sechdrs[relsec].sh_info].sh_addr
- 			+ rel[i].r_offset;
+ 	mutex_lock(&text_mutex);
+ 	if (!uniproc_patched)
+@@ -522,7 +528,7 @@ void __init_or_module alternatives_smp_module_add(struct module *mod,
  
-+		alloc = module_get_allocation(me, (unsigned long)loc);
-+		writable_loc = (void *)perm_writable_addr(alloc, (unsigned long)loc);
-+
- 		/* This is the symbol it is referring to.  Note that all
- 		   undefined symbols have been resolved.  */
- 		sym = (Elf64_Sym *)sechdrs[symindex].sh_addr
-@@ -161,40 +218,40 @@ static int __apply_relocate_add(Elf64_Shdr *sechdrs,
- 		case R_X86_64_NONE:
- 			break;
- 		case R_X86_64_64:
--			if (*(u64 *)loc != 0)
-+			if (*(u64 *)writable_loc != 0)
- 				goto invalid_relocation;
--			write(loc, &val, 8);
-+			write(writable_loc, &val, 8);
- 			break;
- 		case R_X86_64_32:
--			if (*(u32 *)loc != 0)
-+			if (*(u32 *)writable_loc != 0)
- 				goto invalid_relocation;
--			write(loc, &val, 4);
--			if (val != *(u32 *)loc)
-+			write(writable_loc, &val, 4);
-+			if (val != *(u32 *)writable_loc)
- 				goto overflow;
- 			break;
- 		case R_X86_64_32S:
--			if (*(s32 *)loc != 0)
-+			if (*(s32 *)writable_loc != 0)
- 				goto invalid_relocation;
--			write(loc, &val, 4);
--			if ((s64)val != *(s32 *)loc)
-+			write(writable_loc, &val, 4);
-+			if ((s64)val != *(s32 *)writable_loc)
- 				goto overflow;
- 			break;
- 		case R_X86_64_PC32:
- 		case R_X86_64_PLT32:
--			if (*(u32 *)loc != 0)
-+			if (*(u32 *)writable_loc != 0)
- 				goto invalid_relocation;
- 			val -= (u64)loc;
--			write(loc, &val, 4);
-+			write(writable_loc, &val, 4);
- #if 0
--			if ((s64)val != *(s32 *)loc)
-+			if ((s64)val != *(s32 *)writable_loc)
- 				goto overflow;
- #endif
- 			break;
- 		case R_X86_64_PC64:
--			if (*(u64 *)loc != 0)
-+			if (*(u64 *)writable_loc != 0)
- 				goto invalid_relocation;
- 			val -= (u64)loc;
--			write(loc, &val, 8);
-+			write(writable_loc, &val, 8);
- 			break;
- 		default:
- 			pr_err("%s: Unknown rela relocation: %llu\n",
-@@ -273,6 +330,7 @@ int module_finalize(const Elf_Ehdr *hdr,
- 		void *aseg = (void *)alt->sh_addr;
- 		apply_alternatives(aseg, aseg + alt->sh_size);
+ 	list_add_tail(&smp->next, &smp_alt_modules);
+ smp_unlock:
+-	alternatives_smp_unlock(locks, locks_end, text, text_end);
++	alternatives_smp_unlock(w_locks, w_locks_end, w_text, w_text_end);
+ unlock:
+ 	mutex_unlock(&text_mutex);
+ }
+@@ -601,17 +607,18 @@ void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
+ 
+ 	for (p = start; p < end; p++) {
+ 		unsigned int used;
++		void *writable = module_adjust_writable_addr(p->instr);
+ 
+ 		BUG_ON(p->len > MAX_PATCH_LEN);
+ 		/* prep the buffer with the original instructions */
+-		memcpy(insn_buff, p->instr, p->len);
+-		used = pv_ops.init.patch(p->type, insn_buff, (unsigned long)p->instr, p->len);
++		memcpy(insn_buff, writable, p->len);
++		used = pv_ops.init.patch(p->type, insn_buff, (unsigned long)writable, p->len);
+ 
+ 		BUG_ON(used > p->len);
+ 
+ 		/* Pad the rest with nops */
+ 		add_nops(insn_buff + used, p->len - used);
+-		text_poke_early(p->instr, insn_buff, p->len);
++		text_poke_early(writable, insn_buff, p->len);
  	}
-+
- 	if (locks && text) {
- 		void *lseg = (void *)locks->sh_addr;
- 		void *tseg = (void *)text->sh_addr;
+ }
+ extern struct paravirt_patch_site __start_parainstructions[],
 -- 
 2.20.1
 
