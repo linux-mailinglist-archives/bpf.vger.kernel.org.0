@@ -2,113 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C922BA499
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 09:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 862C42BA50C
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 09:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgKTI0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 03:26:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57551 "EHLO
+        id S1727334AbgKTIsC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 03:48:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47115 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725805AbgKTI0z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 20 Nov 2020 03:26:55 -0500
+        by vger.kernel.org with ESMTP id S1727087AbgKTIsB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Nov 2020 03:48:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1605860814;
+        s=mimecast20190719; t=1605862080;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=U2YimWpDUws6BcP/KA0i+1IY7B/VrO0r4M6jQRKX2a0=;
-        b=chKcmWKDHX8zwT//xoA2WJBak3mWqqhNV8dBDCgxGoKSC4r7VkqMvt0vvSLUDCx4nxq+/D
-        27aTqjPbhtgOYwAwJcP+Z0zUVgHccMuRQ+4ie+OP24En2YTFecNBkpxCD0YM5udxl80qkW
-        mi27VxrOeQNyD9Qb9UMPiCOpKcPyx3g=
+        bh=9kyanfqjEK3v09gPc0MvvYIMy7ftvIBiugYgleDApks=;
+        b=iyQur7uKS6A5ZZiQQ+e+lL11PPnSYk/m1P/fA3gYJWUilaWJDB8MsHR4SW3Hf+7VORKF77
+        CZjmXvSGvxNuuyBGolVsqHZ6mxJfJ2+g6YvJy7IKgCNsGVMrren/XfI0uvS1RGkUFTigRL
+        Ea387MEUa7FUQtnpD+e9fFkDEFFWg8s=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-564-2R1Y9FVCO6Owey6T2y9aKQ-1; Fri, 20 Nov 2020 03:26:50 -0500
-X-MC-Unique: 2R1Y9FVCO6Owey6T2y9aKQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-527-RCOzyPtgNGKQerkAPD6D2A-1; Fri, 20 Nov 2020 03:47:55 -0500
+X-MC-Unique: RCOzyPtgNGKQerkAPD6D2A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17F7C1005D69;
-        Fri, 20 Nov 2020 08:26:48 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 369741005D65;
+        Fri, 20 Nov 2020 08:47:54 +0000 (UTC)
 Received: from carbon (unknown [10.36.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5AA91002393;
-        Fri, 20 Nov 2020 08:26:39 +0000 (UTC)
-Date:   Fri, 20 Nov 2020 09:26:38 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63E2A5D9C6;
+        Fri, 20 Nov 2020 08:47:48 +0000 (UTC)
+Date:   Fri, 20 Nov 2020 09:47:46 +0100
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+To:     Joe Perches <joe@perches.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
         John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V6 2/7] bpf: fix bpf_fib_lookup helper MTU
- check for SKB ctx
-Message-ID: <20201120092638.14e09025@carbon>
-In-Reply-To: <160571337537.2801246.15228178384451037535.stgit@firesoul>
-References: <160571331409.2801246.11527010115263068327.stgit@firesoul>
-        <160571337537.2801246.15228178384451037535.stgit@firesoul>
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH net-next] MAINTAINERS: Update XDP and AF_XDP entries
+Message-ID: <20201120094746.31e90c91@carbon>
+In-Reply-To: <8eef085f2b4d565463d5251a4868c7aaa19bf6ab.camel@perches.com>
+References: <160580680009.2806072.11680148233715741983.stgit@firesoul>
+        <20201119100210.08374826@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20201119215012.57d39102@carbon>
+        <8eef085f2b4d565463d5251a4868c7aaa19bf6ab.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 18 Nov 2020 16:29:35 +0100
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+On Thu, 19 Nov 2020 14:16:20 -0800
+Joe Perches <joe@perches.com> wrote:
 
-> BPF end-user on Cilium slack-channel (Carlo Carraro) wants to use
-> bpf_fib_lookup for doing MTU-check, but *prior* to extending packet size,
-> by adjusting fib_params 'tot_len' with the packet length plus the
-> expected encap size. (Just like the bpf_check_mtu helper supports). He
-> discovered that for SKB ctx the param->tot_len was not used, instead
-> skb->len was used (via MTU check in is_skb_forwardable()).
+> On Thu, 2020-11-19 at 21:50 +0100, Jesper Dangaard Brouer wrote:
+> > On Thu, 19 Nov 2020 10:02:10 -0800
+> > Jakub Kicinski <kuba@kernel.org> wrote:
+> >   
+> > > On Thu, 19 Nov 2020 18:26:40 +0100 Jesper Dangaard Brouer wrote:  
+> > > > Getting too many false positive matches with current use
+> > > > of the content regex K: and file regex N: patterns.
+> > > > 
+> > > > This patch drops file match N: and makes K: more restricted.
+> > > > Some more normal F: file wildcards are added.
+> > > > 
+> > > > Notice that AF_XDP forgot to some F: files that is also
+> > > > updated in this patch.
+> > > > 
+> > > > Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> > > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>    
+> > > 
+> > > Ah! Sorry, I missed that you sent this before replying to Joe.
+> > > 
+> > > Would you mind respining with his regex?  
+> > 
+> > Sure, I just send it... with your adjusted '(\b|_)xdp(\b|_)' regex, as
+> > it seems to do the same thing (and it works with egrep).  
 > 
-> Fix this by using fib_params 'tot_len' for MTU check.  If not provided
-> (e.g. zero) then keep existing behaviour intact.
-
-Carlo pointed out (in slack) that the logic is not correctly
-implemented in this patch.
-
-I will send a V7.
-
-
-> Fixes: 4c79579b44b1 ("bpf: Change bpf_fib_lookup to return lookup status")
-> Reported-by: Carlo Carraro <colrack@gmail.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  net/core/filter.c |   12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
+> The regexes in MAINTAINERS are perl not egrep and using (\b|_)
+> creates unnecessary capture groups.
 > 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 1ee97fdeea64..ae1fe8e6069a 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5567,10 +5567,20 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
->  
->  	if (!rc) {
->  		struct net_device *dev;
-> +		u32 mtu;
->  
->  		dev = dev_get_by_index_rcu(net, params->ifindex);
-> -		if (!is_skb_forwardable(dev, skb))
-> +		mtu = dev->mtu;
-> +
-> +		/* Using tot_len for L3 MTU check if provided by user. Notice at
-> +		 * this TC cls_bpf level skb->len contains L2 size, but
-> +		 * is_skb_forwardable takes that into account.
-> +		 */
-> +		if (params->tot_len > mtu) {
->  			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
-> +		} else if (!is_skb_forwardable(dev, skb)) {
-> +			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
-> +		}
->  	}
->  
->  	return rc;
+> It _really_ should be (?:\b|_)xdp(?:\b|_)
+
+Okay, I will send a V3 patch.
+
+I was trying to write a perl oneliner to tests this, but I realized
+that git-grep supports this directly via --perl-regexp.
+
+$ time git grep --files-with-matches --perl-regexp '(\b|_)xdp(\b|_)' | wc -l
+297
+
+real	0m2,225s
+user	0m0,832s
+sys	0m2,762s
+
+$ time git grep --files-with-matches --perl-regexp '(?:\b|_)xdp(?:\b|_)' | wc -l
+297
+
+real	0m2,261s
+user	0m0,788s
+sys	0m2,714s
+
 
 -- 
 Best regards,
