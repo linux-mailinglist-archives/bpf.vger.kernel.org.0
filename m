@@ -2,171 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7032BAEB0
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 16:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50FA2BAF47
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 16:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729417AbgKTPT3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 10:19:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbgKTPT3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Nov 2020 10:19:29 -0500
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9DCC0613CF;
-        Fri, 20 Nov 2020 07:19:29 -0800 (PST)
-Received: by mail-il1-x141.google.com with SMTP id z14so8806484ilp.11;
-        Fri, 20 Nov 2020 07:19:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=go7rpHsn97AURPaqxUQweQF8Yet+YfZQ1TK6lJWZl+g=;
-        b=UrAWVCjpki5tt9jdrOvuDgNswX793gxa2psmzm60gyRIQ8VSpqscZdhFcZ7avg+BAQ
-         1bB89FKmqFzZqsTy1uZvlxfijIpa6REn5QTwCtVJfNYXYzDJaZQhY30FtshImitXhfhx
-         8LbJVUqnO1uvDSsAm3PeL1cQV3FXM9SnR0GugEThnY/ZakAkbX1RF9cd71imjoejMUNN
-         1tGUk9OcBiyh9bI9cgAJz76dZcM/+m+zW7+5nlvTYR3IReLqGtio51UXcIqg1yFwS5KY
-         Buvxe7VQaAtI3pSKqMN1CwiFcpNVAVdSjdy7VJ+D60//Uw1idyh78hPI/qcsDqOFGdbB
-         7x9g==
+        id S1728766AbgKTPrA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 10:47:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728770AbgKTPrA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Nov 2020 10:47:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605887218;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=7D2x8us35q17HBLGdyACZHrbyRvTTajSnNXTqPgkdIw=;
+        b=emn6i4Z7B5fPoRaZV20Yzh/QtQqGXCwwOGCfgcj+XwYnfseJwWQnH0wTytcHqpkdsQG/ch
+        7rEeJxqcmaFvJTCZFKpeozzNSOaZrBqRS+PU9mt63WlNqJaO4sgPZrbMr7wfuEDMjPY8Xe
+        di0fLC7hQFjrg7+x6Zi8ptErOXp/J0s=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-177-FCqBcmnQOs6fhYdcf6PZ6A-1; Fri, 20 Nov 2020 10:46:56 -0500
+X-MC-Unique: FCqBcmnQOs6fhYdcf6PZ6A-1
+Received: by mail-wr1-f72.google.com with SMTP id z13so3541280wrm.19
+        for <bpf@vger.kernel.org>; Fri, 20 Nov 2020 07:46:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=go7rpHsn97AURPaqxUQweQF8Yet+YfZQ1TK6lJWZl+g=;
-        b=p8QvgpF28cGhb1ItjWvtbrZDZLuEVA+BNr9AFBF1wPQMVmNoTQ4Krm1QdG/s75Q4RY
-         7rXpTBxzfMmpW5MlKvO0R27yGOfL16rN/bEZoK/mpsk5FsM8/C0A5DpXMdNrKYN1ErJK
-         +zMdzhFuO0oIUzWQyPVNWNrbE4SIH2+FQBDaYcVPPp+VW8K+n+UvZJX3imodGWO91uIW
-         AE9hUoMi9YAvVnrEkyrm21WvRbQPnQv2ZcxGZK0gdzjBHgJcrFsH00hWS8vqQZJaWMbD
-         3uOz3J9j9tkHHue4XVfJnHoWqfh7lUPkTJP0OUh+carSjDNhbOC19EMlSQpkqa1OW/0O
-         97rQ==
-X-Gm-Message-State: AOAM530U4NODdwqfwY9if4fNolOeyLOpoM5Za3y6iHxHXCjbnBIiPwEj
-        LZym/pnZNWcOnQAAaWagfsk=
-X-Google-Smtp-Source: ABdhPJzHuxQ96VQz19thRa5iYvSE5dLidV0XB7RllJORKi7Se319Gn7LsXhuQKKg17tjcb32n1IYiQ==
-X-Received: by 2002:a92:ba14:: with SMTP id o20mr27070503ili.268.1605885568355;
-        Fri, 20 Nov 2020 07:19:28 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:61e9:2b78:3570:a66])
-        by smtp.googlemail.com with ESMTPSA id p83sm1827957iod.49.2020.11.20.07.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2020 07:19:27 -0800 (PST)
-Subject: Re: [PATCH] bpf: Check the return value of dev_get_by_index_rcu()
-To:     Daniel Borkmann <daniel@iogearbox.net>, xiakaixu1987@gmail.com,
-        ast@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        andrii@kernel.org, john.fastabend@gmail.com, kpsingh@chromium.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kaixu Xia <kaixuxia@tencent.com>
-References: <1605769468-2078-1-git-send-email-kaixuxia@tencent.com>
- <65d8f988-5b41-24c2-8501-7cbbddb1238e@iogearbox.net>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f8ff26f0-b1b6-6dd1-738d-4c592a8efdb0@gmail.com>
-Date:   Fri, 20 Nov 2020 08:19:26 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.3
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=7D2x8us35q17HBLGdyACZHrbyRvTTajSnNXTqPgkdIw=;
+        b=sZlmHbVQ+MyFd5rdz0+aEWxpt5HFHD9JZ6isfMVDO/7TVOt9qy7b38GS4hEhvYZEAM
+         C28Ky0LiolRDgTkaKnXiUv1ZhaLKr8v32whFGHoCynMD6KyzIS6u9CxDkzJ3KEDus6jp
+         KLgCxHfKB1vD6H81v9J+NVhwIbBJoyPpA/ZBLFxyWkcyI00OcVMXQKhgIWRbENtLi/Na
+         CZyg4B4Wnch+YCZUNfcO7hHoXkatN+KjJJYBj6FPoQdXMr8LdjzPs0bflTqVqjqh6LrW
+         GFnP0uqz2M91WDI00MBz1Hrb9BtnucV5RwRqmh0rPuNw9rUy0AQl3K5+OH5qwd9/ASiA
+         H/Hg==
+X-Gm-Message-State: AOAM530s3/mMWfzkHtC/JDX7wWP7Is9Lz4eqCHO5bwdaKZIil0yJEiij
+        jhcTaGGVlZc9oe1VoM3j1K2Tl6l+DyMIYuVZA5hp+jmJlytpLcPeiyI7g+X5ZCHxmmPWx+kYYq5
+        h4O+x0j3UXSP/
+X-Received: by 2002:a1c:9d08:: with SMTP id g8mr10524670wme.171.1605887214442;
+        Fri, 20 Nov 2020 07:46:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyed8fU5FpjGTbhTXESXyBAZke9Ry5lq9ggDsQOrPcdVwMvkjgsR+WMyU9nvYfHmKDmoAaxqQ==
+X-Received: by 2002:a1c:9d08:: with SMTP id g8mr10524546wme.171.1605887212719;
+        Fri, 20 Nov 2020 07:46:52 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a144sm4962057wmd.47.2020.11.20.07.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2020 07:46:52 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A19D7183852; Fri, 20 Nov 2020 16:46:51 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@mellanox.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: Is test_offload.py supposed to work?
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 20 Nov 2020 16:46:51 +0100
+Message-ID: <87y2iwqbdg.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <65d8f988-5b41-24c2-8501-7cbbddb1238e@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/20/20 8:13 AM, Daniel Borkmann wrote:
-> [ +David ]
-> 
-> On 11/19/20 8:04 AM, xiakaixu1987@gmail.com wrote:
->> From: Kaixu Xia <kaixuxia@tencent.com>
->>
->> The return value of dev_get_by_index_rcu() can be NULL, so here it
->> is need to check the return value and return error code if it is NULL.
->>
->> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
->> ---
->>   net/core/filter.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 2ca5eecebacf..1263fe07170a 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -5573,6 +5573,8 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *,
->> skb,
->>           struct net_device *dev;
->>             dev = dev_get_by_index_rcu(net, params->ifindex);
->> +        if (unlikely(!dev))
->> +            return -EINVAL;
->>           if (!is_skb_forwardable(dev, skb))
->>               rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
+Hi Jakub and Jiri
 
-rcu lock is held right? It is impossible for dev to return NULL here.
+I am investigating an error with XDP offload mode, and figured I'd run
+'test_offload.py' from selftests. However, I'm unable to get it to run
+successfully; am I missing some config options, or has it simply
+bit-rotted to the point where it no longer works?
 
-> 
-> The above logic is quite ugly anyway given we fetched the dev pointer
-> already earlier
-> in bpf_ipv{4,6}_fib_lookup() and now need to redo it again ... so yeah
-
-evolved from the different needs of the xdp and tc paths.
-
-> there could be
-> a tiny race in here. We wanted do bring this logic closer to what XDP
-> does anyway,
-> something like below, for example. David, thoughts? Thx
-> 
-> Subject: [PATCH] diff mtu check
-> 
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> ---
->  net/core/filter.c | 22 +++++-----------------
->  1 file changed, 5 insertions(+), 17 deletions(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 2ca5eecebacf..3bab0a97fa38 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5547,9 +5547,6 @@ static const struct bpf_func_proto
-> bpf_xdp_fib_lookup_proto = {
->  BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
->         struct bpf_fib_lookup *, params, int, plen, u32, flags)
->  {
-> -    struct net *net = dev_net(skb->dev);
-> -    int rc = -EAFNOSUPPORT;
-> -
->      if (plen < sizeof(*params))
->          return -EINVAL;
-> 
-> @@ -5559,25 +5556,16 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *,
-> skb,
->      switch (params->family) {
->  #if IS_ENABLED(CONFIG_INET)
->      case AF_INET:
-> -        rc = bpf_ipv4_fib_lookup(net, params, flags, false);
-> -        break;
-> +        return bpf_ipv4_fib_lookup(dev_net(skb->dev), params, flags,
-> +                       !skb_is_gso(skb));
->  #endif
->  #if IS_ENABLED(CONFIG_IPV6)
->      case AF_INET6:
-> -        rc = bpf_ipv6_fib_lookup(net, params, flags, false);
-> -        break;
-> +        return bpf_ipv6_fib_lookup(dev_net(skb->dev), params, flags,
-> +                       !skb_is_gso(skb));
-
-seems ok.
+[root@(none) bpf]# ./test_offload.py 
+Test destruction of generic XDP...
+Test TC non-offloaded...
+Test TC non-offloaded isn't getting bound...
+Test TC offloads are off by default...
+FAIL: Missing or incorrect netlink extack message
+  File "./test_offload.py", line 836, in <module>
+    check_extack(err, "TC offload is disabled on net device.", args)
+  File "./test_offload.py", line 657, in check_extack
+    fail(not comp, "Missing or incorrect netlink extack message")
+  File "./test_offload.py", line 86, in fail
+    tb = "".join(traceback.extract_stack().format())
 
 
->  #endif
->      }
-> -
-> -    if (!rc) {
-> -        struct net_device *dev;
-> -
-> -        dev = dev_get_by_index_rcu(net, params->ifindex);
-> -        if (!is_skb_forwardable(dev, skb))
-> -            rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
-> -    }
-> -
-> -    return rc;
-> +    return -EAFNOSUPPORT;
->  }
-> 
->  static const struct bpf_func_proto bpf_skb_fib_lookup_proto = {
+Commenting out that line gets me a bit further:
+
+[root@(none) bpf]# ./test_offload.py 
+Test destruction of generic XDP...
+Test TC non-offloaded...
+Test TC non-offloaded isn't getting bound...
+Test TC offloads are off by default...
+Test TC offload by default...
+Test TC cBPF bytcode tries offload by default...
+Test TC cBPF unbound bytecode doesn't offload...
+Test non-0 chain offload...
+FAIL: Missing or incorrect netlink extack message
+  File "./test_offload.py", line 876, in <module>
+    check_extack(err, "Driver supports only offload of chain 0.", args)
+  File "./test_offload.py", line 657, in check_extack
+    fail(not comp, "Missing or incorrect netlink extack message")
+  File "./test_offload.py", line 86, in fail
+    tb = "".join(traceback.extract_stack().format())
+
+
+And again, after which I gave up:
+
+[root@(none) bpf]# ./test_offload.py 
+Test destruction of generic XDP...
+Test TC non-offloaded...
+Test TC non-offloaded isn't getting bound...
+Test TC offloads are off by default...
+Test TC offload by default...
+Test TC cBPF bytcode tries offload by default...
+Test TC cBPF unbound bytecode doesn't offload...
+Test non-0 chain offload...
+Test TC replace...
+Test TC replace bad flags...
+Test spurious extack from the driver...
+Test TC offloads work...
+FAIL: Missing or incorrect message from netdevsim in verifier log
+  File "./test_offload.py", line 920, in <module>
+    check_verifier_log(err, "[netdevsim] Hello from netdevsim!")
+  File "./test_offload.py", line 671, in check_verifier_log
+    fail(True, "Missing or incorrect message from netdevsim in verifier log")
+  File "./test_offload.py", line 86, in fail
+    tb = "".join(traceback.extract_stack().format())
+
+-Toke
 
