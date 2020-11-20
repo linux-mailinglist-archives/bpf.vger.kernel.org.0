@@ -2,215 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991382BB5A6
-	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 20:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDBF2BB635
+	for <lists+bpf@lfdr.de>; Fri, 20 Nov 2020 21:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728308AbgKTTfE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 14:35:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51430 "EHLO
+        id S1729818AbgKTUDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 15:03:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728282AbgKTTfD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Nov 2020 14:35:03 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC4D9C0613CF;
-        Fri, 20 Nov 2020 11:35:03 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id 10so9586169ybx.9;
-        Fri, 20 Nov 2020 11:35:03 -0800 (PST)
+        with ESMTP id S1729673AbgKTUDE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Nov 2020 15:03:04 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72686C0613CF;
+        Fri, 20 Nov 2020 12:03:04 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id s8so9625500yba.13;
+        Fri, 20 Nov 2020 12:03:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gz1739iBwCHgCBSlGtAiZOrgVZxBWr1CGt1BZBmpYLc=;
-        b=RzB+vNPhSCrctwjVn+9T6hR6Yb4xLi2sRuLX5y1dyGHE7S8qBKJTP60ZFndycLLjWR
-         cfZ+4EeKHWR71BqEEFTdnENFAxgmfIon80UfZY5zzs1BMIRtrNZnKpjAQZ2jfwAaXwGE
-         jIg/wU69lERt1QJmrwiZwBKz+VKPrZ84qCz09yBB4/r1tJ+AQAjppUqBzoTAMzpyXj2f
-         3AXR+EkVhJq9cCM41bfk6ku3vfZOHOhskQX7KJSl+jlDlndy8ihR8rfBKvXxJpFZbt1G
-         z7JrXTeaCMs8evhudiSzZVJOMGJNsPn91wKBD6buBKCemHjbaww+P/VmG3PVi0jU+YPo
-         iuEg==
+         :cc:content-transfer-encoding;
+        bh=7fqPLQEFFb+30cv5hRu417jliDYJU1gr9SR+smm/nlA=;
+        b=mVJRrIt7lNN8CGdZoBvgoQpYSdgK0pfYBLiUFGOPRyEmAXpqMmzVJfhPkd4fUBcz6m
+         vQV3ZzU6uLnwCJlABIhOkNbc4gKmeDqy8jQr3sxKvEOHBUJhvJVYcTg2pQ90Cx4a90oe
+         4HHpgxnPxsJk3exyWx2n/6CELJYS6g67rk4JUNIsBjY3/ulJU83kwTbcqUpnDft+zKIk
+         OkoFJgeq5IHfhoIHNFlMWMmdO000sKcv4Yy8H+4gVow321XbHDdFa2r2gt0FK29Fuh8Q
+         uMGVsasMWgYPmb9ck75e+qZpPDZQlPOLLn3mPNicCgxIxtnm7kX+c36BKfeZbLkiqaVU
+         TzYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gz1739iBwCHgCBSlGtAiZOrgVZxBWr1CGt1BZBmpYLc=;
-        b=c64RCKBjyJD2N0j+EMO2CtRNAG5sGkx1ty64uDgxAjh6WGSUZ5NKTbHF40whbg4Y5i
-         PKcx8R4zWIkxlrvu63pEoSj179Z5qExblzza2arThZ9dIb9IGEgVhcnXiNU/l0CPK5Zo
-         DrZAvA2K1zzPnERDz2HoRyDUFkkNGD/uNb7Z0mkB4+y6d43k0Wj+yPgCAQdpxmB+QGOj
-         ckkaKkHULOlZBEcvXaYu2nacp/CtJU0Llc6yCkGoTfJFhubpOAedmvQwMVlrO1UxVFkl
-         Oo7lzQrp4a8daSeBbedo078VwyPSecECC3VnKefW+1DcXpACFWj5ewlKR2EsN2eWhUDa
-         S2ng==
-X-Gm-Message-State: AOAM533oJjhSLh7Cus2abLtgPUT3am4ZUIQIJG2k5Ki0qM0ulxZ+GFPx
-        hMV49fYNceJ5unQO4wmQSSRFjQFT6YxZFjNaY8U=
-X-Google-Smtp-Source: ABdhPJwkW17RSiw+obd1e5Nm9Hj38vu7NKehRzeU4T+FN+Gb8602HMGA3LC/1ktxDY/miOWB9z+AA91gQ2RHOGaaUf4=
-X-Received: by 2002:a25:254a:: with SMTP id l71mr30667864ybl.439.1605900902740;
- Fri, 20 Nov 2020 11:35:02 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7fqPLQEFFb+30cv5hRu417jliDYJU1gr9SR+smm/nlA=;
+        b=mXHpcmYk3hn3ikl7h8If9EgfEwQP2cde/b8pLsy3ntvMiNAPElAALD+AeIauUhPag9
+         w0Jzu1fPm9yw6LU4yhaJJf19RgBtu4Np5tdytuh5nknHKZi4WVzzp8ymFIBl0qSZca9d
+         lWENq+SFBNsRzkRYP5YjamdTDu4yqyFJnieYM5MaIF+7YzKA8FVnCW7/lqV2PoVLozkg
+         l2eK1zEks5CRAEowyBfoNZ+eedbIfL6JrVALV8MuLK6+aEgHcCMNVNVmDw5nIBk4drZd
+         x7LzYhvlks7lP5HZeZlfFoHHmJ6cG150Zzm5ljMs1OHG458i7pEJ8+PkfyVmPG7a/UMB
+         MFgw==
+X-Gm-Message-State: AOAM532yMYImqLmyMYFZKUOWbJpOBs/YeIfdWPutm1ThRJmhqQ5QTodJ
+        /REMQ7wW8l/o8V8zAwDuh85AACjKD34FVlnG2AI=
+X-Google-Smtp-Source: ABdhPJyTL2JUuHRhyKqsCA40H4wzpjo+coWeGY8JK7nwSgn9KmUYvmDwbHDpplv6hSAZ2ZycK6Nw3I4kyf03eg4h6Jg=
+X-Received: by 2002:a25:7717:: with SMTP id s23mr29244152ybc.459.1605902583683;
+ Fri, 20 Nov 2020 12:03:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20201120130026.19029-1-weqaar.a.janjua@intel.com>
- <20201120130026.19029-3-weqaar.a.janjua@intel.com> <c73ca08d-4eae-c56f-f5fe-b4dd1440773b@fb.com>
-In-Reply-To: <c73ca08d-4eae-c56f-f5fe-b4dd1440773b@fb.com>
-From:   Weqaar Janjua <weqaar.janjua@gmail.com>
-Date:   Fri, 20 Nov 2020 19:34:36 +0000
-Message-ID: <CAPLEeBaq5yu5Be4dd1KxRxk5JX24PynuA-xreBm9qm-3uMrS0A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/5] selftests/bpf: xsk selftests - SKB POLL, NOPOLL
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
-        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        jonathan.lemon@gmail.com
+References: <87y2iwqbdg.fsf@toke.dk>
+In-Reply-To: <87y2iwqbdg.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 20 Nov 2020 12:02:52 -0800
+Message-ID: <CAEf4BzaYPXKCSUX50UrkvbGZ+Ne_YqHLfcgtXzwWFpCvugC8jg@mail.gmail.com>
+Subject: Re: Is test_offload.py supposed to work?
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@mellanox.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 20 Nov 2020 at 18:54, Yonghong Song <yhs@fb.com> wrote:
+On Fri, Nov 20, 2020 at 7:49 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
+> Hi Jakub and Jiri
 >
+> I am investigating an error with XDP offload mode, and figured I'd run
+> 'test_offload.py' from selftests. However, I'm unable to get it to run
+> successfully; am I missing some config options, or has it simply
+> bit-rotted to the point where it no longer works?
 >
-> On 11/20/20 5:00 AM, Weqaar Janjua wrote:
-> > Adds following tests:
-> >
-> > 1. AF_XDP SKB mode
-> >     Generic mode XDP is driver independent, used when the driver does
-> >     not have support for XDP. Works on any netdevice using sockets and
-> >     generic XDP path. XDP hook from netif_receive_skb().
-> >     a. nopoll - soft-irq processing
-> >     b. poll - using poll() syscall
-> >
-> > Signed-off-by: Weqaar Janjua <weqaar.a.janjua@intel.com>
-> > ---
-> >   tools/testing/selftests/bpf/Makefile          |   5 +-
-> >   .../selftests/bpf/test_xsk_prerequisites.sh   |  15 +-
-> >   .../selftests/bpf/test_xsk_skb_nopoll.sh      |  20 +
-> >   ..._xsk_framework.sh => test_xsk_skb_poll.sh} |  12 +-
-> >   tools/testing/selftests/bpf/xdpxceiver.c      | 961 ++++++++++++++++++
-> >   tools/testing/selftests/bpf/xdpxceiver.h      | 151 +++
-> >   tools/testing/selftests/bpf/xsk_env.sh        |  17 +
-> >   7 files changed, 1174 insertions(+), 7 deletions(-)
-> >   create mode 100755 tools/testing/selftests/bpf/test_xsk_skb_nopoll.sh
-> >   rename tools/testing/selftests/bpf/{test_xsk_framework.sh => test_xsk_skb_poll.sh} (61%)
-> >   create mode 100644 tools/testing/selftests/bpf/xdpxceiver.c
-> >   create mode 100644 tools/testing/selftests/bpf/xdpxceiver.h
-> >
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 51436db24f32..17af570a32d7 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -73,7 +73,8 @@ TEST_PROGS := test_kmod.sh \
-> >       test_bpftool.sh \
-> >       test_bpftool_metadata.sh \
-> >       test_xsk_prerequisites.sh \
-> > -     test_xsk_framework.sh
-> > +     test_xsk_skb_nopoll.sh \
-> > +     test_xsk_skb_poll.sh
-> >
-> >   TEST_PROGS_EXTENDED := with_addr.sh \
-> >       with_tunnels.sh \
-> > @@ -84,7 +85,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
-> >   # Compile but not part of 'make run_tests'
-> >   TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
-> >       flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
-> > -     test_lirc_mode2_user xdping test_cpp runqslower bench
-> > +     test_lirc_mode2_user xdping test_cpp runqslower bench xdpxceiver
-> >
-> >   TEST_CUSTOM_PROGS = urandom_read
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_xsk_prerequisites.sh b/tools/testing/selftests/bpf/test_xsk_prerequisites.sh
-> > index 00bfcf53127c..a9ce8887dffc 100755
-> > --- a/tools/testing/selftests/bpf/test_xsk_prerequisites.sh
-> > +++ b/tools/testing/selftests/bpf/test_xsk_prerequisites.sh
-> > @@ -8,8 +8,17 @@
-> >   #
-> >   # Topology:
-> >   # ---------
-> > -#      -----------           -----------
-> > -#      |  xskX   | --------- |  xskY   |
-> > +#                 -----------
-> > +#               _ | Process | _
-> > +#              /  -----------  \
-> > +#             /        |        \
-> > +#            /         |         \
-> > +#      -----------     |     -----------
-> > +#      | Thread1 |     |     | Thread2 |
-> > +#      -----------     |     -----------
-> > +#           |          |          |
-> > +#      -----------     |     -----------
-> > +#      |  xskX   |     |     |  xskY   |
-> >   #      -----------     |     -----------
-> >   #           |          |          |
-> >   #      -----------     |     ----------
-> > @@ -40,6 +49,8 @@
-> >   #       conflict with any existing interface
-> >   #   * tests the veth and xsk layers of the topology
-> >   #
-> > +# See the source xdpxceiver.c for information on each test
-> > +#
-> >   # Kernel configuration:
-> >   # ---------------------
-> >   # See "config" file for recommended kernel config options.
-> > diff --git a/tools/testing/selftests/bpf/test_xsk_skb_nopoll.sh b/tools/testing/selftests/bpf/test_xsk_skb_nopoll.sh
-> > new file mode 100755
-> > index 000000000000..96600b0f5136
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/test_xsk_skb_nopoll.sh
-> > @@ -0,0 +1,20 @@
-> > +#!/bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright(c) 2020 Intel Corporation.
-> > +
-> > +# See test_xsk_prerequisites.sh for detailed information on tests
-> > +
-> > +. xsk_prereqs.sh
-> > +. xsk_env.sh
-> > +
-> > +TEST_NAME="SKB NOPOLL"
-> > +
-> > +vethXDPgeneric ${VETH0} ${VETH1} ${NS1}
-> > +
-> > +params=("-S")
-> > +execxdpxceiver params
-> > +
-> > +retval=$?
-> > +test_status $retval "${TEST_NAME}"
-> > +
-> > +test_exit $retval 0
-> > diff --git a/tools/testing/selftests/bpf/test_xsk_framework.sh b/tools/testing/selftests/bpf/test_xsk_skb_poll.sh
-> > similarity index 61%
-> > rename from tools/testing/selftests/bpf/test_xsk_framework.sh
-> > rename to tools/testing/selftests/bpf/test_xsk_skb_poll.sh
-> > index 2e3f099d001c..d152c8a24251 100755
-> > --- a/tools/testing/selftests/bpf/test_xsk_framework.sh
-> > +++ b/tools/testing/selftests/bpf/test_xsk_skb_poll.sh
-> > @@ -7,11 +7,17 @@
-> >   . xsk_prereqs.sh
-> >   . xsk_env.sh
->
-> Here both xsk_prereqs.sh and xsk_env.sh are executed.
-> But xsk_env.sh also calls xsk_prereqs.sh. This double
-> execution of xsk_prereqs.sh is required or is an
-> oversight?
->
-Oversight, will fix as v3 - in all 5/5 test_xsk_*.sh, thanks
 
-> >
-> > -TEST_NAME="XSK FRAMEWORK"
-> > +TEST_NAME="SKB POLL"
-> >
-> > -test_status $ksft_pass "${TEST_NAME}"
-> > +vethXDPgeneric ${VETH0} ${VETH1} ${NS1}
-> > +
-> > +params=("-S" "-p")
-> > +execxdpxceiver params
-> > +
-> > +retval=$?
-> > +test_status $retval "${TEST_NAME}"
-> >
-> >   # Must be called in the last test to execute
-> >   cleanup_exit ${VETH0} ${VETH1} ${NS1}
-> >
-> > -test_exit $ksft_pass 0
-> > +test_exit $retval 0
-> > diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-> [...]
+See also discussion in [0]
+
+  [0] https://www.spinics.net/lists/netdev/msg697523.html
+
+> [root@(none) bpf]# ./test_offload.py
+> Test destruction of generic XDP...
+> Test TC non-offloaded...
+> Test TC non-offloaded isn't getting bound...
+> Test TC offloads are off by default...
+> FAIL: Missing or incorrect netlink extack message
+>   File "./test_offload.py", line 836, in <module>
+>     check_extack(err, "TC offload is disabled on net device.", args)
+>   File "./test_offload.py", line 657, in check_extack
+>     fail(not comp, "Missing or incorrect netlink extack message")
+>   File "./test_offload.py", line 86, in fail
+>     tb =3D "".join(traceback.extract_stack().format())
+>
+>
+> Commenting out that line gets me a bit further:
+>
+> [root@(none) bpf]# ./test_offload.py
+> Test destruction of generic XDP...
+> Test TC non-offloaded...
+> Test TC non-offloaded isn't getting bound...
+> Test TC offloads are off by default...
+> Test TC offload by default...
+> Test TC cBPF bytcode tries offload by default...
+> Test TC cBPF unbound bytecode doesn't offload...
+> Test non-0 chain offload...
+> FAIL: Missing or incorrect netlink extack message
+>   File "./test_offload.py", line 876, in <module>
+>     check_extack(err, "Driver supports only offload of chain 0.", args)
+>   File "./test_offload.py", line 657, in check_extack
+>     fail(not comp, "Missing or incorrect netlink extack message")
+>   File "./test_offload.py", line 86, in fail
+>     tb =3D "".join(traceback.extract_stack().format())
+>
+>
+> And again, after which I gave up:
+>
+> [root@(none) bpf]# ./test_offload.py
+> Test destruction of generic XDP...
+> Test TC non-offloaded...
+> Test TC non-offloaded isn't getting bound...
+> Test TC offloads are off by default...
+> Test TC offload by default...
+> Test TC cBPF bytcode tries offload by default...
+> Test TC cBPF unbound bytecode doesn't offload...
+> Test non-0 chain offload...
+> Test TC replace...
+> Test TC replace bad flags...
+> Test spurious extack from the driver...
+> Test TC offloads work...
+> FAIL: Missing or incorrect message from netdevsim in verifier log
+>   File "./test_offload.py", line 920, in <module>
+>     check_verifier_log(err, "[netdevsim] Hello from netdevsim!")
+>   File "./test_offload.py", line 671, in check_verifier_log
+>     fail(True, "Missing or incorrect message from netdevsim in verifier l=
+og")
+>   File "./test_offload.py", line 86, in fail
+>     tb =3D "".join(traceback.extract_stack().format())
+>
+> -Toke
+>
