@@ -2,53 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584672BBABD
-	for <lists+bpf@lfdr.de>; Sat, 21 Nov 2020 01:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045A22BBAC8
+	for <lists+bpf@lfdr.de>; Sat, 21 Nov 2020 01:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729014AbgKUAOR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Nov 2020 19:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
+        id S1728282AbgKUAVJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Nov 2020 19:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728528AbgKUAOR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Nov 2020 19:14:17 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8DBC0613CF
-        for <bpf@vger.kernel.org>; Fri, 20 Nov 2020 16:14:17 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id b17so11816781ljf.12
-        for <bpf@vger.kernel.org>; Fri, 20 Nov 2020 16:14:16 -0800 (PST)
+        with ESMTP id S1728187AbgKUAVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Nov 2020 19:21:09 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A840C061A04
+        for <bpf@vger.kernel.org>; Fri, 20 Nov 2020 16:21:08 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id f11so15929144lfs.3
+        for <bpf@vger.kernel.org>; Fri, 20 Nov 2020 16:21:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OOhlCXLQ7me4aX62QOG9RwxgBAhj7Ibflx4qGQLcgl4=;
-        b=ZXn6sV+kmyx7QPspcL9OH8Ac7HBSusOAhV7jGyMTLB/Ng2bK8UvEtybGL/9quDiS5B
-         kazkzkKO7lr3zNI3Yu+yMrqkQjVBxUJzcFOWfHwMnTARFBBzXJn8b08522F4e0VARaE1
-         yiMyfJlmkJMEE5xjV0mq1dX7Vp48u0EpkChkE=
+        bh=drZa5velgen67wbuhgWCwO4H5ccjjMv2YMhC3r+McB0=;
+        b=cRoBALPFmUDu+Z0/0D5ewnX7flXktvF13PyVjt5u+qRieTP0Df9B5Q4xmQWEdFtQwz
+         TJP7P8SsG14kLwr778JOBowdh/blCruw5yQw9tafpanLY7lU392StpA1oIirOPMZdBjV
+         3C9V7nVaotQBG4KcuwA02LzpTjj4j5IefgW4w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OOhlCXLQ7me4aX62QOG9RwxgBAhj7Ibflx4qGQLcgl4=;
-        b=JvoFiSowWGyXufFD/9aYCGCfoWpeDPLpwXtgmv8hPPC8ICk46wJwY1J50fRBFZzT6l
-         GOC17IJ2HfwD1X+0f1asKIi8+GEO9r1L0LgStvRa7lEt11h2g5kFlKlmx/W/c1CgVbMD
-         pH2QdraNsmzP85nATC5dWnTf9XlV4VdDCXxdbB76W/rVFr6/XeeScx8bZR2RXyBCED5t
-         ktgWdfA2G1lJPiPzodasO5goGqiRYpXxVfy2bK8ZsYZS942+fmjH22AkXc7t2TkKd+So
-         m5s9SNGJcj3HO8BxMpJLj5+csJAxTs8wlSmjfAHFexN7H8Hwsx4nxZsA42t9W19Zr2UF
-         0QUA==
-X-Gm-Message-State: AOAM531XZPKeo60PZKZTtSzkFnxslVI1olgqswNjW5Nebybfk1+Wh2jt
-        asvCgQe/Oo5UP8DW1ORx2AOQ92ql8QkFt63b4yyzJg==
-X-Google-Smtp-Source: ABdhPJyI5y9/w8jHkxQAIdO6MKmQNNfY/wh+g99sPjgo0T0PGpb9YCvSxqIeWiqNOT7ZTYQ+tHnXuk7VJNy+u/hJtz4=
-X-Received: by 2002:a2e:85c6:: with SMTP id h6mr9465290ljj.110.1605917655576;
- Fri, 20 Nov 2020 16:14:15 -0800 (PST)
+        bh=drZa5velgen67wbuhgWCwO4H5ccjjMv2YMhC3r+McB0=;
+        b=EJ7UOb4WfbdqWFopHIkZpOw8AIWBh+JUb1UgLUwtpfGcvM4WX/Tr6V3B0UWPx2udf/
+         muEAeB5OxJMQdb35VekrhNq/1AFdJnJZMLw8hYuHnebMztheXA5DyfsqUp2kGG3aP3Sl
+         pziQ8wS94BYnD+yGbO39TSb6zPIE/TS6t1OIQMwaX/cwRzDn3pF4arTrr0iXCD3lE784
+         Xw1WFhmUZdlqyao5SQWxwurHvFpLlWHAThrBbvXuO/q1qVg+aXClPTeRUQMKa8qy04RR
+         RR9A0DvDuj0Etfbay60thS7xEjhOjuFoV7A8ONKFVgRu1QDmwh7EOPgwnvoab6vopwFU
+         mc/A==
+X-Gm-Message-State: AOAM530sBb9WYF3avU/hErbdPtILTEGiXFNz+AF8WcQkZ5iEfMr+NzVA
+        nAd5jClem9CERdgqks1DY8gyJCzJLMyH1Wyuv58tRw==
+X-Google-Smtp-Source: ABdhPJwj+FDMobw209UyLNKnz1dkYYaf/t6WrekVSol8Lb45lO3K3r2Nggoos7syItRduEXQP1UCDn97j7XbeZ0JV8c=
+X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr9118329lfg.167.1605918066950;
+ Fri, 20 Nov 2020 16:21:06 -0800 (PST)
 MIME-Version: 1.0
 References: <20201120131708.3237864-1-kpsingh@chromium.org>
- <20201120131708.3237864-2-kpsingh@chromium.org> <a9336dd5-df17-85d9-7c63-d8ab4b74b459@fb.com>
-In-Reply-To: <a9336dd5-df17-85d9-7c63-d8ab4b74b459@fb.com>
+ <20201120131708.3237864-3-kpsingh@chromium.org> <cad0ea25-8567-368a-1f99-b4adc7440a7f@fb.com>
+In-Reply-To: <cad0ea25-8567-368a-1f99-b4adc7440a7f@fb.com>
 From:   KP Singh <kpsingh@chromium.org>
-Date:   Sat, 21 Nov 2020 01:14:04 +0100
-Message-ID: <CACYkzJ6bZBybX5tg2DvyJUkBPQ6_qP5FVKvMxdCe+CbA-OmPag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add a BPF helper for getting the IMA
- hash of an inode
+Date:   Sat, 21 Nov 2020 01:20:56 +0100
+Message-ID: <CACYkzJ7doNURahGQn=0d8k73USH85owoZ8yDdwtG48oQLNHYaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] bpf: Update LSM selftests for bpf_ima_inode_hash
 To:     Yonghong Song <yhs@fb.com>
 Cc:     James Morris <jmorris@namei.org>,
         open list <linux-kernel@vger.kernel.org>,
@@ -65,48 +64,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Nov 20, 2020 at 7:11 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 11/20/20 5:17 AM, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > - Update the IMA policy before executing the test binary (this is not an
+> >    override of the policy, just an append that ensures that hashes are
+> >    calculated on executions).
+> >
+> > - Call the bpf_ima_inode_hash in the bprm_committed_creds hook and check
+> >    if the call succeeded and a hash was calculated.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+>
+> LGTM with a few nits below.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
+> > ---
+> >   tools/testing/selftests/bpf/config            |  3 ++
+
 [...]
 
-> > + * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
-> > + *   Description
-> > + *           Returns the stored IMA hash of the *inode* (if it's avaialable).
-> > + *           If the hash is larger than *size*, then only *size*
-> > + *           bytes will be copied to *dst*
-> > + *   Return > + *            The **hash_algo** of is returned on success,
+> >   }
+> >
+> [...]
+> > +
+> >   void test_test_lsm(void)
+> >   {
+> >       struct lsm *skel = NULL;
+> > @@ -66,6 +88,10 @@ void test_test_lsm(void)
+> >       if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
+> >               goto close_prog;
+> >
+> > +     err = update_ima_policy();
+> > +     if (CHECK(err != 0, "update_ima_policy", "error = %d\n", err))
+> > +             goto close_prog;
 >
-> of => if?
+> "err != 0" => err?
+> "error = %d" => "err %d" for consistency with other usage in this function.
 
-Just changed it to:
-
-"The **hash_algo** is returned on success"
-
->
-> > + *           **-EOPNOTSUP** if IMA is disabled and **-EINVAL** if
->
-> and => or
-
-Done. (and the same for tools/)
+Done.
 
 >
+> > +
+> >       err = exec_cmd(&skel->bss->monitored_pid);
+> >       if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
+> >               goto close_prog;
+> > @@ -83,6 +109,12 @@ void test_test_lsm(void)
 
 [...]
 
-> > +     .gpl_only       = false,
-> > +     .ret_type       = RET_INTEGER,
-> > +     .arg1_type      = ARG_PTR_TO_BTF_ID,
-> > +     .arg1_btf_id    = &bpf_ima_inode_hash_btf_ids[0],
-> > +     .arg2_type      = ARG_PTR_TO_UNINIT_MEM,
-> > +     .arg3_type      = ARG_CONST_SIZE_OR_ZERO,
+> >   int mprotect_count = 0;
+> >   int bprm_count = 0;
+> > +int ima_hash_ret = -1;
 >
-> I know ARG_CONST_SIZE_OR_ZERO provides some flexibility and may
-> make verifier easier to verify programs. But beyond that did
-> you see any real use case user will pass a zero size buf to
-> get hash value?
->
+> The helper returns type "long", but "int" type here should be fine too.
 
-I agree, in this case it makes more sense to ARG_CONST_SIZE.
-
-> > +     .allowed        = bpf_ima_inode_hash_allowed,
-> > +};
-
-[...]
+Changed it to long for correctness.
