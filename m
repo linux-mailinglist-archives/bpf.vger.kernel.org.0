@@ -2,156 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A91FA2BBE74
-	for <lists+bpf@lfdr.de>; Sat, 21 Nov 2020 11:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1FF2BC0AC
+	for <lists+bpf@lfdr.de>; Sat, 21 Nov 2020 17:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgKUKQk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Nov 2020 05:16:40 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:3283 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727217AbgKUKQk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Nov 2020 05:16:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1605953798; x=1637489798;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=9034pIvqiyx4/X5aSgw+r/ojAUxT1W/5ttXBxilfsUU=;
-  b=qNhaIPQpOLmPts5hLbwCqnGnnwWJwCjNPHXsvBQiADLVo0AyWTI/ot6n
-   khZ41iOAeZs8G9lAqx8Jb3FewKvbg9LiJBl3d7KJRcvh8FFbafe4ga0qp
-   YaWtn0AGkDxzPMEmFD+6itm7ZHC+k3CDoMSCuWcfWYnXcTmQa9kJNQQRe
-   s=;
-X-IronPort-AV: E=Sophos;i="5.78,359,1599523200"; 
-   d="scan'208";a="66467338"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 21 Nov 2020 10:16:36 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id 824CDA1CCF;
-        Sat, 21 Nov 2020 10:16:35 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 21 Nov 2020 10:16:34 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.161.43) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 21 Nov 2020 10:16:30 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/8] Socket migration for SO_REUSEPORT.
-Date:   Sat, 21 Nov 2020 19:16:26 +0900
-Message-ID: <20201121101626.97174-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201120023157.immjndtw4hgcyz75@kafai-mbp.dhcp.thefacebook.com>
-References: <20201120023157.immjndtw4hgcyz75@kafai-mbp.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.43]
-X-ClientProxiedBy: EX13D10UWB004.ant.amazon.com (10.43.161.121) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+        id S1726704AbgKUQvR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Nov 2020 11:51:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58570 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727071AbgKUQvO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 21 Nov 2020 11:51:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1605977471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=zLH0U0S3qPuM/4/c12zDySDpu72UCHtVP0nLwv0orcI=;
+        b=PMDCQH+PjaLILI+jmPRUPCxPNqZ9b1d+FDhMFgHSxhSENkqcfenVx43KFi13r+Ex7D2I2M
+        EljLHUMjVzijt8UE/5TuEqt8gAu+s1/L0/cDhZWp3x/Zbeym6GJ6qKuvFiPa3BQkGiro+3
+        9hzEAFUTRPSRQlWmeMKcu1ZaUpOoL+8=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-483-i_Zn08GpPaq8aoVKdeWYLw-1; Sat, 21 Nov 2020 11:51:08 -0500
+X-MC-Unique: i_Zn08GpPaq8aoVKdeWYLw-1
+Received: by mail-qt1-f199.google.com with SMTP id b10so10126428qtb.16
+        for <bpf@vger.kernel.org>; Sat, 21 Nov 2020 08:51:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zLH0U0S3qPuM/4/c12zDySDpu72UCHtVP0nLwv0orcI=;
+        b=H8VYFZbEiGyLNG4xYym0AjOTkogEhF7qhuSm0xmFOso+xPGXzYjx0k+0pPGZ+cQPGI
+         0pv0OaEcijDcnwPEvUWN0H9Dls7gDqLDT6yZWOKHdJuWaPHdIA3FxVHidedIn4I0Ot76
+         J4GkmStcw0rWk50waPsppXLjwSpTWTPp3oyS7YKbM748stzug5St2eTi5F+nVjpy3f/2
+         b9MeCFKA+sEQVf452cd5l5irBz9/uGHG9FzuK59Pv6l/4+OvY5zc8wORRvjYLYBzhf6e
+         0G5FzOL7k8fonLNoM97KQkQAvzqLXIdJ65c1cIekG70GNW0CUG/q4V33WhTjvp3zqqdG
+         0QJA==
+X-Gm-Message-State: AOAM531qOKcjFjTgWV7/IZgwjyalz/qcSH6G/8ejqQc6siJMIPzIxw2T
+        sCkgvl0+oMdX5G2j36dOD+ZBr+ibLqN1zth+CHV8eUJt/YQQd34LGfa7HFbNX0oeXjl1F1dknqN
+        oNjQfeAPhuLxk
+X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr22885265qkm.231.1605977467694;
+        Sat, 21 Nov 2020 08:51:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJMB7Phx6GdQ/NzrSSCIOwTBjDbbn+gugDtHjIEeXte769cdu0l51J2LUn/+h4QxN+fnLujw==
+X-Received: by 2002:a05:620a:15ce:: with SMTP id o14mr22885248qkm.231.1605977467468;
+        Sat, 21 Nov 2020 08:51:07 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id j202sm4129196qke.108.2020.11.21.08.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Nov 2020 08:51:06 -0800 (PST)
+From:   trix@redhat.com
+To:     trix@redhat.com, joe@perches.com,
+        clang-built-linux@googlegroups.com
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, tboot-devel@lists.sourceforge.net,
+        kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-wireless@vger.kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
+        keyrings@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, alsa-devel@alsa-project.org,
+        bpf@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-nfs@vger.kernel.org, patches@opensource.cirrus.com
+Subject: [RFC] MAINTAINERS tag for cleanup robot
+Date:   Sat, 21 Nov 2020 08:50:58 -0800
+Message-Id: <20201121165058.1644182-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Thu, 19 Nov 2020 18:31:57 -0800
-> On Fri, Nov 20, 2020 at 07:17:49AM +0900, Kuniyuki Iwashima wrote:
-> > From:   Martin KaFai Lau <kafai@fb.com>
-> > Date:   Wed, 18 Nov 2020 17:49:13 -0800
-> > > On Tue, Nov 17, 2020 at 06:40:15PM +0900, Kuniyuki Iwashima wrote:
-> > > > The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > > > accept connections evenly. However, there is a defect in the current
-> > > > implementation. When a SYN packet is received, the connection is tied to a
-> > > > listening socket. Accordingly, when the listener is closed, in-flight
-> > > > requests during the three-way handshake and child sockets in the accept
-> > > > queue are dropped even if other listeners could accept such connections.
-> > > > 
-> > > > This situation can happen when various server management tools restart
-> > > > server (such as nginx) processes. For instance, when we change nginx
-> > > > configurations and restart it, it spins up new workers that respect the new
-> > > > configuration and closes all listeners on the old workers, resulting in
-> > > > in-flight ACK of 3WHS is responded by RST.
-> > > > 
-> > > > As a workaround for this issue, we can do connection draining by eBPF:
-> > > > 
-> > > >   1. Before closing a listener, stop routing SYN packets to it.
-> > > >   2. Wait enough time for requests to complete 3WHS.
-> > > >   3. Accept connections until EAGAIN, then close the listener.
-> > > > 
-> > > > Although this approach seems to work well, EAGAIN has nothing to do with
-> > > > how many requests are still during 3WHS. Thus, we have to know the number
-> > > It sounds like the application can already drain the established socket
-> > > by accept()?  To solve the problem that you have,
-> > > does it mean migrating req_sk (the in-progress 3WHS) is enough?
-> > 
-> > Ideally, the application needs to drain only the accepted sockets because
-> > 3WHS and tying a connection to a listener are just kernel behaviour. Also,
-> > there are some cases where we want to apply new configurations as soon as
-> > possible such as replacing TLS certificates.
-> > 
-> > It is possible to drain the established sockets by accept(), but the
-> > sockets in the accept queue have not started application sessions yet. So,
-> > if we do not drain such sockets (or if the kernel happened to select
-> > another listener), we can (could) apply the new settings much earlier.
-> > 
-> > Moreover, the established sockets may start long-standing connections so
-> > that we cannot complete draining for a long time and may have to
-> > force-close them (and they would have longer lifetime if they are migrated
-> > to a new listener).
-> > 
-> > 
-> > > Applications can already use the bpf prog to do (1) and divert
-> > > the SYN to the newly started process.
-> > > 
-> > > If the application cares about service disruption,
-> > > it usually needs to drain the fd(s) that it already has and
-> > > finishes serving the pending request (e.g. https) on them anyway.
-> > > The time taking to finish those could already be longer than it takes
-> > > to drain the accept queue or finish off the 3WHS in reasonable time.
-> > > or the application that you have does not need to drain the fd(s) 
-> > > it already has and it can close them immediately?
-> > 
-> > In the point of view of service disruption, I agree with you.
-> > 
-> > However, I think that there are some situations where we want to apply new
-> > configurations rather than to drain sockets with old configurations and
-> > that if the kernel migrates sockets automatically, we can simplify user
-> > programs.
-> This configuration-update(/new-TLS-cert...etc) consideration will be useful
-> if it is also included in the cover letter.
+A difficult part of automating commits is composing the subsystem
+preamble in the commit log.  For the ongoing effort of a fixer producing
+one or two fixes a release the use of 'treewide:' does not seem appropriate.
 
-I will add this to the next cover letter.
+It would be better if the normal prefix was used.  Unfortunately normal is
+not consistent across the tree.
 
+So I am looking for comments for adding a new tag to the MAINTAINERS file
 
-> It sounds like the service that you have is draining the existing
-> already-accepted fd(s) which are using the old configuration.
-> Those existing fd(s) could also be long life.  Potentially those
-> existing fd(s) will be in a much higher number than the
-> to-be-accepted fd(s)?
+	D: Commit subsystem prefix
 
-In many cases, yes.
+ex/ for FPGA DFL DRIVERS
 
+	D: fpga: dfl:
 
-> or you meant in some cases it wants to migrate to the new configuration
-> ASAP (e.g. for security reason) even it has to close all the
-> already-accepted fds() which are using the old configuration??
+Continuing with cleaning up clang's -Wextra-semi-stmt
 
-And sometimes, yes.
-As you expected, for some reasons including security, there are cases we
-have to prioritize to close connections than to complete them.
+A significant number of warnings are caused by function like macros with
+a trailing semicolon.  For example.
 
-For example, HTTP/1.1 is often short-lived, and we can complete draining
-immediately. However, sometimes it can be long-lived by upgrading to
-WebSocket. Then we may be not able to wait to finish draining.
+#define FOO(a) a++; <-- extra, unneeded semicolon
+void bar() {
+	int v = 0;
+	FOO(a);
+} 
 
+Clang will warn at the FOO(a); expansion location. Instead of removing
+the semicolon there,  the fixer removes semicolon from the macro
+definition.  After the fixer, the code will be:
 
-> In either cases, considering the already-accepted fd(s)
-> is usually in a much more number, does the to-be-accepted
-> connection make any difference percentage-wise?
+#define FOO(a) a++
+void bar() {
+	int v = 0;
+	FOO(a);
+} 
 
-It is difficult to drain all connections in every case, but we can decrease
-such aborted connections by migration. In that sense, I think migration is
-always better than draining.
+The fixer review is
+https://reviews.llvm.org/D91789
+
+A run over allyesconfig for x86_64 finds 62 issues, 5 are false positives.
+The false positives are caused by macros passed to other macros and by
+some macro expansions that did not have an extra semicolon.
+
+This cleans up about 1,000 of the current 10,000 -Wextra-semi-stmt
+warnings in linux-next.
+
+An update to [RFC] clang tooling cleanup
+This change adds the clang-tidy-fix as a top level target and
+uses it to do the cleaning.  The next iteration will do a loop of
+cleaners.  This will mean breaking clang-tidy-fix out into its own
+processing function 'run_fixers'.
+
+Makefile: Add toplevel target clang-tidy-fix to makefile
+
+Calls clang-tidy with -fix option for a set of checkers that
+programatically fixes the kernel source in place, treewide.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ Makefile                               |  7 ++++---
+ scripts/clang-tools/run-clang-tools.py | 20 +++++++++++++++++---
+ 2 files changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 47a8add4dd28..57756dbb767b 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1567,20 +1567,21 @@ help:
+ 	 echo  ''
+ 	@echo  'Static analysers:'
+ 	@echo  '  checkstack      - Generate a list of stack hogs'
+ 	@echo  '  versioncheck    - Sanity check on version.h usage'
+ 	@echo  '  includecheck    - Check for duplicate included header files'
+ 	@echo  '  export_report   - List the usages of all exported symbols'
+ 	@echo  '  headerdep       - Detect inclusion cycles in headers'
+ 	@echo  '  coccicheck      - Check with Coccinelle'
+ 	@echo  '  clang-analyzer  - Check with clang static analyzer'
+ 	@echo  '  clang-tidy      - Check with clang-tidy'
++	@echo  '  clang-tidy-fix  - Check and fix with clang-tidy'
+ 	@echo  ''
+ 	@echo  'Tools:'
+ 	@echo  '  nsdeps          - Generate missing symbol namespace dependencies'
+ 	@echo  ''
+ 	@echo  'Kernel selftest:'
+ 	@echo  '  kselftest         - Build and run kernel selftest'
+ 	@echo  '                      Build, install, and boot kernel before'
+ 	@echo  '                      running kselftest on it'
+ 	@echo  '                      Run as root for full coverage'
+ 	@echo  '  kselftest-all     - Build kernel selftest'
+@@ -1842,30 +1843,30 @@ nsdeps: modules
+ quiet_cmd_gen_compile_commands = GEN     $@
+       cmd_gen_compile_commands = $(PYTHON3) $< -a $(AR) -o $@ $(filter-out $<, $(real-prereqs))
+ 
+ $(extmod-prefix)compile_commands.json: scripts/clang-tools/gen_compile_commands.py \
+ 	$(if $(KBUILD_EXTMOD),,$(KBUILD_VMLINUX_OBJS) $(KBUILD_VMLINUX_LIBS)) \
+ 	$(if $(CONFIG_MODULES), $(MODORDER)) FORCE
+ 	$(call if_changed,gen_compile_commands)
+ 
+ targets += $(extmod-prefix)compile_commands.json
+ 
+-PHONY += clang-tidy clang-analyzer
++PHONY += clang-tidy-fix clang-tidy clang-analyzer
+ 
+ ifdef CONFIG_CC_IS_CLANG
+ quiet_cmd_clang_tools = CHECK   $<
+       cmd_clang_tools = $(PYTHON3) $(srctree)/scripts/clang-tools/run-clang-tools.py $@ $<
+ 
+-clang-tidy clang-analyzer: $(extmod-prefix)compile_commands.json
++clang-tidy-fix clang-tidy clang-analyzer: $(extmod-prefix)compile_commands.json
+ 	$(call cmd,clang_tools)
+ else
+-clang-tidy clang-analyzer:
++clang-tidy-fix clang-tidy clang-analyzer:
+ 	@echo "$@ requires CC=clang" >&2
+ 	@false
+ endif
+ 
+ # Scripts to check various things for consistency
+ # ---------------------------------------------------------------------------
+ 
+ PHONY += includecheck versioncheck coccicheck export_report
+ 
+ includecheck:
+diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
+index fa7655c7cec0..c177ca822c56 100755
+--- a/scripts/clang-tools/run-clang-tools.py
++++ b/scripts/clang-tools/run-clang-tools.py
+@@ -22,43 +22,57 @@ def parse_arguments():
+     Returns:
+         args: Dict of parsed args
+         Has keys: [path, type]
+     """
+     usage = """Run clang-tidy or the clang static-analyzer on a
+         compilation database."""
+     parser = argparse.ArgumentParser(description=usage)
+ 
+     type_help = "Type of analysis to be performed"
+     parser.add_argument("type",
+-                        choices=["clang-tidy", "clang-analyzer"],
++                        choices=["clang-tidy-fix", "clang-tidy", "clang-analyzer"],
+                         help=type_help)
+     path_help = "Path to the compilation database to parse"
+     parser.add_argument("path", type=str, help=path_help)
+ 
+     return parser.parse_args()
+ 
+ 
+ def init(l, a):
+     global lock
+     global args
+     lock = l
+     args = a
+ 
+ 
+ def run_analysis(entry):
+     # Disable all checks, then re-enable the ones we want
+     checks = "-checks=-*,"
+-    if args.type == "clang-tidy":
++    fix = ""
++    header_filter = ""
++    if args.type == "clang-tidy-fix":
++        checks += "linuxkernel-macro-trailing-semi"
++        #
++        # Fix this
++        # #define M(a) a++; <-- clang-tidy fixes the problem here
++        # int f() {
++        #   int v = 0;
++        #   M(v);  <-- clang reports problem here
++        #   return v;
++        # }
++        fix += "-fix"
++        header_filter += "-header-filter=.*"
++    elif args.type == "clang-tidy":
+         checks += "linuxkernel-*"
+     else:
+         checks += "clang-analyzer-*"
+-    p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
++    p = subprocess.run(["clang-tidy", "-p", args.path, checks, header_filter, fix, entry["file"]],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        cwd=entry["directory"])
+     with lock:
+         sys.stderr.buffer.write(p.stdout)
+ 
+ 
+ def main():
+     args = parse_arguments()
+ 
+-- 
+2.18.4
+
