@@ -2,101 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDCB2BFC46
-	for <lists+bpf@lfdr.de>; Sun, 22 Nov 2020 23:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441EA2BFCB7
+	for <lists+bpf@lfdr.de>; Sun, 22 Nov 2020 23:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgKVWeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Nov 2020 17:34:01 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:50298 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgKVWeB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Nov 2020 17:34:01 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id A588721F21;
-        Sun, 22 Nov 2020 17:33:55 -0500 (EST)
-Date:   Mon, 23 Nov 2020 09:33:55 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Joe Perches <joe@perches.com>
-cc:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Tom Rix <trix@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        clang-built-linux@googlegroups.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        tboot-devel@lists.sourceforge.net, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@acpica.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        netdev@vger.kernel.org, linux-media@vger.kernel.org,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
-        keyrings@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, alsa-devel@alsa-project.org,
-        bpf@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-nfs@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-In-Reply-To: <dec07021e7fc11a02b14c98b713ae2c6e2a4ca00.camel@perches.com>
-Message-ID: <alpine.LNX.2.23.453.2011230810210.7@nippy.intranet>
-References: <20201121165058.1644182-1-trix@redhat.com>         <20201122032304.GE4327@casper.infradead.org>         <ddb08a27-3ca1-fb2e-d51f-4b471f1a56a3@redhat.com>         <20201122145635.GG4327@casper.infradead.org>         <0819ce06-c462-d4df-d3d9-14931dc5aefc@redhat.com>
-         <751803306cd957d0e7ef6a4fc3dbf12ebceaba92.camel@HansenPartnership.com> <dec07021e7fc11a02b14c98b713ae2c6e2a4ca00.camel@perches.com>
+        id S1726655AbgKVW41 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Nov 2020 17:56:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45274 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725782AbgKVW40 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 22 Nov 2020 17:56:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606085785;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7C1OJFA3112ZAFA+JQXUY2iim7RZXde1/6ow0DwVwWk=;
+        b=Xy7zvyvITFlP/pv258eOLxRM1tRj5ngVw+KF0Dc7geF2e9l/LaiYc4j5LFuXrFfcVh12Q+
+        vpfVcO+hc7VMgBCDWTT6QOJ0pnGvZ8iEHBqzgj0YcXpNhK6D8QHxb+xP6qoaCqA4JOcvxV
+        r2Pt2+QF0nnk2lHaKU+g5C0Id9jmO3s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-vTRYCdUmO32IjW9wjb5dHg-1; Sun, 22 Nov 2020 17:56:22 -0500
+X-MC-Unique: vTRYCdUmO32IjW9wjb5dHg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B08EA1005E40;
+        Sun, 22 Nov 2020 22:56:20 +0000 (UTC)
+Received: from krava (unknown [10.40.192.91])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BE5685D6D3;
+        Sun, 22 Nov 2020 22:56:18 +0000 (UTC)
+Date:   Sun, 22 Nov 2020 23:56:17 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCHv3 0/2] btf_encoder: Fix functions BTF data generation
+Message-ID: <20201122225617.GA1902740@krava>
+References: <20201114223853.1010900-1-jolsa@kernel.org>
+ <CAEf4BzZ-0exZK7skcB_UjyatAx_R=hNqAXKVZ8EXgmSsHmthFg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZ-0exZK7skcB_UjyatAx_R=hNqAXKVZ8EXgmSsHmthFg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On Sun, 22 Nov 2020, Joe Perches wrote:
-
-> On Sun, 2020-11-22 at 08:49 -0800, James Bottomley wrote:
-> > We can enforce sysfs_emit going forwards
-> > using tools like checkpatch
+On Fri, Nov 20, 2020 at 05:13:24PM -0800, Andrii Nakryiko wrote:
+> On Sat, Nov 14, 2020 at 2:39 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > recent btf encoder's changes brakes BTF data for some gcc
+> > versions. The problem is that some functions can appear
+> > in dwarf data in some instances without arguments, while
+> > they are defined with some.
 > 
-> It's not really possible for checkpatch to find or warn about
-> sysfs uses of sprintf. checkpatch is really just a trivial
-> line-by-line parser and it has no concept of code intent.
+> Hey Jiri,
+> 
+> So this approach with __start_mcount_loc/__stop_mcount_loc works for
+> vmlinux only, but it doesn't work for kernel modules. For kernel
+> modules there is a dedicated "__mcount_loc" section, but no
+> __start/__stop symbols. I'm working around for now by making sure
+> functions that I need are global, but it would be nice to have this
+> working for modules out of the box as well.
+
+hi,
+I checked and it's bit more tricky than with vmlinux,
+addresses are in __mcount_loc, but it's all zeros and
+it gets filled after via relocation from .rela__mcount_loc
+
+I think we could do relocation of __mcount_loc section
+with zero base and get all base addresses.. and then
+continue from there with current code checks
+
+I'll check on it tomorrow
+
+> 
+> If you get a chance to fix this soon, that would be great. If not,
+> I'll try to get to this ASAP as well, because it would be nice to have
+> this in the same version of pahole that got static function BTFs for
+> vmlinux (if Arnaldo doesn't mind, of course).
+
+we're eagerly expecting the new pahole with the DWARF bug
+workaround, so we asked Arnaldo to release soon, how big
+problem is it for you if the modules fix is in the next one?
+
+thanks,
+jirka
+
+> 
+> >
+> > v3 changes:
+> >   - move 'generated' flag set out of should_generate_function
+> >   - rename should_generate_function to find_function
+> >   - added ack
+> >
+> > v2 changes:
+> >   - drop patch 3 logic and just change conditions
+> >     based on Andrii's suggestion
+> >   - drop patch 2
+> >   - add ack for patch 1
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > ---
+> > Jiri Olsa (2):
+> >       btf_encoder: Generate also .init functions
+> >       btf_encoder: Fix function generation
+> >
+> >  btf_encoder.c | 86 +++++++++++++++++++++-----------------------------------------------------------------
+> >  1 file changed, 21 insertions(+), 65 deletions(-)
+> >
 > 
 
-Checkpatch does suffer from the limitations of regular expressions. But 
-that doesn't stop people from using it. Besides, Coccinelle can do 
-analyses that can't be done with regular expressions, so it's moot.
-
-> It just can't warn on every use of the sprintf family.
-> There are just too many perfectly valid uses.
-> 
-> > but there's no benefit and a lot of harm to
-> > be done by trying to churn the entire tree
-> 
-> Single uses of sprintf for sysfs is not really any problem.
-> 
-> But likely there are still several possible overrun sprintf/snprintf
-> paths in sysfs.  Some of them are very obscure and unlikely to be
-> found by a robot as the logic for sysfs buf uses can be fairly twisty.
-> 
-
-Logic errors of this kind are susceptible to fuzzing, formal methods, 
-symbolic execution etc. No doubt there are other techniques that I don't 
-know about.
-
-> But provably correct conversions IMO _should_ be done and IMO churn 
-> considerations should generally have less importance.
-> 
-
-Provably equivalent conversions are provably churn. So apparently you're 
-advocating changes that are not provably equivalent.
-
-These are patches for code not that's not been shown to be buggy. Code 
-which, after patching, can be shown to be free of a specific kind of 
-theoretical bug. Hardly "provably correct".
-
-The problem is, the class of theoretical bugs that can be avoided in this 
-way is probably limitless, as is the review cost and the risk of 
-accidental regressions. And the payoff is entirely theoretical.
-
-Moreover, the patch review workload for skilled humans is being generated 
-by the automation, which is completely backwards: the machine is supposed 
-to be helping.
