@@ -2,99 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73BF2C0B75
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 14:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02F52C0BC2
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 14:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732316AbgKWNZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 08:25:07 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55094 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730533AbgKWNY7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Nov 2020 08:24:59 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AND76aI034959;
-        Mon, 23 Nov 2020 08:24:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=SF2O5ZXVTST15P2rDMbKpT5pSzhsEEPZsi5upw+5tz8=;
- b=PEMDBFWHjGZ0tz6Xx4aKRQ1C8lU+bjlLYYUUZGRhga9/OYbKePR3B202Aj6PDf5LJALO
- vwcZBF1hbzRajhGss6LZpETscPUwE2MalYXWVv9G1tHS2/8O1xkc5k+TypmtD8Syxl1i
- PgNHXFVrpfh5Dl634ARKM6wtrr1zoTtg0mKexj9EOBvX9727yIGHbiuguUOdtsWU22Sq
- bRFUoX0k2wSXPjXHdZ9H96qhI/V5h4gkJUC38upK9VE/2FdFOOh3pNPiNxXM4uy4YXi6
- gcD6z6pRUi5jBnNe3eS3thsbrnwKgZg/2vGIfiMS/fPHIiIlRfUGBynaezCAlR7zeHEt mg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34xyrvj5eb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 08:24:42 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ANDMBlj013395;
-        Mon, 23 Nov 2020 13:24:40 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 34xth8jfuf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 13:24:40 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ANDOcqW8061484
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Nov 2020 13:24:38 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2085CA404D;
-        Mon, 23 Nov 2020 13:24:38 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13057A4055;
-        Mon, 23 Nov 2020 13:24:36 +0000 (GMT)
-Received: from sig-9-65-241-175.ibm.com (unknown [9.65.241.175])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Nov 2020 13:24:35 +0000 (GMT)
-Message-ID: <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpf: Update LSM selftests for
- bpf_ima_inode_hash
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Date:   Mon, 23 Nov 2020 08:24:35 -0500
-In-Reply-To: <20201121005054.3467947-3-kpsingh@chromium.org>
-References: <20201121005054.3467947-1-kpsingh@chromium.org>
-         <20201121005054.3467947-3-kpsingh@chromium.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        id S2389270AbgKWNaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 08:30:30 -0500
+Received: from www62.your-server.de ([213.133.104.62]:56794 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389068AbgKWNaa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:30:30 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khBv0-0006CV-6y; Mon, 23 Nov 2020 14:30:10 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khBuz-000NhL-VQ; Mon, 23 Nov 2020 14:30:10 +0100
+Subject: Re: [PATCH bpf-next v7 00/34] bpf: switch to memcg-based memory
+ accounting
+To:     Roman Gushchin <guro@fb.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, netdev@vger.kernel.org, andrii@kernel.org,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+References: <20201119173754.4125257-1-guro@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9134a408-e26c-a7f2-23a7-5fc221bafdde@iogearbox.net>
+Date:   Mon, 23 Nov 2020 14:30:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20201119173754.4125257-1-guro@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-23_09:2020-11-23,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=3 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011230086
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25996/Sun Nov 22 14:25:48 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2020-11-21 at 00:50 +0000, KP Singh wrote:
-> From: KP Singh <kpsingh@google.com>
+On 11/19/20 6:37 PM, Roman Gushchin wrote:
+> Currently bpf is using the memlock rlimit for the memory accounting.
+> This approach has its downsides and over time has created a significant
+> amount of problems:
 > 
-> - Update the IMA policy before executing the test binary (this is not an
->   override of the policy, just an append that ensures that hashes are
->   calculated on executions).
+> 1) The limit is per-user, but because most bpf operations are performed
+>     as root, the limit has a little value.
+> 
+> 2) It's hard to come up with a specific maximum value. Especially because
+>     the counter is shared with non-bpf users (e.g. memlock() users).
+>     Any specific value is either too low and creates false failures
+>     or too high and useless.
+> 
+> 3) Charging is not connected to the actual memory allocation. Bpf code
+>     should manually calculate the estimated cost and precharge the counter,
+>     and then take care of uncharging, including all fail paths.
+>     It adds to the code complexity and makes it easy to leak a charge.
+> 
+> 4) There is no simple way of getting the current value of the counter.
+>     We've used drgn for it, but it's far from being convenient.
+> 
+> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+>     a function to "explain" this case for users.
+> 
+> In order to overcome these problems let's switch to the memcg-based
+> memory accounting of bpf objects. With the recent addition of the percpu
+> memory accounting, now it's possible to provide a comprehensive accounting
+> of the memory used by bpf programs and maps.
+> 
+> This approach has the following advantages:
+> 1) The limit is per-cgroup and hierarchical. It's way more flexible and allows
+>     a better control over memory usage by different workloads. Of course, it
+>     requires enabled cgroups and kernel memory accounting and properly configured
+>     cgroup tree, but it's a default configuration for a modern Linux system.
+> 
+> 2) The actual memory consumption is taken into account. It happens automatically
+>     on the allocation time if __GFP_ACCOUNT flags is passed. Uncharging is also
+>     performed automatically on releasing the memory. So the code on the bpf side
+>     becomes simpler and safer.
+> 
+> 3) There is a simple way to get the current value and statistics.
+> 
+> In general, if a process performs a bpf operation (e.g. creates or updates
+> a map), it's memory cgroup is charged. However map updates performed from
+> an interrupt context are charged to the memory cgroup which contained
+> the process, which created the map.
+> 
+> Providing a 1:1 replacement for the rlimit-based memory accounting is
+> a non-goal of this patchset. Users and memory cgroups are completely
+> orthogonal, so it's not possible even in theory.
+> Memcg-based memory accounting requires a properly configured cgroup tree
+> to be actually useful. However, it's the way how the memory is managed
+> on a modern Linux system.
 
-Assuming the builtin policy has been replaced with a custom policy and
-CONFIG_IMA_WRITE_POLICY is enabled, then yes the rule is appended.   If
-a custom policy has not yet been loaded, loading this rule becomes the
-defacto custom policy.
+The cover letter here only describes the advantages of this series, but leaves
+out discussion of the disadvantages. They definitely must be part of the series
+to provide a clear description of the semantic changes to readers. Last time we
+discussed them, they were i) no mem limits in general on unprivileged users when
+memory cgroups was not configured in the kernel, and ii) no mem limits by default
+if not configured in the cgroup specifically. Did we made any progress on these
+in the meantime? How do we want to address them? What is the concrete justification
+to not address them?
 
-Even if a custom policy has been loaded, potentially additional
-measurements unrelated to this test would be included the measurement
-list.  One way of limiting a rule to a specific test is by loopback
-mounting a file system and defining a policy rule based on the loopback
-mount unique uuid.
- 
-Mimi
+Also I wonder what are the risk of regressions here, for example, if an existing
+orchestrator has configured memory cgroup limits that are tailored to the application's
+needs.. now, with kernel upgrade BPF will start to interfere, e.g. if a BPF program
+attached to cgroups (e.g. connect/sendmsg/recvmsg or general cgroup skb egress hook)
+starts charging to the process' memcg due to map updates?
 
+   [0] https://lore.kernel.org/bpf/20200803190639.GD1020566@carbon.DHCP.thefacebook.com/
+
+> The patchset consists of the following parts:
+> 1) 4 mm patches, which are already in the mm tree, but are required
+>     to avoid a regression (otherwise vmallocs cannot be mapped to userspace).
+> 2) memcg-based accounting for various bpf objects: progs and maps
+> 3) removal of the rlimit-based accounting
+> 4) removal of rlimit adjustments in userspace samples
+> 
+> First 4 patches are not supposed to be merged via the bpf tree. I'm including
+> them to make sure bpf tests will pass.
+> 
+> v7:
+>    - introduced bpf_map_kmalloc_node() and bpf_map_alloc_percpu(), by Alexei
+>    - switched allocations made from an interrupt context to new helpers,
+>      by Daniel
+>    - rebase and minor fixes
