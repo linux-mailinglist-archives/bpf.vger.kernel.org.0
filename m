@@ -2,101 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D042C1267
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 18:56:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C50B2C126F
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 18:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733000AbgKWRwE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 12:52:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731384AbgKWRwE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Nov 2020 12:52:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606153923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KcwBDkt/6ndC1qadY8x0l7MPyKKcaJEtF94aWvQSDKM=;
-        b=XB8E6SIIcrAvjmUaCKOw3zWXopHFIJENFqPziY5RtUIfY1T3qJXoyPnWp887zvVdIes5ax
-        MEewYXYMtx8Ubs7hTbJ5epCr9dKM10xoYe4cBl4W0z5GKjgDQZjs43nlbaJtSxfgjs8Xlz
-        3USRcM4zgmF7ykh5/kFjhB3ZTtx1Zoc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-1MKVZVqrOMKyYKday_IbDw-1; Mon, 23 Nov 2020 12:51:04 -0500
-X-MC-Unique: 1MKVZVqrOMKyYKday_IbDw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B60AD8145E6;
-        Mon, 23 Nov 2020 17:51:00 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.134])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9452C19D9F;
-        Mon, 23 Nov 2020 17:50:54 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 23 Nov 2020 18:51:00 +0100 (CET)
-Date:   Mon, 23 Nov 2020 18:50:53 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH v2 02/24] exec: Simplify unshare_files
-Message-ID: <20201123175052.GA20279@redhat.com>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <20201120231441.29911-2-ebiederm@xmission.com>
+        id S1732492AbgKWR4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 12:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729604AbgKWR4O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:56:14 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9422CC0613CF;
+        Mon, 23 Nov 2020 09:56:14 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w4so14914010pgg.13;
+        Mon, 23 Nov 2020 09:56:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=py5JSSlXJWcBrQyWwWpRNK4T/vAv6z6ZKSuuqxdy+GI=;
+        b=Vy3Ex6kTxISbSehx1V6iapmkiA2wFujIN7sbtzzuTfrcAkZJZpsN6hTXRShAQtn5UJ
+         qj7SepGSHvll+bePskpvjZGYJmkV5cb5m1PKI/W8Q6pHKj2NlUKwR+Re9yYppVND3xoY
+         +dkISyCr7o1JXX0HH2Qd3wUnEa/ETFAgYQ8q3UmlMgC56lQtuvme/nx4AxmrG0lCnJTM
+         NNGx6aygUu0janeRnpB01qYw0ZxV4V9mknGXO//azAAMAqqqsKwtOnh84aAVKWbfe1A5
+         5TM1gbFQZyLxPEyoR/H2UfsVHYHOhMx6rvXbiTM31i0M3ofckVCFB1aNnrofG96hVFOW
+         OClw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=py5JSSlXJWcBrQyWwWpRNK4T/vAv6z6ZKSuuqxdy+GI=;
+        b=Ml79WI53E70zU/AsvdlMCu8OPJvBtX378W+75wY43JwIfiRj52TQl6/sncpQ8kmrKt
+         N6L9Ve9sJ8RiNGFA+QeWQJJ+y9kfNvoA8rX/iBqETHwtILrInNz5c3MZvAbulqvhZhZU
+         d3+SUPpY4Iu5r0fDNrNeoyqKRfRP2t8afFdyUVNI0RlhdoFVqA6CNO6eLZZyaIWano2o
+         InwJUXRAXjIhgQWeT2j06agK1RQUmSBH0kC6/kGoFMMPJm5zSXUF6Rw4/RELJA1l8P1A
+         JBiym0F8hKrneE/C/94EHFcOE28NV5DzB2KIuw+DC1fFeK05UTCZSJHsarh7oseuQdw/
+         WuSw==
+X-Gm-Message-State: AOAM531tjTa72O2LuCwJdvlQBvrb/xMsHfbL19M4oFvIg3YVzFDqBk1e
+        HV1LQAva18ANh0Cl2Cs6V3qo2Yxv9f7RRVn0
+X-Google-Smtp-Source: ABdhPJxDTEDp+vPd4v7YrUMs9vuZSE3UyxwzBOlsZN6gCiHjUSOvl2qfj4WixGlLMmWQBjrnBCvTcg==
+X-Received: by 2002:aa7:982e:0:b029:18b:6372:d445 with SMTP id q14-20020aa7982e0000b029018b6372d445mr466612pfl.31.1606154174168;
+        Mon, 23 Nov 2020 09:56:14 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.40])
+        by smtp.gmail.com with ESMTPSA id y5sm12903423pfc.165.2020.11.23.09.56.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 09:56:12 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        jonathan.lemon@gmail.com, yhs@fb.com, weqaar.janjua@gmail.com,
+        magnus.karlsson@intel.com, weqaar.a.janjua@intel.com
+Subject: [PATCH bpf v2] net, xsk: Avoid taking multiple skbuff references
+Date:   Mon, 23 Nov 2020 18:56:00 +0100
+Message-Id: <20201123175600.146255-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120231441.29911-2-ebiederm@xmission.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'll try to actually read this series tomorrow but I see nothing wrong
-after the quick glance.
+From: Björn Töpel <bjorn.topel@intel.com>
 
-Just one off-topic question,
+Commit 642e450b6b59 ("xsk: Do not discard packet when NETDEV_TX_BUSY")
+addressed the problem that packets were discarded from the Tx AF_XDP
+ring, when the driver returned NETDEV_TX_BUSY. Part of the fix was
+bumping the skbuff reference count, so that the buffer would not be
+freed by dev_direct_xmit(). A reference count larger than one means
+that the skbuff is "shared", which is not the case.
 
-On 11/20, Eric W. Biederman wrote:
->
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -585,7 +585,6 @@ void do_coredump(const kernel_siginfo_t *siginfo)
->  	int ispipe;
->  	size_t *argv = NULL;
->  	int argc = 0;
-> -	struct files_struct *displaced;
->  	/* require nonrelative corefile path and be extra careful */
->  	bool need_suid_safe = false;
->  	bool core_dumped = false;
-> @@ -791,11 +790,9 @@ void do_coredump(const kernel_siginfo_t *siginfo)
->  	}
->
->  	/* get us an unshared descriptor table; almost always a no-op */
-> -	retval = unshare_files(&displaced);
-> +	retval = unshare_files();
+If the "shared" skbuff is sent to the generic XDP receive path,
+netif_receive_generic_xdp(), and pskb_expand_head() is entered the
+BUG_ON(skb_shared(skb)) will trigger.
 
-Can anyone explain why does do_coredump() need unshare_files() at all?
+This patch adds a variant to dev_direct_xmit(), __dev_direct_xmit(),
+where a user can select the skbuff free policy. This allows AF_XDP to
+avoid bumping the reference count, but still keep the NETDEV_TX_BUSY
+behavior.
 
-Oleg.
+Reported-by: Yonghong Song <yhs@fb.com>
+Fixes: 642e450b6b59 ("xsk: Do not discard packet when NETDEV_TX_BUSY")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+v2:
+  Removed the bool parameter, and inlined dev_direct_xmit(). (Daniel)
+---
+ include/linux/netdevice.h | 11 ++++++++++-
+ net/core/dev.c            |  8 ++------
+ net/xdp/xsk.c             |  8 +-------
+ 3 files changed, 13 insertions(+), 14 deletions(-)
+
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 964b494b0e8d..bd841f31dfab 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -2815,7 +2815,16 @@ u16 dev_pick_tx_cpu_id(struct net_device *dev, struct sk_buff *skb,
+ 		       struct net_device *sb_dev);
+ int dev_queue_xmit(struct sk_buff *skb);
+ int dev_queue_xmit_accel(struct sk_buff *skb, struct net_device *sb_dev);
+-int dev_direct_xmit(struct sk_buff *skb, u16 queue_id);
++int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id);
++static inline int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
++{
++	int ret;
++
++	ret = __dev_direct_xmit(skb, queue_id);
++	if (!dev_xmit_complete(ret))
++		kfree_skb(skb);
++	return ret;
++}
+ int register_netdevice(struct net_device *dev);
+ void unregister_netdevice_queue(struct net_device *dev, struct list_head *head);
+ void unregister_netdevice_many(struct list_head *head);
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 82dc6b48e45f..8588ade790cb 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4180,7 +4180,7 @@ int dev_queue_xmit_accel(struct sk_buff *skb, struct net_device *sb_dev)
+ }
+ EXPORT_SYMBOL(dev_queue_xmit_accel);
+ 
+-int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
++int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+ {
+ 	struct net_device *dev = skb->dev;
+ 	struct sk_buff *orig_skb = skb;
+@@ -4210,17 +4210,13 @@ int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+ 	dev_xmit_recursion_dec();
+ 
+ 	local_bh_enable();
+-
+-	if (!dev_xmit_complete(ret))
+-		kfree_skb(skb);
+-
+ 	return ret;
+ drop:
+ 	atomic_long_inc(&dev->tx_dropped);
+ 	kfree_skb_list(skb);
+ 	return NET_XMIT_DROP;
+ }
+-EXPORT_SYMBOL(dev_direct_xmit);
++EXPORT_SYMBOL(__dev_direct_xmit);
+ 
+ /*************************************************************************
+  *			Receiver routines
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 5a6cdf7b320d..b7b039bd9d03 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -411,11 +411,7 @@ static int xsk_generic_xmit(struct sock *sk)
+ 		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+ 		skb->destructor = xsk_destruct_skb;
+ 
+-		/* Hinder dev_direct_xmit from freeing the packet and
+-		 * therefore completing it in the destructor
+-		 */
+-		refcount_inc(&skb->users);
+-		err = dev_direct_xmit(skb, xs->queue_id);
++		err = __dev_direct_xmit(skb, xs->queue_id);
+ 		if  (err == NETDEV_TX_BUSY) {
+ 			/* Tell user-space to retry the send */
+ 			skb->destructor = sock_wfree;
+@@ -429,12 +425,10 @@ static int xsk_generic_xmit(struct sock *sk)
+ 		/* Ignore NET_XMIT_CN as packet might have been sent */
+ 		if (err == NET_XMIT_DROP) {
+ 			/* SKB completed but not sent */
+-			kfree_skb(skb);
+ 			err = -EBUSY;
+ 			goto out;
+ 		}
+ 
+-		consume_skb(skb);
+ 		sent_frame = true;
+ 	}
+ 
+
+base-commit: 178648916e73e00de83150eb0c90c0d3a977a46a
+-- 
+2.27.0
 
