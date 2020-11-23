@@ -2,115 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427842C0266
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 10:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484BD2C0354
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 11:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727895AbgKWJkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 04:40:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbgKWJka (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:40:30 -0500
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C225BC0613CF;
-        Mon, 23 Nov 2020 01:40:30 -0800 (PST)
-Received: by mail-pg1-x542.google.com with SMTP id w4so13713598pgg.13;
-        Mon, 23 Nov 2020 01:40:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ySaaDJj3FNEmrbWbcGYLmfeN18a4YdousMGDCBvU6jk=;
-        b=unPNP+t9GaBpFqpa9me97hdsQ/OBmpl48spMDQfiA1k0V21CTihfYEU7yZayAozEN/
-         kXVQ4p4TRZDrylTUKyXahesyy+sivDq47lTZOPkq5AhHkINTdr4UqZ02c/Er0VR4LV+L
-         TqKL1PAOHlZS7MN/z11lyf7V1vTl5LOsE7XbRd4rT4NLrIc5B2s30uKil+p+dav1x8B8
-         qDSeZPY+3MKS1MaCF+PHrBGHr72kultchvZCvPz9142LPzoyWmNxNRbKKzgNOfeGD/GR
-         uRxLI3q70ZgTW3xVW0J1bIc5qfDfAoWuaD8wylWVAknK0ceUcilEiPuecuaSb4Fa9HdH
-         xoeA==
+        id S1728266AbgKWKbf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 05:31:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726819AbgKWKbf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 23 Nov 2020 05:31:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606127494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UMgCW61zqAkB3c+w/CYSUdpW3LDqmoWBeyI4srFJ58c=;
+        b=S6bW3ry0mdtCohErut4KUwVMRP7UVJ9hM41muCmKdtUERNF017UtIpNYULeg33DiWSylDS
+        PPOnWI2quJgWsnBGuXK0xiQXmaO+PfSY/RP4LEtLfRfZunkMIC3iBf0Tfky6n9wN1MtFvh
+        J2NMB2Cm8TkeQFYIzf+rthNyOh+FQzg=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-xkTrbPtrOuK0f5yP6-eWpg-1; Mon, 23 Nov 2020 05:31:32 -0500
+X-MC-Unique: xkTrbPtrOuK0f5yP6-eWpg-1
+Received: by mail-ed1-f72.google.com with SMTP id l24so6387213edt.16
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 02:31:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ySaaDJj3FNEmrbWbcGYLmfeN18a4YdousMGDCBvU6jk=;
-        b=nMkH/1Azb7+FCAO8PzTO4D6mJeNsvzJUwfygF4DpzVwk4TlbVS+49pWlkNmbibsP93
-         XRBep84xYaAlO1i8HkGbJkxFKTRlcqza3lx5Ov90MCn7GkAvjSMKDCf3BP5OjA0KRssq
-         ScTdCZwnCZ0b+lwBiJQgE3CaHbF2t7iQcy18kI6ZzdxXS2Q2m51OzrqDnKvOsnWufapy
-         vfHhUfoY/FMGAXubmkE+dfy0BwVKryrjStfOqh7Xewk29S9afbNh/8BCmkuNBiVMC5og
-         D2l/bQYGTm8AU7DIiE15eKbhLOWlH2jkoX/7UbH2MydRU2cPb9gAPHRG7rWaG8TWcPl7
-         hZKA==
-X-Gm-Message-State: AOAM532BcugWgUO0z0Ciwc0eM8xMZRuOAlio0vQN3Ww1aCBfNG6/KxIF
-        PiMZBh+xJa2qwqtOVu3y2WUydk9At5OaDY+Rn1b/ir8eZplxnLnB
-X-Google-Smtp-Source: ABdhPJxlSdyRLYA8cIXJOOFc10Rd1EjyFau7MY37/lMw/uxdiT6KcFNnJgtf/c8+MgkjyQfx2yqGJxeHlDuKqaPESXY=
-X-Received: by 2002:a62:445:0:b029:196:61fc:2756 with SMTP id
- 66-20020a6204450000b029019661fc2756mr24783083pfe.12.1606124430231; Mon, 23
- Nov 2020 01:40:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=UMgCW61zqAkB3c+w/CYSUdpW3LDqmoWBeyI4srFJ58c=;
+        b=PCr5TbE6rKmKqLAM8vOjpS2TzBhWVYxXF29q+1MdUOXcQwcS2+h8lbjMaeiRt7Czc4
+         PPRfRz1GyjuY1NVrJ40v4d5OBcrVs+wYaqsQCyTbE2H49vdywhkru/W68LukwJt53WcK
+         Vc/al1UNj5crE1SGUN2loYRONwLhkRaTo7lid/Xm3J2qN2sE4xtJLeemTl1avrNNxtmd
+         wQ6hXeK4E+6sgOBOVmIF1VRNTe60lR9Tj6hURf9+vmrQU1Jxltj33ltL0vz6V+BZwZ65
+         jDWGBxA8LMHs+lvfVbZjwV45XDBAhHCZIN2Q3z9KzMIYKpi59Dho+p9gdU7ytylKdxQi
+         L1TA==
+X-Gm-Message-State: AOAM531ehi8Un7QOGlH3kF/FK5957afcjBK5KrVYRli59ymj8EOb56e3
+        5wcJuDObeMHO6MLkhjVIzYGFBZo/V4pi2Zu2n3YIJeBMZJ46VemLYq94hyiqDOEA+0beqZNglU1
+        x5r1Ttz8Jl5cT
+X-Received: by 2002:a17:906:512:: with SMTP id j18mr44485838eja.370.1606127490547;
+        Mon, 23 Nov 2020 02:31:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxQix3XASnb2R1wIlk0/OYWTa6sCSb/kGnCLCYE7l2XDHjsmpgtxsb/YepQiJp3/qHaW7kGYQ==
+X-Received: by 2002:a17:906:512:: with SMTP id j18mr44485808eja.370.1606127490005;
+        Mon, 23 Nov 2020 02:31:30 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k2sm4683215ejp.6.2020.11.23.02.31.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 02:31:29 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1B51D183064; Mon, 23 Nov 2020 11:31:27 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jiri Pirko <jiri@mellanox.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: Is test_offload.py supposed to work?
+In-Reply-To: <20201120084846.710549e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <87y2iwqbdg.fsf@toke.dk>
+ <20201120084846.710549e8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 23 Nov 2020 11:31:27 +0100
+Message-ID: <873610nz40.fsf@toke.dk>
 MIME-Version: 1.0
-References: <1606050623-22963-1-git-send-email-lirongqing@baidu.com>
-In-Reply-To: <1606050623-22963-1-git-send-email-lirongqing@baidu.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 23 Nov 2020 10:40:19 +0100
-Message-ID: <CAJ8uoz3d4x9pWWNxmd9+ozt7ei7WUE=S=FnKE1sLZOqoKRwMJQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: add support for canceling cached_cons advance
-To:     Li RongQing <lirongqing@baidu.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 22, 2020 at 2:21 PM Li RongQing <lirongqing@baidu.com> wrote:
+Jakub Kicinski <kuba@kernel.org> writes:
+
+> On Fri, 20 Nov 2020 16:46:51 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Hi Jakub and Jiri
+>>=20
+>> I am investigating an error with XDP offload mode, and figured I'd run
+>> 'test_offload.py' from selftests. However, I'm unable to get it to run
+>> successfully; am I missing some config options, or has it simply
+>> bit-rotted to the point where it no longer works?
 >
-> It is possible to fail receiving packets after calling
-> xsk_ring_cons__peek, at this condition, cached_cons has
-> been advanced, should be cancelled.
-
-Thanks RongQing,
-
-I have needed this myself in various situations, so I think we should
-add this. But your motivation in the commit message is somewhat
-confusing. How about something like this?
-
-Add a new function for returning descriptors the user received after
-an xsk_ring_cons__peek call. After the application has gotten a number
-of descriptors from a ring, it might not be able to or want to process
-them all for various reasons. Therefore, it would be useful to have an
-interface for returning or cancelling a number of them so that they
-are returned to the ring. This patch adds a new function called
-xsk_ring_cons__cancel that performs this operation on nb descriptors
-counted from the end of the batch of descriptors that was received
-through the peek call.
-
-Replace your commit message with this, fix the bug below, send a v2
-and then I am happy to ack this.
-
-/Magnus
-
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-> ---
->  tools/lib/bpf/xsk.h | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Yeah it must have bit rotted, there are no config options to get
+> wrong there AFAIK.
 >
-> diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
-> index 1069c46364ff..4128215c246b 100644
-> --- a/tools/lib/bpf/xsk.h
-> +++ b/tools/lib/bpf/xsk.h
-> @@ -153,6 +153,12 @@ static inline size_t xsk_ring_cons__peek(struct xsk_ring_cons *cons,
->         return entries;
->  }
->
-> +static inline void xsk_ring_cons__cancel(struct xsk_ring_cons *cons,
-> +                                        size_t nb)
-> +{
-> +       rx->cached_cons -= nb;
+> It shouldn't be too hard to fix tho, it's just a python script...
 
-cons-> not rx->. Please make sure the v2 compiles and passes checkpatch.
+Right, I'll take a stab at fixing it, just wanted to make sure I wasn't
+missing something obvious; thanks!
 
-> +}
-> +
->  static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, size_t nb)
->  {
->         /* Make sure data has been read before indicating we are done
-> --
-> 2.17.3
->
+-Toke
+
