@@ -2,172 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA892C11FB
+	by mail.lfdr.de (Postfix) with ESMTP id E8AF12C11FD
 	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 18:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgKWRbT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 12:31:19 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:37229 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729740AbgKWRbS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:31:18 -0500
-Received: by mail-io1-f71.google.com with SMTP id b4so13390786ioa.4
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:31:16 -0800 (PST)
+        id S1731739AbgKWRcS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 12:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730667AbgKWRcR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:32:17 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B98AC0613CF
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:32:17 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id o25so15288967qkj.1
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:32:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=oXaU5c+8k021cMT48FUBTifmZRS7IJDVtgM5yLX1W+g=;
+        b=JV+yTRpDSS45ad3z5kgLtuIs/5kGTLK0W8LAcKNp1tz/XQU0CoiHupmAYxtKHCFJ1E
+         MbEfwyauyhZvKf8CIsJMOV9+fvoDhIjBRYDvKwlWQwYAtkSbW38jOezIw9WZI+8I85Fk
+         BCIOuE3aXEyBLQ6top9DzvkkJpJHO5z43dGJzpq+dsOKgoYHtK14S0yLSdpFSqB9cCnc
+         tgy7a+vHVvy5xiKDl4n47dnmCsMNYFvIBkcuuD84LOIK+MdLIDs9xJpLCm3b16mTSa+N
+         tgq9uP0zskJNagz6Az6t0cCC8AwlZ5sdjMkbcEDzuMid27/g+VPHBqrWDqxJXgwkfdex
+         3fGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=p06mNsn62UzYbRGqsC6k1rWTPNotjmZgU3HzwqNYA9c=;
-        b=QFfkbsXcFQCb41py9sFgkZW+hm4G4s/xFAC+ArUlqeZmNr9PQyk1Hy3egP0Qjo95d8
-         +arH25F402rvWk3Wj4udQ2KQ2pQ64XUEshnAzihMW+fJteHzanLj1r5rnPbGRGYW7Xv+
-         XUZmIze9+1kJ1jsLMAX/96Uov4It+FYcwD81o9ttqdr+lAimE1xeFSkY6c4dqQgy/i0D
-         kPkfaCPDjPruypPme6+QLp/IYcA2ydGPMmoTkFgP2WceQATiEoU/sxOvQmOwe0iM4au9
-         xy8RyEB1GYBFeS4qL8YhVHPzDfEMHWPS/wInvdWI46qLR8F0zXJbsCMzMqxcswypr2MP
-         8vOg==
-X-Gm-Message-State: AOAM532nyaL+UcUdEOCBTR8F0xQ20XzKxVeQ4cBHbEXJDGXgFslhluI3
-        r/JZ5Mc1btjZIKXiN1JWWP2LVkeGIIFebplhay3wo+6nKmQi
-X-Google-Smtp-Source: ABdhPJwGHghLPmVCAsZYpQebAewIJWlH+DfzNLEnKt6Vvz1+IoacryC4wBZD/HsCCQrvc8CJj3PmuikKrR2xMi8wIjtrG9WyLe6/
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:58a:: with SMTP id a10mr529969jar.51.1606152676379;
- Mon, 23 Nov 2020 09:31:16 -0800 (PST)
-Date:   Mon, 23 Nov 2020 09:31:16 -0800
-In-Reply-To: <0000000000007bf88805a445f729@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bb145805b4c98ff2@google.com>
-Subject: Re: memory leak in inet_create (2)
-From:   syzbot <syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=oXaU5c+8k021cMT48FUBTifmZRS7IJDVtgM5yLX1W+g=;
+        b=A9gKq2m5Z34WcNykFf7jSkEtZo43URKoWSwQIBlQEAw05w4tS2rxBSjemNS8qOE8Ka
+         wNZo5fE/4A9ZnLEhclL3HnAIvFVRHyTWSQvUXve6Uh+4cwslAP9JwldaAVAqG5u40fDE
+         /Luc96nHUgr+AuzM8QvQa0GZf51Sx0O4DEJZo5YGD0xT52Wejkj5NJV+xIo8G02PCNvB
+         hqUu87q5GNJeAZKn8AAZQYwpivAGe0bLMyZhVitDErECCOTcrdAvmrCucgLnlXnErOE6
+         E1HqG8Fcstq+7446p85Y2+/zxZc5vX43d9im1xp/VqcBxu0psaneG1f4BDkEz+EC9qVo
+         Jmhg==
+X-Gm-Message-State: AOAM531F9FQxXytGboRpXGWp5AUsxOT0eyXGEvj5EhcGnDP5XhA9s+JU
+        nllSNMexyJ1hrApOEErTx/aDQlDD1RqffmaaMTU+02JAFQYoJoE+Oo8+59SZEJmp6qUDg3XN8K6
+        f3hG+qf0vIKNmdg7ooNELoK2wMVC9W6lOUiOSigoxrxTGp1AMZxyRIKQUFr3bzLk=
+X-Google-Smtp-Source: ABdhPJxU3j5WzC7Er0skl23G7rTbgw6fasqLaHoUv0VECZGdZcRH21U/h3exjMFHzZPE31zZyKqpFMYPun3GUg==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a0c:f607:: with SMTP id
+ r7mr509314qvm.47.1606152736581; Mon, 23 Nov 2020 09:32:16 -0800 (PST)
+Date:   Mon, 23 Nov 2020 17:31:55 +0000
+Message-Id: <20201123173202.1335708-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH 0/7] Atomics for eBPF
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Status of the patches
+=====================
 
-HEAD commit:    418baf2c Linux 5.10-rc5
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=161c84ed500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5524c10373633a9c
-dashboard link: https://syzkaller.appspot.com/bug?extid=bb7ba8dd62c3cb6e3c78
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1514cfa3500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a52fc1500000
+This patchset is currently incomplete: it oughtn't be released as-is,
+because that would necessitate incrementing architecture
+version number for a partial feature-set. However I've implemented
+the parts that I think are most interesting/controversial, so I'd
+like to get the review started.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com
+The missing elements that I'm aware of are:
 
-executing program
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff88810e85adc0 (size 1728):
-  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
-  backtrace:
-    [<00000000cb2829d9>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1660
-    [<0000000023bd8ef8>] sk_alloc+0x30/0x3f0 net/core/sock.c:1720
-    [<00000000a4a7ed0a>] inet_create net/ipv4/af_inet.c:322 [inline]
-    [<00000000a4a7ed0a>] inet_create+0x16a/0x560 net/ipv4/af_inet.c:248
-    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
-    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
-    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
-    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
-    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
-    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
-    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+* Atomic subtract
+* Atomic & and |
+* Documentation updates
 
-BUG: memory leak
-unreferenced object 0xffff88810fec3c80 (size 768):
-  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
-  hex dump (first 32 bytes):
-    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 c0 72 a0 0e 81 88 ff ff  .........r......
-  backtrace:
-    [<00000000681cd6ae>] sock_alloc_inode+0x18/0x90 net/socket.c:253
-    [<00000000fa9d2004>] alloc_inode+0x27/0x100 fs/inode.c:234
-    [<00000000f3a018c7>] new_inode_pseudo+0x13/0x70 fs/inode.c:930
-    [<00000000549f715a>] sock_alloc+0x18/0x90 net/socket.c:573
-    [<00000000a044e0d4>] __sock_create+0xb8/0x2b0 net/socket.c:1391
-    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
-    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
-    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
-    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
-    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
-    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
-    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
-    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
-    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
-    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
-    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
-    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
-    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The prog_test that's added depends on Clang/LLVM features added by
+Yonghong in https://reviews.llvm.org/D72184
 
-BUG: memory leak
-unreferenced object 0xffff88810de87bb8 (size 24):
-  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
-  hex dump (first 24 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<00000000bea9ec8c>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
-    [<00000000bea9ec8c>] lsm_inode_alloc security/security.c:589 [inline]
-    [<00000000bea9ec8c>] security_inode_alloc+0x2a/0xb0 security/security.c:972
-    [<00000000543365c5>] inode_init_always+0x10c/0x250 fs/inode.c:171
-    [<000000004da5c777>] alloc_inode+0x44/0x100 fs/inode.c:241
-    [<00000000f3a018c7>] new_inode_pseudo+0x13/0x70 fs/inode.c:930
-    [<00000000549f715a>] sock_alloc+0x18/0x90 net/socket.c:573
-    [<00000000a044e0d4>] __sock_create+0xb8/0x2b0 net/socket.c:1391
-    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
-    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
-    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
-    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
-    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
-    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
-    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
-    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
-    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
-    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
-    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
-    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
-    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This only includes a JIT implementation for x86_64 - I don't plan to
+implement JIT support myself for other architectures.
 
-BUG: memory leak
-unreferenced object 0xffff88810ea072c0 (size 2208):
-  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
-  backtrace:
-    [<00000000cb2829d9>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1660
-    [<0000000023bd8ef8>] sk_alloc+0x30/0x3f0 net/core/sock.c:1720
-    [<00000000a4a7ed0a>] inet_create net/ipv4/af_inet.c:322 [inline]
-    [<00000000a4a7ed0a>] inet_create+0x16a/0x560 net/ipv4/af_inet.c:248
-    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
-    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
-    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
-    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
-    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
-    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
-    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
-    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
-    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
-    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
-    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
-    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
-    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
-    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Operations
+==========
 
+This patchset adds atomic operations to the eBPF instruction set. The
+use-case that motivated this work was a trivial and efficient way to
+generate globally-unique cookies in BPF progs, but I think it's
+obvious that these features are pretty widely applicable.  The
+instructions that are added here can be summarised with this list of
+kernel operations:
+
+* atomic[64]_[fetch_]add
+* atomic[64]_[fetch_]sub (TODO)
+* atomic[64]_[fetch_]and (TODO)
+* atomic[64]_[fetch_]or  (TODO)
+* atomic[64]_xchg
+* atomic[64]_cmpxchg
+
+The following are left out of scope for this effort:
+
+* 16 and 8 bit operations
+* Explicit memory barriers
+
+Encoding
+========
+
+I originally planned to add new values for bpf_insn.opcode. This was
+rather unpleasant: the opcode space has holes in it but no entire
+instruction classes[1]. Yonghong Song had a better idea: use the
+immediate field of the existing STX XADD instruction to encode the
+operation. This works nicely, without breaking existing programs,
+because the immediate field is currently reserved-must-be-zero, and
+extra-nicely because BPF_ADD happens to be zero.
+
+Note that this of course makes immediate-source atomic operations
+impossible. It's hard to imagine a measurable speedup from such
+instructions, and if it existed it would certainly not benefit x86,
+which has no support for them.
+
+The BPF_OP opcode fields are re-used in the immediate, and an
+additional flag BPF_FETCH is used to mark instructions that should
+fetch a pre-modification value from memory.
+
+So, BPF_XADD is now called BPF_ATOMIC (the old name is kept to avoid
+breaking userspace builds), and where we previously had .imm = 0, we
+now have .imm = BPF_ADD (which is 0).
+
+Operands
+========
+
+Reg-source eBPF instructions only have two operands, while these
+atomic operations have up to four. To avoid needing to encode
+additional operands, then:
+
+- One of the input registers is re-used as an output register
+  (e.g. atomic_fetch_add both reads from and writes to the source
+  register).
+
+- Where necessary (i.e. for cmpxchg) , R0 is "hard-coded" as one of
+  the operands.
+
+This approach also allows the new eBPF instructions to map directly
+to single x86 instructions.
+
+[1] Visualisation of eBPF opcode space:
+    https://gist.github.com/bjackman/00fdad2d5dfff601c1918bc29b16e778
+
+Brendan Jackman (7):
+  bpf: Factor out emission of ModR/M for *(reg + off)
+  bpf: x86: Factor out emission of REX byte
+  bpf: Rename BPF_XADD and prepare to encode other atomics in .imm
+  bpf: Move BPF_STX reserved field check into BPF_STX verifier code
+  bpf: Add BPF_FETCH field / create atomic_fetch_add instruction
+  bpf: Add instructions for atomic_cmpxchg and friends
+  bpf: Add tests for new BPF atomic operations
+
+ Documentation/networking/filter.rst           |  27 ++--
+ arch/arm/net/bpf_jit_32.c                     |   7 +-
+ arch/arm64/net/bpf_jit_comp.c                 |  16 +-
+ arch/mips/net/ebpf_jit.c                      |  11 +-
+ arch/powerpc/net/bpf_jit_comp64.c             |  25 ++-
+ arch/riscv/net/bpf_jit_comp32.c               |  20 ++-
+ arch/riscv/net/bpf_jit_comp64.c               |  16 +-
+ arch/s390/net/bpf_jit_comp.c                  |  26 ++--
+ arch/sparc/net/bpf_jit_comp_64.c              |  14 +-
+ arch/x86/net/bpf_jit_comp.c                   | 131 ++++++++++------
+ arch/x86/net/bpf_jit_comp32.c                 |   6 +-
+ drivers/net/ethernet/netronome/nfp/bpf/jit.c  |  14 +-
+ drivers/net/ethernet/netronome/nfp/bpf/main.h |   4 +-
+ .../net/ethernet/netronome/nfp/bpf/verifier.c |  13 +-
+ include/linux/filter.h                        |  47 +++++-
+ include/uapi/linux/bpf.h                      |   9 +-
+ kernel/bpf/core.c                             |  64 ++++++--
+ kernel/bpf/disasm.c                           |  25 ++-
+ kernel/bpf/verifier.c                         |  72 ++++++---
+ lib/test_bpf.c                                |   2 +-
+ samples/bpf/bpf_insn.h                        |   4 +-
+ samples/bpf/sock_example.c                    |   3 +-
+ samples/bpf/test_cgrp2_attach.c               |   6 +-
+ tools/include/linux/filter.h                  |  47 +++++-
+ tools/include/uapi/linux/bpf.h                |   9 +-
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../selftests/bpf/prog_tests/atomics_test.c   | 145 ++++++++++++++++++
+ .../bpf/prog_tests/cgroup_attach_multi.c      |   6 +-
+ .../selftests/bpf/progs/atomics_test.c        |  61 ++++++++
+ .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 ++++++++++++
+ .../selftests/bpf/verifier/atomic_fetch_add.c | 106 +++++++++++++
+ .../selftests/bpf/verifier/atomic_xchg.c      | 113 ++++++++++++++
+ tools/testing/selftests/bpf/verifier/ctx.c    |   6 +-
+ .../testing/selftests/bpf/verifier/leak_ptr.c |   4 +-
+ tools/testing/selftests/bpf/verifier/unpriv.c |   3 +-
+ tools/testing/selftests/bpf/verifier/xadd.c   |   2 +-
+ 36 files changed, 1002 insertions(+), 160 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/atomics_test.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
+
+--
+2.29.2.454.gaff20da3a2-goog
 
