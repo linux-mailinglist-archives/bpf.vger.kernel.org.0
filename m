@@ -2,80 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49352C01D9
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 10:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F27452C0272
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 10:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgKWJA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 04:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgKWJA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Nov 2020 04:00:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED8CC0613CF;
-        Mon, 23 Nov 2020 01:00:57 -0800 (PST)
+        id S1725843AbgKWJok (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 04:44:40 -0500
+Received: from gateway23.websitewelcome.com ([192.185.47.80]:44361 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725275AbgKWJoj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 23 Nov 2020 04:44:39 -0500
+X-Greylist: delayed 1234 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Nov 2020 04:44:39 EST
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id A9DD7CA04
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 03:24:03 -0600 (CST)
+Received: from zastava.websitewelcome.com ([192.185.83.71])
+        by cmsmtp with SMTP
+        id h84nkLhrHsvw9h84nk1Ia0; Mon, 23 Nov 2020 03:24:03 -0600
+X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=flYiZOk1DDOO3edQvf6Tz2+/+AB101STTfYO1lfvvJ8=; b=N/3WgXhoIf3l9jopQDWfhTq6NU
-        C/ZOAgGe/B4ARIcIcrVx8uQBhyS06iJkU9B3vaUTvKcXd3FqgM81DY/5Qf0yGeJsCBXaKC15BodUR
-        zqqZ4TdqPAZcbVC0++BJmUB6050njxfsfd8mJUe30ymCfPgR3wb0YK46pfpjY0Mb4rAVkEgCxSWDY
-        jXHBOuJZ2tNQ5t9DbEudZ6UFHjaKKawfkSYTkD7sV6PW/qQruEHlAdAkfJBWEVz+fTKQhJBABwSh/
-        JRAq0qRv1OjED/a1D+8Y0TUsaP+8HzkeP9nqnmmPWztjcfHEV6f7W+qJg3Kz2WimkJvFOhNG73B2y
-        Ypx0g3lw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kh7iC-0002pP-JH; Mon, 23 Nov 2020 09:00:40 +0000
-Date:   Mon, 23 Nov 2020 09:00:40 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     akpm@linux-foundation.org, jeyu@kernel.org, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, luto@kernel.org,
-        dave.hansen@linux.intel.com, peterz@infradead.org, x86@kernel.org,
-        rppt@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dan.j.williams@intel.com, elena.reshetova@intel.com,
-        ira.weiny@intel.com
-Subject: Re: [PATCH RFC 01/10] vmalloc: Add basic perm alloc implementation
-Message-ID: <20201123090040.GA6334@infradead.org>
-References: <20201120202426.18009-1-rick.p.edgecombe@intel.com>
- <20201120202426.18009-2-rick.p.edgecombe@intel.com>
+        d=liamsports.com; s=default; h=Date:Message-Id:Content-Type:MIME-Version:
+        Reply-To:From:Subject:To:Sender:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=DNctREwmdr2xzK+3LW6h9IegnQUayja9aGXYHpevsic=; b=VTKCPySg7LLvaoTAItO/CfGM2l
+        h/84OajdMCkoVcgSWMED5bpeHh/quQJaxZ4g/4ZMBAxJK8T6Vbe23rjWzNgkRVs3I5r1LKkOChhOE
+        lbC0rmDJUChQIfi5AjX/ff0YsJZlS76J//LvdcRx5yGahPT5HsZKJw5KgbII2V5fjMw0IXil7GyiF
+        P/iu6Alykw2UFVnCkF1uqAbKAauJlZgfGaUnIPYe5qW1/lF0btGGM2/yKTyslw0OW3q+sz5m2a2tx
+        Ka27u/EBiMVewbX+CSR6tXDOvm9IgVKcwg8RvTOtzu3bzmJAdqAJC+SlJnsPg0scZxgK1UzxIOKx7
+        QIgNuT4g==;
+Received: from liamsports by zastava.websitewelcome.com with local (Exim 4.93)
+        (envelope-from <info@liamsports.com>)
+        id 1kh84n-003La9-5t
+        for bpf@vger.kernel.org; Mon, 23 Nov 2020 03:24:01 -0600
+To:     bpf@vger.kernel.org
+Subject: Business Proposal
+X-PHP-Script: liamsports.com/email1/index.php for 39.49.96.183
+X-PHP-Originating-Script: 5244:index.php
+From:   Isabella George <info@liamsports.com>
+Reply-To: Isabella George <info@liamsports.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201120202426.18009-2-rick.p.edgecombe@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <E1kh84n-003La9-5t@zastava.websitewelcome.com>
+Date:   Mon, 23 Nov 2020 03:24:01 -0600
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - zastava.websitewelcome.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [5244 32008] / [47 12]
+X-AntiAbuse: Sender Address Domain - liamsports.com
+X-BWhitelist: no
+X-Source-IP: 
+X-Source-L: No
+X-Exim-ID: 1kh84n-003La9-5t
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: liamsports.com:/public_html/email1
+X-Source-Sender: 
+X-Source-Auth: liamsports
+X-Email-Count: 305
+X-Source-Cap: bGlhbXNwb3J0cztwYWt3ZWlvbjt6YXN0YXZhLndlYnNpdGV3ZWxjb21lLmNvbQ==
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-First thanks for doing this, having a vmalloc variant that starts out
-with proper permissions has been on my todo list for a while.
+Hello There
+Liam Sports is The Factory of custom apparels And Team Wears. we are specialist in custom apparels including Tees, Polo Shirts, Tights,  Hoodies, Tracksuits, Softshell, Club Outerwear, Training Singlets, Reversible Training Jumpers and Singlets, Compression Wears, And Club Sports Bag etc We strive to deliver the highest quality in custom sublimation and cut & sew In All Over The worldwide.
+You can ask for samples if you want to check our quality first.
 
 
-> +#define PERM_R	1
-> +#define PERM_W	2
-> +#define PERM_X	4
-> +#define PERM_RWX	(PERM_R | PERM_W | PERM_X)
-> +#define PERM_RW		(PERM_R | PERM_W)
-> +#define PERM_RX		(PERM_R | PERM_X)
+Regards
 
-Why can't this use the normal pgprot flags?
-
-> +typedef u8 virtual_perm;
-
-This would need __bitwise annotations to allow sparse to typecheck the
-flags.
-
-> +/*
-> + * Allocate a special permission kva region. The region may not be mapped
-> + * until a call to perm_writable_finish(). A writable region will be mapped
-> + * immediately at the address returned by perm_writable_addr(). The allocation
-> + * will be made between the start and end virtual addresses.
-> + */
-> +struct perm_allocation *perm_alloc(unsigned long vstart, unsigned long vend, unsigned long page_cnt,
-> +				   virtual_perm perms);
-
-Please avoid totally pointless overly long line (all over the series)
-
-Also I find the unsigned long for kernel virtual address interface
-strange, but I'll take a look at the callers later.
+Company: Liam Sports
+Cell: +92 3127601319
+Whatsapp: +447395606980
+Website : www.liamsports.com
+Factory Address: Small Industrial Area Sialkot 51310, Punjab Pakistan 
+Instagram:  https://www.instagram.com/liamsports_official/
